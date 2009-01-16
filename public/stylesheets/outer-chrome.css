@@ -8,114 +8,120 @@
 
 body
 {
-    background-color: #7a7a7a;
+  background-color: #8d8d8d;
 }
 
 #header, #footer
 {
-    background-color: #6b6b6b;
-    margin-left: 120px;
-    margin-right: 1em;
-    padding: 0.75em;
-    text-align: right;
+  margin-right: 1em;
+  padding: 0.75em;
+  text-align: right;
+}
+
+#header
+{
+  background-color: #7e7e7e;
+  margin-bottom: 1em;
+  margin-left: 120px;
 }
 
 #mainLogo a
 {
-    background-image: url(/images/header_logo.png);
-    display: block;
-    height: 60px;
-    left: 10px;
-    position: absolute;
-    text-align: left;
-    text-indent: -9999px;
-    top: 10px;
-    width: 96px;
+  background-image: url(/images/header_logo.png);
+  display: block;
+  height: 60px;
+  left: 10px;
+  position: absolute;
+  text-align: left;
+  text-indent: -9999px;
+  top: 10px;
+  width: 96px;
 }
 
 #header li, #footer li
 {
-    display: inline;
+  display: inline;
 }
 
 #header a, #footer a
 {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 #header a:hover, #footer a:hover
 {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 #header .notifications
 {
-    color: #f5db85;
-    float: left;
+  color: #fae096;
+  float: left;
 }
 
 #header .notifications a
 {
-    color: #f5db85;
+  color: #fae096;
 }
 
 #header .notifications, #header .userNav
 {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 #header .userNav li
 {
-    margin: 0.5em;
+  margin: 0.5em;
 }
 
 #header .userNav a
 {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 #mainNav
 {
-    background-color: #fae095;
-    float: right;
-    height: 1.3em;
-    margin-left: 1em;
-    margin-right: -0.75em;
-    margin-top: -0.75em;
-    padding: 0.6em;
+  background-color: #fde3a1;
+  float: right;
+  height: 1.3em;
+  margin-left: 1em;
+  margin-right: -0.75em;
+  margin-top: -0.75em;
+  padding: 0.6em;
 }
 
 #mainNav li
 {
-    margin: 0.5em;
+  margin: 0.5em;
 }
 
 #mainNav a
 {
-    color: #333333;
-    font-size: 1.35em;
-    font-weight: bold;
+  color: #000000;
+  font-size: 1.35em;
+  font-weight: bold;
 }
 
 #footer
 {
-    background-color: #535353;
-    margin: 1em 1em 0;
-    padding: 2em;
+  background-color: #666666;
+  margin: 1em 1em 0;
+  padding: 2em;
 }
 
 #footer li
 {
-    margin: 0 2em;
+  margin: 0 2em;
 }
 
 #footer a
 {
-    color: #ffffff;
-    font-size: 1em;
+  color: #c6c6c6;
+  font-size: 1em;
 }
 
 #footer .homeLink
 {
-    float: left;
+  color: #ffffff;
+  float: left;
 }

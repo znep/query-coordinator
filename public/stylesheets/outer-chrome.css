@@ -1,0 +1,121 @@
+/* 
+    Document   : outer-chrome.css
+    Created on : Jan 13, 2009, 3:25:51 PM
+    Author     : jeff.scherpelz@blist.com
+    Description:
+      Styles for header/footer and full page background
+*/
+
+body
+{
+    background-color: #7a7a7a;
+}
+
+#header, #footer
+{
+    background-color: #6b6b6b;
+    margin-left: 120px;
+    margin-right: 1em;
+    padding: 0.75em;
+    text-align: right;
+}
+
+#mainLogo a
+{
+    background-image: url(/images/header_logo.png);
+    display: block;
+    height: 60px;
+    left: 10px;
+    position: absolute;
+    text-align: left;
+    text-indent: -9999px;
+    top: 10px;
+    width: 96px;
+}
+
+#header li, #footer li
+{
+    display: inline;
+}
+
+#header a, #footer a
+{
+    text-decoration: none;
+}
+
+#header a:hover, #footer a:hover
+{
+    text-decoration: underline;
+}
+
+#header .notifications
+{
+    color: #f5db85;
+    float: left;
+}
+
+#header .notifications a
+{
+    color: #f5db85;
+}
+
+#header .notifications, #header .userNav
+{
+    text-transform: uppercase;
+}
+
+#header .userNav li
+{
+    margin: 0.5em;
+}
+
+#header .userNav a
+{
+    color: #ffffff;
+}
+
+#mainNav
+{
+    background-color: #fae095;
+    float: right;
+    height: 1.3em;
+    margin-left: 1em;
+    margin-right: -0.75em;
+    margin-top: -0.75em;
+    padding: 0.6em;
+}
+
+#mainNav li
+{
+    margin: 0.5em;
+}
+
+#mainNav a
+{
+    color: #333333;
+    font-size: 1.35em;
+    font-weight: bold;
+}
+
+#footer
+{
+    background-color: #535353;
+    margin: 1em 1em 0;
+    padding: 2em;
+}
+
+#footer li
+{
+    margin: 0 2em;
+}
+
+#footer a
+{
+    color: #ffffff;
+    font-size: 1em;
+}
+
+#footer .homeLink
+{
+    float: left;
+}

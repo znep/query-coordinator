@@ -1,0 +1,39 @@
+/* 
+    Document   : layout.css
+    Created on : Jan 13, 2009, 3:25:51 PM
+    Author     : jeff.scherpelz@blist.com
+    Description:
+      Main layout of the page (sidebar, info pane, main area with tabs)
+*/
+
+body
+{
+    min-width: 46.6em;
+}
+
+#mainContainer
+{
+    margin: 1em;
+    padding-right: 26.6em;
+}
+
+#mainContainer .column
+{
+    float: left;
+    height: 50em;
+    position: relative;
+}
+
+#mainContent
+{
+    background-color: red;
+    width: 100%;
+}
+
+#sidebar
+{
+    background-color: blue;
+    margin-right: -26.6em;
+    padding-left: 1em;
+    width: 25.6em;
+}

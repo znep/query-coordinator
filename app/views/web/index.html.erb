@@ -1,14 +1,19 @@
 <% content_for :head do %>
-  <%= javascript_include_tag "screens/common-layout",
-    :cache => "cache/all" %>
-
   <title>blist | share your weblists</title>
 <% end %>
 
 
 
 <div id="mainContainer">
-  <div id="mainContent" class="column"></div>
+  <div id="mainContent" class="column">
+    <%= render(:partial => "shared/blists") %>
+  </div>
+
   <div id="sidebar" class="column"></div>
+  <div class='clearBoth'></div>
 </div>
 
+<% content_for :js_footer do %>
+  <%= javascript_include_tag "screens/common-layout",
+    :cache => "cache/all" %>
+<% end %>

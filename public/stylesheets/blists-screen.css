@@ -1,0 +1,56 @@
+/* 
+    Document   : common
+    Created on : Jan 13, 2009, 3:04:23 PM
+    Author     : jeff.scherpelz@blist.com
+    Description:
+      Styles for the 'blists' screen
+*/
+
+#blists .tabList a.blists
+{
+  background-color: #ffffff;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+#blists .headerBar
+{
+  text-align: right;
+}
+
+#blists .headerBar h3
+{
+  float: left;
+}
+
+#blists .headerBar a
+{
+  color: #333333;
+  font-size: 1.2em;
+  margin-right: 0.5em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+#blists .headerBar .menu
+{
+  border-right: solid 2px #ededed;
+  font-size: 1.4em;
+  font-weight: bold;
+  padding-right: 0.5em;
+}
+
+#blists .headerBar form
+{
+  display: inline;
+}
+
+#blists #infoPane .infoContent
+{
+  text-align: right;
+}
+
+#blists #infoPane .infoContent h2
+{
+  float: left;
+}

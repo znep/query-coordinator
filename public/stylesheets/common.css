@@ -3,82 +3,49 @@
     Created on : Jan 13, 2009, 3:04:23 PM
     Author     : jeff.scherpelz@blist.com
     Description:
-      Common styles for default fonts, paddings, and other defaults that apply
-       to all elements
+      Common styles for classes and common elements that are used throughout the app
 */
 
-/* CSS reset rules from http://meyerweb.com/eric/tools/css/reset/
- * Gives a blank canvas for all browsers to develop consistent styles on
- */
-/* v1.0 | 20080212 */
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td
+.content
 {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  font-family: Arial, sans-serif;
-  vertical-align: baseline;
-  background: transparent;
-}
-
-body
-{
-  font-size: 62.5%;
-  line-height: 1;
-}
-
-ol, ul
-{
-  list-style: none;
-}
-
-blockquote, q
-{
-  quotes: none;
-}
-
-blockquote:before, blockquote:after,
-q:before, q:after
-{
-  content: '';
-  content: none;
-}
-
-/* remember to define focus styles! */
-:focus
-{
-  outline: 0;
-}
-
-/* remember to highlight inserts somehow! */
-ins
-{
-  text-decoration: none;
-}
-
-del
-{
-  text-decoration: line-through;
-}
-
-/* tables still need 'cellspacing="0"' in the markup */
-table
-{
-  border-collapse: collapse;
-  border-spacing: 0;
+  background-color: #ffffff;
+  margin-left: 1em;
+  padding: 1em;
 }
 
 .clearBoth
 {
   clear: both;
 }
+
+#infoPane
+{
+  margin-left: 1em;
+  margin-top: 0.5em;
+}
+
+#infoPane .header
+{
+  background-color: #e0d1b8;
+  border-bottom: solid 1px #8d8d8d;
+  padding: 0.5em 0;
+}
+
+#infoPane .header .active
+{
+  background-color: #ffedcc;
+  border-right: solid 2px #8d8d8d;
+  color: #333333;
+  font-size: 1.2em;
+  padding: 0.3em 0.5em;
+  text-decoration: none;
+}
+
+#infoPane .infoContent
+{
+  background-color: #ffedcc;
+  height: 100%;
+  overflow: auto;
+  padding: 1em;
+}
+

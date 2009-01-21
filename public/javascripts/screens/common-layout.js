@@ -3,17 +3,7 @@ if (!blist)
     var blist = {};
 }
 
-blist.common = {};
-blist.common.adjustSize = function()
+if (!blist.common)
 {
-    $("#mainContent, #sidebar").height($(window).height() -
-            $("#header").outerHeight({margin: true}) -
-            $("#footer").outerHeight({margin: true}));
+    blist.common = {};
 }
-
-$(window).resize(blist.common.adjustSize);
-
-$(function()
-{
-    blist.common.adjustSize();
-});

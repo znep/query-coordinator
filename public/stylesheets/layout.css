@@ -8,31 +8,52 @@
 
 body
 {
-    min-width: 46.6em;
+  min-width: 46.6em;
 }
 
 #mainContainer
 {
-    padding-right: 26.6em;
+  padding-bottom: 6em;
+  padding-right: 26.6em;
 }
 
 #mainContainer .column
 {
-    float: left;
-    height: 50em;
-    position: relative;
+  float: left;
+  position: relative;
 }
 
 #mainContent
 {
-    background-color: red;
-    width: 100%;
+  margin-top: 2em;
+  width: 100%;
 }
 
 #sidebar
 {
-    background-color: blue;
-    margin-right: -26.6em;
-    padding-left: 1em;
-    width: 25.6em;
+  background-color: blue;
+  margin-right: -26.6em;
+  padding-left: 1em;
+  width: 25.6em;
+}
+
+.tabList
+{
+  margin-left: 120px;
+  margin-top: 0.2em;
+  padding-bottom: 0.4em;
+}
+
+.tabList li
+{
+  display:inline;
+}
+
+.tabList a
+{
+  background-color: #cacaca;
+  color: #333333;
+  font-size: 1.4em;
+  padding: 0.2em 1em;
+  text-decoration: none;
 }

@@ -14,6 +14,7 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= javascript_include_tag "screens/common-layout",
+  <%= javascript_include_tag "util/events",
+    "screens/common-layout", "screens/blists-screen",
     :cache => "cache/all" %>
 <% end %>

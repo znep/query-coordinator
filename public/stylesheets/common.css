@@ -10,12 +10,77 @@
 {
   background-color: #ffffff;
   margin-left: 1em;
+  overflow: auto;
   padding: 1em;
+  padding-bottom: 0;
 }
 
 .clearBoth
 {
   clear: both;
+}
+
+/* Table styling for fixed headers from
+ * http://home.tampabay.rr.com/bmerkey/examples/nonscroll-table-header.html */
+.selectableListContainer
+{
+  /* height must be set greater than tbody/table for IE */
+  margin: 0 auto;
+  overflow: auto;
+  width: 100%;    /* table width will be 99% of this */
+}
+
+table.selectableList
+{
+  width: 99%;     /* 100% of container produces horiz. scroll in Moz */
+}
+
+table.selectableList tbody
+{
+  height: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+table.selectableList thead
+{
+  background-color: #e8e8e8;
+}
+
+table.selectableList td:last-child
+{
+  padding-right: 20px;    /* prevent Moz scrollbar from hiding cell content */
+}
+
+table.selectableList th
+{
+  border-right: solid 1px #d4d4d4;
+  color: #333333;
+  font-size: 1.3em;
+  font-weight: normal;
+  padding: 1em 0.5em;
+  text-align: left;
+}
+
+table.selectableList th.last
+{
+  border: none;
+}
+
+table.selectableList td
+{
+  font-size: 1.2em;
+  padding: 0.5em;
+}
+
+table.selectableList td.hover, table.selectableList tr.hover
+{
+  background-color: #ffedb2;
+}
+
+table.selectableList td.selected, table.selectableList tr.selected
+{
+  background-color: #cfbd92;
 }
 
 #infoPane

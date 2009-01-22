@@ -11,6 +11,34 @@ if (!blist.myBlists)
 // Alias local namespace
 var ns = blist.myBlists;
 
+/* Functions for main blists screen */
+
+blist.myBlists.adjustSize = function ()
+{
+    var $tbody = $('#blistList tbody');
+    var $content = $('#blists .content');
+    $content.height('auto');
+    // First size to nothing to determine row height
+    $tbody.height(0);
+    var rowHeight = $tbody.children().height();
+    // Now size content to full window height
+    $tbody.height($(window).height());
+    // Then clip it by how much the document overflows the window
+    $tbody.height(Math.max(0,
+                $tbody.height() - ($(document).height() - $(window).height())));
+    // Then if it is too large, adjust it
+    if ($tbody.height() > $tbody.children().length * rowHeight)
+    {
+        $tbody.height($tbody.children().length * rowHeight);
+        // Adjust the content container to fill the missing gap
+        $content.height($(window).height());
+        // Then clip it by how much the document overflows the window
+        $content.height(Math.max(0,
+                    $content.height() -
+                        ($(document).height() - $(window).height())));
+    }
+}
+
 blist.myBlists.getTotalRowCount = function ()
 {
     return $('#blistList tr.item').length;
@@ -25,6 +53,9 @@ blist.myBlists.rowClickedHandler = function (event)
         $(event.currentTarget).trigger(blist.events.ROW_SELECTION);
     }
 }
+
+
+/* Functions for info pane related to blists */
 
 if (!blist.myBlists.infoPane)
 {
@@ -59,9 +90,15 @@ blist.myBlists.infoPane.rowSelectionHandler = function (event)
     }
 }
 
+
+/* Initial start-up calls, and setting up bindings */
+
 $(function ()
 {
-    ns.infoPane.updateSummary();
+    $(window).resize(ns.adjustSize);
     $('#blistList').click(ns.rowClickedHandler);
     $('#blists').bind(blist.events.ROW_SELECTION, ns.infoPane.rowSelectionHandler);
+
+    ns.infoPane.updateSummary();
+    ns.adjustSize();
 });

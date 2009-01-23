@@ -1,0 +1,15 @@
+/* 
+    Document   : home-screen
+    Created on : Jan 13, 2009, 3:04:23 PM
+    Author     : jeff.scherpelz@blist.com
+    Description:
+      Styles for the 'Home' screen
+*/
+
+#home .tabList a.home
+{
+  background-color: #ffffff;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+

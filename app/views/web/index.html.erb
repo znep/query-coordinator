@@ -1,4 +1,6 @@
 <% content_for :head do %>
+  <%= stylesheet_link_tag "home-screen",
+    :cache => "cache/all" %>
   <title>blist | share your weblists</title>
 <% end %>
 
@@ -6,7 +8,12 @@
 
 <div id="mainContainer">
   <div id="mainContent" class="column">
-    <%= render(:partial => "shared/blists") %>
+    <div id='home'>
+      <%= render(:partial => "shared/tabs") %>
+      <div class='content mainScrollContent'>
+        <h1>Home</h1>
+      </div>
+    </div>
   </div>
 
   <div id="sidebar" class="column"></div>
@@ -14,7 +21,5 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= javascript_include_tag "util/events",
-    "screens/common-layout", "screens/blists-screen",
-    :cache => "cache/all" %>
+  <%= render(:partial => "shared/common_js") %>
 <% end %>

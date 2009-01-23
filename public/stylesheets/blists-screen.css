@@ -6,13 +6,6 @@
       Styles for the 'blists' screen
 */
 
-#blists .tabList a.blists
-{
-  background-color: #ffffff;
-  padding-left: 2em;
-  padding-right: 2em;
-}
-
 #blists .headerBar
 {
   margin-bottom: 1em;
@@ -41,9 +34,15 @@
   padding-right: 0.5em;
 }
 
-#blists .headerBar form
+#blists .headerBar form,
+#blists .headerBar form p
 {
   display: inline;
+}
+
+#blists .selectableListContainer
+{
+    margin: 0;
 }
 
 #blists #infoPane .infoContent

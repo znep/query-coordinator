@@ -6,3 +6,33 @@
       Styles for the info pane
 */
 
+#infoPane
+{
+  margin-left: 1em;
+  margin-top: 0.5em;
+}
+
+#infoPane .header
+{
+  background-color: #e0d1b8;
+  border-bottom: solid 1px #8d8d8d;
+  padding: 0.5em 0;
+}
+
+#infoPane .header .active
+{
+  background-color: #ffedcc;
+  border-right: solid 2px #8d8d8d;
+  color: #333333;
+  font-size: 1.2em;
+  padding: 0.3em 0.5em;
+  text-decoration: none;
+}
+
+#infoPane .infoContent
+{
+  background-color: #ffedcc;
+  height: 100%;
+  overflow: auto;
+  padding: 1em;
+}

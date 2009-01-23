@@ -1,15 +1,4 @@
-// Create blist namespace if DNE
-if (!blist)
-{
-    var blist = {};
-}
-// Create file namespace if DNE
-if (!blist.myBlists)
-{
-    blist.myBlists = {};
-}
-// Alias local namespace
-var ns = blist.myBlists;
+var ns = blist.namespace.fetch('blist.myBlists');
 
 /* Functions for main blists screen */
 
@@ -18,28 +7,23 @@ blist.myBlists.adjustSize = function ()
     var $tbody = $('#blistList tbody');
     var $content = $('#blists .content');
     $content.height('auto');
+
     // First size to nothing to determine row height
     $tbody.height(0);
     var rowHeight = $tbody.children().height();
-    // Now size content to full window height
-    $tbody.height($(window).height());
-    // Then clip it by how much the document overflows the window
-    $tbody.height(Math.max(0,
-                $tbody.height() - ($(document).height() - $(window).height())));
+    // Then size to fit
+    blist.util.sizing.fitWindow($tbody);
+
     // Then if it is too large, adjust it
     if ($tbody.height() > $tbody.children().length * rowHeight)
     {
         $tbody.height($tbody.children().length * rowHeight);
         // Adjust the content container to fill the missing gap
-        $content.height($(window).height());
-        // Then clip it by how much the document overflows the window
-        $content.height(Math.max(0,
-                    $content.height() -
-                        ($(document).height() - $(window).height())));
+        blist.util.sizing.fitWindow($content);
     }
 }
 
-blist.myBlists.getTotalRowCount = function ()
+blist.myBlists.getTotalItemCount = function ()
 {
     return $('#blistList tr.item').length;
 }
@@ -49,7 +33,7 @@ blist.myBlists.rowClickedHandler = function (event)
     var $target = $(event.target);
     if ($target.is("td"))
     {
-        $target.siblings().andSelf().toggleClass('selected');
+        $target.parent().toggleClass('selected');
         $(event.currentTarget).trigger(blist.events.ROW_SELECTION);
     }
 }
@@ -61,14 +45,14 @@ blist.myBlists.tableMousemoveHandler = function (event)
     {
         // If they move the mouse directly on the table or tbody,
         //  they are not in a row and we should unhighlight them
-        $('td.hover', $target).removeClass('hover');
+        $('tr.hover', $target).removeClass('hover');
     }
-    else if ($target.is('td') && !$target.is('td.hover') &&
-        $target.parent().is('tr.item'))
+    else if ($target.is('td') && $target.parent().is('tr.item') &&
+            !$target.parent().is('tr.hover'))
     {
-        // If they move over a td that is not already in a hover state,
+        // If they move over a tr that is not already in a hover state,
         //  and is in an item row, highlight it
-        $target.siblings().andSelf().addClass('hover');
+        $target.parent().addClass('hover');
     }
 }
 
@@ -78,12 +62,12 @@ blist.myBlists.tableMouseoutHandler = function (event)
     if ($target.is('tbody') || $target.is('table'))
     {
         // If they mouse out of the table or tbody, unhighlight everything
-        $('td.hover', $target).removeClass('hover');
+        $('tr.hover', $target).removeClass('hover');
     }
     else if ($target.is('td'))
     {
         // If they moused out of a cell, unhighlight that row
-        $target.siblings().andSelf().removeClass('hover');
+        $target.parent().removeClass('hover');
     }
 }
 
@@ -91,16 +75,13 @@ blist.myBlists.tableMouseoutHandler = function (event)
 
 /* Functions for info pane related to blists */
 
-if (!blist.myBlists.infoPane)
-{
-    blist.myBlists.infoPane = {};
-}
+var infoNS = blist.namespace.fetch('blist.myBlists.infoPane');
 blist.myBlists.infoPane.updateSummary = function (numSelect)
 {
     var itemState;
     if (numSelect === undefined || numSelect < 1)
     {
-        numSelect = ns.getTotalRowCount();
+        numSelect = ns.getTotalItemCount();
         $('#infoPane .infoContent .selectPrompt').show();
         itemState = 'total';
     }
@@ -119,8 +100,8 @@ blist.myBlists.infoPane.rowSelectionHandler = function (event)
     var $target = $(event.target);
     if ($target.is('table'))
     {
-        var numSelect = $('tr:has(.selected)', $target).length;
-        ns.infoPane.updateSummary(numSelect);
+        var numSelect = $('tr.selected', $target).length;
+        infoNS.updateSummary(numSelect);
     }
 }
 
@@ -133,8 +114,9 @@ $(function ()
     $('#blistList').click(ns.rowClickedHandler);
     $('#blistList').mousemove(ns.tableMousemoveHandler);
     $('#blistList').mouseout(ns.tableMouseoutHandler);
-    $('#blists').bind(blist.events.ROW_SELECTION, ns.infoPane.rowSelectionHandler);
 
-    ns.infoPane.updateSummary();
+    $('#blists').bind(blist.events.ROW_SELECTION, infoNS.rowSelectionHandler);
+
+    infoNS.updateSummary();
     ns.adjustSize();
 });

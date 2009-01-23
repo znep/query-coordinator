@@ -1,6 +1,7 @@
 <ul class='tabList'>
-  <li><a href='/' class='home'>Home</a></li>
-  <li><a href='/blists' class='blists'>blists</a></li>
+  <li><%= link_to 'Home', { :controller => 'home'}, { :class => 'home' } %></li>
+  <li><%= link_to 'blists', { :controller => 'blists'},
+    { :class => 'blists' } %></li>
   <li><a href='#' class='contacts'>Contacts</a></li>
   <li><a href='#' class='profile'>Profile</a></li>
 </ul>

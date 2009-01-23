@@ -1,12 +1,3 @@
-// Create blist namespace if DNE
-if (!blist)
-{
-    var blist = {};
-}
-// Create file namespace if DNE
-if (!blist.events)
-{
-    blist.events = {};
-}
+blist.namespace.fetch('blist.events');
 
 blist.events.ROW_SELECTION = 'rowselection';

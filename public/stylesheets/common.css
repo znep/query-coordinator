@@ -20,6 +20,15 @@
   clear: both;
 }
 
+/* Selected tab */
+#home .tabList a.home,
+#blists .tabList a.blists
+{
+  background-color: #ffffff;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
 /* Table styling for fixed headers from
  * http://home.tampabay.rr.com/bmerkey/examples/nonscroll-table-header.html */
 .selectableListContainer
@@ -27,29 +36,28 @@
   /* height must be set greater than tbody/table for IE */
   margin: 0 auto;
   overflow: auto;
-  width: 100%;    /* table width will be 99% of this */
+  width: 100%;
 }
 
 table.selectableList
 {
-  width: 99%;     /* 100% of container produces horiz. scroll in Moz */
+  width: 100%;
 }
 
 table.selectableList tbody
 {
-  height: 100%;
   overflow: auto;
   overflow-x: hidden;
-}
-
-table.selectableList thead
-{
-  background-color: #e8e8e8;
 }
 
 table.selectableList td:last-child
 {
   padding-right: 20px;    /* prevent Moz scrollbar from hiding cell content */
+}
+
+table.selectableList thead
+{
+  background-color: #e8e8e8;
 }
 
 table.selectableList th
@@ -73,45 +81,17 @@ table.selectableList td
   padding: 0.5em;
 }
 
-/* More specific than selected */
-table.selectableList tr td.hover
+table.selectableList tr.hover td
 {
   background-color: #ffedb2;
 }
 
-table.selectableList td.selected
+table.selectableList tr.selected td
 {
-  background-color: #cfbd92;
+  background-color: #cfcfcf;
 }
 
-#infoPane
+table.selectableList tr.hover.selected td
 {
-  margin-left: 1em;
-  margin-top: 0.5em;
+    background-color: #e8decc;
 }
-
-#infoPane .header
-{
-  background-color: #e0d1b8;
-  border-bottom: solid 1px #8d8d8d;
-  padding: 0.5em 0;
-}
-
-#infoPane .header .active
-{
-  background-color: #ffedcc;
-  border-right: solid 2px #8d8d8d;
-  color: #333333;
-  font-size: 1.2em;
-  padding: 0.3em 0.5em;
-  text-decoration: none;
-}
-
-#infoPane .infoContent
-{
-  background-color: #ffedcc;
-  height: 100%;
-  overflow: auto;
-  padding: 1em;
-}
-

@@ -73,12 +73,13 @@ table.selectableList td
   padding: 0.5em;
 }
 
-table.selectableList td.hover, table.selectableList tr.hover
+/* More specific than selected */
+table.selectableList tr td.hover
 {
   background-color: #ffedb2;
 }
 
-table.selectableList td.selected, table.selectableList tr.selected
+table.selectableList td.selected
 {
   background-color: #cfbd92;
 }

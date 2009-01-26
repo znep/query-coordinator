@@ -28,6 +28,11 @@ blist.myBlists.getTotalItemCount = function ()
     return $('#blistList tr.item').length;
 }
 
+blist.myBlists.getSelectedItems = function ()
+{
+    return $('#blistList tr.item.selected');
+}
+
 blist.myBlists.rowClickedHandler = function (event)
 {
     var $target = $(event.target);
@@ -78,21 +83,38 @@ blist.myBlists.tableMouseoutHandler = function (event)
 var infoNS = blist.namespace.fetch('blist.myBlists.infoPane');
 blist.myBlists.infoPane.updateSummary = function (numSelect)
 {
-    var itemState;
-    if (numSelect === undefined || numSelect < 1)
+    if (numSelect == 1)
     {
-        numSelect = ns.getTotalItemCount();
-        $('#infoPane .infoContent .selectPrompt').show();
-        itemState = 'total';
+        var $items = ns.getSelectedItems();
+        $.get('/blists/detail', {'id': $items.attr('blist_id')},
+            function (data)
+            {
+                $('#singleSelectInfo').html(data);
+            });
+        $('#singleSelectInfo').show();
+        $('#multiSelectInfo').hide();
     }
     else
     {
-        $('#infoPane .infoContent .selectPrompt').hide();
-        itemState = 'selected';
+        $('#multiSelectInfo').show();
+        $('#singleSelectInfo').hide();
+
+        var itemState;
+        if (numSelect === undefined || numSelect < 1)
+        {
+            numSelect = ns.getTotalItemCount();
+            $('#infoPane .infoContent .selectPrompt').show();
+            itemState = 'total';
+        }
+        else
+        {
+            $('#infoPane .infoContent .selectPrompt').hide();
+            itemState = 'selected';
+        }
+        $('#infoPane .infoContent .itemCount').text(numSelect);
+        $('#infoPane .infoContent .itemSelectedText').text('item' +
+                (numSelect == 1 ? '' : 's') + ' ' + itemState);
     }
-    $('#infoPane .infoContent .itemCount').text(numSelect);
-    $('#infoPane .infoContent .itemSelectedText').text('item' +
-        (numSelect == 1 ? '' : 's') + ' ' + itemState);
 }
 
 blist.myBlists.infoPane.rowSelectionHandler = function (event)

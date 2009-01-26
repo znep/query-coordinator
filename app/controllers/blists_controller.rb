@@ -1,3 +1,9 @@
 class BlistsController < ApplicationController
-  layout 'strict'
+  def index
+    render(:layout => 'strict')
+  end
+
+  def detail
+    @id = params[:id]
+  end
 end

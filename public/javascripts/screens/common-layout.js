@@ -1,4 +1,4 @@
-var ns = blist.namespace.fetch('blist.common');
+var commonNS = blist.namespace.fetch('blist.common');
 
 // Default function to do generic resizing to fill the screen
 //  If you need more detailed behavior, remove .mainScrollContent and
@@ -12,9 +12,9 @@ blist.common.adjustSize = function ()
     }
 }
 
-$(window).resize(ns.adjustSize);
+$(window).resize(commonNS.adjustSize);
 
 $(function ()
 {
-    ns.adjustSize();
+    commonNS.adjustSize();
 });

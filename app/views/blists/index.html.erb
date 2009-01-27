@@ -26,120 +26,126 @@
         </div>
 
         <div class='selectableListContainer'>
-          <table id='blistList' class='selectableList' cellspacing="0">
-            <thead>
-              <tr>
-                <th></th>
-                <th>(Favorite)</th>
-                <th>(Type)</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Owner</th>
-                <th class="last">Last Updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class='item' blist_id='ABC'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='DEF'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='GHI'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='JKL'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='MNO'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='PQR'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='STU'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='VWX'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='YZa'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='bcd'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-              <tr class='item' blist_id='efg'>
-                <td></td>
-                <td></td>
-                <td>blist</td>
-                <td>A blist</td>
-                <td>Some blist description</td>
-                <td>Jeff</td>
-                <td>1/20/09</td>
-              </tr>
-            </tbody>
-          </table>
+          <%
+          # This div will hold a copy of the table that displays the header
+          %>
+          <div class='headerContainer'></div>
+          <div class='selectableListInner mainScrollContent'>
+            <table id='blistList' class='selectableList' cellspacing="0">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>(F)</th>
+                  <th>(T)</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Owner</th>
+                  <th>Last Updated</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class='item' blist_id='ABC'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='DEF'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='GHI'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='JKL'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='MNO'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='PQR'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='STU'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='VWX'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='YZa'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='bcd'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+                <tr class='item' blist_id='efg'>
+                  <td></td>
+                  <td></td>
+                  <td>blist</td>
+                  <td>A blist</td>
+                  <td>Some blist description</td>
+                  <td>Jeff</td>
+                  <td>1/20/09</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -168,6 +174,5 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "screens/blists-screen",
-    :cache => "cache/all" %>
+  <%= javascript_include_tag "screens/blists-screen", :cache => "cache/all" %>
 <% end %>

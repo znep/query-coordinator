@@ -1,94 +1,112 @@
 /* 
-    Document   : common
-    Created on : Jan 13, 2009, 3:04:23 PM
-    Author     : jeff.scherpelz@blist.com
-    Description:
-      Common styles for classes and common elements that are used throughout the app
-*/
+Document   : common
+Created on : Jan 13, 2009, 3:04:23 PM
+Author     : jeff.scherpelz@blist.com
+Description:
+Common styles for classes and common elements that are used throughout the app
+ */
 
 .content
 {
-  background-color: #ffffff;
-  margin-left: 1em;
-  overflow: auto;
-  padding: 1em;
-  padding-bottom: 0;
+    background-color: #ffffff;
+    margin-left: 1em;
+    overflow: auto;
+    padding: 1em;
+    padding-bottom: 0;
 }
 
 .clearBoth
 {
-  clear: both;
+    clear: both;
 }
 
 /* Selected tab */
 #home .tabList a.home,
 #blists .tabList a.blists
 {
-  background-color: #ffffff;
-  padding-left: 2em;
-  padding-right: 2em;
+    background-color: #ffffff;
+    padding-left: 2em;
+    padding-right: 2em;
 }
 
-/* Table styling for fixed headers from
- * http://home.tampabay.rr.com/bmerkey/examples/nonscroll-table-header.html */
 .selectableListContainer
 {
-  /* height must be set greater than tbody/table for IE */
-  margin: 0 auto;
-  overflow: auto;
-  width: 100%;
+    padding-top: 3.9em;
+    width: 100%;
+}
+
+.selectableListContainer .headerContainer
+{
+    height: 3.9em;
+    margin-top: -3.9em;
+    overflow: hidden;
+}
+
+.selectableListContainer .headerContainer th:last-child
+{
+    padding-right: 20px;
+}
+
+.selectableListInner
+{
+    overflow: auto;
+}
+
+.selectableListInner table
+{
+    margin-top: -3.9em;
 }
 
 table.selectableList
 {
-  width: 100%;
+    width: 100%;
 }
 
 table.selectableList tbody
 {
-  overflow: auto;
-  overflow-x: hidden;
+    overflow: auto;
+    overflow-x: hidden;
 }
 
 table.selectableList td:last-child
 {
-  padding-right: 20px;    /* prevent Moz scrollbar from hiding cell content */
+    padding-right: 20px;    /* prevent Moz scrollbar from hiding cell content */
 }
 
 table.selectableList thead
 {
-  background-color: #e8e8e8;
+    background-color: #e8e8e8;
 }
 
 table.selectableList th
 {
-  border-right: solid 1px #d4d4d4;
-  color: #333333;
-  font-size: 1.3em;
-  font-weight: normal;
-  padding: 1em 0.5em;
-  text-align: left;
+    border-right: solid 1px #d4d4d4;
+    color: #333333;
+    font-size: 1.3em;
+    font-weight: normal;
+    padding: 1em 0.5em;
+    text-align: left;
 }
 
-table.selectableList th.last
+table.selectableList th:last-child
 {
-  border: none;
+    border: none;
 }
 
 table.selectableList td
 {
-  font-size: 1.2em;
-  padding: 0.5em;
+    font-size: 1.2em;
+    padding: 0.5em;
 }
 
 table.selectableList tr.hover td
 {
-  background-color: #ffedb2;
+    background-color: #ffedb2;
 }
 
 table.selectableList tr.selected td
 {
-  background-color: #cfcfcf;
+    background-color: #cfcfcf;
 }
 
 table.selectableList tr.hover.selected td

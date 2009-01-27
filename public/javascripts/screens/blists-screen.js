@@ -1,26 +1,10 @@
-var ns = blist.namespace.fetch('blist.myBlists');
+var myBlistsNS = blist.namespace.fetch('blist.myBlists');
 
 /* Functions for main blists screen */
 
-blist.myBlists.adjustSize = function ()
+blist.myBlists.setupTable = function ()
 {
-    var $tbody = $('#blistList tbody');
-    var $content = $('#blists .content');
-    $content.height('auto');
-
-    // First size to nothing to determine row height
-    $tbody.height(0);
-    var rowHeight = $tbody.children().height();
-    // Then size to fit
-    blist.util.sizing.fitWindow($tbody);
-
-    // Then if it is too large, adjust it
-    if ($tbody.height() > $tbody.children().length * rowHeight)
-    {
-        $tbody.height($tbody.children().length * rowHeight);
-        // Adjust the content container to fill the missing gap
-        blist.util.sizing.fitWindow($content);
-    }
+    $('#blistList').clone().removeAttr('id').appendTo('.headerContainer');
 }
 
 blist.myBlists.getTotalItemCount = function ()
@@ -85,7 +69,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
 {
     if (numSelect == 1)
     {
-        var $items = ns.getSelectedItems();
+        var $items = myBlistsNS.getSelectedItems();
         $.get('/blists/detail', {'id': $items.attr('blist_id')},
             function (data)
             {
@@ -102,7 +86,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
         var itemState;
         if (numSelect === undefined || numSelect < 1)
         {
-            numSelect = ns.getTotalItemCount();
+            numSelect = myBlistsNS.getTotalItemCount();
             $('#infoPane .infoContent .selectPrompt').show();
             itemState = 'total';
         }
@@ -122,23 +106,28 @@ blist.myBlists.infoPane.rowSelectionHandler = function (event)
     var $target = $(event.target);
     if ($target.is('table'))
     {
-        var numSelect = $('tr.selected', $target).length;
+        // tr.item.selected is a bit specific, but tr.selected doesn't work
+        //  in jQuery 1.3.1 in Safari
+        //  (either this: http://dev.jquery.com/ticket/3977
+        //  or this: http://dev.jquery.com/ticket/3938)
+        var numSelect = $('tr.item.selected', $target).length;
         infoNS.updateSummary(numSelect);
     }
 }
-
 
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
 {
-    $(window).resize(ns.adjustSize);
-    $('#blistList').click(ns.rowClickedHandler);
-    $('#blistList').mousemove(ns.tableMousemoveHandler);
-    $('#blistList').mouseout(ns.tableMouseoutHandler);
+    myBlistsNS.setupTable();
+
+    $('#blistList').click(myBlistsNS.rowClickedHandler);
+    $('#blistList').mousemove(myBlistsNS.tableMousemoveHandler);
+    $('#blistList').mouseout(myBlistsNS.tableMouseoutHandler);
 
     $('#blists').bind(blist.events.ROW_SELECTION, infoNS.rowSelectionHandler);
 
     infoNS.updateSummary();
-    ns.adjustSize();
+    // Readjust size after updating info pane
+    blist.common.adjustSize();
 });

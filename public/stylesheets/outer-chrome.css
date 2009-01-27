@@ -3,141 +3,244 @@
     Created on : Jan 13, 2009, 3:25:51 PM
     Author     : jeff.scherpelz@blist.com
     Description:
-      Styles for header/footer and full page background
-*/
+        Styles for header/footer and full page background
+ */
 
 html
 {
-  height: 100%;
+    height: 100%;
 }
 
 body
 {
-  background-color: #8d8d8d;
-  height: 100%;
+    background-color: #8d8d8d;
+    height: 100%;
 }
 
 #outerContainer
 {
-  height: auto;
-  min-height: 100%;
-  position: relative;
+    height: auto;
+    min-height: 100%;
+    position: relative;
 }
 
-#header, #footer
-{
-  padding: 0.75em;
-  text-align: right;
-}
+/******************
+ *   HEADER BAR   *
+ ******************/
 
 #header
 {
-  background-color: #7e7e7e;
-  margin-bottom: 1em;
-  margin-left: 120px;
-  margin-right: 1em;
+    margin-bottom: 1em;
+    margin-left: 120px;
+    margin-right: 1em;
+    overflow: hidden;
 }
 
 #mainLogo a
 {
-  background-image: url(/images/header_logo.png);
-  display: block;
-  height: 60px;
-  left: 10px;
-  position: absolute;
-  text-align: left;
-  text-indent: -9999px;
-  top: 10px;
-  width: 96px;
+    background-image: url(/stylesheets/images/header/blist_logo.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 35px;
+    left: 10px;
+    position: absolute;
+    text-align: left;
+    text-indent: -9999px;
+    top: 15px;
+    width: 72px;
 }
 
 #header li, #footer li
 {
-  display: inline;
+    display: inline;
 }
 
 #header a, #footer a
 {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 #header a:hover, #footer a:hover
 {
-  text-decoration: underline;
+    text-decoration: underline;
+}
+
+
+/***********************
+ * Dark tabs in header *
+ ***********************/
+
+#header .notifications, #header .userNav
+{
+    background-color: #7e7e7e;
+    background-image: url(/stylesheets/images/header/gray_bar/DarkGray_corner_left_header.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    text-transform: uppercase;
 }
 
 #header .notifications
 {
-  color: #fae096;
-  float: left;
+    color: #fae096;
+    float: left;
+}
+
+#header .notifications ul
+{
+    background-image: url(/stylesheets/images/header/gray_bar/DarkGray_corner_right_header.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    padding: 0.5em;
 }
 
 #header .notifications a
 {
-  color: #fae096;
+    color: #fae096;
+    background-position: left;
+    background-repeat: no-repeat;
+    font-weight: bold;
+    margin: 0.5em;
+    padding-left: 18px;
 }
 
-#header .notifications, #header .userNav
+#header .notifications li:last-child a
 {
-  text-transform: uppercase;
+    margin-left: 0;
+}
+
+#header .notifications .messages
+{
+    background-image: url(/stylesheets/images/header/icons/icon_mail.png);
+}
+
+#header .notifications .requests
+{
+    background-image: url(/stylesheets/images/header/icons/icon_users.png);
+}
+
+#header .userNav
+{
+    float: right;
+    padding: 0.5em;
 }
 
 #header .userNav li
 {
-  margin: 0.5em;
+    margin: 0.75em;
 }
 
 #header .userNav a
 {
-  color: #ffffff;
+    color: #ffffff;
+    font-weight: bold;
 }
+
+
+/*******************
+ * Main nav bar    *
+ *******************/
 
 #mainNav
 {
-  background-color: #fde3a1;
-  float: right;
-  height: 1.3em;
-  margin-left: 1em;
-  margin-right: -0.75em;
-  margin-top: -0.75em;
-  padding: 0.6em;
+    background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_left.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    float: right;
+    margin-top: 2px;
+}
+
+#mainNav ul
+{
+    background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_right.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    height: 25px;
+    overflow: hidden;
+    padding: 0 9px;
 }
 
 #mainNav li
 {
-  margin: 0.5em;
+    background-image: url(/stylesheets/images/header/main_buttons/MainButton_gradSlice.png);
+    background-position: bottom;
+    background-repeat: repeat-x;
+    float: left;
+    height: 25px;
+    margin-right: 2px;
+    text-align: center;
+    width: 11em;
+}
+
+#mainNav li:last-child
+{
+    margin-right: 0;
 }
 
 #mainNav a
 {
-  color: #000000;
-  font-size: 1.5em;
-  font-weight: bold;
+    color: #000000;
+    font-size: 1.4em;
+    font-weight: bold;
+    line-height: 1.4em;
 }
+
+body.home #mainNav
+{
+    background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_left_active.png);
+}
+
+body.community #mainNav ul
+{
+    background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_right_active.png);
+}
+
+body.home #mainNav li.home,
+body.discover #mainNav li.discover,
+body.community #mainNav li.community
+{
+    background-image: url(/stylesheets/images/header/main_buttons/MainButton_gradSlice_active.png);
+}
+
+
+/*************
+ *  FOOTER   *
+ *************/
 
 #footer
 {
-  background-color: #666666;
-  bottom: 0;
-  left: 1em;
-  padding: 2em;
-  position: absolute;
-  right: 1em;
+    background-color: #666666;
+    background-image: url(/stylesheets/images/footer/DarkGray_corner_left_footer.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    bottom: 0;
+    left: 1em;
+    position: absolute;
+    right: 1em;
+    text-align: right;
+}
+
+#footer ul
+{
+    background-image: url(/stylesheets/images/footer/DarkGray_corner_right_footer.png);
+    background-position: top right;
+    background-repeat: no-repeat;
+    padding: 2em;
 }
 
 #footer li
 {
-  margin: 0 2em;
+    margin: 0 2em;
 }
 
 #footer a
 {
-  color: #c6c6c6;
-  font-size: 1em;
+    color: #e1e1e1;
 }
 
 #footer .homeLink
 {
-  color: #ffffff;
-  float: left;
+    color: #ffffff;
+    float: left;
+    font-weight: bold;
+    padding: 2em;
 }

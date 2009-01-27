@@ -19,32 +19,34 @@
 
 </head>
 
-<body>
+<body class='<%= @bodyClass %>'>
 
   <div id='outerContainer'>
     <div id='header'>
       <div id='mainLogo'><%= link_to 'blist', :controller => 'home' %></div>
 
-      <ul id='mainNav'>
-        <li><%= link_to "Home", :controller => 'home' %></li>
-        <li><a href='#'>Discover</a></li>
-        <li><a href='#'>Community</a></li>
-      </ul>
+      <div id='mainNav'>
+        <ul>
+          <li class='home'><%= link_to "Home", :controller => 'home' %></li>
+          <li class='discover'><a href='#'>Discover</a></li>
+          <li class='community'><a href='#'>Community</a></li>
+        </ul>
+      </div>
 
-      <ul class='notifications'>
-        <li><a href='#'>1 new message</a></li>
-        <% # This is a hack, since IE7 doesn't support generated content,
-        # which would allow us to dynamically generate separators
-        %>
-        <li>/</li>
-        <li><a href='#'>3 requests</a></li>
-      </ul>
+      <div class='notifications'>
+        <ul>
+          <li><a href='#' class='messages' title='Messages'>1</a></li>
+          <li><a href='#' class='requests' title='Requests'>3</a></li>
+        </ul>
+      </div>
 
-      <ul class='userNav'>
-        <li><a href='#'>Help</a></li>
-        <li><a href='#'>My Account</a></li>
-        <li><a href='#'>Sign Out</a></li>
-      </ul>
+      <div class='userNav'>
+        <ul>
+          <li><a href='#'>Help</a></li>
+          <li><a href='#'>My Account</a></li>
+          <li><a href='#'>Sign Out</a></li>
+        </ul>
+      </div>
     </div>
 
     <%= yield :layout %>

@@ -1,33 +1,165 @@
 /* 
-Document   : common
-Created on : Jan 13, 2009, 3:04:23 PM
-Author     : jeff.scherpelz@blist.com
-Description:
-Common styles for classes and common elements that are used throughout the app
+    Document   : common
+    Created on : Jan 13, 2009, 3:04:23 PM
+    Author     : jeff.scherpelz@blist.com
+    Description:
+        Common styles for classes and common elements that are used
+        throughout the app
  */
 
-.content
-{
-    background-color: #ffffff;
-    margin-left: 1em;
-    overflow: auto;
-    padding: 1em;
-    padding-bottom: 0;
-}
+/****************************
+ * Generic, resuable styles *
+ ****************************/
 
 .clearBoth
 {
     clear: both;
 }
 
-/* Selected tab */
-#home .tabList a.home,
-#blists .tabList a.blists
+
+/****************
+ * Content box  *
+ ****************/
+
+.outerContent
 {
     background-color: #ffffff;
+    background-image: url(/stylesheets/images/content/background_corner_left.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    margin-left: 1em;
+    overflow: auto;
+}
+
+.content
+{
+    background-image: url(/stylesheets/images/content/background_corner_right.png);
+    background-position: top right;
+    background-repeat: no-repeat;
+    padding: 1em;
+    padding-bottom: 0;
+}
+
+
+/**********************
+ * Tabs above content *
+ **********************/
+
+.tabList
+{
+    margin-left: 120px;
+    overflow: hidden;
+}
+
+.tabList li
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_gray2_left.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    float: left;
+    margin: 2px -7px 0;
+    position: relative;
+    z-index: 5;
+}
+
+.tabList li:first-child
+{
+    margin-left: 0;
+}
+
+.tabList li + li
+{
+    z-index: 4;
+}
+
+.tabList li + li + li
+{
+    z-index: 3;
+}
+
+.tabList li + li + li + li
+{
+    z-index: 2;
+}
+
+.tabList li + li + li + li + li
+{
+    z-index: 1;
+}
+
+.tabList li.even
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_gray1_left.png);
+}
+
+.tabList li .wrapper
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_gray2_right.png);
+    background-position: top right;
+    background-repeat: no-repeat;
+    height: 19px;
+    padding: 0 19px;
+}
+
+.tabList li.even .wrapper
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_gray1_right.png);
+}
+
+.tabList a
+{
+  background-color: #bdbdbd;
+  color: #333333;
+  display: block;
+  font-size: 1.2em;
+  height: 16px;
+  line-height: 1.2em;
+  padding: 3px 1em 0;
+  text-decoration: none;
+}
+
+.tabList li.even a
+{
+    background-color: #cacaca;
+}
+
+/* Selected tab */
+#home .tabList li.home,
+#blists .tabList li.blists
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_white_left.png);
+    margin-top: 0;
+    z-index: 10;
+}
+
+#home .tabList li.home .wrapper,
+#blists .tabList li.blists .wrapper
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_white_right.png);
+    height: 21px;
+    padding: 0 21px;
+}
+
+#home .tabList li.home a,
+#blists .tabList li.blists a
+{
+    background-color: #ffffff;
+    font-weight: bold;
+    height: 18px;
     padding-left: 2em;
     padding-right: 2em;
 }
+
+#home .tabList li.home a:hover,
+#blists .tabList li.blists a:hover
+{
+    cursor: default;
+    text-decoration: none;
+}
+
+/*********************
+ * Selectable table  *
+ *********************/
 
 .selectableListContainer
 {

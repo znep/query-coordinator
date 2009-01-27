@@ -30,7 +30,7 @@ body
 
 #header
 {
-    margin-bottom: 1em;
+    margin-bottom: 2.4em;
     margin-left: 120px;
     margin-right: 1em;
     overflow: hidden;
@@ -234,7 +234,7 @@ body.community #mainNav li.community
 
 #footer a
 {
-    color: #e1e1e1;
+    color: #c6c6c6;
 }
 
 #footer .homeLink

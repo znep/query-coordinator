@@ -6,3 +6,15 @@
       Styles for the 'Home' screen
 */
 
+#home .outerContent
+{
+    background-image: url(/stylesheets/images/content/background_shape_small.png);
+}
+
+#home .contentHighlight
+{
+    background-image: url(/stylesheets/images/content/background_corner_left.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+}
+

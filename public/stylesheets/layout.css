@@ -25,7 +25,6 @@ body
 
 #mainContent
 {
-  margin-top: 2em;
   width: 100%;
 }
 
@@ -36,23 +35,3 @@ body
   width: 25.6em;
 }
 
-.tabList
-{
-  margin-left: 120px;
-  margin-top: 0.2em;
-  padding-bottom: 0.4em;
-}
-
-.tabList li
-{
-  display:inline;
-}
-
-.tabList a
-{
-  background-color: #cacaca;
-  color: #333333;
-  font-size: 1.4em;
-  padding: 0.2em 1em;
-  text-decoration: none;
-}

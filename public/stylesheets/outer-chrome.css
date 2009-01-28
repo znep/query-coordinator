@@ -30,7 +30,7 @@ body
 
 #header
 {
-    margin-bottom: 2.4em;
+    margin-bottom: -1em;
     margin-left: 120px;
     margin-right: 1em;
     overflow: hidden;
@@ -201,6 +201,51 @@ body.community #mainNav li.community
     background-image: url(/stylesheets/images/header/main_buttons/MainButton_gradSlice_active.png);
 }
 
+/**************
+ * Search box *
+ **************/
+
+#header form.search
+{
+    clear: both;
+    float: right;
+    margin-top: 1em;
+    width: 24.6em;
+}
+
+#header form.search p
+{
+    background-image: url(/stylesheets/images/header/search_field.png);
+    background-repeat: no-repeat;
+    overflow: hidden;
+    padding-left: 10px;
+    padding-right: 30px;
+}
+
+#header form.search input
+{
+    float: left;
+}
+
+#header form.search input[type="text"]
+{
+    border: solid 1px #cacaca;
+    border-left: none;
+    border-right: none;
+    font-size: 1.2em;
+    height: 18px;
+    line-height: 1.2em;
+    padding: 3px 0 0;
+    width: 100%;
+}
+
+#header form.search input[name="submit"]
+{
+    height: 23px;
+    margin-right: -30px;
+    width: 30px;
+}
+
 
 /*************
  *  FOOTER   *
@@ -235,6 +280,14 @@ body.community #mainNav li.community
 #footer a
 {
     color: #c6c6c6;
+}
+
+#footer a.rss
+{
+    background-image: url(/stylesheets/images/footer/icon_rss.png);
+    background-position: left;
+    background-repeat: no-repeat;
+    padding-left: 12px;
 }
 
 #footer .homeLink

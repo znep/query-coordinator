@@ -47,6 +47,14 @@
           <li><a href='#'>Sign Out</a></li>
         </ul>
       </div>
+
+      <form class='search' action='#'>
+        <p>
+          <input type='text' />
+          <input type='image' name='submit'
+            src="/stylesheets/images/header/search_button.png" />
+        </p>
+      </form>
     </div>
 
     <%= yield :layout %>
@@ -55,7 +63,8 @@
       <%= link_to 'blist', { :controller => 'home'} , { :class => 'homeLink' } %>
       <ul>
         <li><%= link_to('Forums', '/forum') %></li>
-        <li><%= link_to('Blog', 'http://blog.blist.com/') %></li>
+        <li><%= link_to('Blog', 'http://blog.blist.com/',
+          { :class => 'rss' }) %></li>
         <li><%= link_to('About blist', '/company-info/about-blist') %></li>
         <li><%= link_to('Terms of use', '/help/terms-of-use') %></li>
         <li><%= link_to('Site map', '/site-map') %></li>

@@ -9,6 +9,7 @@
 body
 {
   min-width: 46.6em;
+  min-height: 500px;
 }
 
 #mainContainer
@@ -31,7 +32,9 @@ body
 #sidebar
 {
   margin-right: -26.6em;
+  /* account for height of tabs in mainContent */
+  margin-top: 21px;
   padding-left: 1em;
-  width: 25.6em;
+  width: 24.6em;
 }
 

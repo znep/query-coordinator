@@ -17,11 +17,11 @@
 }
 
 
-/****************
- * Content box  *
- ****************/
+/********************
+ * Main content box *
+ ********************/
 
-.outerContent
+#mainContent .outerContent
 {
     background-color: #ffffff;
     background-image: url(/stylesheets/images/content/background_corner_left.png);
@@ -31,7 +31,7 @@
     overflow: auto;
 }
 
-.content
+#mainContent .content
 {
     background-image: url(/stylesheets/images/content/background_corner_right.png);
     background-position: top right;
@@ -156,6 +156,7 @@
     cursor: default;
     text-decoration: none;
 }
+
 
 /*********************
  * Selectable table  *

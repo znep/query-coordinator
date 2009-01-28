@@ -1,15 +1,14 @@
 var commonNS = blist.namespace.fetch('blist.common');
 
 // Default function to do generic resizing to fill the screen
-//  If you need more detailed behavior, remove .mainScrollContent and
+//  If you need more detailed behavior, remove .scrollContent and
 //  implement a separate resize for your screen
 blist.common.adjustSize = function ()
 {
-    var $scrollContent = $('.mainScrollContent');
-    if ($scrollContent.length == 1)
+    $('.scrollContent').each(function ()
     {
-        blist.util.sizing.fitWindow($scrollContent);
-    }
+        blist.util.sizing.fitWindow($(this));
+    });
 }
 
 $(window).resize(commonNS.adjustSize);

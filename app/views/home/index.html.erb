@@ -12,7 +12,7 @@
       <%= render(:partial => "shared/tabs") %>
       <div class='outerContent'>
         <div class='contentHighlight'>
-          <div class='content mainScrollContent'>
+          <div class='content scrollContent'>
             <h1>Home</h1>
           </div>
         </div>
@@ -20,7 +20,20 @@
     </div>
   </div>
 
-  <div id="sidebar" class="column"></div>
+  <div id="sidebar" class="column">
+    <% render(:layout => "shared/sidebar_box") do %>
+      <h2>blist User</h2>
+    <% end %>
+    <% render(:layout => "shared/sidebar_box",
+      :locals => { :content_class => 'scrollContent' } ) do %>
+      <h4>Updates</h4>
+    <% end %>
+    <% render(:layout => "shared/sidebar_box") do %>
+      <h4>Storage</h4>
+      <p>You are using 50% of your available storage</p>
+    <% end %>
+    <%= render(:partial => "shared/ad_box") %>
+  </div>
   <div class='clearBoth'></div>
 </div>
 

@@ -6,3 +6,69 @@
       Styles for the sidebar
 */
 
+/***********
+ * Sidebar *
+ ***********/
+
+#sidebar .box
+{
+    background-color: #cacaca;
+    background-image: url(/stylesheets/images/sidebar/sidebar_corner_top_left.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    margin-bottom: 0.5em;
+}
+
+#sidebar .box .outerWrapper
+{
+    background-image: url(/stylesheets/images/sidebar/sidebar_corner_top_right.png);
+    background-position: top right;
+    background-repeat: no-repeat;
+}
+
+#sidebar .box .innerWrapper
+{
+    background-image: url(/stylesheets/images/sidebar/sidebar_corner_bottom_left.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+}
+
+#sidebar .box .content
+{
+    background-image: url(/stylesheets/images/sidebar/sidebar_corner_bottom_right.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    padding: 1em;
+}
+
+#sidebar .box:last-child
+{
+    margin-bottom: 0;
+}
+
+#sidebar .box h4
+{
+    border-bottom: solid 1px #a6a6a6;
+    display: block;
+    margin-bottom: 0.2em;
+}
+
+#sidebar .ad
+{
+    text-align: center;
+}
+
+#sidebar .ad .holder
+{
+    background-color: #fef4da;
+    height: 156px;
+    margin: 0 auto 0.5em;
+    width: 190px;
+}
+
+#sidebar .ad a
+{
+    color: #000000;
+    text-decoration: none;
+    text-transform: uppercase;
+}

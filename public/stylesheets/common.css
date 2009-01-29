@@ -16,6 +16,10 @@
     clear: both;
 }
 
+.scrollContent
+{
+    overflow: auto;
+}
 
 /********************
  * Main content box *

@@ -1,0 +1,26 @@
+<table id='blistList' class='selectableList' cellspacing="0">
+  <thead>
+    <tr>
+      <th></th>
+      <th>(F)</th>
+      <th>(T)</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Owner</th>
+      <th>Last Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for blist in @blists %>
+      <tr class='item' blist_id='<%= blist['id'] %>'>
+        <td></td>
+        <td><%= blist['favorite'] ? '*' : '' %></td>
+        <td><%= blist['is_default'] ? 'blist' : 'lens' %></td>
+        <td><%= blist['name'] %></td>
+        <td><%= blist['description'] %></td>
+        <td><%= blist['owner'] %></td>
+        <td><%= blist['last_updated'] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

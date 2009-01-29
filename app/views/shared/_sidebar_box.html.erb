@@ -1,8 +1,10 @@
-<div class='box <%= local_assigns[:box_class] %>'>
+<div id='<%= local_assigns[:id] %>' class='box <%= local_assigns[:box_class] %>'>
   <div class='outerWrapper'>
     <div class='innerWrapper'>
-      <div class='content <%= local_assigns[:content_class] %>'>
-        <%= yield %>
+      <div class='contentWrapper'>
+        <div class='content <%= local_assigns[:content_class] %>'>
+          <%= yield %>
+        </div>
       </div>
     </div>
   </div>

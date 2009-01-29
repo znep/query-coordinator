@@ -6,9 +6,9 @@
       Styles for the sidebar
 */
 
-/***********
- * Sidebar *
- ***********/
+/***************
+ * Sidebar box *
+ ***************/
 
 #sidebar .box
 {
@@ -33,7 +33,7 @@
     background-repeat: no-repeat;
 }
 
-#sidebar .box .content
+#sidebar .box .contentWrapper
 {
     background-image: url(/stylesheets/images/sidebar/sidebar_corner_bottom_right.png);
     background-position: bottom right;
@@ -53,6 +53,11 @@
     margin-bottom: 0.2em;
 }
 
+
+/************
+ * Ad block *
+ ************/
+
 #sidebar .ad
 {
     text-align: center;
@@ -71,4 +76,84 @@
     color: #000000;
     text-decoration: none;
     text-transform: uppercase;
+}
+
+
+/*****************
+ * blists filter *
+ *****************/
+
+#sidebar .expandableSection
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/expand_open.png);
+    background-position: -6px -3px;
+    background-repeat: no-repeat;
+    margin-bottom: 1em;
+}
+
+#sidebar .expandableSection.closed
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/expand_closed.png);
+}
+
+#sidebar .expandableSection h4
+{
+    background-position: 12px 50%;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    padding-left: 36px;
+    padding-top: 2px;
+}
+
+#sidebar .items h4
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_pages.png);
+}
+
+#sidebar .projects h4
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_project.png);
+}
+
+#sidebar .folders h4
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_folder.png);
+}
+
+#sidebar .tags h4
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_tag.png);
+}
+
+#sidebar .expandableSection.closed ul
+{
+    display: none;
+}
+
+#sidebar .expandableSection li
+{
+    margin: 0.5em 0;
+    padding: 2px 0;
+}
+
+#sidebar .expandableSection a
+{
+    background-position: left;
+    background-repeat: no-repeat;
+    color: #000000;
+    font-size: 1.2em;
+    line-height: 1.2em;
+    margin-left: 12px;
+    padding: 2px 0px 2px 22px;
+    text-decoration: none;
+}
+
+#sidebar .expandableSection.items a
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_magnifying.png);
+}
+
+#sidebar .expandableSection.tags .untagged a
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_default.png);
 }

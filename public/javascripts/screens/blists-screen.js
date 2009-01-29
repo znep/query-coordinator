@@ -60,11 +60,15 @@ blist.myBlists.tableMouseoutHandler = function (event)
     }
 }
 
+blist.myBlists.updateList = function (newTable)
+{
+    $('#blistList tbody').replaceWith($(newTable).find('tbody'));
+}
 
 
 /* Functions for info pane related to blists */
 
-var infoNS = blist.namespace.fetch('blist.myBlists.infoPane');
+var blistsInfoNS = blist.namespace.fetch('blist.myBlists.infoPane');
 blist.myBlists.infoPane.updateSummary = function (numSelect)
 {
     if (numSelect == 1)
@@ -111,23 +115,50 @@ blist.myBlists.infoPane.rowSelectionHandler = function (event)
         //  (either this: http://dev.jquery.com/ticket/3977
         //  or this: http://dev.jquery.com/ticket/3938)
         var numSelect = $('tr.item.selected', $target).length;
-        infoNS.updateSummary(numSelect);
+        blistsInfoNS.updateSummary(numSelect);
     }
 }
+
+
+
+/* Functions for sidebar related to blists */
+
+var blistsBarNS = blist.namespace.fetch('blist.myBlists.sidebar');
+
+blist.myBlists.sidebar.initializeHandlers = function ()
+{
+    $('#blistFilters a').click(blistsBarNS.filterClickHandler);
+    $('#blistFilters h4').click(blistsBarNS.toggleSection);
+}
+
+blist.myBlists.sidebar.filterClickHandler = function (event)
+{
+    event.preventDefault();
+    var $target = $(event.target);
+    $.get($target.attr('href'), myBlistsNS.updateList);
+}
+
+blist.myBlists.sidebar.toggleSection = function (event)
+{
+    $(event.target).parent('.expandableSection').toggleClass('closed');
+}
+
+
 
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
 {
     myBlistsNS.setupTable();
+    blistsBarNS.initializeHandlers();
 
     $('#blistList').click(myBlistsNS.rowClickedHandler);
     $('#blistList').mousemove(myBlistsNS.tableMousemoveHandler);
     $('#blistList').mouseout(myBlistsNS.tableMouseoutHandler);
 
-    $('#blists').bind(blist.events.ROW_SELECTION, infoNS.rowSelectionHandler);
+    $('#blists').bind(blist.events.ROW_SELECTION, blistsInfoNS.rowSelectionHandler);
 
-    infoNS.updateSummary();
+    blistsInfoNS.updateSummary();
     // Readjust size after updating info pane
     blist.common.adjustSize();
 });

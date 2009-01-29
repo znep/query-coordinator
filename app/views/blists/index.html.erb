@@ -27,125 +27,12 @@
           </div>
 
           <div class='selectableListContainer'>
-            <%
-            # This div will hold a copy of the table that displays the header
+            <%#
+             This div will hold a copy of the table that displays the header
             %>
             <div class='headerContainer'></div>
             <div class='selectableListInner scrollContent'>
-              <table id='blistList' class='selectableList' cellspacing="0">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>(F)</th>
-                    <th>(T)</th>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Owner</th>
-                    <th>Last Updated</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr class='item' blist_id='ABC'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='DEF'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='GHI'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='JKL'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='MNO'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='PQR'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='STU'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='VWX'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='YZa'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='bcd'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                  <tr class='item' blist_id='efg'>
-                    <td></td>
-                    <td></td>
-                    <td>blist</td>
-                    <td>A blist</td>
-                    <td>Some blist description</td>
-                    <td>Jeff</td>
-                    <td>1/20/09</td>
-                  </tr>
-                </tbody>
-              </table>
+              <%= render(:partial => "blist_list") %>
             </div>
           </div>
         </div>
@@ -170,7 +57,40 @@
     </div>
   </div>
 
-  <div id="sidebar" class="column"></div>
+  <div id="sidebar" class="column">
+    <% render(:layout => "shared/sidebar_box") do %>
+      <h2>blist User</h2>
+    <% end %>
+    <% render(:layout => "shared/sidebar_box",
+      :locals => { :id => 'blistFilters',
+        :content_class => 'scrollContent' } ) do %>
+      <div class='expandableSection items'>
+        <h4>All Items</h4>
+        <ul>
+          <li><a href='?filter=owner:Jeff'>Owned by Me</a></li>
+          <li><a href='?filter=owner:Chris'>Shared to Me</a></li>
+          <li><a href='?filter=owner:Jeff'>Shared by Me</a></li>
+          <li><a href='?filter=favorite:true'>Show only Favorites</a></li>
+        </ul>
+      </div>
+      <%#
+       These are not supported yet
+      <div class='expandableSection closed projects'>
+        <h4>All Projects</h4>
+      </div>
+      <div class='expandableSection closed folders'>
+        <h4>All Folders</h4>
+      </div>
+      %>
+      <div class='expandableSection closed tags'>
+        <h4>All Tags</h4>
+        <ul>
+          <li class='untagged'><a href='#'>Not Tagged</a></li>
+        </ul>
+      </div>
+    <% end %>
+    <%= render(:partial => "shared/ad_box") %>
+  </div>
   <div class='clearBoth'></div>
 </div>
 

@@ -46,7 +46,7 @@
   function CreateID(oAJAX) {
     var sIdentifier = oAJAX.url;
     sIdentifier += ((typeof oAJAX.data == "string") ? oAJAX.data :
-        $.param(oAJAX.data).split('&').sort().join('&') );
+        oAJAX.data ? $.param(oAJAX.data).split('&').sort().join('&') : "" );
     sIdentifier += ((typeof oAJAX.dataType == "string") ? oAJAX.dataType : "");
     sIdentifier += ((typeof oAJAX.type == "string") ? oAJAX.type : "");
     return sIdentifier;

@@ -74,11 +74,12 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
     if (numSelect == 1)
     {
         var $items = myBlistsNS.getSelectedItems();
-        $.get('/blists/detail', {'id': $items.attr('blist_id')},
-            function (data)
-            {
-                $('#singleSelectInfo').html(data);
-            });
+        $.Tache.Get({ url: '/blists/detail',
+                data: { 'id': $items.attr('blist_id') },
+                success: function (data)
+                {
+                    $('#singleSelectInfo').html(data);
+                } });
         $('#singleSelectInfo').show();
         $('#multiSelectInfo').hide();
     }
@@ -135,7 +136,8 @@ blist.myBlists.sidebar.filterClickHandler = function (event)
 {
     event.preventDefault();
     var $target = $(event.target);
-    $.get($target.attr('href'), myBlistsNS.updateList);
+    $.Tache.Get({ url: $target.attr('href'),
+            success: myBlistsNS.updateList });
 }
 
 blist.myBlists.sidebar.toggleSection = function (event)

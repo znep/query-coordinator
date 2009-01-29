@@ -26,6 +26,9 @@
   OTHER DEALINGS IN THE SOFTWARE.
 */
 
+/*
+  v1.1 (jeff.scherpelz@blist.com): Added support for data parameters besides strings
+*/
 
 (function($) {
 
@@ -42,7 +45,8 @@
   // PRIVATE: create a unique identifier
   function CreateID(oAJAX) {
     var sIdentifier = oAJAX.url;
-    sIdentifier += ((typeof oAJAX.data == "string") ? oAJAX.data : "");
+    sIdentifier += ((typeof oAJAX.data == "string") ? oAJAX.data :
+        $.param(oAJAX.data).split('&').sort().join('&') );
     sIdentifier += ((typeof oAJAX.dataType == "string") ? oAJAX.dataType : "");
     sIdentifier += ((typeof oAJAX.type == "string") ? oAJAX.type : "");
     return sIdentifier;

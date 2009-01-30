@@ -10,8 +10,14 @@ class Model
   def self.find( id )
     http = Net::HTTP.new(self.url.host, self.url.port)
     result = http.send('get', "/service/#{self.name}s/get_#{self.name}?id=#{id}")
+
     model = self.new
     model.data = ActiveSupport::JSON.decode(result.body)
+
+    if !result.is_a?(Net::HTTPSuccess)
+      raise 'Error:' + model.data['code'] + ', message:' + model.data['message']
+    end
+
     model
   end
 

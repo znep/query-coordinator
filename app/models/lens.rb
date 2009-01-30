@@ -1,0 +1,2 @@
+class Lens < Model  
+end

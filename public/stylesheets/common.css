@@ -21,6 +21,53 @@
     overflow: auto;
 }
 
+form input[type="text"]
+{
+    font-size: 1.2em;
+    line-height: 1.2em;
+}
+
+form input.textPrompt.prompt
+{
+    color: #666666;
+    font-style: italic;
+}
+
+/**************
+ * Search box *
+ **************/
+
+form.search p
+{
+    background-image: url(/stylesheets/images/header/search_field.png);
+    background-repeat: no-repeat;
+    overflow: hidden;
+    padding-left: 10px;
+    padding-right: 30px;
+}
+
+form.search input
+{
+    float: left;
+}
+
+form.search input[type="text"]
+{
+    border: solid 1px #cacaca;
+    border-left: none;
+    border-right: none;
+    height: 18px;
+    padding: 3px 0 0;
+    width: 100%;
+}
+
+form.search input[name="submit"]
+{
+    height: 23px;
+    margin-right: -30px;
+    width: 30px;
+}
+
 /********************
  * Main content box *
  ********************/

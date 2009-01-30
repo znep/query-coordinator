@@ -88,6 +88,13 @@ p
     line-height: 1.1em;
 }
 
+/* Reset for ps in forms */
+form p
+{
+    font-size: 1em;
+    line-height: 1em;
+}
+
 h2
 {
     color: #333333;

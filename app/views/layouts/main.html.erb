@@ -78,12 +78,11 @@
     </div>
   </div>
 
-  <%
-  # Better to load JS at the bottom:
-  # http://developer.yahoo.com/performance/rules.html#js_bottom
+  <%#
+  Better to load JS at the bottom:
+  http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
-  <%= javascript_include_tag "plugins/jquery.sizes.min",
-    "plugins/jquery.dimensions.min", "util/namespace",
+  <%= javascript_include_tag "plugins/jquery.sizes.min", "util/namespace",
     :cache => "cache/all" %>
 
   <% if ENV["RAILS_ENV"] != 'production' %>

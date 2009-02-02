@@ -67,9 +67,10 @@
       <div class='expandableSection items'>
         <h4>All Items</h4>
         <ul>
-          <li><a href='?filter=owner:Jeff'>Owned by Me</a></li>
-          <li><a href='?filter=owner:Chris'>Shared to Me</a></li>
-          <li><a href='?filter=owner:Jeff'>Shared by Me</a></li>
+          <%# TODO: These filters are overly simplistic %>
+          <li><a href='?filter=lensUserId:<%= @cur_user.id %>'>Owned by Me</a></li>
+          <li><a href='?filter=lensUserId:1'>Shared to Me</a></li>
+          <li><a href='?filter=lensUserId:<%= @cur_user.id %>'>Shared by Me</a></li>
           <li><a href='?filter=favorite:true'>Show only Favorites</a></li>
         </ul>
       </div>
@@ -86,6 +87,7 @@
         <h4>All Tags</h4>
         <ul>
           <li class='untagged'><a href='#'>Not Tagged</a></li>
+          <%# TODO: Get all blist tags, and construct filters %>
         </ul>
       </div>
     <% end %>

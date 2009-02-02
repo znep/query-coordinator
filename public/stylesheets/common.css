@@ -279,8 +279,15 @@ table.selectableList th:last-child
 
 table.selectableList td
 {
-    font-size: 1.2em;
     padding: 0.5em;
+}
+
+table.selectableList td > *
+{
+    font-size: 1.2em;
+    height: 1.2em;
+    line-height: 1.2em;
+    overflow: hidden;
 }
 
 table.selectableList tr.hover td

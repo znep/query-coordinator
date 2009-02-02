@@ -7,6 +7,12 @@ blist.myBlists.setupTable = function ()
     $('#blistList').clone().removeAttr('id').appendTo('.headerContainer');
 }
 
+blist.myBlists.resizeTable = function ()
+{
+    $('#blists table.selectableList tbody td > *').each( function ()
+            { blist.widget.clippedText.clipElement($(this)) });
+}
+
 blist.myBlists.getTotalItemCount = function ()
 {
     return $('#blistList tr.item').length;
@@ -17,9 +23,20 @@ blist.myBlists.getSelectedItems = function ()
     return $('#blistList tr.item.selected');
 }
 
+blist.myBlists.getTableParent = function ($item)
+{
+    while ($item && !$item.is('table') &&
+        !$item.is('tbody') && !$item.is('thead') &&
+        !$item.is('td') && !$item.is('th'))
+    {
+        $item = $item.parent();
+    }
+    return $item;
+}
+
 blist.myBlists.rowClickedHandler = function (event)
 {
-    var $target = $(event.target);
+    var $target = myBlistsNS.getTableParent($(event.target));
     if ($target.is("td"))
     {
         $target.parent().toggleClass('selected');
@@ -29,7 +46,7 @@ blist.myBlists.rowClickedHandler = function (event)
 
 blist.myBlists.tableMousemoveHandler = function (event)
 {
-    var $target = $(event.target);
+    var $target = myBlistsNS.getTableParent($(event.target));
     if ($target.is('tbody') || $target.is('table'))
     {
         // If they move the mouse directly on the table or tbody,
@@ -47,7 +64,7 @@ blist.myBlists.tableMousemoveHandler = function (event)
 
 blist.myBlists.tableMouseoutHandler = function (event)
 {
-    var $target = $(event.target);
+    var $target = myBlistsNS.getTableParent($(event.target));
     if ($target.is('tbody') || $target.is('table'))
     {
         // If they mouse out of the table or tbody, unhighlight everything
@@ -154,6 +171,7 @@ $(function ()
     myBlistsNS.setupTable();
     blistsBarNS.initializeHandlers();
 
+    $(window).resize(myBlistsNS.resizeTable);
     $('#blistList').click(myBlistsNS.rowClickedHandler);
     $('#blistList').mousemove(myBlistsNS.tableMousemoveHandler);
     $('#blistList').mouseout(myBlistsNS.tableMouseoutHandler);
@@ -163,4 +181,5 @@ $(function ()
     blistsInfoNS.updateSummary();
     // Readjust size after updating info pane
     blist.common.adjustSize();
+    myBlistsNS.resizeTable();
 });

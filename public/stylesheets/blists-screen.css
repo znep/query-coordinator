@@ -54,3 +54,23 @@
 {
   float: left;
 }
+
+#blists table.selectableList .name
+{
+    width: 25%;
+}
+
+#blists table.selectableList .description
+{
+    width: 33%;
+}
+
+#blists table.selectableList .owner
+{
+    width: 20%;
+}
+
+#blists table.selectableList .lastUpdated
+{
+    width: 15%;
+}

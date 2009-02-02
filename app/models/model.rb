@@ -7,16 +7,16 @@ class Model
     data['id']
   end
 
-  def self.find( id )
+  def self.find( resource_name )
     http = Net::HTTP.new(self.url.host, self.url.port)
-    result = http.send('get', "/service/#{self.name}s/get_#{self.name}?id=#{id}")
+    result = http.send('get', "/#{self.name}s/#{resource_name}.json")
 
     model = self.new
     model.data = ActiveSupport::JSON.decode(result.body)
 
     if !result.is_a?(Net::HTTPSuccess)
       raise 'Error:' + model.data['code'] + ', message:' + model.data['message']
-    end
+    end  
 
     model
   end

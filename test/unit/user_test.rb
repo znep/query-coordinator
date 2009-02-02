@@ -4,7 +4,7 @@ class UserTest < Test::Unit::TestCase
 
   def test_user_lookup
 
-    user = User.find(2)
+    user = User.find('justinfriedl')
     
     lenses =  user.lenses
     if lenses.length > 0

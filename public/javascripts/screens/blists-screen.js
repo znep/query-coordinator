@@ -80,6 +80,7 @@ blist.myBlists.tableMouseoutHandler = function (event)
 blist.myBlists.updateList = function (newTable)
 {
     $('#blistList tbody').replaceWith($(newTable).find('tbody'));
+    myBlistsNS.resizeTable();
 }
 
 

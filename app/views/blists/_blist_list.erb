@@ -22,7 +22,7 @@
         <td class='description'><div><%= blist.description %></div></td>
         <%# TODO: This needs to get users from a cache if possible %>
         <td class='owner'><div>
-            <%= User.find(blist.lensUserId).displayName %></div></td>
+            <%# This is disabled until User takes an ID again User.find(blist.lensUserId).displayName %></div></td>
         <%# TODO: Get last updated from data when available %>
         <td class='lastUpdated'><div><%= blist['lastUpdatedDate'] %></div></td>
       </tr>

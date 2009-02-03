@@ -2,8 +2,8 @@
   <thead>
     <tr>
       <th class='handle'></th>
-      <th class='favorite'>(F)</th>
-      <th class='type'>(T)</th>
+      <th class='favorite' title='Favorite?'>Favorite?</th>
+      <th class='type' title='Type'>Type</th>
       <th class='name'>Name</th>
       <th class='description'>Description</th>
       <th class='owner'>Owner</th>
@@ -13,10 +13,11 @@
   <tbody>
     <% for blist in @blists %>
       <tr class='item' blist_id='<%= blist.id %>'>
-        <td class='handle'></td>
+        <td class='handle'><div></div></td>
         <%# TODO: Get favorite from data when available %>
         <td class='favorite'><div><%= blist['favorite'] ? '*' : '' %></div></td>
-        <td class='type'><div><%= blist.isDefault ? 'blist' : 'lens' %></div></td>
+        <% blistType = blist.isDefault ? 'blist' : 'filter' %>
+        <td class='type <%= blistType %>'><div><%= blistType %></div></td>
         <td class='name'><div><%= blist.name %></div></td>
         <td class='description'><div><%= blist.description %></div></td>
         <%# TODO: This needs to get users from a cache if possible %>

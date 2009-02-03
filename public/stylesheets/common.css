@@ -215,14 +215,14 @@ form.search input[name="submit"]
 
 .selectableListContainer
 {
-    padding-top: 3.9em;
+    padding-top: 3.8em;
     width: 100%;
 }
 
 .selectableListContainer .headerContainer
 {
-    height: 3.9em;
-    margin-top: -3.9em;
+    height: 3.8em;
+    margin-top: -3.8em;
     overflow: hidden;
 }
 
@@ -238,7 +238,7 @@ form.search input[name="submit"]
 
 .selectableListInner table
 {
-    margin-top: -3.9em;
+    margin-top: -3.8em;
 }
 
 table.selectableList
@@ -252,11 +252,6 @@ table.selectableList tbody
     overflow-x: hidden;
 }
 
-table.selectableList td:last-child
-{
-    padding-right: 20px;    /* prevent Moz scrollbar from hiding cell content */
-}
-
 table.selectableList thead
 {
     background-color: #e8e8e8;
@@ -266,41 +261,56 @@ table.selectableList th
 {
     border-right: solid 1px #d4d4d4;
     color: #333333;
-    font-size: 1.3em;
+    font-size: 1.4em;
     font-weight: normal;
+    line-height: 0.7em;
     padding: 1em 0.5em;
     text-align: left;
 }
 
+table.selectableList thead th:first-child
+{
+    background-image: url(/stylesheets/images/content/table/header_left_top.png);
+    background-position: left top;
+    background-repeat: no-repeat;
+}
+
 table.selectableList th:last-child
 {
+    background-image: url(/stylesheets/images/content/table/header_right_top.png);
+    background-position: right top;
+    background-repeat: no-repeat;
     border: none;
 }
 
 table.selectableList td
 {
-    padding: 0.5em;
+    vertical-align: top;
 }
 
 table.selectableList td > *
 {
     font-size: 1.2em;
-    height: 1.2em;
+    height: 17px;
     line-height: 1.2em;
+    margin-bottom: 2px;
     overflow: hidden;
+    padding: 5px 0.5em;
 }
 
-table.selectableList tr.hover td
+table.selectableList tr.hover td+td+td+td > *,
+table.selectableList tr.selected td+td+td+td > *,
+table.selectableList tr.hover.selected td+td+td+td > *
 {
     background-color: #ffedb2;
 }
 
-table.selectableList tr.selected td
+table.selectableList tr.hover td:last-child > *,
+table.selectableList tr.selected td:last-child > *,
+table.selectableList tr.hover.selected td:last-child > *
 {
-    background-color: #cfcfcf;
+    background-image: url(/stylesheets/images/content/table/highlight_end.png);
+    background-position: right;
+    background-repeat: no-repeat;
 }
 
-table.selectableList tr.hover.selected td
-{
-    background-color: #e8decc;
-}

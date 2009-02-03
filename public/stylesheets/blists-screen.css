@@ -55,6 +55,47 @@
   float: left;
 }
 
+#blists table.selectableList
+{
+    table-layout: fixed;
+}
+
+#blists table.selectableList th.favorite,
+#blists table.selectableList th.type
+{
+    background-position: center center;
+    background-repeat: no-repeat;
+    text-indent: -9999px;
+}
+
+#blists table.selectableList th.favorite
+{
+    background-image: url(/stylesheets/images/content/table/icon_sorting_star.png);
+}
+
+#blists table.selectableList th.type
+{
+    background-image: url(/stylesheets/images/content/table/icon_sorting_type.png);
+}
+
+#blists table.selectableList .handle
+{
+    padding: 0;
+    width: 33px;
+}
+
+#blists table.selectableList .favorite
+{
+    padding: 0;
+    width: 25px;
+}
+
+#blists table.selectableList .type
+{
+    padding: 0;
+    width: 38px;
+}
+
 #blists table.selectableList .name
 {
     width: 25%;
@@ -73,4 +114,53 @@
 #blists table.selectableList .lastUpdated
 {
     width: 15%;
+}
+
+#blists table.selectableList td.handle,
+#blists table.selectableList td.favorite,
+#blists table.selectableList td.type
+{
+    background-position: center -3px;
+    background-repeat: no-repeat;
+    text-indent: -9999px;
+}
+
+#blists table.selectableList td.handle > *,
+#blists table.selectableList td.favorite > *,
+#blists table.selectableList td.type > *
+{
+    padding: 5px;
+    width: 17px;
+}
+
+/* All the custom icons for list cells */
+#blists table.selectableList td.type
+{
+    background-image: url(/stylesheets/images/content/table/icon_blist.png);
+}
+
+#blists table.selectableList td.type.filter
+{
+    background-image: url(/stylesheets/images/content/table/icon_filter.png);
+}
+
+#blists table.selectableList tr.hover td.handle
+{
+    background-image: url(/stylesheets/images/content/table/icon_double_arrow.png);
+}
+
+#blists table.selectableList tr.hover td.favorite
+{
+    background-image: url(/stylesheets/images/content/table/icon_star_empty.png);
+}
+
+#blists table.selectableList tr.hover td.type
+{
+    background-image: url(/stylesheets/images/content/table/icon_box.png);
+}
+
+#blists table.selectableList tr.selected td.type,
+#blists table.selectableList tr.hover.selected td.type
+{
+    background-image: url(/stylesheets/images/content/table/icon_box_checked.png);
 }

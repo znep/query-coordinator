@@ -7,9 +7,16 @@ class Model
     data['id']
   end
 
-  def self.find( resource_name )
+  #options - the primary lookup of the model object.  Usually id except for users where it is login
+  #options could also be a hash of parameters.  see: user_test.rb
+  def self.find( options )
     http = Net::HTTP.new(self.url.host, self.url.port)
-    result = http.send('get', "/#{self.name}s/#{resource_name}.json")
+
+    if options.is_a? Hash
+      result = http.send('get', "/#{self.name}s.json?" + options.collect{|k,v|k +'=' +v.to_s}.join('&') )
+    else
+      result = http.send('get', "/#{self.name}s/#{options}.json")
+    end
 
     model = self.new
     model.data = ActiveSupport::JSON.decode(result.body)

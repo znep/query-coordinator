@@ -283,6 +283,32 @@ table.selectableList th:last-child
     border: none;
 }
 
+table.selectableList th:last-child > *
+{
+    margin-right: -5px;
+}
+
+table.selectableList th.header
+{
+    cursor: pointer;
+}
+
+table.selectableList th.header > *
+{
+    background-position: right center;
+    background-repeat: no-repeat;
+}
+
+table.selectableList th.headerSortDown > *
+{
+    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
+}
+
+table.selectableList th.headerSortUp > *
+{
+    background-image: url(/stylesheets/images/content/table/icon_sort_down.png);
+}
+
 table.selectableList td
 {
     vertical-align: top;

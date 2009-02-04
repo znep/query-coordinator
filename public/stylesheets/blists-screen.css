@@ -87,13 +87,13 @@
 #blists table.selectableList .favorite
 {
     padding: 0;
-    width: 25px;
+    width: 32px;
 }
 
 #blists table.selectableList .type
 {
     padding: 0;
-    width: 38px;
+    width: 45px;
 }
 
 #blists table.selectableList .name
@@ -134,6 +134,11 @@
 }
 
 /* All the custom icons for list cells */
+#blists table.selectableList td.favorite.true
+{
+    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
+}
+
 #blists table.selectableList td.type
 {
     background-image: url(/stylesheets/images/content/table/icon_blist.png);
@@ -152,6 +157,11 @@
 #blists table.selectableList tr.hover td.favorite
 {
     background-image: url(/stylesheets/images/content/table/icon_star_empty.png);
+}
+
+#blists table.selectableList tr.hover td.favorite.true
+{
+    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
 }
 
 #blists table.selectableList tr.hover td.type

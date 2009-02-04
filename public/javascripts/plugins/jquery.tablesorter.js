@@ -76,6 +76,8 @@
  *
  * @option Boolean debug (optional)             Boolean flag indicating if tablesorter should display debuging information usefull for development.
  *
+ * @option Node headerNode (optional)           DOM Node that allows an alternate tHead to be used for sorting.  The table with rows should be what tablesorter() is called on; but headerNode can be a tHead in a different table on the page.
+ *
  * @type jQuery
  *
  * @name tablesorter
@@ -83,6 +85,14 @@
  * @cat Plugins/Tablesorter
  *
  * @author Christian Bach/christian.bach@polyester.se
+ */
+
+/*
+ * v2.1 (jeff.scherpelz@blist.com):
+ *      * Added support for alternate header object
+ *      * Parse full long dates without time
+ *      * Sort empty text below real text
+ *      * Remove unneeded function
  */
 
 (function($) {
@@ -110,7 +120,8 @@
                 headerList: [],
                 dateFormat: "us",
                 decimal: '.',
-                debug: false
+                debug: false,
+                headerNode: null
             };
 
             /* debuging utils */
@@ -293,9 +304,12 @@
 
                 var meta = ($.metadata) ? true : false, tableHeadersRows = [];
 
-                for(var i = 0; i < table.tHead.rows.length; i++) { tableHeadersRows[i]=0; };
+                for(var i = 0; i < $('tr', table.config.headerNode).length; i++)
+                {
+                    tableHeadersRows[i]=0;
+                };
 
-                $tableHeaders = $("thead th",table);
+                $tableHeaders = $("th", table.config.headerNode);
 
                 $tableHeaders.each(function(index) {
 
@@ -317,24 +331,6 @@
 
                 return $tableHeaders;
 
-            };
-
-            function checkCellColSpan(table, rows, row) {
-                var arr = [], r = table.tHead.rows, c = r[row].cells;
-
-                for(var i=0; i < c.length; i++) {
-                    var cell = c[i];
-
-                    if ( cell.colSpan > 1) {
-                        arr = arr.concat(checkCellColSpan(table, headerArr,row++));
-                    } else  {
-                        if(table.tHead.length == 1 || (cell.rowSpan > 1 || !r[row+1])) {
-                            arr.push(cell);
-                        }
-                        //headerArr[row] = (i+row);
-                    }
-                }
-                return arr;
             };
 
             function checkHeaderMetadata(cell) {
@@ -464,10 +460,28 @@
             };
 
             function sortText(a,b) {
+                // Always sort empty text below real text
+                if (a === '' && b !== '')
+                {
+                    return 1;
+                }
+                else if (b === '' && a !== '')
+                {
+                    return -1;
+                }
                 return ((a < b) ? -1 : ((a > b) ? 1 : 0));
             };
 
             function sortTextDesc(a,b) {
+                // Always sort empty text above real text
+                if (a === '' && b !== '')
+                {
+                    return -1;
+                }
+                else if (b === '' && a !== '')
+                {
+                    return 1;
+                }
                 return ((b < a) ? -1 : ((b > a) ? 1 : 0));
             };
 
@@ -488,13 +502,22 @@
 
                 return this.each(function() {
 
-                    if(!this.tHead || !this.tBodies) return;
+                    if(!this.tBodies) return;
 
                     var $this, $document,$headers, cache, config, shiftDown = 0, sortOrder;
 
                     this.config = {};
 
                     config = $.extend(this.config, $.tablesorter.defaults, settings);
+
+                    if (!config.headerNode)
+                    {
+                        if (!this.tHead)
+                        {
+                            return;
+                        }
+                        config.headerNode = this.tHead;
+                    }
 
                     // store common expression for speed
                     $this = $(this);
@@ -782,7 +805,7 @@
     ts.addParser({
         id: "usLongDate",
         is: function(s) {
-            return s.match(new RegExp(/^[A-Za-z]{3,10}\.? [0-9]{1,2}, ([0-9]{4}|'?[0-9]{2}) (([0-2]?[0-9]:[0-5][0-9])|([0-1]?[0-9]:[0-5][0-9]\s(AM|PM)))$/));
+            return s.match(new RegExp(/^[A-Za-z]{3,10}\.? [0-9]{1,2}, ([0-9]{4}|'?[0-9]{2})( (([0-2]?[0-9]:[0-5][0-9])|([0-1]?[0-9]:[0-5][0-9]\s(AM|PM))))?$/));
         },
         format: function(s) {
             return $.tablesorter.formatFloat(new Date(s).getTime());

@@ -1,13 +1,13 @@
 <table id='blistList' class='selectableList' cellspacing="0">
   <thead>
     <tr>
-      <th class='handle'></th>
-      <th class='favorite' title='Favorite?'>Favorite?</th>
-      <th class='type' title='Type'>Type</th>
-      <th class='name'>Name</th>
-      <th class='description'>Description</th>
-      <th class='owner'>Owner</th>
-      <th class='lastUpdated'>Last&nbsp;Updated</th>
+      <th class='handle'><div></div></th>
+      <th class='favorite' title='Favorite?'><div>Favorite?</div></th>
+      <th class='type' title='Type'><div>Type</div></th>
+      <th class='name'><div>Name</div></th>
+      <th class='description'><div>Description</div></th>
+      <th class='owner'><div>Owner</div></th>
+      <th class='lastUpdated'><div>Last&nbsp;Updated</div></th>
     </tr>
   </thead>
   <tbody>
@@ -15,7 +15,9 @@
       <tr class='item' blist_id='<%= blist.id %>'>
         <td class='handle'><div></div></td>
         <%# TODO: Get favorite from data when available %>
-        <td class='favorite'><div><%= blist['favorite'] ? '*' : '' %></div></td>
+        <% isFavorite = blist.isDefault ? 'false' : 'true' %>
+        <td class='favorite <%= isFavorite %>'><div>
+            <%= isFavorite == 'true' ? '*' : '' %></div></td>
         <% blistType = blist.isDefault ? 'blist' : 'filter' %>
         <td class='type <%= blistType %>'><div><%= blistType %></div></td>
         <td class='name'><div><%= blist.name %></div></td>
@@ -23,8 +25,9 @@
         <%# TODO: This needs to get users from a cache if possible %>
         <td class='owner'><div>
             <%# This is disabled until User takes an ID again User.find(blist.lensUserId).displayName %></div></td>
-        <%# TODO: Get last updated from data when available %>
-        <td class='lastUpdated'><div><%= blist['lastUpdatedDate'] %></div></td>
+        <td class='lastUpdated'><div><%= blist.dataUpdatedAt ?
+            Time.at(blist.dataUpdatedAt/1000).strftime("%b %d, %Y") : '' %>
+          </div></td>
       </tr>
     <% end %>
   </tbody>

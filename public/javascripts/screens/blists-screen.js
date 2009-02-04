@@ -4,7 +4,23 @@ var myBlistsNS = blist.namespace.fetch('blist.myBlists');
 
 blist.myBlists.setupTable = function ()
 {
-    $('#blistList').clone().removeAttr('id').appendTo('.headerContainer');
+    $('#blistList').clone()
+        .removeAttr('id').find('tbody').remove().end()
+        .appendTo('.headerContainer');
+    $('#blistList').tablesorter(
+        {
+         // Pass in a different header for doing the sorting
+         headerNode: $('.headerContainer table.selectableList thead'),
+         // First column is not sortable
+         headers: { 0: {sorter: false} },
+         // Extract the text in the div inside tds
+         textExtraction: function (node)
+         {
+            return node.childNodes[0].innerHTML;
+         },
+         // Initially sort by last updated
+         sortList: [[6, 1]]
+        });
 }
 
 blist.myBlists.resizeTable = function ()
@@ -81,6 +97,9 @@ blist.myBlists.updateList = function (newTable)
 {
     $('#blistList tbody').replaceWith($(newTable).find('tbody'));
     myBlistsNS.resizeTable();
+    $('#blistList').trigger('update');
+    // Resort new list on Last Upated
+    $('#blistList').trigger('sorton', [[[6, 1]]]);
 }
 
 

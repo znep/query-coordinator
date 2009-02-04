@@ -98,5 +98,6 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "screens/blists-screen", :cache => "cache/all" %>
+  <%= javascript_include_tag "plugins/jquery.tablesorter",
+    "screens/blists-screen", :cache => "cache/all" %>
 <% end %>

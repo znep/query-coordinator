@@ -6,7 +6,12 @@ blist.myBlists.setupTable = function ()
 {
     $('#blistList').clone()
         .removeAttr('id').find('tbody').remove().end()
-        .appendTo('.headerContainer');
+        .appendTo('.headerContainer').end()
+        .find('thead').remove();
+    $.fn.treeTable.defaults.indent = 0;
+    $.fn.treeTable.defaults.treeColumn = 3;
+    $('#blistList').treeTable();
+    $('#blistList').bind('sortEnd', myBlistsNS.sortFinishedHandler);
     $('#blistList').tablesorter(
         {
          // Pass in a different header for doing the sorting
@@ -16,11 +21,32 @@ blist.myBlists.setupTable = function ()
          // Extract the text in the div inside tds
          textExtraction: function (node)
          {
-            return node.childNodes[0].innerHTML;
+            return $(node).text();
          },
          // Initially sort by last updated
          sortList: [[6, 1]]
         });
+}
+
+/* When sorting is finished, we need to move all child rows back under
+ * their parent.  Grab them in order (since they are sorted appropriately
+ * relative to each other), reverse them, then insert each one right after
+ * its parent.
+ */
+blist.myBlists.sortFinishedHandler = function (event)
+{
+    $('#blistList tr.child').reverse().each(function ()
+    {
+        var classMatch = $(this).attr('class').match(/child-of-(\S+)/);
+        if (classMatch && classMatch.length > 1)
+        {
+            var $parRow = $('#' + classMatch[1]);
+            if ($parRow.length == 1)
+            {
+                $parRow.after(this);
+            }
+        }
+    });
 }
 
 blist.myBlists.resizeTable = function ()
@@ -52,7 +78,14 @@ blist.myBlists.getTableParent = function ($item)
 
 blist.myBlists.rowClickedHandler = function (event)
 {
-    var $target = myBlistsNS.getTableParent($(event.target));
+    // If they clicked on the expand/collaspe arrow, don't select the row
+    var $target = $(event.target);
+    if ($target.hasClass('expander'))
+    {
+        return;
+    }
+
+    $target = myBlistsNS.getTableParent($target);
     if ($target.is("td"))
     {
         $target.parent().toggleClass('selected');
@@ -97,6 +130,7 @@ blist.myBlists.updateList = function (newTable)
 {
     $('#blistList tbody').replaceWith($(newTable).find('tbody'));
     myBlistsNS.resizeTable();
+    $('#blistList').treeTable();
     $('#blistList').trigger('update');
     // Resort new list on Last Upated
     $('#blistList').trigger('sorton', [[[6, 1]]]);

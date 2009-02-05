@@ -236,11 +236,6 @@ form.search input[name="submit"]
     overflow: auto;
 }
 
-.selectableListInner table
-{
-    margin-top: -3.8em;
-}
-
 table.selectableList
 {
     width: 100%;
@@ -285,7 +280,7 @@ table.selectableList th:last-child
 
 table.selectableList th:last-child > *
 {
-    margin-right: -5px;
+    margin-right: -15px;
 }
 
 table.selectableList th.header

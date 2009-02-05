@@ -118,20 +118,38 @@
 
 #blists table.selectableList td.handle,
 #blists table.selectableList td.favorite,
-#blists table.selectableList td.type
+#blists table.selectableList td.type > div
 {
     background-position: center -3px;
     background-repeat: no-repeat;
     text-indent: -9999px;
 }
 
-#blists table.selectableList td.handle > *,
-#blists table.selectableList td.favorite > *,
-#blists table.selectableList td.type > *
+#blists table.selectableList td.handle > div,
+#blists table.selectableList td.favorite > div,
+#blists table.selectableList td.type > div
 {
     padding: 5px;
     width: 17px;
 }
+
+/* Styling for expand/collapse arrow */
+#blists table.selectableList .expander
+{
+    background-image: url(/stylesheets/images/content/table/expand_closed.png);
+    background-position: 3px center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    float: left;
+    margin-right: -5px;
+    width: 10px;
+}
+
+#blists table.selectableList tr.expanded .expander
+{
+    background-image: url(/stylesheets/images/content/table/expand_opened.png);
+}
+
 
 /* All the custom icons for list cells */
 #blists table.selectableList td.favorite.true
@@ -139,12 +157,15 @@
     background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
 }
 
-#blists table.selectableList td.type
+#blists table.selectableList td.type > div
 {
     background-image: url(/stylesheets/images/content/table/icon_blist.png);
+    height: 2em;
+    padding: 0;
+    width: 100%;
 }
 
-#blists table.selectableList td.type.filter
+#blists table.selectableList td.type.filter > div
 {
     background-image: url(/stylesheets/images/content/table/icon_filter.png);
 }
@@ -164,13 +185,56 @@
     background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
 }
 
-#blists table.selectableList tr.hover td.type
+#blists table.selectableList tr.hover td.type > div
 {
     background-image: url(/stylesheets/images/content/table/icon_box.png);
 }
 
-#blists table.selectableList tr.selected td.type,
-#blists table.selectableList tr.hover.selected td.type
+#blists table.selectableList tr.selected td.type > div,
+#blists table.selectableList tr.hover.selected td.type > div
 {
     background-image: url(/stylesheets/images/content/table/icon_box_checked.png);
 }
+
+
+/* Styling for child rows */
+#blists table.selectableList tr.child td > *
+{
+    margin-bottom: 0;
+}
+
+#blists table.selectableList tr.child td.type > div
+{
+    margin-left: 45px;
+}
+
+#blists table.selectableList tr.child td.name > *
+{
+    margin-left: 35px;
+}
+
+#blists table.selectableList tr.child td.owner > *,
+#blists table.selectableList tr.child td.lastUpdated > *
+{
+    display: none;
+}
+
+#blists table.selectableList tr.child td.type
+{
+    border-right: solid 4px #e0d1b8;
+}
+
+#blists table.selectableList tr.child td.owner
+{
+    border-left: solid 4px #e0d1b8;
+}
+
+#blists table.selectableList tr.child.hover td.description > *,
+#blists table.selectableList tr.child.selected td.description > *,
+#blists table.selectableList tr.child.hover.selected td.description > *
+{
+    background-image: url(/stylesheets/images/content/table/highlight_end.png);
+    background-position: right;
+    background-repeat: no-repeat;
+}
+

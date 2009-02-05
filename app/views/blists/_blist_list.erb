@@ -11,8 +11,16 @@
     </tr>
   </thead>
   <tbody>
+    <% blist_parents = Hash.new %>
     <% for blist in @blists %>
-      <tr class='item' blist_id='<%= blist.id %>'>
+      <%
+        if blist.isDefault
+          blist_parents[blist.blistId.to_s] = true
+        end %>
+      <tr <%= blist.isDefault ? "id='blistRow-#{blist.blistId}'" : '' %>
+        blist_id='<%= blist.id %>' class='item
+        <%= (!blist.isDefault && blist_parents[blist.blistId.to_s]) ?
+          "child child-of-blistRow-#{blist.blistId}" : '' %>'>
         <td class='handle'><div></div></td>
         <%# TODO: Get favorite from data when available %>
         <% isFavorite = blist.isDefault ? 'false' : 'true' %>
@@ -23,8 +31,9 @@
         <td class='name'><div><%= blist.name %></div></td>
         <td class='description'><div><%= blist.description %></div></td>
         <%# TODO: This needs to get users from a cache if possible %>
-        <td class='owner'><div>
-            <%# This is disabled until User takes an ID again User.find(blist.lensUserId).displayName %></div></td>
+        <% owner = 'jeff'# This is disabled until User takes an ID # User.find(blist.lensUserId).displayName
+        %>
+        <td class='owner'><div><%= owner %></div></td>
         <td class='lastUpdated'><div><%= blist.dataUpdatedAt ?
             Time.at(blist.dataUpdatedAt/1000).strftime("%b %d, %Y") : '' %>
           </div></td>

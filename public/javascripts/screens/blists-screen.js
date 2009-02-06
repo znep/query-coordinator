@@ -1,5 +1,97 @@
 var myBlistsNS = blist.namespace.fetch('blist.myBlists');
 
+$.tablesorter.addWidget({
+    id: "sortGrouping",
+    format: function (table)
+    {
+        /* This function will get the group that this cell should be sorted
+         *  into. For example, for text, that is the first letter of the string;
+         *  for dates, that may be something like 'Today' or 'Yesterday'; or
+         *  'Last week' or 'Last month'.
+         */
+        function getSortGroup($cell, parser)
+        {
+            // Get the value that is used to sort this cell
+            var curVal = parser.format($cell.text(), table, $cell[0]);
+            var sortVal = curVal;
+
+            // Favorites are sorted as text, but the headers should be special
+            if ($cell.hasClass('favorite'))
+            {
+                sortVal = curVal == '*' ? 'Favorites' : 'Unmarked';
+            }
+            // Type is special in a similar manner to favorites
+            else if ($cell.hasClass('type'))
+            {
+                sortVal = curVal + 's';
+            }
+            // Otherwise for text, sort by the first letter
+            else if (parser.type == 'text')
+            {
+                sortVal = curVal.slice(0, 1).toLowerCase();
+            }
+            // Try catch dates by looking at the parser ID
+            else if (parser.id.match(/date/i))
+            {
+                // If date is 0, assume it is blank
+                if (curVal === 0)
+                {
+                    sortVal = '';
+                }
+                else
+                {
+                    sortVal = blist.util.humaneDate.getFromDate(new Date(curVal));
+                }
+            }
+
+            if (sortVal === '')
+            {
+                sortVal = 'none';
+            }
+            return sortVal;
+        };
+
+
+        // Get the column that is sorted on.  sortList is internal to tablesorter;
+        //  the first element is the primary sort (it supports sorting on
+        //  multiple columns); the first element of sortList[0] is the column
+        //  number (the other element is asc/desc)
+        var curCol = table.config.sortList[0][0];
+
+        // Clear existing headers
+        $("tr.sortGroup", table).remove();
+
+        var groupValue = '';
+        for (var i = 0; i < table.tBodies[0].rows.length; i++)
+        {
+            var $curRow = $(table.tBodies[0].rows[i]);
+            if ($curRow.hasClass('child'))
+            {
+                continue;
+            }
+
+            var $curCell = $($curRow[0].cells[curCol]);
+            var sortVal = getSortGroup($curCell, table.config.parsers[curCol]);
+            if (groupValue != sortVal)
+            {
+                groupValue = sortVal;
+                var $newRow = $("<tr class='sortGroup'/>");
+                for (var j = 0; j < table.config.headerNode[0].rows[0].cells.length;
+                    j++)
+                {
+                    var $refCell = $(table.config.headerNode[0].rows[0].cells[j]);
+                    var $newCell = $("<td class='" + $refCell.attr('class') +
+                        "'/>").removeClass('header');
+                    $newRow.append($newCell);
+                }
+                $newRow.find("td:first-child").append(
+                    "<div>" + groupValue + "</div>");
+                $curRow.before($newRow);
+            }
+        }
+    }
+});
+
 /* Functions for main blists screen */
 
 blist.myBlists.setupTable = function ()
@@ -18,13 +110,11 @@ blist.myBlists.setupTable = function ()
          headerNode: $('.headerContainer table.selectableList thead'),
          // First column is not sortable
          headers: { 0: {sorter: false} },
-         // Extract the text in the div inside tds
-         textExtraction: function (node)
-         {
-            return $(node).text();
-         },
+         // Don't use simple extraction
+         textExtraction: "complex",
          // Initially sort by last updated
-         sortList: [[6, 1]]
+         sortList: [[6, 1]],
+         widgets: ['sortGrouping']
         });
 }
 

@@ -309,7 +309,7 @@
                     tableHeadersRows[i]=0;
                 };
 
-                $tableHeaders = $("th", table.config.headerNode);
+                var $tableHeaders = $("th", table.config.headerNode);
 
                 $tableHeaders.each(function(index) {
 

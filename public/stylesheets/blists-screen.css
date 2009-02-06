@@ -238,3 +238,12 @@
     background-repeat: no-repeat;
 }
 
+/* Sort grouping headers */
+#blists table.selectableList tr.sortGroup td.handle > *
+{
+    color: #e8a134;
+    font-size: 1.3em;
+    text-indent: 0;
+    text-transform: uppercase;
+    width: 30em;
+}

@@ -6,4 +6,8 @@ class User < Model
     end
     return login
   end
+
+  def self.login(login,password)
+    send_request("/authenticate/#{login}.json?password=#{password}")
+  end
 end

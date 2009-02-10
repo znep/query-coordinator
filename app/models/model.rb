@@ -10,22 +10,14 @@ class Model
   #options - the primary lookup of the model object.  Usually id except for users where it is login
   #options could also be a hash of parameters.  see: user_test.rb
   def self.find( options )
-    http = Net::HTTP.new(self.url.host, self.url.port)
-
+    path = nil
     if options.is_a? Hash
-      result = http.send('get', "/#{self.name}s.json?" + options.collect{|k,v|k +'=' +v.to_s}.join('&') )
+      path = "/#{self.name}s.json?" + options.collect{|k,v|k +'=' +v.to_s}.join('&')
     else
-      result = http.send('get', "/#{self.name}s/#{options}.json")
+      path = "/#{self.name}s/#{options}.json"
     end
 
-    model = self.new
-    model.data = ActiveSupport::JSON.decode(result.body)
-
-    if !result.is_a?(Net::HTTPSuccess)
-      raise 'Error:' + model.data['code'] + ', message:' + model.data['message']
-    end  
-
-    model
+    send_request(path)
   end
 
   def method_missing(method_symbol, *args)
@@ -58,6 +50,30 @@ class Model
 
   def to_s
     data.to_json
+  end
+
+  protected
+
+  def self.send_request(path)
+    http = Net::HTTP.new(self.url.host, self.url.port)
+
+    #headers = {'Cookie' => ApplicationController.cookies}
+    result = http.send('get', path )
+
+    model = self.new
+
+    #this is just temporary until we hook up the login via the client
+    #this needs to be set on the response object going back to the client
+    #then pulled off of the request on each future request.
+    #model.cookie = result['Set-Cookie'] if !result['Set-Cookie'].nil?
+
+    model.data = ActiveSupport::JSON.decode(result.body)
+
+    if !result.is_a?(Net::HTTPSuccess)
+      raise 'Error:' + model.data['code'] + ', message:' + model.data['message']
+    end
+
+    model
   end
 
   private

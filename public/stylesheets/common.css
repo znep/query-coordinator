@@ -72,7 +72,7 @@ form.search input[name="submit"]
  * Main content box *
  ********************/
 
-#mainContent .outerContent
+.mainContent .outerContent
 {
     background-color: #ffffff;
     background-image: url(/stylesheets/images/content/background_corner_left.png);
@@ -82,7 +82,7 @@ form.search input[name="submit"]
     overflow: auto;
 }
 
-#mainContent .content
+.mainContent .content
 {
     background-image: url(/stylesheets/images/content/background_corner_right.png);
     background-position: top right;
@@ -176,7 +176,8 @@ form.search input[name="submit"]
 
 /* Selected tab */
 #home .tabList li.home,
-#blists .tabList li.blists
+#blists .tabList li.blists,
+.tabList li.active
 {
     background-image: url(/stylesheets/images/content/tabs/tab_white_left.png);
     margin-top: 0;
@@ -184,7 +185,8 @@ form.search input[name="submit"]
 }
 
 #home .tabList li.home .wrapper,
-#blists .tabList li.blists .wrapper
+#blists .tabList li.blists .wrapper,
+.tabList li.active .wrapper
 {
     background-image: url(/stylesheets/images/content/tabs/tab_white_right.png);
     height: 21px;
@@ -192,7 +194,8 @@ form.search input[name="submit"]
 }
 
 #home .tabList li.home a,
-#blists .tabList li.blists a
+#blists .tabList li.blists a,
+.tabList li.active a
 {
     background-color: #ffffff;
     font-weight: bold;
@@ -202,7 +205,8 @@ form.search input[name="submit"]
 }
 
 #home .tabList li.home a:hover,
-#blists .tabList li.blists a:hover
+#blists .tabList li.blists a:hover,
+.tabList li.active a:hover
 {
     cursor: default;
     text-decoration: none;

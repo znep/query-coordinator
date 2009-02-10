@@ -1,0 +1,56 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "lens-screen",
+    :cache => "cache/all" %>
+  <title>blist | share your weblists</title>
+<% end %>
+
+<div id='lensContainer' class='mainContent'>
+  <ul class='tabList'>
+    <li class='main active'><div class='wrapper'>
+      <a href='#'>My blist name</a></div></li>
+  </ul>
+
+  <div class='outerContent'>
+    <div class='content scrollContent'>
+      <div class='headerBar'>
+        <a href='#' class='menu'>Menu</a>
+        <a href='#'>Undo</a>
+        <a href='#'>Redo</a>
+        <a href='#'>Add Column</a>
+        <a href='#'>Filter</a>
+        <a href='#'>Sort</a>
+        <a href='#'>Show / Hide</a>
+        <a href='#'>View As</a>
+
+        <form action='#'>
+          <p>
+          <input type='text' class='textPrompt' title='Find' />
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="twoColumnContainer">
+  <div id="mainColumnContent" class="column">
+    <div id='infoPane'>
+      <div class='header'>
+        <a href='#' class='active'>Summary</a>
+        <div class='background'></div>
+      </div>
+      <div class='infoContent'>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="column">
+    <%= render(:partial => "shared/ad_box") %>
+  </div>
+
+  <div class='clearBoth'></div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+<% end %>

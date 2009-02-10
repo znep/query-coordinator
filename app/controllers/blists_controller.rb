@@ -2,7 +2,7 @@ class BlistsController < ApplicationController
   def index
     # TODO: Get real use from login auth
     @cur_user = User.find('jeff11')
-    @bodyClass = 'home'
+    @body_class = 'home'
     args = Hash.new
     filterParam = params[:filter] || ''
     filters = filterParam.split(';')

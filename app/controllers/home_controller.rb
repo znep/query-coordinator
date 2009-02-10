@@ -1,5 +1,5 @@
 class HomeController < ApplicationController
   def index
-    @bodyClass = 'home'
+    @body_class = 'home'
   end
 end

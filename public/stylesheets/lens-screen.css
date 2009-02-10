@@ -1,0 +1,50 @@
+/* 
+    Document   : lens-screen
+    Created on : Feb 9, 2009, 11:00:00 AM
+    Author     : jeff.scherpelz@blist.com
+    Description:
+      Styles for the 'lens' screen
+*/
+
+#lensContainer
+{
+    margin-right: 1em;
+}
+
+#lensContainer .headerBar
+{
+    margin-bottom: 1em;
+}
+
+#lensContainer .headerBar a
+{
+    color: #333333;
+    font-size: 1.2em;
+    margin-right: 0.5em;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+#lensContainer .headerBar form,
+#lensContainer .headerBar form p
+{
+    display: inline;
+}
+
+/* Modify sidebar to lie below grid */
+
+#lensBody #sidebar
+{
+    margin-top: 0.5em;
+}
+
+#lensBody #sidebar .box
+{
+    background-image: none;
+}
+
+#lensBody #sidebar .box .outerWrapper
+{
+    background-image: none;
+}
+

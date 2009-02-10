@@ -9,22 +9,22 @@
 body
 {
   min-width: 46.6em;
-  min-height: 500px;
+  min-height: 650px;
 }
 
-#mainContainer
+.twoColumnContainer
 {
   padding-bottom: 6em;
   padding-right: 26.6em;
 }
 
-#mainContainer .column
+.twoColumnContainer .column
 {
   float: left;
   position: relative;
 }
 
-#mainContent
+#mainColumnContent
 {
   width: 100%;
 }

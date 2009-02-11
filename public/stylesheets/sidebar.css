@@ -41,7 +41,7 @@
     padding: 1em;
 }
 
-#sidebar .box:last-child
+#sidebar .box.last
 {
     margin-bottom: 0;
 }

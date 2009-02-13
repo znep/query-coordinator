@@ -289,8 +289,8 @@ var blistsBarNS = blist.namespace.fetch('blist.myBlists.sidebar');
 
 blist.myBlists.sidebar.initializeHandlers = function ()
 {
-    $('#blistFilters a').click(blistsBarNS.filterClickHandler);
-    $('#blistFilters h4').click(blistsBarNS.toggleSection);
+    $('#blistFilters a:not(.expander)').click(blistsBarNS.filterClickHandler);
+    $('#blistFilters h4, #blistFilters a.expander').click(blistsBarNS.toggleSection);
 }
 
 blist.myBlists.sidebar.filterClickHandler = function (event)
@@ -303,7 +303,10 @@ blist.myBlists.sidebar.filterClickHandler = function (event)
 
 blist.myBlists.sidebar.toggleSection = function (event)
 {
-    $(event.target).parent('.expandableSection').toggleClass('closed');
+    event.preventDefault();
+    var $target = $(event.target);
+    var selector = $target.is("h4") ? ".expandableSection" : ".expandableItem";
+    $target.parents(selector).toggleClass('closed');
 }
 
 

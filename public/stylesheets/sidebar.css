@@ -85,75 +85,138 @@
 
 #sidebar .expandableSection
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/expand_open.png);
-    background-position: -6px -3px;
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_expand_sprites.png);
+    background-position: -6px -22px;
     background-repeat: no-repeat;
-    margin-bottom: 1em;
+    margin-bottom: 1.2em;
 }
 
 #sidebar .expandableSection.closed
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/expand_closed.png);
+    background-position: -6px 0;
 }
 
 #sidebar .expandableSection h4
 {
-    background-position: 12px 50%;
+    background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
+    background-position: 12px 0;
     background-repeat: no-repeat;
     cursor: pointer;
-    padding-left: 36px;
-    padding-top: 2px;
+    height: 18px;
+    margin: 0;
+    padding: 4px 0 0 37px;
 }
 
 #sidebar .items h4
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_pages.png);
+    background-position: 12px -88px;
 }
 
 #sidebar .projects h4
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_project.png);
+    background-position: 12px -110px;
 }
 
 #sidebar .folders h4
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_folder.png);
+    background-position: 12px -44px;
 }
 
 #sidebar .tags h4
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_tag.png);
+    background-position: 12px -132px;
 }
 
-#sidebar .expandableSection.closed ul
+#sidebar .expandableSection ul 
+{
+    margin-top: 3px;
+}
+#sidebar .expandableSection.closed ul, #sidebar .expandableItem.closed ul
 {
     display: none;
 }
-
 #sidebar .expandableSection li
 {
-    margin: 0.5em 0;
     padding: 2px 0;
+}
+
+#sidebar .expandableSection li ul {
+    margin-left: 22px;
 }
 
 #sidebar .expandableSection a
 {
-    background-position: left;
+    background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
+    background-position: 0 0;
     background-repeat: no-repeat;
-    color: #000000;
+    color: #212121;
+    display: block;
     font-size: 1.2em;
-    line-height: 1.2em;
-    margin-left: 12px;
-    padding: 2px 0px 2px 22px;
+    line-height: 22px;
+    margin-left: 10px;
+    padding: 0 0 0 25px;
     text-decoration: none;
 }
 
 #sidebar .expandableSection.items a
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_magnifying.png);
+    background-position: 0 -66px;
+}
+#sidebar .expandableSection.items .deleted a
+{
+    background-position: 0 -22px;
 }
 
+
+#sidebar .expandableSection.projects a
+{
+    background-position: 0 -110px;
+}
+#sidebar .expandableSection.projects li ul a 
+{
+    background-position: 0 -44px;
+}
+
+#sidebar .expandableSection.folders a
+{
+    background-position: 0 -44px;
+}
+#sidebar .expandableSection.folders .not_in_folders a
+{
+    background-position: 0 0;
+}
+
+#sidebar .expandableSection.tags a
+{
+    background-position: 0 -132px;
+}
 #sidebar .expandableSection.tags .untagged a
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_default.png);
+    background-position: 0 0;
+}
+
+#sidebar .expandableSection a span 
+{
+    padding-left: 2px;
+}
+#sidebar .expandableSection a:hover span 
+{
+    display: block;
+}
+#sidebar .expandableSection a:hover span 
+{
+    background: url(images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
+}
+
+#sidebar .expandableSection .expandableItem
+{
+    background-image: url(images/sidebar/blists_filter/icon_expand_sprites.png);
+    background-position: -6px -22px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+#sidebar .expandableSection .expandableItem.closed
+{
+    background-position: -6px 2px;
 }

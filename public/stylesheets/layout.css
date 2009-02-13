@@ -15,7 +15,7 @@ body
 #mainContainer
 {
   padding-bottom: 6em;
-  padding-right: 26.6em;
+  padding-right: 28em;
 }
 
 #mainContainer .column
@@ -31,10 +31,10 @@ body
 
 #sidebar
 {
-  margin-right: -26.6em;
+  margin-right: -28em;
   /* account for height of tabs in mainContent */
   margin-top: 21px;
   padding-left: 1em;
-  width: 24.6em;
+  width: 26em;
 }
 

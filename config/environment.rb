@@ -73,3 +73,20 @@ Rails::Initializer.run do |config|
   # Please note that observers generated using script/generate observer need to have an _observer suffix
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 end
+
+multiuser_config = YAML.load(IO.read(RAILS_ROOT + "/config/multiuser.yml") )
+MULTIUSER_HOST       = multiuser_config[RAILS_ENV]["host"]
+MULTIUSER_PORT       = multiuser_config[RAILS_ENV]["port"]
+MULTIUSER_PROXY_HOST = multiuser_config[RAILS_ENV]["proxy_host"]
+MULTIUSER_PROXY_PORT = multiuser_config[RAILS_ENV]["proxy_port"]
+MULTIUSER_CHANGE_IP  = multiuser_config[RAILS_ENV]["change_ip"]
+MULTIUSER_CHANGE_PORT = multiuser_config[RAILS_ENV]["change_port"]
+
+REVISION_FILE = "#{RAILS_ROOT}/../REVISION"
+SWF_DIR = "#{RAILS_ROOT}/public/swf"
+begin
+  REVISION_NUMBER = File.open(REVISION_FILE, "r").read().chomp()
+rescue
+  REVISION_NUMBER = nil
+end
+

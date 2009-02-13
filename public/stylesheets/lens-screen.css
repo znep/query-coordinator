@@ -6,6 +6,20 @@
       Styles for the 'lens' screen
 */
 
+#overlay
+{
+    background-color: #000000;
+    bottom: 0;
+    display: none;
+    filter: alpha(opacity=60);
+    left: 0;
+    opacity: 0.6;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 99;
+}
+
 #lensContainer
 {
     margin-right: 1em;
@@ -29,6 +43,26 @@
 #lensContainer .headerBar form p
 {
     display: inline;
+}
+
+#lensContainer .content
+{
+    padding-bottom: 1em;
+}
+
+#lensContainer #swfWrapper
+{
+    overflow: hidden;
+    position: absolute;
+    z-index: 100;
+}
+
+/* Styling for message when missing JS or Flash */
+#lensContainer #swfContent
+{
+    background-color: #ffffff;
+    font-size: 1.4em;
+    font-weight: bold;
 }
 
 /* Modify sidebar to lie below grid */

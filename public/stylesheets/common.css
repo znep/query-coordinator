@@ -341,6 +341,7 @@ table.selectableList td
 
 table.selectableList td > *
 {
+    display: block;
     font-size: 1.2em;
     height: 17px;
     line-height: 1.2em;
@@ -365,3 +366,13 @@ table.selectableList tr.hover.selected td:last-child > *
     background-repeat: no-repeat;
 }
 
+table.selectableList td > a
+{
+    color: #333333;
+    text-decoration: none;
+}
+
+table.selectableList td > a:hover
+{
+    text-decoration: underline;
+}

@@ -28,7 +28,8 @@
             <%= isFavorite == 'true' ? '*' : '' %></div></td>
         <% blistType = blist.isDefault ? 'blist' : 'filter' %>
         <td class='type <%= blistType %>'><div><%= blistType %></div></td>
-        <td class='name'><div><%= blist.name %></div></td>
+        <td class='name'><%= link_to blist.name,
+          { :controller => 'blists', :action => 'show', :id => blist.id } %></td>
         <td class='description'><div><%= blist.description %></div></td>
         <%# TODO: This needs to get users from a cache if possible %>
         <% owner = 'jeff'# This is disabled until User takes an ID # User.find(blist.lensUserId).displayName

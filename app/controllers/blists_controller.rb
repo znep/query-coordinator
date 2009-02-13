@@ -1,4 +1,4 @@
-class BlistsController < ApplicationController
+class BlistsController < SwfController
   def index
     # TODO: Get real use from login auth
     @cur_user = User.find('jeff11')
@@ -13,6 +13,16 @@ class BlistsController < ApplicationController
     @blists = getBlists(args)
   end
 
+  def show
+    @body_id = 'lensBody'
+    @minFlashVersion = '9.0.45'
+    # TODO: Get real use from login auth
+    @cur_user = User.find('jeff11')
+    @lens = Lens.find(params[:id])
+
+    @swf_url = swf_url('v3embed.swf')
+  end
+
   def detail
     @id = params[:id]
   end
@@ -20,7 +30,7 @@ class BlistsController < ApplicationController
 private
 
   def getBlists(params = nil)
-    cur_lenses = @cur_user.lenses
+    cur_lenses = Lens.find('userId' => @cur_user.id)
     if !params.nil?
       params.each do |key, value|
         cur_lenses = cur_lenses.find_all { |b| b.send(key).to_s == value }

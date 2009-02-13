@@ -170,7 +170,7 @@ blist.myBlists.rowClickedHandler = function (event)
 {
     // If they clicked on the expand/collaspe arrow, don't select the row
     var $target = $(event.target);
-    if ($target.hasClass('expander'))
+    if ($target.hasClass('expander') || $target.is('a'))
     {
         return;
     }
@@ -235,8 +235,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
     if (numSelect == 1)
     {
         var $items = myBlistsNS.getSelectedItems();
-        $.Tache.Get({ url: '/blists/detail',
-                data: { 'id': $items.attr('blist_id') },
+        $.Tache.Get({ url: '/blists/detail/' + $items.attr('blist_id'),
                 success: function (data)
                 {
                     $('#singleSelectInfo').html(data);

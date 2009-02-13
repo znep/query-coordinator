@@ -14,30 +14,14 @@ class UserTest < Test::Unit::TestCase
 
   def test_user_lookup
     #user = login
-    user = User.find('justinfriedl')
-
-    lenses =  user.lenses
-    if lenses.length > 0
-      assert lenses[0].class.name == 'Lens'
-    end
-    puts user.lenses.length
-    assert user.id == 2
-
-    user = User.find({'id'=>2,'method' => 'getById'})
-    puts user.lenses.length
+    user = User.find('justinfriedl')    
     assert user.id == 2
   end
 
-  def test_user_with_params
+  def test_user_lookup_by_id
     #user = login
-    user = User.find({'id'=>2,'method' => 'getById', 'includeFavorites' => true})
-    puts "with favorites = " + user.lenses.length.to_s
-    withFavs = user.lenses.length
-
-    user = User.find({'id'=>2,'method' => 'getById', 'includeShared' => true, 'includeFavorites' => true})
-    puts "with favorites and shares = " + user.lenses.length.to_s
-    withFavsAndShares = user.lenses.length
-    assert(withFavsAndShares > withFavs)
+    user = User.find({'id'=>2,'method' => 'getById'})
+    assert user.id == 2
   end
 
 end

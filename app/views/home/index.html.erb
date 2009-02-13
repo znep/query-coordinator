@@ -6,7 +6,7 @@
 
 
 
-<div class="twoColumnContainer">
+<div class="twoColumnContainer" class="clearfix">
   <div id="mainColumnContent" class="column mainContent">
     <div id='home'>
       <%= render(:partial => "shared/tabs") %>
@@ -32,9 +32,8 @@
       <h4>Storage</h4>
       <p>You are using 50% of your available storage</p>
     <% end %>
-    <%= render(:partial => "shared/ad_box") %>
+    <%= render(:partial => "shared/ad_box", :locals => { :last_child => true }) %>
   </div>
-  <div class='clearBoth'></div>
 </div>
 
 <% content_for :js_footer do %>

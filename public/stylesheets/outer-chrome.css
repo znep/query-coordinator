@@ -98,6 +98,7 @@ body
     color: #fae096;
     background-position: left;
     background-repeat: no-repeat;
+    font-size: .9em;
     font-weight: bold;
     margin: 0.5em;
     padding-left: 18px;
@@ -132,6 +133,7 @@ body
 #header .userNav a
 {
     color: #ffffff;
+    font-size: .9em;    
     font-weight: bold;
 }
 
@@ -171,7 +173,8 @@ body
     width: 11em;
 }
 
-#mainNav li:last-child
+
+#mainNav li.last
 {
     margin-right: 0;
 }
@@ -179,9 +182,9 @@ body
 #mainNav a
 {
     color: #000000;
-    font-size: 1.4em;
+    font-size: 1.3em;
     font-weight: bold;
-    line-height: 1.4em;
+    line-height: 25px;
 }
 
 body.home #mainNav

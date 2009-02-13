@@ -15,6 +15,32 @@
 {
     clear: both;
 }
+.clearfix:after 
+{
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+/*** START: IE hack.
+/    For IE to do the right thing with clearfix, you must first set the display
+/    to inline-block, then back to block.
+/    The * html hack is to trigger the hasLayout property in IE6.
+***/
+.clearfix 
+{ 
+  display: inline-block; 
+}
+.clearfix 
+{ 
+  display: block; 
+}
+* html .clearfix 
+{ 
+  height: 1%; 
+}
+/*** END: IE hack. ***/
 
 .scrollContent
 {

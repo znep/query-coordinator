@@ -59,15 +59,24 @@ class Model
 
     #headers = {'Cookie' => ApplicationController.cookies}
     result = http.send('get', path )
-
-    model = self.new
+    
 
     #this is just temporary until we hook up the login via the client
     #this needs to be set on the response object going back to the client
     #then pulled off of the request on each future request.
     #model.cookie = result['Set-Cookie'] if !result['Set-Cookie'].nil?
 
-    model.data = ActiveSupport::JSON.decode(result.body)
+    data = ActiveSupport::JSON.decode(result.body)
+    if data.is_a?(Array)
+      model = data.collect do | item |
+        m = self.new
+        m.data = item
+        m
+      end
+    else
+      model = self.new
+      model.data = data
+    end
 
     if !result.is_a?(Net::HTTPSuccess)
       raise 'Error:' + model.data['code'] + ', message:' + model.data['message']

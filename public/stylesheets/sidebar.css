@@ -83,68 +83,91 @@
  * blists filter *
  *****************/
 
-#sidebar .expandableSection
+#sidebar .filterSection
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_expand_sprites.png);
-    background-position: -6px -22px;
-    background-repeat: no-repeat;
     margin-bottom: 1.2em;
 }
 
-#sidebar .expandableSection.closed
+#sidebar .expandableContainer
 {
-    background-position: -6px 0;
+    position: relative;
+}
+#sidebar #blistFilters .expandableContainer a.expander 
+{
+    background-image: url(images/sidebar/blists_filter/icon_expand_sprites.png);
+    background-position: 0 -22px;
+    background-repeat: no-repeat;
+    height: 22px;
+    left: -6px;
+    line-height: 100px;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 22px;
+}
+/* Slight positioning change for the arrow on an <li> */
+#sidebar #blistFilters li.expandableContainer a.expander {
+    top: 2px;
 }
 
-#sidebar .expandableSection h4
+#sidebar #blistFilters .expandableContainer.closed a.expander
+{
+    background-position: 0 0;
+}
+#sidebar .expandableContainer.closed ul
+{
+    display: none;
+}
+
+#sidebar .filterSection h4 {
+    font-size: 1em; /* Reset the font size of h4 so the link inside properly sizes to 12px. */
+    padding-left: 12px;
+}
+#sidebar .filterSection h4 a
 {
     background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
     background-position: 12px 0;
     background-repeat: no-repeat;
-    cursor: pointer;
-    height: 18px;
     margin: 0;
-    padding: 4px 0 0 37px;
+    padding: 0 0 0 25px;
 }
 
-#sidebar .items h4
+#sidebar .filterSection.items h4 a
 {
-    background-position: 12px -88px;
+    background-position: 0 -88px;
 }
 
-#sidebar .projects h4
+#sidebar .filterSection.projects h4 a
 {
-    background-position: 12px -110px;
+    background-position: 0 -110px;
 }
 
-#sidebar .folders h4
+#sidebar .filterSection.folders h4 a
 {
-    background-position: 12px -44px;
+    background-position: 0 -44px;
 }
 
-#sidebar .tags h4
+#sidebar .filterSection.tags h4 a
 {
-    background-position: 12px -132px;
+    background-position: 0 -132px;
 }
 
-#sidebar .expandableSection ul 
+#sidebar .filterSection ul 
 {
     margin-top: 3px;
 }
-#sidebar .expandableSection.closed ul, #sidebar .expandableItem.closed ul
-{
-    display: none;
-}
-#sidebar .expandableSection li
+#sidebar .filterSection li
 {
     padding: 2px 0;
 }
 
-#sidebar .expandableSection li ul {
+#sidebar .filterSection li ul {
     margin-left: 22px;
 }
 
-#sidebar .expandableSection a
+#sidebar .filterSection a
 {
     background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
     background-position: 0 0;
@@ -154,69 +177,54 @@
     font-size: 1.2em;
     line-height: 22px;
     margin-left: 10px;
+    min-width: 0; /* Trigger the hasLayout property for IE7 */
     padding: 0 0 0 25px;
     text-decoration: none;
 }
 
-#sidebar .expandableSection.items a
+#sidebar .filterSection.items a
 {
     background-position: 0 -66px;
 }
-#sidebar .expandableSection.items .deleted a
+#sidebar .filterSection.items .deleted a
 {
     background-position: 0 -22px;
 }
 
 
-#sidebar .expandableSection.projects a
+#sidebar .filterSection.projects a
 {
     background-position: 0 -110px;
 }
-#sidebar .expandableSection.projects li ul a 
+#sidebar .filterSection.projects li ul a 
 {
     background-position: 0 -44px;
 }
 
-#sidebar .expandableSection.folders a
+#sidebar .filterSection.folders a
 {
     background-position: 0 -44px;
 }
-#sidebar .expandableSection.folders .not_in_folders a
+#sidebar .filterSection.folders .not_in_folders a
 {
     background-position: 0 0;
 }
 
-#sidebar .expandableSection.tags a
+#sidebar .filterSection.tags a
 {
     background-position: 0 -132px;
 }
-#sidebar .expandableSection.tags .untagged a
+#sidebar .filterSection.tags .untagged a
 {
     background-position: 0 0;
 }
 
-#sidebar .expandableSection a span 
-{
-    padding-left: 2px;
-}
-#sidebar .expandableSection a:hover span 
+#sidebar .filterSection a span 
 {
     display: block;
+    padding-left: 2px;
 }
-#sidebar .expandableSection a:hover span 
+#sidebar .filterSection a:hover span 
 {
     background: url(images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
-}
-
-#sidebar .expandableSection .expandableItem
-{
-    background-image: url(images/sidebar/blists_filter/icon_expand_sprites.png);
-    background-position: -6px -22px;
-    background-repeat: no-repeat;
-    cursor: pointer;
-}
-
-#sidebar .expandableSection .expandableItem.closed
-{
-    background-position: -6px 2px;
 }

@@ -6,7 +6,7 @@
 
 
 
-<div class="twoColumnContainer">
+<div class="twoColumnContainer" class="clearfix">
   <div id="mainColumnContent" class="column mainContent">
     <div id='blists'>
       <%= render(:partial => "shared/tabs") %>
@@ -64,36 +64,59 @@
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'blistFilters',
         :content_class => 'scrollContent' } ) do %>
-      <div class='expandableSection items'>
-        <h4>All Items</h4>
-        <ul>
+      <div class='filterSection items expandableContainer'>
+        <a href="#expand_items" class="expander">expand</a>
+        <h4><a href="#TODO"><span>All Items</span></a></h4>
+        <ul class="expandable">
           <%# TODO: These filters are overly simplistic %>
-          <li><a href='?filter=lensUserId:<%= @cur_user.id %>'>Owned by Me</a></li>
-          <li><a href='?filter=lensUserId:1'>Shared to Me</a></li>
-          <li><a href='?filter=lensUserId:<%= @cur_user.id %>'>Shared by Me</a></li>
-          <li><a href='?filter=favorite:true'>Show only Favorites</a></li>
+          <li><a href='?filter=lensUserId:<%= @cur_user.id %>'><span>Owned by Me</span></a></li>
+          <li><a href='?filter=lensUserId:1'><span>Shared to Me</span></a></li>
+          <li><a href='?filter=lensUserId:<%= @cur_user.id %>'><span>Shared by Me</span></a></li>
+          <li><a href='?filter=favorite:true'><span>Show only Favorites</span></a></li>
+          <%# Deleted items not yet supported, but styled for future %>
+          <li class="deleted"><a href='?filter=deleted:true'><span>Deleted Items</span></a></li>
+          <%# End not yet supported %>
         </ul>
       </div>
-      <%#
-       These are not supported yet
-      <div class='expandableSection closed projects'>
-        <h4>All Projects</h4>
-      </div>
-      <div class='expandableSection closed folders'>
-        <h4>All Folders</h4>
-      </div>
-      %>
-      <div class='expandableSection closed tags'>
-        <h4>All Tags</h4>
+
+      <%# These are not supported yet. Static styling only. TODO: wire them up. %>
+      <div class='filterSection closed projects expandableContainer'>
+        <a href="#expand_items" class="expander">expand</a>
+        <h4><a href="#TODO"><span>All Projects</span></a></h4>
         <ul>
-          <li class='untagged'><a href='#'>Not Tagged</a></li>
+          <li class="closed expandableContainer">
+            <a href="#expand_items" class="expander">expand</a>
+            <a href="#TODO"><span>Project Name</span></a>
+            <ul class="expandable">
+              <li><a href="#TODO"><span>Project Folder Name</span></a></li>
+            </ul>
+          </li>
+          <li><a href="#TODO"><span>Project name</span></a></li>
+        </ul>
+      </div>
+      <div class='filterSection closed folders expandableContainer'>
+        <a href="#expand_items" class="expander">expand</a>
+        <h4><a href="#TODO"><span>All Folders</span></a></h4>
+        <ul class="expandable">
+          <li class="not_in_folders"><a href="#"><span>Not in folders</span></a></li>
+          <li><a href="#"><span>Folder Name</span></a></li>
+          <li><a href="#"><span>Folder Name</span></a></li>
+        </ul>
+      </div>
+      <%# End unsupported but static styled. %>
+      
+      <div class='filterSection closed tags expandableContainer'>
+        <a href="#expand_items" class="expander">expand</a>
+        <h4><a href="#TODO"><span>All Tags</span></a></h4>
+        <ul class="expandable">
+          <li class='untagged'><a href='#'><span>Not Tagged</span></a></li>
+          <li><a href='#'><span>Tag</span></a></li>
           <%# TODO: Get all blist tags, and construct filters %>
         </ul>
       </div>
     <% end %>
     <%= render(:partial => "shared/ad_box") %>
   </div>
-  <div class='clearBoth'></div>
 </div>
 
 <% content_for :js_footer do %>

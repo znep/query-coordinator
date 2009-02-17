@@ -83,77 +83,148 @@
  * blists filter *
  *****************/
 
-#sidebar .expandableSection
+#sidebar .filterSection
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/expand_open.png);
-    background-position: -6px -3px;
+    margin-bottom: 1.2em;
+}
+
+#sidebar .expandableContainer
+{
+    position: relative;
+}
+#sidebar #blistFilters .expandableContainer a.expander 
+{
+    background-image: url(images/sidebar/blists_filter/icon_expand_sprites.png);
+    background-position: 0 -22px;
     background-repeat: no-repeat;
-    margin-bottom: 1em;
+    height: 22px;
+    left: -6px;
+    line-height: 100px;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    width: 22px;
+}
+/* Slight positioning change for the arrow on an <li> */
+#sidebar #blistFilters li.expandableContainer a.expander {
+    top: 2px;
 }
 
-#sidebar .expandableSection.closed
+#sidebar #blistFilters .expandableContainer.closed a.expander
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/expand_closed.png);
+    background-position: 0 0;
 }
-
-#sidebar .expandableSection h4
-{
-    background-position: 12px 50%;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    padding-left: 36px;
-    padding-top: 2px;
-}
-
-#sidebar .items h4
-{
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_pages.png);
-}
-
-#sidebar .projects h4
-{
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_project.png);
-}
-
-#sidebar .folders h4
-{
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_folder.png);
-}
-
-#sidebar .tags h4
-{
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_tag.png);
-}
-
-#sidebar .expandableSection.closed ul
+#sidebar .expandableContainer.closed ul
 {
     display: none;
 }
 
-#sidebar .expandableSection li
+#sidebar .filterSection h4 {
+    font-size: 1em; /* Reset the font size of h4 so the link inside properly sizes to 12px. */
+    padding-left: 12px;
+}
+#sidebar .filterSection h4 a
 {
-    margin: 0.5em 0;
+    background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
+    background-position: 12px 0;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0 0 0 25px;
+}
+
+#sidebar .filterSection.items h4 a
+{
+    background-position: 0 -88px;
+}
+
+#sidebar .filterSection.projects h4 a
+{
+    background-position: 0 -110px;
+}
+
+#sidebar .filterSection.folders h4 a
+{
+    background-position: 0 -44px;
+}
+
+#sidebar .filterSection.tags h4 a
+{
+    background-position: 0 -132px;
+}
+
+#sidebar .filterSection ul 
+{
+    margin-top: 3px;
+}
+#sidebar .filterSection li
+{
     padding: 2px 0;
 }
 
-#sidebar .expandableSection a
+#sidebar .filterSection li ul {
+    margin-left: 22px;
+}
+
+#sidebar .filterSection a
 {
-    background-position: left;
+    background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
+    background-position: 0 0;
     background-repeat: no-repeat;
-    color: #000000;
+    color: #212121;
+    display: block;
     font-size: 1.2em;
-    line-height: 1.2em;
-    margin-left: 12px;
-    padding: 2px 0px 2px 22px;
+    line-height: 22px;
+    margin-left: 10px;
+    min-width: 0; /* Trigger the hasLayout property for IE7 */
+    padding: 0 0 0 25px;
     text-decoration: none;
 }
 
-#sidebar .expandableSection.items a
+#sidebar .filterSection.items a
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_magnifying.png);
+    background-position: 0 -66px;
+}
+#sidebar .filterSection.items .deleted a
+{
+    background-position: 0 -22px;
 }
 
-#sidebar .expandableSection.tags .untagged a
+
+#sidebar .filterSection.projects a
 {
-    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_default.png);
+    background-position: 0 -110px;
+}
+#sidebar .filterSection.projects li ul a 
+{
+    background-position: 0 -44px;
+}
+
+#sidebar .filterSection.folders a
+{
+    background-position: 0 -44px;
+}
+#sidebar .filterSection.folders .not_in_folders a
+{
+    background-position: 0 0;
+}
+
+#sidebar .filterSection.tags a
+{
+    background-position: 0 -132px;
+}
+#sidebar .filterSection.tags .untagged a
+{
+    background-position: 0 0;
+}
+
+#sidebar .filterSection a span 
+{
+    display: block;
+    padding-left: 2px;
+}
+#sidebar .filterSection a:hover span 
+{
+    background: url(images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
 }

@@ -45,6 +45,7 @@
 .scrollContent
 {
     overflow: auto;
+    position: relative; /** Must add this style for IE7 to properly hide the overflowing content. **/
 }
 
 form input[type="text"]

@@ -161,6 +161,7 @@
 #sidebar .filterSection li
 {
     padding: 2px 0;
+    min-height: 0; /** Trigger hasLayout property for IE7. **/
 }
 
 #sidebar .filterSection li ul {

@@ -1,38 +1,150 @@
 /* 
     Document   : info-pane.css
     Created on : Jan 13, 2009, 3:25:51 PM
-    Author     : jeff.scherpelz@blist.com
+    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
     Description:
       Styles for the info pane
 */
 
 #infoPane
 {
-  margin-left: 1em;
-  margin-top: 0.5em;
+    margin-left: 1em;
+    margin-top: 0.5em;
+    min-width: 700px; /* Tabs will wrap below this width. */
 }
 
 #infoPane .header
 {
-  background-color: #e0d1b8;
-  border-bottom: solid 1px #8d8d8d;
-  padding: 0.5em 0;
+    padding: 0.5em 0 0;
 }
 
-#infoPane .header .active
+/*** START: tabs styling ***/
+#infoPane .summaryTabs 
+{
+    background-color: #e0d1b8;
+    background-image: url(images/info_pane/background_info_tab_top_right_sprites.png);
+    background-position: right -3px;
+    background-repeat: no-repeat;
+    border-bottom: 1px solid #8d8d8d;
+    height: 20px;
+}
+#infoPane .summaryTabs li 
+{
+    background-color: #e0d1b8;
+    background-image: url(images/info_pane/background_info_tab_top_left_sprites.png);
+    background-position: 0 -3px;
+    background-repeat: no-repeat;
+    border-right: 1px solid #8d8d8d;
+    color: #333;
+    float: left;
+    font-size: 1.1em;
+    height: 20px;
+    position: relative;
+    width: 120px;
+}
+#infoPane .summaryTabs li .tabInner 
+{
+    background-image: url(images/info_pane/background_info_tab_top_right_sprites.png);
+    background-position: 114px -3px;
+    background-repeat: no-repeat;
+    min-height: 0;
+}
+#infoPane .summaryTabs li.active 
+{
+    background-color: #ffedcc;
+    background-position: -3px 0;
+    font-size: 1.2em;
+    font-weight: bold;
+    height: 21px;
+}
+#infoPane .summaryTabs li.active .tabInner 
+{
+    background-position: 117px 0;
+}
+#infoPane .summaryTabs li.last .tabInner
+{
+    background-image: url(images/info_pane/background_info_tab_last_sprites.png);
+    background-position: right top;
+    width: 123px;
+}
+#infoPane .summaryTabs li.active.last .tabInner
+{
+    background-position: right -30px;
+}
+
+#infoPane .summaryTabs li a 
+{
+    display: block;
+    color: #333;
+    line-height: 20px;
+    text-align: center;
+    text-decoration: none;
+}
+
+/* The summary tab is special */
+#infoPane .summaryTabs li.summary 
+{
+    border-right-width: 3px;
+    width: 85px;
+}
+#infoPane .summaryTabs li.summary.active .tabInner 
+{
+    background-image: none;
+}
+
+/* expander */
+#infoPane .summaryTabs li a.expander 
+{
+    background: url(images/info_pane/icon_expand_summary_sprites.png) no-repeat;
+    display: none;
+    height: 9px;
+    left: 0;
+    line-height: 100px;
+    margin: 4px 3px;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    width: 9px;
+}
+#infoPane .summaryTabs li.active a.expander 
+{
+    display: block;
+}
+
+
+/*** END: tabs styling ***/
+
+
+/*** START: content ***/
+#infoPane .infoContentOuter
 {
   background-color: #ffedcc;
-  border-right: solid 2px #8d8d8d;
-  color: #333333;
-  font-size: 1.2em;
-  padding: 0.3em 0.5em;
-  text-decoration: none;
+  background-image: url(images/info_pane/background_info_content_bottom_left.png);
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  height: 100%;
 }
-
+#infoPane .infoContentOuter .infoContentInner
+{
+    background-image: url(images/info_pane/background_info_content_bottom_right.png);
+    background-position: right bottom;
+    background-repeat: no-repeat;
+}
 #infoPane .infoContent
 {
-  background-color: #ffedcc;
-  height: 100%;
-  overflow: auto;
-  padding: 1em;
+    padding: 1em;
 }
+
+#blists #infoPane .infoContent
+{
+  text-align: right;
+}
+
+#blists #infoPane .infoContent h2
+{
+  float: left;
+}
+
+
+
+/*** END: content ***/

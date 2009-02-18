@@ -295,7 +295,7 @@ blist.myBlists.sidebar.initializeHandlers = function ()
 blist.myBlists.sidebar.filterClickHandler = function (event)
 {
     event.preventDefault();
-    var $target = $(event.target);
+    var $target = $(event.currentTarget);
     $.Tache.Get({ url: $target.attr('href'),
             success: myBlistsNS.updateList });
 }

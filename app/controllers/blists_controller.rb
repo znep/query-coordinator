@@ -4,13 +4,8 @@ class BlistsController < SwfController
     @cur_user = User.find('jeff11')
     @body_class = 'home'
     args = Hash.new
-    filterParam = params[:filter] || ''
-    filters = filterParam.split(';')
-    filters.each do |f|
-      parts = f.split(':')
-      args[parts[0]] = parts[1]
-    end
-    @blists = getBlists(args)
+    @blists = getBlists(params[:owner], params[:sharedTo],
+                        params[:sharedBy], params[:type])
   end
 
   def show
@@ -29,13 +24,46 @@ class BlistsController < SwfController
 
 private
 
-  def getBlists(params = nil)
-    cur_lenses = Lens.find('userId' => @cur_user.id)
-    if !params.nil?
-      params.each do |key, value|
-        cur_lenses = cur_lenses.find_all { |b| b.send(key).to_s == value }
+  def getBlists(owner, shared_to, shared_by, type)
+    # TODO: implement filters for tags
+
+    opts = Hash.new
+    if owner.nil? && shared_to.nil? && shared_by.nil? && type.nil? ||
+      owner != @cur_user.id.to_s || type == 'filter'
+      opts['includeFavorites'] = true
+      opts['includeShared'] = true
+    end
+    if shared_to == @cur_user.id.to_s
+      opts['includeShared'] = true
+    end
+    if shared_by != @cur_user.id.to_s
+      opts['includeShared'] = true
+    end
+    if type == 'favorite'
+      opts['includeFavorites'] = true
+    end
+    cur_lenses = Lens.find(opts)
+
+    if !owner.nil?
+      cur_lenses = cur_lenses.find_all {|l| l.ownerId.to_s == owner}
+    end
+    if !shared_to.nil?
+      cur_lenses = cur_lenses.find_all do |l|
+        l.permissions.any? do |p|
+          p.isEnabled && !p.user.nil? && p.user.id.to_s == shared_to
+        end
       end
     end
+    if !shared_by.nil?
+      cur_lenses = cur_lenses.find_all {|l| l.ownerId.to_s == shared_by &&
+        l.is_shared?}
+    end
+    if type == 'filter'
+      cur_lenses = cur_lenses.find_all {|l| !l.isDefault}
+    end
+    # TODO: implement filters for favorites
+
+
     # Sort by blist ID, sub-sort by isDefault to sort all blists just
     # before lenses
     cur_lenses.sort! do |a,b|

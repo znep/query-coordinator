@@ -89,6 +89,7 @@ private
       "http://localhost:4000/swf/#{REVISION_NUMBER}/#{filename}"
     else
       logger.fatal("Cannot find SWF to serve")
+      return ''
     end
   end
 

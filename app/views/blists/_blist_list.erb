@@ -32,8 +32,7 @@
           { :controller => 'blists', :action => 'show', :id => blist.id } %></td>
         <td class='description'><div><%= blist.description %></div></td>
         <%# TODO: This needs to get users from a cache if possible %>
-        <% owner = 'jeff'# This is disabled until User takes an ID # User.find(blist.lensUserId).displayName
-        %>
+        <% owner = User.find(blist.ownerId).displayName %>
         <td class='owner'><div><%= owner %></div></td>
         <td class='lastUpdated'><div><%= blist.dataUpdatedAt ?
             Time.at(blist.dataUpdatedAt/1000).strftime("%b %d, %Y") : '' %>

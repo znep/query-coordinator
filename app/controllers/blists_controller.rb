@@ -1,9 +1,13 @@
 class BlistsController < SwfController
+  helper_method :get_title
+
   def index
     # TODO: Get real use from login auth
     @body_class = 'home'
     args = Hash.new
-    @blists = getBlists(params[:owner], params[:sharedTo],
+    @blists = get_blists(params[:owner], params[:sharedTo],
+                        params[:sharedBy], params[:type])
+    @title = get_title(params[:owner], params[:sharedTo],
                         params[:sharedBy], params[:type])
   end
 
@@ -34,7 +38,7 @@ class BlistsController < SwfController
 
 private
 
-  def getBlists(owner, shared_to, shared_by, type)
+  def get_blists(owner, shared_to, shared_by, type)
     # TODO: implement filters for tags
 
     opts = Hash.new
@@ -88,20 +92,57 @@ private
     end
     return cur_lenses
   end
-  
+
   def getLensesWithIds(params = nil)
     opts = Hash.new
     opts['includeShared'] = true
     opts['includeFavorites'] = true
-    
+
     cur_lenses = Lens.find(opts)
-    
+
     if !params.nil?
       cur_lenses = cur_lenses.find_all do |lens|
         params.any? { |p| p == lens.id.to_s }
       end
     end
-    
+
     return cur_lenses
+  end
+
+  def get_name(user_id)
+    return user_id == @cur_user.id.to_s ? 'me' : User.find(user_id).displayName
+  end
+
+  def get_title(owner = nil, shared_to = nil, shared_by = nil, type = nil)
+    title = 'All '
+    if owner.nil? && shared_to.nil? && shared_by.nil? && type.nil?
+      title += 'blists'
+    end
+
+    parts = Array.new
+    if !owner.nil?
+      parts << 'blists owned by ' + get_name(owner)
+    end
+
+    if !shared_to.nil?
+      parts << 'blists shared to ' + get_name(shared_to)
+    end
+
+    if !shared_by.nil?
+      parts << 'blists shared by ' + get_name(shared_by)
+    end
+
+    if !type.nil?
+      parts << 'my ' +
+        case type
+        when 'favorite'
+          'favorite blists'
+        when 'filter'
+          'filters'
+        end
+    end
+
+    title += parts.join(' and ')
+    return title
   end
 end

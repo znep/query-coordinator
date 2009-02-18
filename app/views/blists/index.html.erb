@@ -14,7 +14,7 @@
       <div class='outerContent'>
         <div class='content'>
           <div class='headerBar'>
-            <h3>All blists</h3>
+            <h3 id='listTitle'><%= @title %></h3>
             <a href='#' class='menu'>Menu</a>
             <a href='#'>Add New</a>
             <a href='#'>Import</a>
@@ -51,14 +51,21 @@
         :content_class => 'scrollContent' } ) do %>
       <div class='filterSection items expandableContainer'>
         <a href="#expand_items" class="expander">expand</a>
-        <h4><a href="?"><span>All Items</span></a></h4>
+        <h4><a href="?" title='<%= get_title() %>'>
+            <span>All Items</span></a></h4>
         <ul class="expandable">
-          <li><a href='?owner=<%= @cur_user.id %>'><span>Owned by Me</span></a></li>
-          <li><a href='?sharedTo=<%= @cur_user.id %>'>
+          <li><a href='?owner=<%= @cur_user.id %>'
+            title='<%= get_title(@cur_user.id.to_s) %>'>
+            <span>Owned by Me</span></a></li>
+          <li><a href='?sharedTo=<%= @cur_user.id %>'
+            title='<%= get_title(nil, @cur_user.id.to_s) %>'>
             <span>Shared to Me</span></a></li>
-          <li><a href='?sharedBy=<%= @cur_user.id %>'>
+          <li><a href='?sharedBy=<%= @cur_user.id %>'
+            title='<%= get_title(nil, nil, @cur_user.id.to_s) %>'>
             <span>Shared by Me</span></a></li>
-          <li><a href='?type=favorite'><span>Show only Favorites</span></a></li>
+          <li><a href='?type=favorite'
+            title='<%= get_title(nil, nil, nil, 'favorite') %>'>
+            <span>Show only Favorites</span></a></li>
           <%# Deleted items not yet supported, but styled for future %>
           <li class="deleted"><a href='?filter=deleted:true'><span>Deleted Items</span></a></li>
           <%# End not yet supported %>

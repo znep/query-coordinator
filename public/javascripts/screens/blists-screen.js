@@ -94,6 +94,12 @@ $.tablesorter.addWidget({
 
 /* Functions for main blists screen */
 
+blist.myBlists.listSelectionHandler = function (event, title)
+{
+    $('#blistList tbody').hide();
+    $('#listTitle').text(title);
+}
+
 blist.myBlists.setupTable = function ()
 {
     $('#blistList').clone()
@@ -137,6 +143,7 @@ blist.myBlists.sortFinishedHandler = function (event)
             }
         }
     });
+    $('#blistList tbody').show();
 }
 
 blist.myBlists.resizeTable = function ()
@@ -316,6 +323,7 @@ blist.myBlists.sidebar.filterClickHandler = function (event)
 {
     event.preventDefault();
     var $target = $(event.currentTarget);
+    $target.trigger(blist.events.LIST_SELECTION, [$target.attr('title')]);
     $.Tache.Get({ url: $target.attr('href'),
             success: myBlistsNS.updateList });
 }
@@ -341,12 +349,14 @@ $(function ()
     $('#blistList').mouseout(myBlistsNS.tableMouseoutHandler);
 
     $('#blists').bind(blist.events.ROW_SELECTION, blistsInfoNS.rowSelectionHandler);
+    $('#outerContainer').bind(blist.events.LIST_SELECTION,
+        myBlistsNS.listSelectionHandler);
 
     blistsInfoNS.updateSummary();
     // Readjust size after updating info pane
     blist.common.adjustSize();
     myBlistsNS.resizeTable();
-    
+
     // Wire up some temporary click listeners for the info pane tabs.
     $("#infoPane .summaryTabs li a:not(expander)").click(function () 
     {

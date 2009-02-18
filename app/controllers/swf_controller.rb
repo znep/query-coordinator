@@ -33,7 +33,7 @@ private
     variables[:mats] = timestamp.to_s
 
     key_name = ActionController::Base.session_options[:session_key]
-    variables[key_name.to_sym] = session.session_id
+    variables[key_name.to_sym] = session.id
 
     if REVISION_NUMBER
       variables[:revision] = REVISION_NUMBER
@@ -79,14 +79,14 @@ private
       suffix = "_#{params[:variant]}"
       filename.sub!(/^(.*)\.swf$/, "\\1#{suffix}.swf")
     end
-   
+
     if File.exists?("#{SWF_DIR}/#{filename}")
       stamp = build_stamp(filename)
-      "http://localhost:4000/swf/#{filename}?build=#{stamp}"
+      "#{SWF_HOST}/swf/#{filename}?build=#{stamp}"
     elsif params[:sha]
-      "http://localhost:4000/swf/#{params[:sha]}/#{filename}"
+      "#{SWF_HOST}/swf/#{params[:sha]}/#{filename}"
     elsif REVISION_NUMBER
-      "http://localhost:4000/swf/#{REVISION_NUMBER}/#{filename}"
+      "#{SWF_HOST}/swf/#{REVISION_NUMBER}/#{filename}"
     else
       logger.fatal("Cannot find SWF to serve")
       return ''

@@ -50,6 +50,13 @@
     padding-bottom: 1em;
 }
 
+#lensContainer #outerSwfWrapper
+{
+    /* Override position:relative for .scrollContent to allow this content
+     * to expand beyond its borders */
+    position: static;
+}
+
 #lensContainer #swfWrapper
 {
     overflow: hidden;

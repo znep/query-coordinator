@@ -19,6 +19,7 @@ Rails::Initializer.run do |config|
   # Skip frameworks you're not going to use. To use Rails without a database
   # you must remove the Active Record framework.
   # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
+  config.frameworks -= [ :active_record ]
 
   # Specify gems that this application depends on. 
   # They can then be installed with "rake gems:install" on new installations.
@@ -82,8 +83,12 @@ MULTIUSER_PROXY_PORT = multiuser_config[RAILS_ENV]["proxy_port"]
 MULTIUSER_CHANGE_IP  = multiuser_config[RAILS_ENV]["change_ip"]
 MULTIUSER_CHANGE_PORT = multiuser_config[RAILS_ENV]["change_port"]
 
+swf_config = YAML.load(IO.read(RAILS_ROOT + "/config/swf.yml") )
+SWF_HOST      = swf_config[RAILS_ENV]["host"]
+SWF_DIR       = swf_config[RAILS_ENV]["dir"]
+
 REVISION_FILE = "#{RAILS_ROOT}/../REVISION"
-SWF_DIR = "#{RAILS_ROOT}/public/swf"
+
 begin
   REVISION_NUMBER = File.open(REVISION_FILE, "r").read().chomp()
 rescue

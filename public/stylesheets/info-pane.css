@@ -61,6 +61,7 @@
 {
     background-position: 117px 0;
 }
+
 #infoPane .summaryTabs li.last .tabInner
 {
     background-image: url(images/info_pane/background_info_tab_last_sprites.png);
@@ -72,7 +73,7 @@
     background-position: right -30px;
 }
 
-#infoPane .summaryTabs li a 
+#infoPane .summaryTabs li a, #infoPane .summaryTabs li span
 {
     display: block;
     color: #333;
@@ -87,9 +88,21 @@
     border-right-width: 3px;
     width: 85px;
 }
+#infoPane .summaryTabs li.summary.active.last
+{
+    border-right: 0;
+    width: 91px;
+}
 #infoPane .summaryTabs li.summary.active .tabInner 
 {
     background-image: none;
+}
+#infoPane .summaryTabs li.summary.active.last .tabInner
+{
+    background-image: url(images/info_pane/background_info_tab_summary_last.png);
+    background-position: right top;
+    border-right: none;
+    width: 97px;
 }
 
 /* expander */
@@ -134,17 +147,16 @@
 {
     padding: 1em;
 }
-
-#blists #infoPane .infoContent
-{
-  text-align: right;
-}
-
-#blists #infoPane .infoContent h2
+#infoPane .infoContent h2
 {
   float: left;
 }
 
+#infoPane .selectPrompt 
+{
+    float: right;
+    line-height: 2.2em;
+}
 
 
 /*** END: content ***/

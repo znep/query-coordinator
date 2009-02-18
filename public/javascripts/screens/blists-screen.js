@@ -236,27 +236,47 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
     {
         var $items = myBlistsNS.getSelectedItems();
         $.Tache.Get({ url: '/blists/detail/' + $items.attr('blist_id'),
-                success: function (data)
-                {
-                    $('#singleSelectInfo').html(data);
-                } });
-        $('#singleSelectInfo').show();
-        $('#multiSelectInfo').hide();
+            success: function (data)
+            {
+                $('#infoPane').html(data);
+            } 
+        });
     }
     else
     {
-        $('#multiSelectInfo').show();
-        $('#singleSelectInfo').hide();
-
-        var itemState;
         if (numSelect === undefined || numSelect < 1)
         {
             numSelect = myBlistsNS.getTotalItemCount();
             $('#infoPane .infoContent .selectPrompt').show();
             itemState = 'total';
+            
+            $.Tache.Get({ url: '/blists/detail',
+                data: 'items=' + numSelect,
+                success: function (data)
+                {
+                    $('#infoPane').html(data);
+                } 
+            });
+            
         }
         else
         {
+            var $items = myBlistsNS.getSelectedItems();
+            var arrMulti = $items.map(function (i, n)
+            {
+               return $(n).attr('blist_id');
+            });
+            var multi = $.makeArray(arrMulti).join(';');
+            
+            $.Tache.Get({ url: '/blists/detail',
+                data: 'multi=' + multi,
+                success: function (data)
+                {
+                    $('#infoPane').html(data);
+                } 
+            });
+            
+            
             $('#infoPane .infoContent .selectPrompt').hide();
             itemState = 'selected';
         }

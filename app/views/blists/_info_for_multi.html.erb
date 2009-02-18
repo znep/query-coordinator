@@ -1,0 +1,24 @@
+<%# locals: lenses %>
+
+<div class="header">
+  <ul class="summaryTabs clearfix">
+    <li class="summary active last">
+      <div class="tabInner">
+        <span>Summary</span>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="infoContentOuter">
+  <div class="infoContentInner">
+    <div class="infoContent clearfix">
+      <h2 class="panelHeader"><%= lenses.length %> items selected</h2>
+      <ul class="clearBoth">
+        <%- lenses.each do |lens| -%>
+          <li><%= lens.name %></li>
+        <%- end -%>
+      </ul>
+    </div>
+  </div>
+</div>

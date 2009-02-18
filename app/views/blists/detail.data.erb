@@ -1,7 +1,8 @@
-<div class='header'>
-  <a href='#' class='active'>Summary</a>
-  <div class='background'></div>
-</div>
-<div class='infoContent'>
-  <h2>blist selected: <%= @id %></h2>
-</div>
+<%- if (@item_count) -%>
+  <%= render(:partial => "blists/info_for_list.html", :locals => { :item_count => @item_count }) %>
+<%- elsif (@lens) -%>
+  <%= render(:partial => "blists/info_for_single.html", :locals => { :lens => @lens }) %>
+<%- elsif (@lenses) -%>
+  <%= render(:partial => "blists/info_for_multi.html", :locals => { :lenses => @lenses }) %>
+<%- end -%>
+

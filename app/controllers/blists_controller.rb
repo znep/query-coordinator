@@ -1,7 +1,6 @@
 class BlistsController < SwfController
   def index
     # TODO: Get real use from login auth
-    @cur_user = User.find('jeff11')
     @body_class = 'home'
     args = Hash.new
     @blists = getBlists(params[:owner], params[:sharedTo],
@@ -12,14 +11,25 @@ class BlistsController < SwfController
     @body_id = 'lensBody'
     @minFlashVersion = '9.0.45'
     # TODO: Get real use from login auth
-    @cur_user = User.find('jeff11')
     @lens = Lens.find(params[:id])
 
     @swf_url = swf_url('v3embed.swf')
   end
 
   def detail
-    @id = params[:id]
+    if (params[:id])
+      @lens = Lens.find(params[:id])
+    elsif (params[:multi])
+      #TODO: Need a method to get lenses by array of ids.
+      # Justin working on a method to support this.
+      # Meantime, get all blists and filter out the ones we want.
+      args = Array.new
+      multiParam = params[:multi]
+      args = multiParam.split(';')
+      @lenses = getLensesWithIds(args)
+    elsif (params[:items])
+      @item_count = params[:items]
+    end
   end
 
 private
@@ -76,6 +86,22 @@ private
           -1 : !a.isDefault && b.isDefault ? 1 : 0
       end
     end
+    return cur_lenses
+  end
+  
+  def getLensesWithIds(params = nil)
+    opts = Hash.new
+    opts['includeShared'] = true
+    opts['includeFavorites'] = true
+    
+    cur_lenses = Lens.find(opts)
+    
+    if !params.nil?
+      cur_lenses = cur_lenses.find_all do |lens|
+        params.any? { |p| p == lens.id.to_s }
+      end
+    end
+    
     return cur_lenses
   end
 end

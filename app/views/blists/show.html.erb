@@ -16,19 +16,23 @@
 
   <div class='outerContent'>
     <div class='content'>
-      <div class='headerBar'>
-        <a href='#' class='menu'>Menu</a>
-        <a href='#'>Undo</a>
-        <a href='#'>Redo</a>
-        <a href='#'>Add Column</a>
-        <a id='filterLink' href='#'>Filter</a>
-        <a href='#'>Sort</a>
-        <a href='#'>Show / Hide</a>
-        <a href='#'>View As</a>
+      <div class='headerBar clearfix'>
+        <ul>
+          <li><a href='#' class='menu'>Menu</a></li>
+          <li class='separator'><a href='#' id='undoLink' title='Undo'>Undo</a></li>
+          <li><a href='#' id='redoLink' title='Redo'>Redo</a></li>
+          <li class='separator'><a href='#'>Add Column</a></li>
+          <li class='separator'><a id='filterLink' href='#'>Filter</a></li>
+          <li><a href='#'>Sort</a></li>
+          <li><a href='#'>Show / Hide</a></li>
+          <li class='separator'><a href='#'>View As</a></li>
+        </ul>
 
-        <form action='#'>
+        <form class='search' action='#'>
           <p>
-          <input type='text' class='textPrompt' title='Find' />
+            <input type='text' class='textPrompt' title='Find' />
+            <input type="image" class="submit" name="findSubmit"
+              src="/stylesheets/images/content/table_menu/button_find.png" />
           </p>
         </form>
       </div>

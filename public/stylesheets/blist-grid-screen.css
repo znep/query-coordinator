@@ -25,25 +25,80 @@
     margin-right: 1em;
 }
 
+/* Header bar & Button styles */
+
 #lensContainer .headerBar
 {
+    line-height: 20px;
     margin-bottom: 1em;
+    min-height: 0;
+    overflow: hidden;
+}
+
+#lensContainer .headerBar li
+{
+    float: left;
 }
 
 #lensContainer .headerBar a
 {
+    display: block;
     color: #333333;
     font-size: 1.2em;
-    margin-right: 0.5em;
+    padding: 0 0.5em;
     text-decoration: none;
     text-transform: uppercase;
 }
 
-#lensContainer .headerBar form,
-#lensContainer .headerBar form p
+#lensContainer .headerBar form.search
 {
-    display: inline;
+    float: right;
 }
+
+#lensContainer .headerBar form.search p
+{
+    background-image: url(images/content/table_menu/field_find.png);
+}
+
+#lensContainer .headerBar form.search input[type="text"]
+{
+    height: 15px;
+    padding: 1px 0 0;
+}
+
+#lensContainer .headerBar form.search input.submit
+{
+    height: 18px;
+}
+
+#lensContainer .headerBar .separator
+{
+    border-left: 2px solid #e8e8e8;
+}
+
+#lensBody #undoLink, #lensBody #redoLink
+{
+    background-image: url(images/content/table_menu/menu_bar_sprites.png);
+    background-repeat: no-repeat;
+    height: 20px;
+    line-height: 100px;
+    padding: 0;
+    width: 20px;
+}
+
+#lensBody #undoLink
+{
+    background-position: 5px 0px;
+    width: 25px
+}
+
+#lensBody #redoLink
+{
+    background-position: 0px -20px;
+    margin-right: 0.5em;
+}
+
+/* Main content */
 
 #lensContainer .content
 {

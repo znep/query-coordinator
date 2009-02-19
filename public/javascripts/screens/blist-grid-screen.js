@@ -58,5 +58,17 @@ $(function ()
         blistGridNS.showFlashPopup('LensBuilder');
     });
 
+    $('#undoLink, #redoLink').click(function (event)
+    {
+        blist.util.flashInterface.doAction($(event.currentTarget).text());
+    });
+
+    $('#lensContainer .headerBar form').submit(function (event)
+    {
+        event.preventDefault();
+        blist.util.flashInterface.search(
+            $(event.currentTarget).find('input[type="text"]').val());
+    });
+
     blistGridNS.sizeSwf();
 });

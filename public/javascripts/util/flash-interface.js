@@ -4,6 +4,16 @@ blist.util.flashInterface.allPopups = '*';
 blist.util.flashInterface.popupShownHandlers = {};
 blist.util.flashInterface.popupClosedHandlers = {};
 
+blist.util.flashInterface.doAction = function (action)
+{
+    $('#swfContent')[0].doAction(action);
+}
+
+blist.util.flashInterface.search = function (searchText)
+{
+    $('#swfContent')[0].search(searchText);
+}
+
 blist.util.flashInterface.showPopup = function (popup)
 {
     $('#swfContent')[0].showPopup(popup);

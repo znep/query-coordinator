@@ -88,7 +88,7 @@ form.search input[type="text"]
     width: 100%;
 }
 
-form.search input[name="submit"]
+form.search input.submit
 {
     height: 23px;
     margin-right: -30px;

@@ -26,5 +26,6 @@ private
   
   def auth_current_user
     @cur_user = User.find(CURRENT_USER_LOGIN)
+    User.current_user = @cur_user
   end
 end

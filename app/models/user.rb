@@ -1,4 +1,6 @@
 class User < Model
+  cattr_accessor :current_user
+
   def displayName
     # TODO: This needs to respect privacy settings
     if !firstName.nil? && !lastName.nil?

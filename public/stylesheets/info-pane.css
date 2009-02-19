@@ -119,6 +119,10 @@
     top: 0;
     width: 9px;
 }
+#infoPane .summaryTabs li a.expander.expanded
+{
+    background-position: left -9px;
+}
 #infoPane .summaryTabs li.active a.expander 
 {
     display: block;
@@ -129,34 +133,210 @@
 
 
 /*** START: content ***/
-#infoPane .infoContentOuter
+#infoContentOuter
 {
   background-color: #ffedcc;
-  background-image: url(images/info_pane/background_info_content_bottom_left.png);
-  background-position: left bottom;
+  background-image: url(images/info_pane/background_info_content_bottom_right.png);
+  background-position: right bottom;
   background-repeat: no-repeat;
   height: 100%;
 }
-#infoPane .infoContentOuter .infoContentInner
-{
-    background-image: url(images/info_pane/background_info_content_bottom_right.png);
-    background-position: right bottom;
-    background-repeat: no-repeat;
-}
-#infoPane .infoContent
-{
-    padding: 1em;
-}
-#infoPane .infoContent h2
-{
-  float: left;
-}
 
-#infoPane .selectPrompt 
+#infoContentHeader
+{
+    padding-right: 1em;
+}
+#infoContentHeader h2.panelHeader
+{
+    background: url(images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
+    float: left;
+    font-size: 1.4em;
+    font-weight: normal;
+    height: 41px;
+    line-height: 41px;
+    margin-left: .5em;
+    overflow: hidden;
+    padding-left: 46px;
+}
+#infoContentHeader .selectPrompt 
 {
     float: right;
-    line-height: 2.2em;
+    font-size: 1.1em;
+    line-height: 41px; /* Match the line-height of the header (in pixels). */
+}
+#infoContentHeader .headerActions
+{
+    float: right;
+    padding-top: 1em;
 }
 
+#infoContentOuter #infoContentInner
+{
+    background-image: url(images/info_pane/background_info_content_bottom_left.png);
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    padding-bottom: 1em;
+}
+#infoContent
+{
+    display: none;
+    padding: 0 1em 1em 0;
+}
+
+#infoContentOuter.expanded #infoContent
+{
+    display: block;
+}
+
+/* Expanded info for multi */
+#infoContentOuter.infoList.expanded #infoContentInner
+{
+    background-image: url(images/info_pane/background_expanded_list.png);
+    background-repeat: repeat-y;
+    padding-bottom: 0;
+}
+#infoContentOuter.infoList #infoContent
+{
+    background-image: url(images/info_pane/background_info_content_bottom_left_dark.png);
+    background-position: left bottom;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+#infoContentOuter.infoList #infoContent dl
+{
+    border-top: 1px solid #e0d1b8;
+    margin-left: 140px;
+}
+#infoContentOuter.infoList #infoContent dt
+{
+    color: #666;
+    font-size: 1.1em;
+    left: 5px;
+    line-height: 19px;
+    padding-right: 10px;
+    position: absolute;
+    text-align: right;
+    top: 5px;
+    width: 125px;
+}
+#infoContentOuter.infoList #infoContent dt.hover
+{
+    background-color: #ffed82;
+    background-image: url(images/info_pane/background_summary_list_title.png);
+    background-repeat: no-repeat;
+}
+#infoContentOuter.infoList #infoContent dt a.help
+{
+    background-image: url(images/info_pane/icon_help_highlight.png);
+    background-repeat: no-repeat;
+    display: none;
+    height: 16px;
+    left: 2px;
+    line-height: 100px;
+    overflow: hidden;
+    position: absolute;
+    top: 1px;
+    width: 16px;
+}
+#infoContentOuter.infoList #infoContent dt.hover a.help
+{
+    display: block;
+}
+
+#infoContentOuter.infoList #infoContent dd
+{
+    background-image: url(images/info_pane/summary_list_icon_sprites.png);
+    background-position: left 0;
+    background-repeat: no-repeat;
+    color: #333;
+    height: 25px;
+    overflow: hidden;
+    padding: 6px 0 0 31px;
+    position: relative;
+}
+#infoContentOuter.infoList #infoContent dd.itemBlist
+{
+    background-position: left 0;
+}
+#infoContentOuter.infoList #infoContent dd.itemSharedOutBlist
+{
+    background-position: left -31px;
+}
+#infoContentOuter.infoList #infoContent dd.itemSharedInBlist
+{
+    background-position: left -62px;
+}
+#infoContentOuter.infoList #infoContent dd.itemPrivateBlist
+{
+    background-position: left -93px;
+}
+#infoContentOuter.infoList #infoContent dd.itemPrivateSchemaBlist
+{
+    background-position: left -279px;
+}
+#infoContentOuter.infoList #infoContent dd.itemFilter
+{
+    background-position: left -124px;
+}
+#infoContentOuter.infoList #infoContent dd.itemSharedOutFilter
+{
+    background-position: left -155px;
+}
+#infoContentOuter.infoList #infoContent dd.itemSharedInFilter
+{
+    background-position: left -186px;
+}
+#infoContentOuter.infoList #infoContent dd.itemPrivateFilter
+{
+    background-position: left -217px;
+}
+#infoContentOuter.infoList #infoContent dd.itemPrivateSchemaFilter
+{
+    background-position: left -248px;
+}
+
+#infoContentOuter.infoList #infoContent dd a
+{
+    color: #333;
+    display: block;
+    font-size: 1.1em;
+    height: 19px;
+    line-height: 19px;
+    padding-left: 5px;
+    text-decoration: none;
+}
+#infoContentOuter.infoList #infoContent dd.hover a
+{
+    background-color: #ffed82;
+}
+#infoContentOuter.infoList #infoContent dd a.deselector
+{
+    background-color: #dfd4b8;
+    background-image: url(images/info_pane/summary_secondary_button_sprites.png);
+    background-position: left -38px;
+    background-repeat: no-repeat;
+    display: none;
+    font-size: 1em;
+    height: 19px;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    text-transform: uppercase;
+    top: 6px;
+}
+#infoContentOuter.infoList #infoContent dd a.deselector span
+{
+    background-image: url(images/info_pane/summary_secondary_button_sprites.png);
+    background-position: right -19px;
+    background-repeat: no-repeat;
+    display: block;
+    padding-right: 5px;
+}
+#infoContentOuter.infoList #infoContent dd.hover a.deselector
+{
+    display: block;
+}
 
 /*** END: content ***/

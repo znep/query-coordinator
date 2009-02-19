@@ -279,7 +279,16 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
                 data: 'multi=' + multi,
                 success: function (data)
                 {
+                    // Load the info pane.
                     $('#infoPane').html(data);
+                    // Wire up the expander.
+                    $(".summaryTabs .summary .expander").click(function() 
+                    {
+                        $(this).toggleClass("expanded");
+                        $("#infoContentOuter").toggleClass("expanded");
+                    });
+                    // Wire up the hover behavior.
+                    $("#infoContent dl.summaryList").infoPaneItemHighlight();
                 } 
             });
             
@@ -367,3 +376,4 @@ $(function ()
         $(this).parents(".summaryTabs li").addClass("active");
     });
 });
+

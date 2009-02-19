@@ -1,8 +1,53 @@
 /* 
     Document   : widgets.css
     Created on : Jan 13, 2009, 3:25:51 PM
-    Author     : jeff.scherpelz@blist.com
+    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
     Description:
       Styles for individual widgets that are re-used throughout the app
 */
 
+/*** START: action buttons ***/
+/*  <ul class="actionButtons">
+    
+    
+    Without an arrow icon.
+    <li><a href="#">Delete</a></li>
+    
+    With an arrow icon.
+    <li><a href="#" class="arrowButton">Share</a></li>
+    
+    </ul>
+*/
+
+.actionButtons li
+{
+    background-color: #656565;
+    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-repeat: no-repeat;
+    float: left;
+    height: 21px;
+    margin-left: 1em;
+    overflow: hidden;
+    width: 85px;
+}
+.actionButtons li a
+{
+    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-position: right -21px;
+    background-repeat: no-repeat;
+    color: #fff;
+    display: block;
+    font-size: 1.2em;
+    height: 21px;
+    line-height: 21px;
+    padding-left: 10px;
+    padding-right: 8px;
+    text-decoration: none;
+}
+.actionButtons li a.arrowButton
+{
+    background-position: right -42px;
+    padding-right: 21px;
+}
+
+/*** END: action buttons ***/

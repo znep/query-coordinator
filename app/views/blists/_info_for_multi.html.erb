@@ -4,21 +4,74 @@
   <ul class="summaryTabs clearfix">
     <li class="summary active last">
       <div class="tabInner">
+        <a href="#expand" class="expander">expand</a>
         <span>Summary</span>
       </div>
     </li>
   </ul>
 </div>
 
-<div class="infoContentOuter">
-  <div class="infoContentInner">
-    <div class="infoContent clearfix">
-      <h2 class="panelHeader"><%= lenses.length %> items selected</h2>
-      <ul class="clearBoth">
-        <%- lenses.each do |lens| -%>
-          <li><%= lens.name %></li>
-        <%- end -%>
-      </ul>
+<div id="infoContentOuter" class="infoList">
+  
+  <div id="infoContentHeader" class="clearfix">
+    <h2 class="panelHeader"><%= lenses.length %> items selected</h2>
+    <ul class="headerActions actionButtons">
+      <li><a href="#share" class="arrowButton">Share All</a></li>
+      <li><a href="#delete_all">Delete All</a></li>
+    </ul>
+  </div>
+  
+  <div id="infoContentInner">
+    <div id="infoContent">
+      
+      <dl class="summaryList">
+        <dt>
+          Items
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd class="itemBlist">
+          <a href="#TODO">Blist</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemSharedOutBlist">
+          <a href="#TODO">Shared Out Blist</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemSharedInBlist">
+          <a href="#TODO">Shared In Blist</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemPrivateBlist">
+          <a href="#TODO">Private Blist</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemPrivateSchemaBlist">
+          <a href="#TODO">Private Schema Blist</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemFilter">
+          <a href="#TODO">Filter</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemSharedOutFilter">
+          <a href="#TODO">Shared Out Filter</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemSharedInFilter">
+          <a href="#TODO">Shared In Filter</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemPrivateFilter">
+          <a href="#TODO">Locked Filter</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+        <dd class="itemPrivateSchemaFilter">
+          <a href="#TODO">Unlocked Filter</a>
+          <a href="#unselect" class="deselector"><span>unselect</span></a>
+        </dd>
+      </dl>
+      
     </div>
   </div>
+
 </div>

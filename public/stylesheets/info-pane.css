@@ -175,6 +175,7 @@
     background-image: url(images/info_pane/background_info_content_bottom_left.png);
     background-position: left bottom;
     background-repeat: no-repeat;
+    min-height: 0; /* Trigger hasLayout for IE7 */
     padding-bottom: 1em;
 }
 #infoContent

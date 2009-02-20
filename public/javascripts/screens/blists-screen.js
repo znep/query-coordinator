@@ -186,7 +186,7 @@ blist.myBlists.rowClickedHandler = function (event)
     if ($target.is("td"))
     {
         $target.parent().toggleClass('selected');
-        $(event.currentTarget).trigger(blist.events.ROW_SELECTION);
+        $target.parents("table").trigger(blist.events.ROW_SELECTION);
     }
 }
 
@@ -356,7 +356,7 @@ $(function ()
     $('#blistList').click(myBlistsNS.rowClickedHandler);
     $('#blistList').mousemove(myBlistsNS.tableMousemoveHandler);
     $('#blistList').mouseout(myBlistsNS.tableMouseoutHandler);
-
+    
     $('#blists').bind(blist.events.ROW_SELECTION, blistsInfoNS.rowSelectionHandler);
     $('#outerContainer').bind(blist.events.LIST_SELECTION,
         myBlistsNS.listSelectionHandler);

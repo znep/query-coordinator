@@ -19,7 +19,7 @@
             $this.find("dt").hover(
                 function()
                 {
-                    if (!$(this).parents("#infoContentOuter").is(".multiInfoSummary"))
+                    if (!$(this).parents(".infoContentOuter").is(".multiInfoSummary"))
                     {
                         $(this).parent().find("dd").addClass("hover");
                     }
@@ -27,7 +27,7 @@
                 },
                 function()
                 {
-                    if (!$(this).parents("#infoContentOuter").is(".multiInfoSummary"))
+                    if (!$(this).parents(".infoContentOuter").is(".multiInfoSummary"))
                     {
                         $(this).parent().find("dd").removeClass("hover");
                     }

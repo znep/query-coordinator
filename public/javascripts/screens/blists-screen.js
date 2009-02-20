@@ -251,10 +251,20 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
                 $(".summaryTabs .summary .expander").click(function() 
                 {
                     $(this).toggleClass("expanded");
-                    $("#infoContentOuter").toggleClass("expanded");
+                    $(".infoContentOuter").toggleClass("expanded");
                 });
                 // Wire up the hover behavior.
-                $("#infoContent dl.summaryList").infoPaneItemHighlight();
+                $(".infoContent dl.summaryList").infoPaneItemHighlight();
+                
+                // Wire up some temporary click listeners for the info pane tabs.
+                $("#infoPane .summaryTabs li a:not(expander)").click(function () 
+                {
+                    $("#infoPane .summaryTabs li a:not(expander)").each(function()
+                    {
+                       $(this).parents(".summaryTabs li").removeClass("active");
+                    });
+                    $(this).parents(".summaryTabs li").addClass("active");
+                });
             } 
         });
     }
@@ -294,10 +304,10 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
                     $(".summaryTabs .summary .expander").click(function() 
                     {
                         $(this).toggleClass("expanded");
-                        $("#infoContentOuter").toggleClass("expanded");
+                        $(".infoContentOuter").toggleClass("expanded");
                     });
                     // Wire up the hover behavior.
-                    $("#infoContent dl.summaryList").infoPaneItemHighlight();
+                    $(".infoContent dl.summaryList").infoPaneItemHighlight();
                 } 
             });
             
@@ -374,15 +384,5 @@ $(function ()
     // Readjust size after updating info pane
     blist.common.adjustSize();
     myBlistsNS.resizeTable();
-
-    // Wire up some temporary click listeners for the info pane tabs.
-    $("#infoPane .summaryTabs li a:not(expander)").click(function () 
-    {
-        $("#infoPane .summaryTabs li a:not(expander)").each(function()
-        {
-           $(this).parents(".summaryTabs li").removeClass("active");
-        });
-        $(this).parents(".summaryTabs li").addClass("active");
-    });
 });
 

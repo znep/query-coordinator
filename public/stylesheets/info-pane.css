@@ -133,7 +133,7 @@
 
 
 /*** START: content ***/
-#infoContentOuter
+.infoContentOuter
 {
   background-color: #ffedcc;
   background-image: url(images/info_pane/background_info_content_bottom_right.png);
@@ -142,11 +142,11 @@
   height: 100%;
 }
 
-#infoContentHeader
+.infoContentHeader
 {
     padding-right: 1em;
 }
-#infoContentHeader h2.panelHeader
+.infoContentHeader h2.panelHeader
 {
     background: url(images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
     float: left;
@@ -158,19 +158,19 @@
     overflow: hidden;
     padding-left: 46px;
 }
-#infoContentHeader .selectPrompt 
+.infoContentHeader .selectPrompt 
 {
     float: right;
     font-size: 1.1em;
     line-height: 41px; /* Match the line-height of the header (in pixels). */
 }
-#infoContentHeader .headerActions
+.infoContentHeader .headerActions
 {
     float: right;
     padding-top: 1em;
 }
 
-#infoContentOuter #infoContentInner
+.infoContentOuter .infoContentInner
 {
     background-image: url(images/info_pane/background_info_content_bottom_left.png);
     background-position: left bottom;
@@ -178,25 +178,25 @@
     min-height: 0; /* Trigger hasLayout for IE7 */
     padding-bottom: 1em;
 }
-#infoContent
+.infoContent
 {
     display: none;
     padding: 0 1em 1em 0;
 }
 
-#infoContentOuter.expanded #infoContent
+.infoContentOuter.expanded .infoContent
 {
     display: block;
 }
 
 /* Expanded info for multi */
-#infoContentOuter.listContainer.expanded #infoContentInner
+.infoContentOuter.listContainer.expanded .infoContentInner
 {
     background-image: url(images/info_pane/background_expanded_list.png);
     background-repeat: repeat-y;
     padding-bottom: 0;
 }
-#infoContentOuter.listContainer #infoContent
+.infoContentOuter.listContainer .infoContent
 {
     background-image: url(images/info_pane/background_info_content_bottom_left_dark.png);
     background-position: left bottom;
@@ -204,12 +204,12 @@
     border-top: 1px solid #e0d1b8;
 }
 
-#infoContentOuter.listContainer #infoContent dl
+.infoContentOuter.listContainer .infoContent dl
 {
     padding-left: 140px;
     position: relative;
 }
-#infoContentOuter.listContainer #infoContent dt
+.infoContentOuter.listContainer .infoContent dt
 {
     color: #666;
     font-size: 1.1em;
@@ -221,13 +221,13 @@
     top: 5px;
     width: 125px;
 }
-#infoContentOuter.listContainer #infoContent dt.hover
+.infoContentOuter.listContainer .infoContent dt.hover
 {
     background-color: #ffedb2;
     background-image: url(images/info_pane/background_summary_list_title.png);
     background-repeat: no-repeat;
 }
-#infoContentOuter.listContainer #infoContent dt a.help
+.infoContentOuter.listContainer .infoContent dt a.help
 {
     background-image: url(images/info_pane/icon_help_highlight.png);
     background-repeat: no-repeat;
@@ -240,12 +240,12 @@
     top: 1px;
     width: 16px;
 }
-#infoContentOuter.listContainer #infoContent dt.hover a.help
+.infoContentOuter.listContainer .infoContent dt.hover a.help
 {
     display: block;
 }
 
-#infoContentOuter.listContainer #infoContent dd
+.infoContentOuter.listContainer .infoContent dd
 {
     color: #333;
     padding: 6px 0 0 0;
@@ -253,94 +253,87 @@
 }
 
 
-#infoContentOuter.multiInfoSummary #infoContent dd
+.infoContentOuter.multiInfoSummary .infoContent dd
 {
     background-image: url(images/info_pane/summary_list_icon_sprites.png);
     background-position: left 0;
     background-repeat: no-repeat;
     height: 25px;
     overflow: hidden;
-    padding: 6px 0 0 31px;
-    position: relative;
+    padding-left: 31px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemBlist
+.infoContentOuter.multiInfoSummary .infoContent dd.itemBlist
 {
     background-position: left 0;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemSharedOutBlist
+.infoContentOuter.multiInfoSummary .infoContent dd.itemSharedOutBlist
 {
     background-position: left -31px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemSharedInBlist
+.infoContentOuter.multiInfoSummary .infoContent dd.itemSharedInBlist
 {
     background-position: left -62px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemPrivateBlist
+.infoContentOuter.multiInfoSummary .infoContent dd.itemPrivateBlist
 {
     background-position: left -93px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemPrivateSchemaBlist
+.infoContentOuter.multiInfoSummary .infoContent dd.itemPrivateSchemaBlist
 {
     background-position: left -279px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemFilter
+.infoContentOuter.multiInfoSummary .infoContent dd.itemFilter
 {
     background-position: left -124px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemSharedOutFilter
+.infoContentOuter.multiInfoSummary .infoContent dd.itemSharedOutFilter
 {
     background-position: left -155px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemSharedInFilter
+.infoContentOuter.multiInfoSummary .infoContent dd.itemSharedInFilter
 {
     background-position: left -186px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemPrivateFilter
+.infoContentOuter.multiInfoSummary .infoContent dd.itemPrivateFilter
 {
     background-position: left -217px;
 }
-#infoContentOuter.multiInfoSummary #infoContent dd.itemPrivateSchemaFilter
+.infoContentOuter.multiInfoSummary .infoContent dd.itemPrivateSchemaFilter
 {
     background-position: left -248px;
 }
 
-/*** .itemContent can be either <a>, <span> or <ul> ***/
-#infoContentOuter.listContainer #infoContent dd .itemContent .itemContentInner
+/*** .itemContent > * can be either <a>, <span> or <ul> ***/
+.infoContentOuter.listContainer .infoContent dd .itemContent > *
 {
     color: #333;
     cursor: pointer;
     display: block;
     font-size: 1.1em;
-    padding: 4px 0 4px 10px;
+    padding: 3px 0 5px 10px;
     text-decoration: none;
 }
-/*#infoContentOuter.listContainer.multiInfoSummary #infoContent dd .itemContent
-{
-    height: 19px;
-    line-height: 19px;
-    padding: 0 0 0 5px;
-}*/
-#infoContentOuter.listContainer #infoContent dd.hover .itemContent
+.infoContentOuter.listContainer .infoContent dd.hover .itemContent
 {
     background-color: #ffedb2;
     background-image: url(images/info_pane/summary_item_content_bottom_right.png);
     background-position: right bottom;
     background-repeat: no-repeat;
 }
-#infoContentOuter.listContainer #infoContent dd.hover .itemContent .itemContentInner
+.infoContentOuter.listContainer .infoContent dd.hover .itemContent > *
 {
     background-image: url(images/info_pane/summary_item_content_top_right.png);
     background-position: right top;
     background-repeat: no-repeat;
 }
 
-#infoContentOuter.listContainer #infoContent dd .itemContent li
+.infoContentOuter.listContainer .infoContent dd .itemContent li
 {
     line-height: 1.7em;
 }
 
 /*** .itemActions can be either <div> or <ul> ***/
-#infoContentOuter.listContainer #infoContent dd .itemActions
+.infoContentOuter.listContainer .infoContent dd .itemActions
 {
     display: none;
     position: absolute;
@@ -348,12 +341,12 @@
     top: 6px;
 }
 
-#infoContentOuter.listContainer #infoContent dd .itemActions li
+.infoContentOuter.listContainer .infoContent dd .itemActions li
 {
     padding-bottom: 4px;
 }
 
-#infoContentOuter.listContainer #infoContent .itemActions .action
+.infoContentOuter.listContainer .infoContent .itemActions .action
 {
     background-image: url(images/info_pane/summary_secondary_button_left.png);
     background-position: left top;
@@ -369,7 +362,7 @@
     text-decoration: none;
     text-transform: uppercase;
 }
-#infoContentOuter.listContainer #infoContent .itemActions .action span
+.infoContentOuter.listContainer .infoContent .itemActions .action span
 {
     background-image: url(images/info_pane/summary_secondary_button_right.png);
     background-position: right top;
@@ -377,7 +370,7 @@
     display: block;
     padding-right: 5px;
 }
-#infoContentOuter.listContainer #infoContent dd.hover .itemActions
+.infoContentOuter.listContainer .infoContent dd.hover .itemActions
 {
     display: block;
 }

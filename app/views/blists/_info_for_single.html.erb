@@ -41,12 +41,201 @@
   </ul>
 </div>
 
-<div id="infoContentOuter">
-  <div id="infoContentInner" class="clearfix">
-    <div id="infoHeader">
-      <h2><%= lens.name %></h2>
-    </div>
-    <div id="infoContent clearfix">
+<div id="infoContentOuter" class="singleInfoSummary listContainer">
+  <div id="infoContentHeader" class="clearfix">
+    <h2 class="panelHeader"><%= lens.name %></h2>
+    <ul class="headerActions actionButtons">
+      <li><a href="#open" class="arrowButton">Open</a></li>
+      <li><a href="#duplicate">Delete All</a></li>
+      <li><a href="#share">Share</a></li>
+    </ul>
+  </div>
+    <div id="infoContentInner">
+    <div id="infoContent">
+      
+      <dl class="summaryList">
+        <dt>
+          Description
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">Favorite wines from 2 trips</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Edit</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Tags
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">Wine, French Laundry, Napa, California, Travel</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Edit</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Category
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd class="itemBlist">
+          <div class="itemContent">
+            <span class="itemContentInner">Personal</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Edit</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Owner
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">Kevin Merritt</span>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Created On
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">10/15/2008</span>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Last Update
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">Jason Friedl: 4:52 pm on 10/15/2008</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>View Activity</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Filtered Views
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">5 views</span>
+          </div>
+          <div class="itemActions">
+            <a href="#details" class="action"><span>Details</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Community Activity
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <ul class="itemContentInner">
+              <li>75 views</li>
+              <li>11 copies</li>
+              <li>45 comments</li>
+            </ul>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>View Activity</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Rating
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">4.5 stars</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>View Comments</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Link
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">http://app.blist.com/?variant=debug#/blist/kmerritt/Wines-of-Napa</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Publish</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Permissions
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span class="itemContentInner">Public</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Edit</span></a>
+          </div>
+        </dd>
+      </dl>
+      
+      <dl class="summaryList">
+        <dt>
+          Sharing
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <ul class="itemContentInner">
+              <li>0 Contributors</li>
+              <li>2 Viewers</li>
+              <li>3 Requests</li>
+            </ul>
+          </div>
+          <ul class="itemActions">
+            <li><a href="#share" class="action"><span>Share</span></a></li>
+            <li><a href="#view_requests" class="action"><span>View Requests</span></a></li>
+          </ul>
+        </dd>
+      </dl>
+      
     </div>
   </div>
 </div>

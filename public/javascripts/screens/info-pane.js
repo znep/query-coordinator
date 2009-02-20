@@ -19,10 +19,18 @@
             $this.find("dt").hover(
                 function()
                 {
+                    if (!$(this).parents("#infoContentOuter").is(".multiInfoSummary"))
+                    {
+                        $(this).parent().find("dd").addClass("hover");
+                    }
                     $(this).addClass("hover");
                 },
                 function()
                 {
+                    if (!$(this).parents("#infoContentOuter").is(".multiInfoSummary"))
+                    {
+                        $(this).parent().find("dd").removeClass("hover");
+                    }
                     $(this).removeClass("hover");
                 }
             );
@@ -40,13 +48,6 @@
                 }
             );
         });
-    
-        // private function for debugging
-        function debug($obj) {
-            if (window.console && window.console.log) {
-                window.console.log($obj);
-            }
-        }
     };
 
     // default options

@@ -53,9 +53,17 @@ $(function ()
         blistGridNS.sizeSwf(event);
     });
 
-    $('#filterLink').click(function (event)
+    $('#filterViewMenu .filter').click(function (event)
     {
-        blistGridNS.showFlashPopup('LensBuilder');
+        blistGridNS.showFlashPopup('LensBuilder:Filter');
+    });
+    $('#filterViewMenu .sort').click(function (event)
+    {
+        blistGridNS.showFlashPopup('LensBuilder:Sort');
+    });
+    $('#filterViewMenu .showHide').click(function (event)
+    {
+        blistGridNS.showFlashPopup('LensBuilder:ShowHide');
     });
 
     $('#undoLink, #redoLink').click(function (event)
@@ -69,6 +77,11 @@ $(function ()
         blist.util.flashInterface.search(
             $(event.currentTarget).find('input[type="text"]').val());
     });
+
+    $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
+        menuBar: $('#lensContainer .headerBar')});
+    $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),
+        menuBar: $('#lensContainer .headerBar')});
 
     blistGridNS.sizeSwf();
 });

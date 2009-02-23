@@ -29,23 +29,23 @@
 
 #lensContainer .headerBar
 {
-    line-height: 20px;
+    line-height: 24px;
     margin-bottom: 1em;
     min-height: 0;
     overflow: hidden;
 }
 
-#lensContainer .headerBar li
+#lensContainer .headerBar > ul > li
 {
     float: left;
+    padding: 0 0.5em;
 }
 
-#lensContainer .headerBar a
+#lensContainer .headerBar > ul > li > a
 {
     display: block;
     color: #333333;
     font-size: 1.2em;
-    padding: 0 0.5em;
     text-decoration: none;
     text-transform: uppercase;
 }
@@ -88,14 +88,43 @@
 
 #lensBody #undoLink
 {
-    background-position: 5px 0px;
-    width: 25px
+    background-position: 0 0;
 }
 
 #lensBody #redoLink
 {
-    background-position: 0px -20px;
-    margin-right: 0.5em;
+    background-position: 0 -20px;
+}
+
+#lensBody #filterLink span.linkIcon
+{
+    background-image: url(images/content/table_menu/menu_bar_sprites.png);
+    background-position: 0 -62px;
+    background-repeat: no-repeat;
+    display: block;
+    height: 20px;
+    padding-left: 20px;
+}
+
+#lensBody .headerBar #filterViewMenu li a
+{
+    background-image: url(images/content/table_menu/menu_icon_sprites.png);
+    background-repeat: no-repeat;
+}
+
+#lensBody .headerBar #filterViewMenu .filter
+{
+    background-position: 0 -713px;
+}
+
+#lensBody .headerBar #filterViewMenu .sort
+{
+    background-position: 0 -736px;
+}
+
+#lensBody .headerBar #filterViewMenu .showHide
+{
+    background-position: 0 -368px;
 }
 
 /* Main content */

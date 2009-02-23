@@ -51,3 +51,160 @@
 }
 
 /*** END: action buttons ***/
+
+
+/*** START: dropdown button ***/
+/*
+<a href='#' class='dropdownLink'><div class='outerWrapper'><div class='midWrapper'>
+    <span class='innerWrapper'>Menu</span></div></div></a>
+ */
+
+a.dropdownLink
+{
+    background-position: left top;
+    background-repeat: no-repeat;
+    padding-left: 5px;
+}
+
+a.dropdownLink .outerWrapper
+{
+    background-position: right top;
+    background-repeat: no-repeat;
+    padding-right: 5px;
+}
+
+a.dropdownLink .midWrapper
+{
+    background-repeat: repeat-x;
+}
+
+a.dropdownLink .innerWrapper
+{
+    background-image: url(images/widgets/dropdown_button/menu_bar_arrow.png);
+    background-position: right top;
+    background-repeat: no-repeat;
+    display: block;
+    padding: 1px 25px 0 5px;
+}
+
+a.dropdownLink:hover
+{
+    background-image: url(images/widgets/dropdown_button/hover_left.png);
+}
+
+a.dropdownLink:hover .outerWrapper
+{
+    background-image: url(images/widgets/dropdown_button/hover_right.png);
+}
+
+a.dropdownLink:hover .midWrapper
+{
+    background-image: url(images/widgets/dropdown_button/hover_gradSlice.png);
+}
+
+a.dropdownLink.clicked
+{
+    background-image: url(images/widgets/dropdown_button/click_left.png);
+}
+
+a.dropdownLink.clicked .outerWrapper
+{
+    background-image: url(images/widgets/dropdown_button/click_right.png);
+}
+
+a.dropdownLink.clicked .midWrapper
+{
+    background-image: url(images/widgets/dropdown_button/click_gradSlice.png);
+}
+/*** END: dropdown button ***/
+
+
+/*** START: dropdown menus ***/
+/*
+    <ul class='menu'>
+
+    Gray title for section:
+        <li class='sectionTitle'>View your data</li>
+
+    Menu item:
+        <li><a href='#'>Do an action</a></li>
+
+    End of menu:
+        <li class='footer'><div class='outerWrapper'>
+            <span class='innerWrapper'></span></div></li>
+    </ul>
+*/
+
+ul.menu
+{
+    background-color: #ffedcc;
+    border: 1px solid #8d8d8d;
+    border-bottom: none;
+    display: none;
+    padding-top: 0.3em;
+    position: absolute;
+    z-index: 200;
+}
+
+ul.menu.shown
+{
+    display: block;
+}
+
+ul.menu li
+{
+    display: block;
+    padding: 0 1em;
+}
+
+ul.menu li.sectionTitle
+{
+    color: #959393;
+    font-size: 1.1em;
+    padding-left: 25px;
+}
+
+ul.menu li a
+{
+    color: #333333;
+    display: block;
+    font-size: 1.2em;
+    height: 23px;
+    line-height: 23px;
+    padding-left: 25px;
+    text-decoration: none;
+}
+
+ul.menu li a:hover
+{
+    text-decoration: underline;
+}
+
+ul.menu li.footer
+{
+    background-image: url(images/widgets/menu/corner_light_left_bottom.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    height: 9px;
+    margin: 0 -1px -9px -1px;
+    padding: 0 0 0 9px;
+}
+
+ul.menu li.footer .outerWrapper
+{
+    background-image: url(images/widgets/menu/corner_light_right_bottom.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    height: 9px;
+    padding-right: 8px;
+}
+
+ul.menu li.footer .innerWrapper
+{
+    background-color: #ffedcc;
+    border-bottom: 1px solid #8d8d8d;
+    display: block;
+    height: 8px;
+}
+
+/*** END: dropdown menu ***/

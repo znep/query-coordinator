@@ -18,14 +18,35 @@
     <div class='content'>
       <div class='headerBar clearfix'>
         <ul>
-          <li><a href='#' class='menu'>Menu</a></li>
+          <li><a href='#' class='dropdownLink'>
+            <div class='outerWrapper'><div class='midWrapper'>
+                <span class='innerWrapper'>Menu</span></div></div></a></li>
           <li class='separator'><a href='#' id='undoLink' title='Undo'>Undo</a></li>
           <li><a href='#' id='redoLink' title='Redo'>Redo</a></li>
           <li class='separator'><a href='#'>Add Column</a></li>
-          <li class='separator'><a id='filterLink' href='#'>Filter</a></li>
-          <li><a href='#'>Sort</a></li>
-          <li><a href='#'>Show / Hide</a></li>
-          <li class='separator'><a href='#'>View As</a></li>
+          <li class='separator'><a href='#' id='filterLink' class='dropdownLink'>
+            <div class='outerWrapper'><div class='midWrapper'>
+                <div class='innerWrapper'>
+                  <span class='linkIcon'>Filter & View</span></div></div></div></a>
+            <ul id='filterViewMenu' class='menu'>
+              <li class='sectionTitle'>Build a new view of your data</li>
+              <li><a href='#' class='filter'>Filter Out Rows...</a></li>
+              <li><a href='#' class='sort'>Sort Columns...</a></li>
+              <li><a href='#' class='showHide'>Show or Hide Columns...</a></li>
+              <li class='footer'><div class='outerWrapper'>
+                <span class='innerWrapper'></span></div></li>
+            </ul>
+          </li>
+          <li class='separator'><a href='#' id='displayLink' class='dropdownLink'>
+            <div class='outerWrapper'><div class='midWrapper'>
+                <span class='innerWrapper'>View As</span></div></div></a>
+            <ul id='displayMenu' class='menu'>
+              <li class='sectionTitle'>Choose how to display your data</li>
+              <li><a href='#' class='table'>Table</a></li>
+              <li class='footer'><div class='outerWrapper'>
+                <span class='innerWrapper'></span></div></li>
+            </ul>
+          </li>
         </ul>
 
         <form class='search' action='#'>
@@ -73,5 +94,6 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "util/extMouseWheel", "util/flash-interface",
+    "widgets/dropdown-menu",
     "screens/blist-grid-screen", :cache => "cache/all" %>
 <% end %>

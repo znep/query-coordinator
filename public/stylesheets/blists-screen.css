@@ -150,7 +150,7 @@
 #blists table.selectableList td.type > div
 {
     background-image: url(/stylesheets/images/content/table/icon_blist.png);
-    height: 2em;
+    height: 31px;
     padding: 0;
     width: 100%;
 }

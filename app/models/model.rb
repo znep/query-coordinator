@@ -56,6 +56,10 @@ class Model
     data.to_json
   end
 
+  def flag?(flag_name)
+    !flags.nil? && flags.any? {|f| f.data == flag_name}
+  end
+
   protected
 
   def self.send_request(path)

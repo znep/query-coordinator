@@ -42,40 +42,28 @@ private
     # TODO: implement filters for tags
 
     opts = Hash.new
-    if owner.nil? && shared_to.nil? && shared_by.nil? && type.nil? ||
-      owner != @cur_user.id.to_s || type == 'filter'
-      opts['includeFavorites'] = true
-      opts['includeShared'] = true
-    end
-    if shared_to == @cur_user.id.to_s
-      opts['includeShared'] = true
-    end
-    if shared_by != @cur_user.id.to_s
-      opts['includeShared'] = true
-    end
-    if type == 'favorite'
-      opts['includeFavorites'] = true
-    end
+    # TODO: Once shared_to on the server is supported, add that here
     cur_lenses = Lens.find(opts)
 
     if !owner.nil?
-      cur_lenses = cur_lenses.find_all {|l| l.ownerId.to_s == owner}
+      cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s == owner}
     end
     if !shared_to.nil?
       cur_lenses = cur_lenses.find_all do |l|
-        l.permissions.any? do |p|
-          p.isEnabled && !p.user.nil? && p.user.id.to_s == shared_to
+        l.grants.any? do |p|
+          p.userId.to_s == shared_to
         end
       end
     end
     if !shared_by.nil?
-      cur_lenses = cur_lenses.find_all {|l| l.ownerId.to_s == shared_by &&
+      cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s == shared_by &&
         l.is_shared?}
     end
     if type == 'filter'
-      cur_lenses = cur_lenses.find_all {|l| !l.isDefault}
+      cur_lenses = cur_lenses.find_all {|l| !l.flag?('default')}
+    elsif type == 'favorite'
+      cur_lenses = cur_lenses.find_all {|l| l.flag?('favorite')}
     end
-    # TODO: implement filters for favorites
 
 
     # Sort by blist ID, sub-sort by isDefault to sort all blists just
@@ -86,19 +74,15 @@ private
       elsif a.blistId > b.blistId
         1
       else
-        a.isDefault && !b.isDefault ?
-          -1 : !a.isDefault && b.isDefault ? 1 : 0
+        a.flag?('default') && !b.flag?('default') ?
+          -1 : !a.flag?('default') && b.flag?('default') ? 1 : 0
       end
     end
     return cur_lenses
   end
 
   def getLensesWithIds(params = nil)
-    opts = Hash.new
-    opts['includeShared'] = true
-    opts['includeFavorites'] = true
-
-    cur_lenses = Lens.find(opts)
+    cur_lenses = Lens.find()
 
     if !params.nil?
       cur_lenses = cur_lenses.find_all do |lens|

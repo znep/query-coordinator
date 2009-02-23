@@ -1,6 +1,6 @@
 class Lens < Model
   def is_shared?
-    permissions.any? {|p| p.isEnabled && !p.isPublic}
+    grants.any? {|p| !p.isPublic}
   end
 
   def self.find( options )

@@ -1,0 +1,2 @@
+class Flag < Model
+end

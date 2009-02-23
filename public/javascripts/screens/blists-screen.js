@@ -15,10 +15,11 @@ $.tablesorter.addWidget({
             var curVal = parser.format($cell.text(), table, $cell[0]);
             var sortVal = curVal;
 
-            // Favorites are sorted as text, but the headers should be special
+            // For favorites we leave off the headers since there are only two
+            //  values, and they are obvious visually
             if ($cell.hasClass('favorite'))
             {
-                sortVal = curVal == '*' ? 'Favorites' : 'Unmarked';
+                return '';
             }
             // Type is special in a similar manner to favorites
             else if ($cell.hasClass('type'))

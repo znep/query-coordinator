@@ -12,10 +12,10 @@ class Lens < Model
 
     path = nil
     if options.is_a? Hash
-      path = "/Users/#{user_id}/#{self.name.pluralize}.json?" +
+      path = "/users/#{user_id}/#{self.name.pluralize.downcase}.json?" +
         options_string(options)
     else
-      path = "/Users/#{user_id}/#{self.name.pluralize}/#{options}.json"
+      path = "/users/#{user_id}/#{self.name.pluralize.downcase}/#{options}.json"
     end
 
     send_request(path)

@@ -12,9 +12,9 @@ class Model
   def self.find( options )
     path = nil
     if options.is_a? Hash
-      path = "/#{self.name.pluralize}.json?" + options_string(options)
+      path = "/#{self.name.pluralize.downcase}.json?" + options_string(options)
     else
-      path = "/#{self.name.pluralize}/#{options}.json"
+      path = "/#{self.name.pluralize.downcase}/#{options}.json"
     end
 
     send_request(path)

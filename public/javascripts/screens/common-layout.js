@@ -18,6 +18,12 @@ blist.common.adjustSize = function ()
     }
 }
 
+blist.common.forceWindowResize = function ()
+{
+    commonNS.cachedWinHeight = 0;
+    $(window).resize();
+}
+
 $(function ()
 {
     $(window).resize(function () 

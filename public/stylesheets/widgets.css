@@ -248,3 +248,59 @@ ul.menu.optionMenu li.footer .colorWrapper
 }
 
 /*** END: dropdown menu ***/
+
+/*** START: fixed menus ***/
+/*
+ * These are menus that are inline (display:static) in the HTML
+    <div class='fixedMenu'><div class='outerWrapper'><ul class='innerWrapper'>
+
+    End, including a close button in the corner:
+        </ul>
+        <a href='#Close_Add_Columns' title='Close' class='close'>Close</a>
+    </div></div>
+*/
+
+.fixedMenu
+{
+    background-color: #ffedcc;
+    border: 1px solid #8d8d8d;
+    display: none;
+    margin-bottom: 1em;
+    position: relative;
+}
+
+.fixedMenu.shown
+{
+    display: block;
+}
+
+.fixedMenu .outerWrapper
+{
+    background-image: url(images/widgets/menu/corner_light_left_bottom_whitebg.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    margin: 0 -1px -1px;
+}
+
+.fixedMenu .innerWrapper
+{
+    background-image: url(images/widgets/menu/corner_light_right_bottom_whitebg.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    display: block;
+}
+
+.fixedMenu .close
+{
+    background-image: url(images/content/table_menu/icon_close_light.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 23px;
+    position: absolute;
+    line-height: 100px;
+    overflow: hidden;
+    right: 2px;
+    top: 2px;
+    width: 23px;
+}
+/*** END: fixed menu ***/

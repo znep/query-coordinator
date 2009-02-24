@@ -23,7 +23,7 @@
                 <span class='innerWrapper'>Menu</span></div></div></a></li>
           <li class='separator'><a href='#' id='undoLink' title='Undo'>Undo</a></li>
           <li><a href='#' id='redoLink' title='Redo'>Redo</a></li>
-          <li class='separator'><a href='#'>Add Column</a></li>
+          <li class='separator'><a id='addColumnsLink' href='#'>Add Column</a></li>
           <li class='separator'><a href='#' id='filterLink' class='dropdownLink'>
             <div class='outerWrapper'><div class='midWrapper'>
                 <div class='innerWrapper'>
@@ -58,6 +58,65 @@
           </p>
         </form>
       </div>
+
+      <div id='addColumnsMenu' class='fixedMenu'>
+        <div class='outerWrapper'>
+          <ul class='innerWrapper clearfix'>
+            <li class='column'>
+            <%# Text datatypes %>
+              <ul>
+                <li><a href='#plainText'
+                  id='addColumn_plainText'>Plain Text</a></li>
+                <li><a href='#formattedText'
+                  id='addColumn_formattedText'>Formatted Text</a></li>
+              </ul>
+            </li>
+            <li class='column'>
+            <%# Numeric datatypes %>
+              <ul>
+                <li><a href='#number' id='addColumn_number'>Number</a></li>
+                <li><a href='#money' id='addColumn_money'>Money</a></li>
+                <li><a href='#percent' id='addColumn_percent'>Percent</a></li>
+                <li><a href='#dateTime' id='addColumn_dateTime'>Date & Time</a></li>
+              </ul>
+            </li>
+            <li class='column'>
+            <%# Address datatypes %>
+              <ul>
+                <li><a href='#phone' id='addColumn_phone'>Phone</a></li>
+                <li><a href='#email' id='addColumn_email'>Email</a></li>
+                <li><a href='#url' id='addColumn_url'>Website URL</a></li>
+              </ul>
+            </li>
+            <li class='column'>
+            <%# Chooser/explicit pick options datatypes %>
+              <ul>
+                <li><a href='#checkbox' id='addColumn_checkbox'>Checkbox</a></li>
+                <li><a href='#stars' id='addColumn_stars'>Star</a></li>
+                <li><a href='#flag' id='addColumn_flag'>Flag</a></li>
+              </ul>
+            </li>
+            <li class='column'>
+            <%# Blob datatypes %>
+              <ul>
+                <li><a href='#document' id='addColumn_document'>Document</a></li>
+                <li><a href='#photo' id='addColumn_photo'>Photo (Image)</a></li>
+              </ul>
+            </li>
+            <li class='column last'>
+            <%# Complex/join datatypes %>
+              <ul>
+                <li><a href='#picklist'
+                  id='addColumn_picklist'>Picklist (Drop-down)</a></li>
+                <li><a href='#blist_in_blist'
+                  id='addColumn_bnb'>Table (blist in blist)</a></li>
+              </ul>
+            </li>
+          </ul>
+          <a href='#Close_Add_Columns' title='Close' class='close'>Close</a>
+        </div>
+      </div>
+
       <div id='outerSwfWrapper' class='scrollContent'>
         <div id='swfWrapper'>
           <div id="swfContent">

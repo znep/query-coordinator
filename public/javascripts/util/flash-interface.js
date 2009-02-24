@@ -4,19 +4,29 @@ blist.util.flashInterface.allPopups = '*';
 blist.util.flashInterface.popupShownHandlers = {};
 blist.util.flashInterface.popupClosedHandlers = {};
 
+blist.util.flashInterface.swf = function ()
+{
+    return $('#swfContent')[0];
+}
+
 blist.util.flashInterface.doAction = function (action)
 {
-    $('#swfContent')[0].doAction(action);
+    flashIntNS.swf().doAction(action);
 }
 
 blist.util.flashInterface.search = function (searchText)
 {
-    $('#swfContent')[0].search(searchText);
+    flashIntNS.swf().search(searchText);
 }
 
 blist.util.flashInterface.showPopup = function (popup)
 {
-    $('#swfContent')[0].showPopup(popup);
+    flashIntNS.swf().showPopup(popup);
+}
+
+blist.util.flashInterface.addColumn = function (datatype)
+{
+    flashIntNS.swf().addColumn(datatype);
 }
 
 blist.util.flashInterface.addPopupHandlers = function (shownHandler,

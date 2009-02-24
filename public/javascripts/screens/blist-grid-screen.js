@@ -41,6 +41,18 @@ blist.blistGrid.flashPopupClosedHandler = function ()
     $('#overlay').hide();
 }
 
+blist.blistGrid.toggleAddColumns = function ()
+{
+    $('#addColumnsMenu').toggleClass('shown');
+    blist.common.forceWindowResize();
+}
+
+blist.blistGrid.dataTypeClickHandler = function (event)
+{
+    var dt = $(event.currentTarget).attr('href').slice(1);
+    blist.util.flashInterface.addColumn(dt);
+}
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -78,6 +90,16 @@ $(function ()
     $('#undoLink, #redoLink').click(function (event)
     {
         blist.util.flashInterface.doAction($(event.currentTarget).text());
+    });
+
+    $('#addColumnsLink, #addColumnsMenu .close').click(function (event)
+    {
+        blistGridNS.toggleAddColumns();
+    });
+
+    $('#addColumnsMenu .column a').click(function (event)
+    {
+        blistGridNS.dataTypeClickHandler(event);
     });
 
     $('#lensContainer .headerBar form').submit(function (event)

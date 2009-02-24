@@ -76,6 +76,16 @@
     border-left: 2px solid #e8e8e8;
 }
 
+#lensBody #addColumnsLink
+{
+    background-image: url(images/content/table_menu/menu_bar_sprites.png);
+    background-position: 0 -40px;
+    background-repeat: no-repeat;
+    display: block;
+    height: 20px;
+    padding-left: 20px;
+}
+
 #lensBody #undoLink, #lensBody #redoLink
 {
     background-image: url(images/content/table_menu/menu_bar_sprites.png);
@@ -147,6 +157,130 @@
 {
     background-image: url(images/content/table_menu/icon_view_page.png);
 }
+
+/* Add Columns menu */
+
+#addColumnsMenu .innerWrapper
+{
+    padding: 1em;
+}
+
+#addColumnsMenu .column
+{
+    border-right: solid 1px #e0d1b8;
+    float: left;
+    height: 11em;
+    width: 16.5%;
+}
+
+#addColumnsMenu .column.last
+{
+    border: none;
+}
+
+#addColumnsMenu li ul
+{
+    padding: 0 1em;
+}
+
+#addColumnsMenu li ul li
+{
+    padding: 0.25em 0;
+}
+
+#addColumnsMenu .column a
+{
+    background-image: url(images/common/datatypes/data_type_sprites.png);
+    background-repeat: no-repeat;
+    color: #333333;
+    display: block;
+    font-size: 1.2em;
+    height: 20px;
+    line-height: 20px;
+    padding-left: 24px;
+    text-decoration: none;
+}
+
+#addColumn_plainText
+{
+    background-position: 0 -82px;
+}
+
+#addColumn_formattedText
+{
+    background-position: 0 -62px;
+}
+
+#addColumn_number
+{
+    background-position: 0 -22px;
+}
+
+#addColumn_money
+{
+    background-position: 0 -42px;
+}
+
+#addColumn_percent
+{
+    background-position: 0 -2px;
+}
+
+#addColumn_dateTime
+{
+    background-position: 0 -342px;
+}
+
+#addColumn_phone
+{
+    background-position: 0 -242px;
+}
+
+#addColumn_email
+{
+    background-position: 0 -262px;
+}
+
+#addColumn_url
+{
+    background-position: 0 -362px;
+}
+
+#addColumn_checkbox
+{
+    background-position: 0 -122px;
+}
+
+#addColumn_stars
+{
+    background-position: 0 -142px;
+}
+
+#addColumn_flag
+{
+    background-position: 0 -382px;
+}
+
+#addColumn_document
+{
+    background-position: 0 -282px;
+}
+
+#addColumn_photo
+{
+    background-position: 0 -102px;
+}
+
+#addColumn_picklist
+{
+    background-position: 0 -402px;
+}
+
+#addColumn_bnb
+{
+    background-position: 0 -442px;
+}
+
 
 /* Main content */
 

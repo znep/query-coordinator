@@ -105,6 +105,14 @@
 {
     width: 15%;
 }
+#blists table.selectableList .viewed
+{
+    width: 15%;
+}
+#blists table.selectableList .actionContainer {
+    font-size: 1em;
+    width: 45px;
+}
 
 #blists table.selectableList td.handle,
 #blists table.selectableList td.favorite,
@@ -119,7 +127,6 @@
 #blists table.selectableList td.favorite > div,
 #blists table.selectableList td.type > div
 {
-    padding: 5px;
     width: 17px;
 }
 
@@ -149,15 +156,17 @@
 
 #blists table.selectableList td.type > div
 {
-    background-image: url(/stylesheets/images/content/table/icon_blist.png);
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
     height: 31px;
+    margin: 0;
     padding: 0;
     width: 100%;
 }
 
 #blists table.selectableList td.type.filter > div
 {
-    background-image: url(/stylesheets/images/content/table/icon_filter.png);
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -124px;
 }
 
 #blists table.selectableList tr.hover td.handle
@@ -175,15 +184,17 @@
     background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
 }
 
-#blists table.selectableList tr.hover td.type > div
+#blists .outerContent table.selectableList tr.hover td.type > div
 {
     background-image: url(/stylesheets/images/content/table/icon_box.png);
+    background-position: center -3px;
 }
 
-#blists table.selectableList tr.selected td.type > div,
-#blists table.selectableList tr.hover.selected td.type > div
+#blists .outerContent table.selectableList tr.selected td.type > div,
+#blists .outerContent table.selectableList tr.hover.selected td.type > div
 {
     background-image: url(/stylesheets/images/content/table/icon_box_checked.png);
+    background-position: center -3px;
 }
 
 

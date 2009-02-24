@@ -139,7 +139,11 @@
   background-image: url(images/info_pane/background_info_content_bottom_right.png);
   background-position: right bottom;
   background-repeat: no-repeat;
+  display: none;
   height: 100%;
+}
+.infoContentOuter.active {
+    display: block;
 }
 
 .infoContentHeader
@@ -181,7 +185,7 @@
 .infoContent
 {
     display: none;
-    padding: 0 1em 1em 0;
+    padding: 0 1em 1em;
 }
 
 .infoContentOuter.expanded .infoContent
@@ -202,6 +206,7 @@
     background-position: left bottom;
     background-repeat: no-repeat;
     border-top: 1px solid #e0d1b8;
+    padding-left: 0;
 }
 
 .infoContentOuter.listContainer .infoContent dl
@@ -346,7 +351,8 @@
     padding-bottom: 4px;
 }
 
-.infoContentOuter.listContainer .infoContent .itemActions .action
+.infoContentOuter.listContainer .infoContent .itemActions .action,
+.infoContentOuter .infoContent .actionContainer .action
 {
     background-image: url(images/info_pane/summary_secondary_button_left.png);
     background-position: left top;
@@ -362,7 +368,8 @@
     text-decoration: none;
     text-transform: uppercase;
 }
-.infoContentOuter.listContainer .infoContent .itemActions .action span
+.infoContentOuter.listContainer .infoContent .itemActions .action span,
+.infoContentOuter .infoContent .actionContainer .action span
 {
     background-image: url(images/info_pane/summary_secondary_button_right.png);
     background-position: right top;
@@ -370,9 +377,64 @@
     display: block;
     padding-right: 5px;
 }
+.infoContentOuter .infoContent td.actionContainer > *
+{
+    font-size: 1em; /* Reset the parent element's font size so we can override. */
+}
 .infoContentOuter.listContainer .infoContent dd.hover .itemActions
 {
     display: block;
 }
+
+/*** START: selectable list table ***/
+
+#infoPane .selectableListContainer 
+{
+    padding-top: 0;
+}
+#infoPane .selectableList thead 
+{
+    background-color: #e0d1b8;
+}
+#infoPane .selectableList thead th
+{
+    border-right: 1px solid #e2e2e2;
+    color: #666;
+    font-size: 1.2em;
+}
+#infoPane .selectableList thead th.first,
+#infoPane .selectableList thead th.last
+{
+    background-image: none;
+}
+
+#infoPane table.selectableList td > *
+{
+    color: #333;
+    font-size: 1.1em;
+    height: 19px;
+    line-height: 19px;
+    margin: 6px 0;
+    padding: 0 5px;
+}
+#infoPane table.selectableList td.actionContainer > *
+{
+    font-size: 1em;
+    padding: 0;
+}
+#infoPane table.selectableList td.actionContainer .action
+{
+    display: none;
+}
+#infoPane table.selectableList tr.hover td.actionContainer > *
+{
+    background: none;
+}
+#infoPane table.selectableList tr.hover td.actionContainer .action
+{
+    display: block;
+}
+
+/*** END: selectable list table ***/
 
 /*** END: content ***/

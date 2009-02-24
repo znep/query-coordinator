@@ -2,37 +2,31 @@
 
 <div class="header">
   <ul class="summaryTabs clearfix">
-    <li class="summary active">
+    <li id="tabSummary" class="summary active">
       <div class="tabInner">
         <a href="#expand" class="expander">expand</a>
         <a href="#summary">Summary</a>
       </div>
     </li>
-    <li>
+    <li id="tabFiltered">
       <div class="tabInner">
         <a href="#expand" class="expander">expand</a>
         <a href="#filtered_views">Filtered Views</a>
       </div>
     </li>
-    <li>
+    <li id="tabSharing">
       <div class="tabInner">
         <a href="#expand" class="expander">expand</a>
-        <a href="#comments_ratings">Comments &amp; Ratings</a>
+        <a href="#sharing_permissions">Sharing</a>
       </div>
     </li>
-    <li>
-      <div class="tabInner">
-        <a href="#expand" class="expander">expand</a>
-        <a href="#sharing_permissions">Sharing &amp; Permissions</a>
-      </div>
-    </li>
-    <li>
+    <li id="tabPublishing">
       <div class="tabInner">
         <a href="#expand" class="expander">expand</a>
         <a href="#publishing">Publishing</a>
       </div>
     </li>
-    <li class="last">
+    <li id="tabActivity" class="last">
       <div class="tabInner">
         <a href="#expand" class="expander">expand</a>
         <a href="#activity">Activity</a>
@@ -41,7 +35,8 @@
   </ul>
 </div>
 
-<div class="infoContentOuter singleInfoSummary listContainer">
+<!-- *** START: SUMMARY *** -->
+<div class="infoContentOuter singleInfoSummary listContainer active">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader"><%= lens.name %></h2>
     <ul class="headerActions actionButtons">
@@ -50,193 +45,293 @@
       <li><a href="#share">Share</a></li>
     </ul>
   </div>
-    <div class="infoContentInner">
-      <div class="infoContent">
-      
-        <dl class="summaryList">
-          <dt>
-            Description
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>Favorite wines from 2 trips</span>
-            </div>
-            <div class="itemActions">
-              <a href="#unselect" class="action"><span>Edit</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Tags
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>Wine, French Laundry, Napa, California, Travel</span>
-            </div>
-            <div class="itemActions">
-              <a href="#unselect" class="action"><span>Edit</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Category
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd class="itemBlist">
-            <div class="itemContent">
-              <span>Personal</span>
-            </div>
-            <div class="itemActions">
-              <a href="#unselect" class="action"><span>Edit</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Owner
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>Kevin Merritt</span>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Created On
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>10/15/2008</span>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Last Update
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>Jason Friedl: 4:52 pm on 10/15/2008</span>
-            </div>
-            <div class="itemActions">
-              <a href="#unselect" class="action"><span>View Activity</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Filtered Views
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>5 views</span>
-            </div>
-            <div class="itemActions">
-              <a href="#details" class="action"><span>Details</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Community Activity
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <ul>
-                <li>75 views</li>
-                <li>11 copies</li>
-                <li>45 comments</li>
-              </ul>
-            </div>
-            <div class="itemActions">
-              <a href="#unselect" class="action"><span>View Activity</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Rating
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>4.5 stars</span>
-            </div>
-            <div class="itemActions">
-              <a href="#unselect" class="action"><span>View Comments</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Link
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>http://app.blist.com/?variant=debug#/blist/kmerritt/Wines-of-Napa</span>
-            </div>
-            <div class="itemActions">
-              <a href="#unselect" class="action"><span>Publish</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Permissions
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <span>Public</span>
-            </div>
-            <div class="itemActions">
-              <a href="#unselect" class="action"><span>Edit</span></a>
-            </div>
-          </dd>
-        </dl>
-      
-        <dl class="summaryList">
-          <dt>
-            Sharing
-            <a href="#help" class="help"><span>help</span></a>
-          </dt>
-          <dd>
-            <div class="itemContent">
-              <ul>
-                <li>0 Contributors</li>
-                <li>2 Viewers</li>
-                <li>3 Requests</li>
-              </ul>
-            </div>
-            <ul class="itemActions">
-              <li><a href="#share" class="action"><span>Share</span></a></li>
-              <li><a href="#view_requests" class="action"><span>View Requests</span></a></li>
+  <div class="infoContentInner">
+    <div class="infoContent">
+    
+      <dl class="summaryList">
+        <dt>
+          Description
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>Favorite wines from 2 trips</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Edit</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Tags
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>Wine, French Laundry, Napa, California, Travel</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Edit</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Category
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd class="itemBlist">
+          <div class="itemContent">
+            <span>Personal</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Edit</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Owner
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>Kevin Merritt</span>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Created On
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>10/15/2008</span>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Last Update
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>Jason Friedl: 4:52 pm on 10/15/2008</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>View Activity</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Filtered Views
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>5 views</span>
+          </div>
+          <div class="itemActions">
+            <a href="#details" class="action"><span>Details</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Community Activity
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <ul>
+              <li>75 views</li>
+              <li>11 copies</li>
+              <li>45 comments</li>
             </ul>
-          </dd>
-        </dl>
-      
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>View Activity</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Rating
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>4.5 stars</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>View Comments</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Link
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>http://app.blist.com/?variant=debug#/blist/kmerritt/Wines-of-Napa</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Publish</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Permissions
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <span>Public</span>
+          </div>
+          <div class="itemActions">
+            <a href="#unselect" class="action"><span>Edit</span></a>
+          </div>
+        </dd>
+      </dl>
+    
+      <dl class="summaryList">
+        <dt>
+          Sharing
+          <a href="#help" class="help"><span>help</span></a>
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <ul>
+              <li>0 Contributors</li>
+              <li>2 Viewers</li>
+              <li>3 Requests</li>
+            </ul>
+          </div>
+          <ul class="itemActions">
+            <li><a href="#share" class="action"><span>Share</span></a></li>
+            <li><a href="#view_requests" class="action"><span>View Requests</span></a></li>
+          </ul>
+        </dd>
+      </dl>
+    
+    </div> <!-- /.infoContent -->
+  </div> <!-- /.infoContentInner -->
+</div>
+<!-- *** END: SUMMARY *** -->
+
+<!-- *** START: FILTERED *** -->
+<div class="infoContentOuter singleInfoFiltered">
+  <div class="infoContentHeader clearfix">
+    <h2 class="panelHeader">Filtered</h2>
+    <ul class="headerActions actionButtons">
+      <li><a href="#open" class="arrowButton">Create</a></li>
+    </ul>
+  </div>
+  <div class="infoContentInner">
+    <div class="infoContent">
+      <div class="selectableListContainer">
+        <table class="selectableList" cellspacing="0">
+          <thead>
+            <tr>
+              <th class="handle first"><div></div></th>
+              <th class="favorite" title="Favorite?"><div>Favorite?</div></th>
+              <th class="type" title="Type"><div>Type</div></th>
+              <th class="name"><div>Name</div></th>
+              <th class="description"><div>Description</div></th>
+              <th class="viewed"><div>Viewed</div></th>
+              <th class="actionContainer last"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="item">
+              <td class="handle"><div></div></td>
+              <td class="favorite true"><div>*</div></td>
+              <td class="type filter"><div>filter</div></td>
+              <td class="name"><div>European Leaders</div></td>
+              <td class="description"><div></div></td>
+              <td class="viewed"><div>10/18/2008</div></td>
+              <td class="actionContainer"><div><a href="#view" class="action"><span>View</span></a></div></td>
+            </tr>
+            <tr class="item">
+              <td class="handle"><div></div></td>
+              <td class="favorite false"><div></div></td>
+              <td class="type filter"><div>filter</div></td>
+              <td class="name"><div>Asian Leaders</div></td>
+              <td class="description"><div>China, Japan, Philippines, Indonesia</div></td>
+              <td class="viewed"><div>09/05/2008</div></td>
+              <td class="actionContainer"><div><a href="#view" class="action"><span>View</span></a></div></td>
+            </tr>
+            <tr class="item">
+              <td class="handle"><div></div></td>
+              <td class="favorite false"><div></div></td>
+              <td class="type filter"><div>filter</div></td>
+              <td class="name"><div>S. America</div></td>
+              <td class="description"><div></div></td>
+              <td class="viewed"><div>11/10/2008</div></td>
+              <td class="actionContainer"><div><a href="#view" class="action"><span>View</span></a></div></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+      
+      
     </div>
   </div>
 </div>
+<!-- *** END: FILTERED *** -->
+
+<!-- *** START: SHARING *** -->
+<div class="infoContentOuter singleInfoSharing listContainer">
+  <div class="infoContentHeader clearfix">
+    <h2 class="panelHeader">Sharing</h2>
+    <ul class="headerActions actionButtons">
+      <li><a href="#open" class="arrowButton">Create</a></li>
+    </ul>
+  </div>
+  <div class="infoContentInner">
+  </div>
+</div>
+<!-- *** END: FILTERED *** -->
+
+<!-- *** START: PUBLISHING *** -->
+<div class="infoContentOuter singleInfoPublishing listContainer">
+  <div class="infoContentHeader clearfix">
+    <h2 class="panelHeader">Publishing</h2>
+    <ul class="headerActions actionButtons">
+      <li><a href="#open" class="arrowButton">Create</a></li>
+    </ul>
+  </div>
+  <div class="infoContentInner">
+  </div>
+</div>
+<!-- *** END: PUBLISHING *** -->
+
+<!-- *** START: ACTIVITY *** -->
+<div class="infoContentOuter singleInfoActivity listContainer">
+  <div class="infoContentHeader clearfix">
+    <h2 class="panelHeader">Activity</h2>
+    <ul class="headerActions actionButtons">
+      <li><a href="#open" class="arrowButton">Create</a></li>
+    </ul>
+  </div>
+  <div class="infoContentInner">
+  </div>
+</div>
+<!-- *** END: ACTIVITY *** -->

@@ -248,24 +248,12 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
             {
                 // Load the info pane.
                 $('#infoPane').html(data);
-                // Wire up the expander.
-                $(".summaryTabs .summary .expander").click(function() 
-                {
-                    $(this).toggleClass("expanded");
-                    $(".infoContentOuter").toggleClass("expanded");
-                });
+            
                 // Wire up the hover behavior.
                 $(".infoContent dl.summaryList").infoPaneItemHighlight();
                 
-                // Wire up some temporary click listeners for the info pane tabs.
-                $("#infoPane .summaryTabs li a:not(expander)").click(function () 
-                {
-                    $("#infoPane .summaryTabs li a:not(expander)").each(function()
-                    {
-                       $(this).parents(".summaryTabs li").removeClass("active");
-                    });
-                    $(this).parents(".summaryTabs li").addClass("active");
-                });
+                // Wire up the tab switcher/expander.
+                $(".summaryTabs li").infoPaneTabSwitch();
             } 
         });
     }
@@ -374,8 +362,8 @@ $(function ()
 
     $(window).resize(myBlistsNS.resizeTable);
     $('#blistList').click(myBlistsNS.rowClickedHandler);
-    $('#blistList').mousemove(myBlistsNS.tableMousemoveHandler);
-    $('#blistList').mouseout(myBlistsNS.tableMouseoutHandler);
+    $('.selectableList').live("mousemove", myBlistsNS.tableMousemoveHandler);
+    $('.selectableList').live("mouseout", myBlistsNS.tableMouseoutHandler);
     
     $('#blists').bind(blist.events.ROW_SELECTION, blistsInfoNS.rowSelectionHandler);
     $('#outerContainer').bind(blist.events.LIST_SELECTION,

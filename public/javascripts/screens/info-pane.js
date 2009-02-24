@@ -5,6 +5,59 @@
 // Protect $.
 (function($) {
 
+    // Switch tabs in the info pane.
+    $.fn.infoPaneTabSwitch = function(options) 
+    {
+        var opts = $.extend({}, $.fn.infoPaneTabSwitch.defaults, options);
+        
+        return this.each(function() 
+        {
+            var $this = $(this);
+            
+            // Support for the Metadata Plugin.
+            var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
+            
+            // Determine the corresponding div to show/hide or expand/contract.
+            var panelSelector = opts.tabMap[$this.attr("id")];
+            
+            // Wire up the click events to the a tags.
+            $this.find("a").click(function(event)
+            {
+                event.preventDefault();
+                if ($(this).is(opts.expanderSelector))
+                {
+                    // Wire up the expander arrow.
+                    $(panelSelector).toggleClass(opts.expandedClass);
+                    $(this).toggleClass(opts.expandedClass);
+                }
+                else
+                {
+                    $this.siblings().each(function() { $(this).removeClass(opts.activationClass); });
+                    $this.addClass(opts.activationClass);
+                    
+                    $(opts.allPanelsSelector).each(function() { $(this).removeClass(opts.activationClass); });
+                    $(panelSelector).addClass(opts.activationClass);
+                }
+            });
+        });
+    };
+    
+    // default options
+    $.fn.infoPaneTabSwitch.defaults = {
+        activationClass : "active",
+        expanderSelector : ".expander",
+        expandedClass : "expanded",
+        tabMap: {
+            "tabSummary" : ".singleInfoSummary",
+            "tabFiltered" : ".singleInfoFiltered",
+            "tabSharing" : ".singleInfoSharing",
+            "tabPublishing" : ".singleInfoPublishing",
+            "tabActivity" : ".singleInfoActivity"
+        },
+        allPanelsSelector : ".infoContentOuter"
+    };
+    
+    
     // Highlight list items in the expanded info pane on hover.
     $.fn.infoPaneItemHighlight = function(options) {
         var opts = $.extend({}, $.fn.infoPaneItemHighlight.defaults, options);

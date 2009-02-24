@@ -11,6 +11,11 @@
  *  triggerOpenClass: Class name to add/remove from the triggerButton when it is
  *    shown/hidden
  *
+ *  optionMenuClass: Class name that determines if a menu is an option menu,
+ *    which means that you have one selected a at a time
+ *
+ *  selectedItemClass: Class to apply to the single selected item in an optionMenu
+ *
  *  triggerButton: (no default) jQuery object that is the button to use to show
  *    the menu
  *
@@ -48,6 +53,15 @@
                     showMenu($menu);
                 }
             });
+
+            if ($menu.hasClass(config.optionMenuClass))
+            {
+                $menu.find('a').click(function (event)
+                {
+                    $menu.find('a').removeClass(config.selectedItemClass);
+                    $(this).addClass(config.selectedItemClass);
+                });
+            }
 
             // If they provided a menuBar, hook up a mouseover
             if (config.menuBar !== undefined)
@@ -117,7 +131,9 @@
     //
     $.fn.dropdownMenu.defaults = {
         menuOpenClass: 'shown',
-        triggerOpenClass: 'clicked'
+        triggerOpenClass: 'clicked',
+        optionMenuClass: 'optionMenu',
+        selectedItemClass: 'selected'
     };
 
 })(jQuery);

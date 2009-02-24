@@ -127,6 +127,27 @@
     background-position: 0 -368px;
 }
 
+#lensBody .headerBar #displayMenu li a
+{
+    background-position: left center;
+    background-repeat: no-repeat;
+}
+
+#lensBody .headerBar #displayMenu li a.selected
+{
+    background-image: url(images/content/table_menu/icon_view_selected.png);
+}
+
+#lensBody .headerBar #displayMenu .table
+{
+    background-image: url(images/content/table_menu/icon_view_grid.png);
+}
+
+#lensBody .headerBar #displayMenu .page
+{
+    background-image: url(images/content/table_menu/icon_view_page.png);
+}
+
 /* Main content */
 
 #lensContainer .content

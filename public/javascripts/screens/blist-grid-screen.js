@@ -66,6 +66,15 @@ $(function ()
         blistGridNS.showFlashPopup('LensBuilder:ShowHide');
     });
 
+    $('#displayMenu .table').click(function (event)
+    {
+        blist.util.flashInterface.doAction('TableView');
+    });
+    $('#displayMenu .page').click(function (event)
+    {
+        blist.util.flashInterface.doAction('PageView');
+    });
+
     $('#undoLink, #redoLink').click(function (event)
     {
         blist.util.flashInterface.doAction($(event.currentTarget).text());

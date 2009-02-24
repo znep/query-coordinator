@@ -141,7 +141,7 @@ ul.menu
     border: 1px solid #8d8d8d;
     border-bottom: none;
     display: none;
-    padding-top: 0.3em;
+    min-width: 15em;
     position: absolute;
     z-index: 200;
 }
@@ -154,14 +154,14 @@ ul.menu.shown
 ul.menu li
 {
     display: block;
-    padding: 0 1em;
+    padding: 0.3em 10px 0 5px;
 }
 
 ul.menu li.sectionTitle
 {
     color: #959393;
     font-size: 1.1em;
-    padding-left: 25px;
+    padding-left: 30px;
 }
 
 ul.menu li a
@@ -205,6 +205,46 @@ ul.menu li.footer .innerWrapper
     border-bottom: 1px solid #8d8d8d;
     display: block;
     height: 8px;
+}
+
+/* If you have an option menu (dark on the left under the icons, and the
+ *  icons change to checkboxes for the selected item), add the optionMenu
+ *  class; and add an extra span to the footer:
+        <li class='footer'><div class='outerWrapper'>
+            <div class='innerWrapper'><span class='colorWrapper'><span>
+        </div></div></li>
+ */
+
+ul.menu.optionMenu
+{
+    background-color: #e0d1b8;
+}
+
+ul.menu.optionMenu li
+{
+    background-color: #ffedcc;
+    margin-left: 30px;
+}
+
+ul.menu.optionMenu li a
+{
+    margin-left: -30px;
+    padding-left: 28px;
+}
+
+ul.menu.optionMenu li.footer
+{
+    background-color: transparent;
+    background-image: url(images/widgets/menu/corner_dark_left_bottom.png);
+    margin-left: -1px;
+}
+
+ul.menu.optionMenu li.footer .colorWrapper
+{
+    background-color: #e0d1b8;
+    display: block;
+    height: 8px;
+    width: 22px;
 }
 
 /*** END: dropdown menu ***/

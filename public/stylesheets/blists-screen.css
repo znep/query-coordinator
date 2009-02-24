@@ -186,15 +186,15 @@
 
 #blists .outerContent table.selectableList tr.hover td.type > div
 {
-    background-image: url(/stylesheets/images/content/table/icon_box.png);
-    background-position: center -3px;
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -344px;
 }
 
 #blists .outerContent table.selectableList tr.selected td.type > div,
 #blists .outerContent table.selectableList tr.hover.selected td.type > div
 {
-    background-image: url(/stylesheets/images/content/table/icon_box_checked.png);
-    background-position: center -3px;
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -313px;
 }
 
 

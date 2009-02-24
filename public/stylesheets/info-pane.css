@@ -260,7 +260,7 @@
 
 .infoContentOuter.multiInfoSummary .infoContent dd
 {
-    background-image: url(images/info_pane/summary_list_icon_sprites.png);
+    background-image: url(images/content/table/icon_type_sprites.png);
     background-position: left 0;
     background-repeat: no-repeat;
     height: 25px;

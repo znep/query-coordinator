@@ -82,13 +82,10 @@ private
   end
 
   def getLensesWithIds(params = nil)
-    cur_lenses = Lens.find()
-
-    if !params.nil?
-      cur_lenses = cur_lenses.find_all do |lens|
-        params.any? { |p| p == lens.id.to_s }
-      end
-    end
+    #cur_lenses = Lens.find({ "ids" => [1,2], "method" => "getByIds" })
+    
+    opts = Hash.new
+    cur_lenses = Lens.find(opts);
 
     return cur_lenses
   end

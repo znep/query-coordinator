@@ -148,7 +148,7 @@
 
 .infoContentHeader
 {
-    padding-right: 1em;
+    padding: .4em 1em 0 0;
 }
 .infoContentHeader h2.panelHeader
 {
@@ -436,5 +436,75 @@
 }
 
 /*** END: selectable list table ***/
+
+/*** START: single info sharing tab ***/
+
+.singleInfoSharing .infoContentHeader h2.panelHeader
+{
+    background-position: left -246px;
+}
+.singleInfoSharing .infoContentHeader h2.panelHeader + h2.panelHeader
+{
+    background-position: 5px -123px;
+    border-left: 1px solid #e1d3b6;
+    margin-left: 15px;
+    padding-left: 51px;
+}
+
+.singleInfoSharing .sharingSummary {
+    border-top: 1px solid #e1d3b6;
+    margin-top: 5px;
+}
+.singleInfoSharing .sharingSummary p
+{
+    background: url(images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
+    background-position: left -287px;
+    font-size: 1.2em;
+    height: 41px;
+    line-height: 41px;
+    overflow: hidden;
+    padding-left: 46px;
+}
+.singleInfoSharing .sharingSummary p em
+{
+    text-decoration: underline;
+}
+
+#infoPane .singleInfoSharing table.selectableList td > *
+{
+    margin: 2px 0;
+}
+
+.singleInfoSharing table.selectableList tr.hover td+td > *,
+.singleInfoSharing table.selectableList tr.selected td+td > *,
+.singleInfoSharing table.selectableList tr.hover.selected td+td > *
+{
+    background-color: #ffedb2;
+}
+
+#infoPane table.selectableList .contact
+{
+    width: 40%;
+}
+#infoPane table.selectableList .role
+{
+    width: 6em;
+}
+#infoPane table.selectableList .others
+{
+    width: 10.5em;
+}
+#infoPane table.selectableList .opened
+{
+    width: 6em;
+}
+#infoPane .singleInfoSharing table.selectableList .actionContainer
+{
+    width: 8.5em;
+}
+
+
+
+/*** END: single info sharing tab ***/
 
 /*** END: content ***/

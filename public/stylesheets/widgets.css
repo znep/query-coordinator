@@ -28,7 +28,6 @@
     height: 21px;
     margin-left: 1em;
     overflow: hidden;
-    width: 85px;
 }
 .actionButtons li a
 {
@@ -41,13 +40,13 @@
     height: 21px;
     line-height: 21px;
     padding-left: 10px;
-    padding-right: 8px;
+    padding-right: 10px;
     text-decoration: none;
 }
 .actionButtons li a.arrowButton
 {
     background-position: right -42px;
-    padding-right: 21px;
+    padding-right: 25px;
 }
 
 /*** END: action buttons ***/

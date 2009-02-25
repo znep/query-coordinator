@@ -470,7 +470,8 @@
     text-decoration: underline;
 }
 
-#infoPane .singleInfoSharing table.selectableList td > *
+#infoPane .singleInfoSharing table.selectableList td > *,
+#infoPane .selectableListContainer.simple table.selectableList td > *
 {
     margin: 2px 0;
 }
@@ -503,8 +504,86 @@
     width: 8.5em;
 }
 
-
-
 /*** END: single info sharing tab ***/
+
+/*** START: shared rules for simple selectable list ***/
+
+#infoPane .selectableListContainer.simple
+{
+    padding-top: .4em;
+}
+
+#infoPane .selectableListContainer.simple table.selectableList tr.hover td > *,
+#infoPane .selectableListContainer.simple table.selectableList tr.selected td > *,
+#infoPane .selectableListContainer.simple table.selectableList tr.hover.selected td > *
+{
+    background-color: #ffedb2;
+}
+
+/*** END: shared rules for simple selectable list ***/
+
+/*** START: single info publishing tab ***/
+
+.singleInfoPublishing .infoContentHeader h2.panelHeader
+{
+    background-position: left -328px;
+}
+.singleInfoPublishing .infoContentHeader h2.panelHeader + h2.panelHeader
+{
+    background-position: 5px -369px;
+    border-left: 1px solid #e1d3b6;
+    margin-left: 15px;
+    padding-left: 51px;
+}
+
+#infoPane table.selectableList .widgetBlist
+{
+    width: 40%;
+}
+#infoPane table.selectableList .widgetType
+{
+    width: 6em;
+}
+#infoPane table.selectableList .link
+{
+    width: 40%;
+}
+#infoPane table.selectableList .number
+{
+    width: 4em;
+}
+#infoPane table.selectableList th.number
+{
+    text-align: center;
+}
+#infoPane table.selectableList td.number
+{
+    text-align: right;
+}
+
+#infoPane .singleInfoPublishing table.selectableList .actionContainer
+{
+    width: 6em;
+}
+
+/*** END: single info publishing tab ***/
+
+/*** START: single info activity tab ***/
+
+.singleInfoActivity .infoContentHeader h2.panelHeader
+{
+    background-position: left -410px;
+}
+#infoPane table.selectableList .when,
+#infoPane table.selectableList .who
+{
+    width: 15%;
+}
+#infoPane table.selectableList .what
+{
+    width: 70%;
+}
+
+/*** END: single info activity tab ***/
 
 /*** END: content ***/

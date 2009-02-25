@@ -254,6 +254,9 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
                 
                 // Wire up the tab switcher/expander.
                 $(".summaryTabs li").infoPaneTabSwitch();
+                
+                // Force a window resize.
+                blist.common.forceWindowResize();
             } 
         });
     }
@@ -270,6 +273,9 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
                 success: function (data)
                 {
                     $('#infoPane').html(data);
+                    
+                    // Force a window resize.
+                    blist.common.forceWindowResize();
                 } 
             });
             
@@ -297,6 +303,9 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
                     });
                     // Wire up the hover behavior.
                     $(".infoContent dl.summaryList").infoPaneItemHighlight();
+                    
+                    // Force a window resize.
+                    blist.common.forceWindowResize();
                 } 
             });
             
@@ -370,8 +379,8 @@ $(function ()
         myBlistsNS.listSelectionHandler);
 
     blistsInfoNS.updateSummary();
+    
     // Readjust size after updating info pane
-    blist.common.adjustSize();
     myBlistsNS.resizeTable();
 });
 

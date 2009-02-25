@@ -30,7 +30,7 @@ class BlistsController < SwfController
       args = Array.new
       multiParam = params[:multi]
       args = multiParam.split(';')
-      @lenses = getLensesWithIds(args)
+      @lenses = get_lenses_with_ids(args)
     elsif (params[:items])
       @item_count = params[:items]
     end
@@ -81,12 +81,9 @@ private
     return cur_lenses
   end
 
-  def getLensesWithIds(params = nil)
-    #cur_lenses = Lens.find({ "ids" => [1,2], "method" => "getByIds" })
+  def get_lenses_with_ids(params = nil)
+    cur_lenses = Lens.find({ "ids" => params })
     
-    opts = Hash.new
-    cur_lenses = Lens.find(opts);
-
     return cur_lenses
   end
 

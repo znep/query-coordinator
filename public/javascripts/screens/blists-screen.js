@@ -53,6 +53,14 @@ $.tablesorter.addWidget({
         };
 
 
+        // If we have no table or sorting, bail early
+        if (!table || !table.config || !table.config.sortList ||
+            table.config.sortList.length < 1 ||
+            table.config.sortList[0].length < 1)
+        {
+            return;
+        }
+
         // Get the column that is sorted on.  sortList is internal to tablesorter;
         //  the first element is the primary sort (it supports sorting on
         //  multiple columns); the first element of sortList[0] is the column
@@ -119,10 +127,18 @@ blist.myBlists.setupTable = function ()
          headers: { 0: {sorter: false} },
          // Don't use simple extraction
          textExtraction: "complex",
-         // Initially sort by last updated
-         sortList: [[6, 1]],
          widgets: ['sortGrouping']
         });
+
+    // If there are rows, sort initially on Last Updated
+    if ($('#blistList tbody tr').length > 0)
+    {
+        $('#blistList').trigger('sorton', [[[6, 1]]]);
+    }
+    else
+    {
+        myBlistsNS.displayNoResults();
+    }
 }
 
 /* When sorting is finished, we need to move all child rows back under
@@ -228,12 +244,25 @@ blist.myBlists.updateList = function (newTable)
 {
     $('#blistList tbody').replaceWith($(newTable).find('tbody'));
     myBlistsNS.resizeTable();
-    $('#blistList').treeTable();
-    $('#blistList').trigger('update');
-    // Resort new list on Last Upated
-    $('#blistList').trigger('sorton', [[[6, 1]]]);
+    if ($('#blistList tbody tr').length > 0)
+    {
+        $('#blistList').treeTable();
+        $('#blistList').trigger('update');
+        // Resort new list on Last Upated
+        $('#blistList').trigger('sorton', [[[6, 1]]]);
+    }
+    else
+    {
+        myBlistsNS.displayNoResults();
+    }
 }
 
+blist.myBlists.displayNoResults = function ()
+{
+    var $newRow = $("<tr class='sortGroup'><td class='handle'>" +
+            "<div>No Results</div></td></tr>");
+    $('#blistList tbody').append($newRow);
+}
 
 /* Functions for info pane related to blists */
 

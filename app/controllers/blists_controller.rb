@@ -42,18 +42,17 @@ private
     # TODO: implement filters for tags
 
     opts = Hash.new
-    # TODO: Once shared_to on the server is supported, add that here
+    if !shared_to.nil? && shared_to != @cur_user.id.to_s
+      opts['sharedTo'] = shared_to
+    end
     cur_lenses = Lens.find(opts)
 
     if !owner.nil?
       cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s == owner}
     end
-    if !shared_to.nil?
-      cur_lenses = cur_lenses.find_all do |l|
-        l.grants.any? do |p|
-          p.userId.to_s == shared_to
-        end
-      end
+    if !shared_to.nil? && shared_to == @cur_user.id.to_s
+      cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s != owner &&
+        l.flag?('shared')}
     end
     if !shared_by.nil?
       cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s == shared_by &&

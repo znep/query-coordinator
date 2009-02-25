@@ -26,9 +26,10 @@
                 event.preventDefault();
                 if ($(this).is(opts.expanderSelector))
                 {
-                    // Wire up the expander arrow.
-                    $(panelSelector).toggleClass(opts.expandedClass);
-                    $(this).toggleClass(opts.expandedClass);
+                    // Toggle all panels.
+                    $(opts.allPanelsSelector).toggleClass(opts.expandedClass);
+                    // Toggle all arrows.
+                    $(opts.expanderSelector).toggleClass(opts.expandedClass);
                 }
                 else
                 {
@@ -45,7 +46,7 @@
     // default options
     $.fn.infoPaneTabSwitch.defaults = {
         activationClass : "active",
-        expanderSelector : ".expander",
+        expanderSelector : ".summaryTabs .expander",
         expandedClass : "expanded",
         tabMap: {
             "tabSummary" : ".singleInfoSummary",

@@ -244,20 +244,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
     {
         var $items = myBlistsNS.getSelectedItems();
         $.Tache.Get({ url: '/blists/detail/' + $items.attr('blist_id'),
-            success: function (data)
-            {
-                // Load the info pane.
-                $('#infoPane').html(data);
-            
-                // Wire up the hover behavior.
-                $(".infoContent dl.summaryList").infoPaneItemHighlight();
-                
-                // Wire up the tab switcher/expander.
-                $(".summaryTabs li").infoPaneTabSwitch();
-                
-                // Force a window resize.
-                blist.common.forceWindowResize();
-            } 
+            success: blistsInfoNS.updateSummarySuccessHandler
         });
     }
     else
@@ -270,13 +257,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
             
             $.Tache.Get({ url: '/blists/detail',
                 data: 'items=' + numSelect,
-                success: function (data)
-                {
-                    $('#infoPane').html(data);
-                    
-                    // Force a window resize.
-                    blist.common.forceWindowResize();
-                } 
+                success: blistsInfoNS.updateSummarySuccessHandler
             });
             
         }
@@ -291,32 +272,26 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
             
             $.Tache.Get({ url: '/blists/detail',
                 data: 'multi=' + multi,
-                success: function (data)
-                {
-                    // Load the info pane.
-                    $('#infoPane').html(data);
-                    // Wire up the expander.
-                    $(".summaryTabs .summary .expander").click(function() 
-                    {
-                        $(this).toggleClass("expanded");
-                        $(".infoContentOuter").toggleClass("expanded");
-                    });
-                    // Wire up the hover behavior.
-                    $(".infoContent dl.summaryList").infoPaneItemHighlight();
-                    
-                    // Force a window resize.
-                    blist.common.forceWindowResize();
-                } 
+                success: blistsInfoNS.updateSummarySuccessHandler
             });
-            
-            
-            $('#infoPane .infoContent .selectPrompt').hide();
-            itemState = 'selected';
         }
-        $('#infoPane .infoContent .itemCount').text(numSelect);
-        $('#infoPane .infoContent .itemSelectedText').text('item' +
-                (numSelect == 1 ? '' : 's') + ' ' + itemState);
     }
+}
+
+blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
+{
+    // Load the info pane.
+    $('#infoPane').html(data);
+    
+    // Wire up the hover behavior.
+    $(".infoContent dl.summaryList").infoPaneItemHighlight();
+    
+    // Wire up the tab switcher/expander.
+    $(".summaryTabs li").infoPaneTabSwitch();
+    
+    // Force a window resize.
+    blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
+    blist.common.forceWindowResize();
 }
 
 blist.myBlists.infoPane.rowSelectionHandler = function (event)
@@ -379,7 +354,7 @@ $(function ()
         myBlistsNS.listSelectionHandler);
 
     blistsInfoNS.updateSummary();
-    
+
     // Readjust size after updating info pane
     myBlistsNS.resizeTable();
 });

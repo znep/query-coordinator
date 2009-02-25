@@ -10,10 +10,11 @@ blist.common.adjustSize = function ()
     // We need to cache this because IE8 will throw itself into an infinite loop if we don't.
     if ($(window).height() != blist.common.cachedWinHeight) 
     {
-        $('.scrollContent').each(function ()
-        {
-            blist.util.sizing.fitWindow($(this));
-        });
+        $(".scrollContent").blistFitWindow(
+            {
+                cachedExpandableSelectorHeight: blist.util.sizing.cachedInfoPaneHeight
+            }
+        );
         blist.common.cachedWinHeight = $(window).height();
     }
 }

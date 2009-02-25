@@ -7,6 +7,7 @@ blist.blistGrid.sizeSwf = function (event)
         return;
     }
 
+    var $swf = $('#swfContent');
     var $target = $('#swfWrapper');
     var $container = $('#outerSwfWrapper');
     var $parent = $target.offsetParent();
@@ -19,6 +20,8 @@ blist.blistGrid.sizeSwf = function (event)
     $target.css('left', containerLeft + 'px');
     $target.css('right',
         ($parent.width() - (containerLeft + $container.width())) + 'px');
+    // Safari doesn't give the swf the right height with height:100%; so force it
+    $swf.height($target.height());
 }
 
 blist.blistGrid.showFlashPopup = function (popup)
@@ -31,6 +34,8 @@ blist.blistGrid.flashPopupShownHandler = function (popup)
     blistGridNS.popup = true;
     $('#swfWrapper').css('top', ($('#header').outerHeight() + 10) + 'px');
     $('#swfWrapper').css('bottom', ($('#footer').outerHeight() + 10) + 'px');
+    // Safari doesn't give the swf the right height with height:100%; so force it
+    $('#swfContent').height($('#swfWrapper').height());
     $('#overlay').show();
 }
 
@@ -53,12 +58,36 @@ blist.blistGrid.dataTypeClickHandler = function (event)
     blist.util.flashInterface.addColumn(dt);
 }
 
+blist.blistGrid.viewChangedHandler = function (event, data)
+{
+    var $main = $('#lensContainer');
+    if (data == 'grid')
+    {
+        $main.removeClass('pageView');
+        $main.addClass('tableView');
+    }
+    else if (data == 'page')
+    {
+        $main.removeClass('tableView');
+        $main.addClass('pageView');
+    }
+    blist.common.forceWindowResize();
+}
+
+blist.blistGrid.pageLabelHandler = function (event, newLabel)
+{
+    $('#pageInfo').text(newLabel);
+}
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
 {
     blist.util.flashInterface.addPopupHandlers(blistGridNS.flashPopupShownHandler,
         blistGridNS.flashPopupClosedHandler);
+
+    $(document).bind(blist.events.VIEW_CHANGED, blistGridNS.viewChangedHandler);
+    $(document).bind(blist.events.PAGE_LABEL_UPDATED, blistGridNS.pageLabelHandler);
 
     $(window).resize(function (event)
     {
@@ -87,12 +116,13 @@ $(function ()
         blist.util.flashInterface.doAction('PageView');
     });
 
-    $('#undoLink, #redoLink').click(function (event)
+    $('.flashAction').click(function (event)
     {
-        blist.util.flashInterface.doAction($(event.currentTarget).text());
+        blist.util.flashInterface.doAction(
+            $(event.currentTarget).attr('href').slice(1));
     });
 
-    $('#addColumnsLink, #addColumnsMenu .close').click(function (event)
+    $('.addColumnsLink, #addColumnsMenu .close').click(function (event)
     {
         blistGridNS.toggleAddColumns();
     });

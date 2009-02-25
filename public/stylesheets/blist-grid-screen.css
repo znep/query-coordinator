@@ -76,21 +76,22 @@
     border-left: 2px solid #e8e8e8;
 }
 
-#lensBody #addColumnsLink
+#lensBody .headerBar .linkIcon
 {
     background-image: url(images/content/table_menu/menu_bar_sprites.png);
-    background-position: 0 -40px;
     background-repeat: no-repeat;
     display: block;
     height: 20px;
-    padding-left: 20px;
+    padding-left: 25px;
+}
+
+#lensBody .addColumnsLink
+{
+    background-position: 0 -40px;
 }
 
 #lensBody #undoLink, #lensBody #redoLink
 {
-    background-image: url(images/content/table_menu/menu_bar_sprites.png);
-    background-repeat: no-repeat;
-    height: 20px;
     line-height: 100px;
     padding: 0;
     width: 20px;
@@ -108,12 +109,7 @@
 
 #lensBody #filterLink span.linkIcon
 {
-    background-image: url(images/content/table_menu/menu_bar_sprites.png);
     background-position: 0 -62px;
-    background-repeat: no-repeat;
-    display: block;
-    height: 20px;
-    padding-left: 20px;
 }
 
 #lensBody .headerBar #filterViewMenu li a
@@ -137,6 +133,16 @@
     background-position: 0 -368px;
 }
 
+#lensBody .headerBar #newPageLink
+{
+    background-position: 0 -102px;
+}
+
+#lensBody .headerBar #defaultLayoutLink
+{
+    background-position: 0 -122px;
+}
+
 #lensBody .headerBar #displayMenu li a
 {
     background-position: left center;
@@ -157,6 +163,17 @@
 {
     background-image: url(images/content/table_menu/icon_view_page.png);
 }
+
+/* Table view & page view changes */
+
+#lensContainer.tableView #pageViewHeader,
+#lensContainer.tableView #pageViewFooter,
+#lensContainer.tableView .pageOption,
+#lensContainer.pageView .tableOption
+{
+    display: none;
+}
+
 
 /* Add Columns menu */
 
@@ -309,6 +326,84 @@
     background-color: #ffffff;
     font-size: 1.4em;
     font-weight: bold;
+}
+
+
+/* Page view */
+
+#pageViewHeader
+{
+    background-color: #e8e8e8;
+    background-image: url(images/content/table_menu/light_corner_left_top.png);
+    background-position: center left;
+    background-repeat: no-repeat;
+    height: 9px;
+}
+
+#pageViewHeader .innerWrapper
+{
+    background-image: url(images/content/table_menu/light_corner_right_top.png);
+    background-position: center right;
+    background-repeat: no-repeat;
+    height: 9px;
+}
+
+#pageViewFooter
+{
+    background-color: #e3ecf7;
+    height: 20px;
+    line-height: 20px;
+    padding: 1em 0;
+    text-align: center;
+}
+
+#pageViewFooter a
+{
+    background-image: url(images/content/table_menu/menu_bar_sprites.png);
+    background-repeat: no-repeat;
+    /* This is for support in FF2 */
+    display: -moz-inline-stack;
+    display: inline-block;
+    height: 20px;
+    line-height: 100px;
+    margin: 0 auto;
+    overflow: hidden;
+    vertical-align: middle;
+    width: 20px;
+}
+
+#pageViewFooter #pageInfo
+{
+    color: #8d8d8d;
+    /* This is for support in FF2 */
+    display: -moz-inline-stack;
+    display: inline-block;
+    font-size: 1.2em;
+    margin: 0 auto;
+    padding: 0 2em;
+    text-align: center;
+    vertical-align: middle;
+    width: 7em;
+}
+
+#pageViewFooter a#firstPageLink
+{
+    background-position: 0 -180px;
+}
+
+#pageViewFooter a#prevPageLink
+{
+    background-position: 0 -140px;
+}
+
+#pageViewFooter a#nextPageLink
+{
+    background-position: 0 -160px;
+}
+
+#pageViewFooter a#lastPageLink
+{
+    background-position: 0 -200px;
 }
 
 /* Modify sidebar to lie below grid */

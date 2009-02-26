@@ -85,16 +85,14 @@ $.tablesorter.addWidget({
             {
                 groupValue = sortVal;
                 var $newRow = $("<tr class='sortGroup'/>");
-                for (var j = 0; j < table.config.headerNode[0].rows[0].cells.length;
-                    j++)
-                {
-                    var $refCell = $(table.config.headerNode[0].rows[0].cells[j]);
-                    var $newCell = $("<td class='" + $refCell.attr('class') +
-                        "'/>").removeClass('header');
-                    $newRow.append($newCell);
-                }
+                var colSpan = table.config.headerNode[0].rows[0].cells.length;
+                
+                var $newCell = $("<td colspan='" + colSpan + "'/>");
+                $newRow.append($newCell);
+                
                 $newRow.find("td:first-child").append(
                     "<div>" + groupValue + "</div>");
+                
                 $curRow.before($newRow);
             }
         }

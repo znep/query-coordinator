@@ -398,6 +398,7 @@
 }
 #infoPane .selectableList thead th
 {
+    background-color: #e0d1b8;
     border-right: 1px solid #e2e2e2;
     color: #666;
     font-size: 1.2em;
@@ -497,7 +498,7 @@
 }
 #infoPane table.selectableList .opened
 {
-    width: 6em;
+    width: 7em;
 }
 #infoPane .singleInfoSharing table.selectableList .actionContainer
 {

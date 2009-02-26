@@ -1,13 +1,22 @@
 <table id='blistList' class='selectableList' cellspacing="0">
+  <colgroup>
+    <col class='handle' />
+    <col class='favorite' />
+    <col class='type' />
+    <col class='name' />
+    <col class='description' />
+    <col class='owner' />
+    <col class='lastUpdated' />
+  </colgroup>
   <thead>
     <tr>
-      <th class='handle'><div></div></th>
+      <th class='handle first'><div></div></th>
       <th class='favorite' title='Favorite?'><div>Favorite?</div></th>
       <th class='type' title='Type'><div>Type</div></th>
       <th class='name'><div>Name</div></th>
       <th class='description'><div>Description</div></th>
       <th class='owner'><div>Owner</div></th>
-      <th class='lastUpdated'><div>Last&nbsp;Updated</div></th>
+      <th class='lastUpdated last'><div>Last&nbsp;Updated</div></th>
     </tr>
   </thead>
   <tbody>
@@ -17,10 +26,10 @@
         if blist.flag?('default')
           blist_parents[blist.blistId.to_s] = true
         end %>
+        <%- item_class = (!blist.flag?('default') && blist_parents[blist.blistId.to_s]) ?
+          "child child-of-blistRow-#{blist.blistId}" : '' -%>
       <tr <%= blist.flag?('default') ? "id='blistRow-#{blist.blistId}'" : '' %>
-        blist_id='<%= blist.id %>' class='item
-        <%= (!blist.flag?('default') && blist_parents[blist.blistId.to_s]) ?
-          "child child-of-blistRow-#{blist.blistId}" : '' %>'>
+        blist_id='<%= blist.id %>' class='item <%= item_class %>'>
         <td class='handle'><div></div></td>
         <% isFavorite = blist.flag?('favorite') ? 'true' : 'false' %>
         <td class='favorite <%= isFavorite %>'><div>

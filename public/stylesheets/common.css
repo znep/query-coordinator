@@ -257,7 +257,7 @@ form.search input.submit
     overflow: hidden;
 }
 
-.selectableListContainer .headerContainer th:last-child
+.selectableListContainer .headerContainer th.last
 {
     padding-right: 20px;
 }
@@ -285,6 +285,7 @@ table.selectableList thead
 
 table.selectableList th
 {
+    background-color: #e8e8e8;
     border-right: solid 1px #d4d4d4;
     color: #333333;
     font-size: 1.4em;
@@ -294,14 +295,14 @@ table.selectableList th
     text-align: left;
 }
 
-table.selectableList thead th:first-child
+table.selectableList thead th.first
 {
     background-image: url(/stylesheets/images/content/table/header_left_top.png);
     background-position: left top;
     background-repeat: no-repeat;
 }
 
-table.selectableList th:last-child
+table.selectableList th.last
 {
     background-image: url(/stylesheets/images/content/table/header_right_top.png);
     background-position: right top;
@@ -309,7 +310,7 @@ table.selectableList th:last-child
     border: none;
 }
 
-table.selectableList th:last-child > *
+table.selectableList th.last > *
 {
     margin-right: -15px;
 }

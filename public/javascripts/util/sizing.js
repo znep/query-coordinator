@@ -20,6 +20,9 @@ $.fn.blistFitWindow = function(options) {
         //  largest thing on the page and causing the overflow
         $this.height($(document).height());
         
+        // Fix for IE7. If this line isn't here, IE7 will not resize properly.
+        $this.height();
+
         var adjustedHeight = $(document).height();
         if ($this.parents(opts.columnSelector).find(opts.expandableSelector).length > 0)
         {

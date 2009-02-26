@@ -240,11 +240,10 @@
 }
 
 /* Sort grouping headers */
-#blists table.selectableList tr.sortGroup td.handle > *
+#blists table.selectableList tr.sortGroup td > *
 {
     color: #e8a134;
     font-size: 1.3em;
     text-indent: 0;
     text-transform: uppercase;
-    width: 30em;
 }

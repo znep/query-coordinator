@@ -24,9 +24,6 @@ class BlistsController < SwfController
     if (params[:id])
       @lens = Lens.find(params[:id])
     elsif (params[:multi])
-      #TODO: Need a method to get lenses by array of ids.
-      # Justin working on a method to support this.
-      # Meantime, get all blists and filter out the ones we want.
       args = Array.new
       multiParam = params[:multi]
       args = multiParam.split(';')
@@ -83,7 +80,18 @@ private
   def get_lenses_with_ids(params = nil)
     cur_lenses = Lens.find({ "ids" => params })
     
-    return cur_lenses
+    # Return this array in the order of the params so it'll match the DOM.
+    hash_lenses = Hash.new
+    cur_lenses.each do |l|
+      hash_lenses[l.id.to_s] = l
+    end
+    
+    ret_lenses = Array.new
+    params.each do |p|
+      ret_lenses << hash_lenses[p]
+    end
+    
+    return ret_lenses
   end
 
   def get_name(user_id)

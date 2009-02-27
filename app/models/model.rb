@@ -21,7 +21,15 @@ class Model
   end
 
   def self.options_string(options)
-    return options.collect{|k,v|k +'=' +v.to_s}.join('&')
+    return options.collect{ |k,v|
+      if v.is_a? Array
+        v.collect{ |a|
+          k + '=' + a.to_s
+        }
+      else
+        k + '=' + v.to_s
+      end
+    }.join('&')
   end
 
   def method_missing(method_symbol, *args)

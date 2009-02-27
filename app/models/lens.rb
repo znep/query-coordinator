@@ -1,8 +1,4 @@
 class Lens < Model
-  def is_shared?
-    grants.any? {|p| !p.isPublic}
-  end
-
   def self.find( options )
     user_id = User.current_user.id.to_s
     if !options['userId'].nil?
@@ -19,6 +15,22 @@ class Lens < Model
     end
 
     send_request(path)
+  end
+
+  def is_blist?
+    flag?("default")
+  end
+
+  def is_private?
+    grants.length == 0
+  end
+
+  def is_shared?
+    grants.any? {|p| !p.isPublic}
+  end
+
+  def tag_display_string
+    self.tags.map { |tag| tag.data }.join(", ")
   end
 
 end

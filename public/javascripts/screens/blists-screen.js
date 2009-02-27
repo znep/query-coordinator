@@ -257,7 +257,8 @@ blist.myBlists.updateList = function (newTable)
 
 blist.myBlists.displayNoResults = function ()
 {
-    var $newRow = $("<tr class='sortGroup'><td class='handle'>" +
+    var colSpan = $(".headerContainer table tr th").length;
+    var $newRow = $("<tr class='sortGroup'><td colspan='" + colSpan + "'>" +
             "<div>No Results</div></td></tr>");
     $('#blistList tbody').append($newRow);
 }
@@ -315,6 +316,14 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     
     // Wire up the tab switcher/expander.
     $(".summaryTabs li").infoPaneTabSwitch();
+    
+    // Wire up a click handler for deselectors.
+    $(".action.unselector").click(function (event)
+    {
+        event.preventDefault();
+        var blist_id = $(this).attr("href").replace("#", "");
+        $("#blistList tr[blist_id=" + blist_id + "] td.type").trigger("click");
+    });
     
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();

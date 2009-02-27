@@ -29,86 +29,17 @@
           Items
           <a href="#help" class="help"><span>help</span></a>
         </dt>
-        <dd class="itemBlist">
-          <div class="itemContent">
-            <a href="#TODO">Blist</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemSharedOutBlist">
-          <div class="itemContent">
-            <a href="#TODO">Shared Out Blist</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemSharedInBlist">
-          <div class="itemContent">
-            <a href="#TODO">Shared In Blist</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemPrivateBlist">
-          <div class="itemContent">
-            <a href="#TODO">Private Blist</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemPrivateSchemaBlist">
-          <div class="itemContent">
-            <a href="#TODO">Private Schema Blist</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemFilter">
-          <div class="itemContent">
-            <a href="#TODO">Filter</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemSharedOutFilter">
-          <div class="itemContent">
-            <a href="#TODO">Shared Out Filter</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemSharedInFilter">
-          <div class="itemContent">
-            <a href="#TODO">Shared In Filter</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemPrivateFilter">
-          <div class="itemContent">
-            <a href="#TODO">Locked Filter</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
-        <dd class="itemPrivateSchemaFilter">
-          <div class="itemContent">
-            <a href="#TODO">Unlocked Filter</a>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>unselect</span></a>
-          </div>
-        </dd>
+        
+        <%- lenses.each do |lens| -%>
+          <dd class="<%= get_type_icon_class_for_lens(lens) %>">
+            <div class="itemContent">
+              <a href="<%= blist_url(lens.id) %>"><%= lens.name %></a>
+            </div>
+            <div class="itemActions">
+              <a href="#<%= lens.id %>" class="action unselector"><span>unselect</span></a>
+            </div>
+          </dd>
+        <%- end -%>
       </dl>
       
     </div>

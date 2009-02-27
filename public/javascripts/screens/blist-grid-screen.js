@@ -139,6 +139,8 @@ $(function ()
             $(event.currentTarget).find('input[type="text"]').val());
     });
 
+    $('#mainMenu').dropdownMenu({triggerButton: $('#mainMenuLink'),
+        menuBar: $('#lensContainer .headerBar')});
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
         menuBar: $('#lensContainer .headerBar')});
     $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),

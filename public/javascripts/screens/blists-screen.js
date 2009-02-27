@@ -111,7 +111,7 @@ blist.myBlists.setupTable = function ()
 {
     $('#blistList').clone()
         .removeAttr('id').find('tbody').remove().end()
-        .appendTo('.headerContainer').end()
+        .appendTo('.headerContainer').end().end()
         .find('thead').remove();
     $.fn.treeTable.defaults.indent = 0;
     $.fn.treeTable.defaults.treeColumn = 3;
@@ -201,7 +201,7 @@ blist.myBlists.rowClickedHandler = function (event)
     if ($target.is("td"))
     {
         $target.parent().toggleClass('selected');
-        $target.parents("table").trigger(blist.events.ROW_SELECTION);
+        $(event.currentTarget).trigger(blist.events.ROW_SELECTION);
     }
 }
 

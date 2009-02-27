@@ -11,10 +11,22 @@
  *  triggerOpenClass: Class name to add/remove from the triggerButton when it is
  *    shown/hidden
  *
- *  optionMenuClass: Class name that determines if a menu is an option menu,
+ *  optionMenuSelector: Selector that determines if a menu is an option menu,
  *    which means that you have one selected a at a time
  *
  *  selectedItemClass: Class to apply to the single selected item in an optionMenu
+ *
+ *  menuSelector: Selector to find (sub) menus
+ *
+ *  submenuSelector: Selector to find item containers for submenus; i.e.,
+ *    the menu item that contains a submenu
+ *
+ *  activeClass: Class to use for the active menu item for the top level of
+ *    a multilevel menu
+ *
+ *  multilevelMenuSelector: Selector to determine if a menu is a multilevel menu
+ *
+ *  topLevelLinkSelector: Selector to find the top-level links for a multilevel menu
  *
  *  triggerButton: (no default) jQuery object that is the button to use to show
  *    the menu
@@ -54,12 +66,42 @@
                 }
             });
 
-            if ($menu.hasClass(config.optionMenuClass))
+            /* Hook up submenu handlers */
+            var $submenus = $menu.find(config.submenuSelector);
+            if ($submenus.length > 0)
             {
-                $menu.find('a').click(function (event)
+                $submenus.click(function (event)
                 {
-                    $menu.find('a').removeClass(config.selectedItemClass);
-                    $(this).addClass(config.selectedItemClass);
+                    event.stopPropagation();
+                }).mouseover(function (event)
+                {
+                    activateSubmenu(event, $menu);
+                });
+                $menu.find('li').mouseover(function (event)
+                {
+                    closeSubmenus(event, $menu);
+                });
+            }
+
+            /* If it's an optionMenu, hook up special behavior */
+            if ($menu.is(config.optionMenuSelector))
+            {
+                $menu.find('li').click(function (event)
+                {
+                    $menu.find('li').removeClass(config.selectedItemClass);
+                    $(this).closest('li').addClass(config.selectedItemClass);
+                });
+            }
+
+            /* If it's a multilevelMenu, hook up special behavior */
+            if ($menu.is(config.multilevelMenuSelector))
+            {
+                $menu.find(config.topLevelLinkSelector).click(function (event)
+                {
+                    event.stopPropagation();
+                }).mouseover(function (event)
+                {
+                    activateTopLevelOption(event, $menu);
                 });
             }
 
@@ -108,9 +150,29 @@
     function hideMenu($menu)
     {
         var config = $menu.data("config");
+        if (!config)
+        {
+            return;
+        }
         $menu.removeClass(config.menuOpenClass);
+        // Close any submenus
+        closeSubmenus(null, $menu);
         config.triggerButton.removeClass(config.triggerOpenClass);
         $(document).unbind('click.' + $menu.attr('id'));
+    };
+
+    function closeSubmenus(event, $menu)
+    {
+        var config = $menu.data("config");
+        $menu.find('.' + config.menuOpenClass).each(function ()
+        {
+            if (!event ||
+                ($(this).find('*').index(event.currentTarget) < 0 &&
+                $(this).parents('*').index(event.currentTarget) < 0))
+            {
+                $(this).removeClass(config.menuOpenClass);
+            }
+        });
     };
 
     /* If they clicked on the document, check if they clicked outside the
@@ -124,16 +186,37 @@
         {
             hideMenu($menu);
         }
-    }
+    };
+
+    function activateTopLevelOption(event, $menu)
+    {
+        var config = $menu.data("config");
+        closeSubmenus(null, $menu);
+        $menu.find('.' + config.activeClass)
+            .removeClass(config.activeClass);
+        $(event.currentTarget).closest('li').addClass(config.activeClass);
+    };
+
+    function activateSubmenu(event, $menu)
+    {
+        var config = $menu.data("config");
+        $(event.currentTarget).children(config.menuSelector).
+            addClass(config.menuOpenClass);
+    };
 
     //
     // plugin defaults
     //
     $.fn.dropdownMenu.defaults = {
+        menuSelector: 'ul.menu',
         menuOpenClass: 'shown',
         triggerOpenClass: 'clicked',
-        optionMenuClass: 'optionMenu',
-        selectedItemClass: 'selected'
+        optionMenuSelector: '.optionMenu',
+        selectedItemClass: 'selected',
+        submenuSelector: '.submenu',
+        activeClass: 'active',
+        multilevelMenuSelector: '.multilevelMenu',
+        topLevelLinkSelector: 'dt a'
     };
 
 })(jQuery);

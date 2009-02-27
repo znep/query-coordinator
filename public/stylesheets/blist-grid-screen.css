@@ -53,6 +53,7 @@
 #lensContainer .headerBar form.search
 {
     float: right;
+    width: 20em;
 }
 
 #lensContainer .headerBar form.search p
@@ -118,17 +119,17 @@
     background-repeat: no-repeat;
 }
 
-#lensBody .headerBar #filterViewMenu .filter
+#lensBody .headerBar #filterViewMenu .filter a
 {
     background-position: 0 -713px;
 }
 
-#lensBody .headerBar #filterViewMenu .sort
+#lensBody .headerBar #filterViewMenu .sort a
 {
     background-position: 0 -736px;
 }
 
-#lensBody .headerBar #filterViewMenu .showHide
+#lensBody .headerBar #filterViewMenu .showHide a
 {
     background-position: 0 -368px;
 }
@@ -149,20 +150,204 @@
     background-repeat: no-repeat;
 }
 
-#lensBody .headerBar #displayMenu li a.selected
+#lensBody .headerBar #displayMenu li.selected a
 {
     background-image: url(images/content/table_menu/icon_view_selected.png);
 }
 
-#lensBody .headerBar #displayMenu .table
+#lensBody .headerBar #displayMenu .table a
 {
     background-image: url(images/content/table_menu/icon_view_grid.png);
 }
 
-#lensBody .headerBar #displayMenu .page
+#lensBody .headerBar #displayMenu .page a
 {
     background-image: url(images/content/table_menu/icon_view_page.png);
 }
+
+/* Icons & styling for main menu */
+
+#mainMenu
+{
+    height: 30em;
+}
+
+#mainMenu dl > dd > ul > li > a
+{
+    background-image: url(images/content/table_menu/menu_icon_sprites_dark.png);
+    background-repeat: no-repeat;
+}
+
+#mainMenu li.blist .print > a
+{
+    background-position: 0 0;
+}
+
+#mainMenu li.blist .export > a
+{
+    background-position: 0 -23px;
+}
+
+#mainMenu li.blist .email > a
+{
+    background-position: 0 -46px;
+}
+
+#mainMenu li.blist .copy > a
+{
+    background-position: 0 -69px;
+}
+
+#mainMenu li.blist .create > a
+{
+    background-position: 0 -92px;
+}
+
+#mainMenu li.blist .import > a
+{
+    background-position: 0 -115px;
+}
+
+#mainMenu li.blist .findTemplate > a
+{
+    background-position: 0 -138px;
+}
+
+#mainMenu li.blist .recent > a
+{
+    background-position: 0 -161px;
+}
+
+#mainMenu li.blist .editPermissions > a
+{
+    background-position: 0 -184px;
+}
+
+#mainMenu li.edit .undo > a
+{
+    background-position: 0 -207px;
+}
+
+#mainMenu li.edit .redo > a
+{
+    background-position: 0 -230px;
+}
+
+#mainMenu li.edit .cut > a
+{
+    background-position: 0 -253px;
+}
+
+#mainMenu li.edit .copy > a
+{
+    background-position: 0 -276px;
+}
+
+#mainMenu li.edit .paste > a
+{
+    background-position: 0 -299px;
+}
+
+#mainMenu li.edit .delete > a
+{
+    background-position: 0 -322px;
+}
+
+#mainMenu li.edit .columnOptions > a
+{
+    background-position: 0 -345px;
+}
+
+#mainMenu li.edit .rowOptions > a
+{
+    background-position: 0 -345px;
+}
+
+#mainMenu li.data .insertColumn > a
+{
+    background-position: 0 -368px;
+}
+
+#mainMenu li.data .insertRow > a
+{
+    background-position: 0 -391px;
+}
+
+#mainMenu li.data .picklists > a
+{
+    background-position: 0 -414px;
+}
+
+#mainMenu li.data .rowTags > a
+{
+    background-position: 0 -437px;
+}
+
+#mainMenu li.data .rowIDs > a
+{
+    background-position: 0 -460px;
+}
+
+#mainMenu li.data .columnTotals > a
+{
+    background-position: 0 -483px;
+}
+
+#mainMenu li.info .summary > a
+{
+    background-position: 0 -506px;
+}
+
+#mainMenu li.info .views > a
+{
+    background-position: 0 -529px;
+}
+
+#mainMenu li.info .comments > a
+{
+    background-position: 0 -552px;
+}
+
+#mainMenu li.info .publishing > a
+{
+    background-position: 0 -575px;
+}
+
+#mainMenu li.info .shares > a
+{
+    background-position: 0 -598px;
+}
+
+#mainMenu li.info .activity > a
+{
+    background-position: 0 -621px;
+}
+
+#mainMenu li.publish .grid > a
+{
+    background-position: 0 -644px;
+}
+
+#mainMenu li.publish .gridPage > a
+{
+    background-position: 0 -667px;
+}
+
+#mainMenu li.publish .page > a
+{
+    background-position: 0 -690px;
+}
+
+#mainMenu li.publish .form > a
+{
+    background-position: 0 -713px;
+}
+
+#mainMenu li.publish .search > a
+{
+    background-position: 0 -736px;
+}
+
 
 /* Table view & page view changes */
 

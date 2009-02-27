@@ -19,9 +19,143 @@
       <div class='headerBar clearfix'>
         <ul>
           <%# Main menu %>
-          <li><a href='#' class='dropdownLink'>
+          <li><a href='#' id='mainMenuLink' class='dropdownLink'>
             <div class='outerWrapper'><div class='midWrapper'>
-                <span class='innerWrapper'>Menu</span></div></div></a></li>
+                <span class='innerWrapper'>Menu</span></div></div></a>
+            <ul id='mainMenu' class='menu multilevelMenu'>
+              <li class='first blist active'>
+                <dl><dt><a href='#menublist'>blist</a></dt>
+                  <dd><%= menu_tag({'bare_menu' => true, 'items' => [
+                  {'text' => 'Print this blist...', 'class' => 'print',
+                    'href' => '#'},
+                  {'text' => 'Export this blist', 'class' => 'export',
+                    'href' => '#', 'submenu' => {'items' => [
+                      {'text' => 'As CSV', 'class' => '', 'href' => '#'},
+                      {'text' => 'As PDF', 'class' => '', 'href' => '#'}]}},
+                  {'text' => 'Email this blist...', 'class' => 'email',
+                    'href' => '#'},
+                  {'text' => 'Copy this blist', 'class' => 'copy', 'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'Create New blist', 'class' => 'create',
+                    'href' => '#', 'submenu' => {'items' => [
+                      {'text' => 'Start As a Table', 'href' => '#'},
+                      {'text' => 'Start As a Page', 'href' => '#'},
+                      {'text' => 'Start New Calendar', 'href' => '#'},
+                      {'text' => 'Start New Form', 'href' => '#'}]}},
+                  {'text' => 'Import...', 'class' => 'import', 'href' => '#'},
+                  {'text' => 'Find a Template', 'class' => 'findTemplate',
+                    'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'Undo', 'class' => 'undo', 'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
+                    'submenu' => {'items' => [
+                      {'text' => 'some blist', 'class' => '', 'href' => '#'},
+                      {'text' => 'some filter', 'class' => '', 'href' => '#'}]}},
+                  {'separator' => true},
+                  {'text' => 'Edit blist permissions...',
+                    'class' => 'editPermissions', 'href' => '#'}]}) %>
+                </dd></dl>
+              </li>
+              <li class='edit'>
+                <dl><dt><a href='#menuEdit'>Edit</a></dt>
+                  <dd><%= menu_tag({'bare_menu' => true, 'items' => [
+                  {'text' => 'Undo', 'class' => 'undo', 'href' => '#'},
+                  {'text' => 'Redo', 'class' => 'redo', 'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'Cut', 'class' => 'cut', 'href' => '#'},
+                  {'text' => 'Copy', 'class' => 'copy', 'href' => '#'},
+                  {'text' => 'Paste', 'class' => 'paste', 'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'Delete', 'class' => 'delete', 'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'Edit Column Options', 'class' => 'columnOptions',
+                    'href' => '#', 'submenu' => {'items' => [
+                      {'section_title' => 'Select a Column'},
+                      {'separator' => true},
+                      {'text' => 'col1', 'href' => '#'},
+                      {'text' => 'col2', 'href' => '#'},
+                      ]}},
+                  {'text' => 'Edit Row Options', 'class' => 'rowOptions',
+                    'href' => '#'}]}) %>
+                </dd></dl>
+              </li>
+              <li class='data'>
+                <dl><dt><a href='#menuData'>Data</a></dt>
+                  <dd><%= menu_tag({'bare_menu' => true, 'items' => [
+                  {'text' => 'Insert a Column', 'class' => 'insertColumn',
+                    'href' => '#', 'submenu' => {'items' => [
+                      {'text' => 'At the Far Right', 'class' => '', 'href' => '#'},
+                      {'text' => 'At the Far Left', 'class' => '',
+                        'href' => '#'}]}},
+                  {'text' => 'Insert a Row', 'class' => 'insertRow',
+                    'href' => '#', 'submenu' => {'items' => [
+                      {'text' => 'At the Top', 'class' => '', 'href' => '#'},
+                      {'text' => 'At the Bottom', 'class' => '', 'href' => '#'}]}},
+                  {'separator' => true},
+                  {'text' => 'Mange Pick Lists...', 'class' => 'picklists',
+                    'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'Show Row Tags', 'class' => 'rowTags', 'href' => '#'},
+                  {'text' => 'Show Row IDs', 'class' => 'rowIDs', 'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'Column Totals', 'class' => 'columnTotals',
+                    'href' => '#', 'submenu' => {'items' => [
+                      {'text' => 'Show Totals Bar', 'class' => '', 'href' => '#'},
+                      {'separator' => true},
+                      {'section_title' => 'Add totals to:'},
+                      {'text' => 'col1', 'class' => '', 'href' => '#',
+                        'submenu' => {'option_menu' => true, 'items' => [
+                          {'text' => 'None', 'class' => '', 'href' => '#'},
+                          {'text' => 'Average', 'class' => '', 'href' => '#'},
+                          {'text' => 'Count', 'class' => '', 'href' => '#'},
+                          {'text' => 'Sum', 'class' => '', 'href' => '#'},
+                          {'text' => 'Maximum', 'class' => '', 'href' => '#'},
+                          {'text' => 'Minimum', 'class' => '', 'href' => '#'}]}},
+                      {'text' => 'col2', 'class' => '', 'href' => '#',
+                        'submenu' => {'option_menu' => true, 'items' => [
+                          {'text' => 'None', 'class' => '', 'href' => '#'},
+                          {'text' => 'Average', 'class' => '', 'href' => '#'},
+                          {'text' => 'Count', 'class' => '', 'href' => '#'},
+                          {'text' => 'Sum', 'class' => '', 'href' => '#'},
+                          {'text' => 'Maximum', 'class' => '', 'href' => '#'},
+                          {'text' => 'Minimum', 'class' => '', 'href' => '#'}]}}
+                  ]}}]}) %>
+                </dd></dl>
+              </li>
+              <li class='info'>
+                <dl><dt><a href='#menuInfo'>Info</a></dt>
+                  <dd><%= menu_tag({'bare_menu' => true, 'items' => [
+                  {'section_title' => 'Tabs'},
+                  {'text' => 'Summary', 'class' => 'summary', 'href' => '#'},
+                  {'text' => 'Show Filtered Views', 'class' => 'views',
+                    'href' => '#'},
+                  {'text' => 'Show Comments', 'class' => 'comments', 'href' => '#'},
+                  {'text' => 'Show Publishing', 'class' => 'publishing',
+                    'href' => '#'},
+                  {'text' => 'Show Shares', 'class' => 'shares', 'href' => '#'},
+                  {'text' => 'Show Activity', 'class' => 'activity',
+                    'href' => '#'}]}) %>
+                </dd></dl>
+              </li>
+              <li class='publish'>
+                <dl><dt><a href='#menuPublish'>Publish</a></dt>
+                  <dd><%= menu_tag({'bare_menu' => true, 'items' => [
+                  {'section_title' => 'Embed blists on the Web'},
+                  {'text' => 'Grid Only', 'class' => 'grid', 'href' => '#'},
+                  {'text' => 'Grid + Page', 'class' => 'gridPage', 'href' => '#'},
+                  {'text' => 'Page Only', 'class' => 'page', 'href' => '#'},
+                  {'separator' => true},
+                  {'text' => 'As a Form', 'class' => 'form', 'href' => '#'},
+                  {'text' => 'As a Search Widget', 'class' => 'search',
+                    'href' => '#'}]}) %>
+                </dd></dl>
+              </li>
+              <li class='footer'><div class='outerWrapper'>
+                <div class='innerWrapper'><span class='colorWrapper'></span>
+                  </div></div></li>
+            </ul>
+          </li>
 
           <%# Undo/redo %>
           <li class='separator'><a href='#Undo' id='undoLink'
@@ -38,14 +172,12 @@
                   <div class='innerWrapper'>
                     <span class='linkIcon'>Filter & View</span></div></div>
             </div></a>
-            <ul id='filterViewMenu' class='menu'>
-              <li class='sectionTitle'>Build a new view of your data</li>
-              <li><a href='#' class='filter'>Filter Out Rows...</a></li>
-              <li><a href='#' class='sort'>Sort Columns...</a></li>
-              <li><a href='#' class='showHide'>Show or Hide Columns...</a></li>
-              <li class='footer'><div class='outerWrapper'>
-                <span class='innerWrapper'></span></div></li>
-            </ul>
+            <%= menu_tag({'id' => 'filterViewMenu', 'items' => [
+            {'section_title' => 'Build a new view of your data'},
+            {'text' => 'Filter Out Rows...', 'class' => 'filter', 'href' => '#'},
+            {'text' => 'Sort Columns...', 'class' => 'sort', 'href' => '#'},
+            {'text' => 'Show or Hide Columns...', 'class' => 'showHide',
+              'href' => '#'}]}) %>
           </li>
 
           <%# Page view options %>
@@ -61,13 +193,9 @@
           <li class='separator'><a href='#' id='displayLink' class='dropdownLink'>
             <div class='outerWrapper'><div class='midWrapper'>
                 <span class='innerWrapper'>Display As</span></div></div></a>
-            <ul id='displayMenu' class='menu optionMenu'>
-              <li><a href='#' class='table selected'>A table</a></li>
-              <li><a href='#' class='page'>A page</a></li>
-              <li class='footer'><div class='outerWrapper'>
-                <div class='innerWrapper'><span class='colorWrapper'></span>
-              </div></div></li>
-            </ul>
+            <%= menu_tag({'id' => 'displayMenu', 'option_menu' => true, 'items' => [
+            {'text' => 'A table', 'class' => 'table selected', 'href' => '#'},
+            {'text' => 'A page', 'class' => 'page', 'href' => '#'}]}) %>
           </li>
         </ul>
 

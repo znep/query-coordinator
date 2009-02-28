@@ -55,7 +55,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>Favorite wines from 2 trips</span>
+            <span><%= h(lens.description) %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
@@ -70,7 +70,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>Wine, French Laundry, Napa, California, Travel</span>
+            <span><%= h(lens.tag_display_string) %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
@@ -85,7 +85,7 @@
         </dt>
         <dd class="itemBlist">
           <div class="itemContent">
-            <span>Personal</span>
+            <span><%= h(lens.category) %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
@@ -100,7 +100,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>Kevin Merritt</span>
+            <span><%= h(lens.owner.displayName) %></span>
           </div>
         </dd>
       </dl>
@@ -112,7 +112,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>10/15/2008</span>
+            <span>[10/15/2008]</span>
           </div>
         </dd>
       </dl>
@@ -124,7 +124,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>Jason Friedl: 4:52 pm on 10/15/2008</span>
+            <span>[Jason Friedl: 4:52 pm on 10/15/2008]</span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>View Activity</span></a>
@@ -139,7 +139,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>5 views</span>
+            <span>[5 views]</span>
           </div>
           <div class="itemActions">
             <a href="#details" class="action"><span>Details</span></a>
@@ -155,28 +155,12 @@
         <dd>
           <div class="itemContent">
             <ul>
-              <li>75 views</li>
-              <li>11 copies</li>
-              <li>45 comments</li>
+              <li><%= pluralize(lens.viewCount, " view") %></li>
+              <li>[11 copies]</li>
             </ul>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>View Activity</span></a>
-          </div>
-        </dd>
-      </dl>
-    
-      <dl class="summaryList">
-        <dt>
-          Rating
-          <a href="#help" class="help"><span>help</span></a>
-        </dt>
-        <dd>
-          <div class="itemContent">
-            <span>4.5 stars</span>
-          </div>
-          <div class="itemActions">
-            <a href="#unselect" class="action"><span>View Comments</span></a>
           </div>
         </dd>
       </dl>
@@ -188,7 +172,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>http://app.blist.com/?variant=debug#/blist/kmerritt/Wines-of-Napa</span>
+            <span>[http://app.blist.com/?variant=debug#/blist/kmerritt/]<%= lens.urlName %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Publish</span></a>
@@ -203,7 +187,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>Public</span>
+            <span>[Public]</span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
@@ -219,9 +203,9 @@
         <dd>
           <div class="itemContent">
             <ul>
-              <li>0 Contributors</li>
-              <li>2 Viewers</li>
-              <li>3 Requests</li>
+              <li>[0 Contributors]</li>
+              <li>[2 Viewers]</li>
+              <li>[3 Requests]</li>
             </ul>
           </div>
           <ul class="itemActions">
@@ -260,33 +244,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="item">
-              <td class="handle"><div></div></td>
-              <td class="favorite true"><div>*</div></td>
-              <td class="type filter"><div>filter</div></td>
-              <td class="name"><div>European Leaders</div></td>
-              <td class="description"><div></div></td>
-              <td class="viewed"><div>10/18/2008</div></td>
-              <td class="actionContainer"><div><a href="#view" class="action"><span>View</span></a></div></td>
-            </tr>
-            <tr class="item">
-              <td class="handle"><div></div></td>
-              <td class="favorite false"><div></div></td>
-              <td class="type filter"><div>filter</div></td>
-              <td class="name"><div>Asian Leaders</div></td>
-              <td class="description"><div>China, Japan, Philippines, Indonesia</div></td>
-              <td class="viewed"><div>09/05/2008</div></td>
-              <td class="actionContainer"><div><a href="#view" class="action"><span>View</span></a></div></td>
-            </tr>
-            <tr class="item">
-              <td class="handle"><div></div></td>
-              <td class="favorite false"><div></div></td>
-              <td class="type filter"><div>filter</div></td>
-              <td class="name"><div>S. America</div></td>
-              <td class="description"><div></div></td>
-              <td class="viewed"><div>11/10/2008</div></td>
-              <td class="actionContainer"><div><a href="#view" class="action"><span>View</span></a></div></td>
-            </tr>
+            <%- @filters.each do |filter| -%>
+              <tr class="item">
+                <td class="handle"><div></div></td>
+                <td class="favorite <%= filter.flag?('favorite') %>"><div>
+                  <%= filter.flag?('favorite') ? "*" : "" %></div></td>
+                <td class="type <%= get_type_icon_class_for_lens(filter) %>"><div>filter</div></td>
+                <td class="name"><div><%= h(filter.name) %></div></td>
+                <td class="description"><div><%= h(filter.description) %></div></td>
+                <td class="viewed"><div>[10/18/2008]</div></td>
+                <td class="actionContainer"><div><a href="<%= blist_url(filter.id) %>" class="action" title="<%= h(filter.name) %>"><span>View</span></a></div></td>
+              </tr>
+            <%- end -%>
           </tbody>
         </table>
       </div>

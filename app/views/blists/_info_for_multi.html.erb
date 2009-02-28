@@ -33,7 +33,7 @@
         <%- lenses.each do |lens| -%>
           <dd class="<%= get_type_icon_class_for_lens(lens) %>">
             <div class="itemContent">
-              <a href="<%= blist_url(lens.id) %>"><%= lens.name %></a>
+              <a href="<%= blist_url(lens.id) %>"><%= h(lens.name) %></a>
             </div>
             <div class="itemActions">
               <a href="#<%= lens.id %>" class="action unselector"><span>unselect</span></a>

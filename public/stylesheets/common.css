@@ -345,11 +345,11 @@ table.selectableList td > *
 {
     display: block;
     font-size: 1.2em;
-    height: 17px;
-    line-height: 1.2em;
-    margin-bottom: 2px;
+    height: 27px;
+    line-height: 27px;
+    margin: 2px 0;
     overflow: hidden;
-    padding: 5px 0.5em;
+    padding: 0 5px;
 }
 
 table.selectableList tr.hover td+td+td+td > *,
@@ -359,9 +359,9 @@ table.selectableList tr.hover.selected td+td+td+td > *
     background-color: #ffedb2;
 }
 
-table.selectableList tr.hover td:last-child > *,
-table.selectableList tr.selected td:last-child > *,
-table.selectableList tr.hover.selected td:last-child > *
+table.selectableList tr.hover td.last > *,
+table.selectableList tr.selected td.last > *,
+table.selectableList tr.hover.selected td.last > *
 {
     background-image: url(/stylesheets/images/content/table/highlight_end.png);
     background-position: right;
@@ -378,3 +378,39 @@ table.selectableList td > a:hover
 {
     text-decoration: underline;
 }
+
+
+
+/*** START: item type icons ***/
+
+/*
+typeBlist
+typeFilter
+
+sharedOut
+sharedIn
+privateSchema
+private
+*/
+
+.itemType 
+{
+    background-image: url(images/content/table/icon_type_sprites.png);
+    background-position: left 0;
+    background-repeat: no-repeat;
+    height: 31px;
+    overflow: hidden;
+}
+
+.itemType.typeBlist { background-position: left 0; }
+.itemType.typeBlist.sharedOut { background-position: left -31px; }
+.itemType.typeBlist.sharedIn { background-position: left -62px; }
+.itemType.typeBlist.private { background-position: left -93px; }
+.itemType.typeBlist.privateSchema { background-position: left -279px; }
+.itemType.typeFilter { background-position: left -124px; }
+.itemType.typeFilter.sharedOut { background-position: left -155px; }
+.itemType.typeFilter.sharedIn { background-position: left -186px; }
+.itemType.typeFilter.private { background-position: left -217px; }
+.itemType.typeFilter.privateSchema { background-position: left -248px; }
+
+/*** END: item type icons ***/

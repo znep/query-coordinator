@@ -23,26 +23,24 @@
     <% blist_parents = Hash.new %>
     <% for blist in @blists %>
       <%
-        if blist.flag?('default')
+        if blist.is_blist?
           blist_parents[blist.blistId.to_s] = true
         end %>
-        <%- item_class = (!blist.flag?('default') && blist_parents[blist.blistId.to_s]) ?
+        <%- item_class = (!blist.is_blist? && blist_parents[blist.blistId.to_s]) ?
           "child child-of-blistRow-#{blist.blistId}" : '' -%>
-      <tr <%= blist.flag?('default') ? "id='blistRow-#{blist.blistId}'" : '' %>
+      <tr <%= blist.is_blist? ? "id='blistRow-#{blist.blistId}'" : '' %>
         blist_id='<%= blist.id %>' class='item <%= item_class %>'>
-        <td class='handle'><div></div></td>
-        <% isFavorite = blist.flag?('favorite') ? 'true' : 'false' %>
-        <td class='favorite <%= isFavorite %>'><div>
-            <%= isFavorite == 'true' ? '*' : '' %></div></td>
-        <% blistType = blist.flag?('default') ? 'blist' : 'filter' %>
-        <td class='type <%= blistType %>'><div><%= blistType %></div></td>
-        <td class='name'><%= link_to blist.name,
-          { :controller => 'blists', :action => 'show', :id => blist.id } %></td>
-        <td class='description'><div><%= blist.description %></div></td>
+        <td class='handle first'><div></div></td>
+        <td class='favorite <%= blist.flag?('favorite') %>'><div>
+          <%= blist.flag?('favorite') ? '*' : '' %></div></td>
+        <td class='type'><div class="<%= get_type_icon_class_for_lens(blist) %>">
+          <%= blist.is_blist? ? "blist" : "filter" %>
+        </div></td>
+        <td class='name'><%= link_to(h(blist.name), blist_url(blist.id)) %></td>
+        <td class='description'><div><%= h(blist.description) %></div></td>
         <%# TODO: This needs to get users from a cache if possible %>
-        <% owner = !blist.owner.nil? ? User.find(blist.owner.id).displayName : '' %>
-        <td class='owner'><div><%= owner %></div></td>
-        <td class='lastUpdated'><div><%= blist.rowsUpdatedAt ?
+        <td class='owner'><div><%= h(blist.owner.displayName) %></div></td>
+        <td class='lastUpdated last'><div><%= blist.rowsUpdatedAt ?
             Time.at(blist.rowsUpdatedAt/1000).strftime("%b %d, %Y") : '' %>
           </div></td>
       </tr>

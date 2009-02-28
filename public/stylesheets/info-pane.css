@@ -260,53 +260,10 @@
 
 .infoContentOuter.multiInfoSummary .infoContent dd
 {
-    background-image: url(images/content/table/icon_type_sprites.png);
-    background-position: left 0;
-    background-repeat: no-repeat;
     height: 25px;
-    overflow: hidden;
     padding-left: 31px;
 }
-.infoContentOuter.multiInfoSummary .infoContent dd.itemBlist
-{
-    background-position: left 0;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemSharedOutBlist
-{
-    background-position: left -31px;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemSharedInBlist
-{
-    background-position: left -62px;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemPrivateBlist
-{
-    background-position: left -93px;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemPrivateSchemaBlist
-{
-    background-position: left -279px;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemFilter
-{
-    background-position: left -124px;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemSharedOutFilter
-{
-    background-position: left -155px;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemSharedInFilter
-{
-    background-position: left -186px;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemPrivateFilter
-{
-    background-position: left -217px;
-}
-.infoContentOuter.multiInfoSummary .infoContent dd.itemPrivateSchemaFilter
-{
-    background-position: left -248px;
-}
+
 
 /*** .itemContent > * can be either <a>, <span> or <ul> ***/
 .infoContentOuter.listContainer .infoContent dd .itemContent > *

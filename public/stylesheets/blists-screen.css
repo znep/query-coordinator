@@ -85,6 +85,10 @@
     padding: 0;
     width: 45px;
 }
+#blists table.selectableList td.type > *
+{
+    margin: 0;
+}
 
 #blists table.selectableList .name
 {
@@ -115,12 +119,17 @@
 }
 
 #blists table.selectableList td.handle,
-#blists table.selectableList td.favorite,
-#blists table.selectableList td.type > div
+#blists table.selectableList td.favorite
 {
-    background-position: center -3px;
+    background-position: center center;
     background-repeat: no-repeat;
     text-indent: -9999px;
+}
+
+#blists table.selectableList td.type > div
+{
+    text-indent: -9999px;
+    width: 100%;
 }
 
 #blists table.selectableList td.handle > div,
@@ -134,7 +143,7 @@
 #blists table.selectableList .expander
 {
     background-image: url(/stylesheets/images/content/table/expand_closed.png);
-    background-position: 3px center;
+    background-position: left center;
     background-repeat: no-repeat;
     cursor: pointer;
     float: left;
@@ -152,21 +161,6 @@
 #blists table.selectableList td.favorite.true
 {
     background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
-}
-
-#blists table.selectableList td.type > div
-{
-    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
-    height: 31px;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-#blists table.selectableList td.type.filter > div
-{
-    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -124px;
 }
 
 #blists table.selectableList tr.hover td.handle
@@ -187,14 +181,14 @@
 #blists .outerContent table.selectableList tr.hover td.type > div
 {
     background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -344px;
+    background-position: left -341px;
 }
 
 #blists .outerContent table.selectableList tr.selected td.type > div,
 #blists .outerContent table.selectableList tr.hover.selected td.type > div
 {
     background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -313px;
+    background-position: left -310px;
 }
 
 

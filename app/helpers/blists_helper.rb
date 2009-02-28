@@ -1,17 +1,15 @@
 module BlistsHelper
   
   def get_type_icon_class_for_lens(lens)
-    icon_class = ""
+    icon_class = "itemType"
+    icon_class += lens.is_blist? ? " typeBlist" : " typeFilter"
     
     if lens.is_shared?
-      icon_class = lens.owner.id == @cur_user.id ? "itemSharedOut" : "itemSharedIn"
+      icon_class += lens.owner.id == @cur_user.id ? " sharedOut" : " sharedIn"
     elsif lens.is_private?
-      icon_class = lens.flag?("schemaPublic") ? "itemPrivateSchema" : "itemPrivate"
-    else
-      icon_class = "item"
+      icon_class += lens.flag?("schemaPublic") ? " privateSchema" : " private"
     end
-    
-    lens.is_blist? ? icon_class + "Blist" : icon_class + "Filter"
+    icon_class
   end
 
 end

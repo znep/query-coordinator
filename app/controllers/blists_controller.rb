@@ -25,15 +25,6 @@ class BlistsController < SwfController
   def detail
     if (params[:id])
       @lens = Lens.find(params[:id])
-
-      # TODO: We need a query to get all filters for a given blist.
-      # For now, let's go back out and get the list of all blists,
-      # grab all of them with this blist id, and filter out the default one.
-      @filters = Lens.find({"blist" => params[:id]})
-      # Once the filter thing works, remove the following code.
-      @filters.delete_if do |b|
-        b.blistId.to_s != params[:id] || ( b.flag?("default"))
-      end
     elsif (params[:multi])
       args = Array.new
       multiParam = params[:multi]

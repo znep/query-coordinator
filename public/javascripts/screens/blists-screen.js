@@ -163,7 +163,7 @@ blist.myBlists.sortFinishedHandler = function (event)
 
 blist.myBlists.resizeTable = function ()
 {
-    $('#blists table.selectableList tbody td > *').each( function ()
+    $('#blists table.selectableList tbody td.clipText > *').each( function ()
             { blist.widget.clippedText.clipElement($(this)) });
 }
 
@@ -326,6 +326,9 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         $("#blistList tr[blist_id=" + blist_id + "] td.type").trigger("click");
     });
 
+    // Wire up a click handler for all tab links.
+    $(".tabLink").click(blistsInfoNS.tabLinkHandler);
+
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();
@@ -343,6 +346,18 @@ blist.myBlists.infoPane.rowSelectionHandler = function (event)
         var numSelect = $('tr.item.selected', $target).length;
         blistsInfoNS.updateSummary(numSelect);
     }
+}
+
+blist.myBlists.infoPane.tabLinkHandler = function (event)
+{
+    event.preventDefault();
+    var $target = $(event.currentTarget);
+    
+    // Pull the tab id off of the link's href
+    var tab_selector = $target.attr("href");
+    
+    // Find the a inside the tab id that's not an expander
+    $(tab_selector).find("a:not(.expander)").trigger("click");
 }
 
 

@@ -38,9 +38,9 @@
 <%# *** START: SUMMARY *** %>
 <div class="infoContentOuter singleInfoSummary listContainer active">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader"><%= lens.name %></h2>
+    <h2 class="panelHeader <%= get_type_icon_header_class_for_lens(lens) %>"><%= lens.name %></h2>
     <ul class="headerActions actionButtons">
-      <li><a href="#open" class="arrowButton">Open</a></li>
+      <li><a href="<%= blist_url(lens.id) %>" class="arrowButton">Open</a></li>
       <li><a href="#duplicate">Delete All</a></li>
       <li><a href="#share">Share</a></li>
     </ul>
@@ -63,6 +63,7 @@
         </dd>
       </dl>
     
+      <%- if (lens.tags.length > 0) -%>
       <dl class="summaryList">
         <dt>
           Tags
@@ -77,6 +78,7 @@
           </div>
         </dd>
       </dl>
+      <%- end -%>
     
       <dl class="summaryList">
         <dt>
@@ -124,10 +126,11 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>[Jason Friedl: 4:52 pm on 10/15/2008]</span>
+            <span><%= lens.last_updated_user.displayName %>: <%= lens.rowsUpdatedAt ? 
+              Time.at(lens.rowsUpdatedAt/1000).strftime("%b %d, %Y") : '' %></span>
           </div>
           <div class="itemActions">
-            <a href="#unselect" class="action"><span>View Activity</span></a>
+            <a href="#tabActivity" class="action tabLink"><span>View Activity</span></a>
           </div>
         </dd>
       </dl>
@@ -139,14 +142,14 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>[5 views]</span>
+            <span><%= pluralize(lens.filters.length, "filtered view") %></span>
           </div>
           <div class="itemActions">
-            <a href="#details" class="action"><span>Details</span></a>
+            <a href="#tabFiltered" class="action tabLink"><span>Details</span></a>
           </div>
         </dd>
       </dl>
-    
+      
       <dl class="summaryList">
         <dt>
           Community Activity
@@ -160,7 +163,7 @@
             </ul>
           </div>
           <div class="itemActions">
-            <a href="#unselect" class="action"><span>View Activity</span></a>
+            <a href="#tabActivity" class="action tabLink"><span>View Activity</span></a>
           </div>
         </dd>
       </dl>
@@ -175,7 +178,7 @@
             <span>[http://app.blist.com/?variant=debug#/blist/kmerritt/]<%= lens.urlName %></span>
           </div>
           <div class="itemActions">
-            <a href="#unselect" class="action"><span>Publish</span></a>
+            <a href="#publish" class="action"><span>Publish</span></a>
           </div>
         </dd>
       </dl>
@@ -223,7 +226,7 @@
 <%# *** START: FILTERED *** %>
 <div class="infoContentOuter singleInfoFiltered">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader">Filtered</h2>
+    <h2 class="panelHeader"><%= pluralize(lens.filters.length, "Filtered View") %></h2>
     <ul class="headerActions actionButtons">
       <li><a href="#open" class="arrowButton">Create</a></li>
     </ul>
@@ -244,15 +247,16 @@
             </tr>
           </thead>
           <tbody>
-            <%- @filters.each do |filter| -%>
+            <%- lens.filters.each do |filter| -%>
               <tr class="item">
                 <td class="handle"><div></div></td>
                 <td class="favorite <%= filter.flag?('favorite') %>"><div>
                   <%= filter.flag?('favorite') ? "*" : "" %></div></td>
-                <td class="type <%= get_type_icon_class_for_lens(filter) %>"><div>filter</div></td>
+                <td class="type <%= get_type_icon_class_for_lens(filter) %>"><div><%= get_type_string_for_lens(filter) %></div></td>
                 <td class="name"><div><%= h(filter.name) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
-                <td class="viewed"><div>[10/18/2008]</div></td>
+                <td class="viewed"><div><%= lens.lastOpenedDate ? 
+                  Time.at(lens.rowsUpdatedAt/1000).strftime("%b %d, %Y") : '' %></div></td>
                 <td class="actionContainer"><div><a href="<%= blist_url(filter.id) %>" class="action" title="<%= h(filter.name) %>"><span>View</span></a></div></td>
               </tr>
             <%- end -%>
@@ -269,17 +273,20 @@
 <%# *** START: SHARING *** %>
 <div class="infoContentOuter singleInfoSharing">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader">4 Shares</h2>
-    <h2 class="panelHeader">Private</h2>
+    <h2 class="panelHeader first">4 Shares</h2>
+    <h2 class="panelHeader <%= get_type_icon_header_class_for_lens(lens) %>">
+      <%= lens.is_private? ? "Private" : "Public" %>
+    </h2>
     <ul class="headerActions actionButtons">
-      <li><a href="#open" class="arrowButton">Share</a></li>
+      <li><a href="#open" class="arrowButton" title="Share">Share</a></li>
     </ul>
   </div>
   <div class="infoContentInner">
     <div class="infoContent">
-      
       <div class="sharingSummary">
-        <p>This blist is <em>Private</em> and not yet shared.</p>
+        <p class="<%= lens.is_private? ? "private" : "public" %>">
+          This <%= lens.is_blist? ? "blist" : "filter" %> is <em><%= lens.is_private? ? "Private" : "Public" %></em>
+        </p>
       </div>
       
       <div class="selectableListContainer">

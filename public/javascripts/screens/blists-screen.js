@@ -241,6 +241,7 @@ blist.myBlists.tableMouseoutHandler = function (event)
 blist.myBlists.updateList = function (newTable)
 {
     $('#blistList tbody').replaceWith($(newTable).find('tbody'));
+    blistsInfoNS.updateSummary(0);
     myBlistsNS.resizeTable();
     if ($('#blistList tbody tr').length > 0)
     {
@@ -282,12 +283,12 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
             numSelect = myBlistsNS.getTotalItemCount();
             $('#infoPane .infoContent .selectPrompt').show();
             itemState = 'total';
-            
+
             $.Tache.Get({ url: '/blists/detail',
                 data: 'items=' + numSelect,
                 success: blistsInfoNS.updateSummarySuccessHandler
             });
-            
+
         }
         else
         {
@@ -297,7 +298,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
                return $(n).attr('blist_id');
             });
             var multi = $.makeArray(arrMulti).join(';');
-            
+
             $.Tache.Get({ url: '/blists/detail',
                 data: 'multi=' + multi,
                 success: blistsInfoNS.updateSummarySuccessHandler
@@ -310,13 +311,13 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 {
     // Load the info pane.
     $('#infoPane').html(data);
-    
+
     // Wire up the hover behavior.
     $(".infoContent dl.summaryList").infoPaneItemHighlight();
-    
+
     // Wire up the tab switcher/expander.
     $(".summaryTabs li").infoPaneTabSwitch();
-    
+
     // Wire up a click handler for deselectors.
     $(".action.unselector").click(function (event)
     {
@@ -324,7 +325,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         var blist_id = $(this).attr("href").replace("#", "");
         $("#blistList tr[blist_id=" + blist_id + "] td.type").trigger("click");
     });
-    
+
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();
@@ -384,7 +385,7 @@ $(function ()
     $('#blistList').click(myBlistsNS.rowClickedHandler);
     $('.selectableList').live("mousemove", myBlistsNS.tableMousemoveHandler);
     $('.selectableList').live("mouseout", myBlistsNS.tableMouseoutHandler);
-    
+
     $('#blists').bind(blist.events.ROW_SELECTION, blistsInfoNS.rowSelectionHandler);
     $('#outerContainer').bind(blist.events.LIST_SELECTION,
         myBlistsNS.listSelectionHandler);

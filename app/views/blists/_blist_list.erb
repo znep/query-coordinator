@@ -38,7 +38,6 @@
         </div></td>
         <td class='name'><%= link_to(h(blist.name), blist_url(blist.id)) %></td>
         <td class='description'><div><%= h(blist.description) %></div></td>
-        <%# TODO: This needs to get users from a cache if possible %>
         <td class='owner'><div><%= h(blist.owner.displayName) %></div></td>
         <td class='lastUpdated last'><div><%= blist.rowsUpdatedAt ?
             Time.at(blist.rowsUpdatedAt/1000).strftime("%b %d, %Y") : '' %>

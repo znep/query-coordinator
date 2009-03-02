@@ -1,9 +1,9 @@
 module BlistsHelper
-  
+
   def get_type_icon_class_for_lens(lens)
     icon_class = "itemType"
     icon_class += lens.is_blist? ? " typeBlist" : " typeFilter"
-    
+
     if lens.is_shared?
       icon_class += lens.owner.id == @cur_user.id ? " sharedOut" : " sharedIn"
     elsif lens.is_private?
@@ -12,4 +12,11 @@ module BlistsHelper
     icon_class
   end
 
+  def get_blist_tags
+    lenses = Lens.find(Hash.new)
+
+    tags = []
+    lenses.each { |l| tags << l.tags.collect { |t| t.data } }
+    tags.flatten.sort.uniq
+  end
 end

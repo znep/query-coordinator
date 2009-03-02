@@ -14,7 +14,7 @@
       <div class='outerContent'>
         <div class='content'>
           <div class='headerBar'>
-            <h3 id='listTitle'><%= @title %></h3>
+            <h3 id='listTitle'><%= h(@title) %></h3>
             <a href='#' class='menuLink'>Menu</a>
             <a href='#'>Add New</a>
             <a href='#'>Import</a>
@@ -51,28 +51,28 @@
         :content_class => 'scrollContent' } ) do %>
       <div class='filterSection items expandableContainer'>
         <a href="#expand_items" class="expander">expand</a>
-        <h4><a href="?" title='<%= get_title() %>'>
+        <h4><a href="?" title='<%= h(get_title()) %>'>
             <span>All Items</span></a></h4>
         <ul class="expandable">
           <li><a href='?owner=<%= @cur_user.id %>'
-            title='<%= get_title(@cur_user.id.to_s) %>'>
+            title='<%= h(get_title(@cur_user.id.to_s)) %>'>
             <span>Owned by Me</span></a></li>
           <li><a href='?sharedTo=<%= @cur_user.id %>'
-            title='<%= get_title(nil, @cur_user.id.to_s) %>'>
+            title='<%= h(get_title(nil, @cur_user.id.to_s)) %>'>
             <span>Shared to Me</span></a></li>
           <li><a href='?sharedBy=<%= @cur_user.id %>'
-            title='<%= get_title(nil, nil, @cur_user.id.to_s) %>'>
+            title='<%= h(get_title(nil, nil, @cur_user.id.to_s)) %>'>
             <span>Shared by Me</span></a></li>
           <li><a href='?type=favorite'
-            title='<%= get_title(nil, nil, nil, 'favorite') %>'>
+            title='<%= h(get_title(nil, nil, nil, 'favorite')) %>'>
             <span>Show only Favorites</span></a></li>
-          <%# Deleted items not yet supported, but styled for future %>
+          <%# Deleted items not yet supported, but styled for future
           <li class="deleted"><a href='?filter=deleted:true'><span>Deleted Items</span></a></li>
-          <%# End not yet supported %>
+          # End not yet supported %>
         </ul>
       </div>
 
-      <%# These are not supported yet. Static styling only. TODO: wire them up. %>
+      <%# These are not supported yet. Static styling only. TODO: wire them up.
       <div class='filterSection closed projects expandableContainer'>
         <a href="#expand_items" class="expander">expand</a>
         <h4><a href="#TODO"><span>All Projects</span></a></h4>
@@ -96,15 +96,20 @@
           <li><a href="#"><span>Folder Name</span></a></li>
         </ul>
       </div>
-      <%# End unsupported but static styled. %>
-      
+      # End unsupported but static styled. %>
+
       <div class='filterSection closed tags expandableContainer'>
         <a href="#expand_items" class="expander">expand</a>
-        <h4><a href="#TODO"><span>All Tags</span></a></h4>
+        <h4><a href="?" title='<%= h(get_title()) %>'><span>All Tags</span></a></h4>
         <ul class="expandable">
-          <li class='untagged'><a href='#'><span>Not Tagged</span></a></li>
-          <li><a href='#'><span>Tag</span></a></li>
-          <%# TODO: Get all blist tags, and construct filters %>
+          <li class='untagged'><a href='?untagged=true'
+            title='<%= h(get_title(nil, nil, nil, nil, true)) %>'>
+            <span>Not Tagged</span></a></li>
+          <% get_blist_tags().each do |tag| %>
+          <li><a href='?tag=<%= CGI.escape(tag) %>'
+            title='<%= h(get_title(nil, nil, nil, nil, nil, tag)) %>'>
+            <span><%= h(tag) %></span></a></li>
+          <% end %>
         </ul>
       </div>
     <% end %>

@@ -12,8 +12,111 @@
       <%= render(:partial => "shared/tabs") %>
       <div class='outerContent'>
         <div class='contentHighlight'>
-          <div class='content scrollContent'>
-            <h1>Home</h1>
+          <div class='content'>
+            <h1>Welcome back <%= @cur_user.is_established? ? h(@cur_user.login) : h(@cur_user.firstName) %></h1>
+            
+            <ul class="actionButtons clearfix">
+              <li><a href="#" class="arrowButton">New blist</a></li>
+              <li><a href="#">Import from Excel</a></li>
+              <li><a href="#">Browse blists</a></li>
+              <li class="last"><a href="#">Invite Others</a></li>
+            </ul>
+            
+            <%- if (!@cur_user.is_established?) -%>
+              <div class="featureBoxes">
+                <ul class="clearfix">
+                  <li>
+                    <h2>Collaborate &amp; Publish</h2>
+                    <p><%= image_tag("home/feature_collaborate.png", :size => "199x65", :alt => "Collaborate and Publish") %></p>
+                    <p>Share your blists with friends, family, colleagues or the world. Then work together on the same blist simultaneously!</p>
+                    <p class="watchButton"><a href="#" title="Watch the Video">Watch the Video</a></p>
+                  </li>
+                  <li>
+                    <h2>Visualize your blist</h2>
+                    <p><%= image_tag("home/feature_visualize.png", :size => "199x65", :alt => "Visualize your blist") %></p>
+                    <p>blist lenses make it easy to see and share different views of your data.  Charts and reports coming soon!</p>
+                    <p class="watchButton"><a href="#" title="Watch the Video">Watch the Video</a></p>
+                  </li>
+                  <li class="last">
+                    <h2>Search for Templates</h2>
+                    <p><%= image_tag("home/feature_templates.png", :size => "199x65", :alt => "Search for Templates") %></p>
+                    <p>Why start from scratch when someone inside the blist community has done the hard part for you?</p>
+                    <p class="watchButton"><a href="#" title="Watch the Video">Watch the Video</a></p>
+                  </li>
+                </ul>
+              </div>
+            <%- end -%>
+            
+            <div class="activityListContainer">
+              <h2>Recently Opened blists</h2>
+              <ul>
+                <li>
+                  <p><a href="#" title="This is the blist">Wines of Napa</a></p>
+                  <p class="preview">This is the description text. And more...</p>
+                </li>
+                <li>
+                  <p><a href="#" title="Expenses">Expenses</a></p>
+                  <p class="preview">This is the description text. And more...</p>
+                </li>
+              </ul>
+              <p class="listAction"><a href="#act">View All</a></p>
+            </div>
+            
+            <div class="activityListContainer">
+              <h2>Favorite blists</h2>
+              <ul class="favoriteList">
+                <li>
+                  <p><a href="#" title="This is the blist">Wines of Napa</a></p>
+                  <p class="preview">This is the description text. And more...</p>
+                </li>
+                <li>
+                  <p><a href="#" title="Expenses">Expenses</a></p>
+                  <p class="preview">This is the description text. And more...</p>
+                </li>
+              </ul>
+              <p class="listAction"><a href="#act">View All</a></p>
+            </div>
+            
+            <div class="activityListContainer">
+              <h2>Contacts Updates</h2>
+              <ul class="contactList">
+                <li>
+                  <p class="contact">
+                    <a href="#"><%= image_tag("small-profile.png", :size => "24x24", :alt => "Chris Metcalf") %></a>
+                    <a href="#" title="Chris Metcalf">Chris Metcalf</a>
+                  </p>
+                  <p class="preview">Did something or other to the blist <%= link_to("Wines of Napa", "#") %></p>
+                </li>
+                <li>
+                  <p class="contact">
+                    <a href="#"><%= image_tag("small-profile.png", :size => "24x24", :alt => "Jimmy John") %></a>
+                    <a href="#" title="Expenses">Jimmy John</a>
+                  </p>
+                  <p class="preview">Did something or other</p>
+                </li>
+              </ul>
+              <p class="listAction"><a href="#act">View All</a></p>
+            </div>
+            
+            <div class="activityListContainer">
+              <h2>From the Blog</h2>
+              <ul>
+                <li>
+                  <p><a href="#" title="This is the blist">Join us at Degrag 2008</a></p>
+                  <p class="preview">November 2, Kevin Merritt</p>
+                </li>
+                <li>
+                  <p><a href="#" title="Expenses">Yesterday, Today and Tomorrow in blist</a></p>
+                  <p class="preview">November 2, Kevin Merritt</p>
+                </li>
+                <li>
+                  <p><a href="#" title="Expenses">What is a lens? How do I make one?</a></p>
+                  <p class="preview">November 2, Kevin Merritt</p>
+                </li>
+              </ul>
+              <p class="listAction"><a href="#act">View All</a></p>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -22,16 +125,25 @@
 
   <div id="sidebar" class="column">
     <% render(:layout => "shared/sidebar_box") do %>
-      <h2>blist User</h2>
+      <%= render(:partial => "shared/current_user_tile", :locals => { :user => @cur_user }) %>
     <% end %>
-    <% render(:layout => "shared/sidebar_box",
-      :locals => { :content_class => 'scrollContent' } ) do %>
-      <h4>Updates</h4>
-    <% end %>
-    <% render(:layout => "shared/sidebar_box") do %>
-      <h4>Storage</h4>
-      <p>You are using 50% of your available storage</p>
-    <% end %>
+
+    <%- # only show updates if the user has > 3 total blists -%>
+    <%- if (@cur_user.is_established?) -%>
+      <% render(:layout => "shared/sidebar_box",
+        :locals => { :content_class => 'userUpdates' } ) do %>
+        <%= render(:partial => "shared/user_updates", :locals => { :user => @cur_user }) %>
+      <% end %>
+    <%- end -%>
+    
+    <%- # Storage space used is not yet applicable -%>
+    <%- if false -%>
+      <% render(:layout => "shared/sidebar_box") do %>
+        <h4>Storage</h4>
+        <p>You are using 50% of your available storage</p>
+      <% end %>
+    <%- end -%>
+
     <%= render(:partial => "shared/ad_box", :locals => { :last_child => true }) %>
   </div>
 </div>

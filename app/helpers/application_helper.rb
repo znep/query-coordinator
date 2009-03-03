@@ -64,4 +64,9 @@ module ApplicationHelper
 
     return ret
   end
+  
+  def blist_date(time)
+    Time.at(time/1000).strftime("%b %d, %Y")
+  end
+  
 end

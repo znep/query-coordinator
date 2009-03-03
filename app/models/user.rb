@@ -12,4 +12,9 @@ class User < Model
   def self.login(login,password)
     send_request("/authenticate/#{login}.json?password=#{password}")
   end
+  
+  def is_established?
+    # An established user has 4 or more total blists.
+    Lens.find(Hash.new).length > 3
+  end
 end

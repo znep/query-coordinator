@@ -1,7 +1,7 @@
 /* 
     Document   : layout.css
     Created on : Jan 13, 2009, 3:25:51 PM
-    Author     : jeff.scherpelz@blist.com
+    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
     Description:
       Main layout of the page (sidebar, info pane, main area with tabs)
 */
@@ -26,7 +26,8 @@ body
 
 #mainColumnContent
 {
-  width: 100%;
+    min-width: 729px;
+    width: 100%;
 }
 
 #sidebar

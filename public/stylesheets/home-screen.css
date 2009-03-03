@@ -1,15 +1,10 @@
 /* 
     Document   : home-screen
     Created on : Jan 13, 2009, 3:04:23 PM
-    Author     : jeff.scherpelz@blist.com
+    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
     Description:
       Styles for the 'Home' screen
 */
-
-#home .outerContent
-{
-    background-image: url(/stylesheets/images/content/background_shape_small.png);
-}
 
 #home .contentHighlight
 {
@@ -18,3 +13,70 @@
     background-repeat: no-repeat;
 }
 
+#home .content .actionButtons
+{
+    margin-bottom: 40px;
+}
+#home .content .actionButtons li
+{
+    margin: 0 40px 0 0;
+}
+#home .content .actionButtons li.last
+{
+    margin-right: 0;
+}
+#home .content .actionButtons li a
+{
+    width: 115px;
+}
+#home .content .actionButtons li a.arrowButton
+{
+    width: 100px;
+}
+
+
+#home .featureBoxes
+{
+    margin: 0 0 35px 15px;
+}
+
+#home .featureBoxes ul li
+{
+    border-right: 1px solid #ccc;
+    float: left;
+    margin-right: 15px;
+    padding-right: 15px;
+    width: 199px;
+}
+#home .featureBoxes ul li.last
+{
+    border: none;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+#home .featureBoxes li h2
+{
+    font-size: 1.8em;
+    letter-spacing: .02em;
+    margin-bottom: 5px;
+}
+#home .featureBoxes li p
+{
+    font-size: 1.2em;
+    letter-spacing: .04em;
+    line-height: 1.33em;
+    margin-bottom: .5em;
+}
+#home .featureBoxes li p.watchButton a
+{
+    background: url("images/home/icon_watch_video.png") no-repeat;
+    color: #666;
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+    height: 22px;
+    line-height: 22px;
+    padding-left: 28px;
+    text-transform: uppercase;
+}

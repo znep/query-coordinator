@@ -258,3 +258,36 @@ ul.menu.contactsMenu li.sectionTitle.sortHeader
     font-weight: bold;
     padding: 0 5px;
 }
+
+/*** START: User tile ***/
+.userTile .userPhoto
+{
+    float: left;
+    width: 9em;
+}
+.userTile .userInfo
+{
+    float: left;
+    padding-left: .5em;
+    width: 14.5em;
+}
+.userTile .userInfo h2 a
+{
+    color: #333;
+    font-size: 1.4em;
+    text-decoration: none;
+}
+.userTile .userInfo h2 a:hover
+{
+    text-decoration: underline;
+}
+/*** END: User tile ***/
+
+/*** START: user updates box ***/
+
+#sidebar .userUpdates .updatesContainer
+{
+    margin-bottom: 15px;
+}
+
+/*** END: user updates box ***/

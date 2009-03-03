@@ -48,7 +48,18 @@
     background-position: right -42px;
     padding-right: 25px;
 }
-
+.content .actionButtons li
+{
+    background-position: left -63px;
+}
+.content .actionButtons li a
+{
+    background-position: right -84px;
+}
+.content .actionButtons li a.arrowButton
+{
+    background-position: right -105px;
+}
 /*** END: action buttons ***/
 
 

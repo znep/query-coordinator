@@ -1,7 +1,7 @@
 /* 
     Document   : common
     Created on : Jan 13, 2009, 3:04:23 PM
-    Author     : jeff.scherpelz@blist.com
+    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
     Description:
         Common styles for classes and common elements that are used
         throughout the app
@@ -187,7 +187,7 @@ form.search input.submit
 .tabList a
 {
   background-color: #bdbdbd;
-  color: #333333;
+  color: #333;
   display: block;
   font-size: 1.2em;
   height: 16px;
@@ -287,7 +287,6 @@ table.selectableList th
 {
     background-color: #e8e8e8;
     border-right: solid 1px #d4d4d4;
-    color: #333333;
     font-size: 1.4em;
     font-weight: normal;
     line-height: 0.7em;
@@ -370,7 +369,7 @@ table.selectableList tr.hover.selected td.last > *
 
 table.selectableList td > a
 {
-    color: #333333;
+    color: #333;
     text-decoration: none;
 }
 
@@ -414,3 +413,65 @@ private
 .itemType.typeFilter.privateSchema { background-position: left -248px; }
 
 /*** END: item type icons ***/
+
+/*** START: Activity lists (home page) ***/
+
+.activityListContainer
+{
+    margin-bottom: .5em;
+}
+.activityListContainer h2
+{
+    border-bottom: 1px solid #ccc;
+    color: #e8a134;
+    font-size: 1.2em;
+    margin-bottom: .8em;
+    text-transform: uppercase;
+}
+
+.activityListContainer li
+{
+    margin-bottom: 1.5em;
+}
+.activityListContainer li p
+{
+    color: #666;
+    font-size: 2.1em;
+    margin-bottom: 2px;
+}
+.activityListContainer li p.preview
+{
+    font-size: 1.6em;
+    text-indent: 10px;
+}
+.activityListContainer p.listAction
+{
+    margin-top: .5em;
+    text-align: right;
+}
+.activityListContainer p.listAction a 
+{
+    color: #666;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.activityListContainer ul.favoriteList li
+{
+    background: url(/stylesheets/images/content/table/icon_star_fill.png) -15px -4px no-repeat;
+    padding-left: 20px;
+}
+.activityListContainer ul.contactList li p.contact a
+{
+    display: inline-block;
+    height: 24px;
+    margin-right: 2px;
+    vertical-align: middle;
+}
+.activityListContainer ul.contactList li p.preview
+{
+    text-indent: 42px;
+}
+
+/*** END: Activity lists (home page) ***/
+

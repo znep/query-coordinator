@@ -1,2 +1,2 @@
-class Owner < Model
+class Owner < User
 end

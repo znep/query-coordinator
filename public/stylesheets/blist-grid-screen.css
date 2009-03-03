@@ -113,6 +113,11 @@
     background-position: 0 -62px;
 }
 
+#lensBody .headerBar ul.menu
+{
+    min-width: 15em;
+}
+
 #lensBody .headerBar #filterViewMenu li a
 {
     background-image: url(images/content/table_menu/menu_icon_sprites.png);
@@ -121,17 +126,17 @@
 
 #lensBody .headerBar #filterViewMenu .filter a
 {
-    background-position: 0 -713px;
+    background-position: 0 -717px;
 }
 
 #lensBody .headerBar #filterViewMenu .sort a
 {
-    background-position: 0 -736px;
+    background-position: 0 -740px;
 }
 
 #lensBody .headerBar #filterViewMenu .showHide a
 {
-    background-position: 0 -368px;
+    background-position: 0 -372px;
 }
 
 #lensBody .headerBar #newPageLink
@@ -180,172 +185,172 @@
 
 #mainMenu li.blist .print > a
 {
-    background-position: 0 0;
+    background-position: 0 -4px;
 }
 
 #mainMenu li.blist .export > a
 {
-    background-position: 0 -23px;
+    background-position: 0 -27px;
 }
 
 #mainMenu li.blist .email > a
 {
-    background-position: 0 -46px;
+    background-position: 0 -50px;
 }
 
 #mainMenu li.blist .copy > a
 {
-    background-position: 0 -69px;
+    background-position: 0 -73px;
 }
 
 #mainMenu li.blist .create > a
 {
-    background-position: 0 -92px;
+    background-position: 0 -96px;
 }
 
 #mainMenu li.blist .import > a
 {
-    background-position: 0 -115px;
+    background-position: 0 -119px;
 }
 
 #mainMenu li.blist .findTemplate > a
 {
-    background-position: 0 -138px;
+    background-position: 0 -142px;
 }
 
 #mainMenu li.blist .recent > a
 {
-    background-position: 0 -161px;
+    background-position: 0 -165px;
 }
 
 #mainMenu li.blist .editPermissions > a
 {
-    background-position: 0 -184px;
+    background-position: 0 -188px;
 }
 
 #mainMenu li.edit .undo > a
 {
-    background-position: 0 -207px;
+    background-position: 0 -211px;
 }
 
 #mainMenu li.edit .redo > a
 {
-    background-position: 0 -230px;
+    background-position: 0 -234px;
 }
 
 #mainMenu li.edit .cut > a
 {
-    background-position: 0 -253px;
+    background-position: 0 -257px;
 }
 
 #mainMenu li.edit .copy > a
 {
-    background-position: 0 -276px;
+    background-position: 0 -280px;
 }
 
 #mainMenu li.edit .paste > a
 {
-    background-position: 0 -299px;
+    background-position: 0 -303px;
 }
 
 #mainMenu li.edit .delete > a
 {
-    background-position: 0 -322px;
+    background-position: 0 -326px;
 }
 
 #mainMenu li.edit .columnOptions > a
 {
-    background-position: 0 -345px;
+    background-position: 0 -349px;
 }
 
 #mainMenu li.edit .rowOptions > a
 {
-    background-position: 0 -345px;
+    background-position: 0 -349px;
 }
 
 #mainMenu li.data .insertColumn > a
 {
-    background-position: 0 -368px;
+    background-position: 0 -372px;
 }
 
 #mainMenu li.data .insertRow > a
 {
-    background-position: 0 -391px;
+    background-position: 0 -395px;
 }
 
 #mainMenu li.data .picklists > a
 {
-    background-position: 0 -414px;
+    background-position: 0 -418px;
 }
 
 #mainMenu li.data .rowTags > a
 {
-    background-position: 0 -437px;
+    background-position: 0 -441px;
 }
 
 #mainMenu li.data .rowIDs > a
 {
-    background-position: 0 -460px;
+    background-position: 0 -464px;
 }
 
 #mainMenu li.data .columnTotals > a
 {
-    background-position: 0 -483px;
+    background-position: 0 -487px;
 }
 
 #mainMenu li.info .summary > a
 {
-    background-position: 0 -506px;
+    background-position: 0 -510px;
 }
 
 #mainMenu li.info .views > a
 {
-    background-position: 0 -529px;
+    background-position: 0 -533px;
 }
 
 #mainMenu li.info .comments > a
 {
-    background-position: 0 -552px;
+    background-position: 0 -556px;
 }
 
 #mainMenu li.info .publishing > a
 {
-    background-position: 0 -575px;
+    background-position: 0 -579px;
 }
 
 #mainMenu li.info .shares > a
 {
-    background-position: 0 -598px;
+    background-position: 0 -602px;
 }
 
 #mainMenu li.info .activity > a
 {
-    background-position: 0 -621px;
+    background-position: 0 -625px;
 }
 
 #mainMenu li.publish .grid > a
 {
-    background-position: 0 -644px;
+    background-position: 0 -648px;
 }
 
 #mainMenu li.publish .gridPage > a
 {
-    background-position: 0 -667px;
+    background-position: 0 -671px;
 }
 
 #mainMenu li.publish .page > a
 {
-    background-position: 0 -690px;
+    background-position: 0 -694px;
 }
 
 #mainMenu li.publish .form > a
 {
-    background-position: 0 -713px;
+    background-position: 0 -717px;
 }
 
 #mainMenu li.publish .search > a
 {
-    background-position: 0 -736px;
+    background-position: 0 -740px;
 }
 
 

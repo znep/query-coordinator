@@ -4,13 +4,17 @@ class BlistsController < SwfController
   def index
     # TODO: Get real use from login auth
     @body_class = 'home'
-    args = Hash.new
-    @blists = get_blists(params[:owner], params[:sharedTo],
-                        params[:sharedBy], params[:type],
-                        params[:untagged], params[:tag])
-    @title = get_title(params[:owner], params[:sharedTo],
-                        params[:sharedBy], params[:type],
-                        params[:untagged], params[:tag])
+    args = {'owner' => params[:owner],
+            'owner_group' => params[:ownerGroup],
+            'shared_to' => params[:sharedTo],
+            'shared_to_group' => params[:sharedToGroup],
+            'shared_by' => params[:sharedBy],
+            'shared_by_group' => params[:sharedByGroup],
+            'type' => params[:type],
+            'untagged' => params[:untagged],
+            'tag' => params[:tag]}
+    @blists = get_blists(args)
+    @title = get_title(args)
   end
 
   def show
@@ -37,35 +41,57 @@ class BlistsController < SwfController
 
 private
 
-  def get_blists(owner = nil, shared_to = nil, shared_by = nil, type = nil,
-                untagged = nil, tag = nil)
+  def get_blists(params = nil)
+    if params.nil?
+      params = Hash.new
+    end
+
     opts = Hash.new
-    if !shared_to.nil? && shared_to != @cur_user.id.to_s
-      opts['sharedTo'] = shared_to
+    if !params['shared_to'].nil? && params['shared_to'] != @cur_user.id.to_s
+      opts['sharedTo'] = params['shared_to']
     end
     cur_lenses = Lens.find(opts)
 
-    if !owner.nil?
-      cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s == owner}
+    if !params['owner'].nil?
+      cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s == params['owner']}
     end
-    if !shared_to.nil? && shared_to == @cur_user.id.to_s
-      cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s != owner &&
-        l.flag?('shared')}
+    if !params['owner_group'].nil?
+      group = Group.find(params['owner_group'])
+      cur_lenses = cur_lenses.find_all {|l| group.users.any? {|u|
+        u.id.to_s == l.owner.id.to_s}}
     end
-    if !shared_by.nil?
-      cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s == shared_by &&
-        l.is_shared?}
+
+    if !params['shared_to'].nil? && params['shared_to'] == @cur_user.id.to_s
+      cur_lenses = cur_lenses.find_all {|l|
+        l.owner.id.to_s != params['shared_to'] && l.flag?('shared')}
     end
-    if type == 'filter'
+    if !params['shared_to_group'].nil?
+      cur_lenses = cur_lenses.find_all {|l| l.grants.any? {|g|
+        g.groupId.to_s == params['shared_to_group']}}
+    end
+
+    if !params['shared_by'].nil?
+      cur_lenses = cur_lenses.find_all {|l|
+        l.owner.id.to_s == params['shared_by'] && l.is_shared?}
+    end
+    if !params['shared_by_group'].nil?
+      group = Group.find(params['shared_by_group'])
+      cur_lenses = cur_lenses.find_all {|l| group.users.any? {|u|
+        u.id.to_s == l.owner.id.to_s && l.flag?('shared')}}
+    end
+
+    if params['type'] == 'filter'
       cur_lenses = cur_lenses.find_all {|l| !l.flag?('default')}
-    elsif type == 'favorite'
+    elsif params['type'] == 'favorite'
       cur_lenses = cur_lenses.find_all {|l| l.flag?('favorite')}
     end
-    if !untagged.nil? && untagged
+
+    if !params['untagged'].nil? && params['untagged']
       cur_lenses = cur_lenses.find_all {|l| l.tags.length < 1}
     end
-    if !tag.nil?
-      cur_lenses = cur_lenses.find_all {|l| l.tags.any? {|t| t.data == tag}}
+    if !params['tag'].nil?
+      cur_lenses = cur_lenses.find_all {|l| l.tags.any? {|t|
+        t.data == params['tag']}}
     end
 
 
@@ -105,35 +131,46 @@ private
     return user_id == @cur_user.id.to_s ? 'me' : User.find(user_id).displayName
   end
 
-  def get_title(owner = nil, shared_to = nil, shared_by = nil, type = nil,
-               untagged = nil, tag = nil)
+  def get_title(params = nil)
+    if params.nil?
+      params = Hash.new
+    end
     title = 'All '
     title_type = 'blists'
 
     parts = Array.new
-    if !owner.nil?
-      parts << 'owned by ' + get_name(owner)
+    if !params['owner'].nil?
+      parts << 'owned by ' + get_name(params['owner'])
+    end
+    if !params['owner_group'].nil?
+      parts << 'owned by ' + Group.find(params['owner_group']).name
     end
 
-    if !shared_to.nil?
-      parts << 'shared to ' + get_name(shared_to)
+    if !params['shared_to'].nil?
+      parts << 'shared to ' + get_name(params['shared_to'])
+    end
+    if !params['shared_to_group'].nil?
+      parts << 'shared to ' + Group.find(params['shared_to_group']).name
     end
 
-    if !shared_by.nil?
-      parts << 'shared by ' + get_name(shared_by)
+    if !params['shared_by'].nil?
+      parts << 'shared by ' + get_name(params['shared_by'])
+    end
+    if !params['shared_by_group'].nil?
+      parts << 'shared by ' + Group.find(params['shared_by_group']).name
     end
 
-    if !untagged.nil? && untagged
+    if !params['untagged'].nil? && params['untagged']
       parts << 'with no tags'
     end
 
-    if !tag.nil?
-      parts << 'tagged "' + tag + '"'
+    if !params['tag'].nil?
+      parts << 'tagged "' + params['tag'] + '"'
     end
 
-    if !type.nil?
+    if !params['type'].nil?
       title_type =
-        case type
+        case params['type']
         when 'favorite'
           'my favorite blists'
         when 'filter'

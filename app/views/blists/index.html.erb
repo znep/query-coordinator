@@ -55,17 +55,32 @@
             <span>All Items</span></a></h4>
         <ul class="expandable">
           <li><a href='?owner=<%= @cur_user.id %>'
-            title='<%= h(get_title(@cur_user.id.to_s)) %>'>
-            <span>Owned by Me</span></a></li>
+            title='<%= h(get_title({'owner' => @cur_user.id.to_s})) %>'>
+            <span>Owned by <em>Me</em></span></a>
+          <%= contacts_filter_menu('?owner=', '?ownerGroup=',
+            'owner', 'owner_group', 'ownerMenu') %>
+          </li>
           <li><a href='?sharedTo=<%= @cur_user.id %>'
-            title='<%= h(get_title(nil, @cur_user.id.to_s)) %>'>
-            <span>Shared to Me</span></a></li>
+            title='<%= h(get_title({'shared_to' => @cur_user.id.to_s})) %>'>
+            <span>Shared to <em>Me</em></span></a>
+          <%= contacts_filter_menu('?sharedTo=', '?sharedToGroup=',
+            'shared_to', 'shared_to_group', 'sharedToMenu') %>
+          </li>
           <li><a href='?sharedBy=<%= @cur_user.id %>'
-            title='<%= h(get_title(nil, nil, @cur_user.id.to_s)) %>'>
-            <span>Shared by Me</span></a></li>
+            title='<%= h(get_title({'shared_by' => @cur_user.id.to_s})) %>'>
+            <span>Shared by <em>Me</em></span></a>
+          <%= contacts_filter_menu('?sharedBy=', '?sharedByGroup=',
+            'shared_by', 'shared_by_group', 'sharedByMenu') %>
+          </li>
           <li><a href='?type=favorite'
-            title='<%= h(get_title(nil, nil, nil, 'favorite')) %>'>
-            <span>Show only Favorites</span></a></li>
+            title='<%= h(get_title({'type' => 'favorite'})) %>'>
+            <span>Show only <em>Favorites</em></span></a>
+          <%= menu_tag({'id' => 'typeMenu', 'items' => [
+            { 'text' => 'Favorites', 'href' => '?type=favorite',
+              'title' => h(get_title({'type' => 'favorite'})) },
+            { 'text' => 'Filtered Views', 'href' => '?type=filter',
+              'title' => h(get_title({'type' => 'filter'}))}]}) %>
+          </li>
           <%# Deleted items not yet supported, but styled for future
           <li class="deleted"><a href='?filter=deleted:true'><span>Deleted Items</span></a></li>
           # End not yet supported %>
@@ -103,11 +118,11 @@
         <h4><a href="?" title='<%= h(get_title()) %>'><span>All Tags</span></a></h4>
         <ul class="expandable">
           <li class='untagged'><a href='?untagged=true'
-            title='<%= h(get_title(nil, nil, nil, nil, true)) %>'>
+            title='<%= h(get_title({'untagged' => true})) %>'>
             <span>Not Tagged</span></a></li>
           <% get_blist_tags().each do |tag| %>
           <li><a href='?tag=<%= CGI.escape(tag) %>'
-            title='<%= h(get_title(nil, nil, nil, nil, nil, tag)) %>'>
+            title='<%= h(get_title({'tag' => tag})) %>'>
             <span><%= h(tag) %></span></a></li>
           <% end %>
         </ul>
@@ -120,6 +135,6 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.tablesorter",
-    "plugins/jquery.treeTable.min", "util/humane-date",
+    "plugins/jquery.treeTable.min", "util/humane-date", "widgets/dropdown-menu",
     "screens/blists-screen", "screens/info-pane", :cache => "cache/all" %>
 <% end %>

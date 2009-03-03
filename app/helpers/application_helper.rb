@@ -31,7 +31,7 @@ module ApplicationHelper
   def menu_tag(options = {})
     items = options['items']
 
-    ret = "<ul id='" + options['id'].to_s + "' class='" +
+    ret = "<ul id='" + options['id'].to_s + "' class='" + options['class'].to_s +
       (options['bare_menu'] ? '' : ' menu') +
       (options['option_menu'] ? " optionMenu" : '') + "'>"
 
@@ -39,10 +39,13 @@ module ApplicationHelper
       if i['separator']
         ret += "<li class='separator'></li>"
       elsif i['section_title']
-        ret += "<li class='sectionTitle'>#{i['section_title']}</li>"
+        ret += "<li class='sectionTitle #{i['class']}'>#{i['section_title']}</li>"
       else
+        if i['title'].nil?
+          i['title'] = i['text']
+        end
         ret += "<li class='#{i['class']}" + (i['submenu'] ? ' submenu' : '') +
-          "'><a href='#{i['href']}'>" +
+          "'><a title='#{i['title']}' href='#{i['href']}'>" +
           "<span class='highlight'>#{i['text']}</span></a>"
         if i['submenu']
           ret += menu_tag(i['submenu'])

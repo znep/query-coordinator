@@ -86,13 +86,13 @@ $.tablesorter.addWidget({
                 groupValue = sortVal;
                 var $newRow = $("<tr class='sortGroup'/>");
                 var colSpan = table.config.headerNode[0].rows[0].cells.length;
-                
+
                 var $newCell = $("<td colspan='" + colSpan + "'/>");
                 $newRow.append($newCell);
-                
+
                 $newRow.find("td:first-child").append(
                     "<div>" + groupValue + "</div>");
-                
+
                 $curRow.before($newRow);
             }
         }
@@ -352,10 +352,10 @@ blist.myBlists.infoPane.tabLinkHandler = function (event)
 {
     event.preventDefault();
     var $target = $(event.currentTarget);
-    
+
     // Pull the tab id off of the link's href
     var tab_selector = $target.attr("href");
-    
+
     // Find the a inside the tab id that's not an expander
     $(tab_selector).find("a:not(.expander)").trigger("click");
 }
@@ -368,7 +368,18 @@ var blistsBarNS = blist.namespace.fetch('blist.myBlists.sidebar');
 
 blist.myBlists.sidebar.initializeHandlers = function ()
 {
-    $('#blistFilters a:not(.expander)').click(blistsBarNS.filterClickHandler);
+    $('#blistFilters a:not(.expander, ul.menu a)')
+        .click(blistsBarNS.filterClickHandler)
+        .each(function ()
+        {
+            $(this).siblings('ul.menu').dropdownMenu({triggerButton: $(this),
+                pullToTop: true,
+                linkCallback: blistsBarNS.filterMenuClickHandler,
+                openTest: function (event, $menu)
+                {
+                    return $(event.target).is('em');
+                }});
+        });
     $('#blistFilters a.expander').click(blistsBarNS.toggleSection);
 }
 
@@ -376,6 +387,13 @@ blist.myBlists.sidebar.filterClickHandler = function (event)
 {
     event.preventDefault();
     var $target = $(event.currentTarget);
+    if ($(event.target).is('em'))
+    {
+        $target.siblings('ul.menu').css('left',
+            $(event.target).position().left + 'px');
+        return;
+    }
+
     $target.trigger(blist.events.LIST_SELECTION, [$target.attr('title')]);
     $.Tache.Get({ url: $target.attr('href'),
             success: myBlistsNS.updateList });
@@ -385,6 +403,16 @@ blist.myBlists.sidebar.toggleSection = function (event)
 {
     event.preventDefault();
     $(event.target).parent(".expandableContainer").toggleClass('closed');
+}
+
+blist.myBlists.sidebar.filterMenuClickHandler = function (event, $menu,
+    $triggerButton)
+{
+    event.preventDefault();
+    var $target = $(event.currentTarget);
+    $triggerButton.attr('href', $target.attr('href'))
+        .attr('title', $target.attr('title'))
+        .find('em').text($target.text());
 }
 
 

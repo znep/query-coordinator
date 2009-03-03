@@ -19,14 +19,14 @@
     margin-bottom: 0.5em;
 }
 
-#sidebar .box .outerWrapper
+#sidebar .box > .outerWrapper
 {
     background-image: url(/stylesheets/images/sidebar/sidebar_corner_top_right.png);
     background-position: top right;
     background-repeat: no-repeat;
 }
 
-#sidebar .box .innerWrapper
+#sidebar .box > .outerWrapper > .innerWrapper
 {
     background-image: url(/stylesheets/images/sidebar/sidebar_corner_bottom_left.png);
     background-position: bottom left;
@@ -121,17 +121,32 @@
     display: none;
 }
 
-#sidebar .filterSection h4 {
+#sidebar .filterSection > ul > li > a,
+#sidebar .filterSection h4 a,
+#sidebar .filterSection ul.expandable > li > a
+{
+    background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    color: #212121;
+    display: block;
+    font-size: 1.2em;
+    line-height: 22px;
+    margin-left: 10px;
+    min-width: 0; /* Trigger the hasLayout property for IE7 */
+    padding: 0 0 0 25px;
+    text-decoration: none;
+}
+
+#sidebar .filterSection h4
+{
     font-size: 1em; /* Reset the font size of h4 so the link inside properly sizes to 12px. */
     padding-left: 12px;
 }
 #sidebar .filterSection h4 a
 {
-    background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
     background-position: 12px 0;
-    background-repeat: no-repeat;
     margin: 0;
-    padding: 0 0 0 25px;
 }
 
 #sidebar .filterSection.items h4 a
@@ -154,33 +169,26 @@
     background-position: 0 -132px;
 }
 
-#sidebar .filterSection ul 
+#sidebar .filterSection > ul,
+#sidebar .filterSection ul.expandable
 {
     margin-top: 3px;
 }
-#sidebar .filterSection li
+#sidebar .filterSection > ul > li,
+#sidebar .filterSection ul.expandable > li
 {
     padding: 2px 0;
     min-height: 0; /** Trigger hasLayout property for IE7. **/
 }
 
-#sidebar .filterSection li ul {
+#sidebar .filterSection > ul > li > ul.expandable
+{
     margin-left: 22px;
 }
 
-#sidebar .filterSection a
+#sidebar .filterSection a em
 {
-    background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    color: #212121;
-    display: block;
-    font-size: 1.2em;
-    line-height: 22px;
-    margin-left: 10px;
-    min-width: 0; /* Trigger the hasLayout property for IE7 */
-    padding: 0 0 0 25px;
-    text-decoration: none;
+    text-decoration: underline;
 }
 
 #sidebar .filterSection.items a
@@ -197,7 +205,7 @@
 {
     background-position: 0 -110px;
 }
-#sidebar .filterSection.projects li ul a 
+#sidebar .filterSection.projects li ul a
 {
     background-position: 0 -44px;
 }
@@ -220,12 +228,33 @@
     background-position: 0 0;
 }
 
-#sidebar .filterSection a span 
+#sidebar .filterSection > ul > li > a span,
+#sidebar .filterSection h4 a span,
+#sidebar .filterSection ul.expandable > li > a span
 {
     display: block;
+    height: 22px;
+    overflow: hidden;
     padding-left: 2px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-#sidebar .filterSection a:hover span 
+#sidebar .filterSection > ul > li > a:hover span,
+#sidebar .filterSection h4 a:hover span,
+#sidebar .filterSection ul.expandable > li > a:hover span
 {
     background: url(images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
+}
+
+ul.menu.contactsMenu li a
+{
+    padding-left: 0;
+    margin: 0;
+}
+
+ul.menu.contactsMenu li.sectionTitle.sortHeader
+{
+    color: #e8a134;
+    font-weight: bold;
+    padding: 0 5px;
 }

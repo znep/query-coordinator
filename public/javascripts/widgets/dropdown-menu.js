@@ -9,34 +9,53 @@
  *  menuOpenClass: Class name to add/remove from a menu when it is shown/hidden
  *
  *  triggerOpenClass: Class name to add/remove from the triggerButton when it is
- *    shown/hidden
+ *      shown/hidden
  *
  *  optionMenuSelector: Selector that determines if a menu is an option menu,
- *    which means that you have one selected a at a time
+ *      which means that you have one selected a at a time
  *
  *  selectedItemClass: Class to apply to the single selected item in an optionMenu
  *
  *  menuSelector: Selector to find (sub) menus
  *
  *  submenuSelector: Selector to find item containers for submenus; i.e.,
- *    the menu item that contains a submenu
+ *      the menu item that contains a submenu
  *
  *  activeClass: Class to use for the active menu item for the top level of
- *    a multilevel menu
+ *      a multilevel menu
  *
  *  multilevelMenuSelector: Selector to determine if a menu is a multilevel menu
  *
  *  topLevelLinkSelector: Selector to find the top-level links for a multilevel menu
  *
+ *  pullToTop: Whether or not to pull the menu out of the container into the top
+ *      level of the HTML.  This allows it to escape scrollbars or other
+ *      limitations of the container.  The disadvantage is that the menu is
+ *      no longer if the same contaienr as the link, which can make manipulation
+ *      or styling more difficult.  Also, the menuBar option does not work with
+ *      this option.  Defaults to false.
+ *
  *  triggerButton: (no default) jQuery object that is the button to use to show
- *    the menu
+ *      the menu
  *
  *  menuBar: (no default) jQuery object in which to link other menus.  If
- *    another menu in this menu bar is open, then this menu will be triggered
- *    on mouseover, instead of click.  The other open menu(s) will be closed.
- *    If menuBar is used, menuOpenClass must be used only for open menus
- *    controlled by this plugin, and must be the same menuOpenClass used for
- *    all menus in the menuBar.
+ *      another menu in this menu bar is open, then this menu will be triggered
+ *      on mouseover, instead of click.  The other open menu(s) will be closed.
+ *      If menuBar is used, menuOpenClass must be used only for open menus
+ *      controlled by this plugin, and must be the same menuOpenClass used for
+ *      all menus in the menuBar.
+ *
+ *  linkCallback: (no default) Function to call whenever a link in the menu
+ *      is clicked.  It passes three parameters: the event, the jQuery menu,
+ *      and the jQuery button that triggered the menu
+ *      The advantage to using this instead of adding your own click handler
+ *      outside the menu is that this will pass in the menu & trigger button
+ *
+ *  openTest: (no default) Function to call for whether or not the menu should
+ *      actually open when clicked.  It is called whenever the triggerButton is
+ *      is clicked to open the menu, and passes in the event and the jQuery menu.
+ *      It should return true if the menu should open, false otherwise.  If no
+ *      function is set for openTest, the menu will always open.
  *
  * Author: jeff.scherpelz@blist.com
  */
@@ -59,12 +78,24 @@
             // Hook up click handler to show menu
             config.triggerButton.click(function (event)
             {
-                if (!$menu.hasClass(config.menuOpenClass))
+                if (config.openTest === undefined || config.openTest(event, $menu))
                 {
-                    event.stopPropagation();
-                    showMenu($menu);
+                    if (!$menu.hasClass(config.menuOpenClass))
+                    {
+                        event.stopPropagation();
+                        showMenu($menu);
+                    }
                 }
             });
+
+            // If they want a callback when a link is clicked, add it
+            if (config.linkCallback !== undefined)
+            {
+                $menu.find('a').click(function (event)
+                {
+                    config.linkCallback(event, $menu, config.triggerButton);
+                });
+            }
 
             /* Hook up submenu handlers */
             var $submenus = $menu.find(config.submenuSelector);
@@ -137,12 +168,23 @@
     function showMenu($menu)
     {
         var config = $menu.data("config");
+        // We've got to close all other menus; there can be only one!
+        $(config.menuSelector).each(function () { hideMenu($(this)) });
+
         $menu.addClass(config.menuOpenClass);
         config.triggerButton.addClass(config.triggerOpenClass);
         $(document).bind('click.' + $menu.attr('id'), function (event)
         {
             documentClickedHandler(event, $menu);
         });
+
+        if (config.pullToTop)
+        {
+            config.origPosition = $menu.position();
+            var offsetPos = $menu.offset();
+            offsetPos.top += $menu.offsetParent().scrollTop();
+            $menu.css(offsetPos).appendTo('body');
+        }
     };
 
     /* Hide a menu, and toggle the button state.  Stop listening for
@@ -154,6 +196,12 @@
         {
             return;
         }
+
+        if (config.pullToTop)
+        {
+            $menu.css(config.origPosition).insertAfter(config.triggerButton);
+        }
+
         $menu.removeClass(config.menuOpenClass);
         // Close any submenus
         closeSubmenus(null, $menu);
@@ -180,7 +228,7 @@
     function documentClickedHandler(event, $menu)
     {
         var $target = $(event.target);
-        if ($target.parents('#' + $menu.attr('id')).length == 0 ||
+        if ($target.parents('*').index($menu[0]) < 0 ||
             $target.is('a') ||
             $target.parents('a').length > 0)
         {
@@ -216,7 +264,8 @@
         submenuSelector: '.submenu',
         activeClass: 'active',
         multilevelMenuSelector: '.multilevelMenu',
-        topLevelLinkSelector: 'dt a'
+        topLevelLinkSelector: 'dt a',
+        pullToTop: false
     };
 
 })(jQuery);

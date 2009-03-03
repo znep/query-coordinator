@@ -20,6 +20,24 @@ class Model
     send_request(path)
   end
 
+  def self.find_under_user(options)
+    user_id = User.current_user.id.to_s
+    if !options['userId'].nil?
+      user_id = options['userId']
+      options.delete('userId')
+    end
+
+    path = nil
+    if options.is_a? Hash
+      path = "/users/#{user_id}/#{self.name.pluralize.downcase}.json?" +
+        options_string(options)
+    else
+      path = "/users/#{user_id}/#{self.name.pluralize.downcase}/#{options}.json"
+    end
+
+    send_request(path)
+  end
+
   def self.options_string(options)
     return options.collect{ |k,v|
       if v.is_a? Array

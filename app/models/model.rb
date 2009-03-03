@@ -9,7 +9,10 @@ class Model
 
   #options - the primary lookup of the model object.  Usually id except for users where it is login
   #options could also be a hash of parameters.  see: user_test.rb
-  def self.find( options )
+  def self.find( options = nil )
+    if options.nil?
+      options = Hash.new
+    end
     path = nil
     if options.is_a? Hash
       path = "/#{self.name.pluralize.downcase}.json?" + options_string(options)
@@ -20,7 +23,10 @@ class Model
     send_request(path)
   end
 
-  def self.find_under_user(options)
+  def self.find_under_user(options = nil)
+    if options.nil?
+      options = Hash.new
+    end
     user_id = User.current_user.id.to_s
     if !options['userId'].nil?
       user_id = options['userId']

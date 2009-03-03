@@ -13,7 +13,7 @@ module BlistsHelper
   end
 
   def get_blist_tags
-    lenses = Lens.find(Hash.new)
+    lenses = Lens.find()
 
     tags = []
     lenses.each { |l| tags << l.tags.collect { |t| t.data } }
@@ -49,7 +49,7 @@ module BlistsHelper
               'title' => get_title({title_key => @cur_user.id.to_s})}]
 
     items << {'section_title' => 'Groups'}
-    groups = Group.find(Hash.new).sort {|a,b| a.name <=> b.name}
+    groups = Group.find().sort {|a,b| a.name <=> b.name}
     first_char = ''
     groups.each do |g|
       name_char = g.name.slice(0, 1).upcase
@@ -62,7 +62,7 @@ module BlistsHelper
     end
 
     items << {'section_title' => 'Contacts'}
-    contacts = Contact.find(Hash.new).sort {|a,b| a.displayName <=> b.displayName}
+    contacts = Contact.find().sort {|a,b| a.displayName <=> b.displayName}
     first_char = ''
     contacts.each do |c|
       name_char = c.displayName.slice(0, 1).upcase

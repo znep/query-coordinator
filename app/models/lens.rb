@@ -1,5 +1,5 @@
 class Lens < Model
-  def self.find( options )
+  def self.find( options = nil )
     self.find_under_user(options)
   end
 

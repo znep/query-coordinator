@@ -40,7 +40,9 @@
         <td class='description clipText'><div><%= h(blist.description) %></div></td>
         <td class='owner'><div><%= h(blist.owner.displayName) %></div></td>
         <td class='lastUpdated last'><div><%= blist.rowsUpdatedAt ?
-            Time.at(blist.rowsUpdatedAt/1000).strftime("%b %d, %Y") : '' %>
+            Time.at(blist.rowsUpdatedAt/1000).strftime("%b %d, %Y") :
+            blist.createdAt ?
+            Time.at(blist.createdAt/1000).strftime("%b %d, %Y") : '' %>
           </div></td>
       </tr>
     <% end %>

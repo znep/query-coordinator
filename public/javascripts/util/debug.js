@@ -27,5 +27,8 @@ blist.debug.clearCache = function ()
 $(function ()
 {
     // Alias for inspecting the request cache
-    blist.debug.cache = $.Tache.Data;
+    if ($.Tache)
+    {
+      blist.debug.cache = $.Tache.Data;
+    }
 });

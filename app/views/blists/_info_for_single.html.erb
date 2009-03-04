@@ -22,7 +22,6 @@
     </li>
     <li id="tabPublishing">
       <div class="tabInner">
-        <a href="#expand" class="expander">expand</a>
         <a href="#publishing">Publishing</a>
       </div>
     </li>
@@ -38,16 +37,18 @@
 <%# *** START: SUMMARY *** %>
 <div class="infoContentOuter singleInfoSummary listContainer active">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader <%= get_type_icon_header_class_for_lens(lens) %>"><%= lens.name %></h2>
+    <h2 class="panelHeader <%= get_permissions_icon_class_for_lens(lens) %>">
+      <%= h(lens.name) %>
+    </h2>
     <ul class="headerActions actionButtons">
       <li><a href="<%= blist_url(lens.id) %>" class="arrowButton">Open</a></li>
-      <li><a href="#duplicate">Delete All</a></li>
+      <li><a href="#duplicate">Duplicate</a></li>
       <li><a href="#share">Share</a></li>
     </ul>
   </div>
   <div class="infoContentInner">
     <div class="infoContent">
-    
+
       <dl class="summaryList">
         <dt>
           Description
@@ -62,7 +63,7 @@
           </div>
         </dd>
       </dl>
-    
+
       <%- if (lens.tags.length > 0) -%>
       <dl class="summaryList">
         <dt>
@@ -79,7 +80,7 @@
         </dd>
       </dl>
       <%- end -%>
-    
+
       <dl class="summaryList">
         <dt>
           Category
@@ -94,7 +95,7 @@
           </div>
         </dd>
       </dl>
-    
+
       <dl class="summaryList">
         <dt>
           Owner
@@ -106,7 +107,7 @@
           </div>
         </dd>
       </dl>
-    
+
       <dl class="summaryList">
         <dt>
           Created On
@@ -114,11 +115,11 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>[10/15/2008]</span>
+            <span><%= blist_date(lens.createdAt) %></span>
           </div>
         </dd>
       </dl>
-    
+
       <dl class="summaryList">
         <dt>
           Last Update
@@ -126,15 +127,17 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= lens.last_updated_user.displayName %>: <%= lens.rowsUpdatedAt ? 
-              Time.at(lens.rowsUpdatedAt/1000).strftime("%b %d, %Y") : '' %></span>
+            <span><%= h(lens.last_updated_user.displayName) %>:
+              <%= blist_date(lens.rowsUpdatedAt) || blist_date(lens.createdAt) %>
+            </span>
           </div>
           <div class="itemActions">
-            <a href="#tabActivity" class="action tabLink"><span>View Activity</span></a>
+            <a href="#tabActivity" class="action tabLink">
+              <span>View Activity</span></a>
           </div>
         </dd>
       </dl>
-    
+
       <dl class="summaryList">
         <dt>
           Filtered Views
@@ -149,7 +152,7 @@
           </div>
         </dd>
       </dl>
-      
+
       <dl class="summaryList">
         <dt>
           Community Activity
@@ -163,11 +166,13 @@
             </ul>
           </div>
           <div class="itemActions">
-            <a href="#tabActivity" class="action tabLink"><span>View Activity</span></a>
+            <a href="#tabActivity" class="action tabLink">
+              <span>View Activity</span>
+            </a>
           </div>
         </dd>
       </dl>
-    
+
       <dl class="summaryList">
         <dt>
           Link
@@ -182,7 +187,7 @@
           </div>
         </dd>
       </dl>
-    
+
       <dl class="summaryList">
         <dt>
           Permissions
@@ -190,14 +195,14 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>[Public]</span>
+            <span><%= lens.is_public? ? 'Public' : 'Private' %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
           </div>
         </dd>
       </dl>
-    
+
       <dl class="summaryList">
         <dt>
           Sharing
@@ -206,18 +211,26 @@
         <dd>
           <div class="itemContent">
             <ul>
-              <li>[0 Contributors]</li>
-              <li>[2 Viewers]</li>
+              <li>
+                <%= pluralize(lens.contributor_users.length, 'Contributor') %>
+              </li>
+              <li>
+                <%= pluralize(lens.viewer_users.length, 'Viewer') %>
+              </li>
+              <%# Not supported
               <li>[3 Requests]</li>
+              %>
             </ul>
           </div>
           <ul class="itemActions">
             <li><a href="#share" class="action"><span>Share</span></a></li>
+            <%# Not supported
             <li><a href="#view_requests" class="action"><span>View Requests</span></a></li>
+            %>
           </ul>
         </dd>
       </dl>
-    
+
     </div> <!-- /.infoContent -->
   </div> <!-- /.infoContentInner -->
 </div>
@@ -226,7 +239,9 @@
 <%# *** START: FILTERED *** %>
 <div class="infoContentOuter singleInfoFiltered">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader"><%= pluralize(lens.filters.length, "Filtered View") %></h2>
+    <h2 class="panelHeader">
+      <%= pluralize(lens.filters.length, "Filtered View") %>
+    </h2>
     <ul class="headerActions actionButtons">
       <li><a href="#open" class="arrowButton">Create</a></li>
     </ul>
@@ -251,20 +266,27 @@
               <tr class="item">
                 <td class="handle"><div></div></td>
                 <td class="favorite <%= filter.flag?('favorite') %>"><div>
-                  <%= filter.flag?('favorite') ? "*" : "" %></div></td>
-                <td class="type <%= get_type_icon_class_for_lens(filter) %>"><div><%= get_type_string_for_lens(filter) %></div></td>
+                    <%= filter.flag?('favorite') ? "*" : "" %>
+                </div></td>
+                <td class="type <%=
+                  get_share_direction_icon_class_for_lens(filter) %>">
+                  <div><%= get_type_string_for_lens(filter) %></div>
+                </td>
                 <td class="name"><div><%= h(filter.name) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
-                <td class="viewed"><div><%= lens.lastOpenedDate ? 
-                  Time.at(lens.rowsUpdatedAt/1000).strftime("%b %d, %Y") : '' %></div></td>
-                <td class="actionContainer"><div><a href="<%= blist_url(filter.id) %>" class="action" title="<%= h(filter.name) %>"><span>View</span></a></div></td>
+                <td class="viewed"><div><%= blist_date(lens.lastOpenedDate) %>
+                </div></td>
+                <td class="actionContainer"><div><a
+                      href="<%= blist_url(filter.id) %>" class="action"
+                      title="<%= h(filter.name) %>"><span>View</span></a>
+                </div></td>
               </tr>
             <%- end -%>
           </tbody>
         </table>
       </div>
-      
-      
+
+
     </div>
   </div>
 </div>
@@ -273,9 +295,10 @@
 <%# *** START: SHARING *** %>
 <div class="infoContentOuter singleInfoSharing">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader first">4 Shares</h2>
-    <h2 class="panelHeader <%= get_type_icon_header_class_for_lens(lens) %>">
-      <%= lens.is_private? ? "Private" : "Public" %>
+    <%- shares = lens.shares -%>
+    <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
+    <h2 class="panelHeader <%= get_permissions_icon_class_for_lens(lens) %>">
+      <%= lens.is_public? ? "Public" : "Private" %>
     </h2>
     <ul class="headerActions actionButtons">
       <li><a href="#open" class="arrowButton" title="Share">Share</a></li>
@@ -284,64 +307,48 @@
   <div class="infoContentInner">
     <div class="infoContent">
       <div class="sharingSummary">
-        <p class="<%= lens.is_private? ? "private" : "public" %>">
-          This <%= lens.is_blist? ? "blist" : "filter" %> is <em><%= lens.is_private? ? "Private" : "Public" %></em>
+        <p class="<%= lens.is_public? ? "public" : (lens.is_shared? ?
+          "privateShared" : "private") %>">
+        This <%= lens.is_blist? ? "blist" : "filter" %> is
+        <em><%= lens.is_public? ? "Public" : "Private" %></em>
+        <%= lens.is_shared? ? ' and shared with the following ' +
+        (shares.length == 1 ? 'contact' : 'contact'.pluralize) + ':' : '' %>
         </p>
       </div>
-      
+
       <div class="selectableListContainer">
         <table class="selectableList" cellspacing="0">
           <thead>
             <tr>
               <th class="handle first"><div></div></th>
-              <th class="contact" title="Contact/Group"><div>Contact / Group</div></th>
+              <th class="contact" title="Contact/Group">
+                <div>Contact / Group</div>
+              </th>
               <th class="role" title="Role"><div>Role</div></th>
+              <%# Not supported
               <th class="others"><div>Can Share w/ Others</div></th>
               <th class="opened"><div>Last Opened</div></th>
+              %>
               <th class="actionContainer last"></th>
             </tr>
           </thead>
           <tbody>
+            <%- lens.shares.sort {|a,b|
+              a.type <=> b.type ||
+              a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
             <tr class="item">
               <td class="handle"><div></div></td>
-              <td class="contact"><div>Bob Dobolina</div></td>
-              <td class="role"><div>Contributor</div></td>
+              <td class="contact"><div><%= h(s.member_name) %></div></td>
+              <td class="role"><div><%= s.type %></div></td>
+              <%# Not supported
               <td class="others"><div>Yes</div></td>
               <td class="opened"><div>01/09/2009</div></td>
+              %>
               <td class="actionContainer"><div>
                 <a href="#view" class="action"><span>View Activity</span></a>
               </div></td>
             </tr>
-            <tr class="item">
-              <td class="handle"><div></div></td>
-              <td class="contact"><div>Group Name</div></td>
-              <td class="role"><div>Viewer</div></td>
-              <td class="others"><div>No</div></td>
-              <td class="opened"><div>01/09/2009</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View Activity</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="handle"><div></div></td>
-              <td class="contact"><div>Contact Name</div></td>
-              <td class="role"><div>Contributor</div></td>
-              <td class="others"><div>No</div></td>
-              <td class="opened"><div>01/09/2009</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View Activity</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="handle"><div></div></td>
-              <td class="contact"><div>Group Name</div></td>
-              <td class="role"><div>Viewer</div></td>
-              <td class="others"><div>Yes</div></td>
-              <td class="opened"><div>01/09/2009</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View Activity</span></a>
-              </div></td>
-            </tr>
+            <%- end -%>
           </tbody>
         </table>
       </div>
@@ -354,12 +361,15 @@
 <div class="infoContentOuter singleInfoPublishing">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader">Publishing</h2>
+    <%# Not supported
     <h2 class="panelHeader">3212 total views</h2>
+    %>
     <ul class="headerActions actionButtons">
       <li><a href="#open" class="arrowButton">Publish a Widget</a></li>
     </ul>
   </div>
   <div class="infoContentInner">
+    <%# Not supported
     <div class="infoContent">
       <div class="selectableListContainer simple">
         <table class="selectableList" cellspacing="0">
@@ -408,6 +418,7 @@
         </table>
       </div>
     </div>
+    %>
   </div>
 </div>
 <%# *** END: PUBLISHING *** %>
@@ -431,41 +442,41 @@
           </thead>
           <tbody>
             <tr class="item">
-              <td class="when"><div>01/09/2009</div></td>
-              <td class="who"><div>Jim Beam</div></td>
-              <td class="what"><div>Added new row 1A2B3C</div></td>
+              <td class="when"><div>[01/09/2009]</div></td>
+              <td class="who"><div>[Jim Beam]</div></td>
+              <td class="what"><div>[Added new row 1A2B3C]</div></td>
               <td class="actionContainer"><div>
                 <a href="#view" class="action"><span>View</span></a>
               </div></td>
             </tr>
             <tr class="item">
-              <td class="when"><div>01/10/2009</div></td>
-              <td class="who"><div>Jose Cuervo</div></td>
-              <td class="what"><div>Updated row 1A2B3C</div></td>
+              <td class="when"><div>[01/10/2009]</div></td>
+              <td class="who"><div>[Jose Cuervo]</div></td>
+              <td class="what"><div>[Updated row 1A2B3C]</div></td>
               <td class="actionContainer"><div>
                 <a href="#view" class="action"><span>View</span></a>
               </div></td>
             </tr>
             <tr class="item">
-              <td class="when"><div>01/10/2009</div></td>
-              <td class="who"><div>Jack Daniels</div></td>
-              <td class="what"><div>Commented</div></td>
+              <td class="when"><div>[01/10/2009]</div></td>
+              <td class="who"><div>[Jack Daniels]</div></td>
+              <td class="what"><div>[Commented]</div></td>
               <td class="actionContainer"><div>
                 <a href="#view" class="action"><span>View</span></a>
               </div></td>
             </tr>
             <tr class="item">
-              <td class="when"><div>01/10/2009</div></td>
-              <td class="who"><div>Jack Daniels</div></td>
-              <td class="what"><div>Replied to comment</div></td>
+              <td class="when"><div>[01/10/2009]</div></td>
+              <td class="who"><div>[Jack Daniels]</div></td>
+              <td class="what"><div>[Replied to comment]</div></td>
               <td class="actionContainer"><div>
                 <a href="#view" class="action"><span>View</span></a>
               </div></td>
             </tr>
             <tr class="item">
-              <td class="when"><div>01/11/2009</div></td>
-              <td class="who"><div>Jose Cuervo</div></td>
-              <td class="what"><div>Copied this blist to create "Good Mixers"</div></td>
+              <td class="when"><div>[01/11/2009]</div></td>
+              <td class="who"><div>[Jose Cuervo]</div></td>
+              <td class="what"><div>[Copied this blist to create "Good Mixers"]</div></td>
               <td class="actionContainer"><div>
                 <a href="#view" class="action"><span>View</span></a>
               </div></td>

@@ -166,7 +166,7 @@
 .infoContentHeader h2.panelHeader.typeFilters { background-position: left -41px; }
 .infoContentHeader h2.panelHeader.typeBlist { background-position: left -82px; }
 .infoContentHeader h2.panelHeader.typeBlist.private { background-position: left -123px; }
-.infoContentHeader h2.panelHeader.typeBlist.privateSchema { background-position: left -164px; }
+.infoContentHeader h2.panelHeader.typeBlist.privateShared { background-position: left -164px; }
 .infoContentHeader h2.panelHeader.typeComments { background-position: left -205px; }
 .infoContentHeader h2.panelHeader.typeSharing { background-position: left -246px; }
 .infoContentHeader h2.panelHeader.typePublish { background-position: left -328px; }
@@ -174,7 +174,7 @@
 .infoContentHeader h2.panelHeader.typeActivity { background-position: left -410px; }
 .infoContentHeader h2.panelHeader.typeFilter { background-position: left -451px; }
 .infoContentHeader h2.panelHeader.typeFilter.private { background-position: left -492px; }
-.infoContentHeader h2.panelHeader.typeFilter.privateSchema { background-position: left -533px; }
+.infoContentHeader h2.panelHeader.typeFilter.privateShared { background-position: left -533px; }
 
 .infoContentHeader .selectPrompt 
 {
@@ -285,7 +285,7 @@
     cursor: pointer;
     display: block;
     font-size: 1.1em;
-    padding: 3px 0 5px 10px;
+    padding: 3px 4em 5px 10px;
     text-decoration: none;
 }
 .infoContentOuter.listContainer .infoContent dd.hover .itemContent
@@ -408,10 +408,20 @@
 
 /*** END: selectable list table ***/
 
+/*** START: single info filtered tab ***/
+
+.singleInfoFiltered .infoContentHeader h2.panelHeader
+{
+    background-position: left -41px;
+}
+
+/*** END: single info filtered tab ***/
+
 /*** START: single info sharing tab ***/
 
 .singleInfoSharing .infoContentHeader > h2.panelHeader.first
 {
+    background-position: left -246px;
     border-right: 1px solid #e1d3b6;
     padding-right: 10px;
 }
@@ -439,6 +449,10 @@
 {
     background-position: left -574px;
 }
+.singleInfoSharing .sharingSummary p.privateShared
+{
+    background-position: left -574px;
+}
 
 .singleInfoSharing .sharingSummary p em
 {
@@ -458,10 +472,6 @@
     background-color: #ffedb2;
 }
 
-#infoPane table.selectableList .contact
-{
-    width: 40%;
-}
 #infoPane table.selectableList .role
 {
     width: 6em;

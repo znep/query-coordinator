@@ -7,6 +7,10 @@ class Lens < Model
     flag?("default")
   end
 
+  def is_public?
+    grants.any? {|p| p.isPublic}
+  end
+
   def is_private?
     grants.length == 0
   end
@@ -23,16 +27,65 @@ class Lens < Model
     User.find(rowsUpdatedBy)
   end
 
-  #TODO: This is not yet working correctly. Currently returns all blists for the user.
-  def filters
-    ret_filters = Lens.find( {"blist" => self.blistId} )
+  def contributor_users
+    grants.find_all {|g| !g.isPublic && g.type != 'read'}.
+      collect do |g|
+        if !g.groupId.nil?
+          Group.find(g.groupId.to_s).users.collect {|u| u.id.to_s}
+        elsif !g.userId.nil?
+          g.userId.to_s
+        else
+          g.userEmail
+        end
+      end.flatten.sort.uniq
+  end
 
-    #Filter out all but the filters for this particular blist until the above query works.
-    ret_filters.delete_if do |b|
-      b.blistId != self.blistId || ( b.is_blist?)
+  def viewer_users
+    contributors = contributor_users
+    grants.find_all {|g| !g.isPublic && g.type == 'read'}.
+      collect do |g|
+        if !g.groupId.nil?
+          Group.find(g.groupId.to_s).users.collect {|u| u.id.to_s}
+        elsif !g.userId.nil?
+          g.userId.to_s
+        else
+          g.userEmail
+        end
+      end.flatten.sort.uniq.reject {|u| contributors.include? u}
+  end
+
+  def shares
+    user_shares = Hash.new
+    group_shares = Hash.new
+    grants.reject {|g| g.isPublic}.each do |g|
+      if !g.groupId.nil?
+        if !group_shares[g.groupId.to_s]
+          s = Share.new(nil, g.groupId.to_s, Group.find(g.groupId.to_s).name,
+                        false, true)
+          s.type = g.type == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
+          group_shares[g.groupId.to_s] = s
+        elsif g.type != 'read'
+          group_shares[g.groupId.to_s].type = Share::CONTRIBUTOR
+        end
+      else
+        user_id = g.userId.nil? ? g.userEmail : g.userId.to_s
+        if !user_shares[user_id]
+          s = Share.new(nil, user_id, g.userId.nil? ?
+                        g.userEmail : User.find(g.userId.to_s).displayName,
+                        true, false)
+          s.type = g.type == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
+          user_shares[user_id] = s
+        elsif g.type != 'read'
+          user_shares[user_id].type = Share::CONTRIBUTOR
+        end
+      end
     end
 
-    ret_filters
+    group_shares.values.concat(user_shares.values)
+  end
+
+  def filters
+    Lens.find( {"blistId" => self.blistId} ).reject {|l| l.is_blist?}
   end
 
 end

@@ -33,17 +33,18 @@
         <td class='handle first'><div></div></td>
         <td class='favorite <%= blist.flag?('favorite') %>'><div>
           <%= blist.flag?('favorite') ? '*' : '' %></div></td>
-        <td class='type'><div class="<%= get_type_icon_class_for_lens(blist) %>">
+        <td class='type'><div class="<%=
+          get_share_direction_icon_class_for_lens(blist) %>">
           <%= get_type_string_for_lens(blist) %>
         </div></td>
-        <td class='name clipText'><%= link_to(h(blist.name), blist_url(blist.id)) %></td>
+        <td class='name clipText'>
+          <%= link_to(h(blist.name), blist_url(blist.id)) %>
+        </td>
         <td class='description clipText'><div><%= h(blist.description) %></div></td>
         <td class='owner'><div><%= h(blist.owner.displayName) %></div></td>
-        <td class='lastUpdated last'><div><%= blist.rowsUpdatedAt ?
-            Time.at(blist.rowsUpdatedAt/1000).strftime("%b %d, %Y") :
-            blist.createdAt ?
-            Time.at(blist.createdAt/1000).strftime("%b %d, %Y") : '' %>
-          </div></td>
+        <td class='lastUpdated last'><div>
+            <%= blist_date(blist.rowsUpdatedAt) || blist_date(blist.createdAt) %>
+        </div></td>
       </tr>
     <% end %>
   </tbody>

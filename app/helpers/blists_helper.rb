@@ -1,31 +1,24 @@
 module BlistsHelper
 
-  def get_type_icon_class_for_lens(lens)
+  # Used for lists of lenses, to determine shared in/out
+  def get_share_direction_icon_class_for_lens(lens)
     icon_class = "itemType"
     icon_class += lens.is_blist? ? " typeBlist" : " typeFilter"
 
     if lens.is_shared?
       icon_class += lens.owner.id == @cur_user.id ? " sharedOut" : " sharedIn"
-    elsif lens.is_private?
-      icon_class += lens.flag?("schemaPublic") ? " privateSchema" : " private"
     end
     icon_class
   end
 
-  def get_blist_tags
-    lenses = Lens.find()
-
-    tags = []
-    lenses.each { |l| tags << l.tags.collect { |t| t.data } }
-    tags.flatten.sort.uniq
-  end
-
-  # Used for the header icon in the info pane.
-  def get_type_icon_header_class_for_lens(lens)
+  # Used for individual lenses, to determine permission levels
+  def get_permissions_icon_class_for_lens(lens)
     icon_class = lens.is_blist? ? "typeBlist" : "typeFilter"
 
-    if lens.is_private?
-      icon_class += lens.flag?("schemaPublic") ? " privateSchema" : " private"
+    if !lens.is_public?
+      icon_class += lens.is_shared? ? " privateShared" : " private"
+    else
+      icon_class += " public"
     end
     icon_class
   end
@@ -38,9 +31,17 @@ module BlistsHelper
     end
 
     blist_type = lens.is_blist? ? "blist" : "filter"
-    privacy_type = lens.is_private? ? "private" : ""
+    privacy_type = !lens.is_public? ? "private" : ""
 
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
+  end
+
+  def get_blist_tags
+    lenses = Lens.find()
+
+    tags = []
+    lenses.each { |l| tags << l.tags.collect { |t| t.data } }
+    tags.flatten.sort.uniq
   end
 
   def contacts_filter_menu(href_prefix, href_group_prefix,

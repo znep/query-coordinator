@@ -405,12 +405,12 @@ private
 .itemType.typeBlist.sharedOut { background-position: left -31px; }
 .itemType.typeBlist.sharedIn { background-position: left -62px; }
 .itemType.typeBlist.private { background-position: left -93px; }
-.itemType.typeBlist.privateSchema { background-position: left -279px; }
+.itemType.typeBlist.privateShared { background-position: left -279px; }
 .itemType.typeFilter { background-position: left -124px; }
 .itemType.typeFilter.sharedOut { background-position: left -155px; }
 .itemType.typeFilter.sharedIn { background-position: left -186px; }
 .itemType.typeFilter.private { background-position: left -217px; }
-.itemType.typeFilter.privateSchema { background-position: left -248px; }
+.itemType.typeFilter.privateShared { background-position: left -248px; }
 
 /*** END: item type icons ***/
 

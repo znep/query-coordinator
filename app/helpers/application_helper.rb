@@ -66,7 +66,7 @@ module ApplicationHelper
   end
   
   def blist_date(time)
-    Time.at(time/1000).strftime("%b %d, %Y")
+    time ? Time.at(time/1000).strftime("%b %d, %Y") : nil
   end
   
 end

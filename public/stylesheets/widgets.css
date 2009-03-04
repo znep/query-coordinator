@@ -457,3 +457,97 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
     width: 23px;
 }
 /*** END: fixed menu ***/
+
+/*** START: feature boxes (for getting started) ***/
+.featureBoxes ul li
+{
+    border-right: 1px solid #ccc;
+    float: left;
+    margin-right: 15px;
+    padding-right: 15px;
+    width: 199px;
+}
+.featureBoxes ul li.last
+{
+    border: none;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+.featureBoxes li h2
+{
+    font-size: 1.8em;
+    letter-spacing: .02em;
+    margin-bottom: 5px;
+}
+.featureBoxes li p
+{
+    font-size: 1.2em;
+    letter-spacing: .04em;
+    line-height: 1.33em;
+    margin-bottom: .5em;
+}
+.featureBoxes li p.watchButton a
+{
+    background: url("images/home/icon_watch_video.png") no-repeat;
+    color: #666;
+    display: block;
+    font-size: 10px;
+    font-weight: bold;
+    height: 22px;
+    line-height: 22px;
+    padding-left: 28px;
+    text-transform: uppercase;
+}
+/*** END: feature boxes (for getting started) ***/
+
+/*** START: alert box ***/
+.noticePanel
+{
+    background: #e5f0f0 url(images/common/notice_panel_content_background.png) left bottom repeat-x;
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 0 1px 1px;
+    margin-top: 20px;
+    padding-bottom: 13px;
+}
+.noticeHeaderOuter
+{
+    background: url(images/common/notice_panel_header_background.png) repeat-x;
+    border-top: 1px solid #ccc;
+}
+.noticeHeaderInner
+{
+    background: url(images/common/notice_panel_header_left.png) no-repeat;
+    margin: -1px 0 0 -1px;
+}
+.noticeHeader
+{
+    background: url(images/common/notice_panel_header_right.png) right top no-repeat;
+    border-bottom: 1px solid #ccc;
+    height: 30px;
+    margin: -1px -1px 0 0;
+}
+.noticeHeader > h2, .noticeHeader > p
+{
+    color: #666;
+    float: left;
+    font-size: 1.2em;
+    line-height: 30px;
+    padding-left: 15px;
+}
+.noticeHeader > p.noticePanelCloser
+{
+    float: right;
+    font-size: 1em;
+    text-transform: uppercase;
+    width: 60px;
+}
+.noticeHeader > p.noticePanelCloser a
+{
+    background: url(images/common/expander_arrows.png) right 50% no-repeat;
+    color: #666;
+    display: block;
+    margin-right: 15px;
+}
+/*** END: alert box ***/

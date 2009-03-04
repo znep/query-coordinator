@@ -432,6 +432,10 @@ $(function ()
     $('#blists').bind(blist.events.ROW_SELECTION, blistsInfoNS.rowSelectionHandler);
     $('#outerContainer').bind(blist.events.LIST_SELECTION,
         myBlistsNS.listSelectionHandler);
+    
+    $(".expandContainer").blistPanelExpander({
+        expandCompleteCallback: blistsInfoNS.updateSummary
+    });
 
     blistsInfoNS.updateSummary();
 

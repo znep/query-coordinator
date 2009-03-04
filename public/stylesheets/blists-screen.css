@@ -1,10 +1,15 @@
 /* 
     Document   : blists-screen
     Created on : Jan 13, 2009, 3:04:23 PM
-    Author     : jeff.scherpelz@blist.com
+    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
     Description:
       Styles for the 'blists' screen
 */
+
+#blists .content
+{
+    padding-bottom: 15px;
+}
 
 #blists .headerBar
 {
@@ -240,4 +245,13 @@
     font-size: 1.3em;
     text-indent: 0;
     text-transform: uppercase;
+}
+
+#blists .noticePanel
+{
+    width: 689px;
+}
+#blists .featureBoxes
+{
+    margin: 1.5em 0 0 1.5em;
 }

@@ -35,6 +35,24 @@
               <%= render(:partial => "blist_list") %>
             </div>
           </div>
+          
+          <%- if (!@cur_user.is_established?) -%>
+            <div class="noticePanel expandContainer">
+              <div class="noticeHeaderOuter"><div class="noticeHeaderInner">
+                <div class="noticeHeader clearfix">
+                  <h2>Get Started!</h2>
+                  <p>Have a look at some of the great things you can do with blist.</p>
+                  <p class="noticePanelCloser">
+                    <a href="#hide" class="expander">Hide</a>
+                  </p>
+                </div>
+              </div></div>
+              <div class="noticeContent expandable">
+                <%= render(:partial => "shared/feature_boxes") %>
+              </div>
+            </div>
+          <%- end -%>
+          
         </div>
       </div>
 
@@ -135,6 +153,6 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.tablesorter",
-    "plugins/jquery.treeTable.min", "util/humane-date", "widgets/dropdown-menu",
+    "plugins/jquery.treeTable.min", "util/humane-date", "widgets/panel-expander", "widgets/dropdown-menu",
     "screens/blists-screen", "screens/info-pane", :cache => "cache/all" %>
 <% end %>

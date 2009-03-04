@@ -4,6 +4,7 @@
 class ApplicationController < ActionController::Base
   before_filter :adjust_format, :auth_current_user
   helper :all # include all helpers, all the time
+  helper_method :current_user_session
   layout 'main'
   
   require 'pp'
@@ -17,8 +18,32 @@ class ApplicationController < ActionController::Base
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
   
+  def current_user_session
+    @current_user_session ||= UserSession.find
+  end
+
+  def current_user
+    @current_user ||= current_user_session && current_user_session.user
+  end
   
 private
+  def require_user
+    unless current_user
+      store_location
+      flash[:notice] = "You must be logged in to access this page"
+      redirect_to login_url
+      return false
+    end
+  end
+
+  def store_location
+    session[:return_to] = request.request_uri
+  end
+
+  def redirect_back_or_default(path)
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
+  end
 
   def adjust_format
     request.format = :data if request.xhr?

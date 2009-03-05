@@ -151,23 +151,24 @@
 
 #lensBody .headerBar #displayMenu li a
 {
-    background-position: left center;
+    background-image: url(images/content/table_menu/menu_icon_sprites.png);
+    background-position: left -855px;
     background-repeat: no-repeat;
 }
 
 #lensBody .headerBar #displayMenu li.selected a
 {
-    background-image: url(images/content/table_menu/icon_view_selected.png);
+    background-position: left -510px;
 }
 
 #lensBody .headerBar #displayMenu .table a
 {
-    background-image: url(images/content/table_menu/icon_view_grid.png);
+    background-position: left -855px;
 }
 
 #lensBody .headerBar #displayMenu .page a
 {
-    background-image: url(images/content/table_menu/icon_view_page.png);
+    background-position: left -878px;
 }
 
 /* Icons & styling for main menu */

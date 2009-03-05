@@ -30,7 +30,7 @@
               <div class="activityListContainer">
                 <h2>Recently Opened blists</h2>
                 <ul>
-                  <%= render( :partial => "shared/blist_activity_list_item", 
+                  <%= render( :partial => "blist_activity_list_item", 
                               :collection => @recently_opened_blists) %>
                 </ul>
                 <p class="listAction"><a href="#act">View All</a></p>
@@ -41,7 +41,7 @@
               <div class="activityListContainer">
                 <h2>Favorite blists</h2>
                 <ul class="favoriteList">
-                  <%= render( :partial => "shared/blist_activity_list_item", 
+                  <%= render( :partial => "blist_activity_list_item", 
                               :collection => @favorite_blists) %>
                 </ul>
                 <p class="listAction"><a href="#act">View All</a></p>
@@ -52,7 +52,7 @@
               <div class="activityListContainer">
                 <h2>Contacts Updates</h2>
                 <ul class="contactList">
-                  <%= render( :partial => "shared/contact_activity_list_item", 
+                  <%= render( :partial => "contact_activity_list_item", 
                               :collection => @contacts) %>
                 </ul>
                 <p class="listAction"><a href="#act">View All</a></p>
@@ -63,7 +63,7 @@
               <div class="activityListContainer">
                 <h2>From the Blog</h2>
                 <ul>
-                  <%= render( :partial => "shared/blog_activity_list_item", 
+                  <%= render( :partial => "blog_activity_list_item", 
                               :collection => @feed_items) %>
                 </ul>
                 <p class="listAction"><a href="#act">View All</a></p>

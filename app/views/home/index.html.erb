@@ -26,75 +26,49 @@
               <%= render(:partial => "shared/feature_boxes") %>
             <%- end -%>
             
-            <div class="activityListContainer">
-              <h2>Recently Opened blists</h2>
-              <ul>
-                <li>
-                  <p><a href="#" title="This is the blist">Wines of Napa</a></p>
-                  <p class="preview">This is the description text. And more...</p>
-                </li>
-                <li>
-                  <p><a href="#" title="Expenses">Expenses</a></p>
-                  <p class="preview">This is the description text. And more...</p>
-                </li>
-              </ul>
-              <p class="listAction"><a href="#act">View All</a></p>
-            </div>
+            <%- if (@recently_opened_blists.length > 0) -%>
+              <div class="activityListContainer">
+                <h2>Recently Opened blists</h2>
+                <ul>
+                  <%= render( :partial => "shared/blist_activity_list_item", 
+                              :collection => @recently_opened_blists) %>
+                </ul>
+                <p class="listAction"><a href="#act">View All</a></p>
+              </div>
+            <%- end -%>
             
-            <div class="activityListContainer">
-              <h2>Favorite blists</h2>
-              <ul class="favoriteList">
-                <li>
-                  <p><a href="#" title="This is the blist">Wines of Napa</a></p>
-                  <p class="preview">This is the description text. And more...</p>
-                </li>
-                <li>
-                  <p><a href="#" title="Expenses">Expenses</a></p>
-                  <p class="preview">This is the description text. And more...</p>
-                </li>
-              </ul>
-              <p class="listAction"><a href="#act">View All</a></p>
-            </div>
+            <%- if (@favorite_blists.length > 0) -%>
+              <div class="activityListContainer">
+                <h2>Favorite blists</h2>
+                <ul class="favoriteList">
+                  <%= render( :partial => "shared/blist_activity_list_item", 
+                              :collection => @favorite_blists) %>
+                </ul>
+                <p class="listAction"><a href="#act">View All</a></p>
+              </div>
+            <%- end -%>
             
-            <div class="activityListContainer">
-              <h2>Contacts Updates</h2>
-              <ul class="contactList">
-                <li>
-                  <p class="contact">
-                    <a href="#"><%= image_tag("small-profile.png", :size => "24x24", :alt => "Chris Metcalf") %></a>
-                    <a href="#" title="Chris Metcalf">Chris Metcalf</a>
-                  </p>
-                  <p class="preview">Did something or other to the blist <%= link_to("Wines of Napa", "#") %></p>
-                </li>
-                <li>
-                  <p class="contact">
-                    <a href="#"><%= image_tag("small-profile.png", :size => "24x24", :alt => "Jimmy John") %></a>
-                    <a href="#" title="Expenses">Jimmy John</a>
-                  </p>
-                  <p class="preview">Did something or other</p>
-                </li>
-              </ul>
-              <p class="listAction"><a href="#act">View All</a></p>
-            </div>
+            <%- if (@contacts.length > 0) -%>
+              <div class="activityListContainer">
+                <h2>Contacts Updates</h2>
+                <ul class="contactList">
+                  <%= render( :partial => "shared/contact_activity_list_item", 
+                              :collection => @contacts) %>
+                </ul>
+                <p class="listAction"><a href="#act">View All</a></p>
+              </div>
+            <%- end -%>
             
-            <div class="activityListContainer">
-              <h2>From the Blog</h2>
-              <ul>
-                <li>
-                  <p><a href="#" title="This is the blist">Join us at Degrag 2008</a></p>
-                  <p class="preview">November 2, Kevin Merritt</p>
-                </li>
-                <li>
-                  <p><a href="#" title="Expenses">Yesterday, Today and Tomorrow in blist</a></p>
-                  <p class="preview">November 2, Kevin Merritt</p>
-                </li>
-                <li>
-                  <p><a href="#" title="Expenses">What is a lens? How do I make one?</a></p>
-                  <p class="preview">November 2, Kevin Merritt</p>
-                </li>
-              </ul>
-              <p class="listAction"><a href="#act">View All</a></p>
-            </div>
+            <%- if (@feed_items.length > 0) -%>
+              <div class="activityListContainer">
+                <h2>From the Blog</h2>
+                <ul>
+                  <%= render( :partial => "shared/blog_activity_list_item", 
+                              :collection => @feed_items) %>
+                </ul>
+                <p class="listAction"><a href="#act">View All</a></p>
+              </div>
+            <%- end -%>
             
           </div>
         </div>

@@ -1,0 +1,5 @@
+<%- item = blog_activity_list_item -%>
+<li>
+  <p><%= link_to(h(item.title), item.link) %></p>
+  <p class="preview"><%= item.pubDate.strftime("%b %d, %Y") %></p>
+</li>

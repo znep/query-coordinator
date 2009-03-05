@@ -29,19 +29,19 @@
                   {'text' => 'Print this blist...', 'class' => 'print',
                     'href' => '#'},
                   {'text' => 'Export this blist', 'class' => 'export',
-                    'href' => '#', 'submenu' => {'items' => [
-                      {'text' => 'As CSV', 'class' => '', 'href' => '#'},
-                      {'text' => 'As PDF', 'class' => '', 'href' => '#'}]}},
+                    'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+                      {'text' => 'As CSV', 'href' => '#'},
+                      {'text' => 'As PDF', 'href' => '#'}]}},
                   {'text' => 'Email this blist...', 'class' => 'email',
                     'href' => '#'},
                   {'text' => 'Copy this blist', 'class' => 'copy', 'href' => '#'},
                   {'separator' => true},
                   {'text' => 'Create New blist', 'class' => 'create',
                     'href' => '#', 'submenu' => {'items' => [
-                      {'text' => 'Start As a Table', 'href' => '#'},
-                      {'text' => 'Start As a Page', 'href' => '#'},
-                      {'text' => 'Start New Calendar', 'href' => '#'},
-                      {'text' => 'Start New Form', 'href' => '#'}]}},
+                      {'text' => 'Start As a Table', 'class' => 'table', 'href' => '#'},
+                      {'text' => 'Start As a Page', 'class' => 'page', 'href' => '#'},
+                      {'text' => 'Start New Calendar', 'class' => 'calendar', 'href' => '#'},
+                      {'text' => 'Start New Form', 'class' => 'form', 'href' => '#'}]}},
                   {'text' => 'Import...', 'class' => 'import', 'href' => '#'},
                   {'text' => 'Find a Template', 'class' => 'findTemplate',
                     'href' => '#'},
@@ -84,14 +84,13 @@
                 <dl><dt><a href='#menuData'>Data</a></dt>
                   <dd><%= menu_tag({'bare_menu' => true, 'items' => [
                   {'text' => 'Insert a Column', 'class' => 'insertColumn',
-                    'href' => '#', 'submenu' => {'items' => [
-                      {'text' => 'At the Far Right', 'class' => '', 'href' => '#'},
-                      {'text' => 'At the Far Left', 'class' => '',
-                        'href' => '#'}]}},
+                    'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+                      {'text' => 'At the Far Right', 'href' => '#'},
+                      {'text' => 'At the Far Left', 'href' => '#'}]}},
                   {'text' => 'Insert a Row', 'class' => 'insertRow',
-                    'href' => '#', 'submenu' => {'items' => [
-                      {'text' => 'At the Top', 'class' => '', 'href' => '#'},
-                      {'text' => 'At the Bottom', 'class' => '', 'href' => '#'}]}},
+                    'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+                      {'text' => 'At the Top', 'href' => '#'},
+                      {'text' => 'At the Bottom', 'href' => '#'}]}},
                   {'separator' => true},
                   {'text' => 'Mange Pick Lists...', 'class' => 'picklists',
                     'href' => '#'},
@@ -101,12 +100,12 @@
                   {'separator' => true},
                   {'text' => 'Column Totals', 'class' => 'columnTotals',
                     'href' => '#', 'submenu' => {'items' => [
-                      {'text' => 'Show Totals Bar', 'class' => '', 'href' => '#'},
+                      {'text' => 'Show Totals Bar', 'class' => 'showTotals', 'href' => '#'},
                       {'separator' => true},
                       {'section_title' => 'Add totals to:'},
                       {'text' => 'col1', 'class' => '', 'href' => '#',
                         'submenu' => {'option_menu' => true, 'items' => [
-                          {'text' => 'None', 'class' => '', 'href' => '#'},
+                          {'text' => 'None', 'class' => 'checked', 'href' => '#'},
                           {'text' => 'Average', 'class' => '', 'href' => '#'},
                           {'text' => 'Count', 'class' => '', 'href' => '#'},
                           {'text' => 'Sum', 'class' => '', 'href' => '#'},
@@ -114,7 +113,7 @@
                           {'text' => 'Minimum', 'class' => '', 'href' => '#'}]}},
                       {'text' => 'col2', 'class' => '', 'href' => '#',
                         'submenu' => {'option_menu' => true, 'items' => [
-                          {'text' => 'None', 'class' => '', 'href' => '#'},
+                          {'text' => 'None', 'class' => 'checked', 'href' => '#'},
                           {'text' => 'Average', 'class' => '', 'href' => '#'},
                           {'text' => 'Count', 'class' => '', 'href' => '#'},
                           {'text' => 'Sum', 'class' => '', 'href' => '#'},

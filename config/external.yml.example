@@ -1,0 +1,8 @@
+production:
+  blist_blog_rss: http://blog.blist.com/feed/
+
+development:
+  blist_blog_rss: http://blog.blist.com/feed/
+
+test:
+  blist_blog_rss: http://blog.blist.com/feed/

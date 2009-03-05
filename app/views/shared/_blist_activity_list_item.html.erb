@@ -1,0 +1,5 @@
+<%- item = blist_activity_list_item -%>
+<li>
+  <p><%= link_to(h(item.name), blist_url(item.id), :title => h(item.name)) %></p>
+  <p class="preview"><%= h(item.description) %></p>
+</li>

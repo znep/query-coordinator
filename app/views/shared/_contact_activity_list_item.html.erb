@@ -1,0 +1,8 @@
+<%- item = contact_activity_list_item -%>
+<li>
+  <p class="contact">
+    <%= link_to(image_tag("small-profile.png", :size => "24x24", :alt => h(item.displayName)), "#") %>
+    <%= link_to(h(item.displayName), "#", :title => h(item.displayName)) %>
+  </p>
+  <p class="preview">Did something or other</p>
+</li>

@@ -177,9 +177,11 @@
     height: 30em;
 }
 
-#mainMenu dl > dd > ul > li > a
+#mainMenu dl > dd > ul > li > a,
+#mainMenu dl > dd > ul > li > ul > li > a
 {
-    background-image: url(images/content/table_menu/menu_icon_sprites_dark.png);
+    background-image: url(images/content/table_menu/menu_icon_sprites.png);
+    background-position: 0 23px; /* default to show no icon */
     background-repeat: no-repeat;
 }
 
@@ -207,6 +209,11 @@
 {
     background-position: 0 -96px;
 }
+
+#mainMenu li.blist .create .table > a { background-position: 0 -855px; }
+#mainMenu li.blist .create .page > a { background-position: 0 -878px; }
+#mainMenu li.blist .create .calendar > a { background-position: 0 -763px; }
+#mainMenu li.blist .create .form > a { background-position: 0 -832px; }
 
 #mainMenu li.blist .import > a
 {
@@ -296,6 +303,19 @@
 #mainMenu li.data .columnTotals > a
 {
     background-position: 0 -487px;
+}
+#mainMenu li.data .columnTotals .showTotals > a { background-position: 0 -901px; }
+#mainMenu li.data .columnTotals .showTotals.checked > a { background-position: 0 -510px; }
+
+#mainMenu li.data .columnTotals .optionMenu li > a
+{
+    background-image: url(images/content/table_menu/menu_icon_sprites.png);
+    background-position: 0 -924px;
+    background-repeat: no-repeat;
+}
+#mainMenu li.data .columnTotals .optionMenu li.checked > a
+{
+    background-position: 0 -947px;
 }
 
 #mainMenu li.info .summary > a

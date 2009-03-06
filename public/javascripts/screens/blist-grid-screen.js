@@ -135,7 +135,7 @@ $(function ()
     $('#lensContainer .headerBar form').submit(function (event)
     {
         event.preventDefault();
-        blist.util.flashInterface.search(
+        blist.util.flashInterface.lensSearch(
             $(event.currentTarget).find('input[type="text"]').val());
     });
 

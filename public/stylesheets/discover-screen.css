@@ -1,0 +1,31 @@
+/* 
+    Document   : discover-screen.css
+    Created on : Mar 4, 2009
+    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
+    Description:
+      Styles for the Discover page
+*/
+
+
+#discoverBody #header form.search
+{
+    position: relative;
+    z-index: 200;
+}
+
+#discoverBody #mainLogo a
+{
+    z-index: 200;
+}
+
+#discoverBody .mainContent
+{
+    margin: 0 1em;
+    min-width: 729px;
+    padding-bottom: 6em;
+}
+
+#discoverBody .scrollContent
+{
+    overflow: hidden;
+}

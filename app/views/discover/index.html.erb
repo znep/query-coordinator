@@ -1,0 +1,21 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "discover-screen",
+    :cache => "cache/all" %>
+  <%= javascript_include_tag "util/swfobject",
+    :cache => "cache/all" %>
+  <title>blist | share your weblists</title>
+<% end %>
+
+<div class='mainContent'>
+
+  <div id='swfWrapper' class='scrollContent'>
+    <%= render(:partial => "shared/swf") %>
+  </div>
+
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "util/flash-interface",
+    "screens/discover-screen", :cache => "cache/all" %>
+<% end %>

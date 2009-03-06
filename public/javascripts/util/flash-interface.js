@@ -14,9 +14,14 @@ blist.util.flashInterface.doAction = function (action)
     flashIntNS.swf().doAction(action);
 }
 
-blist.util.flashInterface.search = function (searchText)
+blist.util.flashInterface.lensSearch = function (searchText)
 {
-    flashIntNS.swf().search(searchText);
+    flashIntNS.swf().lensSearch(searchText);
+}
+
+blist.util.flashInterface.discoverSearch = function (searchText)
+{
+    flashIntNS.swf().discoverSearch(searchText);
 }
 
 blist.util.flashInterface.showPopup = function (popup)
@@ -47,6 +52,21 @@ blist.util.flashInterface.eventFired = function (event, data)
 blist.util.flashInterface.updatePageNavigation = function (pageNav)
 {
     $(document).trigger(blist.events.PAGE_LABEL_UPDATED, [pageNav]);
+}
+
+blist.util.flashInterface.updateDiscoverSearch = function (search)
+{
+    $(document).trigger(blist.events.DISCOVER_SEARCH_UPDATED, [search]);
+}
+
+blist.util.flashInterface.openLens = function (lensId)
+{
+    $(document).trigger(blist.events.OPEN_LENS, [lensId]);
+}
+
+blist.util.flashInterface.copyLens = function (lensId)
+{
+    $(document).trigger(blist.events.COPY_LENS, [lensId]);
 }
 
 blist.util.flashInterface.addPopupHandlers = function (shownHandler,

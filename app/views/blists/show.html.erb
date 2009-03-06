@@ -267,13 +267,7 @@
 
       <div id='outerSwfWrapper' class='scrollContent'>
         <div id='swfWrapper'>
-          <div id="swfContent">
-            <%= swfobject_tag @swf_url,
-              :variables => variables_for_swf,
-              :flash_version => @minFlashVersion %>
-              We're sorry, but blist requires Javascript enabled and
-              <a target="_blank" href="http://www.adobe.com/go/getflashplayer">Adobe Flash Player version <%= @minFlashVersion %></a> or higher.
-          </div>
+          <%= render(:partial => "shared/swf") %>
         </div>
       </div>
 

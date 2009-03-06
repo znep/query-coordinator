@@ -19,7 +19,6 @@ class BlistsController < SwfController
 
   def show
     @body_id = 'lensBody'
-    @minFlashVersion = '9.0.45'
     # TODO: Get real use from login auth
     @lens = Lens.find(params[:id])
 

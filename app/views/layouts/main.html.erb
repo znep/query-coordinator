@@ -53,10 +53,11 @@
         </ul>
       </div>
 
-      <form class='search' action='#'>
+      <form class='search' action='/discover'>
         <p>
-          <input type='text' class='textPrompt'
-            title='Search for blists, contacts & help' />
+          <input type='text' class='textPrompt' name='search'
+            title='Search for blists, contacts &amp; help'
+            value='<%= @discover_search %>' />
           <input type='image' class='submit' name='discoverSubmit'
             src="/stylesheets/images/header/search_button.png" />
         </p>

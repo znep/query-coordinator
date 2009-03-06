@@ -1,0 +1,2 @@
+class Childcolumn < Column
+end

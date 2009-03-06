@@ -24,6 +24,24 @@ blist.blistGrid.sizeSwf = function (event)
     $swf.height($target.height());
 }
 
+blist.blistGrid.columnClickHandler = function (event)
+{
+    var $target = $(event.currentTarget);
+    var href_parts = $target.attr('href').slice(1).split(':');
+    if (href_parts.length < 2)
+    {
+        return;
+    }
+
+    switch (href_parts[0])
+    {
+        case 'edit_column':
+            event.preventDefault();
+            blist.util.flashInterface.columnProperties(href_parts[1]);
+            break;
+    }
+}
+
 blist.blistGrid.showFlashPopup = function (popup)
 {
     blist.util.flashInterface.showPopup(popup);
@@ -92,6 +110,11 @@ $(function ()
     $(window).resize(function (event)
     {
         blistGridNS.sizeSwf(event);
+    });
+
+    $('.columnsMenu > li > a').click(function (event)
+    {
+        blistGridNS.columnClickHandler(event);
     });
 
     $('#filterViewMenu .filter').click(function (event)

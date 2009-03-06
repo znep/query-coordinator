@@ -34,6 +34,11 @@ blist.util.flashInterface.addColumn = function (datatype)
     flashIntNS.swf().addColumn(datatype);
 }
 
+blist.util.flashInterface.columnProperties = function (columnId)
+{
+    flashIntNS.swf().columnProperties(columnId);
+}
+
 blist.util.flashInterface.eventFired = function (event, data)
 {
     var jsEvent;

@@ -68,12 +68,12 @@
                   {'text' => 'Delete', 'class' => 'delete', 'href' => '#'},
                   {'separator' => true},
                   {'text' => 'Edit Column Options', 'class' => 'columnOptions',
-                    'href' => '#', 'submenu' => {'items' => [
-                      {'section_title' => 'Select a Column'},
-                      {'separator' => true},
-                      {'text' => 'col1', 'href' => '#'},
-                      {'text' => 'col2', 'href' => '#'},
-                      ]}},
+                    'href' => '#', 'submenu' =>
+                    columns_menu(@lens, "#edit_column:",
+                                 {'blist_in_blist' => true,
+                                   'bnb_children' => true, 'list' => true},
+                                 [{'section_title' => 'Select a Column'},
+                                   {'separator' => true}])},
                   {'text' => 'Edit Row Options', 'class' => 'rowOptions',
                     'href' => '#'}]}) %>
                 </dd></dl>

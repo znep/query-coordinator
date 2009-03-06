@@ -429,84 +429,114 @@
     text-decoration: none;
 }
 
-#addColumn_plainText
+/* Datatypes */
+
+.columnsMenu > li > a
+{
+    background-image: url(images/common/datatypes/data_type_sprites.png);
+    background-position: 0 20px;
+    background-repeat: no-repeat;
+}
+
+#addColumn_plainText,
+.columnsMenu .plainText a
 {
     background-position: 0 -82px;
 }
 
-#addColumn_formattedText
+#addColumn_formattedText,
+.columnsMenu .formattedText a
 {
     background-position: 0 -62px;
 }
 
-#addColumn_number
+#addColumn_number,
+.columnsMenu .number a
 {
     background-position: 0 -22px;
 }
 
-#addColumn_money
+#addColumn_money,
+.columnsMenu .money a
 {
     background-position: 0 -42px;
 }
 
-#addColumn_percent
+#addColumn_percent,
+.columnsMenu .percent a
 {
     background-position: 0 -2px;
 }
 
-#addColumn_dateTime
+#addColumn_dateTime,
+.columnsMenu .dateTime a
 {
     background-position: 0 -342px;
 }
 
-#addColumn_phone
+#addColumn_phone,
+.columnsMenu .phone a
 {
     background-position: 0 -242px;
 }
 
-#addColumn_email
+#addColumn_email,
+.columnsMenu .email a
 {
     background-position: 0 -262px;
 }
 
-#addColumn_url
+#addColumn_url,
+.columnsMenu .url a
 {
     background-position: 0 -362px;
 }
 
-#addColumn_checkbox
+#addColumn_checkbox,
+.columnsMenu .checkbox a
 {
     background-position: 0 -122px;
 }
 
-#addColumn_stars
+#addColumn_stars,
+.columnsMenu .stars a
 {
     background-position: 0 -142px;
 }
 
-#addColumn_flag
+#addColumn_flag,
+.columnsMenu .flag a
 {
     background-position: 0 -382px;
 }
 
-#addColumn_document
+#addColumn_document,
+.columnsMenu .document a
 {
     background-position: 0 -282px;
 }
 
-#addColumn_photo
+#addColumn_photo,
+.columnsMenu .photo a
 {
     background-position: 0 -102px;
 }
 
-#addColumn_picklist
+#addColumn_picklist,
+.columnsMenu .picklist a
 {
     background-position: 0 -402px;
 }
 
-#addColumn_bnb
+#addColumn_bnb,
+.columnsMenu .bnb a
 {
     background-position: 0 -442px;
+}
+
+.columnsMenu .tag a
+{
+    background-position: 0 -182px;
 }
 
 

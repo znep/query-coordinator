@@ -103,7 +103,14 @@
             {
                 $submenus.click(function (event)
                 {
-                    event.stopPropagation();
+                    // Only stop the event if we clicked on the a that launches
+                    //  this submenu.  Find all the direct links under this li,
+                    //  and check if we clicked on or in that a
+                    if ($(event.currentTarget).children('a')
+                        .find('*').andSelf().index(event.target) >= 0)
+                    {
+                        event.stopPropagation();
+                    }
                 }).mouseover(function (event)
                 {
                     activateSubmenu(event, $menu);

@@ -76,4 +76,60 @@ module BlistsHelper
     end
     menu_tag('id' => id, 'class' => 'contactsMenu', 'items' => items)
   end
+
+  def columns_menu(lens, href_prefix, include_options = nil, init_items = nil)
+    include_options = include_options || {}
+    items = init_items || []
+
+    lens.columns.each do |c|
+      # Check for whether or not to display hidden columns and list columns
+      if (!c.flag?('hidden') || include_options['hidden']) &&
+        (!c.is_list || include_options['list'])
+
+        # For lists, the first (and only) child has all the real info
+        if c.is_list
+          c = c.childColumns[0]
+        end
+
+        # Now check if we should display bnb columns (this is not done above,
+        #  as we may want to not display bnb parents,
+        #  but do display bnb children)
+        if (!c.is_blist_in_blist || c.is_list ||
+            include_options['blist_in_blist'])
+          items << {'text' => c.name, 'href' => href_prefix + c.id.to_s,
+            'class' => get_datatype_class(c)}
+        end
+
+        # If we are displaying bnb children, loop through those (and again
+        #  check for visibility for each child)
+        if c.is_blist_in_blist && !c.is_list && include_options['bnb_children']
+          c.childColumns.each do |cc|
+            if !cc.flag?('hidden') || include_options['hidden']
+              items << {'text' => c.name + ': ' + cc.name,
+                'href' => href_prefix + cc.id.to_s,
+                'class' => get_datatype_class(cc)}
+            end
+          end
+        end
+      end
+    end
+
+    {'class' => 'columnsMenu', 'items' => items}
+  end
+
+  def get_datatype_class(column)
+    dtt = column.dataType.type
+    if dtt == 'date'
+      dtt = 'dateTime'
+    elsif dtt == 'blist_in_blist'
+      dtt = 'bnb'
+    elsif dtt == 'text'
+      dtt = 'plainText'
+      # Now check the format to see if it is formatted text
+      if 'Rich' == column.text_format
+        dtt = 'formattedText'
+      end
+    end
+    dtt
+  end
 end

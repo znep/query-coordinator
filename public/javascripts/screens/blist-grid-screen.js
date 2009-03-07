@@ -39,6 +39,17 @@ blist.blistGrid.columnClickHandler = function (event)
             event.preventDefault();
             blist.util.flashInterface.columnProperties(href_parts[1]);
             break;
+        case 'column_totals':
+            event.preventDefault();
+            break;
+        case 'aggregate':
+            event.preventDefault();
+            if (href_parts.length == 3)
+            {
+                blist.util.flashInterface.columnAggregate(href_parts[1],
+                        href_parts[2]);
+            }
+            break;
     }
 }
 
@@ -112,7 +123,7 @@ $(function ()
         blistGridNS.sizeSwf(event);
     });
 
-    $('.columnsMenu > li > a').click(function (event)
+    $('.columnsMenu a').click(function (event)
     {
         blistGridNS.columnClickHandler(event);
     });

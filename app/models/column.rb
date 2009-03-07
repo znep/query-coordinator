@@ -5,8 +5,14 @@ class Column < Model
     format_elem.nil? ? 'Plain' : format_elem.text
   end
 
+  def aggregate
+    format_elem = REXML::Document.new(lensFormat).
+      elements['lens_format/aggregate']
+    format_elem.nil? ? 'none' : format_elem.text
+  end
+
   def is_blist_in_blist
-    dataType.type == 'blist_in_blist'
+    dataType.type.downcase == 'blist_in_blist'
   end
 
   def is_list

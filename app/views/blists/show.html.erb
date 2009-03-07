@@ -69,11 +69,14 @@
                   {'separator' => true},
                   {'text' => 'Edit Column Options', 'class' => 'columnOptions',
                     'href' => '#', 'submenu' =>
-                    columns_menu(@lens, "#edit_column:",
-                                 {'blist_in_blist' => true,
-                                   'bnb_children' => true, 'list' => true},
-                                 [{'section_title' => 'Select a Column'},
-                                   {'separator' => true}])},
+                    columns_menu(@lens,
+                                 {'href_prefix' => "#edit_column:",
+                                  'include_options' =>
+                                    {'blist_in_blist' => true,
+                                      'bnb_children' => true, 'list' => true},
+                                  'initial_items' => [
+                                    {'section_title' => 'Select a Column'},
+                                    {'separator' => true}]})},
                   {'text' => 'Edit Row Options', 'class' => 'rowOptions',
                     'href' => '#'}]}) %>
                 </dd></dl>
@@ -97,27 +100,22 @@
                   {'text' => 'Show Row IDs', 'class' => 'rowIDs', 'href' => '#'},
                   {'separator' => true},
                   {'text' => 'Column Totals', 'class' => 'columnTotals',
-                    'href' => '#', 'submenu' => {'items' => [
-                      {'text' => 'Show Totals Bar', 'class' => 'showTotals', 'href' => '#'},
-                      {'separator' => true},
-                      {'section_title' => 'Add totals to:'},
-                      {'text' => 'col1', 'class' => '', 'href' => '#',
-                        'submenu' => {'option_menu' => true, 'items' => [
-                          {'text' => 'None', 'class' => 'checked', 'href' => '#'},
-                          {'text' => 'Average', 'class' => '', 'href' => '#'},
-                          {'text' => 'Count', 'class' => '', 'href' => '#'},
-                          {'text' => 'Sum', 'class' => '', 'href' => '#'},
-                          {'text' => 'Maximum', 'class' => '', 'href' => '#'},
-                          {'text' => 'Minimum', 'class' => '', 'href' => '#'}]}},
-                      {'text' => 'col2', 'class' => '', 'href' => '#',
-                        'submenu' => {'option_menu' => true, 'items' => [
-                          {'text' => 'None', 'class' => 'checked', 'href' => '#'},
-                          {'text' => 'Average', 'class' => '', 'href' => '#'},
-                          {'text' => 'Count', 'class' => '', 'href' => '#'},
-                          {'text' => 'Sum', 'class' => '', 'href' => '#'},
-                          {'text' => 'Maximum', 'class' => '', 'href' => '#'},
-                          {'text' => 'Minimum', 'class' => '', 'href' => '#'}]}}
-                  ]}}]}) %>
+                    'href' => '#', 'submenu' =>
+                    columns_menu(@lens,
+                                 {'href_prefix' => "#column_totals:",
+                                  'include_options' =>
+                                    {'bnb_children' => true, 'list' => true},
+                                  'initial_items' => [
+                                    # Not supported yet
+                                    #{'text' => 'Show Totals Bar',
+                                    #'class' => 'showTotals', 'href' => '#'},
+                                    #{'separator' => true},
+                                    {'section_title' => 'Add totals to:'}],
+                                  'submenu' => method(:column_aggregate_menu),
+                                  'column_test' => proc {|c|
+                                      c.dataType.possible_aggregates.length > 1}
+                    })}
+                  ]}) %>
                 </dd></dl>
               </li>
               <li class='info'>
@@ -191,7 +189,7 @@
             <div class='outerWrapper'><div class='midWrapper'>
                 <span class='innerWrapper'>Display As</span></div></div></a>
             <%= menu_tag({'id' => 'displayMenu', 'option_menu' => true, 'items' => [
-            {'text' => 'A table', 'class' => 'table selected', 'href' => '#'},
+            {'text' => 'A table', 'class' => 'table checked', 'href' => '#'},
             {'text' => 'A page', 'class' => 'page', 'href' => '#'}]}) %>
           </li>
         </ul>

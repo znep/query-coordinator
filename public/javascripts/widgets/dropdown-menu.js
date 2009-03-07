@@ -121,15 +121,15 @@
                 });
             }
 
-            /* If it's an optionMenu, hook up special behavior */
-            if ($menu.is(config.optionMenuSelector))
-            {
-                $menu.find('li').click(function (event)
+            /* For all optionMenus, hook up special behavior */
+            $menu.find(config.menuSelector).andSelf()
+                .filter(config.optionMenuSelector)
+                .children('li').click(function (event)
                 {
-                    $menu.find('li').removeClass(config.selectedItemClass);
+                    $(this).closest(config.menuSelector)
+                        .children('li').removeClass(config.selectedItemClass);
                     $(this).closest('li').addClass(config.selectedItemClass);
                 });
-            }
 
             /* If it's a multilevelMenu, hook up special behavior */
             if ($menu.is(config.multilevelMenuSelector))
@@ -267,7 +267,7 @@
         menuOpenClass: 'shown',
         triggerOpenClass: 'clicked',
         optionMenuSelector: '.optionMenu',
-        selectedItemClass: 'selected',
+        selectedItemClass: 'checked',
         submenuSelector: '.submenu',
         activeClass: 'active',
         multilevelMenuSelector: '.multilevelMenu',

@@ -156,7 +156,7 @@
     background-repeat: no-repeat;
 }
 
-#lensBody .headerBar #displayMenu li.selected a
+#lensBody .headerBar #displayMenu li.checked a
 {
     background-position: left -510px;
 }
@@ -431,7 +431,7 @@
 
 /* Datatypes */
 
-.columnsMenu > li > a
+#mainMenu .columnsMenu > li > a
 {
     background-image: url(images/common/datatypes/data_type_sprites.png);
     background-position: 0 20px;
@@ -439,102 +439,102 @@
 }
 
 #addColumn_plainText,
-.columnsMenu .plainText a
+#mainMenu .columnsMenu .plainText a
 {
     background-position: 0 -82px;
 }
 
 #addColumn_formattedText,
-.columnsMenu .formattedText a
+#mainMenu .columnsMenu .formattedText a
 {
     background-position: 0 -62px;
 }
 
 #addColumn_number,
-.columnsMenu .number a
+#mainMenu .columnsMenu .number a
 {
     background-position: 0 -22px;
 }
 
 #addColumn_money,
-.columnsMenu .money a
+#mainMenu .columnsMenu .money a
 {
     background-position: 0 -42px;
 }
 
 #addColumn_percent,
-.columnsMenu .percent a
+#mainMenu .columnsMenu .percent a
 {
     background-position: 0 -2px;
 }
 
 #addColumn_dateTime,
-.columnsMenu .dateTime a
+#mainMenu .columnsMenu .dateTime a
 {
     background-position: 0 -342px;
 }
 
 #addColumn_phone,
-.columnsMenu .phone a
+#mainMenu .columnsMenu .phone a
 {
     background-position: 0 -242px;
 }
 
 #addColumn_email,
-.columnsMenu .email a
+#mainMenu .columnsMenu .email a
 {
     background-position: 0 -262px;
 }
 
 #addColumn_url,
-.columnsMenu .url a
+#mainMenu .columnsMenu .url a
 {
     background-position: 0 -362px;
 }
 
 #addColumn_checkbox,
-.columnsMenu .checkbox a
+#mainMenu .columnsMenu .checkbox a
 {
     background-position: 0 -122px;
 }
 
 #addColumn_stars,
-.columnsMenu .stars a
+#mainMenu .columnsMenu .stars a
 {
     background-position: 0 -142px;
 }
 
 #addColumn_flag,
-.columnsMenu .flag a
+#mainMenu .columnsMenu .flag a
 {
     background-position: 0 -382px;
 }
 
 #addColumn_document,
-.columnsMenu .document a
+#mainMenu .columnsMenu .document a
 {
     background-position: 0 -282px;
 }
 
 #addColumn_photo,
-.columnsMenu .photo a
+#mainMenu .columnsMenu .photo a
 {
     background-position: 0 -102px;
 }
 
 #addColumn_picklist,
-.columnsMenu .picklist a
+#mainMenu .columnsMenu .picklist a
 {
     background-position: 0 -402px;
 }
 
 #addColumn_bnb,
-.columnsMenu .bnb a
+#mainMenu .columnsMenu .bnb a
 {
     background-position: 0 -442px;
 }
 
-.columnsMenu .tag a
+#mainMenu .columnsMenu .tag a
 {
     background-position: 0 -182px;
 }

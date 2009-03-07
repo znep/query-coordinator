@@ -39,6 +39,11 @@ blist.util.flashInterface.columnProperties = function (columnId)
     flashIntNS.swf().columnProperties(columnId);
 }
 
+blist.util.flashInterface.columnAggregate = function(columnId, aggregate)
+{
+    flashIntNS.swf().columnAggregate(columnId, aggregate);
+}
+
 blist.util.flashInterface.eventFired = function (event, data)
 {
     var jsEvent;

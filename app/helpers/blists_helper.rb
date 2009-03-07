@@ -77,9 +77,10 @@ module BlistsHelper
     menu_tag('id' => id, 'class' => 'contactsMenu', 'items' => items)
   end
 
-  def columns_menu(lens, href_prefix, include_options = nil, init_items = nil)
-    include_options = include_options || {}
-    items = init_items || []
+  def columns_menu(lens, args = nil)
+    args = args || {}
+    include_options = args['include_options'] || {}
+    items = args['initial_items'] || []
 
     lens.columns.each do |c|
       # Check for whether or not to display hidden columns and list columns
@@ -95,19 +96,30 @@ module BlistsHelper
         #  as we may want to not display bnb parents,
         #  but do display bnb children)
         if (!c.is_blist_in_blist || c.is_list ||
-            include_options['blist_in_blist'])
-          items << {'text' => c.name, 'href' => href_prefix + c.id.to_s,
+            include_options['blist_in_blist']) &&
+          (!args['column_test'] || args['column_test'].call(c))
+          cur_item = {'text' => c.name,
+            'href' => args['href_prefix'] + c.id.to_s,
             'class' => get_datatype_class(c)}
+          if (args['submenu'])
+            cur_item['submenu'] = args['submenu'].call(c)
+          end
+          items << cur_item
         end
 
         # If we are displaying bnb children, loop through those (and again
         #  check for visibility for each child)
         if c.is_blist_in_blist && !c.is_list && include_options['bnb_children']
           c.childColumns.each do |cc|
-            if !cc.flag?('hidden') || include_options['hidden']
-              items << {'text' => c.name + ': ' + cc.name,
-                'href' => href_prefix + cc.id.to_s,
+            if (!cc.flag?('hidden') || include_options['hidden']) &&
+              (!args['column_test'] || args['column_test'].call(cc))
+              cur_item = {'text' => c.name + ': ' + cc.name,
+                'href' => args['href_prefix'] + cc.id.to_s,
                 'class' => get_datatype_class(cc)}
+              if (args['submenu'])
+                cur_item['submenu'] = args['submenu'].call(cc)
+              end
+              items << cur_item
             end
           end
         end
@@ -117,8 +129,19 @@ module BlistsHelper
     {'class' => 'columnsMenu', 'items' => items}
   end
 
+  def column_aggregate_menu(column)
+    aggs = column.dataType.possible_aggregates
+    items = []
+    aggs.each do |a|
+      items << {'text' => a['title'],
+        'class' => column.aggregate == a['name'] ? 'checked' : '',
+        'href' => '#aggregate:' + column.id.to_s + ':' + a['name']}
+    end
+    {'option_menu' => true, 'items' => items}
+  end
+
   def get_datatype_class(column)
-    dtt = column.dataType.type
+    dtt = column.dataType.type.downcase
     if dtt == 'date'
       dtt = 'dateTime'
     elsif dtt == 'blist_in_blist'

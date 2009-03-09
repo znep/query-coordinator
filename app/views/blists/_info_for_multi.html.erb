@@ -31,7 +31,7 @@
         </dt>
         
         <%- lenses.each do |lens| -%>
-          <dd class="<%= get_type_icon_class_for_lens(lens) %>">
+          <dd class="<%= get_share_direction_icon_class_for_lens(lens) %>">
             <div class="itemContent">
               <a href="<%= blist_url(lens.id) %>"><%= h(lens.name) %></a>
             </div>

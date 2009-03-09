@@ -177,67 +177,6 @@ blist.myBlists.getSelectedItems = function ()
     return $('#blistList tr.item.selected');
 }
 
-blist.myBlists.getTableParent = function ($item)
-{
-    while ($item && !$item.is('table') &&
-        !$item.is('tbody') && !$item.is('thead') &&
-        !$item.is('td') && !$item.is('th'))
-    {
-        $item = $item.parent();
-    }
-    return $item;
-}
-
-blist.myBlists.rowClickedHandler = function (event)
-{
-    // If they clicked on the expand/collaspe arrow, don't select the row
-    var $target = $(event.target);
-    if ($target.hasClass('expander') || $target.is('a'))
-    {
-        return;
-    }
-
-    $target = myBlistsNS.getTableParent($target);
-    if ($target.is("td"))
-    {
-        $target.parent().toggleClass('selected');
-        $(event.currentTarget).trigger(blist.events.ROW_SELECTION);
-    }
-}
-
-blist.myBlists.tableMousemoveHandler = function (event)
-{
-    var $target = myBlistsNS.getTableParent($(event.target));
-    if ($target.is('tbody') || $target.is('table'))
-    {
-        // If they move the mouse directly on the table or tbody,
-        //  they are not in a row and we should unhighlight them
-        $('tr.hover', $target).removeClass('hover');
-    }
-    else if ($target.is('td') && $target.parent().is('tr.item') &&
-            !$target.parent().is('tr.hover'))
-    {
-        // If they move over a tr that is not already in a hover state,
-        //  and is in an item row, highlight it
-        $target.parent().addClass('hover');
-    }
-}
-
-blist.myBlists.tableMouseoutHandler = function (event)
-{
-    var $target = myBlistsNS.getTableParent($(event.target));
-    if ($target.is('tbody') || $target.is('table'))
-    {
-        // If they mouse out of the table or tbody, unhighlight everything
-        $('tr.hover', $target).removeClass('hover');
-    }
-    else if ($target.is('td'))
-    {
-        // If they moused out of a cell, unhighlight that row
-        $target.parent().removeClass('hover');
-    }
-}
-
 blist.myBlists.updateList = function (newTable)
 {
     $('#blistList tbody').replaceWith($(newTable).find('tbody'));
@@ -317,6 +256,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 
     // Wire up the tab switcher/expander.
     $(".summaryTabs li").infoPaneTabSwitch();
+    $("#infoPane .selectableList").blistListHoverItems();
 
     // Wire up a click handler for deselectors.
     $(".action.unselector").click(function (event)
@@ -326,41 +266,10 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         $("#blistList tr[blist_id=" + blist_id + "] td.type").trigger("click");
     });
 
-    // Wire up a click handler for all tab links.
-    $(".tabLink").click(blistsInfoNS.tabLinkHandler);
-
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();
 }
-
-blist.myBlists.infoPane.rowSelectionHandler = function (event)
-{
-    var $target = $(event.target);
-    if ($target.is('table'))
-    {
-        // tr.item.selected is a bit specific, but tr.selected doesn't work
-        //  in jQuery 1.3.1 in Safari
-        //  (either this: http://dev.jquery.com/ticket/3977
-        //  or this: http://dev.jquery.com/ticket/3938)
-        var numSelect = $('tr.item.selected', $target).length;
-        blistsInfoNS.updateSummary(numSelect);
-    }
-}
-
-blist.myBlists.infoPane.tabLinkHandler = function (event)
-{
-    event.preventDefault();
-    var $target = $(event.currentTarget);
-
-    // Pull the tab id off of the link's href
-    var tab_selector = $target.attr("href");
-
-    // Find the a inside the tab id that's not an expander
-    $(tab_selector).find("a:not(.expander)").trigger("click");
-}
-
-
 
 /* Functions for sidebar related to blists */
 
@@ -425,11 +334,14 @@ $(function ()
     blistsBarNS.initializeHandlers();
 
     $(window).resize(myBlistsNS.resizeTable);
-    $('#blistList').click(myBlistsNS.rowClickedHandler);
-    $('.selectableList').live("mousemove", myBlistsNS.tableMousemoveHandler);
-    $('.selectableList').live("mouseout", myBlistsNS.tableMouseoutHandler);
+    
+    $(".selectableList").blistSelectableList({
+        rowSelectionHandler: function()
+        {
+            blistsInfoNS.updateSummary($('tr.item.selected').length);
+        }
+    });
 
-    $('#blists').bind(blist.events.ROW_SELECTION, blistsInfoNS.rowSelectionHandler);
     $('#outerContainer').bind(blist.events.LIST_SELECTION,
         myBlistsNS.listSelectionHandler);
     

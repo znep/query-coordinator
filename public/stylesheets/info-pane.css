@@ -379,6 +379,46 @@
     background-image: none;
 }
 
+#infoPane table.selectableList th.favorite,
+#infoPane table.selectableList th.type
+{
+    background-position: center center;
+    background-repeat: no-repeat;
+    text-indent: -9999px;
+}
+
+#infoPane table.selectableList th.favorite 
+{
+    background-image: url(/stylesheets/images/content/table/icon_sorting_star.png); 
+}
+
+#infoPane table.selectableList th.type
+{
+    background-image: url(/stylesheets/images/content/table/icon_sorting_type.png);
+}
+
+#infoPane table.selectableList .handle
+{
+    padding: 0;
+    width: 33px;
+}
+
+#infoPane table.selectableList .favorite
+{
+    padding: 0;
+    width: 32px;
+}
+
+#infoPane table.selectableList .type
+{
+    padding: 0;
+    width: 45px;
+}
+#infoPane table.selectableList td.type > *
+{
+    margin: 0;
+}
+
 #infoPane table.selectableList td > *
 {
     color: #333;
@@ -388,6 +428,61 @@
     margin: 6px 0;
     padding: 0 5px;
 }
+
+#infoPane table.selectableList .actionContainer {
+    font-size: 1em;
+    width: 45px;
+}
+
+#infoPane table.selectableList td.handle,
+#infoPane table.selectableList td.favorite
+{
+    background-position: center center;
+    background-repeat: no-repeat;
+    text-indent: -9999px;
+}
+
+#infoPane table.selectableList td.type > div
+{
+    text-indent: -9999px;
+    width: 100%;
+}
+
+#infoPane table.selectableList td.handle > div,
+#infoPane table.selectableList td.favorite > div,
+#infoPane table.selectableList td.type > div
+{
+    width: 17px;
+}
+
+
+#infoPane table.selectableList td.type > div
+{
+    text-indent: -9999px;
+    width: 100%;
+}
+
+#infoPane table.selectableList td.favorite.true
+{
+    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
+}
+
+#infoPane table.selectableList tr.hover td.handle
+{
+    background-image: url(/stylesheets/images/content/table/icon_double_arrow.png);
+}
+
+#infoPane table.selectableList tr.hover td.favorite
+{
+    background-image: url(/stylesheets/images/content/table/icon_star_empty.png);
+}
+
+#infoPane table.selectableList tr.hover td.favorite.true
+{
+    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
+}
+
+
 #infoPane table.selectableList td.actionContainer > *
 {
     font-size: 1em;

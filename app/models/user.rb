@@ -17,4 +17,9 @@ class User < Model
     # An established user has 4 or more total blists.
     Lens.find(Hash.new).length > 3
   end
+  
+  # size can be "large", "medium", or "small"
+  def profile_image(size = "large")
+    "#{User.url.to_s}users/#{self.id}/profile_images/#{size}"
+  end
 end

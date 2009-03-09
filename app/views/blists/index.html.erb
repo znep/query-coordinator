@@ -7,7 +7,7 @@
 
 
 <div class="twoColumnContainer clearfix">
-  <div id="mainColumnContent" class="column mainContent">
+  <div id="mainColumnContent" class="column mainContent scrollContentColumn">
     <div id='blists'>
       <%= render(:partial => "shared/tabs") %>
 
@@ -60,9 +60,9 @@
     </div>
   </div>
 
-  <div id="sidebar" class="column">
+  <div id="sidebar" class="column scrollContentColumn">
     <% render(:layout => "shared/sidebar_box") do %>
-      <h2>blist User</h2>
+      <%= render(:partial => "shared/current_user_tile", :locals => { :user => @cur_user }) %>
     <% end %>
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'blistFilters',
@@ -153,6 +153,7 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.tablesorter",
-    "plugins/jquery.treeTable.min", "util/humane-date", "widgets/panel-expander", "widgets/dropdown-menu",
+    "plugins/jquery.treeTable.min", "util/humane-date", "widgets/panel-expander", 
+    "widgets/dropdown-menu", "widgets/selectable-list",
     "screens/blists-screen", "screens/info-pane", :cache => "cache/all" %>
 <% end %>

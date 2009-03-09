@@ -181,4 +181,15 @@ $(function ()
         menuBar: $('#lensContainer .headerBar')});
 
     blistGridNS.sizeSwf();
+
+    // Set up the info pane tab switching.
+    blist.util.sizing.cachedInfoPaneHeight = $("#sidebar").height();
+    $(".summaryTabs li").infoPaneTabSwitch({
+        // After switching tabs, we need to size the Swf.
+        switchCompleteCallback: blistGridNS.sizeSwf
+    });
+
+    // Wire up the hover behavior in the info pane.
+    $("#infoPane .selectableList").blistListHoverItems();
+    $(".infoContent dl.summaryList").infoPaneItemHighlight();
 });

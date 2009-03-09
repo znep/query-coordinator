@@ -24,7 +24,7 @@ $.fn.blistFitWindow = function(options) {
         $this.height();
 
         var adjustedHeight = $(document).height();
-        if ($this.parents(opts.columnSelector).find(opts.expandableSelector).length > 0)
+        if ($this.parents(opts.columnSelector).find(opts.isExpandedSelector).length > 0)
         {
             adjustedHeight -= $(opts.expandableSelector).height();
             adjustedHeight += opts.cachedExpandableSelectorHeight;
@@ -40,8 +40,9 @@ $.fn.blistFitWindow = function(options) {
 
 // default options
 $.fn.blistFitWindow.defaults = {
-    columnSelector: ".column",
+    columnSelector: ".scrollContentColumn",
     expandableSelector: "#infoPane:not(:empty)",
+    isExpandedSelector: "#infoPane:not(:empty):has(.expanded)",
     cachedExpandableSelectorHeight: 0
 };
 

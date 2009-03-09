@@ -39,6 +39,7 @@
                     $(opts.allPanelsSelector).each(function() { $(this).removeClass(opts.activationClass); });
                     $(panelSelector).addClass(opts.activationClass);
                 }
+                opts.switchCompleteCallback();
             });
         });
     };
@@ -55,7 +56,8 @@
             "tabPublishing" : ".singleInfoPublishing",
             "tabActivity" : ".singleInfoActivity"
         },
-        allPanelsSelector : ".infoContentOuter"
+        allPanelsSelector : ".infoContentOuter",
+        switchCompleteCallback: function(){}
     };
     
     

@@ -1,6 +1,9 @@
 <div class="userTile clearfix">
   <div class="userPhoto">
-    <%= link_to(image_tag("xlarge-profile.png", :size => "89x89", :alt => h(user.displayName)), "#user_profile") %>
+    <%= link_to(
+            image_tag(user.profile_image("medium"), :size => "80x80", :alt => h(user.displayName)),
+            "#user_profile"
+    ) %>
   </div>
   <div class="userInfo">
     <h2><%= link_to(h(user.displayName), "#user_profile") %></h2>

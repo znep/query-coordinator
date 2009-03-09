@@ -108,6 +108,26 @@ blist.blistGrid.pageLabelHandler = function (event, newLabel)
     $('#pageInfo').text(newLabel);
 }
 
+blist.blistGrid.columnsChangedHandler = function (event, columnIds)
+{
+    // This is a heavy-handed approach to updating column totals or other
+    //  parts of the menu that will change with the columns; but until we
+    //  have real column objects in JS, this is the easiest way
+
+    // This shouldn't be cached, ever
+    $.ajax({ url: window.location.pathname,
+            data: 'dataComponent=mainMenu',
+            success: blistGridNS.mainMenuLoaded});
+}
+
+blist.blistGrid.mainMenuLoaded = function (data)
+{
+    // Swap out the main menu with whatever was loaded
+    $('#mainMenu').replaceWith(data);
+    $('#mainMenu').dropdownMenu({triggerButton: $('#mainMenuLink'),
+            menuBar: $('#lensContainer .headerBar')});
+}
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -117,6 +137,8 @@ $(function ()
 
     $(document).bind(blist.events.VIEW_CHANGED, blistGridNS.viewChangedHandler);
     $(document).bind(blist.events.PAGE_LABEL_UPDATED, blistGridNS.pageLabelHandler);
+    $(document).bind(blist.events.COLUMNS_CHANGED,
+        blistGridNS.columnsChangedHandler);
 
     $(window).resize(function (event)
     {

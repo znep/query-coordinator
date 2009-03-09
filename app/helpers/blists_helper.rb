@@ -126,7 +126,7 @@ module BlistsHelper
       end
     end
 
-    {'class' => 'columnsMenu', 'items' => items}
+    {'id' => args['id'], 'class' => 'columnsMenu', 'items' => items}
   end
 
   def column_aggregate_menu(column)

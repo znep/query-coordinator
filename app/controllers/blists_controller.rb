@@ -2,7 +2,6 @@ class BlistsController < SwfController
   helper_method :get_title
 
   def index
-    # TODO: Get real use from login auth
     @body_class = 'home'
     args = {'owner' => params[:owner],
             'owner_group' => params[:ownerGroup],
@@ -19,8 +18,9 @@ class BlistsController < SwfController
 
   def show
     @body_id = 'lensBody'
-    # TODO: Get real use from login auth
     @lens = Lens.find(params[:id])
+
+    @data_component = params[:dataComponent]
 
     @swf_url = swf_url('v3embed.swf')
   end

@@ -79,6 +79,11 @@ blist.util.flashInterface.copyLens = function (lensId)
     $(document).trigger(blist.events.COPY_LENS, [lensId]);
 }
 
+blist.util.flashInterface.columnsChanged = function (columnIds)
+{
+    $(document).trigger(blist.events.COLUMNS_CHANGED, [columnIds])
+}
+
 blist.util.flashInterface.addPopupHandlers = function (shownHandler,
     closedHandler, popup)
 {

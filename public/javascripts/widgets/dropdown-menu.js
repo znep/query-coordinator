@@ -75,14 +75,17 @@
             var config = $.meta ? $.extend({}, opts, $menu.data()) : opts;
             $menu.data("config", config);
 
+            // Unhook any old handlers in case we're re-applying this
+            config.triggerButton.unbind('click.dropdownMenu');
             // Hook up click handler to show menu
-            config.triggerButton.click(function (event)
+            config.triggerButton.bind('click.dropdownMenu', function (event)
             {
                 if (config.openTest === undefined || config.openTest(event, $menu))
                 {
                     if (!$menu.hasClass(config.menuOpenClass))
                     {
                         event.stopPropagation();
+                        event.preventDefault();
                         showMenu($menu);
                     }
                 }

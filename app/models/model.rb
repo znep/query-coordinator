@@ -14,10 +14,11 @@ class Model
       options = Hash.new
     end
     path = nil
-    if options.is_a? Hash
-      path = "/#{self.name.pluralize.downcase}.json?" + options_string(options)
-    else
+    if options.is_a? String
       path = "/#{self.name.pluralize.downcase}/#{options}.json"
+    elsif options.respond_to?(:to_param)
+      path = "/#{self.name.pluralize.downcase}.json"
+      path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
     send_request(path)
@@ -34,26 +35,14 @@ class Model
     end
 
     path = nil
-    if options.is_a? Hash
-      path = "/users/#{user_id}/#{self.name.pluralize.downcase}.json" +
-        options_string(options)
-    else
+    if options.is_a? String
       path = "/users/#{user_id}/#{self.name.pluralize.downcase}/#{options}.json"
+    elsif options.respond_to?(:to_param)
+      path = "/users/#{user_id}/#{self.name.pluralize.downcase}.json"
+      path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
     send_request(path)
-  end
-
-  def self.options_string(options)
-    return options.collect{ |k,v|
-      if v.is_a? Array
-        v.collect{ |a|
-          k + '=' + a.to_s
-        }
-      else
-        k + '=' + v.to_s
-      end
-    }.join('&')
   end
 
   def method_missing(method_symbol, *args)

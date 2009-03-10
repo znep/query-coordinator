@@ -761,9 +761,11 @@ table.gridList th.type
 {
     background-image: url(images/content/table/icon_sorting_type.png);
 }
-table.gridList td.type > * { 
-    margin: 0;
+table.gridList td.type > *
+{
+    margin: 0 auto;
     text-indent: -9999px;
+    width: 23px;
 }
 
 table.gridList .name { width: 25%; }
@@ -823,14 +825,14 @@ table.gridList tr.child.hover.selected td.description > *
 .outerContent table.selectableList tr.hover td.type > div
 {
     background-image: url(images/content/table/icon_type_sprites.png);
-    background-position: center -341px;
+    background-position: 0 -341px;
 }
 
 .outerContent table.selectableList tr.selected td.type > div,
 .outerContent table.selectableList tr.hover.selected td.type > div
 {
     background-image: url(images/content/table/icon_type_sprites.png);
-    background-position: center -310px;
+    background-position: 0 -310px;
 }
 
 

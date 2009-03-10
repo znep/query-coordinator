@@ -390,6 +390,12 @@
     padding: 0 5px;
 }
 
+#infoPane table.gridList td.type > *
+{
+    height: 27px;
+    line-height: 27px;
+    margin: 0 auto;
+}
 #infoPane table.gridList td.actionContainer .action { display: none; }
 #infoPane table.gridList tr.hover td.actionContainer > * { background: none; }
 #infoPane table.gridList tr.hover td.actionContainer .action { display: block; }

@@ -277,9 +277,9 @@
                 <td class="favorite <%= filter.flag?('favorite') %>"><div>
                     <%= filter.flag?('favorite') ? "*" : "" %>
                 </div></td>
-                <td class="type <%=
+                <td class="type"><div class="<%=
                   get_share_direction_icon_class_for_lens(filter) %>">
-                  <div><%= get_type_string_for_lens(filter) %></div>
+                  <%= get_type_string_for_lens(filter) %></div>
                 </td>
                 <td class="name"><div><%= h(filter.name) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>

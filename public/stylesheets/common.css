@@ -255,22 +255,22 @@ private
 .itemType 
 {
     background-image: url(images/content/table/icon_type_sprites.png);
-    background-position: center 0;
+    background-position: 0 0;
     background-repeat: no-repeat;
     height: 31px;
     overflow: hidden;
 }
 
-.itemType.typeBlist { background-position: center 0; }
-.itemType.typeBlist.sharedOut { background-position: center -31px; }
-.itemType.typeBlist.sharedIn { background-position: center -62px; }
-.itemType.typeBlist.private { background-position: center -93px; }
-.itemType.typeBlist.privateShared { background-position: center -279px; }
-.itemType.typeFilter { background-position: center -124px; }
-.itemType.typeFilter.sharedOut { background-position: center -155px; }
-.itemType.typeFilter.sharedIn { background-position: center -186px; }
-.itemType.typeFilter.private { background-position: center -217px; }
-.itemType.typeFilter.privateShared { background-position: center -248px; }
+.itemType.typeBlist { background-position: 0 0; }
+.itemType.typeBlist.sharedOut { background-position: 0 -31px; }
+.itemType.typeBlist.sharedIn { background-position: 0 -62px; }
+.itemType.typeBlist.private { background-position: 0 -93px; }
+.itemType.typeBlist.privateShared { background-position: 0 -279px; }
+.itemType.typeFilter { background-position: 0 -124px; }
+.itemType.typeFilter.sharedOut { background-position: 0 -155px; }
+.itemType.typeFilter.sharedIn { background-position: 0 -186px; }
+.itemType.typeFilter.private { background-position: 0 -217px; }
+.itemType.typeFilter.privateShared { background-position: 0 -248px; }
 
 /*** END: item type icons ***/
 

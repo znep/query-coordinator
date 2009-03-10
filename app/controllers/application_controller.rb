@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   helper_method :current_user_session
   layout 'main'
+
+  filter_parameter_logging 'password'
   
   require 'pp'
 

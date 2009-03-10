@@ -17,8 +17,11 @@ class UserSession
 
     def find
       session = new()
-      session.find_token
-      session
+      if session.find_token
+        session
+      else
+        nil
+      end
     end
 
     def controller=(value)
@@ -128,6 +131,12 @@ class UserSession
     result
   end
 
+  def destroy
+    @token = nil
+    cookies['blist_core_session'] = nil
+    UserSession.update_current_user(nil, nil)
+  end
+
   def user
     User.current_user
   end
@@ -145,7 +154,7 @@ private
   end
 
   def self.update_current_user(user, session_token)
-    user.session_token = session_token
+    user.session_token = session_token if user
     User.current_user = user
   end
   

@@ -2,8 +2,9 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  before_filter :adjust_format, :auth_current_user
+  before_filter :hook_auth_controller, :adjust_format, :require_user
   helper :all # include all helpers, all the time
+  helper_method :current_user
   helper_method :current_user_session
   layout 'main'
 
@@ -29,6 +30,14 @@ class ApplicationController < ActionController::Base
   end
   
 private
+  # Allow access to the current controller from the UserSession model.
+  # UserSession itself is an ActiveRecord-like model, but it's mostly
+  # concerned with setting session data, so it's easiest to just plumb
+  # it through.
+  def hook_auth_controller
+    UserSession.controller = self
+  end
+
   def require_user
     unless current_user
       store_location
@@ -36,6 +45,7 @@ private
       redirect_to login_url
       return false
     end
+    @current_user = current_user.user
   end
 
   def store_location
@@ -43,16 +53,11 @@ private
   end
 
   def redirect_back_or_default(path)
-    redirect_to(session[:return_to] || default)
+    redirect_to(session[:return_to] || path)
     session[:return_to] = nil
   end
 
   def adjust_format
     request.format = :data if request.xhr?
-  end
-  
-  def auth_current_user
-    @cur_user = User.find(CURRENT_USER_LOGIN)
-    User.current_user = @cur_user
   end
 end

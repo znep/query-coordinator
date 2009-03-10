@@ -6,7 +6,7 @@ module BlistsHelper
     icon_class += lens.is_blist? ? " typeBlist" : " typeFilter"
 
     if lens.is_shared?
-      icon_class += lens.owner.id == @cur_user.id ? " sharedOut" : " sharedIn"
+      icon_class += lens.owner.id == current_user.id ? " sharedOut" : " sharedIn"
     end
     icon_class
   end
@@ -27,7 +27,7 @@ module BlistsHelper
 
     sharing_type = ""
     if lens.is_shared?
-      sharing_type = lens.owner.id == @cur_user.id ? " shared out" : " shared in"
+      sharing_type = lens.owner.id == current_user.id ? " shared out" : " shared in"
     end
 
     blist_type = lens.is_blist? ? "blist" : "filter"
@@ -46,8 +46,8 @@ module BlistsHelper
 
   def contacts_filter_menu(href_prefix, href_group_prefix,
                            title_key, title_group_key, id)
-    items = [{'text' => 'Me', 'href' => href_prefix + @cur_user.id,
-              'title' => get_title({title_key => @cur_user.id})}]
+    items = [{'text' => 'Me', 'href' => href_prefix + current_user.id,
+              'title' => get_title({title_key => current_user.id})}]
 
     items << {'section_title' => 'Groups'}
     groups = Group.find().sort {|a,b| a.name <=> b.name}

@@ -46,7 +46,7 @@ private
     end
 
     opts = Hash.new
-    if !params['shared_to'].nil? && params['shared_to'] != @cur_user.id
+    if !params['shared_to'].nil? && params['shared_to'] != @current_user.id
       opts['sharedTo'] = params['shared_to']
     end
     cur_lenses = Lens.find(opts)
@@ -60,7 +60,7 @@ private
         u.id == l.owner.id}}
     end
 
-    if !params['shared_to'].nil? && params['shared_to'] == @cur_user.id
+    if !params['shared_to'].nil? && params['shared_to'] == @current_user.id
       cur_lenses = cur_lenses.find_all {|l|
         l.owner.id != params['shared_to'] && l.flag?('shared')}
     end
@@ -127,7 +127,7 @@ private
   end
 
   def get_name(user_id)
-    return user_id == @cur_user.id ? 'me' : User.find(user_id).displayName
+    return user_id == @current_user.id ? 'me' : User.find(user_id).displayName
   end
 
   def get_title(params = nil)

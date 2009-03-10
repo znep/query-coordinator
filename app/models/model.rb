@@ -35,7 +35,7 @@ class Model
 
     path = nil
     if options.is_a? Hash
-      path = "/users/#{user_id}/#{self.name.pluralize.downcase}.json?" +
+      path = "/users/#{user_id}/#{self.name.pluralize.downcase}.json" +
         options_string(options)
     else
       path = "/users/#{user_id}/#{self.name.pluralize.downcase}/#{options}.json"
@@ -92,40 +92,46 @@ class Model
     !flags.nil? && flags.any? {|f| f.data == flag_name}
   end
 
-  protected
-
-  def self.send_request(path)
-    http = Net::HTTP.new(self.url.host, self.url.port)
-
-    #headers = {'Cookie' => ApplicationController.cookies}
-    result = http.send('get', path )
-    
-
-    #this is just temporary until we hook up the login via the client
-    #this needs to be set on the response object going back to the client
-    #then pulled off of the request on each future request.
-    #model.cookie = result['Set-Cookie'] if !result['Set-Cookie'].nil?
-
-    data = ActiveSupport::JSON.decode(result.body)
-    if data.is_a?(Array)
-      model = data.collect do | item |
+  def self.parse(data)
+    json_data = ActiveSupport::JSON.decode(data)
+    if json_data.is_a?(Array)
+      model = json_data.collect do | item |
         m = self.new
         m.data = item
         m
       end
     else
       model = self.new
-      model.data = data
-    end
-
-    if !result.is_a?(Net::HTTPSuccess)
-      raise 'Error:' + model.data['code'] + ', message:' + model.data['message']
+      model.data = json_data
     end
 
     model
   end
 
-  private
+protected
+
+  def self.send_request(path)
+    req = Net::HTTP::Get.new(path)
+    requestor = User.current_user
+    if requestor && requestor.session_token
+      req['Cookie'] = requestor.session_token.cookie
+    end
+    result = Net::HTTP.start(self.url.host, self.url.port){ |http| http.request(req) }
+
+    #this is just temporary until we hook up the login via the client
+    #this needs to be set on the response object going back to the client
+    #then pulled off of the request on each future request.
+    #model.cookie = result['Set-Cookie'] if !result['Set-Cookie'].nil?
+    model = self.parse(result.body)
+
+    if !result.is_a?(Net::HTTPSuccess)
+      raise "Error: Accessing #{self.url.host}:#{self.url.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
+    end
+
+    model
+  end
+
+private
 
   cattr_accessor :url
 

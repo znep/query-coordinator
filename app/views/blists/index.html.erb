@@ -36,7 +36,7 @@
             </div>
           </div>
           
-          <%- if (!@cur_user.is_established?) -%>
+          <%- if (!current_user.is_established?) -%>
             <div class="noticePanel expandContainer">
               <div class="noticeHeaderOuter"><div class="noticeHeaderInner">
                 <div class="noticeHeader clearfix">
@@ -72,20 +72,20 @@
         <h4><a href="?" title='<%= h(get_title()) %>'>
             <span>All Items</span></a></h4>
         <ul class="expandable">
-          <li><a href='?owner=<%= @cur_user.id %>'
-            title='<%= h(get_title({'owner' => @cur_user.id.to_s})) %>'>
+          <li><a href='?owner=<%= current_user.id %>'
+            title='<%= h(get_title({'owner' => current_user.id.to_s})) %>'>
             <span>Owned by <em>Me</em></span></a>
           <%= contacts_filter_menu('?owner=', '?ownerGroup=',
             'owner', 'owner_group', 'ownerMenu') %>
           </li>
-          <li><a href='?sharedTo=<%= @cur_user.id %>'
-            title='<%= h(get_title({'shared_to' => @cur_user.id.to_s})) %>'>
+          <li><a href='?sharedTo=<%= current_user.id %>'
+            title='<%= h(get_title({'shared_to' => current_user.id.to_s})) %>'>
             <span>Shared to <em>Me</em></span></a>
           <%= contacts_filter_menu('?sharedTo=', '?sharedToGroup=',
             'shared_to', 'shared_to_group', 'sharedToMenu') %>
           </li>
-          <li><a href='?sharedBy=<%= @cur_user.id %>'
-            title='<%= h(get_title({'shared_by' => @cur_user.id.to_s})) %>'>
+          <li><a href='?sharedBy=<%= current_user.id %>'
+            title='<%= h(get_title({'shared_by' => current_user.id.to_s})) %>'>
             <span>Shared by <em>Me</em></span></a>
           <%= contacts_filter_menu('?sharedBy=', '?sharedByGroup=',
             'shared_by', 'shared_by_group', 'sharedByMenu') %>

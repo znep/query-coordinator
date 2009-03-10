@@ -1,5 +1,6 @@
 class User < Model
   cattr_accessor :current_user
+  attr_accessor :session_token
 
   def displayName
     # TODO: This needs to respect privacy settings

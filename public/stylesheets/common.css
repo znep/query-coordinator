@@ -240,146 +240,6 @@ form.search input.submit
 }
 
 
-/*********************
- * Selectable table  *
- *********************/
-
-.selectableListContainer
-{
-    padding-top: 3.8em;
-    width: 100%;
-}
-
-.selectableListContainer .headerContainer
-{
-    height: 3.8em;
-    margin-top: -3.8em;
-    overflow: hidden;
-}
-
-.selectableListContainer .headerContainer th.last
-{
-    padding-right: 20px;
-}
-
-.selectableListInner
-{
-    overflow: auto;
-}
-
-table.selectableList
-{
-    width: 100%;
-}
-
-table.selectableList tbody
-{
-    overflow: auto;
-    overflow-x: hidden;
-}
-
-table.selectableList thead
-{
-    background-color: #e8e8e8;
-}
-
-table.selectableList th
-{
-    background-color: #e8e8e8;
-    border-right: solid 1px #d4d4d4;
-    font-size: 1.4em;
-    font-weight: normal;
-    line-height: 0.7em;
-    padding: 1em 0.5em;
-    text-align: left;
-}
-
-table.selectableList thead th.first
-{
-    background-image: url(/stylesheets/images/content/table/header_left_top.png);
-    background-position: left top;
-    background-repeat: no-repeat;
-}
-
-table.selectableList th.last
-{
-    background-image: url(/stylesheets/images/content/table/header_right_top.png);
-    background-position: right top;
-    background-repeat: no-repeat;
-    border: none;
-}
-
-table.selectableList th.last > *
-{
-    margin-right: -15px;
-}
-
-table.selectableList th.header
-{
-    cursor: pointer;
-}
-
-table.selectableList th.header > *
-{
-    background-position: right center;
-    background-repeat: no-repeat;
-}
-
-table.selectableList th.headerSortDown > *
-{
-    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
-}
-
-table.selectableList th.headerSortUp > *
-{
-    background-image: url(/stylesheets/images/content/table/icon_sort_down.png);
-}
-
-table.selectableList td
-{
-    vertical-align: top;
-}
-
-table.selectableList td > *
-{
-    display: block;
-    font-size: 1.2em;
-    height: 27px;
-    line-height: 27px;
-    margin: 2px 0;
-    overflow: hidden;
-    padding: 0 5px;
-}
-
-table.selectableList tr.hover td+td+td+td > *,
-table.selectableList tr.selected td+td+td+td > *,
-table.selectableList tr.hover.selected td+td+td+td > *
-{
-    background-color: #ffedb2;
-}
-
-table.selectableList tr.hover td.last > *,
-table.selectableList tr.selected td.last > *,
-table.selectableList tr.hover.selected td.last > *
-{
-    background-image: url(/stylesheets/images/content/table/highlight_end.png);
-    background-position: right;
-    background-repeat: no-repeat;
-}
-
-table.selectableList td > a
-{
-    color: #333;
-    text-decoration: none;
-}
-
-table.selectableList td > a:hover
-{
-    text-decoration: underline;
-}
-
-
-
 /*** START: item type icons ***/
 
 /*
@@ -395,22 +255,22 @@ private
 .itemType 
 {
     background-image: url(images/content/table/icon_type_sprites.png);
-    background-position: left 0;
+    background-position: center 0;
     background-repeat: no-repeat;
     height: 31px;
     overflow: hidden;
 }
 
-.itemType.typeBlist { background-position: left 0; }
-.itemType.typeBlist.sharedOut { background-position: left -31px; }
-.itemType.typeBlist.sharedIn { background-position: left -62px; }
-.itemType.typeBlist.private { background-position: left -93px; }
-.itemType.typeBlist.privateShared { background-position: left -279px; }
-.itemType.typeFilter { background-position: left -124px; }
-.itemType.typeFilter.sharedOut { background-position: left -155px; }
-.itemType.typeFilter.sharedIn { background-position: left -186px; }
-.itemType.typeFilter.private { background-position: left -217px; }
-.itemType.typeFilter.privateShared { background-position: left -248px; }
+.itemType.typeBlist { background-position: center 0; }
+.itemType.typeBlist.sharedOut { background-position: center -31px; }
+.itemType.typeBlist.sharedIn { background-position: center -62px; }
+.itemType.typeBlist.private { background-position: center -93px; }
+.itemType.typeBlist.privateShared { background-position: center -279px; }
+.itemType.typeFilter { background-position: center -124px; }
+.itemType.typeFilter.sharedOut { background-position: center -155px; }
+.itemType.typeFilter.sharedIn { background-position: center -186px; }
+.itemType.typeFilter.private { background-position: center -217px; }
+.itemType.typeFilter.privateShared { background-position: center -248px; }
 
 /*** END: item type icons ***/
 

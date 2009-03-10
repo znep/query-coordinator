@@ -256,7 +256,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 
     // Wire up the tab switcher/expander.
     $(".summaryTabs li").infoPaneTabSwitch();
-    $("#infoPane .selectableList").blistListHoverItems();
+    $("#infoPane .gridList").blistListHoverItems();
 
     // Wire up a click handler for deselectors.
     $(".action.unselector").click(function (event)

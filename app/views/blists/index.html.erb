@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blists-screen",
+  <%= stylesheet_link_tag "blists-screen", "widgets",
     :cache => "cache/all" %>
   <title>blist | share your weblists</title>
 <% end %>
@@ -26,12 +26,12 @@
             </form>
           </div>
 
-          <div class='selectableListContainer'>
+          <div class='gridListContainer'>
             <%#
              This div will hold a copy of the table that displays the header
             %>
             <div class='headerContainer'></div>
-            <div class='selectableListInner scrollContent'>
+            <div class='gridListInner scrollContent'>
               <%= render(:partial => "blist_list") %>
             </div>
           </div>

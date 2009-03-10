@@ -356,70 +356,30 @@
     display: block;
 }
 
-/*** START: selectable list table ***/
+/*** START: grid list table ***/
 
-#infoPane .selectableListContainer 
+#infoPane .gridListContainer 
 {
     padding-top: 0;
 }
-#infoPane .selectableList thead 
+#infoPane .gridList thead 
 {
     background-color: #e0d1b8;
 }
-#infoPane .selectableList thead th
+#infoPane .gridList thead th
 {
     background-color: #e0d1b8;
     border-right: 1px solid #e2e2e2;
     color: #666;
     font-size: 1.2em;
 }
-#infoPane .selectableList thead th.first,
-#infoPane .selectableList thead th.last
+#infoPane .gridList thead th.first,
+#infoPane .gridList thead th.last
 {
     background-image: none;
 }
 
-#infoPane table.selectableList th.favorite,
-#infoPane table.selectableList th.type
-{
-    background-position: center center;
-    background-repeat: no-repeat;
-    text-indent: -9999px;
-}
-
-#infoPane table.selectableList th.favorite 
-{
-    background-image: url(/stylesheets/images/content/table/icon_sorting_star.png); 
-}
-
-#infoPane table.selectableList th.type
-{
-    background-image: url(/stylesheets/images/content/table/icon_sorting_type.png);
-}
-
-#infoPane table.selectableList .handle
-{
-    padding: 0;
-    width: 33px;
-}
-
-#infoPane table.selectableList .favorite
-{
-    padding: 0;
-    width: 32px;
-}
-
-#infoPane table.selectableList .type
-{
-    padding: 0;
-    width: 45px;
-}
-#infoPane table.selectableList td.type > *
-{
-    margin: 0;
-}
-
-#infoPane table.selectableList td > *
+#infoPane table.gridList td > *
 {
     color: #333;
     font-size: 1.1em;
@@ -429,79 +389,11 @@
     padding: 0 5px;
 }
 
-#infoPane table.selectableList .actionContainer {
-    font-size: 1em;
-    width: 45px;
-}
+#infoPane table.gridList td.actionContainer .action { display: none; }
+#infoPane table.gridList tr.hover td.actionContainer > * { background: none; }
+#infoPane table.gridList tr.hover td.actionContainer .action { display: block; }
 
-#infoPane table.selectableList td.handle,
-#infoPane table.selectableList td.favorite
-{
-    background-position: center center;
-    background-repeat: no-repeat;
-    text-indent: -9999px;
-}
-
-#infoPane table.selectableList td.type > div
-{
-    text-indent: -9999px;
-    width: 100%;
-}
-
-#infoPane table.selectableList td.handle > div,
-#infoPane table.selectableList td.favorite > div,
-#infoPane table.selectableList td.type > div
-{
-    width: 17px;
-}
-
-
-#infoPane table.selectableList td.type > div
-{
-    text-indent: -9999px;
-    width: 100%;
-}
-
-#infoPane table.selectableList td.favorite.true
-{
-    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
-}
-
-#infoPane table.selectableList tr.hover td.handle
-{
-    background-image: url(/stylesheets/images/content/table/icon_double_arrow.png);
-}
-
-#infoPane table.selectableList tr.hover td.favorite
-{
-    background-image: url(/stylesheets/images/content/table/icon_star_empty.png);
-}
-
-#infoPane table.selectableList tr.hover td.favorite.true
-{
-    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
-}
-
-
-#infoPane table.selectableList td.actionContainer > *
-{
-    font-size: 1em;
-    padding: 0;
-}
-#infoPane table.selectableList td.actionContainer .action
-{
-    display: none;
-}
-#infoPane table.selectableList tr.hover td.actionContainer > *
-{
-    background: none;
-}
-#infoPane table.selectableList tr.hover td.actionContainer .action
-{
-    display: block;
-}
-
-/*** END: selectable list table ***/
+/*** END: grid list table ***/
 
 /*** START: single info filtered tab ***/
 
@@ -554,53 +446,25 @@
     text-decoration: underline;
 }
 
-#infoPane .singleInfoSharing table.selectableList td > *,
-#infoPane .selectableListContainer.simple table.selectableList td > *
+#infoPane .singleInfoSharing table.gridList td > *,
+#infoPane .gridListContainer.simple table.gridList td > *
 {
     margin: 2px 0;
 }
 
-.singleInfoSharing table.selectableList tr.hover td+td > *,
-.singleInfoSharing table.selectableList tr.selected td+td > *,
-.singleInfoSharing table.selectableList tr.hover.selected td+td > *
+.singleInfoSharing table.gridList tr.hover td+td > *,
+.singleInfoSharing table.gridList tr.selected td+td > *,
+.singleInfoSharing table.gridList tr.hover.selected td+td > *
 {
     background-color: #ffedb2;
 }
 
-#infoPane table.selectableList .role
-{
-    width: 6em;
-}
-#infoPane table.selectableList .others
-{
-    width: 10.5em;
-}
-#infoPane table.selectableList .opened
-{
-    width: 7em;
-}
-#infoPane .singleInfoSharing table.selectableList .actionContainer
+#infoPane .singleInfoSharing table.gridList .actionContainer
 {
     width: 8.5em;
 }
 
 /*** END: single info sharing tab ***/
-
-/*** START: shared rules for simple selectable list ***/
-
-#infoPane .selectableListContainer.simple
-{
-    padding-top: .4em;
-}
-
-#infoPane .selectableListContainer.simple table.selectableList tr.hover td > *,
-#infoPane .selectableListContainer.simple table.selectableList tr.selected td > *,
-#infoPane .selectableListContainer.simple table.selectableList tr.hover.selected td > *
-{
-    background-color: #ffedb2;
-}
-
-/*** END: shared rules for simple selectable list ***/
 
 /*** START: single info publishing tab ***/
 
@@ -616,35 +480,16 @@
     padding-left: 51px;
 }
 
-#infoPane table.selectableList .widgetBlist
-{
-    width: 40%;
-}
-#infoPane table.selectableList .widgetType
-{
-    width: 6em;
-}
-#infoPane table.selectableList .link
-{
-    width: 40%;
-}
-#infoPane table.selectableList .number
-{
-    width: 4em;
-}
-#infoPane table.selectableList th.number
-{
-    text-align: center;
-}
-#infoPane table.selectableList td.number
-{
-    text-align: right;
-}
-
-#infoPane .singleInfoPublishing table.selectableList .actionContainer
-{
-    width: 6em;
-}
+/*  The following rules define styles for stuff that isn't currently implemented. 
+    TODO: clean it all up once the publishing table is implemented.
+*/
+#infoPane table.gridList .widgetBlist { width: 40%; }
+#infoPane table.gridList .widgetType { width: 6em; }
+#infoPane table.gridList .link { width: 40%; }
+#infoPane table.gridList .number { width: 4em; }
+#infoPane table.gridList th.number { text-align: center; }
+#infoPane table.gridList td.number { text-align: right; }
+#infoPane .singleInfoPublishing table.gridList .actionContainer { width: 6em; }
 
 /*** END: single info publishing tab ***/
 
@@ -653,15 +498,6 @@
 .singleInfoActivity .infoContentHeader h2.panelHeader
 {
     background-position: left -410px;
-}
-#infoPane table.selectableList .when,
-#infoPane table.selectableList .who
-{
-    width: 15%;
-}
-#infoPane table.selectableList .what
-{
-    width: 70%;
 }
 
 /*** END: single info activity tab ***/

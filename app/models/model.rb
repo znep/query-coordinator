@@ -27,7 +27,7 @@ class Model
     if options.nil?
       options = Hash.new
     end
-    user_id = User.current_user.id.to_s
+    user_id = User.current_user.id
     if !options['userId'].nil?
       user_id = options['userId']
       options.delete('userId')

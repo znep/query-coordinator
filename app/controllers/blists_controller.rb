@@ -46,37 +46,37 @@ private
     end
 
     opts = Hash.new
-    if !params['shared_to'].nil? && params['shared_to'] != @cur_user.id.to_s
+    if !params['shared_to'].nil? && params['shared_to'] != @cur_user.id
       opts['sharedTo'] = params['shared_to']
     end
     cur_lenses = Lens.find(opts)
 
     if !params['owner'].nil?
-      cur_lenses = cur_lenses.find_all {|l| l.owner.id.to_s == params['owner']}
+      cur_lenses = cur_lenses.find_all {|l| l.owner.id == params['owner']}
     end
     if !params['owner_group'].nil?
       group = Group.find(params['owner_group'])
       cur_lenses = cur_lenses.find_all {|l| group.users.any? {|u|
-        u.id.to_s == l.owner.id.to_s}}
+        u.id == l.owner.id}}
     end
 
-    if !params['shared_to'].nil? && params['shared_to'] == @cur_user.id.to_s
+    if !params['shared_to'].nil? && params['shared_to'] == @cur_user.id
       cur_lenses = cur_lenses.find_all {|l|
-        l.owner.id.to_s != params['shared_to'] && l.flag?('shared')}
+        l.owner.id != params['shared_to'] && l.flag?('shared')}
     end
     if !params['shared_to_group'].nil?
       cur_lenses = cur_lenses.find_all {|l| l.grants.any? {|g|
-        g.groupId.to_s == params['shared_to_group']}}
+        g.groupId == params['shared_to_group']}}
     end
 
     if !params['shared_by'].nil?
       cur_lenses = cur_lenses.find_all {|l|
-        l.owner.id.to_s == params['shared_by'] && l.is_shared?}
+        l.owner.id == params['shared_by'] && l.is_shared?}
     end
     if !params['shared_by_group'].nil?
       group = Group.find(params['shared_by_group'])
       cur_lenses = cur_lenses.find_all {|l| group.users.any? {|u|
-        u.id.to_s == l.owner.id.to_s && l.flag?('shared')}}
+        u.id == l.owner.id && l.flag?('shared')}}
     end
 
     if params['type'] == 'filter'
@@ -110,12 +110,12 @@ private
   end
 
   def get_lenses_with_ids(params = nil)
-    cur_lenses = Lens.find({ "ids" => params })
+    cur_lenses = Lens.find_multiple(params)
 
     # Return this array in the order of the params so it'll match the DOM.
     hash_lenses = Hash.new
     cur_lenses.each do |l|
-      hash_lenses[l.id.to_s] = l
+      hash_lenses[l.id] = l
     end
 
     ret_lenses = Array.new
@@ -127,7 +127,7 @@ private
   end
 
   def get_name(user_id)
-    return user_id == @cur_user.id.to_s ? 'me' : User.find(user_id).displayName
+    return user_id == @cur_user.id ? 'me' : User.find(user_id).displayName
   end
 
   def get_title(params = nil)

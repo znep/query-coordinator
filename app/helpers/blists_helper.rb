@@ -46,8 +46,8 @@ module BlistsHelper
 
   def contacts_filter_menu(href_prefix, href_group_prefix,
                            title_key, title_group_key, id)
-    items = [{'text' => 'Me', 'href' => href_prefix + @cur_user.id.to_s,
-              'title' => get_title({title_key => @cur_user.id.to_s})}]
+    items = [{'text' => 'Me', 'href' => href_prefix + @cur_user.id,
+              'title' => get_title({title_key => @cur_user.id})}]
 
     items << {'section_title' => 'Groups'}
     groups = Group.find().sort {|a,b| a.name <=> b.name}
@@ -58,8 +58,8 @@ module BlistsHelper
         first_char = name_char
         items << {'section_title' => first_char, 'class' => 'sortHeader'}
       end
-      items << {'text' => g.name, 'href' => href_group_prefix + g.id.to_s,
-          'title' => get_title({title_group_key => g.id.to_s})}
+      items << {'text' => g.name, 'href' => href_group_prefix + g.id,
+          'title' => get_title({title_group_key => g.id})}
     end
 
     items << {'section_title' => 'Contacts'}
@@ -71,8 +71,8 @@ module BlistsHelper
         first_char = name_char
         items << {'section_title' => first_char, 'class' => 'sortHeader'}
       end
-      items << {'text' => c.displayName, 'href' => href_prefix + c.id.to_s,
-          'title' => get_title({title_key => c.id.to_s})}
+      items << {'text' => c.displayName, 'href' => href_prefix + c.id,
+          'title' => get_title({title_key => c.id})}
     end
     menu_tag('id' => id, 'class' => 'contactsMenu', 'items' => items)
   end

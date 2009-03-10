@@ -3,12 +3,18 @@ class Lens < Model
     self.find_under_user(options)
   end
 
+  def self.find_multiple(ids)
+    path = "/#{self.name.pluralize.downcase}.json?" +
+      options_string({'ids' => ids})
+    send_request(path)
+  end
+
   def is_blist?
     flag?("default")
   end
 
   def is_public?
-    grants.any? {|p| p.isPublic}
+    grants.any? {|p| p.public}
   end
 
   def is_private?
@@ -16,7 +22,7 @@ class Lens < Model
   end
 
   def is_shared?
-    grants.any? {|p| !p.isPublic}
+    grants.any? {|p| !p.public}
   end
 
   def tag_display_string
@@ -24,16 +30,18 @@ class Lens < Model
   end
 
   def last_updated_user
-    User.find(rowsUpdatedBy)
+    # TODO: When this is converted to the UID, re-enable it
+    #User.find(rowsUpdatedBy)
+    owner
   end
 
   def contributor_users
-    grants.find_all {|g| !g.isPublic && g.type != 'read'}.
+    grants.reject {|g| g.public || g.type.downcase == 'read'}.
       collect do |g|
         if !g.groupId.nil?
-          Group.find(g.groupId.to_s).users.collect {|u| u.id.to_s}
+          Group.find(g.groupId).users.collect {|u| u.id}
         elsif !g.userId.nil?
-          g.userId.to_s
+          g.userId
         else
           g.userEmail
         end
@@ -42,12 +50,12 @@ class Lens < Model
 
   def viewer_users
     contributors = contributor_users
-    grants.find_all {|g| !g.isPublic && g.type == 'read'}.
+    grants.reject {|g| g.public || g.type.downcase != 'read'}.
       collect do |g|
         if !g.groupId.nil?
-          Group.find(g.groupId.to_s).users.collect {|u| u.id.to_s}
+          Group.find(g.groupId).users.collect {|u| u.id}
         elsif !g.userId.nil?
-          g.userId.to_s
+          g.userId
         else
           g.userEmail
         end
@@ -57,25 +65,25 @@ class Lens < Model
   def shares
     user_shares = Hash.new
     group_shares = Hash.new
-    grants.reject {|g| g.isPublic}.each do |g|
+    grants.reject {|g| g.public}.each do |g|
       if !g.groupId.nil?
-        if !group_shares[g.groupId.to_s]
-          s = Share.new(nil, g.groupId.to_s, Group.find(g.groupId.to_s).name,
+        if !group_shares[g.groupId]
+          s = Share.new(nil, g.groupId, Group.find(g.groupId).name,
                         false, true)
-          s.type = g.type == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
-          group_shares[g.groupId.to_s] = s
-        elsif g.type != 'read'
-          group_shares[g.groupId.to_s].type = Share::CONTRIBUTOR
+          s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
+          group_shares[g.groupId] = s
+        elsif g.type.downcase != 'read'
+          group_shares[g.groupId].type = Share::CONTRIBUTOR
         end
       else
-        user_id = g.userId.nil? ? g.userEmail : g.userId.to_s
+        user_id = g.userId.nil? ? g.userEmail : g.userId
         if !user_shares[user_id]
           s = Share.new(nil, user_id, g.userId.nil? ?
-                        g.userEmail : User.find(g.userId.to_s).displayName,
+                        g.userEmail : User.find(g.userId).displayName,
                         true, false)
-          s.type = g.type == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
+          s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
           user_shares[user_id] = s
-        elsif g.type != 'read'
+        elsif g.type.downcase != 'read'
           user_shares[user_id].type = Share::CONTRIBUTOR
         end
       end

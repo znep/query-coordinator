@@ -151,6 +151,7 @@ ul.menu
     border: 1px solid #8d8d8d;
     border-bottom: none;
     display: none;
+    margin-bottom: 9px;
     position: absolute;
     z-index: 200;
 }
@@ -261,6 +262,11 @@ ul.menu li.submenu .menu
 {
     left: 97%;
     top: 0;
+}
+
+ul.menu li.submenu .menu.opposite
+{
+    left: -97%;
 }
 
 

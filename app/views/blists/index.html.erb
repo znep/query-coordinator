@@ -62,7 +62,7 @@
 
   <div id="sidebar" class="column scrollContentColumn">
     <% render(:layout => "shared/sidebar_box") do %>
-      <%= render(:partial => "shared/current_user_tile", :locals => { :user => @cur_user }) %>
+      <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
     <% end %>
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'blistFilters',

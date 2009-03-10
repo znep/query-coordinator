@@ -7,7 +7,7 @@ private
   def variables_for_swf
     variables = {}
     variables[:debug] = debug_mode?
-    variables[:user_id] = @current_user.id
+    variables[:user_id] = current_user.id
 
     timestamp = Time.now.to_f
     #variables[:mat] = @current_user.multiuser_authentication_token(timestamp)

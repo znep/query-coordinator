@@ -4,8 +4,7 @@ class Lens < Model
   end
 
   def self.find_multiple(ids)
-    path = "/#{self.name.pluralize.downcase}.json?" +
-      options_string({'ids' => ids})
+    path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     send_request(path)
   end
 

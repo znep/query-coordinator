@@ -69,12 +69,4 @@ module ApplicationHelper
     time ? Time.at(time/1000).strftime("%b %d, %Y") : nil
   end
 
-  def login_logout_link
-    unless current_user_session
-      link_to('Sign In', login_url)
-    else
-      link_to('Sign Out', logout_url)
-    end
-  end
-  
 end

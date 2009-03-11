@@ -38,18 +38,21 @@
         </ul>
       </div>
 
+      <%# This is not supported yet
       <div class='notifications'>
         <ul>
           <li><a href='#' class='messages' title='Messages'>1</a></li>
           <li><a href='#' class='requests' title='Requests'>3</a></li>
         </ul>
       </div>
+      %>
 
       <div class='userNav'>
         <ul>
-          <li><a href='#'>Help</a></li>
-          <li><a href='#'>My Account</a></li>
-          <li><%= login_logout_link %><li>
+          <li><a href='/help'>Help</a></li>
+          <li class='signInLink'><a href='/login'>Sign In</a></li>
+          <li class='accountLink'><a href='#'>My Account</a></li>
+          <li class='signOutLink'><a href='/logout'>Sign Out</a></li>
         </ul>
       </div>
 
@@ -90,6 +93,22 @@
   <% if ENV["RAILS_ENV"] != 'production' %>
     <%= javascript_include_tag "util/debug", :cache => "cache/all" %>
   <% end %>
+
+
+  <%# This should be included on all pages, including the marketing site.
+  It will update the header appropriately based on your logged-in state %>
+  <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min",
+    :cache => "cache/all" %>
+  <script type="text/javascript">
+    jQuery((function ($)
+    {
+        var blistCookie = $.cookies.get('blist_core_session');
+        if (blistCookie && blistCookie !== "")
+        {
+            $('#header .userNav').addClass('loggedInNav');
+        }
+    })(jQuery));
+  </script>
 
   <%= yield :js_footer %>
 </body>

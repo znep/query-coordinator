@@ -137,6 +137,22 @@ body
     font-weight: bold;
 }
 
+#header .userNav li.accountLink,
+#header .userNav li.signOutLink
+{
+    display: none;
+}
+
+#header .loggedInNav li.accountLink,
+#header .loggedInNav li.signOutLink
+{
+    display: inline;
+}
+
+#header .loggedInNav li.signInLink
+{
+    display: none;
+}
 
 /*******************
  * Main nav bar    *

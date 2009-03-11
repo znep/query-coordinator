@@ -252,6 +252,13 @@ ul.menu.contactsMenu li a
     margin: 0;
 }
 
+ul.menu.contactsMenu li a span
+{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 ul.menu.contactsMenu li.sectionTitle.sortHeader
 {
     color: #e8a134;

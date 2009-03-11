@@ -193,10 +193,22 @@
 
         if (config.pullToTop)
         {
-            config.origPosition = $menu.position();
+            config._origPosition = $menu.position();
             var offsetPos = $menu.offset();
             offsetPos.top += $menu.offsetParent().scrollTop();
             $menu.css(offsetPos).appendTo('body');
+        }
+
+        // Check if we need to restore the original width first
+        if (config._origWidth)
+        {
+            $menu.css('width', config._origWidth);
+        }
+        // Check if the menu is wider than the window; if so, clip it
+        if ($menu.offset().left + $menu.outerWidth(true) > $(window).width())
+        {
+            config._origWidth = $menu.css('width');
+            $menu.css('width', $(window).width() - $menu.offset().left - 5);
         }
     };
 
@@ -212,7 +224,7 @@
 
         if (config.pullToTop)
         {
-            $menu.css(config.origPosition).insertAfter(config.triggerButton);
+            $menu.css(config._origPosition).insertAfter(config.triggerButton);
         }
 
         $menu.removeClass(config.menuOpenClass);

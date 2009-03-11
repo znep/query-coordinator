@@ -48,10 +48,13 @@
     position: relative; /** Must add this style for IE7 to properly hide the overflowing content. **/
 }
 
-form input[type="text"]
+form input[type="text"],
+form input[type="password"]
 {
+    border: solid 1px #cacaca;
     font-size: 1.2em;
     line-height: 1.2em;
+    padding: 0.2em;
 }
 
 form input.textPrompt.prompt

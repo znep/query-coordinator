@@ -1,15 +1,50 @@
-<% if flash[:notice] %>
-  <p><%= flash[:notice] %></p>
+<% content_for :head do %>
+  <%= stylesheet_link_tag "login-screen",
+    :cache => "cache/all" %>
+  <title>blist | share your weblists</title>
 <% end %>
 
-<% form_for @user_session do |f| %>
-  <%= f.error_messages %>
-  <%= f.label :login %><br />
-  <%= f.text_field :login %><br />
-  <br />
-  <%= f.label :password %><br />
-  <%= f.password_field :password %><br />
-  <br />
-  <%= f.submit "Login" %>
-<% end %>
+<div class='loginBox'>
+  <div class='header'>
+    <h1>blist</h1>
+  </div>
 
+  <div class='mainContent'>
+    <div class='title clearfix'><h2>Sign In</h2><a href='#'>Sign Up</a></div>
+
+    <% if flash[:notice] %>
+    <p class='error'><%= flash[:notice] %></p>
+    <% end %>
+
+    <% form_for @user_session do |f| %>
+    <%= f.error_messages %>
+    <p>
+    <%= f.label :login, 'Username' %>
+    <%= f.text_field :login %>
+    </p>
+    <p>
+    <%= f.label :password %>
+    <%= f.password_field :password %>
+    </p>
+    <p class='rememberMe'>
+    <input type='checkbox' id='rememberMe' />
+    <label for='rememberMe'>Remember me</label>
+    </p>
+    <div class='footer clearfix'>
+      <a href='#'>Forgot your password / username?</a>
+      <input type='image' name='submit'
+        src='<%= image_path("button_signin.png") %>' />
+    </div>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <script type="text/javascript">
+    $(function ()
+    {
+        $('#user_session_login').focus();
+    });
+  </script>
+<% end %>

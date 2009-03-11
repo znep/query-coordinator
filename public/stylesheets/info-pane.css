@@ -135,7 +135,7 @@
 .infoContentOuter
 {
   background-color: #ffedcc;
-  background-image: url(images/info_pane/background_info_content_bottom_right.png);
+  background-image: url(images/common/summary_bottom_right.png);
   background-position: right bottom;
   background-repeat: no-repeat;
   display: none;
@@ -190,7 +190,7 @@
 
 .infoContentOuter .infoContentInner
 {
-    background-image: url(images/info_pane/background_info_content_bottom_left.png);
+    background-image: url(images/common/summary_bottom_left.png);
     background-position: left bottom;
     background-repeat: no-repeat;
     min-height: 0; /* Trigger hasLayout for IE7 */

@@ -1,0 +1,125 @@
+/* 
+    Document   : login-screen
+    Created on : Mar 10, 2009
+    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
+    Description:
+      Styles for the 'Login' screen
+*/
+
+#login .loginBox
+{
+    background-color: #ffedcc;
+    background-image: url(images/common/summary_bottom_right.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    margin: 15em auto 0;
+    width: 40em;
+}
+
+#login .loginBox .header
+{
+    background-color: #e0d1b8;
+    border-bottom: solid 1px #8d8d8d;
+    padding: 0.5em;
+}
+
+#login .loginBox .header h1
+{
+    background-image: url(images/common/blist_logo.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 35px;
+    margin: 0;
+    text-indent: -9999px;
+}
+
+#login .loginBox .mainContent
+{
+    background-image: url(images/common/summary_bottom_left.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    padding: 1em;
+}
+
+#login .loginBox .title
+{
+    height: 3em;
+    line-height: 3em;
+    margin-bottom: 2em;
+    margin-right: 2em;
+}
+
+#login .loginBox .title h2
+{
+    float: left;
+    font-size: 1.8em;
+}
+
+#login .loginBox .title a
+{
+    color: #333333;
+    float: right;
+    font-size: 1em;
+    text-decoration: underline;
+    text-transform: uppercase;
+}
+
+#login .loginBox .error
+{
+    color: #ff0000;
+    font-size: 1.2em;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+#login .loginBox form p
+{
+    height: 2em;
+    line-height: 2em;
+    margin-bottom: 0.5em;
+}
+
+#login .loginBox form label
+{
+    float: left;
+    font-size: 1.1em;
+    width: 5em;
+    margin-left: 0.5em;
+    margin-right: 1em;
+}
+
+#login .loginBox form p.rememberMe
+{
+    line-height: 2.3em;
+    margin-left: 6.5em;
+}
+
+#login .loginBox form p.rememberMe input
+{
+    float: left;
+}
+
+#login .loginBox form p.rememberMe label
+{
+    float: none;
+}
+
+#login .loginBox .footer
+{
+    border-top: solid 1px #e0d1b8;
+    height: 25px;
+    line-height: 25px;
+    padding-top: 1em;
+}
+
+#login .loginBox .footer a
+{
+    color: #333333;
+    float: left;
+    text-decoration: underline;
+}
+
+#login .loginBox .footer input
+{
+    float: right;
+}

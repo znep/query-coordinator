@@ -22,27 +22,42 @@
   float: left;
 }
 
-#blists .headerBar a
+#blists .headerBar .headerActions
 {
-  color: #333333;
-  font-size: 1.2em;
-  margin-right: 0.5em;
-  text-decoration: none;
-  text-transform: uppercase;
+    float: right;
+    margin-right: 5px;
 }
-
-#blists .headerBar .menuLink
+#blists .headerBar .headerActions li
 {
-  border-right: solid 2px #ededed;
-  font-size: 1.4em;
-  font-weight: bold;
-  padding-right: 0.5em;
+    float: left;
+    height: 23px;
+    line-height: 23px;
+    margin-right: 1.5em;
 }
+#blists .headerBar .headerActions li a
+{
+    background: url(images/content/blists_menu_icons.png) left 23px no-repeat;
+    color: #333333;
+    display: block;
+    font-size: 1em;
+    padding-left: 26px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+#blists .headerBar .headerActions li a:hover
+{
+    text-decoration: underline;
+}
+#blists .headerBar .headerActions li a.add_new { background-position: left 0; }
+#blists .headerBar .headerActions li a.import { background-position: left -23px; }
 
-#blists .headerBar form,
+#blists .headerBar form
+{
+    float: right;
+}
 #blists .headerBar form p
 {
-  display: inline;
+  width: 15em;
 }
 
 #blists .gridListContainer

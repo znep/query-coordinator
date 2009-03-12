@@ -69,11 +69,11 @@ form input.textPrompt.prompt
 
 form.search p
 {
-    background-image: url(/stylesheets/images/header/search_field.png);
+    background-image: url(images/common/find_input_cap.png);
     background-repeat: no-repeat;
     overflow: hidden;
     padding-left: 10px;
-    padding-right: 30px;
+    padding-right: 31px;
 }
 
 form.search input
@@ -83,9 +83,9 @@ form.search input
 
 form.search input[type="text"]
 {
-    border: solid 1px #cacaca;
-    border-left: none;
-    border-right: none;
+    border-color: #cacaca;
+    border-style: solid;
+    border-width: 1px 0;
     height: 18px;
     padding: 3px 0 0;
     width: 100%;
@@ -94,8 +94,8 @@ form.search input[type="text"]
 form.search input.submit
 {
     height: 23px;
-    margin-right: -30px;
-    width: 30px;
+    margin-right: -31px;
+    width: 31px;
 }
 
 /********************

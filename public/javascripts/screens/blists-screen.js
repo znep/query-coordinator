@@ -74,7 +74,7 @@ $.tablesorter.addWidget({
         for (var i = 0; i < table.tBodies[0].rows.length; i++)
         {
             var $curRow = $(table.tBodies[0].rows[i]);
-            if ($curRow.hasClass('child'))
+            if ($curRow.hasClass('child') || $curRow.is(":hidden"))
             {
                 continue;
             }
@@ -169,7 +169,7 @@ blist.myBlists.resizeTable = function ()
 
 blist.myBlists.getTotalItemCount = function ()
 {
-    return $('#blistList tr.item').length;
+    return $('#blistList tr.item:not(.filteredOut)').length;
 }
 
 blist.myBlists.getSelectedItems = function ()
@@ -347,6 +347,17 @@ $(function ()
     
     $(".expandContainer").blistPanelExpander({
         expandCompleteCallback: blistsInfoNS.updateSummary
+    });
+    
+    $("#blistList").searchable(
+    {
+        searchCompleteCallback: function()
+        {
+            blistsInfoNS.updateSummary(0);
+            $('#blistList').trigger("applyWidgetId", "sortGrouping");
+            myBlistsNS.resizeTable();
+            
+        }
     });
 
     blistsInfoNS.updateSummary();

@@ -13,17 +13,23 @@
 
       <div class='outerContent'>
         <div class='content'>
-          <div class='headerBar'>
+          <div class='headerBar clearfix'>
             <h3 id='listTitle'><%= h(@title) %></h3>
-            <a href='#' class='menuLink'>Menu</a>
-            <a href='#'>Add New</a>
-            <a href='#'>Import</a>
 
-            <form action='#'>
+            <form class="search" action='#'>
               <p>
-                <input type='text' class='textPrompt' title='Find' />
+                <input type='text' class='textPrompt' name='find'
+                  title='Find' value='' />
+                <input type='image' class='submit' name='findSubmit'
+                  src="<%= image_path("find_button.png") %>" />
               </p>
             </form>
+
+            <ul class="headerActions">
+              <li><a href='#' class="add_new">Add New</a></li>
+              <li><a href='#' class="import">Import</a></li>
+            </ul>
+
           </div>
 
           <div class='gridListContainer'>
@@ -153,7 +159,7 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.tablesorter",
-    "plugins/jquery.treeTable.min", "util/humane-date", "widgets/panel-expander", 
-    "widgets/dropdown-menu", "widgets/selectable-list",
+    "plugins/jquery.treeTable.min", "plugins/jquery.searchable", "util/humane-date", 
+    "widgets/panel-expander", "widgets/dropdown-menu", "widgets/selectable-list",
     "screens/blists-screen", "screens/info-pane", :cache => "cache/all" %>
 <% end %>

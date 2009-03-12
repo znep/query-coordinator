@@ -4,7 +4,9 @@
  * 
  * Copyright (c) 2008 Seetha Ramaiah Mangamuri
  * Email: M8R-tk5fe51@mailinator.com
- * 
+ *
+ * Revisions for blist by: pete.stuart@blist.com
+ * March, 2009
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,23 +28,31 @@
  */
 
 (function($){
-    $.fn.searchable = function(){
+    $.fn.searchable = function(options){
+        var opts = $.extend({}, $.fn.searchable.defaults, options);
+        
         return this.each(function(){
             var targetTable = this;
-            $('<input/>').insertBefore(targetTable).before('Search:').keyup(function(event){
+            
+            $(opts.searchFormSelector).submit(function(event){
                 event.preventDefault();
-                var c = event.keyCode;
-                // Check for conditions to trigger auto-search
-                if ( (c == 8) || (c == 46) || (c == 109 || c == 189) || (c >= 65 && c <= 90) || (c >= 48 && c <= 57) ) {
-                    var keyword = new RegExp($(this).val(), "i");
-                    $('tbody tr', targetTable).each(function(){
-                        var $tr = $(this);
-                        $('td', $tr).filter(function(){
-                            return keyword.test($(this).html());
-                        }).length ? $tr.show() : $tr.hide();
-                    });
-                }
+                
+                var keyword = new RegExp($(opts.searchInputSelector).val(), "i");
+                $(opts.searchRowSelector, targetTable).each(function(){
+                    var $tr = $(this);
+                    $('td', $tr).filter(function(){
+                        return keyword.test($(this).html());
+                    }).length ? $tr.removeClass("filteredOut").show() : $tr.addClass("filteredOut").hide();
+                });
+                opts.searchCompleteCallback();
             });
         });
     };
+    
+    $.fn.searchable.defaults = {
+        searchFormSelector: "form.blistsFind",
+        searchInputSelector: "form.blistsFind input.textPrompt",
+        searchRowSelector: "tr.item",
+        searchCompleteCallback: function(){}
+    }
 })(jQuery);

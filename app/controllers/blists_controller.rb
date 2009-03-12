@@ -127,7 +127,7 @@ private
   end
 
   def get_name(user_id)
-    return user_id == @current_user.id ? 'me' : User.find(user_id).displayName
+    return user_id == current_user.id ? 'me' : User.find(user_id).displayName
   end
 
   def get_title(params = nil)

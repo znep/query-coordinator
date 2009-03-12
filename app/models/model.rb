@@ -36,7 +36,7 @@ class Model
 
     path = nil
     if options.is_a? String
-      path = "/users/#{user_id}/#{self.name.pluralize.downcase}/#{options}.json"
+      path = "/#{self.name.pluralize.downcase}/#{options}.json"
     elsif options.respond_to?(:to_param)
       path = "/users/#{user_id}/#{self.name.pluralize.downcase}.json"
       path += "?#{options.to_param}" unless options.to_param.blank?

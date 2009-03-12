@@ -1,46 +1,46 @@
 module BlistsHelper
 
-  # Used for lists of lenses, to determine shared in/out
-  def get_share_direction_icon_class_for_lens(lens)
+  # Used for lists of views, to determine shared in/out
+  def get_share_direction_icon_class_for_view(view)
     icon_class = "itemType"
-    icon_class += lens.is_blist? ? " typeBlist" : " typeFilter"
+    icon_class += view.is_blist? ? " typeBlist" : " typeFilter"
 
-    if lens.is_shared?
-      icon_class += lens.owner.id == current_user.id ? " sharedOut" : " sharedIn"
+    if view.is_shared?
+      icon_class += view.owner.id == current_user.id ? " sharedOut" : " sharedIn"
     end
     icon_class
   end
 
-  # Used for individual lenses, to determine permission levels
-  def get_permissions_icon_class_for_lens(lens)
-    icon_class = lens.is_blist? ? "typeBlist" : "typeFilter"
+  # Used for individual views, to determine permission levels
+  def get_permissions_icon_class_for_view(view)
+    icon_class = view.is_blist? ? "typeBlist" : "typeFilter"
 
-    if !lens.is_public?
-      icon_class += lens.is_shared? ? " privateShared" : " private"
+    if !view.is_public?
+      icon_class += view.is_shared? ? " privateShared" : " private"
     else
       icon_class += " public"
     end
     icon_class
   end
 
-  def get_type_string_for_lens(lens)
+  def get_type_string_for_view(view)
 
     sharing_type = ""
-    if lens.is_shared?
-      sharing_type = lens.owner.id == current_user.id ? " shared out" : " shared in"
+    if view.is_shared?
+      sharing_type = view.owner.id == current_user.id ? " shared out" : " shared in"
     end
 
-    blist_type = lens.is_blist? ? "blist" : "filter"
-    privacy_type = !lens.is_public? ? "private" : ""
+    blist_type = view.is_blist? ? "blist" : "filter"
+    privacy_type = !view.is_public? ? "private" : ""
 
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
   end
 
   def get_blist_tags
-    lenses = Lens.find()
+    views = View.find()
 
     tags = []
-    lenses.each { |l| tags << l.tags.collect { |t| t.data } }
+    views.each { |v| tags << v.tags.collect { |t| t.data } }
     tags.flatten.sort.uniq
   end
 
@@ -77,12 +77,12 @@ module BlistsHelper
     menu_tag('id' => id, 'class' => 'contactsMenu', 'items' => items)
   end
 
-  def columns_menu(lens, args = nil)
+  def columns_menu(view, args = nil)
     args = args || {}
     include_options = args['include_options'] || {}
     items = args['initial_items'] || []
 
-    lens.columns.each do |c|
+    view.columns.each do |c|
       # Check for whether or not to display hidden columns and list columns
       if (!c.flag?('hidden') || include_options['hidden']) &&
         (!c.is_list || include_options['list'])

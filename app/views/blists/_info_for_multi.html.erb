@@ -1,4 +1,4 @@
-<%# locals: lenses %>
+<%# locals: views %>
 
 <div class="header">
   <ul class="summaryTabs clearfix">
@@ -14,7 +14,7 @@
 <div class="infoContentOuter multiInfoSummary listContainer active">
   
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader"><%= lenses.length %> items selected</h2>
+    <h2 class="panelHeader"><%= views.length %> items selected</h2>
     <ul class="headerActions actionButtons">
       <li><a href="#share" class="arrowButton">Share All</a></li>
       <li><a href="#delete_all">Delete All</a></li>
@@ -30,13 +30,13 @@
           <a href="#help" class="help"><span>help</span></a>
         </dt>
         
-        <%- lenses.each do |lens| -%>
-          <dd class="<%= get_share_direction_icon_class_for_lens(lens) %>">
+        <%- views.each do |view| -%>
+          <dd class="<%= get_share_direction_icon_class_for_view(view) %>">
             <div class="itemContent">
-              <a href="<%= blist_url(lens.id) %>"><%= h(lens.name) %></a>
+              <a href="<%= blist_url(view.id) %>"><%= h(view.name) %></a>
             </div>
             <div class="itemActions">
-              <a href="#<%= lens.id %>" class="action unselector"><span>unselect</span></a>
+              <a href="#<%= view.id %>" class="action unselector"><span>unselect</span></a>
             </div>
           </dd>
         <%- end -%>

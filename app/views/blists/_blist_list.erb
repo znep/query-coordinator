@@ -34,8 +34,8 @@
         <td class='favorite <%= blist.flag?('favorite') %>'><div>
           <%= blist.flag?('favorite') ? '*' : '' %></div></td>
         <td class='type'><div class="<%=
-          get_share_direction_icon_class_for_lens(blist) %>">
-          <%= get_type_string_for_lens(blist) %>
+          get_share_direction_icon_class_for_view(blist) %>">
+          <%= get_type_string_for_view(blist) %>
         </div></td>
         <td class='name clipText'>
           <%= link_to(h(blist.name), blist_url(blist.id)) %>

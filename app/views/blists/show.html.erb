@@ -12,7 +12,7 @@
   <div id='lensContainer' class='mainContent tableView'>
     <ul class='tabList'>
       <li class='main active'><div class='wrapper'>
-        <a href='#'><%= @lens.name %></a></div></li>
+        <a href='#'><%= @view.name %></a></div></li>
     </ul>
 
     <div class='outerContent'>
@@ -162,7 +162,7 @@
   <div class="twoColumnContainer clearfix">
     <div id="mainColumnContent" class="column">
       <div id='infoPane'>
-        <%= render(:partial => "info_for_single", :locals => { :lens => @lens }) %>
+        <%= render(:partial => "info_for_single", :locals => { :view => @view }) %>
       </div>
     </div>
 

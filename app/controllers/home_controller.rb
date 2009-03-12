@@ -5,7 +5,7 @@ class HomeController < ApplicationController
   def index
     @body_class = 'home'
     
-    blists = Lens.find()
+    blists = View.find()
     
     @recently_opened_blists = blists.sort { |a,b|
       b.lastOpenedDate <=> a.lastOpenedDate

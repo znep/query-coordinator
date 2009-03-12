@@ -1,4 +1,4 @@
-<%# locals: lens  %>
+<%# locals: view  %>
 
 <div class="header">
   <ul class="summaryTabs clearfix">
@@ -37,11 +37,11 @@
 <%# *** START: SUMMARY *** %>
 <div class="infoContentOuter singleInfoSummary listContainer active">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader <%= get_permissions_icon_class_for_lens(lens) %>">
-      <%= h(lens.name) %>
+    <h2 class="panelHeader <%= get_permissions_icon_class_for_view(view) %>">
+      <%= h(view.name) %>
     </h2>
     <ul class="headerActions actionButtons">
-      <li><a href="<%= blist_url(lens.id) %>" class="arrowButton">Open</a></li>
+      <li><a href="<%= blist_url(view.id) %>" class="arrowButton">Open</a></li>
       <li><a href="#duplicate">Duplicate</a></li>
       <li><a href="#share">Share</a></li>
     </ul>
@@ -56,7 +56,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= h(lens.description) %></span>
+            <span><%= h(view.description) %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
@@ -64,7 +64,7 @@
         </dd>
       </dl>
 
-      <%- if (lens.tags.length > 0) -%>
+      <%- if (view.tags.length > 0) -%>
       <dl class="summaryList">
         <dt>
           Tags
@@ -72,7 +72,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= h(lens.tag_display_string) %></span>
+            <span><%= h(view.tag_display_string) %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
@@ -88,7 +88,7 @@
         </dt>
         <dd class="itemBlist">
           <div class="itemContent">
-            <span><%= h(lens.category) %></span>
+            <span><%= h(view.category) %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
@@ -103,7 +103,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= h(lens.owner.displayName) %></span>
+            <span><%= h(view.owner.displayName) %></span>
           </div>
         </dd>
       </dl>
@@ -115,7 +115,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= blist_date(lens.createdAt) %></span>
+            <span><%= blist_date(view.createdAt) %></span>
           </div>
         </dd>
       </dl>
@@ -127,8 +127,9 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= h(lens.last_updated_user.displayName) %>:
-              <%= blist_date(lens.rowsUpdatedAt) || blist_date(lens.createdAt) %>
+            <span><%= up_user = view.last_updated_user
+              h(up_user.nil? ? '' : up_user.displayName + ':') %>
+              <%= blist_date(view.rowsUpdatedAt) || blist_date(view.createdAt) %>
             </span>
           </div>
           <div class="itemActions">
@@ -145,7 +146,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= pluralize(lens.filters.length, "filtered view") %></span>
+            <span><%= pluralize(view.filters.length, "filtered view") %></span>
           </div>
           <div class="itemActions">
             <a href="#tabFiltered" class="action tabLink"><span>Details</span></a>
@@ -161,7 +162,7 @@
         <dd>
           <div class="itemContent">
             <ul>
-              <li><%= pluralize(lens.viewCount, " view") %></li>
+              <li><%= pluralize(view.viewCount, " view") %></li>
               <li>[11 copies]</li>
             </ul>
           </div>
@@ -180,7 +181,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>[http://app.blist.com/?variant=debug#/blist/kmerritt/]<%= lens.urlName %></span>
+            <span>[http://app.blist.com/?variant=debug#/blist/kmerritt/]<%= view.urlName %></span>
           </div>
           <div class="itemActions">
             <a href="#publish" class="action"><span>Publish</span></a>
@@ -195,7 +196,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= lens.is_public? ? 'Public' : 'Private' %></span>
+            <span><%= view.is_public? ? 'Public' : 'Private' %></span>
           </div>
           <div class="itemActions">
             <a href="#unselect" class="action"><span>Edit</span></a>
@@ -212,10 +213,10 @@
           <div class="itemContent">
             <ul>
               <li>
-                <%= pluralize(lens.contributor_users.length, 'Contributor') %>
+                <%= pluralize(view.contributor_users.length, 'Contributor') %>
               </li>
               <li>
-                <%= pluralize(lens.viewer_users.length, 'Viewer') %>
+                <%= pluralize(view.viewer_users.length, 'Viewer') %>
               </li>
               <%# Not supported
               <li>[3 Requests]</li>
@@ -240,7 +241,7 @@
 <div class="infoContentOuter singleInfoFiltered">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader">
-      <%= pluralize(lens.filters.length, "Filtered View") %>
+      <%= pluralize(view.filters.length, "Filtered View") %>
     </h2>
     <ul class="headerActions actionButtons">
       <li><a href="#open" class="arrowButton">Create</a></li>
@@ -271,19 +272,19 @@
             </tr>
           </thead>
           <tbody>
-            <%- lens.filters.each do |filter| -%>
+            <%- view.filters.each do |filter| -%>
               <tr class="item">
                 <td class="handle"><div></div></td>
                 <td class="favorite <%= filter.flag?('favorite') %>"><div>
                     <%= filter.flag?('favorite') ? "*" : "" %>
                 </div></td>
                 <td class="type"><div class="<%=
-                  get_share_direction_icon_class_for_lens(filter) %>">
-                  <%= get_type_string_for_lens(filter) %></div>
+                  get_share_direction_icon_class_for_view(filter) %>">
+                  <%= get_type_string_for_view(filter) %></div>
                 </td>
                 <td class="name"><div><%= h(filter.name) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
-                <td class="viewed"><div><%= blist_date(lens.lastOpenedDate) %>
+                <td class="viewed"><div><%= blist_date(view.lastOpenedDate) %>
                 </div></td>
                 <td class="actionContainer"><div><a
                       href="<%= blist_url(filter.id) %>" class="action"
@@ -304,10 +305,10 @@
 <%# *** START: SHARING *** %>
 <div class="infoContentOuter singleInfoSharing">
   <div class="infoContentHeader clearfix">
-    <%- shares = lens.shares -%>
+    <%- shares = view.shares -%>
     <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
-    <h2 class="panelHeader <%= get_permissions_icon_class_for_lens(lens) %>">
-      <%= lens.is_public? ? "Public" : "Private" %>
+    <h2 class="panelHeader <%= get_permissions_icon_class_for_view(view) %>">
+      <%= view.is_public? ? "Public" : "Private" %>
     </h2>
     <ul class="headerActions actionButtons">
       <li><a href="#open" class="arrowButton" title="Share">Share</a></li>
@@ -316,11 +317,11 @@
   <div class="infoContentInner">
     <div class="infoContent">
       <div class="sharingSummary">
-        <p class="<%= lens.is_public? ? "public" : (lens.is_shared? ?
+        <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
           "privateShared" : "private") %>">
-        This <%= lens.is_blist? ? "blist" : "filter" %> is
-        <em><%= lens.is_public? ? "Public" : "Private" %></em>
-        <%= lens.is_shared? ? ' and shared with the following ' +
+        This <%= view.is_blist? ? "blist" : "filter" %> is
+        <em><%= view.is_public? ? "Public" : "Private" %></em>
+        <%= view.is_shared? ? ' and shared with the following ' +
         (shares.length == 1 ? 'contact' : 'contact'.pluralize) + ':' : '' %>
         </p>
       </div>
@@ -348,7 +349,7 @@
             </tr>
           </thead>
           <tbody>
-            <%- lens.shares.sort {|a,b|
+            <%- view.shares.sort {|a,b|
               a.type <=> b.type ||
               a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
             <tr class="item">

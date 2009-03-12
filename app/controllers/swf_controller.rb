@@ -7,7 +7,7 @@ private
   def variables_for_swf
     variables = {}
     variables[:debug] = debug_mode?
-    variables[:user_id] = current_user.id
+    variables[:user_id] = current_user.oid
 
     timestamp = Time.now.to_f
     #variables[:mat] = @current_user.multiuser_authentication_token(timestamp)
@@ -31,8 +31,8 @@ private
       variables[:discover_search] = @discover_search
     end
 
-    if @lens
-      variables[:lens_id] = @lens.id
+    if @view
+      variables[:lens_id] = @view.oid
     end
       #variables[:is_editable] = @lens.has_at_least_one_editable_share? || @lens.is_publicly_editable?
     #else

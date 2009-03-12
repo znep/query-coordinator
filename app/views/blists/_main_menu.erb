@@ -48,7 +48,7 @@
         {'text' => 'Delete', 'class' => 'delete', 'href' => '#'},
         {'separator' => true},
         {'text' => 'Edit Column Options', 'class' => 'columnOptions',
-        'href' => '#', 'submenu' => columns_menu(@lens,
+        'href' => '#', 'submenu' => columns_menu(@view,
                  {'id' => 'columnOptionsMenu',
                   'href_prefix' => "#edit_column:",
                   'include_options' =>
@@ -80,7 +80,7 @@
         {'text' => 'Show Row IDs', 'class' => 'rowIDs', 'href' => '#'},
         {'separator' => true},
         {'text' => 'Column Totals', 'class' => 'columnTotals',
-        'href' => '#', 'submenu' => columns_menu(@lens,
+        'href' => '#', 'submenu' => columns_menu(@view,
                  {'id' => 'columnTotalsMenu',
                   'href_prefix' => "#column_totals:",
                   'include_options' =>

@@ -1,4 +1,4 @@
-class Lens < Model
+class View < Model
   def self.find( options = nil )
     self.find_under_user(options)
   end
@@ -13,7 +13,7 @@ class Lens < Model
   end
 
   def is_public?
-    grants.any? {|p| p.public}
+    grants.any? {|p| p.flag?('public')}
   end
 
   def is_private?
@@ -21,7 +21,7 @@ class Lens < Model
   end
 
   def is_shared?
-    grants.any? {|p| !p.public}
+    grants.any? {|p| !p.flag?('public')}
   end
 
   def tag_display_string
@@ -29,13 +29,11 @@ class Lens < Model
   end
 
   def last_updated_user
-    # TODO: When this is converted to the UID, re-enable it
-    #User.find(rowsUpdatedBy)
-    owner
+    rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)
   end
 
   def contributor_users
-    grants.reject {|g| g.public || g.type.downcase == 'read'}.
+    grants.reject {|g| g.flag?('public') || g.type.downcase == 'read'}.
       collect do |g|
         if !g.groupId.nil?
           Group.find(g.groupId).users.collect {|u| u.id}
@@ -49,7 +47,8 @@ class Lens < Model
 
   def viewer_users
     contributors = contributor_users
-    grants.reject {|g| g.public || g.type.downcase != 'read'}.
+    view_grants = grants.reject {|g| g.flag?('public') ||
+      g.type.downcase != 'read'}.
       collect do |g|
         if !g.groupId.nil?
           Group.find(g.groupId).users.collect {|u| u.id}
@@ -64,7 +63,7 @@ class Lens < Model
   def shares
     user_shares = Hash.new
     group_shares = Hash.new
-    grants.reject {|g| g.public}.each do |g|
+    grants.reject {|g| g.flag?('public')}.each do |g|
       if !g.groupId.nil?
         if !group_shares[g.groupId]
           s = Share.new(nil, g.groupId, Group.find(g.groupId).name,
@@ -92,7 +91,7 @@ class Lens < Model
   end
 
   def filters
-    Lens.find( {"blistId" => self.blistId} ).reject {|l| l.is_blist?}
+    View.find( {"blistId" => self.blistId} ).reject {|l| l.is_blist?}
   end
 
 end

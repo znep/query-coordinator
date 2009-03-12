@@ -16,7 +16,7 @@ class User < Model
   
   def is_established?
     # An established user has 4 or more total blists.
-    Lens.find(Hash.new).length > 3
+    View.find(Hash.new).length > 3
   end
   
   # size can be "large", "medium", or "small"

@@ -199,6 +199,7 @@ $(function ()
 
     $('#mainMenu').dropdownMenu({triggerButton: $('#mainMenuLink'),
         menuBar: $('#lensContainer .headerBar')});
+    $('#mainMenu .columnsMenu').scrollable();
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
         menuBar: $('#lensContainer .headerBar')});
     $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),

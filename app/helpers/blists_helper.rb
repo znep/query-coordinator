@@ -81,6 +81,8 @@ module BlistsHelper
     args = args || {}
     include_options = args['include_options'] || {}
     items = args['initial_items'] || []
+    items.unshift({'button' => true, 'text' => 'Previous',
+      'href' => '#prev', 'class' => 'prev'})
 
     view.columns.each do |c|
       # Check for whether or not to display hidden columns and list columns
@@ -100,7 +102,7 @@ module BlistsHelper
           (!args['column_test'] || args['column_test'].call(c))
           cur_item = {'text' => c.name,
             'href' => args['href_prefix'] + c.id.to_s,
-            'class' => get_datatype_class(c)}
+            'class' => get_datatype_class(c) + ' scrollable'}
           if (args['submenu'])
             cur_item['submenu'] = args['submenu'].call(c)
           end
@@ -115,7 +117,7 @@ module BlistsHelper
               (!args['column_test'] || args['column_test'].call(cc))
               cur_item = {'text' => c.name + ': ' + cc.name,
                 'href' => args['href_prefix'] + cc.id.to_s,
-                'class' => get_datatype_class(cc)}
+                'class' => get_datatype_class(cc) + ' scrollable'}
               if (args['submenu'])
                 cur_item['submenu'] = args['submenu'].call(cc)
               end
@@ -125,6 +127,9 @@ module BlistsHelper
         end
       end
     end
+
+    items.push({'button' => true, 'text' => 'Next',
+      'href' => '#next', 'class' => 'next'})
 
     {'id' => args['id'], 'class' => 'columnsMenu', 'items' => items}
   end

@@ -178,6 +178,120 @@
     height: 30em;
 }
 
+/* Scrollable menus */
+
+#mainMenu.menu li a.disabled
+{
+    color: #8d8d8d;
+    text-decoration: none;
+}
+
+#mainMenu.menu li.scrollable.hidden
+{
+    display: none;
+}
+
+#mainMenu.menu li.button
+{
+    padding: 0;
+    margin: 0 1em;
+}
+
+#mainMenu.menu li.button.prev
+{
+    border-bottom: solid 1px #e0d1b8;
+}
+
+#mainMenu.menu li.button.next
+{
+    border-top: solid 1px #e0d1b8;
+}
+
+#mainMenu.menu li.button a
+{
+    background-image: none;
+    background-position: left center;
+    background-repeat: no-repeat;
+    margin: 0 -10px;
+    padding-left: 5px;
+    text-indent: -9999px;
+    width: 2.5em;
+}
+
+#mainMenu.menu li.button .outerWrapper
+{
+    background-position: right center;
+    background-repeat: no-repeat;
+    padding-right: 5px;
+}
+
+#mainMenu.menu li.button .midWrapper
+{
+    background-position: left center;
+    background-repeat: repeat-x;
+}
+
+#mainMenu.menu li.button .innerWrapper
+{
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: block;
+}
+
+#mainMenu.menu li.button.prev .innerWrapper
+{
+    background-image: url(images/widgets/dropdown_button/arrow_up.png);
+}
+
+#mainMenu.menu li.button.next .innerWrapper
+{
+    background-image: url(images/widgets/dropdown_button/arrow_down.png);
+}
+
+#mainMenu.menu li.button.prev a.disabled .innerWrapper
+{
+    background-image: url(images/widgets/dropdown_button/arrow_up_disabled.png);
+}
+
+#mainMenu.menu li.button.next a.disabled .innerWrapper
+{
+    background-image: url(images/widgets/dropdown_button/arrow_down_disabled.png);
+}
+
+#mainMenu.menu li.button a:hover
+{
+    background-image: url(images/widgets/dropdown_button/click_left.png);
+}
+
+#mainMenu.menu li.button a:hover .outerWrapper
+{
+    background-image: url(images/widgets/dropdown_button/click_right.png);
+}
+
+#mainMenu.menu li.button a:hover .midWrapper
+{
+    background-image: url(images/widgets/dropdown_button/click_gradSlice.png);
+}
+
+#mainMenu.menu li.button a.disabled:hover
+{
+    background-image: none;
+    cursor: default;
+}
+
+#mainMenu.menu li.button a.disabled:hover .outerWrapper
+{
+    background-image: none;
+}
+
+#mainMenu.menu li.button a.disabled:hover .midWrapper
+{
+    background-image: none;
+}
+
+
+/* Datatype icons */
+
 #mainMenu dl > dd > ul > li > a,
 #mainMenu dl > dd > ul > li > ul > li > a
 {

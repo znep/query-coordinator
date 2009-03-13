@@ -76,7 +76,7 @@
             var $menu = $(this);
             // build element specific options and store them on the menu
             var config = $.meta ? $.extend({}, opts, $menu.data()) : opts;
-            $menu.data("config", config);
+            $menu.data("config-dropdownMenu", config);
 
             // Unhook any old handlers in case we're re-applying this
             config.triggerButton.unbind('click.dropdownMenu');
@@ -180,7 +180,7 @@
      *  document clicks to hide the menu */
     function showMenu($menu)
     {
-        var config = $menu.data("config");
+        var config = $menu.data("config-dropdownMenu");
         // We've got to close all other menus; there can be only one!
         $(config.menuSelector).each(function () { hideMenu($(this)) });
 
@@ -216,7 +216,7 @@
      *  document clicks */
     function hideMenu($menu)
     {
-        var config = $menu.data("config");
+        var config = $menu.data("config-dropdownMenu");
         if (!config)
         {
             return;
@@ -236,7 +236,7 @@
 
     function closeSubmenus(event, $menu)
     {
-        var config = $menu.data("config");
+        var config = $menu.data("config-dropdownMenu");
         $menu.find('.' + config.menuOpenClass).each(function ()
         {
             if (!event ||
@@ -263,7 +263,7 @@
 
     function activateTopLevelOption(event, $menu)
     {
-        var config = $menu.data("config");
+        var config = $menu.data("config-dropdownMenu");
         closeSubmenus(null, $menu);
         $menu.find('.' + config.activeClass)
             .removeClass(config.activeClass);
@@ -272,7 +272,7 @@
 
     function activateSubmenu(event, $menu)
     {
-        var config = $menu.data("config");
+        var config = $menu.data("config-dropdownMenu");
         var $submenus = $(event.currentTarget).children(config.menuSelector);
         $submenus.addClass(config.menuOpenClass);
         $submenus.css('top', Math.min(0,

@@ -36,14 +36,20 @@ module ApplicationHelper
       (options['option_menu'] ? " optionMenu" : '') + "'>"
 
     items.each do |i|
+      if i['title'].nil?
+        i['title'] = i['text']
+      end
       if i['separator']
         ret += "<li class='separator'></li>"
       elsif i['section_title']
         ret += "<li class='sectionTitle #{i['class']}'>#{i['section_title']}</li>"
+      elsif i['button']
+        ret += "<li class='button #{i['class']}'>" +
+          "<a title='#{i['title']}' href='#{i['href']}'>" +
+          "<div class='outerWrapper'><div class='midWrapper'>" +
+          "<span class='innerWrapper'>" +
+          "#{i['text']}</span></div></div></a></li>"
       else
-        if i['title'].nil?
-          i['title'] = i['text']
-        end
         ret += "<li class='#{i['class']}" + (i['submenu'] ? ' submenu' : '') +
           "'><a title='#{i['title']}' href='#{i['href']}'>" +
           "<span class='highlight'>#{i['text']}</span></a>"

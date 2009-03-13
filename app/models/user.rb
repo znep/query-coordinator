@@ -4,8 +4,12 @@ class User < Model
 
   def displayName
     # TODO: This needs to respect privacy settings
-    if !firstName.nil? && !lastName.nil?
-      return firstName + " " + lastName
+    if (flag?("guest"))
+      return "Anonymous User"
+    else
+      if !firstName.nil? && !lastName.nil?
+        return firstName + " " + lastName
+      end
     end
     return login
   end

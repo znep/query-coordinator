@@ -332,8 +332,13 @@ $(function ()
 {
     myBlistsNS.setupTable();
     blistsBarNS.initializeHandlers();
-
-    $(window).resize(myBlistsNS.resizeTable);
+    
+    $(window).resize(function (event) 
+    {
+        commonNS.adjustSize();
+        myBlistsNS.resizeTable(event);
+    });
+    commonNS.adjustSize();
     
     $(".selectableList").blistSelectableList({
         rowSelectionHandler: function()
@@ -355,8 +360,7 @@ $(function ()
         {
             blistsInfoNS.updateSummary(0);
             $('#blistList').trigger("applyWidgetId", "sortGrouping");
-            myBlistsNS.resizeTable();
-            
+            myBlistsNS.resizeTable();            
         }
     });
 

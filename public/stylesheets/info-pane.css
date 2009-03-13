@@ -202,11 +202,6 @@
     padding: 0 1em 1em;
 }
 
-.infoContentOuter.expanded .infoContent
-{
-    display: block;
-}
-
 /* Expanded info for multi */
 .infoContentOuter.listContainer.expanded .infoContentInner
 {

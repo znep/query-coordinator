@@ -142,8 +142,10 @@ $(function ()
 
     $(window).resize(function (event)
     {
+        commonNS.adjustSize();
         blistGridNS.sizeSwf(event);
     });
+    commonNS.adjustSize();
 
     $('.columnsMenu a').click(function (event)
     {

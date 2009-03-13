@@ -771,7 +771,7 @@ table.gridList td.type > *
 table.gridList .name { width: 25%; }
 table.gridList .description { width: 33%; }
 table.gridList .owner { width: 20%; }
-table.gridList .lastUpdated { width: 15%; }
+table.gridList .lastUpdated { width: 11.5em; }
 
 
 table.gridList .viewed { width: 15%; }

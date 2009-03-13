@@ -31,7 +31,7 @@ ActionController::Routing::Routes.draw do |map|
   #   end
 
   map.resources :blists, :collection => { :detail => :get }
-  map.resources :discover, :collection => { :detail => :get }
+  map.resource :discover
   map.resource :account
   map.resource :profile
 

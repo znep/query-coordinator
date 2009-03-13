@@ -41,4 +41,10 @@ $(function ()
         blist.util.flashInterface.discoverSearch(
             $(event.currentTarget).find('input[type="text"]').val());
     });
+
+    $(window).resize(function (event) 
+    {
+        commonNS.adjustSize();
+    });
+    commonNS.adjustSize();
 });

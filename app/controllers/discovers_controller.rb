@@ -1,5 +1,5 @@
-class DiscoverController < SwfController
-  def index
+class DiscoversController < SwfController
+  def show
     @body_id = 'discoverBody'
     @body_class = 'discover'
     @start_screen = 'discover'

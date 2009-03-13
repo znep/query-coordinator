@@ -41,7 +41,8 @@ $.tablesorter.addWidget({
                 }
                 else
                 {
-                    sortVal = blist.util.humaneDate.getFromDate(new Date(curVal));
+                    sortVal = blist.util.humaneDate.getFromDate
+                        (new Date(curVal), blist.util.humaneDate.DAY);
                 }
             }
 

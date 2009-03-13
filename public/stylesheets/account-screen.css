@@ -1,0 +1,40 @@
+.listSection
+{
+    border-top: 1px dotted #999;
+    margin-bottom: 3em;
+    padding-top: 1em;
+}
+
+.listSection dt, .listSection dd, .listSection p
+{
+    font-size: 1.4em;
+}
+
+.listSection dt 
+{
+    clear: both;
+    color: #666;
+    float: left;
+    line-height: 21px;
+    padding-right: 10px;
+    text-align: right;
+    width: 100px;
+}
+.listSection dd 
+{
+    float: left;
+    line-height: 21px;
+}
+
+.listSection a 
+{
+    color: #333;
+    display: block;
+    height: 21px;
+    line-height: 21px;
+}
+.listSection a:hover
+{
+    background-color: #FFEDB2;
+    text-decoration: none;
+}

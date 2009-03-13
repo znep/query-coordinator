@@ -207,6 +207,7 @@ form.search input.submit
 /* Selected tab */
 #home .tabList li.home,
 #blists .tabList li.blists,
+#profile .tabList li.profile,
 .tabList li.active
 {
     background-image: url(/stylesheets/images/content/tabs/tab_white_left.png);
@@ -216,6 +217,7 @@ form.search input.submit
 
 #home .tabList li.home .wrapper,
 #blists .tabList li.blists .wrapper,
+#profile .tabList li.profile .wrapper,
 .tabList li.active .wrapper
 {
     background-image: url(/stylesheets/images/content/tabs/tab_white_right.png);
@@ -225,6 +227,7 @@ form.search input.submit
 
 #home .tabList li.home a,
 #blists .tabList li.blists a,
+#profile .tabList li.profile a,
 .tabList li.active a
 {
     background-color: #ffffff;
@@ -236,6 +239,7 @@ form.search input.submit
 
 #home .tabList li.home a:hover,
 #blists .tabList li.blists a:hover,
+#profile .tabList li.profile a:hover,
 .tabList li.active a:hover
 {
     cursor: default;

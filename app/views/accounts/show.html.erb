@@ -1,0 +1,68 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "account-screen", :cache => "cache/all" %>
+  <title>blist | share your weblists</title>
+<% end %>
+
+
+<div class="twoColumnContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent">
+    <div id='account'>
+      <%= render(:partial => "shared/account_tabs") %>
+
+      <div class='outerContent'>
+        <div class='content'>
+          <h3>Account Administrator</h3>
+          <div class="listSection">
+            <dl class="clearfix">
+              <dt>Name:</dt>
+              <dd><%= h(@user.displayName) %></dd>
+              <dt>Email Address:</dt>
+              <dd><%= @user.email %></dd>
+              <dt>Phone:</dt>
+              <dd><%= h(@user.phone) %></dd>
+            </dl>
+          </div>
+          
+          <h3>Email Address</h3>
+          <div class="listSection">
+            <p class="sectionDescription"><a href="#change" class="change"><%= h(@user.email) %></a></p>
+          </div>
+          
+          <h3>Password</h3>
+          <div class="listSection">
+            <p class="sectionDescription"><a href="#change" class="change">Change your password</a></p>
+          </div>
+          
+          <h3>Contact Preferences</h3>
+          <div class="listSection">
+            <p class="sectionDescription"><a href="#manage" class="manage">
+              Manage how often blist emails you
+            </a></p>
+          </div>
+          
+          <h3>Community Preferences</h3>
+          <div class="listSection">
+            <p class="sectionDescription"><a href="#manage" class="manage">
+              Manage which blist community members can contact you
+            </a></p>
+          </div>
+          
+          <h3>Time Zone</h3>
+          <div class="listSection">
+            <p class="sectionDescription"><a href="#change" class="change">
+              (GMT-08:00) Pacific Time (US &amp; Canada)
+            </a></p>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="column scrollContentColumn">
+    <% render(:layout => "shared/sidebar_box") do %>
+      <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+    <% end %>
+    <%= render(:partial => "shared/ad_box") %>
+  </div>
+</div>

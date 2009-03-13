@@ -1,0 +1,32 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "profile-screen", :cache => "cache/all" %>
+  <title>blist | share your weblists</title>
+<% end %>
+
+
+
+<div class="twoColumnContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent">
+    <div id='profile'>
+      <%= render(:partial => "shared/tabs") %>
+
+      <div class='outerContent'>
+        <div class='content'>
+          <div class='headerBar clearfix'>
+            <h3 id='listTitle'>Profile for <%= h(current_user.displayName) %></h3>
+          </div>
+          
+          <p>Placeholder for Profile content.</p>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="column scrollContentColumn">
+    <% render(:layout => "shared/sidebar_box") do %>
+      <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+    <% end %>
+    <%= render(:partial => "shared/ad_box") %>
+  </div>
+</div>

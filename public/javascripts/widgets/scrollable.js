@@ -110,20 +110,24 @@
         var config = $this.data("config-scrollable");
         if (prevHiddenItem($this).length > 0)
         {
-            $this.find(config.prevSelector).removeClass(config.disabledClass);
+            $this.find(config.prevSelector)
+                .parent().removeClass(config.disabledClass);
         }
         else
         {
-            $this.find(config.prevSelector).addClass(config.disabledClass);
+            $this.find(config.prevSelector)
+                .parent().addClass(config.disabledClass);
         }
 
         if (nextHiddenItem($this).length > 0)
         {
-            $this.find(config.nextSelector).removeClass(config.disabledClass);
+            $this.find(config.nextSelector)
+                .parent().removeClass(config.disabledClass);
         }
         else
         {
-            $this.find(config.nextSelector).addClass(config.disabledClass);
+            $this.find(config.nextSelector)
+                .parent().addClass(config.disabledClass);
         }
     };
 

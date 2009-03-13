@@ -215,7 +215,6 @@
     margin: 0 -10px;
     padding-left: 5px;
     text-indent: -9999px;
-    width: 2.5em;
 }
 
 #mainMenu.menu li.button .outerWrapper
@@ -233,7 +232,7 @@
 
 #mainMenu.menu li.button .innerWrapper
 {
-    background-position: center center;
+    background-position: left center;
     background-repeat: no-repeat;
     display: block;
 }
@@ -248,16 +247,17 @@
     background-image: url(images/widgets/dropdown_button/arrow_down.png);
 }
 
-#mainMenu.menu li.button.prev a.disabled .innerWrapper
+#mainMenu.menu li.button.prev.disabled .innerWrapper
 {
     background-image: url(images/widgets/dropdown_button/arrow_up_disabled.png);
 }
 
-#mainMenu.menu li.button.next a.disabled .innerWrapper
+#mainMenu.menu li.button.next.disabled .innerWrapper
 {
     background-image: url(images/widgets/dropdown_button/arrow_down_disabled.png);
 }
 
+/*
 #mainMenu.menu li.button a:hover
 {
     background-image: url(images/widgets/dropdown_button/click_left.png);
@@ -272,19 +272,20 @@
 {
     background-image: url(images/widgets/dropdown_button/click_gradSlice.png);
 }
+*/
 
-#mainMenu.menu li.button a.disabled:hover
+#mainMenu.menu li.button.disabled a:hover
 {
     background-image: none;
     cursor: default;
 }
 
-#mainMenu.menu li.button a.disabled:hover .outerWrapper
+#mainMenu.menu li.button.disabled a:hover .outerWrapper
 {
     background-image: none;
 }
 
-#mainMenu.menu li.button a.disabled:hover .midWrapper
+#mainMenu.menu li.button.disabled a:hover .midWrapper
 {
     background-image: none;
 }

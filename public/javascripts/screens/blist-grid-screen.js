@@ -126,6 +126,11 @@ blist.blistGrid.mainMenuLoaded = function (data)
     $('#mainMenu').replaceWith(data);
     $('#mainMenu').dropdownMenu({triggerButton: $('#mainMenuLink'),
             menuBar: $('#lensContainer .headerBar')});
+    $('#mainMenu .columnsMenu').scrollable();
+    $('#mainMenu .columnsMenu a').click(function (event)
+    {
+        blistGridNS.columnClickHandler(event);
+    });
 }
 
 /* Initial start-up calls, and setting up bindings */

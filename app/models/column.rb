@@ -6,7 +6,7 @@ class Column < Model
   end
 
   def aggregate
-    format_elem = REXML::Document.new(lensFormat).
+    format_elem = REXML::Document.new(viewFormat).
       elements['lens_format/aggregate']
     format_elem.nil? ? 'none' : format_elem.text
   end
@@ -17,7 +17,7 @@ class Column < Model
 
   def is_list
     if is_blist_in_blist
-      list_elem = REXML::Document.new(lensFormat).elements['lens_format/isList']
+      list_elem = REXML::Document.new(viewFormat).elements['lens_format/isList']
       return !list_elem.nil? && 'true' == list_elem.text
     end
     false

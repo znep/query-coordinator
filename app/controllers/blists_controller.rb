@@ -31,7 +31,7 @@ class BlistsController < SwfController
     elsif (params[:multi])
       args = Array.new
       multiParam = params[:multi]
-      args = multiParam.split(';')
+      args = multiParam.split(':')
       @views = get_views_with_ids(args)
     elsif (params[:items])
       @item_count = params[:items]

@@ -237,7 +237,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
             {
                return $(n).attr('blist_id');
             });
-            var multi = $.makeArray(arrMulti).join(';');
+            var multi = $.makeArray(arrMulti).join(':');
 
             $.Tache.Get({ url: '/blists/detail',
                 data: 'multi=' + multi,

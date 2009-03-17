@@ -124,6 +124,15 @@ h4
     line-height: 1.3em;
 }
 
+h5
+{
+    color: #333333;
+    display: inline;
+    font-size: 1.2em;
+    font-weight: normal;
+    line-height: 1.3em;
+}
+
 a { 
     color: #0071bc;
     text-decoration: none;

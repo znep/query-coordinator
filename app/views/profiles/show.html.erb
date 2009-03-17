@@ -12,12 +12,79 @@
 
       <div class='outerContent'>
         <div class='content'>
-          <div class='headerBar clearfix'>
-            <h3 id='listTitle'>Profile for <%= h(current_user.displayName) %></h3>
+          <div class='userInfo clearfix'>
+            <div class='profilePicture'>
+              <%= image_tag(current_user.profile_image("medium"),
+                :size => "80x80", :alt => h(current_user.displayName)) %>
+              <a class='action' href='#'>Change</a>
+            </div>
+            <div class='userName'>
+              <h1>
+                <%= h("#{current_user.firstName} #{current_user.lastName}") %>
+              </h1>
+              <a class='first action' href='#'>Edit</a>
+              <a id='switchUsernameLink' class='action'
+                href='#show_username'>Display Username</a>
+            </div>
+            <div class='location'>
+              <h5><%= h("#{current_user.displayState} " +
+                "#{current_user.displayCountry}") %></h5>
+              <a class='action' href='#'>Edit</a>
+            </div>
+            <div class='userTitle'>
+              <h5>[Developer]</h5>
+              <a class='action' href='#'>Edit</a>
+            </div>
+            <div class='tags'>
+              <h5>Tags: <span class='tagContent'>[test, test2, sde]</span></h5>
+              <a class='action' href='#'>Edit</a>
+            </div>
           </div>
-          
-          <p>Placeholder for Profile content.</p>
-          
+          <div class='description'>
+            <h5>[I am some test user that lives in dev]</h5>
+            <a class='action' href='#'>Edit</a>
+          </div>
+
+          <div class='publicBlists'>
+            <h3>My public blists &amp; filters</h3>
+            <div class='infoContentOuter active'>
+              <div class='infoContent'>
+                <div class='infoContentHeader'>
+                  <div class='infoContentHeaderInner clearfix'>
+                    <h2 class='panelHeader'>
+                      <%= pluralize(@public_blists.length, 'item') %> total
+                    </h2>
+                  </div>
+                </div>
+
+                <div class="gridListContainer">
+                  <table class="gridList" cellspacing="0">
+                    <colgroup>
+                      <col class='type' />
+                      <col class='name' />
+                      <col class='views' />
+                      <col class='copies' />
+                      <col class='actionContainer' />
+                    </colgroup>
+                    <thead>
+                      <tr>
+                        <th class="type first" title="Type"><div>Type</div></th>
+                        <th class="name"><div>Name</div></th>
+                        <th class="views"><div>Views</div></th>
+                        <th class="copies"><div>Copies</div></th>
+                        <th class="actionContainer last"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <%= render( :partial => "public_blist_row", 
+                        :collection => @public_blists) %>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -25,8 +92,15 @@
 
   <div id="sidebar" class="column scrollContentColumn">
     <% render(:layout => "shared/sidebar_box") do %>
-      <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+      <%= render(:partial => "shared/current_user_tile",
+        :locals => { :user => current_user }) %>
     <% end %>
     <%= render(:partial => "shared/ad_box") %>
   </div>
 </div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "widgets/selectable-list",
+    "screens/profile-screen", :cache => "cache/all" %>
+<% end %>

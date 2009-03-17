@@ -14,7 +14,7 @@
 <div class="infoContentOuter multiInfoSummary listContainer active">
   
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader"><%= views.length %> items selected</h2>
+    <h2 class="panelHeader"><%= pluralize(views.length, 'item') %> selected</h2>
     <ul class="headerActions actionButtons">
       <li><a href="#share" class="arrowButton">Share All</a></li>
       <li><a href="#delete_all">Delete All</a></li>

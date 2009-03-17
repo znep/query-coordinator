@@ -355,28 +355,28 @@
 
 /*** START: grid list table ***/
 
-#infoPane .gridListContainer 
+.infoContentOuter .gridListContainer 
 {
     padding-top: 0;
 }
-#infoPane .gridList thead 
+.infoContentOuter .gridList thead 
 {
     background-color: #e0d1b8;
 }
-#infoPane .gridList thead th
+.infoContentOuter .gridList thead th
 {
     background-color: #e0d1b8;
     border-right: 1px solid #e2e2e2;
     color: #666;
     font-size: 1.2em;
 }
-#infoPane .gridList thead th.first,
-#infoPane .gridList thead th.last
+.infoContentOuter .gridList thead th.first,
+.infoContentOuter .gridList thead th.last
 {
     background-image: none;
 }
 
-#infoPane table.gridList td > *
+.infoContentOuter table.gridList td > *
 {
     color: #333;
     font-size: 1.1em;
@@ -386,15 +386,15 @@
     padding: 0 5px;
 }
 
-#infoPane table.gridList td.type > *
+.infoContentOuter table.gridList td.type > *
 {
     height: 27px;
     line-height: 27px;
     margin: 0 auto;
 }
-#infoPane table.gridList td.actionContainer .action { display: none; }
-#infoPane table.gridList tr.hover td.actionContainer > * { background: none; }
-#infoPane table.gridList tr.hover td.actionContainer .action { display: block; }
+.infoContentOuter table.gridList td.actionContainer .action { display: none; }
+.infoContentOuter table.gridList tr.hover td.actionContainer > * { background: none; }
+.infoContentOuter table.gridList tr.hover td.actionContainer .action { display: block; }
 
 /*** END: grid list table ***/
 

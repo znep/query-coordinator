@@ -1,0 +1,14 @@
+<%- view = public_blist_row -%>
+<tr class="item">
+  <td class="type"><div class="<%=
+      get_share_direction_icon_class_for_view(view) %>">
+      <%= get_type_string_for_view(view) %></div>
+  </td>
+  <td class="name"><div><%= h(view.name) %></div></td>
+  <td class="views"><div><%= h(view.viewCount) %></div></td>
+  <td class="copies"><div>[5]</div></td>
+  <td class="actionContainer"><div><a
+        href="<%= blist_url(view.id) %>" class="action"
+        title="<%= h(view.name) %>"><span>View</span></a>
+  </div></td>
+</tr>

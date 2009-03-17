@@ -1,0 +1,107 @@
+
+#profile .userInfo
+{
+    border-bottom: dotted 1px #666666;
+    margin-bottom: 0.5em;
+    padding-bottom: 1em;
+}
+
+#profile a.action
+{
+    color: #333333;
+    padding: 0 0.5em;
+    text-transform: uppercase;
+}
+
+#profile .userInfo h5
+{
+    margin-right: 1em;
+}
+
+#profile .profilePicture
+{
+    float: left;
+    margin-bottom: 1em;
+    margin-right: 1em;
+    text-align: center;
+}
+
+#profile .profilePicture img
+{
+    display: block;
+    margin-bottom: 0.5em;
+}
+
+#profile .userName h1
+{
+    display: inline;
+    margin-bottom: 0;
+    margin-right: 1.5em;
+}
+
+#profile .userName a.first
+{
+    border-right: solid 1px #333333;
+    padding-right: 1em;
+}
+
+#profile .description h5
+{
+    display: block;
+    padding: 0.5em 0;
+}
+
+#profile .description a.action
+{
+    padding: 0;
+}
+
+#profile .publicBlists
+{
+    margin-top: 4em;
+    margin-bottom: 1em;
+}
+
+#profile .publicBlists .infoContentOuter
+{
+    background-image: url(images/profile/info_bottom_right_white.png);
+}
+
+#profile .publicBlists .infoContent
+{
+    background-image: url(images/profile/info_bottom_left_white.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    display: block;
+    padding: 0;
+}
+
+#profile .publicBlists .infoContentHeader
+{
+    background-image: url(images/profile/info_top_left_white.png);
+    background-position: top left;
+    background-repeat: no-repeat;
+    padding: 0;
+}
+
+#profile .publicBlists .infoContentHeaderInner
+{
+    background-image: url(images/profile/info_top_right_white.png);
+    background-position: top right;
+    background-repeat: no-repeat;
+}
+
+#profile .publicBlists .gridListContainer
+{
+    padding: 0.5em 1em;
+    width: auto;
+}
+
+#profile table.gridList .views,
+#profile table.gridList .copies { width: 7em; }
+#profile table.gridList .name { width: 100%; }
+
+#profile table.gridList tr.hover td+td > *
+{
+    background-color: #ffedb2;
+}

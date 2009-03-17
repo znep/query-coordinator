@@ -159,7 +159,7 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.tablesorter",
-    "plugins/jquery.treeTable.min", "plugins/jquery.searchable", "util/humane-date", 
+    "plugins/jquery.treeTable", "plugins/jquery.searchable", "util/humane-date",
     "widgets/panel-expander", "widgets/dropdown-menu", "widgets/selectable-list",
     "screens/blists-screen", "screens/info-pane", :cache => "cache/all" %>
 <% end %>

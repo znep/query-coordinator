@@ -333,14 +333,14 @@ $(function ()
 {
     myBlistsNS.setupTable();
     blistsBarNS.initializeHandlers();
-    
+
     $(window).resize(function (event) 
     {
         commonNS.adjustSize();
         myBlistsNS.resizeTable(event);
     });
     commonNS.adjustSize();
-    
+
     $(".selectableList").blistSelectableList({
         rowSelectionHandler: function()
         {
@@ -350,18 +350,26 @@ $(function ()
 
     $('#outerContainer').bind(blist.events.LIST_SELECTION,
         myBlistsNS.listSelectionHandler);
-    
+
     $(".expandContainer").blistPanelExpander({
         expandCompleteCallback: blistsInfoNS.updateSummary
     });
-    
+
     $("#blistList").searchable(
     {
         searchCompleteCallback: function()
         {
             blistsInfoNS.updateSummary(0);
             $('#blistList').trigger("applyWidgetId", "sortGrouping");
-            myBlistsNS.resizeTable();            
+            myBlistsNS.resizeTable();
+            $('#blistList tr.item.parent.filteredOut').each(function ()
+            {
+                $(this).treeTable_disownChildren();
+            });
+            $('#blistList tr.item.parent:not(.filteredOut)').each(function ()
+            {
+                $(this).treeTable_reparentChildren();
+            });
         }
     });
 

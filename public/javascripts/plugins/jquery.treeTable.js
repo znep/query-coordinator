@@ -20,15 +20,34 @@
   
   $.fn.treeTable.defaults = {
     childPrefix: "child-of-",
+    childClass: 'child',
     expandable: true,
     indent: 19,
     initialState: "collapsed",
     treeColumn: 0
   };
   
+  $.fn.treeTable_disownChildren = function() {
+    $(this).expand();
+    childrenOf($(this)).each(function() {
+      $(this).removeClass(options.childClass);
+    });
+
+    return this;
+  };
+
+  $.fn.treeTable_reparentChildren = function() {
+    childrenOf($(this)).each(function() {
+      $(this).addClass(options.childClass);
+    });
+    $(this).collapse();
+
+    return this;
+  };
+
   // Recursively hide all node's children in a tree
   $.fn.collapse = function() {
-    $(this).addClass("collapsed");
+    $(this).removeClass('expanded').addClass("collapsed");
 
     childrenOf($(this)).each(function() {
       initialize($(this));
@@ -37,7 +56,7 @@
         $(this).collapse();
       }
       
-      $(this).hide();
+      $(this).addClass('collapsed');
     });
     
     return this;
@@ -54,7 +73,7 @@
         $(this).expand();
       }
       
-      $(this).show();
+      $(this).removeClass('collapsed');
     });
     
     return this;

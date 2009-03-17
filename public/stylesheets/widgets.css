@@ -820,6 +820,11 @@ table.gridList tr.child.hover.selected td.description > *
     background-repeat: no-repeat;
 }
 
+table.gridList tr.child.collapsed
+{
+    display: none;
+}
+
 
 /* Selectable list: checkbox sprites on hover */
 .outerContent table.selectableList tr.hover td.type > div
@@ -833,6 +838,13 @@ table.gridList tr.child.hover.selected td.description > *
 {
     background-image: url(images/content/table/icon_type_sprites.png);
     background-position: 0 -310px;
+}
+
+
+/* Styling for searchable in grid */
+table.gridList tr.filteredOut
+{
+    display: none;
 }
 
 

@@ -42,7 +42,7 @@
                     var $tr = $(this);
                     $('td', $tr).filter(function(){
                         return keyword.test($(this).html());
-                    }).length ? $tr.removeClass("filteredOut").show() : $tr.addClass("filteredOut").hide();
+                    }).length ? $tr.removeClass("filteredOut") : $tr.addClass("filteredOut");
                 });
                 opts.searchCompleteCallback();
             });

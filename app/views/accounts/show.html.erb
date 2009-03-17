@@ -6,52 +6,74 @@
 
 <div class="twoColumnContainer clearfix">
   <div id="mainColumnContent" class="column mainContent">
-    <div id='account'>
+    <div id="account">
       <%= render(:partial => "shared/account_tabs") %>
 
       <div class='outerContent'>
         <div class='content'>
-          <h3>Account Administrator</h3>
-          <div class="listSection">
-            <dl class="clearfix">
-              <dt>Name:</dt>
-              <dd><%= h(@user.displayName) %></dd>
-              <dt>Email Address:</dt>
-              <dd><%= @user.email %></dd>
-              <dt>Phone:</dt>
-              <dd><%= h(@user.phone) %></dd>
-            </dl>
-          </div>
-          
           <h3>Email Address</h3>
-          <div class="listSection">
-            <p class="sectionDescription"><a href="#change" class="change"><%= h(@user.email) %></a></p>
+          <div class="listSection emailSection">
+            <div class="sectionShow">
+              <p>
+                <span class="dataEmail"><%= h(@user.email) %></span>
+                <a href="#change" class="showAction"><span>Change</span></a>
+              </p>
+            </div>
+            <div class="sectionEdit">
+              <div class="sectionEditTL"><div class="sectionEditTR">
+              <div class="sectionEditBL"><div class="sectionEditBR">
+                <% form_tag(account_url) do %>
+                  <dl class="clearfix">
+                    <dt>Current Email</dt>
+                    <dd class="dataEmail"><%= h(@user.email) %></dd>
+                    <dt>New Email</dt>
+                    <dd><%= text_field_tag("email") %></dd>
+                    <dt>Retype New Email</dt>
+                    <dd><%= text_field_tag("email_confirm") %></dd>
+                    <dt>Enter Password</dt>
+                    <dd>
+                      <%= password_field_tag("email_password") %>
+                      <span class="fieldNote">(For your security)</span>
+                    </dd>
+                  </dl>
+                  <p class="sectionSubmit">
+                    <%= image_submit_tag("button_save.png") %>
+                  </p>
+                <% end %>
+                <p class="sectionClose"><a href="#close">Close</a></p>
+              </div></div>
+              </div></div>
+            </div>
           </div>
           
           <h3>Password</h3>
-          <div class="listSection">
-            <p class="sectionDescription"><a href="#change" class="change">Change your password</a></p>
-          </div>
-          
-          <h3>Contact Preferences</h3>
-          <div class="listSection">
-            <p class="sectionDescription"><a href="#manage" class="manage">
-              Manage how often blist emails you
-            </a></p>
-          </div>
-          
-          <h3>Community Preferences</h3>
-          <div class="listSection">
-            <p class="sectionDescription"><a href="#manage" class="manage">
-              Manage which blist community members can contact you
-            </a></p>
-          </div>
-          
-          <h3>Time Zone</h3>
-          <div class="listSection">
-            <p class="sectionDescription"><a href="#change" class="change">
-              (GMT-08:00) Pacific Time (US &amp; Canada)
-            </a></p>
+          <div class="listSection passwordSection">
+            <div class="sectionShow">
+              <p>
+                Change your password
+                <a href="#change" class="showAction"><span>Change</span></a>
+              </p>
+            </div>
+            <div class="sectionEdit">
+              <div class="sectionEditTL"><div class="sectionEditTR">
+              <div class="sectionEditBL"><div class="sectionEditBR">
+                <% form_tag(account_url) do %>
+                  <dl class="clearfix">
+                    <dt>Old Password</dt>
+                    <dd><%= password_field_tag("password_old") %></dd>
+                    <dt>New Password</dt>
+                    <dd><%= password_field_tag("password_new") %></dd>
+                    <dt>Retype Password</dt>
+                    <dd><%= password_field_tag("password_confirm") %></dd>
+                  </dl>
+                  <p class="sectionSubmit">
+                    <%= image_submit_tag("button_save.png") %>
+                  </p>
+                <% end %>
+                <p class="sectionClose"><a href="#close">Close</a></p>
+              </div></div>
+              </div></div>
+            </div>
           </div>
           
         </div>
@@ -66,3 +88,11 @@
     <%= render(:partial => "shared/ad_box") %>
   </div>
 </div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_tag "screens/account-screen", :cache => "cache/all" %>
+  <script type="text/javascript" charset="utf-8">
+    var form_authenticity_token = "<%= form_authenticity_token %>";
+    var request_forgery_protection_token = "<%= request_forgery_protection_token %>";
+  </script>
+<% end %>

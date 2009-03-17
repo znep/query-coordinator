@@ -2,7 +2,7 @@
 {
     border-top: 1px dotted #999;
     margin-bottom: 3em;
-    padding-top: 1em;
+    padding-top: .5em;
 }
 
 .listSection dt, .listSection dd, .listSection p
@@ -18,23 +18,130 @@
     line-height: 21px;
     padding-right: 10px;
     text-align: right;
-    width: 100px;
+    width: 135px;
 }
 .listSection dd 
 {
     float: left;
     line-height: 21px;
+    padding-left: 10px;
 }
 
-.listSection a 
+.sectionShow p
 {
-    color: #333;
+    cursor: pointer;
+    height: 27px;
+    line-height: 27px;
+    padding-left: 2px;
+    position: relative;
+}
+.sectionShow p.hover
+{
+    background: #ffedb2 url(images/content/table/highlight_end.png) right top no-repeat;
+}
+
+.sectionShow a.showAction
+{
+    background-color: #656565;
+    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-position: left -126px;
+    background-repeat: no-repeat;
+    color: #fff;
+    display: none;
+    float: right;
+    height: 21px;
+    line-height: 21px;
+    position: absolute;
+    right: 3px;
+    text-decoration: none;
+    top: 3px;
+}
+.sectionShow a.showAction span
+{
+    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-position: right -147px;
+    background-repeat: no-repeat;
     display: block;
     height: 21px;
     line-height: 21px;
+    padding: 0 10px;
 }
-.listSection a:hover
+
+.sectionShow p.hover a.showAction { display: block; }
+
+.sectionEdit
 {
-    background-color: #FFEDB2;
+    background: #ffedcc url(images/info_pane/background_expanded_list.png) -5px 0 repeat-y;
+    display: none;
+    position: relative;
+}
+.sectionEditTL { background: url(images/content/section_top_left.png) left top no-repeat; }
+.sectionEditTR { background: url(images/content/section_top_right.png) right top no-repeat; }
+.sectionEditBL { background: url(images/content/section_bottom_left.png) left bottom no-repeat; }
+.sectionEditBR { background: url(images/content/section_bottom_right.png) right bottom no-repeat; }
+
+.sectionEdit form input[type="text"], .sectionEdit form input[type="password"]
+{
+    font-size: 1em;
+}
+
+.sectionEdit dl
+{
+    padding: 1em 0 1em;
+}
+
+.sectionEdit dt, .sectionEdit dd
+{
+    padding-bottom: 5px;
+}
+
+.sectionEdit .fieldNote
+{
+    color: #666;
+    font-size: 10px;
+}
+.sectionEdit .sectionClose
+{
+    display: block;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+}
+.sectionEdit .sectionClose a
+{
+    background: url(images/content/section_close_button.png) no-repeat;
+    display: block;
+    height: 16px;
+    line-height: 200px;
+    overflow: hidden;
+    width: 16px;
+}
+
+.sectionSubmit
+{
+    margin-left: 155px;
+    padding-bottom: 15px;
+    width: 90px;
+}
+.sectionSubmit a
+{
+    background-color: #656565;
+    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-repeat: no-repeat;
+    color: #fff;
+    display: block;
+    height: 21px;
+    line-height: 21px;
     text-decoration: none;
+}
+.sectionSubmit a span
+{
+    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-position: right -42px;
+    background-repeat: no-repeat;
+    display: block;
+    height: 21px;
+    line-height: 21px;
+    padding-left: 10px;
+    padding-right: 25px;
 }

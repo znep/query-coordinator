@@ -105,3 +105,24 @@
 {
     background-color: #ffedb2;
 }
+
+
+/* Sidebar styling */
+
+#profileBody #sidebar p,
+#profileBody #sidebar dt,
+#profileBody #sidebar dd
+{
+    font-size: 1.1em;
+    margin: 0.5em 0;
+}
+
+#profileBody #sidebar dt
+{
+    margin-top: 1em;
+}
+
+#profileBody #sidebar dd
+{
+    margin-left: 3em;
+}

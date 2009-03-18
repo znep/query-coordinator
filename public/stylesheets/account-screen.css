@@ -15,7 +15,7 @@
     clear: both;
     color: #666;
     float: left;
-    line-height: 21px;
+    line-height: 27px;
     padding-right: 10px;
     text-align: right;
     width: 135px;
@@ -23,7 +23,7 @@
 .listSection dd 
 {
     float: left;
-    line-height: 21px;
+    line-height: 27px;
     padding-left: 10px;
 }
 
@@ -144,4 +144,14 @@
     line-height: 21px;
     padding-left: 10px;
     padding-right: 25px;
+}
+
+.sectionEdit input[type="text"].error,
+.sectionEdit input[type="password"].error {
+    border-color: #c00;
+}
+.sectionEdit label.error
+{
+    font-size: 11px;
+    padding-left: 5px;
 }

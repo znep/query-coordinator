@@ -1,6 +1,7 @@
 class ProfilesController < ApplicationController
   def show
     @body_id = 'profileBody'
+    @body_class = 'home'
     @all_owned_views = View.find().reject {|v| v.owner.id != current_user.id}
     @public_views = @all_owned_views.reject {|v| !v.is_public?}.sort do |a,b|
       if a.viewCount == b.viewCount

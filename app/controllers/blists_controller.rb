@@ -18,6 +18,7 @@ class BlistsController < SwfController
 
   def show
     @body_id = 'lensBody'
+    @body_class = 'home'
     @view = View.find(params[:id])
 
     @data_component = params[:dataComponent]

@@ -42,7 +42,7 @@ private
     unless current_user
       store_location
       flash[:notice] = "You must be logged in to access this page"
-      redirect_to login_url
+      redirect_to login_path
       return false
     end
     @current_user = current_user.user

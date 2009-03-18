@@ -154,6 +154,7 @@ private
   end
 
   def self.update_current_user(user, session_token)
+    controller.session[:user] = user.nil? ? nil : user.oid
     user.session_token = session_token if user
     User.current_user = user
   end

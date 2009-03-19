@@ -8,7 +8,7 @@ class HomeController < ApplicationController
     blists = View.find()
     
     @recently_opened_blists = blists.sort { |a,b|
-      b.lastOpenedDate <=> a.lastOpenedDate
+      (b.lastOpenedDate || 0) <=> (a.lastOpenedDate || 0)
     }.slice(0..1)
     
     @favorite_blists = blists.find_all { |b|

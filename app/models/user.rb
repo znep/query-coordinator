@@ -21,7 +21,7 @@ class User < Model
 
   # size can be "large", "medium", or "small"
   def profile_image(size = "large")
-    "#{User.url.to_s}users/#{self.id}/profile_images/#{size}"
+    "/users/#{self.id}/profile_images/#{size}"
   end
 
   def public_blists

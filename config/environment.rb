@@ -85,7 +85,6 @@ MULTIUSER_CHANGE_IP  = multiuser_config[RAILS_ENV]["change_ip"]
 MULTIUSER_CHANGE_PORT = multiuser_config[RAILS_ENV]["change_port"]
 
 swf_config = YAML.load(IO.read(RAILS_ROOT + "/config/swf.yml") )
-SWF_HOST      = swf_config[RAILS_ENV]["host"]
 SWF_DIR       = swf_config[RAILS_ENV]["dir"]
 
 external_config = YAML.load(IO.read(RAILS_ROOT + "/config/external.yml") )

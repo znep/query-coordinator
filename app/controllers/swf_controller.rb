@@ -70,11 +70,11 @@ private
 
     if File.exists?("#{SWF_DIR}/#{filename}")
       stamp = build_stamp(filename)
-      "#{SWF_HOST}/swf/#{filename}?build=#{stamp}"
+      "/swf/#{filename}?build=#{stamp}"
     elsif params[:sha]
-      "#{SWF_HOST}/swf/#{params[:sha]}/#{filename}"
+      "/swf/#{params[:sha]}/#{filename}"
     elsif REVISION_NUMBER
-      "#{SWF_HOST}/swf/#{REVISION_NUMBER}/#{filename}"
+      "/swf/#{REVISION_NUMBER}/#{filename}"
     else
       logger.fatal("Cannot find SWF to serve")
       return ''

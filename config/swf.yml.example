@@ -1,9 +1,6 @@
 production:
-  host: http://app.blist.com
 
 development:
-  host: http://localhost:4000
   dir: /Users/jeff/Documents/git/development/rails/public/swf
 
 test:
-  host: http://swf.test.blist.com

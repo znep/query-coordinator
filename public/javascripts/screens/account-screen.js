@@ -23,7 +23,7 @@ $(function ()
         $(this).closest(".listSection").find(".sectionEdit").slideDown("fast");
     });
 
-    $(".sectionClose a").click(function(event)
+    $(".formListBoxClose a").click(function(event)
     {
         event.preventDefault();
         $(this).closest(".sectionEdit").slideUp("fast");

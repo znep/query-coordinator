@@ -849,3 +849,127 @@ table.gridList tr.filteredOut
 
 
 /*** END: grid list ***/
+
+/*** START: form list boxes ***/
+.formListBox
+{
+    background: #ffedcc url(images/info_pane/background_expanded_list.png) -5px 0 repeat-y;
+    position: relative;
+}
+.formListBoxTL { background: url(images/content/section_top_left.png) left top no-repeat; }
+.formListBoxTR { background: url(images/content/section_top_right.png) right top no-repeat; }
+.formListBoxBL { background: url(images/content/section_bottom_left.png) left bottom no-repeat; }
+.formListBoxBR { background: url(images/content/section_bottom_right.png) right bottom no-repeat; }
+
+.formListBox form input[type="text"], .formListBox form input[type="password"]
+{
+    font-size: 1em;
+}
+
+
+
+.formListBox dt, .formListBox dd
+{
+    font-size: 1.4em;
+    padding-bottom: 5px;
+}
+
+.formListBox dt 
+{
+    clear: both;
+    color: #666;
+    float: left;
+    line-height: 27px;
+    padding-right: 10px;
+    text-align: right;
+    width: 135px;
+}
+.formListBox dd 
+{
+    line-height: 27px;
+    margin-left: 155px;
+}
+
+.formListBox dl
+{
+    padding: 1em 0 1em;
+}
+
+.formListBox .fieldNote
+{
+    color: #666;
+    font-size: 10px;
+}
+.formListBox .formListBoxClose
+{
+    display: block;
+    position: absolute;
+    right: 3px;
+    top: 3px;
+}
+.formListBox .formListBoxClose a
+{
+    background: url(images/content/section_close_button.png) no-repeat;
+    display: block;
+    height: 16px;
+    line-height: 200px;
+    overflow: hidden;
+    width: 16px;
+}
+
+.formListBox label.preLabel
+{
+    color: #666;
+    font-size: 11px;
+}
+.formListBox label.radioLabel
+{
+    color: #666;
+    font-size: 12px;
+}
+.formListBox input[type="radio"]
+{
+    margin: 0 1em 0 0;
+    vertical-align: middle;
+}
+
+.formListBoxSubmit
+{
+    clear: both;
+    margin-left: 155px;
+    padding-bottom: 1.5em;
+    width: 9em;
+}
+.formListBoxSubmit a
+{
+    background-color: #656565;
+    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-repeat: no-repeat;
+    color: #fff;
+    display: block;
+    height: 21px;
+    line-height: 21px;
+    text-decoration: none;
+}
+.formListBoxSubmit a span
+{
+    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-position: right -42px;
+    background-repeat: no-repeat;
+    display: block;
+    height: 21px;
+    line-height: 21px;
+    padding-left: 10px;
+    padding-right: 25px;
+}
+
+.formListBox input[type="text"].error,
+.formListBox input[type="password"].error {
+    border-color: #c00;
+}
+.formListBox label.error
+{
+    font-size: 11px;
+    padding-left: 5px;
+}
+/*** END: form list boxes ***/

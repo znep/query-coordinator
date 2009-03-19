@@ -19,9 +19,9 @@
                 <a href="#change" class="showAction"><span>Change</span></a>
               </p>
             </div>
-            <div class="sectionEdit">
-              <div class="sectionEditTL"><div class="sectionEditTR">
-              <div class="sectionEditBL"><div class="sectionEditBR">
+            <div class="sectionEdit formListBox">
+              <div class="formListBoxTL"><div class="formListBoxTR">
+              <div class="formListBoxBL"><div class="formListBoxBR">
                 <% form_tag(account_url) do %>
                   <dl class="clearfix">
                     <dt>Current Email</dt>
@@ -36,11 +36,11 @@
                       <span class="fieldNote">(For your security)</span>
                     </dd>
                   </dl>
-                  <p class="sectionSubmit">
+                  <p class="formListBoxSubmit">
                     <%= image_submit_tag("button_save.png") %>
                   </p>
                 <% end %>
-                <p class="sectionClose"><a href="#close">Close</a></p>
+                <p class="formListBoxClose"><a href="#close">Close</a></p>
               </div></div>
               </div></div>
             </div>
@@ -54,9 +54,9 @@
                 <a href="#change" class="showAction"><span>Change</span></a>
               </p>
             </div>
-            <div class="sectionEdit">
-              <div class="sectionEditTL"><div class="sectionEditTR">
-              <div class="sectionEditBL"><div class="sectionEditBR">
+            <div class="sectionEdit formListBox">
+              <div class="formListBoxTL"><div class="formListBoxTR">
+              <div class="formListBoxBL"><div class="formListBoxBR">
                 <% form_tag(account_url) do %>
                   <dl class="clearfix">
                     <dt><label for="password_old">Old Password</label></dt>
@@ -66,11 +66,11 @@
                     <dt><label for="password_confirm">Retype Password</label></dt>
                     <dd><%= password_field_tag("password_confirm") %></dd>
                   </dl>
-                  <p class="sectionSubmit">
+                  <p class="formListBoxSubmit">
                     <%= image_submit_tag("button_save.png") %>
                   </p>
                 <% end %>
-                <p class="sectionClose"><a href="#close">Close</a></p>
+                <p class="formListBoxClose"><a href="#close">Close</a></p>
               </div></div>
               </div></div>
             </div>

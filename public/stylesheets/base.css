@@ -141,3 +141,8 @@ a:hover
 { 
     text-decoration: underline;
 }
+
+textarea {
+    font-family: Arial, sans-serif;
+    height: 5em;
+}

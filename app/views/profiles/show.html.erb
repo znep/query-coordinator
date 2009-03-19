@@ -12,39 +12,109 @@
 
       <div class='outerContent'>
         <div class='content'>
+          
+          
           <div class='userInfo clearfix'>
+            
             <div class='profilePicture'>
               <%= image_tag(current_user.profile_image("medium"),
                 :size => "80x80", :alt => h(current_user.displayName)) %>
               <a class='action' href='#'>Change</a>
             </div>
-            <div class='userName'>
-              <h1>
-                <%= h("#{current_user.firstName} #{current_user.lastName}") %>
-              </h1>
-              <a class='first action' href='#'>Edit</a>
-              <a id='switchUsernameLink' class='action'
-                href='#show_username'>Display Username</a>
+            
+            <div class="profileContent sectionContainer">
+              <div class="sectionShow">
+                <div class='userName'>
+                  <h1>
+                    <%= h(current_user.displayName) %>
+                  </h1>
+                  <a class='first action showListBoxLink' href='#edit'>Edit</a>
+                  <a id='switchUsernameLink' class='action'
+                    href='#show_username'>Display Username</a>
+                </div>
+                <div class='userLocation'>
+                  <h5><%= h(current_user.displayLocation) %></h5>
+                </div>
+                <div class='userTitle'>
+                  <h5>[Developer]</h5>
+                </div>
+                <div class='userTags'>
+                  <h5>Tags: <span class='tagContent'>[test, test2, sde]</span></h5>
+                </div>
+              </div>
+              <div class="sectionEdit formListBox">
+                <div class="formListBoxTL"><div class="formListBoxTR">
+                <div class="formListBoxBL"><div class="formListBoxBR">
+                  <% form_tag(profile_url, :class => "clearfix") do %>
+                    <dl class="clearfix">
+                      <dt>Name Display</dt>
+                      <dd>
+                        <label class="radioLabel">Display Full Name</label>
+                        <%= radio_button_tag("name_display", "full", true) %>
+                        <label class="radioLabel">Display Username</label>
+                        <%= radio_button_tag("name_display", "user") %>
+                      </dd>
+                      <dt>Full Name</dt>
+                      <dd>
+                        <label for="first_name" class="preLabel">First:</label>
+                        <%= text_field_tag("first_name", current_user.firstName) %>
+                        <label for="last_name" class="preLabel">Last:</label>
+                        <%= text_field_tag("last_name", current_user.lastName) %>
+                      </dd>
+                      <dt><label for="login">Username</label></dt>
+                      <dd><%= text_field_tag("login", current_user.login) %></dd>
+                      <dt>Location</dt>
+                      <dd>
+                        <%- if (current_user.country == "US") -%>
+                          <label for="state" class="preLabel">State:</label>
+                          <%= select_tag("state", us_state_select_options(current_user.state)) %>
+                        <%- end -%>
+                        <label for="country" class="preLabel">Country:</label>
+                        <%= select_tag("country", country_select_options(current_user.country)) %>
+                      </dd>
+                      <dt><label for="title">Title</label></dt>
+                      <dd><%= text_field_tag("title", "[Developer]") %></dd>
+                      <dt><label for="tags">Tags</label></dt>
+                      <dd><%= text_field_tag("tags", "[test, test2, sde]") %></dd>
+                    </dl>
+                    <p class="formListBoxSubmit">
+                      <%= image_submit_tag("button_save.png") %>
+                    </p>
+                  <% end %>
+                  <p class="formListBoxClose"><a href="#close">Close</a></p>
+                </div></div>
+                </div></div>
+              </div>
             </div>
-            <div class='location'>
-              <h5><%= h("#{current_user.displayState} " +
-                "#{current_user.displayCountry}") %></h5>
-              <a class='action' href='#'>Edit</a>
-            </div>
-            <div class='userTitle'>
-              <h5>[Developer]</h5>
-              <a class='action' href='#'>Edit</a>
-            </div>
-            <div class='tags'>
-              <h5>Tags: <span class='tagContent'>[test, test2, sde]</span></h5>
-              <a class='action' href='#'>Edit</a>
-            </div>
+            
           </div>
-          <div class='description'>
-            <h5>[I am some test user that lives in dev]</h5>
-            <a class='action' href='#'>Edit</a>
+          
+          <div class="descriptionContent sectionContainer">
+            
+            <div class="sectionShow">
+              <p class="descriptionText">[I am some test user that lives in dev]</p>
+              <p><a class='action showListBoxLink' href='#edit'>Edit</a></p>
+            </div>
+            <div class="sectionEdit formListBox">
+              <div class="formListBoxTL"><div class="formListBoxTR">
+              <div class="formListBoxBL"><div class="formListBoxBR">
+                <% form_tag(profile_url, :class => "clearfix") do %>
+                  <dl class="clearfix">
+                    <dt><label for="description">Description</label></dt>
+                    <dd><%= text_area_tag("description", "[I am some test user that lives in dev]", :class => "text_wide") %></dd>
+                  </dl>
+                  <p class="formListBoxSubmit">
+                    <%= image_submit_tag("button_save.png") %>
+                  </p>
+                <% end %>
+                 <p class="formListBoxClose"><a href="#close">Close</a></p>
+              </div></div>
+              </div></div>
+            </div>
+          
           </div>
 
+          
           <div class='publicBlists'>
             <h3>My public blists &amp; filters</h3>
             <div class='infoContentOuter active'>
@@ -85,6 +155,8 @@
               </div>
             </div>
           </div>
+        
+        
         </div>
       </div>
     </div>
@@ -115,6 +187,6 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "widgets/selectable-list",
+  <%= javascript_include_tag "plugins/jquery.validate", "widgets/selectable-list",
     "screens/profile-screen", :cache => "cache/all" %>
 <% end %>

@@ -1,4 +1,6 @@
 class ProfilesController < ApplicationController
+  helper :user
+  
   def show
     @body_id = 'profileBody'
     @body_class = 'home'
@@ -20,5 +22,19 @@ class ProfilesController < ApplicationController
       v.is_shared? && v.flag?('default')}
 
     @contacts = Contact.find();
+  end
+  
+  def update
+    @user = User.find(current_user.id)
+    @user.firstName = params[:first_name] || @user.firstName
+    @user.lastName = params[:last_name] || @user.lastName
+    @user.login = params[:login] || @user.login
+    @user.state = params[:state] || @user.state
+    @user.country = params[:country] || @user.country
+    
+    respond_to do |format|
+      format.html { redirect_to(profile_url) }
+      format.data   { render :json => @user.to_json() }
+    end
   end
 end

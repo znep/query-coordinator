@@ -1,6 +1,17 @@
 class User < Model
-  cattr_accessor :current_user
+  cattr_accessor :current_user, :states, :countries
   attr_accessor :session_token
+  
+  def to_json
+    data_hash = data.clone
+    data_hash[:displayName] = displayLocation
+    data_hash[:displayState] = displayState
+    data_hash[:displayCountry] = displayCountry
+    data_hash[:displayLocation] = displayLocation
+    data_hash[:profile_image] = profile_image
+    
+    data_hash.to_json
+  end
 
   def displayState
     state.nil? ? '' : @@states[state]
@@ -8,6 +19,12 @@ class User < Model
 
   def displayCountry
     country.nil? ? '' : @@countries[country]
+  end
+  
+  def displayLocation
+    #TODO: add city when available.
+    out = country == "US" ? displayState + ", " : ""
+    out += displayCountry
   end
 
   def self.login(login,password)

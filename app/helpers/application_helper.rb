@@ -70,9 +70,16 @@ module ApplicationHelper
 
     return ret
   end
-  
+
   def blist_date(time)
     time ? Time.at(time).strftime("%b %d, %Y") : nil
   end
 
+  def blist_href_new_blist
+    blist_url('new_blist')
+  end
+
+  def blist_href_import
+    blist_url('import')
+  end
 end

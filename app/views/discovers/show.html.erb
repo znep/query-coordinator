@@ -16,6 +16,6 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "util/flash-interface",
+  <%= javascript_include_tag "util/flash-interface", "util/navigation",
     "screens/discover-screen", :cache => "cache/all" %>
 <% end %>

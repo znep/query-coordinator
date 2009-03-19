@@ -9,15 +9,14 @@ blist.discover.searchUpdatedHandler = function (event, search)
     $textBox.blur();
 }
 
-blist.discover.openLensHandler = function (event, lensId)
+blist.discover.openViewHandler = function (event, viewId)
 {
-    // TODO: Is there a better way to get this URL?
-    window.location = '/blists/' + lensId;
+    blist.util.navigation.redirectToView(viewId);
 }
 
-blist.discover.copyLensHandler = function (event, lensId)
+blist.discover.copyViewHandler = function (event, viewId)
 {
-    alert('Copying lens ' + lensId + ': not yet supported');
+    alert('Copying view ' + viewId + ': not yet supported');
 }
 
 /* Initial start-up calls, and setting up bindings */
@@ -26,8 +25,8 @@ $(function ()
 {
     $(document).bind(blist.events.DISCOVER_SEARCH_UPDATED,
         discoverNS.searchUpdatedHandler);
-    $(document).bind(blist.events.OPEN_LENS, discoverNS.openLensHandler);
-    $(document).bind(blist.events.COPY_LENS, discoverNS.copyLensHandler);
+    $(document).bind(blist.events.OPEN_VIEW, discoverNS.openViewHandler);
+    $(document).bind(blist.events.COPY_VIEW, discoverNS.copyViewHandler);
 
     // In Firefox, doing .focus() and .blur() events on a text input will
     // cause JS errors.  Disable autocomplete to make them stop

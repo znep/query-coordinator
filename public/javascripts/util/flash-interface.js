@@ -69,19 +69,24 @@ blist.util.flashInterface.updateDiscoverSearch = function (search)
     $(document).trigger(blist.events.DISCOVER_SEARCH_UPDATED, [search]);
 }
 
-blist.util.flashInterface.openLens = function (lensId)
+blist.util.flashInterface.openLens = function (viewId)
 {
-    $(document).trigger(blist.events.OPEN_LENS, [lensId]);
+    $(document).trigger(blist.events.OPEN_VIEW, [viewId]);
 }
 
-blist.util.flashInterface.copyLens = function (lensId)
+blist.util.flashInterface.copyView = function (viewId)
 {
-    $(document).trigger(blist.events.COPY_LENS, [lensId]);
+    $(document).trigger(blist.events.COPY_VIEW, [viewId]);
 }
 
 blist.util.flashInterface.columnsChanged = function (columnIds)
 {
-    $(document).trigger(blist.events.COLUMNS_CHANGED, [columnIds])
+    $(document).trigger(blist.events.COLUMNS_CHANGED, [columnIds]);
+}
+
+blist.util.flashInterface.popupCanceled = function (popup)
+{
+    $(document).trigger(blist.events.POPUP_CANCELED, [popup]);
 }
 
 blist.util.flashInterface.addPopupHandlers = function (shownHandler,

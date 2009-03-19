@@ -124,13 +124,55 @@ blist.blistGrid.mainMenuLoaded = function (data)
 {
     // Swap out the main menu with whatever was loaded
     $('#mainMenu').replaceWith(data);
+    blistGridNS.hookUpMainMenu();
+}
+
+blist.blistGrid.hookUpMainMenu = function()
+{
     $('#mainMenu').dropdownMenu({triggerButton: $('#mainMenuLink'),
-            menuBar: $('#lensContainer .headerBar')});
+            menuBar: $('#lensContainer .headerBar'),
+            linkCallback: blistGridNS.mainMenuHandler});
     $('#mainMenu .columnsMenu').scrollable();
     $('#mainMenu .columnsMenu a').click(function (event)
     {
         blistGridNS.columnClickHandler(event);
     });
+}
+
+blist.blistGrid.mainMenuHandler = function(event)
+{
+    var $target = $(event.currentTarget);
+    var href = $target.attr('href');
+    if (href[0] != '#')
+    {
+        return;
+    }
+
+    event.preventDefault();
+    switch (href.slice(1))
+    {
+        case 'new_blist':
+            blist.blistGrid.referer = '';
+            blist.util.flashInterface.showPopup('NewLens');
+            break;
+        case 'import':
+            blist.blistGrid.referer = '';
+            blist.util.flashInterface.showPopup('NewLens:Import');
+            break;
+    }
+}
+
+blist.blistGrid.openViewHandler = function(event, viewId)
+{
+    blist.util.navigation.redirectToView(viewId);
+}
+
+blist.blistGrid.popupCanceledHandler = function(event, popup)
+{
+    if (popup == 'NewLens' && blistGridNS.referer && blistGridNS.referer !== '')
+    {
+        window.location = blistGridNS.referer;
+    }
 }
 
 /* Initial start-up calls, and setting up bindings */
@@ -144,6 +186,8 @@ $(function ()
     $(document).bind(blist.events.PAGE_LABEL_UPDATED, blistGridNS.pageLabelHandler);
     $(document).bind(blist.events.COLUMNS_CHANGED,
         blistGridNS.columnsChangedHandler);
+    $(document).bind(blist.events.OPEN_VIEW, blistGridNS.openViewHandler);
+    $(document).bind(blist.events.POPUP_CANCELED, blistGridNS.popupCanceledHandler);
 
     $(window).resize(function (event)
     {
@@ -151,11 +195,6 @@ $(function ()
         blistGridNS.sizeSwf(event);
     });
     commonNS.adjustSize();
-
-    $('.columnsMenu a').click(function (event)
-    {
-        blistGridNS.columnClickHandler(event);
-    });
 
     $('#filterViewMenu .filter').click(function (event)
     {
@@ -202,9 +241,7 @@ $(function ()
             $(event.currentTarget).find('input[type="text"]').val());
     });
 
-    $('#mainMenu').dropdownMenu({triggerButton: $('#mainMenuLink'),
-        menuBar: $('#lensContainer .headerBar')});
-    $('#mainMenu .columnsMenu').scrollable();
+    blistGridNS.hookUpMainMenu();
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
         menuBar: $('#lensContainer .headerBar')});
     $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),

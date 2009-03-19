@@ -19,7 +19,16 @@ class BlistsController < SwfController
   def show
     @body_id = 'lensBody'
     @body_class = 'home'
-    @view = View.find(params[:id])
+    case params[:id]
+    when 'new_blist'
+      # show new blist in swf
+      @start_screen = 'new_blist'
+    when 'import'
+      # show import in swf
+      @start_screen = 'import'
+    else
+      @view = View.find(params[:id])
+    end
 
     @data_component = params[:dataComponent]
 

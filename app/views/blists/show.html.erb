@@ -12,12 +12,13 @@
   <div id='lensContainer' class='mainContent tableView'>
     <ul class='tabList'>
       <li class='main active'><div class='wrapper'>
-        <a href='#'><%= @view.name %></a></div></li>
+        <a href='#'><%= !@view.nil? ? @view.name : 'New blist' %></a></div></li>
     </ul>
 
     <div class='outerContent'>
       <div class='content'>
         <div class='headerBar clearfix'>
+          <%- if !@view.nil? -%>
           <ul>
             <%# Main menu %>
             <li><a href='#' id='mainMenuLink' class='dropdownLink'>
@@ -75,6 +76,7 @@
                 src="/stylesheets/images/content/table_menu/button_find.png" />
             </p>
           </form>
+          <%- end -%>
         </div>
 
         <div id='addColumnsMenu' class='fixedMenu'>
@@ -162,7 +164,9 @@
   <div class="twoColumnContainer clearfix">
     <div id="mainColumnContent" class="column">
       <div id='infoPane'>
+      <%- if !@view.nil? -%>
         <%= render(:partial => "info_for_single", :locals => { :view => @view }) %>
+      <%- end -%>
       </div>
     </div>
 
@@ -173,7 +177,12 @@
 </div>
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.blistGrid');
+    blist.blistGrid.referer = "<%= request.referer %>";
+  </script>
   <%= javascript_include_tag "util/extMouseWheel", "util/flash-interface",
-    "widgets/dropdown-menu", "widgets/selectable-list", "widgets/scrollable",
-    "screens/blist-grid-screen", "screens/info-pane", :cache => "cache/all" %>
+    "util/navigation", "widgets/dropdown-menu", "widgets/selectable-list",
+    "widgets/scrollable", "screens/blist-grid-screen", "screens/info-pane",
+    :cache => "cache/all" %>
 <% end %>

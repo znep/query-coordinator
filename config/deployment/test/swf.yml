@@ -1,6 +1,7 @@
 production:
+  dir: 
 
 development:
-  dir: /Users/jeff/Documents/git/development/rails/public/swf
+  dir:
 
 test:

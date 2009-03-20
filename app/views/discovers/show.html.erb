@@ -1,8 +1,6 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "discover-screen",
-    :cache => "cache/all" %>
-  <%= javascript_include_tag "util/swfobject",
-    :cache => "cache/all" %>
+  <%= stylesheet_link_tag "discover-screen" %>
+  <%= javascript_include_tag "util/swfobject" %>
   <title>blist | share your weblists</title>
 <% end %>
 
@@ -17,5 +15,5 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "util/flash-interface", "util/navigation",
-    "screens/discover-screen", :cache => "cache/all" %>
+    "screens/discover-screen", :cache => "cache/discovers_show_all" %>
 <% end %>

@@ -1,8 +1,6 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blist-grid-screen",
-    :cache => "cache/all" %>
-  <%= javascript_include_tag "util/swfobject",
-    :cache => "cache/all" %>
+  <%= stylesheet_link_tag "blist-grid-screen" %>
+  <%= javascript_include_tag "util/swfobject" %>
   <title>blist | share your weblists</title>
 <% end %>
 
@@ -184,5 +182,5 @@
   <%= javascript_include_tag "util/extMouseWheel", "util/flash-interface",
     "util/navigation", "widgets/dropdown-menu", "widgets/selectable-list",
     "widgets/scrollable", "screens/blist-grid-screen", "screens/info-pane",
-    :cache => "cache/all" %>
+    :cache => "cache/blists_show_all" %>
 <% end %>

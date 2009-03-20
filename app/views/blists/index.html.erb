@@ -1,6 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blists-screen", "widgets",
-    :cache => "cache/all" %>
+  <%= stylesheet_link_tag "blists-screen", "widgets", :cache => "cache/blists_index_all" %>
   <title>blist | share your weblists</title>
 <% end %>
 
@@ -163,5 +162,5 @@
   <%= javascript_include_tag "plugins/jquery.tablesorter",
     "plugins/jquery.treeTable", "plugins/jquery.searchable", "util/humane-date",
     "widgets/panel-expander", "widgets/dropdown-menu", "widgets/selectable-list",
-    "screens/blists-screen", "screens/info-pane", :cache => "cache/all" %>
+    "screens/blists-screen", "screens/info-pane", :cache => "cache/blists_index_all" %>
 <% end %>

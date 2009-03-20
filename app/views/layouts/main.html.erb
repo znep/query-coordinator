@@ -8,7 +8,7 @@
 
   <%= stylesheet_link_tag "base", "common", "info-pane", "layout",
     "outer-chrome", "sidebar", "widgets",
-    :cache => "cache/all" %>
+    :cache => "cache/layout_main_all" %>
 
   <% if ENV["RAILS_ENV"] != 'production' %>
   <script src="/javascripts/jquery-1.3.2.js" type="text/javascript"
@@ -88,17 +88,16 @@
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
   <%= javascript_include_tag "plugins/jquery.sizes.min", "util/namespace",
-    :cache => "cache/all" %>
+    :cache => "cache/layout_main_all" %>
 
   <% if ENV["RAILS_ENV"] != 'production' %>
-    <%= javascript_include_tag "util/debug", :cache => "cache/all" %>
+    <%= javascript_include_tag "util/debug" %>
   <% end %>
 
 
   <%# This should be included on all pages, including the marketing site.
   It will update the header appropriately based on your logged-in state %>
-  <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min",
-    :cache => "cache/all" %>
+  <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min" %>
   <script type="text/javascript">
     jQuery((function ($)
     {

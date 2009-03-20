@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "profile-screen", :cache => "cache/all" %>
+  <%= stylesheet_link_tag "profile-screen" %>
   <title>blist | share your weblists</title>
 <% end %>
 
@@ -188,5 +188,5 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.validate", "widgets/selectable-list",
-    "screens/profile-screen", :cache => "cache/all" %>
+    "screens/profile-screen", :cache => "cache/profiles_show_all" %>
 <% end %>

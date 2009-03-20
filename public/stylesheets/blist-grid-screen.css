@@ -58,7 +58,7 @@
 
 #lensContainer .headerBar form.search p
 {
-    background-image: url(images/content/table_menu/field_find.png);
+    background-image: url(/stylesheets/images/content/table_menu/field_find.png);
 }
 
 #lensContainer .headerBar form.search input[type="text"]
@@ -79,7 +79,7 @@
 
 #lensBody .headerBar .linkIcon
 {
-    background-image: url(images/content/table_menu/menu_bar_sprites.png);
+    background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png);
     background-repeat: no-repeat;
     display: block;
     height: 20px;
@@ -120,7 +120,7 @@
 
 #lensBody .headerBar #filterViewMenu li a
 {
-    background-image: url(images/content/table_menu/menu_icon_sprites.png);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-repeat: no-repeat;
 }
 
@@ -151,7 +151,7 @@
 
 #lensBody .headerBar #displayMenu li a
 {
-    background-image: url(images/content/table_menu/menu_icon_sprites.png);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-position: left -855px;
     background-repeat: no-repeat;
 }
@@ -239,38 +239,38 @@
 
 #mainMenu.menu li.button.prev .innerWrapper
 {
-    background-image: url(images/widgets/dropdown_button/arrow_up.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up.png);
 }
 
 #mainMenu.menu li.button.next .innerWrapper
 {
-    background-image: url(images/widgets/dropdown_button/arrow_down.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down.png);
 }
 
 #mainMenu.menu li.button.prev.disabled .innerWrapper
 {
-    background-image: url(images/widgets/dropdown_button/arrow_up_disabled.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up_disabled.png);
 }
 
 #mainMenu.menu li.button.next.disabled .innerWrapper
 {
-    background-image: url(images/widgets/dropdown_button/arrow_down_disabled.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down_disabled.png);
 }
 
 /*
 #mainMenu.menu li.button a:hover
 {
-    background-image: url(images/widgets/dropdown_button/click_left.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_left.png);
 }
 
 #mainMenu.menu li.button a:hover .outerWrapper
 {
-    background-image: url(images/widgets/dropdown_button/click_right.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_right.png);
 }
 
 #mainMenu.menu li.button a:hover .midWrapper
 {
-    background-image: url(images/widgets/dropdown_button/click_gradSlice.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_gradSlice.png);
 }
 */
 
@@ -296,7 +296,7 @@
 #mainMenu dl > dd > ul > li > a,
 #mainMenu dl > dd > ul > li > ul > li > a
 {
-    background-image: url(images/content/table_menu/menu_icon_sprites.png);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-position: 0 23px; /* default to show no icon */
     background-repeat: no-repeat;
 }
@@ -425,7 +425,7 @@
 
 #mainMenu li.data .columnTotals .optionMenu li > a
 {
-    background-image: url(images/content/table_menu/menu_icon_sprites.png);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-position: 0 -924px;
     background-repeat: no-repeat;
 }
@@ -533,7 +533,7 @@
 
 #addColumnsMenu .column a
 {
-    background-image: url(images/common/datatypes/data_type_sprites.png);
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
     background-repeat: no-repeat;
     color: #333333;
     display: block;
@@ -548,7 +548,7 @@
 
 #mainMenu .columnsMenu > li > a
 {
-    background-image: url(images/common/datatypes/data_type_sprites.png);
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
     background-position: 0 20px;
     background-repeat: no-repeat;
 }
@@ -690,7 +690,7 @@
 #pageViewHeader
 {
     background-color: #e8e8e8;
-    background-image: url(images/content/table_menu/light_corner_left_top.png);
+    background-image: url(/stylesheets/images/content/table_menu/light_corner_left_top.png);
     background-position: center left;
     background-repeat: no-repeat;
     height: 9px;
@@ -698,7 +698,7 @@
 
 #pageViewHeader .innerWrapper
 {
-    background-image: url(images/content/table_menu/light_corner_right_top.png);
+    background-image: url(/stylesheets/images/content/table_menu/light_corner_right_top.png);
     background-position: center right;
     background-repeat: no-repeat;
     height: 9px;
@@ -715,7 +715,7 @@
 
 #pageViewFooter a
 {
-    background-image: url(images/content/table_menu/menu_bar_sprites.png);
+    background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png);
     background-repeat: no-repeat;
     /* This is for support in FF2 */
     display: -moz-inline-stack;

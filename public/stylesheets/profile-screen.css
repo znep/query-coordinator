@@ -77,12 +77,12 @@
 
 #profile .publicBlists .infoContentOuter
 {
-    background-image: url(images/profile/info_bottom_right_white.png);
+    background-image: url(/stylesheets/images/profile/info_bottom_right_white.png);
 }
 
 #profile .publicBlists .infoContent
 {
-    background-image: url(images/profile/info_bottom_left_white.png);
+    background-image: url(/stylesheets/images/profile/info_bottom_left_white.png);
     background-position: bottom left;
     background-repeat: no-repeat;
     display: block;
@@ -91,7 +91,7 @@
 
 #profile .publicBlists .infoContentHeader
 {
-    background-image: url(images/profile/info_top_left_white.png);
+    background-image: url(/stylesheets/images/profile/info_top_left_white.png);
     background-position: top left;
     background-repeat: no-repeat;
     padding: 0;
@@ -99,7 +99,7 @@
 
 #profile .publicBlists .infoContentHeaderInner
 {
-    background-image: url(images/profile/info_top_right_white.png);
+    background-image: url(/stylesheets/images/profile/info_top_right_white.png);
     background-position: top right;
     background-repeat: no-repeat;
 }

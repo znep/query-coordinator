@@ -22,7 +22,7 @@
 .actionButtons li
 {
     background-color: #656565;
-    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
     background-repeat: no-repeat;
     float: left;
     height: 21px;
@@ -31,7 +31,7 @@
 }
 .actionButtons li a
 {
-    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
     background-position: right -21px;
     background-repeat: no-repeat;
     color: #fff;
@@ -90,7 +90,7 @@ a.dropdownLink .midWrapper
 
 a.dropdownLink .innerWrapper
 {
-    background-image: url(images/widgets/dropdown_button/menu_bar_arrow.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/menu_bar_arrow.png);
     background-position: right top;
     background-repeat: no-repeat;
     display: block;
@@ -99,32 +99,32 @@ a.dropdownLink .innerWrapper
 
 a.dropdownLink:hover
 {
-    background-image: url(images/widgets/dropdown_button/hover_left.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_left.png);
 }
 
 a.dropdownLink:hover .outerWrapper
 {
-    background-image: url(images/widgets/dropdown_button/hover_right.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_right.png);
 }
 
 a.dropdownLink:hover .midWrapper
 {
-    background-image: url(images/widgets/dropdown_button/hover_gradSlice.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_gradSlice.png);
 }
 
 a.dropdownLink.clicked
 {
-    background-image: url(images/widgets/dropdown_button/click_left.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_left.png);
 }
 
 a.dropdownLink.clicked .outerWrapper
 {
-    background-image: url(images/widgets/dropdown_button/click_right.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_right.png);
 }
 
 a.dropdownLink.clicked .midWrapper
 {
-    background-image: url(images/widgets/dropdown_button/click_gradSlice.png);
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_gradSlice.png);
 }
 /*** END: dropdown button ***/
 
@@ -214,7 +214,7 @@ ul.menu li.separator
 
 ul.menu li.footer
 {
-    background-image: url(images/widgets/menu/corner_light_left_bottom.png);
+    background-image: url(/stylesheets/images/widgets/menu/corner_light_left_bottom.png);
     background-position: bottom left;
     background-repeat: no-repeat;
     bottom: -9px;
@@ -227,7 +227,7 @@ ul.menu li.footer
 
 ul.menu li.footer .outerWrapper
 {
-    background-image: url(images/widgets/menu/corner_light_right_bottom.png);
+    background-image: url(/stylesheets/images/widgets/menu/corner_light_right_bottom.png);
     background-position: bottom right;
     background-repeat: no-repeat;
     height: 9px;
@@ -253,7 +253,7 @@ ul.menu li.submenu
 
 ul.menu li.submenu > a > .highlight
 {
-    background-image: url(images/widgets/menu/submenu_arrow.png);
+    background-image: url(/stylesheets/images/widgets/menu/submenu_arrow.png);
     background-position: right center;
     background-repeat: no-repeat;
 }
@@ -298,7 +298,7 @@ ul.menu.optionMenu li a
 ul.menu.optionMenu li.footer
 {
     background-color: transparent;
-    background-image: url(images/widgets/menu/corner_dark_left_bottom.png);
+    background-image: url(/stylesheets/images/widgets/menu/corner_dark_left_bottom.png);
     margin-left: -1px;
 }
 
@@ -393,7 +393,7 @@ ul.menu.multilevelMenu > li.footer
 
 ul.menu.multilevelMenu > li.footer > .outerWrapper
 {
-    background-image: url(images/widgets/menu/corner_dark_right_bottom.png);
+    background-image: url(/stylesheets/images/widgets/menu/corner_dark_right_bottom.png);
     border: none;
 }
 
@@ -436,7 +436,7 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
 
 .fixedMenu .outerWrapper
 {
-    background-image: url(images/widgets/menu/corner_light_left_bottom_whitebg.png);
+    background-image: url(/stylesheets/images/widgets/menu/corner_light_left_bottom_whitebg.png);
     background-position: bottom left;
     background-repeat: no-repeat;
     margin: 0 -1px -1px;
@@ -444,7 +444,7 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
 
 .fixedMenu .innerWrapper
 {
-    background-image: url(images/widgets/menu/corner_light_right_bottom_whitebg.png);
+    background-image: url(/stylesheets/images/widgets/menu/corner_light_right_bottom_whitebg.png);
     background-position: bottom right;
     background-repeat: no-repeat;
     display: block;
@@ -452,7 +452,7 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
 
 .fixedMenu .close
 {
-    background-image: url(images/content/table_menu/icon_close_light.png);
+    background-image: url(/stylesheets/images/content/table_menu/icon_close_light.png);
     background-repeat: no-repeat;
     display: block;
     height: 23px;
@@ -511,7 +511,7 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
 /*** START: alert box ***/
 .noticePanel
 {
-    background: #e5f0f0 url(images/common/notice_panel_content_background.png) left bottom repeat-x;
+    background: #e5f0f0 url(/stylesheets/images/common/notice_panel_content_background.png) left bottom repeat-x;
     border-color: #ccc;
     border-style: solid;
     border-width: 0 1px 1px;
@@ -520,17 +520,17 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
 }
 .noticeHeaderOuter
 {
-    background: url(images/common/notice_panel_header_background.png) repeat-x;
+    background: url(/stylesheets/images/common/notice_panel_header_background.png) repeat-x;
     border-top: 1px solid #ccc;
 }
 .noticeHeaderInner
 {
-    background: url(images/common/notice_panel_header_left.png) no-repeat;
+    background: url(/stylesheets/images/common/notice_panel_header_left.png) no-repeat;
     margin: -1px 0 0 -1px;
 }
 .noticeHeader
 {
-    background: url(images/common/notice_panel_header_right.png) right top no-repeat;
+    background: url(/stylesheets/images/common/notice_panel_header_right.png) right top no-repeat;
     border-bottom: 1px solid #ccc;
     height: 30px;
     margin: -1px -1px 0 0;
@@ -552,7 +552,7 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
 }
 .noticeHeader > p.noticePanelCloser a
 {
-    background: url(images/common/expander_arrows.png) right 50% no-repeat;
+    background: url(/stylesheets/images/common/expander_arrows.png) right 50% no-repeat;
     color: #666;
     display: block;
     margin-right: 15px;
@@ -601,13 +601,13 @@ table.gridList th
 
 table.gridList thead th.first
 {
-    background-image: url(images/content/table/header_left_top.png);
+    background-image: url(/stylesheets/images/content/table/header_left_top.png);
     background-position: left top;
     background-repeat: no-repeat;
 }
 table.gridList th.last
 {
-    background-image: url(images/content/table/header_right_top.png);
+    background-image: url(/stylesheets/images/content/table/header_right_top.png);
     background-position: right top;
     background-repeat: no-repeat;
     border: none;
@@ -631,11 +631,11 @@ table.gridList th.header > *
 }
 table.gridList th.headerSortDown > *
 {
-    background-image: url(images/content/table/icon_sort_up.png);
+    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
 }
 table.gridList th.headerSortUp > *
 {
-    background-image: url(images/content/table/icon_sort_down.png);
+    background-image: url(/stylesheets/images/content/table/icon_sort_down.png);
 }
 
 
@@ -690,7 +690,7 @@ table.gridList tr.hover td.last > *,
 table.gridList tr.selected td.last > *,
 table.gridList tr.hover.selected td.last > *
 {
-    background-image: url(images/content/table/highlight_end.png);
+    background-image: url(/stylesheets/images/content/table/highlight_end.png);
     background-position: right;
     background-repeat: no-repeat;
 }
@@ -706,7 +706,7 @@ table.gridList tr.hover.selected td.last > *
 /* expand/collapse arrow */
 table.gridList .expander
 {
-    background-image: url(images/content/table/expand_closed.png);
+    background-image: url(/stylesheets/images/content/table/expand_closed.png);
     background-position: left center;
     background-repeat: no-repeat;
     cursor: pointer;
@@ -717,7 +717,7 @@ table.gridList .expander
 
 table.gridList tr.expanded .expander
 {
-    background-image: url(images/content/table/expand_opened.png);
+    background-image: url(/stylesheets/images/content/table/expand_opened.png);
 }
 
 
@@ -738,28 +738,28 @@ table.gridList th.type { padding: 0; }
 table.gridList .handle { width: 33px; }
 table.gridList tr.hover td.handle
 {
-    background-image: url(images/content/table/icon_double_arrow.png);
+    background-image: url(/stylesheets/images/content/table/icon_double_arrow.png);
 }
 
 table.gridList .favorite { width: 37px;}
 table.gridList th.favorite
 {
-    background-image: url(images/content/table/icon_sorting_star.png);
+    background-image: url(/stylesheets/images/content/table/icon_sorting_star.png);
 }
 table.gridList td.favorite.true,
 table.gridList tr.hover td.favorite.true
 {
-    background-image: url(images/content/table/icon_star_fill.png);
+    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
 }
 table.gridList tr.hover td.favorite
 {
-    background-image: url(images/content/table/icon_star_empty.png);
+    background-image: url(/stylesheets/images/content/table/icon_star_empty.png);
 }
 
 table.gridList .type { width: 45px; }
 table.gridList th.type
 {
-    background-image: url(images/content/table/icon_sorting_type.png);
+    background-image: url(/stylesheets/images/content/table/icon_sorting_type.png);
 }
 table.gridList td.type > *
 {
@@ -815,7 +815,7 @@ table.gridList tr.child.hover td.description > *,
 table.gridList tr.child.selected td.description > *,
 table.gridList tr.child.hover.selected td.description > *
 {
-    background-image: url(images/content/table/highlight_end.png);
+    background-image: url(/stylesheets/images/content/table/highlight_end.png);
     background-position: right;
     background-repeat: no-repeat;
 }
@@ -829,14 +829,14 @@ table.gridList tr.child.collapsed
 /* Selectable list: checkbox sprites on hover */
 .outerContent table.selectableList tr.hover td.type > div
 {
-    background-image: url(images/content/table/icon_type_sprites.png);
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
     background-position: 0 -341px;
 }
 
 .outerContent table.selectableList tr.selected td.type > div,
 .outerContent table.selectableList tr.hover.selected td.type > div
 {
-    background-image: url(images/content/table/icon_type_sprites.png);
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
     background-position: 0 -310px;
 }
 
@@ -853,13 +853,13 @@ table.gridList tr.filteredOut
 /*** START: form list boxes ***/
 .formListBox
 {
-    background: #ffedcc url(images/info_pane/background_expanded_list.png) -5px 0 repeat-y;
+    background: #ffedcc url(/stylesheets/images/info_pane/background_expanded_list.png) -5px 0 repeat-y;
     position: relative;
 }
-.formListBoxTL { background: url(images/content/section_top_left.png) left top no-repeat; }
-.formListBoxTR { background: url(images/content/section_top_right.png) right top no-repeat; }
-.formListBoxBL { background: url(images/content/section_bottom_left.png) left bottom no-repeat; }
-.formListBoxBR { background: url(images/content/section_bottom_right.png) right bottom no-repeat; }
+.formListBoxTL { background: url(/stylesheets/images/content/section_top_left.png) left top no-repeat; }
+.formListBoxTR { background: url(/stylesheets/images/content/section_top_right.png) right top no-repeat; }
+.formListBoxBL { background: url(/stylesheets/images/content/section_bottom_left.png) left bottom no-repeat; }
+.formListBoxBR { background: url(/stylesheets/images/content/section_bottom_right.png) right bottom no-repeat; }
 
 .formListBox form input[type="text"], .formListBox form input[type="password"]
 {
@@ -909,7 +909,7 @@ table.gridList tr.filteredOut
 }
 .formListBox .formListBoxClose a
 {
-    background: url(images/content/section_close_button.png) no-repeat;
+    background: url(/stylesheets/images/content/section_close_button.png) no-repeat;
     display: block;
     height: 16px;
     line-height: 200px;
@@ -943,7 +943,7 @@ table.gridList tr.filteredOut
 .formListBoxSubmit a
 {
     background-color: #656565;
-    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
     background-repeat: no-repeat;
     color: #fff;
     display: block;
@@ -953,7 +953,7 @@ table.gridList tr.filteredOut
 }
 .formListBoxSubmit a span
 {
-    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
     background-position: right -42px;
     background-repeat: no-repeat;
     display: block;

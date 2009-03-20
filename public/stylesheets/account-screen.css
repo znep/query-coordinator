@@ -37,13 +37,13 @@
 }
 .sectionShow p.hover
 {
-    background: #ffedb2 url(images/content/table/highlight_end.png) right top no-repeat;
+    background: #ffedb2 url(/stylesheets/images/content/table/highlight_end.png) right top no-repeat;
 }
 
 .sectionShow a.showAction
 {
     background-color: #656565;
-    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
     background-position: left -126px;
     background-repeat: no-repeat;
     color: #fff;
@@ -58,7 +58,7 @@
 }
 .sectionShow a.showAction span
 {
-    background-image: url(images/widgets/background_buttons_summary_sprites.png);
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
     background-position: right -147px;
     background-repeat: no-repeat;
     display: block;

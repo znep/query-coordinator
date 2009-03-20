@@ -77,7 +77,7 @@ form textarea.text_wide { width: 30em; }
 
 form.search p
 {
-    background-image: url(images/common/find_input_cap.png);
+    background-image: url(/stylesheets/images/common/find_input_cap.png);
     background-repeat: no-repeat;
     overflow: hidden;
     padding-left: 10px;
@@ -269,7 +269,7 @@ private
 
 .itemType 
 {
-    background-image: url(images/content/table/icon_type_sprites.png);
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
     background-position: 0 0;
     background-repeat: no-repeat;
     height: 31px;

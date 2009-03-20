@@ -94,7 +94,7 @@
 }
 #sidebar #blistFilters .expandableContainer a.expander 
 {
-    background-image: url(images/sidebar/blists_filter/icon_expand_sprites.png);
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_expand_sprites.png);
     background-position: 0 -22px;
     background-repeat: no-repeat;
     height: 22px;
@@ -125,7 +125,7 @@
 #sidebar .filterSection h4 a,
 #sidebar .filterSection ul.expandable > li > a
 {
-    background-image: url(images/sidebar/blists_filter/icon_filter_sprites.png);
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_filter_sprites.png);
     background-position: 0 0;
     background-repeat: no-repeat;
     color: #212121;
@@ -243,7 +243,7 @@
 #sidebar .filterSection h4 a:hover span,
 #sidebar .filterSection ul.expandable > li > a:hover span
 {
-    background: url(images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
+    background: url(/stylesheets/images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
 }
 
 ul.menu.contactsMenu li a

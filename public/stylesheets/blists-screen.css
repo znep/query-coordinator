@@ -36,7 +36,7 @@
 }
 #blists .headerBar .headerActions li a
 {
-    background: url(images/content/blists_menu_icons.png) left 23px no-repeat;
+    background: url(/stylesheets/images/content/blists_menu_icons.png) left 23px no-repeat;
     color: #333333;
     display: block;
     font-size: 1em;

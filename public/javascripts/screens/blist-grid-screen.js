@@ -61,14 +61,20 @@ blist.blistGrid.showFlashPopup = function (popup)
 blist.blistGrid.flashPopupShownHandler = function (popup)
 {
     blistGridNS.popup = true;
-    $('#swfWrapper').css('top', ($('#header').outerHeight() + 10) + 'px');
-    $('#swfWrapper').css('bottom', ($('#footer').outerHeight() + 10) + 'px');
-    // Safari doesn't give the swf the right height with height:100%; so force it
-    $('#swfContent').height($('#swfWrapper').height());
+    // Resizing the grid causes the file upload dialog to close; it fits within
+    //  the window as-is, so don't resize for that
+    if (popup != 'MultipleFileUpload')
+    {
+        $('#swfWrapper').css('top', ($('#header').outerHeight() + 10) + 'px');
+        $('#swfWrapper').css('bottom', ($('#footer').outerHeight() + 10) + 'px');
+        // Safari doesn't give the swf the right height with height:100%; so
+        // force it
+        $('#swfContent').height($('#swfWrapper').height());
+    }
     $('#overlay').show();
 }
 
-blist.blistGrid.flashPopupClosedHandler = function ()
+blist.blistGrid.flashPopupClosedHandler = function (popup)
 {
     blistGridNS.popup = false;
     blistGridNS.sizeSwf();

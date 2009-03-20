@@ -132,7 +132,7 @@ blist.util.flashInterface.callHandlers = function (handlerObj, popup)
             var callbackList = handlerObj[curPopup];
             for (var i = 0; i < callbackList.length; i++)
             {
-                callbackList[i]();
+                callbackList[i](popup);
             }
         }
     }

@@ -14,10 +14,6 @@ blist.discover.openViewHandler = function (event, viewId)
     blist.util.navigation.redirectToView(viewId);
 }
 
-blist.discover.copyViewHandler = function (event, viewId)
-{
-    alert('Copying view ' + viewId + ': not yet supported');
-}
 
 /* Initial start-up calls, and setting up bindings */
 
@@ -26,7 +22,6 @@ $(function ()
     $(document).bind(blist.events.DISCOVER_SEARCH_UPDATED,
         discoverNS.searchUpdatedHandler);
     $(document).bind(blist.events.OPEN_VIEW, discoverNS.openViewHandler);
-    $(document).bind(blist.events.COPY_VIEW, discoverNS.copyViewHandler);
 
     // In Firefox, doing .focus() and .blur() events on a text input will
     // cause JS errors.  Disable autocomplete to make them stop

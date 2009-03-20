@@ -1,0 +1,6 @@
+production:
+  site: http://alpha-api.tuk.blist.com
+
+development:
+  site: http://alpha-api.tuk.blist.com
+

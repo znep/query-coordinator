@@ -1,0 +1,6 @@
+production:
+
+development:
+  dir: /Users/jeff/Documents/git/development/rails/public/swf
+
+test:

@@ -204,39 +204,47 @@ $(function ()
 
     $('#filterViewMenu .filter').click(function (event)
     {
+        event.preventDefault();
         blistGridNS.showFlashPopup('LensBuilder:Filter');
     });
     $('#filterViewMenu .sort').click(function (event)
     {
+        event.preventDefault();
         blistGridNS.showFlashPopup('LensBuilder:Sort');
     });
     $('#filterViewMenu .showHide').click(function (event)
     {
+        event.preventDefault();
         blistGridNS.showFlashPopup('LensBuilder:ShowHide');
     });
 
     $('#displayMenu .table').click(function (event)
     {
+        event.preventDefault();
         blist.util.flashInterface.doAction('TableView');
     });
     $('#displayMenu .page').click(function (event)
     {
+        event.preventDefault();
         blist.util.flashInterface.doAction('PageView');
     });
 
     $('.flashAction').click(function (event)
     {
+        event.preventDefault();
         blist.util.flashInterface.doAction(
             $(event.currentTarget).attr('href').slice(1));
     });
 
     $('.addColumnsLink, #addColumnsMenu .close').click(function (event)
     {
+        event.preventDefault();
         blistGridNS.toggleAddColumns();
     });
 
     $('#addColumnsMenu .column a').click(function (event)
     {
+        event.preventDefault();
         blistGridNS.dataTypeClickHandler(event);
     });
 

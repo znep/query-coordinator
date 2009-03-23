@@ -13,9 +13,19 @@
     z-index: 200;
 }
 
+#discoverBody.overlayShown #header form.search
+{
+    z-index: 0;
+}
+
 #discoverBody #mainLogo a
 {
     z-index: 200;
+}
+
+#discoverBody.overlayShown #mainLogo a
+{
+    z-index: 0;
 }
 
 #discoverBody .mainContent
@@ -28,4 +38,9 @@
 #discoverBody .scrollContent
 {
     overflow: hidden;
+}
+
+#discoverBody #swfWrapper
+{
+    z-index: 100;
 }

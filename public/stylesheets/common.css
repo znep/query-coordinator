@@ -350,3 +350,18 @@ private
 
 /*** END: Activity lists (home page) ***/
 
+
+#overlay
+{
+    background-color: #000000;
+    bottom: 0;
+    display: none;
+    filter: alpha(opacity=60);
+    left: 0;
+    opacity: 0.6;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 99;
+}
+

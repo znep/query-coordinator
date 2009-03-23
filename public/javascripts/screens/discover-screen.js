@@ -14,11 +14,26 @@ blist.discover.openViewHandler = function (event, viewId)
     blist.util.navigation.redirectToView(viewId);
 };
 
+blist.discover.flashPopupShownHandler = function (popup)
+{
+    $('#discoverBody').addClass('overlayShown');
+    $('#overlay').show();
+};
+
+blist.discover.flashPopupClosedHandler = function (popup)
+{
+    $('#discoverBody').removeClass('overlayShown');
+    $('#overlay').hide();
+};
+
 
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
 {
+    blist.util.flashInterface.addPopupHandlers(discoverNS.flashPopupShownHandler,
+        discoverNS.flashPopupClosedHandler);
+
     $(document).bind(blist.events.DISCOVER_SEARCH_UPDATED,
         discoverNS.searchUpdatedHandler);
     $(document).bind(blist.events.OPEN_VIEW, discoverNS.openViewHandler);

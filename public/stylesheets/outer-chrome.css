@@ -31,7 +31,7 @@ body
 #header
 {
     margin-bottom: -1em;
-    margin-left: 120px;
+    margin-left: 12em;
     margin-right: 1em;
     overflow: hidden;
 }
@@ -133,7 +133,7 @@ body
 #header .userNav a
 {
     color: #ffffff;
-    font-size: .9em;    
+    font-size: .9em;    /* 9px */
     font-weight: bold;
 }
 
@@ -164,7 +164,7 @@ body
     background-position: bottom left;
     background-repeat: no-repeat;
     float: right;
-    margin-top: 2px;
+    margin-top: .2em;
 }
 
 #mainNav ul
@@ -184,7 +184,7 @@ body
     background-repeat: repeat-x;
     float: left;
     height: 25px;
-    margin-right: 2px;
+    margin-right: .2em;
     text-align: center;
     width: 11em;
 }

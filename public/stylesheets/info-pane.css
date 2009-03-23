@@ -10,7 +10,7 @@
 {
     margin-left: 1em;
     margin-top: 0.5em;
-    min-width: 700px; /* Tabs will wrap below this width. */
+    min-width: 70em; /* Tabs will wrap below this width. */
 }
 
 #infoPane .header

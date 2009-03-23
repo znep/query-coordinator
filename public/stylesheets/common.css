@@ -52,9 +52,9 @@ form input[type="text"],
 form input[type="password"]
 {
     border: solid 1px #cacaca;
-    font-size: 1.2em;
-    line-height: 1.2em;
-    padding: 0.2em;
+    font-size: 1.2em;   /* 12px */
+    line-height: 1.2em; /* 14.4px */
+    padding: 0.2em;     /* 2.4px */
 }
 
 form input.textPrompt.prompt
@@ -136,7 +136,7 @@ form.search input.submit
 
 .tabList
 {
-    margin-left: 120px;
+    margin-left: 12em;
     overflow: hidden;
 }
 
@@ -312,12 +312,12 @@ private
 {
     color: #666;
     font-size: 1.8em;
-    margin-bottom: 2px;
+    margin-bottom: .2em;
 }
 .activityListContainer li p.preview
 {
     font-size: 1.4em;
-    text-indent: 10px;
+    text-indent: 1em;
 }
 .activityListContainer p.listAction
 {

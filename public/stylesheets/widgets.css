@@ -499,7 +499,7 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
     background: url("images/home/icon_watch_video.png") no-repeat;
     color: #666;
     display: block;
-    font-size: 10px;
+    font-size: .833em; /* 10px */
     font-weight: bold;
     height: 22px;
     line-height: 22px;
@@ -515,8 +515,8 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
     border-color: #ccc;
     border-style: solid;
     border-width: 0 1px 1px;
-    margin-top: 20px;
-    padding-bottom: 13px;
+    margin-top: 2em;
+    padding-bottom: 1.3em;
 }
 .noticeHeaderOuter
 {
@@ -768,16 +768,16 @@ table.gridList td.type > *
     width: 23px;
 }
 
-table.gridList .name { width: 25%; }
-table.gridList .description { width: 33%; }
-table.gridList .owner { width: 20%; }
+table.gridList .name { width: 30%; }
+table.gridList .description { width: 45%; }
+table.gridList .owner { width: 25%; }
 table.gridList .lastUpdated { width: 11.5em; }
 
 
-table.gridList .viewed { width: 15%; }
+table.gridList .viewed { width: 25%; }
 table.gridList .actionContainer {
     font-size: 1em;
-    width: 45px;
+    width: 4.5em;
 }
 table.gridList td.actionContainer > *
 {
@@ -868,10 +868,10 @@ table.gridList tr.filteredOut
 
 
 
-.formListBox dt, .formListBox dd
+.formListBox dt, .formListBox dd, .formListBox p
 {
     font-size: 1.4em;
-    padding-bottom: 5px;
+    padding-bottom: .357em; /* 5px */
 }
 
 .formListBox dt 
@@ -887,6 +887,8 @@ table.gridList tr.filteredOut
 .formListBox dd 
 {
     line-height: 27px;
+    margin-left: 145px;
+    padding-left: 10px;
 }
 
 .formListBox dl
@@ -897,7 +899,7 @@ table.gridList tr.filteredOut
 .formListBox .fieldNote
 {
     color: #666;
-    font-size: 10px;
+    font-size: .714em; /* 10px */
 }
 .formListBox .formListBoxClose
 {

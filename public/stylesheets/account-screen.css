@@ -5,34 +5,13 @@
     padding-top: .5em;
 }
 
-.listSection dt, .listSection dd, .listSection p
-{
-    font-size: 1.4em;
-}
-
-.listSection dt 
-{
-    clear: both;
-    color: #666;
-    float: left;
-    line-height: 27px;
-    padding-right: 10px;
-    text-align: right;
-    width: 135px;
-}
-.listSection dd 
-{
-    float: left;
-    line-height: 27px;
-    padding-left: 10px;
-}
-
 .sectionShow p
 {
     cursor: pointer;
+    font-size: 1.4em;
     height: 27px;
     line-height: 27px;
-    padding-left: 2px;
+    padding-left: .2em;
     position: relative;
 }
 .sectionShow p.hover

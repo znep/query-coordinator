@@ -7,42 +7,42 @@ blist.util.flashInterface.popupClosedHandlers = {};
 blist.util.flashInterface.swf = function ()
 {
     return $('#swfContent')[0];
-}
+};
 
 blist.util.flashInterface.doAction = function (action)
 {
     flashIntNS.swf().doAction(action);
-}
+};
 
 blist.util.flashInterface.lensSearch = function (searchText)
 {
     flashIntNS.swf().lensSearch(searchText);
-}
+};
 
 blist.util.flashInterface.discoverSearch = function (searchText)
 {
     flashIntNS.swf().discoverSearch(searchText);
-}
+};
 
 blist.util.flashInterface.showPopup = function (popup)
 {
     flashIntNS.swf().showPopup(popup);
-}
+};
 
 blist.util.flashInterface.addColumn = function (datatype)
 {
     flashIntNS.swf().addColumn(datatype);
-}
+};
 
 blist.util.flashInterface.columnProperties = function (columnId)
 {
     flashIntNS.swf().columnProperties(columnId);
-}
+};
 
 blist.util.flashInterface.columnAggregate = function(columnId, aggregate)
 {
     flashIntNS.swf().columnAggregate(columnId, aggregate);
-}
+};
 
 blist.util.flashInterface.eventFired = function (event, data)
 {
@@ -57,32 +57,32 @@ blist.util.flashInterface.eventFired = function (event, data)
     {
         $(document).trigger(jsEvent, [data]);
     }
-}
+};
 
 blist.util.flashInterface.updatePageNavigation = function (pageNav)
 {
     $(document).trigger(blist.events.PAGE_LABEL_UPDATED, [pageNav]);
-}
+};
 
 blist.util.flashInterface.updateDiscoverSearch = function (search)
 {
     $(document).trigger(blist.events.DISCOVER_SEARCH_UPDATED, [search]);
-}
+};
 
 blist.util.flashInterface.openLens = function (viewId)
 {
     $(document).trigger(blist.events.OPEN_VIEW, [viewId]);
-}
+};
 
 blist.util.flashInterface.columnsChanged = function (columnIds)
 {
     $(document).trigger(blist.events.COLUMNS_CHANGED, [columnIds]);
-}
+};
 
 blist.util.flashInterface.popupCanceled = function (popup)
 {
     $(document).trigger(blist.events.POPUP_CANCELED, [popup]);
-}
+};
 
 blist.util.flashInterface.addPopupHandlers = function (shownHandler,
     closedHandler, popup)
@@ -109,17 +109,17 @@ blist.util.flashInterface.addPopupHandlers = function (shownHandler,
         }
         flashIntNS.popupClosedHandlers[popup].push(closedHandler);
     }
-}
+};
 
 blist.util.flashInterface.popupShown = function (popup)
 {
     flashIntNS.callHandlers(flashIntNS.popupShownHandlers, popup);
-}
+};
 
 blist.util.flashInterface.popupClosed = function (popup)
 {
     flashIntNS.callHandlers(flashIntNS.popupClosedHandlers, popup);
-}
+};
 
 blist.util.flashInterface.callHandlers = function (handlerObj, popup)
 {
@@ -136,4 +136,4 @@ blist.util.flashInterface.callHandlers = function (handlerObj, popup)
             }
         }
     }
-}
+};

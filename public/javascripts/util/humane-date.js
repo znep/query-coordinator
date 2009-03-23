@@ -73,7 +73,7 @@ blist.util.humaneDate.getFromISO = function (date_str)
 {
     var time = ('' + date_str).replace(/-/g,"/").replace(/[TZ]/g," ");
     return humaneUtilNS.getFromDate(new Date(time));
-}
+};
 
 blist.util.humaneDate.timeFormats = [
     [60, 'just now'],

@@ -83,27 +83,27 @@
     {
         var config = $this.data("config-scrollable");
         return firstShownItem($this).prev(config.selector);
-    }
+    };
 
     function firstShownItem($this)
     {
         var config = $this.data("config-scrollable");
         return $this.children(config.selector +
             ':not(.' + config.hiddenClass + '):first');
-    }
+    };
 
     function lastShownItem($this)
     {
         var config = $this.data("config-scrollable");
         return $this.children(config.selector +
             ':not(.' + config.hiddenClass + '):last');
-    }
+    };
 
     function nextHiddenItem($this)
     {
         var config = $this.data("config-scrollable");
         return lastShownItem($this).next(config.selector);
-    }
+    };
 
     function updateButtons($this)
     {

@@ -22,7 +22,7 @@ blist.blistGrid.sizeSwf = function (event)
         ($parent.width() - (containerLeft + $container.width())) + 'px');
     // Safari doesn't give the swf the right height with height:100%; so force it
     $swf.height($target.height());
-}
+};
 
 blist.blistGrid.columnClickHandler = function (event)
 {
@@ -51,12 +51,12 @@ blist.blistGrid.columnClickHandler = function (event)
             }
             break;
     }
-}
+};
 
 blist.blistGrid.showFlashPopup = function (popup)
 {
     blist.util.flashInterface.showPopup(popup);
-}
+};
 
 blist.blistGrid.flashPopupShownHandler = function (popup)
 {
@@ -72,26 +72,26 @@ blist.blistGrid.flashPopupShownHandler = function (popup)
         $('#swfContent').height($('#swfWrapper').height());
     }
     $('#overlay').show();
-}
+};
 
 blist.blistGrid.flashPopupClosedHandler = function (popup)
 {
     blistGridNS.popup = false;
     blistGridNS.sizeSwf();
     $('#overlay').hide();
-}
+};
 
 blist.blistGrid.toggleAddColumns = function ()
 {
     $('#addColumnsMenu').toggleClass('shown');
     blist.common.forceWindowResize();
-}
+};
 
 blist.blistGrid.dataTypeClickHandler = function (event)
 {
     var dt = $(event.currentTarget).attr('href').slice(1);
     blist.util.flashInterface.addColumn(dt);
-}
+};
 
 blist.blistGrid.viewChangedHandler = function (event, data)
 {
@@ -107,12 +107,12 @@ blist.blistGrid.viewChangedHandler = function (event, data)
         $main.addClass('pageView');
     }
     blist.common.forceWindowResize();
-}
+};
 
 blist.blistGrid.pageLabelHandler = function (event, newLabel)
 {
     $('#pageInfo').text(newLabel);
-}
+};
 
 blist.blistGrid.columnsChangedHandler = function (event, columnIds)
 {
@@ -124,14 +124,14 @@ blist.blistGrid.columnsChangedHandler = function (event, columnIds)
     $.ajax({ url: window.location.pathname,
             data: 'dataComponent=mainMenu',
             success: blistGridNS.mainMenuLoaded});
-}
+};
 
 blist.blistGrid.mainMenuLoaded = function (data)
 {
     // Swap out the main menu with whatever was loaded
     $('#mainMenu').replaceWith(data);
     blistGridNS.hookUpMainMenu();
-}
+};
 
 blist.blistGrid.hookUpMainMenu = function()
 {
@@ -143,7 +143,7 @@ blist.blistGrid.hookUpMainMenu = function()
     {
         blistGridNS.columnClickHandler(event);
     });
-}
+};
 
 blist.blistGrid.mainMenuHandler = function(event)
 {
@@ -166,12 +166,12 @@ blist.blistGrid.mainMenuHandler = function(event)
             blist.util.flashInterface.showPopup('NewLens:Import');
             break;
     }
-}
+};
 
 blist.blistGrid.openViewHandler = function(event, viewId)
 {
     blist.util.navigation.redirectToView(viewId);
-}
+};
 
 blist.blistGrid.popupCanceledHandler = function(event, popup)
 {
@@ -179,7 +179,7 @@ blist.blistGrid.popupCanceledHandler = function(event, popup)
     {
         window.location = blistGridNS.referer;
     }
-}
+};
 
 /* Initial start-up calls, and setting up bindings */
 

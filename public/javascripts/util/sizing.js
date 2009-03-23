@@ -78,6 +78,6 @@ $.fn.blistStretchWindow = function(options) {
 
 $.fn.blistStretchWindow.defaults = {
     stretchContainerSelector: "#outerContainer"
-}
+};
 
 })(jQuery);

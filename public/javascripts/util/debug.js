@@ -15,14 +15,14 @@ $.debug = function(msg)
     {
         window.console.log(msg);
     }
-}
+};
 
 var debugNS = blist.namespace.fetch('blist.debug');
 
 blist.debug.clearCache = function ()
 {
     blist.debug.cache.length = 0;
-}
+};
 
 $(function ()
 {

@@ -17,10 +17,10 @@ blist.common.adjustSize = function ()
         );
         blist.common.cachedWinHeight = $(window).height();
     }
-}
+};
 
 blist.common.forceWindowResize = function ()
 {
     commonNS.cachedWinHeight = 0;
     $(window).resize();
-}
+};

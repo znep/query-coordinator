@@ -7,12 +7,12 @@ blist.discover.searchUpdatedHandler = function (event, search)
     $textBox.focus();
     $textBox.val(search);
     $textBox.blur();
-}
+};
 
 blist.discover.openViewHandler = function (event, viewId)
 {
     blist.util.navigation.redirectToView(viewId);
-}
+};
 
 
 /* Initial start-up calls, and setting up bindings */

@@ -28,4 +28,4 @@ blist.widget.clippedText.clipElement = function ($elem)
         $elem.text($elem.text().slice(0, -3) + '...');
     }
     $elem.css('display', origDisplay);
-}
+};

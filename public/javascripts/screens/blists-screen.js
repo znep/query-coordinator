@@ -106,7 +106,7 @@ blist.myBlists.listSelectionHandler = function (event, title)
 {
     $('#blistList tbody').hide();
     $('#listTitle').text(title);
-}
+};
 
 blist.myBlists.setupTable = function ()
 {
@@ -138,7 +138,7 @@ blist.myBlists.setupTable = function ()
     {
         myBlistsNS.displayNoResults();
     }
-}
+};
 
 /* When sorting is finished, we need to move all child rows back under
  * their parent.  Grab them in order (since they are sorted appropriately
@@ -160,23 +160,23 @@ blist.myBlists.sortFinishedHandler = function (event)
         }
     });
     $('#blistList tbody').show();
-}
+};
 
 blist.myBlists.resizeTable = function ()
 {
     $('#blists table.selectableList tbody td.clipText > *').each( function ()
             { blist.widget.clippedText.clipElement($(this)) });
-}
+};
 
 blist.myBlists.getTotalItemCount = function ()
 {
     return $('#blistList tr.item:not(.filteredOut)').length;
-}
+};
 
 blist.myBlists.getSelectedItems = function ()
 {
     return $('#blistList tr.item.selected');
-}
+};
 
 blist.myBlists.updateList = function (newTable)
 {
@@ -194,7 +194,7 @@ blist.myBlists.updateList = function (newTable)
     {
         myBlistsNS.displayNoResults();
     }
-}
+};
 
 blist.myBlists.displayNoResults = function ()
 {
@@ -202,7 +202,7 @@ blist.myBlists.displayNoResults = function ()
     var $newRow = $("<tr class='sortGroup'><td colspan='" + colSpan + "'>" +
             "<div>No Results</div></td></tr>");
     $('#blistList tbody').append($newRow);
-}
+};
 
 /* Functions for info pane related to blists */
 
@@ -245,7 +245,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
             });
         }
     }
-}
+};
 
 blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 {
@@ -270,7 +270,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();
-}
+};
 
 /* Functions for sidebar related to blists */
 
@@ -291,7 +291,7 @@ blist.myBlists.sidebar.initializeHandlers = function ()
                 }});
         });
     $('#blistFilters a.expander').click(blistsBarNS.toggleSection);
-}
+};
 
 blist.myBlists.sidebar.filterClickHandler = function (event)
 {
@@ -307,13 +307,13 @@ blist.myBlists.sidebar.filterClickHandler = function (event)
     $target.trigger(blist.events.LIST_SELECTION, [$target.attr('title')]);
     $.Tache.Get({ url: $target.attr('href'),
             success: myBlistsNS.updateList });
-}
+};
 
 blist.myBlists.sidebar.toggleSection = function (event)
 {
     event.preventDefault();
     $(event.target).parent(".expandableContainer").toggleClass('closed');
-}
+};
 
 blist.myBlists.sidebar.filterMenuClickHandler = function (event, $menu,
     $triggerButton)
@@ -323,7 +323,7 @@ blist.myBlists.sidebar.filterMenuClickHandler = function (event, $menu,
     $triggerButton.attr('href', $target.attr('href'))
         .attr('title', $target.attr('title'))
         .find('em').text($target.text());
-}
+};
 
 
 

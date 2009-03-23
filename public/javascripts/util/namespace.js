@@ -23,4 +23,4 @@ blist.namespace.fetch = function (nsString)
         curNS = curNS[n];
     }
     return curNS;
-}
+};

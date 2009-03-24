@@ -10,6 +10,13 @@ RAILS_GEM_VERSION = '2.3.0' unless defined? RAILS_GEM_VERSION
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
+# For reasons I can't really explain, Phusion Passenger complains if we load
+# this below the Rails::Initializer block - it's like the code gets loaded
+# before environment.rb loads?!
+require 'uri'
+coreservice_config = YAML.load(IO.read(RAILS_ROOT + "/config/coreservice.yml"))
+CORESERVICE_URI = URI.parse(coreservice_config[RAILS_ENV]['site'])
+
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
   # Application configuration should go into files in config/initializers
@@ -89,9 +96,6 @@ SWF_DIR       = swf_config[RAILS_ENV]["dir"]
 
 external_config = YAML.load(IO.read(RAILS_ROOT + "/config/external.yml") )
 BLIST_RSS = external_config[RAILS_ENV]["blist_blog_rss"]
-
-coreservice_config = YAML.load(IO.read(RAILS_ROOT + "/config/coreservice.yml"))
-CORESERVICE_URI = URI.parse(coreservice_config[RAILS_ENV]['site'])
 
 REVISION_FILE = "#{RAILS_ROOT}/../REVISION"
 

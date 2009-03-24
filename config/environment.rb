@@ -90,6 +90,9 @@ SWF_DIR       = swf_config[RAILS_ENV]["dir"]
 external_config = YAML.load(IO.read(RAILS_ROOT + "/config/external.yml") )
 BLIST_RSS = external_config[RAILS_ENV]["blist_blog_rss"]
 
+coreservice_config = YAML.load(IO.read(RAILS_ROOT + "/config/coreservice.yml"))
+CORESERVICE_URI = URI.parse(coreservice_config[RAILS_ENV]['site'])
+
 REVISION_FILE = "#{RAILS_ROOT}/../REVISION"
 
 begin

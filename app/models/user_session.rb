@@ -142,6 +142,10 @@ class UserSession
   end
 
 private
+  @@auth_uri = CORESERVICE_URI.clone
+  @@auth_uri.path += '/authenticate'
+  cattr_reader :auth_uri
+
   # We're calling it 'username' here, but the authentication service prefers
   # 'username' instead. I like login better, since login-by-email is something
   # we want to support and emails aren't usernames. :-P
@@ -150,7 +154,7 @@ private
   end
 
   def post_core_authentication
-    Net::HTTP.post_form(URI.parse('http://localhost:8080/authenticate'), credentials_for_post)
+    Net::HTTP.post_form(auth_uri, credentials_for_post)
   end
 
   def self.update_current_user(user, session_token)

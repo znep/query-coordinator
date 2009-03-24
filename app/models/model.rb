@@ -105,7 +105,7 @@ protected
     if requestor && requestor.session_token
       req['Cookie'] = requestor.session_token.cookie
     end
-    result = Net::HTTP.start(self.url.host, self.url.port){ |http| http.request(req) }
+    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port){ |http| http.request(req) }
 
     #this is just temporary until we hook up the login via the client
     #this needs to be set on the response object going back to the client
@@ -114,20 +114,9 @@ protected
     model = self.parse(result.body)
 
     if !result.is_a?(Net::HTTPSuccess)
-      raise "Error: Accessing #{self.url.host}:#{self.url.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
+      raise "Error: Accessing #{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
     end
 
     model
   end
-
-private
-
-  cattr_accessor :url
-
-  def self.init
-    config = YAML.load( IO.read(::RAILS_ROOT + "/config/coreservice.yml") )
-    self.url = URI.parse( config[::RAILS_ENV]["site"])
-  end
-
-  self.init
 end

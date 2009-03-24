@@ -2,7 +2,7 @@ production:
   site:
 
 development:
-  site: http://localhost:8080/
+  site: http://localhost:8080
 
 test:
-  site: http://localhost:8080/
+  site: http://localhost:8080

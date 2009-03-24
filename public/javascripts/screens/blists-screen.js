@@ -123,7 +123,7 @@ blist.myBlists.setupTable = function ()
          // Pass in a different header for doing the sorting
          headerNode: $('.headerContainer table.selectableList thead'),
          // First column is not sortable
-         headers: { 0: {sorter: false} },
+         headers: { 0: {sorter: false}, 6: {sorter:"usLongDate"} },
          // Don't use simple extraction
          textExtraction: "complex",
          widgets: ['sortGrouping']

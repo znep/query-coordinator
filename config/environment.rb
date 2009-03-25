@@ -28,6 +28,9 @@ Rails::Initializer.run do |config|
   # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
   config.frameworks -= [ :active_record ]
 
+  # request_store only caches things in-memory for a single request
+  config.cache_store = :request_store
+
   # Specify gems that this application depends on. 
   # They can then be installed with "rake gems:install" on new installations.
   # You have to specify the :lib option for libraries, where the Gem name (sqlite3-ruby) differs from the file itself (sqlite3)

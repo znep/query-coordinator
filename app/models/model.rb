@@ -118,78 +118,50 @@ class Model
 protected
 
   def self.get_request(path)
-    req = Net::HTTP::Get.new(path)
-    requestor = User.current_user
-    if requestor && requestor.session_token
-      req['Cookie'] = requestor.session_token.cookie
-    end
-    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port){ |http| http.request(req) }
-
-    #this is just temporary until we hook up the login via the client
-    #this needs to be set on the response object going back to the client
-    #then pulled off of the request on each future request.
-    #model.cookie = result['Set-Cookie'] if !result['Set-Cookie'].nil?
-    model = self.parse(result.body)
-
-    if !result.is_a?(Net::HTTPSuccess)
-      raise "Error: Accessing #{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
+    result_body = Rails.cache.read(path)
+    if result_body.nil?
+      result_body = generic_request(Net::HTTP::Get.new(path)).body
+      Rails.cache.write(path, result_body)
     end
 
-    model
+    parse(result_body)
   end
-  
+
   def self.create_request(path, payload = "")
-    req = Net::HTTP::Post.new(path)
-    requestor = User.current_user
-    if requestor && requestor.session_token
-      req['Cookie'] = requestor.session_token.cookie
-    end
-    req.set_form_data(payload)
-    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) { |http| http.request(req) }
-    
-    model = self.parse(result.body)
-    
-    if !result.is_a?(Net::HTTPSuccess)
-      raise "Error: Posting #{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
-    end
-    
-    model
+    parse(generic_request(Net::HTTP::Post.new(path), payload).body)
   end
-  
+
   def self.update_request(path, payload = "")
-    req = Net::HTTP::Put.new(path)
-    requestor = User.current_user
-    if requestor && requestor.session_token
-      req['Cookie'] = requestor.session_token.cookie
-    end
-    req.set_form_data(payload)
-    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) { |http|  http.request(req) } 
-    
-    model = self.parse(result.body)
-    
-    if !result.is_a?(Net::HTTPSuccess)
-      raise "Error: Putting #{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
-    end
-    
-    model
+    parse(generic_request(Net::HTTP::Put.new(path), payload).body)
   end
-  
+
   def self.delete_request(path, payload = "")
-    req = Net::HTTP::Delete.new(path)
+    parse(generic_request(Net::HTTP::Delete.new(path), payload).body)
+  end
+
+private
+
+  def self.generic_request(request, payload = nil)
     requestor = User.current_user
     if requestor && requestor.session_token
-      req['Cookie'] = requestor.session_token.cookie
+      request['Cookie'] = requestor.session_token.cookie
     end
-    req.set_form_data(payload)
-    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) { |http| http.request(req) }
-    
-    model = self.parse(result.body)
-    
+    if (!payload.nil?)
+      request.set_form_data(payload)
+    end
+
+    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
+      http.request(request)
+    end
+
     if !result.is_a?(Net::HTTPSuccess)
-      raise "Error: Deleting #{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
+      parsed_body = self.parse(result.body)
+      raise "Error: #{request.method} #{CORESERVICE_URI.to_s}#{request.path} - " +
+        "#{parsed_body.data['code']}, " +
+        "message: #{parsed_body.data['message']}"
     end
-    
-    model
+
+    result
   end
 
 end

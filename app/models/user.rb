@@ -14,11 +14,11 @@ class User < Model
   end
 
   def displayState
-    state.nil? ? '' : @@states[state]
+    state.nil? ? '' : @@states[state.upcase]
   end
 
   def displayCountry
-    country.nil? ? '' : @@countries[country]
+    country.nil? ? '' : @@countries[country.upcase]
   end
   
   def displayLocation

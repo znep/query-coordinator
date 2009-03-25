@@ -28,7 +28,7 @@ class User < Model
   end
 
   def self.login(login,password)
-    send_request("/authenticate/#{login}.json?password=#{password}")
+    get_request("/authenticate/#{login}.json?password=#{password}")
   end
 
   def is_established?

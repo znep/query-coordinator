@@ -5,7 +5,25 @@ class View < Model
 
   def self.find_multiple(ids)
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
-    send_request(path)
+    get_request(path)
+  end
+  
+  def self.create_favorite(id)
+    path = "/favorite_views/"
+    self.create_request(path, { "id" => id })
+  end
+  
+  def create_favorite
+    self.class.create_favorite(self.id)
+  end
+  
+  def self.delete_favorite(id)
+    path = "/favorite_views/#{id}"
+    self.delete_request(path)
+  end
+  
+  def delete_favorite
+    self.class.delete_favorite(self.id)
   end
 
   def is_blist?

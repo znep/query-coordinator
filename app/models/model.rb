@@ -21,7 +21,7 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    send_request(path)
+    get_request(path)
   end
 
   def self.find_under_user(options = nil)
@@ -42,7 +42,7 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    send_request(path)
+    get_request(path)
   end
 
   def method_missing(method_symbol, *args)
@@ -80,6 +80,24 @@ class Model
   def flag?(flag_name)
     !flags.nil? && flags.any? {|f| f.data == flag_name}
   end
+  
+  def set_flag(flag)
+    data["flags"] << flag
+  end
+  
+  def unset_flag(flag)
+    data["flags"].delete(flag)
+  end
+  
+  def update_attributes(attributes)
+    path = "/#{self.class.name.pluralize.downcase}/#{self.id}.json"
+    return self.class.update_request(path, ActiveSupport::JSON.encode(attributes))
+  end
+  
+  def self.update_attributes(id, attributes)
+    path = "/#{self.name.pluralize.downcase}/#{id}.json"
+    return self.update_request(path, ActiveSupport::JSON.encode(attributes))
+  end
 
   def self.parse(data)
     json_data = ActiveSupport::JSON.decode(data)
@@ -99,7 +117,7 @@ class Model
 
 protected
 
-  def self.send_request(path)
+  def self.get_request(path)
     req = Net::HTTP::Get.new(path)
     requestor = User.current_user
     if requestor && requestor.session_token
@@ -119,4 +137,59 @@ protected
 
     model
   end
+  
+  def self.create_request(path, payload = "")
+    req = Net::HTTP::Post.new(path)
+    requestor = User.current_user
+    if requestor && requestor.session_token
+      req['Cookie'] = requestor.session_token.cookie
+    end
+    req.set_form_data(payload)
+    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) { |http| http.request(req) }
+    
+    model = self.parse(result.body)
+    
+    if !result.is_a?(Net::HTTPSuccess)
+      raise "Error: Posting #{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
+    end
+    
+    model
+  end
+  
+  def self.update_request(path, payload = "")
+    req = Net::HTTP::Put.new(path)
+    requestor = User.current_user
+    if requestor && requestor.session_token
+      req['Cookie'] = requestor.session_token.cookie
+    end
+    req.set_form_data(payload)
+    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) { |http|  http.request(req) } 
+    
+    model = self.parse(result.body)
+    
+    if !result.is_a?(Net::HTTPSuccess)
+      raise "Error: Putting #{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
+    end
+    
+    model
+  end
+  
+  def self.delete_request(path, payload = "")
+    req = Net::HTTP::Delete.new(path)
+    requestor = User.current_user
+    if requestor && requestor.session_token
+      req['Cookie'] = requestor.session_token.cookie
+    end
+    req.set_form_data(payload)
+    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) { |http| http.request(req) }
+    
+    model = self.parse(result.body)
+    
+    if !result.is_a?(Net::HTTPSuccess)
+      raise "Error: Deleting #{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}#{path} - #{model.data['code']}, message: #{model.data['message']}"
+    end
+    
+    model
+  end
+
 end

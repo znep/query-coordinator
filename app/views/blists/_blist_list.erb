@@ -32,7 +32,10 @@
         blist_id='<%= blist.id %>' class='item <%= item_class %>'>
         <td class='handle first'><div></div></td>
         <td class='favorite <%= blist.flag?('favorite') %>'><div>
-          <%= blist.flag?('favorite') ? '*' : '' %></div></td>
+          <%- favorite_action = blist.flag?("favorite") ? 
+                delete_favorite_blist_url(blist.id) : create_favorite_blist_url(blist.id) -%>
+          <%= link_to(blist.flag?("favorite") ? "favorite" : "", favorite_action, :class => "favoriteMarker") %>
+        </div></td>
         <td class='type'><div class="<%=
           get_share_direction_icon_class_for_view(blist) %>">
           <%= get_type_string_for_view(blist) %>

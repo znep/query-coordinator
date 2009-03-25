@@ -30,10 +30,15 @@ ActionController::Routing::Routes.draw do |map|
   #     admin.resources :products
   #   end
 
-  map.resources :blists, :collection => { :detail => :get }
+  map.resources :blists, :collection => { :detail => :get },
+    :member => {
+      :create_favorite => :post,
+      :delete_favorite => :post
+    }
   map.resource :discover
   map.resource :account
   map.resource :profile
+  
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   map.root :controller => "home"

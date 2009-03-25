@@ -163,4 +163,8 @@
     "plugins/jquery.treeTable", "plugins/jquery.searchable", "util/humane-date",
     "widgets/panel-expander", "widgets/dropdown-menu", "widgets/selectable-list",
     "screens/blists-screen", "screens/info-pane", :cache => "cache/blists_index_all" %>
+    <script type="text/javascript" charset="utf-8">
+      var form_authenticity_token = "<%= form_authenticity_token %>";
+      var request_forgery_protection_token = "<%= request_forgery_protection_token %>";
+    </script>
 <% end %>

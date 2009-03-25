@@ -746,14 +746,22 @@ table.gridList th.favorite
 {
     background-image: url(/stylesheets/images/content/table/icon_sorting_star.png);
 }
-table.gridList td.favorite.true,
-table.gridList tr.hover td.favorite.true
-{
-    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
+table.gridList .favorite .favoriteMarker {
+    background: url(/stylesheets/images/content/table/icon_favorite_sprite.png) left 27px no-repeat;
+    display: block;
+    height: 27px;
+    line-height: 100px;
+    overflow: hidden;
+    width: 27px;
 }
-table.gridList tr.hover td.favorite
+table.gridList td.favorite.true .favoriteMarker,
+table.gridList tr.hover td.favorite.true .favoriteMarker
 {
-    background-image: url(/stylesheets/images/content/table/icon_star_empty.png);
+    background-position: 0 -27px;
+}
+table.gridList tr.hover td.favorite .favoriteMarker
+{
+    background-position: 0 0;
 }
 
 table.gridList .type { width: 45px; }

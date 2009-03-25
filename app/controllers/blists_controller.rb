@@ -34,6 +34,17 @@ class BlistsController < SwfController
 
     @swf_url = swf_url('v3embed.swf')
   end
+  
+  def update
+    blist_id = params[:id]
+    
+    result = View.update_attributes(blist_id, params[:view])
+    
+    respond_to do |format|
+      format.html { redirect_to(blist_url(blist_id)) }
+      format.data { render :json => result.to_json() }
+    end
+  end
 
   def detail
     if (params[:id])
@@ -45,6 +56,26 @@ class BlistsController < SwfController
       @views = get_views_with_ids(args)
     elsif (params[:items])
       @item_count = params[:items]
+    end
+  end
+  
+  def create_favorite
+    blist_id = params[:id]
+    result = View.create_favorite(blist_id)
+    
+    respond_to do |format|
+      format.html { redirect_to(blist_url(blist_id)) }
+      format.data { render :text => "created" }
+    end
+  end
+  
+  def delete_favorite
+    blist_id = params[:id]
+    result = View.delete_favorite(blist_id)
+    
+    respond_to do |format|
+      format.html { redirect_to(blist_url(blist_id)) }
+      format.data { render :text => "deleted" }
     end
   end
 

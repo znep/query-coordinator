@@ -204,6 +204,37 @@ blist.myBlists.displayNoResults = function ()
     $('#blistList tbody').append($newRow);
 };
 
+blist.myBlists.favoriteMarkerClick = function (event)
+{
+    event.preventDefault();
+    
+    $this = $(this);
+    var origHref = $this.attr("href");
+    
+    $.ajax({
+        url: origHref,
+        type: "POST",
+        success: function(responseText, textStatus)
+        {
+            var isCreate = responseText == "created";
+
+            // Update the class of the cell.
+            $this.closest("td.favorite")
+                .removeClass(isCreate ? "false" : "true")
+                .addClass(isCreate ? "true" : "false");
+            
+            // Update the text of the link.
+            $this.text(isCreate ? "favorite" : "");
+            
+            // Update the link.
+            var newHref = isCreate ? 
+                origHref.replace("create", "delete") : origHref.replace("delete", "create");
+            
+            $this.attr("href", newHref);
+        }
+    });
+}
+
 /* Functions for info pane related to blists */
 
 var blistsInfoNS = blist.namespace.fetch('blist.myBlists.infoPane');
@@ -372,6 +403,8 @@ $(function ()
             });
         }
     });
+    
+    $("#blistList a.favoriteMarker").click(myBlistsNS.favoriteMarkerClick);
 
     blistsInfoNS.updateSummary();
 

@@ -104,7 +104,9 @@ REVISION_FILE = "#{RAILS_ROOT}/../REVISION"
 
 begin
   REVISION_NUMBER = File.open(REVISION_FILE, "r").read().chomp()
+  REVISION_DATE = File.stat(REVISION_FILE).mtime.to_i
 rescue
   REVISION_NUMBER = nil
+  REVISION_DATE = nil
 end
 

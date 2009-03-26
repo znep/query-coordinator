@@ -9,7 +9,7 @@ class Model
 
   #options - the primary lookup of the model object.  Usually id except for users where it is login
   #options could also be a hash of parameters.  see: user_test.rb
-  def self.find( options = nil )
+  def self.find( options = nil, session_token = nil )
     if options.nil?
       options = Hash.new
     end
@@ -21,7 +21,7 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    get_request(path)
+    get_request(path, session_token)
   end
 
   def self.find_under_user(options = nil)
@@ -117,10 +117,11 @@ class Model
 
 protected
 
-  def self.get_request(path)
+  def self.get_request(path, session_token = nil)
     result_body = Rails.cache.read(path)
     if result_body.nil?
-      result_body = generic_request(Net::HTTP::Get.new(path)).body
+      result_body = generic_request(Net::HTTP::Get.new(path),
+                                    nil, session_token).body
       Rails.cache.write(path, result_body)
     end
 
@@ -141,9 +142,11 @@ protected
 
 private
 
-  def self.generic_request(request, payload = nil)
+  def self.generic_request(request, payload = nil, session_token = nil)
     requestor = User.current_user
-    if requestor && requestor.session_token
+    if session_token
+      request['Cookie'] = session_token.cookie
+    elsif requestor && requestor.session_token
       request['Cookie'] = requestor.session_token.cookie
     end
     if (!payload.nil?)

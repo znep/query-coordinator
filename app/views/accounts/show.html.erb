@@ -15,7 +15,7 @@
           <div class="listSection emailSection">
             <div class="sectionShow">
               <p>
-                <span class="dataEmail"><%= h(@user.email) %></span>
+                <span class="dataEmail"><%= h(current_user.email) %></span>
                 <a href="#change" class="showAction"><span>Change</span></a>
               </p>
             </div>
@@ -25,7 +25,7 @@
                 <% form_tag(account_url) do %>
                   <dl class="clearfix">
                     <dt>Current Email</dt>
-                    <dd class="dataEmail"><%= h(@user.email) %></dd>
+                    <dd class="dataEmail"><%= h(current_user.email) %></dd>
                     <dt><label for="email">New Email</label></dt>
                     <dd><%= text_field_tag("email") %></dd>
                     <dt><label for="new_email">Retype New Email</label></dt>
@@ -83,7 +83,7 @@
 
   <div id="sidebar" class="column scrollContentColumn">
     <% render(:layout => "shared/sidebar_box") do %>
-      <h2><%= h(@user.displayName) %></h2>
+      <h2><%= h(current_user.displayName) %></h2>
     <% end %>
     <%= render(:partial => "shared/ad_box") %>
   </div>

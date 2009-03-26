@@ -44,7 +44,7 @@ $(function ()
                 dataType: "json",
                 data: requestData,
                 success: function(responseData, textStatus) {
-                    $(".dataEmail").text(responseData.data.email);
+                    $(".dataEmail").text(responseData.email);
                     
                     $form.closest(".sectionEdit").slideUp("fast");
                     $form.closest(".listSection").find(".sectionShow").slideDown("fast");

@@ -99,7 +99,7 @@ class UserSession
     if @token.nil? || !@token.valid?
       if cookies['blist_core_session'] && !cookies['blist_core_session'].blank?
         @token = AuthenticationSessionCookie.new(cookies['blist_core_session'])
-        UserSession.update_current_user(User.find(@token.user_id), @token)
+        UserSession.update_current_user(User.find(@token.user_id, @token), @token)
       end
     end
 

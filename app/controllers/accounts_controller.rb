@@ -1,16 +1,14 @@
 class AccountsController < ApplicationController
   def show
-    @user = User.find(current_user.id)
   end
-  
+
   def update
-    @user = User.find(current_user.id)
-    @user.email = params[:email] || @user.email
-    @user.password = params[:password_new] || @user.password
-    
+    current_user.email = params[:email] || current_user.email
+    current_user.password = params[:password_new] || current_user.password
+
     respond_to do |format|
       format.html { redirect_to(account_url) }
-      format.data   { render :json => @user.to_json }
+      format.data   { render :json => current_user.to_json }
     end
   end
 end

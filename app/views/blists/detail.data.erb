@@ -1,7 +1,7 @@
 <%- if (@item_count) -%>
   <%= render(:partial => "blists/info_for_list.html", :locals => { :item_count => @item_count }) %>
 <%- elsif (@view) -%>
-  <%= render(:partial => "blists/info_for_single.html", :locals => { :view => @view }) %>
+  <%= render(:partial => "blists/info_for_single.html", :locals => { :view => @view, :page_single => false }) %>
 <%- elsif (@views) -%>
   <%= render(:partial => "blists/info_for_multi.html", :locals => { :views => @views }) %>
 <%- end -%>

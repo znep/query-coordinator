@@ -287,7 +287,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $(".infoContent dl.summaryList").infoPaneItemHighlight();
 
     // Wire up the tab switcher/expander.
-    $(".summaryTabs li").infoPaneTabSwitch();
+    $(".summaryTabs").infoPaneNavigate();
     $("#infoPane .gridList").blistListHoverItems();
 
     // Wire up a click handler for deselectors.
@@ -296,6 +296,19 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         event.preventDefault();
         var blist_id = $(this).attr("href").replace("#", "");
         $("#blistList tr[blist_id=" + blist_id + "] td.type").trigger("click");
+    });
+    
+    $(".tabLink.activity").click(function(event){
+        $(".summaryTabs").infoPaneNavigate().activateTab("#tabActivity");
+    });
+    $(".tabLink.filtered").click(function(event){
+        $(".summaryTabs").infoPaneNavigate().activateTab("#tabFiltered");
+    });
+    $(".tabLink.publishing").click(function(event){
+        $(".summaryTabs").infoPaneNavigate().activateTab("#tabPublishing");
+    });
+    $(".tabLink.sharing").click(function(event){
+        $(".summaryTabs").infoPaneNavigate().activateTab("#tabSharing");
     });
 
     // Force a window resize.

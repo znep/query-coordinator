@@ -265,12 +265,24 @@ $(function ()
 
     // Set up the info pane tab switching.
     blist.util.sizing.cachedInfoPaneHeight = $("#sidebar").height();
-    $(".summaryTabs li").infoPaneTabSwitch({
+    $(".summaryTabs").infoPaneNavigate({
         // After switching tabs, we need to size the Swf.
         switchCompleteCallback: blistGridNS.sizeSwf
     });
+    $(".tabLink.activity").click(function(event){
+        $(".summaryTabs").infoPaneNavigate().activateTab("#tabActivity");
+    });
+    $(".tabLink.filtered").click(function(event){
+        $(".summaryTabs").infoPaneNavigate().activateTab("#tabFiltered");
+    });
+    $(".tabLink.publishing").click(function(event){
+        $(".summaryTabs").infoPaneNavigate().activateTab("#tabPublishing");
+    });
+    $(".tabLink.sharing").click(function(event){
+        $(".summaryTabs").infoPaneNavigate().activateTab("#tabSharing");
+    });
 
     // Wire up the hover behavior in the info pane.
-    $("#infoPane .selectableList").blistListHoverItems();
+    $("#infoPane .selectableList, #infoPane .gridList").blistListHoverItems();
     $(".infoContent dl.summaryList").infoPaneItemHighlight();
 });

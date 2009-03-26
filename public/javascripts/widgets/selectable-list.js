@@ -68,12 +68,20 @@
                 function() { $(this).addClass("hover"); },
                 function() { $(this).removeClass("hover"); }
             );
+            $this.find(opts.clickItemSelector).click(function(event)
+            {
+                event.preventDefault();
+                var $link = $(this).closest(opts.hoverItemSelector).find(opts.actionSelector);
+                window.location = $link.attr("href");
+            });
         });
     };
 
     // default options
     $.fn.blistListHoverItems.defaults = {
-        hoverItemSelector: "tr.item"
+        hoverItemSelector: "tr.item",
+        clickItemSelector: "tr.item td:not(.actionContainer) > *",
+        actionSelector: ".actionContainer a"
     };
 
 })(jQuery);

@@ -660,12 +660,14 @@ table.gridList td > *
     padding: 0 5px;
 }
 
-table.gridList td > a
+table.gridList td > a,
+table.gridList td > div > a
 {
     color: #333;
     text-decoration: none;
 }
-table.gridList td > a:hover { text-decoration: underline; }
+table.gridList td > a:hover, 
+table.gridList td > div > a:hover { text-decoration: underline; }
 
 
 /* Sort grouping headers */

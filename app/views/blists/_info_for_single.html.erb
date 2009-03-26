@@ -1,4 +1,4 @@
-<%# locals: view  %>
+<%# locals: view, page_single  %>
 
 <div class="header">
   <ul class="summaryTabs clearfix">
@@ -38,10 +38,12 @@
 <div class="infoContentOuter singleInfoSummary listContainer active">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader <%= get_permissions_icon_class_for_view(view) %>">
-      <%= h(view.name) %>
+      <%= page_single ? h(view.name) : link_to(h(view.name), blist_url(view.id)) %>
     </h2>
     <ul class="headerActions actionButtons">
-      <li><a href="<%= blist_url(view.id) %>" class="arrowButton">Open</a></li>
+      <%- unless (page_single) -%>
+        <li><a href="<%= blist_url(view.id) %>" class="arrowButton">Open</a></li>
+      <%- end -%>
       <li><a href="#duplicate">Duplicate</a></li>
       <li><a href="#share">Share</a></li>
     </ul>
@@ -133,8 +135,9 @@
             </span>
           </div>
           <div class="itemActions">
-            <a href="#tabActivity" class="action tabLink">
-              <span>View Activity</span></a>
+            <a href="#tabActivity" class="action tabLink activity">
+              <span>View Activity</span>
+            </a>
           </div>
         </dd>
       </dl>
@@ -149,7 +152,9 @@
             <span><%= pluralize(view.filters.length, "filtered view") %></span>
           </div>
           <div class="itemActions">
-            <a href="#tabFiltered" class="action tabLink"><span>Details</span></a>
+            <a href="#tabFiltered" class="action tabLink filtered">
+              <span>Details</span>
+            </a>
           </div>
         </dd>
       </dl>
@@ -167,7 +172,7 @@
             </ul>
           </div>
           <div class="itemActions">
-            <a href="#tabActivity" class="action tabLink">
+            <a href="#tabActivity" class="action tabLink activity">
               <span>View Activity</span>
             </a>
           </div>
@@ -184,7 +189,9 @@
             <span>[http://app.blist.com/?variant=debug#/blist/kmerritt/]<%= view.urlName %></span>
           </div>
           <div class="itemActions">
-            <a href="#publish" class="action"><span>Publish</span></a>
+            <a href="#publish" class="action tabLink publishing">
+              <span>Publish</span>
+            </a>
           </div>
         </dd>
       </dl>
@@ -224,7 +231,9 @@
             </ul>
           </div>
           <ul class="itemActions">
-            <li><a href="#share" class="action"><span>Share</span></a></li>
+            <li><a href="#share" class="action tabLink sharing">
+              <span>Share</span></a>
+            </li>
             <%# Not supported
             <li><a href="#view_requests" class="action"><span>View Requests</span></a></li>
             %>
@@ -276,13 +285,13 @@
               <tr class="item">
                 <td class="handle"><div></div></td>
                 <td class="favorite <%= filter.flag?('favorite') %>"><div>
-                    <%= filter.flag?('favorite') ? "*" : "" %>
+                    <span class="favoriteMarker"><%= filter.flag?('favorite') ? "favorite" : "" %></span>
                 </div></td>
                 <td class="type"><div class="<%=
                   get_share_direction_icon_class_for_view(filter) %>">
                   <%= get_type_string_for_view(filter) %></div>
                 </td>
-                <td class="name"><div><%= h(filter.name) %></div></td>
+                <td class="name"><div><%= link_to(h(filter.name), blist_url(filter.id)) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
                 <td class="viewed"><div><%= blist_date(filter.lastOpenedDate) %>
                 </div></td>

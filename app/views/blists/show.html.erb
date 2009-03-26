@@ -163,7 +163,7 @@
     <div id="mainColumnContent" class="column">
       <div id='infoPane'>
       <%- if !@view.nil? -%>
-        <%= render(:partial => "info_for_single", :locals => { :view => @view }) %>
+        <%= render(:partial => "info_for_single", :locals => { :view => @view, :page_single => true }) %>
       <%- end -%>
       </div>
     </div>

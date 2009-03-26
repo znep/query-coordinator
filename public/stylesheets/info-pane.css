@@ -176,6 +176,8 @@
 .infoContentHeader h2.panelHeader.typeFilter.private { background-position: left -492px; }
 .infoContentHeader h2.panelHeader.typeFilter.privateShared { background-position: left -533px; }
 
+.infoContentHeader h2.panelHeader a { color: #333; }
+
 .infoContentHeader .selectPrompt 
 {
     float: right;

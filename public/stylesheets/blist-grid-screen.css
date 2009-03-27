@@ -5,6 +5,10 @@
     Description:
       Styles for the blist-specific grid screen
 */
+body#lensBody
+{
+    max-width: 100%;
+}
 
 #lensContainer
 {

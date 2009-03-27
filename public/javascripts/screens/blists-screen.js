@@ -189,6 +189,12 @@ blist.myBlists.updateList = function (newTable)
         $('#blistList').trigger('update');
         // Resort new list on Last Upated
         $('#blistList').trigger('sorton', [[[6, 1]]]);
+        
+        // Re-bind the dropdown menus.
+        myBlistsNS.itemMenuSetup();
+        
+        // Re-bind the favorite marker links.
+        $("#blistList a.favoriteMarker, #blistList li.favoriteLink a").click(myBlistsNS.favoriteClick);
     }
     else
     {
@@ -204,7 +210,8 @@ blist.myBlists.displayNoResults = function ()
     $('#blistList tbody').append($newRow);
 };
 
-blist.myBlists.favoriteMarkerClick = function (event)
+
+blist.myBlists.favoriteClick = function (event)
 {
     event.preventDefault();
     
@@ -217,21 +224,35 @@ blist.myBlists.favoriteMarkerClick = function (event)
         success: function(responseText, textStatus)
         {
             var isCreate = responseText == "created";
-
-            // Update the class of the cell.
-            $this.closest("td.favorite")
-                .removeClass(isCreate ? "false" : "true")
-                .addClass(isCreate ? "true" : "false");
             
+            $favContainer = $this.closest("tr.item");
+            $favCell = $favContainer.find("td.favorite");
+            $favMarker = $favContainer.find("a.favoriteMarker");
+            $favLink = $favContainer.find(".blistItemMenu li.addFavorite a");
+            
+            // Update the class of the cell.
+            $favCell.removeClass(isCreate ? "false" : "true")
+                    .addClass(isCreate ? "true" : "false");
             // Update the text of the link.
-            $this.text(isCreate ? "favorite" : "");
+            $favMarker.text(isCreate ? "favorite" : "");
+            $favLink.text(isCreate ? "Remove from favorites" : "Add to favorites");
             
             // Update the link.
             var newHref = isCreate ? 
                 origHref.replace("create", "delete") : origHref.replace("delete", "create");
             
-            $this.attr("href", newHref);
+            $favLink.attr("href", newHref);
+            $favMarker.attr("href", newHref);
         }
+    });
+}
+
+
+blist.myBlists.itemMenuSetup = function()
+{
+    $('.blistItemMenu').dropdownMenu({
+        menuContainerSelector: "td.handle",
+        triggerButtonSelector: "a.dropdownLink"
     });
 }
 
@@ -391,6 +412,8 @@ $(function ()
             blistsInfoNS.updateSummary($('tr.item.selected').length);
         }
     });
+    
+    myBlistsNS.itemMenuSetup();
 
     $('#outerContainer').bind(blist.events.LIST_SELECTION,
         myBlistsNS.listSelectionHandler);
@@ -417,7 +440,7 @@ $(function ()
         }
     });
     
-    $("#blistList a.favoriteMarker").click(myBlistsNS.favoriteMarkerClick);
+    $("#blistList a.favoriteMarker, #blistList li.favoriteLink a").click(myBlistsNS.favoriteClick);
 
     blistsInfoNS.updateSummary();
 

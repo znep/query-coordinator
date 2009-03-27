@@ -77,11 +77,15 @@
             // build element specific options and store them on the menu
             var config = $.meta ? $.extend({}, opts, $menu.data()) : opts;
             $menu.data("config-dropdownMenu", config);
-
+            
+            var $trigger = config.triggerButton || 
+                            $menu.closest(config.menuContainerSelector).find(config.triggerButtonSelector);
+            $menu.data("triggerButton", $trigger);
+            
             // Unhook any old handlers in case we're re-applying this
-            config.triggerButton.unbind('click.dropdownMenu');
+            $trigger.unbind('click.dropdownMenu');
             // Hook up click handler to show menu
-            config.triggerButton.bind('click.dropdownMenu', function (event)
+            $trigger.bind('click.dropdownMenu', function (event)
             {
                 if (config.openTest === undefined || config.openTest(event, $menu))
                 {
@@ -99,7 +103,7 @@
             {
                 $menu.find('a').click(function (event)
                 {
-                    config.linkCallback(event, $menu, config.triggerButton);
+                    config.linkCallback(event, $menu, $trigger);
                 });
             }
 
@@ -152,7 +156,7 @@
             // If they provided a menuBar, hook up a mouseover
             if (config.menuBar !== undefined)
             {
-                config.triggerButton.mouseover(function (event)
+                $trigger.mouseover(function (event)
                 {
                     // Look for other open menus in the menuBar
                     var $otherMenus =
@@ -185,7 +189,9 @@
         $(config.menuSelector).each(function () { hideMenu($(this)) });
 
         $menu.addClass(config.menuOpenClass);
-        config.triggerButton.addClass(config.triggerOpenClass);
+        
+        var $trigger = $menu.data("triggerButton");
+        $trigger.addClass(config.triggerOpenClass);
         $(document).bind('click.' + $menu.attr('id'), function (event)
         {
             documentClickedHandler(event, $menu);
@@ -230,7 +236,9 @@
         $menu.removeClass(config.menuOpenClass);
         // Close any submenus
         closeSubmenus(null, $menu);
-        config.triggerButton.removeClass(config.triggerOpenClass);
+        
+        var $trigger = $menu.data("triggerButton");
+        $trigger.removeClass(config.triggerOpenClass);
         $(document).unbind('click.' + $menu.attr('id'));
     };
 
@@ -301,7 +309,9 @@
         multilevelMenuSelector: '.multilevelMenu',
         topLevelLinkSelector: 'dt a',
         pullToTop: false,
-        submenuFlipClass: 'opposite'
+        submenuFlipClass: 'opposite',
+        menuContainerSelector: "li",
+        triggerButtonSelector: "a.dropdownLink"
     };
 
 })(jQuery);

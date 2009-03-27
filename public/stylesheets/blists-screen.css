@@ -65,6 +65,16 @@
     margin: 0;
 }
 
+#blists .blistItemMenu li a
+{
+    background: url(/stylesheets/images/content/table/blists_item_menu_sprites.png) left 15px no-repeat;
+    text-indent: 0;
+}
+#blists .blistItemMenu li.open a { background-position: left 0; }
+#blists .blistItemMenu li.addFavorite a { background-position: left -15px; }
+#blists .blistItemMenu li.rename a { background-position: left -30px; }
+#blists .blistItemMenu li.delete a { background-position: left -45px; }
+
 #blists .noticePanel
 {
     width: 689px;

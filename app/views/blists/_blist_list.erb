@@ -30,10 +30,23 @@
           "child child-of-blistRow-#{blist.blistId}" : '' -%>
       <tr <%= blist.is_blist? ? "id='blistRow-#{blist.blistId}'" : '' %>
         blist_id='<%= blist.id %>' class='item <%= item_class %>'>
-        <td class='handle first'><div></div></td>
+        <%- 
+          favorite_action = blist.flag?("favorite") ? 
+            delete_favorite_blist_url(blist.id) : create_favorite_blist_url(blist.id) 
+          favorite_action_text = blist.flag?("favorite") ? "Remove from favorites" : "Add to favorites"
+        -%>
+        <td class='handle first'><div>
+          <a href="#open_menu" class="dropdownLink menuHandle">Blist Menu</a>
+          <%= menu_tag({'id' => "itemMenu-#{blist.id}", 'class' => 'blistItemMenu',
+            'items' => [
+              {'text' => 'Open', 'class' => 'open', 'href' => blist_url(blist.id)},
+              {'text' => favorite_action_text, 'class' => 'addFavorite favoriteLink', 'href' => favorite_action},
+              {'text' => 'Rename', 'class' => 'rename', 'href' => '#rename'},
+              {'text' => 'Delete', 'class' => 'delete', 'href' => '#delete'}
+            ]
+          }) %>
+        </div></td>
         <td class='favorite <%= blist.flag?('favorite') %>'><div>
-          <%- favorite_action = blist.flag?("favorite") ? 
-                delete_favorite_blist_url(blist.id) : create_favorite_blist_url(blist.id) -%>
           <%= link_to(blist.flag?("favorite") ? "favorite" : "", favorite_action, :class => "favoriteMarker") %>
         </div></td>
         <td class='type'><div class="<%=

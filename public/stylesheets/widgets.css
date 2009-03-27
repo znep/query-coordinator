@@ -843,21 +843,6 @@ table.gridList tr.child.collapsed
 }
 
 
-/* Selectable list: checkbox sprites on hover */
-.outerContent table.selectableList tr.hover td.type > div
-{
-    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: 0 -341px;
-}
-
-.outerContent table.selectableList tr.selected td.type > div,
-.outerContent table.selectableList tr.hover.selected td.type > div
-{
-    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: 0 -310px;
-}
-
-
 /* Styling for searchable in grid */
 table.gridList tr.filteredOut
 {

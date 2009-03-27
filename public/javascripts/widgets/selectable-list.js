@@ -6,32 +6,32 @@
 
       return this.each(function() 
       {
-        var $this = $(this);
+        var $table = $(this);
 
         // Support for the Metadata Plugin.
-        var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
+        var o = $.meta ? $.extend({}, opts, $table.data()) : opts;
 
         // Handle the row hover.
         // Attach to the parent so that the row will remove the highlight when
         // hovering over the scroll bar.
-        $this.parent().mousemove( function(event) 
+        $table.parent().mousemove( function(event) 
         {
             if (!$(event.target).closest("tr.item").length > 0)
             {
-                $this.find("tr.item").removeClass("hover");
+                $table.find("tr.item").removeClass("hover");
             }
             else
             {
-                $this.find("tr.item").removeClass("hover");
+                $table.find("tr.item").removeClass("hover");
                 $(event.target).closest("tr.item").addClass("hover");
             }
         });
-        $this.parent().mouseout( function(event)
+        $table.parent().mouseout( function(event)
         {
-            $this.find("tr.item").removeClass("hover");
+            $table.find("tr.item").removeClass("hover");
         });
-
-        $this.click( function(event)
+        
+        $table.click( function(event)
         {
             var $target = $(event.target);
             if ($target.hasClass('expander') || $target.is('a'))
@@ -40,7 +40,60 @@
             }
             else
             {
-                $target.closest("tr.item").toggleClass('selected');
+                var $targetRow = $target.closest("tr.item");
+                
+                if (event.shiftKey) // If shift key down:
+                {
+                    // Get all selected rows.
+                    var $selectedRows = $table.find("tr.item.selected");
+                    // If nothing is selected, or if only this row is selected, toggle the selection of this row.
+                    if ($selectedRows.length == 0 || ($selectedRows.length == 1 && $targetRow.is(".selected")))
+                    {
+                        if ($targetRow.is(".selected"))
+                            $targetRow.removeClass("selected").removeClass("hover");
+                        else
+                            $targetRow.addClass("selected");
+                    }
+                    else
+                    {
+                        // Get all rows.
+                        var $allRows = $table.find("tr.item:visible");
+                        // Find the index of the first selected and target elements.
+                        var firstIndex = $allRows.index($selectedRows[0]);
+                        var targetIndex = $allRows.index($targetRow);
+                        
+                        // If targetIndex is greater than firstIndex, select from firstIndex to targetIndex.
+                        // Else, select from targetIndex to firstIndex.
+                        var startIndex = targetIndex > firstIndex ? firstIndex : targetIndex;
+                        var endIndex = targetIndex > firstIndex ? targetIndex : firstIndex;
+                        
+                        // Deselect all rows.
+                        $allRows.removeClass("selected");
+                        // Select rows.
+                        $allRows.slice(startIndex, endIndex + 1).addClass("selected");
+                    }
+                }
+                else if (event.metaKey) // If control/comman key down:
+                {
+                    // Toggle the class of the target row.
+                    if ($targetRow.is(".selected"))
+                        $targetRow.removeClass("selected").removeClass("hover");
+                    else
+                        $targetRow.addClass("selected");
+                }
+                else // Else (no shift or control key down)
+                {
+                    // Deselect all rows except this one.
+                    var rows = $table.find("tr.item").not($targetRow).removeClass("selected");
+                    // Toggle the class on this row.
+                    if ($targetRow.is(".selected"))
+                        $targetRow.removeClass("selected").removeClass("hover");
+                    else
+                        $targetRow.addClass("selected");
+                }
+                // Set the focus so that the shift/meta click won't select any text.
+                $table.focus();
+                
                 opts.rowSelectionHandler();
             }
         });

@@ -27,12 +27,12 @@
                     <dt>Current Email</dt>
                     <dd class="dataEmail"><%= h(current_user.email) %></dd>
                     <dt><label for="email">New Email</label></dt>
-                    <dd><%= text_field_tag("email") %></dd>
+                    <dd><%= text_field_tag("user[email]") %></dd>
                     <dt><label for="new_email">Retype New Email</label></dt>
-                    <dd><%= text_field_tag("email_confirm") %></dd>
+                    <dd><%= text_field_tag("user[email_confirm]") %></dd>
                     <dt><label for="email_password">Enter Password</label></dt>
                     <dd>
-                      <%= password_field_tag("email_password") %>
+                      <%= password_field_tag("user[email_password]") %>
                       <span class="fieldNote">(For your security)</span>
                     </dd>
                   </dl>
@@ -45,7 +45,7 @@
               </div></div>
             </div>
           </div>
-          
+
           <h3>Password</h3>
           <div class="listSection passwordSection">
             <div class="sectionShow">

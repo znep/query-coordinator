@@ -1,16 +1,18 @@
 class User < Model
   cattr_accessor :current_user, :states, :countries
   attr_accessor :session_token
-  
+
+  non_serializable :displayName
+
   def to_json
-    data_hash = data.clone
-    data_hash[:displayName] = displayLocation
-    data_hash[:displayState] = displayState
-    data_hash[:displayCountry] = displayCountry
-    data_hash[:displayLocation] = displayLocation
-    data_hash[:profile_image] = profile_image
-    
-    data_hash.to_json
+    dhash = data_hash
+    dhash[:displayName] = displayLocation
+    dhash[:displayState] = displayState
+    dhash[:displayCountry] = displayCountry
+    dhash[:displayLocation] = displayLocation
+    dhash[:profile_image] = profile_image
+
+    dhash.to_json
   end
 
   def displayState
@@ -20,7 +22,7 @@ class User < Model
   def displayCountry
     country.nil? ? '' : @@countries[country.upcase]
   end
-  
+
   def displayLocation
     #TODO: add city when available.
     out = country == "US" ? displayState + ", " : ""

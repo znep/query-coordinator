@@ -1,6 +1,7 @@
 class Model
 
   attr_accessor :data
+  attr_accessor :update_data
 
   # Override super.id and return the id of the model
   def id
@@ -50,13 +51,33 @@ class Model
 
     assign_key = method_name.sub!(/=$/,"")
     if assign_key
-      data[assign_key] = args[0]
+      if self.frozen?
+        raise TypeError.new("Can't modify frozen object")
+      end
+      if assign_key == 'flags'
+        raise TypeError.new("Flags can only be set through set_flag and unset_flag")
+      end
+      if data[assign_key].nil?
+        raise TypeError.new("#{assign_key} is not a valid property")
+      end
+      if self.class.non_serializable_attributes.include?(assign_key)
+        raise "Cannot set non-serializeable attribute"
+      end
+
+      if args[0] == data[assign_key]
+        update_data.delete(assign_key)
+      else
+        update_data[assign_key] = args[0]
+      end
     else
-      value = data[method_name]
+      value = data_hash[method_name]
+
       if value.is_a?(Hash)
         klass = Object.const_get(method_name.capitalize.to_sym)
         model = klass.new
         model.data = value
+        model.update_data = Hash.new
+        model.freeze
         return model
       elsif value.is_a?(Array)
         klass = Object.const_get(method_name.singularize.capitalize.to_sym)
@@ -64,8 +85,11 @@ class Model
         value.each do | item |
           model = klass.new
           model.data = item
+          model.update_data = Hash.new
+          model.freeze
           items.push(model)
         end
+        items.freeze
         return items
       else
         return value
@@ -74,29 +98,56 @@ class Model
   end
 
   def to_s
-    data.to_json
+    to_json
+  end
+
+  def to_json
+    data_hash.to_json
   end
 
   def flag?(flag_name)
     !flags.nil? && flags.any? {|f| f.data == flag_name}
   end
-  
+
   def set_flag(flag)
-    data["flags"] << flag
+    if !data['flags'].include?(flag)
+      @added_flags ||= Array.new
+      @added_flags << flag
+    end
+    if !@deleted_flags.nil?
+      @deleted_flags.delete(flag)
+    end
   end
-  
+
   def unset_flag(flag)
-    data["flags"].delete(flag)
+    if data['flags'].include?(flag)
+      @deleted_flags ||= Array.new
+      @deleted_flags << flag
+    end
+    if !@added_flags.nil?
+      @added_flags.delete(flag)
+    end
   end
-  
-  def update_attributes(attributes)
-    path = "/#{self.class.name.pluralize.downcase}/#{self.id}.json"
-    return self.class.update_request(path, ActiveSupport::JSON.encode(attributes))
+
+  def update_attributes!(attributes)
+    new_model = self.class.update_attributes!(self.id, attributes)
+    self.data = new_model.data
+    update_data.reject! {|key,value| value == data[key]}
+    return self
   end
-  
-  def self.update_attributes(id, attributes)
+
+  def self.update_attributes!(id, attributes)
+    attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
     path = "/#{self.name.pluralize.downcase}/#{id}.json"
     return self.update_request(path, ActiveSupport::JSON.encode(attributes))
+  end
+
+  def save!
+    updates = update_data.clone
+    if flags_modified?
+      updates['flags'] = combined_flags
+    end
+    update_attributes!(updates)
   end
 
   def self.parse(data)
@@ -105,17 +156,42 @@ class Model
       model = json_data.collect do | item |
         m = self.new
         m.data = item
+        m.update_data = Hash.new
         m
       end
     else
       model = self.new
       model.data = json_data
+      model.update_data = Hash.new
     end
 
     model
   end
 
 protected
+
+  def data_hash
+    dhash = data.clone
+    dhash.merge!(update_data)
+    dhash['flags'] = combined_flags
+    dhash
+  end
+
+  def combined_flags
+    flags_array = data['flags'] || Array.new
+    if !@deleted_flags.nil?
+      flags_array = flags_array - @deleted_flags
+    end
+    if !@added_flags.nil?
+      flags_array = flags_array + @added_flags
+    end
+    return flags_array
+  end
+
+  def flags_modified?
+    (!@added_flags.nil? && @added_flags.length > 0) ||
+      (!@deleted_flags.nil? && @deleted_flags.length > 0)
+  end
 
   def self.get_request(path, session_token = nil)
     result_body = Rails.cache.read(path)
@@ -128,7 +204,7 @@ protected
     parse(result_body)
   end
 
-  def self.create_request(path, payload = "")
+  def self.create_request(path, payload = "{}")
     parse(generic_request(Net::HTTP::Post.new(path), payload).body)
   end
 
@@ -142,15 +218,29 @@ protected
 
 private
 
-  def self.generic_request(request, payload = nil, session_token = nil)
+  # Mark one or more attributes as non-serializable -- that is, they shouldn't be
+  # serialized back to the core server
+  def self.non_serializable(*attributes)
+    write_inheritable_attribute("non_serializable",
+                                Set.new(attributes.map(&:to_s)) +
+                                  (non_serializable_attributes || []))
+  end
+
+  # Obtain a list of all non-serializable attributes
+  def self.non_serializable_attributes
+    read_inheritable_attribute("non_serializable") || Array.new
+  end
+
+  def self.generic_request(request, json = nil, session_token = nil)
     requestor = User.current_user
     if session_token
       request['Cookie'] = session_token.cookie
     elsif requestor && requestor.session_token
       request['Cookie'] = requestor.session_token.cookie
     end
-    if (!payload.nil?)
-      request.set_form_data(payload)
+    if (!json.blank?)
+      request.body = json
+      request.content_type = "application/json"
     end
 
     result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|

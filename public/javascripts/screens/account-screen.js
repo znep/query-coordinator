@@ -37,7 +37,6 @@ $(function ()
             $form = $(form);
             
             var requestData = $.param($form.find(":input"));
-            requestData += "&" + form_authenticity_token + "=" + encodeURIComponent(request_forgery_protection_token);
             $.ajax({
                 url: $form.attr("action"),
                 type: "PUT",

@@ -34,15 +34,15 @@ class BlistsController < SwfController
 
     @swf_url = swf_url('v3embed.swf')
   end
-  
+
   def update
     blist_id = params[:id]
-    
-    result = View.update_attributes(blist_id, params[:view])
-    
+
+    blist = View.update_attributes!(blist_id, params[:view])
+
     respond_to do |format|
       format.html { redirect_to(blist_url(blist_id)) }
-      format.data { render :json => result.to_json() }
+      format.data { render :json => blist.to_json() }
     end
   end
 

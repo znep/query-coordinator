@@ -3,8 +3,12 @@ class AccountsController < ApplicationController
   end
 
   def update
-    current_user.email = params[:email] || current_user.email
-    current_user.password = params[:password_new] || current_user.password
+    if params[:user][:email]
+      current_user.email = params[:user][:email]
+    end
+    if params[:user][:password_new]
+      current_user.password = params[:user][:password_new]
+    end
 
     respond_to do |format|
       format.html { redirect_to(account_url) }

@@ -503,7 +503,12 @@ body#lensBody
     border-right: solid 1px #e0d1b8;
     float: left;
     height: 11em;
-    width: 16.5%;
+    width: 15%;
+}
+
+#addColumnsMenu .column.narrow
+{
+    width: 12%;
 }
 
 #addColumnsMenu .column.last
@@ -639,6 +644,7 @@ body#lensBody
     background-position: 0 -442px;
 }
 
+#addColumn_rowTag,
 #mainMenu .columnsMenu .tag a
 {
     background-position: 0 -182px;

@@ -106,7 +106,7 @@
                   <li><a href='#url' id='addColumn_url'>Website URL</a></li>
                 </ul>
               </li>
-              <li class='column'>
+              <li class='column narrow'>
               <%# Chooser/explicit pick options datatypes %>
                 <ul>
                   <li><a href='#checkbox' id='addColumn_checkbox'>Checkbox</a></li>
@@ -121,13 +121,20 @@
                   <li><a href='#photo' id='addColumn_photo'>Photo (Image)</a></li>
                 </ul>
               </li>
-              <li class='column last'>
+              <li class='column'>
               <%# Complex/join datatypes %>
                 <ul>
                   <li><a href='#picklist'
                     id='addColumn_picklist'>Picklist (Drop-down)</a></li>
                   <li><a href='#blist_in_blist'
                     id='addColumn_bnb'>Table (blist in blist)</a></li>
+                </ul>
+              </li>
+              <li class='column narrow last'>
+              <%# Existing columns to unhide %>
+                <ul>
+                  <li><a href='#rowTag'
+                    id='addColumn_rowTag'>Row Tag</a></li>
                 </ul>
               </li>
             </ul>

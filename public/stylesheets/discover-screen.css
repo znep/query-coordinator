@@ -7,27 +7,6 @@
 */
 
 
-#discoverBody #header form.search
-{
-    position: relative;
-    z-index: 200;
-}
-
-#discoverBody.overlayShown #header form.search
-{
-    z-index: 0;
-}
-
-#discoverBody #mainLogo a
-{
-    z-index: 200;
-}
-
-#discoverBody.overlayShown #mainLogo a
-{
-    z-index: 0;
-}
-
 #discoverBody .mainContent
 {
     margin: 0 1em;
@@ -38,6 +17,12 @@
 #discoverBody .scrollContent
 {
     overflow: hidden;
+}
+
+#discoverBody .outerContent
+{
+    margin-left: 0;
+    padding-bottom: 1em;
 }
 
 #discoverBody #swfWrapper

@@ -16,13 +16,11 @@ blist.discover.openViewHandler = function (event, viewId)
 
 blist.discover.flashPopupShownHandler = function (popup)
 {
-    $('#discoverBody').addClass('overlayShown');
     $('#overlay').show();
 };
 
 blist.discover.flashPopupClosedHandler = function (popup)
 {
-    $('#discoverBody').removeClass('overlayShown');
     $('#overlay').hide();
 };
 

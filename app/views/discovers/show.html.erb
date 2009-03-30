@@ -7,9 +7,18 @@
 <div id='overlay'></div>
 
 <div class='mainContent'>
+  <ul class='tabList'>
+    <li class='discover even active'><div class='wrapper'>
+      <%= link_to 'Discover', discover_url %>
+    </div></li>
+  </ul>
 
-  <div id='swfWrapper' class='scrollContent'>
-    <%= render(:partial => "shared/swf") %>
+  <div class='outerContent'>
+    <div class='content'>
+      <div id='swfWrapper' class='scrollContent'>
+        <%= render(:partial => "shared/swf") %>
+      </div>
+    </div>
   </div>
 
 </div>

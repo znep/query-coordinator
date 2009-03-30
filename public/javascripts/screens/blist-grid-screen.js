@@ -165,6 +165,9 @@ blist.blistGrid.mainMenuHandler = function(event)
             blist.blistGrid.referer = '';
             blist.util.flashInterface.showPopup('NewLens:Import');
             break;
+        case 'picklistBrowser':
+            blist.util.flashInterface.showPopup('PickListBrowser');
+            break;
     }
 };
 

@@ -14,7 +14,7 @@ class HomeController < ApplicationController
     @favorite_blists = blists.find_all { |b|
       b.flag?("favorite")
     }.sort { |a,b|
-      b.lastOpenedDate <=> a.lastOpenedDate
+      (b.lastOpenedDate || 0) <=> (a.lastOpenedDate || 0)
     }.slice(0..1)
     
     @contacts = Contact.find().slice(0..2)

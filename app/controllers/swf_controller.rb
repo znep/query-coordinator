@@ -31,6 +31,10 @@ private
       variables[:discover_search] = @discover_search
     end
 
+    if @popup
+      variables[:popup] = @popup
+    end
+
     if @view
       variables[:lens_id] = @view.oid
     end

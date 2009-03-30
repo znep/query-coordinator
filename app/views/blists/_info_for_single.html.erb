@@ -45,7 +45,8 @@
         <li><a href="<%= blist_url(view.id) %>" class="arrowButton">Open</a></li>
       <%- end -%>
       <li><a href="#duplicate">Duplicate</a></li>
-      <li><a href="#share">Share</a></li>
+      <li><a href="<%= blist_url(view.id, {:popup => 'SharingEditor'}) %>"
+        class="showFlashPopup">Share</a></li>
     </ul>
   </div>
   <div class="infoContentInner">
@@ -320,7 +321,8 @@
       <%= view.is_public? ? "Public" : "Private" %>
     </h2>
     <ul class="headerActions actionButtons">
-      <li><a href="#open" class="arrowButton" title="Share">Share</a></li>
+      <li><a href="<%= blist_url(view.id, {:popup => 'SharingEditor'}) %>"
+        class="arrowButton showFlashPopup" title="Share">Share</a></li>
     </ul>
   </div>
   <div class="infoContentInner">
@@ -390,7 +392,8 @@
     <h2 class="panelHeader">3212 total views</h2>
     %>
     <ul class="headerActions actionButtons">
-      <li><a href="#open" class="arrowButton">Publish a Widget</a></li>
+      <li><a href="<%= blist_url(view.id, {:popup => 'PublishDialog'}) %>"
+        class="arrowButton showFlashPopup">Publish a Widget</a></li>
     </ul>
   </div>
   <div class="infoContentInner">

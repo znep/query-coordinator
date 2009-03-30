@@ -93,6 +93,29 @@ blist.blistGrid.dataTypeClickHandler = function (event)
     blist.util.flashInterface.addColumn(dt);
 };
 
+blist.blistGrid.flashPopupClickHandler = function (event)
+{
+    event.preventDefault();
+    var href = $(event.target).attr('href');
+    var popup = '';
+    if (href[0] == '#')
+    {
+        popup = href.slice(1);
+    }
+    else
+    {
+        var matches = href.match(/popup=(\w+)/);
+        if (matches && matches.length > 1)
+        {
+            popup = matches[1];
+        }
+    }
+    if (popup !== '')
+    {
+        blist.util.flashInterface.showPopup(popup);
+    }
+};
+
 blist.blistGrid.viewChangedHandler = function (event, data)
 {
     var $main = $('#lensContainer');
@@ -250,6 +273,8 @@ $(function ()
         event.preventDefault();
         blistGridNS.dataTypeClickHandler(event);
     });
+
+    $('a.showFlashPopup').click(blistGridNS.flashPopupClickHandler);
 
     $('#lensContainer .headerBar form').submit(function (event)
     {

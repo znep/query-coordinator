@@ -31,6 +31,7 @@ class BlistsController < SwfController
     end
 
     @data_component = params[:dataComponent]
+    @popup = params[:popup]
 
     @swf_url = swf_url('v3embed.swf')
   end

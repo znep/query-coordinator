@@ -83,3 +83,26 @@
 {
     margin: 1.5em 0 0 1.5em;
 }
+
+#blistList tr.item form
+{
+    display: none;
+    padding: 0;
+}
+#blistList tr.item input[type="text"]
+{
+    font-size: 1em; /* 12px */
+    width: 9.333em; /* 112px */
+}
+#blistList tr.item.parent input[type="text"]
+{
+    width: 8.5em; /* 102px */
+}
+#blistList tr.item.child input[type="text"]
+{
+    width: 6.833em; /* 82px */
+}
+#blistList tr.item input[type="image"]
+{
+    vertical-align: middle;
+}

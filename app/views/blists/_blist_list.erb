@@ -35,13 +35,13 @@
             delete_favorite_blist_url(blist.id) : create_favorite_blist_url(blist.id) 
           favorite_action_text = blist.flag?("favorite") ? "Remove from favorites" : "Add to favorites"
         -%>
-        <td class='handle first'><div>
+        <td class='noselect handle first'><div>
           <a href="#open_menu" class="dropdownLink menuHandle">Blist Menu</a>
           <%= menu_tag({'id' => "itemMenu-#{blist.id}", 'class' => 'blistItemMenu',
             'items' => [
               {'text' => 'Open', 'class' => 'open', 'href' => blist_url(blist.id)},
               {'text' => favorite_action_text, 'class' => 'addFavorite favoriteLink', 'href' => favorite_action},
-              {'text' => 'Rename', 'class' => 'rename', 'href' => '#rename'},
+              {'text' => 'Rename', 'class' => 'rename renameLink', 'href' => blist_url(blist.id)},
               {'text' => 'Delete', 'class' => 'delete', 'href' => '#delete'}
             ]
           }) %>
@@ -53,8 +53,12 @@
           get_share_direction_icon_class_for_view(blist) %>">
           <%= get_type_string_for_view(blist) %>
         </div></td>
-        <td class='name clipText'>
+        <td class='noselect name clipText'>
           <%= link_to(h(blist.name), blist_url(blist.id)) %>
+          <% form_tag(blist_url(blist.id)) do %>
+            <%= text_field_tag("view_#{blist.id}[name]", h(blist.name)) %>
+            <%= image_submit_tag("submit_button_mini.png", :title => "Rename") %>
+          <% end %>
         </td>
         <td class='description clipText'><div><%= h(blist.description) %></div></td>
         <td class='owner'><div><%= h(blist.owner.displayName) %></div></td>

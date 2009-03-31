@@ -34,7 +34,7 @@
         $table.click( function(event)
         {
             var $target = $(event.target);
-            if ($target.hasClass('expander') || $target.is('a'))
+            if ($target.hasClass('expander') || $target.is('a') || $target.is('a *') || $target.is('.noselect *'))
             {
                 return;
             }
@@ -50,9 +50,9 @@
                     if ($selectedRows.length == 0 || ($selectedRows.length == 1 && $targetRow.is(".selected")))
                     {
                         if ($targetRow.is(".selected"))
-                            $targetRow.removeClass("selected").removeClass("hover");
+                            $targetRow.removeClass("selected highlight");
                         else
-                            $targetRow.addClass("selected");
+                            $targetRow.addClass("selected highlight");
                     }
                     else
                     {
@@ -68,33 +68,33 @@
                         var endIndex = targetIndex > firstIndex ? targetIndex : firstIndex;
                         
                         // Deselect all rows.
-                        $allRows.removeClass("selected");
+                        $allRows.removeClass("selected highlight");
                         // Select rows.
-                        $allRows.slice(startIndex, endIndex + 1).addClass("selected");
+                        $allRows.slice(startIndex, endIndex + 1).addClass("selected highlight");
                     }
                 }
                 else if (event.metaKey) // If control/comman key down:
                 {
                     // Toggle the class of the target row.
                     if ($targetRow.is(".selected"))
-                        $targetRow.removeClass("selected").removeClass("hover");
+                        $targetRow.removeClass("selected highlight");
                     else
-                        $targetRow.addClass("selected");
+                        $targetRow.addClass("selected highlight");
                 }
                 else // Else (no shift or control key down)
                 {
                     // Deselect all rows except this one.
-                    var rows = $table.find("tr.item").not($targetRow).removeClass("selected");
+                    var rows = $table.find("tr.item").not($targetRow).removeClass("selected highlight");
                     // Toggle the class on this row.
                     if ($targetRow.is(".selected"))
-                        $targetRow.removeClass("selected").removeClass("hover");
+                        $targetRow.removeClass("selected highlight");
                     else
-                        $targetRow.addClass("selected");
+                        $targetRow.addClass("selected highlight");
                 }
                 // Set the focus so that the shift/meta click won't select any text.
                 $table.focus();
                 
-                opts.rowSelectionHandler();
+                opts.rowSelectionHandler($targetRow);
             }
         });
       });

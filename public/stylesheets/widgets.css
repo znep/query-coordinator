@@ -682,15 +682,12 @@ table.gridList tr.sortGroup td > *
 
 /* Hover rules */
 table.gridList tr.hover td+td+td+td > *,
-table.gridList tr.selected td+td+td+td > *,
-table.gridList tr.hover.selected td+td+td+td > *
-{
-    background-color: #ffedb2;
+table.gridList tr.highlight td+td+td+td > * 
+{ 
+    background-color: #ffedb2; 
 }
-
 table.gridList tr.hover td.last > *,
-table.gridList tr.selected td.last > *,
-table.gridList tr.hover.selected td.last > *
+table.gridList tr.highlight td.last > *
 {
     background-image: url(/stylesheets/images/content/table/highlight_end.png);
     background-position: right;
@@ -819,7 +816,7 @@ table.gridList tr.child td.type > div {
     width: 40px;
 }
 
-table.gridList tr.child td.name > * { margin-left: 40px; }
+table.gridList tr.child td.name > * { margin-left: 30px; }
 table.gridList tr.child td.description > * { border-right: solid 4px #e0d1b8; }
 
 table.gridList tr.child td.owner > *,

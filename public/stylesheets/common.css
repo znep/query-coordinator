@@ -52,6 +52,8 @@ form input[type="text"],
 form input[type="password"]
 {
     border: solid 1px #cacaca;
+    color: #333;
+    font-family: Arial, sans-serif;
     font-size: 1.2em;   /* 12px */
     line-height: 1.2em; /* 14.4px */
     padding: 0.2em;     /* 2.4px */

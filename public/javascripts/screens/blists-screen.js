@@ -247,6 +247,52 @@ blist.myBlists.favoriteClick = function (event)
     });
 }
 
+blist.myBlists.renameClick = function (event)
+{
+    event.preventDefault();
+    var $this = $(this);
+    
+    // Hide all other forms in td.names.
+    var $allItemRows = $this.closest("table").find("tr.item:not(.selected)").removeClass("highlight");
+    var $allNameCells = $this.closest("table").find("td.name");
+    $allNameCells.find("form").hide();
+    $allNameCells.find("a").show();
+    
+    $currentCell = $this.closest("tr.item").addClass("highlight").find("td.name");
+    $currentCell.find("a").hide();
+    var $form = $currentCell.find("form");
+    $form.show().find("input[type='text']").width($form.width() - 30).focus().select();
+}
+
+blist.myBlists.renameSubmit = function (event)
+{
+    event.preventDefault();
+
+    var $form = $(this);
+    var $nameInput = $form.find("input[type='text']");
+    var $authInput = $form.find("input[type='hidden']");
+
+    $.ajax({
+        url: $form.attr("action"),
+        type: "PUT",
+        data: {
+            "authenticity_token": $authInput.val(),
+            "view[name]": $nameInput.val()
+        },
+        dataType: "json",
+        success: function(responseData)
+        {
+            $form.hide();
+            $form.closest("td.name").find("a").text(responseData.name).show();
+            $form.closest("tr.item").removeClass("highlight");
+            
+            // Update the info pane.
+            $.Tache.DeleteAll();
+            $("#infoPane h2.panelHeader a[href*='" + responseData.id + "']").text(responseData.name);
+        }
+    });
+}
+
 
 blist.myBlists.itemMenuSetup = function()
 {
@@ -407,9 +453,15 @@ $(function ()
     commonNS.adjustSize();
 
     $(".selectableList").blistSelectableList({
-        rowSelectionHandler: function()
+        rowSelectionHandler: function($targetRow)
         {
             blistsInfoNS.updateSummary($('tr.item.selected').length);
+            $("tr.item").not($targetRow).each(function()
+            {
+                var $nameCell = $(this).find("td.name")
+                $nameCell.find("form").hide();
+                $nameCell.find("a").show();
+            });
         }
     });
     
@@ -441,6 +493,8 @@ $(function ()
     });
     
     $("#blistList a.favoriteMarker, #blistList li.favoriteLink a").click(myBlistsNS.favoriteClick);
+    $("#blistList .renameLink a").click(myBlistsNS.renameClick);
+    $("#blistList td.name form").submit(myBlistsNS.renameSubmit);
 
     blistsInfoNS.updateSummary();
 

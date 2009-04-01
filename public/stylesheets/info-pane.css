@@ -268,6 +268,27 @@
     position: relative;
 }
 
+/** Edit forms **/
+.infoContentOuter.listContainer .infoContent dd .itemContent form
+{
+    display: none;
+    padding-top: 0;
+}
+.infoContentOuter.listContainer .infoContent dd input[type="text"]
+{
+    font-size: 1em; /* 11px */
+    width: 31.818em; /* 350px */
+}
+.infoContentOuter.listContainer .infoContent dd select
+{
+    font-size: 1em; /* 11px */
+}
+.infoContentOuter.listContainer .infoContent dd input[type="image"],
+.infoContentOuter.listContainer .infoContent dd form .formCancelLink img
+{
+    vertical-align: middle;
+}
+
 
 .infoContentOuter.multiInfoSummary .infoContent dd
 {

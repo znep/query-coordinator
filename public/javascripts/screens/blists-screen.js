@@ -207,7 +207,18 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $(".tabLink.sharing").click(function(event){
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabSharing");
     });
-
+    
+    $("#infoPane dd.editItem").infoPaneItemEdit({
+        submitSuccessCallback: function(fieldType, fieldValue, itemId)
+        {
+            if (fieldType == "description")
+            {
+                // Find the blist row, update the description cell.
+                $("#blistList tr[blist_id='" + itemId + "']").find("td.description div").text(fieldValue);
+            }
+        }
+    });
+    
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();

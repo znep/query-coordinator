@@ -1,4 +1,6 @@
 class View < Model
+  cattr_accessor :categories
+  
   def self.find( options = nil )
     self.find_under_user(options)
   end
@@ -113,5 +115,13 @@ class View < Model
   def filters
     View.find( {"blistId" => self.blistId} ).reject {|l| l.is_blist?}
   end
+  
+  @@categories = {
+    "" => "-- No category --",
+    "Fun" => "Fun",
+    "Personal" => "Personal",
+    "Business" => "Business",
+    "Education" => "Education"
+  }
 
 end

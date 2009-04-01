@@ -496,7 +496,7 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
 }
 .featureBoxes li p.watchButton a
 {
-    background: url("images/home/icon_watch_video.png") no-repeat;
+    background: url(/stylesheets/images/home/icon_watch_video.png) no-repeat;
     color: #666;
     display: block;
     font-size: .833em; /* 10px */

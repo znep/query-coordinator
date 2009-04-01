@@ -160,4 +160,13 @@ module BlistsHelper
     end
     dtt
   end
+  
+  def category_select_options(selected_category = nil)
+    out = ""
+    View.categories.sort { |a,b| a[1] <=> b[1] }.each do |category|
+      selected = selected_category == category[0] ? " selected=\"selected\"" : ""
+      out += "<option value=\"#{category[0]}\"#{selected}>#{category[1]}</option>"
+    end
+    out
+  end
 end

@@ -64,9 +64,85 @@
     // default options
     $.fn.infoPaneItemHighlight.defaults = {
         itemContainerSelector: "dd",
-        clickSelector: "dd .itemContent > *",
+        clickSelector: "dd .itemContent > *:not(form)",
         actionSelector: ".itemActions > a"
     };
+    
+    
+    
+    $.fn.infoPaneItemEdit = function(options) {
+        var opts = $.extend({}, $.fn.infoPaneItemEdit.defaults, options);
+        
+        return this.each(function() {
+            var $dd = $(this);
+            
+            // Support for the Metadata Plugin.
+            var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
+            
+            // Wire up the events.
+            $dd.find(opts.editClickSelector).click(editClick);
+            $dd.find(opts.editSubmitSelector).submit(editSubmit);
+            $dd.find(opts.editCancelSelector).click(editCancel);
+        });
+        
+        // Private methods
+        function editClick(event)
+        {
+            event.preventDefault();
+            var $this = $(this);
+        
+            // Hide all forms, show all spans.
+            var $allItemContainers = $(opts.allItemSelector);
+            $allItemContainers.find("form").hide();
+            $allItemContainers.find("span").show();
+        
+            var $currentItemContainer = $this.closest("dd").find(opts.itemContentSelector);
+            $currentItemContainer.find("span").hide();
+            var $form = $currentItemContainer.find("form");
+            $form.show().find("input[type='text']").focus().select();
+        };
+        
+        function editSubmit(event)
+        {
+            event.preventDefault();
+            var $form = $(this);
+            
+            var fieldType = $form.find("input[name='fieldType']").val();
+            var fieldValue = $form.find(":input[name*='" + fieldType + "']").val();
+            
+            $.ajax({
+                url: $form.attr("action"),
+                type: "PUT",
+                data: $form.find(":input"),
+                dataType: "json",
+                success: function(responseData)
+                {
+                    $form.hide();
+                    $form.closest(opts.itemContentSelector).find("span").text(fieldValue).show();
+                    opts.submitSuccessCallback(fieldType, fieldValue, responseData.id);
+                }
+            });
+        }
+        
+        function editCancel(event)
+        {
+            event.preventDefault();
+            var $this = $(this);
+            $(this).closest("form").hide().closest(opts.itemContentSelector).find("span").show();
+        }
+     };   
+        
+     // default options
+     $.fn.infoPaneItemEdit.defaults = {
+       editClickSelector: ".itemActions .editLink",
+       editSubmitSelector: ".itemContent form",
+       editCancelSelector: ".itemContent form .formCancelLink",
+       allItemSelector: "#infoPane .summaryList dd .itemContent",
+       itemContentSelector: ".itemContent",
+       submitSuccessCallback: function(){}
+     };
+    
+    
     
     $.fn.infoPaneNavigate = function(options) {
         // check if a navigator for this list was already created

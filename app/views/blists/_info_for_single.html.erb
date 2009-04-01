@@ -57,44 +57,60 @@
           Description
           <a href="#help" class="help"><span>help</span></a>
         </dt>
-        <dd>
+        <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.description) %></span>
+            <% form_tag(blist_url(view.id)) do %>
+              <%= hidden_field_tag("fieldType", "description") %>
+              <%= text_field_tag("view[description]", h(view.description)) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
+            <% end %>
           </div>
           <div class="itemActions">
-            <a href="#unselect" class="action"><span>Edit</span></a>
+            <a href="<%= blist_url(view.id) %>" class="action editLink"><span>Edit</span></a>
           </div>
         </dd>
       </dl>
 
-      <%- if (view.tags.length > 0) -%>
       <dl class="summaryList">
         <dt>
           Tags
           <a href="#help" class="help"><span>help</span></a>
         </dt>
-        <dd>
+        <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.tag_display_string) %></span>
+            <% form_tag(blist_url(view.id)) do %>
+              <%= hidden_field_tag("fieldType", "tags") %>
+              <%= text_field_tag("view[tags]", h(view.tag_display_string)) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
+            <% end %>
           </div>
           <div class="itemActions">
-            <a href="#unselect" class="action"><span>Edit</span></a>
+            <a href="<%= blist_url(view.id) %>" class="action editLink"><span>Edit</span></a>
           </div>
         </dd>
       </dl>
-      <%- end -%>
 
       <dl class="summaryList">
         <dt>
           Category
           <a href="#help" class="help"><span>help</span></a>
         </dt>
-        <dd class="itemBlist">
+        <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.category) %></span>
+            <% form_tag(blist_url(view.id)) do %>
+              <%= hidden_field_tag("fieldType", "category") %>
+              <%= select_tag("view[category]", category_select_options(h(view.category))) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
+            <% end %>
           </div>
           <div class="itemActions">
-            <a href="#unselect" class="action"><span>Edit</span></a>
+            <a href="<%= blist_url(view.id) %>" class="action editLink"><span>Edit</span></a>
           </div>
         </dd>
       </dl>
@@ -207,7 +223,7 @@
             <span><%= view.is_public? ? 'Public' : 'Private' %></span>
           </div>
           <div class="itemActions">
-            <a href="#unselect" class="action"><span>Edit</span></a>
+            <a href="#unselect" class="action"><span>[Edit]</span></a>
           </div>
         </dd>
       </dl>

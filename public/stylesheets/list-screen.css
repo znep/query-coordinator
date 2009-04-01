@@ -1,0 +1,52 @@
+
+.headerBar
+{
+  margin-bottom: 1em;
+  text-align: right;
+}
+
+.headerBar h3
+{
+  float: left;
+}
+
+.headerBar .headerActions
+{
+    float: right;
+    margin-right: .5em;
+}
+.headerBar .headerActions li
+{
+    float: left;
+    height: 23px;
+    line-height: 23px;
+    margin-right: 1.5em;
+}
+.headerBar .headerActions li a
+{
+    color: #333333;
+    display: block;
+    font-size: 1em;
+    padding-left: 26px;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.headerBar .headerActions li a:hover
+{
+    text-decoration: underline;
+}
+
+.headerBar form
+{
+    float: right;
+}
+.headerBar form p
+{
+  width: 15em;
+}
+
+.gridListContainer
+{
+    margin: 0;
+}
+

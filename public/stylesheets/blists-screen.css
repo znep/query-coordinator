@@ -11,59 +11,12 @@
     padding-bottom: 1.5em;
 }
 
-#blists .headerBar
-{
-  margin-bottom: 1em;
-  text-align: right;
-}
-
-#blists .headerBar h3
-{
-  float: left;
-}
-
-#blists .headerBar .headerActions
-{
-    float: right;
-    margin-right: .5em;
-}
-#blists .headerBar .headerActions li
-{
-    float: left;
-    height: 23px;
-    line-height: 23px;
-    margin-right: 1.5em;
-}
 #blists .headerBar .headerActions li a
 {
     background: url(/stylesheets/images/content/blists_menu_icons.png) left 23px no-repeat;
-    color: #333333;
-    display: block;
-    font-size: 1em;
-    padding-left: 26px;
-    text-decoration: none;
-    text-transform: uppercase;
-}
-#blists .headerBar .headerActions li a:hover
-{
-    text-decoration: underline;
 }
 #blists .headerBar .headerActions li a.add_new { background-position: left 0; }
 #blists .headerBar .headerActions li a.import { background-position: left -23px; }
-
-#blists .headerBar form
-{
-    float: right;
-}
-#blists .headerBar form p
-{
-  width: 15em;
-}
-
-#blists .gridListContainer
-{
-    margin: 0;
-}
 
 #blists .blistItemMenu li a
 {

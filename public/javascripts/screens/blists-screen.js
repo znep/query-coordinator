@@ -1,105 +1,5 @@
 var myBlistsNS = blist.namespace.fetch('blist.myBlists');
 
-$.tablesorter.addWidget({
-    id: "sortGrouping",
-    format: function (table)
-    {
-        /* This function will get the group that this cell should be sorted
-         *  into. For example, for text, that is the first letter of the string;
-         *  for dates, that may be something like 'Today' or 'Yesterday'; or
-         *  'Last week' or 'Last month'.
-         */
-        function getSortGroup($cell, parser)
-        {
-            // Get the value that is used to sort this cell
-            var curVal = parser.format($cell.text(), table, $cell[0]);
-            var sortVal = curVal;
-
-            // For favorites we leave off the headers since there are only two
-            //  values, and they are obvious visually
-            if ($cell.hasClass('favorite'))
-            {
-                return '';
-            }
-            // Type is special in a similar manner to favorites
-            else if ($cell.hasClass('type'))
-            {
-                sortVal = curVal + 's';
-            }
-            // Otherwise for text, sort by the first letter
-            else if (parser.type == 'text')
-            {
-                sortVal = curVal.slice(0, 1).toLowerCase();
-            }
-            // Try catch dates by looking at the parser ID
-            else if (parser.id.match(/date/i))
-            {
-                // If date is 0, assume it is blank
-                if (curVal === 0)
-                {
-                    sortVal = '';
-                }
-                else
-                {
-                    sortVal = blist.util.humaneDate.getFromDate
-                        (new Date(curVal), blist.util.humaneDate.DAY);
-                }
-            }
-
-            if (sortVal === '')
-            {
-                sortVal = 'none';
-            }
-            return sortVal;
-        };
-
-
-        // If we have no table or sorting, bail early
-        if (!table || !table.config || !table.config.sortList ||
-            table.config.sortList.length < 1 ||
-            table.config.sortList[0].length < 1)
-        {
-            return;
-        }
-
-        // Get the column that is sorted on.  sortList is internal to tablesorter;
-        //  the first element is the primary sort (it supports sorting on
-        //  multiple columns); the first element of sortList[0] is the column
-        //  number (the other element is asc/desc)
-        var curCol = table.config.sortList[0][0];
-
-        // Clear existing headers
-        $("tr.sortGroup", table).remove();
-
-        var groupValue = '';
-        for (var i = 0; i < table.tBodies[0].rows.length; i++)
-        {
-            var $curRow = $(table.tBodies[0].rows[i]);
-            if ($curRow.hasClass('child') || $curRow.is(":hidden"))
-            {
-                continue;
-            }
-
-            var $curCell = $($curRow[0].cells[curCol]);
-            var sortVal = getSortGroup($curCell, table.config.parsers[curCol]);
-            if (groupValue != sortVal)
-            {
-                groupValue = sortVal;
-                var $newRow = $("<tr class='sortGroup'/>");
-                var colSpan = table.config.headerNode[0].rows[0].cells.length;
-
-                var $newCell = $("<td colspan='" + colSpan + "'/>");
-                $newRow.append($newCell);
-
-                $newRow.find("td:first-child").append(
-                    "<div>" + groupValue + "</div>");
-
-                $curRow.before($newRow);
-            }
-        }
-    }
-});
-
 /* Functions for main blists screen */
 
 blist.myBlists.listSelectionHandler = function (event, title)
@@ -110,137 +10,67 @@ blist.myBlists.listSelectionHandler = function (event, title)
 
 blist.myBlists.setupTable = function ()
 {
-    $('#blistList').clone()
-        .removeAttr('id').find('tbody').remove().end()
-        .appendTo('.headerContainer').end().end()
-        .find('thead').remove();
-    $.fn.treeTable.defaults.indent = 0;
-    $.fn.treeTable.defaults.treeColumn = 3;
-    $('#blistList').treeTable();
-    $('#blistList').bind('sortEnd', myBlistsNS.sortFinishedHandler);
-    $('#blistList').tablesorter(
+    $('#blistList').combinationList({
+        initialSort: [[[6, 1]]],
+        loadedCallback: function ()
         {
-         // Pass in a different header for doing the sorting
-         headerNode: $('.headerContainer table.selectableList thead'),
-         // First column is not sortable
-         headers: { 0: {sorter: false}, 6: {sorter:"usLongDate"} },
-         // Don't use simple extraction
-         textExtraction: "complex",
-         widgets: ['sortGrouping']
-        });
-
-    // If there are rows, sort initially on Last Updated
-    if ($('#blistList tbody tr').length > 0)
-    {
-        $('#blistList').trigger('sorton', [[[6, 1]]]);
-    }
-    else
-    {
-        myBlistsNS.displayNoResults();
-    }
-};
-
-/* When sorting is finished, we need to move all child rows back under
- * their parent.  Grab them in order (since they are sorted appropriately
- * relative to each other), reverse them, then insert each one right after
- * its parent.
- */
-blist.myBlists.sortFinishedHandler = function (event)
-{
-    $('#blistList tr.child').reverse().each(function ()
-    {
-        var classMatch = $(this).attr('class').match(/child-of-(\S+)/);
-        if (classMatch && classMatch.length > 1)
+            myBlistsNS.itemMenuSetup();
+            $("#blistList a.favoriteMarker, #blistList li.favoriteLink a")
+                .click(myBlistsNS.favoriteClick);
+            $("#blistList .renameLink a").click(myBlistsNS.renameClick);
+            $("#blistList td.name form").submit(myBlistsNS.renameSubmit);
+            blistsInfoNS.updateSummary(0);
+        },
+        searchable: true,
+        searchCompleteCallback: function () { blistsInfoNS.updateSummary(0); },
+        selectionCallback: function($targetRow, $selectedItems)
         {
-            var $parRow = $('#' + classMatch[1]);
-            if ($parRow.length == 1)
+            blistsInfoNS.updateSummary($selectedItems.length);
+
+            $("tr.item").not($targetRow).each(function()
             {
-                $parRow.after(this);
-            }
-        }
+                var $nameCell = $(this).find("td.name")
+                $nameCell.find("form").hide();
+                $nameCell.find("a").show();
+            });
+        },
+        sortHeaders: {0: {sorter: false}, 6: {sorter: "usLongDate"}},
+        treeTable: true,
+        treeColumn: 3
     });
-    $('#blistList tbody').show();
 };
-
-blist.myBlists.resizeTable = function ()
-{
-    $('#blists table.selectableList tbody td.clipText > *').each( function ()
-            { blist.widget.clippedText.clipElement($(this)) });
-};
-
-blist.myBlists.getTotalItemCount = function ()
-{
-    return $('#blistList tr.item:not(.filteredOut)').length;
-};
-
-blist.myBlists.getSelectedItems = function ()
-{
-    return $('#blistList tr.item.selected');
-};
-
-blist.myBlists.updateList = function (newTable)
-{
-    $('#blistList tbody').replaceWith($(newTable).find('tbody'));
-    blistsInfoNS.updateSummary(0);
-    myBlistsNS.resizeTable();
-    if ($('#blistList tbody tr').length > 0)
-    {
-        $('#blistList').treeTable();
-        $('#blistList').trigger('update');
-        // Resort new list on Last Upated
-        $('#blistList').trigger('sorton', [[[6, 1]]]);
-        
-        // Re-bind the dropdown menus.
-        myBlistsNS.itemMenuSetup();
-        
-        // Re-bind the favorite marker links.
-        $("#blistList a.favoriteMarker, #blistList li.favoriteLink a").click(myBlistsNS.favoriteClick);
-    }
-    else
-    {
-        myBlistsNS.displayNoResults();
-    }
-};
-
-blist.myBlists.displayNoResults = function ()
-{
-    var colSpan = $(".headerContainer table tr th").length;
-    var $newRow = $("<tr class='sortGroup'><td colspan='" + colSpan + "'>" +
-            "<div>No Results</div></td></tr>");
-    $('#blistList tbody').append($newRow);
-};
-
 
 blist.myBlists.favoriteClick = function (event)
 {
     event.preventDefault();
-    
+
     $this = $(this);
     var origHref = $this.attr("href");
-    
+
     $.ajax({
         url: origHref,
         type: "POST",
         success: function(responseText, textStatus)
         {
             var isCreate = responseText == "created";
-            
+
             $favContainer = $this.closest("tr.item");
             $favCell = $favContainer.find("td.favorite");
             $favMarker = $favContainer.find("a.favoriteMarker");
             $favLink = $favContainer.find(".blistItemMenu li.addFavorite a");
-            
+
             // Update the class of the cell.
             $favCell.removeClass(isCreate ? "false" : "true")
                     .addClass(isCreate ? "true" : "false");
             // Update the text of the link.
             $favMarker.text(isCreate ? "favorite" : "");
             $favLink.text(isCreate ? "Remove from favorites" : "Add to favorites");
-            
+
             // Update the link.
-            var newHref = isCreate ? 
-                origHref.replace("create", "delete") : origHref.replace("delete", "create");
-            
+            var newHref = isCreate ?
+                origHref.replace("create", "delete") :
+                origHref.replace("delete", "create");
+
             $favLink.attr("href", newHref);
             $favMarker.attr("href", newHref);
         }
@@ -309,7 +139,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
 {
     if (numSelect == 1)
     {
-        var $items = myBlistsNS.getSelectedItems();
+        var $items = $('#blistList').combinationList().selectedItems();
         $.Tache.Get({ url: '/blists/detail/' + $items.attr('blist_id'),
             success: blistsInfoNS.updateSummarySuccessHandler
         });
@@ -318,7 +148,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
     {
         if (numSelect === undefined || numSelect < 1)
         {
-            numSelect = myBlistsNS.getTotalItemCount();
+            numSelect = $('#blistList').combinationList().totalItemCount();
             $('#infoPane .infoContent .selectPrompt').show();
             itemState = 'total';
 
@@ -330,7 +160,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
         }
         else
         {
-            var $items = myBlistsNS.getSelectedItems();
+            var $items = $('#blistList').combinationList().selectedItems();
             var arrMulti = $items.map(function (i, n)
             {
                return $(n).attr('blist_id');
@@ -364,7 +194,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         var blist_id = $(this).attr("href").replace("#", "");
         $("#blistList tr[blist_id=" + blist_id + "] td.type").trigger("click");
     });
-    
+
     $(".tabLink.activity").click(function(event){
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabActivity");
     });
@@ -417,7 +247,10 @@ blist.myBlists.sidebar.filterClickHandler = function (event)
 
     $target.trigger(blist.events.LIST_SELECTION, [$target.attr('title')]);
     $.Tache.Get({ url: $target.attr('href'),
-            success: myBlistsNS.updateList });
+            success: function (retData)
+            {
+                $('#blistList').combinationList().updateList(retData);
+            }});
 };
 
 blist.myBlists.sidebar.toggleSection = function (event)
@@ -448,24 +281,8 @@ $(function ()
     $(window).resize(function (event) 
     {
         commonNS.adjustSize();
-        myBlistsNS.resizeTable(event);
     });
     commonNS.adjustSize();
-
-    $(".selectableList").blistSelectableList({
-        rowSelectionHandler: function($targetRow)
-        {
-            blistsInfoNS.updateSummary($('tr.item.selected').length);
-            $("tr.item").not($targetRow).each(function()
-            {
-                var $nameCell = $(this).find("td.name")
-                $nameCell.find("form").hide();
-                $nameCell.find("a").show();
-            });
-        }
-    });
-    
-    myBlistsNS.itemMenuSetup();
 
     $('#outerContainer').bind(blist.events.LIST_SELECTION,
         myBlistsNS.listSelectionHandler);
@@ -473,32 +290,5 @@ $(function ()
     $(".expandContainer").blistPanelExpander({
         expandCompleteCallback: blistsInfoNS.updateSummary
     });
-
-    $("#blistList").searchable(
-    {
-        searchCompleteCallback: function()
-        {
-            blistsInfoNS.updateSummary(0);
-            $('#blistList').trigger("applyWidgetId", "sortGrouping");
-            myBlistsNS.resizeTable();
-            $('#blistList tr.item.parent.filteredOut').each(function ()
-            {
-                $(this).treeTable_disownChildren();
-            });
-            $('#blistList tr.item.parent:not(.filteredOut)').each(function ()
-            {
-                $(this).treeTable_reparentChildren();
-            });
-        }
-    });
-    
-    $("#blistList a.favoriteMarker, #blistList li.favoriteLink a").click(myBlistsNS.favoriteClick);
-    $("#blistList .renameLink a").click(myBlistsNS.renameClick);
-    $("#blistList td.name form").submit(myBlistsNS.renameSubmit);
-
-    blistsInfoNS.updateSummary();
-
-    // Readjust size after updating info pane
-    myBlistsNS.resizeTable();
 });
 

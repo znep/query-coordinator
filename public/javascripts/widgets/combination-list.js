@@ -103,7 +103,7 @@
                      headers: comboListObj.settings.sortHeaders,
                      // Don't use simple extraction
                      textExtraction: "complex",
-                     widgets: [],
+                     widgets: []
                     };
                     if (comboListObj.settings.scrollableBody)
                     {
@@ -238,7 +238,7 @@
     {
         if (comboListObj.settings.clipText)
         {
-            $(comboListObj.currentList).find('tbody td.clipText > *')
+            $(comboListObj.currentList).find('tbody .clipText > *')
                 .each(function ()
                 {
                     blist.widget.clippedText.clipElement($(this))

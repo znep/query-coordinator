@@ -48,6 +48,7 @@
   // Recursively hide all node's children in a tree
   $.fn.collapse = function() {
     $(this).removeClass('expanded').addClass("collapsed");
+    $(this).find("span.expander").attr("title", "Show filters");
 
     childrenOf($(this)).each(function() {
       initialize($(this));
@@ -65,6 +66,7 @@
   // Recursively show all node's children in a tree
   $.fn.expand = function() {
     $(this).removeClass("collapsed").addClass("expanded");
+    $(this).find("span.expander").attr("title", "Hide filters");
     
     childrenOf($(this)).each(function() {
       initialize($(this));
@@ -166,7 +168,7 @@
         });
       
         if(options.expandable) {
-          cell.prepend('<span style="margin-left: -' + options.indent + 'px; padding-left: ' + options.indent + 'px" class="expander"></span>');
+          cell.prepend('<span style="margin-left: -' + options.indent + 'px; padding-left: ' + options.indent + 'px" class="expander" title="Show filters"></span>');
           $(cell[0].firstChild).click(function() { node.toggleBranch(); });
         
           // Check for a class set explicitly by the user, otherwise set the default class

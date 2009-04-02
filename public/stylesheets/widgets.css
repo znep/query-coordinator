@@ -729,13 +729,14 @@ table.gridList .picture
 {
     background-position: center center;
     background-repeat: no-repeat;
-    text-indent: -9999px;
 }
 
 table.gridList th.favorite,
 table.gridList th.type,
-table.gridList th.picture { padding: 0; }
-
+table.gridList th.picture {
+    padding: 0;
+    text-indent: -9999px;
+}
 table.gridList .handle { width: 33px; }
 
 table.gridList .handle .menuHandle
@@ -805,6 +806,8 @@ table.gridList td.picture > .group
 }
 
 table.gridList .name { width: 30%; }
+table.gridList .name > a { display: inline; }
+
 table.gridList .description { width: 45%; }
 table.gridList .owner { width: 25%; }
 table.gridList .lastUpdated,

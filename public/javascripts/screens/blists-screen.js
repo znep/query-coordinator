@@ -26,7 +26,7 @@ blist.myBlists.setupTable = function ()
             {
                 var $nameCell = $(this).find("td.name")
                 $nameCell.find("form").hide();
-                $nameCell.find("a").show();
+                $nameCell.find("div").show();
             });
         },
         sortHeaders: {0: {sorter: false}, 6: {sorter: "usLongDate"}},
@@ -70,7 +70,7 @@ blist.myBlists.favoriteClick = function (event)
             $favMarker.attr("href", newHref);
         }
     });
-}
+};
 
 blist.myBlists.renameClick = function (event)
 {
@@ -78,16 +78,24 @@ blist.myBlists.renameClick = function (event)
     var $this = $(this);
     
     // Hide all other forms in td.names.
+    myBlistsNS.closeRenameForms($this);
+    
+    $currentCell = $this.closest("tr.item").addClass("highlight").find("td.name");
+    $currentCell.find("div").hide();
+    var $form = $currentCell.find("form").keyup(function(event)
+    {
+        if (event.keyCode == 27) myBlistsNS.closeRenameForms($this);
+    });
+    $form.show().find("input[type='text']").width($form.width() - 30).focus().select();
+};
+
+blist.myBlists.closeRenameForms = function($this)
+{
     var $allItemRows = $this.closest("table").find("tr.item:not(.selected)").removeClass("highlight");
     var $allNameCells = $this.closest("table").find("td.name");
     $allNameCells.find("form").hide();
-    $allNameCells.find("a").show();
-    
-    $currentCell = $this.closest("tr.item").addClass("highlight").find("td.name");
-    $currentCell.find("a").hide();
-    var $form = $currentCell.find("form");
-    $form.show().find("input[type='text']").width($form.width() - 30).focus().select();
-}
+    $allNameCells.find("div").show();
+};
 
 blist.myBlists.renameSubmit = function (event)
 {
@@ -108,7 +116,7 @@ blist.myBlists.renameSubmit = function (event)
         success: function(responseData)
         {
             $form.hide();
-            $form.closest("td.name").find("a").text(responseData.name).show();
+            $form.closest("td.name").find("div").show().find("a").text(responseData.name);
             $form.closest("tr.item").removeClass("highlight");
             
             // Update the info pane.
@@ -116,16 +124,16 @@ blist.myBlists.renameSubmit = function (event)
             $("#infoPane h2.panelHeader a[href*='" + responseData.id + "']").text(responseData.name);
         }
     });
-}
+};
 
 
 blist.myBlists.itemMenuSetup = function()
 {
     $('.blistItemMenu').dropdownMenu({
-        menuContainerSelector: "td.handle",
+        menuContainerSelector: "td.handle div",
         triggerButtonSelector: "a.dropdownLink"
     });
-}
+};
 
 /* Functions for info pane related to blists */
 
@@ -276,5 +284,6 @@ $(function ()
     $(".expandContainer").blistPanelExpander({
         expandCompleteCallback: blistsInfoNS.updateSummary
     });
+    
 });
 

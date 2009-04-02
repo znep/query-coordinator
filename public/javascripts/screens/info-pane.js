@@ -92,14 +92,22 @@
             var $this = $(this);
         
             // Hide all forms, show all spans.
-            var $allItemContainers = $(opts.allItemSelector);
-            $allItemContainers.find("form").hide();
-            $allItemContainers.find("span").show();
+            closeAllForms();
         
             var $currentItemContainer = $this.closest("dd").find(opts.itemContentSelector);
             $currentItemContainer.find("span").hide();
-            var $form = $currentItemContainer.find("form");
+            var $form = $currentItemContainer.find("form").keyup(function(event)
+            {
+                if (event.keyCode == 27) closeAllForms();
+            });
             $form.show().find("input[type='text']").focus().select();
+        };
+        
+        function closeAllForms()
+        {
+            var $allItemContainers = $(opts.allItemSelector);
+            $allItemContainers.find("form").hide();
+            $allItemContainers.find("span").show();
         };
         
         function editSubmit(event)
@@ -122,14 +130,13 @@
                     opts.submitSuccessCallback(fieldType, fieldValue, responseData.id);
                 }
             });
-        }
+        };
         
         function editCancel(event)
         {
             event.preventDefault();
-            var $this = $(this);
-            $(this).closest("form").hide().closest(opts.itemContentSelector).find("span").show();
-        }
+            closeAllForms();
+        };
      };   
         
      // default options
@@ -220,12 +227,12 @@
                 var tabNavigator = this;
                 
                 // Toggle all arrows.
-                $(tabNavigator.currentList)
-                    .find(tabNavigator.settings.expanderSelector)
-                    .toggleClass(tabNavigator.settings.expandedClass);
+                $allExpanders = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector);
+                $allExpanders.toggleClass(tabNavigator.settings.expandedClass);
                 
                 if ($(tabNavigator.currentList).data("isExpanded"))
                 {
+                    $allExpanders.attr("title", "more info").text("more info");
                     $(tabNavigator.settings.expandableSelector).each(function()
                     {
                         if ($(this).is(":visible"))
@@ -243,6 +250,7 @@
                 }
                 else
                 {
+                    $allExpanders.attr("title", "less info").text("less info");
                     $(tabNavigator.settings.expandableSelector).slideDown("fast", function() {
                         tabNavigator.settings.switchCompleteCallback();
                     });

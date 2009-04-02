@@ -806,7 +806,6 @@ table.gridList td.picture > .group
 }
 
 table.gridList .name { width: 30%; }
-table.gridList .name > a { display: inline; }
 
 table.gridList .description { width: 45%; }
 table.gridList .owner { width: 25%; }

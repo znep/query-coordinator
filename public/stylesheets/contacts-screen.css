@@ -2,7 +2,16 @@
 {
     background: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png) left 23px no-repeat;
 }
-#contacts .headerBar .headerActions li a.add_new { background-position: 0 -40px; }
+#contacts .headerBar .headerActions li a.add_contact
+{
+    background-position: 0 -40px;
+}
+#contacts .headerBar .headerActions li a.add_group
+{
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 0 -314px;
+    padding-left: 30px;
+}
 
 #contacts table.gridList tr.hover td+td+td > *,
 #contacts table.gridList tr.highlight td+td+td > *

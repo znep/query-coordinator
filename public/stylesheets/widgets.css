@@ -724,7 +724,8 @@ table.gridList tr.expanded .expander
 
 table.gridList .handle,
 table.gridList .favorite,
-table.gridList .type
+table.gridList .type,
+table.gridList .picture
 {
     background-position: center center;
     background-repeat: no-repeat;
@@ -732,7 +733,8 @@ table.gridList .type
 }
 
 table.gridList th.favorite,
-table.gridList th.type { padding: 0; }
+table.gridList th.type,
+table.gridList th.picture { padding: 0; }
 
 table.gridList .handle { width: 33px; }
 
@@ -770,22 +772,43 @@ table.gridList tr.hover td.favorite .favoriteMarker
     background-position: 0 0;
 }
 
-table.gridList .type { width: 45px; }
+table.gridList .type,
+table.gridList .picture { width: 45px; }
+
 table.gridList th.type
 {
     background-image: url(/stylesheets/images/content/table/icon_sorting_type.png);
 }
-table.gridList td.type > *
+table.gridList td.type > *,
+table.gridList td.picture > *
 {
     margin: 0 auto;
     text-indent: -9999px;
     width: 23px;
 }
 
+table.gridList th.picture
+{
+    background-image: url(/stylesheets/images/content/table/icon_contact_type.png);
+}
+table.gridList td.picture > *
+{
+    height: 24px;
+    text-indent: 0;
+    width: 24px;
+}
+table.gridList td.picture > .group
+{
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 0 -310px;
+    text-indent: -9999px;
+}
+
 table.gridList .name { width: 30%; }
 table.gridList .description { width: 45%; }
 table.gridList .owner { width: 25%; }
-table.gridList .lastUpdated { width: 11.5em; }
+table.gridList .lastUpdated,
+table.gridList .activityDate { width: 11.5em; }
 
 
 table.gridList .viewed { width: 25%; }

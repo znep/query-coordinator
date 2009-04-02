@@ -97,8 +97,16 @@ class Model
     end
   end
 
+  def tag_display_string
+    tags.nil? ? '' : tags.join(", ")
+  end
+
   def to_s
-    to_json
+    if data.is_a?(Hash)
+      to_json
+    else
+      data.to_s
+    end
   end
 
   def to_json
@@ -171,10 +179,12 @@ class Model
 protected
 
   def data_hash
-    dhash = data.clone
-    dhash.merge!(update_data)
-    dhash['flags'] = combined_flags
-    dhash
+    dcopy = data.clone
+    if dcopy.is_a?(Hash)
+      dcopy.merge!(update_data)
+      dcopy['flags'] = combined_flags
+    end
+    dcopy
   end
 
   def combined_flags

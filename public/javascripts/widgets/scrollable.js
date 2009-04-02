@@ -33,7 +33,7 @@
         {
             var $this = $(this);
             // build element specific options
-            var config = $.meta ? $.extend({}, opts, $menu.data()) : opts;
+            var config = $.meta ? $.extend({}, opts, $this.data()) : opts;
             $this.data("config-scrollable", config);
 
             if ($this.children(config.selector).length <= config.numVisible)

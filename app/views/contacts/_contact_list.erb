@@ -1,0 +1,57 @@
+<table id='contactList' class='gridList selectableList' cellspacing="0">
+  <colgroup>
+    <col class='handle' />
+    <col class='picture' />
+    <col class='name' />
+    <col class='tags' />
+    <col class='activityDate' />
+  </colgroup>
+  <thead>
+    <tr>
+      <th class='handle first'><div></div></th>
+      <th class='picture' title='Picture'><div>Picture</div></th>
+      <th class='name'><div>Name</div></th>
+      <th class='tags'><div>Tags</div></th>
+      <th class='activityDate last'><div>Last Activity</div></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for contact in @contacts %>
+    <tr id='<%= contact.is_a?(Group) ? 'group' : 'contact' %>:<%= contact.id %>'
+      class='item'>
+      <td class='handle first'><div>
+          <a href="#open_menu" class="dropdownLink menuHandle">Contact Menu</a>
+          <%# menu_tag({'id' => "itemMenu-#{blist.id}", 'class' => 'blistItemMenu',
+          'items' => [
+          {'text' => 'Open', 'class' => 'open', 'href' => blist_url(blist.id)},
+          {'text' => favorite_action_text, 'class' => 'addFavorite favoriteLink', 'href' => favorite_action},
+          {'text' => 'Rename', 'class' => 'rename', 'href' => '#rename'},
+          {'text' => 'Delete', 'class' => 'delete', 'href' => '#delete'}
+          ]
+          }) %>
+      </div></td>
+      <td class='picture'>
+        <%- if contact.is_a?(Group) -%>
+        <div class='group'><a href='#'><%= h(contact.name) %></a></div>
+        <%- else -%>
+        <a href='#'>
+          <img src="<%= contact.profile_image("small") %>" width="24" height="24"
+            alt="<%= h(contact.displayName) %>" />
+        </a>
+        <%- end -%>
+      </td>
+      <td class='name'>
+        <div class='clipText'>
+          <a href='#'><%= h(contact.name || contact.displayName) %></a>
+        </div>
+      </td>
+      <td class='tags'><div class='clipText'>
+          <%= h(contact.tag_display_string) %>
+      </div></td>
+      <td class='activityDate last'><div>
+          <%= blist_date(contact.lastLogin || contact.updatedAt) %>
+      </div></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

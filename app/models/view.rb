@@ -46,10 +46,6 @@ class View < Model
     grants.any? {|p| !p.flag?('public')}
   end
 
-  def tag_display_string
-    self.tags.map { |tag| tag.data }.join(", ")
-  end
-
   def last_updated_user
     rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)
   end

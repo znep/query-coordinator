@@ -74,33 +74,34 @@
     <% end %>
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'blistFilters',
-        :content_class => 'scrollContent' } ) do %>
+      :content_class => 'scrollContent' } ) do %>
       <div class='filterSection items expandableContainer'>
         <a href="#expand_items" class="expander">expand</a>
-        <h4><a href="?" title='<%= h(get_title()) %>'>
-            <span>All Items</span></a></h4>
+        <h4>
+          <%= sidebar_filter_link("<span>All Items</span>", {}, @args, true) %>
+        </h4>
         <ul class="expandable">
-          <li><a href='?owner=<%= current_user.id %>'
-            title='<%= h(get_title({'owner' => current_user.id.to_s})) %>'>
-            <span>Owned by <em>Me</em></span></a>
+          <li>
+            <%= sidebar_filter_link("<span>Owned by <em>Me</em></span>",
+              {'owner' => current_user.id.to_s}, @args) %>
           <%= contacts_filter_menu('?owner=', '?ownerGroup=',
             'owner', 'owner_group', 'ownerMenu') %>
           </li>
-          <li><a href='?sharedTo=<%= current_user.id %>'
-            title='<%= h(get_title({'shared_to' => current_user.id.to_s})) %>'>
-            <span>Shared to <em>Me</em></span></a>
+          <li>
+            <%= sidebar_filter_link("<span>Shared to <em>Me</em></span>",
+              {'shared_to' => current_user.id.to_s}, @args) %>
           <%= contacts_filter_menu('?sharedTo=', '?sharedToGroup=',
             'shared_to', 'shared_to_group', 'sharedToMenu') %>
           </li>
-          <li><a href='?sharedBy=<%= current_user.id %>'
-            title='<%= h(get_title({'shared_by' => current_user.id.to_s})) %>'>
-            <span>Shared by <em>Me</em></span></a>
+          <li>
+            <%= sidebar_filter_link("<span>Shared by <em>Me</em></span>",
+              {'shared_by' => current_user.id.to_s}, @args) %>
           <%= contacts_filter_menu('?sharedBy=', '?sharedByGroup=',
             'shared_by', 'shared_by_group', 'sharedByMenu') %>
           </li>
-          <li><a href='?type=favorite'
-            title='<%= h(get_title({'type' => 'favorite'})) %>'>
-            <span>Show only <em>Favorites</em></span></a>
+          <li>
+            <%= sidebar_filter_link("<span>Show only <em>Favorites</em></span>",
+              {'type' => 'favorite'}, @args) %>
           <%= menu_tag({'id' => 'typeMenu', 'items' => [
             { 'text' => 'Favorites', 'href' => '?type=favorite',
               'title' => h(get_title({'type' => 'favorite'})) },
@@ -141,15 +142,20 @@
 
       <div class='filterSection closed tags expandableContainer'>
         <a href="#expand_items" class="expander">expand</a>
-        <h4><a href="?" title='<%= h(get_title()) %>'><span>All Tags</span></a></h4>
+        <h4>
+          <%= sidebar_filter_link("<span>All Tags</span>",
+            {'untagged' => 'false'}, @args) %>
+        </h4>
         <ul class="expandable">
-          <li class='untagged'><a href='?untagged=true'
-            title='<%= h(get_title({'untagged' => true})) %>'>
-            <span>Not Tagged</span></a></li>
+          <li class='untagged'>
+            <%= sidebar_filter_link("<span>Not Tagged</span>",
+              {'untagged' => 'true'}, @args) %>
+          </li>
           <% get_blist_tags().each do |tag| %>
-          <li><a href='?tag=<%= CGI.escape(tag) %>'
-            title='<%= h(get_title({'tag' => tag})) %>'>
-            <span><%= h(tag) %></span></a></li>
+          <li>
+            <%= sidebar_filter_link("<span>#{h(tag)}</span>",
+              {'tag' => tag}, @args) %>
+          </li>
           <% end %>
         </ul>
       </div>
@@ -163,7 +169,8 @@
   <%= javascript_include_tag "plugins/jquery.tablesorter",
     "plugins/jquery.treeTable", "plugins/jquery.searchable", "util/humane-date",
     "widgets/panel-expander", "widgets/dropdown-menu", "widgets/selectable-list",
-    "widgets/combination-list", "screens/blists-screen", "screens/info-pane",
+    "widgets/combination-list", "widgets/sidebar-filter",
+    "screens/blists-screen", "screens/info-pane",
     :cache => "cache/blists_index_all" %>
     <script type="text/javascript" charset="utf-8">
       var form_authenticity_token = "<%= form_authenticity_token %>";

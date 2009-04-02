@@ -35,6 +35,7 @@ ActionController::Routing::Routes.draw do |map|
       :create_favorite => :post,
       :delete_favorite => :post
     }
+  map.resources :contacts
   map.resource :discover
   map.resource :account
   map.resource :profile

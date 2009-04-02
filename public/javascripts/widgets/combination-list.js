@@ -32,6 +32,7 @@
             scrollableBody: true,
             searchable: false,
             searchCompleteCallback: function () {},
+            searchFormSelector: "form",
             selectable: true,
             selectionCallback: function ($selectedItems) {},
             sortable: true,
@@ -122,6 +123,8 @@
                 {
                     $comboList.searchable(
                     {
+                        searchFormSelector:
+                            comboListObj.settings.searchFormSelector,
                         searchCompleteCallback: function()
                         {
                             comboListObj.settings.searchCompleteCallback();
@@ -213,18 +216,21 @@
     var sortFinishedHandler = function (comboListObj, event)
     {
         var $comboList = $(comboListObj.currentList);
-        $comboList.find('tr.child').reverse().each(function ()
+        if (comboListObj.settings.treeTable)
         {
-            var classMatch = $(this).attr('class').match(/child-of-(\S+)/);
-            if (classMatch && classMatch.length > 1)
+            $comboList.find('tr.child').reverse().each(function ()
             {
-                var $parRow = $('#' + classMatch[1]);
-                if ($parRow.length == 1)
+                var classMatch = $(this).attr('class').match(/child-of-(\S+)/);
+                if (classMatch && classMatch.length > 1)
                 {
-                    $parRow.after(this);
+                    var $parRow = $('#' + classMatch[1]);
+                    if ($parRow.length == 1)
+                    {
+                        $parRow.after(this);
+                    }
                 }
-            }
-        });
+            });
+        }
         $comboList.find('tbody').show();
     };
 

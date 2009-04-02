@@ -2,12 +2,6 @@ var myBlistsNS = blist.namespace.fetch('blist.myBlists');
 
 /* Functions for main blists screen */
 
-blist.myBlists.listSelectionHandler = function (event, title)
-{
-    $('#blistList tbody').hide();
-    $('#listTitle').text(title);
-};
-
 blist.myBlists.setupTable = function ()
 {
     $('#blistList').combinationList({
@@ -23,6 +17,7 @@ blist.myBlists.setupTable = function ()
         },
         searchable: true,
         searchCompleteCallback: function () { blistsInfoNS.updateSummary(0); },
+        searchFormSelector: "form.blistsFind",
         selectionCallback: function($targetRow, $selectedItems)
         {
             blistsInfoNS.updateSummary($selectedItems.length);
@@ -230,8 +225,17 @@ var blistsBarNS = blist.namespace.fetch('blist.myBlists.sidebar');
 
 blist.myBlists.sidebar.initializeHandlers = function ()
 {
+    $('#blistFilters').filterList({
+        filterClickHandler: function (title)
+        {
+            $('#blistList tbody').hide();
+            $('#listTitle').text(title);
+        },
+        filterSuccessHandler: function (retData)
+        {
+            $('#blistList').combinationList().updateList(retData);
+        }});
     $('#blistFilters a:not(.expander, ul.menu a)')
-        .click(blistsBarNS.filterClickHandler)
         .each(function ()
         {
             $(this).siblings('ul.menu').dropdownMenu({triggerButton: $(this),
@@ -242,32 +246,6 @@ blist.myBlists.sidebar.initializeHandlers = function ()
                     return $(event.target).is('em');
                 }});
         });
-    $('#blistFilters a.expander').click(blistsBarNS.toggleSection);
-};
-
-blist.myBlists.sidebar.filterClickHandler = function (event)
-{
-    event.preventDefault();
-    var $target = $(event.currentTarget);
-    if ($(event.target).is('em'))
-    {
-        $target.siblings('ul.menu').css('left',
-            $(event.target).position().left + 'px');
-        return;
-    }
-
-    $target.trigger(blist.events.LIST_SELECTION, [$target.attr('title')]);
-    $.Tache.Get({ url: $target.attr('href'),
-            success: function (retData)
-            {
-                $('#blistList').combinationList().updateList(retData);
-            }});
-};
-
-blist.myBlists.sidebar.toggleSection = function (event)
-{
-    event.preventDefault();
-    $(event.target).parent(".expandableContainer").toggleClass('closed');
 };
 
 blist.myBlists.sidebar.filterMenuClickHandler = function (event, $menu,
@@ -294,9 +272,6 @@ $(function ()
         commonNS.adjustSize();
     });
     commonNS.adjustSize();
-
-    $('#outerContainer').bind(blist.events.LIST_SELECTION,
-        myBlistsNS.listSelectionHandler);
 
     $(".expandContainer").blistPanelExpander({
         expandCompleteCallback: blistsInfoNS.updateSummary

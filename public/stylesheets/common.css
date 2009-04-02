@@ -217,6 +217,7 @@ form.search input.submit
 /* Selected tab */
 #home .tabList li.home,
 #blists .tabList li.blists,
+#contacts .tabList li.contacts,
 #profile .tabList li.profile,
 .tabList li.active
 {
@@ -227,6 +228,7 @@ form.search input.submit
 
 #home .tabList li.home .wrapper,
 #blists .tabList li.blists .wrapper,
+#contacts .tabList li.contacts .wrapper,
 #profile .tabList li.profile .wrapper,
 .tabList li.active .wrapper
 {
@@ -237,6 +239,7 @@ form.search input.submit
 
 #home .tabList li.home a,
 #blists .tabList li.blists a,
+#contacts .tabList li.contacts a,
 #profile .tabList li.profile a,
 .tabList li.active a
 {
@@ -249,6 +252,7 @@ form.search input.submit
 
 #home .tabList li.home a:hover,
 #blists .tabList li.blists a:hover,
+#contacts .tabList li.contacts a:hover,
 #profile .tabList li.profile a:hover,
 .tabList li.active a:hover
 {

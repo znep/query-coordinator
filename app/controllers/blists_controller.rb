@@ -3,17 +3,13 @@ class BlistsController < SwfController
 
   def index
     @body_class = 'home'
-    args = {'owner' => params[:owner],
-            'owner_group' => params[:ownerGroup],
-            'shared_to' => params[:sharedTo],
-            'shared_to_group' => params[:sharedToGroup],
-            'shared_by' => params[:sharedBy],
-            'shared_by_group' => params[:sharedByGroup],
-            'type' => params[:type],
-            'untagged' => params[:untagged],
-            'tag' => params[:tag]}
-    @blists = get_blists(args)
-    @title = get_title(args)
+    accept_keys = ['owner', 'owner_group', 'shared_to', 'shared_to_group',
+      'shared_by', 'shared_by_group', 'type', 'untagged', 'tag']
+    @args = params.reject {|k,v| !accept_keys.include?(k)}.inject({}) do |h,(k,v)|
+      h[k] = CGI.unescape(v); h
+    end
+    @blists = get_blists(@args)
+    @title = get_title(@args)
   end
 
   def show
@@ -136,8 +132,11 @@ private
       cur_views = cur_views.find_all {|v| v.flag?('favorite')}
     end
 
-    if !params['untagged'].nil? && params['untagged']
+    if !params['untagged'].nil? && params['untagged'] == 'true'
       cur_views = cur_views.find_all {|v| v.tags.length < 1}
+    end
+    if !params['untagged'].nil? && params['untagged'] == 'false'
+      cur_views = cur_views.find_all {|v| v.tags.length > 0}
     end
     if !params['tag'].nil?
       cur_views = cur_views.find_all {|v| v.tags.any? {|t|
@@ -210,8 +209,11 @@ private
       parts << 'shared by ' + Group.find(params['shared_by_group']).name
     end
 
-    if !params['untagged'].nil? && params['untagged']
+    if !params['untagged'].nil? && params['untagged'] == 'true'
       parts << 'with no tags'
+    end
+    if !params['untagged'].nil? && params['untagged'] == 'false'
+      parts << 'with any tags'
     end
 
     if !params['tag'].nil?

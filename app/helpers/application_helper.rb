@@ -82,4 +82,12 @@ module ApplicationHelper
   def blist_href_import
     blist_url('import')
   end
+
+  def sidebar_filter_link(content, params, current_params, is_default = false)
+    "<a href='?" +
+      (params.inject({}) {|h,(k,v)| h[k] = CGI.escape(v); h}.to_param) +
+      "' title='#{h(get_title(params))}'" +
+      (params == current_params || (current_params.empty? && is_default) ?
+        "class='hilight'" : "") + ">#{content}</a>"
+  end
 end

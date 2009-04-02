@@ -1,0 +1,14 @@
+#contacts .headerBar .headerActions li a
+{
+    background: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png) left 23px no-repeat;
+}
+#contacts .headerBar .headerActions li a.add_new { background-position: 0 -40px; }
+
+#contacts table.gridList tr.hover td+td+td > *,
+#contacts table.gridList tr.highlight td+td+td > *
+{
+    background-color: #ffedb2;
+}
+
+#contacts table.gridList .name { width: 40%; }
+#contacts table.gridList .tags { width: 60%; }

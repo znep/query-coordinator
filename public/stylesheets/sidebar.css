@@ -92,7 +92,7 @@
 {
     position: relative;
 }
-#sidebar #blistFilters .expandableContainer a.expander 
+#sidebar .filterSection.expandableContainer a.expander
 {
     background-image: url(/stylesheets/images/sidebar/blists_filter/icon_expand_sprites.png);
     background-position: 0 -22px;
@@ -108,15 +108,15 @@
     width: 22px;
 }
 /* Slight positioning change for the arrow on an <li> */
-#sidebar #blistFilters li.expandableContainer a.expander {
+#sidebar li.filterSection.expandableContainer a.expander {
     top: 2px;
 }
 
-#sidebar #blistFilters .expandableContainer.closed a.expander
+#sidebar .filterSection.expandableContainer.closed a.expander
 {
     background-position: 0 0;
 }
-#sidebar .expandableContainer.closed ul
+#sidebar .filterSection.expandableContainer.closed ul
 {
     display: none;
 }
@@ -146,6 +146,7 @@
 #sidebar .filterSection h4 a
 {
     background-position: 12px 0;
+    color: #666666;
     margin: 0;
 }
 
@@ -167,6 +168,11 @@
 #sidebar .filterSection.tags h4 a
 {
     background-position: 0 -132px;
+}
+
+#sidebar .filterSection.groups h4 a
+{
+    background-position: 0 -154px;
 }
 
 #sidebar .filterSection > ul,
@@ -191,41 +197,46 @@
     text-decoration: underline;
 }
 
-#sidebar .filterSection.items a
+#sidebar .filterSection.items > ul > li > a
 {
     background-position: 0 -66px;
 }
-#sidebar .filterSection.items .deleted a
+#sidebar .filterSection.items > ul > li.deleted > a
 {
     background-position: 0 -22px;
 }
 
 
-#sidebar .filterSection.projects a
+#sidebar .filterSection.projects > ul > li > a
 {
     background-position: 0 -110px;
 }
-#sidebar .filterSection.projects li ul a
+#sidebar .filterSection.projects > ul > li > ul > a
 {
     background-position: 0 -44px;
 }
 
-#sidebar .filterSection.folders a
+#sidebar .filterSection.folders > ul > li > a
 {
     background-position: 0 -44px;
 }
-#sidebar .filterSection.folders .not_in_folders a
+#sidebar .filterSection.folders > ul > li.not_in_folders > a
 {
     background-position: 0 0;
 }
 
-#sidebar .filterSection.tags a
+#sidebar .filterSection.tags > ul > li > a
 {
     background-position: 0 -132px;
 }
-#sidebar .filterSection.tags .untagged a
+#sidebar .filterSection.tags > ul > li.untagged > a
 {
     background-position: 0 0;
+}
+
+#sidebar .filterSection.groups > ul > li > a
+{
+    background-position: 0 -154px;
 }
 
 #sidebar .filterSection > ul > li > a span,
@@ -239,9 +250,13 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 #sidebar .filterSection > ul > li > a:hover span,
+#sidebar .filterSection > ul > li > a.hilight span,
 #sidebar .filterSection h4 a:hover span,
-#sidebar .filterSection ul.expandable > li > a:hover span
+#sidebar .filterSection h4 a.hilight span,
+#sidebar .filterSection ul.expandable > li > a:hover span,
+#sidebar .filterSection ul.expandable > li > a.hilight span
 {
     background: url(/stylesheets/images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
 }

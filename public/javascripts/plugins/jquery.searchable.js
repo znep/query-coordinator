@@ -37,7 +37,8 @@
             $(opts.searchFormSelector).submit(function(event){
                 event.preventDefault();
                 
-                var keyword = new RegExp($(opts.searchInputSelector).val(), "i");
+                var keyword = new RegExp($(opts.searchFormSelector)
+                    .find(opts.searchInputSelector).val(), "i");
                 $(opts.searchRowSelector, targetTable).each(function(){
                     var $tr = $(this);
                     $('td', $tr).filter(function(){
@@ -50,8 +51,8 @@
     };
     
     $.fn.searchable.defaults = {
-        searchFormSelector: "form.blistsFind",
-        searchInputSelector: "form.blistsFind input.textPrompt",
+        searchFormSelector: "form",
+        searchInputSelector: "input.textPrompt",
         searchRowSelector: "tr.item",
         searchCompleteCallback: function(){}
     }

@@ -1,0 +1,125 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "list-screen", "contacts-screen", "widgets",
+    :cache => "cache/contacts_index_all" %>
+  <title>blist | share your weblists</title>
+<% end %>
+
+
+
+<div class="twoColumnContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent scrollContentColumn">
+    <div id='contacts'>
+      <%= render(:partial => "shared/tabs") %>
+
+      <div class='outerContent'>
+        <div class='content'>
+          <div class='headerBar clearfix'>
+            <h3 id='listTitle'><%= h(@title) %></h3>
+
+            <form class="search contactsFind" action='#'>
+              <p>
+                <input type='text' class='textPrompt' name='find'
+                  title='Find' value='' />
+                <input type='image' class='submit' name='findSubmit'
+                  src="<%= image_path("find_button.png") %>" />
+              </p>
+            </form>
+
+            <ul class="headerActions">
+              <li><a href='#' class="add_new">Add New</a></li>
+            </ul>
+
+          </div>
+
+          <div class='gridListContainer'>
+            <%#
+             This div will hold a copy of the table that displays the header
+            %>
+            <div class='headerContainer'></div>
+            <div class='gridListInner scrollContent'>
+              <%= render(:partial => "contact_list") %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="infoPane"></div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="column scrollContentColumn">
+    <% render(:layout => "shared/sidebar_box") do %>
+      <%= render(:partial => "shared/current_user_tile",
+        :locals => { :user => current_user }) %>
+    <% end %>
+    <% render(:layout => "shared/sidebar_box",
+      :locals => { :id => 'contactFilters',
+      :content_class => 'scrollContent' } ) do %>
+      <div class='filterSection items expandableContainer'>
+        <a href="#expand_items" class="expander">expand</a>
+        <h4>
+          <%= sidebar_filter_link("<span>All Contacts</span>",
+            {'type' => 'contacts'}, @args, true) %>
+        </h4>
+        <ul class="expandable">
+          <li>
+            <%= sidebar_filter_link("<span>I Have Shared With</span>",
+              {'share_direction' => 'out'}, @args) %>
+          </li>
+          <li>
+            <%= sidebar_filter_link("<span>Have Shared To Me</span>",
+              {'share_direction' => 'in'}, @args) %>
+          </li>
+        </ul>
+      </div>
+
+      <div class='filterSection groups expandableContainer'>
+        <a href="#expand_items" class="expander">expand</a>
+        <h4>
+          <%= sidebar_filter_link('<span>All Groups</span>',
+            {'type' => 'groups'}, @args) %>
+        </h4>
+        <ul class="expandable">
+          <%- get_groups().each do |group| -%>
+          <li>
+          <%= sidebar_filter_link("<span>#{h(group.name)}</span>",
+            {'group' => group.id.to_s}, @args) %>
+          </li>
+          <%- end -%>
+        </ul>
+      </div>
+
+      <div class='filterSection closed tags expandableContainer'>
+        <a href="#expand_items" class="expander">expand</a>
+        <h4>
+          <%= sidebar_filter_link("<span>All Tags</span>",
+            {'untagged' => 'false'}, @args) %>
+        </h4>
+        <ul class="expandable">
+          <li class='untagged'>
+            <%= sidebar_filter_link("<span>Not Tagged</span>",
+              {'untagged' => 'true'}, @args) %>
+          </li>
+          <% get_contact_tags().each do |tag| %>
+          <li>
+            <%= sidebar_filter_link("<span>#{h(tag)}</span>",
+              {'tag' => tag}, @args) %>
+          </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <%= render(:partial => "shared/ad_box") %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "plugins/jquery.tablesorter",
+    "plugins/jquery.searchable", "util/humane-date",
+    "widgets/panel-expander", "widgets/selectable-list",
+    "widgets/combination-list", "widgets/sidebar-filter",
+    "screens/contacts-screen", "screens/info-pane",
+    :cache => "cache/contacts_index_all" %>
+<% end %>

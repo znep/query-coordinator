@@ -9,12 +9,15 @@ blist.util.sizing.cachedInfoPaneHeight = 0;
 // taking into account other items in the flow.
 $.fn.blistFitWindow = function(options) {
     var opts = $.extend({}, $.fn.blistFitWindow.defaults, options);
+    var isFitting = false;
     
     return this.each(function() {
         var $this = $(this);
         
         // Support for the Metadata Plugin.
         var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
+        
+        var naturalHeight = $this.height("auto").height();
         
         // First size content to full document height, to make sure it is the
         //  largest thing on the page and causing the overflow
@@ -30,11 +33,16 @@ $.fn.blistFitWindow = function(options) {
             adjustedHeight += opts.cachedExpandableSelectorHeight;
         }
         
+        var newHeight = Math.max(0,
+                            $this.height() - (adjustedHeight -
+                                Math.max($('body').minSize().height, $(window).height())));
+        // Are we fitting (adding a scroll bar)? 
+        // If so, stash this so all fit windows account for the footer.
+        isFitting = isFitting || newHeight < naturalHeight;
+        newHeight = isFitting ? newHeight + $(opts.footerSelector).height() : newHeight;
+
         // Then clip it by how much the document overflows the window
-        $this.height(Math.max(0,
-                    $this.height() - (adjustedHeight -
-                        Math.max($('body').minSize().height, $(window).height()))));
-        
+        $this.height(newHeight);
     });
 };
 
@@ -43,7 +51,8 @@ $.fn.blistFitWindow.defaults = {
     columnSelector: ".scrollContentColumn",
     expandableSelector: "#infoPane:not(:empty)",
     isExpandedSelector: "#infoPane:not(:empty):has(.expanded)",
-    cachedExpandableSelectorHeight: 0
+    cachedExpandableSelectorHeight: 0,
+    footerSelector: "#footer"
 };
 
 // Stretch an element to fit inside of a containing element.

@@ -189,6 +189,10 @@
         prototype: {
             init: function() {
                 var tabNavigator = this;
+                // Set the expanded state.
+                var isExpanded = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector)
+                                    .is("." + tabNavigator.settings.expandedClass);
+                $(tabNavigator.currentList).data("isExpanded", isExpanded);
                 // Enumerate the tabs..
                 $(tabNavigator.currentList).find(tabNavigator.settings.tabSelector).each(function() {
                     $li = $(this);

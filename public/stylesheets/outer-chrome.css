@@ -41,13 +41,13 @@ body
     background-image: url(/stylesheets/images/header/blist_logo.png);
     background-repeat: no-repeat;
     display: block;
-    height: 35px;
+    height: 37px;
     left: 10px;
     position: absolute;
     text-align: left;
     text-indent: -9999px;
     top: 15px;
-    width: 72px;
+    width: 86px;
 }
 
 #header li, #footer li

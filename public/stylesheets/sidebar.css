@@ -261,10 +261,14 @@
     background: url(/stylesheets/images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
 }
 
+ul.menu.contactsMenu li
+{
+    padding: 0;
+}
+
 ul.menu.contactsMenu li a
 {
-    padding-left: 0;
-    margin: 0;
+    padding-left: 5px;
 }
 
 ul.menu.contactsMenu li a span

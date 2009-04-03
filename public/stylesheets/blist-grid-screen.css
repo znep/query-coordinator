@@ -116,17 +116,17 @@ body#lensBody
 
 #lensBody .headerBar #filterViewMenu .filter a
 {
-    background-position: 0 -717px;
+    background-position: 5px -715px;
 }
 
 #lensBody .headerBar #filterViewMenu .sort a
 {
-    background-position: 0 -740px;
+    background-position: 5px -738px;
 }
 
 #lensBody .headerBar #filterViewMenu .showHide a
 {
-    background-position: 0 -372px;
+    background-position: 5px -370px;
 }
 
 #lensBody .headerBar #newPageLink
@@ -142,23 +142,23 @@ body#lensBody
 #lensBody .headerBar #displayMenu li a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
-    background-position: left -855px;
+    background-position: 5px -853px;
     background-repeat: no-repeat;
 }
 
 #lensBody .headerBar #displayMenu li.checked a
 {
-    background-position: left -510px;
+    background-position: 5px -508px;
 }
 
 #lensBody .headerBar #displayMenu .table a
 {
-    background-position: left -855px;
+    background-position: 5px -853px;
 }
 
 #lensBody .headerBar #displayMenu .page a
 {
-    background-position: left -878px;
+    background-position: 5px -876px;
 }
 
 /* Icons & styling for main menu */
@@ -287,196 +287,196 @@ body#lensBody
 #mainMenu dl > dd > ul > li > ul > li > a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
-    background-position: 0 23px; /* default to show no icon */
+    background-position: 5px 23px; /* default to show no icon */
     background-repeat: no-repeat;
 }
 
 #mainMenu li.blist .print > a
 {
-    background-position: 0 -4px;
+    background-position: 5px -2px;
 }
 
 #mainMenu li.blist .export > a
 {
-    background-position: 0 -27px;
+    background-position: 5px -25px;
 }
 
 #mainMenu li.blist .email > a
 {
-    background-position: 0 -50px;
+    background-position: 5px -48px;
 }
 
 #mainMenu li.blist .copy > a
 {
-    background-position: 0 -73px;
+    background-position: 5px -71px;
 }
 
 #mainMenu li.blist .create > a
 {
-    background-position: 0 -96px;
+    background-position: 5px -94px;
 }
 
-#mainMenu li.blist .create .table > a { background-position: 0 -855px; }
-#mainMenu li.blist .create .page > a { background-position: 0 -878px; }
-#mainMenu li.blist .create .calendar > a { background-position: 0 -763px; }
-#mainMenu li.blist .create .form > a { background-position: 0 -832px; }
+#mainMenu li.blist .create .table > a { background-position: 5px -853px; }
+#mainMenu li.blist .create .page > a { background-position: 5px -876px; }
+#mainMenu li.blist .create .calendar > a { background-position: 5px -761px; }
+#mainMenu li.blist .create .form > a { background-position: 5px -830px; }
 
 #mainMenu li.blist .import > a
 {
-    background-position: 0 -119px;
+    background-position: 5px -117px;
 }
 
 #mainMenu li.blist .findTemplate > a
 {
-    background-position: 0 -142px;
+    background-position: 5px -140px;
 }
 
 #mainMenu li.blist .recent > a
 {
-    background-position: 0 -165px;
+    background-position: 5px -163px;
 }
 
 #mainMenu li.blist .editPermissions > a
 {
-    background-position: 0 -188px;
+    background-position: 5px -186px;
 }
 
 #mainMenu li.edit .undo > a
 {
-    background-position: 0 -211px;
+    background-position: 5px -209px;
 }
 
 #mainMenu li.edit .redo > a
 {
-    background-position: 0 -234px;
+    background-position: 5px -232px;
 }
 
 #mainMenu li.edit .cut > a
 {
-    background-position: 0 -257px;
+    background-position: 5px -255px;
 }
 
 #mainMenu li.edit .copy > a
 {
-    background-position: 0 -280px;
+    background-position: 5px -278px;
 }
 
 #mainMenu li.edit .paste > a
 {
-    background-position: 0 -303px;
+    background-position: 5px -301px;
 }
 
 #mainMenu li.edit .delete > a
 {
-    background-position: 0 -326px;
+    background-position: 5px -324px;
 }
 
 #mainMenu li.edit .columnOptions > a
 {
-    background-position: 0 -349px;
+    background-position: 5px -347px;
 }
 
 #mainMenu li.edit .rowOptions > a
 {
-    background-position: 0 -349px;
+    background-position: 5px -347px;
 }
 
 #mainMenu li.data .insertColumn > a
 {
-    background-position: 0 -372px;
+    background-position: 5px -370px;
 }
 
 #mainMenu li.data .insertRow > a
 {
-    background-position: 0 -395px;
+    background-position: 5px -393px;
 }
 
 #mainMenu li.data .picklists > a
 {
-    background-position: 0 -418px;
+    background-position: 5px -416px;
 }
 
 #mainMenu li.data .rowTags > a
 {
-    background-position: 0 -441px;
+    background-position: 5px -439px;
 }
 
 #mainMenu li.data .rowIDs > a
 {
-    background-position: 0 -464px;
+    background-position: 5px -462px;
 }
 
 #mainMenu li.data .columnTotals > a
 {
-    background-position: 0 -487px;
+    background-position: 5px -485px;
 }
-#mainMenu li.data .columnTotals .showTotals > a { background-position: 0 -901px; }
-#mainMenu li.data .columnTotals .showTotals.checked > a { background-position: 0 -510px; }
+#mainMenu li.data .columnTotals .showTotals > a { background-position: 5px -899px; }
+#mainMenu li.data .columnTotals .showTotals.checked > a { background-position: 5px -508px; }
 
 #mainMenu li.data .columnTotals .optionMenu li > a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
-    background-position: 0 -924px;
+    background-position: 5px -922px;
     background-repeat: no-repeat;
 }
 #mainMenu li.data .columnTotals .optionMenu li.checked > a
 {
-    background-position: 0 -947px;
+    background-position: 5px -945px;
 }
 
 #mainMenu li.info .summary > a
 {
-    background-position: 0 -510px;
+    background-position: 5px -508px;
 }
 
 #mainMenu li.info .views > a
 {
-    background-position: 0 -533px;
+    background-position: 5px -531px;
 }
 
 #mainMenu li.info .comments > a
 {
-    background-position: 0 -556px;
+    background-position: 5px -554px;
 }
 
 #mainMenu li.info .publishing > a
 {
-    background-position: 0 -579px;
+    background-position: 5px -577px;
 }
 
 #mainMenu li.info .shares > a
 {
-    background-position: 0 -602px;
+    background-position: 5px -600px;
 }
 
 #mainMenu li.info .activity > a
 {
-    background-position: 0 -625px;
+    background-position: 5px -623px;
 }
 
 #mainMenu li.publish .grid > a
 {
-    background-position: 0 -648px;
+    background-position: 5px -646px;
 }
 
 #mainMenu li.publish .gridPage > a
 {
-    background-position: 0 -671px;
+    background-position: 5px -669px;
 }
 
 #mainMenu li.publish .page > a
 {
-    background-position: 0 -694px;
+    background-position: 5px -692px;
 }
 
 #mainMenu li.publish .form > a
 {
-    background-position: 0 -717px;
+    background-position: 5px -715px;
 }
 
 #mainMenu li.publish .search > a
 {
-    background-position: 0 -740px;
+    background-position: 5px -738px;
 }
 
 
@@ -535,7 +535,8 @@ body#lensBody
     font-size: 1.2em;
     height: 20px;
     line-height: 20px;
-    padding-left: 24px;
+    margin-left: -5px;
+    padding-left: 30px;
     text-decoration: none;
 }
 
@@ -544,110 +545,110 @@ body#lensBody
 #mainMenu .columnsMenu > li > a
 {
     background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
-    background-position: 0 20px;
+    background-position: 5px 20px;
     background-repeat: no-repeat;
 }
 
 #addColumn_plainText,
 #mainMenu .columnsMenu .plainText a
 {
-    background-position: 0 -82px;
+    background-position: 5px -80px;
 }
 
 #addColumn_formattedText,
 #mainMenu .columnsMenu .formattedText a
 {
-    background-position: 0 -62px;
+    background-position: 5px -60px;
 }
 
 #addColumn_number,
 #mainMenu .columnsMenu .number a
 {
-    background-position: 0 -22px;
+    background-position: 5px -20px;
 }
 
 #addColumn_money,
 #mainMenu .columnsMenu .money a
 {
-    background-position: 0 -42px;
+    background-position: 5px -40px;
 }
 
 #addColumn_percent,
 #mainMenu .columnsMenu .percent a
 {
-    background-position: 0 -2px;
+    background-position: 5px 0;
 }
 
 #addColumn_dateTime,
 #mainMenu .columnsMenu .dateTime a
 {
-    background-position: 0 -342px;
+    background-position: 5px -340px;
 }
 
 #addColumn_phone,
 #mainMenu .columnsMenu .phone a
 {
-    background-position: 0 -242px;
+    background-position: 5px -240px;
 }
 
 #addColumn_email,
 #mainMenu .columnsMenu .email a
 {
-    background-position: 0 -262px;
+    background-position: 5px -260px;
 }
 
 #addColumn_url,
 #mainMenu .columnsMenu .url a
 {
-    background-position: 0 -362px;
+    background-position: 5px -360px;
 }
 
 #addColumn_checkbox,
 #mainMenu .columnsMenu .checkbox a
 {
-    background-position: 0 -122px;
+    background-position: 5px -120px;
 }
 
 #addColumn_stars,
 #mainMenu .columnsMenu .stars a
 {
-    background-position: 0 -142px;
+    background-position: 5px -140px;
 }
 
 #addColumn_flag,
 #mainMenu .columnsMenu .flag a
 {
-    background-position: 0 -382px;
+    background-position: 5px -380px;
 }
 
 #addColumn_document,
 #mainMenu .columnsMenu .document a
 {
-    background-position: 0 -282px;
+    background-position: 5px -280px;
 }
 
 #addColumn_photo,
 #mainMenu .columnsMenu .photo a
 {
-    background-position: 0 -102px;
+    background-position: 5px -100px;
 }
 
 #addColumn_picklist,
 #mainMenu .columnsMenu .picklist a
 {
-    background-position: 0 -402px;
+    background-position: 5px -400px;
 }
 
 #addColumn_bnb,
 #mainMenu .columnsMenu .bnb a
 {
-    background-position: 0 -442px;
+    background-position: 5px -440px;
 }
 
 #addColumn_rowTag,
 #mainMenu .columnsMenu .tag a
 {
-    background-position: 0 -182px;
+    background-position: 5px -180px;
 }
 
 

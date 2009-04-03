@@ -164,7 +164,7 @@ ul.menu.shown
 ul.menu li
 {
     display: block;
-    padding: 0.2em 10px 0.2em 5px;
+    padding: 4px 0;
 }
 
 ul.menu li.sectionTitle
@@ -172,6 +172,7 @@ ul.menu li.sectionTitle
     color: #959393;
     font-size: 1.1em;
     padding-left: 30px;
+    padding-right: 10px;
 }
 
 ul.menu li a
@@ -181,26 +182,20 @@ ul.menu li a
     font-size: 1.1em;
     height: 15px;
     line-height: 15px;
-    margin: 4px 0;
     overflow: hidden;
-    padding: 0 0 0 25px;
+    padding: 0.2em 10px 0.2em 30px;
     text-decoration: none;
 }
-ul.menu.noicon li a { padding-left: 0; }
-
-ul.menu li a:hover
-{
-    text-decoration: underline;
-}
+ul.menu.noicon li a { padding-left: 5px; }
 
 ul.menu li > a > .highlight
 {
     display: block;
 }
 
-ul.menu li:hover > a > .highlight
+ul.menu li > a:hover
 {
-    background-color: #ffedb2;
+    background-color: #e0d1b8;
 }
 
 ul.menu li.separator
@@ -292,7 +287,7 @@ ul.menu.optionMenu li
 ul.menu.optionMenu li a
 {
     margin-left: -30px;
-    padding-left: 28px;
+    padding-left: 33px;
 }
 
 ul.menu.optionMenu li.footer
@@ -370,6 +365,11 @@ ul.menu.multilevelMenu dd > ul
     right: 0;
     top: 0;
     width: 50%;
+}
+
+ul.menu.multilevelMenu dd > ul > li > a:hover
+{
+    background-color: #ffedcc;
 }
 
 ul.menu.multilevelMenu li.active > dl > dd > ul
@@ -738,6 +738,11 @@ table.gridList th.picture {
     text-indent: -9999px;
 }
 table.gridList .handle { width: 33px; }
+
+table.gridList td.handle > *
+{
+    font-size: 1em;
+}
 
 table.gridList .handle .menuHandle
 {

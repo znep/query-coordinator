@@ -18,15 +18,22 @@
 #blists .headerBar .headerActions li a.add_new { background-position: left 0; }
 #blists .headerBar .headerActions li a.import { background-position: left -23px; }
 
+#blists .blistItemMenu li
+{
+    padding: 0 0;
+}
+
 #blists .blistItemMenu li a
 {
-    background: url(/stylesheets/images/content/table/blists_item_menu_sprites.png) left 15px no-repeat;
+    background-image: url(/stylesheets/images/content/table/blists_item_menu_sprites.png);
+    background-position: 5px 17px;
+    background-repeat: no-repeat;
     text-indent: 0;
 }
-#blists .blistItemMenu li.open a { background-position: left 0; }
-#blists .blistItemMenu li.addFavorite a { background-position: left -15px; }
-#blists .blistItemMenu li.rename a { background-position: left -30px; }
-#blists .blistItemMenu li.delete a { background-position: left -45px; }
+#blists .blistItemMenu li.open a { background-position: 5px 2px; }
+#blists .blistItemMenu li.addFavorite a { background-position: 5px -13px; }
+#blists .blistItemMenu li.rename a { background-position: 5px -28px; }
+#blists .blistItemMenu li.delete a { background-position: 5px -43px; }
 
 #blists .noticePanel
 {

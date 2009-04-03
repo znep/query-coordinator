@@ -672,6 +672,14 @@ body#lensBody
     z-index: 100;
 }
 
+/* Position container so it will fit the wrapper */
+#lensContainer #swfContent
+{
+    position: absolute;
+    bottom: 0;
+    top: 0;
+}
+
 /* Styling for message when missing JS or Flash */
 #lensContainer #swfContent
 {

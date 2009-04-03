@@ -20,8 +20,6 @@ blist.blistGrid.sizeSwf = function (event)
     $target.css('left', containerLeft + 'px');
     $target.css('right',
         ($parent.width() - (containerLeft + $container.width())) + 'px');
-    // Safari doesn't give the swf the right height with height:100%; so force it
-    $swf.height($target.height());
 };
 
 blist.blistGrid.columnClickHandler = function (event)
@@ -67,9 +65,6 @@ blist.blistGrid.flashPopupShownHandler = function (popup)
     {
         $('#swfWrapper').css('top', ($('#header').outerHeight() + 10) + 'px');
         $('#swfWrapper').css('bottom', ($('#footer').outerHeight() + 10) + 'px');
-        // Safari doesn't give the swf the right height with height:100%; so
-        // force it
-        $('#swfContent').height($('#swfWrapper').height());
     }
     $('#overlay').show();
 };

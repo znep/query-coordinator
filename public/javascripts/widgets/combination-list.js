@@ -27,6 +27,7 @@
         {
             clipText: true,
             headerContainerSelector: '.headerContainer',
+            hoverOnly: false,
             initialSort: [[[0, 0]]],
             loadedCallback: function () {},
             scrollableBody: true,
@@ -83,6 +84,10 @@
                                 comboListObj.selectedItems());
                         }
                     });
+                }
+                else if (comboListObj.settings.hoverOnly)
+                {
+                    $comboList.blistListHoverItems();
                 }
 
                 if (comboListObj.settings.treeTable)

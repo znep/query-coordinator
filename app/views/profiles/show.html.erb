@@ -39,7 +39,9 @@
                   <h5>[Developer]</h5>
                 </div>
                 <div class='userTags'>
-                  <h5>Tags: <span class='tagContent'>[test, test2, sde]</span></h5>
+                  <h5>Tags: <span class='tagContent'>
+                      <%= current_user.tag_display_string %>
+                  </span></h5>
                 </div>
               </div>
               <div class="sectionEdit formListBox">
@@ -187,6 +189,8 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.validate", "widgets/selectable-list",
-    "screens/profile-screen", :cache => "cache/profiles_show_all" %>
+  <%= javascript_include_tag "plugins/jquery.validate",
+    "plugins/jquery.tablesorter", "widgets/selectable-list",
+    "widgets/combination-list", "screens/profile-screen",
+    :cache => "cache/profiles_show_all" %>
 <% end %>

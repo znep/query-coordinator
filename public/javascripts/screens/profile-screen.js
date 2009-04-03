@@ -1,4 +1,3 @@
-
 var profileNS = blist.namespace.fetch('blist.profile');
 
 /* Initial start-up calls, and setting up bindings */
@@ -15,7 +14,7 @@ $(function ()
         }
     });
     $(".infoContent").blistStretchWindow();
-    
+
     $(".showListBoxLink").click(function(event)
     {
         event.preventDefault();
@@ -29,13 +28,13 @@ $(function ()
         $(this).closest(".sectionEdit").slideUp("fast");
         $(this).closest(".sectionContainer").find(".sectionShow").slideDown("fast");
     });
-    
+
     // Form validation.
     $.validator.setDefaults({
         submitHandler: function(form)
         {
             $form = $(form);
-            
+
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -48,14 +47,14 @@ $(function ()
                     $(".userLocation h5").text(user.displayLocation);
                     // TODO: add user title.
                     // TODO: add user tags.
-                    
+
                     $form.closest(".sectionEdit").slideUp("fast");
                     $form.closest(".sectionContainer").find(".sectionShow").slideDown("fast");
                 }
             });
         }
     });
-    
+
     // Profile form.
     $(".profileContent form").validate({
         rules: {
@@ -64,7 +63,7 @@ $(function ()
             login: "required"
         }
     });
-    
+
     $("#country").change(function()
     {
         $this = $(this);
@@ -77,7 +76,7 @@ $(function ()
             $("label[for='state']:not(:visible), #state:not(:visible)").show();
         }
     });
-    
+
     $(".descriptionContent form").submit(function(event)
     {
         event.preventDefault();
@@ -90,12 +89,19 @@ $(function ()
             data: requestData,
             success: function(responseData, textStatus) {
                 // TODO: add description.
-                
+
                 $form.closest(".sectionEdit").slideUp("fast");
                 $form.closest(".sectionContainer").find(".sectionShow").slideDown("fast");
             }
         });
     });
-    
-    $('#profile .publicBlists table.gridList').blistListHoverItems();
+
+    $('#profile .publicBlists table.gridList').combinationList({
+        hoverOnly: true,
+        initialSort: [[[2, 1]]],
+        scrollableBody: false,
+        selectable: false,
+        sortGrouping: false,
+        sortHeaders: {1: {sorter: "text"}, 4: {sorter: false}}
+    });
 });

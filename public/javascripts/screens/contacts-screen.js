@@ -18,6 +18,7 @@ blist.contacts.setupTable = function ()
             //blistsInfoNS.updateSummary($selectedItems.length);
         },
         sortHeaders: {0: {sorter: false}, 1: {sorter: false},
+            2: {sorter: "text"}, 3: {sorter: "text"},
             4: {sorter: "usLongDate"}},
     });
 };

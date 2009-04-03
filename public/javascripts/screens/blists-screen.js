@@ -29,7 +29,8 @@ blist.myBlists.setupTable = function ()
                 $nameCell.find("div").show();
             });
         },
-        sortHeaders: {0: {sorter: false}, 6: {sorter: "usLongDate"}},
+        sortHeaders: {0: {sorter: false}, 3: {sorter: "text"},
+            4: {sorter: "text"}, 5: {sorter: "text"}, 6: {sorter: "usLongDate"}},
         treeTable: true,
         treeColumn: 3
     });

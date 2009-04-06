@@ -654,6 +654,13 @@ body#lensBody
 
 /* Main content */
 
+#lensContainer .outerContent
+{
+    /* Override overflow: auto so that Firefox on Windows doesn't get screwed
+     * up in regards to cursor positioning in Flash */
+    overflow: visible;
+}
+
 #lensContainer .content
 {
     padding-bottom: 1em;
@@ -661,6 +668,9 @@ body#lensBody
 
 #lensContainer #outerSwfWrapper
 {
+    /* Override overflow: auto for .scrollContent so that Firefox on Windows
+     * doesn't get screwed up in regards to cursor positioning in Flash */
+    overflow: visible;
     /* Override position:relative for .scrollContent to allow this content
      * to expand beyond its borders */
     position: static;

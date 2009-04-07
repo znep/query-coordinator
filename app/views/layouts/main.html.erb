@@ -70,8 +70,7 @@
     <%= yield :layout %>
 
     <div id='footer'>
-      <%= link_to '&copy; 2009 Blist, Inc. All Rights Reserved',
-        { :controller => 'home'} , { :class => 'homeLink' } %>
+      <span class='copyright'>&copy; 2009 Blist, Inc. All Rights Reserved</span>
       <ul>
         <li><%= link_to('Forums', 'http://www.blist.com/forum') %></li>
         <li><%= link_to('Blog', 'http://blog.blist.com/',
@@ -80,7 +79,7 @@
           'http://www.blist.com/company-info/about-blist') %></li>
         <li><%= link_to('Developers',
           'http://www.blist.com/developers') %></li>
-        <li><a id='versionLink' href='#version'>Version Info</a></li>
+        <li><a id='versionLink' href='#version'>Version info</a></li>
         <li><%= link_to('Terms of use',
           'http://www.blist.com/help/terms-of-use') %></li>
         <li><%= link_to('Site map', 'http://www.blist.com/site-map') %></li>

@@ -14,7 +14,6 @@ class BlistsController < SwfController
 
   def show
     @body_id = 'lensBody'
-    @body_class = 'home'
     case params[:id]
     when 'new_blist'
       # show new blist in swf

@@ -7,6 +7,8 @@
 # Specifies gem version of Rails to use when vendor/rails is not present
 RAILS_GEM_VERSION = '2.3.0' unless defined? RAILS_GEM_VERSION
 
+MULTIUSER_SECRET = "zomg dont tell anyone"
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
@@ -84,15 +86,22 @@ Rails::Initializer.run do |config|
   # Activate observers that should always be running
   # Please note that observers generated using script/generate observer need to have an _observer suffix
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
+
+
+  # Use gems in the vendor directory: http://errtheblog.com/post/2120
+  config.load_paths += Dir["#{RAILS_ROOT}/vendor/gems/**"].map do |dir| 
+    File.directory?(lib = "#{dir}/lib") ? lib : dir
+  end
+
 end
 
 multiuser_config = YAML.load(IO.read(RAILS_ROOT + "/config/multiuser.yml") )
-MULTIUSER_HOST       = multiuser_config[RAILS_ENV]["host"]
-MULTIUSER_PORT       = multiuser_config[RAILS_ENV]["port"]
-MULTIUSER_PROXY_HOST = multiuser_config[RAILS_ENV]["proxy_host"]
-MULTIUSER_PROXY_PORT = multiuser_config[RAILS_ENV]["proxy_port"]
-MULTIUSER_CHANGE_IP  = multiuser_config[RAILS_ENV]["change_ip"]
-MULTIUSER_CHANGE_PORT = multiuser_config[RAILS_ENV]["change_port"]
+MULTIUSER_BRIDGE_HOST  = multiuser_config[RAILS_ENV]["bridge_host"]
+MULTIUSER_BRIDGE_PORT  = multiuser_config[RAILS_ENV]["bridge_port"]
+MULTIUSER_ORBITED_PORT = multiuser_config[RAILS_ENV]["orbited_port"]
+MULTIUSER_IE_PORT      = multiuser_config[RAILS_ENV]["ie_port"]
+MULTIUSER_CHANGE_IP    = multiuser_config[RAILS_ENV]["change_ip"]
+MULTIUSER_CHANGE_PORT  = multiuser_config[RAILS_ENV]["change_port"]
 
 swf_config = YAML.load(IO.read(RAILS_ROOT + "/config/swf.yml") )
 SWF_DIR       = swf_config[RAILS_ENV]["dir"]

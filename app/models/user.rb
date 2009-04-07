@@ -4,6 +4,13 @@ class User < Model
 
   non_serializable :displayName
 
+  # Needed for multiuser
+  def multiuser_authentication_token(timestamp)
+    require 'hmac-sha1'
+    hmac = HMAC::SHA1.new(MULTIUSER_SECRET)
+    return hmac.update("#{oid}:#{timestamp}").hexdigest
+  end
+
   def to_json
     dhash = data_hash
     dhash[:displayName] = displayLocation

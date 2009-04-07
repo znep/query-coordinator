@@ -10,7 +10,7 @@ private
     variables[:user_id] = current_user.oid
 
     timestamp = Time.now.to_f
-    #variables[:mat] = @current_user.multiuser_authentication_token(timestamp)
+    variables[:mat] = current_user.multiuser_authentication_token(timestamp)
     variables[:mats] = timestamp.to_s
 
     key_name = ActionController::Base.session_options[:session_key]
@@ -20,10 +20,10 @@ private
       variables[:revision] = REVISION_NUMBER
     end
 
-    variables[:mu_host] = MULTIUSER_HOST
-    variables[:mu_port] = MULTIUSER_PORT
-    variables[:mu_proxy_host] = MULTIUSER_PROXY_HOST || request.host 
-    variables[:mu_proxy_port] = MULTIUSER_PROXY_PORT
+    variables[:bridge_host] = MULTIUSER_BRIDGE_HOST
+    variables[:bridge_port] = MULTIUSER_BRIDGE_PORT
+    variables[:orbited_port] = MULTIUSER_ORBITED_PORT
+    variables[:ie_port] = MULTIUSER_IE_PORT
 
     variables[:start_screen] = @start_screen
 

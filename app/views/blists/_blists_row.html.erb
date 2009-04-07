@@ -49,7 +49,7 @@
       <%= image_submit_tag("submit_button_mini.png", :title => "Rename") %>
     <% end %>
   </td>
-  <td class='description clipText'><div><%= h(blist.description) %></div></td>
+  <td class='description'><div class="clipText"><%= h(blist.description) %></div></td>
   <td class='owner'><div><%= h(blist.owner.displayName) %></div></td>
   <td class='lastUpdated last'><div>
       <%= blist_date(blist.rowsUpdatedAt) || blist_date(blist.createdAt) %>

@@ -48,6 +48,12 @@
     position: relative; /** Must add this style for IE7 to properly hide the overflowing content. **/
 }
 
+.clipText
+{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 form input[type="text"],
 form input[type="password"]
 {

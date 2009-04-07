@@ -25,7 +25,7 @@
     {
         defaults:
         {
-            clipText: true,
+            clipText: false,
             headerContainerSelector: '.headerContainer',
             hoverOnly: false,
             initialSort: [[[0, 0]]],

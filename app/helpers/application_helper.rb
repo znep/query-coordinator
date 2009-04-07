@@ -141,8 +141,7 @@ module ApplicationHelper
     stop = HUMANE_DATE_TIME_FORMATS.length - 1
     for i in start..stop do 
       format = HUMANE_DATE_TIME_FORMATS[i]
-      puts "seconds: " + seconds.to_s
-      puts "format[0]: " + format[0].to_s
+      
       if (seconds < format[0])
         if (format.length < 3)
           out = format[1]

@@ -1,3 +1,5 @@
+require 'json'
+
 class Model
 
   attr_accessor :data
@@ -147,7 +149,7 @@ class Model
   def self.update_attributes!(id, attributes)
     attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
     path = "/#{self.name.pluralize.downcase}/#{id}.json"
-    return self.update_request(path, ActiveSupport::JSON.encode(attributes))
+    return self.update_request(path, JSON.generate(attributes))
   end
 
   def save!
@@ -159,7 +161,7 @@ class Model
   end
 
   def self.parse(data)
-    json_data = ActiveSupport::JSON.decode(data)
+    json_data = JSON.parse(data)
     if json_data.is_a?(Array)
       model = json_data.collect do | item |
         m = self.new

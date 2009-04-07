@@ -105,6 +105,7 @@
                 cssHeader: "header",
                 cssAsc: "headerSortUp",
                 cssDesc: "headerSortDown",
+                cssSortGroupSelector: "tbody tr:not(.sortGroup)",
                 sortInitialOrder: "asc",
                 sortMultiSortKey: "shiftKey",
                 sortForce: null,
@@ -144,10 +145,9 @@
 
                 if(table.config.debug) { var parsersDebug = ""; }
 
-                var rows = table.tBodies[0].rows;
+                var rows = $(table).find(table.config.cssSortGroupSelector);
 
-                if(table.tBodies[0].rows[0]) {
-
+                if(rows.length > 0) {
                     var list = [], cells = rows[0].cells, l = cells.length;
 
                     for (var i=0;i < l; i++) {
@@ -203,15 +203,16 @@
                 if(table.config.debug) { var cacheTime = new Date(); }
 
 
-                var totalRows = (table.tBodies[0] && table.tBodies[0].rows.length) || 0,
-                    totalCells = (table.tBodies[0].rows[0] && table.tBodies[0].rows[0].cells.length) || 0,
+                var $rows = $(table).find(table.config.cssSortGroupSelector);
+                var totalRows = $rows.length || 0;
+                var totalCells = ($rows[0] && $rows[0].cells.length) || 0,
                     parsers = table.config.parsers,
                     cache = {row: [], normalized: []};
 
                     for (var i=0;i < totalRows; ++i) {
 
                         /** Add the table data to main data array */
-                        var c = table.tBodies[0].rows[i], cols = [];
+                        var c = $rows[i], cols = [];
 
                         cache.row.push($(c));
 
@@ -545,9 +546,8 @@
                         $this.trigger("sortStart");
 
                         var totalRows = ($this[0].tBodies[0] && $this[0].tBodies[0].rows.length) || 0;
-
+                        
                         if(!this.sortDisabled && totalRows > 0) {
-
 
                             // store exp, for speed
                             var $cell = $(this);

@@ -143,19 +143,36 @@ private
     end
 
 
-    # Sort by blist ID, sub-sort by isDefault to sort all blists just
-    # before views
-    cur_views.sort! do |a,b|
-      if a.blistId < b.blistId
-        -1
-      elsif a.blistId > b.blistId
-        1
-      else
-        a.flag?('default') && !b.flag?('default') ?
-          -1 : !a.flag?('default') && b.flag?('default') ? 1 : 0
+    # First, sort by name.
+    cur_views = cur_views.sort { |a,b| a.name <=> b.name }
+
+    # Re-organize the views with children under their parents. Maintain overall sorting.
+    # Stash all parent blists.
+    view_parents = Hash.new
+    # First loop, create a hash of parents, keyed on blistId.
+    cur_views.each do |v1|
+      if (v1.is_blist?)
+        view_parents[v1.blistId] = { 
+          :rows_updated => v1.rowsUpdatedAt, 
+          :views => [v1] 
+        }
       end
     end
-    return cur_views
+    
+    # Second loop, if parent found in view_parents, add to the views array in the hash, otherwise create a new entry.
+    cur_views.each do |v2|
+      unless (v2.is_blist?)
+        if (view_parents.has_key?(v2.blistId))
+          view_parents[v2.blistId][:views] << v2
+        else
+          view_parents[v2.id] = {
+            :rows_updated => v2.rowsUpdatedAt,
+            :views => [v2]
+          }
+        end
+      end
+    end
+    return view_parents.sort { |a,b| b[1][:rows_updated] <=> a[1][:rows_updated] }
   end
 
   def get_views_with_ids(params = nil)

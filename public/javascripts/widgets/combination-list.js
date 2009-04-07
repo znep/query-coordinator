@@ -152,12 +152,9 @@
                     });
                 }
 
-                // If there are rows, sort initially on Last Updated
-                if ($comboList.find('tbody tr').length > 0)
-                {
-                    $comboList.trigger('sorton', comboListObj.settings.initialSort);
-                }
-                else
+                // If there aren't any rows, return no results.
+                // NOTE: This is where we would do the initial sort if we were going to do so.
+                if ($comboList.find('tbody tr').length < 1)
                 {
                     comboListObj.displayNoResults();
                 }

@@ -172,7 +172,13 @@ private
         end
       end
     end
-    return view_parents.sort { |a,b| b[1][:rows_updated] <=> a[1][:rows_updated] }
+    return view_parents.sort do |a,b|
+      if b[1][:rows_updated] && a[1][:rows_updated]
+        b[1][:rows_updated] <=> a[1][:rows_updated]
+      else
+        1
+      end
+    end
   end
 
   def get_views_with_ids(params = nil)

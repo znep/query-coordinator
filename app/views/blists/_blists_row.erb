@@ -1,7 +1,7 @@
-<%- 
+<%-
   blist = blists_row
   counter = blists_row_counter
-  
+
   blist_group_heading = @group_heading
   if (counter == 0)
     blist_group_heading = humane_date(blist_date(blist.last_activity), HumaneDateHelper::HUMANE_DATE_GRANULARITY[:day])
@@ -31,7 +31,7 @@
         {'text' => 'Open', 'class' => 'open', 'href' => blist_url(blist.id)},
         {'text' => favorite_action_text, 'class' => 'addFavorite favoriteLink', 'href' => favorite_action},
         {'text' => 'Rename', 'class' => 'rename renameLink', 'href' => blist_url(blist.id)},
-        {'text' => 'Delete', 'class' => 'delete', 'href' => '#delete'}
+        { 'text' => 'Delete', 'class' => 'delete', 'href' => '#delete' }
       ]
     }) %>
   </div></td>

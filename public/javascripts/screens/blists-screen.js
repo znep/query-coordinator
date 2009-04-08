@@ -235,10 +235,11 @@ var blistsBarNS = blist.namespace.fetch('blist.myBlists.sidebar');
 blist.myBlists.sidebar.initializeHandlers = function ()
 {
     $('#blistFilters').filterList({
-        filterClickHandler: function (title)
+        filterClickCallback: function (title)
         {
             $('#blistList tbody').hide();
             $('#listTitle').text(title);
+            $('#listTitle').attr('title', title);
         },
         filterSuccessHandler: function (retData)
         {
@@ -285,6 +286,6 @@ $(function ()
     $(".expandContainer").blistPanelExpander({
         expandCompleteCallback: blistsInfoNS.updateSummary
     });
-    
+
 });
 

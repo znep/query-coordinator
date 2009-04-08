@@ -47,15 +47,24 @@ private
       cur_groups = Group.find()
     end
 
-    # TODO: Handle share_direction when supported by server
+    contacts_args = {}
+    if !params['share_direction'].nil?
+      case params['share_direction']
+      when 'in'
+        contacts_args['sharedToMe'] = 'true'
+      when 'out'
+        contacts_args['sharedToContact'] = 'true'
+      end
+    end
 
     cur_contacts = []
     if !params['group'].nil?
       group_obj = Group.find(params['group'])
       cur_contacts = group_obj.users.dup
     elsif params['type'].nil? || params['type'] == 'contacts' ||
-      !params['untagged'].nil? || !params['tag'].nil?
-      cur_contacts = Contact.find()
+      !params['untagged'].nil? || !params['tag'].nil? ||
+      !params['share_direction'].nil?
+      cur_contacts = Contact.find(contacts_args)
     end
 
     cur_contacts.concat(cur_groups)

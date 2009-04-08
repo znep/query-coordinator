@@ -41,6 +41,7 @@ $(function ()
         {
             $('#contactList tbody').hide();
             $('#listTitle').text(title);
+            $('#listTitle').attr('title', title);
         },
         filterSuccessHandler: function (retData)
         {

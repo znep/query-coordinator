@@ -1,13 +1,16 @@
 
 .headerBar
 {
-  margin-bottom: 1em;
-  text-align: right;
+    margin-bottom: 1em;
+    text-align: right;
 }
 
 .headerBar h3
 {
-  float: left;
+    float: left;
+    max-width: 37%;
+    overflow: hidden;
+    text-align: left;
 }
 
 .headerBar .headerActions

@@ -4,7 +4,7 @@
   
   blist_group_heading = @group_heading
   if (counter == 0)
-    blist_group_heading = humane_date(blist_date(blist.last_activity), ApplicationHelper::HUMANE_DATE_GRANULARITY[:day])
+    blist_group_heading = humane_date(blist_date(blist.last_activity), HumaneDateHelper::HUMANE_DATE_GRANULARITY[:day])
   end
 -%>
 

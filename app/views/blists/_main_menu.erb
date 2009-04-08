@@ -3,14 +3,14 @@
     <dl><dt><a href='#menublist'>blist</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Print this blist...', 'class' => 'print',
-        'href' => '#'},
+        'href' => '#print'},
         {'text' => 'Export this blist', 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-        {'text' => 'As CSV', 'href' => '#'},
-        {'text' => 'As PDF', 'href' => '#'}]}},
+        {'text' => 'As CSV', 'href' => "/views/#{@view.id}/rows.csv"},
+        {'text' => 'As PDF', 'href' => '#print'}]}},
         {'text' => 'Email this blist...', 'class' => 'email',
-        'href' => '#'},
-        {'text' => 'Copy this blist', 'class' => 'copy', 'href' => '#'},
+        'href' => '#email'},
+        {'text' => 'Copy this blist', 'class' => 'copy', 'href' => '#copy_blist'},
         {'separator' => true},
         {'text' => 'Create New blist...', 'class' => 'create',
         'href' => '#new_blist' },
@@ -26,28 +26,26 @@
 #        'href' => '#'}]}
         {'text' => 'Import...', 'class' => 'import', 'href' => '#import'},
         {'text' => 'Find a Template', 'class' => 'findTemplate',
-        'href' => '#'},
+        'href' => '#discover'},
         {'separator' => true},
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
-        'submenu' => {'items' => [
-        {'text' => 'some blist', 'class' => '', 'href' => '#'},
-        {'text' => 'some filter', 'class' => '', 'href' => '#'}]}},
+        'submenu' => {'items' => recent_blists_menu(@view, 5)}},
         {'separator' => true},
         {'text' => 'Edit blist permissions...',
-        'class' => 'editPermissions', 'href' => '#'}]}) %>
+        'class' => 'editPermissions', 'href' => '#permissions'}]}) %>
     </dd></dl>
   </li>
   <li class='edit'>
     <dl><dt><a href='#menuEdit'>Edit</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => 'Undo', 'class' => 'undo', 'href' => '#'},
-        {'text' => 'Redo', 'class' => 'redo', 'href' => '#'},
+        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
+        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo'},
         {'separator' => true},
-        {'text' => 'Cut', 'class' => 'cut', 'href' => '#'},
-        {'text' => 'Copy', 'class' => 'copy', 'href' => '#'},
-        {'text' => 'Paste', 'class' => 'paste', 'href' => '#'},
+        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},
+        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy'},
+        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste'},
         {'separator' => true},
-        {'text' => 'Delete', 'class' => 'delete', 'href' => '#'},
+        {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete'},
         {'separator' => true},
         {'text' => 'Edit Column Options', 'class' => 'columnOptions',
         'href' => '#', 'submenu' => columns_menu(@view,
@@ -58,9 +56,11 @@
                     'bnb_children' => true, 'list' => true},
                     'initial_items' => [
                       {'section_title' => 'Select a Column'},
-                      {'separator' => true}]})},
-        {'text' => 'Edit Row Options', 'class' => 'rowOptions',
-        'href' => '#'}]}) %>
+                      {'separator' => true}]})}
+        # There are no row options
+#        {'text' => 'Edit Row Options', 'class' => 'rowOptions',
+#        'href' => '#'}
+        ]}) %>
     </dd></dl>
   </li>
   <li class='data'>
@@ -68,18 +68,21 @@
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Insert a Column', 'class' => 'insertColumn',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-        {'text' => 'At the Far Right', 'href' => '#'},
-        {'text' => 'At the Far Left', 'href' => '#'}]}},
-        {'text' => 'Insert a Row', 'class' => 'insertRow',
-        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-        {'text' => 'At the Top', 'href' => '#'},
-        {'text' => 'At the Bottom', 'href' => '#'}]}},
+        {'text' => 'At the Far Right', 'href' => '#addColumn_last'},
+        {'text' => 'At the Far Left', 'href' => '#addColumn_first'}]}},
+        # Not supported yet
+#        {'text' => 'Insert a Row', 'class' => 'insertRow',
+#        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+#        {'text' => 'At the Top', 'href' => '#'},
+#        {'text' => 'At the Bottom', 'href' => '#'}]}},
         {'separator' => true},
         {'text' => 'Manage Pick Lists...', 'class' => 'picklists',
         'href' => '#picklistBrowser'},
         {'separator' => true},
-        {'text' => 'Show Row Tags', 'class' => 'rowTags', 'href' => '#'},
-        {'text' => 'Show Row IDs', 'class' => 'rowIDs', 'href' => '#'},
+        {'text' => 'Show Row Tags', 'class' => 'rowTags',
+        'href' => '#addColumn_rowTag'},
+        # Not supported
+#        {'text' => 'Show Row IDs', 'class' => 'rowIDs', 'href' => '#'},
         {'separator' => true},
         {'text' => 'Column Totals', 'class' => 'columnTotals',
         'href' => '#', 'submenu' => columns_menu(@view,
@@ -103,29 +106,35 @@
     <dl><dt><a href='#menuInfo'>Info</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'section_title' => 'Tabs'},
-        {'text' => 'Summary', 'class' => 'summary', 'href' => '#'},
+        {'text' => 'Summary', 'class' => 'summary activePane',
+        'href' => '#infoPane_tabSummary'},
         {'text' => 'Show Filtered Views', 'class' => 'views',
-        'href' => '#'},
-        {'text' => 'Show Comments', 'class' => 'comments',
-        'href' => '#'},
+        'href' => '#infoPane_tabFiltered'},
+        # Not supported
+#        {'text' => '[Show Comments]', 'class' => 'comments',
+#        'href' => '#'},
+        {'text' => 'Show Shares', 'class' => 'shares',
+        'href' => '#infoPane_tabSharing'},
         {'text' => 'Show Publishing', 'class' => 'publishing',
-        'href' => '#'},
-        {'text' => 'Show Shares', 'class' => 'shares', 'href' => '#'},
+        'href' => '#infoPane_tabPublishing'},
         {'text' => 'Show Activity', 'class' => 'activity',
-        'href' => '#'}]}) %>
+        'href' => '#infoPane_tabActivity'}]}) %>
     </dd></dl>
   </li>
   <li class='publish'>
     <dl><dt><a href='#menuPublish'>Publish</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'section_title' => 'Embed blists on the Web'},
-        {'text' => 'Grid Only', 'class' => 'grid', 'href' => '#'},
-        {'text' => 'Grid + Page', 'class' => 'gridPage', 'href' => '#'},
-        {'text' => 'Page Only', 'class' => 'page', 'href' => '#'},
+        {'text' => 'Grid Only', 'class' => 'grid', 'href' => '#publish_grid'},
+        # Not supported
+#        {'text' => 'Grid + Page', 'class' => 'gridPage', 'href' => '#'},
+#        {'text' => 'Page Only', 'class' => 'page', 'href' => '#'},
         {'separator' => true},
-        {'text' => 'As a Form', 'class' => 'form', 'href' => '#'},
-        {'text' => 'As a Search Widget', 'class' => 'search',
-        'href' => '#'}]}) %>
+        {'text' => 'As a Form', 'class' => 'form', 'href' => '#publish_form'}
+        # Not supported
+#        {'text' => 'As a Search Widget', 'class' => 'search',
+#        'href' => '#'}
+        ]}) %>
     </dd></dl>
   </li>
   <li class='footer'><div class='outerWrapper'>

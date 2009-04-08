@@ -77,22 +77,23 @@
             // build element specific options and store them on the menu
             var config = $.meta ? $.extend({}, opts, $menu.data()) : opts;
             $menu.data("config-dropdownMenu", config);
-            
-            var $trigger = config.triggerButton || 
-                            $menu.closest(config.menuContainerSelector).find(config.triggerButtonSelector);
+
+            var $trigger = config.triggerButton ||
+                $menu.closest(config.menuContainerSelector)
+                    .find(config.triggerButtonSelector);
             $menu.data("triggerButton", $trigger);
-            
+
             // Unhook any old handlers in case we're re-applying this
             $trigger.unbind('click.dropdownMenu');
             // Hook up click handler to show menu
             $trigger.bind('click.dropdownMenu', function (event)
             {
+                event.preventDefault();
                 if (config.openTest === undefined || config.openTest(event, $menu))
                 {
                     if (!$menu.hasClass(config.menuOpenClass))
                     {
                         event.stopPropagation();
-                        event.preventDefault();
                         showMenu($menu);
                     }
                 }

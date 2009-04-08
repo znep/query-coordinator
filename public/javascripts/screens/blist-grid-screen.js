@@ -64,7 +64,8 @@ blist.blistGrid.flashPopupShownHandler = function (popup)
     if (popup != 'MultipleFileUpload')
     {
         $('#swfWrapper').css('top', ($('#header').outerHeight() + 10) + 'px');
-        $('#swfWrapper').css('bottom', ($('#footer').outerHeight() + 10) + 'px');
+        $('#swfWrapper').css('bottom',
+            ($(document).height() - $(window).height()) + 'px');
     }
     $('#overlay').show();
 };
@@ -91,7 +92,7 @@ blist.blistGrid.dataTypeClickHandler = function (event)
 blist.blistGrid.flashPopupClickHandler = function (event)
 {
     event.preventDefault();
-    var href = $(event.target).attr('href');
+    var href = $(event.currentTarget).attr('href');
     var popup = '';
     if (href[0] == '#')
     {
@@ -173,7 +174,8 @@ blist.blistGrid.mainMenuHandler = function(event)
     }
 
     event.preventDefault();
-    switch (href.slice(1))
+    var action = href.slice(1);
+    switch (action)
     {
         case 'new_blist':
             blist.blistGrid.referer = '';
@@ -183,8 +185,56 @@ blist.blistGrid.mainMenuHandler = function(event)
             blist.blistGrid.referer = '';
             blist.util.flashInterface.showPopup('NewLens:Import');
             break;
+        case 'discover':
+            blist.blistGrid.referer = '';
+            blist.util.flashInterface.showPopup('NewLens:Discover');
+            break;
+        case 'copy_blist':
+            blist.blistGrid.referer = '';
+            blist.util.flashInterface.showPopup('NewLens:CopyBlist');
+            break;
         case 'picklistBrowser':
             blist.util.flashInterface.showPopup('PickListBrowser');
+            break;
+        case 'print':
+            blist.util.flashInterface.showPopup('PrintDialog');
+            break;
+        case 'email':
+            blist.util.flashInterface.showPopup('EmailDialog');
+            break;
+        case 'permissions':
+            blist.util.flashInterface.showPopup('PermissionsDialog');
+            break;
+        case 'Undo':
+        case 'Redo':
+        case 'Copy':
+        case 'Cut':
+        case 'Paste':
+        case 'Delete':
+            blist.util.flashInterface.doAction(action);
+            break;
+        case 'addColumn_rowTag':
+            blist.util.flashInterface.addColumn('rowTag');
+            break;
+        case 'addColumn_last':
+            blist.util.flashInterface.addColumn('plainText');
+            break;
+        case 'addColumn_first':
+            blist.util.flashInterface.addColumn('plainText', 0);
+            break;
+        case 'publish_grid':
+            blist.util.flashInterface.showPopup('PublishDialog:Grid');
+            break;
+        case 'publish_form':
+            blist.util.flashInterface.showPopup('PublishDialog:Form');
+            break;
+        case 'infoPane_tabSummary':
+        case 'infoPane_tabFiltered':
+        case 'infoPane_tabSharing':
+        case 'infoPane_tabPublishing':
+        case 'infoPane_tabActivity':
+            $(".summaryTabs").infoPaneNavigate()
+                .activateTab("#" + action.split('_')[1]);
             break;
     }
 };
@@ -289,8 +339,14 @@ $(function ()
     // Set up the info pane tab switching.
     blist.util.sizing.cachedInfoPaneHeight = $("#sidebar").height();
     $(".summaryTabs").infoPaneNavigate({
-        // After switching tabs, we need to size the Swf.
-        switchCompleteCallback: blistGridNS.sizeSwf
+        // After switching tabs, update the menu and size the Swf.
+        switchCompleteCallback: function ($tab)
+        {
+            $('#mainMenu li.info li.activePane').removeClass('activePane');
+            $('#mainMenu li.info li > a[href*="' + $tab.attr('id') + '"]')
+                .closest('li').addClass('activePane');
+            blistGridNS.sizeSwf();
+        }
     });
     $(".tabLink.activity").click(function(event){
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabActivity");
@@ -308,6 +364,6 @@ $(function ()
     // Wire up the hover behavior in the info pane.
     $("#infoPane .selectableList, #infoPane .gridList").blistListHoverItems();
     $(".infoContent dl.summaryList").infoPaneItemHighlight();
-    
+
     $("#infoPane dd.editItem").infoPaneItemEdit();
 });

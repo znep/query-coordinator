@@ -1,6 +1,6 @@
 class View < Model
   cattr_accessor :categories
-  
+
   def self.find( options = nil )
     self.find_under_user(options)
   end
@@ -28,6 +28,20 @@ class View < Model
   def delete_favorite
     self.data['flags'].delete("favorite")
     self.class.delete_favorite(self.id)
+  end
+
+  def last_activity
+    if @last_activity.nil?
+      @last_activity = [rowsUpdatedAt || 0, createdAt || 0].max
+    end
+    @last_activity
+  end
+
+  def last_viewed
+    if @last_viewed.nil?
+      @last_viewed = [lastOpenedDate || 0, createdAt || 0].max
+    end
+    @last_viewed
   end
 
   def is_blist?

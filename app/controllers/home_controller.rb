@@ -4,21 +4,21 @@ require 'open-uri'
 class HomeController < ApplicationController
   def index
     @body_class = 'home'
-    
+
     blists = View.find()
-    
+
     @recently_opened_blists = blists.sort { |a,b|
-      (b.lastOpenedDate || 0) <=> (a.lastOpenedDate || 0)
+      b.last_viewed <=> a.last_viewed
     }.slice(0..1)
-    
+
     @favorite_blists = blists.find_all { |b|
       b.flag?("favorite")
     }.sort { |a,b|
-      (b.lastOpenedDate || 0) <=> (a.lastOpenedDate || 0)
+      b.last_viewed <=> a.last_viewed
     }.slice(0..1)
-    
+
     @contacts = Contact.find().slice(0..2)
-    
+
     begin
       rss = RSS::Parser.parse(BLIST_RSS, false)
       @feed_items = rss.items.sort { |a,b|
@@ -29,6 +29,6 @@ class HomeController < ApplicationController
     ensure
       @feed_items = Hash.new unless @feed_items
     end
-    
+
   end
 end

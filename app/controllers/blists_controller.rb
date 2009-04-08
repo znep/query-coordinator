@@ -152,9 +152,9 @@ private
     # First loop, create a hash of parents, keyed on blistId.
     cur_views.each do |v1|
       if (v1.is_blist?)
-        view_parents[v1.blistId] = { 
-          :rows_updated => v1.rowsUpdatedAt, 
-          :views => [v1] 
+        view_parents[v1.blistId] = {
+          :rows_updated => v1.last_activity,
+          :views => [v1]
         }
       end
     end
@@ -166,7 +166,7 @@ private
           view_parents[v2.blistId][:views] << v2
         else
           view_parents[v2.id] = {
-            :rows_updated => v2.rowsUpdatedAt,
+            :rows_updated => v2.last_activity,
             :views => [v2]
           }
         end

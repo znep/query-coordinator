@@ -225,7 +225,7 @@
                 
                 $panel.addClass(tabNavigator.settings.activationClass);
                 
-                tabNavigator.settings.switchCompleteCallback();
+                tabNavigator.settings.switchCompleteCallback($tab);
             },
             expandTabPanels: function() {
                 var tabNavigator = this;

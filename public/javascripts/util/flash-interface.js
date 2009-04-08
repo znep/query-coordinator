@@ -27,16 +27,23 @@ blist.util.flashInterface.discoverSearch = function (searchText)
 blist.util.flashInterface.showPopup = function (popup)
 {
     flashIntNS.swf().showPopup(popup);
+    flashIntNS.swf().focus();
 };
 
-blist.util.flashInterface.addColumn = function (datatype)
+blist.util.flashInterface.addColumn = function (datatype, index)
 {
-    flashIntNS.swf().addColumn(datatype);
+    if (index === undefined)
+    {
+        index = -1;
+    }
+    flashIntNS.swf().addColumn(datatype, index);
+    flashIntNS.swf().focus();
 };
 
 blist.util.flashInterface.columnProperties = function (columnId)
 {
     flashIntNS.swf().columnProperties(columnId);
+    flashIntNS.swf().focus();
 };
 
 blist.util.flashInterface.columnAggregate = function(columnId, aggregate)

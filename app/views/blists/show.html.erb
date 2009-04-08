@@ -19,7 +19,7 @@
           <%- if !@view.nil? -%>
           <ul>
             <%# Main menu %>
-            <li><a href='#' id='mainMenuLink' class='dropdownLink'>
+            <li><a href='#main_menu' id='mainMenuLink' class='dropdownLink'>
               <div class='outerWrapper'><div class='midWrapper'>
                   <span class='innerWrapper'>Menu</span></div></div></a>
               <%= render(:partial => "main_menu") %>
@@ -121,7 +121,7 @@
                   <li><a href='#photo' id='addColumn_photo'>Photo (Image)</a></li>
                 </ul>
               </li>
-              <li class='column'>
+              <li class='column wide'>
               <%# Complex/join datatypes %>
                 <ul>
                   <li><a href='#picklist'

@@ -160,7 +160,16 @@ module BlistsHelper
     end
     dtt
   end
-  
+
+  def recent_blists_menu(cur_view, num_recent)
+    View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
+      b.last_viewed <=> a.last_viewed
+    end.slice(0, num_recent).map do |v|
+      {'text' => v.name, 'href' => blist_url(v.id),
+        'class' => v.is_blist? ? 'blist' : 'filter'}
+    end
+  end
+
   def category_select_options(selected_category = nil)
     out = ""
     View.categories.sort { |a,b| a[1] <=> b[1] }.each do |category|

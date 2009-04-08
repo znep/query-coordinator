@@ -151,7 +151,7 @@
           <div class="itemContent">
             <span><%= up_user = view.last_updated_user
               h(up_user.nil? ? '' : up_user.displayName + ':') %>
-              <%= blist_date(view.rowsUpdatedAt) || blist_date(view.createdAt) %>
+              <%= blist_date(view.last_activity) %>
             </span>
           </div>
           <div class="itemActions">
@@ -226,7 +226,8 @@
             <span><%= view.is_public? ? 'Public' : 'Private' %></span>
           </div>
           <div class="itemActions">
-            <a href="#unselect" class="action"><span>[Edit]</span></a>
+            <a href='<%= blist_url(view.id, {:popup => 'PermissionsDialog'}) %>'
+              class="action showFlashPopup"><span>Edit</span></a>
           </div>
         </dd>
       </dl>
@@ -313,7 +314,7 @@
                 </td>
                 <td class="name"><div><%= link_to(h(filter.name), blist_url(filter.id)) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
-                <td class="viewed"><div><%= blist_date(filter.lastOpenedDate) %>
+                <td class="viewed"><div><%= blist_date(filter.last_viewed) %>
                 </div></td>
                 <td class="actionContainer"><div><a
                       href="<%= blist_url(filter.id) %>" class="action"
@@ -350,7 +351,8 @@
         <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
           "privateShared" : "private") %>">
         This <%= view.is_blist? ? "blist" : "filter" %> is
-        <em><%= view.is_public? ? "Public" : "Private" %></em>
+        <a href='<%= blist_url(view.id, {:popup => 'PermissionsDialog'}) %>'
+          class='showFlashPopup'><%= view.is_public? ? "Public" : "Private" %></a>
         <%= view.is_shared? ? ' and shared with the following ' +
         (shares.length == 1 ? 'contact' : 'contact'.pluralize) + ':' : '' %>
         </p>

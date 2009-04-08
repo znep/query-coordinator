@@ -72,7 +72,7 @@ module ApplicationHelper
   end
 
   def blist_date(time)
-    time ? Time.at(time).strftime("%b %d, %Y") : nil
+    time && time != 0 ? Time.at(time).strftime("%b %d, %Y") : nil
   end
 
   def blist_href_new_blist
@@ -123,6 +123,9 @@ module ApplicationHelper
     [5806080000, 'last century', 'next century'] # 60*60*24*7*4*12*100*2
   ]
   def humane_date(date_string, granularity = HUMANE_DATE_GRANULARITY[:minute])
+    if date_string.nil?
+      return 'None'
+    end
     dt = Time.now.tv_sec
     date_obj = Time.parse(date_string).tv_sec
     seconds = (dt - date_obj)

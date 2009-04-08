@@ -467,8 +467,10 @@
     background-position: left -615px;
 }
 
-.singleInfoSharing .sharingSummary p em
+.singleInfoSharing .sharingSummary p a
 {
+    color: #333333;
+    font-style: italic;
     text-decoration: underline;
 }
 

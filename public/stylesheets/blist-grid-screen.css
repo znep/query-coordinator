@@ -13,6 +13,7 @@ body#lensBody
 #lensContainer
 {
     margin-right: 1em;
+    min-width: 99.9em;
 }
 
 /* Header bar & Button styles */
@@ -281,8 +282,6 @@ body#lensBody
 }
 
 
-/* Datatype icons */
-
 #mainMenu dl > dd > ul > li > a,
 #mainMenu dl > dd > ul > li > ul > li > a
 {
@@ -335,6 +334,9 @@ body#lensBody
 {
     background-position: 5px -163px;
 }
+
+#mainMenu li.blist .recent .blist > a { background-position: 5px -94px; }
+#mainMenu li.blist .recent .filter > a { background-position: 5px -531px; }
 
 #mainMenu li.blist .editPermissions > a
 {
@@ -426,7 +428,7 @@ body#lensBody
 
 #mainMenu li.info .summary > a
 {
-    background-position: 5px -508px;
+    background-position: 5px -94px;
 }
 
 #mainMenu li.info .views > a
@@ -452,6 +454,11 @@ body#lensBody
 #mainMenu li.info .activity > a
 {
     background-position: 5px -623px;
+}
+
+#mainMenu li.info li.activePane > a
+{
+    background-position: 5px -508px;
 }
 
 #mainMenu li.publish .grid > a
@@ -503,12 +510,17 @@ body#lensBody
     border-right: solid 1px #e0d1b8;
     float: left;
     height: 11em;
-    width: 15%;
+    width: 14.5%;
 }
 
 #addColumnsMenu .column.narrow
 {
     width: 12%;
+}
+
+#addColumnsMenu .column.wide
+{
+    width: 17%;
 }
 
 #addColumnsMenu .column.last

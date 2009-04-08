@@ -4,7 +4,7 @@
   
   blist_group_heading = @group_heading
   if (counter == 0)
-    blist_group_heading = humane_date(blist_date(blist.rowsUpdatedAt), ApplicationHelper::HUMANE_DATE_GRANULARITY[:day])
+    blist_group_heading = humane_date(blist_date(blist.last_activity), ApplicationHelper::HUMANE_DATE_GRANULARITY[:day])
   end
 -%>
 
@@ -52,6 +52,6 @@
   <td class='description'><div class="clipText"><%= h(blist.description) %></div></td>
   <td class='owner'><div><%= h(blist.owner.displayName) %></div></td>
   <td class='lastUpdated last'><div>
-      <%= blist_date(blist.rowsUpdatedAt) || blist_date(blist.createdAt) %>
+      <%= blist_date(blist.last_activity) %>
   </div></td>
 </tr>

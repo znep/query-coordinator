@@ -82,8 +82,13 @@ private
 
     # Sort by recent activity
     cur_contacts.sort! do |a,b|
-      (b.lastLogin || b.updatedAt) <=> (a.lastLogin || a.updatedAt)
+      if (b.lastLogin || b.updatedAt) && (a.lastLogin || a.updatedAt)
+        (b.lastLogin || b.updatedAt) <=> (a.lastLogin || a.updatedAt)
+      else
+        1
+      end
     end
+    
 
     return cur_contacts
   end

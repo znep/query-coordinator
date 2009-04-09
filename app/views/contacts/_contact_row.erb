@@ -4,7 +4,7 @@
   contact_group_heading = @group_heading
   contact_group_heading = humane_date(
     blist_date(contact.lastLogin || contact.updatedAt),
-    ApplicationHelper::HUMANE_DATE_GRANULARITY[:day])
+    HumaneDateHelper::HUMANE_DATE_GRANULARITY[:day])
 -%>
 
 <%- if (contact_group_heading.nil? || (contact_group_heading != @group_heading))

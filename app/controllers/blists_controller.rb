@@ -1,5 +1,9 @@
 class BlistsController < SwfController
   helper_method :get_title
+  # TODO: re-enable forgery protection. For some reason auth_tokens don't match
+  # when we use forgery protection on the show page putting to update.
+  # More investication is required, but for now, we'll disable.
+  protect_from_forgery :except => :update
 
   def index
     @body_class = 'home'

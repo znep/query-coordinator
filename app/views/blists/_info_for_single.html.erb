@@ -40,7 +40,8 @@
 <%# *** START: SUMMARY *** %>
 <div class="infoContentOuter singleInfoSummary listContainer active">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader <%= get_permissions_icon_class_for_view(view) %>">
+    <h2 title='<%= h(view.name) %>'
+      class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>">
       <%= page_single ? h(view.name) : link_to(h(view.name), blist_url(view.id)) %>
     </h2>
     <ul class="headerActions actionButtons">

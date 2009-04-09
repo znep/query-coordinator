@@ -148,6 +148,10 @@ class Model
 
   def self.update_attributes!(id, attributes)
     attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
+    # Special parsing for updated tags
+    if !attributes['tags'].nil?
+      attributes['tags'] = parse_tags(attributes['tags'])
+    end
     path = "/#{self.name.pluralize.downcase}/#{id}.json"
     return self.update_request(path, JSON.generate(attributes))
   end
@@ -179,6 +183,15 @@ class Model
   end
 
 protected
+
+  def self.parse_tags(val)
+    if val.is_a?(String)
+      return val.split(',').map {|t| t.strip}
+    else
+      return val
+    end
+  end
+
 
   def data_hash
     dcopy = data.clone

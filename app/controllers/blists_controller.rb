@@ -37,15 +37,6 @@ class BlistsController < SwfController
 
   def update
     blist_id = params[:id]
-    
-    # TODO: We need to update the whole view model.
-    # Remove this once we can send only attributes that should be updated.
-    update_blist = View.find(params[:id])
-    params[:view][:name] = params[:view][:name] || update_blist.name
-    params[:view][:description] = params[:view][:description] || update_blist.description
-    params[:view][:category] = params[:view][:category] || update_blist.category
-    params[:view][:tags] = !params[:view][:tags].nil? ? params[:view][:tags].split(',') : update_blist.data["tags"]
-    # END: Remove this.
 
     blist = View.update_attributes!(blist_id, params[:view])
 

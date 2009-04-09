@@ -443,6 +443,7 @@
 {
     font-size: 1.8em;
     font-weight: bold;
+    max-width: 60%;
 }
 .singleInfoSharing .sharingSummary {
     border-top: 1px solid #e1d3b6;

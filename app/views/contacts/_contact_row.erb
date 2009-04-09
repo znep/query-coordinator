@@ -1,0 +1,52 @@
+<%-
+  contact = contact_row
+
+  contact_group_heading = @group_heading
+  contact_group_heading = humane_date(
+    blist_date(contact.lastLogin || contact.updatedAt),
+    ApplicationHelper::HUMANE_DATE_GRANULARITY[:day])
+-%>
+
+<%- if (contact_group_heading.nil? || (contact_group_heading != @group_heading))
+      @group_heading = contact_group_heading
+-%>
+  <tr class="sortGroup">
+    <td colspan="7"><div><%= contact_group_heading %></div></td>
+  </tr>
+<%- end -%>
+
+<tr id='<%= contact.is_a?(Group) ? 'group' : 'contact' %>:<%= contact.id %>'
+  class='item'>
+  <td class='handle first'><div>
+      <a href="#open_menu" class="dropdownLink menuHandle">Contact Menu</a>
+      <%# menu_tag({'id' => "itemMenu-#{blist.id}", 'class' => 'blistItemMenu',
+      'items' => [
+      {'text' => 'Open', 'class' => 'open', 'href' => blist_url(blist.id)},
+      {'text' => favorite_action_text, 'class' => 'addFavorite favoriteLink', 'href' => favorite_action},
+      {'text' => 'Rename', 'class' => 'rename', 'href' => '#rename'},
+      {'text' => 'Delete', 'class' => 'delete', 'href' => '#delete'}
+      ]
+      }) %>
+  </div></td>
+  <td class='picture'>
+    <%- if contact.is_a?(Group) -%>
+    <div class='group'><a href='#'><%= h(contact.name) %></a></div>
+    <%- else -%>
+    <a href='#'>
+      <img src="<%= contact.profile_image("small") %>" width="24" height="24"
+      alt="<%= h(contact.displayName) %>" />
+    </a>
+    <%- end -%>
+  </td>
+  <td class='name'>
+    <div class='clipText'>
+      <a href='#'><%= h(contact.name || contact.displayName) %></a>
+    </div>
+  </td>
+  <td class='tags'><div class='clipText'>
+      <%= h(contact.tag_display_string) %>
+  </div></td>
+  <td class='activityDate last'><div>
+      <%= blist_date(contact.lastLogin || contact.updatedAt) %>
+  </div></td>
+</tr>

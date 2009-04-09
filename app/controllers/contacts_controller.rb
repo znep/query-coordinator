@@ -80,9 +80,9 @@ private
         t.data == params['tag']}}
     end
 
-    # Sort by name or displayName, depending on the object
+    # Sort by recent activity
     cur_contacts.sort! do |a,b|
-      (a.name || a.displayName) <=> (b.name || b.displayName)
+      (b.lastLogin || b.updatedAt) <=> (a.lastLogin || a.updatedAt)
     end
 
     return cur_contacts

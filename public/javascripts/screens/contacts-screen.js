@@ -46,5 +46,6 @@ $(function ()
         filterSuccessHandler: function (retData)
         {
             $('#contactList').combinationList().updateList(retData);
+            $('#contactList tbody').show();
         }});
 });

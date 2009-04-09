@@ -167,7 +167,17 @@
                 var comboListObj = this;
                 var $comboList = $(comboListObj.currentList);
 
-                $comboList.find('tbody').replaceWith($(newTable).find('tbody'));
+                $comboList.find('tbody').html(newTable);
+                if (comboListObj.settings.sortable)
+                {
+                    $(comboListObj.settings.headerContainerSelector)
+                        .find("table tr th")
+                        .removeClass('headerSortUp')
+                        .removeClass('headerSortDown');
+                    $(comboListObj.settings.headerContainerSelector)
+                        .find("table tr th:last")
+                        .addClass('headerSortUp');
+                }
 
                 comboListObj.settings.loadedCallback();
                 adjustClipping(comboListObj);
@@ -180,8 +190,6 @@
                     }
 
                     $comboList.trigger('update');
-                    // Resort new list on default sort
-                    $comboList.trigger('sorton', comboListObj.settings.initialSort);
                 }
                 else
                 {
@@ -233,7 +241,6 @@
                 }
             });
         }
-        $comboList.find('tbody').show();
     };
 
     var adjustClipping = function (comboListObj)

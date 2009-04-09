@@ -244,6 +244,7 @@ blist.myBlists.sidebar.initializeHandlers = function ()
         filterSuccessHandler: function (retData)
         {
             $('#blistList').combinationList().updateList(retData);
+            $('#blistList tbody').show();
         }});
     $('#blistFilters a:not(.expander, ul.menu a)')
         .each(function ()

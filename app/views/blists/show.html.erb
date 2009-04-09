@@ -9,8 +9,15 @@
 <div class="scrollContentColumn">
   <div id='lensContainer' class='mainContent tableView'>
     <ul class='tabList'>
+      <li class='backLink'><div class='wrapper'><a title='Back to blists'
+          href='<%= blists_url() %>'>Back to blists</a></div></li>
       <li class='main active'><div class='wrapper'>
-        <a href='#'><%= !@view.nil? ? @view.name : 'New blist' %></a></div></li>
+        <a class='clipText' href='#'
+          title='<%= !@view.nil? ? h(@view.name) : '' %>'>
+          <%= !@view.nil? ? h(@view.name) : 'New blist' %>
+        </a>
+      </div></li>
+      <li class='newViewLink'><a href='#newView' title='New View'>New View</a></li>
     </ul>
 
     <div class='outerContent'>

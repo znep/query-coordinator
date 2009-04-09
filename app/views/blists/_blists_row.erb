@@ -43,13 +43,15 @@
     <%= get_type_string_for_view(blist) %>
   </div></td>
   <td class='name'>
-    <div class="clipText"><%= link_to(h(blist.name), blist_url(blist.id)) %></div>
+    <div class="clipText"><%= link_to(h(blist.name),
+      blist_url(blist.id), {:title => h(blist.name)}) %></div>
     <% form_tag(blist_url(blist.id), :class => "noselect") do %>
       <%= text_field_tag("view_#{blist.id}[name]", h(blist.name)) %>
       <%= image_submit_tag("submit_button_mini.png", :title => "Rename") %>
     <% end %>
   </td>
-  <td class='description'><div class="clipText"><%= h(blist.description) %></div></td>
+  <td class='description'><div class="clipText"
+      title='<%= h(blist.description) %>'><%= h(blist.description) %></div></td>
   <td class='owner'><div><%= h(blist.owner.displayName) %></div></td>
   <td class='lastUpdated last'><div>
       <%= blist_date(blist.last_activity) %>

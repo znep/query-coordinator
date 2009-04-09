@@ -76,9 +76,9 @@ blist.util.flashInterface.updateDiscoverSearch = function (search)
     $(document).trigger(blist.events.DISCOVER_SEARCH_UPDATED, [search]);
 };
 
-blist.util.flashInterface.openLens = function (viewId)
+blist.util.flashInterface.openLens = function (viewId, popup)
 {
-    $(document).trigger(blist.events.OPEN_VIEW, [viewId]);
+    $(document).trigger(blist.events.OPEN_VIEW, [viewId, popup]);
 };
 
 blist.util.flashInterface.columnsChanged = function (columnIds)

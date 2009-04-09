@@ -16,6 +16,54 @@ body#lensBody
     min-width: 99.9em;
 }
 
+#lensContainer .tabList
+{
+    margin-left: 10em;
+}
+
+#lensContainer .tabList .backLink
+{
+    margin-right: -20px;
+}
+
+#lensContainer .tabList .backLink a,
+#lensContainer .tabList .newViewLink a
+{
+    background-repeat: no-repeat;
+    line-height: 10em;
+    overflow: hidden;
+    width: 0;
+}
+
+#lensContainer .tabList .backLink a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-position: 0 -71px;
+    margin-left: -5px;
+}
+
+#lensContainer .tabList .newViewLink
+{
+    background-image: none;
+    margin-left: 5px;
+}
+
+#lensContainer .tabList .newViewLink a
+{
+    background-color: transparent;
+    background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png);
+    background-position: 0 -40px;
+}
+
+#lensContainer .tabList li.main a
+{
+    overflow: hidden;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+    width: 11em;
+}
+
 /* Header bar & Button styles */
 
 #lensContainer .headerBar

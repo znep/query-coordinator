@@ -26,7 +26,15 @@ class BlistsController < SwfController
       # show import in swf
       @start_screen = 'import'
     else
-      @view = View.find(params[:id])
+      @parent_view = @view = View.find(params[:id])
+      if !@view.is_blist?
+        par_view = View.find({'blistId' => @view.blistId}).
+          find {|v| v.is_blist?}
+        if (!par_view.nil?)
+          @is_child_view = true
+          @parent_view = par_view
+        end
+      end
     end
 
     @data_component = params[:dataComponent]
@@ -58,21 +66,21 @@ class BlistsController < SwfController
       @item_count = params[:items]
     end
   end
-  
+
   def create_favorite
     blist_id = params[:id]
     result = View.create_favorite(blist_id)
-    
+
     respond_to do |format|
       format.html { redirect_to(blist_url(blist_id)) }
       format.data { render :text => "created" }
     end
   end
-  
+
   def delete_favorite
     blist_id = params[:id]
     result = View.delete_favorite(blist_id)
-    
+
     respond_to do |format|
       format.html { redirect_to(blist_url(blist_id)) }
       format.data { render :text => "deleted" }

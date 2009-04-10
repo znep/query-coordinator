@@ -11,13 +11,21 @@
     <ul class='tabList'>
       <li class='backLink'><div class='wrapper'><a title='Back to blists'
           href='<%= blists_url() %>'>Back to blists</a></div></li>
-      <li class='main active'><div class='wrapper'>
-        <a class='clipText' href='#'
-          title='<%= !@view.nil? ? h(@view.name) : '' %>'>
-          <%= !@view.nil? ? h(@view.name) : 'New blist' %>
-        </a>
-      </div></li>
+      <li class='main <%= @is_child_view ? 'even' : 'active' %>'>
+        <div class='wrapper'>
+          <a class='clipText' href='<%= blist_url(@parent_view.id) %>'
+            title='<%= !@parent_view.nil? ? h(@parent_view.name) : '' %>'>
+            <%= !@parent_view.nil? ? h(@parent_view.name) : 'New blist' %>
+          </a>
+        </div>
+      </li>
       <li class='newViewLink'><a href='#newView' title='New View'>New View</a></li>
+      <%- if @is_child_view -%>
+      <li class='active filter'><div class='wrapper'>
+        <a class='clipText' href='<%= blist_url(@view.id) %>'
+          title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
+      </div></li>
+      <%- end -%>
     </ul>
 
     <div class='outerContent'>

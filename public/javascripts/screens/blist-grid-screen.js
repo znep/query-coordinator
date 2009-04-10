@@ -350,9 +350,12 @@ $(function ()
         // After switching tabs, update the menu and size the Swf.
         switchCompleteCallback: function ($tab)
         {
-            $('#mainMenu li.info li.activePane').removeClass('activePane');
-            $('#mainMenu li.info li > a[href*="' + $tab.attr('id') + '"]')
-                .closest('li').addClass('activePane');
+            if ($tab)
+            {
+                $('#mainMenu li.info li.activePane').removeClass('activePane');
+                $('#mainMenu li.info li > a[href*="' + $tab.attr('id') + '"]')
+                    .closest('li').addClass('activePane');
+            }
             blistGridNS.sizeSwf();
         }
     });

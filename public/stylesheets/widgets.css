@@ -725,7 +725,8 @@ table.gridList tr.expanded .expander
 table.gridList .handle,
 table.gridList .favorite,
 table.gridList .type,
-table.gridList .picture
+table.gridList .picture,
+table.gridList .group
 {
     background-position: center center;
     background-repeat: no-repeat;
@@ -733,7 +734,9 @@ table.gridList .picture
 
 table.gridList th.favorite,
 table.gridList th.type,
-table.gridList th.picture {
+table.gridList th.picture,
+table.gridList th.group
+{
     padding: 0;
     text-indent: -9999px;
 }
@@ -779,14 +782,16 @@ table.gridList tr.hover td.favorite .favoriteMarker
 }
 
 table.gridList .type,
-table.gridList .picture { width: 45px; }
+table.gridList .picture,
+table.gridList .group { width: 45px; }
 
 table.gridList th.type
 {
     background-image: url(/stylesheets/images/content/table/icon_sorting_type.png);
 }
 table.gridList td.type > *,
-table.gridList td.picture > *
+table.gridList td.picture > *,
+table.gridList td.group
 {
     margin: 0 auto;
     text-indent: -9999px;
@@ -797,7 +802,8 @@ table.gridList th.picture
 {
     background-image: url(/stylesheets/images/content/table/icon_contact_type.png);
 }
-table.gridList td.picture > *
+table.gridList td.picture > *,
+table.gridList td.group > *
 {
     height: 24px;
     text-indent: 0;
@@ -810,12 +816,26 @@ table.gridList td.picture > .group
     text-indent: -9999px;
 }
 
+table.gridList th.group
+{
+    background-image: url(/stylesheets/images/content/table/icon_group_type.png);
+}
+table.gridList td.group > *
+{
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 0 -310px;
+    text-indent: -9999px;
+}
+
+
 table.gridList .name { width: 30%; }
 
 table.gridList .description { width: 45%; }
 table.gridList .owner { width: 25%; }
 table.gridList .lastUpdated,
-table.gridList .activityDate { width: 11.5em; }
+table.gridList .activityDate,
+table.gridList .dateAdded,
+table.gridList .sharedOn { width: 11.5em; }
 
 
 table.gridList .viewed { width: 25%; }

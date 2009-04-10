@@ -11,29 +11,75 @@ class ContactsController < ApplicationController
     @title = get_title(@args)
   end
 
-#  def update
-#    blist_id = params[:id]
+# def update
+#   group_id = params[:id]
+#   
+#   # TODO: We need to update the whole group model.
+#   # Remove this once we can send only attributes that should be updated.
+#   update_group = Group.find(group_id)
+#   params[:group][:name] = params[:group][:name] || update_group.name
+#   params[:group][:description] = params[:group][:description] || update_group.description
+#   # END: Remove this.
 #
-#    blist = View.update_attributes!(blist_id, params[:view])
+#   group = Group.update_attributes!(group_id, params[:group])
 #
-#    respond_to do |format|
-#      format.html { redirect_to(blist_url(blist_id)) }
-#      format.data { render :json => blist.to_json() }
-#    end
-#  end
+#   respond_to do |format|
+#     format.html { redirect_to(contacts_url) }
+#     format.data { render :json => group.to_json() }
+#   end
+# end
 
-#  def detail
-#    if (params[:id])
-#      @view = View.find(params[:id])
-#    elsif (params[:multi])
-#      args = Array.new
-#      multiParam = params[:multi]
-#      args = multiParam.split(':')
-#      @views = get_views_with_ids(args)
-#    elsif (params[:items])
-#      @item_count = params[:items]
-#    end
-#  end
+  def detail
+    @item_count = params[:items]
+    @type = params[:type]
+  end
+
+  def contact_detail
+    @contact = User.find(params[:id])
+    
+    @contact_contributor_blists = get_contributor_blists_for_contacts(Array[@contact])
+    @contact_viewer_blists = get_viewer_blists_for_contacts(Array[@contact])
+    
+    @contact_groups = get_groups_for_contact(@contact)
+    @contact_shares = get_shares_for_contacts(Array[@contact])
+    
+    @shares_to_contact = get_shared_to_contacts(Array[@contact])
+    @shares_by_contact = get_shared_by_contacts(Array[@contact])
+    
+    @contact_blists = View.find('userId' => @contact.id)
+    @contact_templates = @contact_blists.find_all { |b| b.flag?("schemaPublic") }
+  end
+
+  def group_detail
+    @group = Group.find(params[:id])
+    
+    @group_contributor_blists = get_contributor_blists_for_contacts(@group.users)
+    @group_viewer_blists = get_viewer_blists_for_contacts(@group.users)
+    
+    @group_shares = get_shares_for_contacts(@group.users)
+    @shares_to_group = get_shared_to_contacts(@group.users)
+    @shares_by_group = get_shared_by_contacts(@group.users)
+    
+    @group_blists = get_blists_for_group(@group)
+  end
+
+  def multi_detail
+    multi = params[:multi].split('|')
+    contact_ids = Array.new
+    group_ids = Array.new
+    
+    multi.each do |item|
+      item_array = item.split(':')
+      if (item_array[0] == "contact")
+        contact_ids << item_array[1]
+      elsif (item_array[0] == "group")
+        group_ids << item_array[1]
+      end
+    end
+    
+    @contacts = get_contacts_with_ids(contact_ids)
+    @groups = get_groups_with_ids(group_ids)
+  end
 
 private
 
@@ -93,22 +139,81 @@ private
     return cur_contacts
   end
 
-#  def get_views_with_ids(params = nil)
-#    cur_views = View.find_multiple(params)
-#
-#    # Return this array in the order of the params so it'll match the DOM.
-#    hash_views = Hash.new
-#    cur_views.each do |v|
-#      hash_views[v.id] = v
-#    end
-#
-#    ret_views = Array.new
-#    params.each do |p|
-#      ret_views << hash_views[p]
-#    end
-#
-#    return ret_views
-#  end
+  def get_groups_for_contact(contact)
+    groups = Group.find()
+    groups = groups.find_all { |g| 
+      g.users.any? { |u| u.id == contact.id } 
+    }
+  end
+
+  def get_contributor_blists_for_contacts(contacts)
+    views = View.find()
+    all_shares = views.find_all { |v|
+      contacts.any? { |c| v.contributor_users.include?(c.id) }
+    }
+  end
+
+  def get_viewer_blists_for_contacts(contacts)
+    views = View.find()
+    all_shares = views.find_all { |v| 
+      contacts.any? { |c| v.viewer_users.include?(c.id) }
+    }
+  end
+
+  # Get all shares for this contact.
+  def get_shares_for_contacts(contacts)
+    views = View.find()
+    all_shares = views.find_all { |v| 
+      contacts.any? { |c| 
+        (v.owner.id == c.id && v.flag?('shared')) ||
+        v.viewer_users.include?(c.id) ||
+        v.contributor_users.include?(c.id)
+      }
+    }
+  end
+  
+  # Views you have shared to the contact.
+  def get_shared_to_contacts(contacts)
+    views = View.find()
+    all_shares = views.find_all { |v|
+      contacts.any? { |c| 
+        v.viewer_users.include?(c.id) ||
+        v.contributor_users.include?(c.id)
+      }
+    }
+  end
+  
+  # Views the given contact has shared with you.
+  def get_shared_by_contacts(contacts)
+    views = View.find()
+    all_shares = views.find_all { |v|
+      contacts.any? { |c| 
+        (v.owner.id == c.id && v.flag?('shared'))
+      }
+    }
+  end
+  
+  def get_blists_for_group(group)
+    views = Array.new
+    group.users.each do |user|
+      views += View.find('userId' => user.id)
+    end
+    views
+  end
+  
+  def get_contacts_with_ids(ids)
+    contacts = Contact.find()
+    these_contacts = contacts.find_all { |c|
+      ids.include?(c.id)
+    }
+  end
+  
+  def get_groups_with_ids(ids)
+    groups = Group.find()
+    these_groups = groups.find_all { |g| 
+      ids.include?(g.id)
+    }
+  end
 
   def group_name(group)
     Group.find(group).name

@@ -35,7 +35,13 @@ ActionController::Routing::Routes.draw do |map|
       :create_favorite => :post,
       :delete_favorite => :post
     }
-  map.resources :contacts
+  map.resources :contacts, 
+    :collection => { 
+      :detail => :get,
+      :contact_detail => :get,
+      :group_detail => :get,
+      :multi_detail => :get
+    }
   map.resource :discover
   map.resource :account
   map.resource :profile

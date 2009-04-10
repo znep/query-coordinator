@@ -38,7 +38,7 @@
 </div>
 
 <%# *** START: SUMMARY *** %>
-<div class="infoContentOuter singleInfoSummary listContainer active">
+<div class="infoContentOuter singleInfoSummary listContainer active<%= page_single ? ' expanded' : '' %>">
   <div class="infoContentHeader clearfix">
     <h2 title='<%= h(view.name) %>'
       class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>">

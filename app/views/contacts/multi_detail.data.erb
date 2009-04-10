@@ -1,0 +1,74 @@
+<div class="header">
+  <ul class="summaryTabs clearfix">
+    <li id="tabSummary" class="summary active">
+      <div class="tabInner">
+        <a href="#expand" class="expander" title="more info">more info</a>
+        <a href="#summary">Summary</a>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div class="infoContentOuter singleInfoSummary listContainer active">
+  <div class="infoContentHeader clearfix">
+    <%- if (@contacts && @contacts.length > 0) -%>
+      <h2 class="panelHeader contactPanelHeader">
+        <%= pluralize(@contacts.length, "contact") %> selected
+      </h2>
+    <%- end -%>
+    
+    <%- if (@groups && @groups.length > 0) -%>
+      <h2 class="panelHeader groupPanelHeader">
+        <%= pluralize(@groups.length, "group") %> selected
+      </h2>
+    <%- end -%>
+  </div>
+  <div class="infoContentInner">
+    <div class="infoContent">
+      <%- if (@contacts && @contacts.length > 0) -%>
+        <dl class="summaryList contactsList">
+          <dt>
+            Contacts
+            <a href="#help" class="help"><span>help</span></a>
+          </dt>
+          <%- @contacts.each do |contact| -%>
+            <dd class="editItem">
+              <div class="itemContent">
+                <span>
+                  <img src="<%= contact.profile_image("small") %>" width="24" height="24"
+                    alt="<%= h(contact.displayName) %>" />
+                  <%= h(contact.displayName) %>
+                </span>
+              </div>
+              <div class="itemActions">
+                <a href="#contact:<%= contact.id %>" class="action unselector"><span>unselect</span></a>
+              </div>
+            </dd>
+          <%- end -%>
+        </dl>
+      <%- end -%>
+
+      <%- if (@groups && @groups.length > 0) -%>
+        <dl class="summaryList groupsList">
+          <dt>
+            Groups
+            <a href="#help" class="help"><span>help</span></a>
+          </dt>
+          <%- @groups.each do |group| -%>
+            <dd class="editItem">
+              <div class="itemContent">
+                <span>
+                  <%= image_tag("icon_group.png", :size => "24x24", :alt => h(group.name)) %>
+                  <%= h(group.name) %></span>
+              </div>
+              <div class="itemActions">
+                <a href="#group:<%= group.id %>" class="action unselector"><span>unselect</span></a>
+              </div>
+            </dd>
+          <%- end -%>
+        </dl>
+      <%- end -%>
+
+    </div> <!-- /.infoContent -->
+  </div> <!-- /.infoContentInner -->
+</div>

@@ -161,6 +161,11 @@
     overflow: hidden;
     padding-left: 46px;
 }
+.infoContentHeader h2.panelHeader.noHeaderIcon
+{
+    background: none;
+    padding-left: 0;
+}
 
 .infoContentHeader h2.panelHeader.typeBlists { background-position: left top; }
 .infoContentHeader h2.panelHeader.typeFilters { background-position: left -41px; }
@@ -175,8 +180,12 @@
 .infoContentHeader h2.panelHeader.typeFilter { background-position: left -451px; }
 .infoContentHeader h2.panelHeader.typeFilter.private { background-position: left -492px; }
 .infoContentHeader h2.panelHeader.typeFilter.privateShared { background-position: left -533px; }
+.infoContentHeader h2.panelHeader.typeSharedIn { background-position: left -738px; }
+.infoContentHeader h2.panelHeader.typeSharedOut { background-position: left -779px; }
 
 .infoContentHeader h2.panelHeader a { color: #333; }
+
+.infoContentHeader h2.panelHeader img { vertical-align: middle; }
 
 .infoContentHeader .selectPrompt 
 {
@@ -308,6 +317,7 @@
     padding: 3px 4em 5px 10px;
     text-decoration: none;
 }
+.infoContentOuter.listContainer .infoContent dd .itemContent > * img { vertical-align: middle; }
 .infoContentOuter.listContainer .infoContent dd.hover .itemContent
 {
     background-color: #ffedb2;
@@ -399,6 +409,20 @@
     background-image: none;
 }
 
+.infoContentOuter.singleInfoGroups table.gridList .description { width: 60%; }
+.infoContentOuter.singleInfoGroups table.gridList .actionContainer,
+.infoContentOuter.singleInfoMembers table.gridList .actionContainer { width: 7em; }
+#infoPane .infoContentOuter.singleInfoBlists table.gridList .name { width: 100%; }
+.infoContentOuter.singleInfoBlists table.gridList .views,
+.infoContentOuter.singleInfoBlists table.gridList .copies { width: 7em; }
+
+.infoContentOuter.singleInfoBlists table.gridList tr.hover td+td > *,
+.infoContentOuter.singleInfoGroups table.gridList tr.hover td+td > *,
+.infoContentOuter.singleInfoMembers table.gridList tr.hover td+td > *
+{ 
+    background-color: #ffedb2; 
+}
+
 .infoContentOuter table.gridList td > *
 {
     color: #333;
@@ -409,7 +433,9 @@
     padding: 0 5px;
 }
 
-.infoContentOuter table.gridList td.type > *
+.infoContentOuter table.gridList td.type > *,
+.infoContentOuter table.gridList td.picture > *,
+.infoContentOuter table.gridList td.group > *
 {
     height: 27px;
     line-height: 27px;
@@ -418,6 +444,9 @@
 .infoContentOuter table.gridList td.actionContainer .action { display: none; }
 .infoContentOuter table.gridList tr.hover td.actionContainer > * { background: none; }
 .infoContentOuter table.gridList tr.hover td.actionContainer .action { display: block; }
+
+.infoContentOuter table.gridList td.views > *,
+.infoContentOuter table.gridList td.copies > * { text-align: right; }
 
 /*** END: grid list table ***/
 
@@ -445,6 +474,17 @@
     font-weight: bold;
     max-width: 60%;
 }
+
+.infoContentHeader h2.panelHeader.contactPanelHeader
+{
+    background-position: left -656px;
+}
+.infoContentHeader h2.panelHeader.groupPanelHeader
+{
+    background-position: left -697px;
+}
+
+
 .singleInfoSharing .sharingSummary {
     border-top: 1px solid #e1d3b6;
     margin-top: 5px;

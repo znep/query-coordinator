@@ -259,10 +259,12 @@ private
   def self.generic_request(request, json = nil, session_token = nil)
     requestor = User.current_user
     if session_token
-      request['Cookie'] = session_token.cookie
+      request['Cookie'] = "_blist_session_id=#{session_token}"
     elsif requestor && requestor.session_token
-      request['Cookie'] = requestor.session_token.cookie
+      pp requestor.session_token.to_s
+      request['Cookie'] = "_blist_session_id=#{requestor.session_token.to_s}"
     end
+
     if (!json.blank?)
       request.body = json
       request.content_type = "application/json"

@@ -82,28 +82,18 @@ class UserSession
     new_session != false
   end
 
-  def valid?
-    @token = find_token unless @token
-    if @token
-      @token.valid?
-    else
-      false
-    end
-  end
-
   # Look up the authentication token based on the user's cookie information.
   # This function is typically called on every request cycle - we're given
   # a token representing an authenticated session, and we need to validate it
   # and look up the user associated with that token.
   def find_token
-    if @token.nil? || !@token.valid?
-      if cookies['blist_core_session'] && !cookies['blist_core_session'].blank?
-        @token = AuthenticationSessionCookie.new(cookies['blist_core_session'])
-        UserSession.update_current_user(User.find(@token.user_id, @token), @token)
-      end
+    if core_session.valid?
+      user = User.find(core_session.user_id, core_session.to_s)
+      UserSession.update_current_user(user, core_session)
+      user
+    else
+      nil
     end
-
-    @token
   end
 
   # Create or update an existing authentication session.
@@ -116,15 +106,13 @@ class UserSession
     result = false
     response = post_core_authentication
     if response.is_a?(Net::HTTPSuccess)
-      cookie = CGI::Cookie.parse(response['Set-Cookie'])
-      token = AuthenticationSessionCookie.new(cookie)
-      if token.valid?
-        cookies['blist_core_session'] = { :value => token.base64_value,
-                                          :domain => cookie_domain }
-        self.new_session = false
-        UserSession.update_current_user(User.parse(response.body)[0], token)
-        result = self
-      end
+      user = User.parse(response.body)
+      core_session.user_id = user.data['id']
+      core_session.expiration = Time.now + 1.hour
+      core_session.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{User.id}--")[0,12]
+      self.new_session = false
+      UserSession.update_current_user(user, core_session)
+      result = self
     end
 
     yield result if result && block_given?
@@ -132,8 +120,8 @@ class UserSession
   end
 
   def destroy
-    @token = nil
-    cookies['blist_core_session'] = nil
+    core_session.clear!
+    self.new_session = true
     UserSession.update_current_user(nil, nil)
   end
 
@@ -158,6 +146,8 @@ private
   end
 
   def self.update_current_user(user, session_token)
+    # We only need to set the session here for the old Rails project.
+    # When we finally get rid of it, you can get rid of this line.
     controller.session[:user] = user.nil? ? nil : user.oid
     user.session_token = session_token if user
     User.current_user = user
@@ -172,64 +162,12 @@ private
   def cookie_domain
     controller.class.session_options[:domain]
   end
-end
 
-# Simple class for representing whether a given session is valid.
-class AuthenticationSessionCookie
-  attr_accessor :user_id, :expiration, :salt, :signature
-
-  def initialize(cookie)
-    if cookie.is_a?(Hash) && cookie['blist_core_session']
-      cookie_text = cookie['blist_core_session'].value[0]
-    elsif cookie.is_a?(String)
-      cookie_text = cookie
-    else
-      raise ArgumentError
-    end
-
-    cookie_text = Base64.decode64(cookie_text)
-    parts = cookie_text.split
-    raise ArgumentError if parts.length != 4
-
-    @user_id = parts[0]
-    @expiration = Time.at(parts[1].to_i)
-    @salt = parts[2]
-    @signature = parts[3]
-  end
-
-  def to_s
-    "#{user_id} #{expiration.to_i} #{salt} #{signature}"
-  end
-
-  def base64_value
-    Base64.encode64(to_s).delete("\n")
-  end
-
-  def cookie
-    CGI::Cookie.new('name' => 'blist_core_session',
-                    'value' => base64_value)
-  end
-
-  def valid?
-    valid_expiration? && valid_signature?
-  end
-
-  def valid_expiration?
-    expiration > Time.now
-  end
-
-  def valid_signature?
-    @signature == computed_signature
-  end
-
-  private
-  SECRET = "wm4NmtBisUd3XJ0JvQwJqTth8UdFvbYpy3LZ5IU3I3XCwG06XRa1TYXC3WySahssDzrt2cHFrbsRPT1o"
-
-  def computed_signature
-    require 'digest/sha1'
-    Digest::SHA1.hexdigest("#{SECRET} #{user_id} #{expiration.to_i} #{salt}")
+  def core_session
+    controller.request.core_session
   end
 end
+
 
 class NotActivatedError < StandardError
   def initialize(session)

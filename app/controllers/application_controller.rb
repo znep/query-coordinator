@@ -21,12 +21,8 @@ class ApplicationController < ActionController::Base
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
   
-  def current_user_session
-    @current_user_session ||= UserSession.find
-  end
-
   def current_user
-    @current_user ||= current_user_session && current_user_session.user
+    @current_user ||= UserSession.find
   end
   
 private

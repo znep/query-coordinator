@@ -19,10 +19,10 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    if current_user_session
-      current_user_session.destroy
+    if current_user
+      current_user.destroy
     end
     flash[:notice] = "You have been logged out"
-    redirect_to(new_user_session_url)
+    redirect_to(login_url)
   end
 end

@@ -107,10 +107,14 @@
   <script type="text/javascript">
     jQuery((function ($)
     {
-        var blistCookie = $.cookies.get('blist_core_session');
+        var blistCookie = $.cookies.get('_blist_session_id');
         if (blistCookie && blistCookie !== "")
         {
-            $('#header .userNav').addClass('loggedInNav');
+            var coreCookie = blistCookie.split("::");
+            if (coreCookie[0] && coreCookie[0] !== "")
+            {
+                $('#header .userNav').addClass('loggedInNav');
+            }
         }
 
         $('#versionLink').click(function (event)

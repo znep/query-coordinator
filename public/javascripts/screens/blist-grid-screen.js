@@ -22,6 +22,77 @@ blist.blistGrid.sizeSwf = function (event)
         ($parent.width() - (containerLeft + $container.width())) + 'px');
 };
 
+blist.blistGrid.setUpTabs = function ()
+{
+    var cookieStr = $.cookies.get('viewTabs');
+    if (!cookieStr)
+    {
+        blistGridNS.createTabCookie();
+        return;
+    }
+
+    var cookieObj = $.json.deserialize(cookieStr);
+    if (cookieObj.blistId != blistGridNS.blistId)
+    {
+        blistGridNS.createTabCookie();
+        return;
+    }
+
+    if (blistGridNS.viewId)
+    {
+        if ($.grep(cookieObj.views, function (v)
+            { return v.id == blistGridNS.viewId }).length < 1)
+        {
+            cookieObj.views.push({name: blistGridNS.viewName,
+                id: blistGridNS.viewId});
+            $.cookies.set('viewTabs', $.json.serialize(cookieObj));
+        }
+    }
+
+    var $tabList = $('.tabList');
+    var $tabTemplate = $tabList.find('li.main').clone()
+        .removeClass('main active even').addClass('filter');
+    var $refTab = $('.tabList li.filter.active');
+    var foundTab = blistGridNS.viewId === null;
+    $.each(cookieObj.views, function (i, v)
+    {
+        if (v.id == blistGridNS.viewId)
+        {
+            foundTab = true;
+            return;
+        }
+        var $newTab = $tabTemplate.clone();
+        if (i % 2 == 0)
+        {
+            $newTab.addClass('even');
+        }
+        var $newA = $newTab.find('a');
+        $newA.attr('href', blist.util.navigation.getViewUrl(v.id));
+        $newA.attr('title', v.name);
+        $newA.text(v.name);
+        if (!foundTab && $refTab.length > 0)
+        {
+            $refTab.before($newTab);
+        }
+        else
+        {
+            $tabList.append($newTab);
+        }
+    });
+};
+
+blist.blistGrid.createTabCookie = function()
+{
+    $.cookies.del('viewTabs');
+    if (blistGridNS.viewId)
+    {
+        $.cookies.set('viewTabs', $.json.serialize({
+            blistId: blistGridNS.blistId,
+            views: [{name: blistGridNS.viewName, id: blistGridNS.viewId}]
+        }));
+    }
+};
+
 blist.blistGrid.columnClickHandler = function (event)
 {
     var $target = $(event.currentTarget);
@@ -258,6 +329,8 @@ blist.blistGrid.popupCanceledHandler = function(event, popup)
 
 $(function ()
 {
+    blistGridNS.setUpTabs();
+
     blist.util.flashInterface.addPopupHandlers(blistGridNS.flashPopupShownHandler,
         blistGridNS.flashPopupClosedHandler);
 

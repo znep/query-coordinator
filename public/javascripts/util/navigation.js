@@ -1,6 +1,6 @@
 var navigationUtilNS = blist.namespace.fetch('blist.util.navigation');
 
-blist.util.navigation.redirectToView = function (viewId, popup)
+blist.util.navigation.getViewUrl = function (viewId, popup)
 {
     // TODO: Is there a better way to get this URL?
     var url = '/blists/' + viewId;
@@ -8,7 +8,12 @@ blist.util.navigation.redirectToView = function (viewId, popup)
     {
         url += "?popup=" + popup;
     }
-    window.location = url;
+    return url;
+};
+
+blist.util.navigation.redirectToView = function (viewId, popup)
+{
+    window.location = navigationUtilNS.getViewUrl(viewId, popup);
 };
 
 blist.util.navigation.redirectToNewView = function ()

@@ -75,8 +75,11 @@ body#lensBody
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-position: 0 -531px;
     background-repeat: no-repeat;
+    margin-left: -2px;
+    padding-left: 20px;
+    overflow: hidden;
     text-align: left;
-    width: 5em;
+    width: 6em;
 }
 
 /* Header bar & Button styles */

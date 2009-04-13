@@ -150,11 +150,12 @@ form.search input.submit
 
 .tabList li
 {
-    background-image: url(/stylesheets/images/content/tabs/tab_gray2_left.png);
-    background-position: top left;
+    background-image: url(/stylesheets/images/content/tabs/tab_small_sprites.png);
+    background-position: left -52px;
     background-repeat: no-repeat;
     float: left;
-    margin: 2px -7px 0;
+    height: 26px;
+    margin: 0 -7px;
     position: relative;
     z-index: 5;
 }
@@ -186,21 +187,20 @@ form.search input.submit
 
 .tabList li.even
 {
-    background-image: url(/stylesheets/images/content/tabs/tab_gray1_left.png);
+    background-position: left -26px;
 }
 
 .tabList li .wrapper
 {
-    background-image: url(/stylesheets/images/content/tabs/tab_gray2_right.png);
-    background-position: top right;
+    background-image: url(/stylesheets/images/content/tabs/tab_small_sprites.png);
+    background-position: right -130px;
     background-repeat: no-repeat;
-    height: 19px;
-    padding: 0 19px;
+    padding: 3px 14px 0;
 }
 
 .tabList li.even .wrapper
 {
-    background-image: url(/stylesheets/images/content/tabs/tab_gray1_right.png);
+    background-position: right -104px;
 }
 
 .tabList a
@@ -209,9 +209,9 @@ form.search input.submit
   color: #333;
   display: block;
   font-size: 1.2em;
-  height: 16px;
+  height: 18px;
   line-height: 1.2em;
-  padding: 3px 1em 0;
+  padding: 5px 1em 0;
   text-decoration: none;
 }
 
@@ -227,7 +227,8 @@ form.search input.submit
 #profile .tabList li.profile,
 .tabList li.active
 {
-    background-image: url(/stylesheets/images/content/tabs/tab_white_left.png);
+    background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
+    background-position: 0 0;
     margin-top: 0;
     z-index: 10;
 }
@@ -238,9 +239,9 @@ form.search input.submit
 #profile .tabList li.profile .wrapper,
 .tabList li.active .wrapper
 {
-    background-image: url(/stylesheets/images/content/tabs/tab_white_right.png);
-    height: 21px;
-    padding: 0 21px;
+    background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
+    background-position: right -52px;
+    padding: 0 18px;
 }
 
 #home .tabList li.home a,
@@ -251,9 +252,8 @@ form.search input.submit
 {
     background-color: #ffffff;
     font-weight: bold;
-    height: 18px;
-    padding-left: 2em;
-    padding-right: 2em;
+    height: 20px;
+    padding: 6px 2em 0;
 }
 
 #home .tabList li.home a:hover,

@@ -9,8 +9,8 @@
 <div class="scrollContentColumn">
   <div id='lensContainer' class='mainContent tableView'>
     <ul class='tabList'>
-      <li class='backLink'><div class='wrapper'><a title='Back to blists'
-          href='<%= blists_url() %>'>Back to blists</a></div></li>
+      <li class='backLink'><a title='Back to blists'
+          href='<%= blists_url() %>'>Back to blists</a></li>
       <li class='main <%= @is_child_view ? 'even' : 'active' %>'>
         <div class='wrapper'>
           <a class='clipText' href='<%= blist_url(@parent_view.id) %>'

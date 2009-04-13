@@ -23,7 +23,8 @@ body#lensBody
 
 #lensContainer .tabList .backLink
 {
-    margin-right: -20px;
+    background-image: none;
+    margin-right: 0;
 }
 
 #lensContainer .tabList .backLink a,
@@ -37,37 +38,85 @@ body#lensBody
 
 #lensContainer .tabList .backLink a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
-    background-position: 0 -71px;
-    margin-left: -5px;
+    background-color: transparent;
+    background-image: url(/stylesheets/images/content/table/icon_back_to_blists.png);
+    background-position: 0 0;
+    height: 15px;
+    margin-top: 7px;
 }
 
 #lensContainer .tabList .newViewLink
 {
     background-image: none;
-    margin-left: 5px;
-    margin-right: 20px;
+    margin-left: 0;
+    margin-right: 10px;
 }
 
 #lensContainer .tabList .newViewLink a
 {
     background-color: transparent;
-    background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png);
-    background-position: 0 -40px;
+    background-image: url(/stylesheets/images/content/table/icon_add_lens.png);
+    background-position: 0 0;
+    height: 16px;
+    margin-top: 3px;
+    padding-top: 0;
+}
+
+#lensContainer .tabList .newViewLink a:hover
+{
+    background-position: 0 -16px;
 }
 
 #lensContainer .tabList li.main
 {
+    background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
+    background-position: 0 -26px;
     z-index: 10;
+}
+
+#lensContainer .tabList li.main .wrapper
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
+    background-position: right -78px;
+    padding: 0 18px;
 }
 
 #lensContainer .tabList li.main a
 {
+    height: 20px;
     overflow: hidden;
-    padding-left: 0;
-    padding-right: 0;
+    padding: 6px 0 0;
     text-align: center;
     width: 10em;
+}
+
+#lensContainer .tabList li.main.active
+{
+    background-position: 0 0;
+}
+
+#lensContainer .tabList li.main.active .wrapper
+{
+    background-position: right -52px;
+}
+
+#lensContainer .tabList li.filter.active
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_small_sprites.png);
+    background-position: left 0;
+}
+
+#lensContainer .tabList li.filter.active .wrapper
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_small_sprites.png);
+    background-position: right -78px;
+    padding: 3px 14px 0;
+}
+
+#lensContainer .tabList li.filter.active a
+{
+  height: 18px;
+  padding: 5px 1em 0 20px;
 }
 
 #lensContainer .tabList li.filter a
@@ -75,7 +124,6 @@ body#lensBody
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-position: 0 -531px;
     background-repeat: no-repeat;
-    margin-left: -2px;
     padding-left: 20px;
     overflow: hidden;
     text-align: left;

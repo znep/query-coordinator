@@ -30,10 +30,10 @@
     background-repeat: no-repeat;
     text-indent: 0;
 }
-#blists .blistItemMenu li.open a { background-position: 5px 2px; }
-#blists .blistItemMenu li.addFavorite a { background-position: 5px -13px; }
-#blists .blistItemMenu li.rename a { background-position: 5px -28px; }
-#blists .blistItemMenu li.delete a { background-position: 5px -43px; }
+#blists .blistItemMenu li.open a { background-position: 5px 0; }
+#blists .blistItemMenu li.addFavorite a { background-position: 5px -19px; }
+#blists .blistItemMenu li.rename a { background-position: 5px -38px; }
+#blists .blistItemMenu li.delete a { background-position: 5px -57px; }
 
 #blists .noticePanel
 {

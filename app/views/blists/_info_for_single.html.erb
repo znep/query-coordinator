@@ -362,14 +362,14 @@
       <div class="gridListContainer">
         <table class="gridList" cellspacing="0">
           <colgroup>
-            <col class='handle' />
+            <col class='picture' />
             <col class='contact' />
             <col class='role' />
             <col class='actionContainer' />
           </colgroup>
           <thead>
             <tr>
-              <th class="handle first"><div></div></th>
+              <th class="picture" title="Contact"><div></div></th>
               <th class="contact" title="Contact/Group">
                 <div>Contact / Group</div>
               </th>
@@ -386,7 +386,14 @@
               a.type <=> b.type ||
               a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
             <tr class="item">
-              <td class="handle"><div></div></td>
+              <td class="picture"><div>
+                <%- if (s.member_image) -%>
+                  <img src="<%= s.member_image %>" width="24" height="24"
+                  alt="<%= h(s.member_name) %>" />
+                <%- else -%>
+                  <%= image_tag("icon_group.png", :size => "24x24", :alt => h(s.member_name)) %>
+                <%- end -%>
+              </div></td>
               <td class="contact"><div><%= h(s.member_name) %></div></td>
               <td class="role"><div><%= s.type %></div></td>
               <%# Not supported

@@ -20,12 +20,18 @@
         </div>
       </li>
       <li class='newViewLink'><a href='#newView' title='New View'>New View</a></li>
+      <li class='prevTabLink'><a href='#prev_tab' title='Previous View'>
+        Previous View
+      </a></li>
       <%- if @is_child_view -%>
       <li class='active filter'><div class='wrapper'>
         <a class='clipText' href='<%= blist_url(@view.id) %>'
           title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
       </div></li>
       <%- end -%>
+      <li class='nextTabLink'><a href='#next_tab' title='Next View'>
+        Next View
+      </a></li>
     </ul>
 
     <div class='outerContent'>

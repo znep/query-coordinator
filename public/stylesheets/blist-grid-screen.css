@@ -32,8 +32,9 @@ body#lensBody
 {
     background-repeat: no-repeat;
     line-height: 10em;
+    max-width: 23px;
     overflow: hidden;
-    width: 0;
+    padding: 0;
 }
 
 #lensContainer .tabList .backLink a
@@ -59,7 +60,6 @@ body#lensBody
     background-position: 0 0;
     height: 16px;
     margin-top: 3px;
-    padding-top: 0;
 }
 
 #lensContainer .tabList .newViewLink a:hover
@@ -98,6 +98,44 @@ body#lensBody
 #lensContainer .tabList li.main.active .wrapper
 {
     background-position: right -52px;
+}
+
+#lensContainer .tabList li.prevTabLink,
+#lensContainer .tabList li.nextTabLink
+{
+    background-image: none;
+    margin-left: 4px;
+    margin-right: 4px;
+    width: 12px;
+}
+
+#lensContainer .tabList li.prevTabLink a,
+#lensContainer .tabList li.nextTabLink a
+{
+    background-color: transparent;
+    background-image: url(/stylesheets/images/content/table/tab_arrow_sprites.png);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    line-height: 10em;
+    margin-top: 5px;
+    overflow: hidden;
+    padding: 0;
+    width: 12px;
+}
+
+#lensContainer .tabList li.nextTabLink a
+{
+    background-position: 0 -16px;
+}
+
+#lensContainer .tabList li.disabled a
+{
+    display: none;
+}
+
+#lensContainer .tabList li.hidden
+{
+    display: none;
 }
 
 #lensContainer .tabList li.filter.active

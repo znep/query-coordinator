@@ -53,12 +53,16 @@ blist.blistGrid.setUpTabs = function ()
     var $tabTemplate = $tabList.find('li.main').clone()
         .removeClass('main active even').addClass('filter');
     var $refTab = $('.tabList li.filter.active');
-    var foundTab = blistGridNS.viewId === null;
+    var $endTab = $('.tabList li.nextTabLink');
+    if (blistGridNS.viewId === null || $refTab.length < 1)
+    {
+        $refTab = $endTab;
+    }
     $.each(cookieObj.views, function (i, v)
     {
         if (v.id == blistGridNS.viewId)
         {
-            foundTab = true;
+            $refTab = $endTab;
             return;
         }
         var $newTab = $tabTemplate.clone();
@@ -70,14 +74,7 @@ blist.blistGrid.setUpTabs = function ()
         $newA.attr('href', blist.util.navigation.getViewUrl(v.id));
         $newA.attr('title', v.name);
         $newA.text(v.name);
-        if (!foundTab && $refTab.length > 0)
-        {
-            $refTab.before($newTab);
-        }
-        else
-        {
-            $tabList.append($newTab);
-        }
+        $refTab.before($newTab);
     });
 };
 
@@ -330,6 +327,12 @@ blist.blistGrid.popupCanceledHandler = function(event, popup)
 $(function ()
 {
     blistGridNS.setUpTabs();
+    $('.tabList').scrollable({
+        selector: '.filter',
+        prevSelector: '.prevTabLink a',
+        nextSelector: '.nextTabLink a',
+        numVisible: 3
+    });
 
     blist.util.flashInterface.addPopupHandlers(blistGridNS.flashPopupShownHandler,
         blistGridNS.flashPopupClosedHandler);

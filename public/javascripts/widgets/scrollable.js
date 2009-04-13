@@ -73,6 +73,13 @@
                     updateButtons($this);
                 }
             });
+
+            var $activeItem = $this.find(config.activeSelector);
+            while ($activeItem.length > 0 &&
+                $activeItem.hasClass(config.hiddenClass))
+            {
+                $this.find(config.nextSelector).click();
+            }
         });
     };
 
@@ -135,6 +142,7 @@
     // plugin defaults
     //
     $.fn.scrollable.defaults = {
+        activeSelector: '.active',
         selector: '.scrollable',
         hiddenClass: 'hidden',
         prevSelector: '.prev a',

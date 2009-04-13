@@ -99,7 +99,7 @@ class View < Model
       if !g.groupId.nil?
         if !group_shares[g.groupId]
           s = Share.new(nil, g.groupId, Group.find(g.groupId).name,
-                        false, true, nil)
+                        false, true)
           s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
           group_shares[g.groupId] = s
         elsif g.type.downcase != 'read'
@@ -110,7 +110,7 @@ class View < Model
         if !user_shares[user_id]
           s = Share.new(nil, user_id, g.userId.nil? ?
                         g.userEmail : User.find(g.userId).displayName,
-                        true, false, User.find(g.userId).profile_image("small"))
+                        true, false)
           s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
           user_shares[user_id] = s
         elsif g.type.downcase != 'read'

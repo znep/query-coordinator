@@ -387,12 +387,7 @@
               a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
             <tr class="item">
               <td class="picture"><div>
-                <%- if (s.member_image) -%>
-                  <img src="<%= s.member_image %>" width="24" height="24"
-                  alt="<%= h(s.member_name) %>" />
-                <%- else -%>
-                  <%= image_tag("icon_group.png", :size => "24x24", :alt => h(s.member_name)) %>
-                <%- end -%>
+                <%= image_tag(s.member_image, :size => "24x24", :alt => h(s.member_name)) %>
               </div></td>
               <td class="contact"><div><%= h(s.member_name) %></div></td>
               <td class="role"><div><%= s.type %></div></td>

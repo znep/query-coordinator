@@ -11,16 +11,19 @@ class Share
     self.is_user = _is_user
     self.is_group = _is_group
   end
-  
+
   def member_image(size = "small")
     out = "/images/#{size}-profile.png"
     if (self.is_user)
-      userMember = User.find(member_id)
-      if (!userMember.nil?)
-        out = userMember.profile_image(size)
+      if (!member_id.nil?)
+        user_member = User.find(member_id)
+        if (!user_member.nil?)
+          out = user_member.profile_image(size)
+        end
       end
     else
       out = "/images/icon_group.png"
     end
+    out
   end
 end

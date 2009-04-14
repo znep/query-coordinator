@@ -108,7 +108,7 @@ class View < Model
       else
         user_id = g.userId.nil? ? g.userEmail : g.userId
         if !user_shares[user_id]
-          s = Share.new(nil, user_id, g.userId.nil? ?
+          s = Share.new(nil, g.userId, g.userId.nil? ?
                         g.userEmail : User.find(g.userId).displayName,
                         true, false)
           s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR

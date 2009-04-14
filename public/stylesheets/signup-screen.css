@@ -1,0 +1,190 @@
+.signup .loginBox 
+{
+    background: url(/stylesheets/images/account/background_signup.png) no-repeat;
+    height: 440px;
+    margin: 40px auto 0;
+    padding: 25px 15px 0;
+    position: relative;
+    width: 672px;
+}
+
+.signup .fieldContent
+{
+    margin: 20px 0 10px;
+}
+
+.signup .header { 
+    margin-bottom: 30px;
+    padding: 0 15px;
+    position: relative;
+}
+.signup .header h1
+{
+    background: url(/stylesheets/images/common/blist_logo.png) no-repeat;
+    height: 34px;
+    line-height: 300px;
+    overflow: hidden;
+    position: absolute;
+    right: 25px;
+    top: 5px;
+    width: 72px;
+}
+.signup .header h2
+{
+    font-size: 2.4em;
+    font-weight: normal;
+    line-height: 1.1em;
+    margin-bottom: 12px;
+}
+.signup .header p
+{
+    font-size: 1.4em;
+}
+
+.signup fieldset
+{
+    display: block;
+    float: left;
+    margin-right: 15px;
+    width: 328px;
+}
+.signup fieldset.last { 
+    margin-right: 0;
+}
+
+.signup form p:after 
+{
+  clear: both;
+  content: ".";
+  display: block;
+  height: 0;
+  visibility: hidden;
+}
+.signup form p
+{ 
+  display: inline-block; 
+}
+.signup form p, .signup form .fileInputContainer
+{ 
+  display: block;
+  margin-bottom: 10px;
+}
+
+.signup form p.fieldInfo
+{ 
+    margin-bottom: 7px;
+    margin-left: 100px;
+}
+
+.signup form label
+{
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    line-height: 22px;
+    padding-right: 10px;
+    text-align: right;
+    width: 115px;
+}
+.signup form fieldset.last label { width: 90px; }
+
+.signup .loginBox form input[type='text'],
+.signup .loginBox form input[type='password']
+{
+    padding: 4px 2px 2px;
+    width: 194px;
+}
+.signup form textarea
+{
+    border: 1px solid #cacaca;
+    height: 50px;
+    font-size: 1.2em;
+    line-height: 1.2em;
+    padding: 0.2em;
+    width: 194px;
+}
+.signup form textarea.prompt
+{
+    color: #999;
+    font-size: 1em;
+    font-style: italic;
+}
+
+.signup form .fileInput { 
+    cursor: pointer;
+    float: left;
+    position: relative;
+    width: 210px;
+}
+.signup form .fileInput .fakeFile
+{
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+}
+.signup form .fileInput input[type='file']
+{
+    display: block;
+    position: absolute;
+    right: 0;
+    z-index: 2;
+    
+    -moz-opacity:0 ;
+    filter:alpha(opacity: 0);
+    opacity: 0;
+}
+.signup form .fileInput .fakeFile input
+{
+    float: left;
+    width: 125px;
+}
+.signup form .fileInput .fakeFile img
+{
+    display: block;
+    float: left;
+    padding-left: 5px;
+}
+
+.signup .submitLine { margin-bottom: 25px; }
+.signup .submitLine input 
+{ 
+    float: left; 
+    margin-left: 135px;
+}
+.signup .submitLine .buttonLinkLarge
+{
+    background: url(/stylesheets/images/account/button_link_large_sprites.png) no-repeat;
+    float: left;
+    margin-left: 20px;
+    padding-left: 12px;
+    width: 180px;
+}
+.signup .submitLine .buttonLinkLarge a
+{
+    background: url(/stylesheets/images/account/button_link_large_sprites.png) right -30px no-repeat;
+    color: #fff;
+    display: block;
+    font-size: 1.4em;
+}
+.signup .submitLine .buttonLinkLarge a:hover { text-decoration: none; }
+.signup .submitLine .buttonLinkLarge a span
+{
+    background-color: #656565;
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 12px;
+}
+.signup .contentFooter
+{
+    position: absolute;
+    bottom: 15px;
+    width: 100%;
+}
+.signup .contentFooter p { text-align: center; }
+.signup .contentFooter p a 
+{
+    color: #333; 
+    text-decoration: underline;
+}

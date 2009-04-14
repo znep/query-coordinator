@@ -1,4 +1,5 @@
 class AccountsController < ApplicationController
+  skip_before_filter :require_user, :only => [:new, :create]
   def show
   end
 
@@ -14,5 +15,12 @@ class AccountsController < ApplicationController
       format.html { redirect_to(account_url) }
       format.data   { render :json => current_user.to_json }
     end
+  end
+
+  def new
+    @body_class = 'signup'
+  end
+
+  def create
   end
 end

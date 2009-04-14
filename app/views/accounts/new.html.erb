@@ -1,0 +1,34 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "signup-screen" %>
+  <title>blist | share your weblists</title>
+<% end %>
+
+<div class='loginBox'>
+  <div class='header'>
+    <h1>blist</h1>
+    <h2><strong>Sign up for blist,</strong> the best choice for<br /> easily creating and sharing lists on the web.</h2>
+    <p>Before we get started, we need to know a little about you.</p>
+  </div>
+
+  <div class='mainContent'>
+    <% form_tag(account_url) do %>
+      <div class="fieldContent clearfix">
+        <%= render(:partial => "new_account_form") %>
+      </div>
+      <div class="submitLine clearfix">
+        <%= image_submit_tag("/stylesheets/images/account/button_sign_up_now.png") %>
+        <div class="buttonLinkLarge">
+          <%= link_to("<span>Already Have an Account?</span>", new_user_session_url) %>
+        </div>
+      </div>
+
+    <% end %>
+  </div>
+  
+  <div class="contentFooter"><p>By signing up, you accept the <a href="http://www.blist.com/help/privacy">Privacy Policy</a> and <a href="http://www.blist.com/help/terms-of-use">Terms of Use</a> | *Required field</p></div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
+<% end %>

@@ -1,0 +1,56 @@
+<fieldset>
+  <p>
+    <label for="account_firstName">*First Name</label>
+    <%= text_field_tag("account[firstName]") %>
+  </p>
+  <p>
+    <label for="account_lastName">*Last Name</label>
+    <%= text_field_tag("account[lastName]") %>
+  </p>
+  <p>
+    <label for="account_email">*Email Address</label>
+    <%= text_field_tag("account[email]") %>
+  </p>
+  <p>
+    <label for="emailConfirm">*Confirm Your Email</label>
+    <%= text_field_tag("emailConfirm") %>
+  </p>
+  <p>
+    <label for="account_username">*Username</label>
+    <%= text_field_tag("account[userName]") %>
+  </p>
+  <p>
+    <label for="account_password">*Password</label>
+    <%= password_field_tag("account[password]") %>
+  </p>
+  <p>
+    <label for="passwordConfirm">*Confirm Password</label>
+    <%= password_field_tag("passwordConfirm") %>
+  </p>
+</fieldset>
+
+<fieldset class="last">
+  <div class="fileInputContainer clearfix">
+    <label for="account_profile_image">Profile Picture</label>
+    <div class="fileInput">
+      <%= file_field_tag("account[profile_image]", :class => "text") %>
+      <div class="fakeFile clearfix">
+        <input type="text" />
+        <%= image_tag("/stylesheets/images/account/button_browse.png", :size => "72x24", :alt => "Browse") %>
+      </div>
+    </div>
+  </div>
+  <p>
+    <label for="account_company">Company</label>
+    <%= text_field_tag("account[company]") %>
+  </p>
+  <p>
+    <label for="account_title">Title</label>
+    <%= text_field_tag("account[title]") %>
+  </p>
+  <p class="fieldInfo">Share your blists and Collaborate with others by inviting friends and collegues.</p>
+  <p>
+    <label for="inviteOthers">Invite Others</label>
+    <%= text_area_tag("inviteOthers", "", :class => "textPrompt", :title => "Enter email addresses separated by commas") %>
+  </p>
+</fieldset>

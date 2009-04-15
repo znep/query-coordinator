@@ -14,7 +14,8 @@ private
     variables[:mats] = timestamp.to_s
 
     key_name = ActionController::Base.session_options[:session_key]
-    variables[key_name.to_sym] = session.id
+    core_session, rails_session = cookies[key_name].split('::')
+    variables[key_name.to_sym] = rails_session if rails_session
 
     if REVISION_NUMBER
       variables[:revision] = REVISION_NUMBER

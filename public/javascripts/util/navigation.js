@@ -2,7 +2,8 @@ var navigationUtilNS = blist.namespace.fetch('blist.util.navigation');
 
 blist.util.navigation.getViewUrl = function (viewId, popup)
 {
-    // TODO: Is there a better way to get this URL?
+    // This is the simple URL; it will automatically be redirected to the
+    //  authoritative URL by the server
     var url = '/blists/' + viewId;
     if (popup !== undefined && popup !== '')
     {

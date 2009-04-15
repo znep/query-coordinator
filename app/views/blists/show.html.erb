@@ -13,7 +13,7 @@
           href='<%= blists_url() %>'>Back to blists</a></li>
       <li class='main <%= @is_child_view ? 'even' : 'active' %>'>
         <div class='wrapper'>
-          <a class='clipText' href='<%= blist_url(@parent_view.id) %>'
+          <a class='clipText' href='<%= @parent_view.href %>'
             title='<%= !@parent_view.nil? ? h(@parent_view.name) : '' %>'>
             <%= !@parent_view.nil? ? h(@parent_view.name) : 'New blist' %>
           </a>
@@ -25,7 +25,7 @@
       </a></li>
       <%- if @is_child_view -%>
       <li class='active filter'><div class='wrapper'>
-        <a class='clipText' href='<%= blist_url(@view.id) %>'
+        <a class='clipText' href='<%= @view.href %>'
           title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
       </div></li>
       <%- end -%>

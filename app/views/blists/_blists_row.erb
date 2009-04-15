@@ -28,9 +28,9 @@
     <a href="#open_menu" class="dropdownLink menuHandle" title="Open menu">Blist Menu</a>
     <%= menu_tag({'id' => "itemMenu-#{blist.id}", 'class' => 'blistItemMenu',
       'items' => [
-        {'text' => 'Open', 'class' => 'open', 'href' => blist_url(blist.id)},
+        {'text' => 'Open', 'class' => 'open', 'href' => blist.href},
         {'text' => favorite_action_text, 'class' => 'addFavorite favoriteLink', 'href' => favorite_action},
-        {'text' => 'Rename', 'class' => 'rename renameLink', 'href' => blist_url(blist.id)},
+        {'text' => 'Rename', 'class' => 'rename renameLink', 'href' => blist.href},
         { 'text' => 'Delete', 'class' => 'delete', 'href' => '#delete' }
       ]
     }) %>
@@ -44,8 +44,8 @@
   </div></td>
   <td class='name'>
     <div class="clipText"><%= link_to(h(blist.name),
-      blist_url(blist.id), {:title => h(blist.name)}) %></div>
-    <% form_tag(blist_url(blist.id), :class => "noselect") do %>
+      blist.href, {:title => h(blist.name)}) %></div>
+    <% form_tag(blist.href, :class => "noselect") do %>
       <%= text_field_tag("view_#{blist.id}[name]", h(blist.name)) %>
       <%= image_submit_tag("submit_button_mini.png", :title => "Rename") %>
     <% end %>

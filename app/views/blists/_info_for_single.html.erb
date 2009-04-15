@@ -42,14 +42,14 @@
   <div class="infoContentHeader clearfix">
     <h2 title='<%= h(view.name) %>'
       class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>">
-      <%= page_single ? h(view.name) : link_to(h(view.name), blist_url(view.id)) %>
+      <%= page_single ? h(view.name) : link_to(h(view.name), view.href) %>
     </h2>
     <ul class="headerActions actionButtons">
       <%- unless (page_single) -%>
-        <li><a href="<%= blist_url(view.id) %>" class="arrowButton">Open</a></li>
+        <li><a href="<%= view.href %>" class="arrowButton">Open</a></li>
       <%- end -%>
       <li><a href="#duplicate">Duplicate</a></li>
-      <li><a href="<%= blist_url(view.id, {:popup => 'SharingEditor'}) %>"
+      <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
         class="showFlashPopup">Share</a></li>
     </ul>
   </div>
@@ -64,7 +64,7 @@
         <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.description) %></span>
-            <% form_tag(blist_url(view.id)) do %>
+            <% form_tag(view.href) do %>
               <%= hidden_field_tag("fieldType", "description") %>
               <%= text_field_tag("view[description]", h(view.description)) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
@@ -72,7 +72,7 @@
             <% end %>
           </div>
           <div class="itemActions">
-            <a href="<%= blist_url(view.id) %>" class="action editLink"><span>Edit</span></a>
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
           </div>
         </dd>
       </dl>
@@ -85,7 +85,7 @@
         <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.tag_display_string) %></span>
-            <% form_tag(blist_url(view.id)) do %>
+            <% form_tag(view.href) do %>
               <%= hidden_field_tag("fieldType", "tags") %>
               <%= text_field_tag("view[tags]", h(view.tag_display_string)) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
@@ -93,7 +93,7 @@
             <% end %>
           </div>
           <div class="itemActions">
-            <a href="<%= blist_url(view.id) %>" class="action editLink"><span>Edit</span></a>
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
           </div>
         </dd>
       </dl>
@@ -106,7 +106,7 @@
         <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.category) %></span>
-            <% form_tag(blist_url(view.id)) do %>
+            <% form_tag(view.href) do %>
               <%= hidden_field_tag("fieldType", "category") %>
               <%= select_tag("view[category]", category_select_options(h(view.category))) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
@@ -114,7 +114,7 @@
             <% end %>
           </div>
           <div class="itemActions">
-            <a href="<%= blist_url(view.id) %>" class="action editLink"><span>Edit</span></a>
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
           </div>
         </dd>
       </dl>
@@ -189,7 +189,7 @@
           <div class="itemContent">
             <ul>
               <li><%= pluralize(view.viewCount, " view") %></li>
-              <li>[11 copies]</li>
+              <li><%= pluralize(view.copyCount, "copy") %></li>
             </ul>
           </div>
           <div class="itemActions">
@@ -207,7 +207,9 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>[http://app.blist.com/?variant=debug#/blist/kmerritt/]<%= view.urlName %></span>
+            <span>
+              <%= request.protocol + request.host_with_port + view.href %>
+            </span>
           </div>
           <div class="itemActions">
             <a href="#publish" class="action tabLink publishing">
@@ -227,7 +229,7 @@
             <span><%= view.is_public? ? 'Public' : 'Private' %></span>
           </div>
           <div class="itemActions">
-            <a href='<%= blist_url(view.id, {:popup => 'PermissionsDialog'}) %>'
+            <a href='<%= "#{view.href}?popup=PermissionsDialog" %>'
               class="action showFlashPopup"><span>Edit</span></a>
           </div>
         </dd>
@@ -313,12 +315,12 @@
                   get_share_direction_icon_class_for_view(filter) %>">
                   <%= get_type_string_for_view(filter) %></div>
                 </td>
-                <td class="name"><div><%= link_to(h(filter.name), blist_url(filter.id)) %></div></td>
+                <td class="name"><div><%= link_to(h(filter.name), filter.href) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
                 <td class="viewed"><div><%= blist_date(filter.last_viewed) %>
                 </div></td>
                 <td class="actionContainer"><div><a
-                      href="<%= blist_url(filter.id) %>" class="action"
+                      href="<%= filter.href %>" class="action"
                       title="<%= h(filter.name) %>"><span>View</span></a>
                 </div></td>
               </tr>
@@ -342,7 +344,7 @@
       <%= view.is_public? ? "Public" : "Private" %>
     </h2>
     <ul class="headerActions actionButtons">
-      <li><a href="<%= blist_url(view.id, {:popup => 'SharingEditor'}) %>"
+      <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
         class="arrowButton showFlashPopup" title="Share">Share</a></li>
     </ul>
   </div>
@@ -352,7 +354,7 @@
         <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
           "privateShared" : "private") %>">
         This <%= view.is_blist? ? "blist" : "filter" %> is
-        <a href='<%= blist_url(view.id, {:popup => 'PermissionsDialog'}) %>'
+        <a href='<%= "#{view.href}?popup=PermissionsDialog" %>'
           class='showFlashPopup'><%= view.is_public? ? "Public" : "Private" %></a>
         <%= view.is_shared? ? ' and shared with the following ' +
         (shares.length == 1 ? 'contact' : 'contact'.pluralize) + ':' : '' %>
@@ -416,7 +418,7 @@
     <h2 class="panelHeader">3212 total views</h2>
     %>
     <ul class="headerActions actionButtons">
-      <li><a href="<%= blist_url(view.id, {:popup => 'PublishDialog'}) %>"
+      <li><a href="<%= "#{view.href}?popup=PublishDialog" %>"
         class="arrowButton showFlashPopup">Publish a Widget</a></li>
     </ul>
   </div>

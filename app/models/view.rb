@@ -64,6 +64,11 @@ class View < Model
     rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)
   end
 
+  def href
+    prefix = self.category || 'blist'
+    "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
+  end
+
   def contributor_users
     grants.reject {|g| g.flag?('public') || g.type.downcase == 'read'}.
       collect do |g|

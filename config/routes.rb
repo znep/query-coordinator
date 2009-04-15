@@ -30,22 +30,34 @@ ActionController::Routing::Routes.draw do |map|
   #     admin.resources :products
   #   end
 
-  map.resources :blists, :collection => { :detail => :get },
-    :member => {
-      :create_favorite => :post,
-      :delete_favorite => :post
-    }
-  map.resources :contacts, 
-    :collection => { 
+  map.resources :contacts,
+    :collection => {
       :detail => :get,
+      :multi_detail => :get
+    },
+    :member => {
       :contact_detail => :get,
       :group_detail => :get,
-      :multi_detail => :get
     }
   map.resource :discover
   map.resource :account
   map.resource :profile
-  
+
+  map.resources :blists,
+    :collection => { :detail => :get },
+    :member => {
+      :detail => :get,
+      :create_favorite => :post,
+      :delete_favorite => :post
+    }
+  map.connect ':category/:view_name/:id', :controller => 'blists',
+    :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => /\w{4}-\w{4}/, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
+  map.connect ':category/:view_name/:id', :controller => 'blists',
+    :action => 'update', :conditions => { :method => :put },
+    :requirements => {:id => /\w{4}-\w{4}/, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
   map.root :controller => "home"
@@ -58,8 +70,8 @@ ActionController::Routing::Routes.draw do |map|
   # Install the default routes as the lowest priority.
   # Note: These default routes make all actions in every controller accessible via GET requests. You should
   # consider removing the them or commenting them out if you're using named routes and resources.
-  map.connect ':controller/:id'
-  map.connect ':controller/:id.:format'
-  map.connect ':controller/:action/:id'
-  map.connect ':controller/:action/:id.:format'
+#  map.connect ':controller/:id'
+#  map.connect ':controller/:id.:format'
+#  map.connect ':controller/:action/:id'
+#  map.connect ':controller/:action/:id.:format'
 end

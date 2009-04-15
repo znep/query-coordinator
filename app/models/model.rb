@@ -165,6 +165,10 @@ class Model
   end
 
   def self.parse(data)
+    if data.blank?
+      return nil
+    end
+
     json_data = JSON.parse(data)
     if json_data.is_a?(Array)
       model = json_data.collect do | item |

@@ -43,7 +43,7 @@ blist.contacts.infoPane.updateSummary = function(numSelect, itemType)
         
         var itemTypeIdArray = $items.attr('id').split(":");
         $.Tache.Get({ 
-            url: '/contacts/' + itemTypeIdArray[0] + '_detail/' + itemTypeIdArray[1],
+            url: '/contacts/' + itemTypeIdArray[1] + '/' + itemTypeIdArray[0] + '_detail',
             success: contactsInfoNS.itemDetailSuccessHandler
         });
     }

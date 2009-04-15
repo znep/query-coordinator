@@ -144,7 +144,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
     if (numSelect == 1)
     {
         var $items = $('#blistList').combinationList().selectedItems();
-        $.Tache.Get({ url: '/blists/detail/' + $items.attr('blist_id'),
+        $.Tache.Get({ url: '/blists/' + $items.attr('blist_id') + '/detail',
             success: blistsInfoNS.updateSummarySuccessHandler
         });
     }

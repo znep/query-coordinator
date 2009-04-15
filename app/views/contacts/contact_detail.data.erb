@@ -238,12 +238,12 @@
                   <%= get_type_string_for_view(share) %></div>
                 </td>
                 <td class="name"><div class="clipText">
-                  <%= link_to(h(share.name), blist_url(share.id)) %>
+                  <%= link_to(h(share.name), share.href) %>
                 </div></td>
                 <td class="description"><div class="clipText"><%= h(share.description) %></div></td>
                 <td class="sharedOn"><div>[10/18/2008]</div></td>
                 <td class="actionContainer"><div><a
-                      href="<%= blist_url(share.id) %>" class="action"
+                      href="<%= share.href %>" class="action"
                       title="<%= h(share.name) %>"><span>View</span></a>
                 </div></td>
               </tr>
@@ -291,13 +291,13 @@
                   get_share_direction_icon_class_for_view(blist) %>">
                   <%= get_type_string_for_view(blist) %></div>
                 </td>
-                <td class="name"><div><%= link_to(h(blist.name), blist_url(blist.id)) %></div></td>
+                <td class="name"><div><%= link_to(h(blist.name), blist.href) %></div></td>
                 <td class="views"><div><%= blist.viewCount %></div></td>
                 <td class="copies"><div><%= blist.copyCount %></div></td>
                 <td class="lastUpdated"><div><%= blist_date(blist.last_activity) %>
                 </div></td>
                 <td class="actionContainer"><div><a
-                      href="<%= blist_url(blist.id) %>" class="action"
+                      href="<%= blist.href %>" class="action"
                       title="<%= h(blist.name) %>"><span>View</span></a>
                 </div></td>
               </tr>

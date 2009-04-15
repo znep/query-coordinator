@@ -165,7 +165,7 @@ module BlistsHelper
     View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
       b.last_viewed <=> a.last_viewed
     end.slice(0, num_recent).map do |v|
-      {'text' => v.name, 'href' => blist_url(v.id),
+      {'text' => v.name, 'href' => v.href,
         'class' => v.is_blist? ? 'blist' : 'filter'}
     end
   end

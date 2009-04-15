@@ -27,6 +27,16 @@ class BlistsController < SwfController
       @start_screen = 'import'
     else
       @parent_view = @view = View.find(params[:id])
+      # See if it matches the authoritative URL; if not, redirect
+      if request.path != @view.href
+        # Log redirects in development
+        if ENV["RAILS_ENV"] != 'production' &&
+          request.path =~ /^\/blists\/\w{4}-\w{4}/
+          logger.info("Doing a blist redirect from #{request.referrer}")
+        end
+        redirect_to(@view.href)
+      end
+
       if !@view.is_blist?
         par_view = View.find({'blistId' => @view.blistId}).
           find {|v| v.is_blist?}
@@ -49,7 +59,7 @@ class BlistsController < SwfController
     blist = View.update_attributes!(blist_id, params[:view])
 
     respond_to do |format|
-      format.html { redirect_to(blist_url(blist_id)) }
+      format.html { redirect_to(blist.href) }
       format.data { render :json => blist.to_json() }
     end
   end
@@ -72,7 +82,7 @@ class BlistsController < SwfController
     result = View.create_favorite(blist_id)
 
     respond_to do |format|
-      format.html { redirect_to(blist_url(blist_id)) }
+      format.html { redirect_to(View.find(blist_id).href) }
       format.data { render :text => "created" }
     end
   end
@@ -82,7 +92,7 @@ class BlistsController < SwfController
     result = View.delete_favorite(blist_id)
 
     respond_to do |format|
-      format.html { redirect_to(blist_url(blist_id)) }
+      format.html { redirect_to(View.find(blist_id).href) }
       format.data { render :text => "deleted" }
     end
   end

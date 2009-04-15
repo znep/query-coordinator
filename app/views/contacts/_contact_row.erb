@@ -2,9 +2,7 @@
   contact = contact_row
 
   contact_group_heading = @group_heading
-  contact_group_heading = humane_date(
-    blist_date(contact.lastLogin || contact.updatedAt),
-    HumaneDateHelper::HUMANE_DATE_GRANULARITY[:day])
+  contact_group_heading = (contact.name || contact.displayName).slice(0, 1).upcase
 -%>
 
 <%- if (contact_group_heading.nil? || (contact_group_heading != @group_heading))

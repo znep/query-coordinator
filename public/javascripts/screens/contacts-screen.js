@@ -3,7 +3,7 @@ var contactsNS = blist.namespace.fetch('blist.contacts');
 blist.contacts.setupTable = function ()
 {
     $('#contactList').combinationList({
-        initialSort: [[[4, 1]]],
+        initialSort: [[2, 0]],
         loadedCallback: function ()
         {
             contactsInfoNS.updateSummary(0, contactsNS.getItemsType());
@@ -19,7 +19,7 @@ blist.contacts.setupTable = function ()
         },
         sortHeaders: {0: {sorter: false}, 1: {sorter: false},
             2: {sorter: "text"}, 3: {sorter: "text"},
-            4: {sorter: "usLongDate"}},
+            4: {sorter: "usLongDate"}}
     });
 };
 

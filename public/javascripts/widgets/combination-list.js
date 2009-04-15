@@ -28,7 +28,7 @@
             clipText: false,
             headerContainerSelector: '.headerContainer',
             hoverOnly: false,
-            initialSort: [[[0, 0]]],
+            initialSort: [],
             loadedCallback: function () {},
             scrollableBody: true,
             searchable: false,
@@ -121,7 +121,16 @@
                     {
                         sorterSettings['widgets'].push('sortGrouping');
                     }
+                    // If there is an initial sort, set the default sort
+                    //  direction opposite
+                    if (comboListObj.settings.initialSort.length > 0)
+                    {
+                        sorterSettings['sortInitialOrder'] =
+                            comboListObj.settings.initialSort[0][1] == 1 ?
+                            "asc" : "desc";
+                    }
                     $comboList.tablesorter(sorterSettings);
+                    setupSortHeaders(comboListObj);
                 }
 
                 if (comboListObj.settings.searchable)
@@ -174,9 +183,7 @@
                         .find("table tr th")
                         .removeClass('headerSortUp')
                         .removeClass('headerSortDown');
-                    $(comboListObj.settings.headerContainerSelector)
-                        .find("table tr th:last")
-                        .addClass('headerSortUp');
+                    setupSortHeaders(comboListObj);
                 }
 
                 comboListObj.settings.loadedCallback();
@@ -253,6 +260,17 @@
                     blist.widget.clippedText.clipElement($(this))
                 });
         }
+    };
+
+    var setupSortHeaders = function (comboListObj)
+    {
+        $.each(comboListObj.settings.initialSort, function (i, s)
+        {
+            $(comboListObj.settings.headerContainerSelector)
+                .find("table tr th:nth(" + s[0] + ")")
+                .addClass(s[1] == 1 ?
+                    'headerSortUp' : 'headerSortDown');
+        });
     };
 
     $.tablesorter.addWidget(

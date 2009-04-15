@@ -5,7 +5,7 @@ var myBlistsNS = blist.namespace.fetch('blist.myBlists');
 blist.myBlists.setupTable = function ()
 {
     $('#blistList').combinationList({
-        initialSort: [[[6, 1]]],
+        initialSort: [[6, 1]],
         loadedCallback: function ()
         {
             myBlistsNS.itemMenuSetup();

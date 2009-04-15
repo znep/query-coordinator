@@ -983,6 +983,13 @@ table.gridList tr.filteredOut
     vertical-align: middle;
 }
 
+.formListBox .errorMessage
+{
+    clear: both;
+    color: red;
+    margin-left: 155px;
+}
+
 .formListBoxSubmit
 {
     clear: both;

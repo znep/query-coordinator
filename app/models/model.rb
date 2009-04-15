@@ -1,5 +1,16 @@
 require 'json'
 
+class CoreServerError < RuntimeError
+  attr :source
+  attr :error_code
+  attr :error_message
+  def initialize(source, error_code, error_message)
+    @source = source
+    @error_code = error_code
+    @error_message = error_message
+  end
+end
+
 class Model
 
   attr_accessor :data
@@ -280,9 +291,9 @@ private
 
     if !result.is_a?(Net::HTTPSuccess)
       parsed_body = self.parse(result.body)
-      raise "Error: #{request.method} #{CORESERVICE_URI.to_s}#{request.path} - " +
-        "#{parsed_body.data['code']}, " +
-        "message: #{parsed_body.data['message']}"
+      raise CoreServerError.new("#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
+        parsed_body.data['code'],
+        parsed_body.data['message'])
     end
 
     result

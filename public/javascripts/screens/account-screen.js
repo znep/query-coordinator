@@ -10,7 +10,7 @@ $(function ()
         }
     });
     $(".outerContent").blistStretchWindow();
-    
+
     $(".sectionShow p").hover(
         function() { $(this).addClass("hover"); },
         function() { $(this).removeClass("hover"); }
@@ -29,53 +29,68 @@ $(function ()
         $(this).closest(".sectionEdit").slideUp("fast");
         $(this).closest(".listSection").find(".sectionShow").slideDown("fast");
     });
-    
+
     // Form validation.
     $.validator.setDefaults({
         submitHandler: function(form)
         {
             $form = $(form);
-            
+
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
                 type: "PUT",
                 dataType: "json",
                 data: requestData,
-                success: function(responseData, textStatus) {
-                    $(".dataEmail").text(responseData.email);
-                    
-                    $form.closest(".sectionEdit").slideUp("fast");
-                    $form.closest(".listSection").find(".sectionShow").slideDown("fast");
+                success: function(responseData, textStatus)
+                {
+                    if (responseData.error)
+                    {
+                        $form.find('.errorMessage').text(responseData.error);
+                    }
+                    else
+                    {
+                        $(".dataEmail").text(responseData.user.email);
+
+                        $form.find('.errorMessage').text('');
+                        $form.closest(".sectionEdit").slideUp("fast");
+                        $form.closest(".listSection")
+                            .find(".sectionShow").slideDown("fast");
+                    }
                 }
             });
         }
     });
-    
+
     // Email form.
     $(".emailSection form").validate({
         rules: {
-            email: {
+            'user[email]': {
                 required: true,
                 email: true
             },
-            email_confirm: {
+            'user[email_confirm]': {
                 required: true,
-                equalTo: "#email"
+                equalTo: "#user_email"
             },
-            email_password: "required",
+            'user[email_password]': "required",
         }
     });
     // Password form.
     $(".passwordSection form").validate({
         rules: {
-            password_old: "required",
-            password_new: "required",
-            password_confirm: {
+            'user[password_old]': "required",
+            'user[password_new]': "required",
+            'user[password_confirm]': {
                 required: true,
-                equalTo: "#password_new"
+                equalTo: "#user_password_new"
             }
         }
     });
-    
+
+    $('.sectionEdit form input').keypress(function (e)
+    {
+        $(e.currentTarget).closest('form').find('.errorMessage').text('');
+    });
+
 });

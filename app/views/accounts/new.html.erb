@@ -6,12 +6,15 @@
 <div class='loginBox'>
   <div class='header'>
     <h1>blist</h1>
-    <h2><strong>Sign up for blist,</strong> the best choice for<br /> easily creating and sharing lists on the web.</h2>
-    <p>Before we get started, we need to know a little about you.</p>
   </div>
 
   <div class='mainContent'>
-    <% form_tag(account_url) do %>
+    <div class='title clearfix'>
+      <h2><strong>Sign up for blist,</strong> the best choice for<br /> easily creating and sharing lists on the web.</h2>
+      <p>Before we get started, we need to know a little about you.</p>
+    </div>
+
+    <% form_tag(account_url, :id => "signupForm") do %>
       <div class="fieldContent clearfix">
         <%= render(:partial => "new_account_form") %>
       </div>
@@ -23,12 +26,15 @@
       </div>
 
     <% end %>
+    
+    <div class="contentFooter">
+      <p>By signing up, you accept the <a href="http://www.blist.com/help/privacy">Privacy Policy</a> and <a href="http://www.blist.com/help/terms-of-use">Terms of Use</a> | *Required field</p>
+    </div>
   </div>
-  
-  <div class="contentFooter"><p>By signing up, you accept the <a href="http://www.blist.com/help/privacy">Privacy Policy</a> and <a href="http://www.blist.com/help/terms-of-use">Terms of Use</a> | *Required field</p></div>
 </div>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
+  <%= javascript_include_tag "plugins/jquery.validate", 
+  "screens/signup-screen", :cache => "cache/accounts_new_all" %>
 <% end %>

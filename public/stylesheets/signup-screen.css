@@ -1,11 +1,20 @@
 .signup .loginBox 
 {
-    background: url(/stylesheets/images/account/background_signup.png) no-repeat;
-    height: 440px;
+    background-color: #ffedcc;
+    background-image: url(/stylesheets/images/common/summary_bottom_right.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    
     margin: 40px auto 0;
-    padding: 25px 15px 0;
-    position: relative;
-    width: 672px;
+    width: 705px;
+}
+
+.signup .mainContent
+{
+    background-image: url(/stylesheets/images/common/summary_bottom_left.png);
+    background-position: bottom left;
+    background-repeat: no-repeat;
+    padding: 15px;
 }
 
 .signup .fieldContent
@@ -14,29 +23,27 @@
 }
 
 .signup .header { 
-    margin-bottom: 30px;
-    padding: 0 15px;
-    position: relative;
+    background-color: #e0d1b8;
+    border-bottom: solid 1px #8d8d8d;
 }
 .signup .header h1
 {
-    background: url(/stylesheets/images/common/blist_logo.png) no-repeat;
-    height: 34px;
-    line-height: 300px;
-    overflow: hidden;
-    position: absolute;
-    right: 25px;
-    top: 5px;
-    width: 72px;
+    background-image: url(/stylesheets/images/common/blist_logo.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 35px;
+    margin: 0;
+    text-indent: -9999px;
 }
-.signup .header h2
+
+.signup .title h2
 {
     font-size: 2.4em;
     font-weight: normal;
     line-height: 1.1em;
     margin-bottom: 12px;
 }
-.signup .header p
+.signup .title   p
 {
     font-size: 1.4em;
 }
@@ -87,6 +94,16 @@
     width: 115px;
 }
 .signup form fieldset.last label { width: 90px; }
+
+.signup form label.error
+{
+    font-size: 1em;
+    line-height: 1.1em;
+    margin-left: 125px;
+    padding-right: 0;
+    text-align: left;
+    width: 200px;
+}
 
 .signup .loginBox form input[type='text'],
 .signup .loginBox form input[type='password']
@@ -176,12 +193,7 @@
     line-height: 30px;
     margin-right: 12px;
 }
-.signup .contentFooter
-{
-    position: absolute;
-    bottom: 15px;
-    width: 100%;
-}
+
 .signup .contentFooter p { text-align: center; }
 .signup .contentFooter p a 
 {

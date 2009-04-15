@@ -1,3 +1,4 @@
+<%- isShareDeleteEnabled = false -%>
 <%# locals: views %>
 
 <div class="header">
@@ -15,10 +16,12 @@
   
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader"><%= pluralize(views.length, 'item') %> selected</h2>
+<%- if isShareDeleteEnabled -%>
     <ul class="headerActions actionButtons">
       <li><a href="#share" class="arrowButton">Share All</a></li>
       <li><a href="#delete_all">Delete All</a></li>
     </ul>
+<%- end -%>
   </div>
   
   <div class="infoContentInner">
@@ -27,7 +30,6 @@
       <dl class="summaryList">
         <dt>
           Items
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         
         <%- views.each do |view| -%>

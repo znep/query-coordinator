@@ -1,5 +1,9 @@
 <%# locals: view, page_single  %>
 <%- 
+  isActivityEnabled = false
+  isDuplicateEnabled = false
+-%>
+<%- 
   expander_class = page_single ? "expander expanded" : "expander" 
   div_shown = page_single ? "style='display:block;'" : ""
 -%>
@@ -28,12 +32,14 @@
         <a href="#publishing">Publishing</a>
       </div>
     </li>
+<%- if isActivityEnabled -%>
     <li id="tabActivity" class="last">
       <div class="tabInner">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#activity">Activity</a>
       </div>
     </li>
+<%- end -%>
   </ul>
 </div>
 
@@ -48,7 +54,9 @@
       <%- unless (page_single) -%>
         <li><a href="<%= view.href %>" class="arrowButton">Open</a></li>
       <%- end -%>
+<%- if isDuplicateEnabled -%>
       <li><a href="#duplicate">Duplicate</a></li>
+<%- end -%>
       <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
         class="showFlashPopup">Share</a></li>
     </ul>
@@ -59,7 +67,6 @@
       <dl class="summaryList">
         <dt>
           Description
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd class="editItem">
           <div class="itemContent">
@@ -80,7 +87,6 @@
       <dl class="summaryList">
         <dt>
           Tags
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd class="editItem">
           <div class="itemContent">
@@ -101,7 +107,6 @@
       <dl class="summaryList">
         <dt>
           Category
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd class="editItem">
           <div class="itemContent">
@@ -122,7 +127,6 @@
       <dl class="summaryList">
         <dt>
           Owner
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd>
           <div class="itemContent">
@@ -134,7 +138,6 @@
       <dl class="summaryList">
         <dt>
           Created On
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd>
           <div class="itemContent">
@@ -146,7 +149,6 @@
       <dl class="summaryList">
         <dt>
           Last Update
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd>
           <div class="itemContent">
@@ -155,18 +157,19 @@
               <%= blist_date(view.last_activity) %>
             </span>
           </div>
+<%- if isActivityEnabled -%>
           <div class="itemActions">
             <a href="#tabActivity" class="action tabLink activity">
               <span>View Activity</span>
             </a>
           </div>
+<%- end -%>
         </dd>
       </dl>
 
       <dl class="summaryList">
         <dt>
           Filtered Views
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd>
           <div class="itemContent">
@@ -179,11 +182,10 @@
           </div>
         </dd>
       </dl>
-
+<%- if isActivityEnabled -%>
       <dl class="summaryList">
         <dt>
           Community Activity
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd>
           <div class="itemContent">
@@ -199,11 +201,10 @@
           </div>
         </dd>
       </dl>
-
+<%- end -%>
       <dl class="summaryList">
         <dt>
-          Link
-          <a href="#help" class="help"><span>help</span></a>
+          Permalink
         </dt>
         <dd>
           <div class="itemContent">
@@ -222,7 +223,6 @@
       <dl class="summaryList">
         <dt>
           Permissions
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd>
           <div class="itemContent">
@@ -238,7 +238,6 @@
       <dl class="summaryList">
         <dt>
           Sharing
-          <a href="#help" class="help"><span>help</span></a>
         </dt>
         <dd>
           <div class="itemContent">
@@ -476,7 +475,7 @@
   </div>
 </div>
 <%# *** END: PUBLISHING *** %>
-
+<%- if isActivityEnabled -%>
 <%# *** START: ACTIVITY *** %>
 <div class="infoContentOuter singleInfoActivity">
   <div class="infoContentHeader clearfix">
@@ -542,3 +541,4 @@
   </div>
 </div>
 <%# *** END: ACTIVITY *** %>
+<%- end -%>

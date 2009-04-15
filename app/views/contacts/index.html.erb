@@ -1,3 +1,4 @@
+<%- isAddingEnabled = false -%>
 <% content_for :head do %>
   <%= stylesheet_link_tag "list-screen", "contacts-screen", "widgets",
     :cache => "cache/contacts_index_all" %>
@@ -25,12 +26,12 @@
                   src="<%= image_path("find_button.png") %>" />
               </p>
             </form>
-
+<%- if isAddingEnabled -%>
             <ul class="headerActions">
               <li><a href='#' class="add_contact">Add Contact</a></li>
               <li><a href='#' class="add_group">Create Group</a></li>
             </ul>
-
+<%- end -%>
           </div>
 
           <div class='gridListContainer'>

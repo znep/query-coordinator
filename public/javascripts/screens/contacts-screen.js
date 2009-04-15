@@ -125,6 +125,8 @@ blist.contacts.infoPane.multiSuccessHandler = function (data)
     
     $(".infoContent dl.summaryList").infoPaneItemHighlight();
     
+    $(".summaryTabs").infoPaneNavigate();
+    
     // Wire up a click handler for deselectors.
     $(".action.unselector").click(function (event)
     {

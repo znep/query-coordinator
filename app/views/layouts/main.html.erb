@@ -110,7 +110,7 @@
         var blistCookie = $.cookies.get('_blist_session_id');
         if (blistCookie && blistCookie !== "")
         {
-            var coreCookie = blistCookie.split("::");
+            var coreCookie = unescape(blistCookie).split("||");
             if (coreCookie[0] && coreCookie[0] !== "")
             {
                 $('#header .userNav').addClass('loggedInNav');

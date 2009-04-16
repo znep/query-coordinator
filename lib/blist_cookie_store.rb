@@ -147,7 +147,7 @@ class BlistCookieStore
       end
       value = [value] unless Array === value
       cookie = Rack::Utils.escape(key) + "=" +
-        core_cookie.to_s + "::" +
+        core_cookie.to_s + "||" +
         value.map { |v| Rack::Utils.escape(v) }.join("&") +
         "#{domain}#{path}#{expires}#{secure}#{httponly}"
     end
@@ -155,7 +155,7 @@ class BlistCookieStore
     def load_session(env)
       request = Rack::Request.new(env)
       cookie_data = request.cookies[@key]
-      core_data, session_data = cookie_data.split('::') if cookie_data
+      core_data, session_data = CGI.unescape(cookie_data).gsub('"', '').split('||') if cookie_data
       data = unmarshal(session_data) || persistent_session_id!({})
       [data[:session_id], data]
     end
@@ -163,7 +163,7 @@ class BlistCookieStore
     def load_core_session(env)
       request = Rack::Request.new(env)
       cookie_data = request.cookies[@key]
-      core_data, session_data = cookie_data.split('::') if cookie_data
+      core_data, session_data = CGI.unescape(cookie_data).gsub('"', '').split('||') if cookie_data
       Base64.decode64(core_data) if core_data
     end
 

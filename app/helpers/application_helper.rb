@@ -115,6 +115,6 @@ module ApplicationHelper
   end
 
   def is_gov_site?
-    request.host.match('gov')
+    I18n.locale == 'gov'
   end
 end

@@ -2,7 +2,7 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
-  before_filter :hook_auth_controller, :adjust_format, :require_user
+  before_filter :hook_auth_controller, :adjust_format, :require_user, :set_locale
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -59,5 +59,11 @@ private
 
   def adjust_format
     request.format = :data if request.xhr?
+  end
+
+  def set_locale
+    if (request.host.match('gov'))
+      I18n.locale = 'gov'
+    end
   end
 end

@@ -113,5 +113,8 @@ module ApplicationHelper
     end
     content_tag 'div', flash_to_display, :class => "flash #{level}"
   end
+
+  def is_gov_site?
+    request.host.match('gov')
+  end
 end
-  

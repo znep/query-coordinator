@@ -24,6 +24,7 @@ blist.profile.updateInfo = function(responseData, $form)
         var user = responseData.user;
         $(".userName h1").text(user.displayName);
         $(".userLocation h5").text(user.displayLocation);
+        $(".userCompany h5").text(user.company);
         $(".userTitle h5").text(user.title);
         $(".userTags h5 .tagContent").text(user.tags.join(', '));
         $('#switchUsernameLink').text('Display ' +
@@ -121,6 +122,35 @@ $(function ()
                 else
                 {
                     $(".descriptionText").html(responseData.user.htmlDescription);
+
+                    $form.find('.errorMessage').text('');
+                    $form.closest(".sectionEdit").slideUp("fast");
+                    $form.closest(".sectionContainer")
+                        .find(".sectionShow").slideDown("fast");
+                }
+            }
+        });
+    });
+    
+    $(".interestsContent form").submit(function(event)
+    {
+        event.preventDefault();
+        $form = $(this);
+        var requestData = $.param($form.find(":input"));
+        $.ajax({
+            url: $form.attr("action"),
+            type: "PUT",
+            dataType: "json",
+            data: requestData,
+            success: function(responseData)
+            {
+                if (responseData.error)
+                {
+                    $form.find('.errorMessage').text(responseData.error);
+                }
+                else
+                {
+                    $(".interestsText").html(responseData.user.interests);
 
                     $form.find('.errorMessage').text('');
                     $form.closest(".sectionEdit").slideUp("fast");

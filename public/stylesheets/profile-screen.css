@@ -1,7 +1,6 @@
 
 #profile .userInfo
 {
-    border-bottom: dotted 1px #666666;
     margin: 1em 0 0.5em;
     padding-bottom: 1em;
 }
@@ -55,14 +54,21 @@
     padding-right: 1em;
 }
 
-#profile .descriptionContent .sectionShow p
+#profile .descriptionContent, 
+#profile .interestsContent
+{
+    border-top: dotted 1px #666666;
+}
+#profile .descriptionContent .sectionShow p, 
+#profile .interestsContent .sectionShow p
 {
     display: block;
     font-size: 1.2em;
     padding: 0.5em 0;
 }
 
-#profile .descriptionContent .sectionShow a.action
+#profile .descriptionContent .sectionShow a.action, 
+#profile .interestsContent .sectionShow a.action
 {
     padding: 0;
     font-size: .833em; /* 10px */

@@ -913,17 +913,15 @@ table.gridList tr.filteredOut
 .formListBox form input[type="text"], .formListBox form input[type="password"]
 {
     font-size: 1em;
+    padding: 0.1em 0.2em;
 }
-
-
 
 .formListBox dt, .formListBox dd, .formListBox p
 {
     font-size: 1.4em;
-    padding-bottom: .357em; /* 5px */
 }
 
-.formListBox dt 
+.formListBox dt
 {
     clear: both;
     color: #666;
@@ -933,7 +931,7 @@ table.gridList tr.filteredOut
     text-align: right;
     width: 135px;
 }
-.formListBox dd 
+.formListBox dd
 {
     line-height: 27px;
     margin-left: 145px;
@@ -943,6 +941,11 @@ table.gridList tr.filteredOut
 .formListBox dl
 {
     padding: 1em 0 1em;
+}
+
+.formListBox .sectionEnd
+{
+    padding-bottom: 1em;
 }
 
 .formListBox .fieldNote
@@ -976,10 +979,11 @@ table.gridList tr.filteredOut
 {
     color: #666;
     font-size: 12px;
+    margin-right: 1em;
 }
 .formListBox input[type="radio"]
 {
-    margin: 0 1em 0 0;
+    margin: 0;
     vertical-align: middle;
 }
 
@@ -988,6 +992,8 @@ table.gridList tr.filteredOut
     clear: both;
     color: red;
     margin-left: 155px;
+    margin-top: -1em;
+    padding-bottom: 1em;
 }
 
 .formListBoxSubmit

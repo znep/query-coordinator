@@ -6,7 +6,7 @@
   </td>
   <td class="name"><div><%= link_to(h(view.name), view.href) %></div></td>
   <td class="views"><div><%= h(view.viewCount) %></div></td>
-  <td class="copies"><div>[5]</div></td>
+  <td class="copies"><div><%= h(view.copyCount) %></div></td>
   <td class="actionContainer"><div><a
         href="<%= view.href %>" class="action"
         title="<%= h(view.name) %>"><span>View</span></a>

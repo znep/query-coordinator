@@ -1,6 +1,6 @@
 class ProfilesController < ApplicationController
   helper :user
-  
+
   def show
     @body_id = 'profileBody'
     @body_class = 'home'
@@ -13,6 +13,7 @@ class ProfilesController < ApplicationController
       end
     end
     @public_view_count = @public_views.inject(0) {|sum,v| sum + v.viewCount}
+    @public_copy_count = @public_views.inject(0) {|sum,v| sum + v.copyCount}
 
     @private_blists = @all_owned_views.find_all {|v|
       !v.is_public? && v.flag?('default')}
@@ -23,18 +24,28 @@ class ProfilesController < ApplicationController
 
     @contacts = Contact.find();
   end
-  
+
   def update
-    @user = User.find(current_user.id)
-    @user.firstName = params[:first_name] || @user.firstName
-    @user.lastName = params[:last_name] || @user.lastName
-    @user.login = params[:login] || @user.login
-    @user.state = params[:state] || @user.state
-    @user.country = params[:country] || @user.country
-    
+    error_msg = nil
+    name_display = params[:user].delete(:name_display)
+    if (params[:user][:country] && params[:user][:country].upcase != 'US' ||
+       params[:user][:state] == '--')
+      params[:user][:state] = nil
+    end
+    if (params[:user][:country] == '--')
+      params[:user][:country] = nil
+    end
+
+    begin
+      current_user.update_attributes!(params[:user])
+    rescue CoreServerError => e
+      error_msg = e.error_message
+    end
+
     respond_to do |format|
       format.html { redirect_to(profile_url) }
-      format.data   { render :json => @user.to_json() }
+      format.data   { render :json => {:error => error_msg,
+        :user => current_user}.to_json }
     end
   end
 end

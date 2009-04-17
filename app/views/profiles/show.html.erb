@@ -12,16 +12,16 @@
 
       <div class='outerContent'>
         <div class='content'>
-          
-          
+
+
           <div class='userInfo clearfix'>
-            
+
             <div class='profilePicture'>
               <%= image_tag(current_user.profile_image("medium"),
                 :size => "80x80", :alt => h(current_user.displayName)) %>
               <a class='action' href='#'>Change</a>
             </div>
-            
+
             <div class="profileContent sectionContainer">
               <div class="sectionShow">
                 <div class='userName'>
@@ -36,7 +36,7 @@
                   <h5><%= h(current_user.displayLocation) %></h5>
                 </div>
                 <div class='userTitle'>
-                  <h5>[Developer]</h5>
+                  <h5><%= h(current_user.title) %></h5>
                 </div>
                 <div class='userTags'>
                   <h5>Tags: <span class='tagContent'>
@@ -51,72 +51,103 @@
                     <dl class="clearfix">
                       <dt>Name Display</dt>
                       <dd>
-                        <label class="radioLabel">Display Full Name</label>
-                        <%= radio_button_tag("name_display", "full", true) %>
-                        <label class="radioLabel">Display Username</label>
-                        <%= radio_button_tag("name_display", "user") %>
+                        <%= radio_button_tag("user[name_display]", "full", true) %>
+                        <label class="radioLabel" for='user_name_display_full'>
+                          Display Full Name
+                        </label>
+                        <%= radio_button_tag("user[name_display]", "user") %>
+                        <label class="radioLabel" for='user_name_display_user'>
+                          Display Username
+                        </label>
                       </dd>
-                      <dt>Full Name</dt>
+                      <dt><label for="user_firstName">First Name</label></dt>
                       <dd>
-                        <label for="first_name" class="preLabel">First:</label>
-                        <%= text_field_tag("first_name", current_user.firstName) %>
-                        <label for="last_name" class="preLabel">Last:</label>
-                        <%= text_field_tag("last_name", current_user.lastName) %>
+                        <%= text_field_tag("user[firstName]",
+                          current_user.firstName) %>
                       </dd>
-                      <dt><label for="login">Username</label></dt>
-                      <dd><%= text_field_tag("login", current_user.login) %></dd>
-                      <dt>Location</dt>
+                      <dt><label for="user_lastName">Last Name</label></dt>
                       <dd>
-                        <%- if (current_user.country == "US") -%>
-                          <label for="state" class="preLabel">State:</label>
-                          <%= select_tag("state", us_state_select_options(current_user.state)) %>
-                        <%- end -%>
-                        <label for="country" class="preLabel">Country:</label>
-                        <%= select_tag("country", country_select_options(current_user.country)) %>
+                        <%= text_field_tag("user[lastName]",
+                          current_user.lastName) %>
                       </dd>
-                      <dt><label for="title">Title</label></dt>
-                      <dd><%= text_field_tag("title", "[Developer]") %></dd>
-                      <dt><label for="tags">Tags</label></dt>
-                      <dd><%= text_field_tag("tags", "[test, test2, sde]") %></dd>
+                      <dt><label for="user_login">Username</label></dt>
+                      <dd>
+                        <%= text_field_tag("user[login]", current_user.login) %>
+                      </dd>
+                      <dt class='sectionEnd'>
+                        <label for="user_title">Title</label>
+                      </dt>
+                      <dd class='sectionEnd'>
+                        <%= text_field_tag("user[title]", current_user.title) %>
+                      </dd>
+                      <dt><label for="user_city">City</label></dt>
+                      <dd>
+                        <%= text_field_tag("user[city]", current_user.city) %>
+                      </dd>
+                      <dt><label for="user_state">State</label></dt>
+                      <dd>
+                        <%= select_tag("user[state]",
+                          us_state_select_options(current_user.state)) %>
+                      </dd>
+                      <dt class='sectionEnd'>
+                        <label for="user_country">Country</label>
+                      </dt>
+                      <dd class='sectionEnd'>
+                        <%= select_tag("user[country]",
+                          country_select_options(current_user.country)) %>
+                      </dd>
+                      <dt><label for="user_tags">Tags</label></dt>
+                      <dd>
+                        <%= text_field_tag("user[tags]",
+                          current_user.tag_display_string) %>
+                        <span class="fieldNote">(Separate tags with commas)</span>
+                      </dd>
                     </dl>
                     <p class="formListBoxSubmit">
                       <%= image_submit_tag("button_save.png") %>
                     </p>
+                    <p class='errorMessage'></p>
                   <% end %>
                   <p class="formListBoxClose"><a href="#close">Close</a></p>
                 </div></div>
                 </div></div>
               </div>
             </div>
-            
+
           </div>
-          
+
           <div class="descriptionContent sectionContainer">
-            
+
             <div class="sectionShow">
-              <p class="descriptionText">[I am some test user that lives in dev]</p>
-              <p><a class='action showListBoxLink' href='#edit'>Edit</a></p>
+              <p class="descriptionText"><%= current_user.htmlDescription %></p>
+              <p>
+                <a class='action showListBoxLink' href='#edit'>Edit Description</a>
+              </p>
             </div>
             <div class="sectionEdit formListBox">
               <div class="formListBoxTL"><div class="formListBoxTR">
               <div class="formListBoxBL"><div class="formListBoxBR">
                 <% form_tag(profile_url, :class => "clearfix") do %>
                   <dl class="clearfix">
-                    <dt><label for="description">Description</label></dt>
-                    <dd><%= text_area_tag("description", "[I am some test user that lives in dev]", :class => "text_wide") %></dd>
+                    <dt><label for="user_description">Description</label></dt>
+                    <dd>
+                      <%= text_area_tag("user[description]",
+                        h(current_user.description), :class => "text_wide") %>
+                    </dd>
                   </dl>
                   <p class="formListBoxSubmit">
                     <%= image_submit_tag("button_save.png") %>
                   </p>
+                  <p class='errorMessage'></p>
                 <% end %>
                  <p class="formListBoxClose"><a href="#close">Close</a></p>
               </div></div>
               </div></div>
             </div>
-          
+
           </div>
 
-          
+
           <div class='publicBlists'>
             <h3>My public blists &amp; filters</h3>
             <div class='infoContentOuter active'>
@@ -157,8 +188,8 @@
               </div>
             </div>
           </div>
-        
-        
+
+
         </div>
       </div>
     </div>
@@ -168,7 +199,7 @@
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'userStats' } ) do %>
       <p>Joined on <%= blist_date(current_user.createdAt) %></p>
-      <p>Last login:</p>
+      <p>Last login: <%= blist_date(current_user.lastLogin) %></p>
     <% end %>
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'blistStats' } ) do %>
@@ -178,7 +209,7 @@
           <dd><%= pluralize(@private_filters.length, 'filter') %></dd>
           <dt>Public blists &amp; Filters: <%= @public_views.length %></dt>
           <dd><%= pluralize(@public_view_count, 'view') %></dd>
-          <dd>[50] copies</dd>
+          <dd><%= pluralize(@public_copy_count, 'copy') %></dd>
           <dt>Shared blists: <%= @shared_blists.length %></dt>
           <dt>Contacts: <%= @contacts.length %></dt>
         </dl>

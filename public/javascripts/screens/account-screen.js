@@ -42,7 +42,7 @@ $(function ()
                 type: "PUT",
                 dataType: "json",
                 data: requestData,
-                success: function(responseData, textStatus)
+                success: function(responseData)
                 {
                     if (responseData.error)
                     {

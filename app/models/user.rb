@@ -13,10 +13,10 @@ class User < Model
 
   def to_json
     dhash = data_hash
-    dhash[:displayName] = displayLocation
     dhash[:displayState] = displayState
     dhash[:displayCountry] = displayCountry
     dhash[:displayLocation] = displayLocation
+    dhash[:htmlDescription] = htmlDescription
     dhash[:profile_image] = profile_image
 
     dhash.to_json
@@ -31,9 +31,21 @@ class User < Model
   end
 
   def displayLocation
-    #TODO: add city when available.
-    out = country == "US" ? displayState + ", " : ""
-    out += displayCountry
+    loc_pieces = []
+    if (!city.blank?)
+      loc_pieces << city
+    end
+    if (!state.blank? && country == "US")
+      loc_pieces << displayState
+    end
+    if (!country.blank?)
+      loc_pieces << displayCountry
+    end
+    loc_pieces.join(', ')
+  end
+
+  def htmlDescription
+    description.blank? ? '' : CGI.escapeHTML(description).gsub("\n", '<br/>')
   end
 
   def self.login(login,password)
@@ -55,6 +67,7 @@ class User < Model
   end
 
   @@states = {
+                '--' => '------',
                 'AK' => 'Alaska',
                 'AL' => 'Alabama',
                 'AR' => 'Arkansas',
@@ -109,6 +122,7 @@ class User < Model
   }
 
   @@countries = {
+            '--' => '------',
             "US" => "United States",
             "GB" => "United Kingdom",
             "CA" => "Canada",

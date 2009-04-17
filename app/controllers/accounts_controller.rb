@@ -6,23 +6,23 @@ class AccountsController < ApplicationController
   def update
     error_msg = nil
     begin
-    if params[:user][:email]
-      if params[:user][:email] != params[:user][:email_confirm]
-        error_msg = "New emails do not match"
-      else
-        current_user.update_attributes!(
-          {:email => params[:user][:email],
-           :password => params[:user][:email_password]})
+      if params[:user][:email]
+        if params[:user][:email] != params[:user][:email_confirm]
+          error_msg = "New emails do not match"
+        else
+          current_user.update_attributes!(
+              {:email => params[:user][:email],
+                :password => params[:user][:email_password]})
+        end
+      elsif params[:user][:password_new]
+        if params[:user][:password_new] != params[:user][:password_confirm]
+          error_msg = "New passwords do not match"
+        else
+          current_user.update_attributes!(
+              {:newPassword => params[:user][:password_new],
+                :password => params[:user][:password_old]})
+        end
       end
-    elsif params[:user][:password_new]
-      if params[:user][:password_new] != params[:user][:password_confirm]
-        error_msg = "New passwords do not match"
-      else
-        current_user.update_attributes!(
-          {:newPassword => params[:user][:password_new],
-           :password => params[:user][:password_old]})
-      end
-    end
     rescue CoreServerError => e
       error_msg = e.error_message
     end

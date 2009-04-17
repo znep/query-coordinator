@@ -1,5 +1,18 @@
 var profileNS = blist.namespace.fetch('blist.profile');
 
+blist.profile.updateStateCombo = function($countryCombo)
+{
+    if ($countryCombo.val() != "US")
+    {
+        $("label[for='user_state'], #user_state").hide();
+    }
+    else
+    {
+        $("label[for='user_state']:not(:visible), #user_state:not(:visible)")
+            .show();
+    }
+};
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -41,15 +54,25 @@ $(function ()
                 type: "PUT",
                 dataType: "json",
                 data: requestData,
-                success: function(user, textStatus) {
-                    // TODO: this should use user.displayName.
-                    $(".userName h1").text(user.firstName + " " + user.lastName);
-                    $(".userLocation h5").text(user.displayLocation);
-                    // TODO: add user title.
-                    // TODO: add user tags.
+                success: function(responseData)
+                {
+                    if (responseData.error)
+                    {
+                        $form.find('.errorMessage').text(responseData.error);
+                    }
+                    else
+                    {
+                        var user = responseData.user;
+                        $(".userName h1").text(user.displayName);
+                        $(".userLocation h5").text(user.displayLocation);
+                        $(".userTitle h5").text(user.title);
+                        $(".userTags h5").text(user.tags.join(', '));
 
-                    $form.closest(".sectionEdit").slideUp("fast");
-                    $form.closest(".sectionContainer").find(".sectionShow").slideDown("fast");
+                        $form.find('.errorMessage').text('');
+                        $form.closest(".sectionEdit").slideUp("fast");
+                        $form.closest(".sectionContainer")
+                            .find(".sectionShow").slideDown("fast");
+                    }
                 }
             });
         }
@@ -58,24 +81,14 @@ $(function ()
     // Profile form.
     $(".profileContent form").validate({
         rules: {
-            first_name: "required",
-            last_name: "required",
-            login: "required"
+            'user[firstName]': "required",
+            'user[lastName]': "required",
+            'user[login]': "required"
         }
     });
 
-    $("#country").change(function()
-    {
-        $this = $(this);
-        if ($this.val() != "US")
-        {
-            $("label[for='state'], #state").hide();
-        }
-        else
-        {
-            $("label[for='state']:not(:visible), #state:not(:visible)").show();
-        }
-    });
+    $("#user_country").change(function() { profileNS.updateStateCombo($(this)); });
+    profileNS.updateStateCombo($('#user_country'));
 
     $(".descriptionContent form").submit(function(event)
     {
@@ -87,11 +100,21 @@ $(function ()
             type: "PUT",
             dataType: "json",
             data: requestData,
-            success: function(responseData, textStatus) {
-                // TODO: add description.
+            success: function(responseData)
+            {
+                if (responseData.error)
+                {
+                    $form.find('.errorMessage').text(responseData.error);
+                }
+                else
+                {
+                    $(".descriptionText").html(responseData.user.htmlDescription);
 
-                $form.closest(".sectionEdit").slideUp("fast");
-                $form.closest(".sectionContainer").find(".sectionShow").slideDown("fast");
+                    $form.find('.errorMessage').text('');
+                    $form.closest(".sectionEdit").slideUp("fast");
+                    $form.closest(".sectionContainer")
+                        .find(".sectionShow").slideDown("fast");
+                }
             }
         });
     });
@@ -103,5 +126,10 @@ $(function ()
         selectable: false,
         sortGrouping: false,
         sortHeaders: {1: {sorter: "text"}, 4: {sorter: false}}
+    });
+
+    $('.sectionEdit form input').keypress(function (e)
+    {
+        $(e.currentTarget).closest('form').find('.errorMessage').text('');
     });
 });

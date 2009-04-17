@@ -19,7 +19,9 @@
             <div class='profilePicture'>
               <%= image_tag(current_user.profile_image("medium"),
                 :size => "80x80", :alt => h(current_user.displayName)) %>
-              <a class='action' href='#'>Change</a>
+              <a id='changeProfileImage' class='action' href='<%= current_user.
+                profile_image("replace").gsub("/replace", "") %>'>Change</a>
+              <p class='errorMessage'></p>
             </div>
 
             <div class="profileContent sectionContainer">
@@ -226,8 +228,8 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.validate",
-    "plugins/jquery.tablesorter", "widgets/selectable-list",
-    "widgets/combination-list", "screens/profile-screen",
-    :cache => "cache/profiles_show_all" %>
+  <%= javascript_include_tag "plugins/jquery.validate", "plugins/jquery.json",
+    "plugins/jquery.tablesorter", "plugins/ajaxupload.3.0",
+  "widgets/selectable-list", "widgets/combination-list",
+  "screens/profile-screen", :cache => "cache/profiles_show_all" %>
 <% end %>

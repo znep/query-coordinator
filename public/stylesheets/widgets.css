@@ -990,7 +990,6 @@ table.gridList tr.filteredOut
 .formListBox .errorMessage
 {
     clear: both;
-    color: red;
     margin-left: 155px;
     margin-top: -1em;
     padding-bottom: 1em;

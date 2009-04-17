@@ -33,6 +33,11 @@
     margin-bottom: 0.5em;
 }
 
+#profile .profilePicture.hover a
+{
+    text-decoration: underline;
+}
+
 #profile .profileContent {
     margin-left: 9em;
 }

@@ -79,6 +79,11 @@ label.error {
 form input[type="text"].text_wide,
 form textarea.text_wide { width: 30em; }
 
+.errorMessage
+{
+    color: red;
+}
+
 /**************
  * Search box *
  **************/

@@ -9,7 +9,11 @@ module ContactsHelper
     # TODO: Add groups in here when they have tags
 
     tags = []
-    contacts.each { |c| tags << c.tags.collect { |t| t.to_s } }
+    contacts.each do |c|
+      if !c.tags.nil?
+        tags << c.tags.collect { |t| t.to_s }
+      end
+    end
     tags.flatten.sort.uniq
   end
 

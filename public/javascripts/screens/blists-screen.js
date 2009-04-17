@@ -223,6 +223,8 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         }
     });
     
+    $(".copyCode textarea").click(function() { $(this).select(); });
+    
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();

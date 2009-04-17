@@ -548,6 +548,29 @@
     padding-left: 51px;
 }
 
+.singleInfoPublishing .publishContent
+{
+    border-top: 1px solid #e1d3b6;
+    padding-top: 1em;
+}
+.singleInfoPublishing .publishContent p
+{
+    font-size: 1.2em;
+}
+.singleInfoPublishing .publishContent .publishCode { margin-top: 2em; }
+.singleInfoPublishing .publishContent .publishCode p
+{
+    font-size: 1.4em;
+}
+.singleInfoPublishing .publishContent .copyCode textarea
+{
+    font-size: 1.1em;
+    height: 7em;
+    overflow: hidden;
+    padding: .5em;
+    width: 45.5em;
+}
+
 /*  The following rules define styles for stuff that isn't currently implemented. 
     TODO: clean it all up once the publishing table is implemented.
 */

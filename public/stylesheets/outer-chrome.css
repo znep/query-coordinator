@@ -203,12 +203,12 @@ body
     line-height: 25px;
 }
 
-body.home #mainNav
+body.discover #mainNav
 {
     background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_left_active.png);
 }
 
-body.community #mainNav ul
+body.home #mainNav ul
 {
     background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_right_active.png);
 }

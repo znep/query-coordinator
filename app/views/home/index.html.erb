@@ -82,11 +82,13 @@
     <% end %>
 
     <%- # only show updates if the user has > 3 total blists -%>
+    <%- if false -%>
     <%- if (current_user.is_established?) -%>
       <% render(:layout => "shared/sidebar_box",
         :locals => { :content_class => 'userUpdates' } ) do %>
         <%= render(:partial => "shared/user_updates", :locals => { :user => current_user }) %>
       <% end %>
+    <%- end -%>
     <%- end -%>
     
     <%- # Storage space used is not yet applicable -%>
@@ -97,7 +99,6 @@
       <% end %>
     <%- end -%>
 
-    <%= render(:partial => "shared/ad_box", :locals => { :last_child => true }) %>
   </div>
 </div>
 

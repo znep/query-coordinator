@@ -29,6 +29,7 @@
     </li>
     <li id="tabPublishing">
       <div class="tabInner">
+        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#publishing">Publishing</a>
       </div>
     </li>
@@ -422,56 +423,20 @@
     </ul>
   </div>
   <div class="infoContentInner">
-    <%# Not supported
-    <div class="infoContent">
-      <div class="gridListContainer simple">
-        <table class="gridList" cellspacing="0">
-          <thead>
-            <tr>
-              <th class="widgetBlist first" title="blist/Filter Name"><div>blist / Filter Name</div></th>
-              <th class="widgetType" title="Role"><div>Role</div></th>
-              <th class="link" title="Link Location"><div>Link Location</div></th>
-              <th class="number" title="Number"><div>#</div></th>
-              <th class="viewed" title="Last Viewed"><div>Last Viewed</div></th>
-              <th class="actionContainer last"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="item">
-              <td class="widgetBlist"><div>East Coast Wine Sales</div></td>
-              <td class="widgetType"><div>Grid Only</div></td>
-              <td class="link"><div>intranet.wineman.com</div></td>
-              <td class="number"><div>125</div></td>
-              <td class="viewed"><div>01/09/2009</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>Republish</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="widgetBlist"><div>Favorite Wines 2008</div></td>
-              <td class="widgetType"><div>Grid with Page</div></td>
-              <td class="link"><div>blog.wineman.com</div></td>
-              <td class="number"><div>3002</div></td>
-              <td class="viewed"><div>01/09/2009</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>Republish</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="widgetBlist"><div>Wedding wine survey</div></td>
-              <td class="widgetType"><div>Grid with Form</div></td>
-              <td class="link"><div>JillandJacksWedding.com</div></td>
-              <td class="number"><div>85</div></td>
-              <td class="viewed"><div>01/09/2009</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>Republish</span></a>
-              </div></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="infoContent"<%= div_shown %>>
+      <div class="publishContent">
+        <p>
+          You can publish your blists and filtered views on your blog, 
+          websites and more by embedding a widget.  Simply copy and paste 
+          the following HTML into your site.
+        </p>
+        <div class="publishCode">
+          <p>Embed this blist as a table:</p>
+          <div class="copyCode">
+            <%= text_area_tag("publishCode", get_publish_embed_code_for_view(view)) %>
+          </div>
+        </div>
     </div>
-    %>
   </div>
 </div>
 <%# *** END: PUBLISHING *** %>

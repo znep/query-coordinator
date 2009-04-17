@@ -10,11 +10,12 @@ body#lensBody
     max-width: 100%;
 }
 
-#lensContainer
+#lensContainer, #lensMetaContainer
 {
     margin-right: 1em;
     min-width: 99.9em;
 }
+#lensMetaContainer { padding-bottom: 6em; }
 
 #lensContainer .tabList
 {

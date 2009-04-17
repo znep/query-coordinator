@@ -33,9 +33,9 @@
 
       <div id='mainNav'>
         <ul>
-          <li class='home'><%= link_to("Home", root_url) %></li>
-          <li class='discover'><%= link_to("Discover", discover_url) %></li>
-          <li class='community last'><a href='#'>Community</a></li>
+          <li class='discover'><%= link_to("Discover", swf_discover_url) %></li>
+          <li class='community'><a href='#'>Community</a></li>
+          <li class='home last'><%= link_to("My blist", root_url) %></li>
         </ul>
       </div>
 
@@ -58,7 +58,7 @@
       </div>
 
       <%- if @show_search_form -%>
-        <form class='search' action='/discover'>
+        <form class='search' action='/discover/swf'>
           <p>
             <input type='text' class='textPrompt' name='search'
               title='Search for blists, contacts &amp; help'

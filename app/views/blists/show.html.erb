@@ -186,18 +186,14 @@
       </div>
     </div>
   </div>
-
-  <div class="twoColumnContainer clearfix">
+  
+  <div id='lensMetaContainer'>
     <div id="mainColumnContent" class="column">
       <div id='infoPane'>
       <%- if !@view.nil? -%>
         <%= render(:partial => "info_for_single", :locals => { :view => @view, :page_single => true }) %>
       <%- end -%>
       </div>
-    </div>
-
-    <div id="sidebar" class="column">
-      <%= render(:partial => "shared/ad_box") %>
     </div>
   </div>
 </div>

@@ -454,4 +454,6 @@ $(function ()
     $(".infoContent dl.summaryList").infoPaneItemHighlight();
 
     $("#infoPane dd.editItem").infoPaneItemEdit();
+    
+    $(".copyCode textarea").click(function() { $(this).select(); });
 });

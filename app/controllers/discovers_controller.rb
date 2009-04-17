@@ -17,12 +17,14 @@ class DiscoversController < SwfController
     @education_views = @all_views.find_all { |v| v.category == "education" }
   end
 
-# def show
-#   @body_id = 'discoverBody'
-#   @body_class = 'discover'
-#   @start_screen = 'discover'
-#   @discover_search = params[:search]
-#   @swf_url = swf_url('v3embed.swf')
-# end
+  def swf
+    @body_id = 'discoverBody'
+    @body_class = 'discover'
+    @start_screen = 'discover'
+    @discover_search = params[:search]
+    @swf_url = swf_url('v3embed.swf')
+    
+    render(:template => "discovers/show_swf")
+  end
 
 end

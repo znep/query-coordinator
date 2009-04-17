@@ -1,0 +1,49 @@
+<div id="<%= "discoverTab#{type}" %>" class="clearfix">
+  <div class="discoverContentOuter"><div class="discoverContentTL"><div class="discoverContentBL">
+    <div class="discoverContent">
+      <h2><%= type.capitalize %> blists</h2>
+      <div class="contentSort">
+        <p>
+          Sort by 
+          <select>
+            <option value="updated">Last updated</option>
+            <option value="added">Date added</option>
+            <option value="popularity">Popularity</option>
+            <option value="alpha">A - Z</option>
+          </select>
+        </p>
+      </div>
+    
+      <ul class="discoverContentList">
+        <%= render(:partial => "view_list_item", :collection => views) %>
+      </ul>
+    </div>
+  </div></div></div>
+  
+  <div class="discoverContentNavTR"><div class="discoverContentNavBR">
+    <div class="discoverContentNav">
+      <h2>Show blists</h2>
+      <ul class="filterList">
+        <li><a href="#network">In my network</a></li>
+        <li><a href="#public">Public blists only</a></li>
+        <li><a href="#templates">Templates only</a></li>
+      </ul>
+  
+      <h2>Browse by tag</h2>
+      <ul class="tagList">
+        <li><a href="#tag">[Sample]</a></li>
+        <li><a href="#tag">[Sample]</a></li>
+        <li><a href="#tag">[Sample]</a></li>
+        <li><a href="#tag">[Sample]</a></li>
+      </ul>
+      
+      <h2>Browse by Category</h2>
+      <ul class="categoryList">
+        <li><a href="#fun">Fun</a></li>
+        <li><a href="#personal">Personal</a></li>
+        <li><a href="#educational">Educational</a></li>
+        <li><a href="#business">Business</a></li>
+      </ul>
+    </div>
+  </div></div>
+</div>

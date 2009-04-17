@@ -1,0 +1,30 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "discover-screen" %>
+  <%= javascript_include_tag "util/swfobject" %>
+  <title>blist | share your weblists</title>
+<% end %>
+
+<div id='overlay'></div>
+
+<div class='mainContent'>
+  <ul class='tabList'>
+    <li class='discover even active'><div class='wrapper'>
+      <%= link_to 'Discover', discover_url %>
+    </div></li>
+  </ul>
+
+  <div class='outerContent'>
+    <div class='content'>
+      <div id='swfWrapper' class='scrollContent'>
+        <%= render(:partial => "shared/swf") %>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "util/flash-interface", "util/navigation",
+    "screens/discover-screen", :cache => "cache/discovers_show_all" %>
+<% end %>

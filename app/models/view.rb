@@ -9,6 +9,11 @@ class View < Model
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     get_request(path)
   end
+  
+  #TODO: Make this find only popular views.
+  def self.find_popular(options = nil)
+    self.find_under_user(options)
+  end
 
   def self.create_favorite(id)
     path = "/favorite_views?" + {"id" => id}.to_param

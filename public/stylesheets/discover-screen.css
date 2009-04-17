@@ -1,31 +1,326 @@
-/* 
-    Document   : discover-screen.css
-    Created on : Mar 4, 2009
-    Author     : jeff.scherpelz@blist.com, pete.stuart@blist.com
-    Description:
-      Styles for the Discover page
-*/
-
-
-#discoverBody .mainContent
+#discover
 {
-    margin: 0 1em;
-    min-width: 729px;
+    margin: 5em 1em 0;
+    min-width: 98.9em;
     padding-bottom: 6em;
 }
 
-#discoverBody .scrollContent
+.discoverHeaderOuter { background-color: #fff; }
+.discoverHeaderTL { background: url(/stylesheets/images/content/background_corner_left.png) top left no-repeat; }
+.discoverHeaderTR { background: url(/stylesheets/images/content/background_corner_right.png) top right no-repeat; }
+.discoverHeaderBL { background: url(/stylesheets/images/content/background_corner_bottom_left.png) bottom left no-repeat; }
+.discoverHeaderBR { background: url(/stylesheets/images/content/background_corner_bottom_right.png) bottom right no-repeat; }
+
+.discoverHeaderContainer
 {
+    min-height: 0;
+    padding: 1em 34em 1em 1em;
+}
+.discoverIntro
+{
+    float: left;
+    width: 100%;
+}
+.discoverIntro p
+{
+    color: #999;
+    font-size: 1.8em;
+}
+.discoverSearch
+{
+    float: right;
+    margin-right: -33em;
+    width: 30em;
+}
+.discoverSearch p
+{
+    font-size: 1em;
+    margin-bottom: .3em;
+}
+
+.discoverHeaderContent
+{
+    clear: both;
+    padding-top: 1em;
+}
+
+.featuredViewsCarousel
+{
+    float: left;
+    width: 100%;
+}
+.featuredViewsCarousel.carouselWrapper { 
+    background: url(/stylesheets/images/common/carousel_background.png) repeat-x;
+    height: 23.2em;
+}
+.featuredViewsCarousel .carouselOuter { background: url(/stylesheets/images/common/carousel_background_left.png) no-repeat; }
+.featuredViewsCarousel .carouselInner
+{
+    background: url(/stylesheets/images/common/carousel_background_right.png) right top no-repeat;
+    height: 21.2em;
+    padding: .5em .5em 1.5em;
+}
+.featuredViewsCarousel h2
+{
+    color: #666;
+    font-size: 1.8em;
+    margin-bottom: .833em; /* 15px */
+}
+
+.featuredViewsCarousel ul.carousel > li
+{
+    float: left;
+}
+.featuredViewsCarousel ul.carousel > li.carouselItem
+{
+    background: url(/stylesheets/images/common/carousel_item_background.png) no-repeat;
+    height: 13.9em;
+    margin-right: 1em;
+    padding: 1.7em .4em 1.7em 1.7em;
+    width: 23.7em;
+}
+.featuredViewsCarousel ul.carousel > li.arrow
+{
+    padding-top: 7em;
+    margin-right: 1em;
+}
+.featuredViewsCarousel ul.carousel > li.arrow a
+{
+    background: url(/stylesheets/images/common/carousel_arrow_sprites.png) no-repeat;
+    display: block;
+    height: 32px;
+    line-height: 200px;
+    overflow: hidden;
+    width: 32px;
+}
+.featuredViewsCarousel ul.carousel > li.arrow.next a { background-position: left -32px; }
+
+.carouselItem .itemTitle h3
+{
+    float: left;
+    font-size: 1.8em;
+    font-weight: normal;
+    padding-right: 34px;
+    text-transform: none;
+}
+.carouselItem .itemTitle img
+{
+    display: block;
+    float: right;
+    margin-left: -34px;
+    margin-right: 15px;
+    width: 55px;
+}
+
+.carouselItem .itemMetaData { margin-top: 1.7em; }
+.carouselItem .metaList li
+{
+    color: #666;
+    font-size: 1.6em;
+    margin-bottom: .312em; /* 5px */
+}
+
+.discoverHeaderContent .myNetworkViews
+{
+    float: right;
+    margin-right: -33em;
+    width: 30em;
+}
+.myNetworkViews h2
+{
+    border-bottom: 1px solid #ccc;
+    color: #666;
+    font-size: 1.4em;
+    font-weight: normal;
+    margin-bottom: .714em; /* 10px */
+    padding-bottom: .357em; /* 5px */
+}
+
+ul.myNetworkList li
+{
+    color: #333;
+    margin-bottom: 1em;
+}
+ul.myNetworkList li a
+{
+    font-size: 1.4em;
+}
+
+
+
+.discoverTabsContainer
+{
+    margin-top: 1em;
+}
+.discoverTabs.tabList { margin-left: 2em; }
+
+.discoverContentContainer
+{
+    background: #cacaca url(/stylesheets/images/sidebar/sidebar_corner_bottom_right.png) bottom right no-repeat;
+    padding-right: 17.5em;
+}
+
+.discoverContentOuter { 
+    background-color: #fff;
+    border-right: 1px solid #8d8d8d;
+    float: left;
+    width: 100%;
+}
+.discoverContentTL { background: url(/stylesheets/images/content/background_corner_left.png) no-repeat; }
+.discoverContentBL { background: url(/stylesheets/images/content/background_corner_bottom_left.png) bottom left no-repeat; }
+
+.discoverContent { padding: 1.5em; }
+.discoverContent h2
+{
+    color: #e8a134;
+    float: left;
+    font-size: 1.4em;
+    margin-bottom: 1.428em; /* 20px */
+    text-transform: uppercase;
+}
+.discoverContent .contentSort
+{
+    float: right;
+}
+
+.discoverContentList
+{
+    border-top: 1px solid #ccc;
+    clear: both;
+}
+.discoverContentList li.viewListItem
+{
+    border-bottom: 1px solid #ccc;
+    padding: .5em 20em 1em 0;
+}
+.discoverContentList li.viewListItem .itemContent
+{
+    float: left;
+    width: 100%;
+}
+.discoverContentList li.viewListItem .itemContent h3
+{
+    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
+    float: left;
+    font-size: 1.8em;
+    font-weight: normal;
+    height: 41px;
+    line-height: 41px;
+    padding-left: 46px;
+    text-transform: none;
+}
+.discoverContentList li.viewListItem .itemContent h3.typeBlists { background-position: left top; }
+.discoverContentList li.viewListItem .itemContent h3.typeFilters { background-position: left -41px; }
+.discoverContentList li.viewListItem .itemContent h3.typeBlist { background-position: left -82px; }
+.discoverContentList li.viewListItem .itemContent h3.typeBlist.private { background-position: left -123px; }
+.discoverContentList li.viewListItem .itemContent h3.typeBlist.privateShared { background-position: left -164px; }
+.discoverContentList li.viewListItem .itemContent h3.typeComments { background-position: left -205px; }
+.discoverContentList li.viewListItem .itemContent h3.typeSharing { background-position: left -246px; }
+.discoverContentList li.viewListItem .itemContent h3.typePublish { background-position: left -328px; }
+.discoverContentList li.viewListItem .itemContent h3.typeViews { background-position: left -369px; }
+.discoverContentList li.viewListItem .itemContent h3.typeActivity { background-position: left -410px; }
+.discoverContentList li.viewListItem .itemContent h3.typeFilter { background-position: left -451px; }
+.discoverContentList li.viewListItem .itemContent h3.typeFilter.private { background-position: left -492px; }
+.discoverContentList li.viewListItem .itemContent h3.typeFilter.privateShared { background-position: left -533px; }
+.discoverContentList li.viewListItem .itemContent h3.typeSharedIn { background-position: left -738px; }
+.discoverContentList li.viewListItem .itemContent h3.typeSharedOut { background-position: left -779px; }
+
+.discoverContentList li.viewListItem .itemContent p
+{
+    color: #666;
+    font-size: 1.2em;
+    margin-bottom: 12px;
+    margin-left: 10px;
+}
+.discoverContentList li.viewListItem .itemContent p.dateLine
+{
+    color: #333;
+    float: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 36px;
+    margin-bottom: 0;
+    margin-left: 1em;
+    padding-top: 5px;
+}
+
+.discoverContentList li.viewListItem .itemContent p.viewCategory
+{ 
+    clear: both;
+    color: #333;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+.discoverContentList li.viewListItem .itemContent p.viewDescription
+{
+    clear: both;
+    height: 15px;
+    margin-right: 1.25em; /* 15px */
+    margin-top: .416em; /* 5px */
     overflow: hidden;
 }
-
-#discoverBody .outerContent
+.discoverContentList li.viewListItem .itemContent p.viewTags span
 {
-    margin-left: 0;
-    padding-bottom: 1em;
+    color: #333;
+    font-size: .916em; /* 11px */
+    font-weight: bold;
 }
 
-#discoverBody #swfWrapper
+.discoverContentList li.viewListItem .itemMetaContainer
 {
-    z-index: 100;
+    float: left;
+    margin-right: -20em;
+}
+.itemMetaContainer ul li
+{
+    float: left;
+    margin: 0 1.5em 0 0;
+    width: 87px;
+}
+.itemMetaContainer ul li.last { margin-right: 0; }
+.itemMetaContainer .itemMeta
+{
+    margin: 0 0 .5em .5em;
+}
+.itemMetaContainer .itemMeta li 
+{ 
+    color: #666;
+    font-size: 1.1em;
+    line-height: 2.2em; 
+}
+.itemMetaContainer .itemMeta li strong { color: #333; }
+
+.itemMetaContainer .itemActions.actionButtons li { background-position: 0 -63px; }
+.itemMetaContainer .itemActions.actionButtons li a { background-position: right -84px; }
+.itemMetaContainer .itemActions.actionButtons li a.arrowButton { background-position: right -105px; }
+
+.discoverContentNavTR
+{
+    background: url(/stylesheets/images/sidebar/sidebar_corner_top_right.png) top right no-repeat;
+    float: left;
+    margin-right: -17.5em;
+    width: 17.4em;
+}
+
+.discoverContentNav { padding: 1em; }
+.discoverContentNav h2
+{
+    color: #666;
+    border-bottom: 1px solid #666;
+    font-size: 1.2em;
+    font-weight: normal;
+    margin-bottom: .5em;
+}
+.discoverContentNav ul
+{
+    margin-bottom: 3em;
+}
+.discoverContentNav ul li
+{
+    margin-bottom: 1em;
+}
+.discoverContentNav ul li a
+{
+    color: #333;
+    font-size: 1.2em;
 }

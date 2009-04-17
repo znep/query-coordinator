@@ -57,15 +57,17 @@
         </ul>
       </div>
 
-      <form class='search' action='/discover'>
-        <p>
-          <input type='text' class='textPrompt' name='search'
-            title='Search for blists, contacts &amp; help'
-            value='<%= @discover_search %>' />
-          <input type='image' class='submit' name='discoverSubmit'
-            src="<%= image_path("find_button.png") %>" />
-        </p>
-      </form>
+      <%- if @show_search_form -%>
+        <form class='search' action='/discover'>
+          <p>
+            <input type='text' class='textPrompt' name='search'
+              title='Search for blists, contacts &amp; help'
+              value='<%= @discover_search %>' />
+            <input type='image' class='submit' name='discoverSubmit'
+              src="<%= image_path("find_button.png") %>" />
+          </p>
+        </form>
+      <%- end -%>
     </div>
 
     <%= yield :layout %>

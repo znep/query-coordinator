@@ -1,0 +1,17 @@
+<%- view = carousel_item -%>
+
+<li class="carouselItem">
+  <div class="itemTitle clearfix">
+    <h3><%= link_to(h(view.name), blist_url(view.id)) %></h3>
+    <%# TODO: Make this image the logo associated with the blist. %>
+    <%= image_tag("small-profile.png", :size => "55x55", :alt => "placeholder") %>
+  </div>
+  <div class="itemMetaData">
+    <%# TODO: Add ratings. %>
+    <ul class="metaList">
+      <li>Viewed <%= pluralize(view.viewCount, "time") %></li>
+      <%# TODO: Make comments real. %>
+      <li>[<%= pluralize(0, "Comment") %>]</li>
+    </ul>
+  </div>
+</li>

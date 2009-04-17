@@ -21,6 +21,10 @@ class ApplicationController < ActionController::Base
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
   
+  def initialize
+    @show_search_form = true
+  end
+  
   def current_user
     @current_user ||= UserSession.find
   end

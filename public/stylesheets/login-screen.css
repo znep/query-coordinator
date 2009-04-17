@@ -64,7 +64,7 @@
     text-transform: uppercase;
 }
 
-#login .loginBox .error
+#login .loginBox .flash
 {
     color: #ff0000;
     font-size: 1.2em;

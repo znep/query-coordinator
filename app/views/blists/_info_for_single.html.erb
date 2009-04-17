@@ -277,7 +277,7 @@
       <%= pluralize(view.filters.length, "Filtered View") %>
     </h2>
     <ul class="headerActions actionButtons">
-      <li><a href="#open" class="arrowButton">Create</a></li>
+      <li><%= link_to("Create", view.href + "?popup=SaveLens", :class => "arrowButton") %></li>
     </ul>
   </div>
   <div class="infoContentInner">

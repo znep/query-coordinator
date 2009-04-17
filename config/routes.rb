@@ -40,6 +40,7 @@ ActionController::Routing::Routes.draw do |map|
       :group_detail => :get,
     }
   map.resource :discover, :member => { :swf => :get }
+  map.resource :community
   map.resource :account
   map.resource :profile
 

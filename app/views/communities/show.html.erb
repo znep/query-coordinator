@@ -1,0 +1,22 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "community-screen", "widgets",
+    :cache => "cache/community_show_all" %>
+  <title>blist | share your weblists</title>
+<% end %>
+
+
+<div id="community">
+  <div class="communityHeaderOuter"><div class="communityHeaderTL"><div class="communityHeaderTR">
+  <div class="communityHeaderBL"><div class="communityHeaderBR">
+    <div class="communityContainer">
+      <h1>blist Community</h1>
+      <p>The blist community pages are currently under development. We're really excited to show you what we've been working on. Expect to see great things here soon!</p>
+    </div>
+  </div></div>
+  </div></div></div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "screens/community-screen", :cache => "cache/community_show_all" %>
+<% end %>

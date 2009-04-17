@@ -14,6 +14,9 @@
 
       <div class='outerContent'>
         <div class='content'>
+          
+          <%- if @contacts.length > 0 -%>
+          
           <div class='headerBar clearfix'>
             <h3 id='listTitle' class='clipText'
               title='<%= h(@title) %>'><%= h(@title) %></h3>
@@ -43,6 +46,20 @@
               <%= render(:partial => "contact_list") %>
             </div>
           </div>
+          
+          <%- else -%>
+          
+          <div class='headerBar clearfix'>
+            <h3 id='listTitle' class='clipText'
+              title='<%= h(@title) %>'><%= h(@title) %></h3>
+          </div>
+          
+          <div class='noContactsContainer'>
+            <p>The contact pages are currently under development. You can't add any contacts from this page yet. To add contacts, please add them in the <a href="http://app.blist.com">blist application</a>. They'll show up here when you come back.</p>
+            <p>Thanks for trying out the alpha version of blist!</p>
+          </div>
+          
+          <%- end -%>
 
         </div>
       </div>

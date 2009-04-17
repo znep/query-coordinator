@@ -1,0 +1,25 @@
+#community
+{
+    margin: 5em 1em 0;
+    min-width: 98.9em;
+    padding-bottom: 6em;
+}
+
+.communityHeaderOuter { background-color: #fff; }
+.communityHeaderTL { background: url(/stylesheets/images/content/background_corner_left.png) top left no-repeat; }
+.communityHeaderTR { background: url(/stylesheets/images/content/background_corner_right.png) top right no-repeat; }
+.communityHeaderBL { background: url(/stylesheets/images/content/background_corner_bottom_left.png) bottom left no-repeat; }
+.communityHeaderBR { background: url(/stylesheets/images/content/background_corner_bottom_right.png) bottom right no-repeat; }
+
+.communityContainer
+{
+    min-height: 0;
+    padding: 1em;
+}
+.communityContainer h1 { color: #E8A134; }
+.communityContainer p
+{
+    font-size: 1.6em;
+    line-height: 1.5em;
+    width: 30em;
+}

@@ -21,3 +21,14 @@
 
 #contacts table.gridList .name { width: 40%; }
 #contacts table.gridList .tags { width: 60%; }
+
+#contacts .noContactsContainer
+{
+    padding-bottom: 6em;
+}
+#contacts .noContactsContainer p {
+    font-size: 1.6em;
+    line-height: 1.5em;
+    margin-bottom: 1em;
+    width: 30em;
+}

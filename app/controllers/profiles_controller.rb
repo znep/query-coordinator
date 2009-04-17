@@ -27,13 +27,16 @@ class ProfilesController < ApplicationController
 
   def update
     error_msg = nil
-    name_display = params[:user].delete(:name_display)
     if (params[:user][:country] && params[:user][:country].upcase != 'US' ||
        params[:user][:state] == '--')
       params[:user][:state] = nil
     end
     if (params[:user][:country] == '--')
       params[:user][:country] = nil
+    end
+    # For now, force setting of tags; they get deleted otherwise
+    if (params[:user][:tags].nil?)
+      params[:user][:tags] = current_user.tag_display_string
     end
 
     begin

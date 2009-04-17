@@ -30,7 +30,11 @@
                   </h1>
                   <a class='first action showListBoxLink' href='#edit'>Edit</a>
                   <a id='switchUsernameLink' class='action'
-                    href='#show_username'>Display Username</a>
+                    href='#show_<%= current_user.privacyControl == "login" ?
+                      'fullName' : 'login' %>'>
+                    Display <%= current_user.privacyControl == "login" ?
+                      'Full Name' : 'Username' %>
+                  </a>
                 </div>
                 <div class='userLocation'>
                   <h5><%= h(current_user.displayLocation) %></h5>
@@ -51,12 +55,15 @@
                     <dl class="clearfix">
                       <dt>Name Display</dt>
                       <dd>
-                        <%= radio_button_tag("user[name_display]", "full", true) %>
-                        <label class="radioLabel" for='user_name_display_full'>
+                        <%= radio_button_tag("user[privacyControl]",
+                        "fullName", current_user.privacyControl == "fullName") %>
+                        <label class="radioLabel"
+                          for='user_privacyControl_fullname'>
                           Display Full Name
                         </label>
-                        <%= radio_button_tag("user[name_display]", "user") %>
-                        <label class="radioLabel" for='user_name_display_user'>
+                        <%= radio_button_tag("user[privacyControl]",
+                          "login", current_user.privacyControl == "login") %>
+                        <label class="radioLabel" for='user_privacyControl_login'>
                           Display Username
                         </label>
                       </dd>

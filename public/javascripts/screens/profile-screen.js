@@ -13,6 +13,33 @@ blist.profile.updateStateCombo = function($countryCombo)
     }
 };
 
+blist.profile.updateInfo = function(responseData, $form)
+{
+    if (responseData.error)
+    {
+        $form.find('.errorMessage').text(responseData.error);
+    }
+    else
+    {
+        var user = responseData.user;
+        $(".userName h1").text(user.displayName);
+        $(".userLocation h5").text(user.displayLocation);
+        $(".userTitle h5").text(user.title);
+        $(".userTags h5 .tagContent").text(user.tags.join(', '));
+        $('#switchUsernameLink').text('Display ' +
+                (user.privacyControl == "login" ?
+                 "Full Name" : "Username"));
+        $('#switchUsernameLink').attr('href', '#show_' +
+                (user.privacyControl == "login" ?
+                 "fullName" : "login"));
+
+        $form.find('.errorMessage').text('');
+        $form.closest(".sectionEdit").slideUp("fast");
+        $form.closest(".sectionContainer")
+            .find(".sectionShow").slideDown("fast");
+    }
+};
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -46,9 +73,10 @@ $(function ()
     $.validator.setDefaults({
         submitHandler: function(form)
         {
-            $form = $(form);
+            var $form = $(form);
 
-            var requestData = $.param($form.find(":input"));
+            var requestData = $.param(
+                $form.find(":input:not(:radio), :radio[checked=true]"));
             $.ajax({
                 url: $form.attr("action"),
                 type: "PUT",
@@ -56,23 +84,7 @@ $(function ()
                 data: requestData,
                 success: function(responseData)
                 {
-                    if (responseData.error)
-                    {
-                        $form.find('.errorMessage').text(responseData.error);
-                    }
-                    else
-                    {
-                        var user = responseData.user;
-                        $(".userName h1").text(user.displayName);
-                        $(".userLocation h5").text(user.displayLocation);
-                        $(".userTitle h5").text(user.title);
-                        $(".userTags h5").text(user.tags.join(', '));
-
-                        $form.find('.errorMessage').text('');
-                        $form.closest(".sectionEdit").slideUp("fast");
-                        $form.closest(".sectionContainer")
-                            .find(".sectionShow").slideDown("fast");
-                    }
+                    profileNS.updateInfo(responseData, $form);
                 }
             });
         }
@@ -131,5 +143,26 @@ $(function ()
     $('.sectionEdit form input').keypress(function (e)
     {
         $(e.currentTarget).closest('form').find('.errorMessage').text('');
+    });
+
+    $('#switchUsernameLink').click(function (e)
+    {
+        e.preventDefault();
+        var requestData = {"user[privacyControl]":
+            $(e.currentTarget).attr('href').split('_')[1]};
+        var $form = $('.userInfo .sectionEdit form');
+        var $authInput = $form.find(':input[name=authenticity_token]');
+        requestData[$authInput.attr('name')] = $authInput.val();
+
+        $.ajax({
+            url: $form.attr("action"),
+            type: "PUT",
+            dataType: "json",
+            data: requestData,
+            success: function(responseData)
+            {
+                profileNS.updateInfo(responseData, $form);
+            }
+        });
     });
 });

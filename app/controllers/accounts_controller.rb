@@ -39,12 +39,21 @@ class AccountsController < ApplicationController
   end
 
   def create
+    # First, try creating the user
     begin
       user = User.create(params[:account])
-      redirect_to root_url
     rescue CoreServerError => e
       flash[:error] = e.error_message
-      redirect_to signup_url
+      return redirect_to signup_url
+    end
+
+    # Now, authenticate the user
+    @user_session = UserSession.new(params[:account])
+    if @user_session.save
+      redirect_to root_url
+    else
+      flash[:warning] = "We were able to create your account, but couldn't log you in."
+      redirect_to login_url
     end
   end
 end

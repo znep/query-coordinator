@@ -39,5 +39,12 @@ class AccountsController < ApplicationController
   end
 
   def create
+    begin
+      user = User.create(params[:account])
+      redirect_to root_url
+    rescue CoreServerError => e
+      flash[:error] = e.error_message
+      redirect_to signup_url
+    end
   end
 end

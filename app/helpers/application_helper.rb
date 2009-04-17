@@ -90,5 +90,28 @@ module ApplicationHelper
       (params == current_params || (current_params.empty? && is_default) ?
         "class='hilight'" : "") + ">#{content}</a>"
   end
+
+
+  # Display a standardized flash error message.
+  # To use this, simply set flash[:notice], flash[:warning], or flash[:error]
+  # in your controller, then add <%= display_standard_flashes %> in your view
+  # template. It will automagically display the most severe flash message
+  # available - error, then warning, then notice. The result is a div like this:
+  #
+  # <div class="flash warning">Your error text</flash>
+  #
+  # Adapted from http://snippets.dzone.com/posts/show/2348
+  def display_standard_flashes
+    if flash[:error]
+      flash_to_display, level = flash[:error], 'error'
+    elsif flash[:warning]
+      flash_to_display, level = flash[:warning], 'warning'
+    elsif flash[:notice]
+      flash_to_display, level = flash[:notice], 'notice'
+    else
+      return
+    end
+    content_tag 'div', flash_to_display, :class => "flash #{level}"
+  end
 end
   

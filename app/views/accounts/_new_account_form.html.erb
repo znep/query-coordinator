@@ -1,3 +1,4 @@
+<%= display_standard_flashes %>
 <fieldset>
   <p>
     <label for="account_firstName">*First Name</label>
@@ -16,8 +17,8 @@
     <%= text_field_tag("emailConfirm") %>
   </p>
   <p>
-    <label for="account_username">*Username</label>
-    <%= text_field_tag("account[userName]") %>
+    <label for="account_login">*Username</label>
+    <%= text_field_tag("account[login]") %>
   </p>
   <p>
     <label for="account_password">*Password</label>
@@ -33,7 +34,7 @@
   <div class="fileInputContainer clearfix">
     <label for="account_profile_image">Profile Picture</label>
     <div class="fileInput">
-      <%= file_field_tag("account[profile_image]", :class => "text") %>
+      <%= file_field_tag("profile_image", :class => "text") %>
       <div class="fakeFile clearfix">
         <input type="text" name="displayProfileImage" />
         <%= image_tag("/stylesheets/images/account/button_browse.png", :size => "72x24", :alt => "Browse") %>

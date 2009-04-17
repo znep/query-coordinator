@@ -95,6 +95,13 @@
 }
 .signup form fieldset.last label { width: 90px; }
 
+.signup form div.error
+{
+    color: #ff0000;
+    font-size: 1.2em;
+    padding-bottom: 2.5em;
+}
+
 .signup form label.error
 {
     font-size: 1em;

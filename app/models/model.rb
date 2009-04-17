@@ -175,6 +175,15 @@ class Model
     update_attributes!(updates)
   end
 
+  def self.create(attributes)
+    attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
+    if !attributes['tags'].nil?
+      attributes['tags'] = parse_tags(attributes['tags'])
+    end
+    path = "/#{self.name.pluralize.downcase}.json"
+    return self.create_request(path, JSON.generate(attributes))
+  end
+
   def self.parse(data)
     if data.blank?
       return nil

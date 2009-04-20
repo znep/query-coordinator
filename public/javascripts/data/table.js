@@ -39,10 +39,9 @@
         var inside = scrolls
             .children('.blist-table-inside');
 
-        scrolls.scroll(function() {
-            console.debug(">>> scrolled!");
+        var onScroll = function() {
             header[0].style.left = -this.scrollLeft + 'px';
-        });
+        };
 
 
         /*** CSS STYLE MANIPULATION ***/
@@ -244,6 +243,9 @@
 
             // Destroy the rows that are no longer visible
             $(destroy).remove();
+
+            scrolls.unbind("scroll", onScroll);
+            scrolls.scroll(onScroll);
         }
 
 

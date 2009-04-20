@@ -1,2 +1,9 @@
 gov:
+  page_title: data.gov | Find Government Data
   my_home_title: My Data.gov
+  discover_nav_title: Data
+  search_prompt_text: Search for Government Data
+  discover_search_intro: Search for Government Data
+  discover_header_intro: Discover useful, informative and interesting data. View or copy and use for yourself!
+  discover_carousel_header: Popular Datasets
+  discover_popular_content_header: Browse Popular

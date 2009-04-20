@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "discover-screen", "widgets",
     :cache => "cache/discover_show_all" %>
-  <title>blist | share your weblists</title>
+  <title><%= t(:page_title) %></title>
 <% end %>
 
 <div id="discover">
@@ -9,10 +9,10 @@
   <div class="discoverHeaderBL"><div class="discoverHeaderBR">
     <div class="discoverHeaderContainer">
       <div class="discoverIntro">
-        <p>Discover useful, unique and unusual datasets created by the blist community. View or copy and use for yourself!</p>
+        <p><%= t(:discover_header_intro) %></p>
       </div>
       <div class="discoverSearch">
-        <p>Search for blists</p>
+        <p><%= t(:discover_search_intro) %></p>
         <% form_tag(discover_url, :class => "search") do %>
           <p>
             <%= text_field_tag("search", @discover_search, :class => "textPrompt", :title => "Search") %>
@@ -23,7 +23,7 @@
       <div class="discoverHeaderContent clearfix">
         <div class="featuredViewsCarousel carouselWrapper">
           <div class="carouselOuter"><div class="carouselInner">
-            <h2>Featured blists</h2>
+            <h2><%= t(:discover_carousel_header) %></h2>
             <ul class="carousel clearfix">
               <li class="arrow prev"><a href="#previous">previous</a></li>
               <%= render(:partial => "carousel_item", :collection => @carousel_views) %>

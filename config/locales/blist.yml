@@ -1,2 +1,9 @@
 blist:
+  page_title: blist | share your weblists
   my_home_title: My blist
+  discover_nav_title: Discover
+  search_prompt_text: Search for blists, contacts &amp; help
+  discover_search_intro: Search for blists
+  discover_header_intro: Discover useful, unique and unusual datasets created by the blist community. View or copy and use for yourself!
+  discover_carousel_header: Featured blists
+  discover_popular_content_header: Popular blists

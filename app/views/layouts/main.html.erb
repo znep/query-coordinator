@@ -9,9 +9,6 @@
   <%= stylesheet_link_tag "base", "common", "info-pane", "layout",
     "outer-chrome", "sidebar", "widgets",
     :cache => "cache/layout_main_all" %>
-  <%- if is_gov_site? -%>
-  <%= stylesheet_link_tag "gov-override" %>
-  <%- end -%>
 
   <% if ENV["RAILS_ENV"] != 'production' %>
   <script src="/javascripts/jquery-1.3.2.js" type="text/javascript"
@@ -24,6 +21,10 @@
   <% end %>
 
   <%= yield :head %>
+  
+  <%- if is_gov_site? -%>
+  <%= stylesheet_link_tag "gov-override" %>
+  <%- end -%>
 
   <link rel="icon" type="image/png" href="/favicon.png" />
 </head>
@@ -36,7 +37,7 @@
 
       <div id='mainNav'>
         <ul>
-          <li class='discover'><%= link_to("Discover", swf_discover_url) %></li>
+          <li class='discover'><%= link_to(t(:discover_nav_title), swf_discover_url) %></li>
           <li class='community'><%= link_to("Community", community_url) %></li>
           <li class='home last'><%= link_to(t(:my_home_title), home_url) %></li>
         </ul>
@@ -64,7 +65,7 @@
         <form class='search' action='/discover/swf'>
           <p>
             <input type='text' class='textPrompt' name='search'
-              title='Search for blists, contacts &amp; help'
+              title='<%= t(:search_prompt_text) %>'
               value='<%= @discover_search %>' />
             <input type='image' class='submit' name='discoverSubmit'
               src="<%= image_path("find_button.png") %>" />

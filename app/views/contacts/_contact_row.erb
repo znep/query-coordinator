@@ -37,7 +37,7 @@
     <div class='group'><a href='#'><%= h(contact.name) %></a></div>
     <%- else -%>
     <a href='#'>
-      <img src="<%= contact.profile_image("small") %>" width="24" height="24"
+      <img src="<%= contact.profile_image_path("small") %>" width="24" height="24"
       alt="<%= h(contact.displayName) %>" />
     </a>
     <%- end -%>

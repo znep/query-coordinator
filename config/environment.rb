@@ -33,14 +33,6 @@ Rails::Initializer.run do |config|
   # request_store only caches things in-memory for a single request
   config.cache_store = :request_store
 
-  # Specify gems that this application depends on. 
-  # They can then be installed with "rake gems:install" on new installations.
-  # You have to specify the :lib option for libraries, where the Gem name (sqlite3-ruby) differs from the file itself (sqlite3)
-  # config.gem "bj"
-  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
-  # config.gem "sqlite3-ruby", :lib => "sqlite3"
-  # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem "json"
 
   # Only load the plugins named here, in the order given. By default, all plugins 
   # in vendor/plugins are loaded in alphabetical order.
@@ -92,11 +84,26 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
 
+  # Specify gems that this application depends on. 
+  # Gems specified here are NOT installed in the vendor directory; you need a system-wide 
+  # installation, typically because they have C-compiled extensions that we can't reliably
+  # vendor across multiple platforms (MacOSX, Linux)
+  # They can then be installed with "rake gems:install" on new installations.
+  # You have to specify the :lib option for libraries, where the Gem name (sqlite3-ruby) differs from the file itself (sqlite3)
+  # config.gem "bj"
+  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
+  # config.gem "sqlite3-ruby", :lib => "sqlite3"
+  # config.gem "aws-s3", :lib => "aws/s3"
+  config.gem "json"
+
   # Use gems in the vendor directory: http://errtheblog.com/post/2120
   config.load_paths += Dir["#{RAILS_ROOT}/vendor/gems/**"].map do |dir| 
     File.directory?(lib = "#{dir}/lib") ? lib : dir
   end
 
+  # These gems are required, but should be available in the vendor/gems directory.
+  config.gem 'ruby-hmac', :lib => 'hmac-sha1'
+  config.gem 'multipart-post', :lib => 'net/http/post/multipart'
 end
 
 multiuser_config = YAML.load(IO.read(RAILS_ROOT + "/config/multiuser.yml") )

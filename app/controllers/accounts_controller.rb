@@ -50,6 +50,17 @@ class AccountsController < ApplicationController
     # Now, authenticate the user
     @user_session = UserSession.new(params[:account])
     if @user_session.save
+      # If they gave us a profile photo, upload that to the user's account
+      # If the core server gives us an error, oh well... we've alredy created
+      # the account, so we might as well send them to the main page, sans
+      # profile photo.
+      if params[:profile_image]
+        begin
+          user.profile_image = params[:profile_image]
+        rescue CoreServerError => e
+          logger.warn "Unable to update profile photo: #{e.error_code} #{e.error_message}"
+        end
+      end
       redirect_to root_url
     else
       flash[:warning] = "We were able to create your account, but couldn't log you in."

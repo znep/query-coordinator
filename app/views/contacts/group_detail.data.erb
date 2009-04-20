@@ -135,7 +135,7 @@
             <%- @group.users.each do |member| -%>
               <tr class="item">
                 <td class="picture"><div>
-                  <img src="<%= member.profile_image("small") %>" width="24" height="24"
+                  <img src="<%= member.profile_image_path("small") %>" width="24" height="24"
                   alt="<%= h(member.displayName) %>" />
                 </div></td>
                 <td class="name"><div class="clipText"><%= h(member.displayName) %></div></td>

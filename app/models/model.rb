@@ -265,6 +265,12 @@ protected
     parse(generic_request(Net::HTTP::Delete.new(path), payload).body)
   end
 
+  def self.multipart_post_file(path, file)
+    req = Net::HTTP::Post::Multipart.new path,
+      'file' => UploadIO.new(file, file.content_type, File.basename(file.path))
+    parse(generic_request(req).body)
+  end
+
 private
 
   # Mark one or more attributes as non-serializable -- that is, they shouldn't be

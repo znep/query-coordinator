@@ -18,7 +18,7 @@ class Share
       if (!member_id.nil?)
         user_member = User.find(member_id)
         if (!user_member.nil?)
-          out = user_member.profile_image(size)
+          out = user_member.profile_image_path(size)
         end
       end
     else

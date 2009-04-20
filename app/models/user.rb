@@ -6,7 +6,6 @@ class User < Model
 
   # Needed for multiuser
   def multiuser_authentication_token(timestamp)
-    require 'hmac-sha1'
     hmac = HMAC::SHA1.new(MULTIUSER_SECRET)
     return hmac.update("#{oid}:#{timestamp}").hexdigest
   end
@@ -17,7 +16,7 @@ class User < Model
     dhash[:displayCountry] = displayCountry
     dhash[:displayLocation] = displayLocation
     dhash[:htmlDescription] = htmlDescription
-    dhash[:profile_image] = profile_image
+    dhash[:profile_image] = profile_image_path
 
     dhash.to_json
   end
@@ -58,8 +57,12 @@ class User < Model
   end
 
   # size can be "large", "medium", or "small"
-  def profile_image(size = "large")
+  def profile_image_path(size = "large")
     "/users/#{self.id}/profile_images/#{size}"
+  end
+
+  def profile_image=(file)
+    User.multipart_post_file("/users/#{self.id}/profile_images", file)
   end
 
   def public_blists

@@ -1,8 +1,8 @@
 require 'rss'
 require 'open-uri'
 
-class HomeController < ApplicationController
-  def index
+class HomesController < ApplicationController
+  def show
     @body_class = 'home'
 
     blists = View.find()

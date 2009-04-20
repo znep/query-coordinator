@@ -4,6 +4,9 @@ class UserSessionsController < ApplicationController
   def new
     @body_id = 'login'
     @user_session = UserSession.new
+    if params[:referer_redirect]
+      session[:return_to] = request.referer
+    end
   end
 
   def create
@@ -19,8 +22,8 @@ class UserSessionsController < ApplicationController
   end
 
   def destroy
-    if current_user
-      current_user.destroy
+    if current_user_session
+      current_user_session.destroy
     end
     flash[:notice] = "You have been logged out"
     redirect_to(login_url)

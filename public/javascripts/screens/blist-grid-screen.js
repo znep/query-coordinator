@@ -9,6 +9,10 @@ blist.blistGrid.sizeSwf = function (event)
 
     var $swf = $('#swfContent');
     var $target = $('#swfWrapper');
+    if ($target.length < 1)
+    {
+        return;
+    }
     var $container = $('#outerSwfWrapper');
     var $parent = $target.offsetParent();
     var containerTop = $container.offset().top;

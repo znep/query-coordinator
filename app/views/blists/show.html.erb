@@ -166,9 +166,17 @@
         <div id='pageViewHeader'><div class='innerWrapper'></div></div>
 
         <div id='outerSwfWrapper' class='scrollContent'>
+          <%- if current_user -%>
           <div id='swfWrapper'>
             <%= render(:partial => "shared/swf") %>
           </div>
+          <%- else -%>
+          <p>
+            Please <%= link_to('sign in',
+              login_url(:referer_redirect => true)) %>
+            to view or edit this blist
+          </p>
+          <%- end -%>
         </div>
 
         <div id='pageViewFooter'>
@@ -186,7 +194,7 @@
       </div>
     </div>
   </div>
-  
+
   <div id='lensMetaContainer'>
     <div id="mainColumnContent" class="column">
       <div id='infoPane'>

@@ -305,7 +305,12 @@ private
 
     if !result.is_a?(Net::HTTPSuccess)
       parsed_body = self.parse(result.body)
-      raise CoreServerError.new("#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
+      Rails.logger.info("Error: " +
+                    "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
+                    (parsed_body.data['code'] || '') + " : " +
+                    (parsed_body.data['message'] || ''))
+      raise CoreServerError.new(
+        "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
         parsed_body.data['code'],
         parsed_body.data['message'])
     end

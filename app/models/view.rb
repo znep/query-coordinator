@@ -1,18 +1,22 @@
 class View < Model
   cattr_accessor :categories
 
-  def self.find( options = nil )
-    self.find_under_user(options)
+  def self.find(options = nil, get_all=false)
+    if get_all || options.is_a?(String)
+      return super(options)
+    else
+      return self.find_under_user(options)
+    end
   end
 
   def self.find_multiple(ids)
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     get_request(path)
   end
-  
+
   #TODO: Make this find only popular views.
-  def self.find_popular(options = nil)
-    self.find_under_user(options)
+  def self.find_popular()
+    self.find({'name' => 'p'}, true)
   end
 
   def self.create_favorite(id)
@@ -133,9 +137,14 @@ class View < Model
   end
 
   def filters
-    View.find( {"blistId" => self.blistId} ).reject {|l| l.is_blist?}
+    # TODO: Pass get_all=true when the server supports blistId under /views
+    if User.current_user
+      View.find({"blistId" => self.blistId}).reject {|l| l.is_blist?}
+    else
+      []
+    end
   end
-  
+
   @@categories = {
     "" => "-- No category --",
     "Fun" => "Fun",

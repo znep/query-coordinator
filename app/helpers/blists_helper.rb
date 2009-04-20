@@ -162,11 +162,15 @@ module BlistsHelper
   end
 
   def recent_blists_menu(cur_view, num_recent)
-    View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
-      b.last_viewed <=> a.last_viewed
-    end.slice(0, num_recent).map do |v|
-      {'text' => v.name, 'href' => v.href,
+    if current_user
+      {'items' => View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
+        b.last_viewed <=> a.last_viewed
+      end.slice(0, num_recent).map do |v|
+        {'text' => v.name, 'href' => v.href,
         'class' => v.is_blist? ? 'blist' : 'filter'}
+      end }
+    else
+      nil
     end
   end
 
@@ -178,7 +182,7 @@ module BlistsHelper
     end
     out
   end
-  
+
   def get_publish_embed_code_for_view(view, width = "425", height = "344")
     root_url = request.protocol + request.host_with_port
     embed_url = root_url.sub("alpha.blist.com", "app.blist.com")

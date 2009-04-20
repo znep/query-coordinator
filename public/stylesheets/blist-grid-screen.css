@@ -864,6 +864,13 @@ body#lensBody
     font-weight: bold;
 }
 
+#lensContainer #outerSwfWrapper p
+{
+    font-size: 1.4em;
+    margin-top: 2em;
+    text-align: center;
+}
+
 
 /* Page view */
 

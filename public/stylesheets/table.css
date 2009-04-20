@@ -1,0 +1,62 @@
+.blist-table {
+    margin: 6px;
+    border: solid 1px #666666;
+    background: white;
+    font-size: 1.4em;
+    overflow: hidden;
+    position: relative;
+}
+
+.blist-table-header {
+    position: absolute;
+    top: 0;
+}
+
+.blist-table-scrolls {
+    position: absolute;
+    left: 0;
+    overflow: auto;
+}
+
+.blist-table-inside {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.blist-tr {
+    position: absolute;
+}
+
+.blist-th {
+    position: absolute;
+    top: 0;
+    background-color: #cccccc;
+    padding: .2em;
+    border-left: solid 1px #999999;
+    border-bottom: solid 1px #999999;
+}
+
+.blist-td {
+    padding: .2em;
+    border-left: solid 1px #999999;
+    border-bottom: solid 1px #999999;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.blist-table-handle {
+    position: absolute;
+    padding: .2em;
+    border-left: solid 1px #999999;
+    border-bottom: solid 1px #999999;
+    left: 0;
+    text-align: center;
+    background-color: #eeeeee;
+}
+
+.blist-table-measure {
+    position: absolute;
+    top: -10000px;
+    left: -10000px;
+}

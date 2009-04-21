@@ -312,7 +312,7 @@
                 initColumns(model);
                 renderHeader();
             }
-            inside.height(rowHeight * model.rows().length);
+            inside.height(rowOffset * model.rows().length);
             inside.remove('.blist-td');
         }
 
@@ -349,9 +349,18 @@
                 stop = first + count;
             }
 
+            // Safety checks in case above are buggy
+            var rows = model.rows();
+            if (start < 0)
+                start = 0;
+            if (rows) {
+                if (stop > rows.length)
+                    stop = rows.length;
+            } else if (stop > 0)
+                stop = 0;
+
             // Render the rows that are newly visible
             var html = [];
-            var rows = model.rows();
             for (var i = start; i < stop; i++)
                 renderFn(html, i, rows[i]);
             inside.append(html.join(''));

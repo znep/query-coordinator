@@ -102,9 +102,10 @@
             if (value == null)
                 return '';
             value = value + '';
-            if (value.substring(0, 11) == '<TEXTFORMAT')
+            if (value.substring(0, 11) == '<TEXTFORMAT') {
                 // HACK - clean up messy markup
-                return value.replace(/ size="\d+"/gi, '');
+                return value.replace(/<\/?textformat[^>]*>/gi, '').replace(/ size="\d+"/gi, '');
+            }
             return value;
         }
 
@@ -264,7 +265,8 @@
                 sizer.className = 'blist-th-sizer';
                 sizer.innerHTML = '&nbsp;'
                 header[0].appendChild(sizer);
-                sizer.style.left = (col.left + col.width + paddingX - 3) + 'px';
+                col.sizerLeft = col.left + col.width + paddingX - 3;
+                sizer.style.left = col.sizerLeft + 'px';
                 $(sizer)
                     .data('col', col)
                     .draggable({
@@ -276,7 +278,7 @@
                             $(this).data('drag', {
                                 col: col,
                                 originalColWidth: col.width,
-                                originalSizerLeft: $(col.sizer).position().left,
+                                originalSizerLeft: col.sizerLeft,
                                 originalInsideWidth: inside.width()
                             })
                         },
@@ -289,8 +291,9 @@
                             // Everything is up-to-date now but size handles to the right; take care of these now
                             var drag = $(this).data('drag');
                             for (var i = drag.col.index + 1; i < columns.length; i++) {
-                                var otherSizer = columns[i].sizer;
-                                otherSizer.style.left = (otherSizer.offsetLeft + drag.delta) + 'px';
+                                var otherCol = columns[i];
+                                otherCol.sizerLeft = otherCol.sizerLeft + drag.delta;
+                                otherCol.sizer.style.left = otherCol.sizerLeft + 'px';
                             }
 
                             $(this).removeData('drag');

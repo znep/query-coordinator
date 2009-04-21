@@ -120,7 +120,9 @@ SWF_DIR       = swf_config[RAILS_ENV]["dir"]
 external_config = YAML.load(IO.read(RAILS_ROOT + "/config/external.yml") )
 BLIST_RSS = external_config[RAILS_ENV]["blist_blog_rss"]
 
-REVISION_FILE = "#{RAILS_ROOT}/../REVISION"
+REVISION_FILE = ["#{RAILS_ROOT}/../REVISION_FLEX", "#{RAILS_ROOT}../REVISION"].detect do |filename|
+  File.exist?(filename)
+end
 
 begin
   REVISION_NUMBER = File.open(REVISION_FILE, "r").read().chomp()

@@ -185,7 +185,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $('#infoPane').html(data);
 
     // Wire up the hover behavior.
-    $(".infoContent dl.summaryList").infoPaneItemHighlight();
+    $(".infoContent dl.actionList").infoPaneItemHighlight();
 
     // Wire up the tab switcher/expander.
     $(".summaryTabs").infoPaneNavigate();
@@ -211,7 +211,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $(".tabLink.sharing").click(function(event){
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabSharing");
     });
-    
+
     $("#infoPane dd.editItem").infoPaneItemEdit({
         submitSuccessCallback: function(fieldType, fieldValue, itemId)
         {
@@ -222,9 +222,9 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
             }
         }
     });
-    
+
     $(".copyCode textarea").click(function() { $(this).select(); });
-    
+
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();

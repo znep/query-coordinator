@@ -1,0 +1,20 @@
+<ul class='summaryList'>
+  <li class='comment'>
+  <div class='userInfo'>
+    <h5><%= h(comment.user.displayName) %></h5>
+    <span><%= h(comment.user.title) %></span>
+    <span><%= h(comment.user.company) %></span>
+  </div>
+  <div class='commentBlock'>
+    <div class='cornerTL'><div class='cornerTR'>
+        <div class='cornerBR'><div class='cornerBL'>
+            <h4><%= h(comment.title) %></h4>
+            <div class='dateLine'>
+              <%= blist_long_date(comment.createdAt) %>
+            </div>
+            <p class='commentBody'><%= h(comment.body) %></p>
+        </div></div>
+    </div></div>
+  </div>
+  </li>
+</ul>

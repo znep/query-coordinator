@@ -147,7 +147,7 @@
 
 .infoContentHeader
 {
-    padding: .4em 1em 0 0;
+    padding: .4em 1em 0.4em 0;
 }
 .infoContentHeader h2.panelHeader
 {
@@ -310,7 +310,6 @@
 .infoContentOuter.listContainer .infoContent dd .itemContent > *
 {
     color: #333;
-    cursor: pointer;
     display: block;
     font-size: 1.1em;
     min-height: 1em;
@@ -330,6 +329,7 @@
     background-image: url(/stylesheets/images/info_pane/summary_item_content_top_right.png);
     background-position: right top;
     background-repeat: no-repeat;
+    cursor: pointer;
 }
 
 .infoContentOuter.listContainer .infoContent dd .itemContent li
@@ -458,6 +458,132 @@
 }
 
 /*** END: single info filtered tab ***/
+
+/*** START: single info comments tab ***/
+
+.singleInfoComments .infoContentHeader > h2.panelHeader.first
+{
+    background-position: left -205px;
+    border-right: 1px solid #e1d3b6;
+    width: 86px;
+}
+
+.singleInfoComments .infoContentHeader h2.panelHeader.rating
+{
+    background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
+    background-position: 0 0;
+    font-size: 1.2em;
+    height: 16px;
+    line-height: 100px;
+    margin-top: 12px;
+    padding: 0;
+    width: 89px;
+}
+
+.singleInfoComments .infoContentHeader p
+{
+    float: left;
+    font-size: 1.2em;
+    margin-left: 0.5em;
+    margin-top: 14px;
+}
+
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.zero
+{ background-position: 0 0; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.zero_half
+{ background-position: 0 -16px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.one
+{ background-position: 0 -32px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.one_half
+{ background-position: 0 -48px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.two
+{ background-position: 0 -64px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.two_half
+{ background-position: 0 -80px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.three
+{ background-position: 0 -96px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.three_half
+{ background-position: 0 -112px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.four
+{ background-position: 0 -128px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.four_half
+{ background-position: 0 -144px; }
+.singleInfoComments .infoContentHeader h2.panelHeader.rating.five
+{ background-position: 0 -160px; }
+
+.singleInfoComments li.comment
+{
+    margin: 1em 0;
+}
+
+.singleInfoComments li.comment .userInfo
+{
+    float: left;
+    padding: 0.5em 1em;
+    width: 120px;
+}
+
+.singleInfoComments li.comment .userInfo h5
+{
+    display: block;
+    color: #000000;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding-bottom: 0.1em;
+}
+
+.singleInfoComments li.comment .userInfo span
+{
+    display: block;
+    color: #333333;
+    font-size: 1.2em;
+    padding: 0.1em 0;
+}
+
+.singleInfoComments li.comment .commentBlock
+{
+    background-image: url(/stylesheets/images/content/comment_bubble_arrow.png);
+    background-position: 0 25px;
+    background-repeat: no-repeat;
+    margin-left: 140px;
+    padding-left: 14px;
+}
+
+.singleInfoComments li.comment .commentBlock .cornerTL
+{
+    background: #ffffff url(/stylesheets/images/content/comment_corner_top_left.png) top left no-repeat;
+}
+.singleInfoComments li.comment .commentBlock .cornerTR
+{ background: url(/stylesheets/images/content/comment_corner_top_right.png) no-repeat top right; }
+.singleInfoComments li.comment .commentBlock .cornerBR
+{ background: url(/stylesheets/images/content/comment_corner_bottom_right.png) no-repeat bottom right; }
+.singleInfoComments li.comment .commentBlock .cornerBL
+{
+    background: url(/stylesheets/images/content/comment_corner_bottom_left.png) no-repeat bottom left;
+    padding: 0.5em 0.5em 1em;
+}
+
+.singleInfoComments li.comment .commentBlock h4
+{
+    color: #000000;
+    font-size: 1.4em;
+}
+
+.singleInfoComments li.comment .commentBlock .dateLine
+{
+    color: #666666;
+    font-size: 1.2em;
+    margin: 0.5em 0;
+}
+
+.singleInfoComments li.comment .commentBlock .commentBody
+{
+    border-top: solid 1px #e0d1b8;
+    font-size: 1.2em;
+    padding-top: 0.5em;
+}
+
+/*** END: single info comments tab ***/
 
 /*** START: single info sharing tab ***/
 

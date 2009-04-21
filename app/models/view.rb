@@ -39,6 +39,18 @@ class View < Model
     self.class.delete_favorite(self.id)
   end
 
+  def numberOfComments
+    data['numberOfComments'] || 0
+  end
+
+  def averageRating
+    (data['averageRating'] || 0) / 20.0
+  end
+
+  def totalTimesRated
+    data['totalTimesRated'] || 0
+  end
+
   def last_activity
     if @last_activity.nil?
       @last_activity = [rowsUpdatedAt || 0, createdAt || 0].max
@@ -143,6 +155,10 @@ class View < Model
     else
       []
     end
+  end
+
+  def comments
+    Comment.find(id)
   end
 
   @@categories = {

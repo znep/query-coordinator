@@ -86,11 +86,11 @@ blist.contacts.infoPane.itemDetailSuccessHandler = function(data)
 {
     // Load the info pane.
     $('#infoPane').html(data);
-    
+
     // Wire up the hover behavior.
-    $(".infoContent dl.summaryList").infoPaneItemHighlight();
+    $(".infoContent dl.actionList").infoPaneItemHighlight();
     $("#infoPane .gridList").blistListHoverItems();
-    
+
     $(".summaryTabs").infoPaneNavigate(
     {
         tabMap: {
@@ -112,7 +112,7 @@ blist.contacts.infoPane.itemDetailSuccessHandler = function(data)
     $(".tabLink.shares").click(function(event){
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabShares");
     });
-    
+
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();
@@ -122,11 +122,11 @@ blist.contacts.infoPane.multiSuccessHandler = function (data)
 {
     // Load the info pane.
     $('#infoPane').html(data);
-    
-    $(".infoContent dl.summaryList").infoPaneItemHighlight();
-    
+
+    $(".infoContent dl.actionList").infoPaneItemHighlight();
+
     $(".summaryTabs").infoPaneNavigate();
-    
+
     // Wire up a click handler for deselectors.
     $(".action.unselector").click(function (event)
     {

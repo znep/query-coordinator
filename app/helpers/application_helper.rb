@@ -75,6 +75,10 @@ module ApplicationHelper
     time && time != 0 ? Time.at(time).strftime("%b %d, %Y") : nil
   end
 
+  def blist_long_date(time)
+    time && time != 0 ? Time.at(time).strftime("%B %d, %Y") : nil
+  end
+
   def blist_href_new_blist
     blist_url('new_blist')
   end

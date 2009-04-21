@@ -455,9 +455,9 @@ $(function ()
 
     // Wire up the hover behavior in the info pane.
     $("#infoPane .selectableList, #infoPane .gridList").blistListHoverItems();
-    $(".infoContent dl.summaryList").infoPaneItemHighlight();
+    $(".infoContent dl.actionList").infoPaneItemHighlight();
 
     $("#infoPane dd.editItem").infoPaneItemEdit();
-    
+
     $(".copyCode textarea").click(function() { $(this).select(); });
 });

@@ -8,13 +8,13 @@
     // Highlight list items in the expanded info pane on hover.
     $.fn.infoPaneItemHighlight = function(options) {
         var opts = $.extend({}, $.fn.infoPaneItemHighlight.defaults, options);
-    
+
         return this.each(function() {
             var $this = $(this);
-        
+
             // Support for the Metadata Plugin.
             var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
-            
+
             // Wire up hover on the dt.
             $this.find("dt").hover(
                 function()
@@ -34,7 +34,7 @@
                     $(this).removeClass("hover");
                 }
             );
-            
+
             $this.find("dd").hover(
                 function()
                 {
@@ -47,12 +47,12 @@
                     $(this).removeClass("hover");
                 }
             );
-            
+
             $this.find(opts.clickSelector).click(function(event)
             {
                 $this = $(this);
                 event.preventDefault();
-                
+
                 // Walk up to the container, down to the actions.
                 $this.closest(opts.itemContainerSelector)
                         .find(opts.actionSelector)
@@ -67,33 +67,33 @@
         clickSelector: "dd .itemContent > *:not(form)",
         actionSelector: ".itemActions > a"
     };
-    
-    
-    
+
+
+
     $.fn.infoPaneItemEdit = function(options) {
         var opts = $.extend({}, $.fn.infoPaneItemEdit.defaults, options);
-        
+
         return this.each(function() {
             var $dd = $(this);
-            
+
             // Support for the Metadata Plugin.
             var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
-            
+
             // Wire up the events.
             $dd.find(opts.editClickSelector).click(editClick);
             $dd.find(opts.editSubmitSelector).submit(editSubmit);
             $dd.find(opts.editCancelSelector).click(editCancel);
         });
-        
+
         // Private methods
         function editClick(event)
         {
             event.preventDefault();
             var $this = $(this);
-        
+
             // Hide all forms, show all spans.
             closeAllForms();
-        
+
             var $currentItemContainer = $this.closest("dd").find(opts.itemContentSelector);
             $currentItemContainer.find("span").hide();
             var $form = $currentItemContainer.find("form").keyup(function(event)
@@ -102,22 +102,22 @@
             });
             $form.show().find("input[type='text']").focus().select();
         };
-        
+
         function closeAllForms()
         {
             var $allItemContainers = $(opts.allItemSelector);
             $allItemContainers.find("form").hide();
             $allItemContainers.find("span").show();
         };
-        
+
         function editSubmit(event)
         {
             event.preventDefault();
             var $form = $(this);
-            
+
             var fieldType = $form.find("input[name='fieldType']").val();
             var fieldValue = $form.find(":input[name*='" + fieldType + "']").val();
-            
+
             $.ajax({
                 url: $form.attr("action"),
                 type: "PUT",
@@ -131,14 +131,14 @@
                 }
             });
         };
-        
+
         function editCancel(event)
         {
             event.preventDefault();
             closeAllForms();
         };
-     };   
-        
+    };
+
      // default options
      $.fn.infoPaneItemEdit.defaults = {
        editClickSelector: ".itemActions .editLink",
@@ -148,22 +148,22 @@
        itemContentSelector: ".itemContent",
        submitSuccessCallback: function(){}
      };
-    
-    
-    
+
+
+
     $.fn.infoPaneNavigate = function(options) {
         // check if a navigator for this list was already created
-		var tabNavigator = $(this[0]).data("tabNavigator");
-		if (tabNavigator) {
-			return tabNavigator;
-		}
-		
-		tabNavigator = new $.infoPaneTabNavigator( options, this[0] );
-		$(this[0]).data("tabNavigator", tabNavigator);
-		
-		return tabNavigator;
+        var tabNavigator = $(this[0]).data("tabNavigator");
+                if (tabNavigator) {
+                    return tabNavigator;
+                }
+
+                tabNavigator = new $.infoPaneTabNavigator( options, this[0] );
+                $(this[0]).data("tabNavigator", tabNavigator);
+
+                return tabNavigator;
     };
-    
+
     $.infoPaneTabNavigator = function(options, list) {
         this.settings = $.extend({}, $.infoPaneTabNavigator.defaults, options);
         this.currentList = list;
@@ -178,6 +178,7 @@
             tabMap: {
                 "tabSummary" : ".singleInfoSummary",
                 "tabFiltered" : ".singleInfoFiltered",
+                "tabComments" : ".singleInfoComments",
                 "tabSharing" : ".singleInfoSharing",
                 "tabPublishing" : ".singleInfoPublishing",
                 "tabActivity" : ".singleInfoActivity"
@@ -213,27 +214,27 @@
                 $tab = $(tab);
                 $tabLink = $tab.find("a:not(" + tabNavigator.settings.expanderSelector + ")");
                 $panel = $(tabNavigator.settings.tabMap[$tab.attr("id")]);
-                
+
                 $(tabNavigator.currentList).find(tabNavigator.settings.tabSelector).each(function() {
                     $(this).removeClass(tabNavigator.settings.activationClass);
                 });
                 $tab.addClass(tabNavigator.settings.activationClass);
-                
+
                 $(tabNavigator.settings.allPanelsSelector).each(function() { 
                     $(this).removeClass(tabNavigator.settings.activationClass); 
                 });
-                
+
                 $panel.addClass(tabNavigator.settings.activationClass);
-                
+
                 tabNavigator.settings.switchCompleteCallback($tab);
             },
             expandTabPanels: function() {
                 var tabNavigator = this;
-                
+
                 // Toggle all arrows.
                 $allExpanders = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector);
                 $allExpanders.toggleClass(tabNavigator.settings.expandedClass);
-                
+
                 if ($(tabNavigator.currentList).data("isExpanded"))
                 {
                     $allExpanders.attr("title", "more info").text("more info");
@@ -260,7 +261,7 @@
                     });
                     $(tabNavigator.currentList).data("isExpanded", true);
                 }
-                
+
                 // Toggle all panels.
                 $(tabNavigator.settings.allPanelsSelector).toggleClass(tabNavigator.settings.expandedClass);
             }

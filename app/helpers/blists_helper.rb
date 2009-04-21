@@ -44,6 +44,12 @@ module BlistsHelper
     tags.flatten.sort.uniq
   end
 
+  def get_rating_class(rating)
+    ['zero', 'one', 'two', 'three', 'four', 'five'][
+      ((rating * 2.0).round / 2.0).floor] +
+      ((rating * 2.0).round % 2 == 1 ? '_half' : '')
+  end
+
   def contacts_filter_menu(href_prefix, href_group_prefix,
                            title_key, title_group_key, id)
     items = [{'text' => 'Me', 'href' => href_prefix + current_user.id,

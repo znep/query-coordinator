@@ -19,6 +19,12 @@
             return result;
         }
 
+        // Calculate the number of digits in the handle.  This is important because we need to recreate our layout if
+        // the width of the column changes.
+        var calculateHandleDigits = function(model) {
+            return Math.ceil(Math.log(model.rows().length || 1) * Math.LOG10E);
+        }
+
 
         /*** HTML RENDERING ***/
 
@@ -39,8 +45,13 @@
         var inside = scrolls
             .children('.blist-table-inside');
 
+        var headerScrolledTo = 0;
         var onScroll = function() {
-            header[0].style.left = -this.scrollLeft + 'px';
+            var scrollTo = this.scrollLeft;
+            if (scrollTo != headerScrolledTo) {
+                header[0].style.left = -scrollTo + 'px';
+                headerScrolledTo = scrollTo;
+            }
         };
 
 
@@ -68,7 +79,7 @@
                 colClasses.push(ruleClass = id + '-c' + colStyles.length);
                 var style = addRule("." + ruleClass).style;
                 colStyles.push(style);
-                style.position = 'absolute';
+                //style.position = 'absolute';
             }
         };
 
@@ -85,11 +96,32 @@
         })();
 
 
-        /*** RENDERING ***/
+        /*** CELL RENDERING ***/
 
-        // Return the name of a rendering function, or null if the value should be displayed as literal text
+        var renderText = function(value) {
+            if (value == null)
+                return '';
+            value = value + '';
+            if (value.substring(0, 11) == '<TEXTFORMAT')
+                // HACK - clean up messy markup
+                return value.replace(/ size="\d+"/gi, '');
+            return value;
+        }
+
+        var renderCheckbox = function(value) {
+            if (value == true || value == 'true')
+                return "<center>&#9745;</center>";
+            return "<center>&#9744;</center>";
+        }
+
+        // Return the name of a rendering function, or null if the value should be displayed as literal text.  Note:
+        // the null optimization is currently not supported because of the Blist text data format.
         var chooseRenderer = function(column) {
-            return null;
+            switch (column.columnType) {
+                case 'checkbox':
+                    return 'renderCheckbox';
+            }
+            return 'renderText';
         }
 
 
@@ -103,13 +135,19 @@
         // Column configuration
         var rowHeight;
         var rowOffset;
+        var handleDigits;
+        var paddingX;
         var initColumns = function(model) {
             // Create an object for each column
             columns = [];
             var mcols = model.meta().columns;
             for (var i = 0; i < mcols.length; i++) {
                 var col = mcols[i];
-                col.metaPos = i;
+                if (!col.columnType)
+                    // Internal column -- ignore for now
+                    continue;
+                col.index = columns.length;
+                col.srcIndex = i;
                 if (!col.hidden)
                     columns.push(col);
                 if (!col.width)
@@ -121,12 +159,13 @@
 
             // Measure width and height of text and cell for the handle (these dimensions must also apply to headers
             // and cells)
-            var measureText = '&nbsp;' + (columns.length + 1) + '&nbsp;'
+            handleDigits = calculateHandleDigits(model);
+            var measureText = '&nbsp;' + (model.rows().length + 1) + '&nbsp;'
             var handleInnerDims = measure('<div>' + measureText + '</div>');
             var handleOuterDims = measure('<div class="blist-td">' + measureText + '</div>');
 
             // Record the amount of padding and border in a table cell
-            var paddingX = handleOuterDims.width - handleInnerDims.width;
+            paddingX = handleOuterDims.width - handleInnerDims.width;
 
             // Update the handle style with proper dimensions
             var headerHeight = rowHeight + 'px';
@@ -141,25 +180,26 @@
             // These variables are used during column initialization
             var pos = handleOuterDims.width;
             var renderFnParts = [
-                '(function(html, index, row) { html.push("<div class=\'blist-tr\'><div class=\'blist-table-handle ' + handleClass + '\'>" + (index + 1) + "</div>"'
+                '(function(html, index, row) { html.push("<div class=\'blist-tr\' style=\'top: " + (index * rowOffset) + "px\'><div class=\'blist-table-handle ' + handleClass + '\'>" + (index + 1) + "</div>"'
             ]
 
             // Initialize each column
             for (i = 0; i < columns.length; i++) {
                 // Initialize the column's style
                 col = columns[i];
+                col.left = pos;
                 colStyles[i].width = columns[i].width + 'px';
                 colStyles[i].height = headerHeight;
-                colStyles[i].left = pos + 'px';
                 pos += columns[i].width + paddingX;
 
                 // Add rendering information to the rendering function
                 var renderer = chooseRenderer(col);
+                var index = col.srcIndex;
                 if (renderer)
-                    renderer = renderer + "(row[" + i + "])";
+                    renderer = renderer + "(row[" + index + "])";
                 else
                     // Inline text for speed
-                    renderer = "row[" + i + "] == null ? '' : (row[" + i + "] + '').replace(/&/g, '&amp;').replace(/</g, '&lt;')";
+                    renderer = "row[" + index + "] == null ? '' : (row[" + index + "] + '').replace(/&/g, '&amp;').replace(/</g, '&lt;')";
                 renderFnParts.push(
                     "\"<div class='blist-td " + colClasses[i] + "'>\", " + renderer + ", \"</div>\""
                 )
@@ -175,6 +215,7 @@
             scrolls[0].style.top = rowOffset + 'px';
             scrolls.height(outside.height() - rowOffset);
             scrolls.width(outside.width());
+            header.width(pos);
             inside.width(pos);
         }
 
@@ -194,6 +235,68 @@
                 );
             }
             header.html(html.join(''));
+
+            var handleResize = function(event, ui) {
+                // Find the column object
+                var drag = $(this).data('drag');
+
+                // Constrain left-drag to container width
+                var position = ui.position;
+                if (position.left < drag.col.left + 5)
+                    position.left = drag.col.left + 5;
+
+                // Compute the delta from the original position
+                var delta = drag.delta = ui.position.left - drag.originalSizerLeft;
+
+                // Update container sizes
+                header.width(drag.originalInsideWidth + delta);
+                inside.width(drag.originalInsideWidth + delta);
+
+                // Update the column style
+                drag.col.width = drag.originalColWidth + delta;
+                colStyles[drag.col.index].width = drag.col.width + 'px';
+            }
+
+            // Create column sizers
+            for (i = 0; i < columns.length; i++) {
+                col = columns[i];
+                var sizer = col.sizer = document.createElement('div');
+                sizer.className = 'blist-th-sizer';
+                sizer.innerHTML = '&nbsp;'
+                header[0].appendChild(sizer);
+                sizer.style.left = (col.left + col.width + paddingX - 3) + 'px';
+                $(sizer)
+                    .data('col', col)
+                    .draggable({
+                        axis: 'x',
+
+                        start: function(event, ui) {
+                            // Record original position information used to update drag position
+                            var col = $(this).data('col');
+                            $(this).data('drag', {
+                                col: col,
+                                originalColWidth: col.width,
+                                originalSizerLeft: $(col.sizer).position().left,
+                                originalInsideWidth: inside.width()
+                            })
+                        },
+
+                        drag: handleResize,
+
+                        stop: function(event, ui) {
+                            handleResize.call(this, event, ui);
+
+                            // Everything is up-to-date now but size handles to the right; take care of these now
+                            var drag = $(this).data('drag');
+                            for (var i = drag.col.index + 1; i < columns.length; i++) {
+                                var otherSizer = columns[i].sizer;
+                                otherSizer.style.left = (otherSizer.offsetLeft + drag.delta) + 'px';
+                            }
+
+                            $(this).removeData('drag');
+                        }
+                    });
+            }
         }
 
 
@@ -202,50 +305,72 @@
         var firstRenderedRow;
 
         var initRows = function(model) {
+            if (handleDigits != calculateHandleDigits(model)) {
+                initColumns(model);
+                renderHeader();
+            }
             inside.height(rowHeight * model.rows().length);
             inside.remove('.blist-td');
         }
 
         var renderRows = function() {
-            var top = inside.scrollTop();
+            var top = scrolls.scrollTop();
 
             // Compute the first row to render
-            var first = Math.floor(top / rowHeight);
+            var first = Math.floor(top / rowOffset);
 
-            // Compute the number of rows to render
-            var count = Math.ceil((top - (first * rowHeight) + inside.height()) / rowHeight);
+            // Compute the number of (possibly partially) visible rows
+            var count = Math.ceil((top - (first * rowOffset) + scrolls.height()) / rowOffset);
 
             // Remove the rows that we will destroy (after rendering the new rows, for visual perf.)
             var renderedRows = inside.children('.blist-tr');
-            if (firstRenderedRow) {
+            if (firstRenderedRow != null) {
                 var delta = firstRenderedRow - first;
-                if (delta > 0)
-                    var destroy = renderedRows.splice(0, delta);
-                else if (delta < 0) {
+                renderedRows.sort(function(row1, row2) {
+                    return row1.firstChild.innerHTML - row2.firstChild.innerHTML;
+                });
+                if (delta > 0) {
                     var spliceFrom = renderedRows.length - delta;
                     if (spliceFrom < 0)
                         spliceFrom = 0;
                     destroy = renderedRows.splice(spliceFrom, renderedRows.length);
+                    var start = first;
+                    var stop = first + destroy.length;
+                } else if (delta < 0) {
+                    var destroy = renderedRows.splice(0, -delta);
+                    start = first + renderedRows.length;
+                    stop = first + count;
                 }
+            } else {
+                start = first;
+                stop = first + count;
             }
 
             // Render the rows that are newly visible
             var html = [];
             var rows = model.rows();
-            for (var i = first + renderedRows.length, stop = first + count; i < stop; i++)
+            for (var i = start; i < stop; i++)
                 renderFn(html, i, rows[i]);
             inside.append(html.join(''));
 
-            // Position the rows
-            $('.blist-tr').each(function(pos) {
-                this.style.top = (first + pos) * rowOffset + 'px';
-            });
-
             // Destroy the rows that are no longer visible
-            $(destroy).remove();
+            if (destroy)
+                $(destroy).each(function() {
+                    this.parentNode.removeChild(this);
+                });
+
+            var deferredRender = function() {
+                // Currently never defer
+                renderRows();
+                //setTimeout(renderRows, 10);
+            }
 
             scrolls.unbind("scroll", onScroll);
+            scrolls.unbind("scroll", deferredRender);
             scrolls.scroll(onScroll);
+            scrolls.scroll(renderRows);
+
+            firstRenderedRow = first;
         }
 
 
@@ -258,7 +383,7 @@
         });
         $(this).bind('postload', function(event, model) {
             initRows(model);
-            renderRows();
+            setTimeout(renderRows);
         });
 
         // Install the model

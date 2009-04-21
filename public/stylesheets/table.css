@@ -29,15 +29,21 @@
 }
 
 .blist-th {
+    /*
     position: absolute;
     top: 0;
+    */
+    float: left;
     background-color: #cccccc;
     padding: .2em;
     border-left: solid 1px #999999;
     border-bottom: solid 1px #999999;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .blist-td {
+    float: left;
     padding: .2em;
     border-left: solid 1px #999999;
     border-bottom: solid 1px #999999;
@@ -46,11 +52,12 @@
 }
 
 .blist-table-handle {
-    position: absolute;
+    float: left;
+    /*position: absolute;
+    left: 0;*/
     padding: .2em;
     border-left: solid 1px #999999;
     border-bottom: solid 1px #999999;
-    left: 0;
     text-align: center;
     background-color: #eeeeee;
 }
@@ -59,4 +66,16 @@
     position: absolute;
     top: -10000px;
     left: -10000px;
+}
+
+.blist-th-sizer {
+    z-index: 10;
+    position: absolute;
+    top: 0px;
+    background-color: red;
+    padding: .2em 0;
+    width: 5px;
+    overflow: hidden;
+    right: 0px;
+    cursor: col-resize;
 }

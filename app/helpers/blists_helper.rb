@@ -50,6 +50,17 @@ module BlistsHelper
       ((rating * 2.0).round % 2 == 1 ? '_half' : '')
   end
 
+  def get_user_rating_html(user_id, view)
+    user_rating = view.rating_for_user(user_id)
+    if user_rating > 0
+      "<div class='rating user_rating_#{user_id} " +
+        "#{get_rating_class(user_rating)}' " +
+        "title='#{user_rating}'>#{user_rating}</div>"
+    else
+      ""
+    end
+  end
+
   def contacts_filter_menu(href_prefix, href_group_prefix,
                            title_key, title_group_key, id)
     items = [{'text' => 'Me', 'href' => href_prefix + current_user.id,

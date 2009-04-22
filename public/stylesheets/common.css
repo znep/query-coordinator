@@ -55,6 +55,7 @@
 }
 
 form input[type="text"],
+form textarea,
 form input[type="password"]
 {
     border: solid 1px #cacaca;
@@ -65,7 +66,7 @@ form input[type="password"]
     padding: 0.2em;     /* 2.4px */
 }
 
-form input.textPrompt.prompt
+form .textPrompt.prompt
 {
     color: #666666;
     font-style: italic;

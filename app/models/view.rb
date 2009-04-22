@@ -39,6 +39,34 @@ class View < Model
     self.class.delete_favorite(self.id)
   end
 
+  def update_rating(user_id, rating)
+    rating = rating.to_i
+    path = "/#{self.class.name.pluralize.downcase}/#{id}/ratings.json" +
+      "?value=#{rating * 20}"
+    if rating_for_user(user_id) != rating
+      if rating_for_user(user_id) > 0
+        result = self.class.update_request(path)
+      else
+        result = self.class.create_request(path)
+      end
+      data['averageRating'] = result.data['averageRating']
+      data['totalTimesRated'] = result.data['totalTimesRated']
+      @user_ratings[user_id] = rating
+    end
+    self
+  end
+
+
+  def to_json
+    dhash = data_hash
+    dhash["numberOfComments"] = numberOfComments
+    dhash["averageRating"] = averageRating
+    dhash["totalTimesRated"] = totalTimesRated
+
+    dhash.to_json
+  end
+
+
   def numberOfComments
     data['numberOfComments'] || 0
   end
@@ -88,6 +116,20 @@ class View < Model
   def href
     prefix = self.category || 'blist'
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
+  end
+
+  def user_role(user_id)
+    if (user_id == blistOwner.id)
+      "blist Author"
+    elsif (user_id == owner.id)
+      "View Author"
+    elsif contributor_users.any? {|cu| cu.id == user_id}
+      "blist Contributor"
+    elsif viewer_users.any? {|vu| vu.id == user_id}
+      "blist Viewer"
+    else
+      ""
+    end
   end
 
   def contributor_users
@@ -159,6 +201,14 @@ class View < Model
 
   def comments
     Comment.find(id)
+  end
+
+  def rating_for_user(user_id)
+    if !@user_ratings
+      @user_ratings = Hash.new
+      Rating.find(id).each {|r| @user_ratings[r.user.id] = r.rating}
+    end
+    @user_ratings[user_id] || 0
   end
 
   @@categories = {

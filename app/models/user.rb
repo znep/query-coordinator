@@ -12,11 +12,11 @@ class User < Model
 
   def to_json
     dhash = data_hash
-    dhash[:displayState] = displayState
-    dhash[:displayCountry] = displayCountry
-    dhash[:displayLocation] = displayLocation
-    dhash[:htmlDescription] = htmlDescription
-    dhash[:profile_image] = profile_image_path
+    dhash["displayState"] = displayState
+    dhash["displayCountry"] = displayCountry
+    dhash["displayLocation"] = displayLocation
+    dhash["htmlDescription"] = htmlDescription
+    dhash["profile_image"] = profile_image_path
 
     dhash.to_json
   end

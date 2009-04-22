@@ -1,3 +1,8 @@
+/**
+ * This file implements the Blist table control.  This control offers an interactive presentation of tabular data to
+ * the user.
+ */
+
 (function($) {
     var nextTableID = 1;
 
@@ -8,8 +13,21 @@
 
     // Make a DOM element into a table
     var makeTable = function(options) {
+
+        /*** MISC. VARIABLES AND INITIALIZATION ***/
+
         var self = this;
+
+        var id = this.id;
+        if (!id) {
+            id = nextTableID++;
+            id = "blist-t" + id;
+            this.id = id;
+        }
+
         
+        /*** CLOSURE UTILITY FUNCTIONS ***/
+
         // Element measuring utility
         var measure = function(html) {
             var e = $('<div class="blist-table-measure">' + html + '</div>');
@@ -25,15 +43,24 @@
             return Math.ceil(Math.log(model.rows().length || 1) * Math.LOG10E);
         }
 
+        // Sort data
+        var sortBy;
+        var sortDescending;
+        var sort = function(index) {
+            if (sortBy == index)
+                sortDescending = !sortDescending;
+            else {
+                sortBy = index;
+                sortDescending = false;
+            }
+            $('.sort', header).remove();
+            var col = columns[sortBy];
+            $(col.dom).append('<div class="sort sort-' + (sortDescending ? 'desc' : 'asc') + '" style="height: ' + rowOffset + 'px"></div>');
+            model.sort(col.srcIndex, sortDescending);
+        }
+
 
         /*** HTML RENDERING ***/
-
-        var id = this.id;
-        if (!id) {
-            id = nextTableID++;
-            id = "blist-t" + id;
-            this.id = id;
-        }
 
         var outside = $(this)
             .addClass('blist-table')
@@ -96,38 +123,9 @@
         })();
 
 
-        /*** CELL RENDERING ***/
-
-        var renderText = function(value) {
-            if (value == null)
-                return '';
-            value = value + '';
-            if (value.substring(0, 11) == '<TEXTFORMAT') {
-                // HACK - clean up messy markup
-                return value.replace(/<\/?textformat[^>]*>/gi, '').replace(/ size="\d+"/gi, '');
-            }
-            return value;
-        }
-
-        var renderCheckbox = function(value) {
-            if (value == true || value == 'true')
-                return "<center>&#9745;</center>";
-            return "<center>&#9744;</center>";
-        }
-
-        // Return the name of a rendering function, or null if the value should be displayed as literal text.  Note:
-        // the null optimization is currently not supported because of the Blist text data format.
-        var chooseRenderer = function(column) {
-            switch (column.columnType) {
-                case 'checkbox':
-                    return 'renderCheckbox';
-            }
-            return 'renderText';
-        }
-
-
         /*** COLUMNS ***/
 
+        // Internal representation of visible columns in the model
         var columns = [];
 
         // This is the row rendering function.  Precompiled using eval() for perf.
@@ -138,21 +136,27 @@
         var rowOffset;
         var handleDigits;
         var paddingX;
+
+        /**
+         * Initialize based on current model metadata.
+         */
         var initColumns = function(model) {
             // Create an object for each column
             columns = [];
             var mcols = model.meta().columns;
             for (var i = 0; i < mcols.length; i++) {
-                var col = mcols[i];
-                if (!col.columnType)
+                var mcol = mcols[i];
+                if (!mcol.columnType || mcol.hidden)
                     // Internal column -- ignore for now
                     continue;
-                col.index = columns.length;
-                col.srcIndex = i;
-                if (!col.hidden)
-                    columns.push(col);
-                if (!col.width)
-                    col.width = 100;
+                var col = {
+                    name: mcol.name,
+                    columnType: mcol.columnType,
+                    index: columns.length,
+                    srcIndex: i,
+                    width: mcol.width || 100
+                }
+                columns.push(col);
             }
 
             // Ensure CSS styles are initialized
@@ -181,7 +185,7 @@
             // These variables are used during column initialization
             var pos = handleOuterDims.width;
             var renderFnParts = [
-                '(function(html, index, row) { html.push("<div class=\'blist-tr\' style=\'top: " + (index * rowOffset) + "px\'><div class=\'blist-table-handle ' + handleClass + '\'>" + (index + 1) + "</div>"'
+                '(function(html, index, row) { html.push("<div class=\'blist-tr\' style=\'top: " + (index * ' + rowOffset + ') + "px\'><div class=\'blist-table-handle ' + handleClass + '\'>" + (index + 1) + "</div>"'
             ]
 
             // Initialize each column
@@ -194,13 +198,8 @@
                 pos += columns[i].width + paddingX;
 
                 // Add rendering information to the rendering function
-                var renderer = chooseRenderer(col);
-                var index = col.srcIndex;
-                if (renderer)
-                    renderer = renderer + "(row[" + index + "])";
-                else
-                    // Inline text for speed
-                    renderer = "row[" + index + "] == null ? '' : (row[" + index + "] + '').replace(/&/g, '&amp;').replace(/</g, '&lt;')";
+                var type = blist.data.types[col.columnType] || blist.data.types.text;
+                var renderer = type.renderGen("row[" + col.srcIndex + "]");
                 renderFnParts.push(
                     "\"<div class='blist-td " + colClasses[i] + "'>\", " + renderer + ", \"</div>\""
                 )
@@ -210,7 +209,7 @@
             // calls, etc.
             renderFnParts.push('"</div>") })')
             renderFn = renderFnParts.join(',');
-            renderFn = eval(renderFn);
+            renderFn = blist.data.types.compile(renderFn);
 
             // Position the scrolling area
             scrolls[0].style.top = rowOffset + 'px';
@@ -219,8 +218,10 @@
             header.width(pos);
             inside.width(pos);
         }
-
-        // Column header rendering
+        
+        /**
+         * Create column header elements for the current row configuration and install event handlers.
+         */
         var renderHeader = function() {
             var html = [
                 '<div class="blist-th ', handleClass, '"></div>'
@@ -236,6 +237,15 @@
                 );
             }
             header.html(html.join(''));
+
+            $(".blist-th", header).each(function(index) {
+                if (!index)
+                    // Skip the header handle
+                    return;
+                index -= 1;
+                columns[index].dom = this;
+                $(this).click(function() { sort(index) });
+            });
 
             var handleResize = function(event, ui) {
                 // Find the column object
@@ -307,15 +317,9 @@
 
         var firstRenderedRow;
 
-        var initRows = function(model) {
-            if (handleDigits != calculateHandleDigits(model)) {
-                initColumns(model);
-                renderHeader();
-            }
-            inside.height(rowOffset * model.rows().length);
-            inside.remove('.blist-td');
-        }
-
+        /**
+         * Render all rows that should be visible but are not yet rendered.  Removes invisible rows.
+         */
         var renderRows = function() {
             var top = scrolls.scrollTop();
 
@@ -371,18 +375,29 @@
                     this.parentNode.removeChild(this);
                 });
 
-            var deferredRender = function() {
-                // Currently never defer
-                renderRows();
-                //setTimeout(renderRows, 10);
-            }
-
             scrolls.unbind("scroll", onScroll);
-            scrolls.unbind("scroll", deferredRender);
+            scrolls.unbind("scroll", renderRows);
             scrolls.scroll(onScroll);
             scrolls.scroll(renderRows);
 
             firstRenderedRow = first;
+        }
+
+        /**
+         * Initialize the row container for the current row set.
+         */
+        var initRows = function(model) {
+            if (handleDigits != calculateHandleDigits(model)) {
+                // The handle changed.  Reinitialize columns.
+                initColumns(model);
+                renderHeader();
+            }
+            inside.height(rowOffset * model.rows().length);
+
+            inside.empty();
+            firstRenderedRow = null;
+            
+            renderRows();
         }
 
 
@@ -395,7 +410,6 @@
         });
         $(this).bind('postload', function(event, model) {
             initRows(model);
-            setTimeout(renderRows);
         });
 
         // Install the model

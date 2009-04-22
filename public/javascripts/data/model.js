@@ -1,3 +1,8 @@
+/**
+ * This file implements the Blist data model.  The data model is a flexible container for dynamic data that is
+ * decoupled from any specific presentation mechanism.
+ */
+
 blist.namespace.fetch('blist.data');
 
 (function($) {
@@ -8,6 +13,18 @@ blist.namespace.fetch('blist.data');
         var listeners = [];
         var data = [];
         var lookup = {};
+
+        var columnType = function(index) {
+            if (meta.columns) {
+                var column = meta.columns[index];
+                if (column) {
+                    var type = blist.data.types[column.columnType];
+                    if (type)
+                        return type;
+                }
+            }
+            return blist.data.types.text;
+        }
 
         var installIDs = function(rows, from) {
             for (var row in rows)
@@ -136,6 +153,35 @@ blist.namespace.fetch('blist.data');
          */
         this.length = function(id) {
             return data.length;
+        }
+
+        /**
+         * Sort the data.
+         *
+         * @param order either a column index or a sort function
+         * @param descending true to sort descending if order is a column index
+         */
+        this.sort = function(order, descending) {
+            // Load the types
+            if (typeof order != 'function') {
+                // Column reference expressions
+                var r1 = "a[" + order + "]";
+                var r2 = "b[" + order + "]";
+
+                // Swap expressions for descending sort
+                if (descending) {
+                    var temp = r1;
+                    r1 = r2;
+                    r2 = temp;
+                }
+
+                // Compile an ordering function specific to the column positions
+                order = columnType(order).sortGen(r1, r2);
+            }
+
+            // Sort and notify listeners
+            data.sort(order);
+            $(listeners).trigger('postload', [ this ]);
         }
 
         if (meta)

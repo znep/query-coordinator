@@ -33,6 +33,7 @@
     position: absolute;
     top: 0;
     */
+    position: relative;
     float: left;
     background-color: #cccccc;
     padding: 2px /*.2em*/;
@@ -44,6 +45,7 @@
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
+    cursor: pointer;
 }
 
 .blist-td {
@@ -64,10 +66,10 @@
     border-bottom: solid 1px #999999;
     text-align: center;
     background-color: #eeeeee;
-    cursor: default;
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
+    cursor: default;
 }
 
 .blist-table-measure {
@@ -85,4 +87,17 @@
     overflow: hidden;
     right: 0px;
     cursor: col-resize;
+}
+
+.blist-th .sort {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    padding-right: 2px;
+    background: transparent url('images/content/table/icon_sort_down.png') right no-repeat;
+}
+
+.blist-th .sort-desc {
+    background-image: url('images/content/table/icon_sort_up.png');
 }

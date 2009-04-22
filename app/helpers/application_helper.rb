@@ -79,6 +79,13 @@ module ApplicationHelper
     time && time != 0 ? Time.at(time).strftime("%B %d, %Y") : nil
   end
 
+  def friendly_relative_time(time_str)
+    time_obj = Time.at(time_str)
+    # Using blist & gov locales screws up this Rails function; force the en locale
+    distance_of_time_in_words(time_obj, Time.now, false, {:locale => 'en'}) +
+      (time_obj > Time.now ? ' from now' : ' ago')
+  end
+
   def blist_href_new_blist
     blist_url('new_blist')
   end

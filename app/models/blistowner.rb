@@ -1,0 +1,2 @@
+class Blistowner < User
+end

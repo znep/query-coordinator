@@ -49,6 +49,7 @@ ActionController::Routing::Routes.draw do |map|
     :collection => { :detail => :get },
     :member => {
       :detail => :get,
+      :post_comment => :post,
       :create_favorite => :post,
       :delete_favorite => :post
     }

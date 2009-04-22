@@ -61,6 +61,26 @@ class BlistsController < SwfController
     end
   end
 
+  def post_comment
+    if params[:comment] && !params[:comment][:body].blank?
+      @comment = Comment.create(params[:id], params[:comment])
+    end
+    if params[:view][:rating]
+      @view = View.find(params[:id]).update_rating(current_user.id,
+                                                   params[:view][:rating])
+    end
+
+    if @view.nil?
+      @view = View.find(params[:id])
+    end
+
+    respond_to do |format|
+      format.html { redirect_to(@view.href) }
+      format.data { render }
+    end
+  end
+
+
   def detail
     if (params[:id])
       @view = View.find(params[:id])

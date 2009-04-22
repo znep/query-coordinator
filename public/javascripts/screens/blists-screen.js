@@ -225,6 +225,8 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 
     $(".copyCode textarea").click(function() { $(this).select(); });
 
+    $('#infoPane .singleInfoComments').infoPaneComments();
+
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();

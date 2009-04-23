@@ -452,16 +452,16 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
 
 .fixedMenu .close
 {
-    background-image: url(/stylesheets/images/content/table_menu/icon_close_light.png);
+    background-image: url(/stylesheets/images/content/section_close_button.png);
     background-repeat: no-repeat;
     display: block;
-    height: 23px;
+    height: 16px;
     position: absolute;
     line-height: 100px;
     overflow: hidden;
     right: 2px;
     top: 2px;
-    width: 23px;
+    width: 16px;
 }
 /*** END: fixed menu ***/
 

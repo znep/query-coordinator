@@ -13,7 +13,8 @@
           href='<%= blists_url() %>'>Back to blists</a></li>
       <li class='main <%= @is_child_view ? 'even' : 'active' %>'>
         <div class='wrapper'>
-          <a class='clipText' href='<%= @parent_view.href %>'
+          <a class='clipText'
+            href='<%= !@parent_view.nil? ? @parent_view.href : '#' %>'
             title='<%= !@parent_view.nil? ? h(@parent_view.name) : '' %>'>
             <%= !@parent_view.nil? ? h(@parent_view.name) : 'New blist' %>
           </a>
@@ -210,10 +211,12 @@
   <script type="text/javascript">
     blist.namespace.fetch('blist.blistGrid');
     blist.blistGrid.referer = "<%= request.referer %>";
+    <%- if !@view.nil? -%>
     blist.blistGrid.blistId = "<%= @view.blistId %>";
     <%- if @is_child_view -%>
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
+    <%- end -%>
     <%- end -%>
   </script>
   <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min",

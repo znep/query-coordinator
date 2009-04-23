@@ -115,16 +115,36 @@ body.community #mainNav li.community
     background: url(/stylesheets/images/gov/header/mainlogo_background.png) repeat-x;
     left: 0;
     right: 0;
-}
-#footer .copyright
-{
-    color: #4f4f4f;
-    padding: 2em 1em;
+    text-align: center;
 }
 #footer ul
 {
     background: none;
     padding: 2em 1em;
+}
+#footer ul li
+{
+    border-right: 1px solid #666;
+    margin: 0 .5em 0 0;
+    padding: 0 .5em 0 0;
+}
+#footer ul li.last
+{
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+#footer span.gov_logo
+{
+    background: url(/stylesheets/images/gov/common/dg_footer_logo.png) no-repeat;
+    display: block;
+    height: 10px;
+    left: 10px;
+    line-height: 100px;
+    overflow: hidden;
+    position: absolute;
+    top: 20px;
+    width: 74px;
 }
 #footer a
 {
@@ -169,19 +189,430 @@ body.community #mainNav li.community
     background-image: url(/stylesheets/images/gov/sidebar/sidebar_corner_bottom_right.png); 
 }
 
+
+#sidebar .filterSection > ul > li > a:hover span,
+#sidebar .filterSection > ul > li > a.hilight span,
+#sidebar .filterSection h4 a:hover span,
+#sidebar .filterSection h4 a.hilight span,
+#sidebar .filterSection ul.expandable > li > a:hover span,
+#sidebar .filterSection ul.expandable > li > a.hilight span
+{
+    background-image: url(/stylesheets/images/gov/sidebar/blists_filter/background_item_hover.png);
+}
+
+ul.menu.contactsMenu li.sectionTitle.sortHeader { color: #333; }
 /*** END: sidebar ***/
 
 /*** START: widgets ***/
 
+#lensContainer .headerBar > ul > li > a.dropdownLink:hover,
+#lensContainer .headerBar > ul > li > a.dropdownLink.clicked { color: #fff; }
+
+a.dropdownLink:hover
+{
+    background-image: url(/stylesheets/images/gov/widgets/dropdown_button/hover_left.png);
+}
+
+a.dropdownLink:hover .outerWrapper
+{
+    background-image: url(/stylesheets/images/gov/widgets/dropdown_button/hover_right.png);
+}
+
+a.dropdownLink:hover .midWrapper
+{
+    background-image: url(/stylesheets/images/gov/widgets/dropdown_button/hover_gradSlice.png);
+}
+
+a.dropdownLink.clicked
+{
+    background-image: url(/stylesheets/images/gov/widgets/dropdown_button/click_left.png);
+}
+
+a.dropdownLink.clicked .outerWrapper
+{
+    background-image: url(/stylesheets/images/gov/widgets/dropdown_button/click_right.png);
+}
+
+a.dropdownLink.clicked .midWrapper
+{
+    background-image: url(/stylesheets/images/gov/widgets/dropdown_button/click_gradSlice.png);
+}
+
+
+ul.menu
+{
+    background-color: #ececec;
+}
+
+ul.menu li.sectionTitle { color: #959393; }
+ul.menu li > a:hover { background-color: #cacaca; }
+ul.menu li.separator { border-top: solid 1px #999; }
+
+ul.menu li.footer
+{
+    background-image: url(/stylesheets/images/gov/widgets/menu/corner_light_left_bottom.png);
+}
+
+ul.menu li.footer .outerWrapper
+{
+    background-image: url(/stylesheets/images/gov/widgets/menu/corner_light_right_bottom.png);
+}
+
+ul.menu li.footer .innerWrapper
+{
+    background-color: #ececec;
+}
+
+
+ul.menu.optionMenu { background-color: #cacaca; }
+ul.menu.optionMenu li { background-color: #ececec; }
+ul.menu.optionMenu li.footer
+{
+    background-image: url(/stylesheets/images/gov/widgets/menu/corner_dark_left_bottom.png);
+}
+ul.menu.optionMenu li.footer .colorWrapper { background-color: #cacaca; }
+ul.menu.multilevelMenu > li
+{
+    border-bottom: solid 1px #cacaca;
+    border-top: solid 1px #ececec;
+}
+ul.menu.multilevelMenu > li.active.first { border-top: solid 1px #cacaca; }
+ul.menu.multilevelMenu li.active dt { background-color: #cacaca; }
+ul.menu.multilevelMenu dd > ul { background-color: #cacaca; }
+ul.menu.multilevelMenu dd > ul > li > a:hover { background-color: #ececec; }
+ul.menu.multilevelMenu dd > ul > li.separator { border-top: solid 1px #ececec; }
+ul.menu.multilevelMenu > li.footer > .outerWrapper
+{
+    background-image: url(/stylesheets/images/gov/widgets/menu/corner_dark_right_bottom.png);
+}
+ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapper
+{
+    background-color: #cacaca;
+}
+
+
+.fixedMenu { background-color: #ececec; }
+.fixedMenu .outerWrapper
+{
+    background-image: url(/stylesheets/images/gov/widgets/menu/corner_light_left_bottom_whitebg.png);
+}
+.fixedMenu .innerWrapper
+{
+    background-image: url(/stylesheets/images/gov/widgets/menu/corner_light_right_bottom_whitebg.png);
+}
+.fixedMenu .close
+{
+    background-image: url(/stylesheets/images/content/section_close_button.png);
+}
+
+
+
+
+
 table.gridList tr.sortGroup td > * { color: #666; }
 
+/* Hover rules */
+table.gridList tr.hover td+td+td+td > *,
+table.gridList tr.highlight td+td+td+td > * 
+{ 
+    background-color: #e3ecf7; 
+}
+table.gridList tr.hover td.last > *,
+table.gridList tr.highlight td.last > *
+{
+    background-image: url(/stylesheets/images/gov/content/table/highlight_end.png);
+}
+.gridListContainer.simple table.gridList tr.hover td > *,
+.gridListContainer.simple table.gridList tr.selected td > *,
+.gridListContainer.simple table.gridList tr.hover.selected td > *
+{
+    background-color: #e3ecf7;
+}
+table.gridList tr.child td.type > div,
+table.gridList tr.child td.description > * { border-color: #cacaca; }
+table.gridList tr.child.hover td.description > *,
+table.gridList tr.child.selected td.description > *,
+table.gridList tr.child.hover.selected td.description > *
+{
+    background-image: url(/stylesheets/images/gov/content/table/highlight_end.png);
+}
+
+
+.actionButtons li
+{
+    background-image: url(/stylesheets/images/gov/widgets/background_buttons_summary_sprites.png);
+}
+.actionButtons li a
+{
+    background-image: url(/stylesheets/images/gov/widgets/background_buttons_summary_sprites.png);
+}
+
+
+
+
+.formListBox
+{
+    background: #ececec url(/stylesheets/images/gov/info_pane/background_expanded_list.png) -5px 0 repeat-y;
+}
+.formListBoxTL { background: url(/stylesheets/images/gov/content/section_top_left.png) left top no-repeat; }
+.formListBoxTR { background: url(/stylesheets/images/gov/content/section_top_right.png) right top no-repeat; }
+.formListBoxBL { background: url(/stylesheets/images/gov/content/section_bottom_left.png) left bottom no-repeat; }
+.formListBoxBR { background: url(/stylesheets/images/gov/content/section_bottom_right.png) right bottom no-repeat; }
+.formListBox dt { color: #eee; }
+
 /*** END: widgets ***/
+
+/*** START: login-screen ***/
+#login .loginBox
+{
+    background-color: #fff;
+    background-image: url(/stylesheets/images/gov/content/background_corner_bottom_right.png);
+}
+#login .loginBox .header
+{
+    background-color: #2f608f;
+    border-bottom: none;
+}
+#login .loginBox .header h1
+{
+    background-image: url(/stylesheets/images/gov/common/data_gov_logo_dialog.png);
+}
+#login .loginBox .mainContent
+{
+    background-image: url(/stylesheets/images/gov/content/background_corner_bottom_left.png);
+    margin-top: 0;
+}
+#login .loginBox .footer { border-top: solid 1px #ccc; }
+
+/*** END: login-screen ***/
+
+/*** START: signup-screen ***/
+
+.signup .loginBox 
+{
+    background-color: #fff;
+    background-image: url(/stylesheets/images/gov/content/background_corner_bottom_right.png);
+}
+.signup .mainContent
+{
+    background-image: url(/stylesheets/images/gov/content/background_corner_bottom_left.png);
+    margin-top: 0;
+}
+.signup .header { 
+    background-color: #2f608f;
+    border-bottom: none;
+}
+.signup .header h1
+{
+    background-image: url(/stylesheets/images/gov/common/data_gov_logo_dialog.png);
+}
+
+/*** END: signup-screen ***/
 
 /*** START: list-screen ***/
 
 .headerBar h3 { color: #666; }
 
 /*** END: list-screen ***/
+
+/*** START: info-pane ***/
+
+#infoPane .summaryTabs 
+{
+    background-color: #ececec;
+    background-image: none;
+    border-color: #06386a;
+}
+#infoPane .summaryTabs li 
+{
+    background-color: #ececec;
+    border-color: #06386a;
+    border-style: solid;
+    border-width: 1px;
+    height: 19px;
+    margin-right: 1px;
+}
+#infoPane .summaryTabs li .tabOuter
+{
+    background-image: url(/stylesheets/images/gov/info_pane/background_info_tab_top_left_sprites.png);
+    background-position: 0 -4px;
+    background-repeat: no-repeat;
+    margin-left: -1px;
+    margin-top: -1px;
+    padding-left: 1px;
+    padding-top: 1px;
+}
+#infoPane .summaryTabs li .tabInner 
+{
+    background-image: url(/stylesheets/images/gov/info_pane/background_info_tab_top_right_sprites.png);
+    background-position: 113px -4px;
+    margin-right: -1px;
+    margin-top: -1px;
+}
+#infoPane .summaryTabs li.active 
+{
+    background-color: #cacaca;
+    border-bottom: none;
+    height: 20px;
+}
+#infoPane .summaryTabs li.active .tabOuter { background-position: -4px 0; }
+
+#infoPane .summaryTabs li.summary 
+{
+    border-right-width: 1px;
+    width: 85px;
+}
+#infoPane .summaryTabs li.summary.active.last
+{
+    border-right: 1px solid #06386a;
+    width: 85px;
+}
+#infoPane .summaryTabs li.summary.active .tabInner 
+{
+    background-image: none;
+}
+#infoPane .summaryTabs li.summary.active.last .tabInner
+{
+    background-image: none;
+    border-right: none;
+    width: 85px;
+}
+
+
+
+.infoContentOuter
+{
+    background-color: #cacaca;
+    background-image: none;
+    border-color: #06386a;
+    border-style: solid;
+    border-width: 0 1px 1px;
+}
+
+.infoContentOuter .infoContentInner
+{
+    background-image: url(/stylesheets/images/gov/info_pane/summary_bottom_left.png);
+    margin-bottom: -1px;
+    margin-left: -1px;
+    padding-bottom: 0;
+}
+.infoContentOuter .infoContentWrapper
+{
+    background-image: url(/stylesheets/images/gov/info_pane/summary_bottom_right.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    margin-bottom: -1px;
+    margin-right: -1px;
+    padding-bottom: 1em;
+    padding-right: 1px;
+}
+
+.infoContentOuter.listContainer.expanded .infoContentInner
+{
+    background-image: url(/stylesheets/images/gov/info_pane/background_expanded_list.png);
+}
+.infoContentOuter.listContainer.expanded .infoContentWrapper { padding-bottom: 0; }
+.infoContentOuter.listContainer .infoContent
+{
+    background-image: url(/stylesheets/images/gov/info_pane/summary_bottom_left_dark.png);
+    border-top: 1px solid #fff;
+}
+
+.infoContentOuter.listContainer .infoContent dt { color: #fff; top: 6px; }
+.infoContentOuter.listContainer .infoContent dt.hover 
+{ 
+    background-color: #e3ecf7;
+    background-image: url(/stylesheets/images/gov/info_pane/background_summary_list_title.png);
+    color: #666;
+}
+
+.infoContentOuter.listContainer .infoContent dd.hover .itemContent
+{
+    background-color: #e3ecf7;
+    background-image: url(/stylesheets/images/gov/info_pane/summary_item_content_bottom_right.png);
+}
+.infoContentOuter.listContainer .infoContent dd.hover .itemContent > *
+{
+    background-image: url(/stylesheets/images/gov/info_pane/summary_item_content_top_right.png);
+}
+
+.infoContentOuter.listContainer .infoContent .itemActions .action,
+.infoContentOuter .infoContent .actionContainer .action
+{
+    background-image: url(/stylesheets/images/gov/info_pane/summary_secondary_button_left.png);
+}
+.infoContentOuter.listContainer .infoContent .itemActions .action span,
+.infoContentOuter .infoContent .actionContainer .action span
+{
+    background-image: url(/stylesheets/images/gov/info_pane/summary_secondary_button_right.png);
+}
+
+
+.infoContentOuter .gridList thead 
+{
+    background-color: #e8e8e8;
+}
+.infoContentOuter .gridList thead th
+{
+    background-color: #e8e8e8;
+    border-right: 1px solid #d4d4d4;
+}
+
+
+.singleInfoSharing .infoContentHeader > h2.panelHeader.first,
+.singleInfoSharing .sharingSummary,
+.singleInfoPublishing .infoContentHeader h2.panelHeader + h2.panelHeader,
+.singleInfoComments .infoContentHeader > h2.panelHeader.first,
+.singleInfoPublishing .publishContent { border-color: #e8e8e8; }
+
+.singleInfoSharing table.gridList tr.hover td+td > *,
+.singleInfoSharing table.gridList tr.selected td+td > *,
+.singleInfoSharing table.gridList tr.hover.selected td+td > *
+{
+    background-color: #e3ecf7;
+}
+
+.infoContentOuter.singleInfoBlists table.gridList tr.hover td+td > *,
+.infoContentOuter.singleInfoGroups table.gridList tr.hover td+td > *,
+.infoContentOuter.singleInfoMembers table.gridList tr.hover td+td > *
+{ 
+    background-color: #e3ecf7; 
+}
+
+#infoPane .singleInfoComments .rating
+{
+    background-image: url(/stylesheets/images/content/comment_stars_white_sprites.png);
+}
+.singleInfoComments li.comment .userInfo h5 { color: #fff; }
+.singleInfoComments li.comment .userInfo span { color: #eee; }
+
+.singleInfoComments li.comment .commentBlock .cornerTL
+{ background-image: url(/stylesheets/images/gov/info_pane/comment_corner_top_left.png); }
+.singleInfoComments li.comment .commentBlock .cornerTR
+{ background-image: url(/stylesheets/images/gov/info_pane/comment_corner_top_right.png); }
+.singleInfoComments li.comment .commentBlock .cornerBR
+{ background-image: url(/stylesheets/images/gov/info_pane/comment_corner_bottom_right.png); }
+.singleInfoComments li.comment .commentBlock .cornerBL
+{ background-image: url(/stylesheets/images/gov/info_pane/comment_corner_bottom_left.png); }
+
+.singleInfoComments li.comment .commentBlock .commentBody { border-top: solid 1px #ccc; }
+.singleInfoComments .footer { 
+    border-color: #fff;
+    margin-left: 15em;
+}
+
+.singleInfoComments form input[type="text"],
+.singleInfoComments form textarea,
+.singleInfoComments form input[type="password"]
+{
+    border: 1px solid #999;
+}
+.singleInfoComments form.postComment .submitSection a { color: #333; }
+
+
+
+
+/*** END: info-pane ***/
 
 /*** START: discover-screen ***/
 .discoverHeaderTL { background-image: url(/stylesheets/images/gov/content/background_corner_left.png); }
@@ -237,3 +668,58 @@ table.gridList tr.sortGroup td > * { color: #666; }
 
 .communityContainer h1 { color: #666; }
 /*** END: community-screen ***/
+
+/*** START: contacts-screen ***/
+
+#contacts table.gridList tr.hover td+td+td > *,
+#contacts table.gridList tr.highlight td+td+td > *
+{
+    background-color: #e3ecf7;
+}
+
+/*** END: contacts-screen ***/
+
+/*** START: profile-screen ***/
+#profile .publicBlists .infoContentOuter { 
+    background-image: none; 
+    border-top-width: 1px;
+}
+#profile .publicBlists .infoContentInner
+{
+    background-image: url(/stylesheets/images/gov/profile/info_bottom_right_white.png);
+    background-position: right bottom;
+    margin: 0 -1px -1px 0;
+    padding-bottom: 0;
+}
+#profile .publicBlists .infoContent
+{
+    background-image: url(/stylesheets/images/gov/profile/info_bottom_left_white.png);
+    margin: 0 0 -1px -1px;
+}
+#profile .publicBlists .infoContentHeader
+{
+    background-image: url(/stylesheets/images/gov/profile/info_top_left_white.png);
+    margin-top: -1px;
+}
+#profile .publicBlists .infoContentHeaderInner
+{
+    background-image: url(/stylesheets/images/gov/profile/info_top_right_white.png);
+    margin-top: -1px;
+}
+#profile table.gridList tr.hover td+td > * { background-color: #e3ecf7; }
+
+/*** end: profile-screen ***/
+
+
+#account .sectionShow p.hover
+{
+    background: #e3ecf7 url(/stylesheets/images/gov/content/table/highlight_end.png) right top no-repeat;
+}
+.sectionShow a.showAction
+{
+    background-image: url(/stylesheets/images/gov/widgets/background_buttons_summary_sprites.png);
+}
+.sectionShow a.showAction span
+{
+    background-image: url(/stylesheets/images/gov/widgets/background_buttons_summary_sprites.png);
+}

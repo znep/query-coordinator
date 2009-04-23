@@ -13,16 +13,14 @@
 
     // Debugging utility
     var puts = function(value) {
-        if (console && console.debug)
-            console.debug(value);
+        if (window.console && window.console.log)
+            window.console.log(value);
     }
 
     // Make a DOM element into a table
     var makeTable = function(options) {
 
         /*** MISC. VARIABLES AND INITIALIZATION ***/
-
-        var self = this;
 
         var id = this.id;
         if (!id) {
@@ -177,17 +175,30 @@
         /*** CSS STYLE MANIPULATION ***/
 
         var css;
+        var rowStyle;
         var handleStyle;
         var handleClass;
         var colStyles = [];
         var colClasses = [];
 
-        // Add a CSS rule
+        // Add a CSS rule.  This creates an empty rule and returns it.  We then dynamically update the rule values as
+        // needed.
         var addRule = function(selector) {
+            // Add the rule
             var rules = css.cssRules || css.rule;
             css.insertRule ? css.insertRule(selector + " {}", rules.length)
                 : css.addRule(selector, null, rules.length);
-            return rules[rules.length - 1];
+            rules = css.cssRules || css.rule;
+
+            // Find the new rule
+            selector = selector.toLowerCase();
+            for (var i = 0; i < rules.length; i++) {
+                if (rules[i].selectorText.toLowerCase() == selector)
+                    return rules[i];
+            }
+
+            // Shouldn't get here
+            return null;
         };
 
         // Initialize CSS for the current column set
@@ -204,7 +215,9 @@
 
         // Initialize my stylesheet
         (function() {
-            var rulesNode = $('head').append('<style type="text/css" id="' + id + '-styles"></style>').select('.' + id + '-styles')[0];
+            var rulesNode = $('head')
+                .append('<style type="text/css" id="' + id + '-styles"></style>')
+                .children('#' + id + '-styles')[0];
             for (css in document.styleSheets) {
                 css = document.styleSheets.item(css);
                 if ((css.ownerNode || css.owningElement) == rulesNode)
@@ -212,6 +225,7 @@
             }
             handleClass = id + "-handle";
             handleStyle = addRule("." + handleClass).style;
+            rowStyle = addRule(".blist-table-tr").style;
         })();
 
 
@@ -266,6 +280,7 @@
             // Row positioning information
             rowHeight = handleInnerDims.height;
             rowOffset = handleOuterDims.height;
+            rowStyle.height = rowHeight + 'px';
 
             // Update the handle style with proper dimensions
             var handleWidth = handleInnerDims.width;

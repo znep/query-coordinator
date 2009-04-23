@@ -79,6 +79,7 @@ input.blist-table-filter {
 
 .blist-tr {
     position: absolute;
+    overflow: hidden;
 }
 
 .blist-tr-even .blist-td {

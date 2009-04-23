@@ -123,9 +123,12 @@
 
                     // Update all ratings for this user
                     var $newRating = $resp.children('.rating[class*=user_rating_]');
-                    var matchClass = $newRating
-                        .attr('class').match(/(user_rating_\w+-\w+)/)[0];
-                    $commentPane.find('.' + matchClass).replaceWith($newRating);
+                    if ($newRating.length > 0)
+                    {
+                        var matchClass = $newRating
+                            .attr('class').match(/(user_rating_\w+-\w+)/)[0];
+                        $commentPane.find('.' + matchClass).replaceWith($newRating);
+                    }
 
                     // Add the new comment
                     $commentPane.find(config.commentListSelector)

@@ -29,7 +29,7 @@ blist.blistGrid.sizeSwf = function (event)
 blist.blistGrid.setUpTabs = function ()
 {
     var cookieStr = $.cookies.get('viewTabs');
-    if (!cookieStr)
+    if (cookieStr === undefined || cookieStr === "" || cookieStr == "undefined")
     {
         blistGridNS.createTabCookie();
         return;

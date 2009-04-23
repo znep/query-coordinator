@@ -124,6 +124,8 @@
 #profile table.gridList .views,
 #profile table.gridList .copies { width: 7em; }
 #profile table.gridList .name { width: 100%; }
+#profile table.gridList .actionContainer { width: 3.5em; }
+#profile .actionContainer a.action { padding: 0 0 0 5px; }
 
 #profile table.gridList tr.hover td+td > *
 {

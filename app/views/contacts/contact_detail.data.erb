@@ -4,35 +4,35 @@
 <div class="header">
   <ul class="summaryTabs clearfix">
     <li id="tabSummary" class="summary active">
-      <div class="tabInner">
+      <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
         <a href="#summary">Summary</a>
-      </div>
+      </div></div>
     </li>
     <li id="tabGroups">
-      <div class="tabInner">
+      <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
         <a href="#groups">Groups</a>
-      </div>
+      </div></div>
     </li>
     <li id="tabShares">
-      <div class="tabInner">
+      <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
         <a href="#shares">Shares</a>
-      </div>
+      </div></div>
     </li>
     <li id="tabBlists">
-      <div class="tabInner">
+      <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
         <a href="#blists">blists</a>
-      </div>
+      </div></div>
     </li>
 <%- if isActivityEnabled -%>
     <li id="tabActivity" class="last">
-      <div class="tabInner">
+      <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
         <a href="#activity">Activity</a>
-      </div>
+      </div></div>
     </li>
 <%- end -%>
   </ul>
@@ -51,7 +51,7 @@
       <li><a href="#" class="arrowButton">Add Groupmember</a></li>
     </ul>
   </div>
-  <div class="infoContentInner">
+  <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">
 
       <dl class="summaryList actionList">
@@ -141,7 +141,7 @@
       </dl>
 
     </div> <!-- /.infoContent -->
-  </div> <!-- /.infoContentInner -->
+  </div></div> <!-- /.infoContentInner -->
 </div>
 <%# *** END: SUMMARY *** %>
 
@@ -155,7 +155,7 @@
       <li><a href="#add" class="arrowButton">[Add to Group]</a></li>
     </ul>
   </div>
-  <div class="infoContentInner">
+  <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">
       <div class="gridListContainer">
         <table class="gridList" cellspacing="0">
@@ -194,7 +194,7 @@
 
 
     </div>
-  </div>
+  </div></div>
 </div>
 <%# *** END: GROUPS *** %>
 
@@ -204,7 +204,7 @@
     <h2 class="panelHeader typeSharedIn first"><%= @shares_by_contact.length %> Shared to you</h2>
     <h2 class="panelHeader typeSharedOut"><%= @shares_to_contact.length %> Shared to <%= h(@contact.displayName) %></h2>
   </div>
-  <div class="infoContentInner">
+  <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">
       <div class="gridListContainer">
         <table class="gridList" cellspacing="0">
@@ -251,7 +251,7 @@
         </table>
       </div>
     </div>
-  </div>
+  </div></div>
 </div>
 <%# *** END: SHARES *** %>
 
@@ -261,7 +261,7 @@
     <h2 class="panelHeader typeBlist first"><%= pluralize(@contact_blists.length, "Public blist") %></h2>
     <h2 class="panelHeader typeBlist private"><%= pluralize(@contact_templates.length, "blist template")%></h2>
   </div>
-  <div class="infoContentInner">
+  <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">
       <div class="gridListContainer">
         <table class="gridList" cellspacing="0">
@@ -305,7 +305,7 @@
         </table>
       </div>
     </div>
-  </div>
+  </div></div>
 </div>
 <%# *** END: BLISTS *** %>
 <%- if isActivityEnabled -%>
@@ -314,7 +314,7 @@
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader"> [4] new activities</h2>
   </div>
-  <div class="infoContentInner">
+  <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">
       <div class="gridListContainer simple">
         <table class="gridList" cellspacing="0">
@@ -370,7 +370,7 @@
         </table>
       </div>
     </div>
-  </div>
+  </div></div>
 </div>
 <%# *** END: ACTIVITY *** %>
 <%- end -%>

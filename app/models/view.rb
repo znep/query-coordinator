@@ -39,6 +39,11 @@ class View < Model
     self.class.delete_favorite(self.id)
   end
 
+  def register_opening
+    self.class.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
+      "?method=opening")
+  end
+
   def update_rating(user_id, rating)
     rating = rating.to_i
     path = "/#{self.class.name.pluralize.downcase}/#{id}/ratings.json" +

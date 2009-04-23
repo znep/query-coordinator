@@ -42,6 +42,7 @@ class BlistsController < SwfController
           @parent_view = par_view
         end
       end
+      @view.register_opening
     end
 
     @data_component = params[:dataComponent]

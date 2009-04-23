@@ -238,7 +238,7 @@ private
       params = Hash.new
     end
     title = 'All '
-    title_type = 'blists'
+    title_type = t(:blists_name)
 
     parts = Array.new
     if !params['owner'].nil?
@@ -277,7 +277,7 @@ private
       title_type =
         case params['type']
         when 'favorite'
-          'my favorite blists'
+          'my favorite ' + t(:blists_name)
         when 'filter'
           'filters'
         end

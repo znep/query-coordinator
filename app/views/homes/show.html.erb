@@ -16,9 +16,9 @@
             
             <ul class="actionButtons clearfix">
               <li><a href="<%= blist_href_new_blist %>"
-                class="arrowButton">New blist</a></li>
+                class="arrowButton">New <%= t(:blist_name) %></a></li>
               <li><a href="<%= blist_href_import %>">Upload</a></li>
-              <li><%= link_to("Browse blists", swf_discover_url) %></li>
+              <li><%= link_to("Browse #{t(:blists_name)}", swf_discover_url) %></li>
               <%- if false -%><li class="last"><a href="#">Invite Others</a></li><%- end -%>
             </ul>
             
@@ -28,7 +28,7 @@
             
             <%- if (@recently_opened_blists.length > 0) -%>
               <div class="activityListContainer">
-                <h2>Recently Opened blists</h2>
+                <h2>Recently Opened <%= t(:blists_name) %></h2>
                 <ul>
                   <%= render( :partial => "blist_activity_list_item", 
                               :collection => @recently_opened_blists) %>
@@ -39,7 +39,7 @@
             
             <%- if (@favorite_blists.length > 0) -%>
               <div class="activityListContainer">
-                <h2>Favorite blists</h2>
+                <h2>Favorite <%= t(:blists_name) %></h2>
                 <ul class="favoriteList">
                   <%= render( :partial => "blist_activity_list_item", 
                               :collection => @favorite_blists) %>

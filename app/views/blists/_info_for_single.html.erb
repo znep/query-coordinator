@@ -429,7 +429,7 @@
       <div class="sharingSummary">
         <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
           "privateShared" : "private") %>">
-        This <%= view.is_blist? ? "blist" : "filter" %> is
+        This <%= view.is_blist? ? t(:blist_name) : "filter" %> is
         <a href='<%= "#{view.href}?popup=PermissionsDialog" %>'
           class='showFlashPopup'><%= view.is_public? ? "Public" : "Private" %></a>
         <%= view.is_shared? ? ' and shared with the following ' +
@@ -502,12 +502,12 @@
     <div class="infoContent"<%= div_shown %>>
       <div class="publishContent">
         <p>
-          You can publish your blists and filtered views on your blog, 
+          You can publish your <%= t(:blists_name) %> and filtered views on your blog, 
           websites and more by embedding a widget.  Simply copy and paste 
           the following HTML into your site.
         </p>
         <div class="publishCode">
-          <p>Embed this blist as a table:</p>
+          <p>Embed this <%= t(:blist_name) %> as a table:</p>
           <div class="copyCode">
             <%= text_area_tag("publishCode", get_publish_embed_code_for_view(view)) %>
           </div>

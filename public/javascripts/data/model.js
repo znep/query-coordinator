@@ -10,9 +10,25 @@ blist.namespace.fetch('blist.data');
      * This class provides functionality for managing a table of data.
      */
     blist.data.Model = function(meta, rows) {
-        var listeners = [];
+        var self = this;
+
+        // The active dataset (rows or a filtered version of rows)
         var data = [];
+
+        // Row lookup-by-ID
         var lookup = {};
+
+        // Event listeners
+        var listeners = [];
+
+        // Sorting configuration
+        var orderFn = null;
+        var orderDesc = false;
+
+        // Filtering configuration
+        var filterFn = null;
+        var filterText = "";
+        var filterTimer = null;
 
         var columnType = function(index) {
             if (meta.columns) {
@@ -29,6 +45,17 @@ blist.namespace.fetch('blist.data');
         var installIDs = function(rows, from) {
             for (var row in rows)
                 lookup[row[0]] = from++;
+        }
+
+        var dataChange = function() {
+            $(listeners).trigger('postload', [ self ]);
+        }
+
+        /**
+         * Access the dataset title.
+         */
+        this.title = function() {
+            return meta.title || "Blist Data";
         }
 
         /**
@@ -96,11 +123,11 @@ blist.namespace.fetch('blist.data');
         /**
          * Get and/or set the rows for the model.
          */
-        this.rows = function(rows) {
-            if (rows) {
-                installIDs(rows, 0);
-                data = rows;
-                $(listeners).trigger('postload', [ this ]);
+        this.rows = function(newRows) {
+            if (newRows) {
+                installIDs(newRows, 0);
+                data = rows = newRows;
+                dataChange();
             }
             return data;
         }
@@ -163,7 +190,9 @@ blist.namespace.fetch('blist.data');
          */
         this.sort = function(order, descending) {
             // Load the types
-            if (typeof order != 'function') {
+            if (typeof order == 'function')
+                orderFn = order;
+            else {
                 // Column reference expressions
                 var r1 = "a[" + order + "]";
                 var r2 = "b[" + order + "]";
@@ -176,12 +205,111 @@ blist.namespace.fetch('blist.data');
                 }
 
                 // Compile an ordering function specific to the column positions
-                order = columnType(order).sortGen(r1, r2);
+                orderFn = columnType(order).sortGen(r1, r2);
+            }
+            orderDesc = descending;
+            
+            // Sort and notify listeners
+            doSort();
+            dataChange();
+        }
+
+        // Run sorting based on current filter configuration.  Does not fire events
+        var doSort = function() {
+            if (orderFn)
+                data.sort(orderFn, orderFn, orderDesc);
+        }
+
+        /**
+         * Filter the data.
+         *
+         * @param filter either filter text or a filtering function
+         * @param timeout an optional async delay value (in milliseconds)
+         */
+        this.filter = function(filter, timeout) {
+            if (filterTimer)
+                clearTimeout(filterTimer);
+            // Configure for filtering.  toFilter is an optimized set that may be a subset of all rows if a previous
+            // filter is in place.
+            var toFilter = configureFilter(filter);
+
+            // If there's nothing to filter, return now
+            if (!toFilter)
+                return;
+
+            // Filter
+            if (timeout) {
+                // Filter, but only after a short timeout
+                filterTimer = setTimeout(function() {
+                    window.clearTimeout(filterTimer);
+                    doFilter(toFilter || rows);
+                    dataChange();
+                }, 250);
+            } else {
+                doFilter(toFilter);
+                dataChange();
+            }
+        }
+
+        var configureFilter = function(filter) {
+            var toFilter;
+            if (typeof filter == "function")
+                filterFn = filter;
+            else {
+                if (filter == null)
+                    filter = "";
+                if (filter == filterText)
+                    return null;
+
+                // Clear the filter if it contains less than three characters
+                if (filter.length < 3) {
+                    filterFn = null;
+                    filterText = "";
+                    data = rows;
+                    dataChange();
+                    return null;
+                }
+
+                // Generate a filter function (TODO - support non-textual values)
+                var regexp = createRegExp(filter);
+                var filterParts = [ "(function(r) { return false" ];
+                for (var i = 0; i < meta.columns.length; i++)
+                    if (columnType(i).filterText)
+                        filterParts.push(' || (r[', i, '] + "").match(regexp)');
+                filterParts.push("; });");
+                filterFn = eval(filterParts.join(''));
+
+                // Filter the current filter set if the filter is a subset of the current filter
+                if (filter.substring(0, filterText.length) == filterText)
+                    toFilter = data;
+                filterText = filter;
             }
 
-            // Sort and notify listeners
-            data.sort(order);
-            $(listeners).trigger('postload', [ this ]);
+            return toFilter || rows;
+        }
+
+        // Create a regular expression to match user entered text
+        var createRegExp = function(text) {
+            // Collapse whitespace
+            text = $.trim(text).replace(/\s+/, ' ');
+
+            // Detect case and perform case sensitive match if capital letters are present
+            if (text.match(/[A-Z]/))
+                var modifiers = "";
+            else
+                modifiers = "i";
+
+            // Escape special characters and create the regexp
+            return new RegExp(text.replace(/(\/|\.|\*|\+|\?|\||\(|\)|\[|\]|\{|\})/g, "\\$1"), modifiers);
+        }
+
+        // Run filtering based on current filter configuration.  Does not fire events
+        var doFilter = function(toFilter) {
+            if (filterTimer) {
+                window.clearTimeout(filterTimer);
+                filterTimer = null;
+            }
+            data = $.grep(toFilter || rows, filterFn);
         }
 
         if (meta)

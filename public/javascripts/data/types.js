@@ -59,7 +59,7 @@ blist.namespace.fetch('blist.data.types');
     }
 
     var renderGenCheckbox = function(value) {
-        return "(" + value + " ? <center>&#9745;</center> : <center>&#9744;</center>)";
+        return "(" + value + " ? '<div class=\"blist-table-checked\"></div>' : '')";
     }
 
     var renderDate = function(value) {
@@ -98,7 +98,8 @@ blist.namespace.fetch('blist.data.types');
     $.extend(blist.data.types, {
         text: {
             renderGen: renderGenText,
-            sortGen: sortGenText
+            sortGen: sortGenText,
+            filterText: true
         },
 
         number: {
@@ -148,7 +149,8 @@ blist.namespace.fetch('blist.data.types');
 
         url: {
             renderGen: renderGenText,
-            sortGen: sortGenSimple
+            sortGen: sortGenSimple,
+            filterText: true
         },
 
         document: {
@@ -163,7 +165,8 @@ blist.namespace.fetch('blist.data.types');
 
         email: {
             renderGen: renderGenText,
-            sortGen: sortGenText
+            sortGen: sortGenText,
+            filterText: true
         },
 
         blist_in_blist: {

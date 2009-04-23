@@ -11,6 +11,12 @@
         return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    // Debugging utility
+    var puts = function(value) {
+        if (console && console.debug)
+            console.debug(value);
+    }
+
     // Make a DOM element into a table
     var makeTable = function(options) {
 
@@ -30,11 +36,34 @@
 
         // Element measuring utility
         var measure = function(html) {
-            var e = $('<div class="blist-table-measure">' + html + '</div>');
-            $(self).append(e);
-            var result = { width: e.width(), height: e.height() };
-            e.remove();
+            measureUtilDOM.innerHTML = html;
+            var result = { width: measureUtil.width(), height: measureUtil.height() };
             return result;
+        }
+
+        var appendInside = function(html) {
+            // Straight jQuery method - slightly slower
+            //inside.append(html);
+
+            // These functions only exist for profiling purposes.  We call this relatively infrequently so it's OK to
+            // leave these in for production purposes.
+            var appendInside_render = function() {
+                appendUtilDOM.innerHTML = html;
+            };
+            var appendInside_append = function() {
+                /*
+                var frag = document.createDocumentFragment();
+                while (appendUtilDOM.firstChild)
+                    frag.appendChild(appendUtilDOM.firstChild);
+                insideDOM.appendChild(frag);
+                */
+               while (appendUtilDOM.firstChild)
+                   insideDOM.appendChild(appendUtilDOM.firstChild);
+            };
+
+            // Call the append functions
+            appendInside_render();
+            appendInside_append();
         }
 
         // Calculate the number of digits in the handle.  This is important because we need to recreate our layout if
@@ -59,19 +88,82 @@
             model.sort(col.srcIndex, sortDescending);
         }
 
+        // Filter data
+        var applyFilter = function() {
+            model.filter(filterBox[0].value, 250);
+        }
+
 
         /*** HTML RENDERING ***/
 
+        // Render container elements
         var outside = $(this)
             .addClass('blist-table')
-            .html('<div class="blist-table-header"></div><div class="blist-table-scrolls"><div class="blist-table-inside">&nbsp;</div></div>');
-        var header = outside
-            .children('.blist-table-header');
-        var scrolls = outside
-            .children('.blist-table-scrolls');
-        var inside = scrolls
-            .children('.blist-table-inside');
+            .html(
+                '<div class="blist-table-top">' +
+                '  <div class="blist-table-title-tl"><div class="blist-table-title-tr"><div class="blist-table-title"><div class="blist-table-name">&nbsp;</div><input class="blist-table-filter"/></div></div></div>' +
+                '  <div class="blist-table-header-scrolls"><div class="blist-table-header">&nbsp;</div></div>' +
+                '</div>' +
+                '<div class="blist-table-scrolls">' +
+                '<div class="blist-table-inside">&nbsp;</div></div>' +
+                '<div class="blist-table-util"></div>'
+            );
 
+        // The top area
+        var top = outside
+            .find('.blist-table-top');
+
+        // The title bar
+        var title = top
+            .find('.blist-table-title');
+        var nameLabel = title
+            .find('.blist-table-name');
+        var filterBox = title
+            .find('.blist-table-filter')
+            .keypress(applyFilter)
+            .change(applyFilter)
+            .example('Search');
+
+        // The table header elements
+        var headerScrolls = top
+            .find('.blist-table-header-scrolls');
+        var header = headerScrolls
+            .find('.blist-table-header');
+
+        // The scrolling container
+        var scrolls = outside
+            .find('.blist-table-scrolls');
+
+        // The non-scrolling row container
+        var inside = scrolls
+            .find('.blist-table-inside');
+        var insideDOM = inside[0];
+
+        // These utility nodes are used to append rows and measure cell text, respectively
+        var appendUtil =
+            $(document.createElement('div'));
+        var appendUtilDOM = appendUtil[0];
+        
+        var measureUtil = outside
+            .find('.blist-table-util');
+        var measureUtilDOM = measureUtil[0];
+
+
+        /*** SCROLLING AND SIZING ***/
+
+        // Window sizing
+        var updateLayout = function() {
+            headerScrolls.height(header.height());
+
+            // Size the scrolling area.  Note that this assumes a width and height of 2px.  TODO - change to absolute
+            // positioning when IE6 is officially dead (June 2010?)
+            scrolls.height(outside.height() - top.height() - 2);
+            scrolls.width(outside.width() - 2);
+        }
+        $(window).resize(updateLayout);
+        updateLayout();
+
+        // Install scrolling handler
         var headerScrolledTo = 0;
         var onScroll = function() {
             var scrollTo = this.scrollLeft;
@@ -140,7 +232,7 @@
         /**
          * Initialize based on current model metadata.
          */
-        var initColumns = function(model) {
+        var initMeta = function(model) {
             // Create an object for each column
             columns = [];
             var mcols = model.meta().columns;
@@ -162,30 +254,28 @@
             // Ensure CSS styles are initialized
             initCSS();
 
-            // Measure width and height of text and cell for the handle (these dimensions must also apply to headers
-            // and cells)
+            // Measure width and height of text and cell for the handle (these dimensions must also apply to cells)
             handleDigits = calculateHandleDigits(model);
-            var measureText = '&nbsp;' + (model.rows().length + 1) + '&nbsp;'
+            var measureText = (model.rows().length + 1);
             var handleInnerDims = measure('<div>' + measureText + '</div>');
             var handleOuterDims = measure('<div class="blist-td">' + measureText + '</div>');
 
             // Record the amount of padding and border in a table cell
             paddingX = handleOuterDims.width - handleInnerDims.width;
 
-            // Update the handle style with proper dimensions
-            var headerHeight = rowHeight + 'px';
-            var handleWidth = handleInnerDims.width;
-            handleStyle.height = headerHeight;
-            handleStyle.width = handleWidth + 'px';
-
-            // Record row positioning information for when we generate rows
+            // Row positioning information
             rowHeight = handleInnerDims.height;
             rowOffset = handleOuterDims.height;
+
+            // Update the handle style with proper dimensions
+            var handleWidth = handleInnerDims.width;
+            handleStyle.height = rowHeight + 'px';
+            handleStyle.width = handleWidth + 'px';
 
             // These variables are used during column initialization
             var pos = handleOuterDims.width;
             var renderFnParts = [
-                '(function(html, index, row) { html.push("<div class=\'blist-tr\' style=\'top: " + (index * ' + rowOffset + ') + "px\'><div class=\'blist-table-handle ' + handleClass + '\'>" + (index + 1) + "</div>"'
+                '(function(html, index, row) { html.push("<div class=\'blist-tr" + (index % 2 ? " blist-tr-even" : "") + "\' style=\'top: " + (index * ' + rowOffset + ') + "px\'><div class=\'blist-table-handle ' + handleClass + '\'>" + (index + 1) + "</div>"'
             ]
 
             // Initialize each column
@@ -194,7 +284,7 @@
                 col = columns[i];
                 col.left = pos;
                 colStyles[i].width = columns[i].width + 'px';
-                colStyles[i].height = headerHeight;
+                colStyles[i].height = rowHeight + 'px';
                 pos += columns[i].width + paddingX;
 
                 // Add rendering information to the rendering function
@@ -211,12 +301,12 @@
             renderFn = renderFnParts.join(',');
             renderFn = blist.data.types.compile(renderFn);
 
-            // Position the scrolling area
-            scrolls[0].style.top = rowOffset + 'px';
-            scrolls.height(outside.height() - rowOffset);
-            scrolls.width(outside.width());
+            // Set the scrolling area width
             header.width(pos);
             inside.width(pos);
+
+            // Set the title
+            nameLabel.html(model.title());
         }
         
         /**
@@ -224,7 +314,7 @@
          */
         var renderHeader = function() {
             var html = [
-                '<div class="blist-th ', handleClass, '"></div>'
+                '<div class="blist-th blist-table-corner ', handleClass, '"></div>'
             ];
             for (var i = 0; i < columns.length; i++) {
                 var col = columns[i];
@@ -367,7 +457,7 @@
             var html = [];
             for (var i = start; i < stop; i++)
                 renderFn(html, i, rows[i]);
-            inside.append(html.join(''));
+            appendInside(html.join(''));
 
             // Destroy the rows that are no longer visible
             if (destroy)
@@ -389,7 +479,7 @@
         var initRows = function(model) {
             if (handleDigits != calculateHandleDigits(model)) {
                 // The handle changed.  Reinitialize columns.
-                initColumns(model);
+                initMeta(model);
                 renderHeader();
             }
             inside.height(rowOffset * model.rows().length);
@@ -405,7 +495,7 @@
 
         // Monitor model events
         $(this).bind('meta_change', function(event, model) {
-            initColumns(model);
+            initMeta(model);
             renderHeader();
         });
         $(this).bind('postload', function(event, model) {

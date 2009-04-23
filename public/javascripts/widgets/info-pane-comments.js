@@ -40,7 +40,19 @@
         function showFormClick($commentPane, e)
         {
             var config = $commentPane.data('config-infoPaneComments');
-            e.preventDefault();
+            if (e)
+            {
+                e.preventDefault();
+            }
+
+            if (!$commentPane.hasClass('expanded'))
+            {
+                $commentPane.parent().find(config.infoTabsSelector)
+                    .infoPaneNavigate().expandTabPanels(
+                        function () { showFormClick($commentPane); });
+                return;
+            }
+
             $commentPane.find(config.formSelector)
                 .removeClass(config.hiddenClass)
                 .find(config.focusSelector).focus()
@@ -156,9 +168,10 @@
         footerSelector: '.footer',
         headerSelector: '.infoContentHeader',
         hiddenClass: 'hidden',
+        infoTabsSelector: '.summaryTabs',
         ratingInputSelector: '.selfRating input',
         ratingUISelector: '.selfRating .rating',
-        showFormSelector: 'a[href=#comment]'
+        showFormSelector: 'a[href=#post_comment]'
      };
 
 })(jQuery);

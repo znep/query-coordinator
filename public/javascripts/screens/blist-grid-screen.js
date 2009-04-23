@@ -305,6 +305,7 @@ blist.blistGrid.mainMenuHandler = function(event)
             break;
         case 'infoPane_tabSummary':
         case 'infoPane_tabFiltered':
+        case 'infoPane_tabComments':
         case 'infoPane_tabSharing':
         case 'infoPane_tabPublishing':
         case 'infoPane_tabActivity':

@@ -34,7 +34,7 @@ blist.namespace.fetch('blist.data');
             if (meta.columns) {
                 var column = meta.columns[index];
                 if (column) {
-                    var type = blist.data.types[column.columnType];
+                    var type = blist.data.types[column.type];
                     if (type)
                         return type;
                 }
@@ -48,14 +48,14 @@ blist.namespace.fetch('blist.data');
         }
 
         var dataChange = function() {
-            $(listeners).trigger('postload', [ self ]);
+            $(listeners).trigger('load', [ self ]);
         }
 
         /**
          * Access the dataset title.
          */
         this.title = function() {
-            return meta.title || "Blist Data";
+            return meta.title || (meta.view && meta.view.name) || "";
         }
 
         /**
@@ -101,10 +101,54 @@ blist.namespace.fetch('blist.data');
                 ajaxOptions.success = function(config) {
                     me.load(config);
                 }
+                ajaxOptions.complete = function() {
+                    $(listeners).trigger('after_load');
+                }
             }
-            if (!$(listeners).trigger('preload', [ ajaxOptions ]))
+            if (!$(listeners).trigger('before_load', [ ajaxOptions ]))
                 return;
             $.ajax(ajaxOptions);
+        }
+
+        var translatePicklistFromView = function(col) {
+            var values = col.dataType && col.dataType.picklist && col.dataType.picklist.values;
+            if (values) {
+                var options = col.options = {};
+                for (var j = 0; j < values.length; j++) {
+                    var value = values[j];
+                    options[value.id] = value.description;
+                }
+            }
+            return options;
+        }
+
+        var translateColumnsFromView = function(view) {
+            var intermediateCols = [];
+            var viewCols = view.columns;
+            if (viewCols) {
+                for (var i = 0; i < viewCols.length; i++) {
+                    var col = viewCols[i];
+                    if (col.position) {
+                        var icol = intermediateCols[col.position] = {
+                            name: col.name,
+                            width: col.width || 100,
+                            type: col.dataType && col.dataType.type ? col.dataType.type : "text",
+                            dataIndex: i
+                        }
+                        if (icol.type == "picklist")
+                            icol.options = translatePicklistFromView(col);
+                    }
+                }
+                var columns = [];
+                for (i = 0; i < intermediateCols.length; i++) {
+                    col = intermediateCols[i];
+                    if (!col)
+                        continue;
+                    // TODO -- handle nested columns
+                    columns.push(col);
+                }
+            }
+            return columns;
         }
 
         /**
@@ -113,8 +157,12 @@ blist.namespace.fetch('blist.data');
         this.meta = function(newMeta) {
             if (newMeta) {
                 meta = newMeta;
-                if (!meta.columns)
-                    meta.columns = [];
+                if (!meta.columns) {
+                    if (meta.view)
+                        meta.columns = translateColumnsFromView(meta.view);
+                    else
+                        meta.columns = [];
+                }
                 $(listeners).trigger('meta_change', [ this ]);
             }
             return meta;

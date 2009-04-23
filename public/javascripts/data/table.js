@@ -99,7 +99,10 @@
             .addClass('blist-table')
             .html(
                 '<div class="blist-table-top">' +
-                '  <div class="blist-table-title-tl"><div class="blist-table-title-tr"><div class="blist-table-title"><div class="blist-table-name">&nbsp;</div><input class="blist-table-filter"/></div></div></div>' +
+                '  <div class="blist-table-title-tl"><div class="blist-table-title-tr"><div class="blist-table-title">' +
+                '    <div class="blist-table-filter-l"><div class="blist-table-filter-r"><input class="blist-table-filter"/></div></div>' +
+                '    <div class="blist-table-name">&nbsp;</div>' +
+                '  </div></div></div>' +
                 '  <div class="blist-table-header-scrolls"><div class="blist-table-header">&nbsp;</div></div>' +
                 '</div>' +
                 '<div class="blist-table-scrolls">' +
@@ -120,7 +123,7 @@
             .find('.blist-table-filter')
             .keypress(applyFilter)
             .change(applyFilter)
-            .example('Search');
+            .example('Find Inside');
 
         // The table header elements
         var headerScrolls = top
@@ -252,15 +255,13 @@
             var mcols = model.meta().columns;
             for (var i = 0; i < mcols.length; i++) {
                 var mcol = mcols[i];
-                if (!mcol.columnType || mcol.hidden)
-                    // Internal column -- ignore for now
-                    continue;
                 var col = {
                     name: mcol.name,
-                    columnType: mcol.columnType,
+                    type: mcol.type,
                     index: columns.length,
-                    srcIndex: i,
-                    width: mcol.width || 100
+                    srcIndex: mcol.dataIndex,
+                    width: mcol.width || 100,
+                    options: mcol.options
                 }
                 columns.push(col);
             }
@@ -294,6 +295,7 @@
             ]
 
             // Initialize each column
+            var contextVariables = {};
             for (i = 0; i < columns.length; i++) {
                 // Initialize the column's style
                 col = columns[i];
@@ -303,8 +305,8 @@
                 pos += columns[i].width + paddingX;
 
                 // Add rendering information to the rendering function
-                var type = blist.data.types[col.columnType] || blist.data.types.text;
-                var renderer = type.renderGen("row[" + col.srcIndex + "]");
+                var type = blist.data.types[col.type] || blist.data.types.text;
+                var renderer = type.renderGen("row[" + col.srcIndex + "]", col, contextVariables);
                 renderFnParts.push(
                     "\"<div class='blist-td " + colClasses[i] + "'>\", " + renderer + ", \"</div>\""
                 )
@@ -314,7 +316,7 @@
             // calls, etc.
             renderFnParts.push('"</div>") })')
             renderFn = renderFnParts.join(',');
-            renderFn = blist.data.types.compile(renderFn);
+            renderFn = blist.data.types.compile(renderFn, contextVariables);
 
             // Set the scrolling area width
             header.width(pos);
@@ -513,9 +515,15 @@
             initMeta(model);
             renderHeader();
         });
-        $(this).bind('postload', function(event, model) {
+        $(this).bind('before_load', function() {
+            outside.addClass('blist-loading');
+        });
+        $(this).bind('load', function(event, model) {
             initRows(model);
         });
+        $(this).bind('after_load', function() {
+            outside.removeClass('blist-loading');
+        })
 
         // Install the model
         var model = $(this).blistModel(options.model);

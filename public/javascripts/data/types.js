@@ -10,11 +10,32 @@ blist.namespace.fetch('blist.data.types');
     /*** UTILITY FUNCTIONS ***/
 
     /**
+     * OK, you're going to hate me for this little gem.
+     *
      * This function compiles a JavaScript expression using eval in this closure.  This allows external code to build
      * complex expressions that use functions that are local to this closure (such as type rendering functions).
+     *
+     * @param expression is the JavaScript expression to compile
+     * @param context defines variables that will be available in the scope of the compiled function.  The key is a
+     *   variable name and the value is the actual value used by the expression.
      */
-    blist.data.types.compile = function(expression) {
+    blist.data.types.compile = function(expression, context) {
+        // Set local variables for each context variable
+        for (var _key_ in context) {
+            var _object_ = context[_key_];
+            eval(_key_ + " = _object_");
+        }
+
+        // Compile
         return eval(expression);
+    }
+
+    /**
+     * Generate a unique variable name for type information.
+     */
+    var nextVarID = 1;
+    var createUniqueName = function() {
+        return "_u" + nextVarID++;
     }
 
 
@@ -87,6 +108,15 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenDate = function(value) {
         return "renderDate(" + value + ")";
+    }
+
+    var renderGenPicklist = function(value, column, context) {
+        var valueLookupVariable = createUniqueName();
+        if (column.options) {
+            context[valueLookupVariable] = column.options;
+            return "(" + valueLookupVariable + "[" + value + "] || '')";
+        }
+        return "'?'";
     }
 
 
@@ -175,7 +205,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         picklist: {
-            renderGen: renderGenText,
+            renderGen: renderGenPicklist,
             sortGen: sortGenSimple
         }
     });

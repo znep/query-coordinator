@@ -14,7 +14,7 @@
 
 .blist-table-title-tl {
     padding-left: 8px;
-    background: transparent url(images/content/table/title_tl.png) no-repeat top left;
+    background: transparent url(images/content/table/title_tl.png) no-repeat scroll left top;
 }
 
 .blist-table-title-tr {
@@ -34,24 +34,41 @@
     font-size: 16px;
 }
 
-input.blist-table-filter {
+.blist-table-filter-l {
     position: absolute;
+    top: 0;
     right: 4px;
-    top: 0px;
+    margin-top: 3px;
+    padding-left: 11px;
+    height: 23px;
+    background: transparent url(images/common/find_input_cap.png) no-repeat scroll center left;
+    margin-right: 4px;
+}
+
+.blist-table-filter-r {
+    padding-right: 31px;
+    height: 23px;
+    background: transparent url(../images/find_button.png) no-repeat scroll center right;
+}
+
+input.blist-table-filter {
     border: solid 1px #cacaca;
-    margin: 4px;
-    padding: 2px 2px 1px 2px;
+    border-left: none;
+    border-right: none;
+    padding: 2px 0 0 0;
     background: white;
-    font-size: 12px;
-    height: 14px;
+    font-size: 14px;
+    height: 19px;
     width: 160px;
+    color: #333333;
 }
 
 .blist-table .example {
-    color: #666666;
+    color: #999999;
 }
 
 .blist-table-header-scrolls {
+    background-color: #e2e2e2;
     position: relative;
     border: solid 1px #cacaca;
     border-bottom: none;
@@ -69,6 +86,10 @@ input.blist-table-filter {
     overflow: auto;
     border: solid 1px #cacaca;
     border-top: none;
+}
+
+.blist-loading .blist-table-scrolls {
+    background: transparent url(images/common/spinner1.gif) no-repeat center center;
 }
 
 .blist-table-inside {
@@ -93,7 +114,6 @@ input.blist-table-filter {
     */
     position: relative;
     float: left;
-    background-color: #e2e2e2;
     padding-left: 4px /*.2em*/;
     padding-right: 4px /*.2em*/;
     border-left: solid 1px #dddddd;
@@ -143,6 +163,7 @@ input.blist-table-filter {
 
 .blist-table .blist-table-corner {
     cursor: default;
+    border-left: none;
 }
 
 .blist-table-util {

@@ -7,3 +7,5 @@ gov:
   discover_header_intro: Discover useful, informative and interesting data. View or copy and use for yourself!
   discover_carousel_header: Popular Datasets
   discover_popular_content_header: Browse Popular
+  blist_name: Dataset
+  blists_name: Datasets

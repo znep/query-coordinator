@@ -24,7 +24,7 @@
     <li id="tabBlists">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
-        <a href="#blists">blists</a>
+        <a href="#blists"><%= t(:blists_name) %></a>
       </div></div>
     </li>
 <%- if isActivityEnabled -%>
@@ -258,8 +258,8 @@
 <%# *** START: BLISTS *** %>
 <div class="infoContentOuter singleInfoBlists">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader typeBlist first"><%= pluralize(@contact_blists.length, "Public blist") %></h2>
-    <h2 class="panelHeader typeBlist private"><%= pluralize(@contact_templates.length, "blist template")%></h2>
+    <h2 class="panelHeader typeBlist first"><%= pluralize(@contact_blists.length, "Public #{t(:blist_name)}") %></h2>
+    <h2 class="panelHeader typeBlist private"><%= pluralize(@contact_templates.length, "#{t(:blist_name)} template")%></h2>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">

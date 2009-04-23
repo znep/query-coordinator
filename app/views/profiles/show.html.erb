@@ -196,7 +196,7 @@
 
 
           <div class='publicBlists'>
-            <h3>My public blists &amp; filters</h3>
+            <h3>My public <%= t(:blists_name) %> &amp; filters</h3>
             <div class='infoContentOuter active'><div class="infoContentInner">
               <div class='infoContent'>
                 <div class='infoContentHeader'>
@@ -252,12 +252,12 @@
       :locals => { :id => 'blistStats' } ) do %>
         <h4>Your Stats</h4>
         <dl>
-          <dt>Private blists: <%= @private_blists.length %></dt>
+          <dt>Private <%= t(:blists_name) %>: <%= @private_blists.length %></dt>
           <dd><%= pluralize(@private_filters.length, 'filter') %></dd>
-          <dt>Public blists &amp; Filters: <%= @public_views.length %></dt>
+          <dt>Public <%= t(:blists_name) %> &amp; Filters: <%= @public_views.length %></dt>
           <dd><%= pluralize(@public_view_count, 'view') %></dd>
           <dd><%= pluralize(@public_copy_count, 'copy') %></dd>
-          <dt>Shared blists: <%= @shared_blists.length %></dt>
+          <dt>Shared <%= t(:blists_name) %>: <%= @shared_blists.length %></dt>
           <dt>Contacts: <%= @contacts.length %></dt>
         </dl>
     <% end %>

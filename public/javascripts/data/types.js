@@ -38,6 +38,15 @@ blist.namespace.fetch('blist.data.types');
         return "_u" + nextVarID++;
     }
 
+    /**
+     * Escape HTML characters.
+     */
+    var escape = function(text) {
+        if (text == null)
+            return '';
+        return (text + "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
 
     /*** SORT FUNCTION GENERATORS ***/
     
@@ -64,7 +73,14 @@ blist.namespace.fetch('blist.data.types');
 
     /*** HTML RENDERERS ***/
 
-    var renderText = function(value) {
+    var renderGenText = function(value) {
+        // Blist text is currently returned with character entities escaped
+        //return "escape(" + value + ")";
+        return "(" + value + " || '')";
+    }
+
+    var renderRichtext = function(value) {
+        // TODO -- sanitize insecure HTML...  This should happen on the server but currently doesn't.
         if (value == null)
             return '';
         value = value + '';
@@ -75,8 +91,8 @@ blist.namespace.fetch('blist.data.types');
         return value;
     }
 
-    var renderGenText = function(value) {
-        return "renderText(" + value + ")";
+    var renderGenRichtext = function(value) {
+        return "renderRichtext(" + value + " || '')";
     }
 
     var renderGenCheckbox = function(value) {
@@ -113,10 +129,40 @@ blist.namespace.fetch('blist.data.types');
     var renderGenPicklist = function(value, column, context) {
         var valueLookupVariable = createUniqueName();
         if (column.options) {
-            context[valueLookupVariable] = column.options;
+            var valueLookup = context[valueLookupVariable] = {};
+            for (var key in column.options) {
+                var option = column.options[key];
+                var icon = option.icon;
+                if (icon)
+                    icon = "<img class='blist-table-option-icon' src='" + icon + "'> ";
+                else
+                    icon = "";
+                valueLookup[key] = icon + escape(option.text);
+            }
             return "(" + valueLookupVariable + "[" + value + "] || '')";
         }
         return "'?'";
+    }
+
+    var renderURL = function(value) {
+        if (!value)
+            return '';
+        else if (typeof value == "string") {
+            // Terrible legacy format
+            if (value.charAt(0) == '<')
+                return value;
+            var url = value;
+            var caption = value;
+        } else {
+            // New hypothetical Blist format
+            url = value.url;
+            caption = value.caption || url;
+        }
+        return "<a href='" + escape(url) + "'>" + escape(caption) + "</a>";
+    }
+
+    var renderGenURL = function(value) {
+        return "renderURL(" + value + ")";
     }
 
 
@@ -128,6 +174,12 @@ blist.namespace.fetch('blist.data.types');
     $.extend(blist.data.types, {
         text: {
             renderGen: renderGenText,
+            sortGen: sortGenText,
+            filterText: true
+        },
+
+        richtext: {
+            renderGen: renderGenRichtext,
             sortGen: sortGenText,
             filterText: true
         },
@@ -178,7 +230,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         url: {
-            renderGen: renderGenText,
+            renderGen: renderGenURL,
             sortGen: sortGenSimple,
             filterText: true
         },
@@ -209,4 +261,10 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenSimple
         }
     });
+
+    for (var name in blist.data.types) {
+        var type = blist.data.types[name];
+        if (typeof type == "object")
+            type.name = name;
+    }
 })(jQuery);

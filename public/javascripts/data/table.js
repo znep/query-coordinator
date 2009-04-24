@@ -4,6 +4,12 @@
  */
 
 (function($) {
+    // Milliseconds to delay before expanding a cell's content
+    var EXPAND_DELAY = 100;
+
+    // Milliseconds in which expansion should occur
+    var EXPAND_DURATION = 100;
+
     var nextTableID = 1;
 
     // HTML escaping utility
@@ -31,13 +37,6 @@
 
         
         /*** CLOSURE UTILITY FUNCTIONS ***/
-
-        // Element measuring utility
-        var measure = function(html) {
-            measureUtilDOM.innerHTML = html;
-            var result = { width: measureUtil.width(), height: measureUtil.height() };
-            return result;
-        }
 
         var appendInside = function(html) {
             // Straight jQuery method - slightly slower
@@ -88,7 +87,158 @@
 
         // Filter data
         var applyFilter = function() {
-            model.filter(filterBox[0].value, 250);
+            setTimeout(function() {
+                model.filter(filterBox[0].value, 250);
+            }, 10);
+        }
+
+
+        /*** CELL HOVER EXPANSION ***/
+
+        // Handle mouse movement within the inside (cell) area
+        var hotCell;
+        var hotCellTimer;
+        var hotExpander;
+
+        var findCell = function(event) {
+            var cell = $(event.target);
+            if (!cell.hasClass('blist-td') && !cell.hasClass('blist-expander')) {
+                cell = cell.closest('.blist-td');
+                if (!cell.length)
+                    return null;
+            }
+            cell = cell[0];
+            if (cell == hotExpander || cell.parentNode == hotExpander)
+                return hotCell;
+            return cell;
+        }
+
+        var onCellMove = function(event) {
+            // Locate the cell the mouse is in, if any
+            var over = findCell(event);
+
+            // If the hover cell is currently hot, nothing to do
+            if (over == hotCell)
+                return;
+            if ($(over).hasClass('blist-table-expander'))
+                return;
+
+            // Update hover state
+            if (hotCell)
+                onCellOut(event);
+            hotCell = over;
+            if (over) {
+                $(over).addClass('blist-hot');
+                hotCellTimer = setTimeout(expandHotCell, EXPAND_DELAY);
+            }
+        }
+
+        var onCellOut = function(event) {
+            if (hotCell) {
+                var to = findCell(event);
+                if (to == hotCell)
+                    return;
+
+                $(hotCell).removeClass('blist-hot');
+                hotCell = null;
+                if (hotCellTimer) {
+                    clearTimeout(hotCellTimer);
+                    hotCellTimer = null;
+                }
+                if (hotExpander)
+                    $(hotExpander).remove();
+            }
+        }
+
+        var expandHotCell = function() {
+            if (!hotCellTimer)
+                return;
+            hotCellTimer = null;
+
+            // Create the expanding element
+            hotExpander = document.createElement('div');
+            var expander = $(hotExpander);
+            expander.addClass('blist-table-expander');
+            var wrap = hotCell.cloneNode(true);
+            var w = $(wrap);
+            w.width('auto').height('auto');
+            hotExpander.appendChild(wrap);
+            measureUtilDOM.appendChild(hotExpander);
+
+            // Compute cell padding
+            var padx = w.outerWidth() - w.width();
+            var pady = w.outerHeight() - w.height();
+
+            // Determine the cell's "natural" size
+            var rc = { width: w.outerWidth(), height: w.outerHeight() };
+
+            // Determine if expansion is necessary.  The + 2 prevents us from expanding if the box would just be
+            // slightly larger than the containing cell.  This is a nicety except in the case of picklists where the
+            // 16px image tends to be just a tad larger than the text (currently configured at 15px).
+            var h = $(hotCell);
+            var hotWidth = h.outerWidth();
+            var hotHeight = h.outerHeight();
+            if (rc.width <= hotWidth + 2 && rc.height <= hotHeight + 2) {
+                // Expansion is not necessary
+                expander.remove();
+                return;
+            }
+
+            // The expander must be at least as large as the hot cell
+            if (rc.width < hotWidth)
+                rc.width = hotWidth;
+            if (rc.height < hotHeight)
+                rc.height = hotHeight;
+
+            // Determine the size to which the contents expand, constraining to predefined maximums
+            var maxWidth = Math.floor(scrolls.width() * .5);
+            if (rc.width > maxWidth) {
+                // Constrain the width and determine the height
+                expander.width(maxWidth);
+                rc.width = maxWidth;
+                rc.height = expander.height();
+            }
+            var maxHeight = Math.floor(inside.height() * .75);
+            if (rc.height > maxHeight)
+                rc.height = maxHeight;
+
+            // Locate a position for the expansion.  We prefer the expansion to align top-left with the cell but do our
+            // best to ensure the expansion remains within the viewport
+            rc.left = hotCell.offsetLeft;
+            rc.top = hotCell.parentNode.offsetTop;
+            rc.left -= 1; // assumes 1px right border
+            rc.top -= 1; // assumes 1px bottom border
+            var origOffset = { top: rc.top, left: rc.left };
+
+            // Ensure viewport is in the window horizontally
+            var viewportWidth = scrolls.width() - scrollbarWidth;
+            var scrollLeft = scrolls.scrollLeft();
+            if (rc.left + rc.width > scrollLeft + viewportWidth)
+                rc.left = scrollLeft + viewportWidth - rc.width;
+            if (rc.left < scrollLeft)
+                rc.left = scrollLeft;
+
+            // Ensure viewport is in the window vertically
+            var viewportHeight = scrolls.height() - scrollbarWidth;
+            var scrollTop = scrolls.scrollTop();
+            if (rc.top + rc.height > scrollTop + viewportHeight)
+                rc.top = scrollTop + viewportHeight - rc.height;
+            if (rc.top < scrollTop - 1)
+                rc.top = scrollTop - 1;
+
+            // Size the content wrapper
+            w.width(rc.width - padx);
+            w.height(rc.height - pady);
+
+            // Position the expander
+            expander.css('top', origOffset.top + 'px');
+            expander.css('left', origOffset.left + 'px');
+            expander.width(hotWidth);
+            expander.height(hotHeight);
+            insideDOM.appendChild(hotExpander);
+
+            // Expand the element into position
+            expander.animate($.extend(rc, rc), EXPAND_DURATION);
         }
 
 
@@ -123,7 +273,7 @@
             .find('.blist-table-filter')
             .keypress(applyFilter)
             .change(applyFilter)
-            .example('Find Inside');
+            .example('Find');
 
         // The table header elements
         var headerScrolls = top
@@ -137,7 +287,9 @@
 
         // The non-scrolling row container
         var inside = scrolls
-            .find('.blist-table-inside');
+            .find('.blist-table-inside')
+            .mousemove(onCellMove)
+            .mouseout(onCellOut);
         var insideDOM = inside[0];
 
         // These utility nodes are used to append rows and measure cell text, respectively
@@ -151,6 +303,17 @@
 
 
         /*** SCROLLING AND SIZING ***/
+
+        // Measure the scroll bar
+        var scrollbarWidth = (function scrollbarWidth() {
+            var div = $('<div style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"><div style="height:100px;"></div>');
+            $('body').append(div);
+            var w1 = $('div', div).innerWidth();
+            div.css('overflow-y', 'scroll');
+            var w2 = $('div', div).innerWidth();
+            $(div).remove();
+            return w1 - w2;
+        })();
 
         // Window sizing
         var updateLayout = function() {
@@ -271,25 +434,29 @@
 
             // Measure width and height of text and cell for the handle (these dimensions must also apply to cells)
             handleDigits = calculateHandleDigits(model);
-            var measureText = (model.rows().length + 1);
-            var handleInnerDims = measure('<div>' + measureText + '</div>');
-            var handleOuterDims = measure('<div class="blist-td">' + measureText + '</div>');
+            measureUtilDOM.innerHTML = '<div>x</div>';
+            var measuredInnerDims = { width: measureUtil.width(), height: measureUtil.height() };
+            measureUtilDOM.innerHTML = '<div class="blist-td">x</div>';
+            var measuredOuterDims = { width: measureUtil.width(), height: measureUtil.height() };
 
             // Record the amount of padding and border in a table cell
-            paddingX = handleOuterDims.width - handleInnerDims.width;
+            paddingX = measuredOuterDims.width - measuredInnerDims.width;
 
             // Row positioning information
-            rowHeight = handleInnerDims.height;
-            rowOffset = handleOuterDims.height;
+            rowHeight = measuredInnerDims.height;
+            rowOffset = measuredOuterDims.height;
             rowStyle.height = rowHeight + 'px';
 
             // Update the handle style with proper dimensions
-            var handleWidth = handleInnerDims.width;
+            var dummyHandleText = Math.min(model.rows().length, 1000);
+            measureUtilDOM.innerHTML = '<div class="blist-table-handle">' + dummyHandleText + '</div>';
+            var handleOuterWidth = measureUtil.width();
+            var handleWidth = $(measureUtilDOM.firstChild).width();
             handleStyle.height = rowHeight + 'px';
             handleStyle.width = handleWidth + 'px';
 
             // These variables are used during column initialization
-            var pos = handleOuterDims.width;
+            var pos = handleOuterWidth;
             var renderFnParts = [
                 '(function(html, index, row) { html.push("<div class=\'blist-tr" + (index % 2 ? " blist-tr-even" : "") + "\' style=\'top: " + (index * ' + rowOffset + ') + "px\'><div class=\'blist-table-handle ' + handleClass + '\'>" + (index + 1) + "</div>"'
             ]

@@ -5,17 +5,14 @@ class DiscoversController < SwfController
     @body_class = 'discover'
     @show_search_form = false
 
-    # TODO: Make all views return ALL public blists.
-    @all_views = View.find({'name' => 't'}, true)
+    opts = Hash.new
+    opts['limit'] = 10
+    @all_views = View.find(opts, true)
 
     @popular_views = View.find_popular()
     @carousel_views = View.find_featured()
-    @network_views = View.find_popular()[0,5]
+    @network_views = View.find_recent(5, true)
 
-    @fun_views = @all_views.find_all { |v| v.category == "fun" }
-    @personal_views = @all_views.find_all { |v| v.category == "personal" }
-    @business_views = @all_views.find_all { |v| v.category == "business" }
-    @education_views = @all_views.find_all { |v| v.category == "education" }
   end
 
   def swf

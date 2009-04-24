@@ -654,7 +654,7 @@ table.gridList tr.child.hover.selected td.description > *
 
 .discoverContent h2 { color: #666; }
 
-.discoverContentList li.viewListItem .itemContent h3
+.discoverContentList li.viewListItem .itemHeader h3
 {
     background: none;
     height: auto;

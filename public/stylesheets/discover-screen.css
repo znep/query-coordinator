@@ -73,6 +73,7 @@
 {
     float: right;
     margin-right: -33em;
+    margin-top: 4em;
     width: 30em;
 }
 .myNetworkViews h2
@@ -88,13 +89,23 @@
 ul.myNetworkList li
 {
     color: #333;
-    margin-bottom: 1em;
+    margin-bottom: .5em;
 }
 ul.myNetworkList li a
 {
+    float: left;
     font-size: 1.4em;
+    line-height: 1.285em; /* 18px; */
+    overflow: hidden;
+    margin-right: .5em;
+    max-width: 100%;
 }
-
+ul.myNetworkList li span
+{
+    float: left;
+    line-height: 1.4em; /* 14px */
+    padding-top: 3px;
+}
 
 
 .discoverTabsContainer
@@ -106,8 +117,10 @@ ul.myNetworkList li a
 .discoverContentContainer
 {
     background: #cacaca url(/stylesheets/images/sidebar/sidebar_corner_bottom_right.png) bottom right no-repeat;
+    display: none;
     padding-right: 17.5em;
 }
+.discoverContentContainer.active { display: block; }
 
 .discoverContentOuter { 
     background-color: #fff;

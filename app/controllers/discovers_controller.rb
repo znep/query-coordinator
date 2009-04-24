@@ -9,7 +9,7 @@ class DiscoversController < SwfController
     @all_views = View.find({'name' => 't'}, true)
 
     @popular_views = View.find_popular()
-    @carousel_views = View.find_popular()[0,2]
+    @carousel_views = View.find_popular()[0,4]
     @network_views = View.find_popular()[0,5]
 
     @fun_views = @all_views.find_all { |v| v.category == "fun" }

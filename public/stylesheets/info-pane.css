@@ -468,11 +468,6 @@
     padding-right: 0.5em;
 }
 
-.singleInfoComments .infoContentHeader h2.panelHeader.rating
-{
-    margin-top: 12px;
-    padding: 0;
-}
 
 .singleInfoComments .infoContentHeader p
 {
@@ -482,28 +477,13 @@
     margin-top: 14px;
 }
 
-
-#infoPane .singleInfoComments .rating
+#infoPane .singleInfoComments h2.rating
 {
-    background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
-    background-position: 0 0;
-    height: 16px;
-    line-height: 100px;
-    overflow: hidden;
-    width: 89px;
+    float: left;
+    margin-left: .5em;
+    margin-top: 12px;
+    padding: 0;
 }
-
-#infoPane .singleInfoComments .rating.zero { background-position: 0 0; }
-#infoPane .singleInfoComments .rating.zero_half { background-position: 0 -16px; }
-#infoPane .singleInfoComments .rating.one { background-position: 0 -32px; }
-#infoPane .singleInfoComments .rating.one_half { background-position: 0 -48px; }
-#infoPane .singleInfoComments .rating.two { background-position: 0 -64px; }
-#infoPane .singleInfoComments .rating.two_half { background-position: 0 -80px; }
-#infoPane .singleInfoComments .rating.three { background-position: 0 -96px; }
-#infoPane .singleInfoComments .rating.three_half { background-position: 0 -112px; }
-#infoPane .singleInfoComments .rating.four { background-position: 0 -128px; }
-#infoPane .singleInfoComments .rating.four_half { background-position: 0 -144px; }
-#infoPane .singleInfoComments .rating.five { background-position: 0 -160px; }
 
 .singleInfoComments.infoContentOuter.listContainer form.postComment dd
 {

@@ -64,7 +64,7 @@ ActionController::Routing::Routes.draw do |map|
       :category => /(\w|-)+/}
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
-  map.root :controller => "discovers", :action => "swf"
+  map.root :controller => "discovers", :action => "show"
   map.login '/login', :controller => 'user_sessions', :action => 'new'
   map.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
   map.signup '/signup', :controller => 'accounts', :action => 'new'

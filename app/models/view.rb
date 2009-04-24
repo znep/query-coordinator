@@ -16,7 +16,7 @@ class View < Model
 
   #TODO: Make this find only popular views.
   def self.find_popular()
-    self.find({'name' => 'p'}, true)
+    self.find(nil, true)
   end
 
   def self.create_favorite(id)

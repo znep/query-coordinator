@@ -67,58 +67,7 @@
     margin-bottom: .833em; /* 15px */
 }
 
-.featuredViewsCarousel ul.carousel > li
-{
-    float: left;
-}
-.featuredViewsCarousel ul.carousel > li.carouselItem
-{
-    background: url(/stylesheets/images/common/carousel_item_background.png) no-repeat;
-    height: 13.9em;
-    margin-right: 1em;
-    padding: 1.7em .4em 1.7em 1.7em;
-    width: 23.7em;
-}
-.featuredViewsCarousel ul.carousel > li.arrow
-{
-    padding-top: 7em;
-    margin-right: 1em;
-}
-.featuredViewsCarousel ul.carousel > li.arrow a
-{
-    background: url(/stylesheets/images/common/carousel_arrow_sprites.png) no-repeat;
-    display: block;
-    height: 32px;
-    line-height: 200px;
-    overflow: hidden;
-    width: 32px;
-}
-.featuredViewsCarousel ul.carousel > li.arrow.next a { background-position: left -32px; }
 
-.carouselItem .itemTitle h3
-{
-    float: left;
-    font-size: 1.8em;
-    font-weight: normal;
-    padding-right: 34px;
-    text-transform: none;
-}
-.carouselItem .itemTitle img
-{
-    display: block;
-    float: right;
-    margin-left: -34px;
-    margin-right: 15px;
-    width: 55px;
-}
-
-.carouselItem .itemMetaData { margin-top: 1.7em; }
-.carouselItem .metaList li
-{
-    color: #666;
-    font-size: 1.6em;
-    margin-bottom: .312em; /* 5px */
-}
 
 .discoverHeaderContent .myNetworkViews
 {
@@ -191,48 +140,30 @@ ul.myNetworkList li a
 .discoverContentList li.viewListItem
 {
     border-bottom: 1px solid #ccc;
-    padding: .5em 20em 1em 0;
 }
-.discoverContentList li.viewListItem .itemContent
+
+
+.viewListItem .itemHeader 
+{
+     padding: .5em 40em 0 0;
+}
+.viewListItem .itemTitle
 {
     float: left;
     width: 100%;
 }
-.discoverContentList li.viewListItem .itemContent h3
-{
-    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
-    float: left;
-    font-size: 1.8em;
-    font-weight: normal;
-    height: 41px;
-    line-height: 41px;
-    padding-left: 46px;
-    text-transform: none;
-}
-.discoverContentList li.viewListItem .itemContent h3.typeBlists { background-position: left top; }
-.discoverContentList li.viewListItem .itemContent h3.typeFilters { background-position: left -41px; }
-.discoverContentList li.viewListItem .itemContent h3.typeBlist { background-position: left -82px; }
-.discoverContentList li.viewListItem .itemContent h3.typeBlist.private { background-position: left -123px; }
-.discoverContentList li.viewListItem .itemContent h3.typeBlist.privateShared { background-position: left -164px; }
-.discoverContentList li.viewListItem .itemContent h3.typeComments { background-position: left -205px; }
-.discoverContentList li.viewListItem .itemContent h3.typeSharing { background-position: left -246px; }
-.discoverContentList li.viewListItem .itemContent h3.typePublish { background-position: left -328px; }
-.discoverContentList li.viewListItem .itemContent h3.typeViews { background-position: left -369px; }
-.discoverContentList li.viewListItem .itemContent h3.typeActivity { background-position: left -410px; }
-.discoverContentList li.viewListItem .itemContent h3.typeFilter { background-position: left -451px; }
-.discoverContentList li.viewListItem .itemContent h3.typeFilter.private { background-position: left -492px; }
-.discoverContentList li.viewListItem .itemContent h3.typeFilter.privateShared { background-position: left -533px; }
-.discoverContentList li.viewListItem .itemContent h3.typeSharedIn { background-position: left -738px; }
-.discoverContentList li.viewListItem .itemContent h3.typeSharedOut { background-position: left -779px; }
 
-.discoverContentList li.viewListItem .itemContent p
+.viewListItem .itemTitleInner
 {
-    color: #666;
-    font-size: 1.2em;
-    margin-bottom: 12px;
-    margin-left: 10px;
+    padding-right: 8.5em;
 }
-.discoverContentList li.viewListItem .itemContent p.dateLine
+.viewListItem .itemTitleWrapper
+{
+    float: left;
+    max-width: 100%;
+}
+
+.discoverContentList li.viewListItem .itemHeader p.dateLine
 {
     color: #333;
     float: left;
@@ -241,7 +172,93 @@ ul.myNetworkList li a
     line-height: 36px;
     margin-bottom: 0;
     margin-left: 1em;
+    margin-right: -7.727em; /* -85px */
     padding-top: 5px;
+}
+
+
+.discoverContentList li.viewListItem .itemHeader h3
+{
+    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
+    color: #0071bc;
+    font-size: 1.8em;
+    font-weight: normal;
+    height: 41px;
+    line-height: 41px;
+    overflow: hidden;
+    padding-left: 2.555em; /* 46px */
+    text-transform: none;
+}
+.discoverContentList li.viewListItem .itemHeader h3.typeBlists { background-position: left top; }
+.discoverContentList li.viewListItem .itemHeader h3.typeFilters { background-position: left -41px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeBlist { background-position: left -82px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeBlist.private { background-position: left -123px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeBlist.privateShared { background-position: left -164px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeComments { background-position: left -205px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeSharing { background-position: left -246px; }
+.discoverContentList li.viewListItem .itemHeader h3.typePublish { background-position: left -328px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeViews { background-position: left -369px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeActivity { background-position: left -410px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeFilter { background-position: left -451px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeFilter.private { background-position: left -492px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeFilter.privateShared { background-position: left -533px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeSharedIn { background-position: left -738px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeSharedOut { background-position: left -779px; }
+
+
+.viewListItem .itemMeta
+{
+    float: right;
+    width: 40em;
+    margin-right: -40em;
+}
+
+.discoverContentList li.viewListItem .itemMeta li
+{
+    color: #666;
+    float: left;
+    font-size: 1.1em;
+    height: 35px;
+    line-height: 35px;
+    margin-left: .909em; /* 10px; */
+    padding-top: 6px;
+    width: 7.909em; /* 87px; */
+}
+.discoverContentList li.viewListItem .itemMeta li strong { color: #333; }
+
+.discoverContentList li.viewListItem .itemMeta li.ratingContainer
+{
+    width: 17.727em; /* 195px; */
+}
+.discoverContentList li.viewListItem .itemMeta li.ratingContainer .rating 
+{ 
+    float: left; 
+    margin-right: 1em;
+    margin-top: 8px;
+}
+
+
+
+.discoverContentList li.viewListItem .itemBody { padding-right: 10.2em; }
+.discoverContentList li.viewListItem .itemContent
+{
+    float: left;
+    width: 100%;
+}
+.discoverContentList li.viewListItem .itemActionContainer
+{
+    float: right;
+    margin-right: -10.2em;
+    width: 10.2em;
+}
+
+
+.discoverContentList li.viewListItem .itemContent p
+{
+    color: #666;
+    font-size: 1.2em;
+    margin-bottom: 12px;
+    margin-left: .833em; /* 10px; */
 }
 
 .discoverContentList li.viewListItem .itemContent p.viewCategory
@@ -266,33 +283,16 @@ ul.myNetworkList li a
     font-weight: bold;
 }
 
-.discoverContentList li.viewListItem .itemMetaContainer
+.itemActionContainer ul li
 {
     float: left;
-    margin-right: -20em;
+    width: 7.909em; /* 87px; */
 }
-.itemMetaContainer ul li
-{
-    float: left;
-    margin: 0 1.5em 0 0;
-    width: 87px;
-}
-.itemMetaContainer ul li.last { margin-right: 0; }
-.itemMetaContainer .itemMeta
-{
-    margin: 0 0 .5em .5em;
-}
-.itemMetaContainer .itemMeta li 
-{ 
-    color: #666;
-    font-size: 1.1em;
-    line-height: 2.2em; 
-}
-.itemMetaContainer .itemMeta li strong { color: #333; }
+.itemActionContainer ul li.last { margin-right: 0; }
 
-.itemMetaContainer .itemActions.actionButtons li { background-position: 0 -63px; }
-.itemMetaContainer .itemActions.actionButtons li a { background-position: right -84px; }
-.itemMetaContainer .itemActions.actionButtons li a.arrowButton { background-position: right -105px; }
+.itemActionContainer .itemActions.actionButtons li { background-position: 0 -63px; }
+.itemActionContainer .itemActions.actionButtons li a { background-position: right -84px; }
+.itemActionContainer .itemActions.actionButtons li a.arrowButton { background-position: right -105px; }
 
 .discoverContentNavTR
 {

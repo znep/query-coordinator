@@ -634,10 +634,17 @@ table.gridList tr.child.hover.selected td.description > *
 }
 
 .featuredViewsCarousel h2 { color: #fff; }
-.featuredViewsCarousel ul.carousel > li.arrow a 
-{ 
+
+
+.jcarousel-skin-discover .jcarousel-prev-horizontal {
     background-image: url(/stylesheets/images/gov/common/carousel_arrow_sprites.png);
 }
+.jcarousel-skin-discover .jcarousel-next-horizontal {
+    background-image: url(/stylesheets/images/gov/common/carousel_arrow_sprites.png);
+}
+
+
+
 
 .discoverContentOuter { border-color: #ececec; }
 .discoverContentContainer { background-image: url(/stylesheets/images/gov/sidebar/sidebar_corner_bottom_right.png); }

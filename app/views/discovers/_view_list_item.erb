@@ -1,27 +1,39 @@
 <%- view = view_list_item -%>
 
 <li class="viewListItem clearfix">
-  <div class="itemContent">
-    <h3 class="<%= get_permissions_icon_class_for_view(view) %>">
-      <%= link_to(h(view.name), blist_url(view.id)) %>
-    </h3>
-    <p class="dateLine"><%= blist_date(view.last_activity) %></p>
-    <%- unless (view.category == "") -%>
-      <p class="viewCategory"><%= view.category %></p>
-    <%- end -%>
-    <p class="viewDescription clipText"><%= h(view.description) %></p>
-    <%- if (view.tags.length > 0) -%>
-      <p class="viewTags"><span>Tags: </span><%= h(view.tag_display_string) %></p>
-    <%- end -%>
-  </div>
-  <div class="itemMetaContainer">
+  
+  <div class="itemHeader clearfix">
+    <div class="itemTitle">
+      <div class="itemTitleInner clearfix">
+        <div class="itemTitleWrapper">
+          <h3 class="<%= get_permissions_icon_class_for_view(view) %> clipText">
+            <%= link_to(h(view.name), view.href, :title => h(view.name)) %>
+          </h3>
+        </div>
+        <p class="dateLine"><%= blist_date(view.last_activity) %></p>
+      </div>
+    </div>
     <ul class="itemMeta clearfix">
+      <li class="ratingContainer"><%= get_blist_rating_html(view) %> <%= pluralize(view.totalTimesRated, "Rating") %></li>
       <li>Viewed <strong><%= view.viewCount %></strong></li>
-      <li class="last">Comments <strong>[5]</strong></li>
+      <li class="last">Comments <strong><%= view.numberOfComments %></strong></li>
     </ul>
-    <ul class="itemActions actionButtons clearfix">
-      <li><%= link_to("<span>Open</span>", blist_url(view.id), :class => "arrowButton") %></li>
-      <li class="last"><a href="#copy">Copy</a></li>
-    </ul>
+  </div>
+  
+  <div class="itemBody">
+    <div class="itemContent">
+      <%- unless (view.category == "") -%>
+        <p class="viewCategory"><%= view.category %></p>
+      <%- end -%>
+      <p class="viewDescription clipText"><%= h(view.description) %></p>
+      <%- if (view.tags.length > 0) -%>
+        <p class="viewTags"><span>Tags: </span><%= h(view.tag_display_string) %></p>
+      <%- end -%>
+    </div>
+    <div class="itemActionContainer">
+      <ul class="itemActions actionButtons clearfix">
+        <li><%= link_to("<span>Open</span>", blist_url(view.id), :class => "arrowButton") %></li>
+      </ul>
+    </div>
   </div>
 </li>

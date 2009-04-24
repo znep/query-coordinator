@@ -151,8 +151,7 @@
         this.container.addClass(this.className('jcarousel-container'));
 
         var di = this.options.visible != null ? Math.ceil(this.clipping() / this.options.visible) : null;
-        var li = this.list.children('li');
-
+        var li = this.list.children('li.carouselItem');
         var self = this;
 
         if (li.size() > 0) {
@@ -265,7 +264,7 @@
             if (this.options.visible != null) {
                 var self = this;
                 var di = Math.ceil(this.clipping() / this.options.visible), wh = 0, lt = 0;
-                $('li', this.list).each(function(i) {
+                $('li.carouselItem', this.list).each(function(i) {
                     wh += self.dimension(this, di);
                     if (i + 1 < self.first)
                         lt = wh;

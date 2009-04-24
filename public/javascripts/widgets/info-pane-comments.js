@@ -73,6 +73,11 @@
                 $commentPane.find(config.formSelector).addClass(config.hiddenClass);
                 $(window).resize();
             }
+            else
+            {
+                $commentPane.parent().find(config.infoTabsSelector)
+                    .infoPaneNavigate().expandTabPanels();
+            }
         };
 
         function ratingMouseleave($commentPane, e)
@@ -155,12 +160,12 @@
                             .click(function (e) { actionClick($commentPane, e); });
                     }
 
-                    hideForm($commentPane);
                     if ($commentPane.find(config.commentSelector).length > 0)
                     {
                         $commentPane.find(config.footerSelector)
                             .removeClass(config.hiddenClass);
                     }
+                    hideForm($commentPane);
                 }
             });
         };
@@ -199,10 +204,7 @@
                 url: $form.attr("action"),
                 type: "PUT",
                 dataType: "json",
-                data: requestData,
-                success: function(responseData)
-                {
-                }
+                data: requestData
             });
         };
 
@@ -236,7 +238,7 @@
         infoTabsSelector: '.summaryTabs',
         ratingInputSelector: '.selfRating input',
         ratingUISelector: '.selfRating .rating',
-        showFormSelector: 'a[href=#post_comment]'
+        showFormSelector: 'a.postComment'
      };
 
 })(jQuery);

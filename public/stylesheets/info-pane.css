@@ -465,7 +465,7 @@
 {
     background-position: left -205px;
     border-right: 1px solid #e1d3b6;
-    width: 86px;
+    padding-right: 0.5em;
 }
 
 .singleInfoComments .infoContentHeader h2.panelHeader.rating
@@ -608,6 +608,7 @@
     background-repeat: no-repeat;
     margin-left: 140px;
     padding-left: 14px;
+    position: relative;
 }
 
 .singleInfoComments li.comment .commentBlock .cornerTL
@@ -649,6 +650,77 @@
     border-top: solid 1px #e0d1b8;
     font-size: 1.2em;
     padding-top: 0.5em;
+}
+
+.singleInfoComments li.comment .actions
+{
+    position: absolute;
+    right: 0.5em;
+    top: 1em;
+}
+
+.singleInfoComments li.comment .actions a
+{
+    color: #333333;
+    font-size: 0.9em;
+    font-weight: bold;
+    float: left;
+    line-height: 18px;
+    margin: 0 0.5em;
+    text-transform: uppercase;
+}
+
+.singleInfoComments li.comment .actions a.actionDone
+{
+    color: #999999;
+    cursor: auto;
+}
+
+.singleInfoComments li.comment .actions a.actionDone:hover
+{
+    text-decoration: none;
+}
+
+.singleInfoComments li.comment .actions a.rateComment
+{
+    background: url(/stylesheets/images/content/like_thumbs_sprites.png) no-repeat 0 0;
+    height: 18px;
+    line-height: 100px;
+    margin: 0 0.2em;
+    overflow: hidden;
+    width: 15px;
+}
+
+.singleInfoComments li.comment .actions a.rateComment.rateDown
+{
+    background-position: 0 -18px;
+}
+
+.singleInfoComments li.comment .actions a.rateComment.rateUp.disabled
+{
+    background-position: 0 -36px;
+}
+
+.singleInfoComments li.comment .actions a.rateComment.rateDown.disabled
+{
+    background-position: 0 -54px;
+}
+
+.singleInfoComments li.comment .actions span
+{
+    font-size: 1.1em;
+    line-height: 18px;
+    margin-left: 0.3em;
+}
+
+.singleInfoComments li.comment .actions .ratingUp
+{
+    color: #3b9242;
+}
+
+.singleInfoComments li.comment .actions .ratingDown
+{
+    color: #923b42;
 }
 
 .singleInfoComments .footer

@@ -50,6 +50,7 @@ ActionController::Routing::Routes.draw do |map|
     :member => {
       :detail => :get,
       :post_comment => :post,
+      :update_comment => :put,
       :create_favorite => :post,
       :delete_favorite => :post
     }

@@ -81,6 +81,19 @@ class BlistsController < SwfController
     end
   end
 
+  def update_comment
+    if (params[:comment][:rating])
+      Comment.rate(params[:id], params[:comment][:id],
+                   params[:comment].delete(:rating))
+    end
+    Comment.update(params[:id], params[:comment])
+
+    respond_to do |format|
+      format.html { redirect_to(View.find(params[:id]).href) }
+      format.data { render :json => {} }
+    end
+  end
+
 
   def detail
     if (params[:id])

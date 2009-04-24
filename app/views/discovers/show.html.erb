@@ -1,5 +1,6 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "discover-screen", "widgets",
+  <%= stylesheet_link_tag "discover-screen", "widgets", 
+    "carousel/jquery.jcarousel", "carousel/discover-carousel-skin",
     :cache => "cache/discover_show_all" %>
   <title><%= t(:page_title) %></title>
 <% end %>
@@ -24,10 +25,8 @@
         <div class="featuredViewsCarousel carouselWrapper">
           <div class="carouselOuter"><div class="carouselInner">
             <h2><%= t(:discover_carousel_header) %></h2>
-            <ul class="carousel clearfix">
-              <li class="arrow prev"><a href="#previous">previous</a></li>
+            <ul id="featuredCarousel" class="jcarousel-skin-discover carousel">
               <%= render(:partial => "carousel_item", :collection => @carousel_views) %>
-              <li class="arrow next"><a href="#next">next</a></li>
             </ul>
           </div></div>
         </div>
@@ -60,22 +59,12 @@
     <div class="discoverContentContainer clearfix">
       <%= render(:partial => "view_list_tab", :locals => { :type => "popular", :views => @popular_views }) %>
     
-      <%# *** START: Fun *** %>
-      <%# *** END: Fun *** %>
-    
-      <%# *** START: Personal *** %>
-      <%# *** END: Personal *** %>
-    
-      <%# *** START: Business *** %>
-      <%# *** END: Business *** %>
-    
-      <%# *** START: Education *** %>
-      <%# *** END: Education *** %>
     </div>
   </div>
 </div>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "screens/discover-screen", :cache => "cache/discover_show_all" %>
+  <%= javascript_include_tag "plugins/jquery.jcarousel",
+  "screens/discover-screen", :cache => "cache/discover_show_all" %>
 <% end %>

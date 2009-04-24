@@ -16,7 +16,8 @@
           <a class='clipText'
             href='<%= !@parent_view.nil? ? @parent_view.href : '#' %>'
             title='<%= !@parent_view.nil? ? h(@parent_view.name) : '' %>'>
-            <%= !@parent_view.nil? ? h(@parent_view.name) : 'New blist' %>
+            <%= !@parent_view.nil? ? h(@parent_view.name) :
+              'New ' + t(:blist_name) %>
           </a>
         </div>
       </li>

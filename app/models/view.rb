@@ -16,7 +16,12 @@ class View < Model
 
   #TODO: Make this find only popular views.
   def self.find_popular()
-    self.find({'name' => 'p'}, true)
+    self.find(nil, true)
+  end
+  
+  def self.find_featured()
+    path = "/views.json?featured=true"
+    get_request(path)
   end
 
   def self.create_favorite(id)
@@ -125,13 +130,13 @@ class View < Model
 
   def user_role(user_id)
     if (user_id == blistOwner.id)
-      "blist Author"
+      I18n.t(:blist_name) + " Author"
     elsif (user_id == owner.id)
       "View Author"
     elsif contributor_users.any? {|cu| cu.id == user_id}
-      "blist Contributor"
+      I18n.t(:blist_name) + " Contributor"
     elsif viewer_users.any? {|vu| vu.id == user_id}
-      "blist Viewer"
+      I18n.t(:blist_name) + " Viewer"
     else
       ""
     end

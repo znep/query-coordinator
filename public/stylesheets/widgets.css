@@ -1035,3 +1035,27 @@ table.gridList tr.filteredOut
     padding-left: 5px;
 }
 /*** END: form list boxes ***/
+
+/*** START: star ratings ***/
+.rating
+{
+    background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
+    background-position: 0 0;
+    height: 16px;
+    line-height: 100px;
+    overflow: hidden;
+    width: 89px;
+}
+
+.rating.zero { background-position: 0 0; }
+.rating.zero_half { background-position: 0 -16px; }
+.rating.one { background-position: 0 -32px; }
+.rating.one_half { background-position: 0 -48px; }
+.rating.two { background-position: 0 -64px; }
+.rating.two_half { background-position: 0 -80px; }
+.rating.three { background-position: 0 -96px; }
+.rating.three_half { background-position: 0 -112px; }
+.rating.four { background-position: 0 -128px; }
+.rating.four_half { background-position: 0 -144px; }
+.rating.five { background-position: 0 -160px; }
+/*** END: star ratings ***/

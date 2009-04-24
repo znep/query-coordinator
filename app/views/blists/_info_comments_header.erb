@@ -2,11 +2,11 @@
   <h2 class="panelHeader first">
     <%= pluralize(view.numberOfComments, 'Comment') %>
   </h2>
-  <h2 class="panelHeader rating <%= get_rating_class(view.averageRating) %>"
+  <h2 class="rating <%= get_rating_class(view.averageRating) %>"
     title="<%= view.averageRating %>"><%= view.averageRating %></h2>
   <p><%= pluralize(view.totalTimesRated, 'Rating') %></p>
   <ul class="headerActions actionButtons">
     <li><a href="#post_comment"
-      class="arrowButton" title="Post a Comment">Post a Comment</a></li>
+      class="arrowButton postComment" title="Post a Comment">Post a Comment</a></li>
   </ul>
 </div>

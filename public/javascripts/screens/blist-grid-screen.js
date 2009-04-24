@@ -29,7 +29,7 @@ blist.blistGrid.sizeSwf = function (event)
 blist.blistGrid.setUpTabs = function ()
 {
     var cookieStr = $.cookies.get('viewTabs');
-    if (cookieStr === undefined || cookieStr === "" || cookieStr == "undefined")
+    if (!cookieStr || cookieStr === undefined || cookieStr === "" || cookieStr == "undefined")
     {
         blistGridNS.createTabCookie();
         return;
@@ -305,6 +305,7 @@ blist.blistGrid.mainMenuHandler = function(event)
             break;
         case 'infoPane_tabSummary':
         case 'infoPane_tabFiltered':
+        case 'infoPane_tabComments':
         case 'infoPane_tabSharing':
         case 'infoPane_tabPublishing':
         case 'infoPane_tabActivity':

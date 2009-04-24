@@ -228,7 +228,7 @@
 
                 tabNavigator.settings.switchCompleteCallback($tab);
             },
-            expandTabPanels: function() {
+            expandTabPanels: function(openCallback) {
                 var tabNavigator = this;
 
                 // Toggle all arrows.
@@ -258,6 +258,10 @@
                     $allExpanders.attr("title", "less info").text("less info");
                     $(tabNavigator.settings.expandableSelector).slideDown("fast", function() {
                         tabNavigator.settings.switchCompleteCallback();
+                        if (openCallback !== undefined)
+                        {
+                            openCallback();
+                        }
                     });
                     $(tabNavigator.currentList).data("isExpanded", true);
                 }

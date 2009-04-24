@@ -21,32 +21,47 @@
             <span>(<%= friendly_relative_time(comment.createdAt) %>)</span>
           </div>
           <p class='commentBody'><%= h(comment.body) %></p>
-          <div class='actions'>
-            <%- form_tag(update_comment_blist_url(view.id),
-              :class => 'updateComment') do -%>
-            <%- if comment.user.id != current_user.id -%>
-            <a class='flagComment <%= comment.flag?("flaggedByCurrentUser") ?
-              'actionDone' : '' %>' href='#flagComment_<%= comment.id %>'>
-              <%= comment.flag?("flaggedByCurrentUser") ?
-              'Flagged' : 'Flag as Inappropriate' %>
-            </a>
-            <a class='rateComment rateUp <%= comment.rated? ? 'actionDone' : '' %>
-              <%= comment.rated_down? ? 'disabled' : '' %>'
-              href='#rateUp_<%= comment.id %>' title='Thumbs Up'>
-              Thumbs Up
-            </a>
-            <a class='rateComment rateDown <%= comment.rated? ? 'actionDone' : '' %>
-              <%= comment.rated_up? ? 'disabled' : '' %>'
-              href='#rateDown_<%= comment.id %>' title='Thumbs Down'>
-              Thumbs Down
-            </a>
-            <%- end -%>
-            <span class='ratingUp <%= comment.upRatings < 1 ? 'hidden' : '' %>'>
-              +<%= comment.upRatings %>
-            </span>
-            <span class='ratingDown <%= comment.downRatings < 1 ? 'hidden' : '' %>'>
-              -<%= comment.downRatings %>
-            </span>
+          <%= render(:partial => 'comment_actions',
+          :locals => {:comment => comment, :view => view}) %>
+
+          <%- form_tag(post_comment_blist_url(view.id),
+          :class => ('replyComment postComment hidden')) do -%>
+          <%- if !current_user -%>
+          <p>Placeholder until submitting comments as not-logged-in user is supported</p>
+          <%- else -%>
+          <%= hidden_field_tag('comment[parent][id]', comment.id,
+          :class => 'parentInput') %>
+          <div class='commentBody'>
+            <%= text_area_tag("comment[body]", '',
+            {:class => 'textPrompt', :title => 'Enter a reply'}) %>
+          </div>
+
+          <div class='submitSection'>
+            <a href='#cancel_comment'>Cancel</a>
+            <%- comment_submit_path = is_gov_site? ?
+            "gov/button_submit_comment.png" : "button_submit_comment.png" -%>
+            <%= image_submit_tag(comment_submit_path, :title => "Submit") %>
+          </div>
+          <%- end -%>
+          <%- end -%>
+
+          <%- comment_children = Array.new(comment.children) -%>
+          <a class='expander expanded
+            <%= comment_children.length < 1 ? 'hidden' : '' %>'
+            title='Toggle replies' href='#toggleReplies'>Toggle replies</a>
+
+          <div class='childContainer <%= comment_children.length < 1 ?
+            'hidden' : '' %>'>
+            <div class='childCollapsed'>View replies...</div>
+
+            <%- is_first = true -%>
+            <%- while !comment_children.empty? do -%>
+            <%- child = comment_children.shift -%>
+            <%= render(:partial => 'child_comment',
+            :locals => {:comment => child, :view => view,
+            :wrapper_class => is_first ? 'first' : ''}) %>
+            <%- is_first = false -%>
+            <%- comment_children.unshift(child.children).flatten! -%>
             <%- end -%>
           </div>
       </div></div>

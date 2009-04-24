@@ -64,9 +64,10 @@ class BlistsController < SwfController
 
   def post_comment
     if params[:comment] && !params[:comment][:body].blank?
+      @is_child = !params[:comment][:parent].nil?
       @comment = Comment.create(params[:id], params[:comment])
     end
-    if params[:view][:rating]
+    if params[:view] && params[:view][:rating]
       @view = View.find(params[:id]).update_rating(current_user.id,
                                                    params[:view][:rating])
     end

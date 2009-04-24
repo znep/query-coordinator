@@ -575,7 +575,7 @@ table.gridList tr.child.hover.selected td.description > *
 .infoContentOuter.singleInfoBlists table.gridList tr.hover td+td > *,
 .infoContentOuter.singleInfoGroups table.gridList tr.hover td+td > *,
 .infoContentOuter.singleInfoMembers table.gridList tr.hover td+td > *
-{ 
+{
     background-color: #e3ecf7; 
 }
 
@@ -595,8 +595,15 @@ table.gridList tr.child.hover.selected td.description > *
 .singleInfoComments li.comment .commentBlock .cornerBL
 { background-image: url(/stylesheets/images/gov/info_pane/comment_corner_bottom_left.png); }
 
-.singleInfoComments li.comment .commentBlock .commentBody { border-top: solid 1px #ccc; }
-.singleInfoComments .footer { 
+.singleInfoComments li.comment .commentBlock .commentBody,
+.singleInfoComments li.comment .childContainer,
+.singleInfoComments li.comment .childContainer .childCollapsed,
+.singleInfoComments li.comment .childWrapper,
+.singleInfoComments li.comment .childComment
+{ border-color: #ccc; }
+
+.singleInfoComments .footer
+{
     border-color: #fff;
     margin-left: 15em;
 }

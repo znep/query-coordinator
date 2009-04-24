@@ -100,6 +100,13 @@
         var hotCellTimer;
         var hotExpander;
 
+        var hideHotExpander = function() {
+            if (hotExpander) {
+                hotExpander.style.top = '-10000px';
+                hotExpander.style.left = '-10000px';
+            }
+        }
+
         var findCell = function(event) {
             var cell = $(event.target);
             if (!cell.hasClass('blist-td') && !cell.hasClass('blist-expander')) {
@@ -145,8 +152,7 @@
                     clearTimeout(hotCellTimer);
                     hotCellTimer = null;
                 }
-                if (hotExpander)
-                    $(hotExpander).remove();
+                hideHotExpander();
             }
         }
 
@@ -155,15 +161,26 @@
                 return;
             hotCellTimer = null;
 
-            // Create the expanding element
-            hotExpander = document.createElement('div');
-            var expander = $(hotExpander);
-            expander.addClass('blist-table-expander');
+            // Obtain an expanding node in utility (off-screen) mode
+            if (!hotExpander) {
+                // Create the expanding element
+                hotExpander = document.createElement('div');
+                var expander = $(hotExpander);
+                expander.addClass('blist-table-expander');
+                expander.addClass('blist-table-util');
+                inside.append(expander);
+            } else {
+                hideHotExpander();
+                expander = $(hotExpander);
+            }
+
+            // Clone the node
             var wrap = hotCell.cloneNode(true);
             var w = $(wrap);
             w.width('auto').height('auto');
-            hotExpander.appendChild(wrap);
-            measureUtilDOM.appendChild(hotExpander);
+            while (hotExpander.firstChild)
+                $(hotExpander.firstChild).remove();
+            expander.append(wrap);
 
             // Compute cell padding
             var padx = w.outerWidth() - w.width();
@@ -180,7 +197,7 @@
             var hotHeight = h.outerHeight();
             if (rc.width <= hotWidth + 2 && rc.height <= hotHeight + 2) {
                 // Expansion is not necessary
-                expander.remove();
+                hideHotExpander();
                 return;
             }
 
@@ -235,7 +252,7 @@
             expander.css('left', origOffset.left + 'px');
             expander.width(hotWidth);
             expander.height(hotHeight);
-            insideDOM.appendChild(hotExpander);
+            expander.removeClass('blist-table-util');
 
             // Expand the element into position
             expander.animate($.extend(rc, rc), EXPAND_DURATION);

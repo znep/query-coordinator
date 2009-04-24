@@ -5,7 +5,7 @@
     <div class="itemTitle clearfix">
       <h3><%= link_to(h(view.name), blist_url(view.id)) %></h3>
       <%# TODO: Make this image the logo associated with the blist. %>
-      <%= image_tag("/stylesheets/images/gov/common/data_gov_logo_dialog.png", :size => "55x55", :alt => "placeholder") %>
+      <%= image_tag(view.iconUrl.to_s, :size => "55x55", :alt => "placeholder") %>
     </div>
     <div class="itemMetaData">
       <%# TODO: Add ratings. %>

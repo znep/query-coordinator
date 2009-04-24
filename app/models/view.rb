@@ -18,6 +18,11 @@ class View < Model
   def self.find_popular()
     self.find(nil, true)
   end
+  
+  def self.find_featured()
+    path = "/views.json?featured=true"
+    get_request(path)
+  end
 
   def self.create_favorite(id)
     path = "/favorite_views?" + {"id" => id}.to_param

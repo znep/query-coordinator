@@ -47,6 +47,18 @@ blist.namespace.fetch('blist.data.types');
         return (text + "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
+    var MATCHES_TAGS = /<[^>]+>/;
+
+    /**
+     * Remove HTML tags in a completely hacky but relatively performant way.  We use this for sorting so it doesn't
+     * need to be 100% accurate.  A far more accurate method would be to set innerHTML on a hidden div, then retrieve
+     * nodeValue.  Have to do perf. tests but that's probably going to be considerably more expensive so we'll just
+     * stick with this for now.
+     */
+    var removeTags = function(text) {
+        return ((text || '') + '').replace(MATCHES_TAGS, '');
+    }
+
 
     /*** SORT FUNCTION GENERATORS ***/
     
@@ -66,8 +78,15 @@ blist.namespace.fetch('blist.data.types');
         return sortGenCore("return " + a + " - " + b)
     }
 
-    var sortGenSimple = function(a, b) {
-        return sortGenCore("return " + a + " < " + b + " ? -1 : " + a + " > " + b + " ? 1 : 0")
+    var sortHtmlPrepro = function(html) {
+        return removeTags(html).toLowerCase();
+    }
+
+    var sortPicklistPrepro = function(value, column) {
+        var option = column.options[value];
+        if (option)
+            return (option.text || '').toLowerCase();
+        return '';
     }
     
 
@@ -195,8 +214,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         photo: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         money: {
@@ -205,8 +223,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         phone: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         checkbox: {
@@ -215,8 +232,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         flag: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         stars: {
@@ -231,13 +247,12 @@ blist.namespace.fetch('blist.data.types');
 
         url: {
             renderGen: renderGenURL,
-            sortGen: sortGenSimple,
+            sortPreprocessor: sortHtmlPrepro,
             filterText: true
         },
 
         document: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         tag: {
@@ -252,13 +267,12 @@ blist.namespace.fetch('blist.data.types');
         },
 
         blist_in_blist: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         picklist: {
             renderGen: renderGenPicklist,
-            sortGen: sortGenSimple
+            sortPreprocessor: sortPicklistPrepro
         }
     });
 

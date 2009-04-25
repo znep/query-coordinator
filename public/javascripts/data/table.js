@@ -82,7 +82,7 @@
             $('.sort', header).remove();
             var col = columns[sortBy];
             $(col.dom).append('<div class="sort sort-' + (sortDescending ? 'desc' : 'asc') + '" style="height: ' + rowOffset + 'px"></div>');
-            model.sort(col.srcIndex, sortDescending);
+            model.sort(col.index, sortDescending);
         }
 
         // Filter data

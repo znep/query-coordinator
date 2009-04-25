@@ -64,9 +64,10 @@ class BlistsController < SwfController
 
   def post_comment
     if params[:comment] && !params[:comment][:body].blank?
+      @is_child = !params[:comment][:parent].nil?
       @comment = Comment.create(params[:id], params[:comment])
     end
-    if params[:view][:rating]
+    if params[:view] && params[:view][:rating]
       @view = View.find(params[:id]).update_rating(current_user.id,
                                                    params[:view][:rating])
     end
@@ -188,7 +189,7 @@ private
 
 
     # First, sort by name.
-    cur_views = cur_views.sort { |a,b| a.name <=> b.name }
+    cur_views = cur_views.sort_by { |view| view.name }
 
     # Re-organize the views with children under their parents. Maintain overall sorting.
     # Stash all parent blists.

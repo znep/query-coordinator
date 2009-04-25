@@ -32,11 +32,11 @@
         </div>
       
         <div class="myNetworkViews">
-          <h2>In My Network</h2>
+          <h2><%= @current_user.nil? ? "Recently Updated" : "In My Network" %></h2>
           <ul class="myNetworkList">
             <%- @network_views.each do |view| -%>
-              <li>
-                <%= link_to(h(view.name), blist_url(view.id)) %> 
+              <li class="clearfix">
+                <%= link_to(h(view.name), view.href, :title => h(view.name), :class => "clipText") %> 
                 <span class="authorLine">by <%= h(view.owner.displayName) %></span>
               </li>
             <%- end -%>
@@ -52,13 +52,17 @@
     <div class="discoverTabNav">
       <ul class="discoverTabs tabList clearfix">
         <%# TODO: Add tab for search results. %>
-        <li id="tabTop" class="active"><div class="wrapper"><a href="#top">Top 100</a></div></li>
-        <li id="tabAll"><div class="wrapper"><a href="#all">All Datasets</a></div></li>
+        <li id="tabPopular" class="active"><div class="wrapper"><a href="#top">Top 100</a></div></li>
+        <li id="tabAll"><div class="wrapper"><a href="#all">All <%= t(:blists_name) %></a></div></li>
       </ul>
     </div>
-    <div class="discoverContentContainer clearfix">
-      <%= render(:partial => "view_list_tab", :locals => { :type => "popular", :views => @popular_views }) %>
-    
+    <div id="discoverTabPopular" class="discoverContentContainer active clearfix">
+      <%= render(:partial => "view_list_tab", :locals => { 
+        :tab_title => t(:discover_popular_content_header), :views => @popular_views }) %>
+    </div>
+    <div id="discoverTabAll" class="discoverContentContainer clearfix">
+      <%= render(:partial => "view_list_tab", :locals => { 
+        :tab_title => "All #{t(:blists_name)}", :views => @all_views }) %>
     </div>
   </div>
 </div>

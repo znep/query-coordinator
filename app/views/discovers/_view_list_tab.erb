@@ -1,42 +1,55 @@
-<div id="<%= "discoverTab#{type}" %>" class="clearfix">
-  <div class="discoverContentOuter"><div class="discoverContentTL"><div class="discoverContentBL">
-    <div class="discoverContent">
-      <h2><%= t(:discover_popular_content_header) %></h2>
-      <div class="contentSort">
-        <p>
-          Sort by 
-          <select>
-            <option value="updated">Last updated</option>
-            <option value="added">Date added</option>
-            <option value="popularity">Popularity</option>
-            <option value="alpha">A - Z</option>
-          </select>
-        </p>
-      </div>
-    
-      <ul class="discoverContentList">
-        <%= render(:partial => "view_list_item", :collection => views) %>
-      </ul>
+
+<div class="discoverContentOuter"><div class="discoverContentTL"><div class="discoverContentBL">
+  <div class="discoverContent">
+    <h2><%= tab_title %></h2>
+    <div class="contentSort">
+      <p>
+        Sort by 
+        <select>
+          <option value="POPULAR">Popularity</option>
+          <option value="ALPHA">A - Z</option>
+          <option value="ALPHA_DESC">Z - A</option>
+          <option value="VIEWS"># of times Viewed</option>
+          <option value="COMMENTS"># of Comments</option>
+          <option value="LAST_CHANGED">Date</option>
+          <option value="CATEGORY">Category</option>
+        </select>
+      </p>
     </div>
-  </div></div></div>
   
-  <div class="discoverContentNavTR"><div class="discoverContentNavBR">
-    <div class="discoverContentNav">
-      <h2>Show blists</h2>
-      <ul class="filterList">
-        <li><a href="#network">In my network</a></li>
-        <li><a href="#public">Public blists only</a></li>
-        <li><a href="#templates">Templates only</a></li>
+    <ul class="discoverContentList">
+      <%= render(:partial => "view_list_item", :collection => views) %>
+    </ul>
+  </div>
+</div></div></div>
+
+<div class="discoverContentNavTR"><div class="discoverContentNavBR">
+  <div class="discoverContentNav">
+    <h2>Show <%= t(:blists_name) %></h2>
+    <ul class="filterList">
+      <li><a href="#network">In my network</a></li>
+      <li><a href="#public">Public <%= t(:blists_name) %> only</a></li>
+      <li><a href="#templates">Templates only</a></li>
+    </ul>
+
+    <h2>Browse by tag</h2>
+    <ul class="tagList">
+      <li><a href="#tag">Wines</a></li>
+      <li><a href="#tag">Contributors</a></li>
+      <li><a href="#tag">Energy</a></li>
+      <li><a href="#tag">Finance</a></li>
+    </ul>
+    
+    <%- if (is_gov_site?) -%>
+      <h2>Browse by Agency</h2>
+      <ul class="categoryList">
+        <li><a href="#agriculture">Agriculture</a></li>
+        <li><a href="#commerce">Commerce</a></li>
+        <li><a href="#defense">Defense</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#energy">Energy</a></li>
       </ul>
-  
-      <h2>Browse by tag</h2>
-      <ul class="tagList">
-        <li><a href="#tag">[Sample]</a></li>
-        <li><a href="#tag">[Sample]</a></li>
-        <li><a href="#tag">[Sample]</a></li>
-        <li><a href="#tag">[Sample]</a></li>
-      </ul>
-      
+    <%- else -%>
       <h2>Browse by Category</h2>
       <ul class="categoryList">
         <li><a href="#fun">Fun</a></li>
@@ -44,6 +57,6 @@
         <li><a href="#educational">Educational</a></li>
         <li><a href="#business">Business</a></li>
       </ul>
-    </div>
-  </div></div>
-</div>
+    <%- end -%>
+  </div>
+</div></div>

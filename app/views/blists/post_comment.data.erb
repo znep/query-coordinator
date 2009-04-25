@@ -2,7 +2,12 @@
   <%= render(:partial => "info_comments_header", :locals => {:view => @view}) %>
   <%= get_user_rating_html(current_user.id, @view) %>
   <%- if @comment -%>
+  <%- if @is_child -%>
+  <%= render(:partial => "child_comment",
+    :locals => {:view => @view, :comment => @comment}) %>
+  <%- else -%>
   <%= render(:partial => "comment", :collection => [@comment],
     :locals => {:view => @view}) %>
+  <%- end -%>
   <%- end -%>
 </div>

@@ -1,0 +1,18 @@
+<div class='childWrapper <%= local_assigns[:wrapper_class] %>'>
+  <div class='childComment'>
+    <div class='author'>
+      <%= h(comment.user.displayName) %>
+      <%- user_title = view.user_role(comment.user.id) -%>
+      <%- if !user_title.blank? -%>
+      <span>(<%= user_title %>)</span>
+      <%- end -%>
+    </div>
+    <div class='dateLine'>
+      <%= blist_long_date(comment.createdAt) %>
+      <span>(<%= friendly_relative_time(comment.createdAt) %>)</span>
+    </div>
+    <p class='commentBody'><%= h(comment.body) %></p>
+    <%= render(:partial => 'comment_actions',
+    :locals => {:comment => comment, :view => view}) %>
+  </div>
+</div>

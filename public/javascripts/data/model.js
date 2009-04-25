@@ -116,7 +116,7 @@ blist.namespace.fetch('blist.data');
                 var options = col.options = {};
                 for (var j = 0; j < values.length; j++) {
                     var value = values[j];
-                    options[value.id] = value.description;
+                    options[value.id] = { text: value.description, icon: value.icon };
                 }
             }
             return options;
@@ -128,13 +128,15 @@ blist.namespace.fetch('blist.data');
             if (viewCols) {
                 for (var i = 0; i < viewCols.length; i++) {
                     var col = viewCols[i];
-                    if (col.position) {
+                    if (col.position && (!col.flags || col.flags.indexOf("hidden") == -1)) {
                         var icol = intermediateCols[col.position] = {
                             name: col.name,
                             width: col.width || 100,
                             type: col.dataType && col.dataType.type ? col.dataType.type : "text",
                             dataIndex: i
                         }
+                        if (icol.type == "text" && col.format && col.format.formatting_option == "Rich")
+                            icol.type = "richtext";
                         if (icol.type == "picklist")
                             icol.options = translatePicklistFromView(col);
                     }
@@ -321,9 +323,23 @@ blist.namespace.fetch('blist.data');
                 // Generate a filter function (TODO - support non-textual values)
                 var regexp = createRegExp(filter);
                 var filterParts = [ "(function(r) { return false" ];
-                for (var i = 0; i < meta.columns.length; i++)
+                for (var i = 0; i < meta.columns.length; i++) {
                     if (columnType(i).filterText)
-                        filterParts.push(' || (r[', i, '] + "").match(regexp)');
+                        // Textual column -- apply the regular expression to each instance
+                        filterParts.push(' || (r[', meta.columns[i].dataIndex, '] + "").match(regexp)');
+                    else if (meta.columns[i] == "picklist") {
+                        // Picklist column -- prefilter and then search by ID
+                        var options = meta.columns[i].options;
+                        if (options) {
+                            var matches = [];
+                            for (var key in options)
+                                if (options[key].text.match(regexp))
+                                    matches.push(key);
+                            for (var j = 0; j < matches.length; j++)
+                                filterParts.push(' || (r[' + meta.columns[j].dataIndex + '] == "' + matches[j] + '")');
+                        }
+                    }
+                }
                 filterParts.push("; });");
                 filterFn = eval(filterParts.join(''));
 

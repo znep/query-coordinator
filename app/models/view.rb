@@ -1,6 +1,7 @@
 class View < Model
   cattr_accessor :categories
 
+
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
       return super(options)
@@ -14,13 +15,27 @@ class View < Model
     get_request(path)
   end
 
-  #TODO: Make this find only popular views.
-  def self.find_popular()
-    self.find(nil, true)
+  def self.find_popular(limit = 10)
+    path = "/views.json?sortBy=POPULAR"
+    unless (limit.nil?)
+      path += "&limit=#{limit}"
+    end
+    get_request(path)
   end
   
   def self.find_featured()
     path = "/views.json?featured=true"
+    get_request(path)
+  end
+  
+  def self.find_recent(limit = 10, inNetwork=false)
+    path = "/views.json?sortBy=LAST_CHANGED"
+    unless (limit.nil?)
+      path += "&limit=#{limit}"
+    end
+    if (inNetwork)
+      path += "&inNetwork=true"
+    end
     get_request(path)
   end
 
@@ -110,6 +125,7 @@ class View < Model
   def is_public?
     grants.any? {|p| p.flag?('public')}
   end
+  memoize :is_public?
 
   def is_private?
     grants.length == 0
@@ -229,4 +245,5 @@ class View < Model
     "Education" => "Education"
   }
 
+  memoize :href
 end

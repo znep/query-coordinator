@@ -1,0 +1,25 @@
+<div class='actions'>
+  <%- form_tag(update_comment_blist_url(view.id),
+  :class => 'updateComment') do -%>
+  <a href='#reply_<%= comment.id %>'>Reply</a>
+  <%- if comment.user.id != current_user.id -%>
+  <a class='flagComment <%= comment.flag?("flaggedByCurrentUser") ?
+    'actionDone' : '' %>' href='#flagComment_<%= comment.id %>'>
+    <%= comment.flag?("flaggedByCurrentUser") ?
+    'Flagged' : 'Flag as Inappropriate' %>
+  </a>
+  <a class='rateComment rateUp <%= comment.rated? ? 'actionDone' : '' %>
+    <%= comment.rated_down? ? 'disabled' : '' %>'
+    href='#rateUp_<%= comment.id %>' title='Helpful'>Helpful</a>
+  <a class='rateComment rateDown <%= comment.rated? ? 'actionDone' : '' %>
+    <%= comment.rated_up? ? 'disabled' : '' %>'
+    href='#rateDown_<%= comment.id %>' title='Not Helpful'>Not Helpful</a>
+  <%- end -%>
+  <span class='ratingUp <%= comment.upRatings < 1 ? 'hidden' : '' %>'>
+    +<%= comment.upRatings %>
+  </span>
+  <span class='ratingDown <%= comment.downRatings < 1 ? 'hidden' : '' %>'>
+    -<%= comment.downRatings %>
+  </span>
+  <%- end -%>
+</div>

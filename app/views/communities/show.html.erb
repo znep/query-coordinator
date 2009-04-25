@@ -6,7 +6,7 @@
 
 
 <div id="community">
-      <%= image_tag('ComingSoon.png', :size => "991x1016", :alt => 'Community Coming Soon') %>
+      <%= image_tag(is_gov_site? ? 'gov/CommunityComingSoon.png' : 'ComingSoon.png', :size => "991x1016", :alt => 'Community Coming Soon') %>
 </div>
 
 <% content_for :js_footer do %>

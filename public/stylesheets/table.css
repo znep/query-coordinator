@@ -1,9 +1,8 @@
 .blist-table {
     background: transparent;
-    font-size: 1.4em;
     overflow: hidden;
     position: relative;
-    font-size: 11px;
+    font-size: 13px;
     font-family: arial, sans-serif;
     color: #333333;
 }
@@ -108,14 +107,10 @@ input.blist-table-filter {
 }
 
 .blist-th {
-    /*
-    position: absolute;
-    top: 0;
-    */
     position: relative;
     float: left;
-    padding-left: 4px /*.2em*/;
-    padding-right: 4px /*.2em*/;
+    padding-left: 4px;
+    padding-right: 4px;
     border-left: solid 1px #dddddd;
     white-space: nowrap;
     overflow: hidden;
@@ -125,31 +120,43 @@ input.blist-table-filter {
     user-select: none;
     cursor: pointer;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 /* Ensure enough specificity to override height in generated styles */
 .blist-table .blist-th {
-    height: 24px;
-    line-height: 24px;
+    height: 26px;
+    line-height: 26px;
 }
 
 .blist-td {
     float: left;
-    padding: 4px /*.2em*/;
-    border-left: solid 1px #dddddd;
+    padding: 4px;
+    border-right: solid 1px #dddddd;
     border-bottom: solid 1px #dddddd;
     overflow: hidden;
     white-space: nowrap;
 }
 
+div.blist-table-expander {
+    position: absolute;
+    z-index: 10;
+    overflow: auto;
+    border-left: solid 1px #cacaca;
+    border-top: solid 1px #cacaca;
+    background-color: #fffad9;
+}
+
+div.blist-table-expander .blist-td {
+    white-space: normal;
+}
+
 .blist-table-handle {
     float: left;
-    /*position: absolute;
-    left: 0;*/
-    padding: 4px /*.2em*/;
-    border-left: solid 1px #dddddd;
-    border-bottom: solid 1px #dddddd;
+    padding: 4px;
+    font-size: 11px;
+    border: solid 1px #dddddd;
+    border-top: 0;
     text-align: center;
     background-color: #eeeeee;
     -moz-user-select: none;
@@ -176,7 +183,7 @@ input.blist-table-filter {
     z-index: 10;
     position: absolute;
     top: 0px;
-    padding: 4px /*.2em*/ 0;
+    padding: 4px 0;
     width: 5px;
     overflow: hidden;
     right: 0px;
@@ -196,11 +203,35 @@ input.blist-table-filter {
 }
 
 div.blist-td p {
-    margin: 0 0 4px 0;
+    margin: 0 0 6px 0;
     padding: 0;
+}
+
+div.blist-td p:last-child {
+    margin-bottom: 0;
 }
 
 div.blist-table-checked {
     height: 15px;
     background: url(images/content/table/check.png) center no-repeat;
+}
+
+img.blist-table-option-icon {
+    width: 16px;
+    height: 16px;
+    float: left;
+    padding-right: 4px;
+    padding-bottom: -1px;
+}
+
+.blist-table .blist-hot {
+}
+
+.blist-table a {
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.blist-table a:hover {
+    text-decoration: underline;
 }

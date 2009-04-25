@@ -109,7 +109,7 @@ class UserSession
       user = User.parse(response.body)
       core_session.user_id = user.data['id']
       core_session.expiration = Time.now + 1.hour
-      core_session.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{user.id}--")[0,12]
+      core_session.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{User.id}--")[0,12]
       self.new_session = false
       UserSession.update_current_user(user, core_session)
       result = self

@@ -30,12 +30,13 @@ module HumaneDateHelper
     [2903040000, 'this century'], # 60*60*24*7*4*12*100, 60*60*24*7*4*12
     [5806080000, 'last century', 'next century'] # 60*60*24*7*4*12*100*2
   ]
-  def humane_date(epoch_secs, granularity = HUMANE_DATE_GRANULARITY[:minute])
-    if epoch_secs.nil? || epoch_secs == 0
+  def humane_date(date_string, granularity = HUMANE_DATE_GRANULARITY[:minute])
+    if date_string.nil?
       return 'None'
     end
     dt = Time.now.tv_sec
-    seconds = (dt - epoch_secs)
+    date_obj = Time.parse(date_string).tv_sec
+    seconds = (dt - date_obj)
     token = 'ago'
     list_choice = 1
 
@@ -44,6 +45,8 @@ module HumaneDateHelper
       token = 'from now'
       list_choice = 2
     end
+    
+    out = date_string
     
     start = granularity
     stop = HUMANE_DATE_TIME_FORMATS.length - 1

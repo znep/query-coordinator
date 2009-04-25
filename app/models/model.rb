@@ -12,7 +12,6 @@ class CoreServerError < RuntimeError
 end
 
 class Model
-  extend ActiveSupport::Memoizable
 
   attr_accessor :data
   attr_accessor :update_data
@@ -77,86 +76,38 @@ class Model
       if self.class.non_serializable_attributes.include?(assign_key)
         raise "Cannot set non-serializeable attribute"
       end
-      if args.length != 1
-        raise ArgumentError.new "Wrong number of arguments: #{args.length} for 1"
+
+      if args[0] == data[assign_key]
+        update_data.delete(assign_key)
       else
-        define_attr_writer(assign_key)
-        send("#{assign_key}=", args[0])
+        update_data[assign_key] = args[0]
       end
     else
       value = data_hash[method_name]
 
       if value.is_a?(Hash)
         klass = Object.const_get(method_name.capitalize.to_sym)
-        define_hash_accessor(method_name, klass)
-        return send(method_name)
+        model = klass.new
+        model.data = value
+        model.update_data = Hash.new
+        model.freeze
+        return model
       elsif value.is_a?(Array)
         klass = Object.const_get(method_name.singularize.capitalize.to_sym)
-        define_array_accessor(method_name, klass)
-        return send(method_name)
-      else
-        define_value_accessor(method_name)
-        return send(method_name)
-      end
-    end
-  end
-
-  def define_attr_writer(attribute)
-    self.class.class_eval <<-EOS, __FILE__, __LINE__
-      def #{attribute}=(value)
-        if value == data['#{attribute}']
-          update_data.delete('#{attribute}')
-        else
-          update_data['#{attribute}'] = value
-        end
-        @cached_#{attribute} = nil
-        return value
-      end
-    EOS
-  end
-
-  def define_hash_accessor(attribute, klass)
-    self.class.class_eval <<-EOS, __FILE__, __LINE__
-      def #{attribute}
-        unless @cached_#{attribute}.nil?
-          return @cached_#{attribute}
-        end
-
-        @cached_#{attribute} = #{klass}.new
-        @cached_#{attribute}.data = @data['#{attribute}']
-        @cached_#{attribute}.update_data = Hash.new
-        @cached_#{attribute}.freeze
-        return @cached_#{attribute}
-      end
-    EOS
-  end
-
-  def define_array_accessor(attribute, klass)
-    self.class.class_eval <<-EOS, __FILE__, __LINE__
-      def #{attribute}
-        unless @cached_#{attribute}.nil?
-          return @cached_#{attribute}
-        end
-        @cached_#{attribute} = Array.new
-        data_hash['#{attribute}'].each do | item |
-          model = #{klass}.new
+        items = Array.new
+        value.each do | item |
+          model = klass.new
           model.data = item
           model.update_data = Hash.new
           model.freeze
-          @cached_#{attribute}.push(model)
+          items.push(model)
         end
-        @cached_#{attribute}.freeze
-        return @cached_#{attribute}
+        items.freeze
+        return items
+      else
+        return value
       end
-    EOS
-  end
-
-  def define_value_accessor(attribute)
-    self.class.class_eval <<-EOS, __FILE__, __LINE__
-      def #{attribute}
-        @update_data['#{attribute}'] || @data['#{attribute}']
-      end
-    EOS
+    end
   end
 
   def tag_display_string
@@ -176,8 +127,7 @@ class Model
   end
 
   def flag?(flag_name)
-    flags = data['flags']
-    !flags.nil? && flags.include?(flag_name) 
+    !flags.nil? && flags.any? {|f| f.data == flag_name}
   end
 
   def set_flag(flag)
@@ -266,8 +216,9 @@ protected
     end
   end
 
+
   def data_hash
-    dcopy = @data.clone
+    dcopy = data.clone
     if dcopy.is_a?(Hash)
       dcopy.merge!(update_data)
       dcopy['flags'] = combined_flags
@@ -276,7 +227,7 @@ protected
   end
 
   def combined_flags
-    flags_array = @data['flags'] || Array.new
+    flags_array = data['flags'] || Array.new
     if !@deleted_flags.nil?
       flags_array = flags_array - @deleted_flags
     end

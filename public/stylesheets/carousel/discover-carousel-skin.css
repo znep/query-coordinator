@@ -6,15 +6,47 @@
     width:  100%;
 }
 
-
-
 .jcarousel-skin-discover .jcarousel-item {
     height: 17.3em;
+    margin-right: 1em;
 }
-.jcarousel-skin-discover .jcarousel-item .carouselInner {
-    background: url(/stylesheets/images/common/carousel_item_background.png) no-repeat;
-    padding: 1.7em .4em 1.7em 1.7em;
-    width: 23.7em;
+
+.jcarousel-skin-discover .carouselItemInner
+{
+    background: url(/stylesheets/images/common/carousel_item_TL.png) no-repeat;
+    padding-left: 7px;
+}
+.jcarousel-skin-discover .carouselItemTR
+{
+    background: url(/stylesheets/images/common/carousel_item_TR.png) right top no-repeat;
+    padding-top: 7px;
+}
+.jcarousel-skin-discover .carouselItemBL
+{
+    background: url(/stylesheets/images/common/carousel_item_BL.png) left bottom no-repeat;
+    margin-left: -7px;
+    padding-left: 7px;
+}
+.jcarousel-skin-discover .carouselItemBR
+{
+    background: url(/stylesheets/images/common/carousel_item_BR.png) right bottom no-repeat;
+    padding-bottom: 7px;
+}
+.jcarousel-skin-discover .carouselItemLeft
+{
+    background: url(/stylesheets/images/common/carousel_item_left.png) repeat-y;
+    margin-left: -7px;
+    padding-left: 4px;
+}
+.jcarousel-skin-discover .carouselItemRight
+{
+    background: url(/stylesheets/images/common/carousel_item_right.png) right top repeat-y;
+    padding-right: 4px;
+}
+
+.jcarousel-skin-discover .jcarousel-item .carouselContainer {
+    background-color: #e7e7e7;
+    padding: 1em 0 1em 1.7em;
 }
 
 
@@ -51,15 +83,16 @@
     background-image: url(/stylesheets/images/content/comment_stars_white_sprites.png);
 }
 
+.jcarousel-skin-discover .jcarousel-item .metaList
+{
+    overflow: hidden;
+}
 .jcarousel-skin-discover .jcarousel-item .metaList li.ratingContainer { 
     background: url(/stylesheets/images/common/rating_capsule_button.png) no-repeat;
     height: 1.125em; /* 18px */
     margin-bottom: 10px;
     padding: 2px 10px;
-    width: 217px; 
 }
-
-
 
 
 .jcarousel-skin-discover .jcarousel-item-placeholder {

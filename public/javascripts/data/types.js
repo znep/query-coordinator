@@ -27,7 +27,9 @@ blist.namespace.fetch('blist.data.types');
         }
 
         // Compile
-        return eval(expression);
+        var val;
+        eval("val = (" + expression + ")");
+        return val;
     }
 
     /**

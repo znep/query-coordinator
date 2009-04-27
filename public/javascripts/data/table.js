@@ -368,10 +368,10 @@
         // needed.
         var addRule = function(selector) {
             // Add the rule
-            var rules = css.cssRules || css.rule;
+            var rules = css.cssRules || css.rules;
             css.insertRule ? css.insertRule(selector + " {}", rules.length)
                 : css.addRule(selector, null, rules.length);
-            rules = css.cssRules || css.rule;
+            rules = css.cssRules || css.rules;
 
             // Find the new rule
             selector = selector.toLowerCase();
@@ -401,8 +401,8 @@
             var rulesNode = $('head')
                 .append('<style type="text/css" id="' + id + '-styles"></style>')
                 .children('#' + id + '-styles')[0];
-            for (css in document.styleSheets) {
-                css = document.styleSheets.item(css);
+            for (var i = 0; i < document.styleSheets.length; i++) {
+                css = document.styleSheets[i];
                 if ((css.ownerNode || css.owningElement) == rulesNode)
                     break;
             }

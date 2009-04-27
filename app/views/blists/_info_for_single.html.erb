@@ -401,6 +401,9 @@
           :locals => {:view => view}) %>
       </ul>
 
+      <%# Filled in by JS %>
+      <div class='commentPagination pagination'></div>
+
       <ul class='actionButtons footer clearfix
         <%= comments.length == 0 ? 'hidden' : '' %>'>
         <li class='commentLink'><a href="#post_comment"

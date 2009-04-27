@@ -1059,3 +1059,48 @@ table.gridList tr.filteredOut
 .rating.four_half { background-position: 0 -144px; }
 .rating.five { background-position: 0 -160px; }
 /*** END: star ratings ***/
+
+
+/*** START: Pagination styling ***/
+.pagination
+{
+    text-align: center;
+}
+
+.pagination > *
+{
+    color: #999999;
+    font-size: 1.1em;
+    margin: 0 0.25em;
+    text-transform: uppercase;
+}
+
+.pagination a.prevLink,
+.pagination a.nextLink
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png);
+    background-repeat: no-repeat;
+    color: #333333;
+}
+
+.pagination a.prevLink
+{
+    background-position: 0 -144px;
+    margin-right: 1em;
+    padding-left: 25px;
+}
+
+.pagination a.nextLink
+{
+    background-position: right -164px;
+    margin-left: 1em;
+    padding-right: 25px;
+}
+
+.pagination a.active
+{
+    color: #333333;
+    font-weight: bold;
+}
+
+/*** END: Pagination styling ***/

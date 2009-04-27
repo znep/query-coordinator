@@ -792,6 +792,11 @@
     padding-top: 0;
 }
 
+.singleInfoComments .commentPagination
+{
+    margin: 0 0 0.5em 15em;
+}
+
 .singleInfoComments .footer
 {
     border-top: solid 1px #e0d1b8;

@@ -38,11 +38,16 @@
             $commentPane.find(config.replySelector)
                 .submit(function (e) { submitReply($commentPane, e); });
 
-            $commentPane.find(config.commentSelector).find(config.actionSelector)
+            $commentPane.find(config.actionSelector)
                 .click(function (e) { actionClick($commentPane, e); });
 
             $commentPane.find(config.expanderSelector)
                 .click(function (e) { expanderClick($commentPane, e); });
+
+            $commentPane.find(config.commentListSelector)
+                .pagination({paginationContainer:
+                    $commentPane.find(config.paginationContainer),
+                    previousText: 'Prev'});
         });
 
         // Private methods
@@ -185,6 +190,8 @@
                             .end()
                             .find(config.expanderSelector)
                             .click(function (e) { expanderClick($commentPane, e); });
+                        $commentPane.find(config.commentListSelector)
+                            .pagination().update();
                     }
 
                     if ($commentPane.find(config.commentSelector).length > 0)
@@ -359,6 +366,7 @@
         headerSelector: '.infoContentHeader',
         hiddenClass: 'hidden',
         infoTabsSelector: '.summaryTabs',
+        paginationContainer: '.commentPagination',
         parentInputSelector: '.parentInput',
         ratingInputSelector: '.selfRating input',
         ratingUISelector: '.selfRating .rating',

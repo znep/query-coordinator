@@ -142,7 +142,6 @@ class Model
           model = #{klass}.new
           model.data = item
           model.update_data = Hash.new
-          model.freeze
           @cached_#{attribute}.push(model)
         end
         @cached_#{attribute}.freeze

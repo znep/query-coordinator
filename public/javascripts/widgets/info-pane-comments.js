@@ -130,7 +130,13 @@
         {
             var config = $commentPane.data('config-infoPaneComments');
             event.preventDefault();
-            $form = $(event.currentTarget);
+            var $form = $(event.currentTarget);
+            if ($form.hasClass(config.disabledClass))
+            {
+                return;
+            }
+
+            $form.addClass(config.disabledClass);
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -140,6 +146,7 @@
                 success: function(responseData)
                 {
                     var $resp = $(responseData);
+                    $form.removeClass(config.disabledClass);
 
                     // Update the summary header
                     $commentPane.find(config.headerSelector)
@@ -194,7 +201,13 @@
         {
             var config = $commentPane.data('config-infoPaneComments');
             event.preventDefault();
-            $form = $(event.currentTarget);
+            var $form = $(event.currentTarget);
+            if ($form.hasClass(config.disabledClass))
+            {
+                return;
+            }
+
+            $form.addClass(config.disabledClass);
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -204,6 +217,7 @@
                 success: function(responseData)
                 {
                     var $resp = $(responseData);
+                    $form.removeClass(config.disabledClass);
 
                     // Update the summary header
                     $commentPane.find(config.headerSelector)
@@ -236,7 +250,10 @@
                         }
 
                         $form.closest(config.commentSelector)
-                            .find(config.expanderSelector).click();
+                            .find(config.expanderSelector)
+                            .addClass(config.expandedClass)
+                            .siblings(config.childContainerSelector)
+                            .removeClass(config.collapsedClass);
                         $addedItem.find(config.actionSelector)
                             .click(function (e) { actionClick($commentPane, e); });
                     }
@@ -333,6 +350,7 @@
         collapsedClass: 'collapsed',
         commentSelector: '.comment',
         commentListSelector: '.commentList',
+        disabledClass: 'disabled',
         expandedClass: 'expanded',
         expanderSelector: '.expander',
         focusSelector: 'input[type=text]',

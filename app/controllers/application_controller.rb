@@ -71,8 +71,13 @@ private
   end
 
   def set_locale
+    logger.info "Request domain: #{request.host}, Current locale: #{I18n.locale}"
+    
     if (request.host.match('gov'))
       I18n.locale = 'gov'
+    else
+      # Force the locale back to blist if we're not datagov
+      I18n.locale = 'blist'
     end
   end
 end

@@ -144,6 +144,7 @@
             }
 
             $form.addClass(config.disabledClass);
+            $(window).resize();
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -208,6 +209,7 @@
             }
 
             $form.addClass(config.disabledClass);
+            $(window).resize();
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -299,6 +301,7 @@
                         .removeClass(config.hiddenClass)
                         .find(config.replyFocusSelector).focus().end()
                         .find(config.parentInputSelector).val(hrefPieces[1]);
+                    $(window).resize();
                     break;
             }
 
@@ -336,6 +339,7 @@
             $(e.currentTarget).toggleClass(config.expandedClass)
                 .siblings(config.childContainerSelector)
                 .toggleClass(config.collapsedClass);
+            $(window).resize();
         };
     };
 

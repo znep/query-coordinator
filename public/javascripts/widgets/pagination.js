@@ -75,6 +75,7 @@
                     paginate.settings.paginationContainer
                         .children('.pageLink').length)
                 {
+                    paginate.settings.paginationContainer.show();
                     paginate.settings.paginationContainer.empty();
                     constructLinks(paginate);
                 }
@@ -113,8 +114,11 @@
             .children('.pageLink');
         paginate.settings.paginationContainer.children('.pageLink:first')
             .after("<span class='ellipses'>...</span>");
-        paginate.settings.paginationContainer.children('.pageLink:last')
-            .before("<span class='ellipses'>...</span>");
+        if (numPages > 2)
+        {
+            paginate.settings.paginationContainer.children('.pageLink:last')
+                .before("<span class='ellipses'>...</span>");
+        }
 
         var $nextLink = paginate.settings.paginationContainer
             .append("<a href='#next_page' class='nextLink' "
@@ -166,6 +170,7 @@
             .slice(pageStart, pageStart + paginate.settings.pageSize)
             .removeClass(paginate.settings.hiddenClass);
         paginate.settings._currentPage = pageNum;
+        $(window).resize();
 
         var lower = Math.max(0, pageNum - paginate.settings.numAdjacent);
         var upper = Math.min(paginate.settings._pageLinks.length,

@@ -58,11 +58,13 @@
     </div>
     <div id="discoverTabPopular" class="discoverContentContainer active clearfix">
       <%= render(:partial => "view_list_tab", :locals => { 
-        :tab_title => t(:discover_popular_content_header), :views => @popular_views }) %>
+        :tab_title => t(:discover_popular_content_header), 
+        :views => @popular_views, :type => "POPULAR" }) %>
     </div>
     <div id="discoverTabAll" class="discoverContentContainer clearfix">
       <%= render(:partial => "view_list_tab", :locals => { 
-        :tab_title => "All #{t(:blists_name)}", :views => @all_views }) %>
+        :tab_title => "All #{t(:blists_name)}", 
+        :views => @all_views, :type => "ALL" }) %>
     </div>
   </div>
 </div>

@@ -27,9 +27,26 @@
   <div class="discoverContentNav">
     <h2>Show <%= t(:blists_name) %></h2>
     <ul class="filterList">
-      <li><a href="#network">In my network</a></li>
-      <li><a href="#public">Public <%= t(:blists_name) %> only</a></li>
-      <li><a href="#templates">Templates only</a></li>
+      <%- if (type == "all") -%>
+        <li><a href="#most_popular" class="tabLink popular">Most popular</a></li>
+      <%- end -%>
+      <%- if (!@current_user.nil?) -%>
+        <li><%= link_to("In my network", 
+                filter_discover_url({:type => type, :filter => {:inNetwork => true}}),
+                :class => "filterLink") %></li>
+        <li><%= link_to("Public #{t(:blists_name)}", 
+                filter_discover_url({:type => type, :filter => {:publicOnly => true}}),
+                :class => "filterLink") %></li>
+        <li><%= link_to("Private #{t(:blists_name)}", 
+                filter_discover_url({:type => type, :filter => {:privateOnly => true}}),
+                :class => "filterLink") %></li>
+      <%- end -%>
+      <li><%= link_to("Most comments", 
+              filter_discover_url({:type => type, :filter => {:sortBy => "COMMENTS"}}),
+              :class => "filterLink") %></li>
+      <li><%= link_to("Most favorited", 
+              filter_discover_url({:type => type, :filter => {:sortBy => "FAVORITED"}}),
+              :class => "filterLink") %></li>
     </ul>
 
     <h2>Browse by tag</h2>
@@ -52,10 +69,18 @@
     <%- else -%>
       <h2>Browse by Category</h2>
       <ul class="categoryList">
-        <li><a href="#fun">Fun</a></li>
-        <li><a href="#personal">Personal</a></li>
-        <li><a href="#educational">Educational</a></li>
-        <li><a href="#business">Business</a></li>
+        <li><%= link_to("Fun", 
+                filter_discover_url({:type => type, :filter => {:category => "Fun"}}),
+                :class => "filterLink") %></li>
+        <li><%= link_to("Personal", 
+                filter_discover_url({:type => type, :filter => {:category => "Personal"}}),
+                :class => "filterLink") %></li>
+        <li><%= link_to("Education", 
+                filter_discover_url({:type => type, :filter => {:category => "Education"}}),
+                :class => "filterLink") %></li>
+        <li><%= link_to("Business", 
+                filter_discover_url({:type => type, :filter => {:category => "Business"}}),
+                :class => "filterLink") %></li>
       </ul>
     <%- end -%>
   </div>

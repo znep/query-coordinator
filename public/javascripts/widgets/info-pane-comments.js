@@ -77,8 +77,9 @@
         function hideAllForms($commentPane)
         {
             var config = $commentPane.data('config-infoPaneComments');
-            $commentPane.find(config.formSelector)
-                .find(config.clearableInputSelector).val('');
+            $commentPane.find(config.clearableInputSelector).val('');
+            $commentPane.find(config.ratingInputSelector).val(0);
+            updateRating($commentPane.find(config.ratingUISelector), 0);
             if ($commentPane.find(config.commentSelector).length > 0)
             {
                 $commentPane.find(config.formSelector).addClass(config.hiddenClass);
@@ -120,7 +121,8 @@
 
         function updateRating($ratingUI, rating)
         {
-            $ratingUI.removeClass(ratingClass($ratingUI.text()))
+            rating = parseInt(rating) || 0;
+            $ratingUI.removeClass(ratingClass(parseInt($ratingUI.text()) || 0))
                 .attr('title', rating).text(rating)
                 .addClass(ratingClass(rating));
         };
@@ -158,15 +160,6 @@
                         .replaceWith($resp.children(config.headerSelector));
                     $commentPane.find(config.showFormSelector).click(
                         function (e) { showFormClick($commentPane, e); });
-
-                    // Update all ratings for this user
-                    var $newRating = $resp.children('.rating[class*=user_rating_]');
-                    if ($newRating.length > 0)
-                    {
-                        var matchClass = $newRating
-                            .attr('class').match(/(user_rating_\w+-\w+)/)[0];
-                        $commentPane.find('.' + matchClass).replaceWith($newRating);
-                    }
 
                     // Add the new comment
                     var $newComment = $resp.children(config.commentSelector);

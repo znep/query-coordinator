@@ -27,12 +27,12 @@ class View < Model
     end
     get_request(path)
   end
-  
+
   def self.find_featured()
     path = "/views.json?featured=true"
     get_request(path)
   end
-  
+
   def self.find_recent(limit = 10, inNetwork=false)
     path = "/views.json?sortBy=LAST_CHANGED"
     unless (limit.nil?)
@@ -67,23 +67,6 @@ class View < Model
   def register_opening
     self.class.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
       "?method=opening")
-  end
-
-  def update_rating(user_id, rating)
-    rating = rating.to_i
-    path = "/#{self.class.name.pluralize.downcase}/#{id}/ratings.json" +
-      "?value=#{rating * 20}"
-    if rating_for_user(user_id) != rating
-      if rating_for_user(user_id) > 0
-        result = self.class.update_request(path)
-      else
-        result = self.class.create_request(path)
-      end
-      data['averageRating'] = result.data['averageRating']
-      data['totalTimesRated'] = result.data['totalTimesRated']
-      @user_ratings[user_id] = rating
-    end
-    self
   end
 
 
@@ -232,14 +215,6 @@ class View < Model
 
   def comments
     Comment.find(id)
-  end
-
-  def rating_for_user(user_id)
-    if !@user_ratings
-      @user_ratings = Hash.new
-      Rating.find(id).each {|r| @user_ratings[r.user.id] = r.rating}
-    end
-    @user_ratings[user_id] || 0
   end
 
   @@categories = {

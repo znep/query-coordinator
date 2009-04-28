@@ -595,6 +595,11 @@ table.gridList tr.child.hover.selected td.description > *
 .singleInfoComments li.comment .commentBlock .cornerBL
 { background-image: url(/stylesheets/images/gov/info_pane/comment_corner_bottom_left.png); }
 
+#infoPane .singleInfoComments li.comment .rating
+{
+    background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
+}
+
 .singleInfoComments li.comment .commentBlock .commentBody,
 .singleInfoComments li.comment .childContainer,
 .singleInfoComments li.comment .childContainer .childCollapsed,

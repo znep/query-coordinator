@@ -6,6 +6,17 @@ class Comment < Model
   end
 
   def self.create(view_id, attributes)
+    if attributes[:viewRating].blank? || attributes[:viewRating].to_i == 0
+      attributes[:viewRating] = nil
+    else
+      attributes[:viewRating] = attributes[:viewRating].to_i * 20
+    end
+    if attributes[:title].blank?
+      attributes[:title] = nil
+    end
+    if attributes[:body].blank?
+      attributes[:body] = nil
+    end
     path = "/views/#{view_id}/#{self.name.pluralize.downcase}.json"
     return self.create_request(path, JSON.generate(attributes))
   end
@@ -28,6 +39,10 @@ class Comment < Model
     return self.create_request("/views/#{view_id}/" +
       "#{self.name.pluralize.downcase}/#{comment_id}/ratings?" +
       "thumbsUp=" + rating)
+  end
+
+  def viewRating
+    (data['viewRating'] || 0) / 20
   end
 
   def rated?

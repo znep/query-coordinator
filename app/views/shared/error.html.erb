@@ -1,0 +1,19 @@
+<% content_for :head do %>
+  <title><%= t(:page_title) %></title>
+<% end %>
+
+<div class='dialogBox'>
+  <div class='header'>
+    <h1>blist</h1>
+  </div>
+
+  <div class='mainContent'>
+    <div class='title clearfix'><h2>Error</h2></div>
+
+    <%= display_standard_flashes %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+<% end %>

@@ -350,6 +350,9 @@ $(function ()
     $(document).bind(blist.events.OPEN_VIEW, blistGridNS.openViewHandler);
     $(document).bind(blist.events.POPUP_CANCELED, blistGridNS.popupCanceledHandler);
 
+    blist.util.sizing.cachedInfoPaneHeight =
+        $("#infoPane .header").height() +
+        $("#infoPane .active .infoContentHeader").height();
     $(window).resize(function (event)
     {
         commonNS.adjustSize();
@@ -428,7 +431,6 @@ $(function ()
 
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
-    blist.util.sizing.cachedInfoPaneHeight = $("#sidebar").height();
     $(".summaryTabs").infoPaneNavigate({
         // After switching tabs, update the menu and size the Swf.
         switchCompleteCallback: function ($tab)

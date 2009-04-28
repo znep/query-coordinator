@@ -315,6 +315,16 @@ body#lensBody
     background-position: 5px -876px;
 }
 
+#lensBody .headerBar #apiLink
+{
+    background-position: 0 -220px;
+}
+
+#lensBody .headerBar #rssLink
+{
+    background-position: 0 -240px;
+}
+
 /* Icons & styling for main menu */
 
 #mainMenu

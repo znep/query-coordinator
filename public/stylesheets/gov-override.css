@@ -360,31 +360,28 @@ table.gridList tr.child.hover.selected td.description > *
 .formListBoxBR { background: url(/stylesheets/images/gov/content/section_bottom_right.png) right bottom no-repeat; }
 .formListBox dt { color: #eee; }
 
-/*** END: widgets ***/
-
-/*** START: login-screen ***/
-#login .loginBox
+.dialogBox
 {
     background-color: #fff;
     background-image: url(/stylesheets/images/gov/content/background_corner_bottom_right.png);
 }
-#login .loginBox .header
+.dialogBox .header
 {
     background-color: #2f608f;
     border-bottom: none;
 }
-#login .loginBox .header h1
+.dialogBox .header h1
 {
     background-image: url(/stylesheets/images/gov/common/data_gov_logo_dialog.png);
 }
-#login .loginBox .mainContent
+.dialogBox .mainContent
 {
     background-image: url(/stylesheets/images/gov/content/background_corner_bottom_left.png);
     margin-top: 0;
 }
-#login .loginBox .footer { border-top: solid 1px #ccc; }
+.dialogBox .footer { border-top: solid 1px #ccc; }
 
-/*** END: login-screen ***/
+/*** END: widgets ***/
 
 /*** START: signup-screen ***/
 

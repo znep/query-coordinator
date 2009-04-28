@@ -23,7 +23,21 @@ class BlistsController < SwfController
       # show import in swf
       @start_screen = 'import'
     else
-      @parent_view = @view = View.find(params[:id])
+      begin
+        @parent_view = @view = View.find(params[:id])
+      rescue CoreServerError => e
+        if e.error_code == 'authentication_required'
+          return require_user
+        elsif e.error_code == 'not_found'
+          flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+            ' cannot be found, or has been deleted.'
+          return render 'shared/error'
+        else
+          flash[:error] = e.error_message
+          return render 'shared/error'
+        end
+      end
+
       # See if it matches the authoritative URL; if not, redirect
       if request.path != @view.href
         # Log redirects in development

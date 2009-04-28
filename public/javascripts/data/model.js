@@ -141,6 +141,8 @@ blist.namespace.fetch('blist.data');
                             icol.type = "richtext";
                         if (icol.type == "picklist")
                             icol.options = translatePicklistFromView(col);
+                        if (col.format && col.format.view)
+                            icol.format = col.format.view;
                     }
                 }
                 var columns = [];

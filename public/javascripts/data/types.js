@@ -120,7 +120,7 @@ blist.namespace.fetch('blist.data.types');
         return "(" + value + " ? '<div class=\"blist-table-checked\"></div>' : '')";
     }
 
-    var renderDate = function(value) {
+    var renderDate = function(value, includeDate, includeTime) {
         if (value == null)
             return '';
         
@@ -128,23 +128,53 @@ blist.namespace.fetch('blist.data.types');
         // Plus this is probably faster.
         if (typeof value == 'number')
             value = new Date(value * 1000);
-        var day = value.getMonth();
-        if (day < 10)
-            day = '0' + day;
-        var hour = value.getHours();
-        var meridian = hour < 12 ? ' am' : ' pm';
-        if (hour > 12)
-            hour -= 12;
-        else if (!hour)
-            hour = 12;
-        var minute = value.getMinutes();
-        if (minute < 10)
-            minute = '0' + minute;
-        return (value.getMonth() + 1) + '/' + value.getDate() + '/' + (value.getYear() + 1900) + ' ' + hour + ':' + minute + meridian;
+
+        var result;
+
+        if (includeDate) {
+            var day = value.getMonth();
+            if (day < 10)
+                day = '0' + day;
+            result = (value.getMonth() + 1) + '/' + value.getDate() + '/' + (value.getYear() + 1900);
+        }
+        if (includeTime) {
+            var hour = value.getHours();
+            var meridian = hour < 12 ? ' am' : ' pm';
+            if (hour > 12)
+                hour -= 12;
+            else if (!hour)
+                hour = 12;
+            var minute = value.getMinutes();
+            if (minute < 10)
+                minute = '0' + minute;
+            var time = hour + ':' + minute + meridian;
+            if (result)
+                result += ' ' + time;
+            else
+                result = time;
+        }
+
+        return result;
     }
 
-    var renderGenDate = function(value) {
-        return "renderDate(" + value + ")";
+    var renderGenDate = function(value, column) {
+        var date, time;
+        switch (column && column.format) {
+            case 'date':
+                date = true;
+                time = false;
+                break;
+
+            case 'time':
+                date = false;
+                time = true;
+                break;
+
+            default:
+                date = time = true;
+                break;
+        }
+        return "renderDate(" + value + ", " + date + ", " + time + ")";
     }
 
     var renderGenPicklist = function(value, column, context) {

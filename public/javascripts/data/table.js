@@ -408,7 +408,7 @@
             }
             handleClass = id + "-handle";
             handleStyle = addRule("." + handleClass).style;
-            rowStyle = addRule(".blist-table-tr").style;
+            rowStyle = addRule(".blist-tr").style;
         })();
 
 
@@ -435,15 +435,10 @@
             var mcols = model.meta().columns;
             for (var i = 0; i < mcols.length; i++) {
                 var mcol = mcols[i];
-                var col = {
-                    name: mcol.name,
-                    type: mcol.type,
+                columns.push($.extend(true, {
                     index: columns.length,
-                    srcIndex: mcol.dataIndex,
-                    width: mcol.width || 100,
-                    options: mcol.options
-                }
-                columns.push(col);
+                    width: 100
+                }, mcol));
             }
 
             // Ensure CSS styles are initialized
@@ -462,7 +457,7 @@
             // Row positioning information
             rowHeight = measuredInnerDims.height;
             rowOffset = measuredOuterDims.height;
-            rowStyle.height = rowHeight + 'px';
+            rowStyle.height = rowOffset + 'px';
 
             // Update the handle style with proper dimensions
             var dummyHandleText = Math.min(model.rows().length, 1000);
@@ -490,11 +485,17 @@
 
                 // Add rendering information to the rendering function
                 var type = blist.data.types[col.type] || blist.data.types.text;
-                var renderer = type.renderGen("row[" + col.srcIndex + "]", col, contextVariables);
+                var renderer = type.renderGen("row[" + col.dataIndex + "]", col, contextVariables);
                 renderFnParts.push(
                     "\"<div class='blist-td " + colClasses[i] + "'>\", " + renderer + ", \"</div>\""
                 )
             }
+
+            // Compute the inside width.  This is the width of all cells or the width of the scrolling container,
+            // whichever is greater
+            var rowWidth = pos;
+            //if (rowWidth < scrolls.width())
+            //    rowWidth = scrolls.width();
 
             // Create the rendering function.  We precompile this for speed so we can avoid tight loops, function
             // calls, etc.
@@ -503,8 +504,9 @@
             renderFn = blist.data.types.compile(renderFn, contextVariables);
 
             // Set the scrolling area width
-            header.width(pos);
-            inside.width(pos);
+            //rowStyle.width = rowWidth + 'px';
+            header.width(rowWidth);
+            inside.width(rowWidth);
 
             // Set the title
             nameLabel.html(model.title());

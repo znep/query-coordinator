@@ -99,8 +99,7 @@ class Model
           model = klass.new
           model.data = item
           model.update_data = Hash.new
-          model.freeze
-          items.push(model)
+          @cached_#{attribute}.push(model)
         end
         items.freeze
         return items

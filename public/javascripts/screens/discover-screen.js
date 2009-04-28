@@ -1,3 +1,19 @@
+var discoverNS = blist.namespace.fetch('blist.discover');
+
+blist.discover.filterClickHandler = function (event)
+{
+    event.preventDefault();
+    var $filterLink = $(this);
+    
+    $.Tache.Get({ 
+        url: $filterLink.attr("href"),
+        success: function(data)
+        {
+            $filterLink.closest(".discoverContentContainer").html(data);
+        }
+    });
+}
+
 $(function ()
 {
     $("#featuredCarousel").jcarousel({
@@ -5,6 +21,12 @@ $(function ()
     });
     
     $(".discoverTabs").discoverTabNavigate();
+    
+    $(".tabLink.popular").click(function(event){
+        $(".discoverTabs").discoverTabNavigate().activateTab("#tabPopular");
+    });
+    
+    $(".filterLink").live("click", discoverNS.filterClickHandler);
 });
 
 

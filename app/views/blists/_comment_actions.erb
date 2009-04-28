@@ -15,10 +15,10 @@
     <%= comment.rated_up? ? 'disabled' : '' %>'
     href='#rateDown_<%= comment.id %>' title='Not Helpful'>Not Helpful</a>
   <%- end -%>
-  <span class='ratingUp <%= comment.upRatings < 1 ? 'hidden' : '' %>'>
+  <span class='ratingUp <%= (comment.upRatings || 0) < 1 ? 'hidden' : '' %>'>
     +<%= comment.upRatings %>
   </span>
-  <span class='ratingDown <%= comment.downRatings < 1 ? 'hidden' : '' %>'>
+  <span class='ratingDown <%= (comment.downRatings || 0) < 1 ? 'hidden' : '' %>'>
     -<%= comment.downRatings %>
   </span>
   <%- end -%>

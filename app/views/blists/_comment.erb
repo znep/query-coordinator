@@ -45,7 +45,7 @@
           <%- end -%>
           <%- end -%>
 
-          <%- comment_children = Array.new(comment.children) -%>
+          <%- comment_children = Array.new(comment.children || 0) -%>
           <a class='expander expanded
             <%= comment_children.length < 1 ? 'hidden' : '' %>'
             title='Toggle replies' href='#toggleReplies'>Toggle replies</a>

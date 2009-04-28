@@ -38,11 +38,16 @@
             $commentPane.find(config.replySelector)
                 .submit(function (e) { submitReply($commentPane, e); });
 
-            $commentPane.find(config.commentSelector).find(config.actionSelector)
+            $commentPane.find(config.actionSelector)
                 .click(function (e) { actionClick($commentPane, e); });
 
             $commentPane.find(config.expanderSelector)
                 .click(function (e) { expanderClick($commentPane, e); });
+
+            $commentPane.find(config.commentListSelector)
+                .pagination({paginationContainer:
+                    $commentPane.find(config.paginationContainer),
+                    previousText: 'Prev'});
         });
 
         // Private methods
@@ -130,7 +135,13 @@
         {
             var config = $commentPane.data('config-infoPaneComments');
             event.preventDefault();
-            $form = $(event.currentTarget);
+            var $form = $(event.currentTarget);
+            if ($form.hasClass(config.disabledClass))
+            {
+                return;
+            }
+
+            $form.addClass(config.disabledClass);
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -140,6 +151,7 @@
                 success: function(responseData)
                 {
                     var $resp = $(responseData);
+                    $form.removeClass(config.disabledClass);
 
                     // Update the summary header
                     $commentPane.find(config.headerSelector)
@@ -178,6 +190,8 @@
                             .end()
                             .find(config.expanderSelector)
                             .click(function (e) { expanderClick($commentPane, e); });
+                        $commentPane.find(config.commentListSelector)
+                            .pagination().update();
                     }
 
                     if ($commentPane.find(config.commentSelector).length > 0)
@@ -194,7 +208,13 @@
         {
             var config = $commentPane.data('config-infoPaneComments');
             event.preventDefault();
-            $form = $(event.currentTarget);
+            var $form = $(event.currentTarget);
+            if ($form.hasClass(config.disabledClass))
+            {
+                return;
+            }
+
+            $form.addClass(config.disabledClass);
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -204,6 +224,7 @@
                 success: function(responseData)
                 {
                     var $resp = $(responseData);
+                    $form.removeClass(config.disabledClass);
 
                     // Update the summary header
                     $commentPane.find(config.headerSelector)
@@ -236,7 +257,10 @@
                         }
 
                         $form.closest(config.commentSelector)
-                            .find(config.expanderSelector).click();
+                            .find(config.expanderSelector)
+                            .addClass(config.expandedClass)
+                            .siblings(config.childContainerSelector)
+                            .removeClass(config.collapsedClass);
                         $addedItem.find(config.actionSelector)
                             .click(function (e) { actionClick($commentPane, e); });
                     }
@@ -333,6 +357,7 @@
         collapsedClass: 'collapsed',
         commentSelector: '.comment',
         commentListSelector: '.commentList',
+        disabledClass: 'disabled',
         expandedClass: 'expanded',
         expanderSelector: '.expander',
         focusSelector: 'input[type=text]',
@@ -341,6 +366,7 @@
         headerSelector: '.infoContentHeader',
         hiddenClass: 'hidden',
         infoTabsSelector: '.summaryTabs',
+        paginationContainer: '.commentPagination',
         parentInputSelector: '.parentInput',
         ratingInputSelector: '.selfRating input',
         ratingUISelector: '.selfRating .rating',

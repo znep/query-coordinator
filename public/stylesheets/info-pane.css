@@ -527,6 +527,11 @@
     text-align: right;
 }
 
+.singleInfoComments form.postComment.disabled .submitSection
+{
+    display: none;
+}
+
 .singleInfoComments form.postComment .submitSection a
 {
     color: #666666;
@@ -785,6 +790,11 @@
 {
     border-top: none;
     padding-top: 0;
+}
+
+.singleInfoComments .commentPagination
+{
+    margin: 0 0 0.5em 15em;
 }
 
 .singleInfoComments .footer

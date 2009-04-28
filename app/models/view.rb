@@ -8,6 +8,11 @@ class View < Model
       return self.find_under_user(options)
     end
   end
+  
+  def self.find_filtered(options)
+    path = "/views.json?#{options.to_param}"
+    get_request(path)
+  end
 
   def self.find_multiple(ids)
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param

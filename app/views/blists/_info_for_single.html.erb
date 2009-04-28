@@ -354,12 +354,9 @@
 
       <%- comments = view.comments -%>
       <%- form_tag(post_comment_blist_url(view.id),
-        :class => ('postComment' + (comments.length > 0 ? ' hidden' : ''))) do -%>
-      <%- if !current_user -%>
-      <dl class="summaryList">
-        <dd>Placeholder until submitting comments as not-logged-in user is supported</dd>
-      </dl>
-      <%- else -%>
+      :class => ('postComment' + (comments.length > 0 ? ' hidden' : '') +
+      (current_user.nil? ? ' doFullReq' : ''))) do -%>
+
       <dl class="summaryList">
         <dt>My Rating</dt>
         <dd class='selfRating'>
@@ -393,7 +390,6 @@
         <%= image_submit_tag(comment_submit_path, :title => "Submit") %>
         </dd>
       </dl>
-      <%- end -%>
       <%- end -%>
 
       <ul class='commentList'>

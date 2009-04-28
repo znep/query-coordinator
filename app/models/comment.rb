@@ -17,6 +17,11 @@ class Comment < Model
     if attributes[:body].blank?
       attributes[:body] = nil
     end
+
+    if attributes[:body].nil? && attributes[:viewRating].nil?
+      return nil
+    end
+
     path = "/views/#{view_id}/#{self.name.pluralize.downcase}.json"
     return self.create_request(path, JSON.generate(attributes))
   end

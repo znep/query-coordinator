@@ -61,7 +61,8 @@ class AccountsController < ApplicationController
           logger.warn "Unable to update profile photo: #{e.error_code} #{e.error_message}"
         end
       end
-      redirect_to root_url
+
+      redirect_back_or_default(root_url)
     else
       flash[:warning] = "We were able to create your account, but couldn't log you in."
       redirect_to login_url

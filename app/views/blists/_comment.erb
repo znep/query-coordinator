@@ -1,5 +1,5 @@
 <%- if !comment.body.blank? -%>
-<li class='comment clearfix'>
+<li id='comment_<%= comment.id %>' class='comment clearfix'>
 <div class='userInfo'>
   <div class='primaryInfo'>
     <%= image_tag(comment.user.profile_image_path("small"), :size => "24x24",
@@ -26,10 +26,9 @@
           :locals => {:comment => comment, :view => view}) %>
 
           <%- form_tag(post_comment_blist_url(view.id),
-          :class => ('replyComment postComment hidden')) do -%>
-          <%- if !current_user -%>
-          <p>Placeholder until submitting comments as not-logged-in user is supported</p>
-          <%- else -%>
+            :class => ('replyComment postComment hidden' +
+            (current_user.nil? ? ' doFullReq' : ''))) do -%>
+
           <%= hidden_field_tag('comment[parent][id]', comment.id,
           :class => 'parentInput') %>
           <div class='commentBody'>
@@ -43,7 +42,6 @@
             "gov/button_submit_comment.png" : "button_submit_comment.png" -%>
             <%= image_submit_tag(comment_submit_path, :title => "Submit") %>
           </div>
-          <%- end -%>
           <%- end -%>
 
           <%- comment_children = Array.new(comment.children || 0) -%>

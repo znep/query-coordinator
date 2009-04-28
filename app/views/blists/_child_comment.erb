@@ -1,4 +1,5 @@
-<div class='childWrapper <%= local_assigns[:wrapper_class] %>'>
+<div id='comment_<%= comment.id %>'
+  class='childWrapper <%= local_assigns[:wrapper_class] %>'>
   <div class='childComment'>
     <div class='author'>
       <%= h(comment.user.displayName) %>

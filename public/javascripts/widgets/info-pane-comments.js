@@ -32,13 +32,16 @@
                 hideAllForms($commentPane);
             });
 
-            $commentPane.find(config.topFormSelector)
+            $commentPane.find(config.topFormSelector
+                + ':not(.' + config.skipActionClass + ')')
                 .submit(function (e) { submitCommentRating($commentPane, e); });
 
-            $commentPane.find(config.replySelector)
+            $commentPane.find(config.replySelector
+                + ':not(.' + config.skipActionClass + ')')
                 .submit(function (e) { submitReply($commentPane, e); });
 
-            $commentPane.find(config.actionSelector)
+            $commentPane.find(config.actionSelector
+                + ':not(.' + config.skipActionClass + ')')
                 .click(function (e) { actionClick($commentPane, e); });
 
             $commentPane.find(config.expanderSelector)
@@ -48,6 +51,13 @@
                 .pagination({paginationContainer:
                     $commentPane.find(config.paginationContainer),
                     previousText: 'Prev'});
+
+            if (config.initialComment && config.initialComment != '')
+            {
+                $commentPane.find(config.commentListSelector)
+                    .pagination().showItem($commentPane
+                            .find('#comment_' + config.initialComment));
+            }
         });
 
         // Private methods
@@ -170,10 +180,12 @@
                             .prependTo(
                                 $commentPane.find(config.commentListSelector)
                             )
-                            .find(config.actionSelector)
+                            .find(config.actionSelector
+                            + ':not(.' + config.skipActionClass + ')')
                             .click(function (e) { actionClick($commentPane, e); })
                             .end()
-                            .find(config.replySelector)
+                            .find(config.replySelector
+                            + ':not(.' + config.skipActionClass + ')')
                             .submit(function (e) { submitReply($commentPane, e); })
                             .end()
                             .find(config.cancelSelector).click(function (e)
@@ -256,7 +268,8 @@
                             .addClass(config.expandedClass)
                             .siblings(config.childContainerSelector)
                             .removeClass(config.collapsedClass);
-                        $addedItem.find(config.actionSelector)
+                        $addedItem.find(config.actionSelector
+                            + ':not(.' + config.skipActionClass + ')')
                             .click(function (e) { actionClick($commentPane, e); });
                     }
 
@@ -362,6 +375,7 @@
         footerSelector: '.footer',
         headerSelector: '.infoContentHeader',
         hiddenClass: 'hidden',
+        initialComment: null,
         infoTabsSelector: '.summaryTabs',
         paginationContainer: '.commentPagination',
         parentInputSelector: '.parentInput',
@@ -370,6 +384,7 @@
         replySelector: '.replyComment',
         replyFocusSelector: 'textarea',
         replySiblingSelector: '.actions',
+        skipActionClass: 'doFullReq',
         showFormSelector: 'a.postComment',
         topFormSelector: '.infoContent > form.postComment'
      };

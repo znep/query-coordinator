@@ -68,12 +68,14 @@ class BlistsController < SwfController
     @view = View.find(params[:id])
 
     respond_to do |format|
-      format.html { redirect_to(@view.href) }
+      format.html { redirect_to(@view.href +
+        '?metadata_pane=tabComments&comment=' + @comment.id.to_s) }
       format.data { render }
     end
   end
 
   def update_comment
+    comment_id = params[:comment][:id]
     if (params[:comment][:rating])
       Comment.rate(params[:id], params[:comment][:id],
                    params[:comment].delete(:rating))
@@ -81,7 +83,8 @@ class BlistsController < SwfController
     Comment.update(params[:id], params[:comment])
 
     respond_to do |format|
-      format.html { redirect_to(View.find(params[:id]).href) }
+      format.html { redirect_to(View.find(params[:id]).href +
+        '?metadata_pane=tabComments&comment=' + comment_id) }
       format.data { render :json => {} }
     end
   end

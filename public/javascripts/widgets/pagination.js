@@ -82,6 +82,28 @@
 
                 paginate.settings._totalCount = paginate.settings._allItems.length;
                 displayPage(paginate, 0);
+            },
+
+            showItem: function ($item)
+            {
+                var paginate = this;
+                if ($item.length > 0)
+                {
+                    var itemIndex = paginate.settings._allItems.index($item);
+                    if (itemIndex < 0)
+                    {
+                        var $parItem = $item
+                            .closest(paginate.settings.itemSelector);
+                        itemIndex = paginate.settings._allItems.index($parItem);
+                    }
+
+                    if (itemIndex >= 0)
+                    {
+                        displayPage(paginate,
+                            Math.floor(itemIndex / paginate.settings.pageSize));
+                    }
+                    $item[0].scrollIntoView();
+                }
             }
         }
     });

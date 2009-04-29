@@ -32,14 +32,17 @@ module SwfHelper
 
     embed = <<HTML
 <script type="text/javascript">
-    swfobject.embedSWF("#{source}",
-                       "#{options[:id]}",
-                       "#{options[:width]}", "#{options[:height]}",
-                       "#{options[:version]}",
-                       "#{options[:install]}",
-                       #{to_object(options[:variables])},
-                       #{to_object(options[:parameters])},
-                       {id:"#{options[:id]}",name:"#{options[:id]}"});
+    function loadSWF()
+    {
+        swfobject.embedSWF("#{source}",
+                           "#{options[:id]}",
+                           "#{options[:width]}", "#{options[:height]}",
+                           "#{options[:version]}",
+                           "#{options[:install]}",
+                           #{to_object(options[:variables])},
+                           #{to_object(options[:parameters])},
+                           {id:"#{options[:id]}",name:"#{options[:id]}"});
+    };
 </script>
 HTML
 

@@ -57,6 +57,12 @@
             </li>
 
             <%- if can_edit -%>
+            <li class='readItem separator'><a href='#editGrid' id='editLink'>
+              Edit
+            </a></li>
+            <%- end -%>
+
+            <%- if can_edit -%>
             <%# Undo/redo %>
             <li class='swfItem separator'><a href='#Undo' id='undoLink'
               class='linkIcon flashAction' title='Undo'>Undo</a></li>
@@ -201,16 +207,11 @@
         <div id='pageViewHeader'><div class='innerWrapper'></div></div>
 
         <div id='outerSwfWrapper' class='scrollContent'>
-          <%- if current_user -%>
-          <div id='swfWrapper'>
+          <p class='readItem'>Javascript grid goes here</p>
+          <%- if can_edit -%>
+          <div id='swfWrapper' class='swfItem'>
             <%= render(:partial => "shared/swf") %>
           </div>
-          <%- else -%>
-          <p>
-            Please <%= link_to('sign in',
-              login_url(:referer_redirect => true)) %>
-            to view or edit this blist
-          </p>
           <%- end -%>
         </div>
 

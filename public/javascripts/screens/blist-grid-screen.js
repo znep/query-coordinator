@@ -438,8 +438,6 @@ $(function ()
     $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),
         menuBar: $('#lensContainer .headerBar')});
 
-    blistGridNS.sizeSwf();
-
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
     $(".summaryTabs").infoPaneNavigate({
@@ -476,5 +474,13 @@ $(function ()
     $('#infoPane .singleInfoComments').infoPaneComments({
         initialComment: commentMatches && commentMatches.length > 1 ?
             commentMatches[1] : null
+    });
+
+    $('#editLink').click(function (e)
+    {
+        e.preventDefault();
+        $('#lensBody').addClass('editMode').removeClass('readMode');
+        loadSWF();
+        blistGridNS.sizeSwf();
     });
 });

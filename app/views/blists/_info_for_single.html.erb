@@ -451,7 +451,7 @@
           "privateShared" : "private") %>">
         This <%= view.is_blist? ? t(:blist_name) : "filter" %> is
         <%- if is_owner -%>
-        <a class='swfItem' href='<%= "#{view.href}?popup=PermissionsDialog" %>'
+        <a href='<%= "#{view.href}?popup=PermissionsDialog" %>'
           class='showFlashPopup'><%= view.is_public? ? "Public" : "Private" %></a>
         <%- else -%>
         <span><%= view.is_public? ? "Public" : "Private" %></span>
@@ -498,7 +498,9 @@
               <td class="opened"><div>01/09/2009</div></td>
               %>
               <td class="actionContainer"><div>
+<%- if isActivityEnabled -%>
                 <a href="#view" class="action"><span>View Activity</span></a>
+<%- end -%>
               </div></td>
             </tr>
             <%- end -%>

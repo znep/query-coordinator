@@ -31,24 +31,6 @@
 }
 
 
-.pageBlockHeaderContent .myNetworkViews
-{
-    float: right;
-    margin-right: -33em;
-    margin-top: 4em;
-    padding-left: 3em;
-    width: 30em;
-}
-.myNetworkViews h2
-{
-    border-bottom: 1px solid #ccc;
-    color: #666;
-    font-size: 1.4em;
-    font-weight: normal;
-    margin-bottom: .714em; /* 10px */
-    padding-bottom: .357em; /* 5px */
-}
-
 ul.myNetworkList li
 {
     color: #333;
@@ -76,6 +58,7 @@ ul.myNetworkList li span
     padding: .5em 50em .5em 7.5em;
 }
 
+
 .memberListItem .memberImage
 {
     float: left;
@@ -87,17 +70,21 @@ ul.myNetworkList li span
     float: left;
     width: 100%;
 }
-.memberListItem .memberMeta
-{
-    float: left;
-    margin-left: 1em;
-    margin-right: -30em;
-    width: 29em;
-}
-.memberListItem .memberData
+.memberListItem .memberRight
 {
     float: right;
     margin-right: -50em;
+    width: 50em;
+}
+.memberListItem .memberMeta
+{
+    float: left;
+    padding: 0 1em;
+    width: 28em;
+}
+.memberListItem .memberData
+{
+    float: left;
     width: 20em;
 }
 

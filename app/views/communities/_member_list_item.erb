@@ -14,22 +14,24 @@
       <li><%= h(member.title) %></li>
     </ul>
   </div>
-  <div class="memberMeta">
-    <ul>
-      <li><strong>Tags:</strong> <%= member.tag_display_string %></li>
-      <li><strong>Interests:</strong> <%= h(member.interests) %></li>
-    </ul>
-  </div>
-  <div class="memberData">
-    <ul class="clearfix">
-      <li>Friends <strong>[0]</strong></li>
-      <li>Activity Score <strong>[0]</strong></li>
-      <li>Followers <strong>[0]</strong></li>
-      <li>Public blists <strong>[0]</strong></li>
-    </ul>
-    <ul class="memberActions actionButtons clearfix">
-      <li><%= link_to("<span>Follow</span>", profile_url(member.id)) %></li>
-      <li class="last"><%= link_to("<span>Profile</span>", profile_url(member.id), :class => "arrowButton") %></li>
-    </ul>
+  <div class="memberRight">
+    <div class="memberMeta">
+      <ul>
+        <li><strong>Tags:</strong> <%= member.tag_display_string %></li>
+        <li><strong>Interests:</strong> <%= h(member.interests) %></li>
+      </ul>
+    </div>
+    <div class="memberData">
+      <ul class="clearfix">
+        <li>Friends <strong>[0]</strong></li>
+        <li>Activity Score <strong>[0]</strong></li>
+        <li>Followers <strong>[0]</strong></li>
+        <li>Public blists <strong>[0]</strong></li>
+      </ul>
+      <ul class="memberActions actionButtons clearfix">
+        <li><%= link_to("<span>Follow</span>", profile_url(member.id)) %></li>
+        <li class="last"><%= link_to("<span>Profile</span>", profile_url(member.id), :class => "arrowButton") %></li>
+      </ul>
+    </div>
   </div>
 </li>

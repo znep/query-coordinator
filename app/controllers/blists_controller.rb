@@ -197,7 +197,7 @@ private
 
 
     # First, sort by name.
-    cur_views = cur_views.sort { |a,b| a.name <=> b.name }
+    cur_views = cur_views.sort_by { |view| view.name }
 
     # Re-organize the views with children under their parents. Maintain overall sorting.
     # Stash all parent blists.

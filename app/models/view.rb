@@ -1,6 +1,7 @@
 class View < Model
   cattr_accessor :categories
 
+
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
       return super(options)
@@ -112,6 +113,7 @@ class View < Model
   def is_public?
     grants.any? {|p| p.flag?('public')}
   end
+  memoize :is_public?
 
   def is_private?
     grants.length == 0
@@ -223,4 +225,5 @@ class View < Model
     "Education" => "Education"
   }
 
+  memoize :href
 end

@@ -64,7 +64,7 @@ module BlistsHelper
     rating = view.averageRating
     "<div class='rating " +
       "#{get_rating_class(rating)}' " +
-      "title='#{rating}'>#{rating}</div>"
+      "title='#{rating}'><span>#{rating}</span></div>"
   end
 
   def contacts_filter_menu(href_prefix, href_group_prefix,

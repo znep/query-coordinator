@@ -23,7 +23,21 @@ class BlistsController < SwfController
       # show import in swf
       @start_screen = 'import'
     else
-      @parent_view = @view = View.find(params[:id])
+      begin
+        @parent_view = @view = View.find(params[:id])
+      rescue CoreServerError => e
+        if e.error_code == 'authentication_required'
+          return require_user
+        elsif e.error_code == 'not_found'
+          flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+            ' cannot be found, or has been deleted.'
+          return render 'shared/error'
+        else
+          flash[:error] = e.error_message
+          return render 'shared/error'
+        end
+      end
+
       # See if it matches the authoritative URL; if not, redirect
       if request.path != @view.href
         # Log redirects in development
@@ -63,26 +77,19 @@ class BlistsController < SwfController
   end
 
   def post_comment
-    if params[:comment] && !params[:comment][:body].blank?
-      @is_child = !params[:comment][:parent].nil?
-      @comment = Comment.create(params[:id], params[:comment])
-    end
-    if params[:view] && params[:view][:rating]
-      @view = View.find(params[:id]).update_rating(current_user.id,
-                                                   params[:view][:rating])
-    end
-
-    if @view.nil?
-      @view = View.find(params[:id])
-    end
+    @is_child = !params[:comment][:parent].nil?
+    @comment = Comment.create(params[:id], params[:comment])
+    @view = View.find(params[:id])
 
     respond_to do |format|
-      format.html { redirect_to(@view.href) }
+      format.html { redirect_to(@view.href +
+        '?metadata_pane=tabComments&comment=' + @comment.id.to_s) }
       format.data { render }
     end
   end
 
   def update_comment
+    comment_id = params[:comment][:id]
     if (params[:comment][:rating])
       Comment.rate(params[:id], params[:comment][:id],
                    params[:comment].delete(:rating))
@@ -90,7 +97,8 @@ class BlistsController < SwfController
     Comment.update(params[:id], params[:comment])
 
     respond_to do |format|
-      format.html { redirect_to(View.find(params[:id]).href) }
+      format.html { redirect_to(View.find(params[:id]).href +
+        '?metadata_pane=tabComments&comment=' + comment_id) }
       format.data { render :json => {} }
     end
   end

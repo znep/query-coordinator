@@ -22,8 +22,10 @@ blist.namespace.fetch('blist.data');
         var listeners = [];
 
         // Sorting configuration
-        var orderFn = null;
-        var orderDesc = false;
+        var sortConfigured;
+        var orderFn;
+        var orderPrepro;
+        var orderCol;
 
         // Filtering configuration
         var filterFn = null;
@@ -116,7 +118,7 @@ blist.namespace.fetch('blist.data');
                 var options = col.options = {};
                 for (var j = 0; j < values.length; j++) {
                     var value = values[j];
-                    options[value.id] = { text: value.description, icon: value.icon };
+                    options[typeof value.id == "string" ? value.id.toLowerCase() : value.id] = { text: value.description, icon: value.icon };
                 }
             }
             return options;
@@ -139,6 +141,8 @@ blist.namespace.fetch('blist.data');
                             icol.type = "richtext";
                         if (icol.type == "picklist")
                             icol.options = translatePicklistFromView(col);
+                        if (col.format && col.format.view)
+                            icol.format = col.format.view;
                     }
                 }
                 var columns = [];
@@ -244,8 +248,13 @@ blist.namespace.fetch('blist.data');
                 orderFn = order;
             else {
                 // Column reference expressions
-                var r1 = "a[" + order + "]";
-                var r2 = "b[" + order + "]";
+                if (typeof order == 'object')
+                    orderCol = order;
+                else
+                    orderCol = meta.columns[order];
+
+                var r1 = "a[" + orderCol.dataIndex + "]";
+                var r2 = "b[" + orderCol.dataIndex + "]";
 
                 // Swap expressions for descending sort
                 if (descending) {
@@ -255,19 +264,58 @@ blist.namespace.fetch('blist.data');
                 }
 
                 // Compile an ordering function specific to the column positions
-                orderFn = columnType(order).sortGen(r1, r2);
+                var sortGen = columnType(order).sortGen;
+                if (sortGen)
+                    orderFn = sortGen(r1, r2);
+                else
+                    orderFn = null;
+
+                // Record preprocessing function for when we actually perform the sort
+                orderPrepro = columnType(order).sortPreprocessor;
+                if (orderPrepro && !orderFn)
+                    if (descending)
+                        orderFn = function(a, b) {
+                            return a[0] > b[0] ? -1 : a[0] < b[0] ? 1 : 0;
+                        }
+                    else
+                        orderFn = function(a, b) {
+                            return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0;
+                        }
+
+                sortConfigured = true;
             }
-            orderDesc = descending;
             
             // Sort and notify listeners
             doSort();
             dataChange();
         }
 
-        // Run sorting based on current filter configuration.  Does not fire events
+        // Run sorting based on the current filter configuration.  Does not fire events
         var doSort = function() {
+            if (!sortConfigured)
+                return;
+
+            // Apply preprocessing function if necessary.  We then sort a new array that contains a
+            // [ 'value', originalRecord ] pair for each item.  This allows us to avoid complex ordering functions.
+            if (orderPrepro) {
+                var toSort = new Array(data.length);
+                for (var i = 0; i < data.length; i++) {
+                    var rec = data[i];
+                    toSort[i] = [ orderPrepro(rec[orderCol.dataIndex], orderCol), rec ];
+                }
+            } else
+                toSort = data;
+
+            // Perform the actual sort
             if (orderFn)
-                data.sort(orderFn, orderFn, orderDesc);
+                toSort.sort(orderFn);
+            else
+                toSort.sort();
+
+            // If we sorted a preprocessed set, update the original set
+            if (orderPrepro)
+                for (i = 0; i < toSort.length; i++)
+                    data[i] = toSort[i][1];
         }
 
         /**

@@ -27,7 +27,9 @@ blist.namespace.fetch('blist.data.types');
         }
 
         // Compile
-        return eval(expression);
+        var val;
+        eval("val = (" + expression + ")");
+        return val;
     }
 
     /**
@@ -45,6 +47,18 @@ blist.namespace.fetch('blist.data.types');
         if (text == null)
             return '';
         return (text + "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    var MATCHES_TAGS = /<[^>]+>/;
+
+    /**
+     * Remove HTML tags in a completely hacky but relatively performant way.  We use this for sorting so it doesn't
+     * need to be 100% accurate.  A far more accurate method would be to set innerHTML on a hidden div, then retrieve
+     * nodeValue.  Have to do perf. tests but that's probably going to be considerably more expensive so we'll just
+     * stick with this for now.
+     */
+    var removeTags = function(text) {
+        return ((text || '') + '').replace(MATCHES_TAGS, '');
     }
 
 
@@ -66,8 +80,15 @@ blist.namespace.fetch('blist.data.types');
         return sortGenCore("return " + a + " - " + b)
     }
 
-    var sortGenSimple = function(a, b) {
-        return sortGenCore("return " + a + " < " + b + " ? -1 : " + a + " > " + b + " ? 1 : 0")
+    var sortHtmlPrepro = function(html) {
+        return removeTags(html).toLowerCase();
+    }
+
+    var sortPicklistPrepro = function(value, column) {
+        var option = column.options[value];
+        if (option)
+            return (option.text || '').toLowerCase();
+        return '';
     }
     
 
@@ -99,7 +120,7 @@ blist.namespace.fetch('blist.data.types');
         return "(" + value + " ? '<div class=\"blist-table-checked\"></div>' : '')";
     }
 
-    var renderDate = function(value) {
+    var renderDate = function(value, includeDate, includeTime) {
         if (value == null)
             return '';
         
@@ -107,23 +128,53 @@ blist.namespace.fetch('blist.data.types');
         // Plus this is probably faster.
         if (typeof value == 'number')
             value = new Date(value * 1000);
-        var day = value.getMonth();
-        if (day < 10)
-            day = '0' + day;
-        var hour = value.getHours();
-        var meridian = hour < 12 ? ' am' : ' pm';
-        if (hour > 12)
-            hour -= 12;
-        else if (!hour)
-            hour = 12;
-        var minute = value.getMinutes();
-        if (minute < 10)
-            minute = '0' + minute;
-        return (value.getMonth() + 1) + '/' + value.getDate() + '/' + (value.getYear() + 1900) + ' ' + hour + ':' + minute + meridian;
+
+        var result;
+
+        if (includeDate) {
+            var day = value.getMonth();
+            if (day < 10)
+                day = '0' + day;
+            result = (value.getMonth() + 1) + '/' + value.getDate() + '/' + (value.getYear() + 1900);
+        }
+        if (includeTime) {
+            var hour = value.getHours();
+            var meridian = hour < 12 ? ' am' : ' pm';
+            if (hour > 12)
+                hour -= 12;
+            else if (!hour)
+                hour = 12;
+            var minute = value.getMinutes();
+            if (minute < 10)
+                minute = '0' + minute;
+            var time = hour + ':' + minute + meridian;
+            if (result)
+                result += ' ' + time;
+            else
+                result = time;
+        }
+
+        return result;
     }
 
-    var renderGenDate = function(value) {
-        return "renderDate(" + value + ")";
+    var renderGenDate = function(value, column) {
+        var date, time;
+        switch (column && column.format) {
+            case 'date':
+                date = true;
+                time = false;
+                break;
+
+            case 'time':
+                date = false;
+                time = true;
+                break;
+
+            default:
+                date = time = true;
+                break;
+        }
+        return "renderDate(" + value + ", " + date + ", " + time + ")";
     }
 
     var renderGenPicklist = function(value, column, context) {
@@ -195,8 +246,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         photo: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         money: {
@@ -205,8 +255,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         phone: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         checkbox: {
@@ -215,8 +264,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         flag: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         stars: {
@@ -231,13 +279,12 @@ blist.namespace.fetch('blist.data.types');
 
         url: {
             renderGen: renderGenURL,
-            sortGen: sortGenSimple,
+            sortPreprocessor: sortHtmlPrepro,
             filterText: true
         },
 
         document: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         tag: {
@@ -252,13 +299,12 @@ blist.namespace.fetch('blist.data.types');
         },
 
         blist_in_blist: {
-            renderGen: renderGenText,
-            sortGen: sortGenSimple
+            renderGen: renderGenText
         },
 
         picklist: {
             renderGen: renderGenPicklist,
-            sortGen: sortGenSimple
+            sortPreprocessor: sortPicklistPrepro
         }
     });
 

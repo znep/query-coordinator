@@ -32,13 +32,16 @@
                 hideAllForms($commentPane);
             });
 
-            $commentPane.find(config.topFormSelector)
+            $commentPane.find(config.topFormSelector
+                + ':not(.' + config.skipActionClass + ')')
                 .submit(function (e) { submitCommentRating($commentPane, e); });
 
-            $commentPane.find(config.replySelector)
+            $commentPane.find(config.replySelector
+                + ':not(.' + config.skipActionClass + ')')
                 .submit(function (e) { submitReply($commentPane, e); });
 
-            $commentPane.find(config.actionSelector)
+            $commentPane.find(config.actionSelector
+                + ':not(.' + config.skipActionClass + ')')
                 .click(function (e) { actionClick($commentPane, e); });
 
             $commentPane.find(config.expanderSelector)
@@ -48,6 +51,13 @@
                 .pagination({paginationContainer:
                     $commentPane.find(config.paginationContainer),
                     previousText: 'Prev'});
+
+            if (config.initialComment && config.initialComment != '')
+            {
+                $commentPane.find(config.commentListSelector)
+                    .pagination().showItem($commentPane
+                            .find('#comment_' + config.initialComment));
+            }
         });
 
         // Private methods
@@ -77,8 +87,9 @@
         function hideAllForms($commentPane)
         {
             var config = $commentPane.data('config-infoPaneComments');
-            $commentPane.find(config.formSelector)
-                .find(config.clearableInputSelector).val('');
+            $commentPane.find(config.clearableInputSelector).val('');
+            $commentPane.find(config.ratingInputSelector).val(0);
+            updateRating($commentPane.find(config.ratingUISelector), 0);
             if ($commentPane.find(config.commentSelector).length > 0)
             {
                 $commentPane.find(config.formSelector).addClass(config.hiddenClass);
@@ -120,7 +131,8 @@
 
         function updateRating($ratingUI, rating)
         {
-            $ratingUI.removeClass(ratingClass($ratingUI.text()))
+            rating = parseInt(rating) || 0;
+            $ratingUI.removeClass(ratingClass(parseInt($ratingUI.text()) || 0))
                 .attr('title', rating).text(rating)
                 .addClass(ratingClass(rating));
         };
@@ -142,6 +154,7 @@
             }
 
             $form.addClass(config.disabledClass);
+            $(window).resize();
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -159,15 +172,6 @@
                     $commentPane.find(config.showFormSelector).click(
                         function (e) { showFormClick($commentPane, e); });
 
-                    // Update all ratings for this user
-                    var $newRating = $resp.children('.rating[class*=user_rating_]');
-                    if ($newRating.length > 0)
-                    {
-                        var matchClass = $newRating
-                            .attr('class').match(/(user_rating_\w+-\w+)/)[0];
-                        $commentPane.find('.' + matchClass).replaceWith($newRating);
-                    }
-
                     // Add the new comment
                     var $newComment = $resp.children(config.commentSelector);
                     if ($newComment.length > 0)
@@ -176,10 +180,12 @@
                             .prependTo(
                                 $commentPane.find(config.commentListSelector)
                             )
-                            .find(config.actionSelector)
+                            .find(config.actionSelector
+                            + ':not(.' + config.skipActionClass + ')')
                             .click(function (e) { actionClick($commentPane, e); })
                             .end()
-                            .find(config.replySelector)
+                            .find(config.replySelector
+                            + ':not(.' + config.skipActionClass + ')')
                             .submit(function (e) { submitReply($commentPane, e); })
                             .end()
                             .find(config.cancelSelector).click(function (e)
@@ -215,6 +221,7 @@
             }
 
             $form.addClass(config.disabledClass);
+            $(window).resize();
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
@@ -261,7 +268,8 @@
                             .addClass(config.expandedClass)
                             .siblings(config.childContainerSelector)
                             .removeClass(config.collapsedClass);
-                        $addedItem.find(config.actionSelector)
+                        $addedItem.find(config.actionSelector
+                            + ':not(.' + config.skipActionClass + ')')
                             .click(function (e) { actionClick($commentPane, e); });
                     }
 
@@ -306,6 +314,7 @@
                         .removeClass(config.hiddenClass)
                         .find(config.replyFocusSelector).focus().end()
                         .find(config.parentInputSelector).val(hrefPieces[1]);
+                    $(window).resize();
                     break;
             }
 
@@ -343,6 +352,7 @@
             $(e.currentTarget).toggleClass(config.expandedClass)
                 .siblings(config.childContainerSelector)
                 .toggleClass(config.collapsedClass);
+            $(window).resize();
         };
     };
 
@@ -365,6 +375,7 @@
         footerSelector: '.footer',
         headerSelector: '.infoContentHeader',
         hiddenClass: 'hidden',
+        initialComment: null,
         infoTabsSelector: '.summaryTabs',
         paginationContainer: '.commentPagination',
         parentInputSelector: '.parentInput',
@@ -373,6 +384,7 @@
         replySelector: '.replyComment',
         replyFocusSelector: 'textarea',
         replySiblingSelector: '.actions',
+        skipActionClass: 'doFullReq',
         showFormSelector: 'a.postComment',
         topFormSelector: '.infoContent > form.postComment'
      };

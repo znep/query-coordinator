@@ -350,6 +350,9 @@ $(function ()
     $(document).bind(blist.events.OPEN_VIEW, blistGridNS.openViewHandler);
     $(document).bind(blist.events.POPUP_CANCELED, blistGridNS.popupCanceledHandler);
 
+    blist.util.sizing.cachedInfoPaneHeight =
+        $("#infoPane .header").height() +
+        $("#infoPane .active .infoContentHeader").height();
     $(window).resize(function (event)
     {
         commonNS.adjustSize();
@@ -427,7 +430,7 @@ $(function ()
     blistGridNS.sizeSwf();
 
     // Set up the info pane tab switching.
-    blist.util.sizing.cachedInfoPaneHeight = $("#sidebar").height();
+    var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
     $(".summaryTabs").infoPaneNavigate({
         // After switching tabs, update the menu and size the Swf.
         switchCompleteCallback: function ($tab)
@@ -439,7 +442,8 @@ $(function ()
                     .closest('li').addClass('activePane');
             }
             blistGridNS.sizeSwf();
-        }
+        },
+        initialTab: paneMatches && paneMatches.length > 1 ? paneMatches[1] : null
     });
     $(".tabLink.activity").click(function(event){
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabActivity");
@@ -462,5 +466,9 @@ $(function ()
 
     $(".copyCode textarea").click(function() { $(this).select(); });
 
-    $('#infoPane .singleInfoComments').infoPaneComments();
+    var commentMatches = window.location.search.match(/comment=(\w+)/);
+    $('#infoPane .singleInfoComments').infoPaneComments({
+        initialComment: commentMatches && commentMatches.length > 1 ?
+            commentMatches[1] : null
+    });
 });

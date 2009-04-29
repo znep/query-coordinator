@@ -75,12 +75,35 @@
                     paginate.settings.paginationContainer
                         .children('.pageLink').length)
                 {
+                    paginate.settings.paginationContainer.show();
                     paginate.settings.paginationContainer.empty();
                     constructLinks(paginate);
                 }
 
                 paginate.settings._totalCount = paginate.settings._allItems.length;
                 displayPage(paginate, 0);
+            },
+
+            showItem: function ($item)
+            {
+                var paginate = this;
+                if ($item.length > 0)
+                {
+                    var itemIndex = paginate.settings._allItems.index($item);
+                    if (itemIndex < 0)
+                    {
+                        var $parItem = $item
+                            .closest(paginate.settings.itemSelector);
+                        itemIndex = paginate.settings._allItems.index($parItem);
+                    }
+
+                    if (itemIndex >= 0)
+                    {
+                        displayPage(paginate,
+                            Math.floor(itemIndex / paginate.settings.pageSize));
+                    }
+                    $item[0].scrollIntoView();
+                }
             }
         }
     });
@@ -113,8 +136,11 @@
             .children('.pageLink');
         paginate.settings.paginationContainer.children('.pageLink:first')
             .after("<span class='ellipses'>...</span>");
-        paginate.settings.paginationContainer.children('.pageLink:last')
-            .before("<span class='ellipses'>...</span>");
+        if (numPages > 2)
+        {
+            paginate.settings.paginationContainer.children('.pageLink:last')
+                .before("<span class='ellipses'>...</span>");
+        }
 
         var $nextLink = paginate.settings.paginationContainer
             .append("<a href='#next_page' class='nextLink' "
@@ -166,6 +192,7 @@
             .slice(pageStart, pageStart + paginate.settings.pageSize)
             .removeClass(paginate.settings.hiddenClass);
         paginate.settings._currentPage = pageNum;
+        $(window).resize();
 
         var lower = Math.max(0, pageNum - paginate.settings.numAdjacent);
         var upper = Math.min(paginate.settings._pageLinks.length,

@@ -185,7 +185,8 @@
             },
             allPanelsSelector : ".infoContentOuter",
             expandableSelector: ".infoContent",
-            switchCompleteCallback: function(){}
+            switchCompleteCallback: function(){},
+            initialTab: null
         },
         prototype: {
             init: function() {
@@ -208,6 +209,24 @@
                         tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
                     });
                 });
+
+                if (tabNavigator.settings.initialTab &&
+                    tabNavigator.settings.initialTab != '')
+                {
+                    if ($(tabNavigator.currentList).data("isExpanded"))
+                    {
+                        tabNavigator.activateTab('#' +
+                            tabNavigator.settings.initialTab);
+                    }
+                    else
+                    {
+                        tabNavigator.expandTabPanels(function ()
+                        {
+                            tabNavigator.activateTab('#' +
+                                tabNavigator.settings.initialTab);
+                        });
+                    }
+                }
             },
             activateTab: function(tab) {
                 var tabNavigator = this;
@@ -225,8 +244,8 @@
                 });
 
                 $panel.addClass(tabNavigator.settings.activationClass);
-
                 tabNavigator.settings.switchCompleteCallback($tab);
+                $tab[0].scrollIntoView();
             },
             expandTabPanels: function(openCallback) {
                 var tabNavigator = this;

@@ -381,6 +381,47 @@ table.gridList tr.child.hover.selected td.description > *
 }
 .dialogBox .footer { border-top: solid 1px #ccc; }
 
+
+.pageBlockHeaderTL { background-image: url(/stylesheets/images/gov/content/background_corner_left.png); }
+.pageBlockHeaderTR { background-image: url(/stylesheets/images/gov/content/background_corner_right.png); }
+.pageBlockHeaderBL { background-image: url(/stylesheets/images/gov/content/background_corner_bottom_left.png); }
+.pageBlockHeaderBR { background-image: url(/stylesheets/images/gov/content/background_corner_bottom_right.png); }
+
+.pageBlockHeaderCarousel.carouselWrapper
+{ 
+    background-image: url(/stylesheets/images/gov/common/carousel_background.png); 
+}
+.pageBlockHeaderCarousel .carouselOuter
+{ 
+    background-image: url(/stylesheets/images/gov/common/carousel_background_left.png); 
+}
+.pageBlockHeaderCarousel .carouselInner
+{
+    background-image: url(/stylesheets/images/gov/common/carousel_background_right.png);
+}
+
+.pageBlockHeaderCarousel h2 { color: #fff; }
+
+
+.jcarousel-skin-discover .jcarousel-prev-horizontal {
+    background-image: url(/stylesheets/images/gov/common/carousel_arrow_sprites.png);
+}
+.jcarousel-skin-discover .jcarousel-next-horizontal {
+    background-image: url(/stylesheets/images/gov/common/carousel_arrow_sprites.png);
+}
+
+
+
+
+.tabContentOuter { border-color: #ececec; }
+.tabContentContainer { background-image: url(/stylesheets/images/gov/sidebar/sidebar_corner_bottom_right.png); }
+.tabContentTL { background-image: url(/stylesheets/images/gov/content/background_corner_left.png); }
+.tabContentBL { background-image: url(/stylesheets/images/gov/content/background_corner_bottom_left.png); }
+.tabContentNavTR { background-image: url(/stylesheets/images/gov/sidebar/sidebar_corner_top_right.png); }
+
+.tabContent h2 { color: #666; }
+
+
 /*** END: widgets ***/
 
 /*** START: signup-screen ***/
@@ -624,44 +665,6 @@ table.gridList tr.child.hover.selected td.description > *
 /*** END: info-pane ***/
 
 /*** START: discover-screen ***/
-.discoverHeaderTL { background-image: url(/stylesheets/images/gov/content/background_corner_left.png); }
-.discoverHeaderTR { background-image: url(/stylesheets/images/gov/content/background_corner_right.png); }
-.discoverHeaderBL { background-image: url(/stylesheets/images/gov/content/background_corner_bottom_left.png); }
-.discoverHeaderBR { background-image: url(/stylesheets/images/gov/content/background_corner_bottom_right.png); }
-
-.featuredViewsCarousel.carouselWrapper
-{ 
-    background-image: url(/stylesheets/images/gov/common/carousel_background.png); 
-}
-.featuredViewsCarousel .carouselOuter
-{ 
-    background-image: url(/stylesheets/images/gov/common/carousel_background_left.png); 
-}
-.featuredViewsCarousel .carouselInner
-{
-    background-image: url(/stylesheets/images/gov/common/carousel_background_right.png);
-}
-
-.featuredViewsCarousel h2 { color: #fff; }
-
-
-.jcarousel-skin-discover .jcarousel-prev-horizontal {
-    background-image: url(/stylesheets/images/gov/common/carousel_arrow_sprites.png);
-}
-.jcarousel-skin-discover .jcarousel-next-horizontal {
-    background-image: url(/stylesheets/images/gov/common/carousel_arrow_sprites.png);
-}
-
-
-
-
-.discoverContentOuter { border-color: #ececec; }
-.discoverContentContainer { background-image: url(/stylesheets/images/gov/sidebar/sidebar_corner_bottom_right.png); }
-.discoverContentTL { background-image: url(/stylesheets/images/gov/content/background_corner_left.png); }
-.discoverContentBL { background-image: url(/stylesheets/images/gov/content/background_corner_bottom_left.png); }
-.discoverContentNavTR { background-image: url(/stylesheets/images/gov/sidebar/sidebar_corner_top_right.png); }
-
-.discoverContent h2 { color: #666; }
 
 .discoverContentList li.viewListItem .itemHeader h3
 {

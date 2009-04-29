@@ -1042,10 +1042,10 @@ table.gridList tr.filteredOut
     background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
     background-position: 0 0;
     height: 16px;
-    line-height: 100px;
     overflow: hidden;
     width: 89px;
 }
+.rating span { display: none; }
 
 .rating.zero { background-position: 0 0; }
 .rating.zero_half { background-position: 0 -16px; }
@@ -1204,6 +1204,7 @@ table.gridList tr.filteredOut
 {
     float: right;
     margin-right: -33em;
+    padding-left: 3em;
     width: 30em;
 }
 .pageBlockSearch p
@@ -1227,13 +1228,13 @@ table.gridList tr.filteredOut
 }
 .pageBlockHeaderCarousel.carouselWrapper { 
     background: url(/stylesheets/images/common/carousel_background.png) repeat-x;
-    height: 23.2em;
+    min-height: 23.2em;
 }
 .pageBlockHeaderCarousel .carouselOuter { background: url(/stylesheets/images/common/carousel_background_left.png) no-repeat; }
 .pageBlockHeaderCarousel .carouselInner
 {
     background: url(/stylesheets/images/common/carousel_background_right.png) right top no-repeat;
-    height: 21.2em;
+    min-height: 21.2em;
     padding: .5em .5em 1.5em;
 }
 .pageBlockHeaderCarousel h2

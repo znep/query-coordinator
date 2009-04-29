@@ -146,6 +146,18 @@ class View < Model
     end
   end
 
+  def can_edit(user_id)
+    owner.id == user_id ||
+      grants.reject {|g| g.type.downcase != 'edit'}.
+        any? {|g| g.flag?('public') || g.userId == user_id}
+  end
+
+  def can_read(user_id)
+    owner.id == user_id ||
+      grants.reject {|g| g.type.downcase != 'read'}.
+        any? {|g| g.flag?('public') || g.userId == user_id}
+  end
+
   def contributor_users
     grants.reject {|g| g.flag?('public') || g.type.downcase == 'read'}.
       collect do |g|

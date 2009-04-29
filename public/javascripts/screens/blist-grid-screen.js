@@ -237,6 +237,7 @@ blist.blistGrid.hookUpMainMenu = function()
     {
         blistGridNS.columnClickHandler(event);
     });
+    blistGridNS.setInfoMenuItem($('#infoPane .summaryTabs li.active'));
 };
 
 blist.blistGrid.mainMenuHandler = function(event)
@@ -325,6 +326,16 @@ blist.blistGrid.popupCanceledHandler = function(event, popup)
     if (popup == 'NewLens' && blistGridNS.referer && blistGridNS.referer !== '')
     {
         window.location = blistGridNS.referer;
+    }
+};
+
+blist.blistGrid.setInfoMenuItem = function ($tab)
+{
+    if ($tab)
+    {
+        $('#mainMenu li.info li.activePane').removeClass('activePane');
+        $('#mainMenu li.info li > a[href*="' + $tab.attr('id') + '"]')
+            .closest('li').addClass('activePane');
     }
 };
 
@@ -435,12 +446,7 @@ $(function ()
         // After switching tabs, update the menu and size the Swf.
         switchCompleteCallback: function ($tab)
         {
-            if ($tab)
-            {
-                $('#mainMenu li.info li.activePane').removeClass('activePane');
-                $('#mainMenu li.info li > a[href*="' + $tab.attr('id') + '"]')
-                    .closest('li').addClass('activePane');
-            }
+            blistGridNS.setInfoMenuItem($tab);
             blistGridNS.sizeSwf();
         },
         initialTab: paneMatches && paneMatches.length > 1 ? paneMatches[1] : null

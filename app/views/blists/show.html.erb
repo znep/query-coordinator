@@ -5,6 +5,8 @@
 <% end %>
 
 <div id='overlay'></div>
+<%- is_owner = current_user && @view.owner.id == current_user.id -%>
+<%- can_edit = @view.can_edit(current_user ? current_user.id : '') -%>
 
 <div class="scrollContentColumn">
   <div id='lensContainer' class='mainContent tableView'>
@@ -21,7 +23,12 @@
           </a>
         </div>
       </li>
-      <li class='newViewLink'><a href='#newView' title='New View'>New View</a></li>
+      <%- if can_edit -%>
+      <li class='swfItem newViewLink'>
+        <a href='#newView' title='New View'>New View</a>
+      </li>
+      <%- end -%>
+
       <li class='prevTabLink'><a href='#prev_tab' title='Previous View'>
         Previous View
       </a></li>
@@ -45,19 +52,25 @@
             <li><a href='#main_menu' id='mainMenuLink' class='dropdownLink'>
               <div class='outerWrapper'><div class='midWrapper'>
                   <span class='innerWrapper'>Menu</span></div></div></a>
-              <%= render(:partial => "main_menu") %>
+            <%= render(:partial => "main_menu",
+            :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
 
+            <%- if can_edit -%>
             <%# Undo/redo %>
-            <li class='separator'><a href='#Undo' id='undoLink'
+            <li class='swfItem separator'><a href='#Undo' id='undoLink'
               class='linkIcon flashAction' title='Undo'>Undo</a></li>
-            <li><a href='#Redo' id='redoLink'
+            <li class='swfItem'><a href='#Redo' id='redoLink'
               class='linkIcon flashAction' title='Redo'>Redo</a></li>
+            <%- end -%>
 
             <%# Table view options %>
-            <li class='separator tableOption'>
+            <%- if is_owner -%>
+            <li class='swfItem separator tableOption'>
               <a class='addColumnsLink linkIcon' href='#'>Add Column</a></li>
-            <li class='separator tableOption'>
+            <%- end -%>
+            <%- if can_edit -%>
+            <li class='swfItem separator tableOption'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
                     <div class='innerWrapper'>
@@ -70,15 +83,21 @@
               {'text' => 'Show or Hide Columns...', 'class' => 'showHide',
                 'href' => '#'}]}) %>
             </li>
+            <%- end -%>
 
             <%# Page view options %>
-            <li class='separator pageOption'><a class='addColumnsLink linkIcon'
-              href='#'>Add Field</a></li>
-            <li class='pageOption'><a id='newPageLink'
+            <%- if is_owner -%>
+            <li class='swfItem separator pageOption'>
+              <a class='addColumnsLink linkIcon' href='#'>Add Field</a>
+            </li>
+            <%- end -%>
+            <%- if can_edit -%>
+            <li class='swfItem pageOption'><a id='newPageLink'
               class='linkIcon flashAction' href='#NewPage'>New Page</a></li>
-            <li class='separator pageOption'><a id='defaultLayoutLink'
+            <li class='swfItem separator pageOption'><a id='defaultLayoutLink'
               class='linkIcon flashAction'
               href='#DefaultLayout'>Default Layout</a></li>
+            <%- end -%>
 
             <%# Export/access options %>
             <li class='separator'>
@@ -89,13 +108,17 @@
             </li>
 
             <%# Display menu %>
-            <li class='separator'><a href='#' id='displayLink' class='dropdownLink'>
-              <div class='outerWrapper'><div class='midWrapper'>
-                  <span class='innerWrapper'>Display As</span></div></div></a>
-              <%= menu_tag({'id' => 'displayMenu', 'option_menu' => true, 'items' => [
+            <%- if can_edit -%>
+            <li class='swfItem separator'>
+              <a href='#' id='displayLink' class='dropdownLink'>
+                <div class='outerWrapper'><div class='midWrapper'>
+                    <span class='innerWrapper'>Display As</span></div></div></a>
+              <%= menu_tag({'id' => 'displayMenu', 'option_menu' => true,
+              'items' => [
               {'text' => 'A table', 'class' => 'table checked', 'href' => '#'},
               {'text' => 'A page', 'class' => 'page', 'href' => '#'}]}) %>
             </li>
+            <%- end -%>
           </ul>
 
           <form class='search' action='#'>
@@ -108,6 +131,7 @@
           <%- end -%>
         </div>
 
+        <%- if is_owner -%>
         <div id='addColumnsMenu' class='fixedMenu'>
           <div class='outerWrapper'>
             <ul class='innerWrapper clearfix'>
@@ -172,6 +196,7 @@
             <a href='#Close_Add_Columns' title='Close' class='close'>Close</a>
           </div>
         </div>
+        <%- end -%>
 
         <div id='pageViewHeader'><div class='innerWrapper'></div></div>
 
@@ -209,7 +234,8 @@
     <div id="mainColumnContent" class="column">
       <div id='infoPane'>
       <%- if !@view.nil? -%>
-        <%= render(:partial => "info_for_single", :locals => { :view => @view, :page_single => true }) %>
+      <%= render(:partial => "info_for_single",
+      :locals => { :view => @view, :page_single => true }) %>
       <%- end -%>
       </div>
     </div>

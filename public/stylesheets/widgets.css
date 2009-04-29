@@ -1174,3 +1174,149 @@ table.gridList tr.filteredOut
 }
 
 /*** END: Dialog boxes ***/
+
+
+/*** START: Page header block (top of discover and community) ***/
+.pageBlockHeaderOuter { background-color: #fff; }
+.pageBlockHeaderTL { background: url(/stylesheets/images/content/background_corner_left.png) top left no-repeat; }
+.pageBlockHeaderTR { background: url(/stylesheets/images/content/background_corner_right.png) top right no-repeat; }
+.pageBlockHeaderBL { background: url(/stylesheets/images/content/background_corner_bottom_left.png) bottom left no-repeat; }
+.pageBlockHeaderBR { background: url(/stylesheets/images/content/background_corner_bottom_right.png) bottom right no-repeat; }
+
+.pageBlockHeaderContainer
+{
+    min-height: 0;
+    padding: 1em 34em 1em 1em;
+}
+
+
+.pageBlockIntro
+{
+    float: left;
+    width: 100%;
+}
+.pageBlockIntro p
+{
+    color: #999;
+    font-size: 1.8em;
+}
+.pageBlockSearch
+{
+    float: right;
+    margin-right: -33em;
+    width: 30em;
+}
+.pageBlockSearch p
+{
+    font-size: 1em;
+    margin-bottom: .3em;
+}
+
+.pageBlockHeaderContent
+{
+    clear: both;
+    padding-top: 1em;
+}
+
+
+
+.pageBlockHeaderCarousel
+{
+    float: left;
+    width: 100%;
+}
+.pageBlockHeaderCarousel.carouselWrapper { 
+    background: url(/stylesheets/images/common/carousel_background.png) repeat-x;
+    height: 23.2em;
+}
+.pageBlockHeaderCarousel .carouselOuter { background: url(/stylesheets/images/common/carousel_background_left.png) no-repeat; }
+.pageBlockHeaderCarousel .carouselInner
+{
+    background: url(/stylesheets/images/common/carousel_background_right.png) right top no-repeat;
+    height: 21.2em;
+    padding: .5em .5em 1.5em;
+}
+.pageBlockHeaderCarousel h2
+{
+    color: #666;
+    font-size: 1.8em;
+    margin-bottom: .833em; /* 15px */
+}
+
+/*** END: Page header block ***/
+
+
+/*** START: Tab content ***/
+.simpleTabsContainer
+{
+    margin-top: 1em;
+}
+.simpleTabs.tabList { margin-left: 2em; }
+
+.tabContentContainer
+{
+    background: #cacaca url(/stylesheets/images/sidebar/sidebar_corner_bottom_right.png) bottom right no-repeat;
+    display: none;
+    padding-right: 17.5em;
+}
+.tabContentContainer.active { display: block; }
+
+.tabContentOuter { 
+    background-color: #fff;
+    border-right: 1px solid #8d8d8d;
+    float: left;
+    width: 100%;
+}
+.tabContentTL { background: url(/stylesheets/images/content/background_corner_left.png) no-repeat; }
+.tabContentBL { background: url(/stylesheets/images/content/background_corner_bottom_left.png) bottom left no-repeat; }
+
+.tabContent { padding: 1.5em; }
+.tabContent h2
+{
+    color: #e8a134;
+    float: left;
+    font-size: 1.4em;
+    margin-bottom: 1.428em; /* 20px */
+    text-transform: uppercase;
+}
+.tabContent .contentSort
+{
+    float: right;
+}
+
+
+
+
+
+.tabContentNavTR
+{
+    background: url(/stylesheets/images/sidebar/sidebar_corner_top_right.png) top right no-repeat;
+    float: left;
+    margin-right: -17.5em;
+    width: 17.4em;
+}
+
+.tabContentNav { padding: 1em; }
+.tabContentNav h2
+{
+    color: #666;
+    border-bottom: 1px solid #666;
+    font-size: 1.2em;
+    font-weight: normal;
+    margin-bottom: .5em;
+}
+.tabContentNav ul
+{
+    margin-bottom: 3em;
+}
+.tabContentNav ul li
+{
+    margin-bottom: 1em;
+}
+.tabContentNav ul li a
+{
+    color: #333;
+    font-size: 1.2em;
+}
+
+/*** END: Tab content ***/

@@ -1,0 +1,35 @@
+<%- member = member_list_item -%>
+
+<li class="memberListItem clearfix">
+  <div class="memberImage">
+    <%= link_to(
+          image_tag(member.profile_image_path("medium"), :size => "65x65",
+          :alt => h(member.displayName)), profile_url(member.id)) %>
+  </div>
+  <div class="memberInfo">
+    <h3 class="clipText"><%= link_to(h(member.displayName), profile_url(member.id), :title => h(member.displayName)) %></h3>
+    <ul>
+      <li><%= h(member.displayLocation) %></li>
+      <li><%= h(member.company) %></li>
+      <li><%= h(member.title) %></li>
+    </ul>
+  </div>
+  <div class="memberMeta">
+    <ul>
+      <li><strong>Tags:</strong> <%= member.tag_display_string %></li>
+      <li><strong>Interests:</strong> <%= h(member.interests) %></li>
+    </ul>
+  </div>
+  <div class="memberData">
+    <ul class="clearfix">
+      <li>Friends <strong>[0]</strong></li>
+      <li>Activity Score <strong>[0]</strong></li>
+      <li>Followers <strong>[0]</strong></li>
+      <li>Public blists <strong>[0]</strong></li>
+    </ul>
+    <ul class="memberActions actionButtons clearfix">
+      <li><%= link_to("<span>Follow</span>", profile_url(member.id)) %></li>
+      <li class="last"><%= link_to("<span>Profile</span>", profile_url(member.id), :class => "arrowButton") %></li>
+    </ul>
+  </div>
+</li>

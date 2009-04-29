@@ -1,6 +1,6 @@
 
-<div class="discoverContentOuter"><div class="discoverContentTL"><div class="discoverContentBL">
-  <div class="discoverContent">
+<div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
+  <div class="tabContent">
     <h2><%= tab_title %></h2>
     <div class="contentSort">
       <p>
@@ -23,11 +23,11 @@
   </div>
 </div></div></div>
 
-<div class="discoverContentNavTR"><div class="discoverContentNavBR">
-  <div class="discoverContentNav">
+<div class="tabContentNavTR"><div class="tabContentNavBR">
+  <div class="tabContentNav">
     <h2>Show <%= t(:blists_name) %></h2>
     <ul class="filterList">
-      <%- if (type == "all") -%>
+      <%- if (type == "ALL") -%>
         <li><a href="#most_popular" class="tabLink popular">Most popular</a></li>
       <%- end -%>
       <%- if (!@current_user.nil?) -%>

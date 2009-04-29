@@ -1,0 +1,41 @@
+
+<div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
+  <div class="tabContent">
+    <h2><%= tab_title %></h2>
+    <div class="contentSort">
+      <p>
+        Sort by 
+        <select>
+          <option value="ACTIVITY">Activity Score</option>
+          <option value="ALPHA">A - Z</option>
+          <option value="ALPHA_DESC">Z - A</option>
+          <option value="VIEWS"># of times Viewed</option>
+          <option value="COMMENTS"># of Comments</option>
+          <option value="LAST_CHANGED">Date</option>
+          <option value="CATEGORY">Category</option>
+        </select>
+      </p>
+    </div>
+  
+    <ul class="communityContentList">
+      <%= render(:partial => "member_list_item", :collection => members) %>
+    </ul>
+  </div>
+</div></div></div>
+
+<div class="tabContentNavTR"><div class="tabContentNavBR">
+  <div class="tabContentNav">
+    <h2>Show People</h2>
+    <ul class="tagList">
+      <li><a href="#public">With Public <%= t(:blists_name) %></a></li>
+    </ul>
+    
+    <h2>Browse by tag</h2>
+    <ul class="tagList">
+      <li><a href="#tag">Wines</a></li>
+      <li><a href="#tag">Contributors</a></li>
+      <li><a href="#tag">Energy</a></li>
+      <li><a href="#tag">Finance</a></li>
+    </ul>
+  </div>
+</div></div>

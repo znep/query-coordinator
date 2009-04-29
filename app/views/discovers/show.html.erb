@@ -6,13 +6,13 @@
 <% end %>
 
 <div id="discover">
-  <div class="discoverHeaderOuter"><div class="discoverHeaderTL"><div class="discoverHeaderTR">
-  <div class="discoverHeaderBL"><div class="discoverHeaderBR">
-    <div class="discoverHeaderContainer">
-      <div class="discoverIntro">
+  <div class="pageBlockHeaderOuter"><div class="pageBlockHeaderTL"><div class="pageBlockHeaderTR">
+  <div class="pageBlockHeaderBL"><div class="pageBlockHeaderBR">
+    <div class="pageBlockHeaderContainer">
+      <div class="pageBlockIntro">
         <p><%= t(:discover_header_intro) %></p>
       </div>
-      <div class="discoverSearch">
+      <div class="pageBlockSearch">
         <p><%= t(:discover_search_intro) %></p>
         <% form_tag(discover_url, :class => "search") do %>
           <p>
@@ -21,8 +21,8 @@
           </p>
         <% end %>
       </div>
-      <div class="discoverHeaderContent clearfix">
-        <div class="featuredViewsCarousel carouselWrapper">
+      <div class="pageBlockHeaderContent clearfix">
+        <div class="pageBlockHeaderCarousel carouselWrapper">
           <div class="carouselOuter"><div class="carouselInner">
             <h2><%= t(:discover_carousel_header) %></h2>
             <ul id="featuredCarousel" class="jcarousel-skin-discover carousel">
@@ -47,21 +47,21 @@
   </div></div>
   </div></div></div>
   
-  <div class="discoverTabsContainer">
+  <div class="simpleTabsContainer">
     
-    <div class="discoverTabNav">
-      <ul class="discoverTabs tabList clearfix">
+    <div class="simpleTabNav">
+      <ul class="simpleTabs tabList clearfix">
         <%# TODO: Add tab for search results. %>
         <li id="tabPopular" class="active"><div class="wrapper"><a href="#top">Top 100</a></div></li>
         <li id="tabAll"><div class="wrapper"><a href="#all">All <%= t(:blists_name) %></a></div></li>
       </ul>
     </div>
-    <div id="discoverTabPopular" class="discoverContentContainer active clearfix">
+    <div id="discoverTabPopular" class="tabContentContainer active clearfix">
       <%= render(:partial => "view_list_tab", :locals => { 
         :tab_title => t(:discover_popular_content_header), 
         :views => @popular_views, :type => "POPULAR" }) %>
     </div>
-    <div id="discoverTabAll" class="discoverContentContainer clearfix">
+    <div id="discoverTabAll" class="tabContentContainer clearfix">
       <%= render(:partial => "view_list_tab", :locals => { 
         :tab_title => "All #{t(:blists_name)}", 
         :views => @all_views, :type => "ALL" }) %>
@@ -71,6 +71,6 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.jcarousel",
+  <%= javascript_include_tag "plugins/jquery.jcarousel", "widgets/simple-tab-navigate",
   "screens/discover-screen", :cache => "cache/discover_show_all" %>
 <% end %>

@@ -1,13 +1,14 @@
 $(function ()
 {
-    var cachedWindowHeight = 0;
-    $(window).resize(function()
-    {
-        if ($(window).height() != cachedWindowHeight)
-        {
-            $(".communityContainer").blistStretchWindow();
-            cachedWindowHeight = $(window).height();
+    $("#featuredCarousel").jcarousel({
+        visible: 3
+    });
+    
+    $(".simpleTabs").simpleTabNavigate({
+        tabMap: {
+            "tabTopMembers" : "#communityTabTopMembers",
+            "tabTopUploaders" : "#communityTabTopUploaders",
+            "tabAllMembers" : "#communityTabAllMembers"
         }
     });
-    $(".communityContainer").blistStretchWindow();
 });

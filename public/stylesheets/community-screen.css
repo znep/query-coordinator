@@ -5,21 +5,138 @@
     padding-bottom: 6em;
 }
 
-.communityHeaderOuter { background-color: #fff; }
-.communityHeaderTL { background: url(/stylesheets/images/content/background_corner_left.png) top left no-repeat; }
-.communityHeaderTR { background: url(/stylesheets/images/content/background_corner_right.png) top right no-repeat; }
-.communityHeaderBL { background: url(/stylesheets/images/content/background_corner_bottom_left.png) bottom left no-repeat; }
-.communityHeaderBR { background: url(/stylesheets/images/content/background_corner_bottom_right.png) bottom right no-repeat; }
 
-.communityContainer
+.carouselItem .itemTitle h3
 {
-    min-height: 0;
-    padding: 1em;
+    color: #0071bc;
+    font-size: 1.8em;
+    font-weight: normal;
+    margin-top: .277em; /* 5px */
+    overflow: hidden;
+    text-transform: none;
 }
-.communityContainer h1 { color: #E8A134; }
-.communityContainer p
+.carouselItem .itemTitle img
 {
+    display: block;
+}
+
+.carouselItem .itemMetaData { margin-top: .5em; }
+.carouselItem .metaList li
+{
+    color: #666;
+    float: none;
     font-size: 1.6em;
-    line-height: 1.5em;
+    height: auto;
+    margin-bottom: .312em; /* 5px */
+}
+
+
+.pageBlockHeaderContent .myNetworkViews
+{
+    float: right;
+    margin-right: -33em;
+    margin-top: 4em;
     width: 30em;
 }
+.myNetworkViews h2
+{
+    border-bottom: 1px solid #ccc;
+    color: #666;
+    font-size: 1.4em;
+    font-weight: normal;
+    margin-bottom: .714em; /* 10px */
+    padding-bottom: .357em; /* 5px */
+}
+
+ul.myNetworkList li
+{
+    color: #333;
+    margin-bottom: .5em;
+}
+ul.myNetworkList li a
+{
+    font-size: 1.4em;
+    line-height: 1.285em; /* 18px; */
+}
+ul.myNetworkList li span
+{
+    line-height: 1.4em; /* 14px */
+}
+
+
+.communityContentList
+{
+    border-top: 1px solid #ccc;
+    clear: both;
+}
+.communityContentList li.memberListItem
+{
+    border-bottom: 1px solid #ccc;
+    padding: .5em 50em .5em 7.5em;
+}
+
+.memberListItem .memberImage
+{
+    float: left;
+    margin-left: -7.5em;
+    width: 6.5em;
+}
+.memberListItem .memberInfo
+{
+    float: left;
+    width: 100%;
+}
+.memberListItem .memberMeta
+{
+    float: left;
+    margin-left: 1em;
+    margin-right: -30em;
+    width: 29em;
+}
+.memberListItem .memberData
+{
+    float: right;
+    margin-right: -50em;
+    width: 20em;
+}
+
+
+.memberListItem .memberInfo h3
+{
+    color: #0071bc;
+    font-size: 1.8em;
+    font-weight: normal;
+    overflow: hidden;
+    text-transform: none;
+}
+.memberListItem ul li
+{
+    color: #666;
+    font-size: 1.2em;
+    line-height: 1.333em; /* 16px */
+}
+.memberListItem .memberMeta li strong
+{
+    color: #333;
+    font-size: .916em; /* 11px */
+}
+.memberListItem .memberData li
+{
+    float: left;
+    font-size: 1.1em;
+    line-height: 1.454; /* 16px */
+    margin-bottom: .272em; /* 3px */
+    width: 9.09em; /* 100px */
+}
+.memberListItem .memberData li strong { color: #333; }
+
+.memberListItem .memberData ul.memberActions { margin-top: 1em; }
+.memberListItem .memberData ul.memberActions li { 
+    margin: 0 .909em 0 0; /* 0 10px 0 0 */
+    width: 8.181em; /* 90px */
+}
+.memberListItem .memberData ul li.last { margin-right: 0; }
+
+.memberListItem .memberData .memberActions.actionButtons li { background-position: 0 -63px; }
+.memberListItem .memberData .memberActions.actionButtons li a { background-position: right -84px; }
+.memberListItem .memberData .memberActions.actionButtons li a.arrowButton { background-position: right -105px; }

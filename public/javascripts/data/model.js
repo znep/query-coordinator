@@ -184,7 +184,8 @@ blist.namespace.fetch('blist.data');
             if (viewCols) {
                 for (var i = 0; i < viewCols.length; i++) {
                     var col = viewCols[i];
-                    if (col.position && (!col.flags || col.flags.indexOf("hidden") == -1)) {
+                    if (col.position && (!col.flags ||
+                        $.inArray("hidden", col.flags) == -1)) {
                         var icol = intermediateCols[col.position] = {
                             name: col.name,
                             width: col.width || 100,

@@ -57,7 +57,7 @@
         // Filter data
         var applyFilter = function() {
             setTimeout(function() {
-                model.filter(filterBox[0].value, 250);
+                model.filter($filterBox[0].value, 250);
             }, 10);
         }
 
@@ -78,13 +78,26 @@
         }
 
         var findCell = function(event) {
-            var cell = $(event.type == "mouseout" ? event.relatedTarget : event.target);
-            if (!cell.hasClass('blist-td') && !cell.hasClass('blist-expander')) {
-                cell = cell.closest('.blist-td');
-                if (!cell.length)
+            var $cell;
+            // Firefox will sometimes return a XULElement for relatedTarget
+            //  Catch the error when trying to access anything on it, and ignore
+            try
+            {
+                $cell = $(event.type == "mouseout" ?
+                    event.relatedTarget : event.target);
+            }
+            catch (ignore) {}
+            if (!$cell)
+            {
+                return null;
+            }
+
+            if (!$cell.hasClass('blist-td') && !$cell.hasClass('blist-expander')) {
+                $cell = $cell.closest('.blist-td');
+                if (!$cell.length)
                     return null;
             }
-            cell = cell[0];
+            var cell = $cell[0];
             if (cell == hotExpander || cell.parentNode == hotExpander)
                 return hotCell;
             return cell;
@@ -254,39 +267,52 @@
 
         /*** HTML RENDERING ***/
 
+        var headerStr = '<div class="blist-table-top">';
+        if (options.showTitle)
+        {
+            headerStr +=
+                '<div class="blist-table-title-tl">\
+                  <div class="blist-table-title-tr">\
+                    <div class="blist-table-title">\
+                      <div class="blist-table-filter-l">\
+                        <div class="blist-table-filter-r">\
+                          <input class="blist-table-filter"/>\
+                      </div></div>\
+                      <div class="blist-table-name">&nbsp;</div>\
+                </div></div></div>';
+        }
+        headerStr +=
+            '  <div class="blist-table-header-scrolls">\
+                <div class="blist-table-header">&nbsp;</div>\
+              </div></div>\
+            <div class="blist-table-scrolls">\
+              <div class="blist-table-inside">&nbsp;</div></div>\
+            <div class="blist-table-util"></div>';
         // Render container elements
         var outside = $(this)
             .addClass('blist-table')
-            .html(
-                '<div class="blist-table-top">' +
-                '  <div class="blist-table-title-tl"><div class="blist-table-title-tr"><div class="blist-table-title">' +
-                '    <div class="blist-table-filter-l"><div class="blist-table-filter-r"><input class="blist-table-filter"/></div></div>' +
-                '    <div class="blist-table-name">&nbsp;</div>' +
-                '  </div></div></div>' +
-                '  <div class="blist-table-header-scrolls"><div class="blist-table-header">&nbsp;</div></div>' +
-                '</div>' +
-                '<div class="blist-table-scrolls">' +
-                '<div class="blist-table-inside">&nbsp;</div></div>' +
-                '<div class="blist-table-util"></div>'
-            );
+            .html(headerStr);
 
         // The top area
-        var top = outside
-            .find('.blist-table-top');
+        var $top = outside.find('.blist-table-top');
 
-        // The title bar
-        var title = top
-            .find('.blist-table-title');
-        var nameLabel = title
-            .find('.blist-table-name');
-        var filterBox = title
-            .find('.blist-table-filter')
-            .keypress(applyFilter)
-            .change(applyFilter)
-            .example('Find');
+        var $title;
+        var $nameLabel;
+        var $filterBox;
+        if (options.showTitle)
+        {
+            // The title bar
+            $title = $top.find('.blist-table-title');
+            $nameLabel = $title.find('.blist-table-name');
+            $filterBox = $title
+                .find('.blist-table-filter')
+                .keypress(applyFilter)
+                .change(applyFilter)
+                .example('Find');
+        }
 
         // The table header elements
-        var headerScrolls = top
+        var headerScrolls = $top
             .find('.blist-table-header-scrolls');
         var header = headerScrolls
             .find('.blist-table-header');
@@ -331,11 +357,19 @@
 
             // Size the scrolling area.  Note that this assumes a width and height of 2px.  TODO - change to absolute
             // positioning when IE6 is officially dead (June 2010?)
-            scrolls.height(outside.height() - top.height() - 2);
+            scrolls.height(outside.height() - $top.height() - 2);
             scrolls.width(outside.width() - 2);
+
+            renderRows();
         }
-        $(window).resize(updateLayout);
-        updateLayout();
+        if (options.manualResize)
+        {
+            $(this).bind('resize', updateLayout);
+        }
+        else
+        {
+            $(window).resize(updateLayout);
+        }
 
         // Install scrolling handler
         var headerScrolledTo = 0;
@@ -521,10 +555,14 @@
 
             // Configure the group header style
             groupHeaderStyle.left = handleOuterWidth + 'px';
-            groupHeaderStyle.width = (pos - handleOuterWidth - paddingX) + 'px';
+            groupHeaderStyle.width = Math.max(0,
+                (pos - handleOuterWidth - paddingX)) + 'px';
 
             // Set the title of the table
-            nameLabel.html(model.title());
+            if ($nameLabel)
+            {
+                $nameLabel.html(model.title());
+            }
         }
         
         /**
@@ -736,7 +774,17 @@
 
         // Install the model
         var model = $(this).blistModel(options.model);
+
+
+        /*** STARTUP ***/
+
+        updateLayout();
     }
+
+    var blistTableDefaults = {
+        manualResize: false,
+        showTitle: true
+    };
 
     $.fn.extend({
         /**
@@ -745,7 +793,8 @@
         blistTable: function(options) {
             // Create the table
             return this.each(function() {
-                makeTable.apply(this, [ options || {} ]);
+                makeTable.apply(this,
+                    [ $.extend({}, blistTableDefaults, options) ]);
             });
         }
     });

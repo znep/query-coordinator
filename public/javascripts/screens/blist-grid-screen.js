@@ -7,7 +7,6 @@ blist.blistGrid.sizeSwf = function (event)
         return;
     }
 
-    var $swf = $('#swfContent');
     var $target = $('#swfWrapper');
     if ($target.length < 1)
     {
@@ -42,7 +41,7 @@ blist.blistGrid.setUpTabs = function ()
         return;
     }
 
-    if (blistGridNS.viewId)
+    if (blistGridNS.viewName)
     {
         if ($.grep(cookieObj.views, function (v)
             { return v.id == blistGridNS.viewId }).length < 1)
@@ -58,7 +57,7 @@ blist.blistGrid.setUpTabs = function ()
         .removeClass('main active even').addClass('filter');
     var $refTab = $('.tabList li.filter.active');
     var $endTab = $('.tabList li.nextTabLink');
-    if (blistGridNS.viewId === null || $refTab.length < 1)
+    if (blistGridNS.viewName === null || $refTab.length < 1)
     {
         $refTab = $endTab;
     }
@@ -85,7 +84,7 @@ blist.blistGrid.setUpTabs = function ()
 blist.blistGrid.createTabCookie = function()
 {
     $.cookies.del('viewTabs');
-    if (blistGridNS.viewId)
+    if (blistGridNS.viewName)
     {
         $.cookies.set('viewTabs', $.json.serialize({
             blistId: blistGridNS.blistId,
@@ -339,10 +338,33 @@ blist.blistGrid.setInfoMenuItem = function ($tab)
     }
 };
 
+blist.blistGrid.jsGridFilter = function (e)
+{
+    var $readGrid = $('#readGrid');
+    if ($readGrid.length > 0)
+    {
+        setTimeout(function ()
+        {
+            $readGrid.blistModel().filter($(e.currentTarget).val(), 250);
+        }, 10);
+    }
+};
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
 {
+    // readMode is a temporary hack until the JS grid is in a reasonable state
+    //  to make it the default.
+    var readMode = window.location.search.indexOf('mode=read') >= 0;
+    if (readMode && blistGridNS.viewId)
+    {
+        $('#readGrid').blistTable({manualResize: true, showTitle: false})
+            .blistModel()
+            .ajax({url: '/views/' + blistGridNS.viewId + '/rows.json',
+                dataType: 'json'});
+    }
+
     blistGridNS.setUpTabs();
     $('.tabList').scrollable({
         selector: '.filter',
@@ -368,8 +390,10 @@ $(function ()
     {
         commonNS.adjustSize();
         blistGridNS.sizeSwf(event);
+        $('#readGrid').trigger('resize');
     });
     commonNS.adjustSize();
+    $('#readGrid').trigger('resize');
 
     $('.tabList .newViewLink a').click(function (event)
     {
@@ -432,6 +456,9 @@ $(function ()
             $(event.currentTarget).find('input[type="text"]').val());
     });
 
+    $('#lensContainer .headerBar form input[type=text]')
+        .keypress(blistGridNS.jsGridFilter);
+
     blistGridNS.hookUpMainMenu();
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
         menuBar: $('#lensContainer .headerBar')});
@@ -480,7 +507,16 @@ $(function ()
     {
         e.preventDefault();
         $('#lensBody').addClass('editMode').removeClass('readMode');
+        $('#readGrid').remove();
         loadSWF();
         blistGridNS.sizeSwf();
     });
+    // readMode is a temporary hack; remove this when it goes away
+    if (!readMode)
+    {
+        $('#lensBody').addClass('editMode').removeClass('readMode');
+        $('#readGrid').remove();
+        loadSWF();
+        blistGridNS.sizeSwf();
+    }
 });

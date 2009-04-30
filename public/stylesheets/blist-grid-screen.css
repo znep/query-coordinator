@@ -999,3 +999,9 @@ body#lensBody
     font-style: normal;
     text-decoration: none;
 }
+
+/* Grid styling */
+#lensBody #readGrid
+{
+    height: 100%;
+}

@@ -1,6 +1,6 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blist-grid-screen" %>
-  <%= javascript_include_tag "util/swfobject" %>
+  <%= stylesheet_link_tag 'table', "blist-grid-screen",
+    :cache => "cache/blists_show_all" %>
   <title><%= t(:page_title) %></title>
 <% end %>
 
@@ -207,8 +207,8 @@
         <div id='pageViewHeader'><div class='innerWrapper'></div></div>
 
         <div id='outerSwfWrapper' class='scrollContent'>
-          <p class='readItem'>Javascript grid goes here</p>
-          <%- if can_edit -%>
+          <div id='readGrid' class='readItem'></div>
+          <%- if current_user -%>
           <div id='swfWrapper' class='swfItem'>
             <%= render(:partial => "shared/swf") %>
           </div>
@@ -249,16 +249,17 @@
     blist.blistGrid.referer = "<%= request.referer %>";
     <%- if !@view.nil? -%>
     blist.blistGrid.blistId = "<%= @view.blistId %>";
-    <%- if @is_child_view -%>
     blist.blistGrid.viewId = "<%= @view.id %>";
+    <%- if @is_child_view -%>
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
     <%- end -%>
     <%- end -%>
   </script>
   <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min",
-    "plugins/jquery.json", "util/extMouseWheel", "util/flash-interface",
-    "util/navigation", "widgets/dropdown-menu", "widgets/selectable-list",
-    "widgets/pagination", "widgets/info-pane-comments", "widgets/scrollable",
-    "screens/blist-grid-screen", "screens/info-pane",
-    :cache => "cache/blists_show_all" %>
+    "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
+    "util/extMouseWheel", "util/flash-interface", "util/navigation",
+    "util/swfobject", "data/types", "data/model", "data/table",
+    "widgets/dropdown-menu", "widgets/selectable-list", "widgets/pagination",
+    "widgets/info-pane-comments", "widgets/scrollable", "screens/info-pane",
+    "screens/blist-grid-screen", :cache => "cache/blists_show_all" %>
 <% end %>

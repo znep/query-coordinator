@@ -16,7 +16,10 @@ blist.util.flashInterface.doAction = function (action)
 
 blist.util.flashInterface.lensSearch = function (searchText)
 {
-    flashIntNS.swf().lensSearch(searchText);
+    if (flashIntNS.swf() != undefined)
+    {
+        flashIntNS.swf().lensSearch(searchText);
+    }
 };
 
 blist.util.flashInterface.discoverSearch = function (searchText)

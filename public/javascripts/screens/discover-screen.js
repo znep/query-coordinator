@@ -17,7 +17,11 @@ blist.discover.filterClickHandler = function (event)
 $(function ()
 {
     $("#featuredCarousel").jcarousel({
-        visible: 2
+        visible: 2,
+        initCallback: function()
+        {
+            $(".jcarousel-skin-discover").hide().css("visibility", "visible").fadeIn("slow");
+        }
     });
     
     $(".simpleTabs").simpleTabNavigate();

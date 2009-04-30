@@ -1,5 +1,7 @@
+.jcarousel-skin-discover { visibility: hidden; }
+
 .jcarousel-skin-discover .jcarousel-container-horizontal {
-    padding: 0 4.6em;
+    padding: 0 3.8em 0 4.6em;
 }
 
 .jcarousel-skin-discover .jcarousel-clip-horizontal {
@@ -46,6 +48,7 @@
 
 .jcarousel-skin-discover .jcarousel-item .carouselContainer {
     background-color: #e7e7e7;
+    height: 139px;
     padding: 1em 0 1em 1.7em;
 }
 

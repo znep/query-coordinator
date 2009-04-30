@@ -46,24 +46,6 @@
 }
 
 
-.pageBlockHeaderContent .myNetworkViews
-{
-    float: right;
-    margin-right: -33em;
-    margin-top: 4em;
-    padding-left: 3em;
-    width: 30em;
-}
-.myNetworkViews h2
-{
-    border-bottom: 1px solid #ccc;
-    color: #666;
-    font-size: 1.4em;
-    font-weight: normal;
-    margin-bottom: .714em; /* 10px */
-    padding-bottom: .357em; /* 5px */
-}
-
 ul.myNetworkList li
 {
     color: #333;

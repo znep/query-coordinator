@@ -90,6 +90,15 @@ blist.namespace.fetch('blist.data.types');
             return (option.text || '').toLowerCase();
         return '';
     }
+
+
+    /*** GROUPING FUNCTIONS ***/
+
+    var groupText = function(value) {
+        if (value == null || value == "")
+            return "";
+        return (value + "").substring(0, 1).toUpperCase();
+    }
     
 
     /*** HTML RENDERERS ***/
@@ -98,6 +107,11 @@ blist.namespace.fetch('blist.data.types');
         // Blist text is currently returned with character entities escaped
         //return "escape(" + value + ")";
         return "(" + value + " || '')";
+    }
+
+    var renderGenCheckbox = function(value, column) {
+        var format = column.format || 'check';
+        return "(\"<div class='blist-cell blist-checkbox blist-" + format + "-\" + (" + value + " ? 'on' : 'off') + \"'></div>\")";
     }
 
     var renderRichtext = function(value) {
@@ -114,10 +128,6 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenRichtext = function(value) {
         return "renderRichtext(" + value + " || '')";
-    }
-
-    var renderGenCheckbox = function(value) {
-        return "(" + value + " ? '<div class=\"blist-table-checked\"></div>' : '')";
     }
 
     var renderDate = function(value, includeDate, includeTime) {
@@ -226,7 +236,8 @@ blist.namespace.fetch('blist.data.types');
         text: {
             renderGen: renderGenText,
             sortGen: sortGenText,
-            filterText: true
+            filterText: true,
+            group: groupText
         },
 
         richtext: {

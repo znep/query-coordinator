@@ -1,6 +1,45 @@
 /**
  * This file implements the Blist data model.  The data model is a flexible container for dynamic data that is
  * decoupled from any specific presentation mechanism.
+ *
+ * The model holds two types of information, metadata and data.  Internally metadata is stored in a private variable
+ * called "meta", data is stored in a private variable called "rows".  Additionally, the model supports filtering,
+ * grouping and sorting.  Sorting is applied against the full dataset.  Grouping and filtering is applied to a subset
+ * of the dataset stored in a private variable called "active".
+ *
+ *
+ * <h2>Metadata</h2>
+ *
+ * Metadata is an object with any of the following optional fields:
+ *
+ * <ul>
+ *   <li>columns - a list of column configuration objects</li>
+ *   <li>view - a Blist view object, used to configure options that aren't otherwise set</li>
+ *   <li>name - the name displayed as the title of the grid</li>
+ * </ul>
+ *
+ * Columns are described using an object with the following fields:
+ *
+ * <ul>
+ *   <li>name - the display name of the column<li>
+ *   <li>dataIndex - the index of the value within rows (a string for object rows, a number for array rows)</li>
+ *   <li>type - the type of data in the column (standard Blist type; defaults to "text").  See types.js for
+ *     more information on supported types</li>
+ *   <li>width - the width of the column</li>
+ *   <li>option - an array of possible picklist values of the form { id: { text: 'My Label', icon: 'icon_url' }
+ *     }</li>
+ *   <li>format - a type specific parameter that describes the display format for the data</li>
+ *   <li>group - a function that generates a "group" object for a given value.  If this value is present a
+ *     table displays group headers when ordered by this column.  Set to "true" to use the default grouping
+ *     function for the type</li>
+ * </ul>
+ *
+ *
+ * <h2>Rows</h2>
+ *
+ * Row data is stored as an array of records.  Records may be arrays or objects.  Once installed, changes to row data
+ * must occur via public model methods.  Model backed objects can register for events to check data (as well as
+ * metadata) changes.
  */
 
 blist.namespace.fetch('blist.data');
@@ -13,7 +52,7 @@ blist.namespace.fetch('blist.data');
         var self = this;
 
         // The active dataset (rows or a filtered version of rows)
-        var data = [];
+        var active = [];
 
         // Row lookup-by-ID
         var lookup = {};
@@ -28,9 +67,15 @@ blist.namespace.fetch('blist.data');
         var orderCol;
 
         // Filtering configuration
-        var filterFn = null;
+        var filterFn;
         var filterText = "";
-        var filterTimer = null;
+        var filterTimer;
+
+        // Grouping configuration
+        var groupFn;
+
+        // Data translation
+        var translateFn = null;
 
         var columnType = function(index) {
             if (meta.columns) {
@@ -89,6 +134,13 @@ blist.namespace.fetch('blist.data');
         }
 
         /**
+         * Configure a function for translating server requests to client requests.
+         */
+        this.translate = function(newTranslateFn) {
+            translateFn = newTranslateFn;
+        }
+
+        /**
          * Load the metadata and rows for the model via an AJAX request.
          */
         this.ajax = function(ajaxOptions) {
@@ -101,6 +153,8 @@ blist.namespace.fetch('blist.data');
                     ajaxOptions.dataType = 'json';
                 var me = this;
                 ajaxOptions.success = function(config) {
+                    if (translateFn)
+                        config = translateFn.apply(this, [ config ]);
                     me.load(config);
                 }
                 ajaxOptions.complete = function() {
@@ -162,6 +216,7 @@ blist.namespace.fetch('blist.data');
          */
         this.meta = function(newMeta) {
             if (newMeta) {
+                // Ensure the meta has a columns object, even if it is empty
                 meta = newMeta;
                 if (!meta.columns) {
                     if (meta.view)
@@ -169,29 +224,56 @@ blist.namespace.fetch('blist.data');
                     else
                         meta.columns = [];
                 }
+
+                // For each column, ensure that dataIndex is present, and create a "dataIndexExpr" which is used with
+                // metaprogramming to reference a column value
+                for (var i = 0; i < meta.columns.length; i++) {
+                    var col = meta.columns[i];
+                    var dataIndex = col.dataIndex;
+                    if (!dataIndex)
+                        dataIndex = col.dataIndex = i;
+                    if (typeof dataIndex == "string")
+                        col.dataIndexExpr = "'" + dataIndex + "'";
+                    else
+                        col.dataIndexExpr = dataIndex + '';
+                }
+
+                // Notify listeners of the metadata change
                 $(listeners).trigger('meta_change', [ this ]);
             }
             return meta;
         }
 
         /**
-         * Get and/or set the rows for the model.
+         * Get and/or set the rows for the model.  Returns only "active" rows, that is, those that are visible.
          */
         this.rows = function(newRows) {
             if (newRows) {
                 installIDs(newRows, 0);
-                data = rows = newRows;
+                active = rows = newRows;
+
+                // Apply sorting if so configured
+                if (sortConfigured)
+                    doSort();
+
+                // Apply filtering and grouping (filtering calls grouping so we never need to call both)
+                if (filterFn)
+                    doFilter(rows);
+                else if (groupFn)
+                    doGroup();
+                
                 dataChange();
             }
-            return data;
+
+            return active;
         }
 
         /**
          * Add rows to the model.
          */
         this.add = function(rows) {
-            installIDs(rows, data.length);
-            data = data.concat(rows);
+            installIDs(rows, active.length);
+            active = active.concat(rows);
             $(listeners).trigger('row_add', [ rows ]);
         }
 
@@ -202,7 +284,7 @@ blist.namespace.fetch('blist.data');
             for (var row in rows) {
                 var index = delete lookup[row[0]];
                 if (index != undefined)
-                    data.splice(index, 1);
+                    active.splice(index, 1);
             }
             $(listeners).trigger('row_remove', [ rows ]);
         }
@@ -218,7 +300,7 @@ blist.namespace.fetch('blist.data');
          * Retrieve a single row by index.
          */
         this.get = function(index) {
-            return data[index];
+            return active[index];
         }
 
         /**
@@ -226,14 +308,14 @@ blist.namespace.fetch('blist.data');
          */
         this.getByID = function(id) {
             var index = lookup[id];
-            return index == undefined ? undefined : data[index];
+            return index == undefined ? undefined : active[index];
         }
 
         /**
          * Retrieve the total number of rows.
          */
         this.length = function(id) {
-            return data.length;
+            return active.length;
         }
 
         /**
@@ -253,8 +335,8 @@ blist.namespace.fetch('blist.data');
                 else
                     orderCol = meta.columns[order];
 
-                var r1 = "a[" + orderCol.dataIndex + "]";
-                var r2 = "b[" + orderCol.dataIndex + "]";
+                var r1 = "a[" + orderCol.dataIndexExpr + "]";
+                var r2 = "b[" + orderCol.dataIndexExpr + "]";
 
                 // Swap expressions for descending sort
                 if (descending) {
@@ -282,29 +364,45 @@ blist.namespace.fetch('blist.data');
                             return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0;
                         }
 
+                // Install the grouping function, if applicable
+                if (orderCol.group === true)
+                    groupFn = columnType(order).group;
+                else
+                    groupFn = orderCol.group;
+
                 sortConfigured = true;
             }
-            
-            // Sort and notify listeners
+
+            // Sort
             doSort();
+
+            // If there's an active filter, or grouping function, re-apply now that we're sorted
+            if (filterFn)
+                doFilter(rows);
+            else if (groupFn)
+                doGroup(rows);
+
+            // Notify listeners
             dataChange();
         }
 
         // Run sorting based on the current filter configuration.  Does not fire events
         var doSort = function() {
+            removeSpecialRows();
+
             if (!sortConfigured)
                 return;
 
             // Apply preprocessing function if necessary.  We then sort a new array that contains a
             // [ 'value', originalRecord ] pair for each item.  This allows us to avoid complex ordering functions.
             if (orderPrepro) {
-                var toSort = new Array(data.length);
-                for (var i = 0; i < data.length; i++) {
-                    var rec = data[i];
+                var toSort = new Array(active.length);
+                for (var i = 0; i < active.length; i++) {
+                    var rec = active[i];
                     toSort[i] = [ orderPrepro(rec[orderCol.dataIndex], orderCol), rec ];
                 }
             } else
-                toSort = data;
+                toSort = active;
 
             // Perform the actual sort
             if (orderFn)
@@ -315,7 +413,7 @@ blist.namespace.fetch('blist.data');
             // If we sorted a preprocessed set, update the original set
             if (orderPrepro)
                 for (i = 0; i < toSort.length; i++)
-                    data[i] = toSort[i][1];
+                    active[i] = toSort[i][1];
         }
 
         /**
@@ -363,7 +461,7 @@ blist.namespace.fetch('blist.data');
                 if (filter.length < 3) {
                     filterFn = null;
                     filterText = "";
-                    data = rows;
+                    active = rows;
                     dataChange();
                     return null;
                 }
@@ -374,7 +472,7 @@ blist.namespace.fetch('blist.data');
                 for (var i = 0; i < meta.columns.length; i++) {
                     if (columnType(i).filterText)
                         // Textual column -- apply the regular expression to each instance
-                        filterParts.push(' || (r[', meta.columns[i].dataIndex, '] + "").match(regexp)');
+                        filterParts.push(' || (r[', meta.columns[i].dataIndexExpr, '] + "").match(regexp)');
                     else if (meta.columns[i] == "picklist") {
                         // Picklist column -- prefilter and then search by ID
                         var options = meta.columns[i].options;
@@ -384,7 +482,7 @@ blist.namespace.fetch('blist.data');
                                 if (options[key].text.match(regexp))
                                     matches.push(key);
                             for (var j = 0; j < matches.length; j++)
-                                filterParts.push(' || (r[' + meta.columns[j].dataIndex + '] == "' + matches[j] + '")');
+                                filterParts.push(' || (r[' + meta.columns[j].dataIndexExpr + '] == "' + matches[j] + '")');
                         }
                     }
                 }
@@ -393,7 +491,7 @@ blist.namespace.fetch('blist.data');
 
                 // Filter the current filter set if the filter is a subset of the current filter
                 if (filter.substring(0, filterText.length) == filterText)
-                    toFilter = data;
+                    toFilter = active;
                 filterText = filter;
             }
 
@@ -417,11 +515,56 @@ blist.namespace.fetch('blist.data');
 
         // Run filtering based on current filter configuration.  Does not fire events
         var doFilter = function(toFilter) {
+            // Remove the filter timer, if any
             if (filterTimer) {
                 window.clearTimeout(filterTimer);
                 filterTimer = null;
             }
-            data = $.grep(toFilter || rows, filterFn);
+            
+            // Remove any header records (e.g. group titles) from the filter set
+            if (toFilter == active)
+                removeSpecialRows();
+
+            // Perform the actual filter
+            active = $.grep(toFilter || rows, filterFn);
+
+            // Generate group headers if grouping is enabled
+            if (groupFn)
+                doGroup();
+        }
+
+        // Remove "special" (non-data) rows
+        var removeSpecialRows = function() {
+            var i = 0;
+            while (i < active.length) {
+                if (active[i]._special)
+                    active.splice(i, 1);
+                else
+                    i++;
+            }
+        }
+
+        // Generate group headers based on the current grouping configuration.  Does not fire events
+        var doGroup = function() {
+            removeSpecialRows();
+            if (!groupFn || !orderCol)
+                return;
+            var i = 0;
+            var currentGroup;
+            var groupOn = orderCol.dataIndex;
+            while (i < active.length) {
+                var group = groupFn(active[i][groupOn]);
+                if (group != currentGroup) {
+                    active.splice(i, 0, {
+                        _special: true,
+                        type: 'group',
+                        title: group
+                    })
+                    i++;
+                    currentGroup = group;
+                }
+                i++;
+            }
         }
 
         if (meta)

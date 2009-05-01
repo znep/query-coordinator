@@ -443,6 +443,16 @@
         class="arrowButton showFlashPopup" title="Share">Share</a></li>
     </ul>
     <%- end -%>
+    <ul class="socialActions">
+      <%- 
+        tweet = CGI::escape("Check out the #{h(view.name)} dataset on blist - ")
+        tweet_url =  "#{request.protocol + request.host_with_port + view.href}."
+      -%>
+      <li><%= link_to(image_tag("share_logo_twitter.png", :size => "32x32", :alt => "Twitter"), 
+              "http://www.twitter.com/home?status=#{tweet + tweet_url}",
+              :title => "Twitter", :rel => "external") %></li>
+    </ul>
+    
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>

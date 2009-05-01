@@ -20,30 +20,6 @@ class View < Model
     get_request(path)
   end
 
-  def self.find_popular(limit = 10)
-    path = "/views.json?sortBy=POPULAR"
-    unless (limit.nil?)
-      path += "&limit=#{limit}"
-    end
-    get_request(path)
-  end
-
-  def self.find_featured()
-    path = "/views.json?featured=true"
-    get_request(path)
-  end
-
-  def self.find_recent(limit = 10, inNetwork=false)
-    path = "/views.json?sortBy=LAST_CHANGED"
-    unless (limit.nil?)
-      path += "&limit=#{limit}"
-    end
-    if (inNetwork)
-      path += "&inNetwork=true"
-    end
-    get_request(path)
-  end
-
   def self.create_favorite(id)
     path = "/favorite_views?" + {"id" => id}.to_param
     self.create_request(path)

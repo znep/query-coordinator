@@ -10,6 +10,7 @@ blist.discover.filterClickHandler = function (event)
         success: function(data)
         {
             $filterLink.closest(".tabContentContainer").html(data);
+            $(".simpleTabsContainer")[0].scrollIntoView();
         }
     });
 }
@@ -30,5 +31,5 @@ $(function ()
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabPopular");
     });
     
-    $(".filterLink").live("click", discoverNS.filterClickHandler);
+    $(".filterLink, .pageLink, .prevLink, .nextLink").live("click", discoverNS.filterClickHandler);
 });

@@ -1,3 +1,20 @@
+var communityNS = blist.namespace.fetch('blist.community');
+
+blist.community.filterClickHandler = function (event)
+{
+    event.preventDefault();
+    var $filterLink = $(this);
+    
+    $.Tache.Get({ 
+        url: $filterLink.attr("href"),
+        success: function(data)
+        {
+            $filterLink.closest(".tabContentContainer").html(data);
+            $(".simpleTabsContainer")[0].scrollIntoView();
+        }
+    });
+}
+
 $(function ()
 {
     $("#featuredCarousel").jcarousel({
@@ -15,4 +32,6 @@ $(function ()
             "tabAllMembers" : "#communityTabAllMembers"
         }
     });
+    
+    $(".filterLink, .pageLink, .prevLink, .nextLink").live("click", communityNS.filterClickHandler);
 });

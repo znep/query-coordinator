@@ -23,10 +23,12 @@
     </div>
     <div class="memberData">
       <ul class="clearfix">
-        <li>Friends <strong>[0]</strong></li>
+        <li>Friends <strong><%= member.numberOfFriends %></strong></li>
+        <%- if false -%>
         <li>Activity Score <strong>[0]</strong></li>
-        <li>Followers <strong>[0]</strong></li>
-        <li>Public blists <strong>[0]</strong></li>
+        <%- end -%>
+        <li>Followers <strong><%= member.numberOfFollowers %></strong></li>
+        <li>Public blists <strong><%= member.publicBlists %></strong></li>
       </ul>
       <ul class="memberActions actionButtons clearfix">
         <li><%= link_to("<span>Follow</span>", profile_url(member.id)) %></li>

@@ -20,6 +20,10 @@
     <ul class="discoverContentList">
       <%= render(:partial => "view_list_item", :collection => views) %>
     </ul>
+    
+    <div class="viewPager">
+      <%= create_pagination(views_total, @page_size, current_page, filter_discover_url({:type => type, :filter => current_filter})) %>
+    </div>
   </div>
 </div></div></div>
 
@@ -41,12 +45,6 @@
                 filter_discover_url({:type => type, :filter => {:privateOnly => true}}),
                 :class => "filterLink") %></li>
       <%- end -%>
-      <li><%= link_to("Most comments", 
-              filter_discover_url({:type => type, :filter => {:sortBy => "COMMENTS"}}),
-              :class => "filterLink") %></li>
-      <li><%= link_to("Most favorited", 
-              filter_discover_url({:type => type, :filter => {:sortBy => "FAVORITED"}}),
-              :class => "filterLink") %></li>
     </ul>
 
     <h2>Browse by tag</h2>

@@ -145,4 +145,41 @@ module ApplicationHelper
   def is_gov_site?
     I18n.locale == 'gov'
   end
+  
+  
+  def create_pagination(total_count, page_count, current_page, base_href)
+    num_pages = (total_count / page_count).floor
+    base_href = (base_href.include?("?")) ? "#{base_href}&page=" : "#{base_href}?page="
+    
+    # Only display 9 pages at a time.
+    start_page = 1
+    if (current_page - 4 > 0)
+      start_page = current_page - 4
+    end
+    
+    end_page = num_pages
+    if (num_pages > 9 && current_page + 4 < num_pages)
+      end_page = start_page > 1 ? current_page + 4 : 9
+    end
+    
+    out = "<div class='pagination'>"
+    if (current_page > 1)
+      out += link_to("Prev", base_href + (current_page - 1).to_s, :class => "prevLink", :title => "Previous")
+    end
+    if (start_page > 1)
+      out += "<span class='ellipses'>...</span>" 
+    end
+    (start_page..end_page).each do |i|
+      page_link_class = i == current_page ? "pageLink active" : "pageLink"
+      out += link_to(i, base_href + i.to_s, :class => page_link_class, :title => "Page #{i}")
+    end
+    if (end_page < num_pages)
+      out += "<span class='ellipses'>...</span>"
+    end
+    if (current_page < num_pages)
+      out += link_to("Next", base_href + (current_page + 1).to_s, :class => "nextLink", :title => "Previous")
+    end
+    
+    out += "</div>"
+  end
 end

@@ -566,7 +566,7 @@
             var renderFnSource =
                 '(function(html, index, row) {' +
                     'html.push(' +
-                        '"<div id=\'' + id + '-r", row.id, "\' class=\'blist-tr", (index % 2 ? " blist-tr-even" : ""), "\' style=\'top: ", (index * ' + rowOffset + '), "px\'>' +
+                        '"<div id=\'' + id + '-r", (row.id || row[0]), "\' class=\'blist-tr", (index % 2 ? " blist-tr-even" : ""), "\' style=\'top: ", (index * ' + rowOffset + '), "px\'>' +
                         '<div class=\'blist-table-handle ' + handleClass + '\'>", (index + 1), "</div>"' +
                     ');' +
                     'if (row._special) ' +

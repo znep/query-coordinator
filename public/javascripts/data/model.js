@@ -7,7 +7,6 @@
  * grouping and sorting.  Sorting is applied against the full dataset.  Grouping and filtering is applied to a subset
  * of the dataset stored in a private variable called "active".
  *
- *
  * <h2>Metadata</h2>
  *
  * Metadata is an object with any of the following optional fields:
@@ -40,6 +39,26 @@
  * Row data is stored as an array of records.  Records may be arrays or objects.  Once installed, changes to row data
  * must occur via public model methods.  Model backed objects can register for events to check data (as well as
  * metadata) changes.
+ *
+ * Row data may be stored "sparsely".  In sparse mode, one or more elements in the row array are represented by a
+ * primitive value rather than actual row data in an object or array.  These primitive value represent row IDs.  To
+ * retrieve actual row data clients may pass an array of such rows to loadRows().  loadRows() is an asynchronous
+ * operation.  When loadRows() succeeds, the row_change is fired with the list of freshly populated rows.
+ *
+ *
+ * <h2>Events</h2>
+ * 
+ * The model fires the following events:
+ *
+ * <li>
+ *   <li>meta_change - when metadata (column, data name, etc.) changes</li>
+ *   <li>before_load - called prior to intiating an AJAX load of data.  Return false to cancel the load</li>
+ *   <li>load - called when the entire set of rows is replaced</li>
+ *   <li>after_load - called after an AJAX load of data</li>
+ *   <li>row_change - called with an array of rows that have had their contents change</li>
+ *   <li>row_add - called with an array of rows that have been newly added to the model</li>
+ *   <li>row_remove - called with an array of rows that are no longer present in the model</li>
+ * </ul>
  */
 
 blist.namespace.fetch('blist.data');
@@ -77,6 +96,9 @@ blist.namespace.fetch('blist.data');
         // Data translation
         var translateFn = null;
 
+        // Data load configuration
+        var supplementalAjaxOptions = null;
+
         var columnType = function(index) {
             if (meta.columns) {
                 var column = meta.columns[index];
@@ -96,7 +118,11 @@ blist.namespace.fetch('blist.data');
                 from = 0;
             for (var i = 0; i < newRows.length; i++) {
                 var row = newRows[i];
-                lookup[row.id || row[0]] = from++;
+                if (typeof row == 'object')
+                    var id = row.id || row[0];
+                else
+                    id= row;
+                lookup[id] = from++;
             }
         }
 
@@ -154,14 +180,18 @@ blist.namespace.fetch('blist.data');
                 ajaxOptions = {
                     url: ajaxOptions
                 }
+            supplementalAjaxOptions = $.extend({}, ajaxOptions);
+            doLoad(this, this.load, ajaxOptions);
+        }
+
+        var doLoad = function(model, onLoad, ajaxOptions) {
             if (!ajaxOptions.success) {
                 if (!ajaxOptions.dataType)
                     ajaxOptions.dataType = 'json';
-                var me = this;
                 ajaxOptions.success = function(config) {
                     if (translateFn)
                         config = translateFn.apply(this, [ config ]);
-                    me.load(config);
+                    onLoad.apply(model, [ config ]);
                 }
                 ajaxOptions.complete = function() {
                     $(listeners).trigger('after_load');
@@ -170,6 +200,38 @@ blist.namespace.fetch('blist.data');
             if (!$(listeners).trigger('before_load', [ ajaxOptions ]))
                 return;
             $.ajax(ajaxOptions);
+        }
+
+        /**
+         * Load a set of rows.  The table must have been populated via AJAX for this to succeed.  Supplementary
+         * requests will be requested of the original URL using ids[] query parameters in the POST body.
+         *
+         * @param rows an array of row IDs
+         */
+        this.loadRows = function(rows) {
+            if (!supplementalAjaxOptions)
+                return;
+            var ajaxOptions = $.extend({
+                data: {
+                    ids: rows
+                }
+            }, supplementalAjaxOptions);
+            doLoad(this, onSupplementalLoad, ajaxOptions);
+        }
+
+        var onSupplementalLoad = function(response) {
+            // Install the rows
+            var supplement = response.data;
+            for (var i = 0; i < supplement.length; i++) {
+                var row = supplement[i];
+                var id = row.id || row[0];
+                var index = lookup[id];
+                if (index != null)
+                    rows[index] = row;
+            }
+
+            // Notify listeners of row load via the "change" event
+            this.change(supplement);
         }
 
         var translatePicklistFromView = function(col) {
@@ -399,6 +461,8 @@ blist.namespace.fetch('blist.data');
 
         // Run sorting based on the current filter configuration.  Does not fire events
         var doSort = function() {
+            // TODO - load from server if we're in progressive rendering mode
+
             removeSpecialRows();
 
             if (!sortConfigured)
@@ -529,6 +593,8 @@ blist.namespace.fetch('blist.data');
 
         // Run filtering based on current filter configuration.  Does not fire events
         var doFilter = function(toFilter) {
+            // TODO - load from server in progressive rendering mode
+
             // Remove the filter timer, if any
             if (filterTimer) {
                 window.clearTimeout(filterTimer);
@@ -558,7 +624,8 @@ blist.namespace.fetch('blist.data');
             }
         }
 
-        // Generate group headers based on the current grouping configuration.  Does not fire events
+        // Generate group headers based on the current grouping configuration.  Does not fire events.  Note that
+        // grouping is not currently supported in progressive rendering mode.
         var doGroup = function() {
             removeSpecialRows();
             if (!groupFn || !orderCol)
@@ -609,7 +676,7 @@ blist.namespace.fetch('blist.data');
                     model.addListener(this);
                 })
                 this.trigger('meta_change', [ model ]);
-                this.trigger('row_change', [ model ]);
+                this.trigger('load', [ model ]);
                 return model;
             }
             var currentModel = this.data('blistModel');

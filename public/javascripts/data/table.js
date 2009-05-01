@@ -10,6 +10,9 @@
     // Milliseconds in which expansion should occur
     var EXPAND_DURATION = 200;
 
+    // Millisecond delay before loading missing rows
+    var MISSING_ROW_LOAD_DELAY = 250;
+
     var nextTableID = 1;
 
     // HTML escaping utility
@@ -693,6 +696,8 @@
 
         var renderedRows = {};
         var dirtyRows = {};
+        var rowLoadTimer = null;
+        var rowLoadRows = null;
 
         var appendRows = function(html) {
             // These functions only exist for profiling purposes.  We call this relatively infrequently so it's OK to
@@ -722,6 +727,9 @@
          * Render all rows that should be visible but are not yet rendered.  Removes invisible rows.
          */
         var renderRows = function() {
+            if (!model)
+                return;
+            
             var top = scrolls.scrollTop();
 
             // Compute the first row to render
@@ -746,15 +754,21 @@
             // Render the rows that are newly visible
             var unusedRows = $.extend({}, renderedRows);
             var html = [];
+            var rowsToLoad = [];
             for (var i = start; i < stop; i++) {
                 var row = rows[i];
-                var rowID = row.id || row[0];
-                if (unusedRows[rowID])
-                    // Keep the existing row
-                    delete unusedRows[rowID];
-                else
-                    // Add a new row
-                    rowRenderFn(html, i, row);
+                if (typeof row == 'object') {
+                    // Loaded row -- render immediately
+                    var rowID = row.id || row[0];
+                    if (unusedRows[rowID])
+                        // Keep the existing row
+                        delete unusedRows[rowID];
+                    else
+                        // Add a new row
+                        rowRenderFn(html, i, row);
+                } else
+                    // Unloaded row -- record for load request
+                    rowsToLoad.push(row);
             }
             appendRows(html.join(''));
 
@@ -765,10 +779,29 @@
                 delete renderedRows[unusedID];
             }
 
+            // Bind scroll handlers
             scrolls.unbind("scroll", onScroll);
             scrolls.unbind("scroll", renderRows);
             scrolls.scroll(onScroll);
             scrolls.scroll(renderRows);
+
+            // Load rows that aren't currently present
+            if (rowsToLoad.length) {
+                if (rowLoadTimer)
+                    clearTimeout(rowLoadTimer);
+                rowLoadTimer = setTimeout(loadMissingRows, MISSING_ROW_LOAD_DELAY);
+                rowLoadRows = rowsToLoad;
+            }
+        }
+
+        var loadMissingRows = function() {
+            if (!rowLoadTimer)
+                return;
+            rowLoadTimer = null;
+            if (!rowLoadRows)
+                return;
+            model.loadRows(rowLoadRows);
+            rowLoadRows = null;
         }
 
         /**
@@ -792,7 +825,6 @@
          * Re-render a set of rows (if visible).
          */
         var updateRows = function(rows) {
-            var anyDirty = false;
             for (var i = 0; i < rows.length; i++) {
                 var row = rows[i];
                 var rowID = row.id || row[0];
@@ -800,11 +832,9 @@
                 if (rendered) {
                     delete renderedRows[rowID];
                     dirtyRows[rowID] = rendered;
-                    anyDirty = true;
                 }
             }
-            if (anyDirty)
-                renderRows();
+            renderRows();
         }
 
 

@@ -107,6 +107,10 @@ class View < Model
     prefix = self.category || 'blist'
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
   end
+  
+  def short_href
+    "/blists/#{id}"
+  end
 
   def user_role(user_id)
     if (user_id == blistOwner.id)

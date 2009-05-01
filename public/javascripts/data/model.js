@@ -89,9 +89,15 @@ blist.namespace.fetch('blist.data');
             return blist.data.types.text;
         }
 
-        var installIDs = function(rows, from) {
-            for (var row in rows)
-                lookup[row[0]] = from++;
+        var installIDs = function(newRows, from) {
+            if (!newRows)
+                newRows = rows;
+            if (from == null)
+                from = 0;
+            for (var i = 0; i < newRows.length; i++) {
+                var row = newRows[i];
+                lookup[row.id || row[0]] = from++;
+            }
         }
 
         var dataChange = function() {
@@ -283,9 +289,13 @@ blist.namespace.fetch('blist.data');
          */
         this.remove = function(rows) {
             for (var row in rows) {
-                var index = delete lookup[row[0]];
-                if (index != undefined)
-                    active.splice(index, 1);
+                var id = row.id || row[0];
+                var index = lookup[id];
+                if (index) {
+                    delete lookup[id];
+                    if (index != undefined)
+                        active.splice(index, 1);
+                }
             }
             $(listeners).trigger('row_remove', [ rows ]);
         }
@@ -309,7 +319,7 @@ blist.namespace.fetch('blist.data');
          */
         this.getByID = function(id) {
             var index = lookup[id];
-            return index == undefined ? undefined : active[index];
+            return index == undefined ? undefined : rows[index];
         }
 
         /**
@@ -415,6 +425,9 @@ blist.namespace.fetch('blist.data');
             if (orderPrepro)
                 for (i = 0; i < toSort.length; i++)
                     active[i] = toSort[i][1];
+
+            // Update ID lookup
+            installIDs();
         }
 
         /**

@@ -17,12 +17,6 @@
         return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     }
 
-    // Debugging utility
-    var puts = function(value) {
-        if (window.console && window.console.log)
-            window.console.log(value);
-    }
-
     // Make a DOM element into a table
     var makeTable = function(options) {
 
@@ -37,31 +31,6 @@
 
         
         /*** CLOSURE UTILITY FUNCTIONS ***/
-
-        var appendInside = function(html) {
-            // Straight jQuery method - slightly slower
-            //inside.append(html);
-
-            // These functions only exist for profiling purposes.  We call this relatively infrequently so it's OK to
-            // leave these in for production purposes.
-            var appendInside_render = function() {
-                appendUtilDOM.innerHTML = html;
-            };
-            var appendInside_append = function() {
-                /*
-                var frag = document.createDocumentFragment();
-                while (appendUtilDOM.firstChild)
-                    frag.appendChild(appendUtilDOM.firstChild);
-                insideDOM.appendChild(frag);
-                */
-               while (appendUtilDOM.firstChild)
-                   insideDOM.appendChild(appendUtilDOM.firstChild);
-            };
-
-            // Call the append functions
-            appendInside_render();
-            appendInside_append();
-        }
 
         // Calculate the number of digits in the handle.  This is important because we need to recreate our layout if
         // the width of the column changes.
@@ -88,7 +57,7 @@
         // Filter data
         var applyFilter = function() {
             setTimeout(function() {
-                model.filter(filterBox[0].value, 250);
+                model.filter($filterBox[0].value, 250);
             }, 10);
         }
 
@@ -97,6 +66,7 @@
 
         // Handle mouse movement within the inside (cell) area
         var hotCell;
+        var hotRow;
         var hotCellTimer;
         var hotExpander;
 
@@ -108,13 +78,26 @@
         }
 
         var findCell = function(event) {
-            var cell = $(event.target);
-            if (!cell.hasClass('blist-td') && !cell.hasClass('blist-expander')) {
-                cell = cell.closest('.blist-td');
-                if (!cell.length)
+            var $cell;
+            // Firefox will sometimes return a XULElement for relatedTarget
+            //  Catch the error when trying to access anything on it, and ignore
+            try
+            {
+                $cell = $(event.type == "mouseout" ?
+                    event.relatedTarget : event.target);
+            }
+            catch (ignore) {}
+            if (!$cell)
+            {
+                return null;
+            }
+
+            if (!$cell.hasClass('blist-td') && !$cell.hasClass('blist-expander')) {
+                $cell = $cell.closest('.blist-td');
+                if (!$cell.length)
                     return null;
             }
-            cell = cell[0];
+            var cell = $cell[0];
             if (cell == hotExpander || cell.parentNode == hotExpander)
                 return hotCell;
             return cell;
@@ -127,10 +110,18 @@
             // If the hover cell is currently hot, nothing to do
             if (over == hotCell)
                 return;
-            if ($(over).hasClass('blist-table-expander'))
-                return;
 
-            // Update hover state
+            // Update row hover state
+            var newHotRow = $(over).closest('.blist-tr');
+            if (newHotRow != hotRow) {
+                if (hotRow)
+                    $(hotRow).removeClass('blist-hot-row');
+                if (newHotRow)
+                    $(newHotRow).addClass('blist-hot-row');
+                hotRow = newHotRow;
+            }
+
+            // Update cell hover state
             if (hotCell)
                 onCellOut(event);
             hotCell = over;
@@ -142,10 +133,20 @@
 
         var onCellOut = function(event) {
             if (hotCell) {
+                // Find the cell focus is moving to
                 var to = findCell(event);
                 if (to == hotCell)
+                    // Ignore -- hot cell isn't changing
                     return;
 
+                // The row is no longer hot if we're changing rows
+                if (hotRow) {
+                    var newHotRow = $(to).closest('.blist-tr');
+                    if (newHotRow != hotRow)
+                        $(hotRow).removeClass('blist-hot-row');
+                }
+
+                // Cell is no longer hot
                 $(hotCell).removeClass('blist-hot');
                 hotCell = null;
                 if (hotCellTimer) {
@@ -176,18 +177,19 @@
 
             // Clone the node
             var wrap = hotCell.cloneNode(true);
-            var w = $(wrap);
-            w.width('auto').height('auto');
+            var $wrap = $(wrap);
+            $wrap.width('auto').height('auto');
+            expander.width('auto').height('auto');
             while (hotExpander.firstChild)
                 $(hotExpander.firstChild).remove();
             expander.append(wrap);
 
             // Compute cell padding
-            var padx = w.outerWidth() - w.width();
-            var pady = w.outerHeight() - w.height();
+            var padx = $wrap.outerWidth() - $wrap.width();
+            var pady = $wrap.outerHeight() - $wrap.height();
 
             // Determine the cell's "natural" size
-            var rc = { width: w.outerWidth(), height: w.outerHeight() };
+            var rc = { width: $wrap.outerWidth() + 1, height: $wrap.outerHeight() };
 
             // Determine if expansion is necessary.  The + 2 prevents us from expanding if the box would just be
             // slightly larger than the containing cell.  This is a nicety except in the case of picklists where the
@@ -228,7 +230,9 @@
             var origOffset = { top: rc.top, left: rc.left };
 
             // Ensure viewport is in the window horizontally
-            var viewportWidth = scrolls.width() - scrollbarWidth;
+            var viewportWidth = scrolls.width();
+            if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
+                viewportWidth -= scrollbarWidth;
             var scrollLeft = scrolls.scrollLeft();
             if (rc.left + rc.width > scrollLeft + viewportWidth)
                 rc.left = scrollLeft + viewportWidth - rc.width;
@@ -236,7 +240,9 @@
                 rc.left = scrollLeft;
 
             // Ensure viewport is in the window vertically
-            var viewportHeight = scrolls.height() - scrollbarWidth;
+            var viewportHeight = scrolls.height();
+            if (scrolls[0].scrollWidth > scrolls[0].clientWidth)
+                viewportHeight -= scrollbarWidth;
             var scrollTop = scrolls.scrollTop();
             if (rc.top + rc.height > scrollTop + viewportHeight)
                 rc.top = scrollTop + viewportHeight - rc.height;
@@ -244,8 +250,8 @@
                 rc.top = scrollTop - 1;
 
             // Size the content wrapper
-            w.width(rc.width - padx);
-            w.height(rc.height - pady);
+            $wrap.width(rc.width - padx);
+            $wrap.height(rc.height - pady);
 
             // Position the expander
             expander.css('top', origOffset.top + 'px');
@@ -261,39 +267,52 @@
 
         /*** HTML RENDERING ***/
 
+        var headerStr = '<div class="blist-table-top">';
+        if (options.showTitle)
+        {
+            headerStr +=
+                '<div class="blist-table-title-tl">\
+                  <div class="blist-table-title-tr">\
+                    <div class="blist-table-title">\
+                      <div class="blist-table-filter-l">\
+                        <div class="blist-table-filter-r">\
+                          <input class="blist-table-filter"/>\
+                      </div></div>\
+                      <div class="blist-table-name">&nbsp;</div>\
+                </div></div></div>';
+        }
+        headerStr +=
+            '  <div class="blist-table-header-scrolls">\
+                <div class="blist-table-header">&nbsp;</div>\
+              </div></div>\
+            <div class="blist-table-scrolls">\
+              <div class="blist-table-inside">&nbsp;</div></div>\
+            <div class="blist-table-util"></div>';
         // Render container elements
         var outside = $(this)
             .addClass('blist-table')
-            .html(
-                '<div class="blist-table-top">' +
-                '  <div class="blist-table-title-tl"><div class="blist-table-title-tr"><div class="blist-table-title">' +
-                '    <div class="blist-table-filter-l"><div class="blist-table-filter-r"><input class="blist-table-filter"/></div></div>' +
-                '    <div class="blist-table-name">&nbsp;</div>' +
-                '  </div></div></div>' +
-                '  <div class="blist-table-header-scrolls"><div class="blist-table-header">&nbsp;</div></div>' +
-                '</div>' +
-                '<div class="blist-table-scrolls">' +
-                '<div class="blist-table-inside">&nbsp;</div></div>' +
-                '<div class="blist-table-util"></div>'
-            );
+            .html(headerStr);
 
         // The top area
-        var top = outside
-            .find('.blist-table-top');
+        var $top = outside.find('.blist-table-top');
 
-        // The title bar
-        var title = top
-            .find('.blist-table-title');
-        var nameLabel = title
-            .find('.blist-table-name');
-        var filterBox = title
-            .find('.blist-table-filter')
-            .keypress(applyFilter)
-            .change(applyFilter)
-            .example('Find');
+        var $title;
+        var $nameLabel;
+        var $filterBox;
+        if (options.showTitle)
+        {
+            // The title bar
+            $title = $top.find('.blist-table-title');
+            $nameLabel = $title.find('.blist-table-name');
+            $filterBox = $title
+                .find('.blist-table-filter')
+                .keypress(applyFilter)
+                .change(applyFilter)
+                .example('Find');
+        }
 
         // The table header elements
-        var headerScrolls = top
+        var headerScrolls = $top
             .find('.blist-table-header-scrolls');
         var header = headerScrolls
             .find('.blist-table-header');
@@ -338,11 +357,19 @@
 
             // Size the scrolling area.  Note that this assumes a width and height of 2px.  TODO - change to absolute
             // positioning when IE6 is officially dead (June 2010?)
-            scrolls.height(outside.height() - top.height() - 2);
+            scrolls.height(outside.height() - $top.height() - 2);
             scrolls.width(outside.width() - 2);
+
+            renderRows();
         }
-        $(window).resize(updateLayout);
-        updateLayout();
+        if (options.manualResize)
+        {
+            $(this).bind('resize', updateLayout);
+        }
+        else
+        {
+            $(window).resize(updateLayout);
+        }
 
         // Install scrolling handler
         var headerScrolledTo = 0;
@@ -360,6 +387,8 @@
         var css;
         var rowStyle;
         var handleStyle;
+        var cellStyle;
+        var groupHeaderStyle;
         var handleClass;
         var colStyles = [];
         var colClasses = [];
@@ -407,8 +436,18 @@
                     break;
             }
             handleClass = id + "-handle";
+
+            // Dynamic style applied to the handle
             handleStyle = addRule("." + handleClass).style;
-            rowStyle = addRule(".blist-tr").style;
+
+            // Dynamic style applied to rows
+            rowStyle = addRule("#" + id + " .blist-tr").style;
+
+            // Dynamic style available to cell renderers to fill height properly
+            cellStyle = addRule("#" + id + " .blist-cell").style;
+
+            // Dynamic style applied to "special" row cells
+            groupHeaderStyle = addRule("#" + id + " .blist-td-header").style;
         })();
 
 
@@ -418,7 +457,7 @@
         var columns = [];
 
         // This is the row rendering function.  Precompiled using eval() for perf.
-        var renderFn;
+        var rowRenderFn;
 
         // Column configuration
         var rowHeight;
@@ -444,7 +483,7 @@
             // Ensure CSS styles are initialized
             initCSS();
 
-            // Measure width and height of text and cell for the handle (these dimensions must also apply to cells)
+            // Measure width of the handle and height and width of the cell
             handleDigits = calculateHandleDigits(model);
             measureUtilDOM.innerHTML = '<div>x</div>';
             var measuredInnerDims = { width: measureUtil.width(), height: measureUtil.height() };
@@ -466,18 +505,21 @@
             var handleWidth = $(measureUtilDOM.firstChild).width();
             handleStyle.height = rowHeight + 'px';
             handleStyle.width = handleWidth + 'px';
+            cellStyle.height = rowHeight + 'px';
 
-            // These variables are used during column initialization
+            // These variables are available to the rendering function
+            var contextVariables = {
+                renderSpecial: function(specialRow) {
+                    return "<div class='blist-td blist-td-header'>" + specialRow.title + "</div>";
+                }
+            };
+
+            // Create default column rendering
+            var columnParts = [];
             var pos = handleOuterWidth;
-            var renderFnParts = [
-                '(function(html, index, row) { html.push("<div class=\'blist-tr" + (index % 2 ? " blist-tr-even" : "") + "\' style=\'top: " + (index * ' + rowOffset + ') + "px\'><div class=\'blist-table-handle ' + handleClass + '\'>" + (index + 1) + "</div>"'
-            ]
-
-            // Initialize each column
-            var contextVariables = {};
             for (i = 0; i < columns.length; i++) {
                 // Initialize the column's style
-                col = columns[i];
+                var col = columns[i];
                 col.left = pos;
                 colStyles[i].width = columns[i].width + 'px';
                 colStyles[i].height = rowHeight + 'px';
@@ -485,31 +527,42 @@
 
                 // Add rendering information to the rendering function
                 var type = blist.data.types[col.type] || blist.data.types.text;
-                var renderer = type.renderGen("row[" + col.dataIndex + "]", col, contextVariables);
-                renderFnParts.push(
+                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]", col, contextVariables);
+                columnParts.push(
                     "\"<div class='blist-td " + colClasses[i] + "'>\", " + renderer + ", \"</div>\""
                 )
             }
 
-            // Compute the inside width.  This is the width of all cells or the width of the scrolling container,
-            // whichever is greater
-            var rowWidth = pos;
-            //if (rowWidth < scrolls.width())
-            //    rowWidth = scrolls.width();
-
             // Create the rendering function.  We precompile this for speed so we can avoid tight loops, function
             // calls, etc.
-            renderFnParts.push('"</div>") })')
-            renderFn = renderFnParts.join(',');
-            renderFn = blist.data.types.compile(renderFn, contextVariables);
+            var renderFnSource =
+                '(function(html, index, row) {' +
+                    'html.push(' +
+                        '"<div id=\'' + id + '-r", index, "\' class=\'blist-tr", (index % 2 ? " blist-tr-even" : ""), "\' style=\'top: ", (index * ' + rowOffset + '), "px\'>' +
+                        '<div class=\'blist-table-handle ' + handleClass + '\'>", (index + 1), "</div>"' +
+                    ');' +
+                    'if (row._special) ' +
+                        'html.push(renderSpecial(row)); ' +
+                    'else ' +
+                        'html.push(' + columnParts.join(',') + '); ' +
+                    'html.push("</div>");' +
+                '})';
+            rowRenderFn = blist.data.types.compile(renderFnSource, contextVariables);
 
             // Set the scrolling area width
-            //rowStyle.width = rowWidth + 'px';
-            header.width(rowWidth);
-            inside.width(rowWidth);
+            header.width(pos);
+            inside.width(pos);
 
-            // Set the title
-            nameLabel.html(model.title());
+            // Configure the group header style
+            groupHeaderStyle.left = handleOuterWidth + 'px';
+            groupHeaderStyle.width = Math.max(0,
+                (pos - handleOuterWidth - paddingX)) + 'px';
+
+            // Set the title of the table
+            if ($nameLabel)
+            {
+                $nameLabel.html(model.title());
+            }
         }
         
         /**
@@ -521,12 +574,14 @@
             ];
             for (var i = 0; i < columns.length; i++) {
                 var col = columns[i];
+                var cls = col.cls ? ' ' + col.cls : '';
                 html.push(
                     '<div class="blist-th ',
                     colClasses[i],
-                    '">',
-                    escape(col.name),
-                    '</div>'
+                    cls,
+                    '"><span class="blist-th-name">',
+                    col.name == null ? '' : escape(col.name),
+                    '</span></div>'
                 );
             }
             header.html(html.join(''));
@@ -608,7 +663,27 @@
 
         /*** ROWS ***/
 
-        var firstRenderedRow;
+        var renderedRows = {};
+
+        var appendRows = function(html) {
+            // These functions only exist for profiling purposes.  We call this relatively infrequently so it's OK to
+            // leave these in for production purposes.
+            var appendRows_render = function() {
+                appendUtilDOM.innerHTML = html;
+            };
+            var appendRows_append = function() {
+                while (appendUtilDOM.firstChild) {
+                    var row = appendUtilDOM.firstChild;
+                    var rowID = row.id.substring(id.length + 2); // + 2 for "-r" suffix prior to row ID
+                    renderedRows[rowID] = row;
+                    insideDOM.appendChild(row);
+                }
+            };
+
+            // Call the append functions
+            appendRows_render();
+            appendRows_append();
+        }
 
         /**
          * Render all rows that should be visible but are not yet rendered.  Removes invisible rows.
@@ -620,33 +695,12 @@
             var first = Math.floor(top / rowOffset);
 
             // Compute the number of (possibly partially) visible rows
-            var count = Math.ceil((top - (first * rowOffset) + scrolls.height()) / rowOffset);
+            var count = Math.ceil((top - (first * rowOffset) + scrolls.height()) / rowOffset) + 1;
 
-            // Remove the rows that we will destroy (after rendering the new rows, for visual perf.)
-            var renderedRows = inside.children('.blist-tr');
-            if (firstRenderedRow != null) {
-                var delta = firstRenderedRow - first;
-                renderedRows.sort(function(row1, row2) {
-                    return row1.firstChild.innerHTML - row2.firstChild.innerHTML;
-                });
-                if (delta > 0) {
-                    var spliceFrom = renderedRows.length - delta;
-                    if (spliceFrom < 0)
-                        spliceFrom = 0;
-                    destroy = renderedRows.splice(spliceFrom, renderedRows.length);
-                    var start = first;
-                    var stop = first + destroy.length;
-                } else if (delta < 0) {
-                    var destroy = renderedRows.splice(0, -delta);
-                    start = first + renderedRows.length;
-                    stop = first + count;
-                }
-            } else {
-                start = first;
-                stop = first + count;
-            }
-
-            // Safety checks in case above are buggy
+            // Determine the range of rows we need to render, with safety checks to be sure we don't attempt the
+            // impossible
+            var start = first;
+            var stop = start + count;
             var rows = model.rows();
             if (start < 0)
                 start = 0;
@@ -657,23 +711,30 @@
                 stop = 0;
 
             // Render the rows that are newly visible
+            var unusedRows = $.extend({}, renderedRows);
             var html = [];
-            for (var i = start; i < stop; i++)
-                renderFn(html, i, rows[i]);
-            appendInside(html.join(''));
+            for (var i = start; i < stop; i++) {
+                if (unusedRows[i])
+                    // Keep the existing row
+                    delete unusedRows[i];
+                else {
+                    // Add a new row
+                    rowRenderFn(html, i, rows[i]);
+                }
+            }
+            appendRows(html.join(''));
 
             // Destroy the rows that are no longer visible
-            if (destroy)
-                $(destroy).each(function() {
-                    this.parentNode.removeChild(this);
-                });
+            for (var unusedID in unusedRows) {
+                var row = unusedRows[unusedID];
+                row.parentNode.removeChild(row);
+                delete renderedRows[unusedID];
+            }
 
             scrolls.unbind("scroll", onScroll);
             scrolls.unbind("scroll", renderRows);
             scrolls.scroll(onScroll);
             scrolls.scroll(renderRows);
-
-            firstRenderedRow = first;
         }
 
         /**
@@ -688,7 +749,7 @@
             inside.height(rowOffset * model.rows().length);
 
             inside.empty();
-            firstRenderedRow = null;
+            renderedRows = {};
             
             renderRows();
         }
@@ -709,11 +770,21 @@
         });
         $(this).bind('after_load', function() {
             outside.removeClass('blist-loading');
-        })
+        });
 
         // Install the model
         var model = $(this).blistModel(options.model);
+
+
+        /*** STARTUP ***/
+
+        updateLayout();
     }
+
+    var blistTableDefaults = {
+        manualResize: false,
+        showTitle: true
+    };
 
     $.fn.extend({
         /**
@@ -722,7 +793,8 @@
         blistTable: function(options) {
             // Create the table
             return this.each(function() {
-                makeTable.apply(this, [ options || {} ]);
+                makeTable.apply(this,
+                    [ $.extend({}, blistTableDefaults, options) ]);
             });
         }
     });

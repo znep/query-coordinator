@@ -235,6 +235,11 @@ body#lensBody
     background-position: 0 -40px;
 }
 
+#lensBody #editLink
+{
+    font-weight: bold;
+}
+
 #lensBody #undoLink, #lensBody #redoLink
 {
     line-height: 100px;
@@ -976,3 +981,27 @@ body#lensBody
     background-image: none;
 }
 
+
+/* SWF/Non-SWF */
+#lensBody.readMode .swfItem
+{
+    display: none;
+}
+
+#lensBody.editMode .readItem
+{
+    display: none;
+}
+
+#lensBody.readMode #infoPane .sharingSummary a
+{
+    cursor: auto;
+    font-style: normal;
+    text-decoration: none;
+}
+
+/* Grid styling */
+#lensBody #readGrid
+{
+    height: 100%;
+}

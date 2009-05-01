@@ -1,10 +1,12 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blist-grid-screen" %>
-  <%= javascript_include_tag "util/swfobject" %>
+  <%= stylesheet_link_tag 'table', "blist-grid-screen",
+    :cache => "cache/blists_show_all" %>
   <title><%= t(:page_title) %></title>
 <% end %>
 
 <div id='overlay'></div>
+<%- is_owner = current_user && @view.owner.id == current_user.id -%>
+<%- can_edit = @view.can_edit(current_user ? current_user.id : '') -%>
 
 <div class="scrollContentColumn">
   <div id='lensContainer' class='mainContent tableView'>
@@ -21,7 +23,12 @@
           </a>
         </div>
       </li>
-      <li class='newViewLink'><a href='#newView' title='New View'>New View</a></li>
+      <%- if can_edit -%>
+      <li class='swfItem newViewLink'>
+        <a href='#newView' title='New View'>New View</a>
+      </li>
+      <%- end -%>
+
       <li class='prevTabLink'><a href='#prev_tab' title='Previous View'>
         Previous View
       </a></li>
@@ -45,19 +52,31 @@
             <li><a href='#main_menu' id='mainMenuLink' class='dropdownLink'>
               <div class='outerWrapper'><div class='midWrapper'>
                   <span class='innerWrapper'>Menu</span></div></div></a>
-              <%= render(:partial => "main_menu") %>
+            <%= render(:partial => "main_menu",
+            :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
 
+            <%- if can_edit -%>
+            <li class='readItem separator'><a href='#editGrid' id='editLink'>
+              Edit
+            </a></li>
+            <%- end -%>
+
+            <%- if can_edit -%>
             <%# Undo/redo %>
-            <li class='separator'><a href='#Undo' id='undoLink'
+            <li class='swfItem separator'><a href='#Undo' id='undoLink'
               class='linkIcon flashAction' title='Undo'>Undo</a></li>
-            <li><a href='#Redo' id='redoLink'
+            <li class='swfItem'><a href='#Redo' id='redoLink'
               class='linkIcon flashAction' title='Redo'>Redo</a></li>
+            <%- end -%>
 
             <%# Table view options %>
-            <li class='separator tableOption'>
+            <%- if is_owner -%>
+            <li class='swfItem separator tableOption'>
               <a class='addColumnsLink linkIcon' href='#'>Add Column</a></li>
-            <li class='separator tableOption'>
+            <%- end -%>
+            <%- if can_edit -%>
+            <li class='swfItem separator tableOption'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
                     <div class='innerWrapper'>
@@ -70,15 +89,21 @@
               {'text' => 'Show or Hide Columns...', 'class' => 'showHide',
                 'href' => '#'}]}) %>
             </li>
+            <%- end -%>
 
             <%# Page view options %>
-            <li class='separator pageOption'><a class='addColumnsLink linkIcon'
-              href='#'>Add Field</a></li>
-            <li class='pageOption'><a id='newPageLink'
+            <%- if is_owner -%>
+            <li class='swfItem separator pageOption'>
+              <a class='addColumnsLink linkIcon' href='#'>Add Field</a>
+            </li>
+            <%- end -%>
+            <%- if can_edit -%>
+            <li class='swfItem pageOption'><a id='newPageLink'
               class='linkIcon flashAction' href='#NewPage'>New Page</a></li>
-            <li class='separator pageOption'><a id='defaultLayoutLink'
+            <li class='swfItem separator pageOption'><a id='defaultLayoutLink'
               class='linkIcon flashAction'
               href='#DefaultLayout'>Default Layout</a></li>
+            <%- end -%>
 
             <%# Export/access options %>
             <li class='separator'>
@@ -89,13 +114,17 @@
             </li>
 
             <%# Display menu %>
-            <li class='separator'><a href='#' id='displayLink' class='dropdownLink'>
-              <div class='outerWrapper'><div class='midWrapper'>
-                  <span class='innerWrapper'>Display As</span></div></div></a>
-              <%= menu_tag({'id' => 'displayMenu', 'option_menu' => true, 'items' => [
+            <%- if can_edit -%>
+            <li class='swfItem separator'>
+              <a href='#' id='displayLink' class='dropdownLink'>
+                <div class='outerWrapper'><div class='midWrapper'>
+                    <span class='innerWrapper'>Display As</span></div></div></a>
+              <%= menu_tag({'id' => 'displayMenu', 'option_menu' => true,
+              'items' => [
               {'text' => 'A table', 'class' => 'table checked', 'href' => '#'},
               {'text' => 'A page', 'class' => 'page', 'href' => '#'}]}) %>
             </li>
+            <%- end -%>
           </ul>
 
           <form class='search' action='#'>
@@ -108,6 +137,7 @@
           <%- end -%>
         </div>
 
+        <%- if is_owner -%>
         <div id='addColumnsMenu' class='fixedMenu'>
           <div class='outerWrapper'>
             <ul class='innerWrapper clearfix'>
@@ -172,20 +202,16 @@
             <a href='#Close_Add_Columns' title='Close' class='close'>Close</a>
           </div>
         </div>
+        <%- end -%>
 
         <div id='pageViewHeader'><div class='innerWrapper'></div></div>
 
         <div id='outerSwfWrapper' class='scrollContent'>
+          <div id='readGrid' class='readItem'></div>
           <%- if current_user -%>
-          <div id='swfWrapper'>
+          <div id='swfWrapper' class='swfItem'>
             <%= render(:partial => "shared/swf") %>
           </div>
-          <%- else -%>
-          <p>
-            Please <%= link_to('sign in',
-              login_url(:referer_redirect => true)) %>
-            to view or edit this blist
-          </p>
           <%- end -%>
         </div>
 
@@ -209,7 +235,8 @@
     <div id="mainColumnContent" class="column">
       <div id='infoPane'>
       <%- if !@view.nil? -%>
-        <%= render(:partial => "info_for_single", :locals => { :view => @view, :page_single => true }) %>
+      <%= render(:partial => "info_for_single",
+      :locals => { :view => @view, :page_single => true }) %>
       <%- end -%>
       </div>
     </div>
@@ -222,16 +249,17 @@
     blist.blistGrid.referer = "<%= request.referer %>";
     <%- if !@view.nil? -%>
     blist.blistGrid.blistId = "<%= @view.blistId %>";
-    <%- if @is_child_view -%>
     blist.blistGrid.viewId = "<%= @view.id %>";
+    <%- if @is_child_view -%>
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
     <%- end -%>
     <%- end -%>
   </script>
   <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min",
-    "plugins/jquery.json", "util/extMouseWheel", "util/flash-interface",
-    "util/navigation", "widgets/dropdown-menu", "widgets/selectable-list",
-    "widgets/pagination", "widgets/info-pane-comments", "widgets/scrollable",
-    "screens/blist-grid-screen", "screens/info-pane",
-    :cache => "cache/blists_show_all" %>
+    "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
+    "util/extMouseWheel", "util/flash-interface", "util/navigation",
+    "util/swfobject", "data/types", "data/model", "data/table",
+    "widgets/dropdown-menu", "widgets/selectable-list", "widgets/pagination",
+    "widgets/info-pane-comments", "widgets/scrollable", "screens/info-pane",
+    "screens/blist-grid-screen", :cache => "cache/blists_show_all" %>
 <% end %>

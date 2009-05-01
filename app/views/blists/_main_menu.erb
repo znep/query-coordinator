@@ -3,17 +3,18 @@
     <dl><dt><a href='#menublist'>blist</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Print this blist...', 'class' => 'print',
-        'href' => '#print'},
+        'href' => '#print', 'swf_item' => true},
         {'text' => 'Export this blist', 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
         {'text' => 'As CSV', 'href' => "/views/#{@view.id}/rows.csv"},
-        {'text' => 'As PDF', 'href' => '#print'}]}},
+        {'text' => 'As PDF', 'href' => '#print', 'swf_item' => true}]}},
         {'text' => 'Email this blist...', 'class' => 'email',
-        'href' => '#email'},
-        {'text' => 'Copy this blist', 'class' => 'copy', 'href' => '#copy_blist'},
-        {'separator' => true},
+        'href' => '#email', 'swf_item' => true},
+        {'text' => 'Copy this blist', 'class' => 'copy', 'href' => '#copy_blist',
+        'swf_item' => true},
+        {'separator' => true, 'swf_item' => true},
         {'text' => 'Create New blist...', 'class' => 'create',
-        'href' => '#new_blist' },
+        'href' => '#new_blist', 'swf_item' => true },
         # Submenu for Create blist when we support different types
 #        , 'submenu' => {'items' => [
 #        {'text' => 'Start As a Table', 'class' => 'table',
@@ -24,18 +25,22 @@
 #        'href' => '#'},
 #        {'text' => 'Start New Form', 'class' => 'form',
 #        'href' => '#'}]}
-        {'text' => 'Upload...', 'class' => 'import', 'href' => '#import'},
+        {'text' => 'Upload...', 'class' => 'import', 'href' => '#import',
+        'swf_item' => true},
         {'text' => 'Find a Template', 'class' => 'findTemplate',
-        'href' => '#discover'},
+        'href' => discover_url},
         {'separator' => true},
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
         'submenu' => recent_blists_menu(@view, 5)},
-        {'separator' => true},
+        {'separator' => true, 'owner_item' => true, 'swf_item' => true},
         {'text' => 'Edit blist permissions...',
-        'class' => 'editPermissions', 'href' => '#permissions'}]}) %>
+        'class' => 'editPermissions', 'href' => '#permissions',
+        'owner_item' => true, 'swf_item' => true}
+        ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
-  <li class='edit'>
+  <%- if can_edit -%>
+  <li class='edit swfItem'>
     <dl><dt><a href='#menuEdit'>Edit</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
@@ -60,14 +65,17 @@
         # There are no row options
 #        {'text' => 'Edit Row Options', 'class' => 'rowOptions',
 #        'href' => '#'}
-        ]}) %>
+        ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
-  <li class='data'>
+  <%- end -%>
+  <%- if can_edit -%>
+  <li class='data swfItem'>
     <dl><dt><a href='#menuData'>Data</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Insert a Column', 'class' => 'insertColumn',
-        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+        'href' => '#', 'owner_item' => true,
+        'submenu' => {'class' => 'noicon', 'items' => [
         {'text' => 'At the Far Right', 'href' => '#addColumn_last'},
         {'text' => 'At the Far Left', 'href' => '#addColumn_first'}]}},
         # Not supported yet
@@ -75,7 +83,7 @@
 #        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
 #        {'text' => 'At the Top', 'href' => '#'},
 #        {'text' => 'At the Bottom', 'href' => '#'}]}},
-        {'separator' => true},
+        {'separator' => true, 'owner_item' => true},
         {'text' => 'Manage Pick Lists...', 'class' => 'picklists',
         'href' => '#picklistBrowser'},
         {'separator' => true},
@@ -99,9 +107,10 @@
                   'submenu' => method(:column_aggregate_menu),
                   'column_test' => proc {|c|
                   c.dataType.possible_aggregates.length > 1}})}
-        ]}) %>
+        ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
+  <%- end -%>
   <li class='info'>
     <dl><dt><a href='#menuInfo'>Info</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
@@ -118,10 +127,11 @@
         'href' => '#infoPane_tabPublishing'}
 #        {'text' => 'Show Activity', 'class' => 'activity',
 #        'href' => '#infoPane_tabActivity'}
-        ]}) %>
+        ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
-  <li class='publish'>
+  <%- if can_edit -%>
+  <li class='publish swfItem'>
     <dl><dt><a href='#menuPublish'>Publish</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'section_title' => 'Embed blists on the Web'},
@@ -134,9 +144,10 @@
         # Not supported
 #        {'text' => 'As a Search Widget', 'class' => 'search',
 #        'href' => '#'}
-        ]}) %>
+        ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
+  <%- end -%>
   <li class='footer'><div class='outerWrapper'>
     <div class='innerWrapper'><span class='colorWrapper'></span>
   </div></div></li>

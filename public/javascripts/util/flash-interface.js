@@ -6,7 +6,7 @@ blist.util.flashInterface.popupClosedHandlers = {};
 
 blist.util.flashInterface.swf = function ()
 {
-    return $('#swfContent')[0];
+    return $('object#swfContent')[0];
 };
 
 blist.util.flashInterface.doAction = function (action)
@@ -16,7 +16,10 @@ blist.util.flashInterface.doAction = function (action)
 
 blist.util.flashInterface.lensSearch = function (searchText)
 {
-    flashIntNS.swf().lensSearch(searchText);
+    if (flashIntNS.swf() != undefined)
+    {
+        flashIntNS.swf().lensSearch(searchText);
+    }
 };
 
 blist.util.flashInterface.discoverSearch = function (searchText)
@@ -26,8 +29,11 @@ blist.util.flashInterface.discoverSearch = function (searchText)
 
 blist.util.flashInterface.showPopup = function (popup)
 {
-    flashIntNS.swf().showPopup(popup);
-    flashIntNS.swf().focus();
+    if (flashIntNS.swf() != undefined)
+    {
+        flashIntNS.swf().showPopup(popup);
+        flashIntNS.swf().focus();
+    }
 };
 
 blist.util.flashInterface.addColumn = function (datatype, index)

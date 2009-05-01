@@ -146,6 +146,16 @@ class View < Model
     end
   end
 
+  def can_edit(user_id)
+    data['rights'].include?('write') ||
+      data['rights'].include?('add') ||
+      data['rights'].include?('delete')
+  end
+
+  def can_read(user_id)
+    data['rights'].include?('read')
+  end
+
   def contributor_users
     grants.reject {|g| g.flag?('public') || g.type.downcase == 'read'}.
       collect do |g|

@@ -28,20 +28,25 @@ module ApplicationHelper
   #   option_menu:
   #     If set to true, renders an option menu (adds a class and different styling)
 
-  def menu_tag(options = {})
+  def menu_tag(options = {}, is_owner = false, can_edit = false)
     items = options['items']
 
     ret = StringIO.new
-    ret << "<ul id='" << options['id'].to_s << "' class='" << options['class'].to_s <<
-      (options['bare_menu'] ? '' : ' menu') <<
-      (options['option_menu'] ? " optionMenu" : '') << "'>"
+    ret << "<ul id='" << options['id'].to_s << "' class='" <<
+    options['class'].to_s << (options['bare_menu'] ? '' : ' menu') <<
+    (options['option_menu'] ? " optionMenu" : '') << "'>"
 
     items.each do |i|
+      if (i['owner_item'] && !is_owner) || (i['swf_item'] && !can_edit)
+        next
+      end
+
       if i['title'].nil?
         i['title'] = i['text']
       end
       if i['separator']
-        ret << "<li class='separator'></li>"
+        ret << "<li class='separator" << (i['swf_item'] ? ' swfItem' : '') <<
+        "'></li>"
       elsif i['section_title']
         ret << "<li class='sectionTitle #{i['class']}'>#{i['section_title']}</li>"
       elsif i['button']
@@ -51,11 +56,18 @@ module ApplicationHelper
           "<span class='innerWrapper'>" <<
           "#{i['text']}</span></div></div></a></li>"
       else
+        if i.has_key?('submenu') && (i['submenu'].nil? ||
+                                     i['submenu']['items'].nil? ||
+                                     i['submenu']['items'].length < 1)
+          next
+        end
+
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
-          "'><a title='#{i['title']}' href='#{i['href']}'>" <<
+          (i['swf_item'] ? ' swfItem' : '') << "'><a title='#{i['title']}' " <<
+          "href='#{i['href']}'>" <<
           "<span class='highlight'>#{i['text']}</span></a>"
         if i['submenu']
-          ret << menu_tag(i['submenu'])
+          ret << menu_tag(i['submenu'], is_owner, can_edit)
         end
         ret << "</li>"
       end
@@ -64,7 +76,7 @@ module ApplicationHelper
     if !options['bare_menu']
       ret << "<li class='footer'><div class='outerWrapper'>" <<
         "<div class='innerWrapper'>"
-      ret << options['option_menu'] ? "<span class='colorWrapper'></span>" : ''
+      ret << (options['option_menu'] ? "<span class='colorWrapper'></span>" : '')
       ret << "</div></div></li>"
     end
     ret << "</ul>"

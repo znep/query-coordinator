@@ -54,7 +54,7 @@ module BlistsHelper
     rating = comment.viewRating
     if rating > 0
       "<div class='rating #{get_rating_class(rating)}' " +
-        "title='#{rating}'>#{rating}</div>"
+        "title='#{rating}'><span>#{rating}</span></div>"
     else
       ""
     end

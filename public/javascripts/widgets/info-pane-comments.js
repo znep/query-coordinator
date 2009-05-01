@@ -133,8 +133,9 @@
         {
             rating = parseInt(rating) || 0;
             $ratingUI.removeClass(ratingClass(parseInt($ratingUI.text()) || 0))
-                .attr('title', rating).text(rating)
-                .addClass(ratingClass(rating));
+                .attr('title', rating)
+                .addClass(ratingClass(rating))
+                .find("span").text(rating);
         };
 
         function mousedOverRating($ratingUI, e)

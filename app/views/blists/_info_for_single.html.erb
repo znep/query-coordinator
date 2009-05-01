@@ -7,6 +7,7 @@
   expander_class = page_single ? "expander expanded" : "expander" 
   div_shown = page_single ? "style='display:block;'" : ""
 -%>
+<%- is_owner = current_user && view.owner.id == current_user.id -%>
 <div class="header">
   <ul class="summaryTabs clearfix">
     <li id="tabSummary" class="summary active">
@@ -64,70 +65,84 @@
 <%- if isDuplicateEnabled -%>
       <li><a href="#duplicate">Duplicate</a></li>
 <%- end -%>
-      <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
+      <%- if is_owner -%>
+      <li class='swfItem'><a href="<%= "#{view.href}?popup=SharingEditor" %>"
         class="showFlashPopup">Share</a></li>
+      <%- end -%>
     </ul>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
 
-      <dl class="summaryList actionList">
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
         <dt>
           Description
         </dt>
         <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.description) %></span>
-            <% form_tag(view.href) do %>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
               <%= hidden_field_tag("fieldType", "description") %>
               <%= text_field_tag("view[description]", h(view.description)) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
               <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
-            <% end %>
+            <%- end -%>
+            <%- end -%>
           </div>
+          <%- if is_owner -%>
           <div class="itemActions">
             <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
           </div>
+          <%- end -%>
         </dd>
       </dl>
 
-      <dl class="summaryList actionList">
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
         <dt>
           Tags
         </dt>
         <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.tag_display_string) %></span>
-            <% form_tag(view.href) do %>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
               <%= hidden_field_tag("fieldType", "tags") %>
               <%= text_field_tag("view[tags]", h(view.tag_display_string)) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
               <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
-            <% end %>
+            <%- end -%>
+            <%- end -%>
           </div>
+          <%- if is_owner -%>
           <div class="itemActions">
             <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
           </div>
+          <%- end -%>
         </dd>
       </dl>
 
-      <dl class="summaryList actionList">
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
         <dt>
           Category
         </dt>
         <dd class="editItem">
           <div class="itemContent">
             <span><%= h(view.category) %></span>
-            <% form_tag(view.href) do %>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
               <%= hidden_field_tag("fieldType", "category") %>
               <%= select_tag("view[category]", category_select_options(h(view.category))) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
               <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
-            <% end %>
+            <%- end -%>
+            <%- end -%>
           </div>
+          <%- if is_owner -%>
           <div class="itemActions">
             <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
           </div>
+          <%- end -%>
         </dd>
       </dl>
 
@@ -231,7 +246,7 @@
         </dd>
       </dl>
 
-      <dl class="summaryList actionList">
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
         <dt>
           Permissions
         </dt>
@@ -239,10 +254,12 @@
           <div class="itemContent">
             <span><%= view.is_public? ? 'Public' : 'Private' %></span>
           </div>
-          <div class="itemActions">
+          <%- if is_owner -%>
+          <div class="itemActions swfItem">
             <a href='<%= "#{view.href}?popup=PermissionsDialog" %>'
               class="action showFlashPopup"><span>Edit</span></a>
           </div>
+          <%- end -%>
         </dd>
       </dl>
 
@@ -286,7 +303,7 @@
     <h2 class="panelHeader">
       <%= pluralize(view.filters.length, "Filtered View") %>
     </h2>
-    <ul class="headerActions actionButtons">
+    <ul class="headerActions actionButtons swfItem">
       <li><%= link_to("Create", view.href + "?popup=SaveLens", :class => "arrowButton") %></li>
     </ul>
   </div>
@@ -362,7 +379,7 @@
         <dd class='selfRating'>
         <%- my_rating = 0 -%>
         <div class='rating <%= get_rating_class(my_rating) %>'
-          title='<%= my_rating %>'><%= my_rating %></div>
+          title='<%= my_rating %>'><span><%= my_rating %></span></div>
         <%= hidden_field_tag("comment[viewRating]", my_rating) %>
         </dd>
       </dl>
@@ -420,10 +437,12 @@
     <h2 class="panelHeader <%= get_permissions_icon_class_for_view(view) %>">
       <%= view.is_public? ? "Public" : "Private" %>
     </h2>
-    <ul class="headerActions actionButtons">
+    <%- if is_owner -%>
+    <ul class="headerActions actionButtons swfItem">
       <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
         class="arrowButton showFlashPopup" title="Share">Share</a></li>
     </ul>
+    <%- end -%>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
@@ -431,8 +450,12 @@
         <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
           "privateShared" : "private") %>">
         This <%= view.is_blist? ? t(:blist_name) : "filter" %> is
+        <%- if is_owner -%>
         <a href='<%= "#{view.href}?popup=PermissionsDialog" %>'
           class='showFlashPopup'><%= view.is_public? ? "Public" : "Private" %></a>
+        <%- else -%>
+        <span><%= view.is_public? ? "Public" : "Private" %></span>
+        <%- end -%>
         <%= view.is_shared? ? ' and shared with the following ' +
         (shares.length == 1 ? 'contact' : 'contact'.pluralize) + ':' : '' %>
         </p>
@@ -475,7 +498,9 @@
               <td class="opened"><div>01/09/2009</div></td>
               %>
               <td class="actionContainer"><div>
+<%- if isActivityEnabled -%>
                 <a href="#view" class="action"><span>View Activity</span></a>
+<%- end -%>
               </div></td>
             </tr>
             <%- end -%>
@@ -494,7 +519,7 @@
     <%# Not supported
     <h2 class="panelHeader">3212 total views</h2>
     %>
-    <ul class="headerActions actionButtons">
+    <ul class="headerActions actionButtons swfItem">
       <li><a href="<%= "#{view.href}?popup=PublishDialog" %>"
         class="arrowButton showFlashPopup">Publish a Widget</a></li>
     </ul>
@@ -503,12 +528,13 @@
     <div class="infoContent"<%= div_shown %>>
       <div class="publishContent">
         <p>
-          You can publish your <%= t(:blists_name) %> and filtered views on your blog, 
-          websites and more by embedding a widget.  Simply copy and paste 
-          the following HTML into your site.
+        You can publish this <%= t(:blist_name).downcase %> and
+        filtered views on your blog,
+        websites and more by embedding a widget.  Simply copy and paste
+        the following HTML into your site.
         </p>
         <div class="publishCode">
-          <p>Embed this <%= t(:blist_name) %> as a table:</p>
+          <p>Embed this <%= t(:blist_name).downcase %> as a table:</p>
           <div class="copyCode">
             <%= text_area_tag("publishCode", get_publish_embed_code_for_view(view)) %>
           </div>

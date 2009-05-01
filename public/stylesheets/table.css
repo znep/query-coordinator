@@ -57,7 +57,7 @@ input.blist-table-filter {
     padding: 2px 0 0 0;
     background: white;
     font-size: 14px;
-    height: 23px;
+    height: 19px;
     width: 160px;
     color: #333333;
 }
@@ -138,6 +138,10 @@ input.blist-table-filter {
     white-space: nowrap;
 }
 
+.blist-td-header {
+    font-weight: bold;
+}
+
 div.blist-table-expander {
     position: absolute;
     z-index: 10;
@@ -211,11 +215,6 @@ div.blist-td p:last-child {
     margin-bottom: 0;
 }
 
-div.blist-table-checked {
-    height: 15px;
-    background: url(images/content/table/check.png) center no-repeat;
-}
-
 img.blist-table-option-icon {
     width: 16px;
     height: 16px;
@@ -234,4 +233,16 @@ img.blist-table-option-icon {
 
 .blist-table a:hover {
     text-decoration: underline;
+}
+
+div.blist-checkbox {
+    background: no-repeat scroll center center;
+}
+
+div.blist-star-on {
+    background-image: url(images/content/table/icon_star_fill.png);
+}
+
+div.blist-check-on {
+    background: url(images/content/table/check.png);
 }

@@ -1,8 +1,9 @@
 <% content_for :head do %>
+  <%= stylesheet_link_tag "error-screen" %>
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<div class='dialogBox'>
+<div id='errorBox' class='dialogBox'>
   <div class='header'>
     <h1>blist</h1>
   </div>

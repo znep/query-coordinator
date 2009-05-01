@@ -43,7 +43,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :community, :member => { :filter => :get }
   map.resource :home
   map.resource :account
-  map.resource :profile
+  map.resources :profile
 
   map.resources :blists,
     :collection => { :detail => :get },

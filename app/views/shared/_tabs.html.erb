@@ -9,6 +9,6 @@
     <%= link_to 'Contacts', contacts_url %>
   </div></li>
   <li class='profile'><div class='wrapper'>
-    <%= link_to "Profile", profile_url %>
+    <%= link_to "Profile", profile_url(current_user.id) %>
   </div></li>
 </ul>

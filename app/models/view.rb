@@ -19,6 +19,11 @@ class View < Model
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     get_request(path)
   end
+  
+  def self.find_for_user(id)
+    path = "/users/#{id}/views.json"
+    get_request(path)
+  end
 
   def self.create_favorite(id)
     path = "/favorite_views?" + {"id" => id}.to_param

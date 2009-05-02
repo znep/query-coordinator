@@ -28,6 +28,7 @@
     font-size: 1.6em;
     height: auto;
     margin-bottom: .312em; /* 5px */
+    width: auto;
 }
 
 
@@ -128,3 +129,5 @@ ul.myNetworkList li span
 .memberListItem .memberData .memberActions.actionButtons li { background-position: 0 -63px; }
 .memberListItem .memberData .memberActions.actionButtons li a { background-position: right -84px; }
 .memberListItem .memberData .memberActions.actionButtons li a.arrowButton { background-position: right -105px; }
+
+.memberPager { margin-top: 1em; }

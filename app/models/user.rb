@@ -3,6 +3,11 @@ class User < Model
   attr_accessor :session_token
 
   non_serializable :displayName
+  
+  def self.find_profile(id)
+    path = "/users/#{id}.json"
+    get_request(path)
+  end
 
   # Needed for multiuser
   def multiuser_authentication_token(timestamp)
@@ -66,7 +71,7 @@ class User < Model
   end
 
   def public_blists
-    View.find().reject {|v| !v.is_public? || v.owner.id != id}
+    View.find_for_user(self.id)
   end
 
   @@states = {

@@ -8,7 +8,10 @@
     var EXPAND_DELAY = 100;
 
     // Milliseconds in which expansion should occur
-    var EXPAND_DURATION = 100;
+    var EXPAND_DURATION = 200;
+
+    // Millisecond delay before loading missing rows
+    var MISSING_ROW_LOAD_DELAY = 250;
 
     var nextTableID = 1;
 
@@ -28,6 +31,8 @@
             id = "blist-t" + id;
             this.id = id;
         }
+
+        var $this = $(this);
 
         
         /*** CLOSURE UTILITY FUNCTIONS ***/
@@ -63,11 +68,7 @@
 
 
         /*** CELL HOVER EXPANSION ***/
-
-        // Handle mouse movement within the inside (cell) area
-        var hotCell;
-        var hotRow;
-        var hotCellTimer;
+        
         var hotExpander;
 
         var hideHotExpander = function() {
@@ -76,6 +77,121 @@
                 hotExpander.style.left = '-10000px';
             }
         }
+
+        var expandHotCell = function() {
+            if (!hotCellTimer)
+                return;
+            hotCellTimer = null;
+
+            // Obtain an expanding node in utility (off-screen) mode
+            if (!hotExpander) {
+                // Create the expanding element
+                hotExpander = document.createElement('div');
+                var $hotExpander = $(hotExpander);
+                $hotExpander.addClass('blist-table-expander');
+                $hotExpander.addClass('blist-table-util');
+                inside.append($hotExpander);
+            } else {
+                hideHotExpander();
+                $hotExpander = $(hotExpander);
+            }
+
+            // Clone the node
+            var wrap = hotCell.cloneNode(true);
+            var $wrap = $(wrap);
+            $wrap.width('auto').height('auto');
+            $hotExpander.width('auto').height('auto');
+            while (hotExpander.firstChild)
+                $(hotExpander.firstChild).remove();
+            $hotExpander.append(wrap);
+
+            // Compute cell padding
+            var padx = $wrap.outerWidth() - $wrap.width();
+            var pady = $wrap.outerHeight() - $wrap.height();
+
+            // Determine the cell's "natural" size
+            var rc = { width: $wrap.outerWidth() + 1, height: $wrap.outerHeight() };
+
+            // Determine if expansion is necessary.  The + 2 prevents us from expanding if the box would just be
+            // slightly larger than the containing cell.  This is a nicety except in the case of picklists where the
+            // 16px image tends to be just a tad larger than the text (currently configured at 15px).
+            var h = $(hotCell);
+            var hotWidth = h.outerWidth();
+            var hotHeight = h.outerHeight();
+            if (rc.width <= hotWidth + 2 && rc.height <= hotHeight + 2) {
+                // Expansion is not necessary
+                hideHotExpander();
+                return;
+            }
+
+            // The expander must be at least as large as the hot cell
+            if (rc.width < hotWidth)
+                rc.width = hotWidth;
+            if (rc.height < hotHeight)
+                rc.height = hotHeight;
+
+            // Determine the size to which the contents expand, constraining to predefined maximums
+            var maxWidth = Math.floor(scrolls.width() * .5);
+            if (rc.width > maxWidth) {
+                // Constrain the width and determine the height
+                $hotExpander.width(maxWidth);
+                rc.width = maxWidth;
+                rc.height = $hotExpander.height();
+            }
+            var maxHeight = Math.floor(inside.height() * .75);
+            if (rc.height > maxHeight)
+                rc.height = maxHeight;
+
+            // Locate a position for the expansion.  We prefer the expansion to align top-left with the cell but do our
+            // best to ensure the expansion remains within the viewport
+            rc.left = hotCell.offsetLeft;
+            rc.top = hotCell.parentNode.offsetTop;
+            rc.left -= 1; // assumes 1px right border
+            rc.top -= 1; // assumes 1px bottom border
+            var origOffset = { top: rc.top, left: rc.left };
+
+            // Ensure viewport is in the window horizontally
+            var viewportWidth = scrolls.width();
+            if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
+                viewportWidth -= scrollbarWidth;
+            var scrollLeft = scrolls.scrollLeft();
+            if (rc.left + rc.width > scrollLeft + viewportWidth)
+                rc.left = scrollLeft + viewportWidth - rc.width;
+            if (rc.left < scrollLeft)
+                rc.left = scrollLeft;
+
+            // Ensure viewport is in the window vertically
+            var viewportHeight = scrolls.height();
+            if (scrolls[0].scrollWidth > scrolls[0].clientWidth)
+                viewportHeight -= scrollbarWidth;
+            var scrollTop = scrolls.scrollTop();
+            if (rc.top + rc.height > scrollTop + viewportHeight)
+                rc.top = scrollTop + viewportHeight - rc.height;
+            if (rc.top < scrollTop - 1)
+                rc.top = scrollTop - 1;
+
+            // Size the content wrapper
+            $wrap.width(rc.width - padx);
+            $wrap.height(rc.height - pady);
+
+            // Position the expander
+            $hotExpander.css('top', origOffset.top + 'px');
+            $hotExpander.css('left', origOffset.left + 'px');
+            $hotExpander.width(hotWidth);
+            $hotExpander.height(hotHeight);
+            $hotExpander.removeClass('blist-table-util');
+
+            // Expand the element into position
+            $hotExpander.animate($.extend(rc, rc), EXPAND_DURATION);
+        }
+
+
+        /*** CELL EVENT HANDLING ***/
+
+        // Handle mouse movement within the inside (cell) area
+        var hotCell;
+        var hotRow;
+        var hotCellTimer;
 
         var findCell = function(event) {
             var $cell;
@@ -157,111 +273,24 @@
             }
         }
 
-        var expandHotCell = function() {
-            if (!hotCellTimer)
-                return;
-            hotCellTimer = null;
+        var onCellClick = function(event) {
+            var cell = findCell(event);
+            if (cell) {
+                // Retrieve the column
+                var index = 0;
+                for (var pos = cell.previousSibling; pos; pos = pos.previousSibling)
+                    index++;
+                index--;
+                var column = columns[index];
 
-            // Obtain an expanding node in utility (off-screen) mode
-            if (!hotExpander) {
-                // Create the expanding element
-                hotExpander = document.createElement('div');
-                var expander = $(hotExpander);
-                expander.addClass('blist-table-expander');
-                expander.addClass('blist-table-util');
-                inside.append(expander);
-            } else {
-                hideHotExpander();
-                expander = $(hotExpander);
+                // Retrieve the row
+                var row = cell.parentNode;
+                var rowID = row.id.substring(id.length + 2); // + 2 for "-r" suffix prior to row ID
+                row = model.getByID(rowID);
+
+                // Notify listeners
+                $this.trigger("cellclick", [ row, column, event ]);
             }
-
-            // Clone the node
-            var wrap = hotCell.cloneNode(true);
-            var $wrap = $(wrap);
-            $wrap.width('auto').height('auto');
-            expander.width('auto').height('auto');
-            while (hotExpander.firstChild)
-                $(hotExpander.firstChild).remove();
-            expander.append(wrap);
-
-            // Compute cell padding
-            var padx = $wrap.outerWidth() - $wrap.width();
-            var pady = $wrap.outerHeight() - $wrap.height();
-
-            // Determine the cell's "natural" size
-            var rc = { width: $wrap.outerWidth() + 1, height: $wrap.outerHeight() };
-
-            // Determine if expansion is necessary.  The + 2 prevents us from expanding if the box would just be
-            // slightly larger than the containing cell.  This is a nicety except in the case of picklists where the
-            // 16px image tends to be just a tad larger than the text (currently configured at 15px).
-            var h = $(hotCell);
-            var hotWidth = h.outerWidth();
-            var hotHeight = h.outerHeight();
-            if (rc.width <= hotWidth + 2 && rc.height <= hotHeight + 2) {
-                // Expansion is not necessary
-                hideHotExpander();
-                return;
-            }
-
-            // The expander must be at least as large as the hot cell
-            if (rc.width < hotWidth)
-                rc.width = hotWidth;
-            if (rc.height < hotHeight)
-                rc.height = hotHeight;
-
-            // Determine the size to which the contents expand, constraining to predefined maximums
-            var maxWidth = Math.floor(scrolls.width() * .5);
-            if (rc.width > maxWidth) {
-                // Constrain the width and determine the height
-                expander.width(maxWidth);
-                rc.width = maxWidth;
-                rc.height = expander.height();
-            }
-            var maxHeight = Math.floor(inside.height() * .75);
-            if (rc.height > maxHeight)
-                rc.height = maxHeight;
-
-            // Locate a position for the expansion.  We prefer the expansion to align top-left with the cell but do our
-            // best to ensure the expansion remains within the viewport
-            rc.left = hotCell.offsetLeft;
-            rc.top = hotCell.parentNode.offsetTop;
-            rc.left -= 1; // assumes 1px right border
-            rc.top -= 1; // assumes 1px bottom border
-            var origOffset = { top: rc.top, left: rc.left };
-
-            // Ensure viewport is in the window horizontally
-            var viewportWidth = scrolls.width();
-            if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
-                viewportWidth -= scrollbarWidth;
-            var scrollLeft = scrolls.scrollLeft();
-            if (rc.left + rc.width > scrollLeft + viewportWidth)
-                rc.left = scrollLeft + viewportWidth - rc.width;
-            if (rc.left < scrollLeft)
-                rc.left = scrollLeft;
-
-            // Ensure viewport is in the window vertically
-            var viewportHeight = scrolls.height();
-            if (scrolls[0].scrollWidth > scrolls[0].clientWidth)
-                viewportHeight -= scrollbarWidth;
-            var scrollTop = scrolls.scrollTop();
-            if (rc.top + rc.height > scrollTop + viewportHeight)
-                rc.top = scrollTop + viewportHeight - rc.height;
-            if (rc.top < scrollTop - 1)
-                rc.top = scrollTop - 1;
-
-            // Size the content wrapper
-            $wrap.width(rc.width - padx);
-            $wrap.height(rc.height - pady);
-
-            // Position the expander
-            expander.css('top', origOffset.top + 'px');
-            expander.css('left', origOffset.left + 'px');
-            expander.width(hotWidth);
-            expander.height(hotHeight);
-            expander.removeClass('blist-table-util');
-
-            // Expand the element into position
-            expander.animate($.extend(rc, rc), EXPAND_DURATION);
         }
 
 
@@ -289,7 +318,7 @@
               <div class="blist-table-inside">&nbsp;</div></div>\
             <div class="blist-table-util"></div>';
         // Render container elements
-        var outside = $(this)
+        var outside = $this
             .addClass('blist-table')
             .html(headerStr);
 
@@ -325,7 +354,8 @@
         var inside = scrolls
             .find('.blist-table-inside')
             .mousemove(onCellMove)
-            .mouseout(onCellOut);
+            .mouseout(onCellOut)
+            .click(onCellClick);
         var insideDOM = inside[0];
 
         // These utility nodes are used to append rows and measure cell text, respectively
@@ -364,7 +394,7 @@
         }
         if (options.manualResize)
         {
-            $(this).bind('resize', updateLayout);
+            $this.bind('resize', updateLayout);
         }
         else
         {
@@ -528,9 +558,10 @@
                 // Add rendering information to the rendering function
                 var type = blist.data.types[col.type] || blist.data.types.text;
                 var renderer = type.renderGen("row[" + col.dataIndexExpr + "]", col, contextVariables);
+                var cls = col.cls ? ' blist-td-' + col.cls : '';
                 columnParts.push(
-                    "\"<div class='blist-td " + colClasses[i] + "'>\", " + renderer + ", \"</div>\""
-                )
+                    "\"<div class='blist-td " + colClasses[i] + cls + "'>\", " + renderer + ", \"</div>\""
+                );
             }
 
             // Create the rendering function.  We precompile this for speed so we can avoid tight loops, function
@@ -538,7 +569,7 @@
             var renderFnSource =
                 '(function(html, index, row) {' +
                     'html.push(' +
-                        '"<div id=\'' + id + '-r", index, "\' class=\'blist-tr", (index % 2 ? " blist-tr-even" : ""), "\' style=\'top: ", (index * ' + rowOffset + '), "px\'>' +
+                        '"<div id=\'' + id + '-r", (row.id || row[0]), "\' class=\'blist-tr", (index % 2 ? " blist-tr-even" : ""), "\' style=\'top: ", (index * ' + rowOffset + '), "px\'>' +
                         '<div class=\'blist-table-handle ' + handleClass + '\'>", (index + 1), "</div>"' +
                     ');' +
                     'if (row._special) ' +
@@ -574,7 +605,7 @@
             ];
             for (var i = 0; i < columns.length; i++) {
                 var col = columns[i];
-                var cls = col.cls ? ' ' + col.cls : '';
+                var cls = col.cls ? ' blist-th-' + col.cls : '';
                 html.push(
                     '<div class="blist-th ',
                     colClasses[i],
@@ -664,6 +695,9 @@
         /*** ROWS ***/
 
         var renderedRows = {};
+        var dirtyRows = {};
+        var rowLoadTimer = null;
+        var rowLoadRows = null;
 
         var appendRows = function(html) {
             // These functions only exist for profiling purposes.  We call this relatively infrequently so it's OK to
@@ -676,7 +710,11 @@
                     var row = appendUtilDOM.firstChild;
                     var rowID = row.id.substring(id.length + 2); // + 2 for "-r" suffix prior to row ID
                     renderedRows[rowID] = row;
-                    insideDOM.appendChild(row);
+                    if (dirtyRows[rowID]) {
+                        insideDOM.replaceChild(row, dirtyRows[rowID]);
+                        delete dirtyRows[rowID];
+                    } else
+                        insideDOM.appendChild(row);
                 }
             };
 
@@ -689,6 +727,9 @@
          * Render all rows that should be visible but are not yet rendered.  Removes invisible rows.
          */
         var renderRows = function() {
+            if (!model)
+                return;
+            
             var top = scrolls.scrollTop();
 
             // Compute the first row to render
@@ -713,28 +754,54 @@
             // Render the rows that are newly visible
             var unusedRows = $.extend({}, renderedRows);
             var html = [];
+            var rowsToLoad = [];
             for (var i = start; i < stop; i++) {
-                if (unusedRows[i])
-                    // Keep the existing row
-                    delete unusedRows[i];
-                else {
-                    // Add a new row
-                    rowRenderFn(html, i, rows[i]);
-                }
+                var row = rows[i];
+                if (typeof row == 'object') {
+                    // Loaded row -- render immediately
+                    var rowID = row.id || row[0];
+                    if (unusedRows[rowID])
+                        // Keep the existing row
+                        delete unusedRows[rowID];
+                    else
+                        // Add a new row
+                        rowRenderFn(html, i, row);
+                } else
+                    // Unloaded row -- record for load request
+                    rowsToLoad.push(row);
             }
             appendRows(html.join(''));
 
             // Destroy the rows that are no longer visible
             for (var unusedID in unusedRows) {
-                var row = unusedRows[unusedID];
+                row = unusedRows[unusedID];
                 row.parentNode.removeChild(row);
                 delete renderedRows[unusedID];
             }
 
+            // Bind scroll handlers
             scrolls.unbind("scroll", onScroll);
             scrolls.unbind("scroll", renderRows);
             scrolls.scroll(onScroll);
             scrolls.scroll(renderRows);
+
+            // Load rows that aren't currently present
+            if (rowsToLoad.length) {
+                if (rowLoadTimer)
+                    clearTimeout(rowLoadTimer);
+                rowLoadTimer = setTimeout(loadMissingRows, MISSING_ROW_LOAD_DELAY);
+                rowLoadRows = rowsToLoad;
+            }
+        }
+
+        var loadMissingRows = function() {
+            if (!rowLoadTimer)
+                return;
+            rowLoadTimer = null;
+            if (!rowLoadRows)
+                return;
+            model.loadRows(rowLoadRows);
+            rowLoadRows = null;
         }
 
         /**
@@ -754,26 +821,45 @@
             renderRows();
         }
 
+        /**
+         * Re-render a set of rows (if visible).
+         */
+        var updateRows = function(rows) {
+            for (var i = 0; i < rows.length; i++) {
+                var row = rows[i];
+                var rowID = row.id || row[0];
+                var rendered = renderedRows[rowID];
+                if (rendered) {
+                    delete renderedRows[rowID];
+                    dirtyRows[rowID] = rendered;
+                }
+            }
+            renderRows();
+        }
+
 
         /*** MODEL ***/
 
         // Monitor model events
-        $(this).bind('meta_change', function(event, model) {
+        $this.bind('meta_change', function(event, model) {
             initMeta(model);
             renderHeader();
         });
-        $(this).bind('before_load', function() {
+        $this.bind('before_load', function() {
             outside.addClass('blist-loading');
         });
-        $(this).bind('load', function(event, model) {
+        $this.bind('load', function(event, model) {
             initRows(model);
         });
-        $(this).bind('after_load', function() {
+        $this.bind('after_load', function() {
             outside.removeClass('blist-loading');
+        });
+        $this.bind('row_change', function(event, rows) {
+            updateRows(rows);
         });
 
         // Install the model
-        var model = $(this).blistModel(options.model);
+        var model = $this.blistModel(options.model);
 
 
         /*** STARTUP ***/

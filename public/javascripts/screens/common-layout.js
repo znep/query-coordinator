@@ -24,3 +24,9 @@ blist.common.forceWindowResize = function ()
     commonNS.cachedWinHeight = 0;
     $(window).resize();
 };
+
+$(function ()
+{
+    // Make all links with rel="external" open in a new window.
+    $("a[rel$='external']").click(function(){ this.target = "_blank"; });
+});

@@ -199,6 +199,18 @@
     font-size: 1.1em;
     line-height: 41px; /* Match the line-height of the header (in pixels). */
 }
+
+.infoContentHeader .socialActions
+{
+    float: right;
+    padding-top: .5em;
+}
+.infoContentHeader .socialActions li
+{
+    float: left;
+    margin-left: 1em;
+}
+
 .infoContentHeader .headerActions
 {
     float: right;

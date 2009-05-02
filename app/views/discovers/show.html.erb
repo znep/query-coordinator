@@ -48,7 +48,6 @@
   </div></div></div>
   
   <div class="simpleTabsContainer">
-    
     <div class="simpleTabNav">
       <ul class="simpleTabs tabList clearfix">
         <%# TODO: Add tab for search results. %>
@@ -59,12 +58,14 @@
     <div id="discoverTabPopular" class="tabContentContainer active clearfix">
       <%= render(:partial => "view_list_tab", :locals => { 
         :tab_title => t(:discover_popular_content_header), 
-        :views => @popular_views, :type => "POPULAR" }) %>
+        :views => @popular_views, :views_total => @popular_views_total,
+        :current_page => 1, :type => "POPULAR", :current_filter => nil }) %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix">
       <%= render(:partial => "view_list_tab", :locals => { 
         :tab_title => "All #{t(:blists_name)}", 
-        :views => @all_views, :type => "ALL" }) %>
+        :views => @all_views, :views_total => @all_views_total,
+        :current_page => 1, :type => "ALL", :current_filter => nil }) %>
     </div>
   </div>
 </div>

@@ -198,29 +198,33 @@ $(function ()
 
     var $imageChange = $("#changeProfileImage")
         .click(function (e) { e.preventDefault(); });
-    new AjaxUpload($imageChange, {
-        action: $imageChange.attr('href'),
-        autoSubmit: true,
-        name: 'profileImageInput',
-        onSubmit: function (file, ext)
-        {
-            if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
+    
+    if ($("#changeProfileImage").length > 0)
+    {
+        new AjaxUpload($imageChange, {
+            action: $imageChange.attr('href'),
+            autoSubmit: true,
+            name: 'profileImageInput',
+            onSubmit: function (file, ext)
             {
-                $('.profilePicture .errorMessage')
-                    .text('Please choose an image file (jpg, gif, png or tiff)');
-                return false;
+                if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
+                {
+                    $('.profilePicture .errorMessage')
+                        .text('Please choose an image file (jpg, gif, png or tiff)');
+                    return false;
+                }
+                $('.profilePicture .errorMessage').text('');
+                var $img = $('.profilePicture img');
+                $img.attr('src', '');
+            },
+            onComplete: function (file, response)
+            {
+                // Response is plain text that gets converted to an HTML doc with
+                //  <pre> tags
+                response = $.json.deserialize(response.slice(5, -6));
+                var $img = $('.profilePicture img');
+                $img.attr('src', response.medium + '?rand=' + Date.now());
             }
-            $('.profilePicture .errorMessage').text('');
-            var $img = $('.profilePicture img');
-            $img.attr('src', '');
-        },
-        onComplete: function (file, response)
-        {
-            // Response is plain text that gets converted to an HTML doc with
-            //  <pre> tags
-            response = $.json.deserialize(response.slice(5, -6));
-            var $img = $('.profilePicture img');
-            $img.attr('src', response.medium + '?rand=' + Date.now());
-        }
-    });
+        });
+    }
 });

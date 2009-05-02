@@ -443,6 +443,23 @@
         class="arrowButton showFlashPopup" title="Share">Share</a></li>
     </ul>
     <%- end -%>
+    <ul class="socialActions">
+      <%- 
+        tweet = CGI::escape("Check out the #{h(view.name)} dataset on blist - ")
+        seo_url = "#{request.protocol + request.host_with_port + view.href}"
+        short_url = "#{request.protocol + request.host_with_port + view.short_href}"
+      -%>
+      <li><%= link_to(image_tag("share_delicious.png", :size => "32x32", :alt => "Delicious"), 
+              "http://del.icio.us/post?url=#{seo_url}&title=#{h(view.name)}",
+              :title => "Bookmark this on Delicious", :rel => "external") %></li>
+      <li><%= link_to(image_tag("share_digg_guy.png", :size => "32x32", :alt => "Digg"), 
+              "http://digg.com/submit?phase=2&url=#{seo_url}&title=#{h(view.name)}",
+              :title => "Digg this", :rel => "external") %></li>
+      <li><%= link_to(image_tag("share_logo_twitter.png", :size => "32x32", :alt => "Twitter"), 
+              "http://www.twitter.com/home?status=#{tweet + short_url}",
+              :title => "Tweet this", :rel => "external") %></li>
+    </ul>
+    
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>

@@ -232,3 +232,4 @@ ul.myNetworkList li span
 .itemActionContainer .itemActions.actionButtons li a { background-position: right -84px; }
 .itemActionContainer .itemActions.actionButtons li a.arrowButton { background-position: right -105px; }
 
+.viewPager { margin-top: 1em; }

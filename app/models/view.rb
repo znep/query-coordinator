@@ -19,28 +19,9 @@ class View < Model
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     get_request(path)
   end
-
-  def self.find_popular(limit = 10)
-    path = "/views.json?sortBy=POPULAR"
-    unless (limit.nil?)
-      path += "&limit=#{limit}"
-    end
-    get_request(path)
-  end
-
-  def self.find_featured()
-    path = "/views.json?featured=true"
-    get_request(path)
-  end
-
-  def self.find_recent(limit = 10, inNetwork=false)
-    path = "/views.json?sortBy=LAST_CHANGED"
-    unless (limit.nil?)
-      path += "&limit=#{limit}"
-    end
-    if (inNetwork)
-      path += "&inNetwork=true"
-    end
+  
+  def self.find_for_user(id)
+    path = "/users/#{id}/views.json"
     get_request(path)
   end
 
@@ -130,6 +111,10 @@ class View < Model
   def href
     prefix = self.category || 'blist'
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
+  end
+  
+  def short_href
+    "/blists/#{id}"
   end
 
   def user_role(user_id)

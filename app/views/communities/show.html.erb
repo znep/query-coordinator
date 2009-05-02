@@ -72,17 +72,20 @@
     <div id="communityTabTopMembers" class="tabContentContainer active clearfix">
       <%= render(:partial => "member_list_tab", :locals => { 
         :tab_title => "Top Members", 
-        :members => @top_members, :type => "TOPMEMBERS" }) %>
+        :members => @top_members, :members_total => @top_members_total,
+        :current_page => 1, :type => "TOPMEMBERS", :current_filter => nil }) %>
     </div>
     <div id="communityTabTopUploaders" class="tabContentContainer clearfix">
       <%= render(:partial => "member_list_tab", :locals => { 
         :tab_title => "Top Uploaders", 
-        :members => @top_uploaders, :type => "TOPUPLOADERS" }) %>
+        :members => @top_uploaders, :members_total => @top_uploaders_total,
+        :current_page => 1, :type => "TOPUPLOADERS", :current_filter => nil }) %>
     </div>
     <div id="communityTabAllMembers" class="tabContentContainer clearfix">
       <%= render(:partial => "member_list_tab", :locals => { 
         :tab_title => "All Members", 
-        :members => @all_members, :type => "ALLMEMBERS" }) %>
+        :members => @all_members, :members_total => @all_members_total,
+        :current_page => 1, :type => "ALLMEMBERS", :current_filter => nil }) %>
     </div>
   </div>
 </div>

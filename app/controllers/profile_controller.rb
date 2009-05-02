@@ -9,7 +9,7 @@ class ProfileController < ApplicationController
   
   def show
     user_id = params[:id]
-    if (!current_user || user_id != current_user.id)
+    if (!current_user || user_id != current_user.login)
       @is_user_current = false
       @user = User.find_profile(user_id)
     else
@@ -54,7 +54,7 @@ class ProfileController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to(profile_url(current_user.id)) }
+      format.html { redirect_to(profile_url(current_user.login)) }
       format.data   { render :json => {:error => error_msg,
         :user => current_user}.to_json }
     end

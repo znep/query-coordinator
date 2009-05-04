@@ -45,6 +45,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :account
   map.resources :profile
 
+  map.import '/import', :controller => 'imports', :action => 'new' 
+  map.import_redirect '/import/redirect', :controller => 'imports', :action => 'redirect'
+
   map.resources :blists,
     :collection => { :detail => :get },
     :member => {

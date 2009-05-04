@@ -20,9 +20,6 @@ class BlistsController < SwfController
     when 'new_blist'
       # show new blist in swf
       @start_screen = 'new_blist'
-    when 'import'
-      # show import in swf
-      @start_screen = 'import'
     else
       begin
         @parent_view = @view = View.find(params[:id])

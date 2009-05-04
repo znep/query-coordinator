@@ -45,10 +45,14 @@ $(function ()
         },
         onComplete: function (file, response)
         {
-            if (response.indexOf("<h1>500 Error</h1>") == 0)
+            // Errors start with a header, success doesn't.
+            if (response.indexOf("<h1>") == 0)
             {
               $("#throbber").css("display", "none");
 
+              // We don't care what type of error it was, only that there was
+              // one. Error format is "<h1>{http error code} Error</h1>\n"
+              // followed by the error payload.
               response = response.slice(19, -6);
               $('.errorMessage')
                 .html("<p><strong>Failed to import that file!</strong><br/></p>" + response);

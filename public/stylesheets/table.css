@@ -1,10 +1,14 @@
 .blist-table {
     background: transparent;
     overflow: hidden;
-    position: relative;
+    position: absolute;
     font-size: 13px;
     font-family: arial, sans-serif;
     color: #333333;
+    top: 6px;
+    right: 6px;
+    left: 6px;
+    bottom: 36px;
 }
 
 .blist-table-top {
@@ -13,17 +17,17 @@
 
 .blist-table-title-tl {
     padding-left: 8px;
-    background: transparent url(images/content/table/title_tl.png) no-repeat scroll left top;
+    background: transparent url(/stylesheets/images/content/table/title_tl.png) no-repeat scroll left top;
 }
 
 .blist-table-title-tr {
     padding-right: 8px;
-    background: transparent url(images/content/table/title_tr.png) no-repeat top right;
+    background: transparent url(/stylesheets/images/content/table/title_tr.png) no-repeat top right;
 }
 
 .blist-table-title {
     position: relative;
-    background: transparent url(images/content/table/title_t.png) repeat-x top;
+    background: transparent url(/stylesheets/images/content/table/title_t.png) repeat-x top;
     padding-left: 4px;
 }
 
@@ -40,14 +44,14 @@
     margin-top: 3px;
     padding-left: 11px;
     height: 23px;
-    background: transparent url(images/common/find_input_cap.png) no-repeat scroll center left;
+    background: transparent url(/stylesheets/images/common/find_input_cap.png) no-repeat scroll center left;
     margin-right: 4px;
 }
 
 .blist-table-filter-r {
     padding-right: 31px;
     height: 23px;
-    background: transparent url(../images/find_button.png) no-repeat scroll center right;
+    background: transparent url(/images/find_button.png) no-repeat scroll center right;
 }
 
 input.blist-table-filter {
@@ -88,7 +92,7 @@ input.blist-table-filter {
 }
 
 .blist-loading .blist-table-scrolls {
-    background: transparent url(images/common/spinner1.gif) no-repeat center center;
+    background: transparent url(/stylesheets/images/common/spinner1.gif) no-repeat center center;
 }
 
 .blist-table-inside {
@@ -199,11 +203,11 @@ div.blist-table-expander .blist-td {
     top: 0;
     right: 2px;
     width: 12px;
-    background: transparent url(images/content/table/icon_sort_down.png) right no-repeat;
+    background: transparent url(/stylesheets/images/content/table/icon_sort_down.png) right no-repeat;
 }
 
 .blist-th .sort-desc {
-    background-image: url(images/content/table/icon_sort_up.png);
+    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
 }
 
 div.blist-td p {
@@ -240,9 +244,34 @@ div.blist-checkbox {
 }
 
 div.blist-star-on {
-    background-image: url(images/content/table/icon_star_fill.png);
+    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
 }
 
-div.blist-check-on {
-    background: url(images/content/table/check.png);
+div.blist-check-on,
+div.blist-boolean_checkbox-on
+{
+    background-image: url(/stylesheets/images/content/table/check.png);
 }
+
+
+.blist-table-footer-bl {
+    background: transparent url(/stylesheets/images/content/table/title_bl.png) no-repeat left bottom;
+    padding-left: 8px;
+    position: absolute;
+    bottom: 31px;
+    left: 6px;
+    right: 6px;
+    height: 6px;
+}
+
+.blist-table-footer-br {
+    padding-right: 8px;
+    background: transparent url(/stylesheets/images/content/table/title_br.png) no-repeat bottom right;
+}
+
+.blist-table-footer {
+    background: transparent url(/stylesheets/images/content/table/title_b.png) repeat-x bottom;
+    height: 6px;
+    padding-left: 4px;
+}
+

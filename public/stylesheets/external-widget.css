@@ -1,0 +1,27 @@
+.widgetFooter
+{
+    bottom: 0;
+    padding-bottom: 1em;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.widgetFooter li
+{
+    border-right: solid 1px #666666;
+    display: inline;
+    padding: 0 0.5em 0 0.25em;
+}
+
+.widgetFooter li.last
+{
+    border-right: none;
+}
+
+.widgetFooter a
+{
+    color: #666666;
+    font-size: 1.2em;
+    text-transform: lowercase;
+}

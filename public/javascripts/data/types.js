@@ -214,10 +214,15 @@ blist.namespace.fetch('blist.data.types');
                 return value;
             var url = value;
             var caption = value;
-        } else {
-            // New hypothetical Blist format
-            url = value.url;
-            caption = value.caption || url;
+        }
+        else if (typeof value == "object")
+        {
+            url = value[0];
+            caption = value[1] || url;
+        }
+        if (url && url != '' && !url.match(/^(ht|f)tps?:\/\//))
+        {
+            url = 'http://' + url;
         }
         return "<a href='" + escape(url) + "'>" + escape(caption) + "</a>";
     }

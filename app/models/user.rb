@@ -8,7 +8,7 @@ class User < Model
     path = "/users/#{id}.json"
     get_request(path)
   end
-
+  
   # Needed for multiuser
   def multiuser_authentication_token(timestamp)
     hmac = HMAC::SHA1.new(MULTIUSER_SECRET)
@@ -50,6 +50,16 @@ class User < Model
 
   def htmlDescription
     description.blank? ? '' : CGI.escapeHTML(description).gsub("\n", '<br/>')
+  end
+  
+  def friends
+    path = "/users/#{id}/contacts.json"
+    self.class.get_request(path)
+  end
+  
+  def followers
+    path = "/users/#{id}/followers.json"
+    self.class.get_request(path)
   end
 
   def self.login(login,password)

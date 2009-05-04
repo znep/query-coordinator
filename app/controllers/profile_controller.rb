@@ -17,6 +17,9 @@ class ProfileController < ApplicationController
       @user = current_user
     end
     
+    @friends = @user.friends.sort_by{ rand }.first(8)
+    @followers = @user.followers.sort_by{ rand }.first(8)
+    
     @body_id = 'profileBody'
     @body_class = 'home'
     

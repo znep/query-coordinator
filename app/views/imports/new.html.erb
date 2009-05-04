@@ -1,0 +1,54 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "import-screen" %>
+  <%= javascript_tag "window._token = '#{form_authenticity_token}'" %>
+  <title><%= t(:page_title) %></title>
+<% end %>
+
+<div class="dialogBox loginBox">
+  <div class="header">
+    <h1>Import from CSV or Excel</h1>
+  </div>
+
+  <div class="mainContent">
+    <div class='title clearfix'>
+      <h2><strong>Select a file to import</strong></h2>
+    </div>
+    
+    <% form_tag(import_url, :id => "importForm", :multipart => true) do %>
+      <div class="fieldContent clearfix">
+        <%= display_standard_flashes %>
+        <fieldset class="last">
+          <div class="fileInputContainer clearfix">
+            <label for="import_file">Choose a file</label>
+            <div class="fileInput">
+              <div class="fakeFile clearfix">
+                <input type="text" name="fileName" />
+                <a id="importAction" href="/imports">
+                  <%= image_tag("/stylesheets/images/account/button_browse.png", 
+                      :size => "72x24", :alt => "Browse", :id => "importButton") %>
+                </a>
+              </div>
+            </div>
+            <p class="errorMessage"></p>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="footer clearfix">
+        <a id="importSubmit" href="#"><%= image_tag("button_signin.png") %></a>
+        <%= image_tag("/images/throbber.gif", 
+                      :size => "20x20", 
+                      :alt => "Importing...", 
+                      :id => "throbber",
+                      :style => "display: none;") %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "plugins/jquery.json", 
+  "plugins/ajaxupload.3.0", "screens/import-screen", 
+  :cache => "cache/imports_new_all" %> 
+<% end %>

@@ -29,8 +29,7 @@
             <ul class="headerActions">
               <li><a href='<%= blist_href_new_blist %>'
                 class="add_new">Create <%= t(:blist_name) %></a></li>
-              <li><a href='<%= blist_href_import %>'
-                class="import">Upload</a></li>
+              <li><%= link_to("Upload", {:controller => "imports", :action => "new"}, :class => "import") %></li>
             </ul>
 
           </div>

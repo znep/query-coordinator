@@ -1,0 +1,69 @@
+.import form .fileInputContainer
+{
+    display: block;
+    margin-bottom: 10px;
+}
+
+.import form fileInput
+{
+    cursor: pointer;
+    float: left;
+    position: relative;
+}
+
+.import form fileName
+{
+    width: 190px;
+}
+
+.import form fileInput .fakeFile
+{
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index 1;
+}
+
+.import form .fileInput input[type='file']
+{
+    display: block;
+    position: absolute;
+    z-index: 2;
+    margin-left: 100px;
+    width: 255px;
+    height: 2.2em;
+    
+    -moz-opacity:0 ;
+    filter:alpha(opacity: 0);
+    opacity: 0;
+}
+.import form .fileInput .fakeFile input
+{
+    float: left;
+    width: 170px;
+}
+
+.import form .fileInput .fakeFile img
+{
+    display: block;
+    float: left;
+    padding-left: 5px;
+}
+
+.import form label
+{
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    line-height: 22px;
+    padding-right: 10px;
+    text-align: right;
+    width: 90px;
+}
+
+.import form .errorMessage
+{
+    line-height: 2em;
+    margin-left: 100px;
+}
+

@@ -165,6 +165,25 @@ body.community #mainNav li.community
     background-image: url(/stylesheets/images/gov/content/background_corner_right.png);
 }
 
+.fullPageContentContainer
+{
+    background-image: url(/stylesheets/images/gov/content/background_corner_left.png);
+    margin-top: 5em;
+}
+.fullPageContentBL
+{
+    background-image: url(/stylesheets/images/gov/content/background_corner_bottom_left.png);
+}
+.fullPageContentBR
+{
+    background-image: url(/stylesheets/images/gov/content/background_corner_bottom_right.png);
+}
+.fullPageContent
+{
+    background-image: url(/stylesheets/images/gov/content/background_corner_right.png);
+}
+
+
 
 .activityListContainer h2 { color: #666; }
 

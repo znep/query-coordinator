@@ -40,7 +40,7 @@ ActionController::Routing::Routes.draw do |map|
       :group_detail => :get,
     }
   map.resource :discover, :member => { :filter => :get, :swf => :get }
-  map.resource :community, :member => { :filter => :get }
+  map.resource :community, :member => { :filter => :get, :activities => :get }
   map.resource :home
   map.resource :account
   map.resources :profile

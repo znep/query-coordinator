@@ -25,3 +25,60 @@
     font-size: 1.2em;
     text-transform: lowercase;
 }
+
+.interstitial
+{
+    background-color: #ffffff;
+    border: solid 1px #333333;
+    display: none;
+    padding: 4em 2em 2em 2em;
+    position: absolute;
+    text-align: center;
+    z-index: 10;
+}
+
+.interstitial a.closeLink
+{
+    background-color: #cccccc;
+    color: #ffffff;
+    font-size: 1.2em;
+    height: 1em;
+    padding: 0.5em;
+    position: absolute;
+    right: 2px;
+    top: 2px;
+    width: 4.5em;
+}
+
+.interstitial .closeKeyText
+{
+    position: absolute;
+    right: 4px;
+    text-transform: uppercase;
+    top: 2.75em;
+}
+
+.interstitial h4
+{
+    color: #000000;
+    font-weight: bold;
+    margin: 0.5em;
+}
+
+.interstitial p
+{
+    font-size: 1.2em;
+    margin: 0.5em;
+}
+
+.interstitial .exitBox
+{
+    background-color: #cccccc;
+    margin: 1em 0;
+    padding: 1em;
+}
+
+.interstitial .exitBox a
+{
+    font-size: 1.2em;
+}

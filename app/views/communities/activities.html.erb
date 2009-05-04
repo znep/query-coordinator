@@ -1,0 +1,81 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "community-activities-screen", "widgets",
+    :cache => "cache/community_activites_all" %>
+  <title><%= t(:page_title) %></title>
+<% end %>
+
+
+<div id="activities">
+  <div class="fullPageContentContainer">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+      
+        <div class="activitiesHeader clearfix">
+          <h1>The <%= t(:blist_company) %> Community Feed</h1>
+          <p class="communityBackLink">
+            <%= link_to("Back to the #{t(:blist_company)} community", community_url) %>
+          </p>
+        </div>
+      
+        <div class="activitiesBody clearfix">
+          <div class="activityColumn"><div class="activityColumnInner">
+            <h2>Community Activity</h2>
+            <ul class="activityList">
+              <li class="clearfix">
+                <a href="#" class="profileImageLink"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Kevin Merritt</a> created <a href="#">Wines of Napa</a> 15 min ago
+              </li>
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Karla Etten</a> joined <%= t(:blist_company) %> about an hour ago
+              </li>
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Alex Yeh</a> created the pick-list "Complete Protein Stuff and Things" 2 hours ago
+              </li>
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Zana Moa</a> copied <a href="#">Venture Capital Investments in Seattle</a> 3 hours ago
+              </li>
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Kyle Webb</a> exported <a href="#">Project</a> 1 day ago
+              </li>
+            </ul>
+          </div></div>
+          <div class="activityColumn last"><div class="activityColumnInner">
+            <h2>Your Contacts Activity</h2>
+            <ul class="activityList">
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Kevin Merritt</a> created <a href="#">Wines of Napa</a> 15 min ago
+              </li>
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Karla Etten</a> joined <%= t(:blist_company) %> about an hour ago
+              </li>
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Alex Yeh</a> created the pick-list "Complete Protein Stuff and Things" 2 hours ago
+              </li>
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Zana Moa</a> copied <a href="#">Venture Capital Investments in Seattle</a> 3 hours ago
+              </li>
+              <li class="clearfix">
+                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
+                <a href="#">Kyle Webb</a> exported <a href="#">Project</a> 1 day ago
+              </li>
+            </ul>
+          </div></div>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "screens/community-activities-screen", :cache => "cache/community_activites_all" %>
+<% end %>

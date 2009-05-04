@@ -1,5 +1,5 @@
 class CommunitiesController < SwfController
-  skip_before_filter :require_user, :only => [:show]
+  skip_before_filter :require_user, :only => [:show, :activities]
 
   PAGE_SIZE = 10
   
@@ -62,6 +62,10 @@ class CommunitiesController < SwfController
           })
       }
     end
+  end
+  
+  def activities
+    
   end
 
 end

@@ -1262,6 +1262,16 @@ table.gridList tr.filteredOut
     margin-bottom: .714em; /* 10px */
     padding-bottom: .357em; /* 5px */
 }
+.pageBlockHeaderSide .moreLinkContainer
+{
+    float: right;
+    margin-top: .5em;
+}
+.pageBlockHeaderSide .moreLinkContainer a
+{
+    color: #333;
+    text-transform: uppercase;
+}
 
 /*** END: Page header block ***/
 

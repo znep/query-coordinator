@@ -144,6 +144,28 @@ form.search input.submit
 }
 
 
+.fullPageContentContainer
+{
+    background: #fff url(/stylesheets/images/content/background_corner_left.png) no-repeat;
+    margin: 2.6em 1em 0;
+    min-width: 98.9em;
+}
+.fullPageContentBL
+{
+    background: url(/stylesheets/images/content/background_corner_bottom_left.png) left bottom no-repeat;
+}
+.fullPageContentBR
+{
+    background: url(/stylesheets/images/content/background_corner_bottom_right.png) right bottom no-repeat;
+}
+.fullPageContent
+{
+    background: url(/stylesheets/images/content/background_corner_right.png) right top no-repeat;
+    padding: 1em;
+}
+
+
+
 /**********************
  * Tabs above content *
  **********************/

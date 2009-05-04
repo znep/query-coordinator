@@ -66,8 +66,22 @@ input.blist-table-filter {
     color: #333333;
 }
 
+.blist-table-clear-filter
+{
+    background: url(/stylesheets/images/content/section_close_button.png) no-repeat top left;
+    display: block;
+    height: 16px;
+    line-height: 100px;
+    overflow: hidden;
+    position: absolute;
+    right: 35px;
+    top: 4px;
+    width: 16px;
+}
+
 .blist-table .example {
     color: #999999;
+    font-style: italic;
 }
 
 .blist-table-header-scrolls {

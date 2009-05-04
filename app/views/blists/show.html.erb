@@ -125,6 +125,25 @@
               {'text' => 'A page', 'class' => 'page', 'href' => '#'}]}) %>
             </li>
             <%- end -%>
+            
+            <li class='separator'>
+              <ul class="socialActions clearfix">
+                <%- 
+                  tweet = CGI::escape("Check out the #{h(@view.name)} dataset on blist - ")
+                  seo_url = "#{request.protocol + request.host_with_port + @view.href}"
+                  short_url = "#{request.protocol + request.host_with_port + @view.short_href}"
+                -%>
+                <li><%= link_to(image_tag("icons/social_icon_delicious_small.png", :size => "20x20", :alt => "Delicious"), 
+                        "http://del.icio.us/post?url=#{seo_url}&title=#{h(@view.name)}",
+                        :title => "Bookmark this on Delicious", :rel => "external") %></li>
+                <li><%= link_to(image_tag("icons/social_icon_digg_small.png", :size => "20x20", :alt => "Digg"), 
+                        "http://digg.com/submit?phase=2&url=#{seo_url}&title=#{h(@view.name)}",
+                        :title => "Digg this", :rel => "external") %></li>
+                <li><%= link_to(image_tag("icons/social_icon_twitter_small.png", :size => "20x20", :alt => "Twitter"), 
+                        "http://www.twitter.com/home?status=#{tweet + short_url}",
+                        :title => "Tweet this", :rel => "external") %></li>
+              </ul>
+            </li>
           </ul>
 
           <form class='search' action='#'>

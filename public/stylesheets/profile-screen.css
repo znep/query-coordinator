@@ -55,10 +55,13 @@
     padding-right: 1em;
 }
 
+
 #profile .descriptionContent, 
-#profile .interestsContent
+#profile .interestsContent,
+#profile .linksContent
 {
     border-top: dotted 1px #666666;
+    margin-bottom: 3em;
 }
 #profile .descriptionContent .sectionShow p, 
 #profile .interestsContent .sectionShow p
@@ -80,6 +83,13 @@
     min-height: 0;
 }
 #profile .sectionEdit dl { float: left; }
+
+#profile .linksContent ul.userLinkActions { margin: 1em 0; }
+#profile .linksContent ul.userLinkActions li
+{
+    float: left;
+    margin-right: 1em;
+}
 
 #profile .publicBlists
 {
@@ -144,6 +154,10 @@
     margin: 0.5em 0;
 }
 
+#profileBody #sidebar dl
+{
+    border-top: 1px solid #a6a6a6;
+}
 #profileBody #sidebar dt
 {
     margin-top: 1em;
@@ -152,4 +166,14 @@
 #profileBody #sidebar dd
 {
     margin-left: 3em;
+}
+#profileBody #sidebar dd.userList
+{
+    margin-left: 0;
+}
+
+#profileBody #sidebar dd .userIconList li
+{
+    float: left;
+    margin-right: .5em;
 }

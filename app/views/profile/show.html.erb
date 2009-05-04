@@ -207,6 +207,42 @@
               </div>
             <%- end -%>
           </div>
+          
+          <h3>Links</h3>
+          <div class="linksContent sectionContainer">
+            <div class="sectionShow">
+              <ul class="userLinkActions clearfix">
+                <%- #TODO: Make these links real and generated from the user's data. -%>
+                <li><%= link_to(image_tag("share_delicious.png", :size => "32x32", :alt => "Delicious"), 
+                        "http://delicious.com/#{@user.login}",
+                        :title => "Delicious page for #{@user.displayName}", :rel => "external") %></li>
+                <li><%= link_to(image_tag("share_digg_guy.png", :size => "32x32", :alt => "Digg"), 
+                        "http://digg.com/users/#{@user.login}",
+                        :title => "Digg profile for #{@user.displayName}", :rel => "external") %></li>
+                <li><%= link_to(image_tag("share_logo_twitter.png", :size => "32x32", :alt => "Twitter"), 
+                        "http://www.twitter.com/#{@user.login}",
+                        :title => "Twitter page for #{@user.displayName}", :rel => "external") %></li>
+              </ul>
+              <%- if (@is_user_current) -%>
+                <p>
+                  <a class='action showListBoxLink' href='#edit'>Edit</a>
+                </p>
+              <%- end -%>
+            </div>
+            <%- if (@is_user_current) -%>
+              <div class="sectionEdit formListBox">
+                <div class="formListBoxTL"><div class="formListBoxTR">
+                <div class="formListBoxBL"><div class="formListBoxBR">
+                  <% form_tag(profile_url(@user.login), :class => "clearfix") do %>
+                    <p>Soon, you'll be able to edit your links.</p>
+                    <p class='errorMessage'></p>
+                  <% end %>
+                   <p class="formListBoxClose"><a href="#close">Close</a></p>
+                </div></div>
+                </div></div>
+              </div>
+            <%- end -%>
+          </div>
 
 
           <div class='publicBlists'>
@@ -274,7 +310,21 @@
           <dd><%= @shared_views.length %> Shared</dd>
 
           <dt><strong>Friends:</strong> <%= @user.numberOfFriends %></dt>
+          <%- if (@user.numberOfFriends > 0) -%>
+          <dd class="userList">
+            <ul class="userIconList clearfix">
+              <%= render(:partial => "user_icon_item", :collection => @friends) %>
+            </ul>
+          </dd>
+          <%- end -%>
           <dt><strong>Followers:</strong> <%= @user.numberOfFollowers %></dt>
+          <%- if (@user.numberOfFollowers > 0) -%>
+          <dd class="userList">
+            <ul class="userIconList clearfix">
+              <%= render(:partial => "user_icon_item", :collection => @followers) %>
+            </ul>
+          </dd>
+          <%- end -%>
         </dl>
     <% end %>
   </div>

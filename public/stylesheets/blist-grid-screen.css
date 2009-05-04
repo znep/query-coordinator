@@ -330,6 +330,17 @@ body#lensBody
     background-position: 0 -240px;
 }
 
+#lensBody .headerBar .socialActions li
+{
+    float: left;
+    margin-left: 1em;
+}
+#lensBody .headerBar .socialActions li a
+{
+    display: block;
+    height: 20px;
+}
+
 /* Icons & styling for main menu */
 
 #mainMenu

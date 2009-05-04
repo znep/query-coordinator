@@ -66,6 +66,14 @@
             }, 10);
         }
 
+        var clearFilter = function(e)
+        {
+            e.preventDefault();
+            $filterBox.val('').blur();
+            model.filter('');
+        }
+
+
 
         /*** CELL HOVER EXPANSION ***/
         
@@ -306,6 +314,7 @@
                       <div class="blist-table-filter-l">\
                         <div class="blist-table-filter-r">\
                           <input class="blist-table-filter"/>\
+                          <a class="blist-table-clear-filter" title="Clear Search" href="#clear_filter">Clear Search</a>\
                       </div></div>\
                       <div class="blist-table-name">&nbsp;</div>\
                 </div></div></div>';
@@ -337,7 +346,9 @@
                 .find('.blist-table-filter')
                 .keypress(applyFilter)
                 .change(applyFilter)
-                .example('Find');
+                .example('Find Inside');
+            $title.find('.blist-table-clear-filter')
+                .click(clearFilter);
         }
 
         // The table header elements

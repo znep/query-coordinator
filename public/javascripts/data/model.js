@@ -70,6 +70,10 @@ blist.namespace.fetch('blist.data');
     blist.data.Model = function(meta, rows) {
         var self = this;
 
+        var curOptions = {
+            filterMinChars: 3
+        };
+
         // The active dataset (rows or a filtered version of rows)
         var active = [];
 
@@ -129,6 +133,19 @@ blist.namespace.fetch('blist.data');
         var dataChange = function() {
             $(listeners).trigger('load', [ self ]);
         }
+
+        /**
+         * Set options
+         */
+
+        this.options = function (newOpt)
+        {
+            if (newOpt)
+            {
+                $.extend(curOptions, newOpt);
+            }
+            return this;
+        };
 
         /**
          * Access the dataset title.
@@ -535,8 +552,8 @@ blist.namespace.fetch('blist.data');
                 if (filter == filterText)
                     return null;
 
-                // Clear the filter if it contains less than three characters
-                if (filter.length < 3) {
+                // Clear the filter if it contains less than the minimum characters
+                if (filter.length < curOptions.filterMinChars) {
                     filterFn = null;
                     filterText = "";
                     active = rows;

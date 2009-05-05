@@ -4,19 +4,14 @@
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<div class="dialogBox loginBox">
+<div class="dialogBox">
   <div class="header">
-    <h1>Import from CSV or Excel</h1>
+    <h1>Upload a file</h1>
   </div>
 
   <div class="mainContent">
-    <div class='title clearfix'>
-      <h2><strong>Select a file to import</strong></h2>
-    </div>
-    
     <% form_tag(import_url, :id => "importForm", :multipart => true) do %>
       <div class="fieldContent clearfix">
-        <%= display_standard_flashes %>
         <fieldset class="last">
           <div class="fileInputContainer clearfix">
             <label for="import_file">Choose a file</label>
@@ -35,9 +30,9 @@
       </div>
 
       <div class="footer clearfix">
-        <a id="importSubmit" href="#"><%= image_tag("button_signin.png") %></a>
+        <span class="submitButton"><%= link_to("Upload", "#", :class => 'arrowButton', :id => "importSubmit") %></span>
         <%= image_tag("/images/throbber.gif", 
-                      :size => "20x20", 
+                      :size => "16x16", 
                       :alt => "Importing...", 
                       :id => "throbber",
                       :style => "display: none;") %>

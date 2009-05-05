@@ -315,9 +315,12 @@
                         <div class="blist-table-filter-r">\
                           <input class="blist-table-filter"/>\
                           <a class="blist-table-clear-filter" title="Clear Search" href="#clear_filter">Clear Search</a>\
-                      </div></div>\
-                      <div class="blist-table-name">&nbsp;</div>\
-                </div></div></div>';
+                      </div></div>';
+            if (options.showName)
+            {
+                headerStr += '<div class="blist-table-name">&nbsp;</div>';
+            }
+            headerStr += '</div></div></div>';
         }
         headerStr +=
             '  <div class="blist-table-header-scrolls">\
@@ -544,9 +547,15 @@
             measureUtilDOM.innerHTML = '<div class="blist-table-handle">' + dummyHandleText + '</div>';
             var handleOuterWidth = measureUtil.width();
             var handleWidth = $(measureUtilDOM.firstChild).width();
-            handleStyle.height = rowHeight + 'px';
+            if (options.generateHeights)
+            {
+                handleStyle.height = rowHeight + 'px';
+            }
             handleStyle.width = handleWidth + 'px';
-            cellStyle.height = rowHeight + 'px';
+            if (options.generateHeights)
+            {
+                cellStyle.height = rowHeight + 'px';
+            }
 
             // These variables are available to the rendering function
             var contextVariables = {
@@ -563,7 +572,10 @@
                 var col = columns[i];
                 col.left = pos;
                 colStyles[i].width = columns[i].width + 'px';
-                colStyles[i].height = rowHeight + 'px';
+                if (options.generateHeights)
+                {
+                    colStyles[i].height = rowHeight + 'px';
+                }
                 pos += columns[i].width + paddingX;
 
                 // Add rendering information to the rendering function
@@ -580,9 +592,12 @@
             var renderFnSource =
                 '(function(html, index, row) {' +
                     'html.push(' +
-                        '"<div id=\'' + id + '-r", (row.id || row[0]), "\' class=\'blist-tr", (index % 2 ? " blist-tr-even" : ""), "\' style=\'top: ", (index * ' + rowOffset + '), "px\'>' +
-                        '<div class=\'blist-table-handle ' + handleClass + '\'>", (index + 1), "</div>"' +
-                    ');' +
+                        '"<div id=\'' + id + '-r", (row.id || row[0]), "\' class=\'blist-tr", (index % 2 ? " blist-tr-even" : ""), "\' style=\'top: ", (index * ' + rowOffset + '), "px\'>"';
+            if (options.showRowNumbers)
+            {
+                renderFnSource += ', "<div class=\'blist-table-handle ' + handleClass + '\'>", (index + 1), "</div>"';
+            }
+            renderFnSource += ');' +
                     'if (row._special) ' +
                         'html.push(renderSpecial(row)); ' +
                     'else ' +
@@ -611,9 +626,11 @@
          * Create column header elements for the current row configuration and install event handlers.
          */
         var renderHeader = function() {
-            var html = [
-                '<div class="blist-th blist-table-corner ', handleClass, '"></div>'
-            ];
+            var html = [];
+            if (options.showRowNumbers)
+            {
+                html.push('<div class="blist-th blist-table-corner ', handleClass, '"></div>');
+            }
             for (var i = 0; i < columns.length; i++) {
                 var col = columns[i];
                 var cls = col.cls ? ' blist-th-' + col.cls : '';
@@ -879,7 +896,10 @@
     }
 
     var blistTableDefaults = {
+        generateHeights: true,
         manualResize: false,
+        showName: true,
+        showRowNumbers: true,
         showTitle: true
     };
 

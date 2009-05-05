@@ -1,0 +1,154 @@
+.blist-table
+{
+    overflow: hidden;
+    position: relative;
+}
+
+.blist-table-top
+{
+    position: relative;
+}
+
+.blist-table-title
+{
+    position: relative;
+}
+
+.blist-table-filter-l
+{
+    position: absolute;
+    top: 0;
+}
+
+.blist-table-clear-filter
+{
+    background: url(/stylesheets/images/content/section_close_button.png) no-repeat top left;
+    display: block;
+    height: 16px;
+    line-height: 100px;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 16px;
+}
+
+.blist-table-header-scrolls
+{
+    position: relative;
+    overflow: hidden;
+}
+
+.blist-table-header
+{
+    position: absolute;
+    top: 0;
+}
+
+.blist-table-scrolls
+{
+    position: relative;
+    overflow: auto;
+}
+
+.blist-loading .blist-table-scrolls
+{
+    background: transparent url(/stylesheets/images/common/spinner1.gif) no-repeat center center;
+}
+
+.blist-table-inside
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.blist-tr
+{
+    position: absolute;
+    overflow: hidden;
+}
+
+.blist-th
+{
+    position: relative;
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: default;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+.blist-td
+{
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+div.blist-table-expander
+{
+    position: absolute;
+    z-index: 10;
+    overflow: auto;
+}
+
+div.blist-table-expander .blist-td
+{
+    white-space: normal;
+}
+
+.blist-table-handle
+{
+    float: left;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+.blist-table .blist-table-corner
+{
+    cursor: default;
+}
+
+.blist-table-util
+{
+    position: absolute;
+    top: -10000px;
+    left: -10000px;
+}
+
+.blist-th-sizer
+{
+    z-index: 10;
+    position: absolute;
+    top: 0px;
+    padding: 4px 0;
+    width: 5px;
+    overflow: hidden;
+    right: 0px;
+    cursor: col-resize;
+}
+
+.blist-th .sort
+{
+    position: absolute;
+    top: 0;
+    right: 2px;
+}
+
+img.blist-table-option-icon
+{
+    width: 16px;
+    height: 16px;
+    float: left;
+}
+
+.blist-table a
+{
+    white-space: nowrap;
+}

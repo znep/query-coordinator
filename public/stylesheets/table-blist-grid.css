@@ -1,0 +1,137 @@
+.blist-table
+{
+    background: transparent;
+    font-family: arial, sans-serif;
+    color: #333333;
+}
+
+.blist-table-header-scrolls
+{
+    background-color: #e2e2e2;
+    border: solid 1px #cacaca;
+    border-bottom: none;
+}
+
+.blist-table-header
+{
+    height: 2.4em;
+}
+
+.blist-table-scrolls
+{
+    border: solid 1px #cacaca;
+    border-top: none;
+}
+
+.blist-th
+{
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+    border-left: solid 1px #dddddd;
+}
+
+.blist-th-name
+{
+    font-weight: bold;
+    font-size: 1.3em;
+}
+
+/* Ensure enough specificity to override height in generated styles */
+.blist-table .blist-th
+{
+    height: 2.6em;
+    line-height: 2.6em;
+}
+
+.blist-td
+{
+    font-size: 1.2em;
+    padding: 0.4em;
+    height: 1.2em;
+    line-height: 1.2em;
+    border-right: solid 1px #dddddd;
+    border-bottom: solid 1px #dddddd;
+}
+
+.blist-td-header
+{
+    font-weight: bold;
+}
+
+div.blist-table-expander
+{
+    border-left: solid 1px #cacaca;
+    border-top: solid 1px #cacaca;
+    background-color: #ffffff;
+}
+
+.blist-table-handle
+{
+    line-height: 1.4em;
+    height: 1.4em;
+    padding: 0.4em;
+    font-size: 1.1em;
+    border: solid 1px #dddddd;
+    border-top: none;
+    background-color: #eeeeee;
+    border-left: none;
+    color: #333399;
+    text-align: right;
+}
+
+.blist-table .blist-table-corner
+{
+    border-left: none;
+}
+
+.blist-th .sort
+{
+    width: 12px;
+    background: transparent url(images/content/table/icon_sort_down.png) right no-repeat;
+}
+
+.blist-th .sort-desc
+{
+    background-image: url(images/content/table/icon_sort_up.png);
+}
+
+div.blist-td p
+{
+    margin-bottom: 6px;
+}
+
+div.blist-td p:last-child
+{
+    margin-bottom: 0;
+}
+
+img.blist-table-option-icon
+{
+    padding-right: 0.4em;
+    margin-bottom: -1px;
+}
+
+.blist-table a
+{
+    text-decoration: none;
+}
+
+.blist-table a:hover
+{
+    text-decoration: underline;
+}
+
+div.blist-checkbox
+{
+    background: no-repeat scroll center center;
+}
+
+div.blist-star-on
+{
+    background-image: url(images/content/table/icon_star_fill.png);
+}
+
+div.blist-check-on
+{
+    background: url(images/content/table/check.png);
+}

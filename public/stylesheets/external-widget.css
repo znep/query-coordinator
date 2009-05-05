@@ -1,3 +1,239 @@
+.blist-table
+{
+    background: transparent;
+    color: #333333;
+    font-family: arial, sans-serif;
+    font-size: 13px;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    left: 6px;
+    bottom: 36px;
+}
+
+.blist-table-title-tl
+{
+    padding-left: 8px;
+    background: transparent url(/stylesheets/images/content/table/title_tl.png) no-repeat scroll left top;
+}
+
+.blist-table-title-tr
+{
+    padding-right: 8px;
+    background: transparent url(/stylesheets/images/content/table/title_tr.png) no-repeat top right;
+}
+
+.blist-table-title
+{
+    background: transparent url(/stylesheets/images/content/table/title_t.png) repeat-x top;
+    height: 28px;
+    padding-left: 4px;
+}
+
+.blist-table-name
+{
+    height: 28px;
+    line-height: 28px;
+    font-size: 16px;
+}
+
+.blist-table-filter-l
+{
+    right: 4px;
+    margin-top: 3px;
+    padding-left: 11px;
+    height: 23px;
+    background: transparent url(/stylesheets/images/common/find_input_cap.png) no-repeat scroll center left;
+    margin-right: 4px;
+}
+
+.blist-table-filter-r
+{
+    padding-right: 31px;
+    height: 23px;
+    background: transparent url(/images/find_button.png) no-repeat scroll center right;
+}
+
+input.blist-table-filter
+{
+    border: solid 1px #cacaca;
+    border-left: none;
+    border-right: none;
+    padding: 2px 0 0 0;
+    background: white;
+    font-size: 14px;
+    height: 19px;
+    width: 160px;
+    color: #333333;
+}
+
+.blist-table-clear-filter
+{
+    right: 35px;
+    top: 4px;
+}
+
+
+.blist-table .example
+{
+    color: #999999;
+    font-style: italic;
+}
+
+.blist-table-header-scrolls
+{
+    background-color: #e2e2e2;
+    border: solid 1px #cacaca;
+    border-bottom: none;
+}
+
+.blist-table-header
+{
+    height: 24px;
+}
+
+.blist-table-scrolls
+{
+    border: solid 1px #cacaca;
+    border-top: none;
+}
+
+.blist-tr-even .blist-td
+{
+    background-color: #e8ebf6;
+}
+
+.blist-th
+{
+    padding-left: 4px;
+    padding-right: 4px;
+    border-left: solid 1px #dddddd;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Ensure enough specificity to override height in generated styles */
+.blist-table .blist-th
+{
+    height: 26px;
+    line-height: 26px;
+}
+
+.blist-td
+{
+    padding: 4px;
+    border-right: solid 1px #dddddd;
+    border-bottom: solid 1px #dddddd;
+}
+
+.blist-td-header
+{
+    font-weight: bold;
+}
+
+div.blist-table-expander
+{
+    border-left: solid 1px #cacaca;
+    border-top: solid 1px #cacaca;
+    background-color: #fffad9;
+}
+
+.blist-table-handle
+{
+    padding: 4px;
+    font-size: 11px;
+    border: solid 1px #dddddd;
+    border-top: 0;
+    background-color: #eeeeee;
+    border-left: none;
+    color: #333399;
+    text-align: right;
+}
+
+.blist-table .blist-table-corner
+{
+    border-left: none;
+}
+
+.blist-th .sort
+{
+    width: 12px;
+    background: transparent url(/stylesheets/images/content/table/icon_sort_down.png) right no-repeat;
+}
+
+.blist-th .sort-desc
+{
+    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
+}
+
+div.blist-td p
+{
+    margin: 0 0 6px 0;
+    padding: 0;
+}
+
+div.blist-td p:last-child
+{
+    margin-bottom: 0;
+}
+
+img.blist-table-option-icon
+{
+    padding-right: 4px;
+    padding-bottom: -1px;
+}
+
+.blist-table .blist-hot
+{
+}
+
+.blist-table a
+{
+    text-decoration: none;
+}
+
+.blist-table a:hover
+{
+    text-decoration: underline;
+}
+
+div.blist-checkbox
+{
+    background: no-repeat scroll center center;
+}
+
+div.blist-star-on
+{
+    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
+}
+
+div.blist-check-on,
+div.blist-boolean_checkbox-on
+{
+    background-image: url(/stylesheets/images/content/table/check.png);
+}
+
+.blist-table-footer-bl {
+    background: transparent url(/stylesheets/images/content/table/title_bl.png) no-repeat left bottom;
+    padding-left: 8px;
+    position: absolute;
+    bottom: 31px;
+    left: 6px;
+    right: 6px;
+    height: 6px;
+}
+
+.blist-table-footer-br {
+    padding-right: 8px;
+    background: transparent url(/stylesheets/images/content/table/title_br.png) no-repeat bottom right;
+}
+
+.blist-table-footer {
+    background: transparent url(/stylesheets/images/content/table/title_b.png) repeat-x bottom;
+    height: 6px;
+    padding-left: 4px;
+}
+
 .widgetFooter
 {
     bottom: 0;

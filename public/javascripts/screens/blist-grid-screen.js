@@ -359,7 +359,8 @@ $(function ()
     var readMode = window.location.search.indexOf('mode=read') >= 0;
     if (readMode && blistGridNS.viewId)
     {
-        $('#readGrid').blistTable({manualResize: true, showTitle: false})
+        $('#readGrid').blistTable({generateHeights: false,
+            manualResize: true, showTitle: false})
             .blistModel()
             .ajax({url: '/views/' + blistGridNS.viewId + '/rows.json',
                 dataType: 'json'});

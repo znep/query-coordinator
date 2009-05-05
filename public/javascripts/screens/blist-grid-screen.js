@@ -243,7 +243,7 @@ blist.blistGrid.mainMenuHandler = function(event)
 {
     var $target = $(event.currentTarget);
     var href = $target.attr('href');
-    if (href[0] != '#')
+    if (href.slice(0, 1) != '#')
     {
         return;
     }

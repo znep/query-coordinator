@@ -525,7 +525,7 @@ blist.namespace.fetch('blist.data');
             var toFilter = configureFilter(filter);
 
             // If there's nothing to filter, return now
-            if (!toFilter)
+            if (!toFilter || !filterFn)
                 return;
 
             // Filter

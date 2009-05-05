@@ -26,6 +26,7 @@
 .blist-table-title
 {
     background: transparent url(/stylesheets/images/content/table/title_t.png) repeat-x top;
+    height: 28px;
     padding-left: 4px;
 }
 

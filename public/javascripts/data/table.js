@@ -526,7 +526,7 @@
 
             // Measure width of the handle and height and width of the cell
             handleDigits = calculateHandleDigits(model);
-            measureUtilDOM.innerHTML = '<div>x</div>';
+            measureUtilDOM.innerHTML = '<div class="blist-table-handle">x</div>';
             var measuredInnerDims = { width: measureUtil.width(), height: measureUtil.height() };
             measureUtilDOM.innerHTML = '<div class="blist-td">x</div>';
             var measuredOuterDims = { width: measureUtil.width(), height: measureUtil.height() };
@@ -544,9 +544,15 @@
             measureUtilDOM.innerHTML = '<div class="blist-table-handle">' + dummyHandleText + '</div>';
             var handleOuterWidth = measureUtil.width();
             var handleWidth = $(measureUtilDOM.firstChild).width();
-            handleStyle.height = rowHeight + 'px';
+            if (options.generateHeights)
+            {
+                handleStyle.height = rowHeight + 'px';
+            }
             handleStyle.width = handleWidth + 'px';
-            cellStyle.height = rowHeight + 'px';
+            if (options.generateHeights)
+            {
+                cellStyle.height = rowHeight + 'px';
+            }
 
             // These variables are available to the rendering function
             var contextVariables = {
@@ -563,7 +569,10 @@
                 var col = columns[i];
                 col.left = pos;
                 colStyles[i].width = columns[i].width + 'px';
-                colStyles[i].height = rowHeight + 'px';
+                if (options.generateHeights)
+                {
+                    colStyles[i].height = rowHeight + 'px';
+                }
                 pos += columns[i].width + paddingX;
 
                 // Add rendering information to the rendering function
@@ -879,6 +888,7 @@
     }
 
     var blistTableDefaults = {
+        generateHeights: true,
         manualResize: false,
         showTitle: true
     };

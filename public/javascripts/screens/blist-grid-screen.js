@@ -168,7 +168,7 @@ blist.blistGrid.flashPopupClickHandler = function (event)
     event.preventDefault();
     var href = $(event.currentTarget).attr('href');
     var popup = '';
-    if (href[0] == '#')
+    if (href.slice(0, 1) == '#')
     {
         popup = href.slice(1);
     }

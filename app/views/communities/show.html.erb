@@ -35,23 +35,11 @@
         <div class="pageBlockHeaderSide">
           <h2>Community Activity</h2>
           <ul class="myNetworkList">
-            <%#- @network_views.each do |view| -%>
-              <li class="clearfix">
-                <a href="#">Kevin Merritt</a> created <a href="#">Wines of Napa</a>
+            <%- @activities.each do |activity| -%>
+              <li>
+                <%= get_html_for_activity(activity) %>
               </li>
-              <li class="clearfix">
-                <a href="#">Karla Etten</a> joined <%= t(:blist_company) %>
-              </li>
-              <li class="clearfix">
-                <a href="#">Alex Yeh</a> created the pick-list "Complete Protein Stuff and Things"
-              </li>
-              <li class="clearfix">
-                <a href="#">Zana Moa</a> copied <a href="#">Venture Capital Investments in Seattle</a>
-              </li>
-              <li class="clearfix">
-                <a href="#">Kyle Webb</a> exported <a href="#">Project</a>
-              </li>
-            <%#- end -%>
+            <%- end -%>
           </ul>
           <p class="moreLinkContainer">
             <%= link_to("More", activities_community_url) %>

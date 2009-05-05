@@ -303,9 +303,11 @@
     <h2 class="panelHeader">
       <%= pluralize(view.filters.length, "Filtered View") %>
     </h2>
+    <%- if is_owner -%>
     <ul class="headerActions actionButtons swfItem">
-      <li><%= link_to("Create", view.href + "?popup=SaveLens", :class => "arrowButton") %></li>
+      <li><%= link_to("Create", view.href + "?popup=SaveLens", :class => "arrowButton showFlashPopup") %></li>
     </ul>
+    <%- end -%>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>

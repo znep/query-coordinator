@@ -2,10 +2,16 @@ $(function ()
 {
     $('a:not([href^=#]):not(.noInterstitial)').live('click', function (e)
     {
-        e.preventDefault();
-        var $link = $(e.originalTarget);
+        var $link = $(this);
         var href = $link.attr('href');
-        if (href[0] == '/')
+        // IE sticks the full URL in the href, so we didn't filter out local URLs
+        if (href.indexOf(location) == 0)
+        {
+            return;
+        }
+
+        e.preventDefault();
+        if (href.slice(0, 1) == '/')
         {
             href = location.host + href;
         }

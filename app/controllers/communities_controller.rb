@@ -20,6 +20,7 @@ class CommunitiesController < SwfController
     
     @carousel_members = User.find({ :featured => true, :limit => 10 }, true);
     
+    @activities = Activity.find(5)
   end
   
   def filter
@@ -65,7 +66,8 @@ class CommunitiesController < SwfController
   end
   
   def activities
-    
+    @community_activity = Activity.find()
+    @contacts_activity = nil
   end
 
 end

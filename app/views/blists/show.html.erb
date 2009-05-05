@@ -5,8 +5,8 @@
 <% end %>
 
 <div id='overlay'></div>
-<%- is_owner = current_user && @view.owner.id == current_user.id -%>
-<%- can_edit = @view.can_edit(current_user ? current_user.id : '') -%>
+<%- is_owner = current_user && @view && @view.owner.id == current_user.id -%>
+<%- can_edit = @view && @view.can_edit(current_user ? current_user.id : '') -%>
 
 <div class="scrollContentColumn">
   <div id='lensContainer' class='mainContent tableView'>

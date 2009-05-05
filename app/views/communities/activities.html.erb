@@ -21,53 +21,25 @@
           <div class="activityColumn"><div class="activityColumnInner">
             <h2>Community Activity</h2>
             <ul class="activityList">
-              <li class="clearfix">
-                <a href="#" class="profileImageLink"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Kevin Merritt</a> created <a href="#">Wines of Napa</a> 15 min ago
-              </li>
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Karla Etten</a> joined <%= t(:blist_company) %> about an hour ago
-              </li>
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Alex Yeh</a> created the pick-list "Complete Protein Stuff and Things" 2 hours ago
-              </li>
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Zana Moa</a> copied <a href="#">Venture Capital Investments in Seattle</a> 3 hours ago
-              </li>
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Kyle Webb</a> exported <a href="#">Project</a> 1 day ago
-              </li>
+              <%- @community_activity.each do |activity| -%>
+                <li>
+                  <%= get_html_for_activity(activity, "full") %>
+                </li>
+              <%- end -%>
             </ul>
           </div></div>
+          <%- if @contacts_activity && @contacts_activity.length > 0 -%>
           <div class="activityColumn last"><div class="activityColumnInner">
             <h2>Your Contacts Activity</h2>
             <ul class="activityList">
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Kevin Merritt</a> created <a href="#">Wines of Napa</a> 15 min ago
-              </li>
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Karla Etten</a> joined <%= t(:blist_company) %> about an hour ago
-              </li>
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Alex Yeh</a> created the pick-list "Complete Protein Stuff and Things" 2 hours ago
-              </li>
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Zana Moa</a> copied <a href="#">Venture Capital Investments in Seattle</a> 3 hours ago
-              </li>
-              <li class="clearfix">
-                <a href="#"><img src="/images/large-profile.png" width="40" height="40" alt="profile" /></a>
-                <a href="#">Kyle Webb</a> exported <a href="#">Project</a> 1 day ago
-              </li>
+              <%- @contacts_activity.each do |activity| -%>
+                <li>
+                  <%= get_html_for_activity(activity, "full") %>
+                </li>
+              <%- end -%>
             </ul>
           </div></div>
+          <%- end -%>
         </div>
       
       </div>

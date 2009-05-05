@@ -25,12 +25,6 @@ class User < Model
 
     dhash.to_json
   end
-  
-  def login
-    # Anonymous users don't have their login disclosed, so use their user ID 
-    # in place of it
-    return login || id
-  end
 
   def displayState
     state.nil? ? '' : @@states[state.upcase]

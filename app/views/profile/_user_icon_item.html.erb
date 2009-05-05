@@ -1,7 +1,7 @@
 <%- contact = user_icon_item -%>
 
 <li>
-  <a href="<%= profile_url(contact.login) %>", title="<%= h(contact.displayName) %>">
+  <a href="<%= profile_url(contact.id) %>", title="<%= h(contact.displayName) %>">
     <img src="<%= contact.profile_image_path("small") %>" width="24" height="24"
     alt="<%= h(contact.displayName) %>" />
   </a>

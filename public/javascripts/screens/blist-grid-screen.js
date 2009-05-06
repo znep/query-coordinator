@@ -271,9 +271,6 @@ blist.blistGrid.mainMenuHandler = function(event)
         case 'picklistBrowser':
             blist.util.flashInterface.showPopup('PickListBrowser');
             break;
-        case 'print':
-            blist.util.flashInterface.showPopup('PrintDialog');
-            break;
         case 'email':
             blist.util.flashInterface.showPopup('EmailDialog');
             break;

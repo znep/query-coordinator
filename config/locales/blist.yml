@@ -1,13 +1,13 @@
 blist:
   page_title: blist | share your weblists
-  my_home_title: My blist
+  my_home_title: My datasets
   discover_nav_title: Discover
-  search_prompt_text: Search for blists, contacts &amp; help
-  discover_search_intro: Search for blists
-  discover_header_intro: Discover useful, unique and unusual datasets created by the blist community. View or copy and use for yourself!
-  discover_carousel_header: Featured blists
-  discover_popular_content_header: Popular blists
-  community_header_intro: Welcome to the blist Community! Here you can find other people that share your interests along any topic.
+  search_prompt_text: Search for Data, contacts &amp; help
+  discover_search_intro: Search for Data
+  discover_header_intro: Discover useful, unique and unusual datasets created by the community.
+  discover_carousel_header: Featured Datasets
+  discover_popular_content_header: Popular Datasets
+  community_header_intro: Welcome to the Community! Here you can find other people that share your interests along any topic.
   blist_name: dataset
-  blists_name: datasets
+  blists_name: dataset
   blist_company: blist

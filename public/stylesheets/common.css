@@ -97,6 +97,13 @@ form.search p
     padding-left: 10px;
     padding-right: 31px;
 }
+form.search.large p
+{
+    background-image: url(/stylesheets/images/common/find_input_cap_large.png);
+    padding-left: 17px;
+    padding-right: 40px;
+}
+
 
 form.search input
 {
@@ -112,12 +119,23 @@ form.search input[type="text"]
     padding: 3px 0 0;
     width: 100%;
 }
+form.search.large input[type="text"]
+{
+    font-size: 2.4em;
+    height: 32px;
+}
 
 form.search input.submit
 {
     height: 23px;
     margin-right: -31px;
     width: 31px;
+}
+form.search.large input.submit
+{
+    height: 37px;
+    margin-right: -40px;
+    width: 40px;
 }
 
 /********************

@@ -39,6 +39,7 @@ $(function ()
 {
     $("#featuredCarousel").jcarousel({
         visible: 2,
+        wrap: 'both',
         initCallback: function()
         {
             $(".jcarousel-skin-discover").hide().css("visibility", "visible").fadeIn("slow");

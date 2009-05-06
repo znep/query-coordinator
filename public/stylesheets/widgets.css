@@ -1207,16 +1207,17 @@ table.gridList tr.filteredOut
     padding-left: 3em;
     width: 30em;
 }
-.pageBlockSearch p
+.pageBlockSearch p.searchIntro
 {
-    font-size: 1em;
-    margin-bottom: .3em;
+    color: #666;
+    font-size: 1.2em;
+    margin-bottom: .25em; /* 3px */
+    margin-left: .8333em; /* 10px */
 }
 
 .pageBlockHeaderContent
 {
     clear: both;
-    padding-top: 1em;
 }
 
 

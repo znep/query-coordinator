@@ -14,11 +14,11 @@
         <p><%= t(:community_header_intro) %></p>
       </div>
       <div class="pageBlockSearch">
-        <p>Search for People</p>
-        <% form_tag(community_url, :class => "search") do %>
+        <p class="searchIntro">Search for People</p>
+        <% form_tag(community_url, :class => "search large") do %>
           <p>
             <%= text_field_tag("search", @community_search, :class => "textPrompt", :title => "Search") %>
-            <%= image_submit_tag("find_button.png", :name => "communitySubmit", :class => "submit") %>
+            <%= image_submit_tag("find_button_large.png", :name => "communitySubmit", :class => "submit") %>
           </p>
         <% end %>
       </div>

@@ -81,8 +81,8 @@ class CommunitiesController < ApplicationController
   end
   
   def activities
-    @community_activity = Activity.find()
-    @contacts_activity = nil
+    @community_activity = Activity.find({:maxResults => 13})
+    @contacts_activity = Activity.find({:maxResults => 13, :inNetwork => true})
   end
 
 end

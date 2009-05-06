@@ -344,7 +344,7 @@ blist.namespace.fetch('blist.data');
 
                 // Apply filtering and grouping (filtering calls grouping so we never need to call both)
                 if (filterFn)
-                    doFilter(rows);
+                    doFilter(active);
                 else if (groupFn)
                     doGroup();
                 
@@ -468,9 +468,9 @@ blist.namespace.fetch('blist.data');
 
             // If there's an active filter, or grouping function, re-apply now that we're sorted
             if (filterFn)
-                doFilter(rows);
+                doFilter(active);
             else if (groupFn)
-                doGroup(rows);
+                doGroup();
 
             // Notify listeners
             dataChange();
@@ -533,7 +533,7 @@ blist.namespace.fetch('blist.data');
                 // Filter, but only after a short timeout
                 filterTimer = setTimeout(function() {
                     window.clearTimeout(filterTimer);
-                    doFilter(toFilter || rows);
+                    doFilter(toFilter || active);
                     dataChange();
                 }, 250);
             } else {
@@ -553,7 +553,7 @@ blist.namespace.fetch('blist.data');
                     return null;
 
                 // Clear the filter if it contains less than the minimum characters
-                if (filter.length < curOptions.filterMinChars) {
+                if (filter.length < curOptions.filterMinChars || filter.length == 0) {
                     filterFn = null;
                     filterText = "";
                     active = rows;
@@ -582,7 +582,8 @@ blist.namespace.fetch('blist.data');
                     }
                 }
                 filterParts.push("; });");
-                filterFn = eval(filterParts.join(''));
+                filterFn = new Function('regexp',
+                    'return ' + filterParts.join(''))(regexp);
 
                 // Filter the current filter set if the filter is a subset of the current filter
                 if (filter.substring(0, filterText.length) == filterText)

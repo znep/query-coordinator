@@ -347,7 +347,7 @@
             $nameLabel = $title.find('.blist-table-name');
             $filterBox = $title
                 .find('.blist-table-filter')
-                .keypress(applyFilter)
+                .keydown(applyFilter)
                 .change(applyFilter)
                 .example('Find Inside');
             $title.find('.blist-table-clear-filter')
@@ -646,10 +646,13 @@
             header.html(html.join(''));
 
             $(".blist-th", header).each(function(index) {
-                if (!index)
+                if (!index && options.showRowNumbers)
                     // Skip the header handle
                     return;
-                index -= 1;
+                if (options.showRowNumbers)
+                {
+                    index -= 1;
+                }
                 columns[index].dom = this;
                 $(this).click(function() { sort(index) });
             });

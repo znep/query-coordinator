@@ -59,14 +59,14 @@ blist.namespace.fetch('blist.data.types');
      */
     var removeTags = function(text) {
         return ((text || '') + '').replace(MATCHES_TAGS, '');
-    }
+    };
 
 
     /*** SORT FUNCTION GENERATORS ***/
-    
+
     var sortGenCore = function(compare) {
-        return eval("(function(a, b) { "  + compare + " })")
-    }
+        return new Function("a", "b", compare);
+    };
 
     var sortGenText = function(a, b) {
         return sortGenCore(

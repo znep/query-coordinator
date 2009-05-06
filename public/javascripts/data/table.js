@@ -622,7 +622,7 @@
                 $nameLabel.html(model.title());
             }
         }
-        
+
         /**
          * Create column header elements for the current row configuration and install event handlers.
          */
@@ -638,9 +638,14 @@
                 html.push(
                     '<div class="blist-th ',
                     !i ? 'blist-th-first ' : '',
+                    col.type + ' ',
                     colClasses[i],
                     cls,
-                    '"><span class="blist-th-name">',
+                    '" title="',
+                    col.name == null ? '' : escape(col.name),
+                    '">',
+                    '<span class="blist-th-icon"></span>',
+                    '<span class="blist-th-name">',
                     col.name == null ? '' : escape(col.name),
                     '</span></div>'
                 );

@@ -21,10 +21,11 @@ blist.discover.sortSelectChangeHandler = function (event)
     event.preventDefault();
     
     var $sortSelect = $(this);
-    var sortUrl = $sortSelect.closest("form").attr("action") + "&sort_by=" + $sortSelect.val();
+    var sortUrl = $sortSelect.closest("form").attr("action");
     
     $.Tache.Get({ 
         url: sortUrl,
+        data: {"sort_by": $sortSelect.val()},
         success: function(data)
         {
             $sortSelect.closest(".tabContentContainer").html(data);

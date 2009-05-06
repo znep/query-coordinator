@@ -1,5 +1,5 @@
 class CommunitiesController < SwfController
-  skip_before_filter :require_user, :only => [:show, :activities]
+  skip_before_filter :require_user, :only => [:show, :activities, :filter]
 
   PAGE_SIZE = 10
   
@@ -27,6 +27,18 @@ class CommunitiesController < SwfController
     type = params[:type]
     filter = params[:filter]
     page = params[:page] || 1
+    sort_by_selection = params[:sort_by] || "ACTIVITY"
+    
+    sort_by = sort_by_selection
+    is_asc = false
+    case sort_by_selection
+    when "ALPHA"
+      is_asc = true
+    when "ALPHA_DESC"
+      sort_by = "ALPHA"
+    when "LAST_LOGGED_IN"
+      is_asc = true
+    end 
     
     opts = Hash.new
     opts.update({:page => page, :limit => PAGE_SIZE})
@@ -34,6 +46,8 @@ class CommunitiesController < SwfController
       when "TOPMEMBERS" then opts.update({:topMembers => true})
       when "TOPUPLOADERS"then opts.update({:topUploaders => true})
     end
+    
+    opts.update({:sortBy => sort_by, :isAsc => is_asc})
     
     tab_title = type == "ALLMEMBERS" ? "All Members" : (type == "TOPMEMBERS" ? "Top Members" : "Top Uploaders")
     unless(filter.nil?)
@@ -59,7 +73,8 @@ class CommunitiesController < SwfController
             :members_total => @filtered_members_total,
             :current_page => page.to_i,
             :type => type,
-            :current_filter => filter
+            :current_filter => filter,
+            :sort_by => sort_by_selection
           })
       }
     end

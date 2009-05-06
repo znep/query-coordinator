@@ -136,8 +136,8 @@ div.blist-table-expander .blist-td
 
 .blist-th .sort
 {
+    bottom: 0;
     position: absolute;
-    top: 0;
     right: 2px;
 }
 

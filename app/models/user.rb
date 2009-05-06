@@ -1,5 +1,5 @@
 class User < Model
-  cattr_accessor :current_user, :states, :countries
+  cattr_accessor :current_user, :states, :countries, :sorts
   attr_accessor :session_token
 
   non_serializable :displayName
@@ -387,4 +387,14 @@ class User < Model
             "ZM" => "Zambia",
             "ZW" => "Zimbabwe"
   }
+  
+  @@sorts = [
+    ["ACTIVITY", "Activity Score"],
+    ["ALPHA", "A - Z"],
+    ["ALPHA_DESC", "Z - A"],
+    ["NUM_OF_FOLLOWERS", "# of Followers"],
+    ["NUM_OF_FRIENDS", "# of Friends"],
+    ["LAST_LOGGED_IN", "Last Login Date"],
+    ["NUM_OF_PUBLIC_BLISTS", "# of Public Data Sets"]
+  ]
 end

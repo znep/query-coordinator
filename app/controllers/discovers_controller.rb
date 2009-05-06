@@ -17,13 +17,23 @@ class DiscoversController < SwfController
     
     @carousel_views = View.find_filtered({ :featured => true, :limit => 10 })
     @network_views = View.find_filtered({ :inNetwork => true, :limit => 5 })
-
   end
 
   def filter
     type = params[:type]
     filter = params[:filter]
     page = params[:page] || 1
+    sort_by_selection = params[:sort_by] || (type == "POPULAR" ? "POPULAR" : "LAST_CHANGED")
+    
+    sort_by = sort_by_selection
+    is_asc = true
+    case sort_by_selection
+    when "ALPHA_DESC"
+      sort_by = "ALPHA"
+      is_asc = false
+    when "NUM_OF_VIEWS", "AVERAGE_RATING", "COMMENTS"
+      is_asc = false
+    end
     
     opts = Hash.new
     opts.update({:page => page, :limit => PAGE_SIZE})
@@ -48,6 +58,8 @@ class DiscoversController < SwfController
       tab_title += " #{t(:blists_name)}"
     end
     
+    opts.update({:sortBy => sort_by, :isAsc => is_asc})
+    
     @page_size = PAGE_SIZE
     @filtered_views = View.find_filtered(opts)
     @filtered_views_total = View.find_filtered(opts.update({:count => true})).count
@@ -63,7 +75,8 @@ class DiscoversController < SwfController
             :views_total => @filtered_views_total,
             :current_page => page.to_i,
             :type => type,
-            :current_filter => filter
+            :current_filter => filter,
+            :sort_by => sort_by_selection
           })
       }
     end

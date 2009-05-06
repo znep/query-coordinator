@@ -3,18 +3,12 @@
   <div class="tabContent">
     <h2><%= tab_title %></h2>
     <div class="contentSort">
-      <p>
-        Sort by 
-        <select>
-          <option value="POPULAR">Popularity</option>
-          <option value="ALPHA">A - Z</option>
-          <option value="ALPHA_DESC">Z - A</option>
-          <option value="VIEWS"># of times Viewed</option>
-          <option value="COMMENTS"># of Comments</option>
-          <option value="LAST_CHANGED">Date</option>
-          <option value="CATEGORY">Category</option>
-        </select>
-      </p>
+      <% form_tag(filter_discover_url(:type => type, :filter => current_filter), :class => "sortForm") do %>
+        <p>
+          Sort by
+          <%= select_tag("sort_by", sort_select_options(sort_by), :id => "sort_by_" + type) %>
+        </p>
+      <% end %>
     </div>
   
     <ul class="discoverContentList">
@@ -22,7 +16,7 @@
     </ul>
     
     <div class="viewPager">
-      <%= create_pagination(views_total, @page_size, current_page, filter_discover_url({:type => type, :filter => current_filter})) %>
+      <%= create_pagination(views_total, @page_size, current_page, filter_discover_url({:type => type, :filter => current_filter, :sort_by => sort_by})) %>
     </div>
   </div>
 </div></div></div>
@@ -33,6 +27,8 @@
     <ul class="filterList">
       <%- if (type == "ALL") -%>
         <li><a href="#most_popular" class="tabLink popular">Most popular</a></li>
+      <%- else -%>
+        <li><a href="#all" class="tabLink all">All <%= t(:blists_name) %></a></li>
       <%- end -%>
       <%- if (!@current_user.nil?) -%>
         <li><%= link_to("In my network", 

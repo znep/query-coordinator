@@ -168,7 +168,7 @@ blist.blistGrid.flashPopupClickHandler = function (event)
     event.preventDefault();
     var href = $(event.currentTarget).attr('href');
     var popup = '';
-    if (href[0] == '#')
+    if (href.slice(0, 1) == '#')
     {
         popup = href.slice(1);
     }
@@ -362,6 +362,7 @@ $(function ()
         $('#readGrid').blistTable({generateHeights: false,
             manualResize: true, showTitle: false})
             .blistModel()
+            .options({filterMinChars: 0})
             .ajax({url: '/views/' + blistGridNS.viewId + '/rows.json',
                 dataType: 'json'});
     }
@@ -458,7 +459,7 @@ $(function ()
     });
 
     $('#lensContainer .headerBar form input[type=text]')
-        .keypress(blistGridNS.jsGridFilter);
+        .keydown(blistGridNS.jsGridFilter);
 
     blistGridNS.hookUpMainMenu();
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),

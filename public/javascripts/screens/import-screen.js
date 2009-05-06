@@ -1,5 +1,7 @@
 $(function ()
 {
+    $("#throbber").hide();
+
     $(".fileInputContainer input[type='file']").change(function()
     {
         $(".fileInputContainer input[type='text']").val($(this).val());
@@ -17,7 +19,7 @@ $(function ()
             if (!(ext && /^(csv)$/.test(ext)))
             {
                 $('.errorMessage')
-                    .html('<p>Please choose a csv file</p>');
+                    .html('Please choose a csv file');
                 $(".fileInputContainer input[type='text']").val('');
                 return false;
             }
@@ -33,13 +35,13 @@ $(function ()
             if (!(ext && /^(csv)$/.test(ext)))
             {
                 $('.errorMessage')
-                    .html('<p>Please choose a csv file</p>');
+                    .html('Please choose a csv file');
                 $(".fileInputContainer input[type='text']").val('');
                 return false;
             }
             else
             {
-                $("#throbber").css("display", "inline");
+                $("#throbber").show();
                 $('.errorMessage').text('');
             }
         },
@@ -48,12 +50,13 @@ $(function ()
             // Errors start with a header, success doesn't.
             if (response.indexOf("<h1>") == 0)
             {
-              $("#throbber").css("display", "none");
+              $("#throbber").hide();
 
               // We don't care what type of error it was, only that there was
               // one. Error format is "<h1>{http error code} Error</h1>\n"
               // followed by the error payload.
               response = response.slice(19, -6);
+              response = response.replace(/\s*\(code <em>\w+<\/em>\)\s*/, '');
               $('.errorMessage')
                 .html("<p><strong>Failed to import that file!</strong><br/></p>" + response);
               return false;

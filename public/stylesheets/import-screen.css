@@ -1,3 +1,10 @@
+.dialogBox .header h1
+{
+    background-image:url(/stylesheets/images/common/upload_icon.png);
+    background-repeat:no-repeat;
+    text-indent: 35px;
+    font-size: 2.25em;
+}
 .import form .fileInputContainer
 {
     display: block;
@@ -24,19 +31,6 @@
     z-index 1;
 }
 
-.import form .fileInput input[type='file']
-{
-    display: block;
-    position: absolute;
-    z-index: 2;
-    margin-left: 100px;
-    width: 255px;
-    height: 2.2em;
-    
-    -moz-opacity:0 ;
-    filter:alpha(opacity: 0);
-    opacity: 0;
-}
 .import form .fileInput .fakeFile input
 {
     float: left;
@@ -67,3 +61,28 @@
     margin-left: 100px;
 }
 
+.import form .submitButton
+{
+    background-color:#656565;
+    background-image:url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
+    background-repeat:no-repeat;
+    float:left;
+    height:21px;
+    overflow:hidden;
+    margin-right: 16px;
+}
+
+.import form .arrowButton
+{
+    width: 100px;
+    background-position:right -168px;
+    background-image:url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
+    background-repeat:no-repeat;
+    color:#FFFFFF;
+    display:block;
+    font-size:1.2em;
+    height:21px;
+    line-height:21px;
+    padding-left:10px;
+    text-decoration:none;    
+}

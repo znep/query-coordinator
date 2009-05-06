@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories
+  cattr_accessor :categories, :sorts
 
 
   def self.find(options = nil, get_all=false)
@@ -219,6 +219,17 @@ class View < Model
     "Business" => "Business",
     "Education" => "Education"
   }
+  
+  @@sorts = [
+    ["POPULAR", "Popularity"],
+    ["AVERAGE_RATING", "Rating"],
+    ["ALPHA", "A - Z"],
+    ["ALPHA_DESC", "Z - A"],
+    ["NUM_OF_VIEWS", "# of times Viewed"],
+    ["COMMENTS", "# of Comments"],
+    ["LAST_CHANGED", "Date"],
+    ["CATEGORY", "Category"]
+  ]
 
   memoize :href
 end

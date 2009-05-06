@@ -1,14 +1,14 @@
+#data-grid
+{
+    margin: 6px;
+}
+
 .blist-table
 {
     background: transparent;
     color: #333333;
     font-family: arial, sans-serif;
     font-size: 13px;
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    left: 6px;
-    bottom: 36px;
 }
 
 .blist-table-title-tl
@@ -45,6 +45,7 @@
     height: 23px;
     background: transparent url(/stylesheets/images/common/find_input_cap.png) no-repeat scroll center left;
     margin-right: 4px;
+    width: 191px;
 }
 
 .blist-table-filter-r
@@ -217,7 +218,7 @@ div.blist-boolean_checkbox-on
     background: transparent url(/stylesheets/images/content/table/title_bl.png) no-repeat left bottom;
     padding-left: 8px;
     position: absolute;
-    bottom: 31px;
+    bottom: 30px;
     left: 6px;
     right: 6px;
     height: 6px;

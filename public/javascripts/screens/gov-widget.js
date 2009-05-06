@@ -26,8 +26,8 @@ $(function ()
         var $inter = $('.interstitial');
         $inter
             .show()
-            .css('left', ($(document).width() - $inter.width())/2)
-            .css('top', ($(document).height() - $inter.height())/2);
+            .css('left', ($(window).width() - $inter.width())/2)
+            .css('top', ($(window).height() - $inter.height())/2);
     });
 
     $('.interstitial a.closeLink').click(function (e)

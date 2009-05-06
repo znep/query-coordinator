@@ -11,6 +11,26 @@ blist.community.filterClickHandler = function (event)
         {
             $filterLink.closest(".tabContentContainer").html(data);
             $(".simpleTabsContainer")[0].scrollIntoView();
+            $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
+        }
+    });
+}
+
+blist.community.sortSelectChangeHandler = function (event)
+{
+    event.preventDefault();
+    
+    var $sortSelect = $(this);
+    var sortUrl = $sortSelect.closest("form").attr("action");
+    
+    $.Tache.Get({ 
+        url: sortUrl,
+        data: {"sort_by": $sortSelect.val()},
+        success: function(data)
+        {
+            $sortSelect.closest(".tabContentContainer").html(data);
+            $(".simpleTabsContainer")[0].scrollIntoView();
+            $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
         }
     });
 }
@@ -34,4 +54,5 @@ $(function ()
     });
     
     $(".filterLink, .pageLink, .prevLink, .nextLink").live("click", communityNS.filterClickHandler);
+    $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
 });

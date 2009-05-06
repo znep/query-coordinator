@@ -22,11 +22,6 @@ blist.util.flashInterface.lensSearch = function (searchText)
     }
 };
 
-blist.util.flashInterface.discoverSearch = function (searchText)
-{
-    flashIntNS.swf().discoverSearch(searchText);
-};
-
 blist.util.flashInterface.showPopup = function (popup)
 {
     if (flashIntNS.swf() != undefined)
@@ -75,11 +70,6 @@ blist.util.flashInterface.eventFired = function (event, data)
 blist.util.flashInterface.updatePageNavigation = function (pageNav)
 {
     $(document).trigger(blist.events.PAGE_LABEL_UPDATED, [pageNav]);
-};
-
-blist.util.flashInterface.updateDiscoverSearch = function (search)
-{
-    $(document).trigger(blist.events.DISCOVER_SEARCH_UPDATED, [search]);
 };
 
 blist.util.flashInterface.openLens = function (viewId, popup)

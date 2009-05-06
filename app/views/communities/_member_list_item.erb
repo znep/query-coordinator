@@ -4,10 +4,10 @@
   <div class="memberImage">
     <%= link_to(
           image_tag(member.profile_image_path("medium"), :size => "65x65",
-          :alt => h(member.displayName)), profile_url(member.login)) %>
+          :alt => h(member.displayName)), profile_url(member.id)) %>
   </div>
   <div class="memberInfo">
-    <h3 class="clipText"><%= link_to(h(member.displayName), profile_url(member.login), :title => h(member.displayName)) %></h3>
+    <h3 class="clipText"><%= link_to(h(member.displayName), profile_url(member.id), :title => h(member.displayName)) %></h3>
     <ul>
       <li><%= h(member.displayLocation) %></li>
       <li><%= h(member.company) %></li>
@@ -31,8 +31,8 @@
         <li>Public blists <strong><%= member.publicBlists %></strong></li>
       </ul>
       <ul class="memberActions actionButtons clearfix">
-        <li><%= link_to("<span>Follow</span>", profile_url(member.login)) %></li>
-        <li class="last"><%= link_to("<span>Profile</span>", profile_url(member.login), :class => "arrowButton") %></li>
+        <li><%= link_to("<span>Follow</span>", profile_url(member.id)) %></li>
+        <li class="last"><%= link_to("<span>Profile</span>", profile_url(member.id), :class => "arrowButton") %></li>
       </ul>
     </div>
   </div>

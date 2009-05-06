@@ -63,7 +63,7 @@
             <span><%= @contact.htmlDescription %></span>
           </div>
           <div class="itemActions">
-            <%= link_to("<span>View profile</span>", profile_url(@contact.login), :class => "action") %>
+            <%= link_to("<span>View profile</span>", profile_url(@contact.id), :class => "action") %>
           </div>
         </dd>
       </dl>
@@ -77,7 +77,7 @@
             <span><%= h(@contact.tag_display_string) %></span>
           </div>
           <div class="itemActions">
-            <%= link_to("<span>View profile</span>", profile_url(@contact.login), :class => "action") %>
+            <%= link_to("<span>View profile</span>", profile_url(@contact.id), :class => "action") %>
           </div>
         </dd>
       </dl>

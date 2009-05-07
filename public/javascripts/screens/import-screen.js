@@ -16,10 +16,10 @@ $(function ()
         name: 'importFileInput',
         onChange: function (file, ext)
         {
-            if (!(ext && /^(csv)$/.test(ext)))
+            if (!(ext && /^(csv|xml)$/.test(ext)))
             {
                 $('.errorMessage')
-                    .html('Please choose a csv file');
+                    .html('Please choose a csv or xml file');
                 $(".fileInputContainer input[type='text']").val('');
                 return false;
             }
@@ -32,18 +32,8 @@ $(function ()
         },
         onSubmit: function (file, ext)
         {
-            if (!(ext && /^(csv)$/.test(ext)))
-            {
-                $('.errorMessage')
-                    .html('Please choose a csv file');
-                $(".fileInputContainer input[type='text']").val('');
-                return false;
-            }
-            else
-            {
-                $("#throbber").show();
-                $('.errorMessage').text('');
-            }
+            $("#throbber").show();
+            $('.errorMessage').text('');
         },
         onComplete: function (file, response)
         {

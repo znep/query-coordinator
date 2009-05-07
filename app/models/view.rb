@@ -109,7 +109,7 @@ class View < Model
   end
 
   def href
-    prefix = self.category || 'blist'
+    prefix = self.category || 'dataset'
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
   end
   

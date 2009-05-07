@@ -25,10 +25,10 @@ blist.contacts.setupTable = function ()
 
 blist.contacts.getItemsType = function()
 {
-    var $contacts = $("#contactList tr[id*='contact']");
+    var $contacts = $("#contactList tr[id*='friend']");
     var $groups = $("#contactList tr[id*='group']");
     
-    var type = $groups.length > 0 ? ($contacts.length > 0 ? "contacts and groups" : "groups") : "contacts";
+    var type = $groups.length > 0 ? ($contacts.length > 0 ? "friends and groups" : "groups") : "friend";
     
     return type;
 }
@@ -36,14 +36,15 @@ blist.contacts.getItemsType = function()
 var contactsInfoNS = blist.namespace.fetch('blist.contacts.infoPane');
 blist.contacts.infoPane.updateSummary = function(numSelect, itemType)
 {
-    // itemType must be either "contact" or "group".
+    // itemType must be either "friend" or "group".
     if (numSelect == 1)
     {
         var $items = $('#contactList').combinationList().selectedItems();
         
         var itemTypeIdArray = $items.attr('id').split(":");
+        var firstType = itemTypeIdArray[0] == "friend" ? "contact" : itemTypeIdArray[0]
         $.Tache.Get({ 
-            url: '/contacts/' + itemTypeIdArray[1] + '/' + itemTypeIdArray[0] + '_detail',
+            url: '/contacts/' + itemTypeIdArray[1] + '/' + firstType + '_detail',
             success: contactsInfoNS.itemDetailSuccessHandler
         });
     }

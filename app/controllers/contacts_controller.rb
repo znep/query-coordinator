@@ -70,7 +70,7 @@ class ContactsController < ApplicationController
     
     multi.each do |item|
       item_array = item.split(':')
-      if (item_array[0] == "contact")
+      if (item_array[0] == "friend")
         contact_ids << item_array[1]
       elsif (item_array[0] == "group")
         group_ids << item_array[1]
@@ -107,7 +107,7 @@ private
     if !params['group'].nil?
       group_obj = Group.find(params['group'])
       cur_contacts = group_obj.users.dup
-    elsif params['type'].nil? || params['type'] == 'contacts' ||
+    elsif params['type'].nil? || params['type'] == 'friend' ||
       !params['untagged'].nil? || !params['tag'].nil? ||
       !params['share_direction'].nil?
       cur_contacts = Contact.find(contacts_args)
@@ -220,7 +220,7 @@ private
       params = Hash.new
     end
     title = 'All '
-    title_type = 'contacts'
+    title_type = 'friends'
 
     parts = Array.new
     if !params['group'].nil?
@@ -238,25 +238,25 @@ private
     end
 
     if !params['untagged'].nil? && params['untagged'] == 'true'
-      title_type = 'contacts and groups'
+      title_type = 'friends and groups'
       parts << 'with no tags'
     end
 
     if !params['untagged'].nil? && params['untagged'] == 'false'
-      title_type = 'contacts and groups'
+      title_type = 'friends and groups'
       parts << 'with any tags'
     end
 
     if !params['tag'].nil?
-      title_type = 'contacts and groups'
+      title_type = 'friends and groups'
       parts << 'tagged "' + params['tag'] + '"'
     end
 
     if !params['type'].nil?
       title_type =
         case params['type']
-        when 'contacts'
-          'contacts'
+        when 'friend'
+          'friends'
         when 'groups'
           'groups'
         end

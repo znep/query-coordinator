@@ -11,12 +11,15 @@ class CommunitiesController < ApplicationController
     
     @all_members_total = User.find({ :limit => PAGE_SIZE, :count => true }, true).count
     @all_members = User.find({ :limit => PAGE_SIZE }, true)
+    @all_members_tags = Tag.find({ :method => "usersTags", :limit => 5 })
     
     @top_members_total = 100
     @top_members = User.find({ :topMembers => true, :limit => PAGE_SIZE, :page => 1 }, true);
+    @top_members_tags = Tag.find({ :method => "usersTags", :topMembers => true, :limit => 5 })
     
     @top_uploaders_total = 100
     @top_uploaders = User.find({ :topUploaders => true, :limit => PAGE_SIZE, :page => 1 }, true);
+    @top_uploaders_tags = Tag.find({ :method => "usersTags", :topUploaders => true, :limit => 5 })
     
     @carousel_members = User.find({ :featured => true, :limit => 10 }, true);
     
@@ -28,6 +31,7 @@ class CommunitiesController < ApplicationController
     filter = params[:filter]
     page = params[:page] || 1
     sort_by_selection = params[:sort_by] || "ACTIVITY"
+    tag = params[:tag]
     
     sort_by = sort_by_selection
     is_asc = false
@@ -42,12 +46,22 @@ class CommunitiesController < ApplicationController
     
     opts = Hash.new
     opts.update({:page => page, :limit => PAGE_SIZE})
+    tag_opts = Hash.new
+    tag_opts.update({ :method => "usersTags", :limit => 5 })
+    
     case type
-      when "TOPMEMBERS" then opts.update({:topMembers => true})
-      when "TOPUPLOADERS"then opts.update({:topUploaders => true})
+      when "TOPMEMBERS"
+        opts.update({:topMembers => true})
+        tag_opts.update({:topMembers => true})
+      when "TOPUPLOADERS"
+        opts.update({:topUploaders => true})
+        tag_opts.update({:topUploaders => true})
     end
     
     opts.update({:sortBy => sort_by, :isAsc => is_asc})
+    if (!tag.nil?)
+      opts.update({:tags => tag})
+    end
     
     tab_title = type == "ALLMEMBERS" ? "All Members" : (type == "TOPMEMBERS" ? "Top Members" : "Top Uploaders")
     unless(filter.nil?)
@@ -62,6 +76,8 @@ class CommunitiesController < ApplicationController
     @filtered_members = User.find(opts, true)
     @filtered_members_total = User.find(opts.update({:count => true})).count
     
+    tag_list = Tag.find(tag_opts)
+    
     respond_to do |format|
       format.html { redirect_to(community_url(params)) }
       format.data { 
@@ -74,7 +90,9 @@ class CommunitiesController < ApplicationController
             :current_page => page.to_i,
             :type => type,
             :current_filter => filter,
-            :sort_by => sort_by_selection
+            :sort_by => sort_by_selection,
+            :tag_list => tag_list,
+            :current_tag => tag
           })
       }
     end

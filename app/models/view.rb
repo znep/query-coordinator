@@ -131,13 +131,13 @@ class View < Model
     end
   end
 
-  def can_edit(user_id)
+  def can_edit()
     data['rights'].include?('write') ||
       data['rights'].include?('add') ||
       data['rights'].include?('delete')
   end
 
-  def can_read(user_id)
+  def can_read()
     data['rights'].include?('read')
   end
 

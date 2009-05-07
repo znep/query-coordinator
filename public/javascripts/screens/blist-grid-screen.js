@@ -351,10 +351,7 @@ blist.blistGrid.jsGridFilter = function (e)
 
 $(function ()
 {
-    // readMode is a temporary hack until the JS grid is in a reasonable state
-    //  to make it the default.
-    var readMode = window.location.search.indexOf('mode=read') >= 0;
-    if (readMode && blistGridNS.viewId)
+    if (blistGridNS.viewId)
     {
         $('#readGrid').blistTable({generateHeights: false,
             manualResize: true, showGhostColumn: true, showTitle: false})
@@ -510,12 +507,4 @@ $(function ()
         loadSWF();
         blistGridNS.sizeSwf();
     });
-    // readMode is a temporary hack; remove this when it goes away
-    if (!readMode)
-    {
-        $('#lensBody').addClass('editMode').removeClass('readMode');
-        $('#readGrid').remove();
-        loadSWF();
-        blistGridNS.sizeSwf();
-    }
 });

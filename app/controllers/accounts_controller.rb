@@ -1,5 +1,5 @@
 class AccountsController < ApplicationController
-  skip_before_filter :require_user, :only => [:new, :create]
+  skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
   def show
   end
 
@@ -66,6 +66,60 @@ class AccountsController < ApplicationController
     else
       flash[:warning] = "We were able to create your account, but couldn't log you in."
       redirect_to login_url
+    end
+  end
+
+  def forgot_password
+    if request.post?
+      req = Net::HTTP::Post.new('/users')
+      req.set_form_data({'method' => 'forgotPassword', 'login' => params[:account][:login]})
+      result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
+        http.request(req)
+      end
+
+      if result.is_a? Net::HTTPSuccess
+        flash[:notice] = "Thank you. An email has been sent to the account on file with further information."
+        redirect_to login_url
+      else
+        flash[:warning] = "There was a problem submitting your password reset request. Please try again."
+      end
+    end
+  end
+
+  def reset_password
+    if request.post?
+      if params[:confirm_password] != params[:password]
+        flash[:notice] = 'Passwords do not match; please try again'
+        return
+      end
+
+      req = Net::HTTP::Post.new('/users')
+      req.set_form_data({'method' => 'resetPassword', 
+                         'uid' => params[:uid], 
+                         'reset_code' => params[:reset_code], 
+                         'password' => params[:password]})
+      result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
+        http.request(req)
+      end
+
+      if result.is_a? Net::HTTPSuccess
+        flash[:notice] = 'Password successfully reset'
+
+        # Awesome; let's log them in.
+        user = User.parse(result.body)
+        @user_session = UserSession.new('login' => user.login, 'password' => params[:password])
+        if @user_session.save
+          redirect_to root_url
+        else
+          # Hmmm. They successfully reset their password, but we couldn't log them in?
+          # Something's very wrong. Let's just put them at the login page and have them
+          # try again. :-(
+          redirect_to login_url
+        end
+      else
+        flash[:warning] = 'There was a problem resetting your password. Please try again.'
+        redirect_to forgot_password_url
+      end
     end
   end
 end

@@ -29,6 +29,7 @@ ActionController::Routing::Routes.draw do |map|
   #     # Directs /admin/products/* to Admin::ProductsController (app/controllers/admin/products_controller.rb)
   #     admin.resources :products
   #   end
+  UID_REGEXP = /\w{4}-\w{4}/
 
   map.resources :contacts,
     :collection => {
@@ -59,11 +60,11 @@ ActionController::Routing::Routes.draw do |map|
     }
   map.connect ':category/:view_name/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
-    :requirements => {:id => /\w{4}-\w{4}/, :view_name => /(\w|-)+/,
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
   map.connect ':category/:view_name/:id', :controller => 'blists',
     :action => 'update', :conditions => { :method => :put },
-    :requirements => {:id => /\w{4}-\w{4}/, :view_name => /(\w|-)+/,
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
   # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
@@ -71,6 +72,9 @@ ActionController::Routing::Routes.draw do |map|
   map.login '/login', :controller => 'user_sessions', :action => 'new'
   map.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
   map.signup '/signup', :controller => 'accounts', :action => 'new'
+  map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'forgot_password'
+  map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'reset_password',
+    :uid => UID_REGEXP
 
   # See how all your routes lay out with "rake routes"
   map.resources :user_sessions

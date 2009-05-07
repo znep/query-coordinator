@@ -28,7 +28,7 @@
     <label for='rememberMe'>Remember me</label>
     </p>
     <div class='footer clearfix'>
-      <a href='#'>Forgot your password / username?</a>
+      <%= link_to "Forgot your password / username?", forgot_password_url %>
       <input type='image' name='submit'
         src='<%= image_path("button_signin.png") %>' />
     </div>

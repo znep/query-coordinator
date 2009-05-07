@@ -1,19 +1,22 @@
 <ul id='mainMenu' class='menu multilevelMenu'>
   <li class='first blist active'>
-    <dl><dt><a href='#menublist'>blist</a></dt>
+    <dl><dt><a href='#menublist'><%= t(:blist_name) %></a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => 'Print this blist...', 'class' => 'print',
-        'href' => '#print', 'swf_item' => true},
-        {'text' => 'Export this blist', 'class' => 'export',
+        {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
+        'href' => "/views/#{@view.id}/rows.pdf?print=true&headers_on_every_page=true"},
+        {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
         {'text' => 'As CSV', 'href' => "/views/#{@view.id}/rows.csv"},
-        {'text' => 'As PDF', 'href' => '#print', 'swf_item' => true}]}},
-        {'text' => 'Email this blist...', 'class' => 'email',
+        {'text' => 'As PDF', 'href' => "/views/#{@view.id}/rows.pdf"},
+        {'text' => 'As JSON', 'href' => "/views/#{@view.id}/rows.json"}
+        ]}},
+        {'text' => "Email this #{t(:blist_name)}...", 'class' => 'email',
         'href' => '#email', 'swf_item' => true},
-        {'text' => 'Copy this blist', 'class' => 'copy', 'href' => '#copy_blist',
+        {'text' => "Copy this #{t(:blist_name)}", 'class' => 'copy',
+        'href' => '#copy_blist',
         'swf_item' => true},
         {'separator' => true, 'swf_item' => true},
-        {'text' => 'Create New blist...', 'class' => 'create',
+        {'text' => "Create New #{t(:blist_name)}...", 'class' => 'create',
         'href' => '#new_blist', 'swf_item' => true },
         # Submenu for Create blist when we support different types
 #        , 'submenu' => {'items' => [
@@ -27,13 +30,11 @@
 #        'href' => '#'}]}
         {'text' => 'Upload...', 'class' => 'import', 'href' => '/import',
         'swf_item' => false},
-        {'text' => 'Find a Template', 'class' => 'findTemplate',
-        'href' => discover_url},
         {'separator' => true},
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
         'submenu' => recent_blists_menu(@view, 5)},
         {'separator' => true, 'owner_item' => true, 'swf_item' => true},
-        {'text' => 'Edit blist permissions...',
+        {'text' => "Edit #{t(:blist_name)} permissions...",
         'class' => 'editPermissions', 'href' => '#permissions',
         'owner_item' => true, 'swf_item' => true}
         ]}, is_owner, can_edit) %>
@@ -134,7 +135,7 @@
   <li class='publish swfItem'>
     <dl><dt><a href='#menuPublish'>Publish</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'section_title' => 'Embed blists on the Web'},
+      {'section_title' => "Embed #{t(:blists_name)} on the Web"},
         {'text' => 'Grid Only', 'class' => 'grid', 'href' => '#publish_grid'},
         # Not supported
 #        {'text' => 'Grid + Page', 'class' => 'gridPage', 'href' => '#'},

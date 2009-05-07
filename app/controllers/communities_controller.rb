@@ -1,4 +1,4 @@
-class CommunitiesController < SwfController
+class CommunitiesController < ApplicationController
   skip_before_filter :require_user, :only => [:show, :activities, :filter]
 
   PAGE_SIZE = 10
@@ -81,8 +81,8 @@ class CommunitiesController < SwfController
   end
   
   def activities
-    @community_activity = Activity.find()
-    @contacts_activity = nil
+    @community_activity = Activity.find({:maxResults => 13})
+    @contacts_activity = Activity.find({:maxResults => 13, :inNetwork => true})
   end
 
 end

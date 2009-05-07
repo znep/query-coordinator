@@ -1,4 +1,4 @@
-class DiscoversController < SwfController
+class DiscoversController < ApplicationController
   skip_before_filter :require_user, :only => [:show, :filter]
   
   PAGE_SIZE = 10
@@ -82,17 +82,5 @@ class DiscoversController < SwfController
     end
     
   end
-
-  def swf
-    @body_id = 'discoverBody'
-    @body_class = 'discover'
-    @start_screen = 'discover'
-    @discover_search = params[:search]
-    @swf_url = swf_url('v3embed.swf')
-
-    render(:template => "discovers/show_swf")
-  end
-  
-  
 
 end

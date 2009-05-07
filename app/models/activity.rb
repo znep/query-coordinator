@@ -1,9 +1,9 @@
 class Activity < Model
   
-  def self.find(limit = nil)
+  def self.find(opts = nil)
     path = "/activities.json"
-    if (!limit.nil?)
-      path += "?maxResults=#{limit}"
+    if (opts)
+      path += "?#{opts.to_param}"
     end
     get_request(path)
   end

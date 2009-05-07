@@ -13,11 +13,11 @@
         <p><%= t(:discover_header_intro) %></p>
       </div>
       <div class="pageBlockSearch">
-        <p><%= t(:discover_search_intro) %></p>
-        <% form_tag(discover_url, :class => "search") do %>
+        <p class="searchIntro"><%= t(:discover_search_intro) %></p>
+        <% form_tag(discover_url, :class => "search large") do %>
           <p>
             <%= text_field_tag("search", @discover_search, :class => "textPrompt", :title => "Search") %>
-            <%= image_submit_tag("find_button.png", :name => "discoverSubmit", :class => "submit") %>
+            <%= image_submit_tag("find_button_large.png", :name => "discoverSubmit", :class => "submit") %>
           </p>
         <% end %>
       </div>

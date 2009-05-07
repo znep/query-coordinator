@@ -529,10 +529,10 @@
 
             // Measure width of the handle and height and width of the cell
             handleDigits = calculateHandleDigits(model);
-            measureUtilDOM.innerHTML = '<div>x</div>';
-            var measuredInnerDims = { width: measureUtil.width(), height: measureUtil.height() };
             measureUtilDOM.innerHTML = '<div class="blist-td">x</div>';
-            var measuredOuterDims = { width: measureUtil.width(), height: measureUtil.height() };
+            var $measureDiv = $(measureUtilDOM.firstChild);
+            var measuredInnerDims = { width: $measureDiv.width(), height: $measureDiv.height() };
+            var measuredOuterDims = { width: $measureDiv.outerWidth(), height: $measureDiv.outerHeight() };
 
             // Record the amount of padding and border in a table cell
             paddingX = measuredOuterDims.width - measuredInnerDims.width;
@@ -545,8 +545,9 @@
             // Update the handle style with proper dimensions
             var dummyHandleText = Math.min(model.rows().length, 1000);
             measureUtilDOM.innerHTML = '<div class="blist-table-handle">' + dummyHandleText + '</div>';
-            var handleOuterWidth = measureUtil.width();
-            var handleWidth = $(measureUtilDOM.firstChild).width();
+            var $measureHandle = $(measureUtilDOM.firstChild);
+            var handleOuterWidth = $measureHandle.outerWidth();
+            var handleWidth = $measureHandle.width();
             if (options.generateHeights)
             {
                 handleStyle.height = rowHeight + 'px';
@@ -621,7 +622,7 @@
                 $nameLabel.html(model.title());
             }
         }
-        
+
         /**
          * Create column header elements for the current row configuration and install event handlers.
          */
@@ -636,9 +637,15 @@
                 var cls = col.cls ? ' blist-th-' + col.cls : '';
                 html.push(
                     '<div class="blist-th ',
+                    !i ? 'blist-th-first ' : '',
+                    col.type + ' ',
                     colClasses[i],
                     cls,
-                    '"><span class="blist-th-name">',
+                    '" title="',
+                    col.name == null ? '' : escape(col.name),
+                    '">',
+                    '<span class="blist-th-icon"></span>',
+                    '<span class="blist-th-name">',
                     col.name == null ? '' : escape(col.name),
                     '</span></div>'
                 );

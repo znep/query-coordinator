@@ -1,56 +1,86 @@
 .blist-table
 {
-    background: transparent;
-    font-family: arial, sans-serif;
     color: #333333;
 }
 
 .blist-table-header-scrolls
 {
-    background-color: #e2e2e2;
-    border: solid 1px #cacaca;
-    border-bottom: none;
+    background: #e8e8e8 url(/stylesheets/images/content/table/header_right_top.png) no-repeat right top;
 }
 
 .blist-table-header
 {
-    height: 2.4em;
-}
-
-.blist-table-scrolls
-{
-    border: solid 1px #cacaca;
-    border-top: none;
+    height: 3.5em;
 }
 
 .blist-th
 {
-    padding-left: 0.4em;
-    padding-right: 0.4em;
-    border-left: solid 1px #dddddd;
+    border-left: solid 1px #e2e2e2;
+    font-size: 1.2em;
+    height: 2.9166em; /* 35px */
+    line-height: 2.9166em;
+    padding: 0 0.3333em; /* 4px */
+    text-overflow: ellipsis;
+}
+
+.blist-th-first
+{
+    background: url(/stylesheets/images/content/table/header_left_top.png) no-repeat left top;
+    border-left: none;
+    padding-left: 0.4166em; /* 5px */
 }
 
 .blist-th-name
 {
+    font-size: 1.0833em;  /* 1.0833 * 1.2 = 1.3 */
     font-weight: bold;
-    font-size: 1.3em;
+
 }
 
-/* Ensure enough specificity to override height in generated styles */
-.blist-table .blist-th
+.blist-th-icon
 {
-    height: 2.6em;
-    line-height: 2.6em;
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-position: 5px 20px;
+    background-repeat: no-repeat;
+    display: block;
+    float: left;
+    height: 20px;
+    margin-left: -5px;
+    margin-top: -10px;
+    position: relative;
+    top: 50%;
+    width: 30px;
 }
+
+.blist-table .blist-table-corner
+{
+    background-color: #ffffff;
+    border: none;
+    font-size: 1.1em;
+    height: 3.1818em; /* 35px */
+    padding: 0 0.3636em; /* 4px */
+}
+
+.blist-th .sort
+{
+    background: transparent url(/stylesheets/images/content/table/icon_sort_down.png) right no-repeat;
+    width: 12px;
+}
+
+.blist-th .sort-desc
+{
+    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
+}
+
 
 .blist-td
 {
+    border-bottom: solid 1px #d0d0d0;
+    border-left: solid 1px #e2e2e2;
     font-size: 1.2em;
-    padding: 0.4em;
-    height: 1.2em;
-    line-height: 1.2em;
-    border-right: solid 1px #dddddd;
-    border-bottom: solid 1px #dddddd;
+    height: 1.3333em; /* 16px */
+    line-height: 1.3333em;
+    padding: 0.3333em; /* 4px */
 }
 
 .blist-td-header
@@ -60,55 +90,25 @@
 
 div.blist-table-expander
 {
-    border-left: solid 1px #cacaca;
-    border-top: solid 1px #cacaca;
     background-color: #ffffff;
+    border-right: solid 1px #e2e2e2;
+    border-top: solid 1px #d0d0d0;
 }
 
 .blist-table-handle
 {
-    line-height: 1.4em;
-    height: 1.4em;
-    padding: 0.4em;
+    color: #a9cef2;
     font-size: 1.1em;
-    border: solid 1px #dddddd;
-    border-top: none;
-    background-color: #eeeeee;
-    border-left: none;
-    color: #333399;
+    height: 1.4545em; /* 16px */
+    line-height: 1.4545em;
+    padding: 0.3636em; /* 4px */
     text-align: right;
-}
-
-.blist-table .blist-table-corner
-{
-    border-left: none;
-}
-
-.blist-th .sort
-{
-    width: 12px;
-    background: transparent url(/stylesheets/images/content/table/icon_sort_down.png) right no-repeat;
-}
-
-.blist-th .sort-desc
-{
-    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
-}
-
-div.blist-td p
-{
-    margin-bottom: 6px;
-}
-
-div.blist-td p:last-child
-{
-    margin-bottom: 0;
 }
 
 img.blist-table-option-icon
 {
-    padding-right: 0.4em;
     margin-bottom: -1px;
+    padding-right: 0.4em;
 }
 
 .blist-table a

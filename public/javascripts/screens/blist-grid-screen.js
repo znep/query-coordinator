@@ -357,7 +357,7 @@ $(function ()
     if (readMode && blistGridNS.viewId)
     {
         $('#readGrid').blistTable({generateHeights: false,
-            manualResize: true, showTitle: false})
+            manualResize: true, showGhostColumn: true, showTitle: false})
             .blistModel()
             .options({filterMinChars: 0})
             .ajax({url: '/views/' + blistGridNS.viewId + '/rows.json',

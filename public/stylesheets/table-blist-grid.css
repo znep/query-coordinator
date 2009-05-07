@@ -72,6 +72,10 @@
     background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
 }
 
+.blist-th.blist-table-ghost
+{
+    cursor: auto;
+}
 
 .blist-td
 {

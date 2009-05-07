@@ -71,14 +71,21 @@ blist.namespace.fetch('blist.data');
         var self = this;
 
         var curOptions = {
-            filterMinChars: 3
+            filterMinChars: 3,
+            pageSize: 50,
+            progressiveLoading: false
         };
+
+        // Count number of loaded rows, so we know when to disable progressive
+        // loading
+        var rowsLoaded = 0;
 
         // The active dataset (rows or a filtered version of rows)
         var active = [];
 
         // Row lookup-by-ID
         var lookup = {};
+        var activeLookup = {};
 
         // Event listeners
         var listeners = [];
@@ -115,24 +122,57 @@ blist.namespace.fetch('blist.data');
             return blist.data.types.text;
         }
 
-        var installIDs = function(newRows, from) {
-            if (!newRows)
-                newRows = rows;
-            if (from == null)
-                from = 0;
-            for (var i = 0; i < newRows.length; i++) {
-                var row = newRows[i];
-                if (typeof row == 'object')
-                    var id = row.id || row[0];
-                else
-                    id= row;
-                lookup[id] = from++;
+        /**
+         * Create a mapping of ids to positions for both rows & active
+         *  (since these arrays may be different)
+         */
+        var installIDs = function(activeOnly)
+        {
+            if (!activeOnly || rows == active)
+            {
+                // Count the total number of rows we have actual data for
+                rowsLoaded = 0;
+                for (var i = 0; i < rows.length; i++)
+                {
+                    var row = rows[i];
+                    if (typeof row == 'object')
+                    {
+                        var id = row.id || row[0];
+                        rowsLoaded++;
+                    }
+                    else
+                    {
+                        id = row;
+                    }
+                    lookup[id] = i;
+                    if (rows == active)
+                    {
+                        activeLookup[id] = i;
+                    }
+                }
             }
-        }
+            if (rows != active)
+            {
+                for (var i = 0; i < active.length; i++)
+                {
+                    var row = active[i];
+                    if (typeof row == 'object')
+                    {
+                        var id = row.id || row[0];
+                    }
+                    else
+                    {
+                        id = row;
+                    }
+                    activeLookup[id] = i;
+                }
+            }
+        };
 
-        var dataChange = function() {
+        var dataChange = function()
+        {
             $(listeners).trigger('load', [ self ]);
-        }
+        };
 
         /**
          * Set options
@@ -148,61 +188,83 @@ blist.namespace.fetch('blist.data');
         };
 
         /**
+         * Whether or not to do progressive loading from the server,
+         * i.e., whether or not to do sorting & filtering locally
+         */
+        this.isProgressiveLoading = function()
+        {
+            return curOptions.progressiveLoading && rowsLoaded < rows.length;
+        };
+
+        /**
          * Access the dataset title.
          */
-        this.title = function() {
+        this.title = function()
+        {
             return meta.title || (meta.view && meta.view.name) || "";
-        }
+        };
 
         /**
          * Add a model listener.  A model listener receives events fired by the model.
          */
-        this.addListener = function(listener) {
+        this.addListener = function(listener)
+        {
             var pos = $.inArray(listener, listeners);
             if (pos == -1)
                 listeners.push(listener);
-        }
+        };
 
         /**
          * Remove a model listener.
          */
-        this.removeListener = function(listener) {
+        this.removeListener = function(listener)
+        {
             var pos = $.inArray(listener, listeners);
             if (pos == -1)
                 listeners = listeners.splice(pos, 1);
-        }
+        };
 
         /**
          * Set the metadata and rows for the model.
          */
-        this.load = function(config) {
+        this.load = function(config)
+        {
             if (config.meta)
                 this.meta(config.meta);
             if (config.rows || config.data)
                 this.rows(config.rows || config.data);
-        }
+        };
 
         /**
          * Configure a function for translating server requests to client requests.
          */
-        this.translate = function(newTranslateFn) {
+        this.translate = function(newTranslateFn)
+        {
             translateFn = newTranslateFn;
-        }
+        };
 
         /**
          * Load the metadata and rows for the model via an AJAX request.
          */
-        this.ajax = function(ajaxOptions) {
+        this.ajax = function(ajaxOptions)
+        {
             if (typeof ajaxOptions != 'object')
                 ajaxOptions = {
                     url: ajaxOptions
                 }
             supplementalAjaxOptions = $.extend({}, ajaxOptions);
+            if (curOptions.progressiveLoading)
+            {
+                ajaxOptions.data = $.extend({}, ajaxOptions.data,
+                    {max_rows: curOptions.pageSize, include_ids: true});
+            }
             doLoad(this, this.load, ajaxOptions);
-        }
+        };
 
-        var doLoad = function(model, onLoad, ajaxOptions) {
-            if (!ajaxOptions.success) {
+        var doLoad = function(model, onLoad, ajaxOptions)
+        {
+            if (!ajaxOptions.success)
+            {
                 if (!ajaxOptions.dataType)
                     ajaxOptions.dataType = 'json';
                 ajaxOptions.success = function(config) {
@@ -217,7 +279,7 @@ blist.namespace.fetch('blist.data');
             if (!$(listeners).trigger('before_load', [ ajaxOptions ]))
                 return;
             $.ajax(ajaxOptions);
-        }
+        };
 
         /**
          * Load a set of rows.  The table must have been populated via AJAX for this to succeed.  Supplementary
@@ -225,31 +287,46 @@ blist.namespace.fetch('blist.data');
          *
          * @param rows an array of row IDs
          */
-        this.loadRows = function(rows) {
+        this.loadRows = function(rowsToLoad)
+        {
             if (!supplementalAjaxOptions)
+            {
                 return;
-            var ajaxOptions = $.extend({
-                data: {
-                    ids: rows
-                }
-            }, supplementalAjaxOptions);
-            doLoad(this, onSupplementalLoad, ajaxOptions);
-        }
+            }
 
-        var onSupplementalLoad = function(response) {
+            var ajaxOptions = $.extend({},
+                    supplementalAjaxOptions,
+                    { data: { ids: rowsToLoad } });
+            doLoad(this, onSupplementalLoad, ajaxOptions);
+        };
+
+        var onSupplementalLoad = function(response)
+        {
             // Install the rows
             var supplement = response.data;
-            for (var i = 0; i < supplement.length; i++) {
+            for (var i = 0; i < supplement.length; i++)
+            {
                 var row = supplement[i];
                 var id = row.id || row[0];
                 var index = lookup[id];
                 if (index != null)
+                {
                     rows[index] = row;
+                    rowsLoaded++;
+                }
+                if (rows != active)
+                {
+                    index = activeLookup[id];
+                    if (index != null)
+                    {
+                        active[index] = row;
+                    }
+                }
             }
 
             // Notify listeners of row load via the "change" event
             this.change(supplement);
-        }
+        };
 
         var translatePicklistFromView = function(col) {
             var values = col.dataType && col.dataType.picklist && col.dataType.picklist.values;
@@ -275,7 +352,8 @@ blist.namespace.fetch('blist.data');
                             name: col.name,
                             width: col.width || 100,
                             type: col.dataType && col.dataType.type ? col.dataType.type : "text",
-                            dataIndex: i
+                            dataIndex: i,
+                            id: col.id
                         }
                         if (icol.type == "text" && col.format && col.format.formatting_option == "Rich")
                             icol.type = "richtext";
@@ -331,37 +409,46 @@ blist.namespace.fetch('blist.data');
         }
 
         /**
-         * Get and/or set the rows for the model.  Returns only "active" rows, that is, those that are visible.
+         * Get and/or set the rows for the model.  Returns only "active" rows,
+         * that is, those that are visible.
          */
-        this.rows = function(newRows) {
-            if (newRows) {
-                installIDs(newRows, 0);
+        this.rows = function(newRows)
+        {
+            if (newRows)
+            {
                 active = rows = newRows;
+                installIDs();
 
                 // Apply sorting if so configured
                 if (sortConfigured)
                     doSort();
 
-                // Apply filtering and grouping (filtering calls grouping so we never need to call both)
+                // Apply filtering and grouping (filtering calls grouping so we
+                // never need to call both)
                 if (filterFn)
                     doFilter(active);
                 else if (groupFn)
                     doGroup();
-                
+
                 dataChange();
             }
 
             return active;
-        }
+        };
 
         /**
          * Add rows to the model.
          */
-        this.add = function(rows) {
-            installIDs(rows, active.length);
-            active = active.concat(rows);
-            $(listeners).trigger('row_add', [ rows ]);
-        }
+        this.add = function(addedRows)
+        {
+            rows = rows.concat(addedRows);
+            if (active != rows)
+            {
+                active = active.concat(addedRows);
+            }
+            installIDs();
+            $(listeners).trigger('row_add', [ addedRows ]);
+        };
 
         /**
          * Remove rows from the model.
@@ -370,10 +457,26 @@ blist.namespace.fetch('blist.data');
             for (var row in rows) {
                 var id = row.id || row[0];
                 var index = lookup[id];
-                if (index) {
+                if (index)
+                {
                     delete lookup[id];
                     if (index != undefined)
-                        active.splice(index, 1);
+                    {
+                        rows.splice(index, 1);
+                        rowsLoaded--;
+                    }
+                }
+                if (rows != active)
+                {
+                    index = activeLookup[id];
+                    if (index)
+                    {
+                        delete activeLookup[id];
+                        if (index != undefined)
+                        {
+                            active.splice(index, 1);
+                        }
+                    }
                 }
             }
             $(listeners).trigger('row_remove', [ rows ]);
@@ -396,10 +499,11 @@ blist.namespace.fetch('blist.data');
         /**
          * Retrieve a single row by ID.
          */
-        this.getByID = function(id) {
+        this.getByID = function(id)
+        {
             var index = lookup[id];
             return index == undefined ? undefined : rows[index];
-        }
+        };
 
         /**
          * Retrieve the total number of rows.
@@ -418,12 +522,20 @@ blist.namespace.fetch('blist.data');
             // Load the types
             if (typeof order == 'function')
                 orderFn = order;
-            else {
+            else
+            {
                 // Column reference expressions
                 if (typeof order == 'object')
                     orderCol = order;
                 else
                     orderCol = meta.columns[order];
+
+                // Update the view in-memory, so we can always serialize it to
+                //  the server and get the correct sort options
+                meta.view.sortBys = [{
+                    viewColumnId: orderCol.id,
+                    asc: !descending
+                }];
 
                 var r1 = "a[" + orderCol.dataIndexExpr + "]";
                 var r2 = "b[" + orderCol.dataIndexExpr + "]";
@@ -477,24 +589,54 @@ blist.namespace.fetch('blist.data');
         }
 
         // Run sorting based on the current filter configuration.  Does not fire events
-        var doSort = function() {
-            // TODO - load from server if we're in progressive rendering mode
-
+        var doSort = function()
+        {
             removeSpecialRows();
 
             if (!sortConfigured)
                 return;
 
-            // Apply preprocessing function if necessary.  We then sort a new array that contains a
-            // [ 'value', originalRecord ] pair for each item.  This allows us to avoid complex ordering functions.
+            if (self.isProgressiveLoading())
+            {
+                // If we're doing progressive loading, set up a temporary
+                //  view, then construct a query with a special URL and
+                //  appropriate params to get rows back for the specified view
+                // Don't include columns since we want them all back, and we
+                //  don't need to send all that extra data over or modify columns
+                //  accidentally
+                var tempView = $.extend({}, meta.view,
+                    {originalViewId: meta.view.id, columns: null});
+                var ajaxOptions = $.extend({},
+                        supplementalAjaxOptions,
+                        {
+                        url: '/views/INLINE/rows.json?' + $.param(
+                        {   method: 'index',
+                            max_rows: curOptions.pageSize,
+                            include_ids: true
+                        }),
+                        type: 'POST',
+                        data: $.json.serialize(tempView)
+                        });
+                doLoad(self, loadSort, ajaxOptions);
+                // Bail out early, since the server does the sorting
+                return;
+            }
+
+            // Apply preprocessing function if necessary.  We then sort a new
+            // array that contains a [ 'value', originalRecord ] pair for each
+            // item.  This allows us to avoid complex ordering functions.
             if (orderPrepro) {
                 var toSort = new Array(active.length);
                 for (var i = 0; i < active.length; i++) {
                     var rec = active[i];
-                    toSort[i] = [ orderPrepro(rec[orderCol.dataIndex], orderCol), rec ];
+                    toSort[i] = [ orderPrepro(rec[orderCol.dataIndex], orderCol),
+                        rec ];
                 }
-            } else
+            }
+            else
+            {
                 toSort = active;
+            }
 
             // Perform the actual sort
             if (orderFn)
@@ -508,8 +650,63 @@ blist.namespace.fetch('blist.data');
                     active[i] = toSort[i][1];
 
             // Update ID lookup
-            installIDs();
-        }
+            installIDs(true);
+        };
+
+        /**
+         * When we load the sorted data from the server, we may have
+         *  a different set of full rows than was previously loaded, updated
+         *  data, or possibly new rows.  We may also have rows that were already
+         *  loaded, but did not come back with the sort.  So do some work to
+         *  get active & rows in-sync
+         */
+        var loadSort = function(config)
+        {
+            var installActiveOnly = true;
+            // active is now the new set of rows from the server, and not
+            //  linked-to or based-on rows
+            active = config.rows || config.data;
+            for (var i = 0; i < active.length; i++)
+            {
+                // If it is not an object, just an id, try to look it up from rows
+                if (typeof active[i] != 'object')
+                {
+                    var curRow = self.getByID(active[i]);
+                    if (curRow == undefined)
+                    {
+                        rows.push(active[i]);
+                        installActiveOnly = false;
+                    }
+                    else
+                    {
+                        active[i] = curRow;
+                    }
+                }
+                else
+                {
+                    // If it is a full row, then update rows with it (even if
+                    //  this row was already loaded, since it may have updated data)
+                    var curRow = active[i];
+                    var rowPos = lookup[curRow.id || curRow[0]];
+                    if (rowPos == undefined)
+                    {
+                        rows.push(curRow);
+                        installActiveOnly = false;
+                        rowsLoaded++;
+                    }
+                    else
+                    {
+                        if (typeof rows[rowPos] != 'object')
+                        {
+                            rowsLoaded++;
+                        }
+                        rows[rowPos] = curRow;
+                    }
+                }
+            }
+            installIDs(installActiveOnly);
+            dataChange();
+        };
 
         /**
          * Filter the data.

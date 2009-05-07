@@ -359,7 +359,7 @@ $(function ()
         $('#readGrid').blistTable({generateHeights: false,
             manualResize: true, showGhostColumn: true, showTitle: false})
             .blistModel()
-            .options({filterMinChars: 0})
+            .options({filterMinChars: 0, progressiveLoading: true})
             .ajax({url: '/views/' + blistGridNS.viewId + '/rows.json',
                 dataType: 'json'});
     }

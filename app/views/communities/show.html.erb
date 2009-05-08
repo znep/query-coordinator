@@ -85,7 +85,8 @@
 </div>
 
 <% content_for :js_footer do %>
+  <div class="jqmWindow" id="tagCloud"></div>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.jcarousel", "widgets/simple-tab-navigate",
-  "screens/community-screen", :cache => "cache/community_show_all" %>
+  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud",
+  "widgets/simple-tab-navigate", "screens/community-screen", :cache => "cache/community_show_all" %>
 <% end %>

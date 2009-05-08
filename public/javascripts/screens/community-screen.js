@@ -5,13 +5,22 @@ blist.community.filterClickHandler = function (event)
     event.preventDefault();
     var $filterLink = $(this);
     
+    var tabContainers = {
+        "TOPMEMBERS": "#communityTabTopMembers",
+        "TOPUPLOADERS": "#communityTabTopUploaders",
+        "ALLMEMBERS": "#communityTabAllMembers"
+    };
+    
+    var tabSelector = tabContainers[$.urlParam("type", $filterLink.attr("href"))];
+    
     $.Tache.Get({ 
         url: $filterLink.attr("href"),
         success: function(data)
         {
-            $filterLink.closest(".tabContentContainer").html(data);
+            $(tabSelector).html(data);
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
+            $("#tagCloud").jqmHide();
         }
     });
 }
@@ -31,6 +40,21 @@ blist.community.sortSelectChangeHandler = function (event)
             $sortSelect.closest(".tabContentContainer").html(data);
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
+        }
+    });
+}
+
+blist.community.tagModalShowHandler = function(hash)
+{
+    var $modal = hash.w;
+    var $trigger = $(hash.t);
+    
+    $.Tache.Get({ 
+        url: $trigger.attr("href"),
+        success: function(data)
+        {
+            $modal.html(data).show();
+            $(".tagCloudContainer a").tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } });
         }
     });
 }
@@ -56,4 +80,19 @@ $(function ()
     
     $(".filterLink, .pageLink, .prevLink, .nextLink").live("click", communityNS.filterClickHandler);
     $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
+    
+    $("#tagCloud").jqm({
+        trigger: false,
+        onShow: communityNS.tagModalShowHandler
+    });
+    $(".moreTagsLink").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#tagCloud").jqmShow($(this));
+    });
+    $(".closeContainer a").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#tagCloud").jqmHide();
+    });
 });

@@ -1,0 +1,17 @@
+
+<div class="tagCloudWrapper">
+  <h1>Popular Tags</h1>
+
+  <div class="tagCloudContainer">
+    <p>
+      <%- @tag_list.each do |tag| -%>
+        <%= link_to(h(tag.name), 
+            filter_community_url({ 
+              :type => @type, :filter => @current_filter, :tag => tag.name }),
+              :class => "filterLink", :rel => tag.frequency ) %>
+      <%- end -%>
+    </p>
+  </div>
+
+  <div class="closeContainer"><a href="#close" title="close">Close</a></div>
+</div>

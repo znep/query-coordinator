@@ -70,6 +70,7 @@ class AccountsController < ApplicationController
   end
 
   def forgot_password
+    @body_id = 'resetPassword'
     if request.post?
       req = Net::HTTP::Post.new('/users')
       req.set_form_data({'method' => 'forgotPassword', 'login' => params[:account][:login]})
@@ -87,6 +88,7 @@ class AccountsController < ApplicationController
   end
 
   def reset_password
+    @body_id = 'resetPassword'
     if request.post?
       if params[:confirm_password] != params[:password]
         flash[:notice] = 'Passwords do not match; please try again'

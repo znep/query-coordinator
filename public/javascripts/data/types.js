@@ -245,7 +245,6 @@ blist.namespace.fetch('blist.data.types');
     }
 
     var renderGenStars = function(value, column) {
-        console.debug(column);
         var range = parseFloat(column.range);
         if (range <= 0 || range == NaN)
             range = 5;
@@ -274,7 +273,8 @@ blist.namespace.fetch('blist.data.types');
 
         number: {
             renderGen: renderGenText,
-            sortGen: sortGenNumeric
+            sortGen: sortGenNumeric,
+            filterText: true
         },
 
         date: {
@@ -288,11 +288,13 @@ blist.namespace.fetch('blist.data.types');
 
         money: {
             renderGen: renderGenText,
-            sortGen: sortGenNumeric
+            sortGen: sortGenNumeric,
+            filterText: true
         },
 
         phone: {
-            renderGen: renderGenText
+            renderGen: renderGenText,
+            filterText: true
         },
 
         checkbox: {
@@ -301,17 +303,20 @@ blist.namespace.fetch('blist.data.types');
         },
 
         flag: {
-            renderGen: renderGenText
+            renderGen: renderGenText,
+            filterText: true
         },
 
         stars: {
             renderGen: renderGenStars,
-            sortGen: sortGenNumeric
+            sortGen: sortGenNumeric,
+            filterText: true
         },
 
         percent: {
             renderGen: renderGenText,
-            sortGen: sortGenNumeric
+            sortGen: sortGenNumeric,
+            filterText: true
         },
 
         url: {
@@ -326,7 +331,8 @@ blist.namespace.fetch('blist.data.types');
 
         tag: {
             renderGen: renderGenText,
-            sortGen: sortGenText
+            sortGen: sortGenText,
+            filterText: true
         },
 
         email: {

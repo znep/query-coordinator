@@ -125,7 +125,7 @@
               {'text' => 'A page', 'class' => 'page', 'href' => '#'}]}) %>
             </li>
             <%- end -%>
-            
+
             <li class='separator'>
               <ul class="socialActions clearfix">
                 <%- 
@@ -147,11 +147,18 @@
           </ul>
 
           <form class='search' action='#'>
-            <p>
+            <div class='searchContainer'>
               <input type='text' class='textPrompt' title='Find' />
+              <div class='actionBox'>
+              <div class='clearBox'>
+                <a class='clearSearch' title='Clear Search' href='#clear_search'>
+                  Clear Search
+                </a>
+              </div>
               <input type="image" class="submit" name="findSubmit"
                 src="/stylesheets/images/content/table_menu/button_find.png" />
-            </p>
+              </div>
+            </div>
           </form>
           <%- end -%>
         </div>

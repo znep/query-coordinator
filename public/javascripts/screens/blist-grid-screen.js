@@ -342,10 +342,28 @@ blist.blistGrid.jsGridFilter = function (e)
     {
         setTimeout(function ()
         {
-            $readGrid.blistModel().filter($(e.currentTarget).val(), 250);
+            var searchText = $(e.currentTarget).val();
+            $readGrid.blistModel().filter(searchText, 250);
+            if (!searchText || searchText == '')
+            {
+                $('#lensContainer .headerBar form .clearSearch').hide();
+            }
+            else
+            {
+                $('#lensContainer .headerBar form .clearSearch').show();
+            }
         }, 10);
     }
 };
+
+blist.blistGrid.jsGridClearFilter = function(e)
+{
+    e.preventDefault();
+    $('#lensContainer .headerBar form input[type=text]').val('').blur();
+    $('#readGrid').blistModel().filter('');
+    $(e.currentTarget).hide();
+};
+
 
 /* Initial start-up calls, and setting up bindings */
 
@@ -454,6 +472,12 @@ $(function ()
 
     $('#lensContainer .headerBar form input[type=text]')
         .keydown(blistGridNS.jsGridFilter);
+    $('#lensContainer .headerBar form .clearSearch')
+        .click(function (e)
+        {
+            blist.util.flashInterface.lensSearch('');
+            blistGridNS.jsGridClearFilter(e);
+        }).hide();
 
     blistGridNS.hookUpMainMenu();
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),

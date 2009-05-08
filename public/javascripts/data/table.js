@@ -34,11 +34,12 @@
 
         var $this = $(this);
 
-        
+
         /*** CLOSURE UTILITY FUNCTIONS ***/
 
-        // Calculate the number of digits in the handle.  This is important because we need to recreate our layout if
-        // the width of the column changes.
+        // Calculate the number of digits in the handle.  This is important
+        // because we need to recreate our layout if the width of the column
+        // changes.
         var calculateHandleDigits = function(model) {
             return Math.ceil(Math.log(model.rows().length || 1) * Math.LOG10E);
         }
@@ -385,8 +386,11 @@
         /*** SCROLLING AND SIZING ***/
 
         // Measure the scroll bar
-        var scrollbarWidth = (function scrollbarWidth() {
-            var div = $('<div style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"><div style="height:100px;"></div></div>');
+        var scrollbarWidth = (function scrollbarWidth()
+        {
+            var div = $('<div style="width:50px;height:50px;overflow:hidden;' +
+                'position:absolute;top:-200px;left:-200px;">' +
+                '<div style="height:100px;"></div></div>');
             $('body').append(div);
             var w1 = div[0].clientWidth;
             div.css('overflow', 'scroll');
@@ -400,8 +404,9 @@
         {
             headerScrolls.height(header.height());
 
-            // Size the scrolling area.  Note that this assumes a width and height of 2px.  TODO - change to absolute
-            // positioning when IE6 is officially dead (June 2010?)
+            // Size the scrolling area.  Note that this assumes a width and
+            // height of 2px.  TODO - change to absolute positioning when IE6
+            // is officially dead (June 2010?)
             scrolls.height(outside.height() - $top.height() - 2);
             scrolls.width(outside.width() - 2);
 
@@ -416,14 +421,15 @@
             {
                 // Count the ghost column padding
                 var pos = paddingX;
-                if (options.showRowNumbers)
+                // Look at the last column to get the end of the headers
+                if (columns.length > 0)
                 {
-                    pos += parseInt(handleStyle.width) + paddingX;
+                    var lastCol = columns[columns.length - 1];
+                    pos += lastCol.left + lastCol.width + paddingX;
                 }
-                // Loop through all columns to sum widths
-                for (i = 0; i < columns.length; i++)
+                else if (options.showRowNumbers)
                 {
-                    pos += columns[i].width + paddingX;
+                    pos += handleOuterWidth;
                 }
 
                 var ghostSize = scrolls.width() - pos;
@@ -437,7 +443,7 @@
                 inside.width(ghostSize + pos);
                 header.width(ghostSize + pos);
             }
-        }
+        };
 
         if (options.manualResize)
         {
@@ -547,15 +553,19 @@
         var rowOffset;
         var handleDigits;
         var paddingX;
+        var handleOuterWidth;
+        var handleWidth;
 
         /**
          * Initialize based on current model metadata.
          */
-        var initMeta = function(model) {
+        var initMeta = function(model)
+        {
             // Create an object for each column
             columns = [];
             var mcols = model.meta().columns;
-            for (var i = 0; i < mcols.length; i++) {
+            for (var i = 0; i < mcols.length; i++)
+            {
                 var mcol = mcols[i];
                 columns.push($.extend(true, {
                     index: columns.length,
@@ -570,8 +580,10 @@
             handleDigits = calculateHandleDigits(model);
             measureUtilDOM.innerHTML = '<div class="blist-td">x</div>';
             var $measureDiv = $(measureUtilDOM.firstChild);
-            var measuredInnerDims = { width: $measureDiv.width(), height: $measureDiv.height() };
-            var measuredOuterDims = { width: $measureDiv.outerWidth(), height: $measureDiv.outerHeight() };
+            var measuredInnerDims = { width: $measureDiv.width(),
+                height: $measureDiv.height() };
+            var measuredOuterDims = { width: $measureDiv.outerWidth(),
+                height: $measureDiv.outerHeight() };
 
             // Record the amount of padding and border in a table cell
             paddingX = measuredOuterDims.width - measuredInnerDims.width;
@@ -583,10 +595,11 @@
 
             // Update the handle style with proper dimensions
             var dummyHandleText = Math.max(model.rows().length, 100);
-            measureUtilDOM.innerHTML = '<div class="blist-table-handle">' + dummyHandleText + '</div>';
+            measureUtilDOM.innerHTML = '<div class="blist-table-handle">' +
+                dummyHandleText + '</div>';
             var $measureHandle = $(measureUtilDOM.firstChild);
-            var handleOuterWidth = $measureHandle.outerWidth();
-            var handleWidth = $measureHandle.width();
+            handleOuterWidth = $measureHandle.outerWidth();
+            handleWidth = $measureHandle.width();
             if (options.generateHeights && options.showRowNumbers)
             {
                 handleStyle.height = rowHeight + 'px';
@@ -604,7 +617,8 @@
             // These variables are available to the rendering function
             var contextVariables = {
                 renderSpecial: function(specialRow) {
-                    return "<div class='blist-td blist-td-header'>" + specialRow.title + "</div>";
+                    return "<div class='blist-td blist-td-header'>" +
+                        specialRow.title + "</div>";
                 }
             };
 
@@ -616,7 +630,8 @@
             {
                 pos += handleOuterWidth;
             }
-            for (i = 0; i < columns.length; i++) {
+            for (i = 0; i < columns.length; i++)
+            {
                 // Initialize the column's style
                 var col = columns[i];
                 col.left = pos;
@@ -629,10 +644,12 @@
 
                 // Add rendering information to the rendering function
                 var type = blist.data.types[col.type] || blist.data.types.text;
-                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]", col, contextVariables);
+                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]",
+                    col, contextVariables);
                 var cls = col.cls ? ' blist-td-' + col.cls : '';
                 columnParts.push(
-                    "\"<div class='blist-td " + colClasses[i] + cls + "'>\", " + renderer + ", \"</div>\""
+                    "\"<div class='blist-td " + colClasses[i] + cls + "'>\", " +
+                        renderer + ", \"</div>\""
                 );
             }
             if (options.showGhostColumn)
@@ -640,15 +657,21 @@
                 pos += paddingX;
             }
 
-            // Create the rendering function.  We precompile this for speed so we can avoid tight loops, function
-            // calls, etc.
+            // Create the rendering function.  We precompile this for speed so
+            // we can avoid tight loops, function calls, etc.
             var renderFnSource =
                 '(function(html, index, row) {' +
                     'html.push(' +
-                        '"<div id=\'' + id + '-r", (row.id || row[0]), "\' class=\'blist-tr", (index % 2 ? " blist-tr-even" : ""), "\' style=\'top: ", (index * ' + rowOffset + '), "px\'>"';
+                        '"<div id=\'' + id + '-r", ' +
+                        '(row.id || row[0]), ' +
+                        '"\' class=\'blist-tr", ' +
+                        '(index % 2 ? " blist-tr-even" : ""), ' +
+                        '"\' style=\'top: ", ' +
+                        '(index * ' + rowOffset + '), "px\'>"';
             if (options.showRowNumbers)
             {
-                renderFnSource += ', "<div class=\'blist-table-handle ' + handleClass + '\'>", (index + 1), "</div>"';
+                renderFnSource += ', "<div class=\'blist-table-handle '
+                    + handleClass + '\'>", (index + 1), "</div>"';
             }
             renderFnSource += ');' +
                     'if (row._special) ' +
@@ -662,7 +685,8 @@
             }
             renderFnSource += 'html.push("</div>");' +
                 '})';
-            rowRenderFn = blist.data.types.compile(renderFnSource, contextVariables);
+            rowRenderFn = blist.data.types.compile(renderFnSource,
+                contextVariables);
 
             // Set the scrolling area width
             header.width(pos);
@@ -679,18 +703,22 @@
             {
                 $nameLabel.html(model.title());
             }
-        }
+        };
 
         /**
-         * Create column header elements for the current row configuration and install event handlers.
+         * Create column header elements for the current row configuration and
+         * install event handlers.
          */
-        var renderHeader = function() {
+        var renderHeader = function()
+        {
             var html = [];
             if (options.showRowNumbers)
             {
-                html.push('<div class="blist-th blist-table-corner ', handleClass, '"></div>');
+                html.push('<div class="blist-th blist-table-corner ',
+                    handleClass, '"></div>');
             }
-            for (var i = 0; i < columns.length; i++) {
+            for (var i = 0; i < columns.length; i++)
+            {
                 var col = columns[i];
                 var cls = col.cls ? ' blist-th-' + col.cls : '';
                 html.push(
@@ -711,6 +739,7 @@
             if (options.showGhostColumn)
             {
                 html.push('<div class="blist-th blist-table-ghost ',
+                    columns.length < 1 ? 'blist-th-first ' : '',
                     ghostClass, '"></div>');
             }
             header.html(html.join(''));

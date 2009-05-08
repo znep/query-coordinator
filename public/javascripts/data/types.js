@@ -193,7 +193,7 @@ blist.namespace.fetch('blist.data.types');
     }
 
     var renderGenPhone = function(value) {
-        return "((" + value + " && " + value + "[1]) || '')";
+        return "((" + value + " && " + value + "[0]) || '')";
     }
 
     var renderGenCheckbox = function(value, column) {
@@ -357,11 +357,11 @@ blist.namespace.fetch('blist.data.types');
         if (value == null)
             return '';
         if (typeof value == 'object') {
-            url = value[2];
+            url = value[1];
             if (url == null)
                 return '';
-            name = value[3];
-            size = url[1];
+            name = value[0];
+            size = url[2];
         } else
             url = value;
         var rv = renderURL([ (base || '') + url, name || 'Document' ]);

@@ -704,6 +704,7 @@ blist.namespace.fetch('blist.data');
                             include_ids: true
                         }),
                     type: 'POST',
+                    contentType: 'application/json',
                     data: $.json.serialize(tempView)
             });
             doLoad(self, loadTempView, ajaxOptions);

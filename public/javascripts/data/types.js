@@ -6,6 +6,7 @@
 blist.namespace.fetch('blist.data.types');
 
 (function($) {
+    STAR_WIDTH = 10;
 
     /*** UTILITY FUNCTIONS ***/
 
@@ -231,6 +232,26 @@ blist.namespace.fetch('blist.data.types');
         return "renderURL(" + value + ")";
     }
 
+    var renderStars = function(value, range) {
+        if (value == null)
+            return '';
+        var on = Math.round(value * STAR_WIDTH);
+        if (on < 0)
+            on = 0;
+        else if (on > range)
+            on = range;
+        var off = range - on;
+        return "<span class='blist-tstars' style='width: " + range + "px'><div class='blist-cell blist-tstar-on' style='width: " + on + "px'></div><div class='blist-cell blist-tstar-off' style='width: " + off + "px; background-position-x: " + -(on % STAR_WIDTH) + "px'></div></span>";
+    }
+
+    var renderGenStars = function(value, column) {
+        console.debug(column);
+        var range = parseFloat(column.range);
+        if (range <= 0 || range == NaN)
+            range = 5;
+        return "renderStars(" + value + ", " + (range * 10) + ")";
+    }
+
 
     /*** DATA TYPE DEFINITIONS ***/
 
@@ -284,7 +305,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         stars: {
-            renderGen: renderGenText,
+            renderGen: renderGenStars,
             sortGen: sortGenNumeric
         },
 

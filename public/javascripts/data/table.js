@@ -11,7 +11,7 @@
     var EXPAND_DURATION = 200;
 
     // Millisecond delay before loading missing rows
-    var MISSING_ROW_LOAD_DELAY = 250;
+    var MISSING_ROW_LOAD_DELAY = 100;
 
     var nextTableID = 1;
 
@@ -836,7 +836,7 @@
             // Determine the range of rows we need to render, with safety checks to be sure we don't attempt the
             // impossible
             var start = first;
-            var stop = start + count;
+            var stop = start + count * 1.5;
             var rows = model.rows();
             if (start < 0)
                 start = 0;

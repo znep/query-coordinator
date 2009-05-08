@@ -346,23 +346,31 @@ blist.namespace.fetch('blist.data');
             if (viewCols) {
                 for (var i = 0; i < viewCols.length; i++) {
                     var col = viewCols[i];
-                    if (col.position && (!col.flags ||
-                        $.inArray("hidden", col.flags) == -1)) {
-                        var icol = intermediateCols[col.position] = {
+                    if (col.position && (!col.flags || $.inArray("hidden", col.flags) == -1)) {
+                        var icol = {
                             name: col.name,
                             width: col.width || 100,
                             type: col.dataType && col.dataType.type ? col.dataType.type : "text",
                             dataIndex: i,
                             id: col.id
                         }
-                        if (icol.type == "text" && col.format && col.format.formatting_option == "Rich")
-                            icol.type = "richtext";
                         if (icol.type == "picklist")
                             icol.options = translatePicklistFromView(col);
-                        if (col.format && col.format.view)
-                            icol.format = col.format.view;
+                        var format = col.format;
+                        if (format) {
+                            if (icol.type == "text" && format.formatting_option == "Rich")
+                                icol.type = "richtext";
+                            if (icol.type == "stars" && format.view == "stars_number")
+                                icol.type = "number";
+                            else if (format.view)
+                                icol.format = col.format.view;
+                            if (format.range)
+                                icol.range = format.range;
+                        }
+                        intermediateCols.push(icol);
                     }
                 }
+                viewCols.sort(function(col1, col2) { return col1 - col2; });
                 var columns = [];
                 for (i = 0; i < intermediateCols.length; i++) {
                     col = intermediateCols[i];

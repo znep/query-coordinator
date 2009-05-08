@@ -152,3 +152,30 @@ img.blist-table-option-icon
 {
     white-space: nowrap;
 }
+
+.blist-tstars {
+    display: block;
+    margin: auto;
+    position: relative;
+}
+
+.blist-tstar-on {
+    float: left;
+    background: transparent url(images/content/table/star_on.png) center left repeat-x;
+    width: 10px;
+    height: 10px;
+}
+
+.blist-tstar-off {
+    float: left;
+    background: transparent url(images/content/table/star_off.png) center left repeat-x;
+    width: 10px;
+    height: 10px;
+}
+
+.blist-tstar-over {
+    float: left;
+    background: transparent url(images/content/table/star_over.png) center left repeat-x;
+    width: 10px;
+    height: 10px;
+}

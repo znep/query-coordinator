@@ -407,24 +407,38 @@
 
             renderRows();
 
+            adjustGhostColumn();
+        };
+
+        var adjustGhostColumn = function()
+        {
             if (options.showGhostColumn)
             {
-                // Adjust the ghost column to fit
-                var ghostWidth = parseInt(ghostStyle.width) || 0;
-                var adj = scrolls.width() - inside.width();
+                // Count the ghost column padding
+                var pos = paddingX;
+                if (options.showRowNumbers)
+                {
+                    pos += parseInt(handleStyle.width) + paddingX;
+                }
+                // Loop through all columns to sum widths
+                for (i = 0; i < columns.length; i++)
+                {
+                    pos += columns[i].width + paddingX;
+                }
+
+                var ghostSize = scrolls.width() - pos;
                 if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
                 {
-                    adj -= scrollbarWidth;
+                    ghostSize -= scrollbarWidth;
                 }
-                if (adj + ghostWidth < options.ghostMinWidth + scrollbarWidth)
-                {
-                    adj = options.ghostMinWidth + scrollbarWidth - ghostWidth;
-                }
-                ghostStyle.width = (ghostWidth + adj)  + "px";
-                inside.width(inside.width() + adj);
-                header.width(header.width() + adj);
+                ghostSize = Math.max(ghostSize,
+                    options.ghostMinWidth + scrollbarWidth);
+                ghostStyle.width = ghostSize  + "px";
+                inside.width(ghostSize + pos);
+                header.width(ghostSize + pos);
             }
         }
+
         if (options.manualResize)
         {
             $this.bind('resize', updateLayout);
@@ -568,7 +582,7 @@
             rowStyle.height = rowOffset + 'px';
 
             // Update the handle style with proper dimensions
-            var dummyHandleText = Math.min(model.rows().length, 1000);
+            var dummyHandleText = Math.max(model.rows().length, 100);
             measureUtilDOM.innerHTML = '<div class="blist-table-handle">' + dummyHandleText + '</div>';
             var $measureHandle = $(measureUtilDOM.firstChild);
             var handleOuterWidth = $measureHandle.outerWidth();
@@ -602,10 +616,6 @@
             {
                 pos += handleOuterWidth;
             }
-            if (options.showGhostColumn)
-            {
-                pos += paddingX;
-            }
             for (i = 0; i < columns.length; i++) {
                 // Initialize the column's style
                 var col = columns[i];
@@ -624,6 +634,10 @@
                 columnParts.push(
                     "\"<div class='blist-td " + colClasses[i] + cls + "'>\", " + renderer + ", \"</div>\""
                 );
+            }
+            if (options.showGhostColumn)
+            {
+                pos += paddingX;
             }
 
             // Create the rendering function.  We precompile this for speed so we can avoid tight loops, function
@@ -721,7 +735,8 @@
                 $(this).click(function() { sort(index) });
             });
 
-            var handleResize = function(event, ui) {
+            var handleResize = function(event, ui)
+            {
                 // Find the column object
                 var drag = $(this).data('drag');
 
@@ -740,10 +755,13 @@
                 // Update the column style
                 drag.col.width = drag.originalColWidth + delta;
                 colStyles[drag.col.index].width = drag.col.width + 'px';
-            }
+
+                adjustGhostColumn();
+            };
 
             // Create column sizers
-            for (i = 0; i < columns.length; i++) {
+            for (i = 0; i < columns.length; i++)
+            {
                 col = columns[i];
                 var sizer = col.sizer = document.createElement('div');
                 sizer.className = 'blist-th-sizer';
@@ -757,7 +775,8 @@
                         axis: 'x',
 
                         start: function(event, ui) {
-                            // Record original position information used to update drag position
+                            // Record original position information used to
+                            // update drag position
                             var col = $(this).data('col');
                             $(this).data('drag', {
                                 col: col,
@@ -772,17 +791,25 @@
                         stop: function(event, ui) {
                             handleResize.call(this, event, ui);
 
-                            // Everything is up-to-date now but size handles to the right; take care of these now
+                            // Everything is up-to-date now but size handles
+                            // and column.left to the right; take care of these
+                            // now
                             var drag = $(this).data('drag');
-                            for (var i = drag.col.index + 1; i < columns.length; i++) {
+                            drag.col.sizerLeft = drag.col.left + drag.col.width
+                                + paddingX - 3;
+                            for (var i = drag.col.index + 1; i < columns.length;
+                                i++)
+                            {
                                 var otherCol = columns[i];
-                                otherCol.sizerLeft = otherCol.sizerLeft + drag.delta;
-                                otherCol.sizer.style.left = otherCol.sizerLeft + 'px';
+                                otherCol.left += drag.delta;
+                                otherCol.sizerLeft += drag.delta;
+                                otherCol.sizer.style.left =
+                                    otherCol.sizerLeft + 'px';
                             }
 
                             $(this).removeData('drag');
                         }
-                    });
+                });
             }
         }
 

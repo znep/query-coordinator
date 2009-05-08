@@ -77,6 +77,11 @@
     cursor: auto;
 }
 
+.blist-th-sizer
+{
+    height: 3.5em;
+}
+
 .blist-td
 {
     border-bottom: solid 1px #d0d0d0;

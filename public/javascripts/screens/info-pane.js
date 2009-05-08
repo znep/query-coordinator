@@ -152,6 +152,11 @@
 
 
     $.fn.infoPaneNavigate = function(options) {
+        if (this.length < 1)
+        {
+            return false;
+        }
+
         // check if a navigator for this list was already created
         var tabNavigator = $(this[0]).data("tabNavigator");
                 if (tabNavigator) {

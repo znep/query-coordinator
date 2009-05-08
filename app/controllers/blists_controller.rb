@@ -15,12 +15,16 @@ class BlistsController < SwfController
 
   def show
     @body_id = 'lensBody'
-    @body_class = 'readMode'
     case params[:id]
     when 'new_blist'
+      if !current_user
+        return require_user
+      end
       # show new blist in swf
+      @body_class = 'editMode'
       @start_screen = 'new_blist'
     else
+      @body_class = 'readMode'
       begin
         @parent_view = @view = View.find(params[:id])
       rescue CoreServerError => e

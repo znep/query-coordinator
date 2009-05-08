@@ -186,6 +186,11 @@
 
     function displayPage(paginate, pageNum)
     {
+        if (paginate.settings._allItems.length <= paginate.settings.pageSize)
+        {
+            return;
+        }
+
         var pageStart = Math.max(0, pageNum * paginate.settings.pageSize);
         paginate.settings._allItems.addClass(paginate.settings.hiddenClass);
         paginate.settings._allItems

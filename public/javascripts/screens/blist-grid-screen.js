@@ -531,4 +531,10 @@ $(function ()
         loadSWF();
         blistGridNS.sizeSwf();
     });
+    if ($('#lensBody').hasClass('editMode'))
+    {
+        $('#readGrid').remove();
+        loadSWF();
+        blistGridNS.sizeSwf();
+    }
 });

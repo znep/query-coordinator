@@ -29,6 +29,20 @@ module CommunitiesHelper
       out = "rated"
     when "comment_and_rate"
       out = "commented on and rated"
+    when "promote_dataset"
+      out = "promoted"
+    when "update_profile"
+      out = "updated their profile"
+    when "add_profile_photo"
+      out = "added a profile photo"
+    when "publish_widget"
+      "published a widget for"
+    when "moderate_comment"
+      "moderated a comment for"
+    when "rate_comment"
+      "rated a comment for"
+    when "reply_to_comment"
+      "replied to a comment for"
     end
     out
   end
@@ -38,7 +52,9 @@ module CommunitiesHelper
     case activity.action
     when "add_contact"
       out = "<a href='#{profile_url(activity.actedOnId)}'>#{h(activity.actedOnName)}</a>"
-    when "create_view", "create_blist", "edit_blist", "comment", "rated", "comment_and_rate"
+    when "create_view", "create_blist", "edit_blist", "comment", "rated", 
+          "comment_and_rate", "promote_dataset", "published", "moderate_comment", 
+          "rate_comment", "reply_to_comment"
       out = "<a href='#{blist_url(activity.actedOnId)}'>#{h(activity.actedOnName)}</a>"
     end
     out

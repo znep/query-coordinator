@@ -293,7 +293,7 @@ blist.namespace.fetch('blist.data');
                         baseURL = url.substring(0, endOfHost);
 
                 } else
-                    baseURL = "/";
+                    baseURL = '';
             }
             $.ajax(ajaxOptions);
         };

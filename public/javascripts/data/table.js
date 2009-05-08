@@ -3,7 +3,8 @@
  * the user.
  */
 
-(function($) {
+(function($)
+{
     // Milliseconds to delay before expanding a cell's content
     var EXPAND_DELAY = 100;
 
@@ -16,17 +17,21 @@
     var nextTableID = 1;
 
     // HTML escaping utility
-    var escape = function(text) {
-        return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
+    var escape = function(text)
+    {
+        return text.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    };
 
     // Make a DOM element into a table
-    var makeTable = function(options) {
+    var makeTable = function(options)
+    {
 
         /*** MISC. VARIABLES AND INITIALIZATION ***/
 
         var id = this.id;
-        if (!id) {
+        if (!id)
+        {
             id = nextTableID++;
             id = "blist-t" + id;
             this.id = id;
@@ -40,69 +45,89 @@
         // Calculate the number of digits in the handle.  This is important
         // because we need to recreate our layout if the width of the column
         // changes.
-        var calculateHandleDigits = function(model) {
+        var calculateHandleDigits = function(model)
+        {
             return Math.ceil(Math.log(model.rows().length || 1) * Math.LOG10E);
-        }
+        };
 
         // Sort data
         var sortBy;
         var sortDescending;
-        var sort = function(index) {
+        var sort = function(index)
+        {
             if (sortBy == index)
+            {
                 sortDescending = !sortDescending;
-            else {
+            }
+            else
+            {
                 sortBy = index;
                 sortDescending = false;
             }
             $('.sort', header).remove();
             var col = columns[sortBy];
-            $(col.dom).append('<div class="sort sort-' + (sortDescending ? 'desc' : 'asc') + '" style="height: ' + rowOffset + 'px"></div>');
+            $(col.dom).append('<div class="sort sort-' +
+                (sortDescending ? 'desc' : 'asc') + '" style="height: ' +
+                rowOffset + 'px"></div>');
             model.sort(col.index, sortDescending);
-        }
+        };
 
         // Filter data
-        var applyFilter = function() {
+        var applyFilter = function()
+        {
             setTimeout(function() {
                 model.filter($filterBox[0].value, 250);
             }, 10);
-        }
+        };
 
         var clearFilter = function(e)
         {
             e.preventDefault();
             $filterBox.val('').blur();
             model.filter('');
-        }
+        };
 
 
 
         /*** CELL HOVER EXPANSION ***/
-        
+
         var hotExpander;
 
-        var hideHotExpander = function() {
-            if (hotExpander) {
+        var hideHotExpander = function()
+        {
+            if (hotExpander)
+            {
                 hotExpander.style.top = '-10000px';
                 hotExpander.style.left = '-10000px';
             }
-        }
+        };
 
-        var expandHotCell = function() {
+        var expandHotCell = function()
+        {
             if (!hotCellTimer)
+            {
                 return;
+            }
             hotCellTimer = null;
 
             // Obtain an expanding node in utility (off-screen) mode
-            if (!hotExpander) {
+            if (!hotExpander)
+            {
                 // Create the expanding element
                 hotExpander = document.createElement('div');
                 var $hotExpander = $(hotExpander);
                 $hotExpander.addClass('blist-table-expander');
                 $hotExpander.addClass('blist-table-util');
-                inside.append($hotExpander);
-            } else {
+            }
+            else
+            {
                 hideHotExpander();
                 $hotExpander = $(hotExpander);
+            }
+            // If hotExpander is not in the tree anywhere, stick it inside
+            if (hotExpander.parentNode == null)
+            {
+                inside.append($hotExpander);
             }
 
             // Clone the node
@@ -110,8 +135,7 @@
             var $wrap = $(wrap);
             $wrap.width('auto').height('auto');
             $hotExpander.width('auto').height('auto');
-            while (hotExpander.firstChild)
-                $(hotExpander.firstChild).remove();
+            $hotExpander.empty();
             $hotExpander.append(wrap);
 
             // Compute cell padding
@@ -119,15 +143,19 @@
             var pady = $wrap.outerHeight() - $wrap.height();
 
             // Determine the cell's "natural" size
-            var rc = { width: $wrap.outerWidth() + 1, height: $wrap.outerHeight() };
+            var rc = { width: $wrap.outerWidth() + 1,
+                height: $wrap.outerHeight() };
 
-            // Determine if expansion is necessary.  The + 2 prevents us from expanding if the box would just be
-            // slightly larger than the containing cell.  This is a nicety except in the case of picklists where the
-            // 16px image tends to be just a tad larger than the text (currently configured at 15px).
+            // Determine if expansion is necessary.  The + 2 prevents us from
+            // expanding if the box would just be slightly larger than the
+            // containing cell.  This is a nicety except in the case of
+            // picklists where the 16px image tends to be just a tad larger
+            // than the text (currently configured at 15px).
             var h = $(hotCell);
             var hotWidth = h.outerWidth();
             var hotHeight = h.outerHeight();
-            if (rc.width <= hotWidth + 2 && rc.height <= hotHeight + 2) {
+            if (rc.width <= hotWidth + 2 && rc.height <= hotHeight + 2)
+            {
                 // Expansion is not necessary
                 hideHotExpander();
                 return;
@@ -135,13 +163,19 @@
 
             // The expander must be at least as large as the hot cell
             if (rc.width < hotWidth)
+            {
                 rc.width = hotWidth;
+            }
             if (rc.height < hotHeight)
+            {
                 rc.height = hotHeight;
+            }
 
-            // Determine the size to which the contents expand, constraining to predefined maximums
+            // Determine the size to which the contents expand, constraining to
+            // predefined maximums
             var maxWidth = Math.floor(scrolls.width() * .5);
-            if (rc.width > maxWidth) {
+            if (rc.width > maxWidth)
+            {
                 // Constrain the width and determine the height
                 $hotExpander.width(maxWidth);
                 rc.width = maxWidth;
@@ -151,8 +185,9 @@
             if (rc.height > maxHeight)
                 rc.height = maxHeight;
 
-            // Locate a position for the expansion.  We prefer the expansion to align top-left with the cell but do our
-            // best to ensure the expansion remains within the viewport
+            // Locate a position for the expansion.  We prefer the expansion to
+            // align top-left with the cell but do our best to ensure the
+            // expansion remains within the viewport
             rc.left = hotCell.offsetLeft;
             rc.top = hotCell.parentNode.offsetTop;
             rc.left -= 1; // assumes 1px right border
@@ -192,7 +227,7 @@
 
             // Expand the element into position
             $hotExpander.animate($.extend(rc, rc), EXPAND_DURATION);
-        }
+        };
 
 
         /*** CELL EVENT HANDLING ***/
@@ -202,7 +237,8 @@
         var hotRow;
         var hotCellTimer;
 
-        var findCell = function(event) {
+        var findCell = function(event)
+        {
             var $cell;
             // Firefox will sometimes return a XULElement for relatedTarget
             //  Catch the error when trying to access anything on it, and ignore
@@ -217,55 +253,76 @@
                 return null;
             }
 
-            if (!$cell.hasClass('blist-td') && !$cell.hasClass('blist-expander')) {
+            if (!$cell.hasClass('blist-td') && !$cell.hasClass('blist-expander'))
+            {
                 $cell = $cell.closest('.blist-td');
                 if (!$cell.length)
+                {
                     return null;
+                }
             }
             var cell = $cell[0];
             if (cell == hotExpander || cell.parentNode == hotExpander)
+            {
                 return hotCell;
+            }
             return cell;
-        }
+        };
 
-        var onCellMove = function(event) {
+        var onCellMove = function(event)
+        {
             // Locate the cell the mouse is in, if any
             var over = findCell(event);
 
             // If the hover cell is currently hot, nothing to do
             if (over == hotCell)
+            {
                 return;
+            }
 
             // Update row hover state
             var newHotRow = $(over).closest('.blist-tr');
-            if (newHotRow != hotRow) {
+            if (newHotRow != hotRow)
+            {
                 if (hotRow)
+                {
                     $(hotRow).removeClass('blist-hot-row');
+                }
                 if (newHotRow)
+                {
                     $(newHotRow).addClass('blist-hot-row');
+                }
                 hotRow = newHotRow;
             }
 
             // Update cell hover state
             if (hotCell)
+            {
                 onCellOut(event);
+            }
             hotCell = over;
-            if (over) {
+            if (over)
+            {
                 $(over).addClass('blist-hot');
                 hotCellTimer = setTimeout(expandHotCell, EXPAND_DELAY);
             }
-        }
+        };
 
-        var onCellOut = function(event) {
-            if (hotCell) {
+        var onCellOut = function(event)
+        {
+            if (hotCell)
+            {
                 // Find the cell focus is moving to
                 var to = findCell(event);
                 if (to == hotCell)
+                {
                     // Ignore -- hot cell isn't changing
                     return;
+                }
 
                 // The row is no longer hot if we're changing rows
-                if (hotRow) {
+                if (hotRow)
+                {
                     var newHotRow = $(to).closest('.blist-tr');
                     if (newHotRow != hotRow)
                         $(hotRow).removeClass('blist-hot-row');
@@ -274,33 +331,40 @@
                 // Cell is no longer hot
                 $(hotCell).removeClass('blist-hot');
                 hotCell = null;
-                if (hotCellTimer) {
+                if (hotCellTimer)
+                {
                     clearTimeout(hotCellTimer);
                     hotCellTimer = null;
                 }
                 hideHotExpander();
             }
-        }
+        };
 
-        var onCellClick = function(event) {
+        var onCellClick = function(event)
+        {
             var cell = findCell(event);
-            if (cell) {
+            if (cell)
+            {
                 // Retrieve the column
                 var index = 0;
-                for (var pos = cell.previousSibling; pos; pos = pos.previousSibling)
+                for (var pos = cell.previousSibling; pos;
+                    pos = pos.previousSibling)
+                {
                     index++;
+                }
                 index--;
                 var column = columns[index];
 
                 // Retrieve the row
                 var row = cell.parentNode;
-                var rowID = row.id.substring(id.length + 2); // + 2 for "-r" suffix prior to row ID
+                // + 2 for "-r" suffix prior to row ID
+                var rowID = row.id.substring(id.length + 2);
                 row = model.getByID(rowID);
 
                 // Notify listeners
                 $this.trigger("cellclick", [ row, column, event ]);
             }
-        }
+        };
 
 
         /*** HTML RENDERING ***/
@@ -957,7 +1021,8 @@
         /**
          * Initialize the row container for the current row set.
          */
-        var initRows = function(model) {
+        var initRows = function(model)
+        {
             if (handleDigits != calculateHandleDigits(model)) {
                 // The handle changed.  Reinitialize columns.
                 initMeta(model);
@@ -969,7 +1034,7 @@
             renderedRows = {};
 
             updateLayout();
-        }
+        };
 
         /**
          * Re-render a set of rows (if visible).

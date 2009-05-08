@@ -108,6 +108,8 @@ blist.namespace.fetch('blist.data');
         var translateFn = null;
 
         // Data load configuration
+        var autoBaseURL = true;
+        var baseURL = null;
         var supplementalAjaxOptions = null;
 
         var columnType = function(index) {
@@ -278,6 +280,21 @@ blist.namespace.fetch('blist.data');
             }
             if (!$(listeners).trigger('before_load', [ ajaxOptions ]))
                 return;
+
+            if (autoBaseURL) {
+                var url = ajaxOptions.url;
+                var endOfProt = url.indexOf('://');
+                if (endOfProt != -1) {
+                    endOfProt += 3;
+                    var endOfHost = url.indexOf('/', endOfProt);
+                    if (endOfHost == -1)
+                        baseURL = url;
+                    else
+                        baseURL = url.substring(0, endOfHost);
+
+                } else
+                    baseURL = '';
+            }
             $.ajax(ajaxOptions);
         };
 
@@ -346,23 +363,43 @@ blist.namespace.fetch('blist.data');
             if (viewCols) {
                 for (var i = 0; i < viewCols.length; i++) {
                     var col = viewCols[i];
-                    if (col.position && (!col.flags ||
-                        $.inArray("hidden", col.flags) == -1)) {
-                        var icol = intermediateCols[col.position] = {
+                    if (col.position && (!col.flags || $.inArray("hidden", col.flags) == -1)) {
+                        var icol = {
                             name: col.name,
                             width: col.width || 100,
                             type: col.dataType && col.dataType.type ? col.dataType.type : "text",
                             dataIndex: i,
                             id: col.id
                         }
-                        if (icol.type == "text" && col.format && col.format.formatting_option == "Rich")
-                            icol.type = "richtext";
-                        if (icol.type == "picklist")
-                            icol.options = translatePicklistFromView(col);
-                        if (col.format && col.format.view)
-                            icol.format = col.format.view;
+                        switch (icol.type) {
+                            case 'picklist':
+                                icol.options = translatePicklistFromView(col);
+                                break;
+
+                            case 'photo':
+                            case 'document':
+                                icol.base = baseURL + "/views/" + view.id + "/files/";
+                                break;
+                        }
+
+                        var format = col.format;
+                        if (format) {
+                            if (icol.type == "text" && format.formatting_option == "Rich")
+                                icol.type = "richtext";
+                            if (icol.type == "stars" && format.view == "stars_number")
+                                icol.type = "number";
+                            else if (format.view)
+                                icol.format = col.format.view;
+                            if (format.range)
+                                icol.range = format.range;
+                            if (format.precision)
+                                // This isn't actual precision, it's decimal places
+                                icol.decimalPlaces = format.precision;
+                        }
+                        intermediateCols.push(icol);
                     }
                 }
+                viewCols.sort(function(col1, col2) { return col1 - col2; });
                 var columns = [];
                 for (i = 0; i < intermediateCols.length; i++) {
                     col = intermediateCols[i];
@@ -554,7 +591,8 @@ blist.namespace.fetch('blist.data');
                 else
                     orderFn = null;
 
-                // Record preprocessing function for when we actually perform the sort
+                // Record preprocessing function for when we actually perform
+                // the sort
                 orderPrepro = columnType(order).sortPreprocessor;
                 if (orderPrepro && !orderFn)
                     if (descending)
@@ -578,7 +616,8 @@ blist.namespace.fetch('blist.data');
             // Sort
             doSort();
 
-            // If there's an active filter, or grouping function, re-apply now that we're sorted
+            // If there's an active filter, or grouping function, re-apply now
+            // that we're sorted
             if (filterFn)
                 doFilter(active);
             else if (groupFn)
@@ -588,7 +627,20 @@ blist.namespace.fetch('blist.data');
             dataChange();
         }
 
-        // Run sorting based on the current filter configuration.  Does not fire events
+        /**
+         * Get or set the base URL for retrieving child documents.  This is set automatically when you use the ajax
+         * calls.
+         */
+        this.baseURL = function(newBaseURL) {
+            if (newBaseURL) {
+                baseURL = newBaseURL;
+                autoBaseURL = !baseURL;
+            }
+            return baseURL;
+        }
+
+        // Run sorting based on the current filter configuration.  Does not
+        // fire events
         var doSort = function()
         {
             removeSpecialRows();
@@ -598,26 +650,7 @@ blist.namespace.fetch('blist.data');
 
             if (self.isProgressiveLoading())
             {
-                // If we're doing progressive loading, set up a temporary
-                //  view, then construct a query with a special URL and
-                //  appropriate params to get rows back for the specified view
-                // Don't include columns since we want them all back, and we
-                //  don't need to send all that extra data over or modify columns
-                //  accidentally
-                var tempView = $.extend({}, meta.view,
-                    {originalViewId: meta.view.id, columns: null});
-                var ajaxOptions = $.extend({},
-                        supplementalAjaxOptions,
-                        {
-                        url: '/views/INLINE/rows.json?' + $.param(
-                        {   method: 'index',
-                            max_rows: curOptions.pageSize,
-                            include_ids: true
-                        }),
-                        type: 'POST',
-                        data: $.json.serialize(tempView)
-                        });
-                doLoad(self, loadSort, ajaxOptions);
+                getTempView();
                 // Bail out early, since the server does the sorting
                 return;
             }
@@ -653,6 +686,30 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
         };
 
+        var getTempView = function()
+        {
+            // If we're doing progressive loading, set up a temporary
+            //  view, then construct a query with a special URL and
+            //  appropriate params to get rows back for the specified view
+            // Don't include columns since we want them all back, and we
+            //  don't need to send all that extra data over or modify columns
+            //  accidentally
+            var tempView = $.extend({}, meta.view,
+                    {originalViewId: meta.view.id, columns: null});
+            var ajaxOptions = $.extend({},
+                    supplementalAjaxOptions,
+                    { url: '/views/INLINE/rows.json?' + $.param(
+                        {   method: 'index',
+                            max_rows: curOptions.pageSize,
+                            include_ids: true
+                        }),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: $.json.serialize(tempView)
+            });
+            doLoad(self, loadTempView, ajaxOptions);
+        };
+
         /**
          * When we load the sorted data from the server, we may have
          *  a different set of full rows than was previously loaded, updated
@@ -660,7 +717,7 @@ blist.namespace.fetch('blist.data');
          *  loaded, but did not come back with the sort.  So do some work to
          *  get active & rows in-sync
          */
-        var loadSort = function(config)
+        var loadTempView = function(config)
         {
             var installActiveOnly = true;
             // active is now the new set of rows from the server, and not
@@ -714,11 +771,12 @@ blist.namespace.fetch('blist.data');
          * @param filter either filter text or a filtering function
          * @param timeout an optional async delay value (in milliseconds)
          */
-        this.filter = function(filter, timeout) {
+        this.filter = function(filter, timeout)
+        {
             if (filterTimer)
                 clearTimeout(filterTimer);
-            // Configure for filtering.  toFilter is an optimized set that may be a subset of all rows if a previous
-            // filter is in place.
+            // Configure for filtering.  toFilter is an optimized set that may
+            // be a subset of all rows if a previous filter is in place.
             var toFilter = configureFilter(filter);
 
             // If there's nothing to filter, return now
@@ -726,46 +784,66 @@ blist.namespace.fetch('blist.data');
                 return;
 
             // Filter
-            if (timeout) {
+            if (timeout)
+            {
                 // Filter, but only after a short timeout
                 filterTimer = setTimeout(function() {
                     window.clearTimeout(filterTimer);
                     doFilter(toFilter || active);
                     dataChange();
                 }, 250);
-            } else {
+            }
+            else
+            {
                 doFilter(toFilter);
                 dataChange();
             }
-        }
+        };
 
-        var configureFilter = function(filter) {
+        var configureFilter = function(filter)
+        {
             var toFilter;
             if (typeof filter == "function")
                 filterFn = filter;
-            else {
+            else
+            {
                 if (filter == null)
                     filter = "";
                 if (filter == filterText)
                     return null;
 
                 // Clear the filter if it contains less than the minimum characters
-                if (filter.length < curOptions.filterMinChars || filter.length == 0) {
+                if (filter.length < curOptions.filterMinChars || filter.length == 0)
+                {
                     filterFn = null;
                     filterText = "";
-                    active = rows;
-                    dataChange();
+                    meta.view.searchString = null;
+                    if (self.isProgressiveLoading())
+                    {
+                        getTempView();
+                    }
+                    else
+                    {
+                        active = rows;
+                        dataChange();
+                    }
                     return null;
                 }
 
                 // Generate a filter function (TODO - support non-textual values)
                 var regexp = createRegExp(filter);
                 var filterParts = [ "(function(r) { return false" ];
-                for (var i = 0; i < meta.columns.length; i++) {
+                for (var i = 0; i < meta.columns.length; i++)
+                {
                     if (columnType(i).filterText)
-                        // Textual column -- apply the regular expression to each instance
-                        filterParts.push(' || (r[', meta.columns[i].dataIndexExpr, '] + "").match(regexp)');
-                    else if (meta.columns[i] == "picklist") {
+                    {
+                        // Textual column -- apply the regular expression to
+                        // each instance
+                        filterParts.push(' || (r[', meta.columns[i].dataIndexExpr,
+                            '] + "").match(regexp)');
+                    }
+                    else if (meta.columns[i] == "picklist")
+                    {
                         // Picklist column -- prefilter and then search by ID
                         var options = meta.columns[i].options;
                         if (options) {
@@ -774,7 +852,9 @@ blist.namespace.fetch('blist.data');
                                 if (options[key].text.match(regexp))
                                     matches.push(key);
                             for (var j = 0; j < matches.length; j++)
-                                filterParts.push(' || (r[' + meta.columns[j].dataIndexExpr + '] == "' + matches[j] + '")');
+                                filterParts.push(' || (r['
+                                    + meta.columns[j].dataIndexExpr + '] == "'
+                                    + matches[j] + '")');
                         }
                     }
                 }
@@ -782,43 +862,57 @@ blist.namespace.fetch('blist.data');
                 filterFn = new Function('regexp',
                     'return ' + filterParts.join(''))(regexp);
 
-                // Filter the current filter set if the filter is a subset of the current filter
+                // Filter the current filter set if the filter is a subset of
+                // the current filter
                 if (filter.substring(0, filterText.length) == filterText)
                     toFilter = active;
                 filterText = filter;
+                meta.view.searchString = filterText;
             }
 
             return toFilter || rows;
-        }
+        };
 
         // Create a regular expression to match user entered text
-        var createRegExp = function(text) {
+        var createRegExp = function(text)
+        {
             // Collapse whitespace
             text = $.trim(text).replace(/\s+/, ' ');
 
-            // Detect case and perform case sensitive match if capital letters are present
+            // Detect case and perform case sensitive match if capital letters
+            // are present
             if (text.match(/[A-Z]/))
                 var modifiers = "";
             else
                 modifiers = "i";
 
             // Escape special characters and create the regexp
-            return new RegExp(text.replace(/(\/|\.|\*|\+|\?|\||\(|\)|\[|\]|\{|\})/g, "\\$1"), modifiers);
-        }
+            return new RegExp(
+                text.replace(/(\/|\.|\*|\+|\?|\||\(|\)|\[|\]|\{|\})/g, "\\$1"),
+                modifiers);
+        };
 
-        // Run filtering based on current filter configuration.  Does not fire events
-        var doFilter = function(toFilter) {
-            // TODO - load from server in progressive rendering mode
-
+        // Run filtering based on current filter configuration.  Does not fire
+        // events
+        var doFilter = function(toFilter)
+        {
             // Remove the filter timer, if any
-            if (filterTimer) {
+            if (filterTimer)
+            {
                 window.clearTimeout(filterTimer);
                 filterTimer = null;
             }
-            
+
             // Remove any header records (e.g. group titles) from the filter set
             if (toFilter == active)
                 removeSpecialRows();
+
+            if (self.isProgressiveLoading())
+            {
+                getTempView();
+                // Bail out early, since the server does the sorting
+                return;
+            }
 
             // Perform the actual filter
             active = $.grep(toFilter || rows, filterFn);

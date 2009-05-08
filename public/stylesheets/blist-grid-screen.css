@@ -200,9 +200,13 @@ body#lensBody
     width: 20em;
 }
 
-#lensContainer .headerBar form.search p
+#lensContainer .headerBar form.search .searchContainer
 {
     background-image: url(/stylesheets/images/content/table_menu/field_find.png);
+    background-repeat: no-repeat;
+    overflow: hidden;
+    padding-left: 10px;
+    padding-right: 49px;
 }
 
 #lensContainer .headerBar form.search input[type="text"]
@@ -214,7 +218,36 @@ body#lensBody
 #lensContainer .headerBar form.search input.submit
 {
     height: 18px;
+    margin-right: 0;
 }
+
+#lensContainer .headerBar form.search .actionBox
+{
+    float: left;
+    margin-right: -49px;
+    width: 49px;
+}
+
+#lensContainer .headerBar form.search .clearBox
+{
+    border-color: #cacaca;
+    border-style: solid;
+    border-width: 1px 0;
+    float: left;
+    height: 16px;
+    width: 18px;
+}
+
+#lensContainer .headerBar form.search .clearSearch
+{
+    background: url(/stylesheets/images/content/section_close_button.png) no-repeat top left;
+    display: block;
+    height: 16px;
+    line-height: 100px;
+    overflow: hidden;
+    width: 16px;
+}
+
 
 #lensContainer .headerBar .separator
 {

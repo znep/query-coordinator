@@ -35,10 +35,17 @@
       <%- tag_list.each do |tag| -%>
         <li>
           <%= link_to(h(tag.name), 
-              filter_community_url({ :type => type, :filter => current_filter, :tag => tag.name }),
-              :class => "filterLink" ) %>
+              filter_community_url({ 
+                :type => type, :filter => current_filter, :tag => tag.name }),
+                :class => "filterLink" ) %>
         </li>
       <%- end -%>
+      <li class="moreLink">
+        <%= link_to("More", 
+            tags_community_url({
+              :type => type, :filter => current_filter}), 
+              :class => "moreTagsLink") %>
+      </li>
     </ul>
   </div>
 </div></div>

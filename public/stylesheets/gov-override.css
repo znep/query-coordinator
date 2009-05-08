@@ -392,6 +392,7 @@ table.gridList tr.child.hover.selected td.description > *
 .dialogBox .header h1
 {
     background-image: url(/stylesheets/images/gov/common/data_gov_logo_dialog.png);
+    color: #ffffff;
 }
 .dialogBox .mainContent
 {
@@ -761,3 +762,16 @@ table.gridList tr.child.hover.selected td.description > *
 {
     background-image: url(/stylesheets/images/gov/widgets/background_buttons_summary_sprites.png);
 }
+
+
+/*** START: import-scren ***/
+.import form .arrowButton
+{
+    background-position: right -105px;
+}
+
+.import .dialogBox .header h1
+{
+    text-indent: 40px;
+}
+/*** END: impor-screen ***/

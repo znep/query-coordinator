@@ -1,5 +1,5 @@
 class CommunitiesController < ApplicationController
-  skip_before_filter :require_user, :only => [:show, :activities, :filter]
+  skip_before_filter :require_user, :only => [:show, :activities, :filter, :tags]
 
   PAGE_SIZE = 10
   
@@ -23,7 +23,7 @@ class CommunitiesController < ApplicationController
     
     @carousel_members = User.find({ :featured => true, :limit => 10 }, true);
     
-    @activities = Activity.find(5)
+    @activities = Activity.find({ :maxResults => 5 })
   end
   
   def filter
@@ -100,7 +100,31 @@ class CommunitiesController < ApplicationController
   
   def activities
     @community_activity = Activity.find({:maxResults => 13})
-    @contacts_activity = Activity.find({:maxResults => 13, :inNetwork => true})
+    if (current_user)
+      @contacts_activity = Activity.find({:maxResults => 13, :inNetwork => true})
+    end
+  end
+  
+  def tags
+    @type = params[:type]
+    @current_filter = params[:filter]
+    
+    opts = Hash.new
+    opts.update({ :method => "usersTags" })
+    case @type
+      when "TOPMEMBERS"
+        opts.update({:topMembers => true})
+      when "TOPUPLOADERS"
+        opts.update({:topUploaders => true})
+    end
+    
+    unless(@current_filter.nil?)
+      opts.update(@current_filter)
+    end
+    
+    @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
+    
+    render(:layout => "modal")
   end
 
 end

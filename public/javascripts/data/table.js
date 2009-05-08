@@ -506,7 +506,6 @@
                 colClasses.push(ruleClass = id + '-c' + colStyles.length);
                 var style = addRule("." + ruleClass).style;
                 colStyles.push(style);
-                //style.position = 'absolute';
             }
         };
 
@@ -644,9 +643,9 @@
 
                 // Add rendering information to the rendering function
                 var type = blist.data.types[col.type] || blist.data.types.text;
-                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]",
-                    col, contextVariables);
-                var cls = col.cls ? ' blist-td-' + col.cls : '';
+                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]", col, contextVariables);
+                var cls = col.cls || type.cls;
+                cls = cls ? ' blist-td-' + cls : '';
                 columnParts.push(
                     "\"<div class='blist-td " + colClasses[i] + cls + "'>\", " +
                         renderer + ", \"</div>\""

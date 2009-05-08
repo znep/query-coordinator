@@ -179,3 +179,79 @@ img.blist-table-option-icon
     width: 10px;
     height: 10px;
 }
+
+.blist-td-number {
+    text-align: right;
+}
+
+.blist-percent {
+    position: relative;
+}
+
+.blist-percent-num {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: 0;
+}
+
+.blist-percent-bar-pos {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: transparent url(images/content/table/percent_positive.png) center left repeat-x;
+}
+
+.blist-percent-bar-neg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: transparent url(images/content/table/percent_negative.png) center left repeat-x;
+}
+
+.blist-document-size {
+    font-size: .8em;
+    color: #666666;
+}
+
+.blist-flag-blue {
+    background-image: url(/stylesheets/images/content/table/flags/blue.png);
+    margin: auto;
+    width: 25px;
+    height: 22px;
+}
+
+.blist-flag-green {
+    background-image: url(/stylesheets/images/content/table/flags/green.png);
+    margin: auto;
+    width: 25px;
+    height: 22px;
+}
+
+.blist-flag-orange {
+    background-image: url(/stylesheets/images/content/table/flags/orange.png);
+    margin: auto;
+    width: 25px;
+    height: 22px;
+}
+
+.blist-flag-purple {
+    background-image: url(/stylesheets/images/content/table/flags/purple.png);
+    margin: auto;
+    width: 25px;
+    height: 22px;
+}
+
+.blist-flag-red {
+    background-image: url(/stylesheets/images/content/table/flags/red.png);
+    margin: auto;
+    width: 25px;
+    height: 22px;
+}
+
+.blist-flag-yellow {
+    background-image: url(/stylesheets/images/content/table/flags/yellow.png);
+    margin: auto;
+    width: 25px;
+    height: 22px;
+}

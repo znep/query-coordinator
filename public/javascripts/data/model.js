@@ -108,6 +108,8 @@ blist.namespace.fetch('blist.data');
         var translateFn = null;
 
         // Data load configuration
+        var autoBaseURL = true;
+        var baseURL = null;
         var supplementalAjaxOptions = null;
 
         var columnType = function(index) {
@@ -278,6 +280,21 @@ blist.namespace.fetch('blist.data');
             }
             if (!$(listeners).trigger('before_load', [ ajaxOptions ]))
                 return;
+
+            if (autoBaseURL) {
+                var url = ajaxOptions.url;
+                var endOfProt = url.indexOf('://');
+                if (endOfProt != -1) {
+                    endOfProt += 3;
+                    var endOfHost = url.indexOf('/', endOfProt);
+                    if (endOfHost == -1)
+                        baseURL = url;
+                    else
+                        baseURL = url.substring(0, endOfHost);
+
+                } else
+                    baseURL = "/";
+            }
             $.ajax(ajaxOptions);
         };
 
@@ -354,8 +371,17 @@ blist.namespace.fetch('blist.data');
                             dataIndex: i,
                             id: col.id
                         }
-                        if (icol.type == "picklist")
-                            icol.options = translatePicklistFromView(col);
+                        switch (icol.type) {
+                            case 'picklist':
+                                icol.options = translatePicklistFromView(col);
+                                break;
+
+                            case 'photo':
+                            case 'document':
+                                icol.base = baseURL + "/views/" + view.id + "/files/";
+                                break;
+                        }
+
                         var format = col.format;
                         if (format) {
                             if (icol.type == "text" && format.formatting_option == "Rich")
@@ -366,6 +392,9 @@ blist.namespace.fetch('blist.data');
                                 icol.format = col.format.view;
                             if (format.range)
                                 icol.range = format.range;
+                            if (format.precision)
+                                // This isn't actual precision, it's decimal places
+                                icol.decimalPlaces = format.precision;
                         }
                         intermediateCols.push(icol);
                     }
@@ -596,6 +625,18 @@ blist.namespace.fetch('blist.data');
 
             // Notify listeners
             dataChange();
+        }
+
+        /**
+         * Get or set the base URL for retrieving child documents.  This is set automatically when you use the ajax
+         * calls.
+         */
+        this.baseURL = function(newBaseURL) {
+            if (newBaseURL) {
+                baseURL = newBaseURL;
+                autoBaseURL = !baseURL;
+            }
+            return baseURL;
         }
 
         // Run sorting based on the current filter configuration.  Does not

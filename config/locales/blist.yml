@@ -1,13 +1,13 @@
 blist:
-  page_title: blist | share your weblists
-  my_home_title: My datasets
+  page_title: blist | Making Data Social
+  my_home_title: My blist
   discover_nav_title: Discover
-  search_prompt_text: Search for Data, contacts &amp; help
+  search_prompt_text: Search for Data
   discover_search_intro: Search for Data
   discover_header_intro: Discover useful, unique and unusual datasets created by the community.
   discover_carousel_header: Featured Datasets
   discover_popular_content_header: Popular Datasets
   community_header_intro: Welcome to the Community! Here you can find other people that share your interests along any topic.
   blist_name: dataset
-  blists_name: dataset
+  blists_name: datasets
   blist_company: blist

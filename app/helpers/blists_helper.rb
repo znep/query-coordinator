@@ -85,7 +85,7 @@ module BlistsHelper
           'title' => get_title({title_group_key => g.id})}
     end
 
-    items << {'section_title' => 'Contacts'}
+    items << {'section_title' => 'Friends'}
     contacts = Contact.find().sort {|a,b| a.displayName <=> b.displayName}
     first_char = ''
     contacts.each do |c|

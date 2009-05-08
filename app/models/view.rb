@@ -109,7 +109,7 @@ class View < Model
   end
 
   def href
-    prefix = self.category || 'blist'
+    prefix = self.category || 'dataset'
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
   end
   
@@ -131,13 +131,13 @@ class View < Model
     end
   end
 
-  def can_edit(user_id)
+  def can_edit()
     data['rights'].include?('write') ||
       data['rights'].include?('add') ||
       data['rights'].include?('delete')
   end
 
-  def can_read(user_id)
+  def can_read()
     data['rights'].include?('read')
   end
 

@@ -386,17 +386,18 @@
 
         // Measure the scroll bar
         var scrollbarWidth = (function scrollbarWidth() {
-            var div = $('<div style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"><div style="height:100px;"></div>');
+            var div = $('<div style="width:50px;height:50px;overflow:hidden;position:absolute;top:-200px;left:-200px;"><div style="height:100px;"></div></div>');
             $('body').append(div);
-            var w1 = $('div', div).innerWidth();
-            div.css('overflow-y', 'scroll');
-            var w2 = $('div', div).innerWidth();
+            var w1 = div[0].clientWidth;
+            div.css('overflow', 'scroll');
+            var w2 = div[0].clientWidth;
             $(div).remove();
             return w1 - w2;
         })();
 
         // Window sizing
-        var updateLayout = function() {
+        var updateLayout = function()
+        {
             headerScrolls.height(header.height());
 
             // Size the scrolling area.  Note that this assumes a width and height of 2px.  TODO - change to absolute
@@ -405,6 +406,24 @@
             scrolls.width(outside.width() - 2);
 
             renderRows();
+
+            if (options.showGhostColumn)
+            {
+                // Adjust the ghost column to fit
+                var ghostWidth = parseInt(ghostStyle.width) || 0;
+                var adj = scrolls.width() - inside.width();
+                if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
+                {
+                    adj -= scrollbarWidth;
+                }
+                if (adj + ghostWidth < options.ghostMinWidth + scrollbarWidth)
+                {
+                    adj = options.ghostMinWidth + scrollbarWidth - ghostWidth;
+                }
+                ghostStyle.width = (ghostWidth + adj)  + "px";
+                inside.width(inside.width() + adj);
+                header.width(header.width() + adj);
+            }
         }
         if (options.manualResize)
         {
@@ -431,9 +450,11 @@
         var css;
         var rowStyle;
         var handleStyle;
+        var ghostStyle;
         var cellStyle;
         var groupHeaderStyle;
         var handleClass;
+        var ghostClass;
         var colStyles = [];
         var colClasses = [];
 
@@ -480,9 +501,13 @@
                     break;
             }
             handleClass = id + "-handle";
+            ghostClass = id + "-ghost";
 
             // Dynamic style applied to the handle
             handleStyle = addRule("." + handleClass).style;
+
+            // Dynamic style applied to the handle
+            ghostStyle = addRule("." + ghostClass).style;
 
             // Dynamic style applied to rows
             rowStyle = addRule("#" + id + " .blist-tr").style;
@@ -548,9 +573,13 @@
             var $measureHandle = $(measureUtilDOM.firstChild);
             var handleOuterWidth = $measureHandle.outerWidth();
             var handleWidth = $measureHandle.width();
-            if (options.generateHeights)
+            if (options.generateHeights && options.showRowNumbers)
             {
                 handleStyle.height = rowHeight + 'px';
+            }
+            if (options.generateHeights && options.showGhostColumn)
+            {
+                ghostStyle.height = rowHeight + 'px';
             }
             handleStyle.width = handleWidth + 'px';
             if (options.generateHeights)
@@ -567,7 +596,16 @@
 
             // Create default column rendering
             var columnParts = [];
-            var pos = handleOuterWidth;
+            // Count the ghost column padding
+            var pos = 0;
+            if (options.showRowNumbers)
+            {
+                pos += handleOuterWidth;
+            }
+            if (options.showGhostColumn)
+            {
+                pos += paddingX;
+            }
             for (i = 0; i < columns.length; i++) {
                 // Initialize the column's style
                 var col = columns[i];
@@ -602,14 +640,20 @@
                     'if (row._special) ' +
                         'html.push(renderSpecial(row)); ' +
                     'else ' +
-                        'html.push(' + columnParts.join(',') + '); ' +
-                    'html.push("</div>");' +
+                        'html.push(' + columnParts.join(',') + '); ';
+            if (options.showGhostColumn)
+            {
+                renderFnSource += 'html.push("<div class=\'blist-td ' +
+                    ghostClass + ' blist-table-ghost\'></div>");';
+            }
+            renderFnSource += 'html.push("</div>");' +
                 '})';
             rowRenderFn = blist.data.types.compile(renderFnSource, contextVariables);
 
             // Set the scrolling area width
             header.width(pos);
             inside.width(pos);
+            ghostStyle.width = 0;
 
             // Configure the group header style
             groupHeaderStyle.left = handleOuterWidth + 'px';
@@ -650,15 +694,28 @@
                     '</span></div>'
                 );
             }
+            if (options.showGhostColumn)
+            {
+                html.push('<div class="blist-th blist-table-ghost ',
+                    ghostClass, '"></div>');
+            }
             header.html(html.join(''));
 
-            $(".blist-th", header).each(function(index) {
+            $(".blist-th", header).each(function(index)
+            {
                 if (!index && options.showRowNumbers)
+                {
                     // Skip the header handle
                     return;
+                }
                 if (options.showRowNumbers)
                 {
                     index -= 1;
+                }
+                if (index >= columns.length)
+                {
+                    // Skip the ghost column
+                    return;
                 }
                 columns[index].dom = this;
                 $(this).click(function() { sort(index) });
@@ -855,8 +912,8 @@
 
             inside.empty();
             renderedRows = {};
-            
-            renderRows();
+
+            updateLayout();
         }
 
         /**
@@ -872,7 +929,7 @@
                     dirtyRows[rowID] = rendered;
                 }
             }
-            renderRows();
+            updateLayout();
         }
 
 
@@ -907,7 +964,9 @@
 
     var blistTableDefaults = {
         generateHeights: true,
+        ghostMinWidth: 20,
         manualResize: false,
+        showGhostColumn: false,
         showName: true,
         showRowNumbers: true,
         showTitle: true

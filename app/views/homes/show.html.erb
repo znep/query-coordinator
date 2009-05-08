@@ -15,9 +15,9 @@
             <h1>Welcome back <%= current_user.is_established? ? h(current_user.login) : h(current_user.firstName) %></h1>
             
             <ul class="actionButtons clearfix">
-              <li><a href="<%= blist_href_new_blist %>">New <%= t(:blist_name) %></a></li>
-              <li><%= link_to("Upload", {:controller => "imports", :action => "new"}, :class => 'arrowButton') %> </li>
-              <li><%= link_to("Browse #{t(:blists_name)}", discover_url) %></li>
+              <li><a href="<%= blist_href_new_blist %>">New <%= t(:blist_name).titleize %></a></li>
+              <li><%= link_to("Upload Data", {:controller => "imports", :action => "new"}, :class => 'arrowButton', :title => "Upload an XLS, CSV or other data file and we'll convert it into a dataset.") %> </li>
+              <li><%= link_to("Browse #{t(:blists_name).titleize}", discover_url) %></li>
               <%- if false -%><li class="last"><a href="#">Invite Others</a></li><%- end -%>
             </ul>
             
@@ -49,7 +49,7 @@
             
             <%- if (@contacts.length > 0) -%>
               <div class="activityListContainer">
-                <h2>Contacts Updates</h2>
+                <h2>Friends Updates</h2>
                 <ul class="contactList">
                   <%= render( :partial => "contact_activity_list_item", 
                               :collection => @contacts) %>

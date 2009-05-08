@@ -3,10 +3,10 @@
     <%= link_to 'Home', home_url %>
   </div></li>
   <li class='blists'><div class='wrapper'>
-    <%= link_to t(:blists_name), blists_url %>
+    <%= link_to t(:blists_name).titleize, blists_url %>
   </div></li>
   <li class='contacts even'><div class='wrapper'>
-    <%= link_to 'Contacts', contacts_url %>
+    <%= link_to 'Friends', contacts_url %>
   </div></li>
   <li class='profile'><div class='wrapper'>
     <%= link_to "Profile", profile_url(current_user.id) %>

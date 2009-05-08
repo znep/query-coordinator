@@ -476,7 +476,7 @@
         <span><%= view.is_public? ? "Public" : "Private" %></span>
         <%- end -%>
         <%= view.is_shared? ? ' and shared with the following ' +
-        (shares.length == 1 ? 'contact' : 'contact'.pluralize) + ':' : '' %>
+        (shares.length == 1 ? 'friend' : 'friend'.pluralize) + ':' : '' %>
         </p>
       </div>
 
@@ -490,9 +490,9 @@
           </colgroup>
           <thead>
             <tr>
-              <th class="picture" title="Contact"><div></div></th>
-              <th class="contact" title="Contact/Group">
-                <div>Contact / Group</div>
+              <th class="picture" title="Friend"><div></div></th>
+              <th class="contact" title="Friend/Group">
+                <div>Friend / Group</div>
               </th>
               <th class="role" title="Role"><div>Role</div></th>
               <%# Not supported

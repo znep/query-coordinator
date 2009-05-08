@@ -1,9 +1,8 @@
-
 <div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
   <div class="tabContent">
     <h2><%= tab_title %></h2>
     <div class="contentSort">
-      <% form_tag(filter_community_url(:type => type, :filter => current_filter), :class => "sortForm") do %>
+      <% form_tag(filter_community_url(:type => type, :filter => current_filter, :tag => current_tag), :class => "sortForm") do %>
         <p>
           Sort by
           <%= select_tag("sort_by", community_sort_select_options(sort_by), :id => "sort_by_" + type) %>
@@ -16,7 +15,7 @@
     </ul>
     
     <div class="memberPager">
-      <%= create_pagination(members_total, @page_size, current_page, filter_community_url({:type => type, :filter => current_filter, :sort_by => sort_by})) %>
+      <%= create_pagination(members_total, @page_size, current_page, filter_community_url({:type => type, :filter => current_filter, :sort_by => sort_by, :tag => current_tag})) %>
     </div>
     
   </div>
@@ -27,16 +26,19 @@
     <h2>Show People</h2>
     <ul class="tagList">
       <li><%= link_to("With public #{t(:blists_name)}", 
-              filter_community_url({:type => type, :filter => {:publicOnly => true}}),
+              filter_community_url({:type => type, :filter => {:publicOnly => true}, :tag => current_tag}),
               :class => "filterLink") %></li>
     </ul>
     
-    <h2>Browse by tag</h2>
+    <h2>Browse by Tag</h2>
     <ul class="tagList">
-      <li><a href="#tag">Wines</a></li>
-      <li><a href="#tag">Contributors</a></li>
-      <li><a href="#tag">Energy</a></li>
-      <li><a href="#tag">Finance</a></li>
+      <%- tag_list.each do |tag| -%>
+        <li>
+          <%= link_to(h(tag.name), 
+              filter_community_url({ :type => type, :filter => current_filter, :tag => tag.name }),
+              :class => "filterLink" ) %>
+        </li>
+      <%- end -%>
     </ul>
   </div>
 </div></div>

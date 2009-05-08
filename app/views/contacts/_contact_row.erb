@@ -13,10 +13,10 @@
   </tr>
 <%- end -%>
 
-<tr id='<%= contact.is_a?(Group) ? 'group' : 'contact' %>:<%= contact.id %>'
+<tr id='<%= contact.is_a?(Group) ? 'group' : 'friend' %>:<%= contact.id %>'
   class='item'>
   <td class='handle first'><div>
-      <%-# <a href="#open_menu" class="dropdownLink menuHandle">Contact Menu</a> -%>
+      <%-# <a href="#open_menu" class="dropdownLink menuHandle">Friend Menu</a> -%>
       <%#- if (contact.is_a?(Group)) -%>
         <%#= menu_tag({'id' => "itemMenu-#{contact.id}", 'class' => 'blistItemMenu',
           'items' => [

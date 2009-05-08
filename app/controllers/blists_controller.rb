@@ -1,6 +1,6 @@
 class BlistsController < SwfController
   helper_method :get_title
-  #skip_before_filter :require_user, :only => [:show]
+  skip_before_filter :require_user, :only => [:show]
 
   def index
     @body_class = 'home'
@@ -34,6 +34,10 @@ class BlistsController < SwfController
           flash[:error] = e.error_message
           return render 'shared/error'
         end
+      end
+
+      if !@view.can_read()
+        return require_user
       end
 
       # See if it matches the authoritative URL; if not, redirect

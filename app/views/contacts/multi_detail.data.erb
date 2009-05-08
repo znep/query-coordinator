@@ -13,7 +13,7 @@
   <div class="infoContentHeader clearfix">
     <%- if (@contacts && @contacts.length > 0) -%>
       <h2 class="panelHeader contactPanelHeader">
-        <%= pluralize(@contacts.length, "contact") %> selected
+        <%= pluralize(@contacts.length, "friend") %> selected
       </h2>
     <%- end -%>
     
@@ -28,7 +28,7 @@
       <%- if (@contacts && @contacts.length > 0) -%>
         <dl class="summaryList actionList contactsList">
           <dt>
-            Contacts
+            Friends
           </dt>
           <%- @contacts.each do |contact| -%>
             <dd class="editItem">

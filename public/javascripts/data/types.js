@@ -357,11 +357,11 @@ blist.namespace.fetch('blist.data.types');
         if (value == null)
             return '';
         if (typeof value == 'object') {
-            url = value[1];
+            url = value[2];
             if (url == null)
                 return '';
-            name = value[0];
-            size = url[2];
+            name = value[1];
+            size = value[3];
         } else
             url = value;
         var rv = renderURL([ (base || '') + url, name || 'Document' ]);

@@ -314,7 +314,7 @@ blist.blistGrid.mainMenuHandler = function(event)
 
 blist.blistGrid.openViewHandler = function(event, viewId, popup)
 {
-    blist.util.navigation.redirectToView(viewId, popup);
+    blist.util.navigation.redirectToView(viewId, {popup: popup, mode: 'edit'});
 };
 
 blist.blistGrid.popupCanceledHandler = function(event, popup)

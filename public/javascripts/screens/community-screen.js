@@ -4,6 +4,12 @@ blist.community.filterClickHandler = function (event)
 {
     event.preventDefault();
     var $filterLink = $(this);
+    var filterUrl = $filterLink.attr("href");
+
+    if ($filterLink.hasClass("hilight"))
+    {
+        filterUrl += $filterLink.closest(".tagList").length > 0 ? "&clearTag=true" : "&clearFilter=true";
+    }
     
     var tabContainers = {
         "TOPMEMBERS": "#communityTabTopMembers",
@@ -14,7 +20,7 @@ blist.community.filterClickHandler = function (event)
     var tabSelector = tabContainers[$.urlParam("type", $filterLink.attr("href"))];
     
     $.Tache.Get({ 
-        url: $filterLink.attr("href"),
+        url: filterUrl,
         success: function(data)
         {
             $(tabSelector).html(data);

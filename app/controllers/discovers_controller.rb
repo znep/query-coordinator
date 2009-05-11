@@ -24,6 +24,7 @@ class DiscoversController < ApplicationController
     filter = params[:filter]
     page = params[:page] || 1
     sort_by_selection = params[:sort_by] || (type == "POPULAR" ? "POPULAR" : "LAST_CHANGED")
+    is_clear_filter = params[:clearFilter]
     
     sort_by = sort_by_selection
     is_asc = true
@@ -39,6 +40,10 @@ class DiscoversController < ApplicationController
     opts.update({:page => page, :limit => PAGE_SIZE})
     if (type == "POPULAR")
       opts.update({:top100 => true})
+    end
+    
+    if (is_clear_filter)
+      filter = nil
     end
     
     tab_title = type == "POPULAR" ? "Popular" : "All"

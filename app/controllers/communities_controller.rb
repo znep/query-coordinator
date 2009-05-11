@@ -32,6 +32,8 @@ class CommunitiesController < ApplicationController
     page = params[:page] || 1
     sort_by_selection = params[:sort_by] || "ACTIVITY"
     tag = params[:tag]
+    is_clear_filter = params[:clearFilter]
+    is_clear_tag = params[:clearTag]
     
     sort_by = sort_by_selection
     is_asc = false
@@ -58,9 +60,17 @@ class CommunitiesController < ApplicationController
         tag_opts.update({:topUploaders => true})
     end
     
+    if (is_clear_tag)
+      tag = nil
+    end
+    
     opts.update({:sortBy => sort_by, :isAsc => is_asc})
     if (!tag.nil?)
       opts.update({:tags => tag})
+    end
+    
+    if (is_clear_filter)
+      filter = nil
     end
     
     tab_title = type == "ALLMEMBERS" ? "All Members" : (type == "TOPMEMBERS" ? "Top Members" : "Top Uploaders")
@@ -77,6 +87,11 @@ class CommunitiesController < ApplicationController
     @filtered_members_total = User.find(opts.update({:count => true})).count
     
     tag_list = Tag.find(tag_opts)
+    if (tag && !tag_list.nil? && !tag_list.any? {|itag| itag.name == tag })
+      new_tag = Tag.new
+      new_tag.data['name'] = tag
+      tag_list << new_tag
+    end
     
     respond_to do |format|
       format.html { redirect_to(community_url(params)) }

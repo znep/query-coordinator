@@ -24,20 +24,20 @@
 <div class="tabContentNavTR"><div class="tabContentNavBR">
   <div class="tabContentNav">
     <h2>Show People</h2>
-    <ul class="tagList">
-      <li><%= link_to("With public #{t(:blists_name)}", 
+    <ul class="filterList hilightList">
+      <li><%= link_to("<span>With public #{t(:blists_name)}</span>", 
               filter_community_url({:type => type, :filter => {:publicOnly => true}, :tag => current_tag}),
-              :class => "filterLink") %></li>
+              :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
     </ul>
     
     <h2>Browse by Tag</h2>
-    <ul class="tagList">
+    <ul class="tagList hilightList">
       <%- tag_list.each do |tag| -%>
         <li>
-          <%= link_to(h(tag.name), 
+          <%= link_to("<span>#{h(tag.name)}</span>", 
               filter_community_url({ 
                 :type => type, :filter => current_filter, :tag => tag.name }),
-                :class => "filterLink" ) %>
+                :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
         </li>
       <%- end -%>
       <li class="moreLink">

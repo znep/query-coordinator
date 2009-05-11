@@ -4,9 +4,15 @@ blist.discover.filterClickHandler = function (event)
 {
     event.preventDefault();
     var $filterLink = $(this);
+    var filterUrl = $filterLink.attr("href");
+
+    if ($filterLink.hasClass("hilight"))
+    {
+        filterUrl += "&clearFilter=true";
+    }
     
     $.Tache.Get({ 
-        url: $filterLink.attr("href"),
+        url: filterUrl,
         success: function(data)
         {
             $filterLink.closest(".tabContentContainer").html(data);

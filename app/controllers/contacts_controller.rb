@@ -3,7 +3,7 @@ class ContactsController < ApplicationController
 
   def index
     @body_class = 'home'
-    accept_keys = ['share_direction', 'group', 'type', 'untagged', 'tag']
+    accept_keys = ['share_direction', 'untagged', 'tag']
     @args = params.reject {|k,v| !accept_keys.include?(k)}.inject({}) do |h,(k,v)|
       h[k] = CGI.unescape(v); h
     end
@@ -31,7 +31,6 @@ class ContactsController < ApplicationController
 
   def detail
     @item_count = params[:items]
-    @type = params[:type]
   end
 
   def contact_detail
@@ -40,7 +39,6 @@ class ContactsController < ApplicationController
     @contact_contributor_blists = get_contributor_blists_for_contacts(Array[@contact])
     @contact_viewer_blists = get_viewer_blists_for_contacts(Array[@contact])
     
-    @contact_groups = get_groups_for_contact(@contact)
     @contact_shares = get_shares_for_contacts(Array[@contact])
     
     @shares_to_contact = get_shared_to_contacts(Array[@contact])
@@ -50,35 +48,16 @@ class ContactsController < ApplicationController
     @contact_templates = @contact_blists.find_all { |b| b.flag?("schemaPublic") }
   end
 
-  def group_detail
-    @group = Group.find(params[:id])
-    
-    @group_contributor_blists = get_contributor_blists_for_contacts(@group.users)
-    @group_viewer_blists = get_viewer_blists_for_contacts(@group.users)
-    
-    @group_shares = get_shares_for_contacts(@group.users)
-    @shares_to_group = get_shared_to_contacts(@group.users)
-    @shares_by_group = get_shared_by_contacts(@group.users)
-    
-    @group_blists = get_blists_for_group(@group)
-  end
-
   def multi_detail
     multi = params[:multi].split('|')
     contact_ids = Array.new
-    group_ids = Array.new
     
     multi.each do |item|
       item_array = item.split(':')
-      if (item_array[0] == "friend")
-        contact_ids << item_array[1]
-      elsif (item_array[0] == "group")
-        group_ids << item_array[1]
-      end
+      contact_ids << item_array[1]
     end
     
     @contacts = get_contacts_with_ids(contact_ids)
-    @groups = get_groups_with_ids(group_ids)
   end
 
 private
@@ -86,11 +65,6 @@ private
   def get_contacts(params = nil)
     if params.nil?
       params = Hash.new
-    end
-
-    cur_groups = []
-    if params['type'] == 'groups' || !params['untagged'].nil? || !params['tag'].nil?
-      cur_groups = Group.find()
     end
 
     contacts_args = {}
@@ -103,17 +77,7 @@ private
       end
     end
 
-    cur_contacts = []
-    if !params['group'].nil?
-      group_obj = Group.find(params['group'])
-      cur_contacts = group_obj.users.dup
-    elsif params['type'].nil? || params['type'] == 'friend' ||
-      !params['untagged'].nil? || !params['tag'].nil? ||
-      !params['share_direction'].nil?
-      cur_contacts = Contact.find(contacts_args)
-    end
-
-    cur_contacts.concat(cur_groups)
+    cur_contacts = Contact.find(contacts_args)
 
     if !params['untagged'].nil? && params['untagged'] == 'true'
       cur_contacts = cur_contacts.find_all {|c| c.tags.nil? || c.tags.length < 1}
@@ -133,13 +97,6 @@ private
 
 
     return cur_contacts
-  end
-
-  def get_groups_for_contact(contact)
-    groups = Group.find()
-    groups = groups.find_all { |g| 
-      g.users.any? { |u| u.id == contact.id } 
-    }
   end
 
   def get_contributor_blists_for_contacts(contacts)
@@ -189,14 +146,6 @@ private
     }
   end
   
-  def get_blists_for_group(group)
-    views = Array.new
-    group.users.each do |user|
-      views += View.find('userId' => user.id)
-    end
-    views
-  end
-  
   def get_contacts_with_ids(ids)
     contacts = Contact.find()
     these_contacts = contacts.find_all { |c|
@@ -204,29 +153,13 @@ private
     }
   end
   
-  def get_groups_with_ids(ids)
-    groups = Group.find()
-    these_groups = groups.find_all { |g| 
-      ids.include?(g.id)
-    }
-  end
-
-  def group_name(group)
-    Group.find(group).name
-  end
-
   def get_title(params = nil)
     if params.nil?
       params = Hash.new
     end
-    title = 'All '
-    title_type = 'friends'
+    title = 'All friends'
 
     parts = Array.new
-    if !params['group'].nil?
-      parts << 'in ' + group_name(params['group'])
-    end
-
     if !params['share_direction'].nil?
       parts <<
         case params['share_direction']
@@ -238,31 +171,18 @@ private
     end
 
     if !params['untagged'].nil? && params['untagged'] == 'true'
-      title_type = 'friends and groups'
       parts << 'with no tags'
     end
 
     if !params['untagged'].nil? && params['untagged'] == 'false'
-      title_type = 'friends and groups'
       parts << 'with any tags'
     end
 
     if !params['tag'].nil?
-      title_type = 'friends and groups'
       parts << 'tagged "' + params['tag'] + '"'
     end
 
-    if !params['type'].nil?
-      title_type =
-        case params['type']
-        when 'friend'
-          'friends'
-        when 'groups'
-          'groups'
-        end
-    end
-
-    title += "#{title_type} " + parts.join(' and ')
+    title += parts.join(' and ')
     return title
   end
 end

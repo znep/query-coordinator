@@ -12,10 +12,10 @@
 <div class="infoContentOuter listPane active">
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContentHeader clearfix">
-      <h2 class="panelHeader <%= (@type == "friend" || @type == "friends and groups") ? "contactPanelHeader" : "groupPanelHeader" %>">
-        <%= pluralize(@item_count, @type) %>
+      <h2 class="panelHeader contactPanelHeader">
+        <%= pluralize(@item_count, "friend") %>
       </h2>
-      <span class="selectPrompt">Select a specific <%= @type %> or <%= "#{@type}s" %> above for more information</span>
+      <span class="selectPrompt">Select a specific friend or friends above for more information</span>
     </div>
     <div class="infoContent"></div>
   </div></div>

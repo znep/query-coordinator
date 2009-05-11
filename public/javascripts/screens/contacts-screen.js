@@ -6,16 +6,16 @@ blist.contacts.setupTable = function ()
         initialSort: [[2, 0]],
         loadedCallback: function ()
         {
-            contactsInfoNS.updateSummary(0, contactsNS.getItemsType());
+            contactsInfoNS.updateSummary(0);
         },
         searchable: true,
         searchCompleteCallback: function () {
-            contactsInfoNS.updateSummary(0, contactsNS.getItemsType());
+            contactsInfoNS.updateSummary(0);
         },
         searchFormSelector: "form.contactsFind",
         selectionCallback: function($targetRow, $selectedItems)
         {
-            contactsInfoNS.updateSummary($selectedItems.length, contactsNS.getItemsType());
+            contactsInfoNS.updateSummary($selectedItems.length);
         },
         sortHeaders: {0: {sorter: false}, 1: {sorter: false},
             2: {sorter: "text"}, 3: {sorter: "text"},
@@ -23,28 +23,17 @@ blist.contacts.setupTable = function ()
     });
 };
 
-blist.contacts.getItemsType = function()
-{
-    var $contacts = $("#contactList tr[id*='friend']");
-    var $groups = $("#contactList tr[id*='group']");
-    
-    var type = $groups.length > 0 ? ($contacts.length > 0 ? "friends and groups" : "groups") : "friend";
-    
-    return type;
-}
-
 var contactsInfoNS = blist.namespace.fetch('blist.contacts.infoPane');
-blist.contacts.infoPane.updateSummary = function(numSelect, itemType)
+blist.contacts.infoPane.updateSummary = function(numSelect)
 {
     // itemType must be either "friend" or "group".
     if (numSelect == 1)
     {
         var $items = $('#contactList').combinationList().selectedItems();
         
-        var itemTypeIdArray = $items.attr('id').split(":");
-        var firstType = itemTypeIdArray[0] == "friend" ? "contact" : itemTypeIdArray[0]
+        var itemIdArray = $items.attr('id').split(":");
         $.Tache.Get({ 
-            url: '/contacts/' + itemTypeIdArray[1] + '/' + firstType + '_detail',
+            url: '/contacts/' + itemIdArray[1] + '/contact_detail',
             success: contactsInfoNS.itemDetailSuccessHandler
         });
     }
@@ -56,8 +45,7 @@ blist.contacts.infoPane.updateSummary = function(numSelect, itemType)
 
             $.Tache.Get({ url: '/contacts/detail',
                 data: {
-                    "items" : numSelect,
-                    "type" : itemType
+                    "items" : numSelect
                 },
                 success: function(data)
                 {
@@ -96,7 +84,6 @@ blist.contacts.infoPane.itemDetailSuccessHandler = function(data)
     {
         tabMap: {
             "tabSummary" : ".singleInfoSummary",
-            "tabGroups" : ".singleInfoGroups",
             "tabMembers" : ".singleInfoMembers",
             "tabShares" : ".singleInfoShares",
             "tabBlists" : ".singleInfoBlists",
@@ -104,9 +91,6 @@ blist.contacts.infoPane.itemDetailSuccessHandler = function(data)
         }
     });
 
-    $(".tabLink.groups").click(function(event){
-        $(".summaryTabs").infoPaneNavigate().activateTab("#tabGroups");
-    });
     $(".tabLink.members").click(function(event){
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabMembers");
     });

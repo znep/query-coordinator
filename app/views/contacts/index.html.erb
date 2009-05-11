@@ -32,7 +32,6 @@
 <%- if isAddingEnabled -%>
             <ul class="headerActions">
               <li><a href='#' class="add_contact">Add Contact</a></li>
-              <li><a href='#' class="add_group">Create Group</a></li>
             </ul>
 <%- end -%>
           </div>
@@ -91,22 +90,6 @@
             <%= sidebar_filter_link("<span>Have Shared To Me</span>",
               {'share_direction' => 'in'}, @args) %>
           </li>
-        </ul>
-      </div>
-
-      <div class='filterSection groups expandableContainer'>
-        <a href="#expand_items" class="expander">expand</a>
-        <h4>
-          <%= sidebar_filter_link('<span>All Groups</span>',
-            {'type' => 'groups'}, @args) %>
-        </h4>
-        <ul class="expandable">
-          <%- get_groups().each do |group| -%>
-          <li>
-          <%= sidebar_filter_link("<span>#{h(group.name)}</span>",
-            {'group' => group.id.to_s}, @args) %>
-          </li>
-          <%- end -%>
         </ul>
       </div>
 

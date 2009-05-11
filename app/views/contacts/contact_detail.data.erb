@@ -9,12 +9,6 @@
         <a href="#summary">Summary</a>
       </div></div>
     </li>
-    <li id="tabGroups">
-      <div class="tabOuter"><div class="tabInner">
-        <a href="#expand" class="expander" title="more info">more info</a>
-        <a href="#groups">Groups</a>
-      </div></div>
-    </li>
     <li id="tabShares">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
@@ -47,9 +41,6 @@
         alt="<%= h(@contact.displayName) %>" />
       <%= h(@contact.displayName) %>
     </h2>
-    <ul class="headerActions actionButtons">
-      <li><a href="#" class="arrowButton">Add Groupmember</a></li>
-    </ul>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">
@@ -106,22 +97,6 @@
 
       <dl class="summaryList actionList">
         <dt>
-          Groups
-        </dt>
-        <dd>
-          <div class="itemContent">
-            <span>Member of <%= pluralize(@contact_groups.length, "group") %></span>
-          </div>
-          <div class="itemActions">
-            <a href="#tabGroups" class="action tabLink groups">
-              <span>View</span>
-            </a>
-          </div>
-        </dd>
-      </dl>
-
-      <dl class="summaryList actionList">
-        <dt>
           Shares
         </dt>
         <dd>
@@ -144,59 +119,6 @@
   </div></div> <!-- /.infoContentInner -->
 </div>
 <%# *** END: SUMMARY *** %>
-
-<%# *** START: GROUPS *** %>
-<div class="infoContentOuter singleInfoGroups">
-  <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader groupPanelHeader">
-      <%= pluralize(@contact_groups.length, "Mutual Group") %>
-    </h2>
-    <ul class="headerActions actionButtons">
-      <li><a href="#add" class="arrowButton">[Add to Group]</a></li>
-    </ul>
-  </div>
-  <div class="infoContentInner"><div class="infoContentWrapper">
-    <div class="infoContent">
-      <div class="gridListContainer">
-        <table class="gridList" cellspacing="0">
-          <colgroup>
-            <col class='group' />
-            <col class='name' />
-            <col class='description' />
-            <col class='dateAdded' />
-            <col class='actionContainer' />
-          </colgroup>
-          <thead>
-            <tr>
-              <th class="group" title="Group"><div>Group</div></th>
-              <th class="name"><div>Name</div></th>
-              <th class="description"><div>Description</div></th>
-              <th class="dateAdded"><div>Date Added</div></th>
-              <th class="actionContainer"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <%- @contact_groups.each do |group| -%>
-              <tr class="item">
-                <td class="group"><div>group</div></td>
-                <td class="name"><div class="clipText"><%= h(group.name) %></div></td>
-                <td class="description"><div class="clipText"><%= h(group.description) %></div></td>
-                <td class="dateAdded"><div>[10/18/2008]</div></td>
-                <td class="actionContainer"><div><a
-                      href="#remove" class="action"
-                      title="Removve"><span>[Remove]</span></a>
-                </div></td>
-              </tr>
-            <%- end -%>
-          </tbody>
-        </table>
-      </div>
-
-
-    </div>
-  </div></div>
-</div>
-<%# *** END: GROUPS *** %>
 
 <%# *** START: SHARES *** %>
 <div class="infoContentOuter singleInfoShares">

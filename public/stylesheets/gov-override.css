@@ -442,6 +442,16 @@ table.gridList tr.child.hover.selected td.description > *
 .tabContent h2 { color: #666; }
 
 
+
+.hilightList li a:hover span
+{
+    background: url(/stylesheets/images/gov/sidebar/blists_filter/background_item_hover.png) right no-repeat;
+}
+.hilightList li a.hilight span
+{
+    background: url(/stylesheets/images/gov/sidebar/blists_filter/background_item_hover_close.png) right no-repeat;
+}
+
 /*** END: widgets ***/
 
 /*** START: signup-screen ***/

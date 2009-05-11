@@ -114,6 +114,23 @@ module ApplicationHelper
       (params == current_params || (current_params.empty? && is_default) ?
         "class='hilight'" : "") + ">#{content}</a>"
   end
+  
+  
+  def get_filter_hilight_class(this_filter, current_filter, hilight_class)
+    out = ""
+    if (!current_filter.nil? && (current_filter == this_filter || current_filter.include?(this_filter)))
+      out = hilight_class
+    end
+    out
+  end
+  
+  def get_tag_hilight_class(this_tag, current_tag, hilight_class)
+    out = ""
+    if (!current_tag.nil? && current_tag == this_tag)
+      out = hilight_class
+    end
+    out
+  end
 
 
   # Display a standardized flash error message.

@@ -357,59 +357,74 @@ blist.namespace.fetch('blist.data');
             return options;
         }
 
-        var translateColumnsFromView = function(view) {
+        var translateColumnsFromView = function(view)
+        {
             var intermediateCols = [];
             var viewCols = view.columns;
-            if (viewCols) {
-                for (var i = 0; i < viewCols.length; i++) {
+            if (viewCols)
+            {
+                for (var i = 0; i < viewCols.length; i++)
+                {
                     var col = viewCols[i];
-                    if (col.position && (!col.flags || $.inArray("hidden", col.flags) == -1)) {
+                    if (col.position && (!col.flags ||
+                        $.inArray("hidden", col.flags) == -1))
+                    {
                         var icol = {
                             name: col.name,
                             width: col.width || 100,
-                            type: col.dataType && col.dataType.type ? col.dataType.type : "text",
+                            type: col.dataType && col.dataType.type ?
+                                col.dataType.type : "text",
                             dataIndex: i,
+                            position: col.position,
                             id: col.id
                         }
-                        switch (icol.type) {
+                        switch (icol.type)
+                        {
                             case 'picklist':
                                 icol.options = translatePicklistFromView(col);
                                 break;
 
                             case 'photo':
                             case 'document':
-                                icol.base = baseURL + "/views/" + view.id + "/files/";
+                                icol.base = baseURL + "/views/" + view.id +
+                                    "/files/";
                                 break;
                         }
 
                         var format = col.format;
-                        if (format) {
-                            if (icol.type == "text" && format.formatting_option == "Rich")
+                        if (format)
+                        {
+                            if (icol.type == "text" &&
+                                format.formatting_option == "Rich")
+                            {
                                 icol.type = "richtext";
-                            if (icol.type == "stars" && format.view == "stars_number")
+                            }
+                            if (icol.type == "stars" &&
+                                format.view == "stars_number")
+                            {
                                 icol.type = "number";
+                            }
                             else if (format.view)
+                            {
                                 icol.format = col.format.view;
+                            }
                             if (format.range)
+                            {
                                 icol.range = format.range;
+                            }
                             if (format.precision)
+                            {
                                 // This isn't actual precision, it's decimal places
                                 icol.decimalPlaces = format.precision;
+                            }
                         }
                         intermediateCols.push(icol);
                     }
                 }
-                viewCols.sort(function(col1, col2) { return col1 - col2; });
-                var columns = [];
-                for (i = 0; i < intermediateCols.length; i++) {
-                    col = intermediateCols[i];
-                    if (!col)
-                        continue;
-                    // TODO -- handle nested columns
-                    columns.push(col);
-                }
+                intermediateCols.sort(function(col1, col2)
+                    { return col1.position - col2.position; });
             }
-            return columns;
+            return intermediateCols;
         }
 
         /**

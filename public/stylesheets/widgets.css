@@ -1349,24 +1349,6 @@ table.gridList tr.filteredOut
 {
     margin-bottom: 3em;
 }
-.tabContentNav ul li
-{
-    margin-bottom: 1em;
-}
-.tabContentNav ul li a
-{
-    color: #333;
-    font-size: 1.2em;
-}
-.tabContentNav ul li.moreLink
-{
-    text-align: right;
-}
-.tabContentNav ul li.moreLink a
-{
-    font-size: 1.1em;
-    text-transform: uppercase;
-}
 
 /*** END: Tab content ***/
 
@@ -1462,3 +1444,61 @@ table.gridList tr.filteredOut
     text-transform: uppercase;
 }
 /*** END: Tag Cloud ***/
+
+/*** START: Hilight List ***/
+
+.hilightList li
+{
+    margin-bottom: .3em;
+}
+.hilightList li a
+{
+    color: #333;
+    display: block;
+    font-size: 1.2em;
+    line-height: 22px;
+    min-height: 0;
+    text-decoration: none;
+}
+.hilightList li a span
+{
+    display: block;
+    height: 22px;
+    overflow: hidden;
+    padding-left: 2px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.hilightList li a:hover span
+{
+    background: url(/stylesheets/images/sidebar/blists_filter/background_item_hover.png) right no-repeat;
+}
+.hilightList li a.hilight span
+{
+    background: url(/stylesheets/images/sidebar/blists_filter/background_item_hover_close.png) right no-repeat;
+}
+
+
+.tabContentNav ul.filterList li a
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_filter_sprites.png);
+    background-position: 0 -66px;
+    background-repeat: no-repeat;
+    display: block;
+    min-width: 0; /* Trigger the hasLayout property for IE7 */
+    padding: 0 0 0 25px;
+    
+}
+
+.tabContentNav ul li.moreLink
+{
+    text-align: right;
+}
+.tabContentNav ul li.moreLink a
+{
+    font-size: 1.1em;
+    text-transform: uppercase;
+}
+
+
+/*** END: Hilight List ***/

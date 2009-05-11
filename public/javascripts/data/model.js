@@ -258,7 +258,7 @@ blist.namespace.fetch('blist.data');
             if (curOptions.progressiveLoading)
             {
                 ajaxOptions.data = $.extend({}, ajaxOptions.data,
-                    {max_rows: curOptions.pageSize, include_ids: true});
+                    {include_ids_after: curOptions.pageSize});
             }
             doLoad(this, this.load, ajaxOptions);
         };
@@ -715,8 +715,7 @@ blist.namespace.fetch('blist.data');
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
                         {   method: 'index',
-                            max_rows: curOptions.pageSize,
-                            include_ids: true
+                            include_ids_after: curOptions.pageSize
                         }),
                     type: 'POST',
                     contentType: 'application/json',

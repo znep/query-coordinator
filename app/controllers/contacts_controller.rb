@@ -8,6 +8,7 @@ class ContactsController < ApplicationController
       h[k] = CGI.unescape(v); h
     end
     @contacts = get_contacts(@args)
+
     @title = get_title(@args)
   end
 
@@ -46,6 +47,8 @@ class ContactsController < ApplicationController
     
     @contact_blists = View.find('userId' => @contact.id)
     @contact_templates = @contact_blists.find_all { |b| b.flag?("schemaPublic") }
+    
+    @contact_activities = Activity.find_for_user(@contact)
   end
 
   def multi_detail

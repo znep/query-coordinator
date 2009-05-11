@@ -21,8 +21,8 @@
         <a href="#blists"><%= t(:blists_name).titleize %></a>
       </div></div>
     </li>
-<%- if isActivityEnabled -%>
-    <li id="tabActivity" class="last">
+<%- if @contact_activities && @contact_activities.length > 0 -%>
+    <li id="tabActivity">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
         <a href="#activity">Activity</a>
@@ -69,17 +69,6 @@
           </div>
           <div class="itemActions">
             <%= link_to("<span>View profile</span>", profile_url(@contact.id), :class => "action") %>
-          </div>
-        </dd>
-      </dl>
-
-      <dl class="summaryList">
-        <dt>
-          Friend Since
-        </dt>
-        <dd class="editItem">
-          <div class="itemContent">
-            <span>[10/15/2008]</span>
           </div>
         </dd>
       </dl>
@@ -162,7 +151,8 @@
                   <%= link_to(h(share.name), share.href) %>
                 </div></td>
                 <td class="description"><div class="clipText"><%= h(share.description) %></div></td>
-                <td class="sharedOn"><div>[10/18/2008]</div></td>
+                <td class="sharedOn"><div>
+                  <%= blist_date(share.share_date_for_contact(share.owner.id == current_user.id ? @contact : current_user)) %></div></td>
                 <td class="actionContainer"><div><a
                       href="<%= share.href %>" class="action"
                       title="<%= h(share.name) %>"><span>View</span></a>
@@ -230,11 +220,12 @@
   </div></div>
 </div>
 <%# *** END: BLISTS *** %>
-<%- if isActivityEnabled -%>
+
 <%# *** START: ACTIVITY *** %>
+<%- if @contact_activities && @contact_activities.length > 0 -%>
 <div class="infoContentOuter singleInfoActivity">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader"> [4] new activities</h2>
+    <h2 class="panelHeader"><%= @contact_activities.length %> new activities</h2>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">
@@ -253,46 +244,23 @@
             </tr>
           </thead>
           <tbody>
+            <%- @contact_activities.each do |act| -%>
             <tr class="item">
-              <td class="when"><div>[01/09/2009]</div></td>
-              <td class="what"><div>[Added new row 1A2B3C]</div></td>
+              <td class="when"><div><%= blist_date(act.createdAt) %></div></td>
+              <td class="what"><div>
+                <%= get_verb_for_activity_action(act.action).capitalize %>
+                <%= act.actedOnName %>
+              </div></td>
               <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
+                <a href="<%= get_url_for_activity_action(act) %>" class="action"><span>View</span></a>
               </div></td>
             </tr>
-            <tr class="item">
-              <td class="when"><div>[01/10/2009]</div></td>
-              <td class="what"><div>[Updated row 1A2B3C]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="when"><div>[01/10/2009]</div></td>
-              <td class="what"><div>[Commented]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="when"><div>[01/10/2009]</div></td>
-              <td class="what"><div>[Replied to comment]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="when"><div>[01/11/2009]</div></td>
-              <td class="what"><div>[Copied this blist to create "Good Mixers"]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
+            <%- end -%>
           </tbody>
         </table>
       </div>
     </div>
   </div></div>
 </div>
-<%# *** END: ACTIVITY *** %>
 <%- end -%>
+<%# *** END: ACTIVITY *** %>

@@ -211,6 +211,14 @@ class View < Model
   def comments
     Comment.find(id)
   end
+  
+  def share_date_for_contact(contact)
+    out = ""
+    contact_grant = grants.find {|g| g.userId == contact.id}
+    if (contact_grant)
+      out = contact_grant.createdAt
+    end
+  end
 
   @@categories = {
     "" => "-- No category --",

@@ -36,26 +36,30 @@ module CommunitiesHelper
     when "add_profile_photo"
       out = "added a profile photo"
     when "publish_widget"
-      "published a widget for"
+      out = "published a widget for"
     when "moderate_comment"
-      "moderated a comment for"
+      out = "moderated a comment for"
     when "rate_comment"
-      "rated a comment for"
+      out = "rated a comment for"
     when "reply_to_comment"
-      "replied to a comment for"
+      out = "replied to a comment for"
     end
     out
   end
   
   def get_html_for_action_object(activity)
+    out = "<a href='#{get_url_for_activity_action(activity)}'>#{h(activity.actedOnName)}</a>"
+  end
+  
+  def get_url_for_activity_action(activity)
     out = ""
     case activity.action
     when "add_contact"
-      out = "<a href='#{profile_url(activity.actedOnId)}'>#{h(activity.actedOnName)}</a>"
+      out = profile_url(activity.actedOnId)
     when "create_view", "create_blist", "edit_blist", "comment", "rated", 
           "comment_and_rate", "promote_dataset", "published", "moderate_comment", 
           "rate_comment", "reply_to_comment"
-      out = "<a href='#{blist_url(activity.actedOnId)}'>#{h(activity.actedOnName)}</a>"
+      out = blist_url(activity.actedOnId)
     end
     out
   end

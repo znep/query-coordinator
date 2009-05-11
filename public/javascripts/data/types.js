@@ -210,6 +210,15 @@ blist.namespace.fetch('blist.data.types');
         if (value == null)
             return '';
         value = value + '';
+        // If there is font-size, add an extra wrapper so we can tweak the
+        //  display to something reasoanble
+        if (value.indexOf('font-size:') >= 0)
+        {
+            value = '<div class="blist-richtext">' + value + '</div>';
+        }
+        // TODO: Remove these munging rules once the server returns better HTML
+        // Swap out pt font sizing for ems divided by 10
+        value = value.replace(/font-size\:\s*(\d*)(\d)pt/g, 'font-size:$1.$2em');
         if (value.substring(0, 11) == '<TEXTFORMAT') {
             // XXX  - HACK - clean up terrible Flash markup
             return value.replace(/<\/?textformat[^>]*>/gi, '').replace(/ size="\d+"/gi, '');

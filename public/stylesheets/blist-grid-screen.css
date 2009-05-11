@@ -940,7 +940,7 @@ body#lensBody
     font-weight: bold;
 }
 
-#lensContainer #outerSwfWrapper p
+#lensContainer #swfWrapper p
 {
     font-size: 1.4em;
     margin-top: 2em;

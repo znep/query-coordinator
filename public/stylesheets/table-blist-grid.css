@@ -147,3 +147,10 @@ div.blist-boolean_checkbox-on
     height: 13px;
 }
 
+
+div.blist-richtext p
+{
+    font-size: 0.7692em;
+    line-height: 1.4em;
+    margin: 0.3em 0;
+}

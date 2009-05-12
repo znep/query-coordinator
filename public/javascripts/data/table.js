@@ -934,6 +934,7 @@
                     return;
                 }
                 columns[index].dom = this;
+
                 $(this).click(function()
                     {
                         $(this).removeClass('hover');
@@ -941,6 +942,12 @@
                     })
                     .hover(function () { $(this).addClass('hover') },
                         function () { $(this).removeClass('hover') });
+
+                if (options.headerMods != null)
+                {
+                    options.headerMods(columns[index]);
+                }
+
             });
 
 
@@ -1215,6 +1222,7 @@
     var blistTableDefaults = {
         generateHeights: true,
         ghostMinWidth: 20,
+        headerMods: function (col) {},
         manualResize: false,
         resizeHandleAdjust: 3,
         showGhostColumn: false,

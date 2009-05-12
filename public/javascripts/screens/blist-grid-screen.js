@@ -365,6 +365,50 @@ blist.blistGrid.jsGridClearFilter = function(e)
 };
 
 
+blist.blistGrid.headerMods = function(col)
+{
+    var $col = $(col.dom);
+    $col.append('<a class="menuLink"' +
+            ' href="#column-menu_' +
+            col.index + '"></a>' +
+            '<ul class="menu columnHeaderMenu">' +
+            '<li class="sortAsc"><a href="#column-sort-asc_' + col.index + '">' +
+            'Sort A-Z</a></li>' +
+            '<li class="sortDesc"><a href="#column-sort-desc_' + col.index + '">' +
+            'Sort Z-A</a></li>' +
+            '<li class="footer"><div class="outerWrapper">' +
+            '<div class="innerWrapper"><span class="colorWrapper">' +
+            '</span></div></div></li>' +
+            '</ul>');
+    $col.find('ul.menu').dropdownMenu({triggerButton: $col.find('a.menuLink'),
+            linkCallback: blistGridNS.columnHeaderMenuHandler,
+            forcePosition: true, pullToTop: true});
+};
+
+blist.blistGrid.columnHeaderMenuHandler = function(event)
+{
+    event.preventDefault();
+    var s = $(event.currentTarget).attr('href').slice(1).split('_');
+    if (s.length < 2)
+    {
+        return;
+    }
+
+    var action = s[0];
+    var colIndex = s[1];
+    var model = $('#readGrid').blistModel();
+    switch (action)
+    {
+        case 'column-sort-asc':
+            model.sort(colIndex, false);
+            break;
+        case 'column-sort-desc':
+            model.sort(colIndex, true);
+            break;
+    }
+    $('#readGrid').trigger('meta_change', [model]);
+};
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -372,6 +416,7 @@ $(function ()
     if (blistGridNS.viewId)
     {
         $('#readGrid').blistTable({generateHeights: false,
+            headerMods: blistGridNS.headerMods,
             manualResize: true, showGhostColumn: true, showTitle: false})
             .blistModel()
             .options({filterMinChars: 0, progressiveLoading: true})

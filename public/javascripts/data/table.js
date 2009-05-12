@@ -51,7 +51,7 @@
         };
 
         // Sort data
-        var sortBy;
+        var sortBy = -1;
         var sortDescending;
         var sort = function(index)
         {
@@ -64,12 +64,28 @@
                 sortBy = index;
                 sortDescending = false;
             }
-            $('.sort', header).remove();
-            var col = columns[sortBy];
-            $(col.dom).append('<div class="sort sort-' +
-                (sortDescending ? 'desc' : 'asc') + '" style="height: ' +
-                rowOffset + 'px"></div>');
-            model.sort(col.index, sortDescending);
+            configureSortHeader();
+            model.sort(index, sortDescending);
+        };
+
+        var configureSortHeader = function()
+        {
+            $('.sort.active', header)
+                .removeClass('sort-asc').addClass('sort-desc')
+                .attr('title', 'Sort ascending')
+                .removeClass('active');
+            if (sortBy >= 0)
+            {
+                var col = columns[sortBy];
+                var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
+                var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
+                var newTitle = 'Sort ' +
+                    (sortDescending ? 'ascending' : 'descending');
+                $('.sort', col.dom)
+                    .removeClass(oldClass).addClass(newClass)
+                    .attr('title', newTitle)
+                    .addClass('active');
+            }
         };
 
         // Filter data
@@ -437,11 +453,11 @@
             .click(onCellClick);
         var insideDOM = inside[0];
 
-        // These utility nodes are used to append rows and measure cell text, respectively
-        var appendUtil =
-            $(document.createElement('div'));
+        // These utility nodes are used to append rows and measure cell text,
+        // respectively
+        var appendUtil = $(document.createElement('div'));
         var appendUtilDOM = appendUtil[0];
-        
+
         var measureUtil = outside
             .find('.blist-table-util');
         var measureUtilDOM = measureUtil[0];
@@ -476,36 +492,72 @@
 
             renderRows();
 
-            adjustGhostColumn();
+            adjustVariableColumns();
         };
 
-        var adjustGhostColumn = function()
+        var adjustVariableColumns = function()
         {
-            if (options.showGhostColumn)
+            if (variableColumns.length > 0)
             {
-                // Count the ghost column padding
-                var pos = paddingX;
-                // Look at the last column to get the end of the headers
-                if (columns.length > 0)
+                var pos = 0;
+                // Sum up all the fixed column widths & paddings
+                if (options.showGhostColumn)
                 {
-                    var lastCol = columns[columns.length - 1];
-                    pos += lastCol.left + lastCol.width + paddingX;
+                    // Count the ghost column padding
+                    pos += paddingX;
                 }
-                else if (options.showRowNumbers)
+                if (options.showRowNumbers)
                 {
                     pos += handleOuterWidth;
                 }
+                for (var i = 0; i < columns.length; i++)
+                {
+                    pos += columns[i].width + paddingX;
+                }
+                pos += varMinWidth;
 
-                var ghostSize = scrolls.width() - pos;
+                var varSize = scrolls.width() - pos;
                 if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
                 {
-                    ghostSize -= scrollbarWidth;
+                    varSize -= scrollbarWidth;
                 }
-                ghostSize = Math.max(ghostSize,
-                    options.ghostMinWidth + scrollbarWidth);
-                ghostStyle.width = ghostSize  + "px";
-                inside.width(ghostSize + pos);
-                header.width(ghostSize + pos);
+                varSize = Math.max(varSize, 0);
+                for (i = 0; i < variableColumns.length; i++)
+                {
+                    var c = variableColumns[i];
+                    if (c.ghostColumn)
+                    {
+                        ghostStyle.width = (c.minWidth + varSize)  + "px";
+                    }
+                    else
+                    {
+                        colStyles[c.index].width = ((c.minWidth || 0) +
+                            ((c.percentWidth / 100.0) * varSize)) + 'px';
+                    }
+                }
+
+                inside.width(varSize + pos);
+                header.width(varSize + pos);
+
+                // If we're not dealing with just the ghost column,
+                //  readjust column lefts, sizers
+                if (!options.showGhostColumn)
+                {
+                    pos = 0;
+                    if (options.showRowNumbers)
+                    {
+                        pos += handleOuterWidth;
+                    }
+                    for (var i = 0; i < columns.length; i++)
+                    {
+                        var col = columns[i];
+                        col.left = pos;
+                        pos += paddingX;
+                        pos += col.width || parseFloat(colStyles[col.index].width);
+                        col.sizerLeft = pos - options.resizeHandleAdjust;
+                        col.sizer.style.left = col.sizerLeft + 'px';
+                    }
+                }
             }
         };
 
@@ -520,9 +572,11 @@
 
         // Install scrolling handler
         var headerScrolledTo = 0;
-        var onScroll = function() {
+        var onScroll = function()
+        {
             var scrollTo = this.scrollLeft;
-            if (scrollTo != headerScrolledTo) {
+            if (scrollTo != headerScrolledTo)
+            {
                 header[0].style.left = -scrollTo + 'px';
                 headerScrolledTo = scrollTo;
             }
@@ -542,9 +596,10 @@
         var colStyles = [];
         var colClasses = [];
 
-        // Add a CSS rule.  This creates an empty rule and returns it.  We then dynamically update the rule values as
-        // needed.
-        var addRule = function(selector) {
+        // Add a CSS rule.  This creates an empty rule and returns it.  We then
+        // dynamically update the rule values as needed.
+        var addRule = function(selector)
+        {
             // Add the rule
             var rules = css.cssRules || css.rules;
             css.insertRule ? css.insertRule(selector + " {}", rules.length)
@@ -553,9 +608,12 @@
 
             // Find the new rule
             selector = selector.toLowerCase();
-            for (var i = 0; i < rules.length; i++) {
+            for (var i = 0; i < rules.length; i++)
+            {
                 if (rules[i].selectorText.toLowerCase() == selector)
+                {
                     return rules[i];
+                }
             }
 
             // Shouldn't get here
@@ -563,10 +621,12 @@
         };
 
         // Initialize CSS for the current column set
-        var initCSS = function() {
+        var initCSS = function()
+        {
             var cnt = columns.length;
             var ruleClass;
-            while (colStyles.length < cnt) {
+            while (colStyles.length < cnt)
+            {
                 colClasses.push(ruleClass = id + '-c' + colStyles.length);
                 var style = addRule("." + ruleClass).style;
                 colStyles.push(style);
@@ -607,6 +667,7 @@
 
         // Internal representation of visible columns in the model
         var columns = [];
+        var variableColumns = [];
 
         // This is the row rendering function.  Precompiled using eval() for perf.
         var rowRenderFn;
@@ -619,6 +680,8 @@
         var handleOuterWidth;
         var handleWidth;
 
+        var varMinWidth;
+
         /**
          * Initialize based on current model metadata.
          */
@@ -626,14 +689,40 @@
         {
             // Create an object for each column
             columns = [];
+            variableColumns = [];
+            varMinWidth = 0;
             var mcols = model.meta().columns;
             for (var i = 0; i < mcols.length; i++)
             {
                 var mcol = mcols[i];
-                columns.push($.extend(true, {
-                    index: columns.length,
-                    width: 100
-                }, mcol));
+                var modCol = $.extend(true, {
+                    index: columns.length
+                }, mcol);
+                if (modCol.hasOwnProperty('percentWidth'))
+                {
+                    if (modCol.minWidth)
+                    {
+                        varMinWidth += modCol.minWidth;
+                    }
+                    modCol.width = 0;
+                    variableColumns.push(modCol);
+                }
+                else if (!modCol.hasOwnProperty('width'))
+                {
+                    modCol.width = 100;
+                }
+                columns.push(modCol);
+            }
+            if (variableColumns.length < 1 && options.showGhostColumn)
+            {
+                variableColumns.push({percentWidth: 100,
+                    minWidth: options.ghostMinWidth,
+                    ghostColumn: true});
+                varMinWidth += options.ghostMinWidth;
+            }
+            else
+            {
+                options.showGhostColumn = false;
             }
 
             // Ensure CSS styles are initialized
@@ -707,7 +796,8 @@
 
                 // Add rendering information to the rendering function
                 var type = blist.data.types[col.type] || blist.data.types.text;
-                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]", col, contextVariables);
+                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]",
+                    col, contextVariables);
                 var cls = col.cls || type.cls;
                 cls = cls ? ' blist-td-' + cls : '';
                 columnParts.push(
@@ -766,6 +856,21 @@
             {
                 $nameLabel.html(model.title());
             }
+
+            // Set up data for existing sort
+            if (model.meta().sort)
+            {
+                var s = model.meta().sort;
+                sortDescending = !s.ascending;
+                $.each(columns, function (i, c)
+                {
+                    if (s.column.dataIndex == c.dataIndex)
+                    {
+                        sortBy = i;
+                        return false;
+                    }
+                });
+            }
         };
 
         /**
@@ -796,7 +901,12 @@
                     '<span class="blist-th-icon"></span>',
                     '<span class="blist-th-name">',
                     col.name == null ? '' : escape(col.name),
-                    '</span></div>'
+                    '</span>',
+                    '<div class="sort sort-desc" title="Sort ascending"',
+                    options.generateHeights ? ' style="height: ' +
+                        rowOffset + 'px"' : '',
+                    '></div>',
+                    '</div>'
                 );
             }
             if (options.showGhostColumn)
@@ -824,8 +934,18 @@
                     return;
                 }
                 columns[index].dom = this;
-                $(this).click(function() { sort(index) });
+                $(this).click(function()
+                    {
+                        $(this).removeClass('hover');
+                        sort(index);
+                    })
+                    .hover(function () { $(this).addClass('hover') },
+                        function () { $(this).removeClass('hover') });
             });
+
+
+            // Render sort header
+            configureSortHeader();
 
             var handleResize = function(event, ui)
             {
@@ -846,9 +966,15 @@
 
                 // Update the column style
                 drag.col.width = drag.originalColWidth + delta;
+                if (drag.col.percentWidth)
+                {
+                    variableColumns.splice($.inArray(drag.col,
+                        variableColumns), 1);
+                    drag.col.percentWidth = null;
+                }
                 colStyles[drag.col.index].width = drag.col.width + 'px';
 
-                adjustGhostColumn();
+                adjustVariableColumns();
             };
 
             // Create column sizers
@@ -859,7 +985,8 @@
                 sizer.className = 'blist-th-sizer';
                 sizer.innerHTML = '&nbsp;'
                 header[0].appendChild(sizer);
-                col.sizerLeft = col.left + col.width + paddingX - 3;
+                col.sizerLeft = col.left + col.width + paddingX -
+                    options.resizeHandleAdjust;
                 sizer.style.left = col.sizerLeft + 'px';
                 $(sizer)
                     .data('col', col)
@@ -872,7 +999,8 @@
                             var col = $(this).data('col');
                             $(this).data('drag', {
                                 col: col,
-                                originalColWidth: col.width,
+                                originalColWidth: col.width ||
+                                    parseFloat(colStyles[col.index].width),
                                 originalSizerLeft: col.sizerLeft,
                                 originalInsideWidth: inside.width()
                             })
@@ -888,7 +1016,7 @@
                             // now
                             var drag = $(this).data('drag');
                             drag.col.sizerLeft = drag.col.left + drag.col.width
-                                + paddingX - 3;
+                                + paddingX - options.resizeHandleAdjust;
                             for (var i = drag.col.index + 1; i < columns.length;
                                 i++)
                             {
@@ -898,6 +1026,8 @@
                                 otherCol.sizer.style.left =
                                     otherCol.sizerLeft + 'px';
                             }
+
+                            adjustVariableColumns();
 
                             $(this).removeData('drag');
                         }
@@ -1086,6 +1216,7 @@
         generateHeights: true,
         ghostMinWidth: 20,
         manualResize: false,
+        resizeHandleAdjust: 3,
         showGhostColumn: false,
         showName: true,
         showRowNumbers: true,

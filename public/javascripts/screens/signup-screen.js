@@ -20,7 +20,7 @@ $(function ()
                 required: true,
                 equalTo: "#account_email"
             },
-            "account[userName]": "required",
+            "account[login]": "required",
             "account[password]": "required",
             passwordConfirm: {
                 required: true,

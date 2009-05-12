@@ -16,6 +16,7 @@
 .blist-th
 {
     border-left: solid 1px #e2e2e2;
+    cursor: auto;
     font-size: 1.2em;
     height: 2.9166em; /* 35px */
     line-height: 2.9166em;
@@ -61,17 +62,6 @@
     padding: 0 0.3636em; /* 4px */
 }
 
-.blist-th .sort
-{
-    background: transparent url(/stylesheets/images/content/table/icon_sort_down.png) right no-repeat;
-    width: 12px;
-}
-
-.blist-th .sort-desc
-{
-    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
-}
-
 .blist-th.blist-table-ghost
 {
     cursor: auto;
@@ -80,6 +70,38 @@
 .blist-th-sizer
 {
     height: 3.5em;
+}
+
+.blist-th .sort
+{
+    background-color: #e8e8e8;
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
+    background-position: 0 0;
+    cursor: pointer;
+    height: 12px;
+    margin-top: -6px;
+    right: 0;
+    top: 50%;
+}
+
+.blist-th .sort-asc
+{
+    background-position: 0 -24px;
+}
+
+.blist-th.hover .sort
+{
+    display: block;
+}
+
+.blist-th.hover .sort-asc
+{
+    background-position: 0 -12px;
+}
+
+.blist-th.hover .sort-desc
+{
+    background-position: 0 -36px;
 }
 
 .blist-td
@@ -129,24 +151,6 @@ img.blist-table-option-icon
 {
     text-decoration: underline;
 }
-
-div.blist-checkbox
-{
-    background: no-repeat scroll center center;
-}
-
-div.blist-star-on
-{
-    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
-}
-
-div.blist-check-on,
-div.blist-boolean_checkbox-on
-{
-    background-image: url(/stylesheets/images/content/table/check.png);
-    height: 13px;
-}
-
 
 div.blist-richtext p
 {

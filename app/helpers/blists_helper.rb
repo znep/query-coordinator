@@ -82,7 +82,9 @@ module BlistsHelper
         items << {'section_title' => first_char, 'class' => 'sortHeader'}
       end
       items << {'text' => g.name, 'href' => href_group_prefix + g.id,
-          'title' => get_title({title_group_key => g.id})}
+          'title' => get_title({title_group_key => g.id}), 
+          'q' => "{'owner_group': '#{g.id}'}"
+      }
     end
 
     items << {'section_title' => 'Friends'}
@@ -95,7 +97,9 @@ module BlistsHelper
         items << {'section_title' => first_char, 'class' => 'sortHeader'}
       end
       items << {'text' => c.displayName, 'href' => href_prefix + c.id,
-          'title' => get_title({title_key => c.id})}
+          'title' => get_title({title_key => c.id}),
+          'q' => "{'owner': '#{c.id}'}"
+      }
     end
     menu_tag('id' => id, 'class' => 'contactsMenu', 'items' => items)
   end

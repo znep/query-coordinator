@@ -1,45 +1,190 @@
 var myBlistsNS = blist.namespace.fetch('blist.myBlists');
 
-/* Functions for main blists screen */
-
-blist.myBlists.setupTable = function ()
+blist.myBlists.ownedByGroupFilterGen = function(group)
 {
-    $('#blistList').combinationList({
-        initialSort: [[6, 1]],
-        loadedCallback: function ()
-        {
-            myBlistsNS.itemMenuSetup();
-            $("#blistList a.favoriteMarker, #blistList li.favoriteLink a")
-                .click(myBlistsNS.favoriteClick);
-            $("#blistList .renameLink a").click(myBlistsNS.renameClick);
-            $("#blistList td.name form").submit(myBlistsNS.renameSubmit);
-            blistsInfoNS.updateSummary(0);
-        },
-        searchable: true,
-        searchCompleteCallback: function () { blistsInfoNS.updateSummary(0); },
-        searchFormSelector: "form.blistsFind",
-        selectionCallback: function($targetRow, $selectedItems)
-        {
-            blistsInfoNS.updateSummary($selectedItems.length);
+    return function(view) {
+        $.each(group.users, function(i, user) {
+            if (user.id == view.owner.id)
+                return true;
+        });
+        return false;
+    }
+}
 
-            $("tr.item").not($targetRow).each(function()
+blist.myBlists.sharedByGroupFilterGen = function(group)
+{
+    return function(view) {
+        $.each(group.users, function(i, user) {
+            if (user.id == view.owner.id && 
+                view.flags.indexOf("shared") != -1)
+                return true;
+        });
+        return false;
+    }
+}
+
+blist.myBlists.ownedByFilterGen = function(userId)
+{
+    return function(view) { 
+        return view.owner.id == userId;
+    };
+}
+
+blist.myBlists.sharedToMeFilter = function(view)
+{
+    return view.owner.id != myBlistsNS.currentUserId &&
+        view.flags.indexOf("shared") != -1;
+}
+
+blist.myBlists.sharedToFilterGen = function(userId)
+{
+    return function(view) {
+        $.each(view.grants, function(i, grant) {
+            if (grant.userId == userId)
+                return true;
+        });
+        return false;
+    };
+}
+
+blist.myBlists.sharedWithGroupFilterGen = function(groupId)
+{
+    return function(view) {
+        $.each(view.grants, function(i, grant) {
+            if (grant.groupId == groupId) 
+                return true;
+        });
+        return false;
+    };
+}
+
+blist.myBlists.sharedByFilterGen = function(userId)
+{
+    return function(view) {
+        $.each(view.grants, function(i, grant) {
+            if ((grant.flags == undefined || 
+                grant.flags.indexOf('public') == -1) && 
+                view.owner.id == userId)
+                return true;
+        });
+        return false;
+    };
+}
+
+blist.myBlists.defaultFilter = function(view)
+{
+    if (view.flags.indexOf('default') != -1)
+    {
+        return true;
+    }
+    return false;
+}
+
+blist.myBlists.filterFilter = function(view)
+{
+    if (view.flags.indexOf('default') == -1)
+    {
+        return true;
+    }
+    return false;
+}
+
+blist.myBlists.untaggedFilter = function(view)
+{
+    if (view.tags.length == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+blist.myBlists.taggedFilter = function(view)
+{
+    if (view.tags.length > 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+blist.myBlists.tagFilterGen = function(tag)
+{
+    return function(view) {
+        $.each(view.tags, function(i, t) {
+            if (t.data == tag) return true;
+        });
+        return false;
+    };
+}
+
+blist.myBlists.favoriteFilter = function(view)
+{
+    if (view.flags.indexOf('favorite') != -1)
+    {
+        return true;
+    }
+    return false;
+}
+
+blist.myBlists.filterGen = function(type, argument, callback)
+{
+    switch(type)
+    {
+        case 'owner': 
+            return callback(myBlistsNS.ownedByFilterGen(argument));
+        case 'owner_group':
+            var filterGenCallback = function(data) {
+                var group = $.json.deserialize(data);
+                callback(myBlistsNS.ownedByGroupFilterGen(group));
+            }
+            return $.get("/groups/" + argument + ".json", null, filterGenCallback);
+        case 'shared_to':
+            var userId = argument;
+            if (userId == myBlistsNS.currentUserId)
             {
-                var $nameCell = $(this).find("td.name")
-                $nameCell.find("form").hide();
-                $nameCell.find("div").show();
-            });
-        },
-        sortHeaders: {0: {sorter: false}, 3: {sorter: "text"},
-            4: {sorter: "text"}, 5: {sorter: "text"}, 6: {sorter: "usLongDate"}},
-        treeTable: true,
-        treeColumn: 3
-    });
-};
+                return callback(myBlistsNS.sharedToMeFilter);
+            }
+            else
+            {
+                return callback(myBlistsNS.sharedToFilterGen(userId));
+            }
+        case 'shared_by':
+            return callback(myBlistsNS.sharedByFilterGen(argument));
+        case 'shared_by_group':
+            var filterGenCallback = function(data) {
+                var group = $.json.deserialize(data);
+                callback(myBlistsNS.sharedByGroupFilterGen(group));
+            }
+            return $.get("/groups/" + argument + ".json", null, filterGenCallback);
+        case 'type':
+            if (argument == 'filter')
+            {
+                return callback(myBlistsNS.filterFilter);
+            }
+            else if (argument == 'favorite')
+            {
+                return callback(myBlistsNS.favoriteFilter);
+            }
+            else
+            {
+                return callback(myBlistsNS.defaultFilter);
+            }
+        case 'untagged':
+            if (argument == 'true')
+            {
+                return callback(myBlistsNS.untaggedFilter);
+            }
+            else
+            {
+                return callback(myBlistsNS.taggedFilter);
+            }
+        case 'tag':
+            return callback(myBlistsNS.tagFilterGen(argument));
+    }
+}
 
-blist.myBlists.favoriteClick = function (event)
+blist.myBlists.favoriteClick = function()
 {
-    event.preventDefault();
-
     $this = $(this);
     var origHref = $this.attr("href");
 
@@ -164,16 +309,6 @@ blist.myBlists.renameSubmit = function (event)
 };
 
 
-blist.myBlists.itemMenuSetup = function()
-{
-    $('.blistItemMenu').dropdownMenu({
-        menuContainerSelector: "td.handle div",
-        triggerButtonSelector: "a.dropdownLink"
-    });
-};
-
-/* Functions for info pane related to blists */
-
 var blistsInfoNS = blist.namespace.fetch('blist.myBlists.infoPane');
 blist.myBlists.infoPane.updateSummary = function (numSelect)
 {
@@ -188,12 +323,13 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
     {
         if (numSelect === undefined || numSelect < 1)
         {
-            numSelect = $('#blistList').combinationList().totalItemCount();
+            //numSelect = $('#blistList').combinationList().totalItemCount();
             $('#infoPane .infoContent .selectPrompt').show();
             itemState = 'total';
 
             $.Tache.Get({ url: '/blists/detail',
-                data: 'items=' + numSelect,
+                    //TODO remove mock data and implement
+                data: 'items=' + '100',
                 success: blistsInfoNS.updateSummarySuccessHandler
             });
 
@@ -213,6 +349,14 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
             });
         }
     }
+};
+
+blist.myBlists.itemMenuSetup = function()
+{
+    $('.blistItemMenu').dropdownMenu({
+        menuContainerSelector: "td.handle div",
+        triggerButtonSelector: "a.dropdownLink"
+    });
 };
 
 blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
@@ -274,20 +418,37 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 
 var blistsBarNS = blist.namespace.fetch('blist.myBlists.sidebar');
 
+blist.myBlists.sidebar.filterCallback = function(fn) 
+{
+    myBlistsNS.model.filter(fn);
+}
+
 blist.myBlists.sidebar.initializeHandlers = function ()
 {
     $('#blistFilters').filterList({
-        filterClickCallback: function (title)
-        {
-            $('#blistList tbody').hide();
-            $('#listTitle').text(title);
-            $('#listTitle').attr('title', title);
-        },
-        filterSuccessHandler: function (retData)
-        {
-            $('#blistList').combinationList().updateList(retData);
-            $('#blistList tbody').show();
-        }});
+            noRequest: true,
+            filterClickCallback: function (target)
+            {
+                var title = target.attr('title');
+                if (target.attr('q') != "")
+                {
+                    var query = $.json.deserialize(target.attr('q').replace(/'/g, '"'));
+                    for (var type in query)
+                    {
+                        myBlistsNS.filterGen(type, query[type], blistsBarNS.filterCallback);
+                    }
+                }
+                else
+                {
+                    myBlistsNS.model.filter(function() { return true });
+                }
+
+
+                // Set the title to whatever the filter is.
+                $('#listTitle').text(title);
+                $('#listTitle').attr('title', title);
+            }
+        });
     $('#blistFilters a:not(.expander, ul.menu a)')
         .each(function ()
         {
@@ -308,27 +469,115 @@ blist.myBlists.sidebar.filterMenuClickHandler = function (event, $menu,
     var $target = $(event.currentTarget);
     $triggerButton.attr('href', $target.attr('href'))
         .attr('title', $target.attr('title'))
+        .attr('q', $target.attr('q'))
         .find('em').text($target.text());
 };
 
+/* Custom grid renderers */
+
+blist.myBlists.customDate = function(value, column) {
+    value = new Date(value * 1000);
+    var months = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+
+    var formatted = months[value.getMonth()] + " " + value.getDate() + ", " + value.getFullYear() 
+
+    return formatted;
+};
+
+blist.myBlists.customFav = function(value, column) {
+    return "\"<div class='blist-cell blist-favorite-\" + (" + value + " ? 'on' : 'off') + \"'></div>\"";
+};
+
+blist.myBlists.customDateMeta = function(value, column) {
+    return "blist.myBlists.customDate(" + value + ")";
+};
+
+blist.myBlists.customLensOrBlist = function(value, column) {
+    return "\"<div class='blist-type-\" + (" + value + ".indexOf('default') >= 0 ? 'default': 'filter') + \"'></div>\"";
+};
 
 
-/* Initial start-up calls, and setting up bindings */
+/* Functions for main blists screen */
 
-$(function ()
+// TODO: Bug with grouping headers.
+blist.myBlists.listCellClick = function(event, row, column, origEvent) 
 {
-    myBlistsNS.setupTable();
+    switch (column.dataIndex) {
+        case 'favorite':
+            // Note that this would probably fire off an AJAX event before updating the value
+            row.favorite = !row.favorite;
+            model.change([ row ]);
+            // TODO: ajax 
+            break;
+    }
+}
+
+blist.myBlists.translateViewJson = function(views) 
+{
+    for (var i = 0; i < views.length; i++) {
+        var view = views[i];
+        view.favorite = view.flags && view.flags.indexOf('favorite') != -1;
+        view.ownerName = view.owner && view.owner.displayName;
+        if (!view.updatedAt)
+            view.updatedAt = view.createdAt;
+    }
+    return {rows: views}
+}
+
+blist.myBlists.initializeGrid = function()
+{
+    // Configure the table and retrieve the model
+    myBlistsNS.model = $('#blist-list')
+        .blistTable(myBlistsNS.options)
+        .bind('cellclick', myBlistsNS.listCellClick)
+        .blistModel();
+
+    // Configure columns for the view list
+    myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});
+
+    // Install a translator that tweaks the view objects so they're more conducive to grid display
+    myBlistsNS.model.translate(myBlistsNS.translateViewJson);
+
+    myBlistsNS.model.ajax({url: myBlistsNS.viewUrl });
+    myBlistsNS.model.sort(6, true);
+}
+
+blist.myBlists.columns = [
+  { width: 32, dataIndex: null },
+  { cls: 'favorite', name: 'Favorite?', width: 36, dataIndex: 'favorite', renderer: blist.myBlists.customFav, sortable: true},
+  { cls: 'type', name: 'Type', width: 45, dataIndex: 'flags', renderer: blist.myBlists.customLensOrBlist, sortable: true },
+  { name: 'Name', percentWidth: 20, dataIndex: 'name', group: true, sortable: true },
+  { name: 'Description', percentWidth: 40, dataIndex: 'description', group: true, sortable: true },
+  { name: 'Owner', percentWidth: 20, dataIndex: 'ownerName', group: true, sortable: true},
+  { name: 'Last Updated', percentWidth: 20, dataIndex: 'updatedAt', group: true, type: 'date', renderer: blist.myBlists.customDateMeta }
+];
+
+blist.myBlists.options = {
+    showRowNumbers: false
+};
+
+$(function() {
     blistsBarNS.initializeHandlers();
 
+    // Setup the grid.
+    myBlistsNS.initializeGrid();
+
+    // Setup the info pane
+    myBlistsNS.itemMenuSetup();
+    blistsInfoNS.updateSummary(0);
+
+    /* FIXME Still necessary?
+    $("#blistList a.favoriteMarker, #blistList li.favoriteLink a")
+        .click(myBlistsNS.favoriteClick);
+    $("#blistList .renameLink a").click(myBlistsNS.renameClick);
+    $("#blistList td.name form").submit(myBlistsNS.renameSubmit);*/
+
+    // Fit everything to the screen properly
     $(window).resize(function (event) 
     {
         commonNS.adjustSize();
     });
+
     commonNS.adjustSize();
-
-    $(".expandContainer").blistPanelExpander({
-        expandCompleteCallback: blistsInfoNS.updateSummary
-    });
-
 });
-

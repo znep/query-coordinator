@@ -490,6 +490,13 @@
             scrolls.height(outside.height() - $top.height() - 2);
             scrolls.width(outside.width() - 2);
 
+            // Size the inside row container
+            var insideHeight = model ? rowOffset * model.rows().length : 0;
+            var scrollsHeight = scrolls[0].clientHeight;
+            if (insideHeight < scrollsHeight)
+                insideHeight = scrollsHeight;
+            inside.height(insideHeight);
+
             renderRows();
 
             adjustVariableColumns();
@@ -1174,7 +1181,6 @@
                 initMeta(model);
                 renderHeader();
             }
-            inside.height(rowOffset * model.rows().length);
 
             inside.empty();
             renderedRows = {};

@@ -51,7 +51,7 @@
         };
 
         // Sort data
-        var sortBy;
+        var sortBy = -1;
         var sortDescending;
         var sort = function(index)
         {
@@ -64,12 +64,28 @@
                 sortBy = index;
                 sortDescending = false;
             }
-            $('.sort', header).remove();
-            var col = columns[sortBy];
-            $(col.dom).append('<div class="sort sort-' +
-                (sortDescending ? 'desc' : 'asc') + '" style="height: ' +
-                rowOffset + 'px"></div>');
-            model.sort(col.index, sortDescending);
+            configureSortHeader();
+            model.sort(index, sortDescending);
+        };
+
+        var configureSortHeader = function()
+        {
+            $('.sort.active', header)
+                .removeClass('sort-asc').addClass('sort-desc')
+                .attr('title', 'Sort ascending')
+                .removeClass('active');
+            if (sortBy >= 0)
+            {
+                var col = columns[sortBy];
+                var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
+                var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
+                var newTitle = 'Sort ' +
+                    (sortDescending ? 'ascending' : 'descending');
+                $('.sort', col.dom)
+                    .removeClass(oldClass).addClass(newClass)
+                    .attr('title', newTitle)
+                    .addClass('active');
+            }
         };
 
         // Filter data
@@ -840,6 +856,21 @@
             {
                 $nameLabel.html(model.title());
             }
+
+            // Set up data for existing sort
+            if (model.meta().sort)
+            {
+                var s = model.meta().sort;
+                sortDescending = !s.ascending;
+                $.each(columns, function (i, c)
+                {
+                    if (s.column.dataIndex == c.dataIndex)
+                    {
+                        sortBy = i;
+                        return false;
+                    }
+                });
+            }
         };
 
         /**
@@ -870,7 +901,12 @@
                     '<span class="blist-th-icon"></span>',
                     '<span class="blist-th-name">',
                     col.name == null ? '' : escape(col.name),
-                    '</span></div>'
+                    '</span>',
+                    '<div class="sort sort-desc" title="Sort ascending"',
+                    options.generateHeights ? ' style="height: ' +
+                        rowOffset + 'px"' : '',
+                    '></div>',
+                    '</div>'
                 );
             }
             if (options.showGhostColumn)
@@ -898,8 +934,18 @@
                     return;
                 }
                 columns[index].dom = this;
-                $(this).click(function() { sort(index) });
+                $(this).click(function()
+                    {
+                        $(this).removeClass('hover');
+                        sort(index);
+                    })
+                    .hover(function () { $(this).addClass('hover') },
+                        function () { $(this).removeClass('hover') });
             });
+
+
+            // Render sort header
+            configureSortHeader();
 
             var handleResize = function(event, ui)
             {

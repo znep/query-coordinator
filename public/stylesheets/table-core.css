@@ -136,9 +136,22 @@ div.blist-table-expander .blist-td
 
 .blist-th .sort
 {
+    background: transparent url(/stylesheets/images/content/table/icon_sort_up.png) right no-repeat;
     bottom: 0;
+    display: none;
     position: absolute;
     right: 2px;
+    width: 12px;
+}
+
+.blist-th .sort-desc
+{
+    background-image: url(/stylesheets/images/content/table/icon_sort_down.png);
+}
+
+.blist-th .sort.active
+{
+    display: block;
 }
 
 img.blist-table-option-icon
@@ -151,6 +164,18 @@ img.blist-table-option-icon
 .blist-table a
 {
     white-space: nowrap;
+}
+
+.blist-checkbox
+{
+    background: no-repeat scroll center center;
+}
+
+.blist-check-on,
+.blist-boolean_checkbox-on
+{
+    background-image: url(/stylesheets/images/content/table/check.png);
+    height: 13px;
 }
 
 .blist-tstars {

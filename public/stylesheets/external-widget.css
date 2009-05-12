@@ -156,17 +156,6 @@ div.blist-table-expander
     border-left: none;
 }
 
-.blist-th .sort
-{
-    width: 12px;
-    background: transparent url(/stylesheets/images/content/table/icon_sort_down.png) right no-repeat;
-}
-
-.blist-th .sort-desc
-{
-    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
-}
-
 div.blist-td p
 {
     margin: 0 0 6px 0;
@@ -196,22 +185,6 @@ img.blist-table-option-icon
 .blist-table a:hover
 {
     text-decoration: underline;
-}
-
-div.blist-checkbox
-{
-    background: no-repeat scroll center center;
-}
-
-div.blist-star-on
-{
-    background-image: url(/stylesheets/images/content/table/icon_star_fill.png);
-}
-
-div.blist-check-on,
-div.blist-boolean_checkbox-on
-{
-    background-image: url(/stylesheets/images/content/table/check.png);
 }
 
 .blist-table-footer-bl {

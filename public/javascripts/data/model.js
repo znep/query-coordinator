@@ -430,35 +430,64 @@ blist.namespace.fetch('blist.data');
         /**
          * Get and/or set the metadata for the model.
          */
-        this.meta = function(newMeta) {
-            if (newMeta) {
+        this.meta = function(newMeta)
+        {
+            if (newMeta)
+            {
                 // Ensure the meta has a columns object, even if it is empty
                 meta = newMeta;
-                if (!meta.columns) {
+                if (!meta.columns)
+                {
                     if (meta.view)
+                    {
                         meta.columns = translateColumnsFromView(meta.view);
+                    }
                     else
+                    {
                         meta.columns = [];
+                    }
                 }
 
-                // For each column, ensure that dataIndex is present, and create a "dataIndexExpr" which is used with
-                // metaprogramming to reference a column value
-                for (var i = 0; i < meta.columns.length; i++) {
+                if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
+                {
+                    var s = meta.view.sortBys[0];
+                    meta.sort = {ascending: $.inArray('asc', s.flags) >= 0};
+                    $.each(meta.columns, function (i, c)
+                    {
+                        if (meta.view.columns[c.dataIndex].id == s.viewColumnId)
+                        {
+                            meta.sort.column = c;
+                            return false;
+                        }
+                    });
+                }
+
+                // For each column, ensure that dataIndex is present, and
+                // create a "dataIndexExpr" which is used with metaprogramming
+                // to reference a column value
+                for (var i = 0; i < meta.columns.length; i++)
+                {
                     var col = meta.columns[i];
                     var dataIndex = col.dataIndex;
                     if (!dataIndex)
+                    {
                         dataIndex = col.dataIndex = i;
+                    }
                     if (typeof dataIndex == "string")
+                    {
                         col.dataIndexExpr = "'" + dataIndex + "'";
+                    }
                     else
+                    {
                         col.dataIndexExpr = dataIndex + '';
+                    }
                 }
 
                 // Notify listeners of the metadata change
                 $(listeners).trigger('meta_change', [ this ]);
             }
             return meta;
-        }
+        };
 
         /**
          * Get and/or set the rows for the model.  Returns only "active" rows,
@@ -570,17 +599,26 @@ blist.namespace.fetch('blist.data');
          * @param order either a column index or a sort function
          * @param descending true to sort descending if order is a column index
          */
-        this.sort = function(order, descending) {
+        this.sort = function(order, descending)
+        {
             // Load the types
             if (typeof order == 'function')
+            {
                 orderFn = order;
+            }
             else
             {
                 // Column reference expressions
                 if (typeof order == 'object')
+                {
                     orderCol = order;
+                }
                 else
+                {
                     orderCol = meta.columns[order];
+                }
+
+                meta.sort = {column: orderCol, ascending: !descending};
 
                 // Update the view in-memory, so we can always serialize it to
                 //  the server and get the correct sort options
@@ -593,7 +631,8 @@ blist.namespace.fetch('blist.data');
                 var r2 = "b[" + orderCol.dataIndexExpr + "]";
 
                 // Swap expressions for descending sort
-                if (descending) {
+                if (descending)
+                {
                     var temp = r1;
                     r1 = r2;
                     r2 = temp;
@@ -602,28 +641,42 @@ blist.namespace.fetch('blist.data');
                 // Compile an ordering function specific to the column positions
                 var sortGen = columnType(order).sortGen;
                 if (sortGen)
+                {
                     orderFn = sortGen(r1, r2);
+                }
                 else
+                {
                     orderFn = null;
+                }
 
                 // Record preprocessing function for when we actually perform
                 // the sort
                 orderPrepro = columnType(order).sortPreprocessor;
                 if (orderPrepro && !orderFn)
+                {
                     if (descending)
+                    {
                         orderFn = function(a, b) {
                             return a[0] > b[0] ? -1 : a[0] < b[0] ? 1 : 0;
                         }
+                    }
                     else
+                    {
                         orderFn = function(a, b) {
                             return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0;
                         }
+                    }
+                }
 
                 // Install the grouping function, if applicable
                 if (orderCol.group === true)
+                {
                     groupFn = columnType(order).group;
+                }
                 else
+                {
                     groupFn = orderCol.group;
+                }
 
                 sortConfigured = true;
             }
@@ -634,13 +687,17 @@ blist.namespace.fetch('blist.data');
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
             if (filterFn)
+            {
                 doFilter(active);
+            }
             else if (groupFn)
+            {
                 doGroup();
+            }
 
             // Notify listeners
             dataChange();
-        }
+        };
 
         /**
          * Get or set the base URL for retrieving child documents.  This is set automatically when you use the ajax

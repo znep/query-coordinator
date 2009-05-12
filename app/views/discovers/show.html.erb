@@ -60,20 +60,21 @@
         :tab_title => t(:discover_popular_content_header), 
         :views => @popular_views, :views_total => @popular_views_total,
         :current_page => 1, :type => "POPULAR", :current_filter => nil, 
-        :sort_by => "POPULAR" }) %>
+        :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil }) %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix">
       <%= render(:partial => "view_list_tab", :locals => { 
         :tab_title => "All #{t(:blists_name)}", 
         :views => @all_views, :views_total => @all_views_total,
         :current_page => 1, :type => "ALL", :current_filter => nil, 
-        :sort_by => "LAST_CHANGED" }) %>
+        :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil }) %>
     </div>
   </div>
 </div>
 
 <% content_for :js_footer do %>
+  <div class="jqmWindow" id="tagCloud"></div>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.jcarousel", "widgets/simple-tab-navigate",
-  "screens/discover-screen", :cache => "cache/discover_show_all" %>
+  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", 
+  "widgets/simple-tab-navigate", "screens/discover-screen", :cache => "cache/discover_show_all" %>
 <% end %>

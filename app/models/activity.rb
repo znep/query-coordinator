@@ -8,4 +8,12 @@ class Activity < Model
     get_request(path)
   end
   
+  def self.find_for_user(user, opts = nil)
+    path = "/users/#{user.id}/activities.json"
+    if (opts)
+      path += "?#{opts.to_param}"
+    end
+    get_request(path)
+  end
+  
 end

@@ -40,7 +40,7 @@ ActionController::Routing::Routes.draw do |map|
       :contact_detail => :get,
       :group_detail => :get,
     }
-  map.resource :discover, :member => { :filter => :get }
+  map.resource :discover, :member => { :filter => :get, :tags => :get }
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
@@ -79,11 +79,6 @@ ActionController::Routing::Routes.draw do |map|
   # See how all your routes lay out with "rake routes"
   map.resources :user_sessions
 
-  # Install the default routes as the lowest priority.
-  # Note: These default routes make all actions in every controller accessible via GET requests. You should
-  # consider removing the them or commenting them out if you're using named routes and resources.
-#  map.connect ':controller/:id'
-#  map.connect ':controller/:id.:format'
-#  map.connect ':controller/:action/:id'
-#  map.connect ':controller/:action/:id.:format'
+  map.about '/about', :controller => 'about'
+  map.about_subpage '/about/:page', :controller => 'about', :action => 'show'
 end

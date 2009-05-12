@@ -13,7 +13,7 @@
   </tr>
 <%- end -%>
 
-<tr id='<%= contact.is_a?(Group) ? 'group' : 'friend' %>:<%= contact.id %>'
+<tr id='friend:<%= contact.id %>'
   class='item'>
   <td class='handle first'><div>
       <%-# <a href="#open_menu" class="dropdownLink menuHandle">Friend Menu</a> -%>
@@ -33,14 +33,10 @@
       <%#- end -%>
   </div></td>
   <td class='picture'>
-    <%- if contact.is_a?(Group) -%>
-    <div class='group'><a href='#'><%= h(contact.name) %></a></div>
-    <%- else -%>
-    <a href='#'>
+    <a href='<%= profile_url(contact.id) %>'>
       <img src="<%= contact.profile_image_path("small") %>" width="24" height="24"
       alt="<%= h(contact.displayName) %>" />
     </a>
-    <%- end -%>
   </td>
   <td class='name'>
     <div class='clipText'>

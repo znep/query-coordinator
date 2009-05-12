@@ -24,7 +24,8 @@ class BlistsController < SwfController
       @body_class = 'editMode'
       @start_screen = 'new_blist'
     else
-      @body_class = 'readMode'
+      @body_class = params[:mode] && params[:mode] == 'edit' ?
+        'editMode' : 'readMode'
       begin
         @parent_view = @view = View.find(params[:id])
       rescue CoreServerError => e
@@ -51,7 +52,7 @@ class BlistsController < SwfController
           request.path =~ /^\/blists\/\w{4}-\w{4}/
           logger.info("Doing a blist redirect from #{request.referrer}")
         end
-        redirect_to(@view.href)
+        redirect_to(@view.href + '?' + request.query_string)
       end
 
       if !@view.is_blist?

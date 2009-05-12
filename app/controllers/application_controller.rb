@@ -33,6 +33,14 @@ class ApplicationController < ActionController::Base
     @current_user_session ||= UserSession.find
   end
 
+  def render_404
+    render_error(404)
+  end
+
+  def render_500
+    render_error(500)
+  end
+
 private
   # Allow access to the current controller from the UserSession model.
   # UserSession itself is an ActiveRecord-like model, but it's mostly
@@ -104,4 +112,28 @@ private
       I18n.locale = 'blist'
     end
   end
+
+  # Custom logic for rendering a 404 page with our pretty templates.
+  def render_optional_error_file(status_code)
+    if status_code == :not_found
+      render_404
+    elsif status_code == :internal_server_error
+      render_500
+    else
+      super
+    end
+  end
+
+  def render_error(code)
+    respond_to do |format|
+      format.html { render :template => "errors/error_#{code}", :layout => 'main', :status => :not_found }
+      format.all { render :nothing => true, :status => :not_found }
+    end
+    true # so we can do "render_404 and return"
+  end
+
+  # If you're working on error templates locally, you probably want to
+  # uncomment this code so you see the public-facing errors rather than
+  # the usual development call stacks:
+  # alias_method :rescue_action_locally, :rescue_action_in_public
 end

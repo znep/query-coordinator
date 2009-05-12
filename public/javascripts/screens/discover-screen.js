@@ -8,16 +8,23 @@ blist.discover.filterClickHandler = function (event)
 
     if ($filterLink.hasClass("hilight"))
     {
-        filterUrl += "&clearFilter=true";
+        filterUrl += $filterLink.closest(".tagList").length > 0 ? "&clearTag=true" : "&clearFilter=true";
     }
     
+    var tabContainers = {
+        "POPULAR": "#discoverTabPopular",
+        "ALL": "#discoverTabAll"
+    };
+    
+    var tabSelector = tabContainers[$.urlParam("type", $filterLink.attr("href"))];
     $.Tache.Get({ 
         url: filterUrl,
         success: function(data)
         {
-            $filterLink.closest(".tabContentContainer").html(data);
+            $(tabSelector).html(data);
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
+            $("#tagCloud").jqmHide();
         }
     });
 }
@@ -40,6 +47,22 @@ blist.discover.sortSelectChangeHandler = function (event)
         }
     });
 }
+
+blist.discover.tagModalShowHandler = function(hash)
+{
+    var $modal = hash.w;
+    var $trigger = $(hash.t);
+    
+    $.Tache.Get({ 
+        url: $trigger.attr("href"),
+        success: function(data)
+        {
+            $modal.html(data).show();
+            $(".tagCloudContainer a").tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } });
+        }
+    });
+}
+
 
 $(function ()
 {
@@ -65,4 +88,19 @@ $(function ()
     
     $(".filterLink, .pageLink, .prevLink, .nextLink").live("click", discoverNS.filterClickHandler);
     $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
+    
+    $("#tagCloud").jqm({
+        trigger: false,
+        onShow: discoverNS.tagModalShowHandler
+    });
+    $(".moreTagsLink").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#tagCloud").jqmShow($(this));
+    });
+    $(".closeContainer a").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#tagCloud").jqmHide();
+    });
 });

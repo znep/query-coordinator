@@ -95,11 +95,6 @@
                 $commentPane.find(config.formSelector).addClass(config.hiddenClass);
                 $(window).resize();
             }
-            else
-            {
-                $commentPane.parent().find(config.infoTabsSelector)
-                    .infoPaneNavigate().expandTabPanels();
-            }
         };
 
         function ratingMouseleave($commentPane, e)

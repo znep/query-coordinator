@@ -41,6 +41,19 @@ class ApplicationController < ActionController::Base
     render_error(500)
   end
 
+  # Patch the page caching support to handle our dynamic domain support.
+  # (ie: the cache ends up in a directory based on the locale set via
+  # the set_locale parameter, and Apache uses the domain name of the
+  # request to determine which directory to serve.)
+  def self.cache_page(content, path)
+    super(content, I18n.locale + path)
+  end
+
+  def self.expire_page(path)
+    super(I18n.locale + path)
+  end
+
+
 private
   # Allow access to the current controller from the UserSession model.
   # UserSession itself is an ActiveRecord-like model, but it's mostly

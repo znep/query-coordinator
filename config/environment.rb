@@ -74,6 +74,12 @@ Rails::Initializer.run do |config|
   # config.action_controller.session_store = :active_record_store
   config.action_controller.session_store = :blist_cookie_store
 
+  # Store cached pages in a subdirectory "cache" of public/
+  # This allows us to easily blow away the entire cache without getting
+  # rid of any real public resources, at the expense of slightly more
+  # complex Apache rewrite rules
+  config.action_controller.page_cache_directory = File.join(Rails.root, 'public', 'cache/')
+
   # Use SQL instead of Active Record's schema dumper when creating the test database.
   # This is necessary if your schema can't be completely dumped by the schema dumper,
   # like if you have constraints or database-specific column types

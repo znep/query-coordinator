@@ -1,5 +1,6 @@
 class AboutController < ApplicationController
   skip_before_filter :require_user
+  caches_page :index, :show
 
   rescue_from ActionView::MissingTemplate do |exception|
     render_404

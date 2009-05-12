@@ -125,9 +125,10 @@ private
   end
 
   def render_error(code)
+    set_locale
     respond_to do |format|
-      format.html { render :template => "errors/error_#{code}", :layout => 'main', :status => :not_found }
-      format.all { render :nothing => true, :status => :not_found }
+      format.html { render :template => "errors/error_#{code}", :layout => 'main', :status => code }
+      format.all { render :nothing => true, :status => code }
     end
     true # so we can do "render_404 and return"
   end

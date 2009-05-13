@@ -12,6 +12,7 @@ blist.discover.filterClickHandler = function (event)
     }
     
     var tabContainers = {
+        "SEARCH": "#discoverTabSearchResults",
         "POPULAR": "#discoverTabPopular",
         "ALL": "#discoverTabAll"
     };
@@ -63,6 +64,35 @@ blist.discover.tagModalShowHandler = function(hash)
     });
 }
 
+blist.discover.searchSubmitHandler = function(event)
+{
+    event.preventDefault();
+    var $form = $(this);
+    
+    $.Tache.Get({ 
+        url: $form.attr("action"),
+        data: $form.find(":input"),
+        success: function(data)
+        {
+            $(".simpleTabs li").removeClass("active");
+            if ($("#tabSearch").length > 0)
+            {
+                $("#tabSearch").addClass("active");
+            }
+            else
+            {
+                $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
+            }
+            
+            $(".tabContentContainer").removeClass("active");
+            $("#discoverTabSearchResults").addClass("active").html(data);
+            
+            $(".simpleTabsContainer")[0].scrollIntoView();
+            $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
+        }
+    });
+}
+
 
 $(function ()
 {
@@ -75,8 +105,18 @@ $(function ()
         }
     });
     
-    $(".simpleTabs").simpleTabNavigate();
+    $(".simpleTabs").simpleTabNavigate({
+        tabMap: {
+            "tabSearch" : "#discoverTabSearchResults",
+            "tabPopular" : "#discoverTabPopular",
+            "tabAll" : "#discoverTabAll"
+        }
+    });
     
+    $(".simpleTabs li#tabSearch a").live("click", function(event){
+        event.preventDefault();
+        $(".simpleTabs").simpleTabNavigate().activateTab("#tabSearch");
+    });
     $(".tabLink.popular").live("click", function(event){
         event.preventDefault();
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabPopular");
@@ -103,4 +143,6 @@ $(function ()
         event.preventDefault();
         $("#tagCloud").jqmHide();
     });
+    
+    $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler)
 });

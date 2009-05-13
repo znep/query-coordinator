@@ -14,9 +14,10 @@
       </div>
       <div class="pageBlockSearch">
         <p class="searchIntro"><%= t(:discover_search_intro) %></p>
-        <% form_tag(discover_url, :class => "search large") do %>
+        <% form_tag(filter_discover_url, :class => "search large") do %>
           <p>
-            <%= text_field_tag("search", @discover_search, :class => "textPrompt", :title => "Search") %>
+            <%= text_field_tag("search", @search_term, :class => "textPrompt", :title => "Search") %>
+            <%= hidden_field_tag("type", "SEARCH") %>
             <%= image_submit_tag("find_button_large.png", :name => "discoverSubmit", :class => "submit") %>
           </p>
         <% end %>
@@ -50,24 +51,42 @@
   <div class="simpleTabsContainer">
     <div class="simpleTabNav">
       <ul class="simpleTabs tabList clearfix">
-        <%# TODO: Add tab for search results. %>
-        <li id="tabPopular" class="active"><div class="wrapper"><a href="#top">Top 100</a></div></li>
+        <%- if (@search_views && @search_views.length > 0) -%>
+          <li id="tabSearch" class="active">
+            <div class="wrapper"><a href="#results">Search Results</a></div>
+          </li>
+        <%- end -%>
+        <li id="tabPopular" class="<%= @search_views.nil? ? 'active' : '' %>"><div class="wrapper"><a href="#top">Top 100</a></div></li>
         <li id="tabAll"><div class="wrapper"><a href="#all">All <%= t(:blists_name) %></a></div></li>
       </ul>
     </div>
-    <div id="discoverTabPopular" class="tabContentContainer active clearfix">
+    <div id="discoverTabSearchResults" class="tabContentContainer clearfix<%= @search_views.nil? ? '' : ' active' %>">
+      <%- if (@search_views && @search_views.length > 0) -%>
+        <%= render(:partial => "view_list_tab", :locals => { 
+          :tab_title => "Search Results for \"#{@search_term}\"", 
+          :views => @search_views, :views_total => @search_views_total,
+          :current_page => 1, :type => "SEARCH", :current_filter => nil, 
+          :sort_by => "LAST_CHANGED", :tag_list => @search_views_tags, :current_tag => nil,
+          :search_term => @search_term }) %>
+      <%- else -%>
+        <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>
+      <%- end -%>
+    </div>
+    <div id="discoverTabPopular" class="tabContentContainer clearfix<%= @search_views.nil? ? ' active' : '' %>">
       <%= render(:partial => "view_list_tab", :locals => { 
         :tab_title => t(:discover_popular_content_header), 
         :views => @popular_views, :views_total => @popular_views_total,
         :current_page => 1, :type => "POPULAR", :current_filter => nil, 
-        :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil }) %>
+        :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil,
+        :search_term => nil }) %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix">
       <%= render(:partial => "view_list_tab", :locals => { 
         :tab_title => "All #{t(:blists_name)}", 
         :views => @all_views, :views_total => @all_views_total,
         :current_page => 1, :type => "ALL", :current_filter => nil, 
-        :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil }) %>
+        :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil,
+        :search_term => nil }) %>
     </div>
   </div>
 </div>

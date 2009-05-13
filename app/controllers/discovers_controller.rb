@@ -14,13 +14,19 @@ class DiscoversController < ApplicationController
     @all_views_tags = Tag.find({ :method => "viewsTags", :limit => 5 })
     
     @popular_views_total = 100
-    @popular_views = View.find_filtered({ :top100 => true, :limit => PAGE_SIZE, :page => 1 });
+    @popular_views = View.find_filtered({ :top100 => true, :limit => PAGE_SIZE, :page => 1 })
     @popular_views_tags = Tag.find({ :method => "viewsTags", :top100 => true, :limit => 5 })
     
     @carousel_views = View.find_filtered({ :featured => true, :limit => 10 })
     @network_views = View.find_filtered({ :inNetwork => true, :limit => 5 })
+    
+    if (params[:search])
+      @search_term = params[:search]
+      @search_views_total = View.find_filtered({ :full => @search_term, :count => true }).count
+      @search_views = View.find_filtered({ :full => @search_term, :limit => PAGE_SIZE, :page => 1 })
+    end
   end
-
+  
   def filter
     type = params[:type]
     filter = params[:filter]
@@ -29,6 +35,7 @@ class DiscoversController < ApplicationController
     tag = params[:tag]
     is_clear_filter = params[:clearFilter]
     is_clear_tag = params[:clearTag]
+    search_term = params[:search]
     
     sort_by = sort_by_selection
     is_asc = true
@@ -47,6 +54,8 @@ class DiscoversController < ApplicationController
     
     if (type == "POPULAR")
       opts.update({:top100 => true})
+    elsif (type == "SEARCH")
+      opts.update({:full => search_term })
     end
     
     if (is_clear_tag)
@@ -79,6 +88,10 @@ class DiscoversController < ApplicationController
       tab_title += " #{t(:blists_name)}"
     end
     
+    if type == "SEARCH"
+      tab_title = "Search Results for \"#{search_term}\""
+    end
+    
     @page_size = PAGE_SIZE
     @filtered_views = View.find_filtered(opts)
     @filtered_views_total = View.find_filtered(opts.update({:count => true})).count
@@ -93,19 +106,25 @@ class DiscoversController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(discover_url(params)) }
       format.data { 
-        render(:partial => "discovers/view_list_tab", 
-          :locals => 
-          {
-            :tab_title => tab_title, 
-            :views => @filtered_views, 
-            :views_total => @filtered_views_total,
-            :current_page => page.to_i,
-            :type => type,
-            :current_filter => filter,
-            :sort_by => sort_by_selection,
-            :tag_list => tag_list,
-            :current_tag => tag
-          })
+        if (@filtered_views.length > 0)
+          render(:partial => "discovers/view_list_tab", 
+            :locals => 
+            {
+              :tab_title => tab_title, 
+              :views => @filtered_views, 
+              :views_total => @filtered_views_total,
+              :current_page => page.to_i,
+              :type => type,
+              :current_filter => filter,
+              :sort_by => sort_by_selection,
+              :tag_list => tag_list,
+              :current_tag => tag,
+              :search_term => search_term
+            })
+        else
+          render(:partial => "discovers/view_list_tab_noresult", 
+              :locals => { :term => search_term })
+        end
       }
     end
     

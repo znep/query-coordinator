@@ -6,6 +6,6 @@ class ImportsController < ApplicationController
   def redirect
     view = View.find(params[:id])
 
-    redirect_to view.href
+    redirect_to view.href + '?mode=edit'
   end
 end

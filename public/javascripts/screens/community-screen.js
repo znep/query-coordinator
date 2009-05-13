@@ -12,6 +12,7 @@ blist.community.filterClickHandler = function (event)
     }
     
     var tabContainers = {
+        "SEARCH": "#communityTabSearchResults",
         "TOPMEMBERS": "#communityTabTopMembers",
         "TOPUPLOADERS": "#communityTabTopUploaders",
         "ALLMEMBERS": "#communityTabAllMembers"
@@ -65,6 +66,35 @@ blist.community.tagModalShowHandler = function(hash)
     });
 }
 
+blist.community.searchSubmitHandler = function(event)
+{
+    event.preventDefault();
+    var $form = $(this);
+    
+    $.Tache.Get({ 
+        url: $form.attr("action"),
+        data: $form.find(":input"),
+        success: function(data)
+        {
+            $(".simpleTabs li").removeClass("active");
+            if ($("#tabSearch").length > 0)
+            {
+                $("#tabSearch").addClass("active");
+            }
+            else
+            {
+                $("#tabTopMembers").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
+            }
+            
+            $(".tabContentContainer").removeClass("active");
+            $("#communityTabSearchResults").addClass("active").html(data);
+            
+            $(".simpleTabsContainer")[0].scrollIntoView();
+            $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
+        }
+    });
+}
+
 $(function ()
 {
     $("#featuredCarousel").jcarousel({
@@ -78,11 +108,18 @@ $(function ()
     
     $(".simpleTabs").simpleTabNavigate({
         tabMap: {
+            "tabSearch" : "#communityTabSearchResults",
             "tabTopMembers" : "#communityTabTopMembers",
             "tabTopUploaders" : "#communityTabTopUploaders",
             "tabAllMembers" : "#communityTabAllMembers"
         }
     });
+    
+    $(".simpleTabs li#tabSearch a").live("click", function(event){
+        event.preventDefault();
+        $(".simpleTabs").simpleTabNavigate().activateTab("#tabSearch");
+    });
+    
     
     $(".filterLink, .pageLink, .prevLink, .nextLink").live("click", communityNS.filterClickHandler);
     $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
@@ -101,4 +138,6 @@ $(function ()
         event.preventDefault();
         $("#tagCloud").jqmHide();
     });
+    
+    $("#community .pageBlockSearch form").submit(communityNS.searchSubmitHandler)
 });

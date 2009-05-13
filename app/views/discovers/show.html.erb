@@ -56,7 +56,9 @@
             <div class="wrapper"><a href="#results">Search Results</a></div>
           </li>
         <%- end -%>
-        <li id="tabPopular" class="<%= @search_views.nil? ? 'active' : '' %>"><div class="wrapper"><a href="#top">Top 100</a></div></li>
+        <li id="tabPopular" class="<%= @search_views.nil? ? 'active' : '' %>">
+          <div class="wrapper"><a href="#top">Top 100</a></div>
+        </li>
         <li id="tabAll"><div class="wrapper"><a href="#all">All <%= t(:blists_name) %></a></div></li>
       </ul>
     </div>
@@ -66,7 +68,7 @@
           :tab_title => "Search Results for \"#{@search_term}\"", 
           :views => @search_views, :views_total => @search_views_total,
           :current_page => 1, :type => "SEARCH", :current_filter => nil, 
-          :sort_by => "LAST_CHANGED", :tag_list => @search_views_tags, :current_tag => nil,
+          :sort_by => "LAST_CHANGED", :tag_list => nil, :current_tag => nil,
           :search_term => @search_term }) %>
       <%- else -%>
         <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>

@@ -2,7 +2,7 @@
   <div class="tabContent">
     <h2><%= tab_title %></h2>
     <div class="contentSort">
-      <% form_tag(filter_community_url(:type => type, :filter => current_filter, :tag => current_tag), :class => "sortForm") do %>
+      <% form_tag(filter_community_url(:type => type, :filter => current_filter, :tag => current_tag, :search => search_term), :class => "sortForm") do %>
         <p>
           Sort by
           <%= select_tag("sort_by", community_sort_select_options(sort_by), :id => "sort_by_" + type) %>
@@ -15,7 +15,10 @@
     </ul>
     
     <div class="memberPager">
-      <%= create_pagination(members_total, @page_size, current_page, filter_community_url({:type => type, :filter => current_filter, :sort_by => sort_by, :tag => current_tag})) %>
+      <%= create_pagination(members_total, @page_size, current_page, 
+          filter_community_url({
+            :type => type, :filter => current_filter, :sort_by => sort_by, 
+            :tag => current_tag, :search => search_term})) %>
     </div>
     
   </div>
@@ -23,29 +26,31 @@
 
 <div class="tabContentNavTR"><div class="tabContentNavBR">
   <div class="tabContentNav">
-    <h2>Show People</h2>
-    <ul class="filterList hilightList">
-      <li><%= link_to("<span>With public #{t(:blists_name)}</span>", 
-              filter_community_url({:type => type, :filter => {:publicOnly => true}, :tag => current_tag}),
-              :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
-    </ul>
+    <%- unless (type == "SEARCH") -%>
+      <h2>Show People</h2>
+      <ul class="filterList hilightList">
+        <li><%= link_to("<span>With public #{t(:blists_name)}</span>", 
+                filter_community_url({:type => type, :filter => {:publicOnly => true}, :tag => current_tag}),
+                :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
+      </ul>
     
-    <h2>Browse by Tag</h2>
-    <ul class="tagList hilightList">
-      <%- tag_list.each do |tag| -%>
-        <li>
-          <%= link_to("<span>#{h(tag.name)}</span>", 
-              filter_community_url({ 
-                :type => type, :filter => current_filter, :tag => tag.name }),
-                :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
+      <h2>Browse by Tag</h2>
+      <ul class="tagList hilightList">
+        <%- tag_list.each do |tag| -%>
+          <li>
+            <%= link_to("<span>#{h(tag.name)}</span>", 
+                filter_community_url({ 
+                  :type => type, :filter => current_filter, :tag => tag.name }),
+                  :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
+          </li>
+        <%- end -%>
+        <li class="moreLink">
+          <%= link_to("More", 
+              tags_community_url({
+                :type => type, :filter => current_filter}), 
+                :class => "moreTagsLink") %>
         </li>
-      <%- end -%>
-      <li class="moreLink">
-        <%= link_to("More", 
-            tags_community_url({
-              :type => type, :filter => current_filter}), 
-              :class => "moreTagsLink") %>
-      </li>
-    </ul>
+      </ul>
+    <%- end -%>
   </div>
 </div></div>

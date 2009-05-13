@@ -123,7 +123,7 @@ module BlistsHelper
         if (!c.is_blist_in_blist || c.is_list ||
             include_options['blist_in_blist']) &&
           (!args['column_test'] || args['column_test'].call(c))
-          cur_item = {'text' => c.name,
+          cur_item = {'text' => h(c.name),
             'href' => args['href_prefix'] + c.id.to_s,
             'class' => get_datatype_class(c) + ' scrollable'}
           if (args['submenu'])
@@ -138,7 +138,7 @@ module BlistsHelper
           c.childColumns.each do |cc|
             if (!cc.flag?('hidden') || include_options['hidden']) &&
               (!args['column_test'] || args['column_test'].call(cc))
-              cur_item = {'text' => c.name + ': ' + cc.name,
+              cur_item = {'text' => h(c.name) + ': ' + h(cc.name),
                 'href' => args['href_prefix'] + cc.id.to_s,
                 'class' => get_datatype_class(cc) + ' scrollable'}
               if (args['submenu'])

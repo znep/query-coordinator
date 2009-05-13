@@ -889,6 +889,8 @@
             {
                 var col = columns[i];
                 var cls = col.cls ? ' blist-th-' + col.cls : '';
+                var colName = col.name == null ? '' :
+                    escape(col.name).replace(/"/g, '&quot;');
                 html.push(
                     '<div class="blist-th ',
                     !i ? 'blist-th-first ' : '',
@@ -896,11 +898,11 @@
                     colClasses[i],
                     cls,
                     '" title="',
-                    col.name == null ? '' : escape(col.name),
+                    colName,
                     '">',
                     '<span class="blist-th-icon"></span>',
                     '<span class="blist-th-name">',
-                    col.name == null ? '' : escape(col.name),
+                    colName,
                     '</span>');
                 if (blist.data.types[col.type].sortGen != null)
                 {

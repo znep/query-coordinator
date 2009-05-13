@@ -468,7 +468,6 @@ blist.namespace.fetch('blist.data.types');
 
         tag: {
             renderGen: renderGenText,
-            sortGen: sortGenText,
             filterText: true
         },
 

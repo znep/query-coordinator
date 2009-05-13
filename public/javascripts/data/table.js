@@ -901,13 +901,16 @@
                     '<span class="blist-th-icon"></span>',
                     '<span class="blist-th-name">',
                     col.name == null ? '' : escape(col.name),
-                    '</span>',
-                    '<div class="sort sort-desc" title="Sort ascending"',
-                    options.generateHeights ? ' style="height: ' +
-                        rowOffset + 'px"' : '',
-                    '></div>',
-                    '</div>'
-                );
+                    '</span>');
+                if (blist.data.types[col.type].sortGen != null)
+                {
+                    html.push(
+                            '<div class="sort sort-desc" title="Sort ascending"',
+                            options.generateHeights ? ' style="height: ' +
+                            rowOffset + 'px"' : '',
+                            '></div>');
+                }
+                html.push('</div>');
             }
             if (options.showGhostColumn)
             {
@@ -935,10 +938,14 @@
                 }
                 columns[index].dom = this;
 
-                $(this).click(function()
+                $(this)
+                    .click(function()
                     {
                         $(this).removeClass('hover');
-                        sort(index);
+                        if (blist.data.types[columns[index].type].sortGen != null)
+                        {
+                            sort(index);
+                        }
                     })
                     .hover(function () { $(this).addClass('hover') },
                         function () { $(this).removeClass('hover') });

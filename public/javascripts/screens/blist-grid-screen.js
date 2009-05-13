@@ -367,22 +367,25 @@ blist.blistGrid.jsGridClearFilter = function(e)
 
 blist.blistGrid.headerMods = function(col)
 {
-    var $col = $(col.dom);
-    $col.append('<a class="menuLink"' +
-            ' href="#column-menu_' +
-            col.index + '"></a>' +
-            '<ul class="menu columnHeaderMenu">' +
-            '<li class="sortAsc"><a href="#column-sort-asc_' + col.index + '">' +
-            'Sort A-Z</a></li>' +
-            '<li class="sortDesc"><a href="#column-sort-desc_' + col.index + '">' +
-            'Sort Z-A</a></li>' +
-            '<li class="footer"><div class="outerWrapper">' +
-            '<div class="innerWrapper"><span class="colorWrapper">' +
-            '</span></div></div></li>' +
-            '</ul>');
-    $col.find('ul.menu').dropdownMenu({triggerButton: $col.find('a.menuLink'),
-            linkCallback: blistGridNS.columnHeaderMenuHandler,
-            forcePosition: true, pullToTop: true});
+    if (blist.data.types[col.type].sortGen != null)
+    {
+        var $col = $(col.dom);
+        $col.append('<a class="menuLink"' +
+                ' href="#column-menu_' +
+                col.index + '"></a>' +
+                '<ul class="menu columnHeaderMenu">' +
+                '<li class="sortAsc"><a href="#column-sort-asc_' + col.index +
+                '">Sort A-Z</a></li>' +
+                '<li class="sortDesc"><a href="#column-sort-desc_' + col.index +
+                '">Sort Z-A</a></li>' +
+                '<li class="footer"><div class="outerWrapper">' +
+                '<div class="innerWrapper"><span class="colorWrapper">' +
+                '</span></div></div></li>' +
+                '</ul>');
+        $col.find('ul.menu').dropdownMenu({triggerButton: $col.find('a.menuLink'),
+                linkCallback: blistGridNS.columnHeaderMenuHandler,
+                forcePosition: true, pullToTop: true});
+    }
 };
 
 blist.blistGrid.columnHeaderMenuHandler = function(event)

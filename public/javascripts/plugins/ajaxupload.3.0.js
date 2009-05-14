@@ -467,7 +467,11 @@ AjaxUpload.prototype = {
 						response = doc.XMLDocument;
 					} else if (doc.body){
 						// response is html document or plain text
-						response = doc.body.innerHTML;
+						if (doc.body.firstChild.tagName === 'PRE') {
+							response = doc.body.firstChild.innerHTML;
+						} else {
+							response = doc.body.innerHTML;
+						}
 						if (settings.responseType == 'json'){
 							response = window["eval"]("(" + response + ")");
 						}

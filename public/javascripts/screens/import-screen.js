@@ -45,15 +45,14 @@ $(function ()
               // We don't care what type of error it was, only that there was
               // one. Error format is "<h1>{http error code} Error</h1>\n"
               // followed by the error payload.
-              response = response.slice(19, -6);
-              response = response.replace(/\s*\(code <em>\w+<\/em>\)\s*/, '');
+              response = $(response).filter("p").text().replace(/\s*\(code \w+\)\s*/, '');
               $('.errorMessage')
                 .html("<p><strong>Failed to import that file!</strong><br/></p>" + response);
               return false;
             }
 
             // If we succeeded importing, redirect to the new view.
-            response = $.json.deserialize(response.slice(5, -6));
+            response = $.json.deserialize(response);
             window.location = "/import/redirect?id=" + response.id; 
         }
     });

@@ -204,7 +204,8 @@ $(function ()
         new AjaxUpload($imageChange, {
             action: $imageChange.attr('href'),
             autoSubmit: true,
-            name: 'profileImageInput',
+            name: 'profileImageInput', 
+            responseType: 'json',
             onSubmit: function (file, ext)
             {
                 if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
@@ -219,11 +220,8 @@ $(function ()
             },
             onComplete: function (file, response)
             {
-                // Response is plain text that gets converted to an HTML doc with
-                //  <pre> tags
-                response = $.json.deserialize(response.slice(5, -6));
                 var $img = $('.profilePicture img');
-                $img.attr('src', response.medium + '?rand=' + Date.now());
+                $img.attr('src', response.medium + '?rand=' + new Date().getTime());
             }
         });
     }

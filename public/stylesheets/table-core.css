@@ -186,21 +186,21 @@ img.blist-table-option-icon
 
 .blist-tstar-on {
     float: left;
-    background: transparent url(images/content/table/star_on.png) center left repeat-x;
+    background: transparent url(/stylesheets/images/content/table/star_on.png) center left repeat-x;
     width: 10px;
     height: 10px;
 }
 
 .blist-tstar-off {
     float: left;
-    background: transparent url(images/content/table/star_off.png) center left repeat-x;
+    background: transparent url(/stylesheets/images/content/table/star_off.png) center left repeat-x;
     width: 10px;
     height: 10px;
 }
 
 .blist-tstar-over {
     float: left;
-    background: transparent url(images/content/table/star_over.png) center left repeat-x;
+    background: transparent url(/stylesheets/images/content/table/star_over.png) center left repeat-x;
     width: 10px;
     height: 10px;
 }
@@ -224,14 +224,14 @@ img.blist-table-option-icon
     position: absolute;
     top: 0;
     left: 0;
-    background: transparent url(images/content/table/percent_positive.png) center left repeat-x;
+    background: transparent url(/stylesheets/images/content/table/percent_positive.png) center left repeat-x;
 }
 
 .blist-percent-bar-neg {
     position: absolute;
     top: 0;
     right: 0;
-    background: transparent url(images/content/table/percent_negative.png) center left repeat-x;
+    background: transparent url(/stylesheets/images/content/table/percent_negative.png) center left repeat-x;
 }
 
 .blist-document-size {

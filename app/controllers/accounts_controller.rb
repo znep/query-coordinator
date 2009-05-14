@@ -45,7 +45,7 @@ class AccountsController < ApplicationController
       user = User.create(params[:account])
     rescue CoreServerError => e
       flash[:error] = e.error_message
-      return redirect_to signup_url
+      return (redirect_to signup_url)
     end
 
     # Now, authenticate the user

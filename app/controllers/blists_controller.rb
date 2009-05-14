@@ -34,10 +34,10 @@ class BlistsController < SwfController
         elsif e.error_code == 'not_found'
           flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' cannot be found, or has been deleted.'
-          return render 'shared/error'
+          return (render 'shared/error')
         else
           flash[:error] = e.error_message
-          return render 'shared/error'
+          return (render 'shared/error')
         end
       end
 

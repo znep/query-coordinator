@@ -490,6 +490,13 @@
             scrolls.height(outside.height() - $top.height() - 2);
             scrolls.width(outside.width() - 2);
 
+            // Size the inside row container
+            var insideHeight = model ? rowOffset * model.rows().length : 0;
+            var scrollsHeight = scrolls[0].clientHeight;
+            if (insideHeight < scrollsHeight)
+                insideHeight = scrollsHeight;
+            inside.height(insideHeight);
+
             renderRows();
 
             adjustVariableColumns();
@@ -904,7 +911,8 @@
                     '<span class="blist-th-name">',
                     colName,
                     '</span>');
-                if (blist.data.types[col.type].sortGen != null)
+                if (blist.data.types[col.type].sortGen != null ||
+                    blist.data.types[col.type].sortPreprocessor != null)
                 {
                     html.push(
                             '<div class="sort sort-desc" title="Sort ascending"',
@@ -944,7 +952,8 @@
                     .click(function()
                     {
                         $(this).removeClass('hover');
-                        if (blist.data.types[columns[index].type].sortGen != null)
+                        if (blist.data.types[columns[index].type].sortGen != null ||
+                            blist.data.types[columns[index].type].sortPreprocessor != null)
                         {
                             sort(index);
                         }
@@ -1174,7 +1183,6 @@
                 initMeta(model);
                 renderHeader();
             }
-            inside.height(rowOffset * model.rows().length);
 
             inside.empty();
             renderedRows = {};

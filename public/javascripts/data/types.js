@@ -198,7 +198,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenCheckbox = function(value, column) {
         var format = column.format || 'check';
-        return value + " && (\"<div class='blist-cell blist-checkbox blist-" + format + "-\" + (" + value + " ? 'on' : 'off') + \"'></div>\")";
+        return value + " ? (\"<div class='blist-cell blist-checkbox blist-" + format + "-\" + (" + value + " ? 'on' : 'off') + \"'></div>\") : ''";
     }
 
     var renderGenFlag = function(value, column) {
@@ -432,6 +432,7 @@ blist.namespace.fetch('blist.data.types');
 
         phone: {
             renderGen: renderGenPhone,
+            sortGen: sortGenText,
             filterText: true
         },
 
@@ -441,7 +442,8 @@ blist.namespace.fetch('blist.data.types');
         },
 
         flag: {
-            renderGen: renderGenFlag
+            renderGen: renderGenFlag,
+            sortGen: sortGenText
         },
 
         stars: {

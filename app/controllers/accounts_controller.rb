@@ -1,6 +1,5 @@
 class AccountsController < ApplicationController
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
-  caches_page :new
 
   def show
   end

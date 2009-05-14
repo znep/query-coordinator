@@ -190,13 +190,25 @@
         $(config.menuSelector).each(function () { hideMenu($(this)) });
 
         $menu.addClass(config.menuOpenClass);
-        
+
         var $trigger = $menu.data("triggerButton");
         $trigger.addClass(config.triggerOpenClass);
         $(document).bind('click.' + $menu.attr('id'), function (event)
         {
             documentClickedHandler(event, $menu);
         });
+
+        if (config.forcePosition)
+        {
+            $menu.css('left', $trigger.position().left);
+            $menu.css('top', $trigger.position().top + $trigger.outerHeight(true));
+            // Check if the menu is wider than the window; if so, flip it
+            if ($menu.offset().left + $menu.outerWidth(true) > $(window).width())
+            {
+                $menu.css('left', $menu.position().left -
+                        ($menu.outerWidth(true) - $trigger.outerWidth(true)));
+            }
+        }
 
         if (config.pullToTop)
         {
@@ -300,19 +312,20 @@
     // plugin defaults
     //
     $.fn.dropdownMenu.defaults = {
-        menuSelector: 'ul.menu',
-        menuOpenClass: 'shown',
-        triggerOpenClass: 'clicked',
-        optionMenuSelector: '.optionMenu',
-        selectedItemClass: 'checked',
-        submenuSelector: '.submenu',
         activeClass: 'active',
-        multilevelMenuSelector: '.multilevelMenu',
-        topLevelLinkSelector: 'dt a',
-        pullToTop: false,
-        submenuFlipClass: 'opposite',
+        forcePosition: false,
         menuContainerSelector: "li",
-        triggerButtonSelector: "a.dropdownLink"
+        menuOpenClass: 'shown',
+        menuSelector: 'ul.menu',
+        multilevelMenuSelector: '.multilevelMenu',
+        optionMenuSelector: '.optionMenu',
+        pullToTop: false,
+        selectedItemClass: 'checked',
+        submenuFlipClass: 'opposite',
+        submenuSelector: '.submenu',
+        topLevelLinkSelector: 'dt a',
+        triggerButtonSelector: "a.dropdownLink",
+        triggerOpenClass: 'clicked'
     };
 
 })(jQuery);

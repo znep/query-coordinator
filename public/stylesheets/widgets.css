@@ -1324,7 +1324,9 @@ table.gridList tr.filteredOut
     float: right;
 }
 
-
+.tabContent.noresult { padding-bottom: 30px; }
+.tabContent.noresult h2 { margin-bottom: 1em; }
+.tabContent.noresult p { font-size: 1.2em; }
 
 
 

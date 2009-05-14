@@ -65,7 +65,7 @@
       </div>
 
       <%- if @show_search_form -%>
-        <form class='search' action='/discover'>
+        <% form_tag(discover_url, :method => :get, :class => "search") do %>
           <p>
             <input type='text' class='textPrompt' name='search'
               title='<%= t(:search_prompt_text) %>'
@@ -73,7 +73,7 @@
             <input type='image' class='submit' name='discoverSubmit'
               src="<%= image_path("find_button.png") %>" />
           </p>
-        </form>
+        <% end %>
       <%- end -%>
     </div>
 

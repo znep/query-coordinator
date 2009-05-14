@@ -24,6 +24,12 @@ class CommunitiesController < ApplicationController
     @carousel_members = User.find({ :featured => true, :limit => 10 }, true);
     
     @activities = Activity.find({ :maxResults => 5 })
+    
+    if (params[:search])
+      @search_term = params[:search]
+      @search_members_total = User.find({ :full => @search_term, :count => true }).count
+      @search_members = User.find({ :full => @search_term, :limit => PAGE_SIZE, :page => 1 })
+    end
   end
   
   def filter
@@ -34,6 +40,7 @@ class CommunitiesController < ApplicationController
     tag = params[:tag]
     is_clear_filter = params[:clearFilter]
     is_clear_tag = params[:clearTag]
+    search_term = params[:search]
     
     sort_by = sort_by_selection
     is_asc = false
@@ -58,6 +65,8 @@ class CommunitiesController < ApplicationController
       when "TOPUPLOADERS"
         opts.update({:topUploaders => true})
         tag_opts.update({:topUploaders => true})
+      when "SEARCH"
+        opts.update({:full => search_term })
     end
     
     if (is_clear_tag)
@@ -82,6 +91,10 @@ class CommunitiesController < ApplicationController
       end
     end
     
+    if type == "SEARCH"
+      tab_title = "Search Results for \"#{search_term}\""
+    end
+    
     @page_size = PAGE_SIZE
     @filtered_members = User.find(opts, true)
     @filtered_members_total = User.find(opts.update({:count => true})).count
@@ -96,19 +109,25 @@ class CommunitiesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(community_url(params)) }
       format.data { 
-        render(:partial => "communities/member_list_tab", 
-          :locals => 
-          {
-            :tab_title => tab_title, 
-            :members => @filtered_members, 
-            :members_total => @filtered_members_total,
-            :current_page => page.to_i,
-            :type => type,
-            :current_filter => filter,
-            :sort_by => sort_by_selection,
-            :tag_list => tag_list,
-            :current_tag => tag
-          })
+        if (@filtered_members.length > 0)
+          render(:partial => "communities/member_list_tab", 
+            :locals => 
+            {
+              :tab_title => tab_title, 
+              :members => @filtered_members, 
+              :members_total => @filtered_members_total,
+              :current_page => page.to_i,
+              :type => type,
+              :current_filter => filter,
+              :sort_by => sort_by_selection,
+              :tag_list => tag_list,
+              :current_tag => tag,
+              :search_term => search_term
+            })
+        else
+          render(:partial => "communities/member_list_tab_noresult", 
+              :locals => { :term => search_term })
+        end
       }
     end
   end

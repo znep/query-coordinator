@@ -3,7 +3,8 @@
   <div class="tabContent">
     <h2><%= tab_title %></h2>
     <div class="contentSort">
-      <% form_tag(filter_discover_url(:type => type, :filter => current_filter), :class => "sortForm") do %>
+      <% form_tag(filter_discover_url(:type => type, :filter => current_filter, :search => search_term), 
+          :class => "sortForm") do %>
         <p>
           Sort by
           <%= select_tag("sort_by", sort_select_options(sort_by), :id => "sort_by_" + type) %>
@@ -19,68 +20,70 @@
       <%= create_pagination(views_total, @page_size, current_page, 
           filter_discover_url({
             :type => type, :filter => current_filter, 
-            :sort_by => sort_by, :tag => current_tag})) %>
+            :sort_by => sort_by, :tag => current_tag, :search => search_term})) %>
     </div>
   </div>
 </div></div></div>
 
 <div class="tabContentNavTR"><div class="tabContentNavBR">
   <div class="tabContentNav">
-    <h2>Show <%= t(:blists_name) %></h2>
-    <ul class="filterList hilightList">
-      <%- if (type == "ALL") -%>
-        <li><a href="#most_popular" class="tabLink popular"><span>Most popular</span></a></li>
-      <%- else -%>
-        <li><a href="#all" class="tabLink all"><span>All <%= t(:blists_name) %></span></a></li>
-      <%- end -%>
-      <%- if (!@current_user.nil?) -%>
-        <li><%= link_to("<span>In my network</span>", 
-                filter_discover_url({:type => type, :filter => {:inNetwork => true}, :tag => current_tag}),
-                :class => "filterLink#{get_filter_hilight_class({'inNetwork' => 'true'}, current_filter, ' hilight')}") %>
-        </li>
-        <li><%= link_to("<span>Public #{t(:blists_name)}</span>", 
-                filter_discover_url({:type => type, :filter => {:publicOnly => true}, :tag => current_tag}),
-                :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
-        <li><%= link_to("<span>Private #{t(:blists_name)}</span>", 
-                filter_discover_url({:type => type, :filter => {:privateOnly => true}, :tag => current_tag}),
-                :class => "filterLink#{get_filter_hilight_class({'privateOnly' => 'true'}, current_filter, ' hilight')}") %></li>
-      <%- end -%>
-    </ul>
-
-    <h2>Browse by tag</h2>
-    <ul class="tagList hilightList">
-      <%- tag_list.each do |tag| -%>
-        <li>
-          <%= link_to("<span>#{h(tag.name)}</span>", 
-              filter_discover_url({ 
-                :type => type, :filter => current_filter, :tag => tag.name }),
-                :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
-        </li>
-      <%- end -%>
-      <li class="moreLink">
-        <%= link_to("More", 
-            tags_discover_url({
-              :type => type, :filter => current_filter}), 
-              :class => "moreTagsLink") %>
-      </li>
-    </ul>
-    
-    <%- if (!is_gov_site?) -%>
-      <h2>Browse by Category</h2>
-      <ul class="categoryList hilightList">
-        <li><%= link_to("<span>Fun</span>", 
-                filter_discover_url({:type => type, :filter => {:category => "Fun"}, :tag => current_tag}),
-                :class => "filterLink#{get_filter_hilight_class({'category' => 'Fun'}, current_filter, ' hilight')}") %></li>
-        <li><%= link_to("<span>Personal</span>", 
-                filter_discover_url({:type => type, :filter => {:category => "Personal"}, :tag => current_tag}),
-                :class => "filterLink#{get_filter_hilight_class({'category' => 'Personal'}, current_filter, ' hilight')}") %></li>
-        <li><%= link_to("<span>Education</span>", 
-                filter_discover_url({:type => type, :filter => {:category => "Education"}, :tag => current_tag}),
-                :class => "filterLink#{get_filter_hilight_class({'category' => 'Education'}, current_filter, ' hilight')}") %></li>
-        <li><%= link_to("<span>Business</span>", 
-                filter_discover_url({:type => type, :filter => {:category => "Business"}, :tag => current_tag}),
-                :class => "filterLink#{get_filter_hilight_class({'category' => 'Business'}, current_filter, ' hilight')}") %></li>
+    <%- unless (type == "SEARCH") -%>
+      <h2>Show <%= t(:blists_name) %></h2>
+      <ul class="filterList hilightList">
+        <%- if (type == "ALL") -%>
+          <li><a href="#most_popular" class="tabLink popular"><span>Most popular</span></a></li>
+        <%- else -%>
+          <li><a href="#all" class="tabLink all"><span>All <%= t(:blists_name) %></span></a></li>
+        <%- end -%>
+        <%- if (!@current_user.nil?) -%>
+          <li><%= link_to("<span>In my network</span>", 
+                  filter_discover_url({:type => type, :filter => {:inNetwork => true}, :tag => current_tag}),
+                  :class => "filterLink#{get_filter_hilight_class({'inNetwork' => 'true'}, current_filter, ' hilight')}") %>
+          </li>
+          <li><%= link_to("<span>Public #{t(:blists_name)}</span>", 
+                  filter_discover_url({:type => type, :filter => {:publicOnly => true}, :tag => current_tag}),
+                  :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
+          <li><%= link_to("<span>Private #{t(:blists_name)}</span>", 
+                  filter_discover_url({:type => type, :filter => {:privateOnly => true}, :tag => current_tag}),
+                  :class => "filterLink#{get_filter_hilight_class({'privateOnly' => 'true'}, current_filter, ' hilight')}") %></li>
+        <%- end -%>
       </ul>
+
+      <h2>Browse by tag</h2>
+      <ul class="tagList hilightList">
+        <%- tag_list.each do |tag| -%>
+          <li>
+            <%= link_to("<span>#{h(tag.name)}</span>", 
+                filter_discover_url({ 
+                  :type => type, :filter => current_filter, :tag => tag.name }),
+                  :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
+          </li>
+        <%- end -%>
+        <li class="moreLink">
+          <%= link_to("More", 
+              tags_discover_url({
+                :type => type, :filter => current_filter}), 
+                :class => "moreTagsLink") %>
+        </li>
+      </ul>
+    
+      <%- if (!is_gov_site?) -%>
+        <h2>Browse by Category</h2>
+        <ul class="categoryList hilightList">
+          <li><%= link_to("<span>Fun</span>", 
+                  filter_discover_url({:type => type, :filter => {:category => "Fun"}, :tag => current_tag}),
+                  :class => "filterLink#{get_filter_hilight_class({'category' => 'Fun'}, current_filter, ' hilight')}") %></li>
+          <li><%= link_to("<span>Personal</span>", 
+                  filter_discover_url({:type => type, :filter => {:category => "Personal"}, :tag => current_tag}),
+                  :class => "filterLink#{get_filter_hilight_class({'category' => 'Personal'}, current_filter, ' hilight')}") %></li>
+          <li><%= link_to("<span>Education</span>", 
+                  filter_discover_url({:type => type, :filter => {:category => "Education"}, :tag => current_tag}),
+                  :class => "filterLink#{get_filter_hilight_class({'category' => 'Education'}, current_filter, ' hilight')}") %></li>
+          <li><%= link_to("<span>Business</span>", 
+                  filter_discover_url({:type => type, :filter => {:category => "Business"}, :tag => current_tag}),
+                  :class => "filterLink#{get_filter_hilight_class({'category' => 'Business'}, current_filter, ' hilight')}") %></li>
+        </ul>
+      <%- end -%>
     <%- end -%>
   </div>
 </div></div>

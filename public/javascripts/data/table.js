@@ -889,6 +889,8 @@
             {
                 var col = columns[i];
                 var cls = col.cls ? ' blist-th-' + col.cls : '';
+                var colName = col.name == null ? '' :
+                    escape(col.name).replace(/"/g, '&quot;');
                 html.push(
                     '<div class="blist-th ',
                     !i ? 'blist-th-first ' : '',
@@ -896,18 +898,21 @@
                     colClasses[i],
                     cls,
                     '" title="',
-                    col.name == null ? '' : escape(col.name),
+                    colName,
                     '">',
                     '<span class="blist-th-icon"></span>',
                     '<span class="blist-th-name">',
-                    col.name == null ? '' : escape(col.name),
-                    '</span>',
-                    '<div class="sort sort-desc" title="Sort ascending"',
-                    options.generateHeights ? ' style="height: ' +
-                        rowOffset + 'px"' : '',
-                    '></div>',
-                    '</div>'
-                );
+                    colName,
+                    '</span>');
+                if (blist.data.types[col.type].sortGen != null)
+                {
+                    html.push(
+                            '<div class="sort sort-desc" title="Sort ascending"',
+                            options.generateHeights ? ' style="height: ' +
+                            rowOffset + 'px"' : '',
+                            '></div>');
+                }
+                html.push('</div>');
             }
             if (options.showGhostColumn)
             {
@@ -934,13 +939,24 @@
                     return;
                 }
                 columns[index].dom = this;
-                $(this).click(function()
+
+                $(this)
+                    .click(function()
                     {
                         $(this).removeClass('hover');
-                        sort(index);
+                        if (blist.data.types[columns[index].type].sortGen != null)
+                        {
+                            sort(index);
+                        }
                     })
                     .hover(function () { $(this).addClass('hover') },
                         function () { $(this).removeClass('hover') });
+
+                if (options.headerMods != null)
+                {
+                    options.headerMods(columns[index]);
+                }
+
             });
 
 
@@ -1215,6 +1231,7 @@
     var blistTableDefaults = {
         generateHeights: true,
         ghostMinWidth: 20,
+        headerMods: function (col) {},
         manualResize: false,
         resizeHandleAdjust: 3,
         showGhostColumn: false,

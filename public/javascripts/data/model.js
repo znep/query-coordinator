@@ -451,7 +451,8 @@ blist.namespace.fetch('blist.data');
                 if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
                 {
                     var s = meta.view.sortBys[0];
-                    meta.sort = {ascending: $.inArray('asc', s.flags) >= 0};
+                    meta.sort = {ascending: s.flags != null &&
+                        $.inArray('asc', s.flags) >= 0};
                     $.each(meta.columns, function (i, c)
                     {
                         if (meta.view.columns[c.dataIndex].id == s.viewColumnId)

@@ -432,6 +432,7 @@ blist.namespace.fetch('blist.data.types');
 
         phone: {
             renderGen: renderGenPhone,
+            sortGen: sortGenText,
             filterText: true
         },
 
@@ -441,7 +442,8 @@ blist.namespace.fetch('blist.data.types');
         },
 
         flag: {
-            renderGen: renderGenFlag
+            renderGen: renderGenFlag,
+            sortGen: sortGenText
         },
 
         stars: {

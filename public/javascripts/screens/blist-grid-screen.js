@@ -367,7 +367,8 @@ blist.blistGrid.jsGridClearFilter = function(e)
 
 blist.blistGrid.headerMods = function(col)
 {
-    if (blist.data.types[col.type].sortGen != null)
+    if (blist.data.types[col.type].sortGen != null ||
+        blist.data.types[col.type].sortPreprocessor != null)
     {
         var $col = $(col.dom);
         $col.append('<a class="menuLink"' +

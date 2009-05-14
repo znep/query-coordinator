@@ -911,7 +911,8 @@
                     '<span class="blist-th-name">',
                     colName,
                     '</span>');
-                if (blist.data.types[col.type].sortGen != null)
+                if (blist.data.types[col.type].sortGen != null ||
+                    blist.data.types[col.type].sortPreprocessor != null)
                 {
                     html.push(
                             '<div class="sort sort-desc" title="Sort ascending"',
@@ -951,7 +952,8 @@
                     .click(function()
                     {
                         $(this).removeClass('hover');
-                        if (blist.data.types[columns[index].type].sortGen != null)
+                        if (blist.data.types[columns[index].type].sortGen != null ||
+                            blist.data.types[columns[index].type].sortPreprocessor != null)
                         {
                             sort(index);
                         }

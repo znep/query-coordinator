@@ -6,9 +6,10 @@
         'href' => "/views/#{@view.id}/rows.pdf?print=true&headers_on_every_page=true"},
         {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-        {'text' => 'As CSV', 'href' => "/views/#{@view.id}/rows.csv"},
-        {'text' => 'As PDF', 'href' => "/views/#{@view.id}/rows.pdf"},
-        {'text' => 'As JSON', 'href' => "/views/#{@view.id}/rows.json"}
+        {'text' => 'As CSV', 'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
+        {'text' => 'As PDF', 'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
+        {'text' => 'As XML', 'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
+        {'text' => 'As JSON', 'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
         ]}},
         {'text' => "Email this #{t(:blist_name)}...", 'class' => 'email',
         'href' => '#email', 'swf_item' => true},

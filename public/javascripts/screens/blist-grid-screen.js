@@ -384,12 +384,12 @@ blist.blistGrid.headerMods = function(col)
             htmlStr +=
                 '<li class="sortAsc">\
                     <a href="#column-sort-asc_' + col.index + '">\
-                        <span class="highlight">Sort A-Z</span>\
+                        <span class="highlight">Sort Ascending</span>\
                     </a>\
                 </li>\
                 <li class="sortDesc">\
                     <a href="#column-sort-desc_' + col.index + '">\
-                        <span class="highlight">Sort Z-A</span>\
+                        <span class="highlight">Sort Descending</span>\
                     </a>\
                 </li>';
         }

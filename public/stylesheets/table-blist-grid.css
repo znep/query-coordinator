@@ -134,13 +134,13 @@ ul.menu.columnHeaderMenu li
 .columnHeaderMenu .sortDesc a
 {
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
-    background-position: 7px -21px;
+    background-position: 7px -20px;
     background-repeat: no-repeat;
 }
 
 .columnHeaderMenu .sortDesc a
 {
-    background-position: 7px 3px;
+    background-position: 7px 4px;
 }
 
 .columnHeaderMenu .autofilter a

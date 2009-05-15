@@ -85,10 +85,11 @@ body#lensBody
 #lensContainer .tabList li.main a
 {
     height: 20px;
+    min-width: 6em;
+    max-width: 20em;
     overflow: hidden;
     padding: 6px 0 0;
     text-align: center;
-    width: 10em;
 }
 
 #lensContainer .tabList li.main.active
@@ -163,10 +164,11 @@ body#lensBody
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-position: 0 -531px;
     background-repeat: no-repeat;
+    min-width: 5em;
+    max-width: 15em;
     padding-left: 20px;
     overflow: hidden;
     text-align: left;
-    width: 6em;
 }
 
 /* Header bar & Button styles */
@@ -396,7 +398,7 @@ body#lensBody
 
 #mainMenu li.blist .export > a
 {
-    background-position: 5px -25px;
+    background-position: 5px -117px;
 }
 
 #mainMenu li.blist .email > a
@@ -421,7 +423,7 @@ body#lensBody
 
 #mainMenu li.blist .import > a
 {
-    background-position: 5px -117px;
+    background-position: 5px -25px;
 }
 
 #mainMenu li.blist .findTemplate > a

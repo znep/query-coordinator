@@ -236,9 +236,16 @@ img.blist-table-option-icon
     text-decoration: underline;
 }
 
-div.blist-richtext p
+div.blist-richtext p,
+div.blist-richtext ul
 {
     font-size: 0.7692em;
     line-height: 1.4em;
     margin: 0.3em 0;
+}
+
+div.blist-richtext ul
+{
+    list-style-position: inside;
+    list-style-type: disc;
 }

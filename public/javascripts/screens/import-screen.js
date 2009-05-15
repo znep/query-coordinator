@@ -14,6 +14,7 @@ $(function ()
         action: $("#importAction").attr('href'),
         autoSubmit: false,
         name: 'importFileInput',
+        responseType: 'json',
         onChange: function (file, ext)
         {
             if (!(ext && /^(csv|xml)$/.test(ext)))
@@ -37,22 +38,15 @@ $(function ()
         },
         onComplete: function (file, response)
         {
-            // Errors start with a header, success doesn't.
-            if (response.indexOf("<h1>") == 0)
+            if (response.error == true)
             {
               $("#throbber").hide();
-
-              // We don't care what type of error it was, only that there was
-              // one. Error format is "<h1>{http error code} Error</h1>\n"
-              // followed by the error payload.
-              response = $(response).filter("p").text().replace(/\s*\(code \w+\)\s*/, '');
               $('.errorMessage')
-                .html("<p><strong>Failed to import that file!</strong><br/></p>" + response);
+                .html("<p><strong>Failed to import that file!</strong><br/></p>" + response.message);
               return false;
             }
 
             // If we succeeded importing, redirect to the new view.
-            response = $.json.deserialize(response);
             window.location = "/import/redirect?id=" + response.id; 
         }
     });

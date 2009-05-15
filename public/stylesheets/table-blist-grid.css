@@ -72,37 +72,28 @@
     height: 3.5em;
 }
 
-.blist-th .sort
+.blist-th .sort,
+.blist-th .filter
 {
     background-color: #e8e8e8;
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
     background-position: 0 0;
-    cursor: pointer;
     height: 12px;
     margin-top: -6px;
     right: 0;
     top: 50%;
+    width: 12px;
 }
+.blist-th .sort { cursor: pointer; }
+.blist-th .sort-asc { background-position: 0 -24px; }
+.blist-th.hover .sort { display: none; }
+.blist-th.hover .sort-asc { background-position: 0 -12px; }
+.blist-th.hover .sort-desc { background-position: 0 -36px; }
 
-.blist-th .sort-asc
-{
-    background-position: 0 -24px;
-}
-
-.blist-th.hover .sort
-{
-    display: block;
-}
-
-.blist-th.hover .sort-asc
-{
-    background-position: 0 -12px;
-}
-
-.blist-th.hover .sort-desc
-{
-    background-position: 0 -36px;
-}
+.blist-th .filter { background-position: 0 -48px; }
+.blist-th .filter.active { display: block; }
+.blist-th.sorted .filter { right: 12px; }
+.blist-th.hover .filter.active { display: none; }
 
 .blist-th .menuLink
 {
@@ -131,7 +122,7 @@
 
 .columnHeaderMenu
 {
-    width: 12em;
+    width: 15em;
 }
 
 ul.menu.columnHeaderMenu li
@@ -150,6 +141,44 @@ ul.menu.columnHeaderMenu li
 .columnHeaderMenu .sortDesc a
 {
     background-position: 7px 3px;
+}
+
+.columnHeaderMenu .autofilter a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-position: 5px -531px;
+    background-repeat: no-repeat;
+}
+
+.columnHeaderMenu .autofilter ul.menu
+{
+    width: 15em;
+}
+
+.columnHeaderMenu .autofilter li.clearFilter,
+.columnHeaderMenu .autofilter li.clearFilter a
+{
+    margin-left: 0;
+}
+
+.columnHeaderMenu .autofilter li.clearFilter
+{
+    border-bottom: solid 1px #e0d1b8;
+}
+
+.columnHeaderMenu .autofilter li.clearFilter a
+{
+    background-position: 5px -324px;
+}
+
+.columnHeaderMenu .autofilter li.filterItem a
+{
+    background-position: 5px -899px;
+}
+
+.columnHeaderMenu .autofilter li.filterItem.active a
+{
+    background-position: 5px -508px;
 }
 
 /* This is only used for initial positioning; the menu is pulled out, so real

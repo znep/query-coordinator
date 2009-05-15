@@ -84,9 +84,9 @@
             $menu.data("triggerButton", $trigger);
 
             // Unhook any old handlers in case we're re-applying this
-            $trigger.unbind('click.dropdownMenu');
+            $trigger.unbind('click.dropdownMenu.menu_trigger');
             // Hook up click handler to show menu
-            $trigger.bind('click.dropdownMenu', function (event)
+            $trigger.bind('click.dropdownMenu.menu_trigger', function (event)
             {
                 event.preventDefault();
                 if (config.openTest === undefined || config.openTest(event, $menu))
@@ -102,40 +102,48 @@
             // If they want a callback when a link is clicked, add it
             if (config.linkCallback !== undefined)
             {
-                $menu.find('a').click(function (event)
-                {
-                    config.linkCallback(event, $menu, $trigger);
-                });
+                $menu.find('a').unbind('click.dropdownMenu.menu_callback')
+                    .bind('click.dropdownMenu.menu_callback', function (event)
+                    {
+                        config.linkCallback(event, $menu, $trigger);
+                    });
             }
 
             /* Hook up submenu handlers */
             var $submenus = $menu.find(config.submenuSelector);
             if ($submenus.length > 0)
             {
-                $submenus.click(function (event)
-                {
-                    // Only stop the event if we clicked on the a that launches
-                    //  this submenu.  Find all the direct links under this li,
-                    //  and check if we clicked on or in that a
-                    if ($(event.currentTarget).children('a')
-                        .find('*').andSelf().index(event.target) >= 0)
+                $submenus.unbind('click.dropdownMenu.menu_subclick')
+                    .bind('click.dropdownMenu.menu_subclick', function (event)
                     {
-                        event.stopPropagation();
-                    }
-                }).mouseover(function (event)
-                {
-                    activateSubmenu(event, $menu);
-                });
-                $menu.find('li').mouseover(function (event)
-                {
-                    closeSubmenus(event, $menu);
-                });
+                        // Only stop the event if we clicked on the a that launches
+                        //  this submenu.  Find all the direct links under this li,
+                        //  and check if we clicked on or in that a
+                        if ($(event.currentTarget).children('a')
+                            .find('*').andSelf().index(event.target) >= 0)
+                        {
+                            event.stopPropagation();
+                        }
+                    })
+                    .unbind('mouseover.dropdownMenu.menu_subactivate')
+                    .bind('mouseover.dropdownMenu.menu_subactivate',
+                    function (event)
+                    {
+                        activateSubmenu(event, $menu);
+                    });
+                $menu.find('li').unbind('mouseover.dropdownMenu.menu_subclose')
+                    .bind('mouseover.dropdownMenu.menu_subclose', function (event)
+                    {
+                        closeSubmenus(event, $menu);
+                    });
             }
 
             /* For all optionMenus, hook up special behavior */
             $menu.find(config.menuSelector).andSelf()
                 .filter(config.optionMenuSelector)
-                .children('li').click(function (event)
+                .children('li')
+                .unbind('click.dropdownMenu.menu_optclick')
+                .bind('click.dropdownMenu.menu_optclick', function (event)
                 {
                     $(this).closest(config.menuSelector)
                         .children('li').removeClass(config.selectedItemClass);
@@ -145,34 +153,39 @@
             /* If it's a multilevelMenu, hook up special behavior */
             if ($menu.is(config.multilevelMenuSelector))
             {
-                $menu.find(config.topLevelLinkSelector).click(function (event)
-                {
-                    event.stopPropagation();
-                }).mouseover(function (event)
-                {
-                    activateTopLevelOption(event, $menu);
-                });
+                $menu.find(config.topLevelLinkSelector)
+                    .unbind('click.dropdownMenu.menu_multilevel')
+                    .bind('click.dropdownMenu.menu_multilevel', function (event)
+                    {
+                        event.stopPropagation();
+                    })
+                    .unbind('mouseover.dropdownMenu.menu_multilevel')
+                    .bind('mouseover.dropdownMenu.menu_multilevel', function (event)
+                    {
+                        activateTopLevelOption(event, $menu);
+                    });
             }
 
             // If they provided a menuBar, hook up a mouseover
             if (config.menuBar !== undefined)
             {
-                $trigger.mouseover(function (event)
-                {
-                    // Look for other open menus in the menuBar
-                    var $otherMenus =
-                        config.menuBar.find('.' + config.menuOpenClass +
-                        ':not(#' + $menu.attr('id') + ')');
-                    // If we find some, then hide those and show this menu
-                    if ($otherMenus.length > 0)
+                $trigger.unbind('mouseover.dropdownMenu.menu_menubar')
+                    .bind('mouseover.dropdownMenu.menu_menubar', function (event)
                     {
-                        $otherMenus.each(function ()
+                        // Look for other open menus in the menuBar
+                        var $otherMenus =
+                            config.menuBar.find('.' + config.menuOpenClass +
+                            ':not(#' + $menu.attr('id') + ')');
+                        // If we find some, then hide those and show this menu
+                        if ($otherMenus.length > 0)
                         {
-                            hideMenu($(this));
-                        });
-                        showMenu($menu);
-                    }
-                });
+                            $otherMenus.each(function ()
+                            {
+                                hideMenu($(this));
+                            });
+                            showMenu($menu);
+                        }
+                    });
             }
         });
     };
@@ -249,7 +262,7 @@
         $menu.removeClass(config.menuOpenClass);
         // Close any submenus
         closeSubmenus(null, $menu);
-        
+
         var $trigger = $menu.data("triggerButton");
         $trigger.removeClass(config.triggerOpenClass);
         $(document).unbind('click.' + $menu.attr('id'));

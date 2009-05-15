@@ -398,25 +398,33 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenText,
             sortGen: sortGenText,
             filterText: true,
-            group: groupText
+            group: groupText,
+            sortable: true,
+            filterable: true
         },
 
         richtext: {
             renderGen: renderGenRichtext,
             sortGen: sortGenText,
-            filterText: true
+            filterText: true,
+            sortable: true,
+            filterable: true
         },
 
         number: {
             renderGen: renderGenNumber,
             sortGen: sortGenNumeric,
             filterText: true,
-            cls: 'number'
+            cls: 'number',
+            sortable: true,
+            filterable: true
         },
 
         date: {
             renderGen: renderGenDate,
-            sortGen: sortGenNumeric
+            sortGen: sortGenNumeric,
+            sortable: true
+//            filterable: true
         },
 
         photo: {
@@ -427,41 +435,55 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenMoney,
             sortGen: sortGenNumeric,
             cls: 'number',
-            filterText: true
+            filterText: true,
+            sortable: true,
+            filterable: true
         },
 
         phone: {
             renderGen: renderGenPhone,
             sortGen: sortGenText,
-            filterText: true
+            filterText: true,
+            sortable: true
+//            filterable: true
         },
 
         checkbox: {
             renderGen: renderGenCheckbox,
-            sortGen: sortGenNumeric
+            sortGen: sortGenNumeric,
+            sortable: true,
+            filterable: true
         },
 
         flag: {
             renderGen: renderGenFlag,
-            sortGen: sortGenText
+            sortGen: sortGenText,
+            sortable: true,
+            filterable: true
         },
 
         stars: {
             renderGen: renderGenStars,
             sortGen: sortGenNumeric,
-            filterText: true
+            filterText: true,
+            sortable: true,
+            filterable: true
         },
 
         percent: {
             renderGen: renderGenPercent,
             sortGen: sortGenNumeric,
-            filterText: true
+            filterText: true,
+            sortable: true,
+            filterable: true
         },
 
         url: {
             renderGen: renderGenURL,
             sortPreprocessor: sortHtmlPrepro,
-            filterText: true
+            filterText: true,
+            sortable: true,
+            filterable: true
         },
 
         document: {
@@ -471,12 +493,15 @@ blist.namespace.fetch('blist.data.types');
         tag: {
             renderGen: renderGenText,
             filterText: true
+//            filterable: true
         },
 
         email: {
             renderGen: renderGenEmail,
             sortGen: sortGenText,
-            filterText: true
+            filterText: true,
+            sortable: true,
+            filterable: true
         },
 
         blist_in_blist: {
@@ -485,7 +510,9 @@ blist.namespace.fetch('blist.data.types');
 
         picklist: {
             renderGen: renderGenPicklist,
-            sortPreprocessor: sortPicklistPrepro
+            sortPreprocessor: sortPicklistPrepro,
+            sortable: true
+//            filterable: true
         }
     });
 

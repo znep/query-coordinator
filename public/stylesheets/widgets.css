@@ -407,6 +407,128 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
     width: 50%;
 }
 
+/* Scrollable menus */
+
+ul.menu li a.disabled
+{
+    color: #8d8d8d;
+    text-decoration: none;
+}
+
+ul.menu li.scrollable.hidden
+{
+    display: none;
+}
+
+ul.menu li.button
+{
+    padding: 0;
+    margin: 0 1em;
+}
+
+ul.menu li.button.prev
+{
+    border-bottom: solid 1px #e0d1b8;
+}
+
+ul.menu li.button.next
+{
+    border-top: solid 1px #e0d1b8;
+}
+
+ul.menu li.button a
+{
+    background-image: none;
+    background-position: left center;
+    background-repeat: no-repeat;
+    margin: 0 -10px;
+    padding-left: 5px;
+    text-indent: -9999px;
+}
+
+ul.menu li.button .outerWrapper
+{
+    background-position: right center;
+    background-repeat: no-repeat;
+    padding-right: 5px;
+}
+
+ul.menu li.button .midWrapper
+{
+    background-position: left center;
+    background-repeat: repeat-x;
+}
+
+ul.menu li.button .innerWrapper
+{
+    background-position: left center;
+    background-repeat: no-repeat;
+    display: block;
+}
+
+ul.menu li.button.prev .innerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up.png);
+}
+
+ul.menu li.button.next .innerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down.png);
+}
+
+ul.menu li.button.prev.disabled .innerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up_disabled.png);
+}
+
+ul.menu li.button.next.disabled .innerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down_disabled.png);
+}
+
+/*
+ul.menu li.button a:hover
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_left.png);
+}
+
+ul.menu li.button a:hover .outerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_right.png);
+}
+
+ul.menu li.button a:hover .midWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_gradSlice.png);
+}
+*/
+
+ul.menu li.button.disabled a:hover
+{
+    background-image: none;
+    cursor: default;
+}
+
+ul.menu li.button.disabled a:hover .outerWrapper
+{
+    background-image: none;
+}
+
+ul.menu li.button.disabled a:hover .midWrapper
+{
+    background-image: none;
+}
+
+ul.menu.optionMenu li.button
+{
+    margin: 0 0 0 30px;
+}
+
+ul.menu.optionMenu li.button a
+{
+    margin: 0;
+}
+
 /*** END: dropdown menu ***/
 
 /*** START: fixed menus ***/

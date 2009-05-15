@@ -35,15 +35,6 @@
                   <h1>
                     <%= h(@user.displayName) %>
                   </h1>
-                  <%- if (@is_user_current) -%>
-                    <a class='first action showListBoxLink' href='#edit'>Edit</a>
-                    <a id='switchUsernameLink' class='action'
-                      href='#show_<%= @user.privacyControl == "login" ?
-                        'fullName' : 'login' %>'>
-                      Display <%= current_user.privacyControl == "login" ?
-                        'Full Name' : 'Username' %>
-                    </a>
-                  <%- end -%>
                 </div>
                 <div class='userLocation'>
                   <h5><%= h(@user.displayLocation) %></h5>
@@ -59,6 +50,17 @@
                       <%= @user.tag_display_string %>
                   </span></h5>
                 </div>
+                <%- if (@is_user_current) -%>
+                  <p class="editProfileContentActions">
+                    <a class='first action showListBoxLink' href='#edit'>Edit</a>
+                    <a id='switchUsernameLink' class='action'
+                      href='#show_<%= @user.privacyControl == "login" ?
+                        'fullName' : 'login' %>'>
+                      Display <%= current_user.privacyControl == "login" ?
+                        'Full Name' : 'Username' %>
+                    </a>
+                  </p>
+                <%- end -%>
               </div>
               <%- if (@is_user_current) -%>
                 <div class="sectionEdit formListBox">
@@ -145,7 +147,7 @@
             <div class="sectionShow">
               <p class="descriptionText"><%= @user.htmlDescription %></p>
               <%- if (@is_user_current) -%>
-                <p>
+                <p class="editContainer">
                   <a class='action showListBoxLink' href='#edit'>Edit</a>
                 </p>
               <%- end -%>
@@ -179,7 +181,7 @@
             <div class="sectionShow">
               <p class="interestsText"><%= h(@user.interests) %></p>
               <%- if (@is_user_current) -%>
-                <p>
+                <p class="editContainer">
                   <a class='action showListBoxLink' href='#edit'>Edit</a>
                 </p>
               <%- end -%>
@@ -211,33 +213,77 @@
           <h3>Links</h3>
           <div class="linksContent sectionContainer">
             <div class="sectionShow">
-              <ul class="userLinkActions clearfix">
-                <%- #TODO: Make these links real and generated from the user's data. -%>
-                <li><%= link_to(image_tag("share_delicious.png", :size => "32x32", :alt => "Delicious"), 
-                        "http://delicious.com/#{@user.login}",
-                        :title => "Delicious page for #{@user.displayName}", :rel => "external") %></li>
-                <li><%= link_to(image_tag("share_digg_guy.png", :size => "32x32", :alt => "Digg"), 
-                        "http://digg.com/users/#{@user.login}",
-                        :title => "Digg profile for #{@user.displayName}", :rel => "external") %></li>
-                <li><%= link_to(image_tag("share_logo_twitter.png", :size => "32x32", :alt => "Twitter"), 
-                        "http://www.twitter.com/#{@user.login}",
-                        :title => "Twitter page for #{@user.displayName}", :rel => "external") %></li>
+              <ul class="userLinkActions clearfix<%= (@user_links.nil? || @user_links.length < 1) ? " initialHide" : "" %>">
+                <%= render(:partial => "user_link_item", :collection => @user_links) %>
               </ul>
               <%- if (@is_user_current) -%>
-                <p>
+                <p class="editContainer">
                   <a class='action showListBoxLink' href='#edit'>Edit</a>
                 </p>
               <%- end -%>
             </div>
             <%- if (@is_user_current) -%>
-              <div class="sectionEdit formListBox">
+              <div class="sectionEdit formListBox solid">
                 <div class="formListBoxTL"><div class="formListBoxTR">
                 <div class="formListBoxBL"><div class="formListBoxBR">
-                  <% form_tag(profile_url(@user.id), :class => "clearfix") do %>
-                    <p>Soon, you'll be able to edit your links.</p>
-                    <p class='errorMessage'></p>
-                  <% end %>
-                   <p class="formListBoxClose"><a href="#close">Close</a></p>
+                  <div class="updateLinksContainer int">
+                    <p>Share your personal or organizational website, blog, twitter or favorite social network profiles.</p>
+                    <div class="linksTableContainer<%= (@user_links.nil? || @user_links.length < 1) ? " initialHide" : "" %>">
+                      <table cellspacing="0" class="gridList">
+                        <colgroup>
+                          <col class="edit_handle first" />
+                          <col class="edit_name" />
+                          <col class="edit_label" />
+                          <col class="edit_url" />
+                          <col class="edit_action last" />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th class="edit_handle"><span>remove</span></th>
+                            <th class="edit_name">Type / Name</th>
+                            <th class="edit_label">Label</th>
+                            <th class="edit_url">URL</th>
+                            <th class="edit_action">&nbsp;</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <%= render(:partial => "user_link_row", :collection => @user_links) %>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="editLinksContainer">
+                      <% form_tag(create_link_profile_url(@user.id), :method => :post, :class => "clearfix") do %>
+                        <table cellspacing="0">
+                          <colgroup>
+                            <col class="edit_handle" />
+                            <col class="edit_name" />
+                            <col class="edit_label" />
+                            <col class="edit_url" />
+                            <col class="edit_action" />
+                          </colgroup>
+                          <tr>
+                            <td class="edit_handle"><span>Add</span></td>
+                            <td class="edit_name">
+                              <%= select_tag("link[linkType]",
+                                links_select_options) %>
+                            </td>
+                            <td class="edit_label">
+                              <%= text_field_tag("link[label]", "", 
+                                    :class => "textPrompt prompt", :title => "Add a personal label") %>
+                            </td>
+                            <td class="edit_url">
+                              <%= text_field_tag("link[url]", "",
+                                    :class => "textPrompt prompt", :title => "Paste the full URL") %>
+                            </td>
+                            <td class="edit_action">
+                              <%= image_submit_tag("button_add.png") %>
+                            </td>
+                          </tr>
+                        </table>
+                      <% end %>
+                    </div>
+                    <p class="formListBoxClose"><a href="#close">Close</a></p>
+                   </div>
                 </div></div>
                 </div></div>
               </div>

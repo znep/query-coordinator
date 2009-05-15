@@ -44,7 +44,11 @@ ActionController::Routing::Routes.draw do |map|
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
-  map.resources :profile
+  map.resources :profile, :member => { 
+    :create_link => :post, 
+    :delete_link => :delete,
+    :update_link => :put 
+  }
 
   map.import '/import', :controller => 'imports', :action => 'new' 
   map.import_redirect '/import/redirect', :controller => 'imports', :action => 'redirect'

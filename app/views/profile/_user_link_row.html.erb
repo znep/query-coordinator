@@ -1,0 +1,24 @@
+<%- link = user_link_row -%>
+<tr id="link_row_<%= link.id %>">
+  <td class="edit_handle">
+    <%= link_to("delete", delete_link_profile_url(current_user.id, :link_id => link.id)) %>
+  </td>
+  <td class="edit_type">
+    <p>
+      <%- link_type = UserLink.link_types.find { |link_item| link_item[0] == link.linkType.upcase} -%>
+      <%= image_tag("user_link_icons/#{link.linkType}.png", :size => "32x32", :alt => link_type[1]) %>
+      <span class="<%= link_type[0] %>"><%= link_type[1] %></span>
+    </p>
+  </td>
+  <td class="edit_label">
+    <p><%= h(link.label) %></p>
+  </td>
+  <td class="edit_url">
+    <p><%= h(link.url) %></p>
+  </td>
+  <td class="edit_action">
+    <p class="smallButton">
+      <%= link_to("<span>edit</span>", update_link_profile_url(current_user.id, :link_id => link.id)) %>
+    </p>
+  </td>
+</tr>

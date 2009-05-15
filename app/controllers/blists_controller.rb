@@ -29,8 +29,9 @@ class BlistsController < SwfController
       begin
         @parent_view = @view = View.find(params[:id])
       rescue CoreServerError => e
-        if e.error_code == 'authentication_required'
-          return require_user
+        if e.error_code == 'authentication_required' ||
+          e.error_code == 'permission_denied'
+          return require_user(true)
         elsif e.error_code == 'not_found'
           flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' cannot be found, or has been deleted.'
@@ -42,7 +43,7 @@ class BlistsController < SwfController
       end
 
       if !@view.can_read()
-        return require_user
+        return require_user(true)
       end
 
       # See if it matches the authoritative URL; if not, redirect

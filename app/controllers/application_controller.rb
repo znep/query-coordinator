@@ -63,8 +63,8 @@ private
     UserSession.controller = self
   end
 
-  def require_user
-    unless current_user_session
+  def require_user(force_login = false)
+    unless current_user_session && !force_login
       store_location
       if request.method == :post
         session[:return_post_params] = params

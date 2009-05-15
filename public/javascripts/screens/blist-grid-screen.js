@@ -425,6 +425,7 @@ $(function ()
             .blistModel()
             .options({filterMinChars: 0, progressiveLoading: true})
             .ajax({url: '/views/' + blistGridNS.viewId + '/rows.json',
+                data: {accessType: 'WEBSITE'},
                 dataType: 'json'});
     }
 

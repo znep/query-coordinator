@@ -78,7 +78,7 @@ class Model
         raise "Cannot set non-serializeable attribute"
       end
       if args.length != 1
-        raise ArgumentError.new "Wrong number of arguments: #{args.length} for 1"
+        raise ArgumentError.new("Wrong number of arguments: #{args.length} for 1")
       else
         define_attr_writer(assign_key)
         send("#{assign_key}=", args[0])

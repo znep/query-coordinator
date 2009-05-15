@@ -313,7 +313,8 @@ blist.namespace.fetch('blist.data');
 
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
-                    { data: { ids: rowsToLoad } });
+                    { data: $.extend({}, supplementalAjaxOptions.data,
+                        { ids: rowsToLoad }) });
             doLoad(this, onSupplementalLoad, ajaxOptions);
         };
 
@@ -772,9 +773,10 @@ blist.namespace.fetch('blist.data');
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
+                        $.extend({}, supplementalAjaxOptions.data,
                         {   method: 'index',
                             include_ids_after: curOptions.pageSize
-                        }),
+                        })),
                     type: 'POST',
                     contentType: 'application/json',
                     data: $.json.serialize(tempView)

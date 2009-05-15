@@ -120,6 +120,8 @@ private
     
     if (request.host.match('gov'))
       I18n.locale = 'gov'
+    elsif (request.host.match('socrata.com'))
+      I18n.locale = 'gov'
     else
       # Force the locale back to blist if we're not datagov
       I18n.locale = 'blist'

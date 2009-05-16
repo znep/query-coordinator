@@ -110,6 +110,7 @@ Rails::Initializer.run do |config|
   # These gems are required, but should be available in the vendor/gems directory.
   config.gem 'ruby-hmac', :lib => 'hmac-sha1'
   config.gem 'multipart-post', :lib => 'net/http/post/multipart'
+  config.gem 'googlecharts', :lib => 'gchart'
 end
 
 multiuser_config = YAML.load(IO.read(RAILS_ROOT + "/config/multiuser.yml") )

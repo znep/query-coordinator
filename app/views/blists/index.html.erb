@@ -27,12 +27,14 @@
             </form>
 
             <ul class="headerActions">
-              <li><a href='<%= blist_href_new_blist %>'
-                class="add_new" title="Create a new <%= t(:blist_name) %>.">Design</a></li>
+              <li><a href='<%= blist_href_new_blist %>' class="add_new"
+                title="Create a new <%= t(:blist_name) %> from scratch">
+                Design a <%= t(:blist_name).capitalize %>
+              </a></li>
               <li>
-                <%= link_to("Upload Data", {:controller => "imports", :action => "new"}, 
-                    :class => "import", 
-                    :title => "Upload an XLS, CSV or other data file and we'll convert it into a #{t(:blist_name)}.") %>
+                <%= link_to("Upload Data", {:controller => "imports", :action => "new"},
+                    :class => "import",
+                    :title => "Upload a CSV or other data file and we'll convert it into a #{t(:blist_name)}.") %>
               </li>
             </ul>
 

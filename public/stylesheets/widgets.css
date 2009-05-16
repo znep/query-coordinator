@@ -62,6 +62,34 @@
 }
 /*** END: action buttons ***/
 
+/*** START: small buttons ***/
+
+.smallButton
+{
+    background: url(/stylesheets/images/common/button_ends_small_sprite.png) no-repeat;
+    float: left;
+    height: 19px;
+    line-height: 19px;
+    padding: 0 0 0 9px;
+}
+.smallButton a
+{
+    background: url(/stylesheets/images/common/button_ends_small_sprite.png) right -19px no-repeat;
+    color: #333;
+    display: block;
+    font-size: 10px;
+    height: 19px;
+    padding-right: 9px;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+.smallButton span
+{
+    background-color: #dfd4b8;
+    display: block;
+}
+
+/*** END: small buttons ***/
 
 /*** START: dropdown button ***/
 /*
@@ -405,6 +433,128 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
     float: right;
     height: 8px;
     width: 50%;
+}
+
+/* Scrollable menus */
+
+ul.menu li a.disabled
+{
+    color: #8d8d8d;
+    text-decoration: none;
+}
+
+ul.menu li.scrollable.hidden
+{
+    display: none;
+}
+
+ul.menu li.button
+{
+    padding: 0;
+    margin: 0 1em;
+}
+
+ul.menu li.button.prev
+{
+    border-bottom: solid 1px #e0d1b8;
+}
+
+ul.menu li.button.next
+{
+    border-top: solid 1px #e0d1b8;
+}
+
+ul.menu li.button a
+{
+    background-image: none;
+    background-position: left center;
+    background-repeat: no-repeat;
+    margin: 0 -10px;
+    padding-left: 5px;
+    text-indent: -9999px;
+}
+
+ul.menu li.button .outerWrapper
+{
+    background-position: right center;
+    background-repeat: no-repeat;
+    padding-right: 5px;
+}
+
+ul.menu li.button .midWrapper
+{
+    background-position: left center;
+    background-repeat: repeat-x;
+}
+
+ul.menu li.button .innerWrapper
+{
+    background-position: left center;
+    background-repeat: no-repeat;
+    display: block;
+}
+
+ul.menu li.button.prev .innerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up.png);
+}
+
+ul.menu li.button.next .innerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down.png);
+}
+
+ul.menu li.button.prev.disabled .innerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up_disabled.png);
+}
+
+ul.menu li.button.next.disabled .innerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down_disabled.png);
+}
+
+/*
+ul.menu li.button a:hover
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_left.png);
+}
+
+ul.menu li.button a:hover .outerWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_right.png);
+}
+
+ul.menu li.button a:hover .midWrapper
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/click_gradSlice.png);
+}
+*/
+
+ul.menu li.button.disabled a:hover
+{
+    background-image: none;
+    cursor: default;
+}
+
+ul.menu li.button.disabled a:hover .outerWrapper
+{
+    background-image: none;
+}
+
+ul.menu li.button.disabled a:hover .midWrapper
+{
+    background-image: none;
+}
+
+ul.menu.optionMenu li.button
+{
+    margin: 0 0 0 30px;
+}
+
+ul.menu.optionMenu li.button a
+{
+    margin: 0;
 }
 
 /*** END: dropdown menu ***/
@@ -905,10 +1055,15 @@ table.gridList tr.filteredOut
     background: #ffedcc url(/stylesheets/images/info_pane/background_expanded_list.png) -5px 0 repeat-y;
     position: relative;
 }
+.formListBox.solid { background-image: none; }
 .formListBoxTL { background: url(/stylesheets/images/content/section_top_left.png) left top no-repeat; }
+.formListBox.solid .formListBoxTL { background: url(/stylesheets/images/content/section_solid_top_left.png) left top no-repeat; }
 .formListBoxTR { background: url(/stylesheets/images/content/section_top_right.png) right top no-repeat; }
 .formListBoxBL { background: url(/stylesheets/images/content/section_bottom_left.png) left bottom no-repeat; }
+.formListBox.solid .formListBoxBL { background: url(/stylesheets/images/content/section_solid_bottom_left.png) left bottom no-repeat; }
 .formListBoxBR { background: url(/stylesheets/images/content/section_bottom_right.png) right bottom no-repeat; }
+
+.formListBox .int { padding: 1em; }
 
 .formListBox form input[type="text"], .formListBox form input[type="password"]
 {

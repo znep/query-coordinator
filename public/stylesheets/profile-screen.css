@@ -40,20 +40,32 @@
 
 #profile .profileContent {
     margin-left: 9em;
+    min-height: 0;
+    position: relative;
 }
 
+#profile .userName, #profile .userLocation { display: inline; }
 #profile .userName h1
 {
     display: inline;
     margin-bottom: 0;
-    margin-right: 1.5em;
+    margin-right: .5em;
 }
 
-#profile .userName a.first
+#profile .editProfileContentActions
+{
+    position: absolute;
+    right: 0;
+    top: 1.6em;
+}
+
+#profile .editProfileContentActions a.action.first
 {
     border-right: solid 1px #333333;
     padding-right: 1em;
 }
+
+
 
 
 #profile .descriptionContent, 
@@ -63,16 +75,27 @@
     border-top: dotted 1px #666666;
     margin-bottom: 3em;
 }
-#profile .descriptionContent .sectionShow p, 
-#profile .interestsContent .sectionShow p
+
+#profile .sectionShow
+{
+    min-height: 0;
+    position: relative;
+}
+
+#profile .sectionShow p
 {
     display: block;
     font-size: 1.2em;
     padding: 0.5em 0;
 }
 
-#profile .descriptionContent .sectionShow a.action, 
-#profile .interestsContent .sectionShow a.action
+#profile .editContainer
+{
+    position: absolute;
+    right: 0;
+    top: -1.9em;
+}
+#profile .sectionShow a.action
 {
     padding: 0;
     font-size: .833em; /* 10px */
@@ -84,12 +107,131 @@
 }
 #profile .sectionEdit dl { float: left; }
 
-#profile .linksContent ul.userLinkActions { margin: 1em 0; }
+#profile .linksContent ul.userLinkActions { padding: 1em 0; }
 #profile .linksContent ul.userLinkActions li
 {
     float: left;
     margin-right: 1em;
 }
+
+
+/*** START: form list links edit table ***/
+.linksContent ul.userLinkActions.initialHide,
+.linksTableContainer.initialHide { display: none; }
+
+
+.updateLinksContainer table
+{
+    table-layout: fixed;
+    width: 100%;
+}
+
+.updateLinksContainer table .edit_handle { width: 2.2em; }
+.updateLinksContainer table .edit_name { width: 34%; }
+.updateLinksContainer table .edit_label { width: 33%; }
+.updateLinksContainer table .edit_url { width: 33%; }
+.updateLinksContainer table .edit_action { width: 9em; }
+
+.linksTableContainer { margin: 1em 0; }
+.linksTableContainer .gridList thead th {
+    background-color: #e0d1b8;
+    border-right: 1px solid #e2e2e2;
+    color: #666;
+    font-size: 1.2em;
+}
+
+.linksTableContainer table.gridList td > * { height: 32px; line-height: 32px; }
+.linksTableContainer table th.edit_handle span
+{
+    background: url(/stylesheets/images/profile/profile_links_delete_header.png) no-repeat;
+    display: block;
+    height: 10px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 10px;
+}
+.linksTableContainer table td.edit_handle a
+{
+    background: url(/stylesheets/images/profile/profile_links_delete.png) center center no-repeat;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    margin: 0;
+    padding: 0;
+    text-indent: -9999px;
+    width: 22px;
+}
+.linksTableContainer table td.edit_type p img { vertical-align: middle; }
+
+.linksTableContainer table td.edit_action p.smallButton
+{
+    height: 19px;
+    line-height: 19px;
+    margin: 6px 0;
+    padding: 0 0 0 9px;
+}
+
+.editLinksContainer
+{
+    border-top: 1px solid #e1d3b6;
+    margin-top: 1em;
+    padding-top: 1em;
+}
+
+.updateLinksContainer table.gridList td.linkFormContainer > form
+{ 
+    font-size: 1em;
+    height: auto;
+    line-height: 1.3em;
+    margin: 0;
+    padding: 0;
+}
+
+.updateLinksContainer form table td { vertical-align: middle; }
+
+.updateLinksContainer form table td.edit_handle span
+{
+    background: url(/stylesheets/images/profile/profile_links_add.png) no-repeat;
+    display: block;
+    height: 14px;
+    line-height: 500px;
+    overflow: hidden;
+    width: 15px;
+}
+.updateLinksContainer table td input[type="text"] 
+{
+    font-size: 1.2em;
+    width: 90%; 
+}
+.updateLinksContainer table option { font-size: 1.2em; }
+.updateLinksContainer table.gridList table td { height: 3.1em; }
+.updateLinksContainer table.gridList table td > * 
+{ 
+    font-size: 1.2em;
+    height: auto;
+    line-height: 1.3em;
+    margin: 0;
+    padding: 0;
+}
+.updateLinksContainer table.gridList table td > select { font-size: 1.1em; }
+.updateLinksContainer table.gridList table td > input[type="text"]
+{
+    padding: 0.1em 0.2em;
+}
+.updateLinksContainer table.gridList table td > input[type="image"] { 
+    height: 21px;
+    line-height: 21px;
+}
+
+/*** END: form list links edit table ***/
+
+
+
+
+
+
+
+
 
 #profile .publicBlists
 {

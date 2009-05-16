@@ -41,6 +41,52 @@ blist.profile.updateInfo = function(responseData, $form)
     }
 };
 
+blist.profile.updateLinkSubmit = function(event)
+{
+    event.preventDefault();
+    var $form = $(this);
+    var requestData = $.param($form.find(":input"));
+    var link_id = $.urlParam("link_id", $form.attr("action"));
+    $.ajax({
+        url: $form.attr("action"),
+        type: "PUT",
+        data: requestData,
+        success: function(data) { profileNS.updateLinkSuccess(data, link_id); }
+    });
+}
+
+blist.profile.updateLinkSuccess = function(data, link_id)
+{
+    var $data = $(data);
+    var $row = $data.find("tr");
+    var $li = $data.find("li");
+    
+    var $currentLinkRow = $(".linksTableContainer tr#link_row_" + link_id);
+    if ($currentLinkRow.length > 0)
+    {
+        $currentLinkRow.replaceWith($row);
+    }
+    else
+    {
+        $(".linksTableContainer")
+            .removeClass("initialHide")
+            .find("table tbody")
+                .append($row);
+    }
+    
+    $currentLinkItem = $(".linksContent .userLinkActions li#link_list_item_" + link_id);
+    if ($currentLinkItem.length > 0)
+    {
+        $currentLinkItem.replaceWith($li);
+    }
+    else
+    {
+        $(".linksContent .userLinkActions").removeClass("initialHide").append($li);
+    }
+    
+    $(".updateLinksContainer form").each(function(f) { this.reset(); });
+}
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -106,7 +152,7 @@ $(function ()
     $(".descriptionContent form").submit(function(event)
     {
         event.preventDefault();
-        $form = $(this);
+        var $form = $(this);
         var requestData = $.param($form.find(":input"));
         $.ajax({
             url: $form.attr("action"),
@@ -135,7 +181,7 @@ $(function ()
     $(".interestsContent form").submit(function(event)
     {
         event.preventDefault();
-        $form = $(this);
+        var $form = $(this);
         var requestData = $.param($form.find(":input"));
         $.ajax({
             url: $form.attr("action"),
@@ -160,6 +206,69 @@ $(function ()
             }
         });
     });
+    
+    // ADD
+    $(".editLinksContainer form").submit(function(event)
+    {
+        event.preventDefault();
+        var $form = $(this);
+        var requestData = $.param($form.find(":input"));
+        $.ajax({
+            url: $form.attr("action"),
+            type: "POST",
+            data: requestData,
+            success: function(data) { profileNS.updateLinkSuccess(data, 0); }
+        });
+    });
+    
+    
+    // DELETE
+    $(".linksTableContainer td.edit_handle a").live("click", function(event)
+    {
+        event.preventDefault();
+        if (confirm("Are you sure you want to delete this link?"))
+        {
+            var $link = $(this);
+            $.ajax({
+                url: $link.attr("href"),
+                type: "DELETE",
+                dataType: "json",
+                success: function(data) { 
+                    $("#link_row_" + data.link_id).remove();
+                    $("#link_list_item_" + data.link_id).remove();
+                }
+            });
+        }
+    });
+    
+    // EDIT
+    $(".linksTableContainer td.edit_action a").live("click", function(event)
+    {
+        event.preventDefault();
+        var $link = $(this);
+        var $row = $link.closest("tr");
+        var $cell = $("<td colspan='5' class='linkFormContainer'>");
+        
+        var $formTable = $(".editLinksContainer form table").clone();
+        var $formAuth = $(".editLinksContainer form input[type='hidden']").clone();
+
+        var $form = $("<form action=\"" + $link.attr("href") + "\" method=\"post\" class=\"clearfix\"></form>");
+        $form.append($formAuth);
+
+        $formTable
+            .find("select").val($row.find("td.edit_type p span").text()).end()
+            .find(".edit_label input").val($row.find("td.edit_label p").text())
+                .removeClass("textPrompt prompt").end()
+            .find(".edit_url input").val($row.find("td.edit_url p").text())
+                .removeClass("textPrompt prompt").end()
+            .find(".edit_action input").attr("src", "/images/button_update.png");
+        $form.append($formTable);
+        $form.submit( profileNS.updateLinkSubmit );
+        
+        $row.empty().append($cell);
+        $cell.append($form);
+    });
+    
 
     $('#profile .publicBlists table.gridList').combinationList({
         hoverOnly: true,

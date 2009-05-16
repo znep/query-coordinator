@@ -17,15 +17,16 @@
     var nextTableID = 1;
 
     // HTML escaping utility
-    var escape = function(text)
+    var htmlEscape = function(text)
     {
         return text.replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     };
 
     // Make a DOM element into a table
     var makeTable = function(options)
     {
+        var model;
 
         /*** MISC. VARIABLES AND INITIALIZATION ***/
 
@@ -73,7 +74,8 @@
             $('.sort.active', header)
                 .removeClass('sort-asc').addClass('sort-desc')
                 .attr('title', 'Sort ascending')
-                .removeClass('active');
+                .removeClass('active')
+                .parent().removeClass('sorted');
             if (sortBy >= 0)
             {
                 var col = columns[sortBy];
@@ -84,7 +86,24 @@
                 $('.sort', col.dom)
                     .removeClass(oldClass).addClass(newClass)
                     .attr('title', newTitle)
-                    .addClass('active');
+                    .addClass('active')
+                    .parent().addClass('sorted');
+            }
+        };
+
+        var configureFilterHeaders = function()
+        {
+            $('.filter.active', header).removeClass('active');
+            var colFilters = model.meta().columnFilters;
+            if (colFilters != null)
+            {
+                $.each(columns, function (i, c)
+                {
+                    if (colFilters[c.dataIndex] != null)
+                    {
+                        $('.filter', c.dom).addClass('active');
+                    }
+                });
             }
         };
 
@@ -692,8 +711,9 @@
         /**
          * Initialize based on current model metadata.
          */
-        var initMeta = function(model)
+        var initMeta = function(newModel)
         {
+            model = newModel;
             // Create an object for each column
             columns = [];
             variableColumns = [];
@@ -896,8 +916,7 @@
             {
                 var col = columns[i];
                 var cls = col.cls ? ' blist-th-' + col.cls : '';
-                var colName = col.name == null ? '' :
-                    escape(col.name).replace(/"/g, '&quot;');
+                var colName = col.name == null ? '' : htmlEscape(col.name);
                 html.push(
                     '<div class="blist-th ',
                     !i ? 'blist-th-first ' : '',
@@ -911,8 +930,14 @@
                     '<span class="blist-th-name">',
                     colName,
                     '</span>');
-                if (blist.data.types[col.type].sortGen != null ||
-                    blist.data.types[col.type].sortPreprocessor != null)
+                if (blist.data.types[col.type].filterable)
+                {
+                    html.push('<div class="filter"',
+                            options.generateHeights ? ' style="height: ' +
+                            rowOffset + 'px"' : '',
+                            '></div>');
+                }
+                if (blist.data.types[col.type].sortable)
                 {
                     html.push(
                             '<div class="sort sort-desc" title="Sort ascending"',
@@ -949,11 +974,11 @@
                 columns[index].dom = this;
 
                 $(this)
+                    .data('column', columns[index])
                     .click(function()
                     {
                         $(this).removeClass('hover');
-                        if (blist.data.types[columns[index].type].sortGen != null ||
-                            blist.data.types[columns[index].type].sortPreprocessor != null)
+                        if (blist.data.types[columns[index].type].sortable)
                         {
                             sort(index);
                         }
@@ -969,8 +994,9 @@
             });
 
 
-            // Render sort header
+            // Render sort & filter headers
             configureSortHeader();
+            configureFilterHeaders();
 
             var handleResize = function(event, ui)
             {
@@ -1058,8 +1084,27 @@
                         }
                 });
             }
-        }
+        };
 
+        var updateHeader = function (model)
+        {
+            // Set up data for existing sort
+            if (model.meta().sort)
+            {
+                var s = model.meta().sort;
+                sortDescending = !s.ascending;
+                $.each(columns, function (i, c)
+                {
+                    if (s.column.dataIndex == c.dataIndex)
+                    {
+                        sortBy = i;
+                        return false;
+                    }
+                });
+            }
+            configureSortHeader();
+            configureFilterHeaders();
+        };
 
         /*** ROWS ***/
 
@@ -1214,6 +1259,10 @@
             initMeta(model);
             renderHeader();
         });
+        $this.bind('header_change', function(event, model)
+        {
+            updateHeader(model);
+        });
         $this.bind('before_load', function() {
             outside.addClass('blist-loading');
         });
@@ -1228,7 +1277,7 @@
         });
 
         // Install the model
-        var model = $this.blistModel(options.model);
+        $this.blistModel(options.model);
 
 
         /*** STARTUP ***/

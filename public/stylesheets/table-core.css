@@ -154,6 +154,12 @@ div.blist-table-expander .blist-td
     display: block;
 }
 
+.blist-th .filter
+{
+    display: none;
+    position: absolute;
+}
+
 img.blist-table-option-icon
 {
     width: 16px;

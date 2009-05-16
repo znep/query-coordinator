@@ -32,6 +32,7 @@ class ProfileController < ApplicationController
         !v.is_public? && v.flag?('default')}
       @private_filters = @all_owned_views.find_all {|v|
         !v.is_public? && !v.flag?('default')}
+      @user_links = UserLink.find(current_user.id)
     end
 
   end
@@ -60,6 +61,33 @@ class ProfileController < ApplicationController
       format.html { redirect_to(profile_url(current_user.id)) }
       format.data   { render :json => {:error => error_msg,
         :user => current_user}.to_json }
+    end
+  end
+  
+  def create_link
+    @user_link = UserLink.create(params[:id], params[:link])
+    
+    respond_to do |format|
+      format.html { redirect_to(profile_url(current_user.id)) }
+      format.data { render }
+    end
+  end
+  
+  def delete_link
+    UserLink.delete(params[:id], params[:link_id])
+    
+    respond_to do |format|
+      format.html { redirect_to(profile_url(current_user.id)) }
+      format.data { render :json => {:link_id => params[:link_id]} }
+    end
+  end
+  
+  def update_link
+    @user_link = UserLink.update(params[:id], params[:link_id], params[:link])
+    
+    respond_to do |format|
+      format.html { redirect_to(profile_url(current_user.id)) }
+      format.data { render :action => "create_link" }
     end
   end
 end

@@ -50,10 +50,11 @@ class DiscoversController < ApplicationController
     opts = Hash.new
     opts.update({:page => page, :limit => PAGE_SIZE})
     tag_opts = Hash.new
-    tag_opts.update({ :method => "usersTags", :limit => 5 })
+    tag_opts.update({ :method => "viewsTags", :limit => 5 })
     
     if (type == "POPULAR")
       opts.update({:top100 => true})
+      tag_opts.update({:top100 => true})
     elsif (type == "SEARCH")
       opts.update({:full => search_term })
     end

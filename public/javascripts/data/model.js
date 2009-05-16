@@ -504,7 +504,9 @@ blist.namespace.fetch('blist.data');
 
                 // Apply sorting if so configured
                 if (sortConfigured)
+                {
                     doSort();
+                }
 
                 // Apply filtering and grouping (filtering calls grouping so we
                 // never need to call both)
@@ -1007,8 +1009,131 @@ blist.namespace.fetch('blist.data');
             }
         }
 
-        // Generate group headers based on the current grouping configuration.  Does not fire events.  Note that
-        // grouping is not currently supported in progressive rendering mode.
+        /* Clear out the filter for a particular column.  Takes a column obj
+         *  or a column index.
+         * This clears both the short version stored on the meta obj, and
+         * updates the meta.view.viewFilters that is sent to the server. */
+        var clearColumnFilterData = function(filterCol)
+        {
+            // Turn index into obj
+            if (typeof filterCol != 'object')
+            {
+                filterCol = meta.columns[filterCol];
+            }
+
+            if (meta.columnFilters != null)
+            {
+                var cf = meta.columnFilters[filterCol.dataIndex];
+                // First check if this is the only viewFilter; if so, clear it
+                if (meta.view.viewFilters == cf.viewFilter)
+                {
+                    meta.view.viewFilters = null;
+                }
+                else
+                {
+                    // Else it is a child of the top-level filter; splice it out
+                    meta.view.viewFilters.children.splice(
+                            $.inArray(cf.viewFilter,
+                                meta.view.viewFilters.children), 1);
+                    // If the top-level filter is empty, get rid of it
+                    if (meta.view.viewFilters.children.length < 1)
+                    {
+                        meta.view.viewFilters = null;
+                    }
+                }
+                meta.columnFilters[filterCol.dataIndex] = null;
+            }
+        };
+
+        /* Filter a single column (column obj or index) on a value.
+         *  These filters are additive (all ANDed at the top level).
+         *  Currently it only supports one filter per column.
+         */
+        this.filterColumn = function(filterCol, filterVal)
+        {
+            // Turn index into obj
+            if (typeof filterCol != 'object')
+            {
+                filterCol = meta.columns[filterCol];
+            }
+
+            if (meta.columnFilters == null)
+            {
+                meta.columnFilters = {};
+            }
+
+            // If there is already a filter for this column, clear it out
+            if (meta.columnFilters[filterCol.dataIndex])
+            {
+                clearColumnFilterData(filterCol);
+            }
+
+            // Update the view in-memory, so we can always serialize it to
+            //  the server and get the correct filter
+            var filterItem = { type: 'operator', value: 'EQUALS', children: [
+                { type: 'column', columnId: filterCol.id  },
+                { type: 'literal', value: filterVal } ] };
+                //{ type: 'subColumnType', value: },
+            if (meta.view.viewFilters == null)
+            {
+                // Make it the top-level filter
+                meta.view.viewFilters = filterItem;
+            }
+            else if (meta.view.viewFilters.type == 'operator' &&
+                meta.view.viewFilters.value == 'AND')
+            {
+                // Add it to the top-level filter
+                if (!meta.view.viewFilters.children)
+                {
+                    meta.view.viewFilters.children = [];
+                }
+                meta.view.viewFilters.children.push(filterItem);
+            }
+            else
+            {
+                // Else push the top-level filter down one level, and
+                //  add this to the new top-level filter
+                var topF = { type: 'operator', value: 'AND', children: [
+                    meta.view.viewFilters, filterItem
+                ] };
+                meta.view.viewFilters = topF;
+            }
+
+            // Store the filter in an easier format to deal with elsewhere;
+            //  also keep a pointer back to the viewFilter
+            meta.columnFilters[filterCol.dataIndex] =
+                {column: filterCol, value: filterVal, viewFilter: filterItem};
+
+            // Reload the view from the server; eventually we should do this
+            //  locally if not in progressiveLoading mode
+            getTempView();
+        };
+
+        /* Clear out the filtr for a particular column */
+        this.clearColumnFilter = function(filterCol)
+        {
+            // Turn index into obj
+            if (typeof filterCol != 'object')
+            {
+                filterCol = meta.columns[filterCol];
+            }
+
+            if (meta.columnFilters == null)
+            {
+                meta.columnFilters = {};
+            }
+
+            if (meta.columnFilters[filterCol.dataIndex])
+            {
+                clearColumnFilterData(filterCol);
+            }
+
+            getTempView();
+        };
+
+        // Generate group headers based on the current grouping configuration.
+        // Does not fire events.  Note that grouping is not currently supported
+        // in progressive rendering mode.
         var doGroup = function() {
             removeSpecialRows();
             if (!groupFn || !orderCol)

@@ -63,8 +63,8 @@ private
     UserSession.controller = self
   end
 
-  def require_user
-    unless current_user_session
+  def require_user(force_login = false)
+    unless current_user_session && !force_login
       store_location
       if request.method == :post
         session[:return_post_params] = params
@@ -119,6 +119,8 @@ private
     logger.info "Request domain: #{request.host}, Current locale: #{I18n.locale}"
     
     if (request.host.match('gov'))
+      I18n.locale = 'gov'
+    elsif (request.host.match('socrata.com'))
       I18n.locale = 'gov'
     else
       # Force the locale back to blist if we're not datagov

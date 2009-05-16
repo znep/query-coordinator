@@ -85,10 +85,11 @@ body#lensBody
 #lensContainer .tabList li.main a
 {
     height: 20px;
+    min-width: 6em;
+    max-width: 20em;
     overflow: hidden;
     padding: 6px 0 0;
     text-align: center;
-    width: 10em;
 }
 
 #lensContainer .tabList li.main.active
@@ -163,10 +164,11 @@ body#lensBody
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-position: 0 -531px;
     background-repeat: no-repeat;
+    min-width: 5em;
+    max-width: 15em;
     padding-left: 20px;
     overflow: hidden;
     text-align: left;
-    width: 6em;
 }
 
 /* Header bar & Button styles */
@@ -381,119 +383,6 @@ body#lensBody
     height: 30em;
 }
 
-/* Scrollable menus */
-
-#mainMenu.menu li a.disabled
-{
-    color: #8d8d8d;
-    text-decoration: none;
-}
-
-#mainMenu.menu li.scrollable.hidden
-{
-    display: none;
-}
-
-#mainMenu.menu li.button
-{
-    padding: 0;
-    margin: 0 1em;
-}
-
-#mainMenu.menu li.button.prev
-{
-    border-bottom: solid 1px #e0d1b8;
-}
-
-#mainMenu.menu li.button.next
-{
-    border-top: solid 1px #e0d1b8;
-}
-
-#mainMenu.menu li.button a
-{
-    background-image: none;
-    background-position: left center;
-    background-repeat: no-repeat;
-    margin: 0 -10px;
-    padding-left: 5px;
-    text-indent: -9999px;
-}
-
-#mainMenu.menu li.button .outerWrapper
-{
-    background-position: right center;
-    background-repeat: no-repeat;
-    padding-right: 5px;
-}
-
-#mainMenu.menu li.button .midWrapper
-{
-    background-position: left center;
-    background-repeat: repeat-x;
-}
-
-#mainMenu.menu li.button .innerWrapper
-{
-    background-position: left center;
-    background-repeat: no-repeat;
-    display: block;
-}
-
-#mainMenu.menu li.button.prev .innerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up.png);
-}
-
-#mainMenu.menu li.button.next .innerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down.png);
-}
-
-#mainMenu.menu li.button.prev.disabled .innerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up_disabled.png);
-}
-
-#mainMenu.menu li.button.next.disabled .innerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down_disabled.png);
-}
-
-/*
-#mainMenu.menu li.button a:hover
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_left.png);
-}
-
-#mainMenu.menu li.button a:hover .outerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_right.png);
-}
-
-#mainMenu.menu li.button a:hover .midWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_gradSlice.png);
-}
-*/
-
-#mainMenu.menu li.button.disabled a:hover
-{
-    background-image: none;
-    cursor: default;
-}
-
-#mainMenu.menu li.button.disabled a:hover .outerWrapper
-{
-    background-image: none;
-}
-
-#mainMenu.menu li.button.disabled a:hover .midWrapper
-{
-    background-image: none;
-}
-
-
 #mainMenu dl > dd > ul > li > a,
 #mainMenu dl > dd > ul > li > ul > li > a
 {
@@ -509,7 +398,7 @@ body#lensBody
 
 #mainMenu li.blist .export > a
 {
-    background-position: 5px -25px;
+    background-position: 5px -117px;
 }
 
 #mainMenu li.blist .email > a
@@ -534,7 +423,7 @@ body#lensBody
 
 #mainMenu li.blist .import > a
 {
-    background-position: 5px -117px;
+    background-position: 5px -25px;
 }
 
 #mainMenu li.blist .findTemplate > a

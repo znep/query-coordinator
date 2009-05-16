@@ -309,6 +309,12 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapp
     background-color: #cacaca;
 }
 
+ul.menu li.button.prev,
+ul.menu li.button.next
+{
+    border-color: #cacaca;
+}
+
 
 .fixedMenu { background-color: #ececec; }
 .fixedMenu .outerWrapper
@@ -784,4 +790,13 @@ table.gridList tr.child.hover.selected td.description > *
 {
     text-indent: 40px;
 }
-/*** END: impor-screen ***/
+/*** END: import-screen ***/
+
+
+/*** START: table-blist-grid ***/
+.columnHeaderMenu .autofilter li.clearFilter
+{
+    border-bottom-color: #cacaca;
+}
+
+/*** END: table-blist-grid ***/

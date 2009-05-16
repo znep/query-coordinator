@@ -106,12 +106,16 @@
             <%- end -%>
 
             <%# Export/access options %>
+            <%- if !@view.nil? -%>
             <li class='separator'>
-              <a id='apiLink' class='linkIcon' href='#API'>API</a>
+              <a id='apiLink' class='linkIcon'
+                href='/views/<%= @view.id %>/rows.xml?accessType=API'>API</a>
             </li>
             <li>
-              <a id='rssLink' class='linkIcon' href='#RSS'>RSS</a>
+              <a id='rssLink' class='linkIcon'
+                href='/views/<%= @view.id %>/rows.rss?accessType=WEBSITE'>RSS</a>
             </li>
+            <%- end -%>
 
             <%# Display menu %>
             <%- if can_edit -%>
@@ -131,7 +135,6 @@
                 <%- 
                   tweet = CGI::escape("Check out the #{h(@view.name)} dataset on blist - ")
                   seo_url = "#{request.protocol + request.host_with_port + @view.href}"
-                  short_url = "#{request.protocol + request.host_with_port + @view.short_href}"
                 -%>
                 <li><%= link_to(image_tag("icons/social_icon_delicious_small.png", :size => "20x20", :alt => "Delicious"), 
                         "http://del.icio.us/post?url=#{seo_url}&title=#{h(@view.name)}",
@@ -140,7 +143,7 @@
                         "http://digg.com/submit?phase=2&url=#{seo_url}&title=#{h(@view.name)}",
                         :title => "Digg this", :rel => "external") %></li>
                 <li><%= link_to(image_tag("icons/social_icon_twitter_small.png", :size => "20x20", :alt => "Twitter"), 
-                        "http://www.twitter.com/home?status=#{tweet + short_url}",
+                        "http://www.twitter.com/home?status=#{tweet + seo_url}",
                         :title => "Tweet this", :rel => "external") %></li>
               </ul>
             </li>

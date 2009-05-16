@@ -1,14 +1,12 @@
 class Column < Model
   def text_format
-    format_elem = REXML::Document.new(blistFormat).
-      elements['blist_format/formatting_option']
-    format_elem.nil? ? 'Plain' : format_elem.text
+    (self.format.nil? || self.format.formatting_option.nil?) ? 'Plain' :
+      self.format.formatting_option
   end
 
   def aggregate
-    format_elem = REXML::Document.new(viewFormat).
-      elements['lens_format/aggregate']
-    format_elem.nil? ? 'none' : format_elem.text
+    (self.format.nil? || self.format.aggregate.nil?) ? 'none' :
+      self.format.aggregate
   end
 
   def is_blist_in_blist
@@ -17,8 +15,7 @@ class Column < Model
 
   def is_list
     if is_blist_in_blist
-      list_elem = REXML::Document.new(viewFormat).elements['lens_format/isList']
-      return !list_elem.nil? && 'true' == list_elem.text
+      return !self.format.nil? && self.format.isList
     end
     false
   end

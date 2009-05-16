@@ -1,0 +1,155 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "widgets", "stats-screen", 
+    :cache => "cache/stats_show_all" %>
+  <title>Stats for '<%= h(@dataset.name) %>' | <%= t(:page_title) %></title>
+<% end %>
+
+<div id="stats">
+  <div class="pageBlockHeaderOuter"><div class="pageBlockHeaderTL"><div class="pageBlockHeaderTR">
+        <div class="pageBlockHeaderBL"><div class="pageBlockHeaderBR">
+
+    <%#
+      Header
+    %>
+    <div class="statsHeaderContainer">
+      <div class="statsBlockIntro">
+        <div class="left">
+          <p class="title">Statistics for "<%= link_to(h(@dataset.name), @dataset.href, :title => @dataset.name) %>"</p>
+          <p class="timeline">Since <%= duration_in_words(@since) %></p>
+        </div>
+        <div class="right links">
+          <%= link_to("Back to the #{t(:blist_name)}", @dataset.href, :title => @dataset.name) %>
+          <a href="#" title="Print">Print</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="statsContentContainer">
+      <div class="left statsColumn">
+        <%#
+          Rows accessed section (with bar graphs!)
+        %>
+        <div class="panel">
+          <h1>Records Accessed</h1>
+
+          <div class="left">
+            <img src="<%= @stat.row_access_chart_href %>" />
+          </div>
+
+          <div class="left">
+            <%#
+              Create the legend for the graph
+            %>
+            <table class="legend">
+              <%
+                Stat::ROW_ACCESS_LEGEND.each_slice(2) do |pair|
+              %>
+                <tr>
+                  <% pair.each do |desc, color| %>
+                    <td class="legendColor"><div style="background-color: #<%= color %>"></div></td>
+                    <td class="legendDesc">Via <%= desc.titleize %>: <strong><%= number_with_delimiter(@stat.rows_accessed[desc] || 0, ',') %></strong></td>
+                  <% end %>
+                </tr>
+              <% end %>
+            </table>
+            <div class="totalRowsAccessed">
+              <strong>Total: <%= number_with_delimiter(@stat.total_rows_accessed, ',') %></strong>
+            </div>
+          </div>
+        </div>
+
+        <%#
+          Community activity
+        %>
+        <div class="panel"> 
+          <h1>Community Activity</h1>
+          <table class="totals">
+            <tr>
+              <td class="total">Total Views:</td>
+              <td class="number"><%= number_with_delimiter(@stat.views || 0, ',') %></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="total">Total Copies:</td>
+              <td class="number"><%= number_with_delimiter(0, ',') %></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="total">Total Favorites:</td>
+              <td class="number"><%= number_with_delimiter(@stat.favorited || 0, ',') %></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="total">Total Ratings:</td>
+              <td class="number"><%= number_with_delimiter(@stat.ratings || 0, ',') %></td>
+              <td><%= get_blist_rating_html(@stat) %></td>
+            </tr>
+            <tr>
+              <td class="total">Total Comments:</td>
+              <td class="number"><%= number_with_delimiter(@stat.comments || 0, ',') %></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="left statsColumn">
+        <div class="panel">
+          <h1>Web Publishing Activity</h1>
+          <div class="clearfix scrollableTableContainer">
+            <table width="100%" class="scrollTable">
+              <thead class="fixedHeader">
+                <tr>
+                  <th class="first"></th>
+                  <th>URL</th>
+                  <th class="last">Views</th>
+                </tr>
+              </thead>
+              <tbody class="scrollContent">
+                <% @stat.url_activity.each do |url, views| %>
+                  <tr>
+                    <td><%# TODO put a sparklines graph here %></td>
+                    <td><%= link_to(url, url) %></td>
+                    <td><%= number_with_delimiter(views || 0, ',') %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="2">Total: <%= @stat.url_activity.size %></td>
+                  <td><%= @stat.url_activity.values.sum %></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <%#
+          Additional Usage
+        %>
+        <div class="panel">
+          <h1>Additional Usage</h1>
+          <table class="totals">
+            <tr>
+              <td class="total">Total Shares:</td>
+              <td class="number"><%= number_with_delimiter(0, ',') %></td>
+            </tr>
+            <tr>
+              <td class="total">Total Downloads:</td>
+              <td class="number"><%= number_with_delimiter(@stat.download || 0, ',') %></td>
+            </tr>
+            <tr>
+              <td class="total">Total Emails:</td>
+              <td class="number"><%= number_with_delimiter(@stat.email || 0, ',') %></td>
+            </tr>
+            <tr>
+              <td class="total">Total Prints:</td>
+              <td class="number"><%= number_with_delimiter(@stat.print || 0, ',') %></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div></div>
+  </div></div></div>
+</div>

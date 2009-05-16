@@ -50,9 +50,6 @@ ActionController::Routing::Routes.draw do |map|
     :update_link => :put 
   }
 
-  map.import '/import', :controller => 'imports', :action => 'new' 
-  map.import_redirect '/import/redirect', :controller => 'imports', :action => 'redirect'
-
   map.resources :blists,
     :collection => { :detail => :get },
     :member => {
@@ -61,7 +58,10 @@ ActionController::Routing::Routes.draw do |map|
       :update_comment => [:put, :get],
       :create_favorite => :post,
       :delete_favorite => :post
-    }
+    } do |blist|
+      blist.connect 'stats', :controller => 'stats', :action => 'index'
+    end
+
   map.connect ':category/:view_name/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
@@ -71,8 +71,18 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
-  # You can have the root of your site routed with map.root -- just remember to delete public/index.html.
+  # NOTE: I'm not sure if there's a way to map a child resource to a connected
+  # route without restating this ugly route definition. If there is, we should
+  # probably use that instead of this.
+  map.connect ':category/:view_name/:id/stats', :controller => 'stats',
+    :action => 'index', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
   map.root :controller => "discovers", :action => "show"
+
+  map.import '/upload', :controller => 'imports', :action => 'new' 
+  map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
   map.login '/login', :controller => 'user_sessions', :action => 'new'
   map.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
   map.signup '/signup', :controller => 'accounts', :action => 'new'
@@ -80,9 +90,10 @@ ActionController::Routing::Routes.draw do |map|
   map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'reset_password',
     :uid => UID_REGEXP
 
-  # See how all your routes lay out with "rake routes"
   map.resources :user_sessions
 
   map.about '/about', :controller => 'about'
   map.about_subpage '/about/:page', :controller => 'about', :action => 'show'
+
+  # See how all your routes lay out with "rake routes"
 end

@@ -48,7 +48,13 @@ module CommunitiesHelper
   end
   
   def get_html_for_action_object(activity)
-    out = "<a href='#{get_url_for_activity_action(activity)}'>#{h(activity.actedOnName)}</a>"
+    out = ""
+    case activity.action
+    when "join_blist", "update_profile", "add_profile_photo"
+      out = ""
+    else
+      out = "<a href='#{get_url_for_activity_action(activity)}'>#{h(activity.actedOnName)}</a>"
+    end
   end
   
   def get_url_for_activity_action(activity)

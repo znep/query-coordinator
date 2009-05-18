@@ -578,6 +578,42 @@ blist.blistGrid.reloadSummary = function ()
     });
 };
 
+// The favorite action in the info for single panel - when one blist is selected.
+blist.blistGrid.favoriteActionClick = function (event)
+{
+    event.preventDefault();
+
+    var $favLink = $(this);
+    var $favContainer = $favLink.closest("li");
+    
+    var origHref = $favLink.attr("href");
+
+    $.ajax({
+        url: origHref,
+        type: "POST",
+        success: function(responseText, textStatus)
+        {
+            var isCreate = responseText == "created";
+
+            // Update the class of the list item.
+            $favContainer.removeClass(isCreate ? "false" : "true")
+                         .addClass(isCreate ? "true" : "false");
+            // Update the text of the link.
+            var linkText = isCreate ? "Remove from favorites" : "Add to favorites";
+            $favLink.text(linkText);
+            $favLink.attr("title", linkText);
+
+            // Update the link.
+            var newHref = isCreate ?
+                origHref.replace("create", "delete") :
+                origHref.replace("delete", "create");
+
+            $favLink.attr("href", newHref);
+        }
+    });
+};
+
+
 // This keeps track of when the column summary data is stale and needs to be
 // refreshed
 blist.blistGrid.summaryStale = true;
@@ -763,4 +799,6 @@ $(function ()
         loadSWF();
         blistGridNS.sizeSwf();
     }
+    
+    $(".favoriteAction a").click( blistGridNS.favoriteActionClick );
 });

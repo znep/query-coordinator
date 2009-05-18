@@ -217,6 +217,20 @@
     padding-top: 1em;
 }
 
+.infoContentHeader .favoriteAction li a
+{
+    background: url(/stylesheets/images/content/favorite_large_sprites.png) no-repeat;
+    display: block;
+    height: 19px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 19px;
+}
+
+.infoContentHeader .favoriteAction li a:hover,
+.infoContentHeader .favoriteAction li.true a { background-position: 0 -19px; }
+
+
 .infoContentOuter .infoContentInner
 {
     background-image: url(/stylesheets/images/common/summary_bottom_left.png);

@@ -21,7 +21,7 @@
   blist_id='<%= blist.id %>' class='item <%= item_class %>'>
   <%-
     if blist.flag?("favorite")
-      favorite_action = "/blists/#{blist.id}/remove_favorite"
+      favorite_action = "/blists/#{blist.id}/delete_favorite"
       favorite_action_text = "Remove from favorites"
     else
       favorite_action = "/blists/#{blist.id}/create_favorite"

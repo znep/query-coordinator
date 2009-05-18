@@ -55,7 +55,7 @@ class BlistsController < SwfController
       end
 
       if !@view.is_blist?
-        par_view = View.find({'blistId' => @view.blistId}).
+        par_view = View.find({'blistId' => @view.blistId}, true).
           find {|v| v.is_blist?}
         if (!par_view.nil?)
           @is_child_view = true

@@ -32,9 +32,16 @@ class Stat < Model
     require 'gchart'
 
     colors = ROW_ACCESS_LEGEND
-    Gchart.pie(:data => colors.keys.collect{|k| self.rows_accessed[k].to_i },
-               :line_colors => colors.values,
-               :size => "150x150"
-              )
+    if rows_accessed.values.sum > 0
+        Gchart.pie(:data => colors.keys.collect{|k| self.rows_accessed[k].to_i },
+                   :line_colors => colors.values,
+                   :size => "150x150"
+                  )
+    else
+        Gchart.pie(:data => [1],
+                   :line_colors => ["666666"],
+                   :size => "150x150"
+                  )
+    end
   end
 end

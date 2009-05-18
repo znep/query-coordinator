@@ -17,9 +17,13 @@
           <p class="title">Statistics for "<%= link_to(h(@dataset.name), @dataset.href, :title => @dataset.name) %>"</p>
           <p class="timeline">Since <%= duration_in_words(@since) %></p>
         </div>
-        <div class="right links">
-          <%= link_to("Back to the #{t(:blist_name)}", @dataset.href, :title => @dataset.name) %>
-          <a href="#" title="Print">Print</a>
+        <div class="right miniMenu">
+            <div>
+              <%= image_tag("/stylesheets/images/common/back_arrow_icon_community.png", :width => 10, :height => 10) %>
+              <%= link_to("Back to the #{t(:blist_name)}", @dataset.href, 
+                          :title => @dataset.name, :class => "backButton") %>
+            </div>
+          <a href="#" title="Print"></a>
         </div>
       </div>
     </div>

@@ -242,6 +242,12 @@ div.blist-percent .blist-percent-bar-pos
     height: 100%;
 }
 
+.blist-tstars-wrapper,
+.blist-tstars-wrapper .blist-tstars
+{
+    height: 100%;
+}
+
 div.blist-richtext p,
 div.blist-richtext ul
 {

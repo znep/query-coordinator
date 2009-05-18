@@ -441,6 +441,11 @@ blist.blistGrid.addFilterMenu = function(col)
     // Remove the old filter menu if necessary
     var $menu = $('ul.columnHeaderMenu', col.dom);
     $menu.children('.autofilter').prev('.separator').andSelf().remove();
+    if (cf == null && colSum.topFrequencies.length < 1)
+    {
+        return;
+    }
+
     var filterStr =
             '<li class="autofilter submenu">\
                 <a href="#"><span class="highlight">Filter This Column</span></a>\
@@ -466,14 +471,19 @@ blist.blistGrid.addFilterMenu = function(col)
     $.each(colSum.topFrequencies, function (i, f)
     {
         var isMatching = cf != null && cf.value == f.value;
-        var escapedValue = $.htmlEscape(f.value + '');
+        var curType = blist.data.types[col.type] || blist.data.types['text'];
+        var escapedValue = curType.filterValue != null ?
+            curType.filterValue(f.value, col) : $.htmlStrip(f.value + '');
+        var renderedValue = curType.filterRender != null ?
+            curType.filterRender(f.value, col) : '';
         filterStr +=
             '<li class="filterItem' + (isMatching ? ' active' : '') +
                 ' scrollable">\
                 <a href="' +
                     (isMatching ? '#clear-filter-column_' : '#filter-column_') +
-                    col.index + '_' + escapedValue + '" title="' + escapedValue +
-                    '" class="clipText">' + escapedValue +
+                    col.index + '_' + escapedValue + '" title="' +
+                    $.htmlStrip(renderedValue) + '" class="clipText">' +
+                    renderedValue +
                 '</a>\
             </li>';
     });

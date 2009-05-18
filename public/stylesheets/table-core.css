@@ -175,13 +175,13 @@ img.blist-table-option-icon
 .blist-checkbox
 {
     background: no-repeat scroll center center;
+    height: 13px;
 }
 
 .blist-check-on,
 .blist-boolean_checkbox-on
 {
     background-image: url(/stylesheets/images/content/table/check.png);
-    height: 13px;
 }
 
 .blist-tstars {
@@ -245,44 +245,32 @@ img.blist-table-option-icon
     color: #666666;
 }
 
+.blist-flag
+{
+    background: transparent no-repeat center center;
+    height: 22px;
+}
+
 .blist-flag-blue {
     background-image: url(/stylesheets/images/content/table/flags/blue.png);
-    margin: auto;
-    width: 25px;
-    height: 22px;
 }
 
 .blist-flag-green {
     background-image: url(/stylesheets/images/content/table/flags/green.png);
-    margin: auto;
-    width: 25px;
-    height: 22px;
 }
 
 .blist-flag-orange {
     background-image: url(/stylesheets/images/content/table/flags/orange.png);
-    margin: auto;
-    width: 25px;
-    height: 22px;
 }
 
 .blist-flag-purple {
     background-image: url(/stylesheets/images/content/table/flags/purple.png);
-    margin: auto;
-    width: 25px;
-    height: 22px;
 }
 
 .blist-flag-red {
     background-image: url(/stylesheets/images/content/table/flags/red.png);
-    margin: auto;
-    width: 25px;
-    height: 22px;
 }
 
 .blist-flag-yellow {
     background-image: url(/stylesheets/images/content/table/flags/yellow.png);
-    margin: auto;
-    width: 25px;
-    height: 22px;
 }

@@ -389,7 +389,7 @@ class User < Model
   }
   
   @@sorts = [
-    ["ACTIVITY", "Activity Score"],
+    ["ACTIVITY", "Socrata Grade"],
     ["ALPHA", "A - Z"],
     ["ALPHA_DESC", "Z - A"],
     ["NUM_OF_FOLLOWERS", "# of Followers"],

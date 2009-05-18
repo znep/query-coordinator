@@ -320,7 +320,8 @@ blist.namespace.fetch('blist.data.types');
             url = value[0];
             caption = value[1] || url;
         }
-        if (url && url != '' && !url.match(/^([a-z]+):/i))
+        if (url && url != '' && !url.match(/^([a-z]+):/i) &&
+                url.indexOf('/') != 0)
         {
             url = 'http://' + url;
         }

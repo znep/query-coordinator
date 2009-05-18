@@ -1,23 +1,25 @@
-<%- view = carousel_item -%>
+<% cache ["carousel-public-item", carousel_item.id], :expires_in => 15.minutes do %>
+  <%- view = carousel_item -%>
 
-<li class="carouselItem"><div class="carouselItemInner">
-  <div class="carouselItemTR"><div class="carouselItemBL"><div class="carouselItemBR">
-    <div class="carouselItemLeft"><div class="carouselItemRight">
-      
-      <div class="carouselContainer">
-        <div class="itemTitle clearfix">
-          <h3><%= link_to(h(view.name), view.href, :title => h(view.name)) %></h3>
-          <%= image_tag(view.iconUrl.to_s, :size => "55x55", :alt => "placeholder") %>
-        </div>
-        <div class="itemMetaData">
-          <ul class="metaList">
-            <li class="ratingContainer"><%= get_blist_rating_html(view) %></li>
-            <li>Viewed <%= pluralize(view.viewCount, "time") %></li>
-            <li><%= pluralize(view.numberOfComments, "Comment") %></li>
-          </ul>
-        </div>
-      </div>
-      
-    </div></div>
-  </div></div></div>
-</div></li>
+  <li class="carouselItem"><div class="carouselItemInner">
+	<div class="carouselItemTR"><div class="carouselItemBL"><div class="carouselItemBR">
+	  <div class="carouselItemLeft"><div class="carouselItemRight">
+
+		<div class="carouselContainer">
+		  <div class="itemTitle clearfix">
+			<h3><%= link_to(h(view.name), view.href, :title => h(view.name)) %></h3>
+			<%= image_tag(view.iconUrl.to_s, :size => "55x55", :alt => "placeholder") %>
+		  </div>
+		  <div class="itemMetaData">
+			<ul class="metaList">
+			  <li class="ratingContainer"><%= get_blist_rating_html(view) %></li>
+			  <li>Viewed <%= pluralize(view.viewCount, "time") %></li>
+			  <li><%= pluralize(view.numberOfComments, "Comment") %></li>
+			</ul>
+		  </div>
+		</div>
+
+	  </div></div>
+	</div></div></div>
+  </div></li>
+<% end %>

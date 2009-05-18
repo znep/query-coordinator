@@ -1,3 +1,4 @@
+<% cache ["discover-view-list-item", view_list_item.id], :expires_in => 15.minutes do %>
 <%- view = view_list_item -%>
 
 <li class="viewListItem clearfix">
@@ -37,3 +38,4 @@
     </div>
   </div>
 </li>
+<% end %>

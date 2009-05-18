@@ -291,11 +291,11 @@ protected
   end
 
   def self.get_request(path, session_token = nil)
-    result_body = Rails.cache.read(path)
+    result_body = cache.read(path)
     if result_body.nil?
       result_body = generic_request(Net::HTTP::Get.new(path),
                                     nil, session_token).body
-      Rails.cache.write(path, result_body)
+      cache.write(path, result_body)
     end
 
     parse(result_body)
@@ -366,4 +366,7 @@ private
     result
   end
 
+  def self.cache
+    @cache ||= ActiveSupport::Cache::RequestStore.new
+  end
 end

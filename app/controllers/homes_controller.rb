@@ -17,7 +17,7 @@ class HomesController < ApplicationController
       b.last_viewed <=> a.last_viewed
     }.slice(0..1)
 
-    @contacts = Contact.find().slice(0..2)
+    @contacts_activities = Activity.find({:maxResults => 3, :inNetwork => true})
 
     begin
       rss = RSS::Parser.parse(BLIST_RSS, false)

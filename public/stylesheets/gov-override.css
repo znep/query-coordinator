@@ -380,8 +380,10 @@ table.gridList tr.child.hover.selected td.description > *
     background: #ececec url(/stylesheets/images/gov/info_pane/background_expanded_list.png) -5px 0 repeat-y;
 }
 .formListBoxTL { background: url(/stylesheets/images/gov/content/section_top_left.png) left top no-repeat; }
+.formListBox.solid .formListBoxTL { background: url(/stylesheets/images/gov/content/section_solid_top_left.png) left top no-repeat; }
 .formListBoxTR { background: url(/stylesheets/images/gov/content/section_top_right.png) right top no-repeat; }
 .formListBoxBL { background: url(/stylesheets/images/gov/content/section_bottom_left.png) left bottom no-repeat; }
+.formListBox.solid .formListBoxBL { background: url(/stylesheets/images/gov/content/section_solid_bottom_left.png) left bottom no-repeat; }
 .formListBoxBR { background: url(/stylesheets/images/gov/content/section_bottom_right.png) right bottom no-repeat; }
 .formListBox dt { color: #eee; }
 
@@ -457,6 +459,20 @@ table.gridList tr.child.hover.selected td.description > *
 {
     background: url(/stylesheets/images/gov/sidebar/blists_filter/background_item_hover_close.png) right no-repeat;
 }
+
+.smallButton
+{
+    background: url(/stylesheets/images/gov/common/button_ends_small_sprite.png) no-repeat;
+}
+.smallButton a
+{
+    background: url(/stylesheets/images/gov/common/button_ends_small_sprite.png) right -19px no-repeat;
+}
+.smallButton span
+{
+    background-color: #ababab;
+}
+
 
 /*** END: widgets ***/
 
@@ -630,7 +646,7 @@ table.gridList tr.child.hover.selected td.description > *
 }
 
 
-.infoContentOuter .gridList thead 
+.infoContentOuter .gridList thead
 {
     background-color: #e8e8e8;
 }
@@ -743,6 +759,19 @@ table.gridList tr.child.hover.selected td.description > *
 /*** END: contacts-screen ***/
 
 /*** START: profile-screen ***/
+.linksTableContainer .gridList thead
+{
+    background-color: #06386a;
+}
+.linksTableContainer .gridList thead th
+{
+    color: #fff;
+    background-color: #06386a;
+    border-right: 1px solid #d4d4d4;
+}
+
+
+
 #profile .publicBlists .infoContentOuter { 
     background-image: none; 
     border-top-width: 1px;

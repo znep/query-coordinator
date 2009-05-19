@@ -318,8 +318,8 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
 blist.myBlists.itemMenuSetup = function()
 {
     $('.blistItemMenu').dropdownMenu({
-        menuContainerSelector: "td.handle div",
-        triggerButtonSelector: "a.dropdownLink"
+        menuContainerSelector: "div.blist-list-c0 div",
+        triggerButtonSelector: "div.blist-list-c0 a.menuHandle"
     });
 };
 
@@ -461,10 +461,41 @@ blist.myBlists.customLensOrBlist = function(value, column) {
     return "\"<div class='blist-type-\" + (" + value + ".indexOf('default') >= 0 ? 'default': 'filter') + \"'></div>\"";
 };
 
+blist.myBlists.customHandle = function(value, column) {
+    var menu = "<ul class='blistItemMenu menu' id='itemMenu-\"+" + value + "+\"'>" +
+        "<li class='open'>" + 
+          "<a href='/dataset/foo/\"+" + value + "+\"' title='Open'>" + 
+            "<span class='highlight'>Open</span>" + 
+          "</a>" +
+        "</li>" + 
+        "<li class='addFavorite favoriteLink'>" + 
+          "<a href='/blists/\"+" + value + "+\"/create_favorite' title='Add to favorites'>" +
+            "<span class='highlight'>Add to favorites</span>" +
+          "</a>" +
+        "</li>" +
+        "<li class='rename renameLink'>" +
+          "<a href='/dataset/foo/\"+" + value + "+\"' title='Rename'>" +
+            "<span class='highlight'>Rename</span>" +
+          "</a>" +
+        "</li>" +
+        "<li class='delete'>" +
+          "<a href='#delete' title='Delete'>" +
+            "<span class='highlight'>Delete</span>" +
+          "</a>" +
+        "</li>" +
+        "<li class='footer'>" +
+          "<div class='outerWrapper'>" +
+            "<div class='innerWrapper'/>" +
+          "</div>" +
+        "</li>" +
+      "</ul>";
+    return "\"<div><a class='menuHandle' title='Open menu' href='#open_menu'>Blist Menu</a></div>" + menu + "\"";
+};
+
 
 /* Functions for main blists screen */
 
-blist.myBlists.favoriteClick = function(event, row, column, origEvent)
+blist.myBlists.favoriteClick = function(row)
 {
     if (!row.favorite)
     {
@@ -483,7 +514,7 @@ blist.myBlists.listCellClick = function(event, row, column, origEvent)
 {
     switch (column.dataIndex) {
         case 'favorite':
-            myBlistsNS.favoriteClick(event, row, column, origEvent);
+            myBlistsNS.favoriteClick(row);
             break;
     }
 }
@@ -523,7 +554,7 @@ blist.myBlists.initializeGrid = function()
 }
 
 blist.myBlists.columns = [
-  { width: 32, dataIndex: null },
+  { width: 32, dataIndex: 'id', renderer: blist.myBlists.customHandle, sortable: false },
   { cls: 'favorite', name: 'Favorite?', width: 36, dataIndex: 'favorite', renderer: blist.myBlists.customFav, sortable: true},
   { cls: 'type', name: 'Type', width: 45, dataIndex: 'flags', renderer: blist.myBlists.customLensOrBlist, sortable: true },
   { name: 'Name', percentWidth: 20, dataIndex: 'name', group: true, sortable: true },

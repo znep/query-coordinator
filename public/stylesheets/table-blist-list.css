@@ -151,3 +151,19 @@ div.blist-list-c2 > div
 {
     height: 27px;
 }
+
+div.blist-hot-row .menuHandle 
+{
+    background:transparent url(/stylesheets/images/content/table/icon_double_arrow.png) no-repeat scroll left 100px;
+    background-position: 0px -8px;
+}
+
+.menuHandle
+{
+    display:block;
+    height:27px;
+    line-height:100px;
+    overflow:hidden;
+    width:27px;
+}
+

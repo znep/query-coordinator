@@ -533,7 +533,8 @@ blist.myBlists.columns = [
 ];
 
 blist.myBlists.options = {
-    showRowNumbers: false
+    showRowNumbers: false,
+    noExpand: true
 };
 
 $(function() {

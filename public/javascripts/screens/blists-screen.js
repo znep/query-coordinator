@@ -183,41 +183,6 @@ blist.myBlists.filterGen = function(type, argument, callback)
     }
 }
 
-blist.myBlists.favoriteClick = function()
-{
-    $this = $(this);
-    var origHref = $this.attr("href");
-
-    $.ajax({
-        url: origHref,
-        type: "POST",
-        success: function(responseText, textStatus)
-        {
-            var isCreate = responseText == "created";
-
-            $favContainer = $this.closest("tr.item");
-            $favCell = $favContainer.find("td.favorite");
-            $favMarker = $favContainer.find("a.favoriteMarker");
-            $favLink = $favContainer.find(".blistItemMenu li.addFavorite a");
-
-            // Update the class of the cell.
-            $favCell.removeClass(isCreate ? "false" : "true")
-                    .addClass(isCreate ? "true" : "false");
-            // Update the text of the link.
-            $favMarker.text(isCreate ? "favorite" : "");
-            $favLink.text(isCreate ? "Remove from favorites" : "Add to favorites");
-
-            // Update the link.
-            var newHref = isCreate ?
-                origHref.replace("create", "delete") :
-                origHref.replace("delete", "create");
-
-            $favLink.attr("href", newHref);
-            $favMarker.attr("href", newHref);
-        }
-    });
-};
-
 // The favorite action in the info for single panel - when one blist is selected.
 blist.myBlists.favoriteActionClick = function (event)
 {
@@ -499,14 +464,26 @@ blist.myBlists.customLensOrBlist = function(value, column) {
 
 /* Functions for main blists screen */
 
+blist.myBlists.favoriteClick = function(event, row, column, origEvent)
+{
+    if (!row.favorite)
+    {
+        $.post("/blists/" + row.id + "/create_favorite");
+    }
+    else
+    {
+        $.post("/blists/" + row.id + "/delete_favorite");
+    }
+    
+    row.favorite = !row.favorite;
+    myBlistsNS.model.change([row]);
+};
+
 blist.myBlists.listCellClick = function(event, row, column, origEvent) 
 {
     switch (column.dataIndex) {
         case 'favorite':
-            // Note that this would probably fire off an AJAX event before updating the value
-            row.favorite = !row.favorite;
-            myBlistsNS.model.change([ row ]);
-            // TODO: ajax 
+            myBlistsNS.favoriteClick(event, row, column, origEvent);
             break;
     }
 }

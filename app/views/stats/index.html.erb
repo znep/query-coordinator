@@ -1,6 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "widgets", "stats-screen", 
-    :cache => "cache/stats_show_all" %>
+  <%= stylesheet_link_tag "widgets", "stats-screen" %>
   <title>Stats for '<%= h(@dataset.name) %>' | <%= t(:page_title) %></title>
 <% end %>
 
@@ -23,7 +22,9 @@
               <%= link_to("Back to the #{t(:blist_name)}", @dataset.href, 
                           :title => @dataset.name, :class => "backButton") %>
             </div>
-          <a href="#" title="Print"></a>
+            <a href="#" onclick="window.print(); return false;" title="Print">
+                <%= image_tag("/stylesheets/images/common/print_icon.png", :width => 10, :height => 10) %>
+            </a>
         </div>
       </div>
     </div>

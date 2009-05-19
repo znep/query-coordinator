@@ -183,41 +183,6 @@ blist.myBlists.filterGen = function(type, argument, callback)
     }
 }
 
-blist.myBlists.favoriteClick = function()
-{
-    $this = $(this);
-    var origHref = $this.attr("href");
-
-    $.ajax({
-        url: origHref,
-        type: "POST",
-        success: function(responseText, textStatus)
-        {
-            var isCreate = responseText == "created";
-
-            $favContainer = $this.closest("tr.item");
-            $favCell = $favContainer.find("td.favorite");
-            $favMarker = $favContainer.find("a.favoriteMarker");
-            $favLink = $favContainer.find(".blistItemMenu li.addFavorite a");
-
-            // Update the class of the cell.
-            $favCell.removeClass(isCreate ? "false" : "true")
-                    .addClass(isCreate ? "true" : "false");
-            // Update the text of the link.
-            $favMarker.text(isCreate ? "favorite" : "");
-            $favLink.text(isCreate ? "Remove from favorites" : "Add to favorites");
-
-            // Update the link.
-            var newHref = isCreate ?
-                origHref.replace("create", "delete") :
-                origHref.replace("delete", "create");
-
-            $favLink.attr("href", newHref);
-            $favMarker.attr("href", newHref);
-        }
-    });
-};
-
 // The favorite action in the info for single panel - when one blist is selected.
 blist.myBlists.favoriteActionClick = function (event)
 {
@@ -225,7 +190,7 @@ blist.myBlists.favoriteActionClick = function (event)
 
     var $favLink = $(this);
     var $favContainer = $favLink.closest("li");
-    
+
     var origHref = $favLink.attr("href");
 
     $.ajax({
@@ -474,12 +439,14 @@ blist.myBlists.sidebar.filterMenuClickHandler = function (event, $menu,
 
 /* Custom grid renderers */
 
-blist.myBlists.customDate = function(value, column) {
+blist.myBlists.customDate = function(value, column)
+{
     value = new Date(value * 1000);
-    var months = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+    var months = new Array("Jan", "Feb", "Mar", "Apr", "May", "Jun",
                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
 
-    var formatted = months[value.getMonth()] + " " + value.getDate() + ", " + value.getFullYear() 
+    var formatted = months[value.getMonth()] + " " + value.getDate() + ", " +
+        value.getFullYear();
 
     return formatted;
 };
@@ -491,14 +458,31 @@ blist.myBlists.customFav = function(value, column)
         " ? 'Remove from favorites' : 'Add to favorites') + \"'></div>\"";
 };
 
-blist.myBlists.customDateMeta = function(value, column) {
+blist.myBlists.customDateMeta = function(value, column)
+{
     return "blist.myBlists.customDate(" + value + ")";
 };
 
-blist.myBlists.customLensOrBlist = function(value, column) {
-    return "\"<div class='blist-type-\" + (" + value + " ? 'default': 'filter') + \"'></div>\"";
+blist.myBlists.customLensOrBlist = function(value, column)
+{
+    return "\"<div class='blist-type-\" + (" + value +
+        " ? 'default': 'filter') + \"'></div>\"";
 };
 
+blist.myBlists.customDatasetName = function(value)
+{
+    return '\'<a href="/\' + $.urlSafe(row.category || "dataset") + \'/\' + \
+        $.urlSafe(' + value + ') + \'/\' + row.id + \'" \
+        class="clipText dataset-name" title="\' + $.htmlEscape(' + value + ') + \
+        \'">\' + $.htmlEscape(' + value + ') + \'</a>\'';
+};
+
+blist.myBlists.customClipText = function(value)
+{
+    return '\'<div class="clipText" title="\' + $.htmlEscape(' + value +
+        ' || "") + \
+        \'">\' + $.htmlEscape(' + value + ' || "") + \'</div>\'';
+};
 
 /* Functions for main blists screen */
 
@@ -516,7 +500,7 @@ blist.myBlists.listCellClick = function(event, row, column, origEvent)
     }
 }
 
-blist.myBlists.translateViewJson = function(views) 
+blist.myBlists.translateViewJson = function(views)
 {
     for (var i = 0; i < views.length; i++) {
         var view = views[i];
@@ -547,21 +531,29 @@ blist.myBlists.initializeGrid = function()
     // Install a translator that tweaks the view objects so they're more conducive to grid display
     myBlistsNS.model.translate(myBlistsNS.translateViewJson);
 
-    myBlistsNS.model.ajax({url: myBlistsNS.viewUrl });
+    myBlistsNS.model.ajax({url: myBlistsNS.viewUrl, cache: false });
     myBlistsNS.model.sort(6, true);
 }
 
 blist.myBlists.columns = [
   { width: 32, dataIndex: null },
-  { cls: 'favorite', name: 'Favorite?', width: 36, dataIndex: 'favorite', renderer: blist.myBlists.customFav, sortable: true},
-  { cls: 'type', name: 'Type', width: 45, dataIndex: 'isDefault', renderer: blist.myBlists.customLensOrBlist, sortable: true },
-  { name: 'Name', percentWidth: 20, dataIndex: 'name', group: true, sortable: true },
-  { name: 'Description', percentWidth: 40, dataIndex: 'description', group: true, sortable: true },
-  { name: 'Owner', percentWidth: 20, dataIndex: 'ownerName', group: true, sortable: true},
-  { name: 'Last Updated', percentWidth: 20, dataIndex: 'updatedAt', group: true, type: 'date', renderer: blist.myBlists.customDateMeta }
+  { cls: 'favorite', name: 'Favorite?', width: 36, dataIndex: 'favorite',
+    renderer: blist.myBlists.customFav, sortable: true},
+  { cls: 'type', name: 'Type', width: 45, dataIndex: 'isDefault',
+    renderer: blist.myBlists.customLensOrBlist, sortable: true },
+  { name: 'Name', percentWidth: 20, dataIndex: 'name',
+    renderer: blist.myBlists.customDatasetName, group: true, sortable: true },
+  { name: 'Description', percentWidth: 40, dataIndex: 'description',
+    renderer: blist.myBlists.customClipText, group: true, sortable: true },
+  { name: 'Owner', percentWidth: 20, dataIndex: 'ownerName',
+    renderer: blist.myBlists.customClipText, group: true, sortable: true},
+  { name: 'Last Updated', percentWidth: 20, dataIndex: 'updatedAt',
+    group: true, type: 'date', renderer: blist.myBlists.customDateMeta }
 ];
 
 blist.myBlists.options = {
+    cellExpandEnabled: false,
+    manualResize: true,
     showRowNumbers: false
 };
 
@@ -576,8 +568,6 @@ $(function() {
     blistsInfoNS.updateSummary(0);
 
     /* FIXME Still necessary?
-    $("#blistList a.favoriteMarker, #blistList li.favoriteLink a")
-        .click(myBlistsNS.favoriteClick);
     $("#blistList .renameLink a").click(myBlistsNS.renameClick);
     $("#blistList td.name form").submit(myBlistsNS.renameSubmit);*/
 
@@ -585,7 +575,9 @@ $(function() {
     $(window).resize(function (event) 
     {
         commonNS.adjustSize();
+        $('#blist-list').trigger('resize');
     });
 
     commonNS.adjustSize();
+    $('#blist-list').trigger('resize');
 });

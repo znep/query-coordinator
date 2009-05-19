@@ -65,6 +65,7 @@ class BlistsController < SwfController
       @view.register_opening
     end
 
+    @view_activities = Activity.find({:viewId => @view.id})
     @data_component = params[:dataComponent]
     @popup = params[:popup]
 
@@ -113,6 +114,7 @@ class BlistsController < SwfController
   def detail
     if (params[:id])
       @view = View.find(params[:id])
+      @view_activities = Activity.find({:viewId => @view.id})
     elsif (params[:multi])
       args = Array.new
       multiParam = params[:multi]

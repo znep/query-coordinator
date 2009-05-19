@@ -1,6 +1,5 @@
 <%# locals: view, page_single  %>
 <%- 
-  isActivityEnabled = false
   isDuplicateEnabled = false
 -%>
 <%- 
@@ -40,14 +39,12 @@
         <a href="#publishing">Publishing</a>
       </div></div>
     </li>
-<%- if isActivityEnabled -%>
-    <li id="tabActivity" class="last">
+    <li id="tabActivity">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#activity">Activity</a>
       </div></div>
     </li>
-<%- end -%>
   </ul>
 </div>
 
@@ -186,11 +183,7 @@
         </dd>
       </dl>
 
-<%- if isActivityEnabled -%>
       <dl class="summaryList actionList">
-<%- else -%>
-      <dl class="summaryList">
-<%- end -%>
         <dt>
           Last Update
         </dt>
@@ -201,13 +194,11 @@
               <%= blist_date(view.last_activity) %>
             </span>
           </div>
-<%- if isActivityEnabled -%>
           <div class="itemActions">
             <a href="#tabActivity" class="action tabLink activity">
               <span>View Activity</span>
             </a>
           </div>
-<%- end -%>
         </dd>
       </dl>
 
@@ -226,7 +217,6 @@
           </div>
         </dd>
       </dl>
-<%- if isActivityEnabled -%>
       <dl class="summaryList actionList">
         <dt>
           Community Activity
@@ -245,7 +235,6 @@
           </div>
         </dd>
       </dl>
-<%- end -%>
       <dl class="summaryList actionList">
         <dt>
           Permalink
@@ -538,9 +527,7 @@
               <td class="opened"><div>01/09/2009</div></td>
               %>
               <td class="actionContainer"><div>
-<%- if isActivityEnabled -%>
-                <a href="#view" class="action"><span>View Activity</span></a>
-<%- end -%>
+                <a href="<%= profile_url(s.member_id) %>" class="action"><span>View Profile</span></a>
               </div></td>
             </tr>
             <%- end -%>
@@ -579,15 +566,19 @@
             <%= text_area_tag("publishCode", get_publish_embed_code_for_view(view)) %>
           </div>
         </div>
+      </div>
     </div>
   </div></div>
 </div>
 <%# *** END: PUBLISHING *** %>
-<%- if isActivityEnabled -%>
+
 <%# *** START: ACTIVITY *** %>
 <div class="infoContentOuter singleInfoActivity">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader">Activity</h2>
+    <ul class="headerActions actionButtons">
+      <li><a href="<%= "#{view.href}/stats" %>" class="arrowButton">View Statistics</a></li>
+    </ul>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
@@ -602,46 +593,31 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="item">
-              <td class="when"><div>[01/09/2009]</div></td>
-              <td class="who"><div>[Jim Beam]</div></td>
-              <td class="what"><div>[Added new row 1A2B3C]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="when"><div>[01/10/2009]</div></td>
-              <td class="who"><div>[Jose Cuervo]</div></td>
-              <td class="what"><div>[Updated row 1A2B3C]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="when"><div>[01/10/2009]</div></td>
-              <td class="who"><div>[Jack Daniels]</div></td>
-              <td class="what"><div>[Commented]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="when"><div>[01/10/2009]</div></td>
-              <td class="who"><div>[Jack Daniels]</div></td>
-              <td class="what"><div>[Replied to comment]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
-            <tr class="item">
-              <td class="when"><div>[01/11/2009]</div></td>
-              <td class="who"><div>[Jose Cuervo]</div></td>
-              <td class="what"><div>[Copied this blist to create "Good Mixers"]</div></td>
-              <td class="actionContainer"><div>
-                <a href="#view" class="action"><span>View</span></a>
-              </div></td>
-            </tr>
+            <%- if @view_activities && @view_activities.length > 0 -%>
+              <%- @view_activities.each do |activity| -%>
+                <tr class="item">
+                  <td class="when"><div><%= blist_date(activity.createdAt) %></div></td>
+                  <td class="who"><div>
+                    <a href="<%= profile_url(activity.actor.id) %>">
+                      <%= activity.actor.displayName %>
+                    </a>
+                  </div></td>
+                  <td class="what"><div>
+                    <%= get_verb_for_activity_action(activity.action) %>
+                    <%= get_html_for_action_object(activity) %>
+                  </div></td>
+                  <td class="actionContainer"><div>
+                    <a href="<%= get_url_for_activity_action(activity) %>" class="action"><span>View</span></a>
+                  </div></td>
+                </tr>
+              <%- end -%>
+            <%- else -%>
+              <tr class="item">
+                <td colspan="4"><div>
+                  <p>There are no activities for this dataset.</p>
+                </div></td>
+              </tr>
+            <%- end -%>
           </tbody>
         </table>
       </div>
@@ -649,4 +625,3 @@
   </div></div>
 </div>
 <%# *** END: ACTIVITY *** %>
-<%- end -%>

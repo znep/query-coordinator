@@ -339,7 +339,10 @@
             if (over)
             {
                 $(over).addClass('blist-hot');
-                hotCellTimer = setTimeout(expandHotCell, EXPAND_DELAY);
+                if (options.cellExpandEnabled)
+                {
+                    hotCellTimer = setTimeout(expandHotCell, EXPAND_DELAY);
+                }
             }
         };
 
@@ -824,9 +827,10 @@
 
                 if (col.renderer)
                 {
-                    var renderer = col.renderer("row[" + col.dataIndexExpr + "]", col, contextVariables); 
+                    var renderer = col.renderer("row[" + col.dataIndexExpr + "]",
+                        col, contextVariables);
                     // TODO: Give it some class?
-                    var cls = ''; 
+                    var cls = '';
                 }
                 else
                 {
@@ -1290,6 +1294,7 @@
     }
 
     var blistTableDefaults = {
+        cellExpandEnabled: true,
         generateHeights: true,
         ghostMinWidth: 20,
         headerMods: function (col) {},

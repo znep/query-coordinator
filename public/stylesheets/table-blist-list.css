@@ -103,12 +103,6 @@
     padding: 0 7px;
 }
 
-div.blist-table-expander
-{
-    background-color: #ffffff;
-    border: solid 1px #e2e2e2;
-}
-
 .favoriteMarker
 {
     background:transparent url(/stylesheets/images/content/table/icon_favorite_sprite.png) no-repeat scroll left 27px;
@@ -164,4 +158,16 @@ div.blist-type-filter
 div.blist-list-c2 > div
 {
     height: 27px;
+}
+
+.blist-td .dataset-name
+{
+    color: #333333;
+    display: block;
+    width: 100%;
+}
+
+.blist-td .clipText
+{
+    overflow: hidden;
 }

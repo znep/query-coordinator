@@ -1,0 +1,2 @@
+class Actee < Model
+end

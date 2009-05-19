@@ -93,7 +93,34 @@ blist.community.searchSubmitHandler = function(event)
             $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
         }
     });
-}
+};
+
+blist.community.addFriendClick = function(event)
+{
+    event.preventDefault();
+    var $link = $(this);
+    var origHref = $link.attr("href");
+    $.ajax({
+        url: origHref,
+        type: "GET",
+        success: function(responseText)
+        {
+            var isCreate = responseText == "created";
+            
+            // Update the text of the link.
+            $link.text(isCreate ? "Remove" : "Add Friend");
+            $link.attr("title", isCreate ? "Remove as Friend" : "Add Friend");
+            
+            // Update the link.
+            var newHref = isCreate ?
+                origHref.replace("create", "delete") :
+                origHref.replace("delete", "create");
+
+            $link.attr("href", newHref);
+        }
+    });
+};
+
 
 $(function ()
 {
@@ -139,5 +166,6 @@ $(function ()
         $("#tagCloud").jqmHide();
     });
     
-    $("#community .pageBlockSearch form").submit(communityNS.searchSubmitHandler)
+    $("#community .pageBlockSearch form").submit(communityNS.searchSubmitHandler);
+    $(".memberActions .followAction").live("click", communityNS.addFriendClick);
 });

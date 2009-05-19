@@ -53,7 +53,7 @@ blist.profile.updateLinkSubmit = function(event)
         data: requestData,
         success: function(data) { profileNS.updateLinkSuccess(data, link_id); }
     });
-}
+};
 
 blist.profile.updateLinkSuccess = function(data, link_id)
 {
@@ -85,7 +85,34 @@ blist.profile.updateLinkSuccess = function(data, link_id)
     }
     
     $(".updateLinksContainer form").each(function(f) { this.reset(); });
-}
+};
+
+blist.profile.addFriendClick = function(event)
+{
+    event.preventDefault();
+    var $link = $(this);
+    var origHref = $link.attr("href");
+    $.ajax({
+        url: origHref,
+        type: "GET",
+        success: function(responseText)
+        {
+            var isCreate = responseText == "created";
+            
+            // Update the text of the link.
+            var linkText = isCreate ? "Remove as Friend" : "Add as Friend";
+            $link.text(linkText);
+            $link.attr("title", linkText);
+            
+            // Update the link.
+            var newHref = isCreate ?
+                origHref.replace("create", "delete") :
+                origHref.replace("delete", "create");
+
+            $link.attr("href", newHref);
+        }
+    });
+};
 
 /* Initial start-up calls, and setting up bindings */
 
@@ -334,4 +361,6 @@ $(function ()
             }
         });
     }
+    
+    $(".publicProfileContentActions .actionButtons a").live("click", profileNS.addFriendClick);
 });

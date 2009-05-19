@@ -47,7 +47,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :profile, :member => { 
     :create_link => :post, 
     :delete_link => :delete,
-    :update_link => :put 
+    :update_link => :put,
+    :create_friend => :get,
+    :delete_friend => :get
   }
 
   map.resources :blists,

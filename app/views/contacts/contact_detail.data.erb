@@ -248,8 +248,7 @@
             <tr class="item">
               <td class="when"><div><%= blist_date(act.createdAt) %></div></td>
               <td class="what"><div>
-                <%= get_verb_for_activity_action(act.action).capitalize %>
-                <%= act.actedOnName %>
+                <%= get_html_for_activity(act) %>
               </div></td>
               <td class="actionContainer"><div>
                 <a href="<%= get_url_for_activity_action(act) %>" class="action"><span>View</span></a>

@@ -50,6 +50,7 @@
                       <%= @user.tag_display_string %>
                   </span></h5>
                 </div>
+                
                 <%- if (@is_user_current) -%>
                   <p class="editProfileContentActions">
                     <a class='first action showListBoxLink' href='#edit'>Edit</a>
@@ -60,7 +61,30 @@
                         'Full Name' : 'Username' %>
                     </a>
                   </p>
+                <%- else -%>
+                  <div class="publicProfileContentActions">
+                    <%- if (!@current_user.nil?) -%>
+                      <ul class="actionButtons clearfix">
+                        <li>
+                          <%- if (@user.my_friend?) -%>
+                            <%= link_to("Remove as Friend", 
+                                        delete_friend_profile_url, 
+                                          :class => "arrowButton", 
+                                          :title => "Remove as Friend") %>
+                          <%- else -%>
+                            <%= link_to("Add as Friend", 
+                                        create_friend_profile_url, 
+                                          :class => "arrowButton", 
+                                          :title => "Add as Friend") %>
+                          <%- end -%>
+                        </li>
+                      </ul>
+                    <%- end -%>
+                    <p><%= link_to("Go to #{t(:blist_company)} community", community_url, :class => "action") %></p>
+                  </div>
                 <%- end -%>
+                
+                
               </div>
               <%- if (@is_user_current) -%>
                 <div class="sectionEdit formListBox">

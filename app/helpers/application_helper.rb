@@ -193,7 +193,7 @@ HREF
       out += "<span class='ellipses'>...</span>"
     end
     if (current_page < num_pages)
-      out += link_to("Next", base_href + (current_page + 1).to_s, :class => "nextLink", :title => "Previous")
+      out += link_to("Next", base_href + (current_page + 1).to_s, :class => "nextLink", :title => "Next")
     end
     
     out += "</div>"

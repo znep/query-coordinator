@@ -61,6 +61,13 @@ class User < Model
     path = "/users/#{id}/followers.json"
     self.class.get_request(path)
   end
+  
+  def my_friend?
+    return false if current_user.nil
+    return followers.any? { |follower|
+      follower.id == current_user.id
+    }
+  end
 
   def self.login(login,password)
     get_request("/authenticate/#{login}.json?password=#{password}")

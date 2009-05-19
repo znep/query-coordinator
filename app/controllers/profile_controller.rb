@@ -90,4 +90,25 @@ class ProfileController < ApplicationController
       format.data { render :action => "create_link" }
     end
   end
+  
+  def create_friend
+    user_id = params[:id]
+    user = { :id => user_id }
+    Contact.create(user)
+    
+    respond_to do |format|
+      format.html { redirect_to(profile_url(user_id)) }
+      format.data { render :text => "created" }
+    end
+  end
+  
+  def delete_friend
+    user_id = params[:id]
+    Contact.delete(user_id)
+    
+    respond_to do |format|
+      format.html { redirect_to(profile_url(user_id)) }
+      format.data { render :text => "deleted" }
+    end
+  end
 end

@@ -50,24 +50,25 @@ module CommunitiesHelper
   def get_html_for_action_object(activity)
     out = ""
     case activity.action
-    when "join_blist", "update_profile", "add_profile_photo"
-      out = ""
-    else
-      out = "<a href='#{get_url_for_activity_action(activity)}'>#{h(activity.actedOnName)}</a>"
+    when "add_contact"
+      out = "<a href='#{profile_url(activity.actee.id)}'>#{h(activity.actee.displayName)}</a>"
+    when "create_view", "create_blist", "edit_blist", "comment", "rated", 
+          "comment_and_rate", "promote_dataset", "published", "moderate_comment", 
+          "rate_comment", "reply_to_comment"
+      out = "<a href='#{blist_url(activity.actedOnId)}'>#{h(activity.actedOnName)}</a>"
     end
+    out
   end
   
   def get_url_for_activity_action(activity)
-    out = ""
     case activity.action
     when "add_contact"
-      out = profile_url(activity.actedOnId)
+      out = profile_url(activity.actee.id)
     when "create_view", "create_blist", "edit_blist", "comment", "rated", 
           "comment_and_rate", "promote_dataset", "published", "moderate_comment", 
           "rate_comment", "reply_to_comment"
       out = blist_url(activity.actedOnId)
     end
-    out
   end
   
   def community_sort_select_options(current_sort = nil)

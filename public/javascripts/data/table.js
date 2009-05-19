@@ -849,14 +849,14 @@
             // Create the rendering function.  We precompile this for speed so
             // we can avoid tight loops, function calls, etc.
             var renderFnSource =
-                '(function(html, index, row) {' +
-                    'html.push(' +
-                        '"<div id=\'' + id + '-r", ' +
-                        '(row.id || row[0]), ' +
-                        '"\' class=\'blist-tr", ' +
-                        '(index % 2 ? " blist-tr-even" : ""), ' +
-                        '"\' style=\'top: ", ' +
-                        '(index * ' + rowOffset + '), "px\'>"';
+                '(function(html, index, row) {\
+                    html.push(\
+                        "<div id=\'' + id + '-r", \
+                        (row.id || row[0]), \
+                        "\' class=\'blist-tr", \
+                        (index % 2 ? " blist-tr-even" : ""), \
+                        "\' style=\'top: ", \
+                        (index * ' + rowOffset + '), "px\'>"';
             if (options.showRowNumbers)
             {
                 renderFnSource += ', "<div class=\'blist-table-handle '

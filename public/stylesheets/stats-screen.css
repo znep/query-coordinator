@@ -25,11 +25,6 @@
     font-weight: bold;
 }
 
-#printButton
-{
-    background-image: url(/stylesheets/images/common/print_icon.png);
-}
-
 .statsHeaderContainer
 {
     min-height: 5em;

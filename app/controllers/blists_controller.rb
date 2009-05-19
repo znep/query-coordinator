@@ -9,8 +9,6 @@ class BlistsController < SwfController
     @args = params.reject {|k,v| !accept_keys.include?(k)}.inject({}) do |h,(k,v)|
       h[k] = CGI.unescape(v); h
     end
-    @blists = get_blists(@args)
-    @title = get_title(@args)
   end
 
   def show
@@ -148,101 +146,6 @@ class BlistsController < SwfController
   end
 
 private
-
-  def get_blists(params = nil)
-    if params.nil?
-      params = Hash.new
-    end
-
-    opts = Hash.new
-    if !params['shared_to'].nil? && params['shared_to'] != current_user.id
-      opts['sharedTo'] = params['shared_to']
-    end
-    cur_views = View.find(opts)
-
-    if !params['owner'].nil?
-      cur_views = cur_views.find_all {|v| v.owner.id == params['owner']}
-    end
-    if !params['owner_group'].nil?
-      group = Group.find(params['owner_group'])
-      cur_views = cur_views.find_all {|v| group.users.any? {|u|
-        u.id == v.owner.id}}
-    end
-
-    if !params['shared_to'].nil? && params['shared_to'] == current_user.id
-      cur_views = cur_views.find_all {|v|
-        v.owner.id != params['shared_to'] && v.flag?('shared')}
-    end
-    if !params['shared_to_group'].nil?
-      cur_views = cur_views.find_all {|v| v.grants.any? {|g|
-        g.groupId == params['shared_to_group']}}
-    end
-
-    if !params['shared_by'].nil?
-      cur_views = cur_views.find_all {|v|
-        v.owner.id == params['shared_by'] && v.is_shared?}
-    end
-    if !params['shared_by_group'].nil?
-      group = Group.find(params['shared_by_group'])
-      cur_views = cur_views.find_all {|v| group.users.any? {|u|
-        u.id == v.owner.id && v.flag?('shared')}}
-    end
-
-    if params['type'] == 'filter'
-      cur_views = cur_views.find_all {|v| !v.flag?('default')}
-    elsif params['type'] == 'favorite'
-      cur_views = cur_views.find_all {|v| v.flag?('favorite')}
-    end
-
-    if !params['untagged'].nil? && params['untagged'] == 'true'
-      cur_views = cur_views.find_all {|v| v.tags.length < 1}
-    end
-    if !params['untagged'].nil? && params['untagged'] == 'false'
-      cur_views = cur_views.find_all {|v| v.tags.length > 0}
-    end
-    if !params['tag'].nil?
-      cur_views = cur_views.find_all {|v| v.tags.any? {|t|
-        t.data == params['tag']}}
-    end
-
-
-    # First, sort by name.
-    cur_views = cur_views.sort_by { |view| view.name }
-
-    # Re-organize the views with children under their parents. Maintain overall sorting.
-    # Stash all parent blists.
-    view_parents = Hash.new
-    # First loop, create a hash of parents, keyed on blistId.
-    cur_views.each do |v1|
-      if (v1.is_blist?)
-        view_parents[v1.blistId] = {
-          :rows_updated => v1.last_activity,
-          :views => [v1]
-        }
-      end
-    end
-    
-    # Second loop, if parent found in view_parents, add to the views array in the hash, otherwise create a new entry.
-    cur_views.each do |v2|
-      unless (v2.is_blist?)
-        if (view_parents.has_key?(v2.blistId))
-          view_parents[v2.blistId][:views] << v2
-        else
-          view_parents[v2.id] = {
-            :rows_updated => v2.last_activity,
-            :views => [v2]
-          }
-        end
-      end
-    end
-    return view_parents.sort do |a,b|
-      if b[1][:rows_updated] && a[1][:rows_updated]
-        b[1][:rows_updated] <=> a[1][:rows_updated]
-      else
-        1
-      end
-    end
-  end
 
   def get_views_with_ids(params = nil)
     cur_views = View.find_multiple(params)

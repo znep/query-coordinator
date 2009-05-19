@@ -16,7 +16,7 @@ blist.myBlists.sharedByGroupFilterGen = function(group)
     return function(view) {
         $.each(group.users, function(i, user) {
             if (user.id == view.owner.id && 
-                view.flags.indexOf("shared") != -1)
+                $.inArray("shared", view.flags) != -1)
                 return true;
         });
         return false;
@@ -33,7 +33,7 @@ blist.myBlists.ownedByFilterGen = function(userId)
 blist.myBlists.sharedToMeFilter = function(view)
 {
     return view.owner.id != myBlistsNS.currentUserId &&
-        view.flags.indexOf("shared") != -1;
+        $.inArray("shared", view.flags) != -1;
 }
 
 blist.myBlists.sharedToFilterGen = function(userId)
@@ -63,7 +63,7 @@ blist.myBlists.sharedByFilterGen = function(userId)
     return function(view) {
         $.each(view.grants, function(i, grant) {
             if ((grant.flags == undefined || 
-                grant.flags.indexOf('public') == -1) && 
+                $.inArray("public", grant.flags) == -1) && 
                 view.owner.id == userId)
                 return true;
         });
@@ -73,7 +73,7 @@ blist.myBlists.sharedByFilterGen = function(userId)
 
 blist.myBlists.defaultFilter = function(view)
 {
-    if (view.flags.indexOf('default') != -1)
+    if ($.inArray('default', view.flags) != -1)
     {
         return true;
     }
@@ -82,7 +82,7 @@ blist.myBlists.defaultFilter = function(view)
 
 blist.myBlists.filterFilter = function(view)
 {
-    if (view.flags.indexOf('default') == -1)
+    if ($.inArray('default', view.flags) == -1)
     {
         return true;
     }
@@ -119,7 +119,7 @@ blist.myBlists.tagFilterGen = function(tag)
 
 blist.myBlists.favoriteFilter = function(view)
 {
-    if (view.flags.indexOf('favorite') != -1)
+    if ($.inArray('favorite', view.flags) != -1)
     {
         return true;
     }
@@ -507,7 +507,7 @@ blist.myBlists.listCellClick = function(event, row, column, origEvent)
         case 'favorite':
             // Note that this would probably fire off an AJAX event before updating the value
             row.favorite = !row.favorite;
-            model.change([ row ]);
+            myBlistsNS.model.change([ row ]);
             // TODO: ajax 
             break;
     }
@@ -517,7 +517,7 @@ blist.myBlists.translateViewJson = function(views)
 {
     for (var i = 0; i < views.length; i++) {
         var view = views[i];
-        view.favorite = view.flags && view.flags.indexOf('favorite') != -1;
+        view.favorite = view.flags && $.inArray("favorite", view.flags) != -1;
         view.ownerName = view.owner && view.owner.displayName;
         if (!view.updatedAt)
             view.updatedAt = view.createdAt;

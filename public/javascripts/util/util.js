@@ -24,4 +24,9 @@ $.htmlUnescape = function(text)
         .replace(/&amp;/g, '&');
 };
 
+$.htmlStrip = function(text)
+{
+    return text.replace(/<[^>]*>/g, '');
+};
+
 })(jQuery);

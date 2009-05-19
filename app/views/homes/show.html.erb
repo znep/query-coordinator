@@ -16,7 +16,7 @@
             
             <ul class="actionButtons clearfix">
               <li><a href="<%= blist_href_new_blist %>">New <%= t(:blist_name).titleize %></a></li>
-              <li><%= link_to("Upload Data", {:controller => "imports", :action => "new"}, :class => 'arrowButton', :title => "Upload an XLS, CSV or other data file and we'll convert it into a dataset.") %> </li>
+              <li><%= link_to("Upload Data", {:controller => "imports", :action => "new"}, :class => 'arrowButton', :title => "Upload an XML, CSV or other data file and we'll convert it into a dataset.") %> </li>
               <li><%= link_to("Browse #{t(:blists_name).titleize}", discover_url) %></li>
               <%- if false -%><li class="last"><a href="#">Invite Others</a></li><%- end -%>
             </ul>

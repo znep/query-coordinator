@@ -47,7 +47,7 @@ $(function ()
             }
 
             // If we succeeded importing, redirect to the new view.
-            window.location = "/import/redirect?id=" + response.id; 
+            window.location = "/upload/redirect?id=" + response.id; 
         }
     });
 

@@ -214,7 +214,7 @@ blist.blistGrid.columnsChangedHandler = function (event, columnIds)
     //  have real column objects in JS, this is the easiest way
 
     // This shouldn't be cached, ever
-    $.ajax({ url: window.location.pathname,
+    $.ajax({ url: window.location.pathname, cache: false,
             data: 'dataComponent=mainMenu',
             success: blistGridNS.mainMenuLoaded});
 };
@@ -441,6 +441,11 @@ blist.blistGrid.addFilterMenu = function(col)
     // Remove the old filter menu if necessary
     var $menu = $('ul.columnHeaderMenu', col.dom);
     $menu.children('.autofilter').prev('.separator').andSelf().remove();
+    if (cf == null && colSum.topFrequencies.length < 1)
+    {
+        return;
+    }
+
     var filterStr =
             '<li class="autofilter submenu">\
                 <a href="#"><span class="highlight">Filter This Column</span></a>\
@@ -466,14 +471,19 @@ blist.blistGrid.addFilterMenu = function(col)
     $.each(colSum.topFrequencies, function (i, f)
     {
         var isMatching = cf != null && cf.value == f.value;
-        var escapedValue = $.htmlEscape(f.value + '');
+        var curType = blist.data.types[col.type] || blist.data.types['text'];
+        var escapedValue = curType.filterValue != null ?
+            curType.filterValue(f.value, col) : $.htmlStrip(f.value + '');
+        var renderedValue = curType.filterRender != null ?
+            curType.filterRender(f.value, col) : '';
         filterStr +=
             '<li class="filterItem' + (isMatching ? ' active' : '') +
                 ' scrollable">\
                 <a href="' +
                     (isMatching ? '#clear-filter-column_' : '#filter-column_') +
-                    col.index + '_' + escapedValue + '" title="' + escapedValue +
-                    '" class="clipText">' + escapedValue +
+                    col.index + '_' + escapedValue + '" title="' +
+                    $.htmlStrip(renderedValue) + '" class="clipText">' +
+                    renderedValue +
                 '</a>\
             </li>';
     });
@@ -554,6 +564,7 @@ blist.blistGrid.reloadSummary = function ()
             {originalViewId: modView.id, columns: null});
     $.ajax({url: '/views/INLINE/rows.json?method=getSummary',
             dataType: 'json',
+            cache: false,
             type: 'POST',
             contentType: 'application/json',
             data: $.json.serialize(tempView),
@@ -578,6 +589,42 @@ blist.blistGrid.reloadSummary = function ()
     });
 };
 
+// The favorite action in the info for single panel - when one blist is selected.
+blist.blistGrid.favoriteActionClick = function (event)
+{
+    event.preventDefault();
+
+    var $favLink = $(this);
+    var $favContainer = $favLink.closest("li");
+
+    var origHref = $favLink.attr("href");
+
+    $.ajax({
+        url: origHref,
+        type: "POST",
+        success: function(responseText, textStatus)
+        {
+            var isCreate = responseText == "created";
+
+            // Update the class of the list item.
+            $favContainer.removeClass(isCreate ? "false" : "true")
+                         .addClass(isCreate ? "true" : "false");
+            // Update the text of the link.
+            var linkText = isCreate ? "Remove from favorites" : "Add to favorites";
+            $favLink.text(linkText);
+            $favLink.attr("title", linkText);
+
+            // Update the link.
+            var newHref = isCreate ?
+                origHref.replace("create", "delete") :
+                origHref.replace("delete", "create");
+
+            $favLink.attr("href", newHref);
+        }
+    });
+};
+
+
 // This keeps track of when the column summary data is stale and needs to be
 // refreshed
 blist.blistGrid.summaryStale = true;
@@ -601,7 +648,7 @@ $(function ()
             .blistModel()
             .options({filterMinChars: 0, progressiveLoading: true})
             .ajax({url: '/views/' + blistGridNS.viewId + '/rows.json',
-                data: {accessType: 'WEBSITE'},
+                cache: false, data: {accessType: 'WEBSITE'},
                 dataType: 'json'});
     }
 
@@ -763,4 +810,6 @@ $(function ()
         loadSWF();
         blistGridNS.sizeSwf();
     }
+    
+    $(".favoriteAction a").click( blistGridNS.favoriteActionClick );
 });

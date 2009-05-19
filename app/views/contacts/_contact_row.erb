@@ -40,7 +40,7 @@
   </td>
   <td class='name'>
     <div class='clipText'>
-      <a href='#'><%= h(contact.name || contact.displayName) %></a>
+      <a href='<%= profile_url(contact.id) %>'><%= h(contact.displayName) %></a>
     </div>
   </td>
   <td class='tags'><div class='clipText'>

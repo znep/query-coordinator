@@ -1,4 +1,5 @@
 class Stat < Model
+  GRAPH_DIMENSIONS = "150x150"
   ROW_ACCESS_LEGEND = {
       "api" => "FF2C12", 
       "widget" => "2327C8",
@@ -32,9 +33,16 @@ class Stat < Model
     require 'gchart'
 
     colors = ROW_ACCESS_LEGEND
-    Gchart.pie(:data => colors.keys.collect{|k| self.rows_accessed[k].to_i },
-               :line_colors => colors.values,
-               :size => "150x150"
-              )
+    if rows_accessed.values.sum > 0
+        Gchart.pie(:data => colors.keys.collect{|k| self.rows_accessed[k].to_i },
+                   :line_colors => colors.values,
+                   :size => GRAPH_DIMENSIONS 
+                  )
+    else
+        Gchart.pie(:data => [1],
+                   :line_colors => ["666666"],
+                   :size => "150x150"
+                  )
+    end
   end
 end

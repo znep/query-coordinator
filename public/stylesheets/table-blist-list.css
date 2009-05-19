@@ -1,0 +1,153 @@
+.gridList
+{
+    position: relative;
+}
+
+.blist-table-title-tl
+{
+    padding-left: 8px;
+}
+
+.blist-table-title-tr
+{
+    display: none;
+}
+
+.blist-table-header-scrolls
+{
+    background: #e8e8e8 url(/stylesheets/images/content/table/header_right_top.png) no-repeat right top;
+}
+
+.blist-table-header-scrolls
+{
+    background-color: #e2e2e2;
+    border-bottom: none;
+}
+
+.blist-table
+{
+    position: relative;
+    background: transparent;
+    color: #333333;
+    font-family: arial, sans-serif;
+    font-size: 13px;
+}
+
+.blist-th .sort
+{
+    margin-bottom: 6px;
+    width: 12px;
+    background: transparent url(/stylesheets/images/content/table/icon_sort_down.png) right no-repeat;
+}
+
+.blist-th .sort-desc
+{
+    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
+}
+
+.blist-th-first
+{
+    background: url(/stylesheets/images/content/table/header_left_top.png) no-repeat left top;
+    border-left: none;
+    width: 33px;
+}
+
+.blist-th-favorite 
+{
+    background: transparent url(/stylesheets/images/content/table/icon_sorting_star.png) no-repeat center center;
+}
+
+.blist-th-type 
+{
+    background: transparent url(/stylesheets/images/content/table/icon_sorting_type.png) no-repeat center center;
+}
+
+.blist-th-favorite .blist-th-name, div.gridList .blist-th-type .blist-th-name 
+{
+    visibility: hidden;
+}
+
+.blist-th
+{
+    border-right: 1px solid #d4d4d4;
+    font-size: 1.2em;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    line-height: 0.7em;
+}
+
+.blist-td
+{
+    border-right: 1px solid #ffffff;
+    font-size: 1em;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.blist-td-header
+{
+    color:#E8A134;
+    font-size:1.1em;
+    text-indent:0;
+    text-transform:uppercase;
+}
+
+.blist-th, .blist-td
+{
+    font-weight: normal;
+    padding-left: 7px;
+    padding-right: 7px;
+    text-align:left;
+}
+
+.favoriteMarker 
+{
+    background:transparent url(/stylesheets/images/content/table/icon_favorite_sprite.png) no-repeat scroll left 27px;
+}
+
+div.blist-hot-row > div + div + div + div
+{
+    background-color:#ffedb2;
+    border-right: 1px solid #ffedb2;
+}
+
+div.blist-hot-row > div + div + div + div + div + div + div
+{
+    background-image:url(/stylesheets/images/content/table/highlight_end.png);
+    background-position:right center;
+    background-repeat:no-repeat;
+    border-right: none;
+}
+
+div.blist-hot-row > div.blist-td > div.blist-favorite-off
+{
+    background-image:url(/stylesheets/images/content/table/icon_favorite_sprite.png);
+    background-position: 5px -5px;
+}
+
+.blist-favorite-on
+{
+    background-image:url(/stylesheets/images/content/table/icon_favorite_sprite.png);
+    background-position: 5px 20px;
+}
+
+div.blist-type-default
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 10px -7px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-filter
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 10px -131px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-list-c2 > div
+{
+    height: 27px;
+}

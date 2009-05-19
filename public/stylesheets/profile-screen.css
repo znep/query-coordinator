@@ -66,6 +66,17 @@
 }
 
 
+#profile .publicProfileContentActions
+{
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+#profile .publicProfileContentActions li { margin: 0; }
+#profile .publicProfileContentActions li a { width: 8.5em; }
+#profile .publicProfileContentActions p { margin: .5em 0 0 .5em; }
+
+
 
 
 #profile .descriptionContent, 

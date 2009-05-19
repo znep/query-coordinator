@@ -387,7 +387,6 @@
                 {
                     index++;
                 }
-                index--;
                 var column = columns[index];
 
                 // Retrieve the row
@@ -449,7 +448,7 @@
                 .find('.blist-table-filter')
                 .keydown(applyFilter)
                 .change(applyFilter)
-                .example('Find Inside');
+                .example('Find');
             $title.find('.blist-table-clear-filter')
                 .click(clearFilter);
         }
@@ -822,11 +821,21 @@
                 pos += columns[i].width + paddingX;
 
                 // Add rendering information to the rendering function
-                var type = blist.data.types[col.type] || blist.data.types.text;
-                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]",
-                    col, contextVariables);
-                var cls = col.cls || type.cls;
-                cls = cls ? ' blist-td-' + cls : '';
+
+                if (col.renderer)
+                {
+                    var renderer = col.renderer("row[" + col.dataIndexExpr + "]", col, contextVariables); 
+                    // TODO: Give it some class?
+                    var cls = ''; 
+                }
+                else
+                {
+                    var type = blist.data.types[col.type] || blist.data.types.text;
+                    var renderer = type.renderGen("row[" + col.dataIndexExpr + "]", col, contextVariables);
+                    var cls = col.cls || type.cls;
+                    cls = cls ? ' blist-td-' + cls : '';
+                }
+
                 columnParts.push(
                     "\"<div class='blist-td " + colClasses[i] + cls + "'>\", " +
                         renderer + ", \"</div>\""
@@ -930,21 +939,15 @@
                     '<span class="blist-th-name">',
                     colName,
                     '</span>');
-                if (blist.data.types[col.type].filterable)
-                {
-                    html.push('<div class="filter"',
-                            options.generateHeights ? ' style="height: ' +
-                            rowOffset + 'px"' : '',
-                            '></div>');
-                }
-                if (blist.data.types[col.type].sortable)
-                {
-                    html.push(
-                            '<div class="sort sort-desc" title="Sort ascending"',
-                            options.generateHeights ? ' style="height: ' +
-                            rowOffset + 'px"' : '',
-                            '></div>');
-                }
+                html.push('<div class="filter"',
+                        options.generateHeights ? ' style="height: ' +
+                        rowOffset + 'px"' : '',
+                        '></div>');
+                html.push(
+                        '<div class="sort sort-desc" title="Sort ascending"',
+                        options.generateHeights ? ' style="height: ' +
+                        rowOffset + 'px"' : '',
+                        '></div>');
                 html.push('</div>');
             }
             if (options.showGhostColumn)
@@ -978,7 +981,8 @@
                     .click(function()
                     {
                         $(this).removeClass('hover');
-                        if (blist.data.types[columns[index].type].sortable)
+                        if ((blist.data.types[columns[index]] == undefined && columns[index].sortable) ||
+                            blist.data.types[columns[index].type].sortable)
                         {
                             sort(index);
                         }

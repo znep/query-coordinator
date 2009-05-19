@@ -8,9 +8,21 @@
 .left { float: left; }
 .right { float: right; }
 
-.links 
+.miniMenu
 {
-    
+    text-transform: uppercase;
+}
+.miniMenu div 
+{
+    display: inline;
+    margin-right: 15px;
+}
+
+.backButton
+{
+    vertical-align: top;
+    color: #666666;
+    font-weight: bold;
 }
 
 .statsHeaderContainer

@@ -25,13 +25,25 @@
       <ul class="clearfix">
         <li>Friends <strong><%= member.numberOfFriends %></strong></li>
         <%- if false -%>
-        <li>Activity Score <strong>[0]</strong></li>
+        <li>Socrata Grade <strong>[0]</strong></li>
         <%- end -%>
         <li>Followers <strong><%= member.numberOfFollowers %></strong></li>
         <li>Public <%= t(:blists_name) %> <strong><%= member.publicBlists %></strong></li>
       </ul>
       <ul class="memberActions actionButtons clearfix">
-        <li><%= link_to("<span>Follow</span>", profile_url(member.id)) %></li>
+        <%- if (!@current_user.nil?) -%>
+          <li>
+            <%- if (member.my_friend?) -%>
+              <%= link_to("<span>Remove</end>", 
+                          delete_friend_profile_url(member.id), 
+                          :class=> "followAction", :title => "Remove as Friend") %>
+            <%- else -%>
+              <%= link_to("<span>Add Friend</span>", 
+                          create_friend_profile_url(member.id), 
+                          :class=> "followAction", :title => "Add Friend") %>
+            <%- end -%>
+          </li>
+        <%- end -%>
         <li class="last"><%= link_to("<span>Profile</span>", profile_url(member.id), :class => "arrowButton") %></li>
       </ul>
     </div>

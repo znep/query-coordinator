@@ -58,6 +58,7 @@
       class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>">
       <%= page_single ? h(view.name) : link_to(h(view.name), view.href) %>
     </h2>
+    
     <ul class="headerActions actionButtons">
       <%- unless (page_single) -%>
         <li><a href="<%= view.href %>" class="arrowButton">Open</a></li>
@@ -70,6 +71,23 @@
         class="showFlashPopup">Share</a></li>
       <%- end -%>
     </ul>
+    
+    <%- if (!@current_user.nil?) -%>
+      <%-
+        if view.flag?("favorite")
+          favorite_action = "/blists/#{view.id}/delete_favorite"
+          favorite_action_text = "Remove from favorites"
+        else
+          favorite_action = "/blists/#{view.id}/create_favorite"
+          favorite_action_text = "Add to favorites"
+        end
+      -%>
+    <ul class="headerActions favoriteAction">
+      <li class="favorite <%= view.flag?('favorite') %>">
+        <a href="<%= favorite_action %>" title="<%= favorite_action_text %>"><%= favorite_action_text %></a>
+      </li>
+    </ul>
+    <%- end -%>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
@@ -460,6 +478,9 @@
       <li><%= link_to(image_tag("share_logo_twitter.png", :size => "32x32", :alt => "Twitter"), 
               "http://www.twitter.com/home?status=#{tweet + short_url}",
               :title => "Tweet this", :rel => "external") %></li>
+      <li><%= link_to(image_tag("share_logo_facebook.png", :size => "32x32", :alt => "Facebook"), 
+              "http://www.facebook.com/share.php?u=#{h(seo_url)}",
+              :title => "Share with your friends on Facebook", :rel => "external") %></li>
     </ul>
     
   </div>

@@ -61,6 +61,13 @@ class User < Model
     path = "/users/#{id}/followers.json"
     self.class.get_request(path)
   end
+  
+  def my_friend?
+    return false if current_user.nil
+    return followers.any? { |follower|
+      follower.id == current_user.id
+    }
+  end
 
   def self.login(login,password)
     get_request("/authenticate/#{login}.json?password=#{password}")
@@ -389,7 +396,7 @@ class User < Model
   }
   
   @@sorts = [
-    ["ACTIVITY", "Activity Score"],
+    ["ACTIVITY", "Socrata Grade"],
     ["ALPHA", "A - Z"],
     ["ALPHA_DESC", "Z - A"],
     ["NUM_OF_FOLLOWERS", "# of Followers"],

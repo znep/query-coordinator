@@ -483,6 +483,14 @@ table.gridList tr.child.hover.selected td.description > *
 
 /*** END: signup-screen ***/
 
+/*** START: import-screen ***/
+.import form .submitButton, .import form .arrowButton
+{
+    background-image: url(/stylesheets/images/gov/widgets/background_buttons_summary_sprites.png);
+}
+
+/*** END: import-screen ***/
+
 /*** START: list-screen ***/
 
 .headerBar h3 { color: #666; }

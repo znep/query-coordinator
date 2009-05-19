@@ -214,7 +214,7 @@ blist.blistGrid.columnsChangedHandler = function (event, columnIds)
     //  have real column objects in JS, this is the easiest way
 
     // This shouldn't be cached, ever
-    $.ajax({ url: window.location.pathname,
+    $.ajax({ url: window.location.pathname, cache: false,
             data: 'dataComponent=mainMenu',
             success: blistGridNS.mainMenuLoaded});
 };
@@ -564,6 +564,7 @@ blist.blistGrid.reloadSummary = function ()
             {originalViewId: modView.id, columns: null});
     $.ajax({url: '/views/INLINE/rows.json?method=getSummary',
             dataType: 'json',
+            cache: false,
             type: 'POST',
             contentType: 'application/json',
             data: $.json.serialize(tempView),
@@ -595,7 +596,7 @@ blist.blistGrid.favoriteActionClick = function (event)
 
     var $favLink = $(this);
     var $favContainer = $favLink.closest("li");
-    
+
     var origHref = $favLink.attr("href");
 
     $.ajax({
@@ -647,7 +648,7 @@ $(function ()
             .blistModel()
             .options({filterMinChars: 0, progressiveLoading: true})
             .ajax({url: '/views/' + blistGridNS.viewId + '/rows.json',
-                data: {accessType: 'WEBSITE'},
+                cache: false, data: {accessType: 'WEBSITE'},
                 dataType: 'json'});
     }
 

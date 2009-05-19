@@ -328,8 +328,7 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
             itemState = 'total';
 
             $.Tache.Get({ url: '/blists/detail',
-                    //TODO remove mock data and implement
-                data: 'items=' + '100',
+                data: 'items=' + myBlistsNS.model.length(),
                 success: blistsInfoNS.updateSummarySuccessHandler
             });
 
@@ -500,7 +499,6 @@ blist.myBlists.customLensOrBlist = function(value, column) {
 
 /* Functions for main blists screen */
 
-// TODO: Bug with grouping headers.
 blist.myBlists.listCellClick = function(event, row, column, origEvent) 
 {
     switch (column.dataIndex) {
@@ -535,6 +533,10 @@ blist.myBlists.initializeGrid = function()
 
     // Configure columns for the view list
     myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});
+
+    $('#blist-list').bind('load', function() {
+        blistsInfoNS.updateSummary(0);
+    });
 
     // Install a translator that tweaks the view objects so they're more conducive to grid display
     myBlistsNS.model.translate(myBlistsNS.translateViewJson);

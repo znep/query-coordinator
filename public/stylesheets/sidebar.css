@@ -17,6 +17,7 @@
     background-position: top left;
     background-repeat: no-repeat;
     margin-bottom: 0.5em;
+    min-height: 0;
 }
 
 #sidebar .box > .outerWrapper

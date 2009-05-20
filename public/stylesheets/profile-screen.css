@@ -52,11 +52,13 @@
     margin-right: .5em;
 }
 
+#profile .userCompany, #profile .userTitle, #profile .userTags { margin-right: 15em; } 
+
 #profile .editProfileContentActions
 {
     position: absolute;
     right: 0;
-    top: 1.6em;
+    top: 0;
 }
 
 #profile .editProfileContentActions a.action.first
@@ -253,6 +255,11 @@
 #profile .publicBlists .infoContentOuter
 {
     background-image: url(/stylesheets/images/profile/info_bottom_right_white.png);
+}
+#profile .publicBlists .infoContentInner
+{
+    background: none;
+    padding: 0;
 }
 
 #profile .publicBlists .infoContent

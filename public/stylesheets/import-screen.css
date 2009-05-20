@@ -57,8 +57,8 @@
 
 .import form .errorMessage
 {
-    line-height: 2em;
-    margin-left: 100px;
+    font-size: 1.2em;
+    line-height:2.5em;
 }
 
 .import form .submitButton

@@ -17,7 +17,14 @@ $(function ()
         responseType: 'json',
         onChange: function (file, ext)
         {
-            if (!(ext && /^(csv|xml)$/.test(ext)))
+            if(ext && /^(xls)$/.test(ext))
+            {
+                $('.errorMessage')
+                    .html('Uploading XLS files is coming soon. Until then, save it first as CSV');
+                $(".fileInputContainer input[type='text']").val('');
+                return false;
+            }
+            else if (!(ext && /^(tsv|csv|xml)$/.test(ext)))
             {
                 $('.errorMessage')
                     .html('Please choose a csv or xml file');

@@ -318,8 +318,8 @@ blist.myBlists.infoPane.updateSummary = function (numSelect)
 blist.myBlists.itemMenuSetup = function()
 {
     $('.blistItemMenu').dropdownMenu({
-        menuContainerSelector: "td.handle div",
-        triggerButtonSelector: "a.dropdownLink"
+        menuContainerSelector: "div.blist-list-c0 div",
+        triggerButtonSelector: "div.blist-list-c0 a.menuHandle"
     });
 };
 
@@ -453,7 +453,7 @@ blist.myBlists.customDate = function(value, column)
 
 blist.myBlists.customFav = function(value, column)
 {
-    return "\"<div class='blist-cell blist-favorite blist-favorite-\" + (" +
+    return "\"<div class='blist-favorite blist-favorite-\" + (" +
         value + " ? 'on' : 'off') + \"' title='\" + (" + value +
         " ? 'Remove from favorites' : 'Add to favorites') + \"'></div>\"";
 };
@@ -484,18 +484,70 @@ blist.myBlists.customClipText = function(value)
         \'">\' + $.htmlEscape(' + value + ' || "") + \'</div>\'';
 };
 
+blist.myBlists.listDropdown = function(div)
+{
+    $(div.childNodes[0]).dropdownMenu({
+        menuContainerSelector: "#" + div.id,
+        triggerButtonSelector: "a.menuHandle",
+        pullToTop: true
+    });
+}
+
+blist.myBlists.customHandle = function(value, column) {
+    var menu = "<ul class='blistItemMenu menu' id='itemMenu-\"+" + value + "+\"'>" +
+        "<li class='open'>" + 
+          "<a href='/dataset/foo/\"+" + value + "+\"' title='Open'>" + 
+            "<span class='highlight'>Open</span>" + 
+          "</a>" +
+        "</li>" + 
+        "<li class='addFavorite favoriteLink'>" + 
+          "<a href='/blists/\"+" + value + "+\"/create_favorite' title='Add to favorites'>" +
+            "<span class='highlight'>Add to favorites</span>" +
+          "</a>" +
+        "</li>" +
+        "<li class='rename renameLink'>" +
+          "<a href='/dataset/foo/\"+" + value + "+\"' title='Rename'>" +
+            "<span class='highlight'>Rename</span>" +
+          "</a>" +
+        "</li>" +
+        "<li class='delete'>" +
+          "<a href='#delete' title='Delete'>" +
+            "<span class='highlight'>Delete</span>" +
+          "</a>" +
+        "</li>" +
+        "<li class='footer'>" +
+          "<div class='outerWrapper'>" +
+            "<div class='innerWrapper'/>" +
+          "</div>" +
+        "</li>" +
+      "</ul>";
+    return "\"<div onmouseover='blist.myBlists.listDropdown(this)' id='dropdown-\"+" + value + "+\"'><a id='a-\"+" + value + "+\"' class='menuHandle' title='Open menu' href='#open_menu'>Blist Menu</a></div>" + menu + "\"";
+};
+
+
 /* Functions for main blists screen */
 
-blist.myBlists.listCellClick = function(event, row, column, origEvent)
+blist.myBlists.favoriteClick = function(row)
+{
+    if (!row.favorite)
+    {
+        $.post("/blists/" + row.id + "/create_favorite");
+    }
+    else
+    {
+        $.post("/blists/" + row.id + "/delete_favorite");
+    }
+    
+    row.favorite = !row.favorite;
+    myBlistsNS.model.change([row]);
+};
+
+blist.myBlists.listCellClick = function(event, row, column, origEvent) 
 {
     switch (column.dataIndex)
     {
         case 'favorite':
-            var favUrl = '/blists/' + row.id + '/' +
-                (row.favorite ? 'delete' : 'create' ) + '_favorite';
-            $.ajax({ url: favUrl, type: "POST" });
-            row.favorite = !row.favorite;
-            myBlistsNS.model.change([ row ]);
+            myBlistsNS.favoriteClick(row);
             break;
     }
 }
@@ -536,7 +588,7 @@ blist.myBlists.initializeGrid = function()
 }
 
 blist.myBlists.columns = [
-  { width: 32, dataIndex: null },
+  { width: 32, dataIndex: 'id', renderer: blist.myBlists.customHandle, sortable: false },
   { cls: 'favorite', name: 'Favorite?', width: 36, dataIndex: 'favorite',
     renderer: blist.myBlists.customFav, sortable: true},
   { cls: 'type', name: 'Type', width: 45, dataIndex: 'isDefault',
@@ -554,7 +606,8 @@ blist.myBlists.columns = [
 blist.myBlists.options = {
     cellExpandEnabled: false,
     manualResize: true,
-    showRowNumbers: false
+    showRowNumbers: false,
+    noExpand: true
 };
 
 $(function() {

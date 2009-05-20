@@ -125,7 +125,12 @@ div.blist-hot-row > div + div + div + div + div + div + div
 div.blist-hot-row > div.blist-td > div.blist-favorite-off
 {
     background-image:url(/stylesheets/images/content/table/icon_favorite_sprite.png);
-    background-position: 5px -5px;
+    background-position: 5px 0px;
+}
+
+div.blist-favorite
+{
+    height: 27px;
 }
 
 .blist-favorite
@@ -136,7 +141,7 @@ div.blist-hot-row > div.blist-td > div.blist-favorite-off
 .blist-favorite-on
 {
     background-image:url(/stylesheets/images/content/table/icon_favorite_sprite.png);
-    background-position: 5px 20px;
+    background-position: 5px 25px;
 }
 
 div.blist-type-default
@@ -170,4 +175,18 @@ div.blist-list-c2 > div
 .blist-td .clipText
 {
     overflow: hidden;
+}
+div.blist-hot-row .menuHandle 
+{
+    background:transparent url(/stylesheets/images/content/table/icon_double_arrow.png) no-repeat scroll left 100px;
+    background-position: 0px -8px;
+}
+
+.menuHandle
+{
+    display:block;
+    height:27px;
+    line-height:100px;
+    overflow:hidden;
+    width:27px;
 }

@@ -139,6 +139,8 @@
 
         var expandHotCell = function()
         {
+            if (options.noExpand) return;
+
             if (!hotCellTimer)
             {
                 return;

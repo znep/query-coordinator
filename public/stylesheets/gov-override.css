@@ -334,16 +334,19 @@ ul.menu li.button.next
 
 
 
-table.gridList tr.sortGroup td > * { color: #666; }
+table.gridList tr.sortGroup td > *,
+.gridList .blist-td-header { color: #666; }
 
 /* Hover rules */
 table.gridList tr.hover td+td+td+td > *,
-table.gridList tr.highlight td+td+td+td > * 
-{ 
-    background-color: #e3ecf7; 
+table.gridList tr.highlight td+td+td+td > *,
+.gridList div.blist-hot-row > div + div + div + div
+{
+    background-color: #e3ecf7;
 }
 table.gridList tr.hover td.last > *,
-table.gridList tr.highlight td.last > *
+table.gridList tr.highlight td.last > *,
+.gridList div.blist-hot-row > div + div + div + div + div + div + div
 {
     background-image: url(/stylesheets/images/gov/content/table/highlight_end.png);
 }

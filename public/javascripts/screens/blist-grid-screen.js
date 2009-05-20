@@ -607,8 +607,8 @@ blist.blistGrid.favoriteActionClick = function (event)
 
     $.ajax({
         url: origHref,
-        type: "POST",
-        success: function(responseText, textStatus)
+        type: "GET",
+        success: function(responseText)
         {
             var isCreate = responseText == "created";
 

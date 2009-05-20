@@ -45,7 +45,7 @@ blist.myBlists.favoriteClick = function (event)
 
     $.ajax({
         url: origHref,
-        type: "POST",
+        type: "GET",
         success: function(responseText, textStatus)
         {
             var isCreate = responseText == "created";
@@ -85,7 +85,7 @@ blist.myBlists.favoriteActionClick = function (event)
 
     $.ajax({
         url: origHref,
-        type: "POST",
+        type: "GET",
         success: function(responseText, textStatus)
         {
             var isCreate = responseText == "created";

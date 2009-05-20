@@ -1,2 +1,2 @@
-class Actee < Model
+class Actee < User
 end

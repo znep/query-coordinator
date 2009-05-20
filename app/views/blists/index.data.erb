@@ -1,0 +1,4 @@
+<%- @group_heading = nil -%>
+<% for parent_object in @blists %>
+  <%= render(:partial => "blists_row", :collection => parent_object[1][:views]) %>
+<% end %>

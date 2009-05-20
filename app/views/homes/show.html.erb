@@ -47,14 +47,14 @@
               </div>
             <%- end -%>
             
-            <%- if (@contacts.length > 0) -%>
+            <%- if (@contacts_activities.length > 0) -%>
               <div class="activityListContainer">
                 <h2>Friends Updates</h2>
                 <ul class="contactList">
                   <%= render( :partial => "contact_activity_list_item", 
-                              :collection => @contacts) %>
+                              :collection => @contacts_activities) %>
                 </ul>
-                <p class="listAction"><%= link_to("View All", contacts_url) %></p>
+                <p class="listAction"><%= link_to("View All", activities_community_url) %></p>
               </div>
             <%- end -%>
             

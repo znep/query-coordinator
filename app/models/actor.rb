@@ -1,2 +1,2 @@
-class Actor < Model
+class Actor < User
 end

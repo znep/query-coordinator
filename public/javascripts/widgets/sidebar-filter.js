@@ -40,13 +40,9 @@
             .removeClass(config.hilightClass);
         $target.addClass(config.hilightClass);
 
-        config.filterClickCallback($target);
-
-        if (!config.noRequest)
-        {
-            $.Tache.Get({ url: $target.attr('href'),
-                success: config.filterSuccessHandler});
-        }
+        config.filterClickCallback($target.attr('title'));
+        $.Tache.Get({ url: $target.attr('href'),
+            success: config.filterSuccessHandler});
     };
 
     var toggleSection = function (event)

@@ -1,5 +1,6 @@
 class StatsController < ApplicationController
   caches_page :index
+  skip_before_filter :require_user, :only => [:index]
 
   rescue_from ActionView::MissingTemplate do |exception|
     render 404

@@ -176,7 +176,7 @@ div.blist-list-c2 > div
 {
     overflow: hidden;
 }
-div.blist-hot-row .menuHandle 
+div.blist-hot-row .menuHandle
 {
     background:transparent url(/stylesheets/images/content/table/icon_double_arrow.png) no-repeat scroll left 100px;
     background-position: 0px -8px;
@@ -189,4 +189,10 @@ div.blist-hot-row .menuHandle
     line-height:100px;
     overflow:hidden;
     width:27px;
+}
+
+.blistItemMenu
+{
+    left: 16px;
+    top: 21px;
 }

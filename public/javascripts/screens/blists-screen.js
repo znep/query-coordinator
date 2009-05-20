@@ -484,44 +484,53 @@ blist.myBlists.customClipText = function(value)
         \'">\' + $.htmlEscape(' + value + ' || "") + \'</div>\'';
 };
 
-blist.myBlists.listDropdown = function(div)
+blist.myBlists.listDropdown = function()
 {
-    $(div.childNodes[0]).dropdownMenu({
-        menuContainerSelector: "#" + div.id,
-        triggerButtonSelector: "a.menuHandle",
-        pullToTop: true
-    });
+    var $div = $(this);
+    if (!$div.data('menu-applied'))
+    {
+        $div.find('ul.menu').dropdownMenu({
+            menuContainerSelector: "#" + $div.attr('id'),
+            triggerButtonSelector: "a.menuHandle",
+            pullToTop: true
+        });
+        $div.data('menu-applied', true);
+    }
 }
 
 blist.myBlists.customHandle = function(value, column) {
-    var menu = "<ul class='blistItemMenu menu' id='itemMenu-\"+" + value + "+\"'>" +
-        "<li class='open'>" + 
-          "<a href='/dataset/foo/\"+" + value + "+\"' title='Open'>" + 
-            "<span class='highlight'>Open</span>" + 
-          "</a>" +
-        "</li>" + 
-        "<li class='addFavorite favoriteLink'>" + 
-          "<a href='/blists/\"+" + value + "+\"/create_favorite' title='Add to favorites'>" +
-            "<span class='highlight'>Add to favorites</span>" +
-          "</a>" +
-        "</li>" +
-        "<li class='rename renameLink'>" +
-          "<a href='/dataset/foo/\"+" + value + "+\"' title='Rename'>" +
-            "<span class='highlight'>Rename</span>" +
-          "</a>" +
-        "</li>" +
-        "<li class='delete'>" +
-          "<a href='#delete' title='Delete'>" +
-            "<span class='highlight'>Delete</span>" +
-          "</a>" +
-        "</li>" +
-        "<li class='footer'>" +
-          "<div class='outerWrapper'>" +
-            "<div class='innerWrapper'/>" +
-          "</div>" +
-        "</li>" +
-      "</ul>";
-    return "\"<div onmouseover='blist.myBlists.listDropdown(this)' id='dropdown-\"+" + value + "+\"'><a id='a-\"+" + value + "+\"' class='menuHandle' title='Open menu' href='#open_menu'>Blist Menu</a></div>" + menu + "\"";
+    var menu = "<ul class='blistItemMenu menu' id='itemMenu-\"+" + value + "+\"'>\
+        <li class='open'>\
+          <a href='/dataset/foo/\"+" + value + "+\"' title='Open'>\
+            <span class='highlight'>Open</span>\
+          </a>\
+        </li>\
+        <li class='addFavorite favoriteLink'>\
+          <a href='/blists/\"+" + value +
+            "+\"/create_favorite' title='Add to favorites'>\
+            <span class='highlight'>Add to favorites</span>\
+          </a>\
+        </li>\
+        <li class='rename renameLink'>\
+          <a href='/dataset/foo/\"+" + value + "+\"' title='Rename'>\
+            <span class='highlight'>Rename</span>\
+          </a>\
+        </li>\
+        <li class='delete'>\
+          <a href='#delete' title='Delete'>\
+            <span class='highlight'>Delete</span>\
+          </a>\
+        </li>\
+        <li class='footer'>\
+          <div class='outerWrapper'>\
+            <div class='innerWrapper'/>\
+          </div>\
+        </li>\
+      </ul>";
+    return "\"<div class='blist-dropdown-container' id='dropdown-\"+" + value +
+        "+\"'><a id='a-\"+" + value +
+        "+\"' class='menuHandle' title='Open menu' href='#open_menu'>\
+            Blist Menu</a>" + menu + "</div>\"";
 };
 
 
@@ -572,6 +581,8 @@ blist.myBlists.initializeGrid = function()
         .blistTable(myBlistsNS.options)
         .bind('cellclick', myBlistsNS.listCellClick)
         .blistModel();
+
+    $('#blist-list .blist-dropdown-container').live('mouseover', myBlistsNS.listDropdown);
 
     // Configure columns for the view list
     myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});

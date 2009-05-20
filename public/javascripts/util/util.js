@@ -29,17 +29,4 @@ $.htmlStrip = function(text)
     return text.replace(/<[^>]*>/g, '');
 };
 
-$.urlSafe = function(text)
-{
-    var output = text
-        .replace(/\s+/g, '-')
-        .replace(/[^a-zA-Z0-9_\-]/g, '')
-        .replace(/\-+/g, '-');
-    if (output.length < 1)
-    {
-      output = '-';
-    }
-    return output.slice(0, 50);
-};
-
 })(jQuery);

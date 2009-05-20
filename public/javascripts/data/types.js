@@ -102,16 +102,8 @@ blist.namespace.fetch('blist.data.types');
 
     var groupText = function(value) {
         if (value == null || value == "")
-            return "Empty";
-        return (value + "").substring(0, 1).toUpperCase();
-    }
-
-    var groupDate = function(value) {
-        if (value == null || value == "")
             return "";
-
-        return blist.util.humaneDate.getFromDate
-                    (new Date(value * 1000), blist.util.humaneDate.DAY);
+        return (value + "").substring(0, 1).toUpperCase();
     }
     
 
@@ -561,7 +553,6 @@ blist.namespace.fetch('blist.data.types');
             filterValue: renderFilterDate,
             sortable: true,
             filterable: true,
-            group: groupDate
         },
 
         photo: {

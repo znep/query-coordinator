@@ -1,6 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "table-core", "table-blist-list", "list-screen", 
-    "blists-screen", "widgets",
+  <%= stylesheet_link_tag "list-screen", "blists-screen", "widgets",
     :cache => "cache/blists_index_all" %>
   <title><%= t(:page_title) %></title>
 <% end %>
@@ -39,13 +38,16 @@
               </li>
             </ul>
 
-        </div>
+          </div>
 
-          <div class="gridListContainer">
+          <div class='gridListContainer'>
             <%#
              This div will hold a copy of the table that displays the header
             %>
-            <div class="gridList scrollContent" id="blist-list"></div>
+            <div class='headerContainer'></div>
+            <div class='gridListInner scrollContent'>
+              <%= render(:partial => "blist_list") %>
+            </div>
           </div>
           
           <%- if (!current_user.is_established?) -%>
@@ -108,13 +110,9 @@
               {'type' => 'favorite'}, @args) %>
           <%= menu_tag({'id' => 'typeMenu', 'items' => [
             { 'text' => 'Favorites', 'href' => '?type=favorite',
-                'title' => h(get_title({'type' => 'favorite'})),
-                'q' => "{'type': 'favorite'}" 
-            },
+              'title' => h(get_title({'type' => 'favorite'})) },
             { 'text' => 'Filtered Views', 'href' => '?type=filter',
-                'title' => h(get_title({'type' => 'filter'})),
-                'q' => "{'type': 'filter'}"
-            }]}) %>
+              'title' => h(get_title({'type' => 'filter'}))}]}) %>
           </li>
           <%# Deleted items not yet supported, but styled for future
           <li class="deleted"><a href='?filter=deleted:true'><span>Deleted Items</span></a></li>
@@ -173,18 +171,14 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
-    "util/humane-date", "data/types", "data/model", "data/table",
+  <%= javascript_include_tag "plugins/jquery.tablesorter",
+    "plugins/jquery.treeTable", "plugins/jquery.searchable", "util/humane-date",
     "widgets/panel-expander", "widgets/dropdown-menu", "widgets/selectable-list",
-    "widgets/sidebar-filter", "widgets/pagination",
+    "widgets/combination-list", "widgets/sidebar-filter", "widgets/pagination",
     "widgets/info-pane-comments", "screens/blists-screen", "screens/info-pane",
     :cache => "cache/blists_index_all" %>
     <script type="text/javascript" charset="utf-8">
       var form_authenticity_token = "<%= form_authenticity_token %>";
       var request_forgery_protection_token = "<%= request_forgery_protection_token %>";
-
-      blist.namespace.fetch('blist.myBlists');
-      blist.myBlists.viewUrl = "/users/<%= current_user.id %>/views.json";
-      blist.myBlists.currentUserId = "<%= current_user.id %>";
     </script>
 <% end %>

@@ -14,7 +14,7 @@
  * <ul>
  *   <li>columns - a list of column configuration objects</li>
  *   <li>view - a Blist view object, used to configure options that aren't otherwise set</li>
- *   <li>title - the name displayed as the title of the grid</li>
+ *   <li>name - the name displayed as the title of the grid</li>
  * </ul>
  *
  * Columns are described using an object with the following fields:

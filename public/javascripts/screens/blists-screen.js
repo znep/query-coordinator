@@ -484,11 +484,8 @@ blist.myBlists.customDate = function(value, column) {
     return formatted;
 };
 
-blist.myBlists.customFav = function(value, column)
-{
-    return "\"<div class='blist-cell blist-favorite blist-favorite-\" + (" +
-        value + " ? 'on' : 'off') + \"' title='\" + (" + value +
-        " ? 'Remove from favorites' : 'Add to favorites') + \"'></div>\"";
+blist.myBlists.customFav = function(value, column) {
+    return "\"<div class='blist-cell blist-favorite-\" + (" + value + " ? 'on' : 'off') + \"'></div>\"";
 };
 
 blist.myBlists.customDateMeta = function(value, column) {
@@ -496,22 +493,20 @@ blist.myBlists.customDateMeta = function(value, column) {
 };
 
 blist.myBlists.customLensOrBlist = function(value, column) {
-    return "\"<div class='blist-type-\" + (" + value + " ? 'default': 'filter') + \"'></div>\"";
+    return "\"<div class='blist-type-\" + (" + value + ".indexOf('default') >= 0 ? 'default': 'filter') + \"'></div>\"";
 };
 
 
 /* Functions for main blists screen */
 
-blist.myBlists.listCellClick = function(event, row, column, origEvent)
+blist.myBlists.listCellClick = function(event, row, column, origEvent) 
 {
-    switch (column.dataIndex)
-    {
+    switch (column.dataIndex) {
         case 'favorite':
-            var favUrl = '/blists/' + row.id + '/' +
-                (row.favorite ? 'delete' : 'create' ) + '_favorite';
-            $.ajax({ url: favUrl, type: "POST" });
+            // Note that this would probably fire off an AJAX event before updating the value
             row.favorite = !row.favorite;
             myBlistsNS.model.change([ row ]);
+            // TODO: ajax 
             break;
     }
 }
@@ -521,7 +516,6 @@ blist.myBlists.translateViewJson = function(views)
     for (var i = 0; i < views.length; i++) {
         var view = views[i];
         view.favorite = view.flags && $.inArray("favorite", view.flags) != -1;
-        view.isDefault = view.flags && $.inArray("default", view.flags) != -1;
         view.ownerName = view.owner && view.owner.displayName;
         if (!view.updatedAt)
             view.updatedAt = view.createdAt;
@@ -554,7 +548,7 @@ blist.myBlists.initializeGrid = function()
 blist.myBlists.columns = [
   { width: 32, dataIndex: null },
   { cls: 'favorite', name: 'Favorite?', width: 36, dataIndex: 'favorite', renderer: blist.myBlists.customFav, sortable: true},
-  { cls: 'type', name: 'Type', width: 45, dataIndex: 'isDefault', renderer: blist.myBlists.customLensOrBlist, sortable: true },
+  { cls: 'type', name: 'Type', width: 45, dataIndex: 'flags', renderer: blist.myBlists.customLensOrBlist, sortable: true },
   { name: 'Name', percentWidth: 20, dataIndex: 'name', group: true, sortable: true },
   { name: 'Description', percentWidth: 40, dataIndex: 'description', group: true, sortable: true },
   { name: 'Owner', percentWidth: 20, dataIndex: 'ownerName', group: true, sortable: true},

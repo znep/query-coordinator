@@ -1134,8 +1134,7 @@ blist.namespace.fetch('blist.data');
         // Generate group headers based on the current grouping configuration.
         // Does not fire events.  Note that grouping is not currently supported
         // in progressive rendering mode.
-        var doGroup = function()
-        {
+        var doGroup = function() {
             removeSpecialRows();
             if (!groupFn || !orderCol)
                 return;
@@ -1148,17 +1147,14 @@ blist.namespace.fetch('blist.data');
                     active.splice(i, 0, {
                         _special: true,
                         type: 'group',
-                        title: group,
-                        id: 'special-' + i
-                    });
+                        title: group
+                    })
                     i++;
                     currentGroup = group;
                 }
                 i++;
             }
-            // Update ID lookup
-            installIDs(true);
-        };
+        }
 
         if (meta)
             this.meta(meta);

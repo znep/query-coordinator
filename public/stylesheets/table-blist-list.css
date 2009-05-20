@@ -27,6 +27,10 @@
 .blist-table
 {
     position: relative;
+    background: transparent;
+    color: #333333;
+    font-family: arial, sans-serif;
+    font-size: 13px;
 }
 
 .blist-th .sort
@@ -66,7 +70,7 @@
 .blist-th
 {
     border-right: 1px solid #d4d4d4;
-    font-size: 1.4em;
+    font-size: 1.2em;
     padding-top: 13px;
     padding-bottom: 13px;
     line-height: 0.7em;
@@ -75,7 +79,7 @@
 .blist-td
 {
     border-right: 1px solid #ffffff;
-    font-size: 1.2em;
+    font-size: 1em;
     padding-top: 7px;
     padding-bottom: 7px;
 }
@@ -83,7 +87,7 @@
 .blist-td-header
 {
     color:#E8A134;
-    font-size:1.3em;
+    font-size:1.1em;
     text-indent:0;
     text-transform:uppercase;
 }
@@ -96,20 +100,7 @@
     text-align:left;
 }
 
-.blist-td.blist-list-c1,
-.blist-td.blist-list-c2
-{
-    height: 27px;
-    padding: 0 7px;
-}
-
-div.blist-table-expander
-{
-    background-color: #ffffff;
-    border: solid 1px #e2e2e2;
-}
-
-.favoriteMarker
+.favoriteMarker 
 {
     background:transparent url(/stylesheets/images/content/table/icon_favorite_sprite.png) no-repeat scroll left 27px;
 }
@@ -132,11 +123,6 @@ div.blist-hot-row > div.blist-td > div.blist-favorite-off
 {
     background-image:url(/stylesheets/images/content/table/icon_favorite_sprite.png);
     background-position: 5px -5px;
-}
-
-.blist-favorite
-{
-    cursor: pointer;
 }
 
 .blist-favorite-on

@@ -29,6 +29,10 @@ class Stat < Model
     return rows_accessed.values.sum
   end
 
+  def averageRating
+    (data['averageRating'] || 0) / 20.0
+  end
+
   def row_access_chart_href
     require 'gchart'
 

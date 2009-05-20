@@ -37,7 +37,8 @@ module ApplicationHelper
     (options['option_menu'] ? " optionMenu" : '') << "'>"
 
     items.each do |i|
-      if (i['owner_item'] && !is_owner) || (i['swf_item'] && !can_edit)
+      if (i['owner_item'] && !is_owner) || (i['swf_item'] && !can_edit) ||
+        (i['user_required'] && !current_user)
         next
       end
 

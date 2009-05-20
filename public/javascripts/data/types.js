@@ -552,7 +552,7 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterDate,
             filterValue: renderFilterDate,
             sortable: true,
-            filterable: true,
+            filterable: true
         },
 
         photo: {

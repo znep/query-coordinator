@@ -187,6 +187,9 @@ body.community #mainNav li.community
 
 .activityListContainer h2 { color: #666; }
 
+#jqmAlert .actionButtons li { background-position: left -63px; }
+#jqmAlert .actionButtons li a.arrowButton { background-position: right -105px; }
+
 /*** END: common ***/
 
 /*** START: sidebar ***/

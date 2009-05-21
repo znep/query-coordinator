@@ -58,8 +58,8 @@ ActionController::Routing::Routes.draw do |map|
       :detail => :get,
       :post_comment => :post,
       :update_comment => [:put, :get],
-      :create_favorite => :post,
-      :delete_favorite => :post
+      :create_favorite => :get,
+      :delete_favorite => :get
     } do |blist|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
     end

@@ -272,7 +272,13 @@ blist.blistGrid.mainMenuHandler = function(event)
             blist.util.flashInterface.showPopup('PickListBrowser');
             break;
         case 'email':
-            blist.util.flashInterface.showPopup('EmailDialog');
+            $.ajax({url: '/views/' + blistGridNS.viewId + '/rows.html',
+                data: {'method': 'email'},
+                cache: false,
+                success: function (resp)
+                {
+                    alert('This dataset has been sent to you.');
+                }});
             break;
         case 'permissions':
             blist.util.flashInterface.showPopup('PermissionsDialog');
@@ -601,8 +607,8 @@ blist.blistGrid.favoriteActionClick = function (event)
 
     $.ajax({
         url: origHref,
-        type: "POST",
-        success: function(responseText, textStatus)
+        type: "GET",
+        success: function(responseText)
         {
             var isCreate = responseText == "created";
 

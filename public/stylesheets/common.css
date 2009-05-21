@@ -423,3 +423,41 @@ private
     z-index: 99;
 }
 
+/*** Common alert dialog ***/
+
+#jqmAlert
+{
+    display: none;
+    left: 50%;
+    margin-left: -15em;
+    min-height: 0;
+    position: fixed;
+    top: 7em;
+    width: 30em;
+}
+
+/* For now turn off corners until we get nice drop-shadows for the dialog */
+#jqmAlert,
+#jqmAlert .mainContent
+{
+    background-image: none;
+}
+
+#jqmAlert .alertMessage
+{
+    font-size: 1.3em;
+}
+
+#jqmAlert .actionButtons li
+{
+    background-position: left -126px;
+    float: right;
+}
+
+#jqmAlert .actionButtons li a.arrowButton
+{
+    background-position: right -42px;
+}
+
+.jqmOverlay { background-color: #000; }
+

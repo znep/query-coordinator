@@ -52,7 +52,8 @@
  *
  * <ul>
  *   <li>level - the level of the row, or -1 if the row is "special" (that is, uses a custom renderer)
- *   <li>expanded - true iff the row is in a selected state
+ *   <li>expanded - true iff the row is in an "open" state
+ *   <li>children - columns that are nested within this column, if applicable
  * </ul>
  *
  * Each row is identified by an ID.  IDs must be unique across rows.  If column data is stored in an object then the
@@ -430,7 +431,7 @@ blist.namespace.fetch('blist.data');
                         break;
 
                     case 'blist_in_blist':
-                    case 'table':
+                    case 'nested_table':
                         // Create the "body" column that appears in the next level
                         var children = [];
                         col.body = {
@@ -829,6 +830,9 @@ blist.namespace.fetch('blist.data');
             } else if (expanded)
                 delete expanded[row.id || row[0]];
 
+            // Update IDs for the rows that moved
+            installIDs(true);
+
             // Fire events
             dataChange([ row ]);
         }
@@ -1222,9 +1226,11 @@ blist.namespace.fetch('blist.data');
         // active set and then notifies listeners of the data change.
         var configureActive = function(filterSource) {
             removeSpecialRows();
-            if (filterFn)
-                doFilter(filterSource);
             var idChange;
+            if (filterFn) {
+                doFilter(filterSource);
+                idChange = true;
+            }
             if (groupFn) {
                 doGroup();
                 idChange = true;

@@ -15,7 +15,7 @@ class Datatype < Model
     ]
 
     case type.downcase
-    when "blist_in_blist", "picklist"
+    when "nested_table", "picklist"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "photo", "phone", "checkbox", "flag", "url",
       "email", "document", "tag"

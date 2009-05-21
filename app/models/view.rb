@@ -118,7 +118,7 @@ class View < Model
   end
 
   def user_role(user_id)
-    if (user_id == blistOwner.id)
+    if (user_id == tableOwner.id)
       I18n.t(:blist_name) + " Author"
     elsif (user_id == owner.id)
       "View Author"
@@ -200,9 +200,9 @@ class View < Model
   end
 
   def filters
-    # TODO: Pass get_all=true when the server supports blistId under /views
+    # TODO: Pass get_all=true when the server supports tableId under /views
     if User.current_user
-      View.find({"blistId" => self.blistId}).reject {|l| l.is_blist?}
+      View.find({"tableId" => self.tableId}).reject {|l| l.is_blist?}
     else
       []
     end

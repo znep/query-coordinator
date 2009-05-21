@@ -57,7 +57,7 @@ class BlistsController < SwfController
       end
 
       if !@view.is_blist?
-        par_view = View.find({'blistId' => @view.blistId}, true).
+        par_view = View.find({'tableId' => @view.tableId}, true).
           find {|v| v.is_blist?}
         if (!par_view.nil?)
           @is_child_view = true
@@ -212,10 +212,10 @@ private
     # Re-organize the views with children under their parents. Maintain overall sorting.
     # Stash all parent blists.
     view_parents = Hash.new
-    # First loop, create a hash of parents, keyed on blistId.
+    # First loop, create a hash of parents, keyed on tableId.
     cur_views.each do |v1|
       if (v1.is_blist?)
-        view_parents[v1.blistId] = {
+        view_parents[v1.tableId] = {
           :rows_updated => v1.last_activity,
           :views => [v1]
         }
@@ -225,8 +225,8 @@ private
     # Second loop, if parent found in view_parents, add to the views array in the hash, otherwise create a new entry.
     cur_views.each do |v2|
       unless (v2.is_blist?)
-        if (view_parents.has_key?(v2.blistId))
-          view_parents[v2.blistId][:views] << v2
+        if (view_parents.has_key?(v2.tableId))
+          view_parents[v2.tableId][:views] << v2
         else
           view_parents[v2.id] = {
             :rows_updated => v2.last_activity,

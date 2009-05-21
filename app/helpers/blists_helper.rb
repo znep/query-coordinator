@@ -172,7 +172,7 @@ module BlistsHelper
     dtt = column.dataType.type.downcase
     if dtt == 'date'
       dtt = 'dateTime'
-    elsif dtt == 'blist_in_blist'
+    elsif dtt == 'nested_table'
       dtt = 'bnb'
     elsif dtt == 'text'
       dtt = 'plainText'

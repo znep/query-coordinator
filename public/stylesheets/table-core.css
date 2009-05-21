@@ -97,6 +97,11 @@ div.blist-table .blist-td.blist-tdh
     color: #666666;
 }
 
+div.blist-table .blist-tr-open .blist-td.blist-tdh {
+    color: #333333;
+    font-weight: bold;
+}
+
 .blist-td.blist-opener {
     background-image: url('/stylesheets/images/content/table/expand_closed.png');
     background-position: center center;

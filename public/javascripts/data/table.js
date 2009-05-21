@@ -727,6 +727,15 @@
             var generatedCode = '';
             if (prefix)
                 colParts.push(prefix);
+
+            // Utility function that writes a push for all column parts
+            var completeStatement = function() {
+                if (colParts.length) {
+                    generatedCode += 'html.push(' + colParts.join(',') + ');';
+                    colParts = [];
+                }
+            }
+
             for (var j = 0; j < mcols.length; j++)
             {
                 // Initialize style information for the column
@@ -737,6 +746,10 @@
 
                 if (mcol.body) {
                     // Nested table header -- render headers for child columns and set width based on child widths
+                    completeStatement();
+
+                    generatedCode +=
+                        "if (row" + mcol.dataLookupExpr + " && row" + mcol.dataLookupExpr + ".length)";
                     var childHPos = openerWidth + paddingX;
                     colParts.push("\"<div class='blist-td blist-tdh blist-opener " + openerClass + "'></div>\"");
                     var children = mcol.body.children;
@@ -747,15 +760,15 @@
                             htmlEscape(child.name) + "</div>\"");
                         childHPos += child.width + paddingX;
                     }
+                    completeStatement();
+
+                    generatedCode += "else " +
+                        "html.push('<div class=\"blist-td " + getColumnClass(mcol) + "\">&nbsp;</div>');";
+
                     colWidth = childHPos;
                 } else if (mcol.children) {
                     // Nested table row -- render cells if the row is present or filler if not
-
-                    // Complete the statement for columns preceding this because we're going to make an "if" statement
-                    if (colParts.length) {
-                        generatedCode += 'html.push(' + colParts.join(',') + ');';
-                        colParts = [];
-                    }
+                    completeStatement();
 
                     // Add the code.  If no record is present we add a filler row; otherwise we add the rows.  This is
                     // just getting ridiculous
@@ -802,8 +815,7 @@
             if (hpos > insideWidth)
                 insideWidth = hpos;
 
-            if (colParts.length)
-                generatedCode += 'html.push(' + colParts.join(',') + ');';
+            completeStatement();
             
             return generatedCode;
         }

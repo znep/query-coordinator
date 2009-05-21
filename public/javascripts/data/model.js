@@ -103,6 +103,9 @@ blist.namespace.fetch('blist.data');
         var filterText = "";
         var filterTimer;
 
+        // Expanded row configuration
+        var expanded;
+
         // Grouping configuration
         var groupFn;
 
@@ -564,14 +567,8 @@ blist.namespace.fetch('blist.data');
                     doSort();
                 }
 
-                // Apply filtering and grouping (filtering calls grouping so we
-                // never need to call both)
-                if (filterFn)
-                    doFilter(active);
-                else if (groupFn)
-                    doGroup();
-
-                dataChange();
+                // Apply filtering and grouping
+                configureActive(active);
             }
 
             return active;
@@ -746,18 +743,35 @@ blist.namespace.fetch('blist.data');
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
-            if (filterFn)
-            {
-                doFilter(active);
-            }
-            else if (groupFn)
-            {
-                doGroup();
-            }
-
-            // Notify listeners
-            dataChange();
+            configureActive(active);
         };
+
+        var getChildRows = function(row) {
+            if (row.childRows)
+                return row.childRows;
+
+            var cols = meta.columns[row.level || 0];
+            var childRows = row.childRows = [];
+
+            for (var i = 0; i < cols.length; i++) {
+                var col = cols[i];
+                if (!col.body)
+                    continue;
+                var cell = row[col.dataIndex];
+                if (!cell || !cell.length)
+                    continue;
+                for (var j = 0; j < cell.length; j++) {
+                    var childRow = childRows[j] || (childRows[j] = []);
+                    childRow.id = "t" + nextTempID++;
+                    childRow.level = (row.level || 0) + 1;
+                    childRow[col.dataIndex] = cell[j];
+                }
+            }
+            
+            if (childRows.length)
+                childRows[childRows.length - 1].groupLast = true;
+            return childRows;
+        }
 
         /**
          * Open or close a row (open rows display nested records).
@@ -771,35 +785,19 @@ blist.namespace.fetch('blist.data');
                 return;
 
             // Create child rows
-            var cols = meta.columns[row.level || 0];
             if (open) {
                 // Create the child rows
-                var childRows = row.childRows = [];
-                for (var i = 0; i < cols.length; i++) {
-                    var col = cols[i];
-                    if (!col.body)
-                        continue;
-                    var cell = row[col.dataIndex];
-                    if (!cell || !cell.length)
-                        continue;
-                    for (var j = 0; j < cell.length; j++) {
-                        var childRow = childRows[j] || (childRows[j] = []);
-                        childRow.id = "t" + nextTempID++;
-                        childRow.level = (row.level || 0) + 1;
-                        childRow[col.dataIndex] = cell[j];
-                    }
-                }
-                if (childRows.length)
-                    childRows[childRows.length - 1].groupLast = true;
+                var childRows = getChildRows(row);
 
                 // Install child rows into the active set if the row is open
-                for (i = 0; i < active.length; i++) {
+                if (active == rows)
+                    active = active.slice();
+                for (var i = 0; i < active.length; i++)
                     if (active[i] == row) {
                         var after = active.splice(i + 1, active.length - i + 1);
                         active = active.concat(childRows).concat(after);
                         break;
                     }
-                }
             } else {
                 // Remove the child rows
                 if (row.childRows && row.childRows.length)
@@ -812,6 +810,12 @@ blist.namespace.fetch('blist.data');
 
             // Record the new row state
             row.expanded = open;
+            if (open) {
+                if (!expanded)
+                    expanded = {};
+                expanded[row.id || row[0]] = true;
+            } else if (expanded)
+                delete expanded[row.id || row[0]];
 
             // Fire events
             dataChange([ row ]);
@@ -933,7 +937,7 @@ blist.namespace.fetch('blist.data');
                 {
                     // If it is a full row, then update rows with it (even if
                     //  this row was already loaded, since it may have updated data)
-                    var curRow = active[i];
+                    curRow = active[i];
                     var rowPos = lookup[curRow.id || curRow[0]];
                     if (rowPos == undefined)
                     {
@@ -979,14 +983,12 @@ blist.namespace.fetch('blist.data');
                 // Filter, but only after a short timeout
                 filterTimer = setTimeout(function() {
                     window.clearTimeout(filterTimer);
-                    doFilter(toFilter || active);
-                    dataChange();
+                    configureActive(toFilter || active);
                 }, 250);
             }
             else
             {
-                doFilter(toFilter);
-                dataChange();
+                configureActive(toFilter);
             }
         };
 
@@ -1081,47 +1083,6 @@ blist.namespace.fetch('blist.data');
                 text.replace(/(\/|\.|\*|\+|\?|\||\(|\)|\[|\]|\{|\})/g, "\\$1"),
                 modifiers);
         };
-
-        // Run filtering based on current filter configuration.  Does not fire
-        // events
-        var doFilter = function(toFilter)
-        {
-            // Remove the filter timer, if any
-            if (filterTimer)
-            {
-                window.clearTimeout(filterTimer);
-                filterTimer = null;
-            }
-
-            // Remove any header records (group titles, expanded rows, etc.) from the filter set
-            if (toFilter == active)
-                removeSpecialRows();
-
-            if (self.isProgressiveLoading())
-            {
-                getTempView();
-                // Bail out early, since the server does the sorting
-                return;
-            }
-
-            // Perform the actual filter
-            active = $.grep(toFilter || rows, filterFn);
-
-            // Generate group headers if grouping is enabled
-            if (groupFn)
-                doGroup();
-        }
-
-        // Remove "special" (non-data or nested) rows
-        var removeSpecialRows = function() {
-            var i = 0;
-            while (i < active.length) {
-                if (active[i].level)
-                    active.splice(i, 1);
-                else
-                    i++;
-            }
-        }
 
         /* Clear out the filter for a particular column.  Takes a column obj
          *  or a column index.
@@ -1245,6 +1206,59 @@ blist.namespace.fetch('blist.data');
             getTempView();
         };
 
+        // Apply filtering, grouping, and sub-row expansion to the active set.  This applies current settings to the
+        // active set and then notifies listeners of the data change.
+        var configureActive = function(filterSource) {
+            removeSpecialRows();
+            if (filterFn)
+                doFilter(filterSource);
+            var idChange;
+            if (groupFn) {
+                doGroup();
+                idChange = true;
+            }
+            if (expanded) {
+                doExpansion();
+                idChange = true;
+            }
+            if (idChange)
+                installIDs(true);
+            dataChange();
+        }
+
+        // Remove "special" (non-data or nested) rows
+        var removeSpecialRows = function() {
+            var i = 0;
+            while (i < active.length) {
+                if (active[i].level)
+                    active.splice(i, 1);
+                else
+                    i++;
+            }
+        }
+
+        // Run filtering based on current filter configuration.  Does not fire
+        // events
+        var doFilter = function(toFilter)
+        {
+            // Remove the filter timer, if any
+            if (filterTimer)
+            {
+                window.clearTimeout(filterTimer);
+                filterTimer = null;
+            }
+
+            if (self.isProgressiveLoading())
+            {
+                getTempView();
+                // Bail out early, since the server does the sorting
+                return;
+            }
+
+            // Perform the actual filter
+            active = $.grep(toFilter || rows, filterFn);
+        }
+
         // Generate group headers based on the current grouping configuration.
         // Does not fire events.  Note that grouping is not currently supported
         // in progressive rendering mode.
@@ -1270,11 +1284,33 @@ blist.namespace.fetch('blist.data');
             }
         }
 
+        // Expand rows that the user has opened
+        var doExpansion = function() {
+            var newActive;
+            var lastCopied = 0;
+
+            for (var i = 0; i < active.length; i++)
+                if (expanded[active[i].id || active[i][0]]) {
+                    if (!newActive)
+                        newActive = [];
+                    newActive.push.apply(newActive, active.slice(lastCopied, lastCopied = i + 1));
+                    var childRows = getChildRows(active[i]);
+                    newActive.push.apply(newActive, childRows);
+                }
+
+            if (newActive) {
+                newActive.push.apply(newActive, active.slice(lastCopied, active.length));
+                active = newActive;
+            }
+        }
+
+        // Install initial metadata
         if (meta)
             this.meta(meta);
         else
             this.meta({});
 
+        // Install initial rows
         if (rows)
             this.rows(rows);
         else

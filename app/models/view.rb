@@ -225,7 +225,8 @@ class View < Model
     "Fun" => "Fun",
     "Personal" => "Personal",
     "Business" => "Business",
-    "Education" => "Education"
+    "Education" => "Education",
+    "Government" => "Government"
   }
   
   @@sorts = [

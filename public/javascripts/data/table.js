@@ -395,13 +395,33 @@
                 var column = columns[index];
 
                 // Retrieve the row
-                var row = cell.parentNode;
+                var rowDOM = cell.parentNode;
                 // + 2 for "-r" suffix prior to row ID
-                var rowID = row.id.substring(id.length + 2);
-                row = model.getByID(rowID);
+                var rowID = rowDOM.id.substring(id.length + 2);
+                var row = model.getByID(rowID);
 
                 // Notify listeners
-                $this.trigger("cellclick", [ row, column, event ]);
+                var cellEvent = $.Event('cellclick');
+                $this.trigger(cellEvent, [ row, column, event ]);
+                if (!cellEvent.isDefaultPrevented())
+                {
+                    if (event.metaKey) // ctrl/cmd key
+                    {
+                        model.toggleSelectRow(row);
+                    }
+                    else if (event.shiftKey)
+                    {
+                        model.selectRowsTo(row);
+                    }
+                    else
+                    {
+                        model.selectSingleRow(row);
+                    }
+                    $(rowDOM).removeClass('blist-hot-row');
+                    // Set the focus so that the shift/meta click won't select
+                    // any text.
+                    $this.focus();
+                }
             }
         };
 
@@ -1216,7 +1236,18 @@
                 rowLoadTimer = setTimeout(loadMissingRows, MISSING_ROW_LOAD_DELAY);
                 rowLoadRows = rowsToLoad;
             }
-        }
+
+            updateSelection();
+        };
+
+        var updateSelection = function()
+        {
+            inside.find('.blist-select-row').removeClass('blist-select-row');
+            $.each(model.selectedRows, function (k, v)
+            {
+                inside.find('#' + id + '-r' + k).addClass('blist-select-row');
+            });
+        };
 
         var loadMissingRows = function() {
             if (!rowLoadTimer)
@@ -1284,6 +1315,9 @@
         });
         $this.bind('row_change', function(event, rows) {
             updateRows(rows);
+        });
+        $this.bind('selection_change', function(event, rows) {
+            updateSelection(rows);
         });
 
         // Install the model

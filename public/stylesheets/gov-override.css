@@ -343,13 +343,15 @@ table.gridList tr.sortGroup td > *,
 /* Hover rules */
 table.gridList tr.hover td+td+td+td > *,
 table.gridList tr.highlight td+td+td+td > *,
-.gridList div.blist-hot-row > div + div + div + div
+.gridList div.blist-hot-row > div + div + div + div,
+.gridList div.blist-select-row > div + div + div + div
 {
     background-color: #e3ecf7;
 }
 table.gridList tr.hover td.last > *,
 table.gridList tr.highlight td.last > *,
-.gridList div.blist-hot-row > div + div + div + div + div + div + div
+.gridList div.blist-hot-row > div + div + div + div + div + div + div,
+.gridList div.blist-select-row > div + div + div + div + div + div + div
 {
     background-image: url(/stylesheets/images/gov/content/table/highlight_end.png);
 }

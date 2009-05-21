@@ -56,6 +56,7 @@
  *   <li>load - called when the entire set of rows is replaced</li>
  *   <li>after_load - called after an AJAX load of data</li>
  *   <li>row_change - called with an array of rows that have had their contents change</li>
+ *   <li>selection_change - called with an array of rows that have had their selection change</li>
  *   <li>row_add - called with an array of rows that have been newly added to the model</li>
  *   <li>row_remove - called with an array of rows that are no longer present in the model</li>
  * </ul>
@@ -173,6 +174,7 @@ blist.namespace.fetch('blist.data');
 
         var dataChange = function()
         {
+            self.unselectAllRows(true);
             $(listeners).trigger('load', [ self ]);
         };
 
@@ -575,6 +577,14 @@ blist.namespace.fetch('blist.data');
         }
 
         /**
+         * Notify listeners of row selectionchanges.
+         */
+        this.selectionChange = function(rows)
+        {
+            $(listeners).trigger('selection_change', [ rows ]);
+        };
+
+        /**
          * Retrieve a single row by index.
          */
         this.get = function(index) {
@@ -593,9 +603,112 @@ blist.namespace.fetch('blist.data');
         /**
          * Retrieve the total number of rows.
          */
-        this.length = function(id) {
+        this.length = function(id)
+        {
             return active.length;
-        }
+        };
+
+        /**
+         * Retrieve the total number of rows, excluding group headers or other
+         *  special rows
+         */
+        this.dataLength = function(id)
+        {
+            return $.grep(active, function(row, i)
+                { return row._special; }, true).length;
+        };
+
+        this.selectedRows = {};
+
+        this.toggleSelectRow = function(row)
+        {
+            if (this.selectedRows[row.id || row[0]])
+            {
+                return this.unselectRow(row);
+            }
+            else
+            {
+                return this.selectRow(row);
+            }
+        };
+
+        this.selectRow = function(row, suppressChange)
+        {
+            var rowId = row.id || row[0];
+            this.selectedRows[rowId] = activeLookup[rowId];
+            if (!suppressChange)
+            {
+                this.selectionChange([row]);
+            }
+            return [row];
+        };
+
+        this.unselectRow = function(row)
+        {
+            delete this.selectedRows[row.id || row[0]];
+            this.selectionChange([row]);
+            return [row];
+        };
+
+        this.unselectAllRows = function(suppressChange)
+        {
+            var unselectedRows = [];
+            $.each(this.selectedRows, function (id, v)
+            {
+                unselectedRows.push(self.getByID(id));
+            });
+            this.selectedRows = {};
+            if (!suppressChange)
+            {
+                this.selectionChange(unselectedRows);
+            }
+            return unselectedRows;
+        };
+
+        this.selectSingleRow = function(row)
+        {
+            var changedRows = this.unselectAllRows(true)
+                .concat(this.selectRow(row, true));
+            this.selectionChange(changedRows);
+            return changedRows;
+        };
+
+        this.selectRowsTo = function(row)
+        {
+            var minIndex;
+            $.each(this.selectedRows, function (id, index)
+            {
+                if (minIndex == null || minIndex > index)
+                {
+                    minIndex = index;
+                }
+            });
+
+            if (minIndex == null)
+            {
+                return this.selectRow(row);
+            }
+            var curIndex = activeLookup[row.id || row[0]];
+            var maxIndex = curIndex;
+            if (curIndex < minIndex)
+            {
+                maxIndex = minIndex;
+                minIndex = curIndex;
+            }
+
+            var changedRows = this.unselectAllRows(true);
+            for (var i = minIndex; i <= maxIndex; i++)
+            {
+                var curRow = active[i];
+                if (!curRow._special)
+                {
+                    this.selectedRows[curRow.id || curRow[0]] = i;
+                    changedRows.push(curRow);
+                }
+            }
+            this.selectionChange(changedRows);
+            return changedRows;
+        };
 
         /**
          * Sort the data.

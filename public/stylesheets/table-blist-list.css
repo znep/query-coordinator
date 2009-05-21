@@ -108,13 +108,15 @@
     background:transparent url(/stylesheets/images/content/table/icon_favorite_sprite.png) no-repeat scroll left 27px;
 }
 
-div.blist-hot-row > div + div + div + div
+div.blist-hot-row > div + div + div + div,
+div.blist-select-row > div + div + div + div
 {
     background-color:#ffedb2;
     border-right: 1px solid #ffedb2;
 }
 
-div.blist-hot-row > div + div + div + div + div + div + div
+div.blist-hot-row > div + div + div + div + div + div + div,
+div.blist-select-row > div + div + div + div + div + div + div
 {
     background-image:url(/stylesheets/images/content/table/highlight_end.png);
     background-position:right center;
@@ -168,8 +170,6 @@ div.blist-list-c2 > div
 .blist-td .dataset-name
 {
     color: #333333;
-    display: block;
-    width: 100%;
 }
 
 .blist-td .clipText

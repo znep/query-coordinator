@@ -275,38 +275,36 @@ blist.myBlists.renameSubmit = function (event)
 
 
 var blistsInfoNS = blist.namespace.fetch('blist.myBlists.infoPane');
-blist.myBlists.infoPane.updateSummary = function (numSelect)
+blist.myBlists.infoPane.updateSummary = function ()
 {
-    if (numSelect == 1)
+    var selectedItems = [];
+    $.each(myBlistsNS.model.selectedRows, function (id, index)
     {
-        var $items = $('#blistList').combinationList().selectedItems();
-        $.Tache.Get({ url: '/blists/' + $items.attr('blist_id') + '/detail',
+        selectedItems.push(id);
+    });
+
+    if (selectedItems.length == 1)
+    {
+        $.Tache.Get({ url: '/blists/' + selectedItems[0] + '/detail',
             success: blistsInfoNS.updateSummarySuccessHandler
         });
     }
     else
     {
-        if (numSelect === undefined || numSelect < 1)
+        if (selectedItems.length < 1)
         {
-            //numSelect = $('#blistList').combinationList().totalItemCount();
             $('#infoPane .infoContent .selectPrompt').show();
             itemState = 'total';
 
             $.Tache.Get({ url: '/blists/detail',
-                data: 'items=' + myBlistsNS.model.length(),
+                data: 'items=' + myBlistsNS.model.dataLength(),
                 success: blistsInfoNS.updateSummarySuccessHandler
             });
 
         }
         else
         {
-            var $items = $('#blistList').combinationList().selectedItems();
-            var arrMulti = $items.map(function (i, n)
-            {
-               return $(n).attr('blist_id');
-            });
-            var multi = $.makeArray(arrMulti).join(':');
-
+            var multi = selectedItems.join(':');
             $.Tache.Get({ url: '/blists/detail',
                 data: 'multi=' + multi,
                 success: blistsInfoNS.updateSummarySuccessHandler
@@ -471,17 +469,16 @@ blist.myBlists.customLensOrBlist = function(value, column)
 
 blist.myBlists.customDatasetName = function(value)
 {
-    return '\'<a href="/\' + $.urlSafe(row.category || "dataset") + \'/\' + \
-        $.urlSafe(' + value + ') + \'/\' + row.id + \'" \
-        class="clipText dataset-name" title="\' + $.htmlEscape(' + value + ') + \
-        \'">\' + $.htmlEscape(' + value + ') + \'</a>\'';
+    return '\'<div class="clipText" title="\' + $.htmlEscape(' + value +
+        ' || "") + \'"><a href="/\' + $.urlSafe(row.category || "dataset") + \
+        \'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" \
+        class="dataset-name">\' + $.htmlEscape(' + value + ') + \'</a></div>\'';
 };
 
 blist.myBlists.customClipText = function(value)
 {
     return '\'<div class="clipText" title="\' + $.htmlEscape(' + value +
-        ' || "") + \
-        \'">\' + $.htmlEscape(' + value + ' || "") + \'</div>\'';
+        ' || "") + \'">\' + $.htmlEscape(' + value + ' || "") + \'</div>\'';
 };
 
 blist.myBlists.listDropdown = function()
@@ -540,22 +537,27 @@ blist.myBlists.favoriteClick = function(row)
 {
     if (!row.favorite)
     {
-        $.post("/blists/" + row.id + "/create_favorite");
+        $.get("/blists/" + row.id + "/create_favorite");
     }
     else
     {
-        $.post("/blists/" + row.id + "/delete_favorite");
+        $.get("/blists/" + row.id + "/delete_favorite");
     }
-    
+
     row.favorite = !row.favorite;
     myBlistsNS.model.change([row]);
 };
 
-blist.myBlists.listCellClick = function(event, row, column, origEvent) 
+blist.myBlists.listCellClick = function(event, row, column, origEvent)
 {
+    if ($(origEvent.target).is('a'))
+    {
+        event.preventDefault();
+    }
     switch (column.dataIndex)
     {
         case 'favorite':
+            event.preventDefault();
             myBlistsNS.favoriteClick(row);
             break;
     }
@@ -586,16 +588,22 @@ blist.myBlists.initializeGrid = function()
 
     // Configure columns for the view list
     myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});
+    // Set up initial sort
+    myBlistsNS.model.sort(6, true);
 
-    $('#blist-list').bind('load', function() {
-        blistsInfoNS.updateSummary(0);
-    });
+    $('#blist-list').bind('load', function()
+        {
+            blistsInfoNS.updateSummary();
+        })
+        .bind('selection_change', function()
+        {
+            blistsInfoNS.updateSummary();
+        });
 
     // Install a translator that tweaks the view objects so they're more conducive to grid display
     myBlistsNS.model.translate(myBlistsNS.translateViewJson);
 
     myBlistsNS.model.ajax({url: myBlistsNS.viewUrl, cache: false });
-    myBlistsNS.model.sort(6, true);
 }
 
 blist.myBlists.columns = [
@@ -629,7 +637,6 @@ $(function() {
 
     // Setup the info pane
     myBlistsNS.itemMenuSetup();
-    blistsInfoNS.updateSummary(0);
 
     /* FIXME Still necessary?
     $("#blistList .renameLink a").click(myBlistsNS.renameClick);

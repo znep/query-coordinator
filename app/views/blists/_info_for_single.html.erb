@@ -527,7 +527,9 @@
               <td class="opened"><div>01/09/2009</div></td>
               %>
               <td class="actionContainer"><div>
-                <a href="<%= profile_url(s.member_id) %>" class="action"><span>View Profile</span></a>
+                  <%- if s.member_id -%>
+                  <a href="<%= profile_url(s.member_id) %>" class="action"><span>View Profile</span></a>
+                  <%- end -%>
               </div></td>
             </tr>
             <%- end -%>

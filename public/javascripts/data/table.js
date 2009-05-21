@@ -530,22 +530,8 @@
         {
             if (variableColumns.length > 0)
             {
-                var pos = 0;
-                // Sum up all the fixed column widths & paddings
-                if (options.showGhostColumn)
-                {
-                    // Count the ghost column padding
-                    pos += paddingX;
-                }
-                if (options.showRowNumbers)
-                {
-                    pos += handleOuterWidth;
-                }
-                for (var i = 0; i < columns.length; i++)
-                {
-                    pos += columns[i].width + paddingX;
-                }
-                pos += varMinWidth;
+                // Adjust total width of columns by variable min widths
+                var pos = insideWidth + varMinWidth;
 
                 var varSize = scrolls.width() - pos;
                 if (scrolls[0].scrollHeight > scrolls[0].clientHeight)

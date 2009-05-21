@@ -75,7 +75,6 @@
     float: left;
     white-space: nowrap;
     overflow: hidden;
-    cursor: default;
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
@@ -87,6 +86,35 @@
     float: left;
     overflow: hidden;
     white-space: nowrap;
+}
+
+div.blist-table .blist-td.blist-tdh
+{
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    background-color: #f8f8f8;
+    color: #666666;
+}
+
+.blist-td.blist-opener {
+    background-image: url('/stylesheets/images/content/table/expand_closed.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    border-right-color: #f8f8f8;
+}
+
+.blist-tr-open .blist-td.blist-opener {
+    background-image: url('/stylesheets/images/content/table/expand_opened.png');
+}
+
+.blist-td.blist-opener-space {
+    border-right-color: transparent;
+}
+
+.blist-tdfill, .blist-tr-even .blist-td.blist-tdfill {
+    background-color: white;
 }
 
 div.blist-table-expander

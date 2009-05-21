@@ -65,9 +65,9 @@ class BlistsController < SwfController
         end
       end
       @view.register_opening
+      @view_activities = Activity.find({:viewId => @view.id})
     end
 
-    @view_activities = Activity.find({:viewId => @view.id})
     @data_component = params[:dataComponent]
     @popup = params[:popup]
 

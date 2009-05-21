@@ -397,7 +397,8 @@ blist.namespace.fetch('blist.data');
                         type: 'fill',
                         fillFor: fillFor
                     });
-                }
+                } else
+                    filledTo++;
             }
 
             for (i = 0; i < viewCols.length; i++) {

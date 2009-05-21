@@ -928,6 +928,7 @@
                         '"\' class=\'blist-tr", ' +
                         '(index % 2 ? " blist-tr-even" : ""), ' +
                         '(row.expanded ? " blist-tr-open" : ""), ' +
+                        '(row.groupLast ? " last" : ""), ' +
                         '"\' style=\'top: ", ' +
                         '(index * ' + rowOffset + '), "px\'>"';
             if (options.showRowNumbers)

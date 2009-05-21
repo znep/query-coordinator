@@ -762,6 +762,7 @@ blist.namespace.fetch('blist.data');
         /**
          * Open or close a row (open rows display nested records).
          */
+        var nextTempID = 0;
         this.expand = function(row, open) {
             // Determine whether to expand/open or unexpand/close the row
             if (open == undefined)
@@ -783,10 +784,13 @@ blist.namespace.fetch('blist.data');
                         continue;
                     for (var j = 0; j < cell.length; j++) {
                         var childRow = childRows[j] || (childRows[j] = []);
+                        childRow.id = "t" + nextTempID++;
                         childRow.level = (row.level || 0) + 1;
                         childRow[col.dataIndex] = cell[j];
                     }
                 }
+                if (childRows.length)
+                    childRows[childRows.length - 1].groupLast = true;
 
                 // Install child rows into the active set if the row is open
                 for (i = 0; i < active.length; i++) {

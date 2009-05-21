@@ -113,8 +113,13 @@ div.blist-table .blist-td.blist-tdh
     border-right-color: transparent;
 }
 
-.blist-tdfill, .blist-tr-even .blist-td.blist-tdfill {
+.blist-table .blist-td.blist-tdfill {
     background-color: white;
+    border-bottom-color: white;
+}
+
+.blist-table .last .blist-td.blist-tdfill {
+    border-bottom-color: #dddddd;
 }
 
 div.blist-table-expander

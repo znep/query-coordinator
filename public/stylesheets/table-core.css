@@ -93,13 +93,14 @@ div.blist-table .blist-td.blist-tdh
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-    background-color: #f8f8f8;
+    /*background-color: #f8f8f8;*/
     color: #666666;
 }
 
 div.blist-table .blist-tr-open .blist-td.blist-tdh {
     color: #333333;
     font-weight: bold;
+    background-color: #eeeeee;
 }
 
 .blist-td.blist-opener {
@@ -107,11 +108,12 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh {
     background-position: center center;
     background-repeat: no-repeat;
     cursor: pointer;
-    border-right-color: #f8f8f8;
+    border-right-color: transparent /*#f8f8f8*/;
 }
 
 .blist-tr-open .blist-td.blist-opener {
     background-image: url('/stylesheets/images/content/table/expand_opened.png');
+    border-right-color: #eeeeee;
 }
 
 .blist-td.blist-opener-space {
@@ -119,8 +121,8 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh {
 }
 
 .blist-table .blist-td.blist-tdfill {
-    background-color: white;
-    border-bottom-color: white;
+    background-color: #f8f8f8;
+    border-bottom-color: #f8f8f8;
 }
 
 .blist-table .last .blist-td.blist-tdfill {

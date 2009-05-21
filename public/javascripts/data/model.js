@@ -13,7 +13,8 @@
  *
  * <ul>
  *   <li>columns - a hierarchical list of column configuration objects.  This is an array of arrays.  Each sub-array
- *     describes the columns such as they might appear in a tree.</li>
+ *     describes the columns such as they might appear in the corresponding level of a tree.  For example, columns[0]
+ *     is the root column set.  Columns[1] contains the columns that display if a root row is expanded.  Etc.</li>
  *   <li>view - a Blist view object, used to configure options that aren't otherwise set</li>
  *   <li>name - the name displayed as the title of the grid</li>
  * </ul>
@@ -47,12 +48,22 @@
  * retrieve actual row data clients may pass an array of such rows to loadRows().  loadRows() is an asynchronous
  * operation.  When loadRows() succeeds, the row_change is fired with the list of freshly populated rows.
  *
+ * In addition to actual data, rows may have the following properties:
+ *
+ * <ul>
+ *   <li>level - the level of the row, or -1 if the row is "special" (that is, uses a custom renderer)
+ *   <li>expanded - true iff the row is in a selected state
+ * </ul>
+ *
+ * Each row is identified by an ID.  IDs must be unique across rows.  If column data is stored in an object then the
+ * ID is the field "id".  If column data is stored in a row then the first column is used as the ID.
+ *
  *
  * <h2>Events</h2>
  * 
  * The model fires the following events:
  *
- * <li>
+ * <ul>
  *   <li>meta_change - when metadata (column, data name, etc.) changes</li>
  *   <li>before_load - called prior to intiating an AJAX load of data.  Return false to cancel the load</li>
  *   <li>load - called when the entire set of rows is replaced</li>
@@ -558,6 +569,7 @@ blist.namespace.fetch('blist.data');
         {
             if (newRows)
             {
+                expanded = {};
                 active = rows = newRows;
                 installIDs();
 
@@ -956,7 +968,7 @@ blist.namespace.fetch('blist.data');
                 }
             }
             installIDs(installActiveOnly);
-            dataChange();
+            configureActive();
         };
 
         /**
@@ -1014,10 +1026,10 @@ blist.namespace.fetch('blist.data');
                     {
                         getTempView();
                     }
-                    else
+                    else if (active != rows)
                     {
                         active = rows;
-                        dataChange();
+                        configureActive();
                     }
                     return null;
                 }
@@ -1237,8 +1249,7 @@ blist.namespace.fetch('blist.data');
             }
         }
 
-        // Run filtering based on current filter configuration.  Does not fire
-        // events
+        // Run filtering based on current filter configuration
         var doFilter = function(toFilter)
         {
             // Remove the filter timer, if any

@@ -47,7 +47,7 @@ class Comment < Model
   end
 
   def viewRating
-    (data['viewRating'] || 0) / 20
+    (data['viewRating'] || 0) / 20.0
   end
 
   def rated?

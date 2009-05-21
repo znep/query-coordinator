@@ -208,17 +208,14 @@ module BlistsHelper
 
   def get_publish_embed_code_for_view(view, width = "425", height = "344")
     root_url = request.protocol + request.host_with_port
-    embed_url = root_url.sub("alpha.blist.com", "app.blist.com")
-    embed_url = embed_url.sub("alpha-test.blist.com", "test.blist.com")
-    embed_template =  "<br/><div><small><a href=\"#{root_url + view.href}\"" + 
-                      "style=\"font-size:12pt;font-weight:bold;" + 
-                      "text-decoration:none;color:#000000;\">" + 
-                      "#{h(view.name)}</a></small><br/><iframe width=\"" + 
-                      "#{width}px\" height=\"#{height}px\" src=\"#{embed_url}" + 
-                      "/widgets/#{view.oid}?width=#{width}px&height=" + 
-                      "#{height}px\" frameborder=\"0\" scrolling=\"no\">" + 
-                      "<a href=\"#{root_url + view.href}\" title=\"#{h(view.name)}\">" + 
-                      "#{h(view.name)}</a></iframe><br/><small><a href=" + 
-                      "\"http://www.blist.com/\">Powered by blist</a></small></div><br/>"
+    embed_template =  "<div><p><a href=\"#{root_url + view.href}\" " +
+                      "style=\"font-size:12pt;font-weight:bold;" +
+                      "text-decoration:none;color:#000000;\">" +
+                      "#{h(view.name)}</a></p><iframe width=\"" +
+                      "#{width}px\" height=\"#{height}px\" src=\"#{root_url}" +
+                      "/widgets/#{view.id}\" frameborder=\"0\" scrolling=\"no\">" +
+                      "<a href=\"#{root_url + view.href}\" title=\"#{h(view.name)}\">" +
+                      "#{h(view.name)}</a></iframe><p><a href=" +
+                      "\"http://www.blist.com/\">Powered by blist</a></p></div>"
   end
 end

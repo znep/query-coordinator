@@ -12,6 +12,7 @@
   <div class="mainContent">
     <% form_tag(import_url, :id => "importForm", :multipart => true) do %>
       <div class="fieldContent clearfix">
+        <p class="errorMessage"></p>
         <fieldset class="last">
           <div class="fileInputContainer clearfix">
             <label for="import_file">Choose a file</label>
@@ -24,7 +25,6 @@
                 </a>
               </div>
             </div>
-            <p class="errorMessage"></p>
           </div>
         </fieldset>
       </div>

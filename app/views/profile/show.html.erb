@@ -39,17 +39,23 @@
                 <div class='userLocation'>
                   <h5><%= h(@user.displayLocation) %></h5>
                 </div>
-                <div class='userCompany'>
-                  <h5><%= h(@user.company) %></h5>
-                </div>
-                <div class='userTitle'>
-                  <h5><%= h(@user.title) %></h5>
-                </div>
-                <div class='userTags'>
-                  <h5>Tags: <span class='tagContent'>
-                      <%= @user.tag_display_string %>
-                  </span></h5>
-                </div>
+                <%- unless @user.company.blank? -%>
+                  <div class='userCompany'>
+                    <h5><%= h(@user.company) %></h5>
+                  </div>
+                <%- end -%>
+                <%- unless @user.title.blank? -%>
+                  <div class='userTitle'>
+                    <h5><%= h(@user.title) %></h5>
+                  </div>
+                <%- end -%>
+                <%- unless @user.tags.blank? -%>
+                  <div class='userTags'>
+                    <h5>Tags: <span class='tagContent'>
+                        <%= @user.tag_display_string %>
+                    </span></h5>
+                  </div>
+                <%- end -%>
                 
                 <%- if (@is_user_current) -%>
                   <p class="editProfileContentActions">

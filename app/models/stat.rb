@@ -3,8 +3,8 @@ class Stat < Model
   ROW_ACCESS_LEGEND = {
       "api" => "FF2C12", 
       "widget" => "2327C8",
-      "download" => "0099F6",
-      "website" => "FDEF00",
+      "download" => "FDEF00",
+      "website" => "0099F6",
       "email" => "00B133",
       "print" => "7D26CD"
     }
@@ -27,6 +27,10 @@ class Stat < Model
 
   def total_rows_accessed
     return rows_accessed.values.sum
+  end
+
+  def averageRating
+    (data['averageRating'] || 0) / 20.0
   end
 
   def row_access_chart_href

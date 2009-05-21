@@ -11,8 +11,8 @@
         {'text' => 'As XML', 'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
         {'text' => 'As JSON', 'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
         ]}},
-        {'text' => "Email this #{t(:blist_name)}...", 'class' => 'email',
-        'href' => '#email', 'swf_item' => true},
+        {'text' => "Email this #{t(:blist_name)} to me", 'class' => 'email',
+        'href' => '#email', 'user_required' => true},
         {'text' => "Copy this #{t(:blist_name)}", 'class' => 'copy',
         'href' => '#copy_blist',
         'swf_item' => true},

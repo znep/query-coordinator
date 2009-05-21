@@ -12,7 +12,8 @@
 {
     text-transform: uppercase;
 }
-.miniMenu div 
+
+.miniMenu p 
 {
     display: inline;
     margin-right: 15px;
@@ -21,8 +22,7 @@
 .backButton
 {
     vertical-align: top;
-    color: #666666;
-    font-weight: bold;
+    color: #333;
 }
 
 #printButton

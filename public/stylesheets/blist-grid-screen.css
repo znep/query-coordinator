@@ -769,7 +769,7 @@ body#lensBody
 
 #addColumn_bnb,
 #mainMenu .columnsMenu .bnb a,
-.blist-table .blist-th.blist_in_blist .blist-th-icon
+.blist-table .blist-th.nested_table .blist-th-icon
 {
     background-position: 5px -440px;
 }

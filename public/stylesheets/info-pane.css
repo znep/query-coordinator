@@ -188,6 +188,7 @@
 .infoContentHeader h2.panelHeader.typeFilter.privateShared { background-position: left -533px; }
 .infoContentHeader h2.panelHeader.typeSharedIn { background-position: left -738px; }
 .infoContentHeader h2.panelHeader.typeSharedOut { background-position: left -779px; }
+.infoContentHeader h2.panelHeader.typeNotify { background-position: left -410px; }
 
 .infoContentHeader h2.panelHeader a { color: #333; }
 

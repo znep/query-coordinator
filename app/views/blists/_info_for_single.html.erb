@@ -443,9 +443,21 @@
   <div class="infoContentHeader clearfix">
     <%- shares = view.shares -%>
     <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
-    <h2 class="panelHeader <%= get_permissions_icon_class_for_view(view) %>">
+    <h2 class="panelHeader first <%= get_permissions_icon_class_for_view(view) %>">
       <%= view.is_public? ? "Public" : "Private" %>
     </h2>
+    <%- if view.shares.size > 0 %>
+      <h2 class="panelHeader typeNotify">
+        <% form_tag(url_for(:controller => :blists, 
+          :action => :notify_all_of_changes)) do %>
+          <a href="#" id="notifyAll">Notify all of changes</a>
+          <%= image_tag("/images/throbber.gif", 
+                      :size => "16x16", 
+                      :alt => "Notifying...", 
+                      :id => "throbber") %>
+        <% end %>
+      </h2>
+    <% end %>
     <%- if is_owner -%>
     <ul class="headerActions actionButtons swfItem">
       <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"

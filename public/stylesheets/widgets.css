@@ -834,9 +834,13 @@ table.gridList tr.sortGroup td > *
 
 /* Hover rules */
 table.gridList tr.hover td+td+td+td > *,
-table.gridList tr.highlight td+td+td+td > * 
-{ 
+table.gridList tr.highlight td+td+td+td > *
+{
     background-color: #e3ecf7;
+}
+table.gridList tr.hover td.picture > *
+{
+    background-color: transparent;
 }
 table.gridList tr.hover td.last > *,
 table.gridList tr.highlight td.last > *
@@ -936,6 +940,7 @@ table.gridList tr.hover td.favorite .favoriteMarker
 table.gridList .type,
 table.gridList .picture,
 table.gridList .group { width: 45px; }
+table.gridList .picture { vertical-align: middle; }
 
 table.gridList th.type
 {
@@ -990,7 +995,7 @@ table.gridList .dateAdded,
 table.gridList .sharedOn { width: 11.5em; }
 
 
-table.gridList .viewed { width: 25%; }
+table.gridList .viewed { width: 10em; }
 table.gridList .actionContainer {
     font-size: 1em;
     width: 4.5em;

@@ -25,6 +25,16 @@ class View < Model
     get_request(path)
   end
 
+  def self.notify_all_of_changes(id)
+    path = "/#{self.name.pluralize.downcase}/#{id}.json?" + 
+        {"method" => "notifyUsers"}.to_param
+    self.create_request(path)
+  end
+
+  def notify_all_of_changes
+    self.class.create_favorite(self.id)
+  end
+
   def self.create_favorite(id)
     path = "/favorite_views?" + {"id" => id}.to_param
     self.create_request(path)

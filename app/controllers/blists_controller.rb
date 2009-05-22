@@ -127,6 +127,12 @@ class BlistsController < SwfController
     end
   end
 
+  def notify_all_of_changes
+    blist_id = params[:id]
+    result = View.notify_all_of_changes(blist_id)
+    render :text => {"result" => "success"}.to_json
+  end
+
   def create_favorite
     blist_id = params[:id]
     result = View.create_favorite(blist_id)

@@ -694,6 +694,16 @@ $(function ()
         blist.util.flashInterface.showPopup('SaveLens');
     });
 
+    $("#throbber").hide();
+    $('a#notifyAll').click(function(event)
+    {
+        event.preventDefault();
+        $("#throbber").show();
+        $.post($(this).closest("form").attr("action"), null, function(data, textStatus) {
+            $("#throbber").hide();
+        });
+    });
+
     $('#filterViewMenu .filter').click(function (event)
     {
         event.preventDefault();

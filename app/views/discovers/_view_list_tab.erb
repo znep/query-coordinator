@@ -71,7 +71,7 @@
         <h2>Browse by Category</h2>
         <ul class="categoryList hilightList">
           
-          <%- View.categories.keys.each do |category| -%>
+          <%- View.categories.keys.sort.each do |category| -%>
             <%- next if category.nil? || category.length == 0 -%>
             <li><%= link_to("<span>#{category}</span>", 
                     filter_discover_url({:type => type, :filter => {:category => category}, :tag => current_tag}),

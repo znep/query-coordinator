@@ -431,7 +431,6 @@ blist.namespace.fetch('blist.data');
                         col.base = baseURL + "/views/" + view.id + "/files/";
                         break;
 
-                    case 'blist_in_blist':
                     case 'nested_table':
                         // Create the "body" column that appears in the next level
                         var children = [];

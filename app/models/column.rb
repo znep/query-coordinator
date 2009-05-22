@@ -9,12 +9,12 @@ class Column < Model
       self.format.aggregate
   end
 
-  def is_blist_in_blist
+  def is_nested_table
     dataType.type.downcase == 'nested_table'
   end
 
   def is_list
-    if is_blist_in_blist
+    if is_nested_table
       return !self.format.nil? && self.format.isList
     end
     false

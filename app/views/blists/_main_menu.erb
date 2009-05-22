@@ -59,8 +59,8 @@
                  {'id' => 'columnOptionsMenu',
                   'href_prefix' => "#edit_column:",
                   'include_options' =>
-                   {'blist_in_blist' => true,
-                    'bnb_children' => true, 'list' => true},
+                   {'nested_table' => true,
+                    'nested_table_children' => true, 'list' => true},
                     'initial_items' => [
                       {'section_title' => 'Select a Column'},
                       {'separator' => true}]})}
@@ -99,7 +99,7 @@
                  {'id' => 'columnTotalsMenu',
                   'href_prefix' => "#column_totals:",
                   'include_options' =>
-                   {'bnb_children' => true, 'list' => true},
+                   {'nested_table_children' => true, 'list' => true},
                     'initial_items' => [
                       # Not supported yet
                       #{'text' => 'Show Totals Bar',

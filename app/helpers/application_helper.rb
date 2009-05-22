@@ -162,7 +162,7 @@ module ApplicationHelper
   
   
   def create_pagination(total_count, page_count, current_page, base_href)
-    num_pages = (total_count / page_count).floor
+    num_pages = (total_count / page_count).ceil
     base_href = (base_href.include?("?")) ? "#{base_href}&page=" : "#{base_href}?page="
     
     # Only display 9 pages at a time.

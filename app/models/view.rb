@@ -210,12 +210,8 @@ class View < Model
   end
 
   def filters
-    # TODO: Pass get_all=true when the server supports tableId under /views
-    if User.current_user
-      View.find({"tableId" => self.tableId}).reject {|l| l.is_blist?}
-    else
-      []
-    end
+    View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
+      reject {|l| l.is_blist?}
   end
 
   def comments

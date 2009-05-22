@@ -326,6 +326,8 @@
             <col class='type' />
             <col class='name' />
             <col class='description' />
+            <col class='picture' />
+            <col class='owner' />
             <col class='viewed' />
             <col class='actionContainer' />
           </colgroup>
@@ -336,6 +338,8 @@
               <th class="type" title="Type"><div>Type</div></th>
               <th class="name"><div>Name</div></th>
               <th class="description"><div>Description</div></th>
+              <th class="picture" title="Owner"><div></div></th>
+              <th class="owner" title="Owner"><div>Owner</div></th>
               <th class="viewed"><div>Viewed</div></th>
               <th class="actionContainer last"></th>
             </tr>
@@ -353,6 +357,18 @@
                 </td>
                 <td class="name"><div><%= link_to(h(filter.name), filter.href) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
+                <td class="picture"><a href='<%= profile_url(filter.owner.id) %>'>
+                    <%= image_tag(filter.owner.profile_image_path,
+                    :size => "24x24", :alt => h(filter.owner.displayName)) %>
+                </a></td>
+                <td class="owner">
+                  <div class='clipText'>
+                    <a href='<%= profile_url(filter.owner.id) %>'
+                      title='<%= h(filter.owner.displayName) %>'>
+                      <%= h(filter.owner.displayName) %>
+                    </a>
+                  </div>
+                </td>
                 <td class="viewed"><div><%= blist_date(filter.last_viewed) %>
                 </div></td>
                 <td class="actionContainer"><div><a
@@ -441,7 +457,7 @@
   <div class="infoContentHeader clearfix">
     <%- shares = view.shares -%>
     <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
-    <h2 class="panelHeader first <%= get_permissions_icon_class_for_view(view) %>">
+    <h2 class="panelHeader <?= view.shares.size > 0 ? ' first' : '' %> <%= get_permissions_icon_class_for_view(view) %>">
       <%= view.is_public? ? "Public" : "Private" %>
     </h2>
     <%- if view.shares.size > 0 %>
@@ -511,8 +527,8 @@
           <thead>
             <tr>
               <th class="picture" title="Friend"><div></div></th>
-              <th class="contact" title="Friend/Group">
-                <div>Friend / Group</div>
+              <th class="contact" title="Friend">
+                <div>Friend</div>
               </th>
               <th class="role" title="Role"><div>Role</div></th>
               <%# Not supported
@@ -594,11 +610,12 @@
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <div class="gridListContainer simple">
+      <div class="gridListContainer">
         <table class="gridList" cellspacing="0">
           <thead>
             <tr>
               <th class="when first" title="When"><div>When</div></th>
+              <th class="picture" title="Who"><div></div></th>
               <th class="who" title="Who"><div>Who</div></th>
               <th class="what" title="What Activity"><div>What Activity</div></th>
               <th class="actionContainer last"></th>
@@ -609,9 +626,14 @@
               <%- @view_activities.each do |activity| -%>
                 <tr class="item">
                   <td class="when"><div><%= blist_date(activity.createdAt) %></div></td>
-                  <td class="who"><div>
-                    <a href="<%= profile_url(activity.actor.id) %>">
-                      <%= activity.actor.displayName %>
+                  <td class="picture"><a href='<%= profile_url(activity.actor.id) %>'>
+                      <%= image_tag(activity.actor.profile_image_path,
+                      :size => "24x24", :alt => h(activity.actor.displayName)) %>
+                  </a></td>
+                  <td class="who"><div class='clipText'>
+                      <a href="<%= profile_url(activity.actor.id) %>"
+                        title='<%= h(activity.actor.displayName) %>'>
+                      <%= h(activity.actor.displayName) %>
                     </a>
                   </div></td>
                   <td class="what"><div>

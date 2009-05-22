@@ -173,12 +173,12 @@ ul.menu.columnHeaderMenu li
 
 .columnHeaderMenu .autofilter li.filterItem a
 {
-    background-position: 5px -899px;
+    background-position: 5px 30px; /*-899px;*/
 }
 
 .columnHeaderMenu .autofilter li.filterItem.active a
 {
-    background-position: 5px -508px;
+    background-position: 5px 30px; /*-508px;*/
 }
 
 /* This is only used for initial positioning; the menu is pulled out, so real

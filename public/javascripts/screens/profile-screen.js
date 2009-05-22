@@ -298,12 +298,14 @@ $(function ()
     
 
     $('#profile .publicBlists table.gridList').combinationList({
+        headerContainerSelector: '#profile .publicBlists .gridListContainer',
         hoverOnly: true,
-        initialSort: [[[2, 1]]],
+        initialSort: [[2, 1]],
         scrollableBody: false,
         selectable: false,
         sortGrouping: false,
-        sortHeaders: {1: {sorter: "text"}, 4: {sorter: false}}
+        sortHeaders: {1: {sorter: "text"}, 2: {sorter: 'digit'},
+            3: {sorter: 'digit'}, 4: {sorter: false}}
     });
 
     $('.sectionEdit form input').keypress(function (e)

@@ -488,11 +488,16 @@
 }
 
 .infoContentOuter table.gridList td.type > *,
-.infoContentOuter table.gridList td.picture > *,
 .infoContentOuter table.gridList td.group > *
 {
     height: 27px;
     line-height: 27px;
+    margin: 0 auto;
+}
+infoContentOuter table.gridList td.picture > *
+{
+    height: 24px;
+    line-height: 24px;
     margin: 0 auto;
 }
 .infoContentOuter table.gridList td.actionContainer .action { display: none; }
@@ -1008,6 +1013,13 @@
 {
     background-position: left -410px;
 }
+.singleInfoActivity table.gridList tr.hover td > *,
+.singleInfoActivity table.gridList tr.selected td > *,
+.singleInfoActivity table.gridList tr.hover.selected td > *
+{
+    background-color: #e3ecf7;
+}
+
 
 /*** END: single info activity tab ***/
 

@@ -728,7 +728,7 @@
                 var mcol = mcols[j];
 
                 // Add rendering information to the rendering function
-                var colWidth;
+                var colWidth = 0;
 
                 if (mcol.body) {
                     // Nested table header -- render headers for child columns and set width based on child widths
@@ -763,6 +763,7 @@
                             createColumnRendering(mcol.children, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
                         "else " +
                             "html.push('<div class=\"blist-td blist-tdfill " + getColumnClass(mcol.header) + "\">&nbsp;</div>');";
+                    colWidth = 0;
                 } else if (mcol.fillFor) {
                     // Fill column -- covers background for a range of columns that aren't present in this row
                     colWidth = 0;
@@ -789,12 +790,15 @@
 
                 // Initialize the column's style
                 mcol.left = hpos;
-                hpos += colWidth;
-                var style = getColumnStyle(mcol);
-                style.width = (colWidth - paddingX) + 'px';
-                if (options.generateHeights)
+                if (colWidth)
                 {
-                    style.height = rowHeight + 'px';
+                    hpos += colWidth;
+                    var style = getColumnStyle(mcol);
+                    style.width = (colWidth - paddingX) + 'px';
+                    if (options.generateHeights)
+                    {
+                        style.height = rowHeight + 'px';
+                    }
                 }
             }
 

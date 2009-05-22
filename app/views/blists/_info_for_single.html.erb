@@ -441,7 +441,7 @@
   <div class="infoContentHeader clearfix">
     <%- shares = view.shares -%>
     <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
-    <h2 class="panelHeader first <%= get_permissions_icon_class_for_view(view) %>">
+    <h2 class="panelHeader <?= view.shares.size > 0 ? ' first' : '' %> <%= get_permissions_icon_class_for_view(view) %>">
       <%= view.is_public? ? "Public" : "Private" %>
     </h2>
     <%- if view.shares.size > 0 %>

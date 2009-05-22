@@ -40,12 +40,6 @@
                   filter_discover_url({:type => type, :filter => {:inNetwork => true}, :tag => current_tag}),
                   :class => "filterLink#{get_filter_hilight_class({'inNetwork' => 'true'}, current_filter, ' hilight')}") %>
           </li>
-          <li><%= link_to("<span>Public #{t(:blists_name)}</span>", 
-                  filter_discover_url({:type => type, :filter => {:publicOnly => true}, :tag => current_tag}),
-                  :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
-          <li><%= link_to("<span>Private #{t(:blists_name)}</span>", 
-                  filter_discover_url({:type => type, :filter => {:privateOnly => true}, :tag => current_tag}),
-                  :class => "filterLink#{get_filter_hilight_class({'privateOnly' => 'true'}, current_filter, ' hilight')}") %></li>
         <%- end -%>
       </ul>
 

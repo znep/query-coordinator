@@ -78,10 +78,6 @@ class DiscoversController < ApplicationController
       
       if (filter[:inNetwork])
         tab_title += " #{t(:blists_name)} in my network"
-      elsif (filter[:publicOnly])
-        tab_title += " Public #{t(:blists_name)}"
-      elsif (filter[:privateOnly])
-        tab_title += " Private #{t(:blists_name)}"
       elsif (filter[:category])
         tab_title += " #{filter[:category]} #{t(:blists_name)}"
       end

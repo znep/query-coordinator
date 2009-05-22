@@ -91,6 +91,7 @@ blist.community.searchSubmitHandler = function(event)
             
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
+            $("#search").blur();
         }
     });
 };
@@ -167,5 +168,6 @@ $(function ()
     });
     
     $("#community .pageBlockSearch form").submit(communityNS.searchSubmitHandler);
+    $("#search").focus(function(){ $(this).select(); });
     $(".memberActions .followAction").live("click", communityNS.addFriendClick);
 });

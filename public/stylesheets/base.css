@@ -110,7 +110,7 @@ h2
 
 h3
 {
-    color: #e8a134;
+    color: #666;
     font-size: 1.4em;
     line-height: 1.4em;
     text-transform: uppercase;
@@ -134,7 +134,7 @@ h5
 }
 
 a { 
-    color: #0071bc;
+    color: #600;
     text-decoration: none;
 }
 a:hover 

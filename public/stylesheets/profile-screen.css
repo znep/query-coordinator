@@ -146,10 +146,11 @@
 .updateLinksContainer table .edit_action { width: 9em; }
 
 .linksTableContainer { margin: 1em 0; }
+.linksTableContainer .gridList thead { background-color: #06386a; }
 .linksTableContainer .gridList thead th {
-    background-color: #e0d1b8;
-    border-right: 1px solid #e2e2e2;
-    color: #666;
+    background-color: #06386a;
+    border-right: 1px solid #d4d4d4;
+    color: #fff;
     font-size: 1.2em;
 }
 
@@ -186,7 +187,7 @@
 
 .editLinksContainer
 {
-    border-top: 1px solid #e1d3b6;
+    border-top: 1px solid #ccc;
     margin-top: 1em;
     padding-top: 1em;
 }
@@ -254,12 +255,15 @@
 
 #profile .publicBlists .infoContentOuter
 {
-    background-image: url(/stylesheets/images/profile/info_bottom_right_white.png);
+    border-top-width: 1px;
 }
 #profile .publicBlists .infoContentInner
 {
-    background: none;
-    padding: 0;
+    background-image: url(/stylesheets/images/profile/info_bottom_right_white.png);
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    margin: 0 -1px -1px 0;
+    padding-bottom: 0;
 }
 
 #profile .publicBlists .infoContent
@@ -268,6 +272,7 @@
     background-position: bottom left;
     background-repeat: no-repeat;
     display: block;
+    margin: 0 0 -1px -1px;
     padding: 0;
 }
 
@@ -276,6 +281,7 @@
     background-image: url(/stylesheets/images/profile/info_top_left_white.png);
     background-position: top left;
     background-repeat: no-repeat;
+    margin-top: -1px;
     padding: 0;
 }
 
@@ -284,6 +290,7 @@
     background-image: url(/stylesheets/images/profile/info_top_right_white.png);
     background-position: top right;
     background-repeat: no-repeat;
+    margin-top: -1px;
 }
 
 #profile .publicBlists .gridListContainer
@@ -300,7 +307,7 @@
 
 #profile table.gridList tr.hover td+td > *
 {
-    background-color: #ffedb2;
+    background-color: #e3ecf7;
 }
 
 

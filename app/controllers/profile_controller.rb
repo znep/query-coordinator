@@ -32,8 +32,9 @@ class ProfileController < ApplicationController
         !v.is_public? && v.flag?('default')}
       @private_filters = @all_owned_views.find_all {|v|
         !v.is_public? && !v.flag?('default')}
-      @user_links = UserLink.find(current_user.id)
     end
+    
+    @user_links = UserLink.find(@user.id)
 
   end
 

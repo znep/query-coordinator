@@ -21,41 +21,50 @@
 /*** START: tabs styling ***/
 #infoPane .summaryTabs 
 {
-    background-color: #e0d1b8;
-    background-image: url(/stylesheets/images/info_pane/background_info_tab_top_right_sprites.png);
-    background-position: right -3px;
-    background-repeat: no-repeat;
-    border-bottom: 1px solid #8d8d8d;
+    background-color: #ececec;
+    border-bottom: 1px solid #06386a;
     height: 20px;
 }
 #infoPane .summaryTabs li 
 {
-    background-color: #e0d1b8;
-    background-image: url(/stylesheets/images/info_pane/background_info_tab_top_left_sprites.png);
-    background-position: 0 -3px;
-    background-repeat: no-repeat;
-    border-right: 1px solid #8d8d8d;
+    background-color: #ececec;
+    border: 1px solid #06386a;
     float: left;
     font-size: 1.1em;
-    height: 20px;
+    height: 19px;
+    margin-right: 1px;
     position: relative;
     width: 120px;
+}
+#infoPane .summaryTabs li .tabOuter
+{
+    background-image: url(/stylesheets/images/info_pane/background_info_tab_top_left_sprites.png);
+    background-position: 0 -4px;
+    background-repeat: no-repeat;
+    margin-left: -1px;
+    margin-top: -1px;
+    padding-left: 1px;
+    padding-top: 1px;
 }
 #infoPane .summaryTabs li .tabInner 
 {
     background-image: url(/stylesheets/images/info_pane/background_info_tab_top_right_sprites.png);
-    background-position: 114px -3px;
+    background-position: 113px -4px;
     background-repeat: no-repeat;
+    margin-right: -1px;
+    margin-top: -1px;
     min-height: 0;
 }
 #infoPane .summaryTabs li.active 
 {
-    background-color: #ffedcc;
+    background-color: #cacaca;
     background-position: -3px 0;
+    border-bottom: none;
     font-size: 1.2em;
     font-weight: bold;
-    height: 21px;
+    height: 20px;
 }
+#infoPane .summaryTabs li.active .tabOuter { background-position: -4px 0; }
 #infoPane .summaryTabs li.active .tabInner 
 {
     background-position: 117px 0;
@@ -84,24 +93,22 @@
 /* The summary tab is special */
 #infoPane .summaryTabs li.summary 
 {
-    border-right-width: 3px;
+    border-right-width: 1px;
     width: 85px;
 }
 #infoPane .summaryTabs li.summary.active.last
 {
-    border-right: 0;
-    width: 91px;
+    border-right: 1px solid #06386a;
+    width: 85px;
 }
+
 #infoPane .summaryTabs li.summary.active .tabInner 
 {
     background-image: none;
 }
 #infoPane .summaryTabs li.summary.active.last .tabInner
 {
-    background-image: url(/stylesheets/images/info_pane/background_info_tab_summary_last.png);
-    background-position: right top;
-    border-right: none;
-    width: 97px;
+    width: 85px;
 }
 
 /* expander */
@@ -140,13 +147,13 @@
 /*** START: content ***/
 .infoContentOuter
 {
-  background-color: #ffedcc;
-  background-image: url(/stylesheets/images/common/summary_bottom_right.png);
-  background-position: right bottom;
-  background-repeat: no-repeat;
-  display: none;
-  height: 100%;
+    background-color: #cacaca;
+    border-color: #06386a;
+    border-style: solid;
+    border-width: 0 1px 1px;
+    display: none;
 }
+
 .infoContentOuter.active {
     display: block;
 }
@@ -234,11 +241,23 @@
 
 .infoContentOuter .infoContentInner
 {
-    background-image: url(/stylesheets/images/common/summary_bottom_left.png);
+    background-image: url(/stylesheets/images/info_pane/summary_bottom_left.png);
     background-position: left bottom;
     background-repeat: no-repeat;
+    margin-bottom: -1px;
+    margin-left: -1px;
     min-height: 0; /* Trigger hasLayout for IE7 */
+    padding-bottom: 0;
+}
+.infoContentOuter .infoContentWrapper
+{
+    background-image: url(/stylesheets/images/info_pane/summary_bottom_right.png);
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    margin-bottom: -1px;
+    margin-right: -1px;
     padding-bottom: 1em;
+    padding-right: 1px;
 }
 .infoContent
 {
@@ -254,12 +273,13 @@
     background-repeat: repeat-y;
     padding-bottom: 0;
 }
+.infoContentOuter.listContainer.expanded .infoContentWrapper { padding-bottom: 0; }
 .infoContentOuter.listContainer .infoContent
 {
-    background-image: url(/stylesheets/images/info_pane/background_info_content_bottom_left_dark.png);
+    background-image: url(/stylesheets/images/info_pane/summary_bottom_left_dark.png);
     background-position: left bottom;
     background-repeat: no-repeat;
-    border-top: 1px solid #e0d1b8;
+    border-top: 1px solid #fff;
     padding-left: 0;
 }
 
@@ -270,21 +290,22 @@
 }
 .infoContentOuter.listContainer .infoContent dt
 {
-    color: #666;
+    color: #fff;
     font-size: 1.1em;
     left: 5px;
     line-height: 19px;
     padding-right: 10px;
     position: absolute;
     text-align: right;
-    top: 5px;
+    top: 6px;
     width: 125px;
 }
 .infoContentOuter.listContainer .infoContent dt.hover
 {
-    background-color: #ffedb2;
+    background-color: #e3ecf7;
     background-image: url(/stylesheets/images/info_pane/background_summary_list_title.png);
     background-repeat: no-repeat;
+    color: #666;
 }
 .infoContentOuter.listContainer .infoContent dt a.help
 {
@@ -352,7 +373,7 @@
 .infoContentOuter.listContainer .infoContent dd .itemContent > * img { vertical-align: middle; }
 .infoContentOuter.listContainer .infoContent dd.hover .itemContent
 {
-    background-color: #ffedb2;
+    background-color: #e3ecf7;
     background-image: url(/stylesheets/images/info_pane/summary_item_content_bottom_right.png);
     background-position: right bottom;
     background-repeat: no-repeat;
@@ -427,12 +448,12 @@
 }
 .infoContentOuter .gridList thead 
 {
-    background-color: #e0d1b8;
+    background-color: #e8e8e8;
 }
 .infoContentOuter .gridList thead th
 {
-    background-color: #e0d1b8;
-    border-right: 1px solid #e2e2e2;
+    background-color: #e8e8e8;
+    border-right: 1px solid #d4d4d4;
     color: #666;
     font-size: 1.2em;
 }
@@ -453,7 +474,7 @@
 .infoContentOuter.singleInfoGroups table.gridList tr.hover td+td > *,
 .infoContentOuter.singleInfoMembers table.gridList tr.hover td+td > *
 { 
-    background-color: #ffedb2; 
+    background-color: #e3ecf7; 
 }
 
 .infoContentOuter table.gridList td > *
@@ -497,7 +518,7 @@
 .singleInfoComments .infoContentHeader > h2.panelHeader.first
 {
     background-position: left -205px;
-    border-right: 1px solid #e1d3b6;
+    border-right: 1px solid #e8e8e8;
     padding-right: 0.5em;
 }
 
@@ -512,6 +533,7 @@
 
 #infoPane .singleInfoComments h2.rating
 {
+    background-image: url(/stylesheets/images/content/comment_stars_white_sprites.png);
     float: left;
     margin-left: .5em;
     margin-top: 12px;
@@ -526,6 +548,13 @@
 .singleInfoComments .hidden
 {
     display: none;
+}
+
+.singleInfoComments form input[type="text"],
+.singleInfoComments form textarea,
+.singleInfoComments form input[type="password"]
+{
+    border: 1px solid #999;
 }
 
 .singleInfoComments.infoContentOuter.listContainer form.postComment .rating
@@ -561,7 +590,7 @@
 
 .singleInfoComments form.postComment .submitSection a
 {
-    color: #666666;
+    color: #333;
     font-size: 0.9em;
     font-weight: bold;
     padding: 0 0.5em;
@@ -600,16 +629,15 @@
 .singleInfoComments li.comment .userInfo h5
 {
     display: block;
-    color: #000000;
+    color: #fff;
     font-size: 1.2em;
     font-weight: bold;
     padding-bottom: 0.1em;
 }
-
 .singleInfoComments li.comment .userInfo span
 {
     display: block;
-    color: #333333;
+    color: #eee;
     font-size: 1.2em;
     padding: 0.1em 0;
 }
@@ -631,17 +659,23 @@
 
 .singleInfoComments li.comment .commentBlock .cornerTL
 {
-    background: #ffffff url(/stylesheets/images/content/comment_corner_top_left.png) top left no-repeat;
+    background: #ffffff url(/stylesheets/images/info_pane/comment_corner_top_left.png) top left no-repeat;
 }
 .singleInfoComments li.comment .commentBlock .cornerTR
-{ background: url(/stylesheets/images/content/comment_corner_top_right.png) no-repeat top right; }
+{ background: url(/stylesheets/images/info_pane/comment_corner_top_right.png) no-repeat top right; }
 .singleInfoComments li.comment .commentBlock .cornerBR
-{ background: url(/stylesheets/images/content/comment_corner_bottom_right.png) no-repeat bottom right; }
+{ background: url(/stylesheets/images/info_pane/comment_corner_bottom_right.png) no-repeat bottom right; }
 .singleInfoComments li.comment .commentBlock .cornerBL
 {
-    background: url(/stylesheets/images/content/comment_corner_bottom_left.png) no-repeat bottom left;
+    background: url(/stylesheets/images/info_pane/comment_corner_bottom_left.png) no-repeat bottom left;
     padding: 0.5em 0.5em 1em;
 }
+
+#infoPane .singleInfoComments li.comment .rating
+{
+    background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
+}
+
 
 .singleInfoComments li.comment .commentBlock .rating
 {
@@ -671,7 +705,7 @@
 
 .singleInfoComments li.comment .commentBlock .commentBody
 {
-    border-top: solid 1px #e0d1b8;
+    border-top: solid 1px #ccc;
     font-size: 1.2em;
     padding-top: 0.5em;
 }
@@ -767,14 +801,14 @@
 
 .singleInfoComments li.comment .childContainer
 {
-    border-top: solid 1px #e0d1b8;
+    border-top: solid 1px #ccc;
     margin-top: 1em;
     padding-top: 0.5em;
 }
 
 .singleInfoComments li.comment .childContainer .childCollapsed
 {
-    border-left: solid 5px #e0d1b8;
+    border-left: solid 5px #ccc;
     color: #999999;
     display: none;
     font-size: 1.1em;
@@ -794,7 +828,7 @@
 
 .singleInfoComments li.comment .childWrapper
 {
-    border-top: solid 1px #e0d1b8;
+    border-top: solid 1px #ccc;
     margin-left: 2em;
     padding: 1em 0;
 }
@@ -806,7 +840,7 @@
 
 .singleInfoComments li.comment .childComment
 {
-    border-left: solid 5px #e0d1b8;
+    border-left: solid 5px #ccc;
     padding-left: 1em;
     position: relative;
 }
@@ -831,7 +865,8 @@
 
 .singleInfoComments .footer
 {
-    border-top: solid 1px #e0d1b8;
+    border-top: solid 1px #fff;
+    margin-left: 15em;
     padding-top: 0.5em;
 }
 
@@ -847,7 +882,7 @@
 .singleInfoSharing .infoContentHeader > h2.panelHeader.first
 {
     background-position: left -246px;
-    border-right: 1px solid #e1d3b6;
+    border-right: 1px solid #e8e8e8;
     padding-right: 10px;
 }
 
@@ -869,7 +904,7 @@
 
 
 .singleInfoSharing .sharingSummary {
-    border-top: 1px solid #e1d3b6;
+    border-top: 1px solid #e8e8e8;
     margin-top: 5px;
 }
 .singleInfoSharing .sharingSummary p
@@ -907,7 +942,7 @@
 .singleInfoSharing table.gridList tr.selected td+td > *,
 .singleInfoSharing table.gridList tr.hover.selected td+td > *
 {
-    background-color: #ffedb2;
+    background-color: #e3ecf7;
 }
 
 #infoPane .singleInfoSharing table.gridList .actionContainer
@@ -926,14 +961,14 @@
 .singleInfoPublishing .infoContentHeader h2.panelHeader + h2.panelHeader
 {
     background-position: 5px -369px;
-    border-left: 1px solid #e1d3b6;
+    border-left: 1px solid #e8e8e8;
     margin-left: 15px;
     padding-left: 51px;
 }
 
 .singleInfoPublishing .publishContent
 {
-    border-top: 1px solid #e1d3b6;
+    border-top: 1px solid #e8e8e8;
     padding-top: 1em;
 }
 .singleInfoPublishing .publishContent p

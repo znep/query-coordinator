@@ -519,8 +519,9 @@ blist.namespace.fetch('blist.data');
                     assignUIDs(levelCols);
                 }
 
-                // Configure root column sorting based on view configuration if a view is present
                 var rootColumns = meta.columns[0];
+                // Configure root column sorting based on view configuration if
+                // a view is present
                 if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
                 {
                     var s = meta.view.sortBys[0];
@@ -528,7 +529,7 @@ blist.namespace.fetch('blist.data');
                         $.inArray('asc', s.flags) >= 0};
                     $.each(rootColumns, function (i, c)
                     {
-                        if (rootColumns[c.dataIndex].id == s.viewColumnId)
+                        if (c.id == s.viewColumnId)
                         {
                             meta.sort.column = c;
                             return false;
@@ -536,8 +537,9 @@ blist.namespace.fetch('blist.data');
                     });
                 }
 
-                // For each column at the root nesting level, ensure that dataIndex is present, and that a
-                // "dataLookupExpr" is present.  Other levels must configure these explicitly.
+                // For each column at the root nesting level, ensure that
+                // dataIndex is present, and that a "dataLookupExpr" is
+                // present.  Other levels must configure these explicitly.
                 for (i = 0; i < rootColumns.length; i++)
                 {
                     var col = rootColumns[i];

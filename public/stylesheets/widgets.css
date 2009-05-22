@@ -85,7 +85,7 @@
 }
 .smallButton span
 {
-    background-color: #dfd4b8;
+    background-color: #ababab;
     display: block;
 }
 
@@ -154,6 +154,9 @@ a.dropdownLink.clicked .midWrapper
 {
     background-image: url(/stylesheets/images/widgets/dropdown_button/click_gradSlice.png);
 }
+
+#lensContainer .headerBar > ul > li > a.dropdownLink:hover,
+#lensContainer .headerBar > ul > li > a.dropdownLink.clicked { color: #fff; }
 /*** END: dropdown button ***/
 
 
@@ -175,7 +178,7 @@ a.dropdownLink.clicked .midWrapper
 
 ul.menu
 {
-    background-color: #ffedcc;
+    background-color: #ececec;
     border: 1px solid #8d8d8d;
     border-bottom: none;
     display: none;
@@ -223,12 +226,12 @@ ul.menu li > a > .highlight
 
 ul.menu li > a:hover
 {
-    background-color: #e0d1b8;
+    background-color: #cacaca;
 }
 
 ul.menu li.separator
 {
-    border-top: solid 1px #e0d1b8;
+    border-top: solid 1px #999;
     height: 0;
     line-height: 0;
     margin: 0 10px;
@@ -261,7 +264,7 @@ ul.menu li.footer .outerWrapper
 
 ul.menu li.footer .innerWrapper
 {
-    background-color: #ffedcc;
+    background-color: #ececec;
     border-bottom: 1px solid #8d8d8d;
     display: block;
     height: 8px;
@@ -303,12 +306,12 @@ ul.menu li.submenu .menu.opposite
 
 ul.menu.optionMenu
 {
-    background-color: #e0d1b8;
+    background-color: #cacaca;
 }
 
 ul.menu.optionMenu li
 {
-    background-color: #ffedcc;
+    background-color: #ececec;
     margin-left: 30px;
 }
 
@@ -327,7 +330,7 @@ ul.menu.optionMenu li.footer
 
 ul.menu.optionMenu li.footer .colorWrapper
 {
-    background-color: #e0d1b8;
+    background-color: #cacaca;
     display: block;
     height: 8px;
     width: 22px;
@@ -342,8 +345,8 @@ ul.menu.multilevelMenu
 
 ul.menu.multilevelMenu > li
 {
-    border-bottom: solid 1px #e0d1b8;
-    border-top: solid 1px #ffedcc;
+    border-bottom: solid 1px #cacaca;
+    border-top: solid 1px #ececec;
     padding: 0;
     width: 50%;
 }
@@ -357,7 +360,7 @@ ul.menu.multilevelMenu > li.active
 
 ul.menu.multilevelMenu > li.active.first
 {
-    border-top: solid 1px #e0d1b8;
+    border-top: solid 1px #cacaca;
 }
 
 ul.menu.multilevelMenu li dt a
@@ -372,7 +375,7 @@ ul.menu.multilevelMenu li dt a
 
 ul.menu.multilevelMenu li.active dt
 {
-    background-color: #e0d1b8;
+    background-color: #cacaca;
     position: relative;
     z-index: 201;
 }
@@ -385,7 +388,7 @@ ul.menu.multilevelMenu > li.active.first dt
 
 ul.menu.multilevelMenu dd > ul
 {
-    background-color: #e0d1b8;
+    background-color: #cacaca;
     border-left: solid 1px #8d8d8d;
     display: none;
     height: 100%;
@@ -397,7 +400,7 @@ ul.menu.multilevelMenu dd > ul
 
 ul.menu.multilevelMenu dd > ul > li > a:hover
 {
-    background-color: #ffedcc;
+    background-color: #ececec;
 }
 
 ul.menu.multilevelMenu li.active > dl > dd > ul
@@ -407,7 +410,7 @@ ul.menu.multilevelMenu li.active > dl > dd > ul
 
 ul.menu.multilevelMenu dd > ul > li.separator
 {
-    border-top: solid 1px #ffedcc;
+    border-top: solid 1px #ececec;
     margin: 0.3em 10px 0.3em 30px;
     padding: 0;
 }
@@ -427,7 +430,7 @@ ul.menu.multilevelMenu > li.footer > .outerWrapper
 
 ul.menu.multilevelMenu > li.footer > .outerWrapper > .innerWrapper > .colorWrapper
 {
-    background-color: #e0d1b8;
+    background-color: #cacaca;
     border-left: solid 1px #8d8d8d;
     display: block;
     float: right;
@@ -456,12 +459,12 @@ ul.menu li.button
 
 ul.menu li.button.prev
 {
-    border-bottom: solid 1px #e0d1b8;
+    border-bottom: solid 1px #cacaca;
 }
 
 ul.menu li.button.next
 {
-    border-top: solid 1px #e0d1b8;
+    border-top: solid 1px #cacaca;
 }
 
 ul.menu li.button a
@@ -572,7 +575,7 @@ ul.menu.optionMenu li.button a
 
 .fixedMenu
 {
-    background-color: #ffedcc;
+    background-color: #ececec;
     border: 1px solid #8d8d8d;
     display: none;
     margin-bottom: 1em;
@@ -823,18 +826,17 @@ table.gridList td > div > a:hover { text-decoration: underline; }
 /* Sort grouping headers */
 table.gridList tr.sortGroup td > *
 {
-    color: #e8a134;
+    color: #666;
     font-size: 1.3em;
     text-indent: 0;
     text-transform: uppercase;
 }
 
-
 /* Hover rules */
 table.gridList tr.hover td+td+td+td > *,
 table.gridList tr.highlight td+td+td+td > * 
 { 
-    background-color: #ffedb2; 
+    background-color: #e3ecf7;
 }
 table.gridList tr.hover td.last > *,
 table.gridList tr.highlight td.last > *
@@ -848,7 +850,7 @@ table.gridList tr.highlight td.last > *
 .gridListContainer.simple table.gridList tr.selected td > *,
 .gridListContainer.simple table.gridList tr.hover.selected td > *
 {
-    background-color: #ffedb2;
+    background-color: #e3ecf7;
 }
 
 
@@ -1011,13 +1013,13 @@ table.gridList .what { width: 70%; }
 /* Styling for child rows */
 table.gridList tr.child td > * { margin-bottom: 0; }
 table.gridList tr.child td.type > div { 
-    border-left: 4px solid #e0d1b8;
+    border-left: 4px solid #cacaca;
     margin-left: 40px; 
     width: 40px;
 }
 
 table.gridList tr.child td.name > * { margin-left: 30px; }
-table.gridList tr.child td.description > * { border-right: solid 4px #e0d1b8; }
+table.gridList tr.child td.description > * { border-right: solid 4px #cacaca; }
 
 table.gridList tr.child td.owner > *,
 table.gridList tr.child td.lastUpdated > *
@@ -1052,7 +1054,7 @@ table.gridList tr.filteredOut
 /*** START: form list boxes ***/
 .formListBox
 {
-    background: #ffedcc url(/stylesheets/images/info_pane/background_expanded_list.png) -5px 0 repeat-y;
+    background: #ececec url(/stylesheets/images/info_pane/background_expanded_list.png) -5px 0 repeat-y;
     position: relative;
 }
 .formListBox.solid { background-image: none; }
@@ -1079,7 +1081,7 @@ table.gridList tr.filteredOut
 .formListBox dt
 {
     clear: both;
-    color: #666;
+    color: #eee;
     float: left;
     line-height: 27px;
     padding-right: 10px;
@@ -1194,7 +1196,7 @@ table.gridList tr.filteredOut
 /*** START: star ratings ***/
 .rating
 {
-    background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
+    background-image: url(/stylesheets/images/content/comment_stars_white_sprites.png);
     background-position: 0 0;
     height: 16px;
     overflow: hidden;
@@ -1265,8 +1267,8 @@ table.gridList tr.filteredOut
 
 .dialogBox
 {
-    background-color: #ffedcc;
-    background-image: url(/stylesheets/images/common/summary_bottom_right.png);
+    background-color: #fff;
+    background-image: url(/stylesheets/images/content/background_corner_bottom_right.png);
     background-position: bottom right;
     background-repeat: no-repeat;
     margin: 15em auto 0;
@@ -1275,8 +1277,7 @@ table.gridList tr.filteredOut
 
 .dialogBox .header
 {
-    background-color: #e0d1b8;
-    border-bottom: solid 1px #8d8d8d;
+    background-color: #2f608f;
     padding: 0.5em;
 }
 
@@ -1284,6 +1285,7 @@ table.gridList tr.filteredOut
 {
     background-image: url(/stylesheets/images/common/blist_logo.png);
     background-repeat: no-repeat;
+    color: #fff;
     display: block;
     height: 35px;
     margin: 0;
@@ -1292,9 +1294,10 @@ table.gridList tr.filteredOut
 
 .dialogBox .mainContent
 {
-    background-image: url(/stylesheets/images/common/summary_bottom_left.png);
+    background-image: url(/stylesheets/images/content/background_corner_bottom_left.png);
     background-position: bottom left;
     background-repeat: no-repeat;
+    margin-top: 0;
     padding: 1em;
 }
 
@@ -1322,7 +1325,7 @@ table.gridList tr.filteredOut
 
 .dialogBox .footer
 {
-    border-top: solid 1px #e0d1b8;
+    border-top: solid 1px #ccc;
     height: 25px;
     line-height: 25px;
     padding-top: 1em;
@@ -1395,10 +1398,18 @@ table.gridList tr.filteredOut
 }
 .pageBlockHeaderCarousel h2
 {
-    color: #666;
+    color: #fff;
     font-size: 1.8em;
     margin-bottom: .833em; /* 15px */
 }
+
+.jcarousel-skin-discover .jcarousel-prev-horizontal {
+    background-image: url(/stylesheets/images/common/carousel_arrow_sprites.png);
+}
+.jcarousel-skin-discover .jcarousel-next-horizontal {
+    background-image: url(/stylesheets/images/common/carousel_arrow_sprites.png);
+}
+
 
 
 .pageBlockHeaderContent .pageBlockHeaderSide
@@ -1468,7 +1479,7 @@ table.gridList tr.filteredOut
 .tabContent { padding: 1.5em; }
 .tabContent h2
 {
-    color: #e8a134;
+    color: #666;
     float: left;
     font-size: 1.4em;
     margin-bottom: 1.428em; /* 20px */

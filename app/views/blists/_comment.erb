@@ -38,9 +38,7 @@
 
           <div class='submitSection'>
             <a href='#cancel_comment'>Cancel</a>
-            <%- comment_submit_path = is_gov_site? ?
-            "gov/button_submit_comment.png" : "button_submit_comment.png" -%>
-            <%= image_submit_tag(comment_submit_path, :title => "Submit") %>
+            <%= image_submit_tag("button_submit_comment.png", :title => "Submit") %>
           </div>
           <%- end -%>
 

@@ -165,7 +165,7 @@ form.search.large input.submit
 .fullPageContentContainer
 {
     background: #fff url(/stylesheets/images/content/background_corner_left.png) no-repeat;
-    margin: 2.6em 1em 0;
+    margin: 5em 1em 0;
     min-width: 98.9em;
 }
 .fullPageContentBL
@@ -356,7 +356,7 @@ private
 .activityListContainer h2
 {
     border-bottom: 1px solid #ccc;
-    color: #e8a134;
+    color: #666;
     font-size: 1.2em;
     margin-bottom: .8em;
     text-transform: uppercase;
@@ -450,13 +450,13 @@ private
 
 #jqmAlert .actionButtons li
 {
-    background-position: left -126px;
+    background-position: left -63px;
     float: right;
 }
 
 #jqmAlert .actionButtons li a.arrowButton
 {
-    background-position: right -42px;
+    background-position: right -105px;
 }
 
 .jqmOverlay { background-color: #000; }

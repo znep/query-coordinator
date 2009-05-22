@@ -1,0 +1,2 @@
+class Tableowner < User
+end

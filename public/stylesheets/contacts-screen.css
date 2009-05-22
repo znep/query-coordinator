@@ -16,7 +16,7 @@
 #contacts table.gridList tr.hover td+td+td > *,
 #contacts table.gridList tr.highlight td+td+td > *
 {
-    background-color: #ffedb2;
+    background-color: #e3ecf7;
 }
 
 #contacts table.gridList .name { width: 40%; }

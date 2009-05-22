@@ -117,11 +117,11 @@ module BlistsHelper
           c = c.childColumns[0]
         end
 
-        # Now check if we should display bnb columns (this is not done above,
-        #  as we may want to not display bnb parents,
-        #  but do display bnb children)
-        if (!c.is_blist_in_blist || c.is_list ||
-            include_options['blist_in_blist']) &&
+        # Now check if we should display nested table columns (this is not done
+        # above, as we may want to not display nested table parents, but do
+        # display nested table children)
+        if (!c.is_nested_table || c.is_list ||
+            include_options['nested_table']) &&
           (!args['column_test'] || args['column_test'].call(c))
           cur_item = {'text' => h(c.name),
             'href' => args['href_prefix'] + c.id.to_s,
@@ -132,9 +132,10 @@ module BlistsHelper
           items << cur_item
         end
 
-        # If we are displaying bnb children, loop through those (and again
-        #  check for visibility for each child)
-        if c.is_blist_in_blist && !c.is_list && include_options['bnb_children']
+        # If we are displaying nested table children, loop through those (and
+        # again check for visibility for each child)
+        if c.is_nested_table && !c.is_list &&
+          include_options['nested_table_children']
           c.childColumns.each do |cc|
             if (!cc.flag?('hidden') || include_options['hidden']) &&
               (!args['column_test'] || args['column_test'].call(cc))
@@ -172,8 +173,6 @@ module BlistsHelper
     dtt = column.dataType.type.downcase
     if dtt == 'date'
       dtt = 'dateTime'
-    elsif dtt == 'nested_table'
-      dtt = 'bnb'
     elsif dtt == 'text'
       dtt = 'plainText'
       # Now check the format to see if it is formatted text

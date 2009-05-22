@@ -608,7 +608,7 @@ body#lensBody
 
 #addColumnsMenu .column
 {
-    border-right: solid 1px #e0d1b8;
+    border-right: solid 1px #cccccc;
     float: left;
     height: 11em;
     width: 14.5%;
@@ -767,8 +767,8 @@ body#lensBody
     background-position: 5px -400px;
 }
 
-#addColumn_bnb,
-#mainMenu .columnsMenu .bnb a,
+#addColumn_nested_table,
+#mainMenu .columnsMenu .nested_table a,
 .blist-table .blist-th.nested_table .blist-th-icon
 {
     background-position: 5px -440px;

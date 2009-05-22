@@ -88,7 +88,7 @@ class User < Model
   end
 
   def public_blists
-    View.find_for_user(self.id)
+    View.find_for_user(self.id).reject {|v| !v.is_public? || v.owner.id != id}
   end
 
   @@states = {

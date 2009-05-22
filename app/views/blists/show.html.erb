@@ -280,7 +280,7 @@
     blist.namespace.fetch('blist.blistGrid');
     blist.blistGrid.referer = "<%= request.referer %>";
     <%- if !@view.nil? -%>
-    blist.blistGrid.blistId = "<%= @view.blistId %>";
+    blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
     <%- if @is_child_view -%>
     blist.blistGrid.viewName = "<%= h(@view.name) %>";

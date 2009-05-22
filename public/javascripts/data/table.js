@@ -380,21 +380,26 @@
             var cell = findCell(event);
             if (cell)
             {
-                // Retrieve the column
-                var index = 0;
-                for (var pos = cell.previousSibling; pos;
-                    pos = pos.previousSibling)
-                {
-                    index++;
-                }
-                index--;
-                var column = columns[index];
-
                 // Retrieve the row
                 var row = cell.parentNode;
                 // + 2 for "-r" suffix prior to row ID
                 var rowID = row.id.substring(id.length + 2);
                 row = model.getByID(rowID);
+
+                // If this is a row opener, invoke expand on the model
+                if ($(cell).hasClass('blist-opener'))
+                    model.expand(row);
+
+                // Retrieve the column
+                var index = 0;
+                for (var pos = cell.previousSibling; pos;
+                    pos = pos.previousSibling)
+                {
+                    if (!$(pos).hasClass('blist-opener'))
+                        index++;
+                }
+                index--;
+                var column = columns[index];
 
                 // Notify listeners
                 $this.trigger("cellclick", [ row, column, event ]);
@@ -525,22 +530,8 @@
         {
             if (variableColumns.length > 0)
             {
-                var pos = 0;
-                // Sum up all the fixed column widths & paddings
-                if (options.showGhostColumn)
-                {
-                    // Count the ghost column padding
-                    pos += paddingX;
-                }
-                if (options.showRowNumbers)
-                {
-                    pos += handleOuterWidth;
-                }
-                for (var i = 0; i < columns.length; i++)
-                {
-                    pos += columns[i].width + paddingX;
-                }
-                pos += varMinWidth;
+                // Adjust total width of columns by variable min widths
+                var pos = insideWidth + varMinWidth;
 
                 var varSize = scrolls.width() - pos;
                 if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
@@ -557,7 +548,7 @@
                     }
                     else
                     {
-                        colStyles[c.index].width = ((c.minWidth || 0) +
+                        getColumnStyle(c).width = ((c.minWidth || 0) +
                             ((c.percentWidth / 100.0) * varSize)) + 'px';
                     }
                 }
@@ -579,7 +570,7 @@
                         var col = columns[i];
                         col.left = pos;
                         pos += paddingX;
-                        pos += col.width || parseFloat(colStyles[col.index].width);
+                        pos += col.width || parseFloat(getColumnStyle(col).width);
                         col.sizerLeft = pos - options.resizeHandleAdjust;
                         col.sizer.style.left = col.sizerLeft + 'px';
                     }
@@ -615,12 +606,12 @@
         var rowStyle;
         var handleStyle;
         var ghostStyle;
+        var openerStyle;
         var cellStyle;
         var groupHeaderStyle;
         var handleClass;
         var ghostClass;
-        var colStyles = [];
-        var colClasses = [];
+        var openerClass;
 
         // Add a CSS rule.  This creates an empty rule and returns it.  We then
         // dynamically update the rule values as needed.
@@ -646,19 +637,17 @@
             return null;
         };
 
-        // Initialize CSS for the current column set
-        var initCSS = function()
-        {
-            var cnt = columns.length;
-            var ruleClass;
-            while (colStyles.length < cnt)
-            {
-                colClasses.push(ruleClass = id + '-c' + colStyles.length);
-                var style = addRule("." + ruleClass).style;
-                colStyles.push(style);
-            }
+        // Obtain a CSS class for a column
+        var getColumnClass = function(column) {
+            return id + '-c' + column.uid;
         };
 
+        // Obtain a CSS style for a column
+        var colStyles = [];
+        var getColumnStyle = function(column) {
+            return colStyles[column.uid] || (colStyles[column.uid] = addRule('.' + getColumnClass(column)).style);
+        };
+        
         // Initialize my stylesheet
         (function() {
             var rulesNode = $('head')
@@ -671,12 +660,16 @@
             }
             handleClass = id + "-handle";
             ghostClass = id + "-ghost";
+            openerClass = id + "-opener";
 
             // Dynamic style applied to the handle
             handleStyle = addRule("." + handleClass).style;
 
             // Dynamic style applied to the handle
             ghostStyle = addRule("." + ghostClass).style;
+
+            // Dynamic style applied to nested table openers
+            openerStyle = addRule("." + openerClass).style;
 
             // Dynamic style applied to rows
             rowStyle = addRule("#" + id + " .blist-tr").style;
@@ -705,8 +698,117 @@
         var paddingX;
         var handleOuterWidth;
         var handleWidth;
-
+        var openerWidth;
         var varMinWidth;
+        var insideWidth;
+
+        /**
+         * Create rendering code for a series of columns and initialize the column's styles.
+         */
+        var createColumnRendering = function(mcols, contextVariables, prefix) {
+            var colParts = [];
+            var hpos = 0;
+            if (options.showRowNumbers)
+                hpos += handleOuterWidth;
+            var generatedCode = '';
+            if (prefix)
+                colParts.push(prefix);
+
+            // Utility function that writes a push for all column parts
+            var completeStatement = function() {
+                if (colParts.length) {
+                    generatedCode += 'html.push(' + colParts.join(',') + ');';
+                    colParts = [];
+                }
+            }
+
+            for (var j = 0; j < mcols.length; j++)
+            {
+                // Initialize style information for the column
+                var mcol = mcols[j];
+
+                // Add rendering information to the rendering function
+                var colWidth = 0;
+
+                if (mcol.body) {
+                    // Nested table header -- render headers for child columns and set width based on child widths
+                    completeStatement();
+
+                    generatedCode +=
+                        "if (row" + mcol.dataLookupExpr + " && row" + mcol.dataLookupExpr + ".length)";
+                    var childHPos = openerWidth + paddingX;
+                    colParts.push("\"<div class='blist-td blist-tdh blist-opener " + openerClass + "'></div>\"");
+                    var children = mcol.body.children;
+                    for (var k = 0; k < children.length; k++) {
+                        var child = children[k];
+                        colParts.push(
+                            "\"<div class='blist-td blist-tdh " + getColumnClass(child) + "'>&nbsp;" +
+                            htmlEscape(child.name) + "</div>\"");
+                        childHPos += child.width + paddingX;
+                    }
+                    completeStatement();
+
+                    generatedCode += "else " +
+                        "html.push('<div class=\"blist-td " + getColumnClass(mcol) + "\">&nbsp;</div>');";
+
+                    colWidth = childHPos;
+                } else if (mcol.children) {
+                    // Nested table row -- render cells if the row is present or filler if not
+                    completeStatement();
+
+                    // Add the code.  If no record is present we add a filler row; otherwise we add the rows.  This is
+                    // just getting ridiculous
+                    generatedCode +=
+                        "if (row" + mcol.header.dataLookupExpr + ") " +
+                            createColumnRendering(mcol.children, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
+                        "else " +
+                            "html.push('<div class=\"blist-td blist-tdfill " + getColumnClass(mcol.header) + "\">&nbsp;</div>');";
+                    colWidth = 0;
+                } else if (mcol.fillFor) {
+                    // Fill column -- covers background for a range of columns that aren't present in this row
+                    colWidth = 0;
+                    colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + "'>&nbsp;</div>\"");
+                    for (k = 0; k < mcol.fillFor.length; k++) {
+                        var fillFor = mcol.fillFor[k];
+                        colWidth += fillFor.width + paddingX;
+                    }
+                } else {
+                    // Standard cell
+                    colWidth = mcol.width + paddingX;
+
+                    var type = blist.data.types[mcol.type] || blist.data.types.text;
+                    var renderer = mcol.renderer || type.renderGen;
+                    var cls = mcol.cls || type.cls;
+                    cls = cls ? ' blist-td-' + cls : '';
+                    renderer = renderer("row" + mcol.dataLookupExpr, mcol, contextVariables);
+
+                    colParts.push(
+                        "\"<div class='blist-td " + getColumnClass(mcol) + cls + "'>\", " +
+                            renderer + ", \"</div>\""
+                    );
+                }
+
+                // Initialize the column's style
+                mcol.left = hpos;
+                if (colWidth)
+                {
+                    hpos += colWidth;
+                    var style = getColumnStyle(mcol);
+                    style.width = (colWidth - paddingX) + 'px';
+                    if (options.generateHeights)
+                    {
+                        style.height = rowHeight + 'px';
+                    }
+                }
+            }
+
+            if (hpos > insideWidth)
+                insideWidth = hpos;
+
+            completeStatement();
+            
+            return generatedCode;
+        }
 
         /**
          * Initialize based on current model metadata.
@@ -714,31 +816,32 @@
         var initMeta = function(newModel)
         {
             model = newModel;
-            // Create an object for each column
+            
+            // Convert the model columns to table columns
             columns = [];
             variableColumns = [];
             varMinWidth = 0;
-            var mcols = model.meta().columns;
+            var mcols = model.meta().columns[0];
             for (var i = 0; i < mcols.length; i++)
             {
                 var mcol = mcols[i];
-                var modCol = $.extend(true, {
+                var col = $.extend(false, {
                     index: columns.length
                 }, mcol);
-                if (modCol.hasOwnProperty('percentWidth'))
+                if (col.hasOwnProperty('percentWidth'))
                 {
-                    if (modCol.minWidth)
+                    if (col.minWidth)
                     {
-                        varMinWidth += modCol.minWidth;
+                        varMinWidth += col.minWidth;
                     }
-                    modCol.width = 0;
-                    variableColumns.push(modCol);
+                    col.width = 0;
+                    variableColumns.push(col);
                 }
-                else if (!modCol.hasOwnProperty('width'))
+                else if (!col.hasOwnProperty('width'))
                 {
-                    modCol.width = 100;
+                    col.width = 100;
                 }
-                columns.push(modCol);
+                columns.push(col);
             }
             if (variableColumns.length < 1 && options.showGhostColumn)
             {
@@ -751,9 +854,6 @@
             {
                 options.showGhostColumn = false;
             }
-
-            // Ensure CSS styles are initialized
-            initCSS();
 
             // Measure width of the handle and height and width of the cell
             handleDigits = calculateHandleDigits(model);
@@ -793,6 +893,12 @@
                 cellStyle.height = rowHeight + 'px';
             }
 
+            // Record the width of the opener for nested tables
+            openerWidth = measuredInnerDims.width * 1.5;
+            openerStyle.width = openerWidth + 'px';
+            if (options.generateHeights)
+                openerStyle.height = rowHeight + 'px';
+
             // These variables are available to the rendering function
             var contextVariables = {
                 renderSpecial: function(specialRow) {
@@ -802,39 +908,16 @@
             };
 
             // Create default column rendering
-            var columnParts = [];
-            // Count the ghost column padding
-            var pos = 0;
-            if (options.showRowNumbers)
+            var levelRender = [];
+            insideWidth = 0;
+            for (i = 0; i < model.meta().columns.length; i++)
             {
-                pos += handleOuterWidth;
-            }
-            for (i = 0; i < columns.length; i++)
-            {
-                // Initialize the column's style
-                var col = columns[i];
-                col.left = pos;
-                colStyles[i].width = columns[i].width + 'px';
-                if (options.generateHeights)
-                {
-                    colStyles[i].height = rowHeight + 'px';
-                }
-                pos += columns[i].width + paddingX;
-
-                // Add rendering information to the rendering function
-                var type = blist.data.types[col.type] || blist.data.types.text;
-                var renderer = type.renderGen("row[" + col.dataIndexExpr + "]",
-                    col, contextVariables);
-                var cls = col.cls || type.cls;
-                cls = cls ? ' blist-td-' + cls : '';
-                columnParts.push(
-                    "\"<div class='blist-td " + colClasses[i] + cls + "'>\", " +
-                        renderer + ", \"</div>\""
-                );
+                mcols = model.meta().columns[i];
+                levelRender[i] = createColumnRendering(mcols, contextVariables);
             }
             if (options.showGhostColumn)
             {
-                pos += paddingX;
+                insideWidth += paddingX;
             }
 
             // Create the rendering function.  We precompile this for speed so
@@ -846,6 +929,8 @@
                         '(row.id || row[0]), ' +
                         '"\' class=\'blist-tr", ' +
                         '(index % 2 ? " blist-tr-even" : ""), ' +
+                        '(row.expanded ? " blist-tr-open" : ""), ' +
+                        '(row.groupLast ? " last" : ""), ' +
                         '"\' style=\'top: ", ' +
                         '(index * ' + rowOffset + '), "px\'>"';
             if (options.showRowNumbers)
@@ -854,10 +939,16 @@
                     + handleClass + '\'>", (index + 1), "</div>"';
             }
             renderFnSource += ');' +
-                    'if (row._special) ' +
-                        'html.push(renderSpecial(row)); ' +
-                    'else ' +
-                        'html.push(' + columnParts.join(',') + '); ';
+                    'switch (row.level || 0) {' +
+                    '  case -1:' +
+                        'html.push(renderSpecial(row));' +
+                        'break;';
+            for (i = 0; i < levelRender.length; i++) {
+                renderFnSource += 'case ' + i + ':' +
+                    levelRender[i] +
+                    'break;';
+            }
+            renderFnSource += '}';
             if (options.showGhostColumn)
             {
                 renderFnSource += 'html.push("<div class=\'blist-td ' +
@@ -865,18 +956,17 @@
             }
             renderFnSource += 'html.push("</div>");' +
                 '})';
-            rowRenderFn = blist.data.types.compile(renderFnSource,
-                contextVariables);
+            rowRenderFn = blist.data.types.compile(renderFnSource, contextVariables);
 
             // Set the scrolling area width
-            header.width(pos);
-            inside.width(pos);
+            header.width(insideWidth);
+            inside.width(insideWidth);
             ghostStyle.width = 0;
 
             // Configure the group header style
             groupHeaderStyle.left = handleOuterWidth + 'px';
             groupHeaderStyle.width = Math.max(0,
-                (pos - handleOuterWidth - paddingX)) + 'px';
+                (insideWidth - handleOuterWidth - paddingX)) + 'px';
 
             // Set the title of the table
             if ($nameLabel)
@@ -921,7 +1011,7 @@
                     '<div class="blist-th ',
                     !i ? 'blist-th-first ' : '',
                     col.type + ' ',
-                    colClasses[i],
+                    getColumnClass(col),
                     cls,
                     '" title="',
                     colName,
@@ -1023,7 +1113,7 @@
                         variableColumns), 1);
                     drag.col.percentWidth = null;
                 }
-                colStyles[drag.col.index].width = drag.col.width + 'px';
+                getColumnStyle(drag.col).width = drag.col.width + 'px';
 
                 adjustVariableColumns();
             };
@@ -1051,7 +1141,7 @@
                             $(this).data('drag', {
                                 col: col,
                                 originalColWidth: col.width ||
-                                    parseFloat(colStyles[col.index].width),
+                                    parseFloat(getColumnStyle(col).width),
                                 originalSizerLeft: col.sizerLeft,
                                 originalInsideWidth: inside.width()
                             })
@@ -1108,8 +1198,9 @@
 
         /*** ROWS ***/
 
-        var renderedRows = {};
-        var dirtyRows = {};
+        var renderedRows = {}; // All rows that are rendered, by ID
+        var dirtyRows = {}; // Rows that are rendered but need to re-render
+        var rowIndices = {}; // Position of rendered rows (triggers re-rendering if a row moves)
         var rowLoadTimer = null;
         var rowLoadRows = null;
 
@@ -1174,12 +1265,14 @@
                 if (typeof row == 'object') {
                     // Loaded row -- render immediately
                     var rowID = row.id || row[0];
-                    if (unusedRows[rowID])
+                    if (unusedRows[rowID] && rowIndices[rowID] == i)
                         // Keep the existing row
                         delete unusedRows[rowID];
-                    else
+                    else {
                         // Add a new row
                         rowRenderFn(html, i, row);
+                        rowIndices[rowID] = i;
+                    }
                 } else
                     // Unloaded row -- record for load request
                     rowsToLoad.push(row);
@@ -1275,6 +1368,8 @@
         $this.bind('row_change', function(event, rows) {
             updateRows(rows);
         });
+        $this.bind('row_add', updateLayout);
+        $this.bind('row_remove', updateLayout);
 
         // Install the model
         $this.blistModel(options.model);

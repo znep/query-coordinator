@@ -23,7 +23,7 @@
   <div class="itemBody">
     <div class="itemContent">
       <%- unless (view.category == "") -%>
-        <p class="viewCategory"><%= view.category %></p>
+        <p class="viewCategory"><%= view.category.nil? ? '' : view.category.capitalize %></p>
       <%- end -%>
       <p class="viewDescription clipText"><%= h(view.description) %></p>
       <%- if (view.tags.length > 0) -%>

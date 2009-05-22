@@ -10,7 +10,7 @@ class Column < Model
   end
 
   def is_blist_in_blist
-    dataType.type.downcase == 'blist_in_blist'
+    dataType.type.downcase == 'nested_table'
   end
 
   def is_list

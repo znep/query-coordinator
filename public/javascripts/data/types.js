@@ -641,7 +641,7 @@ blist.namespace.fetch('blist.data.types');
             filterable: true
         },
 
-        blist_in_blist: {
+        nested_table: {
             renderGen: renderGenText
         },
 

@@ -16,8 +16,8 @@
   </tr>
 <%- end -%>
 
-<%- item_class = (counter > 0) ? "child child-of-blistRow-#{blist.blistId}" : '' -%>
-<tr <%= blist.is_blist? ? "id='blistRow-#{blist.blistId}'" : '' %>
+<%- item_class = (counter > 0) ? "child child-of-blistRow-#{blist.tableId}" : '' -%>
+<tr <%= blist.is_blist? ? "id='blistRow-#{blist.tableId}'" : '' %>
   blist_id='<%= blist.id %>' class='item <%= item_class %>'>
   <%-
     if blist.flag?("favorite")

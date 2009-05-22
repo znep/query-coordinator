@@ -381,7 +381,7 @@
             <dt><strong>Private <%= t(:blists_name).titleize %>:</strong> <%= @private_blists.length %></dt>
             <dd><%= pluralize(@private_views.length, 'View') %></dd>
           <%- end -%>
-          <dt><strong>Public <%= t(:blists_name).titleize %> &amp; Views:</strong> <%= @user.publicBlists + @user.publicViews %></dt>
+          <dt><strong>Public <%= t(:blists_name).titleize %> &amp; Views:</strong> <%= @user.publicTables + @user.publicViews %></dt>
           <dd><%= pluralize(@user.publicViews, 'View') %></dd>
           <dd><%= @shared_views.length %> Shared</dd>
 

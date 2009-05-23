@@ -72,6 +72,7 @@
  *   <li>row_change - called with an array of rows that have had their contents change</li>
  *   <li>row_add - called with an array of rows that have been newly added to the model</li>
  *   <li>row_remove - called with an array of rows that are no longer present in the model</li>
+ *   <li>col_width_change - called when there is a metadata change that only affects column widths</li>
  * </ul>
  */
 
@@ -100,6 +101,9 @@ blist.namespace.fetch('blist.data');
         // Row lookup-by-ID
         var lookup = {};
         var activeLookup = {};
+
+        // Column lookup by UID
+        var columnLookup = [];
 
         // Event listeners
         var listeners = [];
@@ -375,6 +379,15 @@ blist.namespace.fetch('blist.data');
             return options;
         }
 
+        var getColumnLevel = function(columns, id) {
+            var level = columns[id];
+            if (!level) {
+                level = columns[id] = [];
+                level.id = id;
+            }
+            return level;
+        }
+
         var translateViewColumns = function(view, viewCols, columns, nestDepth, nestedIn) {
             if (!viewCols)
                 return;
@@ -384,7 +397,7 @@ blist.namespace.fetch('blist.data');
                 viewCols[i].dataIndex = i;
             viewCols.sort(function(col1, col2) { return col1.position - col2.position; });
 
-            var levelCols = columns[nestDepth] || (columns[nestDepth] = []);
+            var levelCols = getColumnLevel(columns, nestDepth);
             
             var filledTo = 0;
             var addNestFiller = function() {
@@ -393,7 +406,7 @@ blist.namespace.fetch('blist.data');
                     for (var i = filledTo; i < levelCols.length; i++)
                         fillFor.push(levelCols[i]);
                     filledTo = levelCols.length + 1;
-                    (columns[nestDepth + 1] || (columns[nestDepth + 1] = [])).push({
+                    getColumnLevel(columns, nestDepth + 1).push({
                         type: 'fill',
                         fillFor: fillFor
                     });
@@ -413,9 +426,10 @@ blist.namespace.fetch('blist.data');
                 };
 
                 var dataIndex = vcol.dataIndex;
-                if (nestedIn)
+                if (nestedIn) {
+                    col.nestedIn = nestedIn;
                     col.dataLookupExpr = nestedIn.header.dataLookupExpr + "[" + dataIndex + "]";
-                else {
+                } else {
                     col.dataIndex = dataIndex;
                     col.dataLookupExpr = "[" + dataIndex + "]";
                 }
@@ -504,19 +518,21 @@ blist.namespace.fetch('blist.data');
                     }
                 }
 
-                // Assign a unique numeric to each column
+                // Assign a unique numeric ID (UID) and level ID to each column
+                columnLookup = [];
                 var nextID = 0;
-                var assignUIDs = function(cols) {
+                var assignIDs = function(cols) {
                     for (var i = 0; i < cols.length; i++) {
-                        cols[i].uid = nextID++;
-                        if (cols[i].children)
-                            assignUIDs(cols[i].children);
+                        var col = cols[i];
+                        col.uid = nextID++;
+                        col.level = cols;
+                        columnLookup[col.uid] = col;
+                        if (col.children)
+                            assignIDs(col.children);
                     }
                 }
-                for (var i = 0; i < meta.columns.length; i++) {
-                    var levelCols = meta.columns[i];
-                    assignUIDs(levelCols);
-                }
+                for (var i = 0; i < meta.columns.length; i++)
+                    assignIDs(meta.columns[i]);
 
                 var rootColumns = meta.columns[0];
                 // Configure root column sorting based on view configuration if
@@ -643,6 +659,14 @@ blist.namespace.fetch('blist.data');
         }
 
         /**
+         * Notify the model of column width changes.  This function allows clients to perform optimized rendering vs.
+         * completely replacing all metadata.
+         */
+        this.colWidthChange = function() {
+            $(listeners).trigger('col_width_change');
+        }
+
+        /**
          * Retrieve a single row by index.
          */
         this.get = function(index) {
@@ -657,6 +681,13 @@ blist.namespace.fetch('blist.data');
             var index = lookup[id];
             return index == undefined ? undefined : rows[index];
         };
+
+        /**
+         * Retrieve a column object by UID.
+         */
+        this.getColumn = function(uid) {
+            return columnLookup[uid];
+        }
 
         /**
          * Retrieve the total number of rows.

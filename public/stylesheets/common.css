@@ -161,12 +161,20 @@ form.search.large input.submit
     padding-bottom: 0;
 }
 
-
-.fullPageContentContainer
+.fullPageContentContainer, .tabPageContentContainer
 {
     background: #fff url(/stylesheets/images/content/background_corner_left.png) no-repeat;
-    margin: 5em 1em 0;
     min-width: 98.9em;
+}
+.tabPageContentContainer
+{
+   margin: 0px auto;
+}
+.fullPageContentContainer
+{
+    margin-top: 5em;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 .fullPageContentBL
 {
@@ -182,6 +190,10 @@ form.search.large input.submit
     padding: 1em;
 }
 
+.pageBlockContent
+{
+    padding-bottom: 6em;
+}
 
 
 /**********************
@@ -271,6 +283,10 @@ form.search.large input.submit
 #blists .tabList li.blists,
 #contacts .tabList li.contacts,
 #profile .tabList li.profile,
+#overview .tabList li.overview,
+#directories .tabList li.directories,
+#solution .tablList li.solution,
+#contact .tabList li.contact,
 .tabList li.active
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
@@ -283,6 +299,10 @@ form.search.large input.submit
 #blists .tabList li.blists .wrapper,
 #contacts .tabList li.contacts .wrapper,
 #profile .tabList li.profile .wrapper,
+#overview .tabList li.overview .wrapper,
+#directories .tabList li.directories .wrapper,
+#solution .tablList li.solution .wrapper,
+#contact .tabList li.contact .wrapper,
 .tabList li.active .wrapper
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
@@ -294,6 +314,10 @@ form.search.large input.submit
 #blists .tabList li.blists a,
 #contacts .tabList li.contacts a,
 #profile .tabList li.profile a,
+#overview .tabList li.overview a,
+#directories .tabList li.directories a,
+#solution .tablList li.solution a,
+#contact .tabList li.contact a,
 .tabList li.active a
 {
     background-color: #ffffff;

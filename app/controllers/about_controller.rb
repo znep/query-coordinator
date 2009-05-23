@@ -1,15 +1,3 @@
 class AboutController < ApplicationController
-  skip_before_filter :require_user
-  caches_page :index, :show
-
-  rescue_from ActionView::MissingTemplate do |exception|
-    render_404
-  end
-
-  def index
-  end
-
-  def show
-    render :action => params[:page]
-  end
+  include StaticContent
 end

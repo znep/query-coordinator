@@ -137,7 +137,7 @@ blist.myBlists.tagFilterGen = function(tag)
         for (var i=0; i < view.tags.length; i++)
         {
             var t = view.tags[i];
-            if (t.data == tag) return true;
+            if (t == tag) return true;
         }
         return false;
     };

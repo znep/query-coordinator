@@ -222,29 +222,35 @@ blist.myBlists.favoriteActionClick = function (event)
 blist.myBlists.renameClick = function (event)
 {
     event.preventDefault();
-    var $this = $(this);
-    
+
+    var rowId = $a.closest(".blistItemMenu").attr("id").replace("itemMenu-", "")
+    $currentCell = $("#name-cell-" + rowId).parent();
+
     // Hide all other forms in td.names.
-    myBlistsNS.closeRenameForms($this);
+    myBlistsNS.closeRenameForms();
     
-    $currentCell = $this.closest("tr.item").addClass("highlight").find("td.name");
+    $currentCell.closest(".blist-tr").addClass("highlight");
+
     $currentCell.find("div").hide();
+
+    // Close the form on pressing escape
     var $form = $currentCell.find("form").keyup(function(event)
     {
-        if (event.keyCode == 27) myBlistsNS.closeRenameForms($this);
+        if (event.keyCode == 27) myBlistsNS.closeRenameForms();
     });
-    $form.show().find("input[type='text']").width($form.width() - 30).focus().select();
+    $form.show().find("input[type='text']").width($form.width() - 20).focus().select();
 };
 
-blist.myBlists.closeRenameForms = function($this)
+blist.myBlists.closeRenameForms = function()
 {
-    var $allItemRows = $this.closest("table").find("tr.item:not(.selected)").removeClass("highlight");
-    var $allNameCells = $this.closest("table").find("td.name");
+    var $this = $("#blist-list");
+    var $allNameCells = $this.find("div.blist-list-c3");
+    $allNameCells.closest(".blist-tr").removeClass("highlight");
     $allNameCells.find("form").hide();
     $allNameCells.find("div").show();
 };
 
-blist.myBlists.renameSubmit = function (event)
+blist.myBlists.renameSubmit = function(event)
 {
     event.preventDefault();
 
@@ -263,8 +269,8 @@ blist.myBlists.renameSubmit = function (event)
         success: function(responseData)
         {
             $form.hide();
-            $form.closest("td.name").find("div").show().find("a").text(responseData.name);
-            $form.closest("tr.item").removeClass("highlight");
+            $form.closest(".blist-td").find("div").show().find("a").text(responseData.name);
+            $form.closest(".blist-tr").removeClass("highlight");
             
             // Update the info pane.
             $.Tache.DeleteAll();
@@ -469,10 +475,17 @@ blist.myBlists.customLensOrBlist = function(value, column)
 
 blist.myBlists.customDatasetName = function(value)
 {
-    return '\'<div class="clipText" title="\' + $.htmlEscape(' + value +
+    var form = '\'<form action="/\' + $.urlSafe(row.category || "dataset") + \'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" ' +
+      'class="noselect" method="post">' + 
+      '<input name="authenticity_token" type="hidden" value="' + form_authenticity_token + '"/>' + 
+      '<input id="view_\'+ row.id + \'_name" name="view_\' + row.id + \'[name]" type="text" value="\' + $.urlSafe(' + value + ') + \'"/>' +
+      '<input src="/images/submit_button_mini.png" title="Rename" type="image" />' +
+    '</form>\'';
+
+    return '\'<div id="name-cell-\' + row.id + \'" class="clipText" title="\' + $.htmlEscape(' + value +
         ' || "") + \'"><a href="/\' + $.urlSafe(row.category || "dataset") + \
         \'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" \
-        class="dataset-name">\' + $.htmlEscape(' + value + ') + \'</a></div>\'';
+        class="dataset-name">\' + $.htmlEscape(' + value + ') + \'</a></div>\' + ' + form;
 };
 
 blist.myBlists.customClipText = function(value)
@@ -498,7 +511,7 @@ blist.myBlists.listDropdown = function()
 blist.myBlists.customHandle = function(value, column) {
     var menu = "<ul class='blistItemMenu menu' id='itemMenu-\"+" + value + "+\"'>\
         <li class='open'>\
-          <a href='/dataset/foo/\"+" + value + "+\"' title='Open'>\
+          <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Open'>\
             <span class='highlight'>Open</span>\
           </a>\
         </li>\
@@ -509,7 +522,7 @@ blist.myBlists.customHandle = function(value, column) {
           </a>\
         </li>\
         <li class='rename renameLink'>\
-          <a href='/dataset/foo/\"+" + value + "+\"' title='Rename'>\
+          <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Rename'>\
             <span class='highlight'>Rename</span>\
           </a>\
         </li>\
@@ -598,6 +611,15 @@ blist.myBlists.initializeGrid = function()
             myBlistsNS.favoriteClick(row);
         });
     });
+    $('.blist-td form').live("submit", myBlistsNS.renameSubmit);
+
+    $('.renameLink').live('mouseover', function() {
+        $a = $(this);
+        // Unbind any old listeners
+        $a.unbind('click');
+
+        $a.bind('click', myBlistsNS.renameClick);
+    });
 
     // Configure columns for the view list
     myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});
@@ -650,10 +672,6 @@ $(function() {
 
     // Setup the info pane
     myBlistsNS.itemMenuSetup();
-
-    /* FIXME Still necessary?
-    $("#blistList .renameLink a").click(myBlistsNS.renameClick);
-    $("#blistList td.name form").submit(myBlistsNS.renameSubmit);*/
 
     // Fit everything to the screen properly
     $(window).resize(function (event) 

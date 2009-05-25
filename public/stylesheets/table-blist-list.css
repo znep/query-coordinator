@@ -109,6 +109,7 @@
 }
 
 div.blist-hot-row > div + div + div + div,
+div.highlight > div + div + div + div,
 div.blist-select-row > div + div + div + div
 {
     background-color:#ffedb2;
@@ -116,6 +117,7 @@ div.blist-select-row > div + div + div + div
 }
 
 div.blist-hot-row > div + div + div + div + div + div + div,
+div.highlight > div + div + div + div + div + div + div,
 div.blist-select-row > div + div + div + div + div + div + div
 {
     background-image:url(/stylesheets/images/content/table/highlight_end.png);

@@ -1,6 +1,23 @@
 /**
  * This file implements the Blist table control.  This control offers an interactive presentation of tabular data to
  * the user.
+ *
+ * The table renders data contained within a Blist "model" class.  The table uses the model associated with its root
+ * DOM node.
+ *
+ * Most events triggered by the table are managed by the model class.  Events supported directly by the table are:
+ *
+ * <ul>
+ *   <li>cellclick - fired whenever the user clicks a cell and the table does not perform a default action</li>
+ *   <li>table_click - fired when the mouse is clicked within the table and the table does not fire a default
+ *      action</li>
+ * </ul>
+ *
+ * Implementation note: We process mouse up and mouse down events manually.  We treat some mouse events differently
+ * regardless of the element on which they occur.  For example, a mouse down within a few pixels of a column heading
+ * border is a resize, but the mouse may in fact be over a control.  Because of this and the fact that you can't
+ * cancel click events in mouseup handlers we generally can't use the browser's built in "click" event.  Instead the
+ * table fires a "table_click" event.  You should be able to use this anywhere you would instead handle "click".
  */
 
 (function($)
@@ -283,6 +300,7 @@
         var hotHeaderDrag;
         var dragFrom;
         var dragHeaderLeft;
+        var clickTarget;
 
         var findContainer = function(event, selector)
         {
@@ -505,23 +523,28 @@
         };
 
         var onMouseDown = function(event) {
-            if (hotHeader) {
+            if (hotHeader && hotHeaderMode != 3) {
+                clickTarget = null;
                 hotHeaderDrag = true;
                 dragFrom = { x: event.clientX, y: event.clientY };
                 event.stopPropagation();
                 event.preventDefault();
                 return false;
             }
+            clickTarget = event.target;
         }
 
         var onMouseUp = function(event) {
             if (hotHeaderDrag) {
+                console.debug('huh ' + hotHeaderMode);
                 hotHeaderDrag = false;
                 onMouseMove(event);
                 event.stopPropagation();
                 event.preventDefault();
-                return false;
+                return true;
             }
+            if (clickTarget && clickTarget == event.target)
+                $(clickTarget).trigger('table_click', event);
         }
 
 
@@ -580,7 +603,7 @@
                 .change(applyFilter)
                 .example('Find Inside');
             $title.find('.blist-table-clear-filter')
-                .click(clearFilter);
+                .bind('table_click', clearFilter);
         }
 
         // The table header elements
@@ -597,7 +620,7 @@
         var inside = scrolls
             .find('.blist-table-inside')
             .mouseout(onCellOut)
-            .click(onCellClick);
+            .bind('table_click', onCellClick);
         var insideDOM = inside[0];
 
         // These utility nodes are used to append rows and measure cell text,
@@ -1229,7 +1252,7 @@
 
                 $(this)
                     .data('column', columns[index])
-                    .click(function()
+                    .bind('table_click', function()
                     {
                         $(this).removeClass('hover');
                         if (blist.data.types[columns[index].type].sortable)

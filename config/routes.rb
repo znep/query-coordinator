@@ -101,9 +101,10 @@ ActionController::Routing::Routes.draw do |map|
     map.connect "/#{static_section}", :controller => controller_name
     map.connect "/#{static_section}/:page", :controller => controller_name, :action => 'show'
   end
-  ['terms-of-use', 'privacy', 'contact-us'].each do |static_toplevel|
+  ['terms-of-use', 'privacy'].each do |static_toplevel|
     map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
   end
+  map.contact_us '/contact-us', :controller => 'static', :action => 'contact_us'
 
   # See how all your routes lay out with "rake routes"
 end

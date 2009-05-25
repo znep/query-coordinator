@@ -113,6 +113,11 @@ Rails::Initializer.run do |config|
   config.gem 'googlecharts', :lib => 'gchart'
 end
 
+ActionMailer::Base.smtp_settings = {
+  :address => "mail",
+  :domain => "socrata.com"
+}
+
 multiuser_config = YAML.load(IO.read(RAILS_ROOT + "/config/multiuser.yml") )
 MULTIUSER_BRIDGE_HOST  = multiuser_config[RAILS_ENV]["bridge_host"]
 MULTIUSER_BRIDGE_PORT  = multiuser_config[RAILS_ENV]["bridge_port"]

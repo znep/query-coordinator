@@ -806,6 +806,39 @@ $(function ()
 
     $(".copyCode textarea").click(function() { $(this).select(); });
 
+    $('.switchPermsLink').click(function (event)
+        {
+            event.preventDefault();
+            var $link = $(this);
+            var curState = $link.text().toLowerCase();
+            var newState = curState == 'private' ?
+                'public' : 'private';
+
+            var viewId = $link.attr('href').split('_')[1];
+            $.get('/views/' + viewId, {'method': 'setPermission',
+                'value': newState});
+
+            var capState = newState.charAt(0).toUpperCase() +
+                newState.substring(1);
+
+            // Update link & icon
+            $link.closest('p.' + curState)
+                .removeClass(curState).addClass(newState);
+            $link.text(capState);
+            // Update panel header & icon
+            $link.closest('.singleInfoSharing')
+                .find('.panelHeader.' + curState).text(capState)
+                .removeClass(curState).addClass(newState);
+            // Update line in summary pane
+            $link.closest('#infoPane')
+                .find('.singleInfoSummary .permissions .itemContent > *')
+                .text(capState);
+            // Update summary panel header icon
+            $link.closest('#infoPane')
+                .find('.singleInfoSummary .panelHeader.' + curState)
+                .removeClass(curState).addClass(newState);
+        });
+
     var commentMatches = window.location.search.match(/comment=(\w+)/);
     $('#infoPane .singleInfoComments').infoPaneComments({
         initialComment: commentMatches && commentMatches.length > 1 ?
@@ -826,6 +859,6 @@ $(function ()
         loadSWF();
         blistGridNS.sizeSwf();
     }
-    
+
     $(".favoriteAction a").click( blistGridNS.favoriteActionClick );
 });

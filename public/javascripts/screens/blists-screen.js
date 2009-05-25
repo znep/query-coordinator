@@ -502,8 +502,8 @@ blist.myBlists.customHandle = function(value, column) {
             <span class='highlight'>Open</span>\
           </a>\
         </li>\
-        <li class='addFavorite favoriteLink'>\
-          <a href='/blists/\"+" + value +
+        <li class='addFavorite'>\
+          <a class='favoriteLink' href='/blists/\"+" + value +
             "+\"/create_favorite' title='Add to favorites'>\
             <span class='highlight'>Add to favorites</span>\
           </a>\
@@ -585,6 +585,19 @@ blist.myBlists.initializeGrid = function()
         .blistModel();
 
     $('#blist-list .blist-dropdown-container').live('mouseover', myBlistsNS.listDropdown);
+    $('.favoriteLink').live('mouseover', function() {
+        $a = $(this);
+        // Unbind any old listeners to the click event.
+        $a.unbind('click');
+
+        // When clicking on the menu item, do a favorite ajax request instead.
+        $a.bind('click', function(event) {
+            event.preventDefault();
+            var rowId = $a.closest(".blistItemMenu").attr("id").replace("itemMenu-", "")
+            var row = myBlistsNS.model.getByID(rowId);
+            myBlistsNS.favoriteClick(row);
+        });
+    });
 
     // Configure columns for the view list
     myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});

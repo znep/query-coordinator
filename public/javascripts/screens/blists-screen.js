@@ -307,8 +307,9 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $(".action.unselector").click(function (event)
     {
         event.preventDefault();
-        var blist_id = $(this).attr("href").replace("#", "");
-        $("#blistList tr[blist_id=" + blist_id + "] td.type").trigger("click");
+        var rowId = $(this).attr("href").replace("#", "");
+        var row = myBlistsNS.model.getByID(rowId);
+        myBlistsNS.model.unselectRow(row);
     });
 
     $(".tabLink.activity").click(function(event){

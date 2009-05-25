@@ -3,10 +3,12 @@ var myBlistsNS = blist.namespace.fetch('blist.myBlists');
 blist.myBlists.ownedByGroupFilterGen = function(group)
 {
     return function(view) {
-        $.each(group.users, function(i, user) {
+        for (var i=0; i < group.users.length; i++)
+        {
+            var user = group.users[i];
             if (user.id == view.owner.id)
                 return true;
-        });
+        }
         return false;
     }
 }
@@ -14,11 +16,13 @@ blist.myBlists.ownedByGroupFilterGen = function(group)
 blist.myBlists.sharedByGroupFilterGen = function(group)
 {
     return function(view) {
-        $.each(group.users, function(i, user) {
+        for (var i=0; i < group.users; i++)
+        {
+            var user = group.users[i];
             if (user.id == view.owner.id && 
                 $.inArray("shared", view.flags) != -1)
                 return true;
-        });
+        }
         return false;
     }
 }
@@ -39,10 +43,12 @@ blist.myBlists.sharedToMeFilter = function(view)
 blist.myBlists.sharedToFilterGen = function(userId)
 {
     return function(view) {
-        $.each(view.grants, function(i, grant) {
+        for (var i=0; i < view.grants.length; i++)
+        {
+            var grant = view.grants[i];
             if (grant.userId == userId)
                 return true;
-        });
+        }
         return false;
     };
 }
@@ -50,10 +56,12 @@ blist.myBlists.sharedToFilterGen = function(userId)
 blist.myBlists.sharedWithGroupFilterGen = function(groupId)
 {
     return function(view) {
-        $.each(view.grants, function(i, grant) {
+        for (var i=0; i < view.grants.length; i++)
+        {
+            var grant = view.grants[i];
             if (grant.groupId == groupId) 
                 return true;
-        });
+        }
         return false;
     };
 }
@@ -61,12 +69,28 @@ blist.myBlists.sharedWithGroupFilterGen = function(groupId)
 blist.myBlists.sharedByFilterGen = function(userId)
 {
     return function(view) {
-        $.each(view.grants, function(i, grant) {
-            if ((grant.flags == undefined || 
-                $.inArray("public", grant.flags) == -1) && 
-                view.owner.id == userId)
-                return true;
-        });
+        for (var i=0; i < view.grants.length; i++)
+        {
+            var grant = view.grants[i];
+            if (grant.flags != undefined)
+            {
+                for (var j=0; j < grant.flags.length; j++)
+                {
+                    var flag = grant.flags[j];
+                    if (flag != "public" && view.owner.id == userId)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (view.owner.id == userId)
+                {
+                    return true;
+                }
+            }
+        }
         return false;
     };
 }
@@ -110,9 +134,11 @@ blist.myBlists.taggedFilter = function(view)
 blist.myBlists.tagFilterGen = function(tag)
 {
     return function(view) {
-        $.each(view.tags, function(i, t) {
+        for (var i=0; i < view.tags.length; i++)
+        {
+            var t = view.tags[i];
             if (t.data == tag) return true;
-        });
+        }
         return false;
     };
 }
@@ -382,7 +408,7 @@ blist.myBlists.sidebar.initializeHandlers = function ()
             filterClickCallback: function (target)
             {
                 var title = target.attr('title');
-                if (target.attr('q') != "")
+                if (target.attr('q') != "" && target.attr('q') != "{}")
                 {
                     var query = $.json.deserialize(target.attr('q').replace(/'/g, '"'));
                     for (var type in query)

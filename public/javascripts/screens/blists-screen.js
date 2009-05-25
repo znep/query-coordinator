@@ -183,42 +183,6 @@ blist.myBlists.filterGen = function(type, argument, callback)
     }
 }
 
-// The favorite action in the info for single panel - when one blist is selected.
-blist.myBlists.favoriteActionClick = function (event)
-{
-    event.preventDefault();
-
-    var $favLink = $(this);
-    var $favContainer = $favLink.closest("li");
-
-    var origHref = $favLink.attr("href");
-
-    $.ajax({
-        url: origHref,
-        type: "GET",
-        success: function(responseText, textStatus)
-        {
-            var isCreate = responseText == "created";
-
-            // Update the class of the list item.
-            $favContainer.removeClass(isCreate ? "false" : "true")
-                         .addClass(isCreate ? "true" : "false");
-            // Update the text of the link.
-            var linkText = isCreate ? "Remove from favorites" : "Add to favorites";
-            $favLink.text(linkText);
-            $favLink.attr("title", linkText);
-
-            // Update the link.
-            var newHref = isCreate ?
-                origHref.replace("create", "delete") :
-                origHref.replace("delete", "create");
-
-            $favLink.attr("href", newHref);
-        }
-    });
-};
-
-
 blist.myBlists.renameClick = function (event)
 {
     event.preventDefault();
@@ -365,15 +329,34 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         {
             if (fieldType == "description")
             {
-                // Find the blist row, update the description cell.
-                $("#blistList tr[blist_id='" + itemId + "']").find("td.description div").text(fieldValue);
+                var row = myBlistsNS.model.getByID(itemId);
+                row.description = fieldValue; 
+                myBlistsNS.model.change([row]);
             }
         }
     });
 
     $(".copyCode textarea").click(function() { $(this).select(); });
     
-    $(".favoriteAction a").click( myBlistsNS.favoriteActionClick );
+    $(".favoriteAction a").click(function(event) {
+        event.preventDefault();
+
+        var rowId = $(this).attr("id").replace("info-fav-","");
+        var row = myBlistsNS.model.getByID(rowId);
+        myBlistsNS.favoriteClick(row);
+
+        var $favLink = $(this);
+        var $favContainer = $favLink.closest("li");
+
+        $favContainer.removeClass(row.favorite ? "false" : "true")
+                     .addClass(row.favorite ? "true" : "false");
+
+        // Update the text of the link.
+        var linkText = row.favorite ? "Remove from favorites" : "Add to favorites";
+        $favLink.text(linkText);
+        $favLink.attr("title", linkText);
+        
+    });
 
     $('#infoPane .singleInfoComments').infoPaneComments();
 

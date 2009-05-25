@@ -95,8 +95,16 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :user_sessions
 
-  map.about '/about', :controller => 'about'
-  map.about_subpage '/about/:page', :controller => 'about', :action => 'show'
+  # Static content
+  ['about', 'solution', 'company-info'].each do |static_section|
+    controller_name = static_section.underscore.camelize
+    map.connect "/#{static_section}", :controller => controller_name
+    map.connect "/#{static_section}/:page", :controller => controller_name, :action => 'show'
+  end
+  ['terms-of-use', 'privacy'].each do |static_toplevel|
+    map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
+  end
+  map.contact_us '/contact-us', :controller => 'static', :action => 'contact_us'
 
   # See how all your routes lay out with "rake routes"
 end

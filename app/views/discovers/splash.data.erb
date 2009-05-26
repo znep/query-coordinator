@@ -1,0 +1,31 @@
+<h1>Welcome to Socrata.com</h1>
+<h2>The place for social data discovery.</h2>
+
+<div class="splashActionBoxContainer clearfix">
+  <div class="splashActionBox">
+    <h3>Discover</h3>
+    <h4>Community Datasets</h4>
+    <p>Search for data, slice and dice, and participate.</p>
+    <p class="splashActionButton splashActionDiscover">
+      <%= link_to("Search for Data", discover_url) %>
+    </p>
+  </div>
+  
+  <div class="splashActionBox">
+    <h3>Socratize</h3>
+    <h4>Your Datasets</h4>
+    <p>Upload datasets to Socrata.com and share with others.</p>
+    <p class="splashActionButton">
+      <%= link_to("Upload Datasets", import_url) %>
+    </p>
+  </div>
+  
+  <div class="splashActionBox last">
+    <h3>Revolutionize</h3>
+    <h4>Your .GOV</h4>
+    <p>Learn about the Socrata Social Data Discovery solution.</p>
+    <p class="splashActionButton">
+      <%= link_to("About Socrata", "/about") %>
+    </p>
+  </div>
+</div>

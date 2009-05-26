@@ -78,7 +78,6 @@
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-    cursor: pointer;
 }
 
 .blist-td
@@ -107,7 +106,6 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh {
     background-image: url('/stylesheets/images/content/table/expand_closed.png');
     background-position: center center;
     background-repeat: no-repeat;
-    cursor: pointer;
     border-right-color: transparent /*#f8f8f8*/;
 }
 
@@ -147,12 +145,10 @@ div.blist-table-expander .blist-td
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-    cursor: default;
 }
 
 .blist-table .blist-table-corner
 {
-    cursor: default;
 }
 
 .blist-table-util
@@ -171,7 +167,6 @@ div.blist-table-expander .blist-td
     width: 5px;
     overflow: hidden;
     right: 0px;
-    cursor: col-resize;
 }
 
 .blist-th .sort

@@ -1,6 +1,6 @@
 <ul id='mainMenu' class='menu multilevelMenu'>
   <li class='first blist active'>
-    <dl><dt><a href='#menublist'><%= t(:blist_name) %></a></dt>
+    <dl><dt><a href='#menublist'><%= t(:blist_name).capitalize %></a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
         'href' => "/views/#{@view.id}/rows.pdf?print=true&headers_on_every_page=true"},
@@ -141,8 +141,8 @@
         # Not supported
 #        {'text' => 'Grid + Page', 'class' => 'gridPage', 'href' => '#'},
 #        {'text' => 'Page Only', 'class' => 'page', 'href' => '#'},
-        {'separator' => true},
-        {'text' => 'As a Form', 'class' => 'form', 'href' => '#publish_form'}
+#        {'separator' => true},
+#        {'text' => 'As a Form', 'class' => 'form', 'href' => '#publish_form'}
         # Not supported
 #        {'text' => 'As a Search Widget', 'class' => 'search',
 #        'href' => '#'}

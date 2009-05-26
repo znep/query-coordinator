@@ -1316,6 +1316,7 @@ table.gridList tr.filteredOut
 
 .dialogBox .title h2
 {
+    color: #333;
     float: left;
     font-size: 1.8em;
 }

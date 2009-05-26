@@ -285,7 +285,7 @@ form.search.large input.submit
 #profile .tabList li.profile,
 #overview .tabList li.overview,
 #directories .tabList li.directories,
-#solution .tablList li.solution,
+#solution .tabList li.solution,
 #contact .tabList li.contact,
 .tabList li.active
 {
@@ -301,7 +301,7 @@ form.search.large input.submit
 #profile .tabList li.profile .wrapper,
 #overview .tabList li.overview .wrapper,
 #directories .tabList li.directories .wrapper,
-#solution .tablList li.solution .wrapper,
+#solution .tabList li.solution .wrapper,
 #contact .tabList li.contact .wrapper,
 .tabList li.active .wrapper
 {
@@ -316,7 +316,7 @@ form.search.large input.submit
 #profile .tabList li.profile a,
 #overview .tabList li.overview a,
 #directories .tabList li.directories a,
-#solution .tablList li.solution a,
+#solution .tabList li.solution a,
 #contact .tabList li.contact a,
 .tabList li.active a
 {

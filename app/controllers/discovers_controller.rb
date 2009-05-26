@@ -1,12 +1,14 @@
 class DiscoversController < ApplicationController
-  skip_before_filter :require_user, :only => [:show, :filter, :tags]
+  skip_before_filter :require_user, :only => [:show, :filter, :tags, :splash]
   
   PAGE_SIZE = 10
 
   def show
     @body_class = 'discover'
     @show_search_form = false
-    
+    @show_splash = !current_user.nil? ? false :
+                      (cookies[:show_splash].nil? ? true : cookies[:show_splash][:value])
+
     @page_size = PAGE_SIZE
 
     @all_views_total = View.find({ :limit => PAGE_SIZE, :count => true }, true).count
@@ -145,6 +147,12 @@ class DiscoversController < ApplicationController
     @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
     
     render(:layout => "modal")
+  end
+  
+  def splash
+    cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
+    
+    render(:layout => "splash")
   end
 
 end

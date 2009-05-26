@@ -540,16 +540,27 @@ blist.namespace.fetch('blist.data');
                 if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
                 {
                     var s = meta.view.sortBys[0];
-                    meta.sort = {ascending: s.flags != null &&
-                        $.inArray('asc', s.flags) >= 0};
+                    var sortCol;
                     $.each(rootColumns, function (i, c)
                     {
                         if (c.id == s.viewColumnId)
                         {
-                            meta.sort.column = c;
+                            sortCol = c;
                             return false;
                         }
                     });
+                    if (sortCol)
+                    {
+                        meta.sort = {ascending: s.flags != null &&
+                            $.inArray('asc', s.flags) >= 0, column: sortCol};
+                    }
+                    else
+                    {
+                        // We're dealing with a sort on a column that doesn't
+                        // exist in our view; we can't post this back, so
+                        // clear it out
+                        meta.view.sortBys = null;
+                    }
                 }
 
                 // For each column at the root nesting level, ensure that

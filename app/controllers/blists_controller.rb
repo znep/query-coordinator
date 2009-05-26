@@ -57,7 +57,8 @@ class BlistsController < SwfController
       end
 
       if !@view.is_blist?
-        par_view = View.find({'tableId' => @view.tableId}, true).
+        par_view = View.find({'tableId' => @view.tableId,
+          'method' => 'getByTableId'}, true).
           find {|v| v.is_blist?}
         if (!par_view.nil?)
           @is_child_view = true

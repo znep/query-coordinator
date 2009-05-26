@@ -147,4 +147,51 @@ $(function ()
     
     $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler);
     $("#search").focus(function(){ $(this).select(); });
+    
+    $("#splashModal").jqm({
+        trigger: false,
+        onShow: function(hash)
+        {
+            var $modal = hash.w;
+
+            $.Tache.Get({ 
+                url: "/discover/splash",
+                success: function(data)
+                {
+                    $modal.html(data).show();
+                }
+            });
+        }
+    });
+    $("#splashModal").jqmShow();
+    $("#splashModal .closeContainer a").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#splashModal").jqmHide();
+    });
+    $("#splashModal .splashActionDiscover").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#splashModal").jqmHide();
+        $("#discover .pageBlockSearch form #search").focus();
+    });
+    $("#splashModal .splashActionBox").live("click", function(event)
+    {
+        var $this = $(this);
+        var $target = $(event.target);
+        if (!$target.is("a"))
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            var $a = $this.find(".splashActionButton a");
+            if ($a.closest(".splashActionButton").hasClass("splashActionDiscover"))
+            {
+                $a.click();
+            }
+            else
+            {
+                window.location = $a.attr("href");
+            }
+        }
+    });
 });

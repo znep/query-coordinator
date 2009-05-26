@@ -396,6 +396,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 
 var blistsBarNS = blist.namespace.fetch('blist.myBlists.sidebar');
 
+blist.myBlists.sidebar.defaultFilter = function() { return true; };
 blist.myBlists.sidebar.filterCallback = function(fn) 
 {
     myBlistsNS.model.filter(fn);
@@ -418,7 +419,7 @@ blist.myBlists.sidebar.initializeHandlers = function ()
                 }
                 else
                 {
-                    myBlistsNS.model.filter(function() { return true });
+                    myBlistsNS.model.filter(blist.myBlists.sidebar.defaultFilter);
                 }
 
 
@@ -609,7 +610,7 @@ blist.myBlists.initializeGrid = function()
 
     $('#blist-list .blist-dropdown-container').live('mouseover', myBlistsNS.listDropdown);
     $('.favoriteLink').live('mouseover', function() {
-        $a = $(this);
+        var $a = $(this);
         // Unbind any old listeners to the click event.
         $a.unbind('click');
 
@@ -621,6 +622,26 @@ blist.myBlists.initializeGrid = function()
             myBlistsNS.favoriteClick(row);
         });
     });
+
+    var applyFilter = function() {
+        var filterText = $('form.blistsFind input[type="text"]').val();
+        if (filterText == "")
+        {
+            // For some reason clearing out the filter causing grouping to no 
+            // longer work, so instead, clear with a function that filters 
+            // nothing.
+            myBlistsNS.model.filter(blistsBarNS.defaultFilter);
+        }
+        else
+        {
+            myBlistsNS.model.filter(filterText);
+        }
+    };
+
+    $('form.blistsFind')
+        .keyup(applyFilter)
+        .submit(function(event) { event.preventDefault(); applyFilter() });
+
     $('.blist-td form').live("submit", myBlistsNS.renameSubmit);
 
     $('.renameLink').live('mouseover', function() {

@@ -368,7 +368,7 @@
     </div>
   </div>
 
-  <div id="sidebar" class="column scrollContentColumn">
+  <div id="sidebar" class="column scrollContentColumn<%= @is_user_current ? "" : " notabs" %>">
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'blistStats' } ) do %>
         <h4><%= @is_user_current ? "My" : "#{h(@user.displayName)}'s" %> Stats</h4>

@@ -1,0 +1,27 @@
+.tabList li,
+.tabList li .wrapper
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_small_sprites.gif);
+}
+
+#home .tabList li.home,
+#blists .tabList li.blists,
+#contacts .tabList li.contacts,
+#profile .tabList li.profile,
+#overview .tabList li.overview,
+#directories .tabList li.directories,
+#solution .tablList li.solution,
+#contact .tabList li.contact,
+.tabList li.active,
+#home .tabList li.home .wrapper,
+#blists .tabList li.blists .wrapper,
+#contacts .tabList li.contacts .wrapper,
+#profile .tabList li.profile .wrapper,
+#overview .tabList li.overview .wrapper,
+#directories .tabList li.directories .wrapper,
+#solution .tablList li.solution .wrapper,
+#contact .tabList li.contact .wrapper,
+.tabList li.active .wrapper
+{
+    background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.gif);
+}

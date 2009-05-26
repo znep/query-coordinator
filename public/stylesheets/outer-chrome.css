@@ -32,18 +32,19 @@ body
 #header
 {
     position: relative;
+    height: 75px;
 }
 
 #mainLogo
 {
     background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
     font-size: 1em;
-    left: 0;
     margin: 0;
-    padding-top: 1.2em;
+    left: 0;
     position: absolute;
-    top: 25px;
     width: 100%;
+    top: 2.5em;
+    height: 6.2em;
 }
 
 #mainLogo a
@@ -52,6 +53,8 @@ body
     background-repeat: no-repeat;
     display: block;
     height: 35px;
+    margin-top: 1.0em;
+    padding-bottom: .3em;
     margin-left: 1em;
     text-indent: -9999px;
     width: 142px;
@@ -130,10 +133,11 @@ body
 {
     background: none;
     padding: 0.5em;
+    padding-top: .7em;
     position: absolute;
     right: 0;
+    top: 0;
     text-transform: none;
-    bottom: 0;
 }
 
 #header .userNav li
@@ -242,10 +246,8 @@ body.community #mainNav li.community
 /****************
  * Main content *
  ****************/
-.mainContent,
-#discoverBody .mainContent { margin-top: 46px; }
 
-#sidebar { margin-top: 72px; }
+#sidebar { margin-top: 26; }
 
 
 /*************
@@ -260,6 +262,7 @@ body.community #mainNav li.community
     position: absolute;
     right: 0;
     text-align: right;
+    width: 100%;
 }
 
 #footer ul

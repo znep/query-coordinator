@@ -94,6 +94,7 @@ form.search p
     background-image: url(/stylesheets/images/common/find_input_cap.png);
     background-repeat: no-repeat;
     overflow: hidden;
+    width: 219px; /* Required for IE6 */
     padding-left: 10px;
     padding-right: 31px;
 }
@@ -110,7 +111,7 @@ form.search input
     float: left;
 }
 
-form.search input[type="text"]
+form.search input.textPrompt
 {
     border-color: #cacaca;
     border-style: solid;
@@ -119,7 +120,7 @@ form.search input[type="text"]
     padding: 3px 0 0;
     width: 100%;
 }
-form.search.large input[type="text"]
+form.search.large input.textPrompt
 {
     font-size: 2.4em;
     height: 32px;
@@ -254,6 +255,8 @@ form.search.large input.submit
     background-position: right -130px;
     background-repeat: no-repeat;
     padding: 3px 14px 0;
+    height: 23px;
+    float: left;
 }
 
 .tabList li.even .wrapper
@@ -271,6 +274,7 @@ form.search.large input.submit
   line-height: 1.2em;
   padding: 5px 1em 0;
   text-decoration: none;
+  float: left;
 }
 
 .tabList li.even a
@@ -307,6 +311,7 @@ form.search.large input.submit
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
     background-position: right -52px;
+    height: 26px;
     padding: 0 18px;
 }
 

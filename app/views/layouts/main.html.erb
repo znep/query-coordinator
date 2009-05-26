@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -10,6 +9,10 @@
   <%= stylesheet_link_tag "base", "common", "info-pane", "layout",
     "outer-chrome", "sidebar", "widgets",
     :cache => "cache/layout_main_all" %>
+    
+  <!--[if lt IE 7]>
+      <style type="text/css">@import "stylesheets/core-ie6.css";</style>
+  <![endif]-->
 
   <% if ENV["RAILS_ENV"] != 'production' %>
   <script src="/javascripts/jquery-1.3.2.js" type="text/javascript"
@@ -47,15 +50,6 @@
         </ul>
       </div>
 
-      <%# This is not supported yet
-      <div class='notifications'>
-        <ul>
-          <li><a href='#' class='messages' title='Messages'>1</a></li>
-          <li><a href='#' class='requests' title='Requests'>3</a></li>
-        </ul>
-      </div>
-      %>
-
       <div class='userNav'>
         <ul>
           <li><a href='http://www.getsatisfaction.com/socrata' rel="external">Help</a></li>
@@ -64,6 +58,15 @@
           <li class='signOutLink'><a href='/logout'>Sign Out</a></li>
         </ul>
       </div>
+
+      <%# This is not supported yet
+      <div class='notifications'>
+        <ul>
+          <li><a href='#' class='messages' title='Messages'>1</a></li>
+          <li><a href='#' class='requests' title='Requests'>3</a></li>
+        </ul>
+      </div>
+      %>
 
       <%- if @show_search_form -%>
         <% form_tag(discover_url, :method => :get, :class => "search") do %>

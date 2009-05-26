@@ -536,7 +536,6 @@
 
         var onMouseUp = function(event) {
             if (hotHeaderDrag) {
-                console.debug('huh ' + hotHeaderMode);
                 hotHeaderDrag = false;
                 onMouseMove(event);
                 event.stopPropagation();

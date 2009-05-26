@@ -81,7 +81,7 @@ private
     elsif REVISION_NUMBER
       "/swf/#{REVISION_NUMBER}/#{filename}"
     else
-      logger.fatal("Cannot find SWF to serve")
+      logger.fatal("Cannot find SWF to serve (searching for #{filename} within #{SWF_DIR})")
       return ''
     end
   end

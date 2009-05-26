@@ -943,13 +943,6 @@ body#lensBody
     display: none;
 }
 
-#lensBody.readMode #infoPane .sharingSummary a
-{
-    cursor: auto;
-    font-style: normal;
-    text-decoration: none;
-}
-
 /* Grid styling */
 #lensBody #readGrid
 {

@@ -215,6 +215,6 @@ module BlistsHelper
                       "/widgets/#{view.id}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_url + view.href}\" title=\"#{h(view.name)}\">" +
                       "#{h(view.name)}</a></iframe><p><a href=" +
-                      "\"http://www.blist.com/\">Powered by blist</a></p></div>"
+                      "\"http://www.#{t(:blist_company).downcase}.com/\">Powered by #{t(:blist_company)}</a></p></div>"
   end
 end

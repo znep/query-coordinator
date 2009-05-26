@@ -345,7 +345,8 @@
 
             var x = event.clientX;
             var hh, hhm;
-            $('.blist-th, .blist-tdh', container).each(function() {
+            $('.blist-th:not(.blist-table-ghost), .blist-tdh', container)
+                .each(function() {
                 var header = $(this);
                 var left = header.offset().left;
                 if (left > x)
@@ -536,14 +537,14 @@
 
         var onMouseUp = function(event) {
             if (hotHeaderDrag) {
-                console.debug('huh ' + hotHeaderMode);
                 hotHeaderDrag = false;
                 onMouseMove(event);
                 event.stopPropagation();
                 event.preventDefault();
                 return true;
             }
-            if (clickTarget && clickTarget == event.target)
+            if (clickTarget && clickTarget == event.target &&
+                !$(clickTarget).is('a'))
                 $(clickTarget).trigger('table_click', event);
         }
 
@@ -577,7 +578,7 @@
             <div class="blist-table-util"></div>';
 
         $(document)
-            .mouseup(onMouseUp)
+            .mouseup(onMouseUp);
 
         // Render container elements
         var $outside = $this

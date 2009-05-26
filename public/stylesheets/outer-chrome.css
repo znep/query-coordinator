@@ -40,7 +40,7 @@ body
     font-size: 1em;
     left: 0;
     margin: 0;
-    padding-top: .3em;
+    padding-top: 1.2em;
     position: absolute;
     top: 25px;
     width: 100%;
@@ -48,13 +48,13 @@ body
 
 #mainLogo a
 {
-    background-image: url(/stylesheets/images/header/blist_logo.png);
+    background-image: url(/stylesheets/images/header/socrata_logo.png);
     background-repeat: no-repeat;
     display: block;
-    height: 37px;
+    height: 35px;
     margin-left: 1em;
     text-indent: -9999px;
-    width: 86px;
+    width: 142px;
 }
 
 #header li, #footer li

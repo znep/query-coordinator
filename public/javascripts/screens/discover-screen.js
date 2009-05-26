@@ -89,6 +89,7 @@ blist.discover.searchSubmitHandler = function(event)
             
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
+            $("#search").blur();
         }
     });
 }
@@ -144,5 +145,6 @@ $(function ()
         $("#tagCloud").jqmHide();
     });
     
-    $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler)
+    $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler);
+    $("#search").focus(function(){ $(this).select(); });
 });

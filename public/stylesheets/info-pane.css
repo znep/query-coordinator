@@ -165,6 +165,7 @@
 .infoContentHeader h2.panelHeader
 {
     background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
+    color: #333;
     float: left;
     font-size: 1.4em;
     font-weight: normal;
@@ -508,6 +509,17 @@ infoContentOuter table.gridList td.picture > *
 .infoContentOuter table.gridList td.copies > * { text-align: right; }
 
 /*** END: grid list table ***/
+
+/*** START: single info summary tab ***/
+
+.singleInfoSummary .infoContentHeader h2.panelHeader
+{
+    font-size: 1.8em;
+    font-weight: bold;
+    max-width: 60%;
+}
+
+/*** END: single info summary tab ***/
 
 /*** START: single info filtered tab ***/
 
@@ -887,15 +899,17 @@ infoContentOuter table.gridList td.picture > *
 .singleInfoSharing .infoContentHeader > h2.panelHeader.first
 {
     background-position: left -246px;
+}
+
+.singleInfoSharing .infoContentHeader h2.panelHeader
+{
     border-right: 1px solid #e8e8e8;
     padding-right: 10px;
 }
 
-.singleInfoSummary .infoContentHeader h2.panelHeader
+.singleInfoSharing .infoContentHeader h2.panelHeader.last
 {
-    font-size: 1.8em;
-    font-weight: bold;
-    max-width: 60%;
+    border-right: none;
 }
 
 .infoContentHeader h2.panelHeader.contactPanelHeader

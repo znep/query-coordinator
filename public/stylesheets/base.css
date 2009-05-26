@@ -97,6 +97,7 @@ form p
 
 h1
 {
+    color: #600;
     font-size: 2.4em;
     line-height: 1.4em;
     margin-bottom: .5em;
@@ -104,13 +105,14 @@ h1
 
 h2
 {
+    color: #600;
     font-size: 1.5em;
     line-height: 1.5em;
 }
 
 h3
 {
-    color: #666;
+    color: #600;
     font-size: 1.4em;
     line-height: 1.4em;
     text-transform: uppercase;
@@ -134,7 +136,7 @@ h5
 }
 
 a { 
-    color: #600;
+    color: #0071bc;
     text-decoration: none;
 }
 a:hover 

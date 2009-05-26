@@ -9,6 +9,9 @@ module CommunitiesHelper
     out << "<a href=#{profile_url(activity.actor.id)}>#{activity.actor.displayName}</a> "
     out << get_verb_for_activity_action(activity.action)
     out << get_html_for_action_object(activity)
+    unless (style == "short")
+      out << friendly_relative_time(activity.createdAt)
+    end
     out.join(" ")
   end
   

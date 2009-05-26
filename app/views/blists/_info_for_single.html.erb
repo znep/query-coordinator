@@ -497,7 +497,7 @@
     <%- end -%>
     <ul class="socialActions">
       <%- 
-        tweet = CGI::escape("Check out the #{h(view.name)} dataset on blist - ")
+        tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{t(:blist_company)} - ")
         seo_url = "#{request.protocol + request.host_with_port + view.href}"
         short_url = "#{request.protocol + request.host_with_port + view.short_href}"
       -%>

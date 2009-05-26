@@ -37,7 +37,7 @@
 
   <div id='outerContainer'>
     <div id='header'>
-      <h1 id='mainLogo'><%= link_to('blist', root_url) %></h1>
+      <h1 id='mainLogo'><%= link_to(t(:blist_company), root_url) %></h1>
 
       <div id='mainNav'>
         <ul>
@@ -58,7 +58,7 @@
 
       <div class='userNav'>
         <ul>
-          <li><a href='http://www.blist.com/help' target='_blank'>Help</a></li>
+          <li><a href='http://www.getsatisfaction.com/socrata' rel="external">Help</a></li>
           <li class='signInLink'><a href='/login'>Sign In</a></li>
           <li class='accountLink'><%= link_to "My Account", account_url %></li>
           <li class='signOutLink'><a href='/logout'>Sign Out</a></li>

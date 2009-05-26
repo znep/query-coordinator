@@ -134,7 +134,7 @@
             <li class='separator'>
               <ul class="socialActions clearfix">
                 <%- 
-                  tweet = CGI::escape("Check out the #{h(@view.name)} dataset on blist - ")
+                  tweet = CGI::escape("Check out the #{h(@view.name)} dataset on #{t(:blist_company)} - ")
                   seo_url = "#{request.protocol + request.host_with_port + @view.href}"
                 -%>
                 <li><%= link_to(image_tag("icons/social_icon_delicious_small.png", :size => "20x20", :alt => "Delicious"), 

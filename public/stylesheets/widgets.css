@@ -1288,7 +1288,7 @@ table.gridList tr.filteredOut
 
 .dialogBox .header h1
 {
-    background-image: url(/stylesheets/images/common/socrata_logo.png);
+    background-image: url(/stylesheets/images/common/socrata_logo_light.png);
     background-repeat: no-repeat;
     color: #fff;
     display: block;

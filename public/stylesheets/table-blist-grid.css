@@ -16,7 +16,6 @@
 .blist-th
 {
     border-left: solid 1px #e2e2e2;
-    cursor: auto;
     font-size: 1.2em;
     height: 2.9166em; /* 35px */
     line-height: 2.9166em;
@@ -60,11 +59,6 @@
     font-size: 1.1em;
     height: 3.1818em; /* 35px */
     padding: 0 0.3636em; /* 4px */
-}
-
-.blist-th.blist-table-ghost
-{
-    cursor: auto;
 }
 
 .blist-th-sizer

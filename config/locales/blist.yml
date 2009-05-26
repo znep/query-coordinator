@@ -1,6 +1,6 @@
 blist:
-  page_title: blist | Making Data Social
-  my_home_title: My blist
+  page_title: Socrata | Making Data Social
+  my_home_title: My Socrata
   discover_nav_title: Data
   search_prompt_text: Search for Data
   discover_search_intro: Search for Data
@@ -10,4 +10,4 @@ blist:
   community_header_intro: Welcome to the Community!
   blist_name: dataset
   blists_name: datasets
-  blist_company: blist
+  blist_company: Socrata

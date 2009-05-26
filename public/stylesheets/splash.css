@@ -1,0 +1,98 @@
+/* 
+    Document   : splash.css
+    Created on : May 26, 2009
+    Author     : pete.stuart@blist.com
+    Description:
+      Styles for splash popup on home/discover page.
+*/
+
+.splashContainer
+{
+    background: url(/stylesheets/images/splash/splash_pop_background.png) no-repeat;
+    height: 40.5em;
+    margin: 0 auto;
+    padding: 6.5em 3em 3em;
+    position: relative;
+    width: 69em;
+}
+.splashContainer h1
+{
+    color: #fff;
+    font-size: 4.5em;
+    line-height: 1.1em;
+    margin: 0;
+}
+.splashContainer h2
+{
+    color: #fff;
+    font-size: 2em;
+    font-weight: normal;
+}
+
+
+.splashActionBoxContainer
+{
+    margin-top: 3em;
+    position: relative;
+}
+.splashActionBox
+{
+    cursor: pointer;
+    float: left;
+    margin-right: 1.5em;
+    width: 21.5em;
+}
+.splashActionBox.last { margin-right: 0; }
+
+
+.splashActionBox h3
+{
+    color: #fff;
+    font-size: 3em;
+    font-weight: normal;
+    line-height: 1.1em;
+    text-transform: none;
+}
+.splashActionBox h4
+{
+    color: #fff;
+    font-size: 2em;
+}
+.splashActionBox p
+{
+    color: #fff;
+    font-size: 1.4em;
+    line-height: 1.428em; /* 20px */
+    margin-top: 1.428em; /* 20px */
+}
+
+.splashActionBox p.splashActionButton
+{
+    margin-top: 2em;
+}
+.splashActionBox p.splashActionButton a
+{
+    background: url(/stylesheets/images/splash/pop_action_button.png) no-repeat;
+    color: #fff;
+    display:block;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 15px;
+    width: 201px;
+}
+
+.splashContainer .closeContainer
+{
+    position: absolute;
+    right: 1.5em;
+    top: 1.3em;
+}
+.splashContainer .closeContainer a
+{
+    background: url(/stylesheets/images/splash/pop_close.png) no-repeat;
+    display: block;
+    height: 14px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 14px;
+}

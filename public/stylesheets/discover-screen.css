@@ -170,6 +170,7 @@ ul.myNetworkList li span
 }
 .discoverContentList li.viewListItem .itemMeta li.ratingContainer .rating 
 { 
+    background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
     float: left; 
     margin-right: 1em;
     margin-top: 8px;

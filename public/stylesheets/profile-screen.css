@@ -47,12 +47,13 @@
 #profile .userName, #profile .userLocation { display: inline; }
 #profile .userName h1
 {
+    color: #333;
     display: inline;
     margin-bottom: 0;
     margin-right: .5em;
 }
 
-#profile .userCompany, #profile .userTitle, #profile .userTags { margin-right: 15em; } 
+#profile .userCompany, #profile .userTitle, #profile .userTags { margin-right: 16em; } 
 
 #profile .editProfileContentActions
 {

@@ -826,7 +826,7 @@ table.gridList td > div > a:hover { text-decoration: underline; }
 /* Sort grouping headers */
 table.gridList tr.sortGroup td > *
 {
-    color: #666;
+    color: #600;
     font-size: 1.3em;
     text-indent: 0;
     text-transform: uppercase;
@@ -1484,7 +1484,6 @@ table.gridList tr.filteredOut
 .tabContent { padding: 1.5em; }
 .tabContent h2
 {
-    color: #666;
     float: left;
     font-size: 1.4em;
     margin-bottom: 1.428em; /* 20px */

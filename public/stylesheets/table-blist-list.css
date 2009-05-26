@@ -164,6 +164,38 @@ div.blist-type-filter
     overflow: visible;
 }
 
+div.blist-type-defaultSharedTo
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 10px -69px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-defaultSharedBy
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 10px -38px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-filterSharedTo
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 10px -193px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-filterSharedBy
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: 10px -162px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
 div.blist-list-c2 > div
 {
     height: 27px;

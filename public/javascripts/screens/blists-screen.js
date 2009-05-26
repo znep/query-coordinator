@@ -478,10 +478,35 @@ blist.myBlists.customDateMeta = function(value, column)
     return "blist.myBlists.customDate(" + value + ")";
 };
 
-blist.myBlists.customLensOrBlist = function(value, column)
+blist.myBlists.getTypeClassName = function(value)
 {
-    return "\"<div class='blist-type-\" + (" + value +
-        " ? 'default': 'filter') + \"'></div>\"";
+    var cls = "";
+
+    if (myBlistsNS.filterFilter(value))
+    {
+        cls += "filter";
+    }
+    else
+    {
+        cls += "default";
+    }
+
+    if (myBlistsNS.sharedToMeFilter(value))
+    {
+        cls += "SharedTo";
+    }
+    else if (myBlistsNS.sharedByFilterGen(myBlistsNS.currentUserId)(value))
+    {
+        // Shared by me.
+        cls += "SharedBy";
+    }
+
+    return cls
+};
+
+blist.myBlists.customType = function(value, column)
+{
+    return "\"<div class='blist-type-\" + blist.myBlists.getTypeClassName(row) + \"'></div>\"";
 };
 
 blist.myBlists.customDatasetName = function(value)
@@ -677,7 +702,7 @@ blist.myBlists.columns = [
   { cls: 'favorite', name: 'Favorite?', width: 36, dataIndex: 'favorite',
     renderer: blist.myBlists.customFav, sortable: true},
   { cls: 'type', name: 'Type', width: 45, dataIndex: 'isDefault',
-    renderer: blist.myBlists.customLensOrBlist, sortable: true },
+    renderer: blist.myBlists.customType, sortable: true },
   { name: 'Name', percentWidth: 20, dataIndex: 'name',
     renderer: blist.myBlists.customDatasetName, group: true, sortable: true },
   { name: 'Description', percentWidth: 40, dataIndex: 'description',

@@ -800,9 +800,9 @@ $(function ()
 
     // Wire up the hover behavior in the info pane.
     $("#infoPane .selectableList, #infoPane .gridList").blistListHoverItems();
-    $(".infoContent dl.actionList").infoPaneItemHighlight();
+    $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
 
-    $("#infoPane dd.editItem").infoPaneItemEdit();
+    $("#infoPane .editItem").infoPaneItemEdit();
 
     $(".copyCode textarea").click(function() { $(this).select(); });
 

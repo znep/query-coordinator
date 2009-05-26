@@ -52,10 +52,28 @@
 <div class="infoContentOuter singleInfoSummary listContainer active<%= page_single ? ' expanded' : '' %>">
   <div class="infoContentHeader clearfix">
     <h2 title='<%= h(view.name) %>'
-      class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>">
-      <%= page_single ? h(view.name) : link_to(h(view.name), view.href) %>
+      class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>
+      <%= is_owner ? 'editItem' : '' %>">
+      <div class='itemContent'>
+        <span><%= page_single ? h(view.name) :
+          link_to(h(view.name), view.href) %></span>
+        <%- if is_owner -%>
+        <%- form_tag(view.href) do -%>
+        <%= hidden_field_tag("fieldType", "name") %>
+        <%= text_field_tag("view[name]", h(view.name)) %>
+        <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+        <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),
+        blists_url, :title => "Cancel", :class => "formCancelLink") %>
+        <%- end -%>
+        <%- end -%>
+      </div>
+      <%- if is_owner -%>
+      <div class="itemActions">
+        <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+      </div>
+      <%- end -%>
     </h2>
-    
+
     <ul class="headerActions actionButtons">
       <%- unless (page_single) -%>
         <li><a href="<%= view.href %>" class="arrowButton">Open</a></li>
@@ -68,7 +86,7 @@
         class="showFlashPopup">Share</a></li>
       <%- end -%>
     </ul>
-    
+
     <%- if (!@current_user.nil?) -%>
       <%-
         if view.flag?("favorite")

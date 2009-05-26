@@ -333,14 +333,17 @@
 }
 
 /** Edit forms **/
-.infoContentOuter.listContainer .infoContent dd .itemContent form
+.infoContentOuter.listContainer .infoContent dd .itemContent form,
+.infoContentOuter.listContainer .infoContentHeader .itemContent form
 {
     display: none;
+    padding-bottom: 0;
     padding-top: 0;
 }
 .infoContentOuter.listContainer .infoContent dd input[type="text"]
 {
     font-size: 1em; /* 11px */
+    padding-top: 0.1em;
     width: 31.818em; /* 350px */
 }
 .infoContentOuter.listContainer .infoContent dd select
@@ -372,20 +375,39 @@
     text-decoration: none;
 }
 .infoContentOuter.listContainer .infoContent dd .itemContent > * img { vertical-align: middle; }
-.infoContentOuter.listContainer .infoContent dd.hover .itemContent
+.infoContentOuter.listContainer .infoContent dd.hover .itemContent,
+.infoContentOuter.listContainer .infoContentHeader .hover .itemContent
 {
     background-color: #e3ecf7;
     background-image: url(/stylesheets/images/info_pane/summary_item_content_bottom_right.png);
     background-position: right bottom;
     background-repeat: no-repeat;
 }
-.infoContentOuter.listContainer .infoContent dd.hover .itemContent > *
+.infoContentOuter.listContainer .infoContent dd.hover .itemContent > *,
+.infoContentOuter.listContainer .infoContentHeader .hover .itemContent > *
 {
     background-image: url(/stylesheets/images/info_pane/summary_item_content_top_right.png);
     background-position: right top;
     background-repeat: no-repeat;
     cursor: pointer;
 }
+.infoContentOuter.listContainer .infoContentHeader .panelHeader.editItem
+{ padding-left: 40px; }
+.infoContentOuter.listContainer .infoContentHeader .editItem .itemContent
+{ padding-left: 0.5em; }
+.infoContentOuter.listContainer .infoContentHeader .editItem .itemContent > *
+{ display: block; }
+.infoContentOuter.listContainer .infoContentHeader .editItem .itemContent > form
+{ display: none; }
+.infoContentOuter.listContainer .infoContentHeader .editItem form input[type="text"]
+{
+    font-size: 1em;
+    font-weight: bold;
+    width: 75%;
+}
+.infoContentOuter.listContainer .infoContentHeader .editItem .formCancelLink img
+{ vertical-align: baseline; }
+
 
 .infoContentOuter.listContainer .infoContent dd .itemContent li
 {
@@ -393,13 +415,15 @@
 }
 
 /*** .itemActions can be either <div> or <ul> ***/
-.infoContentOuter.listContainer .infoContent dd .itemActions
+.infoContentOuter.listContainer .infoContent dd .itemActions,
+.infoContentOuter.listContainer .infoContentHeader .itemActions
 {
     display: none;
     position: absolute;
     right: 0;
     top: 6px;
 }
+.infoContentOuter.listContainer .infoContentHeader .itemActions { top: 0; }
 
 .infoContentOuter.listContainer .infoContent dd .itemActions li
 {
@@ -407,6 +431,7 @@
 }
 
 .infoContentOuter.listContainer .infoContent .itemActions .action,
+.infoContentOuter.listContainer .infoContentHeader .itemActions .action,
 .infoContentOuter .infoContent .actionContainer .action
 {
     background-image: url(/stylesheets/images/info_pane/summary_secondary_button_left.png);
@@ -418,25 +443,34 @@
     height: 19px;
     line-height: 19px;
     overflow: hidden;
-    padding-left: 5px;
+    padding-left: 7px;
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
 }
+.infoContentOuter.listContainer .infoContentHeader .itemActions .action
+{
+    font-size: 0.5556em;
+    font-weight: normal;
+}
+
 .infoContentOuter.listContainer .infoContent .itemActions .action span,
+.infoContentOuter.listContainer .infoContentHeader .itemActions .action span,
 .infoContentOuter .infoContent .actionContainer .action span
 {
     background-image: url(/stylesheets/images/info_pane/summary_secondary_button_right.png);
     background-position: right top;
     background-repeat: no-repeat;
     display: block;
-    padding-right: 5px;
+    height: 19px;
+    padding-right: 7px;
 }
 .infoContentOuter .infoContent td.actionContainer > *
 {
     font-size: 1em; /* Reset the parent element's font size so we can override. */
 }
-.infoContentOuter.listContainer .infoContent dd.hover .itemActions
+.infoContentOuter.listContainer .infoContent dd.hover .itemActions,
+.infoContentOuter.listContainer .infoContentHeader .hover .itemActions
 {
     display: block;
 }
@@ -516,7 +550,8 @@ infoContentOuter table.gridList td.picture > *
 {
     font-size: 1.8em;
     font-weight: bold;
-    max-width: 60%;
+    position: relative;
+    width: 60%;
 }
 
 /*** END: single info summary tab ***/

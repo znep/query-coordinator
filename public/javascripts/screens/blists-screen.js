@@ -221,7 +221,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $('#infoPane').html(data);
 
     // Wire up the hover behavior.
-    $(".infoContent dl.actionList").infoPaneItemHighlight();
+    $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
 
     // Wire up the tab switcher/expander.
     $(".summaryTabs").infoPaneNavigate();
@@ -248,7 +248,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabSharing");
     });
 
-    $("#infoPane dd.editItem").infoPaneItemEdit({
+    $("#infoPane .editItem").infoPaneItemEdit({
         submitSuccessCallback: function(fieldType, fieldValue, itemId)
         {
             if (fieldType == "description")

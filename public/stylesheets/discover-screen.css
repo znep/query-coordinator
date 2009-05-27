@@ -74,6 +74,7 @@ ul.myNetworkList li span
     background: url(/stylesheets/images/content/community_bug_background.png) 12px 0 no-repeat;
     height: 203px;
     margin-top: 2.9em;
+    margin-right: -330px;
     padding-left: 12px;
     position: relative;
     width: 318px;

@@ -202,8 +202,23 @@ blist.namespace.fetch('blist.data.types');
         return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) + ", '$')";
     }
 
+    var renderPhone = function(number) {
+        if (!number || !number[0])
+            return '';
+
+        var label = number[0] + "";
+        if (label.match(/^\d{10}$/))
+            label = "(" + label.substring(0, 3) + ") " + label.substring(3, 6) + "-" + label.substring(6, 10);
+        else if (label.match(/^\d{7}$/))
+            label = label.substring(0, 3) + "-" + label.substring(3, 4);
+
+        label = "<div class='blist-phone-icon blist-phone-icon-" + (number[1] ? number[1].toLowerCase() : "unknown") + "'></div> " + htmlEscape(label);
+
+        return renderURL([ "callto://" + number[0].replace(/[\-()\s]/g, ''), label ], true);
+    }
+
     var renderGenPhone = function(value) {
-        return "((" + value + " && " + value + "[0]) || '')";
+        return "renderPhone(" + value + ")";
     }
 
     var renderGenCheckbox = function(value, column) {
@@ -316,7 +331,7 @@ blist.namespace.fetch('blist.data.types');
         return "'?'";
     }
 
-    var renderURL = function(value) {
+    var renderURL = function(value, captionIsHTML) {
         if (!value)
             return '';
         else if (typeof value == "string") {
@@ -336,7 +351,9 @@ blist.namespace.fetch('blist.data.types');
         {
             url = 'http://' + url;
         }
-        return "<a target='blist-viewer' href='" + htmlEscape(url) + "'>" + htmlEscape(caption) + "</a>";
+        if (!captionIsHTML)
+            caption = htmlEscape(caption);
+        return "<a target='blist-viewer' href='" + htmlEscape(url) + "'>" + caption + "</a>";
     }
 
     var renderGenURL = function(value) {

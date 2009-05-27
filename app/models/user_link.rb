@@ -22,10 +22,10 @@ class UserLink < Model
   end
   
   @@link_types = [
-    ["MY_COMPANY", "My Company"],
+    ["MY_COMPANY", "My Company / Organization"],
     ["BLOG", "My Blog"],
     ["MY_SITE", "My Website (personal)"],
-    ["DOC_STOCK", "DockStock"],
+    ["DOC_STOCK", "docstoc"],
     ["FACEBOOK", "Facebook"],
     ["FLICKR", "flickr"],
     ["FRIEND_FEED", "FriendFeed"],
@@ -33,7 +33,9 @@ class UserLink < Model
     ["MYSPACE", "MySpace"],
     ["SLIDESHARE", "Slideshare"],
     ["TWITTER", "Twitter"],
-    ["YOUTUBE", "YouTube"]
+    ["YOUTUBE", "YouTube"],
+    ["SCRIBD", "Scribd"],
+    ["GOVLOOP", "GovLoop"]
   ]
   
 end

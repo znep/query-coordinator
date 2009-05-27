@@ -284,6 +284,8 @@ img.blist-table-option-icon
 {
     background: transparent no-repeat center center;
     height: 22px;
+    margin-top: -4px;
+    margin-bottom: -4px;
 }
 
 .blist-flag-blue {
@@ -308,6 +310,33 @@ img.blist-table-option-icon
 
 .blist-flag-yellow {
     background-image: url(/stylesheets/images/content/table/flags/yellow.png);
+}
+
+.blist-phone-icon {
+    float: right;
+    width: 25px;
+    height: 20px;
+    margin: -4px 0px -4px 0;
+}
+
+.blist-phone-icon-cell {
+    background-image: url(/stylesheets/images/content/table/phones/cell.png);
+}
+
+.blist-phone-icon-fax {
+    background-image: url(/stylesheets/images/content/table/phones/fax.png);
+}
+
+.blist-phone-icon-home {
+    background-image: url(/stylesheets/images/content/table/phones/home.png);
+}
+
+.blist-phone-icon-other {
+    background-image: url(/stylesheets/images/content/table/phones/other.png);
+}
+
+.blist-phone-icon-work {
+    background-image: url(/stylesheets/images/content/table/phones/work.png);
 }
 
 .blist-tag

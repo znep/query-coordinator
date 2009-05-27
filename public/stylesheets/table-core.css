@@ -309,3 +309,11 @@ img.blist-table-option-icon
 .blist-flag-yellow {
     background-image: url(/stylesheets/images/content/table/flags/yellow.png);
 }
+
+.blist-tag
+{
+    background-image: url(/stylesheets/images/content/table/tagIcon.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 18px;
+}

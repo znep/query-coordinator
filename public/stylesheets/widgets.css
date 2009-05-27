@@ -1276,7 +1276,7 @@ table.gridList tr.filteredOut
     background-image: url(/stylesheets/images/content/background_corner_bottom_right.png);
     background-position: bottom right;
     background-repeat: no-repeat;
-    margin: 15em auto 0;
+    margin: 10em auto 0;
     width: 40em;
 }
 
@@ -1288,7 +1288,7 @@ table.gridList tr.filteredOut
 
 .dialogBox .header h1
 {
-    background-image: url(/stylesheets/images/common/socrata_logo.png);
+    background-image: url(/stylesheets/images/common/socrata_logo_light.png);
     background-repeat: no-repeat;
     color: #fff;
     display: block;

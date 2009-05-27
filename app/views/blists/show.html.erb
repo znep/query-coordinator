@@ -134,7 +134,7 @@
             <li class='separator'>
               <ul class="socialActions clearfix">
                 <%- 
-                  tweet = CGI::escape("Check out the #{h(@view.name)} dataset on blist - ")
+                  tweet = CGI::escape("Check out the #{h(@view.name)} dataset on #{t(:blist_company)} - ")
                   seo_url = "#{request.protocol + request.host_with_port + @view.href}"
                 -%>
                 <li><%= link_to(image_tag("icons/social_icon_delicious_small.png", :size => "20x20", :alt => "Delicious"), 
@@ -155,7 +155,8 @@
 
           <form class='search' action='#'>
             <div class='searchContainer'>
-              <input type='text' class='textPrompt' title='Find' />
+              <input type='text' class='textPrompt'
+              title='Find in this <%= t(:blist_name) %>' />
               <div class='actionBox'>
               <div class='clearBox'>
                 <a class='clearSearch' title='Clear Search' href='#clear_search'>

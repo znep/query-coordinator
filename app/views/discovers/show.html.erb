@@ -31,18 +31,30 @@
             </ul>
           </div></div>
         </div>
-      
-        <div class="pageBlockHeaderSide">
-          <h2><%= @current_user.nil? ? "Recently Updated" : "In My Network" %></h2>
-          <ul class="myNetworkList">
-            <%- @network_views.each do |view| -%>
-              <li class="clearfix">
-                <%= link_to(h(view.name), view.href, :title => h(view.name), :class => "clipText") %> 
-                <span class="authorLine">by <%= h(view.owner.displayName) %></span>
-              </li>
-            <%- end -%>
-          </ul>
-        </div>
+        
+        <%- if !@current_user.nil? -%>
+          <div class="pageBlockHeaderSide">
+            <h2>In My Network</h2>
+            <ul class="myNetworkList">
+              <%- @network_views.each do |view| -%>
+                <li class="clearfix">
+                  <%= link_to(h(view.name), view.href, :title => h(view.name), :class => "clipText") %> 
+                  <span class="authorLine">by <%= h(view.owner.displayName) %></span>
+                </li>
+              <%- end -%>
+            </ul>
+          </div>
+        <%- else -%>
+          <div class="pageBlockHeaderSide discoverBugContainer">
+            <h2><%= t(:blist_company) %> Transforms Raw Data Into a Vibrant Social Experience</h2>
+            <p class="bugActionButton">
+              <a href="/about">About <%= t(:blist_company) %></a>
+            </p>
+            <p class="footnote">US Federal Government Agencies, US State &amp; Local Governments, Worldwide Federal Governments</p>
+          </div>
+        <%- end -%>
+        
+
       </div>
     </div>
   </div></div>

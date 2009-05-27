@@ -185,7 +185,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= h(view.owner.displayName) %></span>
+            <span><a href="<%= profile_url(view.owner.id) %>"><%= h(view.owner.displayName) %></a></span>
           </div>
         </dd>
       </dl>
@@ -259,14 +259,9 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>
-              <%= request.protocol + request.host_with_port + view.href %>
+            <span class="copyCode">
+              <input name="permalink" type="text" value="<%= request.protocol + request.host_with_port + view.href %>"/>
             </span>
-          </div>
-          <div class="itemActions">
-            <a href="#publish" class="action tabLink publishing">
-              <span>Publish</span>
-            </a>
           </div>
         </dd>
       </dl>

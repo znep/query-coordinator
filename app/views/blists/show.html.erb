@@ -284,8 +284,9 @@
     <%- if !@view.nil? -%>
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
-    <%- if @is_child_view -%>
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
+    <%- if @is_child_view -%>
+    blist.blistGrid.isFilter = true;
     <%- end -%>
     <%- end -%>
   </script>

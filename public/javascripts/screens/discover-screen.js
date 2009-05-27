@@ -153,9 +153,10 @@ $(function ()
         onShow: function(hash)
         {
             var $modal = hash.w;
-
+            var modalUrl = typeof(isOldIE) !== "undefined" ? "/discover/noie" : "/discover/splash";
+            
             $.Tache.Get({ 
-                url: "/discover/splash",
+                url: modalUrl,
                 success: function(data)
                 {
                     $modal.html(data).show();
@@ -163,6 +164,7 @@ $(function ()
             });
         }
     });
+    
     $("#splashModal").jqmShow();
     $("#splashModal .closeContainer a").live("click", function(event)
     {
@@ -194,4 +196,6 @@ $(function ()
             }
         }
     });
+    
+    
 });

@@ -270,16 +270,20 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $("#infoPane .editItem").infoPaneItemEdit({
         submitSuccessCallback: function(fieldType, fieldValue, itemId)
         {
-            if (fieldType == "description")
+            if (fieldType == "description" || fieldType == "name")
             {
                 // Find the blist row, update the description cell.
-                $("#blistList tr[blist_id='" + itemId + "']").find("td.description div").text(fieldValue);
+                $("#blistList tr[blist_id='" + itemId + "'] td." +
+                    fieldType + " div")
+                    .text(fieldValue).attr('title', fieldValue);
             }
+            // If anything in the info pane is changed, make sure it reloads
+            $.Tache.DeleteAll();
         }
     });
 
     $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
-    
+
     $('.switchPermsLink').click(function (event)
         {
             event.preventDefault();

@@ -129,7 +129,7 @@ class View < Model
   end
   
   def short_href
-    "/blists/#{id}"
+    "/dataset/#{id}"
   end
 
   def user_role(user_id)

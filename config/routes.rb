@@ -40,7 +40,7 @@ ActionController::Routing::Routes.draw do |map|
       :contact_detail => :get,
       :group_detail => :get,
     }
-  map.resource :discover, :member => { :filter => :get, :tags => :get, :splash => :get }
+  map.resource :discover, :member => { :filter => :get, :tags => :get, :splash => :get, :noie => :get }
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
@@ -82,6 +82,11 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
+  # Support both /blists and /datasets short URLs
+  map.connect 'dataset/:id', :controller => 'blists',
+    :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP}
+
   map.root :controller => "discovers", :action => "show"
 
   map.import '/upload', :controller => 'imports', :action => 'new' 
@@ -101,10 +106,9 @@ ActionController::Routing::Routes.draw do |map|
     map.connect "/#{static_section}", :controller => controller_name
     map.connect "/#{static_section}/:page", :controller => controller_name, :action => 'show'
   end
-  ['terms-of-service', 'privacy'].each do |static_toplevel|
+  ['terms-of-service', 'privacy', 'contact-us'].each do |static_toplevel|
     map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
   end
-  map.contact_us '/contact-us', :controller => 'static', :action => 'contact_us'
 
   # See how all your routes lay out with "rake routes"
 end

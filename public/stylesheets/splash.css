@@ -96,3 +96,32 @@
     text-indent: -9999px;
     width: 14px;
 }
+
+/* For the don't use IE6 modal */
+.splashActionBoxContainer.noIE { margin-top: 2em; }
+.splashActionBoxContainer.noIE p
+{
+    color: #fff;
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+.splashActionBoxContainer.noIE .splashActionBox
+{
+    cursor: auto;
+    float: left;
+    margin-left: 6em;
+    margin-right: 1.5em;
+    width: 21.5em;
+}
+.splashActionBoxContainer.noIE .splashActionBox.last { margin-left: 0; }
+
+.splashActionBoxContainer.noIE .splashActionBox p
+{
+    margin-top: 10px
+}
+
+.splashActionBoxContainer.noIE .splashActionBox p.splashActionButton
+{
+    margin-top: 1em;
+}

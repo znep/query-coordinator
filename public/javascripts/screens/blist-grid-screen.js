@@ -41,7 +41,7 @@ blist.blistGrid.setUpTabs = function ()
         return;
     }
 
-    if (blistGridNS.viewName)
+    if (blistGridNS.isFilter)
     {
         if ($.grep(cookieObj.views, function (v)
             { return v.id == blistGridNS.viewId }).length < 1)
@@ -57,7 +57,7 @@ blist.blistGrid.setUpTabs = function ()
         .removeClass('main active even').addClass('filter');
     var $refTab = $('.tabList li.filter.active');
     var $endTab = $('.tabList li.nextTabLink');
-    if (blistGridNS.viewName === null || $refTab.length < 1)
+    if (!blistGridNS.isFilter || $refTab.length < 1)
     {
         $refTab = $endTab;
     }
@@ -84,7 +84,7 @@ blist.blistGrid.setUpTabs = function ()
 blist.blistGrid.createTabCookie = function()
 {
     $.cookies.del('viewTabs');
-    if (blistGridNS.viewName)
+    if (blistGridNS.isFilter)
     {
         $.cookies.set('viewTabs', $.json.serialize({
             blistId: blistGridNS.blistId,
@@ -635,6 +635,44 @@ blist.blistGrid.favoriteActionClick = function (event)
 // refreshed
 blist.blistGrid.summaryStale = true;
 
+
+blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId)
+{
+    if (fieldType == "name")
+    {
+        var oldName = blistGridNS.viewName;
+        blistGridNS.viewName = fieldValue;
+
+        // Update text in tab
+        $('#lensContainer .tabList .active a')
+            .text(blistGridNS.viewName).attr('title', blistGridNS.viewName);
+
+        // Update stored info in cookie for filter
+        var cookieStr = $.cookies.get('viewTabs');
+        if (blistGridNS.isFilter &&
+            cookieStr && cookieStr != "" && cookieStr != "undefined")
+        {
+            var cookieObj = $.json.deserialize(cookieStr);
+            $.each(cookieObj.views, function (k, v)
+                {
+                    if (v.id == blistGridNS.viewId)
+                    {
+                        v.name = blistGridNS.viewName;
+                        return false;
+                    }
+                });
+            $.cookies.set('viewTabs', $.json.serialize(cookieObj));
+        }
+
+        // Update in filtered view list
+        if (blistGridNS.isFilter)
+        {
+            $('.singleInfoFiltered .gridList .item .name a:contains(' +
+                oldName + ')').text(blistGridNS.viewName);
+        }
+    }
+};
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -802,7 +840,8 @@ $(function ()
     $("#infoPane .selectableList, #infoPane .gridList").blistListHoverItems();
     $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
 
-    $("#infoPane .editItem").infoPaneItemEdit();
+    $("#infoPane .editItem").infoPaneItemEdit({
+        submitSuccessCallback: blistGridNS.infoEditCallback});
 
     $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
 

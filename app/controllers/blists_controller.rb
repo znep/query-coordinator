@@ -134,7 +134,26 @@ class BlistsController < SwfController
     render :text => {"result" => "success"}.to_json
   end
 
-  def destroy 
+  def create
+    begin
+      view = View.create(params[:view])
+    rescue CoreServerError => e
+      return respond_to do |format|
+        format.html do
+          flash[:error] = e.error_message
+          render 'shared/error'
+        end
+        format.data { render :json => {'error' => e.error_message}.to_json }
+      end
+    end
+
+    respond_to do |format|
+      format.html { redirect_to(view.href) }
+      format.data { render :json => {'url' => view.href}.to_json }
+    end
+  end
+
+  def destroy
       blist_id = params[:id]
       result = View.delete(blist_id)
 

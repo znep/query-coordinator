@@ -6,26 +6,26 @@
       Styles for the info pane
 */
 
-#infoPane
+.metadataPane
 {
     margin-left: 1em;
     margin-top: 0.5em;
     min-width: 70em; /* Tabs will wrap below this width. */
 }
 
-#infoPane .header
+.metadataPane .header
 {
     padding: 0.5em 0 0;
 }
 
 /*** START: tabs styling ***/
-#infoPane .summaryTabs 
+.metadataPane .summaryTabs 
 {
     background-color: #ececec;
     border-bottom: 1px solid #06386a;
     height: 20px;
 }
-#infoPane .summaryTabs li 
+.metadataPane .summaryTabs li 
 {
     background-color: #ececec;
     border: 1px solid #06386a;
@@ -36,7 +36,7 @@
     position: relative;
     width: 120px;
 }
-#infoPane .summaryTabs li .tabOuter
+.metadataPane .summaryTabs li .tabOuter
 {
     background-image: url(/stylesheets/images/info_pane/background_info_tab_top_left_sprites.png);
     background-position: 0 -4px;
@@ -46,7 +46,7 @@
     padding-left: 1px;
     padding-top: 1px;
 }
-#infoPane .summaryTabs li .tabInner 
+.metadataPane .summaryTabs li .tabInner 
 {
     background-image: url(/stylesheets/images/info_pane/background_info_tab_top_right_sprites.png);
     background-position: 113px -4px;
@@ -55,7 +55,7 @@
     margin-top: -1px;
     min-height: 0;
 }
-#infoPane .summaryTabs li.active 
+.metadataPane .summaryTabs li.active 
 {
     background-color: #cacaca;
     background-position: -3px 0;
@@ -64,24 +64,24 @@
     font-weight: bold;
     height: 20px;
 }
-#infoPane .summaryTabs li.active .tabOuter { background-position: -4px 0; }
-#infoPane .summaryTabs li.active .tabInner 
+.metadataPane .summaryTabs li.active .tabOuter { background-position: -4px 0; }
+.metadataPane .summaryTabs li.active .tabInner 
 {
     background-position: 117px 0;
 }
 
-#infoPane .summaryTabs li.last .tabInner
+.metadataPane .summaryTabs li.last .tabInner
 {
     background-image: url(/stylesheets/images/info_pane/background_info_tab_last_sprites.png);
     background-position: right top;
     width: 123px;
 }
-#infoPane .summaryTabs li.active.last .tabInner
+.metadataPane .summaryTabs li.active.last .tabInner
 {
     background-position: right -30px;
 }
 
-#infoPane .summaryTabs li a, #infoPane .summaryTabs li span
+.metadataPane .summaryTabs li a, .metadataPane .summaryTabs li span
 {
     color: #333;
     display: block;
@@ -91,28 +91,28 @@
 }
 
 /* The summary tab is special */
-#infoPane .summaryTabs li.summary 
+.metadataPane .summaryTabs li.summary 
 {
     border-right-width: 1px;
     width: 85px;
 }
-#infoPane .summaryTabs li.summary.active.last
+.metadataPane .summaryTabs li.summary.active.last
 {
     border-right: 1px solid #06386a;
     width: 85px;
 }
 
-#infoPane .summaryTabs li.summary.active .tabInner 
+.metadataPane .summaryTabs li.summary.active .tabInner 
 {
     background-image: none;
 }
-#infoPane .summaryTabs li.summary.active.last .tabInner
+.metadataPane .summaryTabs li.summary.active.last .tabInner
 {
     width: 85px;
 }
 
 /* expander */
-#infoPane a.expander
+.metadataPane a.expander
 {
     background: url(/stylesheets/images/info_pane/icon_expand_summary_sprites.png) no-repeat 0 0;
     display: block;
@@ -121,12 +121,12 @@
     overflow: hidden;
     width: 9px;
 }
-#infoPane a.expander.expanded
+.metadataPane a.expander.expanded
 {
     background-position: left -9px;
 }
 
-#infoPane .summaryTabs li a.expander
+.metadataPane .summaryTabs li a.expander
 {
     display: none;
     left: 0;
@@ -135,7 +135,7 @@
     position: absolute;
     top: 0;
 }
-#infoPane .summaryTabs li.active a.expander
+.metadataPane .summaryTabs li.active a.expander
 {
     display: block;
 }
@@ -501,7 +501,7 @@
 .infoContentOuter.singleInfoGroups table.gridList .description { width: 60%; }
 .infoContentOuter.singleInfoGroups table.gridList .actionContainer,
 .infoContentOuter.singleInfoMembers table.gridList .actionContainer { width: 7em; }
-#infoPane .infoContentOuter.singleInfoBlists table.gridList .name { width: 100%; }
+.metadataPane .infoContentOuter.singleInfoBlists table.gridList .name { width: 100%; }
 .infoContentOuter.singleInfoBlists table.gridList .views,
 .infoContentOuter.singleInfoBlists table.gridList .copies { width: 7em; }
 
@@ -583,7 +583,7 @@ infoContentOuter table.gridList td.picture > *
     margin-top: 14px;
 }
 
-#infoPane .singleInfoComments h2.rating
+.metadataPane .singleInfoComments h2.rating
 {
     background-image: url(/stylesheets/images/content/comment_stars_white_sprites.png);
     float: left;
@@ -694,7 +694,7 @@ infoContentOuter table.gridList td.picture > *
     padding: 0.1em 0;
 }
 
-#infoPane .singleInfoComments .userInfo .rating
+.metadataPane .singleInfoComments .userInfo .rating
 {
     background-image: url(/stylesheets/images/content/comment_stars_white_sprites.png);
 }
@@ -723,7 +723,7 @@ infoContentOuter table.gridList td.picture > *
     padding: 0.5em 0.5em 1em;
 }
 
-#infoPane .singleInfoComments li.comment .rating
+.metadataPane .singleInfoComments li.comment .rating
 {
     background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png);
 }
@@ -839,7 +839,7 @@ infoContentOuter table.gridList td.picture > *
     margin-top: 2.5em;
 }
 
-#infoPane .singleInfoComments li.comment .expander.hidden
+.metadataPane .singleInfoComments li.comment .expander.hidden
 {
     display: none;
 }
@@ -987,7 +987,7 @@ infoContentOuter table.gridList td.picture > *
     text-decoration: underline;
 }
 
-#infoPane .gridListContainer.simple table.gridList td > *
+.metadataPane .gridListContainer.simple table.gridList td > *
 {
     margin: 2px 0;
 }
@@ -999,7 +999,7 @@ infoContentOuter table.gridList td.picture > *
     background-color: #e3ecf7;
 }
 
-#infoPane .singleInfoSharing table.gridList .actionContainer
+.metadataPane .singleInfoSharing table.gridList .actionContainer
 {
     width: 8.5em;
 }
@@ -1046,13 +1046,13 @@ infoContentOuter table.gridList td.picture > *
 /*  The following rules define styles for stuff that isn't currently implemented. 
     TODO: clean it all up once the publishing table is implemented.
 */
-#infoPane table.gridList .widgetBlist { width: 40%; }
-#infoPane table.gridList .widgetType { width: 6em; }
-#infoPane table.gridList .link { width: 40%; }
-#infoPane table.gridList .number { width: 4em; }
-#infoPane table.gridList th.number { text-align: center; }
-#infoPane table.gridList td.number { text-align: right; }
-#infoPane .singleInfoPublishing table.gridList .actionContainer { width: 6em; }
+.metadataPane table.gridList .widgetBlist { width: 40%; }
+.metadataPane table.gridList .widgetType { width: 6em; }
+.metadataPane table.gridList .link { width: 40%; }
+.metadataPane table.gridList .number { width: 4em; }
+.metadataPane table.gridList th.number { text-align: center; }
+.metadataPane table.gridList td.number { text-align: right; }
+.metadataPane .singleInfoPublishing table.gridList .actionContainer { width: 6em; }
 
 /*** END: single info publishing tab ***/
 

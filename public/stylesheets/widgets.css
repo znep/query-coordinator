@@ -1681,3 +1681,12 @@ table.gridList tr.filteredOut
 
 
 /*** END: Hilight List ***/
+
+/*** START: inline edit ***/
+
+.inlineEdit form
+{
+    display: none;
+}
+
+/*** END: inline edit ***/

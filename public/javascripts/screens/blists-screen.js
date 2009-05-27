@@ -11,6 +11,8 @@ blist.myBlists.setupTable = function ()
             myBlistsNS.itemMenuSetup();
             $("#blistList a.favoriteMarker, #blistList li.favoriteLink a")
                 .click(myBlistsNS.favoriteClick);
+            $("#blistList li.delete")
+                .click(myBlistsNS.deleteClick);
             $("#blistList .renameLink a").click(myBlistsNS.renameClick);
             $("#blistList td.name form").submit(myBlistsNS.renameSubmit);
             blistsInfoNS.updateSummary(0);
@@ -35,6 +37,23 @@ blist.myBlists.setupTable = function ()
         treeColumn: 3
     });
 };
+
+blist.myBlists.deleteClick = function (event)
+{
+    event.preventDefault();
+
+    $this = $(this);
+    var origHref = $this.find("a").attr("href");
+
+    $.ajax({
+        url: origHref,
+        type: "DELETE",
+        success: function(responseText, textStatus)
+        {
+            $this.closest("tr.item").remove();
+        }
+    });
+}
 
 blist.myBlists.favoriteClick = function (event)
 {

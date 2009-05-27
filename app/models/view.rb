@@ -45,6 +45,11 @@ class View < Model
     self.class.create_favorite(self.id)
   end
 
+  def self.delete(id)
+    path = "/#{self.name.pluralize.downcase}.json?" + {"id" => id, "method" => "delete"}.to_param
+    self.delete_request(path)
+  end
+
   def self.delete_favorite(id)
     path = "/favorite_views/#{id}"
     self.delete_request(path)

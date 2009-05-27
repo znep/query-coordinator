@@ -56,7 +56,8 @@
 
 form input[type="text"],
 form textarea,
-form input[type="password"]
+form input[type="password"],
+input[type="text"]
 {
     border: solid 1px #cacaca;
     color: #333;

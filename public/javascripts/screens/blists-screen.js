@@ -259,7 +259,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         }
     });
 
-    $(".copyCode textarea").click(function() { $(this).select(); });
+    $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
     
     $('.switchPermsLink').click(function (event)
         {

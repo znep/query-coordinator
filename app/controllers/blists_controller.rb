@@ -50,8 +50,8 @@ class BlistsController < SwfController
       if request.path != @view.href
         # Log redirects in development
         if ENV["RAILS_ENV"] != 'production' &&
-          request.path =~ /^\/blists\/\w{4}-\w{4}/
-          logger.info("Doing a blist redirect from #{request.referrer}")
+          request.path =~ /^\/dataset\/\w{4}-\w{4}/
+          logger.info("Doing a dataset redirect from #{request.referrer}")
         end
         redirect_to(@view.href + '?' + request.query_string)
       end

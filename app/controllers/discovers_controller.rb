@@ -1,5 +1,5 @@
 class DiscoversController < ApplicationController
-  skip_before_filter :require_user, :only => [:show, :filter, :tags, :splash]
+  skip_before_filter :require_user, :only => [:show, :filter, :tags, :splash, :noie]
   
   PAGE_SIZE = 10
 
@@ -152,6 +152,10 @@ class DiscoversController < ApplicationController
   def splash
     cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
     
+    render(:layout => "splash")
+  end
+  
+  def noie
     render(:layout => "splash")
   end
 

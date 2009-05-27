@@ -1540,6 +1540,12 @@ table.gridList tr.filteredOut
 }
 .jqmOverlay { background-color: #000; }
 
+* html .jqmWindow { position: absolute; }
+* iframe.jqm {position:absolute;top:0;left:0;z-index:-1;
+	width: expression(this.parentNode.offsetWidth+'px');
+	height: expression(this.parentNode.offsetHeight+'px');
+}
+
 .modalTR
 {
     background: url(/stylesheets/images/content/modal_corner_TR.png) right top no-repeat;

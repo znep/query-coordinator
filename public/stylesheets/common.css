@@ -128,15 +128,19 @@ form.search.large input.textPrompt
 
 form.search input.submit
 {
+    background: transparent url(/stylesheets/images/common/find_button.png) no-repeat top left;
     height: 23px;
     margin-right: -31px;
     width: 31px;
+    text-indent: -9999px;
 }
+
 form.search.large input.submit
 {
     height: 37px;
     margin-right: -40px;
     width: 40px;
+    background-image: none;
 }
 
 /********************

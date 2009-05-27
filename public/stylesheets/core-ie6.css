@@ -1,7 +1,22 @@
+#mainLogo a
+{
+    background-image: url(/stylesheets/images/header/socrata_logo.gif);
+}
+
 .tabList li,
 .tabList li .wrapper
 {
     background-image: url(/stylesheets/images/content/tabs/tab_small_sprites.gif);
+}
+
+form.search p
+{
+    background-image: url(/stylesheets/images/common/find_input_cap.gif);
+}
+
+form.search input.submit
+{
+    background: transparent url(/stylesheets/images/common/find_button.gif) no-repeat top left;
 }
 
 #home .tabList li.home,

@@ -69,6 +69,57 @@ ul.myNetworkList li span
 }
 
 
+.pageBlockHeaderSide.discoverBugContainer
+{
+    background: url(/stylesheets/images/content/community_bug_background.png) 12px 0 no-repeat;
+    height: 203px;
+    margin-top: 2.9em;
+    padding-left: 12px;
+    position: relative;
+    width: 318px;
+}
+.pageBlockHeaderSide.discoverBugContainer h2,
+.pageBlockHeaderSide.discoverBugContainer p
+{
+    color: #fff;
+    text-align: center;
+}
+.pageBlockHeaderSide.discoverBugContainer h2
+{
+    border: none;
+    font-size: 2em;
+    margin-top: 1.5em;
+    padding: 0 .5em 0;
+}
+
+.pageBlockHeaderSide.discoverBugContainer p.bugActionButton
+{
+    margin-top: 2em;
+    padding-left: 58px;
+}
+.pageBlockHeaderSide.discoverBugContainer p.bugActionButton a
+{
+    background: url(/stylesheets/images/splash/pop_action_button.png) no-repeat;
+    color: #fff;
+    display:block;
+    font-size: 1.2em;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 15px;
+    text-align: left;
+    width: 201px;
+}
+
+.pageBlockHeaderSide.discoverBugContainer p.footnote
+{
+    bottom: 0;
+    font-size: 1em;
+    margin-bottom: 2em;
+    left: 12px;
+    position: absolute;
+}
+
+
 
 .discoverContentList
 {

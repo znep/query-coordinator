@@ -134,6 +134,15 @@ class BlistsController < SwfController
     render :text => {"result" => "success"}.to_json
   end
 
+  def destroy 
+      blist_id = params[:id]
+      result = View.delete(blist_id)
+
+      respond_to do |format|
+        format.data { render :text => "deleted" }
+      end
+  end
+
   def create_favorite
     blist_id = params[:id]
     result = View.create_favorite(blist_id)

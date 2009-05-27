@@ -45,7 +45,7 @@ class DiscoversController < ApplicationController
     when "ALPHA_DESC"
       sort_by = "ALPHA"
       is_asc = false
-    when "NUM_OF_VIEWS", "AVERAGE_RATING", "COMMENTS"
+    when "NUM_OF_VIEWS", "AVERAGE_RATING", "COMMENTS", "LAST_CHANGED", "POPULAR"
       is_asc = false
     end
     

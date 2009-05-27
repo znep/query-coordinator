@@ -11,7 +11,7 @@
       Header
     %>
     <div class="statsHeaderContainer">
-      <div class="statsBlockIntro">
+      <div class="statsBlockIntro clearfix">
         <div class="left">
           <p class="title">Statistics for "<%= link_to(h(@dataset.name), @dataset.href, :title => @dataset.name) %>"</p>
           <p class="timeline">Since <%= duration_in_words(@since) %></p>
@@ -28,12 +28,12 @@
       </div>
     </div>
 
-    <div class="statsContentContainer">
+    <div class="statsContentContainer clearfix">
       <div class="left statsColumn">
         <%#
           Rows accessed section (with bar graphs!)
         %>
-        <div class="panel">
+        <div class="panel clearfix">
           <h1>Records Accessed</h1>
 
           <div class="left">
@@ -152,7 +152,6 @@
           </table>
         </div>
       </div>
-      <div class="clearfix"></div>
     </div>
   </div></div>
   </div></div></div>

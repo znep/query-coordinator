@@ -115,6 +115,11 @@ blist.namespace.fetch('blist.data.types');
         return "(" + value + " || '')";
     }
 
+    var renderGenTags = function(value) {
+        return value + ' && ' + value + ' != "" ? "<div class=\'blist-tag\' \
+            title=\'" + htmlEscape(' + value + ' || "") + "\'></div>" : ""';
+    }
+
     var DIGITS = {
         "0": true,
         "1": true,
@@ -626,7 +631,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         tag: {
-            renderGen: renderGenText,
+            renderGen: renderGenTags,
             filterRender: renderFilterText,
             filterText: true,
             filterable: true
@@ -639,10 +644,6 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             sortable: true,
             filterable: true
-        },
-
-        blist_in_blist: {
-            renderGen: renderGenText
         },
 
         nested_table: {

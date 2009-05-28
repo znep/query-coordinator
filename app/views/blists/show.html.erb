@@ -33,6 +33,7 @@
       <li class='prevTabLink'><a href='#prev_tab' title='Previous View'>
         Previous View
       </a></li>
+      <%- if @view -%>
       <li class='tempViewTab filter inlineEdit'><div class='wrapper'>
         <div class='innerWrapper'>
           <span title='Click to name and save your filtered view'>[Temp View]</span>
@@ -45,6 +46,7 @@
           <%- end -%>
         </div>
       </div></li>
+      <%- end -%>
       <%- if @is_child_view -%>
       <li class='active filter'><div class='wrapper'>
         <a class='clipText' href='<%= @view.href %>'
@@ -290,6 +292,7 @@
       <%- end -%>
       </div>
 
+      <%- if @view -%>
       <div id='tempInfoPane' class='metadataPane'>
         <div class="header">
           <ul class="summaryTabs clearfix">
@@ -329,6 +332,7 @@
           </div>
         </div>
       </div>
+      <%- end -%>
 
     </div>
   </div>

@@ -711,8 +711,8 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId)
         // Update in filtered view list
         if (blistGridNS.isFilter)
         {
-            $('.singleInfoFiltered .gridList .item .name a:contains(' +
-                oldName + ')').text(blistGridNS.viewName);
+            $('.singleInfoFiltered .gridList #filter-row_' + itemId +
+                ' .name a').text(blistGridNS.viewName);
         }
     }
 };

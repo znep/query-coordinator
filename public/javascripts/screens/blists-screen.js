@@ -277,6 +277,13 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
                     fieldType + " div")
                     .text(fieldValue).attr('title', fieldValue);
             }
+            if (fieldType == 'name')
+            {
+                // Update in filtered view list
+                $('.singleInfoFiltered .gridList #filter-row_' + itemId +
+                    ' .name a').text(fieldValue);
+            }
+
             // If anything in the info pane is changed, make sure it reloads
             $.Tache.DeleteAll();
         }

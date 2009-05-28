@@ -358,7 +358,7 @@
           </thead>
           <tbody>
             <%- view.filters.each do |filter| -%>
-              <tr class="item">
+              <tr class="item" id="filter-row_<%= filter.id %>">
                 <td class="handle"><div></div></td>
                 <td class="favorite <%= filter.flag?('favorite') %>"><div>
                     <span class="favoriteMarker"><%= filter.flag?('favorite') ? "favorite" : "" %></span>

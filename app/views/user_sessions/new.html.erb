@@ -9,7 +9,7 @@
   </div>
 
   <div class='mainContent'>
-    <div class='title clearfix'><h2>Sign In</h2> <%= link_to("Sign Up", new_account_url) %></div>
+    <div class='title clearfix'><h2>Sign In</h2> <%= link_to("Sign Up", new_account_path) %></div>
 
     <%= display_standard_flashes %>
 
@@ -28,7 +28,7 @@
     <label for='rememberMe'>Remember me</label>
     </p>
     <div class='footer clearfix'>
-      <%= link_to "Forgot your password / username?", forgot_password_url %>
+      <%= link_to "Forgot your password / username?", forgot_password_path%>
       <input type='image' name='submit'
         src='<%= image_path("button_signin.png") %>' />
     </div>

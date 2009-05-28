@@ -8,9 +8,9 @@
         <div class="itemTitle clearfix">
           <%= link_to(
                 image_tag(member.profile_image_path("medium"), :size => "65x65",
-                :alt => h(member.displayName)), profile_url(member.id)) %>
+                :alt => h(member.displayName)), profile_path(member.id)) %>
           <h3 class="clipText">
-            <%= link_to(h(member.displayName), profile_url(member.id), :title => h(member.displayName)) %>
+            <%= link_to(h(member.displayName), profile_path(member.id), :title => h(member.displayName)) %>
           </h3>
         </div>
         <div class="itemMetaData">

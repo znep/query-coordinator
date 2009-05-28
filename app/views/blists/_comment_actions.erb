@@ -1,5 +1,5 @@
 <div class='actions'>
-  <%- form_tag(update_comment_blist_url(view.id),
+  <%- form_tag(update_comment_blist_path(view.id),
   :class => 'updateComment') do -%>
   <a href='#reply_<%= comment.id %>'>Reply</a>
   <%- if current_user.nil? || comment.user.id != current_user.id -%>

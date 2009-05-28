@@ -1,7 +1,7 @@
 <%- link = user_link_row -%>
 <tr id="link_row_<%= link.id %>">
   <td class="edit_handle">
-    <%= link_to("delete", delete_link_profile_url(current_user.id, :link_id => link.id)) %>
+    <%= link_to("delete", delete_link_profile_path(current_user.id, :link_id => link.id)) %>
   </td>
   <td class="edit_type">
     <p>
@@ -18,7 +18,7 @@
   </td>
   <td class="edit_action">
     <p class="smallButton">
-      <%= link_to("<span>edit</span>", update_link_profile_url(current_user.id, :link_id => link.id)) %>
+      <%= link_to("<span>edit</span>", update_link_profile_path(current_user.id, :link_id => link.id)) %>
     </p>
   </td>
 </tr>

@@ -29,7 +29,7 @@ class AccountsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to(account_url) }
+      format.html { redirect_to(account_path) }
       format.data   { render :json => {:error => error_msg,
         :user => current_user}.to_json }
     end
@@ -45,7 +45,7 @@ class AccountsController < ApplicationController
       user = User.create(params[:account])
     rescue CoreServerError => e
       flash[:error] = e.error_message
-      return (redirect_to signup_url)
+      return (redirect_to signup_path)
     end
 
     # Now, authenticate the user
@@ -63,10 +63,10 @@ class AccountsController < ApplicationController
         end
       end
 
-      redirect_back_or_default(root_url)
+      redirect_back_or_default(home_path)
     else
       flash[:warning] = "We were able to create your account, but couldn't log you in."
-      redirect_to login_url
+      redirect_to login_path
     end
   end
 
@@ -81,7 +81,7 @@ class AccountsController < ApplicationController
 
       if result.is_a? Net::HTTPSuccess
         flash[:notice] = "Thank you. An email has been sent to the account on file with further information."
-        redirect_to login_url
+        redirect_to login_path
       else
         flash[:warning] = "There was a problem submitting your password reset request. Please try again."
       end
@@ -112,16 +112,16 @@ class AccountsController < ApplicationController
         user = User.parse(result.body)
         @user_session = UserSession.new('login' => user.login, 'password' => params[:password])
         if @user_session.save
-          redirect_to root_url
+          redirect_to root_path
         else
           # Hmmm. They successfully reset their password, but we couldn't log them in?
           # Something's very wrong. Let's just put them at the login page and have them
           # try again. :-(
-          redirect_to login_url
+          redirect_to login_path
         end
       else
         flash[:warning] = 'There was a problem resetting your password. Please try again.'
-        redirect_to forgot_password_url
+        redirect_to forgot_password_path
       end
     end
   end

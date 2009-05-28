@@ -14,7 +14,7 @@
       </div>
       <div class="pageBlockSearch">
         <p class="searchIntro"><%= t(:discover_search_intro) %></p>
-        <% form_tag(filter_discover_url, :class => "search large") do %>
+        <% form_tag(filter_discover_path, :class => "search large") do %>
           <p>
             <%= text_field_tag("search", @search_term, :class => "textPrompt", :title => "Search") %>
             <%= hidden_field_tag("type", "SEARCH") %>

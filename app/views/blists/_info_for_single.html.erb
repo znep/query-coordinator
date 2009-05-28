@@ -63,7 +63,7 @@
         <%= text_field_tag("view[name]", h(view.name)) %>
         <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
         <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),
-        blists_url, :title => "Cancel", :class => "formCancelLink") %>
+        blists_path, :title => "Cancel", :class => "formCancelLink") %>
         <%- end -%>
         <%- end -%>
       </div>
@@ -119,7 +119,7 @@
               <%= hidden_field_tag("fieldType", "description") %>
               <%= text_field_tag("view[description]", h(view.description)) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
             <%- end -%>
             <%- end -%>
           </div>
@@ -143,7 +143,7 @@
               <%= hidden_field_tag("fieldType", "tags") %>
               <%= text_field_tag("view[tags]", h(view.tag_display_string)) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
             <%- end -%>
             <%- end -%>
           </div>
@@ -167,7 +167,7 @@
               <%= hidden_field_tag("fieldType", "category") %>
               <%= select_tag("view[category]", category_select_options(h(view.category))) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_url, :title => "Cancel", :class => "formCancelLink") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
             <%- end -%>
             <%- end -%>
           </div>
@@ -185,7 +185,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><a href="<%= profile_url(view.owner.id) %>"><%= h(view.owner.displayName) %></a></span>
+            <span><a href="<%= profile_path(view.owner.id) %>"><%= h(view.owner.displayName) %></a></span>
           </div>
         </dd>
       </dl>
@@ -358,7 +358,7 @@
           </thead>
           <tbody>
             <%- view.filters.each do |filter| -%>
-              <tr class="item">
+              <tr class="item" id="filter-row_<%= filter.id %>">
                 <td class="handle"><div></div></td>
                 <td class="favorite <%= filter.flag?('favorite') %>"><div>
                     <span class="favoriteMarker"><%= filter.flag?('favorite') ? "favorite" : "" %></span>
@@ -369,13 +369,13 @@
                 </td>
                 <td class="name"><div><%= link_to(h(filter.name), filter.href) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
-                <td class="picture"><a href='<%= profile_url(filter.owner.id) %>'>
+                <td class="picture"><a href='<%= profile_path(filter.owner.id) %>'>
                     <%= image_tag(filter.owner.profile_image_path,
                     :size => "24x24", :alt => h(filter.owner.displayName)) %>
                 </a></td>
                 <td class="owner">
                   <div class='clipText'>
-                    <a href='<%= profile_url(filter.owner.id) %>'
+                    <a href='<%= profile_path(filter.owner.id) %>'
                       title='<%= h(filter.owner.displayName) %>'>
                       <%= h(filter.owner.displayName) %>
                     </a>
@@ -407,7 +407,7 @@
     <div class="infoContent"<%= div_shown %>>
 
       <%- comments = view.comments -%>
-      <%- form_tag(post_comment_blist_url(view.id),
+      <%- form_tag(post_comment_blist_path(view.id),
       :class => ('postComment' + (comments.length > 0 ? ' hidden' : '') +
       (current_user.nil? ? ' doFullReq' : ''))) do -%>
 
@@ -493,20 +493,20 @@
     <ul class="socialActions">
       <%- 
         tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{t(:blist_company)} - ")
-        seo_url = "#{request.protocol + request.host_with_port + view.href}"
-        short_url = "#{request.protocol + request.host_with_port + view.short_href}"
+        seo_path= "#{request.protocol + request.host_with_port + view.href}"
+        short_path= "#{request.protocol + request.host_with_port + view.short_href}"
       -%>
       <li><%= link_to(image_tag("share_delicious.png", :size => "32x32", :alt => "Delicious"), 
-              "http://del.icio.us/post?url=#{seo_url}&title=#{h(view.name)}",
+              "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}",
               :title => "Bookmark this on Delicious", :rel => "external") %></li>
       <li><%= link_to(image_tag("share_digg_guy.png", :size => "32x32", :alt => "Digg"), 
-              "http://digg.com/submit?phase=2&url=#{seo_url}&title=#{h(view.name)}",
+              "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(view.name)}",
               :title => "Digg this", :rel => "external") %></li>
       <li><%= link_to(image_tag("share_logo_twitter.png", :size => "32x32", :alt => "Twitter"), 
-              "http://www.twitter.com/home?status=#{tweet + short_url}",
+              "http://www.twitter.com/home?status=#{tweet + short_path}",
               :title => "Tweet this", :rel => "external") %></li>
       <li><%= link_to(image_tag("share_logo_facebook.png", :size => "32x32", :alt => "Facebook"), 
-              "http://www.facebook.com/share.php?u=#{h(seo_url)}",
+              "http://www.facebook.com/share.php?u=#{h(seo_path)}",
               :title => "Share with your friends on Facebook", :rel => "external") %></li>
     </ul>
     
@@ -567,7 +567,7 @@
               %>
               <td class="actionContainer"><div>
                   <%- if s.member_id -%>
-                  <a href="<%= profile_url(s.member_id) %>" class="action"><span>View Profile</span></a>
+                  <a href="<%= profile_path(s.member_id) %>" class="action"><span>View Profile</span></a>
                   <%- end -%>
               </div></td>
             </tr>
@@ -639,12 +639,12 @@
               <%- @view_activities.each do |activity| -%>
                 <tr class="item">
                   <td class="when"><div><%= blist_date(activity.createdAt) %></div></td>
-                  <td class="picture"><a href='<%= profile_url(activity.actor.id) %>'>
+                  <td class="picture"><a href='<%= profile_path(activity.actor.id) %>'>
                       <%= image_tag(activity.actor.profile_image_path,
                       :size => "24x24", :alt => h(activity.actor.displayName)) %>
                   </a></td>
                   <td class="who"><div class='clipText'>
-                      <a href="<%= profile_url(activity.actor.id) %>"
+                      <a href="<%= profile_path(activity.actor.id) %>"
                         title='<%= h(activity.actor.displayName) %>'>
                       <%= h(activity.actor.displayName) %>
                     </a>

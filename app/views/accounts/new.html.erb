@@ -14,7 +14,7 @@
       <p>Before we get started, we need to know a little about you.</p>
     </div>
 
-    <% form_tag(account_url, :id => "signupForm", :multipart => true) do %>
+    <% form_tag(account_path, :id => "signupForm", :multipart => true) do %>
       <div class="fieldContent clearfix">
         <%= render(:partial => "new_account_form") %>
       </div>

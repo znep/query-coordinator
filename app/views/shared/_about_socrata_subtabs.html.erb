@@ -1,9 +1,31 @@
-<ul id="sub-nav" class="clearfix">
-    <li><a href="/company-info">About Socrata</a></li>
-    <li><a href="/company-info/board-of-directors">Board of Directors</a></li>
-    <li><a href="/company-info/investors">Investors</a></li>
-    <li><a href="/company-info/management-team">Management</a></li>
-    <li><a href="/company-info/careers">Career</a></li>
-    <li><a href="/company-info/press">Press</a></li>
+<%-
+# Local used set the currently selected item: selected
+# Possible values: about, board, investors, management, career, press
+about_class = selected == "about" ? "active" : ""
+board_class = selected == "board" ? "active" : ""
+investors_class = selected == "investors" ? "active" : ""
+management_class = selected == "management" ? "active" : ""
+careers_class = selected == "careers" ? "active" : ""
+press_class = selected == "press" ? "active" : ""
+-%>
+<ul class="simpleTabs tabList clearfix">
+    <li class="<%= about_class %>">
+      <div class="wrapper"><a href="/company-info">About Socrata</a></div>
+    </li>
+    <li class="<%= board_class %> even">
+      <div class="wrapper"><a href="/company-info/board-of-directors">Board of Directors</a></div>
+    </li>
+    <li class="<%= investors_class %>">
+      <div class="wrapper"><a href="/company-info/investors">Investors</a></div>
+    </li>
+    <li class="<%= management_class %> even">
+      <div class="wrapper"><a href="/company-info/management-team">Management</a></div>
+    </li>
+    <li class="<%= careers_class %>">
+      <div class="wrapper"><a href="/company-info/careers">Careers</a></div>
+    </li>
+    <li class="<%= press_class %> even">
+      <div class="wrapper"><a href="/company-info/press">Press</a></div>
+    </li>
 </ul>
 

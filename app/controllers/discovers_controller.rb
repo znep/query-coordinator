@@ -103,7 +103,7 @@ class DiscoversController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { redirect_to(discover_url(params)) }
+      format.html { redirect_to(discover_path(params)) }
       format.data { 
         if (@filtered_views.length > 0)
           render(:partial => "discovers/view_list_tab", 

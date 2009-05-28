@@ -23,7 +23,7 @@ class ProfileController < ApplicationController
     @body_id = 'profileBody'
     @body_class = 'home'
     
-    @public_views = @user.public_blists
+    @public_views = @user.public_blists.sort {|a,b| b.viewCount <=> a.viewCount}
     @shared_views = @public_views.find_all {|v| v.is_shared? }
     
     if (@is_user_current)
@@ -32,8 +32,9 @@ class ProfileController < ApplicationController
         !v.is_public? && v.flag?('default')}
       @private_filters = @all_owned_views.find_all {|v|
         !v.is_public? && !v.flag?('default')}
-      @user_links = UserLink.find(current_user.id)
     end
+    
+    @user_links = UserLink.find(@user.id)
 
   end
 

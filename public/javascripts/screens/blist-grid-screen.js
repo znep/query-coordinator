@@ -41,7 +41,7 @@ blist.blistGrid.setUpTabs = function ()
         return;
     }
 
-    if (blistGridNS.viewName)
+    if (blistGridNS.isFilter)
     {
         if ($.grep(cookieObj.views, function (v)
             { return v.id == blistGridNS.viewId }).length < 1)
@@ -52,12 +52,11 @@ blist.blistGrid.setUpTabs = function ()
         }
     }
 
-    var $tabList = $('.tabList');
-    var $tabTemplate = $tabList.find('li.main').clone()
+    var $tabTemplate = $('.tabList li.main').clone()
         .removeClass('main active even').addClass('filter');
     var $refTab = $('.tabList li.filter.active');
     var $endTab = $('.tabList li.nextTabLink');
-    if (blistGridNS.viewName === null || $refTab.length < 1)
+    if (!blistGridNS.isFilter || $refTab.length < 1)
     {
         $refTab = $endTab;
     }
@@ -84,7 +83,7 @@ blist.blistGrid.setUpTabs = function ()
 blist.blistGrid.createTabCookie = function()
 {
     $.cookies.del('viewTabs');
-    if (blistGridNS.viewName)
+    if (blistGridNS.isFilter)
     {
         $.cookies.set('viewTabs', $.json.serialize({
             blistId: blistGridNS.blistId,
@@ -545,14 +544,59 @@ blist.blistGrid.columnHeaderMenuHandler = function(event)
             blistGridNS.summaryStale = true;
             // Rejoin remainder of parts in case the filter value had _
             model.filterColumn(colIndex, $.htmlUnescape(s.slice(2).join('_')));
+            blistGridNS.setTempView(model.meta().view);
             break;
         case 'clear-filter-column':
             blistGridNS.summaryStale = true;
             model.clearColumnFilter(colIndex);
+            blistGridNS.clearTempView();
             break;
     }
     // Update the grid header to reflect updated sorting, filtering
     $('#readGrid').trigger('header_change', [model]);
+};
+
+blist.blistGrid.filterCount = 0;
+blist.blistGrid.isTempView = false;
+
+blist.blistGrid.setTempView = function(tempView)
+{
+    blistGridNS.filterCount++;
+    if (blistGridNS.isTempView)
+    {
+        return;
+    }
+
+    $('.tabList .active').addClass('origView').removeClass('active');
+    $('.tabList .filter.tempViewTab').addClass('active').show();
+    $('#infoPane').hide();
+    $('.headerBar li:has(#mainMenuLink)').hide();
+    $('#tempInfoPane').show();
+    $('form.tempView input[name="view[viewFilters]"]')
+        .val($.json.serialize(tempView.viewFilters));
+    blistGridNS.isTempView = true;
+};
+
+blist.blistGrid.clearTempView = function()
+{
+    blistGridNS.filterCount--;
+    if (blistGridNS.filterCount > 0)
+    {
+        return;
+    }
+
+    $('.tabList .filter.tempViewTab').removeClass('active').hide();
+    $('.tabList .origView').addClass('active').removeClass('origView');
+    $('#infoPane').show();
+    $('.headerBar li:has(#mainMenuLink)').show();
+    $('#tempInfoPane').hide();
+    blistGridNS.isTempView = false;
+};
+
+blist.blistGrid.newViewCreated = function($iEdit, responseData)
+{
+    blistGridNS.isTempView = false;
+    window.location = responseData.url;
 };
 
 /* Update the column summary data as appropriate via Ajax */
@@ -635,6 +679,44 @@ blist.blistGrid.favoriteActionClick = function (event)
 // refreshed
 blist.blistGrid.summaryStale = true;
 
+
+blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId)
+{
+    if (fieldType == "name")
+    {
+        var oldName = blistGridNS.viewName;
+        blistGridNS.viewName = fieldValue;
+
+        // Update text in tab
+        $('#lensContainer .tabList .active a')
+            .text(blistGridNS.viewName).attr('title', blistGridNS.viewName);
+
+        // Update stored info in cookie for filter
+        var cookieStr = $.cookies.get('viewTabs');
+        if (blistGridNS.isFilter &&
+            cookieStr && cookieStr != "" && cookieStr != "undefined")
+        {
+            var cookieObj = $.json.deserialize(cookieStr);
+            $.each(cookieObj.views, function (k, v)
+                {
+                    if (v.id == blistGridNS.viewId)
+                    {
+                        v.name = blistGridNS.viewName;
+                        return false;
+                    }
+                });
+            $.cookies.set('viewTabs', $.json.serialize(cookieObj));
+        }
+
+        // Update in filtered view list
+        if (blistGridNS.isFilter)
+        {
+            $('.singleInfoFiltered .gridList .item .name a:contains(' +
+                oldName + ')').text(blistGridNS.viewName);
+        }
+    }
+};
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -692,6 +774,16 @@ $(function ()
     {
         event.preventDefault();
         blist.util.flashInterface.showPopup('SaveLens');
+    });
+
+    $("#throbber").hide();
+    $('a#notifyAll').click(function(event)
+    {
+        event.preventDefault();
+        $("#throbber").show();
+        $.post($(this).closest("form").attr("action"), null, function(data, textStatus) {
+            $("#throbber").hide();
+        });
     });
 
     $('#filterViewMenu .filter').click(function (event)
@@ -790,11 +882,60 @@ $(function ()
 
     // Wire up the hover behavior in the info pane.
     $("#infoPane .selectableList, #infoPane .gridList").blistListHoverItems();
-    $(".infoContent dl.actionList").infoPaneItemHighlight();
+    $(".infoContent dl.actionList, #infoPane .infoContentHeader")
+        .infoPaneItemHighlight();
+    // We want the item pane highlight, but not the click selector;
+    //  so pass it a dummy ID
+    $('#tempInfoPane .infoContentHeader').infoPaneItemHighlight(
+        {clickSelector: '#n/a'});
 
-    $("#infoPane dd.editItem").infoPaneItemEdit();
+    $("#infoPane .editItem").infoPaneItemEdit({
+        submitSuccessCallback: blistGridNS.infoEditCallback});
+    $("#tempInfoPane .inlineEdit").inlineEdit({
+        displaySelector: '.itemContent span',
+        editClickSelector: '.itemContent span, .itemActions',
+        submitSuccessCallback: blistGridNS.newViewCreated});
+    $(".tabList .tempViewTab.inlineEdit").inlineEdit({
+        submitSuccessCallback: blistGridNS.newViewCreated});
+    // When they are not logged in and try to submit a create, first disable
+    //  isTempView so they aren't prompted when they hit Login
+    $('#tempInfoPane form.doFullReq, .tabList .tempViewTab form.doFullReq')
+        .submit(function (e) { blistGridNS.anonLeaving = true; });
 
-    $(".copyCode textarea").click(function() { $(this).select(); });
+    $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
+
+    $('.switchPermsLink').click(function (event)
+        {
+            event.preventDefault();
+            var $link = $(this);
+            var curState = $link.text().toLowerCase();
+            var newState = curState == 'private' ?
+                'public' : 'private';
+
+            var viewId = $link.attr('href').split('_')[1];
+            $.get('/views/' + viewId, {'method': 'setPermission',
+                'value': newState});
+
+            var capState = newState.charAt(0).toUpperCase() +
+                newState.substring(1);
+
+            // Update link & icon
+            $link.closest('p.' + curState)
+                .removeClass(curState).addClass(newState);
+            $link.text(capState);
+            // Update panel header & icon
+            $link.closest('.singleInfoSharing')
+                .find('.panelHeader.' + curState).text(capState)
+                .removeClass(curState).addClass(newState);
+            // Update line in summary pane
+            $link.closest('#infoPane')
+                .find('.singleInfoSummary .permissions .itemContent > *')
+                .text(capState);
+            // Update summary panel header icon
+            $link.closest('#infoPane')
+                .find('.singleInfoSummary .panelHeader.' + curState)
+                .removeClass(curState).addClass(newState);
+        });
 
     var commentMatches = window.location.search.match(/comment=(\w+)/);
     $('#infoPane .singleInfoComments').infoPaneComments({
@@ -816,6 +957,20 @@ $(function ()
         loadSWF();
         blistGridNS.sizeSwf();
     }
-    
+
     $(".favoriteAction a").click( blistGridNS.favoriteActionClick );
+
+    window.onbeforeunload = function ()
+    {
+        if (blistGridNS.anonLeaving)
+        {
+            blistGridNS.anonLeaving = false;
+            return 'Saving a view requires you to be logged in.' +
+                '  You will be redirected to the login page.';
+        }
+        else if (blistGridNS.isTempView)
+        {
+            return 'You will lose your temporary filter.';
+        }
+    };
 });

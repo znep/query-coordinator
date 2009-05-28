@@ -1,4 +1,5 @@
 <% content_for :head do %>
+  <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") : '' %>
   <%= stylesheet_link_tag 'table-core', 'table-blist-grid', "blist-grid-screen",
     :cache => "cache/blists_show_all" %>
   <title><%= t(:page_title) %></title>
@@ -13,7 +14,7 @@
     <ul class='tabList'>
       <li class='backLink'><a title='Back to <%= t :blists_name %>'
         href='<%= blists_url() %>'>Back to <%= t :blists_name %></a></li>
-      <li class='main <%= @is_child_view ? 'even' : 'active' %>'>
+      <li class='main even <%= @is_child_view ? '' : 'active' %>'>
         <div class='wrapper'>
           <a class='clipText'
             href='<%= !@parent_view.nil? ? @parent_view.href : '#' %>'
@@ -32,6 +33,18 @@
       <li class='prevTabLink'><a href='#prev_tab' title='Previous View'>
         Previous View
       </a></li>
+      <li class='tempViewTab filter inlineEdit'><div class='wrapper'>
+        <div class='innerWrapper'>
+          <span title='Click to name and save your filtered view'>[Temp View]</span>
+          <%- form_tag(blists_url, :class => ('tempView' +
+            (current_user.nil? ? ' doFullReq' : ''))) do -%>
+          <%= hidden_field_tag("view[originalViewId]", @view.id) %>
+          <%= hidden_field_tag("view[viewFilters]",
+            (JSON.generate(@view.data['viewFilters'] || ''))) %>
+          <%= text_field_tag("view[name]", '') %>
+          <%- end -%>
+        </div>
+      </div></li>
       <%- if @is_child_view -%>
       <li class='active filter'><div class='wrapper'>
         <a class='clipText' href='<%= @view.href %>'
@@ -49,9 +62,12 @@
           <%- if !@view.nil? -%>
           <ul>
             <%# Main menu %>
-            <li><a href='#main_menu' id='mainMenuLink' class='dropdownLink'>
+            <li class='separator'>
+            <a href='#main_menu' id='mainMenuLink' class='dropdownLink'>
               <div class='outerWrapper'><div class='midWrapper'>
-                  <span class='innerWrapper'>Menu</span></div></div></a>
+                  <span class='innerWrapper'>Menu</span>
+              </div></div>
+            </a>
             <%= render(:partial => "main_menu",
             :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
@@ -64,9 +80,9 @@
 
             <%- if can_edit -%>
             <%# Undo/redo %>
-            <li class='swfItem separator'><a href='#Undo' id='undoLink'
+            <li class='swfItem'><a href='#Undo' id='undoLink'
               class='linkIcon flashAction' title='Undo'>Undo</a></li>
-            <li class='swfItem'><a href='#Redo' id='redoLink'
+            <li class='swfItem separator'><a href='#Redo' id='redoLink'
               class='linkIcon flashAction' title='Redo'>Redo</a></li>
             <%- end -%>
 
@@ -93,12 +109,12 @@
 
             <%# Page view options %>
             <%- if is_owner -%>
-            <li class='swfItem separator pageOption'>
+            <li class='swfItem pageOption'>
               <a class='addColumnsLink linkIcon' href='#'>Add Field</a>
             </li>
             <%- end -%>
             <%- if can_edit -%>
-            <li class='swfItem pageOption'><a id='newPageLink'
+            <li class='swfItem separator pageOption'><a id='newPageLink'
               class='linkIcon flashAction' href='#NewPage'>New Page</a></li>
             <li class='swfItem separator pageOption'><a id='defaultLayoutLink'
               class='linkIcon flashAction'
@@ -107,11 +123,11 @@
 
             <%# Export/access options %>
             <%- if !@view.nil? -%>
-            <li class='separator'>
+            <li>
               <a id='apiLink' class='linkIcon'
                 href='/views/<%= @view.id %>/rows.xml?accessType=API'>API</a>
             </li>
-            <li>
+            <li class='separator'>
               <a id='rssLink' class='linkIcon'
                 href='/views/<%= @view.id %>/rows.rss?accessType=WEBSITE'>RSS</a>
             </li>
@@ -130,10 +146,10 @@
             </li>
             <%- end -%>
 
-            <li class='separator'>
+            <li>
               <ul class="socialActions clearfix">
                 <%- 
-                  tweet = CGI::escape("Check out the #{h(@view.name)} dataset on blist - ")
+                  tweet = CGI::escape("Check out the #{h(@view.name)} dataset on #{t(:blist_company)} - ")
                   seo_url = "#{request.protocol + request.host_with_port + @view.href}"
                 -%>
                 <li><%= link_to(image_tag("icons/social_icon_delicious_small.png", :size => "20x20", :alt => "Delicious"), 
@@ -154,7 +170,8 @@
 
           <form class='search' action='#'>
             <div class='searchContainer'>
-              <input type='text' class='textPrompt' title='Find' />
+              <input type='text' class='textPrompt'
+              title='Find in this <%= t(:blist_name) %>' />
               <div class='actionBox'>
               <div class='clearBox'>
                 <a class='clearSearch' title='Clear Search' href='#clear_search'>
@@ -220,7 +237,7 @@
                   <li><a href='#picklist'
                     id='addColumn_picklist'>Picklist (Drop-down)</a></li>
                   <li><a href='#blist_in_blist'
-                    id='addColumn_bnb'>Table (blist in blist)</a></li>
+                    id='addColumn_nested_table'>Nested Table</a></li>
                 </ul>
               </li>
               <li class='column narrow last'>
@@ -265,12 +282,54 @@
 
   <div id='lensMetaContainer'>
     <div id="mainColumnContent" class="column">
-      <div id='infoPane'>
+
+      <div id='infoPane' class='metadataPane'>
       <%- if !@view.nil? -%>
       <%= render(:partial => "info_for_single",
       :locals => { :view => @view, :page_single => true }) %>
       <%- end -%>
       </div>
+
+      <div id='tempInfoPane' class='metadataPane'>
+        <div class="header">
+          <ul class="summaryTabs clearfix">
+            <li class="summary active">
+            <div class="tabOuter"><div class="tabInner">
+                <a href="#">Summary</a>
+            </div></div>
+            </li>
+          </ul>
+        </div>
+        <div class="infoContentOuter singleInfoSummary listContainer active">
+          <div class="infoContentHeader clearfix">
+            <h2 class="panelHeader clipText inlineEdit editItem typeFilter">
+              <div class='itemContent'>
+                <span title='Click to name and save your filtered view'>
+                  [Temp View]
+                </span>
+                <%- form_tag(blists_url, :class => ('tempView' +
+                  (current_user.nil? ? ' doFullReq' : ''))) do -%>
+                <%= hidden_field_tag("view[originalViewId]", @view.id) %>
+                <%= hidden_field_tag("view[viewFilters]",
+                  (JSON.generate(@view.data['viewFilters'] || ''))) %>
+                <%= text_field_tag("view[name]", '') %>
+                <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+                <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),
+                blists_url, :title => "Cancel", :class => "formCancelLink") %>
+                <%- end -%>
+              </div>
+              <div class="itemActions">
+                <a href="#create_filter"
+                  class="action editLink"><span>Create</span></a>
+              </div>
+            </h2>
+          </div>
+          <div class='infoContentInner'>
+            <div class='infoContentWrapper'></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -280,10 +339,11 @@
     blist.namespace.fetch('blist.blistGrid');
     blist.blistGrid.referer = "<%= request.referer %>";
     <%- if !@view.nil? -%>
-    blist.blistGrid.blistId = "<%= @view.blistId %>";
+    blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
-    <%- if @is_child_view -%>
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
+    <%- if @is_child_view -%>
+    blist.blistGrid.isFilter = true;
     <%- end -%>
     <%- end -%>
   </script>
@@ -291,7 +351,8 @@
     "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
     "util/extMouseWheel", "util/flash-interface", "util/navigation",
     "util/swfobject", "data/types", "data/model", "data/table",
-    "widgets/dropdown-menu", "widgets/selectable-list", "widgets/pagination",
-    "widgets/info-pane-comments", "widgets/scrollable", "screens/info-pane",
-    "screens/blist-grid-screen", :cache => "cache/blists_show_all" %>
+    "widgets/inline-edit", "widgets/dropdown-menu", "widgets/selectable-list",
+    "widgets/pagination", "widgets/info-pane-comments", "widgets/scrollable",
+    "screens/info-pane", "screens/blist-grid-screen",
+    :cache => "cache/blists_show_all" %>
 <% end %>

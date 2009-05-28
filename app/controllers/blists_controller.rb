@@ -48,14 +48,15 @@ class BlistsController < SwfController
       if request.path != @view.href
         # Log redirects in development
         if ENV["RAILS_ENV"] != 'production' &&
-          request.path =~ /^\/blists\/\w{4}-\w{4}/
-          logger.info("Doing a blist redirect from #{request.referrer}")
+          request.path =~ /^\/dataset\/\w{4}-\w{4}/
+          logger.info("Doing a dataset redirect from #{request.referrer}")
         end
         redirect_to(@view.href + '?' + request.query_string)
       end
 
       if !@view.is_blist?
-        par_view = View.find({'blistId' => @view.blistId}, true).
+        par_view = View.find({'tableId' => @view.tableId,
+          'method' => 'getByTableId'}, true).
           find {|v| v.is_blist?}
         if (!par_view.nil?)
           @is_child_view = true
@@ -63,9 +64,9 @@ class BlistsController < SwfController
         end
       end
       @view.register_opening
+      @view_activities = Activity.find({:viewId => @view.id})
     end
 
-    @view_activities = Activity.find({:viewId => @view.id})
     @data_component = params[:dataComponent]
     @popup = params[:popup]
 
@@ -123,6 +124,40 @@ class BlistsController < SwfController
     elsif (params[:items])
       @item_count = params[:items]
     end
+  end
+
+  def notify_all_of_changes
+    blist_id = params[:id]
+    result = View.notify_all_of_changes(blist_id)
+    render :text => {"result" => "success"}.to_json
+  end
+
+  def create
+    begin
+      view = View.create(params[:view])
+    rescue CoreServerError => e
+      return respond_to do |format|
+        format.html do
+          flash[:error] = e.error_message
+          render 'shared/error'
+        end
+        format.data { render :json => {'error' => e.error_message}.to_json }
+      end
+    end
+
+    respond_to do |format|
+      format.html { redirect_to(view.href) }
+      format.data { render :json => {'url' => view.href}.to_json }
+    end
+  end
+
+  def destroy
+      blist_id = params[:id]
+      result = View.delete(blist_id)
+
+      respond_to do |format|
+        format.data { render :text => "deleted" }
+      end
   end
 
   def create_favorite

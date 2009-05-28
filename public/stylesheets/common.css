@@ -56,7 +56,8 @@
 
 form input[type="text"],
 form textarea,
-form input[type="password"]
+form input[type="password"],
+input[type="text"]
 {
     border: solid 1px #cacaca;
     color: #333;
@@ -94,6 +95,7 @@ form.search p
     background-image: url(/stylesheets/images/common/find_input_cap.png);
     background-repeat: no-repeat;
     overflow: hidden;
+    width: 219px; /* Required for IE6 */
     padding-left: 10px;
     padding-right: 31px;
 }
@@ -110,7 +112,7 @@ form.search input
     float: left;
 }
 
-form.search input[type="text"]
+form.search input.textPrompt
 {
     border-color: #cacaca;
     border-style: solid;
@@ -119,7 +121,7 @@ form.search input[type="text"]
     padding: 3px 0 0;
     width: 100%;
 }
-form.search.large input[type="text"]
+form.search.large input.textPrompt
 {
     font-size: 2.4em;
     height: 32px;
@@ -127,15 +129,19 @@ form.search.large input[type="text"]
 
 form.search input.submit
 {
+    background: transparent url(/stylesheets/images/common/find_button.png) no-repeat top left;
     height: 23px;
     margin-right: -31px;
     width: 31px;
+    text-indent: -9999px;
 }
+
 form.search.large input.submit
 {
     height: 37px;
     margin-right: -40px;
     width: 40px;
+    background-image: none;
 }
 
 /********************
@@ -161,12 +167,20 @@ form.search.large input.submit
     padding-bottom: 0;
 }
 
-
-.fullPageContentContainer
+.fullPageContentContainer, .tabPageContentContainer
 {
     background: #fff url(/stylesheets/images/content/background_corner_left.png) no-repeat;
-    margin: 2.6em 1em 0;
     min-width: 98.9em;
+}
+.tabPageContentContainer
+{
+   margin: 0px auto;
+}
+.fullPageContentContainer
+{
+    margin-top: 5em;
+    margin-left: 1em;
+    margin-right: 1em;
 }
 .fullPageContentBL
 {
@@ -182,6 +196,10 @@ form.search.large input.submit
     padding: 1em;
 }
 
+.pageBlockContent
+{
+    padding-bottom: 6em;
+}
 
 
 /**********************
@@ -242,6 +260,8 @@ form.search.large input.submit
     background-position: right -130px;
     background-repeat: no-repeat;
     padding: 3px 14px 0;
+    height: 23px;
+    float: left;
 }
 
 .tabList li.even .wrapper
@@ -249,7 +269,8 @@ form.search.large input.submit
     background-position: right -104px;
 }
 
-.tabList a
+.tabList a,
+.tabList .innerWrapper
 {
   background-color: #bdbdbd;
   color: #333;
@@ -259,9 +280,11 @@ form.search.large input.submit
   line-height: 1.2em;
   padding: 5px 1em 0;
   text-decoration: none;
+  float: left;
 }
 
-.tabList li.even a
+.tabList li.even a,
+.tabList li.even .innerWrapper
 {
     background-color: #cacaca;
 }
@@ -271,6 +294,10 @@ form.search.large input.submit
 #blists .tabList li.blists,
 #contacts .tabList li.contacts,
 #profile .tabList li.profile,
+#overview .tabList li.overview,
+#directories .tabList li.directories,
+#solution .tabList li.solution,
+#contact .tabList li.contact,
 .tabList li.active
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
@@ -283,10 +310,15 @@ form.search.large input.submit
 #blists .tabList li.blists .wrapper,
 #contacts .tabList li.contacts .wrapper,
 #profile .tabList li.profile .wrapper,
+#overview .tabList li.overview .wrapper,
+#directories .tabList li.directories .wrapper,
+#solution .tabList li.solution .wrapper,
+#contact .tabList li.contact .wrapper,
 .tabList li.active .wrapper
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
     background-position: right -52px;
+    height: 26px;
     padding: 0 18px;
 }
 
@@ -294,7 +326,12 @@ form.search.large input.submit
 #blists .tabList li.blists a,
 #contacts .tabList li.contacts a,
 #profile .tabList li.profile a,
-.tabList li.active a
+#overview .tabList li.overview a,
+#directories .tabList li.directories a,
+#solution .tabList li.solution a,
+#contact .tabList li.contact a,
+.tabList li.active a,
+.tabList li.active .innerWrapper
 {
     background-color: #ffffff;
     font-weight: bold;
@@ -356,7 +393,7 @@ private
 .activityListContainer h2
 {
     border-bottom: 1px solid #ccc;
-    color: #e8a134;
+    color: #666;
     font-size: 1.2em;
     margin-bottom: .8em;
     text-transform: uppercase;
@@ -450,13 +487,13 @@ private
 
 #jqmAlert .actionButtons li
 {
-    background-position: left -126px;
+    background-position: left -63px;
     float: right;
 }
 
 #jqmAlert .actionButtons li a.arrowButton
 {
-    background-position: right -42px;
+    background-position: right -105px;
 }
 
 .jqmOverlay { background-color: #000; }

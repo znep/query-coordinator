@@ -52,10 +52,28 @@
 <div class="infoContentOuter singleInfoSummary listContainer active<%= page_single ? ' expanded' : '' %>">
   <div class="infoContentHeader clearfix">
     <h2 title='<%= h(view.name) %>'
-      class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>">
-      <%= page_single ? h(view.name) : link_to(h(view.name), view.href) %>
+      class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>
+      <%= is_owner ? 'editItem' : '' %>">
+      <div class='itemContent'>
+        <span><%= page_single ? h(view.name) :
+          link_to(h(view.name), view.href) %></span>
+        <%- if is_owner -%>
+        <%- form_tag(view.href) do -%>
+        <%= hidden_field_tag("fieldType", "name") %>
+        <%= text_field_tag("view[name]", h(view.name)) %>
+        <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+        <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),
+        blists_url, :title => "Cancel", :class => "formCancelLink") %>
+        <%- end -%>
+        <%- end -%>
+      </div>
+      <%- if is_owner -%>
+      <div class="itemActions">
+        <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+      </div>
+      <%- end -%>
     </h2>
-    
+
     <ul class="headerActions actionButtons">
       <%- unless (page_single) -%>
         <li><a href="<%= view.href %>" class="arrowButton">Open</a></li>
@@ -68,7 +86,7 @@
         class="showFlashPopup">Share</a></li>
       <%- end -%>
     </ul>
-    
+
     <%- if (!@current_user.nil?) -%>
       <%-
         if view.flag?("favorite")
@@ -143,7 +161,7 @@
         </dt>
         <dd class="editItem">
           <div class="itemContent">
-            <span><%= h(view.category) %></span>
+            <span><%= h(view.category.nil? ? '' : view.category.capitalize) %></span>
             <%- if is_owner -%>
             <%- form_tag(view.href) do -%>
               <%= hidden_field_tag("fieldType", "category") %>
@@ -167,7 +185,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= h(view.owner.displayName) %></span>
+            <span><a href="<%= profile_url(view.owner.id) %>"><%= h(view.owner.displayName) %></a></span>
           </div>
         </dd>
       </dl>
@@ -241,19 +259,14 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>
-              <%= request.protocol + request.host_with_port + view.href %>
+            <span class="copyCode">
+              <input name="permalink" type="text" value="<%= request.protocol + request.host_with_port + view.href %>"/>
             </span>
-          </div>
-          <div class="itemActions">
-            <a href="#publish" class="action tabLink publishing">
-              <span>Publish</span>
-            </a>
           </div>
         </dd>
       </dl>
 
-      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+      <dl class="summaryList permissions <%= is_owner ? 'actionList' : '' %>">
         <dt>
           Permissions
         </dt>
@@ -262,9 +275,8 @@
             <span><%= view.is_public? ? 'Public' : 'Private' %></span>
           </div>
           <%- if is_owner -%>
-          <div class="itemActions swfItem">
-            <a href='<%= "#{view.href}?popup=PermissionsDialog" %>'
-              class="action showFlashPopup"><span>Edit</span></a>
+          <div class="itemActions">
+            <a href='#sharing' class="action tabLink sharing"><span>Edit</span></a>
           </div>
           <%- end -%>
         </dd>
@@ -326,6 +338,8 @@
             <col class='type' />
             <col class='name' />
             <col class='description' />
+            <col class='picture' />
+            <col class='owner' />
             <col class='viewed' />
             <col class='actionContainer' />
           </colgroup>
@@ -336,6 +350,8 @@
               <th class="type" title="Type"><div>Type</div></th>
               <th class="name"><div>Name</div></th>
               <th class="description"><div>Description</div></th>
+              <th class="picture" title="Owner"><div></div></th>
+              <th class="owner" title="Owner"><div>Owner</div></th>
               <th class="viewed"><div>Viewed</div></th>
               <th class="actionContainer last"></th>
             </tr>
@@ -353,6 +369,18 @@
                 </td>
                 <td class="name"><div><%= link_to(h(filter.name), filter.href) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
+                <td class="picture"><a href='<%= profile_url(filter.owner.id) %>'>
+                    <%= image_tag(filter.owner.profile_image_path,
+                    :size => "24x24", :alt => h(filter.owner.displayName)) %>
+                </a></td>
+                <td class="owner">
+                  <div class='clipText'>
+                    <a href='<%= profile_url(filter.owner.id) %>'
+                      title='<%= h(filter.owner.displayName) %>'>
+                      <%= h(filter.owner.displayName) %>
+                    </a>
+                  </div>
+                </td>
                 <td class="viewed"><div><%= blist_date(filter.last_viewed) %>
                 </div></td>
                 <td class="actionContainer"><div><a
@@ -411,9 +439,7 @@
       <dl class="summaryList">
         <dd class='submitSection'>
         <a href='#cancel_comment'>Cancel</a>
-        <%- comment_submit_path = is_gov_site? ?
-          "gov/button_submit_comment.png" : "button_submit_comment.png" -%>
-        <%= image_submit_tag(comment_submit_path, :title => "Submit") %>
+        <%= image_submit_tag("button_submit_comment.png", :title => "Submit") %>
         </dd>
       </dl>
       <%- end -%>
@@ -443,9 +469,21 @@
   <div class="infoContentHeader clearfix">
     <%- shares = view.shares -%>
     <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
-    <h2 class="panelHeader <%= get_permissions_icon_class_for_view(view) %>">
+    <h2 class="panelHeader <%= view.shares.size > 0 ? '' : ' last' %> <%= get_permissions_icon_class_for_view(view) %>">
       <%= view.is_public? ? "Public" : "Private" %>
     </h2>
+    <%- if view.shares.size > 0 %>
+      <h2 class="panelHeader typeNotify last">
+        <% form_tag(url_for(:controller => :blists, 
+          :action => :notify_all_of_changes)) do %>
+          <a href="#" id="notifyAll">Notify all of changes</a>
+          <%= image_tag("/images/throbber.gif", 
+                      :size => "16x16", 
+                      :alt => "Notifying...", 
+                      :id => "throbber") %>
+        <% end %>
+      </h2>
+    <% end %>
     <%- if is_owner -%>
     <ul class="headerActions actionButtons swfItem">
       <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
@@ -454,7 +492,7 @@
     <%- end -%>
     <ul class="socialActions">
       <%- 
-        tweet = CGI::escape("Check out the #{h(view.name)} dataset on blist - ")
+        tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{t(:blist_company)} - ")
         seo_url = "#{request.protocol + request.host_with_port + view.href}"
         short_url = "#{request.protocol + request.host_with_port + view.short_href}"
       -%>
@@ -479,9 +517,10 @@
         <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
           "privateShared" : "private") %>">
         This <%= view.is_blist? ? t(:blist_name) : "filter" %> is
-        <%- if is_owner -%>
-        <a href='<%= "#{view.href}?popup=PermissionsDialog" %>'
-          class='showFlashPopup'><%= view.is_public? ? "Public" : "Private" %></a>
+        <%- if is_owner && view.tableOwner.id == view.owner.id -%>
+        <a href='#toggle-permissions_<%= view.id %>'
+          class='switchPermsLink'><%= view.is_public? ?
+            "Public" : "Private" %></a>
         <%- else -%>
         <span><%= view.is_public? ? "Public" : "Private" %></span>
         <%- end -%>
@@ -501,8 +540,8 @@
           <thead>
             <tr>
               <th class="picture" title="Friend"><div></div></th>
-              <th class="contact" title="Friend/Group">
-                <div>Friend / Group</div>
+              <th class="contact" title="Friend">
+                <div>Friend</div>
               </th>
               <th class="role" title="Role"><div>Role</div></th>
               <%# Not supported
@@ -527,7 +566,9 @@
               <td class="opened"><div>01/09/2009</div></td>
               %>
               <td class="actionContainer"><div>
-                <a href="<%= profile_url(s.member_id) %>" class="action"><span>View Profile</span></a>
+                  <%- if s.member_id -%>
+                  <a href="<%= profile_url(s.member_id) %>" class="action"><span>View Profile</span></a>
+                  <%- end -%>
               </div></td>
             </tr>
             <%- end -%>
@@ -582,11 +623,12 @@
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <div class="gridListContainer simple">
+      <div class="gridListContainer">
         <table class="gridList" cellspacing="0">
           <thead>
             <tr>
               <th class="when first" title="When"><div>When</div></th>
+              <th class="picture" title="Who"><div></div></th>
               <th class="who" title="Who"><div>Who</div></th>
               <th class="what" title="What Activity"><div>What Activity</div></th>
               <th class="actionContainer last"></th>
@@ -597,9 +639,14 @@
               <%- @view_activities.each do |activity| -%>
                 <tr class="item">
                   <td class="when"><div><%= blist_date(activity.createdAt) %></div></td>
-                  <td class="who"><div>
-                    <a href="<%= profile_url(activity.actor.id) %>">
-                      <%= activity.actor.displayName %>
+                  <td class="picture"><a href='<%= profile_url(activity.actor.id) %>'>
+                      <%= image_tag(activity.actor.profile_image_path,
+                      :size => "24x24", :alt => h(activity.actor.displayName)) %>
+                  </a></td>
+                  <td class="who"><div class='clipText'>
+                      <a href="<%= profile_url(activity.actor.id) %>"
+                        title='<%= h(activity.actor.displayName) %>'>
+                      <%= h(activity.actor.displayName) %>
                     </a>
                   </div></td>
                   <td class="what"><div>

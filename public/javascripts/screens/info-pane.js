@@ -48,9 +48,24 @@
                 }
             );
 
+            $this.find(".panelHeader.editItem").hover(
+                function()
+                {
+                    $(this).addClass("hover");
+                },
+                function()
+                {
+                    $(this).removeClass("hover");
+                }
+            );
+
             $this.find(opts.clickSelector).click(function(event)
             {
-                $this = $(this);
+                var $this = $(this);
+                if ($(event.target).is('a'))
+                {
+                    return;
+                }
                 event.preventDefault();
 
                 // Walk up to the container, down to the actions.
@@ -63,8 +78,8 @@
 
     // default options
     $.fn.infoPaneItemHighlight.defaults = {
-        itemContainerSelector: "dd",
-        clickSelector: "dd .itemContent > *:not(form)",
+        itemContainerSelector: "dd, .editItem",
+        clickSelector: ".itemContent > *:not(form)",
         actionSelector: ".itemActions > a"
     };
 
@@ -94,7 +109,8 @@
             // Hide all forms, show all spans.
             closeAllForms();
 
-            var $currentItemContainer = $this.closest("dd").find(opts.itemContentSelector);
+            var $currentItemContainer = $this.closest(opts.containerSelector)
+                .find(opts.itemContentSelector);
             $currentItemContainer.find("span").hide();
             var $form = $currentItemContainer.find("form").keyup(function(event)
             {
@@ -141,10 +157,11 @@
 
      // default options
      $.fn.infoPaneItemEdit.defaults = {
+       containerSelector: '.editItem',
        editClickSelector: ".itemActions .editLink",
        editSubmitSelector: ".itemContent form",
        editCancelSelector: ".itemContent form .formCancelLink",
-       allItemSelector: "#infoPane .summaryList dd .itemContent",
+       allItemSelector: "#infoPane .summaryList dd .itemContent, #infoPane .panelHeader.editItem .itemContent",
        itemContentSelector: ".itemContent",
        submitSuccessCallback: function(){}
      };

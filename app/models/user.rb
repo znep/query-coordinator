@@ -88,7 +88,7 @@ class User < Model
   end
 
   def public_blists
-    View.find_for_user(self.id)
+    View.find_for_user(self.id).reject {|v| !v.is_public? || v.owner.id != id}
   end
 
   @@states = {
@@ -402,6 +402,6 @@ class User < Model
     ["NUM_OF_FOLLOWERS", "# of Followers"],
     ["NUM_OF_FRIENDS", "# of Friends"],
     ["LAST_LOGGED_IN", "Last Login Date"],
-    ["NUM_OF_PUBLIC_BLISTS", "# of Public Data Sets"]
+    ["NUM_OF_PUBLIC_TABLES", "# of Public Data Sets"]
   ]
 end

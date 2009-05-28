@@ -89,7 +89,7 @@
 
   <div id="sidebar" class="column scrollContentColumn">
     <% render(:layout => "shared/sidebar_box") do %>
-      <h2><%= h(current_user.displayName) %></h2>
+      <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
     <% end %>
   </div>
 </div>

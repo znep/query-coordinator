@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "discover-screen", "widgets", 
+  <%= stylesheet_link_tag "discover-screen", "splash",
     "carousel/jquery.jcarousel", "carousel/discover-carousel-skin",
     :cache => "cache/discover_show_all" %>
   <title><%= t(:page_title) %></title>
@@ -31,18 +31,31 @@
             </ul>
           </div></div>
         </div>
-      
-        <div class="pageBlockHeaderSide">
-          <h2><%= @current_user.nil? ? "Recently Updated" : "In My Network" %></h2>
-          <ul class="myNetworkList">
-            <%- @network_views.each do |view| -%>
-              <li class="clearfix">
-                <%= link_to(h(view.name), view.href, :title => h(view.name), :class => "clipText") %> 
-                <span class="authorLine">by <%= h(view.owner.displayName) %></span>
-              </li>
-            <%- end -%>
-          </ul>
-        </div>
+        
+        <%- if !@current_user.nil? -%>
+          <div class="pageBlockHeaderSide">
+            <h2>In My Network</h2>
+            <ul class="myNetworkList">
+              <%- @network_views.each do |view| -%>
+                <li class="clearfix">
+                  <%= link_to(h(view.name), view.href, :title => h(view.name), :class => "clipText") %> 
+                  <span class="authorLine">by <%= h(view.owner.displayName) %></span>
+                </li>
+              <%- end -%>
+            </ul>
+          </div>
+        <%- else -%>
+          <div class="pageBlockHeaderSide discoverBugContainer">
+            <h2>Revolutionize Your .GOV</h2>
+            <h3>High Quality Data, Low Cost Delivery</h3>
+            <p class="bugActionButton">
+              <a href="/about">About <%= t(:blist_company) %></a>
+            </p>
+            <p class="footnote">US Federal Government Agencies, US State &amp; Local Governments, Worldwide Federal Governments</p>
+          </div>
+        <%- end -%>
+        
+
       </div>
     </div>
   </div></div>
@@ -95,6 +108,9 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="tagCloud"></div>
+  <%- if @show_splash -%>
+    <div class="jqmWindow" id="splashModal"></div>
+  <%- end -%>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", 
   "widgets/simple-tab-navigate", "screens/discover-screen", :cache => "cache/discover_show_all" %>

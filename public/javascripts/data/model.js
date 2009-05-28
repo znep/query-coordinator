@@ -12,7 +12,9 @@
  * Metadata is an object with any of the following optional fields:
  *
  * <ul>
- *   <li>columns - a list of column configuration objects</li>
+ *   <li>columns - a hierarchical list of column configuration objects.  This is an array of arrays.  Each sub-array
+ *     describes the columns such as they might appear in the corresponding level of a tree.  For example, columns[0]
+ *     is the root column set.  Columns[1] contains the columns that display if a root row is expanded.  Etc.</li>
  *   <li>view - a Blist view object, used to configure options that aren't otherwise set</li>
  *   <li>title - the name displayed as the title of the grid</li>
  * </ul>
@@ -31,6 +33,7 @@
  *   <li>group - a function that generates a "group" object for a given value.  If this value is present a
  *     table displays group headers when ordered by this column.  Set to "true" to use the default grouping
  *     function for the type</li>
+ *   <li>children - if a column has associated "sub-columns", these columns are referenced here</li>
  * </ul>
  *
  *
@@ -45,12 +48,23 @@
  * retrieve actual row data clients may pass an array of such rows to loadRows().  loadRows() is an asynchronous
  * operation.  When loadRows() succeeds, the row_change is fired with the list of freshly populated rows.
  *
+ * In addition to actual data, rows may have the following properties:
+ *
+ * <ul>
+ *   <li>level - the level of the row, or -1 if the row is "special" (that is, uses a custom renderer)
+ *   <li>expanded - true iff the row is in an "open" state
+ *   <li>children - columns that are nested within this column, if applicable
+ * </ul>
+ *
+ * Each row is identified by an ID.  IDs must be unique across rows.  If column data is stored in an object then the
+ * ID is the field "id".  If column data is stored in a row then the first column is used as the ID.
+ *
  *
  * <h2>Events</h2>
  * 
  * The model fires the following events:
  *
- * <li>
+ * <ul>
  *   <li>meta_change - when metadata (column, data name, etc.) changes</li>
  *   <li>before_load - called prior to intiating an AJAX load of data.  Return false to cancel the load</li>
  *   <li>load - called when the entire set of rows is replaced</li>
@@ -59,6 +73,7 @@
  *   <li>selection_change - called with an array of rows that have had their selection change</li>
  *   <li>row_add - called with an array of rows that have been newly added to the model</li>
  *   <li>row_remove - called with an array of rows that are no longer present in the model</li>
+ *   <li>col_width_change - called when there is a metadata change that only affects column widths</li>
  * </ul>
  */
 
@@ -88,6 +103,9 @@ blist.namespace.fetch('blist.data');
         var lookup = {};
         var activeLookup = {};
 
+        // Column lookup by UID
+        var columnLookup = [];
+
         // Event listeners
         var listeners = [];
 
@@ -102,6 +120,9 @@ blist.namespace.fetch('blist.data');
         var filterText = "";
         var filterTimer;
 
+        // Expanded row configuration
+        var expanded;
+
         // Grouping configuration
         var groupFn;
 
@@ -115,7 +136,7 @@ blist.namespace.fetch('blist.data');
 
         var columnType = function(index) {
             if (meta.columns) {
-                var column = meta.columns[index];
+                var column = meta.columns[0][index];
                 if (column) {
                     var type = blist.data.types[column.type];
                     if (type)
@@ -156,12 +177,12 @@ blist.namespace.fetch('blist.data');
             }
             if (rows != active)
             {
-                for (var i = 0; i < active.length; i++)
+                for (i = 0; i < active.length; i++)
                 {
-                    var row = active[i];
+                    row = active[i];
                     if (typeof row == 'object')
                     {
-                        var id = row.id || row[0];
+                        id = row.id || row[0];
                     }
                     else
                     {
@@ -360,74 +381,125 @@ blist.namespace.fetch('blist.data');
             return options;
         }
 
-        var translateColumnsFromView = function(view)
-        {
-            var intermediateCols = [];
-            var viewCols = view.columns;
-            if (viewCols)
-            {
-                for (var i = 0; i < viewCols.length; i++)
+        var getColumnLevel = function(columns, id) {
+            var level = columns[id];
+            if (!level) {
+                level = columns[id] = [];
+                level.id = id;
+            }
+            return level;
+        }
+
+        var translateViewColumns = function(view, viewCols, columns, nestDepth, nestedIn) {
+            if (!viewCols)
+                return;
+
+            viewCols = viewCols.slice();
+            for (var i = 0; i < viewCols.length; i++)
+                viewCols[i].dataIndex = i;
+            viewCols.sort(function(col1, col2) { return col1.position - col2.position; });
+
+            var levelCols = getColumnLevel(columns, nestDepth);
+            
+            var filledTo = 0;
+            var addNestFiller = function() {
+                if (filledTo < levelCols.length) {
+                    var fillFor = [];
+                    for (var i = filledTo; i < levelCols.length; i++)
+                        fillFor.push(levelCols[i]);
+                    filledTo = levelCols.length + 1;
+                    getColumnLevel(columns, nestDepth + 1).push({
+                        type: 'fill',
+                        fillFor: fillFor
+                    });
+                } else
+                    filledTo++;
+            }
+
+            for (i = 0; i < viewCols.length; i++) {
+                var vcol = viewCols[i];
+                if (!vcol.position || (vcol.flags && $.inArray("hidden", vcol.flags) != -1))
+                    continue;
+                var col = {
+                    name: vcol.name,
+                    width: vcol.width || 100,
+                    type: vcol.dataType && vcol.dataType.type ? vcol.dataType.type : "text",
+                    id: vcol.id
+                };
+
+                var dataIndex = vcol.dataIndex;
+                if (nestedIn) {
+                    col.nestedIn = nestedIn;
+                    col.dataLookupExpr = nestedIn.header.dataLookupExpr + "[" + dataIndex + "]";
+                } else {
+                    col.dataIndex = dataIndex;
+                    col.dataLookupExpr = "[" + dataIndex + "]";
+                }
+
+                switch (col.type)
                 {
-                    var col = viewCols[i];
-                    if (col.position && (!col.flags ||
-                        $.inArray("hidden", col.flags) == -1))
+                    case 'picklist':
+                        col.options = translatePicklistFromView(vcol);
+                        break;
+
+                    case 'photo':
+                    case 'document':
+                        col.base = baseURL + "/views/" + view.id + "/files/";
+                        break;
+
+                    case 'nested_table':
+                        // Create the "body" column that appears in the next level
+                        var children = [];
+                        col.body = {
+                            type: 'nested',
+                            children: children,
+                            header: col
+                        };
+                        translateViewColumns(view, vcol.childColumns, columns, nestDepth + 1, col.body);
+
+                        // Add the body column to the next nesting level
+                        addNestFiller();
+                        columns[nestDepth + 1].push(col.body);
+
+                        break;
+                }
+                
+                var format = vcol.format;
+                if (format)
+                {
+                    if (col.type == "text" && format.formatting_option == "Rich")
                     {
-                        var icol = {
-                            name: col.name,
-                            width: col.width || 100,
-                            type: col.dataType && col.dataType.type ?
-                                col.dataType.type : "text",
-                            dataIndex: i,
-                            position: col.position,
-                            id: col.id
-                        }
-                        switch (icol.type)
-                        {
-                            case 'picklist':
-                                icol.options = translatePicklistFromView(col);
-                                break;
-
-                            case 'photo':
-                            case 'document':
-                                icol.base = baseURL + "/views/" + view.id +
-                                    "/files/";
-                                break;
-                        }
-
-                        var format = col.format;
-                        if (format)
-                        {
-                            if (icol.type == "text" &&
-                                format.formatting_option == "Rich")
-                            {
-                                icol.type = "richtext";
-                            }
-                            if (icol.type == "stars" &&
-                                format.view == "stars_number")
-                            {
-                                icol.type = "number";
-                            }
-                            else if (format.view)
-                            {
-                                icol.format = col.format.view;
-                            }
-                            if (format.range)
-                            {
-                                icol.range = format.range;
-                            }
-                            if (format.precision)
-                            {
-                                // This isn't actual precision, it's decimal places
-                                icol.decimalPlaces = format.precision;
-                            }
-                        }
-                        intermediateCols.push(icol);
+                        col.type = "richtext";
+                    }
+                    if (col.type == "stars" &&
+                        format.view == "stars_number")
+                    {
+                        col.type = "number";
+                    }
+                    else if (format.view)
+                    {
+                        col.format = vcol.format.view;
+                    }
+                    if (format.range)
+                    {
+                        col.range = format.range;
+                    }
+                    if (format.precision)
+                    {
+                        // This isn't actual precision, it's decimal places
+                        col.decimalPlaces = format.precision;
                     }
                 }
-                intermediateCols.sort(function(col1, col2)
-                    { return col1.position - col2.position; });
+
+                if (nestedIn)
+                    nestedIn.children.push(col);
+                else
+                    levelCols.push(col);
             }
-            return intermediateCols;
+
+            // Add filler for trailing unnested columns to the next nesting depth if applicable
+            if (columns[nestDepth + 1])
+                addNestFiller();
         }
 
         /**
@@ -441,50 +513,78 @@ blist.namespace.fetch('blist.data');
                 meta = newMeta;
                 if (!meta.columns)
                 {
+                    meta.columns = [[]];
                     if (meta.view)
                     {
-                        meta.columns = translateColumnsFromView(meta.view);
-                    }
-                    else
-                    {
-                        meta.columns = [];
+                        translateViewColumns(meta.view, meta.view.columns, meta.columns, 0);
                     }
                 }
 
+                // Assign a unique numeric ID (UID) and level ID to each column
+                columnLookup = [];
+                var nextID = 0;
+                var assignIDs = function(cols) {
+                    for (var i = 0; i < cols.length; i++) {
+                        var col = cols[i];
+                        col.uid = nextID++;
+                        col.level = cols;
+                        columnLookup[col.uid] = col;
+                        if (col.children)
+                            assignIDs(col.children);
+                    }
+                }
+                for (var i = 0; i < meta.columns.length; i++)
+                    assignIDs(meta.columns[i]);
+
+                var rootColumns = meta.columns[0];
+                // Configure root column sorting based on view configuration if
+                // a view is present
                 if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
                 {
                     var s = meta.view.sortBys[0];
-                    meta.sort = {ascending: s.flags != null &&
-                        $.inArray('asc', s.flags) >= 0};
-                    $.each(meta.columns, function (i, c)
+                    var sortCol;
+                    $.each(rootColumns, function (i, c)
                     {
-                        if (meta.view.columns[c.dataIndex].id == s.viewColumnId)
+                        if (c.id == s.viewColumnId)
                         {
-                            meta.sort.column = c;
+                            sortCol = c;
                             return false;
                         }
                     });
-                }
-
-                // For each column, ensure that dataIndex is present, and
-                // create a "dataIndexExpr" which is used with metaprogramming
-                // to reference a column value
-                for (var i = 0; i < meta.columns.length; i++)
-                {
-                    var col = meta.columns[i];
-                    var dataIndex = col.dataIndex;
-                    if (!dataIndex)
+                    if (sortCol)
                     {
-                        dataIndex = col.dataIndex = i;
-                    }
-                    if (typeof dataIndex == "string")
-                    {
-                        col.dataIndexExpr = "'" + dataIndex + "'";
+                        meta.sort = {ascending: s.flags != null &&
+                            $.inArray('asc', s.flags) >= 0, column: sortCol};
                     }
                     else
                     {
-                        col.dataIndexExpr = dataIndex + '';
+                        // We're dealing with a sort on a column that doesn't
+                        // exist in our view; we can't post this back, so
+                        // clear it out
+                        meta.view.sortBys = null;
                     }
+                }
+
+                // For each column at the root nesting level, ensure that
+                // dataIndex is present, and that a "dataLookupExpr" is
+                // present.  Other levels must configure these explicitly.
+                for (i = 0; i < rootColumns.length; i++)
+                {
+                    var col = rootColumns[i];
+                    var dataIndex = col.dataIndex;
+                    if (!dataIndex == undefined)
+                    {
+                        dataIndex = col.dataIndex = i;
+                    }
+                    if (!col.dataLookupExpr)
+                        if (typeof dataIndex == "string")
+                        {
+                            col.dataLookupExpr = "['" + dataIndex + "']";
+                        }
+                        else
+                        {
+                            col.dataLookupExpr = '[' + dataIndex + ']';
+                        }
                 }
 
                 // Notify listeners of the metadata change
@@ -501,6 +601,7 @@ blist.namespace.fetch('blist.data');
         {
             if (newRows)
             {
+                expanded = {};
                 active = rows = newRows;
                 installIDs();
 
@@ -510,14 +611,8 @@ blist.namespace.fetch('blist.data');
                     doSort();
                 }
 
-                // Apply filtering and grouping (filtering calls grouping so we
-                // never need to call both)
-                if (filterFn)
-                    doFilter(active);
-                else if (groupFn)
-                    doGroup();
-
-                dataChange();
+                // Apply filtering and grouping
+                configureActive(active);
             }
 
             return active;
@@ -585,6 +680,14 @@ blist.namespace.fetch('blist.data');
         };
 
         /**
+         * Notify the model of column width changes.  This function allows clients to perform optimized rendering vs.
+         * completely replacing all metadata.
+         */
+        this.colWidthChange = function() {
+            $(listeners).trigger('col_width_change');
+        }
+
+        /**
          * Retrieve a single row by index.
          */
         this.get = function(index) {
@@ -599,6 +702,13 @@ blist.namespace.fetch('blist.data');
             var index = lookup[id];
             return index == undefined ? undefined : rows[index];
         };
+
+        /**
+         * Retrieve a column object by UID.
+         */
+        this.getColumn = function(uid) {
+            return columnLookup[uid];
+        }
 
         /**
          * Retrieve the total number of rows.
@@ -732,7 +842,7 @@ blist.namespace.fetch('blist.data');
                 }
                 else
                 {
-                    orderCol = meta.columns[order];
+                    orderCol = meta.columns[0][order];
                 }
 
                 meta.sort = {column: orderCol, ascending: !descending};
@@ -744,8 +854,8 @@ blist.namespace.fetch('blist.data');
                     asc: !descending
                 }];
 
-                var r1 = "a[" + orderCol.dataIndexExpr + "]";
-                var r2 = "b[" + orderCol.dataIndexExpr + "]";
+                var r1 = "a" + orderCol.dataLookupExpr;
+                var r2 = "b" + orderCol.dataLookupExpr;
 
                 // Swap expressions for descending sort
                 if (descending)
@@ -803,18 +913,86 @@ blist.namespace.fetch('blist.data');
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
-            if (filterFn)
-            {
-                doFilter(active);
+            configureActive(active);
+        };
+
+        var getChildRows = function(row) {
+            if (row.childRows)
+                return row.childRows;
+
+            var cols = meta.columns[row.level || 0];
+            var childRows = row.childRows = [];
+
+            for (var i = 0; i < cols.length; i++) {
+                var col = cols[i];
+                if (!col.body)
+                    continue;
+                var cell = row[col.dataIndex];
+                if (!cell || !cell.length)
+                    continue;
+                for (var j = 0; j < cell.length; j++) {
+                    var childRow = childRows[j] || (childRows[j] = []);
+                    childRow.id = "t" + nextTempID++;
+                    childRow.level = (row.level || 0) + 1;
+                    childRow[col.dataIndex] = cell[j];
+                }
             }
-            else if (groupFn)
-            {
-                doGroup();
+            
+            if (childRows.length)
+                childRows[childRows.length - 1].groupLast = true;
+            return childRows;
+        }
+
+        /**
+         * Open or close a row (open rows display nested records).
+         */
+        var nextTempID = 0;
+        this.expand = function(row, open) {
+            // Determine whether to expand/open or unexpand/close the row
+            if (open == undefined)
+                open = !row.expanded;
+            if (open == row.expanded)
+                return;
+
+            // Create child rows
+            if (open) {
+                // Create the child rows
+                var childRows = getChildRows(row);
+
+                // Install child rows into the active set if the row is open
+                if (active == rows)
+                    active = active.slice();
+                for (var i = 0; i < active.length; i++)
+                    if (active[i] == row) {
+                        var after = active.splice(i + 1, active.length - i + 1);
+                        active = active.concat(childRows).concat(after);
+                        break;
+                    }
+            } else {
+                // Remove the child rows
+                if (row.childRows && row.childRows.length)
+                    for (i = 0; i < active.length; i++)
+                        if (active[i] == row) {
+                            active.splice(i + 1, row.childRows.length);
+                            break;
+                        }
             }
 
-            // Notify listeners
-            dataChange();
-        };
+            // Record the new row state
+            row.expanded = open;
+            if (open) {
+                if (!expanded)
+                    expanded = {};
+                expanded[row.id || row[0]] = true;
+            } else if (expanded)
+                delete expanded[row.id || row[0]];
+
+            // Update IDs for the rows that moved
+            installIDs(true);
+
+            // Fire events
+            dataChange([ row ]);
+        }
 
         /**
          * Get or set the base URL for retrieving child documents.  This is set automatically when you use the ajax
@@ -932,7 +1110,7 @@ blist.namespace.fetch('blist.data');
                 {
                     // If it is a full row, then update rows with it (even if
                     //  this row was already loaded, since it may have updated data)
-                    var curRow = active[i];
+                    curRow = active[i];
                     var rowPos = lookup[curRow.id || curRow[0]];
                     if (rowPos == undefined)
                     {
@@ -951,7 +1129,7 @@ blist.namespace.fetch('blist.data');
                 }
             }
             installIDs(installActiveOnly);
-            dataChange();
+            configureActive();
         };
 
         /**
@@ -978,14 +1156,12 @@ blist.namespace.fetch('blist.data');
                 // Filter, but only after a short timeout
                 filterTimer = setTimeout(function() {
                     window.clearTimeout(filterTimer);
-                    doFilter(toFilter || active);
-                    dataChange();
+                    configureActive(toFilter || active);
                 }, 250);
             }
             else
             {
-                doFilter(toFilter);
-                dataChange();
+                configureActive(toFilter);
             }
         };
 
@@ -1011,38 +1187,38 @@ blist.namespace.fetch('blist.data');
                     {
                         getTempView();
                     }
-                    else
+                    else if (active != rows)
                     {
                         active = rows;
-                        dataChange();
+                        configureActive();
                     }
                     return null;
                 }
 
-                // Generate a filter function (TODO - support non-textual values)
+                // Generate a filter function
                 var regexp = createRegExp(filter);
                 var filterParts = [ "(function(r) { return false" ];
-                for (var i = 0; i < meta.columns.length; i++)
+                var rootColumns = meta.columns[0];
+                for (var i = 0; i < rootColumns.length; i++)
                 {
                     if (columnType(i).filterText)
                     {
                         // Textual column -- apply the regular expression to
                         // each instance
-                        filterParts.push(' || (r[', meta.columns[i].dataIndexExpr,
-                            '] + "").match(regexp)');
+                        filterParts.push(' || (r', rootColumns[i].dataLookupExpr, ' + "").match(regexp)');
                     }
-                    else if (meta.columns[i] == "picklist")
+                    else if (rootColumns[i] == "picklist")
                     {
                         // Picklist column -- prefilter and then search by ID
-                        var options = meta.columns[i].options;
+                        var options = rootColumns[i].options;
                         if (options) {
                             var matches = [];
                             for (var key in options)
                                 if (options[key].text.match(regexp))
                                     matches.push(key);
                             for (var j = 0; j < matches.length; j++)
-                                filterParts.push(' || (r['
-                                    + meta.columns[j].dataIndexExpr + '] == "'
+                                filterParts.push(' || (r'
+                                    + rootColumns[j].dataLookupExpr + ' == "'
                                     + matches[j] + '")');
                         }
                     }
@@ -1081,47 +1257,6 @@ blist.namespace.fetch('blist.data');
                 modifiers);
         };
 
-        // Run filtering based on current filter configuration.  Does not fire
-        // events
-        var doFilter = function(toFilter)
-        {
-            // Remove the filter timer, if any
-            if (filterTimer)
-            {
-                window.clearTimeout(filterTimer);
-                filterTimer = null;
-            }
-
-            // Remove any header records (e.g. group titles) from the filter set
-            if (toFilter == active)
-                removeSpecialRows();
-
-            if (self.isProgressiveLoading())
-            {
-                getTempView();
-                // Bail out early, since the server does the sorting
-                return;
-            }
-
-            // Perform the actual filter
-            active = $.grep(toFilter || rows, filterFn);
-
-            // Generate group headers if grouping is enabled
-            if (groupFn)
-                doGroup();
-        }
-
-        // Remove "special" (non-data) rows
-        var removeSpecialRows = function() {
-            var i = 0;
-            while (i < active.length) {
-                if (active[i]._special)
-                    active.splice(i, 1);
-                else
-                    i++;
-            }
-        }
-
         /* Clear out the filter for a particular column.  Takes a column obj
          *  or a column index.
          * This clears both the short version stored on the meta obj, and
@@ -1131,7 +1266,7 @@ blist.namespace.fetch('blist.data');
             // Turn index into obj
             if (typeof filterCol != 'object')
             {
-                filterCol = meta.columns[filterCol];
+                filterCol = meta.columns[0][filterCol];
             }
 
             if (meta.columnFilters != null)
@@ -1167,7 +1302,7 @@ blist.namespace.fetch('blist.data');
             // Turn index into obj
             if (typeof filterCol != 'object')
             {
-                filterCol = meta.columns[filterCol];
+                filterCol = meta.columns[0][filterCol];
             }
 
             if (meta.columnFilters == null)
@@ -1228,7 +1363,7 @@ blist.namespace.fetch('blist.data');
             // Turn index into obj
             if (typeof filterCol != 'object')
             {
-                filterCol = meta.columns[filterCol];
+                filterCol = meta.columns[0][filterCol];
             }
 
             if (meta.columnFilters == null)
@@ -1243,6 +1378,60 @@ blist.namespace.fetch('blist.data');
 
             getTempView();
         };
+
+        // Apply filtering, grouping, and sub-row expansion to the active set.  This applies current settings to the
+        // active set and then notifies listeners of the data change.
+        var configureActive = function(filterSource) {
+            removeSpecialRows();
+            var idChange;
+            if (filterFn) {
+                doFilter(filterSource);
+                idChange = true;
+            }
+            if (groupFn) {
+                doGroup();
+                idChange = true;
+            }
+            if (expanded) {
+                doExpansion();
+                idChange = true;
+            }
+            if (idChange)
+                installIDs(true);
+            dataChange();
+        }
+
+        // Remove "special" (non-data or nested) rows
+        var removeSpecialRows = function() {
+            var i = 0;
+            while (i < active.length) {
+                if (active[i].level)
+                    active.splice(i, 1);
+                else
+                    i++;
+            }
+        }
+
+        // Run filtering based on current filter configuration
+        var doFilter = function(toFilter)
+        {
+            // Remove the filter timer, if any
+            if (filterTimer)
+            {
+                window.clearTimeout(filterTimer);
+                filterTimer = null;
+            }
+
+            if (self.isProgressiveLoading())
+            {
+                getTempView();
+                // Bail out early, since the server does the sorting
+                return;
+            }
+
+            // Perform the actual filter
+            active = $.grep(toFilter || rows, filterFn);
+        }
 
         // Generate group headers based on the current grouping configuration.
         // Does not fire events.  Note that grouping is not currently supported
@@ -1259,7 +1448,7 @@ blist.namespace.fetch('blist.data');
                 var group = groupFn(active[i][groupOn]);
                 if (group != currentGroup) {
                     active.splice(i, 0, {
-                        _special: true,
+                        level: -1,
                         type: 'group',
                         title: group,
                         id: 'special-' + i
@@ -1273,11 +1462,33 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
         };
 
+        // Expand rows that the user has opened
+        var doExpansion = function() {
+            var newActive;
+            var lastCopied = 0;
+
+            for (var i = 0; i < active.length; i++)
+                if (expanded[active[i].id || active[i][0]]) {
+                    if (!newActive)
+                        newActive = [];
+                    newActive.push.apply(newActive, active.slice(lastCopied, lastCopied = i + 1));
+                    var childRows = getChildRows(active[i]);
+                    newActive.push.apply(newActive, childRows);
+                }
+
+            if (newActive) {
+                newActive.push.apply(newActive, active.slice(lastCopied, active.length));
+                active = newActive;
+            }
+        }
+
+        // Install initial metadata
         if (meta)
             this.meta(meta);
         else
             this.meta({});
 
+        // Install initial rows
         if (rows)
             this.rows(rows);
         else

@@ -25,6 +25,16 @@ class View < Model
     get_request(path)
   end
 
+  def self.notify_all_of_changes(id)
+    path = "/#{self.name.pluralize.downcase}/#{id}.json?" + 
+        {"method" => "notifyUsers"}.to_param
+    self.create_request(path)
+  end
+
+  def notify_all_of_changes
+    self.class.create_favorite(self.id)
+  end
+
   def self.create_favorite(id)
     path = "/favorite_views?" + {"id" => id}.to_param
     self.create_request(path)
@@ -33,6 +43,21 @@ class View < Model
   def create_favorite
     self.data['flags'] << "favorite"
     self.class.create_favorite(self.id)
+  end
+
+  def self.create(attributes)
+    if attributes['viewFilters'].blank? || attributes['viewFilters'] == '""' ||
+      attributes['viewFilters'] == "''"
+      attributes['viewFilters'] = nil
+    else
+      attributes['viewFilters'] = JSON.parse(attributes['viewFilters'])
+    end
+    super(attributes)
+  end
+
+  def self.delete(id)
+    path = "/#{self.name.pluralize.downcase}.json?" + {"id" => id, "method" => "delete"}.to_param
+    self.delete_request(path)
   end
 
   def self.delete_favorite(id)
@@ -114,11 +139,11 @@ class View < Model
   end
   
   def short_href
-    "/blists/#{id}"
+    "/dataset/#{id}"
   end
 
   def user_role(user_id)
-    if (user_id == blistOwner.id)
+    if (user_id == tableOwner.id)
       I18n.t(:blist_name) + " Author"
     elsif (user_id == owner.id)
       "View Author"
@@ -200,12 +225,8 @@ class View < Model
   end
 
   def filters
-    # TODO: Pass get_all=true when the server supports blistId under /views
-    if User.current_user
-      View.find({"blistId" => self.blistId}).reject {|l| l.is_blist?}
-    else
-      []
-    end
+    View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
+      reject {|l| l.is_blist?}
   end
 
   def comments
@@ -225,7 +246,8 @@ class View < Model
     "Fun" => "Fun",
     "Personal" => "Personal",
     "Business" => "Business",
-    "Education" => "Education"
+    "Education" => "Education",
+    "Government" => "Government"
   }
   
   @@sorts = [

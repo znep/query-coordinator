@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "community-screen", "widgets",
+  <%= stylesheet_link_tag "community-screen",
     "carousel/jquery.jcarousel", "carousel/discover-carousel-skin",
     :cache => "cache/community_show_all" %>
   <title><%= t(:page_title) %></title>
@@ -61,7 +61,7 @@
           </li>
         <%- end -%>
         <li id="tabTopMembers" class="<%= @search_views.nil? ? 'active' : '' %>">
-          <div class="wrapper"><a href="#top_members">Top Members</a></div>
+          <div class="wrapper"><a href="#top_members">Top 100</a></div>
         </li>
         <li id="tabTopUploaders"><div class="wrapper"><a href="#top_uploaders">Top Uploaders</a></div></li>
         <li id="tabAllMembers"><div class="wrapper"><a href="#all">All Members</a></div></li>

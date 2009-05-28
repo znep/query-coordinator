@@ -75,11 +75,9 @@
     float: left;
     white-space: nowrap;
     overflow: hidden;
-    cursor: default;
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-    cursor: pointer;
 }
 
 .blist-td
@@ -87,6 +85,46 @@
     float: left;
     overflow: hidden;
     white-space: nowrap;
+}
+
+div.blist-table .blist-td.blist-tdh
+{
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    /*background-color: #f8f8f8;*/
+    color: #666666;
+}
+
+div.blist-table .blist-tr-open .blist-td.blist-tdh {
+    color: #333333;
+    font-weight: bold;
+    background-color: #eeeeee;
+}
+
+.blist-td.blist-opener {
+    background-image: url('/stylesheets/images/content/table/expand_closed.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-right-color: transparent /*#f8f8f8*/;
+}
+
+.blist-tr-open .blist-td.blist-opener {
+    background-image: url('/stylesheets/images/content/table/expand_opened.png');
+    border-right-color: #eeeeee;
+}
+
+.blist-td.blist-opener-space {
+    border-right-color: transparent;
+}
+
+.blist-table .blist-td.blist-tdfill {
+    background-color: #f8f8f8;
+    border-bottom-color: #f8f8f8;
+}
+
+.blist-table .last .blist-td.blist-tdfill {
+    border-bottom-color: #dddddd;
 }
 
 div.blist-table-expander
@@ -107,12 +145,10 @@ div.blist-table-expander .blist-td
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-    cursor: default;
 }
 
 .blist-table .blist-table-corner
 {
-    cursor: default;
 }
 
 .blist-table-util
@@ -131,7 +167,6 @@ div.blist-table-expander .blist-td
     width: 5px;
     overflow: hidden;
     right: 0px;
-    cursor: col-resize;
 }
 
 .blist-th .sort
@@ -249,6 +284,8 @@ img.blist-table-option-icon
 {
     background: transparent no-repeat center center;
     height: 22px;
+    margin-top: -4px;
+    margin-bottom: -4px;
 }
 
 .blist-flag-blue {
@@ -273,4 +310,39 @@ img.blist-table-option-icon
 
 .blist-flag-yellow {
     background-image: url(/stylesheets/images/content/table/flags/yellow.png);
+}
+
+.blist-phone-icon {
+    float: right;
+    width: 25px;
+    height: 20px;
+    margin: -4px 0px -4px 0;
+}
+
+.blist-phone-icon-cell {
+    background-image: url(/stylesheets/images/content/table/phones/cell.png);
+}
+
+.blist-phone-icon-fax {
+    background-image: url(/stylesheets/images/content/table/phones/fax.png);
+}
+
+.blist-phone-icon-home {
+    background-image: url(/stylesheets/images/content/table/phones/home.png);
+}
+
+.blist-phone-icon-other {
+    background-image: url(/stylesheets/images/content/table/phones/other.png);
+}
+
+.blist-phone-icon-work {
+    background-image: url(/stylesheets/images/content/table/phones/work.png);
+}
+
+.blist-tag
+{
+    background-image: url(/stylesheets/images/content/table/tagIcon.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 18px;
 }

@@ -165,7 +165,7 @@ HREF
   
   
   def create_pagination(total_count, page_count, current_page, base_href)
-    num_pages = (total_count / page_count).floor
+    num_pages = (total_count / page_count).ceil
     base_href = (base_href.include?("?")) ? "#{base_href}&page=" : "#{base_href}?page="
     
     # Only display 9 pages at a time.
@@ -198,5 +198,17 @@ HREF
     end
     
     out += "</div>"
+  end
+
+  def fullpage_content(id = nil, &block)
+    concat(content_tag(:div, :id => id, :class => 'tabPageContentContainer') do
+      content_tag(:div, :class => "fullPageContentBL") do
+        content_tag(:div, :class => "fullPageContentBR") do
+          content_tag(:div, :class => "fullPageContent") do
+            capture(&block)
+          end
+        end
+      end
+    end)
   end
 end

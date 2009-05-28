@@ -16,7 +16,6 @@
 .blist-th
 {
     border-left: solid 1px #e2e2e2;
-    cursor: auto;
     font-size: 1.2em;
     height: 2.9166em; /* 35px */
     line-height: 2.9166em;
@@ -60,11 +59,6 @@
     font-size: 1.1em;
     height: 3.1818em; /* 35px */
     padding: 0 0.3636em; /* 4px */
-}
-
-.blist-th.blist-table-ghost
-{
-    cursor: auto;
 }
 
 .blist-th-sizer
@@ -163,7 +157,7 @@ ul.menu.columnHeaderMenu li
 
 .columnHeaderMenu .autofilter li.clearFilter
 {
-    border-bottom: solid 1px #e0d1b8;
+    border-bottom: solid 1px #cacaca;
 }
 
 .columnHeaderMenu .autofilter li.clearFilter a
@@ -173,12 +167,12 @@ ul.menu.columnHeaderMenu li
 
 .columnHeaderMenu .autofilter li.filterItem a
 {
-    background-position: 5px -899px;
+    background-position: 5px 30px; /*-899px;*/
 }
 
 .columnHeaderMenu .autofilter li.filterItem.active a
 {
-    background-position: 5px -508px;
+    background-position: 5px 30px; /*-508px;*/
 }
 
 /* This is only used for initial positioning; the menu is pulled out, so real

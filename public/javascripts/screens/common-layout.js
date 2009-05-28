@@ -28,5 +28,5 @@ blist.common.forceWindowResize = function ()
 $(function ()
 {
     // Make all links with rel="external" open in a new window.
-    $("a[rel$='external']").click(function(){ this.target = "_blank"; });
+    $("a[rel$='external']").live("click", function(){ this.target = "_blank"; });
 });

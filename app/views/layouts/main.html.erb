@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -10,6 +9,13 @@
   <%= stylesheet_link_tag "base", "common", "info-pane", "layout",
     "outer-chrome", "sidebar", "widgets",
     :cache => "cache/layout_main_all" %>
+    
+  <!--[if lt IE 7]>
+    <link href="/stylesheets/core-ie6.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" charset="utf-8">
+      var isOldIE = true;
+    </script>
+  <![endif]-->
 
   <% if ENV["RAILS_ENV"] != 'production' %>
   <script src="/javascripts/jquery-1.3.2.js" type="text/javascript"
@@ -37,13 +43,22 @@
 
   <div id='outerContainer'>
     <div id='header'>
-      <div id='mainLogo'><%= link_to('blist', root_url) %></div>
+      <h1 id='mainLogo'><%= link_to(t(:blist_company), root_url) %></h1>
 
       <div id='mainNav'>
         <ul>
           <li class='discover'><%= link_to(t(:discover_nav_title), discover_url) %></li>
           <li class='community'><%= link_to("Community", community_url) %></li>
           <li class='home last'><%= link_to(t(:my_home_title), home_url) %></li>
+        </ul>
+      </div>
+
+      <div class='userNav'>
+        <ul>
+          <li><a href='http://www.getsatisfaction.com/socrata' rel="external">Help</a></li>
+          <li class='signInLink'><a href='/login'>Sign In</a></li>
+          <li class='accountLink'><%= link_to "My Account", account_url %></li>
+          <li class='signOutLink'><a href='/logout'>Sign Out</a></li>
         </ul>
       </div>
 
@@ -56,23 +71,13 @@
       </div>
       %>
 
-      <div class='userNav'>
-        <ul>
-          <li><a href='http://www.blist.com/help' target='_blank'>Help</a></li>
-          <li class='signInLink'><a href='/login'>Sign In</a></li>
-          <li class='accountLink'><%= link_to "My Account", account_url %></li>
-          <li class='signOutLink'><a href='/logout'>Sign Out</a></li>
-        </ul>
-      </div>
-
       <%- if @show_search_form -%>
         <% form_tag(discover_url, :method => :get, :class => "search") do %>
           <p>
             <input type='text' class='textPrompt' name='search'
               title='<%= t(:search_prompt_text) %>'
               value='<%= @discover_search %>' />
-            <input type='image' class='submit' name='discoverSubmit'
-              src="<%= image_path("find_button.png") %>" />
+            <input type='image' class='submit' name='discoverSubmit' src='/stylesheets/images/common/empty.gif' />
           </p>
         <% end %>
       <%- end -%>
@@ -150,7 +155,7 @@
   </script>
   <script type="text/javascript">
   try {
-  var pageTracker = _gat._getTracker("UA-8482197-1");
+  var pageTracker = _gat._getTracker("UA-9046230-1");
   pageTracker._trackPageview();
   } catch(err) {}</script>
   <% end %>

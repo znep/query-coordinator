@@ -1,7 +1,6 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "table-core", "table-blist-list", "list-screen", 
-    "blists-screen", "widgets",
-    :cache => "cache/blists_index_all" %>
+  <%= stylesheet_link_tag "table-core", "table-blist-list", "list-screen",
+    "blists-screen", :cache => "cache/blists_index_all" %>
   <title><%= t(:page_title) %></title>
 <% end %>
 
@@ -35,7 +34,7 @@
               <li>
                 <%= link_to("Upload Data", {:controller => "imports", :action => "new"},
                     :class => "import",
-                    :title => "Upload a CSV or other data file and we'll convert it into a #{t(:blist_name)}.") %>
+                    :title => "Upload a CSV or XML file and we'll convert it into a #{t(:blist_name)}.") %>
               </li>
             </ul>
 
@@ -53,7 +52,7 @@
               <div class="noticeHeaderOuter"><div class="noticeHeaderInner">
                 <div class="noticeHeader clearfix">
                   <h2>Get Started!</h2>
-                  <p>Have a look at some of the great things you can do with blist.</p>
+                  <p>Have a look at some of the great things you can do with <%= t(:blist_company) %>.</p>
                   <p class="noticePanelCloser">
                     <a href="#hide" class="expander">Hide</a>
                   </p>
@@ -68,7 +67,7 @@
         </div>
       </div>
 
-      <div id="infoPane"></div>
+      <div id="infoPane" class='metadataPane'></div>
     </div>
   </div>
 

@@ -13,6 +13,8 @@
     background-repeat: no-repeat;
 }
 
+#home h1 { color: #333; }
+
 #home .content .actionButtons
 {
     margin-bottom: 4em;

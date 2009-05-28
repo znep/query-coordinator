@@ -13,12 +13,13 @@ html
 
 body
 {
-    background-color: #8d8d8d;
+    background-color: #ececec;
     height: 100%;
 }
 
 #outerContainer
 {
+    border-top: 9px solid #06386a;
     height: auto;
     min-height: 100%;
     position: relative;
@@ -30,24 +31,34 @@ body
 
 #header
 {
-    margin-bottom: -1em;
-    margin-left: 12em;
-    margin-right: 1em;
-    overflow: hidden;
+    position: relative;
+    height: 75px;
+}
+
+#mainLogo
+{
+    background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
+    font-size: 1em;
+    margin: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    top: 2.5em;
+    height: 6.2em;
+    text-align: left;
 }
 
 #mainLogo a
 {
-    background-image: url(/stylesheets/images/header/blist_logo.png);
+    background-image: url(/stylesheets/images/header/socrata_logo.png);
     background-repeat: no-repeat;
     display: block;
-    height: 37px;
-    left: 10px;
-    position: absolute;
-    text-align: left;
+    height: 35px;
+    margin-top: 1.0em;
+    padding-bottom: .3em;
+    margin-left: 1em;
     text-indent: -9999px;
-    top: 15px;
-    width: 86px;
+    width: 142px;
 }
 
 #header li, #footer li
@@ -121,20 +132,34 @@ body
 
 #header .userNav
 {
-    float: right;
+    background: none;
     padding: 0.5em;
+    padding-top: .7em;
+    position: absolute;
+    right: 0;
+    top: 0;
+    text-transform: none;
 }
 
 #header .userNav li
 {
-    margin: 0.75em;
+    border-right: 1px solid #666;
+    padding-right: .75em;
+    margin: 0 .75em 0 0;
+}
+
+#header .userNav li.signInLink,
+#header .loggedInNav li.signOutLink
+{
+    border-right: 0;
+    margin-right: 10px;
+    padding-right: 0;
 }
 
 #header .userNav a
 {
-    color: #ffffff;
-    font-size: .9em;    /* 9px */
-    font-weight: bold;
+    color: #666;
+    font-size: 1.1em;    /* 11px */
 }
 
 #header .userNav li.accountLink,
@@ -160,35 +185,35 @@ body
 
 #mainNav
 {
-    background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_left.png);
-    background-position: bottom left;
-    background-repeat: no-repeat;
-    float: right;
-    margin-top: .2em;
+    margin: 0 auto;
+    width: 33.333em;
 }
+
 
 #mainNav ul
 {
-    background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_right.png);
-    background-position: bottom right;
-    background-repeat: no-repeat;
     height: 25px;
     overflow: hidden;
-    padding: 0 9px;
 }
 
 #mainNav li
 {
-    background-image: url(/stylesheets/images/header/main_buttons/MainButton_gradSlice.png);
+    background-image: url(/stylesheets/images/header/MainButton_gradSlice.png);
     background-position: bottom;
     background-repeat: repeat-x;
     float: left;
     height: 25px;
-    margin-right: .2em;
+    margin-right: .1em;
     text-align: center;
     width: 11em;
 }
 
+body.home #mainNav li.home,
+body.discover #mainNav li.discover,
+body.community #mainNav li.community
+{
+    background-image: url(/stylesheets/images/header/MainButton_gradSlice_active.png);
+}
 
 #mainNav li.last
 {
@@ -197,27 +222,10 @@ body
 
 #mainNav a
 {
-    color: #000000;
+    color: #fff;
+    display: block;
     font-size: 1.3em;
-    font-weight: bold;
     line-height: 25px;
-}
-
-body.discover #mainNav
-{
-    background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_left_active.png);
-}
-
-body.home #mainNav ul
-{
-    background-image: url(/stylesheets/images/header/main_buttons/MainButton_corner_right_active.png);
-}
-
-body.home #mainNav li.home,
-body.discover #mainNav li.discover,
-body.community #mainNav li.community
-{
-    background-image: url(/stylesheets/images/header/main_buttons/MainButton_gradSlice_active.png);
 }
 
 
@@ -229,9 +237,19 @@ body.community #mainNav li.community
 {
     clear: both;
     float: right;
+    margin-right: 1em;
     margin-top: 1em;
+    position: relative;
     width: 26em;
+    z-index: 10;
 }
+
+/****************
+ * Main content *
+ ****************/
+
+#sidebar { margin-top: 26; }
+
 
 /*************
  *  FOOTER   *
@@ -239,23 +257,18 @@ body.community #mainNav li.community
 
 #footer
 {
-    background-color: #666666;
-    background-image: url(/stylesheets/images/footer/DarkGray_corner_left_footer.png);
-    background-position: top left;
-    background-repeat: no-repeat;
+    background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
     bottom: 0;
-    left: 1em;
+    left: 0;
     position: absolute;
-    right: 1em;
+    right: 0;
     text-align: right;
+    width: 100%;
 }
 
 #footer ul
 {
-    background-image: url(/stylesheets/images/footer/DarkGray_corner_right_footer.png);
-    background-position: top right;
-    background-repeat: no-repeat;
-    padding: 2em;
+    padding: 2em 1em;
 }
 
 #footer li
@@ -265,7 +278,7 @@ body.community #mainNav li.community
 
 #footer a
 {
-    color: #c6c6c6;
+    color: #4f4f4f;
 }
 
 #footer a.rss
@@ -278,7 +291,6 @@ body.community #mainNav li.community
 
 #footer .copyright
 {
-    color: #ffffff;
     float: left;
     font-weight: bold;
     padding: 2em;

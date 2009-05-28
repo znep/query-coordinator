@@ -89,6 +89,7 @@ blist.discover.searchSubmitHandler = function(event)
             
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
+            $("#search").blur();
         }
     });
 }
@@ -144,5 +145,57 @@ $(function ()
         $("#tagCloud").jqmHide();
     });
     
-    $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler)
+    $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler);
+    $("#search").focus(function(){ $(this).select(); });
+    
+    $("#splashModal").jqm({
+        trigger: false,
+        onShow: function(hash)
+        {
+            var $modal = hash.w;
+            var modalUrl = typeof(isOldIE) !== "undefined" ? "/discover/noie" : "/discover/splash";
+            
+            $.Tache.Get({ 
+                url: modalUrl,
+                success: function(data)
+                {
+                    $modal.html(data).show();
+                }
+            });
+        }
+    });
+    
+    $("#splashModal").jqmShow();
+    $("#splashModal .closeContainer a").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#splashModal").jqmHide();
+    });
+    $("#splashModal .splashActionDiscover").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#splashModal").jqmHide();
+        $("#discover .pageBlockSearch form #search").focus();
+    });
+    $("#splashModal .splashActionBox").live("click", function(event)
+    {
+        var $this = $(this);
+        var $target = $(event.target);
+        if (!$target.is("a"))
+        {
+            event.preventDefault();
+            event.stopPropagation();
+            var $a = $this.find(".splashActionButton a");
+            if ($a.closest(".splashActionButton").hasClass("splashActionDiscover"))
+            {
+                $a.click();
+            }
+            else
+            {
+                window.location = $a.attr("href");
+            }
+        }
+    });
+    
+    
 });

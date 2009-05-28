@@ -99,10 +99,10 @@ input.blist-table-filter
     border-top: none;
 }
 
-.blist-tr-even .blist-td
+/*.blist-tr-even .blist-td
 {
     background-color: #e8ebf6;
-}
+}*/
 
 .blist-th
 {

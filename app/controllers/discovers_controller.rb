@@ -1,12 +1,14 @@
 class DiscoversController < ApplicationController
-  skip_before_filter :require_user, :only => [:show, :filter, :tags]
+  skip_before_filter :require_user, :only => [:show, :filter, :tags, :splash, :noie]
   
   PAGE_SIZE = 10
 
   def show
     @body_class = 'discover'
     @show_search_form = false
-    
+    @show_splash = !current_user.nil? ? false :
+                      (cookies[:show_splash].nil? ? true : cookies[:show_splash][:value])
+
     @page_size = PAGE_SIZE
 
     @all_views_total = View.find({ :limit => PAGE_SIZE, :count => true }, true).count
@@ -43,7 +45,7 @@ class DiscoversController < ApplicationController
     when "ALPHA_DESC"
       sort_by = "ALPHA"
       is_asc = false
-    when "NUM_OF_VIEWS", "AVERAGE_RATING", "COMMENTS"
+    when "NUM_OF_VIEWS", "AVERAGE_RATING", "COMMENTS", "LAST_CHANGED", "POPULAR"
       is_asc = false
     end
     
@@ -78,10 +80,6 @@ class DiscoversController < ApplicationController
       
       if (filter[:inNetwork])
         tab_title += " #{t(:blists_name)} in my network"
-      elsif (filter[:publicOnly])
-        tab_title += " Public #{t(:blists_name)}"
-      elsif (filter[:privateOnly])
-        tab_title += " Private #{t(:blists_name)}"
       elsif (filter[:category])
         tab_title += " #{filter[:category]} #{t(:blists_name)}"
       end
@@ -149,6 +147,16 @@ class DiscoversController < ApplicationController
     @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
     
     render(:layout => "modal")
+  end
+  
+  def splash
+    cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
+    
+    render(:layout => "splash")
+  end
+  
+  def noie
+    render(:layout => "splash")
   end
 
 end

@@ -40,7 +40,7 @@ ActionController::Routing::Routes.draw do |map|
       :contact_detail => :get,
       :group_detail => :get,
     }
-  map.resource :discover, :member => { :filter => :get, :tags => :get }
+  map.resource :discover, :member => { :filter => :get, :tags => :get, :splash => :get, :noie => :get }
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
@@ -59,7 +59,8 @@ ActionController::Routing::Routes.draw do |map|
       :post_comment => :post,
       :update_comment => [:put, :get],
       :create_favorite => :get,
-      :delete_favorite => :get
+      :delete_favorite => :get,
+      :notify_all_of_changes => :post
     } do |blist|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
     end
@@ -81,6 +82,11 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
+  # Support both /blists and /datasets short URLs
+  map.connect 'dataset/:id', :controller => 'blists',
+    :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP}
+
   map.root :controller => "discovers", :action => "show"
 
   map.import '/upload', :controller => 'imports', :action => 'new' 
@@ -94,8 +100,15 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :user_sessions
 
-  map.about '/about', :controller => 'about'
-  map.about_subpage '/about/:page', :controller => 'about', :action => 'show'
+  # Static content
+  ['about', 'solution', 'company-info'].each do |static_section|
+    controller_name = static_section.underscore.camelize
+    map.connect "/#{static_section}", :controller => controller_name
+    map.connect "/#{static_section}/:page", :controller => controller_name, :action => 'show'
+  end
+  ['terms-of-service', 'privacy', 'contact-us'].each do |static_toplevel|
+    map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
+  end
 
   # See how all your routes lay out with "rake routes"
 end

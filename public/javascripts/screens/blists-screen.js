@@ -29,7 +29,7 @@ blist.myBlists.sharedByGroupFilterGen = function(group)
 
 blist.myBlists.ownedByFilterGen = function(userId)
 {
-    return function(view) { 
+    return function(view) {
         return view.owner.id == userId;
     };
 }
@@ -106,7 +106,7 @@ blist.myBlists.defaultFilter = function(view)
 
 blist.myBlists.filterFilter = function(view)
 {
-    if ($.inArray('default', view.flags) == -1)
+    if (!view.flags || $.inArray('default', view.flags) == -1)
     {
         return true;
     }
@@ -323,7 +323,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $('#infoPane').html(data);
 
     // Wire up the hover behavior.
-    $(".infoContent dl.actionList").infoPaneItemHighlight();
+    $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
 
     // Wire up the tab switcher/expander.
     $(".summaryTabs").infoPaneNavigate();
@@ -351,20 +351,55 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         $(".summaryTabs").infoPaneNavigate().activateTab("#tabSharing");
     });
 
-    $("#infoPane dd.editItem").infoPaneItemEdit({
+    $("#infoPane .editItem").infoPaneItemEdit({
         submitSuccessCallback: function(fieldType, fieldValue, itemId)
         {
-            if (fieldType == "description")
+            if (fieldType == "description" || fieldType == "name")
             {
                 var row = myBlistsNS.model.getByID(itemId);
-                row.description = fieldValue; 
+                row[fieldType] = fieldValue;
                 myBlistsNS.model.change([row]);
             }
+            // If anything in the info pane is changed, make sure it reloads
+            $.Tache.DeleteAll();
         }
     });
 
-    $(".copyCode textarea").click(function() { $(this).select(); });
-    
+    $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
+
+    $('.switchPermsLink').click(function (event)
+        {
+            event.preventDefault();
+            var $link = $(this);
+            var curState = $link.text().toLowerCase();
+            var newState = curState == 'private' ?
+                'public' : 'private';
+
+            var viewId = $link.attr('href').split('_')[1];
+            $.get('/views/' + viewId, {'method': 'setPermission',
+                'value': newState});
+
+            var capState = newState.charAt(0).toUpperCase() +
+                newState.substring(1);
+
+            // Update link & icon
+            $link.closest('p.' + curState)
+                .removeClass(curState).addClass(newState);
+            $link.text(capState);
+            // Update panel header & icon
+            $link.closest('.singleInfoSharing')
+                .find('.panelHeader.' + curState).text(capState)
+                .removeClass(curState).addClass(newState);
+            // Update line in summary pane
+            $link.closest('#infoPane')
+                .find('.singleInfoSummary .permissions .itemContent > *')
+                .text(capState);
+            // Update summary panel header icon
+            $link.closest('#infoPane')
+                .find('.singleInfoSummary .panelHeader.' + curState)
+                .removeClass(curState).addClass(newState);
+        });
+
     $(".favoriteAction a").click(function(event) {
         event.preventDefault();
 
@@ -382,7 +417,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         var linkText = row.favorite ? "Remove from favorites" : "Add to favorites";
         $favLink.text(linkText);
         $favLink.attr("title", linkText);
-        
+
     });
 
     $('#infoPane .singleInfoComments').infoPaneComments();
@@ -597,6 +632,24 @@ blist.myBlists.favoriteClick = function(row)
     myBlistsNS.model.change([row]);
 };
 
+// TODO: Needs updating?
+blist.myBlists.deleteClick = function (event)
+{
+    event.preventDefault();
+
+    $this = $(this);
+    var origHref = $this.find("a").attr("href");
+
+    $.ajax({
+        url: origHref,
+        type: "DELETE",
+        success: function(responseText, textStatus)
+        {
+            $this.closest("tr.item").remove();
+        }
+    });
+};
+
 blist.myBlists.listCellClick = function(event, row, column, origEvent)
 {
     if ($(origEvent.target).is('a'))
@@ -697,21 +750,27 @@ blist.myBlists.initializeGrid = function()
     myBlistsNS.model.ajax({url: myBlistsNS.viewUrl, cache: false });
 }
 
-blist.myBlists.columns = [
-  { width: 32, dataIndex: 'id', renderer: blist.myBlists.customHandle, sortable: false },
-  { cls: 'favorite', name: 'Favorite?', width: 36, dataIndex: 'favorite',
+blist.myBlists.columns = [[
+  { width: 18, dataIndex: 'id', dataLookupExpr: '.id',
+    renderer: blist.myBlists.customHandle, sortable: false },
+  { cls: 'favorite', name: 'Favorite?', width: 22,
+    dataIndex: 'favorite', dataLookupExpr: '.favorite',
     renderer: blist.myBlists.customFav, sortable: true},
-  { cls: 'type', name: 'Type', width: 45, dataIndex: 'isDefault',
+  { cls: 'type', name: 'Type', width: 31,
+    dataIndex: 'isDefault', dataLookupExpr: '.isDefault',
     renderer: blist.myBlists.customType, sortable: true },
-  { name: 'Name', percentWidth: 20, dataIndex: 'name',
+  { name: 'Name', percentWidth: 20, dataIndex: 'name', dataLookupExpr: '.name',
     renderer: blist.myBlists.customDatasetName, group: true, sortable: true },
-  { name: 'Description', percentWidth: 40, dataIndex: 'description',
+  { name: 'Description', percentWidth: 40,
+    dataIndex: 'description', dataLookupExpr: '.description',
     renderer: blist.myBlists.customClipText, group: true, sortable: true },
-  { name: 'Owner', percentWidth: 20, dataIndex: 'ownerName',
+  { name: 'Owner', percentWidth: 20,
+    dataIndex: 'ownerName', dataLookupExpr: '.ownerName',
     renderer: blist.myBlists.customClipText, group: true, sortable: true},
-  { name: 'Last Updated', percentWidth: 20, dataIndex: 'updatedAt',
+  { name: 'Last Updated', percentWidth: 20,
+    dataIndex: 'updatedAt', dataLookupExpr: '.updatedAt',
     group: true, type: 'date', renderer: blist.myBlists.customDateMeta }
-];
+]];
 
 blist.myBlists.options = {
     cellExpandEnabled: false,

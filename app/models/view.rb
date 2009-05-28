@@ -45,6 +45,16 @@ class View < Model
     self.class.create_favorite(self.id)
   end
 
+  def self.create(attributes)
+    if attributes['viewFilters'].blank? || attributes['viewFilters'] == '""' ||
+      attributes['viewFilters'] == "''"
+      attributes['viewFilters'] = nil
+    else
+      attributes['viewFilters'] = JSON.parse(attributes['viewFilters'])
+    end
+    super(attributes)
+  end
+
   def self.delete(id)
     path = "/#{self.name.pluralize.downcase}.json?" + {"id" => id, "method" => "delete"}.to_param
     self.delete_request(path)

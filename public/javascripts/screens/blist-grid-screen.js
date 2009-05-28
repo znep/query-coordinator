@@ -52,8 +52,7 @@ blist.blistGrid.setUpTabs = function ()
         }
     }
 
-    var $tabList = $('.tabList');
-    var $tabTemplate = $tabList.find('li.main').clone()
+    var $tabTemplate = $('.tabList li.main').clone()
         .removeClass('main active even').addClass('filter');
     var $refTab = $('.tabList li.filter.active');
     var $endTab = $('.tabList li.nextTabLink');
@@ -545,14 +544,59 @@ blist.blistGrid.columnHeaderMenuHandler = function(event)
             blistGridNS.summaryStale = true;
             // Rejoin remainder of parts in case the filter value had _
             model.filterColumn(colIndex, $.htmlUnescape(s.slice(2).join('_')));
+            blistGridNS.setTempView(model.meta().view);
             break;
         case 'clear-filter-column':
             blistGridNS.summaryStale = true;
             model.clearColumnFilter(colIndex);
+            blistGridNS.clearTempView();
             break;
     }
     // Update the grid header to reflect updated sorting, filtering
     $('#readGrid').trigger('header_change', [model]);
+};
+
+blist.blistGrid.filterCount = 0;
+blist.blistGrid.isTempView = false;
+
+blist.blistGrid.setTempView = function(tempView)
+{
+    blistGridNS.filterCount++;
+    if (blistGridNS.isTempView)
+    {
+        return;
+    }
+
+    $('.tabList .active').addClass('origView').removeClass('active');
+    $('.tabList .filter.tempViewTab').addClass('active').show();
+    $('#infoPane').hide();
+    $('.headerBar li:has(#mainMenuLink)').hide();
+    $('#tempInfoPane').show();
+    $('form.tempView input[name="view[viewFilters]"]')
+        .val($.json.serialize(tempView.viewFilters));
+    blistGridNS.isTempView = true;
+};
+
+blist.blistGrid.clearTempView = function()
+{
+    blistGridNS.filterCount--;
+    if (blistGridNS.filterCount > 0)
+    {
+        return;
+    }
+
+    $('.tabList .filter.tempViewTab').removeClass('active').hide();
+    $('.tabList .origView').addClass('active').removeClass('origView');
+    $('#infoPane').show();
+    $('.headerBar li:has(#mainMenuLink)').show();
+    $('#tempInfoPane').hide();
+    blistGridNS.isTempView = false;
+};
+
+blist.blistGrid.newViewCreated = function($iEdit, responseData)
+{
+    blistGridNS.isTempView = false;
+    window.location = responseData.url;
 };
 
 /* Update the column summary data as appropriate via Ajax */
@@ -838,10 +882,25 @@ $(function ()
 
     // Wire up the hover behavior in the info pane.
     $("#infoPane .selectableList, #infoPane .gridList").blistListHoverItems();
-    $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
+    $(".infoContent dl.actionList, #infoPane .infoContentHeader")
+        .infoPaneItemHighlight();
+    // We want the item pane highlight, but not the click selector;
+    //  so pass it a dummy ID
+    $('#tempInfoPane .infoContentHeader').infoPaneItemHighlight(
+        {clickSelector: '#n/a'});
 
     $("#infoPane .editItem").infoPaneItemEdit({
         submitSuccessCallback: blistGridNS.infoEditCallback});
+    $("#tempInfoPane .inlineEdit").inlineEdit({
+        displaySelector: '.itemContent span',
+        editClickSelector: '.itemContent span, .itemActions',
+        submitSuccessCallback: blistGridNS.newViewCreated});
+    $(".tabList .tempViewTab.inlineEdit").inlineEdit({
+        submitSuccessCallback: blistGridNS.newViewCreated});
+    // When they are not logged in and try to submit a create, first disable
+    //  isTempView so they aren't prompted when they hit Login
+    $('#tempInfoPane form.doFullReq, .tabList .tempViewTab form.doFullReq')
+        .submit(function (e) { blistGridNS.anonLeaving = true; });
 
     $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
 
@@ -900,4 +959,18 @@ $(function ()
     }
 
     $(".favoriteAction a").click( blistGridNS.favoriteActionClick );
+
+    window.onbeforeunload = function ()
+    {
+        if (blistGridNS.anonLeaving)
+        {
+            blistGridNS.anonLeaving = false;
+            return 'Saving a view requires you to be logged in.' +
+                '  You will be redirected to the login page.';
+        }
+        else if (blistGridNS.isTempView)
+        {
+            return 'You will lose your temporary filter.';
+        }
+    };
 });

@@ -269,7 +269,8 @@ form.search.large input.submit
     background-position: right -104px;
 }
 
-.tabList a
+.tabList a,
+.tabList .innerWrapper
 {
   background-color: #bdbdbd;
   color: #333;
@@ -282,7 +283,8 @@ form.search.large input.submit
   float: left;
 }
 
-.tabList li.even a
+.tabList li.even a,
+.tabList li.even .innerWrapper
 {
     background-color: #cacaca;
 }
@@ -328,7 +330,8 @@ form.search.large input.submit
 #directories .tabList li.directories a,
 #solution .tabList li.solution a,
 #contact .tabList li.contact a,
-.tabList li.active a
+.tabList li.active a,
+.tabList li.active .innerWrapper
 {
     background-color: #ffffff;
     font-weight: bold;

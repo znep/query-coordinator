@@ -79,10 +79,12 @@ body#lensBody
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
     background-position: right -78px;
+    height: 26px;
     padding: 0 18px;
 }
 
-#lensContainer .tabList li.main a
+#lensContainer .tabList li.main a,
+#lensContainer .tabList li.main .innerWrapper
 {
     height: 20px;
     min-width: 6em;
@@ -153,20 +155,22 @@ body#lensBody
     padding: 3px 14px 0;
 }
 
-#lensContainer .tabList li.filter.active a
+#lensContainer .tabList li.filter.active a,
+#lensContainer .tabList li.filter.active .innerWrapper
 {
   height: 18px;
-  padding: 5px 1em 0 20px;
+  padding: 5px 1em 0 23px;
 }
 
-#lensContainer .tabList li.filter a
+#lensContainer .tabList li.filter a,
+#lensContainer .tabList li.filter .innerWrapper
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
-    background-position: 0 -531px;
+    background-position: 0 -529px;
     background-repeat: no-repeat;
     min-width: 5em;
     max-width: 15em;
-    padding-left: 20px;
+    padding-left: 23px;
     overflow: hidden;
     text-align: left;
 }
@@ -253,7 +257,7 @@ body#lensBody
 
 #lensContainer .headerBar .separator
 {
-    border-left: 2px solid #e8e8e8;
+    border-right: 2px solid #e8e8e8;
 }
 
 #lensBody .headerBar .linkIcon
@@ -950,4 +954,36 @@ body#lensBody
     left: 0;
     position: relative;
     top: 0;
+}
+
+/* Special temp view styling */
+#tempInfoPane,
+#lensContainer .tabList .filter.tempViewTab
+{
+    display: none;
+}
+
+#lensContainer .tabList li.filter.tempViewTab div.innerWrapper
+{
+    cursor: pointer;
+    height: 23px;
+    padding-top: 0;
+}
+
+#lensContainer .tabList .filter.tempViewTab .innerWrapper span
+{
+    display: block;
+    padding-top: 5px;
+}
+
+#lensContainer .tabList .filter.tempViewTab form
+{
+    padding-top: 1px;
+}
+
+#lensContainer .tabList .filter.tempViewTab form input[type="text"]
+{
+    font-size: 1em;
+    line-height: 1em;
+    padding-top: 1px;
 }

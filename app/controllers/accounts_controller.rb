@@ -63,7 +63,7 @@ class AccountsController < ApplicationController
         end
       end
 
-      redirect_back_or_default(root_path)
+      redirect_back_or_default(home_path)
     else
       flash[:warning] = "We were able to create your account, but couldn't log you in."
       redirect_to login_path

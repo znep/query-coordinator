@@ -635,8 +635,11 @@ blist.namespace.fetch('blist.data');
         /**
          * Remove rows from the model.
          */
-        this.remove = function(rows) {
-            for (var row in rows) {
+        this.remove = function(rows)
+        {
+            for (var i = 0; i < rows.length; i++)
+            {
+                var row = rows[i];
                 var id = row.id || row[0];
                 var index = lookup[id];
                 if (index)
@@ -660,7 +663,9 @@ blist.namespace.fetch('blist.data');
                         }
                     }
                 }
+                this.unselectRow(row);
             }
+            installIDs();
             $(listeners).trigger('row_remove', [ rows ]);
         }
 
@@ -725,7 +730,7 @@ blist.namespace.fetch('blist.data');
         this.dataLength = function(id)
         {
             return $.grep(active, function(row, i)
-                { return row._special; }, true).length;
+                { return row.level < 0; }, true).length;
         };
 
         this.selectedRows = {};
@@ -744,6 +749,11 @@ blist.namespace.fetch('blist.data');
 
         this.selectRow = function(row, suppressChange)
         {
+            if (row.level < 0)
+            {
+                return;
+            }
+
             var rowId = row.id || row[0];
             this.selectedRows[rowId] = activeLookup[rowId];
             if (!suppressChange)
@@ -810,7 +820,7 @@ blist.namespace.fetch('blist.data');
             for (var i = minIndex; i <= maxIndex; i++)
             {
                 var curRow = active[i];
-                if (!curRow._special)
+                if (!(curRow.level < 0))
                 {
                     this.selectedRows[curRow.id || curRow[0]] = i;
                     changedRows.push(curRow);
@@ -1381,7 +1391,9 @@ blist.namespace.fetch('blist.data');
 
         // Apply filtering, grouping, and sub-row expansion to the active set.  This applies current settings to the
         // active set and then notifies listeners of the data change.
-        var configureActive = function(filterSource) {
+        var configureActive = function(filterSource)
+        {
+            var activeOnly = active != rows;
             removeSpecialRows();
             var idChange;
             if (filterFn) {
@@ -1397,7 +1409,7 @@ blist.namespace.fetch('blist.data');
                 idChange = true;
             }
             if (idChange)
-                installIDs(true);
+                installIDs(activeOnly);
             dataChange();
         }
 

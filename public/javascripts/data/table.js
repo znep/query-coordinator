@@ -497,7 +497,7 @@
             }
         };
 
-        var onCellClick = function(event)
+        var onCellClick = function(event, origEvent)
         {
             var cell = findCell(event);
             if (cell)
@@ -525,13 +525,13 @@
                 // Notify listeners
                 var cellEvent = $.Event('cellclick');
                 $this.trigger(cellEvent, [ row, column, event ]);
-                if (!cellEvent.isDefaultPrevented())
+                if (!cellEvent.isDefaultPrevented() && !(row.level < 0))
                 {
-                    if (event.metaKey) // ctrl/cmd key
+                    if (origEvent.metaKey) // ctrl/cmd key
                     {
                         model.toggleSelectRow(row);
                     }
-                    else if (event.shiftKey)
+                    else if (origEvent.shiftKey)
                     {
                         model.selectRowsTo(row);
                     }
@@ -1398,31 +1398,42 @@
             var unusedRows = $.extend({}, renderedRows);
             var html = [];
             var rowsToLoad = [];
-            for (var i = start; i < stop; i++) {
+            for (var i = start; i < stop; i++)
+            {
                 var row = rows[i];
-                if (typeof row == 'object') {
+                if (typeof row == 'object')
+                {
                     // Loaded row -- render immediately
                     var rowID = row.id || row[0];
                     if (unusedRows[rowID] && rowIndices[rowID] == i)
+                    {
                         // Keep the existing row
                         delete unusedRows[rowID];
-                    else {
+                    }
+                    else
+                    {
                         // Add a new row
                         rowRenderFn(html, i, row);
                         rowIndices[rowID] = i;
                     }
-                } else
+                }
+                else
+                {
                     // Unloaded row -- record for load request
                     rowsToLoad.push(row);
+                }
             }
-            appendRows(html.join(''));
 
             // Destroy the rows that are no longer visible
-            for (var unusedID in unusedRows) {
+            for (var unusedID in unusedRows)
+            {
                 row = unusedRows[unusedID];
                 row.parentNode.removeChild(row);
                 delete renderedRows[unusedID];
             }
+
+            // Now add new/moved rows
+            appendRows(html.join(''));
 
             // Bind scroll handlers
             scrolls.unbind("scroll", onScroll);

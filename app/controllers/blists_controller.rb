@@ -156,7 +156,7 @@ class BlistsController < SwfController
       result = View.delete(blist_id)
 
       respond_to do |format|
-        format.data { render :text => "deleted" }
+        format.data { render :text => blist_id }
       end
   end
 

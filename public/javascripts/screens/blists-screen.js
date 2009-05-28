@@ -11,7 +11,7 @@ blist.myBlists.ownedByGroupFilterGen = function(group)
         }
         return false;
     }
-}
+};
 
 blist.myBlists.sharedByGroupFilterGen = function(group)
 {
@@ -25,20 +25,20 @@ blist.myBlists.sharedByGroupFilterGen = function(group)
         }
         return false;
     }
-}
+};
 
 blist.myBlists.ownedByFilterGen = function(userId)
 {
     return function(view) {
         return view.owner.id == userId;
     };
-}
+};
 
 blist.myBlists.sharedToMeFilter = function(view)
 {
     return view.owner.id != myBlistsNS.currentUserId &&
         $.inArray("shared", view.flags) != -1;
-}
+};
 
 blist.myBlists.sharedToFilterGen = function(userId)
 {
@@ -51,7 +51,7 @@ blist.myBlists.sharedToFilterGen = function(userId)
         }
         return false;
     };
-}
+};
 
 blist.myBlists.sharedWithGroupFilterGen = function(groupId)
 {
@@ -64,7 +64,7 @@ blist.myBlists.sharedWithGroupFilterGen = function(groupId)
         }
         return false;
     };
-}
+};
 
 blist.myBlists.sharedByFilterGen = function(userId)
 {
@@ -93,7 +93,7 @@ blist.myBlists.sharedByFilterGen = function(userId)
         }
         return false;
     };
-}
+};
 
 blist.myBlists.defaultFilter = function(view)
 {
@@ -102,7 +102,7 @@ blist.myBlists.defaultFilter = function(view)
         return true;
     }
     return false;
-}
+};
 
 blist.myBlists.filterFilter = function(view)
 {
@@ -111,7 +111,7 @@ blist.myBlists.filterFilter = function(view)
         return true;
     }
     return false;
-}
+};
 
 blist.myBlists.untaggedFilter = function(view)
 {
@@ -120,7 +120,7 @@ blist.myBlists.untaggedFilter = function(view)
         return true;
     }
     return false;
-}
+};
 
 blist.myBlists.taggedFilter = function(view)
 {
@@ -129,7 +129,7 @@ blist.myBlists.taggedFilter = function(view)
         return true;
     }
     return false;
-}
+};
 
 blist.myBlists.tagFilterGen = function(tag)
 {
@@ -141,7 +141,7 @@ blist.myBlists.tagFilterGen = function(tag)
         }
         return false;
     };
-}
+};
 
 blist.myBlists.favoriteFilter = function(view)
 {
@@ -150,7 +150,7 @@ blist.myBlists.favoriteFilter = function(view)
         return true;
     }
     return false;
-}
+};
 
 blist.myBlists.filterGen = function(type, argument, callback)
 {
@@ -207,18 +207,19 @@ blist.myBlists.filterGen = function(type, argument, callback)
         case 'tag':
             return callback(myBlistsNS.tagFilterGen(argument));
     }
-}
+};
 
 blist.myBlists.renameClick = function (event)
 {
     event.preventDefault();
 
-    var rowId = $a.closest(".blistItemMenu").attr("id").replace("itemMenu-", "")
-    $currentCell = $("#name-cell-" + rowId).parent();
+    var rowId = $(this).closest(".blistItemMenu")
+        .attr("id").replace("itemMenu-", "");
+    var $currentCell = $("#name-cell-" + rowId).parent();
 
     // Hide all other forms in td.names.
     myBlistsNS.closeRenameForms();
-    
+
     $currentCell.closest(".blist-tr").addClass("highlight");
 
     $currentCell.find("div").hide();
@@ -228,13 +229,13 @@ blist.myBlists.renameClick = function (event)
     {
         if (event.keyCode == 27) myBlistsNS.closeRenameForms();
     });
-    $form.show().find("input[type='text']").width($form.width() - 20).focus().select();
+    $form.show().find(":text").width($form.width() - 20).focus().select();
 };
 
 blist.myBlists.closeRenameForms = function()
 {
     var $this = $("#blist-list");
-    var $allNameCells = $this.find("div.blist-list-c3");
+    var $allNameCells = $this.find("div.blist-td.blist-list-c3");
     $allNameCells.closest(".blist-tr").removeClass("highlight");
     $allNameCells.find("form").hide();
     $allNameCells.find("div").show();
@@ -259,12 +260,14 @@ blist.myBlists.renameSubmit = function(event)
         success: function(responseData)
         {
             $form.hide();
-            $form.closest(".blist-td").find("div").show().find("a").text(responseData.name);
-            $form.closest(".blist-tr").removeClass("highlight");
-            
+            var row = myBlistsNS.model.getByID(responseData.id);
+            row.name = responseData.name;
+            myBlistsNS.model.change([row]);
+
             // Update the info pane.
             $.Tache.DeleteAll();
-            $("#infoPane h2.panelHeader a[href*='" + responseData.id + "']").text(responseData.name);
+            $("#infoPane h2.panelHeader a[href*='" + responseData.id + "']")
+                .text(responseData.name);
         }
     });
 };
@@ -432,10 +435,10 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 var blistsBarNS = blist.namespace.fetch('blist.myBlists.sidebar');
 
 blist.myBlists.sidebar.defaultFilter = function() { return true; };
-blist.myBlists.sidebar.filterCallback = function(fn) 
+blist.myBlists.sidebar.filterCallback = function(fn)
 {
     myBlistsNS.model.filter(fn);
-}
+};
 
 blist.myBlists.sidebar.initializeHandlers = function ()
 {
@@ -549,7 +552,7 @@ blist.myBlists.customDatasetName = function(value)
     var form = '\'<form action="/\' + $.urlSafe(row.category || "dataset") + \'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" ' +
       'class="noselect" method="post">' + 
       '<input name="authenticity_token" type="hidden" value="' + form_authenticity_token + '"/>' + 
-      '<input id="view_\'+ row.id + \'_name" name="view_\' + row.id + \'[name]" type="text" value="\' + $.urlSafe(' + value + ') + \'"/>' +
+      '<input id="view_\'+ row.id + \'_name" name="view_\' + row.id + \'[name]" type="text" value="\' + $.htmlEscape(' + value + ') + \'"/>' +
       '<input src="/images/submit_button_mini.png" title="Rename" type="image" />' +
     '</form>\'';
 
@@ -577,7 +580,7 @@ blist.myBlists.listDropdown = function()
         });
         $div.data('menu-applied', true);
     }
-}
+};
 
 blist.myBlists.customHandle = function(value, column) {
     var menu = "<ul class='blistItemMenu menu' id='itemMenu-\"+" + value + "+\"'>\
@@ -592,16 +595,18 @@ blist.myBlists.customHandle = function(value, column) {
             <span class='highlight'>Add to favorites</span>\
           </a>\
         </li>\
+        \" + ((row.owner.id == '" + myBlistsNS.currentUserId + "') ? \"\
         <li class='rename renameLink'>\
           <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Rename'>\
             <span class='highlight'>Rename</span>\
           </a>\
         </li>\
         <li class='delete'>\
-          <a href='#delete' title='Delete'>\
+          <a href='/blists/\"+" + value + "+\"' class='deleteLink' title='Delete'>\
             <span class='highlight'>Delete</span>\
           </a>\
         </li>\
+        \" : '') + \"\
         <li class='footer'>\
           <div class='outerWrapper'>\
             <div class='innerWrapper'/>\
@@ -632,20 +637,24 @@ blist.myBlists.favoriteClick = function(row)
     myBlistsNS.model.change([row]);
 };
 
-// TODO: Needs updating?
 blist.myBlists.deleteClick = function (event)
 {
     event.preventDefault();
 
-    $this = $(this);
-    var origHref = $this.find("a").attr("href");
+    if (!confirm('This view will be deleted permanently.'))
+    {
+        return;
+    }
+
+    var origHref = $(this).attr("href");
 
     $.ajax({
         url: origHref,
         type: "DELETE",
         success: function(responseText, textStatus)
         {
-            $this.closest("tr.item").remove();
+            var row  = myBlistsNS.model.getByID(responseText);
+            myBlistsNS.model.remove([row]);
         }
     });
 };
@@ -663,12 +672,13 @@ blist.myBlists.listCellClick = function(event, row, column, origEvent)
             myBlistsNS.favoriteClick(row);
             break;
     }
-}
+};
 
 blist.myBlists.translateViewJson = function(views)
 {
     for (var i = 0; i < views.length; i++) {
         var view = views[i];
+        view.level = 0;
         view.favorite = view.flags && $.inArray("favorite", view.flags) != -1;
         view.isDefault = view.flags && $.inArray("default", view.flags) != -1;
         view.ownerName = view.owner && view.owner.displayName;
@@ -676,7 +686,7 @@ blist.myBlists.translateViewJson = function(views)
             view.updatedAt = view.createdAt;
     }
     return {rows: views}
-}
+};
 
 blist.myBlists.initializeGrid = function()
 {
@@ -686,19 +696,16 @@ blist.myBlists.initializeGrid = function()
         .bind('cellclick', myBlistsNS.listCellClick)
         .blistModel();
 
-    $('#blist-list .blist-dropdown-container').live('mouseover', myBlistsNS.listDropdown);
-    $('.favoriteLink').live('mouseover', function() {
-        var $a = $(this);
-        // Unbind any old listeners to the click event.
-        $a.unbind('click');
-
-        // When clicking on the menu item, do a favorite ajax request instead.
-        $a.bind('click', function(event) {
-            event.preventDefault();
-            var rowId = $a.closest(".blistItemMenu").attr("id").replace("itemMenu-", "")
-            var row = myBlistsNS.model.getByID(rowId);
-            myBlistsNS.favoriteClick(row);
-        });
+    $('#blist-list .blist-dropdown-container')
+        .live('mouseover', myBlistsNS.listDropdown);
+    $('.favoriteLink').live('click', function(event)
+    {
+        // When clicking on the menu item, do a favorite ajax request
+        event.preventDefault();
+        var rowId = $(this).closest(".blistItemMenu")
+            .attr("id").replace("itemMenu-", "")
+        var row = myBlistsNS.model.getByID(rowId);
+        myBlistsNS.favoriteClick(row);
     });
 
     var applyFilter = function() {
@@ -722,33 +729,25 @@ blist.myBlists.initializeGrid = function()
 
     $('.blist-td form').live("submit", myBlistsNS.renameSubmit);
 
-    $('.renameLink').live('mouseover', function() {
-        $a = $(this);
-        // Unbind any old listeners
-        $a.unbind('click');
+    $('.renameLink').live('click', myBlistsNS.renameClick);
 
-        $a.bind('click', myBlistsNS.renameClick);
-    });
+    $('.deleteLink').live('click', myBlistsNS.deleteClick);
 
     // Configure columns for the view list
     myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});
     // Set up initial sort
     myBlistsNS.model.sort(6, true);
 
-    $('#blist-list').bind('load', function()
-        {
-            blistsInfoNS.updateSummary();
-        })
-        .bind('selection_change', function()
-        {
-            blistsInfoNS.updateSummary();
-        });
+    $('#blist-list').bind('load', blistsInfoNS.updateSummary)
+        .bind('selection_change', blistsInfoNS.updateSummary)
+        .bind('row_remove', blistsInfoNS.updateSummary);
 
-    // Install a translator that tweaks the view objects so they're more conducive to grid display
+    // Install a translator that tweaks the view objects so they're more
+    // conducive to grid display
     myBlistsNS.model.translate(myBlistsNS.translateViewJson);
 
     myBlistsNS.model.ajax({url: myBlistsNS.viewUrl, cache: false });
-}
+};
 
 blist.myBlists.columns = [[
   { width: 18, dataIndex: 'id', dataLookupExpr: '.id',
@@ -789,7 +788,7 @@ $(function() {
     myBlistsNS.itemMenuSetup();
 
     // Fit everything to the screen properly
-    $(window).resize(function (event) 
+    $(window).resize(function (event)
     {
         commonNS.adjustSize();
         $('#blist-list').trigger('resize');

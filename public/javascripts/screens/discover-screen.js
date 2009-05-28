@@ -165,7 +165,6 @@ $(function ()
         }
     });
     
-    $("#splashModal").jqmShow();
     $("#splashModal .closeContainer a").live("click", function(event)
     {
         event.preventDefault();
@@ -197,5 +196,38 @@ $(function ()
         }
     });
     
+    $("#redirectedModal").jqm({
+        trigger: false,
+        onShow: function(hash)
+        {
+            var $modal = hash.w;
+            $.Tache.Get({ 
+                url: "/discover/redirected",
+                success: function(data)
+                {
+                    $modal.html(data).show();
+                }
+            });
+        }
+    });
+    $("#redirectedModal .closeContainer a").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#redirectedModal").jqmHide();
+    });
     
+    var re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
+    var ref_host = "";
+    if (document.referrer.match(re) && document.referrer.match(re)[1])
+    {
+        ref_host = document.referrer.match(re)[1].toString();
+    }
+    if (ref_host.indexOf("blist") != -1)
+    {
+        $("#redirectedModal").jqmShow();
+    }
+    else
+    {
+        $("#splashModal").jqmShow();
+    }
 });

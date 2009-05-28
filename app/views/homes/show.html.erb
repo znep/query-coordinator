@@ -17,7 +17,7 @@
             <ul class="actionButtons clearfix">
               <li><a href="<%= blist_href_new_blist %>">New <%= t(:blist_name).titleize %></a></li>
               <li><%= link_to("Upload Data", {:controller => "imports", :action => "new"}, :class => 'arrowButton', :title => "Upload a CSV or XML data file and we'll convert it into a #{t(:blist_name)}.") %> </li>
-              <li><%= link_to("Browse #{t(:blists_name).titleize}", discover_url) %></li>
+              <li><%= link_to("Browse #{t(:blists_name).titleize}", discover_path) %></li>
               <%- if false -%><li class="last"><a href="#">Invite Others</a></li><%- end -%>
             </ul>
             
@@ -32,7 +32,7 @@
                   <%= render( :partial => "blist_activity_list_item", 
                               :collection => @recently_opened_blists) %>
                 </ul>
-                <p class="listAction"><%= link_to("View All", blists_url) %></p>
+                <p class="listAction"><%= link_to("View All", blists_path) %></p>
               </div>
             <%- end -%>
             
@@ -43,7 +43,7 @@
                   <%= render( :partial => "blist_activity_list_item", 
                               :collection => @favorite_blists) %>
                 </ul>
-                <p class="listAction"><%= link_to("View All", blists_url) %></p>
+                <p class="listAction"><%= link_to("View All", blists_path) %></p>
               </div>
             <%- end -%>
             
@@ -54,7 +54,7 @@
                   <%= render( :partial => "contact_activity_list_item", 
                               :collection => @contacts_activities) %>
                 </ul>
-                <p class="listAction"><%= link_to("View All", activities_community_url) %></p>
+                <p class="listAction"><%= link_to("View All", activities_community_path) %></p>
               </div>
             <%- end -%>
             

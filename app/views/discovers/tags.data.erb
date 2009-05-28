@@ -6,7 +6,7 @@
     <p>
       <%- @tag_list.each do |tag| -%>
         <%= link_to(h(tag.name), 
-            filter_discover_url({ 
+            filter_discover_path({ 
               :type => @type, :filter => @current_filter, :tag => tag.name }),
               :class => "filterLink", :rel => tag.frequency ) %>
       <%- end -%>

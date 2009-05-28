@@ -13,7 +13,7 @@
   <div id='lensContainer' class='mainContent tableView'>
     <ul class='tabList'>
       <li class='backLink'><a title='Back to <%= t :blists_name %>'
-        href='<%= blists_url() %>'>Back to <%= t :blists_name %></a></li>
+        href='<%= blists_path() %>'>Back to <%= t :blists_name %></a></li>
       <li class='main even <%= @is_child_view ? '' : 'active' %>'>
         <div class='wrapper'>
           <a class='clipText'
@@ -36,7 +36,7 @@
       <li class='tempViewTab filter inlineEdit'><div class='wrapper'>
         <div class='innerWrapper'>
           <span title='Click to name and save your filtered view'>[Temp View]</span>
-          <%- form_tag(blists_url, :class => ('tempView' +
+          <%- form_tag(blists_path, :class => ('tempView' +
             (current_user.nil? ? ' doFullReq' : ''))) do -%>
           <%= hidden_field_tag("view[originalViewId]", @view.id) %>
           <%= hidden_field_tag("view[viewFilters]",
@@ -150,19 +150,19 @@
               <ul class="socialActions clearfix">
                 <%- 
                   tweet = CGI::escape("Check out the #{h(@view.name)} dataset on #{t(:blist_company)} - ")
-                  seo_url = "#{request.protocol + request.host_with_port + @view.href}"
+                  seo_path= "#{request.protocol + request.host_with_port + @view.href}"
                 -%>
                 <li><%= link_to(image_tag("icons/social_icon_delicious_small.png", :size => "20x20", :alt => "Delicious"), 
-                        "http://del.icio.us/post?url=#{seo_url}&title=#{h(@view.name)}",
+                        "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}",
                         :title => "Bookmark this on Delicious", :rel => "external") %></li>
                 <li><%= link_to(image_tag("icons/social_icon_digg_small.png", :size => "20x20", :alt => "Digg"), 
-                        "http://digg.com/submit?phase=2&url=#{seo_url}&title=#{h(@view.name)}",
+                        "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}",
                         :title => "Digg this", :rel => "external") %></li>
                 <li><%= link_to(image_tag("icons/social_icon_twitter_small.png", :size => "20x20", :alt => "Twitter"), 
-                        "http://www.twitter.com/home?status=#{tweet + seo_url}",
+                        "http://www.twitter.com/home?status=#{tweet + seo_path}",
                         :title => "Tweet this", :rel => "external") %></li>
                 <li><%= link_to(image_tag("icons/social_icon_facebook_small.png", :size => "20x20", :alt => "Facebook"), 
-                        "http://www.facebook.com/share.php?u=#{h(seo_url)}",
+                        "http://www.facebook.com/share.php?u=#{h(seo_path)}",
                         :title => "Share with your friends on Facebook", :rel => "external") %></li>
               </ul>
             </li>
@@ -307,7 +307,7 @@
                 <span title='Click to name and save your filtered view'>
                   [Temp View]
                 </span>
-                <%- form_tag(blists_url, :class => ('tempView' +
+                <%- form_tag(blists_path, :class => ('tempView' +
                   (current_user.nil? ? ' doFullReq' : ''))) do -%>
                 <%= hidden_field_tag("view[originalViewId]", @view.id) %>
                 <%= hidden_field_tag("view[viewFilters]",
@@ -315,7 +315,7 @@
                 <%= text_field_tag("view[name]", '') %>
                 <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
                 <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),
-                blists_url, :title => "Cancel", :class => "formCancelLink") %>
+                blists_path, :title => "Cancel", :class => "formCancelLink") %>
                 <%- end -%>
               </div>
               <div class="itemActions">

@@ -74,19 +74,19 @@
                         <li>
                           <%- if (@user.my_friend?) -%>
                             <%= link_to("Remove as Friend", 
-                                        delete_friend_profile_url, 
+                                        delete_friend_profile_path, 
                                           :class => "arrowButton", 
                                           :title => "Remove as Friend") %>
                           <%- else -%>
                             <%= link_to("Add as Friend", 
-                                        create_friend_profile_url, 
+                                        create_friend_profile_path, 
                                           :class => "arrowButton", 
                                           :title => "Add as Friend") %>
                           <%- end -%>
                         </li>
                       </ul>
                     <%- end -%>
-                    <p><%= link_to("Go to #{t(:blist_company)} community", community_url, :class => "action") %></p>
+                    <p><%= link_to("Go to #{t(:blist_company)} community", community_path, :class => "action") %></p>
                   </div>
                 <%- end -%>
                 
@@ -96,7 +96,7 @@
                 <div class="sectionEdit formListBox">
                   <div class="formListBoxTL"><div class="formListBoxTR">
                   <div class="formListBoxBL"><div class="formListBoxBR">
-                    <% form_tag(profile_url(@user.id), :class => "clearfix") do %>
+                    <% form_tag(profile_path(@user.id), :class => "clearfix") do %>
                       <dl class="clearfix">
                         <dt>Name Display</dt>
                         <dd>
@@ -186,7 +186,7 @@
               <div class="sectionEdit formListBox">
                 <div class="formListBoxTL"><div class="formListBoxTR">
                 <div class="formListBoxBL"><div class="formListBoxBR">
-                  <% form_tag(profile_url(@user.id), :class => "clearfix") do %>
+                  <% form_tag(profile_path(@user.id), :class => "clearfix") do %>
                     <dl class="clearfix">
                       <dt><label for="user_description">Description</label></dt>
                       <dd>
@@ -220,7 +220,7 @@
               <div class="sectionEdit formListBox">
                 <div class="formListBoxTL"><div class="formListBoxTR">
                 <div class="formListBoxBL"><div class="formListBoxBR">
-                  <% form_tag(profile_url(@user.id), :class => "clearfix") do %>
+                  <% form_tag(profile_path(@user.id), :class => "clearfix") do %>
                     <dl class="clearfix">
                       <dt><label for="user_interests">Interests</label></dt>
                       <dd>
@@ -282,7 +282,7 @@
                       </table>
                     </div>
                     <div class="editLinksContainer">
-                      <% form_tag(create_link_profile_url(@user.id), :method => :post, :class => "clearfix") do %>
+                      <% form_tag(create_link_profile_path(@user.id), :method => :post, :class => "clearfix") do %>
                         <table cellspacing="0">
                           <colgroup>
                             <col class="edit_handle" />

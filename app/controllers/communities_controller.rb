@@ -107,7 +107,7 @@ class CommunitiesController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { redirect_to(community_url(params)) }
+      format.html { redirect_to(community_path(params)) }
       format.data { 
         if (@filtered_members.length > 0)
           render(:partial => "communities/member_list_tab", 

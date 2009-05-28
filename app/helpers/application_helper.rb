@@ -105,7 +105,7 @@ module ApplicationHelper
   end
 
   def blist_href_new_blist
-    blist_url('new_blist')
+    blist_path('new_blist')
   end
 
   def sidebar_filter_link(content, params, current_params, is_default = false)

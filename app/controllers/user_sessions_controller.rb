@@ -26,6 +26,6 @@ class UserSessionsController < ApplicationController
       current_user_session.destroy
     end
     flash[:notice] = "You have been logged out"
-    redirect_to(login_url)
+    redirect_to(login_path)
   end
 end

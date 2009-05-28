@@ -1,14 +1,14 @@
 <ul class='tabList'>
   <li class='home even'><div class='wrapper'>
-    <%= link_to 'Home', home_url %>
+    <%= link_to 'Home', home_path %>
   </div></li>
   <li class='blists'><div class='wrapper'>
-    <%= link_to t(:blists_name).titleize, blists_url %>
+    <%= link_to t(:blists_name).titleize, blists_path %>
   </div></li>
   <li class='contacts even'><div class='wrapper'>
-    <%= link_to 'Friends', contacts_url %>
+    <%= link_to 'Friends', contacts_path %>
   </div></li>
   <li class='profile'><div class='wrapper'>
-    <%= link_to "Profile", profile_url(current_user.id) %>
+    <%= link_to "Profile", profile_path(current_user.id) %>
   </div></li>
 </ul>

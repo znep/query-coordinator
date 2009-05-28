@@ -4,10 +4,10 @@
   <div class="memberImage">
     <%= link_to(
           image_tag(member.profile_image_path("medium"), :size => "65x65",
-          :alt => h(member.displayName)), profile_url(member.id)) %>
+          :alt => h(member.displayName)), profile_path(member.id)) %>
   </div>
   <div class="memberInfo">
-    <h3 class="clipText"><%= link_to(h(member.displayName), profile_url(member.id), :title => h(member.displayName)) %></h3>
+    <h3 class="clipText"><%= link_to(h(member.displayName), profile_path(member.id), :title => h(member.displayName)) %></h3>
     <ul>
       <li><%= h(member.displayLocation) %></li>
       <li><%= h(member.company) %></li>
@@ -35,16 +35,16 @@
           <li>
             <%- if (member.my_friend?) -%>
               <%= link_to("<span>Remove</end>", 
-                          delete_friend_profile_url(member.id), 
+                          delete_friend_profile_path(member.id), 
                           :class=> "followAction", :title => "Remove as Friend") %>
             <%- else -%>
               <%= link_to("<span>Add Friend</span>", 
-                          create_friend_profile_url(member.id), 
+                          create_friend_profile_path(member.id), 
                           :class=> "followAction", :title => "Add Friend") %>
             <%- end -%>
           </li>
         <%- end -%>
-        <li class="last"><%= link_to("<span>Profile</span>", profile_url(member.id), :class => "arrowButton") %></li>
+        <li class="last"><%= link_to("<span>Profile</span>", profile_path(member.id), :class => "arrowButton") %></li>
       </ul>
     </div>
   </div>

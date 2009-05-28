@@ -1,4 +1,10 @@
+<%-
+# Local used set the currently selected item: selected
+# Possible values: socrata, government
+socrata_class = selected == "socrata" ? "selected" : ""
+government_class = selected == "government" ? "selected" : ""
+-%>
 <ul id="sub-nav" class="clearfix">
-    <li><a href="/about">Socrata Overview</a></li>
-    <li><a href="/about/federal-government-overview">Federal Government Overview</a></li>
+    <li><a href="/about" class="<%= socrata_class %>">Socrata Overview</a></li>
+    <li><a href="/about/federal-government-overview" class="<%= government_class %>">Federal Government Overview</a></li>
 </ul>

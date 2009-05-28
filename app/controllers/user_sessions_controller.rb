@@ -13,7 +13,7 @@ class UserSessionsController < ApplicationController
     @body_id = 'login'
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
-      redirect_back_or_default(:controller => :homes, :action => :show)
+      redirect_back_or_default(home_path)
     else
       flash[:notice] = "Unable to login with that username and password;" +
         " please try again"

@@ -125,3 +125,10 @@
 {
     margin-top: 1em;
 }
+
+.redirected_blist_logo
+{
+    position: absolute;
+    right: 110px;
+    top: 25px;
+}

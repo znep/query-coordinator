@@ -297,7 +297,7 @@ form.search.large input.submit
 #overview .tabList li.overview,
 #directories .tabList li.directories,
 #solution .tabList li.solution,
-#contact .tabList li.contact,
+#sales .tabList li.sales,
 .tabList li.active
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
@@ -313,7 +313,7 @@ form.search.large input.submit
 #overview .tabList li.overview .wrapper,
 #directories .tabList li.directories .wrapper,
 #solution .tabList li.solution .wrapper,
-#contact .tabList li.contact .wrapper,
+#sales .tabList li.sales .wrapper,
 .tabList li.active .wrapper
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
@@ -329,7 +329,7 @@ form.search.large input.submit
 #overview .tabList li.overview a,
 #directories .tabList li.directories a,
 #solution .tabList li.solution a,
-#contact .tabList li.contact a,
+#sales .tabList li.sales a,
 .tabList li.active a,
 .tabList li.active .innerWrapper
 {
@@ -343,6 +343,7 @@ form.search.large input.submit
 #blists .tabList li.blists a:hover,
 #contacts .tabList li.contacts a:hover,
 #profile .tabList li.profile a:hover,
+#sales .tabList li.sales a:hover,
 .tabList li.active a:hover
 {
     cursor: default;

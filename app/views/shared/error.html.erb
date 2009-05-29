@@ -3,7 +3,7 @@
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<div id='errorBox' class='dialogBox'>
+<% dialog_content("errorBox") do %>
   <div class='header'>
     <h1>t(:blist_company)</h1>
   </div>
@@ -13,7 +13,7 @@
 
     <%= display_standard_flashes %>
   </div>
-</div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>

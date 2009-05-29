@@ -1270,14 +1270,44 @@ table.gridList tr.filteredOut
 
 /*** START: Dialog boxes ***/
 
+.dialogWrapper
+{
+    margin: 10em auto 0;
+    min-height: 0;
+    width: 40em;
+}
+.dialogTL
+{
+    margin-left: 16px;
+    min-height: 0;
+}
+.dialogBR
+{
+    background: url(/stylesheets/images/content/modal_corner_BR.png) right bottom no-repeat;
+    margin: 0 -10px 0 0;
+    min-height: 0;
+    padding: 0 10px 23px 0;
+}
+.dialogBL
+{
+    background: url(/stylesheets/images/content/modal_corner_BL.png) left bottom no-repeat;
+    margin: 0 0 -23px -16px;
+    min-height: 0;
+    padding: 0 0 23px 16px;
+}
+.dialogOuter
+{
+    background: url(/stylesheets/images/content/modal_right.png) right top repeat-y;
+    margin: 0 -10px 0 -16px;
+    min-height: 0;
+    padding: 0 10px 0 0;
+}
+
 .dialogBox
 {
     background-color: #fff;
-    background-image: url(/stylesheets/images/content/background_corner_bottom_right.png);
-    background-position: bottom right;
-    background-repeat: no-repeat;
-    margin: 10em auto 0;
-    width: 40em;
+    min-height: 0;
+    position: relative;
 }
 
 .dialogBox .header
@@ -1299,9 +1329,6 @@ table.gridList tr.filteredOut
 
 .dialogBox .mainContent
 {
-    background-image: url(/stylesheets/images/content/background_corner_bottom_left.png);
-    background-position: bottom left;
-    background-repeat: no-repeat;
     margin-top: 0;
     padding: 1em;
 }
@@ -1576,7 +1603,7 @@ table.gridList tr.filteredOut
     margin: 0 -11px 0 -16px;
     padding: 0 11px 0 0;
 }
-.modalInner 
+.modalInner
 {
     background-color: #fff;
     min-height: 0;

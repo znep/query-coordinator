@@ -3,7 +3,7 @@
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<div class='dialogBox loginBox'>
+<% dialog_content(nil, "signupBox") do %>
   <div class='header'>
     <h1>t(:blist_company)</h1>
   </div>
@@ -31,7 +31,7 @@
       <p>By signing up, you accept the <a href="/privacy">Privacy Policy</a> and <a href="/terms-of-service">Terms of Service</a> | *Required field</p>
     </div>
   </div>
-</div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>

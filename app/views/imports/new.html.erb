@@ -4,7 +4,7 @@
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<div class="dialogBox">
+<% dialog_content do %>
   <div class="header">
     <h1>Upload a file</h1>
   </div>
@@ -39,7 +39,7 @@
       </div>
     <% end %>
   </div>
-</div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>

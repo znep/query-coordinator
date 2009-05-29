@@ -208,4 +208,15 @@ module ApplicationHelper
       end
     end)
   end
+
+  def meta_tags(meta)
+    meta.reject!{|k,v| v.blank?}
+    meta.map do |key, value|
+      if value.is_a? Array
+        value = value.join(',')
+      end
+      %Q[<meta name="#{key.to_s}" value="#{sanitize(value)}" />]
+    end.join("\n")
+  end
+
 end

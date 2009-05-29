@@ -71,6 +71,13 @@ ActionController::Routing::Routes.draw do |map|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
     end
 
+  map.connect 'profile/:profile_name/:id', :controller => 'profile',
+     :action => 'show', :conditions => { :method => :get },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+   map.connect 'profile/:profile_name/:id', :controller => 'profile',
+     :action => 'update', :conditions => { :method => :put },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+     
   map.connect ':category/:view_name/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,

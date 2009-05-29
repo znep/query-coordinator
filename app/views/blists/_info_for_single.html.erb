@@ -185,7 +185,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><a href="<%= profile_path(view.owner.id) %>"><%= h(view.owner.displayName) %></a></span>
+            <span><a href="<%= view.owner.href %>"><%= h(view.owner.displayName) %></a></span>
           </div>
         </dd>
       </dl>
@@ -369,13 +369,13 @@
                 </td>
                 <td class="name"><div><%= link_to(h(filter.name), filter.href) %></div></td>
                 <td class="description"><div><%= h(filter.description) %></div></td>
-                <td class="picture"><a href='<%= profile_path(filter.owner.id) %>'>
+                <td class="picture"><a href='<%= filter.owner.href %>'>
                     <%= image_tag(filter.owner.profile_image_path,
                     :size => "24x24", :alt => h(filter.owner.displayName)) %>
                 </a></td>
                 <td class="owner">
                   <div class='clipText'>
-                    <a href='<%= profile_path(filter.owner.id) %>'
+                    <a href='<%= filter.owner.href %>'
                       title='<%= h(filter.owner.displayName) %>'>
                       <%= h(filter.owner.displayName) %>
                     </a>
@@ -567,7 +567,7 @@
               %>
               <td class="actionContainer"><div>
                   <%- if s.member_id -%>
-                  <a href="<%= profile_path(s.member_id) %>" class="action"><span>View Profile</span></a>
+                  <a href="<%= User.href(s.member_name, s.member_id) %>" class="action"><span>View Profile</span></a>
                   <%- end -%>
               </div></td>
             </tr>
@@ -639,12 +639,12 @@
               <%- @view_activities.each do |activity| -%>
                 <tr class="item">
                   <td class="when"><div><%= blist_date(activity.createdAt) %></div></td>
-                  <td class="picture"><a href='<%= profile_path(activity.actor.id) %>'>
+                  <td class="picture"><a href='<%= activity.actor.href %>'>
                       <%= image_tag(activity.actor.profile_image_path,
                       :size => "24x24", :alt => h(activity.actor.displayName)) %>
                   </a></td>
                   <td class="who"><div class='clipText'>
-                      <a href="<%= profile_path(activity.actor.id) %>"
+                      <a href="<%= activity.actor.href %>"
                         title='<%= h(activity.actor.displayName) %>'>
                       <%= h(activity.actor.displayName) %>
                     </a>

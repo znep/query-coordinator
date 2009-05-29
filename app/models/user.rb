@@ -25,6 +25,14 @@ class User < Model
 
     dhash.to_json
   end
+  
+  def href
+    "/profile/#{displayName.convert_to_url}/#{id}"
+  end
+  
+  def self.href(member_name, member_id)
+    "/profile/#{member_name.convert_to_url}/#{member_id}"
+  end
 
   def displayScore
     if score.nil?

@@ -17,13 +17,21 @@
             <h3 id='listTitle' class='clipText'
               title='<%= h(@title) %>'><%= h(@title) %></h3>
 
-            <form class="search blistsFind" action='#'>
-              <p>
-                <input type='text' class='textPrompt' name='find'
-                  title='Find' value='' />
-                <input type='image' class='submit' name='findSubmit'
+            <form class='search blistsFind' action='#'>
+              <div class='searchContainer'>
+                <input type='text' class='textPrompt'
+                title='Find in my <%= t(:blists_name) %>' />
+                <div class='actionBox'>
+                  <div class='clearBox'>
+                    <a class='clearSearch' title='Clear Search'
+                      href='#clear_search'>
+                      Clear Search
+                    </a>
+                  </div>
+                  <input type="image" class="submit" name="findSubmit"
                   src="<%= image_path("find_button.png") %>" />
-              </p>
+                </div>
+              </div>
             </form>
 
             <ul class="headerActions">

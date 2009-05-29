@@ -347,8 +347,9 @@
 
             var x = event.clientX;
             var hh, hhm;
-            $('.blist-th:not(.blist-table-ghost), .blist-tdh', container)
-                .each(function() {
+            var $headers = $('.blist-th:not(.blist-table-ghost), .blist-tdh',
+                container);
+            $headers.each(function(i) {
                 var header = $(this);
                 var left = header.offset().left;
                 if (left > x)
@@ -357,8 +358,10 @@
                 var right = left + width;
 
                 var isCtl = header.is('.blist-opener');
-                var isSizable = !isCtl && !header.is('.nested_table');
-                
+                var isSizable = !isCtl && !header.is('.nested_table') &&
+                    !(options.disableLastColumnResize &&
+                        (i == ($headers.length - 1)));
+
                 if (isSizable && x >= right - options.resizeHandleAdjust && x < right + options.resizeHandleAdjust) {
                     hh = header[0];
                     hhm = 2;
@@ -394,6 +397,17 @@
             if (width < MINIMUM_HEADER_SIZE)
                 width = MINIMUM_HEADER_SIZE;
             var col = getColumnForHeader(hotHeader);
+            if (col.hasOwnProperty('percentWidth'))
+            {
+                varDenom -= col.percentWidth;
+                delete col.percentWidth;
+                variableColumns = $.grep(variableColumns, function (c, i)
+                    { return c.dataIndex == col.dataIndex; }, true);
+                if (col.minWidth)
+                {
+                    varMinWidth -= col.minWidth;
+                }
+            }
             col.width = width;
             model.colWidthChange();
         }
@@ -818,6 +832,7 @@
         var handleWidth;
         var openerWidth;
         var varMinWidth;
+        var varDenom;
         var insideWidth;
 
         /**
@@ -921,6 +936,7 @@
             columns = [];
             variableColumns = [];
             varMinWidth = 0;
+            varDenom = 0.0;
             var mcols = model.meta().columns[0];
             for (var i = 0; i < mcols.length; i++)
             {
@@ -930,6 +946,7 @@
                 }, mcol);
                 if (col.hasOwnProperty('percentWidth'))
                 {
+                    varDenom += col.percentWidth;
                     if (col.minWidth)
                     {
                         varMinWidth += col.minWidth;
@@ -949,6 +966,7 @@
                     minWidth: options.ghostMinWidth,
                     ghostColumn: true});
                 varMinWidth += options.ghostMinWidth;
+                varDenom += 100;
             }
             else
             {
@@ -1189,7 +1207,7 @@
                     else
                     {
                         getColumnStyle(c).width = ((c.minWidth || 0) +
-                            ((c.percentWidth / 100.0) * varSize)) + 'px';
+                            ((c.percentWidth / varDenom) * varSize)) + 'px';
                     }
                 }
 
@@ -1546,6 +1564,7 @@
 
     var blistTableDefaults = {
         cellExpandEnabled: true,
+        disableLastColumnResize: false,
         generateHeights: true,
         ghostMinWidth: 20,
         headerMods: function (col) {},

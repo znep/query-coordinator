@@ -4,10 +4,10 @@
   <div class="memberImage">
     <%= link_to(
           image_tag(member.profile_image_path("medium"), :size => "65x65",
-          :alt => h(member.displayName)), profile_path(member.id)) %>
+          :alt => h(member.displayName)), member.href) %>
   </div>
   <div class="memberInfo">
-    <h3 class="clipText"><%= link_to(h(member.displayName), profile_path(member.id), :title => h(member.displayName)) %></h3>
+    <h3 class="clipText"><%= link_to(h(member.displayName), member.href, :title => h(member.displayName)) %></h3>
     <ul>
       <li><%= h(member.displayLocation) %></li>
       <li><%= h(member.company) %></li>
@@ -42,7 +42,7 @@
             <%- end -%>
           </li>
         <%- end -%>
-        <li class="last"><%= link_to("<span>Profile</span>", profile_path(member.id), :class => "arrowButton") %></li>
+        <li class="last"><%= link_to("<span>Profile</span>", member.href, :class => "arrowButton") %></li>
       </ul>
     </div>
   </div>

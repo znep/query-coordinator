@@ -96,7 +96,7 @@
                 <div class="sectionEdit formListBox">
                   <div class="formListBoxTL"><div class="formListBoxTR">
                   <div class="formListBoxBL"><div class="formListBoxBR">
-                    <% form_tag(profile_path(@user.id), :class => "clearfix") do %>
+                    <% form_tag(@user.href, :class => "clearfix") do %>
                       <dl class="clearfix">
                         <dt>Name Display</dt>
                         <dd>
@@ -186,7 +186,7 @@
               <div class="sectionEdit formListBox">
                 <div class="formListBoxTL"><div class="formListBoxTR">
                 <div class="formListBoxBL"><div class="formListBoxBR">
-                  <% form_tag(profile_path(@user.id), :class => "clearfix") do %>
+                  <% form_tag(@user.href, :class => "clearfix") do %>
                     <dl class="clearfix">
                       <dt><label for="user_description">Description</label></dt>
                       <dd>
@@ -220,7 +220,7 @@
               <div class="sectionEdit formListBox">
                 <div class="formListBoxTL"><div class="formListBoxTR">
                 <div class="formListBoxBL"><div class="formListBoxBR">
-                  <% form_tag(profile_path(@user.id), :class => "clearfix") do %>
+                  <% form_tag(@user.href, :class => "clearfix") do %>
                     <dl class="clearfix">
                       <dt><label for="user_interests">Interests</label></dt>
                       <dd>

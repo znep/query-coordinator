@@ -9,6 +9,6 @@
     <%= link_to 'Friends', contacts_path %>
   </div></li>
   <li class='profile'><div class='wrapper'>
-    <%= link_to "Profile", profile_path(current_user.id) %>
+    <%= link_to "Profile", current_user.href %>
   </div></li>
 </ul>

@@ -2,7 +2,7 @@
   <title><%= t(:page_title) %></title>  
 <% end %>
 
-<div class='dialogBox'>
+<% dialog_content do %>
   <div class='header'>
     <h1><%= t(:blist_company) %></h1>
   </div>
@@ -15,4 +15,4 @@
     <p style="font-size: 1.5em">We're sorry, but there was a problem processing your request.
     Please try again in a few moments, or <a href="/contact-us">report this error</a> with the details of what you were trying to do.</p>
   </div>
-</div>
+<% end %>

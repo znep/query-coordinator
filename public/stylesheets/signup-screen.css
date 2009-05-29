@@ -1,19 +1,11 @@
-.signup .loginBox 
+.signup .dialogWrapper
 {
-    background-color: #fff;
-    background-image: url(/stylesheets/images/content/background_corner_bottom_right.png);
-    background-position: bottom right;
-    background-repeat: no-repeat;
     margin: 40px auto 0;
     width: 705px;
 }
 
 .signup .mainContent
 {
-    background-image: url(/stylesheets/images/content/background_corner_bottom_left.png);
-    background-position: bottom left;
-    background-repeat: no-repeat;
-    margin-top: 0;
     padding: 15px;
 }
 

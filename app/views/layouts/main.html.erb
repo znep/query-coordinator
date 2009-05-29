@@ -96,7 +96,7 @@
     </div>
   </div>
 
-  <div id='jqmAlert' class='dialogBox'>
+  <% dialog_content("jqmAlert") do %>
     <div class='header'>
       <h1>Alert</h1>
     </div>
@@ -108,7 +108,7 @@
         <li><a href='#close' class='arrowButton jqmClose'>Close</a></li>
       </ul>
     </div>
-  </div>
+  <% end %>
 
   <%#
   Better to load JS at the bottom:

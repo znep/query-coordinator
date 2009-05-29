@@ -219,4 +219,22 @@ module ApplicationHelper
     end.join("\n")
   end
 
+  def dialog_content(id = nil, inner_class = nil, &block)
+    concat(
+      content_tag(:div, :id => id, :class => "dialogWrapper") do
+        content_tag(:div, :class => "dialogTL") do
+          content_tag(:div, :class => "dialogBR") do
+            content_tag(:div, :class => "dialogBL") do
+              content_tag(:div, :class => "dialogOuter") do
+                content_tag(:div, :class => "dialogBox #{inner_class}") do
+                  capture(&block)
+                end
+              end
+            end
+          end
+        end
+      end
+    )
+  end
+
 end

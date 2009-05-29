@@ -3,7 +3,7 @@
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<div class='dialogBox loginBox'>
+<% dialog_content(nil, "loginBox") do %>
   <div class='header'>
     <h1><%= t(:blist_company) %></h1>
   </div>
@@ -34,7 +34,7 @@
     </div>
     <% end %>
   </div>
-</div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>

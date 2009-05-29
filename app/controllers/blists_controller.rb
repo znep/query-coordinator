@@ -69,6 +69,16 @@ class BlistsController < SwfController
       @view_activities = Activity.find({:viewId => @view.id})
     end
 
+    if @view.description.blank?
+      @meta_description = "View this dataset"
+      updated_at = help.blist_long_date(@view.rowsUpdatedAt)
+      if updated_at
+        @meta_description += ", last updated #{updated_at}"
+      end
+    else
+      @meta_description = @view.description
+    end
+    @meta_keywords = @view.tags
     @data_component = params[:dataComponent]
     @popup = params[:popup]
 
@@ -354,4 +364,13 @@ private
     return title
   end
 
+  def help
+    Helper.instance
+  end
+
+end
+
+class Helper
+  include Singleton
+  include ApplicationHelper
 end

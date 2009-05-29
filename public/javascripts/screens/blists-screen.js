@@ -779,7 +779,7 @@ blist.myBlists.columns = [[
   { name: 'Owner', percentWidth: 20,
     dataIndex: 'ownerName', dataLookupExpr: '.ownerName',
     renderer: blist.myBlists.customClipText, group: true, sortable: true},
-  { name: 'Last Updated', percentWidth: 20, sortable: true,
+  { name: 'Last Updated', percentWidth: 20,
     dataIndex: 'updatedAt', dataLookupExpr: '.updatedAt',
     group: true, type: 'date', renderer: blist.myBlists.customDateMeta }
 ]];

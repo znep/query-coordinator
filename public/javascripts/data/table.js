@@ -1309,7 +1309,7 @@
                     .bind('table_click', function()
                     {
                         $(this).removeClass('hover');
-                        if ((blist.data.types[columns[index]] != undefined &&
+                        if ((blist.data.types[columns[index].type] != undefined &&
                                 blist.data.types[columns[index].type].sortable) ||
                             columns[index].sortable)
                         {

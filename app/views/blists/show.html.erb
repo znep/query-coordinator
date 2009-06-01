@@ -2,7 +2,7 @@
   <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") : '' %>
   <%= stylesheet_link_tag 'table-core', 'table-blist-grid', "blist-grid-screen",
     :cache => "cache/blists_show_all" %>
-  <title><%= @view.name %> | <%= t(:page_title) %></title>
+  <title><%= @view ? @view.name : 'Design a Dataset' %> | <%= t(:page_title) %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
 <% end %>
 

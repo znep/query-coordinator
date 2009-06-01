@@ -72,6 +72,25 @@
                 return;
             }
 
+            if (blist.util.inlineLogin)
+            {
+                $(document).unbind('click.inlineEdit');
+                blist.util.inlineLogin.verifyUser(
+                    function (isSuccess) {
+                        if (isSuccess) doSave($iEdit, $form, fieldValue);
+                        else closeAllForms($iEdit);
+                    }, config.loginMessage);
+            }
+            else
+            {
+                doSave($iEdit, $form, fieldValue);
+            }
+        };
+
+        function doSave($iEdit, $form, fieldValue)
+        {
+            var config = $iEdit.data("config-inlineEdit");
+
             $.ajax({
                 url: $form.attr("action"),
                 type: config.requestType,
@@ -116,6 +135,7 @@
        editCancelSelector: "form .formCancelLink",
        editClickSelector: "span",
        editSubmitSelector: "form:not(.doFullReq)",
+       loginMessage: 'You must be logged in to edit',
        requestType: "POST",
        submitSuccessCallback: function($inlineEditItem, responseData){}
      };

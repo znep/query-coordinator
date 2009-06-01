@@ -455,7 +455,7 @@ private
     filter: alpha(opacity=60);
     left: 0;
     opacity: 0.6;
-    position: absolute;
+    position: fixed;
     right: 0;
     top: 0;
     z-index: 99;

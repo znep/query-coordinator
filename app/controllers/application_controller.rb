@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
 
   def initialize
     @show_search_form = true
+    @is_marketing_page = false
   end
 
   def current_user

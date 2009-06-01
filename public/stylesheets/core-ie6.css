@@ -2,6 +2,7 @@
 {
     background-image: url(/stylesheets/images/header/socrata_logo.gif);
 }
+#mainLogo.aboutLogo a { background-image: url(/stylesheets/images/header/socrata_logo_about.gif); }
 
 .tabList li,
 .tabList li .wrapper

@@ -115,6 +115,7 @@ ActionController::Routing::Routes.draw do |map|
   ['terms-of-service', 'privacy', 'contact-us'].each do |static_toplevel|
     map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
   end
-
+  map.sales '/sales', :controller => 'static', :action => 'sales'
+  
   # See how all your routes lay out with "rake routes"
 end

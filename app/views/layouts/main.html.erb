@@ -43,13 +43,15 @@
 
   <div id='outerContainer'>
     <div id='header'>
-      <h1 id='mainLogo'><%= link_to(t(:blist_company), root_url) %></h1>
+      <h1 id='mainLogo' class='<%= @is_marketing_page ? "aboutLogo" : "appLogo" %>'>
+        <%= link_to(t(:blist_company), root_path) %>
+      </h1>
 
       <div id='mainNav'>
         <ul>
-          <li class='discover'><%= link_to(t(:discover_nav_title), discover_url) %></li>
-          <li class='community'><%= link_to("Community", community_url) %></li>
-          <li class='home last'><%= link_to(t(:my_home_title), home_url) %></li>
+          <li class='discover'><%= link_to(t(:discover_nav_title), discover_path) %></li>
+          <li class='community'><%= link_to("Community", community_path) %></li>
+          <li class='home last'><%= link_to(t(:my_home_title), home_path) %></li>
         </ul>
       </div>
 
@@ -57,7 +59,7 @@
         <ul>
           <li><a href='http://www.getsatisfaction.com/socrata' rel="external">Help</a></li>
           <li class='signInLink'><a href='/login'>Sign In</a></li>
-          <li class='accountLink'><%= link_to "My Account", account_url %></li>
+          <li class='accountLink'><%= link_to "My Account", account_path%></li>
           <li class='signOutLink'><a href='/logout'>Sign Out</a></li>
         </ul>
       </div>
@@ -72,7 +74,7 @@
       %>
 
       <%- if @show_search_form -%>
-        <% form_tag(discover_url, :method => :get, :class => "search") do %>
+        <% form_tag(discover_path, :method => :get, :class => "search") do %>
           <p>
             <input type='text' class='textPrompt' name='search'
               title='<%= t(:search_prompt_text) %>'
@@ -94,7 +96,7 @@
     </div>
   </div>
 
-  <div id='jqmAlert' class='dialogBox'>
+  <% dialog_content("jqmAlert") do %>
     <div class='header'>
       <h1>Alert</h1>
     </div>
@@ -106,7 +108,7 @@
         <li><a href='#close' class='arrowButton jqmClose'>Close</a></li>
       </ul>
     </div>
-  </div>
+  <% end %>
 
   <%#
   Better to load JS at the bottom:

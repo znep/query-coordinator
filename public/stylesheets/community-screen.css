@@ -81,14 +81,13 @@ ul.myNetworkList li span
 {
     float: left;
     padding: 0 1em;
-    width: 28em;
+    width: 27em;
 }
 .memberListItem .memberData
 {
     float: left;
-    width: 20em;
+    width: 21em;
 }
-
 
 .memberListItem .memberInfo h3
 {
@@ -125,6 +124,10 @@ ul.myNetworkList li span
     width: 8.181em; /* 90px */
 }
 .memberListItem .memberData ul li.last { margin-right: 0; }
+
+.memberListItem .memberData .memberStats li {
+    width: 9.5em;
+}
 
 .memberListItem .memberData .memberActions.actionButtons li { background-position: 0 -63px; }
 .memberListItem .memberData .memberActions.actionButtons li a { background-position: right -84px; }

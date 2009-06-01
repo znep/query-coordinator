@@ -13,11 +13,20 @@ class UserSessionsController < ApplicationController
     @body_id = 'login'
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
-      redirect_back_or_default(root_url)
+      respond_to do |format|
+        format.html { redirect_back_or_default(home_path) }
+        format.data { render :json => {:user_id => current_user.id}}
+      end
     else
-      flash[:notice] = "Unable to login with that username and password;" +
+      notice = "Unable to login with that username and password;" +
         " please try again"
-      render :action => :new
+      respond_to do |format|
+        format.html do
+          flash[:notice] = notice
+          render :action => :new
+        end
+        format.data { render :json => {:error => notice}}
+      end
     end
   end
 
@@ -26,6 +35,6 @@ class UserSessionsController < ApplicationController
       current_user_session.destroy
     end
     flash[:notice] = "You have been logged out"
-    redirect_to(login_url)
+    redirect_to(login_path)
   end
 end

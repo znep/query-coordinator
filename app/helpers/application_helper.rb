@@ -105,7 +105,7 @@ module ApplicationHelper
   end
 
   def blist_href_new_blist
-    blist_url('new_blist')
+    blist_path('new_blist')
   end
 
   def sidebar_filter_link(content, params, current_params, is_default = false)
@@ -153,8 +153,6 @@ HREF
       flash_to_display, level = flash[:warning], 'warning'
     elsif flash[:notice]
       flash_to_display, level = flash[:notice], 'notice'
-    else
-      return
     end
     content_tag 'div', flash_to_display, :class => "flash #{level}"
   end
@@ -211,4 +209,33 @@ HREF
       end
     end)
   end
+
+  def meta_tags(meta)
+    meta.reject!{|k,v| v.blank?}
+    meta.map do |key, value|
+      if value.is_a? Array
+        value = value.join(',')
+      end
+      %Q[<meta name="#{key.to_s}" value="#{sanitize(value)}" />]
+    end.join("\n")
+  end
+
+  def dialog_content(id = nil, inner_class = nil, &block)
+    concat(
+      content_tag(:div, :id => id, :class => "dialogWrapper") do
+        content_tag(:div, :class => "dialogTL") do
+          content_tag(:div, :class => "dialogBR") do
+            content_tag(:div, :class => "dialogBL") do
+              content_tag(:div, :class => "dialogOuter") do
+                content_tag(:div, :class => "dialogBox #{inner_class}") do
+                  capture(&block)
+                end
+              end
+            end
+          end
+        end
+      end
+    )
+  end
+
 end

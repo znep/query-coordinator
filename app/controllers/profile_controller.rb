@@ -17,6 +17,16 @@ class ProfileController < ApplicationController
       @user = current_user
     end
     
+    # See if it matches the authoritative URL; if not, redirect
+    if request.path != @user.href
+      # Log redirects in development
+      if ENV["RAILS_ENV"] != 'production' &&
+        request.path =~ /^\w{4}-\w{4}/
+        logger.info("Doing a profile redirect from #{request.referrer}")
+      end
+      redirect_to(@user.href + '?' + request.query_string, :status => 301)
+    end
+    
     @friends = @user.friends.sort_by{ rand }.first(8)
     @followers = @user.followers.sort_by{ rand }.first(8)
     
@@ -59,7 +69,7 @@ class ProfileController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to(profile_url(current_user.id)) }
+      format.html { redirect_to(current_user.href) }
       format.data   { render :json => {:error => error_msg,
         :user => current_user}.to_json }
     end
@@ -69,7 +79,7 @@ class ProfileController < ApplicationController
     @user_link = UserLink.create(params[:id], params[:link])
     
     respond_to do |format|
-      format.html { redirect_to(profile_url(current_user.id)) }
+      format.html { redirect_to(current_user.href) }
       format.data { render }
     end
   end
@@ -78,7 +88,7 @@ class ProfileController < ApplicationController
     UserLink.delete(params[:id], params[:link_id])
     
     respond_to do |format|
-      format.html { redirect_to(profile_url(current_user.id)) }
+      format.html { redirect_to(current_user.href) }
       format.data { render :json => {:link_id => params[:link_id]} }
     end
   end
@@ -87,7 +97,7 @@ class ProfileController < ApplicationController
     @user_link = UserLink.update(params[:id], params[:link_id], params[:link])
     
     respond_to do |format|
-      format.html { redirect_to(profile_url(current_user.id)) }
+      format.html { redirect_to(current_user.href) }
       format.data { render :action => "create_link" }
     end
   end
@@ -98,7 +108,7 @@ class ProfileController < ApplicationController
     Contact.create(user)
     
     respond_to do |format|
-      format.html { redirect_to(profile_url(user_id)) }
+      format.html { redirect_to(current_user.href) }
       format.data { render :text => "created" }
     end
   end
@@ -108,7 +118,7 @@ class ProfileController < ApplicationController
     Contact.delete(user_id)
     
     respond_to do |format|
-      format.html { redirect_to(profile_url(user_id)) }
+      format.html { redirect_to(current_user.href) }
       format.data { render :text => "deleted" }
     end
   end

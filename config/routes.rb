@@ -40,7 +40,13 @@ ActionController::Routing::Routes.draw do |map|
       :contact_detail => :get,
       :group_detail => :get,
     }
-  map.resource :discover, :member => { :filter => :get, :tags => :get, :splash => :get, :noie => :get }
+  map.resource :discover, :member => { 
+    :filter => :get, 
+    :tags => :get, 
+    :splash => :get, 
+    :noie => :get, 
+    :redirected => :get
+  }
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
@@ -65,6 +71,13 @@ ActionController::Routing::Routes.draw do |map|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
     end
 
+  map.connect 'profile/:profile_name/:id', :controller => 'profile',
+     :action => 'show', :conditions => { :method => :get },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+   map.connect 'profile/:profile_name/:id', :controller => 'profile',
+     :action => 'update', :conditions => { :method => :put },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+     
   map.connect ':category/:view_name/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
@@ -109,6 +122,7 @@ ActionController::Routing::Routes.draw do |map|
   ['terms-of-service', 'privacy', 'contact-us'].each do |static_toplevel|
     map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
   end
-
+  map.sales '/sales', :controller => 'static', :action => 'sales'
+  
   # See how all your routes lay out with "rake routes"
 end

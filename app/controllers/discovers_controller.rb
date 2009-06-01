@@ -1,5 +1,5 @@
 class DiscoversController < ApplicationController
-  skip_before_filter :require_user, :only => [:show, :filter, :tags, :splash, :noie]
+  skip_before_filter :require_user
   
   PAGE_SIZE = 10
 
@@ -103,7 +103,7 @@ class DiscoversController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { redirect_to(discover_url(params)) }
+      format.html { redirect_to(discover_path(params)) }
       format.data { 
         if (@filtered_views.length > 0)
           render(:partial => "discovers/view_list_tab", 
@@ -156,6 +156,11 @@ class DiscoversController < ApplicationController
   end
   
   def noie
+    render(:layout => "splash")
+  end
+  
+  def redirected
+    cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
     render(:layout => "splash")
   end
 

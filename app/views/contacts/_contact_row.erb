@@ -20,7 +20,7 @@
       <%#- if (contact.is_a?(Group)) -%>
         <%#= menu_tag({'id' => "itemMenu-#{contact.id}", 'class' => 'blistItemMenu',
           'items' => [
-            {'text' => 'Rename', 'class' => 'rename renameLink', 'href' => contact_url(contact.id)},
+            {'text' => 'Rename', 'class' => 'rename renameLink', 'href' => contact_path(contact.id)},
             { 'text' => 'Remove', 'class' => 'delete', 'href' => '#remove' }
           ]
         }) %>
@@ -33,14 +33,14 @@
       <%#- end -%>
   </div></td>
   <td class='picture'>
-    <a href='<%= profile_url(contact.id) %>'>
+    <a href='<%= contact.href %>'>
       <img src="<%= contact.profile_image_path("small") %>" width="24" height="24"
       alt="<%= h(contact.displayName) %>" />
     </a>
   </td>
   <td class='name'>
     <div class='clipText'>
-      <a href='<%= profile_url(contact.id) %>'><%= h(contact.displayName) %></a>
+      <a href='<%= contact.href %>'><%= h(contact.displayName) %></a>
     </div>
   </td>
   <td class='tags'><div class='clipText'>

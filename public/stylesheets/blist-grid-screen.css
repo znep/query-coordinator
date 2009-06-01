@@ -987,3 +987,26 @@ body#lensBody
     line-height: 1em;
     padding-top: 1px;
 }
+
+/* Login overlay */
+#login
+{
+    display: none;
+    left: 50%;
+    margin-left: -20em;
+    margin-top: 0;
+    position: fixed;
+    top: 20em;
+    z-index: 100;
+}
+
+div#signup.dialogWrapper
+{
+    display: none;
+    left: 50%;
+    margin-left: -35.25em;
+    margin-top: 0;
+    position: fixed;
+    top: 10em;
+    z-index: 100;
+}

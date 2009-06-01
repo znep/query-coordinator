@@ -14,7 +14,7 @@
       </div>
       <div class="pageBlockSearch">
         <p class="searchIntro"><%= t(:discover_search_intro) %></p>
-        <% form_tag(filter_discover_url, :class => "search large") do %>
+        <% form_tag(filter_discover_path, :class => "search large") do %>
           <p>
             <%= text_field_tag("search", @search_term, :class => "textPrompt", :title => "Search") %>
             <%= hidden_field_tag("type", "SEARCH") %>
@@ -111,6 +111,7 @@
   <%- if @show_splash -%>
     <div class="jqmWindow" id="splashModal"></div>
   <%- end -%>
+  <div class="jqmWindow" id="redirectedModal"></div>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", 
   "widgets/simple-tab-navigate", "screens/discover-screen", :cache => "cache/discover_show_all" %>

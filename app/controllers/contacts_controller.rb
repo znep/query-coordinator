@@ -25,7 +25,7 @@ class ContactsController < ApplicationController
 #   group = Group.update_attributes!(group_id, params[:group])
 #
 #   respond_to do |format|
-#     format.html { redirect_to(contacts_url) }
+#     format.html { redirect_to(contacts_path) }
 #     format.data { render :json => group.to_json() }
 #   end
 # end

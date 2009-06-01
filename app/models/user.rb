@@ -25,6 +25,24 @@ class User < Model
 
     dhash.to_json
   end
+  
+  def href
+    "/profile/#{displayName.convert_to_url}/#{id}"
+  end
+  
+  def self.href(member_name, member_id)
+    "/profile/#{member_name.convert_to_url}/#{member_id}"
+  end
+
+  def displayScore
+    if score.nil?
+      "0"
+    elsif score > 0.90
+      return "%.2f" % (score * 100)
+    else
+      return "%d" % (score * 100);
+    end
+  end
 
   def displayState
     state.nil? ? '' : @@states[state.upcase]

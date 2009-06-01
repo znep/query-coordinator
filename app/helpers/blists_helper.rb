@@ -210,14 +210,14 @@ module BlistsHelper
   end
 
   def get_publish_embed_code_for_view(view, width = "425", height = "344")
-    root_url = request.protocol + request.host_with_port
-    embed_template =  "<div><p><a href=\"#{root_url + view.href}\" " +
+    root_path = request.protocol + request.host_with_port
+    embed_template =  "<div><p><a href=\"#{root_path + view.href}\" " +
                       "style=\"font-size:12pt;font-weight:bold;" +
                       "text-decoration:none;color:#000000;\">" +
                       "#{h(view.name)}</a></p><iframe width=\"" +
-                      "#{width}px\" height=\"#{height}px\" src=\"#{root_url}" +
+                      "#{width}px\" height=\"#{height}px\" src=\"#{root_path}" +
                       "/widgets/#{view.id}\" frameborder=\"0\" scrolling=\"no\">" +
-                      "<a href=\"#{root_url + view.href}\" title=\"#{h(view.name)}\">" +
+                      "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\">" +
                       "#{h(view.name)}</a></iframe><p><a href=" +
                       "\"http://www.#{t(:blist_company).downcase}.com/\">Powered by #{t(:blist_company)}</a></p></div>"
   end

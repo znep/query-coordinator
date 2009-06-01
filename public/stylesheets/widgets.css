@@ -48,6 +48,10 @@
     background-position: right -42px;
     padding-right: 25px;
 }
+.actionButtons li.bare
+{
+    background: none;
+}
 .content .actionButtons li
 {
     background-position: left -63px;
@@ -1270,14 +1274,44 @@ table.gridList tr.filteredOut
 
 /*** START: Dialog boxes ***/
 
+.dialogWrapper
+{
+    margin: 10em auto 0;
+    min-height: 0;
+    width: 40em;
+}
+.dialogTL
+{
+    margin-left: 16px;
+    min-height: 0;
+}
+.dialogBR
+{
+    background: url(/stylesheets/images/content/modal_corner_BR.png) right bottom no-repeat;
+    margin: 0 -10px 0 0;
+    min-height: 0;
+    padding: 0 10px 23px 0;
+}
+.dialogBL
+{
+    background: url(/stylesheets/images/content/modal_corner_BL.png) left bottom no-repeat;
+    margin: 0 0 -23px -16px;
+    min-height: 0;
+    padding: 0 0 23px 16px;
+}
+.dialogOuter
+{
+    background: url(/stylesheets/images/content/modal_right.png) right top repeat-y;
+    margin: 0 -10px 0 -16px;
+    min-height: 0;
+    padding: 0 10px 0 0;
+}
+
 .dialogBox
 {
     background-color: #fff;
-    background-image: url(/stylesheets/images/content/background_corner_bottom_right.png);
-    background-position: bottom right;
-    background-repeat: no-repeat;
-    margin: 10em auto 0;
-    width: 40em;
+    min-height: 0;
+    position: relative;
 }
 
 .dialogBox .header
@@ -1292,16 +1326,27 @@ table.gridList tr.filteredOut
     background-repeat: no-repeat;
     color: #fff;
     display: block;
-    height: 35px;
+    height: 34px;
     margin: 0;
     text-indent: -9999px;
 }
 
+.dialogBox .header .close
+{
+    background-image: url(/stylesheets/images/content/dialog_close_button.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 16px;
+    position: absolute;
+    line-height: 100px;
+    overflow: hidden;
+    right: 5px;
+    top: 5px;
+    width: 16px;
+}
+
 .dialogBox .mainContent
 {
-    background-image: url(/stylesheets/images/content/background_corner_bottom_left.png);
-    background-position: bottom left;
-    background-repeat: no-repeat;
     margin-top: 0;
     padding: 1em;
 }
@@ -1334,10 +1379,306 @@ table.gridList tr.filteredOut
     border-top: solid 1px #ccc;
     height: 25px;
     line-height: 25px;
+    margin-top: 1.5em;
     padding-top: 1em;
 }
 
 /*** END: Dialog boxes ***/
+
+
+/*** START: Login box ***/
+
+.loginBox .title a
+{
+    color: #333333;
+    float: right;
+    font-size: 1em;
+    text-decoration: underline;
+    text-transform: uppercase;
+}
+
+.loginBox form p
+{
+    height: 2em;
+    line-height: 2em;
+    margin-bottom: 0.5em;
+}
+
+.loginBox form label
+{
+    float: left;
+    font-size: 1.1em;
+    width: 5em;
+    margin-left: 0.5em;
+    margin-right: 1em;
+}
+
+.loginBox form p.rememberMe
+{
+    line-height: 2.3em;
+    margin-left: 6.5em;
+}
+
+.loginBox form p.rememberMe input
+{
+    float: left;
+}
+
+.loginBox form p.rememberMe label
+{
+    float: none;
+}
+
+.loginBox .footer a
+{
+    color: #333333;
+    float: left;
+    text-decoration: underline;
+}
+
+.loginBox .footer ul.actionButtons
+{
+    float: right;
+}
+
+.loginBox .footer ul.actionButtons li
+{
+    background-position: left -63px;
+}
+
+.loginBox .footer ul.actionButtons a
+{
+    background-position: right -84px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/*** END: Login box ***/
+
+
+/*** START: Signup box ***/
+
+#signup.dialogWrapper
+{
+    margin: 4em auto 0;
+    width: 70.5em;
+}
+
+.signupBox .mainContent
+{
+    padding: 1.5em;
+}
+
+.signupBox .fieldContent
+{
+    margin: 20px 0 10px;
+}
+
+.signupBox .header
+{
+    background-color: #2f608f;
+    padding: 0.5em;
+}
+
+.signupBox .header h1
+{
+    background-image: url(/stylesheets/images/common/socrata_logo_light.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 34px;
+    margin: 0;
+    text-indent: -9999px;
+}
+
+.signupBox .title h2
+{
+    font-size: 2.4em;
+    font-weight: normal;
+    line-height: 1.1em;
+    margin-bottom: 12px;
+    margin-right: 2em;
+}
+
+.signupBox .title   p
+{
+    font-size: 1.4em;
+}
+
+.signupBox fieldset
+{
+    display: block;
+    float: left;
+    margin-right: 15px;
+    width: 328px;
+}
+
+.signupBox fieldset.last
+{
+    margin-right: 0;
+}
+
+.signupBox form p:after
+{
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
+.signupBox form p
+{
+    display: inline-block;
+}
+
+.signupBox form p, .signupBox form .fileInputContainer
+{
+    display: block;
+  margin-bottom: 10px;
+}
+
+.signupBox form p.fieldInfo
+{
+    margin-bottom: 7px;
+    margin-left: 100px;
+}
+
+.signupBox form label
+{
+    display: block;
+    float: left;
+    font-size: 1.2em;
+    line-height: 22px;
+    padding-right: 10px;
+    text-align: right;
+    width: 115px;
+}
+
+.signupBox form fieldset.last label { width: 90px; }
+
+.signupBox form div.error
+{
+    color: #ff0000;
+    font-size: 1.2em;
+    padding-bottom: 2.5em;
+}
+
+.signupBox form label.error
+{
+    font-size: 1em;
+    line-height: 1.1em;
+    margin-left: 125px;
+    padding-right: 0;
+    text-align: left;
+    width: 200px;
+}
+
+.signupBox form input[type='text'],
+.signupBox form input[type='password']
+{
+    padding: 4px 2px 2px;
+    width: 194px;
+}
+
+.signupBox form textarea
+{
+    border: 1px solid #cacaca;
+    height: 50px;
+    font-size: 1.2em;
+    line-height: 1.2em;
+    padding: 0.2em;
+    width: 194px;
+}
+
+.signupBox form textarea.prompt
+{
+    color: #999;
+    font-size: 1em;
+    font-style: italic;
+}
+
+.signupBox form .fileInput
+{
+    cursor: pointer;
+    float: left;
+    position: relative;
+    width: 210px;
+}
+
+.signupBox form .fileInput .fakeFile
+{
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+}
+
+.signupBox form .fileInput input[type='file']
+{
+    display: block;
+    position: absolute;
+    right: 0;
+    z-index: 2;
+
+    -moz-opacity: 0;
+    filter:alpha(opacity: 0);
+    opacity: 0;
+}
+
+.signupBox form .fileInput .fakeFile input
+{
+    float: left;
+    width: 125px;
+}
+
+.signupBox form .fileInput .fakeFile img
+{
+    display: block;
+    float: left;
+    padding-left: 5px;
+}
+
+.signupBox .submitLine { margin-bottom: 25px; }
+.signupBox .submitLine input
+{
+    float: left;
+    margin-left: 135px;
+}
+
+.signupBox .submitLine .buttonLinkLarge
+{
+    background: url(/stylesheets/images/account/button_link_large_sprites.png) no-repeat;
+    float: left;
+    margin-left: 20px;
+    padding-left: 12px;
+}
+
+.signupBox .submitLine .buttonLinkLarge a
+{
+    background: url(/stylesheets/images/account/button_link_large_sprites.png) right -30px no-repeat;
+    color: #fff;
+    display: block;
+    font-size: 1.4em;
+}
+
+.signupBox .submitLine .buttonLinkLarge a:hover { text-decoration: none; }
+.signupBox .submitLine .buttonLinkLarge a span
+{
+    background-color: #656565;
+    display: block;
+    height: 30px;
+    line-height: 30px;
+    margin-right: 12px;
+}
+
+.signupBox .contentFooter p { text-align: center; }
+.signupBox .contentFooter p a
+{
+    color: #333;
+    text-decoration: underline;
+}
+
+/*** END: Signup box ***/
 
 
 /*** START: Page header block (top of discover and community) ***/
@@ -1576,7 +1917,7 @@ table.gridList tr.filteredOut
     margin: 0 -11px 0 -16px;
     padding: 0 11px 0 0;
 }
-.modalInner 
+.modalInner
 {
     background-color: #fff;
     min-height: 0;

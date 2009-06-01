@@ -32,12 +32,15 @@
             // Hide all forms, show all spans.
             closeAllForms($iEdit);
 
+            $(document).bind('click.inlineEdit',
+                function (e) {docClick(e, $iEdit);});
+
             $iEdit.find(config.displaySelector).hide();
             var $form = $iEdit.find("form").keyup(function(event)
             {
                 if (event.keyCode == 27) closeAllForms($iEdit);
             });
-            $form.show().find("input[type='text']").focus().select();
+            $form.show().find(":text").focus().select();
         };
 
         function closeAllForms($iEdit)
@@ -47,15 +50,46 @@
             var $allItemContainers = $(config.allItemSelector);
             $allItemContainers.find("form").hide();
             $allItemContainers.find(config.displaySelector).show();
+            $(document).unbind('click.inlineEdit');
         };
 
         function editSubmit(event, $iEdit)
         {
+            event.preventDefault();
+
+            saveValue($iEdit);
+        };
+
+        function saveValue($iEdit)
+        {
             var config = $iEdit.data("config-inlineEdit");
 
-            event.preventDefault();
-            var $form = $(event.currentTarget);
+            var $form = $iEdit.find(config.editSubmitSelector);
             var fieldValue = $form.find(":text").val();
+            if (!fieldValue || fieldValue == '')
+            {
+                closeAllForms($iEdit);
+                return;
+            }
+
+            if (blist.util.inlineLogin)
+            {
+                $(document).unbind('click.inlineEdit');
+                blist.util.inlineLogin.verifyUser(
+                    function (isSuccess) {
+                        if (isSuccess) doSave($iEdit, $form, fieldValue);
+                        else closeAllForms($iEdit);
+                    }, config.loginMessage);
+            }
+            else
+            {
+                doSave($iEdit, $form, fieldValue);
+            }
+        };
+
+        function doSave($iEdit, $form, fieldValue)
+        {
+            var config = $iEdit.data("config-inlineEdit");
 
             $.ajax({
                 url: $form.attr("action"),
@@ -70,6 +104,7 @@
                     }
                     else
                     {
+                        $(document).unbind('click.inlineEdit');
                         $form.hide();
                         $iEdit.find(config.displaySelector).text(fieldValue).show();
                         config.submitSuccessCallback($iEdit, responseData);
@@ -83,6 +118,14 @@
             event.preventDefault();
             closeAllForms($iEdit);
         };
+
+        function docClick(event, $iEdit)
+        {
+            if ($iEdit.find('*').andSelf().index(event.target) < 0)
+            {
+                saveValue($iEdit);
+            }
+        };
     };
 
      // default options
@@ -90,8 +133,9 @@
        allItemSelector: ".inlineEdit",
        displaySelector: "span",
        editCancelSelector: "form .formCancelLink",
-       editClickSelector: "*:not(form):not(form *)",
+       editClickSelector: "span",
        editSubmitSelector: "form:not(.doFullReq)",
+       loginMessage: 'You must be logged in to edit',
        requestType: "POST",
        submitSuccessCallback: function($inlineEditItem, responseData){}
      };

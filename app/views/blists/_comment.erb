@@ -25,9 +25,8 @@
           <%= render(:partial => 'comment_actions',
           :locals => {:comment => comment, :view => view}) %>
 
-          <%- form_tag(post_comment_blist_url(view.id),
-            :class => ('replyComment postComment hidden' +
-            (current_user.nil? ? ' doFullReq' : ''))) do -%>
+          <%- form_tag(post_comment_blist_path(view.id),
+            :class => 'replyComment postComment hidden') do -%>
 
           <%= hidden_field_tag('comment[parent][id]', comment.id,
           :class => 'parentInput') %>

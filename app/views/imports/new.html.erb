@@ -4,13 +4,13 @@
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<div class="dialogBox">
+<% dialog_content do %>
   <div class="header">
     <h1>Upload a file</h1>
   </div>
 
   <div class="mainContent">
-    <% form_tag(import_url, :id => "importForm", :multipart => true) do %>
+    <% form_tag(import_path, :id => "importForm", :multipart => true) do %>
       <div class="fieldContent clearfix">
         <p class="errorMessage"></p>
         <fieldset class="last">
@@ -39,7 +39,7 @@
       </div>
     <% end %>
   </div>
-</div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>

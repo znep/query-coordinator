@@ -15,7 +15,7 @@
       </div>
       <div class="pageBlockSearch">
         <p class="searchIntro">Search for People</p>
-        <% form_tag(filter_community_url, :class => "search large") do %>
+        <% form_tag(filter_community_path, :class => "search large") do %>
           <p>
             <%= text_field_tag("search", @community_search, :class => "textPrompt", :title => "Search") %>
             <%= hidden_field_tag("type", "SEARCH") %>
@@ -43,7 +43,7 @@
             <%- end -%>
           </ul>
           <p class="moreLinkContainer">
-            <%= link_to("More", activities_community_url) %>
+            <%= link_to("More", activities_community_path) %>
           </p>
         </div>
       </div>

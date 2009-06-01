@@ -3,7 +3,7 @@
   <div class="tabContent">
     <h2><%= tab_title %></h2>
     <div class="contentSort">
-      <% form_tag(filter_discover_url(:type => type, :filter => current_filter, :search => search_term), 
+      <% form_tag(filter_discover_path(:type => type, :filter => current_filter, :search => search_term), 
           :class => "sortForm") do %>
         <p>
           Sort by
@@ -18,7 +18,7 @@
     
     <div class="viewPager">
       <%= create_pagination(views_total, @page_size, current_page, 
-          filter_discover_url({
+          filter_discover_path({
             :type => type, :filter => current_filter, 
             :sort_by => sort_by, :tag => current_tag, :search => search_term})) %>
     </div>
@@ -37,7 +37,7 @@
         <%- end -%>
         <%- if (!@current_user.nil?) -%>
           <li><%= link_to("<span>In my network</span>", 
-                  filter_discover_url({:type => type, :filter => {:inNetwork => true}, :tag => current_tag}),
+                  filter_discover_path({:type => type, :filter => {:inNetwork => true}, :tag => current_tag}),
                   :class => "filterLink#{get_filter_hilight_class({'inNetwork' => 'true'}, current_filter, ' hilight')}") %>
           </li>
         <%- end -%>
@@ -48,14 +48,14 @@
         <%- tag_list.each do |tag| -%>
           <li>
             <%= link_to("<span>#{h(tag.name)}</span>", 
-                filter_discover_url({ 
+                filter_discover_path({ 
                   :type => type, :filter => current_filter, :tag => tag.name }),
                   :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
           </li>
         <%- end -%>
         <li class="moreLink">
           <%= link_to("More", 
-              tags_discover_url({
+              tags_discover_path({
                 :type => type, :filter => current_filter}), 
                 :class => "moreTagsLink") %>
         </li>
@@ -68,7 +68,7 @@
           <%- View.categories.keys.sort.each do |category| -%>
             <%- next if category.nil? || category.length == 0 -%>
             <li><%= link_to("<span>#{category}</span>", 
-                    filter_discover_url({:type => type, :filter => {:category => category}, :tag => current_tag}),
+                    filter_discover_path({:type => type, :filter => {:category => category}, :tag => current_tag}),
                     :class => "filterLink#{get_filter_hilight_class({'category' => category}, current_filter, ' hilight')}") %></li>
           <%- end -%>
         </ul>

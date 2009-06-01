@@ -1,14 +1,17 @@
 $(function ()
 {
-    $("#account_firstName").focus();
-    
-    $(".fileInputContainer input[type='file']").change(function()
+    if ($('body').is('.signup'))
     {
-        $(".fileInputContainer input[type='text']").val($(this).val());
+        $("#signup #account_firstName").focus();
+    }
+
+    $("#signup .fileInputContainer input[type='file']").change(function()
+    {
+        $("#signup .fileInputContainer input[type='text']").val($(this).val());
     });
 
     // Signup form validation.
-    $("#signupForm").validate({
+    $("#signup #signupForm").validate({
         rules: {
             "account[firstName]": "required",
             "account[lastName]": "required",

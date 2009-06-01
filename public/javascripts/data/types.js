@@ -52,6 +52,8 @@ blist.namespace.fetch('blist.data.types');
 
     var htmlStrip = function(text)
     {
+        if (text == null)
+            return '';
         return text.replace(/<[^>]*>/g, '');
     };
 

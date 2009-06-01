@@ -2,7 +2,7 @@
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<div class='dialogBox'>
+<% dialog_content do %>
   <div class='header'>
     <h1>t(:blist_company)</h1>
   </div>
@@ -13,7 +13,7 @@
     </div>
 
     <p style="font-size: 1.5em">We're sorry, but it appears the page you're looking for doesn't exist.
-    Try checking your spelling, visit our <%= link_to "homepage", root_url %>, or go
+    Try checking your spelling, visit our <%= link_to "homepage", root_path%>, or go
     <%= link_to "back", :back %> to the page you were last on.</p>
   </div>
-</div>
+<% end %>

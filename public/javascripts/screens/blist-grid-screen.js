@@ -96,7 +96,8 @@ blist.blistGrid.createTabCookie = function()
 blist.blistGrid.columnClickHandler = function (event)
 {
     var $target = $(event.currentTarget);
-    var href_parts = $target.attr('href').slice(1).split(':');
+    var href = $target.attr('href');
+    var href_parts = href.slice(href.indexOf('#') + 1).split(':');
     if (href_parts.length < 2)
     {
         return;
@@ -158,7 +159,8 @@ blist.blistGrid.toggleAddColumns = function ()
 
 blist.blistGrid.dataTypeClickHandler = function (event)
 {
-    var dt = $(event.currentTarget).attr('href').slice(1);
+    var href = $(event.currentTarget).attr('href');
+    var dt = href.slice(href.indexOf('#') + 1);
     blist.util.flashInterface.addColumn(dt);
 };
 
@@ -167,9 +169,9 @@ blist.blistGrid.flashPopupClickHandler = function (event)
     event.preventDefault();
     var href = $(event.currentTarget).attr('href');
     var popup = '';
-    if (href.slice(0, 1) == '#')
+    if (href.indexOf('#') >= 0)
     {
-        popup = href.slice(1);
+        popup = href.slice(href.indexOf('#') + 1);
     }
     else
     {
@@ -242,13 +244,13 @@ blist.blistGrid.mainMenuHandler = function(event)
 {
     var $target = $(event.currentTarget);
     var href = $target.attr('href');
-    if (href.slice(0, 1) != '#')
+    if (href.indexOf('#') < 0)
     {
         return;
     }
 
     event.preventDefault();
-    var action = href.slice(1);
+    var action = href.slice(href.indexOf('#') + 1);
     switch (action)
     {
         case 'new_blist':
@@ -311,7 +313,7 @@ blist.blistGrid.mainMenuHandler = function(event)
         case 'infoPane_tabSharing':
         case 'infoPane_tabPublishing':
         case 'infoPane_tabActivity':
-            $(".summaryTabs").infoPaneNavigate()
+            $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab("#" + action.split('_')[1]);
             break;
     }
@@ -522,8 +524,10 @@ blist.blistGrid.addFilterMenu = function(col)
 blist.blistGrid.columnHeaderMenuHandler = function(event)
 {
     event.preventDefault();
-    // Href starts with # and parts are separated with _
-    var s = $(event.currentTarget).attr('href').slice(1).split('_');
+    // Href that we care about starts with # and parts are separated with _
+    // IE sticks the full thing, so slice everything up to #
+    var href = $(event.currentTarget).attr('href');
+    var s = href.slice(href.indexOf('#') + 1).split('_');
     if (s.length < 2)
     {
         return;
@@ -711,11 +715,13 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId)
         // Update in filtered view list
         if (blistGridNS.isFilter)
         {
-            $('.singleInfoFiltered .gridList .item .name a:contains(' +
-                oldName + ')').text(blistGridNS.viewName);
+            $('.singleInfoFiltered .gridList #filter-row_' + itemId +
+                ' .name a').text(blistGridNS.viewName);
         }
     }
 };
+
+
 
 /* Initial start-up calls, and setting up bindings */
 
@@ -816,8 +822,9 @@ $(function ()
     $('.flashAction').click(function (event)
     {
         event.preventDefault();
+        var href = $(event.currentTarget).attr('href');
         blist.util.flashInterface.doAction(
-            $(event.currentTarget).attr('href').slice(1));
+            href.slice(href.indexOf('#') + 1));
     });
 
     $('.addColumnsLink, #addColumnsMenu .close').click(function (event)
@@ -858,7 +865,17 @@ $(function ()
 
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
-    $(".summaryTabs").infoPaneNavigate({
+    $("#infoPane .summaryTabs").infoPaneNavigate({
+        tabMap: {
+            "tabSummary" : "#infoPane .singleInfoSummary",
+            "tabFiltered" : "#infoPane .singleInfoFiltered",
+            "tabComments" : "#infoPane .singleInfoComments",
+            "tabSharing" : "#infoPane .singleInfoSharing",
+            "tabPublishing" : "#infoPane .singleInfoPublishing",
+            "tabActivity" : "#infoPane .singleInfoActivity"
+        },
+        allPanelsSelector : "#infoPane .infoContentOuter",
+        expandableSelector: "#infoPane .infoContent",
         // After switching tabs, update the menu and size the Swf.
         switchCompleteCallback: function ($tab)
         {
@@ -868,16 +885,16 @@ $(function ()
         initialTab: paneMatches && paneMatches.length > 1 ? paneMatches[1] : null
     });
     $(".tabLink.activity").click(function(event){
-        $(".summaryTabs").infoPaneNavigate().activateTab("#tabActivity");
+        $("#infoPane .summaryTabs").infoPaneNavigate().activateTab("#tabActivity");
     });
     $(".tabLink.filtered").click(function(event){
-        $(".summaryTabs").infoPaneNavigate().activateTab("#tabFiltered");
+        $("#infoPane .summaryTabs").infoPaneNavigate().activateTab("#tabFiltered");
     });
     $(".tabLink.publishing").click(function(event){
-        $(".summaryTabs").infoPaneNavigate().activateTab("#tabPublishing");
+        $("#infoPane .summaryTabs").infoPaneNavigate().activateTab("#tabPublishing");
     });
     $(".tabLink.sharing").click(function(event){
-        $(".summaryTabs").infoPaneNavigate().activateTab("#tabSharing");
+        $("#infoPane .summaryTabs").infoPaneNavigate().activateTab("#tabSharing");
     });
 
     // Wire up the hover behavior in the info pane.
@@ -894,13 +911,13 @@ $(function ()
     $("#tempInfoPane .inlineEdit").inlineEdit({
         displaySelector: '.itemContent span',
         editClickSelector: '.itemContent span, .itemActions',
+        loginMessage: 'Creating a public filter requires you to have an account. \
+            Either sign in or sign up to save your public filter.',
         submitSuccessCallback: blistGridNS.newViewCreated});
     $(".tabList .tempViewTab.inlineEdit").inlineEdit({
+        loginMessage: 'Creating a public filter requires you to have an account. \
+            Either sign in or sign up to save your public filter.',
         submitSuccessCallback: blistGridNS.newViewCreated});
-    // When they are not logged in and try to submit a create, first disable
-    //  isTempView so they aren't prompted when they hit Login
-    $('#tempInfoPane form.doFullReq, .tabList .tempViewTab form.doFullReq')
-        .submit(function (e) { blistGridNS.anonLeaving = true; });
 
     $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
 
@@ -962,13 +979,7 @@ $(function ()
 
     window.onbeforeunload = function ()
     {
-        if (blistGridNS.anonLeaving)
-        {
-            blistGridNS.anonLeaving = false;
-            return 'Saving a view requires you to be logged in.' +
-                '  You will be redirected to the login page.';
-        }
-        else if (blistGridNS.isTempView)
+        if (blistGridNS.isTempView)
         {
             return 'You will lose your temporary filter.';
         }

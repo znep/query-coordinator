@@ -60,6 +60,7 @@ body
     text-indent: -9999px;
     width: 151px;
 }
+#mainLogo.aboutLogo a { background-image: url(/stylesheets/images/header/socrata_logo_about.png); }
 
 #header li, #footer li
 {

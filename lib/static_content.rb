@@ -13,9 +13,11 @@ module StaticContent
   end
 
   def index
+    @is_marketing_page = true
   end
 
   def show
+    @is_marketing_page = true
     render :action => params[:page]
   end
 

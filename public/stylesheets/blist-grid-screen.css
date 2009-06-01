@@ -276,7 +276,26 @@ body#lensBody
 
 #lensBody #editLink
 {
-    font-weight: bold;
+    height: 23px;
+    padding-top: 2px;
+}
+#lensBody #editLink:hover
+{
+    background: url(/stylesheets/images/widgets/dropdown_button/hover_gradSlice.png) repeat-x;
+    color: #fff;
+}
+
+#lensBody #editLink span
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png);
+    background-position: 0 -260px;
+    background-repeat: no-repeat;
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    padding-left: 21px;
+    padding-right: 5px;
+    padding-top: 1px;
 }
 
 #lensBody #undoLink, #lensBody #redoLink

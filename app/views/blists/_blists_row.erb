@@ -34,6 +34,7 @@
       'items' => [
         {'text' => 'Open', 'class' => 'open', 'href' => blist.href},
         {'text' => favorite_action_text, 'class' => 'addFavorite favoriteLink', 'href' => favorite_action},
+        {'text' => 'Edit', 'class' => 'rename editLink', 'href' => blist.href + "?mode=edit"},
         {'text' => 'Rename', 'class' => 'rename renameLink', 'href' => blist.href},
         {'text' => 'Delete', 'class' => 'delete', 'href' => "/blists/#{blist.id}" }
       ]

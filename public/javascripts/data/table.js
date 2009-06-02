@@ -399,13 +399,13 @@
             var col = getColumnForHeader(hotHeader);
             if (col.hasOwnProperty('percentWidth'))
             {
-                varDenom -= col.percentWidth;
+                varDenom[0] -= col.percentWidth;
                 delete col.percentWidth;
-                variableColumns = $.grep(variableColumns, function (c, i)
+                variableColumns[0] = $.grep(variableColumns[0], function (c, i)
                     { return c.dataIndex == col.dataIndex; }, true);
                 if (col.minWidth)
                 {
-                    varMinWidth -= col.minWidth;
+                    varMinWidth[0] -= col.minWidth;
                 }
             }
             col.width = width;
@@ -527,14 +527,13 @@
                     model.expand(row);
 
                 // Retrieve the column
-                var index = 0;
-                for (var pos = cell.previousSibling; pos;
-                    pos = pos.previousSibling)
-                {
-                    if (!$(pos).hasClass('blist-opener'))
-                        index++;
-                }
-                var column = columns[index];
+                // The cell will have a class like 'tableId-c4'; we need to
+                //  extra the part after the tableId-c, which is the uid of
+                //  the column that can be looked up
+                var classIndex = cell.className.indexOf(id + '-c');
+                var colUID = cell.className.slice(classIndex + id.length + 2,
+                    cell.className.indexOf(' ', classIndex));
+                var column = model.getColumn(colUID);
 
                 // Notify listeners
                 var cellEvent = $.Event('cellclick');
@@ -707,7 +706,7 @@
             inside.height(insideHeight);
 
             renderRows();
-            configureVariableWidths();
+            configureWidths();
         };
 
         if (options.manualResize)
@@ -816,7 +815,7 @@
 
         /*** COLUMNS ***/
 
-        // Internal representation of visible columns in the model
+        // Internal representation of visible top-level columns in the model
         var columns = [];
         var variableColumns = [];
 
@@ -831,8 +830,8 @@
         var handleOuterWidth;
         var handleWidth;
         var openerWidth;
-        var varMinWidth;
-        var varDenom;
+        var varMinWidth = [];
+        var varDenom = [];
         var insideWidth;
 
         /**
@@ -891,7 +890,7 @@
                             createColumnRendering(mcol.children, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
                         "else " +
                             "html.push('<div class=\"blist-td blist-tdfill " + getColumnClass(mcol.header) + "\">&nbsp;</div>');";
-                } else if (mcol.fillFor)
+                } else if (mcol.type && mcol.type == 'fill')
                     // Fill column -- covers background for a range of columns that aren't present in this row
                     colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + "'>&nbsp;</div>\"");
                 else {
@@ -935,38 +934,47 @@
             // Convert the model columns to table columns
             columns = [];
             variableColumns = [];
-            varMinWidth = 0;
-            varDenom = 0.0;
-            var mcols = model.meta().columns[0];
-            for (var i = 0; i < mcols.length; i++)
+            varMinWidth = [];
+            varDenom = [];
+
+            // Set up variable columns at each level
+            for (var j = 0; j < model.meta().columns.length; j++)
             {
-                var mcol = mcols[i];
-                var col = $.extend(false, {
-                    index: columns.length
-                }, mcol);
-                if (col.hasOwnProperty('percentWidth'))
+                variableColumns[j] = [];
+                varMinWidth[j] = 0;
+                varDenom[j] = 0.0;
+                var mcols = model.meta().columns[j];
+                for (var i = 0; i < mcols.length; i++)
                 {
-                    varDenom += col.percentWidth;
-                    if (col.minWidth)
+                    var mcol = mcols[i];
+                    var col = $.extend(false, { index: i }, mcol);
+                    if (col.hasOwnProperty('percentWidth'))
                     {
-                        varMinWidth += col.minWidth;
+                        varDenom[j] += col.percentWidth;
+                        if (col.minWidth)
+                        {
+                            varMinWidth[j] += col.minWidth;
+                        }
+                        col.width = 0;
+                        variableColumns[j].push(col);
                     }
-                    col.width = 0;
-                    variableColumns.push(col);
+                    else if (!col.hasOwnProperty('width'))
+                    {
+                        col.width = 100;
+                    }
+                    if (j == 0)
+                    {
+                        columns.push(col);
+                    }
                 }
-                else if (!col.hasOwnProperty('width'))
-                {
-                    col.width = 100;
-                }
-                columns.push(col);
             }
-            if (variableColumns.length < 1 && options.showGhostColumn)
+            if (variableColumns[0].length < 1 && options.showGhostColumn)
             {
-                variableColumns.push({percentWidth: 100,
-                    minWidth: options.ghostMinWidth,
-                    ghostColumn: true});
-                varMinWidth += options.ghostMinWidth;
-                varDenom += 100;
+                variableColumns[0].push({percentWidth: 100,
+                        minWidth: options.ghostMinWidth,
+                        ghostColumn: true});
+                varMinWidth[0] += options.ghostMinWidth;
+                varDenom[0] += 100;
             }
             else
             {
@@ -1107,28 +1115,30 @@
             insideWidth = 0;
             var mcols = model.meta().columns;
             for (var i = 0; i < mcols.length; i++)
-                configureLevelWidths(mcols[i]);
-            if (options.showGhostColumn)
-                insideWidth += paddingX;
+                configureLevelWidths(mcols[i], i);
 
             // Configure grouping header column widths
             groupHeaderStyle.width = Math.max(0,
                 (insideWidth - handleOuterWidth - paddingX)) + 'px';
 
             // Set the scrolling area width
-            header.width(insideWidth);
-            inside.width(insideWidth);
-
-            // Now that all columns with static sizes are configured, tackle
-            // variable width columns
-            configureVariableWidths();
+            var scrollWidth = scrolls.width();
+            if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
+            {
+                scrollWidth -= scrollbarWidth;
+            }
+            var totalWidth = Math.max(insideWidth, scrollWidth);
+            header.width(totalWidth);
+            inside.width(totalWidth);
         }
 
-        var configureLevelWidths = function(mcols)
+        var configureLevelWidths = function(mcols, level)
         {
             var hpos = 0;
             if (options.showRowNumbers)
                 hpos += handleOuterWidth;
+            if (level == 0 && options.showGhostColumn)
+                hpos += paddingX;
 
             for (var j = 0; j < mcols.length; j++)
             {
@@ -1149,7 +1159,7 @@
                     // the only nested columns are actually rendered into the
                     // DOM, so only compute width for nested children
                     colWidth = null;
-                    configureLevelWidths(mcol.children);
+                    configureLevelWidths(mcol.children, level);
                 }
                 else if (mcol.fillFor)
                 {
@@ -1159,7 +1169,8 @@
                     colWidth = 0;
                     for (k = 0; k < mcol.fillFor.length; k++) {
                         var fillFor = mcol.fillFor[k];
-                        colWidth += fillFor.width + paddingX;
+                        colWidth += (fillFor.width ||
+                            parseFloat(getColumnStyle(fillFor).width)) + paddingX;
                     }
                 }
                 else
@@ -1177,19 +1188,21 @@
                 }
             }
 
+            hpos += varMinWidth[level];
+
+            configureVariableWidths(level, hpos);
+
             // Expand the inside width if the level is wider
             if (hpos > insideWidth)
                 insideWidth = hpos;
         }
 
-        var configureVariableWidths = function()
+        var configureVariableWidths = function(level, levelWidth)
         {
-            ghostStyle.width = 0;
-
-            if (variableColumns.length > 0)
+            if (variableColumns[level].length > 0)
             {
-                // Adjust total width of columns by variable min widths
-                var pos = insideWidth + varMinWidth;
+                // Start with the total fixed width for this level
+                var pos = levelWidth;
 
                 var varSize = scrolls.width() - pos;
                 if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
@@ -1197,9 +1210,9 @@
                     varSize -= scrollbarWidth;
                 }
                 varSize = Math.max(varSize, 0);
-                for (i = 0; i < variableColumns.length; i++)
+                for (i = 0; i < variableColumns[level].length; i++)
                 {
-                    var c = variableColumns[i];
+                    var c = variableColumns[level][i];
                     if (c.ghostColumn)
                     {
                         ghostStyle.width = (c.minWidth + varSize)  + "px";
@@ -1207,16 +1220,13 @@
                     else
                     {
                         getColumnStyle(c).width = ((c.minWidth || 0) +
-                            ((c.percentWidth / varDenom) * varSize)) + 'px';
+                            ((c.percentWidth / varDenom[level]) * varSize)) + 'px';
                     }
                 }
 
-                inside.width(varSize + pos);
-                header.width(varSize + pos);
-
                 // If we're not dealing with just the ghost column,
-                //  readjust column lefts, sizers
-                if (!options.showGhostColumn)
+                //  readjust column lefts
+                if (level == 0 && !options.showGhostColumn)
                 {
                     pos = 0;
                     if (options.showRowNumbers)

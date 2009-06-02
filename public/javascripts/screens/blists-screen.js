@@ -683,16 +683,60 @@ blist.myBlists.listCellClick = function(event, row, column, origEvent)
 
 blist.myBlists.translateViewJson = function(views)
 {
-    for (var i = 0; i < views.length; i++) {
+    var unclaimedViews = {};
+    var datasetsByTable = {};
+    var datasets = [];
+    for (var i = 0; i < views.length; i++)
+    {
         var view = views[i];
         view.level = 0;
         view.favorite = view.flags && $.inArray("favorite", view.flags) != -1;
         view.isDefault = view.flags && $.inArray("default", view.flags) != -1;
         view.ownerName = view.owner && view.owner.displayName;
         if (!view.updatedAt)
+        {
             view.updatedAt = view.createdAt;
+        }
+
+        if (view.isDefault)
+        {
+            datasetsByTable[view.tableId] = view;
+            view.childRows = [];
+            if (unclaimedViews[view.tableId])
+            {
+                view.childRows = unclaimedViews[view.tableId];
+                delete unclaimedViews[view.tableId];
+            }
+            datasets.push(view);
+        }
+        else
+        {
+            view.level = 1;
+            if (datasetsByTable[view.tableId])
+            {
+                datasetsByTable[view.tableId].childRows.push(view);
+            }
+            else
+            {
+                if (!unclaimedViews[view.tableId])
+                {
+                    unclaimedViews[view.tableId] = [];
+                }
+                unclaimedViews[view.tableId].push(view);
+            }
+        }
     }
-    return {rows: views}
+
+    $.each(unclaimedViews, function(tId, viewList)
+    {
+        $.each(viewList, function (i, v)
+        {
+            v.level = 0;
+            datasets.push(v);
+        });
+    });
+
+    return {rows: datasets}
 };
 
 blist.myBlists.initializeGrid = function()
@@ -790,6 +834,25 @@ blist.myBlists.columns = [[
     dataIndex: 'updatedAt', dataLookupExpr: '.updatedAt',
     group: true, type: 'date', renderer: blist.myBlists.customDateMeta }
 ]];
+blist.myBlists.columns.push([
+    { fillFor: [myBlistsNS.columns[0][0]],
+        dataIndex: 'id', dataLookupExpr: '.id',
+        renderer: blist.myBlists.customHandle },
+    { cls: 'favorite', name: 'Favorite?', fillFor: [myBlistsNS.columns[0][1]],
+        dataIndex: 'favorite', dataLookupExpr: '.favorite',
+        renderer: blist.myBlists.customFav },
+    { cls: 'type', name: 'Type', fillFor: [myBlistsNS.columns[0][2]],
+        dataIndex: 'isDefault', dataLookupExpr: '.isDefault',
+        renderer: blist.myBlists.customType },
+    { name: 'Name', fillFor: [myBlistsNS.columns[0][3]],
+        dataIndex: 'name', dataLookupExpr: '.name',
+        renderer: blist.myBlists.customDatasetName },
+    { name: 'Description', fillFor: [myBlistsNS.columns[0][4]],
+        dataIndex: 'description', dataLookupExpr: '.description',
+        renderer: blist.myBlists.customClipText },
+    { type: 'fill', fillFor: [myBlistsNS.columns[0][5],
+        myBlistsNS.columns[0][6] ] }
+]);
 
 blist.myBlists.options = {
     cellExpandEnabled: false,

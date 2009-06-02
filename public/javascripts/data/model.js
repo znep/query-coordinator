@@ -704,8 +704,16 @@ blist.namespace.fetch('blist.data');
          */
         this.getByID = function(id)
         {
-            var index = lookup[id];
-            return index == undefined ? undefined : rows[index];
+            var row = undefined;
+            if (lookup[id] != undefined)
+            {
+                row = rows[lookup[id]];
+            }
+            else if (activeLookup[id] != undefined)
+            {
+                row = active[activeLookup[id]];
+            }
+            return row;
         };
 
         /**

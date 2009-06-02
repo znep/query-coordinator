@@ -33,7 +33,7 @@ $.urlSafe = function(text)
 {
     var output = text
         .replace(/\s+/g, '-')
-        .replace(/[^a-zA-Z0-9_\-]/g, '')
+        .replace(/[^a-zA-Z0-9_\-]/g, '-')
         .replace(/\-+/g, '-');
     if (output.length < 1)
     {

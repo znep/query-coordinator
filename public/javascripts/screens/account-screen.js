@@ -73,7 +73,7 @@ $(function ()
                 required: true,
                 equalTo: "#user_email"
             },
-            'user[email_password]': "required",
+            'user[email_password]': "required"
         }
     });
     // Password form.

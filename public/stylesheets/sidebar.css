@@ -25,6 +25,7 @@
     background-image: url(/stylesheets/images/sidebar/sidebar_corner_top_right.png);
     background-position: top right;
     background-repeat: no-repeat;
+    min-height: 0;
 }
 
 #sidebar .box > .outerWrapper > .innerWrapper

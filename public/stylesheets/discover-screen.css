@@ -123,12 +123,13 @@ ul.myNetworkList li span
 .pageBlockHeaderSide.discoverBugContainer p.footnote
 {
     bottom: 0;
-    font-size: 1em;
+    font-size: 1.3em;
     margin-bottom: 2em;
     left: 12px;
+    padding: 0 2em;
     position: absolute;
 }
-
+.pageBlockHeaderSide.discoverBugContainer p.footnote a { color: #fff; }
 
 
 .discoverContentList

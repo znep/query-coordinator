@@ -95,8 +95,12 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
-  # Support both /blists and /datasets short URLs
+  # Support /blists, /datasets, and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',
+    :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP}
+
+  map.connect 'd/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
 

@@ -69,23 +69,37 @@ blist.discover.searchSubmitHandler = function(event)
     event.preventDefault();
     var $form = $(this);
     
+    $(".simpleTabs li").removeClass("active");
+    if ($("#tabSearch").length > 0)
+    {
+        $("#tabSearch").addClass("active");
+    }
+    else
+    {
+        $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
+    }
+    
+    $(".tabContentContainer").removeClass("active");
+    $("#discoverTabSearchResults").addClass("active").html(
+        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\"> \
+          <div class=\"tabContent noresult\"> \
+            <h2>Searching...</h2> \
+            <p class=\"clearBoth\"> \
+                <img src=\"/stylesheets/images/common/spinner1.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
+            </p> \
+          </div> \
+        </div></div></div> \
+        <div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\"> \
+          <div class=\"tabContentNav\"></div> \
+        </div></div>"
+    );
+    
     $.Tache.Get({ 
         url: $form.attr("action"),
         data: $form.find(":input"),
         success: function(data)
         {
-            $(".simpleTabs li").removeClass("active");
-            if ($("#tabSearch").length > 0)
-            {
-                $("#tabSearch").addClass("active");
-            }
-            else
-            {
-                $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
-            }
-            
-            $(".tabContentContainer").removeClass("active");
-            $("#discoverTabSearchResults").addClass("active").html(data);
+            $("#discoverTabSearchResults").html(data);
             
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);

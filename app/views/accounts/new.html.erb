@@ -1,40 +1,11 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "signup-screen" %>
   <title><%= t(:page_title) %></title>
 <% end %>
 
-<% dialog_content(nil, "signupBox") do %>
-  <div class='header'>
-    <h1>t(:blist_company)</h1>
-  </div>
-
-  <div class='mainContent'>
-    <div class='title clearfix'>
-      <h2><strong>Sign up!</strong> We're making data social.</h2>
-      <p>Before we get started, we need to know a little about you.</p>
-    </div>
-
-    <% form_tag(account_path, :id => "signupForm", :multipart => true) do %>
-      <div class="fieldContent clearfix">
-        <%= render(:partial => "new_account_form") %>
-      </div>
-      <div class="submitLine clearfix">
-        <%= image_submit_tag("/stylesheets/images/account/button_sign_up_now.png") %>
-        <div class="buttonLinkLarge">
-          <%= link_to("<span>Already Have an Account?</span>", login_path) %>
-        </div>
-      </div>
-
-    <% end %>
-
-    <div class="contentFooter">
-      <p>By signing up, you accept the <a href="/privacy">Privacy Policy</a> and <a href="/terms-of-service">Terms of Service</a> | *Required field</p>
-    </div>
-  </div>
-<% end %>
+<%= render(:partial => "signup") %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.validate", 
+  <%= javascript_include_tag "plugins/jquery.validate",
   "screens/signup-screen", :cache => "cache/accounts_new_all" %>
 <% end %>

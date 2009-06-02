@@ -149,6 +149,29 @@
                 return;
             }
 
+            if (blist.util.inlineLogin)
+            {
+                blist.util.inlineLogin.verifyUser(
+                    function (isSuccess) {
+                        if (isSuccess)
+                        {
+                            doSubmitComment($commentPane, $form, true);
+                        }
+                        else
+                        {
+                            $form.find(':text:first').focus();
+                        }
+                    }, 'You must have an account to comment or rate a dataset');
+            }
+            else
+            {
+                doSubmitComment($commentPane, $form);
+            }
+        };
+
+        function doSubmitComment($commentPane, $form, redirectAfter)
+        {
+            var config = $commentPane.data('config-infoPaneComments');
             $form.addClass(config.disabledClass);
             $(window).resize();
             var requestData = $.param($form.find(":input"));
@@ -202,6 +225,15 @@
                             .removeClass(config.hiddenClass);
                     }
                     hideAllForms($commentPane);
+
+                    if (redirectAfter)
+                    {
+                        if ($newComment.length > 0)
+                        {
+                            var commentId = $newComment.attr('id').split('_')[1];
+                        }
+                        redirect($form, commentId);
+                    }
                 }
             });
         };
@@ -216,6 +248,29 @@
                 return;
             }
 
+            if (blist.util.inlineLogin)
+            {
+                blist.util.inlineLogin.verifyUser(
+                    function (isSuccess) {
+                        if (isSuccess)
+                        {
+                            doSubmitReply($commentPane, $form, true);
+                        }
+                        else
+                        {
+                            $form.find('textarea:first').focus();
+                        }
+                    }, 'You must have an account to comment or rate a dataset');
+            }
+            else
+            {
+                doSubmitReply($commentPane, $form);
+            }
+        };
+
+        function doSubmitReply($commentPane, $form, redirectAfter)
+        {
+            var config = $commentPane.data('config-infoPaneComments');
             $form.addClass(config.disabledClass);
             $(window).resize();
             var requestData = $.param($form.find(":input"));
@@ -270,6 +325,15 @@
                     }
 
                     hideAllForms($commentPane);
+
+                    if (redirectAfter)
+                    {
+                        if ($newComment.length > 0)
+                        {
+                            var commentId = $newComment.attr('id').split('_')[1];
+                        }
+                        redirect($form, commentId);
+                    }
                 }
             });
         };
@@ -284,7 +348,8 @@
                 return;
             }
 
-            var hrefPieces = $link.attr('href').slice(1).split('_');
+            var href = $link.attr('href');
+            var hrefPieces = href.slice(href.indexOf('#') + 1).split('_');
             var $form = $link.closest('form');
             var reqObj = {'comment[id]': hrefPieces[1]};
             var isAjaxAction = true;
@@ -316,16 +381,52 @@
 
             if (isAjaxAction)
             {
-                $link.addClass(config.actionDoneClass);
-                var requestData = $.param(reqObj) + "&" +
-                    $.param($form.find(":input"));
-                $.ajax({
-                    url: $form.attr("action"),
-                    type: "PUT",
-                    dataType: "json",
-                    data: requestData
-                });
+                if (blist.util.inlineLogin)
+                {
+                    blist.util.inlineLogin.verifyUser(
+                        function (isSuccess) {
+                            if (isSuccess)
+                            {
+                                doAction($commentPane, $link, $form, reqObj, true);
+                            }
+                        },
+                        'You must have an account to flag or rate a comment');
+                }
+                else
+                {
+                    doAction($commentPane, $link, $form, reqObj);
+                }
             }
+        };
+
+        function doAction($commentPane, $link, $form, reqObj, redirectAfter)
+        {
+            var config = $commentPane.data('config-infoPaneComments');
+            $link.addClass(config.actionDoneClass);
+            var requestData = $.param(reqObj) + "&" +
+                $.param($form.find(":input"));
+            $.ajax({
+                url: $form.attr("action"),
+                type: "PUT",
+                dataType: "json",
+                data: requestData,
+                success: function()
+                {
+                    if (redirectAfter)
+                    {
+                        redirect($form, reqObj['comment[id]']);
+                    }
+                }
+            });
+        };
+
+        function redirect($form, commentId)
+        {
+            var href = $form.attr('action')
+                .match(/((\/[a-zA-Z0-9_\-]+){1,2}\/\w{4}-\w{4})/)[1];
+            window.location = href +
+                '?metadata_pane=tabComments' +
+                (commentId ? '&comment=' + commentId : '')
         };
 
         function updateCommentRating($commentPane, $link)

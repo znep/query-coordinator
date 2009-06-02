@@ -408,8 +408,7 @@
 
       <%- comments = view.comments -%>
       <%- form_tag(post_comment_blist_path(view.id),
-      :class => ('postComment' + (comments.length > 0 ? ' hidden' : '') +
-      (current_user.nil? ? ' doFullReq' : ''))) do -%>
+      :class => ('postComment' + (comments.length > 0 ? ' hidden' : ''))) do -%>
 
       <dl class="summaryList">
         <dt>My Rating</dt>

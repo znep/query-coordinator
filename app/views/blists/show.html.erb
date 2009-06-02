@@ -6,7 +6,6 @@
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
 <% end %>
 
-<div id='overlay'></div>
 <%- is_owner = current_user && @view && @view.owner.id == current_user.id -%>
 <%- can_edit = @view && @view.can_edit() -%>
 
@@ -38,8 +37,7 @@
       <li class='tempViewTab filter inlineEdit'><div class='wrapper'>
         <div class='innerWrapper'>
           <span title='Click to name and save your filtered view'>[Temp View]</span>
-          <%- form_tag(blists_path, :class => ('tempView' +
-            (current_user.nil? ? ' doFullReq' : ''))) do -%>
+          <%- form_tag(blists_path, :class => 'tempView') do -%>
           <%= hidden_field_tag("view[originalViewId]", @view.id) %>
           <%= hidden_field_tag("view[viewFilters]",
             (JSON.generate(@view.data['viewFilters'] || ''))) %>
@@ -311,8 +309,7 @@
                 <span title='Click to name and save your filtered view'>
                   Unsaved Filter
                 </span>
-                <%- form_tag(blists_path, :class => ('tempView' +
-                  (current_user.nil? ? ' doFullReq' : ''))) do -%>
+                <%- form_tag(blists_path, :class => 'tempView') do -%>
                 <%= hidden_field_tag("view[originalViewId]", @view.id) %>
                 <%= hidden_field_tag("view[viewFilters]",
                   (JSON.generate(@view.data['viewFilters'] || ''))) %>
@@ -338,10 +335,23 @@
     </div>
   </div>
 </div>
+
 <% content_for :js_footer do %>
+  <div id='overlay'></div>
+
+  <%- if !current_user -%>
+  <%= render(:partial => 'user_sessions/login', :locals => {:is_modal => true}) %>
+  <%= render(:partial => "accounts/signup", :locals => {:is_modal => true}) %>
+  <%= javascript_include_tag "plugins/jquery.validate", "plugins/ajaxupload.3.0",
+    "screens/signup-screen", :cache => "cache/inline_accounts_new_all" %>
+  <%- end -%>
+
   <%= render(:partial => "shared/common_js") %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.blistGrid');
+    <%- if !current_user.nil? -%>
+    blist.currentUserId = "<%= current_user.id %>";
+    <%- end -%>
     blist.blistGrid.referer = "<%= request.referer %>";
     <%- if !@view.nil? -%>
     blist.blistGrid.blistId = "<%= @view.tableId %>";
@@ -355,9 +365,10 @@
   <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min",
     "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
     "util/extMouseWheel", "util/flash-interface", "util/navigation",
-    "util/swfobject", "data/types", "data/model", "data/table",
-    "widgets/inline-edit", "widgets/dropdown-menu", "widgets/selectable-list",
-    "widgets/pagination", "widgets/info-pane-comments", "widgets/scrollable",
+    "util/inline-login", "util/swfobject", "data/types", "data/model",
+    "data/table", "widgets/inline-edit", "widgets/dropdown-menu",
+    "widgets/selectable-list", "widgets/pagination",
+    "widgets/info-pane-comments", "widgets/scrollable",
     "screens/info-pane", "screens/blist-grid-screen",
     :cache => "cache/blists_show_all" %>
 <% end %>

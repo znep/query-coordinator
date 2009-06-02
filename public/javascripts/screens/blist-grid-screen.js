@@ -721,6 +721,8 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId)
     }
 };
 
+
+
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -909,13 +911,13 @@ $(function ()
     $("#tempInfoPane .inlineEdit").inlineEdit({
         displaySelector: '.itemContent span',
         editClickSelector: '.itemContent span, .itemActions',
+        loginMessage: 'Creating a public filter requires you to have an account. \
+            Either sign in or sign up to save your public filter.',
         submitSuccessCallback: blistGridNS.newViewCreated});
     $(".tabList .tempViewTab.inlineEdit").inlineEdit({
+        loginMessage: 'Creating a public filter requires you to have an account. \
+            Either sign in or sign up to save your public filter.',
         submitSuccessCallback: blistGridNS.newViewCreated});
-    // When they are not logged in and try to submit a create, first disable
-    //  isTempView so they aren't prompted when they hit Login
-    $('#tempInfoPane form.doFullReq, .tabList .tempViewTab form.doFullReq')
-        .submit(function (e) { blistGridNS.anonLeaving = true; });
 
     $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
 
@@ -977,13 +979,7 @@ $(function ()
 
     window.onbeforeunload = function ()
     {
-        if (blistGridNS.anonLeaving)
-        {
-            blistGridNS.anonLeaving = false;
-            return 'Saving a view requires you to be logged in.' +
-                '  You will be redirected to the login page.';
-        }
-        else if (blistGridNS.isTempView)
+        if (blistGridNS.isTempView)
         {
             return 'You will lose your temporary filter.';
         }

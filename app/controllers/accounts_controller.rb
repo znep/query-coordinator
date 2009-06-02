@@ -44,8 +44,14 @@ class AccountsController < ApplicationController
     begin
       user = User.create(params[:account])
     rescue CoreServerError => e
-      flash[:error] = e.error_message
-      return (redirect_to signup_path)
+      error = e.error_message
+      respond_to do |format|
+        format.html do
+          flash[:error] = error
+          return (redirect_to signup_path)
+        end
+        format.data { return render :json => {:error => error}}
+      end
     end
 
     # Now, authenticate the user
@@ -55,7 +61,7 @@ class AccountsController < ApplicationController
       # If the core server gives us an error, oh well... we've alredy created
       # the account, so we might as well send them to the main page, sans
       # profile photo.
-      if params[:profile_image]
+      if params[:profile_image] && !params[:profile_image].blank?
         begin
           user.profile_image = params[:profile_image]
         rescue CoreServerError => e
@@ -63,10 +69,19 @@ class AccountsController < ApplicationController
         end
       end
 
-      redirect_back_or_default(home_path)
+      respond_to do |format|
+        format.html { redirect_back_or_default(home_path) }
+        format.data { render :json => {:user_id => current_user.id}}
+      end
     else
-      flash[:warning] = "We were able to create your account, but couldn't log you in."
-      redirect_to login_path
+      warn = "We were able to create your account, but couldn't log you in."
+      respond_to do |format|
+        format.html do
+          flash[:warning] = warn
+          redirect_to login_path
+        end
+        format.data { render :json => {:error => warn, :promptLogin => true}}
+      end
     end
   end
 

@@ -68,6 +68,10 @@ class BlistsController < SwfController
       @view.register_opening
       @view_activities = Activity.find({:viewId => @view.id})
 
+      if !current_user
+        @user_session = UserSession.new
+      end
+
       # If we're displaying a single dataset, set the title to the description.
       if @view.description.blank?
         @meta_description = "View this dataset"

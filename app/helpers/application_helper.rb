@@ -150,8 +150,6 @@ module ApplicationHelper
       flash_to_display, level = flash[:warning], 'warning'
     elsif flash[:notice]
       flash_to_display, level = flash[:notice], 'notice'
-    else
-      return
     end
     content_tag 'div', flash_to_display, :class => "flash #{level}"
   end

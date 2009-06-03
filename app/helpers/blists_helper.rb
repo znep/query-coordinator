@@ -115,6 +115,8 @@ module BlistsHelper
         # For lists, the first (and only) child has all the real info
         if c.is_list
           c = c.childColumns[0]
+          # The core server is returning hidden list columns as an empty bnb
+          next unless c
         end
 
         # Now check if we should display nested table columns (this is not done

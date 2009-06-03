@@ -1,4 +1,4 @@
-class DiscoversController < ApplicationController
+class DataController < ApplicationController
   skip_before_filter :require_user
   
   PAGE_SIZE = 10
@@ -103,10 +103,10 @@ class DiscoversController < ApplicationController
     end
     
     respond_to do |format|
-      format.html { redirect_to(discover_path(params)) }
+      format.html { redirect_to(data_path(params)) }
       format.data { 
         if (@filtered_views.length > 0)
-          render(:partial => "discovers/view_list_tab", 
+          render(:partial => "data/view_list_tab", 
             :locals => 
             {
               :tab_title => tab_title, 
@@ -121,7 +121,7 @@ class DiscoversController < ApplicationController
               :search_term => search_term
             })
         else
-          render(:partial => "discovers/view_list_tab_noresult", 
+          render(:partial => "data/view_list_tab_noresult", 
               :locals => { :term => search_term })
         end
       }

@@ -40,13 +40,18 @@ ActionController::Routing::Routes.draw do |map|
       :contact_detail => :get,
       :group_detail => :get,
     }
-  map.resource :discover, :member => { 
-    :filter => :get, 
-    :tags => :get, 
-    :splash => :get, 
-    :noie => :get, 
-    :redirected => :get
-  }
+  
+  map.data 'data/', :controller => 'data', :action => 'show'
+  map.namespace(:data) do |data|
+    data.with_options :controller => 'data' do |data|
+      data.filter        'filter',      :action => 'filter'
+      data.tags          'tags',        :action => 'tags'
+      data.splash        'splash',      :action => 'splash'
+      data.noie          'noie',        :action => 'noie'
+      data.redirected    'redirected',  :action => 'redirected'
+    end
+  end
+  
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
@@ -104,7 +109,7 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
 
-  map.root :controller => "discovers", :action => "show"
+  map.root :controller => "data", :action => "show"
 
   map.import '/upload', :controller => 'imports', :action => 'new' 
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'

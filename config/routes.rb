@@ -43,11 +43,11 @@ ActionController::Routing::Routes.draw do |map|
   
   map.data 'data/', :controller => 'data', :action => 'show'
   map.with_options :controller => 'data' do |data|
-    data.data_filter        'filter',      :action => 'filter'
-    data.data_tags          'tags',        :action => 'tags'
-    data.data_splash        'splash',      :action => 'splash'
-    data.data_noie          'noie',        :action => 'noie'
-    data.data_redirected    'redirected',  :action => 'redirected'
+    data.data_filter        'data/filter',      :action => 'filter'
+    data.data_tags          'data/tags',        :action => 'tags'
+    data.data_splash        'data/splash',      :action => 'splash'
+    data.data_noie          'data/noie',        :action => 'noie'
+    data.data_redirected    'data/redirected',  :action => 'redirected'
   end
   
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }

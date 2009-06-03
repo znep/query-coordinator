@@ -7,7 +7,9 @@
 <% end %>
 
 <%- is_owner = current_user && @view && @view.owner.id == current_user.id -%>
-<%- can_edit = @view && @view.can_edit() -%>
+<%- can_edit = current_user && @view && @view.can_edit() -%>
+
+<div id='overlay'></div>
 
 <div class="scrollContentColumn">
   <div id='lensContainer' class='mainContent tableView'>
@@ -151,7 +153,8 @@
               <ul class="socialActions clearfix">
                 <%- 
                   tweet = CGI::escape("Check out the #{h(@view.name)} dataset on #{t(:blist_company)} - ")
-                  seo_path= "#{request.protocol + request.host_with_port + @view.href}"
+                  seo_path = "#{request.protocol + request.host_with_port + @view.href}"
+                  short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + @view.short_href}"
                 -%>
                 <li><%= link_to(image_tag("icons/social_icon_delicious_small.png", :size => "20x20", :alt => "Delicious"), 
                         "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}",
@@ -160,7 +163,7 @@
                         "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}",
                         :title => "Digg this", :rel => "external") %></li>
                 <li><%= link_to(image_tag("icons/social_icon_twitter_small.png", :size => "20x20", :alt => "Twitter"), 
-                        "http://www.twitter.com/home?status=#{tweet + seo_path}",
+                        "http://www.twitter.com/home?status=#{tweet + short_path}",
                         :title => "Tweet this", :rel => "external") %></li>
                 <li><%= link_to(image_tag("icons/social_icon_facebook_small.png", :size => "20x20", :alt => "Facebook"), 
                         "http://www.facebook.com/share.php?u=#{h(seo_path)}",
@@ -337,8 +340,6 @@
 </div>
 
 <% content_for :js_footer do %>
-  <div id='overlay'></div>
-
   <%- if !current_user -%>
   <%= render(:partial => 'user_sessions/login', :locals => {:is_modal => true}) %>
   <%= render(:partial => "accounts/signup", :locals => {:is_modal => true}) %>

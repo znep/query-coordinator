@@ -493,7 +493,7 @@
       <%- 
         tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{t(:blist_company)} - ")
         seo_path= "#{request.protocol + request.host_with_port + view.href}"
-        short_path= "#{request.protocol + request.host_with_port + view.short_href}"
+        short_path= "#{request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href}"
       -%>
       <li><%= link_to(image_tag("share_delicious.png", :size => "32x32", :alt => "Delicious"), 
               "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}",

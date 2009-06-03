@@ -20,7 +20,7 @@
                 Design a <%= t(:blist_name).capitalize %>
               </a></li>
               <li><%= link_to("Upload Data", {:controller => "imports", :action => "new"}, :class => 'arrowButton', :title => "Upload a CSV or XML data file and we'll convert it into a #{t(:blist_name)}.") %> </li>
-              <li><%= link_to("Browse #{t(:blists_name).titleize}", discover_path) %></li>
+              <li><%= link_to("Browse #{t(:blists_name).titleize}", data_path) %></li>
               <%- if false -%><li class="last"><a href="#">Invite Others</a></li><%- end -%>
             </ul>
             

@@ -42,14 +42,12 @@ ActionController::Routing::Routes.draw do |map|
     }
   
   map.data 'data/', :controller => 'data', :action => 'show'
-  map.namespace(:data) do |data|
-    data.with_options :controller => 'data' do |data|
-      data.filter        'filter',      :action => 'filter'
-      data.tags          'tags',        :action => 'tags'
-      data.splash        'splash',      :action => 'splash'
-      data.noie          'noie',        :action => 'noie'
-      data.redirected    'redirected',  :action => 'redirected'
-    end
+  map.with_options :controller => 'data' do |data|
+    data.data_filter        'filter',      :action => 'filter'
+    data.data_tags          'tags',        :action => 'tags'
+    data.data_splash        'splash',      :action => 'splash'
+    data.data_noie          'noie',        :action => 'noie'
+    data.data_redirected    'redirected',  :action => 'redirected'
   end
   
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }

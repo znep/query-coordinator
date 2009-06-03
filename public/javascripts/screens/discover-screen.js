@@ -167,7 +167,7 @@ $(function ()
         onShow: function(hash)
         {
             var $modal = hash.w;
-            var modalUrl = typeof(isOldIE) !== "undefined" ? "/discover/noie" : "/discover/splash";
+            var modalUrl = typeof(isOldIE) !== "undefined" ? "/data/noie" : "/data/splash";
             
             $.Tache.Get({ 
                 url: modalUrl,
@@ -216,7 +216,7 @@ $(function ()
         {
             var $modal = hash.w;
             $.Tache.Get({ 
-                url: "/discover/redirected",
+                url: "/data/redirected",
                 success: function(data)
                 {
                     $modal.html(data).show();

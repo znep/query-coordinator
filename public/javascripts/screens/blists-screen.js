@@ -551,22 +551,35 @@ blist.myBlists.getTypeClassName = function(value)
 
 blist.myBlists.customType = function(value, column)
 {
-    return "\"<div class='blist-type-\" + blist.myBlists.getTypeClassName(row) + \"'></div>\"";
+    return "\"<div class='blist-type blist-type-\" + \
+        blist.myBlists.getTypeClassName(row) + \"'></div>\"";
 };
 
 blist.myBlists.customDatasetName = function(value)
 {
-    var form = '\'<form action="/\' + $.urlSafe(row.category || "dataset") + \'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" ' +
-      'class="noselect" method="post">' + 
-      '<input name="authenticity_token" type="hidden" value="' + form_authenticity_token + '"/>' + 
-      '<input id="view_\'+ row.id + \'_name" name="view_\' + row.id + \'[name]" type="text" value="\' + $.htmlEscape(' + value + ') + \'"/>' +
+    var form = '\'<form action="/\' + $.urlSafe(row.category || "dataset") + \
+        \'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" \
+      class="noselect" method="post">\
+      <input name="authenticity_token" type="hidden" value="' +
+      form_authenticity_token + '"/>' +
+      '<input id="view_\'+ row.id + \'_name" name="view_\' + row.id + \
+      \'[name]" type="text" value="\' + $.htmlEscape(' + value + ') + \'"/>' +
       '<input src="/images/submit_button_mini.png" title="Rename" type="image" />' +
     '</form>\'';
 
-    return '\'<div id="name-cell-\' + row.id + \'" class="clipText" title="\' + $.htmlEscape(' + value +
+    var expansion =
+        '\'<a href="#expand_\' + row.id + \'" title="\' + \
+            (row.expanded ? \'Hide\' : \'Show\') + \' filters" \
+            class="blist-opener"></a>\'';
+
+    return '(row.childRows && row.childRows.length > 0 ? (' + expansion +
+        ') : \'\') + \'<div id="name-cell-\' + row.id + \'" \
+        class="name-cell clipText" \
+        title="\' + $.htmlEscape(' + value +
         ' || "") + \'"><a href="/\' + $.urlSafe(row.category || "dataset") + \
         \'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" \
-        class="dataset-name">\' + $.htmlEscape(' + value + ') + \'</a></div>\' + ' + form;
+        class="dataset-name">\' + $.htmlEscape(' + value + ') + \'</a></div>\' + ' +
+        form;
 };
 
 blist.myBlists.customClipText = function(value)
@@ -592,7 +605,8 @@ blist.myBlists.listDropdown = function()
 blist.myBlists.customHandle = function(value, column) {
     var menu = "<ul class='blistItemMenu menu' id='itemMenu-\"+" + value + "+\"'>\
         <li class='open'>\
-          <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Open'>\
+          <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + \
+            $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Open'>\
             <span class='highlight'>Open</span>\
           </a>\
         </li>\
@@ -602,9 +616,16 @@ blist.myBlists.customHandle = function(value, column) {
             <span class='highlight'>Add to favorites</span>\
           </a>\
         </li>\
+        <li class='edit'>\
+          <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + \
+            $.urlSafe(row.name) + \"/\"+" + value + "+\"?mode=edit' title='Edit'>\
+            <span class='highlight'>Edit</span>\
+          </a>\
+        </li>\
         \" + ((row.owner.id == '" + myBlistsNS.currentUserId + "') ? \"\
         <li class='rename renameLink'>\
-          <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Rename'>\
+          <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + \
+            $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Rename'>\
             <span class='highlight'>Rename</span>\
           </a>\
         </li>\
@@ -664,6 +685,13 @@ blist.myBlists.deleteClick = function (event)
             myBlistsNS.model.remove([row]);
         }
     });
+};
+
+blist.myBlists.openerClick = function(event)
+{
+    event.preventDefault();
+    myBlistsNS.model.expand(myBlistsNS.model.getByID(
+        $(this).attr('href').split('_')[1]));
 };
 
 blist.myBlists.listCellClick = function(event, row, column, origEvent)
@@ -776,6 +804,8 @@ blist.myBlists.initializeGrid = function()
         }
     };
 
+    $('.blist-td .blist-opener').live('click', myBlistsNS.openerClick);
+
     $('form.blistsFind')
         .keyup(applyFilter)
         .submit(function(event) { event.preventDefault(); applyFilter() });
@@ -844,7 +874,7 @@ blist.myBlists.columns.push([
     { cls: 'type', name: 'Type', fillFor: [myBlistsNS.columns[0][2]],
         dataIndex: 'isDefault', dataLookupExpr: '.isDefault',
         renderer: blist.myBlists.customType },
-    { name: 'Name', fillFor: [myBlistsNS.columns[0][3]],
+    { cls: 'name', name: 'Name', fillFor: [myBlistsNS.columns[0][3]],
         dataIndex: 'name', dataLookupExpr: '.name',
         renderer: blist.myBlists.customDatasetName },
     { name: 'Description', fillFor: [myBlistsNS.columns[0][4]],

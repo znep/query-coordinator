@@ -1050,6 +1050,8 @@
                         (row.id || row[0]), \
                         "\' class=\'blist-tr", \
                         (index % 2 ? " blist-tr-even" : ""), \
+                        (row.level != undefined ? " blist-tr-level" + \
+                            row.level : ""), \
                         (row.expanded ? " blist-tr-open" : ""), \
                         (row.groupLast ? " last" : ""), \
                         "\' style=\'top: ", \

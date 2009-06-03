@@ -733,12 +733,20 @@ blist.namespace.fetch('blist.data');
 
         /**
          * Retrieve the total number of rows, excluding group headers or other
-         *  special rows
+         *  special rows, but including all children of rows
          */
         this.dataLength = function(id)
         {
-            return $.grep(active, function(row, i)
-                { return row.level < 0; }, true).length;
+            var total = 0;
+            $.each(active, function(i, row)
+                {
+                    // Count rows with level 0 and no level
+                    if (!(row.level != 0))
+                    {
+                        total += 1 + (row.childRows ? row.childRows.length : 0);
+                    }
+                });
+            return total;
         };
 
         this.selectedRows = {};
@@ -1009,7 +1017,7 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
 
             // Fire events
-            dataChange([ row ]);
+            this.change([ row ]);
         }
 
         /**

@@ -101,8 +101,8 @@
     text-align:left;
 }
 
-.blist-td.blist-list-c1,
-.blist-td.blist-list-c2
+.blist-td.blist-td-favorite,
+.blist-td.blist-td-type
 {
     height: 27px;
     padding: 0 7px;
@@ -122,13 +122,21 @@ div.blist-select-row > div + div + div + div
 }
 
 div.blist-hot-row > div + div + div + div + div + div + div,
+div.blist-hot-row.blist-tr-level1 > div + div + div + div + div,
 div.highlight > div + div + div + div + div + div + div,
-div.blist-select-row > div + div + div + div + div + div + div
+div.blist-select-row > div + div + div + div + div + div + div,
+div.blist-select-row.blist-tr-level1 > div + div + div + div + div
 {
     background-image:url(/stylesheets/images/content/table/highlight_end.png);
-    background-position:right center;
+    background-position:right top;
     background-repeat:no-repeat;
     border-right: none;
+}
+
+div.blist-hot-row.blist-tr-level1 > div + div + div + div + div,
+div.blist-select-row.blist-tr-level1 > div + div + div + div + div
+{
+    border-right: solid 1px #ffffff;
 }
 
 div.blist-hot-row > div.blist-td > div.blist-favorite-off
@@ -201,9 +209,24 @@ div.blist-type-filterSharedBy
     overflow: visible;
 }
 
-div.blist-list-c2 > div
+div.blist-td-type > div
 {
     height: 27px;
+}
+
+.blist-td .blist-opener
+{
+    background-image: url('/stylesheets/images/content/table/expand_closed.png');
+    background-position: left center;
+    background-repeat: no-repeat;
+    float: left;
+    height: 12px;
+    width: 12px;
+}
+
+.blist-tr-open .blist-td .blist-opener
+{
+    background-image: url('/stylesheets/images/content/table/expand_opened.png');
 }
 
 .blist-td .dataset-name
@@ -219,6 +242,34 @@ div.blist-hot-row .menuHandle
 {
     background:transparent url(/stylesheets/images/content/table/icon_double_arrow.png) no-repeat scroll left 100px;
     background-position: 0px -8px;
+}
+
+.blist-tr-level1 .blist-td-type
+{
+    border-right: solid 4px #cacaca;
+    padding-right: 3px;
+    overflow: visible;
+}
+
+.blist-tr-level1 .blist-td-type .blist-type
+{
+    background-color: #ffffff;
+    left: 7px;
+    margin-left: 100%;
+    position: relative;
+    width: 31px;
+}
+
+.blist-tr-level1 .blist-td-name .name-cell
+{
+    padding-left: 26px;
+}
+
+.blist-table .blist-tr-level1 .blist-td.blist-tdfill
+{
+    background: none;
+    border-left: solid 4px #cacaca;
+    padding-left: 3px;
 }
 
 .menuHandle

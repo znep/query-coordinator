@@ -71,7 +71,7 @@
     width: 16px;
 }
 
-.blistItemMenu li
+ul.blistItemMenu.menu li
 {
     padding: 0 0;
 }
@@ -85,6 +85,7 @@
 }
 .blistItemMenu li.open a { background-position: 5px 0; }
 .blistItemMenu li.addFavorite a { background-position: 5px -19px; }
+.blistItemMenu li.edit a { background-position: 5px -38px; }
 .blistItemMenu li.rename a { background-position: 5px -38px; }
 .blistItemMenu li.delete a { background-position: 5px -57px; }
 

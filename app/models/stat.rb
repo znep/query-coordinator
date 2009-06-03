@@ -1,5 +1,5 @@
 class Stat < Model
-  GRAPH_DIMENSIONS = "150x150"
+  GRAPH_DIMENSIONS = "140x140"
   ROW_ACCESS_LEGEND = {
       "api" => "FF2C12", 
       "widget" => "2327C8",

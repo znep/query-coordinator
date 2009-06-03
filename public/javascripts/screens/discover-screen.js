@@ -230,18 +230,27 @@ $(function ()
         $("#redirectedModal").jqmHide();
     });
     
-    var re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
-    var ref_host = "";
-    if (document.referrer.match(re) && document.referrer.match(re)[1])
-    {
-        ref_host = document.referrer.match(re)[1].toString();
-    }
-    if (ref_host.indexOf("blist") != -1)
+    // Check to see if we were referred from a blist.com domain
+    var ref_re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
+    if (document.referrer.match(ref_re) 
+        && document.referrer.match(ref_re)[1]
+        && document.referrer.match(ref_re)[1].toString().indexOf("blist") != -1)
     {
         $("#redirectedModal").jqmShow();
+        return;
     }
-    else
+
+    // Check to see if we have a referrer URL
+    // var query_ref_re = new RegExp('(?:?|&)ref=(.+)(?:&|$)');
+    var query_ref_re = new RegExp('ref=(.+)(?:&|$)');
+    if (document.URL.match(query_ref_re) 
+        && document.URL.match(query_ref_re)[1]
+        && document.URL.match(query_ref_re)[1].toString().indexOf("blist") != -1)
     {
-        $("#splashModal").jqmShow();
+        $("#redirectedModal").jqmShow();
+        return;
     }
+
+    // Default ot the normal splash
+    $("#splashModal").jqmShow();
 });

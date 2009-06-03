@@ -1,4 +1,4 @@
-module DiscoversHelper
+module DataHelper
   
   def sort_select_options(current_sort = nil)
     out = ""

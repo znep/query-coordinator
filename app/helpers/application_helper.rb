@@ -238,4 +238,7 @@ HREF
     )
   end
 
+  def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
+    @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
+  end
 end

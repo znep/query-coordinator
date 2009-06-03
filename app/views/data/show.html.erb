@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "discover-screen", "splash",
     "carousel/jquery.jcarousel", "carousel/discover-carousel-skin",
-    :cache => "cache/discover_show_all" %>
+    :cache => "cache/data_show_all" %>
   <title><%= t(:page_title) %></title>
 <% end %>
 
@@ -14,7 +14,7 @@
       </div>
       <div class="pageBlockSearch">
         <p class="searchIntro"><%= t(:discover_search_intro) %></p>
-        <% form_tag(filter_discover_path, :class => "search large") do %>
+        <% form_tag(data_filter_path, :class => "search large") do %>
           <p>
             <%= text_field_tag("search", @search_term, :class => "textPrompt", :title => "Search") %>
             <%= hidden_field_tag("type", "SEARCH") %>
@@ -23,14 +23,16 @@
         <% end %>
       </div>
       <div class="pageBlockHeaderContent clearfix">
-        <div class="pageBlockHeaderCarousel carouselWrapper">
-          <div class="carouselOuter"><div class="carouselInner">
-            <h2><%= t(:discover_carousel_header) %></h2>
-            <ul id="featuredCarousel" class="jcarousel-skin-discover carousel">
-              <%= render(:partial => "carousel_item", :collection => @carousel_views) %>
-            </ul>
-          </div></div>
-        </div>
+        <% prerendered_cache "discover-carousel", @carousel_views_rendered, :expires => 15.minutes do %>
+          <div class="pageBlockHeaderCarousel carouselWrapper">
+            <div class="carouselOuter"><div class="carouselInner">
+              <h2><%= t(:discover_carousel_header) %></h2>
+              <ul id="featuredCarousel" class="jcarousel-skin-discover carousel">
+                <%= render(:partial => "carousel_item", :collection => @carousel_views) %>
+              </ul>
+            </div></div>
+          </div>
+        <% end %>
         
         <%- if !@current_user.nil? -%>
           <div class="pageBlockHeaderSide">
@@ -51,11 +53,11 @@
             <p class="bugActionButton">
               <a href="/about">About <%= t(:blist_company) %></a>
             </p>
-            <p class="footnote">US Federal Government Agencies, US State &amp; Local Governments, Worldwide Federal Governments</p>
+            <p class="footnote">
+              Latest News: <a href="/company-info/press"><strong>Socrata Launches Social Data Network for Open Government</strong></a>
+            </p>
           </div>
         <%- end -%>
-        
-
       </div>
     </div>
   </div></div>
@@ -88,20 +90,24 @@
       <%- end -%>
     </div>
     <div id="discoverTabPopular" class="tabContentContainer clearfix<%= @search_views.nil? ? ' active' : '' %>">
-      <%= render(:partial => "view_list_tab", :locals => { 
-        :tab_title => t(:discover_popular_content_header), 
-        :views => @popular_views, :views_total => @popular_views_total,
-        :current_page => 1, :type => "POPULAR", :current_filter => nil, 
-        :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil,
-        :search_term => nil }) %>
+	  <% prerendered_cache "discover-tab-popular", @popular_views_rendered, :expires_in => 15.minutes do %>
+		<%= render(:partial => "view_list_tab", :locals => {
+		  :tab_title => t(:discover_popular_content_header),
+		  :views => @popular_views, :views_total => @popular_views_total,
+		  :current_page => 1, :type => "POPULAR", :current_filter => nil,
+		  :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil,
+		  :search_term => nil }) %>
+	  <% end %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix">
-      <%= render(:partial => "view_list_tab", :locals => { 
-        :tab_title => "All #{t(:blists_name)}", 
-        :views => @all_views, :views_total => @all_views_total,
-        :current_page => 1, :type => "ALL", :current_filter => nil, 
-        :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil,
-        :search_term => nil }) %>
+	  <% prerendered_cache "discover-tab-all", @all_views_rendered, :expires_in => 15.minutes do %>
+		<%= render(:partial => "view_list_tab", :locals => {
+		  :tab_title => "All #{t(:blists_name)}",
+		  :views => @all_views, :views_total => @all_views_total,
+		  :current_page => 1, :type => "ALL", :current_filter => nil,
+		  :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil,
+		  :search_term => nil }) %>
+      <% end %>
     </div>
   </div>
 </div>
@@ -114,5 +120,5 @@
   <div class="jqmWindow" id="redirectedModal"></div>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", 
-  "widgets/simple-tab-navigate", "screens/discover-screen", :cache => "cache/discover_show_all" %>
+  "widgets/simple-tab-navigate", "screens/discover-screen", :cache => "cache/data_show_all" %>
 <% end %>

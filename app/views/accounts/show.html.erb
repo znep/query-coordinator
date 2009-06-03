@@ -91,6 +91,13 @@
     <% render(:layout => "shared/sidebar_box") do %>
       <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
     <% end %>
+    
+    <% render(:layout => "shared/sidebar_box", :locals => {:box_class => "jumpToActions"}) do %>
+      <h4>Jump To</h4>
+      <ul class="actionButtons blockList clearfix">
+        <li><%= link_to("Edit Profile", current_user.href) %></li>
+      </ul>
+    <% end %>
   </div>
 </div>
 

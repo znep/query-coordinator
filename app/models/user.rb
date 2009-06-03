@@ -38,7 +38,7 @@ class User < Model
     if score.nil?
       "0"
     elsif score > 0.90
-      return "%.2f" % (score * 100)
+      return "%.1f" % (score * 100)
     else
       return "%d" % (score * 100);
     end

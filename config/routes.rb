@@ -40,13 +40,16 @@ ActionController::Routing::Routes.draw do |map|
       :contact_detail => :get,
       :group_detail => :get,
     }
-  map.resource :discover, :member => { 
-    :filter => :get, 
-    :tags => :get, 
-    :splash => :get, 
-    :noie => :get, 
-    :redirected => :get
-  }
+  
+  map.data 'data/', :controller => 'data', :action => 'show'
+  map.with_options :controller => 'data' do |data|
+    data.data_filter        'data/filter',      :action => 'filter'
+    data.data_tags          'data/tags',        :action => 'tags'
+    data.data_splash        'data/splash',      :action => 'splash'
+    data.data_noie          'data/noie',        :action => 'noie'
+    data.data_redirected    'data/redirected',  :action => 'redirected'
+  end
+  
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
@@ -95,12 +98,16 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
-  # Support both /blists and /datasets short URLs
+  # Support /blists, /datasets, and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
 
-  map.root :controller => "discovers", :action => "show"
+  map.connect 'd/:id', :controller => 'blists',
+    :action => 'show', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP}
+
+  map.root :controller => "data", :action => "show"
 
   map.import '/upload', :controller => 'imports', :action => 'new' 
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'

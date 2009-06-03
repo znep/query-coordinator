@@ -69,23 +69,37 @@ blist.discover.searchSubmitHandler = function(event)
     event.preventDefault();
     var $form = $(this);
     
+    $(".simpleTabs li").removeClass("active");
+    if ($("#tabSearch").length > 0)
+    {
+        $("#tabSearch").addClass("active");
+    }
+    else
+    {
+        $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
+    }
+    
+    $(".tabContentContainer").removeClass("active");
+    $("#discoverTabSearchResults").addClass("active").html(
+        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\"> \
+          <div class=\"tabContent noresult\"> \
+            <h2>Searching...</h2> \
+            <p class=\"clearBoth\"> \
+                <img src=\"/stylesheets/images/common/spinner1.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
+            </p> \
+          </div> \
+        </div></div></div> \
+        <div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\"> \
+          <div class=\"tabContentNav\"></div> \
+        </div></div>"
+    );
+    
     $.Tache.Get({ 
         url: $form.attr("action"),
         data: $form.find(":input"),
         success: function(data)
         {
-            $(".simpleTabs li").removeClass("active");
-            if ($("#tabSearch").length > 0)
-            {
-                $("#tabSearch").addClass("active");
-            }
-            else
-            {
-                $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
-            }
-            
-            $(".tabContentContainer").removeClass("active");
-            $("#discoverTabSearchResults").addClass("active").html(data);
+            $("#discoverTabSearchResults").html(data);
             
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
@@ -153,7 +167,7 @@ $(function ()
         onShow: function(hash)
         {
             var $modal = hash.w;
-            var modalUrl = typeof(isOldIE) !== "undefined" ? "/discover/noie" : "/discover/splash";
+            var modalUrl = typeof(isOldIE) !== "undefined" ? "/data/noie" : "/data/splash";
             
             $.Tache.Get({ 
                 url: modalUrl,
@@ -202,7 +216,7 @@ $(function ()
         {
             var $modal = hash.w;
             $.Tache.Get({ 
-                url: "/discover/redirected",
+                url: "/data/redirected",
                 success: function(data)
                 {
                     $modal.html(data).show();
@@ -216,18 +230,27 @@ $(function ()
         $("#redirectedModal").jqmHide();
     });
     
-    var re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
-    var ref_host = "";
-    if (document.referrer.match(re) && document.referrer.match(re)[1])
-    {
-        ref_host = document.referrer.match(re)[1].toString();
-    }
-    if (ref_host.indexOf("blist") != -1)
+    // Check to see if we were referred from a blist.com domain
+    var ref_re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
+    if (document.referrer.match(ref_re) 
+        && document.referrer.match(ref_re)[1]
+        && document.referrer.match(ref_re)[1].toString().indexOf("blist") != -1)
     {
         $("#redirectedModal").jqmShow();
+        return;
     }
-    else
+
+    // Check to see if we have a referrer URL
+    // var query_ref_re = new RegExp('(?:?|&)ref=(.+)(?:&|$)');
+    var query_ref_re = new RegExp('ref=(.+)(?:&|$)');
+    if (document.URL.match(query_ref_re) 
+        && document.URL.match(query_ref_re)[1]
+        && document.URL.match(query_ref_re)[1].toString().indexOf("blist") != -1)
     {
-        $("#splashModal").jqmShow();
+        $("#redirectedModal").jqmShow();
+        return;
     }
+
+    // Default ot the normal splash
+    $("#splashModal").jqmShow();
 });

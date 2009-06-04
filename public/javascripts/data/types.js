@@ -287,7 +287,7 @@ blist.namespace.fetch('blist.data.types');
             var day = value.getMonth();
             if (day < 10)
                 day = '0' + day;
-            result = (value.getMonth() + 1) + '/' + value.getDate() + '/' + (value.getYear() + 1900);
+            result = (value.getMonth() + 1) + '/' + value.getDate() + '/' + (value.getFullYear());
         }
         if (includeTime) {
             var hour = value.getHours();

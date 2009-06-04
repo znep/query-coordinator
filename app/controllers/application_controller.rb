@@ -42,6 +42,20 @@ class ApplicationController < ActionController::Base
     render_error(500)
   end
 
+  def prerendered_fragment_for(buffer, name = {}, prerendered_content = nil, options = nil, &block)
+    if perform_caching
+      if prerendered_content
+        buffer.concat(prerendered_content)
+      else
+        pos = buffer.length
+        block.call
+        write_fragment(name, buffer[pos..-1], options)
+      end
+    else
+      block.call
+    end
+  end
+
   # Patch the page caching support to handle our dynamic domain support.
   # (ie: the cache ends up in a directory based on the locale set via
   # the set_locale parameter, and Apache uses the domain name of the
@@ -54,6 +68,20 @@ class ApplicationController < ActionController::Base
     super(I18n.locale + path)
   end
 
+protected
+  # We use a custom page_cache_directory based on the theme of the site.
+  # The builtin rails page_cache_file function is broken with this type of
+  # implementation...
+  def self.page_cache_file(path)
+    if path == I18n.locale || path == I18n.locale + '/'
+      name = path += "/index"
+    else
+      name = URI.unescape(path.chomp('/'))
+    end
+
+    name << page_cache_extension unless (name.split('/').last || name).include? '.'
+    return name
+  end
 
 private
   # Allow access to the current controller from the UserSession model.

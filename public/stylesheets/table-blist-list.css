@@ -1,0 +1,288 @@
+.gridList
+{
+    position: relative;
+}
+
+.blist-table-title-tl
+{
+    padding-left: 8px;
+}
+
+.blist-table-title-tr
+{
+    display: none;
+}
+
+.blist-table-header-scrolls
+{
+    background: #e8e8e8 url(/stylesheets/images/content/table/header_right_top.png) no-repeat right top;
+}
+
+.blist-table-header-scrolls
+{
+    background-color: #e8e8e8;
+    border-bottom: none;
+}
+
+.blist-table
+{
+    position: relative;
+}
+
+.blist-th .sort
+{
+    margin-bottom: 6px;
+    width: 12px;
+    background: transparent url(/stylesheets/images/content/table/icon_sort_down.png) right no-repeat;
+}
+
+.blist-th .sort-desc
+{
+    background-image: url(/stylesheets/images/content/table/icon_sort_up.png);
+}
+
+.blist-th-first
+{
+    background: url(/stylesheets/images/content/table/header_left_top.png) no-repeat left top;
+    border-left: none;
+    width: 33px;
+}
+
+.blist-th-favorite 
+{
+    background: transparent url(/stylesheets/images/content/table/icon_sorting_star.png) no-repeat center center;
+}
+
+.blist-th-type 
+{
+    background: transparent url(/stylesheets/images/content/table/icon_sorting_type.png) no-repeat center center;
+}
+
+.blist-th-favorite .blist-th-name, div.gridList .blist-th-type .blist-th-name 
+{
+    visibility: hidden;
+}
+
+.blist-th
+{
+    border-right: 1px solid #d4d4d4;
+    font-size: 1.4em;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    line-height: 0.7em;
+}
+
+.blist-th.blist-list-c6
+{
+    border-right: none;
+}
+
+.blist-td
+{
+    border-right: 1px solid #ffffff;
+    font-size: 1.2em;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.blist-td-header
+{
+    color:#660000;
+    font-size:1.3em;
+    text-indent:0;
+    text-transform:uppercase;
+}
+
+.blist-th, .blist-td
+{
+    font-weight: normal;
+    padding-left: 7px;
+    padding-right: 7px;
+    text-align:left;
+}
+
+.blist-td.blist-td-favorite,
+.blist-td.blist-td-type
+{
+    height: 27px;
+    padding: 0 7px;
+}
+
+.favoriteMarker
+{
+    background:transparent url(/stylesheets/images/content/table/icon_favorite_sprite.png) no-repeat scroll left 27px;
+}
+
+div.blist-hot-row > div + div + div + div,
+div.highlight > div + div + div + div,
+div.blist-select-row > div + div + div + div
+{
+    background-color:#e3ecf7;
+    border-right: 1px solid #e3ecf7;
+}
+
+div.blist-hot-row > div + div + div + div + div + div + div,
+div.blist-hot-row.blist-tr-level1 > div + div + div + div + div,
+div.highlight > div + div + div + div + div + div + div,
+div.blist-select-row > div + div + div + div + div + div + div,
+div.blist-select-row.blist-tr-level1 > div + div + div + div + div
+{
+    background-image:url(/stylesheets/images/content/table/highlight_end.png);
+    background-position:right top;
+    background-repeat:no-repeat;
+    border-right: none;
+}
+
+div.blist-hot-row.blist-tr-level1 > div + div + div + div + div,
+div.blist-select-row.blist-tr-level1 > div + div + div + div + div
+{
+    border-right: solid 1px #ffffff;
+}
+
+div.blist-hot-row > div.blist-td > div.blist-favorite-off
+{
+    background-image:url(/stylesheets/images/content/table/icon_favorite_sprite.png);
+    background-position: center 0px;
+}
+
+div.blist-favorite
+{
+    height: 27px;
+}
+
+.blist-favorite
+{
+    cursor: pointer;
+}
+
+.blist-favorite-on
+{
+    background-image:url(/stylesheets/images/content/table/icon_favorite_sprite.png);
+    background-position: center 25px;
+}
+
+div.blist-type-default
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -7px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-filter
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -131px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-defaultSharedTo
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -69px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-defaultSharedBy
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -38px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-filterSharedTo
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -193px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-type-filterSharedBy
+{
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-position: center -162px;
+    background-repeat: no-repeat;
+    overflow: visible;
+}
+
+div.blist-td-type > div
+{
+    height: 27px;
+}
+
+.blist-td .blist-opener
+{
+    background-image: url('/stylesheets/images/content/table/expand_closed.png');
+    background-position: left center;
+    background-repeat: no-repeat;
+    float: left;
+    height: 12px;
+    width: 12px;
+}
+
+.blist-tr-open .blist-td .blist-opener
+{
+    background-image: url('/stylesheets/images/content/table/expand_opened.png');
+}
+
+.blist-td .dataset-name
+{
+    color: #333333;
+}
+
+.blist-td .clipText
+{
+    overflow: hidden;
+}
+div.blist-hot-row .menuHandle
+{
+    background:transparent url(/stylesheets/images/content/table/icon_double_arrow.png) no-repeat scroll left 100px;
+    background-position: 0px -8px;
+}
+
+.blist-tr-level1 .blist-td-type
+{
+    border-right: solid 4px #cacaca;
+    padding-right: 3px;
+    overflow: visible;
+}
+
+.blist-tr-level1 .blist-td-type .blist-type
+{
+    background-color: #ffffff;
+    left: 7px;
+    margin-left: 100%;
+    position: relative;
+    width: 31px;
+}
+
+.blist-tr-level1 .blist-td-name .name-cell
+{
+    padding-left: 26px;
+}
+
+.blist-table .blist-tr-level1 .blist-td.blist-tdfill
+{
+    background: none;
+    border-left: solid 4px #cacaca;
+    padding-left: 3px;
+}
+
+.menuHandle
+{
+    display:block;
+    height:27px;
+    line-height:100px;
+    overflow:hidden;
+    width:27px;
+}
+
+.blistItemMenu
+{
+    left: 16px;
+    top: 21px;
+}

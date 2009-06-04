@@ -1,3 +1,4 @@
+<% cache ["discover-view-list-item", view_list_item.id], :expires_in => 15.minutes do %>
 <%- view = view_list_item -%>
 
 <li class="viewListItem clearfix">
@@ -26,7 +27,7 @@
         <p class="viewCategory"><%= view.category.nil? ? '' : view.category.capitalize %></p>
       <%- end -%>
       <p class="viewDescription clipText"><%= h(view.description) %></p>
-      <%- if (view.tags.length > 0) -%>
+      <%- if (view.tags && view.tags.length > 0) -%>
         <p class="viewTags"><span>Tags: </span><%= h(view.tag_display_string) %></p>
       <%- end -%>
     </div>
@@ -37,3 +38,4 @@
     </div>
   </div>
 </li>
+<% end %>

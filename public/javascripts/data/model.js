@@ -16,7 +16,7 @@
  *     describes the columns such as they might appear in the corresponding level of a tree.  For example, columns[0]
  *     is the root column set.  Columns[1] contains the columns that display if a root row is expanded.  Etc.</li>
  *   <li>view - a Blist view object, used to configure options that aren't otherwise set</li>
- *   <li>name - the name displayed as the title of the grid</li>
+ *   <li>title - the name displayed as the title of the grid</li>
  * </ul>
  *
  * Columns are described using an object with the following fields:
@@ -70,6 +70,7 @@
  *   <li>load - called when the entire set of rows is replaced</li>
  *   <li>after_load - called after an AJAX load of data</li>
  *   <li>row_change - called with an array of rows that have had their contents change</li>
+ *   <li>selection_change - called with an array of rows that have had their selection change</li>
  *   <li>row_add - called with an array of rows that have been newly added to the model</li>
  *   <li>row_remove - called with an array of rows that are no longer present in the model</li>
  *   <li>col_width_change - called when there is a metadata change that only affects column widths</li>
@@ -194,6 +195,7 @@ blist.namespace.fetch('blist.data');
 
         var dataChange = function()
         {
+            self.unselectAllRows(true);
             $(listeners).trigger('load', [ self ]);
         };
 
@@ -633,8 +635,11 @@ blist.namespace.fetch('blist.data');
         /**
          * Remove rows from the model.
          */
-        this.remove = function(rows) {
-            for (var row in rows) {
+        this.remove = function(rows)
+        {
+            for (var i = 0; i < rows.length; i++)
+            {
+                var row = rows[i];
                 var id = row.id || row[0];
                 var index = lookup[id];
                 if (index)
@@ -658,7 +663,9 @@ blist.namespace.fetch('blist.data');
                         }
                     }
                 }
+                this.unselectRow(row);
             }
+            installIDs();
             $(listeners).trigger('row_remove', [ rows ]);
         }
 
@@ -668,6 +675,14 @@ blist.namespace.fetch('blist.data');
         this.change = function(rows) {
             $(listeners).trigger('row_change', [ rows ]);
         }
+
+        /**
+         * Notify listeners of row selectionchanges.
+         */
+        this.selectionChange = function(rows)
+        {
+            $(listeners).trigger('selection_change', [ rows ]);
+        };
 
         /**
          * Notify the model of column width changes.  This function allows clients to perform optimized rendering vs.
@@ -689,8 +704,16 @@ blist.namespace.fetch('blist.data');
          */
         this.getByID = function(id)
         {
-            var index = lookup[id];
-            return index == undefined ? undefined : rows[index];
+            var row = undefined;
+            if (lookup[id] != undefined)
+            {
+                row = rows[lookup[id]];
+            }
+            else if (activeLookup[id] != undefined)
+            {
+                row = active[activeLookup[id]];
+            }
+            return row;
         };
 
         /**
@@ -703,9 +726,125 @@ blist.namespace.fetch('blist.data');
         /**
          * Retrieve the total number of rows.
          */
-        this.length = function(id) {
+        this.length = function(id)
+        {
             return active.length;
-        }
+        };
+
+        /**
+         * Retrieve the total number of rows, excluding group headers or other
+         *  special rows, but including all children of rows
+         */
+        this.dataLength = function(id)
+        {
+            var total = 0;
+            $.each(active, function(i, row)
+                {
+                    // Count rows with level 0 and no level
+                    if (!(row.level != 0))
+                    {
+                        total += 1 + (row.childRows ? row.childRows.length : 0);
+                    }
+                });
+            return total;
+        };
+
+        this.selectedRows = {};
+
+        this.toggleSelectRow = function(row)
+        {
+            if (this.selectedRows[row.id || row[0]])
+            {
+                return this.unselectRow(row);
+            }
+            else
+            {
+                return this.selectRow(row);
+            }
+        };
+
+        this.selectRow = function(row, suppressChange)
+        {
+            if (row.level < 0)
+            {
+                return;
+            }
+
+            var rowId = row.id || row[0];
+            this.selectedRows[rowId] = activeLookup[rowId];
+            if (!suppressChange)
+            {
+                this.selectionChange([row]);
+            }
+            return [row];
+        };
+
+        this.unselectRow = function(row)
+        {
+            delete this.selectedRows[row.id || row[0]];
+            this.selectionChange([row]);
+            return [row];
+        };
+
+        this.unselectAllRows = function(suppressChange)
+        {
+            var unselectedRows = [];
+            $.each(this.selectedRows, function (id, v)
+            {
+                unselectedRows.push(self.getByID(id));
+            });
+            this.selectedRows = {};
+            if (!suppressChange)
+            {
+                this.selectionChange(unselectedRows);
+            }
+            return unselectedRows;
+        };
+
+        this.selectSingleRow = function(row)
+        {
+            var changedRows = this.unselectAllRows(true)
+                .concat(this.selectRow(row, true));
+            this.selectionChange(changedRows);
+            return changedRows;
+        };
+
+        this.selectRowsTo = function(row)
+        {
+            var minIndex;
+            $.each(this.selectedRows, function (id, index)
+            {
+                if (minIndex == null || minIndex > index)
+                {
+                    minIndex = index;
+                }
+            });
+
+            if (minIndex == null)
+            {
+                return this.selectRow(row);
+            }
+            var curIndex = activeLookup[row.id || row[0]];
+            var maxIndex = curIndex;
+            if (curIndex < minIndex)
+            {
+                maxIndex = minIndex;
+                minIndex = curIndex;
+            }
+
+            var changedRows = this.unselectAllRows(true);
+            for (var i = minIndex; i <= maxIndex; i++)
+            {
+                var curRow = active[i];
+                if (!(curRow.level < 0))
+                {
+                    this.selectedRows[curRow.id || curRow[0]] = i;
+                    changedRows.push(curRow);
+                }
+            }
+            this.selectionChange(changedRows);
+            return changedRows;
+        };
 
         /**
          * Sort the data.
@@ -878,7 +1017,7 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
 
             // Fire events
-            dataChange([ row ]);
+            this.change([ row ]);
         }
 
         /**
@@ -1268,7 +1407,9 @@ blist.namespace.fetch('blist.data');
 
         // Apply filtering, grouping, and sub-row expansion to the active set.  This applies current settings to the
         // active set and then notifies listeners of the data change.
-        var configureActive = function(filterSource) {
+        var configureActive = function(filterSource)
+        {
+            var activeOnly = active != rows;
             removeSpecialRows();
             var idChange;
             if (filterFn) {
@@ -1284,7 +1425,7 @@ blist.namespace.fetch('blist.data');
                 idChange = true;
             }
             if (idChange)
-                installIDs(true);
+                installIDs(activeOnly);
             dataChange();
         }
 
@@ -1323,7 +1464,8 @@ blist.namespace.fetch('blist.data');
         // Generate group headers based on the current grouping configuration.
         // Does not fire events.  Note that grouping is not currently supported
         // in progressive rendering mode.
-        var doGroup = function() {
+        var doGroup = function()
+        {
             removeSpecialRows();
             if (!groupFn || !orderCol)
                 return;
@@ -1336,14 +1478,17 @@ blist.namespace.fetch('blist.data');
                     active.splice(i, 0, {
                         level: -1,
                         type: 'group',
-                        title: group
-                    })
+                        title: group,
+                        id: 'special-' + i
+                    });
                     i++;
                     currentGroup = group;
                 }
                 i++;
             }
-        }
+            // Update ID lookup
+            installIDs(true);
+        };
 
         // Expand rows that the user has opened
         var doExpansion = function() {

@@ -52,7 +52,7 @@ module ApplicationHelper
         ret << "<li class='sectionTitle #{i['class']}'>#{i['section_title']}</li>"
       elsif i['button']
         ret << "<li class='button #{i['class']}'>" <<
-          "<a title='#{i['title']}' href='#{i['href']}'>" <<
+          "<a title='#{i['title']}' href='#{i['href']}' q=\"#{i['q']}\">" <<
           "<div class='outerWrapper'><div class='midWrapper'>" <<
           "<span class='innerWrapper'>" <<
           "#{i['text']}</span></div></div></a></li>"
@@ -65,7 +65,7 @@ module ApplicationHelper
 
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
           (i['swf_item'] ? ' swfItem' : '') << "'><a title='#{i['title']}' " <<
-          "href='#{i['href']}'>" <<
+          "href='#{i['href']}' q=\"#{i['q']}\">" <<
           "<span class='highlight'>#{i['text']}</span></a>"
         if i['submenu']
           ret << menu_tag(i['submenu'], is_owner, can_edit)
@@ -109,11 +109,14 @@ module ApplicationHelper
   end
 
   def sidebar_filter_link(content, params, current_params, is_default = false)
-    "<a href='?" +
-      (params.inject({}) {|h,(k,v)| h[k] = CGI.escape(v); h}.to_param) +
-      "' title='#{h(get_title(params))}'" +
-      (params == current_params || (current_params.empty? && is_default) ?
-        "class='hilight'" : "") + ">#{content}</a>"
+    escaped = params.inject({}) {|h, (k,v)| h[k] = CGI.escape(v); h}
+    href = escaped.to_param
+    title = h(get_title(params))
+    cls = (params == current_params || (current_params.empty? && is_default) ? 'hilight' : '')
+
+    return <<HREF
+<a href="?#{href}" title="#{title}" class="#{cls}" q="#{params.to_json.gsub(/"/, "'")}">#{content}</a>
+HREF
   end
   
   
@@ -235,4 +238,7 @@ module ApplicationHelper
     )
   end
 
+  def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
+    @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
+  end
 end

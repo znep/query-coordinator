@@ -10,18 +10,52 @@ class DataController < ApplicationController
                       (cookies[:show_splash].nil? ? true : cookies[:show_splash][:value])
 
     @page_size = PAGE_SIZE
+    factory = RequestFactory.new(:timeout => 10)
 
-    @all_views_total = View.find({ :limit => PAGE_SIZE, :count => true }, true).count
-    @all_views = View.find({ :limit => PAGE_SIZE }, true)
-    @all_views_tags = Tag.find({ :method => "viewsTags", :limit => 5 })
-    
-    @popular_views_total = 100
-    @popular_views = View.find_filtered({ :top100 => true, :limit => PAGE_SIZE, :page => 1 })
-    @popular_views_tags = Tag.find({ :method => "viewsTags", :top100 => true, :limit => 5 })
-    
-    @carousel_views = View.find_filtered({ :featured => true, :limit => 10 })
-    @network_views = View.find_filtered({ :inNetwork => true, :limit => 5 })
-    
+    EventMachine.run do
+      multi = EventMachine::MultiRequest.new
+      unless @all_views_rendered = read_fragment("discover-tab-all")
+        multi.add(@all_views_total = factory.views('limit' => PAGE_SIZE, 'count' => true))
+        multi.add(@all_views = factory.views('limit' => PAGE_SIZE))
+        multi.add(@all_views_tags = factory.tags('method' => 'viewsTags', 'limit' => 5))
+      end
+      unless @popular_views_rendered = read_fragment("discover-tab-popular")
+        multi.add(@popular_views = factory.views('top100' => true, 'limit' => PAGE_SIZE, 'page' => 1))
+        multi.add(@popular_views_tags = factory.tags('method' => 'viewsTags', 'top100' => true, 'limit' => 5))
+      end
+      unless @carousel_views_rendered = read_fragment("discover-carousel")
+        multi.add(@carousel_views = factory.views('featured' => true, 'limit' => 10))
+      end
+      multi.add(@network_views = factory.views('inNetwork' => 'true', 'limit' => 5))
+
+      multi.callback do
+        if multi.responses[:failed].length > 0
+          EventMachine.stop
+          return render_500
+        else
+
+          unless @all_views_rendered
+            @all_views_total = View.parse(@all_views_total.response).count
+            @all_views = View.parse(@all_views.response)
+            @all_views_tags = Tag.parse(@all_views_tags.response)
+          end
+
+          unless @popular_views_rendered
+            @popular_views = View.parse(@popular_views.response)
+            @popular_views_tags = Tag.parse(@popular_views_tags.response)
+            @popular_views_total = 100
+          end
+
+          unless @carousel_views_rendered
+            @carousel_views = View.parse(@carousel_views.response)
+          end
+          @network_views = View.parse(@network_views.response)
+          EventMachine.stop
+        end
+      end
+    end
+
+
     if (params[:search])
       @search_term = params[:search]
       @search_views_total = View.find_filtered({ :full => @search_term, :count => true }).count
@@ -162,6 +196,14 @@ class DataController < ApplicationController
   def redirected
     cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
     render(:layout => "splash")
+  end
+
+  protected
+  # Discover controller is heavily cached. Don't bother with putting an
+  # authenticity_token  anywhere on this page, since we'd just end up caching it
+  # and breaking stuff.
+  def protect_against_forgery?
+    false
   end
 
 end

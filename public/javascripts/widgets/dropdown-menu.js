@@ -200,7 +200,7 @@
     {
         var config = $menu.data("config-dropdownMenu");
         // We've got to close all other menus; there can be only one!
-        $(config.menuSelector).each(function () { hideMenu($(this)) });
+        $(config.menuSelector + ':visible').each(function () { hideMenu($(this)) });
 
         $menu.addClass(config.menuOpenClass);
 
@@ -254,16 +254,16 @@
             return;
         }
 
+        var $trigger = $menu.data("triggerButton");
         if (config.pullToTop)
         {
-            $menu.css(config._origPosition).insertAfter(config.triggerButton);
+            $menu.css(config._origPosition).insertAfter($trigger);
         }
 
         $menu.removeClass(config.menuOpenClass);
         // Close any submenus
         closeSubmenus(null, $menu);
 
-        var $trigger = $menu.data("triggerButton");
         $trigger.removeClass(config.triggerOpenClass);
         $(document).unbind('click.' + $menu.attr('id'));
     };

@@ -99,7 +99,7 @@
       -%>
     <ul class="headerActions favoriteAction">
       <li class="favorite <%= view.flag?('favorite') %>">
-        <a href="<%= favorite_action %>" title="<%= favorite_action_text %>"><%= favorite_action_text %></a>
+        <a id="info-fav-<%=view.id%>" href="<%= favorite_action %>" title="<%= favorite_action_text %>"><%= favorite_action_text %></a>
       </li>
     </ul>
     <%- end -%>

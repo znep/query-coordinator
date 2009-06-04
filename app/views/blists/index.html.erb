@@ -1,6 +1,6 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "list-screen", "blists-screen",
-    :cache => "cache/blists_index_all" %>
+  <%= stylesheet_link_tag "table-core", "table-blist-list", "list-screen",
+    "blists-screen", :cache => "cache/blists_index_all" %>
   <title><%= t(:page_title) %></title>
 <% end %>
 
@@ -17,13 +17,21 @@
             <h3 id='listTitle' class='clipText'
               title='<%= h(@title) %>'><%= h(@title) %></h3>
 
-            <form class="search blistsFind" action='#'>
-              <p>
-                <input type='text' class='textPrompt' name='find'
-                  title='Find' value='' />
-                <input type='image' class='submit' name='findSubmit'
+            <form class='search blistsFind' action='#'>
+              <div class='searchContainer'>
+                <input type='text' class='textPrompt'
+                title='Find in my <%= t(:blists_name) %>' />
+                <div class='actionBox'>
+                  <div class='clearBox'>
+                    <a class='clearSearch' title='Clear Search'
+                      href='#clear_search'>
+                      Clear Search
+                    </a>
+                  </div>
+                  <input type="image" class="submit" name="findSubmit"
                   src="<%= image_path("find_button.png") %>" />
-              </p>
+                </div>
+              </div>
             </form>
 
             <ul class="headerActions">
@@ -38,16 +46,13 @@
               </li>
             </ul>
 
-          </div>
+        </div>
 
-          <div class='gridListContainer'>
+          <div class="gridListContainer">
             <%#
              This div will hold a copy of the table that displays the header
             %>
-            <div class='headerContainer'></div>
-            <div class='gridListInner scrollContent'>
-              <%= render(:partial => "blist_list") %>
-            </div>
+            <div class="gridList scrollContent" id="blist-list"></div>
           </div>
           
           <%- if (!current_user.is_established?) -%>
@@ -110,9 +115,13 @@
               {'type' => 'favorite'}, @args) %>
           <%= menu_tag({'id' => 'typeMenu', 'items' => [
             { 'text' => 'Favorites', 'href' => '?type=favorite',
-              'title' => h(get_title({'type' => 'favorite'})) },
+                'title' => h(get_title({'type' => 'favorite'})),
+                'q' => "{'type': 'favorite'}" 
+            },
             { 'text' => 'Filtered Views', 'href' => '?type=filter',
-              'title' => h(get_title({'type' => 'filter'}))}]}) %>
+                'title' => h(get_title({'type' => 'filter'})),
+                'q' => "{'type': 'filter'}"
+            }]}) %>
           </li>
           <%# Deleted items not yet supported, but styled for future
           <li class="deleted"><a href='?filter=deleted:true'><span>Deleted Items</span></a></li>
@@ -171,14 +180,18 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.tablesorter",
-    "plugins/jquery.treeTable", "plugins/jquery.searchable", "util/humane-date",
+  <%= javascript_include_tag "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
+    "util/humane-date", "data/types", "data/model", "data/table",
     "widgets/panel-expander", "widgets/dropdown-menu", "widgets/selectable-list",
-    "widgets/combination-list", "widgets/sidebar-filter", "widgets/pagination",
+    "widgets/sidebar-filter", "widgets/pagination",
     "widgets/info-pane-comments", "screens/blists-screen", "screens/info-pane",
     :cache => "cache/blists_index_all" %>
     <script type="text/javascript" charset="utf-8">
       var form_authenticity_token = "<%= form_authenticity_token %>";
       var request_forgery_protection_token = "<%= request_forgery_protection_token %>";
+
+      blist.namespace.fetch('blist.myBlists');
+      blist.myBlists.viewUrl = "/users/<%= current_user.id %>/views.json";
+      blist.myBlists.currentUserId = "<%= current_user.id %>";
     </script>
 <% end %>

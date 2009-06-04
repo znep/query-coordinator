@@ -104,8 +104,16 @@ blist.namespace.fetch('blist.data.types');
 
     var groupText = function(value) {
         if (value == null || value == "")
-            return "";
+            return "Empty";
         return (value + "").substring(0, 1).toUpperCase();
+    }
+
+    var groupDate = function(value) {
+        if (value == null || value == "")
+            return "";
+
+        return blist.util.humaneDate.getFromDate
+                    (new Date(value * 1000), blist.util.humaneDate.DAY);
     }
     
 
@@ -139,14 +147,21 @@ blist.namespace.fetch('blist.data.types');
         if (value == null)
             return '';
         value = parseFloat(value).toFixed(decimalPlaces);
-        var pos = value.indexOf('.');
-        if (pos == -1)
-            pos = value.length;
-        pos -= 3;
-        while (pos > 0 && DIGITS[value.charAt(pos - 1)]) {
-            value = value.substring(0, pos) + "," + value.substring(pos);
-            pos -= 3;
+        // HACK HACK HACK
+        // Temporary HACK: Don't put commas if a number is less than 10,000.
+        // This should help with the display of dates
+        if (value > 9999)
+        {
+          var pos = value.indexOf('.');
+          if (pos == -1)
+              pos = value.length;
+          pos -= 3;
+          while (pos > 0 && DIGITS[value.charAt(pos - 1)]) {
+              value = value.substring(0, pos) + "," + value.substring(pos);
+              pos -= 3;
+          }
         }
+        // END HACK
         if (prefix)
             value = prefix + value;
         if (suffix)
@@ -576,7 +591,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterDate,
             filterValue: renderFilterDate,
             sortable: true,
-            filterable: true
+            filterable: true,
+            group: groupDate
         },
 
         photo: {

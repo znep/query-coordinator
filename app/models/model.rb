@@ -85,6 +85,7 @@ class Model
       end
     else
       value = data_hash[method_name]
+      return nil if value.nil?
 
       if value.is_a?(Hash)
         klass = Object.const_get(method_name.capitalize.to_sym)
@@ -137,14 +138,16 @@ class Model
         unless @cached_#{attribute}.nil?
           return @cached_#{attribute}
         end
-        @cached_#{attribute} = Array.new
-        data_hash['#{attribute}'].each do | item |
-          model = #{klass}.new
-          model.data = item
-          model.update_data = Hash.new
-          @cached_#{attribute}.push(model)
+        unless data_hash['#{attribute}'].nil?
+          @cached_#{attribute} = Array.new
+          data_hash['#{attribute}'].each do | item |
+            model = #{klass}.new
+            model.data = item
+            model.update_data = Hash.new
+            @cached_#{attribute}.push(model)
+          end
+          @cached_#{attribute}.freeze
         end
-        @cached_#{attribute}.freeze
         return @cached_#{attribute}
       end
     EOS
@@ -291,11 +294,11 @@ protected
   end
 
   def self.get_request(path, session_token = nil)
-    result_body = Rails.cache.read(path)
+    result_body = cache.read(path)
     if result_body.nil?
       result_body = generic_request(Net::HTTP::Get.new(path),
                                     nil, session_token).body
-      Rails.cache.write(path, result_body)
+      cache.write(path, result_body)
     end
 
     parse(result_body)
@@ -366,4 +369,7 @@ private
     result
   end
 
+  def self.cache
+    @cache ||= ActiveSupport::Cache::RequestStore.new
+  end
 end

@@ -1,5 +1,4 @@
 class StatsController < ApplicationController
-  caches_page :index
   skip_before_filter :require_user, :only => [:index]
 
   rescue_from ActionView::MissingTemplate do |exception|
@@ -10,7 +9,13 @@ class StatsController < ApplicationController
     @dataset = View.find(params[:id])
     @show_search_form = false
 
-    @since = params[:since] ? Time.parse(params[:since]) :  (Time.now - 1.month)
+    # TODO: In 45 days (around July 15th, 2009) change the sliding window from 
+    # 1 year ago to default to a month.
+    creation_date = Time.at(@dataset.createdAt)
+
+    # Pick either a year ago or the creation date of the dataset.
+    default_since = [creation_date, (Time.now - 1.year)].max
+    @since = params[:since] ? Time.parse(params[:since]) :  default_since
 
     @stat = Stat.find_for_view(@dataset, {:since => @since.strftime("%m/%d/%Y")})
   end

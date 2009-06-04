@@ -40,7 +40,7 @@ module BlistsHelper
     views = View.find()
 
     tags = []
-    views.each { |v| tags << v.tags.collect { |t| t.data } }
+    views.each { |v| v.tags.nil? ? true : tags << v.tags.collect { |t| t.data } }
     tags.flatten.sort.uniq
   end
 
@@ -118,6 +118,7 @@ module BlistsHelper
 
         # For lists, the first (and only) child has all the real info
         if c.is_list
+          next if c.childColumns.nil?
           c = c.childColumns[0]
           # The core server is returning hidden list columns as an empty bnb
           next unless c

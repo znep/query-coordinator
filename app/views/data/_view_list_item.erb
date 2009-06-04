@@ -27,7 +27,7 @@
         <p class="viewCategory"><%= view.category.nil? ? '' : view.category.capitalize %></p>
       <%- end -%>
       <p class="viewDescription clipText"><%= h(view.description) %></p>
-      <%- if (view.tags.length > 0) -%>
+      <%- if (view.tags && view.tags.length > 0) -%>
         <p class="viewTags"><span>Tags: </span><%= h(view.tag_display_string) %></p>
       <%- end -%>
     </div>

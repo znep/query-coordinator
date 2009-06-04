@@ -85,6 +85,7 @@ class Model
       end
     else
       value = data_hash[method_name]
+      return nil if value.nil?
 
       if value.is_a?(Hash)
         klass = Object.const_get(method_name.capitalize.to_sym)
@@ -137,14 +138,16 @@ class Model
         unless @cached_#{attribute}.nil?
           return @cached_#{attribute}
         end
-        @cached_#{attribute} = Array.new
-        data_hash['#{attribute}'].each do | item |
-          model = #{klass}.new
-          model.data = item
-          model.update_data = Hash.new
-          @cached_#{attribute}.push(model)
+        unless data_hash['#{attribute}'].nil?
+          @cached_#{attribute} = Array.new
+          data_hash['#{attribute}'].each do | item |
+            model = #{klass}.new
+            model.data = item
+            model.update_data = Hash.new
+            @cached_#{attribute}.push(model)
+          end
+          @cached_#{attribute}.freeze
         end
-        @cached_#{attribute}.freeze
         return @cached_#{attribute}
       end
     EOS

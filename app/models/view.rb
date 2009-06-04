@@ -117,16 +117,16 @@ class View < Model
   end
 
   def is_public?
-    grants.any? {|p| p.flag?('public')}
+    grants && grants.any? {|p| p.flag?('public')}
   end
   memoize :is_public?
 
   def is_private?
-    grants.length == 0
+    grants.nil? || grants.length == 0
   end
 
   def is_shared?
-    grants.any? {|p| !p.flag?('public')}
+    grants && grants.any? {|p| !p.flag?('public')}
   end
 
   def last_updated_user
@@ -167,7 +167,7 @@ class View < Model
   end
 
   def contributor_users
-    grants.reject {|g| g.flag?('public') || g.type.downcase == 'read'}.
+    (grants || []).reject {|g| g.flag?('public') || g.type.downcase == 'read'}.
       collect do |g|
         if !g.groupId.nil?
           Group.find(g.groupId).users.collect {|u| u.id}
@@ -181,7 +181,7 @@ class View < Model
 
   def viewer_users
     contributors = contributor_users
-    view_grants = grants.reject {|g| g.flag?('public') ||
+    view_grants = (grants || []).reject {|g| g.flag?('public') ||
       g.type.downcase != 'read'}.
       collect do |g|
         if !g.groupId.nil?

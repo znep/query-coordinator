@@ -448,7 +448,8 @@ blist.blistGrid.addFilterMenu = function(col)
     // Remove the old filter menu if necessary
     var $menu = $('ul.columnHeaderMenu', col.dom);
     $menu.children('.autofilter').prev('.separator').andSelf().remove();
-    if (cf == null && colSum.topFrequencies.length < 1)
+    if (cf == null && (colSum.topFrequencies == null ||
+        colSum.topFrequencies.length < 1))
     {
         return;
     }

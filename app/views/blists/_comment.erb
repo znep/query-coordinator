@@ -57,7 +57,8 @@
             :locals => {:comment => child, :view => view,
             :wrapper_class => is_first ? 'first' : ''}) %>
             <%- is_first = false -%>
-            <%- comment_children.unshift(child.children).flatten! -%>
+            <%- comment_children = comment_children.
+              unshift(child.children).flatten.compact -%>
             <%- end -%>
           </div>
       </div></div>

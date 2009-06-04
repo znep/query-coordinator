@@ -68,7 +68,12 @@ blist.myBlists.sharedWithGroupFilterGen = function(groupId)
 
 blist.myBlists.sharedByFilterGen = function(userId)
 {
-    return function(view) {
+    return function(view)
+    {
+        if (!view.grants)
+        {
+            return false;
+        }
         for (var i=0; i < view.grants.length; i++)
         {
             var grant = view.grants[i];

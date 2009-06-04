@@ -197,7 +197,7 @@ class View < Model
   def shares
     user_shares = Hash.new
     group_shares = Hash.new
-    grants.reject {|g| g.flag?('public')}.each do |g|
+    (grants || []).reject {|g| g.flag?('public')}.each do |g|
       if !g.groupId.nil?
         if !group_shares[g.groupId]
           s = Share.new(nil, g.groupId, Group.find(g.groupId).name,

@@ -123,10 +123,12 @@ class Model
           return @cached_#{attribute}
         end
 
-        @cached_#{attribute} = #{klass}.new
-        @cached_#{attribute}.data = @data['#{attribute}']
-        @cached_#{attribute}.update_data = Hash.new
-        @cached_#{attribute}.freeze
+        unless @data['#{attribute}'].nil?
+          @cached_#{attribute} = #{klass}.new
+          @cached_#{attribute}.data = @data['#{attribute}']
+          @cached_#{attribute}.update_data = Hash.new
+          @cached_#{attribute}.freeze
+        end
         return @cached_#{attribute}
       end
     EOS
@@ -358,8 +360,10 @@ private
       parsed_body = self.parse(result.body)
       Rails.logger.info("Error: " +
                     "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
-                    (parsed_body.data['code'] || '') + " : " +
-                    (parsed_body.data['message'] || ''))
+                    (parsed_body.nil? ? 'No response' :
+                      (parsed_body.data['code'] || '')) + " : " +
+                    (parsed_body.nil? ? 'No response' :
+                      (parsed_body.data['message'] || '')))
       raise CoreServerError.new(
         "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
         parsed_body.data['code'],

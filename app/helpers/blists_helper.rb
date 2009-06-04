@@ -143,7 +143,7 @@ module BlistsHelper
         # again check for visibility for each child)
         if c.is_nested_table && !c.is_list &&
           include_options['nested_table_children']
-          c.childColumns.each do |cc|
+          (c.childColumns || []).each do |cc|
             if (!cc.flag?('hidden') || include_options['hidden']) &&
               (!args['column_test'] || args['column_test'].call(cc))
               cur_item = {'text' => h(c.name) + ': ' + h(cc.name),

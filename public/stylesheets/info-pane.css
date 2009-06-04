@@ -701,17 +701,24 @@ infoContentOuter table.gridList td.picture > *
 
 .singleInfoComments li.comment .commentBlock
 {
-    background-image: url(/stylesheets/images/content/comment_bubble_arrow.png);
-    background-position: 0 25px;
-    background-repeat: no-repeat;
     margin-left: 140px;
-    padding-left: 14px;
+    padding-left: 16px;
     position: relative;
 }
+.singleInfoComments li.comment .commentBlock .commentArrow
+{
+    background: url(/stylesheets/images/content/comment_bubble_arrow.png);
+    height: 14px;
+    left: 0;
+    position: absolute;
+    top: 25px;
+    width: 17px;
+}
 
+.singleInfoComments li.comment .commentBlock .cornerOuter { background-color: #fff; }
 .singleInfoComments li.comment .commentBlock .cornerTL
 {
-    background: #ffffff url(/stylesheets/images/info_pane/comment_corner_top_left.png) top left no-repeat;
+    background: url(/stylesheets/images/info_pane/comment_corner_top_left.png) top left no-repeat;
 }
 .singleInfoComments li.comment .commentBlock .cornerTR
 { background: url(/stylesheets/images/info_pane/comment_corner_top_right.png) no-repeat top right; }
@@ -721,6 +728,39 @@ infoContentOuter table.gridList td.picture > *
 {
     background: url(/stylesheets/images/info_pane/comment_corner_bottom_left.png) no-repeat bottom left;
     padding: 0.5em 0.5em 1em;
+}
+
+/* Owner comments (blue border) */
+.singleInfoComments li.comment.ownerComment .commentBlock .commentArrow
+{
+    background-image: url(/stylesheets/images/content/comment_bubble_arrow_owner.png);
+}
+.singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter { 
+    border: 1px solid #06386a;
+}
+.singleInfoComments li.comment.ownerComment .commentBlock .cornerTL
+{
+    background-image: url(/stylesheets/images/info_pane/comment_corner_owner_top_left.png); 
+    margin: -1px 0 0 -1px;
+    padding: 1px 0 0 1px;
+}
+.singleInfoComments li.comment.ownerComment .commentBlock .cornerTR
+{ 
+    background-image: url(/stylesheets/images/info_pane/comment_corner_owner_top_right.png);
+    margin: -1px -1px 0 0;
+    padding: 1px 1px 0 0;
+}
+.singleInfoComments li.comment.ownerComment .commentBlock .cornerBR
+{ 
+    background-image: url(/stylesheets/images/info_pane/comment_corner_owner_bottom_right.png);
+    margin: 0 -1px -1px 0;
+    padding: 0 1px 1px 0;
+}
+.singleInfoComments li.comment.ownerComment .commentBlock .cornerBL
+{
+    background-image: url(/stylesheets/images/info_pane/comment_corner_owner_bottom_left.png);
+    margin: 0 0 -1px -1px;
+    padding: .6em .5em 1.1em .6em;
 }
 
 .metadataPane .singleInfoComments li.comment .rating

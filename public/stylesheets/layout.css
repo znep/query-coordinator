@@ -10,14 +10,21 @@ body
 {
   min-width: 46.6em;
   min-height: 65em;
-  max-width: 140em;
+}
+
+.oneColumnContainer
+{
+    padding-top: .5em;
 }
 
 .twoColumnContainer
 {
   padding-bottom: 6em;
   padding-right: 28em;
+  padding-top: 1em;
 }
+
+.tabContainer { padding-top: 0; }
 
 .twoColumnContainer .column
 {
@@ -35,8 +42,8 @@ body
 {
   margin-right: -28em;
   /* account for height of tabs in mainContent */
-  margin-top: 26px;
   padding-left: 1em;
   width: 26em;
 }
+.tabContainer #sidebar { padding-top: 26px; }
 

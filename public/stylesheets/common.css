@@ -176,10 +176,12 @@ form.search.large input.submit
 .tabPageContentContainer
 {
    margin: 0px auto;
+   min-height: 0;
+   position: relative;
 }
 .fullPageContentContainer
 {
-    margin-top: 5em;
+    margin-top: 1em;
     margin-left: 1em;
     margin-right: 1em;
 }

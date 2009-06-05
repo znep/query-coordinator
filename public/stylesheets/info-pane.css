@@ -43,6 +43,7 @@
     background-repeat: no-repeat;
     margin-left: -1px;
     margin-top: -1px;
+    min-height: 0;
     padding-left: 1px;
     padding-top: 1px;
 }
@@ -152,6 +153,7 @@
     border-style: solid;
     border-width: 0 1px 1px;
     display: none;
+    min-height: 0;
 }
 
 .infoContentOuter.active {
@@ -245,10 +247,9 @@
     background-image: url(/stylesheets/images/info_pane/summary_bottom_left.png);
     background-position: left bottom;
     background-repeat: no-repeat;
-    margin-bottom: -1px;
-    margin-left: -1px;
+    margin: 0 0 -1px -1px;
     min-height: 0; /* Trigger hasLayout for IE7 */
-    padding-bottom: 0;
+    padding: 0 0 1px 1px;
 }
 .infoContentOuter .infoContentWrapper
 {
@@ -257,6 +258,7 @@
     background-repeat: no-repeat;
     margin-bottom: -1px;
     margin-right: -1px;
+    min-height: 0;
     padding-bottom: 1em;
     padding-right: 1px;
 }
@@ -272,16 +274,17 @@
     background-image: url(/stylesheets/images/info_pane/background_expanded_list.png);
     background-position: -10px 0;
     background-repeat: repeat-y;
-    padding-bottom: 0;
 }
-.infoContentOuter.listContainer.expanded .infoContentWrapper { padding-bottom: 0; }
+.infoContentOuter.listContainer.expanded .infoContentWrapper { padding-bottom: 1px; }
 .infoContentOuter.listContainer .infoContent
 {
     background-image: url(/stylesheets/images/info_pane/summary_bottom_left_dark.png);
     background-position: left bottom;
     background-repeat: no-repeat;
     border-top: 1px solid #fff;
-    padding-left: 0;
+    margin: 0 0 -1px -1px;
+    min-height: 0;
+    padding: 0 1em 1.1em 1px;
 }
 
 .infoContentOuter.listContainer .infoContent dl

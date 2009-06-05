@@ -146,7 +146,9 @@ blist.namespace.fetch('blist.data.types');
     var renderNumber = function(value, decimalPlaces, prefix, suffix) {
         if (value == null)
             return '';
-        value = parseFloat(value).toFixed(decimalPlaces);
+        value = parseFloat(value);
+        if (decimalPlaces !== undefined)
+            value = value.toFixed(decimalPlaces);
         // HACK HACK HACK
         // Temporary HACK: Don't put commas if a number is less than 10,000.
         // This should help with the display of dates
@@ -170,7 +172,7 @@ blist.namespace.fetch('blist.data.types');
     }
 
     var renderGenNumber = function(value, column) {
-        return "renderNumber(" + value + ", " + (column.decimalPlaces || 0) + ")";
+        return "renderNumber(" + value + ", " + column.decimalPlaces + ")";
     }
 
     var renderPercentBar = function(value) {
@@ -210,7 +212,7 @@ blist.namespace.fetch('blist.data.types');
         if (renderBar)
             rv += " + renderPercentBar(" + value + ")";
         if (renderText)
-            rv += " + '<div class=\"blist-cell blist-percent-num\">' + renderNumber(" + value + ", " + (column.decimalPlaces || 0) + ", null, '%') + '</div>'";
+            rv += " + '<div class=\"blist-cell blist-percent-num\">' + renderNumber(" + value + ", " + column.decimalPlaces + ", null, '%') + '</div>'";
         rv += "+ '</div>'";
         return rv;
     }
@@ -442,7 +444,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterNumber = function(value, column)
     {
-        return renderNumber(value, (column.decimalPlaces || 0));
+        return renderNumber(value, column.decimalPlaces);
     };
 
     var renderFilterDate = function(value, column)
@@ -502,7 +504,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterPercent = function(value, column)
     {
-        return renderNumber(value, (column.decimalPlaces || 0), null, '%');
+        return renderNumber(value, column.decimalPlaces, null, '%');
     };
 
     var renderFilterURL = function(value)

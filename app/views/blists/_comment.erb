@@ -1,5 +1,5 @@
 <%- if !comment.body.blank? -%>
-<li id='comment_<%= comment.id %>' class='comment clearfix'>
+<li id='comment_<%= comment.id %>' class='comment <%= comment.user.id == view.owner.id ? "ownerComment" : "" %> clearfix'>
 <div class='userInfo'>
   <div class='primaryInfo'>
     <%= image_tag(comment.user.profile_image_path("small"), :size => "24x24",
@@ -13,6 +13,7 @@
   </div>
 </div>
 <div class='commentBlock'>
+  <div class='cornerOuter'>
   <div class='cornerTL'><div class='cornerTR'>
       <div class='cornerBR'><div class='cornerBL'>
           <%= get_comment_rating_html(comment) %>
@@ -63,6 +64,8 @@
           </div>
       </div></div>
   </div></div>
+  </div>
+  <div class="commentArrow"></div>
 </div>
 </li>
 <%- end -%>

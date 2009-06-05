@@ -1,130 +1,128 @@
 #data-grid
 {
-    margin: 6px;
+    margin: 0 6px 6px;
 }
 
 .blist-table
 {
     background: transparent;
-    color: #333333;
-    font-family: arial, sans-serif;
-    font-size: 13px;
+    color: #212121;
 }
 
-.blist-table-title-tl
+#header
 {
+    margin: 6px 6px 0;
     padding-left: 8px;
     background: transparent url(/stylesheets/images/content/table/title_tl.png) no-repeat scroll left top;
 }
 
-.blist-table-title-tr
+#header .wrapper
 {
     padding-right: 8px;
     background: transparent url(/stylesheets/images/content/table/title_tr.png) no-repeat top right;
 }
 
-.blist-table-title
+#header .innerWrapper
 {
     background: transparent url(/stylesheets/images/content/table/title_t.png) repeat-x top;
     height: 28px;
     padding-left: 4px;
 }
 
-.blist-table-name
+#header form.search
 {
-    height: 28px;
-    line-height: 28px;
-    font-size: 16px;
+    float: right;
+    margin-top: 5px;
+    width: 20em;
 }
 
-.blist-table-filter-l
+#header form.search .searchContainer
 {
-    right: 4px;
-    margin-top: 3px;
-    padding-left: 11px;
-    height: 23px;
-    background: transparent url(/stylesheets/images/common/find_input_cap.png) no-repeat scroll center left;
-    margin-right: 4px;
-    width: 191px;
+    background-image: url(/stylesheets/images/content/table_menu/find_field_blue.png);
+    background-repeat: no-repeat;
+    overflow: hidden;
+    padding-left: 10px;
+    padding-right: 49px;
 }
 
-.blist-table-filter-r
+#header form.search input.textInput
 {
-    padding-right: 31px;
-    height: 23px;
-    background: transparent url(/images/find_button.png) no-repeat scroll center right;
+    height: 15px;
+    padding: 1px 0 0;
 }
 
-input.blist-table-filter
+#header form.search input.submit
 {
-    border: solid 1px #cacaca;
-    border-left: none;
-    border-right: none;
-    padding: 2px 0 0 0;
-    background: white;
-    font-size: 14px;
-    height: 19px;
-    width: 160px;
-    color: #333333;
+    height: 18px;
+    margin-right: 0;
 }
 
-.blist-table-clear-filter
+#header form.search .actionBox
 {
-    right: 35px;
-    top: 4px;
+    float: left;
+    margin-right: -49px;
+    width: 49px;
 }
 
-
-.blist-table .example
+#header form.search .clearBox
 {
-    color: #999999;
-    font-style: italic;
+    background-color: #ffffff;
+    border-color: #cacaca;
+    border-style: solid;
+    border-width: 1px 0;
+    float: left;
+    height: 16px;
+    width: 18px;
 }
+
+#header form.search .clearSearch
+{
+    background: url(/stylesheets/images/content/section_close_button.png) no-repeat top left;
+    display: block;
+    height: 16px;
+    line-height: 100px;
+    overflow: hidden;
+    width: 16px;
+}
+
 
 .blist-table-header-scrolls
 {
-    background-color: #e2e2e2;
+    background-color: #e8e8e2;
     border: solid 1px #cacaca;
     border-bottom: none;
 }
 
-.blist-table-header
-{
-    height: 24px;
-}
-
 .blist-table-scrolls
 {
-    border: solid 1px #cacaca;
-    border-top: none;
+    border: solid 1px #646464;
 }
 
-/*.blist-tr-even .blist-td
+.blist-tr-even .blist-td
 {
-    background-color: #e8ebf6;
-}*/
-
-.blist-th
-{
-    padding-left: 4px;
-    padding-right: 4px;
-    border-left: solid 1px #dddddd;
-    font-weight: bold;
-    font-size: 14px;
+    background-color: #e7ebf2;
 }
 
-/* Ensure enough specificity to override height in generated styles */
 .blist-table .blist-th
 {
-    height: 26px;
-    line-height: 26px;
+    color: #676767;
+    border-left: solid 1px #dddddd;
+    font-size: 1.2em;
+    font-weight: bold;
+    height: 2.1667em; /* 26px */
+    line-height: 2.1667em;
+    padding: 0 0.3333em; /* 4px */
+    text-overflow: ellipsis;
 }
 
 .blist-td
 {
-    padding: 4px;
     border-right: solid 1px #dddddd;
     border-bottom: solid 1px #dddddd;
+    font-size: 1.1em;
+    height: 1.4545em; /* 16px */
+    line-height: 1.4545em;
+    padding: 0.3636em; /* 4px */
 }
 
 .blist-td-header
@@ -137,18 +135,6 @@ div.blist-table-expander
     border-left: solid 1px #cacaca;
     border-top: solid 1px #cacaca;
     background-color: #fffad9;
-}
-
-.blist-table-handle
-{
-    padding: 4px;
-    font-size: 11px;
-    border: solid 1px #dddddd;
-    border-top: 0;
-    background-color: #eeeeee;
-    border-left: none;
-    color: #333399;
-    text-align: right;
 }
 
 .blist-table .blist-table-corner
@@ -208,7 +194,7 @@ img.blist-table-option-icon
     padding-left: 4px;
 }
 
-.widgetLogo 
+.widgetLogo
 {
     left: 1em;
     bottom: 0;

@@ -13,14 +13,17 @@ html
 
 body
 {
-    background-color: #ececec;
+    background-color: #fff;
     height: 100%;
 }
 
 #outerContainer
 {
-    border-top: 9px solid #06386a;
+    background-color: #ececec;
+    border-top: 6px solid #06386a;
     height: auto;
+    margin: 0 auto;
+    max-width: 140em;
     min-height: 100%;
     position: relative;
 }
@@ -31,21 +34,20 @@ body
 
 #header
 {
+    background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
+    height: 44px;
+    padding-bottom: .5em;
     position: relative;
-    height: 75px;
 }
 
 #mainLogo
 {
-    background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
     font-size: 1em;
+    left: 10px;
     margin: 0;
-    left: 0;
+    min-height: 0;
     position: absolute;
-    width: 100%;
-    top: 2.5em;
-    height: 6.2em;
-    text-align: left;
+    top: 5px;
 }
 
 #mainLogo a
@@ -54,9 +56,7 @@ body
     background-repeat: no-repeat;
     display: block;
     height: 34px;
-    margin-top: 1.0em;
     padding-bottom: .3em;
-    margin-left: 1em;
     text-indent: -9999px;
     width: 151px;
 }
@@ -187,7 +187,7 @@ body
 #mainNav
 {
     margin: 0 auto;
-    width: 33.333em;
+    width: 33.3em;
 }
 
 
@@ -204,7 +204,7 @@ body
     background-repeat: repeat-x;
     float: left;
     height: 25px;
-    margin-right: .1em;
+    margin-right: 1px;
     text-align: center;
     width: 11em;
 }
@@ -236,11 +236,9 @@ body.community #mainNav li.community
 
 #header form.search
 {
-    clear: both;
-    float: right;
-    margin-right: 1em;
-    margin-top: 1em;
-    position: relative;
+    position: absolute;
+    right: 1em;
+    top: 30px;
     width: 26em;
     z-index: 10;
 }

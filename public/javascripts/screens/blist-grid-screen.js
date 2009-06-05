@@ -481,7 +481,7 @@ blist.blistGrid.addFilterMenu = function(col)
         var isMatching = cf != null && cf.value == f.value;
         var curType = blist.data.types[col.type] || blist.data.types['text'];
         var escapedValue = curType.filterValue != null ?
-            curType.filterValue(f.value, col) : $.htmlStrip(f.value + '');
+            curType.filterValue(f.value, col) : $.htmlStrip(f.value);
         var renderedValue = curType.filterRender != null ?
             curType.filterRender(f.value, col) : '';
         filterStr +=

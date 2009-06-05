@@ -131,7 +131,16 @@
         var applyFilter = function()
         {
             setTimeout(function() {
-                model.filter($filterBox[0].value, 250);
+                var searchText = $filterBox[0].value;
+                model.filter(searchText, 250);
+                if (!searchText || searchText == '')
+                {
+                    $filterClear.hide();
+                }
+                else
+                {
+                    $filterClear.show();
+                }
             }, 10);
         }
 
@@ -139,6 +148,7 @@
         {
             e.preventDefault();
             $filterBox.val('').blur();
+            $filterClear.hide();
             model.filter('');
         }
 
@@ -630,6 +640,7 @@
         var $title;
         var $nameLabel;
         var $filterBox;
+        var $filterClear;
         if (options.showTitle)
         {
             // The title bar
@@ -640,8 +651,8 @@
                 .keydown(applyFilter)
                 .change(applyFilter)
                 .example('Find');
-            $title.find('.blist-table-clear-filter')
-                .bind('table_click', clearFilter);
+            $filterClear = $title.find('.blist-table-clear-filter')
+                .bind('click', clearFilter).hide();
         }
 
         // The table header elements
@@ -692,10 +703,10 @@
         {
             headerScrolls.height(header.height());
 
-            // Size the scrolling area.  Note that this assumes a width and
-            // height of 2px.  TODO - change to absolute positioning when IE6
-            // is officially dead (June 2010?)
-            scrolls.height($outside.height() - $top.height() - 2);
+            // Size the scrolling area.  Note that this assumes a fixed extra
+            // amount of height & width.  TODO - change to absolute positioning
+            // when IE6 is officially dead (June 2010?)
+            scrolls.height($outside.outerHeight() - $top.height() - 3);
             scrolls.width($outside.width() - 2);
 
             // Size the inside row container

@@ -23,7 +23,7 @@
         <% end %>
       </div>
       <div class="pageBlockHeaderContent clearfix">
-        <% prerendered_cache "discover-carousel", @carousel_views_rendered, :expires => 15.minutes do %>
+        <% prerendered_cache "discover-carousel", @carousel_views_rendered, :expires_in => 15.minutes do %>
           <div class="pageBlockHeaderCarousel carouselWrapper">
             <div class="carouselOuter"><div class="carouselInner">
               <h2><%= t(:discover_carousel_header) %></h2>

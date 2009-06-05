@@ -632,7 +632,6 @@ infoContentOuter table.gridList td.picture > *
 .singleInfoComments.infoContentOuter.listContainer form.postComment .submitSection
 {
     padding-top: 0.25em;
-    text-align: right;
 }
 
 .singleInfoComments form.postComment.disabled .submitSection
@@ -651,7 +650,7 @@ infoContentOuter table.gridList td.picture > *
 
 .singleInfoComments form.postComment .submitSection input
 {
-    margin-top: -0.25em;
+    vertical-align: middle;
 }
 
 .singleInfoComments li.comment

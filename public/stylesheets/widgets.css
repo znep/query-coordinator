@@ -1382,6 +1382,15 @@ table.gridList tr.filteredOut
     padding-top: 1em;
 }
 
+.dialogBox .actionButtons
+{
+    float: right;
+    margin-top: 1em;
+}
+.dialogBox .actionButtons li { background-position: left -63px; }
+.dialogBox .actionButtons li a { background-position: right -84px; }
+.dialogBox .actionButtons li a.arrowButton { background-position: right -105px; }
+
 /*** END: Dialog boxes ***/
 
 

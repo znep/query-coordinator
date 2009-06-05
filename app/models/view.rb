@@ -157,13 +157,13 @@ class View < Model
   end
 
   def can_edit()
-    data['rights'].include?('write') ||
+    data['rights'] && (data['rights'].include?('write') ||
       data['rights'].include?('add') ||
-      data['rights'].include?('delete')
+      data['rights'].include?('delete'))
   end
 
   def can_read()
-    data['rights'].include?('read')
+    data['rights'] && data['rights'].include?('read')
   end
 
   def contributor_users

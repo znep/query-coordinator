@@ -1498,17 +1498,16 @@ table.gridList tr.filteredOut
     margin-right: 2em;
 }
 
-.signupBox .title   p
+.signupBox .title p
 {
     font-size: 1.4em;
 }
 
 .signupBox fieldset
 {
-    display: block;
     float: left;
     margin-right: 15px;
-    width: 328px;
+    width: 325px;
 }
 
 .signupBox fieldset.last
@@ -1533,7 +1532,7 @@ table.gridList tr.filteredOut
 .signupBox form p, .signupBox form .fileInputContainer
 {
     display: block;
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
 
 .signupBox form p.fieldInfo
@@ -1544,7 +1543,6 @@ table.gridList tr.filteredOut
 
 .signupBox form label
 {
-    display: block;
     float: left;
     font-size: 1.2em;
     line-height: 22px;
@@ -1569,7 +1567,7 @@ table.gridList tr.filteredOut
     margin-left: 125px;
     padding-right: 0;
     text-align: left;
-    width: 200px;
+    width: 115px;
 }
 
 .signupBox form input[type='text'],
@@ -1585,7 +1583,7 @@ table.gridList tr.filteredOut
     height: 50px;
     font-size: 1.2em;
     line-height: 1.2em;
-    padding: 0.2em;
+    padding: 2px;
     width: 194px;
 }
 

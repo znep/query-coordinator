@@ -154,14 +154,15 @@ blist.namespace.fetch('blist.data.types');
         // This should help with the display of dates
         if (value > 9999)
         {
-          var pos = value.indexOf('.');
-          if (pos == -1)
-              pos = value.length;
-          pos -= 3;
-          while (pos > 0 && DIGITS[value.charAt(pos - 1)]) {
-              value = value.substring(0, pos) + "," + value.substring(pos);
-              pos -= 3;
-          }
+            value = value + '';
+            var pos = value.indexOf('.');
+            if (pos == -1)
+                pos = value.length;
+            pos -= 3;
+            while (pos > 0 && DIGITS[value.charAt(pos - 1)]) {
+                value = value.substring(0, pos) + "," + value.substring(pos);
+                pos -= 3;
+            }
         }
         // END HACK
         if (prefix)

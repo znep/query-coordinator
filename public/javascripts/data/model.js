@@ -459,7 +459,8 @@ blist.namespace.fetch('blist.data');
 
                         // Add the body column to the next nesting level
                         addNestFiller();
-                        columns[nestDepth + 1].push(col.body);
+                        if (columns[nestDepth + 1])
+                            columns[nestDepth + 1].push(col.body);
 
                         break;
                 }

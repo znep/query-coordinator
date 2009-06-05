@@ -140,6 +140,7 @@
 
         $('#versionLink').click(function (event)
         {
+            event.preventDefault();
             alert("Build time: " +
                 "<%= REVISION_DATE ? Time.at(REVISION_DATE).to_s : '' %>\n" +
                 "Build version: <%= REVISION_NUMBER %>");

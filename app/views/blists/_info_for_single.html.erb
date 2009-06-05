@@ -165,7 +165,9 @@
             <%- if is_owner -%>
             <%- form_tag(view.href) do -%>
               <%= hidden_field_tag("fieldType", "category") %>
-              <%= select_tag("view[category]", category_select_options(h(view.category))) %>
+              <%= select_tag("view[category]",
+                category_select_options(h(view.category.nil? ?
+                '' : view.category.capitalize))) %>
               <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
               <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
             <%- end -%>

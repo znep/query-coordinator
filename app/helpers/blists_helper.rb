@@ -221,7 +221,11 @@ module BlistsHelper
                       "#{width}px\" height=\"#{height}px\" src=\"#{root_path}" +
                       "/widgets/#{view.id}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\">" +
-                      "#{h(view.name)}</a></iframe><p><a href=" +
-                      "\"http://www.#{t(:blist_company).downcase}.com/\">Powered by #{t(:blist_company)}</a></p></div>"
+                      "#{h(view.name)}</a></iframe>"
+    if view.category.nil? || view.category.downcase != 'government'
+      embed_template += "<p><a href=\"http://www.socrata.com/\">" +
+        "Powered by #{t(:blist_company)}</a></p>"
+    end
+    embed_template += "</div>"
   end
 end

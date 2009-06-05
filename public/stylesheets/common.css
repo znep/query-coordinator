@@ -55,6 +55,7 @@
 }
 
 form input[type="text"],
+form input.textInput,
 form textarea,
 form input[type="password"],
 input[type="text"]

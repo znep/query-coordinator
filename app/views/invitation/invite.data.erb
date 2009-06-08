@@ -1,0 +1,16 @@
+<%- content_for :headline do -%>
+  <h1>Invite Others to Try Socrata</h1>
+<%- end -%>
+
+<div class="invitationWrapper">
+  <% form_tag(create_invitation_path) do %>
+    <%= render(:partial => "invitation_form") %>
+
+    <div class="submitLine clearfix">
+      <%= submit_tag("Invite") %>
+      <div class="buttonLinkLarge">
+        <a href='#close_signup' class='close jqmClose'><span>Cancel</span></a>
+      </div>
+    </div>
+  <% end %>
+</div>

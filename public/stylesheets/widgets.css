@@ -1279,6 +1279,10 @@ table.gridList tr.filteredOut
     min-height: 0;
     width: 40em;
 }
+.dialogWrapper.modalDialog
+{
+    width: 70.5em;
+}
 .dialogTL
 {
     margin-left: 16px;

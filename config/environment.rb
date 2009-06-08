@@ -31,7 +31,7 @@ Rails::Initializer.run do |config|
   config.frameworks -= [ :active_record ]
 
   # request_store only caches things in-memory for a single request
-  config.cache_store = :mem_cache_store, { :namespace => 'webapp' }
+  # config.cache_store = :mem_cache_store
 
 
   # Only load the plugins named here, in the order given. By default, all plugins 
@@ -101,8 +101,6 @@ Rails::Initializer.run do |config|
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "json"
-  config.gem "eventmachine", :version => '0.12.6'
-  config.gem "igrigorik-em-http-request", :version => '0.1.5', :source => "http://gems.github.com", :lib => "em-http"
 
   # Use gems in the vendor directory: http://errtheblog.com/post/2120
   config.load_paths += Dir["#{RAILS_ROOT}/vendor/gems/**"].map do |dir| 

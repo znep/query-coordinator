@@ -456,7 +456,7 @@ $(function ()
             clearTempViewCallback: blistGridNS.clearTempViewTab,
             setTempViewCallback: blistGridNS.setTempViewTab,
             filterItem: '#lensContainer .headerBar form :text',
-            clearFilterItem: '#lensContainer .headerBar form .clearSearch',
+            clearFilterItem: '#lensContainer .headerBar form .clearSearch'
         });
     }
 

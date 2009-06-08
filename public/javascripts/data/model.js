@@ -74,6 +74,7 @@
  *   <li>row_add - called with an array of rows that have been newly added to the model</li>
  *   <li>row_remove - called with an array of rows that are no longer present in the model</li>
  *   <li>col_width_change - called when there is a metadata change that only affects column widths</li>
+ *   <li>client_filter - called when a filter is run on the client, not the server</li>
  * </ul>
  */
 
@@ -1156,7 +1157,7 @@ blist.namespace.fetch('blist.data');
                 }
             }
             installIDs(installActiveOnly);
-            configureActive();
+            configureActive(null, true);
         };
 
         /**
@@ -1217,6 +1218,7 @@ blist.namespace.fetch('blist.data');
                     else if (active != rows)
                     {
                         active = rows;
+                        $(listeners).trigger('client_filter');
                         configureActive();
                     }
                     return null;
@@ -1406,14 +1408,17 @@ blist.namespace.fetch('blist.data');
             getTempView();
         };
 
-        // Apply filtering, grouping, and sub-row expansion to the active set.  This applies current settings to the
-        // active set and then notifies listeners of the data change.
-        var configureActive = function(filterSource)
+        // Apply filtering, grouping, and sub-row expansion to the active set.
+        // This applies current settings to the active set and then notifies
+        // listeners of the data change.
+        var configureActive = function(filterSource, loadedTempView)
         {
             var activeOnly = active != rows;
             removeSpecialRows();
             var idChange;
-            if (filterFn) {
+            // If we just loaded a temp view, the set is already filtered
+            if (!loadedTempView && filterFn)
+            {
                 doFilter(filterSource);
                 idChange = true;
             }
@@ -1421,6 +1426,7 @@ blist.namespace.fetch('blist.data');
                 doGroup();
                 idChange = true;
             }
+
             if (expanded) {
                 doExpansion();
                 idChange = true;
@@ -1460,6 +1466,7 @@ blist.namespace.fetch('blist.data');
 
             // Perform the actual filter
             active = $.grep(toFilter || rows, filterFn);
+            $(listeners).trigger('client_filter');
         }
 
         // Generate group headers based on the current grouping configuration.

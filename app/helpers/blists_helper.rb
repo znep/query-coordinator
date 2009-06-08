@@ -215,13 +215,17 @@ module BlistsHelper
   def get_publish_embed_code_for_view(view, width = "425", height = "344")
     root_path = request.protocol + request.host_with_port
     embed_template =  "<div><p><a href=\"#{root_path + view.href}\" " +
-                      "style=\"font-size:12pt;font-weight:bold;" +
-                      "text-decoration:none;color:#000000;\">" +
+                      "style=\"font-size:12px;font-weight:bold;" +
+                      "text-decoration:none;color:#333333;font-family:arial;\">" +
                       "#{h(view.name)}</a></p><iframe width=\"" +
                       "#{width}px\" height=\"#{height}px\" src=\"#{root_path}" +
                       "/widgets/#{view.id}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\">" +
-                      "#{h(view.name)}</a></iframe><p><a href=" +
-                      "\"http://www.#{t(:blist_company).downcase}.com/\">Powered by #{t(:blist_company)}</a></p></div>"
+                      "#{h(view.name)}</a></iframe>"
+    if view.category.nil? || view.category.downcase != 'government'
+      embed_template += "<p><a href=\"http://www.socrata.com/\">" +
+        "Powered by #{t(:blist_company)}</a></p>"
+    end
+    embed_template += "</div>"
   end
 end

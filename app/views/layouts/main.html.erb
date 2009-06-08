@@ -49,9 +49,9 @@
 
       <div id='mainNav'>
         <ul class="clearfix">
-          <li class='discover'><%= link_to(t(:discover_nav_title), data_path) %></li>
-          <li class='community'><%= link_to("Community", community_path) %></li>
-          <li class='home last'><%= link_to(t(:my_home_title), home_path) %></li>
+          <li class='discover'><%= link_to("<span>#{t(:discover_nav_title)}</span>", data_path) %></li>
+          <li class='community'><%= link_to("<span>Community</span>", community_path) %></li>
+          <li class='home last'><%= link_to("<span>#{t(:my_home_title)}</span>", home_path) %></li>
         </ul>
       </div>
 
@@ -101,10 +101,10 @@
       <h1>Alert</h1>
     </div>
 
-    <div class='mainContent'>
+    <div class='mainContent clearfix'>
       <p class='alertMessage'></p>
 
-      <ul class='actionButtons clearfix'>
+      <ul class='actionButtons'>
         <li><a href='#close' class='arrowButton jqmClose'>Close</a></li>
       </ul>
     </div>
@@ -140,6 +140,7 @@
 
         $('#versionLink').click(function (event)
         {
+            event.preventDefault();
             alert("Build time: " +
                 "<%= REVISION_DATE ? Time.at(REVISION_DATE).to_s : '' %>\n" +
                 "Build version: <%= REVISION_NUMBER %>");

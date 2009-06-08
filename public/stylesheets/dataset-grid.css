@@ -1,0 +1,116 @@
+.blist-th .sort,
+.blist-th .filter
+{
+    background-color: #e8e8e8;
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
+    background-position: 0 0;
+    height: 12px;
+    margin-top: -6px;
+    right: 0;
+    top: 50%;
+    width: 12px;
+}
+.blist-th .sort { cursor: pointer; }
+.blist-th .sort-asc { background-position: 0 -24px; }
+.blist-th.hover .sort { display: none; }
+.blist-th.hover .sort-asc { background-position: 0 -12px; }
+.blist-th.hover .sort-desc { background-position: 0 -36px; }
+
+.blist-th .filter { background-position: 0 -48px; }
+.blist-th .filter.active { display: block; }
+.blist-th.sorted .filter { right: 12px; }
+.blist-th.hover .filter.active { display: none; }
+
+.blist-th .menuLink
+{
+    background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    display: none;
+    height: 14px;
+    margin-top: -7px;
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    width: 14px;
+}
+
+.blist-th.hover .menuLink,
+.blist-th .menuLink.clicked
+{
+    display: block;
+}
+
+.blist-th .menuLink.clicked
+{
+    background-position: 0 -14px;
+}
+
+.columnHeaderMenu
+{
+    width: 15em;
+}
+
+ul.menu.columnHeaderMenu li
+{
+    padding: 2px 0 0;
+}
+
+.columnHeaderMenu .sortAsc a,
+.columnHeaderMenu .sortDesc a
+{
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
+    background-position: 7px -20px;
+    background-repeat: no-repeat;
+}
+
+.columnHeaderMenu .sortDesc a
+{
+    background-position: 7px 4px;
+}
+
+.columnHeaderMenu .autofilter a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-position: 5px -531px;
+    background-repeat: no-repeat;
+}
+
+.columnHeaderMenu .autofilter ul.menu
+{
+    width: 15em;
+}
+
+.columnHeaderMenu .autofilter li.clearFilter,
+.columnHeaderMenu .autofilter li.clearFilter a
+{
+    margin-left: 0;
+}
+
+.columnHeaderMenu .autofilter li.clearFilter
+{
+    border-bottom: solid 1px #cacaca;
+}
+
+.columnHeaderMenu .autofilter li.clearFilter a
+{
+    background-position: 5px -324px;
+}
+
+.columnHeaderMenu .autofilter li.filterItem a
+{
+    background-position: 5px 30px; /*-899px;*/
+}
+
+.columnHeaderMenu .autofilter li.filterItem.active a
+{
+    background-position: 5px 30px; /*-508px;*/
+}
+
+/* This is only used for initial positioning; the menu is pulled out, so real
+ * styling needs to go directly on the menu */
+.blist-th .columnHeaderMenu
+{
+    font-size: 0.8333em;
+}
+

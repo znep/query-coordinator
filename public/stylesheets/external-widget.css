@@ -16,18 +16,45 @@
     background: transparent url(/stylesheets/images/content/table/title_tl.png) no-repeat scroll left top;
 }
 
-#header .wrapper
+#header .wrapperTR
 {
     padding-right: 8px;
     background: transparent url(/stylesheets/images/content/table/title_tr.png) no-repeat top right;
 }
 
-#header .innerWrapper
+#header .wrapperT
 {
     background: transparent url(/stylesheets/images/content/table/title_t.png) repeat-x top;
     height: 28px;
     padding-left: 4px;
 }
+
+#header .menuLink
+{
+    background-image: url(/stylesheets/images/content/table/expand_opened.png);
+    background-position: right center;
+    background-repeat: no-repeat;
+    color: #ff3333;
+    float: left;
+    font-size: 1.1em;
+    font-weight: bold;
+    padding-right: 12px;
+    margin-top: 0.909em; /* 10px */
+    text-transform: uppercase;
+}
+
+#header .headerMenu a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-repeat: no-repeat;
+}
+
+#header .headerMenu .email a { background-position: 5px -48px; }
+#header .headerMenu .csvExport a { background-position: 5px -117px; }
+#header .headerMenu .publish a { background-position: 5px -577px; }
+#header .headerMenu .fullscreen a { background-position: 5px -163px; }
+#header .headerMenu .print a { background-position: 5px -2px; }
+#header .headerMenu .newDataset a { background-position: 5px -94px; }
 
 #header form.search
 {
@@ -196,11 +223,19 @@ img.blist-table-option-icon
 
 .widgetLogo
 {
+    background-image: url(/stylesheets/images/widgets/socrata_logo_player.gif);
+    background-position: left top;
+    background-repeat: no-repeat;
+    display: block;
     left: 1em;
     bottom: 0;
+    height: 34px;
+    overflow: hidden;
     padding-bottom: 1em;
     position: absolute;
-    text-align: left;
+    text-indent: -9999px;
+    width: 121px;
+    z-index: 10;
 }
 
 .widgetFooter
@@ -286,4 +321,52 @@ img.blist-table-option-icon
 .interstitial .exitBox a
 {
     font-size: 1.2em;
+}
+
+.dialogWrapper
+{
+    display: none;
+    left: 50%;
+    margin-left: -15em;
+    margin-top: 0;
+    position: absolute;
+    top: 5em;
+    width: 30em;
+}
+
+.dialogWrapper .header h1
+{
+    background: none;
+    text-indent: 0;
+}
+
+.dialogWrapper .error
+{
+    color: #ff0000;
+    margin-top: 0.2em;
+    text-align: center;
+}
+
+#emailDialog label
+{
+    display: block;
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+}
+
+#emailDialog input
+{
+    width: 22.5em;
+}
+
+#publishDialog p
+{
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+#publishDialog textarea
+{
+    font-size: 1.2em;
+    width: 23em;
 }

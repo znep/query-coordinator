@@ -490,16 +490,5 @@ private
     font-size: 1.3em;
 }
 
-#jqmAlert .actionButtons li
-{
-    background-position: left -63px;
-    float: right;
-}
-
-#jqmAlert .actionButtons li a.arrowButton
-{
-    background-position: right -105px;
-}
-
 .jqmOverlay { background-color: #000; }
 

@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") : '' %>
-  <%= stylesheet_link_tag 'table-core', 'table-blist-grid', "blist-grid-screen",
-    :cache => "cache/blists_show_all" %>
+  <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
+    "blist-grid-screen", :cache => "cache/blists_show_all" %>
   <title><%= @view ? @view.name : 'Design a Dataset' %> | <%= t(:page_title) %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
 <% end %>
@@ -369,7 +369,7 @@
     "util/inline-login", "util/swfobject", "data/types", "data/model",
     "data/table", "widgets/inline-edit", "widgets/dropdown-menu",
     "widgets/selectable-list", "widgets/pagination",
-    "widgets/info-pane-comments", "widgets/scrollable",
+    "widgets/info-pane-comments", "widgets/scrollable", "widgets/dataset-grid",
     "screens/info-pane", "screens/blist-grid-screen",
     :cache => "cache/blists_show_all" %>
 <% end %>

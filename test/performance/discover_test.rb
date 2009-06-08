@@ -9,7 +9,7 @@ class BlistsListTest < ActionController::PerformanceTest
   # Replace this with your real tests.
   def test_blists_list
     #login('paul', 'test')
-    get '/discover'
+    get '/data'
     assert_response :ok
   end
 end

@@ -3,53 +3,86 @@ var flashIntNS = blist.namespace.fetch('blist.util.flashInterface');
 blist.util.flashInterface.allPopups = '*';
 blist.util.flashInterface.popupShownHandlers = {};
 blist.util.flashInterface.popupClosedHandlers = {};
+blist.util.flashInterface.isReady = false;
+
+blist.util.flashInterface.callSwf = function (callback)
+{
+    if (!flashIntNS.isReady)
+    {
+        loadSWF();
+        $(document).trigger('swf_load');
+        if (callback != null)
+        {
+            $(document).bind('swf_loaded', callback);
+        }
+    }
+    else if (callback != null)
+    {
+        callback();
+    }
+};
 
 blist.util.flashInterface.swf = function ()
 {
-    return $('object#swfContent')[0];
+    return flashIntNS.isReady ? $('object#swfContent')[0] : undefined;
+};
+
+blist.util.flashInterface.swfReady = function ()
+{
+    if (!flashIntNS.isReady)
+    {
+        flashIntNS.isReady = true;
+        $(document).trigger('swf_loaded');
+    }
 };
 
 blist.util.flashInterface.doAction = function (action)
 {
-    flashIntNS.swf().doAction(action);
+    flashIntNS.callSwf(function ()
+            { flashIntNS.swf().doAction(action); });
 };
 
 blist.util.flashInterface.lensSearch = function (searchText)
 {
-    if (flashIntNS.swf() != undefined)
-    {
-        flashIntNS.swf().lensSearch(searchText);
-    }
+    flashIntNS.callSwf(function ()
+            { flashIntNS.swf().lensSearch(searchText); });
 };
 
 blist.util.flashInterface.showPopup = function (popup)
 {
-    if (flashIntNS.swf() != undefined)
+    flashIntNS.callSwf(function ()
     {
         flashIntNS.swf().showPopup(popup);
         flashIntNS.swf().focus();
-    }
+    });
 };
 
 blist.util.flashInterface.addColumn = function (datatype, index)
 {
-    if (index === undefined)
+    flashIntNS.callSwf(function ()
     {
-        index = -1;
-    }
-    flashIntNS.swf().addColumn(datatype, index);
-    flashIntNS.swf().focus();
+        if (index === undefined)
+        {
+            index = -1;
+        }
+        flashIntNS.swf().addColumn(datatype, index);
+        flashIntNS.swf().focus();
+    });
 };
 
 blist.util.flashInterface.columnProperties = function (columnId)
 {
-    flashIntNS.swf().columnProperties(columnId);
-    flashIntNS.swf().focus();
+    flashIntNS.callSwf(function ()
+    {
+        flashIntNS.swf().columnProperties(columnId);
+        flashIntNS.swf().focus();
+    });
 };
 
 blist.util.flashInterface.columnAggregate = function(columnId, aggregate)
 {
-    flashIntNS.swf().columnAggregate(columnId, aggregate);
+    flashIntNS.callSwf(function ()
+    { flashIntNS.swf().columnAggregate(columnId, aggregate); });
 };
 
 blist.util.flashInterface.eventFired = function (event, data)

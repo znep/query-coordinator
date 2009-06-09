@@ -668,19 +668,20 @@ $(function ()
             commentMatches[1] : null
     });
 
+    $(document).bind('swf_load', function ()
+    {
+        $('#lensBody').addClass('editMode').removeClass('readMode');
+        $('#readGrid').remove();
+        blistGridNS.sizeSwf();
+    });
     $('#editLink').click(function (e)
     {
         e.preventDefault();
-        $('#lensBody').addClass('editMode').removeClass('readMode');
-        $('#readGrid').remove();
-        loadSWF();
-        blistGridNS.sizeSwf();
+        blist.util.flashInterface.callSwf();
     });
     if ($('#lensBody').hasClass('editMode'))
     {
-        $('#readGrid').remove();
-        loadSWF();
-        blistGridNS.sizeSwf();
+        blist.util.flashInterface.callSwf();
     }
 
     $(".favoriteAction a").click( blistGridNS.favoriteActionClick );

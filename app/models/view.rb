@@ -25,6 +25,11 @@ class View < Model
     get_request(path)
   end
 
+  def html
+    self.class.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.html?template=bare_template.html", nil, true)
+  end
+
   def self.notify_all_of_changes(id)
     path = "/#{self.name.pluralize.downcase}/#{id}.json?" + 
         {"method" => "notifyUsers"}.to_param

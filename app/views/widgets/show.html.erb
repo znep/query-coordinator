@@ -1,0 +1,147 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'table-core', 'dataset-grid', 'external-widget',
+    :cache => "cache/widgets_show_all" %>
+  <%- if !@variation.blank? -%>
+  <%= stylesheet_link_tag @variation + "-widget" %>
+  <%- end -%>
+  <title><%= @view.name %> | <%= t(:page_title) %></title>
+<% end %>
+
+    <div id='header'><div class='wrapperTR'><div class='wrapperT'>
+          <a class="menuLink" href="#header-menu">Menu</a>
+          <%= menu_tag({'class' => 'headerMenu', 'items' => [
+          {'text' => 'Email this ' + t(:blist_name), 'class' => 'email',
+          'href' => '#email'},
+          {'text' => 'Download as CSV', 'class' => 'csvExport',
+          'href' => '/views/' + @view.id + '/rows.csv'},
+          {'text' => 'Republish this ' + t(:blist_name), 'class' => 'publish',
+          'href' => '#publish'},
+          {'text' => 'View fullscreen', 'class' => 'fullscreen',
+          'href' => @view.href, 'external' => true},
+          {'text' => 'Print as PDF', 'class' => 'print',
+          'href' => '/views/' + @view.id + '/rows.pdf?print=true&' +
+          'headers_on_every_page=true'},
+          {'text' => 'Create new ' + t(:blist_name), 'class' => 'newDataset',
+          'href' => blist_href_new_blist, 'external' => true},
+          ]}) %>
+
+          <form class='search' action='#'>
+            <div class='searchContainer clearfix'>
+              <input type='text' class='textInput textPrompt'
+              title='Find Inside' />
+              <div class='actionBox'>
+                <div class='clearBox'>
+                  <a class='clearSearch' title='Clear Search' href='#clear_search'>
+                    Clear Search
+                  </a>
+                </div>
+                <%= image_submit_tag('button_find_blue.png', :class => 'submit',
+                  :name => 'findSubmit') %>
+              </div>
+            </div>
+          </form>
+    </div></div></div>
+
+    <div id="data-grid">
+      <noscript>
+        <h3><a href="<%= @view.href %>"><%= h(@view.name) %></a></h3>
+
+        <p><%= h(@view.description) %></p>
+
+        <%= @view.html %>
+      </noscript>
+    </div>
+
+    <div class='blist-table-footer-bl'>
+        <div class='blist-table-footer-br'>
+            <div class='blist-table-footer'></div>
+        </div>
+    </div>
+
+    <%- if !@is_gov_widget -%>
+    <p><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
+        Socrata Social Data Player
+    </a></p>
+    <%- end -%>
+
+    <ul class='widgetFooter'>
+      <li><a class='noInterstitial'
+        href="/views/<%= @view.id %>/rows.csv">Download as CSV</a></li>
+      <li><a class='noInterstitial'
+        href="/views/<%= @view.id %>/rows.pdf?print=true&headers_on_every_page=true">Print as PDF</a></li>
+      <li class='last'><a href="<%= @view.href %>"
+        rel="external">View Fullscreen</a></li>
+    </ul>
+
+    <% dialog_content("emailDialog") do %>
+    <div class='header'>
+      <h1>Email this <%= t(:blist_name) %></h1>
+    </div>
+
+    <div class="mainContent clearfix">
+      <form action="/views/<%= @view.id %>/rows.html?method=email">
+        <label for="emailInput">Email to send this dataset to:</label>
+        <input id="emailInput" name="email" type="text" />
+      </form>
+      <p class="error"></p>
+      <ul class="actionButtons">
+        <li><a href="#close" class="jqmClose">Close</a></li>
+        <li><a href="#send-email" class="submit arrowButton">Send Email</a></li>
+      </ul>
+    </div>
+    <% end %>
+
+    <% dialog_content("publishDialog") do %>
+    <div class='header'>
+      <h1>Republish this widget</h1>
+    </div>
+
+    <div class="mainContent clearfix">
+      <p>Copy and paste this HTML code into your blog</p>
+      <%= text_area_tag("publishCode", get_publish_embed_code_for_view(@view)) %>
+      <ul class="actionButtons">
+        <li><a href="#close" class="arrowButton jqmClose">Close</a></li>
+      </ul>
+    </div>
+    <% end %>
+
+    <%- if @is_gov_widget -%>
+    <div class='interstitial'>
+      <a class='closeLink' href='#close'>Close</a>
+      <span class='closeKeyText'>or ESC key</span>
+      <h4>You are leaving <span class='serverName'>the current website</span></h4>
+      <p>Thank you for visiting our site.</p>
+      <div class='exitBox'>
+        <p>You will now access</p>
+        <a href='#' class='noInterstitial externalLink'></a>
+      </div>
+      <h4>We hope your visit was informative and enjoyable.</h4>
+    </div>
+    <%- end -%>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.widget');
+    blist.widget.viewId = '<%= @view.id %>';
+    blist.widget.viewName = '<%= @view.name %>';
+  </script>
+  <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",
+    "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
+    "util/util", "data/types", "data/model", "data/table", "widgets/text-prompt",
+    "widgets/dropdown-menu", "widgets/scrollable", "widgets/dataset-grid",
+    "screens/external-widget", :cache => "cache/widgets_show_all" %>
+
+  <%- if @is_gov_widget -%>
+  <%= javascript_include_tag "screens/gov-widget" %>
+  <%- elsif ENV['RAILS_ENV'] == 'production' -%>
+  <script type="text/javascript">
+  var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+  document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script type="text/javascript">
+  try {
+  var pageTracker = _gat._getTracker("UA-7633631-1");
+  pageTracker._trackPageview();
+  } catch(err) {}</script>
+  <%- end -%>
+<% end %>

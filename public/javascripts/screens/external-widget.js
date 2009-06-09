@@ -191,7 +191,7 @@ $(function ()
     $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             accessType: 'WIDGET', showRowNumbers: false,
             filterItem: '#header form :text',
-            clearFilterItem: '#header form .clearSearch',
+            clearFilterItem: '#header form .clearSearch'
         });
     $.ajax({url: '/views/' + widgetNS.viewId + '.json', data: {method: 'opening',
             accessType: 'WIDGET'}});

@@ -144,13 +144,13 @@ class View < Model
 
   def user_role(user_id)
     if (user_id == tableOwner.id)
-      I18n.t(:blist_name) + " Author"
+      I18n.t(:blist_name).capitalize + " Author"
     elsif (user_id == owner.id)
       "View Author"
     elsif contributor_users.any? {|cu| cu.id == user_id}
-      I18n.t(:blist_name) + " Contributor"
+      I18n.t(:blist_name).capitalize + " Contributor"
     elsif viewer_users.any? {|vu| vu.id == user_id}
-      I18n.t(:blist_name) + " Viewer"
+      I18n.t(:blist_name).capitalize + " Viewer"
     else
       ""
     end

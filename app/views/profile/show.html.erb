@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "profile-screen" %>
-  <title><%= t(:page_title) %></title>
+  <title><%= @user.displayName %> | <%= t(:page_title) %></title>
 <% end %>
 
 

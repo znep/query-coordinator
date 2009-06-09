@@ -81,7 +81,7 @@
 
     <div class="mainContent clearfix">
       <form action="/views/<%= @view.id %>/rows.html?method=email">
-        <label for="emailInput">Email to send this dataset to:</label>
+        <label for="emailInput">Email this <%= t(:blist_name) %> to:</label>
         <input id="emailInput" name="email" type="text" />
       </form>
       <p class="error"></p>

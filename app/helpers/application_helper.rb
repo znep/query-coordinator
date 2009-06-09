@@ -28,8 +28,14 @@ module ApplicationHelper
   #   option_menu:
   #     If set to true, renders an option menu (adds a class and different styling)
 
+  @@menuUID = 0
+
   def menu_tag(options = {}, is_owner = false, can_edit = false)
     items = options['items']
+    if options['id'].blank?
+      options['id'] = 'autofill_' + @@menuUID.to_s
+      @@menuUID += 1
+    end
 
     ret = StringIO.new
     ret << "<ul id='" << options['id'].to_s << "' class='" <<
@@ -65,7 +71,7 @@ module ApplicationHelper
 
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
           (i['swf_item'] ? ' swfItem' : '') << "'><a title='#{i['title']}' " <<
-          "href='#{i['href']}' q=\"#{i['q']}\"" <<
+          "href='#{i['href']}' q=\"#{i['q']}\" class=\"#{i['link_class']}\"" <<
           (i['external'] ? ' rel="external"' : '') << ">" <<
           "<span class='highlight'>#{i['text']}</span></a>"
         if i['submenu']

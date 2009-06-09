@@ -13,14 +13,15 @@
           {'text' => 'Email this ' + t(:blist_name), 'class' => 'email',
           'href' => '#email'},
           {'text' => 'Download as CSV', 'class' => 'csvExport',
-          'href' => '/views/' + @view.id + '/rows.csv'},
+          'link_class' => 'noInterstitial', 'href' => '/views/' + @view.id +
+          '/rows.csv'},
           {'text' => 'Republish this ' + t(:blist_name), 'class' => 'publish',
           'href' => '#publish'},
           {'text' => 'View fullscreen', 'class' => 'fullscreen',
           'href' => @view.href, 'external' => true},
           {'text' => 'Print as PDF', 'class' => 'print',
-          'href' => '/views/' + @view.id + '/rows.pdf?print=true&' +
-          'headers_on_every_page=true'},
+          'link_class' => 'noInterstitial', 'href' => '/views/' + @view.id +
+          '/rows.pdf?print=true&headers_on_every_page=true'},
           {'text' => 'Create new ' + t(:blist_name), 'class' => 'newDataset',
           'href' => blist_href_new_blist, 'external' => true},
           ]}) %>

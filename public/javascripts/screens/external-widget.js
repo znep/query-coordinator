@@ -86,6 +86,8 @@ $(function ()
 
     widgetNS.setupMenu();
 
+    $('#header form').submit(function (event) { event.preventDefault(); });
+
     $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             accessType: 'WIDGET', showRowNumbers: false,
             filterItem: '#header form :text',

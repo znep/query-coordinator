@@ -7,10 +7,88 @@
     <%= render(:partial => "invitation_form") %>
 
     <div class="submitLine clearfix">
-      <%= submit_tag("Invite") %>
-      <div class="buttonLinkLarge">
-        <a href='#close_signup' class='close jqmClose'><span>Cancel</span></a>
-      </div>
+      <%= image_submit_tag("button_invite.png", :id => "inviteButton") %>
+      <a href='#close_signup' class='close jqmClose'>Cancel</a>
     </div>
   <% end %>
 </div>
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    var addedRecipients = new Array();
+    var addedRecipientUID = 0;
+    
+    // Wire up text prompt for recipient form.
+    $('.textPrompt').example(function ()
+    {
+        return $(this).attr('title');
+    });
+    // TODO: Wire up validation for recipient form.
+    
+    $("#recipientAddButton").click(function(event)
+    {
+      event.preventDefault();
+      // TODO: Validate the form.
+      
+      var newRecipient = {
+        id: "remove_" + addedRecipientUID,
+        email: $("#add_recipient_email").val(),
+        first: $("#add_recipient_first_name").val(),
+        last: $("#add_recipient_last_name").val()
+      };
+      addedRecipients.push(newRecipient);
+      
+      var addRow = "\
+        <tr>\
+          <td class=\"add_handle\"><a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>\
+          <td class=\"add_email\"><span>" + newRecipient.email + "</span></td>\
+          <td class=\"add_first_name\"><span>" + newRecipient.first + "</span></td>\
+          <td class=\"add_last_name\"><span>" + newRecipient.last + "</span></td>\
+          <td class=\"add_action\"></td>\
+        </tr>\
+      ";
+      
+      addedRecipientUID++;
+      
+      if ($(".recipientsShowTableContainer table tbody tr").length < 1)
+      {
+        $(".recipientsShowTableContainer").show();
+      }
+      
+      $(".recipientsShowTableContainer table tbody").append($(addRow));
+      
+      $(".recipientsEditTableContainer :input").val("").blur();
+    });
+    
+    // DELETE
+    $(".recipientsShowTableContainer td.add_handle a").live("click", function(event)
+    {
+      event.preventDefault();
+      
+      var $link = $(this);
+      
+      var recipientIndex = null;
+      var recipientId = $link.attr("id");
+      for (var i = 0; i < addedRecipients.length; i++)
+      {
+        if (recipientId == addedRecipients[i].id)
+        {
+          recipientIndex = i;
+        }
+      }
+      
+      if (recipientIndex != null)
+      {
+        addedRecipients.splice(recipientIndex, 1);
+        $link.closest("tr").remove();
+      }
+    });
+    
+    // HIDE RECIPIENT NAME
+    $("#invitation_addName").click(function(event)
+    {
+      $(".emailIntro").toggle();
+    });
+  };
+</script>

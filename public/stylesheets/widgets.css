@@ -1281,6 +1281,7 @@ table.gridList tr.filteredOut
 }
 .dialogWrapper.modalDialog
 {
+    margin: 5em;
     width: 70.5em;
 }
 .dialogTL
@@ -1332,6 +1333,13 @@ table.gridList tr.filteredOut
     height: 34px;
     margin: 0;
     text-indent: -9999px;
+}
+.modalDialog .dialogBox .header h1
+{
+    background-image: none;
+    height: auto;
+    margin: 0;
+    text-indent: 0;
 }
 
 .dialogBox .header .close
@@ -1886,7 +1894,7 @@ table.gridList tr.filteredOut
     margin-left: -40em;
     min-height: 0;
     position: fixed;
-    top: 7em;
+    top: 0;
     width: 80em;
 }
 .jqmOverlay { background-color: #000; }
@@ -2041,3 +2049,116 @@ table.gridList tr.filteredOut
 }
 
 /*** END: inline edit ***/
+
+
+/*** START: Invitation form ***/
+
+.invitationWrapper
+{
+    padding: 1em;
+}
+
+.invitationWrapper p
+{
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+.invitationWrapper label { width: 65px; }
+.invitationWrapper input.textEmail { width: 27em; }
+.invitationWrapper input[type='checkbox'] { vertical-align: middle; }
+.invitationWrapper .invitationText {
+    font-size: 1em;
+    width: 45em;
+}
+.invitationWrapper input[type='image']
+{
+    margin-right: 1em;
+    vertical-align: middle;
+}
+.invitationWrapper .submitLine a
+{
+    color: #333;
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+
+.recipientsShowTableContainer
+{
+    display: none;
+    max-height: 135px;
+    overflow: auto;
+}
+.recipientsEditTableContainer
+{
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding-top: 1em;
+}
+
+.recipientsWrapper table
+{
+    table-layout: fixed;
+    width: 100%;
+}
+.recipientsWrapper table .add_handle { width: 22px; }
+.recipientsWrapper table .add_email { width: 50%; }
+.recipientsWrapper table .add_first_name,
+.recipientsWrapper table .add_last_name { width: 25%; }
+.recipientsWrapper table .add_action { width: 90px; }
+
+.recipientsWrapper thead { background-color: #06386a; }
+.recipientsWrapper thead th
+{
+    background-color: #06386a;
+    border-right: 1px solid #d4d4d4;
+    color: #fff;
+    font-size: 1.2em;
+    font-weight: normal;
+    padding: .5em;
+    text-align: left;
+}
+.recipientsWrapper tbody td
+{
+    /* FF bug draws gray right border on cells when there's more than 2 rows if border undefined. */
+    border-right: 1px solid #fff;
+    padding: .3em 0;
+    vertical-align: middle;
+}
+.recipientsShowTableContainer tbody td { 
+    font-size: 1.2em;
+    padding: .2em .5em;
+}
+
+.recipientsWrapper table td.add_handle { padding: 0; }
+.recipientsShowTableContainer table td.add_handle a,
+.recipientsEditTableContainer table td.add_handle span
+{
+    background: url(/stylesheets/images/profile/profile_links_delete.png) center center no-repeat;
+    display: block;
+    height: 22px;
+    line-height: 22px;
+    margin: 0;
+    padding: 0;
+    text-indent: -9999px;
+    width: 22px;
+}
+.recipientsEditTableContainer table td.add_handle span
+{
+    background-image: url(/stylesheets/images/profile/profile_links_add.png);
+}
+
+.recipientsWrapper table td input[type='text']
+{
+    font-size: 1.2em;
+    width: 90%;
+}
+
+.invitationPreviewContainer {
+    background-color: #ececec;
+    margin-bottom: 1em;
+    padding: 1em;
+}
+
+
+/*** END: Invitation form ***/

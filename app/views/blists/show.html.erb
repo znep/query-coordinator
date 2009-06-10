@@ -26,8 +26,8 @@
           </a>
         </div>
       </li>
-      <%- if can_edit -%>
-      <li class='swfItem newViewLink'>
+      <%- if current_user -%>
+      <li class='newViewLink'>
         <a href='#newView' title='New View'>New View</a>
       </li>
       <%- end -%>
@@ -91,11 +91,11 @@
 
             <%# Table view options %>
             <%- if is_owner -%>
-            <li class='swfItem separator tableOption'>
+            <li class='separator tableOption'>
               <a class='addColumnsLink linkIcon' href='#'>Add Column</a></li>
             <%- end -%>
-            <%- if can_edit -%>
-            <li class='swfItem separator tableOption'>
+            <%- if current_user -%>
+            <li class='separator tableOption'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
                     <div class='innerWrapper'>
@@ -112,14 +112,14 @@
 
             <%# Page view options %>
             <%- if is_owner -%>
-            <li class='swfItem pageOption'>
+            <li class='pageOption'>
               <a class='addColumnsLink linkIcon' href='#'>Add Field</a>
             </li>
             <%- end -%>
             <%- if can_edit -%>
-            <li class='swfItem separator pageOption'><a id='newPageLink'
+            <li class='separator pageOption'><a id='newPageLink'
               class='linkIcon flashAction' href='#NewPage'>New Page</a></li>
-            <li class='swfItem separator pageOption'><a id='defaultLayoutLink'
+            <li class='separator pageOption'><a id='defaultLayoutLink'
               class='linkIcon flashAction'
               href='#DefaultLayout'>Default Layout</a></li>
             <%- end -%>
@@ -137,8 +137,8 @@
             <%- end -%>
 
             <%# Display menu %>
-            <%- if can_edit -%>
-            <li class='swfItem separator'>
+            <%- if current_user -%>
+            <li class='separator'>
               <a href='#' id='displayLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
                     <span class='innerWrapper'>Display As</span></div></div></a>

@@ -82,7 +82,7 @@
       <li><a href="#duplicate">Duplicate</a></li>
 <%- end -%>
       <%- if is_owner -%>
-      <li class='swfItem'><a href="<%= "#{view.href}?popup=SharingEditor" %>"
+      <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
         class="showFlashPopup">Share</a></li>
       <%- end -%>
     </ul>
@@ -324,8 +324,8 @@
     <h2 class="panelHeader">
       <%= pluralize(view.filters.length, "Filtered View") %>
     </h2>
-    <%- if is_owner -%>
-    <ul class="headerActions actionButtons swfItem">
+    <%- if current_user -%>
+    <ul class="headerActions actionButtons">
       <li><%= link_to("Create", view.href + "?popup=SaveLens", :class => "arrowButton showFlashPopup") %></li>
     </ul>
     <%- end -%>
@@ -486,7 +486,7 @@
       </h2>
     <% end %>
     <%- if is_owner -%>
-    <ul class="headerActions actionButtons swfItem">
+    <ul class="headerActions actionButtons">
       <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
         class="arrowButton showFlashPopup" title="Share">Share</a></li>
     </ul>
@@ -588,10 +588,12 @@
     <%# Not supported
     <h2 class="panelHeader">3212 total views</h2>
     %>
-    <ul class="headerActions actionButtons swfItem">
+    <%- if current_user -%>
+    <ul class="headerActions actionButtons">
       <li><a href="<%= "#{view.href}?popup=PublishDialog" %>"
         class="arrowButton showFlashPopup">Publish a Widget</a></li>
     </ul>
+    <%- end -%>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>

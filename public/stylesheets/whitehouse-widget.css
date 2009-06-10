@@ -1,0 +1,33 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td
+{
+    font-family: "Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
+}
+
+.blist-table .blist-th
+{
+    font-size: 1.1em;
+    height: 3.0909em; /* 34px */
+    line-height: 1.4545em; /* 16px */
+    padding: 0 0.3636em;
+    white-space: normal;
+}
+
+.blist-table .blist-th-name
+{
+    bottom: 0;
+    display: block;
+    position: absolute;
+}
+
+.blist-table .blist-td
+{
+    font-size: 1.2em;
+    height: 1.3333em; /* 16px */
+    line-height: 1.3333em; /* 16px */
+    padding: 0.3333em; /* 4px */
+}
+
+.blist-table .blist-tr-even .blist-td { background-color: #F1F4F7; }
+.blist-table .blist-td a, .interstitial a { color: #336699; }
+
+.widgetFooter { text-align: center; }

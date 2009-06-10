@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "profile-screen" %>
-  <title><%= t(:page_title) %></title>
+  <title><%= @user.displayName %> | <%= t(:page_title) %></title>
 <% end %>
 
 
@@ -322,7 +322,7 @@
 
 
           <div class='publicBlists'>
-            <h3>My public <%= t(:blists_name) %> &amp; filters</h3>
+            <h3>My public <%= t(:blists_name) %> &amp; views</h3>
             <div class='infoContentOuter active'><div class="infoContentInner">
               <div class='infoContent'>
                 <div class='infoContentHeader'>

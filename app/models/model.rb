@@ -295,7 +295,7 @@ protected
       (!@deleted_flags.nil? && @deleted_flags.length > 0)
   end
 
-  def self.get_request(path, session_token = nil)
+  def self.get_request(path, session_token = nil, skip_parse = false)
     result_body = cache.read(path)
     if result_body.nil?
       result_body = generic_request(Net::HTTP::Get.new(path),
@@ -303,7 +303,7 @@ protected
       cache.write(path, result_body)
     end
 
-    parse(result_body)
+    skip_parse ? result_body : parse(result_body)
   end
 
   def self.create_request(path, payload = "{}")

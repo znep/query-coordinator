@@ -16,11 +16,10 @@
         {'text' => "Email this #{t(:blist_name)} to me", 'class' => 'email',
         'href' => '#email', 'user_required' => true},
         {'text' => "Copy this #{t(:blist_name)}", 'class' => 'copy',
-        'href' => '#copy_blist',
-        'swf_item' => true},
-        {'separator' => true, 'swf_item' => true},
+        'href' => '#copy_blist', 'user_required' => true},
+        {'separator' => true, 'user_required' => true},
         {'text' => "Create New #{t(:blist_name)}...", 'class' => 'create',
-        'href' => '#new_blist', 'swf_item' => true },
+        'href' => '#new_blist', 'user_required' => true },
         # Submenu for Create blist when we support different types
 #        , 'submenu' => {'items' => [
 #        {'text' => 'Start As a Table', 'class' => 'table',
@@ -31,15 +30,14 @@
 #        'href' => '#'},
 #        {'text' => 'Start New Form', 'class' => 'form',
 #        'href' => '#'}]}
-        {'text' => 'Upload...', 'class' => 'import', 'href' => '/upload',
-        'swf_item' => false},
+        {'text' => 'Upload...', 'class' => 'import', 'href' => '/upload'},
         {'separator' => true},
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
         'submenu' => recent_blists_menu(@view, 5)},
-        {'separator' => true, 'owner_item' => true, 'swf_item' => true},
+        {'separator' => true, 'owner_item' => true},
         {'text' => "Edit #{t(:blist_name)} permissions...",
         'class' => 'editPermissions', 'href' => '#permissions',
-        'owner_item' => true, 'swf_item' => true}
+        'owner_item' => true}
         ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
@@ -73,8 +71,8 @@
     </dd></dl>
   </li>
   <%- end -%>
-  <%- if can_edit -%>
-  <li class='data swfItem'>
+  <%- if current_user -%>
+  <li class='data'>
     <dl><dt><a href='#menuData'>Data</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Insert a Column', 'class' => 'insertColumn',
@@ -134,8 +132,8 @@
         ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
-  <%- if can_edit -%>
-  <li class='publish swfItem'>
+  <%- if current_user -%>
+  <li class='publish'>
     <dl><dt><a href='#menuPublish'>Publish</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
       {'section_title' => "Embed #{t(:blists_name)} on the Web"},

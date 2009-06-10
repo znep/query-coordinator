@@ -107,6 +107,9 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
 
+  map.connect 'widgets/:id/:variation', :controller => 'widgets', :action => 'show'
+  map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'
+
   map.root :controller => "data", :action => "show"
 
   map.import '/upload', :controller => 'imports', :action => 'new' 

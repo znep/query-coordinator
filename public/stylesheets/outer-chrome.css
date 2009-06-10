@@ -175,6 +175,11 @@ body
     display: inline;
 }
 
+#header .userNav li.signInLink a
+{
+  font-weight: bold;
+}
+
 #header .loggedInNav li.signInLink
 {
     display: none;
@@ -210,6 +215,7 @@ body
     background-image: url(/stylesheets/images/header/MainButton_gradSlice.png);
     background-repeat: repeat-x;
     display: block;
+    font-weight: bold;
 }
 #mainNav li.discover
 { background: url(/stylesheets/images/header/MainButton_gradLeft.png) no-repeat; }

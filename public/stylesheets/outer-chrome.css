@@ -175,6 +175,11 @@ body
     display: inline;
 }
 
+#header .userNav li.signInLink a
+{
+  font-weight: bold;
+}
+
 #header .loggedInNav li.signInLink
 {
     display: none;

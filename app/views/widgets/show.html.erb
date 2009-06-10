@@ -12,9 +12,21 @@
           <%= menu_tag({'class' => 'headerMenu', 'items' => [
           {'text' => 'Email this ' + t(:blist_name), 'class' => 'email',
           'href' => '#email'},
-          {'text' => 'Download as CSV', 'class' => 'csvExport',
-          'link_class' => 'noInterstitial', 'href' => '/views/' + @view.id +
-          '/rows.csv'},
+          {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
+          'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+          {'text' => 'As CSV', 'link_class' => 'noInterstitial',
+          'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
+          {'text' => 'As PDF', 'link_class' => 'noInterstitial',
+          'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
+          {'text' => 'As XLS', 'link_class' => 'noInterstitial',
+          'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
+          {'text' => 'As XLSX', 'link_class' => 'noInterstitial',
+          'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
+          {'text' => 'As XML', 'link_class' => 'noInterstitial',
+          'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
+          {'text' => 'As JSON', 'link_class' => 'noInterstitial',
+          'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
+          ]}},
           {'text' => 'Republish this ' + t(:blist_name), 'class' => 'publish',
           'href' => '#publish'},
           {'text' => 'View fullscreen', 'class' => 'fullscreen',

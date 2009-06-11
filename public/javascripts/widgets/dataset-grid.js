@@ -231,7 +231,7 @@
             return;
         }
         var colSum = datasetObj.settings._columnSummaries[col.id];
-        if (colSum == null)
+        if (colSum == null || colSum.topFrequencies == null)
         {
             return;
         }

@@ -219,7 +219,13 @@ blist.namespace.fetch('blist.data');
          */
         this.isProgressiveLoading = function()
         {
-            return curOptions.progressiveLoading && rowsLoaded < rows.length;
+            var isProg = curOptions.progressiveLoading && rowsLoaded < rows.length;
+            if (!isProg && meta.columnFilters != null)
+            {
+                $.each(meta.columnFilters, function (i, v)
+                    { if (v != null) { isProg = true; return false; } });
+            }
+            return isProg;
         };
 
         /**

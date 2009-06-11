@@ -23,9 +23,13 @@
     text-overflow: ellipsis;
 }
 
-.blist-th-first
+.blist-table-header .blist-th.blist-table-corner
 {
     background: url(/stylesheets/images/content/table/header_left_top.png) no-repeat left top;
+}
+
+.blist-th-first
+{
     border-left: none;
     padding-left: 0.4166em; /* 5px */
 }
@@ -54,7 +58,6 @@
 
 .blist-table .blist-table-corner
 {
-    background-color: #ffffff;
     border: none;
     font-size: 1.1em;
     height: 3.1818em; /* 35px */
@@ -71,6 +74,54 @@
 .blist-th .columnHeaderMenu
 {
     font-size: 0.8333em;
+}
+
+.blist-table-footer-scrolls
+{
+    background-color: #ffffff;
+    border-top: solid 1px #d0d0d0;
+    height: 4.2em;
+}
+
+.blist-table-footer
+{
+    background-color: #e3ecf7;
+    height: 3.5em;
+}
+
+.blist-tf
+{
+    border-color: #ffffff;
+    border-style: solid;
+    border-width: 0 1px;
+    font-size: 1.2em;
+    height: 2.9167em; /* 35px */
+    overflow: hidden;
+    padding: 0 0.25em 0 0.3333em; /* 3px right, 4px left */
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.blist-tf .blist-tf-value
+{
+    bottom: 0.4167em; /* 5px */
+    position: absolute;
+    right: 0.4167em; /* 5px */
+}
+
+.blist-tf.blist-tf-first
+{
+    border-left-width: 0;
+    padding-left: 0.4167em; /* 5px */
+}
+
+.blist-table-footer .blist-tf.blist-table-corner
+{
+    font-size: 1em;
+    height: 3em; /* 30px */
+    overflow: visible;
+    padding: 0.5em 0.4em 0; /* 5px top, 4px l/r */
 }
 
 .blist-td
@@ -95,14 +146,21 @@ div.blist-table-expander
     border-top: solid 1px #d0d0d0;
 }
 
-.blist-table-handle
+.blist-tr .blist-table-handle.blist-td
 {
+    border-left-width: 0;
     color: #a9cef2;
     font-size: 1.1em;
     height: 1.4545em; /* 16px */
     line-height: 1.4545em;
     padding: 0.3636em; /* 4px */
     text-align: right;
+}
+
+.blist-tr .blist-td-first
+{
+    border-left-width: 0;
+    padding-left: 0.4167em; /* 5px */
 }
 
 img.blist-table-option-icon

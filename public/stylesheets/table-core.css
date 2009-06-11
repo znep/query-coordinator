@@ -80,6 +80,23 @@
     user-select: none;
 }
 
+.blist-table-footer-scrolls
+{
+    position: relative;
+    overflow: hidden;
+}
+
+.blist-table-footer
+{
+    bottom: 0;
+    position: absolute;
+}
+
+.blist-tf
+{
+    float: left;
+}
+
 .blist-td
 {
     float: left;

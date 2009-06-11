@@ -244,7 +244,7 @@
 
             // Determine the size to which the contents expand, constraining to
             // predefined maximums
-            var maxWidth = Math.floor(scrolls.width() * .5);
+            var maxWidth = Math.floor($scrolls.width() * .5);
             if (rc.width > maxWidth)
             {
                 // Constrain the width and determine the height
@@ -266,20 +266,20 @@
             var origOffset = { top: rc.top, left: rc.left };
 
             // Ensure viewport is in the window horizontally
-            var viewportWidth = scrolls.width();
-            if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
+            var viewportWidth = $scrolls.width();
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
                 viewportWidth -= scrollbarWidth;
-            var scrollLeft = scrolls.scrollLeft();
+            var scrollLeft = $scrolls.scrollLeft();
             if (rc.left + rc.width > scrollLeft + viewportWidth)
                 rc.left = scrollLeft + viewportWidth - rc.width;
             if (rc.left < scrollLeft)
                 rc.left = scrollLeft;
 
             // Ensure viewport is in the window vertically
-            var viewportHeight = scrolls.height();
-            if (scrolls[0].scrollWidth > scrolls[0].clientWidth)
+            var viewportHeight = $scrolls.height();
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
                 viewportHeight -= scrollbarWidth;
-            var scrollTop = scrolls.scrollTop();
+            var scrollTop = $scrolls.scrollTop();
             if (rc.top + rc.height > scrollTop + viewportHeight)
                 rc.top = scrollTop + viewportHeight - rc.height;
             if (rc.top < scrollTop - 1)
@@ -619,9 +619,12 @@
         headerStr +=
             '  <div class="blist-table-header-scrolls">\
                 <div class="blist-table-header">&nbsp;</div>\
-              </div></div>\
+            </div></div>\
             <div class="blist-table-scrolls">\
               <div class="blist-table-inside">&nbsp;</div></div>\
+            <div class="blist-table-footer-scrolls">\
+                <div class="blist-table-footer">&nbsp;</div>\
+            </div>\
             <div class="blist-table-util"></div>';
 
         $(document)
@@ -662,15 +665,21 @@
             .find('.blist-table-header')
 
         // The scrolling container
-        var scrolls = $outside
-            .find('.blist-table-scrolls');
+        var $scrolls = $outside
+            .find('.blist-table-scrolls')
+            .scroll(function () {renderRows(); onScroll();});
+
 
         // The non-scrolling row container
-        var inside = scrolls
+        var inside = $scrolls
             .find('.blist-table-inside')
             .mouseout(onCellOut)
             .bind('table_click', onCellClick);
         var insideDOM = inside[0];
+
+        // Footer pieces
+        var $footerScrolls = $outside.find('.blist-table-footer-scrolls');
+        var $footer = $footerScrolls.find('.blist-table-footer');
 
         // These utility nodes are used to append rows and measure cell text,
         // respectively
@@ -703,21 +712,44 @@
         {
             headerScrolls.height(header.height());
 
-            // Size the scrolling area.  Note that this assumes a fixed extra
-            // amount of height & width.  TODO - change to absolute positioning
+            // Size the scrolling area.  TODO - change to absolute positioning
             // when IE6 is officially dead (June 2010?)
-            scrolls.height($outside.outerHeight() - $top.height() - 3);
-            scrolls.width($outside.width() - 2);
+            $scrolls.height($outside.innerHeight() - $top.outerHeight() -
+                ($scrolls.outerHeight() - $scrolls.innerHeight()) - 1);
+            $scrolls.width($outside.innerWidth() -
+                ($scrolls.outerWidth() - $scrolls.innerWidth()));
 
             // Size the inside row container
             var insideHeight = model ? rowOffset * model.rows().length : 0;
-            var scrollsHeight = scrolls[0].clientHeight;
+            var scrollsHeight = $scrolls[0].clientHeight;
+            if ($footerScrolls.is(':visible'))
+                insideHeight += $footerScrolls.outerHeight() - 1;
             if (insideHeight < scrollsHeight)
                 insideHeight = scrollsHeight;
             inside.height(insideHeight);
 
             renderRows();
             configureWidths();
+
+            // Move footer up to bottom, or just above the scrollbar
+            var bottom = parseFloat($scrolls.css('border-bottom-width')) +
+                $footerScrolls.outerHeight();
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+            {
+                bottom += scrollbarWidth;
+            }
+            $footerScrolls.css('bottom', bottom);
+
+            // Adjust the margin footer for the scrollbar if necessary
+            // Adjusting the width directly caused Safari to lose scrolling
+            //  events after resizing the browser window a few times, and making
+            //  the grid vertical scrollbar go from on->off->on
+            var marginR = $scrolls.outerHeight() - $scrolls.innerHeight();
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+            {
+                marginR += scrollbarWidth;
+            }
+            $footerScrolls.css('margin-right', marginR);
         };
 
         if (options.manualResize)
@@ -733,10 +765,11 @@
         var headerScrolledTo = 0;
         var onScroll = function()
         {
-            var scrollTo = this.scrollLeft;
+            var scrollTo = $scrolls[0].scrollLeft;
             if (scrollTo != headerScrolledTo)
             {
                 header[0].style.left = -scrollTo + 'px';
+                $footer[0].style.left = -scrollTo + 'px';
                 headerScrolledTo = scrollTo;
             }
         };
@@ -915,7 +948,8 @@
                         contextVariables);
 
                     colParts.push(
-                        "\"<div class='blist-td " + getColumnClass(mcol) + cls + "'>\", " +
+                        "\"<div class='blist-td " + getColumnClass(mcol) + cls +
+                            (j == 0 ? ' blist-td-first' : '') + "'>\", " +
                             renderer + ", \"</div>\""
                     );
                 }
@@ -1011,7 +1045,7 @@
 
             // Update the handle style with proper dimensions
             var dummyHandleText = Math.max(model.rows().length, 100);
-            measureUtilDOM.innerHTML = '<div class="blist-table-handle">' +
+            measureUtilDOM.innerHTML = '<div class="blist-table-handle blist-td">' +
                 dummyHandleText + '</div>';
             var $measureHandle = $(measureUtilDOM.firstChild);
             handleOuterWidth = $measureHandle.outerWidth();
@@ -1069,7 +1103,7 @@
                         (index * ' + rowOffset + '), "px\'>"';
             if (options.showRowNumbers)
             {
-                renderFnSource += ', "<div class=\'blist-table-handle '
+                renderFnSource += ', "<div class=\'blist-table-handle blist-td '
                     + handleClass + '\'>", (index + 1), "</div>"';
             }
             renderFnSource += ');' +
@@ -1135,13 +1169,14 @@
                 (insideWidth - handleOuterWidth - paddingX)) + 'px';
 
             // Set the scrolling area width
-            var scrollWidth = scrolls.width();
-            if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
+            var scrollWidth = $scrolls.width();
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
             {
                 scrollWidth -= scrollbarWidth;
             }
             var totalWidth = Math.max(insideWidth, scrollWidth);
             header.width(totalWidth);
+            $footer.width(totalWidth);
             inside.width(totalWidth);
         }
 
@@ -1217,8 +1252,8 @@
                 // Start with the total fixed width for this level
                 var pos = levelWidth;
 
-                var varSize = scrolls.width() - pos;
-                if (scrolls[0].scrollHeight > scrolls[0].clientHeight)
+                var varSize = $scrolls.width() - pos;
+                if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
                 {
                     varSize -= scrollbarWidth;
                 }
@@ -1375,6 +1410,80 @@
             configureFilterHeaders();
         };
 
+        /**
+         * Create column footer elements for the current row configuration
+         */
+        var renderFooter = function()
+        {
+            var html = [];
+            if (options.showRowNumbers)
+            {
+                html.push('<div class="blist-tf blist-table-corner ',
+                    handleClass, '">Totals</div>');
+            }
+
+            var showAgg = false;
+            var renderColFooter = function (col)
+            {
+                var cls = col.cls ? ' blist-tf-' + col.cls : '';
+                showAgg = showAgg || col.aggregate != undefined;
+                // Convert string to float, then clip to desired number of digits;
+                //  then convert back to float to strip extra zeros
+                var val = col.aggregate ?
+                    parseFloat(parseFloat(col.aggregate.value || 0)
+                        .toFixed(col.decimalPlaces || 3)) :
+                    '';
+                html.push(
+                    '<div class="blist-tf ',
+                    !i ? 'blist-tf-first ' : '',
+                    getColumnClass(col),
+                    cls,
+                    '" title="',
+                    col.aggregate ? $.capitalize(col.aggregate.type) : '',
+                    '" uid="',
+                    col.uid,
+                    '">',
+                    '<span class="blist-tf-value">',
+                    val,
+                    '</span></div>');
+            };
+            for (var i = 0; i < columns.length; i++)
+            {
+                var col = columns[i];
+                if (col.body)
+                {
+                    // This assumes that columns with children in the body
+                    //  fit inside the width of this column, and override any
+                    //  parent aggregate
+                    html.push(
+                        '<div class="blist-tf blist-opener ',
+                        id,
+                        '-opener"></div>');
+                    $.each(col.body.children,
+                        function(i, cc) {renderColFooter(cc);});
+                }
+                else
+                {
+                    renderColFooter(col);
+                }
+            }
+            if (options.showGhostColumn)
+            {
+                html.push('<div class="blist-tf blist-table-ghost ',
+                    columns.length < 1 ? 'blist-tf-first ' : '',
+                    ghostClass, '"></div>');
+            }
+            if (showAgg)
+            {
+                $footer.html(html.join(''));
+                $footerScrolls.show();
+            }
+            else
+            {
+                $footerScrolls.hide();
+            }
+        };
+
         /*** ROWS ***/
 
         var renderedRows = {}; // All rows that are rendered, by ID
@@ -1414,13 +1523,13 @@
             if (!model)
                 return;
             
-            var top = scrolls.scrollTop();
+            var top = $scrolls.scrollTop();
 
             // Compute the first row to render
             var first = Math.floor(top / rowOffset);
 
             // Compute the number of (possibly partially) visible rows
-            var count = Math.ceil((top - (first * rowOffset) + scrolls.height()) / rowOffset) + 1;
+            var count = Math.ceil((top - (first * rowOffset) + $scrolls.height()) / rowOffset) + 1;
 
             // Determine the range of rows we need to render, with safety checks to be sure we don't attempt the
             // impossible
@@ -1476,12 +1585,6 @@
             // Now add new/moved rows
             appendRows(html.join(''));
 
-            // Bind scroll handlers
-            scrolls.unbind("scroll", onScroll);
-            scrolls.unbind("scroll", renderRows);
-            scrolls.scroll(onScroll);
-            scrolls.scroll(renderRows);
-
             // Load rows that aren't currently present
             if (rowsToLoad.length) {
                 if (rowLoadTimer)
@@ -1521,6 +1624,7 @@
                 // The handle changed.  Reinitialize columns.
                 initMeta(model);
                 renderHeader();
+                renderFooter();
             }
 
             inside.empty();
@@ -1552,6 +1656,7 @@
         $this.bind('meta_change', function(event, model) {
             initMeta(model);
             renderHeader();
+            renderFooter();
         });
         $this.bind('header_change', function(event, model)
         {

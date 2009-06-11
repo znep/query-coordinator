@@ -3,14 +3,10 @@
 <%- end -%>
 
 <div class="invitationWrapper">
-  <% form_tag(create_invitation_path) do %>
-    <%= render(:partial => "invitation_form") %>
-
-    <div class="submitLine clearfix">
-      <%= image_submit_tag("button_invite.png", :id => "inviteButton") %>
-      <a href='#close_signup' class='close jqmClose'>Cancel</a>
-    </div>
-  <% end %>
+  <p>
+    <strong>From:</strong> <%= current_user.displayName %> &lt;<%= current_user.email %>&gt;
+  </p>
+  <%= render(:partial => "invitation_form") %>
 </div>
 
 <script type="text/javascript" charset="utf-8">
@@ -18,49 +14,63 @@
   {
     var addedRecipients = new Array();
     var addedRecipientUID = 0;
-    
-    // Wire up text prompt for recipient form.
-    $('.textPrompt').example(function ()
-    {
-        return $(this).attr('title');
-    });
-    // TODO: Wire up validation for recipient form.
-    
-    $("#recipientAddButton").click(function(event)
-    {
-      event.preventDefault();
-      // TODO: Validate the form.
-      
-      var newRecipient = {
-        id: "remove_" + addedRecipientUID,
-        email: $("#add_recipient_email").val(),
-        first: $("#add_recipient_first_name").val(),
-        last: $("#add_recipient_last_name").val()
-      };
-      addedRecipients.push(newRecipient);
-      
-      var addRow = "\
-        <tr>\
-          <td class=\"add_handle\"><a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>\
-          <td class=\"add_email\"><span>" + newRecipient.email + "</span></td>\
-          <td class=\"add_first_name\"><span>" + newRecipient.first + "</span></td>\
-          <td class=\"add_last_name\"><span>" + newRecipient.last + "</span></td>\
-          <td class=\"add_action\"></td>\
-        </tr>\
-      ";
-      
-      addedRecipientUID++;
-      
-      if ($(".recipientsShowTableContainer table tbody tr").length < 1)
-      {
-        $(".recipientsShowTableContainer").show();
+        
+    // ADD
+    $("#recipientsEditForm").validate({
+      rules: {
+        add_recipient_first_name: "required",
+        add_recipient_last_name: "required",
+        add_recipient_email: {
+            required: true,
+            email: true
+        }
+      },
+      messages: {
+        add_recipient_first_name: "First name is required.",
+        add_recipient_last_name: "Last name is required.",
+        add_recipient_email: {
+          required: "Email address is required.",
+          email: "Please enter a valid email address"
+        }
+      },
+      submitHandler: function(form) {
+        var $form = $(form);
+        
+        var newRecipient = {
+          id: "remove_" + addedRecipientUID,
+          email: $("#add_recipient_email").val(),
+          first: $("#add_recipient_first_name").val(),
+          last: $("#add_recipient_last_name").val()
+        };
+        addedRecipients.push($.json.serialize(newRecipient));
+
+        var addRow = "\
+          <tr>\
+            <td class=\"add_handle\"><a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>\
+            <td class=\"add_email\"><span>" + newRecipient.email + "</span></td>\
+            <td class=\"add_first_name\"><span>" + newRecipient.first + "</span></td>\
+            <td class=\"add_last_name\"><span>" + newRecipient.last + "</span></td>\
+            <td class=\"add_action\"></td>\
+          </tr>\
+        ";
+
+        addedRecipientUID++;
+
+        if ($(".recipientsShowTableContainer table tbody tr").length < 1)
+        {
+          $(".recipientsShowTableContainer").show();
+        }
+
+        $(".recipientsShowTableContainer table tbody").append($(addRow));
+
+        $(".recipientsShowTableContainer").attr({ 
+          scrollTop: $(".recipientsShowTableContainer").attr("scrollHeight") 
+        });
+        $(".recipientsEditTableContainer :input").val("").blur();
+        $("#add_recipient_email").focus();
       }
-      
-      $(".recipientsShowTableContainer table tbody").append($(addRow));
-      
-      $(".recipientsEditTableContainer :input").val("").blur();
     });
-    
+
     // DELETE
     $(".recipientsShowTableContainer td.add_handle a").live("click", function(event)
     {
@@ -72,7 +82,7 @@
       var recipientId = $link.attr("id");
       for (var i = 0; i < addedRecipients.length; i++)
       {
-        if (recipientId == addedRecipients[i].id)
+        if (recipientId == $.json.deserialize(addedRecipients[i]).id)
         {
           recipientIndex = i;
         }
@@ -85,10 +95,41 @@
       }
     });
     
-    // HIDE RECIPIENT NAME
-    $("#invitation_addName").click(function(event)
+    $("#inviteForm").submit(function(event)
     {
-      $(".emailIntro").toggle();
+      event.preventDefault();
+      var $form = $(this);
+      
+      var formData = {
+        message: $("#invitation_message").val(),
+        "recipients[]": addedRecipients,
+        authenticity_token: $("input[name='authenticity_token']").val()
+      };
+      
+      $.ajax({
+        url: $form.attr("action"),
+        type: "POST",
+        data: formData,
+        dataType: "json",
+        success: function(data) {
+          if (data.status == "failure")
+          {
+            $(".invitationWrapper .errorMessage").append(
+              $("<p class=\"error\">Unable to send invitations to the recipients indicated below in red.</p>")
+            );
+            $(data.errors).each(function()
+            {
+              var error = this;
+              $("#" + error.removeId).closest("tr").addClass("error");
+            });
+            $(".recipientsShowTableContainer table tbody tr:not('.error')").remove();
+          }
+          else
+          {
+            $("#modal").jqmHide();
+          }
+        }
+      });
     });
   };
 </script>

@@ -343,8 +343,8 @@
   <%- if !current_user -%>
   <%= render(:partial => 'user_sessions/login', :locals => {:is_modal => true}) %>
   <%= render(:partial => "accounts/signup", :locals => {:is_modal => true}) %>
-  <%= javascript_include_tag "plugins/jquery.validate", "plugins/ajaxupload.3.0",
-    "screens/signup-screen", :cache => "cache/inline_accounts_new_all" %>
+  <%= javascript_include_tag "plugins/ajaxupload.3.0", "screens/signup-screen", 
+    :cache => "cache/inline_accounts_new_all" %>
   <%- end -%>
 
   <%= render(:partial => "shared/common_js") %>
@@ -364,7 +364,7 @@
     <%- end -%>
   </script>
   <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min",
-    "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
+    "plugins/ui.core", "plugins/ui.draggable",
     "util/extMouseWheel", "util/flash-interface", "util/navigation",
     "util/inline-login", "util/swfobject", "data/types", "data/model",
     "data/table", "widgets/inline-edit", "widgets/dropdown-menu",

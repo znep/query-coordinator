@@ -2064,7 +2064,6 @@ table.gridList tr.filteredOut
     margin-bottom: 1em;
 }
 
-.invitationWrapper label { width: 65px; }
 .invitationWrapper input.textEmail { width: 27em; }
 .invitationWrapper input[type='checkbox'] { vertical-align: middle; }
 .invitationWrapper .invitationText {
@@ -2085,7 +2084,6 @@ table.gridList tr.filteredOut
 
 .recipientsShowTableContainer
 {
-    display: none;
     max-height: 135px;
     overflow: auto;
 }
@@ -2160,5 +2158,10 @@ table.gridList tr.filteredOut
     padding: 1em;
 }
 
+/* errors */
+.recipientsShowTableContainer tr.error
+{
+    background-color: #ffb2b2;
+}
 
 /*** END: Invitation form ***/

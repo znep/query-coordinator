@@ -44,10 +44,6 @@ blist.common.showModalHandler = function(hash)
         {
             $modal.html(data).show();
             
-            
-            
-            
-            
             if (commonNS.modalReady) commonNS.modalReady();
         }
     });

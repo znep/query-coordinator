@@ -563,7 +563,13 @@ $(function ()
     });
 
     $('#lensContainer .headerBar form .clearSearch')
-        .click(function (e) { blist.util.flashInterface.lensSearch(''); });
+        .click(function (e)
+        {
+            if (blist.util.flashInterface.swf() != undefined)
+            {
+                blist.util.flashInterface.lensSearch('');
+            }
+        });
 
     blistGridNS.hookUpMainMenu();
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
@@ -641,8 +647,7 @@ $(function ()
             $.get('/views/' + viewId, {'method': 'setPermission',
                 'value': newState});
 
-            var capState = newState.charAt(0).toUpperCase() +
-                newState.substring(1);
+            var capState = $.capitalize(newState);
 
             // Update link & icon
             $link.closest('p.' + curState)

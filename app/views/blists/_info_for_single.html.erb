@@ -591,7 +591,7 @@
     <%- if current_user -%>
     <ul class="headerActions actionButtons">
       <li><a href="<%= "#{view.href}?popup=PublishDialog" %>"
-        class="arrowButton showFlashPopup">Publish a Widget</a></li>
+        class="arrowButton showFlashPopup">Create a Data Player</a></li>
     </ul>
     <%- end -%>
   </div>
@@ -601,11 +601,11 @@
         <p>
         You can publish this <%= t(:blist_name).downcase %> and
         filtered views on your blog,
-        websites and more by embedding a widget.  Simply copy and paste
+        websites and more by embedding a Social Data Player.  Simply copy and paste
         the following HTML into your site.
         </p>
         <div class="publishCode">
-          <p>Embed this <%= t(:blist_name).downcase %> as a table:</p>
+          <p>Embed this <%= t(:blist_name).downcase %> as a Social Data Player:</p>
           <div class="copyCode">
             <%= text_area_tag("publishCode", get_publish_embed_code_for_view(view)) %>
           </div>

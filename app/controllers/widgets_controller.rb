@@ -5,12 +5,24 @@ class WidgetsController < ApplicationController
 
   def show
     @variation = params[:variation]
-    if (@variation.blank? && request.referrer &&
-        (m = request.referrer.match(/^\w+:\/\/[a-zA-Z0-9_\-.]+\.(\w{3})(:|\/)/)))
-      if m[1] == 'gov' || m[1] == 'mil'
-        redirect_to('/widgets/' + params[:id] + '/gov')
+    if @variation.blank? 
+      
+      @variation = "normal"
+      if !request.referrer.nil? 
+        # Check the referrer
+        m = request.referrer.match(/^\w+:\/\/([a-zA-Z0-9_\-.]+\.(\w{3}))(:|\/)/)
+        
+        # TLD Check
+        if m && m[1].include?("whitehouse.gov")
+          @variation = 'whitehouse'
+        elsif m && (m[2] == 'gov' || m[2] == 'mil')
+          @variation = 'gov'
+        end
       end
+      
+      redirect_to("/widgets/#{params[:id]}/#{@variation}")
     end
+    
     # HACK: Support old template options
     if (!params[:template].blank? &&
         (tm = params[:template].match(/(\w+)_template\.html/)))
@@ -40,10 +52,14 @@ class WidgetsController < ApplicationController
       return (render 'shared/error')
     end
 
-    if @variation.blank? && @view.category &&
-      @view.category.downcase == 'government'
+    # Force us back to the gov variation if this dataset is categorized government
+    if @view.category &&
+      @view.category.downcase == 'government' &&
+      @variation != 'gov' &&
+      
       @variation = 'gov'
     end
+
     @is_gov_widget = @variation == 'gov' || @variation == 'whitehouse'
   end
 end

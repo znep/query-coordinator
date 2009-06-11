@@ -43,6 +43,9 @@
     text-transform: uppercase;
 }
 
+#header .headerMenu { width: 17em; }
+#header .headerMenu .submenu .menu { width: 10em; }
+
 #header .headerMenu a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
@@ -50,7 +53,8 @@
 }
 
 #header .headerMenu .email a { background-position: 5px -48px; }
-#header .headerMenu .csvExport a { background-position: 5px -117px; }
+#header .headerMenu .export a { background-position: 5px -117px; }
+#header .headerMenu .export .menu a { background-position: 5px 23px; }
 #header .headerMenu .publish a { background-position: 5px -577px; }
 #header .headerMenu .fullscreen a { background-position: 5px -163px; }
 #header .headerMenu .print a { background-position: 5px -2px; }

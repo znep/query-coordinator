@@ -2127,6 +2127,7 @@ table.gridList tr.filteredOut
     font-size: 1.2em;
     padding: .2em .5em;
 }
+.recipientsEditTableContainer tbody td { vertical-align: top; }
 
 .recipientsWrapper table td.add_handle { padding: 0; }
 .recipientsShowTableContainer table td.add_handle a,

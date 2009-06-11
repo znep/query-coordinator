@@ -563,7 +563,13 @@ $(function ()
     });
 
     $('#lensContainer .headerBar form .clearSearch')
-        .click(function (e) { blist.util.flashInterface.lensSearch(''); });
+        .click(function (e)
+        {
+            if (blist.util.flashInterface.swf() != undefined)
+            {
+                blist.util.flashInterface.lensSearch('');
+            }
+        });
 
     blistGridNS.hookUpMainMenu();
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),

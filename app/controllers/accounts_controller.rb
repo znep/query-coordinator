@@ -37,12 +37,13 @@ class AccountsController < ApplicationController
 
   def new
     @body_class = 'signup'
+    @token = params[:token] || ""
   end
 
   def create
     # First, try creating the user
     begin
-      user = User.create(params[:account])
+      user = User.create(params[:account], params[:inviteToken])
     rescue CoreServerError => e
       error = e.error_message
       respond_to do |format|
@@ -73,6 +74,18 @@ class AccountsController < ApplicationController
         format.html { redirect_back_or_default(home_path) }
         format.data { render :json => {:user_id => current_user.id}}
       end
+      
+      # If there were any email addresses in the Invite Others field, 
+      # create some invitations and send them to the core server.
+      if (params[:inviteOthers] && params[:inviteOthers] != "")
+        emails = params[:inviteOthers].split(",").map {|e| e.strip}
+        emails.each do |email|
+          begin
+            InvitationRecord.create({:recipientEmail => email, :message => t(:invitation_email_text)})
+          end
+        end
+      end
+      
     else
       warn = "We were able to create your account, but couldn't log you in."
       respond_to do |format|

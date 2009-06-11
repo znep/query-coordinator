@@ -33,10 +33,4 @@ class InvitationController < ApplicationController
     
   end
   
-  def show
-  end
-  
-  def accept
-  end
-  
 end

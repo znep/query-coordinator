@@ -24,7 +24,7 @@ class Model
 
   #options - the primary lookup of the model object.  Usually id except for users where it is login
   #options could also be a hash of parameters.  see: user_test.rb
-  def self.find( options = nil, session_token = nil )
+  def self.find( options = nil, custom_headers = {})
     if options.nil?
       options = Hash.new
     end
@@ -36,7 +36,7 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    get_request(path, session_token)
+    get_request(path, custom_headers)
   end
 
   def self.find_under_user(options = nil)
@@ -295,11 +295,11 @@ protected
       (!@deleted_flags.nil? && @deleted_flags.length > 0)
   end
 
-  def self.get_request(path, session_token = nil, skip_parse = false)
+  def self.get_request(path, custom_headers = {}, skip_parse = false)
     result_body = cache.read(path)
     if result_body.nil?
       result_body = generic_request(Net::HTTP::Get.new(path),
-                                    nil, session_token).body
+                                    nil, custom_headers).body
       cache.write(path, result_body)
     end
 
@@ -339,13 +339,12 @@ private
     read_inheritable_attribute("non_serializable") || Array.new
   end
 
-  def self.generic_request(request, json = nil, session_token = nil)
+  def self.generic_request(request, json = nil, custom_headers = {})
     requestor = User.current_user
-    if session_token
-      request['Cookie'] = "_blist_session_id=#{session_token}"
-    elsif requestor && requestor.session_token
+    if requestor && requestor.session_token
       request['Cookie'] = "_blist_session_id=#{requestor.session_token.to_s}"
     end
+    custom_headers.each { |key, value| request[key] = value }
 
     if (!json.blank?)
       request.body = json

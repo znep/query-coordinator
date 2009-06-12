@@ -25,9 +25,49 @@ blist.common.forceWindowResize = function ()
     $(window).resize();
 };
 
+blist.common.showModalHandler = function(hash)
+{
+    var $modal = hash.w;
+    var $trigger = $(hash.t);
+    
+    $(document).keyup(function (event)
+    {
+        if (event.keyCode == 27)
+        {
+            $modal.jqmHide();
+        }
+    });
+    
+    $.Tache.Get({ 
+        url: $trigger.attr("href"),
+        success: function(data)
+        {
+            $modal.html(data).show();
+            
+            if (commonNS.modalReady) commonNS.modalReady();
+        }
+    });
+};
+
 $(function ()
 {
     // Make all links with rel="external" open in a new window.
     $("a[rel$='external']").live("mouseover",
         function(){ this.target = "_blank"; });
+    
+    $("#modal").jqm({ 
+        trigger: false,
+        onShow: blist.common.showModalHandler
+    });
+    $("a[rel$='modal']").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#modal").jqmShow($(this));
+    });
+    $("a.jqmClose").live("click", function(event)
+    {
+        event.preventDefault();
+        $("#modal").jqmHide();
+    });
+    
 });

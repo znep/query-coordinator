@@ -134,5 +134,12 @@ ActionController::Routing::Routes.draw do |map|
   end
   map.sales '/sales', :controller => 'static', :action => 'sales'
   
+  map.with_options :controller => 'invitation' do |invitation|
+    invitation.invite             'invite',                 :action => 'invite'
+    invitation.create_invitation  'invitation/create',      :action => 'create'
+    invitation.show_invitation    'invitation/show/:id',    :action => 'show'
+    invitation.accept_invitation  'invitation/accept/:id',  :action => 'accept'
+  end
+  
   # See how all your routes lay out with "rake routes"
 end

@@ -1,5 +1,6 @@
 <%= display_standard_flashes %>
 <fieldset>
+  <%= hidden_field_tag("inviteToken", @token) %>
   <p>
     <label for="account_firstName">*First Name</label>
     <%= text_field_tag("account[firstName]") %>

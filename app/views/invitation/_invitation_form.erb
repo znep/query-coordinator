@@ -1,0 +1,67 @@
+<p><strong>Add the names and email addresses of the people you'd like to join you at <%= t(:blist_company) %>.</strong></p>
+<div class="errorMessage"></div>
+
+<div class="recipientsWrapper">
+  <div class="recipientsShowTableContainer">
+    <table cellspacing="0">
+      <colgroup>
+        <col class="add_handle" />
+        <col class="add_email" />
+        <col class="add_first_name" />
+        <col class="add_last_name" />
+        <col class="add_action" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="add_handle">&nbsp;</th>
+          <th class="add_email">Recipient's email address</th>
+          <th class="add_first_name">First name</th>
+          <th class="add_last_name">Last name</th>
+          <th class="add_action">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody />
+    </table>
+  </div>
+  <div class="recipientsEditTableContainer">
+    <form action="#" id="recipientsEditForm">
+      <table cellspacing="0">
+        <colgroup>
+          <col class="add_handle" />
+          <col class="add_email" />
+          <col class="add_first_name" />
+          <col class="add_last_name" />
+          <col class="add_action" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <td class="add_handle"><span>add</span></td>
+            <td class="add_email">
+              <%= text_field_tag("add_recipient_email", "") %></td>
+            <td class="add_first_name"><%= text_field_tag("add_recipient_first_name", "") %></td>
+            <td class="add_last_name"><%= text_field_tag("add_recipient_last_name", "") %></td>
+            <td class="add_action">
+              <%= image_submit_tag("button_add.png", :id => "addRecipientButton") %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+</div>
+
+<% form_tag(create_invitation_path, :id => "inviteForm") do %>
+  <fieldset>
+    <p><strong>Customize your message:</strong></p>
+  
+    <div class="invitationPreviewContainer">
+      <p>
+        <%= text_area_tag("invitation_message", t(:invitation_email_text), :class => "invitationText") %>
+      </p>
+    </div>
+  </fieldset>
+  <div class="submitLine clearfix">
+    <%= image_submit_tag("button_invite.png", :id => "inviteButton") %>
+    <a href='#close_signup' class='close jqmClose'>Cancel</a>
+  </div>
+<% end %>

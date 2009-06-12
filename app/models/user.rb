@@ -9,6 +9,14 @@ class User < Model
     get_request(path)
   end
   
+  def self.create(attributes, inviteToken = nil)
+    path = "/#{self.name.pluralize.downcase}.json"
+    if (inviteToken && inviteToken != "")
+      path += "?inviteToken=#{inviteToken}"
+    end
+    return self.create_request(path, JSON.generate(attributes))
+  end
+  
   # Needed for multiuser
   def multiuser_authentication_token(timestamp)
     hmac = HMAC::SHA1.new(MULTIUSER_SECRET)

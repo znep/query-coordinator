@@ -6,6 +6,5 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.validate",
-  "screens/signup-screen", :cache => "cache/accounts_new_all" %>
+  <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
 <% end %>

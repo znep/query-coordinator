@@ -647,8 +647,7 @@ $(function ()
             $.get('/views/' + viewId, {'method': 'setPermission',
                 'value': newState});
 
-            var capState = newState.charAt(0).toUpperCase() +
-                newState.substring(1);
+            var capState = $.capitalize(newState);
 
             // Update link & icon
             $link.closest('p.' + curState)

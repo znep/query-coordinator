@@ -34,7 +34,7 @@ class UserSession
   end
 
   cattr_accessor :controller
-  attr_accessor :login, :password, :new_session, :cookie
+  attr_accessor :login, :password, :new_session, :cookie, :remember_me
   attr_writer :id
 
   # You can initialize a session by doing any of the following:
@@ -64,7 +64,7 @@ class UserSession
   def credentials=(values)
     return if values.blank? || !values.is_a?(Hash)
     
-    values.slice('login', 'password').each do |field, value|
+    values.slice('login', 'password', 'remember_me').each do |field, value|
       send("#{field}=", value)
     end
   end
@@ -88,12 +88,19 @@ class UserSession
   # and look up the user associated with that token.
   def find_token
     if core_session.valid?
-      user = User.find(core_session.user_id, core_session.to_s)
+      user = User.find(core_session.user_id, {'Cookie' => "_blist_session_id=#{core_session.to_s}"})
       UserSession.update_current_user(user, core_session)
-      user
-    else
-      nil
+    elsif !cookies['remember_token'].blank?
+      response = post_cookie_authentication
+      if response.is_a?(Net::HTTPSuccess)
+        user = User.parse(response.body)
+        create_core_session_credentials(user)
+        self.new_session = false
+        UserSession.update_current_user(user, core_session)
+      end
     end
+
+    return user
   end
 
   # Create or update an existing authentication session.
@@ -107,9 +114,15 @@ class UserSession
     response = post_core_authentication
     if response.is_a?(Net::HTTPSuccess)
       user = User.parse(response.body)
-      core_session.user_id = user.data['id']
-      core_session.expiration = Time.now + 1.hour
-      core_session.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{user.id}--")[0,12]
+      create_core_session_credentials(user)
+
+      # Plumb the cookie from the core server back to the user's browser
+      response.get_fields('set-cookie').each do |cookie_header|
+        if match = /^remember_token=([A-Za-z0-9]+)/.match(cookie_header)
+          cookies['remember_token'] = { :value => match[1], :expires => 2.weeks.from_now }
+        end
+      end
+
       self.new_session = false
       UserSession.update_current_user(user, core_session)
       result = self
@@ -123,6 +136,8 @@ class UserSession
     core_session.clear!
     self.new_session = true
     UserSession.update_current_user(nil, nil)
+    post_expire_cookie_authentication if cookies['remember_token']
+    cookies.delete(:remember_token)
   end
 
   def user
@@ -138,11 +153,42 @@ private
   # 'username' instead. I like login better, since login-by-email is something
   # we want to support and emails aren't usernames. :-P
   def credentials_for_post
-    {'username' => login, 'password' => password}
+    creds = {'username' => login, 'password' => password}
+    if remember_me
+      creds['remember_me'] = 'true'
+    end
+
+    return creds
   end
 
   def post_core_authentication
     Net::HTTP.post_form(auth_uri, credentials_for_post)
+  end
+
+  def post_cookie_authentication
+    uri = auth_uri.clone
+    uri.query = "method=findByRememberToken"
+    post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
+
+    Net::HTTP.start(uri.host, uri.port) do |http|
+      http.request post
+    end
+  end
+
+  def post_expire_cookie_authentication
+    uri = auth_uri.clone
+    uri.query = "method=expireRememberToken"
+    post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
+
+    Net::HTTP.start(uri.host, uri.port) do |http|
+      http.request post
+    end
+  end
+
+  def create_core_session_credentials(user)
+    core_session.user_id = user.data['id']
+    core_session.expiration = Time.now + 1.hour
+    core_session.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{user.id}--")[0,12]
   end
 
   def self.update_current_user(user, session_token)

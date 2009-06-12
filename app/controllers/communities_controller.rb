@@ -9,19 +9,19 @@ class CommunitiesController < ApplicationController
     
     @page_size = PAGE_SIZE
     
-    @all_members_total = User.find({ :limit => PAGE_SIZE, :count => true }, true).count
-    @all_members = User.find({ :limit => PAGE_SIZE }, true)
+    @all_members_total = User.find({ :limit => PAGE_SIZE, :count => true }).count
+    @all_members = User.find({ :limit => PAGE_SIZE })
     @all_members_tags = Tag.find({ :method => "usersTags", :limit => 5 })
     
     @top_members_total = 100
-    @top_members = User.find({ :topMembers => true, :limit => PAGE_SIZE, :page => 1 }, true);
+    @top_members = User.find({ :topMembers => true, :limit => PAGE_SIZE, :page => 1 });
     @top_members_tags = Tag.find({ :method => "usersTags", :topMembers => true, :limit => 5 })
     
     @top_uploaders_total = 100
-    @top_uploaders = User.find({ :topUploaders => true, :limit => PAGE_SIZE, :page => 1 }, true);
+    @top_uploaders = User.find({ :topUploaders => true, :limit => PAGE_SIZE, :page => 1 });
     @top_uploaders_tags = Tag.find({ :method => "usersTags", :topUploaders => true, :limit => 5 })
     
-    @carousel_members = User.find({ :featured => true, :limit => 10 }, true);
+    @carousel_members = User.find({ :featured => true, :limit => 10 });
     
     @activities = Activity.find({ :maxResults => 5 })
     

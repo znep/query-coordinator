@@ -53,7 +53,7 @@
 
 .blist-loading .blist-table-scrolls
 {
-    background: transparent url(/stylesheets/images/common/spinner1.gif) no-repeat center center;
+    background: transparent url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center;
 }
 
 .blist-table-inside
@@ -78,6 +78,23 @@
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
+}
+
+.blist-table-footer-scrolls
+{
+    position: relative;
+    overflow: hidden;
+}
+
+.blist-table-footer
+{
+    bottom: 0;
+    position: absolute;
+}
+
+.blist-tf
+{
+    float: left;
 }
 
 .blist-td

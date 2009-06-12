@@ -288,7 +288,8 @@ blist.namespace.fetch('blist.data');
             if (curOptions.progressiveLoading)
             {
                 ajaxOptions.data = $.extend({}, ajaxOptions.data,
-                    {include_ids_after: curOptions.pageSize});
+                    {include_ids_after: curOptions.pageSize,
+                    include_aggregates: true});
             }
             doLoad(this, this.load, ajaxOptions);
         };
@@ -397,6 +398,26 @@ blist.namespace.fetch('blist.data');
             return level;
         }
 
+        var updateAggregateHash = function(newAggs)
+        {
+            if (!meta.aggregateHash)
+            {
+                meta.aggregateHash = {};
+            }
+            if (newAggs)
+            {
+                $.each(newAggs, function (i, a)
+                {
+                    if (!meta.aggregateHash[a.columnId])
+                    {
+                        meta.aggregateHash[a.columnId] = {};
+                    }
+                    meta.aggregateHash[a.columnId].type = a.name;
+                    meta.aggregateHash[a.columnId].value = a.value;
+                });
+            }
+        };
+
         var translateViewColumns = function(view, viewCols, columns, nestDepth, nestedIn) {
             if (!viewCols)
                 return;
@@ -431,7 +452,8 @@ blist.namespace.fetch('blist.data');
                     name: vcol.name,
                     width: vcol.width || 100,
                     type: vcol.dataType && vcol.dataType.type ? vcol.dataType.type : "text",
-                    id: vcol.id
+                    id: vcol.id,
+                    aggregate: meta.aggregateHash[vcol.id]
                 };
 
                 var dataIndex = vcol.dataIndex;
@@ -524,6 +546,7 @@ blist.namespace.fetch('blist.data');
                     meta.columns = [[]];
                     if (meta.view)
                     {
+                        updateAggregateHash(meta.aggregates);
                         translateViewColumns(meta.view, meta.view.columns, meta.columns, 0);
                     }
                 }
@@ -1102,7 +1125,8 @@ blist.namespace.fetch('blist.data');
                     { url: '/views/INLINE/rows.json?' + $.param(
                         $.extend({}, supplementalAjaxOptions.data,
                         {   method: 'index',
-                            include_ids_after: curOptions.pageSize
+                            include_ids_after: curOptions.pageSize,
+                            include_aggregates: true
                         })),
                     type: 'POST',
                     contentType: 'application/json',
@@ -1120,6 +1144,11 @@ blist.namespace.fetch('blist.data');
          */
         var loadTempView = function(config)
         {
+            if (config.meta)
+            {
+                updateAggregateHash(config.meta.aggregates);
+            }
+
             var installActiveOnly = true;
             // active is now the new set of rows from the server, and not
             //  linked-to or based-on rows

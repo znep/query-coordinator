@@ -23,12 +23,12 @@
     <%= f.label :password %>
     <%= f.password_field :password %>
     </p>
-    <%# TODO: This should work sometime...
+   
     <p class='rememberMe'>
-    <input type='checkbox' id='rememberMe' />
-    <label for='rememberMe'>Remember me</label>
+    <%= f.check_box :remember_me %>
+    <%= f.label :remember_me %>
     </p>
-    %>
+
     <div class='footer clearfix'>
       <%= link_to "Forgot your password / username?", forgot_password_path%>
       <ul class='actionButtons clearfix'>

@@ -34,6 +34,7 @@ class UserSessionsController < ApplicationController
     if current_user_session
       current_user_session.destroy
     end
+    cookies.delete :remember_token
     flash[:notice] = "You have been logged out"
     redirect_to(login_path)
   end

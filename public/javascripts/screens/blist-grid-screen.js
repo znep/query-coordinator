@@ -452,7 +452,7 @@ $(function ()
     if (blistGridNS.viewId)
     {
         $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
-            accessType: 'WEBSITE', manualResize: true,
+            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
             clearTempViewCallback: blistGridNS.clearTempViewTab,
             setTempViewCallback: blistGridNS.setTempViewTab,
             filterItem: '#lensContainer .headerBar form :text',

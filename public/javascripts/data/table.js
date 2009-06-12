@@ -746,10 +746,10 @@
 
             // Size the scrolling area.  TODO - change to absolute positioning
             // when IE6 is officially dead (June 2010?)
-            $scrolls.height($outside.innerHeight() - $top.outerHeight() -
-                ($scrolls.outerHeight() - $scrolls.innerHeight()) - 1);
-            $scrolls.width($outside.innerWidth() -
-                ($scrolls.outerWidth() - $scrolls.innerWidth()));
+            $scrolls.height($outside.height() - $top.outerHeight() -
+                ($scrolls.outerHeight() - $scrolls.height()) - 1);
+            $scrolls.width($outside.width() -
+                ($scrolls.outerWidth() - $scrolls.width()));
 
             // Size the inside row container
             var insideHeight = model ? rowOffset * model.rows().length : 0;
@@ -780,7 +780,7 @@
             // Adjusting the width directly caused Safari to lose scrolling
             //  events after resizing the browser window a few times, and making
             //  the grid vertical scrollbar go from on->off->on
-            var marginR = $scrolls.outerHeight() - $scrolls.innerHeight();
+            var marginR = $scrolls.outerHeight() - $scrolls.height();
             if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
             {
                 marginR += scrollbarWidth;
@@ -824,12 +824,10 @@
         var css;
         var rowStyle;
         var unlockedRowStyle;
-        var handleStyle;
         var ghostStyle;
         var openerStyle;
         var cellStyle;
         var groupHeaderStyle;
-        var handleClass;
         var ghostClass;
         var openerClass;
 
@@ -867,7 +865,7 @@
         var getColumnStyle = function(column) {
             return colStyles[column.uid] || (colStyles[column.uid] = addRule('.' + getColumnClass(column)).style);
         };
-        
+
         // Initialize my stylesheet
         (function() {
             var rulesNode = $('head')
@@ -878,14 +876,10 @@
                 if ((css.ownerNode || css.owningElement) == rulesNode)
                     break;
             }
-            handleClass = id + "-handle";
             ghostClass = id + "-ghost";
             openerClass = id + "-opener";
 
-            // Dynamic style applied to the handle
-            handleStyle = addRule("." + handleClass).style;
-
-            // Dynamic style applied to the handle
+            // Dynamic style applied to the ghost column
             ghostStyle = addRule("." + ghostClass).style;
 
             // Dynamic style applied to nested table openers
@@ -908,6 +902,7 @@
 
         // Internal representation of visible top-level columns in the model
         var columns = [];
+        var lockedColumns = [];
         var variableColumns = [];
 
         // This is the row rendering function.  Precompiled using eval() for perf.
@@ -920,7 +915,6 @@
         var handleDigits;
         var paddingX;
         var lockedWidth;
-        var handleWidth;
         var openerWidth;
         var varMinWidth = [];
         var varDenom = [];
@@ -1074,8 +1068,26 @@
                 options.showGhostColumn = false;
             }
 
-            // Measure width of the handle and height and width of the cell
+            lockedColumns = [];
+            if (options.showRowNumbers)
+            {
+                lockedColumns.push({uid: 'rowNumberCol',
+                    cls: 'blist-table-row-numbers',
+                    measureText: Math.max(model.rows().length, 100),
+                    renderer: '(index + 1)',
+                    footerText: 'Totals'});
+            }
+            if (options.showRowHandle)
+            {
+                lockedColumns.push({uid: 'rowHandleCol',
+                    cls: 'blist-table-row-handle',
+                    width: 1,
+                    renderer: '""'});
+            }
+
             handleDigits = calculateHandleDigits(model);
+
+            // Measure width of a default cell and height and width of the cell
             measureUtilDOM.innerHTML = '<div class="blist-td">x</div>';
             var $measureDiv = $(measureUtilDOM.firstChild);
             var measuredInnerDims = { width: $measureDiv.width(),
@@ -1091,27 +1103,39 @@
             rowOffset = measuredOuterDims.height;
             rowStyle.height = rowOffset + 'px';
 
-            // Update the handle style with proper dimensions
-            var dummyHandleText = Math.max(model.rows().length, 100);
-            measureUtilDOM.innerHTML =
-                '<div class="blist-table-handle blist-td">' +
-                dummyHandleText + '</div>';
-            var $measureHandle = $(measureUtilDOM.firstChild);
-            lockedWidth = options.showRowNumbers ? $measureHandle.outerWidth() : 0;
-            handleWidth = $measureHandle.width();
-            if (options.generateHeights && options.showRowNumbers)
-            {
-                handleStyle.height = rowHeight + 'px';
-            }
+            // Set row heights
             if (options.generateHeights && options.showGhostColumn)
             {
                 ghostStyle.height = rowHeight + 'px';
             }
-            handleStyle.width = handleWidth + 'px';
             if (options.generateHeights)
             {
                 cellStyle.height = rowHeight + 'px';
             }
+
+            // Update the locked column styles with proper dimensions
+            lockedWidth = 0;
+            $.each(lockedColumns, function (i, c)
+            {
+                measureUtilDOM.innerHTML =
+                    '<div class="' + (c.cls || '') + ' ' + getColumnClass(c) +
+                    ' blist-td">' + (c.measureText || '') + '</div>';
+                var $measureCol = $(measureUtilDOM.firstChild);
+                var colStyle = getColumnStyle(c);
+                if (c.width)
+                {
+                    colStyle.width = c.width + 'px';
+                }
+                else
+                {
+                    colStyle.width = $measureCol.width() + 'px';
+                }
+                lockedWidth += $measureCol.outerWidth();
+                if (options.generateHeights)
+                {
+                    colStyle.height = rowHeight + 'px';
+                }
+            });
 
             // Record the width of the opener for nested tables
             openerWidth = measuredInnerDims.width * 1.5;
@@ -1172,24 +1196,26 @@
             rowRenderFn = blist.data.types.compile(
                 renderFnSource, contextVariables);
 
-            if (options.showRowNumbers)
+            var renderLockedFnSource =
+                    '(function(html, index, row) {';
+            renderLockedFnSource += 'html.push(\
+                "<div id=\'' + id + '-l", \
+                (row.id || row[0]), \
+                "\' ' + rowDivContents + '>");';
+
+            $.each(lockedColumns, function (i, c)
             {
-                var renderLockedFnSource =
-                    '(function(html, index, row) {\
-                        html.push(\
-                            "<div id=\'' + id + '-l", \
-                            (row.id || row[0]), \
-                            "\' ' + rowDivContents + '>", \
-                            "<div class=\'blist-table-handle blist-td ' +
-                                handleClass + '\'>", \
-                            (index + 1), \
-                            "</div>",\
-                            "</div>" \
-                            ); \
-                            })';
-                rowLockedRenderFn = blist.data.types.compile(
+                renderLockedFnSource += 'html.push(\
+                    "<div class=\'' + (c.cls || '') + ' blist-td ' +
+                        getColumnClass(c) + '\'>", ' +
+                        c.renderer + ', \
+                        "</div>");';
+            });
+            renderLockedFnSource += 'html.push("</div>");';
+            renderLockedFnSource += '})';
+            rowLockedRenderFn = blist.data.types.compile(
                     renderLockedFnSource, contextVariables);
-            }
+
             // Configure the left position of grid rows
             groupHeaderStyle.left = lockedWidth + 'px';
             unlockedRowStyle.left = lockedWidth + 'px';
@@ -1435,11 +1461,13 @@
 
             });
 
-            if (options.showRowNumbers)
+            var lockedHtml = '';
+            $.each(lockedColumns, function (i, c)
             {
-                $lockedHeader.html('<div class="blist-th blist-table-corner ' +
-                    handleClass + '"></div>');
-            }
+                lockedHtml += '<div class="blist-th ' + (c.cls || '') +
+                    ' ' + getColumnClass(c) + '"></div>';
+            });
+            $lockedHeader.html(lockedHtml);
 
             // Render sort & filter headers
             configureSortHeader();
@@ -1527,21 +1555,22 @@
             {
                 $footer.html(html.join(''));
                 $footerScrolls.show();
+                $lockedFooter.show();
             }
             else
             {
                 $footerScrolls.hide();
-            }
-
-            if (options.showRowNumbers && showAgg)
-            {
-                $lockedFooter.html('<div class="blist-tf blist-table-corner ' +
-                        handleClass + '">Totals</div>').show();
-            }
-            else
-            {
                 $lockedFooter.hide();
             }
+
+            var lockedHtml = '';
+            $.each(lockedColumns, function (i, c)
+            {
+                lockedHtml += '<div class="blist-tf ' + (c.cls || '') +
+                    ' ' + getColumnClass(c) + '">' + (c.footerText || '') +
+                    '</div>';
+            });
+            $lockedFooter.html(lockedHtml);
         };
 
         /*** ROWS ***/
@@ -1578,6 +1607,7 @@
             appendRows_append();
         };
 
+        // TODO: This should probably be consolidated with appendRows...
         var appendLockedRows = function(html)
         {
             // These functions only exist for profiling purposes.  We call this
@@ -1683,6 +1713,8 @@
             }
 
             // Now add new/moved rows
+            // appendLockedRows must be called first; it should probably
+            //  be consolidated with appendRows
             appendLockedRows(lockedHtml.join(''));
             appendRows(html.join(''));
 
@@ -1804,6 +1836,7 @@
         showGhostColumn: false,
         showName: true,
         showRowNumbers: true,
+        showRowHandle: false,
         showTitle: true
     };
 

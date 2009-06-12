@@ -180,16 +180,12 @@ div.blist-table-expander .blist-td
     white-space: normal;
 }
 
-.blist-table-handle
+.blist-table-row-numbers
 {
     float: left;
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-}
-
-.blist-table .blist-table-corner
-{
 }
 
 .blist-table-util

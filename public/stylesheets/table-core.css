@@ -53,7 +53,7 @@
 
 .blist-loading .blist-table-scrolls
 {
-    background: transparent url(/stylesheets/images/common/spinner1.gif) no-repeat center center;
+    background: transparent url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center;
 }
 
 .blist-table-inside

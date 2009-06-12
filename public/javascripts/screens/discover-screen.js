@@ -85,7 +85,7 @@ blist.discover.searchSubmitHandler = function(event)
           <div class=\"tabContent noresult\"> \
             <h2>Searching...</h2> \
             <p class=\"clearBoth\"> \
-                <img src=\"/stylesheets/images/common/spinner1.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
+                <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
             </p> \
           </div> \
         </div></div></div> \

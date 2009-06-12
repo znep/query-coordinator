@@ -91,7 +91,7 @@
 
         var configureSortHeader = function()
         {
-            $('.sort.active', header)
+            $('.sort.active', $header)
                 .removeClass('sort-asc').addClass('sort-desc')
                 .attr('title', 'Sort ascending')
                 .removeClass('active')
@@ -113,7 +113,7 @@
 
         var configureFilterHeaders = function()
         {
-            $('.filter.active', header).removeClass('active');
+            $('.filter.active', $header).removeClass('active');
             var colFilters = model.meta().columnFilters;
             if (colFilters != null)
             {
@@ -305,7 +305,7 @@
 
         // Handle mouse movement within the inside (cell) area
         var hotCell;
-        var hotRow;
+        var hotRowID;
         var hotCellTimer;
         var hotHeader;
         var hotHeaderMode; // 1 = hover, 2 = resize, 3 = control hover
@@ -428,6 +428,14 @@
             // TODO -- implement column dragging support...
         }
 
+        var unHotRow = function(rowID)
+        {
+            inside.find('#' + id + '-r' + rowID)
+                .removeClass('blist-hot-row');
+            $locked.find('#' + id + '-l' + rowID)
+                .removeClass('blist-hot-row');
+        };
+
         var onMouseMove = function(event)
         {
             if (hotHeaderDrag)
@@ -459,18 +467,24 @@
             }
 
             // Update row hover state
-            var newHotRow = $(over).closest('.blist-tr');
-            if (newHotRow != hotRow)
+            // + 2 for "-r"/"-l" suffix prior to row ID
+            var $nhr = $(over).closest('.blist-tr');
+            var newHotID = $nhr.length > 0 ?
+                $nhr.attr('id').substring(id.length + 2) : null;
+            if (newHotID != hotRowID)
             {
-                if (hotRow)
+                if (hotRowID)
                 {
-                    $(hotRow).removeClass('blist-hot-row');
+                    unHotRow(hotRowID);
                 }
-                if (newHotRow)
+                if (newHotID)
                 {
-                    $(newHotRow).addClass('blist-hot-row');
+                    inside.find('#' + id + '-r' + newHotID)
+                        .addClass('blist-hot-row');
+                    $locked.find('#' + id + '-l' + newHotID)
+                        .addClass('blist-hot-row');
                 }
-                hotRow = newHotRow;
+                hotRowID = newHotID;
             }
 
             // Update cell hover state
@@ -502,11 +516,15 @@
                 }
 
                 // The row is no longer hot if we're changing rows
-                if (hotRow)
+                if (hotRowID)
                 {
-                    var newHotRow = $(to).closest('.blist-tr');
-                    if (newHotRow != hotRow)
-                        $(hotRow).removeClass('blist-hot-row');
+                    var $nhr = $(to).closest('.blist-tr');
+                    var newHotID = $nhr.length > 0 ?
+                        $nhr.attr('id').substring(id.length + 2) : null;
+                    if (newHotID != hotRowID)
+                    {
+                        unHotRow(hotRowID);
+                    }
                 }
 
                 // Cell is no longer hot
@@ -528,7 +546,7 @@
             {
                 // Retrieve the row
                 var rowDOM = cell.parentNode;
-                // + 2 for "-r" suffix prior to row ID
+                // + 2 for "-r"/"-l" suffix prior to row ID
                 var rowID = rowDOM.id.substring(id.length + 2);
                 var row = model.getByID(rowID);
 
@@ -562,7 +580,7 @@
                     {
                         model.selectSingleRow(row);
                     }
-                    $(rowDOM).removeClass('blist-hot-row');
+                    unHotRow(rowID);
                     // Set the focus so that the shift/meta click won't select
                     // any text.
                     $this.focus();
@@ -598,7 +616,13 @@
 
         /*** HTML RENDERING ***/
 
-        var headerStr = '<div class="blist-table-top">';
+        var headerStr =
+            '<div class="blist-table-locked-scrolls">\
+                <div class="blist-table-locked-header">&nbsp;</div>\
+                <div class="blist-table-locked">&nbsp;</div>\
+                <div class="blist-table-locked-footer">&nbsp;</div>\
+            </div>\
+            <div class="blist-table-top">';
         if (options.showTitle)
         {
             headerStr +=
@@ -637,6 +661,12 @@
             .mousemove(onMouseMove)
             .html(headerStr);
 
+        var $lockedScrolls = $outside.find('.blist-table-locked-scrolls');
+        var $lockedHeader = $lockedScrolls.find('.blist-table-locked-header');
+        var $locked = $lockedScrolls.find('.blist-table-locked')
+            .bind('table_click', onCellClick);
+        var $lockedFooter = $lockedScrolls.find('.blist-table-locked-footer');
+
         // The top area
         var $top = $outside.find('.blist-table-top');
 
@@ -659,15 +689,15 @@
         }
 
         // The table header elements
-        var headerScrolls = $top
+        var $headerScrolls = $top
             .find('.blist-table-header-scrolls');
-        var header = headerScrolls
+        var $header = $headerScrolls
             .find('.blist-table-header')
 
         // The scrolling container
         var $scrolls = $outside
             .find('.blist-table-scrolls')
-            .scroll(function () {renderRows(); onScroll();});
+            .scroll(function () {onScroll(); renderRows();});
 
 
         // The non-scrolling row container
@@ -690,6 +720,8 @@
             .find('.blist-table-util');
         var measureUtilDOM = measureUtil[0];
 
+        // Set up initial top of locked section
+        $locked.css('top', $header.outerHeight());
 
         /*** SCROLLING AND SIZING ***/
 
@@ -710,7 +742,7 @@
         // Window sizing
         var updateLayout = function()
         {
-            headerScrolls.height(header.height());
+            $headerScrolls.height($header.outerHeight());
 
             // Size the scrolling area.  TODO - change to absolute positioning
             // when IE6 is officially dead (June 2010?)
@@ -727,18 +759,22 @@
             if (insideHeight < scrollsHeight)
                 insideHeight = scrollsHeight;
             inside.height(insideHeight);
+            $locked.height(insideHeight);
 
             renderRows();
             configureWidths();
 
             // Move footer up to bottom, or just above the scrollbar
-            var bottom = parseFloat($scrolls.css('border-bottom-width')) +
+            var lockedBottom = parseFloat($scrolls.css('border-bottom-width')) + 1;
+            var footerBottom = parseFloat($scrolls.css('border-bottom-width')) +
                 $footerScrolls.outerHeight();
             if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
             {
-                bottom += scrollbarWidth;
+                lockedBottom += scrollbarWidth;
+                footerBottom += scrollbarWidth;
             }
-            $footerScrolls.css('bottom', bottom);
+            $lockedScrolls.css('bottom', lockedBottom);
+            $footerScrolls.css('bottom', footerBottom);
 
             // Adjust the margin footer for the scrollbar if necessary
             // Adjusting the width directly caused Safari to lose scrolling
@@ -763,14 +799,22 @@
 
         // Install scrolling handler
         var headerScrolledTo = 0;
+        var rowsScrolledTo = 0;
         var onScroll = function()
         {
-            var scrollTo = $scrolls[0].scrollLeft;
-            if (scrollTo != headerScrolledTo)
+            var scrollHoriz = $scrolls[0].scrollLeft;
+            if (scrollHoriz != headerScrolledTo)
             {
-                header[0].style.left = -scrollTo + 'px';
-                $footer[0].style.left = -scrollTo + 'px';
-                headerScrolledTo = scrollTo;
+                $header[0].style.left = -scrollHoriz + 'px';
+                $footer[0].style.left = -scrollHoriz + 'px';
+                headerScrolledTo = scrollHoriz;
+            }
+
+            var scrollVert = $scrolls[0].scrollTop;
+            if (scrollVert != rowsScrolledTo)
+            {
+                $locked.css('top', $header.outerHeight() - scrollVert);
+                rowsScrolledTo = scrollVert;
             }
         };
 
@@ -779,6 +823,7 @@
 
         var css;
         var rowStyle;
+        var unlockedRowStyle;
         var handleStyle;
         var ghostStyle;
         var openerStyle;
@@ -848,6 +893,8 @@
 
             // Dynamic style applied to rows
             rowStyle = addRule("#" + id + " .blist-tr").style;
+            unlockedRowStyle =
+                addRule("#" + id + " .blist-table-inside .blist-tr").style;
 
             // Dynamic style available to cell renderers to fill height properly
             cellStyle = addRule("#" + id + " .blist-cell").style;
@@ -865,13 +912,14 @@
 
         // This is the row rendering function.  Precompiled using eval() for perf.
         var rowRenderFn;
+        var rowLockedRenderFn;
 
         // Column configuration
         var rowHeight;
         var rowOffset;
         var handleDigits;
         var paddingX;
-        var handleOuterWidth;
+        var lockedWidth;
         var handleWidth;
         var openerWidth;
         var varMinWidth = [];
@@ -1045,10 +1093,11 @@
 
             // Update the handle style with proper dimensions
             var dummyHandleText = Math.max(model.rows().length, 100);
-            measureUtilDOM.innerHTML = '<div class="blist-table-handle blist-td">' +
+            measureUtilDOM.innerHTML =
+                '<div class="blist-table-handle blist-td">' +
                 dummyHandleText + '</div>';
             var $measureHandle = $(measureUtilDOM.firstChild);
-            handleOuterWidth = $measureHandle.outerWidth();
+            lockedWidth = options.showRowNumbers ? $measureHandle.outerWidth() : 0;
             handleWidth = $measureHandle.width();
             if (options.generateHeights && options.showRowNumbers)
             {
@@ -1086,6 +1135,14 @@
                 levelRender[i] = createColumnRendering(mcols, contextVariables);
             }
 
+            var rowDivContents =
+                'class=\'blist-tr", \
+                (index % 2 ? " blist-tr-even" : ""), \
+                (row.level != undefined ? " blist-tr-level" + row.level : ""), \
+                (row.expanded ? " blist-tr-open" : ""), \
+                (row.groupLast ? " last" : ""), \
+                "\' style=\'top: ", \
+                (index * ' + rowOffset + '), "px\'';
             // Create the rendering function.  We precompile this for speed so
             // we can avoid tight loops, function calls, etc.
             var renderFnSource =
@@ -1093,24 +1150,12 @@
                     html.push(\
                         "<div id=\'' + id + '-r", \
                         (row.id || row[0]), \
-                        "\' class=\'blist-tr", \
-                        (index % 2 ? " blist-tr-even" : ""), \
-                        (row.level != undefined ? " blist-tr-level" + \
-                            row.level : ""), \
-                        (row.expanded ? " blist-tr-open" : ""), \
-                        (row.groupLast ? " last" : ""), \
-                        "\' style=\'top: ", \
-                        (index * ' + rowOffset + '), "px\'>"';
-            if (options.showRowNumbers)
-            {
-                renderFnSource += ', "<div class=\'blist-table-handle blist-td '
-                    + handleClass + '\'>", (index + 1), "</div>"';
-            }
-            renderFnSource += ');' +
-                    'switch (row.level || 0) {' +
-                    '  case -1:' +
-                        'html.push(renderSpecial(row));' +
-                        'break;';
+                        "\' ' + rowDivContents + '>"\
+                        );\
+                    switch (row.level || 0) {\
+                      case -1:\
+                        html.push(renderSpecial(row));\
+                        break;';
             for (i = 0; i < levelRender.length; i++) {
                 renderFnSource += 'case ' + i + ':' +
                     levelRender[i] +
@@ -1124,10 +1169,33 @@
             }
             renderFnSource += 'html.push("</div>");' +
                 '})';
-            rowRenderFn = blist.data.types.compile(renderFnSource, contextVariables);
+            rowRenderFn = blist.data.types.compile(
+                renderFnSource, contextVariables);
 
-            // Configure the group header style
-            groupHeaderStyle.left = handleOuterWidth + 'px';
+            if (options.showRowNumbers)
+            {
+                var renderLockedFnSource =
+                    '(function(html, index, row) {\
+                        html.push(\
+                            "<div id=\'' + id + '-l", \
+                            (row.id || row[0]), \
+                            "\' ' + rowDivContents + '>", \
+                            "<div class=\'blist-table-handle blist-td ' +
+                                handleClass + '\'>", \
+                            (index + 1), \
+                            "</div>",\
+                            "</div>" \
+                            ); \
+                            })';
+                rowLockedRenderFn = blist.data.types.compile(
+                    renderLockedFnSource, contextVariables);
+            }
+            // Configure the left position of grid rows
+            groupHeaderStyle.left = lockedWidth + 'px';
+            unlockedRowStyle.left = lockedWidth + 'px';
+
+            $headerScrolls.css('margin-left', lockedWidth);
+            $footerScrolls.css('margin-left', lockedWidth);
 
             // Set the title of the table
             if ($nameLabel)
@@ -1166,7 +1234,7 @@
 
             // Configure grouping header column widths
             groupHeaderStyle.width = Math.max(0,
-                (insideWidth - handleOuterWidth - paddingX)) + 'px';
+                (insideWidth - lockedWidth - paddingX)) + 'px';
 
             // Set the scrolling area width
             var scrollWidth = $scrolls.width();
@@ -1175,16 +1243,17 @@
                 scrollWidth -= scrollbarWidth;
             }
             var totalWidth = Math.max(insideWidth, scrollWidth);
-            header.width(totalWidth);
+            $header.width(totalWidth);
             $footer.width(totalWidth);
             inside.width(totalWidth);
+
+            $lockedScrolls.width(lockedWidth);
+            $locked.width(lockedWidth);
         }
 
         var configureLevelWidths = function(mcols, level)
         {
-            var hpos = 0;
-            if (options.showRowNumbers)
-                hpos += handleOuterWidth;
+            var hpos = lockedWidth;
             if (level == 0 && options.showGhostColumn)
                 hpos += paddingX;
 
@@ -1276,11 +1345,7 @@
                 //  readjust column lefts
                 if (level == 0 && !options.showGhostColumn)
                 {
-                    pos = 0;
-                    if (options.showRowNumbers)
-                    {
-                        pos += handleOuterWidth;
-                    }
+                    pos = lockedWidth;
                     for (var i = 0; i < columns.length; i++)
                     {
                         var col = columns[i];
@@ -1299,11 +1364,6 @@
         var renderHeader = function()
         {
             var html = [];
-            if (options.showRowNumbers)
-            {
-                html.push('<div class="blist-th blist-table-corner ',
-                    handleClass, '"></div>');
-            }
             for (var i = 0; i < columns.length; i++)
             {
                 var col = columns[i];
@@ -1342,19 +1402,10 @@
                     columns.length < 1 ? 'blist-th-first ' : '',
                     ghostClass, '"></div>');
             }
-            header.html(html.join(''));
+            $header.html(html.join(''));
 
-            $(".blist-th", header).each(function(index)
+            $(".blist-th", $header).each(function(index)
             {
-                if (!index && options.showRowNumbers)
-                {
-                    // Skip the header handle
-                    return;
-                }
-                if (options.showRowNumbers)
-                {
-                    index -= 1;
-                }
                 if (index >= columns.length)
                 {
                     // Skip the ghost column
@@ -1384,6 +1435,11 @@
 
             });
 
+            if (options.showRowNumbers)
+            {
+                $lockedHeader.html('<div class="blist-th blist-table-corner ' +
+                    handleClass + '"></div>');
+            }
 
             // Render sort & filter headers
             configureSortHeader();
@@ -1416,12 +1472,6 @@
         var renderFooter = function()
         {
             var html = [];
-            if (options.showRowNumbers)
-            {
-                html.push('<div class="blist-tf blist-table-corner ',
-                    handleClass, '">Totals</div>');
-            }
-
             var showAgg = false;
             var renderColFooter = function (col)
             {
@@ -1482,6 +1532,16 @@
             {
                 $footerScrolls.hide();
             }
+
+            if (options.showRowNumbers && showAgg)
+            {
+                $lockedFooter.html('<div class="blist-tf blist-table-corner ' +
+                        handleClass + '">Totals</div>').show();
+            }
+            else
+            {
+                $lockedFooter.hide();
+            }
         };
 
         /*** ROWS ***/
@@ -1502,9 +1562,11 @@
                 while (appendUtilDOM.firstChild) {
                     var row = appendUtilDOM.firstChild;
                     var rowID = row.id.substring(id.length + 2); // + 2 for "-r" suffix prior to row ID
-                    renderedRows[rowID] = row;
+                    if (!renderedRows[rowID])
+                        renderedRows[rowID] = {};
+                    renderedRows[rowID].row = row;
                     if (dirtyRows[rowID]) {
-                        insideDOM.replaceChild(row, dirtyRows[rowID]);
+                        insideDOM.replaceChild(row, dirtyRows[rowID].row);
                         delete dirtyRows[rowID];
                     } else
                         insideDOM.appendChild(row);
@@ -1514,7 +1576,39 @@
             // Call the append functions
             appendRows_render();
             appendRows_append();
-        }
+        };
+
+        var appendLockedRows = function(html)
+        {
+            // These functions only exist for profiling purposes.  We call this
+            // relatively infrequently so it's OK to leave these in for
+            // production purposes.
+            var appendRows_render = function()
+            {
+                appendUtilDOM.innerHTML = html;
+            };
+            var appendRows_append = function()
+            {
+                while (appendUtilDOM.firstChild)
+                {
+                    var row = appendUtilDOM.firstChild;
+                    // + 2 for "-l" suffix prior to row ID
+                    var rowID = row.id.substring(id.length + 2);
+                    if (!renderedRows[rowID])
+                        renderedRows[rowID] = {};
+                    renderedRows[rowID].locked = row;
+                    if (dirtyRows[rowID])
+                        $locked[0].replaceChild(row, dirtyRows[rowID].locked);
+                    else
+                        $locked[0].appendChild(row);
+                }
+            };
+
+            // Call the append functions
+            appendRows_render();
+            appendRows_append();
+        };
+
 
         /**
          * Render all rows that should be visible but are not yet rendered.  Removes invisible rows.
@@ -1547,6 +1641,7 @@
             // Render the rows that are newly visible
             var unusedRows = $.extend({}, renderedRows);
             var html = [];
+            var lockedHtml = [];
             var rowsToLoad = [];
             for (var i = start; i < stop; i++)
             {
@@ -1564,6 +1659,8 @@
                     {
                         // Add a new row
                         rowRenderFn(html, i, row);
+                        if (rowLockedRenderFn != null)
+                            rowLockedRenderFn(lockedHtml, i, row);
                         rowIndices[rowID] = i;
                     }
                 }
@@ -1577,12 +1674,16 @@
             // Destroy the rows that are no longer visible
             for (var unusedID in unusedRows)
             {
-                row = unusedRows[unusedID];
+                row = unusedRows[unusedID].row;
                 row.parentNode.removeChild(row);
+                row = unusedRows[unusedID].locked;
+                if (row)
+                    row.parentNode.removeChild(row);
                 delete renderedRows[unusedID];
             }
 
             // Now add new/moved rows
+            appendLockedRows(lockedHtml.join(''));
             appendRows(html.join(''));
 
             // Load rows that aren't currently present
@@ -1599,9 +1700,11 @@
         var updateSelection = function()
         {
             inside.find('.blist-select-row').removeClass('blist-select-row');
+            $locked.find('.blist-select-row').removeClass('blist-select-row');
             $.each(model.selectedRows, function (k, v)
             {
                 inside.find('#' + id + '-r' + k).addClass('blist-select-row');
+                $locked.find('#' + id + '-l' + k).addClass('blist-select-row');
             });
         };
 

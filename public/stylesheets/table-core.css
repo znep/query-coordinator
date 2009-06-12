@@ -4,6 +4,29 @@
     position: relative;
 }
 
+.blist-table-locked-scrolls
+{
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 21;
+}
+
+.blist-table-locked
+{
+    left: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.blist-table-locked-footer
+{
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}
+
 .blist-table-top
 {
     position: relative;

@@ -3,6 +3,11 @@
     color: #333333;
 }
 
+.blist-table-locked-scrolls
+{
+    background-color: white;
+}
+
 .blist-table-header-scrolls
 {
     background: #e8e8e8 url(/stylesheets/images/content/table/header_right_top.png) no-repeat right top;
@@ -23,9 +28,9 @@
     text-overflow: ellipsis;
 }
 
-.blist-table-header .blist-th.blist-table-corner
+.blist-th.blist-table-corner
 {
-    background: url(/stylesheets/images/content/table/header_left_top.png) no-repeat left top;
+    background: url(/stylesheets/images/content/table/header_left_top.png) no-repeat left top #e8e8e8;
 }
 
 .blist-th-first
@@ -76,7 +81,8 @@
     font-size: 0.8333em;
 }
 
-.blist-table-footer-scrolls
+.blist-table-footer-scrolls,
+.blist-table-locked-footer
 {
     background-color: #ffffff;
     border-top: solid 1px #d0d0d0;
@@ -116,10 +122,12 @@
     padding-left: 0.4167em; /* 5px */
 }
 
-.blist-table-footer .blist-tf.blist-table-corner
+.blist-table-locked-footer .blist-tf.blist-table-corner
 {
+    background-color: #e3ecf7;
     font-size: 1em;
     height: 3em; /* 30px */
+    margin-top: 0.7em;
     overflow: visible;
     padding: 0.5em 0.4em 0; /* 5px top, 4px l/r */
 }
@@ -146,7 +154,7 @@ div.blist-table-expander
     border-top: solid 1px #d0d0d0;
 }
 
-.blist-tr .blist-table-handle.blist-td
+.blist-table .blist-table-handle.blist-td
 {
     border-left-width: 0;
     color: #a9cef2;

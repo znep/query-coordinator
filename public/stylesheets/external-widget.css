@@ -209,11 +209,6 @@ div.blist-table-expander
     background-color: #fffad9;
 }
 
-.blist-table .blist-table-corner
-{
-    border-left: none;
-}
-
 div.blist-td p
 {
     margin: 0 0 6px 0;

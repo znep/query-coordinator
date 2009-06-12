@@ -4,6 +4,29 @@
     position: relative;
 }
 
+.blist-table-locked-scrolls
+{
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 21;
+}
+
+.blist-table-locked
+{
+    left: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.blist-table-locked-footer
+{
+    bottom: 0;
+    left: 0;
+    position: absolute;
+}
+
 .blist-table-top
 {
     position: relative;
@@ -84,6 +107,7 @@
 {
     position: relative;
     overflow: hidden;
+    z-index: 20;
 }
 
 .blist-table-footer
@@ -156,16 +180,12 @@ div.blist-table-expander .blist-td
     white-space: normal;
 }
 
-.blist-table-handle
+.blist-table-row-numbers
 {
     float: left;
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-}
-
-.blist-table .blist-table-corner
-{
 }
 
 .blist-table-util

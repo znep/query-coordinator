@@ -3,15 +3,22 @@
     <dl><dt><a href='#menublist'><%= t(:blist_name).capitalize %></a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
+        'external' => true,
         'href' => "/views/#{@view.id}/rows.pdf?print=true&headers_on_every_page=true"},
         {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-        {'text' => 'As CSV', 'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
-        {'text' => 'As PDF', 'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
-        {'text' => 'As XLS', 'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
-        {'text' => 'As XLSX', 'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-        {'text' => 'As XML', 'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
-        {'text' => 'As JSON', 'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
+        {'text' => 'As CSV', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
+        {'text' => 'As PDF', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
+        {'text' => 'As XLS', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
+        {'text' => 'As XLSX', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
+        {'text' => 'As XML', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
+        {'text' => 'As JSON', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
         ]}},
         {'text' => "Email this #{t(:blist_name)} to me", 'class' => 'email',
         'href' => '#email', 'user_required' => true},

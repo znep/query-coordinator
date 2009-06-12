@@ -28,6 +28,7 @@
             filterItem: null,
             manualResize: false,
             setTempViewCallback: function (tempView) {},
+            showRowHandle: false,
             showRowNumbers: true,
             viewId: null
         },
@@ -55,6 +56,7 @@
                         headerMods: function (col) { headerMods(datasetObj, col); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
+                        showRowHandle: datasetObj.settings.showRowHandle,
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .blistModel()
                     .options({filterMinChars: 0, progressiveLoading: true})

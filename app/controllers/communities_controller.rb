@@ -96,7 +96,7 @@ class CommunitiesController < ApplicationController
     end
     
     @page_size = PAGE_SIZE
-    @filtered_members = User.find(opts, true)
+    @filtered_members = User.find(opts)
     @filtered_members_total = User.find(opts.update({:count => true})).count
     
     tag_list = Tag.find(tag_opts)

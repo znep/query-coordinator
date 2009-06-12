@@ -27,7 +27,7 @@ class View < Model
 
   def html
     self.class.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.html?template=bare_template.html", nil, true)
+      "rows.html?template=bare_template.html", {}, true)
   end
 
   def self.notify_all_of_changes(id)

@@ -41,7 +41,7 @@ ActionController::Routing::Routes.draw do |map|
       :group_detail => :get,
     }
   
-  map.data 'data/', :controller => 'data', :action => 'show'
+  map.data 'data/', :controller => 'data', :action => 'redirect_to_root'
   map.with_options :controller => 'data' do |data|
     data.data_filter        'data/filter',      :action => 'filter'
     data.data_tags          'data/tags',        :action => 'tags'

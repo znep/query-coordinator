@@ -3,6 +3,10 @@ class DataController < ApplicationController
   
   PAGE_SIZE = 10
 
+  def redirect_to_root
+    redirect_to root_path, :status => 301
+  end
+
   def show
     @body_class = 'discover'
     @show_search_form = false

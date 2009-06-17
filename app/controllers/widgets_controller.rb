@@ -26,7 +26,7 @@ class WidgetsController < ApplicationController
     # HACK: Support old template options
     if (!params[:template].blank? &&
         (tm = params[:template].match(/(\w+)_template\.html/)))
-      redirect_to('/widgets/' + params[:id] + '/' + tm[1])
+      return redirect_to('/widgets/' + params[:id] + '/' + tm[1])
     end
 
     begin

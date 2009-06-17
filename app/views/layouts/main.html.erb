@@ -74,7 +74,7 @@
       %>
 
       <%- if @show_search_form -%>
-        <% form_tag(data_path, :method => :get, :class => "search") do %>
+        <% form_tag(root_path, :method => :get, :class => "search") do %>
           <p>
             <input type='text' class='textPrompt' name='search'
               title='<%= t(:search_prompt_text) %>'

@@ -576,6 +576,9 @@ $(function ()
         menuBar: $('#lensContainer .headerBar')});
     $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),
         menuBar: $('#lensContainer .headerBar')});
+	$('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
+		menuBar: $('#lensContainer .headerBar')});
+	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink')});
 
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);

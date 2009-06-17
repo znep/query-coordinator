@@ -214,12 +214,43 @@
 .infoContentHeader .socialActions
 {
     float: right;
-    padding-top: .5em;
+    padding-top: 1em;
 }
-.infoContentHeader .socialActions li
+
+.infoContentHeader .socialActions #shareInfoMenu li a
 {
-    float: left;
-    margin-left: 1em;
+	background-repeat: no-repeat;
+	background-position: 5px center;
+}
+
+.infoContentHeader .socialActions #shareInfoLink
+{
+	background: url(/images/button_share_menu.png) no-repeat;
+	width: 35px;
+	height: 21px;
+	overflow: hidden;
+	display: block;
+	text-indent: -999px;
+}
+
+.infoContentHeader .socialActions #shareInfoMenu .delicious a
+{
+	background-image: url(/images/icons/social_icon_delicious_small.png);
+}
+
+.infoContentHeader .socialActions #shareInfoMenu .digg a
+{
+	background-image: url(/images/icons/social_icon_digg_small.png);
+}
+
+.infoContentHeader .socialActions #shareInfoMenu .twitter a
+{
+	background-image: url(/images/icons/social_icon_twitter_small.png);
+}
+
+.infoContentHeader .socialActions #shareInfoMenu .facebook a
+{
+	background-image: url(/images/icons/social_icon_facebook_small.png);
 }
 
 .infoContentHeader .headerActions

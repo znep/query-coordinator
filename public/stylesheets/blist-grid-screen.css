@@ -378,6 +378,37 @@ body#lensBody
     background-position: 5px -876px;
 }
 
+#lensBody #shareTopLink span.linkIcon
+{
+    background-position: 0 -280px;
+}
+
+#lensBody .headerBar #shareTopMenu li a
+{
+	background-repeat: no-repeat;
+	background-position: 5px center;
+}
+
+#lensBody .headerBar #shareTopMenu .delicious a
+{
+	background-image: url(/images/icons/social_icon_delicious_small.png);
+}
+
+#lensBody .headerBar #shareTopMenu .digg a
+{
+	background-image: url(/images/icons/social_icon_digg_small.png);
+}
+
+#lensBody .headerBar #shareTopMenu .twitter a
+{
+	background-image: url(/images/icons/social_icon_twitter_small.png);
+}
+
+#lensBody .headerBar #shareTopMenu .facebook a
+{
+	background-image: url(/images/icons/social_icon_facebook_small.png);
+}
+
 #lensBody .headerBar #apiLink
 {
     background-position: 0 -220px;
@@ -386,17 +417,6 @@ body#lensBody
 #lensBody .headerBar #rssLink
 {
     background-position: 0 -240px;
-}
-
-#lensBody .headerBar .socialActions li
-{
-    float: left;
-    margin-left: 1em;
-}
-#lensBody .headerBar .socialActions li a
-{
-    display: block;
-    height: 20px;
 }
 
 /* Icons & styling for main menu */

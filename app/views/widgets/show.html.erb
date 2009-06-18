@@ -7,43 +7,65 @@
   <title><%= @view.name %> | <%= t(:page_title) %></title>
 <% end %>
 
-    <div id='header'><div class='wrapperTR'><div class='wrapperT'>
+    <div id='header'><div class='wrapperTR'><div class='wrapperT clearfix'>
+          <%- 
+            tweet = CGI::escape("Check out the #{h(@view.name)} dataset on #{t(:blist_company)} - ")
+            seo_path = "#{request.protocol + request.host_with_port + @view.href}"
+            short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + @view.short_href}"
+          -%>
           <a class="menuLink" href="#header-menu">Menu</a>
           <%= menu_tag({'class' => 'headerMenu', 'items' => [
-          {'text' => 'Email this ' + t(:blist_name), 'class' => 'email',
-          'href' => '#email'},
-          {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
-          'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-          {'text' => 'As CSV', 'link_class' => 'noInterstitial', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
-          {'text' => 'As PDF', 'link_class' => 'noInterstitial', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
-          {'text' => 'As XLS', 'link_class' => 'noInterstitial', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
-          # {'text' => 'As XLSX', 'link_class' => 'noInterstitial',
-          # 'external' => true,
-          # 'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-          {'text' => 'As XML', 'link_class' => 'noInterstitial', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
-          {'text' => 'As JSON', 'link_class' => 'noInterstitial',
-          'external' => true,
-          'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
+          {'text' => 'Share this ' + t(:blist_name).capitalize, 'class' => 'share',
+          'href' => '#', 'submenu' => { 'option_menu' => true, 'items' => [
+            {'text' => 'Delicious', 'class' => 'delicious', 'href' =>
+            "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
+            {'text' => 'Digg', 'class' => 'digg', 'href' =>
+            "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
+            {'text' => 'Twitter', 'class' => 'twitter', 'href' => 
+            "http://www.twitter.com/home?status=#{tweet + short_path}", 'external' => true},
+            {'text' => 'Facebook', 'class' => 'facebook', 'href' =>
+            "http://www.facebook.com/share.php?u=#{h(seo_path)}", 'external' => true}
           ]}},
-          {'text' => 'Republish this ' + t(:blist_name), 'class' => 'publish',
+          {'text' => 'Email this ' + t(:blist_name).capitalize + '...', 'class' => 'email',
+          'href' => '#email'},
+          {'separator' => true},
+          {'text' => 'Publish this ' + t(:blist_name).capitalize + '...' , 'class' => 'publish',
           'href' => '#publish'},
-          {'text' => 'View fullscreen', 'class' => 'fullscreen',
-          'href' => @view.href, 'external' => true},
+          {'separator' => true},
           {'text' => 'Print as PDF', 'class' => 'print', 'external' => true,
           'link_class' => 'noInterstitial', 'href' => '/views/' + @view.id +
           '/rows.pdf?print=true&headers_on_every_page=true'},
-          {'text' => 'Create new ' + t(:blist_name), 'class' => 'newDataset',
+          {'text' => 'Download ' + t(:blist_name).capitalize + ' as', 'class' => 'export',
+          'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+          {'text' => 'Comma Separated Values (.csv)', 'link_class' => 'noInterstitial', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
+          {'text' => 'Adobe PDF (.pdf)', 'link_class' => 'noInterstitial', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
+          {'text' => 'Excel 97 - 2003 Workbook (.xls)', 'link_class' => 'noInterstitial', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
+          # {'text' => 'Excel Workbook (.xlsx)', 'link_class' => 'noInterstitial',
+          # 'external' => true,
+          # 'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
+          {'text' => 'XML Data (.xml)', 'link_class' => 'noInterstitial', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
+          {'text' => 'Java Script Object Notation (.json)', 'link_class' => 'noInterstitial',
+          'external' => true,
+          'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
+          ]}},
+          {'separator' => true},
+          {'text' => 'View Fullscreen', 'class' => 'fullscreen',
+          'href' => @view.href, 'external' => true},
+          {'text' => 'Design a ' + t(:blist_name).capitalize, 'class' => 'newDataset',
           'href' => blist_href_new_blist, 'external' => true},
           ]}) %>
 
+          <p class="fullScreenButton">
+            <a href="<%= @view.href %>" rel="external">View Fullscreen</a>
+          </p>
+          
           <form class='search' action='#'>
             <div class='searchContainer clearfix'>
-              <input type='text' class='textInput textPrompt'
-              title='Find Inside' />
+              <input type='text' class='textInput textPrompt' title='Find Inside' />
               <div class='actionBox'>
                 <div class='clearBox'>
                   <a class='clearSearch' title='Clear Search' href='#clear_search'>
@@ -55,38 +77,28 @@
               </div>
             </div>
           </form>
+          
     </div></div></div>
 
     <div id="data-grid">
       <noscript>
         <h3><a href="<%= @view.href %>"><%= h(@view.name) %></a></h3>
-
+    
         <p><%= h(@view.description) %></p>
-
+    
         <%= @view.html %>
       </noscript>
     </div>
-
-    <div class='blist-table-endcap-bl'>
-        <div class='blist-table-endcap-br'>
-            <div class='blist-table-endcap'></div>
-        </div>
-    </div>
-
-    <%- if !@is_gov_widget -%>
-    <p><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
-        Socrata Social Data Player
-    </a></p>
-    <%- end -%>
-
-    <ul class='widgetFooter'>
-      <li><a class='noInterstitial'
-        href="/views/<%= @view.id %>/rows.csv">Download as CSV</a></li>
-      <li><a class='noInterstitial'
-        href="/views/<%= @view.id %>/rows.pdf?print=true&headers_on_every_page=true">Print as PDF</a></li>
-      <li class='last'><a href="<%= @view.href %>"
-        rel="external">View Fullscreen</a></li>
-    </ul>
+    
+    <div class="widgetFooterWrapper"><div class="widgetFooterInner clearfix">
+      <%- if !@is_gov_widget -%>
+      <p class="widgetLogoWrapper"><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
+          Socrata Social Data Player
+      </a></p>
+      <%- end -%>
+      
+      <p class="getPlayerAction"><a href="http://www.socrata.com" rel="external">Get a Data Player of Your Own</a></p>
+    </div></div>
 
     <% dialog_content("emailDialog") do %>
     <div class='header'>

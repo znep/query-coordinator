@@ -1,6 +1,10 @@
 #data-grid
 {
-    margin: 0 6px 6px;
+    background-color: #06386a;
+    border-color: #c9c9c9;
+    border-style: solid;
+    border-width: 0 1px;
+    padding: 0 5px;
 }
 
 .blist-table
@@ -11,7 +15,6 @@
 
 #header
 {
-    margin: 6px 6px 0;
     padding-left: 8px;
     background: transparent url(/stylesheets/images/content/table/title_tl.png) no-repeat scroll left top;
 }
@@ -26,15 +29,16 @@
 {
     background: transparent url(/stylesheets/images/content/table/title_t.png) repeat-x top;
     height: 28px;
-    padding-left: 4px;
+    padding-left: 7px;
+    padding-right: 7px;
 }
 
 #header .menuLink
 {
-    background-image: url(/stylesheets/images/content/table/expand_opened.png);
+    background-image: url(/stylesheets/images/content/table/expand_opened_white.png);
     background-position: right center;
     background-repeat: no-repeat;
-    color: #ff3333;
+    color: #fff;
     float: left;
     font-size: 1.1em;
     font-weight: bold;
@@ -46,19 +50,63 @@
 #header .headerMenu { width: 17em; }
 #header .headerMenu .submenu .menu { width: 10em; }
 
+#header .headerMenu .submenu.export .menu { width: 19em; }
+
 #header .headerMenu a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
     background-repeat: no-repeat;
 }
 
+#header .headerMenu .share a { background-position: 5px -968px; }
 #header .headerMenu .email a { background-position: 5px -48px; }
 #header .headerMenu .export a { background-position: 5px -117px; }
 #header .headerMenu .export .menu a { background-position: 5px 23px; }
 #header .headerMenu .publish a { background-position: 5px -577px; }
-#header .headerMenu .fullscreen a { background-position: 5px -163px; }
+#header .headerMenu .fullscreen a { background-position: 5px -992px; }
 #header .headerMenu .print a { background-position: 5px -2px; }
 #header .headerMenu .newDataset a { background-position: 5px -94px; }
+
+#header .headerMenu li.share .menu a
+{
+    background-repeat: no-repeat;
+    background-position: 5px center;
+}
+#header .headerMenu .share .delicious a
+{
+    background-image: url(/images/icons/social_icon_delicious_small.png);
+}
+
+#header .headerMenu .share .digg a
+{
+	background-image: url(/images/icons/social_icon_digg_small.png);
+}
+
+#header .headerMenu .share .twitter a
+{
+	background-image: url(/images/icons/social_icon_twitter_small.png);
+}
+
+#header .headerMenu .share .facebook a
+{
+	background-image: url(/images/icons/social_icon_facebook_small.png);
+}
+
+
+#header .fullScreenButton
+{
+    display: inline;
+    float: right;
+    margin: 5px 0 0 5px;
+}
+#header .fullScreenButton
+{
+    background: url(/stylesheets/images/widgets/button_fullscreen_player.png) no-repeat;
+    height: 18px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 22px;
+}
 
 #header form.search
 {
@@ -84,6 +132,7 @@
 
 #header form.search input.submit
 {
+    background-image: none;
     height: 18px;
     margin-right: 0;
 }
@@ -126,6 +175,7 @@
 
 .blist-table-scrolls
 {
+    background-color: #fff;
     border: solid 1px #646464;
 }
 
@@ -240,73 +290,50 @@ img.blist-table-option-icon
     text-decoration: underline;
 }
 
-.blist-table-endcap-bl
+.widgetFooterWrapper
 {
-    background: transparent url(/stylesheets/images/content/table/title_bl.png) no-repeat left bottom;
-    padding-left: 8px;
+    background: url(/stylesheets/images/content/table/title_b.png) repeat-x bottom;
+    bottom: 0;
+    height: 45px;
     position: absolute;
-    bottom: 45px;
-    left: 6px;
-    right: 6px;
-    height: 6px;
+    width: 100%;
+}
+.widgetFooterInner
+{
+    border-color: #c9c9c9;
+    border-style: solid;
+    border-width: 0 1px 1px;
+    padding: .5em 1.5em;
 }
 
-.blist-table-endcap-br
+.widgetLogoWrapper
 {
-    padding-right: 8px;
-    background: transparent url(/stylesheets/images/content/table/title_br.png) no-repeat bottom right;
-}
-
-.blist-table-endcap
-{
-    background: transparent url(/stylesheets/images/content/table/title_b.png) repeat-x bottom;
-    height: 6px;
-    padding-left: 4px;
+    float: left;
 }
 
 .widgetLogo
 {
     background-image: url(/stylesheets/images/widgets/socrata_logo_player.gif);
-    background-position: left top;
+    background-position: left center;
     background-repeat: no-repeat;
     display: block;
-    left: 1em;
-    bottom: 0;
-    height: 34px;
+    height: 35px;
     overflow: hidden;
-    padding-bottom: 1em;
-    position: absolute;
     text-indent: -9999px;
-    width: 121px;
-    z-index: 10;
+    width: 92px;
 }
 
-.widgetFooter
-{
-    bottom: 0;
-    padding-bottom: 2em;
-    position: absolute;
-    text-align: right;
-    width: 100%;
-}
 
-.widgetFooter li
+.getPlayerAction
 {
-    border-right: solid 1px #666666;
-    display: inline;
-    padding: 0 0.5em 0 0.25em;
+    float: right;
+    height: 35px;
+    line-height: 35px;
 }
-
-.widgetFooter li.last
+.getPlayerAction a
 {
-    border-right: none;
-}
-
-.widgetFooter a
-{
-    color: #666666;
-    font-size: 1.2em;
-    text-transform: lowercase;
+    color: #fff;
+    text-transform: uppercase;
 }
 
 .interstitial

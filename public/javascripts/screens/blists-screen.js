@@ -379,6 +379,8 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
             $.Tache.DeleteAll();
         }
     });
+	
+	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoMenu')});
 
     $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
 

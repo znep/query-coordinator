@@ -491,24 +491,20 @@
         class="arrowButton showFlashPopup" title="Share">Share</a></li>
     </ul>
     <%- end -%>
-    <ul class="socialActions">
+    <div class="socialActions">
       <%- 
         tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{t(:blist_company)} - ")
-        seo_path= "#{request.protocol + request.host_with_port + view.href}"
-        short_path= "#{request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href}"
+        seo_path = "#{request.protocol + request.host_with_port + view.href}"
+        short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href}"
       -%>
-      <li><%= link_to(image_tag("share_delicious.png", :size => "32x32", :alt => "Delicious"), 
-              "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}",
-              :title => "Bookmark this on Delicious", :rel => "external") %></li>
-      <li><%= link_to(image_tag("share_digg_guy.png", :size => "32x32", :alt => "Digg"), 
-              "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(view.name)}",
-              :title => "Digg this", :rel => "external") %></li>
-      <li><%= link_to(image_tag("share_logo_twitter.png", :size => "32x32", :alt => "Twitter"), 
-              "http://www.twitter.com/home?status=#{tweet + short_path}",
-              :title => "Tweet this", :rel => "external") %></li>
-      <li><%= link_to(image_tag("share_logo_facebook.png", :size => "32x32", :alt => "Facebook"), 
-              "http://www.facebook.com/share.php?u=#{h(seo_path)}",
-              :title => "Share with your friends on Facebook", :rel => "external") %></li>
+      <a href='#' title='Share on Social Networks' id='shareInfoLink'>Share on Social Networks</a>
+	    <%= menu_tag({'id' => 'shareInfoMenu', 'option_menu' => true,
+	    'items' => [
+	    {'text' => 'Delicious', 'class' => 'delicious', 'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
+	    {'text' => 'Digg', 'class' => 'digg', 'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
+	    {'text' => 'Twitter', 'class' => 'twitter', 'href' => "http://www.twitter.com/home?status=#{tweet + short_path}", 'external' => true},
+	    {'text' => 'Facebook', 'class' => 'facebook', 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}", 'external' => true}]}) %>
+    </div>
     </ul>
     
   </div>

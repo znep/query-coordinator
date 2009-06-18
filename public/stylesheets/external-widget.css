@@ -99,9 +99,10 @@
     float: right;
     margin: 5px 0 0 5px;
 }
-#header .fullScreenButton
+#header .fullScreenButton a
 {
     background: url(/stylesheets/images/widgets/button_fullscreen_player.png) no-repeat;
+    display: block;
     height: 18px;
     overflow: hidden;
     text-indent: -9999px;

@@ -20,7 +20,7 @@ class WidgetsController < ApplicationController
         end
       end
       
-      redirect_to("/widgets/#{params[:id]}/#{@variation}")
+      return redirect_to("/widgets/#{params[:id]}/#{@variation}")
     end
     
     # HACK: Support old template options

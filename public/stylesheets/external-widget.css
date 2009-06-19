@@ -1,15 +1,19 @@
-#data-grid
+.gridOuter 
 {
-    background-color: #06386a;
     border-color: #c9c9c9;
     border-style: solid;
     border-width: 0 1px;
-    padding: 0 5px;
+}
+#data-grid
+{
+    background-color: #fff;
+    border-color: #06386a;
+    border-style: solid;
+    border-width: 0 5px;
 }
 
 .blist-table
 {
-    background: transparent;
     color: #212121;
 }
 
@@ -54,7 +58,7 @@
 
 #header .headerMenu a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?1);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
     background-repeat: no-repeat;
 }
 
@@ -113,7 +117,7 @@
 {
     float: right;
     margin-top: 5px;
-    width: 20em;
+    width: 13em;
 }
 
 #header form.search .searchContainer

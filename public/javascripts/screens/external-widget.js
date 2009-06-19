@@ -74,8 +74,11 @@ $(function ()
 {
     var sizeGrid = function ()
     {
+        var $container = $('#data-grid').closest(".gridOuter");
         var $grid = $('#data-grid');
-        $grid.height($grid.next().offset().top - $grid.offset().top + 1);
+        var newHeight = ($container.next().offset().top - $container.offset().top + 1);
+        $container.height(newHeight);
+        $grid.height(newHeight);
     };
     sizeGrid();
     $(window).resize(sizeGrid);

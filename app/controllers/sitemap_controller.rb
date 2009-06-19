@@ -1,7 +1,7 @@
 class SitemapController < ApplicationController
 
   skip_before_filter :require_user
-  caches_page :sitemap, :users, :datasets
+  caches_page :index, :users, :datasets
 
   # Individual map pages must be under 50k entries AND 10 MB Use a lower
   # number of entries per page to make sure we don't exceede the size limit.

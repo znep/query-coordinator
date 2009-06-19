@@ -20,8 +20,10 @@
           <div class='userInfo clearfix'>
 
             <div class='profilePicture'>
-              <%= image_tag(@user.profile_image_path("medium"),
-                :size => "80x80", :alt => h(@user.displayName)) %>
+              <div id="profileImageContent">
+                <%= image_tag(@user.profile_image_path("medium"),
+                  :size => "80x80", :alt => h(@user.displayName)) %>
+              </div>
               <%- if (@is_user_current) -%>
                 <a id='changeProfileImage' class='action' href='<%= @user.
                   profile_image_path("replace").gsub("/replace", "") %>'>Change</a>

@@ -25,6 +25,12 @@
     width: 8em;
 }
 
+#profile .profilePicture #profileImageContent
+{
+    height: 80px;
+    width: 80px;
+}
+
 #profile .profilePicture img
 {
     display: block;

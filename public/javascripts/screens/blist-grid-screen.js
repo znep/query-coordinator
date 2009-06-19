@@ -302,7 +302,8 @@ blist.blistGrid.mainMenuHandler = function(event)
             blist.util.flashInterface.addColumn('plainText', 0);
             break;
         case 'publish_grid':
-            blist.util.flashInterface.showPopup('PublishDialog:Grid');
+            $("#infoPane .summaryTabs").infoPaneNavigate()
+                .activateTab('#tabPublishing');
             break;
         case 'publish_form':
             blist.util.flashInterface.showPopup('PublishDialog:Form');
@@ -636,7 +637,31 @@ $(function ()
             Either sign in or sign up to save your public filter.',
         submitSuccessCallback: blistGridNS.newViewCreated});
 
-    $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
+    $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
+
+	// Update copyable publish code and live preview from template/params
+	var updatePublishCode = function()
+		{
+			// detemplatize publish code template if it exists
+			if ($('.copyCode #publishCode').length > 0)
+			{
+				$('.copyCode #publishCode').val($('.copyCode #publishCodeTemplate').val()
+												.replace('#width#', $('#publishWidth').val())
+												.replace('#height#', $('#publishHeight').val()));
+				$('.publishPreview iframe').attr('width', $('#publishWidth').val());
+				$('.publishPreview iframe').attr('height', $('#publishHeight').val());
+			}
+		};
+	updatePublishCode();
+	$('#publishWidth, #publishHeight').keyup(updatePublishCode);
+	$('#publishWidth, #publishHeight').keypress(function (event)
+		{
+			if ((event.which < 48 || event.which > 57) && !(event.which == 8 || event.which == 0))
+			{
+				// Disallow non-numeric input in width/height fields
+				return false;
+			}
+		});
 
     $('.switchPermsLink').click(function (event)
         {
@@ -668,6 +693,16 @@ $(function ()
             $link.closest('#infoPane')
                 .find('.singleInfoSummary .panelHeader.' + curState)
                 .removeClass(curState).addClass(newState);
+			// Update publishing panel view
+			$('.singleInfoPublishing .hidden').removeClass('hide');
+			if (newState == 'private')
+			{
+				$('.singleInfoPublishing .publishContent').addClass('hide');
+			}
+			else
+			{
+				$('.singleInfoPublishing .publishWarning').addClass('hide');
+			}
         });
 
     var commentMatches = window.location.search.match(/comment=(\w+)/);

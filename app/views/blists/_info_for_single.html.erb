@@ -593,7 +593,18 @@
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <div class="publishContent">
+      <div class="publishWarningWrapper <%= (view.is_public? || view.is_shared?) ? 'hide' : '' %>">
+        <div class="publishWarning">
+          <h2>Warning</h2>
+          <p>
+          This <%= view.is_blist? ? t(:blist_name).downcase : 'filter' %> is
+          currently private.  Private <%= view.is_blist? ? t(:blist_name).downcase.pluralize : 'filters' %> 
+          cannot be viewed in the Social Data Player.  Please
+          set the privacy to public or shared before publishing.
+          </p>
+        </div>
+      </div>
+      <div class="publishContent <%= view.is_private? ? 'hide' : '' %>">
         <p>
         You can publish this <%= t(:blist_name).downcase %> and
         filtered views on your blog,
@@ -601,10 +612,25 @@
         the following HTML into your site.
         </p>
         <div class="publishCode">
-          <p>Embed this <%= t(:blist_name).downcase %> as a Social Data Player:</p>
-          <div class="copyCode">
-            <%= text_area_tag("publishCode", get_publish_embed_code_for_view(view)) %>
+          <p>Embed this <%= view.is_blist? ? t(:blist_name).downcase : 'filter' %> as a Social Data Player:</p>
+          <div class="sizeOptions">
+            <p>
+              <label for="publishWidth">Width</label>
+              <%= text_field_tag("publishWidth", "425") %> px
+            </p>
+            <p>
+              <label for="publishHeight">Height</label>
+              <%= text_field_tag("publishHeight", "344") %> px
+            </p>
           </div>
+          <div class="copyCode">
+            <%= text_area_tag("publishCode") %>
+            <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(view, "#width#", "#height#")) %>
+          </div>
+        </div>
+        <div class="publishPreview">
+          <p>Preview:</p>
+          <%= get_publish_embed_code_for_view(view) %>
         </div>
       </div>
     </div>

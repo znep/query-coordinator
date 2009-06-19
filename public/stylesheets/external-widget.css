@@ -16,18 +16,18 @@
 #header
 {
     padding-left: 8px;
-    background: transparent url(/stylesheets/images/content/table/title_tl.png) no-repeat scroll left top;
+    background: transparent url(/stylesheets/images/content/table/title_tl.png?1) no-repeat scroll left top;
 }
 
 #header .wrapperTR
 {
     padding-right: 8px;
-    background: transparent url(/stylesheets/images/content/table/title_tr.png) no-repeat top right;
+    background: transparent url(/stylesheets/images/content/table/title_tr.png?1) no-repeat top right;
 }
 
 #header .wrapperT
 {
-    background: transparent url(/stylesheets/images/content/table/title_t.png) repeat-x top;
+    background: transparent url(/stylesheets/images/content/table/title_t.png?1) repeat-x top;
     height: 28px;
     padding-left: 7px;
     padding-right: 7px;
@@ -54,7 +54,7 @@
 
 #header .headerMenu a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?1);
     background-repeat: no-repeat;
 }
 
@@ -99,9 +99,10 @@
     float: right;
     margin: 5px 0 0 5px;
 }
-#header .fullScreenButton
+#header .fullScreenButton a
 {
     background: url(/stylesheets/images/widgets/button_fullscreen_player.png) no-repeat;
+    display: block;
     height: 18px;
     overflow: hidden;
     text-indent: -9999px;
@@ -294,7 +295,6 @@ img.blist-table-option-icon
 {
     background: url(/stylesheets/images/content/table/title_b.png) repeat-x bottom;
     bottom: 0;
-    height: 45px;
     position: absolute;
     width: 100%;
 }

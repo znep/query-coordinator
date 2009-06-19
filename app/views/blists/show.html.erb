@@ -76,23 +76,22 @@
             </li>
 
             <%- if can_edit -%>
-            <li class='readItem separator'><a href='#editGrid' id='editLink'>
-              <span>Edit this <%= t(:blist_name) %></span>
-            </a></li>
+            <li class='readItem separator'><a href='#editGrid' id='editLink' 
+              class='staticLink'><span class='linkIcon'>Edit this <%= t(:blist_name) %></span></a></li>
             <%- end -%>
 
             <%- if can_edit -%>
             <%# Undo/redo %>
             <li class='swfItem'><a href='#Undo' id='undoLink'
-              class='linkIcon flashAction' title='Undo'>Undo</a></li>
+              class='flashAction staticLink' title='Undo'><span class='linkIcon'>Undo</span></a></li>
             <li class='swfItem separator'><a href='#Redo' id='redoLink'
-              class='linkIcon flashAction' title='Redo'>Redo</a></li>
+              class='flashAction staticLink' title='Redo'><span class='linkIcon'>Redo</span></a></li>
             <%- end -%>
 
             <%# Table view options %>
             <%- if is_owner -%>
-            <li class='separator tableOption'>
-              <a class='addColumnsLink linkIcon' href='#'>Add Column</a></li>
+            <li class='separator tableOption swfItem'><a href='#' 
+              class='addColumnsLink staticLink'><span class='linkIcon'>Add Column</span></a></li>
             <%- end -%>
             <%- if current_user -%>
             <li class='separator tableOption'>
@@ -113,26 +112,26 @@
             <%# Page view options %>
             <%- if is_owner -%>
             <li class='pageOption'>
-              <a class='addColumnsLink linkIcon' href='#'>Add Field</a>
+              <a class='addColumnsLink staticLink' href='#'><span class='linkIcon'>Add Field</span></a>
             </li>
             <%- end -%>
             <%- if can_edit -%>
             <li class='separator pageOption'><a id='newPageLink'
-              class='linkIcon flashAction' href='#NewPage'>New Page</a></li>
+              class='flashAction staticLink' href='#NewPage'><span class='linkIcon'>New Page</span></a></li>
             <li class='separator pageOption'><a id='defaultLayoutLink'
-              class='linkIcon flashAction'
-              href='#DefaultLayout'>Default Layout</a></li>
+              class='flashAction staticLink'
+              href='#DefaultLayout'><span class='linkIcon'>Default Layout</span></a></li>
             <%- end -%>
 
             <%# Export/access options %>
             <%- if !@view.nil? -%>
             <li>
-              <a id='apiLink' class='linkIcon'
-                href='/views/<%= @view.id %>/rows.xml?accessType=API'>API</a>
+              <a id='apiLink' class='staticLink'
+                href='/views/<%= @view.id %>/rows.xml?accessType=API'><span class='linkIcon'>API</span></a>
             </li>
             <li class='separator'>
-              <a id='rssLink' class='linkIcon'
-                href='/views/<%= @view.id %>/rows.rss?accessType=WEBSITE'>RSS</a>
+              <a id='rssLink' class='staticLink'
+                href='/views/<%= @view.id %>/rows.rss?accessType=WEBSITE'><span class='linkIcon'>RSS</span></a>
             </li>
             <%- end -%>
 
@@ -141,7 +140,8 @@
             <li class='separator'>
               <a href='#' id='displayLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
-                    <span class='innerWrapper'>Display As</span></div></div></a>
+                    <div class='innerWrapper'>
+                      <span class='linkIcon'>Display As</span></div></div></div></a>
               <%= menu_tag({'id' => 'displayMenu', 'option_menu' => true,
               'items' => [
               {'text' => 'A table', 'class' => 'table checked', 'href' => '#'},

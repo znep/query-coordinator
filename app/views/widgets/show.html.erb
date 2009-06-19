@@ -92,12 +92,14 @@
     
     <div class="widgetFooterWrapper"><div class="widgetFooterInner clearfix">
       <%- if !@is_gov_widget -%>
-      <p class="widgetLogoWrapper"><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
-          Socrata Social Data Player
-      </a></p>
-      <%- end -%>
+        <p class="widgetLogoWrapper"><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
+            Socrata Social Data Player
+        </a></p>
       
-      <p class="getPlayerAction"><a href="http://www.socrata.com" rel="external">Get a Data Player of Your Own</a></p>
+        <p class="getPlayerAction"><a href="http://www.socrata.com" rel="external">Get a Data Player of Your Own</a></p>
+      <%- else -%>
+        &nbsp;
+      <%- end -%>
     </div></div>
 
     <% dialog_content("emailDialog") do %>

@@ -380,7 +380,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         }
     });
 	
-	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoMenu')});
+	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink')});
 
     $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
 

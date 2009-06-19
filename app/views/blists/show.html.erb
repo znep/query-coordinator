@@ -4,6 +4,9 @@
     "blist-grid-screen", :cache => "cache/blists_show_all" %>
   <title><%= @view ? @view.name : 'Design a Dataset' %> | <%= t(:page_title) %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <%- if @view -%>
+    <link rel="canonical" href="<%= @view.href %>" />
+  <%- end -%>
 <% end %>
 
 <%- is_owner = current_user && @view && @view.owner.id == current_user.id -%>

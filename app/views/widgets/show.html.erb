@@ -15,7 +15,7 @@
           -%>
           <a class="menuLink" href="#header-menu">Menu</a>
           <%= menu_tag({'class' => 'headerMenu', 'items' => [
-          {'text' => 'Share this ' + t(:blist_name).capitalize, 'class' => 'share',
+          {'text' => 'Socialize this ' + t(:blist_name).capitalize, 'class' => 'share',
           'href' => '#', 'submenu' => { 'option_menu' => true, 'items' => [
             {'text' => 'Delicious', 'class' => 'delicious', 'href' =>
             "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
@@ -60,7 +60,7 @@
           ]}) %>
 
           <p class="fullScreenButton">
-            <a href="<%= @view.href %>" rel="external">View Fullscreen</a>
+            <a href="<%= @view.href %>" rel="external" title="View Full Screen">View Full Screen</a>
           </p>
           
           <form class='search' action='#'>
@@ -80,7 +80,7 @@
           
     </div></div></div>
 
-    <div id="data-grid">
+    <div class="gridOuter"><div id="data-grid">
       <noscript>
         <h3><a href="<%= @view.href %>"><%= h(@view.name) %></a></h3>
     
@@ -88,7 +88,7 @@
     
         <%= @view.html %>
       </noscript>
-    </div>
+    </div></div>
     
     <div class="widgetFooterWrapper"><div class="widgetFooterInner clearfix">
       <%- if !@is_gov_widget -%>

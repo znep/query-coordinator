@@ -1093,6 +1093,17 @@ infoContentOuter table.gridList td.picture > *
     padding-left: 51px;
 }
 
+.singleInfoPublishing .publishWarningWrapper
+{
+    border-top: 1px solid #e8e8e8;
+}
+.singleInfoPublishing .publishWarning
+{
+	background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) no-repeat left -287px;
+	margin: 2em;
+	padding-left: 46px;
+}
+
 .singleInfoPublishing .publishContent
 {
     border-top: 1px solid #e8e8e8;
@@ -1102,10 +1113,29 @@ infoContentOuter table.gridList td.picture > *
 {
     font-size: 1.2em;
 }
-.singleInfoPublishing .publishContent .publishCode { margin-top: 2em; }
+.singleInfoPublishing .publishContent .publishCode
+{
+	margin-bottom: 1em;
+	margin-top: 2em;
+}
 .singleInfoPublishing .publishContent .publishCode p
 {
     font-size: 1.4em;
+}
+.singleInfoPublishing .publishContent .sizeOptions
+{
+	font-size: 0.8em;
+	padding-bottom: 0.5em;
+	padding-top: 0.5em;
+}
+.singleInfoPublishing .publishContent .sizeOptions p
+{
+	display: inline;
+	margin: 0.5em 2.5em 0.5em 0;
+}
+.singleInfoPublishing .publishContent .sizeOptions input
+{
+	width: 4em;
 }
 .singleInfoPublishing .publishContent .copyCode textarea
 {
@@ -1114,6 +1144,16 @@ infoContentOuter table.gridList td.picture > *
     overflow: hidden;
     padding: .5em;
     width: 45.5em;
+}
+.singleInfoPublishing .publishPreview
+{
+	max-width: 100%;
+	overflow-y: hidden;
+	overflow-x: auto;
+}
+.singleInfoPublishing .publishPreview p
+{
+	font-size: 1.4em;
 }
 
 /*  The following rules define styles for stuff that isn't currently implemented. 

@@ -55,7 +55,7 @@ class WidgetsController < ApplicationController
     # Force us back to the gov variation if this dataset is categorized government
     if @view.category &&
       @view.category.downcase == 'government' &&
-      @variation != 'gov' &&
+      @variation != 'gov'
       
       @variation = 'gov'
     end

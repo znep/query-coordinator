@@ -353,13 +353,18 @@ $(function ()
                     return false;
                 }
                 $('.profilePicture .errorMessage').text('');
-                var $img = $('.profilePicture img');
-                $img.attr('src', '');
+                $('.profilePicture #profileImageContent').animate({ opacity: 0 });
             },
             onComplete: function (file, response)
             {
-                var $img = $('.profilePicture img');
-                $img.attr('src', response.medium + '?rand=' + new Date().getTime());
+                $('<img/>')
+                    .attr('src', response.medium + '?rand=' + new Date().getTime())
+                    .load(function(){
+                        $('.profilePicture #profileImageContent')
+                            .empty()
+                            .append($(this))
+                            .animate({ opacity: 1 });
+                    });
             }
         });
     }

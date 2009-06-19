@@ -382,7 +382,31 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 	
 	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink')});
 
-    $(".copyCode textarea, .copyCode input").click(function() { $(this).select(); });
+    $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
+
+	// Update copyable publish code and live preview from template/params
+	var updatePublishCode = function()
+		{
+			// detemplatize publish code template if it exists
+			if ($('.copyCode #publishCode').length > 0)
+			{
+				$('.copyCode #publishCode').val($('.copyCode #publishCodeTemplate').val()
+												.replace('#width#', $('#publishWidth').val())
+												.replace('#height#', $('#publishHeight').val()));
+				$('.publishPreview iframe').attr('width', $('#publishWidth').val());
+				$('.publishPreview iframe').attr('height', $('#publishHeight').val());
+			}
+		};
+	updatePublishCode();
+	$('#publishWidth, #publishHeight').keyup(updatePublishCode);
+	$('#publishWidth, #publishHeight').keypress(function (event)
+		{
+			if ((event.which < 48 || event.which > 57) && !(event.which == 8 || event.which == 0))
+			{
+				// Disallow non-numeric input in width/height fields
+				return false;
+			}
+		});
 
     $('.switchPermsLink').click(function (event)
         {
@@ -414,6 +438,16 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
             $link.closest('#infoPane')
                 .find('.singleInfoSummary .panelHeader.' + curState)
                 .removeClass(curState).addClass(newState);
+			// Update publishing panel view
+			$('.singleInfoPublishing .hidden').removeClass('hide');
+			if (newState == 'private')
+			{
+				$('.singleInfoPublishing .publishContent').addClass('hide');
+			}
+			else
+			{
+				$('.singleInfoPublishing .publishWarning').addClass('hide');
+			}
         });
 
     $(".favoriteAction a").click(function(event) {
@@ -788,7 +822,7 @@ blist.myBlists.initializeGrid = function()
         // When clicking on the menu item, do a favorite ajax request
         event.preventDefault();
         var rowId = $(this).closest(".blistItemMenu")
-            .attr("id").replace("itemMenu-", "")
+            .attr("id").replace("itemMenu-", "");
         var row = myBlistsNS.model.getByID(rowId);
         myBlistsNS.favoriteClick(row);
     });

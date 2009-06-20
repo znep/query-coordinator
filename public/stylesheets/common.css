@@ -87,6 +87,11 @@ form textarea.text_wide { width: 30em; }
     color: red;
 }
 
+.hide
+{
+	display: none;
+}
+
 /**************
  * Search box *
  **************/

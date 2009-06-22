@@ -1,0 +1,19 @@
+#header
+{
+    padding-left: 8px;
+    background: transparent url(/stylesheets/images/content/table/title_tl_black.png?1) no-repeat scroll left top;
+}
+
+#header .wrapperTR
+{
+    padding-right: 8px;
+    background: transparent url(/stylesheets/images/content/table/title_tr_black.png?1) no-repeat top right;
+}
+
+#header .wrapperT
+{
+    background: transparent url(/stylesheets/images/content/table/title_t_black.png?1) repeat-x top;
+    height: 28px;
+    padding-left: 7px;
+    padding-right: 7px;
+}

@@ -23,7 +23,7 @@ class UserSessionsController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:notice] = notice
-          render :action => :new
+          redirect_to login_path
         end
         format.data { render :json => {:error => notice}}
       end

@@ -19,6 +19,7 @@ $(function ()
         {
             href = "http://" + href;
         }
+		$('.interstitial .exitBox').width($(window).width() - 125);
         $('.interstitial .exitBox .externalLink')
             .attr('href', href)
             .text(href)
@@ -26,8 +27,8 @@ $(function ()
         var $inter = $('.interstitial');
         $inter
             .show()
-            .css('left', ($(window).width() - $inter.width())/2)
-            .css('top', ($(window).height() - $inter.height())/2);
+            .css('left', ($(window).width() - $inter.outerWidth(true)) / 2)
+            .css('top', ($(window).height() - $inter.outerHeight(true)) / 2);
     });
 
     $('.interstitial a.closeLink').click(function (e)

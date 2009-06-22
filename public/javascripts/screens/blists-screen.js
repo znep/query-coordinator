@@ -439,7 +439,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
                 .find('.singleInfoSummary .panelHeader.' + curState)
                 .removeClass(curState).addClass(newState);
 			// Update publishing panel view
-			$('.singleInfoPublishing .hidden').removeClass('hide');
+			$('.singleInfoPublishing .hide').removeClass('hide');
 			if (newState == 'private')
 			{
 				$('.singleInfoPublishing .publishContent').addClass('hide');

@@ -1,19 +1,9 @@
-#header
-{
-    padding-left: 8px;
-    background: transparent url(/stylesheets/images/content/table/title_tl_black.png?1) no-repeat scroll left top;
-}
+#data-grid { border-color: #333; }
 
-#header .wrapperTR
-{
-    padding-right: 8px;
-    background: transparent url(/stylesheets/images/content/table/title_tr_black.png?1) no-repeat top right;
-}
+#header { background-image: url(/stylesheets/images/sdp/black/title_tl.png); }
+#header .wrapperTR { background-image: url(/stylesheets/images/sdp/black/title_tr.png); }
+#header .wrapperT { background-image: url(/stylesheets/images/sdp/black/title_t.png); }
 
-#header .wrapperT
-{
-    background: transparent url(/stylesheets/images/content/table/title_t_black.png?1) repeat-x top;
-    height: 28px;
-    padding-left: 7px;
-    padding-right: 7px;
-}
+#header form.search .searchContainer { background-image: url(/stylesheets/images/sdp/black/find_field.png); }
+.widgetFooterWrapper { background-image: url(/stylesheets/images/sdp/black/title_b.png); }
+.widgetLogo { background-image: url(/stylesheets/images/widgets/socrata_logo_player_black.gif); }

@@ -389,9 +389,14 @@ body#lensBody
     background-position: 0 -240px;
 }
 
-#lensBody .headerBar #displayLink span.linkIcon
+#lensBody .headerBar #displayLink span.linkIcon.table
 {
 	background-position: 0 -300px;
+}
+
+#lensBody .headerBar #displayLink span.linkIcon.page
+{
+	background-position: 0 -320px;
 }
 
 #lensBody .headerBar #displayMenu li a

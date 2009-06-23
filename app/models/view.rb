@@ -246,6 +246,33 @@ class View < Model
     end
   end
 
+  def chart_class
+    case self.displayType
+    when 'geomap'
+      'google.visualization.GeoMap'
+    when 'annotatedtimeline'
+      'google.visualization.AnnotatedTimeLine'
+    when 'imagesparkline'
+      'google.visualization.ImageSparkLine'
+    when 'areachart'
+      'google.visualization.AreaChart'
+    when 'barchart'
+      'google.visualization.BarChart'
+    when 'columnchart'
+      'google.visualization.ColumnChart'
+    when 'intensitymap'
+      'google.visualization.IntensityMap'
+    when 'linechart'
+      'google.visualization.LineChart'
+    when 'map'
+      'google.visualization.Map'
+    when 'piechart'
+      'google.visualization.PieChart'
+    else
+      nil
+    end
+  end
+
   @@categories = {
     "" => "-- No category --",
     "Fun" => "Fun",

@@ -320,7 +320,7 @@ protected
 
   def self.multipart_post_file(path, file)
     req = Net::HTTP::Post::Multipart.new path,
-      'file' => UploadIO.new(file, file.content_type, File.basename(file.path))
+      'file' => UploadIO.new(file, file.content_type, File.basename(file.original_path))
     parse(generic_request(req).body)
   end
 

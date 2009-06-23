@@ -526,11 +526,17 @@ $(function ()
     $('#displayMenu .table').click(function (event)
     {
         event.preventDefault();
+		$('#displayLink .linkIcon')
+			.removeClass('page')
+			.addClass('table');
         blist.util.flashInterface.doAction('TableView');
     });
     $('#displayMenu .page').click(function (event)
     {
         event.preventDefault();
+		$('#displayLink .linkIcon')
+			.removeClass('table')
+			.addClass('page');
         blist.util.flashInterface.doAction('PageView');
     });
 

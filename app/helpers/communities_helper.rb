@@ -39,7 +39,7 @@ module CommunitiesHelper
     when "add_profile_photo"
       out = "added a profile photo"
     when "publish_widget"
-      out = "published a widget for"
+      out = "published a Social Data Player for"
     when "moderate_comment"
       out = "moderated a comment for"
     when "rate_comment"

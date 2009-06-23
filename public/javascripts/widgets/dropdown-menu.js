@@ -215,12 +215,6 @@
         {
             $menu.css('left', $trigger.position().left);
             $menu.css('top', $trigger.position().top + $trigger.outerHeight(true));
-            // Check if the menu is wider than the window; if so, flip it
-            if ($menu.offset().left + $menu.outerWidth(true) > $(window).width())
-            {
-                $menu.css('left', $menu.position().left -
-                        ($menu.outerWidth(true) - $trigger.outerWidth(true)));
-            }
         }
 
         if (config.pullToTop)
@@ -236,12 +230,33 @@
         {
             $menu.css('width', config._origWidth);
         }
-        // Check if the menu is wider than the window; if so, clip it
-        if ($menu.offset().left + $menu.outerWidth(true) > $(window).width())
+		
+		// Check if the menu is wider or taller than the window
+		if ($menu.offset().left + $menu.outerWidth(true) > $(window).width())
         {
-            config._origWidth = $menu.css('width');
-            $menu.css('width', $(window).width() - $menu.offset().left - 5);
+			// if the menu can be flipped left, do so; otherwise, crop it
+			if ($trigger.position().left + $trigger.outerWidth(true) - 
+				$menu.outerWidth(true) < 0)
+			{
+				config._origWidth = $menu.css('width');
+	            $menu.css('width', $(window).width() - $menu.offset().left - 5);
+			}
+            else
+			{
+				$menu.css('left', $menu.position().left -
+			            ($menu.outerWidth(true) - $trigger.outerWidth(true)));
+			}
         }
+		if ($menu.offset().top + $menu.outerHeight(true) >
+			($(document).outerHeight(true) || document.body.clientHeight))
+		{
+			// if the menu can be flipped up, do so; otherwise, leave it alone
+			if ($trigger.position().top - $menu.outerHeight(true))
+			{
+				$menu.css('top', $menu.position().top -
+						($menu.outerHeight(true) + $trigger.outerHeight(true)));
+			}
+		}
     };
 
     /* Hide a menu, and toggle the button state.  Stop listening for

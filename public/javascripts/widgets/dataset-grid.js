@@ -52,7 +52,8 @@
                     .bind('after_load', function() { reloadSummary(datasetObj); })
                     .bind('client_filter', function()
                         { reloadSummary(datasetObj); })
-                    .blistTable({generateHeights: false,
+                    .blistTable({cellNav: true,
+                        generateHeights: false,
                         headerMods: function (col) { headerMods(datasetObj, col); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,

@@ -101,6 +101,7 @@
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
+    cursor: default;
 }
 
 .blist-table-footer-scrolls
@@ -126,6 +127,10 @@
     float: left;
     overflow: hidden;
     white-space: nowrap;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    cursor: default;
 }
 
 div.blist-table .blist-td.blist-tdh
@@ -148,6 +153,7 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh {
     background-position: center center;
     background-repeat: no-repeat;
     border-right-color: transparent /*#f8f8f8*/;
+    cursor: pointer;
 }
 
 .blist-tr-open .blist-td.blist-opener {
@@ -382,4 +388,18 @@ img.blist-table-option-icon
     background-position: center center;
     background-repeat: no-repeat;
     height: 18px;
+}
+
+.blist-cell-selected {
+    background-color: #b4d5fe;
+}
+
+.blist-cell-active, .blist-cell-selected.blist-cell-active {
+    color: HighlightText;
+    background-color: Highlight;
+}
+
+.blist-table-navigator {
+    position: absolute;
+    left: -10000px;
 }

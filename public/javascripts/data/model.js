@@ -162,7 +162,7 @@ blist.namespace.fetch('blist.data');
                     var row = rows[i];
                     if (typeof row == 'object')
                     {
-                        var id = row.id || row[0];
+                        var id = row.id || (row.id = row[0]);
                         rowsLoaded++;
                     }
                     else
@@ -183,7 +183,7 @@ blist.namespace.fetch('blist.data');
                     row = active[i];
                     if (typeof row == 'object')
                     {
-                        id = row.id || row[0];
+                        id = row.id || (row.id = row[0]);
                     }
                     else
                     {
@@ -356,7 +356,7 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < supplement.length; i++)
             {
                 var row = supplement[i];
-                var id = row.id || row[0];
+                var id = row.id;
                 var index = lookup[id];
                 if (index != null)
                 {
@@ -554,18 +554,19 @@ blist.namespace.fetch('blist.data');
                 // Assign a unique numeric ID (UID) and level ID to each column
                 columnLookup = [];
                 var nextID = 0;
-                var assignIDs = function(cols) {
+                var assignIDs = function(cols, levelID) {
                     for (var i = 0; i < cols.length; i++) {
                         var col = cols[i];
                         col.uid = nextID++;
                         col.level = cols;
+                        col.indexInLevel = i;
                         columnLookup[col.uid] = col;
                         if (col.children)
                             assignIDs(col.children);
                     }
                 }
                 for (var i = 0; i < meta.columns.length; i++)
-                    assignIDs(meta.columns[i]);
+                    assignIDs(meta.columns[i], i);
 
                 var rootColumns = meta.columns[0];
                 // Configure root column sorting based on view configuration if
@@ -650,6 +651,23 @@ blist.namespace.fetch('blist.data');
         };
 
         /**
+         * Given a row or a row ID, retrieve the ordinal index of the row in the active set.
+         */
+        this.index = function(rowOrRowID)
+        {
+            if (rowOrRowID instanceof Object)
+                return activeLookup[rowOrRowID.id];
+            return activeLookup[rowOrRowID];
+        }
+
+        /**
+         * Given a column UID, return the index of the column within its level.
+         */
+        this.colIndex = function(uid) {
+            return columnLookup[uid].indexInLevel;
+        }
+
+        /**
          * Add rows to the model.
          */
         this.add = function(addedRows)
@@ -671,7 +689,7 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < rows.length; i++)
             {
                 var row = rows[i];
-                var id = row.id || row[0];
+                var id = row.id;
                 var index = lookup[id];
                 if (index)
                 {
@@ -750,7 +768,7 @@ blist.namespace.fetch('blist.data');
         /**
          * Retrieve a column object by UID.
          */
-        this.getColumn = function(uid) {
+        this.column = function(uid) {
             return columnLookup[uid];
         }
 
@@ -760,7 +778,14 @@ blist.namespace.fetch('blist.data');
         this.length = function(id)
         {
             return active.length;
-        };
+        }
+
+        /**
+         * Retrieve the columns for a level.
+         */
+        this.level = function(id) {
+            return meta.columns[id];
+        }
 
         /**
          * Retrieve the total number of rows, excluding group headers or other
@@ -784,7 +809,7 @@ blist.namespace.fetch('blist.data');
 
         this.toggleSelectRow = function(row)
         {
-            if (this.selectedRows[row.id || row[0]])
+            if (this.selectedRows[row.id])
             {
                 return this.unselectRow(row);
             }
@@ -801,7 +826,7 @@ blist.namespace.fetch('blist.data');
                 return;
             }
 
-            var rowId = row.id || row[0];
+            var rowId = row.id;
             this.selectedRows[rowId] = activeLookup[rowId];
             if (!suppressChange)
             {
@@ -812,7 +837,7 @@ blist.namespace.fetch('blist.data');
 
         this.unselectRow = function(row)
         {
-            delete this.selectedRows[row.id || row[0]];
+            delete this.selectedRows[row.id];
             this.selectionChange([row]);
             return [row];
         };
@@ -855,7 +880,7 @@ blist.namespace.fetch('blist.data');
             {
                 return this.selectRow(row);
             }
-            var curIndex = activeLookup[row.id || row[0]];
+            var curIndex = activeLookup[row.id];
             var maxIndex = curIndex;
             if (curIndex < minIndex)
             {
@@ -869,7 +894,7 @@ blist.namespace.fetch('blist.data');
                 var curRow = active[i];
                 if (!(curRow.level < 0))
                 {
-                    this.selectedRows[curRow.id || curRow[0]] = i;
+                    this.selectedRows[curRow.id] = i;
                     changedRows.push(curRow);
                 }
             }
@@ -1040,9 +1065,9 @@ blist.namespace.fetch('blist.data');
             if (open) {
                 if (!expanded)
                     expanded = {};
-                expanded[row.id || row[0]] = true;
+                expanded[row.id] = true;
             } else if (expanded)
-                delete expanded[row.id || row[0]];
+                delete expanded[row.id];
 
             // Update IDs for the rows that moved
             installIDs(true);
@@ -1174,7 +1199,7 @@ blist.namespace.fetch('blist.data');
                     // If it is a full row, then update rows with it (even if
                     //  this row was already loaded, since it may have updated data)
                     curRow = active[i];
-                    var rowPos = lookup[curRow.id || curRow[0]];
+                    var rowPos = lookup[curRow.id];
                     if (rowPos == undefined)
                     {
                         rows.push(curRow);
@@ -1539,7 +1564,7 @@ blist.namespace.fetch('blist.data');
             var lastCopied = 0;
 
             for (var i = 0; i < active.length; i++)
-                if (expanded[active[i].id || active[i][0]]) {
+                if (expanded[active[i].id]) {
                     if (!newActive)
                         newActive = [];
                     newActive.push.apply(newActive, active.slice(lastCopied, lastCopied = i + 1));

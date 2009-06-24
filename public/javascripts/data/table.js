@@ -154,7 +154,284 @@
 
         // Obtain a model column associated with a column header DOM node
         var getColumnForHeader = function(e) {
-            return model.getColumn(e.getAttribute('uid'));
+            return model.column(e.getAttribute('uid'));
+        }
+
+        // Given a DOM node, retrieve the logical row in which the cell resides
+        var getRow = function(cell) {
+            var rowDOM = cell.parentNode;
+            // + 2 for "-r" suffix prior to row ID
+            var rowID = rowDOM.id.substring(id.length + 2);
+            return model.getByID(rowID);
+        }
+
+        // Given a DOM node, retrieve the logical column in which the cell resides
+        var getColumn = function(cell) {
+            // The cell will have a class like 'tableId-c4'; we need to
+            //  extra the part after the tableId-c, which is the uid of
+            //  the column that can be looked up
+            var classIndex = cell.className.indexOf(id + '-c');
+            if (classIndex == -1)
+                return null;
+            var endOfUID = cell.className.indexOf(' ', classIndex);
+            if (endOfUID == -1)
+                endOfUID = cell.className.length;
+            var colUID = cell.className.slice(classIndex + id.length + 2, endOfUID);
+            return model.column(colUID);
+        }
+
+
+        /*** CELL SELECTION AND NAVIGATION ***/
+
+        // Is cell selection and navigation on?
+        var cellNav = options.cellNav;
+
+        // Active cell
+        var activeCellOn = false;
+        var activeCellX,    // Column UID
+            activeCellY;    // Row ID
+
+        // Cell selection information.  The cell selection consists of one or more rectangular areas each including
+        // one or more cells.  The selections are stored in an array with the following values:
+        //   x1, the first selected column index
+        //   y1, the first selected row index
+        //   x2, the last selected column index (inclusive)
+        //   y2, the last selected row index (inclusive)
+        var selectionLevel = -1;
+        var cellSelection = [];
+
+        // Convert selection into a sorted array of arrays for quickly identifying selected cells
+        var convertCellSelection = function() {
+            var converted = [];
+
+            for (var i = 0; i < cellSelection.length; i++) {
+                var sel = cellSelection[i];
+                var sel2 = sel.slice(0);
+                if (sel2[1] > sel2[3]) {
+                    var tmp = sel2[3];
+                    sel2[3] = sel2[1];
+                    sel2[1] = tmp;
+                }
+                if (sel2[0] > sel2[2]) {
+                    tmp = sel2[2];
+                    sel2[2] = sel2[0];
+                    sel2[0] = tmp;
+                }
+                converted.push(sel2);
+            }
+
+            converted.sort(function(a, b) {
+                // Order by first row...
+                var diff = a[1] - b[1];
+                if (diff)
+                    return diff;
+
+                // Or by last row
+                return a[3] - b[3];
+            });
+            return converted;
+        }
+
+        var getRenderedRowsWithPosition = function() {
+            var rows = [];
+            for (var id in renderedRows) {
+                var row = renderedRows[id];
+                rows.push([ rowIndices[id], row ]);
+            }
+            return rows.sort(function(a, b) { return a[0] - b[0] });
+        }
+
+        var clearRowSelection = function(row) {
+            for (var cell = row.row.firstChild; cell; cell = cell.nextSibling)
+                if (cell._sel) {
+                    $(cell).removeClass('blist-cell-selected');
+                    delete cell._sel;
+                }
+            delete row.selected;
+        }
+
+        var setRowSelection = function(row, selmap) {
+            row.selected = true;
+            for (var pos = 0, node = row.row.firstChild; node; node = node.nextSibling, pos++) {
+                if (selmap[pos]) {
+                    if (!node.selected) {
+                        $(node).addClass('blist-cell-selected');
+                        node._sel = true;
+                    }
+                } else if (node._sel) {
+                    $(node).removeClass('blist-cell-selected');
+                    delete node._sel;
+                }
+            }
+        }
+
+        var updateSelectionCues = function() {
+            // Convert the selection into canonical and sorted form to optimize processing
+            var selection = convertCellSelection();
+
+            // Obtain a list of rendered rows in natural order
+            var rows = getRenderedRowsWithPosition();
+
+            // This "selmap" is an array of booleans indicating whether each cell in a row is selected.  This is
+            // computed from the set of selections and cached between rows unless the set of selections that applies
+            // change.
+            var selmap;
+            var selmapSelectionCount;
+
+            for (var i = 0, len = rows.length; i < len; i++) {
+                var index = rows[i][0];
+                var row = rows[i][1];
+                
+                // Drop selection boxes that appear before this row
+                while (selection.length && selection[0][3] < index) {
+                    selection.shift();
+                    selmap = undefined;
+                }
+
+                // Count the number of selection boxes that apply to this row
+                for (var selCount = 0; selCount < selection.length; selCount++)
+                    if (selection[selCount][1] > index)
+                        break;
+
+                // Update the row
+                if (selCount == 0) {
+                    clearRowSelection(row);
+                    continue;
+                }
+
+                // Build the selection map if a cached version isn't available
+                if (!selmap || selmapSelectionCount != selCount) {
+                    selmap = [];
+                    selmapSelectionCount = selCount;
+                    for (var j = 0; j < selCount; j++) {
+                        var sel = selection[j];
+                        for (var k = sel[0]; k <= sel[2]; k++)
+                            selmap[k] = true;
+                    }
+                }
+
+                // Update the selection
+                setRowSelection(row, selmap);
+            }
+        }
+
+        var updateCellNavCues = function() {
+            // Update the active cell
+            var active = $('.blist-cell-active', $this)[0];
+            if (activeCellOn) {
+                var activeRow = model.getByID(activeCellY);
+                if (activeRow) {
+                    activeRow = renderedRows[activeRow.id];
+                    if (activeRow)
+                        var newActive = activeRow.row.childNodes[model.column(activeCellX).indexInLevel];
+                }
+                if (newActive == active)
+                    active = null;
+                else if (newActive)
+                    $(newActive).addClass('blist-cell-active');
+            }
+            if (active)
+                $(active).removeClass('blist-cell-active');
+
+            // Update selection rendering
+            updateSelectionCues();
+        }
+
+        var clearCellNav = function(selectionOnly) {
+            var needRefresh;
+            
+            if (!selectionOnly && activeCellOn) {
+                activeCellOn = false;
+                needRefresh = true;
+            }
+
+            if (cellSelection.length) {
+                cellSelection = [];
+                needRefresh = true;
+            }
+
+            if (needRefresh)
+                updateCellNavCues();
+        }
+
+        /**
+         * Navigate to a particular cell (a DOM element).  Returns true iff the cell is a focusable table cell.  This
+         * is used for mouse handling.
+         */
+        var cellNavTo = function(cell, event, selecting) {
+            var row = getRow(cell);
+            var column = getColumn(cell);
+
+            if (!row || !column) {
+                // Not a proper cell -- ignore the event
+                clearCellNav();
+                return false;
+            } else if ($(event.target).is('a') && !selecting) {
+                // Special case for anchor clicks -- do not select the cell immediately but do enter "possible drag"
+                // mode
+                clearCellNav();
+                return true;
+            } else if (column.type != 'fill')
+                // Standard cell -- activate the cell
+                return cellNavToXY(column.uid, row.id, event, selecting);
+            return false;
+        }
+
+        /**
+         * Navigate to a particular location (column UID, row ID pair).  Returns true iff the location contains a
+         * focusable table cell.
+         */
+        var cellNavToXY = function(x, y, event, selecting) {
+            // Decide what affect this navigation has on the selection
+            var selectionMode;
+            if (selecting || event.shiftKey) {
+                // Shift key -- selection continuation (continues the last selection box or starts a new box)
+                if (!cellSelection.length)
+                    selectionMode = 'start';
+                else if (selectionLevel == model.column(x).level.id)
+                    selectionMode = 'continue';
+            } else if (event.metaKey)
+                // Control or command key -- starts a new box
+                selectionMode = 'start-new';
+            else if (cellSelection.length) {
+                // No modifier keys -- remove the selection
+                cellSelection = [];
+            }
+
+            // Selection must occur in the same level -- otherwise, ignore
+            if (selectionMode && cellSelection.length && selectionLevel != model.column(x).level.id)
+                delete selectionMode;
+            
+            // Locate the selection box we're modifying, if any
+            var selection;
+            if (selectionMode == 'start' || selectionMode == 'start-new') {
+                // Begin a new selection box
+                if (!cellSelection.length)
+                    selectionLevel = model.column(x).level.id;
+                var startX = model.colIndex(selectionMode == 'start' && activeCellOn ? activeCellX : x);
+                var startY = model.index(selectionMode == 'start' && activeCellOn ? activeCellY : y);
+                cellSelection.push(selection = [ startX, startY ]);
+            } else if (selectionMode == 'continue')
+                // Add to final selection box
+                selection = cellSelection[cellSelection.length - 1];
+
+            // Update the selection box, if any
+            if (selection) {
+                selection[2] = model.colIndex(x);
+                selection[3] = model.index(y);
+            }
+
+            // Update the active cell
+            activeCellOn = true;
+            activeCellX = x;
+            activeCellY = y;
+
+            // Reset standard grid state
+            $navigator[0].focus();
+            killHotExpander();
+            updateCellNavCues();
+
+            return true;
         }
 
 
@@ -169,7 +446,17 @@
                 hotExpander.style.top = '-10000px';
                 hotExpander.style.left = '-10000px';
             }
-        };
+        }
+
+        var killHotExpander = function()
+        {
+            if (hotCellTimer)
+            {
+                clearTimeout(hotCellTimer);
+                hotCellTimer = null;
+            }
+            hideHotExpander();
+        }
 
         var expandHotCell = function()
         {
@@ -310,9 +597,10 @@
         var hotHeader;
         var hotHeaderMode; // 1 = hover, 2 = resize, 3 = control hover
         var hotHeaderDrag;
-        var dragFrom;
+        var mouseDownAt;
         var dragHeaderLeft;
         var clickTarget;
+        var selectFrom;
 
         var findContainer = function(event, selector)
         {
@@ -423,7 +711,7 @@
         }
 
         var handleColumnMove = function(event) {
-            var delta = { x: event.clientX - dragFrom.x, y: event.clientY - dragFrom.y };
+            var delta = { x: event.clientX - mouseDownAt.x, y: event.clientY - mouseDownAt.y };
 
             // TODO -- implement column dragging support...
         }
@@ -434,7 +722,16 @@
                 .removeClass('blist-hot-row');
             $locked.find('#' + id + '-l' + rowID)
                 .removeClass('blist-hot-row');
-        };
+        }
+
+        var isSelectingFrom = function(cell) {
+            if (!cellSelection.length)
+                return false;
+            var col = getColumn(cell);
+            var row = getRow(cell);
+            var sel = cellSelection[cellSelection.length - 1];
+            return sel[0] == col.indexInLevel && sel[1] == model.index(row);
+        }
 
         var onMouseMove = function(event)
         {
@@ -447,6 +744,32 @@
                     return;
                 }
 
+            // Handle mouse down movement
+            if (mouseDownAt) {
+                if (clickTarget && Math.abs(event.clientX - mouseDownAt.x) > 3 || Math.abs(event.clientY - mouseDownAt.y > 3)) {
+                    // No longer consider this a potential click event
+                    clickTarget = null;
+                }
+
+                // If we are selecting and can't be in a click then update the selection
+                if (selectFrom && !clickTarget) {
+                    console.debug(">>> " + cellSelection.length);
+                    // Ensure that the cell we started dragging from is the beginning of the current selection
+                    if (!isSelectingFrom(selectFrom)) {
+                        activeCellOn = false;
+                        cellNavTo(selectFrom, event);
+                    }
+
+                    // If we've moved over another cell, update the selection
+                    var over = findCell(event);
+                    if (over)
+                        cellNavTo(over, event, true);
+                    console.debug("<<< " + cellSelection.length);
+                }
+
+                return;
+            }
+
             if (handleHeaderHover(event)) {
                 if (hotCell)
                     onCellOut(event);
@@ -458,7 +781,7 @@
             }
 
             // Locate the cell the mouse is in, if any
-            var over = findCell(event);
+            over = findCell(event);
             
             // If the hover cell is currently hot, nothing to do
             if (over == hotCell)
@@ -530,12 +853,7 @@
                 // Cell is no longer hot
                 $(hotCell).removeClass('blist-hot');
                 hotCell = null;
-                if (hotCellTimer)
-                {
-                    clearTimeout(hotCellTimer);
-                    hotCellTimer = null;
-                }
-                hideHotExpander();
+                killHotExpander();
             }
         };
 
@@ -545,23 +863,14 @@
             if (cell)
             {
                 // Retrieve the row
-                var rowDOM = cell.parentNode;
-                // + 2 for "-r"/"-l" suffix prior to row ID
-                var rowID = rowDOM.id.substring(id.length + 2);
-                var row = model.getByID(rowID);
+                var row = getRow(cell);
 
                 // If this is a row opener, invoke expand on the model
                 if ($(cell).hasClass('blist-opener'))
                     model.expand(row);
 
                 // Retrieve the column
-                // The cell will have a class like 'tableId-c4'; we need to
-                //  extra the part after the tableId-c, which is the uid of
-                //  the column that can be looked up
-                var classIndex = cell.className.indexOf(id + '-c');
-                var colUID = cell.className.slice(classIndex + id.length + 2,
-                    cell.className.indexOf(' ', classIndex));
-                var column = model.getColumn(colUID);
+                var column = getColumn(cell);
 
                 // Notify listeners
                 var cellEvent = $.Event('cellclick');
@@ -580,7 +889,7 @@
                     {
                         model.selectSingleRow(row);
                     }
-                    unHotRow(rowID);
+                    unHotRow(row.id);
                     // Set the focus so that the shift/meta click won't select
                     // any text.
                     $this.focus();
@@ -592,12 +901,22 @@
             if (hotHeader && hotHeaderMode != 3) {
                 clickTarget = null;
                 hotHeaderDrag = true;
-                dragFrom = { x: event.clientX, y: event.clientY };
                 event.stopPropagation();
                 event.preventDefault();
                 return false;
             }
+
             clickTarget = event.target;
+            mouseDownAt = { x: event.clientX, y: event.clientY };
+            selectFrom = null;
+
+            if (cellNav) {
+                var cell = findCell(event);
+                if (cell && cellNavTo(cell, event)) {
+                    selectFrom = cell;
+                    return false;
+                }
+            }
         }
 
         var onMouseUp = function(event) {
@@ -608,16 +927,143 @@
                 event.preventDefault();
                 return true;
             }
-            if (clickTarget && clickTarget == event.target &&
-                !$(clickTarget).is('a'))
+            if (clickTarget && clickTarget == event.target && !$(clickTarget).is('a')) {
                 $(clickTarget).trigger('table_click', event);
+                $navigator[0].focus();
+            }
+            mouseDownAt = null;
+        }
+
+
+        /*** KEYBOARD HANDLING ***/
+
+        // Page size is configured in renderRows()
+        var pageSize = 1;
+
+        var onKeyPress = function(event) {
+            var deltaX = 0;
+            var deltaY = 0;
+            switch (event.keyCode) {
+                case 34:
+                    // Page up
+                    deltaX = -pageSize;
+                    break;
+
+                case 35:
+                    // Page down
+                    deltaX = pageSize;
+                    break;
+
+                case 37:
+                    // Left
+                    deltaX = -1;
+                    break;
+
+                case 38:
+                    // Up
+                    deltaY = -1;
+                    break;
+
+                case 39:
+                    // Right
+                    deltaX = 1;
+                    break;
+
+                case 40:
+                    // Down
+                    deltaY = 1;
+                    break;
+
+                default:
+                    return;
+            }
+
+            if (deltaX || deltaY) {
+                var updateNav = false;
+                if (!activeCellOn) {
+                    // First keyboard nav without cell nav on -- move to position 0, 0
+                    if (model.length() && model.column(0))
+                        cellNavToXY(0, model.get(0).id);
+                } else if (deltaY) {
+                    // Move to a new row
+                    var y = model.index(activeCellY);
+                    if (y !== undefined) {
+                        // Update the y position
+                        y += deltaY;
+
+                        // Bounds checking
+                        if (y < 0)
+                            y = 0;
+                        if (y >= model.length())
+                            y = model.length() - 1;
+
+                        // Update if we made changes
+                        var newRow = model.get(y);
+                        if (newRow.id != activeCellY) {
+                            // If we switched levels, we have to change to a column within the new level
+                            var oldRow = model.getByID(activeCellY);
+                            if (oldRow.level != newRow.level) {
+                                var oldCol = columnLayout[activeCellX];
+                                var oldLeft = oldCol.left;
+                                var oldRight = oldCol.left + oldCol.width;
+
+                                // Search the new level for the column who is closest to overlapping this column's left
+                                // side
+                                var newLevel = model.level(newRow.level);
+                                var winningCandidate = null;
+                                var winnerDelta;
+                                for (var i = 0; i < newLevel.length; i++) {
+                                    var col = columnLayout[newLevel[i].uid];
+                                    if (col.type == 'fill')
+                                        continue;
+                                    var delta = Math.min(Math.abs(col.left - oldLeft), Math.abs(col.left - oldRight));
+                                    if (winningCandidate == null || winnerDelta > delta) {
+                                        winningCandidate = col;
+                                        winnerDelta = delta;
+                                    }
+                                }
+
+                                // Update the column
+                                if (!winningCandidate)
+                                    // No non-fill in the next level?
+                                    activeCellX = null;
+                                else
+                                    activeCellX = winningCandidate.uid;
+                            }
+
+                            // Update the column
+                            cellNavToXY(activeCellX, newRow.id, event);
+                        }
+                    }
+                } else if (deltaX) {
+                    // Move to a new column
+
+                    // Update the X position within the level
+                    var column = model.column(activeCellX);
+                    var x = column.indexInLevel;
+                    x += deltaX;
+
+                    // Bounds checks
+                    var max = column.level.length;
+                    if (x >= max)
+                        x = max - 1;
+                    if (x < 0)
+                        x = 0;
+
+                    // Update if we made changes
+                    if (x != activeCellX)
+                        cellNavToXY(x, activeCellY, event);
+                }
+                return false;
+            }
         }
 
 
         /*** HTML RENDERING ***/
 
         var headerStr =
-            '<div class="blist-table-locked-scrolls">\
+            '<textarea class="blist-table-navigator"></textarea>\
+             <div class="blist-table-locked-scrolls">\
                 <div class="blist-table-locked-header">&nbsp;</div>\
                 <div class="blist-table-locked">&nbsp;</div>\
                 <div class="blist-table-locked-footer">&nbsp;</div>\
@@ -699,7 +1145,6 @@
             .find('.blist-table-scrolls')
             .scroll(function () {onScroll(); renderRows();});
 
-
         // The non-scrolling row container
         var inside = $scrolls
             .find('.blist-table-inside')
@@ -715,10 +1160,13 @@
         // respectively
         var appendUtil = $(document.createElement('div'));
         var appendUtilDOM = appendUtil[0];
-
         var measureUtil = $outside
             .find('.blist-table-util');
         var measureUtilDOM = measureUtil[0];
+
+        // This guy receives focus when the user interacts with the grid
+        var $navigator = $($outside.find('.blist-table-navigator'))
+            .keypress(onKeyPress);
 
         // Set up initial top of locked section
         $locked.css('top', $header.outerHeight());
@@ -919,6 +1367,7 @@
         var varMinWidth = [];
         var varDenom = [];
         var insideWidth;
+        var columnLayout = [];
 
         /**
          * Create rendering code for a series of columns.
@@ -1008,8 +1457,6 @@
             
             return generatedCode;
         }
-
-
 
         /**
          * Initialize based on current model metadata.
@@ -1322,6 +1769,9 @@
                     colWidth = (mcol.width || 0) + paddingX;
                 }
 
+                // Cache position information for cell navigation
+                columnLayout[mcol.uid] = { left: hpos, width: colWidth };
+
                 // Initialize the column's style
                 if (colWidth)
                 {
@@ -1573,6 +2023,7 @@
             $lockedFooter.html(lockedHtml);
         };
 
+
         /*** ROWS ***/
 
         var renderedRows = {}; // All rows that are rendered, by ID
@@ -1653,7 +2104,10 @@
             var first = Math.floor(top / rowOffset);
 
             // Compute the number of (possibly partially) visible rows
-            var count = Math.ceil((top - (first * rowOffset) + $scrolls.height()) / rowOffset) + 1;
+            var count = Math.ceil((top - first * rowOffset + $scrolls.height()) / rowOffset) + 1;
+            
+            // Count the scrolling page size
+            pageSize = Math.floor((top - first * rowOffset + $scrolls.height()) / rowOffset) || 1;
 
             // Determine the range of rows we need to render, with safety checks to be sure we don't attempt the
             // impossible
@@ -1726,11 +2180,18 @@
                 rowLoadRows = rowsToLoad;
             }
 
-            updateSelection();
+            if (cellNav)
+                // Cell selection and navigation
+                updateCellNavCues();
+            else
+                // Row selection
+                updateSelection();
         };
 
         var updateSelection = function()
         {
+            if (cellNav)
+                return;
             inside.find('.blist-select-row').removeClass('blist-select-row');
             $locked.find('.blist-select-row').removeClass('blist-select-row');
             $.each(model.selectedRows, function (k, v)
@@ -1755,6 +2216,8 @@
          */
         var initRows = function(model)
         {
+            clearCellNav();
+
             if (handleDigits != calculateHandleDigits(model)) {
                 // The handle changed.  Reinitialize columns.
                 initMeta(model);

@@ -2,28 +2,28 @@
 <fieldset>
   <%= hidden_field_tag("inviteToken", @token) %>
   <p>
-    <label for="account_firstName">*First Name</label>
-    <%= text_field_tag("account[firstName]") %>
+    <label for="firstName">*First Name</label>
+    <%= text_field_tag("firstName") %>
   </p>
   <p>
-    <label for="account_lastName">*Last Name</label>
-    <%= text_field_tag("account[lastName]") %>
+    <label for="lastName">*Last Name</label>
+    <%= text_field_tag("lastName") %>
   </p>
   <p>
-    <label for="account_email">*Email Address</label>
-    <%= text_field_tag("account[email]") %>
+    <label for="email">*Email Address</label>
+    <%= text_field_tag("email") %>
   </p>
   <p>
     <label for="emailConfirm">*Confirm Email</label>
     <%= text_field_tag("emailConfirm") %>
   </p>
   <p>
-    <label for="account_login">*Username</label>
-    <%= text_field_tag("account[login]") %>
+    <label for="login">*Username</label>
+    <%= text_field_tag("login", nil, :maxlength => 40) %>
   </p>
   <p>
-    <label for="account_password">*Password</label>
-    <%= password_field_tag("account[password]") %>
+    <label for="password">*Password</label>
+    <%= password_field_tag("password") %>
   </p>
   <p>
     <label for="passwordConfirm">*Confirm Password</label>
@@ -33,7 +33,7 @@
 
 <fieldset class="last">
   <div class="fileInputContainer clearfix">
-    <label for="account_profile_image">Profile Picture</label>
+    <label for="profile_image">Profile Picture</label>
     <div class="fileInput">
       <%= file_field_tag("profile_image", :class => "text") %>
       <div class="fakeFile clearfix">
@@ -43,12 +43,12 @@
     </div>
   </div>
   <p>
-    <label for="account_company">Company</label>
-    <%= text_field_tag("account[company]") %>
+    <label for="company">Company</label>
+    <%= text_field_tag("company") %>
   </p>
   <p>
-    <label for="account_title">Title</label>
-    <%= text_field_tag("account[title]") %>
+    <label for="title">Title</label>
+    <%= text_field_tag("title") %>
   </p>
   <p class="fieldInfo">
   Share and collaborate with your friends and colleagues. Enter their email addresses and we'll send them an invite on your behalf.

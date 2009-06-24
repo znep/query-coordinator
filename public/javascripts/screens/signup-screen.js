@@ -2,7 +2,7 @@ $(function ()
 {
     if ($('body').is('.signup'))
     {
-        $("#signup #account_firstName").focus();
+        $("#signup #firstName").focus();
     }
 
     $("#signup .fileInputContainer input[type='file']").change(function()
@@ -10,24 +10,42 @@ $(function ()
         $("#signup .fileInputContainer input[type='text']").val($(this).val());
     });
 
+    $.validator.addMethod("loginRegex", function(value, element) {
+        return this.optional(element) || /^[a-z0-9\-]+$/i.test(value);
+    }, "Username must contain only letters, numbers, or dashes.");
+
+    $.validator.addMethod("login4x4", function(value, element) {
+        return this.optional(element) || !/^[a-z0-9]{4}-[a-z0-9]{4}$/i.test(value);
+    }, "Username cannot be in the form nnnn-nnnn.");
+
     // Signup form validation.
     $("#signup #signupForm").validate({
         rules: {
-            "account[firstName]": "required",
-            "account[lastName]": "required",
-            "account[email]": {
+            "firstName": "required",
+            "lastName": "required",
+            "email": {
                 required: true,
                 email: true
             },
-            emailConfirm: {
+            "emailConfirm": {
                 required: true,
-                equalTo: "#account_email"
+                equalTo: "#email"
             },
-            "account[login]": "required",
-            "account[password]": "required",
-            passwordConfirm: {
+            "login": {
                 required: true,
-                equalTo: "#account_password"
+                loginRegex: true,
+                login4x4: true,
+                remote: "/users?method=loginAvailable"
+            },
+            "password": "required",
+            "passwordConfirm": {
+                required: true,
+                equalTo: "#password"
+            }
+        },
+        messages: {
+            "login": {
+                remote: $.format("'{0}' is already taken.")
             }
         }
     });

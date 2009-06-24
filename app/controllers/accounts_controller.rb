@@ -43,7 +43,7 @@ class AccountsController < ApplicationController
   def create
     # First, try creating the user
     begin
-      user = User.create(params[:account], params[:inviteToken])
+      user = User.create(account, params[:inviteToken])
     rescue CoreServerError => e
       error = e.error_message
       respond_to do |format|
@@ -56,7 +56,7 @@ class AccountsController < ApplicationController
     end
 
     # Now, authenticate the user
-    @user_session = UserSession.new(params[:account])
+    @user_session = UserSession.new('login' => account[:login], 'password' => account[:password])
     if @user_session.save
       # If they gave us a profile photo, upload that to the user's account
       # If the core server gives us an error, oh well... we've alredy created
@@ -102,7 +102,7 @@ class AccountsController < ApplicationController
     @body_id = 'resetPassword'
     if request.post?
       req = Net::HTTP::Post.new('/users')
-      req.set_form_data({'method' => 'forgotPassword', 'login' => params[:account][:login]})
+      req.set_form_data({'method' => 'forgotPassword', 'login' => params[:login]})
       result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
         http.request(req)
       end
@@ -152,5 +152,18 @@ class AccountsController < ApplicationController
         redirect_to forgot_password_path
       end
     end
+  end
+
+private
+
+  def account
+    unless @account
+      @account = {}
+      [:firstName, :lastName, :email, :login, :password, :company, :title].each do |field|
+        @account[field] = params[field]
+      end
+    end
+
+    return @account
   end
 end

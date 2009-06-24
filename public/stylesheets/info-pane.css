@@ -233,6 +233,11 @@
 	text-indent: -999px;
 }
 
+.infoContentHeader .socialActions #shareInfoMenu
+{
+	width: 10em;
+}
+
 .infoContentHeader .socialActions #shareInfoMenu .delicious a
 {
 	background-image: url(/images/icons/social_icon_delicious_small.png);

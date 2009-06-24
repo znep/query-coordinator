@@ -242,6 +242,7 @@
 
 .blist-td
 {
+    background-color: #fff;
     border-right: solid 1px #dddddd;
     border-bottom: solid 1px #dddddd;
     font-size: 1.1em;

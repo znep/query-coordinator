@@ -460,6 +460,10 @@ $(function ()
             clearFilterItem: '#lensContainer .headerBar form .clearSearch'
         });
     }
+    else if (blistGridNS.newDataset)
+    {
+        $("#modal").jqmShow($("<a href='/blists/new'></a>"));
+    }
 
     blistGridNS.setUpTabs();
     $('.tabList').scrollable({

@@ -353,6 +353,9 @@
     blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
     blist.blistGrid.referer = "<%= request.referer %>";
+    <%- if @new_dataset -%>
+    blist.blistGrid.newDataset = true;
+    <%- end -%>
     <%- if !@view.nil? -%>
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";

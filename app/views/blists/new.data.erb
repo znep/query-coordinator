@@ -39,12 +39,15 @@
                   My data can only be modified by me, but everyone can view it.
                 </label>
               </p>
+              <%- #TODO: Add public editable back in when core server supports it. -%>
+              <%- if false -%>
               <p>
                 <%= radio_button_tag("privacy", "public_edit") %>
                 <label for="privacy_public_edit">
                   My data can be viewed by everyone and modified by anyone with an account.
                 </label>
               </p>
+              <%- end -%>
               <p>
                 <%= radio_button_tag("privacy", "private_data") %>
                 <label for="privacy_private_data">
@@ -104,7 +107,7 @@
       $("#privacyDisplayText").text(blist.common.privacyText[selectedId]);
     });
     
-    // TODO: Validation
+    // Validation
     $("#newDatasetForm").validate({
       rules: {
         "view[name]": "required"

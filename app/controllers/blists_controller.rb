@@ -18,9 +18,7 @@ class BlistsController < SwfController
       if !current_user
         return require_user
       end
-      # show new blist in swf
-      @body_class = 'editMode'
-      @start_screen = 'new_blist'
+      @new_dataset = true;
     else
       @body_class = params[:mode] && params[:mode] == 'edit' ?
         'editMode' : 'readMode'
@@ -184,7 +182,7 @@ class BlistsController < SwfController
     end
 
     respond_to do |format|
-      format.html { redirect_to(view.href) }
+      format.html { redirect_to(view.href + "?mode=edit") }
       format.data { render :json => {'url' => view.href}.to_json }
     end
   end

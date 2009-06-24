@@ -72,7 +72,7 @@ module ApplicationHelper
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
           (i['swf_item'] ? ' swfItem' : '') << "'><a title='#{i['title']}' " <<
           "href='#{i['href']}' q=\"#{i['q']}\" class=\"#{i['link_class']}\"" <<
-          (i['external'] ? ' rel="external"' : '') << ">" <<
+          (i['external'] ? ' rel="external"' : (i['modal'] ? ' rel="modal"' : '')) << ">" <<
           "<span class='highlight'>#{i['text']}</span></a>"
         if i['submenu']
           ret << menu_tag(i['submenu'], is_owner, can_edit)

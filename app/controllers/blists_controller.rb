@@ -148,9 +148,31 @@ class BlistsController < SwfController
     render :text => {"result" => "success"}.to_json
   end
 
+  def new
+    respond_to do |format|
+      format.html { redirect_to(blists_path)}
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+  
   def create
+    new_view = params[:view].reject { |key,value| value.blank? }
+    
+    flags = Array.new
+    case (params[:privacy])
+    when "public_view"
+      flags << "dataPublic"
+    #when "public_edit"
+    #  flags << "publicEdit"
+    when "private_data"
+      flags << "schemaPublic"
+    when "adult_content"
+      flags << "adultContent"
+    end
+    new_view[:flags] = flags
+    
     begin
-      view = View.create(params[:view])
+      view = View.create(new_view)
     rescue CoreServerError => e
       return respond_to do |format|
         format.html do

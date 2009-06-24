@@ -210,6 +210,15 @@
         {
             documentClickedHandler(event, $menu);
         });
+        
+        // If they want any keyup to close the window, hook it up.
+        if (config.closeOnKeyup)
+        {
+            $(document).keyup(function (event)
+            {
+                hideMenu($menu);
+            });
+        }
 
         if (config.forcePosition)
         {
@@ -341,6 +350,7 @@
     //
     $.fn.dropdownMenu.defaults = {
         activeClass: 'active',
+        closeOnKeyup: false,
         forcePosition: false,
         menuContainerSelector: "li",
         menuOpenClass: 'shown',

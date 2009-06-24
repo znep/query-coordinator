@@ -3,8 +3,11 @@ var widgetNS = blist.namespace.fetch('blist.widget');
 blist.widget.setupMenu = function()
 {
     $('#header').find('ul.headerMenu')
-        .dropdownMenu({triggerButton: $('#header').find('a.menuLink'),
-            forcePosition: true, linkCallback: widgetNS.headerMenuHandler});
+        .dropdownMenu({
+            triggerButton: $('#header').find('a.menuLink'),
+            forcePosition: true,
+            closeOnKeyup: true, 
+            linkCallback: widgetNS.headerMenuHandler});
 
     $('#emailDialog').jqm({trigger: false});
     $('#emailDialog a.submit').click(widgetNS.submitEmail);

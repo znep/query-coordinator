@@ -661,13 +661,6 @@ blist.namespace.fetch('blist.data');
         }
 
         /**
-         * Given a column UID, return the index of the column within its level.
-         */
-        this.colIndex = function(uid) {
-            return columnLookup[uid].indexInLevel;
-        }
-
-        /**
          * Add rows to the model.
          */
         this.add = function(addedRows)

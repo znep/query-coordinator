@@ -589,7 +589,8 @@ $(function ()
         menuBar: $('#lensContainer .headerBar')});
 	$('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
 		menuBar: $('#lensContainer .headerBar')});
-	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'), forcePosition: true});
+	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'),
+		forcePosition: true, closeOnResize: true});
 
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);

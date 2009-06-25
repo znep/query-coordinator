@@ -5,9 +5,7 @@
     <%= stylesheet_link_tag @variation + "-widget" %>
   <%- end -%>
 
-  <title><%= @view.name %> | <%= t(:page_title) %></title>
-
-  <%- if !@view.displayType.nil? -%>
+  <%- if @view.is_visualization? -%>
     <!--Load the Visualization API-->
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -38,6 +36,10 @@
 
     </script>
   <%- end -%> 
+
+
+  <title><%= @view.name %> | <%= t(:page_title) %></title>
+
 <% end %>
 
     <div id='header'><div class='wrapperTR'><div class='wrapperT clearfix'>
@@ -182,13 +184,13 @@
     <%- end -%>
 
 <% content_for :js_footer do %>
-  <%- if @view.displayType.nil? %>
-    <script type="text/javascript">
-      blist.namespace.fetch('blist.widget');
-      blist.widget.viewId = '<%= @view.id %>';
-      blist.widget.viewName = '<%= @view.name %>';
-    </script>
-  <%- end %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.widget');
+    blist.widget.viewId = '<%= @view.id %>';
+    blist.widget.viewName = '<%= @view.name %>';
+    blist.widget.isVisualization = <%= @view.is_visualization? %>;
+  </script>
+
   <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",
     "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
     "util/util", "data/types", "data/model", "data/table", "widgets/text-prompt",

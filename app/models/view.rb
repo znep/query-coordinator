@@ -246,6 +246,13 @@ class View < Model
     end
   end
 
+  # return true if this view is a visualization (not a table)
+  # the displayType contains the type of visualization
+  # a nil value indicates that it needs to be rendered as a table
+  def is_visualization?
+    !self.displayType.nil?
+  end
+
   def chart_class
     case self.displayType
     when 'geomap'

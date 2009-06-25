@@ -96,11 +96,15 @@ $(function ()
 
     $('#header form').submit(function (event) { event.preventDefault(); });
 
-    $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
+    if(!widgetNS.isVisualization) 
+    {
+        $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             accessType: 'WIDGET', showRowNumbers: false,
             filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch'
-        });
+            });
+    }
+
     $.ajax({url: '/views/' + widgetNS.viewId + '.json', data: {method: 'opening',
             accessType: 'WIDGET'}});
 });

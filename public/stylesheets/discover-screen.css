@@ -179,14 +179,12 @@ ul.myNetworkList li span
 
 .discoverContentList li.viewListItem .itemHeader h3
 {
-    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
     color: #0071bc;
     font-size: 1.8em;
     font-weight: normal;
     height: 41px;
     line-height: 41px;
     overflow: hidden;
-    padding-left: 2.555em; /* 46px */
     text-transform: none;
 }
 .discoverContentList li.viewListItem .itemHeader h3.typeBlists { background-position: left top; }

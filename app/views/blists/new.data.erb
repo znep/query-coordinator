@@ -1,0 +1,120 @@
+<%- content_for :headline do -%>
+  <h1>New <%= t(:blist_name).capitalize %></h1>
+<%- end -%>
+
+<div class="modalContentWrapper newDatasetWrapper">
+  <div class="errorMessage"></div>
+  <% form_tag(blists_path, :id => "newDatasetForm") do %>
+    <table cellspacing="0">
+      <colgroup>
+        <col class="labelColumn" />
+        <col class="fieldColumn" />
+      </colgroup>
+      <tbody>
+        <tr>
+          <td class="labelColumn"><p><label for="view_name">*Enter a name for this <%= t(:blist_name) %>:</label></p></td>
+          <td class="fieldColumn"><%= text_field_tag("view[name]", "") %></td>
+        </tr>
+        <tr>
+          <td class="labelColumn"><p><label for="view_description">Short description:</label></p></td>
+          <td class="fieldColumn"><%= text_area_tag("view[description]", "") %></td>
+        </tr>
+        <tr>
+          <td class="labelColumn"><p><label for="view_category">What type of <%= t(:blist_name) %> is this?:</label></p></td>
+          <td class="fieldColumn"><%= select_tag("view[category]", category_select_options()) %></td>
+        </tr>
+        <tr>
+           <td class="labelColumn"><p><label for="view_tags">Tags:</label></p></td>
+           <td class="fieldColumn"><%= text_field_tag("view[tags]", "") %></td>
+        </tr>
+        <tr>
+          <td class="labelColumn"><p><label for="view_privacy">Privacy:</label></p></td>
+          <td class="fieldColumn">
+            <p id="privacyDisplayText">This <%= t(:blist_name) %> can be viewed by the public.</p>
+            <p><a href="#modify_privacy" class="privacy_expander">Modify this setting</a></p>
+            <div class="privacyButtons">
+              <p>
+                <%= radio_button_tag("privacy", "public_view", true) %>
+                <label for="privacy_public_view">
+                  My data can only be modified by me, but everyone can view it.
+                </label>
+              </p>
+              <%- #TODO: Add public editable back in when core server supports it. -%>
+              <%- if false -%>
+              <p>
+                <%= radio_button_tag("privacy", "public_edit") %>
+                <label for="privacy_public_edit">
+                  My data can be viewed by everyone and modified by anyone with an account.
+                </label>
+              </p>
+              <%- end -%>
+              <p>
+                <%= radio_button_tag("privacy", "private_data") %>
+                <label for="privacy_private_data">
+                  My data is private but my column names can be viewed by anyone.
+                </label>
+              </p>
+              <p><a href="#advanced_privacy" class="privacy_expander">Advanced Privacy Settings</a></p>
+              <div class="advancedPrivacy">
+                <p>
+                  <%= radio_button_tag("privacy", "private_columns") %>
+                  <label for="privacy_private_columns">
+                    Conceal my column names and column types.
+                  </label>
+                </p>
+                <p>
+                  <%= radio_button_tag("privacy", "adult_content") %>
+                  <label for="privacy_adult_content">
+                    This <%= t(:blist_name) %> contains adult content.
+                  </label>
+                </p>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="submitLine clearfix">
+      <ul class="submitActions">
+        <li><input type="image" name="submit" src="<%= image_path("button_finish.png") %>" /></li>
+        <li class="cancelButton"><a href="#close_new" class="jqmClose"><span>Cancel</span></a></li>
+      </ul>
+    </div>
+  <% end %>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.privacyText = {
+    privacy_public_view: "This <%= t(:blist_name) %> can be viewed by the public.",
+    privacy_public_edit: "This <%= t(:blist_name) %> can be viewed and edited by the public.",
+    privacy_private_data: "This <%= t(:blist_name) %>'s data is private but column names are public.",
+    privacy_private_columns: "This <%= t(:blist_name) %>'s data and column names are private.",
+    privacy_adult_content: "This <%= t(:blist_name) %> contains adult content."
+  };
+  
+  blist.common.modalReady = function()
+  {
+    $(".privacy_expander").click(function(event)
+    {
+      event.preventDefault();
+      $(this).closest("p").next().toggle();
+    });
+    
+    $("input[name='privacy']").change(function(event)
+    {
+      var selectedId = $("input[name='privacy']:checked").attr("id");
+      $("#privacyDisplayText").text(blist.common.privacyText[selectedId]);
+    });
+    
+    // Validation
+    $("#newDatasetForm").validate({
+      rules: {
+        "view[name]": "required"
+      },
+      messages: {
+        "view[name]": " <%= t(:blist_name).capitalize %> name is required."
+      }
+    });
+  };
+</script>

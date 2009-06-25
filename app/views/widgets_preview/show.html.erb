@@ -1,0 +1,17 @@
+<% content_for :head do %>
+  <title>Preview | <%= t(:page_title) %></title>
+<% end %>
+
+<div id="publishPreview">
+  <%= get_publish_embed_code_for_view(@view, params[:width], params[:height], params[:variation]) %>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    // Height needs mangling since the param indicates browser, not frame height
+    // IE doesn't support window.outerHeight, so we take a guess at the outer chrome
+    var $container = $('#publishPreview');
+    var browserChromeHeight = (window.outerHeight - $(document).height()) || 80;
+    window.resizeTo($container.outerWidth(), $container.outerHeight() + browserChromeHeight);
+  });
+</script>

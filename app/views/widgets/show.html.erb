@@ -46,7 +46,7 @@
             seo_path = "#{request.protocol + request.host_with_port + @view.href}"
             short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + @view.short_href}"
           -%>
-          <a class="menuLink" href="#header-menu">Menu</a>
+          <a class="menuLink" href="#header-menu" title="Click for more options">Menu</a>
           <%= menu_tag({'class' => 'headerMenu', 'items' => [
           {'text' => 'Socialize this ' + t(:blist_name).capitalize, 'class' => 'share',
           'href' => '#', 'submenu' => { 'option_menu' => true, 'items' => [

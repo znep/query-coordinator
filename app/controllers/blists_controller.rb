@@ -18,9 +18,7 @@ class BlistsController < SwfController
       if !current_user
         return require_user
       end
-      # show new blist in swf
-      @body_class = 'editMode'
-      @start_screen = 'new_blist'
+      @new_dataset = true;
     else
       @body_class = params[:mode] && params[:mode] == 'edit' ?
         'editMode' : 'readMode'
@@ -148,9 +146,31 @@ class BlistsController < SwfController
     render :text => {"result" => "success"}.to_json
   end
 
+  def new
+    respond_to do |format|
+      format.html { redirect_to(blists_path)}
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+  
   def create
+    new_view = params[:view].reject { |key,value| value.blank? }
+    
+    flags = Array.new
+    case (params[:privacy])
+    when "public_view"
+      flags << "dataPublic"
+    #when "public_edit"
+    #  flags << "publicEdit"
+    when "private_data"
+      flags << "schemaPublic"
+    when "adult_content"
+      flags << "adultContent"
+    end
+    new_view[:flags] = flags
+    
     begin
-      view = View.create(params[:view])
+      view = View.create(new_view)
     rescue CoreServerError => e
       return respond_to do |format|
         format.html do
@@ -162,7 +182,7 @@ class BlistsController < SwfController
     end
 
     respond_to do |format|
-      format.html { redirect_to(view.href) }
+      format.html { redirect_to(view.href + "?mode=edit") }
       format.data { render :json => {'url' => view.href}.to_json }
     end
   end

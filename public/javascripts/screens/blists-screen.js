@@ -390,15 +390,29 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 			// detemplatize publish code template if it exists
 			if ($('.copyCode #publishCode').length > 0)
 			{
+				var width = parseInt($('#publishWidth').val());
+				var height = parseInt($('#publishHeight').val());
 				$('.copyCode #publishCode').val($('.copyCode #publishCodeTemplate').val()
-												.replace('#width#', $('#publishWidth').val())
-												.replace('#height#', $('#publishHeight').val()));
-				$('.publishPreview iframe').attr('width', $('#publishWidth').val());
-				$('.publishPreview iframe').attr('height', $('#publishHeight').val());
+												.replace('#width#', width)
+												.replace('#height#', height)
+												.replace('#variation#', $('#publishVariation').val()));
+				
+				// Restrict size to >= 425x344 px
+				if (width < 425 || height < 344)
+				{
+					$('#sizeError').removeClass('hide');
+					$('.copyCode #publishCode').attr('disabled', true);
+				}
+				else
+				{
+					$('#sizeError').addClass('hide');
+					$('.copyCode #publishCode').removeAttr('disabled');
+				}
 			}
 		};
 	updatePublishCode();
 	$('#publishWidth, #publishHeight').keyup(updatePublishCode);
+	$('#publishVariation').change(updatePublishCode);
 	$('#publishWidth, #publishHeight').keypress(function (event)
 		{
 			if ((event.which < 48 || event.which > 57) && !(event.which == 8 || event.which == 0))
@@ -406,6 +420,16 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 				// Disallow non-numeric input in width/height fields
 				return false;
 			}
+		});
+	$('#previewWidgetLink').click(function (event)
+		{
+			event.preventDefault();
+			var $link = $(this);
+			var width = $('#publishWidth').val();
+			var height = $('#publishHeight').val();
+			window.open(
+				$link.attr('href') + "?width=" + width + "&height=" + height + "&variation=" + $('#publishVariation').val(), 
+				"Preview", "location=no,menubar=no,resizable=no,status=no,toolbar=no");
 		});
 
     $('.switchPermsLink').click(function (event)

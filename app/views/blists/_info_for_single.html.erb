@@ -608,23 +608,27 @@
         <div class="publishCode">
           <p>Embed this <%= view.is_blist? ? t(:blist_name).downcase : 'filter' %> as a Social Data Player:</p>
           <div class="sizeOptions">
-            <p>
+            <p class="field">
               <label for="publishWidth">Width</label>
               <%= text_field_tag("publishWidth", "425") %> px
             </p>
-            <p>
+            <p class="field">
               <label for="publishHeight">Height</label>
               <%= text_field_tag("publishHeight", "344") %> px
             </p>
+            <p class="field">
+              <label for="publishVariation">Variation</label>
+              <%= select_tag("publishVariation", options_for_select({ 'Default' => '', 'Black' => 'black' })) %>
+            </p>
+            <p id="sizeError" class="hide">The player must be at least 425 pixels wide by 344 pixels tall.</p>
           </div>
           <div class="copyCode">
             <%= text_area_tag("publishCode") %>
-            <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(view, "#width#", "#height#")) %>
+            <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(view, "#width#", "#height#", "#variation#")) %>
+            <ul class="actionButtons">
+              <li><a id="previewWidgetLink" href="<%= "/widgets_preview/#{view.id}" %>" class="arrowButton">See Preview</a></li>
+            </ul>
           </div>
-        </div>
-        <div class="publishPreview">
-          <p>Preview:</p>
-          <%= get_publish_embed_code_for_view(view) %>
         </div>
       </div>
     </div>

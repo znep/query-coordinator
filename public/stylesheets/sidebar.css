@@ -50,7 +50,8 @@
 
 #sidebar .box h4
 {
-    border-bottom: solid 1px #a6a6a6;
+    border-bottom: solid 1px #999;
+    color: #600;
     display: block;
     margin-bottom: 0.2em;
 }
@@ -148,7 +149,7 @@
 #sidebar .filterSection h4 a
 {
     background-position: 12px 0;
-    color: #666666;
+    color: #600;
     margin: 0;
 }
 

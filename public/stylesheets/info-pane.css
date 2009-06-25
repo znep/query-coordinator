@@ -1133,10 +1133,15 @@ infoContentOuter table.gridList td.picture > *
 	padding-bottom: 0.5em;
 	padding-top: 0.5em;
 }
-.singleInfoPublishing .publishContent .sizeOptions p
+.singleInfoPublishing .publishContent .sizeOptions p.field
 {
 	display: inline;
 	margin: 0.5em 2.5em 0.5em 0;
+}
+.singleInfoPublishing .publishContent .sizeOptions #sizeError
+{
+	margin: 0.5em;
+	color: red;
 }
 .singleInfoPublishing .publishContent .sizeOptions input
 {
@@ -1149,16 +1154,7 @@ infoContentOuter table.gridList td.picture > *
     overflow: hidden;
     padding: .5em;
     width: 45.5em;
-}
-.singleInfoPublishing .publishPreview
-{
-	max-width: 100%;
-	overflow-y: hidden;
-	overflow-x: auto;
-}
-.singleInfoPublishing .publishPreview p
-{
-	font-size: 1.4em;
+	margin-bottom: 5px;
 }
 
 /*  The following rules define styles for stuff that isn't currently implemented. 

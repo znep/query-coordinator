@@ -109,6 +109,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'widgets/:id/:variation', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'
+  
+  map.connect 'widgets_preview/:id', :controller => 'widgets_preview', :action => 'show'
 
   map.root :controller => "data", :action => "show"
 

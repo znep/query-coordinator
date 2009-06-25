@@ -212,7 +212,7 @@ module BlistsHelper
     out
   end
 
-  def get_publish_embed_code_for_view(view, width = "425", height = "344")
+  def get_publish_embed_code_for_view(view, width = "425", height = "344", variation = "")
     root_path = request.protocol + request.host_with_port
     embed_template =  "<div><p><a href=\"#{root_path + view.href}\" " +
                       "target=\"_blank\" " +
@@ -220,7 +220,7 @@ module BlistsHelper
                       "text-decoration:none;color:#333333;font-family:arial;\">" +
                       "#{h(view.name)}</a></p><iframe width=\"" +
                       "#{width}px\" height=\"#{height}px\" src=\"#{root_path}" +
-                      "/widgets/#{view.id}\" frameborder=\"0\" scrolling=\"no\">" +
+                      "/widgets/#{view.id}/#{variation}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">" +
                       "#{h(view.name)}</a></iframe>"

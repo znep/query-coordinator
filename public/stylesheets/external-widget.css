@@ -137,9 +137,10 @@
 
 #header form.search input.submit
 {
-    background-image: none;
+    background-image: url(/images/button_find_blue.png);;
     height: 18px;
     margin-right: 0;
+    width: 30px;
 }
 
 #header form.search .actionBox

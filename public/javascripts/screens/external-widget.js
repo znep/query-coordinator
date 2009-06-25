@@ -2,12 +2,14 @@ var widgetNS = blist.namespace.fetch('blist.widget');
 
 blist.widget.setupMenu = function()
 {
+	// pullToTop here to account for Firefox 3.0.10 Windows bug
     $('#header').find('ul.headerMenu')
         .dropdownMenu({
             triggerButton: $('#header').find('a.menuLink'),
             forcePosition: true,
             closeOnKeyup: true, 
-            linkCallback: widgetNS.headerMenuHandler});
+            linkCallback: widgetNS.headerMenuHandler,
+			pullToTop: true});
 
     $('#emailDialog').jqm({trigger: false});
     $('#emailDialog a.submit').click(widgetNS.submitEmail);

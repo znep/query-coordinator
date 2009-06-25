@@ -49,47 +49,47 @@
     text-transform: uppercase;
 }
 
-#header .headerMenu { width: 17em; }
-#header .headerMenu .submenu .menu { width: 10em; }
+.headerMenu { width: 17em; }
+.headerMenu .submenu .menu { width: 10em; }
 
-#header .headerMenu .submenu.export .menu { width: 19em; }
+.headerMenu .submenu.export .menu { width: 19em; }
 
-#header .headerMenu a
+.headerMenu a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
     background-repeat: no-repeat;
 }
 
-#header .headerMenu .share a { background-position: 5px -968px; }
-#header .headerMenu .email a { background-position: 5px -48px; }
-#header .headerMenu .export a { background-position: 5px -117px; }
-#header .headerMenu .export .menu a { background-position: 5px 23px; }
-#header .headerMenu .publish a { background-position: 5px -577px; }
-#header .headerMenu .fullscreen a { background-position: 5px -992px; }
-#header .headerMenu .print a { background-position: 5px -2px; }
-#header .headerMenu .newDataset a { background-position: 5px -94px; }
+.headerMenu .share a { background-position: 5px -968px; }
+.headerMenu .email a { background-position: 5px -48px; }
+.headerMenu .export a { background-position: 5px -117px; }
+.headerMenu .export .menu a { background-position: 5px 23px; }
+.headerMenu .publish a { background-position: 5px -577px; }
+.headerMenu .fullscreen a { background-position: 5px -992px; }
+.headerMenu .print a { background-position: 5px -2px; }
+.headerMenu .newDataset a { background-position: 5px -94px; }
 
-#header .headerMenu li.share .menu a
+.headerMenu li.share .menu a
 {
     background-repeat: no-repeat;
     background-position: 5px center;
 }
-#header .headerMenu .share .delicious a
+.headerMenu .share .delicious a
 {
     background-image: url(/images/icons/social_icon_delicious_small.png);
 }
 
-#header .headerMenu .share .digg a
+.headerMenu .share .digg a
 {
 	background-image: url(/images/icons/social_icon_digg_small.png);
 }
 
-#header .headerMenu .share .twitter a
+.headerMenu .share .twitter a
 {
 	background-image: url(/images/icons/social_icon_twitter_small.png);
 }
 
-#header .headerMenu .share .facebook a
+.headerMenu .share .facebook a
 {
 	background-image: url(/images/icons/social_icon_facebook_small.png);
 }

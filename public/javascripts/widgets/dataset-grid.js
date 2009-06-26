@@ -138,7 +138,7 @@
             var htmlStr =
                 '<a class="menuLink" href="#column-menu_' +
                 col.index + '"></a>\
-                <ul class="menu columnHeaderMenu">';
+                <ul class="menu columnHeaderMenu" id="column-menu_' + col.index + '">';
             if (blist.data.types[col.type].sortable)
             {
                 htmlStr +=

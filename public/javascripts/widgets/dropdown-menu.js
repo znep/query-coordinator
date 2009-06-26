@@ -60,6 +60,13 @@
  *      It should return true if the menu should open, false otherwise.  If no
  *      function is set for openTest, the menu will always open.
  *
+ *  forcePosition: Reassert the position of the menu when it is shown.  Use
+ *      when the position might change (eg due to browser resizing or column
+ *      resizing).
+ *
+ *  closeOnResize: Closes the menu if the browser is resized.  Repositioning
+ *      the menu automatically can get sticky; this is a cleaner compromise.
+ *
  * Author: jeff.scherpelz@blist.com
  */
 
@@ -198,6 +205,7 @@
      *  document clicks to hide the menu */
     function showMenu($menu)
     {
+		var documentHeight = $(document).height();
         var config = $menu.data("config-dropdownMenu");
         // We've got to close all other menus; there can be only one!
         $(config.menuSelector + ':visible').each(function () { hideMenu($(this)) });
@@ -214,7 +222,7 @@
         // If they want any keyup to close the window, hook it up.
         if (config.closeOnKeyup)
         {
-            $(document).keyup(function (event)
+            $(document).one('keyup', function (event)
             {
                 hideMenu($menu);
             });
@@ -233,6 +241,13 @@
             offsetPos.top += $menu.offsetParent().scrollTop();
             $menu.css(offsetPos).appendTo('body');
         }
+
+		if (config.closeOnResize)
+		{
+			$(window).one('resize', function () {
+				hideMenu($menu);
+			});
+		}
 
         // Check if we need to restore the original width first
         if (config._origWidth)
@@ -256,8 +271,8 @@
 			            ($menu.outerWidth(true) - $trigger.outerWidth(true)));
 			}
         }
-		if ($menu.offset().top + $menu.outerHeight(true) >
-			($(document).outerHeight(true) || document.body.clientHeight))
+
+		if ($menu.offset().top + $menu.outerHeight(false) > documentHeight)
 		{
 			// if the menu can be flipped up, do so; otherwise, leave it alone
 			if ($trigger.position().top - $menu.outerHeight(true))

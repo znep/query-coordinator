@@ -1140,8 +1140,8 @@ infoContentOuter table.gridList td.picture > *
 }
 .singleInfoPublishing .publishContent .sizeOptions #sizeError
 {
-	margin: 0.5em;
 	color: red;
+	margin: 0.5em;
 }
 .singleInfoPublishing .publishContent .sizeOptions input
 {
@@ -1151,10 +1151,16 @@ infoContentOuter table.gridList td.picture > *
 {
     font-size: 1.1em;
     height: 7em;
+	margin-bottom: 5px;
     overflow: hidden;
     padding: .5em;
     width: 45.5em;
-	margin-bottom: 5px;
+}
+
+.singleInfoPublishing .publishContent #previewWidgetLink.disabled
+{
+	color: #888;
+	cursor: default;
 }
 
 /*  The following rules define styles for stuff that isn't currently implemented. 

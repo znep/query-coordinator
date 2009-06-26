@@ -305,7 +305,7 @@
         closeSubmenus(null, $menu);
 
         $trigger.removeClass(config.triggerOpenClass);
-        //$(document).unbind('click.' + $menu.attr('id'));
+        $(document).unbind('click.' + $menu.attr('id'));
     };
 
     function closeSubmenus(event, $menu)

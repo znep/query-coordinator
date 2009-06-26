@@ -1,6 +1,6 @@
 class BlistsController < SwfController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show]
+  skip_before_filter :require_user, :only => [:show, :about]
 
   def index
     @body_class = 'home'
@@ -85,6 +85,16 @@ class BlistsController < SwfController
     @popup = params[:popup]
 
     @swf_url = swf_url('v3embed.swf')
+  end
+  
+  # To build a url to this action, use View.about_href.
+  # Do not use about_blist_path (it doesn't exist).
+  def about
+    @body_class = 'aboutDataset'
+    @view = View.find(params[:id])
+    @view.columns.each do |column|
+      pp column.flags
+    end
   end
 
   def update

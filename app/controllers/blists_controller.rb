@@ -172,8 +172,8 @@ class BlistsController < SwfController
       flags << "dataPublic"
     #when "public_edit"
     #  flags << "publicEdit"
-    when "private_data"
-      flags << "schemaPublic"
+    when "private"
+      # Don't need to set any flags for private
     when "adult_content"
       flags << "adultContent"
     end

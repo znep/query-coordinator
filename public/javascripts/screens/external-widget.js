@@ -105,6 +105,11 @@ $(function ()
             });
     }
 
-    $.ajax({url: '/views/' + widgetNS.viewId + '.json', data: {method: 'opening',
-            accessType: 'WIDGET'}});
+    $.ajax({url: '/views/' + widgetNS.viewId + '.json',
+            data: {
+              method: 'opening',
+              accessType: 'WIDGET',
+              referrer: document.referrer 
+            }
+    });
 });

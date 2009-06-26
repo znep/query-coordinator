@@ -11,7 +11,7 @@
     // Height needs mangling since the param indicates browser, not frame height
     // IE doesn't support window.outerHeight, so we take a guess at the outer chrome
     var $container = $('#publishPreview');
-    var browserChromeHeight = (window.outerHeight - $(document).height()) || 80;
+    var browserChromeHeight = (window.outerHeight - window.innerHeight) || 80;
     window.resizeTo($container.outerWidth(), $container.outerHeight() + browserChromeHeight);
   });
 </script>

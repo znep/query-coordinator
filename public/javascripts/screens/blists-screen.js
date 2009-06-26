@@ -391,23 +391,25 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 			// detemplatize publish code template if it exists
 			if ($('.copyCode #publishCode').length > 0)
 			{
-				var width = parseInt($('#publishWidth').val());
-				var height = parseInt($('#publishHeight').val());
+				var width = $('#publishWidth').val();
+				var height = $('#publishHeight').val();
 				$('.copyCode #publishCode').val($('.copyCode #publishCodeTemplate').val()
 												.replace('#width#', width)
 												.replace('#height#', height)
 												.replace('#variation#', $('#publishVariation').val()));
 				
 				// Restrict size to >= 425x344 px
-				if (width < 425 || height < 344)
+				if (parseInt(width) < 425 || parseInt(height) < 344 || width == '' || height == '')
 				{
 					$('#sizeError').removeClass('hide');
 					$('.copyCode #publishCode').attr('disabled', true);
+					$('#previewWidgetLink').addClass('disabled');
 				}
 				else
 				{
 					$('#sizeError').addClass('hide');
 					$('.copyCode #publishCode').removeAttr('disabled');
+					$('#previewWidgetLink').removeClass('disabled');
 				}
 			}
 		};
@@ -428,6 +430,10 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 			var $link = $(this);
 			var width = $('#publishWidth').val();
 			var height = $('#publishHeight').val();
+			if (parseInt(width) < 425 || parseInt(height) < 344 || width == '' || height == '')
+			{
+				return;
+			}
 			window.open(
 				$link.attr('href') + "?width=" + width + "&height=" + height + "&variation=" + $('#publishVariation').val(), 
 				"Preview", "location=no,menubar=no,resizable=no,status=no,toolbar=no");

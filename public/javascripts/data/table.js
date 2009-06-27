@@ -191,6 +191,9 @@
         var activeCellX,    // Index of column
             activeCellY;    // Row ID
 
+        // The focus box (chases the active cell)
+        var $focus;
+
         // Cell selection information.  The cell selection consists of one or more rectangular areas each including
         // one or more cells.  The selections are stored in an array with the following values:
         //   x1, the first selected column index
@@ -265,6 +268,27 @@
             }
         }
 
+        var createSelectionMap = function(selectionComponents, selectionComponentCount) {
+            // Create a logical selection map -- an array with one entry for each logical (model) column, set to true
+            // iff the column is selected
+            var logicalSelectionMap = [];
+            for (var selectionComponentID = 0; selectionComponentID < selectionComponentCount; selectionComponentID++) {
+                var selectionComponent = selectionComponents[selectionComponentID];
+                for (var logicalColumnID = selectionComponent[0]; logicalColumnID <= selectionComponent[2]; logicalColumnID++)
+                    logicalSelectionMap[logicalColumnID] = true;
+            }
+
+            // Convert to a physical selection map -- an array with one entry for each physical (DOM) column, set to
+            // true iff the column is selected
+            var physicalSelectionMap = [];
+            var physicalLayout = layout[selectionLevel];
+            for (var physicalColumnID = 0, length = physicalLayout.length; physicalColumnID < length; physicalColumnID++)
+                physicalSelectionMap[physicalColumnID] = logicalSelectionMap[physicalLayout[physicalColumnID].logical];
+
+            // The physical selection map marks actual selected columns
+            return physicalSelectionMap;
+        }
+
         var updateSelectionCues = function() {
             // Convert the selection into canonical and sorted form to optimize processing
             var selection = convertCellSelection();
@@ -301,18 +325,17 @@
 
                 // Build the selection map if a cached version isn't available
                 if (!selmap || selmapSelectionCount != selCount) {
-                    selmap = [];
                     selmapSelectionCount = selCount;
-                    for (var j = 0; j < selCount; j++) {
-                        var sel = selection[j];
-                        for (var k = sel[0]; k <= sel[2]; k++)
-                            selmap[k] = true;
-                    }
+                    selmap = createSelectionMap(selection, selCount);
                 }
 
                 // Update the selection
                 setRowSelection(row, selmap);
             }
+        }
+
+        var getActiveCell = function() {
+            return $('.blist-cell-active', $this)[0];
         }
 
         var updateCellNavCues = function() {
@@ -328,7 +351,7 @@
                         var rowLayout = layout[activeRow.level || 0];
                         for (var i = 0, node = activeRow.row.firstChild; !newActive && node && i < rowLayout.length; i++, node = node.nextSibling) {
                             var lcol = rowLayout[i];
-                            if (lcol.mcolIndex == activeCellX)
+                            if (lcol.logical == activeCellX)
                                 newActive = node;
                             else if (lcol.skippable && $(node).hasClass('blist-skip'))
                                 // Nested table record isn't present -- skip it
@@ -338,11 +361,39 @@
                 }
                 if (newActive == active)
                     active = null;
-                else if (newActive)
-                    $(newActive).addClass('blist-cell-active');
+                else if (newActive) {
+                    var $active = $(newActive);
+                    $active.addClass('blist-cell-active');
+                    if (!$focus) {
+                        $scrolls.append('<div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/>');
+                        $focus = $('.blist-table-focus');
+                        $focus[0].style.height = $focus[2].style.height = '2px';
+                        $focus[1].style.width = $focus[3].style.width = '2px';
+                    }
+                    var tl1 = $active.position();
+                    var tl2 = $($active[0].parentNode).position();
+                    var x = tl1.left + tl2.left;
+                    var y = tl1.top + tl2.top - 1;
+                    var w = $active.outerWidth() - 1;
+                    var h = $active.outerHeight() - 1;
+
+                    $focus[0].style.left = $focus[2].style.left = $focus[3].style.left = x + 'px'
+                    $focus[1].style.left = (x + w) + 'px';
+
+                    $focus[0].style.top = $focus[1].style.top = $focus[3].style.top = y + 'px';
+                    $focus[2].style.top = (y + h) + 'px';
+
+                    $focus[0].style.width = $focus[2].style.width = (w + 2) + 'px';
+                    $focus[1].style.height = $focus[3].style.height = (h + 2) + 'px';
+
+                    $focus.css('display', 'block');
+                }
             }
-            if (active)
+            if (active) {
                 $(active).removeClass('blist-cell-active');
+                if (!newActive && $focus)
+                    $focus.css('display', 'none');
+            }
 
             // Update selection rendering
             updateSelectionCues();
@@ -430,7 +481,7 @@
                 }
                 
                 // Standard cell -- activate the cell
-                return cellNavToXY(lcol.mcolIndex, row.id, event, selecting);
+                return cellNavToXY(lcol.logical, row.id, event, selecting);
             }
 
             // Not a valid navigation target; ignore
@@ -925,8 +976,10 @@
                 var row = getRow(cell);
 
                 // If this is a row opener, invoke expand on the model
-                if ($(cell).hasClass('blist-opener'))
+                if ($(cell).hasClass('blist-opener') && !$(cell).hasClass('blist-opener-inactive')) {
                     model.expand(row);
+                    clearCellNav();
+                }
 
                 // Retrieve the column
                 var column = getColumn(cell);
@@ -999,122 +1052,150 @@
         // Page size is configured in renderRows()
         var pageSize = 1;
 
+        var preNav = function(event) {
+            if (!activeCellOn) {
+                // First keyboard nav without cell nav on -- move to position 0, 0
+                if (model.length() && model.column(0))
+                    cellNavToXY(0, model.get(0).id, event);
+                return false;
+            }
+            return true;
+        }
+
+        var navigateY = function(deltaY, event) {
+            if (!preNav(event))
+                return;
+
+            // Locate our current position
+            var y = model.index(activeCellY);
+            if (y == undefined)
+                return;
+
+            // Update the y position
+            y += deltaY;
+
+            // Bounds checking
+            if (y < 0)
+                y = 0;
+            if (y >= model.length())
+                y = model.length() - 1;
+
+            // No need to update if we didn't make changes
+            var newRow = model.get(y);
+            if (newRow.id == activeCellY)
+                return;
+
+            // Handle level changes
+            // TODO -- this logic is a bit of a cop out, it relies on the fact that we won't have cell nav on w/ more
+            // than 1 or 2 levels
+            var oldRow = model.getByID(activeCellY);
+            if (oldRow.level != newRow.level) {
+                if (event.shiftKey || event.metaKey)
+                    // Can't select into a different level
+                    newRow = model.nextInLevel(oldRow.level, deltaY < 0);
+                else {
+                    // Non-selecting nav into a different level
+                }
+                var oldCol = columnLayout[activeCellX];
+                var oldLeft = oldCol.left;
+                var oldRight = oldCol.left + oldCol.width;
+
+                // Search the new level for the column who is closest to overlapping this column's left
+                // side
+                var newLevel = model.level(newRow.level);
+                var winningCandidate = null;
+                var winnerDelta;
+                for (var i = 0; i < newLevel.length; i++) {
+                    var col = columnLayout[newLevel[i].uid];
+                    if (col.type == 'fill')
+                        continue;
+                    var delta = Math.min(Math.abs(col.left - oldLeft), Math.abs(col.left - oldRight));
+                    if (winningCandidate == null || winnerDelta > delta) {
+                        winningCandidate = col;
+                        winnerDelta = delta;
+                    }
+                }
+
+                // Update the column
+                if (!winningCandidate)
+                    // No non-fill in the next level?
+                    activeCellX = null;
+                else
+                    activeCellX = winningCandidate.uid;
+            }
+
+            // Update the column
+            cellNavToXY(activeCellX, newRow.id, event);
+        }
+
+        var navigateX = function(deltaX, event) {
+            if (!preNav(event))
+                return;
+
+            // Update the X position within the level
+            var column = model.column(activeCellX);
+            var x = column.indexInLevel;
+            x += deltaX;
+
+            // Bounds checks
+            var max = column.level.length;
+            if (x >= max)
+                x = max - 1;
+            if (x < 0)
+                x = 0;
+
+            // Update if we made changes
+            if (x != activeCellX)
+                cellNavToXY(x, activeCellY, event);
+        }
+
         var onKeyPress = function(event) {
             var deltaX = 0;
             var deltaY = 0;
-            switch (event.keyCode) {
+            switch (event.keyCode || event.charCode) {
                 case 34:
                     // Page up
-                    deltaX = -pageSize;
+                    navigateY(-pageSize);
                     break;
 
                 case 35:
                     // Page down
-                    deltaX = pageSize;
+                    navigateY(pageSize);
                     break;
 
                 case 37:
                     // Left
-                    deltaX = -1;
+                    navigateX(-1);
                     break;
 
                 case 38:
                     // Up
-                    deltaY = -1;
+                    navigateY(-1);
                     break;
 
                 case 39:
                     // Right
-                    deltaX = 1;
+                    navigateX(1);
                     break;
 
                 case 40:
                     // Down
-                    deltaY = 1;
+                    navigateY(1);
+                    break;
+
+                case 13:
+                case 32:
+                    // Action
+                    var cell = getActiveCell();
+                    if (cell && $(cell).hasClass('blist-opener') && !$(cell).hasClass('blist-opener-inactive'))
+                        model.expand(getRow(cell));
                     break;
 
                 default:
                     return;
             }
 
-            if (deltaX || deltaY) {
-                if (!activeCellOn) {
-                    // First keyboard nav without cell nav on -- move to position 0, 0
-                    if (model.length() && model.column(0))
-                        cellNavToXY(0, model.get(0).id);
-                } else if (deltaY) {
-                    // Move to a new row
-                    var y = model.index(activeCellY);
-                    if (y !== undefined) {
-                        // Update the y position
-                        y += deltaY;
-
-                        // Bounds checking
-                        if (y < 0)
-                            y = 0;
-                        if (y >= model.length())
-                            y = model.length() - 1;
-
-                        // Update if we made changes
-                        var newRow = model.get(y);
-                        if (newRow.id != activeCellY) {
-                            // If we switched levels, we have to change to a column within the new level
-                            // TODO -- columnLayout no longer exists; need to refresh this logic
-                            var oldRow = model.getByID(activeCellY);
-                            if (oldRow.level != newRow.level) {
-                                var oldCol = columnLayout[activeCellX];
-                                var oldLeft = oldCol.left;
-                                var oldRight = oldCol.left + oldCol.width;
-
-                                // Search the new level for the column who is closest to overlapping this column's left
-                                // side
-                                var newLevel = model.level(newRow.level);
-                                var winningCandidate = null;
-                                var winnerDelta;
-                                for (var i = 0; i < newLevel.length; i++) {
-                                    var col = columnLayout[newLevel[i].uid];
-                                    if (col.type == 'fill')
-                                        continue;
-                                    var delta = Math.min(Math.abs(col.left - oldLeft), Math.abs(col.left - oldRight));
-                                    if (winningCandidate == null || winnerDelta > delta) {
-                                        winningCandidate = col;
-                                        winnerDelta = delta;
-                                    }
-                                }
-
-                                // Update the column
-                                if (!winningCandidate)
-                                    // No non-fill in the next level?
-                                    activeCellX = null;
-                                else
-                                    activeCellX = winningCandidate.uid;
-                            }
-
-                            // Update the column
-                            cellNavToXY(activeCellX, newRow.id, event);
-                        }
-                    }
-                } else if (deltaX) {
-                    // Move to a new column
-
-                    // Update the X position within the level
-                    var column = model.column(activeCellX);
-                    var x = column.indexInLevel;
-                    x += deltaX;
-
-                    // Bounds checks
-                    var max = column.level.length;
-                    if (x >= max)
-                        x = max - 1;
-                    if (x < 0)
-                        x = 0;
-
-                    // Update if we made changes
-                    if (x != activeCellX)
-                        cellNavToXY(x, activeCellY, event);
-                }
-                return false;
-            }
+            return false;
         }
 
 
@@ -1464,7 +1545,7 @@
                         skippable: true,
                         skipCount: children.length,
                         mcol: mcol,
-                        mcolIndex: j
+                        logical: j
                     });
                     for (var k = 0; k < children.length; k++) {
                         var child = children[k];
@@ -1479,13 +1560,25 @@
                         );
                         lcols.push({
                             type: 'header',
-                            mcol: child, mcolIndex: j
+                            mcol: child,
+                            logical: j
                         });
                     }
                     completeStatement();
 
-                    generatedCode += "else " +
-                        "html.push('<div class=\"blist-td blist-skip " + getColumnClass(mcol) + "\">&nbsp;</div>');";
+                    generatedCode += "else ";
+                    colParts.push("\"<div class='blist-td blist-tdh blist-opener blist-opener-inactive " + openerClass + "'></div>\"");
+                    for (k = 0; k < children.length; k++) {
+                        child = children[k];
+                        colParts.push(
+                            "\"<div class='blist-td blist-tdh " +
+                            getColumnClass(child) +
+                            "' uid='" +
+                            child.uid +
+                            "'></div>\""
+                        );
+                    }
+                    completeStatement();
                 } else if (mcol.children) {
                     // Nested table row -- render cells if the row is present or filler if not
                     completeStatement();
@@ -1502,7 +1595,7 @@
                         skippable: true,
                         skipCount: mcol.children.length,
                         mcol: mcol,
-                        mcolIndex: j
+                        logical: j
                     });
                 } else if (mcol.type && mcol.type == 'fill') {
                     // Fill column -- covers background for a range of columns that aren't present in this row
@@ -1528,7 +1621,7 @@
 
                     lcols.push({
                         mcol: mcol,
-                        mcolIndex: j
+                        logical: j
                     });
                 }
 
@@ -1690,7 +1783,7 @@
             for (i = 0; i < model.meta().columns.length; i++)
             {
                 mcols = model.meta().columns[i];
-                lcols = layout[i] = [];
+                var lcols = layout[i] = [];
                 levelRender[i] = createColumnRendering(mcols, lcols, contextVariables);
             }
 

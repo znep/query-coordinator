@@ -20,7 +20,6 @@ body
 #outerContainer
 {
     background-color: #ececec;
-    border-top: 6px solid #06386a;
     height: auto;
     margin: 0 auto;
     max-width: 140em;
@@ -35,6 +34,7 @@ body
 #header
 {
     background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
+    border-top: 6px solid #06386a;
     height: 44px;
     padding-bottom: .5em;
     position: relative;

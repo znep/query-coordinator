@@ -2,8 +2,8 @@ var statsNS = blist.namespace.fetch("blist.stats");
 
 blist.stats.columns = [[
     {cls: "sparkline", width: 27, dataIndex: "sparkline", type: 'text', name: "", sortable: false},
-    {cls: "url", width: 320, dataIndex: "url", type: 'url', name: "URL"},
-    {cls: "views", width: 55, dataIndex: "views", type: 'number', name: "Views"}
+    {cls: "url", width: 360, dataIndex: "url", type: 'url', name: "URL"},
+    {cls: "views", width: 55, dataIndex: "views", type: 'number', name: "Visits"}
 ]];
 
 blist.stats.options = {

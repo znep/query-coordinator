@@ -241,15 +241,16 @@
     padding-left: 0.4167em; /* 5px */
 }
 
+/* IE doesn't like rounding ems. */
 .blist-td
 {
     background-color: #fff;
     border-right: solid 1px #dddddd;
     border-bottom: solid 1px #dddddd;
     font-size: 1.1em;
-    height: 1.4545em; /* 16px */
-    line-height: 1.4545em;
-    padding: 0.3636em; /* 4px */
+	height: 16px; /* 1.4545em */
+	line-height: 16px; /* 1.4545em */
+	padding: 4px; /* .3636em */
 }
 
 .blist-td-header

@@ -215,7 +215,7 @@
         var $trigger = $menu.data("triggerButton");
         $trigger.addClass(config.triggerOpenClass);
         $(document).bind('click.' + $menu.attr('id'), function (event)
-        {
+		{
             documentClickedHandler(event, $menu);
         });
         
@@ -244,7 +244,8 @@
 
 		if (config.closeOnResize)
 		{
-			$(window).one('resize', function () {
+			$(window).one('resize', function ()
+			{
 				hideMenu($menu);
 			});
 		}

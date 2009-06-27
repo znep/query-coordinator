@@ -58,7 +58,7 @@
 {
     padding: 1em;
     color: #666;
-    width: 430px; 
+    width: 480px;
 }
 
 .statsColumn h1
@@ -154,7 +154,7 @@ div.blist-table-title-tr
 
 #total-urls
 {
-    min-width: 308px;
+    min-width: 348px;
     padding-left: 35px;
     background-image:url(/stylesheets/images/content/table/header_left_bottom.png);
     background-position: left bottom;
@@ -163,8 +163,9 @@ div.blist-table-title-tr
 
 #total-views
 {
-    margin-left: 350px;
+    margin-left: 390px;
     border: none;
+	width: 50px;
 }
 
 .blist-th,
@@ -207,4 +208,9 @@ div.blist-table-title-tr
 .blist-th-first, .blist-table-top
 {
     background-repeat: no-repeat;
+}
+
+.blist-td-views, #total-views, .blist-th-views .blist-th-name
+{
+	text-align: right;
 }

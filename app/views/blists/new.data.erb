@@ -49,19 +49,13 @@
               </p>
               <%- end -%>
               <p>
-                <%= radio_button_tag("privacy", "private_data") %>
+                <%= radio_button_tag("privacy", "private") %>
                 <label for="privacy_private_data">
-                  My data is private but my column names can be viewed by anyone.
+                  My data is private.
                 </label>
               </p>
               <p><a href="#advanced_privacy" class="privacy_expander">Advanced Privacy Settings</a></p>
               <div class="advancedPrivacy">
-                <p>
-                  <%= radio_button_tag("privacy", "private_columns") %>
-                  <label for="privacy_private_columns">
-                    Conceal my column names and column types.
-                  </label>
-                </p>
                 <p>
                   <%= radio_button_tag("privacy", "adult_content") %>
                   <label for="privacy_adult_content">
@@ -88,8 +82,7 @@
   blist.common.privacyText = {
     privacy_public_view: "This <%= t(:blist_name) %> can be viewed by the public.",
     privacy_public_edit: "This <%= t(:blist_name) %> can be viewed and edited by the public.",
-    privacy_private_data: "This <%= t(:blist_name) %>'s data is private but column names are public.",
-    privacy_private_columns: "This <%= t(:blist_name) %>'s data and column names are private.",
+    privacy_private: "This <%= t(:blist_name) %>'s data is private.",
     privacy_adult_content: "This <%= t(:blist_name) %> contains adult content."
   };
   

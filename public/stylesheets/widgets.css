@@ -64,6 +64,17 @@
 {
     background-position: right -105px;
 }
+
+.actionButtons.blockList li 
+{ 
+    background-position: 0 0;
+    float: none;
+    margin-left: 0;
+    width: 14em;
+}
+.actionButtons.blockList li a { background-position: right -21px; }
+.actionButtons.blockList li a.arrowButton { background-position: right -42px; }
+
 /*** END: action buttons ***/
 
 /*** START: small buttons ***/
@@ -1208,6 +1219,7 @@ table.gridList tr.filteredOut
     overflow: hidden;
     width: 89px;
 }
+.grayStars .rating { background-image: url(/stylesheets/images/content/comment_stars_gray_sprites.png); }
 .rating span { display: none; }
 
 .rating.zero { background-position: 0 0; }

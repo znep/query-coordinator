@@ -51,7 +51,7 @@
                 <tr>
                   <% pair.each do |desc, color| %>
                     <td class="legendColor"><div style="background-color: #<%= color %>"></div></td>
-                    <td class="legendDesc">Via <%= desc.titleize %>:</td>
+                    <td class="legendDesc">Via <%= (desc == "widget") ? "Social Data Player" : desc.titleize %>:</td>
                     <td class="legendDesc"><strong><%= number_with_delimiter(@stat.rows_accessed[desc] || 0, ',') %></strong></td>
                   <% end %>
                 </tr>
@@ -70,7 +70,7 @@
           <h1>Community Activity</h1>
           <table class="totals">
             <tr>
-              <td class="total">Total Views:</td>
+              <td class="total">Total Visits:</td>
               <td class="number"><%= number_with_delimiter(@stat.views || 0, ',') %></td>
               <td></td>
             </tr>

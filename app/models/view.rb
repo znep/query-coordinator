@@ -146,6 +146,10 @@ class View < Model
   def short_href
     "/d/#{id}"
   end
+  
+  def about_href
+    self.href + "/about"
+  end
 
   def user_role(user_id)
     if (user_id == tableOwner.id)

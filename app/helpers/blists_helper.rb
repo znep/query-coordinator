@@ -214,7 +214,7 @@ module BlistsHelper
 
   def get_publish_embed_code_for_view(view, width = "425", height = "344", variation = "")
     root_path = request.protocol + request.host_with_port
-    embed_template =  "<div><p><a href=\"#{root_path + view.href}\" " +
+    embed_template =  "<div><p style=\"margin-bottom:3px\"><a href=\"#{root_path + view.href}\" " +
                       "target=\"_blank\" " +
                       "style=\"font-size:12px;font-weight:bold;" +
                       "text-decoration:none;color:#333333;font-family:arial;\">" +

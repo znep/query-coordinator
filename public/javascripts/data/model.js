@@ -554,19 +554,19 @@ blist.namespace.fetch('blist.data');
                 // Assign a unique numeric ID (UID) and level ID to each column
                 columnLookup = [];
                 var nextID = 0;
-                var assignIDs = function(cols, levelID) {
+                var assignIDs = function(cols, level) {
                     for (var i = 0; i < cols.length; i++) {
                         var col = cols[i];
                         col.uid = nextID++;
-                        col.level = cols;
+                        col.level = level;
                         col.indexInLevel = i;
                         columnLookup[col.uid] = col;
                         if (col.children)
-                            assignIDs(col.children);
+                            assignIDs(col.children, level);
                     }
                 }
                 for (var i = 0; i < meta.columns.length; i++)
-                    assignIDs(meta.columns[i], i);
+                    assignIDs(meta.columns[i], meta.columns[i]);
 
                 var rootColumns = meta.columns[0];
                 // Configure root column sorting based on view configuration if
@@ -797,6 +797,27 @@ blist.namespace.fetch('blist.data');
                 });
             return total;
         };
+
+        /**
+         * Scan to find the next or previous row in the same level.
+         */
+        this.nextInLevel = function(from, backward) {
+            var pos = this.index(from);
+            if (pos == null)
+                return null;
+            var level = active[pos].level || 0;
+            if (backward) {
+                while (--pos >= 0)
+                    if ((active[pos].level || 0) == level)
+                        return active[pos];
+            } else {
+                var end = active.length;
+                while (++pos < end)
+                    if ((active[pos].level || 0) == level)
+                        return active[pos];
+            }
+            return null;
+        }
 
         this.selectedRows = {};
 

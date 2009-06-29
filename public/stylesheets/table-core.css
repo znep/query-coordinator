@@ -148,6 +148,14 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh {
     background-color: #eeeeee;
 }
 
+div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected {
+    background-color: #b4d5fe;
+}
+
+.blist-cell-selected {
+    background-color: #b4d5fe;
+}
+
 .blist-td.blist-opener {
     background-image: url('/stylesheets/images/content/table/expand_closed.png');
     background-position: center center;
@@ -393,10 +401,6 @@ img.blist-table-option-icon
     background-position: center center;
     background-repeat: no-repeat;
     height: 18px;
-}
-
-.blist-cell-selected {
-    background-color: #b4d5fe;
 }
 
 .blist-cell-active, .blist-cell-selected.blist-cell-active {

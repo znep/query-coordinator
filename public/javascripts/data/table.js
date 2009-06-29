@@ -188,8 +188,8 @@
 
         // Active cell
         var activeCellOn = false;
-        var activeCellX,    // Index of column
-            activeCellY;    // Row ID
+        var activeCellX,    // Index of column (the UID of a model column)
+            activeCellY;    // Row ID (of a row in the model active set)
 
         // The focus box (chases the active cell)
         var $focus;
@@ -305,6 +305,12 @@
             for (var i = 0, len = rows.length; i < len; i++) {
                 var index = rows[i][0];
                 var row = rows[i][1];
+
+                // Clear the selection if the row isn't in the selection level
+                if ((model.get(index).level || 0) != selectionLevel) {
+                    clearRowSelection(row);
+                    continue;
+                }
                 
                 // Drop selection boxes that appear before this row
                 while (selection.length && selection[0][3] < index) {
@@ -345,11 +351,11 @@
                 var activeRow = model.getByID(activeCellY);
                 var newActive = null;
                 if (activeRow) {
-                    activeRow = renderedRows[activeRow.id];
-                    if (activeRow) {
+                    var physActiveRow = renderedRows[activeRow.id];
+                    if (physActiveRow) {
                         // Find the DOM element that displays as "active"
                         var rowLayout = layout[activeRow.level || 0];
-                        for (var i = 0, node = activeRow.row.firstChild; !newActive && node && i < rowLayout.length; i++, node = node.nextSibling) {
+                        for (var i = 0, node = physActiveRow.row.firstChild; !newActive && node && i < rowLayout.length; i++, node = node.nextSibling) {
                             var lcol = rowLayout[i];
                             if (lcol.logical == activeCellX)
                                 newActive = node;
@@ -417,37 +423,6 @@
 
             if (needRefresh)
                 updateCellNavCues();
-        }
-
-        /**
-         * Given a column UID and a level, return the index of the last DOM element that represents the associated
-         * column in the row.
-         */
-        var colIndex = function(uid, levelID) {
-            if (levelID == null)
-                levelID = 0;
-            var level = model.level(levelID);
-            if (!level)
-                return null;
-            var pos = 0;
-            for (var i = 0; i < level.length; i++) {
-                var col = level[i];
-                if (col.uid == uid)
-                    return pos;
-                if (col.type == 'nested_table' && col.body) {
-                    // Search child columns
-                    var foundCol = false;
-                    for (var j = 0; j < col.body.length; j++) {
-                        var col2 = col.body[j];
-                        if (col2.uid == uid)
-                            return pos;
-                        pos++;
-                    }
-                    if (foundCol)
-                        return pos;
-                } else
-                    pos++;
-            }
         }
 
         /**
@@ -743,10 +718,10 @@
         var findCell = function(event)
         {
             var cell = findContainer(event, '.blist-td, .blist-expander');
+            if ($(cell).hasClass('blist-tdfill'))
+                return null;
             if (cell && (cell == hotExpander || cell.parentNode == hotExpander))
-            {
                 return hotCell;
-            }
             return cell;
         }
 
@@ -1080,52 +1055,55 @@
             if (y >= model.length())
                 y = model.length() - 1;
 
+            // Convert y to a row ID
+            y = model.get(y);
+            if (typeof y == "object")
+                y = y.id;
+
             // No need to update if we didn't make changes
-            var newRow = model.get(y);
-            if (newRow.id == activeCellY)
+            if (y == activeCellY)
                 return;
+            var x = activeCellX;
 
             // Handle level changes
             // TODO -- this logic is a bit of a cop out, it relies on the fact that we won't have cell nav on w/ more
-            // than 1 or 2 levels
-            var oldRow = model.getByID(activeCellY);
-            if (oldRow.level != newRow.level) {
+            // than 2 levels and that BnB parent/child linkage will be available
+            var oldLevel = model.getByID(activeCellY).level || 0;
+            var newLevel = model.getByID(y).level || 0;
+            if (newLevel != oldLevel) {
                 if (event.shiftKey || event.metaKey)
                     // Can't select into a different level
-                    newRow = model.nextInLevel(oldRow.level, deltaY < 0);
+                    var needScan = true;
                 else {
                     // Non-selecting nav into a different level
-                }
-                var oldCol = columnLayout[activeCellX];
-                var oldLeft = oldCol.left;
-                var oldRight = oldCol.left + oldCol.width;
-
-                // Search the new level for the column who is closest to overlapping this column's left
-                // side
-                var newLevel = model.level(newRow.level);
-                var winningCandidate = null;
-                var winnerDelta;
-                for (var i = 0; i < newLevel.length; i++) {
-                    var col = columnLayout[newLevel[i].uid];
-                    if (col.type == 'fill')
-                        continue;
-                    var delta = Math.min(Math.abs(col.left - oldLeft), Math.abs(col.left - oldRight));
-                    if (winningCandidate == null || winnerDelta > delta) {
-                        winningCandidate = col;
-                        winnerDelta = delta;
-                    }
+                    var sourceColumn = model.column(activeCellX);
+                    if (newLevel > oldLevel && sourceColumn.body)
+                        // Navigating into a nested row
+                        var newCol = sourceColumn.body.children[0];
+                    else if (newLevel < oldLevel && sourceColumn.nestedIn)
+                        // Navigating out of a nested row
+                        newCol = sourceColumn.nestedIn.header;
+                    else
+                        needScan = true;
                 }
 
-                // Update the column
-                if (!winningCandidate)
-                    // No non-fill in the next level?
-                    activeCellX = null;
+                if (needScan) {
+                    // Find next row in the same level
+                    y = model.nextInLevel(activeCellY, deltaY < 0);
+                    if (y == null)
+                        return;
+                    if (typeof y == "object")
+                        y = y.id;
+                } else if (newCol)
+                    // Moving into a different level
+                    x = newCol.uid;
                 else
-                    activeCellX = winningCandidate.uid;
+                    // Bug -- should have selected a new column or decided to scan
+                    return;
             }
 
             // Update the column
-            cellNavToXY(activeCellX, newRow.id, event);
+            cellNavToXY(x, y, event);
         }
 
         var navigateX = function(deltaX, event) {
@@ -1134,15 +1112,17 @@
 
             // Update the X position within the level
             var column = model.column(activeCellX);
-            var x = column.indexInLevel;
+            var x = activeCellX;
             x += deltaX;
 
             // Bounds checks
-            var max = column.level.length;
-            if (x >= max)
-                x = max - 1;
-            if (x < 0)
-                x = 0;
+            var level = column.level;
+            var min = level[0].uid;
+            if (x < min)
+                x = min;
+            var max = level[level.length - 1].uid;
+            if (x > max)
+                x = max;
 
             // Update if we made changes
             if (x != activeCellX)
@@ -1150,37 +1130,35 @@
         }
 
         var onKeyPress = function(event) {
-            var deltaX = 0;
-            var deltaY = 0;
             switch (event.keyCode || event.charCode) {
                 case 34:
                     // Page up
-                    navigateY(-pageSize);
+                    navigateY(-pageSize, event);
                     break;
 
                 case 35:
                     // Page down
-                    navigateY(pageSize);
+                    navigateY(pageSize, event);
                     break;
 
                 case 37:
                     // Left
-                    navigateX(-1);
+                    navigateX(-1, event);
                     break;
 
                 case 38:
                     // Up
-                    navigateY(-1);
+                    navigateY(-1, event);
                     break;
 
                 case 39:
                     // Right
-                    navigateX(1);
+                    navigateX(1, event);
                     break;
 
                 case 40:
                     // Down
-                    navigateY(1);
+                    navigateY(1, event);
                     break;
 
                 case 13:
@@ -1192,7 +1170,7 @@
                     break;
 
                 default:
-                    return;
+                    return true;
             }
 
             return false;
@@ -1545,7 +1523,7 @@
                         skippable: true,
                         skipCount: children.length,
                         mcol: mcol,
-                        logical: j
+                        logical: mcol.uid
                     });
                     for (var k = 0; k < children.length; k++) {
                         var child = children[k];
@@ -1561,7 +1539,7 @@
                         lcols.push({
                             type: 'header',
                             mcol: child,
-                            logical: j
+                            logical: mcol.uid
                         });
                     }
                     completeStatement();
@@ -1583,20 +1561,25 @@
                     // Nested table row -- render cells if the row is present or filler if not
                     completeStatement();
 
-                    // Add the code.  If no record is present we add a filler row; otherwise we add the rows.  This is
-                    // just getting ridiculous
-                    generatedCode +=
-                        "if (row" + mcol.header.dataLookupExpr + ") " +
-                            createColumnRendering(mcol.children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
-                        "else " +
-                            "html.push('<div class=\"blist-td blist-tdfill blist-skip " + getColumnClass(mcol.header) + "\">&nbsp;</div>');";
+                    // Add the code.  If no record is present we add a filler row; otherwise we add the rows
+                    var children = mcol.children;
                     lcols.push({
                         type: 'nest-header',
                         skippable: true,
                         skipCount: mcol.children.length,
                         mcol: mcol,
-                        logical: j
+                        logical: mcol.uid
                     });
+                    generatedCode +=
+                        "if (row" + mcol.header.dataLookupExpr + ") " +
+                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'") +
+                        "else ";
+                        colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
+                        for (var i = 0; i < children.length; i++)
+                        colParts.push("\"<div class='blist-td blist-tdfill blist-td-first "
+                            + getColumnClass(children[i])
+                            + "'></div>\"");
+                    completeStatement();
                 } else if (mcol.type && mcol.type == 'fill') {
                     // Fill column -- covers background for a range of columns that aren't present in this row
                     colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + "'>&nbsp;</div>\"");
@@ -1614,14 +1597,13 @@
                         contextVariables);
 
                     colParts.push(
-                        "\"<div class='blist-td " + getColumnClass(mcol) + cls +
-                            (j == 0 ? ' blist-td-first' : '') + "'>\", " +
+                        "\"<div class='blist-td " + getColumnClass(mcol) + cls + "'>\", " +
                             renderer + ", \"</div>\""
                     );
 
                     lcols.push({
                         mcol: mcol,
-                        logical: j
+                        logical: mcol.uid
                     });
                 }
 

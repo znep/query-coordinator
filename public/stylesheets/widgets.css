@@ -43,6 +43,12 @@
     padding-right: 10px;
     text-decoration: none;
 }
+
+.actionButtons li.flushLeft 
+{
+  margin-left: 0;
+}
+
 .actionButtons li a.arrowButton
 {
     background-position: right -42px;

@@ -366,7 +366,10 @@ blist.blistGrid.setTempViewTab = function (tempView)
 
 blist.blistGrid.newViewCreated = function($iEdit, responseData)
 {
-    $('#readGrid').datasetGrid().isTempView = false;
+    if (!blist.widgets.visualization.isVisualization)
+    {
+        $('#readGrid').datasetGrid().isTempView = false;
+    }
     window.location = responseData.url;
 };
 
@@ -452,13 +455,20 @@ $(function ()
 {
     if (blistGridNS.viewId)
     {
-        $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
-            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-            clearTempViewCallback: blistGridNS.clearTempViewTab,
-            setTempViewCallback: blistGridNS.setTempViewTab,
-            filterItem: '#lensContainer .headerBar form :text',
-            clearFilterItem: '#lensContainer .headerBar form .clearSearch'
-        });
+        if (!blist.widgets.visualization.isVisualization)
+        {
+            $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
+                accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
+                clearTempViewCallback: blistGridNS.clearTempViewTab,
+                setTempViewCallback: blistGridNS.setTempViewTab,
+                filterItem: '#lensContainer .headerBar form :text',
+                clearFilterItem: '#lensContainer .headerBar form .clearSearch'
+            });
+        }
+        else
+        {
+            $('#readGrid').visualization();
+        }
     }
     else if (blistGridNS.newDataset)
     {
@@ -773,7 +783,8 @@ $(function ()
 
     window.onbeforeunload = function ()
     {
-        if ($('#readGrid').datasetGrid().isTempView)
+        if (!blist.widgets.visualization.isVisualization &&
+            $('#readGrid').datasetGrid().isTempView)
         {
             return 'You will lose your temporary filter.';
         }

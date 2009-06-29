@@ -5,39 +5,6 @@
     <%= stylesheet_link_tag @variation + "-widget" %>
   <%- end -%>
 
-  <%- if @view.is_visualization? -%>
-    <!--Load the Visualization API-->
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1', {'packages':['<%= @view.displayType %>']});
-      
-      // Set a callback to run when the API is loaded.
-      google.setOnLoadCallback(initializeChart); 
-
-      function initializeChart() {
-          var query = new google.visualization.Query('/views/<%= @view.id %>/rows.gvds');
-          // Send the query with a callback function.
-          query.send(handleQueryResponse);
-      }
-
-      function handleQueryResponse(response) {
-          // Called when the query response is returned.
-          if (response.isError()) {
-              alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-              return;
-          }
-
-          var data = response.getDataTable();
-          var chart = new <%= @view.chart_class %>(document.getElementById('data-grid'));
-          chart.draw(data, { <%= @view.displayFormat %>} );        
-      }
-
-    </script>
-  <%- end -%> 
-
-
   <title><%= @view.name %> | <%= t(:page_title) %></title>
 
 <% end %>
@@ -184,18 +151,20 @@
     <%- end -%>
 
 <% content_for :js_footer do %>
+  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
+
   <script type="text/javascript">
     blist.namespace.fetch('blist.widget');
     blist.widget.viewId = '<%= @view.id %>';
     blist.widget.viewName = '<%= @view.name %>';
-    blist.widget.isVisualization = <%= @view.is_visualization? %>;
   </script>
 
   <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",
     "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
     "util/util", "data/types", "data/model", "data/table", "widgets/text-prompt",
     "widgets/dropdown-menu", "widgets/scrollable", "widgets/dataset-grid",
-    "screens/external-widget", :cache => "cache/widgets_show_all" %>
+    "widgets/visualization", "screens/external-widget",
+    :cache => "cache/widgets_show_all" %>
 
   <%- if @is_gov_widget -%>
   <%= javascript_include_tag "screens/gov-widget" %>

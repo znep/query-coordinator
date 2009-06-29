@@ -278,6 +278,19 @@
             </div></div>\
             </a></li>';
 
+		var searchMethod = function(a, b)
+		{
+			return (a.value > b.value) ? 1 : -1;
+		};
+		if (colSum.subColumnType == "number" || colSum.subColumnType == "money")
+		{
+			searchMethod = function(a, b)
+			{
+				return (parseFloat(a.value) > parseFloat(b.value)) ? 1 : -1;
+			};
+		}
+		colSum.topFrequencies.sort(searchMethod);
+
         // Add an option for each filter item
         $.each(colSum.topFrequencies, function (i, f)
             {

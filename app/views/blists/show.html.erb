@@ -41,7 +41,7 @@
       <%- if @view -%>
       <li class='tempViewTab filter inlineEdit'><div class='wrapper'>
         <div class='innerWrapper'>
-          <span title='Click to name and save your filtered view'>[Temp View]</span>
+          <span title='Click to name and save your filtered view'>[Unsaved Filter]</span>
           <%- form_tag(blists_path, :class => 'tempView') do -%>
           <%= hidden_field_tag("view[originalViewId]", @view.id) %>
           <%= hidden_field_tag("view[viewFilters]",

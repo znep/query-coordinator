@@ -1,7 +1,9 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "discover-screen", "splash",
+  <% bundle :name => "data_show" do %>
+    <%= stylesheet_link_tag "discover-screen", "splash",
     "carousel/jquery.jcarousel", "carousel/discover-carousel-skin",
     :cache => "cache/data_show_all" %>
+  <% end %>
   <title><%= t(:page_title) %></title>
 <% end %>
 

@@ -1,7 +1,9 @@
 <% content_for :head do %>
   <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") : '' %>
-  <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
-    "blist-grid-screen", :cache => "cache/blists_show_all" %>
+  <% bundle :name => "blists_show" do %>
+    <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
+      "blist-grid-screen", :cache => "cache/blists_show_all" %>
+  <% end %>
   <title><%= @view ? @view.name : 'Design a Dataset' %> | <%= t(:page_title) %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <%- if @view -%>

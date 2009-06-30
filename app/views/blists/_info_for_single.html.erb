@@ -553,9 +553,15 @@
               a.type <=> b.type ||
               a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
             <tr class="item">
-              <td class="picture"><div>
-                <%= image_tag(s.member_image, :size => "24x24", :alt => h(s.member_name)) %>
-              </div></td>
+              <td class="picture">
+                <div>
+                  <%- if s.member_id -%>
+                    <a href="<%= User.href(s.member_name, s.member_id) %>"><%= image_tag(s.member_image, :size => "24x24", :alt => h(s.member_name)) %></a>
+                  <%- else -%>
+                    <%= image_tag(s.member_image, :size => "24x24", :alt => h(s.member_name)) %>
+                  <%- end -%>
+                </div>
+              </td>
               <td class="contact"><div><%= h(s.member_name) %></div></td>
               <td class="role"><div><%= s.type %></div></td>
               <%# Not supported
@@ -564,7 +570,7 @@
               %>
               <td class="actionContainer"><div>
                   <%- if s.member_id -%>
-                  <a href="<%= User.href(s.member_name, s.member_id) %>" class="action"><span>View Profile</span></a>
+                    <a href="<%= User.href(s.member_name, s.member_id) %>" class="action"><span>View Profile</span></a>
                   <%- end -%>
               </div></td>
             </tr>

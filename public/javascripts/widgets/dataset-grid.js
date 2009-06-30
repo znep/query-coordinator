@@ -30,6 +30,7 @@
             setTempViewCallback: function (tempView) {},
             showRowHandle: false,
             showRowNumbers: true,
+            updateTempViewCallback: function (tempView) {},
             viewId: null
         },
 
@@ -98,13 +99,16 @@
             {
                 var searchText = $(e.currentTarget).val();
                 datasetObj.summaryStale = true;
-                $(datasetObj.currentGrid).blistModel().filter(searchText, 250);
+                var model = $(datasetObj.currentGrid).blistModel();
+                model.filter(searchText, 250);
                 if (!searchText || searchText == '')
                 {
+                    clearTempView(datasetObj, 'searchString');
                     datasetObj.settings.clearFilterItem.hide();
                 }
                 else
                 {
+                    setTempView(datasetObj, model.meta().view, 'searchString');
                     datasetObj.settings.clearFilterItem.show();
                 }
             }, 10);
@@ -121,6 +125,7 @@
         datasetObj.settings.filterItem.val('').blur();
         datasetObj.summaryStale = true;
         $(datasetObj.currentGrid).blistModel().filter('');
+        clearTempView(datasetObj, 'searchString');
         $(e.currentTarget).hide();
     };
 
@@ -410,8 +415,11 @@
         $(datasetObj.currentGrid).trigger('header_change', [model]);
     };
 
-    var clearTempView = function(datasetObj)
+    var clearTempView = function(datasetObj, countId)
     {
+        if (!datasetObj.settings._filterIds) {datasetObj.settings._filterIds = {};}
+        if (countId != null) { delete datasetObj.settings._filterIds[countId]; }
+
         datasetObj.settings._filterCount--;
         if (datasetObj.settings._filterCount > 0)
         {
@@ -426,9 +434,20 @@
         datasetObj.isTempView = false;
     };
 
-    var setTempView = function(datasetObj, tempView)
+    var setTempView = function(datasetObj, tempView, countId)
     {
-        datasetObj.settings._filterCount++;
+        if (!datasetObj.settings._filterIds) {datasetObj.settings._filterIds = {};}
+        if (countId == null || datasetObj.settings._filterIds[countId] == null)
+        {
+            datasetObj.settings._filterCount++;
+            if (countId != null) { datasetObj.settings._filterIds[countId] = true; }
+        }
+
+        if (datasetObj.settings.updateTempViewCallback != null)
+        {
+            datasetObj.settings.updateTempViewCallback(tempView);
+        }
+
         if (datasetObj.isTempView)
         {
             return;

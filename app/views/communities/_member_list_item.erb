@@ -29,7 +29,7 @@
         <li>Socrata Grade <strong><%= member.displayScore %></strong></li>
       </ul>
       <ul class="memberActions actionButtons clearfix">
-        <%- if (!@current_user.nil?) -%>
+        <%- if (!@current_user.nil? && @current_user.id != member.id) -%>
           <li>
             <%- if (member.my_friend?) -%>
               <%= link_to("<span>Remove</end>", 

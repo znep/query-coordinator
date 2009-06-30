@@ -1,6 +1,8 @@
 class BlistsController < SwfController
   helper_method :get_title
   skip_before_filter :require_user, :only => [:show, :about]
+  
+  @@default_meta_tags = ["public", "data", "statistics", "dataset"]
 
   def index
     @body_class = 'home'
@@ -78,7 +80,9 @@ class BlistsController < SwfController
       else
         @meta_description = @view.description
       end
-      @meta_keywords = @view.tags
+      
+      # Shuffle the default tags into the keywords list
+      @meta_keywords = (@view.tags.nil? ? @@default_meta_tags : @view.tags + @@default_meta_tags).sort_by {rand}
     end
 
     @data_component = params[:dataComponent]

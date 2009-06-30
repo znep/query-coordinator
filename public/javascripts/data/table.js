@@ -188,7 +188,7 @@
 
         // Active cell
         var activeCellOn = false;
-        var activeCellX,    // Index of column (the UID of a model column)
+        var activeCellX,    // Index of the physical column that is active
             activeCellY;    // Row ID (of a row in the model active set)
 
         // The focus box (chases the active cell)
@@ -269,24 +269,23 @@
         }
 
         var createSelectionMap = function(selectionComponents, selectionComponentCount) {
-            // Create a logical selection map -- an array with one entry for each logical (model) column, set to true
-            // iff the column is selected
-            var logicalSelectionMap = [];
+            var selectionMap = [];
+
+            // Mark all selected positions in the selection map
             for (var selectionComponentID = 0; selectionComponentID < selectionComponentCount; selectionComponentID++) {
                 var selectionComponent = selectionComponents[selectionComponentID];
-                for (var logicalColumnID = selectionComponent[0]; logicalColumnID <= selectionComponent[2]; logicalColumnID++)
-                    logicalSelectionMap[logicalColumnID] = true;
+                for (var columnID = selectionComponent[0]; columnID <= selectionComponent[2]; columnID++)
+                    selectionMap[columnID] = true;
+                
+                // For the last position, mark any following positions that are associated with the same logical column
+                var layoutLevel = layout[selectionLevel];
+                columnID = selectionComponent[2];
+                var uid = layoutLevel[columnID].logical;
+                for (columnID++; columnID < layoutLevel.length && layoutLevel[columnID].logical == uid; columnID++)
+                    selectionMap[columnID] = true;
             }
 
-            // Convert to a physical selection map -- an array with one entry for each physical (DOM) column, set to
-            // true iff the column is selected
-            var physicalSelectionMap = [];
-            var physicalLayout = layout[selectionLevel];
-            for (var physicalColumnID = 0, length = physicalLayout.length; physicalColumnID < length; physicalColumnID++)
-                physicalSelectionMap[physicalColumnID] = logicalSelectionMap[physicalLayout[physicalColumnID].logical];
-
-            // The physical selection map marks actual selected columns
-            return physicalSelectionMap;
+            return selectionMap;
         }
 
         var updateSelectionCues = function() {
@@ -348,28 +347,17 @@
             // Update the active cell
             var active = $('.blist-cell-active', $this)[0];
             if (activeCellOn) {
-                var activeRow = model.getByID(activeCellY);
-                var newActive = null;
-                if (activeRow) {
-                    var physActiveRow = renderedRows[activeRow.id];
-                    if (physActiveRow) {
-                        // Find the DOM element that displays as "active"
-                        var rowLayout = layout[activeRow.level || 0];
-                        for (var i = 0, node = physActiveRow.row.firstChild; !newActive && node && i < rowLayout.length; i++, node = node.nextSibling) {
-                            var lcol = rowLayout[i];
-                            if (lcol.logical == activeCellX)
-                                newActive = node;
-                            else if (lcol.skippable && $(node).hasClass('blist-skip'))
-                                // Nested table record isn't present -- skip it
-                                i += lcol.skipCount;
-                        }
-                    }
-                }
+                var physActive = renderedRows[activeCellY];
+                if (physActive)
+                    var newActive = physActive.row.childNodes[activeCellX];
                 if (newActive == active)
                     active = null;
                 else if (newActive) {
+                    // Mark the new cell as active
                     var $active = $(newActive);
                     $active.addClass('blist-cell-active');
+
+                    // Move the focus rectangle
                     if (!$focus) {
                         $scrolls.append('<div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/>');
                         $focus = $('.blist-table-focus');
@@ -432,9 +420,10 @@
         var cellNavTo = function(cell, event, selecting) {
             // Obtain the row for the cell
             var row = getRow(cell);
+            var levelID = row.level || 0;
 
             // Find the index of the cell in the layout level
-            var rowLayout = layout[row.level || 0];
+            var rowLayout = layout[levelID];
             for (var x = 0, node = cell.parentNode.firstChild; node; node = node.nextSibling) {
                 var lcol = rowLayout[x];
                 if (!lcol)
@@ -447,7 +436,8 @@
                 x++;
             }
 
-            if (row && node && lcol && !$(cell).hasClass('blist-tdfill')) {
+            // If we found the column, focus now
+            if (lcol) {
                 if ($(event.target).is('a') && !selecting) {
                     // Special case for anchor clicks -- do not select the cell immediately but do enter "possible drag"
                     // mode
@@ -456,7 +446,7 @@
                 }
                 
                 // Standard cell -- activate the cell
-                return cellNavToXY(lcol.logical, row.id, event, selecting);
+                return cellNavToXY(x, row.id, event, selecting);
             }
 
             // Not a valid navigation target; ignore
@@ -486,8 +476,8 @@
             }
 
             // Selection must occur in the same level -- otherwise, ignore
-            if (selectionMode && (model.getByID(y).level || 0))
-                selectionMode = null;
+            if (cellSelection.length && (model.getByID(y).level || 0) != selectionLevel)
+                return false;
             
             // Locate the selection box we're modifying, if any
             var selection;
@@ -512,6 +502,23 @@
             activeCellOn = true;
             activeCellX = x;
             activeCellY = y;
+
+            // Scroll the active cell into view if it isn't visible vertically
+            var scrollTop = $scrolls[0].scrollTop,
+                scrollHeight = $scrolls.height(),
+                scrollBottom = scrollTop + scrollHeight,
+                top = model.index(y) * rowOffset,
+                bottom = top + rowOffset,
+                origScrollTop = scrollTop;
+            if (scrollBottom < bottom)
+                scrollTop = bottom - scrollHeight;
+            if (scrollTop > top)
+                scrollTop = top;
+            if (scrollTop != origScrollTop)
+                $scrolls.scrollTop(scrollTop);
+
+            // Scroll the active cell into view if it isn't visible horizontally
+            // TODO
 
             // Reset standard grid state
             $navigator[0].focus();
@@ -718,10 +725,30 @@
         var findCell = function(event)
         {
             var cell = findContainer(event, '.blist-td, .blist-expander');
-            if ($(cell).hasClass('blist-tdfill'))
+            if (!cell)
                 return null;
-            if (cell && (cell == hotExpander || cell.parentNode == hotExpander))
+            var $cell = $(cell);
+            
+            // Can't interact with fill
+            if ($cell.hasClass('blist-tdfill'))
+                return null;
+
+            // Nested table header send focus to the opener
+            if ($cell.hasClass('blist-tdh')) {
+                while (!$cell.hasClass('blist-opener'))
+                    $cell = $(cell = cell.previousSibling);
+                return cell;
+            }
+
+            // If the mouse strays over part of the focus rect. return the active cell
+            if ($cell.hasClass('blist-table-focus'))
+                return getActiveCell();
+
+            // If the mouse strays over the hot expander return the hot cell
+            if (cell == hotExpander || cell.parentNode == hotExpander)
                 return hotCell;
+
+            // Normal cell
             return cell;
         }
 
@@ -814,10 +841,9 @@
         var isSelectingFrom = function(cell) {
             if (!cellSelection.length)
                 return false;
-            var col = getColumn(cell);
             var row = getRow(cell);
             var sel = cellSelection[cellSelection.length - 1];
-            return sel[0] == col.indexInLevel && sel[1] == model.index(row);
+            return cell.parentNode.childNodes[sel[0]] == cell && sel[1] == model.index(row);
         }
 
         var onMouseMove = function(event)
@@ -848,8 +874,9 @@
 
                     // If we've moved over another cell, update the selection
                     var over = findCell(event);
-                    if (over)
+                    if (over) {
                         cellNavTo(over, event, true);
+                    }
                 }
 
                 return;
@@ -1037,6 +1064,7 @@
             return true;
         }
 
+        // Move the active cell an arbitrary number of rows.  Supports an value for deltaY, including negative offsets
         var navigateY = function(deltaY, event) {
             if (!preNav(event))
                 return;
@@ -1076,13 +1104,13 @@
                     var needScan = true;
                 else {
                     // Non-selecting nav into a different level
-                    var sourceColumn = model.column(activeCellX);
-                    if (newLevel > oldLevel && sourceColumn.body)
+                    var sourceColumn = layout[oldLevel][activeCellX];
+                    if (newLevel > oldLevel && sourceColumn.mcol.body)
                         // Navigating into a nested row
-                        var newCol = sourceColumn.body.children[0];
-                    else if (newLevel < oldLevel && sourceColumn.nestedIn)
+                        var newMCol = sourceColumn.mcol.body.children[0];
+                    else if (newLevel < oldLevel && sourceColumn.mcol.nestedIn)
                         // Navigating out of a nested row
-                        newCol = sourceColumn.nestedIn.header;
+                        newMCol = sourceColumn.mcol.nestedIn.header;
                     else
                         needScan = true;
                 }
@@ -1094,10 +1122,19 @@
                         return;
                     if (typeof y == "object")
                         y = y.id;
-                } else if (newCol)
-                    // Moving into a different level
-                    x = newCol.uid;
-                else
+                } else if (newMCol) {
+                    // Moving into a different level -- find the physical position for the model column
+                    var newLevelLayout = layout[newLevel];
+                    for (var i = 0; i < newLevelLayout.length; i++)
+                        if (newLevelLayout[i].mcol == newMCol) {
+                            x = i;
+                            break;
+                        }
+                    if (i == newLevelLayout.length) {
+                        // Bug -- selected model column does not reside in this level
+                        return;
+                    }
+                } else
                     // Bug -- should have selected a new column or decided to scan
                     return;
             }
@@ -1106,23 +1143,27 @@
             cellNavToXY(x, y, event);
         }
 
+        // Move the active cell an arbitrary number of columns
         var navigateX = function(deltaX, event) {
             if (!preNav(event))
                 return;
 
-            // Update the X position within the level
-            var column = model.column(activeCellX);
+            // Scan for the next focusable cell
+            var layoutLevel = layout[model.getByID(activeCellY).level || 0];
             var x = activeCellX;
-            x += deltaX;
-
-            // Bounds checks
-            var level = column.level;
-            var min = level[0].uid;
-            if (x < min)
-                x = min;
-            var max = level[level.length - 1].uid;
-            if (x > max)
-                x = max;
+            var cellsToMove = Math.abs(deltaX);
+            var delta = deltaX / cellsToMove;
+            for (var i = 0; i < cellsToMove; i++) {
+                for (var newX = x + delta; newX >= 0 && newX < layoutLevel.length; newX += delta) {
+                    if (layoutLevel[newX].canFocus !== false)
+                        // Found new cell to focus on
+                        break;
+                }
+                if (newX < 0 || newX >= layoutLevel.length)
+                    // Can't move further left
+                    break;
+                x = newX;
+            }
 
             // Update if we made changes
             if (x != activeCellX)
@@ -1538,6 +1579,7 @@
                         );
                         lcols.push({
                             type: 'header',
+                            canFocus: false,
                             mcol: child,
                             logical: mcol.uid
                         });
@@ -1562,9 +1604,10 @@
                     completeStatement();
 
                     // Add the code.  If no record is present we add a filler row; otherwise we add the rows
-                    var children = mcol.children;
+                    children = mcol.children;
                     lcols.push({
                         type: 'nest-header',
+                        canFocus: false,
                         skippable: true,
                         skipCount: mcol.children.length,
                         mcol: mcol,
@@ -1584,7 +1627,8 @@
                     // Fill column -- covers background for a range of columns that aren't present in this row
                     colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + "'>&nbsp;</div>\"");
                     lcols.push({
-                        type: 'fill'
+                        type: 'fill',
+                        canFocus: false
                     });
                 } else {
                     // Standard cell

@@ -579,8 +579,11 @@ $(function ()
     $('#lensContainer .headerBar form').submit(function (event)
     {
         event.preventDefault();
-        blist.util.flashInterface.lensSearch(
-            $(event.currentTarget).find('input[type="text"]').val());
+        if (blist.util.flashInterface.swf() != undefined)
+        {
+            blist.util.flashInterface.lensSearch(
+                $(event.currentTarget).find('input[type="text"]').val());
+        }
     });
 
     $('#lensContainer .headerBar form .clearSearch')

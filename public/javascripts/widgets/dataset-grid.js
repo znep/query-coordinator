@@ -49,9 +49,6 @@
                 // * blistModel: disable minimum characters for full-text search,
                 //     enable progressive loading of data, and hook up Ajax info
                 $datasetGrid
-                    .bind('after_load', function() { reloadSummary(datasetObj); })
-                    .bind('client_filter', function()
-                        { reloadSummary(datasetObj); })
                     .blistTable({generateHeights: false,
                         headerMods: function (col) { headerMods(datasetObj, col); },
                         manualResize: datasetObj.settings.manualResize,
@@ -160,30 +157,67 @@
                 </div></li>\
                 </ul>';
             $col.append(htmlStr);
-            hookUpHeaderMenu(datasetObj, $col);
-            addFilterMenu(datasetObj, col);
+            var $menu = $col.find('ul.columnHeaderMenu');
+            hookUpHeaderMenu(datasetObj, $col, $menu);
+            addFilterMenu(datasetObj, col, $menu);
         }
     };
 
-    /* Update the column summary data as appropriate via Ajax */
-    var reloadSummary = function (datasetObj)
+    /* Hook up JS behavior for menu.  This is safe to be applied multiple times */
+    var hookUpHeaderMenu = function(datasetObj, $colHeader, $menu)
     {
-        if (!datasetObj.summaryStale)
+        $menu.dropdownMenu({triggerButton: $colHeader.find('a.menuLink'),
+                    openCallback: function ($menu)
+                        {
+                            var col = $colHeader.data('column');
+                            loadFilterMenu(datasetObj, col, $menu);
+                        },
+                    linkCallback: function (e)
+                        { columnHeaderMenuHandler(datasetObj, e); },
+                    forcePosition: true, pullToTop: true})
+            .find('.autofilter ul.menu').scrollable();
+    };
+
+    var loadFilterMenu = function(datasetObj, col, $menu)
+    {
+        if (datasetObj.summaryStale || datasetObj.settings._columnSummaries == null)
         {
+            datasetObj.settings._columnSummaries = {};
+            datasetObj.summaryStale = false;
+        }
+
+        if (!blist.data.types[col.type].filterable) { return; }
+
+        if (datasetObj.settings._columnSummaries[col.id] != null &&
+            datasetObj.settings._columnSummaries[col.id].topFrequencies != null)
+        {
+            addFilterMenu(datasetObj, col, $menu);
             return;
         }
 
         var modView = $(datasetObj.currentGrid).blistModel().meta().view;
-        if (!modView)
+        if (!modView) { return; }
+
+        // Remove the old filter menu if necessary
+        $menu.children('.autofilter').prev('.separator').andSelf().remove();
+
+        var spinnerStr = '<li class="autofilter loading"></li>';
+        // Find the correct spot to add it; either after sort descending, or the top
+        var $sortItem = $menu.find('li.sortDesc');
+        if ($sortItem.length > 0)
         {
-            return;
+            $sortItem.after(spinnerStr);
+        }
+        else
+        {
+            $menu.prepend(spinnerStr);
         }
 
         // Set up the current view to send to the server to get the appropriate
         //  summary data back
         var tempView = $.extend({}, modView,
                 {originalViewId: modView.id, columns: null});
-        $.ajax({url: '/views/INLINE/rows.json?method=getSummary',
+        $.ajax({url: '/views/INLINE/rows.json?method=getSummary&columnId=' + col.id,
                 dataType: 'json',
                 cache: false,
                 type: 'POST',
@@ -193,39 +227,23 @@
                 {
                     // On success, hash the summaries by column ID (they come
                     //  in an array)
-                    datasetObj.summaryStale = false;
-                    datasetObj.settings._columnSummaries = {};
                     $.each(data.columnSummaries, function (i, s)
                     {
                         datasetObj.settings._columnSummaries[s.columnId] = s;
                     });
-                    // Then update the column header menus
-                    $('ul.columnHeaderMenu', datasetObj.currentGrid)
-                        .each(function ()
-                        {
-                            var col = $(this)
-                                .closest('.blist-th').data('column');
-                            addFilterMenu(datasetObj, col);
-                        });
+                    // Then update the column header menu
+                    addFilterMenu(datasetObj, col, $menu);
                 }
         });
     };
 
-    /* Hook up JS behavior for menu.  This is safe to be applied multiple times */
-    var hookUpHeaderMenu = function(datasetObj, $colHeader)
-    {
-        $colHeader.children('ul.columnHeaderMenu')
-            .dropdownMenu({triggerButton: $colHeader.find('a.menuLink'),
-                    linkCallback: function (e)
-                        { columnHeaderMenuHandler(datasetObj, e); },
-                    forcePosition: true, pullToTop: true})
-            .find('.autofilter ul.menu').scrollable();
-    };
-
     /* Add auto-filter sub-menu for a particular column that we get from the JS
      * grid */
-    var addFilterMenu = function(datasetObj, col)
+    var addFilterMenu = function(datasetObj, col, $menu)
     {
+        // Remove spinner
+        $menu.children('.autofilter.loading').remove();
+
         // Make sure this column is filterable, and we have data for it
         if (datasetObj.settings._columnSummaries == null ||
                 !blist.data.types[col.type].filterable)
@@ -233,7 +251,7 @@
             return;
         }
         var colSum = datasetObj.settings._columnSummaries[col.id];
-        if (colSum == null || colSum.topFrequencies == null)
+        if (colSum == null)
         {
             return;
         }
@@ -248,7 +266,6 @@
         }
 
         // Remove the old filter menu if necessary
-        var $menu = $('ul.columnHeaderMenu', col.dom);
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
         if (cf == null && (colSum.topFrequencies == null ||
                     colSum.topFrequencies.length < 1))
@@ -269,6 +286,10 @@
                 <span class="highlight">Clear Column Filter</span>\
                 </a>\
                 </li>';
+            if (colSum.topFrequencies == null)
+            {
+                colSum.topFrequencies = [{value: cf.value, count: 0}];
+            }
         }
         // Previous button for scrolling
         filterStr +=
@@ -278,42 +299,48 @@
             </div></div>\
             </a></li>';
 
-		var searchMethod = function(a, b)
-		{
-			return (a.value > b.value) ? 1 : -1;
-		};
-		if (colSum.subColumnType == "number" ||
-		    colSum.subColumnType == "money" ||
-		    colSum.subColumnType == "percent")
-		{
-			searchMethod = function(a, b)
-			{
-				return (parseFloat(a.value) > parseFloat(b.value)) ? 1 : -1;
-			};
-		}
-		colSum.topFrequencies.sort(searchMethod);
-
-        // Add an option for each filter item
-        $.each(colSum.topFrequencies, function (i, f)
+        var searchMethod = function(a, b)
+        {
+            return (a.value > b.value) ? 1 : -1;
+        };
+        if (colSum.subColumnType == "number" ||
+                colSum.subColumnType == "money" ||
+                colSum.subColumnType == "percent")
+        {
+            searchMethod = function(a, b)
             {
-                var isMatching = cf != null && cf.value == f.value;
-                var curType = blist.data.types[col.type] ||
-                    blist.data.types['text'];
-                var escapedValue = curType.filterValue != null ?
-                    curType.filterValue(f.value, col) : $.htmlStrip(f.value);
-                var renderedValue = curType.filterRender != null ?
-                    curType.filterRender(f.value, col) : '';
-                filterStr +=
-                '<li class="filterItem' + (isMatching ? ' active' : '') +
-                ' scrollable">\
-                <a href="' +
-                (isMatching ? '#clear-filter-column_' : '#filter-column_') +
-                col.index + '_' + escapedValue + '" title="' +
-                $.htmlStrip(renderedValue) + '" class="clipText">' +
-                renderedValue +
-                '</a>\
-                </li>';
-            });
+                return (parseFloat(a.value) > parseFloat(b.value)) ? 1 : -1;
+            };
+        }
+        if (colSum.topFrequencies != null)
+        {
+            colSum.topFrequencies.sort(searchMethod);
+
+            // Add an option for each filter item
+            $.each(colSum.topFrequencies, function (i, f)
+                {
+                    var isMatching = cf != null && cf.value == f.value;
+                    var curType = blist.data.types[col.type] ||
+                        blist.data.types['text'];
+                    var escapedValue = curType.filterValue != null ?
+                        curType.filterValue(f.value, col) :
+                        $.htmlStrip(f.value + '');
+                    var renderedValue = curType.filterRender != null ?
+                        curType.filterRender(f.value, col) : '';
+                    filterStr +=
+                        '<li class="filterItem' + (isMatching ? ' active' : '') +
+                        ' scrollable">\
+                            <a href="' +
+                            (isMatching ? '#clear-filter-column_' :
+                                '#filter-column_') +
+                            col.index + '_' + escapedValue + '" title="' +
+                            $.htmlStrip(renderedValue) + ' (' + f.count +
+                            ')" class="clipText">' + renderedValue +
+                            ' (' + f.count + ')\
+                            </a>\
+                        </li>';
+                });
+        }
 
         // Next button for scrolling & menu footer
         filterStr +=
@@ -339,7 +366,7 @@
         {
             $menu.prepend(filterStr);
         }
-        hookUpHeaderMenu(datasetObj, $(col.dom));
+        hookUpHeaderMenu(datasetObj, $(col.dom), $menu);
     };
 
 

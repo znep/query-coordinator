@@ -479,8 +479,8 @@ blist.namespace.fetch('blist.data.types');
     {
         var format = column.format || 'check';
         return "<div class='blist-cell blist-checkbox blist-" +
-                format + "-" + (value ? 'on' : 'off') + "' title='" +
-                (value ? 'True' : 'False') + "'></div>";
+                format + "-" + (value ? 'on' : 'off') + "'>" +
+                (value ? 'True' : 'False') + "</div>";
     };
 
     var valueFilterCheckbox = function(value)
@@ -491,7 +491,7 @@ blist.namespace.fetch('blist.data.types');
     var renderFilterFlag = function(value, column)
     {
         return value && "<div class='blist-flag blist-flag-" + value +
-            "' title='" + value + "'></div>";
+            "'>" + value + "</div>";
     };
 
     var renderFilterStars = function(value, column)
@@ -499,8 +499,8 @@ blist.namespace.fetch('blist.data.types');
         var range = parseFloat(column.range);
         if (range <= 0 || range == NaN)
             range = 5;
-        return "<div class='blist-tstars-wrapper' title='" + value + "'>" +
-            renderStars(value, range * 10) + "</div>";
+        return "<div class='blist-tstars-wrapper'>" +
+            renderStars(value, range * 10) + value + "</div>";
     };
 
     var renderFilterPercent = function(value, column)
@@ -546,8 +546,8 @@ blist.namespace.fetch('blist.data.types');
                 valueLookup[key.toLowerCase()]['html'] =
                     icon + htmlStrip(option.text);
             }
-            return "<div title='" + valueLookup[value.toLowerCase()]['text'] +
-                "'>" + (valueLookup[value.toLowerCase()]['html'] || '') +
+            return "<div class='blist-picklist-wrapper'>" +
+                (valueLookup[value.toLowerCase()]['html'] || '') +
                 "</div>";
         }
         return '?';

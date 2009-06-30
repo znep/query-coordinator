@@ -257,6 +257,16 @@ ul.menu li.separator
     padding: 0;
 }
 
+ul.menu li.loading
+{
+    background-image: url(/images/throbber.gif);
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 16px;
+    margin: 0 auto;
+    width: 16px;
+}
+
 ul.menu li.footer
 {
     background-image: url(/stylesheets/images/widgets/menu/corner_light_left_bottom.png);

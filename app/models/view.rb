@@ -298,7 +298,7 @@ class View < Model
     ["AVERAGE_RATING", "Rating"],
     ["ALPHA", "A - Z"],
     ["ALPHA_DESC", "Z - A"],
-    ["NUM_OF_VIEWS", "# of times Viewed"],
+    ["NUM_OF_VIEWS", "# of times Visited"],
     ["COMMENTS", "# of Comments"],
     ["LAST_CHANGED", "Date"],
     ["CATEGORY", "Category"]

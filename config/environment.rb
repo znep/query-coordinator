@@ -111,6 +111,7 @@ Rails::Initializer.run do |config|
   config.gem 'ruby-hmac', :lib => 'hmac-sha1'
   config.gem 'multipart-post', :lib => 'net/http/post/multipart'
   config.gem 'googlecharts', :lib => 'gchart'
+  config.gem 'packr', :lib => 'packr'
 end
 
 ActionMailer::Base.smtp_settings = {

@@ -1,6 +1,8 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "table-core", "table-blist-list", "list-screen",
-    "blists-screen", :cache => "cache/blists_index_all" %>
+  <% bundle :name => "blist_index_css" do %>
+    <%= stylesheet_link_tag "table-core", "table-blist-list", "list-screen",
+      "blists-screen", :cache => "cache/blists_index_all" %>
+  <% end %>
   <title><%= t(:page_title) %></title>
 <% end %>
 

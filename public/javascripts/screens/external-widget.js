@@ -96,13 +96,17 @@ $(function ()
 
     $('#header form').submit(function (event) { event.preventDefault(); });
 
-    if(!widgetNS.isVisualization) 
+    if (!blist.widgets.visualization.isVisualization)
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             accessType: 'WIDGET', showRowNumbers: false,
             filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch'
             });
+    }
+    else
+    {
+        $('#data-grid').visualization();
     }
 
     $.ajax({url: '/views/' + widgetNS.viewId + '.json',

@@ -31,7 +31,11 @@ class ProfileController < ApplicationController
     @followers = @user.followers.sort_by{ rand }.first(8)
     
     @body_id = 'profileBody'
-    @body_class = 'home'
+    if @is_user_current
+      @body_class = 'home'
+    else
+      @body_class = 'community'
+    end
     
     @public_views = @user.public_blists.sort {|a,b| b.viewCount <=> a.viewCount}
     @shared_views = @public_views.find_all {|v| v.is_shared? }

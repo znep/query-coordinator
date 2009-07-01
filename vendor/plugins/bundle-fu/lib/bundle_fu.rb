@@ -1,4 +1,3 @@
-require 'packr'
 
 class BundleFu
 
@@ -39,12 +38,12 @@ class BundleFu
         end
       }
       
-      if Object.const_defined?("Packr")
+      #if Object.const_defined?("Packr")
         # use Packr plugin (http://blog.jcoglan.com/packr/)
-        Packr.new.pack(output, options[:packr_options] || {:shrink_vars => false, :base62 => false})
-      else
-        output
-      end
+      Packr.new.pack(output, options[:packr_options] || {:shrink_vars => false, :base62 => false})
+      #else
+      #  output
+      #end
       
     end
 

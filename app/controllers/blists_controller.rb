@@ -2,8 +2,6 @@ class BlistsController < SwfController
   helper_method :get_title
   skip_before_filter :require_user, :only => [:show, :about]
   
-  @@default_meta_tags = ["public", "data", "statistics", "dataset"]
-
   def index
     @body_class = 'home'
     accept_keys = ['owner', 'owner_group', 'shared_to', 'shared_to_group',
@@ -71,18 +69,10 @@ class BlistsController < SwfController
       end
 
       # If we're displaying a single dataset, set the title to the description.
-      if @view.description.blank?
-        @meta_description = "View this dataset"
-        updated_at = help.blist_long_date(@view.rowsUpdatedAt)
-        if updated_at
-          @meta_description += ", last updated #{updated_at}"
-        end
-      else
-        @meta_description = @view.description
-      end
+      @meta_description = help.meta_description(@view)
       
       # Shuffle the default tags into the keywords list
-      @meta_keywords = (@view.tags.nil? ? @@default_meta_tags : @view.tags + @@default_meta_tags).sort_by {rand}
+      @meta_keywords = help.meta_keywords(@view)
     end
 
     @data_component = params[:dataComponent]

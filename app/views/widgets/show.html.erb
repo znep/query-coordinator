@@ -3,6 +3,12 @@
     <%= stylesheet_link_tag 'table-core', 'dataset-grid', 'external-widget',
       :cache => "cache/widgets_show_all" %>
   <% end %>
+  
+  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <%- if @view -%>
+    <link rel="canonical" href="<%= @view.href %>" />
+  <%- end -%>
+  
   <%- if !@variation.blank? -%>
     <%= stylesheet_link_tag @variation + "-widget" %>
   <%- end -%>

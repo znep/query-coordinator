@@ -1,7 +1,6 @@
 class View < Model
   cattr_accessor :categories, :sorts
 
-
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
       return super(options)

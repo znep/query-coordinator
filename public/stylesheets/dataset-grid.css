@@ -140,3 +140,16 @@ ul.menu.columnHeaderMenu li
     font-size: 0.8333em;
 }
 
+.blist-table .blist-hot-row .blist-table-row-numbers.blist-td,
+.blist-table .blist-select-row .blist-table-row-numbers.blist-td
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-repeat: no-repeat;
+    text-align: left;
+    text-indent: -9999px;
+}
+
+.blist-table .blist-hot-row .blist-table-row-numbers.blist-td
+{ background-position: right -897px; }
+.blist-table .blist-select-row .blist-table-row-numbers.blist-td
+{ background-position: right -506px; }

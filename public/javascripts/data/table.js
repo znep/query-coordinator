@@ -177,6 +177,14 @@
             if (endOfUID == -1)
                 endOfUID = cell.className.length;
             var colUID = cell.className.slice(classIndex + id.length + 2, endOfUID);
+            if (colUID == 'rowHandleCol')
+            {
+                return rowHandleColumn;
+            }
+            else if (colUID == 'rowNumberCol')
+            {
+                return rowNumberColumn;
+            }
             return model.column(colUID);
         }
 
@@ -422,6 +430,13 @@
             var row = getRow(cell);
             var levelID = row.level || 0;
 
+            // Check if we clicked in a locked section; ignore those for now
+            if ($(event.target).closest('.blist-table-locked').length > 0)
+            {
+                clearCellNav();
+                return false;
+            }
+
             // Find the index of the cell in the layout level
             var rowLayout = layout[levelID];
             for (var x = 0, node = cell.parentNode.firstChild; node; node = node.nextSibling) {
@@ -438,13 +453,14 @@
 
             // If we found the column, focus now
             if (lcol) {
+                model.unselectAllRows();
                 if ($(event.target).is('a') && !selecting) {
                     // Special case for anchor clicks -- do not select the cell immediately but do enter "possible drag"
                     // mode
                     clearCellNav();
                     return true;
                 }
-                
+
                 // Standard cell -- activate the cell
                 return cellNavToXY(x, row.id, event, selecting);
             }
@@ -988,8 +1004,9 @@
 
                 // Notify listeners
                 var cellEvent = $.Event('cellclick');
-                $this.trigger(cellEvent, [ row, column, event ]);
-                if (!cellEvent.isDefaultPrevented() && !(row.level < 0))
+                $this.trigger(cellEvent, [ row, column, origEvent ]);
+                if (!activeCellOn && options.selectionEnabled &&
+                    !cellEvent.isDefaultPrevented() && !(row.level < 0))
                 {
                     if (origEvent.metaKey) // ctrl/cmd key
                     {
@@ -1530,6 +1547,10 @@
         var varDenom = [];
         var insideWidth;
 
+        // Special columns
+        var rowNumberColumn;
+        var rowHandleColumn;
+
         /**
          * Create rendering code for a series of columns.
          */
@@ -1724,7 +1745,8 @@
             lockedColumns = [];
             if (options.showRowNumbers)
             {
-                lockedColumns.push({uid: 'rowNumberCol',
+                lockedColumns.push(rowNumberColumn = {uid: 'rowNumberCol',
+                    dataIndex: 'rowNumber',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.rows().length, 100),
                     renderer: '(index + 1)',
@@ -1732,7 +1754,8 @@
             }
             if (options.showRowHandle)
             {
-                lockedColumns.push({uid: 'rowHandleCol',
+                lockedColumns.push(rowHandleColumn = {uid: 'rowHandleCol',
+                    dataIndex: 'rowHandle',
                     cls: 'blist-table-row-handle',
                     width: 1,
                     renderer: '""'});
@@ -2392,15 +2415,12 @@
             if (cellNav)
                 // Cell selection and navigation
                 updateCellNavCues();
-            else
-                // Row selection
-                updateSelection();
+            // Row selection
+            updateSelection();
         };
 
         var updateSelection = function()
         {
-            if (cellNav)
-                return;
             inside.find('.blist-select-row').removeClass('blist-select-row');
             $locked.find('.blist-select-row').removeClass('blist-select-row');
             $.each(model.selectedRows, function (k, v)
@@ -2506,6 +2526,7 @@
         headerMods: function (col) {},
         manualResize: false,
         resizeHandleAdjust: 3,
+        selectionEnabled: true,
         showGhostColumn: false,
         showName: true,
         showRowNumbers: true,

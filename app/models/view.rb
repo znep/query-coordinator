@@ -1,7 +1,6 @@
 class View < Model
   cattr_accessor :categories, :sorts
 
-
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
       return super(options)
@@ -52,7 +51,7 @@ class View < Model
 
   def self.create(attributes)
     if attributes['viewFilters'].blank? || attributes['viewFilters'] == '""' ||
-      attributes['viewFilters'] == "''"
+      attributes['viewFilters'] == "''" || attributes['viewFilters'] == "null"
       attributes['viewFilters'] = nil
     else
       attributes['viewFilters'] = JSON.parse(attributes['viewFilters'])
@@ -145,6 +144,10 @@ class View < Model
   
   def short_href
     "/d/#{id}"
+  end
+  
+  def about_href
+    self.href + "/about"
   end
 
   def user_role(user_id)
@@ -246,6 +249,13 @@ class View < Model
     end
   end
 
+  # return true if this view is a visualization (not a table)
+  # the displayType contains the type of visualization
+  # a nil value indicates that it needs to be rendered as a table
+  def is_visualization?
+    !self.displayType.nil?
+  end
+
   def chart_class
     case self.displayType
     when 'geomap'
@@ -287,7 +297,7 @@ class View < Model
     ["AVERAGE_RATING", "Rating"],
     ["ALPHA", "A - Z"],
     ["ALPHA_DESC", "Z - A"],
-    ["NUM_OF_VIEWS", "# of times Viewed"],
+    ["NUM_OF_VIEWS", "# of times Visited"],
     ["COMMENTS", "# of Comments"],
     ["LAST_CHANGED", "Date"],
     ["CATEGORY", "Category"]

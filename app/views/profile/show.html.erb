@@ -324,7 +324,7 @@
 
 
           <div class='publicBlists'>
-            <h3>My public <%= t(:blists_name) %> &amp; views</h3>
+            <h3>My public <%= t(:blists_name) %> &amp; filtered views</h3>
             <div class='infoContentOuter active'><div class="infoContentInner">
               <div class='infoContent'>
                 <div class='infoContentHeader'>
@@ -383,8 +383,8 @@
             <dt><strong>Private <%= t(:blists_name).titleize %>:</strong> <%= @private_blists.length %></dt>
             <dd><%= pluralize(@private_views.length, 'View') %></dd>
           <%- end -%>
-          <dt><strong>Public <%= t(:blists_name).titleize %> &amp; Views:</strong> <%= @user.publicTables + @user.publicViews %></dt>
-          <dd><%= pluralize(@user.publicViews, 'View') %></dd>
+          <dt><strong>Public <%= t(:blists_name).titleize %> &amp; Filtered Views:</strong> <%= @user.publicTables + @user.publicViews %></dt>
+          <dd><%= pluralize(@user.publicViews, 'Filtered View') %></dd>
           <dd><%= @shared_views.length %> Shared</dd>
 
           <dt><strong>Friends:</strong> <%= @user.numberOfFriends %></dt>

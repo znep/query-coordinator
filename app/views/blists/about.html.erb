@@ -1,0 +1,155 @@
+<% content_for :head do %>
+  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") %>
+  <%= stylesheet_link_tag "blist-about-screen", :cache => "cache/blists_about_all" %>
+  <title><%= @view.name %> | <%= t(:page_title) %></title>
+  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <link rel="canonical" href="<%= @view.about_href %>" />
+<% end %>
+
+<%- is_owner = current_user && @view.owner.id == current_user.id -%>
+<%- can_edit = current_user && @view.can_edit() -%>
+
+<div id='overlay'></div>
+
+<div class="twoColumnContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent">
+    <div id="aboutContent">
+      <div class="outerContent">
+        <div class="content">
+          
+          <div class="aboutHeader">
+            <h1><%= link_to(h(@view.name), @view.href) %></h1>
+            <ul class="itemMeta clearfix">
+              <li class="ratingContainer grayStars"><%= get_blist_rating_html(@view) %></li>
+              <li>Votes <strong><%= @view.totalTimesRated %></strong></li>
+              <li>Visits <strong><%= @view.viewCount %></strong></li>
+              <li class="last">Comments <strong><%= @view.numberOfComments %></strong></li>
+            </ul>
+          </div>
+          <%- if ((@view.category && @view.category != "") || (@view.tags && @view.tags.length > 0)) -%>
+          <ul class="aboutCategoryList">
+            <%- if (@view.category && @view.category != "") -%>
+              <li>Category <strong><%= @view.category.capitalize %></strong></li>
+            <%- end -%>
+            <%- if (@view.tags && @view.tags.length > 0) -%>
+              <li>Tags <strong><%= h(@view.tag_display_string) %></strong></li>
+            <%- end -%>
+          </ul>
+          <%- end -%>
+          
+          <div class="aboutBody">
+            
+            <h2>Description</h2>
+            <p><%= h(@view.description) %></p>
+            
+            <h2>Licensing, Attribution &amp; Terms of Use</h2>
+            <%# TODO: Add real attribution data when available. %>
+            <ul class="attributionList">
+              <li>Data Provided by <strong>Congressional Accountability Office of Compliance</strong></li>
+              <li>Link <strong><a href="http://www.compliance.gov">http://www.compliance.gov</a></strong></li>
+            </ul>
+            
+            <h3>Usage License</h3>
+            <p>CC image or License type goes here.</p>
+            
+            <h3>Terms of Use</h3>
+            <p class="attributionTerms">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            
+            <h2 class="summaryInfoHeader">Summary Information</h2>
+            <dl class="aboutSummaryList clearfix">
+              <dt>Added By</dt>
+              <dd>
+                <%= link_to(image_tag(@view.owner.profile_image_path("small"), :size => "16x16", :alt => h(@view.owner.displayName), :class => "summaryProfileImage"), @view.owner.href) %><%= link_to(h(@view.owner.displayName), @view.owner.href) %></dd>
+              <dt>Added On</dt>
+              <dd><%= blist_date(@view.createdAt) %></dd>
+              <dt>Last Update</dt>
+              <%- 
+                up_user = @view.last_updated_user 
+              %>
+              <dd>
+                <%= up_user.nil? ? '' : link_to(h(up_user.displayName), up_user.href) + ':' %>
+                <%= blist_date(@view.last_activity) %>
+              </dd>
+              <dt>Filtered Views</dt>
+              <dd><%= @view.filters.length %> total</dd>
+              <dt>Community Activity</dt>
+              <dd>
+                <ul>
+                  <li>Visits: <%= @view.viewCount %></li>
+                  <li>Comments: <%= @view.numberOfComments %></li>
+                  <li>Votes: <%= @view.totalTimesRated %> <div class="grayStars"><%= get_blist_rating_html(@view) %></div></li>
+                </ul>
+              </dd>
+              <dt>Permalink</dt>
+              <dd>
+                <span class="copyCode">
+                  <input name="permalink" type="text" value="<%= request.protocol + request.host_with_port + @view.href %>"/>
+                </span>
+              </dd>
+              <dt>Permissions</dt>
+              <dd><%= @view.is_public? ? 'Public' : 'Private' %></dd>
+              <dt>Sharing</dt>
+              <dd>
+                <ul>
+                  <li><%= pluralize(@view.contributor_users.length, 'Contributor') %></li>
+                  <li><%= pluralize(@view.viewer_users.length, 'Viewer') %></li>
+                </ul>
+              </dd>
+            </dl>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="sidebar" class="column notabs">
+    <% render(:layout => "shared/sidebar_box") do %>
+      <ul class="actionButtons blockList clearfix">
+        <li><%= link_to("View this #{t(:blist_name)}", @view.href, :class => "arrowButton") %></li>
+        <%# TODO: Add publishing button when we have publish modal available. %>
+      </ul>
+    <% end %>
+    
+    <% render(:layout => "shared/sidebar_box") do %>
+      <div class="ownerProfileContainer clearfix">
+        <ul class="ownerData">
+          <li><strong>Added By:</strong> <%= h(@view.owner.displayName) %></li>
+          <li><strong>Added On:</strong> <%= blist_date(@view.createdAt) %></li>
+          <li><strong>Last Update:</strong> <%= blist_date(@view.last_activity) %></li>
+        </ul>
+        <div class="ownerImage">
+          <a href="<%= @view.owner.href %>">
+            <%= image_tag(@view.owner.profile_image_path("medium"), :size => "60x60", :alt => h(@view.owner.displayName)) %>
+          </a>
+        </div>
+      </div>
+    <% end %>
+    
+    <% render(:layout => "shared/sidebar_box") do %>
+      <h4>Columns</h4>
+      <ul class="columnList">
+        <%- @view.columns.slice(0, 20).each do |column| -%>
+          <%- unless (column.flags.any? {|flag| flag.data == "hidden"}) -%> 
+            <li class="<%= get_datatype_class(column) %>"><%= h(column.name) %></li>
+          <%- end -%>
+        <%- end -%>
+        <%- if (@view.columns.length > 20) -%>
+          <li class="moreColumns">&hellip;</li>
+        <%- end -%>
+        <li class="viewLink"><%= link_to("View", @view.href) %></li>
+      </ul>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <script type="text/javascript" charset="utf-8">
+    $(function ()
+    {
+        $(".outerContent").blistStretchWindow();
+        $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
+    });
+  </script>
+<% end %>

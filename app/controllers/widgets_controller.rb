@@ -12,7 +12,7 @@ class WidgetsController < ApplicationController
         # Check the referrer
         m = request.referrer.match(/^\w+:\/\/([a-zA-Z0-9_\-.]+\.(\w{3}))(:|\/)/)
         
-        # TLD Check
+        # TLD Check, until we have GSA approval marking
         if m && m[1].include?("whitehouse.gov")
           @variation = 'whitehouse'
         elsif m && (m[2] == 'gov' || m[2] == 'mil')
@@ -52,14 +52,14 @@ class WidgetsController < ApplicationController
       return (render 'shared/error')
     end
 
-    # Force us back to the gov variation if this dataset is categorized government
-    if @view.category &&
-      @view.category.downcase == 'government' &&
-      @variation != 'gov'
-      
-      @variation = 'gov'
-    end
-
+    @meta_description = Helper.instance.meta_description(@view)
+    @meta_keywords = Helper.instance.meta_keywords(@view)
+    
     @is_gov_widget = @variation == 'gov' || @variation == 'whitehouse'
   end
+end
+
+class Helper
+  include Singleton
+  include ApplicationHelper
 end

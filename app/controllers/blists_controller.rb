@@ -1,7 +1,7 @@
 class BlistsController < SwfController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show]
-
+  skip_before_filter :require_user, :only => [:show, :about]
+  
   def index
     @body_class = 'home'
     accept_keys = ['owner', 'owner_group', 'shared_to', 'shared_to_group',
@@ -18,9 +18,7 @@ class BlistsController < SwfController
       if !current_user
         return require_user
       end
-      # show new blist in swf
-      @body_class = 'editMode'
-      @start_screen = 'new_blist'
+      @new_dataset = true;
     else
       @body_class = params[:mode] && params[:mode] == 'edit' ?
         'editMode' : 'readMode'
@@ -71,22 +69,26 @@ class BlistsController < SwfController
       end
 
       # If we're displaying a single dataset, set the title to the description.
-      if @view.description.blank?
-        @meta_description = "View this dataset"
-        updated_at = help.blist_long_date(@view.rowsUpdatedAt)
-        if updated_at
-          @meta_description += ", last updated #{updated_at}"
-        end
-      else
-        @meta_description = @view.description
-      end
-      @meta_keywords = @view.tags
+      @meta_description = help.meta_description(@view)
+      
+      # Shuffle the default tags into the keywords list
+      @meta_keywords = help.meta_keywords(@view)
     end
 
     @data_component = params[:dataComponent]
     @popup = params[:popup]
 
     @swf_url = swf_url('v3embed.swf')
+  end
+  
+  # To build a url to this action, use View.about_href.
+  # Do not use about_blist_path (it doesn't exist).
+  def about
+    @body_class = 'aboutDataset'
+    @view = View.find(params[:id])
+    @view.columns.each do |column|
+      pp column.flags
+    end
   end
 
   def update
@@ -148,9 +150,31 @@ class BlistsController < SwfController
     render :text => {"result" => "success"}.to_json
   end
 
+  def new
+    respond_to do |format|
+      format.html { redirect_to(blists_path)}
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+  
   def create
+    new_view = params[:view].reject { |key,value| value.blank? }
+    
+    flags = Array.new
+    case (params[:privacy])
+    when "public_view"
+      flags << "dataPublic"
+    #when "public_edit"
+    #  flags << "publicEdit"
+    when "private"
+      # Don't need to set any flags for private
+    when "adult_content"
+      flags << "adultContent"
+    end
+    new_view[:flags] = flags
+    
     begin
-      view = View.create(params[:view])
+      view = View.create(new_view)
     rescue CoreServerError => e
       return respond_to do |format|
         format.html do
@@ -162,7 +186,7 @@ class BlistsController < SwfController
     end
 
     respond_to do |format|
-      format.html { redirect_to(view.href) }
+      format.html { redirect_to(view.href + "?mode=edit") }
       format.data { render :json => {'url' => view.href}.to_json }
     end
   end

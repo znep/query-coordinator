@@ -1,6 +1,8 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "table-core", "table-blist-list", "list-screen",
-    "blists-screen", :cache => "cache/blists_index_all" %>
+  <% bundle :name => "blist_index_css" do %>
+    <%= stylesheet_link_tag "table-core", "table-blist-list", "list-screen",
+      "blists-screen", :cache => "cache/blists_index_all" %>
+  <% end %>
   <title><%= t(:page_title) %></title>
 <% end %>
 
@@ -35,7 +37,7 @@
             </form>
 
             <ul class="headerActions">
-              <li><a href='<%= blist_href_new_blist %>' class="add_new"
+              <li><a href='<%= new_blist_path %>' class="add_new" rel="modal"
                 title="Create a new <%= t(:blist_name) %> from scratch">
                 Design a <%= t(:blist_name).capitalize %>
               </a></li>

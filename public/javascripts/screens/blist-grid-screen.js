@@ -359,14 +359,22 @@ blist.blistGrid.setTempViewTab = function (tempView)
     $('#infoPane').hide();
     $('.headerBar li:has(#mainMenuLink)').hide();
     $('#tempInfoPane').show();
-    $('form.tempView input[name="view[viewFilters]"]')
-        .val($.json.serialize(tempView.viewFilters));
 };
 
+blist.blistGrid.updateTempView = function (tempView)
+{
+    $('form.tempView input[name="view[viewFilters]"]')
+        .val($.json.serialize(tempView.viewFilters));
+    $('form.tempView input[name="view[searchString]"]')
+        .val(tempView.searchString);
+};
 
 blist.blistGrid.newViewCreated = function($iEdit, responseData)
 {
-    $('#readGrid').datasetGrid().isTempView = false;
+    if (!blist.widgets.visualization.isVisualization)
+    {
+        $('#readGrid').datasetGrid().isTempView = false;
+    }
     window.location = responseData.url;
 };
 
@@ -452,13 +460,25 @@ $(function ()
 {
     if (blistGridNS.viewId)
     {
-        $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
-            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-            clearTempViewCallback: blistGridNS.clearTempViewTab,
-            setTempViewCallback: blistGridNS.setTempViewTab,
-            filterItem: '#lensContainer .headerBar form :text',
-            clearFilterItem: '#lensContainer .headerBar form .clearSearch'
-        });
+        if (!blist.widgets.visualization.isVisualization)
+        {
+            $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
+                accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
+                clearTempViewCallback: blistGridNS.clearTempViewTab,
+                setTempViewCallback: blistGridNS.setTempViewTab,
+                updateTempViewCallback: blistGridNS.updateTempView,
+                filterItem: '#lensContainer .headerBar form :text',
+                clearFilterItem: '#lensContainer .headerBar form .clearSearch'
+            });
+        }
+        else
+        {
+            $('#readGrid').visualization();
+        }
+    }
+    else if (blistGridNS.newDataset)
+    {
+        $("#modal").jqmShow($("<a href='/blists/new'></a>"));
     }
 
     blistGridNS.setUpTabs();
@@ -565,8 +585,11 @@ $(function ()
     $('#lensContainer .headerBar form').submit(function (event)
     {
         event.preventDefault();
-        blist.util.flashInterface.lensSearch(
-            $(event.currentTarget).find('input[type="text"]').val());
+        if (blist.util.flashInterface.swf() != undefined)
+        {
+            blist.util.flashInterface.lensSearch(
+                $(event.currentTarget).find('input[type="text"]').val());
+        }
     });
 
     $('#lensContainer .headerBar form .clearSearch')
@@ -585,7 +608,8 @@ $(function ()
         menuBar: $('#lensContainer .headerBar')});
 	$('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
 		menuBar: $('#lensContainer .headerBar')});
-	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'), forcePosition: true});
+	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'),
+		forcePosition: true, closeOnResize: true});
 
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
@@ -645,29 +669,60 @@ $(function ()
 
     $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
 
-	// Update copyable publish code and live preview from template/params
-	var updatePublishCode = function()
-		{
-			// detemplatize publish code template if it exists
-			if ($('.copyCode #publishCode').length > 0)
-			{
-				$('.copyCode #publishCode').val($('.copyCode #publishCodeTemplate').val()
-												.replace('#width#', $('#publishWidth').val())
-												.replace('#height#', $('#publishHeight').val()));
-				$('.publishPreview iframe').attr('width', $('#publishWidth').val());
-				$('.publishPreview iframe').attr('height', $('#publishHeight').val());
-			}
-		};
-	updatePublishCode();
-	$('#publishWidth, #publishHeight').keyup(updatePublishCode);
-	$('#publishWidth, #publishHeight').keypress(function (event)
-		{
-			if ((event.which < 48 || event.which > 57) && !(event.which == 8 || event.which == 0))
-			{
-				// Disallow non-numeric input in width/height fields
-				return false;
-			}
-		});
+    // Update copyable publish code and live preview from template/params
+    var updatePublishCode = function()
+    {
+        // detemplatize publish code template if it exists
+        if ($('.copyCode #publishCode').length > 0)
+        {
+            var width = $('#publishWidth').val();
+            var height = $('#publishHeight').val();
+            $('.copyCode #publishCode').val($('.copyCode #publishCodeTemplate').val()
+                    .replace('#width#', width)
+                    .replace('#height#', height)
+                    .replace('#variation#', $('#publishVariation').val()));
+
+            // Restrict size to >= 425x344 px
+            if (parseInt(width) < 425 || parseInt(height) < 344 || width == '' || height == '')
+            {
+                $('#sizeError').removeClass('hide');
+                $('.copyCode #publishCode').attr('disabled', true);
+                $('#previewWidgetLink').addClass('disabled');
+            }
+            else
+            {
+                $('#sizeError').addClass('hide');
+                $('.copyCode #publishCode').removeAttr('disabled');
+                $('#previewWidgetLink').removeClass('disabled');
+            }
+        }
+    };
+    updatePublishCode();
+    $('#publishWidth, #publishHeight').keyup(updatePublishCode);
+    $('#publishVariation').change(updatePublishCode);
+    $('#publishWidth, #publishHeight').keypress(function (event)
+        {
+            if ((event.which < 48 || event.which > 57) && !(event.which == 8 || event.which == 0))
+            {
+                // Disallow non-numeric input in width/height fields
+                return false;
+            }
+        });
+    $('#previewWidgetLink').click(function (event)
+            {
+                event.preventDefault();
+                var $link = $(this);
+                var width = $('#publishWidth').val();
+                var height = $('#publishHeight').val();
+                if (parseInt(width) < 425 || parseInt(height) < 344 || width == '' || height == '')
+                {
+                    return;
+                }
+                window.open(
+                    $link.attr('href') + "?width=" + width + "&height=" + height + "&variation=" + $('#publishVariation').val(), 
+                    "Preview", "location=no,menubar=no,resizable=no,status=no,toolbar=no");
+            });
+
 
     $('.switchPermsLink').click(function (event)
         {
@@ -699,16 +754,16 @@ $(function ()
             $link.closest('#infoPane')
                 .find('.singleInfoSummary .panelHeader.' + curState)
                 .removeClass(curState).addClass(newState);
-			// Update publishing panel view
-			$('.singleInfoPublishing .hide').removeClass('hide');
-			if (newState == 'private')
-			{
-				$('.singleInfoPublishing .publishContent').addClass('hide');
-			}
-			else
-			{
-				$('.singleInfoPublishing .publishWarning').addClass('hide');
-			}
+            // Update publishing panel view
+            $('.singleInfoPublishing .hide').removeClass('hide');
+            if (newState == 'private')
+            {
+                $('.singleInfoPublishing .publishContent').addClass('hide');
+            }
+            else
+            {
+                $('.singleInfoPublishing .publishWarning').addClass('hide');
+            }
         });
 
     var commentMatches = window.location.search.match(/comment=(\w+)/);
@@ -737,7 +792,8 @@ $(function ()
 
     window.onbeforeunload = function ()
     {
-        if ($('#readGrid').datasetGrid().isTempView)
+        if (!blist.widgets.visualization.isVisualization &&
+            $('#readGrid').datasetGrid().isTempView)
         {
             return 'You will lose your temporary filter.';
         }

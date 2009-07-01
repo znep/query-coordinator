@@ -26,7 +26,14 @@ $.htmlUnescape = function(text)
 
 $.htmlStrip = function(text)
 {
-    return text instanceof String ? text.replace(/<[^>]*>/g, '') : text;
+  try
+  {
+    return text.replace(/<[^>]*>/g, '');
+  }
+  catch (ex)
+  {
+    return '';
+  }
 };
 
 $.urlSafe = function(text)

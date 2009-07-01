@@ -2434,6 +2434,7 @@
                 renderFooter();
             }
 
+            $locked.empty();
             inside.empty();
             renderedRows = {};
 

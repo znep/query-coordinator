@@ -3,6 +3,29 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     font-family: "Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
 }
 
+#data-grid { border-color: #dae2f2; }
+
+#header { background-image: url(/stylesheets/images/sdp/whitehouse/title_tl.png); }
+#header .wrapperTR { background-image: url(/stylesheets/images/sdp/whitehouse/title_tr.png); }
+#header .wrapperT { background-image: url(/stylesheets/images/sdp/whitehouse/title_t.png); }
+#header .menuLink
+{
+    background-image: url(/stylesheets/images/content/table/expand_opened.png);
+    color: #333;
+}
+#header form.search .searchContainer
+{
+    background-image: url(/stylesheets/images/sdp/whitehouse/find_field.png);
+}
+#header form.search input.submit
+{
+    background-image: url(/stylesheets/images/sdp/whitehouse/button_find.png);
+}
+#header .fullScreenButton a
+{
+    background: url(/stylesheets/images/sdp/whitehouse/button_fullscreen_player.png) no-repeat;
+}
+
 .blist-table .blist-th
 {
     font-size: 1.1em;
@@ -30,4 +53,8 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 .blist-table .blist-tr-even .blist-td { background-color: #F1F4F7; }
 .blist-table .blist-td a, .interstitial a { color: #336699; }
 
+.widgetFooterWrapper { background-image: url(/stylesheets/images/sdp/whitehouse/title_b.png); }
 .widgetFooter { text-align: center; }
+
+.dialogBox .header { background-color: #DAE2F2; }
+.dialogBox .header h1 { color: #333; }

@@ -72,7 +72,7 @@ module ApplicationHelper
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
           (i['swf_item'] ? ' swfItem' : '') << "'><a title='#{i['title']}' " <<
           "href='#{i['href']}' q=\"#{i['q']}\" class=\"#{i['link_class']}\"" <<
-          (i['external'] ? ' rel="external"' : '') << ">" <<
+          (i['external'] ? ' rel="external"' : (i['modal'] ? ' rel="modal"' : '')) << ">" <<
           "<span class='highlight'>#{i['text']}</span></a>"
         if i['submenu']
           ret << menu_tag(i['submenu'], is_owner, can_edit)
@@ -247,5 +247,27 @@ HREF
 
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
+  end
+  
+  # Returns the meta keyword tags for this view that we'll use in headers
+  @@default_meta_tags = ["public", "data", "statistics", "dataset"]
+  def meta_keywords(view)
+    view.nil? ? nil : (view.tags.nil? ? @@default_meta_tags : view.tags + @@default_meta_tags).sort_by {rand}
+  end
+  
+  # Return the description we'll use in the meta description header
+  def meta_description(view)
+    return nil if(view.nil? || !view.is_a?(View))
+    
+    if view.description.blank?
+      desc = "View this dataset"
+      updated_at = view.rowsUpdatedAt.nil? ? nil : blist_long_date(view.rowsUpdatedAt)
+      if updated_at
+        desc += ", last updated #{updated_at}"
+      end
+      return desc
+    else
+      return view.description
+    end
   end
 end

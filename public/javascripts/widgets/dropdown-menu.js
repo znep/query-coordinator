@@ -60,6 +60,13 @@
  *      It should return true if the menu should open, false otherwise.  If no
  *      function is set for openTest, the menu will always open.
  *
+ *  forcePosition: Reassert the position of the menu when it is shown.  Use
+ *      when the position might change (eg due to browser resizing or column
+ *      resizing).
+ *
+ *  closeOnResize: Closes the menu if the browser is resized.  Repositioning
+ *      the menu automatically can get sticky; this is a cleaner compromise.
+ *
  * Author: jeff.scherpelz@blist.com
  */
 
@@ -198,11 +205,17 @@
      *  document clicks to hide the menu */
     function showMenu($menu)
     {
+        var documentHeight = $(document).height();
         var config = $menu.data("config-dropdownMenu");
         // We've got to close all other menus; there can be only one!
         $(config.menuSelector + ':visible').each(function () { hideMenu($(this)) });
 
         $menu.addClass(config.menuOpenClass);
+
+        if (config.openCallback != null)
+        {
+            config.openCallback($menu);
+        }
 
         var $trigger = $menu.data("triggerButton");
         $trigger.addClass(config.triggerOpenClass);
@@ -210,6 +223,15 @@
         {
             documentClickedHandler(event, $menu);
         });
+
+        // If they want any keyup to close the window, hook it up.
+        if (config.closeOnKeyup)
+        {
+            $(document).one('keyup', function (event)
+            {
+                hideMenu($menu);
+            });
+        }
 
         if (config.forcePosition)
         {
@@ -225,38 +247,46 @@
             $menu.css(offsetPos).appendTo('body');
         }
 
+        if (config.closeOnResize)
+        {
+            $(window).one('resize', function ()
+            {
+                hideMenu($menu);
+            });
+        }
+
         // Check if we need to restore the original width first
         if (config._origWidth)
         {
             $menu.css('width', config._origWidth);
         }
-		
-		// Check if the menu is wider or taller than the window
-		if ($menu.offset().left + $menu.outerWidth(true) > $(window).width())
+
+        // Check if the menu is wider or taller than the window
+        if ($menu.offset().left + $menu.outerWidth(true) > $(window).width())
         {
-			// if the menu can be flipped left, do so; otherwise, crop it
-			if ($trigger.position().left + $trigger.outerWidth(true) - 
-				$menu.outerWidth(true) < 0)
-			{
-				config._origWidth = $menu.css('width');
-	            $menu.css('width', $(window).width() - $menu.offset().left - 5);
-			}
+            // if the menu can be flipped left, do so; otherwise, crop it
+            if ($trigger.position().left + $trigger.outerWidth(true) -
+                    $menu.outerWidth(true) < 0)
+            {
+                config._origWidth = $menu.css('width');
+                $menu.css('width', $(window).width() - $menu.offset().left - 5);
+            }
             else
-			{
-				$menu.css('left', $menu.position().left -
-			            ($menu.outerWidth(true) - $trigger.outerWidth(true)));
-			}
+            {
+                $menu.css('left', $menu.position().left -
+                        ($menu.outerWidth(true) - $trigger.outerWidth(true)));
+            }
         }
-		if ($menu.offset().top + $menu.outerHeight(true) >
-			($(document).outerHeight(true) || document.body.clientHeight))
-		{
-			// if the menu can be flipped up, do so; otherwise, leave it alone
-			if ($trigger.position().top - $menu.outerHeight(true))
-			{
-				$menu.css('top', $menu.position().top -
-						($menu.outerHeight(true) + $trigger.outerHeight(true)));
-			}
-		}
+
+        if ($menu.offset().top + $menu.outerHeight(false) > documentHeight)
+        {
+            // if the menu can be flipped up, do so; otherwise, leave it alone
+            if ($trigger.position().top - $menu.outerHeight(true))
+            {
+                $menu.css('top', $menu.position().top -
+                        ($menu.outerHeight(true) + $trigger.outerHeight(true)));
+            }
+        }
     };
 
     /* Hide a menu, and toggle the button state.  Stop listening for
@@ -341,11 +371,13 @@
     //
     $.fn.dropdownMenu.defaults = {
         activeClass: 'active',
+        closeOnKeyup: false,
         forcePosition: false,
         menuContainerSelector: "li",
         menuOpenClass: 'shown',
         menuSelector: 'ul.menu',
         multilevelMenuSelector: '.multilevelMenu',
+        openCallback: function($menu) {},
         optionMenuSelector: '.optionMenu',
         pullToTop: false,
         selectedItemClass: 'checked',

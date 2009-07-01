@@ -33,65 +33,63 @@
 {
     background: transparent url(/stylesheets/images/content/table/title_t.png?1) repeat-x top;
     height: 28px;
-    padding-left: 7px;
     padding-right: 7px;
 }
 
 #header .menuLink
 {
     background-image: url(/stylesheets/images/content/table/expand_opened_white.png);
-    background-position: right center;
+    background-position: right 10px;
     background-repeat: no-repeat;
     color: #fff;
     float: left;
     font-size: 1.1em;
     font-weight: bold;
-    padding-right: 12px;
-    margin-top: 0.909em; /* 10px */
+    padding: 10px 12px 5px 7px;
     text-transform: uppercase;
 }
 
-#header .headerMenu { width: 17em; }
-#header .headerMenu .submenu .menu { width: 10em; }
+.headerMenu { width: 17em; }
+.headerMenu .submenu .menu { width: 10em; }
 
-#header .headerMenu .submenu.export .menu { width: 19em; }
+.headerMenu .submenu.export .menu { width: 19em; }
 
-#header .headerMenu a
+.headerMenu a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
     background-repeat: no-repeat;
 }
 
-#header .headerMenu .share a { background-position: 5px -968px; }
-#header .headerMenu .email a { background-position: 5px -48px; }
-#header .headerMenu .export a { background-position: 5px -117px; }
-#header .headerMenu .export .menu a { background-position: 5px 23px; }
-#header .headerMenu .publish a { background-position: 5px -577px; }
-#header .headerMenu .fullscreen a { background-position: 5px -992px; }
-#header .headerMenu .print a { background-position: 5px -2px; }
-#header .headerMenu .newDataset a { background-position: 5px -94px; }
+.headerMenu .share a { background-position: 5px -968px; }
+.headerMenu .email a { background-position: 5px -48px; }
+.headerMenu .export a { background-position: 5px -117px; }
+.headerMenu .export .menu a { background-position: 5px 23px; }
+.headerMenu .publish a { background-position: 5px -577px; }
+.headerMenu .fullscreen a { background-position: 5px -992px; }
+.headerMenu .print a { background-position: 5px -2px; }
+.headerMenu .newDataset a { background-position: 5px -94px; }
 
-#header .headerMenu li.share .menu a
+.headerMenu li.share .menu a
 {
     background-repeat: no-repeat;
     background-position: 5px center;
 }
-#header .headerMenu .share .delicious a
+.headerMenu .share .delicious a
 {
     background-image: url(/images/icons/social_icon_delicious_small.png);
 }
 
-#header .headerMenu .share .digg a
+.headerMenu .share .digg a
 {
 	background-image: url(/images/icons/social_icon_digg_small.png);
 }
 
-#header .headerMenu .share .twitter a
+.headerMenu .share .twitter a
 {
 	background-image: url(/images/icons/social_icon_twitter_small.png);
 }
 
-#header .headerMenu .share .facebook a
+.headerMenu .share .facebook a
 {
 	background-image: url(/images/icons/social_icon_facebook_small.png);
 }
@@ -137,9 +135,10 @@
 
 #header form.search input.submit
 {
-    background-image: none;
+    background-image: url(/images/button_find_blue.png);;
     height: 18px;
     margin-right: 0;
+    width: 30px;
 }
 
 #header form.search .actionBox
@@ -242,14 +241,16 @@
     padding-left: 0.4167em; /* 5px */
 }
 
+/* IE doesn't like rounding ems. */
 .blist-td
 {
+    background-color: #fff;
     border-right: solid 1px #dddddd;
     border-bottom: solid 1px #dddddd;
     font-size: 1.1em;
-    height: 1.4545em; /* 16px */
-    line-height: 1.4545em;
-    padding: 0.3636em; /* 4px */
+	height: 16px; /* 1.4545em */
+	line-height: 16px; /* 1.4545em */
+	padding: 4px; /* .3636em */
 }
 
 .blist-td-header

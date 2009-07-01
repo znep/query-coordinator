@@ -5,5 +5,11 @@
 #header .wrapperT { background-image: url(/stylesheets/images/sdp/black/title_t.png); }
 
 #header form.search .searchContainer { background-image: url(/stylesheets/images/sdp/black/find_field.png); }
+#header form.search input.submit
+{
+    background-image: url(/stylesheets/images/sdp/black/button_find.png);
+}
 .widgetFooterWrapper { background-image: url(/stylesheets/images/sdp/black/title_b.png); }
 .widgetLogo { background-image: url(/stylesheets/images/widgets/socrata_logo_player_black.gif); }
+
+.dialogBox .header { background-color: #000; }

@@ -52,6 +52,14 @@ class WidgetsController < ApplicationController
       return (render 'shared/error')
     end
 
+    @meta_description = Helper.instance.meta_description(@view)
+    @meta_keywords = Helper.instance.meta_keywords(@view)
+    
     @is_gov_widget = @variation == 'gov' || @variation == 'whitehouse'
   end
+end
+
+class Helper
+  include Singleton
+  include ApplicationHelper
 end

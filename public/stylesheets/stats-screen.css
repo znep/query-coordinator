@@ -67,6 +67,11 @@
     border-bottom: 1px solid #666;
 }
 
+.statsColumn h1.webPub
+{
+  border-bottom: none;
+}
+
 td.legendColor div
 {
     min-height: 12px;

@@ -260,6 +260,8 @@ $(function ()
                 url: $link.attr("href"),
                 type: "DELETE",
                 dataType: "json",
+                data: " ",
+                contentType: "application/json",
                 success: function(data) { 
                     $("#link_row_" + data.link_id).remove();
                     $("#link_list_item_" + data.link_id).remove();

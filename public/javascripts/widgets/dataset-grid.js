@@ -282,7 +282,9 @@
 		{
 			return (a.value > b.value) ? 1 : -1;
 		};
-		if (colSum.subColumnType == "number" || colSum.subColumnType == "money")
+		if (colSum.subColumnType == "number" ||
+		    colSum.subColumnType == "money" ||
+		    colSum.subColumnType == "percent")
 		{
 			searchMethod = function(a, b)
 			{

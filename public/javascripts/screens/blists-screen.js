@@ -750,6 +750,8 @@ blist.myBlists.deleteClick = function (event)
     $.ajax({
         url: origHref,
         type: "DELETE",
+        data: " ",
+        contentType: "application/json",
         success: function(responseText, textStatus)
         {
             var row  = myBlistsNS.model.getByID(responseText);

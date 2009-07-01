@@ -11,3 +11,5 @@
 }
 .widgetFooterWrapper { background-image: url(/stylesheets/images/sdp/black/title_b.png); }
 .widgetLogo { background-image: url(/stylesheets/images/widgets/socrata_logo_player_black.gif); }
+
+.dialogBox .header { background-color: #000; }

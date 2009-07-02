@@ -76,7 +76,7 @@
             </tr>
             <tr>
               <td class="total">Total Copies:</td>
-              <td class="number"><%= number_with_delimiter(0, ',') %></td>
+              <td class="number"><%= number_with_delimiter(@stat.copies || 0, ',') %></td>
               <td></td>
             </tr>
             <tr>

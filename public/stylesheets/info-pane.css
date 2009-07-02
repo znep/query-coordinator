@@ -579,7 +579,8 @@ infoContentOuter table.gridList td.picture > *
 .infoContentOuter table.gridList tr.hover td.actionContainer .action { display: block; }
 
 .infoContentOuter table.gridList td.views > *,
-.infoContentOuter table.gridList td.copies > * { text-align: right; }
+.infoContentOuter table.gridList td.copies > *,
+.infoContentOuter table.gridList td.comments > * { text-align: right; }
 
 /*** END: grid list table ***/
 

@@ -46,6 +46,12 @@
     background-position: 0 -14px;
 }
 
+div.blist-percent,
+div.blist-percent .blist-percent-bar-pos
+{
+    height: 100%;
+}
+
 .columnHeaderMenu
 {
     width: 15em;
@@ -105,6 +111,26 @@ ul.menu.columnHeaderMenu li
 .columnHeaderMenu .autofilter li.filterItem.active a
 {
     background-position: 5px 30px; /*-508px;*/
+}
+
+.columnHeaderMenu .blist-checkbox,
+.columnHeaderMenu .blist-picklist-wrapper,
+.columnHeaderMenu .blist-flag,
+.columnHeaderMenu .blist-tstars-wrapper
+{
+    float: left;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+.columnHeaderMenu .blist-checkbox { width: 14px; }
+.columnHeaderMenu .blist-flag { width: 25px; }
+
+.columnHeaderMenu .blist-tstars-wrapper,
+.columnHeaderMenu .blist-tstars { height: 10px; }
+.columnHeaderMenu .blist-tstars-wrapper
+{
+    margin-top: 0.2em;
+    width: 50px;
 }
 
 /* This is only used for initial positioning; the menu is pulled out, so real

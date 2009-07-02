@@ -307,8 +307,15 @@
     width: auto;
 }
 
-#profile table.gridList .views,
-#profile table.gridList .copies { width: 7em; }
+#profile table.gridList .views { width: 7em;}
+#profile table.gridList .comments { width: 7em; }
+#profile table.gridList .averageRating { width: 10em; }
+#profile table.gridList .averageRating div.rating
+{
+    height: 16px;
+    width: 89px;
+    padding: 0;
+}
 #profile table.gridList .name { width: 100%; }
 #profile table.gridList .actionContainer { width: 3.5em; }
 #profile .actionContainer a.action { padding: 0 0 0 5px; }

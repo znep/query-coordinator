@@ -48,72 +48,72 @@
 
             updateButtons($this);
 
-			var timerPtr;
+            var timerPtr;
 
-			// Repeats a function call on intervals based on the number of
-			// iterations passed. Sets the timerPtr variable to the value
-			// of the setTimeout pointer so it can be cancelled externally.
-			var repeatScroll = function(tickCallback, iterations)
-			{
-				if (!tickCallback())
-				{
-					$(document).unbind('mouseup.scrollable.repeatScroll');
-					return;
-				}
-				timerPtr = setTimeout(function()
-				{
-					repeatScroll(tickCallback, iterations++);
-				}, Math.max(100 - iterations * 2, 5));
-			};
+            // Repeats a function call on intervals based on the number of
+            // iterations passed. Sets the timerPtr variable to the value
+            // of the setTimeout pointer so it can be cancelled externally.
+            var repeatScroll = function(tickCallback, iterations)
+            {
+                if (!tickCallback())
+                {
+                    $(document).unbind('mouseup.scrollable.repeatScroll');
+                    return;
+                }
+                timerPtr = setTimeout(function()
+                {
+                    repeatScroll(tickCallback, iterations++);
+                }, Math.max(100 - iterations * 2, 5));
+            };
 
-			// Call stepPrev once for immediate feedback, then kicks off
-			// repeatScroll calling stepPrev at each tick.
-			$this.find(config.prevSelector).mousedown(function (event)
-			{
-				if (!stepPrev($this))
-				{
-					return;
-				}
-				timerPtr = setTimeout(function()
-				{
-					repeatScroll(function()
-					{
-						return stepPrev($this);
-					}, 0);
-				}, 800);
-				$(document).bind('mouseup.scrollable.repeatScroll', function(event)
-				{
-					clearTimeout(timerPtr);
-					$(document).unbind('mouseup.scrollable.repeatScroll');
-				});
-			});
+            // Call stepPrev once for immediate feedback, then kicks off
+            // repeatScroll calling stepPrev at each tick.
+            $this.find(config.prevSelector).mousedown(function (event)
+                {
+                    if (!stepPrev($this))
+                    {
+                        return;
+                    }
+                    timerPtr = setTimeout(function()
+                    {
+                        repeatScroll(function()
+                        {
+                            return stepPrev($this);
+                        }, 0);
+                    }, 800);
+                    $(document).bind('mouseup.scrollable.repeatScroll', function(event)
+                    {
+                        clearTimeout(timerPtr);
+                        $(document).unbind('mouseup.scrollable.repeatScroll');
+                    });
+                });
             $this.find(config.prevSelector).click(function (event)
             {
                 event.stopPropagation();
                 event.preventDefault();
             });
 
-			// Call stepNext once for immediate feedback, then kicks off
-			// repeatScroll calling stepNext at each tick.
-			$this.find(config.nextSelector).mousedown(function (event)
-			{
-				if (!stepNext($this))
-				{
-					return;
-				}
-				timerPtr = setTimeout(function()
-				{
-					repeatScroll(function()
-					{
-						return stepNext($this);
-					}, 0);
-				}, 500);
-				$(document).bind('mouseup.scrollable.repeatScroll', function(event)
-				{
-					clearTimeout(timerPtr);
-					$(document).unbind('mouseup.scrollable.repeatScroll');
-				});
-			});
+            // Call stepNext once for immediate feedback, then kicks off
+            // repeatScroll calling stepNext at each tick.
+            $this.find(config.nextSelector).mousedown(function (event)
+                {
+                    if (!stepNext($this))
+                    {
+                        return;
+                    }
+                    timerPtr = setTimeout(function()
+                    {
+                        repeatScroll(function()
+                        {
+                            return stepNext($this);
+                        }, 0);
+                    }, 500);
+                    $(document).bind('mouseup.scrollable.repeatScroll', function(event)
+                    {
+                        clearTimeout(timerPtr);
+                        $(document).unbind('mouseup.scrollable.repeatScroll');
+                    });
+                });
             $this.find(config.nextSelector).click(function (event)
             {
                 event.stopPropagation();
@@ -124,7 +124,7 @@
             while ($activeItem.length > 0 &&
                 $activeItem.hasClass(config.hiddenClass))
             {
-                $this.find(config.nextSelector).click();
+                stepNext($this);
             }
         });
     };
@@ -133,35 +133,35 @@
     // private functions
     //
 
-	// Logic required to scroll up the menu by one entry.
-	function stepPrev($this)
-	{
-		var config = $this.data("config-scrollable");
+    // Logic required to scroll up the menu by one entry.
+    function stepPrev($this)
+    {
+        var config = $this.data("config-scrollable");
         var $prevItem = prevHiddenItem($this);
         if ($prevItem.length > 0)
         {
             $prevItem.removeClass(config.hiddenClass);
             lastShownItem($this).addClass(config.hiddenClass);
             updateButtons($this);
-			return true;
+            return true;
         }
-		return false;
-	};
+        return false;
+    };
 
-	// Logic required to scroll down the menu by one entry.
-	function stepNext($this)
-	{
-		var config = $this.data("config-scrollable");
-		var $nextItem = nextHiddenItem($this);
+    // Logic required to scroll down the menu by one entry.
+    function stepNext($this)
+    {
+        var config = $this.data("config-scrollable");
+        var $nextItem = nextHiddenItem($this);
         if ($nextItem.length > 0)
         {
             $nextItem.removeClass(config.hiddenClass);
             firstShownItem($this).addClass(config.hiddenClass);
             updateButtons($this);
-			return true;
+            return true;
         }
-		return false;
-	};
+        return false;
+    };
 
     function prevHiddenItem($this)
     {

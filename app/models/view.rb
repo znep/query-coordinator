@@ -51,7 +51,7 @@ class View < Model
 
   def self.create(attributes)
     if attributes['viewFilters'].blank? || attributes['viewFilters'] == '""' ||
-      attributes['viewFilters'] == "''"
+      attributes['viewFilters'] == "''" || attributes['viewFilters'] == "null"
       attributes['viewFilters'] = nil
     else
       attributes['viewFilters'] = JSON.parse(attributes['viewFilters'])

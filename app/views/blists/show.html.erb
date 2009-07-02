@@ -48,6 +48,8 @@
           <%= hidden_field_tag("view[originalViewId]", @view.id) %>
           <%= hidden_field_tag("view[viewFilters]",
             (JSON.generate(@view.data['viewFilters'] || ''))) %>
+          <%= hidden_field_tag("view[searchString]",
+            (JSON.generate(@view.data['searchString'] || ''))) %>
           <%= text_field_tag("view[name]", '') %>
           <%- end -%>
         </div>
@@ -163,7 +165,7 @@
 					    <a href='#' id='shareTopLink' class='dropdownLink'>
 					      <div class='outerWrapper'><div class='midWrapper'>
 					          <div class='innerWrapper'>
-					            <span class='linkIcon'>Share With</span></div></div></div></a>
+					            <span class='linkIcon'>Socialize This</span></div></div></div></a>
 					    <%= menu_tag({'id' => 'shareTopMenu', 'option_menu' => true,
 					    'items' => [
 					    {'text' => 'Delicious', 'class' => 'delicious', 'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
@@ -176,7 +178,8 @@
           <form class='search' action='#'>
             <div class='searchContainer'>
               <input type='text' class='textPrompt'
-              title='<%= @view.searchString != nil && @view.searchString != "" ? @view.searchString : "Find in this " + t(:blist_name) %>' />
+              title='Find in this <%= t(:blist_name) %>'
+              value='<%= @view.searchString %>' />
               <div class='actionBox'>
               <div class='clearBox'>
                 <a class='clearSearch' title='Clear Search' href='#clear_search'>
@@ -317,6 +320,8 @@
                 <%= hidden_field_tag("view[originalViewId]", @view.id) %>
                 <%= hidden_field_tag("view[viewFilters]",
                   (JSON.generate(@view.data['viewFilters'] || ''))) %>
+                <%= hidden_field_tag("view[searchString]",
+                  (JSON.generate(@view.data['searchString'] || ''))) %>
                 <%= text_field_tag("view[name]", '') %>
                 <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
                 <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),

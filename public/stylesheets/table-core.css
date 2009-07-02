@@ -248,6 +248,7 @@ img.blist-table-option-icon
 {
     background: no-repeat scroll center center;
     height: 13px;
+    text-indent: -9999px;
 }
 
 .blist-check-on,
@@ -256,7 +257,14 @@ img.blist-table-option-icon
     background-image: url(/stylesheets/images/content/table/check.png);
 }
 
-.blist-tstars {
+.blist-tstars-wrapper
+{
+    overflow: hidden;
+    text-indent: -9999px;
+}
+
+.blist-tstars
+{
     display: block;
     margin: auto;
     position: relative;
@@ -323,6 +331,7 @@ img.blist-table-option-icon
     height: 22px;
     margin-top: -4px;
     margin-bottom: -4px;
+    text-indent: -9999px;
 }
 
 .blist-flag-blue {

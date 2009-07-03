@@ -102,7 +102,7 @@
 </div>
 
 <% content_for :js_footer do %>
-  <% bundle :name => "account_screen_validate" do %>
+  <% bundle :name => "account_screen_validate", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
     <%= javascript_include_tag "util/sizing", "plugins/jquery.validate", 
     "screens/account-screen", :cache => "cache/accounts_show_all" %>
   <% end %>

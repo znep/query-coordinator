@@ -1,6 +1,6 @@
 class ImportsController < ApplicationController
   def new
-    @body_class = 'import'
+    redirect_to(:controller => 'blists', :action => 'new', :status => 301)
   end
 
   def redirect

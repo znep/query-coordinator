@@ -152,7 +152,7 @@ class BlistsController < SwfController
 
   def new
     respond_to do |format|
-      format.html { redirect_to(blists_path)}
+      format.html { render }
       format.data { render(:layout => "modal_dialog") }
     end
   end
@@ -170,11 +170,23 @@ class BlistsController < SwfController
       # Don't need to set any flags for private
     when "adult_content"
       flags << "adultContent"
-    end
+    end  
     new_view[:flags] = flags
     
+    # if there is CC license type selected then we need to
+    # populate from the creative commons dropdown
+    if new_view[:licenseId] == "CC"
+      new_view[:licenseId] = params[:license_cc_type]
+    end
+
+    # if we have a datasetID then the user imported
     begin
-      view = View.create(new_view)
+      if params.has_key?('datasetID') && !params[:datasetID].empty?
+        view = View.find(params[:datasetID])
+        view.update_attributes!(new_view)
+      else
+        view = View.create(new_view)
+      end
     rescue CoreServerError => e
       return respond_to do |format|
         format.html do

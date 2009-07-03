@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories, :sorts
+  cattr_accessor :categories, :licenses, :creative_commons, :sorts
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -290,6 +290,22 @@ class View < Model
     "Business" => "Business",
     "Education" => "Education",
     "Government" => "Government"
+  }
+  
+  @@licenses = {
+    "" => "",
+    "PUBLIC_DOMAIN" => "Public Domain",
+    "CC" => "Creative Commons"
+  }
+  
+  @@creative_commons = {
+    "CC0_10" => "1.0 Universal",
+    "CC_30_BY" => "Attribution 3.0 Unported",
+    "CC_30_BY_SA" => "Attribution | Share Alike 3.0 Unported",
+    "CC_30_BY_ND" => "Attribution | No Derivative Works 3.0 Unported",
+    "CC_30_BY_NC" => "Attribution | Noncommercial 3.0 Unported",
+    "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
+    "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
   
   @@sorts = [

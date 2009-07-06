@@ -27,6 +27,7 @@
           </ul>
           <span class="helpie" title="You can upload a data file to help get started with your <%= t(:blist_name) %>.">?</span>
           <%= hidden_field_tag("datasetID") %>
+          <label class="error uploadErrorMessage hide"></label>
         
           <label for="view_description">Short Description:</label>
           <%= text_area_tag("view[description]", "", :title => "Enter a description", :class => "textPrompt") %>

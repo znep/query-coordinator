@@ -83,7 +83,7 @@ $(function ()
             {
                 $('.uploadErrorMessage')
                     .text('Uploading XLS files is coming soon. Until then, save it first as CSV.')
-                    .show();
+                    .removeClass('hide');
                 $(".newBlistContent #view_file").val('');
                 return false;
             }
@@ -91,13 +91,13 @@ $(function ()
             {
                 $('.uploadErrorMessage')
                     .text('Please choose a CSV or XML file.')
-                    .show();
+                    .removeClass('hide');
                 $(".newBlistContent #view_file").val('');
                 return false;
             }
             else
             {
-                $('.uploadErrorMessage').hide();
+                $('.uploadErrorMessage').addClass('hide');
             }
 
             $(".newBlistContent #view_file").val(file);
@@ -119,7 +119,7 @@ $(function ()
                 $(".newBlistContent #view_file").val('');
                 $('.uploadErrorMessage')
                     .text("Failed to import that file!  " + response.message)
-                    .show();
+                    .removeClass('hide');
                 $(".submitPending").hide();
                 $uploadButton.show();
                 return false;

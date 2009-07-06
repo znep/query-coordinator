@@ -49,6 +49,11 @@
     text-align: inherit;
 }
 
+.newBlistContent label.error.hide
+{
+    display: none;
+}
+
 .newBlistContent label.required
 {
     background: url(images/common/required.png) no-repeat;

@@ -130,9 +130,6 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :user_sessions
 
-  map.connect 'sitemap.xml', :controller => "sitemap", :action => "index"
-  map.connect 'sitemap/:action/:page', :controller => "sitemap", :page => /\d*/
-
   # Static content
   ['about', 'solution', 'company-info', 'press'].each do |static_section|
     controller_name = static_section.underscore.camelize

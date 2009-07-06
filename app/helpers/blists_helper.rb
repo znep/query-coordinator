@@ -204,12 +204,18 @@ module BlistsHelper
   end
 
   def category_select_options(selected_category = nil)
-    out = ""
-    View.categories.sort { |a,b| a[1] <=> b[1] }.each do |category|
-      selected = selected_category == category[0] ? " selected=\"selected\"" : ""
-      out += "<option value=\"#{category[0]}\"#{selected}>#{category[1]}</option>"
+    options_for_select(View.categories.invert.sort { |a, b| a.first <=> b.first }, selected_category)
+  end
+  
+  def license_select_options(selected_license = nil)
+    if selected_license.include?("CC")
+      selected_license = "CC"
     end
-    out
+    options_for_select(View.licenses.invert, selected_license)
+  end
+  
+  def creative_commons_select_options(selected_option = nil)
+    options_for_select(View.creative_commons.invert.sort { |a, b| a.first <=> b.first }, selected_option)
   end
 
   def get_publish_embed_code_for_view(view, width = "425", height = "344", variation = "")

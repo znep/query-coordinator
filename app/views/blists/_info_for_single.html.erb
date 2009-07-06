@@ -180,6 +180,92 @@
           <%- end -%>
         </dd>
       </dl>
+      
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+        <dt>
+          Licensing
+        </dt>
+        <dd class="editItem">
+          <div class="itemContent">
+            <span>
+              <%- if @view.license -%>
+                <%- if view.license.logoUrl.empty? -%>
+                  <%= h(view.license.name) %>
+                <%- else -%>
+                  <a href="<%= h(@view.license.termsLink) %>">
+                    <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
+                  </a>
+                <%- end -%>
+              <%- end -%>
+            </span>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
+              <%= hidden_field_tag("fieldType", "licenseId") %>
+              <%= select_tag("view[licenseId]",
+                license_select_options(h(view.licenseId.nil? ? '' : view.licenseId))) %>
+              <%= select_tag("license_cc_type",
+                creative_commons_select_options(h(view.licenseId.nil? ? '' : view.licenseId)),
+                :class => ((!view.licenseId.nil? && view.licenseId.include?("CC")) ? '' : 'hide')) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+            <%- end -%>
+            <%- end -%>
+          </div>
+          <%- if is_owner -%>
+          <div class="itemActions">
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+          </div>
+          <%- end -%>
+        </dd>
+      </dl>
+
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+        <dt>
+          Attributed To
+        </dt>
+        <dd class="editItem">
+          <div class="itemContent">
+            <span><%= h(view.attribution) %></span>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
+              <%= hidden_field_tag("fieldType", "attribution") %>
+              <%= text_field_tag("view[attribution]", h(view.attribution)) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+            <%- end -%>
+            <%- end -%>
+          </div>
+          <%- if is_owner -%>
+          <div class="itemActions">
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+          </div>
+          <%- end -%>
+        </dd>
+      </dl>
+
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+        <dt>
+          Attribution Link
+        </dt>
+        <dd class="editItem">
+          <div class="itemContent">
+            <span><%= link_to(h(view.attributionLink)) %></span>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
+              <%= hidden_field_tag("fieldType", "attributionLink") %>
+              <%= text_field_tag("view[attributionLink]", h(view.attributionLink)) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+            <%- end -%>
+            <%- end -%>
+          </div>
+          <%- if is_owner -%>
+          <div class="itemActions">
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+          </div>
+          <%- end -%>
+        </dd>
+      </dl>
 
       <dl class="summaryList">
         <dt>
@@ -244,7 +330,7 @@
         <dd>
           <div class="itemContent">
             <ul>
-              <li><%= pluralize(view.viewCount, "visits") %></li>
+              <li><%= pluralize(view.viewCount, "visit") %></li>
               <li><%= pluralize(view.copyCount, "copy") %></li>
             </ul>
           </div>

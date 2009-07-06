@@ -384,6 +384,29 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 		forcePosition: true, closeOnResize: true});
 
     $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
+    
+    // Creative Commons cascading dropdown
+    if ($("#view_licenseId").val() == "CC")
+    {
+        $('#view_licenseId').attr('name', '');
+        $('#license_cc_type').attr('name', 'view[licenseId]');
+    }
+    
+    $('#view_licenseId').change(function()
+    {
+        if ($("#view_licenseId").val() == "CC")
+        {
+            $('#license_cc_type').show();
+            $('#view_licenseId').attr('name', '');
+            $('#license_cc_type').attr('name', 'view[licenseId]');
+        }
+        else
+        {
+            $('#license_cc_type').hide();
+            $('#view_licenseId').attr('name', 'view[licenseId]');
+            $('#license_cc_type').attr('name', '');
+        }
+    });
 
 	// Update copyable publish code and live preview from template/params
 	var updatePublishCode = function()

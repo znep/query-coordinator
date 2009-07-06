@@ -15,11 +15,11 @@
             <h1>Welcome back <%= current_user.is_established? ? h(current_user.login) : h(current_user.firstName) %></h1>
             
             <ul class="actionButtons clearfix">
-              <li><a href="<%= new_blist_path %>" rel="modal"
-                title='Create a new <%= t(:blist_name) %> from scratch'>
-                Design a <%= t(:blist_name).capitalize %>
-              </a></li>
-              <li><%= link_to("Upload Data", {:controller => "imports", :action => "new"}, :class => 'arrowButton', :title => "Upload a CSV or XML data file and we'll convert it into a #{t(:blist_name)}.") %> </li>
+              <li>
+                <%= link_to("New #{t(:blist_name).titleize}", {:controller => "blists", :action => "new"}, 
+                :class => 'arrowButton', 
+                :title => "Create a new #{t(:blist_name)}, either by importing your own data file, or from scratch.") %>
+              </li>
               <li><%= link_to("Browse #{t(:blists_name).titleize}", root_path) %></li>
               <li class="last"><%= link_to("Invite Others", invite_path, :rel => "modal") %></li>
             </ul>

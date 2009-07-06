@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") : '' %>
-  <% bundle :name => "blists_show" do %>
+  <% bundle :name => "blists_show", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
     <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
       "blist-grid-screen", :cache => "cache/blists_show_all" %>
   <% end %>
@@ -165,7 +165,7 @@
 					    <a href='#' id='shareTopLink' class='dropdownLink'>
 					      <div class='outerWrapper'><div class='midWrapper'>
 					          <div class='innerWrapper'>
-					            <span class='linkIcon'>Share With</span></div></div></div></a>
+					            <span class='linkIcon'>Socialize This</span></div></div></div></a>
 					    <%= menu_tag({'id' => 'shareTopMenu', 'option_menu' => true,
 					    'items' => [
 					    {'text' => 'Delicious', 'class' => 'delicious', 'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},

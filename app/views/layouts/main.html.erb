@@ -5,7 +5,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=8" />
-  <% bundle :name => "base_style" do %>
+  <% bundle :name => "base_style", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
     <%= stylesheet_link_tag "base", "common", "info-pane", "layout",
     "outer-chrome", "sidebar", "widgets", "modals",
     :cache => "cache/layout_main_all" %>
@@ -58,10 +58,10 @@
 
       <div class='userNav'>
         <ul>
-          <li><a href='http://www.getsatisfaction.com/socrata' rel="external">Help</a></li>
-          <li class='signInLink'><a href='/login'>Sign Up / In</a></li>
+          <li><a href='http://www.getsatisfaction.com/socrata' rel='nofollow external'>Help</a></li>
+          <li class='signInLink'><a href='/login' rel='nofollow'>Sign Up / In</a></li>
           <li class='accountLink'><%= link_to "My Account", account_path%></li>
-          <li class='signOutLink'><a href='/logout'>Sign Out</a></li>
+          <li class='signOutLink'><a href='/logout' rel='nofollow'>Sign Out</a></li>
         </ul>
       </div>
 
@@ -119,7 +119,7 @@
     :cache => "cache/layout_main_all" %>
 
   <% if ENV["RAILS_ENV"] != 'production' %>
-  	<% bundle :name => "debug" do %>
+  	<% bundle :name => "debug", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
       <%= javascript_include_tag "util/debug" %>
     <% end %>
   <% end %>

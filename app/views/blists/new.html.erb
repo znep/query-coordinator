@@ -1,0 +1,133 @@
+<% content_for :head do %>
+  <% bundle :name => "blist_new_css" do %>
+    <%= stylesheet_link_tag "blist-new-screen", :cache => "cache/blists_new_all" %>
+  <% end %>
+  <title>New <%= t(:blist_name).capitalize %> | <%= t(:page_title) %></title>
+<% end %>
+
+<div class="twoColumnContainer tabContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent scrollContentColumn">
+    <div class='outerContent'>
+      <div class='content newBlistContent'>
+        <% form_tag(blists_path, :id => "newDatasetForm") do %>
+          <h1>Create a New <%= t(:blist_name).capitalize %></h1>
+
+          <h3>General Information</h3>
+        
+          <label for="view_name" class="required"><%= t(:blist_name).capitalize %> Title:</label>
+          <%= text_field_tag("view[name]", "", :title => "Enter a title", :class => "textPrompt") %>
+        
+          <label for="view_file">Optional File Upload:</label>
+          <%= text_field_tag("view[file]", "Supported Formats: .csv .tsv .xml", :class => "prompt", :readonly => true) %>
+          <span id="uploadThrobber" class="hide"><div>uploading...</div></span>
+          <ul id="fileBrowseButtonList" class="actionButtons">
+            <li>
+              <a id="fileBrowseButton" href="/imports.txt?two_step_import=true">Browse For File</a>
+            </li>
+          </ul>
+          <span class="helpie" title="You can upload a data file to help get started with your <%= t(:blist_name) %>.">?</span>
+          <%= hidden_field_tag("datasetID") %>
+          <label class="error uploadErrorMessage hide"></label>
+        
+          <label for="view_description">Short Description:</label>
+          <%= text_area_tag("view[description]", "", :title => "Enter a description", :class => "textPrompt") %>
+        
+          <label for="view_category">Type of <%= t(:blist_name).capitalize %>:</label>
+          <%= select_tag("view[category]", category_select_options()) %>
+          <span class="helpie" title="What kind of <%= t(:blist_name) %> is this?">?</span>
+        
+          <label for="view_tags">Tags / Keywords:</label>
+          <%= text_field_tag("view[tags]", "", :title => "Enter keywords", :class => "textPrompt") %>
+          <span class="helpie" title="Keywords can help other people find this <%= t(:blist_name) %>.">?</span>
+          <span class="additionalHelp">(Enter one or more keywords separated by commas)</span>
+        
+          <h3>Licensing &amp; Attribution</h3>
+
+          <div class="licensing">
+            <label for="view_licenseId">Licensing:</label>
+            <%= select_tag("view[licenseId]", license_select_options("")) %>
+            <span class="helpie" title="Choose licensing terms for people who wish to use this dataset.">?</span>
+          
+            <div id="licensingCreativeCommons" class="hide">
+              <hr />
+              <label for="license_cc_type" class="required">License Type:</label>
+              <%= select_tag("license_cc_type", creative_commons_select_options()) %>
+            </div>
+          
+            <label for="view_attribution">Attributed To:</label>
+            <%= text_field_tag("view[attribution]", "", :title => "Individual or Organization", :class => "textPrompt") %>
+          
+            <label for="view_attributionLink">Attribution URL:</label>
+            <%= text_field_tag("view[attributionLink]", "", :title => "Enter Web Address", :class => "textPrompt") %>
+          
+            <%#<label for="view_attribution_logo">Attribution Logo:</label>%>
+            <%# Someday turn this back into an AJAX upload for betterer styling %>
+            <%#<%= text_field_tag("view[attribution_logo]", "", :title => "Upload", :class => "textPrompt") %>
+            <%#<ul class="actionButtons"><li><a id="logoBrowseButton" href="#browse">Browse</a></li></ul> %>
+            <%#= file_field_tag("attribution_logo") %>
+          </div>
+      
+          <h3>Privacy &amp; Security</h3>
+      
+          <label>Privacy Settings:</label>
+          <p id="privacyDisplayText">This <%= t(:blist_name) %> can be viewed by the public.</p>
+          <p><a href="#modifyPrivacy" class="privacyExpander">Edit</a></p>
+          <div class="privacyButtons hide">
+            <p>
+              <%= radio_button_tag("privacy", "public_view", true) %>
+              <label for="privacy_public_view">
+                My data can only be modified by me, but everyone can view it.
+              </label>
+            </p>
+            <%- #TODO: Add public editable back in when core server supports it. -%>
+            <%- if false -%>
+            <p>
+              <%= radio_button_tag("privacy", "public_edit") %>
+              <label for="privacy_public_edit">
+                My data can be viewed by everyone and modified by anyone with an account.
+              </label>
+            </p>
+            <%- end -%>
+            <p>
+              <%= radio_button_tag("privacy", "private") %>
+              <label for="privacy_private">
+                My data is private.
+              </label>
+            </p>
+            <p><a href="#advancedPrivacy" class="privacyExpander">Advanced Privacy Settings</a></p>
+            <div class="advancedPrivacy hide">
+              <p>
+                <%= radio_button_tag("privacy", "adult_content") %>
+                <label for="privacy_adult_content">
+                  This <%= t(:blist_name) %> contains adult content.
+                </label>
+              </p>
+            </div>
+          </div>
+      
+          <hr />
+          <ul class="submitActions">
+            <li><input type="image" name="submit" src="<%= image_path("button_finish.png") %>" /></li>
+            <li class="cancelButton"><a href="#cancel"><span>Cancel</span></a></li>
+          </ul>
+          <div class="submitPending hide">
+            Your data is being imported by our servers.  Please wait.
+          </div>
+          <div class="requiredEntryText">Required Entry</div>
+        <%- end -%>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="column scrollContentColumn">
+  <% render(:layout => "shared/sidebar_box") do %>
+    <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+  <% end %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "plugins/ajaxupload.3.0", "screens/blist-new-screen.js",
+  :cache => "cache/blists_new" %>
+<% end %>

@@ -56,6 +56,12 @@ class View < Model
     else
       attributes['viewFilters'] = JSON.parse(attributes['viewFilters'])
     end
+    if attributes['searchString'].blank? || attributes['searchString'] == '""' ||
+      attributes['searchString'] == "''" || attributes['searchString'] == "null"
+      attributes['searchString'] = nil
+    else
+      attributes['searchString'] = JSON.parse(attributes['searchString'])
+    end
     super(attributes)
   end
 

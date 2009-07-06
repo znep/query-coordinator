@@ -187,12 +187,14 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected {
     border-bottom-color: #dddddd;
 }
 
-div.blist-table-expander
+div.blist-table-expander,
+div.blist-table-edit-container
 {
-    position: absolute;
-    z-index: 10;
     overflow: auto;
+    position: absolute;
 }
+div.blist-table-expander { z-index: 15; }
+div.blist-table-edit-container { z-index: 20; }
 
 div.blist-table-expander .blist-td
 {

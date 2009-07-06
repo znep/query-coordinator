@@ -1032,6 +1032,7 @@ blist.namespace.fetch('blist.data');
                     var childRow = childRows[j] || (childRows[j] = []);
                     childRow.id = "t" + nextTempID++;
                     childRow.level = (row.level || 0) + 1;
+                    childRow.parent = row;
                     childRow[col.dataIndex] = cell[j];
                 }
             }

@@ -198,6 +198,7 @@
         var activeCellOn = false;
         var activeCellX,    // Index of the physical column that is active
             activeCellY;    // Row ID (of a row in the model active set)
+        var $activeCell;
 
         // The focus box (chases the active cell)
         var $focus;
@@ -348,12 +349,12 @@
         }
 
         var getActiveCell = function() {
-            return $('.blist-cell-active', $this)[0];
+            return $activeCell ? $activeCell[0] : null;
         }
 
         var updateCellNavCues = function() {
             // Update the active cell
-            var active = $('.blist-cell-active', $this)[0];
+            var active = getActiveCell();
             if (activeCellOn) {
                 var physActive = renderedRows[activeCellY];
                 if (physActive)
@@ -362,22 +363,22 @@
                     active = null;
                 else if (newActive) {
                     // Mark the new cell as active
-                    var $active = $(newActive);
-                    $active.addClass('blist-cell-active');
+                    $activeCell = $(newActive);
+                    $activeCell.addClass('blist-cell-active');
 
                     // Move the focus rectangle
                     if (!$focus) {
-                        $scrolls.append('<div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/>');
+                        inside.append('<div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/>');
                         $focus = $('.blist-table-focus');
                         $focus[0].style.height = $focus[2].style.height = '2px';
                         $focus[1].style.width = $focus[3].style.width = '2px';
                     }
-                    var tl1 = $active.position();
-                    var tl2 = $($active[0].parentNode).position();
+                    var tl1 = $activeCell.position();
+                    var tl2 = $($activeCell[0].parentNode).position();
                     var x = tl1.left + tl2.left;
                     var y = tl1.top + tl2.top - 1;
-                    var w = $active.outerWidth() - 1;
-                    var h = $active.outerHeight() - 1;
+                    var w = $activeCell.outerWidth() - 1;
+                    var h = $activeCell.outerHeight() - 1;
 
                     $focus[0].style.left = $focus[2].style.left = $focus[3].style.left = x + 'px'
                     $focus[1].style.left = (x + w) + 'px';
@@ -428,6 +429,12 @@
         var cellNavTo = function(cell, event, selecting) {
             // Obtain the row for the cell
             var row = getRow(cell);
+            if (!row)
+            {
+                clearCellNav();
+                return false;
+            }
+
             var levelID = row.level || 0;
 
             // Check if we clicked in a locked section; ignore those for now
@@ -545,6 +552,124 @@
         }
 
 
+        /*** CELL EDITING ***/
+        var $editContainer;
+        var isEdit = false;
+
+        var editCell = function(cell)
+        {
+            var row = getRow(cell);
+            var col = getColumn(cell);
+            if (!col || !row) { return; }
+            var value;
+            eval('value = row' + col.dataLookupExpr + ';');
+
+            // Obtain an expanding node in utility (off-screen) mode
+            if (!$editContainer)
+            {
+                $editContainer = $('<div class="blist-table-edit-container ' +
+                    'blist-table-util"></div>');
+                $editContainer.blistEditor();
+                $editContainer.bind('keydown.blistTableEdit', editorKeyDown);
+                inside.append($editContainer);
+            }
+            // If editContainer is not in the tree anywhere, stick it inside
+            else if ($editContainer[0].parentNode == null)
+            {
+                inside.append($editContainer);
+            }
+
+            var $editor = $editContainer.blistEditor().setEditor(row, col, value);
+
+            $editor.width('auto').height('auto');
+            $editContainer.width('auto').height('auto');
+
+            isEdit = true;
+            $(document).bind('mousedown.blistTableEdit', editMouseDown);
+            $(document).bind('keydown.blistTableEdit', editKeyDown);
+
+            sizeCellOverlay($editContainer, $editor, $(cell));
+            positionCellOverlay($editContainer, $(cell));
+            $editContainer.removeClass('blist-table-util').addClass('shown');
+
+            $editor.find(':text').focus();
+        };
+
+        var endEdit = function(isCancel)
+        {
+            isEdit = false;
+            $(document).unbind('.blistTableEdit');
+            $navigator[0].focus();
+
+            if (!$editContainer) { return; }
+            $editContainer.css('top', -10000);
+            $editContainer.css('left', -10000);
+            $editContainer.removeClass('shown');
+
+            if (isCancel) { return; }
+
+            var editor = $editContainer.blistEditor();
+            var origValue = editor.originalValue;
+            var value = editor.currentValue();
+            if (origValue != value)
+            {
+                var row = editor.row;
+                var col = editor.column;
+                eval('row' + col.dataLookupExpr + ' = value;');
+                model.change([row]);
+
+                var data = {};
+                data[col.id] = value;
+                var url = '/views/' + model.meta().view.id + '/rows/';
+                if (col.nestedIn)
+                {
+                    var parCol = col.nestedIn.header;
+                    var childRow;
+                    eval('childRow = row' + parCol.dataLookupExpr + ';');
+                    url += row.parent.id +
+                        '/columns/' + parCol.id +
+                        '/subrows/' + (childRow.id || childRow[0]) +
+                        '.json';
+                }
+                else
+                {
+                    url += row.id + '.json';
+                }
+
+                $.ajax(
+                    { url: url,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: $.json.serialize(data)
+                });
+            }
+        };
+
+        var editMouseDown = function(event)
+        {
+            if ($(event.target).parents().andSelf().index($editContainer) < 0)
+            {
+                endEdit();
+            }
+        };
+
+        var editKeyDown = function(event)
+        {
+            if (event.keyCode == 27) // ESC
+            {
+                endEdit(true);
+            }
+        };
+
+        var editorKeyDown = function(event)
+        {
+            if (event.keyCode == 13) // Enter
+            {
+                endEdit();
+                navigateY(1, event);
+            }
+        };
+
         /*** CELL HOVER EXPANSION ***/
 
         var hotExpander;
@@ -606,37 +731,90 @@
             $hotExpander.empty();
             $hotExpander.append(wrap);
 
-            // Compute cell padding
-            var padx = $wrap.outerWidth() - $wrap.width();
-            var pady = $wrap.outerHeight() - $wrap.height();
-
-            // Determine the cell's "natural" size
-            var rc = { width: $wrap.outerWidth() + 1,
-                height: $wrap.outerHeight() };
-
             // Determine if expansion is necessary.  The + 2 prevents us from
             // expanding if the box would just be slightly larger than the
             // containing cell.  This is a nicety except in the case of
             // picklists where the 16px image tends to be just a tad larger
             // than the text (currently configured at 15px).
-            var h = $(hotCell);
-            var hotWidth = h.outerWidth();
-            var hotHeight = h.outerHeight();
-            if (rc.width <= hotWidth + 2 && rc.height <= hotHeight + 2)
+            var $hotCell = $(hotCell);
+            var hotWidth = $hotCell.outerWidth();
+            var hotHeight = $hotCell.outerHeight();
+            if ($wrap.outerWidth() <= hotWidth + 2 &&
+                $wrap.outerHeight() <= hotHeight + 2)
             {
                 // Expansion is not necessary
                 hideHotExpander();
                 return;
             }
 
-            // The expander must be at least as large as the hot cell
-            if (rc.width < hotWidth)
+            // Size the expander
+            var rc = sizeCellOverlay($hotExpander, $wrap, $hotCell, true);
+            // Position the expander
+            rc = $.extend(rc, positionCellOverlay($hotExpander, $hotCell, true));
+
+            $hotExpander.removeClass('blist-table-util');
+
+            // Expand the element into position
+            $hotExpander.animate(rc, EXPAND_DURATION);
+        };
+
+
+        /***  CELL EXPANSION & POSITIONING  ***/
+        var positionCellOverlay = function($container, $refCell, animate)
+        {
+            // Locate a position for the expansion.  We prefer the expansion to
+            // align top-left with the cell but do our best to ensure the
+            // expansion remains within the viewport
+            var left = $refCell.offset().left - inside.offset().left;
+            var top = $refCell.offset().top - inside.offset().top;
+            var origOffset = { top: top, left: left };
+
+            // Ensure viewport is in the window horizontally
+            var viewportWidth = $scrolls.width();
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+                viewportWidth -= scrollbarWidth;
+            var scrollLeft = $scrolls.scrollLeft();
+            if (left + $container.width() > scrollLeft + viewportWidth)
+                left = scrollLeft + viewportWidth - $container.width();
+            if (left < scrollLeft)
+                left = scrollLeft;
+
+            // Ensure viewport is in the window vertically
+            var viewportHeight = $scrolls.height();
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+                viewportHeight -= scrollbarWidth;
+            var scrollTop = $scrolls.scrollTop();
+            if (top + $container.height() > scrollTop + viewportHeight)
+                top = scrollTop + viewportHeight - $container.height();
+            if (top < scrollTop - 1)
+                top = scrollTop - 1;
+
+            if (!animate)
             {
-                rc.width = hotWidth;
+                origOffset = { top: top, left: left };
             }
-            if (rc.height < hotHeight)
+            $container.css('top', origOffset.top + 'px');
+            $container.css('left', origOffset.left + 'px');
+
+            return ({left: left, top: top});
+        };
+
+        var sizeCellOverlay = function($container, $expandCell, $refCell, animate)
+        {
+            // Determine the cell's "natural" size
+            var rc = { width: $expandCell.outerWidth(),
+                height: $expandCell.outerHeight() };
+            var refWidth = $refCell.outerWidth();
+            var refHeight = $refCell.outerHeight();
+
+            // The expander must be at least as large as the hot cell
+            if (rc.width < refWidth)
             {
-                rc.height = hotHeight;
+                rc.width = refWidth;
+            }
+            if (rc.height < refHeight)
+            {
+                rc.height = refHeight;
             }
 
             // Determine the size to which the contents expand, constraining to
@@ -645,58 +823,38 @@
             if (rc.width > maxWidth)
             {
                 // Constrain the width and determine the height
-                $hotExpander.width(maxWidth);
+                $container.width(maxWidth);
                 rc.width = maxWidth;
-                rc.height = $hotExpander.height();
+                rc.height = $container.height();
             }
             var maxHeight = Math.floor(inside.height() * .75);
             if (rc.height > maxHeight)
                 rc.height = maxHeight;
 
-            // Locate a position for the expansion.  We prefer the expansion to
-            // align top-left with the cell but do our best to ensure the
-            // expansion remains within the viewport
-            rc.left = hotCell.offsetLeft;
-            rc.top = hotCell.parentNode.offsetTop;
-            rc.left -= 1; // assumes 1px right border
-            rc.top -= 1; // assumes 1px bottom border
-            var origOffset = { top: rc.top, left: rc.left };
+            // Compute container padding
+            var outerPadx = $container.outerWidth() - $container.width();
+            var outerPady = $container.outerHeight() - $container.height();
+            rc.width -= outerPadx;
+            rc.height -= outerPady;
 
-            // Ensure viewport is in the window horizontally
-            var viewportWidth = $scrolls.width();
-            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
-                viewportWidth -= scrollbarWidth;
-            var scrollLeft = $scrolls.scrollLeft();
-            if (rc.left + rc.width > scrollLeft + viewportWidth)
-                rc.left = scrollLeft + viewportWidth - rc.width;
-            if (rc.left < scrollLeft)
-                rc.left = scrollLeft;
-
-            // Ensure viewport is in the window vertically
-            var viewportHeight = $scrolls.height();
-            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
-                viewportHeight -= scrollbarWidth;
-            var scrollTop = $scrolls.scrollTop();
-            if (rc.top + rc.height > scrollTop + viewportHeight)
-                rc.top = scrollTop + viewportHeight - rc.height;
-            if (rc.top < scrollTop - 1)
-                rc.top = scrollTop - 1;
+            // Compute cell padding
+            var innerPadx = $expandCell.outerWidth() - $expandCell.width();
+            var innerPady = $expandCell.outerHeight() - $expandCell.height();
 
             // Size the content wrapper
-            $wrap.width(rc.width - padx);
-            $wrap.height(rc.height - pady);
+            $expandCell.width(rc.width - innerPadx);
+            $expandCell.height(rc.height - innerPady);
 
-            // Position the expander
-            $hotExpander.css('top', origOffset.top + 'px');
-            $hotExpander.css('left', origOffset.left + 'px');
-            $hotExpander.width(hotWidth);
-            $hotExpander.height(hotHeight);
-            $hotExpander.removeClass('blist-table-util');
+            if (!animate)
+            {
+                refWidth = rc.width;
+                refHeight = rc.height;
+            }
+            $container.width(refWidth);
+            $container.height(refHeight);
 
-            // Expand the element into position
-            $hotExpander.animate($.extend(rc, rc), EXPAND_DURATION);
+            return rc;
         };
-
 
         /*** MOUSE HANDLING ***/
 
@@ -911,8 +1069,10 @@
             // Locate the cell the mouse is in, if any
             over = findCell(event);
             
-            // If the hover cell is currently hot, nothing to do
-            if (over == hotCell)
+            // If the hover cell is currently hot or is an editor , nothing to
+            // do
+            if (over == hotCell ||
+                $(over).closest('.blist-table-edit-container').length > 0)
             {
                 return;
             }
@@ -1021,14 +1181,19 @@
                         model.selectSingleRow(row);
                     }
                     unHotRow(row.id);
-                    // Set the focus so that the shift/meta click won't select
-                    // any text.
-                    $this.focus();
                 }
             }
         };
 
-        var onMouseDown = function(event) {
+        var prevActiveCell;
+        var onMouseDown = function(event)
+        {
+            if (isEdit &&
+                $(event.target).parents().andSelf().index($editContainer) >= 0)
+            { return; }
+
+            clickTarget = event.target;
+
             if (hotHeader && hotHeaderMode != 3) {
                 clickTarget = null;
                 hotHeaderDrag = true;
@@ -1037,20 +1202,32 @@
                 return false;
             }
 
-            clickTarget = event.target;
             mouseDownAt = { x: event.clientX, y: event.clientY };
             selectFrom = null;
 
-            if (cellNav) {
+            if (cellNav)
+            {
                 var cell = findCell(event);
+                if (options.editEnabled && cell && cell == getActiveCell())
+                {
+                    prevActiveCell = cell;
+                }
+                else
+                {
+                    prevActiveCell = null;
+                }
                 if (cell && cellNavTo(cell, event)) {
+                    if (isEdit) { endEdit(); }
                     selectFrom = cell;
                     return false;
                 }
             }
         }
 
-        var onMouseUp = function(event) {
+        var onMouseUp = function(event)
+        {
+            if (isEdit) { return; }
+
             if (hotHeaderDrag) {
                 hotHeaderDrag = false;
                 onMouseMove(event);
@@ -1059,13 +1236,46 @@
                 event.preventDefault();
                 return true;
             }
-            if (clickTarget && clickTarget == event.target && !$(clickTarget).is('a')) {
+
+            if (clickTarget && clickTarget == event.target &&
+                !$(clickTarget).is('a'))
+            {
+                var editMode = false;
+                if (cellNav && options.editEnabled)
+                {
+                    var curActiveCell = getActiveCell();
+                    if (curActiveCell && curActiveCell == prevActiveCell)
+                    {
+                        // They clicked on a selected cell, go to edit mode
+                        editCell(curActiveCell);
+                        editMode = true;
+                    }
+                }
+
                 $(clickTarget).trigger('table_click', event);
-                $navigator[0].focus();
+                if (!editMode) { $navigator[0].focus(); }
             }
             mouseDownAt = null;
         }
 
+        var onDoubleClick = function(event)
+        {
+            if (isEdit &&
+                $(event.target).parents().andSelf().index($editContainer) >= 0)
+            { return; }
+
+            clickTarget = event.target;
+
+            if (cellNav)
+            {
+                var cell = findCell(event);
+                if (options.editEnabled && cell)
+                {
+                    // They clicked on a cell, go to edit mode
+                    editCell(cell);
+                }
+            }
+        };
 
         /*** KEYBOARD HANDLING ***/
 
@@ -1282,6 +1492,7 @@
             .addClass('blist-table')
             .mousedown(onMouseDown)
             .mousemove(onMouseMove)
+            .dblclick(onDoubleClick)
             .html(headerStr);
 
         var $lockedScrolls = $outside.find('.blist-table-locked-scrolls');
@@ -2522,6 +2733,7 @@
     var blistTableDefaults = {
         cellExpandEnabled: true,
         disableLastColumnResize: false,
+        editEnabled: false,
         generateHeights: true,
         ghostMinWidth: 20,
         headerMods: function (col) {},

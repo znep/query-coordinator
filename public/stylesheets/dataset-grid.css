@@ -46,6 +46,41 @@
     background-position: 0 -14px;
 }
 
+div.blist-table-edit-container
+{
+    background-color: #ffffff;
+    border: solid 2px #ff3333;
+    overflow: hidden;
+}
+
+.blist-table-editor.blist-td
+{
+    border: none;
+    padding: 0;
+}
+
+div.blist-table-edit-container input[type="text"],
+div.blist-table-edit-container input.textInput
+{
+    border: none;
+    font-size: 1em;
+    height: 100%;
+    padding: 0.2em;
+    width: 8.333em; /* 100px */
+}
+
+div.blist-table-edit-container.shown input[type="text"],
+div.blist-table-edit-container.shown input.textInput
+{
+    /* For some reason, interacting normally with this text field in FF
+     * wasn't working properly until I pulled it just above the container
+     * it is in */
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 21;
+}
+
 div.blist-percent,
 div.blist-percent .blist-percent-bar-pos
 {

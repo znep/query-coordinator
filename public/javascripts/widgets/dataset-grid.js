@@ -26,6 +26,7 @@
             clearFilterItem: null,
             clearTempViewCallback: function () {},
             currentUserId: null,
+            editEnabled: false,
             filterItem: null,
             manualResize: false,
             setTempViewCallback: function (tempView) {},
@@ -57,6 +58,7 @@
                         { sortChanged(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false,
+                        editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
@@ -101,6 +103,8 @@
     var cellClick = function(datasetObj, event, row, column, origEvent)
     {
         var model = datasetObj.settings._model;
+        if (!column) { return; }
+
         switch (column.dataIndex)
         {
             case 'rowNumber':
@@ -116,9 +120,6 @@
                 {
                     model.selectSingleRow(row);
                 }
-                // Set the focus so that the shift/meta click won't select
-                // any text.
-                $(datasetObj.currentGrid).focus();
                 break;
         }
     };

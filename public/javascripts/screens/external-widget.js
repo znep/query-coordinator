@@ -100,7 +100,7 @@ $(function ()
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             currentUserId: blist.currentUserId,
-            accessType: 'WIDGET', showRowNumbers: false,
+            accessType: 'WIDGET', showRowNumbers: false, editEnabled: false,
             filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch'
             });

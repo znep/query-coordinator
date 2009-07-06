@@ -72,6 +72,7 @@ ActionController::Routing::Routes.draw do |map|
       :notify_all_of_changes => :post
     } do |blist|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
+      blist.resources :columns
     end
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',

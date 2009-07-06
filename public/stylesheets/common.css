@@ -535,3 +535,13 @@ private
 
 .jqmOverlay { background-color: #000; }
 
+span.helpie
+{
+    background: url(/stylesheets/images/info_pane/icon_help_highlight.png) no-repeat;
+    cursor: help;
+    display: inline-block;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+

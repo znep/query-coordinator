@@ -2,7 +2,7 @@
   <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") : '' %>
   <% bundle :name => "blists_show", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
     <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
-      "blist-grid-screen", :cache => "cache/blists_show_all" %>
+      "blist-grid-screen", "form-common", :cache => "cache/blists_show_all" %>
   <% end %>
   <title><%= @view ? @view.name : 'Design a Dataset' %> | <%= t(:page_title) %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
@@ -326,6 +326,7 @@
 </div>
 
 <% content_for :js_footer do %>
+  <div class="jqmWindow" id="columnPropertiesModal"></div>
   <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
 
   <%- if !current_user -%>
@@ -350,17 +351,21 @@
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
+    blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
     <%- end -%>
     <%- end -%>
   </script>
   <%= javascript_include_tag "plugins/jquery.cookies.2.0.1.min",
-    "plugins/ui.core", "plugins/ui.draggable",
+    "plugins/ui.core", "plugins/ui.draggable", "plugins/ui.spinner",
     "util/extMouseWheel", "util/flash-interface", "util/navigation",
     "util/inline-login", "util/swfobject", "data/types", "data/model",
     "data/editor", "data/table", "widgets/inline-edit",
     "widgets/dropdown-menu", "widgets/selectable-list", "widgets/pagination",
+    "widgets/column-format",
+    "data/table", "widgets/inline-edit", "widgets/dropdown-menu",
+    "widgets/column-format", "widgets/column-totals",
     "widgets/info-pane-comments", "widgets/scrollable", "widgets/dataset-grid",
     "widgets/visualization", "screens/info-pane", "screens/attribution-edit",
     "screens/blist-grid-screen",

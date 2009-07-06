@@ -216,6 +216,10 @@ module BlistsHelper
     end
   end
 
+  def type_select_options(selected_type = nil)
+    options_for_select(Column.types.invert.sort { |a, b| a.first <=> b.first }, selected_type)
+  end
+
   def category_select_options(selected_category = nil)
     options_for_select(View.categories.invert.sort { |a, b| a.first <=> b.first }, selected_category)
   end

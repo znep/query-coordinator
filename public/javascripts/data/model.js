@@ -23,6 +23,7 @@
  *
  * <ul>
  *   <li>name - the display name of the column<li>
+ *   <li>description - the user defined description of the column<li>
  *   <li>dataIndex - the index of the value within rows (a string for object rows, a number for array rows)</li>
  *   <li>type - the type of data in the column (standard Blist type; defaults to "text").  See types.js for
  *     more information on supported types</li>
@@ -450,6 +451,7 @@ blist.namespace.fetch('blist.data');
                     continue;
                 var col = {
                     name: vcol.name,
+                    description: vcol.description,
                     width: vcol.width || 100,
                     type: vcol.dataType && vcol.dataType.type ? vcol.dataType.type : "text",
                     id: vcol.id,
@@ -518,6 +520,10 @@ blist.namespace.fetch('blist.data');
                     {
                         // This isn't actual precision, it's decimal places
                         col.decimalPlaces = format.precision;
+                    }
+                    if (format.align)
+                    {
+                        col.alignment = format.align;
                     }
                 }
 
@@ -812,6 +818,22 @@ blist.namespace.fetch('blist.data');
          */
         this.column = function(uid) {
             return columnLookup[uid];
+        }
+
+        this.updateColumn = function(updates) {
+          for (var i=0; i < columnLookup.length; i++)
+          {
+            var col = columnLookup[i];
+
+            if (col.id == updates.id)
+            {
+              for (var prop in updates)
+              {
+                col[prop] = updates[prop];
+              }
+              break;
+            }
+          }
         }
 
         /**

@@ -2,7 +2,7 @@ $(function ()
 {
     if ($('body').is('.signup'))
     {
-        $("#signup #firstName").focus();
+        $("#signup #account_firstName").focus();
     }
 
     $("#signup .fileInputContainer input[type='file']").change(function()
@@ -29,7 +29,7 @@ $(function ()
             },
             "emailConfirm": {
                 required: true,
-                equalTo: "#email"
+                equalTo: "#account_email"
             },
             "login": {
                 required: true,
@@ -40,7 +40,7 @@ $(function ()
             "password": "required",
             "passwordConfirm": {
                 required: true,
-                equalTo: "#password"
+                equalTo: "#account_password"
             }
         },
         messages: {

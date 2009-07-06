@@ -1,0 +1,223 @@
+.mainContent .outerContent
+{
+    margin-top: 26px;
+}
+
+.newBlistContent
+{
+    margin: 0 0 1em;
+}
+
+.newBlistContent h1
+{
+    background: url(images/common/new_blist.png) no-repeat;
+    color: #000;
+    height: 40px;
+    padding-left: 50px;
+}
+
+.newBlistContent h3
+{
+    border-bottom: 1px dotted #666;
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+.newBlistContent hr
+{
+    border: none;
+    border-bottom: 1px dotted #666;
+    height: 0;
+}
+
+.newBlistContent label
+{
+    display: block;
+    font-size: 1.2em;
+    height: 20px;
+    margin: 10px;
+    margin-bottom: -25px;
+    text-align: right;
+    width: 200px;
+}
+
+.newBlistContent label.error
+{
+    font-size: 1em;
+    padding: 0;
+    margin: 2px 0 2px 230px;
+    text-align: inherit;
+}
+
+.newBlistContent label.required
+{
+    background: url(images/common/required.png) no-repeat;
+    background-position: right top;
+    padding-right: 15px;
+}
+
+.newBlistContent input[type=text], input[type=file], textarea, select, #privacyDisplayText
+{
+    display: inline-block;
+    margin-left: 230px;
+    width: 350px;
+}
+
+.newBlistContent .prompt
+{
+    color: #666;
+    font-style: italic;
+}
+
+.newBlistContent textarea
+{
+    border: 1px solid #CACACA;
+    color: #333;
+    font-size: 1.3em;
+    height: 60px;
+    padding: 2px;
+}
+
+.newBlistContent select
+{
+    border: 1px solid #CACACA;
+    color: #333;
+    width: 356px;
+}
+
+.newBlistContent #uploadThrobber div
+{
+    background-image: url(/images/throbber.gif);
+    display: inline-block;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+
+.newBlistContent #licensingCreativeCommons hr
+{
+    margin-left: 230px;
+    text-align: left; /* IE is awesome. */
+    width: 375px;
+}
+.newBlistContent .submitPending
+{
+    background: url(/images/throbber.gif) no-repeat;
+    background-color: #ffc;
+    background-position: 6px center;
+    border: 1px solid #aa7;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 10px;
+    padding: 7px;
+    padding-left: 30px;
+}
+
+.newBlistContent span.helpie
+{
+    background: url(images/info_pane/icon_help_highlight.png) no-repeat;
+    cursor: help;
+    display: inline-block;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+
+.newBlistContent span.additionalHelp
+{
+    display: block;
+    margin-left: 230px;
+}
+
+.newBlistContent .actionButtons
+{
+    display: inline-block;
+    margin-bottom: -0.65em;
+}
+
+.newBlistContent .submitActions
+{
+    margin: 15px;
+    margin-left: 230px;
+}
+
+.newBlistContent .submitActions li
+{
+    display: inline;
+}
+
+.newBlistContent .submitActions li.cancelButton
+{
+    margin-left: 20px;
+}
+
+.newBlistContent .submitActions li.cancelButton a
+{
+    bottom: 6px;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.newBlistContent .licensing
+{
+    margin-top: -6px;
+    padding: 5px 0 10px;
+}
+
+.newBlistContent .licensing.active
+{
+    background-color: #cacaca;
+}
+
+.newBlistContent .licensing.active .actionButtons li
+{
+    background-position: 0 0;
+}
+
+.newBlistContent .licensing.active .actionButtons a
+{
+    background-position: right -21px;
+}
+
+.newBlistContent .requiredEntryText
+{
+    background: url(images/common/required.png) no-repeat;
+    padding-left: 15px;
+}
+
+/* Privacy */
+
+.newBlistContent #privacyDisplayText
+{
+    font-size: 1.2em;
+    font-style: italic;
+    padding: 5px 0;
+}
+
+.newBlistContent .privacyButtons p
+{
+    line-height: 1.4em;
+}
+
+.newBlistContent .privacyButtons p input
+{
+    margin-left: 230px;
+}
+
+.newBlistContent .privacyButtons p label
+{
+    display: inline;
+}
+
+.newBlistContent .privacyExpander
+{
+    background: url(images/common/expander_arrows.png) no-repeat;
+    background-position: 0 0.12em;
+    color: #333;
+    display: block;
+    margin: 10px 0 10px 230px;
+    padding-left: 13px;
+    text-transform: uppercase;
+}

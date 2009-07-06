@@ -37,14 +37,10 @@
             </form>
 
             <ul class="headerActions">
-              <li><a href='<%= new_blist_path %>' class="add_new" rel="modal"
-                title="Create a new <%= t(:blist_name) %> from scratch">
-                Design a <%= t(:blist_name).capitalize %>
-              </a></li>
               <li>
-                <%= link_to("Upload Data", {:controller => "imports", :action => "new"},
-                    :class => "import",
-                    :title => "Upload a CSV or XML file and we'll convert it into a #{t(:blist_name)}.") %>
+                <%= link_to("New #{t(:blist_name).capitalize}", {:controller => "blists", :action => "new"},
+                    :class => "add_new",
+                    :title => "Create a new #{t(:blist_name)}, either by importing your own data file, or from scratch.") %>
               </li>
             </ul>
 

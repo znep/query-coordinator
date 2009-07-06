@@ -43,17 +43,24 @@
             <p><%= h(@view.description) %></p>
             
             <h2>Licensing, Attribution &amp; Terms of Use</h2>
-            <%# TODO: Add real attribution data when available. %>
             <ul class="attributionList">
-              <li>Data Provided by <strong>Congressional Accountability Office of Compliance</strong></li>
-              <li>Link <strong><a href="http://www.compliance.gov">http://www.compliance.gov</a></strong></li>
+              <li>Data Provided by <strong><%= h(@view.attribution) %></strong></li>
+              <li>Link <strong><%= link_to(h(@view.attributionLink)) %></strong></li>
             </ul>
             
+            <%- if @view.license -%>
             <h3>Usage License</h3>
-            <p>CC image or License type goes here.</p>
+            <p>
+              <a href="<%= h(@view.license.termsLink) %>">
+                <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
+              </a>
+            </p>
+            <%- end -%>
             
-            <h3>Terms of Use</h3>
-            <p class="attributionTerms">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <%- if @view.termsAndConditions -%>
+              <h3>Terms of Use</h3>
+              <p class="attributionTerms"><%= @view.termsAndConditions %></p>
+            <%- end -%>
             
             <h2 class="summaryInfoHeader">Summary Information</h2>
             <dl class="aboutSummaryList clearfix">

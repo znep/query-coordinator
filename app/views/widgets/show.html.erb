@@ -197,6 +197,9 @@
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.widget');
+    <%- if !current_user.nil? -%>
+    blist.currentUserId = "<%= current_user.id %>";
+    <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
     blist.widget.viewName = '<%= @view.name %>';
   </script>

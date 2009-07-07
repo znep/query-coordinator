@@ -99,6 +99,7 @@ $(function ()
     if (!blist.widgets.visualization.isVisualization)
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
+            currentUserId: blist.currentUserId,
             accessType: 'WIDGET', showRowNumbers: false,
             filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch'

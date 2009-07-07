@@ -820,7 +820,7 @@
             return false;
         }
 
-        var handleColumnResize = function(event) {
+        var handleColumnResize = function(event, isFinished) {
             var width = event.clientX - dragHeaderLeft - paddingX;
             if (width < MINIMUM_HEADER_SIZE)
                 width = MINIMUM_HEADER_SIZE;
@@ -837,7 +837,7 @@
                 }
             }
             col.width = width;
-            model.colWidthChange();
+            model.colWidthChange(col, isFinished);
         }
 
         var handleColumnMove = function(event) {
@@ -1054,6 +1054,7 @@
             if (hotHeaderDrag) {
                 hotHeaderDrag = false;
                 onMouseMove(event);
+                if (hotHeaderMode == 2) { handleColumnResize(event, true); }
                 event.stopPropagation();
                 event.preventDefault();
                 return true;

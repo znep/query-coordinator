@@ -361,21 +361,13 @@ blist.blistGrid.setTempViewTab = function (tempView)
     $('#tempInfoPane').show();
 };
 
-blist.blistGrid.updateTempView = function (tempView)
-{
-    $('form.tempView input[name="view[viewFilters]"]')
-        .val($.json.serialize(tempView.viewFilters));
-    $('form.tempView input[name="view[searchString]"]')
-        .val(tempView.searchString);
-};
-
 blist.blistGrid.newViewCreated = function($iEdit, responseData)
 {
     if (!blist.widgets.visualization.isVisualization)
     {
         $('#readGrid').datasetGrid().isTempView = false;
     }
-    window.location = responseData.url;
+    blist.util.navigation.redirectToView(responseData.id)
 };
 
 // The favorite action in the info for single panel - when one blist is selected.
@@ -463,10 +455,10 @@ $(function ()
         if (!blist.widgets.visualization.isVisualization)
         {
             $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
+                currentUserId: blist.currentUserId,
                 accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                 clearTempViewCallback: blistGridNS.clearTempViewTab,
                 setTempViewCallback: blistGridNS.setTempViewTab,
-                updateTempViewCallback: blistGridNS.updateTempView,
                 filterItem: '#lensContainer .headerBar form :text',
                 clearFilterItem: '#lensContainer .headerBar form .clearSearch'
             });
@@ -606,10 +598,10 @@ $(function ()
         menuBar: $('#lensContainer .headerBar')});
     $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),
         menuBar: $('#lensContainer .headerBar')});
-	$('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
-		menuBar: $('#lensContainer .headerBar')});
-	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'),
-		forcePosition: true, closeOnResize: true});
+    $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
+        menuBar: $('#lensContainer .headerBar')});
+    $('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'),
+        forcePosition: true, closeOnResize: true});
 
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
@@ -656,16 +648,38 @@ $(function ()
 
     $("#infoPane .editItem").infoPaneItemEdit({
         submitSuccessCallback: blistGridNS.infoEditCallback});
-    $("#tempInfoPane .inlineEdit").inlineEdit({
+    var inlineEditArgs = {
+        requestUrl: '/views.json',
+        requestDataCallback: function($form, name)
+        {
+            // We need to save column sizes & positions with the view;
+            //  but these are stored in the meta.columns -- so translate
+            //  meta.columns to view.columns, along with children
+            var meta = $('#readGrid').blistModel().meta();
+            var view = $.extend({}, meta.view);
+            var colTranslate = function(col, i)
+            {
+                var newCol = {id: col.id, name: col.name,
+                    position: i + 1, width: col.width};
+                if (col.body && col.body.children)
+                {
+                    newCol.childColumns = $.map(col.body.children, colTranslate);
+                }
+                return newCol;
+            };
+            view.columns = $.map(meta.columns[0], colTranslate);
+            return $.json.serialize($.extend(view,
+                        {grants: null, originalViewId: view.id,
+                        name: name}));
+        },
+        requestContentType: 'application/json',
+        loginMessage: 'Creating a public filter requires you to have an account. \
+            Either sign in or sign up to save your public filter.',
+        submitSuccessCallback: blistGridNS.newViewCreated};
+    $("#tempInfoPane .inlineEdit").inlineEdit($.extend({
         displaySelector: '.itemContent span',
-        editClickSelector: '.itemContent span, .itemActions',
-        loginMessage: 'Creating a public filter requires you to have an account. \
-            Either sign in or sign up to save your public filter.',
-        submitSuccessCallback: blistGridNS.newViewCreated});
-    $(".tabList .tempViewTab.inlineEdit").inlineEdit({
-        loginMessage: 'Creating a public filter requires you to have an account. \
-            Either sign in or sign up to save your public filter.',
-        submitSuccessCallback: blistGridNS.newViewCreated});
+        editClickSelector: '.itemContent span, .itemActions'}, inlineEditArgs));
+    $(".tabList .tempViewTab.inlineEdit").inlineEdit(inlineEditArgs);
 
     $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
 

@@ -25,6 +25,7 @@
             accessType: 'DEFAULT',
             clearFilterItem: null,
             clearTempViewCallback: function () {},
+            currentUserId: null,
             filterItem: null,
             manualResize: false,
             setTempViewCallback: function (tempView) {},
@@ -50,6 +51,10 @@
                 // * blistModel: disable minimum characters for full-text search,
                 //     enable progressive loading of data, and hook up Ajax info
                 $datasetGrid
+                    .bind('col_width_change', function (event, c, f)
+                        { columnResized(datasetObj, c, f); })
+                    .bind('sort_change', function (event)
+                        { sortChanged(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false,
                         headerMods: function (col) { headerMods(datasetObj, col); },
@@ -443,6 +448,36 @@
         }
         // Update the grid header to reflect updated sorting, filtering
         $(datasetObj.currentGrid).trigger('header_change', [model]);
+    };
+
+
+    var columnResized = function(datasetObj, col, isFinished)
+    {
+        if (isFinished)
+        {
+            var view = datasetObj.settings._model.meta().view;
+            if (datasetObj.settings.currentUserId == view.owner.id)
+            {
+                $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',
+                    data: $.json.serialize({width: col.width}),
+                    type: 'PUT', contentType: 'application/json'});
+            }
+        }
+    };
+
+    var sortChanged = function(datasetObj)
+    {
+        var view = datasetObj.settings._model.meta().view;
+        if (datasetObj.settings.currentUserId == view.owner.id)
+        {
+            $.ajax({url: '/views/' + view.id + '.json',
+                data: $.json.serialize({sortBys: view.sortBys}),
+                type: 'PUT', contentType: 'application/json'});
+        }
+        else
+        {
+            setTempView(datasetObj, datasetObj.settings._model.meta().view, 'sort');
+        }
     };
 
     var clearTempView = function(datasetObj, countId)

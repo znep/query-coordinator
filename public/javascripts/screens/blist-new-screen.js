@@ -19,10 +19,12 @@ $(function ()
     // Validation
     $("#newDatasetForm").validate({
         rules: {
-            "view[name]": "required"
+            "view[name]": "required",
+            "view[attributionLink]": "url"
         },
         messages: {
-            "view[name]": " Dataset name is required."
+            "view[name]": " Dataset name is required.",
+            "view[attributionLink]": " That does not appear to be a valid URL."
         }
     });
     

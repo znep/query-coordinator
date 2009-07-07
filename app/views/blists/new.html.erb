@@ -12,13 +12,19 @@
         <% form_tag(blists_path, :id => "newDatasetForm") do %>
           <h1>Create a New <%= t(:blist_name).capitalize %></h1>
 
+          <div class="errorMessage validationError">
+            <%= display_standard_flashes %>
+          </div>
+
           <h3>General Information</h3>
         
           <label for="view_name" class="required"><%= t(:blist_name).capitalize %> Title:</label>
           <%= text_field_tag("view[name]", "", :title => "Enter a title", :class => "textPrompt") %>
         
           <label for="view_file">Optional File Upload:</label>
-          <%= text_field_tag("view[file]", "Supported Formats: .csv .tsv .xml", :class => "prompt", :readonly => true) %>
+          <%= text_field_tag("view[file]", "Supported Formats: .csv .tsv .xml .xls .xlsx",
+                             :class => "prompt",
+                             :readonly => true) %>
           <span id="uploadThrobber" class="hide"><div>uploading...</div></span>
           <ul id="fileBrowseButtonList" class="actionButtons">
             <li>

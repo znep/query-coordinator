@@ -360,7 +360,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     });
 
     $("#infoPane .editItem").infoPaneItemEdit({
-        submitSuccessCallback: function(fieldType, fieldValue, itemId)
+        submitSuccessCallback: function(fieldType, fieldValue, itemId, responseData)
         {
             if (fieldType == "description" || fieldType == "name")
             {
@@ -373,6 +373,39 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
                 // Update in filtered view list
                 $('.singleInfoFiltered .gridList #filter-row_' + itemId +
                     ' .name a').text(fieldValue);
+            }
+            if (fieldType == "licenseId")
+            {
+                if (responseData['license'])
+                {
+                    if (responseData['license']['logoUrl'])
+                    {
+                        $('.infoLicensing span')
+                            .empty()
+                            .append(
+                                $('<a/>')
+                                    .attr('href', responseData['license']['termsLink'])
+                                    .append(
+                                        $('<img/>')
+                                            .attr('src', '/' + responseData['license']['logoUrl'])
+                                            .attr('alt', responseData['license']['name'])));
+                    }
+                    else
+                    {
+                        $('.infoLicensing span')
+                            .empty()
+                            .text(responseData['license']['name']);
+                    }
+                }
+            }
+            if (fieldType == "attributionLink")
+            {
+                $('.infoAttributionLink span')
+                    .empty()
+                    .append(
+                        $('<a/>')
+                            .attr('href', fieldValue)
+                            .text(fieldValue));
             }
 
             // If anything in the info pane is changed, make sure it reloads
@@ -388,6 +421,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     // Creative Commons cascading dropdown
     if ($("#view_licenseId").val() == "CC")
     {
+        $('#license_cc_type').show();
         $('#view_licenseId').attr('name', '');
         $('#license_cc_type').attr('name', 'view[licenseId]');
     }
@@ -405,6 +439,16 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
             $('#license_cc_type').hide();
             $('#view_licenseId').attr('name', 'view[licenseId]');
             $('#license_cc_type').attr('name', '');
+        }
+    });
+
+    // Attribution Link URL validation
+    $('.infoAttributionLink form').validate({
+        rules: {
+            "view[attributionLink]": "url"
+        },
+        messages: {
+            "view[attributionLink]": "That does not appear to be a valid url."
         }
     });
 

@@ -205,6 +205,12 @@ class Model
   end
 
   def update_attributes!(attributes)
+    attributes.each do |key, value|
+      if value.blank? || value == '""' ||
+        value == "''" || value == "null"
+        attributes[key] = nil
+      end
+    end
     new_model = self.class.update_attributes!(self.id, attributes)
     self.data = new_model.data
     update_data.reject! {|key,value| value == data[key]}
@@ -213,6 +219,12 @@ class Model
 
   def self.update_attributes!(id, attributes)
     attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
+    attributes.each do |key, value|
+      if value.blank? || value == '""' ||
+        value == "''" || value == "null"
+        attributes[key] = nil
+      end
+    end
     # Special parsing for updated tags
     if !attributes['tags'].nil?
       attributes['tags'] = parse_tags(attributes['tags'])
@@ -357,6 +369,7 @@ private
 
     if !result.is_a?(Net::HTTPSuccess)
       parsed_body = self.parse(result.body)
+      pp result.body
       Rails.logger.info("Error: " +
                     "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
                     (parsed_body.nil? ? 'No response' :

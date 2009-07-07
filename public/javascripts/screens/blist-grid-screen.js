@@ -407,7 +407,7 @@ blist.blistGrid.favoriteActionClick = function (event)
 
 
 
-blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId)
+blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, responseData)
 {
     if (fieldType == "name")
     {
@@ -441,6 +441,39 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId)
             $('.singleInfoFiltered .gridList #filter-row_' + itemId +
                 ' .name a').text(blistGridNS.viewName);
         }
+    }
+    else if (fieldType == "licenseId")
+    {
+        if (responseData['license'])
+        {
+            if (responseData['license']['logoUrl'])
+            {
+                $('.infoLicensing span')
+                    .empty()
+                    .append(
+                        $('<a/>')
+                            .attr('href', responseData['license']['termsLink'])
+                            .append(
+                                $('<img/>')
+                                    .attr('src', '/' + responseData['license']['logoUrl'])
+                                    .attr('alt', responseData['license']['name'])));
+            }
+            else
+            {
+                $('.infoLicensing span')
+                    .empty()
+                    .text(responseData['license']['name']);
+            }
+        }
+    }
+    else if (fieldType == "attributionLink")
+    {
+        $('.infoAttributionLink span')
+            .empty()
+            .append(
+                $('<a/>')
+                    .attr('href', fieldValue)
+                    .text(fieldValue));
     }
 };
 
@@ -686,6 +719,7 @@ $(function ()
     // Creative Commons cascading dropdown
     if ($("#view_licenseId").val() == "CC")
     {
+        $('#license_cc_type').show();
         $('#view_licenseId').attr('name', '');
         $('#license_cc_type').attr('name', 'view[licenseId]');
     }
@@ -703,6 +737,16 @@ $(function ()
             $('#license_cc_type').hide();
             $('#view_licenseId').attr('name', 'view[licenseId]');
             $('#license_cc_type').attr('name', '');
+        }
+    });
+    
+    // Attribution Link URL validation
+    $('.infoAttributionLink form').validate({
+        rules: {
+            "view[attributionLink]": "url"
+        },
+        messages: {
+            "view[attributionLink]": "That does not appear to be a valid url."
         }
     });
 

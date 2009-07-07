@@ -191,7 +191,7 @@ class BlistsController < SwfController
       return respond_to do |format|
         format.html do
           flash[:error] = e.error_message
-          render 'shared/error'
+          redirect_to :action => :new
         end
         format.data { render :json => {'error' => e.error_message}.to_json }
       end

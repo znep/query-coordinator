@@ -133,7 +133,7 @@
     // default options
     $.fn.blistListHoverItems.defaults = {
         hoverItemSelector: "tr.item",
-        clickItemSelector: "tr.item td:not(.actionContainer) > *",
+        clickItemSelector: "tr.item td:not(.actionContainer) > *:not(a, :has(a))",
         actionSelector: ".actionContainer a"
     };
 

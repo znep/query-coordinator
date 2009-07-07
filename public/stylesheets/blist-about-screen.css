@@ -110,6 +110,11 @@
     width: 350px;
 }
 
+.aboutSummaryList .grayStars
+{
+    margin-top: 8px;
+}
+
 /*** END: content ***/
 
 /*** START: sidebar ***/

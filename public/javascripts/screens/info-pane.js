@@ -143,7 +143,7 @@
                 {
                     $form.hide();
                     $form.closest(opts.itemContentSelector).find("span").text(fieldValue).show();
-                    opts.submitSuccessCallback(fieldType, fieldValue, responseData.id);
+                    opts.submitSuccessCallback(fieldType, fieldValue, responseData.id, responseData);
                 }
             });
         };

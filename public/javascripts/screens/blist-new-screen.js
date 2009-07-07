@@ -79,28 +79,19 @@ $(function ()
         responseType: 'json',
         onChange: function (file, ext)
         {
-            if(ext && /^(xls|xlsx)$/.test(ext))
+            if (!(ext && /^(tsv|csv|xml|xls|xlsx)$/.test(ext)))
             {
                 $('.uploadErrorMessage')
-                    .text('Uploading XLS files is coming soon. Until then, save it first as CSV.')
-                    .show();
-                $(".newBlistContent #view_file").val('');
-                return false;
-            }
-            else if (!(ext && /^(tsv|csv|xml)$/.test(ext)))
-            {
-                $('.uploadErrorMessage')
-                    .text('Please choose a CSV or XML file.')
-                    .show();
+                    .text('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
+                    .removeClass('hide');
                 $(".newBlistContent #view_file").val('');
                 return false;
             }
             else
             {
-                $('.uploadErrorMessage').hide();
+                $('.uploadErrorMessage').addClass('hide');
+                $(".newBlistContent #view_file").val(file);
             }
-
-            $(".newBlistContent #view_file").val(file);
         },
         onSubmit: function (file, ext)
         {
@@ -119,7 +110,7 @@ $(function ()
                 $(".newBlistContent #view_file").val('');
                 $('.uploadErrorMessage')
                     .text("Failed to import that file!  " + response.message)
-                    .show();
+                    .removeClass('hide');
                 $(".submitPending").hide();
                 $uploadButton.show();
                 return false;

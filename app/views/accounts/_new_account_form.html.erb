@@ -2,32 +2,33 @@
 <fieldset>
   <%= hidden_field_tag("inviteToken", @token) %>
   <p>
-    <label for="firstName">*First Name</label>
-    <%= text_field_tag("firstName") %>
+    <label for="account_firstName">*First Name</label>
+    <%= text_field_tag("firstName", nil, :id => 'account_firstName') %>
   </p>
   <p>
-    <label for="lastName">*Last Name</label>
-    <%= text_field_tag("lastName") %>
+    <label for="account_lastName">*Last Name</label>
+    <%= text_field_tag("lastName", nil, :id => 'account_lastName') %>
   </p>
   <p>
-    <label for="email">*Email Address</label>
-    <%= text_field_tag("email") %>
+    <label for="account_email">*Email Address</label>
+    <%= text_field_tag("email", nil, :id => 'account_email') %>
   </p>
   <p>
-    <label for="emailConfirm">*Confirm Email</label>
-    <%= text_field_tag("emailConfirm") %>
+    <label for="account_emailConfirm">*Confirm Email</label>
+    <%= text_field_tag("emailConfirm", nil, :id => 'account_emailConfirm') %>
   </p>
   <p>
-    <label for="login">*Username</label>
-    <%= text_field_tag("login", nil, :maxlength => 40) %>
+    <label for="account_login">*Username</label>
+    <%= text_field_tag("login", nil, {:maxlength => 40, :id => 'account_login'}) %>
   </p>
   <p>
-    <label for="password">*Password</label>
-    <%= password_field_tag("password") %>
+    <label for="account_password">*Password</label>
+    <%= password_field_tag("password", nil, :id => 'account_password') %>
   </p>
   <p>
-    <label for="passwordConfirm">*Confirm Password</label>
-    <%= password_field_tag("passwordConfirm") %>
+    <label for="account_passwordConfirm">*Confirm Password</label>
+    <%= password_field_tag("passwordConfirm", nil,
+      :id => 'account_passwordConfirm') %>
   </p>
 </fieldset>
 
@@ -43,12 +44,12 @@
     </div>
   </div>
   <p>
-    <label for="company">Company</label>
-    <%= text_field_tag("company") %>
+    <label for="account_company">Company</label>
+    <%= text_field_tag("company", nil, :id => 'account_company') %>
   </p>
   <p>
-    <label for="title">Title</label>
-    <%= text_field_tag("title") %>
+    <label for="account_title">Title</label>
+    <%= text_field_tag("title", nil, :id => 'account_title') %>
   </p>
   <p class="fieldInfo">
   Share and collaborate with your friends and colleagues. Enter their email addresses and we'll send them an invite on your behalf.

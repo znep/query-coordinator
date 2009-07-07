@@ -10,7 +10,7 @@
 
 .newBlistContent h1
 {
-    background: url(images/common/new_blist.png) no-repeat;
+    background: url(/stylesheets/images/common/new_blist.png) no-repeat;
     color: #000;
     height: 40px;
     padding-left: 50px;
@@ -49,9 +49,14 @@
     text-align: inherit;
 }
 
+.newBlistContent label.error.hide
+{
+    display: none;
+}
+
 .newBlistContent label.required
 {
-    background: url(images/common/required.png) no-repeat;
+    background: url(/stylesheets/images/common/required.png) no-repeat;
     background-position: right top;
     padding-right: 15px;
 }
@@ -113,9 +118,14 @@
     padding-left: 30px;
 }
 
+.newBlistContent .validationError
+{
+    font-size: 1.4em;
+}
+
 .newBlistContent span.helpie
 {
-    background: url(images/info_pane/icon_help_highlight.png) no-repeat;
+    background: url(/stylesheets/images/info_pane/icon_help_highlight.png) no-repeat;
     cursor: help;
     display: inline-block;
     height: 16px;
@@ -183,7 +193,7 @@
 
 .newBlistContent .requiredEntryText
 {
-    background: url(images/common/required.png) no-repeat;
+    background: url(/stylesheets/images/common/required.png) no-repeat;
     padding-left: 15px;
 }
 
@@ -213,7 +223,7 @@
 
 .newBlistContent .privacyExpander
 {
-    background: url(images/common/expander_arrows.png) no-repeat;
+    background: url(/stylesheets/images/common/expander_arrows.png) no-repeat;
     background-position: 0 0.12em;
     color: #333;
     display: block;

@@ -394,6 +394,10 @@
 {
     vertical-align: middle;
 }
+.infoContentOuter.listContainer .infoContent dd form label.error
+{
+    margin: 1px 5px;
+}
 
 
 .infoContentOuter.multiInfoSummary .infoContent dd

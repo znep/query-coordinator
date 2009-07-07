@@ -186,14 +186,14 @@
           Licensing
         </dt>
         <dd class="editItem">
-          <div class="itemContent">
+          <div class="itemContent infoLicensing">
             <span>
-              <%- if @view.license -%>
-                <%- if view.license.logoUrl.empty? -%>
+              <%- if view.license -%>
+                <%- if view.license.logoUrl.nil? || view.license.logoUrl.empty? -%>
                   <%= h(view.license.name) %>
                 <%- else -%>
-                  <a href="<%= h(@view.license.termsLink) %>">
-                    <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
+                  <a href="<%= h(view.license.termsLink) %>">
+                    <img src="/<%= view.license.logoUrl %>" alt="<%= view.license.name %>" />
                   </a>
                 <%- end -%>
               <%- end -%>
@@ -248,7 +248,7 @@
           Attribution Link
         </dt>
         <dd class="editItem">
-          <div class="itemContent">
+          <div class="itemContent infoAttributionLink">
             <span><%= link_to(h(view.attributionLink)) %></span>
             <%- if is_owner -%>
             <%- form_tag(view.href) do -%>
@@ -776,7 +776,7 @@
             <%- else -%>
               <tr class="item">
                 <td colspan="4"><div>
-                  <p>There are no activities for this dataset.</p>
+                  <p>There is no activity for this <%= t(:blist_name).downcase %>.</p>
                 </div></td>
               </tr>
             <%- end -%>

@@ -20,7 +20,7 @@ $(function ()
     $("#newDatasetForm").validate({
         rules: {
             "view[name]": "required",
-            "view[attributionLink]": "url"
+            "view[attributionLink]": "customUrl"
         },
         messages: {
             "view[name]": " Dataset name is required.",

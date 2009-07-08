@@ -152,9 +152,7 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected {
     background-color: #b4d5fe;
 }
 
-.blist-cell-selected {
-    background-color: #b4d5fe;
-}
+.blist-table div.blist-cell-selected { background-color: #b4d5fe; }
 
 .blist-td.blist-opener {
     background-image: url('/stylesheets/images/content/table/expand_closed.png');

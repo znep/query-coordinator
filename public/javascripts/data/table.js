@@ -160,6 +160,8 @@
         // Given a DOM node, retrieve the logical row in which the cell resides
         var getRow = function(cell) {
             var rowDOM = cell.parentNode;
+            if (!rowDOM) { return null; }
+
             // + 2 for "-r" suffix prior to row ID
             var rowID = rowDOM.id.substring(id.length + 2);
             return model.getByID(rowID);
@@ -254,7 +256,7 @@
             for (var cell = row.row.firstChild; cell; cell = cell.nextSibling)
                 if (cell._sel) {
                     $(cell).removeClass('blist-cell-selected');
-                    delete cell._sel;
+                    cell._sel = false;
                 }
             delete row.selected;
         }
@@ -269,7 +271,7 @@
                     }
                 } else if (node._sel) {
                     $(node).removeClass('blist-cell-selected');
-                    delete node._sel;
+                    node._sel = false;
                 }
             }
         }
@@ -388,7 +390,8 @@
                 inside.append($activeContainer);
             }
             // If activeContainer is not in the tree anywhere, stick it inside
-            else if ($activeContainer[0].parentNode == null)
+            else if ($activeContainer[0].parentNode == null ||
+                $activeContainer[0].parentNode.nodeType == 11) // doc fragment
             {
                 inside.append($activeContainer);
             }
@@ -923,11 +926,12 @@
 
         var findCell = function(event)
         {
-            var cell = findContainer(event, '.blist-td, .blist-expander');
+            var cell = findContainer(event, '.blist-td, .blist-table-expander, ' +
+                '.blist-table-active-container');
             if (!cell)
                 return null;
             var $cell = $(cell);
-            
+
             // Can't interact with fill
             if ($cell.hasClass('blist-tdfill'))
                 return null;
@@ -942,6 +946,10 @@
             // If the mouse strays over the hot expander return the hot cell
             if (cell == hotExpander || cell.parentNode == hotExpander)
                 return hotCell;
+
+            if ($activeContainer && ($cell[0] == $activeContainer[0] ||
+                $cell.parent()[0] == $activeContainer[0]))
+                return getActiveCell();
 
             // Normal cell
             return cell;
@@ -1070,7 +1078,9 @@
 
                     // If we've moved over another cell, update the selection
                     var over = findCell(event);
-                    if (over) {
+                    if (over &&
+                        $(over).closest('.blist-table-edit-container').length <= 0)
+                    {
                         cellNavTo(over, event, true);
                     }
                 }
@@ -1093,9 +1103,8 @@
 
             // If the hover cell is currently hot or is an editor or is the
             // selected (active) cell, nothing to do
-            if (over == hotCell ||
-                $(over).closest('.blist-table-edit-container').length > 0 ||
-                $(over).closest('.blist-table-active-container').length > 0)
+            if (over == hotCell || over == getActiveCell() ||
+                $(over).closest('.blist-table-edit-container').length > 0)
             {
                 return;
             }

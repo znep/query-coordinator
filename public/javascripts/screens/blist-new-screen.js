@@ -74,54 +74,120 @@ $(function ()
     
     // Import/upload
     var $uploadButton = $(".newBlistContent #fileBrowseButton");
+    var $clearButton = $(".newBlistContent #fileClearButton");
+    var isImport = false;
+    var importErrors = false;
+
     var $uploader = new AjaxUpload($uploadButton, {
         action: $uploadButton.attr('href'),
-        autoSubmit: true,
+        autoSubmit: false,
         name: 'importFileInput',
         responseType: 'json',
         onChange: function (file, ext)
         {
+            $uploadButton.hide();
+            $clearButton.removeClass('hide');
+            isImport = true;
+            $(".newBlistContent #view_file")
+                .val(file)
+                .removeClass('prompt');
             if (!(ext && /^(tsv|csv|xml|xls|xlsx)$/.test(ext)))
             {
                 $('.uploadErrorMessage')
                     .text('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
                     .removeClass('hide');
-                $(".newBlistContent #view_file").val('');
+                importErrors = true;
                 return false;
             }
             else
             {
                 $('.uploadErrorMessage').addClass('hide');
-                $(".newBlistContent #view_file").val(file);
+                importErrors = false;
             }
         },
         onSubmit: function (file, ext)
         {
-            $("#uploadThrobber").show();
             $(".submitActions").hide();
             $(".submitPending").show();
-            $uploadButton.hide();
+            $clearButton.hide();
         },
         onComplete: function (file, response)
         {
-            $("#uploadThrobber").hide();
-            $(".submitActions").show();
+            isImport = false;
             
             if (response.error == true)
             {
-                $(".newBlistContent #view_file").val('');
+                $(".submitActions").show();
+                $clearButton.show();
                 $('.uploadErrorMessage')
-                    .text("Failed to import that file!  " + response.message)
+                    .text("Failed to import that file.  " + response.message)
                     .removeClass('hide');
                 $(".submitPending").hide();
                 $uploadButton.show();
                 return false;
             }
             
-            $(".submitPending")
-                .text("Your data is imported and ready for you.")
-                .css("background-image", "none");
             $(".newBlistContent #datasetID").val(response.id);
+            $uploader.destroy();
+            $("#newDatasetForm").submit();
         }
     });
+    
+    $clearButton.click(function()
+    {
+        $('.newBlistContent #view_file')
+            .val('Supported Formats: .csv .tsv .xml .xls .xlsx')
+            .addClass('prompt');
+        $('.newBlistContent #datasetID').val('');
+        $('.uploadErrorMessage').addClass('hide');
+        var $uploaderClone = new AjaxUpload($uploadButton, jQuery.extend(true, {}, $uploader._settings));
+        $uploader.destroy();
+        $uploader = $uploaderClone;
+        $uploadButton.show();
+        $clearButton.addClass('hide');
+    });
+    
+    // Form Submit
+    var formSubmit = function()
+    {
+        if (isImport || $('#newDatasetForm #view_file').prev("label").hasClass('required'))
+        {
+            $('#newDatasetForm .textPrompt.prompt')
+                .val('')
+                .removeClass('textPrompt')
+                .removeClass('prompt');
+            if ($('#newDatasetForm').valid() && validateRequiredFile() && !importErrors)
+            {
+                $uploader.submit();
+            }
+        }
+        else
+        {
+            $('#newDatasetForm').submit();
+        }
+    };
+    $('#newDatasetForm #submitButton').click(function(event)
+    {
+        event.preventDefault();
+        formSubmit();
+    });
+    $('#newDatasetForm input').keypress(function(event)
+    {
+        if (event.which == 13)
+        {
+            formSubmit();
+        }
+    });
+    
+    var validateRequiredFile = function()
+    {
+        if (!isImport)
+        {
+            $('.uploadErrorMessage')
+                .text("You must choose a file to import.")
+                .removeClass('hide');
+            return false;
+        }
+        return true;
+    };
 });

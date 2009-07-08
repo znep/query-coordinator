@@ -17,8 +17,13 @@
             <ul class="actionButtons clearfix">
               <li>
                 <%= link_to("New #{t(:blist_name).titleize}", {:controller => "blists", :action => "new"}, 
-                :class => 'arrowButton', 
-                :title => "Create a new #{t(:blist_name)}, either by importing your own data file, or from scratch.") %>
+                    :class => 'arrowButton', 
+                    :title => "Create a new #{t(:blist_name)}.") %>
+              </li>
+              <li>
+                <%= link_to("Upload Data", {:controller => "blists", :action => "upload"},
+                    :class => "import",
+                    :title => "Upload a CSV, XLS, or XML file and we'll convert it into a #{t(:blist_name)}.") %>
               </li>
               <li><%= link_to("Browse #{t(:blists_name).titleize}", root_path) %></li>
               <li class="last"><%= link_to("Invite Others", invite_path, :rel => "modal") %></li>

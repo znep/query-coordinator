@@ -15,10 +15,12 @@ class BlistsController < SwfController
     @body_id = 'lensBody'
     case params[:id]
     when 'new_blist'
-      if !current_user
-        return require_user
-      end
-      @new_dataset = true;
+      redirect_to(:controller => 'blists', :action => 'new', :status => 301)
+      # Use this to modal instead
+      #if !current_user
+      #  return require_user
+      #end
+      #@new_dataset = true;
     else
       @body_class = params[:mode] && params[:mode] == 'edit' ?
         'editMode' : 'readMode'
@@ -154,6 +156,14 @@ class BlistsController < SwfController
     respond_to do |format|
       format.html { render }
       format.data { render(:layout => "modal_dialog") }
+    end
+  end
+  
+  def upload
+    @is_upload = true
+    respond_to do |format|
+      format.html { render(:action => "new") }
+      format.data { render(:action => "new", :layout => "modal_dialog") }
     end
   end
   

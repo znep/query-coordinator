@@ -10,7 +10,11 @@
     <div class='outerContent'>
       <div class='content newBlistContent'>
         <% form_tag(blists_path, :id => "newDatasetForm") do %>
-          <h1>Create a New <%= t(:blist_name).capitalize %></h1>
+          <%- if @is_upload -%>
+            <h1>Import a File</h1>
+          <%- else -%>
+            <h1>Create a New <%= t(:blist_name).capitalize %></h1>
+          <%- end -%>
 
           <div class="errorMessage validationError">
             <%= display_standard_flashes %>
@@ -21,19 +25,25 @@
           <label for="view_name" class="required"><%= t(:blist_name).capitalize %> Title:</label>
           <%= text_field_tag("view[name]", "", :title => "Enter a title", :class => "textPrompt") %>
         
-          <label for="view_file">Optional File Upload:</label>
-          <%= text_field_tag("view[file]", "Supported Formats: .csv .tsv .xml .xls .xlsx",
+          <%- if @is_upload -%>
+            <label for="view_file" class="required">File to Upload:</label>
+          <%- else -%>
+            <label for="view_file">Optional File Upload:</label>
+          <%- end -%>
+          <%= text_field_tag("view_file", "Supported Formats: .csv .tsv .xml .xls .xlsx",
                              :class => "prompt",
                              :readonly => true) %>
-          <span id="uploadThrobber" class="hide"><div>uploading...</div></span>
           <ul id="fileBrowseButtonList" class="actionButtons">
             <li>
               <a id="fileBrowseButton" href="/imports.txt?two_step_import=true">Browse For File</a>
             </li>
+            <li>
+              <a class="hide" id="fileClearButton" href="#clear">Clear File</a>
+            </li>
           </ul>
           <span class="helpie" title="You can upload a data file to help get started with your <%= t(:blist_name) %>.">?</span>
           <%= hidden_field_tag("datasetID") %>
-          <label class="error uploadErrorMessage hide"></label>
+          <label class="uploadErrorMessage hide"></label>
         
           <label for="view_description">Short Description:</label>
           <%= text_area_tag("view[description]", "", :title => "Enter a description", :class => "textPrompt") %>
@@ -113,7 +123,11 @@
       
           <hr />
           <ul class="submitActions">
-            <li><input type="image" name="submit" src="<%= image_path("button_finish.png") %>" /></li>
+            <li>
+              <ul class="actionButtons">
+                <li><a id="submitButton" class="arrowButton" href="#submit">Finish</a></li>
+              </ul>
+            </li>
             <li class="cancelButton"><a href="#cancel"><span>Cancel</span></a></li>
           </ul>
           <div class="submitPending hide">

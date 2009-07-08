@@ -165,7 +165,7 @@ body#lensBody
 #lensContainer .tabList li.filter a,
 #lensContainer .tabList li.filter .innerWrapper
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
     background-position: 0 -529px;
     background-repeat: no-repeat;
     min-width: 5em;
@@ -350,7 +350,7 @@ body#lensBody
 
 #lensBody .headerBar #filterViewMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
     background-repeat: no-repeat;
 }
 
@@ -401,7 +401,7 @@ body#lensBody
 
 #lensBody .headerBar #displayMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
     background-position: 5px -853px;
     background-repeat: no-repeat;
 }
@@ -462,7 +462,7 @@ body#lensBody
 #mainMenu dl > dd > ul > li > a,
 #mainMenu dl > dd > ul > li > ul > li > a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
     background-position: 5px 23px; /* default to show no icon */
     background-repeat: no-repeat;
 }
@@ -594,7 +594,7 @@ body#lensBody
 
 #mainMenu li.data .columnTotals .optionMenu li > a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
     background-position: 5px -922px;
     background-repeat: no-repeat;
 }

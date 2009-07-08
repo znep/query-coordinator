@@ -299,7 +299,7 @@ class View < Model
   }
   
   @@licenses = {
-    "" => "",
+    "" => "-- No License --",
     "PUBLIC_DOMAIN" => "Public Domain",
     "CC" => "Creative Commons"
   }

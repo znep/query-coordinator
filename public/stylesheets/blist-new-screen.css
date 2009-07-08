@@ -41,15 +41,17 @@
     width: 200px;
 }
 
-.newBlistContent label.error
+.newBlistContent label.error, label.uploadErrorMessage
 {
+    color: red;
     font-size: 1em;
     padding: 0;
     margin: 2px 0 2px 230px;
-    text-align: inherit;
+    text-align: left;
+    width: 350px;
 }
 
-.newBlistContent label.error.hide
+.newBlistContent label.uploadErrorMessage.hide
 {
     display: none;
 }
@@ -88,15 +90,6 @@
     border: 1px solid #CACACA;
     color: #333;
     width: 356px;
-}
-
-.newBlistContent #uploadThrobber div
-{
-    background-image: url(/images/throbber.gif);
-    display: inline-block;
-    height: 16px;
-    text-indent: -9999px;
-    width: 16px;
 }
 
 .newBlistContent #licensingCreativeCommons hr
@@ -145,6 +138,16 @@
     margin-bottom: -0.65em;
 }
 
+.newBlistContent #fileBrowseButtonList
+{
+    border-right: 1px solid transparent; /* IE8 is awesome */
+}
+
+.newBlistContent #fileClearButton.hide
+{
+    display: none;
+}
+
 .newBlistContent .submitActions
 {
     margin: 15px;
@@ -163,11 +166,9 @@
 
 .newBlistContent .submitActions li.cancelButton a
 {
-    bottom: 6px;
     color: #333;
     font-weight: bold;
     text-transform: uppercase;
-    position: relative;
 }
 
 .newBlistContent .licensing

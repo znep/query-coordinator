@@ -211,7 +211,7 @@ module BlistsHelper
     if selected_license.include?("CC")
       selected_license = "CC"
     end
-    options_for_select(View.licenses.invert, selected_license)
+    options_for_select(View.licenses.invert.sort { |a, b| a.first <=> b.first }, selected_license)
   end
   
   def creative_commons_select_options(selected_option = nil)

@@ -1,6 +1,6 @@
 class ImportsController < ApplicationController
   def new
-    redirect_to(:controller => 'blists', :action => 'new', :status => 301)
+    redirect_to(:controller => 'blists', :action => 'upload', :status => 301)
   end
 
   def redirect

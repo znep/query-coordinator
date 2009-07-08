@@ -5,13 +5,13 @@
   <title>New <%= t(:blist_name).capitalize %> | <%= t(:page_title) %></title>
 <% end %>
 
-<div class="twoColumnContainer tabContainer clearfix">
+<div class="twoColumnContainer clearfix">
   <div id="mainColumnContent" class="column mainContent scrollContentColumn">
     <div class='outerContent'>
       <div class='content newBlistContent'>
         <% form_tag(blists_path, :id => "newDatasetForm") do %>
           <%- if @is_upload -%>
-            <h1>Import a File</h1>
+            <h1>Upload a New Dataset</h1>
           <%- else -%>
             <h1>Create a New <%= t(:blist_name).capitalize %></h1>
           <%- end -%>
@@ -41,7 +41,7 @@
               <a class="hide" id="fileClearButton" href="#clear">Clear File</a>
             </li>
           </ul>
-          <span class="helpie" title="You can upload a data file to help get started with your <%= t(:blist_name) %>.">?</span>
+          <span class="helpie fileUploadHelpie" title="You can upload a data file to help get started with your <%= t(:blist_name) %>.">?</span>
           <%= hidden_field_tag("datasetID") %>
           <label class="uploadErrorMessage hide"></label>
         
@@ -70,10 +70,10 @@
               <%= select_tag("license_cc_type", creative_commons_select_options()) %>
             </div>
           
-            <label for="view_attribution">Attributed To:</label>
+            <label for="view_attribution">Data Provided By:</label>
             <%= text_field_tag("view[attribution]", "", :title => "Individual or Organization", :class => "textPrompt") %>
           
-            <label for="view_attributionLink">Attribution URL:</label>
+            <label for="view_attributionLink">Source Link:</label>
             <%= text_field_tag("view[attributionLink]", "", :title => "Enter Web Address", :class => "textPrompt") %>
           
             <%#<label for="view_attribution_logo">Attribution Logo:</label>%>
@@ -125,7 +125,7 @@
           <ul class="submitActions">
             <li>
               <ul class="actionButtons">
-                <li><a id="submitButton" class="arrowButton" href="#submit">Finish</a></li>
+                <li><a id="submitButton" class="arrowButton" href="#submit">Create Dataset</a></li>
               </ul>
             </li>
             <li class="cancelButton"><a href="#cancel"><span>Cancel</span></a></li>

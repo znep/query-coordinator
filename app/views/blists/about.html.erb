@@ -40,12 +40,29 @@
           <div class="aboutBody">
             
             <h2>Description</h2>
-            <p><%= h(@view.description) %></p>
+            <%- if @view.description.nil? || @view.description.empty? -%>
+              <p>No Description Provided</p>
+            <%- else -%>
+              <p><%= h(@view.description) %></p>
+            <%- end -%>
+            
             
             <h2>Licensing, Attribution &amp; Terms of Use</h2>
             <ul class="attributionList">
-              <li>Data Provided by: <strong><%= h(@view.attribution) %></strong></li>
-              <li>Link: <strong><%= link_to(h(@view.attributionLink)) %></strong></li>
+              <li>Data Provided by:
+                <%- if @view.attribution.nil? || @view.attribution.empty? -%>
+                  <strong>None specified</strong>
+                <%- else -%>
+                  <strong><%= h(@view.attribution) %></strong>
+                <%- end -%>
+              </li>
+              <li>Link:
+                <%- if @view.attributionLink.nil? || @view.attributionLink.empty? -%>
+                  <strong>None</strong>
+                <%- else -%>
+                  <strong><%= link_to(h(@view.attributionLink)) %></strong>
+                <%- end -%>
+              </li>
             </ul>
             
             <%- if @view.license -%>

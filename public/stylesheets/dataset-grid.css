@@ -55,9 +55,21 @@ div.blist-table-active-container
 
 div.blist-table-active-container .blist-td
 {
-    border: none;
-    padding: 0.1667em 0.1667em 0.25em 0.25em; /* 3px 2px */
+    border-bottom: none;
+    padding-bottom: 0.25em; /* 3px */
+    padding-top: 0.1667em; /* 2px */
 }
+
+div.blist-table-active-container .blist-td.blist-first
+{
+    border-left: none;
+    padding-left: 0.25em; /* 3px */
+}
+
+div.blist-table-active-container .blist-td.blist-last
+{ padding-right: 0.1667em; /* 2px */ }
+div.blist-table-active-container .blist-td.blist-td.blist-opener
+{ background-position: 2px center; }
 
 div.blist-table-edit-container
 {

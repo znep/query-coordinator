@@ -537,6 +537,23 @@
                 (model.getByID(y).level || 0) != selectionLevel)
                 return false;
 
+            if (!(typeof x == Array))
+            {
+                var origX = x;
+                x = [origX];
+                var row = renderedRows[y];
+                var levelID = row.level || 0;
+                // See if we selected into a nested table; if so, select all
+                // headers
+                var layoutLevel = layout[levelID];
+                var uid = layoutLevel[origX].logical;
+                for (origX++; origX < layoutLevel.length &&
+                        layoutLevel[origX].logical == uid; origX++)
+                {
+                    x.push(origX);
+                }
+            }
+
             // Locate the selection box we're modifying, if any
             var selection;
             if (selectionMode == 'start' || selectionMode == 'start-new')
@@ -545,7 +562,7 @@
                 if (!cellSelection.length)
                     selectionLevel = model.getByID(y).level || 0;
                 var startX = selectionMode == 'start' && activeCellOn ?
-                    activeCellXs[0] : x;
+                    activeCellXs[0] : x[0];
                 var startY = model.index(selectionMode == 'start' &&
                     activeCellOn ? activeCellY : y);
                 cellSelection.push(selection = [ startX, startY ]);
@@ -559,13 +576,14 @@
             // Update the selection box, if any
             if (selection)
             {
-                selection[2] = x;
+                selection[2] = x[0] < selection[0] ?
+                    x[0] : x[x.length - 1];
                 selection[3] = model.index(y);
             }
 
             // Update the active cell
             activeCellOn = true;
-            activeCellXs = [x];
+            activeCellXs = x;
             activeCellY = y;
 
             // Scroll the active cell into view if it isn't visible vertically
@@ -850,13 +868,26 @@
             return ({left: left, top: top});
         };
 
-        var sizeCellOverlay = function($container, $expandCell, $refCell, animate)
+        var sizeCellOverlay = function($container, $expandCells, $refCells,
+            animate)
         {
+            $expandCells.eq(0).addClass('blist-first');
+            $expandCells.eq($expandCells.length - 1).addClass('blist-last');
+
             // Determine the cell's "natural" size
             var rc = { width: $container.outerWidth(),
                 height: $container.outerHeight() };
-            var refWidth = $refCell.outerWidth();
-            var refHeight = $refCell.outerHeight();
+            var refWidth = 0;
+            var refHeight = 0;
+            var minWidths = [];
+            $refCells.each(function()
+            {
+                var $t = $(this);
+                var w = $t.outerWidth();
+                refWidth += w;
+                minWidths.push(w);
+                refHeight = Math.max(refHeight, $t.outerHeight());
+            });
 
             // The expander must be at least as large as the hot cell
             if (rc.width < refWidth)
@@ -888,19 +919,28 @@
             rc.width -= outerPadx;
             rc.height -= outerPady;
 
-            // Compute cell padding
-            var innerPadx = $expandCell.outerWidth() - $expandCell.width();
-            var innerPady = $expandCell.outerHeight() - $expandCell.height();
-
-            // Size the content wrapper
-            $expandCell.width(rc.width - innerPadx);
-            $expandCell.height(rc.height - innerPady);
+            var numCells = $expandCells.length;
+            $expandCells.each(function(i)
+            {
+                var minW = minWidths.shift();
+                if (i == 0) { minW -= outerPadx / 2; }
+                if (i == numCells - 1) { minW -= outerPadx / 2; }
+                var $t = $(this);
+                // Compute cell padding
+                var w = $t.outerWidth();
+                var innerPadx = w - $t.width();
+                var innerPady = $t.outerHeight() - $t.height();
+                // Size the cell
+                $t.width(Math.max(minW, w) - innerPadx);
+                $t.height(rc.height - innerPady);
+            });
 
             if (!animate)
             {
                 refWidth = rc.width;
                 refHeight = rc.height;
             }
+            // Size the content wrapper
             $container.width(refWidth);
             $container.height(refHeight);
 
@@ -1504,6 +1544,7 @@
                 default:
                     return true;
             }
+            expandActiveCell();
 
             return false;
         }

@@ -67,11 +67,15 @@
             
             <%- if @view.license -%>
             <h3>Usage License</h3>
-            <p>
-              <a href="<%= h(@view.license.termsLink) %>">
-                <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
-              </a>
-            </p>
+              <%- if @view.license.logoUrl.nil? || @view.license.logoUrl.empty? -%>
+                <p><strong><%= @view.license.name %><strong></p>
+              <%- else -%>
+                <p>
+                  <a href="<%= h(@view.license.termsLink) %>">
+                    <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
+                  </a>
+                </p>
+              <%- end -%>
             <%- end -%>
             
             <%- if @view.termsAndConditions -%>

@@ -198,9 +198,9 @@
 
         // Active cell
         var activeCellOn = false;
-        var activeCellX,    // Index of the physical column that is active
-            activeCellY;    // Row ID (of a row in the model active set)
-        var $activeCell;
+        var activeCellXs,    // Index of the physical columns that are active
+            activeCellY;     // Row ID (of a row in the model active set)
+        var $activeCells;
 
         // Cell selection information.  The cell selection consists of one or more rectangular areas each including
         // one or more cells.  The selections are stored in an array with the following values:
@@ -347,32 +347,32 @@
             }
         }
 
-        var getActiveCell = function() {
-            return $activeCell ? $activeCell[0] : null;
-        }
-
-        var updateCellNavCues = function() {
+        var updateCellNavCues = function()
+        {
             // Update the active cell
-            var active = getActiveCell();
-            if (activeCellOn) {
+            if ($activeCells)
+            {
+                $activeCells.removeClass('blist-cell-active');
+            }
+            if (activeCellOn)
+            {
                 var physActive = renderedRows[activeCellY];
                 if (physActive)
-                    var newActive = physActive.row.childNodes[activeCellX];
-                if (newActive == active)
-                    active = null;
-                else if (newActive) {
-                    // Mark the new cell as active
-                    $activeCell = $(newActive);
-                    $activeCell.addClass('blist-cell-active');
+                {
+                    var $newActive = $(physActive.row).children()
+                        .slice(activeCellXs[0],
+                            activeCellXs[activeCellXs.length - 1] + 1);
                 }
-            }
-            if (active) {
-                $(active).removeClass('blist-cell-active');
+                if ($newActive)
+                {
+                    // Mark the new cells as active
+                    $activeCells = $newActive;
+                    $activeCells.addClass('blist-cell-active');
+                }
             }
 
             // Update selection rendering
             updateSelectionCues();
-            expandActiveCell();
         }
 
         var $activeContainer;
@@ -396,8 +396,7 @@
                 inside.append($activeContainer);
             }
 
-            var activeCell = getActiveCell();
-            if (!activeCell)
+            if (!$activeCells)
             {
                 $activeContainer.css('top', -10000);
                 $activeContainer.css('left', -10000);
@@ -405,17 +404,16 @@
             }
 
             // Clone the cell
-            var activeExpand = activeCell.cloneNode(true);
-            var $activeExpand = $(activeExpand);
+            var $activeExpand = $activeCells.clone();
             $activeExpand.width('auto').height('auto');
             $activeContainer.width('auto').height('auto');
             $activeContainer.empty();
-            $activeContainer.append(activeExpand);
+            $activeContainer.append($activeExpand);
 
             // Size the expander
-            sizeCellOverlay($activeContainer, $activeExpand, $activeCell);
+            sizeCellOverlay($activeContainer, $activeExpand, $activeCells);
             // Position the expander
-            positionCellOverlay($activeContainer, $activeCell);
+            positionCellOverlay($activeContainer, $activeCells);
 
             $activeContainer.removeClass('blist-table-util');
         };
@@ -423,12 +421,14 @@
         /**
          * Remove all navigation cues, both logically and visually.
          */
-        var clearCellNav = function(selectionOnly) {
+        var clearCellNav = function(selectionOnly)
+        {
             var needRefresh;
-            
-            if (!selectionOnly && activeCellOn) {
+
+            if (!selectionOnly && activeCellOn)
+            {
                 activeCellOn = false;
-                $activeCell = null;
+                $activeCells = null;
                 needRefresh = true;
             }
 
@@ -438,14 +438,18 @@
             }
 
             if (needRefresh)
+            {
                 updateCellNavCues();
+                expandActiveCell();
+            }
         }
 
         /**
-         * Navigate to a particular cell (a DOM element).  Returns true iff the cell is a focusable table cell.  This
-         * is used for mouse handling.
+         * Navigate to a particular cell (a DOM element).  Returns true iff the
+         * cell is a focusable table cell.  This is used for mouse handling.
          */
-        var cellNavTo = function(cell, event, selecting) {
+        var cellNavTo = function(cell, event, selecting)
+        {
             // Obtain the row for the cell
             var row = getRow(cell);
             if (!row)
@@ -465,7 +469,9 @@
 
             // Find the index of the cell in the layout level
             var rowLayout = layout[levelID];
-            for (var x = 0, node = cell.parentNode.firstChild; node; node = node.nextSibling) {
+            for (var x = 0, node = cell.parentNode.firstChild; node;
+                node = node.nextSibling)
+            {
                 var lcol = rowLayout[x];
                 if (!lcol)
                     break;
@@ -478,11 +484,13 @@
             }
 
             // If we found the column, focus now
-            if (lcol) {
+            if (lcol)
+            {
                 model.unselectAllRows();
-                if ($(event.target).is('a') && !selecting) {
-                    // Special case for anchor clicks -- do not select the cell immediately but do enter "possible drag"
-                    // mode
+                if ($(event.target).is('a') && !selecting)
+                {
+                    // Special case for anchor clicks -- do not select the cell
+                    // immediately but do enter "possible drag" mode
                     clearCellNav();
                     return true;
                 }
@@ -497,52 +505,67 @@
         }
 
         /**
-         * Navigate to a particular location (column UID, row ID pair).  Returns true iff the location contains a
-         * focusable table cell.
+         * Navigate to a particular location (column UID, row ID pair).
+         * Returns true iff the location contains a focusable table cell.
          */
-        var cellNavToXY = function(x, y, event, selecting) {
+        var cellNavToXY = function(x, y, event, selecting)
+        {
             // Decide what affect this navigation has on the selection
             var selectionMode;
-            if (selecting || event.shiftKey) {
-                // Shift key -- selection continuation (continues the last selection box or starts a new box)
+            if (selecting || event.shiftKey)
+            {
+                // Shift key -- selection continuation (continues the last
+                // selection box or starts a new box)
                 if (!cellSelection.length)
                     selectionMode = 'start';
                 else
                     selectionMode = 'continue';
-            } else if (event.metaKey)
+            }
+            else if (event.metaKey)
+            {
                 // Control or command key -- starts a new box
                 selectionMode = 'start-new';
-            else if (cellSelection.length) {
+            }
+            else if (cellSelection.length)
+            {
                 // No modifier keys -- remove the selection
                 cellSelection = [];
             }
 
             // Selection must occur in the same level -- otherwise, ignore
-            if (cellSelection.length && (model.getByID(y).level || 0) != selectionLevel)
+            if (cellSelection.length &&
+                (model.getByID(y).level || 0) != selectionLevel)
                 return false;
-            
+
             // Locate the selection box we're modifying, if any
             var selection;
-            if (selectionMode == 'start' || selectionMode == 'start-new') {
+            if (selectionMode == 'start' || selectionMode == 'start-new')
+            {
                 // Begin a new selection box
                 if (!cellSelection.length)
                     selectionLevel = model.getByID(y).level || 0;
-                var startX = selectionMode == 'start' && activeCellOn ? activeCellX : x;
-                var startY = model.index(selectionMode == 'start' && activeCellOn ? activeCellY : y);
+                var startX = selectionMode == 'start' && activeCellOn ?
+                    activeCellXs[0] : x;
+                var startY = model.index(selectionMode == 'start' &&
+                    activeCellOn ? activeCellY : y);
                 cellSelection.push(selection = [ startX, startY ]);
-            } else if (selectionMode == 'continue')
+            }
+            else if (selectionMode == 'continue')
+            {
                 // Add to final selection box
                 selection = cellSelection[cellSelection.length - 1];
+            }
 
             // Update the selection box, if any
-            if (selection) {
+            if (selection)
+            {
                 selection[2] = x;
                 selection[3] = model.index(y);
             }
 
             // Update the active cell
             activeCellOn = true;
-            activeCellX = x;
+            activeCellXs = [x];
             activeCellY = y;
 
             // Scroll the active cell into view if it isn't visible vertically
@@ -937,7 +960,8 @@
                 return null;
 
             // Nested table header send focus to the opener
-            if ($cell.hasClass('blist-tdh')) {
+            if ($cell.hasClass('blist-tdh'))
+            {
                 while (!$cell.hasClass('blist-opener'))
                     $cell = $(cell = cell.previousSibling);
                 return cell;
@@ -949,7 +973,7 @@
 
             if ($activeContainer && ($cell[0] == $activeContainer[0] ||
                 $cell.parent()[0] == $activeContainer[0]))
-                return getActiveCell();
+                return $activeCells[0];
 
             // Normal cell
             return cell;
@@ -1068,10 +1092,14 @@
                     clickTarget = null;
                 }
 
-                // If we are selecting and can't be in a click then update the selection
-                if (selectFrom && !clickTarget) {
-                    // Ensure that the cell we started dragging from is the beginning of the current selection
-                    if (!isSelectingFrom(selectFrom)) {
+                // If we are selecting and can't be in a click then update the
+                // selection
+                if (selectFrom && !clickTarget)
+                {
+                    // Ensure that the cell we started dragging from is the
+                    // beginning of the current selection
+                    if (!isSelectingFrom(selectFrom))
+                    {
                         activeCellOn = false;
                         cellNavTo(selectFrom, event);
                     }
@@ -1103,7 +1131,8 @@
 
             // If the hover cell is currently hot or is an editor or is the
             // selected (active) cell, nothing to do
-            if (over == hotCell || over == getActiveCell() ||
+            if (over == hotCell ||
+                ($activeCells && $activeCells.index(over) >= 0) ||
                 $(over).closest('.blist-table-edit-container').length > 0)
             {
                 return;
@@ -1204,7 +1233,7 @@
             }
         };
 
-        var prevActiveCell;
+        var $prevActiveCells;
         var onMouseDown = function(event)
         {
             if (isEdit &&
@@ -1227,19 +1256,22 @@
             if (cellNav)
             {
                 var cell = findCell(event);
-                if (options.editEnabled && cell && cell == getActiveCell())
+                if (options.editEnabled && cell && $activeCells &&
+                    $activeCells.index(cell) >= 0)
                 {
-                    prevActiveCell = cell;
+                    $prevActiveCells = $activeCells;
                 }
                 else
                 {
-                    prevActiveCell = null;
+                    $prevActiveCells = null;
+                    clearCellNav();
                 }
-                if (cell && cellNavTo(cell, event)) {
+                if (cell && cellNavTo(cell, event))
+                {
                     if (isEdit) { endEdit(); }
                     selectFrom = cell;
-                    return false;
                 }
+
             }
         }
 
@@ -1262,8 +1294,9 @@
                 var editMode = false;
                 if (cellNav && options.editEnabled)
                 {
-                    var curActiveCell = getActiveCell();
-                    if (curActiveCell && curActiveCell == prevActiveCell)
+                    var curActiveCell = $activeCells ? $activeCells[0] : null;
+                    if (curActiveCell && $prevActiveCells &&
+                        $prevActiveCells.index(curActiveCell) >= 0)
                     {
                         // They clicked on a selected cell, go to edit mode
                         editCell(curActiveCell);
@@ -1275,6 +1308,8 @@
                 if (!editMode) { $navigator[0].focus(); }
             }
             mouseDownAt = null;
+
+            expandActiveCell();
         }
 
         var onDoubleClick = function(event)
@@ -1347,7 +1382,7 @@
             // No need to update if we didn't make changes
             if (y == activeCellY)
                 return;
-            var x = activeCellX;
+            var x = activeCellXs[0];
 
             // Handle level changes
             // TODO -- this logic is a bit of a cop out, it relies on the fact that we won't have cell nav on w/ more
@@ -1360,7 +1395,7 @@
                     var needScan = true;
                 else {
                     // Non-selecting nav into a different level
-                    var sourceColumn = layout[oldLevel][activeCellX];
+                    var sourceColumn = layout[oldLevel][activeCellXs[0]];
                     if (newLevel > oldLevel && sourceColumn.mcol.body)
                         // Navigating into a nested row
                         var newMCol = sourceColumn.mcol.body.children[0];
@@ -1406,7 +1441,7 @@
 
             // Scan for the next focusable cell
             var layoutLevel = layout[model.getByID(activeCellY).level || 0];
-            var x = activeCellX;
+            var x = activeCellXs[0];
             var cellsToMove = Math.abs(deltaX);
             var delta = deltaX / cellsToMove;
             for (var i = 0; i < cellsToMove; i++) {
@@ -1422,7 +1457,7 @@
             }
 
             // Update if we made changes
-            if (x != activeCellX)
+            if (x != activeCellXs[0])
                 cellNavToXY(x, activeCellY, event);
         }
 
@@ -1461,9 +1496,9 @@
                 case 13:
                 case 32:
                     // Action
-                    var cell = getActiveCell();
-                    if (cell && $(cell).hasClass('blist-opener') && !$(cell).hasClass('blist-opener-inactive'))
-                        model.expand(getRow(cell));
+                    if ($activeCells && $activeCells.hasClass('blist-opener') &&
+                        !$activeCells.hasClass('blist-opener-inactive'))
+                        model.expand(getRow($activeCells[0]));
                     break;
 
                 default:

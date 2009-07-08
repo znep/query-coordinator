@@ -599,7 +599,8 @@ blist.namespace.fetch('blist.data.types');
         },
 
         photo: {
-            renderGen: renderGenPhoto
+            renderGen: renderGenPhoto,
+            cls: 'photo'
         },
 
         money: {

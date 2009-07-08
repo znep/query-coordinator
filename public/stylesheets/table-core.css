@@ -416,6 +416,13 @@ img.blist-table-option-icon
     height: 18px;
 }
 
+/* Quick & cheap way to thumbnail photos; won't work right for
+ * really wide images */
+.blist-td-photo img
+{
+    height: 100%;
+}
+
 .blist-cell-active, .blist-cell-selected.blist-cell-active {
 }
 

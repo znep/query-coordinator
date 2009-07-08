@@ -200,9 +200,6 @@
             activeCellY;    // Row ID (of a row in the model active set)
         var $activeCell;
 
-        // The focus box (chases the active cell)
-        var $focus;
-
         // Cell selection information.  The cell selection consists of one or more rectangular areas each including
         // one or more cells.  The selections are stored in an array with the following values:
         //   x1, the first selected column index
@@ -365,42 +362,60 @@
                     // Mark the new cell as active
                     $activeCell = $(newActive);
                     $activeCell.addClass('blist-cell-active');
-
-                    // Move the focus rectangle
-                    if (!$focus) {
-                        inside.append('<div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/><div class="blist-table-focus"/>');
-                        $focus = $('.blist-table-focus');
-                        $focus[0].style.height = $focus[2].style.height = '2px';
-                        $focus[1].style.width = $focus[3].style.width = '2px';
-                    }
-                    var tl1 = $activeCell.position();
-                    var tl2 = $($activeCell[0].parentNode).position();
-                    var x = tl1.left + tl2.left;
-                    var y = tl1.top + tl2.top - 1;
-                    var w = $activeCell.outerWidth() - 1;
-                    var h = $activeCell.outerHeight() - 1;
-
-                    $focus[0].style.left = $focus[2].style.left = $focus[3].style.left = x + 'px'
-                    $focus[1].style.left = (x + w) + 'px';
-
-                    $focus[0].style.top = $focus[1].style.top = $focus[3].style.top = y + 'px';
-                    $focus[2].style.top = (y + h) + 'px';
-
-                    $focus[0].style.width = $focus[2].style.width = (w + 2) + 'px';
-                    $focus[1].style.height = $focus[3].style.height = (h + 2) + 'px';
-
-                    $focus.css('display', 'block');
                 }
             }
             if (active) {
                 $(active).removeClass('blist-cell-active');
-                if (!newActive && $focus)
-                    $focus.css('display', 'none');
             }
 
             // Update selection rendering
             updateSelectionCues();
+            expandActiveCell();
         }
+
+        var $activeContainer;
+
+        var expandActiveCell = function()
+        {
+            if (options.noExpand) return;
+
+            // Obtain an expanding node in utility (off-screen) mode
+            if (!$activeContainer)
+            {
+                // Create the expanding element
+                $activeContainer = $('<div class="blist-table-active-container ' +
+                    'blist-table-util"></div>');
+                inside.append($activeContainer);
+            }
+            // If activeContainer is not in the tree anywhere, stick it inside
+            else if ($activeContainer[0].parentNode == null)
+            {
+                inside.append($activeContainer);
+            }
+
+            var activeCell = getActiveCell();
+            if (!activeCell)
+            {
+                $activeContainer.css('top', -10000);
+                $activeContainer.css('left', -10000);
+                return;
+            }
+
+            // Clone the cell
+            var activeExpand = activeCell.cloneNode(true);
+            var $activeExpand = $(activeExpand);
+            $activeExpand.width('auto').height('auto');
+            $activeContainer.width('auto').height('auto');
+            $activeContainer.empty();
+            $activeContainer.append(activeExpand);
+
+            // Size the expander
+            sizeCellOverlay($activeContainer, $activeExpand, $activeCell);
+            // Position the expander
+            positionCellOverlay($activeContainer, $activeCell);
+
+            $activeContainer.removeClass('blist-table-util');
+        };
 
         /**
          * Remove all navigation cues, both logically and visually.
@@ -410,6 +425,7 @@
             
             if (!selectionOnly && activeCellOn) {
                 activeCellOn = false;
+                $activeCell = null;
                 needRefresh = true;
             }
 
@@ -586,7 +602,6 @@
 
             isEdit = true;
             $(document).bind('mousedown.blistTableEdit', editMouseDown);
-            $(document).bind('keydown.blistTableEdit', editKeyDown);
 
             sizeCellOverlay($editContainer, $editor, $(cell));
             positionCellOverlay($editContainer, $(cell));
@@ -653,14 +668,6 @@
             }
         };
 
-        var editKeyDown = function(event)
-        {
-            if (event.keyCode == 27) // ESC
-            {
-                endEdit(true);
-            }
-        };
-
         var editorKeyDown = function(event)
         {
             if (event.keyCode == 13) // Enter
@@ -692,6 +699,24 @@
             }
             hideHotExpander();
         }
+
+        var setHotCell = function(newCell, event)
+        {
+            // Update cell hover state
+            if (hotCell)
+            {
+                onCellOut(event);
+            }
+            hotCell = newCell;
+            if (newCell)
+            {
+                $(newCell).addClass('blist-hot');
+                if (options.cellExpandEnabled)
+                {
+                    hotCellTimer = setTimeout(expandHotCell, EXPAND_DELAY);
+                }
+            }
+        };
 
         var expandHotCell = function()
         {
@@ -802,8 +827,8 @@
         var sizeCellOverlay = function($container, $expandCell, $refCell, animate)
         {
             // Determine the cell's "natural" size
-            var rc = { width: $expandCell.outerWidth(),
-                height: $expandCell.outerHeight() };
+            var rc = { width: $container.outerWidth(),
+                height: $container.outerHeight() };
             var refWidth = $refCell.outerWidth();
             var refHeight = $refCell.outerHeight();
 
@@ -914,10 +939,6 @@
                 return cell;
             }
 
-            // If the mouse strays over part of the focus rect. return the active cell
-            if ($cell.hasClass('blist-table-focus'))
-                return getActiveCell();
-
             // If the mouse strays over the hot expander return the hot cell
             if (cell == hotExpander || cell.parentNode == hotExpander)
                 return hotCell;
@@ -996,6 +1017,7 @@
             }
             col.width = width;
             model.colWidthChange(col, isFinished);
+            updateCellNavCues();
         }
 
         var handleColumnMove = function(event) {
@@ -1068,11 +1090,12 @@
 
             // Locate the cell the mouse is in, if any
             over = findCell(event);
-            
-            // If the hover cell is currently hot or is an editor , nothing to
-            // do
+
+            // If the hover cell is currently hot or is an editor or is the
+            // selected (active) cell, nothing to do
             if (over == hotCell ||
-                $(over).closest('.blist-table-edit-container').length > 0)
+                $(over).closest('.blist-table-edit-container').length > 0 ||
+                $(over).closest('.blist-table-active-container').length > 0)
             {
                 return;
             }
@@ -1098,20 +1121,7 @@
                 hotRowID = newHotID;
             }
 
-            // Update cell hover state
-            if (hotCell)
-            {
-                onCellOut(event);
-            }
-            hotCell = over;
-            if (over)
-            {
-                $(over).addClass('blist-hot');
-                if (options.cellExpandEnabled)
-                {
-                    hotCellTimer = setTimeout(expandHotCell, EXPAND_DELAY);
-                }
-            }
+            setHotCell(over, event);
         };
 
         var onCellOut = function(event)
@@ -1274,6 +1284,15 @@
                     // They clicked on a cell, go to edit mode
                     editCell(cell);
                 }
+            }
+        };
+
+        var onKeyDown = function(event)
+        {
+            if (event.keyCode == 27) // ESC
+            {
+                if (isEdit) { endEdit(true); }
+                else { clearCellNav(); }
             }
         };
 
@@ -1485,7 +1504,8 @@
             <div class="blist-table-util"></div>';
 
         $(document)
-            .mouseup(onMouseUp);
+            .mouseup(onMouseUp)
+            .keydown(onKeyDown);
 
         // Render container elements
         var $outside = $this

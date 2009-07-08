@@ -188,11 +188,13 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected {
 }
 
 div.blist-table-expander,
-div.blist-table-edit-container
+div.blist-table-edit-container,
+div.blist-table-active-container
 {
     overflow: auto;
     position: absolute;
 }
+div.blist-table-active-container { z-index: 10; }
 div.blist-table-expander { z-index: 15; }
 div.blist-table-edit-container { z-index: 20; }
 
@@ -420,10 +422,4 @@ img.blist-table-option-icon
 .blist-table-navigator {
     position: absolute;
     left: -10000px;
-}
-
-.blist-table-focus {
-    background-color: #91abcc;
-    z-index: 10;
-    position: absolute;
 }

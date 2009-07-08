@@ -46,6 +46,19 @@
     background-position: 0 -14px;
 }
 
+div.blist-table-active-container
+{
+    background-color: #ffffff;
+    border: solid 2px #91abcc;
+    overflow: hidden;
+}
+
+div.blist-table-active-container .blist-td
+{
+    border: none;
+    padding: 0.1667em 0.1667em 0.25em 0.25em; /* 3px 2px */
+}
+
 div.blist-table-edit-container
 {
     background-color: #ffffff;

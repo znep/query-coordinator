@@ -603,6 +603,16 @@ body#lensBody
     background-position: 5px -945px;
 }
 
+#mainMenu li.info .statistics > a
+{
+    background-position: 5px -1012px;
+}
+
+#mainMenu li.info .about > a
+{
+    background-position: 5px -1035px;
+}
+
 #mainMenu li.info .summary > a
 {
     background-position: 5px -94px;

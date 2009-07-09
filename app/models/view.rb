@@ -262,6 +262,10 @@ class View < Model
     !self.displayType.nil?
   end
 
+  def is_map?
+    self.displayType == "map" || self.displayType == "geomap"
+  end
+
   def chart_class
     case self.displayType
     when 'geomap'

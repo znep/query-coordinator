@@ -445,7 +445,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     // Attribution Link URL validation
     $('.infoAttributionLink form').validate({
         rules: {
-            "view[attributionLink]": "url"
+            "view[attributionLink]": "customUrl"
         },
         messages: {
             "view[attributionLink]": "That does not appear to be a valid url."

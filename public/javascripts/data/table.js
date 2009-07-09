@@ -460,10 +460,11 @@
 
             var levelID = row.level || 0;
 
-            // Check if we clicked in a locked section; ignore those for now
-            if ($(event.target).closest('.blist-table-locked').length > 0)
+            // Check if we clicked in a locked section or on a nested table
+            // header; ignore those for now
+            if ($(event.target)
+                .closest('.blist-table-locked, .blist-tdh').length > 0)
             {
-                clearCellNav();
                 return false;
             }
 
@@ -532,25 +533,49 @@
                 cellSelection = [];
             }
 
+            var row = model.getByID(y);
             // Selection must occur in the same level -- otherwise, ignore
-            if (cellSelection.length &&
-                (model.getByID(y).level || 0) != selectionLevel)
+            if (cellSelection.length && (row.level || 0) != selectionLevel)
                 return false;
 
+            var layoutLevel = layout[row.level || 0];
+            var col;
             if (!(typeof x == Array))
             {
                 var origX = x;
                 x = [origX];
-                var row = renderedRows[y];
-                var levelID = row.level || 0;
-                // See if we selected into a nested table; if so, select all
-                // headers
-                var layoutLevel = layout[levelID];
-                var uid = layoutLevel[origX].logical;
-                for (origX++; origX < layoutLevel.length &&
-                        layoutLevel[origX].logical == uid; origX++)
+                col = layoutLevel[origX];
+                var uid = col.logical;
+                // See if we selected into a closed nested table; if so, select
+                // all headers
+                if (!row.expanded &&
+                    (col.type == 'opener' || col.type == 'header'))
                 {
-                    x.push(origX);
+                    for (origX++; origX < layoutLevel.length &&
+                            layoutLevel[origX].logical == uid; origX++)
+                    {
+                        x.push(origX);
+                    }
+                }
+            }
+            else
+            {
+                col = layoutLevel[x[0]];
+            }
+
+            // If we are naving into an expanded header, then go into the
+            //  first navigable child cell
+            if (row.expanded &&
+                    (col.type == 'opener' || col.type == 'header'))
+            {
+                y = row.childRows[0].id;
+                row = model.getByID(y);
+                layoutLevel = layout[row.level || 0];
+                col = layoutLevel[x[0]];
+                while (col.skippable)
+                {
+                    x[0]++;
+                    col = layoutLevel[x[0]];
                 }
             }
 
@@ -999,6 +1024,12 @@
             if ($cell.hasClass('blist-tdfill'))
                 return null;
 
+            // If we are looking at the selection expansion, return
+            //  the first active cell
+            if ($activeContainer && ($cell[0] == $activeContainer[0] ||
+                $cell.parent()[0] == $activeContainer[0]))
+                return $activeCells[0];
+
             // Nested table header send focus to the opener
             if ($cell.hasClass('blist-tdh'))
             {
@@ -1010,10 +1041,6 @@
             // If the mouse strays over the hot expander return the hot cell
             if (cell == hotExpander || cell.parentNode == hotExpander)
                 return hotCell;
-
-            if ($activeContainer && ($cell[0] == $activeContainer[0] ||
-                $cell.parent()[0] == $activeContainer[0]))
-                return $activeCells[0];
 
             // Normal cell
             return cell;
@@ -1296,8 +1323,7 @@
             if (cellNav)
             {
                 var cell = findCell(event);
-                if (options.editEnabled && cell && $activeCells &&
-                    $activeCells.index(cell) >= 0)
+                if (cell && $activeCells && $activeCells.index(cell) >= 0)
                 {
                     $prevActiveCells = $activeCells;
                 }
@@ -1401,21 +1427,21 @@
                 return;
 
             // Locate our current position
-            var y = model.index(activeCellY);
-            if (y == undefined)
+            var yIndex = model.index(activeCellY);
+            if (yIndex == undefined)
                 return;
 
             // Update the y position
-            y += deltaY;
+            yIndex += deltaY;
 
             // Bounds checking
-            if (y < 0)
-                y = 0;
-            if (y >= model.length())
-                y = model.length() - 1;
+            if (yIndex < 0)
+                yIndex = 0;
+            if (yIndex >= model.length())
+                yIndex = model.length() - 1;
 
             // Convert y to a row ID
-            y = model.get(y);
+            var y = model.get(yIndex);
             if (typeof y == "object")
                 y = y.id;
 
@@ -1440,8 +1466,12 @@
                         // Navigating into a nested row
                         var newMCol = sourceColumn.mcol.body.children[0];
                     else if (newLevel < oldLevel && sourceColumn.mcol.nestedIn)
+                    {
                         // Navigating out of a nested row
+                        // If going up to a header, go one extra row
+                        if (deltaY == -1) { return navigateY(-2, event); }
                         newMCol = sourceColumn.mcol.nestedIn.header;
+                    }
                     else
                         needScan = true;
                 }
@@ -1475,20 +1505,35 @@
         }
 
         // Move the active cell an arbitrary number of columns
-        var navigateX = function(deltaX, event) {
+        var navigateX = function(deltaX, event)
+        {
             if (!preNav(event))
                 return;
 
             // Scan for the next focusable cell
-            var layoutLevel = layout[model.getByID(activeCellY).level || 0];
+            var y = activeCellY;
+            var layoutLevel = layout[model.getByID(y).level || 0];
             var x = activeCellXs[0];
             var cellsToMove = Math.abs(deltaX);
             var delta = deltaX / cellsToMove;
-            for (var i = 0; i < cellsToMove; i++) {
-                for (var newX = x + delta; newX >= 0 && newX < layoutLevel.length; newX += delta) {
-                    if (layoutLevel[newX].canFocus !== false)
+            for (var i = 0; i < cellsToMove; i++)
+            {
+                for (var newX = x + delta; newX >= 0 &&
+                    newX < layoutLevel.length; newX += delta)
+                {
+                    // If we hit a fill, go up to the parent
+                    if (layoutLevel[newX].type == 'fill')
+                    {
+                        var newRow = model.getByID(y).parent;
+                        y = newRow.id;
+                        layoutLevel = layout[newRow.level || 0];
+                        break;
+                    }
+                    else if (layoutLevel[newX].canFocus !== false)
+                    {
                         // Found new cell to focus on
                         break;
+                    }
                 }
                 if (newX < 0 || newX >= layoutLevel.length)
                     // Can't move further left
@@ -1497,8 +1542,8 @@
             }
 
             // Update if we made changes
-            if (x != activeCellXs[0])
-                cellNavToXY(x, activeCellY, event);
+            if (x != activeCellXs[0] || y != activeCellY)
+                cellNavToXY(x, y, event);
         }
 
         var onKeyPress = function(event) {
@@ -1539,6 +1584,7 @@
                     if ($activeCells && $activeCells.hasClass('blist-opener') &&
                         !$activeCells.hasClass('blist-opener-inactive'))
                         model.expand(getRow($activeCells[0]));
+                    navigateY(1, event);
                     break;
 
                 default:

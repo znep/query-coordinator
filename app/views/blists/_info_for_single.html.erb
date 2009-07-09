@@ -246,7 +246,9 @@
           <div class="itemContent">
             <ul>
               <li><%= pluralize(view.viewCount, "visit") %></li>
-              <li><%= pluralize(view.copyCount, "copy") %></li>
+              <%- if view.copyCount > 0 -%>
+                <li><%= pluralize(view.copyCount, "copy") %></li>
+              <%- end -%>
             </ul>
           </div>
           <div class="itemActions">
@@ -285,6 +287,7 @@
         </dd>
       </dl>
 
+      <%- if view.contributor_users.length > 0 || view.viewer_users.length > 0 -%>
       <dl class="summaryList actionList">
         <dt>
           Sharing
@@ -292,12 +295,17 @@
         <dd>
           <div class="itemContent">
             <ul>
-              <li>
-                <%= pluralize(view.contributor_users.length, 'Contributor') %>
-              </li>
-              <li>
-                <%= pluralize(view.viewer_users.length, 'Viewer') %>
-              </li>
+              <%- if view.contributor_users.length > 0 -%>
+                <li>
+                  <%= pluralize(view.contributor_users.length, 'Contributor') %>
+                </li>
+              <%- end -%>
+              
+              <% if view.viewer_users.length > 0 -%>
+                <li>
+                  <%= pluralize(view.viewer_users.length, 'Viewer') %>
+                </li>
+              <%- end -%>
               <%# Not supported
               <li>[3 Requests]</li>
               %>
@@ -313,6 +321,7 @@
           </ul>
         </dd>
       </dl>
+      <%- end -%>
 
       <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
         <dt>

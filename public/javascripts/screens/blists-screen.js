@@ -410,6 +410,22 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 
             // If anything in the info pane is changed, make sure it reloads
             $.Tache.DeleteAll();
+        },
+        submitErrorCallback: function(fieldType, request)
+        {
+            if ((fieldType == "attributionLink") && (request.status == 500))
+            {
+                // We don't get anything coherent back on a validation error,
+                // so if we hit a 500 just assume that's what it was
+                var $label = $('.infoAttributionLink label');
+                if ($label.length == 0)
+                {
+                    $label = $('<label/>').addClass("error");
+                }
+                $label
+                    .text("That does not appear to be a valid url.")
+                    .insertAfter($("#view_attributionLink"));
+            }
         }
     });
 	

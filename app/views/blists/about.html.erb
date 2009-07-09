@@ -68,7 +68,7 @@
             <%- if @view.license -%>
             <h3>Usage License</h3>
               <%- if @view.license.logoUrl.nil? || @view.license.logoUrl.empty? -%>
-                <p><strong><%= @view.license.name %><strong></p>
+                <p><strong><%= @view.license.name %></strong></p>
               <%- else -%>
                 <p>
                   <a href="<%= h(@view.license.termsLink) %>">
@@ -110,8 +110,11 @@
               </dd>
               <dt>Permalink</dt>
               <dd>
-                <span class="copyCode">
-                  <input name="permalink" type="text" value="<%= request.protocol + request.host_with_port + @view.href %>"/>
+                <% permaLink = request.protocol + request.host_with_port + @view.href %>
+                <%# use explicit a href here so Rails doesn't try to be clever %>
+                <span>
+                  <a href="<%= permaLink %>"><%= permaLink %></a>
+                  <%= flash_clipboard_button(permaLink) %>
                 </span>
               </dd>
               <dt>Permissions</dt>

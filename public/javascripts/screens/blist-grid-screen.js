@@ -485,6 +485,23 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
     }
 };
 
+blist.blistGrid.infoEditErrorCallback = function(fieldType, request)
+{
+    if ((fieldType == "attributionLink") && (request.status == 500))
+    {
+        // We don't get anything coherent back on a validation error,
+        // so if we hit a 500 just assume that's what it was
+        var $label = $('.infoAttributionLink label');
+        if ($label.length == 0)
+        {
+            $label = $('<label/>').addClass("error");
+        }
+        $label
+            .text("That does not appear to be a valid url.")
+            .insertAfter($("#view_attributionLink"));
+    }
+};
+
 
 
 /* Initial start-up calls, and setting up bindings */
@@ -688,7 +705,8 @@ $(function ()
         {clickSelector: '#n/a'});
 
     $("#infoPane .editItem").infoPaneItemEdit({
-        submitSuccessCallback: blistGridNS.infoEditCallback});
+        submitSuccessCallback: blistGridNS.infoEditCallback,
+        submitErrorCallback: blistGridNS.infoEditErrorCallback});
     $("#tempInfoPane .inlineEdit").inlineEdit({
         displaySelector: '.itemContent span',
         editClickSelector: '.itemContent span, .itemActions',

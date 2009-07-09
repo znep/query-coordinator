@@ -13,7 +13,7 @@
           <%- if @is_upload -%>
             <h1>Upload a New Dataset</h1>
           <%- else -%>
-            <h1>Create a New <%= t(:blist_name).capitalize %></h1>
+            <h1>Design a New <%= t(:blist_name).capitalize %></h1>
           <%- end -%>
 
           <div class="errorMessage validationError">
@@ -128,7 +128,7 @@
                 <li><a id="submitButton" class="arrowButton" href="#submit">Create Dataset</a></li>
               </ul>
             </li>
-            <li class="cancelButton"><a href="#cancel"><span>Cancel</span></a></li>
+            <li class="cancelButton"><a href="/blists"><span>Cancel</span></a></li>
           </ul>
           <div class="submitPending hide">
             Your data is being imported by our servers.  Please wait.

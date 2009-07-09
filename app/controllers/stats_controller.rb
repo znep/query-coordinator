@@ -18,5 +18,7 @@ class StatsController < ApplicationController
     @since = params[:since] ? Time.parse(params[:since]) :  default_since
 
     @stat = Stat.find_for_view(@dataset, {:since => @since.strftime("%m/%d/%Y")})
+    @total_players = @stat.url_activity.size
+    @total_player_views = @stat.url_activity.inject(0) {|total, v| total + v["count"]}
   end
 end

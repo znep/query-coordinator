@@ -157,6 +157,11 @@ div.blist-table-title-tr
     vertical-align: middle
 }
 
+#url-grid
+{
+    min-height: 400px;
+}
+
 #total-urls
 {
     min-width: 348px;

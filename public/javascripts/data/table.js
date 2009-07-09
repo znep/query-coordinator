@@ -1460,15 +1460,12 @@
             return true;
         }
 
-        // Move the active cell an arbitrary number of rows.  Supports an value for deltaY, including negative offsets
-        var navigateY = function(deltaY, event) {
-            if (!preNav(event))
-                return;
-
+        var getAdjustedY = function(deltaY, event, baseY, baseX)
+        {
             // Locate our current position
-            var yIndex = model.index(activeCellY);
+            var yIndex = model.index(baseY);
             if (yIndex == undefined)
-                return;
+                return null;
 
             // Update the y position
             yIndex += deltaY;
@@ -1485,74 +1482,112 @@
                 y = y.id;
 
             // No need to update if we didn't make changes
-            if (y == activeCellY)
-                return;
-            var x = activeCellXs[0];
+            if (y == baseY)
+                return null;
+
+            var x = baseX;
 
             // Handle level changes
-            // TODO -- this logic is a bit of a cop out, it relies on the fact that we won't have cell nav on w/ more
-            // than 2 levels and that BnB parent/child linkage will be available
-            var oldLevel = model.getByID(activeCellY).level || 0;
+            // TODO -- this logic is a bit of a cop out, it relies on the fact
+            // that we won't have cell nav on w/ more than 2 levels and that
+            // BnB parent/child linkage will be available
+            var oldLevel = model.getByID(baseY).level || 0;
             var newLevel = model.getByID(y).level || 0;
-            if (newLevel != oldLevel) {
+            if (newLevel != oldLevel)
+            {
                 if (event.shiftKey || event.metaKey)
+                {
                     // Can't select into a different level
                     var needScan = true;
-                else {
+                }
+                else
+                {
                     // Non-selecting nav into a different level
-                    var sourceColumn = layout[oldLevel][activeCellXs[0]];
+                    var sourceColumn = layout[oldLevel][baseX];
                     if (newLevel > oldLevel && sourceColumn.mcol.body)
+                    {
                         // Navigating into a nested row
                         var newMCol = sourceColumn.mcol.body.children[0];
+                    }
                     else if (newLevel < oldLevel && sourceColumn.mcol.nestedIn)
                     {
                         // Navigating out of a nested row
                         // If going up to a header, go one extra row
-                        if (deltaY == -1) { return navigateY(-2, event); }
+                        if (deltaY == -1)
+                        {
+                            return getAdjustedY(-2, event, baseY, baseX);
+                        }
                         newMCol = sourceColumn.mcol.nestedIn.header;
                     }
                     else
+                    {
                         needScan = true;
+                    }
                 }
 
-                if (needScan) {
+                if (needScan)
+                {
                     // Find next row in the same level
-                    y = model.nextInLevel(activeCellY, deltaY < 0);
-                    if (y == null)
-                        return;
-                    if (typeof y == "object")
-                        y = y.id;
-                } else if (newMCol) {
-                    // Moving into a different level -- find the physical position for the model column
+                    y = model.nextInLevel(baseY, deltaY < 0);
+                    if (y == null) { return null; }
+                    if (typeof y == "object") { y = y.id; }
+                }
+                else if (newMCol)
+                {
+                    // Moving into a different level -- find the physical
+                    // position for the model column
                     var newLevelLayout = layout[newLevel];
                     for (var i = 0; i < newLevelLayout.length; i++)
-                        if (newLevelLayout[i].mcol == newMCol) {
+                    {
+                        if (newLevelLayout[i].mcol == newMCol)
+                        {
                             x = i;
                             break;
                         }
-                    if (i == newLevelLayout.length) {
-                        // Bug -- selected model column does not reside in this level
-                        return;
                     }
-                } else
+                    if (i == newLevelLayout.length)
+                    {
+                        // Bug -- selected model column does not reside in this
+                        // level
+                        return null;
+                    }
+                }
+                else
+                {
                     // Bug -- should have selected a new column or decided to scan
-                    return;
+                    return null;
+                }
             }
 
+            return {x: x, y: y};
+        };
+
+        // Move the active cell an arbitrary number of rows.  Supports an value
+        // for deltaY, including negative offsets
+        var navigateY = function(deltaY, event)
+        {
+            if (!preNav(event))
+                return;
+
+            var adjPos = getAdjustedY(deltaY, event, activeCellY, activeCellXs[0]);
+            if (!adjPos) { return; }
+
             // Update the column
-            cellNavToXY(x, y, event);
+            cellNavToXY(adjPos.x, adjPos.y, event);
         }
 
         // Move the active cell an arbitrary number of columns
-        var navigateX = function(deltaX, event)
+        var navigateX = function(deltaX, event, wrap)
         {
             if (!preNav(event))
                 return;
 
             // Scan for the next focusable cell
             var y = activeCellY;
-            var layoutLevel = layout[model.getByID(y).level || 0];
+            var origLevel = model.getByID(y).level || 0;
+            var layoutLevel = layout[origLevel];
             var x = activeCellXs[0];
+            var origCol = layoutLevel[x];
             var cellsToMove = Math.abs(deltaX);
             var delta = deltaX / cellsToMove;
             for (var i = 0; i < cellsToMove; i++)
@@ -1560,23 +1595,63 @@
                 for (var newX = x + delta; newX >= 0 &&
                     newX < layoutLevel.length; newX += delta)
                 {
-                    // If we hit a fill, go up to the parent
-                    if (layoutLevel[newX].type == 'fill')
+                    var curCol = layoutLevel[newX];
+
+                    // If we're wrapping, and we hit the edge of nested table
+                    //  we're in, wrap within the table
+                    if (wrap && origCol.mcol && origCol.mcol.nestedIn &&
+                        (!curCol.mcol ||
+                            curCol.mcol.nestedIn != origCol.mcol.nestedIn))
+                    {
+                        var dY = delta < 0 ? -1 : 1;
+                        var adjX = newX + (delta < 0 ? 1 : -1) *
+                            origCol.mcol.nestedIn.children.length;
+                        var adjP = getAdjustedY(dY, event, y, adjX);
+
+                        // If this would cause us to change levels, then don't
+                        // adjust, and let the normal flow happen
+                        if (adjP && origLevel == model.getByID(adjP.y).level || 0)
+                        {
+                            y = adjP.y;
+                            newX = adjP.x;
+                            layoutLevel = layout[model.getByID(y).level || 0];
+                            break;
+                        }
+                    }
+
+                    // Always skip over nest headers
+                    if (curCol.type == 'nest-header') { continue; }
+
+                    // If we hit a fill or switched nested tables, go up to the
+                    // parent
+                    if (curCol.type == 'fill' ||
+                        (origCol.mcol && origCol.mcol.nestedIn && curCol.mcol &&
+                         curCol.mcol.nestedIn != origCol.mcol.nestedIn))
                     {
                         var newRow = model.getByID(y).parent;
                         y = newRow.id;
                         layoutLevel = layout[newRow.level || 0];
                         break;
                     }
-                    else if (layoutLevel[newX].canFocus !== false)
+                    else if (curCol.canFocus !== false)
                     {
                         // Found new cell to focus on
                         break;
                     }
                 }
                 if (newX < 0 || newX >= layoutLevel.length)
-                    // Can't move further left
-                    break;
+                {
+                    // Can't move further left/right
+                    if (!wrap) { break; }
+
+                    var deltaY = newX < 0 ? -1 : 1;
+                    newX = newX < 0 ? 0 : layoutLevel.length - 1;
+                    var adjPos = getAdjustedY(deltaY, event, y, newX);
+                    if (!adjPos) { break; }
+                    y = adjPos.y;
+                    layoutLevel = layout[model.getByID(y).level || 0];
+                    newX = newX == 0 ? layoutLevel.length - 1 : 0;
+                }
                 x = newX;
             }
 
@@ -1617,13 +1692,25 @@
                     navigateY(1, event);
                     break;
 
+                case 9:
+                    // Tab
+                    var direction = event.shiftKey ? -1 : 1;
+                    event.shiftKey = false;
+                    navigateX(direction, event, true);
+                    break;
+
                 case 13:
                 case 32:
-                    // Action
-                    if ($activeCells && $activeCells.hasClass('blist-opener') &&
+                    // Enter/Space
+                    if (!event.shiftKey &&
+                        $activeCells && $activeCells.hasClass('blist-opener') &&
                         !$activeCells.hasClass('blist-opener-inactive'))
+                    {
                         model.expand(getRow($activeCells[0]));
-                    navigateY(1, event);
+                    }
+                    var direction = event.shiftKey ? -1 : 1;
+                    event.shiftKey = false;
+                    navigateY(direction, event);
                     break;
 
                 default:

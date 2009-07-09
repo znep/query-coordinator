@@ -612,12 +612,17 @@
             activeCellY = y;
 
             // Scroll the active cell into view if it isn't visible vertically
-            var scrollTop = $scrolls[0].scrollTop,
-                scrollHeight = $scrolls.height(),
-                scrollBottom = scrollTop + scrollHeight,
-                top = model.index(y) * rowOffset,
-                bottom = top + rowOffset,
-                origScrollTop = scrollTop;
+            var scrollTop = $scrolls[0].scrollTop;
+            var scrollHeight = $scrolls.height();
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+                scrollHeight -= scrollbarWidth;
+            if ($footerScrolls.is(':visible'))
+                scrollHeight -= $footerScrolls.outerHeight() - 1;
+            var scrollBottom = scrollTop + scrollHeight;
+            var top = model.index(y) * rowOffset;
+            var bottom = top + rowOffset;
+            var origScrollTop = scrollTop;
+
             if (scrollBottom < bottom)
                 scrollTop = bottom - scrollHeight;
             if (scrollTop > top)
@@ -626,7 +631,41 @@
                 $scrolls.scrollTop(scrollTop);
 
             // Scroll the active cell into view if it isn't visible horizontally
-            // TODO
+            var renRow = renderedRows[y];
+            if (renRow)
+            {
+                // Set up scroll variables to use
+                var scrollLeft = $scrolls.scrollLeft();
+                var scrollWidth = $scrolls.width();
+                if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+                    scrollWidth -= scrollbarWidth;
+                var scrollRight = scrollLeft + scrollWidth;
+
+                var $row = $(renRow.row);
+                var $lastCell = $row.children().eq(x[x.length - 1]);
+                // We need absolute cell offset versus inside to account for
+                // locked columns
+                var cellRight = ($lastCell.offset().left - inside.offset().left) +
+                    $lastCell.outerWidth();
+                if (cellRight > scrollRight)
+                {
+                    $scrolls.scrollLeft(cellRight - scrollWidth);
+                }
+                else
+                {
+                    // If we don't need to scroll right, then check the left
+                    var $firstCell = $row.children().eq(x[0]);
+                    // Here we check just the left position relative to the
+                    // row, since a 0 position corresponds to a scroll position
+                    // of 0 We account for the locked columns by ignoring them
+                    // (kind of)
+                    var cellLeft = $firstCell.position().left;
+                    if (cellLeft < scrollLeft)
+                    {
+                        $scrolls.scrollLeft(cellLeft);
+                    }
+                }
+            }
 
             // Reset standard grid state
             $navigator[0].focus();

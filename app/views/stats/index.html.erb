@@ -96,20 +96,7 @@
             </tr>
           </table>
         </div>
-      </div>
-      <div class="left statsColumn">
-        <div class="panel">
-            <h1 class="webPub">Web Publishing Activity</h1>
-            <div class="clearfix" id="url-grid"></div>
-            <div class="blist-tfoot">
-              <div id="total-urls">Total: <%= @stat.url_activity.nil? ?
-                0 : @stat.url_activity.size %></div>
-              <div id="total-views"><%= @stat.url_activity.nil? ||
-                @stat.url_activity.values.nil? ?
-                0 : @stat.url_activity.values.sum %></div>
-            </div>
-        </div>
-
+        
         <%#
           Additional Usage
         %>
@@ -135,6 +122,16 @@
           </table>
         </div>
       </div>
+      <div class="left statsColumn">
+        <div class="panel">
+            <h1 class="webPub">Web Publishing Activity</h1>
+            <div class="clearfix" id="url-grid"></div>
+            <div class="blist-tfoot">
+              <div id="total-urls">Total: <%= @total_players %></div>
+              <div id="total-views"><%= @total_player_views %></div>
+            </div>
+        </div>
+      </div>
     </div>
   </div></div>
   </div></div></div>
@@ -148,10 +145,9 @@
     blist.namespace.fetch('blist.stats');
     blist.stats.urlData = [];
 
-    <%# Initialize the data model for the grid %>
-    <% row_id = 0 %>
-    <% (@stat.url_activity || []).each do |url, views| %>
-      blist.stats.urlData.push({id: <%= row_id += 1 %>, url: '<%=url%>', views: <%=views%>, sparkline: null});
+    <%# Initialize the data model for the grid %>  
+    <% (@stat.url_activity || []).each_index do |idx| %>
+      blist.stats.urlData.push({id: <%= idx %>, url: '<%= @stat.url_activity[idx]["url"] %>', views: <%= @stat.url_activity[idx]["count"] %>, sparkline: null});
     <% end %>
   </script>
   

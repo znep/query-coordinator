@@ -190,6 +190,19 @@
             return model.column(colUID);
         }
 
+        // Get the value in a row for a column
+        var getRowValue = function(row, column)
+        {
+            var value;
+            eval('value = row' + column.dataLookupExpr + ';');
+            return value;
+        };
+
+        // Set the value in a row for a column
+        var setRowValue = function(value, row, column)
+        {
+            eval('row' + column.dataLookupExpr + ' = value;');
+        };
 
         /*** CELL SELECTION AND NAVIGATION ***/
 
@@ -685,8 +698,7 @@
             var row = getRow(cell);
             var col = getColumn(cell);
             if (!col || !row) { return; }
-            var value;
-            eval('value = row' + col.dataLookupExpr + ';');
+            var value = getRowValue(row, col);
 
             // Obtain an expanding node in utility (off-screen) mode
             if (!$editContainer)
@@ -738,7 +750,7 @@
             {
                 var row = editor.row;
                 var col = editor.column;
-                eval('row' + col.dataLookupExpr + ' = value;');
+                setRowValue(value, row, col);
                 model.change([row]);
 
                 var data = {};
@@ -747,8 +759,7 @@
                 if (col.nestedIn)
                 {
                     var parCol = col.nestedIn.header;
-                    var childRow;
-                    eval('childRow = row' + parCol.dataLookupExpr + ';');
+                    var childRow = getRowValue(row, parCol);
                     url += row.parent.id +
                         '/columns/' + parCol.id +
                         '/subrows/' + (childRow.id || childRow[0]) +
@@ -1487,12 +1498,36 @@
 
             var x = baseX;
 
+            var newRow = model.getByID(y);
+            var newLevel = newRow.level || 0;
+            var newCol = layout[newLevel][baseX];
+            // If hit an opener or header in an expanded row, skip it
+            if ((newCol.type == 'opener' || newCol.type == 'header') &&
+                newRow.expanded)
+            {
+                return getAdjustedY(deltaY + (deltaY < 0 ? -1 : 1),
+                        event, baseY, baseX);
+            }
+            // If we're in a nested table, check if the row we are on is
+            // completely empty; if so, skip over it
+            if (newCol.mcol && (newCol.mcol.nestedIn ||
+                newCol.type == 'nest-header'))
+            {
+                var subRow = getRowValue(newRow, (newCol.type == 'nest-header' ?
+                            newCol.mcol.header :
+                            newCol.mcol.nestedIn.header) );
+                if (!subRow)
+                {
+                    return getAdjustedY(deltaY + (deltaY < 0 ? -1 : 1),
+                        event, baseY, baseX);
+                }
+            }
+
             // Handle level changes
             // TODO -- this logic is a bit of a cop out, it relies on the fact
             // that we won't have cell nav on w/ more than 2 levels and that
             // BnB parent/child linkage will be available
             var oldLevel = model.getByID(baseY).level || 0;
-            var newLevel = model.getByID(y).level || 0;
             if (newLevel != oldLevel)
             {
                 if (event.shiftKey || event.metaKey)
@@ -1512,11 +1547,6 @@
                     else if (newLevel < oldLevel && sourceColumn.mcol.nestedIn)
                     {
                         // Navigating out of a nested row
-                        // If going up to a header, go one extra row
-                        if (deltaY == -1)
-                        {
-                            return getAdjustedY(-2, event, baseY, baseX);
-                        }
                         newMCol = sourceColumn.mcol.nestedIn.header;
                     }
                     else
@@ -1608,9 +1638,13 @@
                             origCol.mcol.nestedIn.children.length;
                         var adjP = getAdjustedY(dY, event, y, adjX);
 
-                        // If this would cause us to change levels, then don't
-                        // adjust, and let the normal flow happen
-                        if (adjP && origLevel == model.getByID(adjP.y).level || 0)
+                        // Make sure this wouldn't make us change levels or
+                        // parent rows; if it does, then skip setting this data
+                        // and let the normal flow happen
+                        if (adjP &&
+                            origLevel == (model.getByID(adjP.y).level || 0) &&
+                            model.getByID(y).parent.id ==
+                                model.getByID(adjP.y).parent.id)
                         {
                             y = adjP.y;
                             newX = adjP.x;
@@ -1622,6 +1656,17 @@
                     // Always skip over nest headers
                     if (curCol.type == 'nest-header') { continue; }
 
+                    // If going into an empty nested table, skip it
+                    if (curCol.mcol && curCol.mcol.type == 'nested_table')
+                    {
+                        var curRow = model.getByID(y);
+                        if (curRow.expanded)
+                        {
+                            var subTable = getRowValue(curRow, curCol.mcol);
+                            if (subTable.length < 1) { continue; }
+                        }
+                    }
+
                     // If we hit a fill or switched nested tables, go up to the
                     // parent
                     if (curCol.type == 'fill' ||
@@ -1629,6 +1674,15 @@
                          curCol.mcol.nestedIn != origCol.mcol.nestedIn))
                     {
                         var newRow = model.getByID(y).parent;
+                        // If we switched to an expanded & empty nt, skip it
+                        if (curCol.mcol && curCol.mcol.nestedIn &&
+                            newRow.expanded)
+                        {
+                            var subT = getRowValue(newRow,
+                                curCol.mcol.nestedIn.header);
+                            if (subT.length < 1) { continue; }
+                        }
+
                         y = newRow.id;
                         layoutLevel = layout[newRow.level || 0];
                         break;
@@ -1716,7 +1770,7 @@
                 default:
                     return true;
             }
-            expandActiveCell();
+            setTimeout(expandActiveCell, 1);
 
             return false;
         }

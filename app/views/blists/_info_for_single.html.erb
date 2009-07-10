@@ -258,6 +258,7 @@
           </div>
         </dd>
       </dl>
+      
       <dl class="summaryList actionList">
         <dt>
           Permalink
@@ -267,12 +268,29 @@
             <% permaLink = request.protocol + request.host_with_port + view.href %>
             <%# use explicit a href here so Rails doesn't try to be clever %>
             <span>
-              <a href="<%= permaLink %>"><%= permaLink %></a>
+              <a href="<%= permaLink %>" title="A permanent URL for linking to this page"><%= permaLink %></a>
               <%= flash_clipboard_button(permaLink) %>
             </span>
           </div>
         </dd>
       </dl>
+
+      <dl class="summaryList actionList">
+        <dt>
+          Short URL
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <% short_url = request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href %>
+            <%# use explicit a href here so Rails doesn't try to be clever %>
+            <span>
+              <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email"><%= short_url %></a>
+              <%= flash_clipboard_button(short_url) %>
+            </span>
+          </div>
+        </dd>
+      </dl>
+
 
       <dl class="summaryList permissions <%= is_owner ? 'actionList' : '' %>">
         <dt>

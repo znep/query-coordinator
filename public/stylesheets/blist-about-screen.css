@@ -92,7 +92,7 @@
     text-align: right;
     width: 115px;
 }
-.aboutSummaryList dd { width: 400px; }
+.aboutSummaryList dd { width: 600px; }
 .aboutSummaryList dd ul li
 {
     margin-bottom: .5em;

@@ -196,6 +196,11 @@ body#lensBody
 	padding: 0 0.5em;
 }
 
+#lensContainer .headerBar > ul > li.noSpacing
+{
+    padding: 0;
+}
+
 #lensContainer .headerBar > ul > li > a
 {
     display: block;

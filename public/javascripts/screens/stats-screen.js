@@ -7,6 +7,7 @@ blist.stats.columns = [[
 ]];
 
 blist.stats.options = {
+    simpleCellExpand: true,
     cellExpandEnabled: false,
     disableLastColumnResize: true,
     manualResize: false,

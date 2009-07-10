@@ -9,13 +9,6 @@ blist.common.privacyText = {
 
 $(function ()
 {
-    // Cancel button
-    $('.cancelButton a').click(function(event)
-    {
-        event.preventDefault();
-        window.history.back();
-    });
-    
     // Validation
     $("#newDatasetForm").validate({
         rules: {

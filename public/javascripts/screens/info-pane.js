@@ -144,6 +144,10 @@
                     $form.hide();
                     $form.closest(opts.itemContentSelector).find("span").text(fieldValue).show();
                     opts.submitSuccessCallback(fieldType, fieldValue, responseData.id, responseData);
+                },
+                error: function(request, textStatus, errorThrown)
+                {
+                    opts.submitErrorCallback(fieldType, request);
                 }
             });
         };
@@ -163,7 +167,8 @@
        editCancelSelector: ".itemContent form .formCancelLink",
        allItemSelector: "#infoPane .summaryList dd .itemContent, #infoPane .panelHeader.editItem .itemContent",
        itemContentSelector: ".itemContent",
-       submitSuccessCallback: function(){}
+       submitSuccessCallback: function(){},
+       submitErrorCallback: function(){}
      };
 
 

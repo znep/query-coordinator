@@ -612,6 +612,37 @@
                 !$(clickTarget).is('a'))
                 $(clickTarget).trigger('table_click', event);
         }
+        
+        if (options.simpleCellExpand)
+        {
+            $('.blist-td:not(.blist-td-popout)').live('mouseover', function (event)
+            {
+                var $this = $(this);
+
+                var innerContentWidth = 0;
+                $this.children().each(function() { innerContentWidth += $(this).outerWidth(true); });
+
+                if (innerContentWidth <= $this.innerWidth())
+                    return;
+
+                var offsetPos = $this.offset();
+                offsetPos.top += $this.offsetParent().scrollTop();
+
+                var $copy = $this.clone();
+                $copy
+                    .addClass('blist-td-popout')
+                    .css('left', offsetPos.left)
+                    .css('top', offsetPos.top)
+                    .mouseleave(function (event)
+                    {
+                        $(this).fadeOut('fast', function() {
+                            $(this).remove();
+                        });
+                    })
+                    .fadeIn();
+                $(document.body).append($copy);
+            });
+        }
 
 
         /*** HTML RENDERING ***/

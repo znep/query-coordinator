@@ -306,41 +306,51 @@
 
         var searchMethod = function(a, b)
         {
-            return (a.value > b.value) ? 1 : -1;
+            var av = a.titleValue.toUpperCase();
+            var bv = b.titleValue.toUpperCase();
+            return av > bv ? 1 : av < bv ? -1 : 0;
         };
         if (colSum.subColumnType == "number" ||
                 colSum.subColumnType == "money" ||
+                colSum.subColumnType == "date" ||
                 colSum.subColumnType == "percent")
         {
             searchMethod = function(a, b)
             {
-                return (parseFloat(a.value) > parseFloat(b.value)) ? 1 : -1;
+                return a.value - b.value;
             };
         }
         if (colSum.topFrequencies != null)
         {
+            // First loop through and set up variations on the value
+            // to use in the menu
+            $.each(colSum.topFrequencies, function (i, f)
+                {
+                    f.isMatching = cf != null && cf.value == f.value;
+                    var curType = blist.data.types[col.type] ||
+                        blist.data.types['text'];
+                    f.escapedValue = curType.filterValue != null ?
+                        curType.filterValue(f.value, col) :
+                        $.htmlStrip(f.value + '');
+                    f.renderedValue = curType.filterRender != null ?
+                        curType.filterRender(f.value, col) : '';
+                    f.titleValue = $.htmlStrip(f.renderedValue);
+                });
+
             colSum.topFrequencies.sort(searchMethod);
 
             // Add an option for each filter item
             $.each(colSum.topFrequencies, function (i, f)
                 {
-                    var isMatching = cf != null && cf.value == f.value;
-                    var curType = blist.data.types[col.type] ||
-                        blist.data.types['text'];
-                    var escapedValue = curType.filterValue != null ?
-                        curType.filterValue(f.value, col) :
-                        $.htmlStrip(f.value + '');
-                    var renderedValue = curType.filterRender != null ?
-                        curType.filterRender(f.value, col) : '';
                     filterStr +=
-                        '<li class="filterItem' + (isMatching ? ' active' : '') +
+                        '<li class="filterItem' + (f.isMatching ? ' active' : '') +
                         ' scrollable">\
                             <a href="' +
-                            (isMatching ? '#clear-filter-column_' :
+                            (f.isMatching ? '#clear-filter-column_' :
                                 '#filter-column_') +
-                            col.index + '_' + escapedValue + '" title="' +
-                            $.htmlStrip(renderedValue) + ' (' + f.count +
-                            ')" class="clipText">' + renderedValue +
+                            col.index + '_' + f.escapedValue + '" title="' +
+                            f.titleValue + ' (' + f.count +
+                            ')" class="clipText">' + f.renderedValue +
                             ' (' + f.count + ')\
                             </a>\
                         </li>';

@@ -19,7 +19,7 @@ blist.util.navigation.redirectToView = function (viewId, args)
 
 blist.util.navigation.redirectToNewView = function ()
 {
-    window.location = '/blists/new_blist';
+    window.location = '/blists/new';
 };
 
 blist.util.navigation.urlToViewId = function(url)

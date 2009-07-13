@@ -40,21 +40,42 @@
           <div class="aboutBody">
             
             <h2>Description</h2>
-            <p><%= h(@view.description) %></p>
+            <%- if @view.description.nil? || @view.description.empty? -%>
+              <p>No Description Provided</p>
+            <%- else -%>
+              <p><%= h(@view.description) %></p>
+            <%- end -%>
+            
             
             <h2>Licensing, Attribution &amp; Terms of Use</h2>
             <ul class="attributionList">
-              <li>Data Provided by: <strong><%= h(@view.attribution) %></strong></li>
-              <li>Link: <strong><%= link_to(h(@view.attributionLink)) %></strong></li>
+              <li>Data Provided by:
+                <%- if @view.attribution.nil? || @view.attribution.empty? -%>
+                  <strong>None specified</strong>
+                <%- else -%>
+                  <strong><%= h(@view.attribution) %></strong>
+                <%- end -%>
+              </li>
+              <li>Link:
+                <%- if @view.attributionLink.nil? || @view.attributionLink.empty? -%>
+                  <strong>None</strong>
+                <%- else -%>
+                  <strong><%= link_to(h(@view.attributionLink)) %></strong>
+                <%- end -%>
+              </li>
             </ul>
             
             <%- if @view.license -%>
             <h3>Usage License</h3>
-            <p>
-              <a href="<%= h(@view.license.termsLink) %>">
-                <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
-              </a>
-            </p>
+              <%- if @view.license.logoUrl.nil? || @view.license.logoUrl.empty? -%>
+                <p><strong><%= @view.license.name %></strong></p>
+              <%- else -%>
+                <p>
+                  <a href="<%= h(@view.license.termsLink) %>">
+                    <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
+                  </a>
+                </p>
+              <%- end -%>
             <%- end -%>
             
             <%- if @view.termsAndConditions -%>
@@ -89,8 +110,20 @@
               </dd>
               <dt>Permalink</dt>
               <dd>
-                <span class="copyCode">
-                  <input name="permalink" type="text" value="<%= request.protocol + request.host_with_port + @view.href %>"/>
+                <% permaLink = request.protocol + request.host_with_port + @view.href %>
+                <%# use explicit a href here so Rails doesn't try to be clever %>
+                <span>
+                  <a href="<%= permaLink %>" title="A permanent URL for linking to this page"><%= permaLink %></a>
+                  <%= flash_clipboard_button(permaLink) %>
+                </span>
+              </dd>
+              <dt>Short URL</dt>
+              <dd>
+                <% short_url = request.protocol + request.host_with_port.gsub(/www\./, '') + @view.short_href %>
+                <%# use explicit a href here so Rails doesn't try to be clever %>
+                <span>
+                  <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email"><%= short_url %></a>
+                  <%= flash_clipboard_button(short_url) %>
                 </span>
               </dd>
               <dt>Permissions</dt>

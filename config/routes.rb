@@ -119,7 +119,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.root :controller => "data", :action => "show"
 
-  map.import '/upload', :controller => 'imports', :action => 'new' 
+  map.import '/upload', :controller => 'blists', :action => 'upload' 
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
   map.login '/login', :controller => 'user_sessions', :action => 'new'
   map.logout '/logout', :controller => 'user_sessions', :action => 'destroy'

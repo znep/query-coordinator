@@ -133,6 +133,16 @@
     cursor: default;
 }
 
+.blist-td-popout
+{
+    background-color: #fff;
+    border: 1px solid #999 !important;
+    margin: -2px -4px !important;
+    padding: 3px !important;
+    position: absolute;
+    width: auto !important;
+}
+
 div.blist-table .blist-td.blist-tdh
 {
     -moz-user-select: none;

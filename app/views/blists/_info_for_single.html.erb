@@ -85,6 +85,7 @@
       <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
         class="showFlashPopup">Share</a></li>
       <%- end -%>
+      <li><a href="<%= "#{view.href}/about" %>">More Info</a></li>
     </ul>
 
     <%- if (!@current_user.nil?) -%>
@@ -180,92 +181,6 @@
           <%- end -%>
         </dd>
       </dl>
-      
-      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
-        <dt>
-          Licensing
-        </dt>
-        <dd class="editItem">
-          <div class="itemContent infoLicensing">
-            <span>
-              <%- if view.license -%>
-                <%- if view.license.logoUrl.nil? || view.license.logoUrl.empty? -%>
-                  <%= h(view.license.name) %>
-                <%- else -%>
-                  <a href="<%= h(view.license.termsLink) %>">
-                    <img src="/<%= view.license.logoUrl %>" alt="<%= view.license.name %>" />
-                  </a>
-                <%- end -%>
-              <%- end -%>
-            </span>
-            <%- if is_owner -%>
-            <%- form_tag(view.href) do -%>
-              <%= hidden_field_tag("fieldType", "licenseId") %>
-              <%= select_tag("view[licenseId]",
-                license_select_options(h(view.licenseId.nil? ? '' : view.licenseId))) %>
-              <%= select_tag("license_cc_type",
-                creative_commons_select_options(h(view.licenseId.nil? ? '' : view.licenseId)),
-                :class => ((!view.licenseId.nil? && view.licenseId.include?("CC")) ? '' : 'hide')) %>
-              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
-            <%- end -%>
-            <%- end -%>
-          </div>
-          <%- if is_owner -%>
-          <div class="itemActions">
-            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
-          </div>
-          <%- end -%>
-        </dd>
-      </dl>
-
-      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
-        <dt>
-          Attributed To
-        </dt>
-        <dd class="editItem">
-          <div class="itemContent">
-            <span><%= h(view.attribution) %></span>
-            <%- if is_owner -%>
-            <%- form_tag(view.href) do -%>
-              <%= hidden_field_tag("fieldType", "attribution") %>
-              <%= text_field_tag("view[attribution]", h(view.attribution)) %>
-              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
-            <%- end -%>
-            <%- end -%>
-          </div>
-          <%- if is_owner -%>
-          <div class="itemActions">
-            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
-          </div>
-          <%- end -%>
-        </dd>
-      </dl>
-
-      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
-        <dt>
-          Attribution Link
-        </dt>
-        <dd class="editItem">
-          <div class="itemContent infoAttributionLink">
-            <span><%= link_to(h(view.attributionLink)) %></span>
-            <%- if is_owner -%>
-            <%- form_tag(view.href) do -%>
-              <%= hidden_field_tag("fieldType", "attributionLink") %>
-              <%= text_field_tag("view[attributionLink]", h(view.attributionLink)) %>
-              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
-            <%- end -%>
-            <%- end -%>
-          </div>
-          <%- if is_owner -%>
-          <div class="itemActions">
-            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
-          </div>
-          <%- end -%>
-        </dd>
-      </dl>
 
       <dl class="summaryList">
         <dt>
@@ -331,7 +246,9 @@
           <div class="itemContent">
             <ul>
               <li><%= pluralize(view.viewCount, "visit") %></li>
-              <li><%= pluralize(view.copyCount, "copy") %></li>
+              <%- if view.copyCount > 0 -%>
+                <li><%= pluralize(view.copyCount, "copy") %></li>
+              <%- end -%>
             </ul>
           </div>
           <div class="itemActions">
@@ -341,18 +258,39 @@
           </div>
         </dd>
       </dl>
+      
       <dl class="summaryList actionList">
         <dt>
           Permalink
         </dt>
         <dd>
           <div class="itemContent">
-            <span class="copyCode">
-              <input name="permalink" type="text" value="<%= request.protocol + request.host_with_port + view.href %>"/>
+            <% permaLink = request.protocol + request.host_with_port + view.href %>
+            <%# use explicit a href here so Rails doesn't try to be clever %>
+            <span>
+              <a href="<%= permaLink %>" title="A permanent URL for linking to this page"><%= permaLink %></a>
+              <%= flash_clipboard_button(permaLink) %>
             </span>
           </div>
         </dd>
       </dl>
+
+      <dl class="summaryList actionList">
+        <dt>
+          Short URL
+        </dt>
+        <dd>
+          <div class="itemContent">
+            <% short_url = request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href %>
+            <%# use explicit a href here so Rails doesn't try to be clever %>
+            <span>
+              <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email"><%= short_url %></a>
+              <%= flash_clipboard_button(short_url) %>
+            </span>
+          </div>
+        </dd>
+      </dl>
+
 
       <dl class="summaryList permissions <%= is_owner ? 'actionList' : '' %>">
         <dt>
@@ -370,6 +308,7 @@
         </dd>
       </dl>
 
+      <%- if view.contributor_users.length > 0 || view.viewer_users.length > 0 -%>
       <dl class="summaryList actionList">
         <dt>
           Sharing
@@ -377,12 +316,17 @@
         <dd>
           <div class="itemContent">
             <ul>
-              <li>
-                <%= pluralize(view.contributor_users.length, 'Contributor') %>
-              </li>
-              <li>
-                <%= pluralize(view.viewer_users.length, 'Viewer') %>
-              </li>
+              <%- if view.contributor_users.length > 0 -%>
+                <li>
+                  <%= pluralize(view.contributor_users.length, 'Contributor') %>
+                </li>
+              <%- end -%>
+              
+              <% if view.viewer_users.length > 0 -%>
+                <li>
+                  <%= pluralize(view.viewer_users.length, 'Viewer') %>
+                </li>
+              <%- end -%>
               <%# Not supported
               <li>[3 Requests]</li>
               %>
@@ -396,6 +340,93 @@
             <li><a href="#view_requests" class="action"><span>View Requests</span></a></li>
             %>
           </ul>
+        </dd>
+      </dl>
+      <%- end -%>
+
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+        <dt>
+          Licensing
+        </dt>
+        <dd class="editItem">
+          <div class="itemContent infoLicensing">
+            <span>
+              <%- if view.license -%>
+                <%- if view.license.logoUrl.nil? || view.license.logoUrl.empty? -%>
+                  <%= h(view.license.name) %>
+                <%- else -%>
+                  <a href="<%= h(view.license.termsLink) %>">
+                    <img src="/<%= view.license.logoUrl %>" alt="<%= view.license.name %>" />
+                  </a>
+                <%- end -%>
+              <%- end -%>
+            </span>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
+              <%= hidden_field_tag("fieldType", "licenseId") %>
+              <%= select_tag("view[licenseId]",
+                license_select_options(h(view.licenseId.nil? ? '' : view.licenseId))) %>
+              <%= select_tag("license_cc_type",
+                creative_commons_select_options(h(view.licenseId.nil? ? '' : view.licenseId)),
+                :class => ((!view.licenseId.nil? && view.licenseId.include?("CC")) ? '' : 'hide')) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+            <%- end -%>
+            <%- end -%>
+          </div>
+          <%- if is_owner -%>
+          <div class="itemActions">
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+          </div>
+          <%- end -%>
+        </dd>
+      </dl>
+
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+        <dt>
+          Data Provided By
+        </dt>
+        <dd class="editItem">
+          <div class="itemContent">
+            <span><%= h(view.attribution) %></span>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
+              <%= hidden_field_tag("fieldType", "attribution") %>
+              <%= text_field_tag("view[attribution]", h(view.attribution)) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+            <%- end -%>
+            <%- end -%>
+          </div>
+          <%- if is_owner -%>
+          <div class="itemActions">
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+          </div>
+          <%- end -%>
+        </dd>
+      </dl>
+
+      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+        <dt>
+          Source Link
+        </dt>
+        <dd class="editItem">
+          <div class="itemContent infoAttributionLink">
+            <span><%= link_to(h(view.attributionLink)) %></span>
+            <%- if is_owner -%>
+            <%- form_tag(view.href) do -%>
+              <%= hidden_field_tag("fieldType", "attributionLink") %>
+              <%= text_field_tag("view[attributionLink]", h(view.attributionLink)) %>
+              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+            <%- end -%>
+            <%- end -%>
+          </div>
+          <%- if is_owner -%>
+          <div class="itemActions">
+            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+          </div>
+          <%- end -%>
         </dd>
       </dl>
 

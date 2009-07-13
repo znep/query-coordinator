@@ -2,9 +2,11 @@
 <li id='comment_<%= comment.id %>' class='comment <%= comment.user.id == view.owner.id ? "ownerComment" : "" %> clearfix'>
 <div class='userInfo'>
   <div class='primaryInfo'>
-    <%= image_tag(comment.user.profile_image_path("small"), :size => "24x24",
-      :alt => h(comment.user.displayName)) %>
-    <h5><%= h(comment.user.displayName) %></h5>
+    <a href="<%= comment.user.href %>">
+      <%= image_tag(comment.user.profile_image_path("small"), :size => "24x24",
+        :alt => h(comment.user.displayName)) %>
+      <h5><%= h(comment.user.displayName) %></h5>
+    </a>
     <span><%= h(comment.user.title) %></span>
     <span><%= h(comment.user.company) %></span>
   </div>

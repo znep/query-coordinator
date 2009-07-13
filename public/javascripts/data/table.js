@@ -1471,7 +1471,7 @@
             return true;
         }
 
-        var getAdjustedY = function(deltaY, event, baseY, baseX)
+        var getAdjustedY = function(deltaY, event, baseX, baseY, wrap)
         {
             // Locate our current position
             var yIndex = model.index(baseY);
@@ -1480,6 +1480,59 @@
 
             // Update the y position
             yIndex += deltaY;
+
+            var x = baseX;
+
+            var oldRow = model.getByID(baseY);
+            var oldLevel = oldRow.level || 0;
+            var oldCol = layout[oldLevel][baseX];
+
+            // If we're wrapping and we go off the top or bottom, wrap to
+            // the next/previous column
+            if (wrap && (yIndex < 0 || yIndex >= model.length()))
+            {
+                // First catch the case where we are in a nested table, and
+                // should wrap to the next/previous nested table column before
+                // wrapping to the next parent column
+                if (oldCol.type != 'header' && oldCol.type != 'opener' &&
+                    oldCol.mcol && oldCol.mcol.nestedIn &&
+                    ((oldCol.mcol.indexInLevel > 0 && deltaY < 0) ||
+                    (oldCol.mcol.indexInLevel <
+                        oldCol.mcol.nestedIn.children.length - 1 && deltaY > 0)))
+                {
+                    yIndex += (deltaY < 0 ? 1 : -1) *
+                        oldRow.parent.childRows.length;
+                    x += deltaY < 0 ? -1 : 1;
+                }
+                else
+                {
+                    // If we're moving out of a header, go to the start of the
+                    // parent column
+                    if (oldCol.type == 'header')
+                    {
+                        for (var h = 0; h < layout[oldLevel].length; h++)
+                        {
+                            if (layout[oldLevel][h].mcol ==
+                                oldCol.mcol.nestedIn.header)
+                            {
+                                x = h;
+                                break;
+                            }
+                        }
+                    }
+
+                    var newYIndex = yIndex < 0 ? model.length() - 1 : 0;
+                    var newY = model.get(newYIndex);
+                    if (typeof newY == "object")
+                        newY = newY.id;
+                    var adjX = getAdjustedX(yIndex < 0 ? -1 : 1, event, x, newY);
+                    if (adjX && adjX.x != x)
+                    {
+                        x = adjX.x;
+                        yIndex = model.index(adjX.y);
+                    }
+                }
+            }
 
             // Bounds checking
             if (yIndex < 0)
@@ -1496,30 +1549,70 @@
             if (y == baseY)
                 return null;
 
-            var x = baseX;
-
             var newRow = model.getByID(y);
             var newLevel = newRow.level || 0;
-            var newCol = layout[newLevel][baseX];
-            // If hit an opener or header in an expanded row, skip it
-            if ((newCol.type == 'opener' || newCol.type == 'header') &&
-                newRow.expanded)
+            var newCol = layout[newLevel][x];
+            // If we're leaving a child row, then we will either wrap back to
+            // the top of the nested table, or go back to the first column in
+            // the nested table in the next parent row
+            if (wrap && baseX == x && oldCol.mcol.nestedIn &&
+                oldRow.parent && (!newRow.parent ||
+                    newRow.parent != oldRow.parent))
             {
-                return getAdjustedY(deltaY + (deltaY < 0 ? -1 : 1),
-                        event, baseY, baseX);
-            }
-            // If we're in a nested table, check if the row we are on is
-            // completely empty; if so, skip over it
-            if (newCol.mcol && (newCol.mcol.nestedIn ||
-                newCol.type == 'nest-header'))
-            {
-                var subRow = getRowValue(newRow, (newCol.type == 'nest-header' ?
-                            newCol.mcol.header :
-                            newCol.mcol.nestedIn.header) );
-                if (!subRow)
+                // If we're going out of the nested table completely, then
+                // adjust back to the first/last nt column, but let the normal
+                // y flow take affect
+                if ((oldCol.mcol.indexInLevel == 0 && deltaY < 0) ||
+                    (oldCol.mcol.indexInLevel ==
+                     oldCol.mcol.nestedIn.children.length - 1 && deltaY > 0))
                 {
-                    return getAdjustedY(deltaY + (deltaY < 0 ? -1 : 1),
-                        event, baseY, baseX);
+                    x += (deltaY < 0 ? 1 : -1) *
+                        (oldCol.mcol.nestedIn.children.length - 1);
+                    newCol = layout[newLevel][x];
+                }
+                else
+                {
+                    // Otherwise, we are staying within this nested table,
+                    // so we need to adjust columns by one and set y to the
+                    // first or last child row in this nt
+                    var childRows = oldRow.parent.childRows;
+                    var ntY = deltaY < 0 ?
+                        childRows[childRows.length - 1].id : childRows[0].id;
+                    var adjXNT = getAdjustedX(deltaY < 0 ? -1 : 1, event, x, ntY);
+                    if (adjXNT)
+                    {
+                        x = adjXNT.x;
+                        y = adjXNT.y;
+                        newRow = model.getByID(y);
+                        newLevel = newRow.level || 0;
+                        newCol = layout[newLevel][x];
+                    }
+                }
+            }
+
+            // If we hit a header, then there is special behavior
+            if (newCol.type == 'opener' || newCol.type == 'header')
+            {
+                // If hit an opener or header in an expanded row, skip it
+                if (newRow.expanded)
+                {
+                    return getAdjustedY(deltaY < 0 ? -1 : 1, event, x, y, wrap);
+                }
+                else
+                {
+                    // If it is not expanded, then select the whole header
+                    var targetCol = newCol.mcol.type == 'nested_table' ?
+                        targetCol = newCol.mcol :
+                        targetCol = newCol.mcol.nestedIn.header;
+                    for (var j = 0; j < layout[newLevel].length; j++)
+                    {
+                        if (layout[newLevel][j].mcol == targetCol)
+                        {
+                            x = j;
+                            // We found a collapsed header; let's return!
+                            return {x: x, y: y};
+                        }
+                    }
                 }
             }
 
@@ -1527,8 +1620,7 @@
             // TODO -- this logic is a bit of a cop out, it relies on the fact
             // that we won't have cell nav on w/ more than 2 levels and that
             // BnB parent/child linkage will be available
-            var oldLevel = model.getByID(baseY).level || 0;
-            if (newLevel != oldLevel)
+            if (newLevel != oldLevel && baseX == x)
             {
                 if (event.shiftKey || event.metaKey)
                 {
@@ -1538,16 +1630,31 @@
                 else
                 {
                     // Non-selecting nav into a different level
-                    var sourceColumn = layout[oldLevel][baseX];
-                    if (newLevel > oldLevel && sourceColumn.mcol.body)
+                    if (newLevel > oldLevel)
                     {
-                        // Navigating into a nested row
-                        var newMCol = sourceColumn.mcol.body.children[0];
+                        if (oldCol.mcol && oldCol.mcol.body)
+                        {
+                            // If we are leaving a top-level nt column,
+                            // then we're navigating into a nested row
+                            var newMCol = oldCol.mcol.body.children[0];
+                        }
+                        else if (oldCol.mcol && oldCol.mcol.nestedIn)
+                        {
+                            // Else we are leaving the header of a nested
+                            // column, and we're navigating into a nested row
+                            newMCol = oldCol.mcol;
+                        }
+                        else
+                        {
+                            // Otherwise scan for a new top-level row
+                            needScan = true;
+                        }
                     }
-                    else if (newLevel < oldLevel && sourceColumn.mcol.nestedIn)
+                    else if (newLevel < oldLevel && oldCol.mcol &&
+                        oldCol.mcol.nestedIn)
                     {
                         // Navigating out of a nested row
-                        newMCol = sourceColumn.mcol.nestedIn.header;
+                        newMCol = oldCol.mcol.nestedIn.header;
                     }
                     else
                     {
@@ -1559,7 +1666,26 @@
                 {
                     // Find next row in the same level
                     y = model.nextInLevel(baseY, deltaY < 0);
-                    if (y == null) { return null; }
+                    if (y == null)
+                    {
+                        if (!wrap) { return null; }
+                        else
+                        {
+                            // If we can't find another row in the same level,
+                            // then we may need to wrap
+                            var wrapYI = deltaY < 0 ? model.length() - 1 : 0;
+                            var wrapY = model.get(wrapYI);
+                            if (typeof wrapY == "object")
+                                wrapY = wrapY.id;
+                            var wrapXY = getAdjustedX(deltaY < 0 ? -1 : 1,
+                                event, x, wrapY);
+                            if (wrapXY && wrapXY.x != x)
+                            {
+                                return wrapXY;
+                            }
+                            else { return null; }
+                        }
+                    }
                     if (typeof y == "object") { y = y.id; }
                 }
                 else if (newMCol)
@@ -1572,6 +1698,7 @@
                         if (newLevelLayout[i].mcol == newMCol)
                         {
                             x = i;
+                            newCol = layout[newLevel][x];
                             break;
                         }
                     }
@@ -1589,34 +1716,48 @@
                 }
             }
 
+            // If we're in a nested table, check if the row we are on is
+            // completely empty; if so, skip over it
+            if (newCol.mcol && (newCol.mcol.nestedIn ||
+                newCol.type == 'nest-header'))
+            {
+                var subRow = getRowValue(newRow, (newCol.type == 'nest-header' ?
+                            newCol.mcol.header :
+                            newCol.mcol.nestedIn.header) );
+                if (!subRow)
+                {
+                    var adjDelta = deltaY < 0 ? -1 : 1;
+                    if (!wrap && model.index(y) + adjDelta >= model.length())
+                    { return null; }
+                    return getAdjustedY(adjDelta, event, x, y, wrap);
+                }
+            }
+
             return {x: x, y: y};
         };
 
         // Move the active cell an arbitrary number of rows.  Supports an value
         // for deltaY, including negative offsets
-        var navigateY = function(deltaY, event)
+        var navigateY = function(deltaY, event, wrap)
         {
             if (!preNav(event))
                 return;
 
-            var adjPos = getAdjustedY(deltaY, event, activeCellY, activeCellXs[0]);
+            var adjPos = getAdjustedY(deltaY, event, activeCellXs[0],
+                activeCellY, wrap);
             if (!adjPos) { return; }
 
             // Update the column
             cellNavToXY(adjPos.x, adjPos.y, event);
         }
 
-        // Move the active cell an arbitrary number of columns
-        var navigateX = function(deltaX, event, wrap)
+        var getAdjustedX = function(deltaX, event, baseX, baseY, wrap)
         {
-            if (!preNav(event))
-                return;
-
             // Scan for the next focusable cell
-            var y = activeCellY;
+            var y = baseY;
             var origLevel = model.getByID(y).level || 0;
             var layoutLevel = layout[origLevel];
-            var x = activeCellXs[0];
+            var x = baseX;
             var origCol = layoutLevel[x];
             var cellsToMove = Math.abs(deltaX);
             var delta = deltaX / cellsToMove;
@@ -1636,15 +1777,15 @@
                         var dY = delta < 0 ? -1 : 1;
                         var adjX = newX + (delta < 0 ? 1 : -1) *
                             origCol.mcol.nestedIn.children.length;
-                        var adjP = getAdjustedY(dY, event, y, adjX);
+                        var adjP = getAdjustedY(dY, event, adjX, y);
 
                         // Make sure this wouldn't make us change levels or
                         // parent rows; if it does, then skip setting this data
                         // and let the normal flow happen
                         if (adjP &&
                             origLevel == (model.getByID(adjP.y).level || 0) &&
-                            model.getByID(y).parent.id ==
-                                model.getByID(adjP.y).parent.id)
+                            model.getByID(y).parent ==
+                                model.getByID(adjP.y).parent)
                         {
                             y = adjP.y;
                             newX = adjP.x;
@@ -1653,8 +1794,9 @@
                         }
                     }
 
-                    // Always skip over nest headers
-                    if (curCol.type == 'nest-header') { continue; }
+                    // Always skip over nest headers and headers
+                    if (curCol.type == 'nest-header' ||
+                        curCol.type == 'header') { continue; }
 
                     // If going into an empty nested table, skip it
                     if (curCol.mcol && curCol.mcol.type == 'nested_table')
@@ -1670,7 +1812,8 @@
                     // If we hit a fill or switched nested tables, go up to the
                     // parent
                     if (curCol.type == 'fill' ||
-                        (origCol.mcol && origCol.mcol.nestedIn && curCol.mcol &&
+                        (origCol.mcol && origCol.mcol.nestedIn &&
+                         curCol.mcol && curCol.mcol.nestedIn &&
                          curCol.mcol.nestedIn != origCol.mcol.nestedIn))
                     {
                         var newRow = model.getByID(y).parent;
@@ -1700,7 +1843,7 @@
 
                     var deltaY = newX < 0 ? -1 : 1;
                     newX = newX < 0 ? 0 : layoutLevel.length - 1;
-                    var adjPos = getAdjustedY(deltaY, event, y, newX);
+                    var adjPos = getAdjustedY(deltaY, event, newX, y);
                     if (!adjPos) { break; }
                     y = adjPos.y;
                     layoutLevel = layout[model.getByID(y).level || 0];
@@ -1709,9 +1852,21 @@
                 x = newX;
             }
 
+            return {x: x, y: y};
+        };
+
+        // Move the active cell an arbitrary number of columns
+        var navigateX = function(deltaX, event, wrap)
+        {
+            if (!preNav(event))
+                return;
+
+            var adjPos = getAdjustedX(deltaX, event, activeCellXs[0],
+                activeCellY, wrap);
+
             // Update if we made changes
-            if (x != activeCellXs[0] || y != activeCellY)
-                cellNavToXY(x, y, event);
+            if (adjPos.x != activeCellXs[0] || adjPos.y != activeCellY)
+                cellNavToXY(adjPos.x, adjPos.y, event);
         }
 
         var onKeyPress = function(event) {
@@ -1764,7 +1919,7 @@
                     }
                     var direction = event.shiftKey ? -1 : 1;
                     event.shiftKey = false;
-                    navigateY(direction, event);
+                    navigateY(direction, event, true);
                     break;
 
                 default:

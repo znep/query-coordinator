@@ -204,6 +204,21 @@
             eval('row' + column.dataLookupExpr + ' = value;');
         };
 
+        // Takes a column, and gets the real px width for it
+        var getColumnWidthPx = function(col)
+        {
+            if (col.type == 'opener')
+            {
+                return openerWidth + paddingX;
+            }
+            else if (col.mcol)
+            {
+                col = col.mcol;
+            }
+            return (col.width ||
+                parseFloat(getColumnStyle(col).width)) + paddingX;
+        };
+
         /*** CELL SELECTION AND NAVIGATION ***/
 
         // Is cell selection and navigation on?
@@ -382,6 +397,10 @@
                     $activeCells = $newActive;
                     $activeCells.addClass('blist-cell-active');
                 }
+                else
+                {
+                    $activeCells = null;
+                }
             }
 
             // Update selection rendering
@@ -409,10 +428,36 @@
                 inside.append($activeContainer);
             }
 
-            if (!$activeCells)
+            if (!activeCellOn)
             {
                 $activeContainer.css('top', -10000);
                 $activeContainer.css('left', -10000);
+                return;
+            }
+
+            if (!$activeCells)
+            {
+                // Display a placeholder at the appropriate location
+                $activeContainer.empty();
+
+                $activeContainer.height(rowOffset -
+                    ($activeContainer.outerHeight() - $activeContainer.height()));
+                var width = 0;
+                for (var j = 0; j < activeCellXs.length; j++)
+                {
+                    width += getColumnWidthPx(layout[0][activeCellXs[j]]);
+                }
+                $activeContainer.width(width -
+                    ($activeContainer.outerWidth() - $activeContainer.width()));
+
+                var rowIndex = model.index(activeCellY);
+                $activeContainer.css('top', rowIndex * rowOffset);
+                var left = lockedWidth;
+                for (var i = 0; i < activeCellXs[0]; i++)
+                {
+                    left += getColumnWidthPx(layout[0][i]);
+                }
+                $activeContainer.css('left', left);
                 return;
             }
 
@@ -1076,7 +1121,8 @@
 
             // If we are looking at the selection expansion, return
             //  the first active cell
-            if ($activeContainer && ($cell[0] == $activeContainer[0] ||
+            if ($activeContainer && $activeCells &&
+                ($cell[0] == $activeContainer[0] ||
                 $cell.parent()[0] == $activeContainer[0]))
                 return $activeCells[0];
 
@@ -3142,8 +3188,11 @@
             }
 
             if (cellNav)
+            {
                 // Cell selection and navigation
                 updateCellNavCues();
+                expandActiveCell();
+            }
             // Row selection
             updateSelection();
         };

@@ -356,7 +356,7 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < supplement.length; i++)
             {
                 var row = supplement[i];
-                var id = row.id;
+                var id = row.id || (row.id = row[0]);
                 var index = lookup[id];
                 if (index != null)
                 {

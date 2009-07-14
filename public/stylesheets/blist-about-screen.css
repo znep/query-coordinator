@@ -169,7 +169,7 @@ span.fieldValue
 
 dl.summaryList
 {
-    background-color: #cacaca;
+    background-color: #e7e7e7;
     background-image: url(/stylesheets/images/content/about-edit-background.gif);
     background-repeat: repeat-y;
     padding: 5px;
@@ -224,12 +224,12 @@ dl.summaryList .submitActions
 
 dl.summaryList .submitActions .actionButtons li
 {
-    background-position: 0 0;
+    background-position: 0 -189px;
 }
 
 dl.summaryList .submitActions .actionButtons li a
 {
-    background-position: right -42px;
+    background-position: right -231px;
 }
 
 span.helpie

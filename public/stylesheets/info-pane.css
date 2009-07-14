@@ -525,6 +525,20 @@
 }
 
 /* attribution edit */
+.infoContentOuter.listContainer .infoContent .attributionEdit dd
+{
+    background-color: #e7e7e7;
+}
+.infoContentOuter.listContainer .infoContent .attributionEdit dd .submitActions .actionButtons li
+{
+    background-position: 0 -189px;
+}
+
+.infoContentOuter.listContainer .infoContent .attributionEdit dd .submitActions .actionButtons li a
+{
+    background-position: right -231px;
+}
+
 .infoContentOuter.listContainer .infoContent .attributionEdit dd .itemContent select
 {
     display: inline-block;

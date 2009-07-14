@@ -167,22 +167,22 @@ private
       parts <<
         case params['share_direction']
         when 'in'
-          'who have shared with me'
+          ' who have shared with me'
         when 'out'
-          'with whom I have shared'
+          ' with whom I have shared'
         end
     end
 
     if !params['untagged'].nil? && params['untagged'] == 'true'
-      parts << 'with no tags'
+      parts << ' with no tags'
     end
 
     if !params['untagged'].nil? && params['untagged'] == 'false'
-      parts << 'with any tags'
+      parts << ' with any tags'
     end
 
     if !params['tag'].nil?
-      parts << 'tagged "' + params['tag'] + '"'
+      parts << ' tagged "' + params['tag'] + '"'
     end
 
     title += parts.join(' and ')

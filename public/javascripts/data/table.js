@@ -429,6 +429,9 @@
                 return;
             }
 
+            var row = model.getByID(activeCellY);
+            if (row.expanded) { $activeContainer.addClass('blist-tr-open'); }
+            else { $activeContainer.removeClass('blist-tr-open'); }
             if (!$activeCells)
             {
                 // Display a placeholder at the appropriate location
@@ -561,7 +564,7 @@
          * Navigate to a particular location (column UID, row ID pair).
          * Returns true iff the location contains a focusable table cell.
          */
-        var cellNavToXY = function(x, y, event, selecting)
+        var cellNavToXY = function(x, y, event, selecting, wrap)
         {
             // Decide what affect this navigation has on the selection
             var selectionMode;
@@ -594,9 +597,19 @@
             var xNum = 1;
             var col = layoutLevel[x];
             var uid = col.logical;
+
+            // If we are wrapping into a non-expanded header, expand it
+            // if it has children
+            if (wrap && !row.expanded &&
+                    (col.type == 'opener' || col.type == 'header'))
+            {
+                var subT = getRowValue(row, col.mcol);
+                if (subT.length > 0) { model.expand(row); }
+            }
+
             // See if we selected into a closed nested table; if so, select
             // all headers
-            if (!row.expanded &&
+            if ((!row.expanded || !wrap) &&
                     (col.type == 'opener' || col.type == 'header'))
             {
                 for (var i = x + 1; i < layoutLevel.length &&
@@ -608,7 +621,7 @@
 
             // If we are naving into an expanded header, then go into the
             //  first navigable child cell
-            if (row.expanded &&
+            if (row.expanded && wrap &&
                     (col.type == 'opener' || col.type == 'header'))
             {
                 y = row.childRows[0].id;
@@ -1487,11 +1500,11 @@
         // Page size is configured in renderRows()
         var pageSize = 1;
 
-        var preNav = function(event) {
+        var preNav = function(event, wrap) {
             if (!activeCellOn) {
                 // First keyboard nav without cell nav on -- move to position 0, 0
                 if (model.length() && model.column(0))
-                    cellNavToXY(0, model.get(0).id, event);
+                    cellNavToXY(0, model.get(0).id, event, false, wrap);
                 return false;
             }
             return true;
@@ -1620,7 +1633,7 @@
             if (newCol.type == 'opener' || newCol.type == 'header')
             {
                 // If hit an opener or header in an expanded row, skip it
-                if (newRow.expanded)
+                if (newRow.expanded && wrap)
                 {
                     return getAdjustedY(deltaY < 0 ? -1 : 1, event, x, y, wrap);
                 }
@@ -1762,7 +1775,7 @@
         // for deltaY, including negative offsets
         var navigateY = function(deltaY, event, wrap)
         {
-            if (!preNav(event))
+            if (!preNav(event, wrap))
                 return;
 
             var adjPos = getAdjustedY(deltaY, event, activeCellXStart,
@@ -1770,7 +1783,7 @@
             if (!adjPos) { return; }
 
             // Update the column
-            cellNavToXY(adjPos.x, adjPos.y, event);
+            cellNavToXY(adjPos.x, adjPos.y, event, false, wrap);
         }
 
         var getAdjustedX = function(deltaX, event, baseX, baseY, wrap)
@@ -1910,7 +1923,7 @@
         // Move the active cell an arbitrary number of columns
         var navigateX = function(deltaX, event, wrap)
         {
-            if (!preNav(event))
+            if (!preNav(event, wrap))
                 return;
 
             var adjPos = getAdjustedX(deltaX, event, activeCellXStart,
@@ -1919,7 +1932,7 @@
 
             // Update if we made changes
             if (adjPos.x != activeCellXStart || adjPos.y != activeCellY)
-                cellNavToXY(adjPos.x, adjPos.y, event);
+                cellNavToXY(adjPos.x, adjPos.y, event, false, wrap);
         }
 
         var onKeyPress = function(event) {
@@ -1970,9 +1983,12 @@
                     {
                         model.expand(getRow($activeCells[0]));
                     }
-                    var direction = event.shiftKey ? -1 : 1;
-                    event.shiftKey = false;
-                    navigateY(direction, event, true);
+                    else
+                    {
+                        var direction = event.shiftKey ? -1 : 1;
+                        event.shiftKey = false;
+                        navigateY(direction, event, true);
+                    }
                     break;
 
                 default:

@@ -507,6 +507,7 @@ $(function ()
         blistGridNS.sizeSwf(event);
         $('#readGrid').trigger('resize');
     });
+    $('#infoPane').show();
     commonNS.adjustSize();
     $('#readGrid').trigger('resize');
 

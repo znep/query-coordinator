@@ -1023,6 +1023,8 @@ body#lensBody
 }
 
 
+#infoPane { display: none; }
+
 /* SWF/Non-SWF */
 #lensBody.readMode .swfItem
 {

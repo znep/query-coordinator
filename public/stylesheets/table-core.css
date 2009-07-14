@@ -432,9 +432,6 @@ img.blist-table-option-icon
     height: 100%;
 }
 
-.blist-cell-active, .blist-cell-selected.blist-cell-active {
-}
-
 .blist-table-navigator {
     position: absolute;
     left: -10000px;

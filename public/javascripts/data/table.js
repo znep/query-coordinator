@@ -226,8 +226,9 @@
 
         // Active cell
         var activeCellOn = false;
-        var activeCellXs,    // Index of the physical columns that are active
-            activeCellY;     // Row ID (of a row in the model active set)
+        var activeCellXStart;  // Index of the first physical column that is active
+        var activeCellXNum;    // Number of X cells to select
+        var activeCellY;       // Row ID (of a row in the model active set)
         var $activeCells;
 
         // Cell selection information.  The cell selection consists of one or more rectangular areas each including
@@ -378,24 +379,19 @@
         var updateCellNavCues = function()
         {
             // Update the active cell
-            if ($activeCells)
-            {
-                $activeCells.removeClass('blist-cell-active');
-            }
             if (activeCellOn)
             {
                 var physActive = renderedRows[activeCellY];
                 if (physActive)
                 {
                     var $newActive = $(physActive.row).children()
-                        .slice(activeCellXs[0],
-                            activeCellXs[activeCellXs.length - 1] + 1);
+                        .slice(activeCellXStart,
+                            activeCellXStart + activeCellXNum);
                 }
                 if ($newActive)
                 {
                     // Mark the new cells as active
                     $activeCells = $newActive;
-                    $activeCells.addClass('blist-cell-active');
                 }
                 else
                 {
@@ -411,8 +407,6 @@
 
         var expandActiveCell = function()
         {
-            if (options.noExpand) return;
-
             // Obtain an expanding node in utility (off-screen) mode
             if (!$activeContainer)
             {
@@ -443,9 +437,9 @@
                 $activeContainer.height(rowOffset -
                     ($activeContainer.outerHeight() - $activeContainer.height()));
                 var width = 0;
-                for (var j = 0; j < activeCellXs.length; j++)
+                for (var j = 0; j < activeCellXNum; j++)
                 {
-                    width += getColumnWidthPx(layout[0][activeCellXs[j]]);
+                    width += getColumnWidthPx(layout[0][activeCellXStart + j]);
                 }
                 $activeContainer.width(width -
                     ($activeContainer.outerWidth() - $activeContainer.width()));
@@ -453,7 +447,7 @@
                 var rowIndex = model.index(activeCellY);
                 $activeContainer.css('top', rowIndex * rowOffset);
                 var left = lockedWidth;
-                for (var i = 0; i < activeCellXs[0]; i++)
+                for (var i = 0; i < activeCellXStart; i++)
                 {
                     left += getColumnWidthPx(layout[0][i]);
                 }
@@ -520,8 +514,8 @@
 
             // Check if we clicked in a locked section or on a nested table
             // header; ignore those for now
-            if ($(event.target)
-                .closest('.blist-table-locked, .blist-tdh').length > 0)
+            if ($(event.target).closest('.blist-table-locked').length > 0 ||
+                (!selecting && $(event.target).closest('.blist-tdh') > 0))
             {
                 return false;
             }
@@ -597,28 +591,19 @@
                 return false;
 
             var layoutLevel = layout[row.level || 0];
-            var col;
-            if (!(typeof x == Array))
-            {
-                var origX = x;
-                x = [origX];
-                col = layoutLevel[origX];
-                var uid = col.logical;
-                // See if we selected into a closed nested table; if so, select
-                // all headers
-                if (!row.expanded &&
+            var xNum = 1;
+            var col = layoutLevel[x];
+            var uid = col.logical;
+            // See if we selected into a closed nested table; if so, select
+            // all headers
+            if (!row.expanded &&
                     (col.type == 'opener' || col.type == 'header'))
-                {
-                    for (origX++; origX < layoutLevel.length &&
-                            layoutLevel[origX].logical == uid; origX++)
-                    {
-                        x.push(origX);
-                    }
-                }
-            }
-            else
             {
-                col = layoutLevel[x[0]];
+                for (var i = x + 1; i < layoutLevel.length &&
+                        layoutLevel[i].logical == uid; i++)
+                {
+                    xNum++;
+                }
             }
 
             // If we are naving into an expanded header, then go into the
@@ -629,11 +614,11 @@
                 y = row.childRows[0].id;
                 row = model.getByID(y);
                 layoutLevel = layout[row.level || 0];
-                col = layoutLevel[x[0]];
+                col = layoutLevel[x];
                 while (col.skippable)
                 {
-                    x[0]++;
-                    col = layoutLevel[x[0]];
+                    x++;
+                    col = layoutLevel[x];
                 }
             }
 
@@ -645,7 +630,7 @@
                 if (!cellSelection.length)
                     selectionLevel = model.getByID(y).level || 0;
                 var startX = selectionMode == 'start' && activeCellOn ?
-                    activeCellXs[0] : x[0];
+                    activeCellXStart : x;
                 var startY = model.index(selectionMode == 'start' &&
                     activeCellOn ? activeCellY : y);
                 cellSelection.push(selection = [ startX, startY ]);
@@ -659,14 +644,15 @@
             // Update the selection box, if any
             if (selection)
             {
-                selection[2] = x[0] < selection[0] ?
-                    x[0] : x[x.length - 1];
+                selection[2] = x < selection[0] ?
+                    x : x + xNum - 1;
                 selection[3] = model.index(y);
             }
 
             // Update the active cell
             activeCellOn = true;
-            activeCellXs = x;
+            activeCellXStart = x;
+            activeCellXNum = xNum;
             activeCellY = y;
 
             // Scroll the active cell into view if it isn't visible vertically
@@ -689,40 +675,34 @@
                 $scrolls.scrollTop(scrollTop);
 
             // Scroll the active cell into view if it isn't visible horizontally
-            var renRow = renderedRows[y];
-            if (renRow)
-            {
-                // Set up scroll variables to use
-                var scrollLeft = $scrolls.scrollLeft();
-                var scrollWidth = $scrolls.width();
-                if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
-                    scrollWidth -= scrollbarWidth;
-                var scrollRight = scrollLeft + scrollWidth;
+            // Set up scroll variables to use
+            var scrollLeft = $scrolls.scrollLeft();
+            var scrollWidth = $scrolls.width();
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+                scrollWidth -= scrollbarWidth;
+            var scrollRight = scrollLeft + scrollWidth;
 
-                var $row = $(renRow.row);
-                var $lastCell = $row.children().eq(x[x.length - 1]);
-                // We need absolute cell offset versus inside to account for
-                // locked columns
-                var cellRight = ($lastCell.offset().left - inside.offset().left) +
-                    $lastCell.outerWidth();
-                if (cellRight > scrollRight)
-                {
-                    $scrolls.scrollLeft(cellRight - scrollWidth);
-                }
-                else
-                {
-                    // If we don't need to scroll right, then check the left
-                    var $firstCell = $row.children().eq(x[0]);
-                    // Here we check just the left position relative to the
-                    // row, since a 0 position corresponds to a scroll position
-                    // of 0 We account for the locked columns by ignoring them
-                    // (kind of)
-                    var cellLeft = $firstCell.position().left;
-                    if (cellLeft < scrollLeft)
-                    {
-                        $scrolls.scrollLeft(cellLeft);
-                    }
-                }
+            var layoutLevel = layout[model.getByID(y).level || 0];
+            // Calculate left & right positions
+            var cellLeft = lockedWidth;
+            for (var i = 0; i < x; i++)
+            {
+                cellLeft += getColumnWidthPx(layoutLevel[i]);
+            }
+            var cellRight = cellLeft;
+            for (var j = 0; j < xNum; j++)
+            {
+                cellRight += getColumnWidthPx(layoutLevel[x + j]);
+            }
+
+            if (cellRight > scrollRight)
+            {
+                $scrolls.scrollLeft(cellRight - scrollWidth);
+            }
+            // Check the left, to make sure it is in view
+            if (cellLeft - lockedWidth < scrollLeft)
+            {
+                $scrolls.scrollLeft(cellLeft - lockedWidth);
             }
 
             // Reset standard grid state
@@ -1648,8 +1628,7 @@
                 {
                     // If it is not expanded, then select the whole header
                     var targetCol = newCol.mcol.type == 'nested_table' ?
-                        targetCol = newCol.mcol :
-                        targetCol = newCol.mcol.nestedIn.header;
+                        newCol.mcol : newCol.mcol.nestedIn.header;
                     for (var j = 0; j < layout[newLevel].length; j++)
                     {
                         if (layout[newLevel][j].mcol == targetCol)
@@ -1715,22 +1694,19 @@
                     if (y == null)
                     {
                         if (!wrap) { return null; }
-                        else
-                        {
-                            // If we can't find another row in the same level,
-                            // then we may need to wrap
-                            var wrapYI = deltaY < 0 ? model.length() - 1 : 0;
-                            var wrapY = model.get(wrapYI);
-                            if (typeof wrapY == "object")
-                                wrapY = wrapY.id;
-                            var wrapXY = getAdjustedX(deltaY < 0 ? -1 : 1,
+                        // If we can't find another row in the same level,
+                        // then we may need to wrap
+                        var wrapYI = deltaY < 0 ? model.length() - 1 : 0;
+                        var wrapY = model.get(wrapYI);
+                        if (typeof wrapY == "object")
+                            wrapY = wrapY.id;
+                        var wrapXY = getAdjustedX(deltaY < 0 ? -1 : 1,
                                 event, x, wrapY);
-                            if (wrapXY && wrapXY.x != x)
-                            {
-                                return wrapXY;
-                            }
-                            else { return null; }
+                        if (wrapXY && wrapXY.x != x)
+                        {
+                            return wrapXY;
                         }
+                        return null;
                     }
                     if (typeof y == "object") { y = y.id; }
                 }
@@ -1789,7 +1765,7 @@
             if (!preNav(event))
                 return;
 
-            var adjPos = getAdjustedY(deltaY, event, activeCellXs[0],
+            var adjPos = getAdjustedY(deltaY, event, activeCellXStart,
                 activeCellY, wrap);
             if (!adjPos) { return; }
 
@@ -1805,6 +1781,7 @@
             var layoutLevel = layout[origLevel];
             var x = baseX;
             var origCol = layoutLevel[x];
+            var prevCol = origCol;
             var cellsToMove = Math.abs(deltaX);
             var delta = deltaX / cellsToMove;
             for (var i = 0; i < cellsToMove; i++)
@@ -1816,13 +1793,14 @@
 
                     // If we're wrapping, and we hit the edge of nested table
                     //  we're in, wrap within the table
-                    if (wrap && origCol.mcol && origCol.mcol.nestedIn &&
+                    if (wrap && prevCol && prevCol.mcol &&
+                        prevCol.mcol.nestedIn &&
                         (!curCol.mcol ||
-                            curCol.mcol.nestedIn != origCol.mcol.nestedIn))
+                            curCol.mcol.nestedIn != prevCol.mcol.nestedIn))
                     {
                         var dY = delta < 0 ? -1 : 1;
                         var adjX = newX + (delta < 0 ? 1 : -1) *
-                            origCol.mcol.nestedIn.children.length;
+                            prevCol.mcol.nestedIn.children.length;
                         var adjP = getAdjustedY(dY, event, adjX, y);
 
                         // Make sure this wouldn't make us change levels or
@@ -1858,9 +1836,9 @@
                     // If we hit a fill or switched nested tables, go up to the
                     // parent
                     if (curCol.type == 'fill' ||
-                        (origCol.mcol && origCol.mcol.nestedIn &&
+                        (prevCol && prevCol.mcol && prevCol.mcol.nestedIn &&
                          curCol.mcol && curCol.mcol.nestedIn &&
-                         curCol.mcol.nestedIn != origCol.mcol.nestedIn))
+                         curCol.mcol.nestedIn != prevCol.mcol.nestedIn))
                     {
                         var newRow = model.getByID(y).parent;
                         // If we switched to an expanded & empty nt, skip it
@@ -1887,15 +1865,43 @@
                     // Can't move further left/right
                     if (!wrap) { break; }
 
-                    var deltaY = newX < 0 ? -1 : 1;
-                    newX = newX < 0 ? 0 : layoutLevel.length - 1;
-                    var adjPos = getAdjustedY(deltaY, event, newX, y);
-                    if (!adjPos) { break; }
-                    y = adjPos.y;
+                    if (prevCol && prevCol.mcol && prevCol.mcol.nestedIn)
+                    {
+                        var dY = delta < 0 ? -1 : 1;
+                        var adjX = newX + (delta < 0 ? 1 : -1) *
+                            prevCol.mcol.nestedIn.children.length;
+                        var adjP = getAdjustedY(dY, event, adjX, y);
+
+                        // Make sure this wouldn't make us change levels or
+                        // parent rows; if it does, then skip setting this data
+                        // and let the normal flow happen
+                        if (adjP &&
+                            origLevel == (model.getByID(adjP.y).level || 0) &&
+                            model.getByID(y).parent ==
+                                model.getByID(adjP.y).parent)
+                        {
+                            y = adjP.y;
+                            x = adjP.x;
+                            layoutLevel = layout[model.getByID(y).level || 0];
+                            prevCol = layoutLevel[newX];
+                            continue;
+                        }
+                    }
+
+                    // We're wrapping a whole row, so find the next/prev
+                    // parent row
+                    var curRow = model.getByID(y);
+                    if (curRow.parent) { curRow = curRow.parent; }
+                    y = model.nextInLevel(curRow.id, delta < 0);
+                    if (y == null) { return null; }
+
+                    if (typeof y == 'object') { y = y.id; }
+                    newX = newX < 0 ? layoutLevel.length : -1;
                     layoutLevel = layout[model.getByID(y).level || 0];
-                    newX = newX == 0 ? layoutLevel.length - 1 : 0;
+                    i--;
                 }
                 x = newX;
+                prevCol = layoutLevel[x];
             }
 
             return {x: x, y: y};
@@ -1907,11 +1913,12 @@
             if (!preNav(event))
                 return;
 
-            var adjPos = getAdjustedX(deltaX, event, activeCellXs[0],
+            var adjPos = getAdjustedX(deltaX, event, activeCellXStart,
                 activeCellY, wrap);
+            if (!adjPos) { return; }
 
             // Update if we made changes
-            if (adjPos.x != activeCellXs[0] || adjPos.y != activeCellY)
+            if (adjPos.x != activeCellXStart || adjPos.y != activeCellY)
                 cellNavToXY(adjPos.x, adjPos.y, event);
         }
 
@@ -2047,8 +2054,7 @@
             <div class="blist-table-util"></div>';
 
         $(document)
-            .mouseup(onMouseUp)
-            .keydown(onKeyDown);
+            .mouseup(onMouseUp);
 
         // Render container elements
         var $outside = $this
@@ -2056,6 +2062,7 @@
             .mousedown(onMouseDown)
             .mousemove(onMouseMove)
             .dblclick(onDoubleClick)
+            .keydown(onKeyDown)
             .html(headerStr);
 
         var $lockedScrolls = $outside.find('.blist-table-locked-scrolls');

@@ -60,7 +60,7 @@ class View < Model
       attributes['searchString'] == "''" || attributes['searchString'] == "null"
       attributes['searchString'] = nil
     else
-      attributes['searchString'] = JSON.parse(attributes['searchString'])
+      attributes['searchString'] = attributes['searchString']
     end
     super(attributes)
   end

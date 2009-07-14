@@ -157,21 +157,11 @@
             <%- end -%>
 
             <li>
-              <%- 
-                tweet = CGI::escape("Check out the #{h(@view.name)} dataset on #{t(:blist_company)} - ")
-                seo_path = "#{request.protocol + request.host_with_port + @view.href}"
-                short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + @view.short_href}"
-              -%>
 					    <a href='#' id='shareTopLink' class='dropdownLink'>
 					      <div class='outerWrapper'><div class='midWrapper'>
 					          <div class='innerWrapper'>
 					            <span class='linkIcon'>Socialize This</span></div></div></div></a>
-					    <%= menu_tag({'id' => 'shareTopMenu', 'option_menu' => true,
-					    'items' => [
-					    {'text' => 'Delicious', 'class' => 'delicious', 'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
-					    {'text' => 'Digg', 'class' => 'digg', 'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
-					    {'text' => 'Twitter', 'class' => 'twitter', 'href' => "http://www.twitter.com/home?status=#{tweet + short_path}", 'external' => true},
-					    {'text' => 'Facebook', 'class' => 'facebook', 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}", 'external' => true}]}) %>
+					    <%= menu_tag(socialize_menu_options(@view, 'shareTopMenu')) %>
             </li>
           </ul>
 
@@ -381,6 +371,7 @@
     "data/table", "widgets/inline-edit", "widgets/dropdown-menu",
     "widgets/selectable-list", "widgets/pagination",
     "widgets/info-pane-comments", "widgets/scrollable", "widgets/dataset-grid",
-    "widgets/visualization", "screens/info-pane", "screens/blist-grid-screen",
+    "widgets/visualization", "screens/info-pane", "screens/attribution-edit",
+    "screens/blist-grid-screen",
     :cache => "cache/blists_show_all" %>
 <% end %>

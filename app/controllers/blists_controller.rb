@@ -96,7 +96,13 @@ class BlistsController < SwfController
   def update
     blist_id = params[:id]
 
-    blist = View.update_attributes!(blist_id, params[:view])
+    begin
+      blist = View.update_attributes!(blist_id, params[:view])
+    rescue CoreServerError => e
+      return respond_to do |format|
+        format.data { render :json => {'error' => e.error_message}.to_json }
+      end
+    end
 
     respond_to do |format|
       format.html { redirect_to(blist.href) }

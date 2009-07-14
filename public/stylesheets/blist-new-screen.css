@@ -141,6 +141,16 @@
     margin-bottom: -0.65em;
 }
 
+.newBlistContent .fileBrowseButtonListContainer
+{
+    display: inline-block;
+}
+
+.newBlistContent .fileBrowseButtonListContainer
+{
+    display: inline;
+}
+
 .newBlistContent #fileBrowseButtonList
 {
     border-right: 1px solid transparent; /* IE8 is awesome */
@@ -159,12 +169,13 @@
 
 .newBlistContent .submitActions li
 {
-    display: inline;
+    display: inline-block;
 }
 
 .newBlistContent .submitActions li.cancelButton
 {
     margin-left: 20px;
+    margin-top: 5px;
 }
 
 .newBlistContent .submitActions li.cancelButton a

@@ -154,9 +154,685 @@
 
         // Obtain a model column associated with a column header DOM node
         var getColumnForHeader = function(e) {
-            return model.getColumn(e.getAttribute('uid'));
+            return model.column(e.getAttribute('uid'));
         }
 
+        // Given a DOM node, retrieve the logical row in which the cell resides
+        var getRow = function(cell) {
+            var rowDOM = cell.parentNode;
+            if (!rowDOM) { return null; }
+
+            // + 2 for "-r" suffix prior to row ID
+            var rowID = rowDOM.id.substring(id.length + 2);
+            return model.getByID(rowID);
+        }
+
+        // Given a DOM node, retrieve the logical column in which the cell resides
+        var getColumn = function(cell) {
+            // The cell will have a class like 'tableId-c4'; we need to
+            //  extra the part after the tableId-c, which is the uid of
+            //  the column that can be looked up
+            var classIndex = cell.className.indexOf(id + '-c');
+            if (classIndex == -1)
+                return null;
+            var endOfUID = cell.className.indexOf(' ', classIndex);
+            if (endOfUID == -1)
+                endOfUID = cell.className.length;
+            var colUID = cell.className.slice(classIndex + id.length + 2, endOfUID);
+            if (colUID == 'rowHandleCol')
+            {
+                return rowHandleColumn;
+            }
+            else if (colUID == 'rowNumberCol')
+            {
+                return rowNumberColumn;
+            }
+            return model.column(colUID);
+        }
+
+        // Get the value in a row for a column
+        var getRowValue = function(row, column)
+        {
+            var value;
+            eval('value = row' + column.dataLookupExpr + ';');
+            return value;
+        };
+
+        // Set the value in a row for a column
+        var setRowValue = function(value, row, column)
+        {
+            eval('row' + column.dataLookupExpr + ' = value;');
+        };
+
+        // Takes a column, and gets the real px width for it
+        var getColumnWidthPx = function(col)
+        {
+            if (col.type == 'opener')
+            {
+                return openerWidth + paddingX;
+            }
+            else if (col.mcol)
+            {
+                col = col.mcol;
+            }
+            return (col.width ||
+                parseFloat(getColumnStyle(col).width)) + paddingX;
+        };
+
+        /*** CELL SELECTION AND NAVIGATION ***/
+
+        // Is cell selection and navigation on?
+        var cellNav = options.cellNav;
+
+        // Active cell
+        var activeCellOn = false;
+        var activeCellXStart;  // Index of the first physical column that is active
+        var activeCellXNum;    // Number of X cells to select
+        var activeCellY;       // Row ID (of a row in the model active set)
+        var $activeCells;
+
+        // Cell selection information.  The cell selection consists of one or more rectangular areas each including
+        // one or more cells.  The selections are stored in an array with the following values:
+        //   x1, the first selected column index
+        //   y1, the first selected row index
+        //   x2, the last selected column index (inclusive)
+        //   y2, the last selected row index (inclusive)
+        var selectionLevel = -1;
+        var cellSelection = [];
+
+        // Convert selection into a sorted array of arrays for quickly identifying selected cells
+        var convertCellSelection = function() {
+            var converted = [];
+
+            for (var i = 0; i < cellSelection.length; i++) {
+                var sel = cellSelection[i];
+                var sel2 = sel.slice(0);
+                if (sel2[1] > sel2[3]) {
+                    var tmp = sel2[3];
+                    sel2[3] = sel2[1];
+                    sel2[1] = tmp;
+                }
+                if (sel2[0] > sel2[2]) {
+                    tmp = sel2[2];
+                    sel2[2] = sel2[0];
+                    sel2[0] = tmp;
+                }
+                converted.push(sel2);
+            }
+
+            converted.sort(function(a, b) {
+                // Order by first row...
+                var diff = a[1] - b[1];
+                if (diff)
+                    return diff;
+
+                // Or by last row
+                return a[3] - b[3];
+            });
+            return converted;
+        }
+
+        var getRenderedRowsWithPosition = function() {
+            var rows = [];
+            for (var id in renderedRows) {
+                var row = renderedRows[id];
+                rows.push([ rowIndices[id], row ]);
+            }
+            return rows.sort(function(a, b) { return a[0] - b[0] });
+        }
+
+        var clearRowSelection = function(row) {
+            for (var cell = row.row.firstChild; cell; cell = cell.nextSibling)
+                if (cell._sel) {
+                    $(cell).removeClass('blist-cell-selected');
+                    cell._sel = false;
+                }
+            delete row.selected;
+        }
+
+        var setRowSelection = function(row, selmap) {
+            row.selected = true;
+            for (var pos = 0, node = row.row.firstChild; node; node = node.nextSibling, pos++) {
+                if (selmap[pos]) {
+                    if (!node.selected) {
+                        $(node).addClass('blist-cell-selected');
+                        node._sel = true;
+                    }
+                } else if (node._sel) {
+                    $(node).removeClass('blist-cell-selected');
+                    node._sel = false;
+                }
+            }
+        }
+
+        var createSelectionMap = function(selectionComponents, selectionComponentCount) {
+            var selectionMap = [];
+
+            // Mark all selected positions in the selection map
+            for (var selectionComponentID = 0; selectionComponentID < selectionComponentCount; selectionComponentID++) {
+                var selectionComponent = selectionComponents[selectionComponentID];
+                for (var columnID = selectionComponent[0]; columnID <= selectionComponent[2]; columnID++)
+                    selectionMap[columnID] = true;
+                
+                // For the last position, mark any following positions that are associated with the same logical column
+                var layoutLevel = layout[selectionLevel];
+                columnID = selectionComponent[2];
+                var uid = layoutLevel[columnID].logical;
+                for (columnID++; columnID < layoutLevel.length && layoutLevel[columnID].logical == uid; columnID++)
+                    selectionMap[columnID] = true;
+            }
+
+            return selectionMap;
+        }
+
+        var updateSelectionCues = function() {
+            // Convert the selection into canonical and sorted form to optimize processing
+            var selection = convertCellSelection();
+
+            // Obtain a list of rendered rows in natural order
+            var rows = getRenderedRowsWithPosition();
+
+            // This "selmap" is an array of booleans indicating whether each column in a row is selected.  This is
+            // computed from the set of selections and cached between rows unless the set of selections that applies
+            // change.
+            var selmap;
+            var selmapSelectionCount;
+
+            for (var i = 0, len = rows.length; i < len; i++) {
+                var index = rows[i][0];
+                var row = rows[i][1];
+
+                // Clear the selection if the row isn't in the selection level
+                if ((model.get(index).level || 0) != selectionLevel) {
+                    clearRowSelection(row);
+                    continue;
+                }
+                
+                // Drop selection boxes that appear before this row
+                while (selection.length && selection[0][3] < index) {
+                    selection.shift();
+                    selmap = undefined;
+                }
+
+                // Count the number of selection boxes that apply to this row
+                for (var selCount = 0; selCount < selection.length; selCount++)
+                    if (selection[selCount][1] > index)
+                        break;
+
+                // Update the row
+                if (selCount == 0) {
+                    clearRowSelection(row);
+                    continue;
+                }
+
+                // Build the selection map if a cached version isn't available
+                if (!selmap || selmapSelectionCount != selCount) {
+                    selmapSelectionCount = selCount;
+                    selmap = createSelectionMap(selection, selCount);
+                }
+
+                // Update the selection
+                setRowSelection(row, selmap);
+            }
+        }
+
+        var updateCellNavCues = function()
+        {
+            // Update the active cell
+            if (activeCellOn)
+            {
+                var physActive = renderedRows[activeCellY];
+                if (physActive)
+                {
+                    var $newActive = $(physActive.row).children()
+                        .slice(activeCellXStart,
+                            activeCellXStart + activeCellXNum);
+                }
+                if ($newActive)
+                {
+                    // Mark the new cells as active
+                    $activeCells = $newActive;
+                }
+                else
+                {
+                    $activeCells = null;
+                }
+            }
+
+            // Update selection rendering
+            updateSelectionCues();
+        }
+
+        var $activeContainer;
+
+        var expandActiveCell = function()
+        {
+            // Obtain an expanding node in utility (off-screen) mode
+            if (!$activeContainer)
+            {
+                // Create the expanding element
+                $activeContainer = $('<div class="blist-table-active-container ' +
+                    'blist-table-util"></div>');
+                inside.append($activeContainer);
+            }
+            // If activeContainer is not in the tree anywhere, stick it inside
+            else if ($activeContainer[0].parentNode == null ||
+                $activeContainer[0].parentNode.nodeType == 11) // doc fragment
+            {
+                inside.append($activeContainer);
+            }
+
+            if (!activeCellOn)
+            {
+                $activeContainer.css('top', -10000);
+                $activeContainer.css('left', -10000);
+                return;
+            }
+
+            var row = model.getByID(activeCellY);
+            if (row.expanded) { $activeContainer.addClass('blist-tr-open'); }
+            else { $activeContainer.removeClass('blist-tr-open'); }
+            if (!$activeCells)
+            {
+                // Display a placeholder at the appropriate location
+                $activeContainer.empty();
+
+                $activeContainer.height(rowOffset -
+                    ($activeContainer.outerHeight() - $activeContainer.height()));
+                var width = 0;
+                for (var j = 0; j < activeCellXNum; j++)
+                {
+                    width += getColumnWidthPx(layout[0][activeCellXStart + j]);
+                }
+                $activeContainer.width(width -
+                    ($activeContainer.outerWidth() - $activeContainer.width()));
+
+                var rowIndex = model.index(activeCellY);
+                $activeContainer.css('top', rowIndex * rowOffset);
+                var left = lockedWidth;
+                for (var i = 0; i < activeCellXStart; i++)
+                {
+                    left += getColumnWidthPx(layout[0][i]);
+                }
+                $activeContainer.css('left', left);
+                return;
+            }
+
+            // Clone the cell
+            var $activeExpand = $activeCells.clone();
+            $activeExpand.width('auto').height('auto');
+            $activeContainer.width('auto').height('auto');
+            $activeContainer.empty();
+            $activeContainer.append($activeExpand);
+
+            // Size the expander
+            sizeCellOverlay($activeContainer, $activeExpand, $activeCells);
+            // Position the expander
+            positionCellOverlay($activeContainer, $activeCells);
+
+            $activeContainer.removeClass('blist-table-util');
+        };
+
+        /**
+         * Remove all navigation cues, both logically and visually.
+         */
+        var clearCellNav = function(selectionOnly)
+        {
+            var needRefresh;
+
+            if (!selectionOnly && activeCellOn)
+            {
+                activeCellOn = false;
+                $activeCells = null;
+                needRefresh = true;
+            }
+
+            if (cellSelection.length) {
+                cellSelection = [];
+                needRefresh = true;
+            }
+
+            if (needRefresh)
+            {
+                updateCellNavCues();
+                expandActiveCell();
+            }
+        }
+
+        /**
+         * Navigate to a particular cell (a DOM element).  Returns true iff the
+         * cell is a focusable table cell.  This is used for mouse handling.
+         */
+        var cellNavTo = function(cell, event, selecting)
+        {
+            // Obtain the row for the cell
+            var row = getRow(cell);
+            if (!row)
+            {
+                clearCellNav();
+                return false;
+            }
+
+            var levelID = row.level || 0;
+
+            // Check if we clicked in a locked section or on a nested table
+            // header; ignore those for now
+            if ($(event.target).closest('.blist-table-locked').length > 0 ||
+                (!selecting && $(event.target).closest('.blist-tdh') > 0))
+            {
+                return false;
+            }
+
+            // Find the index of the cell in the layout level
+            var rowLayout = layout[levelID];
+            for (var x = 0, node = cell.parentNode.firstChild; node;
+                node = node.nextSibling)
+            {
+                var lcol = rowLayout[x];
+                if (!lcol)
+                    break;
+                if (node == cell)
+                    break;
+                if (lcol.skippable && $(node).hasClass('blist-skip'))
+                    // Children aren't rendered, so skip them
+                    x += lcol.skipCount;
+                x++;
+            }
+
+            // If we found the column, focus now
+            if (lcol)
+            {
+                model.unselectAllRows();
+                if ($(event.target).is('a') && !selecting)
+                {
+                    // Special case for anchor clicks -- do not select the cell
+                    // immediately but do enter "possible drag" mode
+                    clearCellNav();
+                    return true;
+                }
+
+                // Standard cell -- activate the cell
+                return cellNavToXY(x, row.id, event, selecting);
+            }
+
+            // Not a valid navigation target; ignore
+            clearCellNav();
+            return false;
+        }
+
+        /**
+         * Navigate to a particular location (column UID, row ID pair).
+         * Returns true iff the location contains a focusable table cell.
+         */
+        var cellNavToXY = function(x, y, event, selecting, wrap)
+        {
+            // Decide what affect this navigation has on the selection
+            var selectionMode;
+            if (selecting || event.shiftKey)
+            {
+                // Shift key -- selection continuation (continues the last
+                // selection box or starts a new box)
+                if (!cellSelection.length)
+                    selectionMode = 'start';
+                else
+                    selectionMode = 'continue';
+            }
+            else if (event.metaKey)
+            {
+                // Control or command key -- starts a new box
+                selectionMode = 'start-new';
+            }
+            else if (cellSelection.length)
+            {
+                // No modifier keys -- remove the selection
+                cellSelection = [];
+            }
+
+            var row = model.getByID(y);
+            // Selection must occur in the same level -- otherwise, ignore
+            if (cellSelection.length && (row.level || 0) != selectionLevel)
+                return false;
+
+            var layoutLevel = layout[row.level || 0];
+            var xNum = 1;
+            var col = layoutLevel[x];
+            var uid = col.logical;
+
+            // If we are wrapping into a non-expanded header, expand it
+            // if it has children
+            if (wrap && !row.expanded &&
+                    (col.type == 'opener' || col.type == 'header'))
+            {
+                var subT = getRowValue(row, col.mcol);
+                if (subT.length > 0) { model.expand(row); }
+            }
+
+            // See if we selected into a closed nested table; if so, select
+            // all headers
+            if ((!row.expanded || !wrap) &&
+                    (col.type == 'opener' || col.type == 'header'))
+            {
+                for (var i = x + 1; i < layoutLevel.length &&
+                        layoutLevel[i].logical == uid; i++)
+                {
+                    xNum++;
+                }
+            }
+
+            // If we are naving into an expanded header, then go into the
+            //  first navigable child cell
+            if (row.expanded && wrap &&
+                    (col.type == 'opener' || col.type == 'header'))
+            {
+                y = row.childRows[0].id;
+                row = model.getByID(y);
+                layoutLevel = layout[row.level || 0];
+                col = layoutLevel[x];
+                while (col.skippable)
+                {
+                    x++;
+                    col = layoutLevel[x];
+                }
+            }
+
+            // Locate the selection box we're modifying, if any
+            var selection;
+            if (selectionMode == 'start' || selectionMode == 'start-new')
+            {
+                // Begin a new selection box
+                if (!cellSelection.length)
+                    selectionLevel = model.getByID(y).level || 0;
+                var startX = selectionMode == 'start' && activeCellOn ?
+                    activeCellXStart : x;
+                var startY = model.index(selectionMode == 'start' &&
+                    activeCellOn ? activeCellY : y);
+                cellSelection.push(selection = [ startX, startY ]);
+            }
+            else if (selectionMode == 'continue')
+            {
+                // Add to final selection box
+                selection = cellSelection[cellSelection.length - 1];
+            }
+
+            // Update the selection box, if any
+            if (selection)
+            {
+                selection[2] = x < selection[0] ?
+                    x : x + xNum - 1;
+                selection[3] = model.index(y);
+            }
+
+            // Update the active cell
+            activeCellOn = true;
+            activeCellXStart = x;
+            activeCellXNum = xNum;
+            activeCellY = y;
+
+            // Scroll the active cell into view if it isn't visible vertically
+            var scrollTop = $scrolls[0].scrollTop;
+            var scrollHeight = $scrolls.height();
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+                scrollHeight -= scrollbarWidth;
+            if ($footerScrolls.is(':visible'))
+                scrollHeight -= $footerScrolls.outerHeight() - 1;
+            var scrollBottom = scrollTop + scrollHeight;
+            var top = model.index(y) * rowOffset;
+            var bottom = top + rowOffset;
+            var origScrollTop = scrollTop;
+
+            if (scrollBottom < bottom)
+                scrollTop = bottom - scrollHeight;
+            if (scrollTop > top)
+                scrollTop = top;
+            if (scrollTop != origScrollTop)
+                $scrolls.scrollTop(scrollTop);
+
+            // Scroll the active cell into view if it isn't visible horizontally
+            // Set up scroll variables to use
+            var scrollLeft = $scrolls.scrollLeft();
+            var scrollWidth = $scrolls.width();
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+                scrollWidth -= scrollbarWidth;
+            var scrollRight = scrollLeft + scrollWidth;
+
+            var layoutLevel = layout[model.getByID(y).level || 0];
+            // Calculate left & right positions
+            var cellLeft = lockedWidth;
+            for (var i = 0; i < x; i++)
+            {
+                cellLeft += getColumnWidthPx(layoutLevel[i]);
+            }
+            var cellRight = cellLeft;
+            for (var j = 0; j < xNum; j++)
+            {
+                cellRight += getColumnWidthPx(layoutLevel[x + j]);
+            }
+
+            if (cellRight > scrollRight)
+            {
+                $scrolls.scrollLeft(cellRight - scrollWidth);
+            }
+            // Check the left, to make sure it is in view
+            if (cellLeft - lockedWidth < scrollLeft)
+            {
+                $scrolls.scrollLeft(cellLeft - lockedWidth);
+            }
+
+            // Reset standard grid state
+            $navigator[0].focus();
+            killHotExpander();
+            updateCellNavCues();
+
+            return true;
+        }
+
+
+        /*** CELL EDITING ***/
+        var $editContainer;
+        var isEdit = false;
+
+        var editCell = function(cell)
+        {
+            var row = getRow(cell);
+            var col = getColumn(cell);
+            if (!col || !row) { return; }
+            var value = getRowValue(row, col);
+
+            // Obtain an expanding node in utility (off-screen) mode
+            if (!$editContainer)
+            {
+                $editContainer = $('<div class="blist-table-edit-container ' +
+                    'blist-table-util"></div>');
+                $editContainer.blistEditor();
+                $editContainer.bind('keydown.blistTableEdit', editorKeyDown);
+                inside.append($editContainer);
+            }
+            // If editContainer is not in the tree anywhere, stick it inside
+            else if ($editContainer[0].parentNode == null)
+            {
+                inside.append($editContainer);
+            }
+
+            var $editor = $editContainer.blistEditor().setEditor(row, col, value);
+
+            $editor.width('auto').height('auto');
+            $editContainer.width('auto').height('auto');
+
+            isEdit = true;
+            $(document).bind('mousedown.blistTableEdit', editMouseDown);
+
+            sizeCellOverlay($editContainer, $editor, $(cell));
+            positionCellOverlay($editContainer, $(cell));
+            $editContainer.removeClass('blist-table-util').addClass('shown');
+
+            $editor.find(':text').focus();
+        };
+
+        var endEdit = function(isCancel)
+        {
+            isEdit = false;
+            $(document).unbind('.blistTableEdit');
+            $navigator[0].focus();
+
+            if (!$editContainer) { return; }
+            $editContainer.css('top', -10000);
+            $editContainer.css('left', -10000);
+            $editContainer.removeClass('shown');
+
+            if (isCancel) { return; }
+
+            var editor = $editContainer.blistEditor();
+            var origValue = editor.originalValue;
+            var value = editor.currentValue();
+            if (origValue != value)
+            {
+                var row = editor.row;
+                var col = editor.column;
+                setRowValue(value, row, col);
+                model.change([row]);
+
+                var data = {};
+                data[col.id] = value;
+                var url = '/views/' + model.meta().view.id + '/rows/';
+                if (col.nestedIn)
+                {
+                    var parCol = col.nestedIn.header;
+                    var childRow = getRowValue(row, parCol);
+                    url += row.parent.id +
+                        '/columns/' + parCol.id +
+                        '/subrows/' + (childRow.id || childRow[0]) +
+                        '.json';
+                }
+                else
+                {
+                    url += row.id + '.json';
+                }
+
+                $.ajax(
+                    { url: url,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: $.json.serialize(data)
+                });
+            }
+        };
+
+        var editMouseDown = function(event)
+        {
+            if ($(event.target).parents().andSelf().index($editContainer) < 0)
+            {
+                endEdit();
+            }
+        };
+
+        var editorKeyDown = function(event)
+        {
+            if (event.keyCode == 13) // Enter
+            {
+                endEdit();
+                navigateY(1, event);
+            }
+        };
 
         /*** CELL HOVER EXPANSION ***/
 
@@ -168,6 +844,34 @@
             {
                 hotExpander.style.top = '-10000px';
                 hotExpander.style.left = '-10000px';
+            }
+        }
+
+        var killHotExpander = function()
+        {
+            if (hotCellTimer)
+            {
+                clearTimeout(hotCellTimer);
+                hotCellTimer = null;
+            }
+            hideHotExpander();
+        }
+
+        var setHotCell = function(newCell, event)
+        {
+            // Update cell hover state
+            if (hotCell)
+            {
+                onCellOut(event);
+            }
+            hotCell = newCell;
+            if (newCell)
+            {
+                $(newCell).addClass('blist-hot');
+                if (options.cellExpandEnabled)
+                {
+                    hotCellTimer = setTimeout(expandHotCell, EXPAND_DELAY);
+                }
             }
         };
 
@@ -209,37 +913,103 @@
             $hotExpander.empty();
             $hotExpander.append(wrap);
 
-            // Compute cell padding
-            var padx = $wrap.outerWidth() - $wrap.width();
-            var pady = $wrap.outerHeight() - $wrap.height();
-
-            // Determine the cell's "natural" size
-            var rc = { width: $wrap.outerWidth() + 1,
-                height: $wrap.outerHeight() };
-
             // Determine if expansion is necessary.  The + 2 prevents us from
             // expanding if the box would just be slightly larger than the
             // containing cell.  This is a nicety except in the case of
             // picklists where the 16px image tends to be just a tad larger
             // than the text (currently configured at 15px).
-            var h = $(hotCell);
-            var hotWidth = h.outerWidth();
-            var hotHeight = h.outerHeight();
-            if (rc.width <= hotWidth + 2 && rc.height <= hotHeight + 2)
+            var $hotCell = $(hotCell);
+            var hotWidth = $hotCell.outerWidth();
+            var hotHeight = $hotCell.outerHeight();
+            if ($wrap.outerWidth() <= hotWidth + 2 &&
+                $wrap.outerHeight() <= hotHeight + 2)
             {
                 // Expansion is not necessary
                 hideHotExpander();
                 return;
             }
 
-            // The expander must be at least as large as the hot cell
-            if (rc.width < hotWidth)
+            // Size the expander
+            var rc = sizeCellOverlay($hotExpander, $wrap, $hotCell, true);
+            // Position the expander
+            rc = $.extend(rc, positionCellOverlay($hotExpander, $hotCell, true));
+
+            $hotExpander.removeClass('blist-table-util');
+
+            // Expand the element into position
+            $hotExpander.animate(rc, EXPAND_DURATION);
+        };
+
+
+        /***  CELL EXPANSION & POSITIONING  ***/
+        var positionCellOverlay = function($container, $refCell, animate)
+        {
+            // Locate a position for the expansion.  We prefer the expansion to
+            // align top-left with the cell but do our best to ensure the
+            // expansion remains within the viewport
+            var left = $refCell.offset().left - inside.offset().left;
+            var top = $refCell.offset().top - inside.offset().top;
+            var origOffset = { top: top, left: left };
+
+            // Ensure viewport is in the window horizontally
+            var viewportWidth = $scrolls.width();
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+                viewportWidth -= scrollbarWidth;
+            var scrollLeft = $scrolls.scrollLeft();
+            if (left + $container.width() > scrollLeft + viewportWidth)
+                left = scrollLeft + viewportWidth - $container.width();
+            if (left < scrollLeft)
+                left = scrollLeft;
+
+            // Ensure viewport is in the window vertically
+            var viewportHeight = $scrolls.height();
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+                viewportHeight -= scrollbarWidth;
+            var scrollTop = $scrolls.scrollTop();
+            if (top + $container.height() > scrollTop + viewportHeight)
+                top = scrollTop + viewportHeight - $container.height();
+            if (top < scrollTop - 1)
+                top = scrollTop - 1;
+
+            if (!animate)
             {
-                rc.width = hotWidth;
+                origOffset = { top: top, left: left };
             }
-            if (rc.height < hotHeight)
+            $container.css('top', origOffset.top + 'px');
+            $container.css('left', origOffset.left + 'px');
+
+            return ({left: left, top: top});
+        };
+
+        var sizeCellOverlay = function($container, $expandCells, $refCells,
+            animate)
+        {
+            $expandCells.eq(0).addClass('blist-first');
+            $expandCells.eq($expandCells.length - 1).addClass('blist-last');
+
+            // Determine the cell's "natural" size
+            var rc = { width: $container.outerWidth(),
+                height: $container.outerHeight() };
+            var refWidth = 0;
+            var refHeight = 0;
+            var minWidths = [];
+            $refCells.each(function()
             {
-                rc.height = hotHeight;
+                var $t = $(this);
+                var w = $t.outerWidth();
+                refWidth += w;
+                minWidths.push(w);
+                refHeight = Math.max(refHeight, $t.outerHeight());
+            });
+
+            // The expander must be at least as large as the hot cell
+            if (rc.width < refWidth)
+            {
+                rc.width = refWidth;
+            }
+            if (rc.height < refHeight)
+            {
+                rc.height = refHeight;
             }
 
             // Determine the size to which the contents expand, constraining to
@@ -248,58 +1018,47 @@
             if (rc.width > maxWidth)
             {
                 // Constrain the width and determine the height
-                $hotExpander.width(maxWidth);
+                $container.width(maxWidth);
                 rc.width = maxWidth;
-                rc.height = $hotExpander.height();
+                rc.height = $container.height();
             }
             var maxHeight = Math.floor(inside.height() * .75);
             if (rc.height > maxHeight)
                 rc.height = maxHeight;
 
-            // Locate a position for the expansion.  We prefer the expansion to
-            // align top-left with the cell but do our best to ensure the
-            // expansion remains within the viewport
-            rc.left = hotCell.offsetLeft;
-            rc.top = hotCell.parentNode.offsetTop;
-            rc.left -= 1; // assumes 1px right border
-            rc.top -= 1; // assumes 1px bottom border
-            var origOffset = { top: rc.top, left: rc.left };
+            // Compute container padding
+            var outerPadx = $container.outerWidth() - $container.width();
+            var outerPady = $container.outerHeight() - $container.height();
+            rc.width -= outerPadx;
+            rc.height -= outerPady;
 
-            // Ensure viewport is in the window horizontally
-            var viewportWidth = $scrolls.width();
-            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
-                viewportWidth -= scrollbarWidth;
-            var scrollLeft = $scrolls.scrollLeft();
-            if (rc.left + rc.width > scrollLeft + viewportWidth)
-                rc.left = scrollLeft + viewportWidth - rc.width;
-            if (rc.left < scrollLeft)
-                rc.left = scrollLeft;
+            var numCells = $expandCells.length;
+            $expandCells.each(function(i)
+            {
+                var minW = minWidths.shift();
+                if (i == 0) { minW -= outerPadx / 2; }
+                if (i == numCells - 1) { minW -= outerPadx / 2; }
+                var $t = $(this);
+                // Compute cell padding
+                var w = $t.outerWidth();
+                var innerPadx = w - $t.width();
+                var innerPady = $t.outerHeight() - $t.height();
+                // Size the cell
+                $t.width(Math.max(minW, w) - innerPadx);
+                $t.height(rc.height - innerPady);
+            });
 
-            // Ensure viewport is in the window vertically
-            var viewportHeight = $scrolls.height();
-            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
-                viewportHeight -= scrollbarWidth;
-            var scrollTop = $scrolls.scrollTop();
-            if (rc.top + rc.height > scrollTop + viewportHeight)
-                rc.top = scrollTop + viewportHeight - rc.height;
-            if (rc.top < scrollTop - 1)
-                rc.top = scrollTop - 1;
-
+            if (!animate)
+            {
+                refWidth = rc.width;
+                refHeight = rc.height;
+            }
             // Size the content wrapper
-            $wrap.width(rc.width - padx);
-            $wrap.height(rc.height - pady);
+            $container.width(refWidth);
+            $container.height(refHeight);
 
-            // Position the expander
-            $hotExpander.css('top', origOffset.top + 'px');
-            $hotExpander.css('left', origOffset.left + 'px');
-            $hotExpander.width(hotWidth);
-            $hotExpander.height(hotHeight);
-            $hotExpander.removeClass('blist-table-util');
-
-            // Expand the element into position
-            $hotExpander.animate($.extend(rc, rc), EXPAND_DURATION);
+            return rc;
         };
-
 
         /*** MOUSE HANDLING ***/
 
@@ -310,9 +1069,10 @@
         var hotHeader;
         var hotHeaderMode; // 1 = hover, 2 = resize, 3 = control hover
         var hotHeaderDrag;
-        var dragFrom;
+        var mouseDownAt;
         var dragHeaderLeft;
         var clickTarget;
+        var selectFrom;
 
         var findContainer = function(event, selector)
         {
@@ -342,11 +1102,36 @@
 
         var findCell = function(event)
         {
-            var cell = findContainer(event, '.blist-td, .blist-expander');
-            if (cell && (cell == hotExpander || cell.parentNode == hotExpander))
+            var cell = findContainer(event, '.blist-td, .blist-table-expander, ' +
+                '.blist-table-active-container');
+            if (!cell)
+                return null;
+            var $cell = $(cell);
+
+            // Can't interact with fill
+            if ($cell.hasClass('blist-tdfill'))
+                return null;
+
+            // If we are looking at the selection expansion, return
+            //  the first active cell
+            if ($activeContainer && $activeCells &&
+                ($cell[0] == $activeContainer[0] ||
+                $cell.parent()[0] == $activeContainer[0]))
+                return $activeCells[0];
+
+            // Nested table header send focus to the opener
+            if ($cell.hasClass('blist-tdh'))
             {
-                return hotCell;
+                while (!$cell.hasClass('blist-opener'))
+                    $cell = $(cell = cell.previousSibling);
+                return cell;
             }
+
+            // If the mouse strays over the hot expander return the hot cell
+            if (cell == hotExpander || cell.parentNode == hotExpander)
+                return hotCell;
+
+            // Normal cell
             return cell;
         }
 
@@ -402,7 +1187,7 @@
             return false;
         }
 
-        var handleColumnResize = function(event) {
+        var handleColumnResize = function(event, isFinished) {
             var width = event.clientX - dragHeaderLeft - paddingX;
             if (width < MINIMUM_HEADER_SIZE)
                 width = MINIMUM_HEADER_SIZE;
@@ -419,11 +1204,12 @@
                 }
             }
             col.width = width;
-            model.colWidthChange();
+            model.colWidthChange(col, isFinished);
+            updateCellNavCues();
         }
 
         var handleColumnMove = function(event) {
-            var delta = { x: event.clientX - dragFrom.x, y: event.clientY - dragFrom.y };
+            var delta = { x: event.clientX - mouseDownAt.x, y: event.clientY - mouseDownAt.y };
 
             // TODO -- implement column dragging support...
         }
@@ -434,7 +1220,15 @@
                 .removeClass('blist-hot-row');
             $locked.find('#' + id + '-l' + rowID)
                 .removeClass('blist-hot-row');
-        };
+        }
+
+        var isSelectingFrom = function(cell) {
+            if (!cellSelection.length)
+                return false;
+            var row = getRow(cell);
+            var sel = cellSelection[cellSelection.length - 1];
+            return cell.parentNode.childNodes[sel[0]] == cell && sel[1] == model.index(row);
+        }
 
         var onMouseMove = function(event)
         {
@@ -447,6 +1241,37 @@
                     return;
                 }
 
+            // Handle mouse down movement
+            if (mouseDownAt) {
+                if (clickTarget && Math.abs(event.clientX - mouseDownAt.x) > 3 || Math.abs(event.clientY - mouseDownAt.y > 3)) {
+                    // No longer consider this a potential click event
+                    clickTarget = null;
+                }
+
+                // If we are selecting and can't be in a click then update the
+                // selection
+                if (selectFrom && !clickTarget)
+                {
+                    // Ensure that the cell we started dragging from is the
+                    // beginning of the current selection
+                    if (!isSelectingFrom(selectFrom))
+                    {
+                        activeCellOn = false;
+                        cellNavTo(selectFrom, event);
+                    }
+
+                    // If we've moved over another cell, update the selection
+                    var over = findCell(event);
+                    if (over &&
+                        $(over).closest('.blist-table-edit-container').length <= 0)
+                    {
+                        cellNavTo(over, event, true);
+                    }
+                }
+
+                return;
+            }
+
             if (handleHeaderHover(event)) {
                 if (hotCell)
                     onCellOut(event);
@@ -458,10 +1283,13 @@
             }
 
             // Locate the cell the mouse is in, if any
-            var over = findCell(event);
-            
-            // If the hover cell is currently hot, nothing to do
-            if (over == hotCell)
+            over = findCell(event);
+
+            // If the hover cell is currently hot or is an editor or is the
+            // selected (active) cell, nothing to do
+            if (over == hotCell ||
+                ($activeCells && $activeCells.index(over) >= 0) ||
+                $(over).closest('.blist-table-edit-container').length > 0)
             {
                 return;
             }
@@ -487,20 +1315,7 @@
                 hotRowID = newHotID;
             }
 
-            // Update cell hover state
-            if (hotCell)
-            {
-                onCellOut(event);
-            }
-            hotCell = over;
-            if (over)
-            {
-                $(over).addClass('blist-hot');
-                if (options.cellExpandEnabled)
-                {
-                    hotCellTimer = setTimeout(expandHotCell, EXPAND_DELAY);
-                }
-            }
+            setHotCell(over, event);
         };
 
         var onCellOut = function(event)
@@ -530,12 +1345,7 @@
                 // Cell is no longer hot
                 $(hotCell).removeClass('blist-hot');
                 hotCell = null;
-                if (hotCellTimer)
-                {
-                    clearTimeout(hotCellTimer);
-                    hotCellTimer = null;
-                }
-                hideHotExpander();
+                killHotExpander();
             }
         };
 
@@ -545,28 +1355,22 @@
             if (cell)
             {
                 // Retrieve the row
-                var rowDOM = cell.parentNode;
-                // + 2 for "-r"/"-l" suffix prior to row ID
-                var rowID = rowDOM.id.substring(id.length + 2);
-                var row = model.getByID(rowID);
+                var row = getRow(cell);
 
                 // If this is a row opener, invoke expand on the model
-                if ($(cell).hasClass('blist-opener'))
+                if ($(cell).hasClass('blist-opener') && !$(cell).hasClass('blist-opener-inactive')) {
                     model.expand(row);
+                    clearCellNav();
+                }
 
                 // Retrieve the column
-                // The cell will have a class like 'tableId-c4'; we need to
-                //  extra the part after the tableId-c, which is the uid of
-                //  the column that can be looked up
-                var classIndex = cell.className.indexOf(id + '-c');
-                var colUID = cell.className.slice(classIndex + id.length + 2,
-                    cell.className.indexOf(' ', classIndex));
-                var column = model.getColumn(colUID);
+                var column = getColumn(cell);
 
                 // Notify listeners
                 var cellEvent = $.Event('cellclick');
-                $this.trigger(cellEvent, [ row, column, event ]);
-                if (!cellEvent.isDefaultPrevented() && !(row.level < 0))
+                $this.trigger(cellEvent, [ row, column, origEvent ]);
+                if (!activeCellOn && options.selectionEnabled &&
+                    !cellEvent.isDefaultPrevented() && !(row.level < 0))
                 {
                     if (origEvent.metaKey) // ctrl/cmd key
                     {
@@ -580,37 +1384,619 @@
                     {
                         model.selectSingleRow(row);
                     }
-                    unHotRow(rowID);
-                    // Set the focus so that the shift/meta click won't select
-                    // any text.
-                    $this.focus();
+                    unHotRow(row.id);
                 }
             }
         };
 
-        var onMouseDown = function(event) {
+        var $prevActiveCells;
+        var onMouseDown = function(event)
+        {
+            if (isEdit &&
+                $(event.target).parents().andSelf().index($editContainer) >= 0)
+            { return; }
+
+            clickTarget = event.target;
+
             if (hotHeader && hotHeaderMode != 3) {
                 clickTarget = null;
                 hotHeaderDrag = true;
-                dragFrom = { x: event.clientX, y: event.clientY };
                 event.stopPropagation();
                 event.preventDefault();
                 return false;
             }
-            clickTarget = event.target;
+
+            mouseDownAt = { x: event.clientX, y: event.clientY };
+            selectFrom = null;
+
+            if (cellNav)
+            {
+                var cell = findCell(event);
+                if (cell && $activeCells && $activeCells.index(cell) >= 0)
+                {
+                    $prevActiveCells = $activeCells;
+                }
+                else
+                {
+                    $prevActiveCells = null;
+                    clearCellNav();
+                }
+                if (cell && cellNavTo(cell, event))
+                {
+                    if (isEdit) { endEdit(); }
+                    selectFrom = cell;
+                }
+
+            }
         }
 
-        var onMouseUp = function(event) {
+        var onMouseUp = function(event)
+        {
+            if (isEdit) { return; }
+
             if (hotHeaderDrag) {
                 hotHeaderDrag = false;
                 onMouseMove(event);
+                if (hotHeaderMode == 2) { handleColumnResize(event, true); }
                 event.stopPropagation();
                 event.preventDefault();
                 return true;
             }
+
             if (clickTarget && clickTarget == event.target &&
                 !$(clickTarget).is('a'))
+            {
+                var editMode = false;
+                if (cellNav && options.editEnabled)
+                {
+                    var curActiveCell = $activeCells ? $activeCells[0] : null;
+                    if (curActiveCell && $prevActiveCells &&
+                        $prevActiveCells.index(curActiveCell) >= 0)
+                    {
+                        // They clicked on a selected cell, go to edit mode
+                        editCell(curActiveCell);
+                        editMode = true;
+                    }
+                }
+
                 $(clickTarget).trigger('table_click', event);
+                if (!editMode) { $navigator[0].focus(); }
+            }
+            mouseDownAt = null;
+
+            expandActiveCell();
+        }
+
+        var onDoubleClick = function(event)
+        {
+            if (isEdit &&
+                $(event.target).parents().andSelf().index($editContainer) >= 0)
+            { return; }
+
+            clickTarget = event.target;
+
+            if (cellNav)
+            {
+                var cell = findCell(event);
+                if (options.editEnabled && cell)
+                {
+                    // They clicked on a cell, go to edit mode
+                    editCell(cell);
+                }
+            }
+        };
+
+        var onKeyDown = function(event)
+        {
+            if (event.keyCode == 27) // ESC
+            {
+                if (isEdit) { endEdit(true); }
+                else { clearCellNav(); }
+            }
+        };
+
+        /*** KEYBOARD HANDLING ***/
+
+        // Page size is configured in renderRows()
+        var pageSize = 1;
+
+        var preNav = function(event, wrap) {
+            if (!activeCellOn) {
+                // First keyboard nav without cell nav on -- move to position 0, 0
+                if (model.length() && model.column(0))
+                    cellNavToXY(0, model.get(0).id, event, false, wrap);
+                return false;
+            }
+            return true;
+        }
+
+        var getAdjustedY = function(deltaY, event, baseX, baseY, wrap)
+        {
+            // Locate our current position
+            var yIndex = model.index(baseY);
+            if (yIndex == undefined)
+                return null;
+
+            // Update the y position
+            yIndex += deltaY;
+
+            var x = baseX;
+
+            var oldRow = model.getByID(baseY);
+            var oldLevel = oldRow.level || 0;
+            var oldCol = layout[oldLevel][baseX];
+
+            // If we're wrapping and we go off the top or bottom, wrap to
+            // the next/previous column
+            if (wrap && (yIndex < 0 || yIndex >= model.length()))
+            {
+                // First catch the case where we are in a nested table, and
+                // should wrap to the next/previous nested table column before
+                // wrapping to the next parent column
+                if (oldCol.type != 'header' && oldCol.type != 'opener' &&
+                    oldCol.mcol && oldCol.mcol.nestedIn &&
+                    ((oldCol.mcol.indexInLevel > 0 && deltaY < 0) ||
+                    (oldCol.mcol.indexInLevel <
+                        oldCol.mcol.nestedIn.children.length - 1 && deltaY > 0)))
+                {
+                    yIndex += (deltaY < 0 ? 1 : -1) *
+                        oldRow.parent.childRows.length;
+                    x += deltaY < 0 ? -1 : 1;
+                }
+                else
+                {
+                    // If we're moving out of a header, go to the start of the
+                    // parent column
+                    if (oldCol.type == 'header')
+                    {
+                        for (var h = 0; h < layout[oldLevel].length; h++)
+                        {
+                            if (layout[oldLevel][h].mcol ==
+                                oldCol.mcol.nestedIn.header)
+                            {
+                                x = h;
+                                break;
+                            }
+                        }
+                    }
+
+                    var newYIndex = yIndex < 0 ? model.length() - 1 : 0;
+                    var newY = model.get(newYIndex);
+                    if (typeof newY == "object")
+                        newY = newY.id;
+                    var adjX = getAdjustedX(yIndex < 0 ? -1 : 1, event, x, newY);
+                    if (adjX && adjX.x != x)
+                    {
+                        x = adjX.x;
+                        yIndex = model.index(adjX.y);
+                    }
+                }
+            }
+
+            // Bounds checking
+            if (yIndex < 0)
+                yIndex = 0;
+            if (yIndex >= model.length())
+                yIndex = model.length() - 1;
+
+            // Convert y to a row ID
+            var y = model.get(yIndex);
+            if (typeof y == "object")
+                y = y.id;
+
+            // No need to update if we didn't make changes
+            if (y == baseY)
+                return null;
+
+            var newRow = model.getByID(y);
+            var newLevel = newRow.level || 0;
+            var newCol = layout[newLevel][x];
+            // If we're leaving a child row, then we will either wrap back to
+            // the top of the nested table, or go back to the first column in
+            // the nested table in the next parent row
+            if (wrap && baseX == x && oldCol.mcol.nestedIn &&
+                oldRow.parent && (!newRow.parent ||
+                    newRow.parent != oldRow.parent))
+            {
+                // If we're going out of the nested table completely, then
+                // adjust back to the first/last nt column, but let the normal
+                // y flow take affect
+                if ((oldCol.mcol.indexInLevel == 0 && deltaY < 0) ||
+                    (oldCol.mcol.indexInLevel ==
+                     oldCol.mcol.nestedIn.children.length - 1 && deltaY > 0))
+                {
+                    x += (deltaY < 0 ? 1 : -1) *
+                        (oldCol.mcol.nestedIn.children.length - 1);
+                    newCol = layout[newLevel][x];
+                }
+                else
+                {
+                    // Otherwise, we are staying within this nested table,
+                    // so we need to adjust columns by one and set y to the
+                    // first or last child row in this nt
+                    var childRows = oldRow.parent.childRows;
+                    var ntY = deltaY < 0 ?
+                        childRows[childRows.length - 1].id : childRows[0].id;
+                    var adjXNT = getAdjustedX(deltaY < 0 ? -1 : 1, event, x, ntY);
+                    if (adjXNT)
+                    {
+                        x = adjXNT.x;
+                        y = adjXNT.y;
+                        newRow = model.getByID(y);
+                        newLevel = newRow.level || 0;
+                        newCol = layout[newLevel][x];
+                    }
+                }
+            }
+
+            // If we hit a header, then there is special behavior
+            if (newCol.type == 'opener' || newCol.type == 'header')
+            {
+                // If hit an opener or header in an expanded row, skip it
+                if (newRow.expanded && wrap)
+                {
+                    return getAdjustedY(deltaY < 0 ? -1 : 1, event, x, y, wrap);
+                }
+                else
+                {
+                    // If it is not expanded, then select the whole header
+                    var targetCol = newCol.mcol.type == 'nested_table' ?
+                        newCol.mcol : newCol.mcol.nestedIn.header;
+                    for (var j = 0; j < layout[newLevel].length; j++)
+                    {
+                        if (layout[newLevel][j].mcol == targetCol)
+                        {
+                            x = j;
+                            // We found a collapsed header; let's return!
+                            return {x: x, y: y};
+                        }
+                    }
+                }
+            }
+
+            // Handle level changes
+            // TODO -- this logic is a bit of a cop out, it relies on the fact
+            // that we won't have cell nav on w/ more than 2 levels and that
+            // BnB parent/child linkage will be available
+            if (newLevel != oldLevel && baseX == x)
+            {
+                if (event.shiftKey || event.metaKey)
+                {
+                    // Can't select into a different level
+                    var needScan = true;
+                }
+                else
+                {
+                    // Non-selecting nav into a different level
+                    if (newLevel > oldLevel)
+                    {
+                        if (oldCol.mcol && oldCol.mcol.body)
+                        {
+                            // If we are leaving a top-level nt column,
+                            // then we're navigating into a nested row
+                            var newMCol = oldCol.mcol.body.children[0];
+                        }
+                        else if (oldCol.mcol && oldCol.mcol.nestedIn)
+                        {
+                            // Else we are leaving the header of a nested
+                            // column, and we're navigating into a nested row
+                            newMCol = oldCol.mcol;
+                        }
+                        else
+                        {
+                            // Otherwise scan for a new top-level row
+                            needScan = true;
+                        }
+                    }
+                    else if (newLevel < oldLevel && oldCol.mcol &&
+                        oldCol.mcol.nestedIn)
+                    {
+                        // Navigating out of a nested row
+                        newMCol = oldCol.mcol.nestedIn.header;
+                    }
+                    else
+                    {
+                        needScan = true;
+                    }
+                }
+
+                if (needScan)
+                {
+                    // Find next row in the same level
+                    y = model.nextInLevel(baseY, deltaY < 0);
+                    if (y == null)
+                    {
+                        if (!wrap) { return null; }
+                        // If we can't find another row in the same level,
+                        // then we may need to wrap
+                        var wrapYI = deltaY < 0 ? model.length() - 1 : 0;
+                        var wrapY = model.get(wrapYI);
+                        if (typeof wrapY == "object")
+                            wrapY = wrapY.id;
+                        var wrapXY = getAdjustedX(deltaY < 0 ? -1 : 1,
+                                event, x, wrapY);
+                        if (wrapXY && wrapXY.x != x)
+                        {
+                            return wrapXY;
+                        }
+                        return null;
+                    }
+                    if (typeof y == "object") { y = y.id; }
+                }
+                else if (newMCol)
+                {
+                    // Moving into a different level -- find the physical
+                    // position for the model column
+                    var newLevelLayout = layout[newLevel];
+                    for (var i = 0; i < newLevelLayout.length; i++)
+                    {
+                        if (newLevelLayout[i].mcol == newMCol)
+                        {
+                            x = i;
+                            newCol = layout[newLevel][x];
+                            break;
+                        }
+                    }
+                    if (i == newLevelLayout.length)
+                    {
+                        // Bug -- selected model column does not reside in this
+                        // level
+                        return null;
+                    }
+                }
+                else
+                {
+                    // Bug -- should have selected a new column or decided to scan
+                    return null;
+                }
+            }
+
+            // If we're in a nested table, check if the row we are on is
+            // completely empty; if so, skip over it
+            if (newCol.mcol && (newCol.mcol.nestedIn ||
+                newCol.type == 'nest-header'))
+            {
+                var subRow = getRowValue(newRow, (newCol.type == 'nest-header' ?
+                            newCol.mcol.header :
+                            newCol.mcol.nestedIn.header) );
+                if (!subRow)
+                {
+                    var adjDelta = deltaY < 0 ? -1 : 1;
+                    if (!wrap && model.index(y) + adjDelta >= model.length())
+                    { return null; }
+                    return getAdjustedY(adjDelta, event, x, y, wrap);
+                }
+            }
+
+            return {x: x, y: y};
+        };
+
+        // Move the active cell an arbitrary number of rows.  Supports an value
+        // for deltaY, including negative offsets
+        var navigateY = function(deltaY, event, wrap)
+        {
+            if (!preNav(event, wrap))
+                return;
+
+            var adjPos = getAdjustedY(deltaY, event, activeCellXStart,
+                activeCellY, wrap);
+            if (!adjPos) { return; }
+
+            // Update the column
+            cellNavToXY(adjPos.x, adjPos.y, event, false, wrap);
+        }
+
+        var getAdjustedX = function(deltaX, event, baseX, baseY, wrap)
+        {
+            // Scan for the next focusable cell
+            var y = baseY;
+            var origLevel = model.getByID(y).level || 0;
+            var layoutLevel = layout[origLevel];
+            var x = baseX;
+            var origCol = layoutLevel[x];
+            var prevCol = origCol;
+            var cellsToMove = Math.abs(deltaX);
+            var delta = deltaX / cellsToMove;
+            for (var i = 0; i < cellsToMove; i++)
+            {
+                for (var newX = x + delta; newX >= 0 &&
+                    newX < layoutLevel.length; newX += delta)
+                {
+                    var curCol = layoutLevel[newX];
+
+                    // If we're wrapping, and we hit the edge of nested table
+                    //  we're in, wrap within the table
+                    if (wrap && prevCol && prevCol.mcol &&
+                        prevCol.mcol.nestedIn &&
+                        (!curCol.mcol ||
+                            curCol.mcol.nestedIn != prevCol.mcol.nestedIn))
+                    {
+                        var dY = delta < 0 ? -1 : 1;
+                        var adjX = newX + (delta < 0 ? 1 : -1) *
+                            prevCol.mcol.nestedIn.children.length;
+                        var adjP = getAdjustedY(dY, event, adjX, y);
+
+                        // Make sure this wouldn't make us change levels or
+                        // parent rows; if it does, then skip setting this data
+                        // and let the normal flow happen
+                        if (adjP &&
+                            origLevel == (model.getByID(adjP.y).level || 0) &&
+                            model.getByID(y).parent ==
+                                model.getByID(adjP.y).parent)
+                        {
+                            y = adjP.y;
+                            newX = adjP.x;
+                            layoutLevel = layout[model.getByID(y).level || 0];
+                            break;
+                        }
+                    }
+
+                    // Always skip over nest headers and headers
+                    if (curCol.type == 'nest-header' ||
+                        curCol.type == 'header') { continue; }
+
+                    // If going into an empty nested table, skip it
+                    if (curCol.mcol && curCol.mcol.type == 'nested_table')
+                    {
+                        var curRow = model.getByID(y);
+                        if (curRow.expanded)
+                        {
+                            var subTable = getRowValue(curRow, curCol.mcol);
+                            if (subTable.length < 1) { continue; }
+                        }
+                    }
+
+                    // If we hit a fill or switched nested tables, go up to the
+                    // parent
+                    if (curCol.type == 'fill' ||
+                        (prevCol && prevCol.mcol && prevCol.mcol.nestedIn &&
+                         curCol.mcol && curCol.mcol.nestedIn &&
+                         curCol.mcol.nestedIn != prevCol.mcol.nestedIn))
+                    {
+                        var newRow = model.getByID(y).parent;
+                        // If we switched to an expanded & empty nt, skip it
+                        if (curCol.mcol && curCol.mcol.nestedIn &&
+                            newRow.expanded)
+                        {
+                            var subT = getRowValue(newRow,
+                                curCol.mcol.nestedIn.header);
+                            if (subT.length < 1) { continue; }
+                        }
+
+                        y = newRow.id;
+                        layoutLevel = layout[newRow.level || 0];
+                        break;
+                    }
+                    else if (curCol.canFocus !== false)
+                    {
+                        // Found new cell to focus on
+                        break;
+                    }
+                }
+                if (newX < 0 || newX >= layoutLevel.length)
+                {
+                    // Can't move further left/right
+                    if (!wrap) { break; }
+
+                    if (prevCol && prevCol.mcol && prevCol.mcol.nestedIn)
+                    {
+                        var dY = delta < 0 ? -1 : 1;
+                        var adjX = newX + (delta < 0 ? 1 : -1) *
+                            prevCol.mcol.nestedIn.children.length;
+                        var adjP = getAdjustedY(dY, event, adjX, y);
+
+                        // Make sure this wouldn't make us change levels or
+                        // parent rows; if it does, then skip setting this data
+                        // and let the normal flow happen
+                        if (adjP &&
+                            origLevel == (model.getByID(adjP.y).level || 0) &&
+                            model.getByID(y).parent ==
+                                model.getByID(adjP.y).parent)
+                        {
+                            y = adjP.y;
+                            x = adjP.x;
+                            layoutLevel = layout[model.getByID(y).level || 0];
+                            prevCol = layoutLevel[newX];
+                            continue;
+                        }
+                    }
+
+                    // We're wrapping a whole row, so find the next/prev
+                    // parent row
+                    var curRow = model.getByID(y);
+                    if (curRow.parent) { curRow = curRow.parent; }
+                    y = model.nextInLevel(curRow.id, delta < 0);
+                    if (y == null) { return null; }
+
+                    if (typeof y == 'object') { y = y.id; }
+                    newX = newX < 0 ? layoutLevel.length : -1;
+                    layoutLevel = layout[model.getByID(y).level || 0];
+                    i--;
+                }
+                x = newX;
+                prevCol = layoutLevel[x];
+            }
+
+            return {x: x, y: y};
+        };
+
+        // Move the active cell an arbitrary number of columns
+        var navigateX = function(deltaX, event, wrap)
+        {
+            if (!preNav(event, wrap))
+                return;
+
+            var adjPos = getAdjustedX(deltaX, event, activeCellXStart,
+                activeCellY, wrap);
+            if (!adjPos) { return; }
+
+            // Update if we made changes
+            if (adjPos.x != activeCellXStart || adjPos.y != activeCellY)
+                cellNavToXY(adjPos.x, adjPos.y, event, false, wrap);
+        }
+
+        var onKeyPress = function(event) {
+            switch (event.keyCode || event.charCode) {
+                case 34:
+                    // Page up
+                    navigateY(-pageSize, event);
+                    break;
+
+                case 35:
+                    // Page down
+                    navigateY(pageSize, event);
+                    break;
+
+                case 37:
+                    // Left
+                    navigateX(-1, event);
+                    break;
+
+                case 38:
+                    // Up
+                    navigateY(-1, event);
+                    break;
+
+                case 39:
+                    // Right
+                    navigateX(1, event);
+                    break;
+
+                case 40:
+                    // Down
+                    navigateY(1, event);
+                    break;
+
+                case 9:
+                    // Tab
+                    var direction = event.shiftKey ? -1 : 1;
+                    event.shiftKey = false;
+                    navigateX(direction, event, true);
+                    break;
+
+                case 13:
+                case 32:
+                    // Enter/Space
+                    if (!event.shiftKey &&
+                        $activeCells && $activeCells.hasClass('blist-opener') &&
+                        !$activeCells.hasClass('blist-opener-inactive'))
+                    {
+                        model.expand(getRow($activeCells[0]));
+                    }
+                    else
+                    {
+                        var direction = event.shiftKey ? -1 : 1;
+                        event.shiftKey = false;
+                        navigateY(direction, event, true);
+                    }
+                    break;
+
+                default:
+                    return true;
+            }
+            setTimeout(expandActiveCell, 1);
+
+            return false;
         }
         
         if (options.simpleCellExpand)
@@ -648,7 +2034,8 @@
         /*** HTML RENDERING ***/
 
         var headerStr =
-            '<div class="blist-table-locked-scrolls">\
+            '<textarea class="blist-table-navigator"></textarea>\
+             <div class="blist-table-locked-scrolls">\
                 <div class="blist-table-locked-header">&nbsp;</div>\
                 <div class="blist-table-locked">&nbsp;</div>\
                 <div class="blist-table-locked-footer">&nbsp;</div>\
@@ -690,6 +2077,8 @@
             .addClass('blist-table')
             .mousedown(onMouseDown)
             .mousemove(onMouseMove)
+            .dblclick(onDoubleClick)
+            .keydown(onKeyDown)
             .html(headerStr);
 
         var $lockedScrolls = $outside.find('.blist-table-locked-scrolls');
@@ -730,7 +2119,6 @@
             .find('.blist-table-scrolls')
             .scroll(function () {onScroll(); renderRows();});
 
-
         // The non-scrolling row container
         var inside = $scrolls
             .find('.blist-table-inside')
@@ -746,10 +2134,13 @@
         // respectively
         var appendUtil = $(document.createElement('div'));
         var appendUtilDOM = appendUtil[0];
-
         var measureUtil = $outside
             .find('.blist-table-util');
         var measureUtilDOM = measureUtil[0];
+
+        // This guy receives focus when the user interacts with the grid
+        var $navigator = $($outside.find('.blist-table-navigator'))
+            .keypress(onKeyPress);
 
         // Set up initial top of locked section
         $locked.css('top', $header.outerHeight());
@@ -936,6 +2327,9 @@
         var lockedColumns = [];
         var variableColumns = [];
 
+        // Information about physical DOM nodes, represented as an array for each level
+        var layout = [];
+
         // This is the row rendering function.  Precompiled using eval() for perf.
         var rowRenderFn;
         var rowLockedRenderFn;
@@ -951,10 +2345,14 @@
         var varDenom = [];
         var insideWidth;
 
+        // Special columns
+        var rowNumberColumn;
+        var rowHandleColumn;
+
         /**
          * Create rendering code for a series of columns.
          */
-        var createColumnRendering = function(mcols, contextVariables, prefix) {
+        var createColumnRendering = function(mcols, lcols, contextVariables, prefix) {
             var colParts = [];
             var generatedCode = '';
             if (prefix)
@@ -980,6 +2378,13 @@
                         "if (row" + mcol.dataLookupExpr + " && row" + mcol.dataLookupExpr + ".length)";
                     colParts.push("\"<div class='blist-td blist-tdh blist-opener " + openerClass + "'></div>\"");
                     var children = mcol.body.children;
+                    lcols.push({
+                        type: 'opener',
+                        skippable: true,
+                        skipCount: children.length,
+                        mcol: mcol,
+                        logical: mcol.uid
+                    });
                     for (var k = 0; k < children.length; k++) {
                         var child = children[k];
                         colParts.push(
@@ -991,26 +2396,60 @@
                             htmlEscape(child.name) +
                             "</div>\""
                         );
+                        lcols.push({
+                            type: 'header',
+                            canFocus: false,
+                            mcol: child,
+                            logical: mcol.uid
+                        });
                     }
                     completeStatement();
 
-                    generatedCode += "else " +
-                        "html.push('<div class=\"blist-td " + getColumnClass(mcol) + "\">&nbsp;</div>');";
+                    generatedCode += "else ";
+                    colParts.push("\"<div class='blist-td blist-tdh blist-opener blist-opener-inactive " + openerClass + "'></div>\"");
+                    for (k = 0; k < children.length; k++) {
+                        child = children[k];
+                        colParts.push(
+                            "\"<div class='blist-td blist-tdh " +
+                            getColumnClass(child) +
+                            "' uid='" +
+                            child.uid +
+                            "'></div>\""
+                        );
+                    }
+                    completeStatement();
                 } else if (mcol.children) {
                     // Nested table row -- render cells if the row is present or filler if not
                     completeStatement();
 
-                    // Add the code.  If no record is present we add a filler row; otherwise we add the rows.  This is
-                    // just getting ridiculous
+                    // Add the code.  If no record is present we add a filler row; otherwise we add the rows
+                    children = mcol.children;
+                    lcols.push({
+                        type: 'nest-header',
+                        canFocus: false,
+                        skippable: true,
+                        skipCount: mcol.children.length,
+                        mcol: mcol,
+                        logical: mcol.uid
+                    });
                     generatedCode +=
                         "if (row" + mcol.header.dataLookupExpr + ") " +
-                            createColumnRendering(mcol.children, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
-                        "else " +
-                            "html.push('<div class=\"blist-td blist-tdfill " + getColumnClass(mcol.header) + "\">&nbsp;</div>');";
-                } else if (mcol.type && mcol.type == 'fill')
+                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'") +
+                        "else ";
+                        colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
+                        for (var i = 0; i < children.length; i++)
+                        colParts.push("\"<div class='blist-td blist-tdfill blist-td-first "
+                            + getColumnClass(children[i])
+                            + "'></div>\"");
+                    completeStatement();
+                } else if (mcol.type && mcol.type == 'fill') {
                     // Fill column -- covers background for a range of columns that aren't present in this row
                     colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + "'>&nbsp;</div>\"");
-                else {
+                    lcols.push({
+                        type: 'fill',
+                        canFocus: false
+                    });
+                } else {
                     // Standard cell
                     var type = blist.data.types[mcol.type] || blist.data.types.text;
                     var renderer = mcol.renderer || type.renderGen;
@@ -1021,10 +2460,14 @@
                         contextVariables);
 
                     colParts.push(
-                        "\"<div class='blist-td " + getColumnClass(mcol) + cls +
-                            (j == 0 ? ' blist-td-first' : '') + "'>\", " +
+                        "\"<div class='blist-td " + getColumnClass(mcol) + cls + "'>\", " +
                             renderer + ", \"</div>\""
                     );
+
+                    lcols.push({
+                        mcol: mcol,
+                        logical: mcol.uid
+                    });
                 }
 
                 // Initialize column heights (TODO - we don't support variable heights; can we do this on a single
@@ -1039,8 +2482,6 @@
             
             return generatedCode;
         }
-
-
 
         /**
          * Initialize based on current model metadata.
@@ -1102,7 +2543,8 @@
             lockedColumns = [];
             if (options.showRowNumbers)
             {
-                lockedColumns.push({uid: 'rowNumberCol',
+                lockedColumns.push(rowNumberColumn = {uid: 'rowNumberCol',
+                    dataIndex: 'rowNumber',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.rows().length, 100),
                     renderer: '(index + 1)',
@@ -1110,7 +2552,8 @@
             }
             if (options.showRowHandle)
             {
-                lockedColumns.push({uid: 'rowHandleCol',
+                lockedColumns.push(rowHandleColumn = {uid: 'rowHandleCol',
+                    dataIndex: 'rowHandle',
                     cls: 'blist-table-row-handle',
                     width: 1,
                     renderer: '""'});
@@ -1187,7 +2630,8 @@
             for (i = 0; i < model.meta().columns.length; i++)
             {
                 mcols = model.meta().columns[i];
-                levelRender[i] = createColumnRendering(mcols, contextVariables);
+                var lcols = layout[i] = [];
+                levelRender[i] = createColumnRendering(mcols, lcols, contextVariables);
             }
 
             var rowDivContents =
@@ -1198,6 +2642,7 @@
                 (row.groupLast ? " last" : ""), \
                 "\' style=\'top: ", \
                 (index * ' + rowOffset + '), "px\'';
+
             // Create the rendering function.  We precompile this for speed so
             // we can avoid tight loops, function calls, etc.
             var renderFnSource =
@@ -1352,6 +2797,10 @@
                     // Standard cell
                     colWidth = (mcol.width || 0) + paddingX;
                 }
+
+                // Cache position information for cell navigation
+                // TODO
+                //columnLayout[mcol.uid] = { left: hpos, width: colWidth };
 
                 // Initialize the column's style
                 if (colWidth)
@@ -1604,6 +3053,7 @@
             $lockedFooter.html(lockedHtml);
         };
 
+
         /*** ROWS ***/
 
         var renderedRows = {}; // All rows that are rendered, by ID
@@ -1684,7 +3134,10 @@
             var first = Math.floor(top / rowOffset);
 
             // Compute the number of (possibly partially) visible rows
-            var count = Math.ceil((top - (first * rowOffset) + $scrolls.height()) / rowOffset) + 1;
+            var count = Math.ceil((top - first * rowOffset + $scrolls.height()) / rowOffset) + 1;
+            
+            // Count the scrolling page size
+            pageSize = Math.floor((top - first * rowOffset + $scrolls.height()) / rowOffset) || 1;
 
             // Determine the range of rows we need to render, with safety checks to be sure we don't attempt the
             // impossible
@@ -1757,6 +3210,13 @@
                 rowLoadRows = rowsToLoad;
             }
 
+            if (cellNav)
+            {
+                // Cell selection and navigation
+                updateCellNavCues();
+                expandActiveCell();
+            }
+            // Row selection
             updateSelection();
         };
 
@@ -1786,6 +3246,8 @@
          */
         var initRows = function(model)
         {
+            clearCellNav();
+
             if (handleDigits != calculateHandleDigits(model)) {
                 // The handle changed.  Reinitialize columns.
                 initMeta(model);
@@ -1860,11 +3322,13 @@
     var blistTableDefaults = {
         cellExpandEnabled: true,
         disableLastColumnResize: false,
+        editEnabled: false,
         generateHeights: true,
         ghostMinWidth: 20,
         headerMods: function (col) {},
         manualResize: false,
         resizeHandleAdjust: 3,
+        selectionEnabled: true,
         showGhostColumn: false,
         showName: true,
         showRowNumbers: true,

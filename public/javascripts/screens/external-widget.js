@@ -99,7 +99,8 @@ $(function ()
     if (!blist.widgets.visualization.isVisualization)
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
-            accessType: 'WIDGET', showRowNumbers: false,
+            currentUserId: blist.currentUserId,
+            accessType: 'WIDGET', showRowNumbers: false, editEnabled: false,
             filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch'
             });

@@ -25,6 +25,8 @@
             accessType: 'DEFAULT',
             clearFilterItem: null,
             clearTempViewCallback: function () {},
+            currentUserId: null,
+            editEnabled: false,
             filterItem: null,
             manualResize: false,
             setTempViewCallback: function (tempView) {},
@@ -50,18 +52,28 @@
                 // * blistModel: disable minimum characters for full-text search,
                 //     enable progressive loading of data, and hook up Ajax info
                 $datasetGrid
-                    .blistTable({generateHeights: false,
+                    .bind('col_width_change', function (event, c, f)
+                        { columnResized(datasetObj, c, f); })
+                    .bind('sort_change', function (event)
+                        { sortChanged(datasetObj); })
+                    .blistTable({cellNav: false, selectionEnabled: false,
+                        generateHeights: false,
+                        editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         showRowNumbers: datasetObj.settings.showRowNumbers})
+                    .bind('cellclick', function (e, r, c, o)
+                        { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
                     .options({filterMinChars: 0, progressiveLoading: true})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
                                 '/rows.json', cache: false,
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
+
+                datasetObj.settings._model = $datasetGrid.blistModel();
 
                 if (datasetObj.settings.filterItem)
                 {
@@ -88,6 +100,30 @@
         }
     });
 
+    var cellClick = function(datasetObj, event, row, column, origEvent)
+    {
+        var model = datasetObj.settings._model;
+        if (!column) { return; }
+
+        switch (column.dataIndex)
+        {
+            case 'rowNumber':
+                if (origEvent.metaKey) // ctrl/cmd key
+                {
+                    model.toggleSelectRow(row);
+                }
+                else if (origEvent.shiftKey)
+                {
+                    model.selectRowsTo(row);
+                }
+                else
+                {
+                    model.selectSingleRow(row);
+                }
+                break;
+        }
+    };
+
     var filterTextInput = function (datasetObj, e)
     {
         if ($(datasetObj.currentGrid).closest('body').length < 1)
@@ -99,7 +135,7 @@
             {
                 var searchText = $(e.currentTarget).val();
                 datasetObj.summaryStale = true;
-                var model = $(datasetObj.currentGrid).blistModel();
+                var model = datasetObj.settings._model;
                 model.filter(searchText, 250);
                 if (!searchText || searchText == '')
                 {
@@ -124,7 +160,7 @@
         e.preventDefault();
         datasetObj.settings.filterItem.val('').blur();
         datasetObj.summaryStale = true;
-        $(datasetObj.currentGrid).blistModel().filter('');
+        datasetObj.settings._model.filter('');
         clearTempView(datasetObj, 'searchString');
         $(e.currentTarget).hide();
     };
@@ -200,7 +236,7 @@
             return;
         }
 
-        var modView = $(datasetObj.currentGrid).blistModel().meta().view;
+        var modView = datasetObj.settings._model.meta().view;
         if (!modView) { return; }
 
         // Remove the old filter menu if necessary
@@ -262,7 +298,7 @@
         }
 
         // Get the current filter for this column (if it exists)
-        var colFilters = $(datasetObj.currentGrid).blistModel()
+        var colFilters = datasetObj.settings._model
             .meta().columnFilters;
         var cf;
         if (colFilters)
@@ -400,7 +436,7 @@
 
         var action = s[0];
         var colIndex = s[1];
-        var model = $(datasetObj.currentGrid).blistModel();
+        var model = datasetObj.settings._model;
         switch (action)
         {
             case 'column-sort-asc':
@@ -423,6 +459,36 @@
         }
         // Update the grid header to reflect updated sorting, filtering
         $(datasetObj.currentGrid).trigger('header_change', [model]);
+    };
+
+
+    var columnResized = function(datasetObj, col, isFinished)
+    {
+        if (isFinished)
+        {
+            var view = datasetObj.settings._model.meta().view;
+            if (datasetObj.settings.currentUserId == view.owner.id)
+            {
+                $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',
+                    data: $.json.serialize({width: col.width}),
+                    type: 'PUT', contentType: 'application/json'});
+            }
+        }
+    };
+
+    var sortChanged = function(datasetObj)
+    {
+        var view = datasetObj.settings._model.meta().view;
+        if (datasetObj.settings.currentUserId == view.owner.id)
+        {
+            $.ajax({url: '/views/' + view.id + '.json',
+                data: $.json.serialize({sortBys: view.sortBys}),
+                type: 'PUT', contentType: 'application/json'});
+        }
+        else
+        {
+            setTempView(datasetObj, datasetObj.settings._model.meta().view, 'sort');
+        }
     };
 
     var clearTempView = function(datasetObj, countId)

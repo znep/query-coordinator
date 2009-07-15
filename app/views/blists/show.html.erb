@@ -45,11 +45,6 @@
         <div class='innerWrapper'>
           <span title='Click to name and save your filtered view'>[Unsaved Filter]</span>
           <%- form_tag(blists_path, :class => 'tempView') do -%>
-          <%= hidden_field_tag("view[originalViewId]", @view.id) %>
-          <%= hidden_field_tag("view[viewFilters]",
-            (JSON.generate(@view.data['viewFilters'] || ''))) %>
-          <%= hidden_field_tag("view[searchString]",
-            (JSON.generate(@view.data['searchString'] || ''))) %>
           <%= text_field_tag("view[name]", '') %>
           <%- end -%>
         </div>
@@ -307,11 +302,6 @@
                   Unsaved Filter
                 </span>
                 <%- form_tag(blists_path, :class => 'tempView') do -%>
-                <%= hidden_field_tag("view[originalViewId]", @view.id) %>
-                <%= hidden_field_tag("view[viewFilters]",
-                  (JSON.generate(@view.data['viewFilters'] || ''))) %>
-                <%= hidden_field_tag("view[searchString]",
-                  (JSON.generate(@view.data['searchString'] || ''))) %>
                 <%= text_field_tag("view[name]", '') %>
                 <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
                 <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),
@@ -368,8 +358,8 @@
     "plugins/ui.core", "plugins/ui.draggable",
     "util/extMouseWheel", "util/flash-interface", "util/navigation",
     "util/inline-login", "util/swfobject", "data/types", "data/model",
-    "data/table", "widgets/inline-edit", "widgets/dropdown-menu",
-    "widgets/selectable-list", "widgets/pagination",
+    "data/editor", "data/table", "widgets/inline-edit",
+    "widgets/dropdown-menu", "widgets/selectable-list", "widgets/pagination",
     "widgets/info-pane-comments", "widgets/scrollable", "widgets/dataset-grid",
     "widgets/visualization", "screens/info-pane", "screens/attribution-edit",
     "screens/blist-grid-screen",

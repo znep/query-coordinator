@@ -546,8 +546,10 @@
 .infoContentOuter.listContainer .infoContent .attributionEdit dd .itemContent span.helpie
 {
     background: url(/stylesheets/images/info_pane/icon_help_highlight.png) no-repeat;
+    bottom: 3px;
     display: inline-block;
     height: 16px;
+    position: relative;
     text-indent: -9999px;
     width: 16px;
 }

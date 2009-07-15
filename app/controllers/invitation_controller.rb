@@ -10,19 +10,22 @@ class InvitationController < ApplicationController
     recipientArray = params[:recipients]
     
     errors = Array.new
-    recipientArray.each do |r|
-      recipient = JSON.parse(r)
+    
+    if (recipientArray)
+      recipientArray.each do |r|
+        recipient = JSON.parse(r)
       
-      invite = Hash.new
-      invite[:message] = message
-      invite[:firstName] = recipient["first"] || ""
-      invite[:lastName] = recipient["last"] || ""
-      invite[:recipientEmail] = recipient["email"]
+        invite = Hash.new
+        invite[:message] = message
+        invite[:firstName] = recipient["first"] || ""
+        invite[:lastName] = recipient["last"] || ""
+        invite[:recipientEmail] = recipient["email"]
       
-      begin
-        InvitationRecord.create(invite)
-      rescue CoreServerError => e
-        errors << { :removeId => recipient["id"] }
+        begin
+          InvitationRecord.create(invite)
+        rescue CoreServerError => e
+          errors << { :removeId => recipient["id"] }
+        end
       end
     end
 

@@ -56,7 +56,7 @@
                         { columnResized(datasetObj, c, f); })
                     .bind('sort_change', function (event)
                         { sortChanged(datasetObj); })
-                    .blistTable({cellNav: true, selectionEnabled: false,
+                    .blistTable({cellNav: false, selectionEnabled: false,
                         generateHeights: false,
                         editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },

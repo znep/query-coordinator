@@ -200,6 +200,7 @@ ul.menu.columnHeaderMenu li
     font-size: 0.8333em;
 }
 
+/*
 .blist-table .blist-hot-row .blist-td.blist-table-row-numbers,
 .blist-table .blist-select-row .blist-td.blist-table-row-numbers
 {
@@ -213,3 +214,4 @@ ul.menu.columnHeaderMenu li
 { background-position: right -897px; }
 .blist-table .blist-select-row .blist-td.blist-table-row-numbers
 { background-position: right -506px; }
+*/

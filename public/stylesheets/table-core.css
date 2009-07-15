@@ -101,7 +101,6 @@
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-    cursor: default;
 }
 
 .blist-table-footer-scrolls

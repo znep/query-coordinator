@@ -15,7 +15,7 @@
       </div>
     </div>
     <ul class="itemMeta clearfix">
-      <li class="ratingContainer"><%= get_blist_rating_html(view) %> <%= pluralize(view.totalTimesRated, "Rating") %></li>
+      <li class="ratingContainer"><strong><%= get_blist_rating_html(view) %> <%= pluralize(view.totalTimesRated, "Rating") %></strong></li>
       <li>Visits <strong><%= view.viewCount %></strong></li>
       <li class="last">Comments <strong><%= view.numberOfComments %></strong></li>
     </ul>
@@ -26,7 +26,9 @@
       <%- unless (view.category == "") -%>
         <p class="viewCategory"><%= view.category.nil? ? '' : view.category.capitalize %></p>
       <%- end -%>
-      <p class="viewDescription clipText"><%= h(view.description) %></p>
+      <%- unless (view.description.nil? || view.description.length == 0 ) -%>
+        <p class="viewDescription clipText"><%= h(view.description) %></p>
+      <%- end -%>
       <%- if (view.tags && view.tags.length > 0) -%>
         <p class="viewTags"><span>Tags: </span><%= h(view.tag_display_string) %></p>
       <%- end -%>

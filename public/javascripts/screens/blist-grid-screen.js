@@ -450,58 +450,7 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
                 ' .name a').text(blistGridNS.viewName);
         }
     }
-    else if (fieldType == "licenseId")
-    {
-        if (responseData['license'])
-        {
-            if (responseData['license']['logoUrl'])
-            {
-                $('.infoLicensing span')
-                    .empty()
-                    .append(
-                        $('<a/>')
-                            .attr('href', responseData['license']['termsLink'])
-                            .append(
-                                $('<img/>')
-                                    .attr('src', '/' + responseData['license']['logoUrl'])
-                                    .attr('alt', responseData['license']['name'])));
-            }
-            else
-            {
-                $('.infoLicensing span')
-                    .empty()
-                    .text(responseData['license']['name']);
-            }
-        }
-    }
-    else if (fieldType == "attributionLink")
-    {
-        $('.infoAttributionLink span')
-            .empty()
-            .append(
-                $('<a/>')
-                    .attr('href', fieldValue)
-                    .text(fieldValue));
-    }
 };
-
-blist.blistGrid.infoEditErrorCallback = function(fieldType, request)
-{
-    if ((fieldType == "attributionLink") && (request.status == 500))
-    {
-        // We don't get anything coherent back on a validation error,
-        // so if we hit a 500 just assume that's what it was
-        var $label = $('.infoAttributionLink label');
-        if ($label.length == 0)
-        {
-            $label = $('<label/>').addClass("error");
-        }
-        $label
-            .text("That does not appear to be a valid url.")
-            .insertAfter($("#view_attributionLink"));
-    }
-};
-
 
 
 /* Initial start-up calls, and setting up bindings */
@@ -558,6 +507,7 @@ $(function ()
         blistGridNS.sizeSwf(event);
         $('#readGrid').trigger('resize');
     });
+    $('#infoPane').show();
     commonNS.adjustSize();
     $('#readGrid').trigger('resize');
 
@@ -705,8 +655,7 @@ $(function ()
         {clickSelector: '#n/a'});
 
     $("#infoPane .editItem").infoPaneItemEdit({
-        submitSuccessCallback: blistGridNS.infoEditCallback,
-        submitErrorCallback: blistGridNS.infoEditErrorCallback});
+        submitSuccessCallback: blistGridNS.infoEditCallback});
     $("#tempInfoPane .inlineEdit").inlineEdit({
         displaySelector: '.itemContent span',
         editClickSelector: '.itemContent span, .itemActions',
@@ -720,39 +669,8 @@ $(function ()
 
     $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
 
-    // Creative Commons cascading dropdown
-    if ($("#view_licenseId").val() == "CC")
-    {
-        $('#license_cc_type').show();
-        $('#view_licenseId').attr('name', '');
-        $('#license_cc_type').attr('name', 'view[licenseId]');
-    }
-    
-    $('#view_licenseId').change(function()
-    {
-        if ($("#view_licenseId").val() == "CC")
-        {
-            $('#license_cc_type').show();
-            $('#view_licenseId').attr('name', '');
-            $('#license_cc_type').attr('name', 'view[licenseId]');
-        }
-        else
-        {
-            $('#license_cc_type').hide();
-            $('#view_licenseId').attr('name', 'view[licenseId]');
-            $('#license_cc_type').attr('name', '');
-        }
-    });
-    
-    // Attribution Link URL validation
-    $('.infoAttributionLink form').validate({
-        rules: {
-            "view[attributionLink]": "customUrl"
-        },
-        messages: {
-            "view[attributionLink]": "That does not appear to be a valid url."
-        }
-    });
+    // Wire up attribution edit box
+    $('.attributionEdit').attributionEdit();
 
     // Update copyable publish code and live preview from template/params
     var updatePublishCode = function()

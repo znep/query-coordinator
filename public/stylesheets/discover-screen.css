@@ -247,6 +247,7 @@ ul.myNetworkList li span
 .discoverContentList li.viewListItem .itemActionContainer
 {
     float: right;
+    margin-bottom: 12px;
     margin-right: -20.4em;
     width: 20.4em;
 }

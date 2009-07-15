@@ -67,6 +67,19 @@ module BlistsHelper
       "title='#{rating}'><span>#{rating}</span></div>"
   end
 
+  def socialize_menu_options(view, menu_id = '')
+    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{t(:blist_company)} - ")
+    seo_path = "#{request.protocol + request.host_with_port + view.href}"
+    short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href}"
+
+    {'id' => menu_id, 'option_menu' => true,
+      'items' => [
+      {'text' => 'Delicious', 'class' => 'delicious', 'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
+      {'text' => 'Digg', 'class' => 'digg', 'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
+      {'text' => 'Twitter', 'class' => 'twitter', 'href' => "http://www.twitter.com/home?status=#{tweet + short_path}", 'external' => true},
+      {'text' => 'Facebook', 'class' => 'facebook', 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}", 'external' => true}]}
+  end
+
   def contacts_filter_menu(href_prefix, href_group_prefix,
                            title_key, title_group_key, id)
     items = [{'text' => 'Me', 'href' => href_prefix + current_user.id,

@@ -16,73 +16,160 @@
     <div id="aboutContent">
       <div class="outerContent">
         <div class="content">
-          
+
           <div class="aboutHeader">
-            <h1><%= link_to(h(@view.name), @view.href) %></h1>
+
+            <h1 class="dataName"><%= link_to(h(@view.name), @view.href, :class => 'linkToDataset') %></h1>
+            <a class="editLink editName<%= is_owner ? "" : " hide" %>" href="#edit">Edit</a>
+            <div class="editNameForm hide">
+              <%= form_tag(@view.href) %>
+                <%= text_field_tag("view[name]", h(@view.name)) %>
+                <a href="#" class="editNameSubmitButton">Submit</a>
+                <a href="#" class="editNameCancelButton">Cancel</a>
+              </form>
+            </div>
             <ul class="itemMeta clearfix">
               <li class="ratingContainer grayStars"><%= get_blist_rating_html(@view) %></li>
-              <li>Votes <strong><%= @view.totalTimesRated %></strong></li>
-              <li>Visits <strong><%= @view.viewCount %></strong></li>
-              <li class="last">Comments <strong><%= @view.numberOfComments %></strong></li>
+              <li>Ratings <strong><%= number_with_delimiter(@view.totalTimesRated) %></strong></li>
+              <li>Visits <strong><%= number_with_delimiter(@view.viewCount) %></strong></li>
+              <li class="last">Comments <strong><%= number_with_delimiter(@view.numberOfComments) %></strong></li>
             </ul>
           </div>
-          <%- if ((@view.category && @view.category != "") || (@view.tags && @view.tags.length > 0)) -%>
-          <ul class="aboutCategoryList">
-            <%- if (@view.category && @view.category != "") -%>
-              <li>Category <strong><%= @view.category.capitalize %></strong></li>
-            <%- end -%>
-            <%- if (@view.tags && @view.tags.length > 0) -%>
-              <li>Tags <strong><%= h(@view.tag_display_string) %></strong></li>
-            <%- end -%>
-          </ul>
-          <%- end -%>
-          
+
           <div class="aboutBody">
-            
-            <h2>Description</h2>
-            <%- if @view.description.nil? || @view.description.empty? -%>
-              <p>No Description Provided</p>
-            <%- else -%>
-              <p><%= h(@view.description) %></p>
-            <%- end -%>
-            
-            
-            <h2>Licensing, Attribution &amp; Terms of Use</h2>
-            <ul class="attributionList">
-              <li>Data Provided by:
-                <%- if @view.attribution.nil? || @view.attribution.empty? -%>
-                  <strong>None specified</strong>
-                <%- else -%>
-                  <strong><%= h(@view.attribution) %></strong>
+            <div class="dataGeneral">
+              <%- if is_owner || ((@view.category && @view.category != "") || (@view.tags && @view.tags.length > 0)) -%>
+              <ul class="aboutCategoryList">
+                <%- if is_owner || (@view.category && @view.category != "") -%>
+                  <li>Category
+                    <span class="categoryField fieldValue"><%= @view.category.nil? ? "None" : @view.category.capitalize %></span>
+                  </li>
                 <%- end -%>
-              </li>
-              <li>Link:
-                <%- if @view.attributionLink.nil? || @view.attributionLink.empty? -%>
-                  <strong>None</strong>
-                <%- else -%>
-                  <strong><%= link_to(h(@view.attributionLink)) %></strong>
+                <a class="editLink editGeneral<%= is_owner ? "" : " hide" %>" href="#edit">Edit</a>
+                <%- if is_owner || (@view.tags && @view.tags.length > 0) -%>
+                  <li>Tags
+                    <span class="tagsField fieldValue"><%= h(@view.tag_display_string.empty? ? "None" : @view.tag_display_string) %></span>
+                  </li>
                 <%- end -%>
-              </li>
-            </ul>
-            
-            <%- if @view.license -%>
-            <h3>Usage License</h3>
-              <%- if @view.license.logoUrl.nil? || @view.license.logoUrl.empty? -%>
-                <p><strong><%= @view.license.name %></strong></p>
+              </ul>
+              <%- end -%>
+
+              <h2>Description</h2>
+              <p class="descriptionField">
+              <%- if @view.description.nil? || @view.description.empty? -%>
+                No Description Provided
               <%- else -%>
-                <p>
+                <%= h(@view.description) %>
+              <%- end -%>
+              </p>
+            </div>
+            <div class="editGeneralForm hide">
+              <a href="#close" class="closeButton closeGeneral">close</a>
+              <%= form_tag(@view.href) %>
+                <dl class="summaryList">
+                  <dt>
+                    Category
+                  </dt>
+                  <dd>
+                    <div class="itemContent">
+                      <div>
+                        <%= select_tag("view[category]", category_select_options(
+                          h(@view.category.nil? ? '' : @view.category.capitalize))) %>
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt>
+                    Tags
+                  </dt>
+                  <dd>
+                    <div class="itemContent">
+                      <div>
+                        <%= text_field_tag("view[tags]", h(@view.tag_display_string)) %>
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList">
+                  <dt>
+                    Description
+                  </dt>
+                  <dd>
+                    <div class="itemContent">
+                      <div>
+                        <%= text_area_tag("view[description]", h(@view.description)) %>
+                      </div>
+                    </div>
+                  </dd>
+                </dl>
+                <dl class="summaryList submitActionRow">
+                  <dt>&nbsp;</dt>
+                  <dd>
+                    <div class="itemContent">
+                      <ul class="submitActions">
+                        <li>
+                          <ul class="actionButtons">
+                            <li><a id="attributionEditSubmitButton" class="arrowButton" href="#submit">Save</a></li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                  </dd>
+                </dl>
+              </form>
+            </div>
+
+            <div class="attributionSummary">
+              <h2>Licensing, Attribution &amp; Terms of Use</h2>
+              <a class="editLink editAttribution<%= is_owner ? "" : " hide" %>" href="#edit">Edit</a>
+              <ul class="attributionList">
+                <li>Data Provided by
+                  <span class="attributionSource fieldValue">
+                  <%- if @view.attribution.nil? || @view.attribution.empty? -%>
+                    None specified
+                  <%- else -%>
+                    <%= h(@view.attribution) %>
+                  <%- end -%>
+                  </span>
+                </li>
+                <li>Source Link
+                  <span class="attributionSourceLink fieldValue">
+                  <%- if @view.attributionLink.nil? || @view.attributionLink.empty? -%>
+                    None
+                  <%- else -%>
+                    <%= link_to(h(@view.attributionLink)) %>
+                  <%- end -%>
+                  </span>
+                </li>
+              </ul>
+
+              <%- if is_owner || @view.license -%>
+              <h3>Usage License</h3>
+                <p><span class="licenseName fieldValue">
+                <%- if @view.license.nil? -%>
+                  No License
+                <%- elsif @view.license.logoUrl.nil? || @view.license.logoUrl.empty? -%>
+                  <%= @view.license.name %>
+                <%- else -%>
                   <a href="<%= h(@view.license.termsLink) %>">
                     <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
                   </a>
-                </p>
+                <%- end -%>
+                </span></p>
               <%- end -%>
-            <%- end -%>
-            
-            <%- if @view.termsAndConditions -%>
-              <h3>Terms of Use</h3>
-              <p class="attributionTerms"><%= @view.termsAndConditions %></p>
-            <%- end -%>
-            
+
+              <%- if @view.termsAndConditions -%>
+                <h3>Terms of Use</h3>
+                <p class="attributionTerms"><%= @view.termsAndConditions %></p>
+              <%- end -%>
+            </div>
+
+            <div class="attributionEdit hide">
+              <a href="close" class="closeButton closeAttribution">close</a>
+              <%= render :partial => 'attribution_edit', :locals => { :view => @view } %>
+            </div>
+
             <h2 class="summaryInfoHeader">Summary Information</h2>
             <dl class="aboutSummaryList clearfix">
               <dt>Added By</dt>
@@ -91,8 +178,8 @@
               <dt>Added On</dt>
               <dd><%= blist_date(@view.createdAt) %></dd>
               <dt>Last Update</dt>
-              <%- 
-                up_user = @view.last_updated_user 
+              <%-
+                up_user = @view.last_updated_user
               %>
               <dd>
                 <%= up_user.nil? ? '' : link_to(h(up_user.displayName), up_user.href) + ':' %>
@@ -103,17 +190,17 @@
               <dt>Community Activity</dt>
               <dd>
                 <ul>
-                  <li>Visits: <%= @view.viewCount %></li>
-                  <li>Comments: <%= @view.numberOfComments %></li>
-                  <li>Votes: <%= @view.totalTimesRated %> <div class="grayStars"><%= get_blist_rating_html(@view) %></div></li>
+                  <li>Visits: <%= number_with_delimiter(@view.viewCount) %></li>
+                  <li>Comments: <%= number_with_delimiter(@view.numberOfComments) %></li>
+                  <li>Ratings: <%= number_with_delimiter(@view.totalTimesRated) %> <div class="grayStars"><%= get_blist_rating_html(@view) %></div></li>
                 </ul>
               </dd>
               <dt>Permalink</dt>
               <dd>
                 <% permaLink = request.protocol + request.host_with_port + @view.href %>
                 <%# use explicit a href here so Rails doesn't try to be clever %>
-                <span>
-                  <a href="<%= permaLink %>" title="A permanent URL for linking to this page"><%= permaLink %></a>
+                <span class="permalinkField">
+                  <a href="<%= permaLink %>" title="A permanent URL for linking to this page" class="linkAndTextToDataset"><%= permaLink %></a>
                   <%= flash_clipboard_button(permaLink) %>
                 </span>
               </dd>
@@ -136,21 +223,21 @@
                 </ul>
               </dd>
             </dl>
-            
+
           </div>
         </div>
       </div>
     </div>
   </div>
-  
+
   <div id="sidebar" class="column notabs">
     <% render(:layout => "shared/sidebar_box") do %>
       <ul class="actionButtons blockList clearfix">
-        <li><%= link_to("View this #{t(:blist_name)}", @view.href, :class => "arrowButton") %></li>
+        <li><%= link_to("View this #{t(:blist_name)}", @view.href, :class => "arrowButton linkToDataset") %></li>
         <%# TODO: Add publishing button when we have publish modal available. %>
       </ul>
     <% end %>
-    
+
     <% render(:layout => "shared/sidebar_box") do %>
       <div class="ownerProfileContainer clearfix">
         <ul class="ownerData">
@@ -165,19 +252,69 @@
         </div>
       </div>
     <% end %>
-    
+
+    <% render(:layout => "shared/sidebar_box") do %>
+      <ul class="socialActions">
+        <li>
+          <a href="#" class="socialActionLink" title="Share on Social Networks" id="shareLink">
+            <span class="dropdownWrapper">
+              <span class="linkIcon">Socialize</span>
+            </span>
+          </a>
+    	    <%= menu_tag(socialize_menu_options(@view, 'shareMenu')) %>
+    	  </li>
+    	  <li>
+    	    <a href="#" class="socialActionLink"
+    	      title="Download a copy of this dataset to your computer" id="downloadLink">
+    	      <span class="dropdownWrapper">
+              <span class="linkIcon">Download As</span>
+            </span>
+          </a>
+    	    <%= menu_tag({'id' => 'downloadMenu', 'class' => 'noicon', 'items' => [
+          {'text' => 'As CSV', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
+          {'text' => 'As PDF', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
+          {'text' => 'As XLS', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
+          # {'text' => 'As XLSX', 'external' => true,
+          # 'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
+          {'text' => 'As XML', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
+          {'text' => 'As JSON', 'external' => true,
+          'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
+          ]}) %>
+        </li>
+    	  <li>
+    	    <a href="<%= "/views/#{@view.id}/rows.rss?accessType=WEBSITE" %>" class="socialActionLink" title="Stay up to date with this dataset with RSS" id="rssLink">
+    	      <span class="linkIcon">Subscribe to RSS</span>
+    	    </a>
+    	  </li>
+    	  <li>
+    	    <a href="<%= "/views/#{@view.id}/rows.xml?accessType=API" %>" class="socialActionLink" title="Get direct access to this dataset through our API" id="apiLink">
+    	      <span class="linkIcon">Access via API</span>
+    	    </a>
+    	  </li>
+    	  <li>
+    	    <a href="<%= "/views/#{@view.id}/rows.pdf?print=true&headers_on_every_page=true" %>" class="socialActionLink" title="Print out a copy of this dataset" id="printLink">
+    	      <span class="linkIcon">Print</span>
+    	    </a>
+    	  </li>
+      </ul>
+    <% end %>
+
     <% render(:layout => "shared/sidebar_box") do %>
       <h4>Columns</h4>
       <ul class="columnList">
         <%- @view.columns.slice(0, 20).each do |column| -%>
-          <%- unless (column.flags.any? {|flag| flag.data == "hidden"}) -%> 
+          <%- unless (column.flags.any? {|flag| flag.data == "hidden"}) -%>
             <li class="<%= get_datatype_class(column) %>"><%= h(column.name) %></li>
           <%- end -%>
         <%- end -%>
         <%- if (@view.columns.length > 20) -%>
           <li class="moreColumns">&hellip;</li>
         <%- end -%>
-        <li class="viewLink"><%= link_to("View", @view.href) %></li>
+        <li class="viewLink"><%= link_to("View", @view.href, :class => 'linkToDataset') %></li>
       </ul>
     <% end %>
   </div>
@@ -185,11 +322,7 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <script type="text/javascript" charset="utf-8">
-    $(function ()
-    {
-        $(".outerContent").blistStretchWindow();
-        $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
-    });
-  </script>
+  <%= javascript_include_tag "screens/blist-about-screen", "screens/attribution-edit",
+      "widgets/dropdown-menu",
+      :cache => "cache/blists_about" %>
 <% end %>

@@ -344,91 +344,54 @@
       </dl>
       <%- end -%>
 
-      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
-        <dt>
-          Licensing
-        </dt>
-        <dd class="editItem">
-          <div class="itemContent infoLicensing">
-            <span>
-              <%- if view.license -%>
-                <%- if view.license.logoUrl.nil? || view.license.logoUrl.empty? -%>
-                  <%= h(view.license.name) %>
-                <%- else -%>
-                  <a href="<%= h(view.license.termsLink) %>">
-                    <img src="/<%= view.license.logoUrl %>" alt="<%= view.license.name %>" />
-                  </a>
+      <div class="attributionSummary">
+        <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+          <dt>
+            Licensing
+          </dt>
+          <dd class="editItem">
+            <div class="itemContent">
+              <span class="infoLicensing">
+                <%- if view.license -%>
+                  <%- if view.license.logoUrl.nil? || view.license.logoUrl.empty? -%>
+                    <%= h(view.license.name) %>
+                  <%- else -%>
+                    <a href="<%= h(view.license.termsLink) %>">
+                      <img src="/<%= view.license.logoUrl %>" alt="<%= view.license.name %>" />
+                    </a>
+                  <%- end -%>
                 <%- end -%>
-              <%- end -%>
-            </span>
+              </span>
+            </div>
             <%- if is_owner -%>
-            <%- form_tag(view.href) do -%>
-              <%= hidden_field_tag("fieldType", "licenseId") %>
-              <%= select_tag("view[licenseId]",
-                license_select_options(h(view.licenseId.nil? ? '' : view.licenseId))) %>
-              <%= select_tag("license_cc_type",
-                creative_commons_select_options(h(view.licenseId.nil? ? '' : view.licenseId)),
-                :class => ((!view.licenseId.nil? && view.licenseId.include?("CC")) ? '' : 'hide')) %>
-              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+            <div class="itemActions">
+              <a href="<%= view.href %>" class="action"><span>Edit</span></a>
+            </div>
             <%- end -%>
-            <%- end -%>
-          </div>
-          <%- if is_owner -%>
-          <div class="itemActions">
-            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
-          </div>
-          <%- end -%>
-        </dd>
-      </dl>
+          </dd>
+        </dl>
 
-      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
-        <dt>
-          Data Provided By
-        </dt>
-        <dd class="editItem">
-          <div class="itemContent">
-            <span><%= h(view.attribution) %></span>
+        <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
+          <dt>
+            Data Provided By
+          </dt>
+          <dd class="editItem">
+            <div class="itemContent">
+              <span class="infoAttribution">
+                <%= (view.attributionLink.nil? || view.attributionLink.empty?) ? h(view.attribution) : link_to(h(view.attribution), h(view.attributionLink)) %>
+              </span>
+            </div>
             <%- if is_owner -%>
-            <%- form_tag(view.href) do -%>
-              <%= hidden_field_tag("fieldType", "attribution") %>
-              <%= text_field_tag("view[attribution]", h(view.attribution)) %>
-              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+            <div class="itemActions">
+              <a href="<%= view.href %>" class="action"><span>Edit</span></a>
+            </div>
             <%- end -%>
-            <%- end -%>
-          </div>
-          <%- if is_owner -%>
-          <div class="itemActions">
-            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
-          </div>
-          <%- end -%>
-        </dd>
-      </dl>
-
-      <dl class="summaryList <%= is_owner ? 'actionList' : '' %>">
-        <dt>
-          Source Link
-        </dt>
-        <dd class="editItem">
-          <div class="itemContent infoAttributionLink">
-            <span><%= link_to(h(view.attributionLink)) %></span>
-            <%- if is_owner -%>
-            <%- form_tag(view.href) do -%>
-              <%= hidden_field_tag("fieldType", "attributionLink") %>
-              <%= text_field_tag("view[attributionLink]", h(view.attributionLink)) %>
-              <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-              <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
-            <%- end -%>
-            <%- end -%>
-          </div>
-          <%- if is_owner -%>
-          <div class="itemActions">
-            <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
-          </div>
-          <%- end -%>
-        </dd>
-      </dl>
+          </dd>
+        </dl>
+      </div>
+      <div class="attributionEdit hide">
+        <%= render :partial => 'attribution_edit', :locals => { :view => @view } %>
+      </div>
 
     </div> <!-- /.infoContent -->
   </div></div> <!-- /.infoContentInner -->
@@ -609,18 +572,8 @@
     </ul>
     <%- end -%>
     <div class="socialActions">
-      <%- 
-        tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{t(:blist_company)} - ")
-        seo_path = "#{request.protocol + request.host_with_port + view.href}"
-        short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href}"
-      -%>
       <a href='#' title='Share on Social Networks' id='shareInfoLink'>Share on Social Networks</a>
-	    <%= menu_tag({'id' => 'shareInfoMenu', 'option_menu' => true,
-	    'items' => [
-	    {'text' => 'Delicious', 'class' => 'delicious', 'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
-	    {'text' => 'Digg', 'class' => 'digg', 'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
-	    {'text' => 'Twitter', 'class' => 'twitter', 'href' => "http://www.twitter.com/home?status=#{tweet + short_path}", 'external' => true},
-	    {'text' => 'Facebook', 'class' => 'facebook', 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}", 'external' => true}]}) %>
+	    <%= menu_tag(socialize_menu_options(view, 'shareInfoMenu')) %>
     </div>
     </ul>
     

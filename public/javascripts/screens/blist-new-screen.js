@@ -149,7 +149,8 @@ $(function ()
                 .val('')
                 .removeClass('textPrompt')
                 .removeClass('prompt');
-            if ($('#newDatasetForm').valid() && validateRequiredFile() && !importErrors)
+            validateRequiredFile();
+            if ($('#newDatasetForm').valid() && isImport && !importErrors)
             {
                 $uploader.submit();
             }

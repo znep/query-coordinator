@@ -144,6 +144,7 @@ $(function ()
     {
         if (isImport || $('#newDatasetForm #view_file').prev("label").hasClass('required'))
         {
+            $('#newDatasetForm input').blur();
             $('#newDatasetForm .textPrompt.prompt')
                 .val('')
                 .removeClass('textPrompt')

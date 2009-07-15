@@ -116,7 +116,6 @@ $(function ()
                     .text("Failed to import that file.  " + response.message)
                     .removeClass('hide');
                 $(".submitPending").hide();
-                $uploadButton.show();
                 return false;
             }
             

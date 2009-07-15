@@ -518,6 +518,56 @@
     display: block;
 }
 
+.infoContentOuter.listContainer .infoContent dd span object,
+.infoContentOuter.listContainer .infoContent dd span embed
+{
+    margin-top: -4px;
+}
+
+/* attribution edit */
+.infoContentOuter.listContainer .infoContent .attributionEdit dd
+{
+    background-color: #e7e7e7;
+}
+.infoContentOuter.listContainer .infoContent .attributionEdit dd .submitActions .actionButtons li
+{
+    background-position: 0 -189px;
+}
+
+.infoContentOuter.listContainer .infoContent .attributionEdit dd .submitActions .actionButtons li a
+{
+    background-position: right -231px;
+}
+
+.infoContentOuter.listContainer .infoContent .attributionEdit dd .itemContent select
+{
+    display: inline-block;
+}
+.infoContentOuter.listContainer .infoContent .attributionEdit dd .itemContent span.helpie
+{
+    background: url(/stylesheets/images/info_pane/icon_help_highlight.png) no-repeat;
+    bottom: 3px;
+    display: inline-block;
+    height: 16px;
+    position: relative;
+    text-indent: -9999px;
+    width: 16px;
+}
+.infoContentOuter.listContainer .infoContent .attributionEdit .required
+{
+    color: red;
+}
+.infoContentOuter.listContainer .infoContent .attributionEdit .closeAttributionLink
+{
+    background-image: url(/images/cancel_button_mini.png);
+    display: block;
+    height: 18px;
+    margin-left: 80px;
+    margin-top: 2px;
+    text-indent: -9999px;
+    width: 18px;
+}
+
 /*** START: grid list table ***/
 
 .infoContentOuter .gridListContainer 

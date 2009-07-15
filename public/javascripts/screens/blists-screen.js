@@ -374,58 +374,9 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
                 $('.singleInfoFiltered .gridList #filter-row_' + itemId +
                     ' .name a').text(fieldValue);
             }
-            if (fieldType == "licenseId")
-            {
-                if (responseData['license'])
-                {
-                    if (responseData['license']['logoUrl'])
-                    {
-                        $('.infoLicensing span')
-                            .empty()
-                            .append(
-                                $('<a/>')
-                                    .attr('href', responseData['license']['termsLink'])
-                                    .append(
-                                        $('<img/>')
-                                            .attr('src', '/' + responseData['license']['logoUrl'])
-                                            .attr('alt', responseData['license']['name'])));
-                    }
-                    else
-                    {
-                        $('.infoLicensing span')
-                            .empty()
-                            .text(responseData['license']['name']);
-                    }
-                }
-            }
-            if (fieldType == "attributionLink")
-            {
-                $('.infoAttributionLink span')
-                    .empty()
-                    .append(
-                        $('<a/>')
-                            .attr('href', fieldValue)
-                            .text(fieldValue));
-            }
 
             // If anything in the info pane is changed, make sure it reloads
             $.Tache.DeleteAll();
-        },
-        submitErrorCallback: function(fieldType, request)
-        {
-            if ((fieldType == "attributionLink") && (request.status == 500))
-            {
-                // We don't get anything coherent back on a validation error,
-                // so if we hit a 500 just assume that's what it was
-                var $label = $('.infoAttributionLink label');
-                if ($label.length == 0)
-                {
-                    $label = $('<label/>').addClass("error");
-                }
-                $label
-                    .text("That does not appear to be a valid url.")
-                    .insertAfter($("#view_attributionLink"));
-            }
         }
     });
 	
@@ -433,7 +384,10 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 		forcePosition: true, closeOnResize: true});
 
     $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
-    
+
+    // Wire up attribution edit box
+    $('.attributionEdit').attributionEdit();
+
     // Creative Commons cascading dropdown
     if ($("#view_licenseId").val() == "CC")
     {

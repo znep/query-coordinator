@@ -33,15 +33,17 @@
           <%= text_field_tag("view_file", "Supported Formats: .csv .tsv .xml .xls .xlsx",
                              :class => "prompt",
                              :readonly => true) %>
-          <ul id="fileBrowseButtonList" class="actionButtons">
-            <li>
-              <a id="fileBrowseButton" href="/imports.txt?two_step_import=true">Browse For File</a>
-            </li>
-            <li>
-              <a class="hide" id="fileClearButton" href="#clear">Clear File</a>
-            </li>
-          </ul>
-          <span class="helpie fileUploadHelpie" title="You can upload a data file to help get started with your <%= t(:blist_name) %>.">?</span>
+          <div class="fileBrowseButtonListContainer">
+            <ul id="fileBrowseButtonList" class="actionButtons">
+              <li>
+                <a id="fileBrowseButton" href="/imports.txt?two_step_import=true">Browse For File</a>
+              </li>
+              <li>
+                <a class="hide" id="fileClearButton" href="#clear">Clear File</a>
+              </li>
+            </ul>
+          </div>
+          <br /><span class="helpie fileUploadHelpie" title="You can upload a data file to help get started with your <%= t(:blist_name) %>.">?</span>
           <%= hidden_field_tag("datasetID") %>
           <label class="uploadErrorMessage hide"></label>
         
@@ -50,11 +52,11 @@
         
           <label for="view_category">Type of <%= t(:blist_name).capitalize %>:</label>
           <%= select_tag("view[category]", category_select_options()) %>
-          <span class="helpie" title="What kind of <%= t(:blist_name) %> is this?">?</span>
+          <br /><span class="helpie" title="What kind of <%= t(:blist_name) %> is this?">?</span>
         
           <label for="view_tags">Tags / Keywords:</label>
           <%= text_field_tag("view[tags]", "", :title => "Enter keywords", :class => "textPrompt") %>
-          <span class="helpie" title="Keywords can help other people find this <%= t(:blist_name) %>.">?</span>
+          <br /><span class="helpie" title="Keywords can help other people find this <%= t(:blist_name) %>.">?</span>
           <span class="additionalHelp">(Enter one or more keywords separated by commas)</span>
         
           <h3>Licensing &amp; Attribution</h3>
@@ -62,7 +64,7 @@
           <div class="licensing">
             <label for="view_licenseId">Licensing:</label>
             <%= select_tag("view[licenseId]", license_select_options("")) %>
-            <span class="helpie" title="Choose licensing terms for people who wish to use this dataset.">?</span>
+            <br /><span class="helpie" title="Choose licensing terms for people who wish to use this dataset.">?</span>
           
             <div id="licensingCreativeCommons" class="hide">
               <hr />

@@ -268,7 +268,7 @@
             <% permaLink = request.protocol + request.host_with_port + view.href %>
             <%# use explicit a href here so Rails doesn't try to be clever %>
             <span>
-              <a href="<%= permaLink %>" title="A permanent URL for linking to this page"><%= permaLink %></a>
+              <a href="<%= permaLink %>" title="A permanent URL for linking to this page"><%= permaLink %></a>&nbsp;
               <%= flash_clipboard_button(permaLink) %>
             </span>
           </div>
@@ -284,7 +284,7 @@
             <% short_url = request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href %>
             <%# use explicit a href here so Rails doesn't try to be clever %>
             <span>
-              <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email"><%= short_url %></a>
+              <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email"><%= short_url %></a>&nbsp;
               <%= flash_clipboard_button(short_url) %>
             </span>
           </div>

@@ -295,3 +295,69 @@
 .newDatasetWrapper .advancedPrivacy { display: none; }
 
 /*** END: New Dataset form ***/
+
+
+/*** START: Print Dataset form ***/
+
+.printDatasetWrapper .columnLeft
+{
+    float: left;
+    margin-top: -15px;
+    padding-left: 15px;
+    width: 260px;
+}
+
+.printDatasetWrapper .columnRight
+{
+    border-left: 1px solid #cacaca;
+    margin: 15px 0 20px 315px;
+    padding-left: 50px;
+}
+
+.printDatasetWrapper label,
+.printDatasetWrapper input
+{
+    font-size: 1.3em;
+}
+
+.printDatasetWrapper .margins label
+{
+    display: inline-block;
+    text-align: right;
+    width: 50px;
+}
+
+.printDatasetWrapper .margins input
+{
+    display: inline-block;
+    margin: 5px 10px 0 5px;
+    width: 50px;
+}
+
+.printDatasetWrapper .columnRight label
+{
+    margin-left: 25px;
+}
+.printDatasetWrapper .columnRight input
+{
+    display: block;
+    height: 20px;
+    line-height: 20px;
+    margin: 8px 0 -14px 5px;
+    padding: 0;
+}
+
+.printDatasetWrapper label.formHeader
+{
+    display: block;
+    font-weight: bold;
+    margin: 15px 0 5px;
+}
+
+.printDatasetWrapper .submitLine
+{
+    clear: both;
+    margin-top: 10px;
+}
+
+/*** END: Print Dataset form ***/

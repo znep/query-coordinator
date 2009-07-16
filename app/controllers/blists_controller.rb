@@ -158,6 +158,13 @@ class BlistsController < SwfController
     render :text => {"result" => "success"}.to_json
   end
 
+  def print
+    @view = View.find(params[:id])
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
   def new
     respond_to do |format|
       format.html { render }

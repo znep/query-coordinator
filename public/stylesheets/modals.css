@@ -336,7 +336,7 @@
 
 .printDatasetWrapper .columnRight label
 {
-    margin-left: 25px;
+    padding-left: 25px;
 }
 .printDatasetWrapper .columnRight input
 {

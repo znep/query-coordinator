@@ -102,7 +102,7 @@ $(function ()
         {
             $(".submitActions").hide();
             $(".submitPending").show();
-            $clearButton.hide();
+            $clearButton.addClass("hide");
         },
         onComplete: function (file, response)
         {
@@ -111,7 +111,7 @@ $(function ()
             if (response.error == true)
             {
                 $(".submitActions").show();
-                $clearButton.show();
+                $clearButton.removeClass("hide");
                 $('.uploadErrorMessage')
                     .text("Failed to import that file.  " + response.message)
                     .removeClass('hide');
@@ -144,11 +144,7 @@ $(function ()
     {
         if (isImport || $('#newDatasetForm #view_file').prev("label").hasClass('required'))
         {
-            $('#newDatasetForm input').blur();
-            $('#newDatasetForm .textPrompt.prompt')
-                .val('')
-                .removeClass('textPrompt')
-                .removeClass('prompt');
+            $('#newDatasetForm .prompt').val('');
             validateRequiredFile();
             if ($('#newDatasetForm').valid() && isImport && !importErrors)
             {

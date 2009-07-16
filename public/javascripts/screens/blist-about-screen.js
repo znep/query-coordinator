@@ -37,7 +37,8 @@ $(function ()
                 var viewHref = 'http://'
                     + location.host + '/'
                     + (responseData['category'] || 'dataset') + '/'
-                    + responseData['name'] + '/'
+                    + responseData['name'].replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '-')
+                        .replace(/\-+/g, '-').slice(0, 50) + '/'
                     + responseData['id'];
                 $('.dataName a, .linkToDataset, .linkAndTextToDataset')
                     .attr('href', viewHref);
@@ -45,9 +46,6 @@ $(function ()
                 $('.linkAndTextToDataset').text(viewHref);
                 $('.permalinkField embed').attr('flashvars', 'text=' + viewHref);
                 $('.permalinkField object param[name=FlashVars]').remove();
-                $('.permalinkField object').append(
-                    $('<param/>')
-                        .attr('flashvars', 'text=' + viewHref));
 
                 $('.dataName').show();
                 $('.editName').show();
@@ -83,7 +81,7 @@ $(function ()
             {
                 // Capitalize the category name
                 var category = responseData['category'];
-                category = category[0].toUpperCase() + category.slice(1);
+                category = category.charAt(0).toUpperCase() + category.slice(1);
 
                 $('.categoryField').text(category);
                 if (responseData['tags'])

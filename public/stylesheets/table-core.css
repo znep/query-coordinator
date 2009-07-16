@@ -126,6 +126,10 @@
     float: left;
     overflow: hidden;
     white-space: nowrap;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    cursor: default;
 }
 
 .blist-td-popout
@@ -153,16 +157,29 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh {
     background-color: #eeeeee;
 }
 
-.blist-td.blist-opener {
+div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected {
+    background-color: #b4d5fe;
+}
+
+.blist-table div.blist-cell-selected { background-color: #b4d5fe; }
+
+.blist-td.blist-opener
+{
     background-image: url('/stylesheets/images/content/table/expand_closed.png');
-    background-position: center center;
+    background-position: 3px center;
     background-repeat: no-repeat;
     border-right-color: transparent /*#f8f8f8*/;
+    cursor: pointer;
 }
 
 .blist-tr-open .blist-td.blist-opener {
     background-image: url('/stylesheets/images/content/table/expand_opened.png');
     border-right-color: #eeeeee;
+}
+
+.blist-td.blist-opener-inactive, .blist-tr-open .blist-td.blist-opener-inactive {
+    background-image: none;
+    cursor: default;
 }
 
 .blist-td.blist-opener-space {
@@ -178,12 +195,16 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh {
     border-bottom-color: #dddddd;
 }
 
-div.blist-table-expander
+div.blist-table-expander,
+div.blist-table-edit-container,
+div.blist-table-active-container
 {
-    position: absolute;
-    z-index: 10;
     overflow: auto;
+    position: absolute;
 }
+div.blist-table-active-container { z-index: 10; }
+div.blist-table-expander { z-index: 15; }
+div.blist-table-edit-container { z-index: 20; }
 
 div.blist-table-expander .blist-td
 {
@@ -401,4 +422,16 @@ img.blist-table-option-icon
     background-position: center center;
     background-repeat: no-repeat;
     height: 18px;
+}
+
+/* Quick & cheap way to thumbnail photos; won't work right for
+ * really wide images */
+.blist-td-photo img
+{
+    height: 100%;
+}
+
+.blist-table-navigator {
+    position: absolute;
+    left: -10000px;
 }

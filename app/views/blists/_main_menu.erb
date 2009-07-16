@@ -3,8 +3,7 @@
     <dl><dt><a href='#menublist'><%= t(:blist_name).capitalize %></a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
-        'external' => true,
-        'href' => "/views/#{@view.id}/rows.pdf?print=true&headers_on_every_page=true"},
+        'href' => "#{@view.href}/print", 'modal' => true},
         {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
         {'text' => 'As CSV', 'external' => true,

@@ -116,7 +116,6 @@ $(function ()
                     .text("Failed to import that file.  " + response.message)
                     .removeClass('hide');
                 $(".submitPending").hide();
-                $uploadButton.show();
                 return false;
             }
             
@@ -145,6 +144,7 @@ $(function ()
     {
         if (isImport || $('#newDatasetForm #view_file').prev("label").hasClass('required'))
         {
+            $('#newDatasetForm input').blur();
             $('#newDatasetForm .textPrompt.prompt')
                 .val('')
                 .removeClass('textPrompt')

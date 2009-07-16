@@ -92,10 +92,16 @@
             var config = $iEdit.data("config-inlineEdit");
 
             $.ajax({
-                url: $form.attr("action"),
+                url: (config.requestUrl || $form.attr("action")),
                 type: config.requestType,
-                data: $form.find(":input"),
+                contentType: config.requestContentType,
+                data: config.requestDataCallback($form, fieldValue),
                 dataType: "json",
+                error: function(xhr)
+                {
+                    var errBody = $.json.deserialize(xhr.responseText);
+                    alert(errBody.message);
+                },
                 success: function(responseData)
                 {
                     if (responseData.error)
@@ -136,7 +142,11 @@
        editClickSelector: "span",
        editSubmitSelector: "form:not(.doFullReq)",
        loginMessage: 'You must be logged in to edit',
+       requestContentType: "application/x-www-form-urlencoded",
+       requestDataCallback: function($form, fieldValue)
+        { return $form.find(":input"); },
        requestType: "POST",
+       requestUrl: null,
        submitSuccessCallback: function($inlineEditItem, responseData){}
      };
 

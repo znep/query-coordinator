@@ -158,10 +158,14 @@ div.blist-table-expander
 {
     background-color: #ffffff;
     border-right: solid 1px #e2e2e2;
-    border-top: solid 1px #d0d0d0;
 }
 
-.blist-table .blist-table-row-numbers.blist-td
+div.blist-table-expander .blist-td
+{
+    padding-right: 0.25em; /* 3px */
+}
+
+.blist-table .blist-td.blist-table-row-numbers
 {
     border-left-width: 0;
     color: #a9cef2;
@@ -172,7 +176,7 @@ div.blist-table-expander
     text-align: right;
 }
 
-.blist-table .blist-table-row-handle.blist-td
+.blist-table .blist-td.blist-table-row-handle
 {
     border-left-width: 0;
 }

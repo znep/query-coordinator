@@ -46,6 +46,66 @@
     background-position: 0 -14px;
 }
 
+div.blist-table-active-container
+{
+    background-color: #ffffff;
+    border: solid 2px #91abcc;
+    overflow: hidden;
+}
+
+div.blist-table-active-container .blist-td
+{
+    border-bottom: none;
+    padding-bottom: 0.25em; /* 3px */
+    padding-top: 0.1667em; /* 2px */
+}
+
+div.blist-table-active-container .blist-td.blist-first
+{
+    border-left: none;
+    padding-left: 0.25em; /* 3px */
+}
+
+div.blist-table-active-container .blist-td.blist-last
+{ padding-right: 0.1667em; /* 2px */ }
+div.blist-table-active-container .blist-td.blist-td.blist-opener
+{ background-position: 2px center; }
+
+div.blist-table-edit-container
+{
+    background-color: #ffffff;
+    border: solid 2px #ff3333;
+    overflow: hidden;
+}
+
+.blist-table-editor.blist-td
+{
+    border: none;
+    padding: 0;
+}
+
+div.blist-table-edit-container input[type="text"],
+div.blist-table-edit-container input.textInput
+{
+    border: none;
+    font-size: 1em;
+    height: 100%;
+    padding: 0.2em;
+    width: 8.333em; /* 100px */
+}
+
+div.blist-table-edit-container.shown input[type="text"],
+div.blist-table-edit-container.shown input.textInput
+{
+    /* For some reason, interacting normally with this text field in FF
+     * wasn't working properly until I pulled it just above the container
+     * it is in */
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 21;
+}
+
 div.blist-percent,
 div.blist-percent .blist-percent-bar-pos
 {
@@ -140,3 +200,18 @@ ul.menu.columnHeaderMenu li
     font-size: 0.8333em;
 }
 
+/*
+.blist-table .blist-hot-row .blist-td.blist-table-row-numbers,
+.blist-table .blist-select-row .blist-td.blist-table-row-numbers
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-repeat: no-repeat;
+    text-align: left;
+    text-indent: -9999px;
+}
+
+.blist-table .blist-hot-row .blist-td.blist-table-row-numbers
+{ background-position: right -897px; }
+.blist-table .blist-select-row .blist-td.blist-table-row-numbers
+{ background-position: right -506px; }
+*/

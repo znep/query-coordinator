@@ -235,8 +235,10 @@ dl.summaryList .submitActions .actionButtons li a
 span.helpie
 {
     background: url(/stylesheets/images/info_pane/icon_help_highlight.png) no-repeat;
+    bottom: 3px;
     display: inline-block;
     height: 16px;
+    position: relative;
     text-indent: -9999px;
     width: 16px;
 }
@@ -291,6 +293,7 @@ span.helpie
 .socialActions li a.socialActionLink span.dropdownWrapper
 {
     background: url(/stylesheets/images/widgets/dropdown_button/menu_bar_arrow.png) no-repeat right center;
+    display: block;
     padding-right: 20px;
 }
 

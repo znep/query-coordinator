@@ -230,7 +230,7 @@ blist.namespace.fetch('blist.data.types');
         if (label.match(/^\d{10}$/))
             label = "(" + label.substring(0, 3) + ") " + label.substring(3, 6) + "-" + label.substring(6, 10);
         else if (label.match(/^\d{7}$/))
-            label = label.substring(0, 3) + "-" + label.substring(3, 4);
+            label = label.substring(0, 3) + "-" + label.substring(3, 7);
 
         label = "<div class='blist-phone-icon blist-phone-icon-" + (number[1] ? number[1].toLowerCase() : "unknown") + "'></div> " + htmlEscape(label);
 
@@ -599,7 +599,8 @@ blist.namespace.fetch('blist.data.types');
         },
 
         photo: {
-            renderGen: renderGenPhoto
+            renderGen: renderGenPhoto,
+            cls: 'photo'
         },
 
         money: {

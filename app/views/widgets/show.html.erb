@@ -53,41 +53,7 @@
 
     <div id='header'><div class='wrapperTR'><div class='wrapperT clearfix'>
           <a class="menuLink" href="#header-menu" title="Click for more options">Menu</a>
-          <%= menu_tag({'class' => 'headerMenu', 'items' => [
-          {'text' => 'Socialize this ' + t(:blist_name).capitalize, 'class' => 'share',
-          'href' => '#', 'submenu' => socialize_menu_options(@view)},
-          {'text' => 'Email this ' + t(:blist_name).capitalize + '...', 'class' => 'email',
-          'href' => '#email'},
-          {'separator' => true},
-          {'text' => 'Republish this ' + t(:blist_name).capitalize + '...' , 'class' => 'publish',
-          'href' => '#publish'},
-          {'separator' => true},
-          {'text' => 'Print as PDF', 'class' => 'print', 'external' => true,
-          'link_class' => 'noInterstitial', 'href' => '/views/' + @view.id +
-          '/rows.pdf?print=true&headers_on_every_page=true'},
-          {'text' => 'Download ' + t(:blist_name).capitalize + ' as', 'class' => 'export',
-          'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-          {'text' => 'Comma Separated Values (.csv)', 'link_class' => 'noInterstitial', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
-          {'text' => 'Adobe PDF (.pdf)', 'link_class' => 'noInterstitial', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
-          {'text' => 'Excel 97 - 2003 Workbook (.xls)', 'link_class' => 'noInterstitial', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
-          # {'text' => 'Excel Workbook (.xlsx)', 'link_class' => 'noInterstitial',
-          # 'external' => true,
-          # 'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-          {'text' => 'XML Data (.xml)', 'link_class' => 'noInterstitial', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
-          {'text' => 'Java Script Object Notation (.json)', 'link_class' => 'noInterstitial',
-          'external' => true,
-          'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
-          ]}},
-          {'separator' => true},
-          {'text' => 'View Full Screen', 'class' => 'fullscreen',
-          'href' => @view.href, 'external' => true},
-          {'text' => 'Design a New ' + t(:blist_name).capitalize, 'class' => 'newDataset',
-          'href' => blist_href_new_blist, 'external' => true},
-          ]}) %>
+          <%= render(:partial => "widget_menu") %>
 
           <p class="fullScreenButton">
             <a href="<%= @view.href %>" rel="external" title="View Full Screen">View Full Screen</a>
@@ -109,6 +75,21 @@
           </form>
           
     </div></div></div>
+
+    <div id='viewHeader'>
+      <div class='innerWrapper clearfix'>
+        <a class='datasetLink breadcrumbItem'
+          href='#view_<%= @view.id %>'><%= h(@view.name) %></a>
+        <div class='viewName inlineEdit' href='#new_view'>
+          <span title='Click to name and save your filtered view'>
+            [Unsaved Filter]
+          </span>
+          <%- form_tag(blists_path) do -%>
+          <%= text_field_tag("view[name]", '') %>
+          <%- end -%>
+        </div>
+      </div>
+    </div>
 
     <div class="gridOuter"><div id="data-grid">
       <noscript>
@@ -187,15 +168,15 @@
     blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
-    blist.widget.viewName = '<%= @view.name %>';
   </script>
 
   <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",
     "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
-    "util/util", "data/types", "data/model", "data/table", "data/editor",
-    "widgets/text-prompt", "widgets/dropdown-menu", "widgets/scrollable",
-    "widgets/dataset-grid", "widgets/visualization", "screens/external-widget",
-    :cache => "cache/widgets_show_all" %>
+    "util/navigation", "util/util", "data/types", "data/model", "data/table",
+    "data/editor", "widgets/text-prompt", "widgets/dropdown-menu",
+    "widgets/scrollable","widgets/inline-edit", "widgets/dataset-grid",
+    "widgets/visualization","screens/external-widget", :cache =>
+    "cache/widgets_show_all" %>
 
   <%- if @is_gov_widget -%>
   <% bundle :name => "gov_widget", :bypass => (ENV["RAILS_ENV"] != 'production') do %>

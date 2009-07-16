@@ -280,16 +280,16 @@ blist.namespace.fetch('blist.data');
          */
         this.ajax = function(ajaxOptions)
         {
-            if (typeof ajaxOptions != 'object')
-                ajaxOptions = {
-                    url: ajaxOptions
-                }
+            if (typeof ajaxOptions == 'string')
+            {
+                ajaxOptions = { url: ajaxOptions };
+            }
             supplementalAjaxOptions = $.extend({}, ajaxOptions);
             if (curOptions.progressiveLoading)
             {
                 ajaxOptions.data = $.extend({}, ajaxOptions.data,
-                    {include_ids_after: curOptions.pageSize,
-                    include_aggregates: true});
+                        {include_ids_after: curOptions.pageSize,
+                            include_aggregates: true});
             }
             doLoad(this, this.load, ajaxOptions);
         };
@@ -547,9 +547,20 @@ blist.namespace.fetch('blist.data');
                     if (meta.view)
                     {
                         updateAggregateHash(meta.aggregates);
-                        translateViewColumns(meta.view, meta.view.columns, meta.columns, 0);
+                        if (meta.view.columns)
+                        {
+                            translateViewColumns(meta.view, meta.view.columns,
+                                meta.columns, 0);
+                        }
                     }
                 }
+
+                filterFn = null;
+                filterText = "";
+                filterCol = null;
+                orderCol = null;
+                orderFn = null;
+                sortConfigured = false;
 
                 // Assign a unique numeric ID (UID) and level ID to each column
                 columnLookup = [];

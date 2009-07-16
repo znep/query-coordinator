@@ -92,6 +92,70 @@
                 }
             },
 
+            updateView: function(newView)
+            {
+                var datasetObj = this;
+
+                datasetObj.settings._filterIds = {};
+                datasetObj.settings._filterCount = 0;
+                datasetObj.isTempView = false;
+
+                datasetObj.settings.filterItem.val('').blur();
+                datasetObj.settings.clearFilterItem.hide();
+                datasetObj.summaryStale = true;
+
+                if (typeof newView == 'string')
+                {
+                    // Assume ID
+                    newView = {id: newView};
+                }
+                if (!newView.meta && newView.id)
+                {
+                    // Assume view with no rows
+                    datasetObj.settings.viewId = newView.id;
+                    datasetObj.settings._model
+                        .ajax({url: '/views/' + datasetObj.settings.viewId +
+                                '/rows.json', cache: false,
+                            data: {accessType: datasetObj.settings.accessType},
+                            dataType: 'json'});
+                }
+                else if (newView.meta && newView.data)
+                {
+                    datasetObj.settings.viewId = o.meta.view.id;
+                    datasetObj.settings._model.meta(o.meta);
+                    datasetObj.settings._model.rows(o.data);
+                }
+            },
+
+            getViewCopy: function(includeColumns)
+            {
+                var view = $.extend({}, this.settings._model.meta().view);
+
+                if (includeColumns)
+                {
+                    // If they want columns, translate the latest column
+                    // info with widths and positions
+                    var colTranslate = function(col, i)
+                    {
+                        var newCol = {id: col.id, name: col.name,
+                            position: i + 1, width: col.width};
+                        if (col.body && col.body.children)
+                        {
+                            newCol.childColumns = $.map(col.body.children,
+                                    colTranslate);
+                        }
+                        return newCol;
+                    };
+                    view.columns = $.map(this.settings._model.meta().columns[0],
+                        colTranslate);
+                }
+                else
+                {
+                    view.columns = null;
+                }
+                return $.extend(view, {grants: null, originalViewId: view.id});
+            },
+
             // This keeps track of when the column summary data is stale and
             // needs to be refreshed
             summaryStale: true,

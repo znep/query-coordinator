@@ -54,6 +54,14 @@
     white-space: nowrap;
 }
 
+.breadcrumbItem
+{
+    background-image: url(/stylesheets/images/common/breadcrumb_arrow.png);
+    background-position: center right;
+    background-repeat: no-repeat;
+    padding-right: 25px;
+}
+
 form input[type="text"],
 form input.textInput,
 form textarea,

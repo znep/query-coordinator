@@ -4,7 +4,7 @@ blist.util.navigation.getViewUrl = function (viewId, args)
 {
     // This is the simple URL; it will automatically be redirected to the
     //  authoritative URL by the server
-    var url = '/blists/' + viewId;
+    var url = '/d/' + viewId;
     if (args)
     {
         url += '?' + $.param(args);

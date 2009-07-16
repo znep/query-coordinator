@@ -15,11 +15,11 @@
 
             // Wire up the events.
             $iEdit.find(config.editClickSelector)
-                .click(function (e) {editClick(e, $iEdit);});
+                .bind('click.inlineEdit', function (e) {editClick(e, $iEdit);});
             $iEdit.find(config.editSubmitSelector)
-                .submit(function (e) {editSubmit(e, $iEdit);});
+                .bind('submit.inlineEdit', function (e) {editSubmit(e, $iEdit);});
             $iEdit.find(config.editCancelSelector)
-                .click(function (e) {editCancel(e, $iEdit);});
+                .bind('click.inlineEdit', function (e) {editCancel(e, $iEdit);});
         });
 
         // Private methods
@@ -72,7 +72,7 @@
                 return;
             }
 
-            if (blist.util.inlineLogin)
+            if (blist.util && blist.util.inlineLogin)
             {
                 $(document).unbind('click.inlineEdit');
                 blist.util.inlineLogin.verifyUser(
@@ -111,6 +111,10 @@
                     else
                     {
                         $(document).unbind('click.inlineEdit');
+                        if (config.onceOnly)
+                        {
+                            $iEdit.find('*').unbind('.inlineEdit');
+                        }
                         $form.hide();
                         $iEdit.find(config.displaySelector).text(fieldValue).show();
                         config.submitSuccessCallback($iEdit, responseData);
@@ -142,6 +146,7 @@
        editClickSelector: "span",
        editSubmitSelector: "form:not(.doFullReq)",
        loginMessage: 'You must be logged in to edit',
+       onceOnly: false,
        requestContentType: "application/x-www-form-urlencoded",
        requestDataCallback: function($form, fieldValue)
         { return $form.find(":input"); },

@@ -4,7 +4,7 @@
 
 <div class="modalContentWrapper printDatasetWrapper">
   <div class="errorMessage"></div>
-  <% form_tag("/views/#{@view.id}/rows.pdf", :method => :get) do %>
+  <% form_tag("/views/#{@view.id}/rows.pdf", :method => :get, :target => "_blank") do %>
     <input type="hidden" id="print" name="print" value="true" />
     <div class="columnLeft">
       <label for="size" class="formHeader">Paper Size:</label>

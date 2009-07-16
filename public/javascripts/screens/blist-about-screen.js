@@ -81,7 +81,14 @@ $(function ()
             {
                 // Capitalize the category name
                 var category = responseData['category'];
-                category = category.charAt(0).toUpperCase() + category.slice(1);
+                if (category)
+                {
+                    category = category.charAt(0).toUpperCase() + category.slice(1);
+                }
+                else
+                {
+                    category = "None";
+                }
 
                 $('.categoryField').text(category);
                 if (responseData['tags'])

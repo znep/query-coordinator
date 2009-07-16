@@ -62,7 +62,7 @@
       <div class='userNav'>
         <ul>
           <li><a href='http://www.getsatisfaction.com/socrata' rel='nofollow external'>Help</a></li>
-          <li class='signInLink'><a href='/login' rel='nofollow'>Sign Up / In</a></li>
+          <li class='signInLink'><%= link_to "Sign Up / In", login_url, :rel => 'nofollow' %></li>
           <li class='accountLink'><%= link_to "My Account", account_path%></li>
           <li class='signOutLink'><a href='/logout' rel='nofollow'>Sign Out</a></li>
         </ul>

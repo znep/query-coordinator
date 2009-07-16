@@ -2,6 +2,8 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  include SslRequirement
+
   before_filter :hook_auth_controller, :adjust_format, :require_user, :set_user, :set_locale
   helper :all # include all helpers, all the time
   helper_method :current_user

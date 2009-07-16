@@ -8,6 +8,8 @@ default: &default
 
 # Local development
 development:
+  ssl_port: 9443
+  http_port: 9292
   <<: *default
 
 # Running unit tests; NOT test.socrata.com

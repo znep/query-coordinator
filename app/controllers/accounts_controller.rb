@@ -1,4 +1,5 @@
 class AccountsController < ApplicationController
+  ssl_required :new, :update, :create
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
 
   def show

@@ -34,6 +34,13 @@ module SslRequirement
       write_inheritable_array(:ssl_allowed_actions, actions)
     end
   end
+
+  def self.port_for_protocol(protocol)
+    case protocol
+      when "https" then APP_CONFIG['ssl_port'] || Net::HTTP.https_default_port
+      else APP_CONFIG['http_port'] || Net::HTTP.default_port
+    end
+  end
   
   protected
     # Returns true if the current action is supposed to run as SSL
@@ -50,13 +57,29 @@ module SslRequirement
       return true if ssl_allowed?
 
       if ssl_required? && !request.ssl?
-        redirect_to "https://" + request.host + request.request_uri
+        redirect_to "https://" + request.host + port_string_for_protocol("https") + request.request_uri, :status=>:moved_permanently
         flash.keep
         return false
       elsif request.ssl? && !ssl_required?
-        redirect_to "http://" + request.host + request.request_uri
+        redirect_to "http://" + request.host + port_string_for_protocol("http") + request.request_uri, :status=>:moved_permanently
         flash.keep
         return false
+      end
+    end
+
+    def standard_port_for_protocol(protocol)
+      case protocol
+        when "https" then Net::HTTP.https_default_port
+        else Net::HTTP.default_port
+      end
+    end
+
+    def port_string_for_protocol(protocol)
+      port = SslRequirement.port_for_protocol(protocol)
+      if port == standard_port_for_protocol(protocol)
+        ''
+      else
+        ":#{port}"
       end
     end
 end

@@ -5,9 +5,13 @@ $.fn.log = function (msg)
     return this;
 };
 
+var debugNS = blist.namespace.fetch('blist.debug');
+blist.debug.uid = 0;
+
 // extend jQuery with generic console logging.
 $.debug = function(msg, obj)
 {
+    msg = debugNS.uid++ + ' ' + msg;
     if (window.console && window.console.log)
     {
         obj ? window.console.log("%s: %o", msg, obj) : window.console.log(msg);
@@ -28,8 +32,6 @@ $.debug = function(msg, obj)
         $console[0].scrollTop = $console[0].scrollHeight;
     }
 };
-
-var debugNS = blist.namespace.fetch('blist.debug');
 
 blist.debug.clearCache = function ()
 {

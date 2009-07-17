@@ -19,8 +19,8 @@
         {'text' => 'As JSON', 'external' => true,
         'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
         ]}},
-        {'text' => "Email this #{t(:blist_name)} to me", 'class' => 'email',
-        'href' => '#email', 'user_required' => true},
+        {'text' => "Email this #{t(:blist_name)}", 'class' => 'email',
+        'href' => "#{@view.href}/email", 'modal' => true},
         {'text' => "Copy this #{t(:blist_name)}", 'class' => 'copy',
         'href' => '#copy_blist', 'user_required' => true},
         {'separator' => true, 'user_required' => true},

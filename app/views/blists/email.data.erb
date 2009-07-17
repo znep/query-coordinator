@@ -1,0 +1,138 @@
+<%- content_for :headline do -%>
+  <h1>Email this <%= t(:blist_name).capitalize %></h1>
+<%- end -%>
+
+<div class="modalContentWrapper emailDatasetWrapper">
+  <div class="errorMessage"></div>
+  <% form_tag("/views/#{@view.id}/rows.html") do %>
+    <label class="formHeader" for="emailAddress">Email address to send this <%= t(:blist_name).downcase %> to:</label>
+    <div class="formContainer">
+      <ul class="emailFields">
+        <li>
+          <%= text_field_tag("emailAddress", (current_user ? current_user.email : "")) %>
+          <a class="emailFormRemoveButton" href="#remove">Remove</a>
+        </li>
+      </ul>
+      <ul class="actionButtons">
+        <li><a id="emailFormMoreButton" href="#add">Add More</a></li>
+      </ul>
+    </div>
+  
+    <div class="submitLine clearfix">
+      <ul class="submitActions">
+        <li><div class="loadingIndicator hide">Working...</div></li>
+        <li>
+          <ul class="actionButtons">
+            <li><a id="emailFormSubmitButton" class="arrowButton" href="#submit">Send Email</a></li>
+          </ul>
+        </li>
+        <li class="cancelButton"><a href="#close_print" class="jqmClose"><span>Cancel</span></a></li>
+      </ul>
+    </div>
+  <% end %>
+  <div class="successMessage hide">
+    <p>The requested email has been successfully sent.</p>
+    <div class="submitLine clearfix">
+      <ul class="submitActions">
+        <li>
+          <ul class="actionButtons">
+            <li><a class="arrowButton jqmClose" href="#submit">Done</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    var $form = $('.emailDatasetWrapper form');
+    $form.validate({
+      rules: {
+        "emailAddress": "email"
+      },
+      messages: {
+        "emailAddress": "That does not look like a valid email address."
+      }
+    });
+
+    // Add an email field to the list and wire up validation
+    var numberAdded = 0;
+    $('#emailFormMoreButton').click(function(event)
+    {
+      event.preventDefault();
+      var $container = $('<li/>');
+      var $textField = $('<input type="text"/>')
+        .attr('name', 'emailAddress' + numberAdded++)
+        .appendTo($container);
+      $container.append(' ');
+      $('<a class="emailFormRemoveButton" href="#remove">Remove</a>').appendTo($container);
+      $container.appendTo('.emailDatasetWrapper .emailFields');
+
+      // Validation
+      $textField.rules('add', {
+        email: true,
+        messages: {
+          email: 'That does not look like a valid email address.'
+        }
+      });
+    });
+
+    // Remove an email from or clear the last field
+    $('.emailFormRemoveButton').live('click', function(event)
+    {
+      event.preventDefault();
+      if ($('.formContainer input').size() == 1)
+      {
+        $('.formContainer input').val('');
+        return;
+      }
+
+      $(this).closest('li').remove();
+    });
+
+    // Validate, then fire off a request for each email
+    $('#emailFormSubmitButton').click(function(event)
+    {
+      // Must enter one email
+      if ($('.formContainer input[value!=""]').size() == 0)
+      {
+        $('.emailDatasetWrapper .errorMessage').text('Please enter at least one email address.');
+        return;
+      }
+
+      // Remove empty boxes
+      $('.formContainer input[value=""]').each(function() { $(this).closest('li').remove(); });
+
+      if ($form.valid())
+      {
+        $('.emailDatasetWrapper .loadingIndicator').removeClass('hide');
+
+        var $fields = $('.formContainer input');
+        var totalRequests = $fields.size();
+        var completed = 0;
+        $fields.each(function()
+        {
+          $.ajax({
+            url: $form.attr("action"),
+            cache: false,
+            data: {
+              'method': 'email',
+              'email': $(this).val()
+            },
+            success: function (responseData)
+            {
+              if (++completed == totalRequests)
+              {
+                $('.emailDatasetWrapper form').hide();
+                $('.emailDatasetWrapper .successMessage').show();
+              }
+            }
+          });
+        });
+      }
+    });
+  };
+</script>

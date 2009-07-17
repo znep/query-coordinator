@@ -101,11 +101,7 @@
             {
                 event.preventDefault();
                 // Clear text prompt examples manually
-                $form.find('input').blur();
-                $form.find('.textPrompt.prompt')
-                    .val('')
-                    .removeClass('textPrompt')
-                    .removeClass('prompt');
+                $form.find('.prompt').val('');
 
                 if ($form.valid())
                 {

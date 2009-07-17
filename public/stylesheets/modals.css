@@ -336,7 +336,7 @@
 
 .printDatasetWrapper .columnRight label
 {
-    margin-left: 25px;
+    padding-left: 25px;
 }
 .printDatasetWrapper .columnRight input
 {
@@ -361,3 +361,78 @@
 }
 
 /*** END: Print Dataset form ***/
+
+
+/*** START: Email this Dataset form ***/
+
+.emailDatasetWrapper .submitLine .actionButtons { margin-top: 0; }
+
+.emailDatasetWrapper .formHeader
+{
+    font-size: 1.3em;
+    float: left;
+    margin: 0 2em;
+    padding: 3px;
+    text-align: right;
+    width: 20em;
+}
+
+.emailDatasetWrapper .formContainer
+{
+    margin: 2em 0 1em 33em;
+    padding-bottom: 3em;
+}
+
+.emailDatasetWrapper .formContainer input
+{
+    width: 20em;
+}
+
+.emailDatasetWrapper label.error
+{
+    float: left;
+    margin: 3px;
+}
+
+.emailDatasetWrapper .emailFormRemoveButton
+{
+    background: transparent url(/stylesheets/images/content/section_close_button.png) no-repeat scroll 0 0;
+    bottom: 3px;
+    display: inline-block;
+    height: 16px;
+    position: relative;
+    text-indent: -9999px;
+    width: 16px;
+}
+
+.emailDatasetWrapper .formContainer .actionButtons
+{
+    clear: both;
+    float: none;
+    margin: 5px 0;
+}
+
+.emailDatasetWrapper .submitLine
+{
+    clear: both;
+    margin-top: 2em;
+}
+
+.emailDatasetWrapper .submitLine .submitActions
+{
+    width: 300px;
+}
+
+.emailDatasetWrapper .loadingIndicator
+{
+    background: url(/images/throbber.gif);
+    float: right;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+
+.emailDatasetWrapper .successMessage p { margin: 2em; font-size: 1.3em; }
+.emailDatasetWrapper .successMessage .submitActions { width: 100px; }
+
+/*** END: Print this form ***/

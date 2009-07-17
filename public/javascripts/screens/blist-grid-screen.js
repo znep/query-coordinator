@@ -272,15 +272,6 @@ blist.blistGrid.mainMenuHandler = function(event)
         case 'picklistBrowser':
             blist.util.flashInterface.showPopup('PickListBrowser');
             break;
-        case 'email':
-            $.ajax({url: '/views/' + blistGridNS.viewId + '/rows.html',
-                data: {'method': 'email'},
-                cache: false,
-                success: function (resp)
-                {
-                    alert('This dataset has been sent to you.');
-                }});
-            break;
         case 'permissions':
             blist.util.flashInterface.showPopup('PermissionsDialog');
             break;

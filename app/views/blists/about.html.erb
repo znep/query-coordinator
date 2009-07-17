@@ -200,7 +200,7 @@
                 <% permaLink = request.protocol + request.host_with_port + @view.href %>
                 <%# use explicit a href here so Rails doesn't try to be clever %>
                 <span class="permalinkField">
-                  <a href="<%= permaLink %>" title="A permanent URL for linking to this page" class="linkAndTextToDataset"><%= permaLink %></a>
+                  <a href="<%= permaLink %>" title="A permanent URL for linking to this page" class="linkAndTextToDataset"><%= permaLink %></a>&nbsp;
                   <%= flash_clipboard_button(permaLink) %>
                 </span>
               </dd>
@@ -209,7 +209,7 @@
                 <% short_url = request.protocol + request.host_with_port.gsub(/www\./, '') + @view.short_href %>
                 <%# use explicit a href here so Rails doesn't try to be clever %>
                 <span>
-                  <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email"><%= short_url %></a>
+                  <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email"><%= short_url %></a>&nbsp;
                   <%= flash_clipboard_button(short_url) %>
                 </span>
               </dd>
@@ -296,7 +296,7 @@
     	    </a>
     	  </li>
     	  <li>
-    	    <a href="<%= "/views/#{@view.id}/rows.pdf?print=true&headers_on_every_page=true" %>" class="socialActionLink" title="Print out a copy of this dataset" id="printLink">
+    	    <a href="<%= "#{@view.href}/print" %>" class="socialActionLink" title="Print out a copy of this dataset" id="printLink" rel="modal">
     	      <span class="linkIcon">Print</span>
     	    </a>
     	  </li>

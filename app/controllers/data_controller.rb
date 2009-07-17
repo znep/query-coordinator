@@ -35,6 +35,8 @@ class DataController < ApplicationController
       @search_views_total = View.find_filtered({ :full => @search_term, :count => true }).count
       @search_views = View.find_filtered({ :full => @search_term, :limit => PAGE_SIZE, :page => 1 })
     end
+
+    @search_type = params[:search_type]
   end
   
   def filter
@@ -46,6 +48,7 @@ class DataController < ApplicationController
     is_clear_filter = params[:clearFilter]
     is_clear_tag = params[:clearTag]
     search_term = params[:search]
+    use_lucene_search = (!params[:search_type].nil? && params[:search_type] == "lucene" && type == "SEARCH")
     
     sort_by = sort_by_selection
     is_asc = true
@@ -65,6 +68,8 @@ class DataController < ApplicationController
     if (type == "POPULAR")
       opts.update({:top100 => true})
       tag_opts.update({:top100 => true})
+    elsif (use_lucene_search)
+      opts.update({:q => search_term })
     elsif (type == "SEARCH")
       opts.update({:full => search_term })
     end
@@ -95,19 +100,25 @@ class DataController < ApplicationController
       tab_title += " #{t(:blists_name)}"
     end
     
+    @page_size = PAGE_SIZE
     if type == "SEARCH"
       tab_title = "Search Results for \"#{search_term}\""
     end
-    
-    @page_size = PAGE_SIZE
-    @filtered_views = View.find_filtered(opts)
-    @filtered_views_total = View.find_filtered(opts.update({:count => true})).count
-    
-    tag_list = Tag.find(tag_opts)
-    if (tag && !tag_list.nil? && !tag_list.any? {|itag| itag.name == tag })
-      new_tag = Tag.new
-      new_tag.data['name'] = tag
-      tag_list << new_tag
+
+    if use_lucene_search
+      search_results = SearchResult.search("views", opts)
+      @filtered_views = search_results[0].results
+      @filtered_views_total = search_results[0].count
+    else
+      @filtered_views = View.find_filtered(opts)
+      @filtered_views_total = View.find_filtered(opts.update({:count => true})).count
+
+      tag_list = Tag.find(tag_opts)
+      if (tag && !tag_list.nil? && !tag_list.any? {|itag| itag.name == tag })
+        new_tag = Tag.new
+        new_tag.data['name'] = tag
+        tag_list << new_tag
+      end
     end
     
     respond_to do |format|
@@ -126,7 +137,8 @@ class DataController < ApplicationController
               :sort_by => sort_by_selection,
               :tag_list => tag_list,
               :current_tag => tag,
-              :search_term => search_term
+              :search_term => search_term,
+              :search_type => params[:search_type]
             })
         else
           render(:partial => "data/view_list_tab_noresult", 

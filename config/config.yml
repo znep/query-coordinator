@@ -1,0 +1,30 @@
+default: &default
+  blist_blog_rss: http://blog.socrata.com/feed/
+  bridge_host: localhost
+  bridge_port: 12345
+  coreservice_uri: http://localhost:8080
+  ie_port: 12345
+  orbited_port: 9000
+
+# Local development
+development:
+  <<: *default
+
+# Running unit tests; NOT test.socrata.com
+test:
+  <<: *default
+
+# test.socrata.com
+staging:
+  orbited_port: 4817
+  <<: *default
+
+# www.socrata.com
+production:
+  bridge_host: multiuser
+  coreservice_uri: http://alpha-api.tuk.blist.com
+  ie_port: 80
+  orbited_port: 80
+  <<: *default
+
+

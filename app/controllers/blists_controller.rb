@@ -1,6 +1,6 @@
 class BlistsController < SwfController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :about]
+  skip_before_filter :require_user, :only => [:show, :about, :print, :email]
   
   def index
     @body_class = 'home'

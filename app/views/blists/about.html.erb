@@ -296,7 +296,7 @@
     	    </a>
     	  </li>
     	  <li>
-    	    <a href="<%= "/views/#{@view.id}/rows.pdf?print=true&headers_on_every_page=true" %>" class="socialActionLink" title="Print out a copy of this dataset" id="printLink">
+    	    <a href="<%= "#{@view.href}/print" %>" class="socialActionLink" title="Print out a copy of this dataset" id="printLink" rel="modal">
     	      <span class="linkIcon">Print</span>
     	    </a>
     	  </li>

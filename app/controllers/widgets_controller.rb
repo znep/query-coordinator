@@ -3,6 +3,23 @@ class WidgetsController < ApplicationController
   caches_page :show
   layout 'widgets'
 
+  GOV_OVERRIDES = %w{
+    hhs.gov
+    acf.hhs.gov
+    aoa.gov
+    ahrq.gov
+    atsdr.cdc.gov
+    cdc.gov
+    cms.hhs.gov
+    fda.gov
+    hrsa.gov
+    ihs.gov
+    nih.gov
+    oig.hhs.gov
+    samhsa.gov
+    gsa.gov
+  }
+
   def show
     @variation = params[:variation]
     if @variation.blank? 
@@ -15,7 +32,7 @@ class WidgetsController < ApplicationController
         # TLD Check, until we have GSA approval marking
         if m && m[1].include?("whitehouse.gov")
           @variation = 'whitehouse'
-        elsif m && (m[2] == 'gov' || m[2] == 'mil')
+        elsif m && !GOV_OVERRIDES.reject { |domain| !m[1].include? domain }.empty?
           @variation = 'gov'
         end
       end

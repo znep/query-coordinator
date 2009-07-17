@@ -11,6 +11,10 @@ class SearchResult < Model
     if !data.has_key?(key)
       data[key] = data["results"]
     end
-    send(key)
+    result = send(key)
+    if result.nil?
+      return []
+    end
+    return result
   end
 end

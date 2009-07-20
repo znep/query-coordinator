@@ -30,4 +30,4 @@ blist.util.navigation.urlToViewId = function(url)
         return matches[2];
     }
     return null;
-}
+};

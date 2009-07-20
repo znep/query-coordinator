@@ -58,3 +58,5 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 
 .dialogBox .header { background-color: #DAE2F2; }
 .dialogBox .header h1 { color: #333; }
+
+#data-grid, #viewHeader .innerWrapper { border-color: #DAE2F2; }

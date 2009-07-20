@@ -90,6 +90,7 @@ blist.widget.clearTempViewTab = function ()
     {
         $('#viewHeader').hide();
     }
+    
     widgetNS.sizeGrid();
 };
 
@@ -163,9 +164,21 @@ blist.widget.sizeGrid = function ()
 {
     var $grid = $('#data-grid');
     var $container = $grid.closest(".gridOuter");
-    var newHeight = ($container.next().offset().top - $container.offset().top + 1);
-    $container.height(newHeight);
-    $grid.height(newHeight).trigger('resize');
+    var $innerContainer = $grid.closest(".gridInner");
+    var $gridContainer = $grid.closest(".gridContainer");
+    var $metaContainer = $("#widgetMeta");
+    var $viewHeader = $("#viewHeader");
+    
+    var newContainerHeight = $container.next().offset().top - $container.offset().top;
+    var newGridHeight = newContainerHeight - $metaContainer.height();
+    if ($viewHeader.is(":visible"))
+    {
+        newGridHeight -= $viewHeader.outerHeight();
+    }
+    
+    $innerContainer.height(newContainerHeight);
+    $gridContainer.height(newGridHeight);
+    $grid.trigger('resize');
 };
 
 blist.widget.setUpViewHeader = function()
@@ -237,5 +250,15 @@ $(function ()
               accessType: 'WIDGET',
               referrer: document.referrer
             }
+    });
+    
+    // Set up the info pane tab switching.
+    $("#widgetMeta .summaryTabs").infoPaneNavigate({
+        tabMap: {
+            "tabSummary" : "#widgetMeta .singleInfoSummary"
+        },
+        allPanelsSelector : "#widgetMeta .infoContentOuter",
+        expandableSelector: "#widgetMeta .infoContent",
+        isWidget: true
     });
 });

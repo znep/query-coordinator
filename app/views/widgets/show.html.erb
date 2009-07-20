@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <% bundle :name => "widget_show_top", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <%= stylesheet_link_tag 'table-core', 'dataset-grid', 'external-widget',
-      :cache => "cache/widgets_show_all" %>
+    <%= stylesheet_link_tag 'table-core', 'dataset-grid', 'external-widget', 'info-pane',
+      'external-widget-meta', :cache => "cache/widgets_show_all" %>
   <% end %>
   
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
@@ -76,8 +76,8 @@
           
     </div></div></div>
 
-    <div id='viewHeader'>
-      <div class='innerWrapper clearfix'>
+    <div class="gridOuter"><div class="gridInner">
+      <div id='viewHeader' class='clearfix'>
         <a class='datasetLink breadcrumbItem'
           href='#view_<%= @view.id %>'><%= h(@view.name) %></a>
         <div class='viewName inlineEdit' href='#new_view'>
@@ -89,16 +89,24 @@
           <%- end -%>
         </div>
       </div>
-    </div>
-
-    <div class="gridOuter"><div id="data-grid">
-      <noscript>
-        <h3><a href="<%= @view.href %>"><%= h(@view.name) %></a></h3>
+      
+      <div class="gridContainer">
+        <div id="data-grid">
+          <noscript>
+            <h3><a href="<%= @view.href %>"><%= h(@view.name) %></a></h3>
     
-        <p><%= h(@view.description) %></p>
+            <p><%= h(@view.description) %></p>
     
-        <%= @view.html %>
-      </noscript>
+            <%= @view.html %>
+          </noscript>
+        </div>
+      </div>
+      <div id="widgetMeta" class="metadataPane">
+        <%- if !@view.nil? -%>
+          <%= render(:partial => "widget_meta",
+                :locals => { :view => @view, :page_single => false }) %>
+        <%- end -%>
+      </div>
     </div></div>
     
     <div class="widgetFooterWrapper"><div class="widgetFooterInner clearfix">
@@ -175,7 +183,7 @@
     "util/navigation", "util/util", "data/types", "data/model", "data/table",
     "data/editor", "widgets/text-prompt", "widgets/dropdown-menu",
     "widgets/scrollable","widgets/inline-edit", "widgets/dataset-grid",
-    "widgets/visualization","screens/external-widget", :cache =>
+    "widgets/visualization","screens/external-widget", "screens/info-pane", :cache =>
     "cache/widgets_show_all" %>
 
   <%- if @is_gov_widget -%>

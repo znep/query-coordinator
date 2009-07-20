@@ -3,7 +3,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     font-family: "Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
 }
 
-#data-grid { border-color: #dae2f2; }
+.gridInner { border-color: #dae2f2; }
 
 #header { background-image: url(/stylesheets/images/sdp/whitehouse/title_tl.png); }
 #header .wrapperTR { background-image: url(/stylesheets/images/sdp/whitehouse/title_tr.png); }

@@ -4,12 +4,13 @@
     border-style: solid;
     border-width: 0 1px;
 }
-#data-grid, #viewHeader .innerWrapper
+.gridInner
 {
     background-color: #fff;
     border-color: #06386a;
     border-style: solid;
     border-width: 0 5px;
+    position: relative;
 }
 
 .blist-table
@@ -176,13 +177,8 @@
     border-style: solid;
     border-width: 0 1px;
     display: none;
-}
-
-#viewHeader .innerWrapper
-{
     padding: 0.7em;
 }
-
 
 #viewHeader a, #viewHeader .viewName
 {
@@ -219,6 +215,8 @@
     padding-top: 1px;
 }
 
+.blist-table { height: 100%; }
+
 .blist-table-header-scrolls
 {
     background-color: #e8e8e2;
@@ -229,7 +227,6 @@
 .blist-table-scrolls
 {
     background-color: #fff;
-    border: solid 1px #646464;
 }
 
 .blist-tr-even .blist-td
@@ -344,6 +341,7 @@ img.blist-table-option-icon
 {
     text-decoration: underline;
 }
+
 
 .widgetFooterWrapper
 {

@@ -16,6 +16,7 @@ test:
 
 # test.socrata.com
 staging:
+  coreservice_uri: http://localhost:8081
   orbited_port: 4817
   <<: *default
 

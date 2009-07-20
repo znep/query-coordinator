@@ -37,7 +37,8 @@ class WidgetsController < ApplicationController
         end
       end
       
-      return redirect_to("/widgets/#{params[:id]}/#{@variation}")
+      return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => @variation))
+      
     end
     
     # HACK: Support old template options
@@ -45,7 +46,13 @@ class WidgetsController < ApplicationController
         (tm = params[:template].match(/(\w+)_template\.html/)))
       return redirect_to('/widgets/' + params[:id] + '/' + tm[1])
     end
-
+    
+    # Look for parameter to enable filter saving.
+    @save_filter = params[:save_filter] && params[:save_filter] == "enabled"
+    
+    # Look for parameter to disable the meta tabs. Enabled by default.
+    @meta_tabs = (params[:meta_tabs] && params[:meta_tabs] == "enabled")
+    
     begin
       @view = View.find(params[:id])
     rescue CoreServerError => e

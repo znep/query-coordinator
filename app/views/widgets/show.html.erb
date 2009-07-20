@@ -77,18 +77,20 @@
     </div></div></div>
 
     <div class="gridOuter"><div class="gridInner">
-      <div id='viewHeader' class='clearfix'>
-        <a class='datasetLink breadcrumbItem'
-          href='#view_<%= @view.id %>'><%= h(@view.name) %></a>
-        <div class='viewName inlineEdit' href='#new_view'>
-          <span title='Click to name and save your filtered view'>
-            [Unsaved Filter]
-          </span>
-          <%- form_tag(blists_path) do -%>
-          <%= text_field_tag("view[name]", '') %>
-          <%- end -%>
+      <%- if (@save_filter) -%>
+        <div id='viewHeader' class='clearfix'>
+          <a class='datasetLink breadcrumbItem'
+            href='#view_<%= @view.id %>'><%= h(@view.name) %></a>
+          <div class='viewName inlineEdit' href='#new_view'>
+            <span title='Click to name and save your filtered view'>
+              [Unsaved Filter]
+            </span>
+            <%- form_tag(blists_path) do -%>
+            <%= text_field_tag("view[name]", '') %>
+            <%- end -%>
+          </div>
         </div>
-      </div>
+      <%- end -%>
       
       <div class="gridContainer">
         <div id="data-grid">
@@ -101,12 +103,14 @@
           </noscript>
         </div>
       </div>
-      <div id="widgetMeta" class="metadataPane">
-        <%- if !@view.nil? -%>
-          <%= render(:partial => "widget_meta",
-                :locals => { :view => @view, :page_single => false }) %>
-        <%- end -%>
-      </div>
+      <%- if (@meta_tabs) -%>
+        <div id="widgetMeta" class="metadataPane">
+          <%- if !@view.nil? -%>
+            <%= render(:partial => "widget_meta",
+                  :locals => { :view => @view, :page_single => false }) %>
+          <%- end -%>
+        </div>
+      <%- end -%>
     </div></div>
     
     <div class="widgetFooterWrapper"><div class="widgetFooterInner clearfix">

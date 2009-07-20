@@ -229,7 +229,7 @@
             <%# use explicit a href here so Rails doesn't try to be clever %>
             <span>
               <a href="<%= permaLink %>" title="A permanent URL for linking to this page" <%= 'rel="external"' if (in_widget) %>><%= permaLink %></a>
-              <%= flash_clipboard_button(permaLink) %>
+              <%= flash_clipboard_button(permaLink) if !in_widget %>
             </span>
           </div>
         </dd>
@@ -245,7 +245,7 @@
             <%# use explicit a href here so Rails doesn't try to be clever %>
             <span>
               <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email" <%= 'rel="external"' if (in_widget) %>><%= short_url %></a>
-              <%= flash_clipboard_button(short_url) %>
+              <%= flash_clipboard_button(short_url) if !in_widget %>
             </span>
           </div>
         </dd>

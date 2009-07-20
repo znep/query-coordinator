@@ -22,7 +22,7 @@ class Stat < Model
   end
 
   def rows_accessed
-    return data_hash["rowsAccessed"]
+    return data_hash["rowsAccessed"] || {}
   end
 
   def total_rows_accessed

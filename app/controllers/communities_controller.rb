@@ -30,6 +30,7 @@ class CommunitiesController < ApplicationController
       @search_members_total = User.find({ :full => @search_term, :count => true }).count
       @search_members = User.find({ :full => @search_term, :limit => PAGE_SIZE, :page => 1 })
     end
+    @search_type = params[:search_type]
   end
   
   def filter
@@ -41,6 +42,7 @@ class CommunitiesController < ApplicationController
     is_clear_filter = params[:clearFilter]
     is_clear_tag = params[:clearTag]
     search_term = params[:search]
+    use_lucene_search = (!params[:search_type].nil? && params[:search_type] == "lucene" && type == "SEARCH")
     
     sort_by = sort_by_selection
     is_asc = false
@@ -66,7 +68,11 @@ class CommunitiesController < ApplicationController
         opts.update({:topUploaders => true})
         tag_opts.update({:topUploaders => true})
       when "SEARCH"
-        opts.update({:full => search_term })
+        if (use_lucene_search)
+          opts.update({:q => search_term })
+        else
+          opts.update({:full => search_term })
+        end
     end
     
     if (is_clear_tag)
@@ -94,16 +100,22 @@ class CommunitiesController < ApplicationController
     if type == "SEARCH"
       tab_title = "Search Results for \"#{search_term}\""
     end
-    
+
     @page_size = PAGE_SIZE
-    @filtered_members = User.find(opts)
-    @filtered_members_total = User.find(opts.update({:count => true})).count
-    
-    tag_list = Tag.find(tag_opts)
-    if (tag && !tag_list.nil? && !tag_list.any? {|itag| itag.name == tag })
-      new_tag = Tag.new
-      new_tag.data['name'] = tag
-      tag_list << new_tag
+    if use_lucene_search
+      search_results = SearchResult.search("users", opts)
+      @filtered_members = search_results[0].results
+      @filtered_members_total = search_results[0].count
+    else
+      @filtered_members = User.find(opts)
+      @filtered_members_total = User.find(opts.update({:count => true})).count
+
+      tag_list = Tag.find(tag_opts)
+      if (tag && !tag_list.nil? && !tag_list.any? {|itag| itag.name == tag })
+        new_tag = Tag.new
+        new_tag.data['name'] = tag
+        tag_list << new_tag
+      end
     end
     
     respond_to do |format|
@@ -122,7 +134,8 @@ class CommunitiesController < ApplicationController
               :sort_by => sort_by_selection,
               :tag_list => tag_list,
               :current_tag => tag,
-              :search_term => search_term
+              :search_term => search_term,
+              :search_type => params[:search_type]
             })
         else
           render(:partial => "communities/member_list_tab_noresult", 

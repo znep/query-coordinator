@@ -20,6 +20,9 @@
           <p>
             <%= text_field_tag("search", @search_term, :class => "textPrompt", :title => "Search") %>
             <%= hidden_field_tag("type", "SEARCH") %>
+            <%- if !@search_type.nil? -%>
+              <%= hidden_field_tag("search_type", @search_type) %>
+            <%- end -%>
             <%= image_submit_tag("find_button_large.png", :name => "discoverSubmit", :class => "submit") %>
           </p>
         <% end %>
@@ -86,7 +89,7 @@
           :views => @search_views, :views_total => @search_views_total,
           :current_page => 1, :type => "SEARCH", :current_filter => nil, 
           :sort_by => "LAST_CHANGED", :tag_list => nil, :current_tag => nil,
-          :search_term => @search_term }) %>
+          :search_term => @search_term , :search_type => @search_type}) %>
       <%- else -%>
         <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>
       <%- end -%>
@@ -98,7 +101,7 @@
 		  :views => @popular_views, :views_total => @popular_views_total,
 		  :current_page => 1, :type => "POPULAR", :current_filter => nil,
 		  :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil,
-		  :search_term => nil }) %>
+                  :search_term => nil, :search_type => @search_type }) %>
 	  <% end %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix">
@@ -108,7 +111,7 @@
 		  :views => @all_views, :views_total => @all_views_total,
 		  :current_page => 1, :type => "ALL", :current_filter => nil,
 		  :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil,
-		  :search_term => nil }) %>
+                  :search_term => nil, :search_type => @search_type }) %>
       <% end %>
     </div>
   </div>

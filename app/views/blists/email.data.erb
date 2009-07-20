@@ -102,6 +102,7 @@
         $('.emailDatasetWrapper .errorMessage').text('Please enter at least one email address.');
         return;
       }
+      $('.emailDatasetWrapper .errorMessage').text('');
 
       // Remove empty boxes
       $('.formContainer input[value=""]').each(function() { $(this).closest('li').remove(); });

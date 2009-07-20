@@ -69,7 +69,7 @@ $(function ()
         $('.editGeneralForm').slideUp("normal");
     });
     
-    $('#attributionEditSubmitButton').click(function()
+    $('#generalEditSubmitButton').click(function()
     {
         var $form = $('.editGeneralForm form');
         $.ajax({
@@ -97,9 +97,9 @@ $(function ()
                 }
                 else
                 {
-                    $('.tagsField').empty();
+                    $('.tagsField').text('None');
                 }
-                $('.descriptionField').text(responseData['description']);
+                $('.descriptionField').text(responseData['description'] || 'No Description Provided');
                 $('.dataGeneral').slideDown("normal");
                 $('.editGeneralForm').slideUp("normal");
             }
@@ -150,14 +150,7 @@ $(function ()
                 $(opts.licensingInfoSelector).empty().text('No License');
             }
 
-            if (responseData['attribution'])
-            {
-                $(opts.attributionInfoSelector).text(responseData['attribution']);
-            }
-            else
-            {
-                $(opts.attributionInfoSelector).empty();
-            }
+            $(opts.attributionInfoSelector).text(responseData['attribution'] || 'None Specified');
 
             if (responseData['attributionLink'])
             {
@@ -168,7 +161,7 @@ $(function ()
             }
             else
             {
-                $('.attributionSourceLink').empty();
+                $('.attributionSourceLink').empty().text('None');
             }
 
             $('.attributionEdit').hide();

@@ -643,25 +643,10 @@ $(function ()
         requestUrl: '/views.json',
         requestDataCallback: function($form, name)
         {
-            // We need to save column sizes & positions with the view;
-            //  but these are stored in the meta.columns -- so translate
-            //  meta.columns to view.columns, along with children
-            var meta = $('#readGrid').blistModel().meta();
-            var view = $.extend({}, meta.view);
-            var colTranslate = function(col, i)
-            {
-                var newCol = {id: col.id, name: col.name,
-                    position: i + 1, width: col.width};
-                if (col.body && col.body.children)
-                {
-                    newCol.childColumns = $.map(col.body.children, colTranslate);
-                }
-                return newCol;
-            };
-            view.columns = $.map(meta.columns[0], colTranslate);
-            return $.json.serialize($.extend(view,
-                        {grants: null, originalViewId: view.id,
-                        name: name}));
+            // Get the view with columns
+            var view = $('#readGrid').datasetGrid().getViewCopy(true);
+            view.name = name;
+            return $.json.serialize(view);
         },
         requestContentType: 'application/json',
         loginMessage: 'Creating a public filter requires you to have an account. \

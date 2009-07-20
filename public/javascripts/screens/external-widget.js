@@ -1,22 +1,25 @@
 var widgetNS = blist.namespace.fetch('blist.widget');
 
-blist.widget.setupMenu = function()
+blist.widget.setUpMenu = function()
 {
-	// pullToTop here to account for Firefox 3.0.10 Windows bug
-    $('#header').find('ul.headerMenu')
+    // pullToTop here to account for Firefox 3.0.10 Windows bug
+    $('#header ul.headerMenu')
         .dropdownMenu({
             triggerButton: $('#header').find('a.menuLink'),
             forcePosition: true,
-            closeOnKeyup: true, 
+            closeOnKeyup: true,
             linkCallback: widgetNS.headerMenuHandler,
-			pullToTop: true});
+            pullToTop: true});
+};
 
+blist.widget.setUpDialogs = function()
+{
     $('#emailDialog').jqm({trigger: false});
     $('#emailDialog a.submit').click(widgetNS.submitEmail);
     $('#emailDialog form').submit(widgetNS.submitEmail);
 
     $('#publishDialog').jqm({trigger: false});
-    $("#publishDialog textarea").click(function() { $(this).select(); });
+    $("#publishDialog textarea").live('click', function() { $(this).select(); });
 };
 
 blist.widget.headerMenuHandler = function (event)
@@ -75,24 +78,137 @@ blist.widget.submitEmail = function (event)
             }});
 };
 
+blist.widget.clearTempViewTab = function ()
+{
+    if (widgetNS.previousViewHeader)
+    {
+        $('#viewHeader').replaceWith(widgetNS.previousViewHeader.clone());
+        $('#viewHeader').show();
+        widgetNS.setUpViewHeader();
+    }
+    else
+    {
+        $('#viewHeader').hide();
+    }
+    widgetNS.sizeGrid();
+};
+
+blist.widget.setTempViewTab = function (tempView)
+{
+    if (blist.currentUserId)
+    {
+        $('#viewHeader').replaceWith(widgetNS.storedViewHeader.clone());
+        $('#viewHeader').show();
+        widgetNS.setUpViewHeader();
+        widgetNS.sizeGrid();
+    }
+};
+
+blist.widget.newViewCreated = function($iEdit, responseData)
+{
+    $('#viewHeader .viewName span').attr('title', '');
+    $('#viewHeader .inlineEdit').removeClass('inlineEdit');
+    widgetNS.previousViewHeader = $('#viewHeader').clone();
+    if (!blist.widgets.visualization.isVisualization)
+    {
+        $('#data-grid').datasetGrid().isTempView = false;
+    }
+    widgetNS.loadNewView(responseData.id);
+};
+
+blist.widget.loadNewView = function(newViewId)
+{
+    // Update View Fullscreen button
+    $('.fullScreenButton a').attr('href',
+        blist.util.navigation.getViewUrl(newViewId));
+
+    // Load up a new widget menu & publish code
+    var newPath = window.location.pathname.replace(widgetNS.originalViewId,
+        newViewId);
+    $.ajax({ url: newPath, cache: false,
+            success: widgetNS.widgetDataLoaded});
+
+    // Replace form action in Email dialog
+    var $emailForm = $('#emailDialog .mainContent form');
+    $emailForm.attr('action', $emailForm.attr('action')
+        .replace(widgetNS.viewId, newViewId));
+
+    $.ajax({url: '/views/' + newViewId + '.json',
+            data: {
+              method: 'opening',
+              accessType: 'WIDGET',
+              referrer: document.referrer
+            }
+    });
+
+    if (!blist.widgets.visualization.isVisualization)
+    {
+        $('#data-grid').datasetGrid().updateView(newViewId);
+    }
+
+    widgetNS.viewId = newViewId;
+};
+
+blist.widget.widgetDataLoaded = function (data)
+{
+    // Swap out the main menu with whatever was loaded
+    $('#header ul.headerMenu').replaceWith($(data).filter('ul.headerMenu'));
+    widgetNS.setUpMenu();
+
+    // Swap out the embed code
+    $('#publishCode').replaceWith($(data).filter('#publishCode'));
+};
+
+blist.widget.sizeGrid = function ()
+{
+    var $grid = $('#data-grid');
+    var $container = $grid.closest(".gridOuter");
+    var newHeight = ($container.next().offset().top - $container.offset().top + 1);
+    $container.height(newHeight);
+    $grid.height(newHeight).trigger('resize');
+};
+
+blist.widget.setUpViewHeader = function()
+{
+    var inlineEditArgs = {
+        requestUrl: '/views.json',
+        requestDataCallback: function($form, name)
+        {
+            // Get the view with columns
+            var view = $('#data-grid').datasetGrid().getViewCopy(true);
+            view.name = name;
+            return $.json.serialize(view);
+        },
+        requestContentType: 'application/json',
+        onceOnly: true,
+        loginMessage: 'Creating a public filter requires you to have an account. \
+            Either sign in or sign up to save your public filter.',
+        submitSuccessCallback: widgetNS.newViewCreated};
+    $("#viewHeader .inlineEdit").inlineEdit(inlineEditArgs);
+
+    $('#viewHeader .datasetLink').click(function(event)
+    {
+        event.preventDefault();
+        widgetNS.previousViewHeader = null;
+        var href = $(this).attr('href');
+        widgetNS.loadNewView(href.slice(href.indexOf('#') + 1).split('_')[1]);
+        $('#viewHeader').hide();
+        widgetNS.sizeGrid();
+    });
+};
+
+
 $(function ()
 {
-    var sizeGrid = function ()
-    {
-        var $container = $('#data-grid').closest(".gridOuter");
-        var $grid = $('#data-grid');
-        var newHeight = ($container.next().offset().top - $container.offset().top + 1);
-        $container.height(newHeight);
-        $grid.height(newHeight);
-    };
-    sizeGrid();
-    $(window).resize(sizeGrid);
+    widgetNS.sizeGrid();
+    $(window).resize(widgetNS.sizeGrid);
 
     // Make all links with rel="external" open in a new window.
     $("a[rel$='external']").live("mouseover",
         function(){ this.target = "_blank"; });
 
-    widgetNS.setupMenu();
+    widgetNS.setUpMenu();
+    widgetNS.setUpDialogs();
 
     $('#header form').submit(function (event) { event.preventDefault(); });
 
@@ -101,8 +217,10 @@ $(function ()
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             currentUserId: blist.currentUserId,
             accessType: 'WIDGET', showRowNumbers: false, editEnabled: false,
-            filterItem: '#header form :text',
-            clearFilterItem: '#header form .clearSearch'
+            manualResize: true, filterItem: '#header form :text',
+            clearFilterItem: '#header form .clearSearch',
+            clearTempViewCallback: widgetNS.clearTempViewTab,
+            setTempViewCallback: widgetNS.setTempViewTab
             });
     }
     else
@@ -110,11 +228,14 @@ $(function ()
         $('#data-grid').visualization();
     }
 
+    widgetNS.storedViewHeader = $('#viewHeader').clone();
+    widgetNS.originalViewId = widgetNS.viewId;
+
     $.ajax({url: '/views/' + widgetNS.viewId + '.json',
             data: {
               method: 'opening',
               accessType: 'WIDGET',
-              referrer: document.referrer 
+              referrer: document.referrer
             }
     });
 });

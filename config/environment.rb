@@ -5,19 +5,10 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.0' unless defined? RAILS_GEM_VERSION
-
-MULTIUSER_SECRET = "zomg dont tell anyone"
+RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
-
-# For reasons I can't really explain, Phusion Passenger complains if we load
-# this below the Rails::Initializer block - it's like the code gets loaded
-# before environment.rb loads?!
-require 'uri'
-coreservice_config = YAML.load(IO.read(RAILS_ROOT + "/config/coreservice.yml"))
-CORESERVICE_URI = URI.parse(coreservice_config[RAILS_ENV]['site'])
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence over those specified here.
@@ -117,30 +108,3 @@ ActionMailer::Base.smtp_settings = {
   :address => "mail",
   :domain => "socrata.com"
 }
-
-multiuser_config = YAML.load(IO.read(RAILS_ROOT + "/config/multiuser.yml") )
-MULTIUSER_BRIDGE_HOST  = multiuser_config[RAILS_ENV]["bridge_host"]
-MULTIUSER_BRIDGE_PORT  = multiuser_config[RAILS_ENV]["bridge_port"]
-MULTIUSER_ORBITED_PORT = multiuser_config[RAILS_ENV]["orbited_port"]
-MULTIUSER_IE_PORT      = multiuser_config[RAILS_ENV]["ie_port"]
-MULTIUSER_CHANGE_IP    = multiuser_config[RAILS_ENV]["change_ip"]
-MULTIUSER_CHANGE_PORT  = multiuser_config[RAILS_ENV]["change_port"]
-
-swf_config = YAML.load(IO.read(RAILS_ROOT + "/config/swf.yml") )
-SWF_DIR       = swf_config[RAILS_ENV]["dir"]
-
-external_config = YAML.load(IO.read(RAILS_ROOT + "/config/external.yml") )
-BLIST_RSS = external_config[RAILS_ENV]["blist_blog_rss"]
-
-REVISION_FILE = ["#{RAILS_ROOT}/../REVISION_FLEX", "#{RAILS_ROOT}/../REVISION"].detect do |filename|
-  File.exist?(filename)
-end
-
-begin
-  REVISION_NUMBER = File.open(REVISION_FILE, "r").read().chomp()
-  REVISION_DATE = File.stat(REVISION_FILE).mtime.to_i
-rescue
-  REVISION_NUMBER = nil
-  REVISION_DATE = nil
-end
-

@@ -1392,6 +1392,12 @@
         var $prevActiveCells;
         var onMouseDown = function(event)
         {
+            // IE & Chrome only detetct mousedown on scrollbars, not mouseup;
+            // so we need to ignore clicks on the scrollbar to avoid having a
+            // false drag event
+            // If they clicked on the scrollbar, ignore
+            if ($(event.target).is('.blist-table-scrolls')) { return; }
+
             if (isEdit &&
                 $(event.target).parents().andSelf().index($editContainer) >= 0)
             { return; }
@@ -1432,6 +1438,8 @@
 
         var onMouseUp = function(event)
         {
+            mouseDownAt = null;
+
             if (isEdit) { return; }
 
             if (hotHeaderDrag) {
@@ -1462,7 +1470,6 @@
                 $(clickTarget).trigger('table_click', event);
                 if (!editMode) { $navigator[0].focus(); }
             }
-            mouseDownAt = null;
 
             expandActiveCell();
         }

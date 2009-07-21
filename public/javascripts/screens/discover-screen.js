@@ -1,11 +1,13 @@
 var discoverNS = blist.namespace.fetch('blist.discover');
 
+blist.discover.isFirstLoad = true;
 blist.discover.historyChangeHandler = function (hash)
 {
-    if (hash == "")
+    if ((hash == "") && !blist.discover.isFirstLoad)
     {
-        return;
+        hash = "type=POPULAR";
     }
+    blist.discover.isFirstLoad = false;
 
     // Tab/container names
     var tabs = {
@@ -34,7 +36,7 @@ blist.discover.historyChangeHandler = function (hash)
     }
 
     // Find active tab
-    var activeTab = $.urlParam("type", window.location.href);
+    var activeTab = $.urlParam("type", "?" + hash);
     var tabSelector = tabs[activeTab];
     var tabContainerSelector = tabContainers[activeTab];
 
@@ -60,7 +62,7 @@ blist.discover.historyChangeHandler = function (hash)
         {
             $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
             $("form.search #search")
-                .val($.urlParam("search", window.location.href))
+                .val($.urlParam("search", "?" + hash))
                 .removeClass("prompt");
         }
     }

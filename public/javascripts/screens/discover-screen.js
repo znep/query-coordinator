@@ -93,11 +93,16 @@ blist.discover.sortSelectChangeHandler = function (event)
     var $sortSelect = $(this);
     var sortUrl = $sortSelect.closest("form").attr("action");
 
-    var hash = window.location.href
+    var hash = window.location.href.replace(/^.*#*/, '');
+
+    if (hash == 'top' || hash == '') hash = 'type=POPULAR';
+    if (hash == 'all') hash = 'type=ALL';
+    if (hash == 'results') hash = 'type=SEARCH';
+
     hash = hash.replace(/sort_by=[A-Z_]*/gi, '');
     hash += "&sort_by=" + $sortSelect.val();
     hash = hash.replace(/&&+/g, '&');
-    window.location.href = hash;
+    $.historyLoad(hash);
 }
 
 blist.discover.tagModalShowHandler = function(hash)
@@ -118,7 +123,9 @@ blist.discover.tagModalShowHandler = function(hash)
 blist.discover.searchSubmitHandler = function(event)
 {
     event.preventDefault();
-    window.location.href = "#?type=SEARCH&search=" + $(this).find('#search').val();
+    var hash = "type=SEARCH&search=" + $(this).find('#search').val();
+    window.location.href = '#' + hash;
+    $.historyLoad(hash);
     return false;
 }
 
@@ -154,6 +161,15 @@ $(function ()
     });
 
     $.historyInit(discoverNS.historyChangeHandler);
+    $('a').live('click', function(event)
+    {
+        if ($(this).attr('href').match(/#/))
+        {
+            var hash = this.href;
+            hash = hash.replace(/^.*#/, '');
+            $.historyLoad(hash);
+        }
+    });
     $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
 
     $("#tagCloud").jqm({

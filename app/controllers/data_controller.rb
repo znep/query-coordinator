@@ -45,11 +45,9 @@ class DataController < ApplicationController
     page = params[:page] || 1
     sort_by_selection = params[:sort_by] || (type == "POPULAR" ? "POPULAR" : "LAST_CHANGED")
     tag = params[:tag]
-    is_clear_filter = params[:clearFilter]
-    is_clear_tag = params[:clearTag]
     search_term = params[:search]
     use_lucene_search = (!params[:search_type].nil? && params[:search_type] == "lucene" && type == "SEARCH")
-    
+
     sort_by = sort_by_selection
     is_asc = true
     case sort_by_selection
@@ -74,17 +72,9 @@ class DataController < ApplicationController
       opts.update({:full => search_term })
     end
     
-    if (is_clear_tag)
-      tag = nil
-    end
-    
     opts.update({:sortBy => sort_by, :isAsc => is_asc})
     if (!tag.nil?)
       opts.update({:tags => tag})
-    end
-    
-    if (is_clear_filter)
-      filter = nil
     end
     
     tab_title = type == "POPULAR" ? "Popular" : "All"
@@ -98,6 +88,10 @@ class DataController < ApplicationController
       end
     else
       tab_title += " #{t(:blists_name)}"
+    end
+    
+    unless(tag.nil?)
+      tab_title += " tagged '#{tag}'"
     end
     
     @page_size = PAGE_SIZE
@@ -120,11 +114,15 @@ class DataController < ApplicationController
         tag_list << new_tag
       end
     end
-    
+
+    # build current state string
+    @current_state = { :filter => filter, :page => page, :tag => tag,
+      :sort_by => sort_by_selection, :search_term => search_term }
+
     respond_to do |format|
       format.html { redirect_to(data_path(params)) }
       format.data { 
-        if (@filtered_views.length > 0)
+        if ((@filtered_views.length > 0) || (type != "SEARCH"))
           render(:partial => "data/view_list_tab", 
             :locals => 
             {
@@ -141,7 +139,7 @@ class DataController < ApplicationController
               :search_type => params[:search_type]
             })
         else
-          render(:partial => "data/view_list_tab_noresult", 
+          render(:partial => "data/view_list_tab_noresult",
               :locals => { :term => search_term })
         end
       }

@@ -2,26 +2,29 @@
 <div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
   <div class="tabContent">
     <h2><%= tab_title %></h2>
-    <div class="contentSort">
-      <% form_tag(data_filter_path(:type => type, :filter => current_filter, :search => search_term), 
-          :class => "sortForm") do %>
-        <p>
-          Sort by
-          <%= select_tag("sort_by", sort_select_options(sort_by), :id => "sort_by_" + type) %>
-        </p>
-      <% end %>
-    </div>
+    <%- if views_total > 0 -%>
+      <div class="contentSort<%= (type == 'SEARCH') ? ' hide' : '' %>">
+        <% form_tag(data_filter_path(:type => type, :filter => current_filter, :search => search_term), 
+            :class => "sortForm") do %>
+          <p>
+            Sort by
+            <%= select_tag("sort_by", sort_select_options(sort_by), :id => "sort_by_" + type) %>
+          </p>
+        <% end %>
+      </div>
   
-    <ul class="discoverContentList">
-      <%= render(:partial => "view_list_item", :collection => views) %>
-    </ul>
+      <ul class="discoverContentList">
+        <%= render(:partial => "view_list_item", :collection => views) %>
+      </ul>
     
-    <div class="viewPager">
-      <%= create_pagination(views_total, @page_size, current_page, 
-          data_filter_path({
-            :type => type, :filter => current_filter, 
-            :sort_by => sort_by, :tag => current_tag, :search => search_term, :search_type => search_type})) %>
-    </div>
+      <div class="viewPager">
+        <%= create_pagination(views_total, @page_size, current_page, generate_filter_url(@current_state, type)) %>
+      </div>
+    <%- else -%>
+      <p class="clearBoth">
+        There are no <%= t(:blist_name).pluralize %> that match that filter.  Try broadening your search.
+      </p>
+    <%- end -%>
   </div>
 </div></div></div>
 
@@ -36,8 +39,7 @@
           <li><a href="#all" class="tabLink all"><span>All <%= t(:blists_name) %></span></a></li>
         <%- end -%>
         <%- if (!@current_user.nil?) -%>
-          <li><%= link_to("<span>In my network</span>", 
-                  data_filter_path({:type => type, :filter => {:inNetwork => true}, :tag => current_tag}),
+          <li><%= link_to("<span>In my network</span>", generate_filter_url(@current_state, type, {:filter => {:inNetwork => true}}),
                   :class => "filterLink#{get_filter_hilight_class({'inNetwork' => 'true'}, current_filter, ' hilight')}") %>
           </li>
         <%- end -%>
@@ -47,9 +49,7 @@
       <ul class="tagList hilightList">
         <%- tag_list.each do |tag| -%>
           <li>
-            <%= link_to("<span>#{h(tag.name)}</span>", 
-                data_filter_path({ 
-                  :type => type, :filter => current_filter, :tag => tag.name }),
+            <%= link_to("<span>#{h(tag.name)}</span>", generate_filter_url(@current_state, type, {:tag => tag.name}),
                   :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
           </li>
         <%- end -%>
@@ -67,8 +67,7 @@
           
           <%- View.categories.keys.sort.each do |category| -%>
             <%- next if category.nil? || category.length == 0 -%>
-            <li><%= link_to("<span>#{category}</span>", 
-                    data_filter_path({:type => type, :filter => {:category => category}, :tag => current_tag}),
+            <li><%= link_to("<span>#{category}</span>", generate_filter_url(@current_state, type, {:filter => {:category => category}}),
                     :class => "filterLink#{get_filter_hilight_class({'category' => category}, current_filter, ' hilight')}") %></li>
           <%- end -%>
         </ul>

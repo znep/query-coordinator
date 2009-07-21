@@ -27,6 +27,7 @@ $.extend($.simpleTabNavigator, {
             "tabAll" : "#discoverTabAll"
         },
         allPanelsSelector : ".tabContentContainer",
+        preventDefault: true,
         switchCompleteCallback: function(){}
     },
     prototype: {
@@ -37,7 +38,10 @@ $.extend($.simpleTabNavigator, {
                 var $li = $(this);
                 // Wire up the click event for the tab itself for activation
                 $li.find("a").click(function(event) {
-                    event.preventDefault();
+                    if (tabNavigator.settings.preventDefault == true)
+                    {
+                        event.preventDefault();
+                    }
                     tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
                 });
             });

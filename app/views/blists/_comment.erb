@@ -25,7 +25,7 @@
             <span>(<%= friendly_relative_time(comment.createdAt) %>)</span>
           </div>
           <p class='commentBody'><%= h(comment.body) %></p>
-          <%= render(:partial => 'comment_actions',
+          <%= render(:partial => 'blists/comment_actions',
           :locals => {:comment => comment, :view => view}) %>
 
           <%- form_tag(post_comment_blist_path(view.id),
@@ -56,7 +56,7 @@
             <%- is_first = true -%>
             <%- while !comment_children.empty? do -%>
             <%- child = comment_children.shift -%>
-            <%= render(:partial => 'child_comment',
+            <%= render(:partial => 'blists/child_comment',
             :locals => {:comment => child, :view => view,
             :wrapper_class => is_first ? 'first' : ''}) %>
             <%- is_first = false -%>

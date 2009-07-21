@@ -1,0 +1,46 @@
+#widgetMeta
+{
+    /*  This height corresponds to a value in the javascript for when the meta section
+        collapses. If this value changes, also change the value in info-pane.js */
+    height: 62px;
+    margin: 0;
+    min-width: 30em;
+    overflow: hidden;
+}
+#widgetMeta.expanded
+{
+    position: absolute;
+    height: 100%;
+    overflow: auto;
+    width: 100%;
+}
+
+#widgetMeta .header
+{
+    padding: 0;
+}
+
+/*** START: tabs styling ***/
+.metadataPane .summaryTabs 
+{
+    background-color: #fff;
+}
+/*** END: tabs styling ***/
+
+#widgetMeta .infoContentHeader h2.panelHeader 
+{
+    font-size: 1.6em;
+    margin-left: 0;
+    padding-left: 41px;
+    width: auto;
+}
+
+.infoContentOuter .infoContentInner { background-image: none; }
+.infoContentOuter .infoContentWrapper 
+{
+    background-image: none;
+    padding-bottom: 0;
+}
+.infoContentOuter.listContainer .infoContent { background-image: none; }
+
+.infoContentHeader { padding: 0 1em 0 0; }

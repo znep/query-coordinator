@@ -213,7 +213,10 @@
             allPanelsSelector : ".infoContentOuter",
             expandableSelector: ".infoContent",
             switchCompleteCallback: function(){},
-            initialTab: null
+            initialTab: '',
+            isWidget: false,
+            widgetMetaContainerSelector: "#widgetMeta",
+            initialMetaHeight: 0
         },
         prototype: {
             init: function() {
@@ -228,12 +231,24 @@
                     // Wire up the click event for the expander arrow.
                     $li.find(tabNavigator.settings.expanderSelector).click(function(event) {
                         event.preventDefault();
-                        tabNavigator.expandTabPanels();
+                        if (tabNavigator.settings.isWidget)
+                        {
+                            tabNavigator.expandWidgetTabPanels();
+                        }
+                        else
+                        {
+                            tabNavigator.expandTabPanels();
+                        }
                     });
                     // Wire up the click event for the tab itself for activation
                     $li.find("a:not(" + tabNavigator.settings.expanderSelector + ")").click(function(event) {
                         event.preventDefault();
-                        tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
+                        // TODO:    This if statement is temporary so that clicking on the tab doesn't
+                        //          do anything while there's only 1 tab in the widget.
+                        if (!tabNavigator.settings.isWidget)
+                        {
+                            tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
+                        }
                     });
                 });
 
@@ -253,6 +268,12 @@
                                 tabNavigator.settings.initialTab);
                         });
                     }
+                }
+                
+                var $metaContainer = $(tabNavigator.settings.widgetMetaContainerSelector);
+                if ($metaContainer)
+                {
+                    tabNavigator.settings.initialMetaHeight = $metaContainer.height();
                 }
             },
             activateTab: function(tab) {
@@ -278,7 +299,7 @@
                 var tabNavigator = this;
 
                 // Toggle all arrows.
-                $allExpanders = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector);
+                var $allExpanders = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector);
                 $allExpanders.toggleClass(tabNavigator.settings.expandedClass);
 
                 if ($(tabNavigator.currentList).data("isExpanded"))
@@ -312,6 +333,54 @@
                     $(tabNavigator.currentList).data("isExpanded", true);
                 }
 
+                // Toggle all panels.
+                $(tabNavigator.settings.allPanelsSelector).toggleClass(tabNavigator.settings.expandedClass);
+            },
+            expandWidgetTabPanels: function(openCallback) {
+                var tabNavigator = this;
+
+                // Toggle all arrows.
+                var $allExpanders = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector);
+                $allExpanders.toggleClass(tabNavigator.settings.expandedClass);
+                
+                var $metaContainer = $(tabNavigator.settings.widgetMetaContainerSelector);
+                
+                if ($(tabNavigator.currentList).data("isExpanded"))
+                {
+                    $allExpanders.attr("title", "more info").text("more info");
+                    
+                    var metaPosition = $metaContainer.height() - tabNavigator.settings.initialMetaHeight;
+                    $metaContainer.animate(
+                        { top: metaPosition + "px" },
+                        function(){
+                            $metaContainer.removeClass("expanded");
+                            $(tabNavigator.settings.expandableSelector).each(function()
+                            {
+                                $(this).hide();
+                            });
+                        }
+                    );
+                    
+                    $(tabNavigator.currentList).data("isExpanded", false);
+                }
+                else
+                {
+                    $allExpanders.attr("title", "less info").text("less info");
+                    
+                    $(tabNavigator.settings.expandableSelector).show();
+                    tabNavigator.settings.switchCompleteCallback();
+                    if (openCallback !== undefined)
+                    {
+                        openCallback();
+                    }
+                    $(tabNavigator.currentList).data("isExpanded", true);
+                    
+                    $metaContainer.addClass("expanded");
+                    $metaContainer.animate({
+                        top: "0"
+                    });
+                }
+                
                 // Toggle all panels.
                 $(tabNavigator.settings.allPanelsSelector).toggleClass(tabNavigator.settings.expandedClass);
             }

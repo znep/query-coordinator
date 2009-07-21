@@ -1,4 +1,4 @@
-#data-grid { border-color: #333; }
+.gridInner { border-color: #333; }
 
 #header { background-image: url(/stylesheets/images/sdp/black/title_tl.png); }
 #header .wrapperTR { background-image: url(/stylesheets/images/sdp/black/title_tr.png); }

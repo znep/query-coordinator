@@ -170,8 +170,10 @@ HREF
   
   
   def create_pagination(total_count, page_count, current_page, base_href)
-    num_pages = (total_count / page_count).ceil
-    base_href = (base_href.include?("?")) ? "#{base_href}&page=" : "#{base_href}?page="
+    num_pages = (total_count.to_f / page_count).ceil
+    base_href.sub!(/([?&])page=[0-9]*/, '\1')
+    base_href = (base_href.include?("?") || base_href.include?("#")) ? "#{base_href}&page=" : "#{base_href}?page="
+    base_href.sub!(/&&+/, '&')
     
     # Only display 9 pages at a time.
     start_page = 1

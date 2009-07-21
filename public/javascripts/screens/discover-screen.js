@@ -38,6 +38,12 @@ blist.discover.historyChangeHandler = function (hash)
     var tabSelector = tabs[activeTab];
     var tabContainerSelector = tabContainers[activeTab];
 
+    // Abort if we don't know what's going on
+    if (activeTab == 0)
+    {
+        return;
+    }
+
     // Select active tab
     $(".simpleTabs").simpleTabNavigate().activateTab(tabSelector);
     $(tabSelector).find('a').attr("href", "#" + hash);
@@ -53,6 +59,9 @@ blist.discover.historyChangeHandler = function (hash)
         else
         {
             $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
+            $("form.search #search")
+                .val($.urlParam("search", window.location.href))
+                .removeClass("prompt");
         }
     }
 
@@ -186,7 +195,11 @@ $(function ()
         event.preventDefault();
         $("#tagCloud").jqmHide();
     });
-    
+    $(".tagCloudContainer a").live("click", function(event)
+    {
+        $("#tagCloud").jqmHide();
+    });
+
     $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler);
     $("#search").focus(function(){ $(this).select(); });
     

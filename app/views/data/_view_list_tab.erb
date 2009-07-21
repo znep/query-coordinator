@@ -55,8 +55,7 @@
         <%- end -%>
         <li class="moreLink">
           <%= link_to("More", 
-              data_tags_path({
-                :type => type, :filter => current_filter}), 
+              data_tags_path + generate_filter_url(@current_state, type, {}, '?'), 
                 :class => "moreTagsLink") %>
         </li>
       </ul>

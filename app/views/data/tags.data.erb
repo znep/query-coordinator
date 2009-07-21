@@ -5,9 +5,8 @@
   <div class="tagCloudContainer">
     <p>
       <%- @tag_list.each do |tag| -%>
-        <%= link_to(h(tag.name), 
-            data_filter_path({ 
-              :type => @type, :filter => @current_filter, :tag => tag.name }),
+        <%= link_to(h(tag.name),
+            generate_filter_url(@current_state, @type, {:tag => tag.name}),
               :class => "filterLink", :rel => tag.frequency ) %>
       <%- end -%>
     </p>

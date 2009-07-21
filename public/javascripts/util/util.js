@@ -3,7 +3,14 @@
 $.urlParam = function(name, url)
 {
     var results = new RegExp('[\\?#&]' + name + '=([^&#]*)').exec(url);
-    return results[1] || 0;
+    if (results)
+    {
+        return results[1] || 0;
+    }
+    else
+    {
+        return 0;
+    }
 };
 
 $.htmlEscape = function(text)

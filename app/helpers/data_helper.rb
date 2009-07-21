@@ -9,7 +9,7 @@ module DataHelper
     out
   end
 
-  def generate_filter_url(current_state, type, additional_flags = {})
+  def generate_filter_url(current_state, type, additional_flags = {}, delimiter = '#')
     if current_state.nil?
       state = Hash.new
     else
@@ -39,7 +39,7 @@ module DataHelper
 
     out = Array.new
     state.each { |pair| out << pair.join("=") }
-    "##{out.join('&')}"
+    "#{delimiter}#{out.join('&')}"
   end
 
 end

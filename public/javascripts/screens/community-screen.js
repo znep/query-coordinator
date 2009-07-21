@@ -30,7 +30,7 @@ blist.community.filterClickHandler = function (event)
             $("#tagCloud").jqmHide();
         }
     });
-}
+};
 
 blist.community.sortSelectChangeHandler = function (event)
 {
@@ -49,7 +49,7 @@ blist.community.sortSelectChangeHandler = function (event)
             $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
         }
     });
-}
+};
 
 blist.community.tagModalShowHandler = function(hash)
 {
@@ -64,7 +64,7 @@ blist.community.tagModalShowHandler = function(hash)
             $(".tagCloudContainer a").tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } });
         }
     });
-}
+};
 
 blist.community.searchSubmitHandler = function(event)
 {

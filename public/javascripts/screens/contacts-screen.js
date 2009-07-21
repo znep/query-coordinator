@@ -101,7 +101,7 @@ blist.contacts.infoPane.itemDetailSuccessHandler = function(data)
     // Force a window resize.
     blist.util.sizing.cachedInfoPaneHeight = $("#infoPane").height();
     blist.common.forceWindowResize();
-}
+};
 
 blist.contacts.infoPane.multiSuccessHandler = function (data)
 {

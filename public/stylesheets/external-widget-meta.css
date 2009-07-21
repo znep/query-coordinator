@@ -1,7 +1,5 @@
 #widgetMeta
 {
-    /*  This height corresponds to a value in the javascript for when the meta section
-        collapses. If this value changes, also change the value in info-pane.js */
     height: 62px;
     margin: 0;
     min-width: 30em;
@@ -13,6 +11,7 @@
     height: 100%;
     overflow: auto;
     width: 100%;
+    z-index: 30;
 }
 
 #widgetMeta .header

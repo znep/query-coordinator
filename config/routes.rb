@@ -122,6 +122,7 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
 
+  map.connect 'widgets/:id/:variation/:options', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id/:variation', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'
   

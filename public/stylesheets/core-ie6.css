@@ -54,3 +54,10 @@ form.search input.submit
 }
 
 .breadcrumbItem { background-image: url(/stylesheets/images/common/breadcrumb_arrow.gif); }
+
+
+/*** START: meta data tab styles ***/
+.metadataPane .summaryTabs li { margin-bottom: -1px; }
+.singleInfoSummary .headerActions.actionButtons li { width: 80px; }
+.singleInfoSummary .headerActions.actionButtons li a { width: 60px; }
+/*** END: meta data tab styles ***/

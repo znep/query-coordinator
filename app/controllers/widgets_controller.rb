@@ -22,6 +22,7 @@ class WidgetsController < ApplicationController
 
   def show
     @variation = params[:variation]
+    @options = params[:options]
     if @variation.blank? 
       
       @variation = "normal"
@@ -47,11 +48,15 @@ class WidgetsController < ApplicationController
       return redirect_to('/widgets/' + params[:id] + '/' + tm[1])
     end
     
-    # Look for parameter to enable filter saving.
-    @save_filter = params[:save_filter] && params[:save_filter] == "enabled"
-    
-    # Look for parameter to disable the meta tabs. Enabled by default.
-    @meta_tabs = (params[:meta_tabs] && params[:meta_tabs] == "enabled")
+    # If we're using "meta" variation, add the meta tabs and save filter bar
+    if !@options.nil? && @options == "meta"
+      @save_filter = true
+      @meta_tabs = true
+    else
+      # They're disabled by default
+      @save_filter = false
+      @meta_tabs = false
+    end
     
     begin
       @view = View.find(params[:id])

@@ -117,7 +117,7 @@ class DataController < ApplicationController
 
     # build current state string
     @current_state = { :filter => filter, :page => page, :tag => tag,
-      :sort_by => sort_by_selection, :search_term => search_term }
+      :sort_by => sort_by_selection, :search => search_term }
 
     respond_to do |format|
       format.html { redirect_to(data_path(params)) }
@@ -149,7 +149,6 @@ class DataController < ApplicationController
   
   def tags
     @type = params[:type]
-    @current_filter = params[:filter]
     
     opts = Hash.new
     opts.update({ :method => "viewsTags" })
@@ -163,6 +162,10 @@ class DataController < ApplicationController
     end
     
     @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
+    
+    # build current state string
+    @current_state = { :filter => params[:filter], :page => params[:page],
+      :sort_by => params[:sort_by], :search => params[:search] }
     
     render(:layout => "modal")
   end

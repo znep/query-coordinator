@@ -95,7 +95,7 @@ blist.discover.historyChangeHandler = function (hash)
             $("#search").blur();
         }
     });
-}
+};
 
 blist.discover.sortSelectChangeHandler = function (event)
 {
@@ -114,7 +114,7 @@ blist.discover.sortSelectChangeHandler = function (event)
     hash += "&sort_by=" + $sortSelect.val();
     hash = hash.replace(/&&+/g, '&');
     $.historyLoad(hash);
-}
+};
 
 blist.discover.tagModalShowHandler = function(hash)
 {
@@ -129,7 +129,7 @@ blist.discover.tagModalShowHandler = function(hash)
             $(".tagCloudContainer a").tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } });
         }
     });
-}
+};
 
 blist.discover.searchSubmitHandler = function(event)
 {
@@ -138,7 +138,7 @@ blist.discover.searchSubmitHandler = function(event)
     window.location.href = '#' + hash;
     $.historyLoad(hash);
     return false;
-}
+};
 
 
 $(function ()

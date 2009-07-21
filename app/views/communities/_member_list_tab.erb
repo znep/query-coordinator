@@ -1,7 +1,7 @@
 <div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
   <div class="tabContent">
     <h2><%= tab_title %></h2>
-    <div class="contentSort">
+    <div class="contentSort<%= (type == 'SEARCH') ? ' hide' : '' %>">
       <% form_tag(filter_community_path(:type => type, :filter => current_filter, :tag => current_tag, :search => search_term), :class => "sortForm") do %>
         <p>
           Sort by

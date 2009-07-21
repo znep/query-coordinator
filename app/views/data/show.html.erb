@@ -85,10 +85,10 @@
     <div id="discoverTabSearchResults" class="tabContentContainer clearfix<%= @search_views.nil? ? '' : ' active' %>">
       <%- if (@search_views && @search_views.length > 0) -%>
         <%= render(:partial => "view_list_tab", :locals => { 
-          :tab_title => "Search Results for \"#{@search_term}\"", 
+          :tab_title => "Search Results for \"#{@search_term}\"",
           :views => @search_views, :views_total => @search_views_total,
           :current_page => 1, :type => "SEARCH", :current_filter => nil, 
-          :sort_by => "LAST_CHANGED", :tag_list => nil, :current_tag => nil,
+          :sort_by => nil, :tag_list => nil, :current_tag => nil,
           :search_term => @search_term , :search_type => @search_type}) %>
       <%- else -%>
         <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>
@@ -124,6 +124,10 @@
   <%- end -%>
   <div class="jqmWindow" id="redirectedModal"></div>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", 
+  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", "plugins/jquery.history", 
   "widgets/simple-tab-navigate", "screens/discover-screen", :cache => "cache/data_show_all" %>
+
+  <script type="text/javascript" charset="utf-8">
+    discoverNS.filterUrl = "<%= data_filter_path %>";
+  </script>
 <% end %>

@@ -1,31 +1,87 @@
 var discoverNS = blist.namespace.fetch('blist.discover');
 
-blist.discover.filterClickHandler = function (event)
+blist.discover.historyChangeHandler = function (hash)
 {
-    event.preventDefault();
-    var $filterLink = $(this);
-    var filterUrl = $filterLink.attr("href");
-
-    if ($filterLink.hasClass("hilight"))
+    if (hash == "")
     {
-        filterUrl += $filterLink.closest(".tagList").length > 0 ? "&clearTag=true" : "&clearFilter=true";
+        return;
     }
-    
+
+    // Tab/container names
+    var tabs = {
+        "SEARCH": "#tabSearch",
+        "POPULAR": "#tabPopular",
+        "ALL": "#tabAll"
+    };
     var tabContainers = {
         "SEARCH": "#discoverTabSearchResults",
         "POPULAR": "#discoverTabPopular",
         "ALL": "#discoverTabAll"
     };
-    
-    var tabSelector = tabContainers[$.urlParam("type", $filterLink.attr("href"))];
+
+    // Special cases to handle default tab actions
+    switch(hash)
+    {
+        case "results":
+            $(".simpleTabs").simpleTabNavigate().activateTab(tabs["SEARCH"]);
+            return;
+        case "top":
+            $(".simpleTabs").simpleTabNavigate().activateTab(tabs["POPULAR"]);
+            return;
+        case "all":
+            $(".simpleTabs").simpleTabNavigate().activateTab(tabs["ALL"]);
+            return;
+    }
+
+    // Find active tab
+    var activeTab = $.urlParam("type", window.location.href);
+    var tabSelector = tabs[activeTab];
+    var tabContainerSelector = tabContainers[activeTab];
+
+    // Select active tab
+    $(".simpleTabs").simpleTabNavigate().activateTab(tabSelector);
+    $(tabSelector).find('a').attr("href", "#" + hash);
+
+    // Add search tab if necessary
+    if (activeTab == "SEARCH")
+    {
+        $(".simpleTabs li").removeClass("active");
+        if ($("#tabSearch").length > 0)
+        {
+            $("#tabSearch").addClass("active");
+        }
+        else
+        {
+            $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
+        }
+    }
+
+    // Display loading message
+    $(".tabContentContainer").removeClass("active");
+    $(tabContainerSelector).addClass("active").html(
+        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\"> \
+          <div class=\"tabContent noresult\"> \
+            <h2>Searching...</h2> \
+            <p class=\"clearBoth\"> \
+                <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
+            </p> \
+          </div> \
+        </div></div></div> \
+        <div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\"> \
+          <div class=\"tabContentNav\"></div> \
+        </div></div>"
+    );
+
+    // Fetch data
     $.Tache.Get({ 
-        url: filterUrl,
+        url: discoverNS.filterUrl + "?" + hash,
         success: function(data)
         {
-            $(tabSelector).html(data);
+            $(tabContainerSelector).html(data);
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
             $("#tagCloud").jqmHide();
+            $("#search").blur();
         }
     });
 }
@@ -33,20 +89,15 @@ blist.discover.filterClickHandler = function (event)
 blist.discover.sortSelectChangeHandler = function (event)
 {
     event.preventDefault();
-    
+
     var $sortSelect = $(this);
     var sortUrl = $sortSelect.closest("form").attr("action");
-    
-    $.Tache.Get({ 
-        url: sortUrl,
-        data: {"sort_by": $sortSelect.val()},
-        success: function(data)
-        {
-            $sortSelect.closest(".tabContentContainer").html(data);
-            $(".simpleTabsContainer")[0].scrollIntoView();
-            $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
-        }
-    });
+
+    var hash = window.location.href
+    hash = hash.replace(/sort_by=[A-Z_]*/gi, '');
+    hash += "&sort_by=" + $sortSelect.val();
+    hash = hash.replace(/&&+/g, '&');
+    window.location.href = hash;
 }
 
 blist.discover.tagModalShowHandler = function(hash)
@@ -67,45 +118,8 @@ blist.discover.tagModalShowHandler = function(hash)
 blist.discover.searchSubmitHandler = function(event)
 {
     event.preventDefault();
-    var $form = $(this);
-    
-    $(".simpleTabs li").removeClass("active");
-    if ($("#tabSearch").length > 0)
-    {
-        $("#tabSearch").addClass("active");
-    }
-    else
-    {
-        $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
-    }
-    
-    $(".tabContentContainer").removeClass("active");
-    $("#discoverTabSearchResults").addClass("active").html(
-        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\"> \
-          <div class=\"tabContent noresult\"> \
-            <h2>Searching...</h2> \
-            <p class=\"clearBoth\"> \
-                <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
-            </p> \
-          </div> \
-        </div></div></div> \
-        <div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\"> \
-          <div class=\"tabContentNav\"></div> \
-        </div></div>"
-    );
-    
-    $.Tache.Get({ 
-        url: $form.attr("action"),
-        data: $form.find(":input"),
-        success: function(data)
-        {
-            $("#discoverTabSearchResults").html(data);
-            
-            $(".simpleTabsContainer")[0].scrollIntoView();
-            $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
-            $("#search").blur();
-        }
-    });
+    window.location.href = "#?type=SEARCH&search=" + $(this).find('#search').val();
+    return false;
 }
 
 
@@ -125,25 +139,23 @@ $(function ()
             "tabSearch" : "#discoverTabSearchResults",
             "tabPopular" : "#discoverTabPopular",
             "tabAll" : "#discoverTabAll"
-        }
+        },
+        preventDefault: false
     });
     
     $(".simpleTabs li#tabSearch a").live("click", function(event){
-        event.preventDefault();
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabSearch");
     });
     $(".tabLink.popular").live("click", function(event){
-        event.preventDefault();
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabPopular");
     });
     $(".tabLink.all").live("click", function(event){
-        event.preventDefault();
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabAll");
     });
-    
-    $(".filterLink, .pageLink, .prevLink, .nextLink").live("click", discoverNS.filterClickHandler);
+
+    $.historyInit(discoverNS.historyChangeHandler);
     $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
-    
+
     $("#tagCloud").jqm({
         trigger: false,
         onShow: discoverNS.tagModalShowHandler

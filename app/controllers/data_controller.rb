@@ -48,6 +48,19 @@ class DataController < ApplicationController
     search_term = params[:search]
     use_lucene_search = (!params[:search_type].nil? && params[:search_type] == "lucene" && type == "SEARCH")
 
+    # <HACK>
+    #   <reason>testing lucene</reason>
+    #   <details>enabling lucene for staging environment (QA), kevin, kostub, and chris</details>
+    #   <am_i_sorry>true</am_i_sorry>
+      if ENV['RAILS_ENV'] == 'staging' ||
+        (current_user &&
+         (current_user.login == 'kmerritt' ||
+          current_user.login == 'kostub' ||
+          current_user.login == 'chris.metcalf'))
+        use_lucene_search = true
+      end
+    # </HACK>
+
     sort_by = sort_by_selection
     is_asc = true
     case sort_by_selection

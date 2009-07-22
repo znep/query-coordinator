@@ -56,8 +56,10 @@
                         { columnResized(datasetObj, c, f); })
                     .bind('sort_change', function (event)
                         { sortChanged(datasetObj); })
+                    .bind('columns_rearranged', function (event)
+                        { columnsRearranged(datasetObj); })
                     .blistTable({cellNav: false, selectionEnabled: false,
-                        generateHeights: false,
+                        generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },
                         manualResize: datasetObj.settings.manualResize,
@@ -137,8 +139,7 @@
                     // info with widths and positions
                     var colTranslate = function(col, i)
                     {
-                        var newCol = {id: col.id, name: col.name,
-                            position: i + 1, width: col.width};
+                        var newCol = {id: col.id, name: col.name, width: col.width};
                         if (col.body && col.body.children)
                         {
                             newCol.childColumns = $.map(col.body.children,
@@ -153,7 +154,9 @@
                 {
                     view.columns = null;
                 }
-                return $.extend(view, {grants: null, originalViewId: view.id});
+                delete view['grants'];
+                view.originalViewId = view.id;
+                return view;
             },
 
             // This keeps track of when the column summary data is stale and
@@ -552,6 +555,18 @@
         else
         {
             setTempView(datasetObj, datasetObj.settings._model.meta().view, 'sort');
+        }
+    };
+
+    var columnsRearranged = function(datasetObj)
+    {
+        var view = datasetObj.settings._model.meta().view;
+        if (datasetObj.settings.currentUserId == view.owner.id)
+        {
+            var modView = datasetObj.getViewCopy(true);
+            $.ajax({url: '/views/' + view.id + '.json',
+                    data: $.json.serialize(modView),
+                    type: 'PUT', contentType: 'application/json'});
         }
     };
 

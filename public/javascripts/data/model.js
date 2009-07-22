@@ -722,11 +722,33 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('row_remove', [ rows ]);
         }
 
+        this.moveColumn = function(oldPos, newPos)
+        {
+            var viewCols = $.grep(meta.view.columns, function(c)
+                { return c.position > 0 && (!c.flags ||
+                    $.inArray('hidden', c.flags) < 0); });
+            viewCols.sort(function(col1, col2)
+                { return col1.position - col2.position; });
+            viewCols.splice(newPos, 0, viewCols[oldPos]);
+            viewCols.splice((newPos < oldPos ? oldPos + 1 : oldPos), 1);
+            $.each(viewCols, function(i, c) { c.position = i + 1; });
+            meta.columns = null;
+            this.meta(meta);
+            $(listeners).trigger('columns_rearranged', [ this ]);
+        };
+
         /**
          * Notify the model of row changes.
          */
         this.change = function(rows) {
             $(listeners).trigger('row_change', [ rows ]);
+        }
+
+        /**
+         * Notify the model of metadata model changes.
+         */
+        this.metaChange = function() {
+            $(listeners).trigger('meta_change', [ this ]);
         }
 
         /**

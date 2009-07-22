@@ -1,3 +1,31 @@
+.blist-table-header .hover
+{
+    background-color: #ddeaf0;
+}
+
+.blist-th .dragHandle
+{
+    cursor: move;
+    float: left;
+    height: 100%;
+    position: relative;
+    width: 10px;
+    z-index: 1;
+}
+.blist-th.hover .dragHandle
+{
+    background-image: url(/stylesheets/images/content/table/column_drag_handle.png);
+    background-position: top left;
+    background-repeat: repeat-y;
+}
+.blist-th-drag
+{
+    background-color: #ddeaf0;
+    height: 100%;
+    top: 0;
+    z-index: 100;
+}
+
 .blist-th .sort,
 .blist-th .filter
 {
@@ -30,7 +58,7 @@
     height: 14px;
     margin-top: -7px;
     position: absolute;
-    right: 2px;
+    right: 3px;
     top: 50%;
     width: 14px;
 }
@@ -44,6 +72,17 @@
 .blist-th .menuLink.clicked
 {
     background-position: 0 -14px;
+}
+
+.dropIndicator
+{
+    background-color: #333333;
+    display: none;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 4px;
+    z-index: 99;
 }
 
 div.blist-table-active-container

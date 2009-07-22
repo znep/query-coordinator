@@ -94,13 +94,20 @@
 
 .blist-th
 {
-    position: relative;
     float: left;
-    white-space: nowrap;
-    overflow: hidden;
-    -moz-user-select: none;
+    position: relative;
+}
+
+.th-inner-container
+{
+    cursor: default;
+    height: 100%;
     -khtml-user-select: none;
+    -moz-user-select: none;
+    overflow: hidden;
     user-select: none;
+    white-space: nowrap;
+    width: 100%;
 }
 
 .blist-table-footer-scrolls

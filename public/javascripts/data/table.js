@@ -843,7 +843,7 @@
         var hotRowID;
         var hotCellTimer;
         var hotHeader;
-        var hotHeaderMode; // 1 = hover, 2 = resize, 3 = control hover
+        var hotHeaderMode; // 1 = hover, 2 = resize, 3 = control hover, 4 = move
         var hotHeaderDrag;
         var mouseDownAt;
         var dragHeaderLeft;
@@ -911,45 +911,53 @@
             return cell;
         }
 
-        var handleHeaderHover = function(event) {
+        var handleHeaderHover = function(event)
+        {
+            if (hotHeaderMode == 4) { return false; }
+
             var container = findContainer(event, '.blist-tr, .blist-table-header');
             if (!container)
                 return false;
 
             var x = event.clientX;
             var hh, hhm;
+
             var $headers = $('.blist-th:not(.blist-table-ghost), .blist-tdh',
-                container);
-            $headers.each(function(i) {
-                var header = $(this);
-                var left = header.offset().left;
-                if (left > x)
-                    return false;
-                var width = header.outerWidth();
-                var right = left + width;
+                    container);
+            $headers.each(function(i)
+                {
+                    var header = $(this);
+                    var left = header.offset().left;
+                    if (left > x) { return false; }
+                    var width = header.outerWidth();
+                    var right = left + width;
 
-                var isCtl = header.is('.blist-opener');
-                var isSizable = !isCtl && !header.is('.nested_table') &&
-                    !(options.disableLastColumnResize &&
-                        (i == ($headers.length - 1)));
+                    var isCtl = header.is('.blist-opener');
+                    var isSizable = !isCtl && !header.is('.nested_table') &&
+                        !(options.disableLastColumnResize &&
+                            (i == ($headers.length - 1)));
 
-                if (isSizable && x >= right - options.resizeHandleAdjust && x < right + options.resizeHandleAdjust) {
-                    hh = header[0];
-                    hhm = 2;
-                    dragHeaderLeft = left;
-                    return false;
-                }
+                    if (isSizable && x >= right - options.resizeHandleAdjust &&
+                        x < right + options.resizeHandleAdjust)
+                    {
+                        hh = header[0];
+                        hhm = 2;
+                        dragHeaderLeft = left;
+                        return false;
+                    }
 
-                if (x >= left && x < right) {
-                    hh = header[0];
-                    hhm = isCtl ? 3 : 1;
-                    return false;
-                }
-            });
+                    if (x >= left && x < right)
+                    {
+                        hh = header[0];
+                        hhm = isCtl ? 3 : 1;
+                        return false;
+                    }
+                });
 
-            // TODO -- remove "hhm != 1" when column moving is implemented
-            if (hh && hhm != 1) {
-                if (hh != hotHeader || hhm != hotHeaderMode) {
+            if (hh)
+            {
+                if (hh != hotHeader || hhm != hotHeaderMode)
+                {
                     hotHeader = hh;
                     hotHeaderMode = hhm;
                     if (hotHeaderMode == 2)
@@ -959,7 +967,6 @@
                 }
                 return true;
             }
-
             return false;
         }
 
@@ -984,12 +991,6 @@
             updateCellNavCues();
         }
 
-        var handleColumnMove = function(event) {
-            var delta = { x: event.clientX - mouseDownAt.x, y: event.clientY - mouseDownAt.y };
-
-            // TODO -- implement column dragging support...
-        }
-
         var unHotRow = function(rowID)
         {
             inside.find('#' + id + '-r' + rowID)
@@ -999,7 +1000,7 @@
         }
 
         var isSelectingFrom = function(cell) {
-            if (!cellNav.length)
+            if (!cellNav.length || !cell || !cell.parentNode)
                 return false;
             var row = getRow(cell);
             var sel = cellNav[cellNav.length - 1];
@@ -1009,13 +1010,13 @@
         var onMouseMove = function(event)
         {
             if (hotHeaderDrag)
-                if (hotHeaderMode == 1) {
-                    handleColumnMove(event);
-                    return;
-                } else if (hotHeaderMode == 2) {
+            {
+                if (hotHeaderMode == 2) {
                     handleColumnResize(event);
                     return;
                 }
+                else if (hotHeaderMode == 4) { return; }
+            }
 
             // Handle mouse down movement
             if (mouseDownAt) {
@@ -1180,6 +1181,8 @@
 
             clickTarget = event.target;
 
+            mouseDownAt = { x: event.clientX, y: event.clientY };
+
             if (hotHeader && hotHeaderMode != 3) {
                 clickTarget = null;
                 hotHeaderDrag = true;
@@ -1188,7 +1191,6 @@
                 return false;
             }
 
-            mouseDownAt = { x: event.clientX, y: event.clientY };
             selectFrom = null;
 
             if (cellNav)
@@ -1220,8 +1222,12 @@
 
             if (hotHeaderDrag) {
                 hotHeaderDrag = false;
-                onMouseMove(event);
+                // First finish up resize before doing last mouse move,
+                // or else resizing when at the right edge of a wide dataset
+                // will cause the mouse events to screwy as the scrollbar
+                // shrinks and the header moves
                 if (hotHeaderMode == 2) { handleColumnResize(event, true); }
+                onMouseMove(event);
                 event.stopPropagation();
                 event.preventDefault();
                 return true;
@@ -1445,6 +1451,13 @@
             .dblclick(onDoubleClick)
             .keydown(onKeyDown)
             .html(headerStr);
+
+        if (options.columnDrag)
+        {
+            $outside.append($('<div class="dropIndicator"/>'));
+            $dropIndicator = $('.dropIndicator', $outside)
+                .css('left', -10000).hide();
+        }
 
         var $lockedScrolls = $outside.find('.blist-table-locked-scrolls');
         var $lockedHeader = $lockedScrolls.find('.blist-table-locked-header');
@@ -2252,21 +2265,29 @@
                     colName,
                     '" uid="',
                     col.uid,
-                    '">',
+                    '"><div class="th-inner-container">');
+                if (options.columnDrag)
+                {
+                    html.push(
+                            '<div class="dragHandle"',
+                            options.generateHeights ? ' style="height: ' +
+                            rowOffset + 'px"' : '',
+                            '></div>');
+                }
+                html.push(
                     '<span class="blist-th-icon"></span>',
                     '<span class="blist-th-name">',
                     colName,
-                    '</span>');
-                html.push('<div class="filter"',
-                        options.generateHeights ? ' style="height: ' +
+                    '</span>',
+                    '<div class="filter"',
+                    options.generateHeights ? ' style="height: ' +
+                    rowOffset + 'px"' : '',
+                    '></div>',
+                    '<div class="sort sort-desc" title="Sort ascending"',
+                    options.generateHeights ? ' style="height: ' +
                         rowOffset + 'px"' : '',
-                        '></div>');
-                html.push(
-                        '<div class="sort sort-desc" title="Sort ascending"',
-                        options.generateHeights ? ' style="height: ' +
-                        rowOffset + 'px"' : '',
-                        '></div>');
-                html.push('</div>');
+                    '></div>',
+                    '</div></div>');
             }
             if (options.showGhostColumn)
             {
@@ -2297,8 +2318,47 @@
                             sort(index);
                         }
                     })
-                    .hover(function () { $(this).addClass('hover') },
+                    .hover(function ()
+                        { if (hotHeaderMode != 4) { $(this).addClass('hover'); } },
                         function () { $(this).removeClass('hover') });
+                if (options.columnDrag)
+                {
+                    $(this)
+                        .draggable({
+                            appendTo: '.blist-table', axis: 'x',
+                            drag: function(event, ui)
+                            {
+                                var dragPos = findHeaderDragPosition(event);
+                                if (curDropPos != dragPos)
+                                {
+                                    curDropPos = dragPos;
+                                    drawHeaderDragPosition(curDropPos);
+                                }
+                            },
+                            handle: '.dragHandle',
+                            helper: function(event)
+                            {
+                                var $drag = $('<div class="blist-th-drag"/>');
+                                $drag.append($(this).clone());
+                                return $drag;
+                            },
+                            opacity: 0.85,
+                            start: function(event, ui)
+                            {
+                                hotHeaderDrag = true;
+                                hotHeaderMode = 4;
+                            },
+                            stop: function(event, ui)
+                            {
+                                hotHeaderMode = null;
+                                $dropIndicator.css('left', -10000).hide();
+                                if (curDropPos == null) { return; }
+
+                                var col = $(this).data('column');
+                                model.moveColumn(col.index, curDropPos);
+                                curDropPos = null;
+                            }});
+                }
 
                 if (options.headerMods != null)
                 {
@@ -2318,6 +2378,55 @@
             // Render sort & filter headers
             configureSortHeader();
             configureFilterHeaders();
+        };
+
+        var curDropPos = null;
+        var $dropIndicator;
+        var findHeaderDragPosition = function(event)
+        {
+            var x = event.pageX;
+            var $headers = $('.blist-th:not' +
+                '(.ui-draggable-dragging, .blist-table-ghost)', $header);
+            if (x < $headers.eq(0).offset().left) { return 0; }
+            var $lastHeader = $headers.eq($headers.length - 1);
+            if (x > $lastHeader.offset().left + $lastHeader.outerWidth())
+            { return $headers.length }
+
+            var dropPos;
+            $headers.each(function(i)
+            {
+                var $col = $(this);
+                var left = $col.offset().left;
+                if (x < left) { return true; }
+
+                var width = $col.outerWidth();
+                var right = left + width;
+                if (x > right) { return true; }
+
+                dropPos = (x - left) < (width / 2) ? i : i + 1;
+                return false;
+            });
+            return dropPos;
+        };
+
+        var drawHeaderDragPosition = function(pos)
+        {
+            var $headers = $('.blist-th:not' +
+                '(.ui-draggable-dragging, .blist-table-ghost)', $header);
+            var x;
+            if (pos >= $headers.length)
+            {
+                var $lh = $headers.eq($headers.length - 1);
+                x = $lh.offset().left + $lh.outerWidth();
+            }
+            else
+            {
+                x = $headers.eq(pos).offset().left;
+            }
+            x += lockedWidth - $headerScrolls.offset().left -
+                $dropIndicator.width() / 2;
+
+            $dropIndicator.css('left', x).show();
         };
 
         var updateHeader = function (model)
@@ -2652,6 +2761,7 @@
             initMeta(model);
             renderHeader();
             renderFooter();
+            initRows(model);
         });
         $this.bind('header_change', function(event, model)
         {
@@ -2687,6 +2797,7 @@
 
     var blistTableDefaults = {
         cellExpandEnabled: true,
+        columnDrag: false,
         disableLastColumnResize: false,
         editEnabled: false,
         generateHeights: true,

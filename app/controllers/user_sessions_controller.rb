@@ -17,7 +17,7 @@ class UserSessionsController < ApplicationController
     if @user_session.save
       respond_to do |format|
         format.html { redirect_back_or_default(home_path) }
-        format.data { render :json => {:user_id => current_user.id}}
+        format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback] }
       end
     else
       notice = "Unable to login with that username and password;" +
@@ -27,7 +27,7 @@ class UserSessionsController < ApplicationController
           flash[:notice] = notice
           redirect_to login_path
         end
-        format.data { render :json => {:error => notice}}
+        format.json { render :json => {:error => notice}, :callback => params[:callback] }
       end
     end
   end

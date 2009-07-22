@@ -138,6 +138,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.with_options :protocol => "https", :port => SslRequirement.port_for_protocol('https') do |https|
     https.login '/login', :controller => 'user_sessions', :action => 'new'
+    https.login_json '/login.json', :controller => 'user_sessions', :action => 'create', :format => 'json'
     https.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
     https.signup '/signup', :controller => 'accounts', :action => 'new'
   end

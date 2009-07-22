@@ -178,6 +178,7 @@ blist.widget.sizeGrid = function ()
     
     $innerContainer.height(newContainerHeight);
     $gridContainer.height(newGridHeight);
+    $grid.height(newGridHeight);
     $grid.trigger('resize');
 };
 

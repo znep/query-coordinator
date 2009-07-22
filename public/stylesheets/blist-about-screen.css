@@ -333,6 +333,7 @@ span.helpie
     font-size: 1.2em;
     height: 20px;
     line-height: 20px;
+    overflow: hidden;
     padding-left: 25px;
 }
 

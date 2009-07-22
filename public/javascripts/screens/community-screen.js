@@ -71,6 +71,12 @@ blist.community.searchSubmitHandler = function(event)
     event.preventDefault();
     var $form = $(this);
     
+    var query = $(this).find('#search').val();
+    if (query == "")
+    {
+        return;
+    }
+
     $(".simpleTabs li").removeClass("active");
     if ($("#tabSearch").length > 0)
     {

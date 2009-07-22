@@ -1,14 +1,12 @@
 var discoverNS = blist.namespace.fetch('blist.discover');
 
-blist.discover.isFirstLoad = true;
+blist.discover.isTabDirty = {
+    "SEARCH": false,
+    "POPULAR": false,
+    "ALL": false
+};
 blist.discover.historyChangeHandler = function (hash)
 {
-    if ((hash == "") && !blist.discover.isFirstLoad)
-    {
-        hash = "type=POPULAR";
-    }
-    blist.discover.isFirstLoad = false;
-
     // Tab/container names
     var tabs = {
         "SEARCH": "#tabSearch",
@@ -22,17 +20,18 @@ blist.discover.historyChangeHandler = function (hash)
     };
 
     // Special cases to handle default tab actions
-    switch(hash)
+    if (hash == "")
     {
-        case "results":
-            $(".simpleTabs").simpleTabNavigate().activateTab(tabs["SEARCH"]);
-            return;
-        case "top":
-            $(".simpleTabs").simpleTabNavigate().activateTab(tabs["POPULAR"]);
-            return;
-        case "all":
-            $(".simpleTabs").simpleTabNavigate().activateTab(tabs["ALL"]);
-            return;
+        hash = "POPULAR"
+    }
+    if (blist.discover.isTabDirty[hash] === false)
+    {
+        $(".simpleTabs").simpleTabNavigate().activateTab(tabs[hash]);
+        return;
+    }
+    else if (blist.discover.isTabDirty[hash] === true)
+    {
+        hash = "type=" + hash;
     }
 
     // Find active tab
@@ -49,6 +48,7 @@ blist.discover.historyChangeHandler = function (hash)
     // Select active tab
     $(".simpleTabs").simpleTabNavigate().activateTab(tabSelector);
     $(tabSelector).find('a').attr("href", "#" + hash);
+    blist.discover.isTabDirty[activeTab] = true;
 
     // Add search tab if necessary
     if (activeTab == "SEARCH")
@@ -106,9 +106,14 @@ blist.discover.sortSelectChangeHandler = function (event)
 
     var hash = window.location.href.replace(/^.*#*/, '');
 
-    if (hash == 'top' || hash == '') hash = 'type=POPULAR';
-    if (hash == 'all') hash = 'type=ALL';
-    if (hash == 'results') hash = 'type=SEARCH';
+    if (hash == "")
+    {
+        hash = "type=POPULAR";
+    }
+    if (blist.discover.isTabDirty[hash] !== undefined)
+    {
+        hash = "type=" + hash;
+    }
 
     hash = hash.replace(/sort_by=[A-Z_]*/gi, '');
     hash += "&sort_by=" + $sortSelect.val();

@@ -26,6 +26,13 @@ blist.data.TableNavigation = function(model, layout) {
     var selectionLevel = -1;
     var selectionBoxes = [];
 
+    // Retrieve a value from a row
+    var getRowValue = function(row, column) {
+        var value;
+        eval('value = row' + column.dataLookupExpr + ';');
+        return value;
+    }
+
     // Convert selection into a sorted array of arrays for quickly identifying selected cells
     var convertCellSelection = function() {
         var converted = [];

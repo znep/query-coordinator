@@ -52,7 +52,7 @@ class AccountsController < ApplicationController
           flash[:error] = error
           return (redirect_to signup_path)
         end
-        format.json { return render :json => {:error => error}, :callback => params[:callback]}
+        format.json { return (render :json => {:error => error}, :callback => params[:callback]) }
       end
     end
 

@@ -1,6 +1,5 @@
 module CommunitiesHelper
 
-
   def get_html_for_activity(activity, style = "short")
     out = Array.new
     unless (style == "short")
@@ -75,12 +74,7 @@ module CommunitiesHelper
   end
   
   def community_sort_select_options(current_sort = nil)
-    out = ""
-    User.sorts.each do |sort|
-      selected = current_sort == sort[0] ? " selected=\"selected\"" : ""
-      out += "<option value=\"#{sort[0]}\"#{selected}>#{sort[1]}</option>"
-    end
-    out
+    options_for_select(User.sorts.map { |a, b| [b, a] }, current_sort)
   end
 
 end

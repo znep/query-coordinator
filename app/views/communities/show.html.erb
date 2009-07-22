@@ -62,14 +62,14 @@
       <ul class="simpleTabs tabList clearfix">
         <%- if (@search_members && @search_members.length > 0) -%>
           <li id="tabSearch" class="active">
-            <div class="wrapper"><a href="#results">Search Results</a></div>
+            <div class="wrapper"><a href="#SEARCH">Search Results</a></div>
           </li>
         <%- end -%>
         <li id="tabTopMembers" class="<%= @search_views.nil? ? 'active' : '' %>">
-          <div class="wrapper"><a href="#top_members">Top 100</a></div>
+          <div class="wrapper"><a href="#TOPMEMBERS">Top 100</a></div>
         </li>
-        <li id="tabTopUploaders"><div class="wrapper"><a href="#top_uploaders">Top Uploaders</a></div></li>
-        <li id="tabAllMembers"><div class="wrapper"><a href="#all">All Members</a></div></li>
+        <li id="tabTopUploaders"><div class="wrapper"><a href="#TOPUPLOADERS">Top Uploaders</a></div></li>
+        <li id="tabAllMembers"><div class="wrapper"><a href="#ALLMEMBERS">All Members</a></div></li>
       </ul>
     </div>
     <div id="communityTabSearchResults" class="tabContentContainer clearfix<%= @search_members.nil? ? '' : ' active' %>">
@@ -78,7 +78,7 @@
           :tab_title => "Search Results for \"#{@search_term}\"", 
           :members => @search_members, :members_total => @search_members_total,
           :current_page => 1, :type => "SEARCH", :current_filter => nil, 
-          :sort_by => "LAST_CHANGED", :tag_list => nil, :current_tag => nil,
+          :sort_by => nil, :tag_list => nil, :current_tag => nil,
           :search_term => @search_term , :search_type => @search_type}) %>
       <%- else -%>
         <%= render(:partial => "member_list_tab_noresult", :locals => { :term => @search_term }) %>
@@ -114,6 +114,10 @@
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="tagCloud"></div>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud",
+  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", "plugins/jquery.history", 
   "widgets/simple-tab-navigate", "screens/community-screen", :cache => "cache/community_show_all" %>
+  
+  <script type="text/javascript" charset="utf-8">
+    communityNS.filterUrl = "<%= filter_community_path %>";
+  </script>
 <% end %>

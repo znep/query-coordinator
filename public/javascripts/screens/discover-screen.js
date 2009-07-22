@@ -22,6 +22,7 @@ blist.discover.historyChangeHandler = function (hash)
     // Special cases to handle default tab actions
     if (hash == "")
     {
+        // default tab is popular
         hash = "POPULAR"
     }
     if (blist.discover.isTabDirty[hash] === false)
@@ -104,10 +105,11 @@ blist.discover.sortSelectChangeHandler = function (event)
     var $sortSelect = $(this);
     var sortUrl = $sortSelect.closest("form").attr("action");
 
-    var hash = window.location.href.replace(/^.*#*/, '');
+    var hash = window.location.href.match(/#/) ? window.location.href.replace(/^.*#/, '') : '';
 
     if (hash == "")
     {
+        // default tab is popular
         hash = "type=POPULAR";
     }
     if (blist.discover.isTabDirty[hash] !== undefined)

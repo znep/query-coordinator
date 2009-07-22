@@ -1,26 +1,28 @@
 <div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
   <div class="tabContent">
     <h2><%= tab_title %></h2>
-    <div class="contentSort<%= (type == 'SEARCH') ? ' hide' : '' %>">
-      <% form_tag(filter_community_path(:type => type, :filter => current_filter, :tag => current_tag, :search => search_term), :class => "sortForm") do %>
-        <p>
-          Sort by
-          <%= select_tag("sort_by", community_sort_select_options(sort_by), :id => "sort_by_" + type) %>
-        </p>
-      <% end %>
-    </div>
+    <%- if members_total > 0 -%>
+      <div class="contentSort<%= (type == 'SEARCH') ? ' hide' : '' %>">
+        <% form_tag(filter_community_path(:type => type, :filter => current_filter, :tag => current_tag, :search => search_term), :class => "sortForm") do %>
+          <p>
+            Sort by
+            <%= select_tag("sort_by", community_sort_select_options(sort_by), :id => "sort_by_" + type) %>
+          </p>
+        <% end %>
+      </div>
   
-    <ul class="communityContentList">
-      <%= render(:partial => "member_list_item", :collection => members) %>
-    </ul>
+      <ul class="communityContentList">
+        <%= render(:partial => "member_list_item", :collection => members) %>
+      </ul>
     
-    <div class="memberPager">
-      <%= create_pagination(members_total, @page_size, current_page, 
-          filter_community_path({
-            :type => type, :filter => current_filter, :sort_by => sort_by, 
-            :tag => current_tag, :search => search_term, :search_type => search_type})) %>
-    </div>
-    
+      <div class="memberPager">
+        <%= create_pagination(members_total, @page_size, current_page, generate_filter_url(@current_state, type)) %>
+      </div>
+    <%- else -%>
+      <p class="clearBoth">
+        There are no people that match that filter.  Try broadening your search.
+      </p>
+    <%- end -%>
   </div>
 </div></div></div>
 
@@ -30,7 +32,7 @@
       <h2>Show People</h2>
       <ul class="filterList hilightList">
         <li><%= link_to("<span>With public #{t(:blists_name)}</span>", 
-                filter_community_path({:type => type, :filter => {:publicOnly => true}, :tag => current_tag}),
+                generate_filter_url(@current_state, type, {:filter => {"publicOnly" => "true"}}),
                 :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
       </ul>
     
@@ -39,15 +41,13 @@
         <%- tag_list.each do |tag| -%>
           <li>
             <%= link_to("<span>#{h(tag.name)}</span>", 
-                filter_community_path({ 
-                  :type => type, :filter => current_filter, :tag => tag.name }),
+                  generate_filter_url(@current_state, type, {:tag => tag.name}),
                   :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
           </li>
         <%- end -%>
         <li class="moreLink">
           <%= link_to("More", 
-              tags_community_path({
-                :type => type, :filter => current_filter}), 
+              tags_community_path + generate_filter_url(@current_state, type, {}, '?'), 
                 :class => "moreTagsLink") %>
         </li>
       </ul>

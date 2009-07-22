@@ -88,10 +88,9 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     event.preventDefault();
                     var $form = $(this);
                     $.ajax({
-                        url: $form.attr('action'),
-                        type: "POST",
+                        url: blist.blistGrid.secureUrl + '/signup.json',
                         data: $form.find(':input'),
-                        dataType: "json",
+                        dataType: "jsonp",
                         success: signupSuccess
                     });
                 });

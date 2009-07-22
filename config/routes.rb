@@ -141,6 +141,7 @@ ActionController::Routing::Routes.draw do |map|
     https.login_json '/login.json', :controller => 'user_sessions', :action => 'create', :format => 'json'
     https.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
     https.signup '/signup', :controller => 'accounts', :action => 'new'
+    https.signup_json '/signup.json', :controller => 'accounts', :action => 'create', :format => 'json'
   end
 
   map.resources :user_sessions

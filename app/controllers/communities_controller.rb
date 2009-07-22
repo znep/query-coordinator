@@ -48,11 +48,11 @@ class CommunitiesController < ApplicationController
     #   <reason>testing lucene</reason>
     #   <details>enabling lucene for staging environment (QA), kevin, kostub, and chris</details>
     #   <am_i_sorry>true</am_i_sorry>
-      if ENV['RAILS_ENV'] == 'staging' ||
+      if (ENV['RAILS_ENV'] == 'staging' ||
         (current_user &&
          (current_user.login == 'kmerritt' ||
           current_user.login == 'kostub' ||
-          current_user.login == 'chris.metcalf'))
+          current_user.login == 'chris.metcalf'))) && type == "SEARCH"
         use_lucene_search = true
       end
     # </HACK>

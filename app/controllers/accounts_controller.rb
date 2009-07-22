@@ -25,7 +25,7 @@ class AccountsController < ApplicationController
                 :password => params[:user][:password_old]})
         end
       end
-    rescue CoreServerError => e
+    rescue CoreServer::CoreServerError => e
       error_msg = e.error_message
     end
 
@@ -45,7 +45,7 @@ class AccountsController < ApplicationController
     # First, try creating the user
     begin
       user = User.create(account, params[:inviteToken])
-    rescue CoreServerError => e
+    rescue CoreServer::CoreServerError => e
       error = e.error_message
       respond_to do |format|
         format.html do
@@ -66,7 +66,7 @@ class AccountsController < ApplicationController
       if params[:profile_image] && !params[:profile_image].blank?
         begin
           user.profile_image = params[:profile_image]
-        rescue CoreServerError => e
+        rescue CoreServer::CoreServerError => e
           logger.warn "Unable to update profile photo: #{e.error_code} #{e.error_message}"
         end
       end

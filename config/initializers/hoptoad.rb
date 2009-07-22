@@ -7,4 +7,6 @@ HoptoadNotifier.configure do |config|
   config.environment_filters << "AWS_SECRET"
   config.environment_filters << "EC2_CERT"
   config.environment_filters << "EC2_PRIVATE_KEY"
+
+  config.ignore       << CoreServer::ResourceNotFound
 end

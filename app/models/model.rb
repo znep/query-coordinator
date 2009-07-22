@@ -1,16 +1,5 @@
 require 'json'
 
-class CoreServerError < RuntimeError
-  attr :source
-  attr :error_code
-  attr :error_message
-  def initialize(source, error_code, error_message)
-    @source = source
-    @error_code = error_code
-    @error_message = error_message
-  end
-end
-
 class Model
   extend ActiveSupport::Memoizable
 
@@ -367,6 +356,7 @@ private
       http.request(request)
     end
 
+    raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
     if !result.is_a?(Net::HTTPSuccess)
       parsed_body = self.parse(result.body)
       pp result.body
@@ -376,7 +366,7 @@ private
                       (parsed_body.data['code'] || '')) + " : " +
                     (parsed_body.nil? ? 'No response' :
                       (parsed_body.data['message'] || '')))
-      raise CoreServerError.new(
+      raise CoreServer::CoreServerError.new(
         "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
         parsed_body.data['code'],
         parsed_body.data['message'])

@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
 
   filter_parameter_logging 'password'
 
+  rescue_from('CoreServer::ResourceNotFound') { |exception| render_404 }
+
   require 'pp'
 
   # See ActionController::RequestForgeryProtection for details

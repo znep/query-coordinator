@@ -68,7 +68,7 @@ class ProfileController < ApplicationController
 
     begin
       current_user.update_attributes!(params[:user])
-    rescue CoreServerError => e
+    rescue CoreServer::CoreServerError => e
       error_msg = e.error_message
     end
 

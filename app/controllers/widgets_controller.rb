@@ -60,15 +60,15 @@ class WidgetsController < ApplicationController
     
     begin
       @view = View.find(params[:id])
-    rescue CoreServerError => e
+    rescue CoreServer::ResourceNotFound
+      flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+        ' cannot be found, or has been deleted.'
+      return (render 'shared/error')
+    rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required' ||
         e.error_code == 'permission_denied'
         flash[:error] = 'You do not have permissions to view this ' +
           I18n.t(:blist_name).downcase
-        return (render 'shared/error')
-      elsif e.error_code == 'not_found'
-        flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
-          ' cannot be found, or has been deleted.'
         return (render 'shared/error')
       else
         flash[:error] = e.error_message

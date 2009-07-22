@@ -23,7 +23,7 @@ class InvitationController < ApplicationController
       
         begin
           InvitationRecord.create(invite)
-        rescue CoreServerError => e
+        rescue CoreServer::CoreServerError => e
           errors << { :removeId => recipient["id"] }
         end
       end

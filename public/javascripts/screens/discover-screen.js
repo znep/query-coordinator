@@ -134,7 +134,14 @@ blist.discover.tagModalShowHandler = function(hash)
 blist.discover.searchSubmitHandler = function(event)
 {
     event.preventDefault();
-    var hash = "type=SEARCH&search=" + $(this).find('#search').val();
+
+    var query = $(this).find('#search').val();
+    if (query == "")
+    {
+        return;
+    }
+
+    var hash = "type=SEARCH&search=" + query;
     window.location.href = '#' + hash;
     $.historyLoad(hash);
     return false;

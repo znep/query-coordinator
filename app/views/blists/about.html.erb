@@ -308,7 +308,7 @@
       <ul class="columnList">
         <%- @view.columns.slice(0, 20).each do |column| -%>
           <%- unless (column.flags.any? {|flag| flag.data == "hidden"}) -%>
-            <li class="<%= get_datatype_class(column) %>"><%= h(column.name) %></li>
+            <li class="<%= get_datatype_class(column) %> clipText" title="<%= h(column.name) %>"><%= h(column.name) %></li>
           <%- end -%>
         <%- end -%>
         <%- if (@view.columns.length > 20) -%>

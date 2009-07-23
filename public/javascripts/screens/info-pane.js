@@ -216,6 +216,7 @@
             initialTab: '',
             isWidget: false,
             widgetMetaContainerSelector: "#widgetMeta",
+            widgetOuterContainerSelector: ".gridInner", 
             initialMetaHeight: 0
         },
         prototype: {
@@ -296,6 +297,7 @@
                 $tab[0].scrollIntoView();
             },
             expandTabPanels: function(openCallback) {
+                
                 var tabNavigator = this;
 
                 // Toggle all arrows.
@@ -353,7 +355,7 @@
                     $metaContainer.animate(
                         { top: metaPosition + "px" },
                         function(){
-                            $metaContainer.removeClass("expanded");
+                            $metaContainer.removeClass("expanded").height("");
                             $(tabNavigator.settings.expandableSelector).each(function()
                             {
                                 $(this).hide();
@@ -375,10 +377,13 @@
                     }
                     $(tabNavigator.currentList).data("isExpanded", true);
                     
-                    $metaContainer.addClass("expanded");
+                    // Set the height explicitly because IE6 cannot render height 100% properly.
+                    $metaContainer.addClass("expanded")
+                                    .height($(tabNavigator.settings.widgetOuterContainerSelector).height());
                     $metaContainer.animate({
                         top: "0"
                     });
+                    
                 }
                 
                 // Toggle all panels.

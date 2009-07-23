@@ -219,6 +219,118 @@
                 parseFloat(getColumnStyle(col).width)) + paddingX;
         };
 
+
+        /*** COLUMN SELECTION ***/
+
+        var selectedColumns = {};
+        var columnSelectionMap = [];
+        var isColumnSelection = false;
+
+        var toggleSelectColumn = function(col)
+        {
+            if (selectedColumns[col.id])
+            {
+                return unselectColumn(col);
+            }
+            else
+            {
+                return selectColumn(col);
+            }
+        };
+
+        var selectColumn = function(col)
+        {
+            var colId = col.id;
+            selectedColumns[colId] = col;
+
+            // We need to figure out which cells are selected in rows, so
+            // check the rendered columns to see how they match up to our
+            // logical column
+            // FIXME: Should we be hard-coding layout[0]?
+            // Can we determine the level?
+            $.each(layout[0], function(i, c)
+            {
+                if (c.logical == col.index || (c.mcol && c.mcol.id == col.id))
+                {
+                    columnSelectionMap[i] = true;
+                }
+            });
+            updateColumnSelection();
+            return [col];
+        };
+
+        var unselectColumn = function(col)
+        {
+            delete selectedColumns[col.id];
+            // FIXME: Should we be hard-coding layout[0]?
+            // Can we determine the level?
+            $.each(layout[0], function(i, c)
+            {
+                if (c.logical == col.index || (c.mcol && c.mcol.id == col.id))
+                {
+                    delete columnSelectionMap[i];
+                }
+            });
+            updateColumnSelection();
+            return [col];
+        };
+
+        var updateColumnSelection = function()
+        {
+            if (options.columnSelection)
+            {
+                $header.find('.blist-select-col').removeClass('blist-select-col');
+                inside.find('.col-select-holder').remove();
+                $.each(selectedColumns, function (colId, col)
+                {
+                    var colLeft = $header.find('.' + id + '-c' + col.index)
+                    .addClass('blist-select-col').offset().left;
+                    var colClass = getColumnClass(col);
+                    inside.append('<div class="col-select-holder ' +
+                        colClass + '"/>')
+                    .find('.col-select-holder.' + colClass).css('left',
+                        colLeft - $header.offset().left + lockedWidth);
+                });
+                isColumnSelection = $.grep(columnSelectionMap,
+                        function(v, i) { return v; }).length > 0;
+            }
+            updateCellNavCues();
+        };
+
+        var refreshColumnSelection = function()
+        {
+            if (!options.columnSelection) { return; }
+
+            // First update the column objects in the selection list
+            var newSel = {};
+            $.each(selectedColumns, function(colId, col)
+            {
+                var matches = $.grep(columns, function(c)
+                    { return c.id == col.id; });
+                if (matches.length > 0) { newSel[colId] = matches[0]; }
+            });
+            selectedColumns = newSel;
+
+            columnSelectionMap = [];
+            $.each(selectedColumns, function(colId, col)
+            {
+                // We need to figure out which cells are selected in rows, so
+                // check the rendered columns to see how they match up to our
+                // logical column
+                // FIXME: Should we be hard-coding layout[0]?
+                // Can we determine the level?
+                $.each(layout[0], function(i, c)
+                {
+                    if (c.logical == col.index || (c.mcol && c.mcol.id == col.id))
+                    {
+                        columnSelectionMap[i] = true;
+                    }
+                });
+            });
+            updateColumnSelection();
+        };
+
+
         /*** CELL SELECTION AND NAVIGATION ***/
 
         // Cell navigation model and logic
@@ -249,7 +361,7 @@
         var setRowSelection = function(row, selmap) {
             row.selected = true;
             for (var pos = 0, node = row.row.firstChild; node; node = node.nextSibling, pos++) {
-                if (selmap[pos]) {
+                if (selmap[pos] || columnSelectionMap[pos]) {
                     if (!node.selected) {
                         $(node).addClass('blist-cell-selected');
                         node._sel = true;
@@ -288,7 +400,8 @@
             var rows = getRenderedRowsWithPosition();
 
             // Update selection information
-            cellNav.processSelection(rows, setRowSelection, clearRowSelection);
+            cellNav.processSelection(rows, setRowSelection, clearRowSelection,
+                isColumnSelection);
         }
 
         var $activeContainer;
@@ -845,6 +958,7 @@
         var hotHeader;
         var hotHeaderMode; // 1 = hover, 2 = resize, 3 = control hover, 4 = move
         var hotHeaderDrag;
+        var skipHeaderClick;
         var mouseDownAt;
         var dragHeaderLeft;
         var clickTarget;
@@ -988,7 +1102,7 @@
             }
             col.width = width;
             model.colWidthChange(col, isFinished);
-            updateCellNavCues();
+            updateColumnSelection();
         }
 
         var unHotRow = function(rowID)
@@ -1007,6 +1121,35 @@
             return cell.parentNode.childNodes[sel[0]] == cell && sel[1] == model.index(row);
         }
 
+        var getHeaderUnderMouse = function(pageX)
+        {
+            var $headers = $('.blist-th:not' +
+                '(.ui-draggable-dragging, .blist-table-ghost)', $header);
+            if (pageX < $headers.eq(0).offset().left) { return null; }
+            var $lastHeader = $headers.eq($headers.length - 1);
+            if (pageX > $lastHeader.offset().left + $lastHeader.outerWidth())
+            { return null; }
+
+            var $curHeader;
+            $headers.each(function(i)
+            {
+                var $col = $(this);
+                var left = $col.offset().left;
+                if (pageX < left) { return true; }
+
+                var width = $col.outerWidth();
+                var right = left + width;
+                if (pageX > right) { return true; }
+
+                $curHeader = $col;
+                return false;
+            });
+            return $curHeader;
+        };
+
+        var $curHeaderSelect;
+        var origColSelects = null;
+        var curColSelects = {};
         var onMouseMove = function(event)
         {
             if (hotHeaderDrag)
@@ -1016,6 +1159,39 @@
                     return;
                 }
                 else if (hotHeaderMode == 4) { return; }
+                else if (hotHeaderMode == 1 && options.columnSelection)
+                {
+                    if (!origColSelects)
+                    {
+                        origColSelects = {};
+                        $.each(selectedColumns, function(colId, col)
+                                { origColSelects[colId] = true; });
+                    }
+
+                    var $curHeader = getHeaderUnderMouse(event.pageX);
+                    if ($curHeader && $curHeader.index($curHeaderSelect) < 0)
+                    {
+                        var curCol = $curHeader.data('column');
+                        if ($curHeaderSelect && curColSelects[curCol.id])
+                        {
+                            var prevCol = $curHeaderSelect.data('column');
+                            delete curColSelects[prevCol.id];
+                            if (!origColSelects[prevCol.id])
+                            {
+                                unselectColumn(prevCol);
+                            }
+                        }
+                        else
+                        {
+                            curColSelects[curCol.id] = true;
+                            if (!origColSelects[curCol.id])
+                            {
+                                selectColumn(curCol);
+                            }
+                        }
+                        $curHeaderSelect = $curHeader;
+                    }
+                }
             }
 
             // Handle mouse down movement
@@ -1221,12 +1397,16 @@
             if (isEdit) { return; }
 
             if (hotHeaderDrag) {
+                $curHeaderSelect = null;
+                origColSelects = null;
+                curColSelects = {};
                 hotHeaderDrag = false;
                 // First finish up resize before doing last mouse move,
                 // or else resizing when at the right edge of a wide dataset
                 // will cause the mouse events to screwy as the scrollbar
                 // shrinks and the header moves
                 if (hotHeaderMode == 2) { handleColumnResize(event, true); }
+                if (hotHeaderMode > 1) { skipHeaderClick = true; }
                 onMouseMove(event);
                 event.stopPropagation();
                 event.preventDefault();
@@ -2308,8 +2488,23 @@
 
                 $(this)
                     .data('column', columns[index])
-                    .bind('table_click', function()
+                    .bind('click', function(event)
                     {
+                        if (skipHeaderClick)
+                        {
+                            skipHeaderClick = false;
+                            return;
+                        }
+
+                        if (options.columnSelection &&
+                            $(event.target).closest('.blist-th-icon').length > 0)
+                        {
+                            var col = $(event.target).closest('.blist-th')
+                                .data('column');
+                            toggleSelectColumn(col);
+                            return;
+                        }
+
                         $(this).removeClass('hover');
                         if ((blist.data.types[columns[index].type] != undefined &&
                                 blist.data.types[columns[index].type].sortable) ||
@@ -2321,6 +2516,7 @@
                     .hover(function ()
                         { if (hotHeaderMode != 4) { $(this).addClass('hover'); } },
                         function () { $(this).removeClass('hover') });
+
                 if (options.columnDrag)
                 {
                     $(this)
@@ -2692,10 +2888,10 @@
                 expandActiveCell();
             }
             // Row selection
-            updateSelection();
+            updateRowSelection();
         };
 
-        var updateSelection = function()
+        var updateRowSelection = function()
         {
             inside.find('.blist-select-row').removeClass('blist-select-row');
             $locked.find('.blist-select-row').removeClass('blist-select-row');
@@ -2735,6 +2931,7 @@
             renderedRows = {};
 
             updateLayout();
+            refreshColumnSelection();
         };
 
         /**
@@ -2780,7 +2977,7 @@
             updateRows(rows);
         });
         $this.bind('selection_change', function(event, rows) {
-            updateSelection(rows);
+            updateRowSelection(rows);
         });
         $this.bind('row_add', updateLayout);
         $this.bind('row_remove', updateLayout);
@@ -2798,6 +2995,7 @@
     var blistTableDefaults = {
         cellExpandEnabled: true,
         columnDrag: false,
+        columnSelection: false,
         disableLastColumnResize: false,
         editEnabled: false,
         generateHeights: true,

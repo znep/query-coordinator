@@ -98,10 +98,14 @@
                 event.preventDefault();
                 if (config.openTest === undefined || config.openTest(event, $menu))
                 {
+                    event.stopPropagation();
                     if (!$menu.hasClass(config.menuOpenClass))
                     {
-                        event.stopPropagation();
                         showMenu($menu);
+                    }
+                    else
+                    {
+                        hideMenu($menu);
                     }
                 }
             });

@@ -195,7 +195,9 @@ blist.data.TableNavigation = function(model, layout) {
     /**
      * Walk the selection for a sequence of rows.
      */
-    this.processSelection = function(rows, setRowSelectionFn, clearRowSelectionFn) {
+    this.processSelection = function(rows, setRowSelectionFn, clearRowSelectionFn,
+        forceSelectionRender)
+    {
         // Convert the selection into canonical and sorted form to optimize processing
         var selection = convertCellSelection();
 
@@ -210,7 +212,9 @@ blist.data.TableNavigation = function(model, layout) {
             var index = rows[i].index;
 
             // Clear the selection if the row isn't in the selection level
-            if ((model.get(index).level || 0) != selectionLevel) {
+            if ((model.get(index).level || 0) != selectionLevel &&
+                !forceSelectionRender)
+            {
                 clearRowSelectionFn(row);
                 continue;
             }
@@ -227,7 +231,7 @@ blist.data.TableNavigation = function(model, layout) {
                     break;
 
             // Update the row
-            if (selCount == 0) {
+            if (selCount == 0 && !forceSelectionRender) {
                 clearRowSelectionFn(row);
                 continue;
             }

@@ -26,6 +26,17 @@
     z-index: 100;
 }
 
+.blist-table div.blist-th.hover .blist-th-icon,
+.blist-table div.blist-th.blist-select-col .blist-th-icon
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+}
+
+.blist-table div.blist-th.hover .blist-th-icon
+{ background-position: 5px -900px; }
+.blist-table div.blist-th.blist-select-col .blist-th-icon
+{ background-position: 5px -509px; }
+
 .blist-th .sort,
 .blist-th .filter
 {
@@ -83,6 +94,17 @@
     top: 0;
     width: 4px;
     z-index: 99;
+}
+
+.col-select-holder
+{
+    border-left: solid 1px #b4d5fe;
+    background-color: #B4D5FE;
+    height: 100%;
+    padding: 0 0.4em;
+    position: absolute;
+    top: 0;
+    z-index: -1;
 }
 
 div.blist-table-active-container
@@ -239,7 +261,6 @@ ul.menu.columnHeaderMenu li
     font-size: 0.8333em;
 }
 
-/*
 .blist-table .blist-hot-row .blist-td.blist-table-row-numbers,
 .blist-table .blist-select-row .blist-td.blist-table-row-numbers
 {
@@ -253,4 +274,3 @@ ul.menu.columnHeaderMenu li
 { background-position: right -897px; }
 .blist-table .blist-select-row .blist-td.blist-table-row-numbers
 { background-position: right -506px; }
-*/

@@ -58,7 +58,8 @@
                         { sortChanged(datasetObj); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
-                    .blistTable({cellNav: false, selectionEnabled: false,
+                    .blistTable({cellNav: true, selectionEnabled: true,
+                        columnSelection: true,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },

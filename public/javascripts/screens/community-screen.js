@@ -243,5 +243,27 @@ $(function ()
     
     $("#community .pageBlockSearch form").submit(communityNS.searchSubmitHandler);
     $("#search").focus(function(){ $(this).select(); });
+    $("#search").keyup(function()
+    {
+        var $searchField = $(this);
+        if (!$searchField.hasClass("prompt") && ($searchField.val() != ""))
+        {
+            $searchField.parent().find(".clearSearch").show();
+        }
+        else
+        {
+            $searchField.parent().find(".clearSearch").hide();
+        }
+    });
+    $(".clearSearch")
+        .click(function(event)
+        {
+            event.preventDefault();
+            var $link = $(this);
+            $link.closest(".searchContainer").find("input[type='text']").val("").focus();
+            $link.hide();
+        })
+        .hide();
+
     $(".memberActions .followAction").live("click", communityNS.addFriendClick);
 });

@@ -113,13 +113,16 @@ form.search p
     padding-left: 10px;
     padding-right: 31px;
 }
-form.search.large p
+
+form.search.large .searchContainer
 {
     background-image: url(/stylesheets/images/common/find_input_cap_large.png);
+    background-repeat: no-repeat;
+    overflow: hidden;
     padding-left: 17px;
-    padding-right: 40px;
+    padding-right: 56px;
+    width: 219px; /* Required for IE6 */
 }
-
 
 form.search input
 {
@@ -141,6 +144,34 @@ form.search.large input.textPrompt
     height: 32px;
 }
 
+form.search.large .actionsBox
+{
+    float: left;
+    margin-right: -56px;
+    width: 56px;
+}
+
+form.search.large .clearBox
+{
+    border-color: #cacaca;
+    border-style: solid;
+    border-width: 1px 0;
+    display: block;
+    float: left;
+    height: 35px;
+    width: 16px;
+}
+
+form.search.large .clearSearch
+{
+    background: transparent url(/stylesheets/images/content/section_close_button.png) no-repeat scroll left top;
+    display: block;
+    height: 16px;
+    margin-top: 10px;
+    text-indent: -9999px;
+    width: 16px;
+}
+
 form.search input.submit
 {
     background: transparent url(/stylesheets/images/common/find_button.png) no-repeat top left;
@@ -153,7 +184,6 @@ form.search input.submit
 form.search.large input.submit
 {
     height: 37px;
-    margin-right: -40px;
     width: 40px;
     background-image: none;
 }

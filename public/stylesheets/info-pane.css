@@ -325,7 +325,6 @@
 
 .infoContentOuter.listContainer .infoContent dl
 {
-    padding-left: 140px;
     position: relative;
 }
 .infoContentOuter.listContainer .infoContent dt
@@ -367,7 +366,7 @@
 
 .infoContentOuter.listContainer .infoContent dd
 {
-    padding: 6px 0 0 0;
+    padding: 6px 0 0 140px;
     position: relative;
 }
 
@@ -407,8 +406,7 @@
 }
 
 
-/*** .itemContent > * can be either <a>, <span> or <ul> ***/
-.infoContentOuter.listContainer .infoContent dd .itemContent > *
+.infoContentOuter.listContainer .infoContent dd .itemContent .textContent
 {
     color: #333;
     display: block;

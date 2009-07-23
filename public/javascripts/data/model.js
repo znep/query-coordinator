@@ -724,14 +724,27 @@ blist.namespace.fetch('blist.data');
 
         this.moveColumn = function(oldPos, newPos)
         {
+            // First update widths on view columns, since they may have been
+            // updated on the model columns
+            $.each(meta.columns, function(i, colList)
+            { $.each(colList, function(j, c)
+                { meta.view.columns[c.dataIndex].width = c.width; }); });
+
+            // Filter view columns down to just the visible, and sort them
             var viewCols = $.grep(meta.view.columns, function(c)
                 { return c.position > 0 && (!c.flags ||
                     $.inArray('hidden', c.flags) < 0); });
             viewCols.sort(function(col1, col2)
                 { return col1.position - col2.position; });
+
+            // Stick the column in the new spot, then remove it from the old
             viewCols.splice(newPos, 0, viewCols[oldPos]);
             viewCols.splice((newPos < oldPos ? oldPos + 1 : oldPos), 1);
+
+            // Update the adjusted positions
             $.each(viewCols, function(i, c) { c.position = i + 1; });
+
+            // Null out the meta columns, and then force a reset
             meta.columns = null;
             this.meta(meta);
             $(listeners).trigger('columns_rearranged', [ this ]);

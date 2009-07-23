@@ -22,9 +22,12 @@
   <script src="/javascripts/jquery-1.3.2.js" type="text/javascript"
     charset="utf-8"></script>
   <% else %>
-  <script src="http://www.google.com/jsapi" type="text/javascript"></script>
   <script type="text/javascript">
-    google.load("jquery", "1.3.2");
+    document.write([
+        "\<script src='",
+        ("https:" == document.location.protocol) ? "https://" : "http://",
+        "ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js' type='text/javascript'>\<\/script>"
+    ].join(''));
   </script>
   <% end %>
 
@@ -59,7 +62,7 @@
       <div class='userNav'>
         <ul>
           <li><a href='http://www.getsatisfaction.com/socrata' rel='nofollow external'>Help</a></li>
-          <li class='signInLink'><a href='/login' rel='nofollow'>Sign Up / In</a></li>
+          <li class='signInLink'><%= link_to "Sign Up / In", login_url, :rel => 'nofollow' %></li>
           <li class='accountLink'><%= link_to "My Account", account_path%></li>
           <li class='signOutLink'><a href='/logout' rel='nofollow'>Sign Out</a></li>
         </ul>

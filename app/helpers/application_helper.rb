@@ -299,4 +299,38 @@ HREF
       </object>
     EOF
   end
+  
+  # Generate a parameter hash given a current page state and additional flags
+  def generate_filter_url(current_state, type, additional_flags = {}, delimiter = '#')
+    if current_state.nil?
+      state = Hash.new
+    else
+      state = current_state.dup
+    end
+    
+    # If current state already contains an additional flag, toggle instead
+    additional_flags.each do |key, value|
+      if state[key] == value
+        state.delete(key)
+        additional_flags.delete(key)
+      end
+    end
+
+    # Merge all flags
+    state[:type] = type
+    state.merge!(additional_flags)
+
+    # Deal with filter[key] special case if filter exists and is a hash
+    if state.has_key?(:filter) && state[:filter].respond_to?("each")
+      state[:filter].each { |key, value| state["filter[#{key}]"] = value }
+      state.delete(:filter)
+    end
+
+    # Final cleanup and output
+    state.reject! { |key, value| value.nil? || (value == "") || (value == false) }
+
+    out = Array.new
+    state.each { |pair| out << pair.join("=") }
+    "#{delimiter}#{out.join('&')}"
+  end
 end

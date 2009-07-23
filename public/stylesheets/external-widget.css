@@ -238,11 +238,16 @@
 {
     color: #676767;
     border-left: solid 1px #dddddd;
-    font-size: 1.2em;
     font-weight: bold;
-    height: 2.1667em; /* 26px */
-    line-height: 2.1667em;
-    padding: 0 0.3333em; /* 4px */
+    height: 2.6em;
+    line-height: 2.6em;
+    padding: 0 0.4em;
+}
+
+.blist-table .th-inner-container
+{
+    font-size: 1.2em;
+    margin: 0 -0.3333em 0 -0.1667em; /* 4px 2px */
     text-overflow: ellipsis;
 }
 

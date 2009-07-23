@@ -132,12 +132,17 @@ ActionController::Routing::Routes.draw do |map|
 
   map.import '/upload', :controller => 'blists', :action => 'upload' 
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
-  map.login '/login', :controller => 'user_sessions', :action => 'new'
-  map.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
-  map.signup '/signup', :controller => 'accounts', :action => 'new'
   map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'forgot_password'
   map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'reset_password',
     :uid => UID_REGEXP
+
+  map.with_options :protocol => "https", :port => SslRequirement.port_for_protocol('https') do |https|
+    https.login '/login', :controller => 'user_sessions', :action => 'new'
+    https.login_json '/login.json', :controller => 'user_sessions', :action => 'create', :format => 'json'
+    https.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
+    https.signup '/signup', :controller => 'accounts', :action => 'new'
+    https.signup_json '/signup.json', :controller => 'accounts', :action => 'create', :format => 'json'
+  end
 
   map.resources :user_sessions
 

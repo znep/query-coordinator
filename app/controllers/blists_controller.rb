@@ -26,14 +26,14 @@ class BlistsController < SwfController
         'editMode' : 'readMode'
       begin
         @parent_view = @view = View.find(params[:id])
-      rescue CoreServerError => e
+      rescue CoreServer::ResourceNotFound
+          flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+            ' cannot be found, or has been deleted.'
+          return (render 'shared/error', :status => :not_found)
+      rescue CoreServer::CoreServerError => e
         if e.error_code == 'authentication_required' ||
           e.error_code == 'permission_denied'
           return require_user(true)
-        elsif e.error_code == 'not_found'
-          flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
-            ' cannot be found, or has been deleted.'
-          return (render 'shared/error')
         else
           flash[:error] = e.error_message
           return (render 'shared/error')
@@ -98,7 +98,7 @@ class BlistsController < SwfController
 
     begin
       blist = View.update_attributes!(blist_id, params[:view])
-    rescue CoreServerError => e
+    rescue CoreServer::CoreServerError => e
       return respond_to do |format|
         format.data { render :json => {'error' => e.error_message}.to_json }
       end
@@ -217,7 +217,7 @@ class BlistsController < SwfController
       else
         view = View.create(new_view)
       end
-    rescue CoreServerError => e
+    rescue CoreServer::CoreServerError => e
       return respond_to do |format|
         format.html do
           flash[:error] = e.error_message

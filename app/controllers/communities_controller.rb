@@ -39,8 +39,6 @@ class CommunitiesController < ApplicationController
     page = params[:page] || 1
     sort_by_selection = params[:sort_by] || "ACTIVITY"
     tag = params[:tag]
-    is_clear_filter = params[:clearFilter]
-    is_clear_tag = params[:clearTag]
     search_term = params[:search]
     use_lucene_search = (!params[:search_type].nil? && params[:search_type] == "lucene" && type == "SEARCH")
     
@@ -88,17 +86,9 @@ class CommunitiesController < ApplicationController
         end
     end
     
-    if (is_clear_tag)
-      tag = nil
-    end
-    
     opts.update({:sortBy => sort_by, :isAsc => is_asc})
     if (!tag.nil?)
       opts.update({:tags => tag})
-    end
-    
-    if (is_clear_filter)
-      filter = nil
     end
     
     tab_title = type == "ALLMEMBERS" ? "All Members" : (type == "TOPMEMBERS" ? "Top Members" : "Top Uploaders")
@@ -131,10 +121,14 @@ class CommunitiesController < ApplicationController
       end
     end
     
+    # build current state string
+    @current_state = { :filter => filter, :page => page, :tag => tag,
+      :sort_by => sort_by_selection, :search => search_term }
+    
     respond_to do |format|
       format.html { redirect_to(community_path(params)) }
       format.data { 
-        if (@filtered_members.length > 0)
+        if ((@filtered_members.length > 0) || (type != "SEARCH"))
           render(:partial => "communities/member_list_tab", 
             :locals => 
             {
@@ -184,7 +178,10 @@ class CommunitiesController < ApplicationController
     
     @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
     
-    render(:layout => "modal")
+    respond_to do |format|
+      format.html { render }
+      format.data { render(:layout => "modal") }
+    end
   end
 
 end

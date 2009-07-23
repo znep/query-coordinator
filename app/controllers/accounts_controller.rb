@@ -1,4 +1,5 @@
 class AccountsController < ApplicationController
+  ssl_required :new, :update, :create
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
 
   def show
@@ -24,7 +25,7 @@ class AccountsController < ApplicationController
                 :password => params[:user][:password_old]})
         end
       end
-    rescue CoreServerError => e
+    rescue CoreServer::CoreServerError => e
       error_msg = e.error_message
     end
 
@@ -44,14 +45,14 @@ class AccountsController < ApplicationController
     # First, try creating the user
     begin
       user = User.create(account, params[:inviteToken])
-    rescue CoreServerError => e
+    rescue CoreServer::CoreServerError => e
       error = e.error_message
       respond_to do |format|
         format.html do
           flash[:error] = error
           return (redirect_to signup_path)
         end
-        format.data { return render :json => {:error => error}}
+        format.json { return (render :json => {:error => error}, :callback => params[:callback]) }
       end
     end
 
@@ -65,14 +66,14 @@ class AccountsController < ApplicationController
       if params[:profile_image] && !params[:profile_image].blank?
         begin
           user.profile_image = params[:profile_image]
-        rescue CoreServerError => e
+        rescue CoreServer::CoreServerError => e
           logger.warn "Unable to update profile photo: #{e.error_code} #{e.error_message}"
         end
       end
 
       respond_to do |format|
         format.html { redirect_back_or_default(home_path) }
-        format.data { render :json => {:user_id => current_user.id}}
+        format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       end
       
       # If there were any email addresses in the Invite Others field, 
@@ -93,7 +94,7 @@ class AccountsController < ApplicationController
           flash[:warning] = warn
           redirect_to login_path
         end
-        format.data { render :json => {:error => warn, :promptLogin => true}}
+        format.json { render :json => {:error => warn, :promptLogin => true}, :callback => params[:callback]}
       end
     end
   end

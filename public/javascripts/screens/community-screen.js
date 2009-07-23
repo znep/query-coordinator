@@ -1,33 +1,102 @@
 var communityNS = blist.namespace.fetch('blist.community');
 
-blist.community.filterClickHandler = function (event)
+blist.community.isTabDirty = {
+    "SEARCH": false,
+    "TOPMEMBERS": false,
+    "TOPUPLOADERS": false,
+    "ALLMEMBERS": false
+};
+blist.community.historyChangeHandler = function (hash)
 {
-    event.preventDefault();
-    var $filterLink = $(this);
-    var filterUrl = $filterLink.attr("href");
-
-    if ($filterLink.hasClass("hilight"))
-    {
-        filterUrl += $filterLink.closest(".tagList").length > 0 ? "&clearTag=true" : "&clearFilter=true";
-    }
-    
+    // Tab/container names
+    var tabs = {
+        "SEARCH": "#tabSearch",
+        "TOPMEMBERS": "#tabTopMembers",
+        "TOPUPLOADERS": "#tabTopUploaders",
+        "ALLMEMBERS": "#tabAllMembers"
+    };
     var tabContainers = {
         "SEARCH": "#communityTabSearchResults",
         "TOPMEMBERS": "#communityTabTopMembers",
         "TOPUPLOADERS": "#communityTabTopUploaders",
         "ALLMEMBERS": "#communityTabAllMembers"
     };
-    
-    var tabSelector = tabContainers[$.urlParam("type", $filterLink.attr("href"))];
-    
+
+    // Special cases to handle default tab actions
+    if (hash == "")
+    {
+        // default tab is top members
+        hash = "TOPMEMBERS"
+    }
+    if (blist.community.isTabDirty[hash] === false)
+    {
+        $(".simpleTabs").simpleTabNavigate().activateTab(tabs[hash]);
+        return;
+    }
+    else if (blist.community.isTabDirty[hash] === true)
+    {
+        hash = "type=" + hash;
+    }
+
+    // Find active tab
+    var activeTab = $.urlParam("type", "?" + hash);
+    var tabSelector = tabs[activeTab];
+    var tabContainerSelector = tabContainers[activeTab];
+
+    // Abort if we don't know what's going on
+    if (activeTab == 0)
+    {
+        return;
+    }
+
+    // Select active tab
+    $(".simpleTabs").simpleTabNavigate().activateTab(tabSelector);
+    $(tabSelector).find('a').attr("href", "#" + hash);
+    blist.community.isTabDirty[activeTab] = true;
+
+    // Add search tab if necessary
+    if (activeTab == "SEARCH")
+    {
+        $(".simpleTabs li").removeClass("active");
+        if ($("#tabSearch").length > 0)
+        {
+            $("#tabSearch").addClass("active");
+        }
+        else
+        {
+            $("#tabTopMembers").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
+            $("form.search #search")
+                .val($.urlParam("search", "?" + hash))
+                .removeClass("prompt");
+        }
+    }
+
+    // Display loading message
+    $(".tabContentContainer").removeClass("active");
+    $(tabContainerSelector).addClass("active").html(
+        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\"> \
+          <div class=\"tabContent noresult\"> \
+            <h2>Searching...</h2> \
+            <p class=\"clearBoth\"> \
+                <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
+            </p> \
+          </div> \
+        </div></div></div> \
+        <div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\"> \
+          <div class=\"tabContentNav\"></div> \
+        </div></div>"
+    );
+
+    // Fetch data
     $.Tache.Get({ 
-        url: filterUrl,
+        url: communityNS.filterUrl + "?" + hash,
         success: function(data)
         {
-            $(tabSelector).html(data);
+            $(tabContainerSelector).html(data);
             $(".simpleTabsContainer")[0].scrollIntoView();
             $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
             $("#tagCloud").jqmHide();
+            $("#search").blur();
         }
     });
 };
@@ -35,20 +104,26 @@ blist.community.filterClickHandler = function (event)
 blist.community.sortSelectChangeHandler = function (event)
 {
     event.preventDefault();
-    
+
     var $sortSelect = $(this);
     var sortUrl = $sortSelect.closest("form").attr("action");
-    
-    $.Tache.Get({ 
-        url: sortUrl,
-        data: {"sort_by": $sortSelect.val()},
-        success: function(data)
-        {
-            $sortSelect.closest(".tabContentContainer").html(data);
-            $(".simpleTabsContainer")[0].scrollIntoView();
-            $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
-        }
-    });
+
+    var hash = window.location.href.match(/#/) ? window.location.href.replace(/^.*#/, '') : '';
+
+    if (hash == "")
+    {
+        // default tab is top members
+        hash = "type=TOPMEMBERS";
+    }
+    if (blist.community.isTabDirty[hash] !== undefined)
+    {
+        hash = "type=" + hash;
+    }
+
+    hash = hash.replace(/sort_by=[A-Z_]*/gi, '');
+    hash += "&sort_by=" + $sortSelect.val();
+    hash = hash.replace(/&&+/g, '&');
+    $.historyLoad(hash);
 };
 
 blist.community.tagModalShowHandler = function(hash)
@@ -69,51 +144,17 @@ blist.community.tagModalShowHandler = function(hash)
 blist.community.searchSubmitHandler = function(event)
 {
     event.preventDefault();
-    var $form = $(this);
-    
+
     var query = $(this).find('#search').val();
     if (query == "")
     {
         return;
     }
 
-    $(".simpleTabs li").removeClass("active");
-    if ($("#tabSearch").length > 0)
-    {
-        $("#tabSearch").addClass("active");
-    }
-    else
-    {
-        $("#tabTopMembers").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
-    }
-    
-    $(".tabContentContainer").removeClass("active");
-    $("#communityTabSearchResults").addClass("active").html(
-        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\"> \
-          <div class=\"tabContent noresult\"> \
-            <h2>Searching...</h2> \
-            <p class=\"clearBoth\"> \
-                <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
-            </p> \
-          </div> \
-        </div></div></div> \
-        <div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\"> \
-          <div class=\"tabContentNav\"></div> \
-        </div></div>"
-    );
-    
-    $.Tache.Get({ 
-        url: $form.attr("action"),
-        data: $form.find(":input"),
-        success: function(data)
-        {
-            $("#communityTabSearchResults").html(data);
-            
-            $(".simpleTabsContainer")[0].scrollIntoView();
-            $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
-            $("#search").blur();
-        }
-    });
+    var hash = "type=SEARCH&search=" + query;
+    window.location.href = '#' + hash;
+    $.historyLoad(hash);
+    return false;
 };
 
 blist.community.addFriendClick = function(event)
@@ -160,16 +201,25 @@ $(function ()
             "tabTopMembers" : "#communityTabTopMembers",
             "tabTopUploaders" : "#communityTabTopUploaders",
             "tabAllMembers" : "#communityTabAllMembers"
-        }
+        },
+        preventDefault: false
     });
     
     $(".simpleTabs li#tabSearch a").live("click", function(event){
         event.preventDefault();
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabSearch");
     });
-    
-    
-    $(".filterLink, .pageLink, .prevLink, .nextLink").live("click", communityNS.filterClickHandler);
+
+    $.historyInit(communityNS.historyChangeHandler);
+    $('a').live('click', function(event)
+    {
+        if ($(this).attr('href').match(/#/))
+        {
+            var hash = this.href;
+            hash = hash.replace(/^.*#/, '');
+            $.historyLoad(hash);
+        }
+    });
     $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
     
     $("#tagCloud").jqm({
@@ -184,6 +234,10 @@ $(function ()
     $(".closeContainer a").live("click", function(event)
     {
         event.preventDefault();
+        $("#tagCloud").jqmHide();
+    });
+    $(".tagCloudContainer a").live("click", function(event)
+    {
         $("#tagCloud").jqmHide();
     });
     

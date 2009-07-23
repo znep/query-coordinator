@@ -61,3 +61,7 @@ form.search input.submit
 .singleInfoSummary .headerActions.actionButtons li { width: 80px; }
 .singleInfoSummary .headerActions.actionButtons li a { width: 60px; }
 /*** END: meta data tab styles ***/
+
+
+.blist-table-header .hover .dragHandle
+{ background-image: url(/stylesheets/images/content/table/column_drag_handle.gif); }

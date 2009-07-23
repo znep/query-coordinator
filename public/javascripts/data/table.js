@@ -1045,10 +1045,13 @@
                 var w = $t.outerWidth();
                 var innerPadx = w - $t.width();
                 var innerPady = $t.outerHeight() - $t.height();
-                // Size the cell
-                $t.width(Math.max(minW, w) - innerPadx);
+                // Size the cell; bump up by one pixel to offset any rounding
+                $t.width(Math.max(minW, w) - innerPadx + 1);
                 $t.height(rc.height - innerPady);
             });
+            // Account for rounding, and the extra pixels already added for
+            // rounding to the insides
+            rc.width += 1 + $expandCells.length;
 
             if (!animate)
             {

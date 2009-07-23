@@ -748,7 +748,8 @@
                 inside.append($editContainer);
             }
             // If editContainer is not in the tree anywhere, stick it inside
-            else if ($editContainer[0].parentNode == null)
+            else if ($editContainer[0].parentNode == null ||
+                    $editContainer[0].parentNode.nodeType == 11) // doc fragment
             {
                 inside.append($editContainer);
             }
@@ -900,7 +901,8 @@
                 $hotExpander = $(hotExpander);
             }
             // If hotExpander is not in the tree anywhere, stick it inside
-            if (hotExpander.parentNode == null)
+            if (hotExpander.parentNode == null ||
+                hotExpander.parentNode.nodeType == 11) // doc fragment
             {
                 inside.append($hotExpander);
             }

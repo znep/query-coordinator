@@ -178,7 +178,10 @@ class CommunitiesController < ApplicationController
     
     @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
     
-    render(:layout => "modal")
+    respond_to do |format|
+      format.html { render }
+      format.data { render(:layout => "modal") }
+    end
   end
 
 end

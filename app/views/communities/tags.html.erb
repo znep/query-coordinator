@@ -1,0 +1,45 @@
+<% content_for :head do %>
+  <title><%= t(:page_title) %></title>
+<% end %>
+
+<div class="oneColumnContainer">
+  <div class="pageBlockHeaderOuter">
+    <div class="pageBlockHeaderTL">
+      <div class="pageBlockHeaderTR">
+        <div class="pageBlockHeaderBL">
+          <div class="pageBlockHeaderBR">
+            <div class="pageBlockHeaderContainer">
+              <div class="pageBlockIntro">
+                <p>Popular Tags</p>
+              </div>
+              <div class="pageBlockHeaderContent clearfix">
+                <div class="tagCloudContainer">
+                  <p>
+                    <%- @tag_list.each do |tag| -%>
+                      <%= link_to(h(tag.name),
+                          community_path + generate_filter_url(@current_state, @type, {:tag => tag.name}),
+                            :class => "filterLink", :rel => tag.frequency ) %>
+                    <%- end -%>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_tag "plugins/jquery.tagcloud", 
+      :cache => "cache/data_tags" %>
+
+  <script type="text/javascript" charset="utf-8">
+    $(function()
+    {
+      $(".tagCloudContainer a").tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } });
+      $("form.search").hide();
+    });
+  </script>
+<% end %>

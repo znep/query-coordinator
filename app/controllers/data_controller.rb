@@ -180,7 +180,10 @@ class DataController < ApplicationController
     @current_state = { :filter => params[:filter], :page => params[:page],
       :sort_by => params[:sort_by], :search => params[:search] }
     
-    render(:layout => "modal")
+    respond_to do |format|
+      format.html { render }
+      format.data { render(:layout => "modal") }
+    end
   end
   
   def splash

@@ -6,7 +6,12 @@
     title="<%= view.averageRating %>"><span><%= view.averageRating %></span></h2>
   <p><%= pluralize(view.totalTimesRated, 'Rating') %></p>
   <ul class="headerActions actionButtons">
-    <li><a href="#post_comment"
-      class="arrowButton postComment" title="Post a Comment">Post a Comment</a></li>
+    <li>
+      <%- if allow_commenting -%>
+        <a href="#post_comment" class="arrowButton postComment" title="Post a Comment">Post a Comment</a>
+      <%- else -%>
+        <a href="<%= view.href + '?metadata_pane=tabComments'%>" class="arrowButton" title="Post a Comment" rel="external">Post a Comment</a>
+      <%- end -%>
+    </li>
   </ul>
 </div>

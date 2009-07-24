@@ -256,7 +256,8 @@ $(function ()
     // Set up the info pane tab switching.
     $("#widgetMeta .summaryTabs").infoPaneNavigate({
         tabMap: {
-            "tabSummary" : "#widgetMeta .singleInfoSummary"
+            "tabSummary": "#widgetMeta .singleInfoSummary",
+            "tabComments": "#widgetMeta .singleInfoComments"
         },
         allPanelsSelector : "#widgetMeta .infoContentOuter",
         expandableSelector: "#widgetMeta .infoContent",

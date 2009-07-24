@@ -12,9 +12,19 @@
         <a href="#summary">Summary</a>
       </div></div>
     </li>
+    <li id="tabComments">
+      <div class="tabOuter"><div class="tabInner">
+        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
+        <a href="#comments">Comments</a>
+      </div></div>
+    </li>
   </ul>
 </div>
 
 <%= render( :partial => "blists/meta_tab_summary", 
             :locals => {:view => view, :page_single => page_single, 
                         :allow_edit => false, :in_widget => true }) %>
+
+<%= render( :partial => "blists/meta_tab_comments", 
+            :locals => {:view => view, :page_single => page_single, 
+                        :allow_commenting => false }) %>

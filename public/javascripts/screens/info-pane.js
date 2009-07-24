@@ -244,12 +244,7 @@
                     // Wire up the click event for the tab itself for activation
                     $li.find("a:not(" + tabNavigator.settings.expanderSelector + ")").click(function(event) {
                         event.preventDefault();
-                        // TODO:    This if statement is temporary so that clicking on the tab doesn't
-                        //          do anything while there's only 1 tab in the widget.
-                        if (!tabNavigator.settings.isWidget)
-                        {
-                            tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
-                        }
+                        tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
                     });
                 });
 

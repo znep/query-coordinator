@@ -113,7 +113,7 @@
       <%- end -%>
     </div></div>
     
-    <div class="widgetFooterWrapper"><div class="widgetFooterInner clearfix">
+    <div class="widgetFooterWrapper"><div class="widgetFooterInner">
       <%- if !@is_gov_widget -%>
         <p class="widgetLogoWrapper"><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
             Socrata Social Data Player
@@ -123,6 +123,7 @@
       <%- else -%>
         &nbsp;
       <%- end -%>
+      <div class="clearBoth" />
     </div></div>
 
     <% dialog_content("emailDialog") do %>

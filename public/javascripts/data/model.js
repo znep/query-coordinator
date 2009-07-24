@@ -728,7 +728,10 @@ blist.namespace.fetch('blist.data');
             // updated on the model columns
             $.each(meta.columns, function(i, colList)
             { $.each(colList, function(j, c)
-                { meta.view.columns[c.dataIndex].width = c.width; }); });
+                {
+                    if (c.dataIndex)
+                    { meta.view.columns[c.dataIndex].width = c.width; }
+                }); });
 
             // Filter view columns down to just the visible, and sort them
             var viewCols = $.grep(meta.view.columns, function(c)

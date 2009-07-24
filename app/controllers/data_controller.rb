@@ -87,8 +87,13 @@ class DataController < ApplicationController
     elsif (type == "SEARCH")
       opts.update({:full => search_term })
     end
+
+    # the core server caches common queries. This causes the cache to
+    # be used
+    if type == "POPULAR" ? sort_by != "POPULAR" : sort_by != "LAST_CHANGED"
+      opts.update({:sortBy => sort_by, :isAsc => is_asc})
+    end
     
-    opts.update({:sortBy => sort_by, :isAsc => is_asc})
     if (!tag.nil?)
       opts.update({:tags => tag})
     end

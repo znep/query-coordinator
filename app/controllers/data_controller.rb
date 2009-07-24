@@ -37,6 +37,9 @@ class DataController < ApplicationController
     end
 
     @search_type = params[:search_type]
+
+    # build current state string
+    @current_state = { :search => @search_term }
   end
   
   def filter

@@ -328,9 +328,7 @@ HREF
 
     # Final cleanup and output
     state.reject! { |key, value| value.nil? || (value == "") || (value == false) }
-
-    out = Array.new
-    state.each { |pair| out << pair.join("=") }
-    "#{delimiter}#{out.join('&')}"
+    out = state.map { |pair| pair.map{ |item| CGI::escape(item.to_s) }.join("=") }.join('&')
+    "#{delimiter}#{out}"
   end
 end

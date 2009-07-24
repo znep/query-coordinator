@@ -70,7 +70,7 @@
         </dt>
         <dd class="editItem">
           <div class="itemContent">
-            <span><%= h(view.description) %></span>
+            <span class="textContent"><%= h(view.description) %></span>
             <%- if allow_edit -%>
             <%- form_tag(view.href) do -%>
               <%= hidden_field_tag("fieldType", "description") %>
@@ -94,7 +94,7 @@
         </dt>
         <dd class="editItem">
           <div class="itemContent">
-            <span><%= h(view.tag_display_string) %></span>
+            <span class="textContent"><%= h(view.tag_display_string) %></span>
             <%- if allow_edit -%>
             <%- form_tag(view.href) do -%>
               <%= hidden_field_tag("fieldType", "tags") %>
@@ -118,7 +118,7 @@
         </dt>
         <dd class="editItem">
           <div class="itemContent">
-            <span><%= h(view.category.nil? ? '' : view.category.capitalize) %></span>
+            <span class="textContent"><%= h(view.category.nil? ? '' : view.category.capitalize) %></span>
             <%- if allow_edit -%>
             <%- form_tag(view.href) do -%>
               <%= hidden_field_tag("fieldType", "category") %>
@@ -144,7 +144,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span>
+            <span class="textContent">
               <a href="<%= view.owner.href %>" <%= 'rel="external"' if (in_widget) %>>
                     <%= h(view.owner.displayName) %>
               </a>
@@ -159,7 +159,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= blist_date(view.createdAt) %></span>
+            <span class="textContent"><%= blist_date(view.createdAt) %></span>
           </div>
         </dd>
       </dl>
@@ -170,7 +170,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= up_user = view.last_updated_user
+            <span class="textContent"><%= up_user = view.last_updated_user
               h(up_user.nil? ? '' : up_user.displayName + ':') %>
               <%= blist_date(view.last_activity) %>
             </span>
@@ -189,7 +189,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= pluralize(view.filters.length, "filtered view") %></span>
+            <span class="textContent"><%= pluralize(view.filters.length, "filtered view") %></span>
           </div>
           <div class="itemActions">
             <a href="#tabFiltered" class="action tabLink filtered">
@@ -204,7 +204,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <ul>
+            <ul class="textContent">
               <li><%= pluralize(view.viewCount, "visit") %></li>
               <%- if view.copyCount > 0 -%>
                 <li><%= pluralize(view.copyCount, "copy") %></li>
@@ -227,7 +227,7 @@
           <div class="itemContent">
             <% permaLink = request.protocol + request.host_with_port + view.href %>
             <%# use explicit a href here so Rails doesn't try to be clever %>
-            <span>
+            <span class="textContent">
               <a href="<%= permaLink %>" title="A permanent URL for linking to this page" <%= 'rel="external"' if (in_widget) %>><%= permaLink %></a>
               <%= flash_clipboard_button(permaLink) if !in_widget %>
             </span>
@@ -243,7 +243,7 @@
           <div class="itemContent">
             <% short_url = request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href %>
             <%# use explicit a href here so Rails doesn't try to be clever %>
-            <span>
+            <span class="textContent">
               <a href="<%= short_url %>" title="For easy sharing via Twitter, IM, or email" <%= 'rel="external"' if (in_widget) %>><%= short_url %></a>
               <%= flash_clipboard_button(short_url) if !in_widget %>
             </span>
@@ -258,7 +258,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= view.is_public? ? 'Public' : 'Private' %></span>
+            <span class="textContent"><%= view.is_public? ? 'Public' : 'Private' %></span>
           </div>
           <%- if allow_edit -%>
           <div class="itemActions">
@@ -275,7 +275,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <ul>
+            <ul class="textContent">
               <%- if view.contributor_users.length > 0 -%>
                 <li>
                   <%= pluralize(view.contributor_users.length, 'Contributor') %>
@@ -337,7 +337,7 @@
           </dt>
           <dd class="editItem">
             <div class="itemContent">
-              <span class="infoAttribution">
+              <span class="infoAttribution textContent">
                 <%- attr_link_opts = in_widget ? { :rel => "external" } : {} -%>
                 <%= (view.attributionLink.nil? || view.attributionLink.empty?) ? h(view.attribution) : link_to(h(view.attribution), h(view.attributionLink), attr_link_opts) %>
               </span>

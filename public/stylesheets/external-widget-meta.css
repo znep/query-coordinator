@@ -8,7 +8,6 @@
 #widgetMeta.expanded
 {
     position: absolute;
-    height: 100%;
     overflow: auto;
     width: 100%;
     z-index: 30;
@@ -34,7 +33,12 @@
     width: auto;
 }
 
-.infoContentOuter .infoContentInner { background-image: none; }
+.infoContentOuter .infoContentInner
+{
+    background-image: url(/stylesheets/images/info_pane/background_expanded_list.png);
+    background-position: -10px 0;
+    background-repeat: repeat-y;
+}
 .infoContentOuter .infoContentWrapper 
 {
     background-image: none;

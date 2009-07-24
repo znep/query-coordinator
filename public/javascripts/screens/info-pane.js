@@ -211,11 +211,14 @@
                 "tabActivity" : ".singleInfoActivity"
             },
             allPanelsSelector : ".infoContentOuter",
+            allPanelsHeaderSelector: ".infoContentHeader",
             expandableSelector: ".infoContent",
+            expandableContainerSelector: ".infoContentWrapper",
             switchCompleteCallback: function(){},
             initialTab: '',
             isWidget: false,
             widgetMetaContainerSelector: "#widgetMeta",
+            widgetMetaHeaderSelector: "#widgetMeta .header",
             widgetOuterContainerSelector: ".gridInner", 
             initialMetaHeight: 0
         },
@@ -364,7 +367,12 @@
                 {
                     $allExpanders.attr("title", "less info").text("less info");
                     
+                    var expandMinHeight = 
+                        $(tabNavigator.settings.widgetOuterContainerSelector).outerHeight() -
+                        $(tabNavigator.settings.widgetMetaHeaderSelector).outerHeight() -
+                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight() - 1;
                     $(tabNavigator.settings.expandableSelector).show();
+                    $(tabNavigator.settings.expandableContainerSelector).css("min-height", expandMinHeight + "px");
                     tabNavigator.settings.switchCompleteCallback();
                     if (openCallback !== undefined)
                     {

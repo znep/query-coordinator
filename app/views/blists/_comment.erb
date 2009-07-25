@@ -25,23 +25,26 @@
             <span>(<%= friendly_relative_time(comment.createdAt) %>)</span>
           </div>
           <p class='commentBody'><%= h(comment.body) %></p>
+          
           <%= render(:partial => 'blists/comment_actions',
-          :locals => {:comment => comment, :view => view}) %>
+          :locals => {:comment => comment, :view => view, :allow_commenting => allow_commenting}) %>
 
-          <%- form_tag(post_comment_blist_path(view.id),
-            :class => 'replyComment postComment hidden') do -%>
+          <%- if allow_commenting -%>
+            <%- form_tag(post_comment_blist_path(view.id),
+              :class => 'replyComment postComment hidden') do -%>
 
-          <%= hidden_field_tag('comment[parent][id]', comment.id,
-          :class => 'parentInput') %>
-          <div class='commentBody'>
-            <%= text_area_tag("comment[body]", '',
-            {:class => 'textPrompt', :title => 'Enter a reply'}) %>
-          </div>
+            <%= hidden_field_tag('comment[parent][id]', comment.id,
+            :class => 'parentInput') %>
+            <div class='commentBody'>
+              <%= text_area_tag("comment[body]", '',
+              {:class => 'textPrompt', :title => 'Enter a reply'}) %>
+            </div>
 
-          <div class='submitSection'>
-            <a href='#cancel_comment'>Cancel</a>
-            <%= image_submit_tag("button_submit_comment.png", :title => "Submit") %>
-          </div>
+            <div class='submitSection'>
+              <a href='#cancel_comment'>Cancel</a>
+              <%= image_submit_tag("button_submit_comment.png", :title => "Submit") %>
+            </div>
+            <%- end -%>
           <%- end -%>
 
           <%- comment_children = Array.new(comment.children || 0) -%>
@@ -58,7 +61,7 @@
             <%- child = comment_children.shift -%>
             <%= render(:partial => 'blists/child_comment',
             :locals => {:comment => child, :view => view,
-            :wrapper_class => is_first ? 'first' : ''}) %>
+            :wrapper_class => is_first ? 'first' : '', :allow_commenting => allow_commenting}) %>
             <%- is_first = false -%>
             <%- comment_children = comment_children.
               unshift(child.children).flatten.compact -%>

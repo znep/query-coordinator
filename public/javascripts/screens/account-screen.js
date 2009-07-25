@@ -39,8 +39,7 @@ $(function ()
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
-                type: "PUT",
-                dataType: "json",
+                dataType: "jsonp",
                 data: requestData,
                 success: function(responseData)
                 {

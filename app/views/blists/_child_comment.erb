@@ -13,7 +13,7 @@
       <span>(<%= friendly_relative_time(comment.createdAt) %>)</span>
     </div>
     <p class='commentBody'><%= h(comment.body) %></p>
-    <%= render(:partial => 'comment_actions',
-    :locals => {:comment => comment, :view => view}) %>
+    <%= render(:partial => 'blists/comment_actions',
+    :locals => {:comment => comment, :view => view, :allow_commenting => allow_commenting}) %>
   </div>
 </div>

@@ -211,6 +211,37 @@ blist.widget.setUpViewHeader = function()
     });
 };
 
+blist.widget.showInterstitial = function (e)
+{
+    var $link = $(this);
+    var href = $link.attr('href');
+    // IE sticks the full URL in the href, so we didn't filter out local URLs
+    if (href.indexOf(location) == 0)
+    {
+        return;
+    }
+
+    e.preventDefault();
+    if (href.slice(0, 1) == '/')
+    {
+        href = location.host + href;
+    }
+    if (!href.match(/^(f|ht)tps?:\/\//))
+    {
+        href = "http://" + href;
+    }
+	$('.interstitial .exitBox').width($(window).width() - 125);
+    $('.interstitial .exitBox .externalLink')
+        .attr('href', href)
+        .text(href)
+        .attr('target', $link.attr('target'));
+    var $inter = $('.interstitial');
+    $inter
+        .show()
+        .css('left', ($(window).width() - $inter.outerWidth(true)) / 2)
+        .css('top', ($(window).height() - $inter.outerHeight(true)) / 2);
+};
+
 
 $(function ()
 {
@@ -230,8 +261,8 @@ $(function ()
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             currentUserId: blist.currentUserId,
-            accessType: 'WIDGET', showRowNumbers: false, editEnabled: false,
-            manualResize: true, filterItem: '#header form :text',
+            accessType: 'WIDGET', showRowNumbers: widgetNS.theme['grid']['row_numbers'],
+            editEnabled: false, manualResize: true, filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch',
             clearTempViewCallback: widgetNS.clearTempViewTab,
             setTempViewCallback: widgetNS.setTempViewTab
@@ -251,6 +282,26 @@ $(function ()
               accessType: 'WIDGET',
               referrer: document.referrer
             }
+    });
+    
+    // Wire up interstitials
+    if (widgetNS.theme['behavior']['interstitial'])
+    {
+        $('a:not([href^=#]):not(.noInterstitial)').live('click', widgetNS.showInterstitial);
+        $('.interstitial a.closeLink').click(function (e)
+        {
+            e.preventDefault();
+            $('.interstitial').hide();
+        });
+    }
+    
+    $(document).keyup(function (e)
+    {
+        // 27 is ESC
+        if (e.keyCode == 27 && $('.interstitial:visible').length > 0)
+        {
+            $('.interstitial').hide();
+        }
     });
     
     // Set up the info pane tab switching.

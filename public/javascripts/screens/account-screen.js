@@ -20,7 +20,11 @@ $(function ()
     {
         event.preventDefault();
         $(this).closest(".sectionShow").slideUp("fast");
-        $(this).closest(".listSection").find(".sectionEdit").slideDown("fast");
+        $(this).closest(".listSection").find(".sectionEdit")
+          .find("form :input")
+            .val("")
+          .end()
+          .slideDown("fast");
     });
 
     $(".formListBoxClose a").click(function(event)

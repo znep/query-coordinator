@@ -358,6 +358,7 @@
                             {
                                 $(this).hide();
                             });
+                            tabNavigator.settings.switchCompleteCallback();
                         }
                     );
                     

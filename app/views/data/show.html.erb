@@ -127,14 +127,13 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="tagCloud"></div>
-  <%- if @show_splash -%>
-    <div class="jqmWindow" id="splashModal"></div>
-  <%- end -%>
   <div class="jqmWindow" id="redirectedModal"></div>
+  <div class="jqmWindow" id="splashModal"></div>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", "plugins/jquery.history", 
-  "widgets/simple-tab-navigate", "screens/discover-screen", :cache => "cache/data_show_all" %>
-
+  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud",
+    "plugins/jquery.history",
+    "widgets/simple-tab-navigate", "screens/discover-screen",
+    :cache => "cache/data_show_all" %>
   <script type="text/javascript" charset="utf-8">
     discoverNS.filterUrl = "<%= data_filter_path %>";
   </script>

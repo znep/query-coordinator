@@ -1,4 +1,5 @@
 class DataController < ApplicationController
+  caches_page :splash, :noie, :redirected
   skip_before_filter :require_user
   
   PAGE_SIZE = 10
@@ -10,9 +11,6 @@ class DataController < ApplicationController
   def show
     @body_class = 'discover'
     @show_search_form = false
-    @show_splash = !current_user.nil? ? false :
-                      (cookies[:show_splash].nil? ? true : cookies[:show_splash][:value])
-
     @page_size = PAGE_SIZE
 
     unless @all_views_rendered = read_fragment("discover-tab-all")
@@ -195,8 +193,6 @@ class DataController < ApplicationController
   end
   
   def splash
-    cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
-    
     render(:layout => "splash")
   end
   
@@ -205,7 +201,6 @@ class DataController < ApplicationController
   end
   
   def redirected
-    cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
     render(:layout => "splash")
   end
 

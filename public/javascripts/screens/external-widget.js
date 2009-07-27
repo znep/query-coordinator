@@ -261,6 +261,7 @@ $(function ()
         },
         allPanelsSelector : "#widgetMeta .infoContentOuter",
         expandableSelector: "#widgetMeta .infoContent",
-        isWidget: true
+        isWidget: true,
+        switchCompleteCallback: widgetNS.sizeGrid
     });
 });

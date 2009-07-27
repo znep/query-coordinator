@@ -152,10 +152,10 @@
             if (blist.util.inlineLogin)
             {
                 blist.util.inlineLogin.verifyUser(
-                    function (isSuccess) {
+                    function (isSuccess, didLogin) {
                         if (isSuccess)
                         {
-                            doSubmitComment($commentPane, $form, true);
+                            doSubmitComment($commentPane, $form, didLogin);
                         }
                         else
                         {
@@ -251,10 +251,10 @@
             if (blist.util.inlineLogin)
             {
                 blist.util.inlineLogin.verifyUser(
-                    function (isSuccess) {
+                    function (isSuccess, didLogin) {
                         if (isSuccess)
                         {
-                            doSubmitReply($commentPane, $form, true);
+                            doSubmitReply($commentPane, $form, didLogin);
                         }
                         else
                         {
@@ -384,10 +384,11 @@
                 if (blist.util.inlineLogin)
                 {
                     blist.util.inlineLogin.verifyUser(
-                        function (isSuccess) {
+                        function (isSuccess, didLogin) {
                             if (isSuccess)
                             {
-                                doAction($commentPane, $link, $form, reqObj, true);
+                                doAction($commentPane, $link, $form,
+                                    reqObj, didLogin);
                             }
                         },
                         'You must have an account to flag or rate a comment');

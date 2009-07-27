@@ -25,6 +25,7 @@
             accessType: 'DEFAULT',
             clearFilterItem: null,
             clearTempViewCallback: function () {},
+            columnPropertiesEnabled: false,
             currentUserId: null,
             editEnabled: false,
             filterItem: null,
@@ -257,7 +258,7 @@
                     <span class="highlight">Sort Descending</span>\
                     </a>\
                     </li>';
-                    if (blist.blistGrid.isOwner)
+                    if (datasetObj.settings.columnPropertiesEnabled)
                     {
                         var view = $(datasetObj.currentGrid).blistModel().meta().view;
                         htmlStr += '<li class="properties">\

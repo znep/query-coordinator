@@ -785,8 +785,9 @@ $(function ()
 
     window.onbeforeunload = function ()
     {
+        var $grid = $('#readGrid');
         if (!blist.widgets.visualization.isVisualization &&
-            $('#readGrid').datasetGrid().isTempView)
+            $grid.length > 0 && $grid.datasetGrid().isTempView)
         {
             return 'You will lose your temporary filter.';
         }

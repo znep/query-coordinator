@@ -3,6 +3,34 @@
     background-color: #ddeaf0;
 }
 
+.blist-th .th-inner-container
+{
+    margin: 0 -0.4em 0 -0.2em; /* 4px 2px */
+    padding-right: 20px;
+}
+
+.blist-th .info-container
+{
+    font-size: 1.2em;
+    height: 1.667em; /* 20px */
+    line-height: 1.667em;
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
+}
+
+.blist-th-icon
+{
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-position: 5px 20px;
+    background-repeat: no-repeat;
+    display: block;
+    float: left;
+    height: 20px;
+    margin-left: -5px;
+    width: 30px;
+}
+
 .blist-th .dragHandle
 {
     cursor: move;
@@ -40,32 +68,27 @@
 .blist-th .sort,
 .blist-th .filter
 {
-    background-color: #e8e8e8;
-    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
     background-position: 0 0;
     height: 12px;
-    margin-top: -6px;
-    right: 0;
-    top: 50%;
+    top: 2px;
     width: 12px;
 }
-.blist-th .sort { cursor: pointer; }
+.blist-th .sort { left: 50%; }
+.blist-th .filter { right: 50%; }
+
 .blist-th .sort-asc { background-position: 0 -24px; }
-.blist-th.hover .sort { display: none; }
 .blist-th.hover .sort-asc { background-position: 0 -12px; }
 .blist-th.hover .sort-desc { background-position: 0 -36px; }
 
 .blist-th .filter { background-position: 0 -48px; }
 .blist-th .filter.active { display: block; }
-.blist-th.sorted .filter { right: 12px; }
-.blist-th.hover .filter.active { display: none; }
 
 .blist-th .menuLink
 {
-    background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png?1);
+    background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png?2);
     background-position: 0 0;
     background-repeat: no-repeat;
-    display: none;
     height: 14px;
     margin-top: -7px;
     position: absolute;
@@ -75,11 +98,6 @@
 }
 
 .blist-th.hover .menuLink,
-.blist-th .menuLink.clicked
-{
-    display: block;
-}
-
 .blist-th .menuLink.clicked
 {
     background-position: 0 -14px;
@@ -186,7 +204,7 @@ ul.menu.columnHeaderMenu li
 .columnHeaderMenu .sortAsc a,
 .columnHeaderMenu .sortDesc a
 {
-    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
     background-position: 7px -20px;
     background-repeat: no-repeat;
 }

@@ -95,7 +95,7 @@
                 .removeClass('sort-asc').addClass('sort-desc')
                 .attr('title', 'Sort ascending')
                 .removeClass('active')
-                .parent().removeClass('sorted');
+                .closest('.blist-th').removeClass('sorted');
             if (sortBy >= 0)
             {
                 var col = columns[sortBy];
@@ -107,13 +107,14 @@
                     .removeClass(oldClass).addClass(newClass)
                     .attr('title', newTitle)
                     .addClass('active')
-                    .parent().addClass('sorted');
+                    .closest('.blist-th').addClass('sorted');
             }
         };
 
         var configureFilterHeaders = function()
         {
-            $('.filter.active', $header).removeClass('active');
+            $('.filter.active', $header).removeClass('active')
+                .closest('.blist-th').removeClass('filtered');
             var colFilters = model.meta().columnFilters;
             if (colFilters != null)
             {
@@ -121,7 +122,8 @@
                 {
                     if (colFilters[c.dataIndex] != null)
                     {
-                        $('.filter', c.dom).addClass('active');
+                        $('.filter', c.dom).addClass('active')
+                            .closest('.blist-th').addClass('filtered');
                     }
                 });
             }
@@ -1080,9 +1082,13 @@
                     hotHeader = hh;
                     hotHeaderMode = hhm;
                     if (hotHeaderMode == 2)
+                    {
                         $outside.css('cursor', 'col-resize');
+                    }
                     else
-                        $outside.css('cursor', 'pointer');
+                    {
+                        $outside.css('cursor', 'default');
+                    }
                 }
                 return true;
             }
@@ -2460,11 +2466,13 @@
                             '></div>');
                 }
                 html.push(
+                    '<div class="info-container">',
                     '<span class="blist-th-icon"></span>',
                     '<span class="blist-th-name">',
                     colName,
                     '</span>',
-                    '<div class="filter"',
+                    '</div>',
+                    '<div class="filter" title="Remove filter"',
                     options.generateHeights ? ' style="height: ' +
                     rowOffset + 'px"' : '',
                     '></div>',
@@ -2501,21 +2509,27 @@
                             return;
                         }
 
+                        var $target = $(event.target);
+                        var col = $target.closest('.blist-th').data('column');
                         if (options.columnSelection &&
-                            $(event.target).closest('.blist-th-icon').length > 0)
+                            $target.closest('.blist-th-icon').length > 0)
                         {
-                            var col = $(event.target).closest('.blist-th')
-                                .data('column');
                             toggleSelectColumn(col);
                             return;
                         }
 
                         $(this).removeClass('hover');
-                        if ((blist.data.types[columns[index].type] != undefined &&
-                                blist.data.types[columns[index].type].sortable) ||
-                            columns[index].sortable)
+                        if ($target.closest('.filter').length > 0)
                         {
-                            sort(index);
+                            model.clearColumnFilter(col.index);
+                            return;
+                        }
+
+                        if ((blist.data.types[col.type] != undefined &&
+                                blist.data.types[col.type].sortable) ||
+                            col.sortable)
+                        {
+                            sort(col.index);
                         }
                     })
                     .hover(function ()

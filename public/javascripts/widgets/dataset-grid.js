@@ -58,6 +58,8 @@
                         { sortChanged(datasetObj); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
+                    .bind('column_filter_change', function (event, c)
+                        { columnFilterChanged(datasetObj, c); })
                     .blistTable({cellNav: true, selectionEnabled: true,
                         columnSelection: true,
                         generateHeights: false, columnDrag: true,
@@ -514,15 +516,11 @@
                 model.sort(colIndex, true);
                 break;
             case 'filter-column':
-                datasetObj.summaryStale = true;
                 // Rejoin remainder of parts in case the filter value had _
                 model.filterColumn(colIndex, $.htmlUnescape(s.slice(2).join('_')));
-                setTempView(datasetObj, model.meta().view);
                 break;
             case 'clear-filter-column':
-                datasetObj.summaryStale = true;
                 model.clearColumnFilter(colIndex);
-                clearTempView(datasetObj);
                 break;
         }
         // Update the grid header to reflect updated sorting, filtering
@@ -568,6 +566,19 @@
             $.ajax({url: '/views/' + view.id + '.json',
                     data: $.json.serialize(modView),
                     type: 'PUT', contentType: 'application/json'});
+        }
+    };
+
+    var columnFilterChanged = function(datasetObj, col)
+    {
+        datasetObj.summaryStale = true;
+        if (!col)
+        {
+            clearTempView(datasetObj);
+        }
+        else
+        {
+            setTempView(datasetObj, datasetObj.settings._model.meta().view);
         }
     };
 

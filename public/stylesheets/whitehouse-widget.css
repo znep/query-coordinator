@@ -28,19 +28,31 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 
 .blist-table .blist-th
 {
-    font-size: 1.1em;
-    height: 3.0909em; /* 34px */
-    line-height: 1.4545em; /* 16px */
-    padding: 0 0.3636em;
+    height: 3.4em; /* 34px */
+    line-height: 1.6em; /* 16px */
+}
+
+.blist-table .blist-th .th-inner-container
+{
     white-space: normal;
 }
 
-.blist-table .blist-th-name
+.blist-table div.blist-th .info-container
+{
+    font-size: 1.1em;
+    height: 3.0909em; /* 34px */
+    line-height: 1.4545em; /* 16px */
+    top: 0;
+}
+
+.blist-table .blist-th .info-container .blist-th-name,
+.blist-table .blist-th .info-container .blist-th-icon
 {
     bottom: 0;
-    display: block;
     position: absolute;
 }
+.blist-table .blist-th .info-container .blist-th-name
+{ left: 25px; }
 
 .blist-table .blist-td
 {

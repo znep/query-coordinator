@@ -65,3 +65,9 @@ form.search input.submit
 
 .blist-table-header .hover .dragHandle
 { background-image: url(/stylesheets/images/content/table/column_drag_handle.gif); }
+
+.blist-table .blist-th .th-inner-container
+{
+    padding-right: 0;
+    width: 100%;
+}

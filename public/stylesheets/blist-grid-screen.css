@@ -41,11 +41,13 @@ body#lensBody
 #lensContainer .tabList .backLink a
 {
     background-color: transparent;
-    background-image: url(/stylesheets/images/content/table/icon_back_to_blists.png);
+    background-image: url(/stylesheets/images/content/table/icon_back_to_blists.png?1);
     background-position: 0 0;
     height: 15px;
-    margin-top: 7px;
+    margin-top: 3px;
 }
+
+#lensContainer .tabList .backLink a:hover { background-position: 0 -15px; }
 
 #lensContainer .tabList .newViewLink
 {
@@ -754,123 +756,72 @@ body#lensBody
 }
 
 #addColumn_plainText,
-#mainMenu .columnsMenu .plainText a,
-.blist-table .blist-th.text .blist-th-icon
-{
-    background-position: 5px -80px;
-}
+#mainMenu .columnsMenu .plainText a
+{ background-position: 5px -80px; }
 
 #addColumn_formattedText,
-#mainMenu .columnsMenu .formattedText a,
-.blist-table .blist-th.richtext .blist-th-icon
-{
-    background-position: 5px -60px;
-}
+#mainMenu .columnsMenu .formattedText a
+{ background-position: 5px -60px; }
 
 #addColumn_number,
-#mainMenu .columnsMenu .number a,
-.blist-table .blist-th.number .blist-th-icon
-{
-    background-position: 5px -20px;
-}
+#mainMenu .columnsMenu .number a
+{ background-position: 5px -20px; }
 
 #addColumn_money,
-#mainMenu .columnsMenu .money a,
-.blist-table .blist-th.money .blist-th-icon
-{
-    background-position: 5px -40px;
-}
+#mainMenu .columnsMenu .money a
+{ background-position: 5px -40px; }
 
 #addColumn_percent,
-#mainMenu .columnsMenu .percent a,
-.blist-table .blist-th.percent .blist-th-icon
-{
-    background-position: 5px 0;
-}
+#mainMenu .columnsMenu .percent a
+{ background-position: 5px 0; }
 
 #addColumn_dateTime,
-#mainMenu .columnsMenu .dateTime a,
-.blist-table .blist-th.date .blist-th-icon
-{
-    background-position: 5px -340px;
-}
+#mainMenu .columnsMenu .dateTime a
+{ background-position: 5px -340px; }
 
 #addColumn_phone,
-#mainMenu .columnsMenu .phone a,
-.blist-table .blist-th.phone .blist-th-icon
-{
-    background-position: 5px -240px;
-}
+#mainMenu .columnsMenu .phone a
+{ background-position: 5px -240px; }
 
 #addColumn_email,
-#mainMenu .columnsMenu .email a,
-.blist-table .blist-th.email .blist-th-icon
-{
-    background-position: 5px -260px;
-}
+#mainMenu .columnsMenu .email a
+{ background-position: 5px -260px; }
 
 #addColumn_url,
-#mainMenu .columnsMenu .url a,
-.blist-table .blist-th.url .blist-th-icon
-{
-    background-position: 5px -360px;
-}
+#mainMenu .columnsMenu .url a
+{ background-position: 5px -360px; }
 
 #addColumn_checkbox,
-#mainMenu .columnsMenu .checkbox a,
-.blist-table .blist-th.checkbox .blist-th-icon
-{
-    background-position: 5px -120px;
-}
+#mainMenu .columnsMenu .checkbox a
+{ background-position: 5px -120px; }
 
 #addColumn_stars,
-#mainMenu .columnsMenu .stars a,
-.blist-table .blist-th.stars .blist-th-icon
-{
-    background-position: 5px -140px;
-}
+#mainMenu .columnsMenu .stars a
+{ background-position: 5px -140px; }
 
 #addColumn_flag,
-#mainMenu .columnsMenu .flag a,
-.blist-table .blist-th.flag .blist-th-icon
-{
-    background-position: 5px -380px;
-}
+#mainMenu .columnsMenu .flag a
+{ background-position: 5px -380px; }
 
 #addColumn_document,
-#mainMenu .columnsMenu .document a,
-.blist-table .blist-th.document .blist-th-icon
-{
-    background-position: 5px -280px;
-}
+#mainMenu .columnsMenu .document a
+{ background-position: 5px -280px; }
 
 #addColumn_photo,
-#mainMenu .columnsMenu .photo a,
-.blist-table .blist-th.photo .blist-th-icon
-{
-    background-position: 5px -100px;
-}
+#mainMenu .columnsMenu .photo a
+{ background-position: 5px -100px; }
 
 #addColumn_picklist,
-#mainMenu .columnsMenu .picklist a,
-.blist-table .blist-th.picklist .blist-th-icon
-{
-    background-position: 5px -400px;
-}
+#mainMenu .columnsMenu .picklist a
+{ background-position: 5px -400px; }
 
 #addColumn_nested_table,
-#mainMenu .columnsMenu .nested_table a,
-.blist-table .blist-th.nested_table .blist-th-icon
-{
-    background-position: 5px -440px;
-}
+#mainMenu .columnsMenu .nested_table a
+{ background-position: 5px -440px; }
 
 #addColumn_rowTag,
-#mainMenu .columnsMenu .tag a,
-.blist-table .blist-th.tag .blist-th-icon
-{
-    background-position: 5px -180px;
-}
+#mainMenu .columnsMenu .tag a
+{ background-position: 5px -180px; }
 
 
 /* Main content */

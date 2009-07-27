@@ -217,12 +217,7 @@
 
 .blist-table { height: 100%; }
 
-.blist-table-header-scrolls
-{
-    background-color: #e8e8e2;
-    border: solid 1px #cacaca;
-    border-bottom: none;
-}
+.blist-table-header-scrolls { background-color: #e8e8e2; }
 
 .blist-table-scrolls
 {
@@ -237,19 +232,16 @@
 .blist-table .blist-th
 {
     color: #676767;
-    border-left: solid 1px #dddddd;
+    border-right: solid 1px #dddddd;
     font-weight: bold;
     height: 2.6em;
-    line-height: 2.6em;
     padding: 0 0.4em;
 }
 
-.blist-table .th-inner-container
-{
-    font-size: 1.2em;
-    margin: 0 -0.3333em 0 -0.1667em; /* 4px 2px */
-    text-overflow: ellipsis;
-}
+.blist-th .info-container { top: 0.25em; /* 3px */ }
+.sorted .th-inner-container .info-container,
+.filtered .th-inner-container .info-container
+{ top: 0.5em; /* 6px */ }
 
 .blist-table-footer-scrolls
 {

@@ -781,6 +781,14 @@ blist.namespace.fetch('blist.data');
         }
 
         /**
+         * Notify listeners of column filter changes
+         */
+        this.columnFilterChange = function(col)
+        {
+            $(listeners).trigger('column_filter_change', [ col ]);
+        };
+
+        /**
          * Retrieve a single row by index.
          */
         this.get = function(index) {
@@ -1504,6 +1512,8 @@ blist.namespace.fetch('blist.data');
             meta.columnFilters[filterCol.dataIndex] =
                 {column: filterCol, value: filterVal, viewFilter: filterItem};
 
+            this.columnFilterChange(filterCol);
+
             // Reload the view from the server; eventually we should do this
             //  locally if not in progressiveLoading mode
             getTempView();
@@ -1527,6 +1537,8 @@ blist.namespace.fetch('blist.data');
             {
                 clearColumnFilterData(filterCol);
             }
+
+            this.columnFilterChange();
 
             getTempView();
         };

@@ -8,6 +8,14 @@ class Stat < Model
       "email" => "00B133",
       "print" => "7D26CD"
     }
+  HUMAN_READABLE_ROW_ACCESS_LEGEND = {
+      "api" => "API", 
+      "widget" => "Social Data Player",
+      "download" => "Download",
+      "website" => "Website",
+      "email" => "Email",
+      "print" => "Print"
+    }
 
   def self.find_for_view(view, opts=nil)
     path = "/views/#{view.id}/metrics.json"

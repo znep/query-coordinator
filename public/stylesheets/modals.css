@@ -436,18 +436,18 @@
 
 /*** END: Print this form ***/
 /*** START: Column properties***/
-.tabWrapper
+.columnPropertiesWrapper .tabWrapper
 {
   background-color: #ccc;
 }
 
-.tabs
+.columnPropertiesWrapper .tabs
 {
   background-color:#ccc;
   position:absolute;
   width: 15em;
 }
-.tabContent
+.columnPropertiesWrapper .tabContent
 {
   min-height: 25em;
   background-color: #fff;
@@ -455,14 +455,14 @@
   display: none;
 }
 
-.tabs ul.tabSelector
+.columnPropertiesWrapper .tabs ul.tabSelector
 {
   width: 15em;
   padding: 0;
   margin: 0;
 }
 
-.tabs ul.tabSelector li a
+.columnPropertiesWrapper .tabs ul.tabSelector li a
 {
   font-weight: bold;
   font-size: 1.4em;
@@ -471,58 +471,58 @@
   color: #000;
 }
 
-.tabs ul.tabSelector li a.selected
+.columnPropertiesWrapper .tabs ul.tabSelector li a.selected
 {
   background-color: #fff;
 }
 
-.tabs ul.tabSelector li a:hover
+.columnPropertiesWrapper .tabs ul.tabSelector li a:hover
 {
   background-color: #fff;
   text-decoration: none;
 }
 
-.currencies, .alignment
+.columnPropertiesWrapper .currencies, .alignment
 {
   padding: 0.6em;
 }
-.alignment li
+.columnPropertiesWrapper .alignment li
 {
   padding: 0.6em;
   list-style-type: none;
   display: inline;
 }
 
-.alignment p
+.columnPropertiesWrapper .alignment p
 {
   display: inline;
 }
 
-.seperator
+.columnPropertiesWrapper .seperator
 {
   border-bottom: solid 2px #ccc;
 }
-tr.seperator td
+.columnPropertiesWrapper tr.seperator td
 {
   padding: 0;
 }
-.tabContent span.helpie
+.columnPropertiesWrapper .tabContent span.helpie
 {
   vertical-align: middle;
 }
 
-h4.subtitle
+.columnPropertiesWrapper h4.subtitle
 {
   color: #ccc;
   padding: 0.2em 0 0.2em 0;
 }
 
-.displayOptions
+.columnPropertiesWrapper .displayOptions
 {
   padding: 0.6em;
 }
 
-.saveBar
+.columnPropertiesWrapper .saveBar
 {
   margin-left: 165px;
   width: 525px;
@@ -532,16 +532,16 @@ h4.subtitle
   bottom: -5px;
 }
 
-.controlBar
+.columnPropertiesWrapper .controlBar
 {
     margin-top: 0.7em;
 }
 
-div.required
+.columnPropertiesWrapper div.required
 {
     float: left;
 }
-#error
+.columnPropertiesWrapper #error
 {
   float: right;
   padding: 0.3em;
@@ -549,9 +549,38 @@ div.required
   vertical-align: middle;
   font-size: 1.2em;
 }
-#save
+.columnPropertiesWrapper #save
 {
     float: right;
+}
+
+.modalContentWrapper.columnPropertiesWrapper { padding-bottom: 0; }
+.columnPropertiesWrapper p, .columnPropertiesWrapper label 
+{
+    font-size: 1.2em;
+    line-height: 1.75em; /* 21px */
+}
+
+.columnPropertiesWrapper td 
+{
+    padding: 0.5em;
+    vertical-align: top;
+}
+.columnPropertiesWrapper .labelColumn
+{
+    padding-right: 1em;
+    text-align: right;
+}
+
+.columnPropertiesWrapper input[type="text"],
+.columnPropertiesWrapper textarea
+{
+    width: 30em;
+}
+.columnPropertiesWrapper input[type="radio"]
+{
+    margin: 0 0.5em 0 0;
+    vertical-align: middle;
 }
 
 /*** END: Column properties***/

@@ -125,7 +125,7 @@ class Column < Model
   end
 
   def alignment
-    if !self.format.data["align"].nil?
+    if (!self.format.nil? && !self.format.data["align"].nil?)
       return self.format.data["align"]
     end
 

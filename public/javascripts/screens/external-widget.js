@@ -125,7 +125,7 @@ blist.widget.loadNewView = function(newViewId)
 
     // Load up a new widget menu & publish code
     var newPath = window.location.pathname.replace(widgetNS.originalViewId,
-        newViewId);
+        newViewId) + '.data';
     $.ajax({ url: newPath, cache: false,
             success: widgetNS.widgetDataLoaded});
 

@@ -10,7 +10,7 @@
 {
     margin-left: 1em;
     margin-top: 0.5em;
-    min-width: 70em; /* Tabs will wrap below this width. */
+    min-width: 73em; /* Tabs will wrap below this width. */
 }
 
 .metadataPane .header
@@ -91,25 +91,16 @@
     text-decoration: none;
 }
 
-/* The summary tab is special */
-.metadataPane .summaryTabs li.summary 
+/* The comments tab is special */
+.metadataPane .summaryTabs li.comments,
+.metadataPane .summaryTabs li.comments.active.last,
+.metadataPane .summaryTabs li.comments.active.last .tabInner
 {
-    border-right-width: 1px;
-    width: 85px;
+    width: 105px;
 }
-.metadataPane .summaryTabs li.summary.active.last
-{
-    border-right: 1px solid #06386a;
-    width: 85px;
-}
-
-.metadataPane .summaryTabs li.summary.active .tabInner 
+.metadataPane .summaryTabs li.comments.active .tabInner 
 {
     background-image: none;
-}
-.metadataPane .summaryTabs li.summary.active.last .tabInner
-{
-    width: 85px;
 }
 
 /* expander */
@@ -402,9 +393,20 @@
 .infoContentOuter.multiInfoSummary .infoContent dd
 {
     height: 25px;
-    padding-left: 31px;
+    padding-left: 171px;
 }
 
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType { background-position: 140px 0; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeBlist { background-position: 140px 0; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeBlist.sharedOut { background-position: 140px -31px; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeBlist.sharedIn { background-position: 140px -62px; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeBlist.private { background-position: 140px -93px; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeBlist.privateShared { background-position: 140px -279px; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeFilter { background-position: 140px -124px; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeFilter.sharedOut { background-position: 140px -155px; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeFilter.sharedIn { background-position: 140px -186px; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeFilter.private { background-position: 140px -217px; }
+.infoContentOuter.multiInfoSummary .infoContent dd.itemType.typeFilter.privateShared { background-position: 140px -248px; }
 
 .infoContentOuter.listContainer .infoContent dd .itemContent .textContent
 {

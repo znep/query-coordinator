@@ -1,6 +1,7 @@
 <%# locals: view, page_single  %>
 <%- 
   expander_class = page_single ? "expander expanded" : "expander" 
+  div_shown = page_single ? "style='display:block;'" : ""
 -%>
 <%- is_owner = current_user && view.owner.id == current_user.id -%>
 
@@ -20,10 +21,37 @@
   </ul>
 </div>
 
-<%= render( :partial => "blists/meta_tab_summary", 
-            :locals => {:view => view, :page_single => page_single, 
-                        :allow_edit => false, :in_widget => true }) if theme[:meta][:summary][:show] %>
 
-<%= render( :partial => "blists/meta_tab_comments", 
-            :locals => {:view => view, :page_single => page_single, 
-                        :allow_commenting => false }) if theme[:meta][:comments][:show] %>
+<%# *** START: COMMENTS *** %>
+<div class="infoContentOuter singleInfoComments listContainer
+  active <%= page_single ? 'expanded' : '' %>">
+  <div class="infoContentHeader clearfix">
+    <%= render(:partial => "blists/info_comments_header", 
+                :locals => {:view => view, :allow_commenting => false}) %>
+  </div>
+  <div class="infoContentInner"><div class="infoContentWrapper">
+    <div class="infoContent"<%= div_shown %>>
+      <%= render( :partial => "blists/meta_tab_comments", 
+                  :locals => {:view => view, :allow_commenting => false }) if theme[:meta][:comments][:show] %>
+    </div>
+  </div></div>
+</div>
+<%# *** END: COMMENTS *** %>
+
+
+<%# *** START: SUMMARY *** %>
+<div class="infoContentOuter singleInfoSummary listContainer <%= page_single ? ' expanded' : '' %>">
+  <div class="infoContentHeader clearfix">
+    <%= render(:partial => "blists/info_summary_header",
+                :locals => {:view => view, :page_single => page_single, 
+                            :allow_edit => false, :in_widget => true }) %>
+  </div>
+  <div class="infoContentInner"><div class="infoContentWrapper">
+    <div class="infoContent"<%= div_shown %>>
+      <%= render( :partial => "blists/meta_tab_summary", 
+                  :locals => {:view => view, :page_single => page_single, 
+                              :allow_edit => false, :in_widget => true }) if theme[:meta][:summary][:show] %>
+    </div> <!-- /.infoContent -->
+  </div></div> <!-- /.infoContentInner -->
+</div>
+<%# *** END: SUMMARY *** %>

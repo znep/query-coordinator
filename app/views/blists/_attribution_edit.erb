@@ -5,7 +5,7 @@
     </dt>
     <dd>
       <div class="itemContent">
-        <div>
+        <div class="textContent">
           <%= select_tag("view[licenseId]", license_select_options(h(view.licenseId.nil? ? '' : view.licenseId))) %>
           <span class="helpie" title="Choose licensing terms for people who wish to use this dataset.">?</span>
         </div>
@@ -18,7 +18,7 @@
     </dt>
     <dd>
       <div class="itemContent">
-        <div>
+        <div class="textContent">
           <%= select_tag("license_cc_type", creative_commons_select_options(h(view.licenseId.nil? ? '' : view.licenseId))) %>
         </div>
       </div>
@@ -30,7 +30,7 @@
     </dt>
     <dd>
       <div class="itemContent">
-        <div>
+        <div class="textContent">
           <%= text_field_tag("view[attribution]", h(view.attribution), :title => "Individual or Organization", :class => "textPrompt") %>
         </div>
       </div>
@@ -42,7 +42,7 @@
     </dt>
     <dd>
       <div class="itemContent">
-        <div>
+        <div class="textContent">
           <%= text_field_tag("view[attributionLink]", h(view.attributionLink), :title => "Enter Web Address", :class => "textPrompt") %>
         </div>
       </div>
@@ -52,7 +52,7 @@
     <dt>&nbsp;</dt>
     <dd>
       <div class="itemContent">
-        <ul class="submitActions">
+        <ul class="submitActions textContent">
           <li>
             <ul class="actionButtons">
               <li><a id="attributionEditSubmitButton" class="arrowButton" href="#submit">Save</a></li>

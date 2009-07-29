@@ -529,35 +529,37 @@ $(function ()
     $("#filterViewMenu .columnsMenu .scrollable").click(function (event)
     {
         event.preventDefault();
-        $li = $(this);
+        var $li = $(this);
 
-        if ($li.hasClass("checked"))
+        var showHide = function(hide)
         {
             $.ajax({
                 type: "PUT",
                 url: $li.find("a:first").attr("href"),
                 cache: false,
-                data: $.json.serialize({'hidden': true}),
+                data: $.json.serialize({'hidden': hide}),
                 dataType: 'json',
                 success: function(responseData) { 
-                    $li.removeClass("checked");
+                    if (hide)
+                    {
+                        $li.removeClass("checked");
+                    }
+                    else
+                    {
+                        $li.addClass("checked");
+                    }
                     $("#readGrid").blistModel().updateColumn(responseData);
                 }
             });
         }
+
+        if ($li.hasClass("checked"))
+        {
+            showHide(true);
+        }
         else
         {
-            $.ajax({
-                type: "PUT",
-                url: $li.find("a:first").attr("href"),
-                cache: false,
-                data: $.json.serialize({'hidden': false}),
-                dataType: 'json',
-                success: function(responseData) { 
-                    $li.addClass("checked");
-                    $("#readGrid").blistModel().updateColumn(responseData);
-                }
-            });
+            showHide(false);
         }
     });
 

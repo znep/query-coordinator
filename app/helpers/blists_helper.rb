@@ -132,7 +132,7 @@ module BlistsHelper
     items << {'button' => true, 'text' => 'Next',
       'href' => '#next', 'class' => 'next'}
 
-    {'id' => args['id'], 'class' => 'checkboxMenu columnsMenu columnsShowMenu', 'items' => items}
+    {'id' => args['id'], 'class' => 'columnsMenu columnsShowMenu', 'checkbox_menu' => true,'items' => items}
   end
 
   def columns_menu(view, args = nil)

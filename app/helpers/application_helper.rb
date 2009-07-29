@@ -40,7 +40,8 @@ module ApplicationHelper
     ret = StringIO.new
     ret << "<ul id='" << options['id'].to_s << "' class='" <<
     options['class'].to_s << (options['bare_menu'] ? '' : ' menu') <<
-    (options['option_menu'] ? " optionMenu" : '') << "'>"
+    (options['option_menu'] ? " optionMenu" : '') << 
+    (options['checkbox_menu'] ? " checkboxMenu" : '') << "'>"
 
     last_item_was_separator = true
 
@@ -90,7 +91,7 @@ module ApplicationHelper
     if !options['bare_menu']
       ret << "<li class='footer'><div class='outerWrapper'>" <<
         "<div class='innerWrapper'>"
-      ret << (options['option_menu'] ? "<span class='colorWrapper'></span>" : '')
+      ret << (options['option_menu'] || options['checkbox_menu'] ? "<span class='colorWrapper'></span>" : '')
       ret << "</div></div></li>"
     end
     ret << "</ul>"

@@ -742,15 +742,8 @@ blist.namespace.fetch('blist.data');
 
             if (!isColumnPresent)
             {
-                meta.columns.push(column);
+                meta.view.columns.push(column);
             }
-
-            // Filter view columns down to just the visible, and sort them
-            var viewCols = $.grep(meta.view.columns, function(c)
-                { return c.position > 0 && (!c.flags ||
-                    $.inArray('hidden', c.flags) < 0); });
-            viewCols.sort(function(col1, col2)
-                { return col1.position - col2.position; });
 
             // Refresh the meta data and redraw the grid.
             meta.columns = null;

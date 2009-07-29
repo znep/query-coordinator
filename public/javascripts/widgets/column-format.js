@@ -2,7 +2,7 @@ var columnFormatNS = blist.namespace.fetch('blist.columns.properties.format');
 
 columnFormatNS.precision = function(value)
 {
-  return '<tr><td class="labelColumn"><label for="precision">Number of Decimal Places:</label></td><td style="min-width: 200px"><input class="incrementer" type="text" id="precision" value="' + value + '" /></td></tr>';
+  return '<tr><td class="labelColumn"><label for="precision">Number of Decimal Places:</label></td><td><input class="incrementer" type="text" id="precision" value="' + value + '" /></td></tr>';
 }
 
 columnFormatNS.currencies = [

@@ -15,11 +15,15 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       <div class="tabs">
         <ul class="tabSelector">
           <li><a id="general" href="#" class="selected">General</a></li>
-          <li><a id="formatting" href="#">Formatting</a></li>
-          <li><a id="totals" href="#">Column Totals</a></li>
-          <%- #<li><a id="defaults" href="#">Default Values</a></li> %>
+          <% if !@column.is_nested_table %>
+            <li><a id="formatting" href="#">Formatting</a></li>
+            <li><a id="totals" href="#">Column Totals</a></li>
+            <%- #<li><a id="defaults" href="#">Default Values</a></li> %>
+          <% end %>
         </ul>
       </div>
+
+      <% if !@column.is_nested_table %>
       <%- # Default values tab %>
       <%-
         ' 
@@ -55,6 +59,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           </li>
         </ul>
       </div>
+      <% end %>
 
       <%- # General properties tab %>
       <div id="generalTab" class="tabContent">
@@ -130,8 +135,10 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
   // Default the selected tab to "general"
   selectTab("general");
 
-  $("#formattingTab").columnFormat(column);
-  $("#totalsTab").columnTotals(column);
+  <% if !@column.is_nested_table %>
+    $("#formattingTab").columnFormat(column);
+    $("#totalsTab").columnTotals(column);
+  <% end %>
 
   // Keep the column model up to date so we don't have to read from the form to
   // update the properties.

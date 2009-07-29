@@ -17,7 +17,7 @@ class Column < Model
       "document" => "Document",
       "photo" => "Photo (Image)",
       "picklist" => "Picklist (Drop-down)",
-      "nestedTable" => "Nested Table",
+      "nested_table" => "Nested Table",
       "tag" => "Row Tag"
   };
 

@@ -333,31 +333,36 @@ ul.menu li.submenu .menu.opposite
         </div></div></li>
  */
 
-ul.menu.optionMenu
+ul.menu.optionMenu,
+ul.menu.checkboxMenu
 {
     background-color: #cacaca;
 }
 
-ul.menu.optionMenu li
+ul.menu.optionMenu li,
+ul.menu.checkboxMenu li
 {
     background-color: #ececec;
     margin-left: 30px;
 }
 
-ul.menu.optionMenu li a
+ul.menu.optionMenu li a,
+ul.menu.checkboxMenu li a
 {
     margin-left: -30px;
     padding-left: 33px;
 }
 
-ul.menu.optionMenu li.footer
+ul.menu.optionMenu li.footer,
+ul.menu.checkboxMenu li.footer
 {
     background-color: transparent;
     background-image: url(/stylesheets/images/widgets/menu/corner_dark_left_bottom.png);
     margin-left: -1px;
 }
 
-ul.menu.optionMenu li.footer .colorWrapper
+ul.menu.optionMenu li.footer .colorWrapper,
+ul.menu.checkboxMenu li.footer .colorWrapper
 {
     background-color: #cacaca;
     display: block;
@@ -579,12 +584,14 @@ ul.menu li.button.disabled a:hover .midWrapper
     background-image: none;
 }
 
-ul.menu.optionMenu li.button
+ul.menu.optionMenu li.button,
+ul.menu.checkboxMenu li.button
 {
     margin: 0 0 0 30px;
 }
 
-ul.menu.optionMenu li.button a
+ul.menu.optionMenu li.button a,
+ul.menu.checkboxMenu li.button a
 {
     margin: 0;
 }

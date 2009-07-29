@@ -117,6 +117,24 @@ module BlistsHelper
     menu_tag('id' => id, 'class' => 'contactsMenu', 'items' => items)
   end
 
+  def columns_show_menu(view, args=nil)
+    args ||= {}
+    items = [{'button' => true, 'text' => 'Previous',
+      'href' => '#prev', 'class' => 'prev'}]
+
+    view.columns.each do |c|
+      visible = !c.flag?('hidden')
+      items << {'text' => h(c.name),
+        'href' => "/views/#{view.id}/columns/#{c.id}", 
+        'class' => get_datatype_class(c) + ' scrollable ' + (visible ? "checked" : "")}
+    end
+
+    items << {'button' => true, 'text' => 'Next',
+      'href' => '#next', 'class' => 'next'}
+
+    {'id' => args['id'], 'class' => 'checkboxMenu columnsMenu columnsShowMenu', 'items' => items}
+  end
+
   def columns_menu(view, args = nil)
     args = args || {}
     modal = args.key?("modal") ? args["modal"] : false

@@ -29,24 +29,36 @@ select
 {
     float: left;
     width: 4em;
-    margin-right: 0.5em;
+    margin-right: 1.5em;
 }
 
-.ui-spinner-button
+.ui-spinner 
 {
-    display: block;
-    position: relative;
+  height: 2.3em;
 }
 
-.ui-spinner-button-inner
+.ui-icon
 {
-    width: 16px; 
-    color: #666;
-    cursor: default;
-    text-align: center;
-    text-decoration: none;
+  text-decoration: none;
+  width:16px;
+  height:16px;
 }
 
+.ui-icon-triangle-1-n
+{
+  background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_up.png);
+  background-position: 0 -2px;
+}
+
+.ui-icon-triangle-1-s
+{
+  background-image: url(/stylesheets/images/widgets/dropdown_button/arrow_down.png);
+  background-position: 0 0;
+}
+.ui-spinner-button 
+{
+  font-size: 0;
+} 
 #list-style
 {
     margin-right: 0.5em;

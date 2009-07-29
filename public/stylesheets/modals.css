@@ -445,6 +445,7 @@
 {
   background-color:#ccc;
   position:absolute;
+  left: 0;
   width: 15em;
 }
 .columnPropertiesWrapper .tabContent
@@ -457,7 +458,7 @@
 
 .columnPropertiesWrapper .tabs ul.tabSelector
 {
-  width: 15em;
+  width: 15.1em;
   padding: 0;
   margin: 0;
 }

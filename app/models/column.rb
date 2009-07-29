@@ -66,7 +66,12 @@ class Column < Model
     elsif js.key?("alignment")
       update_data[:format]["align"] = js["alignment"]
     end
-    pp update_data[:format]
+
+    if js.key?("decimalPlaces") && js["decimalPlaces"].blank?
+      update_data[:format].delete "precision"
+    elsif js.key?("decimalPlaces")
+      update_data[:format]["precision"] = js["decimalPlaces"].to_i
+    end
   end
 
   # Convert the core server column data to what JS expects as a model so the
@@ -86,14 +91,14 @@ class Column < Model
 
     if !self.format.nil?
       col[:type] = client_type
-      col[:format] = self.format["view"]
+      col[:format] = self.format.view
 
-      if !self.format["range"].nil?
-        col[:range] = self.format["range"]
+      if !self.format.range.nil?
+        col[:range] = self.format.range
       end
 
-      if !self.format["precision"].nil?
-        col[:decimalPlaces] = self.format["precision"]
+      if !self.format.precision.nil?
+        col[:decimalPlaces] = self.format.precision
       end
 
       col[:alignment] = alignment unless aligment.nil?
@@ -104,9 +109,9 @@ class Column < Model
 
   def client_type
     if !self.format.nil?
-      if dataType.type == "text" && self.format["formatting_option"] == "Rich"
+      if dataType.type == "text" && self.format.formatting_option == "Rich"
         "richtext"
-      elsif dataType.type == "stars" && self.format["view"] == "stars_number"
+      elsif dataType.type == "stars" && self.format.view == "stars_number"
         "number"
       end
     end
@@ -125,8 +130,8 @@ class Column < Model
   end
 
   def alignment
-    if (!self.format.nil? && !self.format.data["align"].nil?)
-      return self.format.data["align"]
+    if (!self.format.nil? && !self.format.align.nil?)
+      return self.format.align
     end
 
     return nil

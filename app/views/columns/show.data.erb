@@ -140,6 +140,8 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
   $("#name").change(function() { column.name = $(this).val() });
   $("#description").change(function() { column.description = $(this).val() });
   $("#column_alignment_left,#column_alignment_center,#column_alignment_right").change(function() { column.alignment = $(this).val() });
+  $("#precision").change(function() { column.decimalPlaces = $(this).val() });
+  $("#ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#precision").val() });
 
   $("#save").click(function() {
       $.ajax({

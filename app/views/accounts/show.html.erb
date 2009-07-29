@@ -22,7 +22,7 @@
             <div class="sectionEdit formListBox">
               <div class="formListBoxTL"><div class="formListBoxTR">
               <div class="formListBoxBL"><div class="formListBoxBR">
-                <% form_tag(account_path) do %>
+                <% form_tag(accounts_json_url) do %>
                   <dl class="clearfix">
                     <dt>Current Email</dt>
                     <dd class="dataEmail"><%= h(current_user.email) %></dd>
@@ -60,7 +60,7 @@
             <div class="sectionEdit formListBox">
               <div class="formListBoxTL"><div class="formListBoxTR">
               <div class="formListBoxBL"><div class="formListBoxBR">
-                <% form_tag(account_path) do %>
+                <% form_tag(accounts_json_url) do %>
                   <dl class="clearfix">
                     <dt><label for="user_password_old">Old Password</label></dt>
                     <dd><%= password_field_tag("user[password_old]") %></dd>

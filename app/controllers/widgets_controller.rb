@@ -19,13 +19,52 @@ class WidgetsController < ApplicationController
     samhsa.gov
     gsa.gov
   }
+  
+  DEFAULT_THEME = {
+    :style    => { :custom_stylesheet => 'normal',
+                   :font => { :face => 'arial, sans-serif',
+                              :grid_header_size => '1.2em',
+                              :grid_data_size => '1.1em' } },
+    :frame    => { :color => '#06386A',
+                   :gradient => true,
+                   :border => '#c9c9c9',
+                   :icon_color => 'blue',      #TODO+
+                   :logo => { :show => true,
+                              :type => 'default',
+                              :url => '' },
+                   :powered_by => true },
+    :grid     => { :row_numbers => false,
+                   :wrap_header_text => false, #TODO
+                   :header_icons => false,
+                   :row_height => '16px',
+                   :zebra => '#e7ebf2' },
+    :menu     => { :email => true,
+                   :subscribe  => { :rss => true,
+                                    :atom => true },
+                   :api => true,
+                   :download => true,
+                   :print => true,
+                   :fullscreen => true,
+                   :republish => true },
+    :meta     => { :comments   => { :show => true, :order => 0, :display_name => 'Comments' },
+                   :views      => { :show => true, :order => 1, :display_name => 'Views' },
+                   :publishing => { :show => true, :order => 2, :display_name => 'Publishing' },
+                   :activity   => { :show => true, :order => 3, :display_name => 'Activity' },
+                   :summary    => { :show => true, :order => 4, :display_name => 'Summary' } },
+    :behavior => { :rating => true,             #TODO
+                   :save_public_views => true,  #TODO+
+                   :interstitial => false,
+                   :ga_code => '' }
+  }
 
   def show
     @variation = params[:variation]
+    @theme = DEFAULT_THEME
+
     @options = params[:options]
     if @variation.blank? 
+      @variation = 'normal'
       
-      @variation = "normal"
       if !request.referrer.nil? 
         # Check the referrer
         m = request.referrer.match(/^\w+:\/\/([a-zA-Z0-9_\-.]+\.(\w{3}))(:|\/)/)
@@ -33,7 +72,7 @@ class WidgetsController < ApplicationController
         # TLD Check, until we have GSA approval marking
         if m && m[1].include?("whitehouse.gov")
           @variation = 'whitehouse'
-        elsif m && !GOV_OVERRIDES.reject { |domain| !m[1].include? domain }.empty?
+        elsif m && GOV_OVERRIDES.any? { |domain| m[1].include? domain }
           @variation = 'gov'
         end
       end
@@ -48,14 +87,18 @@ class WidgetsController < ApplicationController
       return redirect_to('/widgets/' + params[:id] + '/' + tm[1])
     end
     
-    # If we're using "meta" variation, add the meta tabs and save filter bar
+    #If we're using "meta" variation, add the meta tabs and save filter bar
     if !@options.nil? && @options == "meta"
-      @save_filter = true
-      @meta_tabs = true
+      @theme[:behavior][:save_public_views] = true
+
+      @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
+      @theme[:meta][:comments][:show] = true
+      @theme[:meta][:summary][:show] = true
     else
-      # They're disabled by default
-      @save_filter = false
-      @meta_tabs = false
+      # They're disabled by default until they're ready
+      @theme[:behavior][:save_public_views] = false
+
+      @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
     end
     
     begin
@@ -80,11 +123,20 @@ class WidgetsController < ApplicationController
         I18n.t(:blist_name).downcase
       return (render 'shared/error')
     end
+    
+    # Todo: grab the theme for the given token here if applicable
 
     @meta_description = Helper.instance.meta_description(@view)
     @meta_keywords = Helper.instance.meta_keywords(@view)
     
     @is_gov_widget = @variation == 'gov' || @variation == 'whitehouse'
+    
+    # Wire in custom behaviors for whitehouse/gov
+    @theme[:style][:custom_stylesheet] = @variation
+    if @is_gov_widget
+      @theme[:behavior][:interstitial] = true
+      @theme[:frame][:logo][:show] = false
+    end
   end
 end
 

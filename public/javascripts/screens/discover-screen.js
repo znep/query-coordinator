@@ -22,8 +22,17 @@ blist.discover.historyChangeHandler = function (hash)
     // Special cases to handle default tab actions
     if (hash == "")
     {
-        // default tab is popular
-        hash = "POPULAR"
+        var searchTerm = $.urlParam("search", window.location.href);
+        if (searchTerm)
+        {
+            // we got here via search, so default tab is search
+            hash = "type=SEARCH&search=" + searchTerm;
+        }
+        else
+        {
+            // default tab is popular
+            hash = "POPULAR"
+        }
     }
     if (blist.discover.isTabDirty[hash] === false)
     {
@@ -109,8 +118,17 @@ blist.discover.sortSelectChangeHandler = function (event)
 
     if (hash == "")
     {
-        // default tab is popular
-        hash = "type=POPULAR";
+        var searchTerm = $.urlParam("search", window.location.href);
+        if (searchTerm)
+        {
+            // we got here via a search
+            hash = "type=SEARCH&search=" + searchTerm;
+        }
+        else
+        {
+            // default tab is popular
+            hash = "type=POPULAR";
+        }
     }
     if (blist.discover.isTabDirty[hash] !== undefined)
     {
@@ -218,6 +236,27 @@ $(function ()
 
     $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler);
     $("#search").focus(function(){ $(this).select(); });
+    $("#search").keyup(function()
+    {
+        var $searchField = $(this);
+        if (!$searchField.hasClass("prompt") && ($searchField.val() != ""))
+        {
+            $searchField.parent().find(".clearSearch").show();
+        }
+        else
+        {
+            $searchField.parent().find(".clearSearch").hide();
+        }
+    });
+    $(".clearSearch")
+        .click(function(event)
+        {
+            event.preventDefault();
+            var $link = $(this);
+            $link.closest(".searchContainer").find("input[type='text']").val("").focus();
+            $link.hide();
+        })
+        .hide();
     
     $("#splashModal").jqm({
         trigger: false,
@@ -231,6 +270,10 @@ $(function ()
                 success: function(data)
                 {
                     $modal.html(data).show();
+                    if (modalUrl == "/data/splash")
+                    {
+                        $.cookies.set('show_splash', 'false', {hoursToLive: 87600});
+                    }
                 }
             });
         }
@@ -277,6 +320,7 @@ $(function ()
                 success: function(data)
                 {
                     $modal.html(data).show();
+                    $.cookies.set('show_splash', 'false', {hoursToLive: 87600});
                 }
             });
         }
@@ -288,13 +332,13 @@ $(function ()
     });
     
     // Check to see if we were referred from a blist.com domain
+    var show_redirect = false;
     var ref_re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
     if (document.referrer.match(ref_re) 
         && document.referrer.match(ref_re)[1]
         && document.referrer.match(ref_re)[1].toString().indexOf("blist") != -1)
     {
-        $("#redirectedModal").jqmShow();
-        return;
+        show_redirect = true;
     }
 
     // Check to see if we have a referrer URL
@@ -304,10 +348,19 @@ $(function ()
         && document.URL.match(query_ref_re)[1]
         && document.URL.match(query_ref_re)[1].toString().indexOf("blist") != -1)
     {
-        $("#redirectedModal").jqmShow();
-        return;
+        show_redirect = true;
     }
 
-    // Default ot the normal splash
-    $("#splashModal").jqmShow();
+    // Default to the normal splash
+    if($.cookies.get('show_splash') != "false")
+    {
+        if (show_redirect)
+        {
+            $("#redirectedModal").jqmShow();
+        }
+        else
+        {
+            $("#splashModal").jqmShow();
+        }
+    }
 });

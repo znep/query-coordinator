@@ -1,22 +1,35 @@
+<%- 
+comment_external_href = view.href + "?metadata_pane=tabComments&comment=" + comment.id.to_s
+-%>
 <div class='actions'>
   <%- form_tag(update_comment_blist_path(view.id),
-  :class => 'updateComment') do -%>
-  <a href='#reply_<%= comment.id %>'>Reply</a>
+  :class => 'updateComment clearfix') do -%>
+  
+  <%- if allow_commenting -%>
+    <a href='#reply_<%= comment.id %>'>Reply</a>
+  <%- else -%>
+    <a href="<%= comment_external_href %>" rel="external">Reply</a>
+  <%- end -%>
   <%- if current_user.nil? || comment.user.id != current_user.id -%>
-  <a class='flagComment <%= comment.flag?("flaggedByCurrentUser") ?
-    'actionDone' : '' %>'
-    href='<%= '#flagComment_' + comment.id.to_s %>'>
-    <%= comment.flag?("flaggedByCurrentUser") ?
-    'Flagged' : 'Flag as Inappropriate' %>
-  </a>
-  <a class='rateComment rateUp <%= comment.rated? ? 'actionDone' : '' %>
-    <%= comment.rated_down? ? 'disabled' : '' %>'
-    href='<%= '#rateUp_' + comment.id.to_s %>'
-    title='Helpful'>Helpful</a>
-  <a class='rateComment rateDown <%= comment.rated? ? 'actionDone' : '' %>
-    <%= comment.rated_up? ? 'disabled' : '' %>'
-    href='<%= '#rateDown_' + comment.id.to_s %>'
-    title='Not Helpful'>Not Helpful</a>
+    <%- 
+      flag_comment_href = allow_commenting ? '#flagComment_' + comment.id.to_s : comment_external_href
+      rateup_comment_href = allow_commenting ? '#rateUp_' + comment.id.to_s : comment_external_href
+      ratedown_comment_href = allow_commenting ? '#rateDown_' + comment.id.to_s : comment_external_href
+    -%>
+    <a class='flagComment <%= comment.flag?("flaggedByCurrentUser") ?
+      'actionDone' : '' %>'
+      href='<%= flag_comment_href %>' <%= "rel=\"external\"" if !allow_commenting %>>
+      <%= comment.flag?("flaggedByCurrentUser") ?
+      'Flagged' : 'Flag as Inappropriate' %>
+    </a>
+    <a class='rateComment rateUp <%= comment.rated? ? 'actionDone' : '' %>
+      <%= comment.rated_down? ? 'disabled' : '' %>'
+      href='<%= rateup_comment_href %>'
+      title='Helpful' <%= "rel=\"external\"" if !allow_commenting %>>Helpful</a>
+    <a class='rateComment rateDown <%= comment.rated? ? 'actionDone' : '' %>
+      <%= comment.rated_up? ? 'disabled' : '' %>'
+      href='<%= ratedown_comment_href %>'
+      title='Not Helpful' <%= "rel=\"external\"" if !allow_commenting %>>Not Helpful</a>
   <%- end -%>
   <span class='ratingUp <%= (comment.upRatings || 0) < 1 ? 'hidden' : '' %>'>
     +<%= comment.upRatings %>

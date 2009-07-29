@@ -5,6 +5,30 @@ blist.util.flashInterface.popupShownHandlers = {};
 blist.util.flashInterface.popupClosedHandlers = {};
 blist.util.flashInterface.isReady = false;
 
+blist.util.flashInterface.displayColumnProperties = function (columnId)
+{
+    blist.namespace.fetch('blist.columns.properties');
+
+    $("#columnPropertiesModal").jqm({
+        trigger: false,
+        onShow: function(hash)
+        {
+            var $modal = hash.w;
+            $.ajax({ 
+                url: "/blists/" + blist.blistGrid.viewId + "/columns/" + columnId,
+                dataType: "html",
+                cache: false,
+                success: function(data)
+                {
+                    $modal.html(data).show();
+                }
+            });
+        }
+    });
+
+    $("#columnPropertiesModal").jqmShow();
+};
+
 blist.util.flashInterface.callSwf = function (callback)
 {
     if (!flashIntNS.isReady)
@@ -25,6 +49,14 @@ blist.util.flashInterface.callSwf = function (callback)
 blist.util.flashInterface.swf = function ()
 {
     return flashIntNS.isReady ? $('object#swfContent')[0] : undefined;
+};
+
+blist.util.flashInterface.columnPropertiesUpdated = function (columnId)
+{
+    if (flashIntNS.swf() != undefined)
+    {
+        flashIntNS.swf().columnPropertiesChanged(columnId);
+    }
 };
 
 blist.util.flashInterface.swfReady = function ()

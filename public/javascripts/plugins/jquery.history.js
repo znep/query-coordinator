@@ -11,6 +11,10 @@
  * for msie when no initial hash supplied.
  */
 
+ /*
+  * 2009/07/23 (based on 2009/06/25 release) (clint.tseng@socrata.com):
+  *      Changed url decoding behavior to pass undecoded hash to the callback.
+  */
 
 jQuery.extend({
 	historyCurrentHash: undefined,
@@ -20,15 +24,16 @@ jQuery.extend({
 	historyInit: function(callback, src){
 		jQuery.historyCallback = callback;
 		if (src) jQuery.historyIframeSrc = src;
-		var current_hash = location.hash.replace(/\?.*$/, '');
+		var matches = location.href.match(/#(.*)$/);
+		var current_hash = (matches !== null) ? matches[1].replace(/\?.*$/, '') : '';
 		
 		jQuery.historyCurrentHash = current_hash;
 		// if ((jQuery.browser.msie) && (jQuery.browser.version < 8)) {
 		if (jQuery.browser.msie) {
 			// To stop the callback firing twice during initilization if no hash present
 			if (jQuery.historyCurrentHash == '') {
-			jQuery.historyCurrentHash = '#';
-		}
+    			jQuery.historyCurrentHash = '#';
+    		}
 		
 			// add hidden iframe for IE
 			jQuery("body").prepend('<iframe id="jQuery_history" style="display: none;"'+
@@ -69,7 +74,8 @@ jQuery.extend({
 			// On IE, check for location.hash of iframe
 			var ihistory = jQuery("#jQuery_history")[0];
 			var iframe = ihistory.contentDocument || ihistory.contentWindow.document;
-			var current_hash = iframe.location.hash.replace(/\?.*$/, '');
+			var matches = iframe.location.href.match(/#(.*)$/);
+			var current_hash = (matches !== null) ? matches[1].replace(/\?.*$/, '') : '';
 			if(current_hash != jQuery.historyCurrentHash) {
 			
 				location.hash = current_hash;
@@ -96,15 +102,17 @@ jQuery.extend({
 					}
 					var cachedHash = jQuery.historyBackStack[jQuery.historyBackStack.length - 1];
 					if (cachedHash != undefined) {
-						jQuery.historyCurrentHash = location.hash.replace(/\?.*$/, '');
+					    var matches = location.href.match(/#(.*)$/);
+						jQuery.historyCurrentHash = (matches !== null) ? matches[1].replace(/\?.*$/, '') : '';
 						jQuery.historyCallback(cachedHash);
 					}
 				} else if (jQuery.historyBackStack[jQuery.historyBackStack.length - 1] == undefined && !jQuery.isFirst) {
 					// back button has been pushed to beginning and URL already pointed to hash (e.g. a bookmark)
 					// document.URL doesn't change in Safari
 					if (location.hash) {
-						var current_hash = location.hash;
-						jQuery.historyCallback(location.hash.replace(/^#/, ''));
+					    var matches = location.href.match(/#(.*)$/);
+						var current_hash = (matches !== null) ? matches[1].replace(/\?.*$/, '') : '';
+						jQuery.historyCallback(current_hash);
 					} else {
 						var current_hash = '';
 						jQuery.historyCallback('');
@@ -114,7 +122,8 @@ jQuery.extend({
 			}
 		} else {
 			// otherwise, check for location.hash
-			var current_hash = location.hash.replace(/\?.*$/, '');
+			var matches = location.href.match(/#(.*)$/);
+			var current_hash = (matches !== null) ? matches[1].replace(/\?.*$/, '') : '';
 			if(current_hash != jQuery.historyCurrentHash) {
 				jQuery.historyCurrentHash = current_hash;
 				jQuery.historyCallback(current_hash.replace(/^#/, ''));
@@ -123,7 +132,7 @@ jQuery.extend({
 	},
 	historyLoad: function(hash){
 		var newhash;
-		hash = decodeURIComponent(hash.replace(/\?.*$/, ''));
+		hash = hash.replace(/\?.*$/, '');
 		
 		if (jQuery.browser.safari) {
 			newhash = hash;

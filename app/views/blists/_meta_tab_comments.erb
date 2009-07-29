@@ -1,0 +1,62 @@
+<%# locals: view, allow_commenting  %>
+
+<%- comments = view.comments -%>
+
+<%- if allow_commenting -%>
+  <%- form_tag(post_comment_blist_path(view.id),
+  :class => ('postComment' + (comments.length > 0 ? ' hidden' : ''))) do -%>
+
+  <dl class="summaryList">
+    <dt>My Rating</dt>
+    <dd class='selfRating'>
+    <%- my_rating = 0 -%>
+    <div class='rating <%= get_rating_class(my_rating) %>'
+      title='<%= my_rating %>'><span><%= my_rating %></span></div>
+    <%= hidden_field_tag("comment[viewRating]", my_rating) %>
+    </dd>
+  </dl>
+
+  <dl class="summaryList">
+    <dt>Title</dt>
+    <dd>
+    <%= text_field_tag("comment[title]", '') %>
+    </dd>
+  </dl>
+
+  <dl class="summaryList">
+    <dt>Comment</dt>
+    <dd class='commentBody'>
+    <%= text_area_tag("comment[body]", '',
+      {:class => 'textPrompt', :title => 'Enter a comment'}) %>
+    </dd>
+  </dl>
+
+  <dl class="summaryList">
+    <dd class='submitSection'>
+    <a href='#cancel_comment'>Cancel</a>
+    <%= image_submit_tag("button_submit_comment.png", :title => "Submit") %>
+    </dd>
+  </dl>
+  <%- end -%>
+<%- end -%>
+
+<ul class='commentList'>
+  <%= render(:partial => "blists/comment", :collection => comments,
+    :locals => {:view => view, :allow_commenting => allow_commenting}) %>
+</ul>
+
+<%# Filled in by JS %>
+<div class='commentPagination pagination'></div>
+
+<%- if allow_commenting -%>
+  <ul class='actionButtons footer clearfix
+    <%= comments.length == 0 ? 'hidden' : '' %>'>
+    <li class='commentLink'>
+      <%- if allow_commenting -%>
+        <a href="#post_comment" class="arrowButton postComment" title="Post a Comment">Post a Comment</a>
+      <%- else -%>
+        <a href="<%= view.href + '?metadata_pane=tabComments'%>" class="arrowButton" title="Post a Comment" rel="external">Post a Comment</a>
+      <%- end -%>
+      </li>
+  </ul>
+<%- end -%>

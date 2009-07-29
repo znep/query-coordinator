@@ -1,6 +1,5 @@
 .gridOuter
 {
-    border-color: #c9c9c9;
     border-style: solid;
     border-width: 0 1px;
 }
@@ -69,6 +68,9 @@
 .headerMenu .fullscreen a { background-position: 5px -992px; }
 .headerMenu .print a { background-position: 5px -2px; }
 .headerMenu .newDataset a { background-position: 5px -94px; }
+.headerMenu .subscribe a { background-position: 5px -1058px; }
+.headerMenu .subscribe .menu a { background-position: 5px 23px; }
+.headerMenu .api a { background-position: 5px -1081px; }
 
 .headerMenu li.share .menu a
 {
@@ -224,17 +226,9 @@
     background-color: #fff;
 }
 
-.blist-tr-even .blist-td
-{
-    background-color: #e7ebf2;
-}
-
 .blist-td
 {
     background-color: #fff;
-    font-size: 1.1em;
-    height: 1.4545em; /* 16px */
-    line-height: 1.4545em; /* 16px */
     padding: 4px; /* .3636em */
 }
 
@@ -247,7 +241,6 @@ div.blist-table-expander
 {
     border-left: solid 1px #cacaca;
     border-top: solid 1px #cacaca;
-    background-color: #fffad9;
 }
 
 div.blist-td p
@@ -265,10 +258,6 @@ img.blist-table-option-icon
 {
     padding-right: 4px;
     padding-bottom: -1px;
-}
-
-.blist-table .blist-hot
-{
 }
 
 .blist-table a
@@ -291,7 +280,6 @@ img.blist-table-option-icon
 }
 .widgetFooterInner
 {
-    border-color: #c9c9c9;
     border-style: solid;
     border-width: 0 1px 1px;
     padding: .5em 1.5em;
@@ -304,7 +292,6 @@ img.blist-table-option-icon
 
 .widgetLogo
 {
-    background-image: url(/stylesheets/images/widgets/socrata_logo_player.gif);
     background-position: left center;
     background-repeat: no-repeat;
     display: block;

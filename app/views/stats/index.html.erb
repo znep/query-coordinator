@@ -51,7 +51,7 @@
                 <tr>
                   <% pair.each do |desc, color| %>
                     <td class="legendColor"><div style="background-color: #<%= color %>"></div></td>
-                    <td class="legendDesc">Via <%= (desc == "widget") ? "Social Data Player" : desc.titleize %>:</td>
+                    <td class="legendDesc">Via <%= Stat::HUMAN_READABLE_ROW_ACCESS_LEGEND[desc] %>:</td>
                     <td class="legendDesc"><strong><%= number_with_delimiter(@stat.rows_accessed[desc] || 0, ',') %></strong></td>
                   <% end %>
                 </tr>

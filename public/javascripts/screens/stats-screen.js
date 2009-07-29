@@ -10,6 +10,7 @@ blist.stats.options = {
     simpleCellExpand: true,
     cellExpandEnabled: false,
     disableLastColumnResize: true,
+    generateHeights: false,
     manualResize: false,
     showRowNumbers: false
 };

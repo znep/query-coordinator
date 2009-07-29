@@ -72,6 +72,7 @@ ActionController::Routing::Routes.draw do |map|
       :notify_all_of_changes => :post
     } do |blist|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
+      blist.resources :columns
     end
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
@@ -123,8 +124,11 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP}
 
   map.connect 'widgets/:id/:variation/:options', :controller => 'widgets', :action => 'show'
+  map.connect 'widgets/:id/:variation/:options.data', :controller => 'widgets', :action => 'show', :format => 'data'
   map.connect 'widgets/:id/:variation', :controller => 'widgets', :action => 'show'
+  map.connect 'widgets/:id/:variation.data', :controller => 'widgets', :action => 'show', :format => 'data'
   map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'
+  map.connect 'widgets/:id.data', :controller => 'widgets', :action => 'show', :format => 'data'
   
   map.connect 'widgets_preview/:id', :controller => 'widgets_preview', :action => 'show'
 
@@ -142,6 +146,7 @@ ActionController::Routing::Routes.draw do |map|
     https.logout '/logout', :controller => 'user_sessions', :action => 'destroy'
     https.signup '/signup', :controller => 'accounts', :action => 'new'
     https.signup_json '/signup.json', :controller => 'accounts', :action => 'create', :format => 'json'
+    https.accounts_json '/accounts.json', :controller => 'accounts', :action => 'update', :format => 'json'
   end
 
   map.resources :user_sessions

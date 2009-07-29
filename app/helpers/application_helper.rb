@@ -42,11 +42,16 @@ module ApplicationHelper
     options['class'].to_s << (options['bare_menu'] ? '' : ' menu') <<
     (options['option_menu'] ? " optionMenu" : '') << "'>"
 
+    last_item_was_separator = true
+
     items.each do |i|
       if (i['owner_item'] && !is_owner) || (i['swf_item'] && !can_edit) ||
-        (i['user_required'] && !current_user)
+        (i['user_required'] && !current_user) || (!i['if'].nil? && !i['if']) || 
+        (last_item_was_separator && i['separator'])
         next
       end
+
+      last_item_was_separator = false
 
       if i['title'].nil?
         i['title'] = i['text']
@@ -54,6 +59,7 @@ module ApplicationHelper
       if i['separator']
         ret << "<li class='separator" << (i['swf_item'] ? ' swfItem' : '') <<
         "'></li>"
+        last_item_was_separator = true
       elsif i['section_title']
         ret << "<li class='sectionTitle #{i['class']}'>#{i['section_title']}</li>"
       elsif i['button']
@@ -328,9 +334,7 @@ HREF
 
     # Final cleanup and output
     state.reject! { |key, value| value.nil? || (value == "") || (value == false) }
-
-    out = Array.new
-    state.each { |pair| out << pair.join("=") }
-    "#{delimiter}#{out.join('&')}"
+    out = state.map { |pair| pair.map{ |item| CGI::escape(item.to_s) }.join("=") }.join('&')
+    "#{delimiter}#{out}"
   end
 end

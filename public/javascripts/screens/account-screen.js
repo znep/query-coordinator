@@ -20,7 +20,11 @@ $(function ()
     {
         event.preventDefault();
         $(this).closest(".sectionShow").slideUp("fast");
-        $(this).closest(".listSection").find(".sectionEdit").slideDown("fast");
+        $(this).closest(".listSection").find(".sectionEdit")
+          .find("form :input")
+            .val("")
+          .end()
+          .slideDown("fast");
     });
 
     $(".formListBoxClose a").click(function(event)
@@ -39,8 +43,7 @@ $(function ()
             var requestData = $.param($form.find(":input"));
             $.ajax({
                 url: $form.attr("action"),
-                type: "PUT",
-                dataType: "json",
+                dataType: "jsonp",
                 data: requestData,
                 success: function(responseData)
                 {

@@ -25,6 +25,7 @@
             accessType: 'DEFAULT',
             clearFilterItem: null,
             clearTempViewCallback: function () {},
+            columnPropertiesEnabled: false,
             currentUserId: null,
             editEnabled: false,
             filterItem: null,
@@ -260,6 +261,15 @@
                     <span class="highlight">Sort Descending</span>\
                     </a>\
                     </li>';
+                    if (datasetObj.settings.columnPropertiesEnabled)
+                    {
+                        var view = $(datasetObj.currentGrid).blistModel().meta().view;
+                        htmlStr += '<li class="properties">\
+                            <a href="/blists/' + view.id + '/columns/' + col.id + '.json" rel="modal">\
+                            <span class="highlight">Properties</span>\
+                            </a>\
+                            </li>';
+                    }
             }
             htmlStr +=
                 '<li class="footer"><div class="outerWrapper">\

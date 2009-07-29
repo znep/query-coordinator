@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") %>
+  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
   <%= stylesheet_link_tag "blist-about-screen", :cache => "cache/blists_about_all" %>
   <title><%= @view.name %> | <%= t(:page_title) %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
@@ -166,7 +166,7 @@
             </div>
 
             <div class="attributionEdit hide">
-              <a href="close" class="closeButton closeAttribution">close</a>
+              <a href="#close" class="closeButton closeAttribution">close</a>
               <%= render :partial => 'attribution_edit', :locals => { :view => @view } %>
             </div>
 
@@ -267,7 +267,7 @@
     	    <a href="#" class="socialActionLink"
     	      title="Download a copy of this dataset to your computer" id="downloadLink">
     	      <span class="dropdownWrapper">
-              <span class="linkIcon">Download As</span>
+              <span class="linkIcon">Download</span>
             </span>
           </a>
     	    <%= menu_tag({'id' => 'downloadMenu', 'class' => 'noicon', 'items' => [
@@ -286,7 +286,7 @@
           ]}) %>
         </li>
     	  <li>
-    	    <a href="<%= "/views/#{@view.id}/rows.rss?accessType=WEBSITE" %>" class="socialActionLink" title="Stay up to date with this dataset with RSS" id="rssLink">
+    	    <a href="<%= "/views/#{@view.id}/rows.rss" %>" class="socialActionLink" title="Stay up to date with this dataset with RSS" id="rssLink">
     	      <span class="linkIcon">Subscribe to RSS</span>
     	    </a>
     	  </li>

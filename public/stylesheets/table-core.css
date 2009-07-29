@@ -204,7 +204,6 @@ div.blist-table-expander,
 div.blist-table-edit-container,
 div.blist-table-active-container
 {
-    overflow: auto;
     position: absolute;
 }
 div.blist-table-active-container { z-index: 10; }
@@ -213,6 +212,7 @@ div.blist-table-edit-container { z-index: 20; }
 
 div.blist-table-expander .blist-td
 {
+    overflow: auto;
     white-space: normal;
 }
 

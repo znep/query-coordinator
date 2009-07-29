@@ -211,11 +211,15 @@
                 "tabActivity" : ".singleInfoActivity"
             },
             allPanelsSelector : ".infoContentOuter",
+            allPanelsHeaderSelector: ".infoContentHeader",
             expandableSelector: ".infoContent",
+            expandableContainerSelector: ".infoContentWrapper",
             switchCompleteCallback: function(){},
             initialTab: '',
             isWidget: false,
+            scrollToTabOnActivate: true,
             widgetMetaContainerSelector: "#widgetMeta",
+            widgetMetaHeaderSelector: "#widgetMeta .header",
             widgetOuterContainerSelector: ".gridInner", 
             initialMetaHeight: 0
         },
@@ -244,12 +248,7 @@
                     // Wire up the click event for the tab itself for activation
                     $li.find("a:not(" + tabNavigator.settings.expanderSelector + ")").click(function(event) {
                         event.preventDefault();
-                        // TODO:    This if statement is temporary so that clicking on the tab doesn't
-                        //          do anything while there's only 1 tab in the widget.
-                        if (!tabNavigator.settings.isWidget)
-                        {
-                            tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
-                        }
+                        tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
                     });
                 });
 
@@ -294,7 +293,10 @@
 
                 $panel.addClass(tabNavigator.settings.activationClass);
                 tabNavigator.settings.switchCompleteCallback($tab);
-                $tab[0].scrollIntoView();
+                if (tabNavigator.settings.scrollToTabOnActivate)
+                {
+                    $tab[0].scrollIntoView();
+                }
             },
             expandTabPanels: function(openCallback) {
                 
@@ -360,6 +362,7 @@
                             {
                                 $(this).hide();
                             });
+                            tabNavigator.settings.switchCompleteCallback();
                         }
                     );
                     
@@ -369,7 +372,12 @@
                 {
                     $allExpanders.attr("title", "less info").text("less info");
                     
+                    var expandMinHeight = 
+                        $(tabNavigator.settings.widgetOuterContainerSelector).outerHeight() -
+                        $(tabNavigator.settings.widgetMetaHeaderSelector).outerHeight() -
+                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight() - 1;
                     $(tabNavigator.settings.expandableSelector).show();
+                    $(tabNavigator.settings.expandableContainerSelector).css("min-height", expandMinHeight + "px");
                     tabNavigator.settings.switchCompleteCallback();
                     if (openCallback !== undefined)
                     {

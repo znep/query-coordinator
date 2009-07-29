@@ -119,6 +119,7 @@ module BlistsHelper
 
   def columns_menu(view, args = nil)
     args = args || {}
+    modal = args.key?("modal") ? args["modal"] : false
     include_options = args['include_options'] || {}
     items = args['initial_items'] || []
     items.unshift({'button' => true, 'text' => 'Previous',
@@ -144,7 +145,8 @@ module BlistsHelper
             include_options['nested_table']) &&
           (!args['column_test'] || args['column_test'].call(c))
           cur_item = {'text' => h(c.name),
-            'href' => args['href_prefix'] + c.id.to_s,
+            'modal' => modal,
+            'href' => args['href_prefix'] + c.id.to_s, 
             'class' => get_datatype_class(c) + ' scrollable'}
           if (args['submenu'])
             cur_item['submenu'] = args['submenu'].call(c)
@@ -160,7 +162,8 @@ module BlistsHelper
             if (!cc.flag?('hidden') || include_options['hidden']) &&
               (!args['column_test'] || args['column_test'].call(cc))
               cur_item = {'text' => h(c.name) + ': ' + h(cc.name),
-                'href' => args['href_prefix'] + cc.id.to_s,
+                'modal' => modal,
+                'href' => args['href_prefix'] + cc.id.to_s, 
                 'class' => get_datatype_class(cc) + ' scrollable'}
               if (args['submenu'])
                 cur_item['submenu'] = args['submenu'].call(cc)
@@ -214,6 +217,10 @@ module BlistsHelper
     else
       nil
     end
+  end
+
+  def type_select_options(selected_type = nil)
+    options_for_select(Column.types.invert.sort { |a, b| a.first <=> b.first }, selected_type)
   end
 
   def category_select_options(selected_category = nil)

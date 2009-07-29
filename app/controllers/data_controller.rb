@@ -1,4 +1,5 @@
 class DataController < ApplicationController
+  caches_page :splash, :noie, :redirected
   skip_before_filter :require_user
   
   PAGE_SIZE = 10
@@ -10,9 +11,6 @@ class DataController < ApplicationController
   def show
     @body_class = 'discover'
     @show_search_form = false
-    @show_splash = !current_user.nil? ? false :
-                      (cookies[:show_splash].nil? ? true : cookies[:show_splash][:value])
-
     @page_size = PAGE_SIZE
 
     unless @all_views_rendered = read_fragment("discover-tab-all")
@@ -32,11 +30,14 @@ class DataController < ApplicationController
 
     if (params[:search])
       @search_term = params[:search]
-      @search_views_total = View.find_filtered({ :full => @search_term, :count => true }).count
-      @search_views = View.find_filtered({ :full => @search_term, :limit => PAGE_SIZE, :page => 1 })
+      search_results = SearchResult.search("views", { :q => @search_term, :limit => PAGE_SIZE, :page => 1 })
+      @search_views = search_results[0].results
+      @search_views_total = search_results[0].count
+      @search_debug = params[:search_debug]
     end
 
-    @search_type = params[:search_type]
+    # build current state string
+    @current_state = { :search => @search_term , :search_debug => @search_debug}
   end
   
   def filter
@@ -46,20 +47,7 @@ class DataController < ApplicationController
     sort_by_selection = params[:sort_by] || (type == "POPULAR" ? "POPULAR" : "LAST_CHANGED")
     tag = params[:tag]
     search_term = params[:search]
-    use_lucene_search = (!params[:search_type].nil? && params[:search_type] == "lucene" && type == "SEARCH")
-
-    # <HACK>
-    #   <reason>testing lucene</reason>
-    #   <details>enabling lucene for staging environment (QA), kevin, kostub, and chris</details>
-    #   <am_i_sorry>true</am_i_sorry>
-      if (ENV['RAILS_ENV'] == 'staging' ||
-        (current_user &&
-         (current_user.login == 'kmerritt' ||
-          current_user.login == 'kostub' ||
-          current_user.login == 'chris.metcalf'))) && type == "SEARCH"
-        use_lucene_search = true
-      end
-    # </HACK>
+    search_debug = params[:search_debug]
 
     sort_by = sort_by_selection
     is_asc = true
@@ -79,13 +67,16 @@ class DataController < ApplicationController
     if (type == "POPULAR")
       opts.update({:top100 => true})
       tag_opts.update({:top100 => true})
-    elsif (use_lucene_search)
-      opts.update({:q => search_term })
     elsif (type == "SEARCH")
-      opts.update({:full => search_term })
+      opts.update({:q => search_term })
+    end
+
+    # the core server caches common queries. This causes the cache to
+    # be used
+    if type == "POPULAR" ? sort_by != "POPULAR" : sort_by != "LAST_CHANGED"
+      opts.update({:sortBy => sort_by, :isAsc => is_asc})
     end
     
-    opts.update({:sortBy => sort_by, :isAsc => is_asc})
     if (!tag.nil?)
       opts.update({:tags => tag})
     end
@@ -110,9 +101,6 @@ class DataController < ApplicationController
     @page_size = PAGE_SIZE
     if type == "SEARCH"
       tab_title = "Search Results for \"#{search_term}\""
-    end
-
-    if use_lucene_search
       search_results = SearchResult.search("views", opts)
       @filtered_views = search_results[0].results
       @filtered_views_total = search_results[0].count
@@ -130,7 +118,8 @@ class DataController < ApplicationController
 
     # build current state string
     @current_state = { :filter => filter, :page => page, :tag => tag,
-      :sort_by => sort_by_selection, :search => search_term }
+      :sort_by => sort_by_selection, :search => search_term, 
+      :search_debug => search_debug }
 
     respond_to do |format|
       format.html { redirect_to(data_path(params)) }
@@ -149,7 +138,7 @@ class DataController < ApplicationController
               :tag_list => tag_list,
               :current_tag => tag,
               :search_term => search_term,
-              :search_type => params[:search_type]
+              :search_debug => search_debug
             })
         else
           render(:partial => "data/view_list_tab_noresult",
@@ -187,8 +176,6 @@ class DataController < ApplicationController
   end
   
   def splash
-    cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
-    
     render(:layout => "splash")
   end
   
@@ -197,7 +184,6 @@ class DataController < ApplicationController
   end
   
   def redirected
-    cookies[:show_splash] = { :value => false, :expires => 10.years.from_now };
     render(:layout => "splash")
   end
 

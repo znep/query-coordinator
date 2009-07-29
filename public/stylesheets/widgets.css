@@ -1315,19 +1315,34 @@ table.gridList tr.filteredOut
     margin-left: 16px;
     min-height: 0;
 }
-.dialogBR
+.dialogBR, .dialogBRgray
 {
-    background: url(/stylesheets/images/content/modal_corner_BR.png) right bottom no-repeat;
     margin: 0 -10px 0 0;
     min-height: 0;
     padding: 0 10px 23px 0;
 }
-.dialogBL
+.dialogBR
 {
-    background: url(/stylesheets/images/content/modal_corner_BL.png) left bottom no-repeat;
+    background: url(/stylesheets/images/content/modal_corner_BR.png) right bottom no-repeat;
+}
+.dialogBRgray
+{
+    background: url(/stylesheets/images/content/modal_corner_gray_BR.png) no-repeat;
+    background-position: -6px bottom;
+}
+.dialogBLgray, .dialogBL
+{
     margin: 0 0 -23px -16px;
     min-height: 0;
     padding: 0 0 23px 16px;
+}
+.dialogBL
+{
+    background: url(/stylesheets/images/content/modal_corner_BL.png) left bottom no-repeat;
+}
+.dialogBLgray
+{
+    background: url(/stylesheets/images/content/modal_corner_gray_BL.png) left bottom no-repeat;
 }
 .dialogOuter
 {

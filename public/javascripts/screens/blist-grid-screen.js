@@ -445,6 +445,7 @@ $(function ()
         if (!blist.widgets.visualization.isVisualization)
         {
             $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
+                columnPropertiesEnabled: blistGridNS.isOwner,
                 currentUserId: blist.currentUserId,
                 accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                 clearTempViewCallback: blistGridNS.clearTempViewTab,
@@ -785,8 +786,9 @@ $(function ()
 
     window.onbeforeunload = function ()
     {
+        var $grid = $('#readGrid');
         if (!blist.widgets.visualization.isVisualization &&
-            $('#readGrid').datasetGrid().isTempView)
+            $grid.length > 0 && $grid.datasetGrid().isTempView)
         {
             return 'You will lose your temporary filter.';
         }

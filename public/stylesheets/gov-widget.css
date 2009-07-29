@@ -1,1 +1,21 @@
+.gridOuter { border-color: #c9c9c9; }
+
 .widgetFooter { text-align: center; }
+.widgetFooterInner { border-color: #c9c9c9; }
+
+.blist-table .th-inner-container
+{
+    font-size: 1.2em;
+}
+
+.blist-tr-even .blist-td
+{
+    background-color: #e7ebf2;
+}
+
+.blist-td
+{
+    font-size: 1.1em;
+	height: 16px; /* 1.4545em */
+	line-height: 16px; /* 1.4545em */
+}

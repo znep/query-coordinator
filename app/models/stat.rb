@@ -6,7 +6,17 @@ class Stat < Model
       "download" => "FDEF00",
       "website" => "0099F6",
       "email" => "00B133",
-      "print" => "7D26CD"
+      "print" => "7D26CD",
+      "rss" => "823311"
+    }
+  HUMAN_READABLE_ROW_ACCESS_LEGEND = {
+      "api" => "API", 
+      "widget" => "Social Data Player",
+      "download" => "Download",
+      "website" => "Website",
+      "email" => "Email",
+      "print" => "Print",
+      "rss"=> "Feeds"
     }
 
   def self.find_for_view(view, opts=nil)

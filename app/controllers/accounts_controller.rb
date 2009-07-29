@@ -31,8 +31,9 @@ class AccountsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to(account_path) }
-      format.data   { render :json => {:error => error_msg,
-        :user => current_user}.to_json }
+      format.json   { render :json => {:error => error_msg,
+                                       :user => current_user},
+                             :callback => params[:callback] }
     end
   end
 

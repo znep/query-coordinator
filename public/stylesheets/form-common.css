@@ -1,0 +1,53 @@
+label.required
+{
+    background: url(/stylesheets/images/common/required.png) no-repeat;
+    background-position: right top;
+}
+
+div.required
+{
+    background: url(/stylesheets/images/common/required.png) no-repeat;
+    background-position: left top;
+    padding: 0.1em;
+    padding-left: 1em;
+}
+
+label
+{
+    /* Pad everything so that if there's any "required" fields they are
+     * vertically aligned */
+    padding-right: 15px;
+}
+
+select
+{
+    border: 1px solid #CACACA;
+    color: #333;
+}
+
+#precision
+{
+    float: left;
+    width: 4em;
+    margin-right: 0.5em;
+}
+
+.ui-spinner-button
+{
+    display: block;
+    position: relative;
+}
+
+.ui-spinner-button-inner
+{
+    width: 16px; 
+    color: #666;
+    cursor: default;
+    text-align: center;
+    text-decoration: none;
+}
+
+#list-style
+{
+    margin-right: 0.5em;
+}

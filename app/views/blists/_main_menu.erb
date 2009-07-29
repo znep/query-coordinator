@@ -50,7 +50,7 @@
   <%- if can_edit -%>
   <li class='edit swfItem'>
     <dl><dt><a href='#menuEdit'>Edit</a></dt>
-      <dd><%= menu_tag({'bare_menu' => true, 'items' => [
+        <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
         {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo'},
         {'separator' => true},
@@ -61,9 +61,10 @@
         {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete'},
         {'separator' => true},
         {'text' => 'Edit Column Options', 'class' => 'columnOptions',
-        'href' => '#', 'submenu' => columns_menu(@view,
+            'submenu' => columns_menu(@view,
                  {'id' => 'columnOptionsMenu',
-                  'href_prefix' => "#edit_column:",
+                  'href_prefix' => "/blists/#{@view.id}/columns/",
+                  'modal' => true,
                   'include_options' =>
                    {'nested_table' => true,
                     'nested_table_children' => true, 'list' => true},

@@ -3,6 +3,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     font-family: "Lucida Sans Unicode","Lucida Grande",Verdana,Arial,Helvetica,sans-serif;
 }
 
+.gridOuter { border-color: #c9c9c9; }
 .gridInner { border-color: #dae2f2; }
 
 #header { background-image: url(/stylesheets/images/sdp/whitehouse/title_tl.png); }
@@ -69,6 +70,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 
 .widgetFooterWrapper { background-image: url(/stylesheets/images/sdp/whitehouse/title_b.png); }
 .widgetFooter { text-align: center; }
+.widgetFooterInner { border-color: #c9c9c9; }
 
 .dialogBox .header { background-color: #DAE2F2; }
 .dialogBox .header h1 { color: #333; }

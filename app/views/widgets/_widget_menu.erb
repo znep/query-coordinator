@@ -2,16 +2,17 @@
 {'text' => 'Socialize this ' + t(:blist_name).capitalize, 'class' => 'share',
   'href' => '#', 'submenu' => socialize_menu_options(@view)},
 {'text' => 'Email this ' + t(:blist_name).capitalize + '...', 'class' => 'email',
-  'href' => '#email'},
+  'href' => '#email', 'if' => theme[:menu][:email]},
 {'separator' => true},
 {'text' => 'Republish this ' + t(:blist_name).capitalize + '...' ,
-  'class' => 'publish', 'href' => '#publish'},
+  'class' => 'publish', 'href' => '#publish', 'if' => theme[:menu][:republish]},
 {'separator' => true},
 {'text' => 'Print as PDF', 'class' => 'print', 'external' => true,
   'link_class' => 'noInterstitial', 'href' => '/views/' + @view.id +
-    '/rows.pdf?print=true&headers_on_every_page=true'},
+    '/rows.pdf?print=true&headers_on_every_page=true', 'if' => theme[:menu][:print]},
 {'text' => 'Download ' + t(:blist_name).capitalize + ' as', 'class' => 'export',
-  'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+  'href' => '#', 'if' => theme[:menu][:download], 'submenu' => 
+  {'class' => 'noicon', 'items' => [
   {'text' => 'Comma Separated Values (.csv)', 'link_class' => 'noInterstitial',
     'external' => true,
     'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
@@ -31,9 +32,23 @@
     'link_class' => 'noInterstitial', 'external' => true,
     'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
   ]}},
+{'text' => 'Subscribe with', 'class' => 'subscribe',
+  'href' => '#', 'if' => theme[:menu][:subscribe].any?{ |key, value| value }, 'submenu' =>
+  {'class' => 'noicon', 'items' => [
+  {'text' => 'RSS',
+    'external' => true,
+    'href' => "/views/#{@view.id}/rows.rss",
+    'if' => theme[:menu][:subscribe][:rss]},
+  {'text' => 'Atom',
+    'external' => true,
+    'href' => "/views/#{@view.id}/rows.atom",
+    'if' => theme[:menu][:subscribe][:atom]}
+  ]}},
+{'text' => 'Access Via API', 'class' => 'api', 'external' => 'true',
+  'href' => "/views/#{@view.id}/rows.xml?accessType=API", 'if' => theme[:menu][:api]},
 {'separator' => true},
 {'text' => 'View Full Screen', 'class' => 'fullscreen',
-  'href' => @view.href, 'external' => true},
+  'href' => @view.href, 'external' => true, 'if' => theme[:menu][:fullscreen]},
 {'text' => 'Design a New ' + t(:blist_name).capitalize, 'class' => 'newDataset',
   'href' => blist_href_new_blist, 'external' => true},
 ]}) %>

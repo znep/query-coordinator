@@ -729,6 +729,7 @@
         /*** CELL HOVER EXPANSION ***/
 
         var hotExpander;
+        var hotExpanderVisible;
 
         var hideHotExpander = function()
         {
@@ -736,6 +737,7 @@
             {
                 hotExpander.style.top = '-10000px';
                 hotExpander.style.left = '-10000px';
+                hotExpanderVisible = false;
             }
         }
 
@@ -825,17 +827,22 @@
             // Size the expander
             var rc = sizeCellOverlay($hotExpander, $wrap, $hotCell, true);
             // Position the expander
-            rc = $.extend(rc, positionCellOverlay($hotExpander, $hotCell, true));
+            rc = $.extend(rc, positionCellOverlay($hotExpander,
+                $hotCell, true, rc));
 
             $hotExpander.removeClass('blist-table-util');
 
+            hotExpanderVisible = true;
             // Expand the element into position
-            $hotExpander.animate(rc, EXPAND_DURATION);
+            // We need to catch if the expander was hidden while animating,
+            // in which case we need to re-hide it at the end of the animation
+            $hotExpander.animate(rc, EXPAND_DURATION, null,
+                function() { if (!hotExpanderVisible) { hideHotExpander(); } });
         };
 
 
         /***  CELL EXPANSION & POSITIONING  ***/
-        var positionCellOverlay = function($container, $refCell, animate)
+        var positionCellOverlay = function($container, $refCell, animate, curSize)
         {
             // Locate a position for the expansion.  We prefer the expansion to
             // align top-left with the cell but do our best to ensure the
@@ -845,22 +852,24 @@
             var origOffset = { top: top, left: left };
 
             // Ensure viewport is in the window horizontally
+            var contWidth = curSize ? curSize.width : $container.outerWidth();
             var viewportWidth = $scrolls.width();
             if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
                 viewportWidth -= scrollbarWidth;
             var scrollLeft = $scrolls.scrollLeft();
-            if (left + $container.width() > scrollLeft + viewportWidth)
-                left = scrollLeft + viewportWidth - $container.width();
+            if (left + contWidth > scrollLeft + viewportWidth)
+                left = scrollLeft + viewportWidth - contWidth;
             if (left < scrollLeft)
                 left = scrollLeft;
 
             // Ensure viewport is in the window vertically
+            var contHeight = curSize ? curSize.height : $container.outerHeight();
             var viewportHeight = $scrolls.height();
             if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
                 viewportHeight -= scrollbarWidth;
             var scrollTop = $scrolls.scrollTop();
-            if (top + $container.height() > scrollTop + viewportHeight)
-                top = scrollTop + viewportHeight - $container.height();
+            if (top + contHeight > scrollTop + viewportHeight)
+                top = scrollTop + viewportHeight - contHeight;
             if (top < scrollTop - 1)
                 top = scrollTop - 1;
 
@@ -907,7 +916,10 @@
 
             // Determine the size to which the contents expand, constraining to
             // predefined maximums
-            var maxWidth = Math.floor($scrolls.width() * .5);
+            var maxWidth = $scrolls.width();
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+            { maxWidth -= scrollbarWidth; }
+            maxWidth = Math.floor(maxWidth * .8);
             if (rc.width > maxWidth)
             {
                 // Constrain the width and determine the height
@@ -915,7 +927,11 @@
                 rc.width = maxWidth;
                 rc.height = $container.height();
             }
-            var maxHeight = Math.floor(inside.height() * .75);
+
+            var maxHeight = $scrolls.height();
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+            { maxHeight -= scrollbarWidth; }
+            maxHeight = Math.floor(maxHeight * .9);
             if (rc.height > maxHeight)
                 rc.height = maxHeight;
 
@@ -938,11 +954,12 @@
                 var innerPady = $t.outerHeight() - $t.height();
                 // Size the cell; bump up by one pixel to offset any rounding
                 $t.width(Math.max(minW, w) - innerPadx + 1);
-                $t.height(rc.height - innerPady);
+                $t.height(rc.height - innerPady + 1);
             });
             // Account for rounding, and the extra pixels already added for
             // rounding to the insides
             rc.width += 1 + $expandCells.length;
+            rc.height += 2;
 
             if (!animate)
             {

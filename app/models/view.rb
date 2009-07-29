@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons, :sorts
+  cattr_accessor :categories, :licenses, :creative_commons, :sorts, :search_sorts
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -328,6 +328,16 @@ class View < Model
     ["LAST_CHANGED", "Date"],
     ["CATEGORY", "Category"]
   ]
+
+  @@search_sorts = [
+    ["RELEVANCE", "Relevance"],
+    ["SCORE", "Popularity"],
+    ["NEWEST", "Recently updated"],
+    ["OLDEST", "Oldest"],
+    ["RATING", "Rating"],
+    ["COMMENTS", "# of Comments"]
+  ]
+
 
   memoize :href
 end

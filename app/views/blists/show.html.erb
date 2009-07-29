@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss?accessType=WEBSITE") : '' %>
+  <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") : '' %>
   <% bundle :name => "blists_show", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
     <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
       "blist-grid-screen", "form-common", :cache => "cache/blists_show_all" %>
@@ -133,7 +133,7 @@
             </li>
             <li class='separator'>
               <a id='rssLink' class='staticLink'
-                href='/views/<%= @view.id %>/rows.rss?accessType=WEBSITE'><span class='linkIcon'>RSS</span></a>
+                href='/views/<%= @view.id %>/rows.rss'><span class='linkIcon'>RSS</span></a>
             </li>
             <%- end -%>
 

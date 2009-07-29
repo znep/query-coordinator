@@ -9,6 +9,119 @@
     <link rel="canonical" href="<%= @view.href %>" />
   <%- end -%>
   
+  <%- unless @is_gov_widget -%>
+  <style type="text/css">
+  /* font */
+    body { font-family: <%= @theme[:style][:font][:face] %>; }
+
+    .blist-table .th-inner-container { font-size: <%= @theme[:style][:font][:grid_header_size] %>; }
+    .blist-td { font-size: <%= @theme[:style][:font][:grid_data_size] %>; }
+  
+  /* frame */
+    <%- if @theme[:frame][:gradient] -%>
+    <%- else -%>
+      #header,
+      #header .wrapperT,
+      #header .wrapperTR,
+      .widgetFooterWrapper
+      {
+          background-color: <%= @theme[:frame][:color] %>;
+          background-image: none;
+      }
+      
+      <%- if @theme[:frame][:border] -%>
+        #header
+        {
+            border: 1px solid <%= @theme[:frame][:border] %>;
+            border-bottom: none;
+        }
+      <%- end -%>
+      
+      .gridInner
+      {
+          border-color: <%= @theme[:frame][:color] %>;
+      }
+    <%- end -%>
+    
+    <%- if @theme[:frame][:border] -%>
+      .gridOuter, .widgetFooterInner
+      {
+          border-color: <%= @theme[:frame][:border] %>;
+      }
+    <%- end -%>
+  
+    .widgetLogo
+    {
+      <%- if @theme[:frame][:logo][:type] == "upload" -%>
+        background-image: url(/TODO/uploads/whatever);
+      <%- elif @theme[:frame][:logo][:type] == "external" -%>
+        background-image: url(<%= @theme[:frame][:logo][:type] %>);
+      <%- elif @theme[:frame][:logo][:type] == "default" -%>
+        background-image: url(/stylesheets/images/widgets/socrata_logo_player.gif);
+      <%- end -%>
+    }
+  
+  /* grid */
+  
+    <%- if @theme[:grid][:header_icons] -%>
+      /*
+        Disabled pending merge
+      .blist-th-name
+      {
+          left: 10px;
+          padding-left: 25px;
+      }
+    
+      .blist-th-icon
+      {
+          background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+          background-position: 5px 20px;
+          background-repeat: no-repeat;
+          display: block;
+          float: left;
+          height: 20px;
+          left: 5px;
+          margin-top: -10px;
+          position: absolute;
+          top: 50%;
+          width: 30px;
+      }
+      
+      .blist-table .blist-th.text .blist-th-icon { background-position: 5px -80px; }
+      .blist-table .blist-th.richtext .blist-th-icon { background-position: 5px -60px; }
+      .blist-table .blist-th.number .blist-th-icon { background-position: 5px -20px; }
+      .blist-table .blist-th.money .blist-th-icon { background-position: 5px -40px; }
+      .blist-table .blist-th.percent .blist-th-icon { background-position: 5px 0; }
+      .blist-table .blist-th.date .blist-th-icon { background-position: 5px -340px; }
+      .blist-table .blist-th.phone .blist-th-icon { background-position: 5px -240px; }
+      .blist-table .blist-th.email .blist-th-icon { background-position: 5px -260px; }
+      .blist-table .blist-th.url .blist-th-icon { background-position: 5px -360px; }
+      .blist-table .blist-th.checkbox .blist-th-icon { background-position: 5px -120px; }
+      .blist-table .blist-th.stars .blist-th-icon { background-position: 5px -140px; }
+      .blist-table .blist-th.flag .blist-th-icon { background-position: 5px -380px; }
+      .blist-table .blist-th.document .blist-th-icon { background-position: 5px -280px; }
+      .blist-table .blist-th.photo .blist-th-icon { background-position: 5px -100px; }
+      .blist-table .blist-th.picklist .blist-th-icon { background-position: 5px -400px; }
+      .blist-table .blist-th.nested_table .blist-th-icon { background-position: 5px -440px; }
+      .blist-table .blist-th.tag .blist-th-icon { background-position: 5px -180px; }
+      */
+    <%- end -%>
+    
+    .blist-td
+    {
+        height: <%= @theme[:grid][:row_height] %>;
+        line-height: <%= @theme[:grid][:row_height] %>;
+    }
+    
+    <%- if @theme[:grid][:zebra] -%>
+      .blist-tr-even .blist-td
+      {
+          background-color: <%= @theme[:grid][:zebra] %>;
+      }
+    <%- end -%>
+  </style>
+  <%- end -%>
+
   <%- if !@theme[:style][:custom_stylesheet].blank? -%>
     <%= stylesheet_link_tag @theme[:style][:custom_stylesheet] + "-widget" %>
   <%- end -%>
@@ -45,7 +158,8 @@
 
     </script>
     <% end %>
-  <%- end -%> 
+
+  <%- end -%>
 
   <title><%= @view.name %> | <%= t(:page_title) %></title>
 
@@ -117,12 +231,14 @@
     </div></div>
     
     <div class="widgetFooterWrapper"><div class="widgetFooterInner">
-      <%- if @theme[:frame][:display_logo] -%>
+      <%- if @theme[:frame][:logo][:show] -%>
         <p class="widgetLogoWrapper"><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
             Socrata Social Data Player
         </a></p>
       
-        <p class="getPlayerAction"><a href="http://www.socrata.com" rel="external">Get a Data Player of Your Own</a></p>
+        <%- if @theme[:frame][:powered_by] -%>
+          <p class="getPlayerAction"><a href="http://www.socrata.com" rel="external">Get a Data Player of Your Own</a></p>
+        <%- end -%>
       <%- else -%>
         &nbsp;
       <%- end -%>

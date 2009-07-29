@@ -22,25 +22,25 @@ class WidgetsController < ApplicationController
   
   DEFAULT_THEME = {
     :style    => { :custom_stylesheet => 'normal',
-                   :font_family => "arial, sans-serif",
-                   :font_size => "62.5%" },
-    :frame    => { :color => "#06386A",
+                   :font => { :face => 'arial, sans-serif',
+                              :grid_header_size => '1.2em',
+                              :grid_data_size => '1.1em' } },
+    :frame    => { :color => '#06386A',
                    :gradient => true,
-                   :drop_shadow => true,
-                   :title => true,
-                   :icon_color => "blue",
-                   :display_logo => true,
-                   :logo_source => "TODO",
+                   :border => '#c9c9c9',
+                   :icon_color => 'blue',      #TODO+
+                   :logo => { :show => true,
+                              :type => 'default',
+                              :url => '' },
                    :powered_by => true },
     :grid     => { :row_numbers => false,
-                   :wrap_header_text => false,
+                   :wrap_header_text => false, #TODO
                    :header_icons => false,
-                   :row_height => 16,
-                   :zebra => true },
+                   :row_height => '16px',
+                   :zebra => '#e7ebf2' },
     :menu     => { :email => true,
                    :subscribe  => { :rss => true,
-                                    :atom => true,
-                                    :email => true },
+                                    :atom => true },
                    :api => true,
                    :download => true,
                    :print => true,
@@ -51,8 +51,8 @@ class WidgetsController < ApplicationController
                    :publishing => { :show => true, :order => 2, :display_name => 'Publishing' },
                    :activity   => { :show => true, :order => 3, :display_name => 'Activity' },
                    :summary    => { :show => true, :order => 4, :display_name => 'Summary' } },
-    :behavior => { :rating => true,
-                   :save_public_views => true,
+    :behavior => { :rating => true,             #TODO
+                   :save_public_views => true,  #TODO+
                    :interstitial => false,
                    :ga_code => '' }
   }
@@ -135,7 +135,7 @@ class WidgetsController < ApplicationController
     @theme[:style][:custom_stylesheet] = @variation
     if @is_gov_widget
       @theme[:behavior][:interstitial] = true
-      @theme[:frame][:display_logo] = false
+      @theme[:frame][:logo][:show] = false
     end
   end
 end

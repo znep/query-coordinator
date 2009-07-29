@@ -1,7 +1,6 @@
 <% content_for :headline do %>
 <script>
-$(".dialogBR").removeClass("dialogBR").addClass("dialogBRgray");
-$(".dialogBL").removeClass("dialogBL").addClass("dialogBLgray");
+$(".dialogBL").addClass("dialogBLgray");
 
 blist.namespace.fetch('blist.columns.properties');
 var column = blist.columns.properties.column = <%= @column.to_js %>;
@@ -101,7 +100,6 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           </div>
         </div>
     </div>
-    <div class="clearfix"></div>
   <% end %>
 </div>
 

@@ -22,8 +22,17 @@ blist.discover.historyChangeHandler = function (hash)
     // Special cases to handle default tab actions
     if (hash == "")
     {
-        // default tab is popular
-        hash = "POPULAR"
+        var searchTerm = $.urlParam("search", window.location.href);
+        if (searchTerm)
+        {
+            // we got here via search, so default tab is search
+            hash = "type=SEARCH&search=" + searchTerm;
+        }
+        else
+        {
+            // default tab is popular
+            hash = "POPULAR"
+        }
     }
     if (blist.discover.isTabDirty[hash] === false)
     {
@@ -109,8 +118,17 @@ blist.discover.sortSelectChangeHandler = function (event)
 
     if (hash == "")
     {
-        // default tab is popular
-        hash = "type=POPULAR";
+        var searchTerm = $.urlParam("search", window.location.href);
+        if (searchTerm)
+        {
+            // we got here via a search
+            hash = "type=SEARCH&search=" + searchTerm;
+        }
+        else
+        {
+            // default tab is popular
+            hash = "type=POPULAR";
+        }
     }
     if (blist.discover.isTabDirty[hash] !== undefined)
     {

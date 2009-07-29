@@ -67,6 +67,7 @@ columnTotalsNS.render_flag =
 columnTotalsNS.render_text = 
 columnTotalsNS.render_richtext =
 columnTotalsNS.render_checkbox = 
+columnTotalsNS.render_date =
 columnTotalsNS.render_picklist =
 function($container) {
     var render = '<div id="columnTotals" class="displayOptions">';

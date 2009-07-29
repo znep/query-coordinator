@@ -2,17 +2,25 @@
 <div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
   <div class="tabContent">
     <h2><%= tab_title %></h2>
+
+    <%- if "true" == search_debug -%>
+      <%= link_to("<span>Explain results</span>", 
+                  "http://#{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}/search.html?method=explain&search=views&q=#{search_term}") %>
+
+    <%- end -%>
+
     <%- if views_total > 0 -%>
-      <div class="contentSort<%= (type == 'SEARCH') ? ' hide' : '' %>">
+      <div class="contentSort">
         <% form_tag(data_filter_path(:type => type, :filter => current_filter, :search => search_term), 
             :class => "sortForm") do %>
           <p>
             Sort by
-            <%= select_tag("sort_by", sort_select_options(sort_by), :id => "sort_by_" + type) %>
+            <%= select_tag("sort_by", (type == "SEARCH") ? 
+                           sort_select_options_for_search(sort_by) : sort_select_options(sort_by), 
+                           :id => "sort_by_" + type) %>
           </p>
         <% end %>
       </div>
-  
       <ul class="discoverContentList">
         <%= render(:partial => "view_list_item", :collection => views) %>
       </ul>

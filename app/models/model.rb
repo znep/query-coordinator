@@ -194,12 +194,6 @@ class Model
   end
 
   def update_attributes!(attributes)
-    attributes.each do |key, value|
-      if value.blank? || value == '""' ||
-        value == "''" || value == "null"
-        attributes[key] = nil
-      end
-    end
     new_model = self.class.update_attributes!(self.id, attributes)
     self.data = new_model.data
     update_data.reject! {|key,value| value == data[key]}
@@ -359,7 +353,6 @@ private
     raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
     if !result.is_a?(Net::HTTPSuccess)
       parsed_body = self.parse(result.body)
-      pp result.body
       Rails.logger.info("Error: " +
                     "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
                     (parsed_body.nil? ? 'No response' :

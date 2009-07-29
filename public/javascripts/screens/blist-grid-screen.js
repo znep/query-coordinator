@@ -445,6 +445,7 @@ $(function ()
         if (!blist.widgets.visualization.isVisualization)
         {
             $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
+                columnPropertiesEnabled: blistGridNS.isOwner,
                 currentUserId: blist.currentUserId,
                 accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                 clearTempViewCallback: blistGridNS.clearTempViewTab,

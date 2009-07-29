@@ -1,0 +1,171 @@
+<% content_for :headline do %>
+<script>
+$(".dialogBR").removeClass("dialogBR").addClass("dialogBRgray");
+$(".dialogBL").removeClass("dialogBL").addClass("dialogBLgray");
+
+blist.namespace.fetch('blist.columns.properties');
+var column = blist.columns.properties.column = <%= @column.to_js %>;
+</script>
+
+<h1 id="title"><%= h(@column.name) %></h1>
+<% end %>
+
+<div class="columnPropertiesWrapper">
+  <% form_tag "#" do %>
+    <div class="tabWrapper">
+      <div class="tabs">
+        <ul class="tabSelector">
+          <li><a id="general" href="#" class="selected">General</a></li>
+          <li><a id="formatting" href="#">Formatting</a></li>
+          <li><a id="totals" href="#">Column Totals</a></li>
+          <%- #<li><a id="defaults" href="#">Default Values</a></li> %>
+        </ul>
+      </div>
+      <%- # Default values tab %>
+      <%-
+        ' 
+        <div id="defaultsTab" class="tabContent">
+          <h3>Apply a Default Cell Value</h3>
+          <h4 class="subtitle seperator">What you enter here will appear by default in every cell for this column</h4>
+        </div>
+        '
+      -%>
+
+      <%- # Column totals tab %>
+      <div id="totalsTab" class="tabContent">
+        <h3>Column Total Options</h3>
+        <h4 class="subtitle seperator">Totals will appear at the bottom of the column while in table display mode</h4>
+      </div>
+
+      <%- # Formatting tab %>
+      <div id="formattingTab" class="tabContent">
+        <h3 class="seperator">Alignment Options</h3>
+        <ul class="alignment">
+          <li><p>Justify:</p></li>
+          <li>
+            <%= radio_button("column", "alignment", "left", :checked => @column.alignment == "left") %>
+            <label for="column_alignment_left">Left</label>
+          </li>
+          <li>
+            <%= radio_button("column", "alignment", "center", :checked => @column.alignment == "center") %>
+            <label for="column_alignment_center">Centered</label>
+          </li>
+          <li>
+            <%= radio_button("column", "alignment", "right", :checked => @column.alignment == "right") %>
+            <label for="column_alignment_right">Right</label>
+          </li>
+        </ul>
+      </div>
+
+      <%- # General properties tab %>
+      <div id="generalTab" class="tabContent">
+        <table cellspacing="0">
+          <tbody>
+            <tr colspan="2" class="seperator">
+              <td><h3>Column Details</h3></td>
+            </tr>
+            <tr>
+              <td class="labelColumn"><label for="name" class="required">Column Name:</label></td>
+              <td class="fieldColumn"><%= text_field_tag("name", @column.name, :id => "name") %></td>
+            </tr>
+            <tr>
+              <td class="labelColumn"><label for="description">Column Description:</label></td>
+              <td class="fieldColumn"><%= text_area_tag("description", @column.description, 
+                                                        :class => "textPrompt" + (@column.description.blank? ? " prompt": ""), 
+                                                        :title => "Enter a description.",
+                                                        :id => "description") %></td>
+            </tr>
+            <tr colspan="2" class="seperator">
+              <td><h3>Type of Column</h3></td>
+            </tr>
+            <tr>
+              <td class="labelColumn"><label for="type">Type:</label></td>
+              <td class="fieldColumn">
+                <%= select_tag("type", 
+                           type_select_options(@column.client_type), 
+                           :id => "type", 
+                           :disabled => true,
+                           :readonly => true) %>
+                <span class="helpie" title="You can change a column's type by changing this."></span>
+              </td>
+            </tr>
+          <tbody>
+        </table>
+      </div>
+        <div class="saveBar">
+          <h3 class="seperator"></h3>
+          <div class="controlBar">
+            <div class="required">Required Field</div> 
+            <a href="#" id="save"><%= image_tag("button_save.png") %></a>
+            <div id="error" class="errorMessage"></div>
+          </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+  <% end %>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  $("#error").hide();
+
+  // Since these widgets are created live, we have to populate the default
+  // text prompt values manually instead of relying on the plugin.
+  $(".textPrompt").example(function () { return $(this).attr("title"); });
+
+  var selectTab = function(which) 
+  {
+    $("#generalTab").hide();
+    $("#formattingTab").hide();
+    $("#totalsTab").hide();
+    $("#defaultsTab").hide();
+
+    $("#" + which + "Tab").show();
+  };
+
+  // Select tabs on hover.
+  $("ul.tabSelector > li > a").hover(function() {
+    $("ul.tabSelector > li > a").removeClass("selected");
+    $(this).addClass("selected");
+    selectTab(this.id);
+  });
+
+  // Default the selected tab to "general"
+  selectTab("general");
+
+  $("#formattingTab").columnFormat(column);
+  $("#totalsTab").columnTotals(column);
+
+  // Keep the column model up to date so we don't have to read from the form to
+  // update the properties.
+  $("#name").change(function() { column.name = $(this).val() });
+  $("#description").change(function() { column.description = $(this).val() });
+  $("#column_alignment_left,#column_alignment_center,#column_alignment_right").change(function() { column.alignment = $(this).val() });
+
+  $("#save").click(function() {
+      $.ajax({
+        type: "PUT",
+        url: '<%= @column.href(@view_id)%>',
+        cache: false,
+        data: {
+          json: $.json.serialize(column), 
+          authenticity_token: "<%= form_authenticity_token %>"
+          },
+        dataType: 'json',
+        error: function(request, status, error) { $("#error").html("Couldn't save the column because there was a server error.").show() },
+        success: function(responseData) { 
+          if (responseData.status == "success")
+          {
+            $(".jqmClose").click();
+            blist.util.flashInterface.columnPropertiesUpdated(column.id);
+            $("#readGrid").blistModel().updateColumn(column);
+            $("#readGrid").trigger('meta_change', [$("#readGrid").blistModel()]);
+            $.Tache.DeleteAll();
+          }
+          else
+          {
+            $("#error").html(responseData.error).show();
+          }
+        }
+      });
+  });
+</script>

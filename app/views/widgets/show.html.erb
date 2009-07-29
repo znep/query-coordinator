@@ -9,8 +9,8 @@
     <link rel="canonical" href="<%= @view.href %>" />
   <%- end -%>
   
-  <%- if !@variation.blank? -%>
-    <%= stylesheet_link_tag @variation + "-widget" %>
+  <%- if !@theme[:style][:custom_stylesheet].blank? -%>
+    <%= stylesheet_link_tag @theme[:style][:custom_stylesheet] + "-widget" %>
   <%- end -%>
 
   <%- if @view.is_visualization? -%>
@@ -53,11 +53,13 @@
 
     <div id='header'><div class='wrapperTR'><div class='wrapperT clearfix'>
           <a class="menuLink" href="#header-menu" title="Click for more options">Menu</a>
-          <%= render(:partial => "widget_menu") %>
+          <%= render(:partial => "widget_menu", :locals => { :theme => @theme }) %>
 
+          <%- if @theme[:menu][:fullscreen] -%>
           <p class="fullScreenButton">
             <a href="<%= @view.href %>" rel="external" title="View Full Screen">View Full Screen</a>
           </p>
+          <%- end -%>
           
           <form class='search' action='#'>
             <div class='searchContainer clearfix'>
@@ -77,7 +79,7 @@
     </div></div></div>
 
     <div class="gridOuter"><div class="gridInner">
-      <%- if (@save_filter) -%>
+      <%- if (@theme[:behavior][:save_public_views]) -%>
         <div id='viewHeader' class='clearfix'>
           <a class='datasetLink breadcrumbItem'
             href='#view_<%= @view.id %>'><%= h(@view.name) %></a>
@@ -103,18 +105,19 @@
           </noscript>
         </div>
       </div>
-      <%- if (@meta_tabs) -%>
+      
+      <%- if @theme[:meta].any?{ |name, properties| properties[:show] } -%>
         <div id="widgetMeta" class="metadataPane">
           <%- if !@view.nil? -%>
             <%= render(:partial => "widget_meta",
-                  :locals => { :view => @view, :page_single => false }) %>
+                  :locals => { :view => @view, :page_single => false, :theme => @theme }) %>
           <%- end -%>
         </div>
       <%- end -%>
     </div></div>
     
     <div class="widgetFooterWrapper"><div class="widgetFooterInner">
-      <%- if !@is_gov_widget -%>
+      <%- if @theme[:frame][:display_logo] -%>
         <p class="widgetLogoWrapper"><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
             Socrata Social Data Player
         </a></p>
@@ -158,7 +161,7 @@
     </div>
     <% end %>
 
-    <%- if @is_gov_widget -%>
+    <%- if @theme[:behavior][:interstitial] -%>
     <div class='interstitial'>
       <a class='closeLink' href='#close'>Close</a>
       <span class='closeKeyText'>or ESC key</span>
@@ -181,6 +184,8 @@
     blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
+    
+    blist.widget.theme = <%= JSON.generate( @theme ) %>;
   </script>
 
   <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",
@@ -191,11 +196,7 @@
     "widgets/visualization","screens/external-widget", "screens/info-pane", :cache =>
     "cache/widgets_show_all" %>
 
-  <%- if @is_gov_widget -%>
-  <% bundle :name => "gov_widget", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <%= javascript_include_tag "screens/gov-widget" %>
-  <% end %>
-  <%- elsif ENV['RAILS_ENV'] == 'production' -%>
+  <%- if !@is_gov_widget && ENV['RAILS_ENV'] == 'production' -%>
   <script type="text/javascript">
   var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
   document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -205,5 +206,13 @@
   var pageTracker = _gat._getTracker("UA-7633631-1");
   pageTracker._trackPageview();
   } catch(err) {}</script>
+
+    <%- unless @themes[:behavior][:ga_code].empty? -%>
+    <script type="text/javascript">
+    try {
+    var pageTracker2 = _gat._getTracker("<%= @theme[:behavior][:ga_code] %>");
+    pageTracker2._trackPageview();
+    } catch(err) {}</script>
+    <%- end -%>
   <%- end -%>
 <% end %>

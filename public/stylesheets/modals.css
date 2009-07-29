@@ -263,7 +263,7 @@
 /*** START: New Dataset form ***/
 
 .modalContentWrapper.newDatasetWrapper { padding-bottom: 0; }
-.newDatasetWrapper p 
+.newDatasetWrapper p, .newDatasetWrapper label 
 {
     font-size: 1.2em;
     line-height: 1.75em; /* 21px */
@@ -295,7 +295,6 @@
 .newDatasetWrapper .advancedPrivacy { display: none; }
 
 /*** END: New Dataset form ***/
-
 
 /*** START: Print Dataset form ***/
 
@@ -436,3 +435,152 @@
 .emailDatasetWrapper .successMessage .submitActions { width: 100px; }
 
 /*** END: Print this form ***/
+/*** START: Column properties***/
+.columnPropertiesWrapper .tabWrapper
+{
+  background-color: #ccc;
+}
+
+.columnPropertiesWrapper .tabs
+{
+  background-color:#ccc;
+  position:absolute;
+  width: 15em;
+}
+.columnPropertiesWrapper .tabContent
+{
+  min-height: 25em;
+  background-color: #fff;
+  margin-left: 150px;
+  display: none;
+}
+
+.columnPropertiesWrapper .tabs ul.tabSelector
+{
+  width: 15em;
+  padding: 0;
+  margin: 0;
+}
+
+.columnPropertiesWrapper .tabs ul.tabSelector li a
+{
+  font-weight: bold;
+  font-size: 1.4em;
+  padding: 0.6em;
+  display: block;
+  color: #000;
+}
+
+.columnPropertiesWrapper .tabs ul.tabSelector li a.selected
+{
+  background-color: #fff;
+}
+
+.columnPropertiesWrapper .tabs ul.tabSelector li a:hover
+{
+  background-color: #fff;
+  text-decoration: none;
+}
+
+.columnPropertiesWrapper .currencies, .alignment
+{
+  padding: 0.6em;
+}
+.columnPropertiesWrapper .alignment li
+{
+  padding: 0.6em;
+  list-style-type: none;
+  display: inline;
+}
+
+.columnPropertiesWrapper .alignment p
+{
+  display: inline;
+}
+
+.columnPropertiesWrapper .seperator
+{
+  border-bottom: solid 2px #ccc;
+}
+.columnPropertiesWrapper tr.seperator td
+{
+  padding: 0;
+}
+.columnPropertiesWrapper .tabContent span.helpie
+{
+  vertical-align: middle;
+}
+
+.columnPropertiesWrapper h4.subtitle
+{
+  color: #ccc;
+  padding: 0.2em 0 0.2em 0;
+}
+
+.columnPropertiesWrapper .displayOptions
+{
+  padding: 0.6em;
+}
+
+.columnPropertiesWrapper .saveBar
+{
+  margin-left: 165px;
+  width: 525px;
+  color: #666666;
+  font-size: 1.1em;
+  position: absolute;
+  bottom: -5px;
+}
+
+.columnPropertiesWrapper .controlBar
+{
+    margin-top: 0.7em;
+}
+
+.columnPropertiesWrapper div.required
+{
+    float: left;
+}
+.columnPropertiesWrapper #error
+{
+  float: right;
+  padding: 0.3em;
+  margin-right: 1em;
+  vertical-align: middle;
+  font-size: 1.2em;
+}
+.columnPropertiesWrapper #save
+{
+    float: right;
+}
+
+.modalContentWrapper.columnPropertiesWrapper { padding-bottom: 0; }
+.columnPropertiesWrapper p, .columnPropertiesWrapper label 
+{
+    font-size: 1.2em;
+    line-height: 1.75em; /* 21px */
+}
+
+.columnPropertiesWrapper td 
+{
+    padding: 0.5em;
+    vertical-align: top;
+}
+.columnPropertiesWrapper .labelColumn
+{
+    padding-right: 1em;
+    text-align: right;
+}
+
+.columnPropertiesWrapper input[type="text"],
+.columnPropertiesWrapper textarea
+{
+    width: 30em;
+}
+.columnPropertiesWrapper input[type="radio"]
+{
+    margin: 0 0.5em 0 0;
+    vertical-align: middle;
+}
+
+/*** END: Column properties***/

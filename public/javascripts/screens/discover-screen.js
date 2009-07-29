@@ -252,6 +252,10 @@ $(function ()
                 success: function(data)
                 {
                     $modal.html(data).show();
+                    if (modalUrl == "/data/splash")
+                    {
+                        $.cookies.set('show_splash', 'false', {hoursToLive: 87600});
+                    }
                 }
             });
         }
@@ -298,6 +302,7 @@ $(function ()
                 success: function(data)
                 {
                     $modal.html(data).show();
+                    $.cookies.set('show_splash', 'false', {hoursToLive: 87600});
                 }
             });
         }
@@ -309,13 +314,13 @@ $(function ()
     });
     
     // Check to see if we were referred from a blist.com domain
+    var show_redirect = false;
     var ref_re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
     if (document.referrer.match(ref_re) 
         && document.referrer.match(ref_re)[1]
         && document.referrer.match(ref_re)[1].toString().indexOf("blist") != -1)
     {
-        $("#redirectedModal").jqmShow();
-        return;
+        show_redirect = true;
     }
 
     // Check to see if we have a referrer URL
@@ -325,10 +330,19 @@ $(function ()
         && document.URL.match(query_ref_re)[1]
         && document.URL.match(query_ref_re)[1].toString().indexOf("blist") != -1)
     {
-        $("#redirectedModal").jqmShow();
-        return;
+        show_redirect = true;
     }
 
-    // Default ot the normal splash
-    $("#splashModal").jqmShow();
+    // Default to the normal splash
+    if($.cookies.get('show_splash') != "false")
+    {
+        if (show_redirect)
+        {
+            $("#redirectedModal").jqmShow();
+        }
+        else
+        {
+            $("#splashModal").jqmShow();
+        }
+    }
 });

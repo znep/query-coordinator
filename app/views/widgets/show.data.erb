@@ -1,2 +1,2 @@
-<%= render(:partial => "widget_menu") %>
+<%= render(:partial => "widget_menu", :locals => { :theme => @theme }) %>
 <%= text_area_tag("publishCode", get_publish_embed_code_for_view(@view)) %>

@@ -122,6 +122,7 @@
     position: absolute;
     text-indent: -9999px;
     width: 16px;
+  vertical-align: middle;
 }
 
 .newBlistContent span.helpie.fileUploadHelpie

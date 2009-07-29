@@ -217,6 +217,7 @@
             switchCompleteCallback: function(){},
             initialTab: '',
             isWidget: false,
+            scrollToTabOnActivate: true,
             widgetMetaContainerSelector: "#widgetMeta",
             widgetMetaHeaderSelector: "#widgetMeta .header",
             widgetOuterContainerSelector: ".gridInner", 
@@ -292,7 +293,10 @@
 
                 $panel.addClass(tabNavigator.settings.activationClass);
                 tabNavigator.settings.switchCompleteCallback($tab);
-                $tab[0].scrollIntoView();
+                if (tabNavigator.settings.scrollToTabOnActivate)
+                {
+                    $tab[0].scrollIntoView();
+                }
             },
             expandTabPanels: function(openCallback) {
                 

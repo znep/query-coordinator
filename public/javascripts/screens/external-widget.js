@@ -313,6 +313,7 @@ $(function ()
         allPanelsSelector : "#widgetMeta .infoContentOuter",
         expandableSelector: "#widgetMeta .infoContent",
         isWidget: true,
+        scrollToTabOnActivate: false,
         switchCompleteCallback: widgetNS.sizeGrid
     });
 });

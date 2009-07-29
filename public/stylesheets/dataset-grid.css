@@ -1,3 +1,27 @@
+.blist-table-locked-scrolls { background-color: #ffffff; }
+
+.blist-table-header,
+.blist-th { height: 3.5em; }
+
+.blist-th .info-container { top: 0.625em; /* 7.5px */ }
+.sorted .th-inner-container .info-container,
+.filtered .th-inner-container .info-container
+{ top: 1.25em; /* 15px */ }
+
+.blist-table-locked-header .blist-th { height: 3.1818em; /* 35px */ }
+
+.blist-th
+{
+    border-left: solid 1px #e2e2e2;
+    padding: 0 0.4em;
+}
+
+div.blist-th-first
+{
+    border-left: none;
+    padding-left: 0.5em;
+}
+
 .blist-table-header .hover
 {
     background-color: #ddeaf0;
@@ -17,6 +41,12 @@
     overflow: hidden;
     position: relative;
     text-overflow: ellipsis;
+}
+
+.blist-th-name
+{
+    font-size: 1.0833em;  /* 1.0833 * 1.2 = 1.3 */
+    font-weight: bold;
 }
 
 .blist-th-icon
@@ -103,6 +133,15 @@
     background-position: 0 -14px;
 }
 
+.blist-table-locked-header .blist-th { background-color: #e8e8e8; }
+
+.blist-table-locked-header .blist-th
+{
+    border: none;
+    font-size: 1.1em;
+    padding: 0 0.3636em; /* 4px */
+}
+
 .dropIndicator
 {
     background-color: #333333;
@@ -123,6 +162,87 @@
     position: absolute;
     top: 0;
     z-index: -1;
+}
+
+.blist-table-footer-scrolls,
+.blist-table-locked-footer
+{
+    background-color: #ffffff;
+    border-top: solid 1px #d0d0d0;
+    height: 2.6em;
+}
+
+.blist-table-footer
+{
+    background-color: #ececec;
+    bottom: 0.2em;
+    height: 2em;
+}
+
+.blist-tf
+{
+    border-color: #ffffff;
+    border-style: solid;
+    border-width: 0 1px;
+    font-size: 1.2em;
+    height: 1.6667em; /* 20px */
+    overflow: hidden;
+    padding: 0 0.25em 0 0.3333em; /* 3px right, 4px left */
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.blist-table-footer-scrolls .blist-tf-value
+{
+    bottom: 0.25em; /* 3px */
+    position: absolute;
+    right: 0.4167em; /* 5px */
+}
+
+.blist-tf.blist-tf-first
+{
+    border-left-width: 0;
+    padding-left: 0.4167em; /* 5px */
+}
+
+.blist-table-locked-footer .blist-tf
+{
+    background-color: #ececec;
+    border: none;
+    float: left;
+    font-size: 1em;
+    font-weight: bold;
+    height: 1.5em; /* 15px */
+    margin-top: 0.4em;
+    overflow: visible;
+    padding: 0.5em 0.4em 0; /* 5px top, 4px l/r */
+}
+.blist-table-locked-footer .blist-tf.blist-table-row-numbers { z-index: 1; }
+
+
+.blist-table .blist-tr .blist-table-row-numbers
+{
+    border-left-width: 0;
+    color: #a9cef2;
+    font-size: 1.1em;
+    height: 1.4545em; /* 16px */
+    line-height: 1.4545em;
+    padding: 0.3636em; /* 4px */
+    text-align: right;
+}
+.blist-table .blist-tr .blist-table-row-handle { border-left-width: 0; }
+
+.blist-td
+{
+    border-bottom: solid 1px #d0d0d0;
+    border-left: solid 1px #e2e2e2;
+}
+
+.blist-tr .blist-td-first
+{
+    border-left-width: 0;
+    padding-left: 0.4167em; /* 5px */
 }
 
 div.blist-table-active-container
@@ -147,7 +267,7 @@ div.blist-table-active-container .blist-td.blist-first
 
 div.blist-table-active-container .blist-td.blist-last
 { padding-right: 0.1667em; /* 2px */ }
-div.blist-table-active-container .blist-td.blist-td.blist-opener
+div.blist-table-active-container .blist-td.blist-opener
 { background-position: 2px center; }
 
 div.blist-table-edit-container
@@ -157,7 +277,7 @@ div.blist-table-edit-container
     overflow: hidden;
 }
 
-.blist-table-editor.blist-td
+div.blist-table-editor
 {
     border: none;
     padding: 0;

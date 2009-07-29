@@ -26,11 +26,13 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     background: url(/stylesheets/images/sdp/whitehouse/button_fullscreen_player.png) no-repeat;
 }
 
+.blist-table-header,
 .blist-table .blist-th
 {
     height: 3.4em; /* 34px */
     line-height: 1.6em; /* 16px */
 }
+.blist-table-locked-header .blist-th { height: 3.0909em; /* 34px */ }
 
 .blist-table .blist-th .th-inner-container
 {

@@ -71,3 +71,9 @@ form.search input.submit
     padding-right: 0;
     width: 100%;
 }
+
+/* IE6 doesn't like overflow: visible; so switch to overflow: hidden, then
+ * pull the content out of normal layout so we display as much as possible
+ * without making the container too large */
+div.blist-table-locked-footer .blist-table-row-numbers { overflow: hidden }
+.blist-table-row-numbers .blist-tf-value { position: absolute; }

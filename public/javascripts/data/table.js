@@ -1764,7 +1764,7 @@
                 lockedBottom += scrollbarWidth;
                 footerBottom += scrollbarWidth;
             }
-            $lockedScrolls.css('bottom', lockedBottom);
+            $lockedScrolls.height($outside.height() - lockedBottom);
             $footerScrolls.css('bottom', footerBottom);
 
             // Adjust the margin footer for the scrollbar if necessary
@@ -2161,9 +2161,10 @@
             $.each(lockedColumns, function (i, c)
             {
                 measureUtilDOM.innerHTML =
-                    '<div class="' + (c.cls || '') + ' ' + getColumnClass(c) +
-                    ' blist-td">' + (c.measureText || '') + '</div>';
-                var $measureCol = $(measureUtilDOM.firstChild);
+                    '<div class="blist-tr">\
+                    <div class="' + (c.cls || '') + ' ' + getColumnClass(c) +
+                    ' blist-td">' + (c.measureText || '') + '</div></div>';
+                var $measureCol = $(measureUtilDOM).find('.blist-td');
                 var colStyle = getColumnStyle(c);
                 if (c.width)
                 {
@@ -2737,8 +2738,8 @@
             $.each(lockedColumns, function (i, c)
             {
                 lockedHtml += '<div class="blist-tf ' + (c.cls || '') +
-                    ' ' + getColumnClass(c) + '">' + (c.footerText || '') +
-                    '</div>';
+                    ' ' + getColumnClass(c) + '"><span class="blist-tf-value">' +
+                    (c.footerText || '') + '</span></div>';
             });
             $lockedFooter.html(lockedHtml);
         };

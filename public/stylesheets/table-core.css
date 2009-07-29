@@ -231,17 +231,6 @@ div.blist-table-expander .blist-td
     left: -10000px;
 }
 
-.blist-th-sizer
-{
-    z-index: 10;
-    position: absolute;
-    top: 0px;
-    padding: 4px 0;
-    width: 5px;
-    overflow: hidden;
-    right: 0px;
-}
-
 .blist-th .sort
 {
     background: transparent url(/stylesheets/images/content/table/icon_sort_up.png) right no-repeat;

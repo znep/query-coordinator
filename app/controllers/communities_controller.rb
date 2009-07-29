@@ -81,6 +81,7 @@ class CommunitiesController < ApplicationController
       when "SEARCH"
         if (use_lucene_search)
           opts.update({:q => search_term })
+          sort_by = nil
         else
           opts.update({:full => search_term })
         end

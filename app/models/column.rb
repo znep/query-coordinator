@@ -54,7 +54,7 @@ class Column < Model
     update_data[:description] = js["description"] if js.key?("description")
     update_data[:width] = js["width"] if js.key?("width")
 
-    update_data[:format] = self.format.data.clone
+    update_data[:format] = self.format.nil? ? {} : self.format.data.clone
     if js.key?("aggregate") && js["aggregate"].blank?
       update_data[:format].delete "aggregate"
     elsif js.key?("aggregate")

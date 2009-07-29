@@ -33,9 +33,9 @@ class WidgetsController < ApplicationController
                               :type => 'default',
                               :url => '' },
                    :powered_by => true },
-    :grid     => { :row_numbers => false,
+    :grid     => { :row_numbers => true,
                    :wrap_header_text => false, #TODO
-                   :header_icons => false,
+                   :header_icons => true,
                    :row_height => '16px',
                    :zebra => '#e7ebf2' },
     :menu     => { :email => true,

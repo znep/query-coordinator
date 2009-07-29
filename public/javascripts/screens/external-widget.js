@@ -261,8 +261,11 @@ $(function ()
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             currentUserId: blist.currentUserId,
-            accessType: 'WIDGET', showRowNumbers: widgetNS.theme['grid']['row_numbers'],
-            editEnabled: false, manualResize: true, filterItem: '#header form :text',
+            accessType: 'WIDGET',
+            showRowNumbers: widgetNS.theme['grid']['row_numbers'],
+            showRowHandle: widgetNS.theme['grid']['row_numbers'],
+            editEnabled: false, manualResize: true,
+            filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch',
             clearTempViewCallback: widgetNS.clearTempViewTab,
             setTempViewCallback: widgetNS.setTempViewTab

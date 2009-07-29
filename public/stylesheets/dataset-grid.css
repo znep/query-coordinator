@@ -3,10 +3,10 @@
 .blist-table-header,
 .blist-th { height: 3.5em; }
 
-.blist-th .info-container { top: 0.625em; /* 7.5px */ }
+.blist-th .info-container { top: 7.5px; }
 .sorted .th-inner-container .info-container,
 .filtered .th-inner-container .info-container
-{ top: 1.25em; /* 15px */ }
+{ top: 15px; }
 
 .blist-table-locked-header .blist-th { height: 3.1818em; /* 35px */ }
 
@@ -36,7 +36,7 @@ div.blist-th-first
 .blist-th .info-container
 {
     font-size: 1.2em;
-    height: 1.667em; /* 20px */
+    height: 1.667em; /* 20px or so */
     line-height: 1.667em;
     overflow: hidden;
     position: relative;
@@ -242,7 +242,7 @@ div.blist-th-first
 .blist-tr .blist-td-first
 {
     border-left-width: 0;
-    padding-left: 0.4167em; /* 5px */
+    padding-left: 5px;
 }
 
 div.blist-table-active-container
@@ -255,18 +255,18 @@ div.blist-table-active-container
 div.blist-table-active-container .blist-td
 {
     border-bottom: none;
-    padding-bottom: 0.25em; /* 3px */
-    padding-top: 0.1667em; /* 2px */
+    padding-bottom: 3px;
+    padding-top: 2px;
 }
 
 div.blist-table-active-container .blist-td.blist-first
 {
     border-left: none;
-    padding-left: 0.25em; /* 3px */
+    padding-left: 3px;
 }
 
 div.blist-table-active-container .blist-td.blist-last
-{ padding-right: 0.1667em; /* 2px */ }
+{ padding-right: 2px; }
 div.blist-table-active-container .blist-td.blist-opener
 { background-position: 2px center; }
 

@@ -126,41 +126,6 @@
     <%= stylesheet_link_tag @theme[:style][:custom_stylesheet] + "-widget" %>
   <%- end -%>
 
-  <%- if @view.is_visualization? -%>
-    <!--Load the Visualization API-->
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <% bundle :name => "visualization_chart", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <script type="text/javascript">
-
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1', {'packages':['<%= @view.displayType %>']});
-      
-      // Set a callback to run when the API is loaded.
-      google.setOnLoadCallback(initializeChart); 
-
-      function initializeChart() {
-          var query = new google.visualization.Query('/views/<%= @view.id %>/rows.gvds');
-          // Send the query with a callback function.
-          query.send(handleQueryResponse);
-      }
-
-      function handleQueryResponse(response) {
-          // Called when the query response is returned.
-          if (response.isError()) {
-              alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-              return;
-          }
-
-          var data = response.getDataTable();
-          var chart = new <%= @view.chart_class %>(document.getElementById('data-grid'));
-          chart.draw(data, { <%= @view.displayFormat %>} );        
-      }
-
-    </script>
-    <% end %>
-
-  <%- end -%>
-
   <title><%= @view.name %> | <%= t(:page_title) %></title>
 
 <% end %>
@@ -292,7 +257,7 @@
     <%- end -%>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
+  <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "data-grid" }) %>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.widget');

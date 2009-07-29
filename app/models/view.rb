@@ -266,6 +266,10 @@ class View < Model
     self.displayType == "map" || self.displayType == "geomap"
   end
 
+  def is_fusion_map?
+    !self.displayType.nil? && !self.displayType[/^FCMap_/].nil?
+  end
+
   def chart_class
     case self.displayType
     when 'geomap'

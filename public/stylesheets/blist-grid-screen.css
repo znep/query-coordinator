@@ -376,6 +376,21 @@ body#lensBody
     background-position: 5px -370px;
 }
 
+#lensBody .headerBar #filterViewMenu .columnsShowMenu li > a
+{
+    background-image: none;
+}
+#lensBody .headerBar #filterViewMenu .columnsShowMenu li.scrollable a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
+    background-position: 5px -899px;
+    background-repeat: no-repeat;
+}
+#lensBody .headerBar #filterViewMenu .columnsShowMenu li.checked a
+{
+    background-position: 5px -508px;
+}
+
 #lensBody .headerBar #newPageLink span.linkIcon
 {
     background-position: 0 -100px;

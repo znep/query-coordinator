@@ -239,44 +239,61 @@
     /* Callback when rendering the grid headers.  Set up column on-object menus */
     var headerMods = function(datasetObj, col)
     {
+        var displayMenu = false;
+        var $col = $(col.dom);
+        var htmlStr =
+            '<a class="menuLink" href="#column-menu_' +
+            col.index + '"></a>\
+            <ul class="menu columnHeaderMenu" id="column-menu_' + col.index + '">';
+
         // We support sort & filter, so if neither is available, don't show a menu
-        if (blist.data.types[col.type].sortable ||
-                blist.data.types[col.type].filterable)
+        if (blist.data.types[col.type].sortable)
         {
-            var $col = $(col.dom);
-            var htmlStr =
-                '<a class="menuLink" href="#column-menu_' +
-                col.index + '"></a>\
-                <ul class="menu columnHeaderMenu" id="column-menu_' + col.index + '">';
-            if (blist.data.types[col.type].sortable)
-            {
-                htmlStr +=
-                    '<li class="sortAsc">\
-                    <a href="#column-sort-asc_' + col.index + '">\
-                    <span class="highlight">Sort Ascending</span>\
-                    </a>\
-                    </li>\
-                    <li class="sortDesc">\
-                    <a href="#column-sort-desc_' + col.index + '">\
-                    <span class="highlight">Sort Descending</span>\
-                    </a>\
-                    </li>';
-                    if (datasetObj.settings.columnPropertiesEnabled)
-                    {
-                        var view = $(datasetObj.currentGrid).blistModel().meta().view;
-                        htmlStr += '<li class="properties">\
-                            <a href="/blists/' + view.id + '/columns/' + col.id + '.json" rel="modal">\
-                            <span class="highlight">Properties</span>\
-                            </a>\
-                            </li>';
-                    }
-            }
             htmlStr +=
-                '<li class="footer"><div class="outerWrapper">\
-                <div class="innerWrapper"><span class="colorWrapper">\
-                </span></div>\
-                </div></li>\
-                </ul>';
+                '<li class="sortAsc">\
+                <a href="#column-sort-asc_' + col.index + '">\
+                <span class="highlight">Sort Ascending</span>\
+                </a>\
+                </li>\
+                <li class="sortDesc">\
+                <a href="#column-sort-desc_' + col.index + '">\
+                <span class="highlight">Sort Descending</span>\
+                </a>\
+                </li>';
+            displayMenu = true;
+        }
+
+        if (blist.data.types[col.type].filterable)
+        {
+            displayMenu = true;
+        }
+
+        if (datasetObj.settings.columnPropertiesEnabled)
+        {
+            var view = $(datasetObj.currentGrid).blistModel().meta().view;
+            if (displayMenu)
+            {
+              // There are already display items in the list, so we need to add
+              // a separator.
+              htmlStr += '<li class="separator" />';
+            }
+            htmlStr += '<li class="properties">\
+                <a href="/blists/' + view.id + '/columns/' + col.id + '.json" rel="modal">\
+                <span class="highlight">Properties</span>\
+                </a>\
+                </li>';
+            displayMenu = true;
+        }
+
+        htmlStr +=
+            '<li class="footer"><div class="outerWrapper">\
+            <div class="innerWrapper"><span class="colorWrapper">\
+            </span></div>\
+            </div></li>\
+            </ul>';
+
+        if (displayMenu)
+        {
             $col.append(htmlStr);
             var $menu = $col.find('ul.columnHeaderMenu');
             hookUpHeaderMenu(datasetObj, $col, $menu);

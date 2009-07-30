@@ -138,6 +138,26 @@ class WidgetsController < ApplicationController
       @theme[:frame][:logo][:show] = false
     end
   end
+  
+  def meta_tab_header
+    if (!params[:tab])
+      return
+    end
+    
+    @tabKey = params[:tab]
+    @view = View.find(params[:id])
+    render(:layout => 'main.data')
+  end
+  
+  def meta_tab
+    if (!params[:tab])
+      return
+    end
+    
+    @tabKey = params[:tab]
+    @view = View.find(params[:id])
+    render(:layout => 'main.data')
+  end
 end
 
 class Helper

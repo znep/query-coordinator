@@ -1,7 +1,6 @@
 <% content_for :headline do %>
 <script>
-$(".dialogBR").removeClass("dialogBR").addClass("dialogBRgray");
-$(".dialogBL").removeClass("dialogBL").addClass("dialogBLgray");
+$(".dialogBL").addClass("dialogBLgray");
 
 blist.namespace.fetch('blist.columns.properties');
 var column = blist.columns.properties.column = <%= @column.to_js %>;
@@ -16,11 +15,15 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       <div class="tabs">
         <ul class="tabSelector">
           <li><a id="general" href="#" class="selected">General</a></li>
-          <li><a id="formatting" href="#">Formatting</a></li>
-          <li><a id="totals" href="#">Column Totals</a></li>
-          <%- #<li><a id="defaults" href="#">Default Values</a></li> %>
+          <% if !@column.is_nested_table %>
+            <li><a id="formatting" href="#">Formatting</a></li>
+            <li><a id="totals" href="#">Column Totals</a></li>
+            <%- #<li><a id="defaults" href="#">Default Values</a></li> %>
+          <% end %>
         </ul>
       </div>
+
+      <% if !@column.is_nested_table %>
       <%- # Default values tab %>
       <%-
         ' 
@@ -56,6 +59,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           </li>
         </ul>
       </div>
+      <% end %>
 
       <%- # General properties tab %>
       <div id="generalTab" class="tabContent">
@@ -101,7 +105,6 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           </div>
         </div>
     </div>
-    <div class="clearfix"></div>
   <% end %>
 </div>
 
@@ -132,14 +135,18 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
   // Default the selected tab to "general"
   selectTab("general");
 
-  $("#formattingTab").columnFormat(column);
-  $("#totalsTab").columnTotals(column);
+  <% if !@column.is_nested_table %>
+    $("#formattingTab").columnFormat(column);
+    $("#totalsTab").columnTotals(column);
+  <% end %>
 
   // Keep the column model up to date so we don't have to read from the form to
   // update the properties.
   $("#name").change(function() { column.name = $(this).val() });
   $("#description").change(function() { column.description = $(this).val() });
   $("#column_alignment_left,#column_alignment_center,#column_alignment_right").change(function() { column.alignment = $(this).val() });
+  $("#precision").change(function() { column.decimalPlaces = $(this).val() });
+  $("#ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#precision").val() });
 
   $("#save").click(function() {
       $.ajax({
@@ -151,20 +158,14 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           authenticity_token: "<%= form_authenticity_token %>"
           },
         dataType: 'json',
-        error: function(request, status, error) { $("#error").html("Couldn't save the column because there was a server error.").show() },
+        error: function(request, status, error) { 
+            $("#error").html("Couldn't save the column because there was a server error.").show() 
+        },
         success: function(responseData) { 
-          if (responseData.status == "success")
-          {
             $(".jqmClose").click();
-            blist.util.flashInterface.columnPropertiesUpdated(column.id);
-            $("#readGrid").blistModel().updateColumn(column);
-            $("#readGrid").trigger('meta_change', [$("#readGrid").blistModel()]);
+            blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
+            $("#readGrid").blistModel().updateColumn(responseData);
             $.Tache.DeleteAll();
-          }
-          else
-          {
-            $("#error").html(responseData.error).show();
-          }
         }
       });
   });

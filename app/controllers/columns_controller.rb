@@ -1,7 +1,15 @@
 class ColumnsController < ApplicationController
   # TODO: Customize this so that rendering an error also renders an error
   # message instead of being relatively useless.
-  rescue_from('CoreServer::CoreServerError') { |exception| render_500 }
+  rescue_from('CoreServer::CoreServerError') { |exception| render_500_error(exception) }
+
+  def render_500_error(exception)
+    set_locale
+    respond_to do |format|
+      format.all { render :text => {:error => exception.error_message}.to_json, :status => 500}
+    end
+    true
+  end
 
   def show
     @view_id = params[:blist_id]

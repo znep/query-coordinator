@@ -358,6 +358,7 @@
                         { top: metaPosition + "px" },
                         function(){
                             $metaContainer.removeClass("expanded").height("");
+                            $(tabNavigator.settings.expandableContainerSelector).css("min-height", "");
                             $(tabNavigator.settings.expandableSelector).each(function()
                             {
                                 $(this).hide();
@@ -375,7 +376,7 @@
                     var expandMinHeight = 
                         $(tabNavigator.settings.widgetOuterContainerSelector).outerHeight() -
                         $(tabNavigator.settings.widgetMetaHeaderSelector).outerHeight() -
-                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight() - 1;
+                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight();
                     $(tabNavigator.settings.expandableSelector).show();
                     $(tabNavigator.settings.expandableContainerSelector).css("min-height", expandMinHeight + "px");
                     tabNavigator.settings.switchCompleteCallback();

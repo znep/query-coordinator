@@ -51,7 +51,11 @@ module ApplicationHelper
         (last_item_was_separator && i['separator'])
         next
       end
-
+      if i.has_key?('submenu') && (i['submenu'].nil? ||
+                                   i['submenu']['items'].nil? ||
+                                   i['submenu']['items'].length < 1)
+        next
+      end
       last_item_was_separator = false
 
       if i['title'].nil?
@@ -70,12 +74,6 @@ module ApplicationHelper
           "<span class='innerWrapper'>" <<
           "#{i['text']}</span></div></div></a></li>"
       else
-        if i.has_key?('submenu') && (i['submenu'].nil? ||
-                                     i['submenu']['items'].nil? ||
-                                     i['submenu']['items'].length < 1)
-          next
-        end
-
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
           (i['swf_item'] ? ' swfItem' : '') << "'><a title='#{i['title']}' " <<
           "href='#{i['href']}' q=\"#{i['q']}\" class=\"#{i['link_class']}\"" <<

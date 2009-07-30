@@ -31,7 +31,7 @@ blist.discover.historyChangeHandler = function (hash)
         else
         {
             // default tab is popular
-            hash = "POPULAR"
+            hash = "POPULAR";
         }
     }
     if (blist.discover.isTabDirty[hash] === false)
@@ -80,17 +80,17 @@ blist.discover.historyChangeHandler = function (hash)
     // Display loading message
     $(".tabContentContainer").removeClass("active");
     $(tabContainerSelector).addClass("active").html(
-        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\"> \
-          <div class=\"tabContent noresult\"> \
-            <h2>Searching...</h2> \
-            <p class=\"clearBoth\"> \
-                <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
-            </p> \
-          </div> \
-        </div></div></div> \
-        <div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\"> \
-          <div class=\"tabContentNav\"></div> \
-        </div></div>"
+        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\">" +
+        "  <div class=\"tabContent noresult\">" +
+        "    <h2>Searching...</h2>" +
+        "    <p class=\"clearBoth\">" +
+        "        <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" />" +
+        "    </p>" +
+        "  </div>" +
+        "</div></div></div>" +
+        "<div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\">" +
+        "  <div class=\"tabContentNav\"></div>" +
+        "</div></div>"
     );
 
     // Fetch data
@@ -334,9 +334,9 @@ $(function ()
     // Check to see if we were referred from a blist.com domain
     var show_redirect = false;
     var ref_re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
-    if (document.referrer.match(ref_re) 
-        && document.referrer.match(ref_re)[1]
-        && document.referrer.match(ref_re)[1].toString().indexOf("blist") != -1)
+    if (document.referrer.match(ref_re) &&
+           document.referrer.match(ref_re)[1] &&
+           document.referrer.match(ref_re)[1].toString().indexOf("blist") !== -1)
     {
         show_redirect = true;
     }
@@ -344,9 +344,9 @@ $(function ()
     // Check to see if we have a referrer URL
     // var query_ref_re = new RegExp('(?:?|&)ref=(.+)(?:&|$)');
     var query_ref_re = new RegExp('ref=(.+)(?:&|$)');
-    if (document.URL.match(query_ref_re) 
-        && document.URL.match(query_ref_re)[1]
-        && document.URL.match(query_ref_re)[1].toString().indexOf("blist") != -1)
+    if (document.URL.match(query_ref_re) &&
+           document.URL.match(query_ref_re)[1] &&
+           document.URL.match(query_ref_re)[1].toString().indexOf("blist") !== -1)
     {
         show_redirect = true;
     }

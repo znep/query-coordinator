@@ -341,6 +341,7 @@ $(function ()
     
     if ($("#changeProfileImage").length > 0)
     {
+        var uploader = 
         new AjaxUpload($imageChange, {
             action: $imageChange.attr('href'),
             autoSubmit: true,

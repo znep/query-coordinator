@@ -34,12 +34,12 @@ $(function ()
             dataType: "json",
             success: function(responseData)
             {
-                var viewHref = 'http://'
-                    + location.host + '/'
-                    + (responseData['category'] || 'dataset') + '/'
-                    + responseData['name'].replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '-')
-                        .replace(/\-+/g, '-').slice(0, 50) + '/'
-                    + responseData['id'];
+                var viewHref = 'http://' +
+                    location.host + '/' +
+                      (responseData['category'] || 'dataset') + '/' +
+                      responseData['name'].replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '-')
+                        .replace(/\-+/g, '-').slice(0, 50) + '/' +
+                      responseData['id'];
                 $('.dataName a, .linkToDataset, .linkAndTextToDataset')
                     .attr('href', viewHref);
                 $('.dataName a').text(responseData['name']);
@@ -117,7 +117,7 @@ $(function ()
             if (responseData['error'] == 'Validation failed')
             {
                 var $label = $('div.itemContent>div:has(#view_attributionLink) label');
-                if ($label.length == 0)
+                if ($label.length === 0)
                 {
                     $label = $('<label/>').addClass("error");
                 }

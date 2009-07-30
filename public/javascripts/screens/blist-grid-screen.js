@@ -44,7 +44,7 @@ blist.blistGrid.setUpTabs = function ()
     if (blistGridNS.isFilter)
     {
         if ($.grep(cookieObj.views, function (v)
-            { return v.id == blistGridNS.viewId }).length < 1)
+            { return v.id == blistGridNS.viewId ; }).length < 1)
         {
             cookieObj.views.push({name: blistGridNS.viewName,
                 id: blistGridNS.viewId, path: window.location.pathname});
@@ -68,7 +68,7 @@ blist.blistGrid.setUpTabs = function ()
             return;
         }
         var $newTab = $tabTemplate.clone();
-        if (i % 2 == 0)
+        if (i % 2 === 0)
         {
             $newTab.addClass('even');
         }
@@ -358,7 +358,7 @@ blist.blistGrid.newViewCreated = function($iEdit, responseData)
     {
         $('#readGrid').datasetGrid().isTempView = false;
     }
-    blist.util.navigation.redirectToView(responseData.id)
+    blist.util.navigation.redirectToView(responseData.id);
 };
 
 // The favorite action in the info for single panel - when one blist is selected.
@@ -551,7 +551,7 @@ $(function ()
                     $("#readGrid").blistModel().updateColumn(responseData);
                 }
             });
-        }
+        };
 
         if ($li.hasClass("checked"))
         {
@@ -686,8 +686,8 @@ $(function ()
             return $.json.serialize(view);
         },
         requestContentType: 'application/json',
-        loginMessage: 'Creating a public filter requires you to have an account. \
-            Either sign in or sign up to save your public filter.',
+        loginMessage: 'Creating a public filter requires you to have an account. ' +
+            'Either sign in or sign up to save your public filter.',
         submitSuccessCallback: blistGridNS.newViewCreated};
     $("#tempInfoPane .inlineEdit").inlineEdit($.extend({
         displaySelector: '.itemContent span',
@@ -713,7 +713,7 @@ $(function ()
                     .replace('#variation#', $('#publishVariation').val()));
 
             // Restrict size to >= 425x344 px
-            if (parseInt(width) < 425 || parseInt(height) < 344 || width == '' || height == '')
+            if (parseInt(width,10) < 425 || parseInt(height,10) < 344 || width == '' || height == '')
             {
                 $('#sizeError').removeClass('hide');
                 $('.copyCode #publishCode').attr('disabled', true);
@@ -744,7 +744,7 @@ $(function ()
                 var $link = $(this);
                 var width = $('#publishWidth').val();
                 var height = $('#publishHeight').val();
-                if (parseInt(width) < 425 || parseInt(height) < 344 || width == '' || height == '')
+                if (parseInt(width,10) < 425 || parseInt(height,10) < 344 || width == '' || height == '')
                 {
                     return;
                 }

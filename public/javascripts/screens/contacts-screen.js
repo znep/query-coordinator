@@ -1,4 +1,5 @@
 var contactsNS = blist.namespace.fetch('blist.contacts');
+var contactsInfoNS = blist.namespace.fetch('blist.contacts.infoPane');
 
 blist.contacts.setupTable = function ()
 {
@@ -23,7 +24,6 @@ blist.contacts.setupTable = function ()
     });
 };
 
-var contactsInfoNS = blist.namespace.fetch('blist.contacts.infoPane');
 blist.contacts.infoPane.updateSummary = function(numSelect)
 {
     // itemType must be either "friend" or "group".

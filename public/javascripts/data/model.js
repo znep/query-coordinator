@@ -726,18 +726,45 @@ blist.namespace.fetch('blist.data');
             }
             installIDs();
             $(listeners).trigger('row_remove', [ rows ]);
-        }
+        };
+
+        this.updateColumn = function(column)
+        {
+            var isColumnPresent = false;
+            $.each(meta.view.columns, function(i, c)
+            {
+                if (c.id == column.id)
+                {
+                    meta.view.columns[i] = column;
+                    isColumnPresent = true;
+                }
+            });
+
+            if (!isColumnPresent)
+            {
+                meta.view.columns.push(column);
+            }
+
+            // Refresh the meta data and redraw the grid.
+            meta.columns = null;
+            this.meta(meta);
+            $(listeners).trigger('columns_updated', [this]);
+        };
 
         this.moveColumn = function(oldPos, newPos)
         {
             // First update widths on view columns, since they may have been
             // updated on the model columns
             $.each(meta.columns, function(i, colList)
-            { $.each(colList, function(j, c)
+            { 
+                $.each(colList, function(j, c)
                 {
                     if (c.dataIndex)
-                    { meta.view.columns[c.dataIndex].width = c.width; }
-                }); });
+                    { 
+                        meta.view.columns[c.dataIndex].width = c.width; 
+                    }
+                }); 
+            });
 
             // Filter view columns down to just the visible, and sort them
             var viewCols = $.grep(meta.view.columns, function(c)
@@ -818,22 +845,6 @@ blist.namespace.fetch('blist.data');
          */
         this.column = function(uid) {
             return columnLookup[uid];
-        }
-
-        this.updateColumn = function(updates) {
-          for (var i=0; i < columnLookup.length; i++)
-          {
-            var col = columnLookup[i];
-
-            if (col.id == updates.id)
-            {
-              for (var prop in updates)
-              {
-                col[prop] = updates[prop];
-              }
-              break;
-            }
-          }
         }
 
         /**

@@ -1,11 +1,11 @@
 var columnTotalsNS = blist.namespace.fetch('blist.columns.properties.totals');
 
 columnTotalsNS.totals = {
-    count:'<div><input type="checkbox" name="count" value="count" id="count" /><label for="count">The total number of cells with data (<strong>Count</strong>)</label></div>',
-    sum:  '<div><input type="checkbox" name="sum" value="sum" id="sum" /><label for="sum">The sum of all cells with data (<strong>Sum</strong>)</label></div>',
-    avg:  '<div><input type="checkbox" name="avg" value="avg" id="average" /><label for="average">The average of all cells with data (<strong>Average</strong>)</label></div>',
-    max:  '<div><input type="checkbox" name="max" value="max" id="max" /><label for="max">The greatest value of any cell (<strong>Maximum</strong>)</label></div>',
-    min:  '<div><input type="checkbox" name="min" value="min" id="min" /><label for="min">The least value of any cell (<strong>Minimum</strong>)</label></div>'
+    count:'<div><input type="radio" name="aggregate" value="count" id="count" /><label for="count">The total number of cells with data (<strong>Count</strong>)</label></div>',
+    sum:  '<div><input type="radio" name="aggregate" value="sum" id="sum" /><label for="sum">The sum of all cells with data (<strong>Sum</strong>)</label></div>',
+    avg:  '<div><input type="radio" name="aggregate" value="average" id="average" /><label for="average">The average of all cells with data (<strong>Average</strong>)</label></div>',
+    max:  '<div><input type="radio" name="aggregate" value="maximum" id="max" /><label for="max">The greatest value of any cell (<strong>Maximum</strong>)</label></div>',
+    min:  '<div><input type="radio" name="aggregate" value="minimum" id="min" /><label for="min">The least value of any cell (<strong>Minimum</strong>)</label></div>'
 };
 
 columnTotalsNS.populate = function($container)
@@ -17,15 +17,8 @@ columnTotalsNS.populate = function($container)
       });
     }
 
-    $("#columnTotals :input[type=checkbox]").change(function() { 
-      if ($(this).attr("checked") == true)
-      {
+    $("#columnTotals :input[type=radio]").change(function() { 
         column.aggregate = {type: $(this).val()} 
-      }
-      else
-      {
-        column.aggregate = null
-      }
     });
 }
 
@@ -74,6 +67,7 @@ columnTotalsNS.render_flag =
 columnTotalsNS.render_text = 
 columnTotalsNS.render_richtext =
 columnTotalsNS.render_checkbox = 
+columnTotalsNS.render_date =
 columnTotalsNS.render_picklist =
 function($container) {
     var render = '<div id="columnTotals" class="displayOptions">';

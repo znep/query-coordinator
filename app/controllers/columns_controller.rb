@@ -1,4 +1,8 @@
 class ColumnsController < ApplicationController
+  # TODO: Customize this so that rendering an error also renders an error
+  # message instead of being relatively useless.
+  rescue_from('CoreServer::CoreServerError') { |exception| render_500 }
+
   def show
     @view_id = params[:blist_id]
     @column = Column.find(params[:blist_id], params[:id])
@@ -14,21 +18,7 @@ class ColumnsController < ApplicationController
     @column.update(column_json)
 
     respond_to do |format|
-      format.data { render :json => 
-          {
-            :status => "success", 
-            :column => @column.save!(params[:blist_id])
-          } 
-      }
-    end
-  rescue CoreServerError => e
-    respond_to do |format|
-      format.data { render :json => 
-          {
-            :status => "failure", 
-            :error => e.error_message 
-          } 
-      }
+      format.data { render :json => @column.save!(params[:blist_id]) }
     end
   end
 end

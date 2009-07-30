@@ -5,15 +5,6 @@ columnFormatNS.precision = function(value)
   return '<tr><td class="labelColumn"><label for="precision">Number of Decimal Places:</label></td><td><input class="incrementer" type="text" id="precision" value="' + value + '" /></td></tr>';
 }
 
-columnFormatNS.listStyleType = 
-  '<tr><td class="labelColumn"><label for="list">List Style:</label></td><td>' +
-      '<select id="list-style">' + 
-      '<option value="none">No list</option>' +
-      '<option value="undecorated">Undecorated list in each cell</option>' +
-      '<option value="bulleted">Bulleted list in each cell</option>' +
-  '</select>' +
-  '<span class="helpie" title="If you want more than one line per cell you may create a list"></span></td></tr>';
-
 columnFormatNS.currencies = [
     ["$", "dollar"],
     ["£", "pound"],
@@ -112,7 +103,6 @@ columnFormatNS.render_number = function($container)
   var render = '<h3 class="seperator">Display Options</h3>';
   render += '<div class="number displayOptions"><table colspacing="0"><tbody>';
   render += columnFormatNS.precision(column.decimalPlaces); 
-  //render += columnFormatNS.listStyleType;
   render += '</tbody></table></div>'
   $container.append(render);
   $("#precision").spinner({min: 0});
@@ -124,7 +114,6 @@ columnFormatNS.render_money = function($container)
   render += '<div class="money displayOptions"><table colspacing="0"><tbody>';
   render += columnFormatNS.precision(column.decimalPlaces); 
   //render += '<tr><td class="labelColumn"><label for="precision">Number Style:</label></td><td><select id="number-style"><option value="standard">1,000.12 (Standard)</option><option value="scientific">1.01E+03 (Scientific)</option></select></td></tr>';
-  //render += columnFormatNS.listStyleType;
   render += '</tbody></table></div>';
   /* TODO: Add me back in when we get rid of flash (god let that be soon...)
   render += '<h3 class="seperator">Currencies</h3>';
@@ -142,7 +131,6 @@ columnFormatNS.render_percent = function($container)
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += columnFormatNS.precision(column.decimalPlaces); 
     render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td><select id="percentView"><option value="bar_text">Bar &amp; Text</option><option value="bar">Bar Only</option><option value="text">Text Only</option></select></td></tr>';
-    //render += columnFormatNS.listStyleType;
     render += '</tbody></table></div>'
     $container.append(render);
     $("#precision").spinner({min: 0});
@@ -153,7 +141,6 @@ columnFormatNS.render_date = function($container)
     var render = '<h3 class="seperator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += '<tr><td class="labelColumn"><label for="view">Date View Style:</label></td><td>' + columnFormatNS.dateView + '</td></tr>';
-    //render += columnFormatNS.listStyleType;
     render += '</tbody></table></div>'
     $container.append(render);
 }
@@ -163,7 +150,6 @@ columnFormatNS.render_checkbox = function($container)
     var render = '<h3 class="seperator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += '<tr><td class="labelColumn"><label for="view">Check Style:</label></td><td>' + columnFormatNS.checkView + '</td></tr>';
-    //render += columnFormatNS.listStyleType;
     render += '</tbody></table></div>'
     $container.append(render);
 }

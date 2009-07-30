@@ -242,6 +242,37 @@ blist.widget.showInterstitial = function (e)
         .css('top', ($(window).height() - $inter.outerHeight(true)) / 2);
 };
 
+blist.widget.metaTabHeaderMap = {
+    "comments": ".singleInfoComments .infoContentHeader",
+    "summary": ".singleInfoSummary .infoContentHeader"
+};
+blist.widget.updateMetaTabHeader = function(tabKey)
+{
+    if (widgetNS.metaTabHeaderMap[tabKey] != undefined)
+    {
+        $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab_header?tab=' + tabKey,
+            success: function(data)
+            {
+                $(widgetNS.metaTabHeaderMap[tabKey]).html(data);
+            }
+        });
+        widgetNS.updateMetaTab(tabKey);
+    }
+}
+
+blist.widget.metaTabMap = {
+    "summary": "#widgetMeta .singleInfoSummary .infoContent",
+    "comments": "#widgetMeta .singleInfoComments .infoContent"
+};
+blist.widget.updateMetaTab = function(tabKey)
+{
+    $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab?tab=' + tabKey,
+        success: function(data)
+        {
+            $(widgetNS.metaTabMap[tabKey]).html(data);
+        }
+    });
+};
 
 $(function ()
 {
@@ -313,6 +344,11 @@ $(function ()
         allPanelsSelector : "#widgetMeta .infoContentOuter",
         expandableSelector: "#widgetMeta .infoContent",
         isWidget: true,
-        switchCompleteCallback: widgetNS.sizeGrid
+        switchCompleteCallback: widgetNS.sizeGrid,
+        scrollToTabOnActivate: false
     });
+    
+    // Update comment meta data tab header.
+    widgetNS.updateMetaTabHeader("comments");
+    widgetNS.updateMetaTabHeader("summary");
 });

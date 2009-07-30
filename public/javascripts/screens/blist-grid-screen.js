@@ -524,7 +524,43 @@ $(function ()
     $('#filterViewMenu .showHide').click(function (event)
     {
         event.preventDefault();
-        blist.util.flashInterface.showPopup('LensBuilder:ShowHide');
+    });
+    $("#filterViewMenu .columnsMenu").scrollable();
+    $("#filterViewMenu .columnsMenu .scrollable").click(function (event)
+    {
+        event.preventDefault();
+        var $li = $(this);
+
+        var showHide = function(hide)
+        {
+            $.ajax({
+                type: "PUT",
+                url: $li.find("a:first").attr("href"),
+                cache: false,
+                data: $.json.serialize({'hidden': hide}),
+                dataType: 'json',
+                success: function(responseData) { 
+                    if (hide)
+                    {
+                        $li.removeClass("checked");
+                    }
+                    else
+                    {
+                        $li.addClass("checked");
+                    }
+                    $("#readGrid").blistModel().updateColumn(responseData);
+                }
+            });
+        }
+
+        if ($li.hasClass("checked"))
+        {
+            showHide(true);
+        }
+        else
+        {
+            showHide(false);
+        }
     });
 
     $('#displayMenu .table').click(function (event)

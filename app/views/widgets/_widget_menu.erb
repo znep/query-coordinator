@@ -32,6 +32,20 @@
     'link_class' => 'noInterstitial', 'external' => true,
     'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
   ]}},
+{'text' => 'Subscribe with', 'class' => 'subscribe',
+  'href' => '#', 'if' => theme[:menu][:subscribe].any?{ |key, value| value }, 'submenu' =>
+  {'class' => 'noicon', 'items' => [
+  {'text' => 'RSS',
+    'external' => true,
+    'href' => "/views/#{@view.id}/rows.rss",
+    'if' => theme[:menu][:subscribe][:rss]},
+  {'text' => 'Atom',
+    'external' => true,
+    'href' => "/views/#{@view.id}/rows.atom",
+    'if' => theme[:menu][:subscribe][:atom]}
+  ]}},
+{'text' => 'Access Via API', 'class' => 'api', 'external' => 'true',
+  'href' => "/views/#{@view.id}/rows.xml?accessType=API", 'if' => theme[:menu][:api]},
 {'separator' => true},
 {'text' => 'View Full Screen', 'class' => 'fullscreen',
   'href' => @view.href, 'external' => true, 'if' => theme[:menu][:fullscreen]},

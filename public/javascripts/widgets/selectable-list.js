@@ -47,12 +47,14 @@
                     // Get all selected rows.
                     var $selectedRows = $table.find("tr.item.selected");
                     // If nothing is selected, or if only this row is selected, toggle the selection of this row.
-                    if ($selectedRows.length == 0 || ($selectedRows.length == 1 && $targetRow.is(".selected")))
+                    if ($selectedRows.length === 0 || ($selectedRows.length == 1 && $targetRow.is(".selected")))
                     {
-                        if ($targetRow.is(".selected"))
+                        if ($targetRow.is(".selected")) {
                             $targetRow.removeClass("selected highlight");
-                        else
+                        }
+                        else {
                             $targetRow.addClass("selected highlight");
+                        }
                     }
                     else
                     {
@@ -76,20 +78,24 @@
                 else if (event.metaKey) // If control/comman key down:
                 {
                     // Toggle the class of the target row.
-                    if ($targetRow.is(".selected"))
+                    if ($targetRow.is(".selected")) {
                         $targetRow.removeClass("selected highlight");
-                    else
+                    }
+                    else {
                         $targetRow.addClass("selected highlight");
+                    }
                 }
                 else // Else (no shift or control key down)
                 {
                     // Deselect all rows except this one.
                     var rows = $table.find("tr.item").not($targetRow).removeClass("selected highlight");
                     // Toggle the class on this row.
-                    if ($targetRow.is(".selected"))
+                    if ($targetRow.is(".selected")) {
                         $targetRow.removeClass("selected highlight");
-                    else
+                    }
+                    else {
                         $targetRow.addClass("selected highlight");
+                    }
                 }
                 // Set the focus so that the shift/meta click won't select any text.
                 $table.focus();

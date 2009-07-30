@@ -10,55 +10,7 @@
     {
         var opts = $.extend({}, $.fn.infoPaneComments.defaults, options);
 
-        return this.each(function()
-        {
-            var $commentPane = $(this);
-
-            // Support for the Metadata Plugin.
-            var config = $.meta ? $.extend({}, opts, $commentPane.data()) : opts;
-            $commentPane.data('config-infoPaneComments', config);
-
-            $commentPane.find(config.showFormSelector).click(
-                function (e) { showFormClick($commentPane, e); });
-
-            $commentPane.find(config.ratingUISelector)
-                .mouseleave(function (e) { ratingMouseleave($commentPane, e); })
-                .mousemove(function (e) { ratingMousemove($commentPane, e); })
-                .click(function (e) { ratingClick($commentPane, e); });
-
-            $commentPane.find(config.cancelSelector).click(function (e)
-            {
-                e.preventDefault();
-                hideAllForms($commentPane);
-            });
-
-            $commentPane.find(config.topFormSelector
-                + ':not(.' + config.skipActionClass + ')')
-                .submit(function (e) { submitCommentRating($commentPane, e); });
-
-            $commentPane.find(config.replySelector
-                + ':not(.' + config.skipActionClass + ')')
-                .submit(function (e) { submitReply($commentPane, e); });
-
-            $commentPane.find(config.actionSelector
-                + ':not(.' + config.skipActionClass + ')')
-                .click(function (e) { actionClick($commentPane, e); });
-
-            $commentPane.find(config.expanderSelector)
-                .click(function (e) { expanderClick($commentPane, e); });
-
-            $commentPane.find(config.commentListSelector)
-                .pagination({paginationContainer:
-                    $commentPane.find(config.paginationContainer),
-                    previousText: 'Prev'});
-
-            if (config.initialComment && config.initialComment != '')
-            {
-                $commentPane.find(config.commentListSelector)
-                    .pagination().showItem($commentPane
-                            .find('#comment_' + config.initialComment));
-            }
-        });
+       
 
         // Private methods
         function showFormClick($commentPane, e)
@@ -126,8 +78,8 @@
 
         function updateRating($ratingUI, rating)
         {
-            rating = parseInt(rating) || 0;
-            $ratingUI.removeClass(ratingClass(parseInt($ratingUI.text()) || 0))
+            rating = parseInt(rating, 10) || 0;
+            $ratingUI.removeClass(ratingClass(parseInt($ratingUI.text(), 10) || 0))
                 .attr('title', rating)
                 .addClass(ratingClass(rating))
                 .find("span").text(rating);
@@ -135,8 +87,8 @@
 
         function mousedOverRating($ratingUI, e)
         {
-            return Math.ceil((e.pageX - $ratingUI.offset().left + 1)
-                / ($ratingUI.width() + 1) * 5);
+            return Math.ceil((e.pageX - $ratingUI.offset().left + 1) /
+                ($ratingUI.width() + 1) * 5);
         };
 
         function submitCommentRating($commentPane, event)
@@ -199,12 +151,12 @@
                             .prependTo(
                                 $commentPane.find(config.commentListSelector)
                             )
-                            .find(config.actionSelector
-                            + ':not(.' + config.skipActionClass + ')')
+                            .find(config.actionSelector +
+                              ':not(.' + config.skipActionClass + ')')
                             .click(function (e) { actionClick($commentPane, e); })
                             .end()
-                            .find(config.replySelector
-                            + ':not(.' + config.skipActionClass + ')')
+                            .find(config.replySelector +
+                              ':not(.' + config.skipActionClass + ')')
                             .submit(function (e) { submitReply($commentPane, e); })
                             .end()
                             .find(config.cancelSelector).click(function (e)
@@ -319,8 +271,8 @@
                             .addClass(config.expandedClass)
                             .siblings(config.childContainerSelector)
                             .removeClass(config.collapsedClass);
-                        $addedItem.find(config.actionSelector
-                            + ':not(.' + config.skipActionClass + ')')
+                        $addedItem.find(config.actionSelector +
+                              ':not(.' + config.skipActionClass + ')')
                             .click(function (e) { actionClick($commentPane, e); });
                     }
 
@@ -427,7 +379,7 @@
                 .match(/((\/[a-zA-Z0-9_\-]+){1,2}\/\w{4}-\w{4})/)[1];
             window.location = href +
                 '?metadata_pane=tabComments' +
-                (commentId ? '&comment=' + commentId : '')
+                (commentId ? '&comment=' + commentId : '');
         };
 
         function updateCommentRating($commentPane, $link)
@@ -440,7 +392,7 @@
             var $ratingSpan = $link.parent().find('.rating' + chosen)
                 .removeClass(config.hiddenClass);
             $ratingSpan.text($ratingSpan.text().match(/(\+|-)/)[1] +
-                (parseInt($ratingSpan.text().match(/(\d+)/)[1]) + 1));
+                (parseInt($ratingSpan.text().match(/(\d+)/)[1], 10) + 1));
         };
 
         function expanderClick($commentPane, e)
@@ -452,6 +404,56 @@
                 .toggleClass(config.collapsedClass);
             $(window).resize();
         };
+        
+        return this.each(function()
+        {
+            var $commentPane = $(this);
+
+            // Support for the Metadata Plugin.
+            var config = $.meta ? $.extend({}, opts, $commentPane.data()) : opts;
+            $commentPane.data('config-infoPaneComments', config);
+
+            $commentPane.find(config.showFormSelector).click(
+                function (e) { showFormClick($commentPane, e); });
+
+            $commentPane.find(config.ratingUISelector)
+                .mouseleave(function (e) { ratingMouseleave($commentPane, e); })
+                .mousemove(function (e) { ratingMousemove($commentPane, e); })
+                .click(function (e) { ratingClick($commentPane, e); });
+
+            $commentPane.find(config.cancelSelector).click(function (e)
+            {
+                e.preventDefault();
+                hideAllForms($commentPane);
+            });
+
+            $commentPane.find(config.topFormSelector +
+                ':not(.' + config.skipActionClass + ')')
+                .submit(function (e) { submitCommentRating($commentPane, e); });
+
+            $commentPane.find(config.replySelector +
+                ':not(.' + config.skipActionClass + ')')
+                .submit(function (e) { submitReply($commentPane, e); });
+
+            $commentPane.find(config.actionSelector +
+                ':not(.' + config.skipActionClass + ')')
+                .click(function (e) { actionClick($commentPane, e); });
+
+            $commentPane.find(config.expanderSelector)
+                .click(function (e) { expanderClick($commentPane, e); });
+
+            $commentPane.find(config.commentListSelector)
+                .pagination({paginationContainer:
+                    $commentPane.find(config.paginationContainer),
+                    previousText: 'Prev'});
+
+            if (config.initialComment && config.initialComment !== '')
+            {
+                $commentPane.find(config.commentListSelector)
+                    .pagination().showItem($commentPane
+                            .find('#comment_' + config.initialComment));
+            }
+        });
     };
 
      // default options

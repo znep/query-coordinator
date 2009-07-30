@@ -18,9 +18,9 @@ columnTotalsNS.populate = function($container)
     }
 
     $("#columnTotals :input[type=radio]").change(function() { 
-        column.aggregate = {type: $(this).val()} 
+        column.aggregate = {type: $(this).val()} ;
     });
-}
+};
 
 columnTotalsNS.render_stars =
 function($container) {
@@ -39,7 +39,7 @@ function($container) {
         this.checked = true;
     });
     columnTotalsNS.populate($container);
-}
+};
 
 columnTotalsNS.render_number =
 columnTotalsNS.render_money =
@@ -55,7 +55,7 @@ function($container) {
     render += '</div>';
     $container.append(render);
     columnTotalsNS.populate($container);
-}
+};
 
 
 columnTotalsNS.render_phone = 
@@ -82,5 +82,5 @@ $(function() {
     $.fn.columnTotals = function(column)
     {
         eval("columnTotalsNS.render_" + column.type + "($(this));");
-    }
+    };
 });

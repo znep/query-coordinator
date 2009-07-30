@@ -70,8 +70,8 @@
                     return;
                 }
 
-                if (Math.ceil(paginate.settings._allItems.length
-                    / paginate.settings.pageSize) !=
+                if (Math.ceil(paginate.settings._allItems.length /
+                      paginate.settings.pageSize) !=
                     paginate.settings.paginationContainer
                         .children('.pageLink').length)
                 {
@@ -114,21 +114,21 @@
     function constructLinks(paginate)
     {
         var $prevLink = paginate.settings.paginationContainer
-            .append("<a href='#prev_page' class='prevLink' "
-                    + "title='Previous'>" + paginate.settings.previousText
-                    + "</a>")
+            .append("<a href='#prev_page' class='prevLink' " +
+                    "title='Previous'>" + paginate.settings.previousText +
+                    "</a>")
             .find('.prevLink');
         paginate.settings._prevLink = $prevLink;
         $prevLink.click(function (e) { prevClick(paginate, e); });
 
-        var numPages = Math.ceil(paginate.settings._allItems.length
-                / paginate.settings.pageSize);
+        var numPages = Math.ceil(paginate.settings._allItems.length /
+                paginate.settings.pageSize);
         for (var i = 1; i <= numPages; i++)
         {
             var $pageLink = paginate.settings.paginationContainer
-                .append("<a href='#page_" + i
-                        + "' title='Page " + i + "' class='pageLink'>" + i
-                        + "</a>")
+                .append("<a href='#page_" + i +
+                        "' title='Page " + i + "' class='pageLink'>" + i +
+                        "</a>")
                 .find('.pageLink');
             $pageLink.click(function (e) { pageClick(paginate, e); });
         }
@@ -143,8 +143,8 @@
         }
 
         var $nextLink = paginate.settings.paginationContainer
-            .append("<a href='#next_page' class='nextLink' "
-                    + "title='Next'>" + paginate.settings.nextText + "</a>")
+            .append("<a href='#next_page' class='nextLink' " +
+                    "title='Next'>" + paginate.settings.nextText + "</a>")
             .find('.nextLink');
         paginate.settings._nextLink = $nextLink;
         $nextLink.click(function (e) { nextClick(paginate, e); });
@@ -181,11 +181,13 @@
 
         var $curLink = $(e.currentTarget);
         var hrefMatches = $curLink.attr('href').split('_');
-        displayPage(paginate, parseInt(hrefMatches[1]) - 1);
+        displayPage(paginate, parseInt(hrefMatches[1], 10) - 1);
     };
 
     function displayPage(paginate, pageNum)
     {
+    	// Just in case we were passed a string
+    	pageNum = parseInt(pageNum, 10);
         if (paginate.settings._allItems.length <= paginate.settings.pageSize)
         {
             return;
@@ -214,7 +216,7 @@
         paginate.settings._pageLinks.eq(paginate.settings._pageLinks.length - 1)
             .removeClass(paginate.settings.hiddenClass);
 
-        if (pageNum == 0)
+        if (pageNum === 0)
         {
             paginate.settings._prevLink.addClass(paginate.settings.hiddenClass);
         }

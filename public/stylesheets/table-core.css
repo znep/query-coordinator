@@ -431,21 +431,21 @@ img.blist-table-option-icon
 }
 
 /* Datatype icons */
-.blist-table .blist-th.text .blist-th-icon { background-position: 5px -80px; }
-.blist-table .blist-th.richtext .blist-th-icon { background-position: 5px -60px; }
-.blist-table .blist-th.number .blist-th-icon { background-position: 5px -20px; }
-.blist-table .blist-th.money .blist-th-icon { background-position: 5px -40px; }
-.blist-table .blist-th.percent .blist-th-icon { background-position: 5px 0; }
-.blist-table .blist-th.date .blist-th-icon { background-position: 5px -340px; }
-.blist-table .blist-th.phone .blist-th-icon { background-position: 5px -240px; }
-.blist-table .blist-th.email .blist-th-icon { background-position: 5px -260px; }
-.blist-table .blist-th.url .blist-th-icon { background-position: 5px -360px; }
-.blist-table .blist-th.checkbox .blist-th-icon { background-position: 5px -120px; }
-.blist-table .blist-th.stars .blist-th-icon { background-position: 5px -140px; }
-.blist-table .blist-th.flag .blist-th-icon { background-position: 5px -380px; }
-.blist-table .blist-th.document .blist-th-icon { background-position: 5px -280px; }
-.blist-table .blist-th.photo .blist-th-icon { background-position: 5px -100px; }
-.blist-table .blist-th.picklist .blist-th-icon { background-position: 5px -400px; }
-.blist-table .blist-th.nested_table .blist-th-icon { background-position: 5px -440px; }
-.blist-table .blist-th.tag .blist-th-icon { background-position: 5px -180px; }
+.blist-table .blist-th.text .blist-th-icon { background-position: 0 -80px; }
+.blist-table .blist-th.richtext .blist-th-icon { background-position: 0 -60px; }
+.blist-table .blist-th.number .blist-th-icon { background-position: 0 -20px; }
+.blist-table .blist-th.money .blist-th-icon { background-position: 0 -40px; }
+.blist-table .blist-th.percent .blist-th-icon { background-position: 0 0; }
+.blist-table .blist-th.date .blist-th-icon { background-position: 0 -340px; }
+.blist-table .blist-th.phone .blist-th-icon { background-position: 0 -240px; }
+.blist-table .blist-th.email .blist-th-icon { background-position: 0 -260px; }
+.blist-table .blist-th.url .blist-th-icon { background-position: 0 -360px; }
+.blist-table .blist-th.checkbox .blist-th-icon { background-position: 0 -120px; }
+.blist-table .blist-th.stars .blist-th-icon { background-position: 0 -140px; }
+.blist-table .blist-th.flag .blist-th-icon { background-position: 0 -380px; }
+.blist-table .blist-th.document .blist-th-icon { background-position: 0 -280px; }
+.blist-table .blist-th.photo .blist-th-icon { background-position: 0 -100px; }
+.blist-table .blist-th.picklist .blist-th-icon { background-position: 0 -400px; }
+.blist-table .blist-th.nested_table .blist-th-icon { background-position: 0 -440px; }
+.blist-table .blist-th.tag .blist-th-icon { background-position: 0 -180px; }
 

@@ -42,14 +42,14 @@
           border-color: <%= @theme[:frame][:color] %>;
       }
     <%- end -%>
-    
+
     <%- if @theme[:frame][:border] -%>
       .gridOuter, .widgetFooterInner
       {
           border-color: <%= @theme[:frame][:border] %>;
       }
     <%- end -%>
-  
+
     .widgetLogo
     {
       <%- if @theme[:frame][:logo][:type] == "upload" -%>
@@ -60,19 +60,30 @@
         background-image: url(/stylesheets/images/widgets/socrata_logo_player.gif);
       <%- end -%>
     }
-  
+
   /* grid */
-  
+
     <%- if !@theme[:grid][:header_icons] -%>
     .blist-th-icon { display: none; }
     <%- end -%>
-    
+
     .blist-td
     {
         height: <%= @theme[:grid][:row_height] %>;
         line-height: <%= @theme[:grid][:row_height] %>;
     }
-    
+
+    <%- if @theme[:grid][:wrap_header_text] -%>
+    .blist-th .info-container
+    {
+        height: 2.5em; /* 30px or so */
+        margin-top: -1.25em;
+    }
+    .blist-th .name-wrapper { height: 2.5em; }
+    div.th-inner-container { white-space: normal; }
+    .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
+    <%- end -%>
+
     <%- if @theme[:grid][:zebra] -%>
       .blist-tr-even .blist-td
       {

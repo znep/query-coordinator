@@ -2487,9 +2487,9 @@
                 html.push(
                     '<div class="info-container">',
                     '<span class="blist-th-icon"></span>',
-                    '<span class="blist-th-name">',
+                    '<div class="name-wrapper"><span class="blist-th-name">',
                     colName,
-                    '</span>',
+                    '</span></div>',
                     '</div>',
                     '<div class="filter" title="Remove filter"',
                     options.generateHeights ? ' style="height: ' +

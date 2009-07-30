@@ -34,7 +34,7 @@ class WidgetsController < ApplicationController
                               :url => '' },
                    :powered_by => true },
     :grid     => { :row_numbers => true,
-                   :wrap_header_text => false, #TODO
+                   :wrap_header_text => false,
                    :header_icons => true,
                    :row_height => '16px',
                    :zebra => '#e7ebf2' },

@@ -72,6 +72,13 @@ form.search input.submit
     width: 100%;
 }
 
+.blist-table .blist-th .info-container
+{
+    position: relative;
+    left: auto;
+    right: auto;
+}
+
 /* IE6 doesn't like overflow: visible; so switch to overflow: hidden, then
  * pull the content out of normal layout so we display as much as possible
  * without making the container too large */

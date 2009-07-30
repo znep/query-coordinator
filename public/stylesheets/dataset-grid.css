@@ -1,14 +1,16 @@
 .blist-table-locked-scrolls { background-color: #ffffff; }
 
 .blist-table-header,
-.blist-th { height: 3.5em; }
+.blist-th,
+.blist-th .dragHandle
+{ height: 3.5em; }
 
-.blist-th .info-container { top: 7.5px; }
 .sorted .th-inner-container .info-container,
 .filtered .th-inner-container .info-container
-{ top: 15px; }
-
-.blist-table-locked-header .blist-th { height: 3.1818em; /* 35px */ }
+{
+    margin-top: 0;
+    top: 15px;
+}
 
 .blist-th
 {
@@ -31,16 +33,29 @@ div.blist-th-first
 {
     margin: 0 -0.4em 0 -0.2em; /* 4px 2px */
     padding-right: 20px;
+    display: table;
 }
 
 .blist-th .info-container
 {
     font-size: 1.2em;
-    height: 1.667em; /* 20px or so */
-    line-height: 1.667em;
+    height: 1.6667em; /* 20px or so */
+    left: 12px;
+    line-height: 1;
+    margin-top: -0.8333em;
     overflow: hidden;
-    position: relative;
+    position: absolute;
+    right: 20px;
     text-overflow: ellipsis;
+    top: 50%;
+}
+
+.blist-th .name-wrapper
+{
+    height: 1.6667em;
+    padding-left: 25px;
+    display: table-cell;
+    vertical-align: middle;
 }
 
 .blist-th-name
@@ -52,23 +67,21 @@ div.blist-th-first
 .blist-th-icon
 {
     background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
-    background-position: 5px 20px;
+    background-position: 0 20px;
     background-repeat: no-repeat;
     display: block;
-    float: left;
     height: 20px;
-    margin-left: -5px;
-    width: 30px;
+    left: 0;
+    margin-top: -10px;
+    position: absolute;
+    top: 50%;
+    width: 20px;
 }
 
 .blist-th .dragHandle
 {
     cursor: move;
-    float: left;
-    height: 100%;
-    position: relative;
     width: 10px;
-    z-index: 1;
 }
 .blist-th.hover .dragHandle
 {
@@ -91,9 +104,9 @@ div.blist-th-first
 }
 
 .blist-table div.blist-th.hover .blist-th-icon
-{ background-position: 5px -900px; }
+{ background-position: 0 -900px; }
 .blist-table div.blist-th.blist-select-col .blist-th-icon
-{ background-position: 5px -509px; }
+{ background-position: 0 -509px; }
 
 .blist-th .sort,
 .blist-th .filter
@@ -138,8 +151,7 @@ div.blist-th-first
 .blist-table-locked-header .blist-th
 {
     border: none;
-    font-size: 1.1em;
-    padding: 0 0.3636em; /* 4px */
+    padding: 0 4px;
 }
 
 .dropIndicator

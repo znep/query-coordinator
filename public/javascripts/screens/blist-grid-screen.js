@@ -222,9 +222,72 @@ blist.blistGrid.columnsChangedHandler = function (event, columnIds)
 
 blist.blistGrid.mainMenuLoaded = function (data)
 {
+    var $data = $(data);
     // Swap out the main menu with whatever was loaded
-    $('#mainMenu').replaceWith(data);
+    $('#mainMenu').replaceWith($data.closest("#mainMenuComponent").html());
+    // Swap out the filter & view menu with whatever was loaded
+    $('#filterViewMenu').replaceWith($data.closest("#filterViewMenuComponent").html());
     blistGridNS.hookUpMainMenu();
+    blistGridNS.hookUpFilterViewMenu();
+};
+
+blist.blistGrid.hookUpFilterViewMenu = function()
+{
+    $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
+        menuBar: $('#lensContainer .headerBar')});
+
+    $('#filterViewMenu .filter').click(function (event)
+    {
+        event.preventDefault();
+        blist.util.flashInterface.showPopup('LensBuilder:Filter');
+    });
+    $('#filterViewMenu .sort').click(function (event)
+    {
+        event.preventDefault();
+        blist.util.flashInterface.showPopup('LensBuilder:Sort');
+    });
+    $('#filterViewMenu .showHide').click(function (event)
+    {
+        event.preventDefault();
+    });
+    $("#filterViewMenu .columnsMenu").scrollable();
+    $("#filterViewMenu .columnsMenu .scrollable").click(function (event)
+    {
+        event.preventDefault();
+        var $li = $(this);
+
+        var showHide = function(hide)
+        {
+            $.ajax({
+                type: "PUT",
+                url: $li.find("a:first").attr("href"),
+                cache: false,
+                data: $.json.serialize({'hidden': hide}),
+                dataType: 'json',
+                success: function(responseData) { 
+                    if (hide)
+                    {
+                        $li.removeClass("checked");
+                    }
+                    else
+                    {
+                        $li.addClass("checked");
+                    }
+                    $("#readGrid").blistModel().updateColumn(responseData);
+                }
+            });
+        }
+
+        if ($li.hasClass("checked"))
+        {
+            showHide(true);
+        }
+        else
+        {
+            showHide(false);
+        }
+    });
+
 };
 
 blist.blistGrid.hookUpMainMenu = function()
@@ -511,58 +574,6 @@ $(function ()
         });
     });
 
-    $('#filterViewMenu .filter').click(function (event)
-    {
-        event.preventDefault();
-        blist.util.flashInterface.showPopup('LensBuilder:Filter');
-    });
-    $('#filterViewMenu .sort').click(function (event)
-    {
-        event.preventDefault();
-        blist.util.flashInterface.showPopup('LensBuilder:Sort');
-    });
-    $('#filterViewMenu .showHide').click(function (event)
-    {
-        event.preventDefault();
-    });
-    $("#filterViewMenu .columnsMenu").scrollable();
-    $("#filterViewMenu .columnsMenu .scrollable").click(function (event)
-    {
-        event.preventDefault();
-        var $li = $(this);
-
-        var showHide = function(hide)
-        {
-            $.ajax({
-                type: "PUT",
-                url: $li.find("a:first").attr("href"),
-                cache: false,
-                data: $.json.serialize({'hidden': hide}),
-                dataType: 'json',
-                success: function(responseData) { 
-                    if (hide)
-                    {
-                        $li.removeClass("checked");
-                    }
-                    else
-                    {
-                        $li.addClass("checked");
-                    }
-                    $("#readGrid").blistModel().updateColumn(responseData);
-                }
-            });
-        };
-
-        if ($li.hasClass("checked"))
-        {
-            showHide(true);
-        }
-        else
-        {
-            showHide(false);
-        }
-    });
-
     $('#displayMenu .table').click(function (event)
     {
         event.preventDefault();
@@ -622,8 +633,7 @@ $(function ()
         });
 
     blistGridNS.hookUpMainMenu();
-    $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
-        menuBar: $('#lensContainer .headerBar')});
+    blistGridNS.hookUpFilterViewMenu();
     $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),
         menuBar: $('#lensContainer .headerBar')});
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),

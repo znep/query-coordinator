@@ -323,7 +323,7 @@
   pageTracker._trackPageview();
   } catch(err) {}</script>
 
-    <%- unless @themes[:behavior][:ga_code].empty? -%>
+    <%- unless @theme[:behavior][:ga_code].empty? -%>
     <script type="text/javascript">
     try {
     var pageTracker2 = _gat._getTracker("<%= @theme[:behavior][:ga_code] %>");

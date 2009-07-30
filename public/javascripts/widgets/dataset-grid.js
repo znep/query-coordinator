@@ -592,7 +592,10 @@
             var modView = datasetObj.getViewCopy(true);
             $.ajax({url: '/views/' + view.id + '.json',
                     data: $.json.serialize(modView),
-                    type: 'PUT', contentType: 'application/json'});
+                    type: 'PUT', contentType: 'application/json',
+                    success: function()
+                        { $(document).trigger(blist.events.COLUMNS_CHANGED); }
+                    });
         }
     };
 

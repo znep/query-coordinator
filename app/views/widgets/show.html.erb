@@ -52,11 +52,11 @@
   
     .widgetLogo
     {
-      <%- if @theme[:frame][:logo][:type] == "upload" -%>
+      <%- if @theme[:frame][:logo][:type] == 'upload' -%>
         background-image: url(/TODO/uploads/whatever);
-      <%- elif @theme[:frame][:logo][:type] == "external" -%>
+      <%- elsif @theme[:frame][:logo][:type] == 'external' -%>
         background-image: url(<%= @theme[:frame][:logo][:type] %>);
-      <%- elif @theme[:frame][:logo][:type] == "default" -%>
+      <%- elsif @theme[:frame][:logo][:type] == 'default' -%>
         background-image: url(/stylesheets/images/widgets/socrata_logo_player.gif);
       <%- end -%>
     }

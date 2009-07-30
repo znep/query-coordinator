@@ -9,24 +9,7 @@ blist.util.flashInterface.displayColumnProperties = function (columnId)
 {
     blist.namespace.fetch('blist.columns.properties');
 
-    $("#columnPropertiesModal").jqm({
-        trigger: false,
-        onShow: function(hash)
-        {
-            var $modal = hash.w;
-            $.ajax({ 
-                url: "/blists/" + blist.blistGrid.viewId + "/columns/" + columnId,
-                dataType: "html",
-                cache: false,
-                success: function(data)
-                {
-                    $modal.html(data).show();
-                }
-            });
-        }
-    });
-
-    $("#columnPropertiesModal").jqmShow();
+    $("#modal").jqmShow($('<a href="/blists/' + blist.blistGrid.viewId + '/columns/' + columnId + '"/>'));
 };
 
 blist.util.flashInterface.callSwf = function (callback)

@@ -162,11 +162,11 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
             $("#error").html($.json.deserialize(request.responseText).error).show() 
         },
         success: function(responseData) { 
-            $(".jqmClose").click();
             blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
             $("#readGrid").blistModel().updateColumn(responseData);
             $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
             $.Tache.DeleteAll();
+            $(".jqmClose").click();
         }
       });
   });

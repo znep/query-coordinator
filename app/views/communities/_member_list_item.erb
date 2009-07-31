@@ -1,3 +1,4 @@
+<% cache ["community-member-list-item", member_list_item.id], :expires_in => 15.minutes do %>
 <%- member = member_list_item -%>
 
 <li class="memberListItem clearfix">
@@ -47,3 +48,4 @@
     </div>
   </div>
 </li>
+<% end %>

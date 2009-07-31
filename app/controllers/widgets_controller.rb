@@ -47,7 +47,7 @@ class WidgetsController < ApplicationController
                    :fullscreen => true,
                    :republish => true },
     :meta     => { :comments   => { :show => true, :order => 0, :display_name => 'Comments' },
-                   :views      => { :show => true, :order => 1, :display_name => 'Views' },
+                   :filtered   => { :show => true, :order => 1, :display_name => 'More Views' },
                    :publishing => { :show => true, :order => 2, :display_name => 'Publishing' },
                    :activity   => { :show => true, :order => 3, :display_name => 'Activity' },
                    :summary    => { :show => true, :order => 4, :display_name => 'Summary' } },
@@ -93,6 +93,8 @@ class WidgetsController < ApplicationController
 
       @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
       @theme[:meta][:comments][:show] = true
+      @theme[:meta][:filtered][:show] = true
+      @theme[:meta][:activity][:show] = true
       @theme[:meta][:summary][:show] = true
     else
       # They're disabled by default until they're ready
@@ -156,6 +158,9 @@ class WidgetsController < ApplicationController
     
     @tabKey = params[:tab]
     @view = View.find(params[:id])
+    if (@tabKey == "activity")
+      @view_activities = Activity.find({:viewId => @view.id})
+    end
     render(:layout => 'main.data')
   end
 end

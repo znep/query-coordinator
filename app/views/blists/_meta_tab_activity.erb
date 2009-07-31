@@ -1,0 +1,51 @@
+<div class="gridListContainer">
+  <table class="gridList" cellspacing="0">
+    <thead>
+      <tr>
+        <th class="when first" title="When"><div>When</div></th>
+        <th class="picture" title="Who"><div></div></th>
+        <th class="who" title="Who"><div>Who</div></th>
+        <th class="what" title="What Activity"><div>What Activity</div></th>
+        <%- if (!in_widget) -%>
+          <th class="actionContainer last"></th>
+        <%- end -%>
+      </tr>
+    </thead>
+    <tbody>
+      <%- if @view_activities && @view_activities.length > 0 -%>
+        <%- @view_activities.each do |activity| -%>
+          <tr class="item">
+            <td class="when"><div><%= blist_date(activity.createdAt) %></div></td>
+            <td class="picture"><a href='<%= activity.actor.href %>' <%= "rel='external'" if in_widget %>>
+                <%= image_tag(activity.actor.profile_image_path,
+                :size => "24x24", :alt => h(activity.actor.displayName)) %>
+            </a></td>
+            <td class="who"><div class='clipText'>
+                <a href="<%= activity.actor.href %>"
+                  title='<%= h(activity.actor.displayName) %>'
+                  <%= "rel='external'" if in_widget %>>
+                <%= h(activity.actor.displayName) %>
+              </a>
+            </div></td>
+            <td class="what"><div>
+              <%= get_verb_for_activity_action(activity.action) %>
+              <%= get_html_for_action_object(activity, in_widget) %>
+            </div></td>
+            
+            <%- if (!in_widget) -%>
+              <td class="actionContainer"><div>
+                <a href="<%= get_url_for_activity_action(activity) %>" class="action"><span>View</span></a>
+              </div></td>
+            <%- end -%>
+          </tr>
+        <%- end -%>
+      <%- else -%>
+        <tr class="item">
+          <td colspan="4"><div>
+            <p>There is no activity for this <%= t(:blist_name).downcase %>.</p>
+          </div></td>
+        </tr>
+      <%- end -%>
+    </tbody>
+  </table>
+</div>

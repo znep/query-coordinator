@@ -1,0 +1,8 @@
+<h2 class="panelHeader">
+  <%= pluralize(view.filters.length, "Filtered View") %>
+</h2>
+<%- if current_user && !in_widget -%>
+<ul class="headerActions actionButtons">
+  <li><%= link_to("Create", view.href + "?popup=SaveLens", :class => "arrowButton showFlashPopup") %></li>
+</ul>
+<%- end -%>

@@ -244,7 +244,9 @@ blist.widget.showInterstitial = function (e)
 
 blist.widget.metaTabHeaderMap = {
     "comments": ".singleInfoComments .infoContentHeader",
-    "summary": ".singleInfoSummary .infoContentHeader"
+    "summary": ".singleInfoSummary .infoContentHeader",
+    "filtered": ".singleInfoFiltered .infoContentHeader",
+    "activity": ".singleInfoActivity .infoContentHeader"
 };
 blist.widget.updateMetaTabHeader = function(tabKey)
 {
@@ -262,7 +264,9 @@ blist.widget.updateMetaTabHeader = function(tabKey)
 
 blist.widget.metaTabMap = {
     "summary": "#widgetMeta .singleInfoSummary .infoContent",
-    "comments": "#widgetMeta .singleInfoComments .infoContent"
+    "comments": "#widgetMeta .singleInfoComments .infoContent",
+    "filtered": "#widgetMeta .singleInfoFiltered .infoContent",
+    "activity": "#widgetMeta .singleInfoActivity .infoContent"
 };
 blist.widget.updateMetaTab = function(tabKey)
 {
@@ -270,8 +274,26 @@ blist.widget.updateMetaTab = function(tabKey)
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);
+            
+            if (tabKey == "comments")
+            {
+                // Set up reply expanders in comments tab.
+                var $commentPane = $("#widgetMeta .singleInfoComments");
+                $commentPane.find(".expander")
+                    .click(function (e) { 
+                        widgetNS.commentExpanderClick($commentPane, e); });
+            }
         }
     });
+};
+
+blist.widget.commentExpanderClick = function($commentPane, e)
+{
+    e.preventDefault();
+    $(e.currentTarget).toggleClass("expanded")
+        .siblings(".childContainer")
+        .toggleClass("collapsed");
+    widgetNS.sizeGrid;
 };
 
 $(function ()
@@ -339,7 +361,9 @@ $(function ()
     $("#widgetMeta .summaryTabs").infoPaneNavigate({
         tabMap: {
             "tabSummary": "#widgetMeta .singleInfoSummary",
-            "tabComments": "#widgetMeta .singleInfoComments"
+            "tabFiltered": "#widgetMeta .singleInfoFiltered",
+            "tabComments": "#widgetMeta .singleInfoComments",
+            "tabActivity": "#widgetMeta .singleInfoActivity"
         },
         allPanelsSelector : "#widgetMeta .infoContentOuter",
         expandableSelector: "#widgetMeta .infoContent",
@@ -348,7 +372,9 @@ $(function ()
         scrollToTabOnActivate: false
     });
     
-    // Update comment meta data tab header.
+    // Update meta data tab headers.
     widgetNS.updateMetaTabHeader("comments");
+    widgetNS.updateMetaTabHeader("filtered");
+    widgetNS.updateMetaTabHeader("activity");
     widgetNS.updateMetaTabHeader("summary");
 });

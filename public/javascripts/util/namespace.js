@@ -1,4 +1,5 @@
 // Create blist namespace if DNE
+/*global blist: true */
 if (!blist)
 {
     var blist = {};

@@ -17,7 +17,9 @@ namespace :js do
     Find.find(File.join(Rails.root, 'public/javascripts')) do |path|
       if (path !~ %r{/public/javascripts/plugins/} &&
           path !~ %r{/public/javascripts/cache/} &&
-          path !~ %r{/public/javascripts/util/} &&
+          path !~ %r{swfobject\.js$} &&
+          path !~ %r{extMouseWheel\.js$} &&
+          path !~ %r{FusionMaps\.js$} &&
           path !~ %r{jquery-\d+\.\d+\.\d+\.js$} &&
           path !~ %r{\.min\.js$} &&
           !FileTest.directory?(path) &&

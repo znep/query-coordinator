@@ -49,23 +49,26 @@ blist.util.humaneDate.getFromDate = function (date_obj, granularity)
     }
 
     var i = granularity;
-    var format;
-    while (format = humaneUtilNS.timeFormats[i++]) if (seconds < format[0])
+    var format = humaneUtilNS.timeFormats[i++];
+    while (format)
     {
-        if (format.length < 3)
+        if (seconds < format[0])
         {
-            return format[1];
-        }
-        if (typeof format[2] == 'string')
-        {
-            return format[list_choice];
-        }
-        else
-        {
-            return Math.floor(seconds / format[2]) + ' ' + format[1] + ' ' + token;
-        }
+            if (format.length < 3)
+            {
+                return format[1];
+            }
+            if (typeof format[2] == 'string')
+            {
+                return format[list_choice];
+            }
+            else
+            {
+                return Math.floor(seconds / format[2]) + ' ' + format[1] + ' ' + token;
+            }
+	    }
+    	format = humaneUtilNS.timeFormats[i++];
     }
-
     // overflow for centuries
     if (seconds > 5806080000)
     {

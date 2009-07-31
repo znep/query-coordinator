@@ -59,7 +59,6 @@ class Column < Model
         attributes[key] = nil
       end
     end
-    pp attributes
     path = "/views/#{view_id}/#{self.class.name.pluralize.downcase}/#{id}.json"
     self.class.update_request(path, JSON.generate(attributes))
   end
@@ -87,8 +86,6 @@ class Column < Model
     elsif js.key?("format")
       update_data[:format]["view"] = js["format"]
     end
-
-    pp update_data
 
     if js.key?("decimalPlaces") && js["decimalPlaces"].blank?
       update_data[:format].delete "precision"

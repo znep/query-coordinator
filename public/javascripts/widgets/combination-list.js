@@ -257,7 +257,7 @@
             $(comboListObj.currentList).find('tbody .clipText > *')
                 .each(function ()
                 {
-                    blist.widget.clippedText.clipElement($(this))
+                    blist.widget.clippedText.clipElement($(this));
                 });
         }
     };

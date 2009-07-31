@@ -514,7 +514,7 @@
 
 .columnPropertiesWrapper h4.subtitle
 {
-  color: #ccc;
+  color: #999;
   padding: 0.2em 0 0.2em 0;
 }
 
@@ -544,7 +544,6 @@
 }
 .columnPropertiesWrapper #error
 {
-  float: right;
   padding: 0.3em;
   margin-right: 1em;
   vertical-align: middle;
@@ -560,6 +559,7 @@
 {
     font-size: 1.2em;
     line-height: 1.75em; /* 21px */
+    vertical-align: middle;
 }
 
 .columnPropertiesWrapper td 

@@ -2630,12 +2630,13 @@
             }
 
             // Update the locked column styles with proper dimensions
-            lockedWidth = 0;
+            // +1 for rounding errors
+            lockedWidth = 1;
             $.each(lockedColumns, function (i, c)
             {
                 measureUtilDOM.innerHTML =
-                    '<div class="' + (c.cls || '') + ' ' + getColumnClass(c) +
-                    ' blist-td">' + (c.measureText || '') + '</div>';
+                    '<div class="' + (c.cls || '') + ' blist-td">' +
+                    (c.measureText || '') + '</div>';
                 var $measureCol = $(measureUtilDOM.firstChild);
                 var colStyle = getColumnStyle(c);
                 if (c.width)

@@ -260,10 +260,11 @@ blist.blistGrid.hookUpFilterViewMenu = function()
         {
             $.ajax({
                 type: "PUT",
-                url: $li.find("a:first").attr("href"),
+                url: $li.find("a:first").attr("href") + ".json",
                 cache: false,
                 data: $.json.serialize({'hidden': hide}),
                 dataType: 'json',
+                contentType: 'application/json',
                 success: function(responseData) { 
                     if (hide)
                     {

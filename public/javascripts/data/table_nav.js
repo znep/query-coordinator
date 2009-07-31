@@ -782,4 +782,4 @@ blist.data.TableNavigation = function(model, layout) {
     }
 
     return this;
-}
+};

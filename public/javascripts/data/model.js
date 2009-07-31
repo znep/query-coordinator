@@ -935,13 +935,14 @@ blist.namespace.fetch('blist.data');
 
         this.toggleSelectRow = function(row)
         {
-            if (this.selectedRows[row.id])
+            if (this.selectedRows[row.id] === undefined ||
+                this.selectedRows[row.id] === null)
             {
-                return this.unselectRow(row);
+                return this.selectRow(row);
             }
             else
             {
-                return this.selectRow(row);
+                return this.unselectRow(row);
             }
         };
 

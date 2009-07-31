@@ -1051,7 +1051,7 @@
 
         var handleHeaderHover = function(event)
         {
-            if (hotHeaderMode == 4) { return false; }
+            if (hotHeaderMode == 4 && hotHeaderDrag) { return false; }
 
             var container = findContainer(event, '.blist-tr, .blist-table-header');
             if (!container)
@@ -1087,7 +1087,17 @@
                     if (x >= left && x < right)
                     {
                         hh = header[0];
-                        hhm = isCtl ? 3 : 1;
+                        var $dragHandle = header.find('.dragHandle');
+                        var dragLeft = $dragHandle.offset().left;
+                        var dragRight = dragLeft + $dragHandle.outerWidth();
+                        if (x >= dragLeft && x < dragRight)
+                        {
+                            hhm = 4;
+                        }
+                        else
+                        {
+                            hhm = isCtl ? 3 : 1;
+                        }
                         return false;
                     }
                 });
@@ -1338,10 +1348,14 @@
                 // Retrieve the row
                 var row = getRow(cell);
 
+                var skipSelect = false;
                 // If this is a row opener, invoke expand on the model
-                if ($(cell).hasClass('blist-opener') && !$(cell).hasClass('blist-opener-inactive')) {
+                if ($(cell).hasClass('blist-opener') &&
+                    !$(cell).hasClass('blist-opener-inactive'))
+                {
                     model.expand(row);
                     clearCellNav();
+                    skipSelect = true;
                 }
 
                 // Retrieve the column
@@ -1350,7 +1364,8 @@
                 // Notify listeners
                 var cellEvent = $.Event('cellclick');
                 $this.trigger(cellEvent, [ row, column, origEvent ]);
-                if (!cellNav.isActive() && options.selectionEnabled &&
+                if (!skipSelect && !cellNav.isActive() &&
+                    options.selectionEnabled &&
                     !cellEvent.isDefaultPrevented() && !(row.level < 0))
                 {
                     if (origEvent.metaKey) // ctrl/cmd key
@@ -2552,7 +2567,8 @@
                         }
                     })
                     .hover(function ()
-                        { if (hotHeaderMode != 4) { $(this).addClass('hover'); } },
+                        { if (!hotHeaderDrag || hotHeaderMode != 4)
+                            { $(this).addClass('hover'); } },
                         function () { $(this).removeClass('hover') });
 
                 if (options.columnDrag)

@@ -61,7 +61,7 @@
                         { columnsRearranged(datasetObj); })
                     .bind('column_filter_change', function (event, c)
                         { columnFilterChanged(datasetObj, c); })
-                    .blistTable({cellNav: true, selectionEnabled: true,
+                    .blistTable({cellNav: true, selectionEnabled: false,
                         columnSelection: true,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -179,17 +179,13 @@
         switch (column.dataIndex)
         {
             case 'rowNumber':
-                if (origEvent.metaKey) // ctrl/cmd key
-                {
-                    model.toggleSelectRow(row);
-                }
-                else if (origEvent.shiftKey)
+                if (origEvent.shiftKey)
                 {
                     model.selectRowsTo(row);
                 }
                 else
                 {
-                    model.selectSingleRow(row);
+                    model.toggleSelectRow(row);
                 }
                 break;
         }

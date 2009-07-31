@@ -140,7 +140,11 @@ class View < Model
   end
 
   def last_updated_user
-    rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)
+    begin
+      return rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)
+    rescue CoreServer::ResourceNotFound
+      return nil
+    end
   end
 
   def href

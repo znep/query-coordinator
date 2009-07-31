@@ -35,6 +35,7 @@ select
 .ui-spinner 
 {
   height: 2.3em;
+  overflow: visible;
 }
 
 .ui-icon

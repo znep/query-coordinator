@@ -88,18 +88,6 @@
     $.fn.infoPaneItemEdit = function(options) {
         var opts = $.extend({}, $.fn.infoPaneItemEdit.defaults, options);
 
-        return this.each(function() {
-            var $dd = $(this);
-
-            // Support for the Metadata Plugin.
-            var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
-
-            // Wire up the events.
-            $dd.find(opts.editClickSelector).click(editClick);
-            $dd.find(opts.editSubmitSelector).submit(editSubmit);
-            $dd.find(opts.editCancelSelector).click(editCancel);
-        });
-
         // Private methods
         function editClick(event)
         {
@@ -114,7 +102,10 @@
             $currentItemContainer.find("span").hide();
             var $form = $currentItemContainer.find("form").keyup(function(event)
             {
-                if (event.keyCode == 27) closeAllForms();
+                if (event.keyCode == 27)
+                {
+                    closeAllForms();
+                }
             });
             $form.show().find("input[type='text']").focus().select();
         };
@@ -157,6 +148,18 @@
             event.preventDefault();
             closeAllForms();
         };
+        
+        return this.each(function() {
+            var $dd = $(this);
+
+            // Support for the Metadata Plugin.
+            var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
+
+            // Wire up the events.
+            $dd.find(opts.editClickSelector).click(editClick);
+            $dd.find(opts.editSubmitSelector).submit(editSubmit);
+            $dd.find(opts.editCancelSelector).click(editCancel);
+        });
     };
 
      // default options
@@ -253,7 +256,7 @@
                 });
 
                 if (tabNavigator.settings.initialTab &&
-                    tabNavigator.settings.initialTab != '')
+                    tabNavigator.settings.initialTab !== '')
                 {
                     if ($(tabNavigator.currentList).data("isExpanded"))
                     {
@@ -358,6 +361,7 @@
                         { top: metaPosition + "px" },
                         function(){
                             $metaContainer.removeClass("expanded").height("");
+                            $(tabNavigator.settings.expandableContainerSelector).css("min-height", "");
                             $(tabNavigator.settings.expandableSelector).each(function()
                             {
                                 $(this).hide();
@@ -375,7 +379,7 @@
                     var expandMinHeight = 
                         $(tabNavigator.settings.widgetOuterContainerSelector).outerHeight() -
                         $(tabNavigator.settings.widgetMetaHeaderSelector).outerHeight() -
-                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight() - 1;
+                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight();
                     $(tabNavigator.settings.expandableSelector).show();
                     $(tabNavigator.settings.expandableContainerSelector).css("min-height", expandMinHeight + "px");
                     tabNavigator.settings.switchCompleteCallback();

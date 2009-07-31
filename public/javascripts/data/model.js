@@ -731,18 +731,40 @@ blist.namespace.fetch('blist.data');
         this.updateColumn = function(column)
         {
             var isColumnPresent = false;
-            $.each(meta.view.columns, function(i, c)
+            if (meta.view != null)
             {
-                if (c.id == column.id)
+                $.each(meta.view.columns, function(i, c)
                 {
-                    meta.view.columns[i] = column;
-                    isColumnPresent = true;
-                }
-            });
+                    if (c.id == column.id)
+                    {
+                        meta.view.columns[i] = column;
+                        isColumnPresent = true;
+                    }
+                });
 
-            if (!isColumnPresent)
+                if (!isColumnPresent)
+                {
+                    meta.view.columns.push(column);
+                }
+            }
+
+
+            if (column.updatedAggregate != null && meta.aggregates != null)
             {
-                meta.view.columns.push(column);
+                var found = false;
+
+                $.each(meta.aggregates, function(i, a) {
+                    if (a.columnId == column.id)
+                    {
+                        meta.aggregates[i] = column.updatedAggregate;
+                        found = true;
+                    }
+                });
+
+                if (!found)
+                {
+                    meta.aggregates.push(column.updatedAggregate);
+                }
             }
 
             // Refresh the meta data and redraw the grid.

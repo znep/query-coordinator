@@ -65,8 +65,8 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       <div id="generalTab" class="tabContent">
         <table cellspacing="0">
           <tbody>
-            <tr colspan="2" class="seperator">
-              <td><h3>Column Details</h3></td>
+            <tr>
+              <td colspan="2"><h3 class="seperator">Column Details</h3></td>
             </tr>
             <tr>
               <td class="labelColumn"><label for="name" class="required">Column Name:</label></td>
@@ -79,8 +79,8 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
                                                         :title => "Enter a description.",
                                                         :id => "description") %></td>
             </tr>
-            <tr colspan="2" class="seperator">
-              <td><h3>Type of Column</h3></td>
+            <tr>
+              <td colspan="2"><h3 class="seperator">Type of Column</h3></td>
             </tr>
             <tr>
               <td class="labelColumn"><label for="type">Type:</label></td>
@@ -97,11 +97,11 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
         </table>
       </div>
         <div class="saveBar">
+            <div id="error" class="errorMessage"></div>
           <h3 class="seperator"></h3>
           <div class="controlBar">
             <div class="required">Required Field</div> 
-            <a href="#" id="save"><%= image_tag("button_save.png") %></a>
-            <div id="error" class="errorMessage"></div>
+            <a href="#" id="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
           </div>
         </div>
     </div>
@@ -158,14 +158,15 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           authenticity_token: "<%= form_authenticity_token %>"
           },
         dataType: 'json',
-        error: function(request, status, error) { 
-            $("#error").html("Couldn't save the column because there was a server error.").show() 
+        error: function(request) { 
+            $("#error").html($.json.deserialize(request.responseText).error).show() 
         },
         success: function(responseData) { 
-            $(".jqmClose").click();
             blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
             $("#readGrid").blistModel().updateColumn(responseData);
+            $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
             $.Tache.DeleteAll();
+            $(".jqmClose").click();
         }
       });
   });

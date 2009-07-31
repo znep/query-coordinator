@@ -28,6 +28,7 @@
 #widgetMeta .infoContentHeader h2.panelHeader 
 {
     font-size: 1.6em;
+    height: 40px;
     margin-left: 0;
     padding-left: 41px;
     width: auto;
@@ -46,7 +47,11 @@
 }
 .infoContentOuter.listContainer .infoContent { background-image: none; }
 
-.infoContentHeader { padding: 0 1em 0 0; }
+.infoContentHeader
+{
+    height: 41px;
+    padding: 0 1em 0 0;
+}
 
 .singleInfoComments li.comment .actions
 {

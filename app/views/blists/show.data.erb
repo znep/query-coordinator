@@ -1,6 +1,12 @@
 <%- if @data_component == 'mainMenu' -%>
+<div id="mainMenuComponent">
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
 <%- can_edit = @view.can_edit() -%>
 <%= render(:partial => "main_menu",
 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+</div>
+<div id="filterViewMenuComponent">
+<%= render(:partial => "filter_view_menu",
+:locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+</div>
 <%- end -%>

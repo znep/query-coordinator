@@ -16,7 +16,7 @@
     blist.widgets.visualization.viewId = '<%= view.id %>';
     blist.widgets.visualization.isVisualization = <%= view.is_visualization? %>;
     blist.widgets.visualization.displayType = '<%= view.displayType %>';
-    blist.widgets.visualization.displayFormat = { <%= view.displayFormat %> };
+    blist.widgets.visualization.displayFormat = { <%= [view.displayFormat, "'wmode': 'opaque'"].compact.join(', ') %> };
     $(function ()
       { blist.widgets.visualization.chartClass = <%= view.chart_class || "''" %>; });
   </script>

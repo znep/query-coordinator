@@ -195,8 +195,8 @@ blist.widget.setUpViewHeader = function()
         },
         requestContentType: 'application/json',
         onceOnly: true,
-        loginMessage: 'Creating a public filter requires you to have an account. \
-            Either sign in or sign up to save your public filter.',
+        loginMessage: 'Creating a public filter requires you to have an account. ' +
+            'Either sign in or sign up to save your public filter.',
         submitSuccessCallback: widgetNS.newViewCreated};
     $("#viewHeader .inlineEdit").inlineEdit(inlineEditArgs);
 
@@ -258,7 +258,7 @@ blist.widget.updateMetaTabHeader = function(tabKey)
         });
         widgetNS.updateMetaTab(tabKey);
     }
-}
+};
 
 blist.widget.metaTabMap = {
     "summary": "#widgetMeta .singleInfoSummary .infoContent",

@@ -3,7 +3,7 @@ class Column < Model
 
   @@types = { 
       "text" => "Plain Text", 
-      "richText" => "Formatted Text",
+      "richtext" => "Formatted Text",
       "number" => "Number",
       "money" => "Money",
       "percent" => "Percent",
@@ -110,13 +110,13 @@ class Column < Model
   def client_type
     if !self.format.nil?
       if dataType.type == "text" && self.format.formatting_option == "Rich"
-        "richtext"
+        return "richtext"
       elsif dataType.type == "stars" && self.format.view == "stars_number"
-        "number"
+        return "number"
       end
     end
 
-    dataType.type
+    return dataType.type
   end
 
   def text_format

@@ -212,7 +212,7 @@
         var documentHeight = $(document).height();
         var config = $menu.data("config-dropdownMenu");
         // We've got to close all other menus; there can be only one!
-        $(config.menuSelector + ':visible').each(function () { hideMenu($(this)) });
+        $(config.menuSelector + ':visible').each(function () { hideMenu($(this)); });
 
         $menu.addClass(config.menuOpenClass);
 

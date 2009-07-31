@@ -208,7 +208,7 @@
                 datasetObj.summaryStale = true;
                 var model = datasetObj.settings._model;
                 model.filter(searchText, 250);
-                if (!searchText || searchText == '')
+                if (!searchText || searchText === '')
                 {
                     clearTempView(datasetObj, 'searchString');
                     datasetObj.settings.clearFilterItem.hide();
@@ -243,23 +243,22 @@
         var $col = $(col.dom);
         var htmlStr =
             '<a class="menuLink" href="#column-menu_' +
-            col.index + '"></a>\
-            <ul class="menu columnHeaderMenu" id="column-menu_' + col.index + '">';
+            col.index + '"></a><ul class="menu columnHeaderMenu" id="column-menu_' + col.index + '">';
 
         // We support sort & filter, so if neither is available, don't show a menu
         if (blist.data.types[col.type].sortable)
         {
             htmlStr +=
-                '<li class="sortAsc">\
-                <a href="#column-sort-asc_' + col.index + '">\
-                <span class="highlight">Sort Ascending</span>\
-                </a>\
-                </li>\
-                <li class="sortDesc">\
-                <a href="#column-sort-desc_' + col.index + '">\
-                <span class="highlight">Sort Descending</span>\
-                </a>\
-                </li>';
+                '<li class="sortAsc">' +
+                '<a href="#column-sort-asc_' + col.index + '">' +
+                '<span class="highlight">Sort Ascending</span>' +
+                '</a>' +
+                '</li>' +
+                '<li class="sortDesc">' +
+                '<a href="#column-sort-desc_' + col.index + '">' +
+                '<span class="highlight">Sort Descending</span>' +
+                '</a>' +
+                '</li>';
             displayMenu = true;
         }
 
@@ -277,20 +276,20 @@
               // a separator.
               htmlStr += '<li class="separator" />';
             }
-            htmlStr += '<li class="properties">\
-                <a href="/blists/' + view.id + '/columns/' + col.id + '.json" rel="modal">\
-                <span class="highlight">Properties</span>\
-                </a>\
-                </li>';
+            htmlStr += '<li class="properties">' +
+                '<a href="/blists/' + view.id + '/columns/' + col.id + '.json" rel="modal">' +
+                '<span class="highlight">Properties</span>' +
+                '</a>' +
+                '</li>';
             displayMenu = true;
         }
 
         htmlStr +=
-            '<li class="footer"><div class="outerWrapper">\
-            <div class="innerWrapper"><span class="colorWrapper">\
-            </span></div>\
-            </div></li>\
-            </ul>';
+            '<li class="footer"><div class="outerWrapper">' +
+            '<div class="innerWrapper"><span class="colorWrapper">' +
+            '</span></div>' +
+            '</div></li>' +
+            '</ul>';
 
         if (displayMenu)
         {
@@ -412,18 +411,18 @@
         }
 
         var filterStr =
-            '<li class="autofilter submenu">\
-            <a href="#"><span class="highlight">Filter This Column</span></a>\
-            <ul class="menu optionMenu">';
+            '<li class="autofilter submenu">' +
+            '<a href="#"><span class="highlight">Filter This Column</span></a>' +
+            '<ul class="menu optionMenu">';
         // If we already have a filter for this column, give them a clear link
         if (cf != null)
         {
             filterStr +=
-                '<li class="clearFilter">\
-                <a href="#clear-filter-column_' + col.index + '">\
-                <span class="highlight">Clear Column Filter</span>\
-                </a>\
-                </li>';
+                '<li class="clearFilter">' +
+                '<a href="#clear-filter-column_' + col.index + '">' +
+                '<span class="highlight">Clear Column Filter</span>' +
+                '</a>' +
+                '</li>';
             if (colSum.topFrequencies == null)
             {
                 colSum.topFrequencies = [{value: cf.value, count: 0}];
@@ -431,11 +430,11 @@
         }
         // Previous button for scrolling
         filterStr +=
-            '<li class="button prev"><a href="#prev" title="Previous">\
-            <div class="outerWrapper"><div class="midWrapper">\
-            <span class="innerWrapper">Previous</span>\
-            </div></div>\
-            </a></li>';
+            '<li class="button prev"><a href="#prev" title="Previous">' +
+            '<div class="outerWrapper"><div class="midWrapper">' +
+            '<span class="innerWrapper">Previous</span>' +
+            '</div></div>' +
+            '</a></li>';
 
         var searchMethod = function(a, b)
         {
@@ -477,31 +476,31 @@
                 {
                     filterStr +=
                         '<li class="filterItem' + (f.isMatching ? ' active' : '') +
-                        ' scrollable">\
-                            <a href="' +
+                        ' scrollable">' +
+                            '<a href="' +
                             (f.isMatching ? '#clear-filter-column_' :
                                 '#filter-column_') +
                             col.index + '_' + f.escapedValue + '" title="' +
                             f.titleValue + ' (' + f.count +
                             ')" class="clipText">' + f.renderedValue +
-                            ' (' + f.count + ')\
-                            </a>\
-                        </li>';
+                            ' (' + f.count + ')' +
+                            '</a>' +
+                        '</li>';
                 });
         }
 
         // Next button for scrolling & menu footer
         filterStr +=
-            '<li class="button next"><a href="#next" title="Next">\
-            <div class="outerWrapper"><div class="midWrapper">\
-            <span class="innerWrapper">Next</span>\
-            </div></div>\
-            </a></li>\
-            <li class="footer"><div class="outerWrapper">\
-            <div class="innerWrapper"><span class="colorWrapper"></span></div>\
-            </div></li>\
-            </ul>\
-            </li>';
+            '<li class="button next"><a href="#next" title="Next">' +
+            '<div class="outerWrapper"><div class="midWrapper">' +
+            '<span class="innerWrapper">Next</span>' +
+            '</div></div>' +
+            '</a></li>' +
+            '<li class="footer"><div class="outerWrapper">' +
+            '<div class="innerWrapper"><span class="colorWrapper"></span></div>' +
+            '</div></li>' +
+            '</ul>' +
+            '</li>';
 
         // Find the correct spot to add it; either after sort descending, or the top
         var $sortItem = $menu.find('li.sortDesc');
@@ -592,7 +591,10 @@
             var modView = datasetObj.getViewCopy(true);
             $.ajax({url: '/views/' + view.id + '.json',
                     data: $.json.serialize(modView),
-                    type: 'PUT', contentType: 'application/json'});
+                    type: 'PUT', contentType: 'application/json',
+                    success: function()
+                        { $(document).trigger(blist.events.COLUMNS_CHANGED); }
+                    });
         }
     };
 

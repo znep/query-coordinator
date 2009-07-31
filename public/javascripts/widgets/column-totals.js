@@ -4,8 +4,8 @@ columnTotalsNS.totals = {
     count:'<div><input type="radio" name="aggregate" value="count" id="count" /><label for="count">The total number of cells with data (<strong>Count</strong>)</label></div>',
     sum:  '<div><input type="radio" name="aggregate" value="sum" id="sum" /><label for="sum">The sum of all cells with data (<strong>Sum</strong>)</label></div>',
     avg:  '<div><input type="radio" name="aggregate" value="average" id="average" /><label for="average">The average of all cells with data (<strong>Average</strong>)</label></div>',
-    max:  '<div><input type="radio" name="aggregate" value="maximum" id="max" /><label for="max">The greatest value of any cell (<strong>Maximum</strong>)</label></div>',
-    min:  '<div><input type="radio" name="aggregate" value="minimum" id="min" /><label for="min">The least value of any cell (<strong>Minimum</strong>)</label></div>'
+    max:  '<div><input type="radio" name="aggregate" value="maximum" id="maximum" /><label for="maximum">The greatest value of any cell (<strong>Maximum</strong>)</label></div>',
+    min:  '<div><input type="radio" name="aggregate" value="minimum" id="minimum" /><label for="minimum">The least value of any cell (<strong>Minimum</strong>)</label></div>'
 };
 
 columnTotalsNS.populate = function($container)
@@ -18,9 +18,9 @@ columnTotalsNS.populate = function($container)
     }
 
     $("#columnTotals :input[type=radio]").change(function() { 
-        column.aggregate = {type: $(this).val()} 
+        column.aggregate = {type: $(this).val()} ;
     });
-}
+};
 
 columnTotalsNS.render_stars =
 function($container) {
@@ -39,7 +39,7 @@ function($container) {
         this.checked = true;
     });
     columnTotalsNS.populate($container);
-}
+};
 
 columnTotalsNS.render_number =
 columnTotalsNS.render_money =
@@ -55,7 +55,7 @@ function($container) {
     render += '</div>';
     $container.append(render);
     columnTotalsNS.populate($container);
-}
+};
 
 
 columnTotalsNS.render_phone = 
@@ -82,5 +82,5 @@ $(function() {
     $.fn.columnTotals = function(column)
     {
         eval("columnTotalsNS.render_" + column.type + "($(this));");
-    }
+    };
 });

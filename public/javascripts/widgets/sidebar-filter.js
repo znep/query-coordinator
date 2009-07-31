@@ -15,7 +15,7 @@
             $filterList.data("config-filterList", config);
 
             $filterList.find('a:not(.expander, ul.menu a)')
-                .click(function (event) { filterClickHandler($filterList, event) });
+                .click(function (event) { filterClickHandler($filterList, event); });
             $filterList.find('a.expander').click(toggleSection);
 
         });

@@ -34,7 +34,7 @@ body
 #header
 {
     background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
-    border-top: 6px solid #06386a;
+    border-top: 6px solid;
     height: 44px;
     padding-bottom: .5em;
     position: relative;
@@ -212,19 +212,17 @@ body
 }
 #mainNav li a span
 {
-    background-image: url(/stylesheets/images/header/MainButton_gradSlice.png);
+    background-position: 0 -25px;
     background-repeat: repeat-x;
     display: block;
     font-weight: bold;
 }
-#mainNav li.discover
-{ background: url(/stylesheets/images/header/MainButton_gradLeft.png) no-repeat; }
 #mainNav li.discover a span {
     margin-left: 10px;
     text-indent: -10px;
 }
 #mainNav li.home
-{ background: url(/stylesheets/images/header/MainButton_gradRight.png) right top no-repeat; }
+{ background-position: right -50px; }
 #mainNav li.home a span {
     margin-right: 10px;
     text-indent: 10px;
@@ -234,16 +232,12 @@ body.home #mainNav li.home a span,
 body.discover #mainNav li.discover a span,
 body.community #mainNav li.community a span
 {
-    background-image: url(/stylesheets/images/header/MainButton_gradSlice_active.png);
+    background-position: 0 -25px;
 }
-body.discover #mainNav li.discover
-{ background: url(/stylesheets/images/header/MainButton_gradLeft_active.png) no-repeat; }
 body.discover #mainNav li.discover a span {
     margin-left: 10px;
     text-indent: -10px;
 }
-body.home #mainNav li.home
-{ background: url(/stylesheets/images/header/MainButton_gradRight_active.png) right top no-repeat; }
 body.home #mainNav li.home a span {
     margin-right: 10px;
     text-indent: 10px;

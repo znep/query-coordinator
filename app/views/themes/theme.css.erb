@@ -1,0 +1,30 @@
+/*** OUTER CHROME ***/
+
+#mainNav li a span,
+#mainNav li.discover,
+#mainNav li.home
+{
+    background-image: <%= main_button_inactive %>;
+}
+
+body.home #mainNav li.home,
+body.home #mainNav li.home a span,
+body.discover #mainNav li.discover a span,
+body.community #mainNav li.community a span,
+body.discover #mainNav li.discover
+{
+    background-image: <%= main_button_active %>;
+}
+#header {
+    border-top-color: #<%= th.top_border %>;
+}
+
+
+/*** DISCOVER ***/
+
+.pageBlockHeaderCarousel.carouselWrapper,
+.pageBlockHeaderCarousel .carouselOuter,
+.pageBlockHeaderCarousel .carouselInner
+{
+    background-image: <%= discover_carousel %>;
+}

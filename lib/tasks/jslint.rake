@@ -7,7 +7,9 @@ namespace :js do
     js_files_to_check = []
     warnings_to_ignore = [
       "Unnecessary semicolon.",
+      "is better written in dot notation.",
       "Be careful when making functions within a loop.",
+      "eval is evil.",
       "Use '!==' to compare with ",
       "Use '===' to compare with " ]
 
@@ -15,8 +17,9 @@ namespace :js do
     Find.find(File.join(Rails.root, 'public/javascripts')) do |path|
       if (path !~ %r{/public/javascripts/plugins/} &&
           path !~ %r{/public/javascripts/cache/} &&
-          ( path !~ %r{/public/javascripts/util/} || path =~ %r{humane-date\.js} ) &&
+          path !~ %r{/public/javascripts/util/} &&
           path !~ %r{jquery-\d+\.\d+\.\d+\.js$} &&
+          path !~ %r{\.min\.js$} &&
           !FileTest.directory?(path) &&
           File.extname(path) == '.js')
         js_files_to_check << path

@@ -276,7 +276,7 @@ blist.blistGrid.hookUpFilterViewMenu = function()
                     $("#readGrid").blistModel().updateColumn(responseData);
                 }
             });
-        }
+        };
 
         if ($li.hasClass("checked"))
         {

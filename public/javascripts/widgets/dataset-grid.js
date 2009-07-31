@@ -173,22 +173,20 @@
         var model = datasetObj.settings._model;
         if (!column) { return; }
 
-        switch (column.dataIndex)
+        if (column.dataIndex == 'rowNumber')
         {
-            case 'rowNumber':
-                if (origEvent.metaKey) // ctrl/cmd key
-                {
-                    model.toggleSelectRow(row);
-                }
-                else if (origEvent.shiftKey)
-                {
-                    model.selectRowsTo(row);
-                }
-                else
-                {
-                    model.selectSingleRow(row);
-                }
-                break;
+            if (origEvent.metaKey) // ctrl/cmd key
+            {
+                model.toggleSelectRow(row);
+            }
+            else if (origEvent.shiftKey)
+            {
+                model.selectRowsTo(row);
+            }
+            else
+            {
+                model.selectSingleRow(row);
+            }
         }
     };
 

@@ -333,7 +333,8 @@ $(function ()
     
     // Check to see if we were referred from a blist.com domain
     var show_redirect = false;
-    var ref_re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
+    var ref_re = /^(?:f|ht)tp(?:s)?\:\/\/([^\/]+)/im;
+    
     if (document.referrer.match(ref_re) &&
            document.referrer.match(ref_re)[1] &&
            document.referrer.match(ref_re)[1].toString().indexOf("blist") !== -1)

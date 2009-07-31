@@ -10,6 +10,7 @@
     "outer-chrome", "sidebar", "widgets", "modals",
     :cache => "cache/layout_main_all" %>
   <% end %>
+  <%= stylesheet_link_tag "theme/#{Theme.active}" %>
     
   <!--[if lt IE 7]>
     <link href="/stylesheets/core-ie6.css" rel="stylesheet" type="text/css">

@@ -19,52 +19,15 @@ class WidgetsController < ApplicationController
     samhsa.gov
     gsa.gov
   }
-  
-  DEFAULT_THEME = {
-    :style    => { :custom_stylesheet => 'normal',
-                   :font => { :face => 'arial, sans-serif',
-                              :grid_header_size => '1.2em',
-                              :grid_data_size => '1.1em' } },
-    :frame    => { :color => '#06386A',
-                   :gradient => true,
-                   :border => '#c9c9c9',
-                   :icon_color => 'blue',      #TODO+
-                   :logo => { :show => true,
-                              :type => 'default',
-                              :url => '' },
-                   :powered_by => true },
-    :grid     => { :row_numbers => false,
-                   :wrap_header_text => false, #TODO
-                   :header_icons => false,
-                   :row_height => '16px',
-                   :zebra => '#e7ebf2' },
-    :menu     => { :email => true,
-                   :subscribe  => { :rss => true,
-                                    :atom => true },
-                   :api => true,
-                   :download => true,
-                   :print => true,
-                   :fullscreen => true,
-                   :republish => true },
-    :meta     => { :comments   => { :show => true, :order => 0, :display_name => 'Comments' },
-                   :views      => { :show => true, :order => 1, :display_name => 'Views' },
-                   :publishing => { :show => true, :order => 2, :display_name => 'Publishing' },
-                   :activity   => { :show => true, :order => 3, :display_name => 'Activity' },
-                   :summary    => { :show => true, :order => 4, :display_name => 'Summary' } },
-    :behavior => { :rating => true,             #TODO
-                   :save_public_views => true,  #TODO+
-                   :interstitial => false,
-                   :ga_code => '' }
-  }
 
   def show
     @variation = params[:variation]
-    @theme = DEFAULT_THEME
+    @theme = Marshal::load(Marshal.dump(WidgetCustomization.default_theme))
 
     @options = params[:options]
-    if @variation.blank? 
+    if @variation.blank?
       @variation = 'normal'
-      
+
       if !request.referrer.nil? 
         # Check the referrer
         m = request.referrer.match(/^\w+:\/\/([a-zA-Z0-9_\-.]+\.(\w{3}))(:|\/)/)

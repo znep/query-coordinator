@@ -17,3 +17,7 @@ config.action_controller.perform_caching             = false
 config.action_mailer.raise_delivery_errors = false
 
 config.cache_store = :mem_cache_store, 'localhost', { :namespace => 'webapp' }
+
+# Disable the rails asset cache buster.  This greatly improves the experience with firebug, and development servers
+# should have caching disabled anyway.
+ENV['RAILS_ASSET_ID'] = ''

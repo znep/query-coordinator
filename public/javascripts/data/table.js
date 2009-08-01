@@ -224,113 +224,36 @@
 
         /*** COLUMN SELECTION ***/
 
-        var selectedColumns = {};
-        var columnSelectionMap = [];
-        var isColumnSelection = false;
-
-        var toggleSelectColumn = function(col)
+        var selectColumn = function(column, state)
         {
-            if (selectedColumns[col.id])
-            {
-                return unselectColumn(col);
-            }
-            else
-            {
-                return selectColumn(col);
-            }
-        };
+            if (!cellNav)
+                return;
 
-        var selectColumn = function(col)
-        {
-            var colId = col.id;
-            selectedColumns[colId] = col;
+            cellNav.setColumnSelection(column, state);
 
-            // We need to figure out which cells are selected in rows, so
-            // check the rendered columns to see how they match up to our
-            // logical column
-            // FIXME: Should we be hard-coding layout[0]?
-            // Can we determine the level?
-            $.each(layout[0], function(i, c)
-            {
-                if (c.logical == col.index || (c.mcol && c.mcol.id == col.id))
-                {
-                    columnSelectionMap[i] = true;
-                }
-            });
-            updateColumnSelection();
-            return [col];
-        };
-
-        var unselectColumn = function(col)
-        {
-            delete selectedColumns[col.id];
-            // FIXME: Should we be hard-coding layout[0]?
-            // Can we determine the level?
-            $.each(layout[0], function(i, c)
-            {
-                if (c.logical == col.index || (c.mcol && c.mcol.id == col.id))
-                {
-                    delete columnSelectionMap[i];
-                }
-            });
-            updateColumnSelection();
-            return [col];
-        };
-
-        var updateColumnSelection = function()
-        {
-            if (options.columnSelection)
-            {
-                $header.find('.blist-select-col').removeClass('blist-select-col');
-                inside.find('.col-select-holder').remove();
-                $.each(selectedColumns, function (colId, col)
-                {
-                    var colLeft = $header.find('.' + id + '-c' + col.index)
-                    .addClass('blist-select-col').offset().left;
-                    var colClass = getColumnClass(col);
-                    inside.append('<div class="col-select-holder ' +
-                        colClass + '"/>')
-                    .find('.col-select-holder.' + colClass).css('left',
-                        colLeft - $header.offset().left + lockedWidth);
-                });
-                isColumnSelection = $.grep(columnSelectionMap,
-                        function(v, i) { return v; }).length > 0;
-            }
-            updateCellNavCues();
-        };
-
-        var refreshColumnSelection = function()
-        {
-            if (!options.columnSelection) { return; }
-
-            // First update the column objects in the selection list
-            var newSel = {};
-            $.each(selectedColumns, function(colId, col)
-            {
-                var matches = $.grep(columns, function(c)
-                    { return c.id == col.id; });
-                if (matches.length > 0) { newSel[colId] = matches[0]; }
-            });
-            selectedColumns = newSel;
-
-            columnSelectionMap = [];
-            $.each(selectedColumns, function(colId, col)
-            {
-                // We need to figure out which cells are selected in rows, so
-                // check the rendered columns to see how they match up to our
-                // logical column
-                // FIXME: Should we be hard-coding layout[0]?
-                // Can we determine the level?
-                $.each(layout[0], function(i, c)
-                {
-                    if (c.logical == col.index || (c.mcol && c.mcol.id == col.id))
-                    {
-                        columnSelectionMap[i] = true;
+            // TODO -- support column selection on nested tables?
+            var cols = layout[0];
+            
+            for (var i = 0; i < cols.length; i++) {
+                var col = $header.find('.' + id + '-c' + column.index);
+                var colClass = getColumnClass(column);
+                if (cellNav.isColumnSelected(column)) {
+                    if (!col.is('.blist-select-col')) {
+                        var colLeft = col.addClass('blist-select-col').offset().left;
+                        inside.append('<div class="col-select-holder ' + colClass + '"/>')
+                            .find('.col-select-holder.' + colClass)
+                            .css('left', colLeft - $header.offset().left + lockedWidth);
                     }
-                });
-            });
-            updateColumnSelection();
-        };
+                } else {
+                    if (col.is('.blist-select-col')) {
+                        col.removeClass('blist-select-col');
+                        inside.find('.col-select-holder.' + colClass).remove();
+                    }
+                }
+            }
+            
+            updateCellNavCues();
+        }
 
 
         /*** CELL SELECTION AND NAVIGATION ***/
@@ -363,7 +286,7 @@
         var setRowSelection = function(row, selmap) {
             row.selected = true;
             for (var pos = 0, node = row.row.firstChild; node; node = node.nextSibling, pos++) {
-                if (selmap[pos] || columnSelectionMap[pos]) {
+                if (selmap[pos]) {
                     if (!node.selected) {
                         $(node).addClass('blist-cell-selected');
                         node._sel = true;
@@ -402,8 +325,7 @@
             var rows = getRenderedRowsWithPosition();
 
             // Update selection information
-            cellNav.processSelection(rows, setRowSelection, clearRowSelection,
-                isColumnSelection);
+            cellNav.processSelection(rows, setRowSelection, clearRowSelection);
         }
 
         var $activeContainer;
@@ -485,6 +407,7 @@
                 $activeCells = null;
                 updateCellNavCues();
                 expandActiveCell();
+                inside.find('.col-select-holder').remove();
             }
         }
 
@@ -1201,14 +1124,12 @@
                     return;
                 }
                 else if (hotHeaderMode == 4) { return; }
-                else if (hotHeaderMode == 1 && options.columnSelection ||
+                else if (hotHeaderMode == 1 && cellNav ||
                     hotHeaderMode == 5)
                 {
                     if (!origColSelects)
                     {
-                        origColSelects = {};
-                        $.each(selectedColumns, function(colId, col)
-                                { origColSelects[colId] = true; });
+                        origColSelects = cellNav.getSelectedColumns();
                     }
 
                     var $curHeader = getHeaderUnderMouse(event.pageX);
@@ -1221,7 +1142,7 @@
                             delete curColSelects[prevCol.id];
                             if (!origColSelects[prevCol.id])
                             {
-                                unselectColumn(prevCol);
+                                selectColumn(prevCol, false);
                             }
                         }
                         else
@@ -1229,7 +1150,7 @@
                             curColSelects[curCol.id] = true;
                             if (!origColSelects[curCol.id])
                             {
-                                selectColumn(curCol);
+                                selectColumn(curCol, true);
                             }
                         }
                         $curHeaderSelect = $curHeader;
@@ -1431,7 +1352,8 @@
                 else
                 {
                     $prevActiveCells = null;
-                    clearCellNav();
+                    if (!event.shiftKey && !event.metaKey)
+                        clearCellNav();
                 }
                 if (cell && cellNavTo(cell, event))
                 {
@@ -2566,11 +2488,12 @@
                         }
 
                         var $target = $(event.target);
-                        var col = $target.closest('.blist-th').data('column');
-                        if (options.columnSelection &&
-                            $target.closest('.blist-th-icon').length > 0)
+                        if (cellNav &&
+                            $target.closest('.blist-th').length > 0)
                         {
-                            toggleSelectColumn(col);
+                            var col = $target.closest('.blist-th')
+                                .data('column');
+                            selectColumn(col, !cellNav.isColumnSelected(col));
                             return;
                         }
 
@@ -3008,7 +2931,6 @@
             renderedRows = {};
 
             updateLayout();
-            refreshColumnSelection();
         };
 
         /**

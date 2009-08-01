@@ -5,7 +5,7 @@ blist.namespace.fetch('blist.data');
  * physical, row and column space.
  * 
  * You should consider this part of the private implementation of the table.  If you do not enable cell navigation you
- * do not need to include this file.
+ * do not need to include this file (theoretically -- this has not been fully debugged yet).
  *
  * @param model the table data model
  * @param layout physical row layout information for each row in the table (provided by the table)
@@ -26,11 +26,23 @@ blist.data.TableNavigation = function(model, layout) {
     var selectionLevel = -1;
     var selectionBoxes = [];
 
+    // Column selection.  Contains "true" for each selected column ID
+    var selectedColumns = {};
+
     // Retrieve a value from a row
     var getRowValue = function(row, column) {
         var value;
         eval('value = row' + column.dataLookupExpr + ';');
         return value;
+    }
+
+    // Is there a selection?
+    var hasSelection = function() {
+        if (selectionBoxes.length)
+            return true;
+        for (var col in selectedColumns)
+            return true;
+        return false;
     }
 
     // Convert selection into a sorted array of arrays for quickly identifying selected cells
@@ -65,8 +77,8 @@ blist.data.TableNavigation = function(model, layout) {
         return converted;
     }
 
-    var createSelectionMap = function(selectionComponents, selectionComponentCount) {
-        var selectionMap = [];
+    var createSelectionMap = function(selectionComponents, selectionComponentCount, template) {
+        var selectionMap = template.slice(0, template.length);
 
         // Mark all selected positions in the selection map
         for (var selectionComponentID = 0; selectionComponentID < selectionComponentCount; selectionComponentID++) {
@@ -102,16 +114,17 @@ blist.data.TableNavigation = function(model, layout) {
             // Control or command key -- starts a new box
             selectionMode = 'start-new';
         }
-        else if (selectionBoxes.length)
+        else if (hasSelection)
         {
             // No modifier keys -- remove the selection
             selectionBoxes = [];
+            selectedColumns = {};
         }
 
         var row = model.getByID(y);
 
         // Selection must occur in the same level -- otherwise, ignore
-        if (selectionBoxes.length && selectionLevel != (row.level || 0))
+        if (hasSelection() && selectionLevel != (row.level || 0))
             return false;
 
         var layoutLevel = layout[row.level || 0];
@@ -195,8 +208,7 @@ blist.data.TableNavigation = function(model, layout) {
     /**
      * Walk the selection for a sequence of rows.
      */
-    this.processSelection = function(rows, setRowSelectionFn, clearRowSelectionFn,
-        forceSelectionRender)
+    this.processSelection = function(rows, setRowSelectionFn, clearRowSelectionFn)
     {
         // Convert the selection into canonical and sorted form to optimize processing
         var selection = convertCellSelection();
@@ -207,13 +219,25 @@ blist.data.TableNavigation = function(model, layout) {
         var selmap;
         var selmapSelectionCount;
 
-        for (var i = 0, len = rows.length; i < len; i++) {
+        // The selection map template is a selection map that only includes column selection information
+        var selmapTemplate = [];
+        var hasColumnSelection;
+        if (selectionLevel == 0) {
+            var layoutLevel = layout[selectionLevel];
+            for (var i = 0; i < layoutLevel.length; i++) {
+                var selected = selmapTemplate[i] = selectedColumns[layoutLevel[i].mcol.id];
+                if (selected)
+                    hasColumnSelection = true;
+            }
+        }
+
+        var len = rows.length;
+        for (i = 0; i < len; i++) {
             var row = rows[i];
             var index = rows[i].index;
 
             // Clear the selection if the row isn't in the selection level
-            if ((model.get(index).level || 0) != selectionLevel &&
-                !forceSelectionRender)
+            if ((model.get(index).level || 0) != selectionLevel)
             {
                 clearRowSelectionFn(row);
                 continue;
@@ -231,7 +255,7 @@ blist.data.TableNavigation = function(model, layout) {
                     break;
 
             // Update the row
-            if (selCount == 0 && !forceSelectionRender) {
+            if (selCount == 0 && !hasColumnSelection) {
                 clearRowSelectionFn(row);
                 continue;
             }
@@ -239,7 +263,7 @@ blist.data.TableNavigation = function(model, layout) {
             // Build the selection map if a cached version isn't available
             if (!selmap || selmapSelectionCount != selCount) {
                 selmapSelectionCount = selCount;
-                selmap = createSelectionMap(selection, selCount);
+                selmap = createSelectionMap(selection, selCount, selmapTemplate);
             }
 
             // Update the selection
@@ -308,9 +332,10 @@ blist.data.TableNavigation = function(model, layout) {
             needRefresh = true;
         }
 
-        if (selectionBoxes.length)
+        if (hasSelection())
         {
             selectionBoxes = [];
+            selectedColumns = {};
             needRefresh = true;
         }
 
@@ -779,6 +804,57 @@ blist.data.TableNavigation = function(model, layout) {
             xy = null;
 
         return xy;
+    }
+
+    /**
+     * Select or unselect a column.
+     */
+    this.setColumnSelection = function(column, value) {
+        if (hasSelection()) {
+            if (selectionLevel != 0)
+                // Can only select columns in the root level
+                return;
+        } else
+            selectionLevel = 0;
+        selectedColumns[column.id] = value;
+    }
+
+    /**
+     * Determine whether a column is selected.
+     */
+    this.isColumnSelected = function(column) {
+        return selectedColumns[column.id];
+    }
+
+    /**
+     * Obtain a lookup for selected columns.  You may modify this set.
+     */
+    this.getSelectedColumns = function() {
+        var rv = {};
+        $.each(selectedColumns, function(colId, col)
+                { rv[colId] = true; });
+        return rv;
+    }
+
+    /**
+     * Convert the selection to a tab-delimited text blob.
+     */
+    this.getSelectionDoc = function() {
+        // Locate all columns that will be present in the selection
+        var usedCols = [];
+        for (var i = 0; i < selectionBoxes.length; i++) {
+            var box = selectionBoxes[i];
+            for (var j = box[0]; j < box[1]; j++)
+                usedCols[j] = true;
+        }
+
+        // Create a mapping from an output column to the source column
+        var colMap = [];
+        for (i = 0; i < usedCols.length; i++)
+            if (usedCols[i])
+                colMap.push(i);
+
+        // TODO
     }
 
     return this;

@@ -1,6 +1,6 @@
 #widgetMeta
 {
-    height: 62px;
+    height: 63px;
     margin: 0;
     min-width: 30em;
     overflow: hidden;
@@ -15,6 +15,8 @@
 
 #widgetMeta .header
 {
+    height: 21px;
+    overflow: hidden;
     padding: 0;
 }
 
@@ -22,12 +24,13 @@
 .metadataPane .summaryTabs 
 {
     background-color: #fff;
+    width: 3000px;
 }
 /*** END: tabs styling ***/
 
 #widgetMeta .infoContentHeader h2.panelHeader 
 {
-    font-size: 1.6em;
+    font-size: 1.2em;
     height: 40px;
     margin-left: 0;
     padding-left: 41px;
@@ -39,12 +42,18 @@
     background-image: url(/stylesheets/images/info_pane/background_expanded_list.png);
     background-position: -10px 0;
     background-repeat: repeat-y;
+    margin: 0;
+    padding: 0;
 }
+
 .infoContentOuter .infoContentWrapper 
 {
+    background-color: #cacaca;
     background-image: none;
+    margin: 0;
     padding-bottom: 0;
 }
+.infoContentOuter.listContainer .infoContentWrapper { background-color: transparent; }
 .infoContentOuter.listContainer .infoContent { background-image: none; }
 
 .infoContentHeader
@@ -52,6 +61,28 @@
     height: 41px;
     padding: 0 1em 0 0;
 }
+
+/*** START: Gridlist styles - override for widget ***/
+.infoContentOuter table.gridList td > *
+{
+    height: auto;
+    line-height: 1.1em;
+}
+.infoContentOuter table.gridList .name { width: 40%; }
+.infoContentOuter table.gridList .description { width: 60%; }
+.infoContentOuter table.gridList .who { width: 25%; }
+.infoContentOuter table.gridList .what { width: 60%; }
+.infoContentOuter table.gridList .type,
+.infoContentOuter table.gridList .picture { width: 35px; }
+.infoContentOuter table.gridList td a,
+.infoContentOuter table.gridList td div a
+{
+    color: #0071bc;
+    text-decoration: none;
+}
+
+
+/*** END: Gridlist styles ***/
 
 .singleInfoComments li.comment .actions
 {
@@ -61,3 +92,6 @@
     position: static;
 }
 .singleInfoComments li.comment .actions a { margin-left: 0; }
+
+
+

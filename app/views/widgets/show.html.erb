@@ -57,7 +57,7 @@
       <%- elsif @theme[:frame][:logo][:type] == 'external' -%>
         background-image: url(<%= @theme[:frame][:logo][:type] %>);
       <%- elsif @theme[:frame][:logo][:type] == 'default' -%>
-        background-image: url(/stylesheets/images/widgets/socrata_logo_player.gif);
+        background-image: url(/stylesheets/images/widgets/socrata_logo_player.png);
       <%- end -%>
     }
   
@@ -124,41 +124,6 @@
 
   <%- if !@theme[:style][:custom_stylesheet].blank? -%>
     <%= stylesheet_link_tag @theme[:style][:custom_stylesheet] + "-widget" %>
-  <%- end -%>
-
-  <%- if @view.is_visualization? -%>
-    <!--Load the Visualization API-->
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <% bundle :name => "visualization_chart", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <script type="text/javascript">
-
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1', {'packages':['<%= @view.displayType %>']});
-      
-      // Set a callback to run when the API is loaded.
-      google.setOnLoadCallback(initializeChart); 
-
-      function initializeChart() {
-          var query = new google.visualization.Query('/views/<%= @view.id %>/rows.gvds');
-          // Send the query with a callback function.
-          query.send(handleQueryResponse);
-      }
-
-      function handleQueryResponse(response) {
-          // Called when the query response is returned.
-          if (response.isError()) {
-              alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
-              return;
-          }
-
-          var data = response.getDataTable();
-          var chart = new <%= @view.chart_class %>(document.getElementById('data-grid'));
-          chart.draw(data, { <%= @view.displayFormat %>} );        
-      }
-
-    </script>
-    <% end %>
-
   <%- end -%>
 
   <title><%= @view.name %> | <%= t(:page_title) %></title>
@@ -292,7 +257,7 @@
     <%- end -%>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
+  <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "data-grid" }) %>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.widget');
@@ -312,14 +277,14 @@
     "widgets/visualization","screens/external-widget", "screens/info-pane", :cache =>
     "cache/widgets_show_all" %>
 
-  <%- if !@is_gov_widget && ENV['RAILS_ENV'] == 'production' -%>
+  <%- if !@is_gov_widget && !APP_CONFIG['google_analytics_id'].blank? -%>
   <script type="text/javascript">
   var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
   document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
   </script>
   <script type="text/javascript">
   try {
-  var pageTracker = _gat._getTracker("UA-7633631-1");
+    var pageTracker = _gat._getTracker("<%= APP_CONFIG['google_analytics_id'] %>");
   pageTracker._trackPageview();
   } catch(err) {}</script>
 

@@ -19,6 +19,7 @@ test:
 # test.socrata.com
 staging:
   coreservice_uri: http://localhost:8081
+  google_analytics_id: UA-9046230-2
   orbited_port: 4817
   <<: *default
 
@@ -26,6 +27,7 @@ staging:
 production:
   bridge_host: multiuser
   coreservice_uri: http://alpha-api.tuk.blist.com
+  google_analytics_id: UA-9046230-1
   ie_port: 80
   orbited_port: 80
   <<: *default

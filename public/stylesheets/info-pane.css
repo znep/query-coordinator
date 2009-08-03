@@ -34,7 +34,7 @@
     height: 19px;
     margin-right: 1px;
     position: relative;
-    width: 120px;
+    width: 100px;
 }
 .metadataPane .summaryTabs li .tabOuter
 {
@@ -50,7 +50,7 @@
 .metadataPane .summaryTabs li .tabInner 
 {
     background-image: url(/stylesheets/images/info_pane/background_info_tab_top_right_sprites.png);
-    background-position: 113px -4px;
+    background-position: 93px -4px;
     background-repeat: no-repeat;
     margin-right: -1px;
     margin-top: -1px;
@@ -68,14 +68,14 @@
 .metadataPane .summaryTabs li.active .tabOuter { background-position: -4px 0; }
 .metadataPane .summaryTabs li.active .tabInner 
 {
-    background-position: 117px 0;
+    background-position: 97px 0;
 }
 
 .metadataPane .summaryTabs li.last .tabInner
 {
     background-image: url(/stylesheets/images/info_pane/background_info_tab_last_sprites.png);
     background-position: right top;
-    width: 123px;
+    width: 103px;
 }
 .metadataPane .summaryTabs li.active.last .tabInner
 {
@@ -96,7 +96,7 @@
 .metadataPane .summaryTabs li.comments.active.last,
 .metadataPane .summaryTabs li.comments.active.last .tabInner
 {
-    width: 105px;
+    width: 95px;
 }
 .metadataPane .summaryTabs li.comments.active .tabInner 
 {
@@ -117,9 +117,9 @@
 {
     background-position: left -9px;
 }
-
 .metadataPane .summaryTabs li a.expander
 {
+    background: url(/stylesheets/images/info_pane/icon_expand_double_chevron.png) no-repeat 0 0;
     display: none;
     left: 0;
     line-height: 100px;
@@ -129,6 +129,7 @@
 }
 .metadataPane .summaryTabs li.active a.expander
 {
+    background-position: 0 0;
     display: block;
 }
 

@@ -103,11 +103,9 @@ blist.util.flashInterface.columnAggregate = function(columnId, aggregate)
 blist.util.flashInterface.eventFired = function (event, data)
 {
     var jsEvent;
-    switch (event)
+    if (event == 'VIEW_CHANGED_EVENT')
     {
-        case 'VIEW_CHANGED_EVENT':
-            jsEvent = blist.events.VIEW_CHANGED;
-            break;
+        jsEvent = blist.events.VIEW_CHANGED;
     }
     if (jsEvent !== null)
     {

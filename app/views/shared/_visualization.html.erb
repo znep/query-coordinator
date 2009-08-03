@@ -1,23 +1,40 @@
 <%- if !view.nil? -%>
   <%- if view.is_visualization? -%>
-    <%# Load the Visualization API %>
-    <%- if view.is_map? -%>
-      <script src="http://maps.google.com/maps?file=api&v=2&sensor=false&key=ABQIAAAAsb4zlahj2tzhr3MICzHX-RSnotMy4ATL1YP8M3LeMBS0jXnuuxSFweoGMstUgy8SUQ1SI1bTYi5f4w" type="text/javascript"></script>
+    <%- if view.is_fusion_map? %>
+      <script type="text/javascript" src="/javascripts/util/FusionMaps.js"></script>
+    <%- else -%>
+      <%# Load the Visualization API %>
+      <%- if view.is_map? -%>
+        <script src="http://maps.google.com/maps?file=api&v=2&sensor=false&key=ABQIAAAAsb4zlahj2tzhr3MICzHX-RSnotMy4ATL1YP8M3LeMBS0jXnuuxSFweoGMstUgy8SUQ1SI1bTYi5f4w" type="text/javascript"></script>
+      <%- end -%>
+      <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+      <script type="text/javascript">
+        <%# Load the Visualization API and the piechart package. %>
+        google.load('visualization', '1', {'packages':['<%= view.displayType %>']});
+      </script>
     <%- end -%>
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      <%# Load the Visualization API and the piechart package. %>
-      google.load('visualization', '1', {'packages':['<%= view.displayType %>']});
-    </script>
   <%- end -%>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.widgets.visualization');
     blist.widgets.visualization.viewId = '<%= view.id %>';
     blist.widgets.visualization.isVisualization = <%= view.is_visualization? %>;
+    blist.widgets.visualization.isFusionMap = <%= view.is_fusion_map? %>;
+    blist.widgets.visualization.fusionMapSwf = '<%= view.displayType %>'+'.swf';
     blist.widgets.visualization.displayType = '<%= view.displayType %>';
-    blist.widgets.visualization.displayFormat = { <%= view.displayFormat %> };
+    blist.widgets.visualization.displayFormat = { <%= [view.displayFormat, "'wmode': 'opaque'"].compact.join(', ') %> };
     $(function ()
-      { blist.widgets.visualization.chartClass = <%= view.chart_class || "''" %>; });
+    { 
+        blist.widgets.visualization.chartClass = <%= view.chart_class || "''" %>; 
+
+        if (blist.widgets.visualization.isFusionMap)
+        {
+            var map = new FusionMaps("/fusionMaps/"+blist.widgets.visualization.fusionMapSwf,
+                "Map1Id", "100%" , "100%", "0", "0");
+            map.setDataURL("/views/"+blist.widgets.visualization.viewId+"/rows.fmap");
+            map.addParam("wmode", "opaque");
+            map.render('<%= grid_div %>');
+        }
+    });
   </script>
 <%- end -%>

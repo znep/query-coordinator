@@ -56,8 +56,8 @@ blist.contacts.infoPane.updateSummary = function(numSelect)
         }
         else
         {
-            var $items = $('#contactList').combinationList().selectedItems();
-            var arrMulti = $items.map(function (i, n)
+            var $itemsContacts = $('#contactList').combinationList().selectedItems();
+            var arrMulti = $itemsContacts.map(function (i, n)
             {
                return $(n).attr('id');
             });

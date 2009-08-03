@@ -224,9 +224,9 @@ blist.blistGrid.mainMenuLoaded = function (data)
 {
     var $data = $(data);
     // Swap out the main menu with whatever was loaded
-    $('#mainMenu').replaceWith($data.closest("#mainMenuComponent").html());
+    $('#mainMenu').replaceWith($data.filter("#mainMenuComponent"));
     // Swap out the filter & view menu with whatever was loaded
-    $('#filterViewMenu').replaceWith($data.closest("#filterViewMenuComponent").html());
+    $('#filterViewMenu').replaceWith($data.filter("#filterViewMenuComponent"));
     blistGridNS.hookUpMainMenu();
     blistGridNS.hookUpFilterViewMenu();
 };
@@ -276,7 +276,7 @@ blist.blistGrid.hookUpFilterViewMenu = function()
                     $("#readGrid").blistModel().updateColumn(responseData);
                 }
             });
-        }
+        };
 
         if ($li.hasClass("checked"))
         {

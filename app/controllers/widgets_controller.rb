@@ -25,7 +25,7 @@ class WidgetsController < ApplicationController
     @theme = Marshal::load(Marshal.dump(WidgetCustomization.default_theme))
 
     @options = params[:options]
-    if @variation.blank?
+    if @variation.blank? && params[:customization_id].blank?
       @variation = 'normal'
 
       if !request.referrer.nil? 
@@ -50,20 +50,31 @@ class WidgetsController < ApplicationController
       return redirect_to('/widgets/' + params[:id] + '/' + tm[1])
     end
     
-    #If we're using "meta" variation, add the meta tabs and save filter bar
-    if !@options.nil? && @options == "meta"
-      @theme[:behavior][:save_public_views] = true
-
-      @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
-      @theme[:meta][:comments][:show] = true
-      @theme[:meta][:summary][:show] = true
+    if params[:customization_id]
+      begin
+        @theme.merge!(WidgetCustomization.find_customization(params[:customization_id]).customization)
+      rescue CoreServer::CoreServerError => e
+        flash[:error] = e.error_message
+        return (render 'shared/error')
+      end
     else
-      # They're disabled by default until they're ready
-      @theme[:behavior][:save_public_views] = false
+      #If we're using "meta" variation, add the meta tabs and save filter bar
+      if !@options.nil? && @options == "meta"
+        @theme[:behavior][:save_public_views] = true
 
-      @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
+        @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
+        @theme[:meta][:comments][:show] = true
+        @theme[:meta][:filtered][:show] = true
+        @theme[:meta][:activity][:show] = true
+        @theme[:meta][:summary][:show] = true
+      else
+        # They're disabled by default until they're ready
+        @theme[:behavior][:save_public_views] = false
+
+        @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
+      end
     end
-    
+
     begin
       @view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -86,8 +97,6 @@ class WidgetsController < ApplicationController
         I18n.t(:blist_name).downcase
       return (render 'shared/error')
     end
-    
-    # Todo: grab the theme for the given token here if applicable
 
     @meta_description = Helper.instance.meta_description(@view)
     @meta_keywords = Helper.instance.meta_keywords(@view)
@@ -119,6 +128,9 @@ class WidgetsController < ApplicationController
     
     @tabKey = params[:tab]
     @view = View.find(params[:id])
+    if (@tabKey == "activity")
+      @view_activities = Activity.find({:viewId => @view.id})
+    end
     render(:layout => 'main.data')
   end
 end

@@ -5,8 +5,10 @@ class WidgetCustomization < Model
     path = "/widgetCustomization/#{id}"
     result = get_request(path)
     
-    # the server doesn't parse the JSON for us, so do it ourselves
+    # the server doesn't parse the JSON for us, so do it ourselves.
     result.customization = JSON.parse(result.customization)
+    # symbolize keys
+    recursive_symbolize_keys!(result.customization)
     result
   end
   
@@ -29,7 +31,7 @@ class WidgetCustomization < Model
                               :url => '' },
                    :powered_by => true },
     :grid     => { :row_numbers => false,
-                   :wrap_header_text => false, #TODO
+                   :wrap_header_text => false, #TODO (Jeff?)
                    :header_icons => false,
                    :row_height => '16px',
                    :zebra => '#e7ebf2' },
@@ -47,9 +49,15 @@ class WidgetCustomization < Model
                    :activity   => { :show => true, :order => 3, :display_name => 'Activity' },
                    :summary    => { :show => true, :order => 4, :display_name => 'Summary' } },
     :behavior => { :rating => true,             #TODO
-                   :save_public_views => true,  #TODO+
+                   :save_public_views => true,
                    :interstitial => false,
                    :ga_code => '' }
   }
+
+private
+  def self.recursive_symbolize_keys!(hash)
+    hash.symbolize_keys!
+    hash.values.select{ |value| value.is_a? Hash }.each{ |hash| recursive_symbolize_keys!(hash) }
+  end
 
 end

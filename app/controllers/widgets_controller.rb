@@ -106,6 +106,7 @@ class WidgetsController < ApplicationController
     # Wire in custom behaviors for whitehouse/gov
     @theme[:style][:custom_stylesheet] = @variation
     if @is_gov_widget
+      @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
       @theme[:behavior][:interstitial] = true
       @theme[:frame][:logo][:show] = false
     end

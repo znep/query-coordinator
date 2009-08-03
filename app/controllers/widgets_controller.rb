@@ -65,6 +65,7 @@ class WidgetsController < ApplicationController
         @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
         @theme[:meta][:comments][:show] = true
         @theme[:meta][:filtered][:show] = true
+        @theme[:meta][:publishing][:show] = true
         @theme[:meta][:activity][:show] = true
         @theme[:meta][:summary][:show] = true
       else

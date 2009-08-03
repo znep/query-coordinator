@@ -274,7 +274,6 @@ img.blist-table-option-icon
 {
     width: 16px;
     height: 16px;
-    float: left;
 }
 
 .blist-table a
@@ -301,12 +300,7 @@ img.blist-table-option-icon
     text-indent: -9999px;
 }
 
-.blist-tstars
-{
-    display: block;
-    margin: auto;
-    position: relative;
-}
+.blist-tstars { display: inline-block; }
 
 .blist-tstar-on {
     float: left;
@@ -329,19 +323,20 @@ img.blist-table-option-icon
     height: 10px;
 }
 
-.blist-td-number {
-    text-align: right;
-}
+.blist-td-number,
+.blist-td-money,
+.blist-td-percent,
+.blist-td-date
+{ text-align: right; }
+
 
 .blist-percent {
     position: relative;
 }
 
 .blist-percent-num {
-    position: absolute;
+    position: relative;
     z-index: 2;
-    top: 0;
-    right: 0;
 }
 
 .blist-percent-bar-pos {
@@ -365,7 +360,7 @@ img.blist-table-option-icon
 
 .blist-flag
 {
-    background: transparent no-repeat center center;
+    background: transparent no-repeat left center;
     height: 22px;
     margin-top: -4px;
     margin-bottom: -4px;
@@ -396,11 +391,13 @@ img.blist-table-option-icon
     background-image: url(/stylesheets/images/content/table/flags/yellow.png);
 }
 
+.blist-td-phone a { display: inline-block; }
+
 .blist-phone-icon {
-    float: right;
+    float: left;
     width: 25px;
     height: 20px;
-    margin: -4px 0px -4px 0;
+    margin: -2px 2px;
 }
 
 .blist-phone-icon-cell {
@@ -442,3 +439,16 @@ img.blist-table-option-icon
     position: absolute;
     left: -10000px;
 }
+
+
+/* Alignment */
+.blist-td.align-left { text-align: left; }
+.blist-td.align-center { text-align: center; }
+.blist-td.align-right { text-align: right; }
+
+.blist-td.align-left .blist-checkbox,
+.blist-td.align-left .blist-flag { background-position: left center; }
+.blist-td.align-center .blist-checkbox,
+.blist-td.align-center .blist-flag { background-position: center center; }
+.blist-td.align-right .blist-checkbox,
+.blist-td.align-right .blist-flag { background-position: right center; }

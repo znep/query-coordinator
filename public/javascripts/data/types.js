@@ -589,6 +589,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         date: {
+            cls: 'date',
             renderGen: renderGenDate,
             sortGen: sortGenNumeric,
             filterRender: renderFilterDate,
@@ -607,13 +608,14 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenMoney,
             sortGen: sortGenNumeric,
             filterRender: renderFilterMoney,
-            cls: 'number',
+            cls: 'money',
             filterText: true,
             sortable: true,
             filterable: true
         },
 
         phone: {
+            cls: 'phone',
             renderGen: renderGenPhone,
             sortGen: sortGenText,
             filterText: true,
@@ -648,6 +650,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         percent: {
+            cls: 'percent',
             renderGen: renderGenPercent,
             sortGen: sortGenNumeric,
             filterRender: renderFilterPercent,

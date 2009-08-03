@@ -980,8 +980,9 @@
         var hotRowID;
         var hotCellTimer;
         var hotHeader;
-        var hotHeaderMode; // 1 = hover, 2 = resize, 3 = control hover, 4 = move
-        var hotHeaderDrag;
+        // 1 = hover, 2 = resize, 3 = control hover, 4 = move, 5 = multi-select
+        var hotHeaderMode;
+        var hotHeaderDrag = false;
         var skipHeaderClick;
         var mouseDownAt;
         var dragHeaderLeft;
@@ -1200,7 +1201,8 @@
                     return;
                 }
                 else if (hotHeaderMode == 4) { return; }
-                else if (hotHeaderMode == 1 && options.columnSelection)
+                else if (hotHeaderMode == 1 && options.columnSelection ||
+                    hotHeaderMode == 5)
                 {
                     if (!origColSelects)
                     {
@@ -1231,6 +1233,7 @@
                             }
                         }
                         $curHeaderSelect = $curHeader;
+                        hotHeaderMode = 5;
                     }
                 }
             }
@@ -1391,21 +1394,24 @@
         var $prevActiveCells;
         var onMouseDown = function(event)
         {
+            clickTarget = event.target;
+            var $clickTarget = $(clickTarget);
             // IE & Chrome only detetct mousedown on scrollbars, not mouseup;
             // so we need to ignore clicks on the scrollbar to avoid having a
             // false drag event
             // If they clicked on the scrollbar, ignore
-            if ($(event.target).is('.blist-table-scrolls')) { return; }
+            if ($clickTarget.is('.blist-table-scrolls')) { return; }
 
             if (isEdit &&
-                $(event.target).parents().andSelf().index($editContainer) >= 0)
+                $clickTarget.parents().andSelf().index($editContainer) >= 0)
             { return; }
 
-            clickTarget = event.target;
 
             mouseDownAt = { x: event.clientX, y: event.clientY };
 
-            if (hotHeader && hotHeaderMode != 3) {
+            if (hotHeader && hotHeaderMode != 3 &&
+                $clickTarget.closest('.action-item').length < 1)
+            {
                 clickTarget = null;
                 hotHeaderDrag = true;
                 event.stopPropagation();
@@ -1452,7 +1458,7 @@
                 // will cause the mouse events to screwy as the scrollbar
                 // shrinks and the header moves
                 if (hotHeaderMode == 2) { handleColumnResize(event, true); }
-                if (hotHeaderMode > 1) { skipHeaderClick = true; }
+                if (hotHeaderMode > 1 ) { skipHeaderClick = true; }
                 onMouseMove(event);
                 event.stopPropagation();
                 event.preventDefault();
@@ -2520,7 +2526,7 @@
                     colName,
                     '</span></div>',
                     '</div>',
-                    '<div class="filter" title="Remove filter"',
+                    '<div class="filter action-item" title="Remove filter"',
                     options.generateHeights ? ' style="height: ' +
                     rowOffset + 'px"' : '',
                     '></div>',

@@ -238,8 +238,8 @@
         var displayMenu = false;
         var $col = $(col.dom);
         var htmlStr =
-            '<a class="menuLink" href="#column-menu_' +
-            col.index + '"></a><ul class="menu columnHeaderMenu" id="column-menu_' + col.index + '">';
+            '<a class="menuLink action-item" href="#column-menu_' +
+            col.index + '"></a><ul class="menu columnHeaderMenu action-item" id="column-menu_' + col.index + '">';
 
         // We support sort & filter, so if neither is available, don't show a menu
         if (blist.data.types[col.type].sortable)

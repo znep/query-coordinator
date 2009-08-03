@@ -12,7 +12,9 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 #header .menuLink
 {
     background-image: url(/stylesheets/images/content/table/expand_opened.png);
+    background-position: right 5px;
     color: #333;
+    padding-right: 22px;
 }
 #header form.search .searchContainer
 {
@@ -42,7 +44,7 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 div.th-inner-container { white-space: normal; }
 .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
 
-.blist-table .blist-td
+div.blist-td
 {
     font-size: 1.2em;
     height: 1.3333em; /* 16px */
@@ -50,7 +52,7 @@ div.th-inner-container { white-space: normal; }
     padding: 0.3333em; /* 4px */
 }
 
-.blist-table .blist-tr-even .blist-td { background-color: #F1F4F7; }
+.blist-tr-even .blist-td { background-color: #F1F4F7; }
 .blist-table .blist-td a, .interstitial a { color: #336699; }
 
 .widgetFooterWrapper { background-image: url(/stylesheets/images/sdp/whitehouse/title_b.png); }

@@ -263,7 +263,10 @@ $(function ()
             $link.closest(".searchContainer").find("input[type='text']").val("").focus();
             $link.hide();
         })
-        .hide();
+    if ($.urlParam("search", window.location.href) === 0)
+    {
+        $(".clearSearch").hide();
+    }
 
     $(".memberActions .followAction").live("click", communityNS.addFriendClick);
 });

@@ -147,8 +147,8 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
                     {
-                        $('#signup .flash').text('Please choose an image file \
-                            (jpg, gif, png or tiff)');
+                        $('#signup .flash').text('Please choose an image file ' +
+                            '(jpg, gif, png or tiff)');
                         return false;
                     }
                     $('#signup .flash').text('');

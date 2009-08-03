@@ -1,0 +1,74 @@
+<div class="gridListContainer">
+  <table class="gridList" cellspacing="0">
+    <colgroup>
+      <%- if (!in_widget) -%>
+        <col class='handle' />
+        <col class='favorite' />
+      <%- end -%>
+      <col class='type' />
+      <col class='name' />
+      <col class='description' />
+      <%- if (!in_widget) -%>
+        <col class='picture' />
+        <col class='owner' />
+        <col class='viewed' />
+        <col class='actionContainer' />
+      <%- end -%>
+    </colgroup>
+    <thead>
+      <tr>
+        <%- if (!in_widget) -%>
+          <th class="handle first"><div></div></th>
+          <th class="favorite" title="Favorite?"><div>Favorite?</div></th>
+        <%- end -%>
+        <th class="type" title="Type"><div>Type</div></th>
+        <th class="name"><div>Name</div></th>
+        <th class="description"><div>Description</div></th>
+        <%- if (!in_widget) -%>
+          <th class="picture" title="Owner"><div></div></th>
+          <th class="owner" title="Owner"><div>Owner</div></th>
+          <th class="viewed"><div>Visits</div></th>
+          <th class="actionContainer last"></th>
+        <%- end -%>
+      </tr>
+    </thead>
+    <tbody>
+      <%- view.filters.each do |filter| -%>
+        <tr class="item" id="filter-row_<%= filter.id %>">
+          <%- if (!in_widget) -%>
+            <td class="handle"><div></div></td>
+            <td class="favorite <%= filter.flag?('favorite') %>"><div>
+                <span class="favoriteMarker"><%= filter.flag?('favorite') ? "favorite" : "" %></span>
+            </div></td>
+          <%- end -%>
+          <td class="type"><div class="<%=
+            get_share_direction_icon_class_for_view(filter) %>">
+            <%= get_type_string_for_view(filter) %></div>
+          </td>
+          <td class="name"><div><%= link_to(h(filter.name), filter.href, :rel => in_widget ? "external" : "") %></div></td>
+          <td class="description"><div><%= h(filter.description) %></div></td>
+          <%- if (!in_widget) -%>
+            <td class="picture"><a href='<%= filter.owner.href %>' title='<%= h(filter.owner.displayName) %>'>
+                <%= image_tag(filter.owner.profile_image_path,
+                :size => "24x24", :alt => h(filter.owner.displayName)) %>
+            </a></td>
+            <td class="owner">
+              <div class='clipText'>
+                <a href='<%= filter.owner.href %>'
+                  title='<%= h(filter.owner.displayName) %>'>
+                  <%= h(filter.owner.displayName) %>
+                </a>
+              </div>
+            </td>
+            <td class="viewed"><div><%= blist_date(filter.last_viewed) %>
+            </div></td>
+            <td class="actionContainer"><div><a
+                  href="<%= filter.href %>" class="action"
+                  title="<%= h(filter.name) %>"><span>View</span></a>
+            </div></td>
+          <%- end -%>
+        </tr>
+      <%- end -%>
+    </tbody>
+  </table>
+</div>

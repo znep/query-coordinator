@@ -14,7 +14,12 @@ $.debug = function(msg, obj)
     msg = '[' + debugNS.uid++ + '] ' + msg;
     if (window.console && window.console.log)
     {
-        obj ? window.console.log("%s: %o", msg, obj) : window.console.log(msg);
+        if (obj)
+        {
+            window.console.log("%s: %o", msg, obj);
+        } else {
+        	window.console.log(msg);
+        }
     }
     else
     {
@@ -26,9 +31,12 @@ $.debug = function(msg, obj)
                 'height:10em;overflow:auto;"></div>');
             $console = $('#debug-console');
         }
-        obj && $.json ?
-            $console.append("<p>" + msg + ": " + $.json.serialize(obj) + "</p>") :
+        if (obj && $.json)
+        {
+            $console.append("<p>" + msg + ": " + $.json.serialize(obj) + "</p>");
+        } else {
             $console.append("<p>" + msg + "</p>");
+        }
         $console[0].scrollTop = $console[0].scrollHeight;
     }
 };

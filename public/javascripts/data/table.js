@@ -2068,12 +2068,14 @@
                     var renderer = mcol.renderer || type.renderGen;
                     var cls = mcol.cls || type.cls;
                     cls = cls ? ' blist-td-' + cls : '';
+                    var align = mcol.alignment ? ' align-' + mcol.alignment : '';
 
                     renderer = renderer("row" + mcol.dataLookupExpr, mcol,
                         contextVariables);
 
                     colParts.push(
-                        "\"<div class='blist-td " + getColumnClass(mcol) + cls + "'>\", " +
+                        "\"<div class='blist-td " + getColumnClass(mcol) + cls +
+                            align + "'>\", " +
                             renderer + ", \"</div>\""
                     );
 

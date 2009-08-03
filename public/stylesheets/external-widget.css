@@ -106,7 +106,7 @@
 }
 #header .fullScreenButton a
 {
-    background: url(/stylesheets/images/widgets/button_fullscreen_player.png) no-repeat;
+    background: url(/stylesheets/images/widgets/button_fullscreen_player_8bit.png) no-repeat;
     display: block;
     height: 18px;
     overflow: hidden;
@@ -123,7 +123,7 @@
 
 #header form.search .searchContainer
 {
-    background-image: url(/stylesheets/images/content/table_menu/find_field_blue.png);
+    background-image: url(/stylesheets/images/content/table_menu/find_field_8bit.png);
     background-repeat: no-repeat;
     overflow: hidden;
     padding-left: 10px;
@@ -138,7 +138,7 @@
 
 #header form.search input.submit
 {
-    background-image: url(/images/button_find_blue.png);;
+    background-image: url(/stylesheets/images/content/table_menu/button_find_8bit.png);
     height: 18px;
     margin-right: 0;
     width: 30px;

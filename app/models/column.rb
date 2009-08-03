@@ -7,7 +7,7 @@ class Column < Model
       "number" => "Number",
       "money" => "Money",
       "percent" => "Percent",
-      "dateTime" => "Date & Time",
+      "date" => "Date & Time",
       "phone" => "Phone",
       "email" => "Email",
       "url" => "Website URL",
@@ -20,6 +20,20 @@ class Column < Model
       "nested_table" => "Nested Table",
       "tag" => "Row Tag"
   };
+  
+  def has_formatting?
+    types_with_formatting = ["date", "number", "money", "percent"]
+
+    return types_with_formatting.include?(client_type)
+  end
+
+  def has_totals?
+    types_with_totals = ["text", "richtext", "number", "money", "percent", 
+                         "date", "phone", "email", "url", "checkbox", "stars", 
+                         "flag", "document", "photo", "picklist"]
+    
+    return types_with_totals.include?(client_type)
+  end
 
   def href(view_id)
     "/blists/#{view_id}/columns/#{id}"
@@ -65,6 +79,12 @@ class Column < Model
       update_data[:format].delete "align"
     elsif js.key?("alignment")
       update_data[:format]["align"] = js["alignment"]
+    end
+
+    if js.key?("format") && js["format"].blank?
+      update_data[:format].delete "view"
+    elsif js.key?("format")
+      update_data[:format]["view"] = js["format"]
     end
 
     if js.key?("decimalPlaces") && js["decimalPlaces"].blank?

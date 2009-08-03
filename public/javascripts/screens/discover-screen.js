@@ -255,8 +255,11 @@ $(function ()
             var $link = $(this);
             $link.closest(".searchContainer").find("input[type='text']").val("").focus();
             $link.hide();
-        })
-        .hide();
+        });
+    if ($.urlParam("search", window.location.href) === 0)
+    {
+        $(".clearSearch").hide();
+    }
     
     $("#splashModal").jqm({
         trigger: false,
@@ -333,7 +336,8 @@ $(function ()
     
     // Check to see if we were referred from a blist.com domain
     var show_redirect = false;
-    var ref_re = new RegExp('^(?:f|ht)tp(?:s)?\://([^/]+)', 'im');
+    var ref_re = /^(?:f|ht)tp(?:s)?\:\/\/([^\/]+)/im;
+    
     if (document.referrer.match(ref_re) &&
            document.referrer.match(ref_re)[1] &&
            document.referrer.match(ref_re)[1].toString().indexOf("blist") !== -1)

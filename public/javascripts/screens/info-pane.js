@@ -379,7 +379,7 @@
                     var expandMinHeight = 
                         $(tabNavigator.settings.widgetOuterContainerSelector).outerHeight() -
                         $(tabNavigator.settings.widgetMetaHeaderSelector).outerHeight() -
-                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight();
+                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight() - 1;
                     $(tabNavigator.settings.expandableSelector).show();
                     $(tabNavigator.settings.expandableContainerSelector).css("min-height", expandMinHeight + "px");
                     tabNavigator.settings.switchCompleteCallback();

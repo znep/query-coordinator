@@ -766,6 +766,18 @@ blist.namespace.fetch('blist.data');
                     meta.aggregates.push(column.updatedAggregate);
                 }
             }
+            else if (meta.aggregates != null)
+            {
+                for (var i=0; i < meta.aggregates.length; i++)
+                {
+                    if (meta.aggregates[i].columnId == column.id)
+                    {
+                        meta.aggregates.splice(i, 1);
+                        meta.aggregateHash = {};
+                        break;
+                    }
+                }
+            }
 
             // Refresh the meta data and redraw the grid.
             meta.columns = null;

@@ -176,18 +176,16 @@
         var model = datasetObj.settings._model;
         if (!column || row.level > 0) { return; }
 
-        switch (column.dataIndex)
+        if (column.dataIndex == 'rowNumber')
         {
-            case 'rowNumber':
-                if (origEvent.shiftKey)
-                {
-                    model.selectRowsTo(row);
-                }
-                else
-                {
-                    model.toggleSelectRow(row);
-                }
-                break;
+            if (origEvent.shiftKey)
+            {
+                model.selectRowsTo(row);
+            }
+            else
+            {
+                model.toggleSelectRow(row);
+            }
         }
     };
 

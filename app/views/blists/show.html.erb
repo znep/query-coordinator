@@ -323,7 +323,7 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
+  <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "readGrid" }) %>
 
   <%- if !current_user -%>
   <%= render(:partial => 'user_sessions/login', :locals => {:is_modal => true}) %>

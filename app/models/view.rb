@@ -140,7 +140,11 @@ class View < Model
   end
 
   def last_updated_user
-    rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)
+    begin
+      return rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)
+    rescue CoreServer::ResourceNotFound
+      return nil
+    end
   end
 
   def href
@@ -264,6 +268,10 @@ class View < Model
 
   def is_map?
     self.displayType == "map" || self.displayType == "geomap"
+  end
+
+  def is_fusion_map?
+    !self.displayType.nil? && !self.displayType[/^FCMap_/].nil?
   end
 
   def chart_class

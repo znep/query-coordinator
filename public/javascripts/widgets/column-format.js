@@ -63,14 +63,15 @@ columnFormatNS.dateFormats = [
 // XXX: Remove me after getting rid of flex.
 columnFormatNS.dateFormats = [
     ["date", "11/22/2009 (Date)"],
-    ["date_dmy", "22/11/2009 (Date)"],
-    ["date_ymd", "2009/11/22 (Date)"],
-    ["date_monthdy", "November 22, 2009 (Date)"],
-    ["date_dmonthy", "22 November 2009 (Date)"],
-    ["date_ymonthd", "2009 November 22 (Date)"],
-    ["date_time", "11/22/2009 5:45 PM GMT+0100 (Date &amp; Time)"],
-    ["date_dmy_time", "22/11/2009 5:45 PM GMT+0100 (Date &amp; Time)"],
-    ["date_ymd_time", "2009/11/22 5:45 PM GMT+0100 (Date &amp; Time)"]
+    // TODO: Waiting on the grid to support these.
+    //["date_dmy", "22/11/2009 (Date)"],
+    //["date_ymd", "2009/11/22 (Date)"],
+    //["date_monthdy", "November 22, 2009 (Date)"],
+    //["date_dmonthy", "22 November 2009 (Date)"],
+    //["date_ymonthd", "2009 November 22 (Date)"],
+    ["date_time", "11/22/2009 5:45 PM GMT+0100 (Date &amp; Time)"]
+    //["date_dmy_time", "22/11/2009 5:45 PM GMT+0100 (Date &amp; Time)"],
+    //["date_ymd_time", "2009/11/22 5:45 PM GMT+0100 (Date &amp; Time)"]
 ];
 
 columnFormatNS.dateView = '<select id="date-view">';
@@ -78,10 +79,10 @@ $.each(columnFormatNS.dateFormats, function() { columnFormatNS.dateView += '<opt
 columnFormatNS.dateView += '</select>';
 
 columnFormatNS.checkFormats = [
-    ["checkbox", "Checkbox"],
-    ["icon_text", "Icon &amp; Text"],
-    ["icon", "Icon only"],
-    ["text", "Text only"]
+    ["boolean_checkbox", "Checkbox"],
+    ["boolean_icon_text", "Icon &amp; Text"],
+    ["boolean_icon", "Icon only"],
+    ["boolean_text", "Text only"]
 ];
 
 columnFormatNS.checkView = '<select id="check-view">';
@@ -130,10 +131,11 @@ columnFormatNS.render_percent = function($container)
     var render = '<h3 class="seperator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += columnFormatNS.precision(column.decimalPlaces); 
-    render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td><select id="percentView"><option value="bar_text">Bar &amp; Text</option><option value="bar">Bar Only</option><option value="text">Text Only</option></select></td></tr>';
+    render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td><select id="percent-view"><option value="percent_bar_text">Bar &amp; Text</option><option value="percent_bar">Bar Only</option><option value="percent_text">Text Only</option></select></td></tr>';
     render += '</tbody></table></div>';
     $container.append(render);
     $("#precision").spinner({min: 0});
+    columnFormatNS.updateView($container, "#percent-view");
 };
 
 columnFormatNS.render_date = function($container)
@@ -143,6 +145,7 @@ columnFormatNS.render_date = function($container)
     render += '<tr><td class="labelColumn"><label for="view">Date View Style:</label></td><td>' + columnFormatNS.dateView + '</td></tr>';
     render += '</tbody></table></div>';
     $container.append(render);
+    columnFormatNS.updateView($container, "#date-view");
 };
 
 columnFormatNS.render_checkbox = function($container)
@@ -152,6 +155,7 @@ columnFormatNS.render_checkbox = function($container)
     render += '<tr><td class="labelColumn"><label for="view">Check Style:</label></td><td>' + columnFormatNS.checkView + '</td></tr>';
     render += '</tbody></table></div>';
     $container.append(render);
+    columnFormatNS.updateView($container, "#check-view");
 };
 
 columnFormatNS.render_picklist = function($container)
@@ -161,7 +165,16 @@ columnFormatNS.render_picklist = function($container)
     render += '<tr><td class="labelColumn"><label for="view">Menu Style:</label></td><td>' + columnFormatNS.picklistView + '</td></tr>';
     render += '</tbody></table></div>';
     $container.append(render);
+    columnFormatNS.updateView($container, "#picklist-view");
 };
+
+columnFormatNS.updateView = function(container, id)
+{
+    container.find(id).val(column.format);
+    container.find(id).change(function (event) {
+        column.format = $(this).val();
+    });
+}
 
 columnFormatNS.render_phone = 
 columnFormatNS.render_email = 

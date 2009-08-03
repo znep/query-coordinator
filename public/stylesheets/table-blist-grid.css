@@ -46,10 +46,26 @@ div.blist-table-expander .blist-td
     padding-right: 0.25em; /* 3px */
 }
 
-img.blist-table-option-icon
+.blist-table .blist-td.blist-table-row-numbers
 {
-    margin-bottom: -1px;
-    padding-right: 0.4em;
+    border-left-width: 0;
+    color: #a9cef2;
+    font-size: 1.1em;
+    height: 1.4545em; /* 16px */
+    line-height: 1.4545em;
+    padding: 0.3636em; /* 4px */
+    text-align: right;
+}
+
+.blist-table .blist-td.blist-table-row-handle
+{
+    border-left-width: 0;
+}
+
+.blist-tr .blist-td-first
+{
+    border-left-width: 0;
+    padding-left: 0.4167em; /* 5px */
 }
 
 .blist-table a

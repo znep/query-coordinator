@@ -64,6 +64,9 @@
  *      when the position might change (eg due to browser resizing or column
  *      resizing).
  *
+ *  matchTriggerWidth: Set the width of the dropdown to the same as the width
+ *      of the trigger upon shown — good if the width is difficult to style.
+ *
  *  closeOnResize: Closes the menu if the browser is resized.  Repositioning
  *      the menu automatically can get sticky; this is a cleaner compromise.
  *
@@ -237,6 +240,11 @@
             });
         }
 
+        if (config.matchTriggerWidth)
+        {
+            $menu.width($trigger.outerWidth(false));
+        }
+
         if (config.forcePosition)
         {
             $menu.css('left', $trigger.position().left);
@@ -377,6 +385,7 @@
         activeClass: 'active',
         closeOnKeyup: false,
         forcePosition: false,
+        matchTriggerWidth: false,
         menuContainerSelector: "li",
         menuOpenClass: 'shown',
         menuSelector: 'ul.menu',

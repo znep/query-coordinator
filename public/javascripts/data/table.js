@@ -1023,7 +1023,7 @@
             var $cell = $(cell);
 
             // Can't interact with fill
-            if ($cell.hasClass('blist-tdfill'))
+            if ($cell.is('.blist-tdfill, .blist-opener-space'))
                 return null;
 
             // If we are looking at the selection expansion, return
@@ -1059,6 +1059,7 @@
 
             var x = event.clientX;
             var hh, hhm;
+            var foundRealHeader = false;
 
             var $headers = $('.blist-th:not(.blist-table-ghost), .blist-tdh',
                     container);
@@ -1081,6 +1082,7 @@
                         hh = header[0];
                         hhm = 2;
                         dragHeaderLeft = left;
+                        foundRealHeader = header.is('.blist-th');
                         return false;
                     }
 
@@ -1098,6 +1100,7 @@
                         {
                             hhm = isCtl ? 3 : 1;
                         }
+                        foundRealHeader = header.is('.blist-th');
                         return false;
                     }
                 });
@@ -1117,7 +1120,7 @@
                         $outside.css('cursor', 'default');
                     }
                 }
-                return true;
+                return foundRealHeader;
             }
             return false;
         }
@@ -1288,7 +1291,7 @@
             // Update row hover state
             // + 2 for "-r"/"-l" suffix prior to row ID
             var $nhr = $(over).closest('.blist-tr');
-            var newHotID = $nhr.length > 0 ?
+            var newHotID = $nhr.length > 0 && !$nhr.is('.blist-tr-sub') ?
                 $nhr.attr('id').substring(id.length + 2) : null;
             if (newHotID != hotRowID)
             {
@@ -1991,11 +1994,14 @@
                         colParts.push(
                             "\"<div class='blist-td blist-tdh " +
                             getColumnClass(child) +
+                            ' ' + child.type +
                             "' uid='" +
                             child.uid +
-                            "'>&nbsp;" +
+                            "'>" +
+                            "<div class='blist-th-icon'></div>" +
+                            "<span class='blist-th-name'>" +
                             htmlEscape(child.name) +
-                            "</div>\""
+                            "</span></div>\""
                         );
                         lcols.push({
                             type: 'header',
@@ -2035,17 +2041,17 @@
                     });
                     generatedCode +=
                         "if (row" + mcol.header.dataLookupExpr + ") " +
-                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'") +
+                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
                         "else ";
                         colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
                         for (var i = 0; i < children.length; i++)
-                        colParts.push("\"<div class='blist-td blist-tdfill blist-td-first "
+                        colParts.push("\"<div class='blist-td blist-tdfill blist-td-colfill "
                             + getColumnClass(children[i])
                             + "'></div>\"");
                     completeStatement();
                 } else if (mcol.type && mcol.type == 'fill') {
                     // Fill column -- covers background for a range of columns that aren't present in this row
-                    colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + "'>&nbsp;</div>\"");
+                    colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + (j == 0 ? ' initial-tdfill' : '') + "'>&nbsp;</div>\"");
                     lcols.push({
                         type: 'fill',
                         canFocus: false
@@ -2242,6 +2248,7 @@
                 'class=\'blist-tr", \
                 (index % 2 ? " blist-tr-even" : ""), \
                 (row.level != undefined ? " blist-tr-level" + row.level : ""), \
+                (row.level > 0 ? " blist-tr-sub" : ""), \
                 (row.expanded ? " blist-tr-open" : ""), \
                 (row.groupLast ? " last" : ""), \
                 "\' style=\'top: ", \
@@ -2490,7 +2497,14 @@
                     colName,
                     '" uid="',
                     col.uid,
-                    '"><div class="th-inner-container">');
+                    '">');
+                if (col.type == 'nested_table')
+                {
+                    html.push('<div class="blist-tdh blist-opener ',
+                        openerClass,
+                        '"></div>');
+                }
+                html.push('<div class="th-inner-container">');
                 if (options.columnDrag)
                 {
                     html.push(
@@ -2847,12 +2861,13 @@
 
 
         /**
-         * Render all rows that should be visible but are not yet rendered.  Removes invisible rows.
+         * Render all rows that should be visible but are not yet rendered.
+         * Removes invisible rows.
          */
         var renderRows = function() {
             if (!model)
                 return;
-            
+
             var top = $scrolls.scrollTop();
 
             // Compute the first row to render
@@ -2860,12 +2875,12 @@
 
             // Compute the number of (possibly partially) visible rows
             var count = Math.ceil((top - first * rowOffset + $scrolls.height()) / rowOffset) + 1;
-            
+
             // Count the scrolling page size
             pageSize = Math.floor((top - first * rowOffset + $scrolls.height()) / rowOffset) || 1;
 
-            // Determine the range of rows we need to render, with safety checks to be sure we don't attempt the
-            // impossible
+            // Determine the range of rows we need to render, with safety
+            // checks to be sure we don't attempt the impossible
             var start = first;
             var stop = start + count * 1.5;
             var rows = model.rows();

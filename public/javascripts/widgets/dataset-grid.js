@@ -174,7 +174,7 @@
     var cellClick = function(datasetObj, event, row, column, origEvent)
     {
         var model = datasetObj.settings._model;
-        if (!column) { return; }
+        if (!column || row.level > 0) { return; }
 
         switch (column.dataIndex)
         {

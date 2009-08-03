@@ -152,14 +152,6 @@ div.blist-table .blist-td.blist-tdh
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
-    /*background-color: #f8f8f8;*/
-    color: #666666;
-}
-
-div.blist-table .blist-tr-open .blist-td.blist-tdh {
-    color: #333333;
-    font-weight: bold;
-    background-color: #eeeeee;
 }
 
 div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected {
@@ -168,36 +160,29 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected {
 
 .blist-table div.blist-cell-selected { background-color: #b4d5fe; }
 
-.blist-td.blist-opener
+.blist-tr .blist-opener
 {
-    background-image: url('/stylesheets/images/content/table/expand_closed.png');
-    background-position: 3px center;
+    background-image: url('/stylesheets/images/content/table/expand_closed.png?1');
+    background-position: -1px center;
     background-repeat: no-repeat;
     border-right-color: transparent /*#f8f8f8*/;
     cursor: pointer;
 }
 
 .blist-tr-open .blist-td.blist-opener {
-    background-image: url('/stylesheets/images/content/table/expand_opened.png');
+    background-image: url('/stylesheets/images/content/table/expand_opened.png?1');
     border-right-color: #eeeeee;
 }
 
-.blist-td.blist-opener-inactive, .blist-tr-open .blist-td.blist-opener-inactive {
+.blist-tr .blist-td.blist-opener-inactive,
+.blist-tr-open .blist-td.blist-opener-inactive
+{
     background-image: none;
     cursor: default;
 }
 
 .blist-td.blist-opener-space {
     border-right-color: transparent;
-}
-
-.blist-table .blist-td.blist-tdfill {
-    background-color: #f8f8f8;
-    border-bottom-color: #f8f8f8;
-}
-
-.blist-table .last .blist-td.blist-tdfill {
-    border-bottom-color: #dddddd;
 }
 
 div.blist-table-expander,
@@ -431,21 +416,20 @@ img.blist-table-option-icon
 }
 
 /* Datatype icons */
-.blist-table .blist-th.text .blist-th-icon { background-position: 0 -80px; }
-.blist-table .blist-th.richtext .blist-th-icon { background-position: 0 -60px; }
-.blist-table .blist-th.number .blist-th-icon { background-position: 0 -20px; }
-.blist-table .blist-th.money .blist-th-icon { background-position: 0 -40px; }
-.blist-table .blist-th.percent .blist-th-icon { background-position: 0 0; }
-.blist-table .blist-th.date .blist-th-icon { background-position: 0 -340px; }
-.blist-table .blist-th.phone .blist-th-icon { background-position: 0 -240px; }
-.blist-table .blist-th.email .blist-th-icon { background-position: 0 -260px; }
-.blist-table .blist-th.url .blist-th-icon { background-position: 0 -360px; }
-.blist-table .blist-th.checkbox .blist-th-icon { background-position: 0 -120px; }
-.blist-table .blist-th.stars .blist-th-icon { background-position: 0 -140px; }
-.blist-table .blist-th.flag .blist-th-icon { background-position: 0 -380px; }
-.blist-table .blist-th.document .blist-th-icon { background-position: 0 -280px; }
-.blist-table .blist-th.photo .blist-th-icon { background-position: 0 -100px; }
-.blist-table .blist-th.picklist .blist-th-icon { background-position: 0 -400px; }
-.blist-table .blist-th.nested_table .blist-th-icon { background-position: 0 -440px; }
-.blist-table .blist-th.tag .blist-th-icon { background-position: 0 -180px; }
-
+.text .blist-th-icon { background-position: 0 -80px; }
+.richtext .blist-th-icon { background-position: 0 -60px; }
+.number .blist-th-icon { background-position: 0 -20px; }
+.money .blist-th-icon { background-position: 0 -40px; }
+.percent .blist-th-icon { background-position: 0 0; }
+.date .blist-th-icon { background-position: 0 -340px; }
+.phone .blist-th-icon { background-position: 0 -240px; }
+.email .blist-th-icon { background-position: 0 -260px; }
+.url .blist-th-icon { background-position: 0 -360px; }
+.checkbox .blist-th-icon { background-position: 0 -120px; }
+.stars .blist-th-icon { background-position: 0 -140px; }
+.flag .blist-th-icon { background-position: 0 -380px; }
+.document .blist-th-icon { background-position: 0 -280px; }
+.photo .blist-th-icon { background-position: 0 -100px; }
+.picklist .blist-th-icon { background-position: 0 -400px; }
+.nested_table .blist-th-icon { background-position: 0 -440px; }
+.tag .blist-th-icon { background-position: 0 -180px; }

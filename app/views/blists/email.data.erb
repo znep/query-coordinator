@@ -60,9 +60,11 @@
 
     // Add an email field to the list and wire up validation
     var numberAdded = 0;
-    $('#emailFormMoreButton').click(function(event)
+    var numberRemoved = 0;
+    $('#emailFormMoreButton:not(.disabled)').live('click', function(event)
     {
       event.preventDefault();
+
       var $container = $('<li/>');
       var $textField = $('<input type="text"/>')
         .attr('name', 'emailAddress' + numberAdded++)
@@ -78,6 +80,11 @@
           email: 'That does not look like a valid email address.'
         }
       });
+
+      if (numberAdded - numberRemoved > 14)
+      {
+        $(this).addClass("disabled");
+      }
     });
 
     // Remove an email from or clear the last field
@@ -91,11 +98,16 @@
       }
 
       $(this).closest('li').remove();
+      numberRemoved++;
+
+      $('#emailFormMoreButton').removeClass("disabled");
     });
 
     // Validate, then fire off a request for each email
     $('#emailFormSubmitButton').click(function(event)
     {
+      event.preventDefault();
+
       // Must enter one email
       if ($('.formContainer input[value!=""]').size() == 0)
       {
@@ -105,7 +117,13 @@
       $('.emailDatasetWrapper .errorMessage').text('');
 
       // Remove empty boxes
-      $('.formContainer input[value=""]').each(function() { $(this).closest('li').remove(); });
+      $('.formContainer input').each(function()
+      {
+        if ($(this).val() === "")
+        {
+          $(this).closest('li').remove();
+        }
+      });
 
       if ($form.valid())
       {

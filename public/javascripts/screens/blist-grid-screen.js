@@ -796,7 +796,7 @@ $(function ()
                 .find('.singleInfoSummary .panelHeader.' + curState)
                 .removeClass(curState).addClass(newState);
             // Update publishing panel view
-            $('.singleInfoPublishing .hide').removeClass('hide');
+            $('.singleInfoPublishing .infoContent > .hide').removeClass('hide');
             if (newState == 'private')
             {
                 $('.singleInfoPublishing .publishContent').addClass('hide');

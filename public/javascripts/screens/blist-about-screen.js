@@ -3,8 +3,8 @@ $(function ()
     $(".outerContent").blistStretchWindow();
     
     // Wire up sidebar menus
-    $('#shareMenu').dropdownMenu({triggerButton: $('#shareLink')});
-    $('#downloadMenu').dropdownMenu({triggerButton: $('#downloadLink')});
+    $('#shareMenu').dropdownMenu({triggerButton: $('#shareLink'), matchTriggerWidth: true});
+    $('#downloadMenu').dropdownMenu({triggerButton: $('#downloadLink'), matchTriggerWidth: true});
     
     // Wire up name edit form
     $('.editName').click(function(event)

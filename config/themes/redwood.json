@@ -1,5 +1,12 @@
 {
-    "main_button_bg": "be292e:.286,113e6b",
-    "main_button_active_bg": "113e6b:.286,be292e",
-    "discover_carousel_bg": "9a9a9a,636363"
+    "company": "Redwood",
+    "logo": "RedwoodLogo.gif",
+    "logo width": 217,
+    "logo height": 32,
+    "top border bg": "be292e",
+    "main button bg": "be292e:.286,ec9e6e",
+    "main button active bg": "ec9e6e:.286,be292e",
+    "link fg": "c38322",
+    "header fg": [ "be2333", "be2333", "be2333", "666", "333" ],
+    "carousel bg": "9a9a9a,636363"
 }

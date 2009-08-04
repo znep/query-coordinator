@@ -1,6 +1,20 @@
 {
-    "top_border": "06386a",
-    "main_button_bg": "2e5f8e:.286,113e6b",
-    "main_button_active_bg": "113f6c:.286,509bdb",
-    "discover_carousel_bg": "2f608f:.1,0f3c69:.9"
+    // Company
+    "company": "Socrata",
+    "logo": "socrata_logo.gif",
+    "logo width": 129,
+    "logo height": 34,
+
+    // Global
+    "link fg": "0071bc",
+    "header fg": [ "600", "600", "600", "666", "333" ],
+
+    // Chrome
+    "top border bg": "06386a",
+    "main button bg": "2e5f8e:.286,113e6b",
+    "main button active bg": "113f6c:.286,509bdb",
+
+    // Discovery page
+    "carousel bg": "2f608f:.1,0f3c69:.9",
+    "carousel item title fg": "0071bc"
 }

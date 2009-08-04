@@ -1,24 +1,20 @@
 require 'cgi'
 
 module ThemesHelper
-    def main_button_inactive
+    def main_button_inactive_bg
         box :h => 35, :r => 10, :ry => 10, :fc => :main_button_bg, :s => 'h'
     end
 
-    def main_button_active
+    def main_button_active_bg
         box :h => 35, :r => 10, :ry => 10, :fc => :main_button_active_bg, :s => 'h'
     end
 
-    def discover_carousel
-        box :h => 235, :r => 5, :bc => 'ffffff', :fc => :discover_carousel_bg, :s => 'h'
+    def carousel_bg
+        box :h => 235, :r => 5, :bc => 'ffffff', :fc => :carousel_bg, :s => 'h'
     end
 
     def box(options)
         ui_url :box, options
-    end
-
-    def th
-        Theme
     end
 
 private

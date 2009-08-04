@@ -210,22 +210,26 @@ blist.data.TableNavigation = function(model, layout) {
      */
     this.processSelection = function(rows, setRowSelectionFn, clearRowSelectionFn)
     {
-        // Convert the selection into canonical and sorted form to optimize processing
+        // Convert the selection into canonical and sorted form to optimize
+        // processing
         var selection = convertCellSelection();
 
-        // This "selmap" is an array of booleans indicating whether each column in a row is selected.  This is
-        // computed from the set of selections and cached between rows unless the set of selections that applies
+        // This "selmap" is an array of booleans indicating whether each column
+        // in a row is selected.  This is computed from the set of selections
+        // and cached between rows unless the set of selections that applies
         // change.
         var selmap;
         var selmapSelectionCount;
 
-        // The selection map template is a selection map that only includes column selection information
+        // The selection map template is a selection map that only includes
+        // column selection information
         var selmapTemplate = [];
         var hasColumnSelection;
         if (selectionLevel == 0) {
             var layoutLevel = layout[selectionLevel];
             for (var i = 0; i < layoutLevel.length; i++) {
-                var selected = selmapTemplate[i] = selectedColumns[layoutLevel[i].mcol.id];
+                var selected = selmapTemplate[i] =
+                    selectedColumns[layoutLevel[i].mcol.id];
                 if (selected)
                     hasColumnSelection = true;
             }
@@ -236,34 +240,45 @@ blist.data.TableNavigation = function(model, layout) {
             var row = rows[i];
             var index = rows[i].index;
 
-            // Clear the selection if the row isn't in the selection level
-            if ((model.get(index).level || 0) != selectionLevel)
+            var modelRow = model.get(index);
+            if (model.selectedRows[modelRow.id] !== undefined)
             {
-                clearRowSelectionFn(row);
-                continue;
+                selmap = [];
+                $.each(layout[modelRow.level || 0], function(i, c)
+                    { selmap[i] = true; });
             }
+            else
+            {
+                // Clear the selection if the row isn't in the selection level
+                if ((modelRow.level || 0) != selectionLevel)
+                {
+                    clearRowSelectionFn(row);
+                    continue;
+                }
 
-            // Drop selection boxes that appear before this row
-            while (selection.length && selection[0][3] < index) {
-                selection.shift();
-                selmap = undefined;
-            }
+                // Drop selection boxes that appear before this row
+                while (selection.length && selection[0][3] < index) {
+                    selection.shift();
+                    selmap = undefined;
+                }
 
-            // Count the number of selection boxes that apply to this row
-            for (var selCount = 0; selCount < selection.length; selCount++)
-                if (selection[selCount][1] > index)
-                    break;
+                // Count the number of selection boxes that apply to this row
+                for (var selCount = 0; selCount < selection.length; selCount++)
+                    if (selection[selCount][1] > index)
+                        break;
 
-            // Update the row
-            if (selCount == 0 && !hasColumnSelection) {
-                clearRowSelectionFn(row);
-                continue;
-            }
+                // Update the row
+                if (selCount == 0 && !hasColumnSelection) {
+                    clearRowSelectionFn(row);
+                    continue;
+                }
 
-            // Build the selection map if a cached version isn't available
-            if (!selmap || selmapSelectionCount != selCount) {
-                selmapSelectionCount = selCount;
-                selmap = createSelectionMap(selection, selCount, selmapTemplate);
+                // Build the selection map if a cached version isn't available
+                if (!selmap || selmapSelectionCount != selCount) {
+                    selmapSelectionCount = selCount;
+                    selmap = createSelectionMap(selection, selCount,
+                        selmapTemplate);
+                }
             }
 
             // Update the selection

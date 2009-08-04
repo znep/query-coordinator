@@ -231,28 +231,44 @@
 
             cellNav.setColumnSelection(column, state);
 
+            if (state)
+            { model.unselectAllRows(); }
+
             // TODO -- support column selection on nested tables?
-            var cols = layout[0];
-            
-            for (var i = 0; i < cols.length; i++) {
-                var col = $header.find('.' + id + '-c' + column.index);
-                var colClass = getColumnClass(column);
-                if (cellNav.isColumnSelected(column)) {
-                    if (!col.is('.blist-select-col')) {
-                        var colLeft = col.addClass('blist-select-col').offset().left;
-                        inside.append('<div class="col-select-holder ' + colClass + '"/>')
+
+            updateColumnSelection();
+            updateCellNavCues();
+        };
+
+        var updateColumnSelection = function()
+        {
+            for (var i = 0; i < columns.length; i++)
+            {
+                var mcol = columns[i];
+                var col = $header.find('.' + id + '-c' + mcol.index);
+                var colClass = getColumnClass(mcol);
+                if (cellNav.isColumnSelected(mcol))
+                {
+                    if (!col.is('.blist-select-col'))
+                    {
+                        var colLeft = col.addClass('blist-select-col')
+                            .offset().left;
+                        inside.append('<div class="col-select-holder ' +
+                            colClass + '"/>')
                             .find('.col-select-holder.' + colClass)
-                            .css('left', colLeft - $header.offset().left + lockedWidth);
+                            .css('left', colLeft - $header.offset().left +
+                                lockedWidth);
                     }
-                } else {
-                    if (col.is('.blist-select-col')) {
+                }
+                else
+                {
+                    if (col.is('.blist-select-col'))
+                    {
                         col.removeClass('blist-select-col');
                         inside.find('.col-select-holder.' + colClass).remove();
                     }
                 }
             }
-            
-            updateCellNavCues();
         }
 
 
@@ -405,6 +421,7 @@
         {
             if (cellNav.clearAll()) {
                 $activeCells = null;
+                updateColumnSelection();
                 updateCellNavCues();
                 expandActiveCell();
                 inside.find('.col-select-holder').remove();
@@ -1353,7 +1370,9 @@
                 {
                     $prevActiveCells = null;
                     if (!event.shiftKey && !event.metaKey)
+                    {
                         clearCellNav();
+                    }
                 }
                 if (cell && cellNavTo(cell, event))
                 {
@@ -2907,6 +2926,7 @@
                 inside.find('#' + id + '-r' + k).addClass('blist-select-row');
                 $locked.find('#' + id + '-l' + k).addClass('blist-select-row');
             });
+            updateCellNavCues();
         };
 
         var loadMissingRows = function() {

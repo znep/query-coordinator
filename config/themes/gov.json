@@ -1,7 +1,5 @@
 {
     "company": "data.gov",
-
-    "logo": "data_gov_logo.png",
-    "logo width": 144,
-    "logo height": 41
+    "site title": "data.gov | Find Government Data",
+    "logo": "data_gov_logo.png"
 }

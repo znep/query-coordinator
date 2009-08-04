@@ -255,22 +255,26 @@ blist.namespace.fetch('blist.data');
          */
         this.canRead = function()
         {
-            return meta.view && $.inArray('read', meta.view.rights) >= 0;
+            return meta.view && meta.view.rights &&
+                $.inArray('read', meta.view.rights) >= 0;
         };
 
         this.canWrite = function()
         {
-            return meta.view && $.inArray('write', meta.view.rights) >= 0;
+            return meta.view && meta.view.rights &&
+                $.inArray('write', meta.view.rights) >= 0;
         };
 
         this.canAdd = function()
         {
-            return meta.view && $.inArray('add', meta.view.rights) >= 0;
+            return meta.view && meta.view.rights &&
+                $.inArray('add', meta.view.rights) >= 0;
         };
 
         this.canDelete = function()
         {
-            return meta.view && $.inArray('delete', meta.view.rights) >= 0;
+            return meta.view && meta.view.rights &&
+                $.inArray('delete', meta.view.rights) >= 0;
         };
 
         /**

@@ -34,7 +34,7 @@ blist.myBlists.sharedByGroupFilterGen = function(group)
 blist.myBlists.ownedByFilterGen = function(userId)
 {
     return function(view) {
-        return view.owner.id == userId;
+        return view.owner && view.owner.id == userId;
     };
 };
 
@@ -128,7 +128,7 @@ blist.myBlists.filterFilter = function(view)
 
 blist.myBlists.untaggedFilter = function(view)
 {
-    if (view.tags.length == 0)
+    if (view.tags && view.tags.length == 0)
     {
         return true;
     }
@@ -137,7 +137,7 @@ blist.myBlists.untaggedFilter = function(view)
 
 blist.myBlists.taggedFilter = function(view)
 {
-    if (view.tags.length > 0)
+    if (view.tags && view.tags.length > 0)
     {
         return true;
     }
@@ -147,6 +147,7 @@ blist.myBlists.taggedFilter = function(view)
 blist.myBlists.tagFilterGen = function(tag)
 {
     return function(view) {
+        if (!view.tags) { return false; }
         for (var i=0; i < view.tags.length; i++)
         {
             var t = view.tags[i];
@@ -832,8 +833,8 @@ blist.myBlists.listCellClick = function(event, row, column, origEvent)
     {
         event.preventDefault();
     }
-    
-    if(column.dataIndex == 'favorite')
+
+    if (column && column.dataIndex == 'favorite')
     {
         event.preventDefault();
         myBlistsNS.favoriteClick(row);

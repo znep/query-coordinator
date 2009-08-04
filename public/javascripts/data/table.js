@@ -242,6 +242,7 @@
 
         var updateColumnSelection = function()
         {
+            if (!cellNav) { return; }
             for (var i = 0; i < columns.length; i++)
             {
                 var mcol = columns[i];
@@ -275,7 +276,8 @@
         /*** CELL SELECTION AND NAVIGATION ***/
 
         // Cell navigation model and logic
-        var cellNav = options.cellNav ? new blist.data.TableNavigation(model, []) : null;
+        var cellNav = options.cellNav ?
+            new blist.data.TableNavigation(model, []) : null;
 
         // DOM nodes for active cells
         var $activeCells;
@@ -316,6 +318,8 @@
 
         var updateCellNavCues = function()
         {
+            if (!cellNav) { return; }
+
             // Update the active cell
             if (cellNav.isActive())
             {
@@ -419,7 +423,7 @@
          */
         var clearCellNav = function()
         {
-            if (cellNav.clearAll()) {
+            if (cellNav && cellNav.clearAll()) {
                 $activeCells = null;
                 updateColumnSelection();
                 updateCellNavCues();
@@ -1308,7 +1312,7 @@
                 // Notify listeners
                 var cellEvent = $.Event('cellclick');
                 $this.trigger(cellEvent, [ row, column, origEvent ]);
-                if (!skipSelect && !cellNav.isActive() &&
+                if (!skipSelect && (!cellNav || !cellNav.isActive()) &&
                     options.selectionEnabled &&
                     !cellEvent.isDefaultPrevented() && !(row.level < 0))
                 {
@@ -1426,7 +1430,7 @@
                 if (!editMode) { $navigator[0].focus(); }
             }
 
-            expandActiveCell();
+            if (cellNav) { expandActiveCell(); }
         }
 
         var onDoubleClick = function(event)
@@ -2197,7 +2201,8 @@
                 var lcols = layout[i] = [];
                 levelRender[i] = createColumnRendering(mcols, lcols, contextVariables);
             }
-            cellNav = new blist.data.TableNavigation(model, layout);
+            cellNav = options.cellNav ?
+                new blist.data.TableNavigation(model, layout) : null;
 
             var rowDivContents =
                 'class=\'blist-tr", \
@@ -2513,11 +2518,10 @@
                         }
 
                         var $target = $(event.target);
+                        var col = $target.closest('.blist-th').data('column');
                         if (cellNav &&
                             $target.closest('.blist-th-icon').length > 0)
                         {
-                            var col = $target.closest('.blist-th')
-                                .data('column');
                             selectColumn(col, !cellNav.isColumnSelected(col));
                             return;
                         }
@@ -3020,8 +3024,8 @@
 
     var blistTableDefaults = {
         cellExpandEnabled: true,
+        cellNav: false,
         columnDrag: false,
-        columnSelection: false,
         disableLastColumnResize: false,
         editEnabled: false,
         generateHeights: true,

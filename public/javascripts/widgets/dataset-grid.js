@@ -64,7 +64,6 @@
                     .bind('column_filter_change', function (event, c)
                         { columnFilterChanged(datasetObj, c); })
                     .blistTable({cellNav: true, selectionEnabled: false,
-                        columnSelection: true,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },

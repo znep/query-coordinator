@@ -139,7 +139,7 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "data/types", "data/model", "data/table", "data/table_nav",
+  <%= javascript_include_tag "data/types", "data/model", "data/table",
       "screens/stats-screen" %> 
   <script type="text/javascript" charset="utf-8">
     blist.namespace.fetch('blist.stats');

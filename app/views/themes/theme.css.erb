@@ -1,10 +1,27 @@
+/*** GENERAL ***/
+
+a {
+    color: #<%= th.link_fg %>;
+}
+
+<% 5.times do |level| %>
+h<%= level + 1 %>  {
+    color: #<%= th.header_fg[level] || '333333' %>;
+}
+<% end %>
+
+
 /*** OUTER CHROME ***/
+
+#header {
+    border-top-color: #<%= th.top_border_bg %>;
+}
 
 #mainNav li a span,
 #mainNav li.discover,
 #mainNav li.home
 {
-    background-image: <%= main_button_inactive %>;
+    background-image: <%= main_button_inactive_bg %>;
 }
 
 body.home #mainNav li.home,
@@ -13,18 +30,20 @@ body.discover #mainNav li.discover a span,
 body.community #mainNav li.community a span,
 body.discover #mainNav li.discover
 {
-    background-image: <%= main_button_active %>;
+    background-image: <%= main_button_active_bg %>;
 }
-#header {
-    border-top-color: #<%= th.top_border %>;
+
+#mainLogo a
+{
+    background-image: <%= th.image :logo %>;
 }
 
 
-/*** DISCOVER ***/
+/*** CAROUSEL ***/
 
 .pageBlockHeaderCarousel.carouselWrapper,
 .pageBlockHeaderCarousel .carouselOuter,
 .pageBlockHeaderCarousel .carouselInner
 {
-    background-image: <%= discover_carousel %>;
+    background-image: <%= carousel_bg %>;
 }

@@ -52,13 +52,13 @@ body
 
 #mainLogo a
 {
-    background-image: url(/stylesheets/images/header/socrata_logo.png);
+    height: 50px;
+    width: 250px;
     background-repeat: no-repeat;
+    background-image: url(/stylesheets/images/header/socrata_logo.png);
     display: block;
-    height: 34px;
     padding-bottom: .3em;
     text-indent: -9999px;
-    width: 151px;
 }
 #mainLogo.aboutLogo a { background-image: url(/stylesheets/images/header/socrata_logo_about.png); }
 

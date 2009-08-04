@@ -9,12 +9,14 @@ module Theme
             host = request.host
             if host.index 'redwood'
                 theme = 'redwood'
+            elsif host.index 'gov'
+                theme = 'gov'
             end
 
             load_theme theme if theme
 
-            # Legacy theme config (eventually to be merged into this system)
-            if (request.host.match('gov'))
+            # Legacy theme config (to be phased out)
+            if (host.match('gov'))
                 I18n.locale = 'gov'
             else
                 # Force the locale back to blist if we're not datagov
@@ -35,9 +37,15 @@ module Theme
 
         options = JSON.parse definition
         options.each do |key, value|
+            if value.is_a? Array
+                value = value.to_json
+            else
+                value = "'#{value.to_s.gsub '\'', '\\\''}'"
+            end
+            
             eval <<-EOS
-              def self.#{key}
-                '#{ value.gsub '\'', '\\\'' }'
+              def self.#{key.gsub /[ \-]/, '_'}
+                #{value}
               end
             EOS
         end
@@ -45,8 +53,19 @@ module Theme
         @@active_name = name
     end
 
+    # Retrieve a CSS URL definition for a specific theme image
+    def self.image(name)
+        "url(/images/themes/#{Theme.active}/#{self.send name})"
+    end
+
+    # Determine the name of the active theme
     def self.active
         @@active_name
+    end
+
+    # Retrieve favicon URL for the theme
+    def self.favicon
+        "/images/themes/#{Theme.active}/favicon.ico"
     end
     
     load_theme 'socrata'

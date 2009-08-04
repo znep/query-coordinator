@@ -36,10 +36,9 @@
   
   <%- if is_gov_site? -%>
   <%= stylesheet_link_tag "gov-override" %>
-  <link rel="shortcut icon" href="/dg_favicon.ico" />
-  <%- else -%>
-  <link rel="shortcut icon" href="/favicon.ico" />
   <%- end -%>
+
+  <link rel="shortcut icon" href="<%=th.favicon%>" />
 
   
 </head>
@@ -49,7 +48,7 @@
   <div id='outerContainer'>
     <div id='header'>
       <h1 id='mainLogo' class='<%= @is_marketing_page ? "aboutLogo" : "appLogo" %>'>
-        <%= link_to(t(:blist_company), root_path) %>
+        <%= link_to(th.company, root_path) %>
       </h1>
 
       <div id='mainNav'>

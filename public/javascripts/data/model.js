@@ -195,6 +195,19 @@ blist.namespace.fetch('blist.data');
             }
         };
 
+        var setRowMetadata = function(newRows)
+        {
+            if (!meta.metaColumns) { return; }
+
+            $.each(newRows, function(i, r)
+            {
+                $.each(meta.metaColumns, function(j, c)
+                {
+                    r[c.name] = r[c.index];
+                });
+            });
+        };
+
         var dataChange = function()
         {
             self.unselectAllRows(true);
@@ -235,6 +248,29 @@ blist.namespace.fetch('blist.data');
         this.title = function()
         {
             return meta.title || (meta.view && meta.view.name) || "";
+        };
+
+        /**
+         * Get rights for this view
+         */
+        this.canRead = function()
+        {
+            return meta.view && $.inArray('read', meta.view.rights) >= 0;
+        };
+
+        this.canWrite = function()
+        {
+            return meta.view && $.inArray('write', meta.view.rights) >= 0;
+        };
+
+        this.canAdd = function()
+        {
+            return meta.view && $.inArray('add', meta.view.rights) >= 0;
+        };
+
+        this.canDelete = function()
+        {
+            return meta.view && $.inArray('delete', meta.view.rights) >= 0;
         };
 
         /**
@@ -354,6 +390,7 @@ blist.namespace.fetch('blist.data');
         {
             // Install the rows
             var supplement = response.data;
+            setRowMetadata(supplement);
             for (var i = 0; i < supplement.length; i++)
             {
                 var row = supplement[i];
@@ -416,6 +453,24 @@ blist.namespace.fetch('blist.data');
                     meta.aggregateHash[a.columnId].type = a.name;
                     meta.aggregateHash[a.columnId].value = a.value;
                 });
+            }
+        };
+
+        var translateMetaColumns = function(viewCols, metaCols)
+        {
+            if (!viewCols)
+                return;
+
+            for (var i = 0; i < viewCols.length; i++)
+            {
+                var v = viewCols[i];
+                if (v.dataType && v.dataType.type == 'meta_data')
+                {
+                    var adjName = v.name;
+                    if (v.name == 'sid') { adjName = 'id'; }
+                    else if (v.name == 'id') { adjName = 'uid'; }
+                    metaCols.push({name: adjName, index: i});
+                }
             }
         };
 
@@ -550,11 +605,14 @@ blist.namespace.fetch('blist.data');
                 if (!meta.columns)
                 {
                     meta.columns = [[]];
+                    meta.metaColumns = [];
                     if (meta.view)
                     {
                         updateAggregateHash(meta.aggregates);
                         if (meta.view.columns)
                         {
+                            translateMetaColumns(meta.view.columns,
+                                meta.metaColumns);
                             translateViewColumns(meta.view, meta.view.columns,
                                 meta.columns, 0);
                         }
@@ -652,6 +710,7 @@ blist.namespace.fetch('blist.data');
             {
                 expanded = {};
                 active = rows = newRows;
+                setRowMetadata(newRows);
                 installIDs();
 
                 // Apply sorting if so configured
@@ -687,6 +746,7 @@ blist.namespace.fetch('blist.data');
             {
                 active = active.concat(addedRows);
             }
+            setRowMetadata(addedRows);
             installIDs();
             $(listeners).trigger('row_add', [ addedRows ]);
         };
@@ -696,6 +756,9 @@ blist.namespace.fetch('blist.data');
          */
         this.remove = function(rows)
         {
+            if (!(typeof rows == Array))
+            { rows = [rows]; }
+
             for (var i = 0; i < rows.length; i++)
             {
                 var row = rows[i];
@@ -1320,6 +1383,7 @@ blist.namespace.fetch('blist.data');
             // active is now the new set of rows from the server, and not
             //  linked-to or based-on rows
             active = config.rows || config.data;
+            setRowMetadata(active);
             for (var i = 0; i < active.length; i++)
             {
                 // If it is not an object, just an id, try to look it up from rows

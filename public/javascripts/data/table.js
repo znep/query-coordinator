@@ -2092,8 +2092,8 @@
                 lockedColumns.push(rowHandleColumn = {uid: 'rowHandleCol',
                     dataIndex: 'rowHandle',
                     cls: 'blist-table-row-handle',
-                    width: 1,
-                    renderer: '""'});
+                    width: options.rowHandleWidth,
+                    renderer: options.rowHandleRenderer});
             }
 
             handleDigits = calculateHandleDigits(model);
@@ -2125,14 +2125,14 @@
             }
 
             // Update the locked column styles with proper dimensions
-            // +1 for rounding errors
-            lockedWidth = 1;
+            lockedWidth = 0;
             $.each(lockedColumns, function (i, c)
             {
                 measureUtilDOM.innerHTML =
                     '<div class="blist-tr">\
-                    <div class="' + (c.cls || '') + ' blist-td">' +
-                    (c.measureText || '') + '</div></div>';
+                    <div class="' + (c.width ? getColumnClass(c) : '') + ' ' +
+                        (c.cls || '') + ' blist-td">' +
+                        (c.measureText || '') + '</div></div>';
                 var $measureCol = $(measureUtilDOM).find('.blist-td');
                 var colStyle = getColumnStyle(c);
                 if (c.width)
@@ -2161,6 +2161,12 @@
                 renderSpecial: function(specialRow) {
                     return "<div class='blist-td blist-td-header'>" +
                         specialRow.title + "</div>";
+                },
+                permissions: {
+                    read: model.canRead(),
+                    write: model.canWrite(),
+                    add: model.canAdd(),
+                    delete: model.canDelete()
                 }
             };
 
@@ -2566,7 +2572,8 @@
             $.each(lockedColumns, function (i, c)
             {
                 lockedHtml += '<div class="blist-th ' + (c.cls || '') +
-                    ' ' + getColumnClass(c) + '"></div>';
+                    ' ' + getColumnClass(c) +
+                    '"><div class="blist-th-icon"></div></div>';
             });
             $lockedHeader.html(lockedHtml);
 
@@ -3002,6 +3009,8 @@
         headerMods: function (col) {},
         manualResize: false,
         resizeHandleAdjust: 3,
+        rowHandleRenderer: '""',
+        rowHandleWidth: 1,
         selectionEnabled: true,
         showGhostColumn: false,
         showName: true,

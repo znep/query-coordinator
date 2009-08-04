@@ -1,3 +1,5 @@
+/* Dataset grids MUST have an ID! */
+
 (function($)
 {
     $.fn.datasetGrid = function(options)
@@ -69,6 +71,8 @@
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
+                        rowHandleWidth: 15,
+                        rowHandleRenderer: datasetObj.rowHandleRenderer,
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
@@ -78,6 +82,10 @@
                                 '/rows.json', cache: false,
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
+
+                $('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle')
+                    .live('mouseover',
+                        function (e) { hookUpRowMenu(datasetObj, this, e); });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
 
@@ -167,9 +175,63 @@
             // needs to be refreshed
             summaryStale: true,
 
-            isTempView: false
+            isTempView: false,
+
+            rowHandleRenderer: '(permissions.delete ? ' +
+                '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
+                'row.id + "\'></a>' +
+                '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "\'>' +
+                '<li class=\'delete\'><a href=\'#row-delete_" + row.id + ' +
+                '"\'>Delete Row</a></li>' +
+                '<li class=\'footer\'><div class=\'outerWrapper\'>' +
+                '<div class=\'innerWrapper\'><span class=\'colorWrapper\'>' +
+                '</span></div>' +
+                '</div></li>' +
+                '</ul>" : "")'
         }
     });
+
+    var hookUpRowMenu = function(datasetObj, curCell, e)
+    {
+        var $cell = $(curCell);
+        if (!$cell.data('row-menu-applied'))
+        {
+            $cell.find('ul.menu').dropdownMenu({
+                menuContainerSelector: ".blist-table-row-handle",
+                triggerButtonSelector: "a.menuLink",
+                linkCallback: function (e)
+                    { rowMenuHandler(datasetObj, e); },
+                pullToTop: true
+            });
+            $cell.data('row-menu-applied', true);
+        }
+    };
+
+    /* Handle clicks in the row menus */
+    var rowMenuHandler = function(datasetObj, event)
+    {
+        event.preventDefault();
+        // Href that we care about starts with # and parts are separated with _
+        // IE sticks the full thing, so slice everything up to #
+        var href = $(event.currentTarget).attr('href');
+        var s = href.slice(href.indexOf('#') + 1).split('_');
+        if (s.length < 2)
+        {
+            return;
+        }
+
+        var action = s[0];
+        var rowId = s[1];
+        var model = datasetObj.settings._model;
+        var view = model.meta().view;
+        if (action == 'row-delete')
+        {
+            $.ajax({url: '/views/' + view.id + '/rows/' + rowId + '.json',
+                    contentType: 'application/json',
+                    type: 'DELETE'});
+            model.remove(model.getByID(rowId));
+        }
+    };
 
     var cellClick = function(datasetObj, event, row, column, origEvent)
     {

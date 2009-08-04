@@ -21,6 +21,13 @@
     position: relative;
 }
 
+.metadataPane .actionButtons li,
+.metadataPane .actionButtons li a,
+.metadataPane .actionButtons li a.arrowButton
+{
+    background-image: url(/stylesheets/images/info_pane/background_buttons_summary_sprites.png);
+}
+
 /*** START: tabs styling ***/
 .metadataPane .summaryTabs
 {
@@ -30,20 +37,20 @@
 
 .metadataPane .summaryTabs li.scrollArrow
 {
-    border: 1px solid #06386a;
+    border-width: 0;
     display: none;
     position: absolute;
     top: 0;
-    width: 24px;
+    width: 26px;
 }
 .metadataPane .summaryTabs li.prev
 {
     border-right: 1px solid #fff;
-    right: 26px;
+    right: 25px;
 }
 .metadataPane .summaryTabs li.next
 {
-    right: 0;
+    right: -1px;
 }
 
 .metadataPane .summaryTabs li.scrollArrow a
@@ -51,6 +58,7 @@
     background-color: #06386a;
     background-position: 6px 0;
     background-repeat: no-repeat;
+    border: 1px solid #06386a;
     display: block;
     height: 19px;
     overflow: hidden;

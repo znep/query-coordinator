@@ -1,9 +1,8 @@
 {
     // Company
     "company": "Socrata",
+    "site title": "Socrata | Making Data Social",
     "logo": "socrata_logo.gif",
-    "logo width": 129,
-    "logo height": 34,
 
     // Global
     "link fg": "0071bc",

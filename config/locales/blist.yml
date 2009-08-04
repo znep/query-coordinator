@@ -1,7 +1,4 @@
 blist:
-  page_title: Socrata | Making Data Social
-  my_home_title: My Socrata
-  discover_nav_title: Public Data
   search_prompt_text: Search for Public Datasets
   discover_search_intro: Search for Public Datasets
   discover_header_intro: Discover useful, unique and unusual datasets created by the community.

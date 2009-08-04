@@ -1,8 +1,7 @@
 {
     "company": "Redwood",
+    "site title": "Redwood City | Open Data",
     "logo": "RedwoodLogo.gif",
-    "logo width": 217,
-    "logo height": 32,
     "top border bg": "be292e",
     "main button bg": "be292e:.286,ec9e6e",
     "main button active bg": "ec9e6e:.286,be292e",

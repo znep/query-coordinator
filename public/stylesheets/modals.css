@@ -303,14 +303,14 @@
     float: left;
     margin-top: -15px;
     padding-left: 15px;
-    width: 260px;
+    width: 290px;
 }
 
 .printDatasetWrapper .columnRight
 {
     border-left: 1px solid #cacaca;
-    margin: 15px 0 20px 315px;
-    padding-left: 50px;
+    margin: 15px 0 20px 335px;
+    padding-left: 30px;
 }
 
 .printDatasetWrapper label,
@@ -402,6 +402,12 @@
     position: relative;
     text-indent: -9999px;
     width: 16px;
+}
+
+.emailDatasetWrapper #emailFormMoreButton.disabled
+{
+    color: #aaa;
+    cursor: default;
 }
 
 .emailDatasetWrapper .formContainer .actionButtons

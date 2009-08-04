@@ -18,14 +18,67 @@
     height: 21px;
     overflow: hidden;
     padding: 0;
+    position: relative;
 }
 
 /*** START: tabs styling ***/
-.metadataPane .summaryTabs 
+.metadataPane .summaryTabs
 {
     background-color: #fff;
     width: 3000px;
 }
+
+.metadataPane .summaryTabs li.scrollArrow
+{
+    border: 1px solid #06386a;
+    display: none;
+    position: absolute;
+    top: 0;
+    width: 24px;
+}
+.metadataPane .summaryTabs li.prev
+{
+    right: 27px;
+}
+.metadataPane .summaryTabs li.next
+{
+    right: 0;
+}
+
+.metadataPane .summaryTabs li.scrollArrow a
+{
+    background-color: #06386a;
+    background-position: 6px 0;
+    background-repeat: no-repeat;
+    display: block;
+    height: 19px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 24px;
+}
+
+.metadataPane .summaryTabs li.prev a
+{
+    background-image: url(/stylesheets/images/info_pane/meta_tab_scroller_left.png);
+}
+.metadataPane .summaryTabs li.next a
+{
+    background-image: url(/stylesheets/images/info_pane/meta_tab_scroller_right.png);
+}
+
+.metadataPane .summaryTabs li.scrollArrow a:hover
+{
+    background-color: #fcd9d4;
+    background-position: 6px -38px;
+}
+.metadataPane .summaryTabs li.scrollArrow.disabled a,
+.metadataPane .summaryTabs li.scrollArrow.disabled a:hover
+{
+    background-color: #06386a;
+    background-position: 6px -19px;
+    cursor: default;
+}
+
 /*** END: tabs styling ***/
 
 #widgetMeta .infoContentHeader h2.panelHeader 
@@ -93,5 +146,8 @@
 }
 .singleInfoComments li.comment .actions a { margin-left: 0; }
 
-
-
+.singleInfoPublishing .publishContent .copyCode textarea
+{
+    height: 13em;
+    width: 33em;
+}

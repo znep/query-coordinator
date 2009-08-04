@@ -77,7 +77,7 @@
                         $('<span>*</span>').addClass('required'));
                     $this.find("#view_attribution").rules("add", {
                         required: true,
-                        messages: { required: " You must attribute the dataset."}
+                        messages: { required: " You must specify the data provider (attribution)."}
                     });
 
                     $this.find('#view_licenseId').attr('name', '');

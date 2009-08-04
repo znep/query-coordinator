@@ -192,12 +192,6 @@ div.blist-table-expander .blist-td
     padding-left: 0.4167em; /* 5px */
 }
 
-img.blist-table-option-icon
-{
-    margin-bottom: -1px;
-    padding-right: 0.4em;
-}
-
 .blist-table a
 {
     text-decoration: none;

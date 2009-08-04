@@ -6,7 +6,7 @@
   <%- is_first_tab = true -%>
   <%- theme[:meta].reject{ |name, properties| !properties[:show] }.
                    sort{ |a, b| a.last[:order] <=> b.last[:order] }.each do |name, properties| -%>
-    <li id="tab<%= name.to_s.titleize %>" class="<%= name %><%= is_first_tab ? ' active' : '' %>">
+    <li id="tab<%= name.to_s.titleize %>" class="scrollable <%= name %><%= is_first_tab ? ' active' : '' %>">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="expander" title="more info">more info</a>
         <a href="#<%= name %>"><%= properties[:display_name] %></a>
@@ -14,6 +14,8 @@
     </li>
   <%- is_first_tab = false -%>
   <%- end -%>
+  <li class="scrollArrow prev"><a href="#scroll_left">Scroll left</a></li>
+  <li class="scrollArrow next"><a href="#scroll_right">Scroll right</a></li>
   </ul>
 </div>
 
@@ -45,6 +47,19 @@
   </div>
 <%- end -%>
 <%# *** END: FILTERED *** %>
+
+<%# *** START: PUBLISHING *** %>
+<%- if theme[:meta][:publishing][:show] -%>
+  <div class="infoContentOuter singleInfoPublishing">
+    <div class="infoContentHeader clearfix">
+      <h2 class="panelHeader">Publishing</h2>
+    </div>
+    <div class="infoContentInner"><div class="infoContentWrapper">
+      <div class="infoContent"></div>
+    </div></div>
+  </div>
+<%- end -%>
+<%# *** END: PUBLISHING *** %>
 
 <%# *** START: ACTIVITY *** %>
 <%- if theme[:meta][:activity][:show] -%>

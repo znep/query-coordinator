@@ -65,6 +65,7 @@ class WidgetsController < ApplicationController
         @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
         @theme[:meta][:comments][:show] = true
         @theme[:meta][:filtered][:show] = true
+        @theme[:meta][:publishing][:show] = true
         @theme[:meta][:activity][:show] = true
         @theme[:meta][:summary][:show] = true
       else
@@ -105,6 +106,9 @@ class WidgetsController < ApplicationController
     
     # Wire in custom behaviors for whitehouse/gov
     @theme[:style][:custom_stylesheet] = @variation
+    if @variation == 'whitehouse'
+      @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
+    end
     if @is_gov_widget
       @theme[:behavior][:interstitial] = true
       @theme[:frame][:logo][:show] = false

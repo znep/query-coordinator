@@ -61,7 +61,8 @@ module CommunitiesHelper
     when "create_view", "create_blist", "edit_blist", "comment", "rate", 
           "comment_and_rate", "promote_dataset", "published", "moderate_comment", 
           "rate_comment", "reply_to_comment"
-      out = "<a href='#{blist_path(activity.actedOnId)}'"
+      # FIXME: Use blist_path or dataset_path after refactor
+      out = "<a href='/dataset/#{activity.actedOnId}'"
       if (external)
         out += " rel='external'"
       end

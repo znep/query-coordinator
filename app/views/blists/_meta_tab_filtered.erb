@@ -60,8 +60,7 @@
                 </a>
               </div>
             </td>
-            <td class="viewed"><div><%= blist_date(filter.last_viewed) %>
-            </div></td>
+            <td class="viewed"><div><%= filter.viewCount %></div></td>
             <td class="actionContainer"><div><a
                   href="<%= filter.href %>" class="action"
                   title="<%= h(filter.name) %>"><span>View</span></a>

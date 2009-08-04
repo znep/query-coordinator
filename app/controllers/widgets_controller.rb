@@ -61,18 +61,9 @@ class WidgetsController < ApplicationController
       #If we're using "meta" variation, add the meta tabs and save filter bar
       if !@options.nil? && @options == "meta"
         @theme[:behavior][:save_public_views] = true
-
-        @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
-        @theme[:meta][:comments][:show] = true
-        @theme[:meta][:filtered][:show] = true
-        @theme[:meta][:publishing][:show] = true
-        @theme[:meta][:activity][:show] = true
-        @theme[:meta][:summary][:show] = true
       else
         # They're disabled by default until they're ready
         @theme[:behavior][:save_public_views] = false
-
-        @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
       end
     end
 

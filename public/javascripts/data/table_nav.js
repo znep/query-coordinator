@@ -114,7 +114,7 @@ blist.data.TableNavigation = function(model, layout) {
             // Control or command key -- starts a new box
             selectionMode = 'start-new';
         }
-        else if (hasSelection)
+        else if (hasSelection())
         {
             // No modifier keys -- remove the selection
             selectionBoxes = [];

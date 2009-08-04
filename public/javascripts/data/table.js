@@ -2489,7 +2489,7 @@
 
                         var $target = $(event.target);
                         if (cellNav &&
-                            $target.closest('.blist-th').length > 0)
+                            $target.closest('.blist-th-icon').length > 0)
                         {
                             var col = $target.closest('.blist-th')
                                 .data('column');

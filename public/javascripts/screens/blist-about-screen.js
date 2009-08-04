@@ -4,7 +4,7 @@ $(function ()
     
     // Wire up sidebar menus
     $('#shareMenu').dropdownMenu({triggerButton: $('#shareLink'), matchTriggerWidth: true});
-    $('#downloadMenu').dropdownMenu({triggerButton: $('#downloadLink'), matchTriggerWidth: true});
+    $('#downloadMenu').dropdownMenu({triggerButton: $('#downloadLink')});
     
     // Wire up name edit form
     $('.editName').click(function(event)

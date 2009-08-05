@@ -53,6 +53,12 @@ form.search input.submit
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.gif);
 }
 
+.blist-th .sort,
+.blist-th .filter
+{
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif);
+}
+
 .breadcrumbItem { background-image: url(/stylesheets/images/common/breadcrumb_arrow.gif); }
 
 /*** START: meta data tab styles ***/

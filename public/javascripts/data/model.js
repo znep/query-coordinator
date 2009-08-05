@@ -768,25 +768,19 @@ blist.namespace.fetch('blist.data');
                 var row = rows[i];
                 var id = row.id;
                 var index = lookup[id];
-                if (index)
+                if (index !== undefined)
                 {
                     delete lookup[id];
-                    if (index != undefined)
-                    {
-                        rows.splice(index, 1);
-                        rowsLoaded--;
-                    }
+                    rows.splice(index, 1);
+                    rowsLoaded--;
                 }
                 if (rows != active)
                 {
                     index = activeLookup[id];
-                    if (index)
+                    if (index !== undefined)
                     {
                         delete activeLookup[id];
-                        if (index != undefined)
-                        {
-                            active.splice(index, 1);
-                        }
+                        active.splice(index, 1);
                     }
                 }
                 this.unselectRow(row);

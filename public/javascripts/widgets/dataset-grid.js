@@ -176,7 +176,7 @@
 
             isTempView: false,
 
-            rowHandleRenderer: '(permissions.delete ? ' +
+            rowHandleRenderer: '(permissions.canDelete ? ' +
                 '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
                 'row.id + "\'></a>' +
                 '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "\'>' +
@@ -225,10 +225,14 @@
         var view = model.meta().view;
         if (action == 'row-delete')
         {
-            $.ajax({url: '/views/' + view.id + '/rows/' + rowId + '.json',
+            model.selectRow(model.getByID(rowId));
+            $.each(model.selectedRows, function(id, index)
+            {
+                $.ajax({url: '/views/' + view.id + '/rows/' + id + '.json',
                     contentType: 'application/json',
                     type: 'DELETE'});
-            model.remove(model.getByID(rowId));
+                model.remove(model.getByID(id));
+            });
         }
     };
 

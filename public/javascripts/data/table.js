@@ -2186,10 +2186,10 @@
                         specialRow.title + "</div>";
                 },
                 permissions: {
-                    read: model.canRead(),
-                    write: model.canWrite(),
-                    add: model.canAdd(),
-                    delete: model.canDelete()
+                    canRead: model.canRead(),
+                    canWrite: model.canWrite(),
+                    canAdd: model.canAdd(),
+                    canDelete: model.canDelete()
                 }
             };
 

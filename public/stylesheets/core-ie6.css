@@ -55,11 +55,13 @@ form.search input.submit
 
 .breadcrumbItem { background-image: url(/stylesheets/images/common/breadcrumb_arrow.gif); }
 
-
 /*** START: meta data tab styles ***/
 .metadataPane .summaryTabs li { margin-bottom: -1px; }
+
 .singleInfoSummary .headerActions.actionButtons li { width: 80px; }
 .singleInfoSummary .headerActions.actionButtons li a { width: 60px; }
+.singleInfoComments .headerActions.actionButtons li { width: 100px; }
+.singleInfoComments .headerActions.actionButtons li a { padding-right: 0; width: 90px; }
 /*** END: meta data tab styles ***/
 
 

@@ -8,8 +8,9 @@
       <col class='type' />
       <col class='name' />
       <col class='description' />
+      <col class='picture' />
       <%- if (!in_widget) -%>
-        <col class='picture' />
+      
         <col class='owner' />
         <col class='viewed' />
         <col class='actionContainer' />
@@ -24,8 +25,8 @@
         <th class="type" title="Type"><div>Type</div></th>
         <th class="name"><div>Name</div></th>
         <th class="description"><div>Description</div></th>
+        <th class="picture" title="Owner"><div></div></th>
         <%- if (!in_widget) -%>
-          <th class="picture" title="Owner"><div></div></th>
           <th class="owner" title="Owner"><div>Owner</div></th>
           <th class="viewed"><div>Visits</div></th>
           <th class="actionContainer last"></th>
@@ -47,11 +48,15 @@
           </td>
           <td class="name"><div><%= link_to(h(filter.name), filter.href, :rel => in_widget ? "external" : "") %></div></td>
           <td class="description"><div><%= h(filter.description) %></div></td>
+          <td class="picture">
+            <a href='<%= filter.owner.href %>' 
+              title='<%= h(filter.owner.displayName) %>'
+              <%= "rel='external'" if in_widget %>>
+              <%= image_tag(filter.owner.profile_image_path,
+              :size => "24x24", :alt => h(filter.owner.displayName)) %>
+            </a>
+          </td>
           <%- if (!in_widget) -%>
-            <td class="picture"><a href='<%= filter.owner.href %>' title='<%= h(filter.owner.displayName) %>'>
-                <%= image_tag(filter.owner.profile_image_path,
-                :size => "24x24", :alt => h(filter.owner.displayName)) %>
-            </a></td>
             <td class="owner">
               <div class='clipText'>
                 <a href='<%= filter.owner.href %>'

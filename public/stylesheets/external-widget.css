@@ -346,6 +346,7 @@ img.blist-table-option-icon
     bottom: 0;
     position: absolute;
     width: 100%;
+    z-index: 30;
 }
 .widgetFooterInner
 {

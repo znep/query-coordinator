@@ -1,3 +1,5 @@
+/* Dataset grids MUST have an ID! */
+
 (function($)
 {
     $.fn.datasetGrid = function(options)
@@ -59,13 +61,17 @@
                         { sortChanged(datasetObj); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
-                    .blistTable({cellNav: false, selectionEnabled: false,
+                    .bind('column_filter_change', function (event, c)
+                        { columnFilterChanged(datasetObj, c); })
+                    .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
+                        rowHandleWidth: 15,
+                        rowHandleRenderer: datasetObj.rowHandleRenderer,
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
@@ -75,6 +81,10 @@
                                 '/rows.json', cache: false,
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
+
+                $('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle')
+                    .live('mouseover',
+                        function (e) { hookUpRowMenu(datasetObj, this, e); });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
 
@@ -164,28 +174,82 @@
             // needs to be refreshed
             summaryStale: true,
 
-            isTempView: false
+            isTempView: false,
+
+            rowHandleRenderer: '(permissions.canDelete ? ' +
+                '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
+                'row.id + "\'></a>' +
+                '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "\'>' +
+                '<li class=\'delete\'><a href=\'#row-delete_" + row.id + ' +
+                '"\'>Delete Row</a></li>' +
+                '<li class=\'footer\'><div class=\'outerWrapper\'>' +
+                '<div class=\'innerWrapper\'><span class=\'colorWrapper\'>' +
+                '</span></div>' +
+                '</div></li>' +
+                '</ul>" : "")'
         }
     });
+
+    var hookUpRowMenu = function(datasetObj, curCell, e)
+    {
+        var $cell = $(curCell);
+        if (!$cell.data('row-menu-applied'))
+        {
+            $cell.find('ul.menu').dropdownMenu({
+                menuContainerSelector: ".blist-table-row-handle",
+                triggerButtonSelector: "a.menuLink",
+                linkCallback: function (e)
+                    { rowMenuHandler(datasetObj, e); },
+                pullToTop: true
+            });
+            $cell.data('row-menu-applied', true);
+        }
+    };
+
+    /* Handle clicks in the row menus */
+    var rowMenuHandler = function(datasetObj, event)
+    {
+        event.preventDefault();
+        // Href that we care about starts with # and parts are separated with _
+        // IE sticks the full thing, so slice everything up to #
+        var href = $(event.currentTarget).attr('href');
+        var s = href.slice(href.indexOf('#') + 1).split('_');
+        if (s.length < 2)
+        {
+            return;
+        }
+
+        var action = s[0];
+        var rowId = s[1];
+        var model = datasetObj.settings._model;
+        var view = model.meta().view;
+        if (action == 'row-delete')
+        {
+            model.selectRow(model.getByID(rowId));
+            $.each(model.selectedRows, function(id, index)
+            {
+                $.ajax({url: '/views/' + view.id + '/rows/' + id + '.json',
+                    contentType: 'application/json',
+                    type: 'DELETE'});
+                model.remove(model.getByID(id));
+            });
+        }
+    };
 
     var cellClick = function(datasetObj, event, row, column, origEvent)
     {
         var model = datasetObj.settings._model;
-        if (!column) { return; }
+        if (!column || row.level > 0) { return; }
 
         if (column.dataIndex == 'rowNumber')
         {
-            if (origEvent.metaKey) // ctrl/cmd key
-            {
-                model.toggleSelectRow(row);
-            }
-            else if (origEvent.shiftKey)
+            if (origEvent.shiftKey)
             {
                 model.selectRowsTo(row);
             }
             else
             {
-                model.selectSingleRow(row);
+                model.toggleSelectRow(row);
             }
         }
     };
@@ -237,8 +301,8 @@
         var displayMenu = false;
         var $col = $(col.dom);
         var htmlStr =
-            '<a class="menuLink" href="#column-menu_' +
-            col.index + '"></a><ul class="menu columnHeaderMenu" id="column-menu_' + col.index + '">';
+            '<a class="menuLink action-item" href="#column-menu_' +
+            col.index + '"></a><ul class="menu columnHeaderMenu action-item" id="column-menu_' + col.index + '">';
 
         // We support sort & filter, so if neither is available, don't show a menu
         if (blist.data.types[col.type].sortable)
@@ -537,15 +601,11 @@
                 model.sort(colIndex, true);
                 break;
             case 'filter-column':
-                datasetObj.summaryStale = true;
                 // Rejoin remainder of parts in case the filter value had _
                 model.filterColumn(colIndex, $.htmlUnescape(s.slice(2).join('_')));
-                setTempView(datasetObj, model.meta().view);
                 break;
             case 'clear-filter-column':
-                datasetObj.summaryStale = true;
                 model.clearColumnFilter(colIndex);
-                clearTempView(datasetObj);
                 break;
         }
         // Update the grid header to reflect updated sorting, filtering
@@ -594,6 +654,19 @@
                     success: function()
                         { $(document).trigger(blist.events.COLUMNS_CHANGED); }
                     });
+        }
+    };
+
+    var columnFilterChanged = function(datasetObj, col)
+    {
+        datasetObj.summaryStale = true;
+        if (!col)
+        {
+            clearTempView(datasetObj);
+        }
+        else
+        {
+            setTempView(datasetObj, datasetObj.settings._model.meta().view);
         }
     };
 

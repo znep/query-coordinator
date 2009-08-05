@@ -53,6 +53,12 @@ form.search input.submit
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.gif);
 }
 
+.blist-th .sort,
+.blist-th .filter
+{
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif);
+}
+
 .breadcrumbItem { background-image: url(/stylesheets/images/common/breadcrumb_arrow.gif); }
 
 /*** START: meta data tab styles ***/
@@ -67,3 +73,28 @@ form.search input.submit
 
 .blist-table-header .hover .dragHandle
 { background-image: url(/stylesheets/images/content/table/column_drag_handle.gif); }
+
+.blist-table .blist-th .th-inner-container
+{
+    padding-right: 0;
+    width: 100%;
+}
+
+.blist-table .blist-th .info-container,
+div.sorted .th-inner-container .info-container,
+div.filtered .th-inner-container .info-container
+{
+    position: relative;
+    left: auto;
+    right: auto;
+    top: -50%;
+}
+
+/* Styling this in IE6 with everything else is too hard to get right */
+.blist-th .blist-opener { display: none; }
+
+/* IE6 doesn't like overflow: visible; so switch to overflow: hidden, then
+ * pull the content out of normal layout so we display as much as possible
+ * without making the container too large */
+div.blist-table-locked-footer .blist-table-row-numbers { overflow: hidden }
+.blist-table-row-numbers .blist-tf-value { position: absolute; }

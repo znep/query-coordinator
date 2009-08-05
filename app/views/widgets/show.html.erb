@@ -14,7 +14,7 @@
   /* font */
     body { font-family: <%= @theme[:style][:font][:face] %>; }
 
-    .blist-table .th-inner-container { font-size: <%= @theme[:style][:font][:grid_header_size] %>; }
+    div.blist-th .info-container { font-size: <%= @theme[:style][:font][:grid_header_size] %>; }
     .blist-td { font-size: <%= @theme[:style][:font][:grid_data_size] %>; }
   
   /* frame */
@@ -42,14 +42,14 @@
           border-color: <%= @theme[:frame][:color] %>;
       }
     <%- end -%>
-    
+
     <%- if @theme[:frame][:border] -%>
       .gridOuter, .widgetFooterInner
       {
           border-color: <%= @theme[:frame][:border] %>;
       }
     <%- end -%>
-  
+
     .widgetLogo
     {
       <%- if @theme[:frame][:logo][:type] == 'upload' -%>
@@ -60,59 +60,30 @@
         background-image: url(/stylesheets/images/widgets/socrata_logo_player.png);
       <%- end -%>
     }
-  
+
   /* grid */
-  
-    <%- if @theme[:grid][:header_icons] -%>
-      /*
-        Disabled pending merge
-      .blist-th-name
-      {
-          left: 10px;
-          padding-left: 25px;
-      }
-    
-      .blist-th-icon
-      {
-          background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
-          background-position: 5px 20px;
-          background-repeat: no-repeat;
-          display: block;
-          float: left;
-          height: 20px;
-          left: 5px;
-          margin-top: -10px;
-          position: absolute;
-          top: 50%;
-          width: 30px;
-      }
-      
-      .blist-table .blist-th.text .blist-th-icon { background-position: 5px -80px; }
-      .blist-table .blist-th.richtext .blist-th-icon { background-position: 5px -60px; }
-      .blist-table .blist-th.number .blist-th-icon { background-position: 5px -20px; }
-      .blist-table .blist-th.money .blist-th-icon { background-position: 5px -40px; }
-      .blist-table .blist-th.percent .blist-th-icon { background-position: 5px 0; }
-      .blist-table .blist-th.date .blist-th-icon { background-position: 5px -340px; }
-      .blist-table .blist-th.phone .blist-th-icon { background-position: 5px -240px; }
-      .blist-table .blist-th.email .blist-th-icon { background-position: 5px -260px; }
-      .blist-table .blist-th.url .blist-th-icon { background-position: 5px -360px; }
-      .blist-table .blist-th.checkbox .blist-th-icon { background-position: 5px -120px; }
-      .blist-table .blist-th.stars .blist-th-icon { background-position: 5px -140px; }
-      .blist-table .blist-th.flag .blist-th-icon { background-position: 5px -380px; }
-      .blist-table .blist-th.document .blist-th-icon { background-position: 5px -280px; }
-      .blist-table .blist-th.photo .blist-th-icon { background-position: 5px -100px; }
-      .blist-table .blist-th.picklist .blist-th-icon { background-position: 5px -400px; }
-      .blist-table .blist-th.nested_table .blist-th-icon { background-position: 5px -440px; }
-      .blist-table .blist-th.tag .blist-th-icon { background-position: 5px -180px; }
-      */
+
+    <%- if !@theme[:grid][:header_icons] -%>
+    .blist-th-icon { display: none; }
     <%- end -%>
-    
+
     .blist-td
     {
         height: <%= @theme[:grid][:row_height] %>;
         line-height: <%= @theme[:grid][:row_height] %>;
     }
-    
+
+    <%- if @theme[:grid][:wrap_header_text] -%>
+    .blist-th .info-container
+    {
+        height: 2.5em; /* 30px or so */
+        margin-top: -1.25em;
+    }
+    .blist-th .name-wrapper { height: 2.5em; }
+    div.th-inner-container { white-space: normal; }
+    .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
+    <%- end -%>
+
     <%- if @theme[:grid][:zebra] -%>
       .blist-tr-even .blist-td
       {
@@ -270,12 +241,13 @@
   </script>
 
   <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",
-    "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable", "plugins/jquery.tache",
-    "util/navigation", "util/util", "data/types", "data/model", "data/table",
+    "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
+    "plugins/jquery.tache", "util/navigation", "util/util", "data/types",
+    "data/model", "data/table", "data/table_nav",
     "data/editor", "widgets/text-prompt", "widgets/dropdown-menu",
-    "widgets/scrollable", "widgets/scrollTabs", "widgets/inline-edit", "widgets/dataset-grid",
-    "widgets/visualization","screens/external-widget", "screens/info-pane", :cache =>
-    "cache/widgets_show_all" %>
+    "widgets/scrollable", "widgets/scrollTabs", "widgets/inline-edit",
+    "widgets/dataset-grid", "widgets/info-pane-publish", "widgets/visualization",
+    "screens/external-widget", "screens/info-pane", :cache => "cache/widgets_show_all" %>
 
   <%- if !@is_gov_widget && !APP_CONFIG['google_analytics_id'].blank? -%>
   <script type="text/javascript">

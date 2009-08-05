@@ -15,16 +15,10 @@
         <a href="#comments">Comments</a>
       </div></div>
     </li>
-    <li id="tabSummary">
-      <div class="tabOuter"><div class="tabInner">
-        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#summary">Summary</a>
-      </div></div>
-    </li>
     <li id="tabFiltered">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#filtered_views">Filtered Views</a>
+        <a href="#filtered_views">More Views</a>
       </div></div>
     </li>
     <li id="tabSharing">
@@ -43,6 +37,12 @@
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#activity">Activity</a>
+      </div></div>
+    </li>
+    <li id="tabSummary">
+      <div class="tabOuter"><div class="tabInner">
+        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
+        <a href="#summary">Summary</a>
       </div></div>
     </li>
   </ul>
@@ -223,50 +223,8 @@
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <div class="publishWarningWrapper <%= (view.is_public? || view.is_shared?) ? 'hide' : '' %>">
-        <div class="publishWarning">
-          <h2>Warning</h2>
-          <p>
-          This <%= view.is_blist? ? t(:blist_name).downcase : 'filter' %> is
-          currently private.  Private <%= view.is_blist? ? t(:blist_name).downcase.pluralize : 'filters' %> 
-          cannot be viewed in the Social Data Player.  Please
-          set the privacy to public or shared before publishing.
-          </p>
-        </div>
-      </div>
-      <div class="publishContent <%= view.is_private? ? 'hide' : '' %>">
-        <p>
-        You can publish this <%= t(:blist_name).downcase %> and
-        filtered views on your blog,
-        websites and more by embedding a Social Data Player.  Simply copy and paste
-        the following HTML into your site.
-        </p>
-        <div class="publishCode">
-          <p>Embed this <%= view.is_blist? ? t(:blist_name).downcase : 'filter' %> as a Social Data Player:</p>
-          <div class="sizeOptions">
-            <p class="field">
-              <label for="publishWidth">Width</label>
-              <%= text_field_tag("publishWidth", "425") %> px
-            </p>
-            <p class="field">
-              <label for="publishHeight">Height</label>
-              <%= text_field_tag("publishHeight", "344") %> px
-            </p>
-            <p class="field">
-              <label for="publishVariation">Color</label>
-              <%= select_tag("publishVariation", options_for_select({ 'Blue' => '', 'Black' => 'black' })) %>
-            </p>
-            <p id="sizeError" class="hide">The player must be at least 425 pixels wide by 344 pixels tall.</p>
-          </div>
-          <div class="copyCode">
-            <%= text_area_tag("publishCode") %>
-            <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(view, "#width#", "#height#", "#variation#")) %>
-            <ul class="actionButtons">
-              <li class="flushLeft"><a id="previewWidgetLink" href="<%= "/widgets_preview/#{view.id}" %>" class="arrowButton">See Preview</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <%= render( :partial => "blists/meta_tab_publishing", 
+                  :locals => {:view => view, :in_widget => false }) %>
     </div>
   </div></div>
 </div>

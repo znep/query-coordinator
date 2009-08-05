@@ -61,9 +61,14 @@
     // Add an email field to the list and wire up validation
     var numberAdded = 0;
     var numberRemoved = 0;
-    $('#emailFormMoreButton:not(.disabled)').live('click', function(event)
+    $('#emailFormMoreButton').click(function(event)
     {
       event.preventDefault();
+
+      if ($(this).hasClass("disabled"))
+      {
+        return;
+      }
 
       var $container = $('<li/>');
       var $textField = $('<input type="text"/>')
@@ -102,9 +107,8 @@
 
       $('#emailFormMoreButton').removeClass("disabled");
     });
-
-    // Validate, then fire off a request for each email
-    $('#emailFormSubmitButton').click(function(event)
+    
+    var submitForm = function(event)
     {
       event.preventDefault();
 
@@ -152,6 +156,10 @@
           });
         });
       }
-    });
+    };
+
+    // Validate, then fire off a request for each email
+    $form.submit(submitForm);
+    $('#emailFormSubmitButton').click(submitForm);
   };
 </script>

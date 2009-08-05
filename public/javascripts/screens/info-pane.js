@@ -285,16 +285,43 @@
                 $tabLink = $tab.find("a:not(" + tabNavigator.settings.expanderSelector + ")");
                 $panel = $(tabNavigator.settings.tabMap[$tab.attr("id")]);
 
-                $(tabNavigator.currentList).find(tabNavigator.settings.tabSelector).each(function() {
-                    $(this).removeClass(tabNavigator.settings.activationClass);
-                });
-                $tab.addClass(tabNavigator.settings.activationClass);
+                if ($tab.is("." + tabNavigator.settings.activationClass))
+                {
+                    if (tabNavigator.settings.isWidget)
+                    {
+                        tabNavigator.expandWidgetTabPanels();
+                    }
+                    else
+                    {
+                        tabNavigator.expandTabPanels();
+                    }
+                }
+                else
+                {
+                    $(tabNavigator.currentList).find(tabNavigator.settings.tabSelector).each(function() {
+                        $(this).removeClass(tabNavigator.settings.activationClass);
+                    });
+                    $tab.addClass(tabNavigator.settings.activationClass);
 
-                $(tabNavigator.settings.allPanelsSelector).each(function() { 
-                    $(this).removeClass(tabNavigator.settings.activationClass); 
-                });
+                    $(tabNavigator.settings.allPanelsSelector).each(function() { 
+                        $(this).removeClass(tabNavigator.settings.activationClass); 
+                    });
 
-                $panel.addClass(tabNavigator.settings.activationClass);
+                    $panel.addClass(tabNavigator.settings.activationClass);
+                
+                    if (!$(tabNavigator.currentList).data("isExpanded"))
+                    {
+                        if (tabNavigator.settings.isWidget)
+                        {
+                            tabNavigator.expandWidgetTabPanels();
+                        }
+                        else
+                        {
+                            tabNavigator.expandTabPanels();
+                        }
+                    }
+                }
+                
                 tabNavigator.settings.switchCompleteCallback($tab);
                 if (tabNavigator.settings.scrollToTabOnActivate)
                 {

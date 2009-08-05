@@ -3,13 +3,16 @@ require 'json'
 module Theme
     # Configure theming based on a web request
     def self.configure(request = nil)
-        # TODO - create an actual registry and/or make this generally less dumb
+        load_theme 'socrata'
+        
         if request
+            # TODO - create an actual registry and/or make this generally less dumb
+            
             # Theme configuration
             host = request.host
-            if host.index 'redwood'
+            if host.contains? 'redwood'
                 theme = 'redwood'
-            elsif host.index 'gov'
+            elsif host.contains? 'gov'
                 theme = 'gov'
             end
 
@@ -66,7 +69,5 @@ module Theme
     # Retrieve favicon URL for the theme
     def self.favicon
         "/images/themes/#{Theme.active}/favicon.ico"
-    end
-    
-    load_theme 'socrata'
+    end    
 end

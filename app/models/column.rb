@@ -3,11 +3,11 @@ class Column < Model
 
   @@types = { 
       "text" => "Plain Text", 
-      "richText" => "Formatted Text",
+      "richtext" => "Formatted Text",
       "number" => "Number",
       "money" => "Money",
       "percent" => "Percent",
-      "dateTime" => "Date & Time",
+      "date" => "Date & Time",
       "phone" => "Phone",
       "email" => "Email",
       "url" => "Website URL",
@@ -20,6 +20,20 @@ class Column < Model
       "nested_table" => "Nested Table",
       "tag" => "Row Tag"
   };
+  
+  def has_formatting?
+    types_with_formatting = ["date", "number", "money", "percent"]
+
+    return types_with_formatting.include?(client_type)
+  end
+
+  def has_totals?
+    types_with_totals = ["text", "richtext", "number", "money", "percent", 
+                         "date", "phone", "email", "url", "checkbox", "stars", 
+                         "flag", "document", "photo", "picklist"]
+    
+    return types_with_totals.include?(client_type)
+  end
 
   def href(view_id)
     "/blists/#{view_id}/columns/#{id}"
@@ -67,6 +81,12 @@ class Column < Model
       update_data[:format]["align"] = js["alignment"]
     end
 
+    if js.key?("format") && js["format"].blank?
+      update_data[:format].delete "view"
+    elsif js.key?("format")
+      update_data[:format]["view"] = js["format"]
+    end
+
     if js.key?("decimalPlaces") && js["decimalPlaces"].blank?
       update_data[:format].delete "precision"
     elsif js.key?("decimalPlaces")
@@ -110,13 +130,13 @@ class Column < Model
   def client_type
     if !self.format.nil?
       if dataType.type == "text" && self.format.formatting_option == "Rich"
-        "richtext"
+        return "richtext"
       elsif dataType.type == "stars" && self.format.view == "stars_number"
-        "number"
+        return "number"
       end
     end
 
-    dataType.type
+    return dataType.type
   end
 
   def text_format

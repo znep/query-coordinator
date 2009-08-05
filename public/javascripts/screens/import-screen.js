@@ -51,5 +51,5 @@ $(function ()
         }
     });
 
-    $("#importSubmit").click(function(e) { $uploader.submit() });
+    $("#importSubmit").click(function(e) { $uploader.submit(); });
 });

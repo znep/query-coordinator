@@ -49,15 +49,24 @@ module CommunitiesHelper
     out
   end
   
-  def get_html_for_action_object(activity)
+  def get_html_for_action_object(activity, external = false)
     out = ""
     case activity.action
     when "add_contact"
-      out = "<a href='#{activity.actee.href}'>#{h(activity.actee.displayName)}</a>"
+      out = "<a href='#{activity.actee.href}'"
+      if (external)
+        out += " rel='external'"
+      end
+      out += ">#{h(activity.actee.displayName)}</a>"
     when "create_view", "create_blist", "edit_blist", "comment", "rate", 
           "comment_and_rate", "promote_dataset", "published", "moderate_comment", 
           "rate_comment", "reply_to_comment"
-      out = "<a href='#{blist_path(activity.actedOnId)}'>#{h(activity.actedOnName)}</a>"
+      # FIXME: Use blist_path or dataset_path after refactor
+      out = "<a href='/dataset/#{activity.actedOnId}'"
+      if (external)
+        out += " rel='external'"
+      end
+      out += ">#{h(activity.actedOnName)}</a>"
     end
     out
   end

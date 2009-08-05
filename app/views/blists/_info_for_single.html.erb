@@ -15,16 +15,10 @@
         <a href="#comments">Comments</a>
       </div></div>
     </li>
-    <li id="tabSummary">
-      <div class="tabOuter"><div class="tabInner">
-        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#summary">Summary</a>
-      </div></div>
-    </li>
     <li id="tabFiltered">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#filtered_views">Filtered Views</a>
+        <a href="#filtered_views">More Views</a>
       </div></div>
     </li>
     <li id="tabSharing">
@@ -43,6 +37,12 @@
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#activity">Activity</a>
+      </div></div>
+    </li>
+    <li id="tabSummary">
+      <div class="tabOuter"><div class="tabInner">
+        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
+        <a href="#summary">Summary</a>
       </div></div>
     </li>
   </ul>
@@ -80,70 +80,8 @@
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <div class="gridListContainer">
-        <table class="gridList" cellspacing="0">
-          <colgroup>
-            <col class='handle' />
-            <col class='favorite' />
-            <col class='type' />
-            <col class='name' />
-            <col class='description' />
-            <col class='picture' />
-            <col class='owner' />
-            <col class='viewed' />
-            <col class='actionContainer' />
-          </colgroup>
-          <thead>
-            <tr>
-              <th class="handle first"><div></div></th>
-              <th class="favorite" title="Favorite?"><div>Favorite?</div></th>
-              <th class="type" title="Type"><div>Type</div></th>
-              <th class="name"><div>Name</div></th>
-              <th class="description"><div>Description</div></th>
-              <th class="picture" title="Owner"><div></div></th>
-              <th class="owner" title="Owner"><div>Owner</div></th>
-              <th class="viewed"><div>Visits</div></th>
-              <th class="actionContainer last"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <%- view.filters.each do |filter| -%>
-              <tr class="item" id="filter-row_<%= filter.id %>">
-                <td class="handle"><div></div></td>
-                <td class="favorite <%= filter.flag?('favorite') %>"><div>
-                    <span class="favoriteMarker"><%= filter.flag?('favorite') ? "favorite" : "" %></span>
-                </div></td>
-                <td class="type"><div class="<%=
-                  get_share_direction_icon_class_for_view(filter) %>">
-                  <%= get_type_string_for_view(filter) %></div>
-                </td>
-                <td class="name"><div><%= link_to(h(filter.name), filter.href) %></div></td>
-                <td class="description"><div><%= h(filter.description) %></div></td>
-                <td class="picture"><a href='<%= filter.owner.href %>'>
-                    <%= image_tag(filter.owner.profile_image_path,
-                    :size => "24x24", :alt => h(filter.owner.displayName)) %>
-                </a></td>
-                <td class="owner">
-                  <div class='clipText'>
-                    <a href='<%= filter.owner.href %>'
-                      title='<%= h(filter.owner.displayName) %>'>
-                      <%= h(filter.owner.displayName) %>
-                    </a>
-                  </div>
-                </td>
-                <td class="viewed"><div><%= blist_date(filter.last_viewed) %>
-                </div></td>
-                <td class="actionContainer"><div><a
-                      href="<%= filter.href %>" class="action"
-                      title="<%= h(filter.name) %>"><span>View</span></a>
-                </div></td>
-              </tr>
-            <%- end -%>
-          </tbody>
-        </table>
-      </div>
-
-
+      <%= render( :partial => "blists/meta_tab_filtered", 
+                  :locals => {:view => view, :in_widget => false }) %>
     </div>
   </div></div>
 </div>
@@ -155,7 +93,7 @@
   active <%= page_single ? 'expanded' : '' %>">
   <div class="infoContentHeader clearfix">
     <%= render(:partial => "blists/info_comments_header", 
-                :locals => {:view => view, :allow_commenting => true}) %>
+                :locals => {:view => view, :allow_commenting => true, :in_widget => false }) %>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
@@ -285,50 +223,8 @@
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <div class="publishWarningWrapper <%= (view.is_public? || view.is_shared?) ? 'hide' : '' %>">
-        <div class="publishWarning">
-          <h2>Warning</h2>
-          <p>
-          This <%= view.is_blist? ? t(:blist_name).downcase : 'filter' %> is
-          currently private.  Private <%= view.is_blist? ? t(:blist_name).downcase.pluralize : 'filters' %> 
-          cannot be viewed in the Social Data Player.  Please
-          set the privacy to public or shared before publishing.
-          </p>
-        </div>
-      </div>
-      <div class="publishContent <%= view.is_private? ? 'hide' : '' %>">
-        <p>
-        You can publish this <%= t(:blist_name).downcase %> and
-        filtered views on your blog,
-        websites and more by embedding a Social Data Player.  Simply copy and paste
-        the following HTML into your site.
-        </p>
-        <div class="publishCode">
-          <p>Embed this <%= view.is_blist? ? t(:blist_name).downcase : 'filter' %> as a Social Data Player:</p>
-          <div class="sizeOptions">
-            <p class="field">
-              <label for="publishWidth">Width</label>
-              <%= text_field_tag("publishWidth", "425") %> px
-            </p>
-            <p class="field">
-              <label for="publishHeight">Height</label>
-              <%= text_field_tag("publishHeight", "344") %> px
-            </p>
-            <p class="field">
-              <label for="publishVariation">Color</label>
-              <%= select_tag("publishVariation", options_for_select({ 'Blue' => '', 'Black' => 'black' })) %>
-            </p>
-            <p id="sizeError" class="hide">The player must be at least 425 pixels wide by 344 pixels tall.</p>
-          </div>
-          <div class="copyCode">
-            <%= text_area_tag("publishCode") %>
-            <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(view, "#width#", "#height#", "#variation#")) %>
-            <ul class="actionButtons">
-              <li class="flushLeft"><a id="previewWidgetLink" href="<%= "/widgets_preview/#{view.id}" %>" class="arrowButton">See Preview</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <%= render( :partial => "blists/meta_tab_publishing", 
+                  :locals => {:view => view, :in_widget => false }) %>
     </div>
   </div></div>
 </div>
@@ -337,58 +233,13 @@
 <%# *** START: ACTIVITY *** %>
 <div class="infoContentOuter singleInfoActivity">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader">Activity</h2>
-    <ul class="headerActions actionButtons">
-      <li><a href="<%= "#{view.href}/stats" %>" class="arrowButton">View Statistics</a></li>
-    </ul>
+    <%= render(:partial => "blists/info_activity_header", 
+                :locals => {:view => view, :in_widget => false }) %>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <div class="gridListContainer">
-        <table class="gridList" cellspacing="0">
-          <thead>
-            <tr>
-              <th class="when first" title="When"><div>When</div></th>
-              <th class="picture" title="Who"><div></div></th>
-              <th class="who" title="Who"><div>Who</div></th>
-              <th class="what" title="What Activity"><div>What Activity</div></th>
-              <th class="actionContainer last"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <%- if @view_activities && @view_activities.length > 0 -%>
-              <%- @view_activities.each do |activity| -%>
-                <tr class="item">
-                  <td class="when"><div><%= blist_date(activity.createdAt) %></div></td>
-                  <td class="picture"><a href='<%= activity.actor.href %>'>
-                      <%= image_tag(activity.actor.profile_image_path,
-                      :size => "24x24", :alt => h(activity.actor.displayName)) %>
-                  </a></td>
-                  <td class="who"><div class='clipText'>
-                      <a href="<%= activity.actor.href %>"
-                        title='<%= h(activity.actor.displayName) %>'>
-                      <%= h(activity.actor.displayName) %>
-                    </a>
-                  </div></td>
-                  <td class="what"><div>
-                    <%= get_verb_for_activity_action(activity.action) %>
-                    <%= get_html_for_action_object(activity) %>
-                  </div></td>
-                  <td class="actionContainer"><div>
-                    <a href="<%= get_url_for_activity_action(activity) %>" class="action"><span>View</span></a>
-                  </div></td>
-                </tr>
-              <%- end -%>
-            <%- else -%>
-              <tr class="item">
-                <td colspan="4"><div>
-                  <p>There is no activity for this <%= t(:blist_name).downcase %>.</p>
-                </div></td>
-              </tr>
-            <%- end -%>
-          </tbody>
-        </table>
-      </div>
+      <%= render( :partial => "blists/meta_tab_activity", 
+                  :locals => {:view => view, :in_widget => false }) %>
     </div>
   </div></div>
 </div>

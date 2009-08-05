@@ -102,13 +102,8 @@
                     <div class='innerWrapper'>
                       <span class='linkIcon'>Filter &amp; View</span></div></div>
               </div></a>
-              <%= menu_tag({'id' => 'filterViewMenu', 'items' => [
-              {'section_title' => 'Build a new view of your data'},
-              {'text' => 'Filter Out Rows...', 'class' => 'filter', 'href' => '#'},
-              {'text' => 'Sort Columns...', 'class' => 'sort', 'href' => '#'},
-              {'text' => 'Show or Hide Columns', 'class' => 'showHide', 
-                  'href' => '#', 'submenu' => columns_show_menu(@view)
-              }]}) %>
+              <%= render(:partial => "filter_view_menu",
+                :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
             <%- end -%>
 
@@ -328,7 +323,7 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
+  <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "readGrid" }) %>
 
   <%- if !current_user -%>
   <%= render(:partial => 'user_sessions/login', :locals => {:is_modal => true}) %>

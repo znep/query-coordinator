@@ -88,18 +88,6 @@
     $.fn.infoPaneItemEdit = function(options) {
         var opts = $.extend({}, $.fn.infoPaneItemEdit.defaults, options);
 
-        return this.each(function() {
-            var $dd = $(this);
-
-            // Support for the Metadata Plugin.
-            var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
-
-            // Wire up the events.
-            $dd.find(opts.editClickSelector).click(editClick);
-            $dd.find(opts.editSubmitSelector).submit(editSubmit);
-            $dd.find(opts.editCancelSelector).click(editCancel);
-        });
-
         // Private methods
         function editClick(event)
         {
@@ -114,7 +102,10 @@
             $currentItemContainer.find("span").hide();
             var $form = $currentItemContainer.find("form").keyup(function(event)
             {
-                if (event.keyCode == 27) closeAllForms();
+                if (event.keyCode == 27)
+                {
+                    closeAllForms();
+                }
             });
             $form.show().find("input[type='text']").focus().select();
         };
@@ -157,6 +148,18 @@
             event.preventDefault();
             closeAllForms();
         };
+        
+        return this.each(function() {
+            var $dd = $(this);
+
+            // Support for the Metadata Plugin.
+            var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
+
+            // Wire up the events.
+            $dd.find(opts.editClickSelector).click(editClick);
+            $dd.find(opts.editSubmitSelector).submit(editSubmit);
+            $dd.find(opts.editCancelSelector).click(editCancel);
+        });
     };
 
      // default options
@@ -253,7 +256,7 @@
                 });
 
                 if (tabNavigator.settings.initialTab &&
-                    tabNavigator.settings.initialTab != '')
+                    tabNavigator.settings.initialTab !== '')
                 {
                     if ($(tabNavigator.currentList).data("isExpanded"))
                     {
@@ -282,16 +285,43 @@
                 $tabLink = $tab.find("a:not(" + tabNavigator.settings.expanderSelector + ")");
                 $panel = $(tabNavigator.settings.tabMap[$tab.attr("id")]);
 
-                $(tabNavigator.currentList).find(tabNavigator.settings.tabSelector).each(function() {
-                    $(this).removeClass(tabNavigator.settings.activationClass);
-                });
-                $tab.addClass(tabNavigator.settings.activationClass);
+                if ($tab.is("." + tabNavigator.settings.activationClass))
+                {
+                    if (tabNavigator.settings.isWidget)
+                    {
+                        tabNavigator.expandWidgetTabPanels();
+                    }
+                    else
+                    {
+                        tabNavigator.expandTabPanels();
+                    }
+                }
+                else
+                {
+                    $(tabNavigator.currentList).find(tabNavigator.settings.tabSelector).each(function() {
+                        $(this).removeClass(tabNavigator.settings.activationClass);
+                    });
+                    $tab.addClass(tabNavigator.settings.activationClass);
 
-                $(tabNavigator.settings.allPanelsSelector).each(function() { 
-                    $(this).removeClass(tabNavigator.settings.activationClass); 
-                });
+                    $(tabNavigator.settings.allPanelsSelector).each(function() { 
+                        $(this).removeClass(tabNavigator.settings.activationClass); 
+                    });
 
-                $panel.addClass(tabNavigator.settings.activationClass);
+                    $panel.addClass(tabNavigator.settings.activationClass);
+                
+                    if (!$(tabNavigator.currentList).data("isExpanded"))
+                    {
+                        if (tabNavigator.settings.isWidget)
+                        {
+                            tabNavigator.expandWidgetTabPanels();
+                        }
+                        else
+                        {
+                            tabNavigator.expandTabPanels();
+                        }
+                    }
+                }
+                
                 tabNavigator.settings.switchCompleteCallback($tab);
                 if (tabNavigator.settings.scrollToTabOnActivate)
                 {
@@ -376,7 +406,7 @@
                     var expandMinHeight = 
                         $(tabNavigator.settings.widgetOuterContainerSelector).outerHeight() -
                         $(tabNavigator.settings.widgetMetaHeaderSelector).outerHeight() -
-                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight();
+                        $(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight() - 1;
                     $(tabNavigator.settings.expandableSelector).show();
                     $(tabNavigator.settings.expandableContainerSelector).css("min-height", expandMinHeight + "px");
                     tabNavigator.settings.switchCompleteCallback();

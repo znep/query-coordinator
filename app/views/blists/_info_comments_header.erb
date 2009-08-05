@@ -6,10 +6,11 @@
 <p><%= pluralize(view.totalTimesRated, 'Rating') %></p>
 <ul class="headerActions actionButtons">
   <li>
+    <%- post_text = in_widget ? "Comment" : "Post a Comment" -%>
     <%- if allow_commenting -%>
-      <a href="#post_comment" class="arrowButton postComment" title="Post a Comment">Post a Comment</a>
+      <a href="#post_comment" class="arrowButton postComment" title="Post a Comment"><%= post_text %></a>
     <%- else -%>
-      <a href="<%= view.href + '?metadata_pane=tabComments'%>" class="arrowButton" title="Post a Comment" rel="external">Post a Comment</a>
+      <a href="<%= view.href + '?metadata_pane=tabComments'%>" class="arrowButton" title="Post a Comment" rel="external"><%= post_text %></a>
     <%- end -%>
   </li>
 </ul>

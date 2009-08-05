@@ -60,10 +60,10 @@ $.fn.blistStretchWindow = function(options) {
     var opts = $.extend({}, $.fn.blistStretchWindow.defaults, options);
     
     return this.each(function() {
+        var $this = $(this);
         // Support for the Metadata Plugin.
         var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
         
-        var $this = $(this);
         var $container = $(opts.stretchContainerSelector);
         
         // Size the element back to its natural height, then cache the result.

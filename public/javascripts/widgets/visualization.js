@@ -13,10 +13,13 @@
             var config = $.meta ? $.extend({}, opts, $visualization.data()) : opts;
             $visualization.data("config-visualization", config);
 
-            var query = new google.visualization.Query('/views/' +
-                blist.widgets.visualization.viewId + '/rows.gvds');
-            // Send the query with a callback function.
-            query.send(function(r) { handleQueryResponse($visualization, r); });
+            if (!blist.widgets.visualization.isFusionMap)
+            {
+                var query = new google.visualization.Query('/views/' +
+                  blist.widgets.visualization.viewId + '/rows.gvds');
+                // Send the query with a callback function.
+                query.send(function(r) { handleQueryResponse($visualization, r); });
+            }
         });
     };
 
@@ -37,5 +40,4 @@
         var chart = new blist.widgets.visualization.chartClass($vis[0]);
         chart.draw(data, blist.widgets.visualization.displayFormat );
     };
-
 })(jQuery);

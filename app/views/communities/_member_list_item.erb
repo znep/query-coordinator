@@ -1,4 +1,5 @@
 <%- member = member_list_item -%>
+<% cache ["community-member-list-item", member_list_item.id], :expires_in => 15.minutes do %>
 
 <li class="memberListItem clearfix">
   <div class="memberImage">
@@ -28,6 +29,7 @@
         <li>Public <%= t(:blists_name) %> <strong><%= member.publicTables %></strong></li>
         <li>Socrata Grade <strong><%= member.displayScore %></strong></li>
       </ul>
+<% end %>
       <ul class="memberActions actionButtons clearfix">
         <%- if (!@current_user.nil? && @current_user.id != member.id) -%>
           <li>

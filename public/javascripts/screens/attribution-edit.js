@@ -77,7 +77,7 @@
                         $('<span>*</span>').addClass('required'));
                     $this.find("#view_attribution").rules("add", {
                         required: true,
-                        messages: { required: " You must attribute the dataset."}
+                        messages: { required: " You must specify the data provider (attribution)."}
                     });
 
                     $this.find('#view_licenseId').attr('name', '');
@@ -110,7 +110,7 @@
                         type: "PUT",
                         data: $form.find(":input"),
                         dataType: "json",
-                        success: function(responseData) { opts.successCallback(responseData, opts) }
+                        success: function(responseData) { opts.successCallback(responseData, opts); }
                     });
                 }
             });
@@ -128,7 +128,7 @@
             if (responseData['error'] == 'Validation failed')
             {
                 var $label = $('div.itemContent>div:has(#view_attributionLink) label');
-                if ($label.length == 0)
+                if ($label.length === 0)
                 {
                     $label = $('<label/>').addClass("error");
                 }

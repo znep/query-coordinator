@@ -4,8 +4,9 @@ columnTotalsNS.totals = {
     count:'<div><input type="radio" name="aggregate" value="count" id="count" /><label for="count">The total number of cells with data (<strong>Count</strong>)</label></div>',
     sum:  '<div><input type="radio" name="aggregate" value="sum" id="sum" /><label for="sum">The sum of all cells with data (<strong>Sum</strong>)</label></div>',
     avg:  '<div><input type="radio" name="aggregate" value="average" id="average" /><label for="average">The average of all cells with data (<strong>Average</strong>)</label></div>',
-    max:  '<div><input type="radio" name="aggregate" value="maximum" id="max" /><label for="max">The greatest value of any cell (<strong>Maximum</strong>)</label></div>',
-    min:  '<div><input type="radio" name="aggregate" value="minimum" id="min" /><label for="min">The least value of any cell (<strong>Minimum</strong>)</label></div>'
+    max:  '<div><input type="radio" name="aggregate" value="maximum" id="maximum" /><label for="maximum">The greatest value of any cell (<strong>Maximum</strong>)</label></div>',
+    min:  '<div><input type="radio" name="aggregate" value="minimum" id="minimum" /><label for="minimum">The least value of any cell (<strong>Minimum</strong>)</label></div>',
+    none: '<div><input type="radio" name="aggregate" value="" id="none" /><label for="none">None</label></div>'
 };
 
 columnTotalsNS.populate = function($container)
@@ -16,11 +17,22 @@ columnTotalsNS.populate = function($container)
           this.checked = true;
       });
     }
+    else
+    {
+        $container.find("#none").each(function() { this.checked = true; });
+    }
 
     $("#columnTotals :input[type=radio]").change(function() { 
-        column.aggregate = {type: $(this).val()} 
+        if ($(this).val() != "")
+        {
+          column.aggregate = {type: $(this).val()} 
+        }
+        else
+        {
+          column.aggregate = null;
+        }
     });
-}
+};
 
 columnTotalsNS.render_stars =
 function($container) {
@@ -30,6 +42,7 @@ function($container) {
     render += columnTotalsNS.totals.avg; 
     render += columnTotalsNS.totals.max; 
     render += columnTotalsNS.totals.min; 
+    render += columnTotalsNS.totals.none; 
     render += '</div>';
     $container.append(render);
     $container.find("input:checkbox").click(function() {
@@ -39,7 +52,7 @@ function($container) {
         this.checked = true;
     });
     columnTotalsNS.populate($container);
-}
+};
 
 columnTotalsNS.render_number =
 columnTotalsNS.render_money =
@@ -52,10 +65,11 @@ function($container) {
     render += columnTotalsNS.totals.avg; 
     render += columnTotalsNS.totals.max; 
     render += columnTotalsNS.totals.min; 
+    render += columnTotalsNS.totals.none; 
     render += '</div>';
     $container.append(render);
     columnTotalsNS.populate($container);
-}
+};
 
 
 columnTotalsNS.render_phone = 
@@ -73,6 +87,7 @@ function($container) {
     var render = '<div id="columnTotals" class="displayOptions">';
     render += '<p>Display the following:</p>';
     render += columnTotalsNS.totals.count; 
+    render += columnTotalsNS.totals.none; 
     render += '</div>';
     $container.append(render);
     columnTotalsNS.populate($container);
@@ -82,5 +97,5 @@ $(function() {
     $.fn.columnTotals = function(column)
     {
         eval("columnTotalsNS.render_" + column.type + "($(this));");
-    }
+    };
 });

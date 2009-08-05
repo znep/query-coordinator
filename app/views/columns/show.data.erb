@@ -15,15 +15,16 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       <div class="tabs">
         <ul class="tabSelector">
           <li><a id="general" href="#" class="selected">General</a></li>
-          <% if !@column.is_nested_table %>
-            <li><a id="formatting" href="#">Formatting</a></li>
-            <li><a id="totals" href="#">Column Totals</a></li>
-            <%- #<li><a id="defaults" href="#">Default Values</a></li> %>
+          <% if @column.has_formatting? %>
+              <li><a id="formatting" href="#">Formatting</a></li>
+          <% end %> 
+          <% if @column.has_totals? %>
+              <li><a id="totals" href="#">Column Totals</a></li>
           <% end %>
+          <%- #<li><a id="defaults" href="#">Default Values</a></li> %>
         </ul>
       </div>
 
-      <% if !@column.is_nested_table %>
       <%- # Default values tab %>
       <%-
         ' 
@@ -35,13 +36,18 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       -%>
 
       <%- # Column totals tab %>
+      <%- if @column.has_totals? %>
       <div id="totalsTab" class="tabContent">
         <h3>Column Total Options</h3>
         <h4 class="subtitle seperator">Totals will appear at the bottom of the column while in table display mode</h4>
       </div>
+      <% end %>
 
       <%- # Formatting tab %>
+      <%- if @column.has_formatting? %>
       <div id="formattingTab" class="tabContent">
+        <%- # TODO: Waiting on the read grid to support alignment.
+            if false %>
         <h3 class="seperator">Alignment Options</h3>
         <ul class="alignment">
           <li><p>Justify:</p></li>
@@ -58,15 +64,16 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
             <label for="column_alignment_right">Right</label>
           </li>
         </ul>
+        <%- end %>
       </div>
-      <% end %>
+      <%- end %>
 
       <%- # General properties tab %>
       <div id="generalTab" class="tabContent">
         <table cellspacing="0">
           <tbody>
-            <tr colspan="2" class="seperator">
-              <td><h3>Column Details</h3></td>
+            <tr>
+              <td colspan="2"><h3 class="seperator">Column Details</h3></td>
             </tr>
             <tr>
               <td class="labelColumn"><label for="name" class="required">Column Name:</label></td>
@@ -79,8 +86,8 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
                                                         :title => "Enter a description.",
                                                         :id => "description") %></td>
             </tr>
-            <tr colspan="2" class="seperator">
-              <td><h3>Type of Column</h3></td>
+            <tr>
+              <td colspan="2"><h3 class="seperator">Type of Column</h3></td>
             </tr>
             <tr>
               <td class="labelColumn"><label for="type">Type:</label></td>
@@ -97,11 +104,11 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
         </table>
       </div>
         <div class="saveBar">
+            <div id="error" class="errorMessage"></div>
           <h3 class="seperator"></h3>
           <div class="controlBar">
             <div class="required">Required Field</div> 
-            <a href="#" id="save"><%= image_tag("button_save.png") %></a>
-            <div id="error" class="errorMessage"></div>
+            <a href="#" id="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
           </div>
         </div>
     </div>
@@ -158,14 +165,19 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           authenticity_token: "<%= form_authenticity_token %>"
           },
         dataType: 'json',
-        error: function(request, status, error) { 
-            $("#error").html("Couldn't save the column because there was a server error.").show() 
+        error: function(request) { 
+            $("#error").html($.json.deserialize(request.responseText).error).show() 
         },
         success: function(responseData) { 
-            $(".jqmClose").click();
             blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
-            $("#readGrid").blistModel().updateColumn(responseData);
+            $grid = $("#readGrid");
+            if ($grid.length != 0)
+            {
+                $("#readGrid").blistModel().updateColumn(responseData);
+            }
+            $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
             $.Tache.DeleteAll();
+            $(".jqmClose").click();
         }
       });
   });

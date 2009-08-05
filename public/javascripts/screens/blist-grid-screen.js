@@ -44,7 +44,7 @@ blist.blistGrid.setUpTabs = function ()
     if (blistGridNS.isFilter)
     {
         if ($.grep(cookieObj.views, function (v)
-            { return v.id == blistGridNS.viewId }).length < 1)
+            { return v.id == blistGridNS.viewId ; }).length < 1)
         {
             cookieObj.views.push({name: blistGridNS.viewName,
                 id: blistGridNS.viewId, path: window.location.pathname});
@@ -68,7 +68,7 @@ blist.blistGrid.setUpTabs = function ()
             return;
         }
         var $newTab = $tabTemplate.clone();
-        if (i % 2 == 0)
+        if (i % 2 === 0)
         {
             $newTab.addClass('even');
         }
@@ -222,9 +222,73 @@ blist.blistGrid.columnsChangedHandler = function (event, columnIds)
 
 blist.blistGrid.mainMenuLoaded = function (data)
 {
+    var $data = $(data);
     // Swap out the main menu with whatever was loaded
-    $('#mainMenu').replaceWith(data);
+    $('#mainMenu').replaceWith($data.filter("#mainMenuComponent"));
+    // Swap out the filter & view menu with whatever was loaded
+    $('#filterViewMenu').replaceWith($data.filter("#filterViewMenuComponent"));
     blistGridNS.hookUpMainMenu();
+    blistGridNS.hookUpFilterViewMenu();
+};
+
+blist.blistGrid.hookUpFilterViewMenu = function()
+{
+    $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
+        menuBar: $('#lensContainer .headerBar')});
+
+    $('#filterViewMenu .filter').click(function (event)
+    {
+        event.preventDefault();
+        blist.util.flashInterface.showPopup('LensBuilder:Filter');
+    });
+    $('#filterViewMenu .sort').click(function (event)
+    {
+        event.preventDefault();
+        blist.util.flashInterface.showPopup('LensBuilder:Sort');
+    });
+    $('#filterViewMenu .showHide').click(function (event)
+    {
+        event.preventDefault();
+    });
+    $("#filterViewMenu .columnsMenu").scrollable();
+    $("#filterViewMenu .columnsMenu .scrollable").click(function (event)
+    {
+        event.preventDefault();
+        var $li = $(this);
+
+        var showHide = function(hide)
+        {
+            $.ajax({
+                type: "PUT",
+                url: $li.find("a:first").attr("href") + ".json",
+                cache: false,
+                data: $.json.serialize({'hidden': hide}),
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function(responseData) { 
+                    if (hide)
+                    {
+                        $li.removeClass("checked");
+                    }
+                    else
+                    {
+                        $li.addClass("checked");
+                    }
+                    $("#readGrid").blistModel().updateColumn(responseData);
+                }
+            });
+        };
+
+        if ($li.hasClass("checked"))
+        {
+            showHide(true);
+        }
+        else
+        {
+            showHide(false);
+        }
+    });
+
 };
 
 blist.blistGrid.hookUpMainMenu = function()
@@ -358,7 +422,7 @@ blist.blistGrid.newViewCreated = function($iEdit, responseData)
     {
         $('#readGrid').datasetGrid().isTempView = false;
     }
-    blist.util.navigation.redirectToView(responseData.id)
+    blist.util.navigation.redirectToView(responseData.id);
 };
 
 // The favorite action in the info for single panel - when one blist is selected.
@@ -511,58 +575,6 @@ $(function ()
         });
     });
 
-    $('#filterViewMenu .filter').click(function (event)
-    {
-        event.preventDefault();
-        blist.util.flashInterface.showPopup('LensBuilder:Filter');
-    });
-    $('#filterViewMenu .sort').click(function (event)
-    {
-        event.preventDefault();
-        blist.util.flashInterface.showPopup('LensBuilder:Sort');
-    });
-    $('#filterViewMenu .showHide').click(function (event)
-    {
-        event.preventDefault();
-    });
-    $("#filterViewMenu .columnsMenu").scrollable();
-    $("#filterViewMenu .columnsMenu .scrollable").click(function (event)
-    {
-        event.preventDefault();
-        var $li = $(this);
-
-        var showHide = function(hide)
-        {
-            $.ajax({
-                type: "PUT",
-                url: $li.find("a:first").attr("href"),
-                cache: false,
-                data: $.json.serialize({'hidden': hide}),
-                dataType: 'json',
-                success: function(responseData) { 
-                    if (hide)
-                    {
-                        $li.removeClass("checked");
-                    }
-                    else
-                    {
-                        $li.addClass("checked");
-                    }
-                    $("#readGrid").blistModel().updateColumn(responseData);
-                }
-            });
-        }
-
-        if ($li.hasClass("checked"))
-        {
-            showHide(true);
-        }
-        else
-        {
-            showHide(false);
-        }
-    });
-
     $('#displayMenu .table').click(function (event)
     {
         event.preventDefault();
@@ -622,8 +634,7 @@ $(function ()
         });
 
     blistGridNS.hookUpMainMenu();
-    $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
-        menuBar: $('#lensContainer .headerBar')});
+    blistGridNS.hookUpFilterViewMenu();
     $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),
         menuBar: $('#lensContainer .headerBar')});
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
@@ -686,8 +697,8 @@ $(function ()
             return $.json.serialize(view);
         },
         requestContentType: 'application/json',
-        loginMessage: 'Creating a public filter requires you to have an account. \
-            Either sign in or sign up to save your public filter.',
+        loginMessage: 'Creating a public filter requires you to have an account. ' +
+            'Either sign in or sign up to save your public filter.',
         submitSuccessCallback: blistGridNS.newViewCreated};
     $("#tempInfoPane .inlineEdit").inlineEdit($.extend({
         displaySelector: '.itemContent span',
@@ -713,7 +724,7 @@ $(function ()
                     .replace('#variation#', $('#publishVariation').val()));
 
             // Restrict size to >= 425x344 px
-            if (parseInt(width) < 425 || parseInt(height) < 344 || width == '' || height == '')
+            if (parseInt(width,10) < 425 || parseInt(height,10) < 344 || width == '' || height == '')
             {
                 $('#sizeError').removeClass('hide');
                 $('.copyCode #publishCode').attr('disabled', true);
@@ -744,7 +755,7 @@ $(function ()
                 var $link = $(this);
                 var width = $('#publishWidth').val();
                 var height = $('#publishHeight').val();
-                if (parseInt(width) < 425 || parseInt(height) < 344 || width == '' || height == '')
+                if (parseInt(width,10) < 425 || parseInt(height,10) < 344 || width == '' || height == '')
                 {
                     return;
                 }
@@ -785,7 +796,7 @@ $(function ()
                 .find('.singleInfoSummary .panelHeader.' + curState)
                 .removeClass(curState).addClass(newState);
             // Update publishing panel view
-            $('.singleInfoPublishing .hide').removeClass('hide');
+            $('.singleInfoPublishing .infoContent > .hide').removeClass('hide');
             if (newState == 'private')
             {
                 $('.singleInfoPublishing .publishContent').addClass('hide');

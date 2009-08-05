@@ -34,7 +34,7 @@
     height: 19px;
     margin-right: 1px;
     position: relative;
-    width: 120px;
+    width: 100px;
 }
 .metadataPane .summaryTabs li .tabOuter
 {
@@ -46,15 +46,19 @@
     min-height: 0;
     padding-left: 1px;
     padding-top: 1px;
+    position: relative;
+    width: 100px;
 }
 .metadataPane .summaryTabs li .tabInner 
 {
     background-image: url(/stylesheets/images/info_pane/background_info_tab_top_right_sprites.png);
-    background-position: 113px -4px;
+    background-position: 93px -4px;
     background-repeat: no-repeat;
     margin-right: -1px;
     margin-top: -1px;
     min-height: 0;
+    position: relative;
+    width: 101px;
 }
 .metadataPane .summaryTabs li.active 
 {
@@ -68,14 +72,14 @@
 .metadataPane .summaryTabs li.active .tabOuter { background-position: -4px 0; }
 .metadataPane .summaryTabs li.active .tabInner 
 {
-    background-position: 117px 0;
+    background-position: 97px 0;
 }
 
 .metadataPane .summaryTabs li.last .tabInner
 {
     background-image: url(/stylesheets/images/info_pane/background_info_tab_last_sprites.png);
     background-position: right top;
-    width: 123px;
+    width: 103px;
 }
 .metadataPane .summaryTabs li.active.last .tabInner
 {
@@ -86,6 +90,7 @@
 {
     color: #333;
     display: block;
+    height: 20px;
     line-height: 20px;
     text-align: center;
     text-decoration: none;
@@ -96,7 +101,7 @@
 .metadataPane .summaryTabs li.comments.active.last,
 .metadataPane .summaryTabs li.comments.active.last .tabInner
 {
-    width: 105px;
+    width: 95px;
 }
 .metadataPane .summaryTabs li.comments.active .tabInner 
 {
@@ -117,9 +122,9 @@
 {
     background-position: left -9px;
 }
-
 .metadataPane .summaryTabs li a.expander
 {
+    background: url(/stylesheets/images/info_pane/icon_expand_double_chevron.png?1) no-repeat 0 0;
     display: none;
     left: 0;
     line-height: 100px;
@@ -129,6 +134,7 @@
 }
 .metadataPane .summaryTabs li.active a.expander
 {
+    background-position: 0 0;
     display: block;
 }
 
@@ -157,7 +163,7 @@
 }
 .infoContentHeader h2.panelHeader
 {
-    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
+    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?1) left top no-repeat;
     color: #333;
     float: left;
     font-size: 1.4em;
@@ -667,7 +673,7 @@ infoContentOuter table.gridList td.picture > *
 
 /*** START: single info comments tab ***/
 
-.singleInfoComments .infoContentHeader > h2.panelHeader.first
+.singleInfoComments .infoContentHeader h2.panelHeader
 {
     background-position: left -205px;
     border-right: 1px solid #e8e8e8;
@@ -685,7 +691,7 @@ infoContentOuter table.gridList td.picture > *
 
 .metadataPane .singleInfoComments h2.rating
 {
-    background-image: url(/stylesheets/images/content/comment_stars_white_sprites.png);
+    background-image: url(/stylesheets/images/info_pane/comment_stars_white_sprites.png);
     float: left;
     margin-left: .5em;
     margin-top: 12px;
@@ -795,7 +801,7 @@ infoContentOuter table.gridList td.picture > *
 
 .metadataPane .singleInfoComments .userInfo .rating
 {
-    background-image: url(/stylesheets/images/content/comment_stars_white_sprites.png);
+    background-image: url(/stylesheets/images/info_pane/comment_stars_white_sprites.png);
 }
 
 .singleInfoComments li.comment .commentBlock
@@ -1102,7 +1108,7 @@ infoContentOuter table.gridList td.picture > *
 }
 .singleInfoSharing .sharingSummary p
 {
-    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) left top no-repeat;
+    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?1) left top no-repeat;
     background-position: left -287px;
     font-size: 1.2em;
     height: 41px;
@@ -1165,7 +1171,7 @@ infoContentOuter table.gridList td.picture > *
 }
 .singleInfoPublishing .publishWarning
 {
-	background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png) no-repeat left -287px;
+	background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?1) no-repeat left -287px;
 	margin: 2em;
 	padding-left: 46px;
 }

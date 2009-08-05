@@ -26,7 +26,7 @@ blist.community.historyChangeHandler = function (hash)
     if (hash == "")
     {
         // default tab is top members
-        hash = "TOPMEMBERS"
+        hash = "TOPMEMBERS";
     }
     if (blist.community.isTabDirty[hash] === false)
     {
@@ -44,7 +44,7 @@ blist.community.historyChangeHandler = function (hash)
     var tabContainerSelector = tabContainers[activeTab];
 
     // Abort if we don't know what's going on
-    if (activeTab == 0)
+    if (activeTab === 0)
     {
         return;
     }
@@ -74,17 +74,17 @@ blist.community.historyChangeHandler = function (hash)
     // Display loading message
     $(".tabContentContainer").removeClass("active");
     $(tabContainerSelector).addClass("active").html(
-        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\"> \
-          <div class=\"tabContent noresult\"> \
-            <h2>Searching...</h2> \
-            <p class=\"clearBoth\"> \
-                <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" /> \
-            </p> \
-          </div> \
-        </div></div></div> \
-        <div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\"> \
-          <div class=\"tabContentNav\"></div> \
-        </div></div>"
+        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\">" +
+        "  <div class=\"tabContent noresult\">" +
+        "   <h2>Searching...</h2>" +
+        "   <p class=\"clearBoth\">" +
+        "       <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" />" +
+        "   </p>" +
+        " </div>" +
+        "</div></div></div>" +
+        "<div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\">" +
+        "  <div class=\"tabContentNav\"></div>" +
+        "</div></div>"
     );
 
     // Fetch data
@@ -263,7 +263,10 @@ $(function ()
             $link.closest(".searchContainer").find("input[type='text']").val("").focus();
             $link.hide();
         })
-        .hide();
+    if ($.urlParam("search", window.location.href) === 0)
+    {
+        $(".clearSearch").hide();
+    }
 
     $(".memberActions .followAction").live("click", communityNS.addFriendClick);
 });

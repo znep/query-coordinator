@@ -195,8 +195,8 @@ blist.widget.setUpViewHeader = function()
         },
         requestContentType: 'application/json',
         onceOnly: true,
-        loginMessage: 'Creating a public filter requires you to have an account. \
-            Either sign in or sign up to save your public filter.',
+        loginMessage: 'Creating a public filter requires you to have an account. ' +
+            'Either sign in or sign up to save your public filter.',
         submitSuccessCallback: widgetNS.newViewCreated};
     $("#viewHeader .inlineEdit").inlineEdit(inlineEditArgs);
 
@@ -244,7 +244,9 @@ blist.widget.showInterstitial = function (e)
 
 blist.widget.metaTabHeaderMap = {
     "comments": ".singleInfoComments .infoContentHeader",
-    "summary": ".singleInfoSummary .infoContentHeader"
+    "summary": ".singleInfoSummary .infoContentHeader",
+    "filtered": ".singleInfoFiltered .infoContentHeader",
+    "activity": ".singleInfoActivity .infoContentHeader"
 };
 blist.widget.updateMetaTabHeader = function(tabKey)
 {
@@ -258,11 +260,14 @@ blist.widget.updateMetaTabHeader = function(tabKey)
         });
         widgetNS.updateMetaTab(tabKey);
     }
-}
+};
 
 blist.widget.metaTabMap = {
     "summary": "#widgetMeta .singleInfoSummary .infoContent",
-    "comments": "#widgetMeta .singleInfoComments .infoContent"
+    "comments": "#widgetMeta .singleInfoComments .infoContent",
+    "filtered": "#widgetMeta .singleInfoFiltered .infoContent",
+    "activity": "#widgetMeta .singleInfoActivity .infoContent",
+    "publishing": "#widgetMeta .singleInfoPublishing .infoContent"
 };
 blist.widget.updateMetaTab = function(tabKey)
 {
@@ -270,8 +275,88 @@ blist.widget.updateMetaTab = function(tabKey)
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);
+            
+            if (tabKey == "comments")
+            {
+                // Set up reply expanders in comments tab.
+                var $commentPane = $("#widgetMeta .singleInfoComments");
+                $commentPane.find(".expander")
+                    .click(function (e) { 
+                        widgetNS.commentExpanderClick($commentPane, e); });
+            }
+            
+            if (tabKey == "publishing")
+            {
+                // Set up publishing javascript.
+                $('.copyCode textarea').click(function() { $(this).select(); });
+                
+                // Update copyable publish code and live preview from template/params
+                widgetNS.updatePublishCode();
+                
+                $('#publishWidth, #publishHeight').keyup(widgetNS.updatePublishCode);
+                $('#publishVariation').change(widgetNS.updatePublishCode);
+                $('#publishWidth, #publishHeight').keypress(function (event)
+                {
+                    if ((event.which < 48 || event.which > 57) && !(event.which == 8 || event.which == 0))
+                    {
+                        // Disallow non-numeric input in width/height fields
+                        return false;
+                    }
+                });
+                $('#previewWidgetLink').click(function (event)
+                {
+                    event.preventDefault();
+                    var $link = $(this);
+                    var width = $('#publishWidth').val();
+                    var height = $('#publishHeight').val();
+                    if (parseInt(width,10) < 425 || parseInt(height,10) < 344 || width == '' || height == '')
+                    {
+                        return;
+                    }
+                    window.open(
+                        $link.attr('href') + "?width=" + width + "&height=" + height + "&variation=" + $('#publishVariation').val(), 
+                        "Preview", "location=no,menubar=no,resizable=no,status=no,toolbar=no");
+                });
+            }
         }
     });
+};
+
+blist.widget.updatePublishCode = function()
+{
+    // detemplatize publish code template if it exists
+    if ($('.copyCode #publishCode').length > 0)
+    {
+        var width = $('#publishWidth').val();
+        var height = $('#publishHeight').val();
+        $('.copyCode #publishCode').val($('.copyCode #publishCodeTemplate').val()
+                .replace('#width#', width)
+                .replace('#height#', height)
+                .replace('#variation#', $('#publishVariation').val()));
+
+        // Restrict size to >= 425x344 px
+        if (parseInt(width,10) < 425 || parseInt(height,10) < 344 || width == '' || height == '')
+        {
+            $('#sizeError').removeClass('hide');
+            $('.copyCode #publishCode').attr('disabled', true);
+            $('#previewWidgetLink').addClass('disabled');
+        }
+        else
+        {
+            $('#sizeError').addClass('hide');
+            $('.copyCode #publishCode').removeAttr('disabled');
+            $('#previewWidgetLink').removeClass('disabled');
+        }
+    }
+};
+
+blist.widget.commentExpanderClick = function($commentPane, e)
+{
+    e.preventDefault();
+    $(e.currentTarget).toggleClass("expanded")
+        .siblings(".childContainer")
+        .toggleClass("collapsed");
+    widgetNS.sizeGrid();
 };
 
 $(function ()
@@ -337,9 +422,13 @@ $(function ()
     
     // Set up the info pane tab switching.
     $("#widgetMeta .summaryTabs").infoPaneNavigate({
+        tabSelector: "li:not('.scrollArrow')",
         tabMap: {
             "tabSummary": "#widgetMeta .singleInfoSummary",
-            "tabComments": "#widgetMeta .singleInfoComments"
+            "tabFiltered": "#widgetMeta .singleInfoFiltered",
+            "tabComments": "#widgetMeta .singleInfoComments",
+            "tabActivity": "#widgetMeta .singleInfoActivity",
+            "tabPublishing": "#widgetMeta .singleInfoPublishing"
         },
         allPanelsSelector : "#widgetMeta .infoContentOuter",
         expandableSelector: "#widgetMeta .infoContent",
@@ -348,7 +437,13 @@ $(function ()
         scrollToTabOnActivate: false
     });
     
-    // Update comment meta data tab header.
+    // Update meta data tab headers.
     widgetNS.updateMetaTabHeader("comments");
+    widgetNS.updateMetaTabHeader("filtered");
+    widgetNS.updateMetaTab("publishing");
+    widgetNS.updateMetaTabHeader("activity");
     widgetNS.updateMetaTabHeader("summary");
+    
+    // Make tabs scrollable.
+    $("#widgetMeta .summaryTabs").scrollTabs();
 });

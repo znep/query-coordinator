@@ -36,7 +36,7 @@ $(function ()
             $(".newBlistContent .licensing #view_attribution").prev("label").addClass("required");
             $(".newBlistContent .licensing #view_attribution").rules("add", {
                 required: true,
-                messages: { required: " You must attribute the dataset."}
+                messages: { required: " You must specify the data provider (attribution)."}
             });
         }
         else

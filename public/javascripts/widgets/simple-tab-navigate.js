@@ -38,7 +38,7 @@ $.extend($.simpleTabNavigator, {
                 var $li = $(this);
                 // Wire up the click event for the tab itself for activation
                 $li.find("a").click(function(event) {
-                    if (tabNavigator.settings.preventDefault == true)
+                    if (tabNavigator.settings.preventDefault === true)
                     {
                         event.preventDefault();
                     }

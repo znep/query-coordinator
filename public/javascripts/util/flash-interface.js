@@ -9,24 +9,7 @@ blist.util.flashInterface.displayColumnProperties = function (columnId)
 {
     blist.namespace.fetch('blist.columns.properties');
 
-    $("#columnPropertiesModal").jqm({
-        trigger: false,
-        onShow: function(hash)
-        {
-            var $modal = hash.w;
-            $.ajax({ 
-                url: "/blists/" + blist.blistGrid.viewId + "/columns/" + columnId,
-                dataType: "html",
-                cache: false,
-                success: function(data)
-                {
-                    $modal.html(data).show();
-                }
-            });
-        }
-    });
-
-    $("#columnPropertiesModal").jqmShow();
+    $("#modal").jqmShow($('<a href="/blists/' + blist.blistGrid.viewId + '/columns/' + columnId + '"/>'));
 };
 
 blist.util.flashInterface.callSwf = function (callback)
@@ -120,11 +103,9 @@ blist.util.flashInterface.columnAggregate = function(columnId, aggregate)
 blist.util.flashInterface.eventFired = function (event, data)
 {
     var jsEvent;
-    switch (event)
+    if (event == 'VIEW_CHANGED_EVENT')
     {
-        case 'VIEW_CHANGED_EVENT':
-            jsEvent = blist.events.VIEW_CHANGED;
-            break;
+        jsEvent = blist.events.VIEW_CHANGED;
     }
     if (jsEvent !== null)
     {

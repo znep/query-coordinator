@@ -267,21 +267,21 @@
     	    <a href="#" class="socialActionLink"
     	      title="Download a copy of this dataset to your computer" id="downloadLink">
     	      <span class="dropdownWrapper">
-              <span class="linkIcon">Download</span>
+              <span class="linkIcon">Download As</span>
             </span>
           </a>
     	    <%= menu_tag({'id' => 'downloadMenu', 'class' => 'noicon', 'items' => [
-          {'text' => 'As CSV', 'external' => true,
+          {'text' => 'Comma Separated Values (.csv)', 'external' => true,
           'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
-          {'text' => 'As PDF', 'external' => true,
+          {'text' => 'Adobe PDF (.pdf)', 'external' => true,
           'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
-          {'text' => 'As XLS', 'external' => true,
+          {'text' => 'Excel 97 - 2003 Workbook (.xls)', 'external' => true,
           'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
           # {'text' => 'As XLSX', 'external' => true,
           # 'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-          {'text' => 'As XML', 'external' => true,
+          {'text' => 'XML Data (.xml)', 'external' => true,
           'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
-          {'text' => 'As JSON', 'external' => true,
+          {'text' => 'JavaScript Object Notation (.json)', 'external' => true,
           'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
           ]}) %>
         </li>
@@ -314,7 +314,8 @@
         <%- if (@view.columns.length > 20) -%>
           <li class="moreColumns">&hellip;</li>
         <%- end -%>
-        <li class="viewLink"><%= link_to("View", @view.href, :class => 'linkToDataset') %></li>
+        <li class="viewLink"><%= link_to("View", @view.href, :class => 'linkToDataset',
+                                          :title => "View all columns in the full #{t(:blist_name)} grid") %></li>
       </ul>
     <% end %>
   </div>

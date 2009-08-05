@@ -60,9 +60,16 @@
 
     // Add an email field to the list and wire up validation
     var numberAdded = 0;
+    var numberRemoved = 0;
     $('#emailFormMoreButton').click(function(event)
     {
       event.preventDefault();
+
+      if ($(this).hasClass("disabled"))
+      {
+        return;
+      }
+
       var $container = $('<li/>');
       var $textField = $('<input type="text"/>')
         .attr('name', 'emailAddress' + numberAdded++)
@@ -78,6 +85,11 @@
           email: 'That does not look like a valid email address.'
         }
       });
+
+      if (numberAdded - numberRemoved > 14)
+      {
+        $(this).addClass("disabled");
+      }
     });
 
     // Remove an email from or clear the last field
@@ -91,11 +103,15 @@
       }
 
       $(this).closest('li').remove();
-    });
+      numberRemoved++;
 
-    // Validate, then fire off a request for each email
-    $('#emailFormSubmitButton').click(function(event)
+      $('#emailFormMoreButton').removeClass("disabled");
+    });
+    
+    var submitForm = function(event)
     {
+      event.preventDefault();
+
       // Must enter one email
       if ($('.formContainer input[value!=""]').size() == 0)
       {
@@ -105,7 +121,13 @@
       $('.emailDatasetWrapper .errorMessage').text('');
 
       // Remove empty boxes
-      $('.formContainer input[value=""]').each(function() { $(this).closest('li').remove(); });
+      $('.formContainer input').each(function()
+      {
+        if ($(this).val() === "")
+        {
+          $(this).closest('li').remove();
+        }
+      });
 
       if ($form.valid())
       {
@@ -134,6 +156,10 @@
           });
         });
       }
-    });
+    };
+
+    // Validate, then fire off a request for each email
+    $form.submit(submitForm);
+    $('#emailFormSubmitButton').click(submitForm);
   };
 </script>

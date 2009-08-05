@@ -10,9 +10,9 @@ module Theme
             
             # Theme configuration
             host = request.host
-            if host.contains? 'redwood'
+            if host.include? 'redwood'
                 theme = 'redwood'
-            elsif host.contains? 'gov'
+            elsif host.include? 'gov'
                 theme = 'gov'
             end
 

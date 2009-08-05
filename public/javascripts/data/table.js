@@ -450,8 +450,12 @@
 
             // Check if we clicked in a locked section or on a nested table
             // header; ignore those for now
-            if ($(event.target).closest('.blist-table-locked').length > 0 ||
-                (!selecting && $(event.target).closest('.blist-tdh') > 0))
+            // Also ignore clicking in the expander -- that means they clicked
+            // on the scrollbar
+            var $target = $(event.target);
+            if ($target.closest('.blist-table-locked').length > 0 ||
+                (!selecting && $target.closest('.blist-tdh') > 0) ||
+                $target.is('.blist-table-expander'))
             {
                 return false;
             }
@@ -476,7 +480,7 @@
             if (lcol)
             {
                 model.unselectAllRows();
-                if ($(event.target).is('a') && !selecting)
+                if ($target.is('a') && !selecting)
                 {
                     // Special case for anchor clicks -- do not select the cell
                     // immediately but do enter "possible drag" mode
@@ -869,7 +873,7 @@
                 // Constrain the width and determine the height
                 $container.width(maxWidth);
                 rc.width = maxWidth;
-                rc.height = $container.height();
+                rc.height = $container.outerHeight();
             }
 
             var maxHeight = $scrolls.height();
@@ -877,7 +881,9 @@
             { maxHeight -= scrollbarWidth; }
             maxHeight = Math.floor(maxHeight * .9);
             if (rc.height > maxHeight)
+            {
                 rc.height = maxHeight;
+            }
 
             // Compute container padding
             var outerPadx = $container.outerWidth() - $container.width();
@@ -885,6 +891,8 @@
             rc.width -= outerPadx;
             rc.height -= outerPady;
 
+            var availW = rc.width;
+            var countedScroll = false;
             var numCells = $expandCells.length;
             $expandCells.each(function(i)
             {
@@ -895,15 +903,25 @@
                 // Compute cell padding
                 var w = $t.outerWidth();
                 var innerPadx = w - $t.width();
+
+                // If the cell is taller than the parent, subtract off the
+                // scrollbar size
+                if (!countedScroll && $t.outerHeight() > rc.height)
+                {
+                    availW -= scrollbarWidth;
+                    countedScroll = true;
+                }
+
                 var innerPady = $t.outerHeight() - $t.height();
-                // Size the cell; bump up by one pixel to offset any rounding
-                $t.width(Math.max(minW, w) - innerPadx + 1);
-                $t.height(rc.height - innerPady + 1);
+                // Size the cell; bump up by one pixel to offset any text that
+                // is not exactly on a pixel boundary
+                $t.width(Math.min(Math.max(minW, w), availW) - innerPadx + 1);
+
+                availW -= $t.outerWidth();
             });
-            // Account for rounding, and the extra pixels already added for
-            // rounding to the insides
-            rc.width += 1 + $expandCells.length;
-            rc.height += 2;
+            // Account for the extra pixels already added for rounding to the
+            // insides
+            rc.width += $expandCells.length;
 
             if (!animate)
             {
@@ -937,13 +955,15 @@
         {
             var $container;
             // Firefox will sometimes return a XULElement for relatedTarget
-            //  Catch the error when trying to access anything on it, and ignore
+            //  Catch the error when trying to access anything on it,
+            //  and fall back to the target (which is technically what we're
+            //  leaving; but it seems to work OK)
             try
             {
                 $container = $(event.type == "mouseout" ?
                     event.relatedTarget : event.target);
             }
-            catch (ignore) {}
+            catch (ignore) { $container = event.target; }
             if (!$container)
             {
                 return null;
@@ -988,7 +1008,9 @@
 
             // If the mouse strays over the hot expander return the hot cell
             if (cell == hotExpander || cell.parentNode == hotExpander)
+            {
                 return hotCell;
+            }
 
             // Normal cell
             return cell;
@@ -1213,7 +1235,9 @@
 
             if (handleHeaderHover(event)) {
                 if (hotCell)
+                {
                     onCellOut(event);
+                }
                 return;
             }
             if (hotHeader) {
@@ -1338,11 +1362,12 @@
         {
             clickTarget = event.target;
             var $clickTarget = $(clickTarget);
-            // IE & Chrome only detetct mousedown on scrollbars, not mouseup;
+            // IE & WebKit only detetct mousedown on scrollbars, not mouseup;
             // so we need to ignore clicks on the scrollbar to avoid having a
             // false drag event
             // If they clicked on the scrollbar, ignore
-            if ($clickTarget.is('.blist-table-scrolls')) { return; }
+            if ($clickTarget.is('.blist-table-scrolls, .blist-table-expander'))
+            { return; }
 
             if (isEdit &&
                 $clickTarget.parents().andSelf().index($editContainer) >= 0)

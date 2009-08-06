@@ -241,7 +241,7 @@
     <% render(:layout => "shared/sidebar_box") do %>
       <div class="ownerProfileContainer clearfix">
         <ul class="ownerData">
-          <li><strong>Added By:</strong> <%= h(@view.owner.displayName) %></li>
+          <li><strong>Added By:</strong> <%= link_to(h(@view.owner.displayName), @view.owner.href) %></li>
           <li><strong>Added On:</strong> <%= blist_date(@view.createdAt) %></li>
           <li><strong>Last Update:</strong> <%= blist_date(@view.last_activity) %></li>
         </ul>

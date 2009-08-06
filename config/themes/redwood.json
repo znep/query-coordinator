@@ -7,5 +7,6 @@
     "main button active bg": "ec9e6e:.286,be292e",
     "link fg": "c38322",
     "header fg": [ "be2333", "be2333", "be2333", "666", "333" ],
-    "carousel bg": "9a9a9a,636363"
+    "carousel bg": "9a9a9a,636363",
+    "highlight color" : "be292e"
 }

@@ -210,8 +210,9 @@ class BlistsController < SwfController
     end
 
     # if we have a datasetID then the user imported
+    is_import = params.has_key?('datasetID') && !params[:datasetID].empty?
     begin
-      if params.has_key?('datasetID') && !params[:datasetID].empty?
+      if is_import
         view = View.find(params[:datasetID])
         view.update_attributes!(new_view)
       else
@@ -228,7 +229,7 @@ class BlistsController < SwfController
     end
 
     respond_to do |format|
-      format.html { redirect_to(view.href + "?mode=edit") }
+      format.html { redirect_to(view.href + (is_import ? '' : "?mode=edit")) }
       format.data { render :json => {'url' => view.href}.to_json }
     end
   end

@@ -241,7 +241,7 @@ blist.data.TableNavigation = function(model, layout) {
             var index = rows[i].index;
 
             var modelRow = model.get(index);
-            if (model.selectedRows[modelRow.id] !== undefined)
+            if (modelRow && model.selectedRows[modelRow.id] !== undefined)
             {
                 selmap = [];
                 $.each(layout[modelRow.level || 0], function(i, c)
@@ -250,7 +250,7 @@ blist.data.TableNavigation = function(model, layout) {
             else
             {
                 // Clear the selection if the row isn't in the selection level
-                if ((modelRow.level || 0) != selectionLevel)
+                if (!modelRow || (modelRow.level || 0) != selectionLevel)
                 {
                     clearRowSelectionFn(row);
                     continue;

@@ -749,19 +749,18 @@
             }
 
             // Clone the node
-            var wrap = hotCell.cloneNode(true);
-            var $wrap = $(wrap);
+            var $hotCell = $(hotCell);
+            var $wrap = $hotCell.clone();
             $wrap.width('auto').height('auto');
             $hotExpander.width('auto').height('auto');
             $hotExpander.empty();
-            $hotExpander.append(wrap);
+            $hotExpander.append($wrap);
 
             // Determine if expansion is necessary.  The + 2 prevents us from
             // expanding if the box would just be slightly larger than the
             // containing cell.  This is a nicety except in the case of
             // picklists where the 16px image tends to be just a tad larger
             // than the text (currently configured at 15px).
-            var $hotCell = $(hotCell);
             var hotWidth = $hotCell.outerWidth();
             var hotHeight = $hotCell.outerHeight();
             if ($wrap.outerWidth() <= hotWidth + 2 &&

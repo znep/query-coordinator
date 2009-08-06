@@ -16,8 +16,8 @@ if Rails.version =~ /^2\.2\./
     end # StylesheetSources
 
   end # ActionView::Helpers::AssetTagHelper::AssetTag
-  ActionView::Helpers::AssetTagHelper::JavaScriptSources.send(
-    :include, Smurf::JavaScriptSources)
+  #ActionView::Helpers::AssetTagHelper::JavaScriptSources.send(
+  #  :include, Smurf::JavaScriptSources)
   ActionView::Helpers::AssetTagHelper::StylesheetSources.send(
     :include, Smurf::StylesheetSources)
 else

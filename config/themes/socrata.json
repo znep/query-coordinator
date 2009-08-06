@@ -7,6 +7,7 @@
     // Global
     "link fg": "0071bc",
     "header fg": [ "600", "600", "600", "666", "333" ],
+    "highlight color": "20608f",
 
     // Chrome
     "top border bg": "06386a",

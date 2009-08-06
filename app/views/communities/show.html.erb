@@ -1,9 +1,7 @@
 <% content_for :head do %>
-  <% bundle :name => "community_show_css", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <%= stylesheet_link_tag "community-screen",
+  <%= stylesheet_link_tag "community-screen",
     "carousel/jquery.jcarousel", "carousel/discover-carousel-skin",
     :cache => "cache/community_show_all" %>
-  <% end %>
   <title>Community | <%= t(:page_title) %></title>
 <% end %>
 

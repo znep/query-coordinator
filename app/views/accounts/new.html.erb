@@ -6,7 +6,5 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <% bundle :name => "signup_screen", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
-  <% end %>
+  <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
 <% end %>

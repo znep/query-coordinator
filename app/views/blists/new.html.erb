@@ -1,7 +1,5 @@
 <% content_for :head do %>
-  <% bundle :name => "blist_new_css" do %>
-    <%= stylesheet_link_tag "blist-new-screen", "form-common", :cache => "cache/blists_new_all" %>
-  <% end %>
+  <%= stylesheet_link_tag "blist-new-screen", "form-common", :cache => "cache/blists_new_all" %>
   <title>New <%= t(:blist_name).capitalize %> | <%= t(:page_title) %></title>
 <% end %>
 

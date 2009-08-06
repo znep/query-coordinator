@@ -94,12 +94,6 @@
     margin-bottom: 3em;
 }
 
-#profile .sectionShow
-{
-    min-height: 0;
-    position: relative;
-}
-
 #profile .sectionShow p
 {
     display: block;
@@ -117,11 +111,6 @@
 {
     padding: 0;
     font-size: .833em; /* 10px */
-}
-
-#profile .sectionEdit { 
-    display: none;
-    min-height: 0;
 }
 #profile .sectionEdit dl { float: left; }
 

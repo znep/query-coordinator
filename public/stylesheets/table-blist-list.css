@@ -217,7 +217,7 @@ div.blist-td-type > div
 .blist-td .blist-opener
 {
     background-image: url('/stylesheets/images/content/table/expand_closed.png');
-    background-position: left center;
+    background-position: center center;
     background-repeat: no-repeat;
     float: left;
     height: 12px;

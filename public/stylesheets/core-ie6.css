@@ -53,17 +53,61 @@ form.search input.submit
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.gif);
 }
 
+.blist-th .sort,
+.blist-th .filter
+{
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif);
+}
+
 .breadcrumbItem { background-image: url(/stylesheets/images/common/breadcrumb_arrow.gif); }
 
 /*** START: meta data tab styles ***/
 .metadataPane .summaryTabs li { margin-bottom: -1px; }
+.metadataPane .summaryTabs li.prev a
+{
+    background-image: url(/stylesheets/images/info_pane/meta_tab_scroller_left.gif);
+}
+.metadataPane .summaryTabs li.next a
+{
+    background-image: url(/stylesheets/images/info_pane/meta_tab_scroller_right.gif);
+}
 
-.singleInfoSummary .headerActions.actionButtons li { width: 80px; }
-.singleInfoSummary .headerActions.actionButtons li a { width: 60px; }
-.singleInfoComments .headerActions.actionButtons li { width: 100px; }
-.singleInfoComments .headerActions.actionButtons li a { padding-right: 0; width: 90px; }
+.singleInfoSummary .actionButtons li { width: 80px; }
+.singleInfoSummary .actionButtons li a { width: 60px; }
+.singleInfoComments .actionButtons li { width: 100px; }
+.singleInfoComments .actionButtons li a { padding-right: 0; width: 90px; }
+.singleInfoPublishing .actionButtons li { width: 120px; }
+.singleInfoActivity .actionButtons li { width: 120px; }
+
+.singleInfoComments li.comment .commentBlock .commentArrow { left: -16px; }
+
 /*** END: meta data tab styles ***/
 
 
 .blist-table-header .hover .dragHandle
 { background-image: url(/stylesheets/images/content/table/column_drag_handle.gif); }
+
+.blist-table .blist-th .th-inner-container
+{
+    padding-right: 0;
+    width: 100%;
+}
+
+.blist-table .blist-th .info-container,
+div.sorted .th-inner-container .info-container,
+div.filtered .th-inner-container .info-container
+{
+    position: relative;
+    left: auto;
+    right: auto;
+    top: -50%;
+}
+
+/* Styling this in IE6 with everything else is too hard to get right */
+.blist-th .blist-opener { display: none; }
+
+/* IE6 doesn't like overflow: visible; so switch to overflow: hidden, then
+ * pull the content out of normal layout so we display as much as possible
+ * without making the container too large */
+div.blist-table-locked-footer .blist-table-row-numbers { overflow: hidden }
+.blist-table-row-numbers .blist-tf-value { position: absolute; }

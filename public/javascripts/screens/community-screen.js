@@ -262,7 +262,7 @@ $(function ()
             var $link = $(this);
             $link.closest(".searchContainer").find("input[type='text']").val("").focus();
             $link.hide();
-        })
+        });
     if ($.urlParam("search", window.location.href) === 0)
     {
         $(".clearSearch").hide();

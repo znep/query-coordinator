@@ -69,6 +69,10 @@ class UserSession
     end
   end
 
+  def remember_me=(value)
+    @remember_me = (value == '1')
+  end
+
   # Stub out the errors class to make error handling on views happy.
   # Right now, we're wrapping ActiveResource::Errors but not actually
   # handling any validations, so don't expect this to work - just expect

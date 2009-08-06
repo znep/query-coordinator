@@ -25,7 +25,7 @@ columnTotalsNS.populate = function($container)
     $("#columnTotals :input[type=radio]").change(function() { 
         if ($(this).val() != "")
         {
-          column.aggregate = {type: $(this).val()} 
+          column.aggregate = {type: $(this).val()}; 
         }
         else
         {

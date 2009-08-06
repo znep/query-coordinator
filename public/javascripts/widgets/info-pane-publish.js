@@ -12,7 +12,7 @@
             $publishPane.data("config-infoPanePublish", config);
             
             $(config.widthSelector + "," + config.heightSelector)
-                .keyup(function() { updatePublishCode($publishPane)})
+                .keyup(function() { updatePublishCode($publishPane);})
                 .keypress(function (event)
                 {
                     if ((event.which < 48 || event.which > 57) && !(event.which == 8 || event.which == 0))
@@ -21,7 +21,7 @@
                         return false;
                     }
                 });
-            $(config.variationSelector).change(function() { updatePublishCode($publishPane) });
+            $(config.variationSelector).change(function() { updatePublishCode($publishPane); });
             $(config.previewLinkSelector).click(function (event)
             {
                 event.preventDefault();

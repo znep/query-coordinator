@@ -893,15 +893,18 @@
             var availW = rc.width;
             var countedScroll = false;
             var numCells = $expandCells.length;
+            var extraPadding = 0;
             $expandCells.each(function(i)
             {
                 var minW = minWidths.shift();
-                if (i == 0) { minW -= outerPadx / 2; }
-                if (i == numCells - 1) { minW -= outerPadx / 2; }
                 var $t = $(this);
                 // Compute cell padding
                 var w = $t.outerWidth();
                 var innerPadx = w - $t.width();
+                // If we have more than one cell, take off the left border width
+                // to make sure the cells line up
+                if (i == 0 && $expandCells.length > 1)
+                { innerPadx += outerPadx / 2; }
 
                 // If the cell is taller than the parent, subtract off the
                 // scrollbar size
@@ -911,16 +914,27 @@
                     countedScroll = true;
                 }
 
-                var innerPady = $t.outerHeight() - $t.height();
-                // Size the cell; bump up by one pixel to offset any text that
+                // Size the cell
+                // If necessary, bump up by one pixel to offset any text that
                 // is not exactly on a pixel boundary
-                $t.width(Math.min(Math.max(minW, w), availW) - innerPadx + 1);
+                if (w > minW)
+                {
+                    innerPadx--;
+                    extraPadding++;
+                }
+                $t.width(Math.min(Math.max(minW, w), availW) - innerPadx);
 
                 availW -= $t.outerWidth();
+
+                if (rc.height > $t.outerHeight())
+                {
+                    var innerPady = $t.outerHeight() - $t.height();
+                    $t.height(rc.height - innerPady);
+                }
             });
             // Account for the extra pixels already added for rounding to the
             // insides
-            rc.width += $expandCells.length;
+            rc.width += extraPadding;
 
             if (!animate)
             {
@@ -962,7 +976,7 @@
                 $container = $(event.type == "mouseout" ?
                     event.relatedTarget : event.target);
             }
-            catch (ignore) { $container = event.target; }
+            catch (ignore) { $container = $(event.target); }
             if (!$container)
             {
                 return null;
@@ -1387,9 +1401,17 @@
 
             selectFrom = null;
 
+
             if (cellNav)
             {
                 var cell = findCell(event);
+                // If this is a row opener or header, we don't allow normal
+                // cell nav clicks on them; so skip the rest
+                if ($(cell).is('.blist-opener, .blist-tdh'))
+                {
+                    return true;
+                }
+
                 if (cell && $activeCells && $activeCells.index(cell) >= 0)
                 {
                     $prevActiveCells = $activeCells;

@@ -489,7 +489,10 @@ blist.data.TableNavigation = function(model, layout) {
         }
 
         // If we hit a header, then there is special behavior
-        if (newCol.type == 'opener' || newCol.type == 'header')
+        // Make sure the column exists, since when switching levels our
+        // column index may not correspond at all with what we had in the
+        // original level
+        if (newCol && (newCol.type == 'opener' || newCol.type == 'header'))
         {
             // If hit an opener or header in an expanded row, skip it
             if (newRow.expanded && wrap)
@@ -612,7 +615,7 @@ blist.data.TableNavigation = function(model, layout) {
 
         // If we're in a nested table, check if the row we are on is
         // completely empty; if so, skip over it
-        if (newCol.mcol && (newCol.mcol.nestedIn ||
+        if (newCol && newCol.mcol && (newCol.mcol.nestedIn ||
             newCol.type == 'nest-header'))
         {
             var subRow = getRowValue(newRow, (newCol.type == 'nest-header' ?

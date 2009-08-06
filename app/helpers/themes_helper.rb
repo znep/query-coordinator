@@ -1,12 +1,17 @@
 require 'cgi'
 
 module ThemesHelper
+    # In order to avoid alpha transparent PNGs (for IE6 support) we emulate the background gradient on our main
+    # navigation buttons.  I chose the colors by using a color meter on our actual rendered site.  Not that we really
+    # support IE6 anyway.
+    MAIN_BUTTON_BG = 'c7c8ca:.286,e6e7e7'
+
     def main_button_inactive_bg
-        box :h => 35, :r => 10, :ry => 10, :fc => :main_button_bg, :s => 'h'
+        box :h => 35, :r => 10, :ry => 10, :fc => :main_button_bg, :bc => MAIN_BUTTON_BG, :s => 'h'
     end
 
     def main_button_active_bg
-        box :h => 35, :r => 10, :ry => 10, :fc => :main_button_active_bg, :s => 'h'
+        box :h => 35, :r => 10, :ry => 10, :fc => :main_button_active_bg, :bc => MAIN_BUTTON_BG, :s => 'h'
     end
 
     def carousel_bg

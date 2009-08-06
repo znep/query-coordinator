@@ -63,11 +63,24 @@ form.search input.submit
 
 /*** START: meta data tab styles ***/
 .metadataPane .summaryTabs li { margin-bottom: -1px; }
+.metadataPane .summaryTabs li.prev a
+{
+    background-image: url(/stylesheets/images/info_pane/meta_tab_scroller_left.gif);
+}
+.metadataPane .summaryTabs li.next a
+{
+    background-image: url(/stylesheets/images/info_pane/meta_tab_scroller_right.gif);
+}
 
-.singleInfoSummary .headerActions.actionButtons li { width: 80px; }
-.singleInfoSummary .headerActions.actionButtons li a { width: 60px; }
-.singleInfoComments .headerActions.actionButtons li { width: 100px; }
-.singleInfoComments .headerActions.actionButtons li a { padding-right: 0; width: 90px; }
+.singleInfoSummary .actionButtons li { width: 80px; }
+.singleInfoSummary .actionButtons li a { width: 60px; }
+.singleInfoComments .actionButtons li { width: 100px; }
+.singleInfoComments .actionButtons li a { padding-right: 0; width: 90px; }
+.singleInfoPublishing .actionButtons li { width: 120px; }
+.singleInfoActivity .actionButtons li { width: 120px; }
+
+.singleInfoComments li.comment .commentBlock .commentArrow { left: -16px; }
+
 /*** END: meta data tab styles ***/
 
 

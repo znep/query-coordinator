@@ -6,6 +6,9 @@ module ThemesHelper
     # support IE6 anyway.
     MAIN_BUTTON_BG = 'c7c8ca:.286,e6e7e7'
 
+    SUMMARY_INSIDE_BG = 'cacaca'
+    SUMMARY_OUTSIDE_BG = 'ececec'
+
     def main_button_inactive_bg
         box :h => 35, :r => 10, :ry => 10, :fc => :main_button_bg, :bc => MAIN_BUTTON_BG, :s => 'h'
     end
@@ -20,23 +23,27 @@ module ThemesHelper
     
     def expanded_list_bg
       # TODO: This should eventually be a gradient
-      box :h => 1, :w => 150, :fc => :highlight_color
+      box :h => 1, :w => 150, :bc => :highlight_color
     end
 
     def bottom_left_dark_bg
-      box :w => 18, :h => 18, :r => 9, :rw => 9, :ry => 9, :bc => "ececec", :fc => :highlight_color
+      box :w => 18, :h => 18, :r => 9, :rw => 9, :ry => 9, :bc => SUMMARY_OUTSIDE_BG, :fc => :highlight_color
     end
 
     def summary_bottom_right_bg
-      box :w => 18, :h => 18, :fc => "cacaca", :bc => "ececec", :r => 9, :rx => 9, :rw => 9, :ry => 9, :ew => 1, :ec => :highlight_color
+      box :w => 18, :h => 18, :fc => SUMMARY_INSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :r => 9, :rx => 9, :rw => 9, :ry => 9, :ew => 1, :ec => :highlight_color
     end
 
-    def background_info_tab_top_left_sprites
-      # TODO: We need the ability to set dim/bright sprites, and to orient them SW->NE
+    def summary_bottom_left_bg
+      box :w => 18, :h => 18, :fc => SUMMARY_INSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :r => 9, :rw => 9, :ry => 9, :ew => 1, :ec => :highlight_color
     end
 
-    def background_info_tab_top_right_sprites
-      # TODO: We need the ability to set dim/bright sprites, and to orient them SW->NE      
+    def summary_tab_bg
+        box :h => 23, :r => 3, :rh => 20, :fc => SUMMARY_OUTSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :ew => 1, :ec => :highlight_color, :s => 'h'
+    end
+
+    def summary_tab_active_bg
+        box :h => 23, :r => 3, :rh => 20, :fc => SUMMARY_INSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :ew => 1, :ec => :highlight_color, :s => 'h'
     end
 
     def box(options)

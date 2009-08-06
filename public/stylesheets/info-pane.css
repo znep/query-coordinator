@@ -38,8 +38,7 @@
 }
 .metadataPane .summaryTabs li .tabOuter
 {
-    background-image: url(/stylesheets/images/info_pane/background_info_tab_top_left_sprites.png);
-    background-position: 0 -4px;
+    background-position: 0 0;
     background-repeat: no-repeat;
     margin-left: -1px;
     margin-top: -1px;
@@ -51,8 +50,7 @@
 }
 .metadataPane .summaryTabs li .tabInner 
 {
-    background-image: url(/stylesheets/images/info_pane/background_info_tab_top_right_sprites.png);
-    background-position: 93px -4px;
+    background-position: right -40px;
     background-repeat: no-repeat;
     margin-right: -1px;
     margin-top: -1px;
@@ -63,27 +61,10 @@
 .metadataPane .summaryTabs li.active 
 {
     background-color: #cacaca;
-    background-position: -3px 0;
     border-bottom: none;
     font-size: 1.2em;
     font-weight: bold;
     height: 20px;
-}
-.metadataPane .summaryTabs li.active .tabOuter { background-position: -4px 0; }
-.metadataPane .summaryTabs li.active .tabInner 
-{
-    background-position: 97px 0;
-}
-
-.metadataPane .summaryTabs li.last .tabInner
-{
-    background-image: url(/stylesheets/images/info_pane/background_info_tab_last_sprites.png);
-    background-position: right top;
-    width: 103px;
-}
-.metadataPane .summaryTabs li.active.last .tabInner
-{
-    background-position: right -30px;
 }
 
 .metadataPane .summaryTabs li a, .metadataPane .summaryTabs li span
@@ -101,11 +82,7 @@
 .metadataPane .summaryTabs li.comments.active.last,
 .metadataPane .summaryTabs li.comments.active.last .tabInner
 {
-    width: 95px;
-}
-.metadataPane .summaryTabs li.comments.active .tabInner 
-{
-    background-image: none;
+    /*width: 95px; nuh uh*/
 }
 
 /* expander */
@@ -276,7 +253,6 @@
 
 .infoContentOuter .infoContentInner
 {
-    background-image: url(/stylesheets/images/info_pane/summary_bottom_left.png);
     background-position: left bottom;
     background-repeat: no-repeat;
     margin: 0 0 -1px -1px;

@@ -78,19 +78,24 @@ body.discover #mainNav li.discover
 {
     background-image: <%= bottom_left_dark_bg %>;
 }
+.infoContentOuter .infoContentInner
+{
+    background-image: <%= summary_bottom_left_bg %>;
+}
 
 .infoContentOuter .infoContentWrapper
 {
     background-image: <%= summary_bottom_right_bg %>;
 }
 
-/*
- * TODO: We need the ability to set dim/bright sprites, and to orient them SW->NE
-.metadataPane .summaryTabs li .tabOuter
+.metadataPane .summaryTabs li .tabOuter,
+.metadataPane .summaryTabs li .tabInner
 {
-    background-image: <%= background_info_tab_top_left_sprites %>;
+    background-image: <%= summary_tab_bg %>;
 }
-.metadataPane .summaryTabs li .tabInner 
+
+.metadataPane .summaryTabs li.active .tabOuter,
+.metadataPane .summaryTabs li.active .tabInner
 {
-    background-image: <%= background_info_tab_top_right_sprites %>;
-}*/
+    background-image: <%= summary_tab_active_bg %>;
+}

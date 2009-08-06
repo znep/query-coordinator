@@ -47,3 +47,50 @@ body.discover #mainNav li.discover
 {
     background-image: <%= carousel_bg %>;
 }
+
+/*** META TABS ***/
+.infoContentOuter.listContainer.expanded .infoContentInner,
+.infoContentOuter.listContainer .infoContent
+{
+    background-image: <%= expanded_list_bg %>;
+}
+
+.infoContentOuter
+{
+    border-color: #<%= th.highlight_color %>;
+}
+
+.metadataPane .summaryTabs 
+{
+    border-bottom: 1px solid #<%= th.highlight_color %>;
+}
+
+.metadataPane .summaryTabs li 
+{
+    border: 1px solid #<%= th.highlight_color %>;
+}
+
+.singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter { 
+    border: 1px solid #<%= th.highlight_color %>;
+}
+
+.infoContentOuter.listContainer .infoContent
+{
+    background-image: <%= bottom_left_dark_bg %>;
+}
+
+.infoContentOuter .infoContentWrapper
+{
+    background-image: <%= summary_bottom_right_bg %>;
+}
+
+/*
+ * TODO: We need the ability to set dim/bright sprites, and to orient them SW->NE
+.metadataPane .summaryTabs li .tabOuter
+{
+    background-image: <%= background_info_tab_top_left_sprites %>;
+}
+.metadataPane .summaryTabs li .tabInner 
+{
+    background-image: <%= background_info_tab_top_right_sprites %>;
+}*/

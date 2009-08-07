@@ -34,16 +34,18 @@ blist.data.TableNavigation = function(model, layout) {
         var value;
         eval('value = row' + column.dataLookupExpr + ';');
         return value;
-    }
+    };
 
     // Is there a selection?
     var hasSelection = function() {
-        if (selectionBoxes.length)
+        if (selectionBoxes.length) {
             return true;
-        for (var col in selectedColumns)
+        }
+        for (var col in selectedColumns) {
             return true;
+        }
         return false;
-    }
+    };
 
     // Convert selection into a sorted array of arrays for quickly identifying selected cells
     var convertCellSelection = function() {
@@ -68,14 +70,14 @@ blist.data.TableNavigation = function(model, layout) {
         converted.sort(function(a, b) {
             // Order by first row...
             var diff = a[1] - b[1];
-            if (diff)
+            if (diff) {
                 return diff;
-
+            }
             // Or by last row
             return a[3] - b[3];
         });
         return converted;
-    }
+    };
 
     var createSelectionMap = function(selectionComponents, selectionComponentCount, template) {
         var selectionMap = template.slice(0, template.length);
@@ -83,19 +85,21 @@ blist.data.TableNavigation = function(model, layout) {
         // Mark all selected positions in the selection map
         for (var selectionComponentID = 0; selectionComponentID < selectionComponentCount; selectionComponentID++) {
             var selectionComponent = selectionComponents[selectionComponentID];
-            for (var columnID = selectionComponent[0]; columnID <= selectionComponent[2]; columnID++)
+            for (var columnID = selectionComponent[0]; columnID <= selectionComponent[2]; columnID++) {
                 selectionMap[columnID] = true;
+            }
 
             // For the last position, mark any following positions that are associated with the same logical column
             var layoutLevel = layout[selectionLevel];
             columnID = selectionComponent[2];
             var uid = layoutLevel[columnID].logical;
-            for (columnID++; columnID < layoutLevel.length && layoutLevel[columnID].logical == uid; columnID++)
+            for (columnID++; columnID < layoutLevel.length && layoutLevel[columnID].logical == uid; columnID++) {
                 selectionMap[columnID] = true;
+            }
         }
 
         return selectionMap;
-    }
+    };
 
     this.goTo = function(x, y, event, selecting, wrap) {
         // Decide what affect this navigation has on the selection
@@ -104,10 +108,11 @@ blist.data.TableNavigation = function(model, layout) {
         {
             // Shift key -- selection continuation (continues the last
             // selection box or starts a new box)
-            if (selectionBoxes.length)
+            if (selectionBoxes.length) {
                 selectionMode = 'continue';
-            else
+            } else {
                 selectionMode = 'start';
+            }
         }
         else if (event.metaKey)
         {
@@ -124,8 +129,9 @@ blist.data.TableNavigation = function(model, layout) {
         var row = model.getByID(y);
 
         // Selection must occur in the same level -- otherwise, ignore
-        if (hasSelection() && selectionLevel != (row.level || 0))
+        if (hasSelection() && selectionLevel != (row.level || 0)) {
             return false;
+        }
 
         var layoutLevel = layout[row.level || 0];
         var xNum = 1;
@@ -174,8 +180,9 @@ blist.data.TableNavigation = function(model, layout) {
         if (selectionMode == 'start' || selectionMode == 'start-new')
         {
             // Begin a new selection box
-            if (!selectionBoxes.length)
+            if (!selectionBoxes.length) {
                 selectionLevel = model.getByID(y).level || 0;
+            }
             var startX = selectionMode == 'start' && activeCellOn ?
                 activeCellXStart : x;
             var startY = model.index(selectionMode == 'start' &&
@@ -203,7 +210,7 @@ blist.data.TableNavigation = function(model, layout) {
         activeCellY = y;
 
         return true;
-    }
+    };
 
     /**
      * Walk the selection for a sequence of rows.
@@ -230,8 +237,9 @@ blist.data.TableNavigation = function(model, layout) {
             for (var i = 0; i < layoutLevel.length; i++) {
                 var selected = selmapTemplate[i] =
                     selectedColumns[layoutLevel[i].mcol.id];
-                if (selected)
+                if (selected) {
                     hasColumnSelection = true;
+                }
             }
         }
 
@@ -263,9 +271,11 @@ blist.data.TableNavigation = function(model, layout) {
                 }
 
                 // Count the number of selection boxes that apply to this row
-                for (var selCount = 0; selCount < selection.length; selCount++)
-                    if (selection[selCount][1] > index)
+                for (var selCount = 0; selCount < selection.length; selCount++) {
+                    if (selection[selCount][1] > index) {
                         break;
+                    }
+                }
 
                 // Update the row
                 if (selCount == 0 && !hasColumnSelection) {
@@ -284,14 +294,14 @@ blist.data.TableNavigation = function(model, layout) {
             // Update the selection
             setRowSelectionFn(row, selmap);
         }
-    }
+    };
 
     /**
      * Is there currently an active cell?
      */
     this.isActive = function() {
         return activeCellOn;
-    }
+    };
 
     /**
      * Obtain the leftmost active X coordinate.
@@ -300,21 +310,21 @@ blist.data.TableNavigation = function(model, layout) {
      */
     this.getActiveX = function() {
         return activeCellXStart;
-    }
+    };
 
     /**
      * Obtain the rightmost active columns.
      */
     this.getActiveXEnd = function() {
         return activeCellXStart + activeCellXCount;
-    }
+    };
 
     /**
      * Obtain the number of active columns.
      */
     this.getActiveWidth = function() {
         return activeCellXCount;
-    }
+    };
 
     /**
      * Obtain the active Y coordinate.
@@ -323,14 +333,14 @@ blist.data.TableNavigation = function(model, layout) {
      */
     this.getActiveY = function() {
         return activeCellY;
-    }
+    };
 
     /**
      * Deactivate the active cell.
      */
     this.deactivate = function() {
         activeCellOn = false;
-    }
+    };
 
     /**
      * Clear all navigation information.
@@ -355,7 +365,7 @@ blist.data.TableNavigation = function(model, layout) {
         }
 
         return needRefresh;
-    }
+    };
 
     /**
      * Given a position and delta, adjust and return a new row.
@@ -372,8 +382,9 @@ blist.data.TableNavigation = function(model, layout) {
     {
         // Locate our current position
         var yIndex = model.index(baseY);
-        if (yIndex == undefined)
+        if (yIndex == undefined) {
             return null;
+        }
 
         // Update the y position
         yIndex += deltaY;
@@ -420,8 +431,9 @@ blist.data.TableNavigation = function(model, layout) {
 
                 var newYIndex = yIndex < 0 ? model.length() - 1 : 0;
                 var newY = model.get(newYIndex);
-                if (typeof newY == "object")
+                if (typeof newY == "object") {
                     newY = newY.id;
+                }
                 var adjX = getAdjustedX(yIndex < 0 ? -1 : 1, event, x, newY);
                 if (adjX && adjX.x != x)
                 {
@@ -432,19 +444,23 @@ blist.data.TableNavigation = function(model, layout) {
         }
 
         // Bounds checking
-        if (yIndex < 0)
+        if (yIndex < 0) {
             yIndex = 0;
-        if (yIndex >= model.length())
+        }
+        if (yIndex >= model.length()) {
             yIndex = model.length() - 1;
+        }
 
         // Convert y to a row ID
         var y = model.get(yIndex);
-        if (typeof y == "object")
+        if (typeof y == "object") {
             y = y.id;
+        }
 
         // No need to update if we didn't make changes
-        if (y == baseY)
+        if (y == baseY) {
             return null;
+        }
 
         var newRow = model.getByID(y);
         var newLevel = newRow.level || 0;
@@ -573,8 +589,9 @@ blist.data.TableNavigation = function(model, layout) {
                     // then we may need to wrap
                     var wrapYI = deltaY < 0 ? model.length() - 1 : 0;
                     var wrapY = model.get(wrapYI);
-                    if (typeof wrapY == "object")
+                    if (typeof wrapY == "object") {
                         wrapY = wrapY.id;
+                    }
                     var wrapXY = getAdjustedX(deltaY < 0 ? -1 : 1,
                             event, x, wrapY);
                     if (wrapXY && wrapXY.x != x)
@@ -631,7 +648,7 @@ blist.data.TableNavigation = function(model, layout) {
         }
 
         return {x: x, y: y};
-    }
+    };
 
     /**
      * Given a position and delta, adjust and return a new column.
@@ -776,14 +793,15 @@ blist.data.TableNavigation = function(model, layout) {
         }
 
         return {x: x, y: y};
-    }
+    };
 
     var preNav = function() {
-        if (!activeCellOn && model.length() && model.column(0))
+        if (!activeCellOn && model.length() && model.column(0)) {
             // First keyboard nav without cell nav on -- move to position 0, 0
-            return { x: 0, y: model.get(0).id }
+            return { x: 0, y: model.get(0).id };
+        }
         return null;
-    }
+    };
 
     /**
      * Compute a new position for a vertical move.
@@ -797,10 +815,11 @@ blist.data.TableNavigation = function(model, layout) {
     this.navigateY = function(deltaY, event, wrap)
     {
         var xy = preNav();
-        if (!xy)
+        if (!xy) {
             xy = getAdjustedY(deltaY, event, activeCellXStart, activeCellY, wrap);
+        }
         return xy;
-    }
+    };
 
     /**
      * Compute a new position for a horizontal move.
@@ -814,35 +833,39 @@ blist.data.TableNavigation = function(model, layout) {
     this.navigateX = function(deltaX, event, wrap)
     {
         var xy = preNav();
-        if (!xy)
+        if (!xy) {
             xy = getAdjustedX(deltaX, event, activeCellXStart, activeCellY, wrap);
+        }
 
         // Ignore if we made no changes
-        if (xy.x == activeCellXStart && xy.y == activeCellY)
+        if (xy.x == activeCellXStart && xy.y == activeCellY) {
             xy = null;
+        }
 
         return xy;
-    }
+    };
 
     /**
      * Select or unselect a column.
      */
     this.setColumnSelection = function(column, value) {
         if (hasSelection()) {
-            if (selectionLevel != 0)
+            if (selectionLevel != 0) {
                 // Can only select columns in the root level
                 return;
-        } else
+            }
+        } else {
             selectionLevel = 0;
+        }
         selectedColumns[column.id] = value;
-    }
+    };
 
     /**
      * Determine whether a column is selected.
      */
     this.isColumnSelected = function(column) {
         return selectedColumns[column.id];
-    }
+    };
 
     /**
      * Obtain a lookup for selected columns.  You may modify this set.
@@ -852,7 +875,7 @@ blist.data.TableNavigation = function(model, layout) {
         $.each(selectedColumns, function(colId, col)
                 { rv[colId] = true; });
         return rv;
-    }
+    };
 
     /**
      * Convert the selection to a tab-delimited text blob.
@@ -862,18 +885,21 @@ blist.data.TableNavigation = function(model, layout) {
         var usedCols = [];
         for (var i = 0; i < selectionBoxes.length; i++) {
             var box = selectionBoxes[i];
-            for (var j = box[0]; j < box[1]; j++)
+            for (var j = box[0]; j < box[1]; j++) {
                 usedCols[j] = true;
+            }
         }
 
         // Create a mapping from an output column to the source column
         var colMap = [];
-        for (i = 0; i < usedCols.length; i++)
-            if (usedCols[i])
+        for (i = 0; i < usedCols.length; i++) {
+            if (usedCols[i]) {
                 colMap.push(i);
+            }
+        }
 
         // TODO
-    }
+    };
 
     return this;
 };

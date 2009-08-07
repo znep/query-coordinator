@@ -766,6 +766,7 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < rows.length; i++)
             {
                 var row = rows[i];
+                if (row.expanded) { this.expand(row, false); }
                 var id = row.id;
                 var index = lookup[id];
                 if (index !== undefined)

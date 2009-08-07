@@ -25,6 +25,7 @@ $(function ()
             .val("")
           .end()
           .slideDown("fast");
+        $(this).closest(".listSection").find(".sectionEdit form").validate().resetForm();
     });
 
     $(".formListBoxClose a").click(function(event)

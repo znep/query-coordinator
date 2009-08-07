@@ -10,6 +10,9 @@ namespace :js do
       "is better written in dot notation.",
       "Be careful when making functions within a loop.",
       "eval is evil.",
+      "The body of a for in",
+      "The Function constructor is eval.",
+      "Inner functions should be listed at the top",
       "Use '!==' to compare with ",
       "Use '===' to compare with " ]
 
@@ -29,20 +32,12 @@ namespace :js do
     end
 
     error_count = 0
-    lint_output = IO.popen("$JAVA_HOME/bin/java -jar #{JSLINT_JAR} #{ENV['JSLINT_ARGS']} #{js_files_to_check.join(' ')}")
-    lint_lines = lint_output.readlines
-    lint_lines.each do |line|
-      ignored = false
-      warnings_to_ignore.each do |warning|
-        if ( line.match(warning) )
-          ignored = true
-        end
-      end
-      if ( ! ignored )
-        puts line
-        error_count += 1
-      end
+    IO.popen("$JAVA_HOME/bin/java -jar #{JSLINT_JAR} #{ENV['JSLINT_ARGS']} #{js_files_to_check.join(' ')}").readlines.each do |line|
+      next if warnings_to_ignore.any?{ |warning| line.match(warning) }
+      puts line
+      error_count += 1
     end
+
     puts "JSLint error count: #{error_count}"
     exit 1 if error_count > 0
   end

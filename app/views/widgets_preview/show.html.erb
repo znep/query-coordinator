@@ -8,7 +8,8 @@
 <% end %>
 
 <div id="publishPreview">
-  <%= get_publish_embed_code_for_view(@view, params[:width], params[:height], params[:variation]) %>
+  <%= get_publish_embed_code_for_view(@view, 
+      {:dimensions => {:width => params[:width], :height => params[:height]}}, params[:variation]) %>
 </div>
 
 <script type="text/javascript">

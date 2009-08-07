@@ -144,7 +144,7 @@
                     $filterClear.show();
                 }
             }, 10);
-        }
+        };
 
         var clearFilter = function(e)
         {
@@ -152,12 +152,12 @@
             $filterBox.val('').blur();
             $filterClear.hide();
             model.filter('');
-        }
+        };
 
         // Obtain a model column associated with a column header DOM node
         var getColumnForHeader = function(e) {
             return model.column(e.getAttribute('uid'));
-        }
+        };
 
         // Given a DOM node, retrieve the logical row in which the cell resides
         var getRow = function(cell) {
@@ -167,7 +167,7 @@
             // + 2 for "-r" suffix prior to row ID
             var rowID = rowDOM.id.substring(id.length + 2);
             return model.getByID(rowID);
-        }
+        };
 
         // Given a DOM node, retrieve the logical column in which the cell resides
         var getColumn = function(cell) {
@@ -175,11 +175,13 @@
             //  extra the part after the tableId-c, which is the uid of
             //  the column that can be looked up
             var classIndex = cell.className.indexOf(id + '-c');
-            if (classIndex == -1)
+            if (classIndex == -1) {
                 return null;
+            }
             var endOfUID = cell.className.indexOf(' ', classIndex);
-            if (endOfUID == -1)
+            if (endOfUID == -1) {
                 endOfUID = cell.className.length;
+            }
             var colUID = cell.className.slice(classIndex + id.length + 2, endOfUID);
             if (colUID == 'rowHandleCol')
             {
@@ -190,7 +192,7 @@
                 return rowNumberColumn;
             }
             return model.column(colUID);
-        }
+        };
 
         // Get the value in a row for a column
         var getRowValue = function(row, column)
@@ -226,8 +228,9 @@
 
         var selectColumn = function(column, state)
         {
-            if (!cellNav)
+            if (!cellNav) {
                 return;
+            }
 
             cellNav.setColumnSelection(column, state);
 
@@ -270,7 +273,7 @@
                     }
                 }
             }
-        }
+        };
 
 
         /*** CELL SELECTION AND NAVIGATION ***/
@@ -289,17 +292,18 @@
                 row.index = rowIndices[id]; // Logical row position -- required by the selection processor
                 rows.push(row);
             }
-            return rows.sort(function(a, b) { return a.index - b.index });
-        }
+            return rows.sort(function(a, b) { return a.index - b.index; });
+        };
 
         var clearRowSelection = function(row) {
-            for (var cell = row.row.firstChild; cell; cell = cell.nextSibling)
+            for (var cell = row.row.firstChild; cell; cell = cell.nextSibling) {
                 if (cell._sel) {
                     $(cell).removeClass('blist-cell-selected');
                     cell._sel = false;
                 }
+            }
             delete row.selected;
-        }
+        };
 
         var setRowSelection = function(row, selmap) {
             row.selected = true;
@@ -314,7 +318,7 @@
                     node._sel = false;
                 }
             }
-        }
+        };
 
         var updateCellNavCues = function()
         {
@@ -346,7 +350,7 @@
 
             // Update selection information
             cellNav.processSelection(rows, setRowSelection, clearRowSelection);
-        }
+        };
 
         var $activeContainer;
 
@@ -430,7 +434,7 @@
                 expandActiveCell();
                 inside.find('.col-select-holder').remove();
             }
-        }
+        };
 
         /**
          * Navigate to a particular cell (a DOM element).  Returns true iff the
@@ -466,13 +470,16 @@
                 node = node.nextSibling)
             {
                 var lcol = rowLayout[x];
-                if (!lcol)
+                if (!lcol) {
                     break;
-                if (node == cell)
+                }
+                if (node == cell) {
                     break;
-                if (lcol.skippable && $(node).hasClass('blist-skip'))
+                }
+                if (lcol.skippable && $(node).hasClass('blist-skip')) {
                     // Children aren't rendered, so skip them
                     x += lcol.skipCount;
+                }
                 x++;
             }
 
@@ -495,7 +502,7 @@
             // Not a valid navigation target; ignore
             clearCellNav();
             return false;
-        }
+        };
 
         /**
          * Navigate to a particular location (column UID, row ID pair).
@@ -563,7 +570,7 @@
             updateCellNavCues();
 
             return true;
-        }
+        };
 
 
         /*** CELL EDITING ***/
@@ -687,7 +694,7 @@
                 hotExpander.style.left = '-10000px';
                 hotExpanderVisible = false;
             }
-        }
+        };
 
         var killHotExpander = function()
         {
@@ -697,7 +704,7 @@
                 hotCellTimer = null;
             }
             hideHotExpander();
-        }
+        };
 
         var setHotCell = function(newCell, event)
         {
@@ -749,19 +756,18 @@
             }
 
             // Clone the node
-            var wrap = hotCell.cloneNode(true);
-            var $wrap = $(wrap);
+            var $hotCell = $(hotCell);
+            var $wrap = $hotCell.clone();
             $wrap.width('auto').height('auto');
             $hotExpander.width('auto').height('auto');
             $hotExpander.empty();
-            $hotExpander.append(wrap);
+            $hotExpander.append($wrap);
 
             // Determine if expansion is necessary.  The + 2 prevents us from
             // expanding if the box would just be slightly larger than the
             // containing cell.  This is a nicety except in the case of
             // picklists where the 16px image tends to be just a tad larger
             // than the text (currently configured at 15px).
-            var $hotCell = $(hotCell);
             var hotWidth = $hotCell.outerWidth();
             var hotHeight = $hotCell.outerHeight();
             if ($wrap.outerWidth() <= hotWidth + 2 &&
@@ -894,15 +900,18 @@
             var availW = rc.width;
             var countedScroll = false;
             var numCells = $expandCells.length;
+            var extraPadding = 0;
             $expandCells.each(function(i)
             {
                 var minW = minWidths.shift();
-                if (i == 0) { minW -= outerPadx / 2; }
-                if (i == numCells - 1) { minW -= outerPadx / 2; }
                 var $t = $(this);
                 // Compute cell padding
                 var w = $t.outerWidth();
                 var innerPadx = w - $t.width();
+                // If we have more than one cell, take off the left border width
+                // to make sure the cells line up
+                if (i == 0 && $expandCells.length > 1)
+                { innerPadx += outerPadx / 2; }
 
                 // If the cell is taller than the parent, subtract off the
                 // scrollbar size
@@ -912,16 +921,27 @@
                     countedScroll = true;
                 }
 
-                var innerPady = $t.outerHeight() - $t.height();
-                // Size the cell; bump up by one pixel to offset any text that
+                // Size the cell
+                // If necessary, bump up by one pixel to offset any text that
                 // is not exactly on a pixel boundary
-                $t.width(Math.min(Math.max(minW, w), availW) - innerPadx + 1);
+                if (w > minW)
+                {
+                    innerPadx--;
+                    extraPadding++;
+                }
+                $t.width(Math.min(Math.max(minW, w), availW) - innerPadx);
 
                 availW -= $t.outerWidth();
+
+                if (rc.height > $t.outerHeight())
+                {
+                    var innerPady = $t.outerHeight() - $t.height();
+                    $t.height(rc.height - innerPady);
+                }
             });
             // Account for the extra pixels already added for rounding to the
             // insides
-            rc.width += $expandCells.length;
+            rc.width += extraPadding;
 
             if (!animate)
             {
@@ -963,7 +983,7 @@
                 $container = $(event.type == "mouseout" ?
                     event.relatedTarget : event.target);
             }
-            catch (ignore) { $container = event.target; }
+            catch (ignore) { $container = $(event.target); }
             if (!$container)
             {
                 return null;
@@ -1388,9 +1408,17 @@
 
             selectFrom = null;
 
+
             if (cellNav)
             {
                 var cell = findCell(event);
+                // If this is a row opener or header, we don't allow normal
+                // cell nav clicks on them; so skip the rest
+                if ($(cell).is('.blist-opener, .blist-tdh'))
+                {
+                    return true;
+                }
+
                 if (cell && $activeCells && $activeCells.index(cell) >= 0)
                 {
                     $prevActiveCells = $activeCells;

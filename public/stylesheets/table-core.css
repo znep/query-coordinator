@@ -154,7 +154,7 @@ div.blist-table .blist-td.blist-tdh
     user-select: none;
 }
 
-.blist-tr .blist-opener
+.blist-table-scrolls .blist-opener
 {
     background-image: url('/stylesheets/images/content/table/expand_closed.png?1');
     background-position: -1px center;
@@ -168,7 +168,7 @@ div.blist-table .blist-td.blist-tdh
     border-right-color: #eeeeee;
 }
 
-.blist-tr .blist-td.blist-opener-inactive,
+.blist-table-scrolls .blist-td.blist-opener-inactive,
 .blist-tr-open .blist-td.blist-opener-inactive
 {
     background-image: none;

@@ -93,6 +93,53 @@ class BlistsController < SwfController
     end
   end
 
+  def publish
+    begin
+      @view = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+        flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+          ' cannot be found, or has been deleted.'
+        return (render 'shared/error', :status => :not_found)
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required' ||
+        e.error_code == 'permission_denied'
+        return require_user(true)
+      else
+        flash[:error] = e.error_message
+        return (render 'shared/error')
+      end
+    end
+    
+    if !@view.can_edit()
+      return require_user(true)
+    end
+    
+    # TODO[ORGS]: check if user is premium
+    #if current_user.organization.nil?
+    #  # TODO: forward to a marketing page?
+    #  return require_user(true)
+    #end
+
+    # TODO[ORGS]:
+    # We don't yet have a orgs service and we're not sure how we want to do it
+    # just yet, so for now by default we are going to just go and create a new
+    # template on behalf of the user the first time we load this page and then
+    # automatically load the first template for them after that.
+    # Eventually, we should be by default fetching the org's default template.
+    @widget_customizations = WidgetCustomization.find
+    if @widget_customizations.empty?
+      @widget_customization = WidgetCustomization.create({
+        'customization' => JSON.generate(WidgetCustomization.default_theme), 'name' => "Default" })
+    else
+      @widget_customization = @widget_customizations.first
+    end
+    @customization = WidgetCustomization.merge_theme_with_default(@widget_customization.customization)
+  end
+
+  def update_customization
+    #save customization
+  end
+
   def update
     blist_id = params[:id]
 

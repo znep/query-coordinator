@@ -872,8 +872,8 @@ blist.data.TableNavigation = function(model, layout) {
      */
     this.getSelectedColumns = function() {
         var rv = {};
-        $.each(selectedColumns, function(colId, col)
-                { rv[colId] = true; });
+        $.each(selectedColumns, function(colId, val)
+                { if (val) { rv[colId] = true; } });
         return rv;
     };
 

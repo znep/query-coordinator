@@ -1233,6 +1233,20 @@ table.gridList tr.filteredOut
 }
 /*** END: form list boxes ***/
 
+/*** START: Collapsable edit sections ***/
+.sectionEdit
+{
+    min-height: 0; /* IE7 */
+    display: none;
+}
+.sectionShow
+{
+    min-height: 0; /* IE7 */
+    position: relative;
+}
+
+/*** END: Collapsable edit sections ***/
+
 /*** START: star ratings ***/
 .rating
 {

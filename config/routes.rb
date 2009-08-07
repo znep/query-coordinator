@@ -110,6 +110,11 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
+  map.connect ':category/:view_name/:id/publish', :controller => 'blists',
+    :action => 'publish', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
   map.connect ':category/:view_name/:id/print', :controller => 'blists',
     :action => 'print', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
@@ -135,7 +140,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widgets/:id/:variation.data', :controller => 'widgets', :action => 'show', :format => 'data'
   map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id.data', :controller => 'widgets', :action => 'show', :format => 'data'
-  
+
+  map.connect 'customization/:id', :controller => 'blists', :action => 'update_customization',
+    :conditions => { :method => :put }, :format => 'data'
+
   map.connect 'widgets_preview/:id', :controller => 'widgets_preview', :action => 'show'
 
   map.connect 'widgets_meta/:id/meta_tab_header', :controller => 'widgets', :action => 'meta_tab_header'

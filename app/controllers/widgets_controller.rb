@@ -22,7 +22,7 @@ class WidgetsController < ApplicationController
 
   def show
     @variation = params[:variation]
-    @theme = Marshal::load(Marshal.dump(WidgetCustomization.default_theme))
+    @theme = WidgetCustomization.default_theme
 
     @options = params[:options]
     if @variation.blank? && params[:customization_id].blank?
@@ -52,7 +52,7 @@ class WidgetsController < ApplicationController
     
     if params[:customization_id]
       begin
-        @theme.merge!(WidgetCustomization.find_customization(params[:customization_id]).customization)
+        @theme.merge!(WidgetCustomization.find(params[:customization_id]).customization)
       rescue CoreServer::CoreServerError => e
         flash[:error] = e.error_message
         return (render 'shared/error')

@@ -1,0 +1,297 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "blist-publish-screen", "colorpicker",
+      :cache => "cache/blists_about_all" %>
+  <title>Publishing <%= @view.name %> | <%= t(:page_title) %></title>
+<% end %>
+
+<div id="publishContent" class="oneColumnContainer">
+  <div class="fullPageContentContainer">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class="publishHeader clearfix">
+          <div class="publishCodeWrapper">
+            <div class="publishCode">
+              <p>
+                Embed Code:
+                <span class="helpie" title="Paste this HTML code on your blog or website to publish your widget.">?</span>
+              </p>
+              <textarea><%= get_publish_embed_code_for_view(@view, @customization[:publish], @widget_customization.uid) %></textarea>
+            </div>
+          </div>
+          <h1>Customize Your Social Data Player</h1> 
+          <p>
+            Use the controls at the bottom of this page to edit the look and 
+            function of this Social Data Player. You can apply an existing 
+            template or create a new one.
+          </p>
+          <p>
+            The Data Player below provides you with a preview of your changes.
+          </p>
+        </div>
+        <div class="previewPane">
+          <%= get_publish_embed_code_for_view(@view, @customization[:publish], @widget_customization.uid) %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="publishOptionsPane" class="metadataPane">
+  <div class="header">
+    <ul class="summaryTabs clearfix">
+      <li id="tabTemplates">
+        <div class="tabOuter"><div class="tabInner active">
+          <a class="expander expanded" title="more info" href="#expand">more info</a>
+          <a href="#templates">Templates</a>
+        </div></div>
+      </li>
+      <li id="tabVisual">
+        <div class="tabOuter"><div class="tabInner">
+          <a class="expander expanded" title="more info" href="#expand">more info</a>
+          <a href="#visual">Visual Options</a>
+        </div></div>
+      </li>
+      <li id="tabMenuControl">
+        <div class="tabOuter"><div class="tabInner">
+          <a class="expander expanded" title="more info" href="#expand">more info</a>
+          <a href="#menuControl">Menu &amp; Control Options</a>
+        </div></div>
+      </li>
+      <li id="tabTab">
+        <div class="tabOuter"><div class="tabInner">
+          <a class="expander expanded" title="more info" href="#expand">more info</a>
+          <a href="#tab">Tab Options</a>
+        </div></div>
+      </li>
+      <li id="tabAdvanced">
+        <div class="tabOuter"><div class="tabInner">
+          <a class="expander expanded" title="more info" href="#expand">more info</a>
+          <a href="#advanced">Advanced Options</a>
+        </div></div>
+      </li>
+    </ul>
+  </div>
+  <% form_tag("customization/#{@widget_customization.uid}") do %>
+    <div class="infoContentOuter singleInfoTemplates listContainer expanded">
+      <div class="infoContentHeader clearfix">
+        <h2 class="panelHeader clipText">
+            Apply the
+            <%= select_tag("template_name", options_from_collection_for_select(
+                @widget_customizations, 'uid', 'name', @widget_customization)) %>
+            template to this Social Data Player
+        </h2>
+        <ul class="headerActions actionButtons">
+          <li class="noButton">
+            or
+          </li>
+          <li>
+            <a class="arrowButton newTemplate" title="Apply a New Template to this Player" href="#newTemplate">
+              Create a New Template
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="infoContentInner">
+        <div class="infoContentWrapper">
+          <div class="infoContent">
+            <dl class="summaryList">
+              <dt>Template Description</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent"><%= @customization[:description] || "(none)" %></span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Players Using Template</dt>
+              <dd>
+                <div class="itemContent">
+                  <ul class="textContent">
+                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
+                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
+                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
+                  </ul>
+                </div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="infoContentOuter singleInfoVisual listContainer expanded">
+      <div class="infoContentHeader clearfix">
+        <h2 class="panelHeader clipText">
+            Editing the <span class="templateName"><%= @widget_customization.name %></span> template.
+        </h2>
+        <ul class="headerActions">
+          <li>
+            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+          </li>
+        </ul>
+      </div>
+      <div class="infoContentInner">
+        <div class="infoContentWrapper">
+          <div class="infoContent">
+            <dl class="summaryList">
+              <dt>Player Size</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= text_field_tag("customization[publish][dimensions][width]",
+                        @customization[:publish][:dimensions][:width]) %>
+                    pixels wide by
+                    <%= text_field_tag("customization[publish][dimensions][height]",
+                        @customization[:publish][:dimensions][:height]) %>
+                    pixels high
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Dataset Title</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= radio_button_tag("customization[publish][show_title]", "true",
+                        @customization[:publish][:show_title]) %>
+                    <%= label_tag("customization_publish_show_title_true", "Show") %>
+                    <%= radio_button_tag("customization[publish][show_title]", "false",
+                        !(@customization[:publish][:show_title])) %>
+                    <%= label_tag("customization_publish_show_title_false", "Don't Show") %>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt></dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <h3>Color and Style</h3>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Frame Color</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= hidden_field_tag("customization[frame][color]", 
+                        @customization[:frame][:color]) %>
+                    <div class="colorPickerContainer"></div>
+                    <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:frame][:color] %>"></div>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Frame Style</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= select_tag("customization[frame][gradient]", options_for_select(
+                        {'Solid Background' => false, 'Gradient Background' => true}, @customization[:frame][:gradient])) %>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Border Color</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= hidden_field_tag("customization[frame][border]", 
+                        @customization[:frame][:border]) %>
+                    <div class="colorPickerContainer"></div>
+                    <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:frame][:border] %>"></div>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Font Style</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= radio_button_tag("customization[style][font][face]", "arial",
+                        @customization[:style][:font][:face] == "arial") %>
+                    <%= label_tag("customization_style_font_face", "Sans Serif") %>
+                    <%= radio_button_tag("customization[style][font][face]", "times",
+                        @customization[:style][:font][:face] == "times") %>
+                    <%= label_tag("customization_style_font_face", "Serif") %>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Menu Icon Style</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= radio_button_tag("customization[frame][icon_color]", "blue",
+                        @customization[:frame][:icon_color] == "blue") %>
+                    <%= label_tag("customization_frame_icon_color_blue", "Dark") %>
+                    <%= radio_button_tag("customization[frame][icon_color]", "grey",
+                        @customization[:frame][:icon_color] == "grey") %>
+                    <%= label_tag("customization_frame_icon_color_grey", "Light") %>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt></dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <h3>Column Titles</h3>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Column Type Icons</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= radio_button_tag("customization[grid][header_icons]", "true",
+                        @customization[:grid][:header_icons] == true) %>
+                    <%= label_tag("customization_grid_header_icons_true", "Show") %>
+                    <%= radio_button_tag("customization[grid][header_icons]", "false",
+                        @customization[:grid][:header_icons] == false) %>
+                    <%= label_tag("customization_grid_header_icons_true", "Don't Show") %>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+            <dl class="summaryList">
+              <dt>Wrap Title Text</dt>
+              <dd>
+                <div class="itemContent">
+                  <span class="textContent">
+                    <%= radio_button_tag("customization[grid][wrap_header_text]", "true",
+                        @customization[:grid][:wrap_header_text] == true) %>
+                    <%= label_tag("customization_grid_wrap_header_text", "Wrap Text") %>
+                    <%= radio_button_tag("customization[grid][wrap_header_text]", "false",
+                        @customization[:grid][:wrap_header_text] == false) %>
+                    <%= label_tag("customization_grid_wrap_header_text", "Don't Wrap Text") %>
+                  </span>
+                </div>
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  <%- end -%>
+</div>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.publish');
+    blist.publish.theme = <%= JSON.generate( @customization ) %>;
+  </script>
+  <%= javascript_include_tag "screens/info-pane.js", "plugins/colorpicker.js",
+      "screens/blist-publish-screen",
+      :cache => "cache/blists_publish" %>
+<% end %>

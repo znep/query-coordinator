@@ -1,8 +1,6 @@
 <% content_for :head do %>
-  <% bundle :name => "community_css", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <%= stylesheet_link_tag "community-activities-screen",
+  <%= stylesheet_link_tag "community-activities-screen",
     :cache => "cache/community_activites_all" %>
-  <% end %>
   <title><%= th.site_title %></title>
 <% end %>
 
@@ -51,7 +49,5 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <% bundle :name => "community_activities", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <%= javascript_include_tag "screens/community-activities-screen", :cache => "cache/community_activites_all" %>
-  <% end %>
+  <%= javascript_include_tag "screens/community-activities-screen", :cache => "cache/community_activites_all" %>
 <% end %>

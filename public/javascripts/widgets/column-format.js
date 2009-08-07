@@ -174,7 +174,7 @@ columnFormatNS.updateView = function(container, id)
     container.find(id).change(function (event) {
         column.format = $(this).val();
     });
-}
+};
 
 columnFormatNS.render_phone = 
 columnFormatNS.render_email = 

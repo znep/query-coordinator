@@ -1,8 +1,6 @@
 <% content_for :head do %>
-  <% bundle :name => "widget_show_top", :bypass => (ENV["RAILS_ENV"] != 'production') do %>
-    <%= stylesheet_link_tag 'table-core', 'dataset-grid', 'external-widget', 'info-pane',
-      'external-widget-meta', :cache => "cache/widgets_show_all" %>
-  <% end %>
+  <%= stylesheet_link_tag 'table-core', 'dataset-grid', 'external-widget', 'info-pane',
+    'external-widget-meta', :cache => "cache/widgets_show_all" %>
   
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <%- if @view -%>

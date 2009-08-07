@@ -306,7 +306,7 @@ blist.widget.commentExpanderClick = function($commentPane, e)
 $(function ()
 {
     widgetNS.sizeGrid();
-    $(window).resize(widgetNS.sizeGrid);
+    $(window).resize(function() { widgetNS.sizeGrid(); });
 
     // Make all links with rel="external" open in a new window.
     $("a[rel$='external']").live("mouseover",
@@ -367,30 +367,33 @@ $(function ()
         }
     });
     
-    // Set up the info pane tab switching.
-    $("#widgetMeta .summaryTabs").infoPaneNavigate({
-        tabSelector: "li:not('.scrollArrow')",
-        tabMap: {
-            "tabSummary": "#widgetMeta .singleInfoSummary",
-            "tabFiltered": "#widgetMeta .singleInfoFiltered",
-            "tabComments": "#widgetMeta .singleInfoComments",
-            "tabActivity": "#widgetMeta .singleInfoActivity",
-            "tabPublishing": "#widgetMeta .singleInfoPublishing"
-        },
-        allPanelsSelector : "#widgetMeta .infoContentOuter",
-        expandableSelector: "#widgetMeta .infoContent",
-        isWidget: true,
-        switchCompleteCallback: widgetNS.sizeGrid,
-        scrollToTabOnActivate: false
-    });
-    
-    // Update meta data tab headers.
-    widgetNS.updateMetaTabHeader("comments");
-    widgetNS.updateMetaTabHeader("filtered");
-    widgetNS.updateMetaTab("publishing");
-    widgetNS.updateMetaTabHeader("activity");
-    widgetNS.updateMetaTabHeader("summary");
-    
-    // Make tabs scrollable.
-    $("#widgetMeta .summaryTabs").scrollTabs();
+    if ($("#widgetMeta").length > 0)
+    {
+        // Set up the info pane tab switching.
+        $("#widgetMeta .summaryTabs").infoPaneNavigate({
+            tabSelector: "li:not('.scrollArrow')",
+            tabMap: {
+                "tabSummary": "#widgetMeta .singleInfoSummary",
+                "tabFiltered": "#widgetMeta .singleInfoFiltered",
+                "tabComments": "#widgetMeta .singleInfoComments",
+                "tabActivity": "#widgetMeta .singleInfoActivity",
+                "tabPublishing": "#widgetMeta .singleInfoPublishing"
+            },
+            allPanelsSelector : "#widgetMeta .infoContentOuter",
+            expandableSelector: "#widgetMeta .infoContent",
+            isWidget: true,
+            switchCompleteCallback: widgetNS.sizeGrid,
+            scrollToTabOnActivate: false
+        });
+
+        // Update meta data tab headers.
+        widgetNS.updateMetaTabHeader("comments");
+        widgetNS.updateMetaTabHeader("filtered");
+        widgetNS.updateMetaTab("publishing");
+        widgetNS.updateMetaTabHeader("activity");
+        widgetNS.updateMetaTabHeader("summary");
+
+        // Make tabs scrollable.
+        $("#widgetMeta .summaryTabs").scrollTabs();
+    }
 });

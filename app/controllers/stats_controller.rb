@@ -10,12 +10,12 @@ class StatsController < ApplicationController
     @show_search_form = false
 
     if (@dataset.createdAt.nil?)
-      default_since = Time.now - 1.month
+      default_since = Time.now - 3.month
     else
       creation_date = Time.at(@dataset.createdAt)
 
       # Pick either a year ago or the creation date of the dataset.
-      default_since = [creation_date, (Time.now - 1.month)].max
+      default_since = [creation_date, (Time.now - 3.month)].max
     end
 
     @since = params[:since] ? Time.parse(params[:since]) : default_since

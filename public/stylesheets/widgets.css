@@ -835,9 +835,10 @@ table.gridList tbody
 }
 table.gridList td
 {
+    min-height: 0;
     vertical-align: top;
 }
-table.gridList td > *
+table.gridList td .cellInner
 {
     display: block;
     font-size: 1.2em;
@@ -848,18 +849,18 @@ table.gridList td > *
     padding: 0 5px;
 }
 
-table.gridList td > a,
-table.gridList td > div > a
+table.gridList td a.cellInner,
+table.gridList td div.cellInner a
 {
     color: #333;
     text-decoration: none;
 }
-table.gridList td > a:hover, 
-table.gridList td > div > a:hover { text-decoration: underline; }
+table.gridList td a.cellInner:hover, 
+table.gridList td div.cellInner a:hover { text-decoration: underline; }
 
 
 /* Sort grouping headers */
-table.gridList tr.sortGroup td > *
+table.gridList tr.sortGroup td .cellInner
 {
     color: #600;
     font-size: 1.3em;
@@ -868,26 +869,29 @@ table.gridList tr.sortGroup td > *
 }
 
 /* Hover rules */
-table.gridList tr.hover td+td+td+td > *,
-table.gridList tr.highlight td+td+td+td > *
+table.gridList tr.hover td .cellInner,
+table.gridList tr.highlight td .cellInner
 {
     background-color: #e3ecf7;
 }
-table.gridList tr.hover td.picture > *
+table.gridList tr.hover td.type .cellInner,
+table.gridList tr.hover td.picture .cellInner,
+table.gridList tr.hover td.favorite .cellInner,
+table.gridList tr.hover td.handle .cellInner
 {
     background-color: transparent;
 }
-table.gridList tr.hover td.last > *,
-table.gridList tr.highlight td.last > *
+table.gridList tr.hover td.last .cellInner,
+table.gridList tr.highlight td.last .cellInner
 {
     background-image: url(/stylesheets/images/content/table/highlight_end.png);
     background-position: right;
     background-repeat: no-repeat;
 }
 
-.gridListContainer.simple table.gridList tr.hover td > *,
-.gridListContainer.simple table.gridList tr.selected td > *,
-.gridListContainer.simple table.gridList tr.hover.selected td > *
+.gridListContainer.simple table.gridList tr.hover td .cellInner,
+.gridListContainer.simple table.gridList tr.selected td .cellInner,
+.gridListContainer.simple table.gridList tr.hover.selected td .cellInner
 {
     background-color: #e3ecf7;
 }
@@ -933,7 +937,7 @@ table.gridList th.group
 }
 table.gridList .handle { width: 33px; }
 
-table.gridList td.handle > *
+table.gridList td.handle .cellInner
 {
     font-size: 1em;
 }
@@ -981,8 +985,8 @@ table.gridList th.type
 {
     background-image: url(/stylesheets/images/content/table/icon_sorting_type.png);
 }
-table.gridList td.type > *,
-table.gridList td.picture > *,
+table.gridList td.type .cellInner,
+table.gridList td.picture .cellInner,
 table.gridList td.group
 {
     margin: 0 auto;
@@ -994,14 +998,14 @@ table.gridList th.picture
 {
     background-image: url(/stylesheets/images/content/table/icon_contact_type.png);
 }
-table.gridList td.picture > *,
-table.gridList td.group > *
+table.gridList td.picture .cellInner,
+table.gridList td.group .cellInner
 {
     height: 24px;
     text-indent: 0;
     width: 24px;
 }
-table.gridList td.picture > .group
+table.gridList td.picture .cellInner.group
 {
     background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
     background-position: 0 -310px;
@@ -1012,7 +1016,7 @@ table.gridList th.group
 {
     background-image: url(/stylesheets/images/content/table/icon_group_type.png);
 }
-table.gridList td.group > *
+table.gridList td.group .cellInner
 {
     background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
     background-position: 0 -310px;
@@ -1035,7 +1039,7 @@ table.gridList .actionContainer {
     font-size: 1em;
     width: 4.5em;
 }
-table.gridList td.actionContainer > *
+table.gridList td.actionContainer .cellInner
 {
     font-size: 1em;
     padding: 0;
@@ -1051,25 +1055,25 @@ table.gridList .what { width: 70%; }
 
 
 /* Styling for child rows */
-table.gridList tr.child td > * { margin-bottom: 0; }
-table.gridList tr.child td.type > div { 
+table.gridList tr.child td .cellInner { margin-bottom: 0; }
+table.gridList tr.child td.type .cellInner { 
     border-left: 4px solid #cacaca;
     margin-left: 40px; 
     width: 40px;
 }
 
-table.gridList tr.child td.name > * { margin-left: 30px; }
-table.gridList tr.child td.description > * { border-right: solid 4px #cacaca; }
+table.gridList tr.child td.name .cellInner { margin-left: 30px; }
+table.gridList tr.child td.description .cellInner { border-right: solid 4px #cacaca; }
 
-table.gridList tr.child td.owner > *,
-table.gridList tr.child td.lastUpdated > *
+table.gridList tr.child td.owner .cellInner,
+table.gridList tr.child td.lastUpdated .cellInner
 {
     display: none;
 }
 
-table.gridList tr.child.hover td.description > *,
-table.gridList tr.child.selected td.description > *,
-table.gridList tr.child.hover.selected td.description > *
+table.gridList tr.child.hover td.description .cellInner,
+table.gridList tr.child.selected td.description .cellInner,
+table.gridList tr.child.hover.selected td.description .cellInner
 {
     background-image: url(/stylesheets/images/content/table/highlight_end.png);
     background-position: right;

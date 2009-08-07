@@ -127,7 +127,7 @@
 }
 
 /*** START: Gridlist styles - override for widget ***/
-.infoContentOuter table.gridList td > *
+.infoContentOuter table.gridList td .cellInner
 {
     height: auto;
     line-height: 1.1em;

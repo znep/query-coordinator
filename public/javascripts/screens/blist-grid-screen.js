@@ -676,6 +676,48 @@ $(function ()
 
     $("#infoPane .singleInfoPublishing").infoPanePublish();
     
+    $('.switchPermsLink').click(function (event)
+    {
+        event.preventDefault();
+        var $link = $(this);
+        var curState = $link.text().toLowerCase();
+        var newState = curState == 'private' ?
+            'public' : 'private';
+    
+        var viewId = $link.attr('href').split('_')[1];
+        $.get('/views/' + viewId, {'method': 'setPermission',
+            'value': newState});
+    
+        var capState = $.capitalize(newState);
+    
+        // Update link & icon
+        $link.closest('p.' + curState)
+            .removeClass(curState).addClass(newState);
+        $link.text(capState);
+        // Update panel header & icon
+        $link.closest('.singleInfoSharing')
+            .find('.panelHeader.' + curState).text(capState)
+            .removeClass(curState).addClass(newState);
+        // Update line in summary pane
+        $link.closest('#infoPane')
+            .find('.singleInfoSummary .permissions .itemContent > *')
+            .text(capState);
+        // Update summary panel header icon
+        $link.closest('#infoPane')
+            .find('.singleInfoSummary .panelHeader.' + curState)
+            .removeClass(curState).addClass(newState);
+        // Update publishing panel view
+        $('.singleInfoPublishing .infoContent > .hide').removeClass('hide');
+        if (newState == 'private')
+        {
+            $('.singleInfoPublishing .publishContent').addClass('hide');
+        }
+        else
+        {
+            $('.singleInfoPublishing .publishWarning').addClass('hide');
+        }
+    });
+    
     var commentMatches = window.location.search.match(/comment=(\w+)/);
     $('#infoPane .singleInfoComments').infoPaneComments({
         initialComment: commentMatches && commentMatches.length > 1 ?

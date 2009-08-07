@@ -99,3 +99,35 @@ body.discover #mainNav li.discover
 {
     background-image: <%= summary_tab_active_bg %>;
 }
+
+/*** DATASET BUTTON BAR ***/
+#lensBody .headerBar .staticLink:hover,
+a.dropdownLink:hover .midWrapper
+{
+    background: <%= button_hover_slice_bg %> repeat-x;
+}
+
+a.dropdownLink:hover
+{
+    background-image: <%= button_hover_endcap_bg %>;
+}
+
+a.dropdownLink:hover .outerWrapper
+{
+    background-image: <%= button_hover_endcap_bg %>;
+}
+
+a.dropdownLink.clicked
+{
+    background-image: <%= button_activated_endcap_bg %>;
+}
+
+a.dropdownLink.clicked .outerWrapper
+{
+    background-image: <%= button_activated_endcap_bg %>;
+}
+
+a.dropdownLink.clicked .midWrapper
+{
+    background-image: <%= button_activated_slice_bg %>;
+}

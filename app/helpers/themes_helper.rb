@@ -5,7 +5,7 @@ module ThemesHelper
     # navigation buttons.  I chose the colors by using a color meter on our actual rendered site.  Not that we really
     # support IE6 anyway.
     MAIN_BUTTON_BG = 'c7c8ca:.286,e6e7e7'
-
+        
     SUMMARY_INSIDE_BG = 'cacaca'
     SUMMARY_OUTSIDE_BG = 'ececec'
 
@@ -44,6 +44,22 @@ module ThemesHelper
 
     def summary_tab_active_bg
         box :h => 23, :r => 3, :rh => 20, :fc => SUMMARY_INSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :ew => 1, :ec => :highlight_color, :s => 'h'
+    end
+    
+    def button_hover_slice_bg
+      box :h => 24, :w => 3, :rx => 1, :rw => 1, :fc => :menu_button_bg
+    end
+
+    def button_hover_endcap_bg
+      box :h => 24, :w => 5, :fc => :menu_button_bg
+    end
+
+    def button_activated_slice_bg
+      box :h => 24, :w => 3, :rx => 1, :rw => 1, :fc => :menu_button_activated_bg
+    end
+    
+    def button_activated_endcap_bg
+      box :h => 24, :w => 5, :fc => :menu_button_activated_bg
     end
 
     def box(options)

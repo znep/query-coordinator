@@ -89,10 +89,14 @@
     <%= yield :layout %>
 
     <div id='footer'>
-      <%- if is_gov_site? -%>
-        <%= render(:partial => "shared/gov_footer") %>
+      <%- if !th.footer_html.nil?-%>
+        <%= th.footer_html %>
       <%- else -%>
-        <%= render(:partial => "shared/footer") %>
+        <%- if is_gov_site? -%>
+          <%= render(:partial => "shared/gov_footer") %>
+        <%- else -%>
+          <%= render(:partial => "shared/footer") %>
+        <%- end -%>
       <%- end -%>
     </div>
   </div>

@@ -144,36 +144,6 @@ a.dropdownLink .innerWrapper
     padding: 1px 25px 0 5px;
 }
 
-a.dropdownLink:hover
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_left.png);
-}
-
-a.dropdownLink:hover .outerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_right.png);
-}
-
-a.dropdownLink:hover .midWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_gradSlice.png);
-}
-
-a.dropdownLink.clicked
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_left.png);
-}
-
-a.dropdownLink.clicked .outerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_right.png);
-}
-
-a.dropdownLink.clicked .midWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_gradSlice.png);
-}
-
 #lensContainer .headerBar > ul > li > a.dropdownLink:hover,
 #lensContainer .headerBar > ul > li > a.dropdownLink.clicked { color: #fff; }
 /*** END: dropdown button ***/

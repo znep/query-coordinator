@@ -1,20 +1,52 @@
 class WidgetCustomization < Model
-  cattr_accessor :default_theme
-  
-  def self.find_customization(id)
-    path = "/widgetCustomization/#{id}"
-    result = get_request(path)
-    
-    # the server doesn't parse the JSON for us, so do it ourselves.
-    result.customization = JSON.parse(result.customization)
-    # symbolize keys
-    recursive_symbolize_keys!(result.customization)
-    result
+  def self.create(attributes)
+    path = "/widget_customization.json"
+    unless attributes['customization'].nil?
+      attributes['customization'] = JSON.generate(attributes['customization'])
+    end
+    create_request(path, JSON.generate(attributes))
   end
   
-  def initialize
-    self.data = Hash.new
-    self.update_data = Hash.new
+  def self.find( options = nil, custom_headers = {})
+    if options.nil?
+      options = Hash.new
+    end
+    path = nil
+    if options.is_a? String
+      path = "/widget_customization/#{options}.json"
+    elsif options.respond_to?(:to_param)
+      path = "/widget_customization.json"
+      path += "?#{options.to_param}" unless options.to_param.blank?
+    end
+
+    get_request(path, custom_headers)
+  end
+  
+  def save!
+    unless @customization_hash.nil?
+      @update_data['customization'] = JSON.generate(@customization_hash)
+    end
+    path = "/widget_customization/#{self.uid}.json"
+    update_request(path, JSON.generate(@update_data))
+  end
+  
+  def self.default_theme
+    Marshal::load(Marshal.dump(@@default_theme))
+  end
+  
+  def self.merge_theme_with_default(theme)
+    @@default_theme.deep_merge(theme)
+  end
+
+  def customization
+    # the server doesn't parse the JSON for us, so do it ourselves.
+    if @customization_hash.nil?
+      hash = JSON.parse(@data['customization'])
+      hash.deep_symbolize_keys!
+      @customization_hash = WidgetCustomization.merge_theme_with_default(hash)
+    end
+
+    @customization_hash
   end
 
   @@default_theme = {
@@ -51,13 +83,10 @@ class WidgetCustomization < Model
     :behavior => { :rating => true,             #TODO
                    :save_public_views => true,
                    :interstitial => false,
-                   :ga_code => '' }
+                   :ga_code => '' },
+    :publish  => { :dimensions => { :width => 425,
+                                    :height => 344 },
+                   :show_title => true,
+                   :show_footer_link => true }
   }
-
-private
-  def self.recursive_symbolize_keys!(hash)
-    hash.symbolize_keys!
-    hash.values.select{ |value| value.is_a? Hash }.each{ |hash| recursive_symbolize_keys!(hash) }
-  end
-
 end

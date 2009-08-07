@@ -256,19 +256,24 @@ module BlistsHelper
     options_for_select(View.creative_commons.invert.sort { |a, b| a.first <=> b.first }, selected_option)
   end
 
-  def get_publish_embed_code_for_view(view, width = "425", height = "344", variation = "")
+  def get_publish_embed_code_for_view(view, options = {}, variation = "")
+    options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]
+
     root_path = request.protocol + request.host_with_port
-    embed_template =  "<div><p style=\"margin-bottom:3px\"><a href=\"#{root_path + view.href}\" " +
-                      "target=\"_blank\" " +
-                      "style=\"font-size:12px;font-weight:bold;" +
-                      "text-decoration:none;color:#333333;font-family:arial;\">" +
-                      "#{h(view.name)}</a></p><iframe width=\"" +
-                      "#{width}px\" height=\"#{height}px\" src=\"#{root_path}" +
+    embed_template =  "<div>"
+    if options[:show_title]
+      embed_template += "<p style=\"margin-bottom:3px\"><a href=\"#{root_path + view.href}\" " +
+                        "target=\"_blank\" style=\"font-size:12px;font-weight:bold;" +
+                        "text-decoration:none;color:#333333;font-family:arial;\">" +
+                        "#{h(view.name)}</a></p>"
+    end
+    embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
+                      "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
                       "/widgets/#{view.id}/#{variation}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">" +
                       "#{h(view.name)}</a></iframe>"
-    if view.category.nil? || view.category.downcase != 'government'
+    if options[:show_footer_link]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
         "Powered by #{t(:blist_company)}</a></p>"
     end

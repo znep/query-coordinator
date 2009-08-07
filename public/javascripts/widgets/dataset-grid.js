@@ -170,6 +170,54 @@
                 return view;
             },
 
+            showHideColumns: function(columns, hide)
+            {
+                var datasetObj = this;
+                var view = datasetObj.settings._model.meta().view;
+                var successCount = 0;
+                $.each(columns, function(i, colId)
+                {
+                    var matchCols = $.grep(view.columns, function(c, i)
+                            { return c.id == colId; });
+                    if (matchCols.length == 1)
+                    {
+                        var col = matchCols[0];
+                        if (!col.flags) { col.flags = []; }
+                        if (hide)
+                        { col.flags.push('hidden'); }
+                        else
+                        {
+                            var ind = $.inArray('hidden', col.flags);
+                            if (ind > -1) { col.flags.splice(ind, 1); }
+                        }
+                        datasetObj.settings._model.updateColumn(col);
+
+                        if (datasetObj.settings.currentUserId == view.owner.id)
+                        {
+                            $.ajax({url: '/views/' + view.id + '/columns/' +
+                                colId + '.json',
+                                data: $.json.serialize({'hidden': hide}),
+                                type: 'PUT', contentType: 'application/json',
+                                success: function()
+                                {
+                                    successCount++;
+                                    if (successCount == columns.length)
+                                    {
+                                        $(document)
+                                            .trigger(blist.events.COLUMNS_CHANGED);
+                                    }
+                                }
+                                });
+                        }
+                        else
+                        {
+                            setTempView(datasetObj, view,
+                                'columnShowHide-' + colId);
+                        }
+                    }
+                });
+            },
+
             // This keeps track of when the column summary data is stale and
             // needs to be refreshed
             summaryStale: true,
@@ -302,18 +350,20 @@
         var $col = $(col.dom);
         var htmlStr =
             '<a class="menuLink action-item" href="#column-menu_' +
-            col.index + '"></a><ul class="menu columnHeaderMenu action-item" id="column-menu_' + col.index + '">';
+            col.index + '"></a>' +
+            '<ul class="menu columnHeaderMenu action-item" id="column-menu_' +
+            col.index + '">';
 
         // We support sort & filter, so if neither is available, don't show a menu
         if (blist.data.types[col.type].sortable)
         {
             htmlStr +=
-                '<li class="sortAsc">' +
+                '<li class="sortAsc singleItem">' +
                 '<a href="#column-sort-asc_' + col.index + '">' +
                 '<span class="highlight">Sort Ascending</span>' +
                 '</a>' +
                 '</li>' +
-                '<li class="sortDesc">' +
+                '<li class="sortDesc singleItem">' +
                 '<a href="#column-sort-desc_' + col.index + '">' +
                 '<span class="highlight">Sort Descending</span>' +
                 '</a>' +
@@ -326,18 +376,31 @@
             displayMenu = true;
         }
 
+        if (displayMenu)
+        {
+            // There are already display items in the list, so we need to add
+            // a separator.
+            htmlStr += '<li class="separator singleItem" />';
+        }
+        htmlStr += '<li class="hide" >' +
+            '<a href="#hide-column_' + col.id + '">' +
+            '<span class="highlight">Hide Column</span>' +
+            '</a></li>';
+        displayMenu = true;
+
         if (datasetObj.settings.columnPropertiesEnabled)
         {
             var view = $(datasetObj.currentGrid).blistModel().meta().view;
             if (displayMenu)
             {
-              // There are already display items in the list, so we need to add
-              // a separator.
-              htmlStr += '<li class="separator" />';
+                // There are already display items in the list, so we need to add
+                // a separator.
+                htmlStr += '<li class="separator singleItem" />';
             }
-            htmlStr += '<li class="properties">' +
-                '<a href="/blists/' + view.id + '/columns/' + col.id + '.json" rel="modal">' +
-                '<span class="highlight">Properties</span>' +
+            htmlStr += '<li class="properties singleItem">' +
+                '<a href="/blists/' + view.id + '/columns/' + col.id +
+                '.json" rel="modal">' +
+                '<span class="highlight">Edit Column Properties</span>' +
                 '</a>' +
                 '</li>';
             displayMenu = true;
@@ -364,14 +427,30 @@
     {
         $menu.dropdownMenu({triggerButton: $colHeader.find('a.menuLink'),
                     openCallback: function ($menu)
-                        {
-                            var col = $colHeader.data('column');
-                            loadFilterMenu(datasetObj, col, $menu);
-                        },
+                        { columnMenuOpenCallback(datasetObj, $colHeader, $menu); },
                     linkCallback: function (e)
                         { columnHeaderMenuHandler(datasetObj, e); },
                     forcePosition: true, pullToTop: true})
             .find('.autofilter ul.menu').scrollable();
+    };
+
+    var columnMenuOpenCallback = function(datasetObj, $colHeader, $menu)
+    {
+        var selCols = $(datasetObj.currentGrid).blistTableAccessor()
+            .getSelectedColumns();
+        var hasSel = false;
+        $.each(selCols, function() { hasSel = true; return false; });
+
+        if (!hasSel)
+        {
+            $menu.find('.singleItem').show();
+            var col = $colHeader.data('column');
+            loadFilterMenu(datasetObj, col, $menu);
+        }
+        else
+        {
+            $menu.find('.singleItem').hide();
+        }
     };
 
     var loadFilterMenu = function(datasetObj, col, $menu)
@@ -470,7 +549,7 @@
         }
 
         var filterStr =
-            '<li class="autofilter submenu">' +
+            '<li class="autofilter submenu singleItem">' +
             '<a href="#"><span class="highlight">Filter This Column</span></a>' +
             '<ul class="menu optionMenu">';
         // If we already have a filter for this column, give them a clear link
@@ -540,9 +619,10 @@
                             (f.isMatching ? '#clear-filter-column_' :
                                 '#filter-column_') +
                             col.index + '_' + f.escapedValue + '" title="' +
-                            f.titleValue + ' (' + f.count +
-                            ')" class="clipText">' + f.renderedValue +
-                            ' (' + f.count + ')' +
+                            f.titleValue +
+                            (f.count > 1 ? ' (' + f.count + ')' : '') +
+                            '" class="clipText">' + f.renderedValue +
+                            (f.count > 1 ? ' (' + f.count + ')' : '') +
                             '</a>' +
                         '</li>';
                 });
@@ -565,7 +645,7 @@
         var $sortItem = $menu.find('li.sortDesc');
         if ($sortItem.length > 0)
         {
-            filterStr = '<li class="separator" />' + filterStr;
+            filterStr = '<li class="separator singleItem" />' + filterStr;
             $sortItem.after(filterStr);
         }
         else
@@ -590,22 +670,31 @@
         }
 
         var action = s[0];
-        var colIndex = s[1];
+        var colIdIndex = s[1];
         var model = datasetObj.settings._model;
         switch (action)
         {
             case 'column-sort-asc':
-                model.sort(colIndex, false);
+                model.sort(colIdIndex, false);
                 break;
             case 'column-sort-desc':
-                model.sort(colIndex, true);
+                model.sort(colIdIndex, true);
                 break;
             case 'filter-column':
                 // Rejoin remainder of parts in case the filter value had _
-                model.filterColumn(colIndex, $.htmlUnescape(s.slice(2).join('_')));
+                model.filterColumn(colIdIndex,
+                    $.htmlUnescape(s.slice(2).join('_')));
                 break;
             case 'clear-filter-column':
-                model.clearColumnFilter(colIndex);
+                model.clearColumnFilter(colIdIndex);
+                break;
+            case 'hide-column':
+                var selCols = $(datasetObj.currentGrid).blistTableAccessor()
+                    .getSelectedColumns();
+                selCols[colIdIndex] = true;
+                var cols = [];
+                $.each(selCols, function(colId, val) { cols.push(colId); });
+                datasetObj.showHideColumns(cols, true);
                 break;
         }
         // Update the grid header to reflect updated sorting, filtering

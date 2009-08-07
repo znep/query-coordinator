@@ -1396,13 +1396,15 @@
 
             mouseDownAt = { x: event.clientX, y: event.clientY };
 
-            if (hotHeader && hotHeaderMode != 3 &&
-                $clickTarget.closest('.action-item').length < 1)
+            if (hotHeader && hotHeaderMode != 3)
             {
-                clickTarget = null;
-                hotHeaderDrag = true;
-                event.stopPropagation();
-                event.preventDefault();
+                if ($clickTarget.closest('.action-item').length < 1)
+                {
+                    clickTarget = null;
+                    hotHeaderDrag = true;
+                    event.stopPropagation();
+                    event.preventDefault();
+                }
                 return false;
             }
 
@@ -3073,6 +3075,17 @@
         /*** STARTUP ***/
 
         updateLayout();
+
+        var table = this;
+        var blistTableObj = function()
+        {
+            this.getSelectedColumns = function()
+            {
+                return cellNav ? cellNav.getSelectedColumns() : {};
+            };
+        };
+
+        $this.data('blistTableObj', new blistTableObj());
     }
 
     var blistTableDefaults = {
@@ -3106,6 +3119,11 @@
                 makeTable.apply(this,
                     [ $.extend({}, blistTableDefaults, options) ]);
             });
+        },
+
+        blistTableAccessor: function()
+        {
+            return this.data('blistTableObj');
         }
     });
 })(jQuery);

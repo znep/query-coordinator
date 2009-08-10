@@ -96,7 +96,7 @@
                 .attr('title', 'Sort ascending')
                 .removeClass('active')
                 .closest('.blist-th').removeClass('sorted');
-            if (sortBy >= 0)
+            if (sortBy >= 0 && columns[sortBy].dom)
             {
                 var col = columns[sortBy];
                 var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
@@ -2331,6 +2331,7 @@
                 $nameLabel.html(model.title());
             }
 
+            sortBy = -1;
             // Set up data for existing sort
             if (model.meta().sort)
             {
@@ -2711,6 +2712,7 @@
 
         var updateHeader = function (model)
         {
+            sortBy = -1;
             // Set up data for existing sort
             if (model.meta().sort)
             {

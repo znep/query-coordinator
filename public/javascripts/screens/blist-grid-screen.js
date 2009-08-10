@@ -330,7 +330,6 @@ blist.blistGrid.menuHandler = function(event)
             var $li = $target.closest('li');
             $('#readGrid').datasetGrid().showHideColumns([actionId],
                 $li.hasClass('checked'));
-            $li.toggleClass('checked');
             break;
     }
 };

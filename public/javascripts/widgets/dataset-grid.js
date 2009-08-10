@@ -146,20 +146,36 @@
 
                 if (includeColumns)
                 {
-                    // If they want columns, translate the latest column
-                    // info with widths and positions
-                    var colTranslate = function(col, i)
+                    var viewCols = $.extend([], view.columns);
+                    // Update all the widths from the meta columns
+                    $.each(this.settings._model.meta().columns[0], function(i, c)
                     {
-                        var newCol = {id: col.id, name: col.name, width: col.width};
-                        if (col.body && col.body.children)
+                        viewCols[c.dataIndex].width = c.width;
+                        if (c.body && c.body.children)
                         {
-                            newCol.childColumns = $.map(col.body.children,
-                                    colTranslate);
+                            $.each(c.body.children, function(j, cc)
+                            {
+                                viewCols[c.dataIndex][cc.dataIndex].width =
+                                    cc.width;
+                            });
                         }
-                        return newCol;
-                    };
-                    view.columns = $.map(this.settings._model.meta().columns[0],
-                        colTranslate);
+                    });
+                    // Filter out all metadata columns
+                    viewCols = $.grep(viewCols, function(c, i)
+                        { return c.id != -1; });
+                    // Clean out dataIndexes, and clean out child metadata columns
+                    $.each(viewCols, function(i, c)
+                    {
+                        delete c.dataIndex;
+                        if (c.childColumns)
+                        {
+                            c.childColumns = $.grep(c.childColumns, function(cc, j)
+                                { return cc.id != -1; });
+                            $.each(c.childColumns, function(j, cc)
+                                { delete cc.dataIndex; });
+                        }
+                    });
+                    view.columns = viewCols;
                 }
                 else
                 {
@@ -205,6 +221,11 @@
                             if (ind > -1) { col.flags.splice(ind, 1); }
                         }
                         datasetObj.settings._model.updateColumn(col);
+
+                        var $li = $('.columnsShowMenu a[href*="_' + colId + '"]')
+                            .closest('li');
+                        if (hide) { $li.removeClass('checked'); }
+                        else { $li.addClass('checked'); }
 
                         if (!skipRequest)
                         {

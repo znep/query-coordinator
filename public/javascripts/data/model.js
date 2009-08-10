@@ -672,10 +672,22 @@ blist.namespace.fetch('blist.data');
                     }
                     else
                     {
-                        // We're dealing with a sort on a column that doesn't
-                        // exist in our view; we can't post this back, so
-                        // clear it out
-                        meta.view.sortBys = null;
+                        var foundCol = false;
+                        $.each(meta.view.columns, function (i, c)
+                        {
+                            if (c.id == s.viewColumnId)
+                            {
+                                foundCol = true;
+                                return false;
+                            }
+                        });
+                        if (!foundCol)
+                        {
+                            // We're dealing with a sort on a column that doesn't
+                            // exist in our view; we can't post this back, so
+                            // clear it out
+                            meta.view.sortBys = null;
+                        }
                     }
                 }
 

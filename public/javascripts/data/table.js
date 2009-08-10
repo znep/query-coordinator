@@ -511,34 +511,41 @@
         var cellNavToXY = function(xy, event, selecting, wrap)
         {
             // Navigate logically
-            if (!cellNav.goTo(xy.x, xy.y, event, selecting, wrap))
+            if (!cellNav.goTo(xy.x, xy.y, event, selecting, wrap)) {
                 return false;
+            }
 
             // Scroll the active cell into view if it isn't visible vertically
             var scrollTop = $scrolls[0].scrollTop;
             var scrollHeight = $scrolls.height();
-            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth) {
                 scrollHeight -= scrollbarWidth;
-            if ($footerScrolls.is(':visible'))
+            }
+            if ($footerScrolls.is(':visible')) {
                 scrollHeight -= $footerScrolls.outerHeight() - 1;
+            }
             var scrollBottom = scrollTop + scrollHeight;
             var top = model.index(xy.y) * rowOffset;
             var bottom = top + rowOffset;
             var origScrollTop = scrollTop;
 
-            if (scrollBottom < bottom)
+            if (scrollBottom < bottom) {
                 scrollTop = bottom - scrollHeight;
-            if (scrollTop > top)
+            }
+            if (scrollTop > top) {
                 scrollTop = top;
-            if (scrollTop != origScrollTop)
+            }
+            if (scrollTop != origScrollTop) {
                 $scrolls.scrollTop(scrollTop);
+            }
 
             // Scroll the active cell into view if it isn't visible horizontally
             // Set up scroll variables to use
             var scrollLeft = $scrolls.scrollLeft();
             var scrollWidth = $scrolls.width();
-            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight) {
                 scrollWidth -= scrollbarWidth;
+            }
             var scrollRight = scrollLeft + scrollWidth;
 
             var layoutLevel = layout[model.getByID(xy.y).level || 0];
@@ -726,7 +733,7 @@
 
         var expandHotCell = function()
         {
-            if (options.noExpand) return;
+            if (options.noExpand) { return; }
 
             if (!hotCellTimer)
             {
@@ -808,24 +815,30 @@
             // Ensure viewport is in the window horizontally
             var contWidth = curSize ? curSize.width : $container.outerWidth();
             var viewportWidth = $scrolls.width();
-            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
+            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight) {
                 viewportWidth -= scrollbarWidth;
+            }
             var scrollLeft = $scrolls.scrollLeft();
-            if (left + contWidth > scrollLeft + viewportWidth)
+            if (left + contWidth > scrollLeft + viewportWidth) {
                 left = scrollLeft + viewportWidth - contWidth;
-            if (left < scrollLeft)
+            }
+            if (left < scrollLeft) {
                 left = scrollLeft;
+            }
 
             // Ensure viewport is in the window vertically
             var contHeight = curSize ? curSize.height : $container.outerHeight();
             var viewportHeight = $scrolls.height();
-            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
+            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth) {
                 viewportHeight -= scrollbarWidth;
+            }
             var scrollTop = $scrolls.scrollTop();
-            if (top + contHeight > scrollTop + viewportHeight)
+            if (top + contHeight > scrollTop + viewportHeight) {
                 top = scrollTop + viewportHeight - contHeight;
-            if (top < scrollTop - 1)
+            }
+            if (top < scrollTop - 1) {
                 top = scrollTop - 1;
+            }
 
             if (!animate)
             {
@@ -873,7 +886,7 @@
             var maxWidth = $scrolls.width();
             if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight)
             { maxWidth -= scrollbarWidth; }
-            maxWidth = Math.floor(maxWidth * .8);
+            maxWidth = Math.floor(maxWidth * 0.8);
             if (rc.width > maxWidth)
             {
                 // Constrain the width and determine the height
@@ -885,7 +898,7 @@
             var maxHeight = $scrolls.height();
             if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth)
             { maxHeight -= scrollbarWidth; }
-            maxHeight = Math.floor(maxHeight * .9);
+            maxHeight = Math.floor(maxHeight * 0.9);
             if (rc.height > maxHeight)
             {
                 rc.height = maxHeight;
@@ -997,32 +1010,36 @@
                 }
             }
             return $container[0];
-        }
+        };
 
         var findCell = function(event)
         {
             var cell = findContainer(event, '.blist-td, .blist-table-expander, ' +
                 '.blist-table-active-container');
-            if (!cell)
+            if (!cell) {
                 return null;
+            }
             var $cell = $(cell);
 
             // Can't interact with fill
-            if ($cell.is('.blist-tdfill, .blist-opener-space'))
+            if ($cell.is('.blist-tdfill, .blist-opener-space')) {
                 return null;
+            }
 
             // If we are looking at the selection expansion, return
             //  the first active cell
             if ($activeContainer && $activeCells &&
                 ($cell[0] == $activeContainer[0] ||
-                $cell.parent()[0] == $activeContainer[0]))
+                $cell.parent()[0] == $activeContainer[0])) {
                 return $activeCells[0];
+            }
 
             // Nested table header send focus to the opener
             if ($cell.hasClass('blist-tdh'))
             {
-                while (!$cell.hasClass('blist-opener'))
+                while (!$cell.hasClass('blist-opener')) {
                     $cell = $(cell = cell.previousSibling);
+                }
                 return cell;
             }
 
@@ -1034,15 +1051,16 @@
 
             // Normal cell
             return cell;
-        }
+        };
 
         var handleHeaderHover = function(event)
         {
             if (hotHeaderMode == 4 && hotHeaderDrag) { return false; }
 
             var container = findContainer(event, '.blist-tr, .blist-table-header');
-            if (!container)
+            if (!container) {
                 return false;
+            }
 
             var x = event.clientX;
             var hh, hhm;
@@ -1110,12 +1128,13 @@
                 return foundRealHeader;
             }
             return false;
-        }
+        };
 
         var handleColumnResize = function(event, isFinished) {
             var width = event.clientX - dragHeaderLeft - paddingX;
-            if (width < MINIMUM_HEADER_SIZE)
+            if (width < MINIMUM_HEADER_SIZE) {
                 width = MINIMUM_HEADER_SIZE;
+            }
             var col = getColumnForHeader(hotHeader);
             if (col.hasOwnProperty('percentWidth'))
             {
@@ -1131,7 +1150,7 @@
             col.width = width;
             model.colWidthChange(col, isFinished);
             updateColumnSelection();
-        }
+        };
 
         var unHotRow = function(rowID)
         {
@@ -1139,15 +1158,16 @@
                 .removeClass('blist-hot-row');
             $locked.find('#' + id + '-l' + rowID)
                 .removeClass('blist-hot-row');
-        }
+        };
 
         var isSelectingFrom = function(cell) {
-            if (!cellNav.length || !cell || !cell.parentNode)
+            if (!cellNav.length || !cell || !cell.parentNode) {
                 return false;
+            }
             var row = getRow(cell);
             var sel = cellNav[cellNav.length - 1];
             return cell.parentNode.childNodes[sel[0]] == cell && sel[1] == model.index(row);
-        }
+        };
 
         var getHeaderUnderMouse = function(pageX)
         {
@@ -1440,7 +1460,7 @@
                 }
 
             }
-        }
+        };
 
         var onMouseUp = function(event)
         {
@@ -1486,7 +1506,7 @@
             }
 
             if (cellNav) { expandActiveCell(); }
-        }
+        };
 
         var onDoubleClick = function(event)
         {
@@ -1522,18 +1542,20 @@
         var navigateX = function(deltaX, event, wrap)
         {
             var to = cellNav.navigateX(deltaX, event, wrap);
-            if (to)
+            if (to) {
                 cellNavToXY(to, event, false, wrap);
-        }
+            }
+        };
 
         // Move the active cell an arbitrary number of rows.  Supports an value
         // for deltaY, including negative offsets
         var navigateY = function(deltaY, event, wrap)
         {
             var to = cellNav.navigateY(deltaY, event, wrap);
-            if (to)
+            if (to) {
                 cellNavToXY(to, event, false, wrap);
-        }
+            }
+        };
 
         // Page size is configured in renderRows()
         var pageSize = 1;
@@ -1600,7 +1622,7 @@
             setTimeout(expandActiveCell, 1);
 
             return false;
-        }
+        };
         
         if (options.simpleCellExpand)
         {
@@ -1611,8 +1633,9 @@
                 var innerContentWidth = 0;
                 $this.children().each(function() { innerContentWidth += $(this).outerWidth(true); });
 
-                if (innerContentWidth <= $this.innerWidth())
+                if (innerContentWidth <= $this.innerWidth()) {
                     return;
+                }
 
                 var offsetPos = $this.offset();
                 offsetPos.top += $this.offsetParent().scrollTop();
@@ -1637,24 +1660,24 @@
         /*** HTML RENDERING ***/
 
         var headerStr =
-            '<textarea class="blist-table-navigator"></textarea>\
-             <div class="blist-table-locked-scrolls">\
-                <div class="blist-table-locked-header">&nbsp;</div>\
-                <div class="blist-table-locked">&nbsp;</div>\
-                <div class="blist-table-locked-footer">&nbsp;</div>\
-            </div>\
-            <div class="blist-table-top">';
+            '<textarea class="blist-table-navigator"></textarea>' +
+            '<div class="blist-table-locked-scrolls">' +
+            '   <div class="blist-table-locked-header">&nbsp;</div>' +
+            '   <div class="blist-table-locked">&nbsp;</div>' +
+            '   <div class="blist-table-locked-footer">&nbsp;</div>' +
+            '</div>' +
+            '<div class="blist-table-top">';
         if (options.showTitle)
         {
             headerStr +=
-                '<div class="blist-table-title-tl">\
-                  <div class="blist-table-title-tr">\
-                    <div class="blist-table-title">\
-                      <div class="blist-table-filter-l">\
-                        <div class="blist-table-filter-r">\
-                          <input class="blist-table-filter"/>\
-                          <a class="blist-table-clear-filter" title="Clear Search" href="#clear_filter">Clear Search</a>\
-                      </div></div>';
+                '<div class="blist-table-title-tl">' +
+                ' <div class="blist-table-title-tr">' +
+                '   <div class="blist-table-title">' +
+                '     <div class="blist-table-filter-l">' +
+                '       <div class="blist-table-filter-r">' +
+                '         <input class="blist-table-filter"/>' +
+                '         <a class="blist-table-clear-filter" title="Clear Search" href="#clear_filter">Clear Search</a>' +
+                '     </div></div>';
             if (options.showName)
             {
                 headerStr += '<div class="blist-table-name">&nbsp;</div>';
@@ -1662,15 +1685,15 @@
             headerStr += '</div></div></div>';
         }
         headerStr +=
-            '  <div class="blist-table-header-scrolls">\
-                <div class="blist-table-header">&nbsp;</div>\
-            </div></div>\
-            <div class="blist-table-scrolls">\
-              <div class="blist-table-inside">&nbsp;</div></div>\
-            <div class="blist-table-footer-scrolls">\
-                <div class="blist-table-footer">&nbsp;</div>\
-            </div>\
-            <div class="blist-table-util"></div>';
+            '  <div class="blist-table-header-scrolls">' +
+            '    <div class="blist-table-header">&nbsp;</div>' +
+            '</div></div>' +
+            '<div class="blist-table-scrolls">' +
+            '  <div class="blist-table-inside">&nbsp;</div></div>' +
+            '<div class="blist-table-footer-scrolls">' +
+            '    <div class="blist-table-footer">&nbsp;</div>' +
+            '</div>' +
+            '<div class="blist-table-util"></div>';
 
         $(document)
             .mouseup(onMouseUp);
@@ -1722,7 +1745,7 @@
         var $headerScrolls = $top
             .find('.blist-table-header-scrolls');
         var $header = $headerScrolls
-            .find('.blist-table-header')
+            .find('.blist-table-header');
 
         // The scrolling container
         var $scrolls = $outside
@@ -1786,10 +1809,12 @@
             // Size the inside row container
             var insideHeight = model ? rowOffset * model.rows().length : 0;
             var scrollsHeight = $scrolls[0].clientHeight;
-            if ($footerScrolls.is(':visible'))
+            if ($footerScrolls.is(':visible')) {
                 insideHeight += $footerScrolls.outerHeight() - 1;
-            if (insideHeight < scrollsHeight)
+            }
+            if (insideHeight < scrollsHeight) {
                 insideHeight = scrollsHeight;
+            }
             inside.height(insideHeight);
             $locked.height(insideHeight);
 
@@ -1905,8 +1930,9 @@
                 .children('#' + id + '-styles')[0];
             for (var i = 0; i < document.styleSheets.length; i++) {
                 css = document.styleSheets[i];
-                if ((css.ownerNode || css.owningElement) == rulesNode)
+                if ((css.ownerNode || css.owningElement) == rulesNode) {
                     break;
+                }
             }
             ghostClass = id + "-ghost";
             openerClass = id + "-opener";
@@ -1965,8 +1991,9 @@
         var createColumnRendering = function(mcols, lcols, contextVariables, prefix) {
             var colParts = [];
             var generatedCode = '';
-            if (prefix)
+            if (prefix) {
                 colParts.push(prefix);
+            }
 
             // Utility function that writes a push for all column parts
             var completeStatement = function() {
@@ -1974,7 +2001,7 @@
                     generatedCode += 'html.push(' + colParts.join(',') + ');';
                     colParts = [];
                 }
-            }
+            };
 
             for (var j = 0; j < mcols.length; j++)
             {
@@ -2050,10 +2077,11 @@
                             createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
                         "else ";
                         colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
-                        for (var i = 0; i < children.length; i++)
-                        colParts.push("\"<div class='blist-td blist-tdfill blist-td-colfill "
-                            + getColumnClass(children[i])
-                            + "'></div>\"");
+                        for (var i = 0; i < children.length; i++) {
+                            colParts.push("\"<div class='blist-td blist-tdfill blist-td-colfill " +
+                                getColumnClass(children[i]) +
+                                "'></div>\"");
+                        }
                     completeStatement();
                 } else if (mcol.type && mcol.type == 'fill') {
                     // Fill column -- covers background for a range of columns that aren't present in this row
@@ -2096,7 +2124,7 @@
             completeStatement();
             
             return generatedCode;
-        }
+        };
 
         /**
          * Initialize based on current model metadata.
@@ -2207,8 +2235,8 @@
             $.each(lockedColumns, function (i, c)
             {
                 measureUtilDOM.innerHTML =
-                    '<div class="blist-tr">\
-                    <div class="' + (c.width ? getColumnClass(c) : '') + ' ' +
+                    '<div class="blist-tr">' +
+                    '<div class="' + (c.width ? getColumnClass(c) : '') + ' ' +
                         (c.cls || '') + ' blist-td">' +
                         (c.measureText || '') + '</div></div>';
                 var $measureCol = $(measureUtilDOM).find('.blist-td');
@@ -2231,8 +2259,9 @@
             // Record the width of the opener for nested tables
             openerWidth = measuredInnerDims.width * 1.5;
             openerStyle.width = openerWidth + 'px';
-            if (options.generateHeights)
+            if (options.generateHeights) {
                 openerStyle.height = rowHeight + 'px';
+            }
 
             // These variables are available to the rendering function
             var contextVariables = {
@@ -2260,28 +2289,28 @@
                 new blist.data.TableNavigation(model, layout) : null;
 
             var rowDivContents =
-                'class=\'blist-tr", \
-                (index % 2 ? " blist-tr-even" : ""), \
-                (row.level != undefined ? " blist-tr-level" + row.level : ""), \
-                (row.level > 0 ? " blist-tr-sub" : ""), \
-                (row.expanded ? " blist-tr-open" : ""), \
-                (row.groupLast ? " last" : ""), \
-                "\' style=\'top: ", \
-                (index * ' + rowOffset + '), "px\'';
+                'class=\'blist-tr", ' +
+                '(index % 2 ? " blist-tr-even" : ""), ' +
+                '(row.level != undefined ? " blist-tr-level" + row.level : ""), ' +
+                '(row.level > 0 ? " blist-tr-sub" : ""), ' +
+                '(row.expanded ? " blist-tr-open" : ""), ' +
+                '(row.groupLast ? " last" : ""), ' +
+                '"\' style=\'top: ", ' +
+                '(index * ' + rowOffset + '), "px\'';
 
             // Create the rendering function.  We precompile this for speed so
             // we can avoid tight loops, function calls, etc.
             var renderFnSource =
-                '(function(html, index, row) {\
-                    html.push(\
-                        "<div id=\'' + id + '-r", \
-                        (row.id || row[0]), \
-                        "\' ' + rowDivContents + '>"\
-                        );\
-                    switch (row.level || 0) {\
-                      case -1:\
-                        html.push(renderSpecial(row));\
-                        break;';
+                '(function(html, index, row) {' +
+                '   html.push(' +
+                '       "<div id=\'' + id + '-r", ' +
+                '       (row.id || row[0]), ' +
+                '       "\' ' + rowDivContents + '>"' +
+                '       );' +
+                '   switch (row.level || 0) {' +
+                '     case -1:' +
+                '       html.push(renderSpecial(row));' +
+                '       break;';
             for (i = 0; i < levelRender.length; i++) {
                 renderFnSource += 'case ' + i + ':' +
                     levelRender[i] +
@@ -2300,10 +2329,10 @@
 
             var renderLockedFnSource =
                     '(function(html, index, row) {';
-            renderLockedFnSource += 'html.push(\
-                "<div id=\'' + id + '-l", \
-                (row.id || row[0]), \
-                "\' ' + rowDivContents + '>");';
+            renderLockedFnSource += 'html.push(' +
+                '"<div id=\'' + id + '-l", '+
+                '(row.id || row[0]), ' +
+                '"\' ' + rowDivContents + '>");';
 
             $.each(lockedColumns, function (i, c)
             {
@@ -2348,7 +2377,7 @@
             }
 
             configureWidths();
-        }
+        };
 
         /**
          * Configure column widths.
@@ -2378,13 +2407,14 @@
 
             $lockedScrolls.width(lockedWidth);
             $locked.width(lockedWidth);
-        }
+        };
 
         var configureLevelWidths = function(mcols, level)
         {
             var hpos = lockedWidth;
-            if (level == 0 && options.showGhostColumn)
+            if (level == 0 && options.showGhostColumn) {
                 hpos += paddingX;
+            }
 
             for (var j = 0; j < mcols.length; j++)
             {
@@ -2445,7 +2475,7 @@
             // Expand the inside width if the level is wider
             if (hpos > insideWidth)
                 insideWidth = hpos;
-        }
+        };
 
         var configureVariableWidths = function(level, levelWidth)
         {
@@ -2488,7 +2518,7 @@
                     }
                 }
             }
-        }
+        };
 
         /**
          * Create column header elements for the current row configuration and

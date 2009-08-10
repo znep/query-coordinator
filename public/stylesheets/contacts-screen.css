@@ -13,10 +13,15 @@
     padding-left: 30px;
 }
 
-#contacts table.gridList tr.hover td+td+td > *,
-#contacts table.gridList tr.highlight td+td+td > *
+#contacts table.gridList tr.hover td .cellInner,
+#contacts table.gridList tr.highlight td .cellInner
 {
     background-color: #e3ecf7;
+}
+#contacts table.gridList tr.hover td.handle .cellInner,
+#contacts table.gridList tr.hover td.picture .cellInner
+{
+    background: transparent;
 }
 
 #contacts table.gridList .name { width: 40%; }

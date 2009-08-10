@@ -184,7 +184,7 @@
               a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
             <tr class="item">
               <td class="picture">
-                <div>
+                <div class="cellInner">
                   <%- if s.member_id -%>
                     <a href="<%= User.href(s.member_name, s.member_id) %>"><%= image_tag(s.member_image, :size => "24x24", :alt => h(s.member_name)) %></a>
                   <%- else -%>
@@ -192,13 +192,13 @@
                   <%- end -%>
                 </div>
               </td>
-              <td class="contact"><div><%= h(s.member_name) %></div></td>
-              <td class="role"><div><%= s.type %></div></td>
+              <td class="contact"><div class="cellInner"><%= h(s.member_name) %></div></td>
+              <td class="role"><div class="cellInner"><%= s.type %></div></td>
               <%# Not supported
               <td class="others"><div>Yes</div></td>
               <td class="opened"><div>01/09/2009</div></td>
               %>
-              <td class="actionContainer"><div>
+              <td class="actionContainer"><div class="cellInner">
                   <%- if s.member_id -%>
                     <a href="<%= User.href(s.member_name, s.member_id) %>" class="action"><span>View Profile</span></a>
                   <%- end -%>

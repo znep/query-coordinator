@@ -148,7 +148,7 @@
     font-size: 1.2em;
 }
 
-.linksTableContainer table.gridList td > * { height: 32px; line-height: 32px; }
+.linksTableContainer table.gridList td .cellInner { height: 32px; line-height: 32px; }
 .linksTableContainer table th.edit_handle span
 {
     background: url(/stylesheets/images/profile/profile_links_delete_header.png) no-repeat;
@@ -213,7 +213,7 @@
 }
 .updateLinksContainer table option { font-size: 1.2em; }
 .updateLinksContainer table.gridList table td { height: 3.1em; }
-.updateLinksContainer table.gridList table td > * 
+.updateLinksContainer table.gridList table td .cellInner 
 { 
     font-size: 1.2em;
     height: auto;
@@ -309,11 +309,14 @@
 #profile table.gridList .actionContainer { width: 3.5em; }
 #profile .actionContainer a.action { padding: 0 0 0 5px; }
 
-#profile table.gridList tr.hover td+td > *
+#profile table.gridList tr.hover td .cellInner
 {
     background-color: #e3ecf7;
 }
-
+#profile table.gridList tr.hover td.type .cellInner
+{
+    background-color: transparent;
+}
 
 /* Sidebar styling */
 

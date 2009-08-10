@@ -125,7 +125,7 @@ module BlistsHelper
     view.columns.each do |c|
       visible = !c.flag?('hidden')
       items << {'text' => h(c.name),
-        'href' => "/views/#{view.id}/columns/#{c.id}", 
+        'href' => "#hide-show-col_#{c.id}",
         'class' => get_datatype_class(c) + ' scrollable ' + (visible ? "checked" : "")}
     end
 

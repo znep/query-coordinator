@@ -444,7 +444,8 @@ ul.menu.rowMenu li
 
 .columnHeaderMenu .autofilter a,
 .columnHeaderMenu .properties a,
-.columnHeaderMenu .hide a
+.columnHeaderMenu .hide a,
+.columnHeaderMenu .delete a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
     background-repeat: no-repeat;
@@ -453,6 +454,7 @@ ul.menu.rowMenu li
 .columnHeaderMenu .autofilter a { background-position: 5px -531px; }
 .columnHeaderMenu .properties a { background-position: 5px -347px; }
 .columnHeaderMenu .hide a { background-position: 5px -1106px; }
+.columnHeaderMenu .delete a { background-position: 5px -324px; }
 
 .columnHeaderMenu .autofilter ul.menu
 {

@@ -105,10 +105,6 @@ blist.blistGrid.columnClickHandler = function (event)
 
     switch (href_parts[0])
     {
-        case 'edit_column':
-            event.preventDefault();
-            blist.util.flashInterface.columnProperties(href_parts[1]);
-            break;
         case 'column_totals':
             event.preventDefault();
             break;
@@ -116,8 +112,8 @@ blist.blistGrid.columnClickHandler = function (event)
             event.preventDefault();
             if (href_parts.length == 3)
             {
-                blist.util.flashInterface.columnAggregate(href_parts[1],
-                        href_parts[2]);
+                $('#readGrid').datasetGrid().setColumnAggregate(href_parts[1],
+                    href_parts[2]);
             }
             break;
     }

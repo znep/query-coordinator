@@ -396,7 +396,7 @@
                 $activeContainer.width(width -
                     ($activeContainer.outerWidth() - $activeContainer.width()));
 
-                var rowIndex = model.index(cellNav.getActiveY);
+                var rowIndex = model.index(cellNav.getActiveY());
                 $activeContainer.css('top', rowIndex * rowOffset);
                 var left = lockedWidth;
                 for (var i = 0; i < cellNav.getActiveX(); i++)

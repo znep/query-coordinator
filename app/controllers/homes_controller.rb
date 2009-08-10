@@ -9,15 +9,15 @@ class HomesController < ApplicationController
 
     @recently_opened_blists = blists.sort { |a,b|
       b.last_viewed <=> a.last_viewed
-    }.slice(0..1)
+    }.slice(0..4)
 
     @favorite_blists = blists.find_all { |b|
       b.flag?("favorite")
     }.sort { |a,b|
       b.last_viewed <=> a.last_viewed
-    }.slice(0..1)
+    }.slice(0..4)
 
-    @contacts_activities = Activity.find({:maxResults => 3, :inNetwork => true})
+    @contacts_activities = Activity.find({:maxResults => 5, :inNetwork => true})
 
     begin
       rss = RSS::Parser.parse(BLIST_RSS, false)

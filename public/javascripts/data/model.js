@@ -520,13 +520,13 @@ blist.namespace.fetch('blist.data');
                     aggregate: meta.aggregateHash[vcol.id]
                 };
 
-                var dataIndex = vcol.dataIndex;
+                col.dataIndex = vcol.dataIndex;
                 if (nestedIn) {
                     col.nestedIn = nestedIn;
-                    col.dataLookupExpr = nestedIn.header.dataLookupExpr + "[" + dataIndex + "]";
+                    col.dataLookupExpr = nestedIn.header.dataLookupExpr +
+                        "[" + col.dataIndex + "]";
                 } else {
-                    col.dataIndex = dataIndex;
-                    col.dataLookupExpr = "[" + dataIndex + "]";
+                    col.dataLookupExpr = "[" + col.dataIndex + "]";
                 }
 
                 switch (col.type)

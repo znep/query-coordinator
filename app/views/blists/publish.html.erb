@@ -28,7 +28,7 @@
             The Data Player below provides you with a preview of your changes.
           </p>
         </div>
-        <div class="previewPane">
+        <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
           <%= get_publish_embed_code_for_view(@view, @customization[:publish], @widget_customization.uid) %>
         </div>
       </div>

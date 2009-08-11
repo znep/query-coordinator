@@ -1,6 +1,7 @@
 #publishContent .fullPageContent
 {
     padding: 0em;
+    padding-bottom: 3em;
 }
 
 #publishContent .publishHeader
@@ -52,9 +53,7 @@
 
 #publishContent .previewPane
 {
-    margin: 0 auto;
-    padding: 3em;
-    width: 600px;
+    margin: 3em auto 0;
 }
 
 h3 .infoText

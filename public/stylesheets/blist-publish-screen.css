@@ -101,16 +101,13 @@ h3 .infoText
     text-transform: uppercase;
 }
 
-#publishOptionsPane .infoContentWhole
+#publishOptionsPane .singleInfoTab .infoContent
 {
-    background: url(/stylesheets/images/info_pane/summary_bottom_left.png) bottom left no-repeat;
     border-top: 1px solid #fff;
-    height: 100%;   /* IE7 is awesome */
-    margin: 0 0 -1px -1px;
-    padding: 1em;
+    padding-top: 1em;
 }
 
-#publishOptionsPane .infoContentWhole p
+#publishOptionsPane .singleInfoTab p
 {
     font-size: 1.2em;
 }

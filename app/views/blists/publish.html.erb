@@ -559,7 +559,7 @@
         </div>
       </div>
     </div>
-    <div class="infoContentOuter singleInfoTab listContainer expanded">
+    <div class="infoContentOuter singleInfoTab expanded">
       <div class="infoContentHeader clearfix">
         <h2 class="panelHeader clipText">
             Editing the <span class="templateName"><%= @widget_customization.name %></span> template.
@@ -570,36 +570,46 @@
           </li>
         </ul>
       </div>
-      <div class="infoContentWrapper">
-        <div class="infoContentWhole">
-          <p>Choose which tabs to display.  Choose the order by dragging tab names up or down.</p>
-          <div class="reorderList clearfix">
-            <div class="activeList">
-              <p>Display These Tabs</p>
-              <ul>
-                <%-
-                i = 1
-                @customization[:meta].reject{ |name, properties| !properties[:show] }.
-                                          sort{ |a, b| a.last[:order] <=> b.last[:order] }.each do |name, properties| -%>
-                  <li><div class="itemWrapper"><span class="orderIndex"><%= i %></span>
-                      <%= properties[:display_name] %></div></li>
-                <%- 
-                i += 1
-                end -%>
-              </ul>
-              <a href="#removeAll" class="removeAllLink">Remove All</a>
-            </div>
-            <div class="swapArrows">
-              <a href="#addItem" class="addItemButton">Add</a>
-              <a href="#removeItem" class="removeItemButton">Remove</a>
-            </div>
-            <div class="inactiveList">
-              <p>Don't Display These Tabs</p>
-              <ul>
-                <%- @customization[:meta].reject{ |name, properties| properties[:show] }.each do |name, properties| -%>
-                  <li><div class="itemWrapper"><%= properties[:display_name] %></div></li>
-                <%- end -%>
-              </ul>
+      <div class="infoContentInner">
+        <div class="infoContentWrapper">
+          <div class="infoContent">
+            <p>Choose which tabs to display.  Choose the order by dragging tab names up or down.</p>
+            <div class="reorderList clearfix">
+              <div class="activeList">
+                <p>Display These Tabs</p>
+                <ul>
+                  <%-
+                  i = 1
+                  @customization[:meta].reject{ |name, properties| !properties[:show] }.
+                                            sort{ |a, b| a.last[:order] <=> b.last[:order] }.each do |name, properties| -%>
+                    <li><div class="itemWrapper">
+                      <span class="orderIndex"><%= i %></span>
+                      <%= properties[:display_name] %>
+                      <%= hidden_field_tag("customization[meta][#{name}][order]", i, :class => 'orderField') %>
+                      <%= hidden_field_tag("customization[meta][#{name}][show]", true, :class => 'activeField') %>
+                    </div></li>
+                  <%- 
+                  i += 1
+                  end -%>
+                </ul>
+                <a href="#removeAll" class="removeAllLink">Remove All</a>
+              </div>
+              <div class="swapArrows">
+                <a href="#addItem" class="addItemButton">Add</a>
+                <a href="#removeItem" class="removeItemButton">Remove</a>
+              </div>
+              <div class="inactiveList">
+                <p>Don't Display These Tabs</p>
+                <ul>
+                  <%- @customization[:meta].reject{ |name, properties| properties[:show] }.each do |name, properties| -%>
+                    <li><div class="itemWrapper">
+                      <%= properties[:display_name] %>
+                      <%= hidden_field_tag("customization[meta][#{name}][order]", 0, :class => 'orderField') %>
+                      <%= hidden_field_tag("customization[meta][#{name}][show]", false, :class => 'activeField') %>
+                    </div></li>
+                  <%- end -%>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

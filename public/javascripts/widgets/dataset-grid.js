@@ -155,24 +155,33 @@
                         {
                             $.each(c.body.children, function(j, cc)
                             {
-                                viewCols[c.dataIndex][cc.dataIndex].width =
-                                    cc.width;
+                                viewCols[c.dataIndex]
+                                    .childColumns[cc.dataIndex].width = cc.width;
                             });
                         }
                     });
                     // Filter out all metadata columns
                     viewCols = $.grep(viewCols, function(c, i)
                         { return c.id != -1; });
+                    var cleanColumn = function(col)
+                    {
+                        delete col.dataIndex;
+                        delete col.options;
+                        if (col.dataType)
+                        {
+                            delete col.dataType.picklist;
+                        }
+                    };
                     // Clean out dataIndexes, and clean out child metadata columns
                     $.each(viewCols, function(i, c)
                     {
-                        delete c.dataIndex;
+                        cleanColumn(c);
                         if (c.childColumns)
                         {
                             c.childColumns = $.grep(c.childColumns, function(cc, j)
                                 { return cc.id != -1; });
                             $.each(c.childColumns, function(j, cc)
-                                { delete cc.dataIndex; });
+                                { cleanColumn(cc); });
                         }
                     });
                     view.columns = viewCols;

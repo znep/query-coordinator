@@ -321,13 +321,37 @@
         if (action == 'row-delete')
         {
             model.selectRow(model.getByID(rowId));
+            var successCount = 0;
+            var totalRows = 0;
             $.each(model.selectedRows, function(id, index)
             {
+                totalRows++;
                 $.ajax({url: '/views/' + view.id + '/rows/' + id + '.json',
-                    contentType: 'application/json', type: 'DELETE'});
+                    contentType: 'application/json', type: 'DELETE',
+                    complete: function()
+                    {
+                        successCount++;
+                        if (successCount == totalRows)
+                        { updateAggregates(datasetObj); }
+                    }});
                 model.remove(model.getByID(id));
             });
+            datasetObj.summaryStale = true;
         }
+    };
+
+    var updateAggregates = function(datasetObj)
+    {
+        var model = datasetObj.settings._model;
+        var view = model.meta().view;
+        $.ajax({url: '/views/' + view.id + '/rows.json',
+            data: {include_aggregates: true, max_rows: 0}, cache: false,
+            contentType: 'application/json', dataType: 'json', type: 'GET',
+            success: function(resp)
+            {
+                model.updateAggregateHash(resp.meta.aggregates);
+                model.metaChange();
+            }});
     };
 
     var cellClick = function(datasetObj, event, row, column, origEvent)
@@ -766,7 +790,7 @@
                     $.ajax({url: '/views/' + view.id + '/columns/' +
                         colId + '.json', type: 'DELETE',
                         contentType: 'application/json',
-                        success: function()
+                        complete: function()
                         {
                             successCount++;
                             if (successCount == cols.length)

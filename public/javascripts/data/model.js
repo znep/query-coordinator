@@ -440,7 +440,7 @@ blist.namespace.fetch('blist.data');
             return level;
         }
 
-        var updateAggregateHash = function(newAggs)
+        this.updateAggregateHash = function(newAggs)
         {
             if (!meta.aggregateHash)
             {
@@ -615,7 +615,7 @@ blist.namespace.fetch('blist.data');
                     meta.metaColumns = [];
                     if (meta.view)
                     {
-                        updateAggregateHash(meta.aggregates);
+                        this.updateAggregateHash(meta.aggregates);
                         if (meta.view.columns)
                         {
                             translateMetaColumns(meta.view.columns,
@@ -714,7 +714,7 @@ blist.namespace.fetch('blist.data');
                 }
 
                 // Notify listeners of the metadata change
-                $(listeners).trigger('meta_change', [ this ]);
+                this.metaChange();
             }
             return meta;
         };
@@ -1445,7 +1445,7 @@ blist.namespace.fetch('blist.data');
         {
             if (config.meta)
             {
-                updateAggregateHash(config.meta.aggregates);
+                this.updateAggregateHash(config.meta.aggregates);
             }
 
             var installActiveOnly = true;

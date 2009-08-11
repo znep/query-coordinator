@@ -305,6 +305,11 @@ blist.widget.commentExpanderClick = function($commentPane, e)
 
 $(function ()
 {
+    // Very first thing, request the user ID
+    $.ajax({url: '/user_sessions', cache: false,
+        contentType: 'application/json', type: 'GET', dataType: 'json',
+        success: function(resp) { blist.currentUserId = resp.user_id; }});
+
     widgetNS.sizeGrid();
     $(window).resize(function() { widgetNS.sizeGrid(); });
 
@@ -320,7 +325,6 @@ $(function ()
     if (!blist.widgets.visualization.isVisualization)
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
-            currentUserId: blist.currentUserId,
             accessType: 'WIDGET',
             showRowNumbers: widgetNS.theme['grid']['row_numbers'],
             showRowHandle: widgetNS.theme['grid']['row_numbers'],

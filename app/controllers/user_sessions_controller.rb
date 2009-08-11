@@ -3,6 +3,12 @@ class UserSessionsController < ApplicationController
   ssl_allowed :destroy
   skip_before_filter :require_user
 
+  def index
+    respond_to do |format|
+      format.data { render :json => {:user_id => current_user.nil? ? nil : current_user.id} }
+    end
+  end
+
   def new
     @body_id = 'login'
     @user_session = UserSession.new

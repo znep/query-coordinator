@@ -488,7 +488,7 @@ blist.namespace.fetch('blist.data');
             viewCols.sort(function(col1, col2) { return col1.position - col2.position; });
 
             var levelCols = getColumnLevel(columns, nestDepth);
-            
+
             var filledTo = 0;
             var addNestFiller = function() {
                 if (filledTo < levelCols.length) {
@@ -504,10 +504,13 @@ blist.namespace.fetch('blist.data');
                     filledTo++;
             }
 
-            for (i = 0; i < viewCols.length; i++) {
+            for (i = 0; i < viewCols.length; i++)
+            {
                 var vcol = viewCols[i];
-                if (!vcol.position || (vcol.flags && $.inArray("hidden", vcol.flags) != -1))
-                    continue;
+                if (!vcol.position ||
+                    (vcol.flags && $.inArray("hidden", vcol.flags) != -1))
+                { continue; }
+
                 var col = {
                     name: vcol.name,
                     description: vcol.description,
@@ -669,10 +672,22 @@ blist.namespace.fetch('blist.data');
                     }
                     else
                     {
-                        // We're dealing with a sort on a column that doesn't
-                        // exist in our view; we can't post this back, so
-                        // clear it out
-                        meta.view.sortBys = null;
+                        var foundCol = false;
+                        $.each(meta.view.columns, function (i, c)
+                        {
+                            if (c.id == s.viewColumnId)
+                            {
+                                foundCol = true;
+                                return false;
+                            }
+                        });
+                        if (!foundCol)
+                        {
+                            // We're dealing with a sort on a column that doesn't
+                            // exist in our view; we can't post this back, so
+                            // clear it out
+                            meta.view.sortBys = null;
+                        }
                     }
                 }
 
@@ -801,6 +816,7 @@ blist.namespace.fetch('blist.data');
                     {
                         meta.view.columns[i] = column;
                         isColumnPresent = true;
+                        return false;
                     }
                 });
 
@@ -811,7 +827,10 @@ blist.namespace.fetch('blist.data');
             }
 
 
-            if (column.updatedAggregate != null && meta.aggregates != null)
+            if (meta.aggregates === null || meta.aggregates === undefined)
+            { meta.aggregates = []; }
+            if (column.updatedAggregate !== null &&
+                column.updatedAggregate !== undefined)
             {
                 var found = false;
 
@@ -828,7 +847,7 @@ blist.namespace.fetch('blist.data');
                     meta.aggregates.push(column.updatedAggregate);
                 }
             }
-            else if (meta.aggregates != null)
+            else
             {
                 for (var i=0; i < meta.aggregates.length; i++)
                 {
@@ -839,6 +858,57 @@ blist.namespace.fetch('blist.data');
                         break;
                     }
                 }
+            }
+
+            // Refresh the meta data and redraw the grid.
+            meta.columns = null;
+            this.meta(meta);
+            $(listeners).trigger('columns_updated', [this]);
+        };
+
+        this.deleteColumns = function(cols)
+        {
+            if (meta.view != null)
+            {
+                var removedData = [];
+                $.each(cols, function(j, cId)
+                {
+                    $.each(meta.view.columns, function(i, c)
+                    {
+                        if (c.id == cId)
+                        {
+                            removedData.push(meta.view.columns[i].dataIndex);
+                            meta.view.columns.splice(i, 1);
+                            return false;
+                        }
+                    });
+
+                    if (meta.aggregates !== null && meta.aggregates !== undefined)
+                    {
+                        $.each(meta.aggregates, function(i, a)
+                        {
+                            if (a.columnId == cId)
+                            {
+                                meta.aggregates.splice(i, 1);
+                                meta.aggregateHash = {};
+                                return false;
+                            }
+                        });
+                    }
+                });
+
+                // Sort reverse numerical so we can properly splice out data
+                removedData.sort(function(a, b) { return b - a; });
+                $.each(rows, function(i, r)
+                {
+                    if (typeof r == 'object')
+                    {
+                        $.each(removedData, function(j, dataI)
+                        {
+                            r.splice(dataI, 1);
+                        });
+                    }
+                });
             }
 
             // Refresh the meta data and redraw the grid.

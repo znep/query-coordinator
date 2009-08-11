@@ -48,18 +48,23 @@
     </dd></dl>
   </li>
   <%- if can_edit -%>
-  <li class='edit swfItem'>
+  <li class='edit'>
     <dl><dt><a href='#menuEdit'>Edit</a></dt>
         <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
-        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo'},
-        {'separator' => true},
-        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},
-        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy'},
-        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste'},
-        {'separator' => true},
-        {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete'},
-        {'separator' => true},
+        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo',
+        'swf_item' => true},
+        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo',
+        'swf_item' => true},
+        {'separator' => true, 'swf_item' => true},
+        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut', 'swf_item' => true},
+        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy',
+        'swf_item' => true},
+        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste',
+        'swf_item' => true},
+        {'separator' => true, 'swf_item' => true},
+        {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete',
+        'swf_item' => true},
+        {'separator' => true, 'swf_item' => true},
         {'text' => 'Edit Column Options', 'class' => 'columnOptions',
             'submenu' => columns_menu(@view,
                  {'id' => 'columnOptionsMenu',

@@ -255,6 +255,10 @@ module BlistsHelper
   def creative_commons_select_options(selected_option = nil)
     options_for_select(View.creative_commons.invert.sort { |a, b| a.first <=> b.first }, selected_option)
   end
+  
+  def font_unit_select_options(selected_unit = nil)
+    options_for_select({'ems' => 'em', 'points' => 'pt', 'pixels' => 'px', 'inches' => 'in'}, selected_unit)
+  end
 
   def get_publish_embed_code_for_view(view, options = {}, variation = "")
     options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]

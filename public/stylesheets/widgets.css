@@ -2009,3 +2009,113 @@ table.gridList tr.filteredOut
 }
 
 /*** END: inline edit ***/
+
+/*** START: reorderable list ***/
+
+.reorderList
+{
+    margin: 1em;
+    position: relative;
+}
+
+.reorderList p
+{
+    font-weight: bold;
+}
+
+.reorderList ul
+{
+    background-color: #fff;
+    border: 1px solid #8d8d8d;
+    display: block;
+    margin: 0.2em 0;
+    font-size: 1.2em;
+    width: 25em;
+}
+
+.reorderList .activeList
+{
+    display: inline-block;
+    float: left;
+    margin: 1em;
+}
+
+.reorderList .activeList li:hover
+{
+    background: url(/stylesheets/images/widgets/reorder_list/reorder_handle.png) no-repeat;
+    cursor: move;
+    margin-left: -35px;
+    padding-left: 35px;
+}
+
+.reorderList li .itemWrapper
+{
+    border-top: 1px solid #8d8d8d;
+    height: 12px;
+    margin: 0 5px;
+    padding: 7px;
+}
+
+.reorderList li:first-child .itemWrapper
+{
+    border-top-color: transparent;
+}
+
+.reorderList .activeList li:hover .itemWrapper
+{
+    background-color: #c8e2f7;
+    border-top-color: transparent;
+    height: 11px;
+    margin: 0 0 1px;
+    padding: 7px 12px;
+}
+
+.reorderList .activeList li .orderIndex
+{
+    color: #0071bc;
+    margin-right: 1em;
+}
+
+.reorderList .activeList .removeAllLink
+{
+    color: #333;
+    font-weight: bold;
+    margin: 0.5em 0.2em;
+    text-transform: uppercase;
+}
+
+.reorderList .swapArrows
+{
+    display: inline-block;
+    float: left;
+}
+
+.reorderList .swapArrows a
+{
+    background: url(/stylesheets/images/widgets/reorder_list/reorder_buttons.png);
+    display: block;
+    height: 21px;
+    margin: 0.2em;
+    position: absolute;
+    text-indent: -9999px;
+    top: 50%;
+    width: 21px;
+}
+
+.reorderList .swapArrows a.addItemButton { margin-top: -29px; }
+.reorderList .swapArrows a.removeItemButton { background-position: 0 -21px; }
+
+.reorderList .inactiveList
+{
+    display: inline-block;
+    float: left;
+    margin: 1em;
+    margin-left: 3.5em;
+}
+
+.reorderList .inactiveList li
+{
+    cursor: pointer;
+}
+
+/*** END: reorderable list ***/

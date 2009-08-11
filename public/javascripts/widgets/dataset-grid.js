@@ -476,6 +476,7 @@
         displayMenu = true;
 
         var view = datasetObj.settings._model.meta().view;
+        // TODO - use rights
         if (view.tableOwner.id == datasetObj.settings.currentUserId &&
                 view.owner.id == datasetObj.settings.currentUserId)
         {

@@ -57,14 +57,6 @@ class WidgetsController < ApplicationController
         flash[:error] = e.error_message
         return (render 'shared/error')
       end
-    else
-      #If we're using "meta" variation, add the meta tabs and save filter bar
-      if !@options.nil? && @options == "meta"
-        @theme[:behavior][:save_public_views] = true
-      else
-        # They're disabled by default until they're ready
-        @theme[:behavior][:save_public_views] = false
-      end
     end
 
     begin

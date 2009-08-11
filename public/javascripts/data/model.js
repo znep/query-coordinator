@@ -195,13 +195,13 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        var setRowMetadata = function(newRows)
+        var setRowMetadata = function(newRows, metaCols)
         {
-            if (!meta.metaColumns) { return; }
+            if (!metaCols) { return; }
 
             $.each(newRows, function(i, r)
             {
-                $.each(meta.metaColumns, function(j, c)
+                $.each(metaCols, function(j, c)
                 {
                     r[c.name] = r[c.index];
                 });
@@ -394,7 +394,7 @@ blist.namespace.fetch('blist.data');
         {
             // Install the rows
             var supplement = response.data;
-            setRowMetadata(supplement);
+            setRowMetadata(supplement, meta.metaColumns);
             for (var i = 0; i < supplement.length; i++)
             {
                 var row = supplement[i];
@@ -548,6 +548,8 @@ blist.namespace.fetch('blist.data');
                             children: children,
                             header: col
                         };
+                        col.metaChildren = [];
+                        translateMetaColumns(vcol.childColumns, col.metaChildren);
                         translateViewColumns(view, vcol.childColumns, columns, nestDepth + 1, col.body);
 
                         // Add the body column to the next nesting level
@@ -729,7 +731,7 @@ blist.namespace.fetch('blist.data');
             {
                 expanded = {};
                 active = rows = newRows;
-                setRowMetadata(newRows);
+                setRowMetadata(newRows, meta.metaColumns);
                 installIDs();
 
                 // Apply sorting if so configured
@@ -765,7 +767,7 @@ blist.namespace.fetch('blist.data');
             {
                 active = active.concat(addedRows);
             }
-            setRowMetadata(addedRows);
+            setRowMetadata(addedRows, meta.metaColumns);
             installIDs();
             $(listeners).trigger('row_add', [ addedRows ]);
         };
@@ -803,6 +805,50 @@ blist.namespace.fetch('blist.data');
             }
             installIDs();
             $(listeners).trigger('row_remove', [ rows ]);
+        };
+
+        // Get the value in a row for a column
+        this.getRowValue = function(row, column)
+        {
+            var value;
+            eval('value = row' + column.dataLookupExpr + ';');
+            return value;
+        };
+
+        // Set the value in a row for a column
+        this.setRowValue = function(value, row, column)
+        {
+            eval('row' + column.dataLookupExpr + ' = value;');
+        };
+
+        // Set the value for a row, save it to the server, and notify listeners
+        this.saveRowValue = function(value, row, column)
+        {
+            this.setRowValue(value, row, column);
+            this.change([row]);
+
+            var data = {};
+            data[column.id] = value;
+            var url = '/views/' + this.meta().view.id + '/rows/';
+            if (column.nestedIn)
+            {
+                var parCol = column.nestedIn.header;
+                var childRow = this.getRowValue(row, parCol);
+                url += row.parent.uid +
+                    '/columns/' + parCol.id +
+                    '/subrows/' + childRow.uid +
+                    '.json';
+            }
+            else
+            {
+                url += row.uid + '.json';
+            }
+
+            $.ajax({ url: url,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: $.json.serialize(data)
+                    });
         };
 
         this.updateColumn = function(column)
@@ -1291,9 +1337,10 @@ blist.namespace.fetch('blist.data');
                     childRow.level = (row.level || 0) + 1;
                     childRow.parent = row;
                     childRow[col.dataIndex] = cell[j];
+                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren);
                 }
             }
-            
+
             if (childRows.length)
                 childRows[childRows.length - 1].groupLast = true;
             return childRows;
@@ -1452,7 +1499,7 @@ blist.namespace.fetch('blist.data');
             // active is now the new set of rows from the server, and not
             //  linked-to or based-on rows
             active = config.rows || config.data;
-            setRowMetadata(active);
+            setRowMetadata(active, meta.metaColumns);
             for (var i = 0; i < active.length; i++)
             {
                 // If it is not an object, just an id, try to look it up from rows

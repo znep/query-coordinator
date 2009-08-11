@@ -29,7 +29,7 @@
             clearTempViewCallback: function () {},
             columnPropertiesEnabled: false,
             currentUserId: null,
-            editEnabled: false,
+            editEnabled: true,
             filterItem: null,
             manualResize: false,
             setTempViewCallback: function (tempView) {},

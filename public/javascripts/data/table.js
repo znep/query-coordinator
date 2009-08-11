@@ -194,20 +194,6 @@
             return model.column(colUID);
         };
 
-        // Get the value in a row for a column
-        var getRowValue = function(row, column)
-        {
-            var value;
-            eval('value = row' + column.dataLookupExpr + ';');
-            return value;
-        };
-
-        // Set the value in a row for a column
-        var setRowValue = function(value, row, column)
-        {
-            eval('row' + column.dataLookupExpr + ' = value;');
-        };
-
         // Takes a column, and gets the real px width for it
         var getColumnWidthPx = function(col)
         {
@@ -586,10 +572,12 @@
 
         var editCell = function(cell)
         {
+            clearCellNav();
+
             var row = getRow(cell);
             var col = getColumn(cell);
             if (!col || !row) { return; }
-            var value = getRowValue(row, col);
+            var value = model.getRowValue(row, col);
 
             // Obtain an expanding node in utility (off-screen) mode
             if (!$editContainer)
@@ -597,7 +585,7 @@
                 $editContainer = $('<div class="blist-table-edit-container ' +
                     'blist-table-util"></div>');
                 $editContainer.blistEditor();
-                $editContainer.bind('keydown.blistTableEdit', editorKeyDown);
+                $editContainer.bind('edit_end', handleEditEnd);
                 inside.append($editContainer);
             }
             // If editContainer is not in the tree anywhere, stick it inside
@@ -607,13 +595,12 @@
                 inside.append($editContainer);
             }
 
-            var $editor = $editContainer.blistEditor().setEditor(row, col, value);
+            var $editor = $editContainer.blistEditor().startEdit(row, col, value);
 
             $editor.width('auto').height('auto');
             $editContainer.width('auto').height('auto');
 
             isEdit = true;
-            $(document).bind('mousedown.blistTableEdit', editMouseDown);
 
             sizeCellOverlay($editContainer, $editor, $(cell));
             positionCellOverlay($editContainer, $(cell));
@@ -622,10 +609,9 @@
             $editor.find(':text').focus();
         };
 
-        var endEdit = function(isCancel)
+        var endEdit = function(isSave)
         {
             isEdit = false;
-            $(document).unbind('.blistTableEdit');
             $navigator[0].focus();
 
             if (!$editContainer) { return; }
@@ -633,59 +619,24 @@
             $editContainer.css('left', -10000);
             $editContainer.removeClass('shown');
 
-            if (isCancel) { return; }
-
             var editor = $editContainer.blistEditor();
+            editor.finishEdit();
+
+            if (!isSave) { return; }
+
             var origValue = editor.originalValue;
             var value = editor.currentValue();
             if (origValue != value)
             {
                 var row = editor.row;
                 var col = editor.column;
-                setRowValue(value, row, col);
-                model.change([row]);
-
-                var data = {};
-                data[col.id] = value;
-                var url = '/views/' + model.meta().view.id + '/rows/';
-                if (col.nestedIn)
-                {
-                    var parCol = col.nestedIn.header;
-                    var childRow = getRowValue(row, parCol);
-                    url += row.parent.id +
-                        '/columns/' + parCol.id +
-                        '/subrows/' + (childRow.id || childRow[0]) +
-                        '.json';
-                }
-                else
-                {
-                    url += row.id + '.json';
-                }
-
-                $.ajax(
-                    { url: url,
-                    type: 'PUT',
-                    contentType: 'application/json',
-                    data: $.json.serialize(data)
-                });
+                model.saveRowValue(value, row, col);
             }
         };
 
-        var editMouseDown = function(event)
+        var handleEditEnd = function(event, isSave)
         {
-            if ($(event.target).parents().andSelf().index($editContainer) < 0)
-            {
-                endEdit();
-            }
-        };
-
-        var editorKeyDown = function(event)
-        {
-            if (event.keyCode == 13) // Enter
-            {
-                endEdit();
-                navigateY(1, event);
-            }
+            endEdit(isSave);
         };
 
         /*** CELL HOVER EXPANSION ***/
@@ -982,6 +933,7 @@
         var mouseDownAt;
         var dragHeaderLeft;
         var clickTarget;
+        var clickCell;
         var selectFrom;
 
         var findContainer = function(event, selector)
@@ -1247,6 +1199,7 @@
                 if (clickTarget && Math.abs(event.clientX - mouseDownAt.x) > 3 || Math.abs(event.clientY - mouseDownAt.y > 3)) {
                     // No longer consider this a potential click event
                     clickTarget = null;
+                    clickCell = null;
                 }
 
                 // If we are selecting and can't be in a click then update the
@@ -1359,6 +1312,7 @@
             {
                 // Retrieve the row
                 var row = getRow(cell);
+                if (!row) { return; }
 
                 var skipSelect = false;
                 // If this is a row opener, invoke expand on the model
@@ -1401,6 +1355,7 @@
         var onMouseDown = function(event)
         {
             clickTarget = event.target;
+            clickCell = findCell(event);
             var $clickTarget = $(clickTarget);
             // IE & WebKit only detetct mousedown on scrollbars, not mouseup;
             // so we need to ignore clicks on the scrollbar to avoid having a
@@ -1421,6 +1376,7 @@
                 if ($clickTarget.closest('.action-item').length < 1)
                 {
                     clickTarget = null;
+                    clickCell = null;
                     hotHeaderDrag = true;
                     event.stopPropagation();
                     event.preventDefault();
@@ -1455,7 +1411,7 @@
                 }
                 if (cell && cellNavTo(cell, event))
                 {
-                    if (isEdit) { endEdit(); }
+                    if (isEdit) { endEdit(true); }
                     selectFrom = cell;
                 }
 
@@ -1485,22 +1441,27 @@
                 return true;
             }
 
+            var cell = findCell(event);
+            var editMode = false;
+            if (cellNav && options.editEnabled && cell == clickCell)
+            {
+                var curActiveCell = $activeCells ? $activeCells[0] : null;
+                if (curActiveCell && $prevActiveCells &&
+                        $prevActiveCells.index(curActiveCell) >= 0)
+                {
+                    // They clicked on a selected cell, go to edit mode
+                    editCell(curActiveCell);
+                    editMode = true;
+                }
+                else if (curActiveCell)
+                {
+                    $prevActiveCells = $activeCells;
+                }
+            }
+
             if (clickTarget && clickTarget == event.target &&
                 !$(clickTarget).is('a'))
             {
-                var editMode = false;
-                if (cellNav && options.editEnabled)
-                {
-                    var curActiveCell = $activeCells ? $activeCells[0] : null;
-                    if (curActiveCell && $prevActiveCells &&
-                        $prevActiveCells.index(curActiveCell) >= 0)
-                    {
-                        // They clicked on a selected cell, go to edit mode
-                        editCell(curActiveCell);
-                        editMode = true;
-                    }
-                }
-
                 $(clickTarget).trigger('table_click', event);
                 if (!editMode) { $navigator[0].focus(); }
             }
@@ -1531,7 +1492,7 @@
         {
             if (event.keyCode == 27) // ESC
             {
-                if (isEdit) { endEdit(true); }
+                if (isEdit) { endEdit(false); }
                 else { clearCellNav(); }
             }
         };

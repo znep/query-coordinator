@@ -6,19 +6,21 @@
         var blistEditor = $(this[0]).data("blistEditor");
         if (!blistEditor)
         {
-            blistEditor = new $.blistEditorObject(options, this[0]);
+            blistEditor = new blistEditorObject(options, this[0]);
         }
         return blistEditor;
     };
 
-    $.blistEditorObject = function(options, dom)
+    var blistEditorObject = function(options, dom)
     {
-        this.settings = $.extend({}, $.blistEditorObject.defaults, options);
+        this.settings = $.extend({}, blistEditorObject.defaults, options);
         this.currentDom = dom;
         this.init();
     };
 
-    $.extend($.blistEditorObject,
+    var editorUID = 1;
+
+    $.extend(blistEditorObject,
     {
         defaults:
         {
@@ -30,23 +32,45 @@
             {
                 var currentObj = this;
                 var $domObj = $(currentObj.currentDom);
+                $domObj.bind('keydown.blistEditor',
+                    function (e) { handleKeyDown(currentObj, e); });
                 $domObj.data("blistEditor", currentObj);
             },
 
             // External interface methods
-            setEditor: function(r, c, v)
+            startEdit: function(r, c, v)
             {
-                this.row = r;
-                this.column = c;
-                this.originalValue = v;
-                this._editorStale = true;
+                var editObj = this;
+                // Make sure this is finished first
+                editObj.finishEdit();
 
-                var $domObj = this.$dom();
+                editObj.row = r;
+                editObj.column = c;
+                editObj.originalValue = v;
+                editObj._editorStale = true;
+                if (!editObj._uid)
+                { editObj._uid = editorUID++; }
+
+                var $domObj = editObj.$dom();
                 $domObj.empty();
 
-                var $editor = this.$editor();
+                var $editor = editObj.$editor();
                 $domObj.append($editor);
+
+                $(document).bind('mousedown.blistEditor_' + editObj._uid,
+                    function (e) { docMouseDown(editObj, e); });
+
                 return $editor;
+            },
+
+            finishEdit: function()
+            {
+                var editObj = this;
+                if (editObj._uid)
+                {
+                    $(document).unbind('.blistEditor_' + editObj._uid);
+                    editObj._uid = null;
+                }
             },
 
             $editor: function()
@@ -68,11 +92,29 @@
 
             $dom: function()
             {
-                return $(this.currentDom);
+                if (!this._$dom)
+                { this._$dom = $(this.currentDom); }
+                return this._$dom;
             }
         }
     });
 
     // Private methods
+    var handleKeyDown = function(editObj, event)
+    {
+        if (event.keyCode == 13 || event.keyCode == 9) // Enter or Tab
+        {
+            editObj.$dom().trigger('edit_end', [true, event]);
+        }
+    };
+
+    var docMouseDown = function(editObj, event)
+    {
+        if ($(event.target).parents().andSelf().index(editObj.$dom()) < 0)
+        {
+            editObj.$dom().trigger('edit_end', [true, event]);
+        }
+    };
+
 
 })(jQuery);

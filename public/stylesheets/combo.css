@@ -1,0 +1,30 @@
+.blist-combo {
+    padding: 2px 20px 2px 4px;
+    width: 84px; /* Default width makes it 100px */
+    border: solid 1px #cccccc;
+    height: 17px;
+    line-height: 17px;
+    background: white url('images/content/select_arrow.png') center right no-repeat;
+    cursor: pointer;
+}
+
+.blist-combo-dd {
+    position: absolute;
+    border: solid 1px #cccccc;
+    background: white;
+    list-style-type: none;
+    visibility: hidden;
+    z-index: 100;
+    opacity: .9;
+}
+
+.blist-combo-dd li {
+    padding: 2px 4px;
+    height: 17px;
+    line-height: 17px;
+    cursor: pointer;
+}
+
+.blist-combo-dd li:hover {
+    background-color: #ddddff;
+}

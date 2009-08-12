@@ -163,6 +163,10 @@
                     // Filter out all metadata columns
                     viewCols = $.grep(viewCols, function(c, i)
                         { return c.id != -1; });
+                    // Sort by position, because the attribute is ignored when
+                    // saving columns
+                    viewCols.sort(function(a, b)
+                        { return a.position - b.position; });
                     var cleanColumn = function(col)
                     {
                         delete col.dataIndex;

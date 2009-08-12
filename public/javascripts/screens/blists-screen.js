@@ -801,6 +801,7 @@ blist.myBlists.translateViewJson = function(views)
         view.favorite = view.flags && $.inArray("favorite", view.flags) != -1;
         view.isDefault = view.flags && $.inArray("default", view.flags) != -1;
         view.ownerName = view.owner && view.owner.displayName;
+        view.updatedAt = view.rowsUpdatedAt;
         if (!view.updatedAt)
         {
             view.updatedAt = view.createdAt;

@@ -112,8 +112,16 @@ blist.blistGrid.columnClickHandler = function (event)
             event.preventDefault();
             if (href_parts.length == 3)
             {
-                $('#readGrid').datasetGrid().setColumnAggregate(href_parts[1],
-                    href_parts[2]);
+                if (blist.util.flashInterface.swf() != undefined)
+                {
+                    blist.util.flashInterface.columnAggregate(href_parts[1],
+                            href_parts[2]);
+                }
+                else
+                {
+                    $('#readGrid').datasetGrid().setColumnAggregate(href_parts[1],
+                            href_parts[2]);
+                }
             }
             break;
     }

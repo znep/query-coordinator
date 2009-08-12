@@ -1,5 +1,5 @@
 class User < Model
-  cattr_accessor :current_user, :states, :countries, :sorts
+  cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts
   attr_accessor :session_token
 
   non_serializable :displayName
@@ -430,4 +430,14 @@ class User < Model
     ["LAST_LOGGED_IN", "Last Login Date"],
     ["NUM_OF_PUBLIC_TABLES", "# of Public Data Sets"]
   ]
+
+  @@search_sorts = [
+    ["RELEVANCE", "Relevance"],
+    ["SCORE", "Socrata Grade"],
+    ["NEWEST", "Recently updated"],
+    ["OLDEST", "Oldest"],
+    ["LAST_LOGIN", "Last Login Date"]
+  ]
+
+
 end

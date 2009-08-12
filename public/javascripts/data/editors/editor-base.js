@@ -1,12 +1,33 @@
 (function($)
 {
+    // Set up namespace for editors to class themselves under
+    $.blistEditor =
+    {
+        extend: function(extHash)
+        {
+            return $.extend({}, blistEditorObject, extHash,
+            {
+                defaults: $.extend({}, blistEditorObject.defaults,
+                    extHash.defaults || {}),
+                prototype: $.extend({}, blistEditorObject.prototype,
+                    extHash.prototype || {})
+            });
+        }
+    };
+
     $.fn.blistEditor = function(options)
     {
         // Check if object was already created
         var blistEditor = $(this[0]).data("blistEditor");
         if (!blistEditor)
         {
-            blistEditor = new blistEditorObject(options, this[0]);
+            var type = blist.data.types[options.column.type] ||
+                blist.data.types.text;
+            var editor = type.editor;
+            if (editor !== null && editor !== undefined)
+            {
+                blistEditor = new editor(options, this[0]);
+            }
         }
         return blistEditor;
     };
@@ -30,37 +51,23 @@
         {
             init: function ()
             {
-                var currentObj = this;
-                var $domObj = $(currentObj.currentDom);
-                $domObj.bind('keydown.blistEditor',
-                    function (e) { handleKeyDown(currentObj, e); });
-                $domObj.data("blistEditor", currentObj);
-            },
-
-            // External interface methods
-            startEdit: function(r, c, v)
-            {
                 var editObj = this;
-                // Make sure this is finished first
-                editObj.finishEdit();
+                var $domObj = editObj.$dom();
+                $domObj.bind('keydown.blistEditor',
+                    function (e) { handleKeyDown(editObj, e); });
+                $domObj.data("blistEditor", editObj);
 
-                editObj.row = r;
-                editObj.column = c;
-                editObj.originalValue = v;
-                editObj._editorStale = true;
+                editObj.row = editObj.settings.row;
+                editObj.column = editObj.settings.column;
+                editObj.originalValue = editObj.settings.value;
                 if (!editObj._uid)
                 { editObj._uid = editorUID++; }
-
-                var $domObj = editObj.$dom();
-                $domObj.empty();
 
                 var $editor = editObj.$editor();
                 $domObj.append($editor);
 
                 $(document).bind('mousedown.blistEditor_' + editObj._uid,
                     function (e) { docMouseDown(editObj, e); });
-
-                return $editor;
             },
 
             finishEdit: function()
@@ -73,28 +80,31 @@
                 }
             },
 
-            $editor: function()
-            {
-                if (this._editorStale)
-                {
-                    this._$editor = $('<div class="blist-table-editor blist-td">' +
-                        '<input type="text" value="' + this.originalValue +
-                        '" /></div>');
-                    this._editorStale = false;
-                }
-                return this._$editor;
-            },
-
-            currentValue: function()
-            {
-                return this.$editor().find(':text').val();
-            },
-
             $dom: function()
             {
                 if (!this._$dom)
                 { this._$dom = $(this.currentDom); }
                 return this._$dom;
+            },
+
+            $editor: function()
+            {
+                // Implement me
+            },
+
+            currentValue: function()
+            {
+                // Implement me
+            },
+
+            focus: function()
+            {
+                // Implement me
+            },
+
+            adjustSize: function()
+            {
+                // Override me if desired
             }
         }
     });

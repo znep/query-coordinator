@@ -384,7 +384,7 @@ div.blist-table-edit-container
 div.blist-table-editor
 {
     border: none;
-    padding: 0;
+    padding: 0 4px 0 0;
 }
 
 div.blist-table-edit-container input[type="text"],
@@ -393,8 +393,8 @@ div.blist-table-edit-container input.textInput
     border: none;
     font-size: 1em;
     height: 100%;
+    min-width: 8.333em; /* 100px */
     padding: 0.2em;
-    width: 8.333em; /* 100px */
 }
 
 div.blist-table-edit-container.shown input[type="text"],

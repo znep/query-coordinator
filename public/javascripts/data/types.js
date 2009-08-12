@@ -604,7 +604,8 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             group: groupText,
             sortable: true,
-            filterable: true
+            filterable: true,
+            editor: $.blistEditor.text
         },
 
         richtext: {

@@ -340,8 +340,23 @@
 
         var $activeContainer;
 
+        var hideActiveCell = function()
+        {
+            if ($activeContainer)
+            {
+                $activeContainer.css('top', -10000);
+                $activeContainer.css('left', -10000);
+            }
+        }
+
         var expandActiveCell = function()
         {
+            if (isEdit || !cellNav.isActive())
+            {
+                hideActiveCell();
+                return;
+            }
+
             // Obtain an expanding node in utility (off-screen) mode
             if (!$activeContainer)
             {
@@ -355,13 +370,6 @@
                 $activeContainer[0].parentNode.nodeType == 11) // doc fragment
             {
                 inside.append($activeContainer);
-            }
-
-            if (!cellNav.isActive())
-            {
-                $activeContainer.css('top', -10000);
-                $activeContainer.css('left', -10000);
-                return;
             }
 
             var row = model.getByID(cellNav.getActiveY());
@@ -572,7 +580,8 @@
 
         var editCell = function(cell)
         {
-            clearCellNav();
+            // Don't start another edit yet
+            if (isEdit) { return; }
 
             var row = getRow(cell);
             var col = getColumn(cell);
@@ -580,33 +589,30 @@
             var value = model.getRowValue(row, col);
 
             // Obtain an expanding node in utility (off-screen) mode
-            if (!$editContainer)
-            {
-                $editContainer = $('<div class="blist-table-edit-container ' +
+            $editContainer = $('<div class="blist-table-edit-container ' +
                     'blist-table-util"></div>');
-                $editContainer.blistEditor();
-                $editContainer.bind('edit_end', handleEditEnd);
-                inside.append($editContainer);
-            }
-            // If editContainer is not in the tree anywhere, stick it inside
-            else if ($editContainer[0].parentNode == null ||
-                    $editContainer[0].parentNode.nodeType == 11) // doc fragment
-            {
-                inside.append($editContainer);
-            }
+            var blistEditor = $editContainer.blistEditor(
+                {row: row, column: col, value: value});
+            if (!blistEditor) { return; }
 
-            var $editor = $editContainer.blistEditor().startEdit(row, col, value);
+            $editContainer.bind('edit_end', handleEditEnd);
+            inside.append($editContainer);
 
+            var $editor = blistEditor.$editor();
+
+            blistEditor.adjustSize();
             $editor.width('auto').height('auto');
             $editContainer.width('auto').height('auto');
 
             isEdit = true;
 
+            hideActiveCell();
+
             sizeCellOverlay($editContainer, $editor, $(cell));
             positionCellOverlay($editContainer, $(cell));
             $editContainer.removeClass('blist-table-util').addClass('shown');
 
-            $editor.find(':text').focus();
+            blistEditor.focus();
         };
 
         var endEdit = function(isSave)
@@ -615,23 +621,21 @@
             $navigator[0].focus();
 
             if (!$editContainer) { return; }
-            $editContainer.css('top', -10000);
-            $editContainer.css('left', -10000);
-            $editContainer.removeClass('shown');
 
             var editor = $editContainer.blistEditor();
             editor.finishEdit();
 
-            if (!isSave) { return; }
-
             var origValue = editor.originalValue;
             var value = editor.currentValue();
-            if (origValue != value)
+            if (isSave && origValue != value)
             {
                 var row = editor.row;
                 var col = editor.column;
                 model.saveRowValue(value, row, col);
             }
+
+            $editContainer.remove();
+            $editContainer = null;
         };
 
         var handleEditEnd = function(event, isSave)
@@ -1466,7 +1470,7 @@
                 if (!editMode) { $navigator[0].focus(); }
             }
 
-            if (cellNav) { expandActiveCell(); }
+            if (cellNav && !editMode) { expandActiveCell(); }
         };
 
         var onDoubleClick = function(event)

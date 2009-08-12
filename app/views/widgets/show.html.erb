@@ -12,8 +12,8 @@
   /* font */
     body { font-family: <%= @theme[:style][:font][:face] %>; }
 
-    div.blist-th .info-container { font-size: <%= @theme[:style][:font][:grid_header_size] %>; }
-    .blist-td { font-size: <%= @theme[:style][:font][:grid_data_size] %>; }
+    div.blist-th .info-container { font-size: <%= @theme[:style][:font][:grid_header_size][:value] %><%= @theme[:style][:font][:grid_header_size][:unit] %>; }
+    .blist-td { font-size: <%= @theme[:style][:font][:grid_data_size][:value] %><%= @theme[:style][:font][:grid_data_size][:unit] %>; }
   
   /* frame */
     <%- if @theme[:frame][:gradient] -%>
@@ -67,8 +67,8 @@
 
     .blist-td
     {
-        height: <%= @theme[:grid][:row_height] %>;
-        line-height: <%= @theme[:grid][:row_height] %>;
+        height: <%= @theme[:grid][:row_height][:value] %><%= @theme[:grid][:row_height][:unit] %>;
+        line-height: <%= @theme[:grid][:row_height][:value] %><%= @theme[:grid][:row_height][:unit] %>;
     }
 
     <%- if @theme[:grid][:wrap_header_text] -%>

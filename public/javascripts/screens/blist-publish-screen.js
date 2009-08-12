@@ -35,9 +35,10 @@ publishNS = blist.namespace.fetch('blist.publish');
             $(document).bind('click.colorPicker', function(event)
             {
                 var $target = $(event.target);
-                if (!$target.parents('*').is($this) &&
+                if (($target.parents('.colorPickerContainer').length == 0) &&
                     !$target.is('.colorPickerTrigger'))
                 {
+                    $(document).unbind('click.colorPicker');
                     $this.hide();
                 }
             });

@@ -442,6 +442,7 @@ blist.namespace.fetch('blist.data');
 
         this.updateAggregateHash = function(newAggs)
         {
+            meta.aggregates = newAggs;
             if (!meta.aggregateHash)
             {
                 meta.aggregateHash = {};

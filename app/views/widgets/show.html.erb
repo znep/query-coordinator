@@ -67,8 +67,8 @@
 
     .blist-td
     {
-        height: <%= @theme[:grid][:row_height] %>px;
-        line-height: <%= @theme[:grid][:row_height] %>px;
+        height: <%= @theme[:grid][:row_height][:value] %><%= @theme[:grid][:row_height][:unit] %>;
+        line-height: <%= @theme[:grid][:row_height][:value] %><%= @theme[:grid][:row_height][:unit] %>;
     }
 
     <%- if @theme[:grid][:wrap_header_text] -%>

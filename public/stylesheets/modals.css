@@ -641,7 +641,8 @@
 .flagDatasetWrapper input[type="text"],
 .flagDatasetWrapper textarea
 {
-    width: 35em;
+    margin-top: 0.5em;
+    width: 35.5em;
 }
 
 .flagDatasetWrapper .labelColumn
@@ -652,6 +653,21 @@
 
 .flagDatasetWrapper .submitLine 
 {
-    width: 54em;
+    width: 53.8em;
+}
+
+.flagDatasetWrapper .submitLine .submitActions
+{
+    width: 53.8em;
+}
+
+.flagDatasetWrapper .submitline li.left
+{
+    float: left;
+}
+
+.flagDatasetWrapper .submitLine li.right
+{
+    float: right;
 }
 /*** END: Message the owner of this dataset ***/

@@ -20,9 +20,32 @@ class Column < Model
       "nested_table" => "Nested Table",
       "tag" => "Row Tag"
   };
+
+  def convertable_types
+    if dataType.type == "text"
+      return [
+        "richtext", "number", "money", "percent", "date", "phone",
+        "email", "url", "checkbox", "stars", "flag"
+      ]
+    end
+
+    if ["percent", "money", "number", "stars"].include?(dataType.type)
+      return [
+        "text", "number", "money", "percent", "stars"
+      ].reject { |i| i == dataType.type }
+    end
+
+    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(dataType.type)
+      return ["text"]
+    end
+
+    return []
+  end
   
   def has_formatting?
-    types_with_formatting = ["date", "number", "money", "percent"]
+    types_with_formatting = ["text", "date", "number", 
+        "money", "percent", "phone", "email", 
+        "url", "checkbox", "star", "flag", "picklist"]
 
     return types_with_formatting.include?(client_type)
   end
@@ -33,6 +56,10 @@ class Column < Model
                          "flag", "document", "photo", "picklist"]
     
     return types_with_totals.include?(client_type)
+  end
+
+  def convert_href(view_id)
+    "/views/#{view_id}/columns/#{id}.json?method=convert"
   end
 
   def href(view_id)

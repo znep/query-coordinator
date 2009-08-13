@@ -591,3 +591,67 @@
 }
 
 /*** END: Column properties***/
+
+/*** START: Message the owner of this dataset ***/
+.flagDataset .dialogBox .header h1#flagHeader
+{
+  background-image: url(/stylesheets/images/content/flag_modal_icon.png);
+  background-position: 2px center;
+  padding-left: 37px;
+}
+
+/* This was black freaking magic */
+.dialogWrapper.modalDialog.flagDataset 
+{
+    width: 56.5em;
+}
+.flagDatasetWrapper label,
+.flagDatasetWrapper p
+{
+    font-size: 1.2em;
+    line-height: 1.75em; /* 21px */
+    vertical-align: middle;
+}
+
+.flagDatasetWrapper .labelColumn
+{
+    vertical-align: top;
+}
+
+.flagDatasetWrapper label.error 
+{
+    display: block;
+}
+
+.flagDatasetWrapper #error,
+.flagDatasetWrapper .errorMessage
+{
+    font-size: 1.2em;
+    padding: 0.3em;
+    padding-bottom: 0.7em;
+    margin-right: 1em;
+    vertical-align: middle;
+}
+
+.flagDatasetWrapper #submit
+{
+    float: right;
+}
+
+.flagDatasetWrapper input[type="text"],
+.flagDatasetWrapper textarea
+{
+    width: 35em;
+}
+
+.flagDatasetWrapper .labelColumn
+{
+    padding-right: 1em;
+    text-align: right;
+}
+
+.flagDatasetWrapper .submitLine 
+{
+    width: 54em;
+}
+/*** END: Message the owner of this dataset ***/

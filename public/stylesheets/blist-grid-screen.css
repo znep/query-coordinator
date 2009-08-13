@@ -542,6 +542,22 @@ body#lensBody
     background-position: 5px -186px;
 }
 
+#mainMenu li.blist .flag > a
+{
+    background-position: 5px -1129px;
+}
+
+#mainMenu li.blist .flagOption > a
+{
+    background-position: 5px -923px;
+}
+
+#mainMenu li.blist .flagOption > a:hover
+{
+    background-position: 5px -946px;
+}
+
+
 #mainMenu li.edit .undo > a
 {
     background-position: 5px -209px;

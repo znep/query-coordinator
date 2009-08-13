@@ -604,8 +604,7 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             group: groupText,
             sortable: true,
-            filterable: true,
-            editor: $.blistEditor.text
+            filterable: true
         },
 
         richtext: {
@@ -739,6 +738,12 @@ blist.namespace.fetch('blist.data.types');
             filterable: true
         }
     });
+
+    // Set editors, but make sure they exist first
+    if ($.blistEditor)
+    {
+        blist.data.types.text.editor = $.blistEditor.text;
+    }
 
     for (var name in blist.data.types) {
         var type = blist.data.types[name];

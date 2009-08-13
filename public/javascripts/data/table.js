@@ -580,8 +580,8 @@
 
         var editCell = function(cell)
         {
-            // Don't start another edit yet
-            if (isEdit) { return; }
+            // Don't start another edit yet; and make sure they can edit
+            if (isEdit || !model.canWrite()) { return; }
 
             var row = getRow(cell);
             var col = getColumn(cell);

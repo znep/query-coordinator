@@ -627,10 +627,10 @@
 
             var origValue = editor.originalValue;
             var value = editor.currentValue();
-            if (isSave && origValue != value)
+            var row = editor.row;
+            var col = editor.column;
+            if (isSave && (origValue != value || model.isCellError(row, col)))
             {
-                var row = editor.row;
-                var col = editor.column;
                 model.saveRowValue(value, row, col);
             }
 
@@ -971,39 +971,37 @@
         var findCell = function(event)
         {
             var cell = findContainer(event, '.blist-td, .blist-table-expander, ' +
-                '.blist-table-active-container');
-            if (!cell) {
-                return null;
-            }
+                '.blist-table-active-container, .blist-table-edit-container');
+            if (!cell) { return null; }
+
             var $cell = $(cell);
 
             // Can't interact with fill
-            if ($cell.is('.blist-tdfill, .blist-opener-space')) {
-                return null;
-            }
+            if ($cell.is('.blist-tdfill, .blist-opener-space'))
+            { return null; }
 
             // If we are looking at the selection expansion, return
             //  the first active cell
-            if ($activeContainer && $activeCells &&
-                ($cell[0] == $activeContainer[0] ||
-                $cell.parent()[0] == $activeContainer[0])) {
-                return $activeCells[0];
-            }
+            if ($activeCells &&
+                (($activeContainer &&
+                    ($cell[0] == $activeContainer[0] ||
+                    $cell.parent()[0] == $activeContainer[0])) ||
+                ($editContainer &&
+                    ($cell[0] == $editContainer[0] ||
+                    $cell.parent()[0] == $editContainer[0]))))
+            { return $activeCells[0]; }
 
             // Nested table header send focus to the opener
             if ($cell.hasClass('blist-tdh'))
             {
-                while (!$cell.hasClass('blist-opener')) {
-                    $cell = $(cell = cell.previousSibling);
-                }
+                while (!$cell.hasClass('blist-opener'))
+                { $cell = $(cell = cell.previousSibling); }
                 return cell;
             }
 
             // If the mouse strays over the hot expander return the hot cell
             if (cell == hotExpander || cell.parentNode == hotExpander)
-            {
-                return hotCell;
-            }
+            { return hotCell; }
 
             // Normal cell
             return cell;
@@ -2068,7 +2066,12 @@
 
                     colParts.push(
                         "\"<div class='blist-td " + getColumnClass(mcol) + cls +
-                            align + "'>\", " +
+                            align + "\"" +
+                            " + (row.saving && row.saving" +
+                            mcol.dataLookupExpr + " ? \" saving\" : \"\") + " +
+                            "(row.error && row.error" +
+                            mcol.dataLookupExpr + " ? \" error\" : \"\") + " +
+                            "\"'>\", " +
                             renderer + ", \"</div>\""
                     );
 

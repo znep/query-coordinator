@@ -822,18 +822,30 @@ blist.namespace.fetch('blist.data');
             eval('row' + column.dataLookupExpr + ' = value;');
         };
 
+        this.isCellError = function(row, column)
+        {
+            if (!row.error) { return false; }
+            var v;
+            eval('v = row.error' + column.dataLookupExpr + ';');
+            return v;
+        };
+
         // Set the value for a row, save it to the server, and notify listeners
         this.saveRowValue = function(value, row, column)
         {
             this.setRowValue(value, row, column);
-            this.change([row]);
 
+            if (!row.saving) { row.saving = []; }
             var data = {};
             data[column.id] = value;
             var url = '/views/' + this.meta().view.id + '/rows/';
             if (column.nestedIn)
             {
                 var parCol = column.nestedIn.header;
+                row.saving[parCol.dataIndex][column.dataIndex] = true;
+                if (row.error && row.error[parCol.dataIndex])
+                { delete row.error[parCol.dataIndex][column.dataIndex]; }
+
                 var childRow = this.getRowValue(row, parCol);
                 url += row.parent.uid +
                     '/columns/' + parCol.id +
@@ -842,13 +854,34 @@ blist.namespace.fetch('blist.data');
             }
             else
             {
+                row.saving[column.dataIndex] = true;
+                if (row.error) { delete row.error[column.dataIndex]; }
                 url += row.uid + '.json';
             }
+            this.change([row]);
 
+            var model = this;
             $.ajax({ url: url,
                     type: 'PUT',
-                    contentType: 'application/json',
-                    data: $.json.serialize(data)
+                    contentType: 'application/json', dataType: 'json',
+                    data: $.json.serialize(data),
+                    complete: function()
+                    {
+                        if (column.nestedIn)
+                        { delete row.saving[parCol.dataIndex][column.dataIndex]; }
+                        else
+                        { delete row.saving[column.dataIndex]; }
+                        model.change([row]);
+                    },
+                    error: function()
+                    {
+                        if (!row.error) { row.error = []; }
+                        if (column.nestedIn)
+                        { row.error[parCol.dataIndex][column.dataIndex] = true; }
+                        else
+                        { row.error[column.dataIndex] = true; }
+                        model.change([row]);
+                    }
                     });
         };
 
@@ -1337,6 +1370,12 @@ blist.namespace.fetch('blist.data');
                     childRow.id = "t" + nextTempID++;
                     childRow.level = (row.level || 0) + 1;
                     childRow.parent = row;
+                    // Set up saving & error arrays so we don't need to do
+                    // two level checks in the row renderer
+                    if (!childRow.saving) { childRow.saving = []; }
+                    childRow.saving[col.dataIndex] = [];
+                    if (!childRow.error) { childRow.error = []; }
+                    childRow.error[col.dataIndex] = [];
                     childRow[col.dataIndex] = cell[j];
                     setRowMetadata([childRow[col.dataIndex]], col.metaChildren);
                 }

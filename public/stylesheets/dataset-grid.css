@@ -328,6 +328,9 @@ div.blist-tdh
     padding-left: 5px;
 }
 
+.blist-table .blist-td.saving { background-color: #ffffcc; }
+.blist-table .blist-td.error { background-color: #ffb6c1; }
+
 div.blist-table-active-container
 {
     background-color: #ffffff;

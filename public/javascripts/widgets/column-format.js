@@ -168,7 +168,7 @@ columnFormatNS.renderValueInfoFormatRow = function(value)
 {
     var $row = $(this);
     var $span_value = $('<span class="value"></span>').html(value.label);
-    var $span_info = $('<span class="value_info"></span').html(value.info);
+    var $span_info = $('<span class="value_info"></span>').html(value.info);
     $row.addClass(value.id).empty().append($span_value).append($span_info);
 };
 

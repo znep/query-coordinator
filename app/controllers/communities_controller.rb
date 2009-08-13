@@ -30,31 +30,17 @@ class CommunitiesController < ApplicationController
       @search_members_total = User.find({ :full => @search_term, :count => true }).count
       @search_members = User.find({ :full => @search_term, :limit => PAGE_SIZE, :page => 1 })
     end
-    @search_type = params[:search_type]
   end
   
   def filter
     type = params[:type]
     filter = params[:filter]
     page = params[:page] || 1
-    sort_by_selection = params[:sort_by] || "ACTIVITY"
+    sort_by_selection = params[:sort_by]
     tag = params[:tag]
     search_term = params[:search]
-    use_lucene_search = (!params[:search_type].nil? && params[:search_type] == "lucene" && type == "SEARCH")
+    search_debug = params[:search_debug]
     
-    # <HACK>
-    #   <reason>testing lucene</reason>
-    #   <details>enabling lucene for staging environment (QA), kevin, kostub, and chris</details>
-    #   <am_i_sorry>true</am_i_sorry>
-      if (ENV['RAILS_ENV'] == 'staging' ||
-        (current_user &&
-         (current_user.login == 'kmerritt' ||
-          current_user.login == 'kostub' ||
-          current_user.login == 'chris.metcalf'))) && type == "SEARCH"
-        use_lucene_search = true
-      end
-    # </HACK>
-
     sort_by = sort_by_selection
     is_asc = false
     case sort_by_selection
@@ -79,15 +65,13 @@ class CommunitiesController < ApplicationController
         opts.update({:topUploaders => true})
         tag_opts.update({:topUploaders => true})
       when "SEARCH"
-        if (use_lucene_search)
-          opts.update({:q => search_term })
-          sort_by = nil
-        else
-          opts.update({:full => search_term })
-        end
+        opts.update({:q => search_term })
     end
     
-    opts.update({:sortBy => sort_by, :isAsc => is_asc})
+    if !sort_by.nil?
+      opts.update({:sortBy => sort_by, :isAsc => is_asc})
+    end
+ 
     if (!tag.nil?)
       opts.update({:tags => tag})
     end
@@ -101,12 +85,9 @@ class CommunitiesController < ApplicationController
       end
     end
     
+    @page_size = PAGE_SIZE
     if type == "SEARCH"
       tab_title = "Search Results for \"#{search_term}\""
-    end
-
-    @page_size = PAGE_SIZE
-    if use_lucene_search
       search_results = SearchResult.search("users", opts)
       @filtered_members = search_results[0].results
       @filtered_members_total = search_results[0].count
@@ -124,7 +105,8 @@ class CommunitiesController < ApplicationController
     
     # build current state string
     @current_state = { :filter => filter, :page => page, :tag => tag,
-      :sort_by => sort_by_selection, :search => search_term }
+      :sort_by => sort_by_selection, :search => search_term,
+      :search_debug => search_debug }
     
     respond_to do |format|
       format.html { redirect_to(community_path(params)) }
@@ -143,7 +125,7 @@ class CommunitiesController < ApplicationController
               :tag_list => tag_list,
               :current_tag => tag,
               :search_term => search_term,
-              :search_type => params[:search_type]
+              :search_debug => search_debug,
             })
         else
           render(:partial => "communities/member_list_tab_noresult", 

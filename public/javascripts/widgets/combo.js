@@ -41,11 +41,11 @@
 
         // Handle clicks on the drop-down
         var onDropdownClick = function(event) {
-            var newValue = values[$dropdown.children().index(event.target)];
+            var newValue = values[$dropdown.children().index($(event.target).closest("li"))];
             if (newValue !== undefined)
                 valueManager.set(newValue.id || newValue);
 
-            $dropdown.css('visibility', 'hidden');
+            $dropdown.slideUp();
         }
 
         // Handle clicks on the control (the part that's always visible)
@@ -53,7 +53,7 @@
             // Create the drop-down
             if (!$dropdown) {
                 $dropdown = $('<ul class="blist-combo-dd"></ul>');
-                $(document.body).append($dropdown);
+                $this.closest(".blist-combo-wrapper").append($dropdown);
                 for (var i = 0; i < values.length; i++) {
                     var $li = $('<li></li>');
                     $dropdown.append($li);
@@ -66,12 +66,9 @@
             var pos = $this.position();
             var left = pos.left;
             var top = pos.top + $this.outerHeight() - 1;
-            $dropdown.css({
-                visibility: 'visible',
-                left: left + 'px',
-                top: top + 'px',
-                width: ($this.outerWidth() - 2) + 'px'
-            });
+            
+            $dropdown.css({ width: ($this.outerWidth() - 2) + 'px' });
+            $dropdown.slideDown();
         }
 
         // Render the current value (in the variable "value") into the value container (in the variable "$value")
@@ -86,7 +83,10 @@
                     if (id === value)
                         valueObj = values[i];
                 }
-
+            
+            // Reset all classes on the value.
+            $value.removeClass().addClass("blist-combo-value");
+            
             // Render empty values
             if (valueObj === undefined) {
                 $this.addClass('blist-combo-empty');

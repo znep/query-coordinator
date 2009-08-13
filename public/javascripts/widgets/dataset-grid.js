@@ -358,11 +358,11 @@
         var model = datasetObj.settings._model;
         var view = model.meta().view;
         $.ajax({url: '/views/' + view.id + '/rows.json',
-            data: {include_aggregates: true, max_rows: 0}, cache: false,
+            data: {method: 'getAggregates'}, cache: false,
             contentType: 'application/json', dataType: 'json', type: 'GET',
             success: function(resp)
             {
-                model.updateAggregateHash(resp.meta.aggregates);
+                model.updateAggregateHash(resp);
                 model.metaChange();
             }});
     };

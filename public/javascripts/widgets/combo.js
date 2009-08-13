@@ -45,7 +45,7 @@
             if (newValue !== undefined)
                 valueManager.set(newValue.id || newValue);
 
-            $dropdown.slideUp();
+            $dropdown.slideUp(100);
         }
 
         // Handle clicks on the control (the part that's always visible)
@@ -68,7 +68,7 @@
             var top = pos.top + $this.outerHeight() - 1;
             
             $dropdown.css({ width: ($this.outerWidth() - 2) + 'px' });
-            $dropdown.slideDown();
+            $dropdown.slideDown(100);
         }
 
         // Render the current value (in the variable "value") into the value container (in the variable "$value")

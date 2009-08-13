@@ -1,22 +1,18 @@
 .blist-combo-wrapper
 {
-    float: left;
-    margin-right: 10px;
+    cursor: default;
     position: relative;
-    width: 200px;
 }
 .blist-combo
 {
     border: solid 1px #ccc;
     background: url('images/content/select_arrow.png') center right no-repeat;
-    cursor: pointer;
     padding-right: 20px;
 }
 .blist-combo-value
 {
     font-size: 1.2em;
-    padding: 4px 5px;
-    
+    padding: 4px 5px;    
 }
 
 .blist-combo-dd {
@@ -33,12 +29,33 @@
 {
     font-size: 1.2em;
     padding: 4px 5px;
-    cursor: pointer;
 }
 
 .blist-combo-dd li:hover {
     background-color: #e3ecf7;
 }
+
+/*** Left/Right Justified Combo List ***/
+
+.blist-combo-wrapper.lr_justified .blist-combo-value,
+.blist-combo-wrapper.lr_justified li
+{
+    overflow: auto;
+    clear: both;
+}
+
+.blist-combo-wrapper.lr_justified .value {
+    display: block;
+    float: left;
+}
+.blist-combo-wrapper.lr_justified .value_info {
+    display: block;
+    float: right;
+}
+
+
+/*** Format Combo Lists ***/
+.blist-combo-wrapper.format_date_view { width: 300px; }
 
 
 /*** Icon Combo List ***/

@@ -2030,6 +2030,8 @@ table.gridList tr.filteredOut
     display: block;
     margin: 0.2em 0;
     font-size: 1.2em;
+    min-height: 2em;
+    position: relative;
     width: 25em;
 }
 
@@ -2040,12 +2042,18 @@ table.gridList tr.filteredOut
     margin: 1em;
 }
 
-.reorderList .activeList li:hover
+.reorderList .activeList.ui-draggable-not-dragging li:hover,
+.reorderList .activeList li.ui-draggable-dragging
 {
     background: url(/stylesheets/images/widgets/reorder_list/reorder_handle.png) no-repeat;
     cursor: move;
     margin-left: -35px;
     padding-left: 35px;
+}
+
+.reorderList .activeList li.ui-draggable-dragging
+{
+    z-index: 100;
 }
 
 .reorderList li .itemWrapper
@@ -2056,12 +2064,13 @@ table.gridList tr.filteredOut
     padding: 7px;
 }
 
-.reorderList li:first-child .itemWrapper
+.reorderList .activeList li.first-child .itemWrapper
 {
     border-top-color: transparent;
 }
 
-.reorderList .activeList li:hover .itemWrapper
+.reorderList .activeList.ui-draggable-not-dragging li:hover .itemWrapper,
+.reorderList .activeList li.ui-draggable-dragging .itemWrapper
 {
     background-color: #c8e2f7;
     border-top-color: transparent;
@@ -2116,6 +2125,16 @@ table.gridList tr.filteredOut
 .reorderList .inactiveList li
 {
     cursor: pointer;
+}
+
+.reorderList .inactiveList li:first-child .itemWrapper
+{
+    border-top-color: transparent;
+}
+
+.reorderList .reorderList-selected
+{
+    background-color: #c8e2f7;
 }
 
 /*** END: reorderable list ***/

@@ -44,4 +44,7 @@ publishNS = blist.namespace.fetch('blist.publish');
             });
         });
     });
+
+    // Reorderable List
+    $('#tabsReorderList').reorderableList();
 })(jQuery);

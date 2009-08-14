@@ -645,7 +645,7 @@ ul.convertables li a:hover
     color: #fff;
 }
 
-#loadingSpinner
+#spinner
 {
     position: absolute;
     top: 150px;
@@ -667,45 +667,6 @@ ul.convertables li a:hover
 .convert-checkbox { background-position: 0 -120px; }
 .convert-stars { background-position: 0 -140px; }
 .convert-flag { background-position: 0 -380px; }
-
-#typeReadOnly
-{
-    background-image:url(/stylesheets/images/common/datatypes/data_type_sprites.png);
-    background-repeat: no-repeat;
-    padding:0.2em;
-    padding-left: 1.75em; 
-    height: 2em;
-    vertical-align: middle;
-}
-
-.columnPropertiesIcon
-{
-    background-image:url(/stylesheets/images/content/GearIcon_color.png);
-    background-repeat: no-repeat;
-    padding-left: 35px;
-}
-
-.align
-{
-    background-image:url(/stylesheets/images/content/AlignmentSprites.png);
-    background-repeat: no-repeat;
-    padding-left: 20px;
-}
-
-.alignLeft
-{
-    background-position: 0 0;
-}
-
-.alignCenter
-{
-    background-position: 0 -13px;
-}
-
-.alignRight
-{
-    background-position: 0 -26px;
-}
 
 /*** END: Column properties***/
 

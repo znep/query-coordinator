@@ -41,12 +41,6 @@ class Column < Model
 
     return []
   end
-
-  def has_display_options?
-    types_with_display_options = ["text", "date", "number", "money", "percent"]
-
-    return types_with_display_options.include?(client_type)
-  end
   
   def has_formatting?
     types_with_formatting = ["text", "date", "number", 
@@ -59,7 +53,7 @@ class Column < Model
   def has_totals?
     types_with_totals = ["text", "richtext", "number", "money", "percent", 
                          "date", "phone", "email", "url", "checkbox", "stars", 
-                         "flag", "document", "photo", "picklist", "tag"]
+                         "flag", "document", "photo", "picklist"]
     
     return types_with_totals.include?(client_type)
   end

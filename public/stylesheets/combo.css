@@ -56,6 +56,15 @@
 
 /*** Format Combo Lists ***/
 .blist-combo-wrapper.format_date_view { width: 300px; }
+.blist-combo-wrapper.format_percent_view { width: 220px; }
+
+.format_percent_view .value
+{
+    background-color: #6c6;
+    text-align: right;
+    width: 100px;
+}
+.format_percent_view .percent_text .value { background-color: transparent; }
 
 
 /*** Icon Combo List ***/

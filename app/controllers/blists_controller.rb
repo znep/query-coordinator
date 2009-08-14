@@ -136,8 +136,8 @@ class BlistsController < SwfController
     @customization = WidgetCustomization.merge_theme_with_default(@widget_customization.customization)
   end
 
-  def update_customization
-    #save customization
+  def new_customization
+    #new customization
   end
 
   def update

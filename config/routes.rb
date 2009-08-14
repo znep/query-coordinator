@@ -146,7 +146,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id.data', :controller => 'widgets', :action => 'show', :format => 'data'
 
-  map.connect 'customization/:id', :controller => 'blists', :action => 'update_customization',
+  map.connect 'customization/new', :controller => 'blists', :action => 'new_customization',
     :conditions => { :method => :put }, :format => 'data'
 
   map.connect 'widgets_preview/:id', :controller => 'widgets_preview', :action => 'show'

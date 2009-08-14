@@ -476,9 +476,8 @@
         displayMenu = true;
 
         var view = datasetObj.settings._model.meta().view;
-        // TODO - use rights
-        if (view.tableOwner.id == datasetObj.settings.currentUserId &&
-                view.owner.id == datasetObj.settings.currentUserId)
+        if(view && view.rights &&
+            $.inArray('remove_column', view.rights) >= 0)
         {
             htmlStr += '<li class="delete" >' +
                 '<a href="#delete-column_' + col.id + '">' +

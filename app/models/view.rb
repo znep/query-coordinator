@@ -161,7 +161,7 @@ class View < Model
   end
 
   def user_role(user_id)
-    if (user_id == tableOwner.id)
+    if (user_id == tableAuthor.id)
       I18n.t(:blist_name).capitalize + " Author"
     elsif (user_id == owner.id)
       "View Author"
@@ -185,7 +185,7 @@ class View < Model
   end
 
   def contributor_users
-    (grants || []).reject {|g| g.flag?('public') || g.type.downcase == 'read'}.
+    (grants || []).select {|g| !g.flag?('public') && g.type.downcase == 'contributor'}.
       collect do |g|
         if !g.groupId.nil?
           Group.find(g.groupId).users.collect {|u| u.id}
@@ -199,8 +199,8 @@ class View < Model
 
   def viewer_users
     contributors = contributor_users
-    view_grants = (grants || []).reject {|g| g.flag?('public') ||
-      g.type.downcase != 'read'}.
+    view_grants = (grants || []).select {|g| !g.flag?('public') &&
+      g.type.downcase == 'viewer'}.
       collect do |g|
         if !g.groupId.nil?
           Group.find(g.groupId).users.collect {|u| u.id}
@@ -217,25 +217,15 @@ class View < Model
     group_shares = Hash.new
     (grants || []).reject {|g| g.flag?('public')}.each do |g|
       if !g.groupId.nil?
-        if !group_shares[g.groupId]
-          s = Share.new(nil, g.groupId, Group.find(g.groupId).name,
+        s = Share.new(g.type.capitalize, g.groupId, Group.find(g.groupId).name,
                         false, true)
-          s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
-          group_shares[g.groupId] = s
-        elsif g.type.downcase != 'read'
-          group_shares[g.groupId].type = Share::CONTRIBUTOR
-        end
+        group_shares[g.groupId] = s
       else
         user_id = g.userId.nil? ? g.userEmail : g.userId
-        if !user_shares[user_id]
-          s = Share.new(nil, g.userId, g.userId.nil? ?
-                        g.userEmail : User.find(g.userId).displayName,
-                        true, false)
-          s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
-          user_shares[user_id] = s
-        elsif g.type.downcase != 'read'
-          user_shares[user_id].type = Share::CONTRIBUTOR
-        end
+        s = Share.new(g.type.capitalize, g.userId, g.userId.nil? ?
+                      g.userEmail : User.find(g.userId).displayName,
+                      true, false)
+        user_shares[user_id] = s
       end
     end
 

@@ -43,7 +43,13 @@
     width: 21.5em;
 }
 .splashActionBox.last { margin-right: 0; }
-
+.splashActionBox.imageActionBox { width: 240px; }
+.splashActionBox.doubleActionBox
+{
+    cursor: default;
+    margin-right: 0;
+    width: 43.5em;
+}
 
 .splashActionBox h3
 {
@@ -65,12 +71,27 @@
     line-height: 1.428em; /* 20px */
     margin-top: 1.428em; /* 20px */
 }
+.splashActionBox.imageActionBox p
+{
+    display: block;
+    margin: 0;
+}
+.splashActionBox.imageActionBox p.imageCaption { text-align: center; }
+.splashActionBox.imageActionBox p.imageCaption a { color: #fff; }
 
-.splashActionBox p.splashActionButton
+.splashActionBox li
+{
+    color: #fff;
+    font-size: 1.4em;
+    line-height: 1.8em;
+}
+
+
+.splashActionBox p.splashActionButton, .splashActionBox ul.splashActionButtonList
 {
     margin-top: 2em;
 }
-.splashActionBox p.splashActionButton a
+.splashActionBox .splashActionButton a
 {
     background: url(/stylesheets/images/splash/pop_action_button.png) no-repeat;
     color: #fff;
@@ -79,6 +100,10 @@
     line-height: 25px;
     padding-left: 15px;
     width: 201px;
+}
+.splashActionButtonList li
+{
+    float: left;
 }
 
 .splashContainer .closeContainer

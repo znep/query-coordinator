@@ -45,7 +45,7 @@
         'class' => 'editPermissions', 'href' => '#permissions',
         'owner_item' => true},
         {'text' => "Flag #{t(:blist_name).capitalize} as",
-        'class' => 'flag', 'submenu' => {'items' => [
+        'class' => 'flag', 'owner_item' => false, 'submenu' => {'items' => [
           {'text' => 'Copyright Violation', 'class' => 'flagOption',
           'href' => "#{@view.href}/flag/copyright_violation", 'modal' => true},
           {'text' => 'Offensive Content', 'class' => 'flagOption',

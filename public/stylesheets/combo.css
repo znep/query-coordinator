@@ -1,30 +1,84 @@
-.blist-combo {
-    padding: 2px 20px 2px 4px;
-    width: 84px; /* Default width makes it 100px */
-    border: solid 1px #cccccc;
-    height: 17px;
-    line-height: 17px;
-    background: white url('images/content/select_arrow.png') center right no-repeat;
-    cursor: pointer;
+.blist-combo-wrapper
+{
+    cursor: default;
+    position: relative;
+}
+.blist-combo
+{
+    border: solid 1px #ccc;
+    background: url('images/content/select_arrow.png') center right no-repeat;
+    padding-right: 20px;
+}
+.blist-combo-value
+{
+    font-size: 1.2em;
+    padding: 4px 5px;
 }
 
 .blist-combo-dd {
+    background: #fff;
+    border: 1px solid #ccc;
+    display: none;
+    max-height: 150px;
+    overflow: auto;
     position: absolute;
-    border: solid 1px #cccccc;
-    background: white;
-    list-style-type: none;
-    visibility: hidden;
     z-index: 100;
-    opacity: .9;
 }
 
-.blist-combo-dd li {
-    padding: 2px 4px;
-    height: 17px;
-    line-height: 17px;
-    cursor: pointer;
+.blist-combo-dd li 
+{
+    font-size: 1.2em;
+    padding: 4px 5px;
 }
 
 .blist-combo-dd li:hover {
-    background-color: #ddddff;
+    background-color: #e3ecf7;
 }
+
+/*** Left/Right Justified Combo List ***/
+
+.blist-combo-wrapper.lr_justified .blist-combo-value,
+.blist-combo-wrapper.lr_justified li
+{
+    overflow: auto;
+    clear: both;
+}
+
+.blist-combo-wrapper.lr_justified .value {
+    display: block;
+    float: left;
+}
+.blist-combo-wrapper.lr_justified .value_info {
+    display: block;
+    float: right;
+}
+
+
+/*** Format Combo Lists ***/
+.blist-combo-wrapper.format_date_view { width: 300px; }
+
+
+/*** Icon Combo List ***/
+.type_combo_list li, .type_combo_list .blist-combo-value
+{
+    background: url(/stylesheets/images/common/datatypes/data_type_sprites.png) no-repeat;
+    padding-left: 23px;
+}
+.type_combo_list .photo { background-position: 0 -100px; }
+.type_combo_list .money { background-position: 0 -40px; }
+.type_combo_list .picklist { background-position: 0 -400px; }
+.type_combo_list .number { background-position: 0 -20px; }
+.type_combo_list .richtext { background-position: 0 -60px; }
+.type_combo_list .text { background-position: 0 -80px; }
+.type_combo_list .date { background-position: 0 -340px; }
+.type_combo_list .tag { background-position: 0 -180px; }
+.type_combo_list .url { background-position: 0 -360px; }
+.type_combo_list .document { background-position: 0 -280px; }
+.type_combo_list .flag { background-position: 0 -380px; }
+.type_combo_list .stars { background-position: 0 -140px; }
+.type_combo_list .nested_table { background-position: 0 -440px; }
+.type_combo_list .checkbox { background-position: 0 -120px; }
+.type_combo_list .phone { background-position: 0 -240px; }
+.type_combo_list .percent { background-position: 0 0; }
+.type_combo_list .email { background-position: 0 -260px; }
+

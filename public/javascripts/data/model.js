@@ -1209,19 +1209,19 @@ blist.namespace.fetch('blist.data');
          * Scan to find the next or previous row in the same level.
          */
         this.nextInLevel = function(from, backward) {
-            var pos = this.index(from);
-            if (pos == null)
+            var pos = from;
+            if (active[pos] == null)
                 return null;
             var level = active[pos].level || 0;
             if (backward) {
                 while (--pos >= 0)
                     if ((active[pos].level || 0) == level)
-                        return active[pos];
+                        return pos;
             } else {
                 var end = active.length;
                 while (++pos < end)
                     if ((active[pos].level || 0) == level)
-                        return active[pos];
+                        return pos;
             }
             return null;
         }

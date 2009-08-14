@@ -313,12 +313,16 @@
             // Update the active cell
             if (cellNav.isActive())
             {
-                var physActive = renderedRows[cellNav.getActiveY()];
-                if (physActive)
+                var row = model.get(cellNav.getActiveY());
+                if (row)
                 {
-                    var $newActive = $(physActive.row).children()
-                        .slice(cellNav.getActiveX(),
-                            cellNav.getActiveXEnd());
+                    var physActive = renderedRows[row.id];
+                    if (physActive)
+                    {
+                        var $newActive = $(physActive.row).children()
+                            .slice(cellNav.getActiveX(),
+                                    cellNav.getActiveXEnd());
+                    }
                 }
                 if ($newActive)
                 {
@@ -372,7 +376,7 @@
                 inside.append($activeContainer);
             }
 
-            var row = model.getByID(cellNav.getActiveY());
+            var row = model.get(cellNav.getActiveY());
             if (row.expanded) { $activeContainer.addClass('blist-tr-open'); }
             else { $activeContainer.removeClass('blist-tr-open'); }
             if (!$activeCells)
@@ -390,7 +394,7 @@
                 $activeContainer.width(width -
                     ($activeContainer.outerWidth() - $activeContainer.width()));
 
-                var rowIndex = model.index(cellNav.getActiveY());
+                var rowIndex = cellNav.getActiveY();
                 $activeContainer.css('top', rowIndex * rowOffset);
                 var left = lockedWidth;
                 for (var i = 0; i < cellNav.getActiveX(); i++)
@@ -495,7 +499,8 @@
                 }
 
                 // Standard cell -- activate the cell
-                return cellNavToXY({ x: x, y: row.id }, event, selecting);
+                return cellNavToXY({ x: x, y: model.index(row) },
+                    event, selecting);
             }
 
             // Not a valid navigation target; ignore
@@ -524,7 +529,7 @@
                 scrollHeight -= $footerScrolls.outerHeight() - 1;
             }
             var scrollBottom = scrollTop + scrollHeight;
-            var top = model.index(xy.y) * rowOffset;
+            var top = xy.y * rowOffset;
             var bottom = top + rowOffset;
             var origScrollTop = scrollTop;
 
@@ -547,7 +552,7 @@
             }
             var scrollRight = scrollLeft + scrollWidth;
 
-            var layoutLevel = layout[model.getByID(xy.y).level || 0];
+            var layoutLevel = layout[model.get(xy.y).level || 0];
             // Calculate left & right positions
             var cellLeft = lockedWidth;
             for (var i = 0; i < xy.x; i++)
@@ -3010,8 +3015,6 @@
          */
         var initRows = function(model)
         {
-            clearCellNav();
-
             if (handleDigits != calculateHandleDigits(model)) {
                 // The handle changed.  Reinitialize columns.
                 initMeta(model);

@@ -806,18 +806,6 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('row_remove', [ rows ]);
         };
 
-        this.invalidateRows = function()
-        {
-            removeSpecialRows();
-            for (var i=0; i < rows.length; i++)
-            {
-                if (rows[i] instanceof Object)
-                {
-                    rows[i] = rows[i].id;
-                }
-            }
-        };
-
         this.updateColumn = function(column)
         {
             var isColumnPresent = false;
@@ -878,24 +866,6 @@ blist.namespace.fetch('blist.data');
             this.meta(meta);
             $(listeners).trigger('columns_updated', [this]);
         };
-
-        this.convertColumn = function(oldId, newViewColumn)
-        {
-            this.invalidateRows();
-            if (meta.view != null)
-            {
-                $.each(meta.view.columns, function(i, c)
-                {
-                    if (c.id == oldId)
-                    {
-                        meta.view.columns[i] = newViewColumn;
-                    }
-                });
-            }
-            meta.columns = null;
-            this.meta(meta);
-            $(listeners).trigger('columns_updated', [this]);
-        }
 
         this.deleteColumns = function(cols)
         {

@@ -10,7 +10,6 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
 <% end %>
 
 <div class="columnPropertiesWrapper">
-  <div id="loadingSpinner"></div>
   <% form_tag "#" do %>
     <div class="tabWrapper">
       <div class="tabs">
@@ -47,6 +46,8 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       <%- # Formatting tab %>
       <%- if @column.has_formatting? %>
       <div id="formattingTab" class="tabContent">
+        <%- # TODO: Waiting on the read grid to support alignment.
+            if false %>
         <h3 class="seperator">Alignment Options</h3>
         <ul class="alignment">
           <li><p>Justify:</p></li>
@@ -63,6 +64,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
             <label for="column_alignment_right">Right</label>
           </li>
         </ul>
+        <%- end %>
       </div>
       <%- end %>
 
@@ -89,28 +91,14 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
             </tr>
             <tr>
               <td class="labelColumn"><label for="type">Type:</label></td>
-              <td class="fieldColumn middle">
-                <strong><%= Column.types[@column.client_type] %></strong>
-                <% if @column.convertable_types.size > 0 %>
-                  <a id="converter" class="convertDropdown" href="#">Change</a>
-                <% end %>
+              <td class="fieldColumn">
+                <%= select_tag("type", 
+                           type_select_options(@column.client_type), 
+                           :id => "type", 
+                           :disabled => true,
+                           :readonly => true) %>
+                <span class="helpie" title="You can change a column's type by changing this."></span>
               </td>
-            </tr>
-            <tr>
-                <td class="labelColumn"></td>
-                <td class="fieldColumn">
-                    <div id="convertables">
-                      <ul class="convertables">
-                        <% @column.convertable_types.each do |type| %>
-                          <li>
-                            <a id="<%=type%>" class="convert convert-<%=type%>" href="#">
-                              <%= Column.types[type] %>
-                            </a>
-                          </li>
-                        <% end %> 
-                      </ul>
-                    </div>
-                </td>
             </tr>
           <tbody>
         </table>
@@ -130,22 +118,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
 <script type="text/javascript" charset="utf-8">
 $(function()
 {
-  $("#loadingSpinner").hide();
   $("#error").hide();
-  $("#convertables").hide();
-
-  var loading = function()
-  {
-    $("#loadingSpinner").css("left", 150 + $("#generalTab").width() / 2);
-    $("#loadingSpinner").show();
-  }
-
-  var formEnabled = true;
-  var toggleEnabled = function()
-  {
-    $(".columnPropertiesWrapper :input").attr("disabled", formEnabled);
-    formEnabled = !formEnabled;
-  }
 
   // Since these widgets are created live, we have to populate the default
   // text prompt values manually instead of relying on the plugin.
@@ -163,7 +136,6 @@ $(function()
 
   // Select tabs on hover.
   $("ul.tabSelector > li > a").hover(function() {
-    if (!formEnabled) { return false; }
     $("ul.tabSelector > li > a").removeClass("selected");
     $(this).addClass("selected");
     selectTab(this.id);
@@ -186,42 +158,7 @@ $(function()
   $("#precision").change(function() { column.decimalPlaces = $(this).val() });
   $("#ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#precision").val() });
 
-  var converting = false;
-  $("a.convert").click(function() { 
-    if (converting) return false;
-    converting = true;
-    $("a.convert").addClass("light");
-    $(this).removeClass("light");
-    loading();
-
-    $.ajax({
-      type: "POST",
-      url: '<%= @column.convert_href(@view_id) %>&type=' + $(this).attr('id'), 
-      cache: false, 
-      dataType: 'json',
-      contentType: "application/json",
-      error: function(request) {
-        $("#error").html($.json.deserialize(request.responseText).message).show();
-      },
-      success: function (responseData) {
-        $(".jqmClose").click();
-        $("#readGrid").blistModel().convertColumn(<%= @column.id %>, responseData);
-      }
-    });
-  });
-
-  $("#converter").click(function() {
-      toggleEnabled();
-      $("#convertables").toggle();
-      return false;
-  });
-
   $("#save").click(function() {
-      if (!formEnabled)
-      {
-        return false;
-      }
-
       $.ajax({
         type: "PUT",
         url: '<%= @column.href(@view_id)%>',

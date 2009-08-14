@@ -10,6 +10,9 @@
  /*
   * 2009/08/06 (based on 2009/05/23 release) (clint.tseng@socrata.com):
   *      Allowed inputting color via "rgb(#, #, #)" format.
+  *
+  * 2009/08/13:
+  *      Allowed inputting hex triplets, changed to fire callback on setColor.
   */
  
 (function ($) {
@@ -289,6 +292,11 @@
 				return hex;
 			}, 
 			HexToRGB = function (hex) {
+				// clint.tseng@socrata.com 2009/08/13: accept hex triplets
+			    if (hex.length < 6)
+			    {
+			        hex = hex.replace(/([0-9abcdef])/gi, "$1$1");
+			    }
 				var hex = parseInt(((hex.indexOf('#') > -1) ? hex.substring(1) : hex), 16);
 				return {r: hex >> 16, g: (hex & 0x00FF00) >> 8, b: (hex & 0x0000FF)};
 			},
@@ -383,7 +391,7 @@
 				if (typeof opt.color == 'string') {
 				    // clint.tseng@socrata.com 2009/08/06: accept rgb string values
 				    var rgb;
-				    if (opt.color.match(/#[\dABCDEF]{6}/)) {
+				    if (opt.color.match(/#([\dABCDEF]{3}){1,2}/ig)) {
 					    opt.color = HexToHSB(opt.color);
 				    } else if (rgb = opt.color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)) {
 				        opt.color = RGBToHSB({r: parseInt(rgb[1]), g: parseInt(rgb[2]), b: parseInt(rgb[3])});
@@ -462,7 +470,13 @@
 			},
 			setColor: function(col) {
 				if (typeof col == 'string') {
-					col = HexToHSB(col);
+					// clint.tseng@socrata.com 2009/08/13: accept rgb string values
+				    var rgb;
+				    if (col.match(/#([\dABCDEF]{3}){1,2}/ig)) {
+					    col = HexToHSB(col);
+				    } else if (rgb = col.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/)) {
+				        col = RGBToHSB({r: parseInt(rgb[1]), g: parseInt(rgb[2]), b: parseInt(rgb[3])});
+				    }
 				} else if (col.r != undefined && col.g != undefined && col.b != undefined) {
 					col = RGBToHSB(col);
 				} else if (col.h != undefined && col.s != undefined && col.b != undefined) {
@@ -482,6 +496,8 @@
 						setSelector(col, cal.get(0));
 						setCurrentColor(col, cal.get(0));
 						setNewColor(col, cal.get(0));
+						// clint.tseng@socrata.com 2009/08/13: call the changed callback on change
+						cal.data('colorpicker').onChange.apply(cal, [col, HSBToHex(col), HSBToRGB(col)]);
 					}
 				});
 			}

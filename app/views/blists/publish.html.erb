@@ -106,9 +106,9 @@
               <dd>
                 <div class="itemContent">
                   <ul class="textContent">
-                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
-                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
-                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
+                    <li>http://whitehouse.gov/index.html</li>
+                    <li>http://thinkprogess.org/2009/12/10/article.html</li>
+                    <li>http://mediamatters.org/tv/recent</li>
                   </ul>
                 </div>
               </dd>
@@ -574,7 +574,7 @@
         <div class="infoContentWrapper">
           <div class="infoContent">
             <p>Choose which tabs to display.  Choose the order by dragging tab names up or down.</p>
-            <div class="reorderList clearfix">
+            <div id="tabsReorderList" class="reorderList clearfix">
               <div class="activeList">
                 <p>Display These Tabs</p>
                 <ul>
@@ -603,6 +603,7 @@
                 <ul>
                   <%- @customization[:meta].reject{ |name, properties| properties[:show] }.each do |name, properties| -%>
                     <li><div class="itemWrapper">
+                      <span class="orderIndex hide"></span>
                       <%= properties[:display_name] %>
                       <%= hidden_field_tag("customization[meta][#{name}][order]", 0, :class => 'orderField') %>
                       <%= hidden_field_tag("customization[meta][#{name}][show]", false, :class => 'activeField') %>
@@ -655,6 +656,6 @@
     blist.publish.theme = <%= JSON.generate( @customization ) %>;
   </script>
   <%= javascript_include_tag "screens/info-pane.js", "plugins/colorpicker.js",
-      "screens/blist-publish-screen",
-      :cache => "cache/blists_publish" %>
+      "plugins/ui.core", "plugins/ui.draggable", "widgets/reorderable-list.js",
+      "screens/blist-publish-screen", :cache => "cache/blists_publish" %>
 <% end %>

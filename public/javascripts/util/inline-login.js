@@ -35,7 +35,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     var $form = $(this);
                     $.ajax({
                         url: blist.blistGrid.secureUrl + '/login.json',
-                        data: $form.find(':input'),
+                        data: $form.find('input[name=authenticity_token], input#user_session_login, input#user_session_password, input#user_session_remember_me:checked'),
                         dataType: "jsonp",
                         success: function(responseData)
                         {

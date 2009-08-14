@@ -1,6 +1,6 @@
 class BlistsController < SwfController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :about, :print, :email]
+  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag]
   
   def index
     @body_class = 'home'
@@ -136,8 +136,8 @@ class BlistsController < SwfController
     @customization = WidgetCustomization.merge_theme_with_default(@widget_customization.customization)
   end
 
-  def update_customization
-    #save customization
+  def new_customization
+    #new customization
   end
 
   def update
@@ -307,6 +307,28 @@ class BlistsController < SwfController
     respond_to do |format|
       format.html { redirect_to(View.find(blist_id).href) }
       format.data { render :text => "deleted" }
+    end
+  end
+
+  def flag
+    @view = View.find(params[:id])
+    @type = params[:type]
+    
+    # Pick our subject line
+    @subject = "A visitor has sent you a message about your \"#{@view.name}\" Socrata #{t(:blist_name)}"
+    case @type
+    when 'copyright_violation'
+      @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for copyright violation"
+    when 'offensive_content'
+      @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for offensive content"
+    when 'spam'
+      @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged as potential SPAM"
+    when 'personal_information'
+      @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for containing personal information"
+    end
+    
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
     end
   end
 

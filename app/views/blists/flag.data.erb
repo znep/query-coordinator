@@ -60,11 +60,11 @@
     var $form = $('.flagDatasetWrapper form');
     $form.validate({
       rules: {
-        "fromAddress": "email",
+        "fromAddress": {"email": true, "required": true},
         "message": "required"
       },
       messages: {
-        "fromAddress": "That does not look like a valid email address.",
+        "fromAddress": {"email": "That does not look like a valid email address.", "required": "You must provide your email address."},
         "message": "You must specify a message to send."
       }
     });

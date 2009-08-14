@@ -6,12 +6,12 @@ blist.namespace.fetch('blist.columns.properties');
 var column = blist.columns.properties.column = <%= @column.to_js %>;
 </script>
 
-<h1 id="title"><%= h(@column.name) %></h1>
+<h1 id="title"><span class="columnPropertiesIcon"><%= h(@column.name) %></span></h1>
 <% end %>
 
 <div class="columnPropertiesWrapper">
   <div id="loadingSpinner"></div>
-  <% form_tag "#" do %>
+  <% form_tag "#", :id => "columnProperties" do %>
     <div class="tabWrapper">
       <div class="tabs">
         <ul class="tabSelector">
@@ -52,15 +52,15 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           <li><p>Justify:</p></li>
           <li>
             <%= radio_button("column", "alignment", "left", :checked => @column.alignment == "left") %>
-            <label for="column_alignment_left">Left</label>
+            <label for="column_alignment_left" class="align alignLeft">Left</label>
           </li>
           <li>
             <%= radio_button("column", "alignment", "center", :checked => @column.alignment == "center") %>
-            <label for="column_alignment_center">Centered</label>
+            <label for="column_alignment_center" class="align alignCenter">Centered</label>
           </li>
           <li>
             <%= radio_button("column", "alignment", "right", :checked => @column.alignment == "right") %>
-            <label for="column_alignment_right">Right</label>
+            <label for="column_alignment_right" class="align alignRight">Right</label>
           </li>
         </ul>
       </div>
@@ -90,7 +90,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
             <tr>
               <td class="labelColumn"><label for="type">Type:</label></td>
               <td class="fieldColumn middle">
-                <strong><%= Column.types[@column.client_type] %></strong>
+                <strong id="typeReadOnly" class="convert-<%= @column.client_type %>"><%= Column.types[@column.client_type] %></strong>
                 <% if @column.convertable_types.size > 0 %>
                   <a id="converter" class="convertDropdown" href="#">Change</a>
                 <% end %>
@@ -172,8 +172,10 @@ $(function()
   // Default the selected tab to "general"
   selectTab("general");
 
-  <% if !@column.is_nested_table %>
+  <% if @column.has_display_options? %>
     $("#formattingTab").columnFormat(column);
+  <% end %>
+  <% if @column.has_totals? %>
     $("#totalsTab").columnTotals(column);
   <% end %>
   
@@ -216,11 +218,14 @@ $(function()
       return false;
   });
 
+  $("#columnProperties").submit( function() {
+    $("#save").click();
+    return false;
+  });
+
   $("#save").click(function() {
-      if (!formEnabled)
-      {
-        return false;
-      }
+      if (!formEnabled) { return false; }
+      toggleEnabled();
 
       $.ajax({
         type: "PUT",

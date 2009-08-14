@@ -445,6 +445,11 @@
             }
 
             var levelID = row.level || 0;
+            if (levelID < 0)
+            {
+                clearCellNav();
+                return false;
+            }
 
             // Check if we clicked in a locked section or on a nested table
             // header; ignore those for now
@@ -2158,7 +2163,7 @@
                     dataIndex: 'rowNumber',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.rows().length, 100),
-                    renderer: '(index + 1)',
+                    renderer: '(row.type == "blank" ? "new" : index + 1)',
                     footerText: 'Totals'});
             }
             if (options.showRowHandle)
@@ -2259,8 +2264,9 @@
             var rowDivContents =
                 'class=\'blist-tr", ' +
                 '(index % 2 ? " blist-tr-even" : ""), ' +
-                '(row.level != undefined ? " blist-tr-level" + row.level : ""), ' +
+                '(row.level !== undefined ? " blist-tr-level" + row.level : ""), ' +
                 '(row.level > 0 ? " blist-tr-sub" : ""), ' +
+                '(row.type ? " blist-tr-" + row.type : ""), ' +
                 '(row.expanded ? " blist-tr-open" : ""), ' +
                 '(row.groupLast ? " last" : ""), ' +
                 '"\' style=\'top: ", ' +
@@ -2277,7 +2283,8 @@
                 '       );' +
                 '   switch (row.level || 0) {' +
                 '     case -1:' +
-                '       html.push(renderSpecial(row));' +
+                '       if (row.type == "group")' +
+                '       { html.push(renderSpecial(row)); }' +
                 '       break;';
             for (i = 0; i < levelRender.length; i++) {
                 renderFnSource += 'case ' + i + ':' +

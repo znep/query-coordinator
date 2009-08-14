@@ -76,7 +76,8 @@
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
-                    .options({filterMinChars: 0, progressiveLoading: true})
+                    .options({blankRow: true,
+                        filterMinChars: 0, progressiveLoading: true})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
                                 '/rows.json', cache: false,
                             data: {accessType: datasetObj.settings.accessType},
@@ -284,7 +285,7 @@
 
             isTempView: false,
 
-            rowHandleRenderer: '(permissions.canDelete ? ' +
+            rowHandleRenderer: '(permissions.canDelete && row.type != "blank" ? ' +
                 '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
                 'row.id + "\'></a>' +
                 '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "\'>' +

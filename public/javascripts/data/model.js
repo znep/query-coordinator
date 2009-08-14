@@ -89,6 +89,7 @@ blist.namespace.fetch('blist.data');
         var self = this;
 
         var curOptions = {
+            blankRow: false,
             filterMinChars: 3,
             pageSize: 50,
             progressiveLoading: false
@@ -203,7 +204,8 @@ blist.namespace.fetch('blist.data');
             {
                 $.each(metaCols, function(j, c)
                 {
-                    r[c.name] = r[c.index];
+                    if (r[c.index] !== undefined)
+                    { r[c.name] = r[c.index]; }
                 });
             });
         };
@@ -469,11 +471,12 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < viewCols.length; i++)
             {
                 var v = viewCols[i];
-                if (v.dataType && v.dataType.type == 'meta_data')
+                if (v.dataType && (v.dataType.type == 'meta_data' ||
+                    v.dataType.type == 'tag'))
                 {
                     var adjName = v.name;
                     if (v.name == 'sid') { adjName = 'id'; }
-                    else if (v.name == 'id') { adjName = 'uid'; }
+                    else if (v.name == 'id') { adjName = 'uuid'; }
                     metaCols.push({name: adjName, index: i});
                 }
             }
@@ -768,8 +771,11 @@ blist.namespace.fetch('blist.data');
             {
                 active = active.concat(addedRows);
             }
+            $.each(addedRows, function(i, r)
+                { if (r instanceof Object) { rowsLoaded++; } });
             setRowMetadata(addedRows, meta.metaColumns);
             installIDs();
+            configureActive();
             $(listeners).trigger('row_add', [ addedRows ]);
         };
 
@@ -830,44 +836,76 @@ blist.namespace.fetch('blist.data');
             return v;
         };
 
+        var saveUID = 0;
+        var pendingRowEdits = {};
         // Set the value for a row, save it to the server, and notify listeners
         this.saveRowValue = function(value, row, column)
         {
+            var editNewRow = row.isNew;
+            if (row.type == 'blank')
+            {
+                row = {id: 'saving' + saveUID++, level: row.level, isNew: true};
+                this.add([row]);
+            }
             this.setRowValue(value, row, column);
 
             if (!row.saving) { row.saving = []; }
             var data = {};
             data[column.id] = value;
-            var url = '/views/' + this.meta().view.id + '/rows/';
             if (column.nestedIn)
             {
                 var parCol = column.nestedIn.header;
                 row.saving[parCol.dataIndex][column.dataIndex] = true;
                 if (row.error && row.error[parCol.dataIndex])
                 { delete row.error[parCol.dataIndex][column.dataIndex]; }
-
-                var childRow = this.getRowValue(row, parCol);
-                url += row.parent.uid +
-                    '/columns/' + parCol.id +
-                    '/subrows/' + childRow.uid +
-                    '.json';
             }
             else
             {
                 row.saving[column.dataIndex] = true;
                 if (row.error) { delete row.error[column.dataIndex]; }
-                url += row.uid + '.json';
             }
+
             this.change([row]);
 
-            var model = this;
+            if (editNewRow)
+            {
+                if (!pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
+                pendingRowEdits[row.id].push({column: column, data: data});
+                return;
+            }
+
+            serverSaveRow(row, column, data);
+        };
+
+        var getSaveURL = function(row, column)
+        {
+            var url = '/views/' + self.meta().view.id + '/rows';
+            if (column.nestedIn)
+            {
+                var childRow = self.getRowValue(row, parCol);
+                url += '/' + row.parent.uuid +
+                    '/columns/' + parCol.id +
+                    '/subrows/' + childRow.uuid +
+                    '.json';
+            }
+            else if (row.isNew) { url += '.json'; }
+            else { url += '/' + row.uuid + '.json'; }
+            return url;
+        };
+
+        var serverSaveRow = function(row, column, data)
+        {
+            var url = getSaveURL(row, column);
+            var model = self;
+            var parCol;
+            if (column.nestedIn) { parCol = column.nestedIn.header; }
             $.ajax({ url: url,
-                    type: 'PUT',
+                    type: row.isNew ? 'POST' : 'PUT',
                     contentType: 'application/json', dataType: 'json',
                     data: $.json.serialize(data),
                     complete: function()
                     {
-                        if (column.nestedIn)
+                        if (parCol)
                         { delete row.saving[parCol.dataIndex][column.dataIndex]; }
                         else
                         { delete row.saving[column.dataIndex]; }
@@ -876,13 +914,45 @@ blist.namespace.fetch('blist.data');
                     error: function()
                     {
                         if (!row.error) { row.error = []; }
-                        if (column.nestedIn)
+                        if (parCol)
                         { row.error[parCol.dataIndex][column.dataIndex] = true; }
                         else
                         { row.error[column.dataIndex] = true; }
                         model.change([row]);
+                    },
+                    success: function(resp)
+                    {
+                        if (row.isNew)
+                        {
+                            var oldID = row.id;
+                            // Add metadata to new row
+                            // FIXME: The server response for this should be
+                            // changing; we can run into problems if there is
+                            // a user column named something like '_id'
+                            $.each(resp, function(a, v)
+                            {
+                                if (a.charAt(0) == '_')
+                                {
+                                    row[a.slice(1)] = v;
+                                }
+                            });
+                            installIDs();
+                            delete row.isNew;
+
+                            // Are there any pending edits to this row?
+                            // If so, save them now
+                            if (pendingRowEdits[oldID])
+                            {
+                                $.each(pendingRowEdits[oldID], function(i, u)
+                                {
+                                    serverSaveRow(row, u.column, u.data);
+                                });
+                                delete pendingRowEdits[oldID];
+                            }
+                            model.change([row]);
+                        }
                     }
-                    });
+                });
         };
 
         this.updateColumn = function(column)
@@ -1120,13 +1190,14 @@ blist.namespace.fetch('blist.data');
          * Retrieve the total number of rows, excluding group headers or other
          *  special rows, but including all children of rows
          */
-        this.dataLength = function(id)
+        this.dataLength = function()
         {
             var total = 0;
             $.each(active, function(i, row)
                 {
                     // Count rows with level 0 and no level
-                    if (!(row.level != 0))
+                    if ((row.level === 0 || row.level === undefined) &&
+                        row.type != 'blank')
                     {
                         total += 1 + (row.childRows ? row.childRows.length : 0);
                     }
@@ -1172,7 +1243,7 @@ blist.namespace.fetch('blist.data');
 
         this.selectRow = function(row, suppressChange)
         {
-            if (row.level < 0)
+            if (row.level < 0 || row.type == 'blank')
             {
                 return;
             }
@@ -1243,7 +1314,8 @@ blist.namespace.fetch('blist.data');
             for (var i = minIndex; i <= maxIndex; i++)
             {
                 var curRow = active[i];
-                if (!(curRow.level < 0))
+                if ((curRow.level >= 0 || curRow.level === undefined) &&
+                    curRow.type != 'blank')
                 {
                     this.selectedRows[curRow.id] = i;
                     changedRows.push(curRow);
@@ -1848,25 +1920,32 @@ blist.namespace.fetch('blist.data');
                 doFilter(filterSource);
                 idChange = true;
             }
-            if (groupFn) {
+            if (groupFn)
+            {
                 doGroup();
                 idChange = true;
             }
 
-            if (expanded) {
+            if (expanded)
+            {
                 doExpansion();
                 idChange = true;
             }
-            if (idChange)
-                installIDs(activeOnly);
-            dataChange();
-        }
 
-        // Remove "special" (non-data or nested) rows
+            // Add in blank row at the end
+            if (curOptions.blankRow && self.canAdd() && self.canWrite())
+            { active.push({level: 0, type: 'blank', id: 'blank'}); }
+
+            if (idChange)
+            { installIDs(activeOnly); }
+            dataChange();
+        };
+
+        // Remove "special" (non-top-level) rows
         var removeSpecialRows = function() {
             var i = 0;
             while (i < active.length) {
-                if (active[i].level)
+                if (active[i].level || active[i].type == 'blank')
                     active.splice(i, 1);
                 else
                     i++;

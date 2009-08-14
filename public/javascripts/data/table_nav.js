@@ -101,7 +101,8 @@ blist.data.TableNavigation = function(model, layout) {
         return selectionMap;
     };
 
-    this.goTo = function(x, y, event, selecting, wrap) {
+    this.goTo = function(x, y, event, selecting, wrap)
+    {
         // Decide what affect this navigation has on the selection
         var selectionMode;
         if (selecting || event.shiftKey)
@@ -127,13 +128,13 @@ blist.data.TableNavigation = function(model, layout) {
         }
 
         var row = model.getByID(y);
+        var rowLevel = row.level || 0;
 
         // Selection must occur in the same level -- otherwise, ignore
-        if (hasSelection() && selectionLevel != (row.level || 0)) {
-            return false;
-        }
+        if (hasSelection() && selectionLevel != rowLevel)
+        { return false; }
 
-        var layoutLevel = layout[row.level || 0];
+        var layoutLevel = layout[rowLevel];
         var xNum = 1;
         var col = layoutLevel[x];
         var uid = col.logical;
@@ -166,7 +167,7 @@ blist.data.TableNavigation = function(model, layout) {
         {
             y = row.childRows[0].id;
             row = model.getByID(y);
-            layoutLevel = layout[row.level || 0];
+            layoutLevel = layout[rowLevel];
             col = layoutLevel[x];
             while (col.skippable)
             {

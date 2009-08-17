@@ -10,7 +10,12 @@ blist.namespace.fetch('blist.data');
  * @param model the table data model
  * @param layout physical row layout information for each row in the table (provided by the table)
  */
-blist.data.TableNavigation = function(model, layout) {
+blist.data.TableNavigation = function(_model, _layout) {
+    var model = _model;
+    this.updateModel = function(_newModel) { model = _newModel; }
+    var layout = _layout;
+    this.updateLayout = function(_newLayout) { layout = _newLayout; }
+
     // Active cell information
     var activeCellOn = false;
     var activeCellXStart;  // Index of the first physical column that is active

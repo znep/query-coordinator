@@ -2263,8 +2263,16 @@
                 var lcols = layout[i] = [];
                 levelRender[i] = createColumnRendering(mcols, lcols, contextVariables);
             }
-            cellNav = options.cellNav ?
-                new blist.data.TableNavigation(model, layout) : null;
+            if (cellNav)
+            {
+                cellNav.updateModel(model);
+                cellNav.updateLayout(layout);
+            }
+            else
+            {
+                cellNav = options.cellNav ?
+                    new blist.data.TableNavigation(model, layout) : null;
+            }
 
             var rowDivContents =
                 'class=\'blist-tr", ' +

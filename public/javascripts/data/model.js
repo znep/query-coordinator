@@ -782,14 +782,14 @@ blist.namespace.fetch('blist.data');
         /**
          * Remove rows from the model.
          */
-        this.remove = function(rows, serverDelete)
+        this.remove = function(delRows, serverDelete)
         {
-            if (!(rows instanceof Array))
-            { rows = [rows]; }
+            if (!(delRows instanceof Array))
+            { delRows = [delRows]; }
 
-            for (var i = 0; i < rows.length; i++)
+            for (var i = 0; i < delRows.length; i++)
             {
-                var row = rows[i];
+                var row = delRows[i];
                 if (row.expanded) { this.expand(row, false); }
                 var id = row.id;
                 var index = lookup[id];
@@ -825,7 +825,7 @@ blist.namespace.fetch('blist.data');
                 // Update IDs after each loop, since positions have adjusted
                 installIDs();
             }
-            $(listeners).trigger('row_remove', [ rows ]);
+            $(listeners).trigger('row_remove', [ delRows ]);
         };
 
         var serverDeleteRow = function(rowId)

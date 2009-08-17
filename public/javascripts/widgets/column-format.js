@@ -74,6 +74,17 @@ columnFormatNS.dateFormats = [
     //["date_ymd_time", "2009/11/22 5:45 PM GMT+0100 (Date &amp; Time)"]
 ];
 
+columnFormatNS.percentFormatValues = [
+    { id: "percent_bar_and_text", label: "90%", info: "Bar &amp; Text" },
+    { id: "percent_bar", label: "&nbsp;", info: "Bar Only" },
+    { id: "percent_text", label: "90%", info: "Text Only" }
+];
+
+columnFormatNS.dateFormatValues = [
+    { id: "date", label: "11/22/2009", info: "(Date)" },
+    { id: "date_time", label: "11/22/2009 5:45 PM GMT+0100", info: "(Date &amp; Time)" }
+];
+
 columnFormatNS.dateView = '<select id="date-view">';
 $.each(columnFormatNS.dateFormats, function() { columnFormatNS.dateView += '<option value="' + this[0] + '">' + this[1] + '</option>'; });
 columnFormatNS.dateView += '</select>';
@@ -131,21 +142,51 @@ columnFormatNS.render_percent = function($container)
     var render = '<h3 class="seperator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += columnFormatNS.precision(column.decimalPlaces); 
-    render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td><select id="percent-view"><option value="percent_bar_text">Bar &amp; Text</option><option value="percent_bar">Bar Only</option><option value="percent_text">Text Only</option></select></td></tr>';
-    render += '</tbody></table></div>';
+    render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td>';
+    render += '<div class="blist-combo-wrapper lr_justified format_percent_view">';
+    render += '<div id="percent-view"></div></div>';
+    render += '</td></tr></tbody></table></div>';
+    
     $container.append(render);
     $("#precision").spinner({min: 0});
-    columnFormatNS.updateView($container, "#percent-view");
+    
+    $("#percent-view").combo({
+        name: "percent-view",
+        values: columnFormatNS.percentFormatValues,
+        value: column.format,
+        renderFn: columnFormatNS.renderValueInfoFormatRow
+    });
+    
+    $("#percent-view").change(function() { column.format = $("#date-view").value(); });    
 };
 
 columnFormatNS.render_date = function($container)
 {
     var render = '<h3 class="seperator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
-    render += '<tr><td class="labelColumn"><label for="view">Date View Style:</label></td><td>' + columnFormatNS.dateView + '</td></tr>';
+    render += '<tr><td class="labelColumn"><label for="view">Date View Style:</label></td><td>';
+    render += '<div class="blist-combo-wrapper lr_justified format_date_view">';
+    render += '<div id="date-view"></div></div>';
+    render += '</td></tr>';
     render += '</tbody></table></div>';
     $container.append(render);
-    columnFormatNS.updateView($container, "#date-view");
+    
+    $("#date-view").combo({
+      name: "date-view",
+      values: columnFormatNS.dateFormatValues,
+      value: column.format,
+      renderFn: columnFormatNS.renderValueInfoFormatRow
+    });
+    
+    $("#date-view").change(function() { column.format = $("#date-view").value(); });
+};
+
+columnFormatNS.renderValueInfoFormatRow = function(value)
+{
+    var $row = $(this);
+    var $span_value = $('<span class="value"></span>').html(value.label);
+    var $span_info = $('<span class="value_info"></span>').html(value.info);
+    $row.addClass(value.id).empty().append($span_value).append($span_info);
 };
 
 columnFormatNS.render_checkbox = function($container)

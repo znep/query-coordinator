@@ -171,7 +171,7 @@
         </a></p>
       
         <%- if @theme[:frame][:powered_by] -%>
-          <p class="getPlayerAction"><a href="http://www.socrata.com" rel="external">Get a Data Player of Your Own</a></p>
+          <p class="getPlayerAction"><a href="http://www.socrata.com/solution/social-data-player-basic" rel="external">Get a Data Player of Your Own</a></p>
         <%- end -%>
       <%- else -%>
         &nbsp;
@@ -211,7 +211,6 @@
     </div>
     <% end %>
 
-    <%- if @theme[:behavior][:interstitial] -%>
     <div class='interstitial'>
       <a class='closeLink' href='#close'>Close</a>
       <span class='closeKeyText'>or ESC key</span>
@@ -223,7 +222,6 @@
       </div>
       <h4>We hope your visit was informative and enjoyable.</h4>
     </div>
-    <%- end -%>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "data-grid" }) %>

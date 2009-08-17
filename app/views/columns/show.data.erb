@@ -116,6 +116,8 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
 </div>
 
 <script type="text/javascript" charset="utf-8">
+$(function()
+{
   $("#error").hide();
 
   // Since these widgets are created live, we have to populate the default
@@ -146,6 +148,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
     $("#formattingTab").columnFormat(column);
     $("#totalsTab").columnTotals(column);
   <% end %>
+  
 
   // Keep the column model up to date so we don't have to read from the form to
   // update the properties.
@@ -181,4 +184,5 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
         }
       });
   });
+});
 </script>

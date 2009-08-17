@@ -1,5 +1,5 @@
 class StatsController < ApplicationController
-  skip_before_filter :require_user, :only => [:index]
+  skip_before_filter :require_user, :only => [:index, :popup, :screenshot]
 
   rescue_from ActionView::MissingTemplate do |exception|
     render 404
@@ -28,5 +28,13 @@ class StatsController < ApplicationController
       @total_players = @stat.url_activity.size
       @total_player_views = @stat.url_activity.inject(0) {|total, v| total + v["count"]}
     end
+  end
+  
+  def popup
+    render(:layout => "splash")
+  end
+  
+  def screenshot
+    render(:layout => "screenshot")
   end
 end

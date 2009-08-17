@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blist-publish-screen", "colorpicker",
+  <%= stylesheet_link_tag "blist-publish-screen", "colorpicker", "form-common",
       :cache => "cache/blists_about_all" %>
   <title>Publishing <%= @view.name %> | <%= t(:page_title) %></title>
 <% end %>
@@ -70,7 +70,7 @@
       </li>
     </ul>
   </div>
-  <% form_tag("customization/#{@widget_customization.uid}") do %>
+  <% form_tag("/widget_customization/") do %>
     <div class="infoContentOuter singleInfoTemplates listContainer expanded">
       <div class="infoContentHeader clearfix">
         <h2 class="panelHeader clipText">
@@ -84,7 +84,7 @@
             or
           </li>
           <li>
-            <a class="arrowButton newTemplate" title="Apply a New Template to this Player" href="#newTemplate">
+            <a class="arrowButton newTemplate" title="Apply a New Template to this Player" href="/customization/new" rel="modal">
               Create a New Template
             </a>
           </li>
@@ -97,7 +97,7 @@
               <dt>Template Description</dt>
               <dd>
                 <div class="itemContent">
-                  <span class="textContent"><%= @customization[:description] || "(none)" %></span>
+                  <span id="customizationDescription" class="textContent"><%= @customization[:description] || "(none)" %></span>
                 </div>
               </dd>
             </dl>
@@ -106,9 +106,9 @@
               <dd>
                 <div class="itemContent">
                   <ul class="textContent">
-                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
-                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
-                    <li>AOHEUTNAHOEUTNAOHEUTNE</li>
+                    <li>http://whitehouse.gov/index.html</li>
+                    <li>http://thinkprogess.org/2009/12/10/article.html</li>
+                    <li>http://mediamatters.org/tv/recent</li>
                   </ul>
                 </div>
               </dd>
@@ -124,7 +124,7 @@
         </h2>
         <ul class="headerActions">
           <li>
-            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
         </ul>
       </div>
@@ -224,6 +224,7 @@
                   </div>
                 </dd>
               </dl>
+            <%- if false # not implemented -%>
               <dl class="summaryList">
                 <dt>Menu Icon Style</dt>
                 <dd>
@@ -239,6 +240,7 @@
                   </div>
                 </dd>
               </dl>
+            <%- end -%>
               <dl class="summaryList">
                 <dt></dt>
                 <dd>
@@ -350,12 +352,12 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization_grid_zebra", "true",
+                      <%= radio_button_tag("grid_zebra", "true",
                           @customization[:grid][:zebra]) %>
-                      <%= label_tag("customization_grid_zebra_true", "Stripe") %>
-                      <%= radio_button_tag("customization_grid_zebra", "false",
+                      <%= label_tag("grid_zebra_true", "Stripe") %>
+                      <%= radio_button_tag("grid_zebra", "false",
                           !@customization[:grid][:zebra]) %>
-                      <%= label_tag("customization_grid_zebra_false", "Don't Stripe") %>
+                      <%= label_tag("grid_zebra_false", "Don't Stripe") %>
                     </span>
                   </div>
                 </dd>
@@ -435,7 +437,7 @@
         </h2>
         <ul class="headerActions">
           <li>
-            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
         </ul>
       </div>
@@ -507,6 +509,7 @@
                   </div>
                 </dd>
               </dl>
+            <%- if false # not implemented -%>
               <dl class="summaryList">
                 <dt>Dataset Ratings</dt>
                 <dd>
@@ -522,6 +525,7 @@
                   </div>
                 </dd>
               </dl>
+            <%- end -%>
               <dl class="summaryList">
                 <dt>Public Views (Filters)</dt>
                 <dd>
@@ -566,7 +570,7 @@
         </h2>
         <ul class="headerActions">
           <li>
-            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
         </ul>
       </div>
@@ -623,7 +627,7 @@
         </h2>
         <ul class="headerActions">
           <li>
-            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
         </ul>
       </div>
@@ -653,7 +657,7 @@
   <%= render(:partial => "shared/common_js") %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
-    blist.publish.theme = <%= JSON.generate( @customization ) %>;
+    blist.publish.currentTheme = <%= JSON.generate( @customization ) %>;
   </script>
   <%= javascript_include_tag "screens/info-pane.js", "plugins/colorpicker.js",
       "plugins/ui.core", "plugins/ui.draggable", "widgets/reorderable-list.js",

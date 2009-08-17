@@ -42,7 +42,7 @@ $.fn.reorderableList = function(options) {
     var orderListItems = function($listItems, config, skipAnimation)
     {
         // Abort if we're in a state of flux
-        if ($listItems.filter('.isAnimating').length > 0)
+        if ($listItems.filter(':animated').length > 0)
         {
             return;
         }
@@ -86,10 +86,8 @@ $.fn.reorderableList = function(options) {
                              .animate(
                                  { top: targetY },
                                  'fast',
-                                 'linear',
-                                 function() { $this.removeClass('isAnimating') }
+                                 'linear'
                              );
-                        $this.addClass('isAnimating');
                     }
                 }
             }
@@ -131,13 +129,13 @@ $.fn.reorderableList = function(options) {
         $elem.draggable('enable');
 
         var itemCount = $('.activeList li').length;
-        $elem.find(config.orderFieldSelector).val(itemCount);
+        $elem.find(config.orderFieldSelector).val(itemCount - 1);
         $elem.find(config.activeFieldSelector).val(true);
         $elem.find(config.orderSpanSelector).text(itemCount);
         $elem.data("reorderableList-order", itemCount - 1);
         $elem.data("reorderableList-initialOrder", itemCount - 1);
 
-        if ($elem.siblings('li').length === 0)
+        if ($elem.is(':first-child'))
         {
             $elem.addClass(config.firstListItemClass);
         }
@@ -185,6 +183,7 @@ $.fn.reorderableList = function(options) {
         var $this = $(this);
 
         var config = $.meta ? $.extend({}, opts, $this.data()) : opts;
+        $this.data("config-reorderableList", config);
 
         // Make items in both lists draggable
         $this.find(".activeList li, .inactiveList li").draggable({
@@ -242,18 +241,21 @@ $.fn.reorderableList = function(options) {
         });
 
         // Wire up click behavior on arrow buttons
-        $this.find(config.addItemButtonSelector).click(function()
+        $this.find(config.addItemButtonSelector).click(function(event)
         {
+            event.preventDefault();
             moveItemToActiveList($this.find('.' + config.selectedListItemClass), $this.find('.activeList ul'), config);
         });
-        $this.find(config.removeItemButtonSelector).click(function()
+        $this.find(config.removeItemButtonSelector).click(function(event)
         {
+            event.preventDefault();
             moveItemToInactiveList($this.find('.' + config.selectedListItemClass), $this.find('.inactiveList ul'), config);
         });
 
         // Wire up behavior on remove all button
-        $this.find(config.removeAllLinkSelector).click(function()
+        $this.find(config.removeAllLinkSelector).click(function(event)
         {
+            event.preventDefault();
             var $items = $this.find('.activeList li');
             $items.find(config.orderSpanSelector).addClass('hide');
             $items.find(config.activeFieldSelector).val(false);
@@ -262,6 +264,39 @@ $.fn.reorderableList = function(options) {
             $items.draggable('disable');
             $this.find('.inactiveList ul').append($items);
         });
+    });
+};
+
+$.fn.reorderableList_updateFromData = function()
+{
+    var $this = $(this);
+    var config = $this.data('config-reorderableList');
+    var $sorted = $($this.find('li').get().sort(function(a, b)
+    {
+        return $(a).find(config.orderFieldSelector).val() - $(b).find(config.orderFieldSelector).val();
+    }));
+
+    $this.find('.inactiveList ul').append($sorted);
+    $sorted.find(config.orderSpanSelector).addClass('hide');
+    $sorted.removeClass(config.firstListItemClass);
+    $sorted.draggable('disable');
+    $sorted.css('top', 0);
+
+    $sorted.filter(':has(' + config.activeFieldSelector + '[value="true"])').each(function(i)
+    {
+        var $item = $(this);
+        $this.find('.activeList ul').append($item);
+        $item.find(config.orderSpanSelector).removeClass('hide');
+        $item.find(config.orderFieldSelector).val(i);
+        $item.find(config.orderSpanSelector).text(i + 1);
+        $item.data("reorderableList-order", i);
+        $item.data("reorderableList-initialOrder", i);
+        $item.draggable('enable');
+
+        if ($item.is(':first-child'))
+        {
+            $item.addClass(config.firstListItemClass);
+        }
     });
 };
 

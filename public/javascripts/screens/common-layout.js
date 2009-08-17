@@ -72,6 +72,14 @@ $(function ()
         event.preventDefault();
         $("#modal").jqmHide();
     });
+    $("a[rel$='screenPop']").live("click", function(event)
+    {
+        event.preventDefault();
+        var $link = $(this);
+        window.open(
+            $link.attr('href'), "Screenshot", "location=0,menubar=0,resizable=0,status=0,toolbar=0"
+        );
+    });
     
     $.validator.addMethod("customUrl", function(value, element)
     {

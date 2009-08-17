@@ -63,6 +63,8 @@
                         { columnsRearranged(datasetObj); })
                     .bind('column_filter_change', function (event, c)
                         { columnFilterChanged(datasetObj, c); })
+                    .bind('server_row_change', function(event)
+                        { updateAggregates(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -335,21 +337,10 @@
         if (action == 'row-delete')
         {
             model.selectRow(model.getByID(rowId));
-            var successCount = 0;
-            var totalRows = 0;
+            var rows = [];
             $.each(model.selectedRows, function(id, index)
-            {
-                totalRows++;
-                $.ajax({url: '/views/' + view.id + '/rows/' + id + '.json',
-                    contentType: 'application/json', type: 'DELETE',
-                    complete: function()
-                    {
-                        successCount++;
-                        if (successCount == totalRows)
-                        { updateAggregates(datasetObj); }
-                    }});
-                model.remove(model.getByID(id));
-            });
+                { rows.push(model.getByID(id)); });
+            model.remove(rows, true);
             datasetObj.summaryStale = true;
         }
     };

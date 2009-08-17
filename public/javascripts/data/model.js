@@ -782,9 +782,9 @@ blist.namespace.fetch('blist.data');
         /**
          * Remove rows from the model.
          */
-        this.remove = function(rows)
+        this.remove = function(rows, serverDelete)
         {
-            if (!(typeof rows == Array))
+            if (!(rows instanceof Array))
             { rows = [rows]; }
 
             for (var i = 0; i < rows.length; i++)
@@ -809,9 +809,32 @@ blist.namespace.fetch('blist.data');
                     }
                 }
                 this.unselectRow(row);
+
+                if (serverDelete)
+                {
+                    startRowChange();
+                    if (pendingRowEdits[id])
+                    {
+                        pendingRowDeletes[id] = true;
+                    }
+                    else
+                    {
+                        serverDeleteRow(id);
+                    }
+                }
+                // Update IDs after each loop, since positions have adjusted
+                installIDs();
             }
-            installIDs();
             $(listeners).trigger('row_remove', [ rows ]);
+        };
+
+        var serverDeleteRow = function(rowId)
+        {
+            $.ajax({url: '/views/' + meta.view.id + '/rows/' +
+                    rowId + '.json',
+                    contentType: 'application/json', type: 'DELETE',
+                    complete: function() { finishRowChange(); }
+                    });
         };
 
         // Get the value in a row for a column
@@ -837,11 +860,28 @@ blist.namespace.fetch('blist.data');
         };
 
         var saveUID = 0;
+        var isRowCreate = false;
+        var pendingRowCreates = [];
         var pendingRowEdits = {};
+        var pendingRowDeletes = {};
+        var rowChangesPending = 0;
+        var startRowChange = function()
+        {
+            rowChangesPending++;
+        };
+
+        var finishRowChange = function()
+        {
+            rowChangesPending--;
+            if (rowChangesPending == 0)
+            {
+                $(listeners).trigger('server_row_change');
+            }
+        };
+
         // Set the value for a row, save it to the server, and notify listeners
         this.saveRowValue = function(value, row, column)
         {
-            var editNewRow = row.isNew;
             if (row.type == 'blank')
             {
                 row = {id: 'saving' + saveUID++, level: row.level, isNew: true};
@@ -867,13 +907,23 @@ blist.namespace.fetch('blist.data');
 
             this.change([row]);
 
-            if (editNewRow)
+            startRowChange();
+            if (pendingRowEdits[row.id])
             {
-                if (!pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
                 pendingRowEdits[row.id].push({column: column, data: data});
                 return;
             }
+            else if (row.isNew)
+            {
+                if (isRowCreate)
+                {
+                    pendingRowCreates.push({row: row, column: column, data: data});
+                    return;
+                }
+                isRowCreate = true;
+            }
 
+            if (!pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
             serverSaveRow(row, column, data);
         };
 
@@ -909,6 +959,26 @@ blist.namespace.fetch('blist.data');
                         { delete row.saving[parCol.dataIndex][column.dataIndex]; }
                         else
                         { delete row.saving[column.dataIndex]; }
+
+                        // Are there any pending edits to this row?
+                        // If so, save the next one
+                        if (pendingRowEdits[row.id] &&
+                            pendingRowEdits[row.id].length > 0)
+                        {
+                            var u = pendingRowEdits[row.id].shift();
+                            serverSaveRow(row, u.column, u.data);
+                        }
+                        else
+                        {
+                            delete pendingRowEdits[row.id];
+                            if (pendingRowDeletes[row.id])
+                            {
+                                serverDeleteRow(row.id);
+                                delete pendingRowDeletes[row.id];
+                            }
+                        }
+
+                        finishRowChange();
                         model.change([row]);
                     },
                     error: function()
@@ -939,16 +1009,25 @@ blist.namespace.fetch('blist.data');
                             installIDs();
                             delete row.isNew;
 
-                            // Are there any pending edits to this row?
-                            // If so, save them now
-                            if (pendingRowEdits[oldID])
+                            pendingRowEdits[row.id] = pendingRowEdits[oldID];
+                            delete pendingRowEdits[oldID];
+                            if (pendingRowDeletes[oldID])
                             {
-                                $.each(pendingRowEdits[oldID], function(i, u)
-                                {
-                                    serverSaveRow(row, u.column, u.data);
-                                });
-                                delete pendingRowEdits[oldID];
+                                pendingRowDeletes[row.id] =
+                                    pendingRowDeletes[oldID];
+                                delete pendingRowDeletes[oldID];
                             }
+
+                            if (pendingRowCreates.length > 0)
+                            {
+                                var c = pendingRowCreates.shift();
+                                serverSaveRow(c.row, c.column, c.data);
+                            }
+                            else
+                            {
+                                isRowCreate = false;
+                            }
+
                             model.change([row]);
                         }
                     }

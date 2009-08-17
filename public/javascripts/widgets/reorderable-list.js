@@ -200,6 +200,7 @@ $.fn.reorderableList = function(options) {
             },
             stop: function(event, ui)
             {
+                config.onChange();
                 $this.find(".activeList").addClass("ui-draggable-not-dragging");
                 var $item = $(this);
                 $item.stop()
@@ -309,7 +310,8 @@ $.fn.reorderableList.defaults = {
     selectedListItemClass: 'reorderList-selected',
     addItemButtonSelector: '.addItemButton',
     removeItemButtonSelector: '.removeItemButton',
-    removeAllLinkSelector: '.removeAllLink'
+    removeAllLinkSelector: '.removeAllLink',
+    onChange: function() { }
 };
 
 })(jQuery);

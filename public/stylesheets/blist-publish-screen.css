@@ -91,7 +91,7 @@ h3 .infoText
     display: block;
 }
 
-#publishOptionsPane .headerActions .cancelLink
+#publishOptionsPane .headerActions .cancelCustomizationLink
 {
     background: url(/stylesheets/images/content/section_close_button.png) no-repeat;
     color: #333;

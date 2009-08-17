@@ -113,12 +113,10 @@ class BlistsController < SwfController
     if !@view.can_edit()
       return require_user(true)
     end
-    
-    # TODO[ORGS]: check if user is premium
-    #if current_user.organization.nil?
-    #  # TODO: forward to a marketing page?
-    #  return require_user(true)
-    #end
+
+    if (current_user.accountCategory != "premium_sdp")
+      redirect_to '/solution'
+    end
 
     # TODO[ORGS]:
     # We don't yet have a orgs service and we're not sure how we want to do it
@@ -129,7 +127,7 @@ class BlistsController < SwfController
     @widget_customizations = WidgetCustomization.find
     if @widget_customizations.empty?
       @widget_customization = WidgetCustomization.create({
-        'customization' => JSON.generate(WidgetCustomization.default_theme), 'name' => "Default" })
+        'customization' => WidgetCustomization.default_theme, 'name' => "Default" })
     else
       @widget_customization = @widget_customizations.first
     end
@@ -137,7 +135,20 @@ class BlistsController < SwfController
   end
 
   def new_customization
-    #new customization
+    @widget_customizations = WidgetCustomization.find
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
+  def create_customization
+    from = WidgetCustomization.find(params[:new_customization][:from])
+    from.customization[:description] = params[:new_customization][:description]
+    new_customization = WidgetCustomization.create({
+      'customization' => from.customization, 'name' => params[:new_customization][:name] })
+    respond_to do |format|
+      format.data { render :json => new_customization.to_json() }
+    end
   end
 
   def update

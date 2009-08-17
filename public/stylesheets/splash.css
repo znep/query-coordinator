@@ -48,7 +48,7 @@
 {
     cursor: default;
     margin-right: 0;
-    width: 43.5em;
+    width: 43em;
 }
 
 .splashActionBox h3
@@ -104,6 +104,11 @@
 .splashActionButtonList li
 {
     float: left;
+}
+
+.splashActionBox.doubleActionBox .splashActionButton a
+{
+    width: 195px;
 }
 
 .splashContainer .closeContainer

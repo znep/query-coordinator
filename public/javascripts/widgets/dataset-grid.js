@@ -71,7 +71,8 @@
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
-                        rowHandleRenderer: datasetObj.rowHandleRenderer,
+                        rowHandleRenderer: (datasetObj.settings.editEnabled ?
+                            datasetObj.rowHandleRenderer : '""'),
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })

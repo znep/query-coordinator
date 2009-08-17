@@ -142,8 +142,9 @@
     <dl><dt><a href='#menuInfo'>Info</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'section_title' => 'Info Pages'},
-        {'text' => "View Statistics", 'class' => 'statistics',
-        'href' => "#{@view.href}/stats"},
+        {'text' => "View Statistics", 'class' => 'statistics', 
+        'href' => (current_user && current_user.accountCategory == "premium_sdp") ? "#{@view.href}/stats" : "/stats_popup", 
+        'modal' => (current_user && current_user.accountCategory != "premium_sdp"), 'owner_item' => true },
         {'text' => "View More Info", 'class' => 'about',
         'href' => "#{@view.href}/about"},
         {'separator' => true},
@@ -160,7 +161,7 @@
         'href' => '#infoPane_tabPublishing'},
         {'text' => 'Show Activity', 'class' => 'activity',
         'href' => '#infoPane_tabActivity'}
-        ]}, is_owner, can_edit) %>
+      ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
   <%- if current_user -%>

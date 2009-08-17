@@ -1,0 +1,138 @@
+<%- content_for :headline do -%>
+  <h1>Sharing <%= h(@view.name) %></h1>
+<%- end -%>
+
+<div class="shareWrapper">
+  <p>Type anyone's email address or select from your existing contacts.</p>
+  <%= render(:partial => "share_form") %>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  
+  
+
+  blist.common.modalReady = function()
+  {
+    var addedRecipients = new Array();
+    var addedRecipientUID = 0;
+    
+    // var contacts_json = <%= @contacts_json %>;
+    //     $("#add_recipient_email").autocomplete(contacts_json,
+    //       {
+    //         minChars: 0,
+    //         formatItem: function(row, i, max) { return row.displayName; }
+    //       });
+    
+    
+    
+    
+        
+    // ADD
+    $("#recipientsEditForm").validate({
+      rules: {
+        add_recipient_email: {
+            required: true,
+            email: true
+        }
+      },
+      messages: {
+        add_recipient_email: {
+          required: "Email address is required.",
+          email: "Please enter a valid email address."
+        }
+      },
+      submitHandler: function(form) {
+        var $form = $(form);
+        
+        var newRecipient = {
+          id: "remove_" + addedRecipientUID,
+          email: $("#add_recipient_email").val()
+        };
+        addedRecipients.push($.json.serialize(newRecipient));
+
+        var addRow = "<tr>";
+        addRow += "<td class=\"add_handle\">";
+        addRow += "<a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>";
+        addRow += "<td class=\"add_email\"><span>" + newRecipient.email + "</span></td>";
+        addRow += "<td class=\"add_action\"></td>";
+        addRow += "</tr>";
+
+        addedRecipientUID++;
+
+        if ($(".recipientsShowTableContainer table tbody tr").length < 1)
+        {
+          $(".recipientsShowTableContainer").show();
+        }
+
+        $(".recipientsShowTableContainer table tbody").append($(addRow));
+
+        $(".recipientsShowTableContainer").attr({ 
+          scrollTop: $(".recipientsShowTableContainer").attr("scrollHeight") 
+        });
+        $(".recipientsEditTableContainer :input").val("").blur();
+        $("#add_recipient_email").focus();
+      }
+    });
+
+    // DELETE
+    $(".recipientsShowTableContainer td.add_handle a").live("click", function(event)
+    {
+      event.preventDefault();
+      
+      var $link = $(this);
+      
+      var recipientIndex = null;
+      var recipientId = $link.attr("id");
+      for (var i = 0; i < addedRecipients.length; i++)
+      {
+        if (recipientId == $.json.deserialize(addedRecipients[i]).id)
+        {
+          recipientIndex = i;
+        }
+      }
+      
+      if (recipientIndex != null)
+      {
+        addedRecipients.splice(recipientIndex, 1);
+        $link.closest("tr").remove();
+      }
+    });
+    
+    $("#shareForm").submit(function(event)
+    {
+      event.preventDefault();
+      var $form = $(this);
+      
+      var formData = {
+        message: $("#share_message").val(),
+        "recipients[]": addedRecipients,
+        authenticity_token: $("input[name='authenticity_token']").val()
+      };
+      
+      $.ajax({
+        url: $form.attr("action"),
+        type: "POST",
+        data: formData,
+        dataType: "json",
+        success: function(data) {
+          if (data.status == "failure")
+          {
+            $(".shareWrapper .errorMessage").append(
+              $("<p class=\"error\">Unable to share to the recipients indicated below in red.</p>")
+            );
+            $(data.errors).each(function()
+            {
+              var error = this;
+              $("#" + error.removeId).closest("tr").addClass("error");
+            });
+            $(".recipientsShowTableContainer table tbody tr:not('.error')").remove();
+          }
+          else
+          {
+            $("#modal").jqmHide();
+          }
+        }
+      });
+    });
+  };
+</script>

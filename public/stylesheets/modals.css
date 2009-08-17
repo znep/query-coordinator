@@ -145,29 +145,35 @@
 
 /*** START: Invitation form ***/
 
-.invitationWrapper
+.invitationWrapper, .shareWrapper
 {
     padding: 1em;
 }
 
-.invitationWrapper p
+.invitationWrapper p, .shareWrapper p
 {
     font-size: 1.2em;
     margin-bottom: 1em;
 }
 
-.invitationWrapper input.textEmail { width: 27em; }
-.invitationWrapper input[type='checkbox'] { vertical-align: middle; }
-.invitationWrapper .invitationText {
+.invitationWrapper input.textEmail,
+.shareWrapper input.textEmail { width: 27em; }
+.invitationWrapper input[type='checkbox'],
+.shareWrapper input[type='checkbox'] { vertical-align: middle; }
+.invitationWrapper .invitationText,
+.shareWrapper .shareText
+{
     font-size: 1em;
     width: 45em;
 }
-.invitationWrapper input[type='image']
+.invitationWrapper input[type='image'],
+.shareWrapper input[type='image']
 {
     margin-right: 1em;
     vertical-align: middle;
 }
-.invitationWrapper .submitLine a
+.invitationWrapper .submitLine a,
+.shareWrapper .submitLine a
 {
     color: #333;
     font-size: 1.2em;
@@ -196,6 +202,8 @@
 .recipientsWrapper table .add_first_name,
 .recipientsWrapper table .add_last_name { width: 25%; }
 .recipientsWrapper table .add_action { width: 90px; }
+
+.shareWrapper .recipientsWrapper table .add_email { width: 100%; }
 
 .recipientsWrapper thead { background-color: #06386a; }
 .recipientsWrapper thead th

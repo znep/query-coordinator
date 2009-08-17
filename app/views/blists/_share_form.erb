@@ -1,0 +1,59 @@
+<div class="errorMessage"></div>
+
+<div class="recipientsWrapper">
+  <div class="recipientsShowTableContainer">
+    <table cellspacing="0">
+      <colgroup>
+        <col class="add_handle" />
+        <col class="add_email" />
+        <col class="add_action" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="add_handle">&nbsp;</th>
+          <th class="add_email">Share with</th>
+          <th class="add_action">&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody />
+    </table>
+  </div>
+  <div class="recipientsEditTableContainer">
+    <form action="#" id="recipientsEditForm">
+      <table cellspacing="0">
+        <colgroup>
+          <col class="add_handle" />
+          <col class="add_email" />
+          <col class="add_action" />
+        </colgroup>
+        <tbody>
+          <tr>
+            <td class="add_handle"><span>add</span></td>
+            <td class="add_email">
+              <%= text_field_tag("add_recipient_email", "") %>
+            </td>
+            <td class="add_action">
+              <%= image_submit_tag("button_add.png", :id => "addRecipientButton") %>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+</div>
+
+<% form_tag("#{@view.href}/create_share", :id => "shareForm") do %>
+  <fieldset>
+    <p><strong>Customize your message:</strong></p>
+  
+    <div class="invitationPreviewContainer">
+      <p>
+        <%= text_area_tag("share_message", "Default share email text goes here.", :class => "shareText") %>
+      </p>
+    </div>
+  </fieldset>
+  <div class="submitLine clearfix">
+    <%= image_submit_tag("button_share.png", :id => "shareButton") %>
+    <a href='#close_share' class='close jqmClose'>Cancel</a>
+  </div>
+<% end %>

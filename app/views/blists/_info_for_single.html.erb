@@ -127,8 +127,7 @@
     <% end %>
     <%- if is_owner -%>
     <ul class="headerActions actionButtons">
-      <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
-        class="arrowButton showFlashPopup" title="Share">Share</a></li>
+      <li><a href="<%= "#{view.href}/share" %>" class="arrowButton" title="Share" rel="modal">Share</a></li>
     </ul>
     <%- end -%>
     <div class="socialActions">

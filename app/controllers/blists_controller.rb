@@ -342,6 +342,21 @@ class BlistsController < SwfController
       format.data { render(:layout => "modal_dialog") }
     end
   end
+  
+  def share
+    @view = View.find(params[:id])
+    
+    # TODO: Make @contacts_json of existing contacts.
+    
+    
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+  
+  def create_share
+    # TODO: do this.
+  end
 
 private
 

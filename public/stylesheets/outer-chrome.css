@@ -13,13 +13,13 @@ html
 
 body
 {
-    background-color: #fff;
+    background: #ececec url(/stylesheets/images/header/mainlogo_background.png) 0 6px repeat-x;
+    border-top: 6px solid #06386a;
     height: 100%;
 }
 
 #outerContainer
 {
-    background-color: #ececec;
     height: auto;
     margin: 0 auto;
     max-width: 140em;
@@ -34,7 +34,6 @@ body
 #header
 {
     background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
-    border-top: 6px solid #06386a;
     height: 44px;
     padding-bottom: .5em;
     position: relative;

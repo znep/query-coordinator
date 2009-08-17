@@ -1196,6 +1196,13 @@ blist.namespace.fetch('blist.data');
         }
 
         /**
+         * Notify the model of footer data changes.
+         */
+        this.footerChange = function() {
+            $(listeners).trigger('footer_change', [ this ]);
+        }
+
+        /**
          * Notify listeners of row selectionchanges.
          */
         this.selectionChange = function(rows)

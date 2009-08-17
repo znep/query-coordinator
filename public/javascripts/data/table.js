@@ -587,6 +587,7 @@
         /*** CELL EDITING ***/
         var $editContainer;
         var isEdit = false;
+        var prevEdit = false;
 
         var editCell = function(cell)
         {
@@ -627,6 +628,7 @@
 
         var endEdit = function(isSave)
         {
+            prevEdit = isSave;
             isEdit = false;
             $navigator[0].focus();
 
@@ -1366,6 +1368,9 @@
         var $prevActiveCells;
         var onMouseDown = function(event)
         {
+            // On any click, lose keyboard nav between edit cells
+            prevEdit = false;
+
             clickTarget = event.target;
             clickCell = findCell(event);
             var $clickTarget = $(clickTarget);
@@ -1423,7 +1428,7 @@
                 }
                 if (cell && cellNavTo(cell, event))
                 {
-                    if (isEdit) { endEdit(true); }
+                    if (isEdit) { endEdit(true); prevEdit = false; }
                     selectFrom = cell;
                 }
 
@@ -1592,11 +1597,19 @@
                 default:
                     return true;
             }
-            setTimeout(expandActiveCell, 1);
+            var curActiveCell = $activeCells ? $activeCells[0] : null;
+            if (prevEdit && curActiveCell)
+            {
+                setTimeout(function() { editCell(curActiveCell); }, 0);
+            }
+            else
+            {
+                setTimeout(expandActiveCell, 0);
+            }
 
             return false;
         };
-        
+
         if (options.simpleCellExpand)
         {
             $('.blist-td:not(.blist-td-popout)').live('mouseover', function (event)
@@ -3063,6 +3076,8 @@
             renderFooter();
             initRows(model);
         });
+        $this.bind('footer_change', function(event)
+        { renderFooter(); });
         $this.bind('header_change', function(event, model)
         {
             updateHeader(model);

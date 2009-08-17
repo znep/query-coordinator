@@ -355,7 +355,7 @@
             success: function(resp)
             {
                 model.updateAggregateHash(resp);
-                model.metaChange();
+                model.footerChange();
             }});
     };
 

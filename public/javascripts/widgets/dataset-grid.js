@@ -73,7 +73,8 @@
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
-                        rowHandleRenderer: datasetObj.rowHandleRenderer,
+                        rowHandleRenderer: (datasetObj.settings.editEnabled ?
+                            datasetObj.rowHandleRenderer : '""'),
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
@@ -790,23 +791,33 @@
                 var cols = [];
                 var successCount = 0;
                 $.each(selCols, function(colId, val)
+                        { cols.push(colId); });
+                var multiCols = cols.length > 1;
+                if (confirm('Do you want to delete the ' +
+                    (multiCols ? cols.length + ' selected columns' :
+                        'selected column') + '? All data in ' +
+                    (multiCols ? 'these columns' : 'this column') +
+                    ' will be removed!'))
                 {
-                    cols.push(colId);
-                    $.ajax({url: '/views/' + view.id + '/columns/' +
-                        colId + '.json', type: 'DELETE',
-                        contentType: 'application/json',
-                        complete: function()
-                        {
-                            successCount++;
-                            if (successCount == cols.length)
+                    $.each(cols, function(i, colId)
+                    {
+                        $.ajax({url: '/views/' + view.id + '/columns/' +
+                            colId + '.json', type: 'DELETE',
+                            contentType: 'application/json',
+                            complete: function()
                             {
-                                model.deleteColumns(cols);
-                                $(document).trigger(blist.events.COLUMNS_CHANGED);
-                            }
-                        }});
-                });
-                // Hide columns so they disappear immediately
-                datasetObj.showHideColumns(cols, true, true);
+                                successCount++;
+                                if (successCount == cols.length)
+                                {
+                                    model.deleteColumns(cols);
+                                    $(document)
+                                        .trigger(blist.events.COLUMNS_CHANGED);
+                                }
+                            }});
+                    });
+                    // Hide columns so they disappear immediately
+                    datasetObj.showHideColumns(cols, true, true);
+                }
                 break;
         }
         // Update the grid header to reflect updated sorting, filtering

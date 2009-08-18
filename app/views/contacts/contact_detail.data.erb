@@ -111,7 +111,7 @@
 <%# *** START: SHARES *** %>
 <div class="infoContentOuter singleInfoShares">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader typeSharedIn first"><%= @shares_by_contact.length %> Shared to you</h2>
+    <h2 class="panelHeader typeSharedIn first"><%= @shares_by_contact.length %> Shared to You</h2>
     <h2 class="panelHeader typeSharedOut"><%= @shares_to_contact.length %> Shared to <%= h(@contact.displayName) %></h2>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
@@ -169,8 +169,7 @@
 <%# *** START: BLISTS *** %>
 <div class="infoContentOuter singleInfoBlists">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader typeBlist first"><%= pluralize(@contact_blists.length, "Public #{t(:blist_name)}") %></h2>
-    <h2 class="panelHeader typeBlist private"><%= pluralize(@contact_templates.length, "#{t(:blist_name)} template")%></h2>
+    <h2 class="panelHeader typeBlist first"><%= pluralize(@contact_blists.length, "Public #{t(:blist_name).capitalize}") %></h2>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">

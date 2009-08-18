@@ -89,7 +89,7 @@
     <%= yield :layout %>
 
     <div id='footer'>
-      <%- if !th.footer_html.nil?-%>
+      <%- if th.respond_to?('footer_html') && !th.footer_html.nil?-%>
         <%= th.footer_html %>
       <%- else -%>
         <%- if is_gov_site? -%>

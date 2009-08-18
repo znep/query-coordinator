@@ -14,7 +14,7 @@ html
 body
 {
     background: #ececec url(/stylesheets/images/header/mainlogo_background.png) 0 6px repeat-x;
-    border-top: 6px solid #06386a;
+    border-top: 6px solid;
     height: 100%;
 }
 
@@ -211,7 +211,7 @@ body
 }
 #mainNav li a span
 {
-    background-position: 0 -25px;
+    background-position: 0 -35px;
     background-repeat: repeat-x;
     display: block;
     font-weight: bold;
@@ -221,7 +221,9 @@ body
     text-indent: -10px;
 }
 #mainNav li.home
-{ background-position: right -50px; }
+{ 
+    background-position: right -70px; 
+}
 #mainNav li.home a span {
     margin-right: 10px;
     text-indent: 10px;
@@ -231,7 +233,7 @@ body.home #mainNav li.home a span,
 body.discover #mainNav li.discover a span,
 body.community #mainNav li.community a span
 {
-    background-position: 0 -25px;
+    background-position: 0 -35px;
 }
 body.discover #mainNav li.discover a span {
     margin-left: 10px;

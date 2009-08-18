@@ -23,7 +23,7 @@ module ThemesHelper
     
     def expanded_list_bg
       # TODO: This should eventually be a gradient
-      box :h => 1, :w => 150, :bc => :highlight_color
+      box :h => 3, :ry => 1, :rh => 1, :w => 150, :bc => :highlight_color
     end
 
     def bottom_left_dark_bg

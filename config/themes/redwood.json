@@ -1,16 +1,26 @@
 {
+    // Company
     "company": "Redwood",
     "site title": "Redwood City | Open Data",
     "logo": "RedwoodLogo.gif",
+    "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li class=\"last\"><a href=\"#\">Redwoodcity.gov</a></li></ul>",
+    
+    // Global
+    "link fg": "c38322",
+    "header fg": [ "be2333", "be2333", "be2333", "666", "333" ],
+    "highlight color" : "be292e",
+    
+    
+    // Chrome
     "top border bg": "be292e",
     "main button bg": "be292e:.286,ec9e6e",
     "main button active bg": "ec9e6e:.286,be292e",
-    "link fg": "c38322",
-    "header fg": [ "be2333", "be2333", "be2333", "666", "333" ],
+    
+    // Discovery page
     "carousel bg": "9a9a9a,636363",
-    "highlight color" : "be292e",
+    "carousel item title fg": "0071bc",
+    
+    // Dataset page
     "menu button bg" : "8f2f2f:.5,6b1111:.5,8d2d2d",
-    "menu button activated bg" : "8e2e2e,6c1212:.5,8e2f2f:.5,8f2f2f",
-    // I really wanted this to be an array of URL, title...
-    "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li class=\"last\"><a href=\"#\">Redwoodcity.gov</a></li></ul>"
+    "menu button activated bg" : "8e2e2e,6c1212:.5,8e2f2f:.5,8f2f2f"
 }

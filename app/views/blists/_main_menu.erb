@@ -43,23 +43,41 @@
         {'separator' => true, 'owner_item' => true},
         {'text' => "Edit #{t(:blist_name)} permissions...",
         'class' => 'editPermissions', 'href' => '#permissions',
-        'owner_item' => true}
+        'owner_item' => true},
+        {'text' => "Flag #{t(:blist_name).capitalize} as",
+        'class' => 'flag', 'owner_item' => false, 'submenu' => {'items' => [
+          {'text' => 'Copyright Violation', 'class' => 'flagOption',
+          'href' => "#{@view.href}/flag/copyright_violation", 'modal' => true},
+          {'text' => 'Offensive Content', 'class' => 'flagOption',
+          'href' => "#{@view.href}/flag/offensive_content", 'modal' => true},
+          {'text' => 'Spam or Junk', 'class' => 'flagOption',
+          'href' => "#{@view.href}/flag/spam", 'modal' => true},
+          {'text' => 'Personal Information', 'class' => 'flagOption',
+          'href' => "#{@view.href}/flag/personal_information", 'modal' => true},
+          {'text' => 'Other', 'class' => 'flagOption',
+          'href' => "#{@view.href}/flag/other", 'modal' => true},
+          ]}}
         ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
   <%- if can_edit -%>
-  <li class='edit swfItem'>
+  <li class='edit'>
     <dl><dt><a href='#menuEdit'>Edit</a></dt>
         <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
-        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo'},
-        {'separator' => true},
-        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},
-        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy'},
-        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste'},
-        {'separator' => true},
-        {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete'},
-        {'separator' => true},
+        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo',
+        'swf_item' => true},
+        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo',
+        'swf_item' => true},
+        {'separator' => true, 'swf_item' => true},
+        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut', 'swf_item' => true},
+        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy',
+        'swf_item' => true},
+        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste',
+        'swf_item' => true},
+        {'separator' => true, 'swf_item' => true},
+        {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete',
+        'swf_item' => true},
+        {'separator' => true, 'swf_item' => true},
         {'text' => 'Edit Column Options', 'class' => 'columnOptions',
             'submenu' => columns_menu(@view,
                  {'id' => 'columnOptionsMenu',
@@ -124,8 +142,9 @@
     <dl><dt><a href='#menuInfo'>Info</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'section_title' => 'Info Pages'},
-        {'text' => "View Statistics", 'class' => 'statistics',
-        'href' => "#{@view.href}/stats"},
+        {'text' => "View Statistics", 'class' => 'statistics', 
+        'href' => (current_user && current_user.accountCategory == "premium_sdp") ? "#{@view.href}/stats" : "/stats_popup", 
+        'modal' => (current_user && current_user.accountCategory != "premium_sdp"), 'owner_item' => true },
         {'text' => "View More Info", 'class' => 'about',
         'href' => "#{@view.href}/about"},
         {'separator' => true},
@@ -142,7 +161,7 @@
         'href' => '#infoPane_tabPublishing'},
         {'text' => 'Show Activity', 'class' => 'activity',
         'href' => '#infoPane_tabActivity'}
-        ]}, is_owner, can_edit) %>
+      ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
   <%- if current_user -%>

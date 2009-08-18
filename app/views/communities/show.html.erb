@@ -19,9 +19,6 @@
           <div class="searchContainer">
             <%= text_field_tag("search", @community_search, :class => "textPrompt", :title => "Search") %>
             <%= hidden_field_tag("type", "SEARCH") %>
-            <%- if !@search_type.nil? -%>
-              <%= hidden_field_tag("search_type", @search_type) %>
-            <%- end -%>
 
             <div class="actionsBox">
               <div class="clearBox">
@@ -71,7 +68,7 @@
             <div class="wrapper"><a href="#SEARCH">Search Results</a></div>
           </li>
         <%- end -%>
-        <li id="tabTopMembers" class="<%= @search_views.nil? ? 'active' : '' %>">
+        <li id="tabTopMembers" class="<%= @search_members.nil? ? 'active' : '' %>">
           <div class="wrapper"><a href="#TOPMEMBERS">Top 100</a></div>
         </li>
         <li id="tabTopUploaders"><div class="wrapper"><a href="#TOPUPLOADERS">Top Uploaders</a></div></li>
@@ -85,7 +82,7 @@
           :members => @search_members, :members_total => @search_members_total,
           :current_page => 1, :type => "SEARCH", :current_filter => nil, 
           :sort_by => nil, :tag_list => nil, :current_tag => nil,
-          :search_term => @search_term , :search_type => @search_type}) %>
+          :search_term => @search_term , :search_debug => @search_debug}) %>
       <%- else -%>
         <%= render(:partial => "member_list_tab_noresult", :locals => { :term => @search_term }) %>
       <%- end -%>
@@ -96,7 +93,7 @@
         :members => @top_members, :members_total => @top_members_total,
         :current_page => 1, :type => "TOPMEMBERS", :current_filter => nil,
         :sort_by => "ACTIVITY", :tag_list => @top_members_tags, :current_tag => nil,
-        :search_term => nil, :search_type => @search_type }) %>
+        :search_term => nil, :search_debug => nil }) %>
     </div>
     <div id="communityTabTopUploaders" class="tabContentContainer clearfix">
       <%= render(:partial => "member_list_tab", :locals => { 
@@ -104,7 +101,7 @@
         :members => @top_uploaders, :members_total => @top_uploaders_total,
         :current_page => 1, :type => "TOPUPLOADERS", :current_filter => nil,
         :sort_by => "ACTIVITY", :tag_list => @top_uploaders_tags, :current_tag => nil,
-        :search_term => nil, :search_type => @search_type }) %>
+        :search_term => nil, :search_debug => nil }) %>
     </div>
     <div id="communityTabAllMembers" class="tabContentContainer clearfix">
       <%= render(:partial => "member_list_tab", :locals => { 
@@ -112,7 +109,7 @@
         :members => @all_members, :members_total => @all_members_total,
         :current_page => 1, :type => "ALLMEMBERS", :current_filter => nil,
         :sort_by => "ACTIVITY", :tag_list => @all_members_tags, :current_tag => nil,
-        :search_term => nil, :search_type => @search_type }) %>
+        :search_term => nil, :search_debug => nil }) %>
     </div>
   </div>
 </div>

@@ -125,6 +125,11 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
+  map.connect ':category/:view_name/:id/flag/:type', :controller => 'blists',
+    :action => 'flag', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
   # Support /blists, /datasets, and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
@@ -141,7 +146,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id.data', :controller => 'widgets', :action => 'show', :format => 'data'
 
-  map.connect 'customization/:id', :controller => 'blists', :action => 'update_customization',
+  map.connect 'customization/new', :controller => 'blists', :action => 'new_customization',
+    :conditions => { :method => :get }, :format => 'data'
+  map.connect 'customization/create', :controller => 'blists', :action => 'create_customization',
     :conditions => { :method => :put }, :format => 'data'
 
   map.connect 'widgets_preview/:id', :controller => 'widgets_preview', :action => 'show'
@@ -150,6 +157,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widgets_meta/:id/meta_tab', :controller => 'widgets', :action => 'meta_tab'
 
   map.connect 'stylesheets/theme/:id.css', :controller => 'themes', :action => 'theme'
+  
+  map.connect 'stats_popup', :controller => 'stats', :action => 'popup'
+  map.connect 'stats_screenshot', :controller => 'stats', :action => 'screenshot'
   
   map.root :controller => "data", :action => "show"
 

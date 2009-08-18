@@ -1,0 +1,112 @@
+<%- content_for(:wrapper_class, "flagDataset") -%>
+
+<%- content_for :headline do -%>
+  <h1 id="flagHeader">Message the <%= t(:blist_name).capitalize %> Owner</h1>
+<%- end -%>
+
+<div class="modalContentWrapper flagDatasetWrapper">
+  <div class="errorMessage"></div>
+  <% form_tag("/views/#{@view.id}.json") do %>
+    <table cellspacing="0">
+      <tbody>
+        <tr>
+          <td class="labelColumn"><label for="subject">Subject</label></td>
+          <td class="fieldColumn"><%= text_field_tag("subject", @subject, :disabled => 'disabled') %></p></td>
+        </tr>
+        <tr>
+          <td class="labelColumn"><label for="message" class="required">Short Message</label></td>
+          <td class="fieldColumn"><%= text_area_tag("message") %></td>
+        </tr>
+        <tr>
+          <td class="labelColumn"><label for="fromAddress" class="required">Your Email</label></td>
+          <td class="fieldColumn"><%= text_field_tag("fromAddress", (current_user ? current_user.email : "")) %></td>
+        </tr>        
+      <tbody>
+    </table>
+  
+    <div class="submitLine clearfix">
+      <ul class="submitActions">
+        <li>
+          <div class="loadingIndicator hide">Sending your message...</div>
+        </li>
+        <li class="left">
+          <div class="required">Required Field</div> 
+        </li>
+        <li class="right">
+          <ul class="actionButtons">
+            <li><a id="flagFormSubmitButton" class="arrowButton" href="#submit">Send</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+  <div class="successMessage hide">
+    <p>The requested message has been successfully sent.</p>
+    <div class="submitLine clearfix">
+      <ul class="submitActions">
+        <li>
+          <ul class="actionButtons">
+            <li><a class="arrowButton jqmClose" href="#submit">Done</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    var $form = $('.flagDatasetWrapper form');
+    $form.validate({
+      rules: {
+        "fromAddress": {"email": true, "required": true},
+        "message": "required"
+      },
+      messages: {
+        "fromAddress": {"email": "That does not look like a valid email address.", "required": "You must provide your email address."},
+        "message": "You must specify a message to send."
+      }
+    });
+
+    var submitForm = function(event)
+    {
+      event.preventDefault();
+
+      if($form.valid()) {
+        // Unhide the sending indicator and hide the error message
+        $('.flagDatasetWrapper .errorMessage').hide();
+        $('.flagDatasetWrapper .loadingIndicator').removeClass('hide');
+
+        // Submit the form
+        $.ajax({
+          url: $form.attr("action"),
+          cache: false,
+          data: {
+            'method': 'flag',
+            'subject': '<%= @subject %>',
+            'message': $('.flagDatasetWrapper textarea#message').val(),
+            'type': '<%= @type %>',
+            'from_address': $('.flagDatasetWrapper input#fromAddress').val()
+          },
+          success: function (responseData)
+          {
+            // Successful, show success message
+            $('.flagDatasetWrapper form').hide();
+            $('.flagDatasetWrapper .successMessage').show();
+          },
+          error: function (request, textStatus, errorThrown)
+          {
+            $('.flagDatasetWrapper .loadingIndicator').hide();
+            $('.flagDatasetWrapper .errorMessage').text("An error was encountered sending your message. Please retry later.");
+            $('.flagDatasetWrapper .errorMessage').show();
+          }
+        }) 
+      }
+    };
+    
+    // Wire up our function
+    $form.submit(submitForm);  
+    $('#flagFormSubmitButton').click(submitForm);
+  };
+</script>

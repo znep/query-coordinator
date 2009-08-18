@@ -140,20 +140,20 @@
           <tbody>
             <%- @contact_shares.each do |share| -%>
               <tr class="item">
-                <td class="favorite <%= share.flag?('favorite') %>"><div>
+                <td class="favorite <%= share.flag?('favorite') %>"><div class="cellInner">
                     <span class="favoriteMarker"><%= share.flag?('favorite') ? "favorite" : "" %></span>
                 </div></td>
-                <td class="type"><div class="<%=
+                <td class="type"><div class="cellInner <%=
                   get_share_direction_icon_class_for_view(share) %>">
                   <%= get_type_string_for_view(share) %></div>
                 </td>
-                <td class="name"><div class="clipText">
+                <td class="name"><div class="cellInner clipText">
                   <%= link_to(h(share.name), share.href) %>
                 </div></td>
-                <td class="description"><div class="clipText"><%= h(share.description) %></div></td>
-                <td class="sharedOn"><div>
+                <td class="description"><div class="cellInner clipText"><%= h(share.description) %></div></td>
+                <td class="sharedOn"><div class="cellInner">
                   <%= blist_date(share.share_date_for_contact(share.owner.id == current_user.id ? @contact : current_user)) %></div></td>
-                <td class="actionContainer"><div><a
+                <td class="actionContainer"><div class="cellInner"><a
                       href="<%= share.href %>" class="action"
                       title="<%= h(share.name) %>"><span>View</span></a>
                 </div></td>
@@ -198,16 +198,16 @@
           <tbody>
             <%- @contact_blists.each do |blist| -%>
               <tr class="item">
-                <td class="type"><div class="<%=
+                <td class="type"><div class="cellInner <%=
                   get_share_direction_icon_class_for_view(blist) %>">
                   <%= get_type_string_for_view(blist) %></div>
                 </td>
-                <td class="name"><div><%= link_to(h(blist.name), blist.href) %></div></td>
-                <td class="views"><div><%= blist.viewCount %></div></td>
-                <td class="copies"><div><%= blist.copyCount %></div></td>
-                <td class="lastUpdated"><div><%= blist_date(blist.last_activity) %>
+                <td class="name"><div class="cellInner"><%= link_to(h(blist.name), blist.href) %></div></td>
+                <td class="views"><div class="cellInner"><%= blist.viewCount %></div></td>
+                <td class="copies"><div class="cellInner"><%= blist.copyCount %></div></td>
+                <td class="lastUpdated"><div class="cellInner"><%= blist_date(blist.last_activity) %>
                 </div></td>
-                <td class="actionContainer"><div><a
+                <td class="actionContainer"><div class="cellInner"><a
                       href="<%= blist.href %>" class="action"
                       title="<%= h(blist.name) %>"><span>View</span></a>
                 </div></td>
@@ -246,11 +246,11 @@
           <tbody>
             <%- @contact_activities.each do |act| -%>
             <tr class="item">
-              <td class="when"><div><%= blist_date(act.createdAt) %></div></td>
-              <td class="what"><div>
+              <td class="when"><div class="cellInner"><%= blist_date(act.createdAt) %></div></td>
+              <td class="what"><div class="cellInner">
                 <%= get_html_for_activity(act) %>
               </div></td>
-              <td class="actionContainer"><div>
+              <td class="actionContainer"><div class="cellInner">
                 <a href="<%= get_url_for_activity_action(act) %>" class="action"><span>View</span></a>
               </div></td>
             </tr>

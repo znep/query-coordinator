@@ -582,14 +582,7 @@
 .infoContentOuter.singleInfoBlists table.gridList .views,
 .infoContentOuter.singleInfoBlists table.gridList .copies { width: 7em; }
 
-.infoContentOuter.singleInfoBlists table.gridList tr.hover td+td > *,
-.infoContentOuter.singleInfoGroups table.gridList tr.hover td+td > *,
-.infoContentOuter.singleInfoMembers table.gridList tr.hover td+td > *
-{ 
-    background-color: #e3ecf7; 
-}
-
-.infoContentOuter table.gridList td > *
+.infoContentOuter table.gridList td .cellInner
 {
     color: #333;
     font-size: 1.1em;
@@ -599,26 +592,26 @@
     padding: 0 5px;
 }
 
-.infoContentOuter table.gridList td.type > *,
-.infoContentOuter table.gridList td.group > *
+.infoContentOuter table.gridList td.type .cellInner,
+.infoContentOuter table.gridList td.group .cellInner
 {
     height: 27px;
     line-height: 27px;
     margin: 0 auto;
 }
-infoContentOuter table.gridList td.picture > *
+infoContentOuter table.gridList td.picture .cellInner
 {
     height: 24px;
     line-height: 24px;
     margin: 0 auto;
 }
 .infoContentOuter table.gridList td.actionContainer .action { display: none; }
-.infoContentOuter table.gridList tr.hover td.actionContainer > * { background: none; }
+.infoContentOuter table.gridList tr.hover td.actionContainer .cellInner { background: none; }
 .infoContentOuter table.gridList tr.hover td.actionContainer .action { display: block; }
 
-.infoContentOuter table.gridList td.views > *,
-.infoContentOuter table.gridList td.copies > *,
-.infoContentOuter table.gridList td.comments > * { text-align: right; }
+.infoContentOuter table.gridList td.views .cellInner,
+.infoContentOuter table.gridList td.copies .cellInner,
+.infoContentOuter table.gridList td.comments .cellInner { text-align: right; }
 
 /*** END: grid list table ***/
 
@@ -1109,13 +1102,6 @@ infoContentOuter table.gridList td.picture > *
 .metadataPane .gridListContainer.simple table.gridList td > *
 {
     margin: 2px 0;
-}
-
-.singleInfoSharing table.gridList tr.hover td+td > *,
-.singleInfoSharing table.gridList tr.selected td+td > *,
-.singleInfoSharing table.gridList tr.hover.selected td+td > *
-{
-    background-color: #e3ecf7;
 }
 
 .metadataPane .singleInfoSharing table.gridList .actionContainer

@@ -101,3 +101,28 @@ div.filtered .th-inner-container .info-container
  * without making the container too large */
 div.blist-table-locked-footer .blist-table-row-numbers { overflow: hidden }
 .blist-table-row-numbers .blist-tf-value { position: absolute; }
+
+.blist-th .menuLink,
+.blist-table-locked-header .blist-table-row-handle .blist-th-icon,
+.blist-tr .blist-table-row-handle .menuLink
+{
+    background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.gif);
+}
+
+
+
+.itemType { background-image: url(/stylesheets/images/content/table/icon_type_sprites_on_white.gif); }
+.infoContentOuter .itemType 
+{
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites_on_gray.gif);
+}
+
+div.blist-type-default,
+div.blist-type-filter,
+div.blist-type-defaultSharedTo,
+div.blist-type-defaultSharedBy,
+div.blist-type-filterSharedTo,
+div.blist-type-filterSharedBy
+{
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites_on_white.gif);
+}

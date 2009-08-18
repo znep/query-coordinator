@@ -37,19 +37,20 @@
       <%- view.filters.each do |filter| -%>
         <tr class="item" id="filter-row_<%= filter.id %>">
           <%- if (!in_widget) -%>
-            <td class="handle"><div></div></td>
-            <td class="favorite <%= filter.flag?('favorite') %>"><div>
+            <td class="handle"><div class="cellInner"></div></td>
+            <td class="favorite <%= filter.flag?('favorite') %>"><div class="cellInner">
                 <span class="favoriteMarker"><%= filter.flag?('favorite') ? "favorite" : "" %></span>
             </div></td>
           <%- end -%>
-          <td class="type"><div class="<%=
+          <td class="type"><div class="cellInner <%=
             get_share_direction_icon_class_for_view(filter) %>">
             <%= get_type_string_for_view(filter) %></div>
           </td>
-          <td class="name"><div><%= link_to(h(filter.name), filter.href, :rel => in_widget ? "external" : "") %></div></td>
-          <td class="description"><div><%= h(filter.description) %></div></td>
+          <td class="name"><div class="cellInner"><%= link_to(h(filter.name), filter.href, :rel => in_widget ? "external" : "") %></div></td>
+          <td class="description"><div class="cellInner"><%= h(filter.description) %></div></td>
           <td class="picture">
             <a href='<%= filter.owner.href %>' 
+              class="cellInner"
               title='<%= h(filter.owner.displayName) %>'
               <%= "rel='external'" if in_widget %>>
               <%= image_tag(filter.owner.profile_image_path,
@@ -58,15 +59,15 @@
           </td>
           <%- if (!in_widget) -%>
             <td class="owner">
-              <div class='clipText'>
+              <div class='cellInner clipText'>
                 <a href='<%= filter.owner.href %>'
                   title='<%= h(filter.owner.displayName) %>'>
                   <%= h(filter.owner.displayName) %>
                 </a>
               </div>
             </td>
-            <td class="viewed"><div><%= filter.viewCount %></div></td>
-            <td class="actionContainer"><div><a
+            <td class="viewed"><div class="cellInner"><%= filter.viewCount %></div></td>
+            <td class="actionContainer"><div class="cellInner"><a
                   href="<%= filter.href %>" class="action"
                   title="<%= h(filter.name) %>"><span>View</span></a>
             </div></td>

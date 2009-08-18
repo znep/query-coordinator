@@ -591,3 +591,128 @@
 }
 
 /*** END: Column properties***/
+
+/*** START: Message the owner of this dataset ***/
+.flagDataset .dialogBox .header h1#flagHeader
+{
+  background-image: url(/stylesheets/images/content/flag_modal_icon.png);
+  background-position: 2px center;
+  padding-left: 37px;
+}
+
+.dialogWrapper.modalDialog.flagDataset 
+{
+    margin-left: 12em;
+    width: 56.5em;
+}
+.flagDatasetWrapper label,
+.flagDatasetWrapper p
+{
+    font-size: 1.2em;
+    line-height: 1.75em; /* 21px */
+    vertical-align: middle;
+}
+
+.flagDatasetWrapper .labelColumn
+{
+    vertical-align: top;
+}
+
+.flagDatasetWrapper label.error 
+{
+    display: block;
+}
+
+.flagDatasetWrapper #error,
+.flagDatasetWrapper .errorMessage
+{
+    font-size: 1.2em;
+    padding: 0.3em;
+    padding-bottom: 0.7em;
+    margin-right: 1em;
+    vertical-align: middle;
+}
+
+.flagDatasetWrapper #submit
+{
+    float: right;
+}
+
+.flagDatasetWrapper input[type="text"],
+.flagDatasetWrapper textarea
+{
+    margin-top: 0.5em;
+    width: 35.5em;
+}
+
+.flagDatasetWrapper .labelColumn
+{
+    padding-right: 1em;
+    text-align: right;
+}
+
+.flagDatasetWrapper .submitLine 
+{
+    width: 53.8em;
+}
+
+.flagDatasetWrapper .submitLine .submitActions
+{
+    width: 53.8em;
+}
+
+.flagDatasetWrapper .submitline li.left
+{
+    float: left;
+}
+
+.flagDatasetWrapper .submitLine li.right
+{
+    float: right;
+}
+/*** END: Message the owner of this dataset ***/
+
+/*** START: New Customization Template ***/
+.dialogWrapper.modalDialog.newCustomization 
+{
+    margin-left: 12em;
+    width: 56.5em;
+}
+
+.newCustomizationWrapper label
+{
+    display: block;
+    font-size: 1.3em;
+    height: 2.5em;
+    margin: 0.5em 0 -2.7em;
+    padding-right: 1em;
+    text-align: right;
+    width: 14em;
+}
+
+.newCustomizationWrapper input,
+.newCustomizationWrapper textarea
+{
+    margin-left: 16.5em;
+    padding: 0.2em;
+    width: 22em;
+}
+
+.newCustomizationWrapper select
+{
+    margin-left: 18em;
+    width: 22em;
+}
+
+.newCustomizationWrapper .requiredText
+{
+    background: url(/stylesheets/images/common/required.png) no-repeat;
+    padding-left: 1.5em;
+    position: absolute;
+}
+
+.newCustomizationWrapper .actionButtons
+{
+    margin-top: 0;
+}
+/*** END: New Customization Template ***/

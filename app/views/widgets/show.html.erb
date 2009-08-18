@@ -12,8 +12,8 @@
   /* font */
     body { font-family: <%= @theme[:style][:font][:face] %>; }
 
-    div.blist-th .info-container { font-size: <%= @theme[:style][:font][:grid_header_size] %>; }
-    .blist-td { font-size: <%= @theme[:style][:font][:grid_data_size] %>; }
+    div.blist-th .info-container { font-size: <%= @theme[:style][:font][:grid_header_size][:value] %><%= @theme[:style][:font][:grid_header_size][:unit] %>; }
+    .blist-td { font-size: <%= @theme[:style][:font][:grid_data_size][:value] %><%= @theme[:style][:font][:grid_data_size][:unit] %>; }
   
   /* frame */
     <%- if @theme[:frame][:gradient] -%>
@@ -53,7 +53,7 @@
       <%- if @theme[:frame][:logo][:type] == 'upload' -%>
         background-image: url(/TODO/uploads/whatever);
       <%- elsif @theme[:frame][:logo][:type] == 'external' -%>
-        background-image: url(<%= @theme[:frame][:logo][:type] %>);
+        background-image: url(<%= @theme[:frame][:logo][:url] %>);
       <%- elsif @theme[:frame][:logo][:type] == 'default' -%>
         background-image: url(/stylesheets/images/widgets/socrata_logo_player.png);
       <%- end -%>
@@ -67,8 +67,8 @@
 
     .blist-td
     {
-        height: <%= @theme[:grid][:row_height] %>;
-        line-height: <%= @theme[:grid][:row_height] %>;
+        height: <%= @theme[:grid][:row_height][:value] %><%= @theme[:grid][:row_height][:unit] %>;
+        line-height: <%= @theme[:grid][:row_height][:value] %><%= @theme[:grid][:row_height][:unit] %>;
     }
 
     <%- if @theme[:grid][:wrap_header_text] -%>
@@ -170,8 +170,12 @@
             Socrata Social Data Player
         </a></p>
       
-        <%- if @theme[:frame][:powered_by] -%>
-          <p class="getPlayerAction"><a href="http://www.socrata.com" rel="external">Get a Data Player of Your Own</a></p>
+        <%- if @theme[:frame][:footer_link][:show] -%>
+          <p class="getPlayerAction">
+            <a href="<%= @theme[:frame][:footer_link][:url] %>" rel="external">
+              <%= @theme[:frame][:footer_link][:text] %>
+            </a>
+          </p>
         <%- end -%>
       <%- else -%>
         &nbsp;
@@ -211,7 +215,6 @@
     </div>
     <% end %>
 
-    <%- if @theme[:behavior][:interstitial] -%>
     <div class='interstitial'>
       <a class='closeLink' href='#close'>Close</a>
       <span class='closeKeyText'>or ESC key</span>
@@ -223,16 +226,12 @@
       </div>
       <h4>We hope your visit was informative and enjoyable.</h4>
     </div>
-    <%- end -%>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "data-grid" }) %>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.widget');
-    <%- if !current_user.nil? -%>
-    blist.currentUserId = "<%= current_user.id %>";
-    <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
     
     blist.widget.theme = <%= JSON.generate( @theme ) %>;

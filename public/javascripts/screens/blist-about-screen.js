@@ -83,7 +83,7 @@ $(function ()
                 var category = responseData['category'];
                 if (category)
                 {
-                    category = category.charAt(0).toUpperCase() + category.slice(1);
+                    category = $.capitalize(category);
                 }
                 else
                 {

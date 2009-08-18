@@ -1,0 +1,71 @@
+<%- content_for(:wrapper_class, "newCustomization") -%>
+
+<%- content_for :headline do -%>
+  <h1>Create a New Template</h1>
+<%- end -%>
+
+<div class="modalContentWrapper newCustomizationWrapper">
+  <div class="errorMessage"></div>
+  <% form_tag('/customization/create', :id => "newCustomizationForm") do %>
+    <label for="new_customization_name" class="required">Name The Template</label>
+    <%= text_field_tag('new_customization[name]') %>
+
+    <label for="new_customization_description">Add a Short Description</label>
+    <%= text_area_tag('new_customization[description]') %>
+
+    <label for="new_customization_from">Start Template From</label>
+    <%= select_tag('new_customization[from]', options_from_collection_for_select(
+        @widget_customizations, 'uid', 'name', @widget_customization)) %>
+    <div class="submitLine clearfix">
+      <span class="requiredText">Required Entry</span>
+      <ul class="submitActions">
+        <li>
+          <ul class="actionButtons">
+            <li><a class="arrowButton" href="#submit" id="submitNewCustomization">Create</a></li>
+          </ul>
+        </li>
+        <li class="cancelButton"><a href="#close_new" class="jqmClose"><span>Cancel</span></a></li>
+      </ul>
+    </div>
+  <% end %>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    var $form = $('#newCustomizationForm');
+
+    $form.validate({
+      rules: { "new_customization[name]": "required" },
+      messages: {  "new_customization[name]": "You must name the template." }
+    });
+
+    $('#submitNewCustomization').click(function(event)
+    {
+      event.preventDefault();
+      if ($form.valid())
+      {
+        $.ajax({
+          url: $form.attr('action'),
+          type: 'PUT',
+          data: $form.find(':input'),
+          dataType: 'json',
+          success: function(responseData)
+          {
+            publishNS.populateForm($.json.deserialize(responseData['customization']));
+            $('.templateName').text(responseData['name']);
+            $('#template_name, #new_customization_from')
+              .append($('<option value="' + responseData['uid'] + '">' + responseData['name'] + '</option>'))
+              .val(responseData['uid']);
+            $('#modal').jqmHide();
+          },
+          error: function(request, status, error)
+          {
+            $('.newCustomizationWrapper .errorMessage').text("An error was encountered creating your customization. Please retry later.");
+          }
+        });
+      }
+    });
+  };
+</script>

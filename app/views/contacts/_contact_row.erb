@@ -9,13 +9,13 @@
       @group_heading = contact_group_heading
 -%>
   <tr class="sortGroup">
-    <td colspan="7"><div><%= contact_group_heading %></div></td>
+    <td colspan="7"><div class="cellInner"><%= contact_group_heading %></div></td>
   </tr>
 <%- end -%>
 
 <tr id='friend:<%= contact.id %>'
   class='item'>
-  <td class='handle first'><div>
+  <td class='handle first'><div class="cellInner">
       <%-# <a href="#open_menu" class="dropdownLink menuHandle">Friend Menu</a> -%>
       <%#- if (contact.is_a?(Group)) -%>
         <%#= menu_tag({'id' => "itemMenu-#{contact.id}", 'class' => 'blistItemMenu',
@@ -33,20 +33,20 @@
       <%#- end -%>
   </div></td>
   <td class='picture'>
-    <a href='<%= contact.href %>'>
+    <a href='<%= contact.href %>' class="cellInner">
       <img src="<%= contact.profile_image_path("small") %>" width="24" height="24"
       alt="<%= h(contact.displayName) %>" />
     </a>
   </td>
   <td class='name'>
-    <div class='clipText'>
+    <div class='cellInner clipText'>
       <a href='<%= contact.href %>'><%= h(contact.displayName) %></a>
     </div>
   </td>
-  <td class='tags'><div class='clipText'>
+  <td class='tags'><div class='cellInner clipText'>
       <%= h(contact.tag_display_string) %>
   </div></td>
-  <td class='activityDate last'><div>
+  <td class='activityDate last'><div class="cellInner">
       <%= blist_date(contact.lastLogin || contact.updatedAt) %>
   </div></td>
 </tr>

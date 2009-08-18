@@ -11,28 +11,28 @@ class View < Model
   
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
   def self.find_multiple(ids)
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
   
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
   def html
-    self.class.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.html?template=bare_template.html", {}, true)
+    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.html?template=bare_template.html", {})
   end
 
   def self.notify_all_of_changes(id)
     path = "/#{self.name.pluralize.downcase}/#{id}.json?" + 
         {"method" => "notifyUsers"}.to_param
-    self.create_request(path)
+    parse(CoreServer::Base.connection.create_request(path))
   end
 
   def notify_all_of_changes
@@ -41,7 +41,7 @@ class View < Model
 
   def self.create_favorite(id)
     path = "/favorite_views?" + {"id" => id}.to_param
-    self.create_request(path)
+    parse(CoreServer::Base.connection.create_request(path))
   end
 
   def create_favorite
@@ -67,12 +67,12 @@ class View < Model
 
   def self.delete(id)
     path = "/#{self.name.pluralize.downcase}.json?" + {"id" => id, "method" => "delete"}.to_param
-    self.delete_request(path)
+    parse(CoreServer::Base.connection.delete_request(path))
   end
 
   def self.delete_favorite(id)
     path = "/favorite_views/#{id}"
-    self.delete_request(path)
+    parse(CoreServer::Base.connection.delete_request(path))
   end
 
   def delete_favorite
@@ -81,8 +81,8 @@ class View < Model
   end
 
   def register_opening
-    self.class.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
-      "?method=opening")
+    parse(CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
+      "?method=opening"))
   end
 
 

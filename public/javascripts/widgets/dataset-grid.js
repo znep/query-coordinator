@@ -71,7 +71,8 @@
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
-                        rowHandleRenderer: datasetObj.rowHandleRenderer,
+                        rowHandleRenderer: (datasetObj.settings.editEnabled ?
+                            datasetObj.rowHandleRenderer : '""'),
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
@@ -146,20 +147,49 @@
 
                 if (includeColumns)
                 {
-                    // If they want columns, translate the latest column
-                    // info with widths and positions
-                    var colTranslate = function(col, i)
+                    var viewCols = $.extend([], view.columns);
+                    // Update all the widths from the meta columns
+                    $.each(this.settings._model.meta().columns[0], function(i, c)
                     {
-                        var newCol = {id: col.id, name: col.name, width: col.width};
-                        if (col.body && col.body.children)
+                        viewCols[c.dataIndex].width = c.width;
+                        if (c.body && c.body.children)
                         {
-                            newCol.childColumns = $.map(col.body.children,
-                                    colTranslate);
+                            $.each(c.body.children, function(j, cc)
+                            {
+                                viewCols[c.dataIndex]
+                                    .childColumns[cc.dataIndex].width = cc.width;
+                            });
                         }
-                        return newCol;
+                    });
+                    // Filter out all metadata columns
+                    viewCols = $.grep(viewCols, function(c, i)
+                        { return c.id != -1; });
+                    // Sort by position, because the attribute is ignored when
+                    // saving columns
+                    viewCols.sort(function(a, b)
+                        { return a.position - b.position; });
+                    var cleanColumn = function(col)
+                    {
+                        delete col.dataIndex;
+                        delete col.options;
+                        if (col.dataType)
+                        {
+                            delete col.dataType.picklist;
+                        }
                     };
-                    view.columns = $.map(this.settings._model.meta().columns[0],
-                        colTranslate);
+                    // Clean out dataIndexes, and clean out child metadata columns
+                    $.each(viewCols, function(i, c)
+                    {
+                        cleanColumn(c);
+                        if (c.childColumns)
+                        {
+                            c.childColumns = $.grep(c.childColumns, function(cc, j)
+                                { return cc.id != -1; });
+                            $.each(c.childColumns, function(j, cc)
+                                { cleanColumn(cc); });
+                        }
+                    });
+                    view.columns = viewCols;
                 }
                 else
                 {
@@ -170,7 +200,21 @@
                 return view;
             },
 
-            showHideColumns: function(columns, hide)
+            setColumnAggregate: function(columnId, aggregate)
+            {
+                var datasetObj = this;
+                var view = datasetObj.settings._model.meta().view;
+                $.ajax({url: '/views/' + view.id + '/columns/' + columnId + '.json',
+                    dataType: 'json', type: 'PUT', contentType: 'application/json',
+                    data: $.json.serialize({'format': {'aggregate':
+                        (aggregate == 'none' ? null : aggregate)}}),
+                    success: function(retCol)
+                    {
+                        datasetObj.settings._model.updateColumn(retCol);
+                    }});
+            },
+
+            showHideColumns: function(columns, hide, skipRequest)
             {
                 var datasetObj = this;
                 var view = datasetObj.settings._model.meta().view;
@@ -192,27 +236,44 @@
                         }
                         datasetObj.settings._model.updateColumn(col);
 
-                        if (datasetObj.settings.currentUserId == view.owner.id)
+                        var $li = $('.columnsShowMenu a[href*="_' + colId + '"]')
+                            .closest('li');
+                        if (hide) { $li.removeClass('checked'); }
+                        else { $li.addClass('checked'); }
+
+                        if (!skipRequest)
                         {
-                            $.ajax({url: '/views/' + view.id + '/columns/' +
-                                colId + '.json',
-                                data: $.json.serialize({'hidden': hide}),
-                                type: 'PUT', contentType: 'application/json',
-                                success: function()
-                                {
-                                    successCount++;
-                                    if (successCount == columns.length)
+                            if (datasetObj.settings.currentUserId == view.owner.id)
+                            {
+                                $.ajax({url: '/views/' + view.id + '/columns/' +
+                                    colId + '.json',
+                                    data: $.json.serialize({'hidden': hide}),
+                                    type: 'PUT', dataType: 'json',
+                                    contentType: 'application/json',
+                                    success: function(retCol)
                                     {
-                                        $(document)
-                                            .trigger(blist.events.COLUMNS_CHANGED);
+                                        // Update the column as it comes from
+                                        // the server if it has an aggregate
+                                        if (retCol.updatedAggregate !== null &&
+                                            retCol.updatedAggregate !== undefined)
+                                        {
+                                            datasetObj.settings._model
+                                                .updateColumn(retCol);
+                                        }
+                                        successCount++;
+                                        if (successCount == columns.length)
+                                        {
+                                            $(document)
+                                                .trigger(blist.events.COLUMNS_CHANGED);
+                                        }
                                     }
-                                }
-                                });
-                        }
-                        else
-                        {
-                            setTempView(datasetObj, view,
-                                'columnShowHide-' + colId);
+                                    });
+                            }
+                            else
+                            {
+                                setTempView(datasetObj, view,
+                                    'columnShowHide-' + colId);
+                            }
                         }
                     }
                 });
@@ -274,14 +335,37 @@
         if (action == 'row-delete')
         {
             model.selectRow(model.getByID(rowId));
+            var successCount = 0;
+            var totalRows = 0;
             $.each(model.selectedRows, function(id, index)
             {
+                totalRows++;
                 $.ajax({url: '/views/' + view.id + '/rows/' + id + '.json',
-                    contentType: 'application/json',
-                    type: 'DELETE'});
+                    contentType: 'application/json', type: 'DELETE',
+                    complete: function()
+                    {
+                        successCount++;
+                        if (successCount == totalRows)
+                        { updateAggregates(datasetObj); }
+                    }});
                 model.remove(model.getByID(id));
             });
+            datasetObj.summaryStale = true;
         }
+    };
+
+    var updateAggregates = function(datasetObj)
+    {
+        var model = datasetObj.settings._model;
+        var view = model.meta().view;
+        $.ajax({url: '/views/' + view.id + '/rows.json',
+            data: {include_aggregates: true, max_rows: 0}, cache: false,
+            contentType: 'application/json', dataType: 'json', type: 'GET',
+            success: function(resp)
+            {
+                model.updateAggregateHash(resp.meta.aggregates);
+                model.metaChange();
+            }});
     };
 
     var cellClick = function(datasetObj, event, row, column, origEvent)
@@ -388,9 +472,19 @@
             '</a></li>';
         displayMenu = true;
 
+        var view = datasetObj.settings._model.meta().view;
+        if (view.tableOwner.id == datasetObj.settings.currentUserId &&
+                view.owner.id == datasetObj.settings.currentUserId)
+        {
+            htmlStr += '<li class="delete" >' +
+                '<a href="#delete-column_' + col.id + '">' +
+                '<span class="highlight">Delete Column</span>' +
+                '</a></li>';
+            displayMenu = true;
+        }
+
         if (datasetObj.settings.columnPropertiesEnabled)
         {
-            var view = $(datasetObj.currentGrid).blistModel().meta().view;
             if (displayMenu)
             {
                 // There are already display items in the list, so we need to add
@@ -695,6 +789,43 @@
                 var cols = [];
                 $.each(selCols, function(colId, val) { cols.push(colId); });
                 datasetObj.showHideColumns(cols, true);
+                break;
+            case 'delete-column':
+                var view = model.meta().view;
+                var selCols = $(datasetObj.currentGrid).blistTableAccessor()
+                    .getSelectedColumns();
+                selCols[colIdIndex] = true;
+
+                var cols = [];
+                var successCount = 0;
+                $.each(selCols, function(colId, val)
+                        { cols.push(colId); });
+                var multiCols = cols.length > 1;
+                if (confirm('Do you want to delete the ' +
+                    (multiCols ? cols.length + ' selected columns' :
+                        'selected column') + '? All data in ' +
+                    (multiCols ? 'these columns' : 'this column') +
+                    ' will be removed!'))
+                {
+                    $.each(cols, function(i, colId)
+                    {
+                        $.ajax({url: '/views/' + view.id + '/columns/' +
+                            colId + '.json', type: 'DELETE',
+                            contentType: 'application/json',
+                            complete: function()
+                            {
+                                successCount++;
+                                if (successCount == cols.length)
+                                {
+                                    model.deleteColumns(cols);
+                                    $(document)
+                                        .trigger(blist.events.COLUMNS_CHANGED);
+                                }
+                            }});
+                    });
+                    // Hide columns so they disappear immediately
+                    datasetObj.showHideColumns(cols, true, true);
+                }
                 break;
         }
         // Update the grid header to reflect updated sorting, filtering

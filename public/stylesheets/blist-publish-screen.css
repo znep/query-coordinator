@@ -1,6 +1,7 @@
 #publishContent .fullPageContent
 {
     padding: 0em;
+    padding-bottom: 3em;
 }
 
 #publishContent .publishHeader
@@ -52,15 +53,26 @@
 
 #publishContent .previewPane
 {
-    margin: 0 auto;
-    padding: 3em;
-    width: 600px;
+    margin: 3em auto 0;
+}
+
+h3 .infoText
+{
+    color: #444;
+    margin-left: 0.5em;
+    text-transform: none;
 }
 
 #publishOptionsPane
 {
     margin-right: 1em;
+    min-width: 86.5em;
     padding-bottom: 7em;
+}
+
+#publishOptionsPane .panelHeader
+{
+    background-position: 0 -820px;
 }
 
 #publishOptionsPane .summaryTabs li
@@ -79,7 +91,7 @@
     display: block;
 }
 
-#publishOptionsPane .headerActions .cancelLink
+#publishOptionsPane .headerActions .cancelCustomizationLink
 {
     background: url(/stylesheets/images/content/section_close_button.png) no-repeat;
     color: #333;
@@ -87,6 +99,37 @@
     padding-left: 20px;
     padding-top: 2px;
     text-transform: uppercase;
+}
+
+#publishOptionsPane .singleInfoTab .infoContent
+{
+    border-top: 1px solid #fff;
+    padding-top: 1em;
+}
+
+#publishOptionsPane .singleInfoTab p
+{
+    font-size: 1.2em;
+}
+
+#publishOptionsPane .infoContent
+{
+    position: relative;
+}
+
+#publishOptionsPane .infoContentLeft
+{
+    width: 50%;
+}
+
+#publishOptionsPane .infoContentRight
+{
+    background: url(/stylesheets/images/info_pane/background_expanded_list.png) -10px 0 repeat-y;
+    bottom: 0;
+    left: 50%;
+    position: absolute;
+    top: 0;
+    width: 50%;
 }
 
 #publishOptionsPane .actionButtons .noButton
@@ -106,7 +149,7 @@
     padding-top: 2px;
 }
 
-#publishOptionsPane label
+#publishOptionsPane .singleInfoVisual label
 {
     display: inline-block;
     width: 8em;
@@ -117,6 +160,12 @@
     border-bottom: 1px solid #fff;
     font-size: 1em;
     font-weight: normal;
+}
+
+#publishOptionsPane .textContent p
+{
+    margin-top: 0.5em;
+    margin-bottom: 0.3em;
 }
 
 #publishOptionsPane .colorPickerTrigger

@@ -86,4 +86,9 @@ module CommunitiesHelper
     options_for_select(User.sorts.map { |a, b| [b, a] }, current_sort)
   end
 
+  def community_sort_select_options_for_search(current_sort = nil)
+    options_for_select(User.search_sorts.map { |a, b| [b, a] }, current_sort)
+  end
+
+
 end

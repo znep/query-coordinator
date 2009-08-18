@@ -1,8 +1,18 @@
+<%- is_owner = current_user && view.owner.id == current_user.id -%>
+
 <h2 class="panelHeader">Activity</h2>
+<%- if (is_owner && !in_widget ) -%>
 <ul class="headerActions actionButtons">
   <li>
-    <a href="<%= "#{view.href}/stats" %>" class="arrowButton" <%= "rel='external'" if in_widget %>>
-      View Statistics
-    </a>
+    <%- if (current_user.accountCategory == "premium_sdp") -%>
+      <a href="<%= "#{view.href}/stats" %>" class="arrowButton">
+        View Statistics
+      </a>
+    <%- else -%>
+      <a href="/stats_popup" class="arrowButton" rel="modal">
+        View Statistics
+      </a>
+    <%- end -%>
   </li>
 </ul>
+<%- end -%>

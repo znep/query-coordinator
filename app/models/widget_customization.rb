@@ -60,8 +60,7 @@ class WidgetCustomization < Model
                    :gradient => true,
                    :border => '#c9c9c9',
                    :icon_color => 'blue',      #TODO+
-                   # HACK HACK HACK: Modified the logo to not show
-                   :logo => { :show => false,
+                   :logo => { :show => true,
                               :type => 'default',
                               :url => '' },
                    :footer_link => { :show => true,

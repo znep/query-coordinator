@@ -53,7 +53,7 @@
       <%- if @theme[:frame][:logo][:type] == 'upload' -%>
         background-image: url(/TODO/uploads/whatever);
       <%- elsif @theme[:frame][:logo][:type] == 'external' -%>
-        background-image: url(<%= @theme[:frame][:logo][:type] %>);
+        background-image: url(<%= @theme[:frame][:logo][:url] %>);
       <%- elsif @theme[:frame][:logo][:type] == 'default' -%>
         background-image: url(/stylesheets/images/widgets/socrata_logo_player.png);
       <%- end -%>
@@ -170,8 +170,12 @@
             Socrata Social Data Player
         </a></p>
       
-        <%- if @theme[:frame][:powered_by] -%>
-          <p class="getPlayerAction"><a href="http://www.socrata.com/solution/social-data-player-basic" rel="external">Get a Data Player of Your Own</a></p>
+        <%- if @theme[:frame][:footer_link][:show] -%>
+          <p class="getPlayerAction">
+            <a href="<%= @theme[:frame][:footer_link][:url] %>" rel="external">
+              <%= @theme[:frame][:footer_link][:text] %>
+            </a>
+          </p>
         <%- end -%>
       <%- else -%>
         &nbsp;

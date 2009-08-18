@@ -36,11 +36,11 @@
   'href' => '#', 'if' => theme[:menu][:subscribe].any?{ |key, value| value }, 'submenu' =>
   {'class' => 'noicon', 'items' => [
   {'text' => 'RSS',
-    'external' => true,
+    'external' => true, 'class' => 'rss',
     'href' => "/views/#{@view.id}/rows.rss",
     'if' => theme[:menu][:subscribe][:rss]},
   {'text' => 'Atom',
-    'external' => true,
+    'external' => true, 'class' => 'atom',
     'href' => "/views/#{@view.id}/rows.atom",
     'if' => theme[:menu][:subscribe][:atom]}
   ]}},

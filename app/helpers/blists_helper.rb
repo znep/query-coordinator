@@ -277,7 +277,7 @@ module BlistsHelper
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">" +
                       "#{h(view.name)}</a></iframe>"
-    if options[:show_footer_link]
+    if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
         "Powered by #{t(:blist_company)}</a></p>"
     end

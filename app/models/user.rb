@@ -6,7 +6,7 @@ class User < Model
   
   def self.find_profile(id)
     path = "/users/#{id}.json"
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
   
   def self.create(attributes, inviteToken = nil)
@@ -14,7 +14,7 @@ class User < Model
     if (inviteToken && inviteToken != "")
       path += "?inviteToken=#{inviteToken}"
     end
-    return self.create_request(path, JSON.generate(attributes))
+    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
   
   # Needed for multiuser
@@ -80,23 +80,23 @@ class User < Model
   
   def friends
     path = "/users/#{id}/contacts.json"
-    self.class.get_request(path)
+    User.parse(CoreServer::Base.connection.get_request(path))
   end
   
   def followers
     path = "/users/#{id}/followers.json"
-    self.class.get_request(path)
+    User.parse(CoreServer::Base.connection.get_request(path))
   end
   
   def my_friend?
-    return false if current_user.nil
+    return false if current_user.nil?
     return followers.any? { |follower|
       follower.id == current_user.id
     }
   end
 
   def self.login(login,password)
-    get_request("/authenticate/#{login}.json?password=#{password}")
+    parse(CoreServer::Base.connection.get_request("/authenticate/#{login}.json?password=#{password}"))
   end
 
   def is_established?
@@ -110,7 +110,7 @@ class User < Model
   end
 
   def profile_image=(file)
-    User.multipart_post_file("/users/#{self.id}/profile_images", file)
+    CoreServer::Base.connection.multipart_post_file("/users/#{self.id}/profile_images", file)
   end
 
   def public_blists

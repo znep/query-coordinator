@@ -2,7 +2,7 @@ class Comment < Model
 
   def self.find(view_id)
     path = "/views/#{view_id}/#{self.name.pluralize.downcase}.json"
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
   def self.create(view_id, attributes)
@@ -23,7 +23,7 @@ class Comment < Model
     end
 
     path = "/views/#{view_id}/#{self.name.pluralize.downcase}.json"
-    return self.create_request(path, JSON.generate(attributes))
+    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
 
   def self.update(view_id, attributes)
@@ -37,13 +37,13 @@ class Comment < Model
     if !attributes[:flags].nil? && !attributes[:flags].is_a?(Array)
       attributes[:flags] = [attributes[:flags]]
     end
-    return self.update_request(path, JSON.generate(attributes))
+    return parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
   end
 
   def self.rate(view_id, comment_id, rating)
-    return self.create_request("/views/#{view_id}/" +
+    return parse(CoreServer::Base.connection.create_request("/views/#{view_id}/" +
       "#{self.name.pluralize.downcase}/#{comment_id}/ratings?" +
-      "thumbsUp=" + rating)
+      "thumbsUp=" + rating))
   end
 
   def viewRating

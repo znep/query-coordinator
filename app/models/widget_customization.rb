@@ -4,7 +4,7 @@ class WidgetCustomization < Model
     unless attributes['customization'].nil?
       attributes['customization'] = JSON.generate(attributes['customization'])
     end
-    create_request(path, JSON.generate(attributes))
+    parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
   
   def self.find( options = nil, custom_headers = {})
@@ -19,7 +19,7 @@ class WidgetCustomization < Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    get_request(path, custom_headers)
+    parse(CoreServer::Base.connection.get_request(path, custom_headers))
   end
   
   def save!
@@ -27,7 +27,7 @@ class WidgetCustomization < Model
       @update_data['customization'] = JSON.generate(@customization_hash)
     end
     path = "/widget_customization/#{self.uid}.json"
-    update_request(path, JSON.generate(@update_data))
+    parse(CoreServer::Base.connection.update_request(path, JSON.generate(@update_data)))
   end
   
   def self.default_theme

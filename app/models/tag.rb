@@ -10,7 +10,7 @@ class Tag < Model
     if (opts)
       path += "?#{opts.to_param}"
     end
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
 end

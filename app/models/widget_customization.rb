@@ -27,7 +27,7 @@ class WidgetCustomization < Model
       @update_data['customization'] = JSON.generate(@customization_hash)
     end
     path = "/widget_customization/#{self.uid}.json"
-    parse(CoreServer::Base.connection.update_request(path, JSON.generate(@update_data)))
+    WidgetCustomization.parse(CoreServer::Base.connection.update_request(path, JSON.generate(@update_data)))
   end
   
   def self.default_theme

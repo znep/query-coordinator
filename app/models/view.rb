@@ -81,7 +81,7 @@ class View < Model
   end
 
   def register_opening
-    parse(CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
+    View.parse(CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
       "?method=opening"))
   end
 

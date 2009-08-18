@@ -5,16 +5,6 @@
 #mainLogo.aboutLogo a { background-image: url(/stylesheets/images/header/socrata_logo_about.gif); }
 
 
-#mainNav li.discover
-{ background-image: url(/stylesheets/images/header/MainButton_gradLeft.gif); }
-#mainNav li.home
-{ background-image: url(/stylesheets/images/header/MainButton_gradRight.gif); }
-body.discover #mainNav li.discover
-{ background-image: url(/stylesheets/images/header/MainButton_gradLeft_active.gif); }
-body.home #mainNav li.home
-{ background-image: url(/stylesheets/images/header/MainButton_gradRight_active.gif); }
-
-
 .tabList li,
 .tabList li .wrapper
 {

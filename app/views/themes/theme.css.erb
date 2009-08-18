@@ -1,0 +1,131 @@
+/*** GENERAL ***/
+
+a {
+    color: #<%= th.link_fg %>;
+}
+
+<% 5.times do |level| %>
+h<%= level + 1 %>  {
+    color: #<%= th.header_fg[level] || '333333' %>;
+}
+<% end %>
+
+body {
+    border-top-color: #<%= th.top_border_bg %>;
+}
+
+/*** OUTER CHROME ***/
+#mainNav li a span,
+#mainNav li.discover,
+#mainNav li.home
+{
+    background-image: <%= main_button_inactive_bg %>;
+}
+
+body.home #mainNav li.home,
+body.home #mainNav li.home a span,
+body.discover #mainNav li.discover a span,
+body.community #mainNav li.community a span,
+body.discover #mainNav li.discover
+{
+    background-image: <%= main_button_active_bg %>;
+}
+
+#mainLogo a
+{
+    background-image: <%= th.image :logo %>;
+}
+
+
+/*** CAROUSEL ***/
+
+.pageBlockHeaderCarousel.carouselWrapper,
+.pageBlockHeaderCarousel .carouselOuter,
+.pageBlockHeaderCarousel .carouselInner
+{
+    background-image: <%= carousel_bg %>;
+}
+
+/*** META TABS ***/
+.infoContentOuter.listContainer.expanded .infoContentInner,
+.infoContentOuter.listContainer .infoContent
+{
+    background-image: <%= expanded_list_bg %>;
+}
+
+.infoContentOuter
+{
+    border-color: #<%= th.highlight_color %>;
+}
+
+.metadataPane .summaryTabs 
+{
+    border-bottom-color: #<%= th.highlight_color %>;
+}
+
+.metadataPane .summaryTabs li 
+{
+    border-color: #<%= th.highlight_color %>;
+}
+
+.singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter { 
+    border-color: #<%= th.highlight_color %>;
+}
+
+.infoContentOuter.listContainer .infoContent
+{
+    background-image: <%= bottom_left_dark_bg %>;
+}
+.infoContentOuter .infoContentInner
+{
+    background-image: <%= summary_bottom_left_bg %>;
+}
+
+.infoContentOuter .infoContentWrapper
+{
+    background-image: <%= summary_bottom_right_bg %>;
+}
+
+.metadataPane .summaryTabs li .tabOuter,
+.metadataPane .summaryTabs li .tabInner
+{
+    background-image: <%= summary_tab_bg %>;
+}
+
+.metadataPane .summaryTabs li.active .tabOuter,
+.metadataPane .summaryTabs li.active .tabInner
+{
+    background-image: <%= summary_tab_active_bg %>;
+}
+
+/*** DATASET BUTTON BAR ***/
+#lensBody .headerBar .staticLink:hover,
+a.dropdownLink:hover .midWrapper
+{
+    background: <%= button_hover_slice_bg %> repeat-x;
+}
+
+a.dropdownLink:hover
+{
+    background-image: <%= button_hover_endcap_bg %>;
+}
+
+a.dropdownLink:hover .outerWrapper
+{
+    background-image: <%= button_hover_endcap_bg %>;
+}
+
+a.dropdownLink.clicked
+{
+    background-image: <%= button_activated_endcap_bg %>;
+}
+
+a.dropdownLink.clicked .outerWrapper
+{
+    background-image: <%= button_activated_endcap_bg %>;
+}
+
+a.dropdownLink.clicked .midWrapper
+{
+    background-image: <%= button_activated_slice_bg %>;
+}

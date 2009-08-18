@@ -96,6 +96,11 @@ class WidgetsController < ApplicationController
       @theme[:behavior][:interstitial] = true
       @theme[:frame][:logo][:show] = false
     end
+
+    # Wire in custom behaviors for black
+    if @variation == 'black'
+      @theme[:frame][:color] = '#666666'
+    end
   end
   
   def meta_tab_header

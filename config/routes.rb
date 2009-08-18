@@ -165,6 +165,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'widgets_meta/:id/meta_tab_header', :controller => 'widgets', :action => 'meta_tab_header'
   map.connect 'widgets_meta/:id/meta_tab', :controller => 'widgets', :action => 'meta_tab'
+
+  map.connect 'stylesheets/theme/:id.css', :controller => 'themes', :action => 'theme'
   
   map.connect 'stats_popup', :controller => 'stats', :action => 'popup'
   map.connect 'stats_screenshot', :controller => 'stats', :action => 'screenshot'

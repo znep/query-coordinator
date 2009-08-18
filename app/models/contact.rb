@@ -5,11 +5,11 @@ class Contact < User
   
   def self.create(attributes)
     path = "/contacts.json"
-    self.create_request(path, JSON.generate(attributes))
+    parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
   
   def self.delete(id)
     path = "/contacts/#{id}.json"
-    self.delete_request(path, nil)
+    parse(CoreServer::Base.connection.delete_request(path, nil))
   end
 end

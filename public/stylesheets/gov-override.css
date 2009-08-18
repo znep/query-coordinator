@@ -1,15 +1,5 @@
 /*** START: outer-chrome ***/
 
-#mainLogo a
-{
-    background: url(/stylesheets/images/gov/header/data_gov_logo.png);
-    height: 41px;
-    width: 144px;
-}
-
-
-
-
 #footer
 {
     text-align: center;

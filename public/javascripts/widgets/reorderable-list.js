@@ -139,6 +139,8 @@ $.fn.reorderableList = function(options) {
         {
             $elem.addClass(config.firstListItemClass);
         }
+
+        config.onChange();
     };
 
     // Move a list item to the inactive list and set data
@@ -176,6 +178,8 @@ $.fn.reorderableList = function(options) {
         $elem.find(config.activeFieldSelector).val(false);
 
         orderListItems($siblings, config, true);
+
+        config.onChange();
     };
 
     return this.each(function()

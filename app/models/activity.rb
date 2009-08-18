@@ -5,7 +5,7 @@ class Activity < Model
     if (opts)
       path += "?#{opts.to_param}"
     end
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
   
   def self.find_for_user(user, opts = nil)
@@ -13,7 +13,7 @@ class Activity < Model
     if (opts)
       path += "?#{opts.to_param}"
     end
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
   
 end

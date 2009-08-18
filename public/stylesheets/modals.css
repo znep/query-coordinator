@@ -581,6 +581,15 @@
     padding: 0.5em;
     vertical-align: top;
 }
+
+.columnPropertiesWrapper td.middle
+{
+    vertical-align: middle;
+}
+.columnPropertiesWrapper td.fieldColumn strong
+{
+    font-size: 1.2em;
+}
 .columnPropertiesWrapper .labelColumn
 {
     padding-right: 1em;
@@ -596,6 +605,114 @@
 {
     margin: 0 0.5em 0 0;
     vertical-align: middle;
+}
+
+.convertDropdown
+{
+    margin-left: 1em;
+    text-transform: uppercase;
+    background-image:url(/stylesheets/images/widgets/dropdown_button/menu_bar_arrow.png); 
+    background-repeat: no-repeat;
+    background-position: 45px -4px;
+    padding-right: 25px;
+    color: #999;
+    font-size: 1em;
+}
+
+ul.convertables
+{
+    padding: 0.75em;
+    margin-bottom: 1.5em;
+    font-size: 1.2em;
+    background-color: #ccc;
+}
+
+ul.convertables li a.light
+{
+    color: #aaa;
+}
+
+ul.convertables li a
+{
+    vertical-align: bottom;
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-repeat: no-repeat;
+    padding: 0.2em;
+    padding-left: 1.75em; 
+    padding-top: 0.3em;
+    height: 1.3em;
+    display: block;
+    font-size: 1em;
+    text-decoration: none;
+    color: #666;
+}
+
+ul.convertables li a:hover
+{
+    background-color: #666;
+    color: #fff;
+}
+
+#loadingSpinner
+{
+    position: absolute;
+    top: 150px;
+    background-image: url(/stylesheets/images/common/BrandedSpinner.gif);
+    background-repeat: no-repeat;
+    height: 45px;
+    width: 45px;
+}
+
+.convert-text { background-position: 0 -80px; }
+.convert-richtext { background-position: 0 -60px; }
+.convert-number { background-position: 0 -20px; }
+.convert-money { background-position: 0 -40px; }
+.convert-percent { background-position: 0 0; }
+.convert-date { background-position: 0 -340px; }
+.convert-phone { background-position: 0 -240px; }
+.convert-email { background-position: 0 -260px; }
+.convert-url { background-position: 0 -360px; }
+.convert-checkbox { background-position: 0 -120px; }
+.convert-stars { background-position: 0 -140px; }
+.convert-flag { background-position: 0 -380px; }
+
+#typeReadOnly
+{
+    background-image:url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-repeat: no-repeat;
+    padding:0.2em;
+    padding-left: 1.75em; 
+    height: 2em;
+    vertical-align: middle;
+}
+
+.columnPropertiesIcon
+{
+    background-image:url(/stylesheets/images/content/GearIcon_color.png);
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
+.align
+{
+    background-image:url(/stylesheets/images/content/AlignmentSprites.png);
+    background-repeat: no-repeat;
+    padding-left: 20px;
+}
+
+.alignLeft
+{
+    background-position: 0 0;
+}
+
+.alignCenter
+{
+    background-position: 0 -13px;
+}
+
+.alignRight
+{
+    background-position: 0 -26px;
 }
 
 /*** END: Column properties***/

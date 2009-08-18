@@ -1,6 +1,6 @@
 <% dialog_content('signup', "signupBox") do %>
   <div class='header'>
-    <h1>t(:blist_company)</h1>
+    <h1><%= th.company %></h1>
     <%- if local_assigns[:is_modal] -%>
     <a href='#close_dialog' class='close' title='Close'>Close</a>
     <%- end -%>

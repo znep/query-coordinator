@@ -273,22 +273,6 @@ blist.blistGrid.menuHandler = function(event)
     event.preventDefault();
     switch (action)
     {
-        case 'new_blist':
-            blist.blistGrid.referer = '';
-            blist.util.flashInterface.showPopup('NewLens');
-            break;
-        case 'import':
-            blist.blistGrid.referer = '';
-            blist.util.flashInterface.showPopup('NewLens:Import');
-            break;
-        case 'discover':
-            blist.blistGrid.referer = '';
-            blist.util.flashInterface.showPopup('NewLens:Discover');
-            break;
-        case 'copy_blist':
-            blist.blistGrid.referer = '';
-            blist.util.flashInterface.showPopup('NewLens:CopyBlist');
-            break;
         case 'picklistBrowser':
             blist.util.flashInterface.showPopup('PickListBrowser');
             break;
@@ -303,30 +287,18 @@ blist.blistGrid.menuHandler = function(event)
         case 'Delete':
             blist.util.flashInterface.doAction(action);
             break;
-        case 'addColumn_rowTag':
-            blist.util.flashInterface.addColumn('rowTag');
+        case 'addColumn':
+            var dt = actionId == 'rowTag' ? 'rowTag' : 'plainText';
+            var i = actionId == 'first' ? 0 : -1;
+            blist.util.flashInterface.addColumn(dt, i);
             break;
-        case 'addColumn_last':
-            blist.util.flashInterface.addColumn('plainText');
-            break;
-        case 'addColumn_first':
-            blist.util.flashInterface.addColumn('plainText', 0);
-            break;
-        case 'publish_grid':
+        case 'publish':
             $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab('#tabPublishing');
             break;
-        case 'publish_form':
-            blist.util.flashInterface.showPopup('PublishDialog:Form');
-            break;
-        case 'infoPane_tabSummary':
-        case 'infoPane_tabFiltered':
-        case 'infoPane_tabComments':
-        case 'infoPane_tabSharing':
-        case 'infoPane_tabPublishing':
-        case 'infoPane_tabActivity':
+        case 'infoPane':
             $("#infoPane .summaryTabs").infoPaneNavigate()
-                .activateTab("#" + action.split('_')[1]);
+                .activateTab("#" + actionId);
             break;
         case 'filterShow':
             blist.util.flashInterface.showPopup('LensBuilder:Filter');

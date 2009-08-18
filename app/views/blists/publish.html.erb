@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blist-publish-screen", "colorpicker",
+  <%= stylesheet_link_tag "blist-publish-screen", "colorpicker", "form-common",
       :cache => "cache/blists_about_all" %>
   <title>Publishing <%= @view.name %> | <%= t(:page_title) %></title>
 <% end %>
@@ -29,7 +29,7 @@
           </p>
         </div>
         <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
-          <%= get_publish_embed_code_for_view(@view, @customization[:publish], @widget_customization.uid) %>
+          <%= get_publish_embed_code_for_view(@view, @customization[:publish], 'normal') %>
         </div>
       </div>
     </div>
@@ -70,7 +70,7 @@
       </li>
     </ul>
   </div>
-  <% form_tag("customization/#{@widget_customization.uid}") do %>
+  <% form_tag("/widget_customization/") do %>
     <div class="infoContentOuter singleInfoTemplates listContainer expanded">
       <div class="infoContentHeader clearfix">
         <h2 class="panelHeader clipText">
@@ -84,7 +84,7 @@
             or
           </li>
           <li>
-            <a class="arrowButton newTemplate" title="Apply a New Template to this Player" href="#newTemplate">
+            <a class="arrowButton newTemplate" title="Apply a New Template to this Player" href="/customization/new" rel="modal">
               Create a New Template
             </a>
           </li>
@@ -97,7 +97,7 @@
               <dt>Template Description</dt>
               <dd>
                 <div class="itemContent">
-                  <span class="textContent"><%= @customization[:description] || "(none)" %></span>
+                  <span id="customizationDescription" class="textContent"><%= @customization[:description] || "(none)" %></span>
                 </div>
               </dd>
             </dl>
@@ -124,7 +124,7 @@
         </h2>
         <ul class="headerActions">
           <li>
-            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
         </ul>
       </div>
@@ -224,6 +224,7 @@
                   </div>
                 </dd>
               </dl>
+            <%- if false # not implemented -%>
               <dl class="summaryList">
                 <dt>Menu Icon Style</dt>
                 <dd>
@@ -239,6 +240,7 @@
                   </div>
                 </dd>
               </dl>
+            <%- end -%>
               <dl class="summaryList">
                 <dt></dt>
                 <dd>
@@ -350,12 +352,12 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization_grid_zebra", "true",
+                      <%= radio_button_tag("grid_zebra", "true",
                           @customization[:grid][:zebra]) %>
-                      <%= label_tag("customization_grid_zebra_true", "Stripe") %>
-                      <%= radio_button_tag("customization_grid_zebra", "false",
+                      <%= label_tag("grid_zebra_true", "Stripe") %>
+                      <%= radio_button_tag("grid_zebra", "false",
                           !@customization[:grid][:zebra]) %>
-                      <%= label_tag("customization_grid_zebra_false", "Don't Stripe") %>
+                      <%= label_tag("grid_zebra_false", "Don't Stripe") %>
                     </span>
                   </div>
                 </dd>
@@ -398,12 +400,12 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[frame][powered_by]", "true",
-                          @customization[:frame][:powered_by]) %>
-                      <%= label_tag("customization_frame_powered_by_true", "Show") %>
-                      <%= radio_button_tag("customization[frame][powered_by]", "false",
-                          !@customization[:frame][:powered_by]) %>
-                      <%= label_tag("customization_frame_powered_by_false", "Don't Show") %>
+                      <%= radio_button_tag("customization[frame][footer_link][show]", "true",
+                          @customization[:frame][:footer_link][:show]) %>
+                      <%= label_tag("customization_frame_footer_link_show_true", "Show") %>
+                      <%= radio_button_tag("customization[frame][footer_link][show]", "false",
+                          !@customization[:frame][:footer_link][:show]) %>
+                      <%= label_tag("customization_frame_footer_link_show_false", "Don't Show") %>
                     </span>
                   </div>
                 </dd>
@@ -413,12 +415,12 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[publish][show_footer_link]", "true",
-                          @customization[:publish][:show_footer_link]) %>
-                      <%= label_tag("customization_publish_show_footer_link_true", "Show") %>
-                      <%= radio_button_tag("customization[publish][show_footer_link]", "false",
-                          !@customization[:publish][:show_footer_link]) %>
-                      <%= label_tag("customization_publish_show_footer_link_false", "Don't Show") %>
+                      <%= radio_button_tag("customization[publish][show_powered_by]", "true",
+                          @customization[:publish][:show_powered_by]) %>
+                      <%= label_tag("customization_publish_show_powered_by_true", "Show") %>
+                      <%= radio_button_tag("customization[publish][show_powered_by]", "false",
+                          !@customization[:publish][:show_powered_by]) %>
+                      <%= label_tag("customization_publish_show_powered_by_false", "Don't Show") %>
                     </span>
                   </div>
                 </dd>
@@ -435,7 +437,7 @@
         </h2>
         <ul class="headerActions">
           <li>
-            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
         </ul>
       </div>
@@ -507,6 +509,7 @@
                   </div>
                 </dd>
               </dl>
+            <%- if false # not implemented -%>
               <dl class="summaryList">
                 <dt>Dataset Ratings</dt>
                 <dd>
@@ -522,6 +525,7 @@
                   </div>
                 </dd>
               </dl>
+            <%- end -%>
               <dl class="summaryList">
                 <dt>Public Views (Filters)</dt>
                 <dd>
@@ -566,7 +570,7 @@
         </h2>
         <ul class="headerActions">
           <li>
-            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
         </ul>
       </div>
@@ -623,7 +627,7 @@
         </h2>
         <ul class="headerActions">
           <li>
-            <a href="#cancel" class="cancelLink">Cancel Changes</a>
+            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
         </ul>
       </div>
@@ -653,7 +657,7 @@
   <%= render(:partial => "shared/common_js") %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
-    blist.publish.theme = <%= JSON.generate( @customization ) %>;
+    blist.publish.currentTheme = <%= JSON.generate( @customization ) %>;
   </script>
   <%= javascript_include_tag "screens/info-pane.js", "plugins/colorpicker.js",
       "plugins/ui.core", "plugins/ui.draggable", "widgets/reorderable-list.js",

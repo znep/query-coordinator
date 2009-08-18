@@ -13,13 +13,13 @@ html
 
 body
 {
-    background-color: #fff;
+    background: #ececec url(/stylesheets/images/header/mainlogo_background.png) 0 6px repeat-x;
+    border-top: 6px solid;
     height: 100%;
 }
 
 #outerContainer
 {
-    background-color: #ececec;
     height: auto;
     margin: 0 auto;
     max-width: 140em;
@@ -34,7 +34,6 @@ body
 #header
 {
     background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
-    border-top: 6px solid #06386a;
     height: 44px;
     padding-bottom: .5em;
     position: relative;
@@ -52,13 +51,13 @@ body
 
 #mainLogo a
 {
-    background-image: url(/stylesheets/images/header/socrata_logo.png);
+    height: 50px;
+    width: 250px;
     background-repeat: no-repeat;
+    background-image: url(/stylesheets/images/header/socrata_logo.png);
     display: block;
-    height: 34px;
     padding-bottom: .3em;
     text-indent: -9999px;
-    width: 151px;
 }
 #mainLogo.aboutLogo a { background-image: url(/stylesheets/images/header/socrata_logo_about.png); }
 
@@ -212,19 +211,19 @@ body
 }
 #mainNav li a span
 {
-    background-image: url(/stylesheets/images/header/MainButton_gradSlice.png);
+    background-position: 0 -35px;
     background-repeat: repeat-x;
     display: block;
     font-weight: bold;
 }
-#mainNav li.discover
-{ background: url(/stylesheets/images/header/MainButton_gradLeft.png) no-repeat; }
 #mainNav li.discover a span {
     margin-left: 10px;
     text-indent: -10px;
 }
 #mainNav li.home
-{ background: url(/stylesheets/images/header/MainButton_gradRight.png) right top no-repeat; }
+{ 
+    background-position: right -70px; 
+}
 #mainNav li.home a span {
     margin-right: 10px;
     text-indent: 10px;
@@ -234,16 +233,12 @@ body.home #mainNav li.home a span,
 body.discover #mainNav li.discover a span,
 body.community #mainNav li.community a span
 {
-    background-image: url(/stylesheets/images/header/MainButton_gradSlice_active.png);
+    background-position: 0 -35px;
 }
-body.discover #mainNav li.discover
-{ background: url(/stylesheets/images/header/MainButton_gradLeft_active.png) no-repeat; }
 body.discover #mainNav li.discover a span {
     margin-left: 10px;
     text-indent: -10px;
 }
-body.home #mainNav li.home
-{ background: url(/stylesheets/images/header/MainButton_gradRight_active.png) right top no-repeat; }
 body.home #mainNav li.home a span {
     margin-right: 10px;
     text-indent: 10px;

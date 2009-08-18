@@ -139,6 +139,8 @@ $.fn.reorderableList = function(options) {
         {
             $elem.addClass(config.firstListItemClass);
         }
+
+        config.onChange();
     };
 
     // Move a list item to the inactive list and set data
@@ -176,6 +178,8 @@ $.fn.reorderableList = function(options) {
         $elem.find(config.activeFieldSelector).val(false);
 
         orderListItems($siblings, config, true);
+
+        config.onChange();
     };
 
     return this.each(function()
@@ -200,6 +204,7 @@ $.fn.reorderableList = function(options) {
             },
             stop: function(event, ui)
             {
+                config.onChange();
                 $this.find(".activeList").addClass("ui-draggable-not-dragging");
                 var $item = $(this);
                 $item.stop()
@@ -309,7 +314,8 @@ $.fn.reorderableList.defaults = {
     selectedListItemClass: 'reorderList-selected',
     addItemButtonSelector: '.addItemButton',
     removeItemButtonSelector: '.removeItemButton',
-    removeAllLinkSelector: '.removeAllLink'
+    removeAllLinkSelector: '.removeAllLink',
+    onChange: function() { }
 };
 
 })(jQuery);

@@ -355,13 +355,14 @@ $(function ()
     if (widgetNS.theme['behavior']['interstitial'])
     {
         $('a:not([href^=#]):not(.noInterstitial)').live('click', widgetNS.showInterstitial);
-        $('.interstitial a.closeLink').click(function (e)
-        {
-            e.preventDefault();
-            $('.interstitial').hide();
-        });
     }
-    
+
+    $('.interstitial a.closeLink').click(function (e)
+    {
+        e.preventDefault();
+        $('.interstitial').hide();
+    });
+
     $(document).keyup(function (e)
     {
         // 27 is ESC

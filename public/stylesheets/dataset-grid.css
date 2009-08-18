@@ -398,6 +398,8 @@ div.blist-table-edit-container input.textInput
     height: 100%;
     min-width: 8.333em; /* 100px */
     padding: 0.2em;
+    /*background-image: url(/stylesheets/images/content/table/bg_text.gif);*/
+    background-repeat: repeat-x;
 }
 
 div.blist-table-edit-container.shown input[type="text"],

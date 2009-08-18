@@ -10,11 +10,12 @@ blist.namespace.fetch('blist.data');
  * @param model the table data model
  * @param layout physical row layout information for each row in the table (provided by the table)
  */
-blist.data.TableNavigation = function(_model, _layout) {
+blist.data.TableNavigation = function(_model, _layout, _$textarea) {
     var model = _model;
     this.updateModel = function(_newModel) { model = _newModel; }
     var layout = _layout;
     this.updateLayout = function(_newLayout) { layout = _newLayout; }
+    var $textarea = _$textarea;
 
     // Active cell information
     var activeCellOn = false;
@@ -49,6 +50,8 @@ blist.data.TableNavigation = function(_model, _layout) {
         for (var col in selectedColumns) {
             return true;
         }
+        if (model.selectedRows && model.selectedRows.length)
+            return true;
         return false;
     };
 
@@ -215,6 +218,19 @@ blist.data.TableNavigation = function(_model, _layout) {
         activeCellXCount = xNum;
         activeCellY = y;
 
+        // Enable copy & paste
+        /*
+        var doc;
+        try {
+            doc = this.getSelectionDoc();
+        } catch (e) {
+            // Ignore errors generating the selection and clear
+            doc = '';
+        }
+        $textarea.text(doc);
+        $textarea[0].select();
+        */
+
         return true;
     };
 
@@ -252,10 +268,22 @@ blist.data.TableNavigation = function(_model, _layout) {
         var len = rows.length;
         for (i = 0; i < len; i++) {
             var row = rows[i];
-            var index = rows[i].index;
+            
+            // Determine the index into the rows set and the actual model row
+            var index = row.index;
+            var modelRow;
+            if (index === undefined) {
+                index = i;
+                modelRow = row;
+            } else
+                modelRow = model.get(index);
 
-            var modelRow = model.get(index);
-            if (modelRow && model.selectedRows[modelRow.id] !== undefined)
+            // Skip the blank row
+            if (modelRow.id == "blank")
+                continue;
+
+            // Update the selection map, and clear the selection if there's no selection in the row
+            if (model.selectedRows[modelRow.id] !== undefined)
             {
                 selmap = [];
                 $.each(layout[modelRow.level || 0], function(i, c)
@@ -369,6 +397,8 @@ blist.data.TableNavigation = function(_model, _layout) {
             selectedColumns = {};
             needRefresh = true;
         }
+
+        $textarea.text('');
 
         return needRefresh;
     };
@@ -852,7 +882,7 @@ blist.data.TableNavigation = function(_model, _layout) {
     this.getSelectedColumns = function() {
         var rv = {};
         $.each(selectedColumns, function(colId, val)
-                { if (val) { rv[colId] = true; } });
+                { if (val) { rv[colId] = val; } });
         return rv;
     };
 
@@ -860,25 +890,79 @@ blist.data.TableNavigation = function(_model, _layout) {
      * Convert the selection to a tab-delimited text blob.
      */
     this.getSelectionDoc = function() {
+        // Standard rendering context variables
+        var rawDoc = [];
+        var renderContextVars = {
+            rawDoc: rawDoc
+        };
+
+        // If we don't have a selection, return just the contents of the active cell
+        if (!hasSelection()) {
+            if (activeCellOn) {
+                var row = model.get(activeCellY);
+                var col = model.column(activeCellXStart);
+                if (row && col && col.dataLookupExpr) {
+                    var type = blist.data.types[col.type] || blist.data.types.text;
+                    renderContextVars.row = row;
+                    var fn = type.renderGen("row" + model.column(activeCellXStart).dataLookupExpr, true, col);
+                    var value = blist.data.types.compile(fn, renderContextVars);
+                    if (value != undefined)
+                        return value;
+                }
+            }
+            return '';
+        }
+
         // Locate all columns that will be present in the selection
-        var usedCols = [];
-        for (var i = 0; i < selectionBoxes.length; i++) {
-            var box = selectionBoxes[i];
-            for (var j = box[0]; j < box[1]; j++) {
-                usedCols[j] = true;
+        var usedCols;
+        var layoutLevel = layout[selectionLevel];
+        if (model.selectedRows && model.selectedRows.length) {
+            usedCols = [];
+            for (var i = 0; i < layoutLevel.length; i++)
+                usedCols[i] = layoutLevel[i].mcol;
+        } else {
+            usedCols = [];
+            var selectedCols = this.getSelectedColumns();
+            for (var id in selectedCols)
+                usedCols[id] = layoutLevel[id].mcol;
+            var selBoxes = convertCellSelection();
+            for (i = 0; i < selBoxes.length; i++) {
+                var box = selBoxes[i];
+                for (id = box[0]; id <= box[2]; id++) {
+                    usedCols[id] = layoutLevel[id].mcol;
+                }
             }
         }
 
         // Create a mapping from an output column to the source column
-        var colMap = [];
-        for (i = 0; i < usedCols.length; i++) {
+        var mapFnSrc = '(function(row, selmap) {';
+        var didOne = false;
+        for (i = 0; i < usedCols.length; i++)
             if (usedCols[i]) {
-                colMap.push(i);
+                col = usedCols[i];
+                if (col.type == 'nested_table' || col.type == 'fill' || col.level.id != selectionLevel)
+                    // TODO -- include body of nested tables?
+                    continue;
+                if (didOne)
+                    mapFnSrc += 'rawDoc.push("\\t");';
+                else
+                    didOne = true;
+                type = blist.data.types[col.type] || blist.data.types.text;
+                mapFnSrc += 'if (selmap[' + i + ']) rawDoc.push(' + type.renderGen("row" + col.dataLookupExpr, true, col, renderContextVars) + ');';
             }
-        }
+        mapFnSrc += 'rawDoc.push("\\n");})';
 
-        // TODO
-    };
+        // Compile the function
+        var mapFn = blist.data.types.compile(mapFnSrc, renderContextVars);
+
+        // Walk selected rows, building the selection document
+        this.processSelection(model.rows(), mapFn, function() {});
+        rawDoc.pop(); // Remove final carriage return
+        if (rawDoc.length == 1)
+            // Only a single cell selected
+            return rawDoc[0];
+        return rawDoc.join('');
+    }
 
     return this;
 };

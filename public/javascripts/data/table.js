@@ -265,8 +265,7 @@
         /*** CELL SELECTION AND NAVIGATION ***/
 
         // Cell navigation model and logic
-        var cellNav = options.cellNav ?
-            new blist.data.TableNavigation(model, []) : null;
+        var cellNav;
 
         // DOM nodes for active cells
         var $activeCells;
@@ -1538,6 +1537,13 @@
         // Page size is configured in renderRows()
         var pageSize = 1;
 
+        var onCopy = function(event) {
+            if (cellNav) {
+                $navigator.text(cellNav.getSelectionDoc());
+                $navigator[0].select();
+            }
+        }
+
         var onKeyPress = function(event) {
             switch (event.keyCode || event.charCode) {
                 case 34:
@@ -1759,10 +1765,17 @@
 
         // This guy receives focus when the user interacts with the grid
         var $navigator = $($outside.find('.blist-table-navigator'))
-            .keypress(onKeyPress);
+            .keypress(onKeyPress)
+            .bind('copy', onCopy);
 
         // Set up initial top of locked section
         $locked.css('top', $header.outerHeight());
+
+        // Initialize cell navigation now that the navigator is rendered
+        cellNav = options.cellNav ?
+            new blist.data.TableNavigation(model, [], $navigator) : null;
+
+
 
         /*** SCROLLING AND SIZING ***/
 
@@ -2084,7 +2097,7 @@
                     cls = cls ? ' blist-td-' + cls : '';
                     var align = mcol.alignment ? ' align-' + mcol.alignment : '';
 
-                    renderer = renderer("row" + mcol.dataLookupExpr, mcol,
+                    renderer = renderer("row" + mcol.dataLookupExpr, false, mcol,
                         contextVariables);
 
                     colParts.push(
@@ -2284,7 +2297,7 @@
             else
             {
                 cellNav = options.cellNav ?
-                    new blist.data.TableNavigation(model, layout) : null;
+                    new blist.data.TableNavigation(model, layout, $navigator) : null;
             }
 
             var rowDivContents =
@@ -3149,8 +3162,8 @@
         blistTable: function(options) {
             // Create the table
             return this.each(function() {
-                makeTable.apply(this,
-                    [ $.extend({}, blistTableDefaults, options) ]);
+                if (!$(this).is('.blist-table'))
+                    makeTable.apply(this, [ $.extend({}, blistTableDefaults, options) ]);
             });
         },
 

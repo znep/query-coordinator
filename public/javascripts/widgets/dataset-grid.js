@@ -71,7 +71,10 @@
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
-                        rowHandleRenderer: (datasetObj.settings.editEnabled ?
+                        // This really ought to be linked to edit; but until
+                        // edit is enabled, we'll check the user
+                        //rowHandleRenderer: (datasetObj.settings.editEnabled ?
+                        rowHandleRenderer: (datasetObj.settings.currentUserId ?
                             datasetObj.rowHandleRenderer : '""'),
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .bind('cellclick', function (e, r, c, o)

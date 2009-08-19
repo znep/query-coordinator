@@ -9,8 +9,6 @@
 
 <script type="text/javascript" charset="utf-8">
   
-  
-
   blist.common.modalReady = function()
   {
     var addedRecipients = new Array();
@@ -24,7 +22,15 @@
     //       });
     
     
-    
+    $("#add_type").combo({
+      name: "add_type",
+      values: [
+        { id: "VIEWER", label: "Viewer" },
+        { id: "CONTRIBUTOR", label: "Contributor" },
+        { id: "OWNER", label: "Owner" }
+      ],
+      value: "VIEWER"
+    });
     
         
     // ADD
@@ -46,7 +52,8 @@
         
         var newRecipient = {
           id: "remove_" + addedRecipientUID,
-          email: $("#add_recipient_email").val()
+          email: $("#add_recipient_email").val(),
+          type: $("#add_type").value()
         };
         addedRecipients.push($.json.serialize(newRecipient));
 
@@ -54,6 +61,7 @@
         addRow += "<td class=\"add_handle\">";
         addRow += "<a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>";
         addRow += "<td class=\"add_email\"><span>" + newRecipient.email + "</span></td>";
+        addRow += "<td class=\"add_type\"><span>" + newRecipient.type + "</span></td>";
         addRow += "<td class=\"add_action\"></td>";
         addRow += "</tr>";
 

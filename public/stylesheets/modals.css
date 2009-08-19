@@ -204,6 +204,9 @@
 .recipientsWrapper table .add_action { width: 90px; }
 
 .shareWrapper .recipientsWrapper table .add_email { width: 100%; }
+.shareWrapper .recipientsWrapper table .add_type { width: 172px }
+
+#add_type.blist-combo { width: 140px; }
 
 .recipientsWrapper thead { background-color: #06386a; }
 .recipientsWrapper thead th

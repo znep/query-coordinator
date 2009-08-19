@@ -355,7 +355,31 @@ class BlistsController < SwfController
   end
   
   def create_share
-    # TODO: do this.
+    message = params[:message]
+    recipientArray = params[:recipients]
+    
+    errors = Array.new
+    
+    if (recipientArray)
+      recipientArray.each do |r|
+        recipient = JSON.parse(r)
+      
+        grant = Hash.new
+        grant[:userEmail] = recipient["email"] || ""
+        grant[:type] = recipient["type"]
+        
+        begin
+          Grant.create(params[:id], grant)
+        rescue CoreServer::CoreServerError => e
+          errors << { :removeId => recipient["id"] }
+        end
+      end
+    end
+
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success",
+      :errors => errors
+    }
   end
 
 private

@@ -324,7 +324,7 @@ blist.blistGrid.menuHandler = function(event)
             },
             error: function (request, textStatus, errorThrown)
             {
-              alert("An error occurred while changing you dataset permissions. Please try again later");
+              alert("An error occurred while changing your dataset permissions. Please try again later");
             }
           });
           break;
@@ -342,7 +342,7 @@ blist.blistGrid.menuHandler = function(event)
             },
             error: function (request, textStatus, errorThrown)
             {
-              alert("An error occurred while changing you dataset permissions. Please try again later");
+              alert("An error occurred while changing your dataset permissions. Please try again later");
             }
           });
           break;

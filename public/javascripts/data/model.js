@@ -157,6 +157,7 @@ blist.namespace.fetch('blist.data');
         {
             if (!activeOnly || rows == active)
             {
+                lookup = {};
                 // Count the total number of rows we have actual data for
                 rowsLoaded = 0;
                 for (var i = 0; i < rows.length; i++)
@@ -180,6 +181,7 @@ blist.namespace.fetch('blist.data');
             }
             if (rows != active)
             {
+                activeLookup = {};
                 for (i = 0; i < active.length; i++)
                 {
                     row = active[i];
@@ -277,6 +279,11 @@ blist.namespace.fetch('blist.data');
         {
             return meta.view && meta.view.rights &&
                 $.inArray('delete', meta.view.rights) >= 0;
+        };
+
+        this.useBlankRows = function()
+        {
+            return curOptions.blankRow && self.canAdd() && self.canWrite();
         };
 
         /**
@@ -882,10 +889,14 @@ blist.namespace.fetch('blist.data');
         // Set the value for a row, save it to the server, and notify listeners
         this.saveRowValue = function(value, row, column)
         {
+            var isCreate = false;
             if (row.type == 'blank')
             {
-                row = {id: 'saving' + saveUID++, level: row.level, isNew: true};
-                this.add([row]);
+                row = $.extend(row, {id: 'saving' + saveUID++, isNew: true,
+                    type: null});
+                installIDs();
+                configureActive();
+                isCreate = true;
             }
             this.setRowValue(value, row, column);
 
@@ -895,9 +906,30 @@ blist.namespace.fetch('blist.data');
             if (column.nestedIn)
             {
                 var parCol = column.nestedIn.header;
+                var parRow = row.parent;
+                // If we're in a blank row, create that row first
+                if (parRow.type == 'blank')
+                { this.saveRowValue(null, parRow, parCol); }
+
+                var childRow = self.getRowValue(row, parCol);
+                // Add the new row to the parent
+                if (!parRow[parCol.dataIndex])
+                { parRow[parCol.dataIndex] = []; }
+                parRow[parCol.dataIndex].push(childRow);
+
+                // Now force refresh by collapsing, clearing
+                // child rows, and then re-expanding
+                this.expand(parRow, false, true);
+                parRow.childRows = undefined;
+                this.expand(parRow, true, true);
+                installIDs();
+                configureActive();
+
                 row.saving[parCol.dataIndex][column.dataIndex] = true;
                 if (row.error && row.error[parCol.dataIndex])
                 { delete row.error[parCol.dataIndex][column.dataIndex]; }
+
+                isCreate = childRow.type == 'blank';
             }
             else
             {
@@ -913,7 +945,7 @@ blist.namespace.fetch('blist.data');
                 pendingRowEdits[row.id].push({column: column, data: data});
                 return;
             }
-            else if (row.isNew)
+            else if (isCreate)
             {
                 if (isRowCreate)
                 {
@@ -932,11 +964,13 @@ blist.namespace.fetch('blist.data');
             var url = '/views/' + self.meta().view.id + '/rows';
             if (column.nestedIn)
             {
+                var parCol = column.nestedIn.header;
                 var childRow = self.getRowValue(row, parCol);
                 url += '/' + row.parent.uuid +
                     '/columns/' + parCol.id +
-                    '/subrows/' + childRow.uuid +
-                    '.json';
+                    '/subrows';
+                if (childRow.type != 'blank') { url += '/' + childRow.uuid; }
+                url += '.json';
             }
             else if (row.isNew) { url += '.json'; }
             else { url += '/' + row.uuid + '.json'; }
@@ -947,10 +981,17 @@ blist.namespace.fetch('blist.data');
         {
             var url = getSaveURL(row, column);
             var model = self;
+            var newRow = row.isNew ? row : null;
             var parCol;
-            if (column.nestedIn) { parCol = column.nestedIn.header; }
+            var childRow;
+            if (column.nestedIn)
+            {
+                parCol = column.nestedIn.header;
+                childRow = self.getRowValue(row, parCol);
+                newRow = childRow.type == 'blank' ? childRow : null;
+            }
             $.ajax({ url: url,
-                    type: row.isNew ? 'POST' : 'PUT',
+                    type: newRow ? 'POST' : 'PUT',
                     contentType: 'application/json', dataType: 'json',
                     data: $.json.serialize(data),
                     complete: function()
@@ -992,9 +1033,9 @@ blist.namespace.fetch('blist.data');
                     },
                     success: function(resp)
                     {
-                        if (row.isNew)
+                        if (newRow)
                         {
-                            var oldID = row.id;
+                            var oldID = newRow.id;
                             // Add metadata to new row
                             // FIXME: The server response for this should be
                             // changing; we can run into problems if there is
@@ -1003,17 +1044,18 @@ blist.namespace.fetch('blist.data');
                             {
                                 if (a.charAt(0) == '_')
                                 {
-                                    row[a.slice(1)] = v;
+                                    newRow[a.slice(1)] = v;
                                 }
                             });
                             installIDs();
-                            delete row.isNew;
+                            delete newRow.isNew;
+                            delete newRow.type;
 
-                            pendingRowEdits[row.id] = pendingRowEdits[oldID];
+                            pendingRowEdits[newRow.id] = pendingRowEdits[oldID];
                             delete pendingRowEdits[oldID];
                             if (pendingRowDeletes[oldID])
                             {
-                                pendingRowDeletes[row.id] =
+                                pendingRowDeletes[newRow.id] =
                                     pendingRowDeletes[oldID];
                                 delete pendingRowDeletes[oldID];
                             }
@@ -1028,7 +1070,7 @@ blist.namespace.fetch('blist.data');
                                 isRowCreate = false;
                             }
 
-                            model.change([row]);
+                            model.change([newRow]);
                         }
                     }
                 });
@@ -1545,19 +1587,27 @@ blist.namespace.fetch('blist.data');
 
             var cols = meta.columns[row.level || 0];
             var childRows = row.childRows = [];
+            var childLevel = (row.level || 0) + 1;
 
             for (var i = 0; i < cols.length; i++) {
                 var col = cols[i];
                 if (!col.body)
                     continue;
                 var cell = row[col.dataIndex];
-                if (!cell || !cell.length)
-                    continue;
-                for (var j = 0; j < cell.length; j++) {
-                    var childRow = childRows[j] || (childRows[j] = []);
-                    childRow.id = "t" + nextTempID++;
-                    childRow.level = (row.level || 0) + 1;
-                    childRow.parent = row;
+                if (!cell && !self.useBlankRows()) { continue; }
+                if (!cell) { cell = []; }
+
+                var numCells = (cell.length || 0) + (self.useBlankRows() ? 1 : 0);
+                for (var j = 0; j < numCells; j++) {
+                    var childRow = childRows[j];
+                    if (!childRow)
+                    {
+                        childRow = childRows[j] = [];
+                        childRow.id = "t" + nextTempID++;
+                        childRow.level = childLevel;
+                        childRow.parent = row;
+                    }
+
                     // Set up saving & error arrays so we don't need to do
                     // two level checks in the row renderer
                     if (!childRow.saving) { childRow.saving = []; }
@@ -1565,6 +1615,11 @@ blist.namespace.fetch('blist.data');
                     if (!childRow.error) { childRow.error = []; }
                     childRow.error[col.dataIndex] = [];
                     childRow[col.dataIndex] = cell[j];
+                    if (!childRow[col.dataIndex])
+                    {
+                        childRow[col.dataIndex] = [];
+                        childRow[col.dataIndex].type = 'blank';
+                    }
                     setRowMetadata([childRow[col.dataIndex]], col.metaChildren);
                 }
             }
@@ -1572,15 +1627,16 @@ blist.namespace.fetch('blist.data');
             if (childRows.length)
                 childRows[childRows.length - 1].groupLast = true;
             return childRows;
-        }
+        };
 
         /**
          * Open or close a row (open rows display nested records).
          */
         var nextTempID = 0;
-        this.expand = function(row, open) {
+        this.expand = function(row, open, skipEvent)
+        {
             // Determine whether to expand/open or unexpand/close the row
-            if (open == undefined)
+            if (open === undefined)
                 open = !row.expanded;
             if (open == row.expanded)
                 return;
@@ -1622,8 +1678,8 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
 
             // Fire events
-            this.change([ row ]);
-        }
+            if (!skipEvent) { this.change([ row ]); }
+        };
 
         /**
          * Get or set the base URL for retrieving child documents.  This is set automatically when you use the ajax
@@ -2049,8 +2105,14 @@ blist.namespace.fetch('blist.data');
             }
 
             // Add in blank row at the end
-            if (curOptions.blankRow && self.canAdd() && self.canWrite())
-            { active.push({level: 0, type: 'blank', id: 'blank'}); }
+            if (self.useBlankRows())
+            {
+                var blankRow = [];
+                blankRow.level = 0;
+                blankRow.type = 'blank';
+                blankRow.id = 'blank';
+                active.push(blankRow);
+            }
 
             if (idChange)
             { installIDs(activeOnly); }

@@ -2011,8 +2011,12 @@
                     completeStatement();
 
                     generatedCode +=
-                        "if (row" + mcol.dataLookupExpr + " && row" + mcol.dataLookupExpr + ".length)";
-                    colParts.push("\"<div class='blist-td blist-tdh blist-opener " + openerClass + "'></div>\"");
+                        "if (row" + mcol.dataLookupExpr +
+                        " && row" + mcol.dataLookupExpr + ".length || " +
+                        model.useBlankRows() + ")";
+                    colParts.push(
+                        "\"<div class='blist-td blist-tdh blist-opener " +
+                        openerClass + "'></div>\"");
                     var children = mcol.body.children;
                     lcols.push({
                         type: 'opener',

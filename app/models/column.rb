@@ -93,7 +93,7 @@ class Column < Model
       end
     end
     path = "/views/#{view_id}/#{self.class.name.pluralize.downcase}/#{id}.json"
-    parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
+    Column.parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
   end
 
   def update(js)

@@ -546,16 +546,25 @@ body#lensBody
     background-position: 5px -1129px;
 }
 
-#mainMenu li.blist .flagOption > a
+#lensBody .headerBar ul.menu .editPermissions ul.menu
+{
+  min-width: 23em;
+}
+
+#mainMenu li.blist .radioOption > a
 {
     background-position: 5px -923px;
 }
 
-#mainMenu li.blist .flagOption > a:hover
+#mainMenu li.blist .radioOption > a:hover
 {
     background-position: 5px -946px;
 }
 
+#mainMenu li.blist .radioOptionSelected > a 
+{
+    background-position: 5px -946px;
+}
 
 #mainMenu li.edit .undo > a
 {

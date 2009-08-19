@@ -255,6 +255,10 @@ class Model
     return model
   end
 
+  def parse(*args)
+    raise "You probably wanted the class method instead."
+  end
+
 protected
 
   def self.parse_tags(val)

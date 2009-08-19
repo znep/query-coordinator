@@ -27,7 +27,7 @@ class WidgetCustomization < Model
       @update_data['customization'] = JSON.generate(@customization_hash)
     end
     path = "/widget_customization/#{self.uid}.json"
-    parse(CoreServer::Base.connection.update_request(path, JSON.generate(@update_data)))
+    WidgetCustomization.parse(CoreServer::Base.connection.update_request(path, JSON.generate(@update_data)))
   end
   
   def self.default_theme
@@ -60,12 +60,10 @@ class WidgetCustomization < Model
                    :gradient => true,
                    :border => '#c9c9c9',
                    :icon_color => 'blue',      #TODO+
-                   :logo => { :show => true,
-                              :type => 'default',
-                              :url => '' },
+                   :logo => 'default',
                    :footer_link => { :show => true,
-                                     :url => 'http://www.socrata.com/solution/social-data-player-basic'},
-                                     :text => 'Get a Data Player of Your Own' },
+                                     :url => 'http://www.socrata.com/solution/social-data-player-basic',
+                                     :text => 'Get a Data Player of Your Own' } },
     :grid     => { :row_numbers => true,
                    :wrap_header_text => false,
                    :header_icons => true,

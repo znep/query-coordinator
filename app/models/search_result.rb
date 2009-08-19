@@ -2,7 +2,7 @@
 class SearchResult < Model
   def self.search(type, options)
     path = "/search/#{type}.json?#{options.to_param}"
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
   def results

@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   include SslRequirement
 
-  before_filter :hook_auth_controller, :adjust_format, :require_user, :set_user, :set_locale
+  before_filter :hook_auth_controller, :adjust_format, :require_user, :set_user, :configure_theme
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
 
   # Patch the page caching support to handle our dynamic domain support.
   # (ie: the cache ends up in a directory based on the locale set via
-  # the set_locale parameter, and Apache uses the domain name of the
+  # the configure_theme parameter, and Apache uses the domain name of the
   # request to determine which directory to serve.)
   def self.cache_page(content, path)
     super(content, I18n.locale + path)
@@ -148,15 +148,10 @@ private
     request.format = :data if request.xhr?
   end
 
-  def set_locale
+  def configure_theme
     logger.info "Request domain: #{request.host}, Current locale: #{I18n.locale}"
-    
-    if (request.host.match('gov'))
-      I18n.locale = 'gov'
-    else
-      # Force the locale back to blist if we're not datagov
-      I18n.locale = 'blist'
-    end
+
+    Theme.configure request
   end
 
   # Custom logic for rendering a 404 page with our pretty templates.
@@ -171,7 +166,7 @@ private
   end
 
   def render_error(code)
-    set_locale
+    configure_theme
     respond_to do |format|
       format.html { render :template => "errors/error_#{code}", :layout => 'main', :status => code }
       format.all { render :nothing => true, :status => code }

@@ -3,22 +3,22 @@ class UserLink < Model
   
   def self.find(user_id)
     path = "/users/#{user_id}/links.json"
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
   def self.create(user_id, attributes)
     path = "/users/#{user_id}/links.json"
-    return self.create_request(path, JSON.generate(attributes))
+    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
 
   def self.update(user_id, id, attributes)
     path = "/users/#{user_id}/links/#{id}.json"
-    return self.update_request(path, JSON.generate(attributes))
+    return parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
   end
   
   def self.delete(user_id, id)
     path = "/users/#{user_id}/links/#{id}.json"
-    return self.delete_request(path)
+    return parse(CoreServer::Base.connection.delete_request(path))
   end
   
   @@link_types = [

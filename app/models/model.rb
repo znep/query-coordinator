@@ -25,7 +25,7 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    get_request(path, custom_headers)
+    parse(CoreServer::Base.connection.get_request(path, custom_headers))
   end
 
   def self.find_under_user(options = nil)
@@ -46,7 +46,7 @@ class Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
   def method_missing(method_symbol, *args)
@@ -213,7 +213,7 @@ class Model
       attributes['tags'] = parse_tags(attributes['tags'])
     end
     path = "/#{self.name.pluralize.downcase}/#{id}.json"
-    return self.update_request(path, JSON.generate(attributes))
+    return parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
   end
 
   def save!
@@ -230,7 +230,7 @@ class Model
       attributes['tags'] = parse_tags(attributes['tags'])
     end
     path = "/#{self.name.pluralize.downcase}.json"
-    return self.create_request(path, JSON.generate(attributes))
+    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
 
   def self.parse(data)
@@ -252,7 +252,11 @@ class Model
       model.update_data = Hash.new
     end
 
-    model
+    return model
+  end
+
+  def parse(*args)
+    raise "You probably wanted the class method instead."
   end
 
 protected
@@ -290,35 +294,6 @@ protected
       (!@deleted_flags.nil? && @deleted_flags.length > 0)
   end
 
-  def self.get_request(path, custom_headers = {}, skip_parse = false)
-    result_body = cache.read(path)
-    if result_body.nil?
-      result_body = generic_request(Net::HTTP::Get.new(path),
-                                    nil, custom_headers).body
-      cache.write(path, result_body)
-    end
-
-    skip_parse ? result_body : parse(result_body)
-  end
-
-  def self.create_request(path, payload = "{}")
-    parse(generic_request(Net::HTTP::Post.new(path), payload).body)
-  end
-
-  def self.update_request(path, payload = "")
-    parse(generic_request(Net::HTTP::Put.new(path), payload).body)
-  end
-
-  def self.delete_request(path, payload = "")
-    parse(generic_request(Net::HTTP::Delete.new(path), payload).body)
-  end
-
-  def self.multipart_post_file(path, file)
-    req = Net::HTTP::Post::Multipart.new path,
-      'file' => UploadIO.new(file, file.content_type, File.basename(file.original_path))
-    parse(generic_request(req).body)
-  end
-
 private
 
   # Mark one or more attributes as non-serializable -- that is, they shouldn't be
@@ -332,43 +307,5 @@ private
   # Obtain a list of all non-serializable attributes
   def self.non_serializable_attributes
     read_inheritable_attribute("non_serializable") || Array.new
-  end
-
-  def self.generic_request(request, json = nil, custom_headers = {})
-    requestor = User.current_user
-    if requestor && requestor.session_token
-      request['Cookie'] = "_blist_session_id=#{requestor.session_token.to_s}"
-    end
-    custom_headers.each { |key, value| request[key] = value }
-
-    if (!json.blank?)
-      request.body = json
-      request.content_type = "application/json"
-    end
-
-    result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
-      http.request(request)
-    end
-
-    raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
-    if !result.is_a?(Net::HTTPSuccess)
-      parsed_body = self.parse(result.body)
-      Rails.logger.info("Error: " +
-                    "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
-                    (parsed_body.nil? ? 'No response' :
-                      (parsed_body.data['code'] || '')) + " : " +
-                    (parsed_body.nil? ? 'No response' :
-                      (parsed_body.data['message'] || '')))
-      raise CoreServer::CoreServerError.new(
-        "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
-        parsed_body.data['code'],
-        parsed_body.data['message'])
-    end
-
-    result
-  end
-
-  def self.cache
-    @cache ||= ActiveSupport::Cache::RequestStore.new
   end
 end

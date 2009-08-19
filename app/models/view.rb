@@ -11,28 +11,28 @@ class View < Model
   
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
   def self.find_multiple(ids)
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
   
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
-    get_request(path)
+    parse(CoreServer::Base.connection.get_request(path))
   end
 
   def html
-    self.class.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.html?template=bare_template.html", {}, true)
+    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.html?template=bare_template.html", {})
   end
 
   def self.notify_all_of_changes(id)
     path = "/#{self.name.pluralize.downcase}/#{id}.json?" + 
         {"method" => "notifyUsers"}.to_param
-    self.create_request(path)
+    parse(CoreServer::Base.connection.create_request(path))
   end
 
   def notify_all_of_changes
@@ -41,7 +41,7 @@ class View < Model
 
   def self.create_favorite(id)
     path = "/favorite_views?" + {"id" => id}.to_param
-    self.create_request(path)
+    parse(CoreServer::Base.connection.create_request(path))
   end
 
   def create_favorite
@@ -67,12 +67,12 @@ class View < Model
 
   def self.delete(id)
     path = "/#{self.name.pluralize.downcase}.json?" + {"id" => id, "method" => "delete"}.to_param
-    self.delete_request(path)
+    parse(CoreServer::Base.connection.delete_request(path))
   end
 
   def self.delete_favorite(id)
     path = "/favorite_views/#{id}"
-    self.delete_request(path)
+    parse(CoreServer::Base.connection.delete_request(path))
   end
 
   def delete_favorite
@@ -81,8 +81,8 @@ class View < Model
   end
 
   def register_opening
-    self.class.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
-      "?method=opening")
+    View.parse(CoreServer::Base.connection.create_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
+      "?method=opening"))
   end
 
 
@@ -161,7 +161,7 @@ class View < Model
   end
 
   def user_role(user_id)
-    if (user_id == tableOwner.id)
+    if (user_id == tableAuthor.id)
       I18n.t(:blist_name).capitalize + " Author"
     elsif (user_id == owner.id)
       "View Author"
@@ -185,7 +185,7 @@ class View < Model
   end
 
   def contributor_users
-    (grants || []).reject {|g| g.flag?('public') || g.type.downcase == 'read'}.
+    (grants || []).select {|g| !g.flag?('public') && g.type.downcase == 'contributor'}.
       collect do |g|
         if !g.groupId.nil?
           Group.find(g.groupId).users.collect {|u| u.id}
@@ -199,8 +199,8 @@ class View < Model
 
   def viewer_users
     contributors = contributor_users
-    view_grants = (grants || []).reject {|g| g.flag?('public') ||
-      g.type.downcase != 'read'}.
+    view_grants = (grants || []).select {|g| !g.flag?('public') &&
+      g.type.downcase == 'viewer'}.
       collect do |g|
         if !g.groupId.nil?
           Group.find(g.groupId).users.collect {|u| u.id}
@@ -217,25 +217,15 @@ class View < Model
     group_shares = Hash.new
     (grants || []).reject {|g| g.flag?('public')}.each do |g|
       if !g.groupId.nil?
-        if !group_shares[g.groupId]
-          s = Share.new(nil, g.groupId, Group.find(g.groupId).name,
+        s = Share.new(g.type.capitalize, g.groupId, Group.find(g.groupId).name,
                         false, true)
-          s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
-          group_shares[g.groupId] = s
-        elsif g.type.downcase != 'read'
-          group_shares[g.groupId].type = Share::CONTRIBUTOR
-        end
+        group_shares[g.groupId] = s
       else
         user_id = g.userId.nil? ? g.userEmail : g.userId
-        if !user_shares[user_id]
-          s = Share.new(nil, g.userId, g.userId.nil? ?
-                        g.userEmail : User.find(g.userId).displayName,
-                        true, false)
-          s.type = g.type.downcase == 'read' ? Share::VIEWER : Share::CONTRIBUTOR
-          user_shares[user_id] = s
-        elsif g.type.downcase != 'read'
-          user_shares[user_id].type = Share::CONTRIBUTOR
-        end
+        s = Share.new(g.type.capitalize, g.userId, g.userId.nil? ?
+                      g.userEmail : User.find(g.userId).displayName,
+                      true, false)
+        user_shares[user_id] = s
       end
     end
 

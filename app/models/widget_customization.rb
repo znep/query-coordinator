@@ -4,7 +4,7 @@ class WidgetCustomization < Model
     unless attributes['customization'].nil?
       attributes['customization'] = JSON.generate(attributes['customization'])
     end
-    create_request(path, JSON.generate(attributes))
+    parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
   
   def self.find( options = nil, custom_headers = {})
@@ -19,7 +19,7 @@ class WidgetCustomization < Model
       path += "?#{options.to_param}" unless options.to_param.blank?
     end
 
-    get_request(path, custom_headers)
+    parse(CoreServer::Base.connection.get_request(path, custom_headers))
   end
   
   def save!
@@ -27,7 +27,7 @@ class WidgetCustomization < Model
       @update_data['customization'] = JSON.generate(@customization_hash)
     end
     path = "/widget_customization/#{self.uid}.json"
-    update_request(path, JSON.generate(@update_data))
+    WidgetCustomization.parse(CoreServer::Base.connection.update_request(path, JSON.generate(@update_data)))
   end
   
   def self.default_theme
@@ -63,7 +63,9 @@ class WidgetCustomization < Model
                    :logo => { :show => true,
                               :type => 'default',
                               :url => '' },
-                   :powered_by => true },
+                   :footer_link => { :show => true,
+                                     :url => 'http://www.socrata.com/solution/social-data-player-basic'},
+                                     :text => 'Get a Data Player of Your Own' },
     :grid     => { :row_numbers => true,
                    :wrap_header_text => false,
                    :header_icons => true,
@@ -90,6 +92,6 @@ class WidgetCustomization < Model
     :publish  => { :dimensions => { :width => 425,
                                     :height => 344 },
                    :show_title => true,
-                   :show_footer_link => true }
+                   :show_powered_by => true }
   }
 end

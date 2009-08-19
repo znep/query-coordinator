@@ -144,36 +144,6 @@ a.dropdownLink .innerWrapper
     padding: 1px 25px 0 5px;
 }
 
-a.dropdownLink:hover
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_left.png);
-}
-
-a.dropdownLink:hover .outerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_right.png);
-}
-
-a.dropdownLink:hover .midWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/hover_gradSlice.png);
-}
-
-a.dropdownLink.clicked
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_left.png);
-}
-
-a.dropdownLink.clicked .outerWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_right.png);
-}
-
-a.dropdownLink.clicked .midWrapper
-{
-    background-image: url(/stylesheets/images/widgets/dropdown_button/click_gradSlice.png);
-}
-
 #lensContainer .headerBar > ul > li > a.dropdownLink:hover,
 #lensContainer .headerBar > ul > li > a.dropdownLink.clicked { color: #fff; }
 /*** END: dropdown button ***/
@@ -1806,13 +1776,16 @@ table.gridList tr.filteredOut
     width: 100%;
 }
 .pageBlockHeaderCarousel.carouselWrapper { 
-    background: url(/stylesheets/images/common/carousel_background.png) repeat-x;
+    background-position: 0 -235px;
     min-height: 23.2em;
 }
-.pageBlockHeaderCarousel .carouselOuter { background: url(/stylesheets/images/common/carousel_background_left.png) no-repeat; }
+.pageBlockHeaderCarousel .carouselOuter {
+    background-repeat: no-repeat;
+}
 .pageBlockHeaderCarousel .carouselInner
 {
-    background: url(/stylesheets/images/common/carousel_background_right.png) right top no-repeat;
+    background-repeat: no-repeat;
+    background-position: right -470px;
     min-height: 21.2em;
     padding: .5em .5em 1.5em;
 }
@@ -1928,7 +1901,6 @@ table.gridList tr.filteredOut
 .tabContentNav { padding: 1em; }
 .tabContentNav h2
 {
-    color: #600;
     border-bottom: 1px solid #999;
     font-size: 1.2em;
     font-weight: normal;

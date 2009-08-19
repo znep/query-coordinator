@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "blist-publish-screen", "colorpicker", "form-common",
       :cache => "cache/blists_about_all" %>
-  <title>Publishing <%= @view.name %> | <%= t(:page_title) %></title>
+  <title>Publishing <%= @view.name %> | <%= th.site_title %></title>
 <% end %>
 
 <div id="publishContent" class="oneColumnContainer">
@@ -29,7 +29,7 @@
           </p>
         </div>
         <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
-          <%= get_publish_embed_code_for_view(@view, @customization[:publish], @widget_customization.uid) %>
+          <%= get_publish_embed_code_for_view(@view, @customization[:publish], 'normal') %>
         </div>
       </div>
     </div>
@@ -400,12 +400,12 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[frame][powered_by]", "true",
-                          @customization[:frame][:powered_by]) %>
-                      <%= label_tag("customization_frame_powered_by_true", "Show") %>
-                      <%= radio_button_tag("customization[frame][powered_by]", "false",
-                          !@customization[:frame][:powered_by]) %>
-                      <%= label_tag("customization_frame_powered_by_false", "Don't Show") %>
+                      <%= radio_button_tag("customization[frame][footer_link][show]", "true",
+                          @customization[:frame][:footer_link][:show]) %>
+                      <%= label_tag("customization_frame_footer_link_show_true", "Show") %>
+                      <%= radio_button_tag("customization[frame][footer_link][show]", "false",
+                          !@customization[:frame][:footer_link][:show]) %>
+                      <%= label_tag("customization_frame_footer_link_show_false", "Don't Show") %>
                     </span>
                   </div>
                 </dd>
@@ -415,12 +415,12 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= radio_button_tag("customization[publish][show_footer_link]", "true",
-                          @customization[:publish][:show_footer_link]) %>
-                      <%= label_tag("customization_publish_show_footer_link_true", "Show") %>
-                      <%= radio_button_tag("customization[publish][show_footer_link]", "false",
-                          !@customization[:publish][:show_footer_link]) %>
-                      <%= label_tag("customization_publish_show_footer_link_false", "Don't Show") %>
+                      <%= radio_button_tag("customization[publish][show_powered_by]", "true",
+                          @customization[:publish][:show_powered_by]) %>
+                      <%= label_tag("customization_publish_show_powered_by_true", "Show") %>
+                      <%= radio_button_tag("customization[publish][show_powered_by]", "false",
+                          !@customization[:publish][:show_powered_by]) %>
+                      <%= label_tag("customization_publish_show_powered_by_false", "Don't Show") %>
                     </span>
                   </div>
                 </dd>

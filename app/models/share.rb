@@ -1,6 +1,7 @@
 class Share
   VIEWER = 'Viewer'
   CONTRIBUTOR = 'Contributor'
+  OWNER = 'Owner'
 
   attr_accessor :type, :member_id, :member_name, :is_user, :is_group
 

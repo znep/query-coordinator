@@ -153,11 +153,11 @@ columnFormatNS.render_percent = function($container)
     $("#percent-view").combo({
         name: "percent-view",
         values: columnFormatNS.percentFormatValues,
-        value: column.format,
+        value: column.format || 'percent_bar',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
     
-    $("#percent-view").change(function() { column.format = $("#date-view").value(); });    
+    $("#percent-view").change(function() { column.format = $("#percent-view").value(); });    
 };
 
 columnFormatNS.render_date = function($container)
@@ -174,7 +174,7 @@ columnFormatNS.render_date = function($container)
     $("#date-view").combo({
       name: "date-view",
       values: columnFormatNS.dateFormatValues,
-      value: column.format,
+      value: column.format || 'date_time',
       renderFn: columnFormatNS.renderValueInfoFormatRow
     });
     

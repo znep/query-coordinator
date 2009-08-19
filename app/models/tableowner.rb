@@ -1,2 +1,0 @@
-class Tableowner < User
-end

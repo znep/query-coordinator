@@ -294,7 +294,6 @@ body#lensBody
 
 #lensBody .headerBar .staticLink:hover
 {
-    background: url(/stylesheets/images/widgets/dropdown_button/hover_gradSlice.png) repeat-x;
     color: #fff;
 }
 

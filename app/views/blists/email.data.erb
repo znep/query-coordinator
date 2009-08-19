@@ -136,21 +136,47 @@
         var $fields = $('.formContainer input');
         var totalRequests = $fields.size();
         var completed = 0;
+        var requestComplete = function()
+        {
+          $('.emailDatasetWrapper .loadingIndicator').addClass('hide');
+          if ($('.formContainer input').length > 0)
+          {
+            $('.emailDatasetWrapper .errorMessage')
+              .text('Emails could not be sent to the following addresses. Please try again later.')
+              .show();
+          }
+          else
+          {
+            $('.emailDatasetWrapper form').hide();
+            $('.emailDatasetWrapper .successMessage').show();
+          }
+        };
         $fields.each(function()
         {
+          var $field = $(this);
           $.ajax({
             url: $form.attr("action"),
             cache: false,
             data: {
               'method': 'email',
-              'email': $(this).val()
+              'email': $field.val()
             },
             success: function (responseData)
             {
+              if (responseData['error'] === undefined)
+              {
+                $field.closest('li').remove();
+              }
               if (++completed == totalRequests)
               {
-                $('.emailDatasetWrapper form').hide();
-                $('.emailDatasetWrapper .successMessage').show();
+                requestComplete();
+              }
+            },
+            error: function (request, status, error)
+            {
+              if (++completed == totalRequests)
+              {
+                requestComplete();
               }
             }
           });

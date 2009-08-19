@@ -74,20 +74,35 @@ blist.publish.applyFrameColor = function($elem, values)
     }
     else
     {
-        $elem.find('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper')
-             .css('background-color', values['color'])
-             .css('background-image', 'none');
-        $elem.find('.gridInner').css('border-color', values['color']);
+        // frame
+        publishNS.appendToStylesBuffer('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
+            'background-color', values['color']);
+        publishNS.appendToStylesBuffer('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
+            'background-image', 'none');
+        publishNS.appendToStylesBuffer('.gridInner', 'border-color', values['color']);
+
+        // meta border
+        publishNS.appendToStylesBuffer('.infoContentOuter, .metadataPane .summaryTabs li, .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter, .metadataPane .summaryTabs',
+            'border-color', values['color']);
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li .tabOuter, .metadataPane .summaryTabs li .tabInner',
+            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=ececec&h=23&r=3&s=h&bc=ececec)');
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.active .tabOuter, .metadataPane .summaryTabs li.active .tabInner',
+            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=cacaca&h=23&r=3&s=h&bc=ececec)');
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
+            'background-color', values['color']);
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
+            'border-color', values['color']);
+
         if (values['border'] !== false)
         {
-            $elem.find('#header').css('border', '1px solid ' + values['border']);
-            $elem.find('#header').css('border-bottom', 'none');
+            publishNS.appendToStylesBuffer('#header', 'border', '1px solid ' + values['border']);
+            publishNS.appendToStylesBuffer('#header', 'border-bottom', 'none');
         }
     }
 
     if (values['border'] !== false)
     {
-        $elem.find('.gridOuter, .widgetFooterInner').css('border-color', values['border']);
+        publishNS.appendToStylesBuffer('.gridOuter, .widgetFooterInner', 'border-color', values['border']);
     }
 };
 
@@ -143,7 +158,7 @@ blist.publish.applyInterstitial = function(value)
 
 // builder hash!
 blist.publish.customizationApplication = {
-    style:          { font:          { face:                [ { selector: '*', css: 'font-family' } ],
+    style:          { font:          { face:                [ { selector: 'html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td', css: 'font-family' } ],
                                        grid_header_size:    [ { selector: 'div.blist-th .info-container', css: 'font-size', hasUnit: true }],
                                        grid_data_size:      [ { selector: '.blist-td', css: 'font-size', hasUnit: true }] } },
     frame:          { _group:                               [ { selector: 'body', properties: ['color', 'gradient', 'border'], callback: publishNS.applyFrameColor } ],
@@ -154,7 +169,7 @@ blist.publish.customizationApplication = {
                                        text:                [ { selector: '.getPlayerAction a', callback: function($elem, value) { $elem.text(value); } } ] } },
     grid:           { row_numbers:                          [ { selector: '.blist-table-locked-scrolls:has(.blist-table-row-numbers)', hideShow: true },
                                                               { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { true: '49px', false: '0' } },
-                                                              { selector: '.blist-table-inside .blist-tr', css: 'left', map: { true: '49px', false: '0' } } ],
+                                                              { selector: '#data-grid .blist-table-inside .blist-tr', css: 'left', map: { true: '49px', false: '0' } } ],
                       wrap_header_text:                     [ { selector: '.blist-th .info-container, .blist-th .name-wrapper', css: 'height', map: { true: '2.5em', false: '' } },
                                                               { selector: '.blist-th .info-container', css: 'margin-top', map: { true: '-1.25em', false: '' } },
                                                               { selector: 'div.th-inner-container', css: 'white-space', map: { true: 'normal', false: '' } },
@@ -223,7 +238,25 @@ blist.publish.applyCustomizationToPreview = function(hash)
                     for (var curapply in subapply[key])
                     {
                         var value = subapply[key][curapply];
-                        if (value['selector'] !== undefined)
+                        if ((value['css'] !== undefined) && (value['outsideWidget'] !== true))
+                        {
+                            if (value['hasUnit'] !== undefined)
+                            {
+                                publishNS.appendToStylesBuffer(value['selector'], value['css'],
+                                    subhash[key]['value'] + subhash[key]['unit']);
+                            }
+                            else if (value['map'] !== undefined)
+                            {
+                                publishNS.appendToStylesBuffer(value['selector'], value['css'],
+                                    value['map'][subhash[key]]);
+                            }
+                            else
+                            {
+                                publishNS.appendToStylesBuffer(value['selector'], value['css'],
+                                    subhash[key]);
+                            }
+                        }
+                        else if (value['selector'] !== undefined)
                         {
                             if (value['outsideWidget'] === true)
                             {
@@ -232,22 +265,6 @@ blist.publish.applyCustomizationToPreview = function(hash)
                             else
                             {
                                 var $elem = $('.previewPane iframe').contents().find(value['selector']);
-                            }
-
-                            if (value['css'] !== undefined)
-                            {
-                                if (value['hasUnit'] !== undefined)
-                                {
-                                    $elem.css(value['css'], subhash[key]['value'] + subhash[key]['unit']);
-                                }
-                                else if (value['map'] !== undefined)
-                                {
-                                    $elem.css(value['css'], value['map'][subhash[key]]);
-                                }
-                                else
-                                {
-                                    $elem.css(value['css'], subhash[key]);
-                                }
                             }
                             if (value['attr'] !== undefined)
                             {
@@ -289,7 +306,42 @@ blist.publish.applyCustomizationToPreview = function(hash)
             }
         }
     };
-    recurse(publishNS.customizationApplication, hash);
+
+    clearTimeout(publishNS.loadFrameTimeout);
+    if ($('.previewPane iframe').contents().find('#customizationStyles').length === 0)
+    {
+        // iframe may not have loaded yet.
+        publishNS.loadFrameTimeout = setTimeout(
+            function() { publishNS.applyCustomizationToPreview(hash); }, 50);
+    }
+    else
+    {
+        recurse(publishNS.customizationApplication, hash);
+        blist.publish.writeStylesBuffer();
+    }
+};
+
+blist.publish.stylesBuffer = '';
+blist.publish.appendToStylesBuffer = function(selector, key, value)
+{
+    if (value !== '')
+    {
+        publishNS.stylesBuffer += selector + ' {' + key + ': ' + value + '; }\n';
+    }
+};
+blist.publish.writeStylesBuffer = function()
+{
+    clearTimeout(publishNS.stylesTimeout);
+    if ($('.previewPane iframe').contents().find('#customizationStyles')
+           .text(blist.publish.stylesBuffer).length === 0)
+    {
+        // iframe may not have loaded yet.
+        publishNS.stylesTimeout = setTimeout(publishNS.writeStylesBuffer, 50);
+    }
+    else
+    {
+        publishNS.stylesBuffer = '';
+    }
 };
 
 blist.publish.valueChanged = function()
@@ -473,6 +525,7 @@ blist.publish.loadCustomization = function()
         });
         $this.siblings('.colorPickerTrigger').click(function()
         {
+            $('.colorPickerContainer').hide();
             $this.show();
             $(document).bind('click.colorPicker', function(event)
             {
@@ -509,4 +562,35 @@ blist.publish.loadCustomization = function()
 
     // Load in customization
     publishNS.applyCustomizationToPreview(publishNS.currentTheme);
+
+    // Hide/show form elements custom UI
+    $('[name="customization[frame][footer_link][show]"]').change(function()
+    {
+        var $this = $(this);
+        if ($this.filter(':checked').val() == 'true')
+        {
+            $this.siblings('.subform').show();
+        }
+        else
+        {
+            $this.siblings('.subform').hide();
+        }
+    });
+    $('[name=grid_zebra]').change(function()
+    {
+        var $this = $(this);
+        if ($this.filter(':checked').val() == 'true')
+        {
+            $this.closest('dl').next()
+                .show()
+                .find('.colorPickerContainer').ColorPickerSetColor('#e7ebf2');
+            $('#customization_grid_zebra').val('#e7ebf2');
+        }
+        else
+        {
+            $this.closest('dl').next().hide();
+            $('#customization_grid_zebra').val('#ffffff');
+            publishNS.valueChanged();
+        }
+    });
 })(jQuery);

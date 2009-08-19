@@ -29,7 +29,7 @@
           </p>
         </div>
         <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
-          <%= get_publish_embed_code_for_view(@view, @customization[:publish], 'normal') %>
+          <%= get_publish_embed_code_for_view(@view, {}, 'normal') %>
         </div>
       </div>
     </div>
@@ -130,7 +130,7 @@
       </div>
       <div class="infoContentInner">
         <div class="infoContentWrapper">
-          <div class="infoContent">
+          <div class="infoContent clearfix">
             <div class="infoContentLeft">
               <dl class="summaryList">
                 <dt>Player Size</dt>
@@ -173,6 +173,17 @@
                 </dd>
               </dl>
               <dl class="summaryList">
+                <dt>Frame Style</dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <%= select_tag("customization[frame][gradient]", options_for_select(
+                          {'Solid Background' => false, 'Gradient Background' => true}, @customization[:frame][:gradient])) %>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
+              <dl class="summaryList">
                 <dt>Frame Color</dt>
                 <dd>
                   <div class="itemContent">
@@ -181,17 +192,6 @@
                           @customization[:frame][:color]) %>
                       <div class="colorPickerContainer"></div>
                       <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:frame][:color] %>"></div>
-                    </span>
-                  </div>
-                </dd>
-              </dl>
-              <dl class="summaryList">
-                <dt>Frame Style</dt>
-                <dd>
-                  <div class="itemContent">
-                    <span class="textContent">
-                      <%= select_tag("customization[frame][gradient]", options_for_select(
-                          {'Solid Background' => false, 'Gradient Background' => true}, @customization[:frame][:gradient])) %>
                     </span>
                   </div>
                 </dd>
@@ -295,6 +295,7 @@
                 </dd>
               </dl>
             </div>
+            <div class="infoContentRightBg"></div>
             <div class="infoContentRight">
               <dl class="summaryList">
                 <dt></dt>
@@ -362,7 +363,7 @@
                   </div>
                 </dd>
               </dl>
-              <dl class="summaryList">
+              <dl class="summaryList" style="display: <%= @customization[:grid][:zebra] ? 'block' : 'none' %>">
                 <dt>Row Stripe Color</dt>
                 <dd>
                   <div class="itemContent">
@@ -390,7 +391,7 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      TODO
+                      <%= select_tag("customization[frame][logo]", images_select_options(@customization[:frame][:logo]))%>
                     </span>
                   </div>
                 </dd>
@@ -406,6 +407,14 @@
                       <%= radio_button_tag("customization[frame][footer_link][show]", "false",
                           !@customization[:frame][:footer_link][:show]) %>
                       <%= label_tag("customization_frame_footer_link_show_false", "Don't Show") %>
+                      <div class="subform" style="display: <%= @customization[:frame][:footer_link][:show] ? 'block' : 'none' %>">
+                        <%= label_tag("customization_frame_footer_link_text", "Text")%>
+                        <%= text_field_tag("customization[frame][footer_link][text]", 
+                            @customization[:frame][:footer_link][:text]) %>
+                        <%= label_tag("customization_frame_footer_link_url", "Link")%>
+                        <%= text_field_tag("customization[frame][footer_link][url]", 
+                            @customization[:frame][:footer_link][:url]) %>
+                      </div>
                     </span>
                   </div>
                 </dd>
@@ -443,7 +452,7 @@
       </div>
       <div class="infoContentInner">
         <div class="infoContentWrapper">
-          <div class="infoContent">
+          <div class="infoContent clearfix">
             <div class="infoContentLeft">
               <dl class="summaryList">
                 <dt></dt>
@@ -498,6 +507,7 @@
                 </dd>
               </dl>
             </div>
+            <div class="infoContentRightBg"></div>
             <div class="infoContentRight">
               <dl class="summaryList">
                 <dt></dt>

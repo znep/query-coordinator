@@ -260,6 +260,10 @@ module BlistsHelper
     options_for_select({'ems' => 'em', 'points' => 'pt', 'pixels' => 'px', 'inches' => 'in'}, selected_unit)
   end
 
+  def images_select_options(selected_image = nil)
+    options_for_select({'None' => 'none', 'Socrata' => 'socrata', 'Upload a New Logo...' => 'upload'})
+  end
+
   def get_publish_embed_code_for_view(view, options = {}, variation = "")
     options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]
 

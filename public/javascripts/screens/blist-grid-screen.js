@@ -311,6 +311,41 @@ blist.blistGrid.menuHandler = function(event)
             $('#readGrid').datasetGrid().showHideColumns([actionId],
                 $li.hasClass('checked'));
             break;
+        case 'makePermissionPublic':
+          $.ajax({
+            url: "/views/" + actionId,
+            cache: false,
+            data: {
+              'method': 'setPermission',
+              'value': 'public'
+            },
+            success: function (responseData) {
+              alert("Your dataset is now publicly viewable.");
+            },
+            error: function (request, textStatus, errorThrown)
+            {
+              alert("An error occurred while changing you dataset permissions. Please try again later");
+            }
+          });
+          break;
+        case 'makePermissionPrivate':
+          $.ajax({
+            url: "/views/" + actionId,
+            cache: false,
+            data: {
+              'method': 'setPermission',
+              'value': 'private'
+            },
+            success: function (responseData)
+            {
+              alert("Your dataset is now viewable to only the dataset owner and any sharees.");
+            },
+            error: function (request, textStatus, errorThrown)
+            {
+              alert("An error occurred while changing you dataset permissions. Please try again later");
+            }
+          });
+          break;
     }
 };
 

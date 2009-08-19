@@ -94,7 +94,7 @@ class WidgetsController < ApplicationController
     end
     if @is_gov_widget
       @theme[:behavior][:interstitial] = true
-      @theme[:frame][:logo][:show] = false
+      @theme[:frame][:logo] = 'none'
     end
 
     # Wire in custom behaviors for black

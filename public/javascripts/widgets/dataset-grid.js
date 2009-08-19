@@ -219,6 +219,7 @@
 
             showHideColumns: function(columns, hide, skipRequest)
             {
+                if (!(columns instanceof Array)) { columns = [columns]; }
                 var datasetObj = this;
                 var view = datasetObj.settings._model.meta().view;
                 var successCount = 0;

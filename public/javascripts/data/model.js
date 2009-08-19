@@ -637,6 +637,13 @@ blist.namespace.fetch('blist.data');
                                 meta.columns, 0);
                         }
                     }
+                    // If there are rows, reset all child rows since there may
+                    // be new nested columns
+                    if (rows && rows.length > 0)
+                    {
+                        $.each(rows, function(i, r)
+                            { if (r instanceof Object) { resetChildRows(r); } });
+                    }
                 }
 
                 filterFn = null;
@@ -866,6 +873,20 @@ blist.namespace.fetch('blist.data');
             return v;
         };
 
+        var resetChildRows = function(row)
+        {
+            if (row.expanded)
+            {
+                self.expand(row, false, true);
+                delete row.childRows;
+                self.expand(row, true, true);
+                installIDs();
+                configureActive();
+            }
+            else
+            { delete row.childRows; }
+        };
+
         var saveUID = 0;
         var isRowCreate = false;
         var pendingRowCreates = [];
@@ -919,11 +940,7 @@ blist.namespace.fetch('blist.data');
 
                 // Now force refresh by collapsing, clearing
                 // child rows, and then re-expanding
-                this.expand(parRow, false, true);
-                parRow.childRows = undefined;
-                this.expand(parRow, true, true);
-                installIDs();
-                configureActive();
+                resetChildRows(parRow);
 
                 row.saving[parCol.dataIndex][column.dataIndex] = true;
                 if (row.error && row.error[parCol.dataIndex])

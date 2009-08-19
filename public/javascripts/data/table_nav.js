@@ -35,13 +35,6 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
     // Column selection.  Contains "true" for each selected column ID
     var selectedColumns = {};
 
-    // Retrieve a value from a row
-    var getRowValue = function(row, column) {
-        var value;
-        eval('value = row' + column.dataLookupExpr + ';');
-        return value;
-    };
-
     // Is there a selection?
     var hasSelection = function() {
         if (selectionBoxes.length) {
@@ -152,8 +145,9 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         if (wrap && !row.expanded &&
                 (col.type == 'opener' || col.type == 'header'))
         {
-            var subT = getRowValue(row, col.mcol);
-            if (subT && subT.length > 0) { model.expand(row); }
+            var subT = model.getRowValue(row, col.mcol);
+            if (model.useBlankRows() ||
+                subT && subT.length > 0) { model.expand(row); }
         }
 
         // See if we selected into a closed nested table; if so, select
@@ -477,7 +471,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         if (y >= model.length()) { y = model.length() - 1; }
 
         // No need to update if we didn't make changes
-        if (y == baseY) { return null; }
+        if (y == baseY && x == baseX) { return null; }
 
         var newRow = model.get(y);
         var newLevel = newRow.level || 0;
@@ -647,7 +641,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         if (newCol && newCol.mcol && (newCol.mcol.nestedIn ||
             newCol.type == 'nest-header'))
         {
-            var subRow = getRowValue(newRow, (newCol.type == 'nest-header' ?
+            var subRow = model.getRowValue(newRow, (newCol.type == 'nest-header' ?
                         newCol.mcol.header :
                         newCol.mcol.nestedIn.header) );
             if (!subRow)
@@ -727,8 +721,9 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                     var curRow = model.get(y);
                     if (curRow.expanded)
                     {
-                        var subTable = getRowValue(curRow, curCol.mcol);
-                        if (subTable.length < 1) { continue; }
+                        var subTable = model.getRowValue(curRow, curCol.mcol);
+                        if (!model.useBlankRows() &&
+                            (!subTable || subTable.length < 1)) { continue; }
                     }
                 }
 
@@ -744,9 +739,10 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                     if (curCol.mcol && curCol.mcol.nestedIn &&
                         newRow.expanded)
                     {
-                        var subT = getRowValue(newRow,
+                        var subT = model.getRowValue(newRow,
                             curCol.mcol.nestedIn.header);
-                        if (subT.length < 1) { continue; }
+                        if (!model.useBlankRows() &&
+                            (!subT || subT.length < 1)) { continue; }
                     }
 
                     y = model.index(newRow);
@@ -847,7 +843,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         }
 
         // Ignore if we made no changes
-        if (xy.x == activeCellXStart && xy.y == activeCellY) {
+        if (!xy || xy.x == activeCellXStart && xy.y == activeCellY) {
             xy = null;
         }
 

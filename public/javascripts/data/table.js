@@ -323,6 +323,10 @@
                                     cellNav.getActiveXEnd());
                     }
                 }
+                else
+                {
+                    clearCellNav();
+                }
                 if ($newActive)
                 {
                     // Mark the new cells as active
@@ -517,6 +521,8 @@
             if (!cellNav.goTo(xy.x, xy.y, event, selecting, wrap)) {
                 return false;
             }
+            xy.x = cellNav.getActiveX();
+            xy.y = cellNav.getActiveY();
 
             // Scroll the active cell into view if it isn't visible vertically
             var scrollTop = $scrolls[0].scrollTop;

@@ -927,26 +927,29 @@ blist.namespace.fetch('blist.data');
             if (column.nestedIn)
             {
                 var parCol = column.nestedIn.header;
-                var parRow = row.parent;
-                // If we're in a blank row, create that row first
-                if (parRow.type == 'blank')
-                { this.saveRowValue(null, parRow, parCol); }
 
                 var childRow = self.getRowValue(row, parCol);
-                // Add the new row to the parent
-                if (!parRow[parCol.dataIndex])
-                { parRow[parCol.dataIndex] = []; }
-                parRow[parCol.dataIndex].push(childRow);
+                isCreate = childRow.type == 'blank';
+                if (isCreate)
+                {
+                    var parRow = row.parent;
+                    // If we're in a blank row, create that row first
+                    if (parRow.type == 'blank')
+                    { this.saveRowValue(null, parRow, parCol); }
 
-                // Now force refresh by collapsing, clearing
-                // child rows, and then re-expanding
-                resetChildRows(parRow);
+                    // Add the new row to the parent
+                    if (!parRow[parCol.dataIndex])
+                    { parRow[parCol.dataIndex] = []; }
+                    parRow[parCol.dataIndex].push(childRow);
+
+                    // Now force refresh by collapsing, clearing
+                    // child rows, and then re-expanding
+                    resetChildRows(parRow);
+                }
 
                 row.saving[parCol.dataIndex][column.dataIndex] = true;
                 if (row.error && row.error[parCol.dataIndex])
                 { delete row.error[parCol.dataIndex][column.dataIndex]; }
-
-                isCreate = childRow.type == 'blank';
             }
             else
             {
@@ -1654,42 +1657,54 @@ blist.namespace.fetch('blist.data');
         {
             // Determine whether to expand/open or unexpand/close the row
             if (open === undefined)
-                open = !row.expanded;
-            if (open == row.expanded)
-                return;
+            { open = !row.expanded; }
+            if (open === row.expanded)
+            { return; }
 
             // Create child rows
-            if (open) {
+            if (open)
+            {
                 // Create the child rows
                 var childRows = getChildRows(row);
 
                 // Install child rows into the active set if the row is open
                 if (active == rows)
-                    active = active.slice();
+                { active = active.slice(); }
                 for (var i = 0; i < active.length; i++)
-                    if (active[i] == row) {
+                {
+                    if (active[i] == row)
+                    {
                         var after = active.splice(i + 1, active.length - i + 1);
                         active = active.concat(childRows).concat(after);
                         break;
                     }
-            } else {
+                }
+            }
+            else
+            {
                 // Remove the child rows
                 if (row.childRows && row.childRows.length)
+                {
                     for (i = 0; i < active.length; i++)
-                        if (active[i] == row) {
+                    {
+                        if (active[i] == row)
+                        {
                             active.splice(i + 1, row.childRows.length);
                             break;
                         }
+                    }
+                }
             }
 
             // Record the new row state
             row.expanded = open;
-            if (open) {
-                if (!expanded)
-                    expanded = {};
+            if (open)
+            {
+                if (!expanded) { expanded = {}; }
                 expanded[row.id] = true;
-            } else if (expanded)
-                delete expanded[row.id];
+            }
+            else if (expanded)
+            { delete expanded[row.id]; }
 
             // Update IDs for the rows that moved
             installIDs(true);
@@ -2139,11 +2154,21 @@ blist.namespace.fetch('blist.data');
         // Remove "special" (non-top-level) rows
         var removeSpecialRows = function() {
             var i = 0;
-            while (i < active.length) {
+            while (i < active.length)
+            {
                 if (active[i].level || active[i].type == 'blank')
-                    active.splice(i, 1);
-                else
-                    i++;
+                { active.splice(i, 1); }
+                else { i++; }
+            }
+            if (rows != active)
+            {
+                i = 0;
+                while (i < rows.length)
+                {
+                    if (rows[i].level || rows[i].type == 'blank')
+                    { rows.splice(i, 1); }
+                    else { i++; }
+                }
             }
         }
 

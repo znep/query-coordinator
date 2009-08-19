@@ -3076,18 +3076,21 @@
         /**
          * Re-render a set of rows (if visible).
          */
-        var updateRows = function(rows) {
-            for (var i = 0; i < rows.length; i++) {
+        var updateRows = function(rows)
+        {
+            for (var i = 0; i < rows.length; i++)
+            {
                 var row = rows[i];
                 var rowID = row.id || row[0];
                 var rendered = renderedRows[rowID];
-                if (rendered) {
+                if (rendered)
+                {
                     delete renderedRows[rowID];
                     dirtyRows[rowID] = rendered;
                 }
             }
             updateLayout();
-        }
+        };
 
 
         /*** MODEL ***/

@@ -51,7 +51,7 @@
         </dt>
         <dd class="editItem">
           <div class="itemContent">
-            <span><%= @contact.htmlDescription %></span>
+            <span class="textContent"><%= @contact.htmlDescription %></span>
           </div>
           <div class="itemActions">
             <%= link_to("<span>View profile</span>", @contact.href, :class => "action") %>
@@ -65,7 +65,7 @@
         </dt>
         <dd class="editItem">
           <div class="itemContent">
-            <span><%= h(@contact.tag_display_string) %></span>
+            <span class="textContent"><%= h(@contact.tag_display_string) %></span>
           </div>
           <div class="itemActions">
             <%= link_to("<span>View profile</span>", @contact.href, :class => "action") %>
@@ -79,7 +79,7 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <span><%= blist_date(@contact.lastLogin) %></span>
+            <span class="textContent"><%= blist_date(@contact.lastLogin) %></span>
           </div>
         </dd>
       </dl>
@@ -90,11 +90,10 @@
         </dt>
         <dd>
           <div class="itemContent">
-            <ul>
+            <ul class="textContent">
               <li>Contributor to <%= pluralize(@contact_contributor_blists.length, t(:blist_name)) %></li>
               <li>Viewer to <%= pluralize(@contact_viewer_blists.length, t(:blist_name)) %></li>
             </ul>
-            </span>
           </div>
           <div class="itemActions">
             <a href="#tabShares" class="action tabLink shares">
@@ -112,7 +111,7 @@
 <%# *** START: SHARES *** %>
 <div class="infoContentOuter singleInfoShares">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader typeSharedIn first"><%= @shares_by_contact.length %> Shared to you</h2>
+    <h2 class="panelHeader typeSharedIn first"><%= @shares_by_contact.length %> Shared to You</h2>
     <h2 class="panelHeader typeSharedOut"><%= @shares_to_contact.length %> Shared to <%= h(@contact.displayName) %></h2>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
@@ -170,8 +169,7 @@
 <%# *** START: BLISTS *** %>
 <div class="infoContentOuter singleInfoBlists">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader typeBlist first"><%= pluralize(@contact_blists.length, "Public #{t(:blist_name)}") %></h2>
-    <h2 class="panelHeader typeBlist private"><%= pluralize(@contact_templates.length, "#{t(:blist_name)} template")%></h2>
+    <h2 class="panelHeader typeBlist first"><%= pluralize(@contact_blists.length, "Public #{t(:blist_name).capitalize}") %></h2>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">

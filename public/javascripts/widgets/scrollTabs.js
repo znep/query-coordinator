@@ -4,34 +4,48 @@ $.fn.scrollTabs = function(options) {
     var opts = $.extend({}, $.fn.scrollTabs.defaults, options);
     
     return this.each(function() {
-      var $this = $(this);
-    
-      // Support for the Metadata Plugin.
-      var config = $.meta ? $.extend({}, opts, $this.data()) : opts;
-      $this.data("config-scrollTabs", config);
-      
-      if (needsScrolling($this))
-      {
-          $(config.scrollArrowsSelector).show();
-          
-          // Initially, set the state of the arrow buttons.
-          $(config.scrollArrowPrevSelector).addClass("disabled");
-          
-          $(config.scrollArrowsSelector + ".disabled a")
-              .live("click", function(event) { event.preventDefault(); });
-          $(config.scrollArrowsSelector + ":not('.disabled') a")
-              .live("click", function(event)
-              {
-                  event.preventDefault();
-                  var $a = $(this);
-                  
-                  if ($a.closest("li").is(".prev")) { scrollPrevious($this); }
-                  else { scrollNext($this); }
-                  
-                  updateArrowStates($this);
-              });
-      }
+        var $this = $(this);
+
+        // Support for the Metadata Plugin.
+        var config = $.meta ? $.extend({}, opts, $this.data()) : opts;
+        $this.data("config-scrollTabs", config);
+
+        $(window).resize(function() { resizeHandler($this); });
+        resizeHandler($this);
     });
+    
+    function resizeHandler($this)
+    {
+        var config = $this.data("config-scrollTabs");
+        if (needsScrolling($this))
+        {
+            $(config.scrollArrowsSelector).show();
+            
+            // Initially, set the state of the arrow buttons.
+            $(config.scrollArrowPrevSelector).addClass("disabled");
+            
+            $(config.scrollArrowsSelector + ".disabled a")
+                .live("click", function(event) { event.preventDefault(); });
+            $(config.scrollArrowsSelector + ":not('.disabled') a")
+                .live("click", function(event)
+                {
+                    event.preventDefault();
+                    var $a = $(this);
+                    
+                    if ($a.closest("li").is(".prev")) { scrollPrevious($this); }
+                    else { scrollNext($this); }
+                    
+                    updateArrowStates($this);
+                });
+        }
+        else
+        {
+            $(config.scrollArrowsSelector).hide();
+            $(config.scrollArrowPrevSelector).removeClass("disabled");
+            $(config.scrollArrowsSelector + ".disabled a").die("click");
+            $(config.scrollArrowsSelector + ":not('.disabled') a").die("click");
+        }
+    }
     
     function needsScrolling($this)
     {

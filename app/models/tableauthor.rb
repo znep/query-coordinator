@@ -1,0 +1,2 @@
+class Tableauthor < User
+end

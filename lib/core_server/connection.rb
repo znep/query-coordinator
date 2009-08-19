@@ -91,13 +91,13 @@ module CoreServer
         Rails.logger.info("Error: " +
                       "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}: " +
                       (parsed_body.nil? ? 'No response' :
-                        (parsed_body.data['code'] || '')) + " : " +
+                        (parsed_body['code'] || '')) + " : " +
                       (parsed_body.nil? ? 'No response' :
-                        (parsed_body.data['message'] || '')))
+                        (parsed_body['message'] || '')))
         raise CoreServer::CoreServerError.new(
           "#{request.method} #{CORESERVICE_URI.to_s}#{request.path}",
-          parsed_body.data['code'],
-          parsed_body.data['message'])
+          parsed_body['code'],
+          parsed_body['message'])
       end
 
       result

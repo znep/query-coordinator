@@ -82,7 +82,6 @@ h3 .infoText
 
 #publishOptionsPane .summaryTabs li .tabInner
 {
-    background-position: 163px -4px;
     width: 171px;
 }
 
@@ -119,17 +118,24 @@ h3 .infoText
 
 #publishOptionsPane .infoContentLeft
 {
+    float: left;
     width: 50%;
 }
 
 #publishOptionsPane .infoContentRight
+{
+    float: right;
+    width: 50%;
+}
+
+#publishOptionsPane .infoContentRightBg
 {
     background: url(/stylesheets/images/info_pane/background_expanded_list.png) -10px 0 repeat-y;
     bottom: 0;
     left: 50%;
     position: absolute;
     top: 0;
-    width: 50%;
+    width: 20em;
 }
 
 #publishOptionsPane .actionButtons .noButton
@@ -166,6 +172,27 @@ h3 .infoText
 {
     margin-top: 0.5em;
     margin-bottom: 0.3em;
+}
+
+#publishOptionsPane .textContent .subform
+{
+    margin: 0.5em;
+    margin-left: 2.2em;
+    width: 25em;
+}
+
+#publishOptionsPane .textContent .subform label
+{
+    display: block;
+    height: 1.5em;
+    margin: 1em 0 -1.8em;
+    width: 3em;
+}
+
+#publishOptionsPane .textContent .subform input
+{
+    margin-left: 4em;
+    width: 21em;
 }
 
 #publishOptionsPane .colorPickerTrigger

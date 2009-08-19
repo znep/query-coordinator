@@ -8,7 +8,7 @@
   <%- end -%>
   
   <%- unless @is_gov_widget -%>
-  <style type="text/css">
+  <style id="customizationStyles" type="text/css">
   /* font */
     body { font-family: <%= @theme[:style][:font][:face] %>; }
 
@@ -41,6 +41,34 @@
       }
     <%- end -%>
 
+    .infoContentOuter,
+    .metadataPane .summaryTabs li,
+    .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter,
+    .metadataPane .summaryTabs
+    {
+        border-color: <%= @theme[:frame][:color] %>;
+    }
+
+    .metadataPane .summaryTabs li .tabOuter,
+    .metadataPane .summaryTabs li .tabInner
+    {
+      background-image: url(/ui/box.png?ew=1&rh=20&ec=<%= @theme[:frame][:color].sub(/#/, '') %>&fc=ececec&h=23&r=3&s=h&bc=ececec);
+    }
+
+    .metadataPane .summaryTabs li.active .tabOuter,
+    .metadataPane .summaryTabs li.active .tabInner
+    {
+      background-image: url(/ui/box.png?ew=1&rh=20&ec=<%= @theme[:frame][:color].sub(/#/, '') %>&fc=cacaca&h=23&r=3&s=h&bc=ececec);
+    }
+
+    .metadataPane .summaryTabs li.scrollArrow a,
+    .metadataPane .summaryTabs li.scrollArrow.disabled a,
+    .metadataPane .summaryTabs li.scrollArrow.disabled a:hover
+    {
+      background-color: <%= @theme[:frame][:color] %>;
+      border-color: <%= @theme[:frame][:color] %>;
+    }
+
     <%- if @theme[:frame][:border] -%>
       .gridOuter, .widgetFooterInner
       {
@@ -50,12 +78,13 @@
 
     .widgetLogo
     {
-      <%- if @theme[:frame][:logo][:type] == 'upload' -%>
-        background-image: url(/TODO/uploads/whatever);
-      <%- elsif @theme[:frame][:logo][:type] == 'external' -%>
-        background-image: url(<%= @theme[:frame][:logo][:url] %>);
-      <%- elsif @theme[:frame][:logo][:type] == 'default' -%>
+      <%- if @theme[:frame][:logo] == 'none' -%>
+      <%- elsif @theme[:frame][:logo] == 'default' -%>
         background-image: url(/stylesheets/images/widgets/socrata_logo_player.png);
+      <%- elsif @theme[:frame][:logo].match(/\d+/) -%>
+        background-image: url(/img/<%= @theme[:frame][:logo] %>);
+      <%- else -%>
+        background-image: url(<%= @theme[:frame][:logo] %>);
       <%- end -%>
     }
 
@@ -165,7 +194,7 @@
     </div></div>
     
     <div class="widgetFooterWrapper"><div class="widgetFooterInner">
-      <%- if @theme[:frame][:logo][:show] -%>
+      <%- if @theme[:frame][:logo] != 'none' -%>
         <p class="widgetLogoWrapper"><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
             Socrata Social Data Player
         </a></p>

@@ -30,7 +30,10 @@
     </p>
 
     <div class='footer clearfix'>
-      <%= link_to "Forgot your password / username?", forgot_password_path%>
+      <div style="float:left;">
+        <%= link_to "Forgot your password / username?", forgot_password_path%><br/>
+        <%= link_to "Sign in with OpenID", "https://socrata.rpxnow.com/openid/v2/signin?token_url=https://localhost:9443/login/rpx", :class => 'rpxnow', :onclick => 'return false' %>
+      </div>
       <ul class='actionButtons clearfix'>
         <%- if local_assigns[:is_modal] -%>
         <li><a href='#close_login' class='close'>Cancel</a></li>
@@ -41,4 +44,13 @@
     </div>
     <% end %>
   </div>
+<% end %>
+
+<% content_for :js_footer do %>
+<script src="https://rpxnow.com/openid/v2/widget"
+        type="text/javascript"></script>
+<script type="text/javascript">
+  RPXNOW.overlay = true;
+  RPXNOW.language_preference = 'en';
+</script>
 <% end %>

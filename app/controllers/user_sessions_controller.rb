@@ -1,7 +1,8 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create
+  ssl_required :new, :create, :rpx
   ssl_allowed :destroy
   skip_before_filter :require_user
+  protect_from_forgery :except => [:rpx]
 
   def index
     respond_to do |format|
@@ -45,5 +46,9 @@ class UserSessionsController < ApplicationController
     cookies.delete :remember_token
     flash[:notice] = "You have been logged out"
     redirect_to(login_path)
+  end
+
+  def rpx
+    render :text => "Not implemented"
   end
 end

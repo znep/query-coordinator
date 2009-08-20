@@ -178,6 +178,7 @@ ActionController::Routing::Routes.draw do |map|
     https.signup '/signup', :controller => 'accounts', :action => 'new'
     https.signup_json '/signup.json', :controller => 'accounts', :action => 'create', :format => 'json'
     https.accounts_json '/accounts.json', :controller => 'accounts', :action => 'update', :format => 'json'
+    https.rpx '/login/rpx', :controller => 'user_sessions', :action => 'rpx'
   end
 
   map.resources :user_sessions

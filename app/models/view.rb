@@ -165,9 +165,9 @@ class View < Model
       I18n.t(:blist_name).capitalize + " Author"
     elsif (user_id == owner.id)
       "View Author"
-    elsif contributor_users.any? {|cu| cu.id == user_id}
+    elsif contributor_users.any? {|cu| cu == user_id}
       I18n.t(:blist_name).capitalize + " Contributor"
-    elsif viewer_users.any? {|vu| vu.id == user_id}
+    elsif viewer_users.any? {|vu| vu == user_id}
       I18n.t(:blist_name).capitalize + " Viewer"
     else
       ""
@@ -187,9 +187,7 @@ class View < Model
   def contributor_users
     (grants || []).select {|g| !g.flag?('public') && g.type.downcase == 'contributor'}.
       collect do |g|
-        if !g.groupId.nil?
-          Group.find(g.groupId).users.collect {|u| u.id}
-        elsif !g.userId.nil?
+        if !g.userId.nil?
           g.userId
         else
           g.userEmail
@@ -202,9 +200,7 @@ class View < Model
     view_grants = (grants || []).select {|g| !g.flag?('public') &&
       g.type.downcase == 'viewer'}.
       collect do |g|
-        if !g.groupId.nil?
-          Group.find(g.groupId).users.collect {|u| u.id}
-        elsif !g.userId.nil?
+        if !g.userId.nil?
           g.userId
         else
           g.userEmail
@@ -213,23 +209,25 @@ class View < Model
   end
 
   def shares
-    user_shares = Hash.new
-    group_shares = Hash.new
-    (grants || []).reject {|g| g.flag?('public')}.each do |g|
-      if !g.groupId.nil?
-        s = Share.new(g.type.capitalize, g.groupId, Group.find(g.groupId).name,
-                        false, true)
-        group_shares[g.groupId] = s
-      else
-        user_id = g.userId.nil? ? g.userEmail : g.userId
-        s = Share.new(g.type.capitalize, g.userId, g.userId.nil? ?
-                      g.userEmail : User.find(g.userId).displayName,
-                      true, false)
-        user_shares[user_id] = s
+    filtered_grants = (grants || []).reject {|g| g.flag?('public')}
+    user_ids = Hash.new
+    filtered_grants.each do |g|
+      if !g.userId.nil?
+        user_ids[g.userId] = true
       end
     end
-
-    group_shares.values.concat(user_shares.values)
+    users_list = User.find({'ids' => user_ids.keys})
+    users = Hash.new
+    users_list.each {|u| users[u.id] = u }
+    user_shares = Hash.new
+    filtered_grants.each do |g|
+      user_id = g.userId.nil? ? g.userEmail : g.userId
+      s = Share.new(g.type.capitalize, g.userId, g.userId.nil? ?
+                    g.userEmail : users[g.userId].displayName, users[g.userId],
+                    true, false)
+      user_shares[user_id] = s
+    end
+    user_shares.values
   end
 
   def filters

@@ -95,7 +95,7 @@ module BlistsHelper
         items << {'section_title' => first_char, 'class' => 'sortHeader'}
       end
       items << {'text' => g.name, 'href' => href_group_prefix + g.id,
-          'title' => get_title({title_group_key => g.id}), 
+          'title' => get_title({title_group_key => g.id, 'object' => g}),
           'q' => "{'owner_group': '#{g.id}'}"
       }
     end
@@ -110,7 +110,7 @@ module BlistsHelper
         items << {'section_title' => first_char, 'class' => 'sortHeader'}
       end
       items << {'text' => c.displayName, 'href' => href_prefix + c.id,
-          'title' => get_title({title_key => c.id}),
+          'title' => get_title({title_key => c.id, 'object' => c}),
           'q' => "{'owner': '#{c.id}'}"
       }
     end
@@ -261,7 +261,13 @@ module BlistsHelper
   end
 
   def images_select_options(selected_image = nil)
-    options_for_select({'None' => 'none', 'Socrata' => 'socrata', 'Upload a New Logo...' => 'upload'})
+    image_options = [['None', 'none'], ['Socrata', 'socrata'], ['Upload a New Logo...', 'upload']]
+    images = Image.find
+    if images.size > 0
+      image_options << ['', 'none']
+      images.each { |image| image_options << [image.nameForOutput, image.id] }
+    end
+    options_for_select(image_options, selected_image)
   end
 
   def get_publish_embed_code_for_view(view, options = {}, variation = "")

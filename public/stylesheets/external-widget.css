@@ -302,6 +302,10 @@ img.blist-table-option-icon
     width: 92px;
 }
 
+.widgetLogo.hide
+{
+    display: none;
+}
 
 .getPlayerAction
 {

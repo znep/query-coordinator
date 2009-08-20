@@ -288,9 +288,8 @@ blist.blistGrid.menuHandler = function(event)
             blist.util.flashInterface.doAction(action);
             break;
         case 'addColumn':
-            var dt = actionId == 'rowTag' ? 'rowTag' : 'plainText';
             var i = actionId == 'first' ? 0 : -1;
-            blist.util.flashInterface.addColumn(dt, i);
+            blist.util.flashInterface.addColumn('plainText', i);
             break;
         case 'publish':
             $("#infoPane .summaryTabs").infoPaneNavigate()
@@ -308,8 +307,25 @@ blist.blistGrid.menuHandler = function(event)
             break;
         case 'hide-show-col':
             var $li = $target.closest('li');
-            $('#readGrid').datasetGrid().showHideColumns([actionId],
+            $('#readGrid').datasetGrid().showHideColumns(actionId,
                 $li.hasClass('checked'));
+            break;
+        case 'show-rowTags':
+            if (blist.util.flashInterface.swf() !== undefined)
+            { blist.util.flashInterface.addColumn('rowTag'); }
+            else
+            {
+                $.each($('#readGrid').blistModel().meta().view.columns,
+                    function(i, col)
+                    {
+                        if (col.dataType && col.dataType.type == 'tag')
+                        {
+                            $('#readGrid').datasetGrid().showHideColumns(col.id,
+                                false);
+                            return false;
+                        }
+                    });
+            }
             break;
         case 'makePermissionPublic':
           $.ajax({
@@ -324,7 +340,7 @@ blist.blistGrid.menuHandler = function(event)
             },
             error: function (request, textStatus, errorThrown)
             {
-              alert("An error occurred while changing you dataset permissions. Please try again later");
+              alert("An error occurred while changing your dataset permissions. Please try again later");
             }
           });
           break;
@@ -342,7 +358,7 @@ blist.blistGrid.menuHandler = function(event)
             },
             error: function (request, textStatus, errorThrown)
             {
-              alert("An error occurred while changing you dataset permissions. Please try again later");
+              alert("An error occurred while changing your dataset permissions. Please try again later");
             }
           });
           break;
@@ -620,15 +636,16 @@ $(function ()
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
     $("#infoPane .summaryTabs").infoPaneNavigate({
         tabMap: {
-            "tabSummary" : "#infoPane .singleInfoSummary",
-            "tabFiltered" : "#infoPane .singleInfoFiltered",
-            "tabComments" : "#infoPane .singleInfoComments",
-            "tabSharing" : "#infoPane .singleInfoSharing",
-            "tabPublishing" : "#infoPane .singleInfoPublishing",
-            "tabActivity" : "#infoPane .singleInfoActivity"
+            "tabSummary" : ".singleInfoSummary",
+            "tabFiltered" : ".singleInfoFiltered",
+            "tabComments" : ".singleInfoComments",
+            "tabSharing" : ".singleInfoSharing",
+            "tabPublishing" : ".singleInfoPublishing",
+            "tabActivity" : ".singleInfoActivity"
         },
-        allPanelsSelector : "#infoPane .infoContentOuter",
-        expandableSelector: "#infoPane .infoContent",
+        containerSelector: "#infoPane",
+        allPanelsSelector : ".infoContentOuter",
+        expandableSelector: ".infoContent",
         // After switching tabs, update the menu and size the Swf.
         switchCompleteCallback: function ($tab)
         {

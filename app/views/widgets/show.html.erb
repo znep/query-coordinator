@@ -81,7 +81,7 @@
       <%- if @theme[:frame][:logo] == 'none' -%>
       <%- elsif @theme[:frame][:logo] == 'default' -%>
         background-image: url(/stylesheets/images/widgets/socrata_logo_player.png);
-      <%- elsif @theme[:frame][:logo].match(/\d+/) -%>
+      <%- elsif @theme[:frame][:logo].match(/[\dA-F]{8}-([\dA-F]{4}-){3}[\dA-F]{12}/) -%>
         background-image: url(/img/<%= @theme[:frame][:logo] %>);
       <%- else -%>
         background-image: url(<%= @theme[:frame][:logo] %>);

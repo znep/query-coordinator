@@ -1,0 +1,26 @@
+{
+    // Company
+    "company": "DataSF",
+    "site title": "DataSF | Open San Francisco",
+    "logo": "data_sf_logo.png",
+    "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li class=\"last\"><a href=\"#\">SFGov.org</a></li></ul>",
+    
+    // Global
+    "link fg": "4584BB",
+    "header fg": [ "4584BB", "4E99DD", "56AEFF", "666", "333" ],
+    "highlight color" : "4584BB",
+    
+    
+    // Chrome
+    "top border bg": "4584BB",
+    "main button bg": "4584BB:.286,53A3EB",
+    "main button active bg": "53A3EB:.286,4584BB",
+    
+    // Discovery page
+    "carousel bg": "9a9a9a,636363",
+    "carousel item title fg": "0071bc",
+    
+    // Dataset page
+    "menu button bg" : "4584BB:.5,4383BD:.5,53A3EB",
+    "menu button activated bg" : "53A3EB,4383BD:.5,4584BB:.5,4584BB"
+}

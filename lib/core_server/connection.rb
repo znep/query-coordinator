@@ -1,15 +1,15 @@
 module CoreServer
   class Connection
-    attr_accessor :cache
+    cattr_accessor :cache
 
     def initialize(logger = nil)
       @logger = logger
       @runtime = 0
+      @request_count = 0
     end
 
-    def reset_runtime
-      rt, @runtime = @runtime, 0
-      rt
+    def reset_counters
+      {:runtime => reset_runtime, :requests => reset_request_count}
     end
 
     def get_request(path, custom_headers = {})
@@ -79,6 +79,7 @@ module CoreServer
         request.content_type = "application/json"
       end
 
+      @request_count += 1
       result = log(request) do
         Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
           http.request(request)
@@ -105,6 +106,16 @@ module CoreServer
 
     def cache
       @@cache ||= ActiveSupport::Cache::RequestStore.new
+    end
+
+    def reset_runtime
+      rt, @runtime = @runtime, 0
+      rt
+    end
+
+    def reset_request_count
+      count, @request_count = @request_count, 0
+      count
     end
   end
 end

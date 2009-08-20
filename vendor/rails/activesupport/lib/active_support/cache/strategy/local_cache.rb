@@ -14,20 +14,22 @@ module ActiveSupport
 
         def middleware
           @middleware ||= begin
-            klass = Class.new
-            klass.class_eval(<<-EOS, __FILE__, __LINE__)
-              def initialize(app)
-                @app = app
-              end
+            klass = Class.new do
+              include MiddlewareMethods
+            end
+          end
+        end
 
-              def call(env)
-                Thread.current[:#{thread_local_key}] = MemoryStore.new
-                @app.call(env)
-              ensure
-                Thread.current[:#{thread_local_key}] = nil
-              end
-            EOS
-            klass
+        module MiddlewareMethods
+          def initialize(app)
+            @app = app
+          end
+
+          def call(env)
+            Thread.current[:local_core_server_connection_cache] = MemoryStore.new
+            @app.call(env)
+          ensure
+            Thread.current[:local_core_server_connection_cache] = nil
           end
         end
 
@@ -92,7 +94,7 @@ module ActiveSupport
 
         private
           def thread_local_key
-            @thread_local_key ||= "#{self.class.name.underscore}_local_cache".gsub("/", "_").to_sym
+            :local_core_server_connection_cache
           end
 
           def local_cache

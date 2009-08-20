@@ -122,8 +122,13 @@
             <%# Export/access options %>
             <%- if !@view.nil? -%>
             <li>
+              <%- if true -%>
               <a id='apiLink' class='staticLink'
                 href='/views/<%= @view.id %>/rows.xml?accessType=API'><span class='linkIcon'>API</span></a>
+              <%- else -%>
+              <a id='apiLink' class='staticLink'
+                href='/data/api_popup' rel='modal'><span class='linkIcon'>API</span></a>
+              <%- end -%>
             </li>
             <li class='separator'>
               <a id='rssLink' class='staticLink'

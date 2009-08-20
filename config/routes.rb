@@ -48,6 +48,7 @@ ActionController::Routing::Routes.draw do |map|
     data.data_splash        'data/splash',      :action => 'splash'
     data.data_noie          'data/noie',        :action => 'noie'
     data.data_redirected    'data/redirected',  :action => 'redirected'
+    data.data_api_popup     'data/api_popup',   :action => 'api_popup'
   end
   
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
@@ -155,6 +156,8 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'widgets_meta/:id/meta_tab_header', :controller => 'widgets', :action => 'meta_tab_header'
   map.connect 'widgets_meta/:id/meta_tab', :controller => 'widgets', :action => 'meta_tab'
+
+  map.connect 'new_image', :controller => 'themes', :action => 'new_image'
 
   map.connect 'stylesheets/theme/:id.css', :controller => 'themes', :action => 'theme'
   

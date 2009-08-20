@@ -12,6 +12,8 @@ module Theme
             host = request.host
             if host.include? 'redwood'
                 theme = 'redwood'
+            elsif host.include? 'datasf'
+                theme = 'datasf'
             elsif host.include? 'gov'
                 theme = 'gov'
             end

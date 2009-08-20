@@ -263,11 +263,11 @@ blist.widget.updateMetaTabHeader = function(tabKey)
 };
 
 blist.widget.metaTabMap = {
-    "summary": "#widgetMeta .singleInfoSummary .infoContent",
-    "comments": "#widgetMeta .singleInfoComments .infoContent",
-    "filtered": "#widgetMeta .singleInfoFiltered .infoContent",
-    "activity": "#widgetMeta .singleInfoActivity .infoContent",
-    "publishing": "#widgetMeta .singleInfoPublishing .infoContent"
+    "summary": ".singleInfoSummary .infoContent",
+    "comments": ".singleInfoComments .infoContent",
+    "filtered": ".singleInfoFiltered .infoContent",
+    "activity": ".singleInfoActivity .infoContent",
+    "publishing": ".singleInfoPublishing .infoContent"
 };
 blist.widget.updateMetaTab = function(tabKey)
 {
@@ -378,14 +378,15 @@ $(function ()
         $("#widgetMeta .summaryTabs").infoPaneNavigate({
             tabSelector: "li:not('.scrollArrow')",
             tabMap: {
-                "tabSummary": "#widgetMeta .singleInfoSummary",
-                "tabFiltered": "#widgetMeta .singleInfoFiltered",
-                "tabComments": "#widgetMeta .singleInfoComments",
-                "tabActivity": "#widgetMeta .singleInfoActivity",
-                "tabPublishing": "#widgetMeta .singleInfoPublishing"
+                "tabSummary": ".singleInfoSummary",
+                "tabFiltered": ".singleInfoFiltered",
+                "tabComments": ".singleInfoComments",
+                "tabActivity": ".singleInfoActivity",
+                "tabPublishing": ".singleInfoPublishing"
             },
-            allPanelsSelector : "#widgetMeta .infoContentOuter",
-            expandableSelector: "#widgetMeta .infoContent",
+            containerSelector: "#widgetMeta",
+            allPanelsSelector : ".infoContentOuter",
+            expandableSelector: ".infoContent",
             isWidget: true,
             switchCompleteCallback: widgetNS.sizeGrid,
             scrollToTabOnActivate: false

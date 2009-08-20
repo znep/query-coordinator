@@ -636,15 +636,16 @@ $(function ()
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
     $("#infoPane .summaryTabs").infoPaneNavigate({
         tabMap: {
-            "tabSummary" : "#infoPane .singleInfoSummary",
-            "tabFiltered" : "#infoPane .singleInfoFiltered",
-            "tabComments" : "#infoPane .singleInfoComments",
-            "tabSharing" : "#infoPane .singleInfoSharing",
-            "tabPublishing" : "#infoPane .singleInfoPublishing",
-            "tabActivity" : "#infoPane .singleInfoActivity"
+            "tabSummary" : ".singleInfoSummary",
+            "tabFiltered" : ".singleInfoFiltered",
+            "tabComments" : ".singleInfoComments",
+            "tabSharing" : ".singleInfoSharing",
+            "tabPublishing" : ".singleInfoPublishing",
+            "tabActivity" : ".singleInfoActivity"
         },
-        allPanelsSelector : "#infoPane .infoContentOuter",
-        expandableSelector: "#infoPane .infoContent",
+        containerSelector: "#infoPane",
+        allPanelsSelector : ".infoContentOuter",
+        expandableSelector: ".infoContent",
         // After switching tabs, update the menu and size the Swf.
         switchCompleteCallback: function ($tab)
         {

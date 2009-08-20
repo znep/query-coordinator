@@ -53,7 +53,7 @@ module ActionController
           # getting the right data without doing it is uglier, and we're
           # likely to want to re-raise the exception regardless.
           begin
-            raise CoreServer::TooManyRequests.new(self, action_name)
+            raise CoreServer::TooManyRequests.new(self, action_name, core_stats[:requests])
           rescue CoreServer::TooManyRequests => e
             notify_hoptoad(e)
             raise unless Rails.env.production?

@@ -1,6 +1,6 @@
 class DataController < ApplicationController
   caches_page :splash, :noie, :redirected
-  skip_before_filter :require_user
+  skip_before_filter :require_user, :api_popup
   
   PAGE_SIZE = 10
 
@@ -184,6 +184,10 @@ class DataController < ApplicationController
   end
   
   def redirected
+    render(:layout => "splash")
+  end
+  
+  def api_popup
     render(:layout => "splash")
   end
 

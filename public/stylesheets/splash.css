@@ -44,12 +44,15 @@
 }
 .splashActionBox.last { margin-right: 0; }
 .splashActionBox.imageActionBox { width: 240px; }
+.apiSplash .splashActionBox.imageActionBox { width: 251px; }
+
 .splashActionBox.doubleActionBox
 {
     cursor: default;
     margin-right: 0;
     width: 43em;
 }
+.apiSplash .splashActionBox.doubleActionBox { width: 42em; }
 
 .splashActionBox h3
 {
@@ -109,6 +112,10 @@
 .splashActionBox.doubleActionBox .splashActionButton a
 {
     width: 195px;
+}
+.apiSplash .splashActionBox.doubleActionBox .splashActionButton a
+{
+    width: 190px;
 }
 
 .splashContainer .closeContainer

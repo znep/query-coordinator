@@ -48,6 +48,7 @@ ActionController::Routing::Routes.draw do |map|
     data.data_splash        'data/splash',      :action => 'splash'
     data.data_noie          'data/noie',        :action => 'noie'
     data.data_redirected    'data/redirected',  :action => 'redirected'
+    data.data_api_popup     'data/api_popup',   :action => 'api_popup'
   end
   
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }

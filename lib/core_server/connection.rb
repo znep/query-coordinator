@@ -1,6 +1,6 @@
 module CoreServer
   class Connection
-    attr_accessor :cache
+    cattr_accessor :cache
 
     def initialize(logger = nil)
       @logger = logger

@@ -95,7 +95,7 @@ module BlistsHelper
         items << {'section_title' => first_char, 'class' => 'sortHeader'}
       end
       items << {'text' => g.name, 'href' => href_group_prefix + g.id,
-          'title' => get_title({title_group_key => g.id}), 
+          'title' => get_title({title_group_key => g.id, 'object' => g}),
           'q' => "{'owner_group': '#{g.id}'}"
       }
     end
@@ -110,7 +110,7 @@ module BlistsHelper
         items << {'section_title' => first_char, 'class' => 'sortHeader'}
       end
       items << {'text' => c.displayName, 'href' => href_prefix + c.id,
-          'title' => get_title({title_key => c.id}),
+          'title' => get_title({title_key => c.id, 'object' => c}),
           'q' => "{'owner': '#{c.id}'}"
       }
     end

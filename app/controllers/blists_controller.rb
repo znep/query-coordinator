@@ -362,8 +362,13 @@ private
     return ret_views
   end
 
-  def get_name(user_id)
-    return user_id == current_user.id ? 'me' : User.find(user_id).displayName
+  def get_name(user_id, obj)
+    return user_id == current_user.id ? 'me' :
+      (obj || User.find(user_id)).displayName
+  end
+
+  def get_group_name(group_id, obj)
+    return (obj || Group.find(group_id)).name
   end
 
   def get_title(params = nil)
@@ -375,24 +380,27 @@ private
 
     parts = Array.new
     if !params['owner'].nil?
-      parts << 'owned by ' + get_name(params['owner'])
+      parts << 'owned by ' + get_name(params['owner'], params['object'])
     end
     if !params['owner_group'].nil?
-      parts << 'owned by ' + Group.find(params['owner_group']).name
+      parts << 'owned by ' +
+        get_group_name(params['owner_group'], params['object'])
     end
 
     if !params['shared_to'].nil?
-      parts << 'shared to ' + get_name(params['shared_to'])
+      parts << 'shared to ' + get_name(params['shared_to'], params['object'])
     end
     if !params['shared_to_group'].nil?
-      parts << 'shared to ' + Group.find(params['shared_to_group']).name
+      parts << 'shared to ' +
+        get_group_name(params['shared_to_group'], params['object'])
     end
 
     if !params['shared_by'].nil?
-      parts << 'shared by ' + get_name(params['shared_by'])
+      parts << 'shared by ' + get_name(params['shared_by'], params['object'])
     end
     if !params['shared_by_group'].nil?
-      parts << 'shared by ' + Group.find(params['shared_by_group']).name
+      parts << 'shared by ' +
+        get_group_name(params['shared_by_group'], params['object'])
     end
 
     if !params['untagged'].nil? && params['untagged'] == 'true'

@@ -1550,8 +1550,23 @@
             }
         }
 
-        var onKeyPress = function(event) {
-            switch (event.keyCode || event.charCode) {
+        var didNavKeyDown = false;
+        var navKeyDown = function(event)
+        {
+            didNavKeyDown = true;
+            doKeyNav(event);
+        };
+
+        var navKeyPress = function(event)
+        {
+            if (!didNavKeyDown) { doKeyNav(event); }
+            didNavKeyDown = false;
+        };
+
+        var doKeyNav = function(event)
+        {
+            switch (event.keyCode)
+            {
                 case 34:
                     // Page up
                     navigateY(-pageSize, event);
@@ -1771,7 +1786,8 @@
 
         // This guy receives focus when the user interacts with the grid
         var $navigator = $($outside.find('.blist-table-navigator'))
-            .keypress(onKeyPress)
+            .keydown(navKeyDown)
+            .keypress(navKeyPress)
             .bind('copy', onCopy);
 
         // Set up initial top of locked section

@@ -158,7 +158,7 @@ blist.publish.applyTabs = function($elem, subhash)
     }
     if ($elem.children('li.active:not(:hidden)').length === 0)
     {
-        //$elem.infoPaneNavigate().activateTab($elem.children('li:first-child'));
+        $elem.infoPaneNavigate().activateTab($elem.children('li:first-child'), true);
     }
 };
 
@@ -515,14 +515,14 @@ blist.publish.loadCustomization = function()
     // Tab behavior
     $("#publishOptionsPane .summaryTabs").infoPaneNavigate({
         tabMap: {
-            "tabTemplates" : "#publishOptionsPane .singleInfoTemplates",
-            "tabVisual" : "#publishOptionsPane .singleInfoVisual",
-            "tabMenuControl" : "#publishOptionsPane .singleInfoMenuControl",
-            "tabTab" : "#publishOptionsPane .singleInfoTab",
-            "tabAdvanced" : "#publishOptionsPane .singleInfoAdvanced"
+            "tabTemplates" :   ".singleInfoTemplates",
+            "tabVisual" :      ".singleInfoVisual",
+            "tabMenuControl" : ".singleInfoMenuControl",
+            "tabTab" :         ".singleInfoTab",
+            "tabAdvanced" :    ".singleInfoAdvanced"
         },
-        allPanelsSelector : "#publishOptionsPane .infoContentOuter",
-        expandableSelector: "#publishOptionsPane .infoContent",
+        allPanelsSelector : ".infoContentOuter",
+        expandableSelector: ".infoContent",
         initialTab: "tabTemplates"
     });
 

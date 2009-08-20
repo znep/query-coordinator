@@ -833,3 +833,53 @@ ul.convertables li a:hover
     margin-top: 0;
 }
 /*** END: New Customization Template ***/
+
+/*** START: New Image Template ***/
+.dialogWrapper.modalDialog.newImage 
+{
+    margin-left: 12em;
+    width: 56.5em;
+}
+
+.newImageWrapper label
+{
+    display: block;
+    font-size: 1.3em;
+    height: 2.5em;
+    margin: 0.5em 0 -2.7em;
+    padding-right: 1em;
+    text-align: right;
+    width: 10em;
+}
+
+.newImageWrapper input
+{
+    margin-left: 12.5em;
+    padding: 0.2em;
+    width: 27.5em;
+}
+
+.newImageWrapper #new_image_file_name
+{
+    width: 17em;
+}
+
+.newImageWrapper .fileBrowseButtonListContainer
+{
+    display: inline;
+    position: absolute;
+    right: 7em;
+}
+
+.newImageWrapper .requiredText
+{
+    background: url(/stylesheets/images/common/required.png) no-repeat;
+    padding-left: 1.5em;
+    position: absolute;
+}
+
+.newImageWrapper .actionButtons
+{
+    margin-top: 0;
+}
+/*** END: New Image Template ***/

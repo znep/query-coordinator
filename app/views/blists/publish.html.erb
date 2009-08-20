@@ -670,6 +670,7 @@
     blist.publish.currentTheme = <%= JSON.generate( @customization ) %>;
   </script>
   <%= javascript_include_tag "screens/info-pane.js", "plugins/colorpicker.js",
-      "plugins/ui.core", "plugins/ui.draggable", "widgets/reorderable-list.js",
-      "screens/blist-publish-screen", :cache => "cache/blists_publish" %>
+      "plugins/ui.core", "plugins/ui.draggable", "plugins/ajaxupload.3.0",
+      "widgets/reorderable-list.js", "screens/blist-publish-screen",
+      :cache => "cache/blists_publish" %>
 <% end %>

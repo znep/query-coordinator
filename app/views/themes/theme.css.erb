@@ -22,6 +22,13 @@ body {
     background-image: <%= main_button_inactive_bg %>;
 }
 
+<% if !th.logo_vertical_offset.nil? %>
+<%= th.body_class %> #mainLogo
+{
+  top: <%= th.logo_vertical_offset %>;
+}
+<% end %>
+
 body.home #mainNav li.home,
 body.home #mainNav li.home a span,
 body.discover #mainNav li.discover a span,
@@ -36,6 +43,16 @@ body.discover #mainNav li.discover
     background-image: <%= th.image :logo %>;
 }
 
+/*** DIALOG BOXEN ***/
+.dialogBox .header
+{
+    background-color: #<%= th.highlight_color %>;
+}
+
+.dialogBox .header h1 
+{
+    background-image: <%= th.image :dialog_logo %>;
+}
 
 /*** CAROUSEL ***/
 

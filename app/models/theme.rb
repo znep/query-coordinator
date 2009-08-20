@@ -68,6 +68,11 @@ module Theme
         @@active_name
     end
 
+    # The body class included for themes
+    def self.body_class
+        ".#{@@active_name}"
+    end
+    
     # Retrieve favicon URL for the theme
     def self.favicon
         "/images/themes/#{Theme.active}/favicon.ico"

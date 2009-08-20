@@ -470,7 +470,7 @@ blist.namespace.fetch('blist.data.types');
         if (plain)
             // TODO
             return url;
-        return "value && ('<img src=\"' + escape(" + url + ") + '\"></img>')";
+        return value + " && ('<img src=\"' + escape(" + url + ") + '\"></img>')";
     };
 
     var renderDocument = function(value, base, plain) {

@@ -261,7 +261,13 @@ module BlistsHelper
   end
 
   def images_select_options(selected_image = nil)
-    options_for_select({'None' => 'none', 'Socrata' => 'socrata', 'Upload a New Logo...' => 'upload'})
+    image_options = [['None', 'none'], ['Socrata', 'socrata'], ['Upload a New Logo...', 'upload']]
+    images = Image.find
+    if images.size > 0
+      image_options << ['', 'none']
+      images.each { |image| image_options << [image.nameForOutput, image.id] }
+    end
+    options_for_select(image_options, selected_image)
   end
 
   def get_publish_embed_code_for_view(view, options = {}, variation = "")

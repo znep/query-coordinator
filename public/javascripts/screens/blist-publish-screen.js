@@ -106,9 +106,27 @@ blist.publish.applyFrameColor = function($elem, values)
     }
 };
 
-blist.publish.applyLogo = function($elem, values)
+blist.publish.applyLogo = function($elem, value)
 {
-    // do stuff
+    if (value == 'none')
+    {
+        $elem.addClass('hide');
+    }
+    else if (value == 'default')
+    {
+        $elem.removeClass('hide')
+             .css('background-image', 'url(/stylesheets/images/widgets/socrata_logo_player.png)');
+    }
+    else if (value.match(/[\dA-F]{8}-([\dA-F]{4}-){3}[\dA-F]{12}/))
+    {
+        $elem.removeClass('hide')
+             .css('background-image', 'url(/img/' + value + ')');
+    }
+    else
+    {
+        $elem.removeClass('hide')
+             .css('background-image', 'url(' + value + ')');
+    }
 };
 
 blist.publish.applyTabs = function($elem, subhash)
@@ -162,18 +180,17 @@ blist.publish.customizationApplication = {
                                        grid_header_size:    [ { selector: 'div.blist-th .info-container', css: 'font-size', hasUnit: true }],
                                        grid_data_size:      [ { selector: '.blist-td', css: 'font-size', hasUnit: true }] } },
     frame:          { _group:                               [ { selector: 'body', properties: ['color', 'gradient', 'border'], callback: publishNS.applyFrameColor } ],
-                      logo:          { show:                [ { selector: '.widgetLogoWrapper', hideShow: true } ],
-                                       _group:              [ { properties: ['type', 'url'], callback: publishNS.applyLogo } ] },
+                      logo:                                 [ { selector: '.widgetLogoWrapper > a', callback: publishNS.applyLogo } ],
                       footer_link:   { show:                [ { selector: '.getPlayerAction', hideShow: true } ],
                                        url:                 [ { selector: '.getPlayerAction a', attr: 'href' } ],
                                        text:                [ { selector: '.getPlayerAction a', callback: function($elem, value) { $elem.text(value); } } ] } },
     grid:           { row_numbers:                          [ { selector: '.blist-table-locked-scrolls:has(.blist-table-row-numbers)', hideShow: true },
-                                                              { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { true: '49px', false: '0' } },
-                                                              { selector: '#data-grid .blist-table-inside .blist-tr', css: 'left', map: { true: '49px', false: '0' } } ],
-                      wrap_header_text:                     [ { selector: '.blist-th .info-container, .blist-th .name-wrapper', css: 'height', map: { true: '2.5em', false: '' } },
-                                                              { selector: '.blist-th .info-container', css: 'margin-top', map: { true: '-1.25em', false: '' } },
-                                                              { selector: 'div.th-inner-container', css: 'white-space', map: { true: 'normal', false: '' } },
-                                                              { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { true: '4.5em', false: '' } } ],
+                                                              { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { 'true': '49px', 'false': '0' } },
+                                                              { selector: '#data-grid .blist-table-inside .blist-tr', css: 'left', map: { 'true': '49px', 'false': '0' } } ],
+                      wrap_header_text:                     [ { selector: '.blist-th .info-container, .blist-th .name-wrapper', css: 'height', map: { 'true': '2.5em', 'false': '' } },
+                                                              { selector: '.blist-th .info-container', css: 'margin-top', map: { 'true': '-1.25em', 'false': '' } },
+                                                              { selector: 'div.th-inner-container', css: 'white-space', map: { 'true': 'normal', 'false': '' } },
+                                                              { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { 'true': '4.5em', 'false': '' } } ],
                       header_icons:                         [ { selector: '.blist-th-icon', hideShow: true } ],
                       row_height:                           [ { selector: '.blist-td', css: 'height', hasUnit: true },
                                                               { selector: '.blist-td', css: 'line-height', hasUnit: true } ],
@@ -187,7 +204,7 @@ blist.publish.customizationApplication = {
                       fullscreen:                           [ { selector: '.headerMenu .fullscreen, .fullScreenButton', hideShow: true } ],
                       republish:                            [ { selector: '.headerMenu .publish', hideShow: true } ] },
     meta:                                                   [ { selector: '#widgetMeta .summaryTabs', callback: publishNS.applyTabs }],
-    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { true: '', false: 'none !important' } } ],
+    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none !important' } } ],
                       interstitial:                         [ { callback: publishNS.applyInterstitial } ] },
     publish:        { dimensions:   { width:                [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('width', value + 'px'); } } ],
                                       height:               [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('height', value + 'px'); } } ] },
@@ -248,7 +265,7 @@ blist.publish.applyCustomizationToPreview = function(hash)
                             else if (value['map'] !== undefined)
                             {
                                 publishNS.appendToStylesBuffer(value['selector'], value['css'],
-                                    value['map'][subhash[key]]);
+                                    value['map'][subhash[key].toString()]);
                             }
                             else
                             {
@@ -591,6 +608,26 @@ blist.publish.loadCustomization = function()
             $this.closest('dl').next().hide();
             $('#customization_grid_zebra').val('#ffffff');
             publishNS.valueChanged();
+        }
+    });
+    
+    // Upload custom UI
+    $('#customization_frame_logo').change(function () {
+        var $this = $(this);
+        if ($this.val() == 'upload')
+        {
+            $("#modal").jqmShow($('<a href="/new_image"></a>'));
+            $this.val('none');
+
+            blist.common.imageUploadedHandler = function(response)
+            {
+                $this.append('<option value="' + response['id'] + '">'+ response['nameForOutput'] + '</option>');
+                $this.val(response['id']);
+                publishNS.valueChanged();
+
+                // Courtesy unbind
+                blist.common.imageUploadedHandler = null;
+            };
         }
     });
 })(jQuery);

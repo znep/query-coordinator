@@ -471,12 +471,3 @@ img.blist-table-option-icon
     padding-right: 5px;
     width: 30px;
 }
-div.blist-table div.blist-table-edit-container input.keycatcher
-{
-    height: 0;
-    left: -1000px;
-    min-width: 0;
-    padding: 0;
-    position: absolute;
-    width: 0;
-}

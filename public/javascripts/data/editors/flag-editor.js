@@ -42,7 +42,6 @@
             editorInserted: function()
             {
                 this.$dom().addClass('blist-combo-wrapper');
-                this.$dom().append('<input type="text" class="keycatcher" />');
                 this.$editor().find('.flag-combo').combo({
                     name: 'flag-combo',
                     values: flagValues,
@@ -59,7 +58,7 @@
 
             focus: function()
             {
-                this.$dom().find('.keycatcher').focus();
+                this.$dom().find('.flag-combo').focus();
             }
         }
     }));

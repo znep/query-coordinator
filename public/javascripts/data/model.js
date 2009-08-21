@@ -776,7 +776,7 @@ blist.namespace.fetch('blist.data');
          */
         this.remove = function(rows)
         {
-            if (!(typeof rows == Array))
+            if (!(rows instanceof Array))
             { rows = [rows]; }
 
             for (var i = 0; i < rows.length; i++)

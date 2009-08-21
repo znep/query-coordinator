@@ -775,6 +775,7 @@ blist.namespace.fetch('blist.data.types');
     if ($.blistEditor)
     {
         blist.data.types.text.editor = $.blistEditor.text;
+        blist.data.types.flag.editor = $.blistEditor.flag;
     }
 
     for (var name in blist.data.types) {

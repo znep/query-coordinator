@@ -66,7 +66,9 @@
             var pos = $this.position();
             var left = pos.left;
             var top = pos.top + $this.outerHeight() - 1;
-            
+            $dropdown.css('left', left);
+            $dropdown.css('top', top);
+
             $dropdown.css({ width: ($this.outerWidth() - 2) + 'px' });
             $dropdown.slideDown(100);
         }

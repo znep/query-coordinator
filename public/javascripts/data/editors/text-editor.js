@@ -41,7 +41,7 @@
 
             focus: function()
             {
-                this.$editor().find(':text').focus();
+                this.$editor().find(':text').focus().select();
             }
         }
     }));

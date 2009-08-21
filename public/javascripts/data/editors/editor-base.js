@@ -65,6 +65,7 @@
 
                 var $editor = editObj.$editor();
                 $domObj.append($editor);
+                editObj.editorInserted();
 
                 $(document).bind('mousedown.blistEditor_' + editObj._uid,
                     function (e) { docMouseDown(editObj, e); });
@@ -90,6 +91,11 @@
             $editor: function()
             {
                 // Implement me
+            },
+
+            editorInserted: function()
+            {
+                // Override me if desired
             },
 
             currentValue: function()

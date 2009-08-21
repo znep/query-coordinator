@@ -15,7 +15,7 @@ class DataController < ApplicationController
     
     # NOTE: Temporary hacks to get agency filtering working until we have org filtering
     @agency_id = Theme.agency_id
-    agency_mcache_key = (@agency_id.nil? ? "" : "-agency-#{@agency_id}")
+    @agency_mcache_key = (@agency_id.nil? ? "" : "-agency-#{@agency_id}")
 
     unless @all_views_rendered = read_fragment("discover-tab-all#{agency_mcache_key}")
       opts = {:limit => PAGE_SIZE}

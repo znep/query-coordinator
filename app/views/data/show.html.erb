@@ -98,7 +98,7 @@
       <%- end -%>
     </div>
     <div id="discoverTabPopular" class="tabContentContainer clearfix<%= @search_views.nil? ? ' active' : '' %>">
-	  <% prerendered_cache "discover-tab-popular", @popular_views_rendered, :expires_in => 15.minutes do %>
+	  <% prerendered_cache "discover-tab-popular#{@agency_mcache_key}", @popular_views_rendered, :expires_in => 15.minutes do %>
 		<%= render(:partial => "view_list_tab", :locals => {
 		  :tab_title => t(:discover_popular_content_header),
 		  :views => @popular_views, :views_total => @popular_views_total,
@@ -108,7 +108,7 @@
 	  <% end %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix">
-	  <% prerendered_cache "discover-tab-all", @all_views_rendered, :expires_in => 15.minutes do %>
+	  <% prerendered_cache "discover-tab-all#{@agency_mcache_key}", @all_views_rendered, :expires_in => 15.minutes do %>
 		<%= render(:partial => "view_list_tab", :locals => {
 		  :tab_title => "All #{t(:blists_name)}",
 		  :views => @all_views, :views_total => @all_views_total,

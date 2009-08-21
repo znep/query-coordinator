@@ -471,3 +471,11 @@ img.blist-table-option-icon
     padding-right: 5px;
     width: 30px;
 }
+.blist-table .blist-combo-wrapper .icon-filler
+{ padding-left: 5px; }
+.blist-table .blist-combo-wrapper .icon-img
+{
+    float: left;
+    max-height: 1.5833em;
+    padding-right: 5px;
+}

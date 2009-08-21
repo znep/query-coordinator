@@ -45,7 +45,7 @@
                 this.$editor().find('.flag-combo').combo({
                     name: 'flag-combo',
                     values: flagValues,
-                    value: this.originalValue,
+                    value: this.originalValue || 'null',
                     renderFn: renderFlagValue
                 });
             },

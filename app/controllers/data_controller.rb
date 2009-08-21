@@ -17,7 +17,7 @@ class DataController < ApplicationController
     @agency_id = Theme.agency_id
     @agency_mcache_key = (@agency_id.nil? ? "" : "-agency-#{@agency_id}")
 
-    unless @all_views_rendered = read_fragment("discover-tab-all#{agency_mcache_key}")
+    unless @all_views_rendered = read_fragment("discover-tab-all#{@agency_mcache_key}")
       opts = {:limit => PAGE_SIZE}
       if !@agency_id.nil?
         opts.merge!({:agencyId => @agency_id})
@@ -29,7 +29,7 @@ class DataController < ApplicationController
       # TODO: Tags should also allow filtering by org
       @all_views_tags = Tag.find({ :method => "viewsTags", :limit => 5 })
     end
-    unless @popular_views_rendered = read_fragment("discover-tab-popular#{agency_mcache_key}")
+    unless @popular_views_rendered = read_fragment("discover-tab-popular#{@agency_mcache_key}")
       opts = {:top100 => true, :limit => PAGE_SIZE, :page => 1}
       if !@agency_id.nil?
         opts.merge!({:agencyId => @agency_id})

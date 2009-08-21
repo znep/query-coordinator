@@ -21,6 +21,7 @@
     // Discovery page
     "carousel bg": "9a9a9a,636363",
     "carousel item title fg": "0071bc",
+    "agency id" : 504, // This really should be an agency name, but ultimately this will be replaced by Orgs 
     
     // Dataset page
     "menu button bg" : "4584BB:.5,4383BD:.5,53A3EB",

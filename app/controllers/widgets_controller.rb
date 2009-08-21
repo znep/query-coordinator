@@ -55,7 +55,7 @@ class WidgetsController < ApplicationController
         @theme.merge!(WidgetCustomization.find(params[:customization_id]).customization)
       rescue CoreServer::CoreServerError => e
         flash[:error] = e.error_message
-        return (render 'shared/error')
+        return (render 'shared/error', :status => :internal_server_error)
       end
     end
 
@@ -64,22 +64,22 @@ class WidgetsController < ApplicationController
     rescue CoreServer::ResourceNotFound
       flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
         ' cannot be found, or has been deleted.'
-      return (render 'shared/error')
+      return (render 'shared/error', :status => :not_found)
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required' ||
         e.error_code == 'permission_denied'
         flash[:error] = 'You do not have permissions to view this ' +
           I18n.t(:blist_name).downcase
-        return (render 'shared/error')
+        return (render 'shared/error', :status => :unauthorized )
       else
         flash[:error] = e.error_message
-        return (render 'shared/error')
+        return (render 'shared/error', :status => :internal_server_error)
       end
     end
     if !@view.can_read()
       flash[:error] = 'You do not have permissions to view this ' +
         I18n.t(:blist_name).downcase
-      return (render 'shared/error')
+      return (render 'shared/error', :status => :unauthorized)
     end
 
     @meta_description = Helper.instance.meta_description(@view)

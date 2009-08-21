@@ -374,16 +374,18 @@ $(function ()
     
     if ($("#widgetMeta").length > 0)
     {
+        var tabMap = {
+            "tabSummary": ".singleInfoSummary",
+            "tabFiltered": ".singleInfoFiltered",
+            "tabComments": ".singleInfoComments",
+            "tabActivity": ".singleInfoActivity",
+            "tabPublishing": ".singleInfoPublishing"
+        };
+        $('#widgetMeta ' + tabMap[$('#widgetMeta .summaryTabs li:first-child').attr('id')]).addClass('active');
         // Set up the info pane tab switching.
         $("#widgetMeta .summaryTabs").infoPaneNavigate({
             tabSelector: "li:not('.scrollArrow')",
-            tabMap: {
-                "tabSummary": ".singleInfoSummary",
-                "tabFiltered": ".singleInfoFiltered",
-                "tabComments": ".singleInfoComments",
-                "tabActivity": ".singleInfoActivity",
-                "tabPublishing": ".singleInfoPublishing"
-            },
+            tabMap: tabMap,
             containerSelector: "#widgetMeta",
             allPanelsSelector : ".infoContentOuter",
             expandableSelector: ".infoContent",

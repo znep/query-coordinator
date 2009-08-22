@@ -27,7 +27,7 @@
         <%= text_field_tag("publishHeight", "344") %> px
       </p>
       <p class="field">
-        <%- unless @customization_id -%>
+        <%- if customization_id.empty? -%>
           <label for="publishVariation">Color</label>
           <%= select_tag("publishVariation", options_for_select({ 'Blue' => '', 'Black' => 'black' })) %>
         <%- end -%>
@@ -38,7 +38,7 @@
       <%= text_area_tag("publishCode") %>
       <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(view,
           {:dimensions => { :width => "#width#",  :height => "#height#" }},
-          (@customization_id || "#variation#"))) %>
+          (customization_id.empty? ? "#variation#" : customization_id ))) %>
       <ul class="actionButtons clearfix">
         <li class="flushLeft"><a id="previewWidgetLink" href="<%= "/widgets_preview/#{view.id}" %>" class="arrowButton">See Preview</a></li>
       </ul>

@@ -264,7 +264,7 @@
 
     <div class="mainContent clearfix">
       <p>Copy and paste this HTML code into your blog</p>
-      <%= text_area_tag("publishCode", get_publish_embed_code_for_view(@view)) %>
+      <%= text_area_tag("publishCode", get_publish_embed_code_for_view(@view, {}, params[:customization_id])) %>
       <ul class="actionButtons">
         <li><a href="#close" class="arrowButton jqmClose">Close</a></li>
       </ul>

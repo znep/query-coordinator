@@ -119,7 +119,6 @@ class WidgetsController < ApplicationController
     end
     
     @tabKey = params[:tab]
-    @customization_id = params[:customization_id]
     @view = View.find(params[:id])
     if (@tabKey == "activity")
       @view_activities = Activity.find({:viewId => @view.id})

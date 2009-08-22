@@ -1,4 +1,5 @@
 <%= render(:partial => "blists/meta_tab_#{@tabKey}", 
             :locals => { :view => @view, :page_single => false, 
                         :allow_edit => false, :in_widget => true,
-                        :allow_commenting => false }) %>
+                        :allow_commenting => false,
+                        :customization_id => params[:customization_id] }) %>

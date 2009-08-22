@@ -271,7 +271,8 @@ blist.widget.metaTabMap = {
 };
 blist.widget.updateMetaTab = function(tabKey)
 {
-    $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab?tab=' + tabKey,
+    $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab?tab=' + tabKey +
+                       '&customization_id=' + widgetNS.customizationId,
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);

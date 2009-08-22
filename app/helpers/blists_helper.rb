@@ -261,7 +261,7 @@ module BlistsHelper
   end
 
   def images_select_options(selected_image = nil)
-    image_options = [['None', 'none'], ['Socrata', 'socrata'], ['Upload a New Logo...', 'upload']]
+    image_options = [['None', 'none'], ['Socrata', 'default'], ['Upload a New Logo...', 'upload']]
     images = Image.find
     if images.size > 0
       image_options << ['', 'none']

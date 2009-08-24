@@ -69,8 +69,33 @@ var publishNS = blist.namespace.fetch('blist.publish');
 blist.publish.applyFrameColor = function($elem, values)
 {
     if (values['gradient'] === true)
-    {
-        // not yet implemented
+    { 
+        var baseGradient = {
+            h: 38,
+            rh: 30,
+            fc: $.gradientString([
+                $.addColors(values['color'], '4c4c4c'),
+                [$.addColors(values['color'], '191919'), 0.4],
+                [values['color'], 0.4]])
+        };
+        if (values['border'] !== false)
+        {
+            baseGradient['ec'] = values['border'].slice(1);
+            baseGradient['ew'] = 1;
+        }
+
+        // top gradients
+        publishNS.appendToStylesBuffer('#header .wrapperT', 'background-image',
+            $.urlToImageBuilder($.extend({ w: 3, rw: 1, rx: 1 }, baseGradient), 'png', true));
+        publishNS.appendToStylesBuffer('#header .wrapperTR', 'background-image',
+            $.urlToImageBuilder($.extend({ r: 8, rx: 8 }, baseGradient), 'png', true));
+        publishNS.appendToStylesBuffer('#header', 'background-image',
+            $.urlToImageBuilder($.extend({ r: 8, rw: 8 }, baseGradient), 'png', true));
+
+        // lower gradient
+        publishNS.appendToStylesBuffer('.widgetFooterWrapper', 'background-image',
+            $.urlToImageBuilder($.extend({}, baseGradient,
+            { h: 80, rh: 80, w: 3, rw: 1, rx: 1, fc: $.gradientString([ [ values['color'], 0.8 ], $.addColors(values['color'], '3f3f3f') ] ) }), 'png', true));
     }
     else
     {
@@ -79,19 +104,6 @@ blist.publish.applyFrameColor = function($elem, values)
             'background-color', values['color']);
         publishNS.appendToStylesBuffer('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
             'background-image', 'none');
-        publishNS.appendToStylesBuffer('.gridInner', 'border-color', values['color']);
-
-        // meta border
-        publishNS.appendToStylesBuffer('.infoContentOuter, .metadataPane .summaryTabs li, .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter, .metadataPane .summaryTabs',
-            'border-color', values['color']);
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li .tabOuter, .metadataPane .summaryTabs li .tabInner',
-            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=ececec&h=23&r=3&s=h&bc=ececec)');
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.active .tabOuter, .metadataPane .summaryTabs li.active .tabInner',
-            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=cacaca&h=23&r=3&s=h&bc=ececec)');
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
-            'background-color', values['color']);
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
-            'border-color', values['color']);
 
         if (values['border'] !== false)
         {
@@ -99,6 +111,26 @@ blist.publish.applyFrameColor = function($elem, values)
             publishNS.appendToStylesBuffer('#header', 'border-bottom', 'none');
         }
     }
+    
+    // sides
+    publishNS.appendToStylesBuffer('.gridInner', 'border-color', values['color']);
+
+    // meta border
+      // general borders
+        publishNS.appendToStylesBuffer('.infoContentOuter, .metadataPane .summaryTabs li, .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter, .metadataPane .summaryTabs',
+            'border-color', values['color']);
+      // inactive tab corners sprite
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li .tabOuter, .metadataPane .summaryTabs li .tabInner',
+            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=ececec&h=23&r=3&s=h&bc=ececec)');
+      // active tab corners sprite
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.active .tabOuter, .metadataPane .summaryTabs li.active .tabInner',
+            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=cacaca&h=23&r=3&s=h&bc=ececec)');
+      // tab scroll buttons background color
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
+            'background-color', values['color']);
+      // tab scroll buttons border color
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
+            'border-color', values['color']);
 
     if (values['border'] !== false)
     {
@@ -335,6 +367,15 @@ blist.publish.applyCustomizationToPreview = function(hash)
     {
         recurse(publishNS.customizationApplication, hash);
         blist.publish.writeStylesBuffer();
+
+        // Update copy code
+        $('.publishCode textarea').text(
+            $('.publishCode #codeTemplate').val()
+                .replace('%variation%', $('#template_name').val())
+                .replace('%width%', hash['publish']['dimensions']['width'])
+                .replace('%height%', hash['publish']['dimensions']['height'])
+                .replace((hash['publish']['show_title'] ? /^<div>/ : /^<div><p.*?<\/p>/), '<div>')
+                .replace((hash['publish']['show_powered_by'] ? /<\/div>$/ : /<p>.*<\/p><\/div>$/), '</div>'));
     }
 };
 
@@ -535,9 +576,6 @@ blist.publish.loadCustomization = function()
             onChange: function(hsb, hex, rgb) {
                 $this.siblings('.colorPickerTrigger').css('background-color', '#' + hex);
                 $this.siblings('input').val('#' + hex);
-
-                // Save changes
-                publishNS.valueChanged();
             }
         });
         $this.siblings('.colorPickerTrigger').click(function()
@@ -552,6 +590,9 @@ blist.publish.loadCustomization = function()
                 {
                     $(document).unbind('click.colorPicker');
                     $this.hide();
+
+                    // Save changes
+                    publishNS.valueChanged();
                 }
             });
         });
@@ -618,6 +659,7 @@ blist.publish.loadCustomization = function()
         {
             $("#modal").jqmShow($('<a href="/new_image"></a>'));
             $this.val('none');
+            publishNS.valueChanged();
 
             blist.common.imageUploadedHandler = function(response)
             {

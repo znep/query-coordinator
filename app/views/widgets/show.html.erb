@@ -17,6 +17,34 @@
   
   /* frame */
     <%- if @theme[:frame][:gradient] -%>
+      <%-
+      base_gradient = {
+        :h => 38, :rh => 30,
+        :fc => "#{Color.from_hex(@theme[:frame][:color]) + Color.from_hex('4c4c4c')}," +
+               "#{Color.from_hex(@theme[:frame][:color]) + Color.from_hex('191919')}:0.4," +
+               "#{Color.from_hex(@theme[:frame][:color])}:0.4" }
+      if @theme[:frame][:border]
+        base_gradient[:ec] = @theme[:frame][:border].gsub(/#/, '')
+        base_gradient[:ew] = 1
+      end
+      -%>
+      #header .wrapperT
+      {
+        background-image: <%= box(base_gradient.merge({ :w => 3, :rw => 1, :rx => 1 })) %>;
+      }
+      #header .wrapperTR
+      {
+        background-image: <%= box(base_gradient.merge({ :r => 8, :rx => 8 })) %>;
+      }
+      #header
+      {
+        background-image: <%= box(base_gradient.merge({ :r => 8, :rw => 8 })) %>;
+      }
+      .widgetFooterWrapper
+      {
+        background-image: <%= box(base_gradient.merge({ :h => 80, :rh => 80, :w => 3, :rw => 1, :rx => 1,
+          :fc => "#{Color.from_hex(@theme[:frame][:color])}:0.8,#{Color.from_hex(@theme[:frame][:color]) + Color.from_hex('3f3f3f')}"})) %>;
+      }
     <%- else -%>
       #header,
       #header .wrapperT,
@@ -34,12 +62,12 @@
             border-bottom: none;
         }
       <%- end -%>
-      
-      .gridInner
-      {
-          border-color: <%= @theme[:frame][:color] %>;
-      }
     <%- end -%>
+
+    .gridInner
+    {
+        border-color: <%= @theme[:frame][:color] %>;
+    }
 
     .infoContentOuter,
     .metadataPane .summaryTabs li,
@@ -127,7 +155,6 @@
   <title><%= @view.name %> | <%= th.site_title %></title>
 
 <% end %>
-
     <div id='header'><div class='wrapperTR'><div class='wrapperT clearfix'>
           <a class="menuLink" href="#header-menu" title="Click for more options">Menu</a>
           <%= render(:partial => "widget_menu", :locals => { :theme => @theme }) %>
@@ -237,7 +264,7 @@
 
     <div class="mainContent clearfix">
       <p>Copy and paste this HTML code into your blog</p>
-      <%= text_area_tag("publishCode", get_publish_embed_code_for_view(@view)) %>
+      <%= text_area_tag("publishCode", get_publish_embed_code_for_view(@view, {}, params[:customization_id])) %>
       <ul class="actionButtons">
         <li><a href="#close" class="arrowButton jqmClose">Close</a></li>
       </ul>
@@ -264,6 +291,7 @@
     blist.widget.viewId = '<%= @view.id %>';
     
     blist.widget.theme = <%= JSON.generate( @theme ) %>;
+    blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
   </script>
 
   <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",

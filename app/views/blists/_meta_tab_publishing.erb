@@ -27,15 +27,18 @@
         <%= text_field_tag("publishHeight", "344") %> px
       </p>
       <p class="field">
-        <label for="publishVariation">Color</label>
-        <%= select_tag("publishVariation", options_for_select({ 'Blue' => '', 'Black' => 'black' })) %>
+        <%- if customization_id.empty? -%>
+          <label for="publishVariation">Color</label>
+          <%= select_tag("publishVariation", options_for_select({ 'Blue' => '', 'Black' => 'black' })) %>
+        <%- end -%>
       </p>
       <p id="sizeError" class="hide">The player must be at least 425 pixels wide by 344 pixels tall.</p>
     </div>
     <div class="copyCode">
       <%= text_area_tag("publishCode") %>
       <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(view,
-          {:dimensions => { :width => "#width#",  :height => "#height#" }}, "#variation#")) %>
+          {:dimensions => { :width => "#width#",  :height => "#height#" }},
+          (customization_id.empty? ? "#variation#" : customization_id ))) %>
       <ul class="actionButtons clearfix">
         <li class="flushLeft"><a id="previewWidgetLink" href="<%= "/widgets_preview/#{view.id}" %>" class="arrowButton">See Preview</a></li>
       </ul>

@@ -1485,7 +1485,7 @@
                 !$(clickTarget).is('a'))
             {
                 $(clickTarget).trigger('table_click', event);
-                if (!editMode) { $navigator[0].focus(); }
+                if (!editMode && cellNav) { $navigator[0].focus(); }
             }
 
             if (cellNav && !editMode) { expandActiveCell(); }
@@ -1543,6 +1543,7 @@
         // Page size is configured in renderRows()
         var pageSize = 1;
 
+<<<<<<< HEAD:web/public/javascripts/data/table.js
         var onCopy = function(event) {
             if (cellNav) {
                 $navigator.text(cellNav.getSelectionDoc());
@@ -1565,6 +1566,8 @@
 
         var doKeyNav = function(event)
         {
+            if (!cellNav) { return; }
+
             switch (event.keyCode)
             {
                 case 34:

@@ -3,6 +3,7 @@
     "company": "Redwood",
     "site title": "Redwood City | Open Data",
     "logo": "RedwoodLogo.gif",
+    "dialog logo": "RedwoodLogo.gif",
     "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li class=\"last\"><a href=\"#\">Redwoodcity.gov</a></li></ul>",
     
     // Global

@@ -36,7 +36,7 @@ class BlistsController < SwfController
           return require_user(true)
         else
           flash[:error] = e.error_message
-          return (render 'shared/error')
+          return (render 'shared/error', :status => :internal_server_error)
         end
       end
 
@@ -106,7 +106,7 @@ class BlistsController < SwfController
         return require_user(true)
       else
         flash[:error] = e.error_message
-        return (render 'shared/error')
+        return (render 'shared/error', :status => :internal_server_error)
       end
     end
     

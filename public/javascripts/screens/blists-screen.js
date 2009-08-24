@@ -252,7 +252,8 @@ blist.myBlists.renameClick = function (event)
             myBlistsNS.closeRenameForms();
         }
     });
-    $form.show().find(":text").width($form.width() - 20).focus().select();
+    $form.submit(myBlistsNS.renameSubmit)
+         .show().find(":text").width($form.width() - 20).focus();
 };
 
 blist.myBlists.closeRenameForms = function()
@@ -901,8 +902,6 @@ blist.myBlists.initializeGrid = function()
             myBlistsNS.model.filter(blistsBarNS.defaultFilter);
             $(e.currentTarget).hide();
         }).hide();
-
-    $('.blist-td form').live("submit", myBlistsNS.renameSubmit);
 
     $('.renameLink').live('click', myBlistsNS.renameClick);
 

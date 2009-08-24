@@ -834,6 +834,8 @@
         if (isFinished)
         {
             var view = datasetObj.settings._model.meta().view;
+            $.each(view.columns, function(i, c)
+                { if (c.id == col.id) { c.width = col.width; return false; } });
             if (datasetObj.settings.currentUserId == view.owner.id)
             {
                 $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',

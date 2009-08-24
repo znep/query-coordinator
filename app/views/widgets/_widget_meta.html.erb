@@ -22,7 +22,7 @@
 
 <%# *** START: COMMENTS *** %>
 <%- if theme[:meta][:comments][:show] -%>
-  <div class="infoContentOuter singleInfoComments listContainer active">
+  <div class="infoContentOuter singleInfoComments listContainer">
     <div class="infoContentHeader clearfix">
       <%= render(:partial => "blists/info_comments_header", 
                   :locals => {:view => view, :allow_commenting => false, :in_widget => true}) %>

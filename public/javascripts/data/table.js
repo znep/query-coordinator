@@ -1300,7 +1300,7 @@
             // Update row hover state
             // + 2 for "-r"/"-l" suffix prior to row ID
             var $nhr = $(over).closest('.blist-tr');
-            var newHotID = $nhr.length > 0 && !$nhr.is('.blist-tr-sub') ?
+            var newHotID = $nhr.length > 0 ?
                 $nhr.attr('id').substring(id.length + 2) : null;
             if (newHotID != hotRowID)
             {

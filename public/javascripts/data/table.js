@@ -1502,7 +1502,7 @@
                 }
 
                 $(clickTarget).trigger('table_click', event);
-                if (!editMode) { $navigator[0].focus(); }
+                if (!editMode && cellNav) { $navigator[0].focus(); }
             }
 
             if (cellNav) { expandActiveCell(); }
@@ -1561,6 +1561,8 @@
         var pageSize = 1;
 
         var onKeyPress = function(event) {
+            if (!cellNav) { return; }
+            
             switch (event.keyCode || event.charCode) {
                 case 34:
                     // Page up

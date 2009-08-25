@@ -232,13 +232,13 @@ blist.myBlists.filterGen = function(type, argument, callback)
 blist.myBlists.renameClick = function (event)
 {
     event.preventDefault();
+    
+    // Hide all other forms in td.names.
+    myBlistsNS.closeRenameForms();
 
     var rowId = $(this).closest(".blistItemMenu")
         .attr("id").replace("itemMenu-", "");
     var $currentCell = $("#name-cell-" + rowId).parent();
-
-    // Hide all other forms in td.names.
-    myBlistsNS.closeRenameForms();
 
     $currentCell.closest(".blist-tr").addClass("highlight");
 
@@ -259,7 +259,7 @@ blist.myBlists.renameClick = function (event)
 blist.myBlists.closeRenameForms = function()
 {
     var $this = $("#blist-list");
-    var $allNameCells = $this.find("div.blist-td.blist-list-c3");
+    var $allNameCells = $this.find("div.blist-td.blist-list-c3, div.blist-td-name");
     $allNameCells.closest(".blist-tr").removeClass("highlight");
     $allNameCells.find("form").hide();
     $allNameCells.find("div").show();
@@ -290,8 +290,11 @@ blist.myBlists.renameSubmit = function(event)
 
             // Update the info pane.
             $.Tache.DeleteAll();
-            $("#infoPane h2.panelHeader a[href*='" + responseData.id + "']")
-                .text(responseData.name);
+            var newName = responseData.name;
+            $("#infoPane h2.panelHeader").attr("title", newName)
+                   .find(".itemContent a[href*='" + responseData.id + "']")
+                        .text(newName).end()
+                   .find("input#view_name").val(newName);
         }
     });
 };

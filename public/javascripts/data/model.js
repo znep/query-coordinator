@@ -206,7 +206,13 @@ blist.namespace.fetch('blist.data');
             {
                 $.each(metaCols, function(j, c)
                 {
-                    if (r[c.index] !== undefined)
+                    if (c.name == 'meta')
+                    {
+                        var md = r[c.index];
+                        if (md !== null && md !== undefined)
+                        { r[c.name] = $.json.deserialize(md); }
+                    }
+                    else if (r[c.index] !== undefined)
                     { r[c.name] = r[c.index]; }
                 });
             });
@@ -528,6 +534,7 @@ blist.namespace.fetch('blist.data');
                     width: vcol.width || 100,
                     type: vcol.dataType && vcol.dataType.type ? vcol.dataType.type : "text",
                     id: vcol.id,
+                    tableColumnId: vcol.tableColumnId,
                     aggregate: meta.aggregateHash[vcol.id]
                 };
 
@@ -859,10 +866,32 @@ blist.namespace.fetch('blist.data');
             return value;
         };
 
+        // Get the invalid value in a row for a column
+        this.getInvalidValue = function(row, column)
+        {
+            var parCol = column.nestedIn ? column.nestedIn.header : column;
+            var childLookup = column.nestedIn ? parCol.dataLookupExpr : '';
+            var realRow;
+            eval("realRow = row" + childLookup + ";");
+            return realRow.meta && realRow.meta.invalidCells &&
+                realRow.meta.invalidCells[column.tableColumnId] || null;
+        };
+
         // Set the value in a row for a column
         this.setRowValue = function(value, row, column)
         {
             eval('row' + column.dataLookupExpr + ' = value;');
+        };
+
+        this.setInvalidValue = function(value, row, column)
+        {
+            var parCol = column.nestedIn ? column.nestedIn.header : column;
+            var childLookup = column.nestedIn ? parCol.dataLookupExpr : '';
+            var realRow;
+            eval("realRow = row" + childLookup + ";");
+            if (!realRow.meta) { realRow.meta = {'invalidCells': {}}; }
+            if (!realRow.meta.invalidCells) { realRow.meta.invalidCells = {}; }
+            realRow.meta.invalidCells[column.tableColumnId] = value;
         };
 
         this.isCellError = function(row, column)
@@ -920,10 +949,12 @@ blist.namespace.fetch('blist.data');
                 isCreate = true;
             }
             this.setRowValue(value, row, column);
+            this.setInvalidValue(null, row, column);
 
             if (!row.saving) { row.saving = []; }
             var data = {};
             data[column.id] = value;
+            if (row.meta) { data.meta = $.json.serialize(row.meta); }
             if (column.nestedIn)
             {
                 var parCol = column.nestedIn.header;

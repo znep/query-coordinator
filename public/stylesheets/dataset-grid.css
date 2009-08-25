@@ -288,6 +288,13 @@ div.blist-th-first
     border-left: solid 1px #e2e2e2;
 }
 
+.blist-td.invalid,
+.invalid .blist-td input
+{
+    color: #ff3333;
+    font-style: italic;
+}
+
 div.blist-tdh
 {
     color: #999999;

@@ -603,10 +603,16 @@
             var col = getColumn(cell);
             if (!col || !row) { return; }
             var value = model.getRowValue(row, col);
+            var isValid = true;
+            if (!value)
+            {
+                value = model.getInvalidValue(row, col);
+                isValid = value === null;
+            }
 
             // Obtain an expanding node in utility (off-screen) mode
             $editContainer = $('<div class="blist-table-edit-container ' +
-                    'blist-table-util"></div>');
+                    (isValid ? '' : 'invalid ') + 'blist-table-util"></div>');
             var blistEditor = $editContainer.blistEditor(
                 {row: row, column: col, value: value});
             if (!blistEditor) { return; }
@@ -1543,7 +1549,6 @@
         // Page size is configured in renderRows()
         var pageSize = 1;
 
-<<<<<<< HEAD:web/public/javascripts/data/table.js
         var onCopy = function(event) {
             if (cellNav) {
                 $navigator.text(cellNav.getSelectionDoc());
@@ -2111,27 +2116,49 @@
                                 "'></div>\"");
                         }
                     completeStatement();
-                } else if (mcol.type && mcol.type == 'fill') {
-                    // Fill column -- covers background for a range of columns that aren't present in this row
-                    colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + (j == 0 ? ' initial-tdfill' : '') + "'>&nbsp;</div>\"");
+                }
+                else if (mcol.type && mcol.type == 'fill')
+                {
+                    // Fill column -- covers background for a range of columns
+                    // that aren't present in this row
+                    colParts.push("\"<div class='blist-td blist-tdfill " +
+                      getColumnClass(mcol) + (j == 0 ? ' initial-tdfill' : '') +
+                      "'>&nbsp;</div>\"");
                     lcols.push({
                         type: 'fill',
                         canFocus: false
                     });
-                } else {
+                }
+                else
+                {
                     // Standard cell
-                    var type = blist.data.types[mcol.type] || blist.data.types.text;
+                    var type = blist.data.types[mcol.type] ||
+                        blist.data.types.text;
                     var renderer = mcol.renderer || type.renderGen;
+                    var invalidRenderer = blist.data.types.text.renderGen;
                     var cls = mcol.cls || type.cls;
                     cls = cls ? ' blist-td-' + cls : '';
                     var align = mcol.alignment ? ' align-' + mcol.alignment : '';
 
-                    renderer = renderer("row" + mcol.dataLookupExpr, false, mcol,
-                        contextVariables);
+                    var parCol = mcol.nestedIn ? mcol.nestedIn.header : mcol;
+                    var childLookup = mcol.nestedIn ? parCol.dataLookupExpr : '';
+                    var invalid = "(!row" + mcol.dataLookupExpr + " && row" +
+                        childLookup + ".meta && row" + childLookup +
+                        ".meta.invalidCells && row" + childLookup +
+                        ".meta.invalidCells[" + mcol.tableColumnId +
+                        "] ? ' invalid' : '')";
+
+                    renderer = "(row" + mcol.dataLookupExpr + " ? " +
+                        renderer("row" + mcol.dataLookupExpr, false, mcol,
+                                contextVariables) +
+                        " : (row" + childLookup + ".meta && row" + childLookup +
+                        ".meta.invalidCells ? " + invalidRenderer("row" +
+                            childLookup + ".meta.invalidCells[" +
+                                mcol.tableColumnId + "]") + " : ''))";
 
                     colParts.push(
                         "\"<div class='blist-td " + getColumnClass(mcol) + cls +
-                            align + "\"" +
+                            align + "\" + " + invalid +
                             " + (row.saving && row.saving" +
                             mcol.dataLookupExpr + " ? \" saving\" : \"\") + " +
                             "(row.error && row.error" +
@@ -2146,16 +2173,15 @@
                     });
                 }
 
-                // Initialize column heights (TODO - we don't support variable heights; can we do this on a single
-                // style rather than for each column style individually?)
+                // Initialize column heights (TODO - we don't support variable
+                // heights; can we do this on a single style rather than for
+                // each column style individually?)
                 if (options.generateHeights)
-                {
-                    getColumnStyle(mcol).height = rowHeight + 'px';
-                }
+                { getColumnStyle(mcol).height = rowHeight + 'px'; }
             }
 
             completeStatement();
-            
+
             return generatedCode;
         };
 

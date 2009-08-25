@@ -1,0 +1,23 @@
+<% content_for :head do %>
+  <title>Current Version | <%= th.site_title %></title>
+  <!--[if IE 7]><style type="text/css">@import "/stylesheets/ie7.css";</style><![endif]-->
+<% end %>
+
+<% dialog_content("versionBox") do %>
+  <div class='header'>
+    <h1><%= th.company %></h1>
+  </div>
+
+  <div class='mainContent'>
+    <div class='title clearfix'><h2>Version Info</h2></div>
+    
+    <dl class="versionInfo">
+      <dt><em>Current Revision:</em></dt><dd><%= @revision_number %></dd>
+      <dt><em>Last Deployment:</em></dt><dd><%= @revision_date.to_s %></dd>
+    </dl>
+  </div>
+<% end %>
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+<% end %>

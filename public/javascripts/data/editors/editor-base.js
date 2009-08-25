@@ -3,14 +3,13 @@
     // Set up namespace for editors to class themselves under
     $.blistEditor =
     {
-        extend: function(extHash)
+        extend: function(extHash, extObj)
         {
-            return $.extend({}, blistEditorObject, extHash,
+            if (!extObj) { extObj = blistEditorObject; }
+            return $.extend({}, extObj, extHash,
             {
-                defaults: $.extend({}, blistEditorObject.defaults,
-                    extHash.defaults || {}),
-                prototype: $.extend({}, blistEditorObject.prototype,
-                    extHash.prototype || {})
+                defaults: $.extend({}, extObj.defaults, extHash.defaults || {}),
+                prototype: $.extend({}, extObj.prototype, extHash.prototype || {})
             });
         }
     };
@@ -65,6 +64,7 @@
 
                 var $editor = editObj.$editor();
                 $domObj.append($editor);
+                if (!editObj.isValid()) { $domObj.addClass('invalid'); }
                 editObj.editorInserted();
 
                 $(document).bind('mousedown.blistEditor_' + editObj._uid,
@@ -101,6 +101,7 @@
             currentValue: function()
             {
                 // Implement me
+                return this.originalValue;
             },
 
             focus: function()
@@ -111,6 +112,12 @@
             adjustSize: function()
             {
                 // Override me if desired
+            },
+
+            isValid: function()
+            {
+                // Override me if desired
+                return true;
             }
         }
     });

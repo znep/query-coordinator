@@ -603,16 +603,11 @@
             var col = getColumn(cell);
             if (!col || !row) { return; }
             var value = model.getRowValue(row, col);
-            var isValid = true;
-            if (!value)
-            {
-                value = model.getInvalidValue(row, col);
-                isValid = value === null;
-            }
+            if (!value) { value = model.getInvalidValue(row, col); }
 
             // Obtain an expanding node in utility (off-screen) mode
             $editContainer = $('<div class="blist-table-edit-container ' +
-                    (isValid ? '' : 'invalid ') + 'blist-table-util"></div>');
+                    'blist-table-util"></div>');
             var blistEditor = $editContainer.blistEditor(
                 {row: row, column: col, value: value});
             if (!blistEditor) { return; }
@@ -654,7 +649,7 @@
             var col = editor.column;
             if (isSave && (origValue != value || model.isCellError(row, col)))
             {
-                model.saveRowValue(value, row, col);
+                model.saveRowValue(value, row, col, editor.isValid());
             }
 
             $editContainer.remove();
@@ -1520,7 +1515,11 @@
         {
             if (event.keyCode == 27) // ESC
             {
-                if (isEdit) { endEdit(false); }
+                if (isEdit)
+                {
+                    endEdit(false);
+                    expandActiveCell();
+                }
                 else { clearCellNav(); }
             }
         };

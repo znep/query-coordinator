@@ -267,9 +267,10 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         }
 
         var len = rows.length;
-        for (i = 0; i < len; i++) {
+        for (i = 0; i < len; i++)
+        {
             var row = rows[i];
-            
+
             // Determine the index into the rows set and the actual model row
             var index = row.index;
             var modelRow;
@@ -280,7 +281,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 modelRow = model.get(index);
 
             // Skip the blank row
-            if (modelRow.id == "blank")
+            if (!modelRow || modelRow.id == "blank")
                 continue;
 
             // Update the selection map, and clear the selection if there's no selection in the row

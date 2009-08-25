@@ -16,12 +16,22 @@
             {
                 if (!this._$editor)
                 {
-                    this._$editor = $('<div class="blist-table-editor blist-td">' +
-                        '<input type="text" value="' +
+                    var align = this.column.alignment ?
+                        ' align-' + this.column.alignment : '';
+                    this._$editor = $('<div class="blist-table-editor blist-td' +
+                        ' type-' + this.column.type +
+                        '"><input type="text" class="' + align +  '" value="' +
                         (this.originalValue ? this.originalValue : '') +
                         '" /></div>');
                 }
                 return this._$editor;
+            },
+
+            editorInserted: function()
+            {
+                var editObj = this;
+                editObj.$dom().find(':input').keypress(function(e)
+                    { setTimeout(function() { editObj.textModified(); }, 0); });
             },
 
             adjustSize: function()
@@ -42,6 +52,12 @@
             focus: function()
             {
                 this.$editor().find(':text').focus().select();
+            },
+
+            textModified: function()
+            {
+                if (this.isValid()) { this.$dom().removeClass('invalid'); }
+                else { this.$dom().addClass('invalid'); }
             }
         }
     }));

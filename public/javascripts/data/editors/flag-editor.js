@@ -59,6 +59,17 @@
             focus: function()
             {
                 this.$dom().find('.flag-combo').focus();
+            },
+
+            isValid: function()
+            {
+                var curVal = this.currentValue();
+                if (curVal === null) { return true; }
+
+                var found = false;
+                $.each(flagValues, function(i, v)
+                        { if (v.id == curVal) { found = true; return false; } });
+                return found;
             }
         }
     }));

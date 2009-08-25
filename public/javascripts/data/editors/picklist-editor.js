@@ -7,6 +7,8 @@
         this.init();
     };
 
+    var valuesList = [ { id: 'null', label: '(Blank)'} ];
+
     var renderValue = function(value)
     {
         var $row = $(this);
@@ -33,13 +35,12 @@
 
             editorInserted: function()
             {
-                var vals = [ { id: 'null', label: '(Blank)'} ];
                 $.each(this.column.options, function(id, v)
-                    { vals.push({id: id, label: v.text, icon: v.icon}); });
+                    { valuesList.push({id: id, label: v.text, icon: v.icon}); });
                 this.$dom().addClass('blist-combo-wrapper');
                 this.$editor().find('.picklist-combo').combo({
                     name: 'picklist-combo',
-                    values: vals,
+                    values: valuesList,
                     value: this.originalValue ?
                         this.originalValue.toLowerCase() : 'null',
                     renderFn: renderValue
@@ -55,6 +56,18 @@
             focus: function()
             {
                 this.$dom().find('.picklist-combo').focus();
+            },
+
+            isValid: function()
+            {
+                var curVal = this.currentValue();
+                if (curVal === null) { return true; }
+
+                var found = false;
+                $.each(valuesList, function(i, v)
+                        { if (v.id.toUpperCase() == curVal)
+                            { found = true; return false; } });
+                return found;
             }
         }
     }));

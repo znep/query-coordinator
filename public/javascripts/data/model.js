@@ -936,8 +936,11 @@ blist.namespace.fetch('blist.data');
         };
 
         // Set the value for a row, save it to the server, and notify listeners
-        this.saveRowValue = function(value, row, column)
+        this.saveRowValue = function(value, row, column, isValid)
         {
+            var validValue = isValid ? value : null;
+            var invalidValue = isValid ? null : value;
+
             var isCreate = false;
             if (row.type == 'blank')
             {
@@ -947,12 +950,12 @@ blist.namespace.fetch('blist.data');
                 configureActive();
                 isCreate = true;
             }
-            this.setRowValue(value, row, column);
-            this.setInvalidValue(null, row, column);
+            this.setRowValue(validValue, row, column);
+            this.setInvalidValue(invalidValue, row, column);
 
             if (!row.saving) { row.saving = []; }
             var data = {};
-            data[column.id] = value;
+            data[column.id] = validValue;
             if (row.meta) { data.meta = $.json.serialize(row.meta); }
             if (column.nestedIn)
             {
@@ -965,7 +968,7 @@ blist.namespace.fetch('blist.data');
                     var parRow = row.parent;
                     // If we're in a blank row, create that row first
                     if (parRow.type == 'blank')
-                    { this.saveRowValue(null, parRow, parCol); }
+                    { this.saveRowValue(null, parRow, parCol, true); }
 
                     // Add the new row to the parent
                     if (!parRow[parCol.dataIndex])

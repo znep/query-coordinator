@@ -24,6 +24,15 @@ class UserSession
       end
     end
 
+    def rpx(token)
+      session = new()
+      if session.find_rpx_token(token)
+        session
+      else
+        nil
+      end
+    end
+
     def controller=(value)
       Thread.current[:session_controller] = value
     end
@@ -107,6 +116,29 @@ class UserSession
     return user
   end
 
+  def find_rpx_token(token)
+    result = nil
+    response = post_rpx_authentication(token)
+    if response.is_a?(Net::HTTPSuccess)
+      user = User.parse(response.body)
+      create_core_session_credentials(user)
+
+      # Plumb the cookie from the core server back to the user's browser
+      #response.get_fields('set-cookie').each do |cookie_header|
+      #  if match = /^remember_token=([A-Za-z0-9]+)/.match(cookie_header)
+      #    cookies['remember_token'] = { :value => match[1], :expires => 2.weeks.from_now }
+      #  end
+      #end
+
+      self.new_session = false
+      UserSession.update_current_user(user, core_session)
+      result = self
+    end
+
+    #yield result if result && block_given?
+    result
+  end
+
   # Create or update an existing authentication session.
   # This function is typically called as part of the login workflow; you must
   # set the login and password before saving, which is then validated against
@@ -183,6 +215,17 @@ private
     uri = auth_uri.clone
     uri.query = "method=expireRememberToken"
     post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
+
+    Net::HTTP.start(uri.host, uri.port) do |http|
+      http.request post
+    end
+  end
+
+  def post_rpx_authentication(token)
+    uri = auth_uri.clone
+    uri.query = "method=findByRpxToken"
+    post = Net::HTTP::Post.new(uri.request_uri)
+    post.form_data = {'token' => token}
 
     Net::HTTP.start(uri.host, uri.port) do |http|
       http.request post

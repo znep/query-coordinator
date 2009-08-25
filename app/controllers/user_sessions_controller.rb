@@ -49,6 +49,12 @@ class UserSessionsController < ApplicationController
   end
 
   def rpx
-    render :text => "Not implemented"
+    @user_session = UserSession.rpx(params[:token])
+    if @user_session
+      redirect_back_or_default(home_path)
+    else
+      flash[:notice] = "OpenID not found"
+      redirect_to login_path
+    end
   end
 end

@@ -883,3 +883,16 @@ ul.convertables li a:hover
     margin-top: 0;
 }
 /*** END: New Image Template ***/
+
+/*** START: Version Info ***/
+dl.versionInfo
+{
+    font-size: 1.3em;
+}
+
+dl.versionInfo dd
+{
+  padding-left: 15px;
+  padding-bottom: 10px;
+} 
+/*** END: Version Info ***/

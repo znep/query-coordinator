@@ -805,7 +805,7 @@ blist.namespace.fetch('blist.data');
          */
         this.remove = function(delRows, serverDelete)
         {
-            if (!(delRows instanceof Array))
+            if (!(delRows instanceof Array) || delRows.id)
             { delRows = [delRows]; }
 
             for (var i = 0; i < delRows.length; i++)

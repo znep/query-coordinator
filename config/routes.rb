@@ -163,6 +163,9 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect 'stats_popup', :controller => 'stats', :action => 'popup'
   map.connect 'stats_screenshot', :controller => 'stats', :action => 'screenshot'
+
+  # The /version page
+  map.connect '/version', :controller => "version", :action => "index"
   
   map.root :controller => "data", :action => "show"
 

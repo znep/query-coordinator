@@ -1,6 +1,6 @@
 class DataController < ApplicationController
   caches_page :splash, :noie, :redirected
-  skip_before_filter :require_user
+  skip_before_filter :require_user, :api_popup
   
   PAGE_SIZE = 10
 
@@ -12,15 +12,31 @@ class DataController < ApplicationController
     @body_class = 'discover'
     @show_search_form = false
     @page_size = PAGE_SIZE
+    
+    # NOTE: Temporary hacks to get agency filtering working until we have org filtering
+    @agency_id = Theme.agency_id
+    @agency_mcache_key = (@agency_id.nil? ? "" : "-agency-#{@agency_id}")
 
-    unless @all_views_rendered = read_fragment("discover-tab-all")
-      @all_views_total = View.find({ :limit => PAGE_SIZE, :count => true }, true).count
-      @all_views = View.find({ :limit => PAGE_SIZE }, true)
+    unless @all_views_rendered = read_fragment("discover-tab-all#{@agency_mcache_key}")
+      opts = {:limit => PAGE_SIZE}
+      if !@agency_id.nil?
+        opts.merge!({:agencyId => @agency_id})
+      end
+      
+      @all_views_total = View.find(opts.merge({:count => true }), true).count
+      @all_views = View.find(opts, true)
+      
+      # TODO: Tags should also allow filtering by org
       @all_views_tags = Tag.find({ :method => "viewsTags", :limit => 5 })
     end
-    unless @popular_views_rendered = read_fragment("discover-tab-popular")
+    unless @popular_views_rendered = read_fragment("discover-tab-popular#{@agency_mcache_key}")
+      opts = {:top100 => true, :limit => PAGE_SIZE, :page => 1}
+      if !@agency_id.nil?
+        opts.merge!({:agencyId => @agency_id})
+      end
+      
       @popular_views_total = 100
-      @popular_views = View.find_filtered({ :top100 => true, :limit => PAGE_SIZE, :page => 1 })
+      @popular_views = View.find_filtered(opts)
       @popular_views_tags = Tag.find({ :method => "viewsTags", :top100 => true, :limit => 5 })
     end
     unless @carousel_views_rendered = read_fragment("discover-carousel")
@@ -48,6 +64,7 @@ class DataController < ApplicationController
     tag = params[:tag]
     search_term = params[:search]
     search_debug = params[:search_debug]
+    agency_id = Theme.agency_id
 
     sort_by = sort_by_selection
     is_asc = true
@@ -63,7 +80,7 @@ class DataController < ApplicationController
     opts.update({:page => page, :limit => PAGE_SIZE})
     tag_opts = Hash.new
     tag_opts.update({ :method => "viewsTags", :limit => 5 })
-    
+        
     if (type == "POPULAR")
       opts.update({:top100 => true})
       tag_opts.update({:top100 => true})
@@ -79,6 +96,10 @@ class DataController < ApplicationController
     
     if (!tag.nil?)
       opts.update({:tags => tag})
+    end
+    
+    if !agency_id.nil?
+      opts.update({:agencyId => agency_id})
     end
     
     tab_title = type == "POPULAR" ? "Popular" : "All"
@@ -184,6 +205,10 @@ class DataController < ApplicationController
   end
   
   def redirected
+    render(:layout => "splash")
+  end
+  
+  def api_popup
     render(:layout => "splash")
   end
 

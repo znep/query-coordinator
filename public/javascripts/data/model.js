@@ -508,7 +508,7 @@ blist.namespace.fetch('blist.data');
             for (i = 0; i < viewCols.length; i++)
             {
                 var vcol = viewCols[i];
-                if (!vcol.position ||
+                if ((vcol.dataType && vcol.dataType.type == 'meta_data') ||
                     (vcol.flags && $.inArray("hidden", vcol.flags) != -1))
                 { continue; }
 
@@ -774,14 +774,14 @@ blist.namespace.fetch('blist.data');
         /**
          * Remove rows from the model.
          */
-        this.remove = function(rows)
+        this.remove = function(delRows)
         {
-            if (!(typeof rows == Array))
-            { rows = [rows]; }
+            if (!(delRows instanceof Array) || delRows.id)
+            { delRows = [delRows]; }
 
-            for (var i = 0; i < rows.length; i++)
+            for (var i = 0; i < delRows.length; i++)
             {
-                var row = rows[i];
+                var row = delRows[i];
                 if (row.expanded) { this.expand(row, false); }
                 var id = row.id;
                 var index = lookup[id];
@@ -803,7 +803,7 @@ blist.namespace.fetch('blist.data');
                 this.unselectRow(row);
             }
             installIDs();
-            $(listeners).trigger('row_remove', [ rows ]);
+            $(listeners).trigger('row_remove', [ delRows ]);
         };
 
         this.invalidateRows = function()
@@ -953,20 +953,20 @@ blist.namespace.fetch('blist.data');
             // First update widths on view columns, since they may have been
             // updated on the model columns
             $.each(meta.columns, function(i, colList)
-            { 
+            {
                 $.each(colList, function(j, c)
                 {
                     if (c.dataIndex)
-                    { 
-                        meta.view.columns[c.dataIndex].width = c.width; 
+                    {
+                        meta.view.columns[c.dataIndex].width = c.width;
                     }
-                }); 
+                });
             });
 
             // Filter view columns down to just the visible, and sort them
             var viewCols = $.grep(meta.view.columns, function(c)
-                { return c.position > 0 && (!c.flags ||
-                    $.inArray('hidden', c.flags) < 0); });
+                { return (!c.dataType || c.dataType.type != 'meta_data') &&
+                    (!c.flags || $.inArray('hidden', c.flags) < 0); });
             viewCols.sort(function(col1, col2)
                 { return col1.position - col2.position; });
 

@@ -263,15 +263,16 @@ blist.widget.updateMetaTabHeader = function(tabKey)
 };
 
 blist.widget.metaTabMap = {
-    "summary": "#widgetMeta .singleInfoSummary .infoContent",
-    "comments": "#widgetMeta .singleInfoComments .infoContent",
-    "filtered": "#widgetMeta .singleInfoFiltered .infoContent",
-    "activity": "#widgetMeta .singleInfoActivity .infoContent",
-    "publishing": "#widgetMeta .singleInfoPublishing .infoContent"
+    "summary": ".singleInfoSummary .infoContent",
+    "comments": ".singleInfoComments .infoContent",
+    "filtered": ".singleInfoFiltered .infoContent",
+    "activity": ".singleInfoActivity .infoContent",
+    "publishing": ".singleInfoPublishing .infoContent"
 };
 blist.widget.updateMetaTab = function(tabKey)
 {
-    $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab?tab=' + tabKey,
+    $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab?tab=' + tabKey +
+                       '&customization_id=' + widgetNS.customizationId,
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);
@@ -374,18 +375,21 @@ $(function ()
     
     if ($("#widgetMeta").length > 0)
     {
+        var tabMap = {
+            "tabSummary": ".singleInfoSummary",
+            "tabFiltered": ".singleInfoFiltered",
+            "tabComments": ".singleInfoComments",
+            "tabActivity": ".singleInfoActivity",
+            "tabPublishing": ".singleInfoPublishing"
+        };
+        $('#widgetMeta ' + tabMap[$('#widgetMeta .summaryTabs li:first-child').attr('id')]).addClass('active');
         // Set up the info pane tab switching.
         $("#widgetMeta .summaryTabs").infoPaneNavigate({
             tabSelector: "li:not('.scrollArrow')",
-            tabMap: {
-                "tabSummary": "#widgetMeta .singleInfoSummary",
-                "tabFiltered": "#widgetMeta .singleInfoFiltered",
-                "tabComments": "#widgetMeta .singleInfoComments",
-                "tabActivity": "#widgetMeta .singleInfoActivity",
-                "tabPublishing": "#widgetMeta .singleInfoPublishing"
-            },
-            allPanelsSelector : "#widgetMeta .infoContentOuter",
-            expandableSelector: "#widgetMeta .infoContent",
+            tabMap: tabMap,
+            containerSelector: "#widgetMeta",
+            allPanelsSelector : ".infoContentOuter",
+            expandableSelector: ".infoContent",
             isWidget: true,
             switchCompleteCallback: widgetNS.sizeGrid,
             scrollToTabOnActivate: false

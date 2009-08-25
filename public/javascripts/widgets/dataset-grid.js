@@ -219,6 +219,7 @@
 
             showHideColumns: function(columns, hide, skipRequest)
             {
+                if (!(columns instanceof Array)) { columns = [columns]; }
                 var datasetObj = this;
                 var view = datasetObj.settings._model.meta().view;
                 var successCount = 0;
@@ -841,6 +842,8 @@
         if (isFinished)
         {
             var view = datasetObj.settings._model.meta().view;
+            $.each(view.columns, function(i, c)
+                { if (c.id == col.id) { c.width = col.width; return false; } });
             if (datasetObj.settings.currentUserId == view.owner.id)
             {
                 $.ajax({url: '/views/' + view.id + '/columns/' + col.id + '.json',

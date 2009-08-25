@@ -69,8 +69,33 @@ var publishNS = blist.namespace.fetch('blist.publish');
 blist.publish.applyFrameColor = function($elem, values)
 {
     if (values['gradient'] === true)
-    {
-        // not yet implemented
+    { 
+        var baseGradient = {
+            h: 38,
+            rh: 30,
+            fc: $.gradientString([
+                $.addColors(values['color'], '4c4c4c'),
+                [$.addColors(values['color'], '191919'), 0.4],
+                [values['color'], 0.4]])
+        };
+        if (values['border'] !== false)
+        {
+            baseGradient['ec'] = values['border'].slice(1);
+            baseGradient['ew'] = 1;
+        }
+
+        // top gradients
+        publishNS.appendToStylesBuffer('#header .wrapperT', 'background-image',
+            $.urlToImageBuilder($.extend({ w: 3, rw: 1, rx: 1 }, baseGradient), 'png', true));
+        publishNS.appendToStylesBuffer('#header .wrapperTR', 'background-image',
+            $.urlToImageBuilder($.extend({ r: 8, rx: 8 }, baseGradient), 'png', true));
+        publishNS.appendToStylesBuffer('#header', 'background-image',
+            $.urlToImageBuilder($.extend({ r: 8, rw: 8 }, baseGradient), 'png', true));
+
+        // lower gradient
+        publishNS.appendToStylesBuffer('.widgetFooterWrapper', 'background-image',
+            $.urlToImageBuilder($.extend({}, baseGradient,
+            { h: 80, rh: 80, w: 3, rw: 1, rx: 1, fc: $.gradientString([ [ values['color'], 0.8 ], $.addColors(values['color'], '3f3f3f') ] ) }), 'png', true));
     }
     else
     {
@@ -79,19 +104,6 @@ blist.publish.applyFrameColor = function($elem, values)
             'background-color', values['color']);
         publishNS.appendToStylesBuffer('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
             'background-image', 'none');
-        publishNS.appendToStylesBuffer('.gridInner', 'border-color', values['color']);
-
-        // meta border
-        publishNS.appendToStylesBuffer('.infoContentOuter, .metadataPane .summaryTabs li, .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter, .metadataPane .summaryTabs',
-            'border-color', values['color']);
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li .tabOuter, .metadataPane .summaryTabs li .tabInner',
-            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=ececec&h=23&r=3&s=h&bc=ececec)');
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.active .tabOuter, .metadataPane .summaryTabs li.active .tabInner',
-            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=cacaca&h=23&r=3&s=h&bc=ececec)');
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
-            'background-color', values['color']);
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
-            'border-color', values['color']);
 
         if (values['border'] !== false)
         {
@@ -99,6 +111,26 @@ blist.publish.applyFrameColor = function($elem, values)
             publishNS.appendToStylesBuffer('#header', 'border-bottom', 'none');
         }
     }
+    
+    // sides
+    publishNS.appendToStylesBuffer('.gridInner', 'border-color', values['color']);
+
+    // meta border
+      // general borders
+        publishNS.appendToStylesBuffer('.infoContentOuter, .metadataPane .summaryTabs li, .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter, .metadataPane .summaryTabs',
+            'border-color', values['color']);
+      // inactive tab corners sprite
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li .tabOuter, .metadataPane .summaryTabs li .tabInner',
+            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=ececec&h=23&r=3&s=h&bc=ececec)');
+      // active tab corners sprite
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.active .tabOuter, .metadataPane .summaryTabs li.active .tabInner',
+            'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=cacaca&h=23&r=3&s=h&bc=ececec)');
+      // tab scroll buttons background color
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
+            'background-color', values['color']);
+      // tab scroll buttons border color
+        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
+            'border-color', values['color']);
 
     if (values['border'] !== false)
     {
@@ -106,9 +138,27 @@ blist.publish.applyFrameColor = function($elem, values)
     }
 };
 
-blist.publish.applyLogo = function($elem, values)
+blist.publish.applyLogo = function($elem, value)
 {
-    // do stuff
+    if (value == 'none')
+    {
+        $elem.addClass('hide');
+    }
+    else if (value == 'default')
+    {
+        $elem.removeClass('hide')
+             .css('background-image', 'url(/stylesheets/images/widgets/socrata_logo_player.png)');
+    }
+    else if (value.match(/[\dA-F]{8}-([\dA-F]{4}-){3}[\dA-F]{12}/))
+    {
+        $elem.removeClass('hide')
+             .css('background-image', 'url(/img/' + value + ')');
+    }
+    else
+    {
+        $elem.removeClass('hide')
+             .css('background-image', 'url(' + value + ')');
+    }
 };
 
 blist.publish.applyTabs = function($elem, subhash)
@@ -140,7 +190,7 @@ blist.publish.applyTabs = function($elem, subhash)
     }
     if ($elem.children('li.active:not(:hidden)').length === 0)
     {
-        //$elem.infoPaneNavigate().activateTab($elem.children('li:first-child'));
+        $elem.infoPaneNavigate().activateTab($elem.children('li:first-child'), true);
     }
 };
 
@@ -162,18 +212,17 @@ blist.publish.customizationApplication = {
                                        grid_header_size:    [ { selector: 'div.blist-th .info-container', css: 'font-size', hasUnit: true }],
                                        grid_data_size:      [ { selector: '.blist-td', css: 'font-size', hasUnit: true }] } },
     frame:          { _group:                               [ { selector: 'body', properties: ['color', 'gradient', 'border'], callback: publishNS.applyFrameColor } ],
-                      logo:          { show:                [ { selector: '.widgetLogoWrapper', hideShow: true } ],
-                                       _group:              [ { properties: ['type', 'url'], callback: publishNS.applyLogo } ] },
+                      logo:                                 [ { selector: '.widgetLogoWrapper > a', callback: publishNS.applyLogo } ],
                       footer_link:   { show:                [ { selector: '.getPlayerAction', hideShow: true } ],
                                        url:                 [ { selector: '.getPlayerAction a', attr: 'href' } ],
                                        text:                [ { selector: '.getPlayerAction a', callback: function($elem, value) { $elem.text(value); } } ] } },
     grid:           { row_numbers:                          [ { selector: '.blist-table-locked-scrolls:has(.blist-table-row-numbers)', hideShow: true },
-                                                              { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { true: '49px', false: '0' } },
-                                                              { selector: '#data-grid .blist-table-inside .blist-tr', css: 'left', map: { true: '49px', false: '0' } } ],
-                      wrap_header_text:                     [ { selector: '.blist-th .info-container, .blist-th .name-wrapper', css: 'height', map: { true: '2.5em', false: '' } },
-                                                              { selector: '.blist-th .info-container', css: 'margin-top', map: { true: '-1.25em', false: '' } },
-                                                              { selector: 'div.th-inner-container', css: 'white-space', map: { true: 'normal', false: '' } },
-                                                              { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { true: '4.5em', false: '' } } ],
+                                                              { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { 'true': '49px', 'false': '0' } },
+                                                              { selector: '#data-grid .blist-table-inside .blist-tr', css: 'left', map: { 'true': '49px', 'false': '0' } } ],
+                      wrap_header_text:                     [ { selector: '.blist-th .info-container, .blist-th .name-wrapper', css: 'height', map: { 'true': '2.5em', 'false': '' } },
+                                                              { selector: '.blist-th .info-container', css: 'margin-top', map: { 'true': '-1.25em', 'false': '' } },
+                                                              { selector: 'div.th-inner-container', css: 'white-space', map: { 'true': 'normal', 'false': '' } },
+                                                              { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { 'true': '4.5em', 'false': '' } } ],
                       header_icons:                         [ { selector: '.blist-th-icon', hideShow: true } ],
                       row_height:                           [ { selector: '.blist-td', css: 'height', hasUnit: true },
                                                               { selector: '.blist-td', css: 'line-height', hasUnit: true } ],
@@ -187,7 +236,7 @@ blist.publish.customizationApplication = {
                       fullscreen:                           [ { selector: '.headerMenu .fullscreen, .fullScreenButton', hideShow: true } ],
                       republish:                            [ { selector: '.headerMenu .publish', hideShow: true } ] },
     meta:                                                   [ { selector: '#widgetMeta .summaryTabs', callback: publishNS.applyTabs }],
-    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { true: '', false: 'none !important' } } ],
+    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none !important' } } ],
                       interstitial:                         [ { callback: publishNS.applyInterstitial } ] },
     publish:        { dimensions:   { width:                [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('width', value + 'px'); } } ],
                                       height:               [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('height', value + 'px'); } } ] },
@@ -248,7 +297,7 @@ blist.publish.applyCustomizationToPreview = function(hash)
                             else if (value['map'] !== undefined)
                             {
                                 publishNS.appendToStylesBuffer(value['selector'], value['css'],
-                                    value['map'][subhash[key]]);
+                                    value['map'][subhash[key].toString()]);
                             }
                             else
                             {
@@ -318,6 +367,15 @@ blist.publish.applyCustomizationToPreview = function(hash)
     {
         recurse(publishNS.customizationApplication, hash);
         blist.publish.writeStylesBuffer();
+
+        // Update copy code
+        $('.publishCode textarea').text(
+            $('.publishCode #codeTemplate').val()
+                .replace('%variation%', $('#template_name').val())
+                .replace('%width%', hash['publish']['dimensions']['width'])
+                .replace('%height%', hash['publish']['dimensions']['height'])
+                .replace((hash['publish']['show_title'] ? /^<div>/ : /^<div><p.*?<\/p>/), '<div>')
+                .replace((hash['publish']['show_powered_by'] ? /<\/div>$/ : /<p>.*<\/p><\/div>$/), '</div>'));
     }
 };
 
@@ -498,14 +556,14 @@ blist.publish.loadCustomization = function()
     // Tab behavior
     $("#publishOptionsPane .summaryTabs").infoPaneNavigate({
         tabMap: {
-            "tabTemplates" : "#publishOptionsPane .singleInfoTemplates",
-            "tabVisual" : "#publishOptionsPane .singleInfoVisual",
-            "tabMenuControl" : "#publishOptionsPane .singleInfoMenuControl",
-            "tabTab" : "#publishOptionsPane .singleInfoTab",
-            "tabAdvanced" : "#publishOptionsPane .singleInfoAdvanced"
+            "tabTemplates" :   ".singleInfoTemplates",
+            "tabVisual" :      ".singleInfoVisual",
+            "tabMenuControl" : ".singleInfoMenuControl",
+            "tabTab" :         ".singleInfoTab",
+            "tabAdvanced" :    ".singleInfoAdvanced"
         },
-        allPanelsSelector : "#publishOptionsPane .infoContentOuter",
-        expandableSelector: "#publishOptionsPane .infoContent",
+        allPanelsSelector : ".infoContentOuter",
+        expandableSelector: ".infoContent",
         initialTab: "tabTemplates"
     });
 
@@ -518,9 +576,6 @@ blist.publish.loadCustomization = function()
             onChange: function(hsb, hex, rgb) {
                 $this.siblings('.colorPickerTrigger').css('background-color', '#' + hex);
                 $this.siblings('input').val('#' + hex);
-
-                // Save changes
-                publishNS.valueChanged();
             }
         });
         $this.siblings('.colorPickerTrigger').click(function()
@@ -535,6 +590,9 @@ blist.publish.loadCustomization = function()
                 {
                     $(document).unbind('click.colorPicker');
                     $this.hide();
+
+                    // Save changes
+                    publishNS.valueChanged();
                 }
             });
         });
@@ -591,6 +649,27 @@ blist.publish.loadCustomization = function()
             $this.closest('dl').next().hide();
             $('#customization_grid_zebra').val('#ffffff');
             publishNS.valueChanged();
+        }
+    });
+    
+    // Upload custom UI
+    $('#customization_frame_logo').change(function () {
+        var $this = $(this);
+        if ($this.val() == 'upload')
+        {
+            $("#modal").jqmShow($('<a href="/new_image"></a>'));
+            $this.val('none');
+            publishNS.valueChanged();
+
+            blist.common.imageUploadedHandler = function(response)
+            {
+                $this.append('<option value="' + response['id'] + '">'+ response['nameForOutput'] + '</option>');
+                $this.val(response['id']);
+                publishNS.valueChanged();
+
+                // Courtesy unbind
+                blist.common.imageUploadedHandler = null;
+            };
         }
     });
 })(jQuery);

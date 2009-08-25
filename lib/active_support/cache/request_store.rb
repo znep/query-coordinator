@@ -9,13 +9,15 @@ module ActiveSupport
         extend Strategy::LocalCache
       end
 
+      def write(key, value, options = nil)
+        nil
+      end
+
       def read(name, options = nil)
-        super
         nil
       end
 
       def exist?(key, options = nil)
-        super
         false
       end
     end

@@ -34,8 +34,9 @@ module ActionController
           end
 
           if logging_core_server
+            core_stats = core_server_stats
             log_message << ", " if (logging_view || logging_active_record)
-            log_message << core_server_runtime
+            log_message << "Core Server: %i req/%.0f ms" % [core_stats[:requests], core_stats[:runtime]]
           end
 
           log_message << ")"
@@ -46,6 +47,18 @@ module ActionController
 
         logger.info(log_message)
         response.headers["X-Runtime"] = "%.0f" % ms
+
+        if too_many_core_server_requests(core_stats[:requests])
+          # Raise an exception just for Hoptoad. Yes, that's ugly, but
+          # getting the right data without doing it is uglier, and we're
+          # likely to want to re-raise the exception regardless.
+          begin
+            raise CoreServer::TooManyRequests.new(self, action_name, core_stats[:requests])
+          rescue CoreServer::TooManyRequests => e
+            notify_hoptoad(e)
+            raise unless Rails.env.production?
+          end
+        end
 
       else
         perform_action_without_core_benchmark
@@ -59,7 +72,7 @@ module ActionController
         end
 
         if Object.const_defined?("CoreServer")
-          core_runtime = CoreServer::Base.connection.reset_runtime
+          core_counters = CoreServer::Base.connection.reset_counters
         end
 
         render_output = nil
@@ -72,9 +85,9 @@ module ActionController
         end
 
         if Object.const_defined?("CoreServer")
-          @core_rt_before_render = core_runtime
-          @core_rt_after_render = CoreServer::Base.connection.reset_runtime
-          @view_runtime -= @core_rt_after_render
+          @core_rt_before_render = core_counters
+          @core_rt_after_render = CoreServer::Base.connection.reset_counters
+          @view_runtime -= @core_rt_after_render[:runtime]
         end
 
         render_output
@@ -83,11 +96,25 @@ module ActionController
       end
     end
 
-    def core_server_runtime
-      core_runtime = CoreServer::Base.connection.reset_runtime
-      core_runtime += @core_rt_before_render if @core_rt_before_render
-      core_runtime += @core_rt_after_render if @core_rt_after_render
-      "Core Server: %.0f" % core_runtime
+    def too_many_core_server_requests(requests)
+      APP_CONFIG['max_core_server_requests'].present? &&
+        (requests > APP_CONFIG['max_core_server_requests'])
+    end
+
+    # Display a formatted count of the number of requests made to the core
+    # server and the cumulative time (in ms) it took to make those requests.
+    def core_server_stats
+      counters = CoreServer::Base.connection.reset_counters
+
+      core_runtime = counters[:runtime]
+      core_runtime += @core_rt_before_render[:runtime] if @core_rt_before_render
+      core_runtime += @core_rt_after_render[:runtime] if @core_rt_after_render
+
+      core_requests = counters[:requests]
+      core_requests += @core_rt_before_render[:requests] if @core_rt_before_render
+      core_requests += @core_rt_after_render[:requests] if @core_rt_after_render
+
+      {:runtime => core_runtime, :requests => core_requests}
     end
   end
 end

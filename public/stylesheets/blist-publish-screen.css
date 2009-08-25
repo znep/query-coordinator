@@ -150,6 +150,12 @@ h3 .infoText
     width: 2em;
 }
 
+#publishOptionsPane select
+{
+    position: relative;
+    top: 1px;
+}
+
 #publishOptionsPane .infoContent dd
 {
     padding-top: 2px;

@@ -1300,7 +1300,7 @@
             // Update row hover state
             // + 2 for "-r"/"-l" suffix prior to row ID
             var $nhr = $(over).closest('.blist-tr');
-            var newHotID = $nhr.length > 0 && !$nhr.is('.blist-tr-sub') ?
+            var newHotID = $nhr.length > 0 ?
                 $nhr.attr('id').substring(id.length + 2) : null;
             if (newHotID != hotRowID)
             {
@@ -1502,7 +1502,7 @@
                 }
 
                 $(clickTarget).trigger('table_click', event);
-                if (!editMode) { $navigator[0].focus(); }
+                if (!editMode && cellNav) { $navigator[0].focus(); }
             }
 
             if (cellNav) { expandActiveCell(); }
@@ -1561,6 +1561,8 @@
         var pageSize = 1;
 
         var onKeyPress = function(event) {
+            if (!cellNav) { return; }
+            
             switch (event.keyCode || event.charCode) {
                 case 34:
                     // Page up

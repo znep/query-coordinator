@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "blist-publish-screen", "colorpicker", "form-common",
-      :cache => "cache/blists_about_all" %>
+      :cache => "cache/blists_publish_screen" %>
   <title>Publishing <%= @view.name %> | <%= th.site_title %></title>
 <% end %>
 
@@ -16,6 +16,8 @@
                 <span class="helpie" title="Paste this HTML code on your blog or website to publish your widget.">?</span>
               </p>
               <textarea><%= get_publish_embed_code_for_view(@view, @customization[:publish], @widget_customization.uid) %></textarea>
+              <%= hidden_field_tag('codeTemplate', get_publish_embed_code_for_view(@view, 
+                    { :dimensions => { :width => '%width%', :height => '%height%' } }, '%variation%')) %>
             </div>
           </div>
           <h1>Customize Your Social Data Player</h1> 
@@ -595,7 +597,7 @@
                   <%-
                   i = 1
                   @customization[:meta].reject{ |name, properties| !properties[:show] }.
-                                            sort{ |a, b| a.last[:order] <=> b.last[:order] }.each do |name, properties| -%>
+                                        sort{ |a, b| a.last[:order] <=> b.last[:order] }.each do |name, properties| -%>
                     <li><div class="itemWrapper">
                       <span class="orderIndex"><%= i %></span>
                       <%= properties[:display_name] %>
@@ -669,7 +671,8 @@
     blist.namespace.fetch('blist.publish');
     blist.publish.currentTheme = <%= JSON.generate( @customization ) %>;
   </script>
-  <%= javascript_include_tag "screens/info-pane.js", "plugins/colorpicker.js",
-      "plugins/ui.core", "plugins/ui.draggable", "widgets/reorderable-list.js",
-      "screens/blist-publish-screen", :cache => "cache/blists_publish" %>
+  <%= javascript_include_tag "screens/info-pane", "plugins/colorpicker",
+      "plugins/ui.core", "plugins/ui.draggable", "plugins/ajaxupload.3.0",
+      "util/color", "widgets/reorderable-list", "screens/blist-publish-screen",
+      :cache => "cache/blists_publish" %>
 <% end %>

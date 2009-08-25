@@ -110,10 +110,10 @@
   <div class="infoContentHeader clearfix">
     <%- shares = view.shares -%>
     <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
-    <h2 class="panelHeader <%= view.shares.size > 0 ? '' : ' last' %> <%= get_permissions_icon_class_for_view(view) %>">
+    <h2 class="panelHeader <%= shares.size > 0 ? '' : ' last' %> <%= get_permissions_icon_class_for_view(view) %>">
       <%= view.is_public? ? "Public" : "Private" %>
     </h2>
-    <%- if view.shares.size > 0 %>
+    <%- if shares.size > 0 %>
       <h2 class="panelHeader typeNotify last">
         <% form_tag(url_for(:controller => :blists, 
           :action => :notify_all_of_changes)) do %>
@@ -177,7 +177,7 @@
             </tr>
           </thead>
           <tbody>
-            <%- view.shares.sort {|a,b|
+            <%- shares.sort {|a,b|
               a.type <=> b.type ||
               a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
             <tr class="item">
@@ -222,7 +222,7 @@
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
       <%= render( :partial => "blists/meta_tab_publishing", 
-                  :locals => {:view => view, :in_widget => false }) %>
+                  :locals => {:view => view, :in_widget => false, :customization_id => "" }) %>
     </div>
   </div></div>
 </div>

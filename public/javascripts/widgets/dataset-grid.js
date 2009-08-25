@@ -29,7 +29,7 @@
             clearTempViewCallback: function () {},
             columnPropertiesEnabled: false,
             currentUserId: null,
-            editEnabled: true,
+            editEnabled: false,
             filterItem: null,
             manualResize: false,
             setTempViewCallback: function (tempView) {},
@@ -82,7 +82,7 @@
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
-                    .options({blankRow: true,
+                    .options({blankRow: datasetObj.settings.editEnabled,
                         filterMinChars: 0, progressiveLoading: true})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
                                 '/rows.json', cache: false,

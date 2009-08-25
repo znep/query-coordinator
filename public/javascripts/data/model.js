@@ -774,14 +774,14 @@ blist.namespace.fetch('blist.data');
         /**
          * Remove rows from the model.
          */
-        this.remove = function(rows)
+        this.remove = function(delRows)
         {
-            if (!(rows instanceof Array))
-            { rows = [rows]; }
+            if (!(delRows instanceof Array) || delRows.id)
+            { delRows = [delRows]; }
 
-            for (var i = 0; i < rows.length; i++)
+            for (var i = 0; i < delRows.length; i++)
             {
-                var row = rows[i];
+                var row = delRows[i];
                 if (row.expanded) { this.expand(row, false); }
                 var id = row.id;
                 var index = lookup[id];
@@ -803,7 +803,7 @@ blist.namespace.fetch('blist.data');
                 this.unselectRow(row);
             }
             installIDs();
-            $(listeners).trigger('row_remove', [ rows ]);
+            $(listeners).trigger('row_remove', [ delRows ]);
         };
 
         this.invalidateRows = function()

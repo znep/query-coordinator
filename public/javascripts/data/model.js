@@ -655,7 +655,6 @@ blist.namespace.fetch('blist.data');
 
                 filterFn = null;
                 filterText = "";
-                filterCol = null;
                 orderCol = null;
                 orderFn = null;
                 sortConfigured = false;

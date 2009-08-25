@@ -213,6 +213,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         activeCellY = y;
 
         // Enable copy & paste
+        // If we can avoid this -- and we hope we can by hooking the "copy" event, then we just need to select enough
+        // in the text area to enable the "copy" option in the browser
         /*
         var doc;
         try {
@@ -224,6 +226,11 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         $textarea.text(doc);
         $textarea[0].select();
         */
+        if (hasSelection()) {
+            $textarea.text('x');
+            $textarea[0].select();
+        } else
+            $textarea.text('');
 
         return true;
     };
@@ -936,8 +943,11 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         for (i = 0; i < usedCols.length; i++)
             if (usedCols[i]) {
                 col = usedCols[i];
-                if (col.type == 'nested_table' || col.type == 'fill' || col.level.id != selectionLevel)
+                if (col.type == 'nested_table' || col.type == 'fill' || (col.level.id || 0) != selectionLevel)
                     // TODO -- include body of nested tables?
+                    continue;
+                if (!col.dataLookupExpr)
+                    // This is a bug -- the column shouldn't be selected because it has no data.  Just ignore.
                     continue;
                 if (didOne)
                     mapFnSrc += 'rawDoc.push("\\t");';
@@ -946,7 +956,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 type = blist.data.types[col.type] || blist.data.types.text;
                 mapFnSrc += 'if (selmap[' + i + ']) rawDoc.push(' + type.renderGen("row" + col.dataLookupExpr, true, col, renderContextVars) + ');';
             }
-        mapFnSrc += 'rawDoc.push("\\n");})';
+        mapFnSrc += 'rawDoc.push("\\r\\n");})';
 
         // Compile the function
         var mapFn = blist.data.types.compile(mapFnSrc, renderContextVars);

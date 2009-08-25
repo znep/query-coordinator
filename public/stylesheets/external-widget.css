@@ -403,6 +403,11 @@ img.blist-table-option-icon
     text-align: center;
 }
 
+.dialogBox .header
+{
+    background-color: #20608F;
+}
+
 #emailDialog label
 {
     display: block;

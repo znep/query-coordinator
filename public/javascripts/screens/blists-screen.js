@@ -238,7 +238,9 @@ blist.myBlists.renameClick = function (event)
 
     var rowId = $(this).closest(".blistItemMenu")
         .attr("id").replace("itemMenu-", "");
-    var $currentCell = $("#name-cell-" + rowId).parent();
+    var $nameCell = $("#name-cell-" + rowId);
+    var nameCellWidth = $nameCell.width();
+    var $currentCell = $nameCell.parent();
 
     $currentCell.closest(".blist-tr").addClass("highlight");
 
@@ -253,7 +255,7 @@ blist.myBlists.renameClick = function (event)
         }
     });
     $form.submit(myBlistsNS.renameSubmit)
-         .show().find(":text").width($form.width() - 20).focus();
+         .show().find(":text").width(nameCellWidth - 20).focus();
 };
 
 blist.myBlists.closeRenameForms = function()

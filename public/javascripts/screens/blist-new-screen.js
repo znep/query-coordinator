@@ -79,7 +79,7 @@ $(function ()
         onChange: function (file, ext)
         {
             $uploadButton.hide();
-            $clearButton.removeClass('hide');
+            $clearButton.closest("li").removeClass('hide');
             isImport = true;
             $(".newBlistContent #view_file")
                 .val(file)
@@ -136,7 +136,7 @@ $(function ()
         $uploader.destroy();
         $uploader = $uploaderClone;
         $uploadButton.show();
-        $clearButton.addClass('hide');
+        $clearButton.closest("li").addClass('hide');
     });
     
     // Form Submit

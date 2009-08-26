@@ -77,4 +77,4 @@ String.prototype.visualLength = function(fontSize)
     $ruler.css('font-size', fontSize);
     $ruler.text(this + '');
     return $ruler.width();
-}
+};

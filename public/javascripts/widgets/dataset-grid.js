@@ -63,6 +63,8 @@
                         { columnsRearranged(datasetObj); })
                     .bind('column_filter_change', function (event, c)
                         { columnFilterChanged(datasetObj, c); })
+                    .bind('server_row_change', function(event)
+                        { updateAggregates(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -80,7 +82,8 @@
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
-                    .options({filterMinChars: 0, progressiveLoading: true})
+                    .options({blankRow: datasetObj.settings.editEnabled,
+                        filterMinChars: 0, progressiveLoading: true})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
                                 '/rows.json', cache: false,
                             data: {accessType: datasetObj.settings.accessType},
@@ -289,7 +292,7 @@
 
             isTempView: false,
 
-            rowHandleRenderer: '(permissions.canDelete ? ' +
+            rowHandleRenderer: '(permissions.canDelete && row.type != "blank" ? ' +
                 '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
                 'row.id + "\'></a>' +
                 '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "\'>' +
@@ -339,21 +342,10 @@
         if (action == 'row-delete')
         {
             model.selectRow(model.getByID(rowId));
-            var successCount = 0;
-            var totalRows = 0;
+            var rows = [];
             $.each(model.selectedRows, function(id, index)
-            {
-                totalRows++;
-                $.ajax({url: '/views/' + view.id + '/rows/' + id + '.json',
-                    contentType: 'application/json', type: 'DELETE',
-                    complete: function()
-                    {
-                        successCount++;
-                        if (successCount == totalRows)
-                        { updateAggregates(datasetObj); }
-                    }});
-                model.remove(model.getByID(id));
-            });
+                { rows.push(model.getByID(id)); });
+            model.remove(rows, true);
             datasetObj.summaryStale = true;
         }
     };
@@ -363,12 +355,12 @@
         var model = datasetObj.settings._model;
         var view = model.meta().view;
         $.ajax({url: '/views/' + view.id + '/rows.json',
-            data: {include_aggregates: true, max_rows: 0}, cache: false,
+            data: {method: 'getAggregates'}, cache: false,
             contentType: 'application/json', dataType: 'json', type: 'GET',
             success: function(resp)
             {
-                model.updateAggregateHash(resp.meta.aggregates);
-                model.metaChange();
+                model.updateAggregateHash(resp);
+                model.footerChange();
             }});
     };
 

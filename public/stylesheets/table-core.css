@@ -292,9 +292,13 @@ img.blist-table-option-icon
 }
 
 .blist-td-number,
+.blist-table-editor.type-number input,
 .blist-td-money,
+.blist-table-editor.type-money input,
 .blist-td-percent,
-.blist-td-date
+.blist-table-editor.type-percent input,
+.blist-td-date,
+.blist-table-editor.type-date input
 { text-align: right; }
 
 
@@ -335,29 +339,29 @@ img.blist-table-option-icon
     text-indent: -9999px;
 }
 
-.blist-flag-blue {
-    background-image: url(/stylesheets/images/content/table/flags/blue.png);
-}
+.blist-flag-blue,
+.blist-table-edit-container .blue .icon
+{ background-image: url(/stylesheets/images/content/table/flags/blue.png); }
 
-.blist-flag-green {
-    background-image: url(/stylesheets/images/content/table/flags/green.png);
-}
+.blist-flag-green,
+.blist-table-edit-container .green .icon
+{ background-image: url(/stylesheets/images/content/table/flags/green.png); }
 
-.blist-flag-orange {
-    background-image: url(/stylesheets/images/content/table/flags/orange.png);
-}
+.blist-flag-orange,
+.blist-table-edit-container .orange .icon
+{ background-image: url(/stylesheets/images/content/table/flags/orange.png); }
 
-.blist-flag-purple {
-    background-image: url(/stylesheets/images/content/table/flags/purple.png);
-}
+.blist-flag-purple,
+.blist-table-edit-container .purple .icon
+{ background-image: url(/stylesheets/images/content/table/flags/purple.png); }
 
-.blist-flag-red {
-    background-image: url(/stylesheets/images/content/table/flags/red.png);
-}
+.blist-flag-red,
+.blist-table-edit-container .red .icon
+{ background-image: url(/stylesheets/images/content/table/flags/red.png); }
 
-.blist-flag-yellow {
-    background-image: url(/stylesheets/images/content/table/flags/yellow.png);
-}
+.blist-flag-yellow,
+.blist-table-edit-container .yellow .icon
+{ background-image: url(/stylesheets/images/content/table/flags/yellow.png); }
 
 .blist-td-phone a { display: inline-block; }
 
@@ -409,9 +413,12 @@ img.blist-table-option-icon
 }
 
 /* Alignment */
-.blist-td.align-left { text-align: left; }
-.blist-td.align-center { text-align: center; }
-.blist-td.align-right { text-align: right; }
+.blist-td.align-left,
+.blist-table-editor .align-left { text-align: left; }
+.blist-td.align-center,
+.blist-table-editor .align-center { text-align: center; }
+.blist-td.align-right,
+.blist-table-editor .align-right { text-align: right; }
 
 .blist-td.align-left .blist-checkbox,
 .blist-td.align-left .blist-flag { background-position: left center; }
@@ -438,3 +445,45 @@ img.blist-table-option-icon
 .picklist .blist-th-icon { background-position: 0 -400px; }
 .nested_table .blist-th-icon { background-position: 0 -440px; }
 .tag .blist-th-icon { background-position: 0 -180px; }
+
+/* Editor styles */
+.blist-table .blist-combo-wrapper
+{
+    overflow: visible;
+    width: 100%;
+}
+.blist-table .blist-combo-wrapper .blist-table-editor { padding-right: 0; }
+.blist-table .blist-combo
+{
+    height: 100%;
+    min-width: 7.5em;
+}
+.blist-table .blist-combo-value
+{
+    font-size: 1em;
+    height: 100%;
+    padding: 0;
+}
+.blist-table .blist-combo-dd li { height: 1.5833em; }
+.blist-table .blist-combo-value .label,
+.blist-table .blist-combo-dd .label
+{ line-height: 1.5833em; }
+.blist-table .blist-combo-value .icon,
+.blist-table .blist-combo-dd .icon
+{
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: block;
+    float: left;
+    height: 1.5833em;
+    padding-right: 5px;
+    width: 30px;
+}
+.blist-table .blist-combo-wrapper .icon-filler
+{ padding-left: 5px; }
+.blist-table .blist-combo-wrapper .icon-img
+{
+    float: left;
+    max-height: 1.5833em;
+    padding-right: 5px;
+}

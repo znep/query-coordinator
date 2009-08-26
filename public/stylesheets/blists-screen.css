@@ -104,6 +104,7 @@ div.blist-tr form
     display: none;
     padding: 0;
 }
+div.blist-tr.blist-tr-sub form { padding-left: 26px; }
 div.blist-tr input[type="text"]
 {
     font-size: 1em; /* 12px */

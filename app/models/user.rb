@@ -79,8 +79,10 @@ class User < Model
   end
   
   def friends
+    return @friends if @friends
+    
     path = "/users/#{id}/contacts.json"
-    User.parse(CoreServer::Base.connection.get_request(path))
+    @friends = User.parse(CoreServer::Base.connection.get_request(path))
   end
   
   def followers
@@ -90,11 +92,11 @@ class User < Model
   
   def my_friend?
     return false if current_user.nil?
-    return followers.any? { |follower|
-      follower.id == current_user.id
+    return current_user.friends.any? { |friend|
+      friend.id == id
     }
   end
-
+  
   def self.login(login,password)
     parse(CoreServer::Base.connection.get_request("/authenticate/#{login}.json?password=#{password}"))
   end

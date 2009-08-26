@@ -194,20 +194,6 @@
             return model.column(colUID);
         };
 
-        // Get the value in a row for a column
-        var getRowValue = function(row, column)
-        {
-            var value;
-            eval('value = row' + column.dataLookupExpr + ';');
-            return value;
-        };
-
-        // Set the value in a row for a column
-        var setRowValue = function(value, row, column)
-        {
-            eval('row' + column.dataLookupExpr + ' = value;');
-        };
-
         // Takes a column, and gets the real px width for it
         var getColumnWidthPx = function(col)
         {
@@ -279,8 +265,7 @@
         /*** CELL SELECTION AND NAVIGATION ***/
 
         // Cell navigation model and logic
-        var cellNav = options.cellNav ?
-            new blist.data.TableNavigation(model, []) : null;
+        var cellNav;
 
         // DOM nodes for active cells
         var $activeCells;
@@ -327,12 +312,20 @@
             // Update the active cell
             if (cellNav.isActive())
             {
-                var physActive = renderedRows[cellNav.getActiveY()];
-                if (physActive)
+                var row = model.get(cellNav.getActiveY());
+                if (row)
                 {
-                    var $newActive = $(physActive.row).children()
-                        .slice(cellNav.getActiveX(),
-                            cellNav.getActiveXEnd());
+                    var physActive = renderedRows[row.id];
+                    if (physActive)
+                    {
+                        var $newActive = $(physActive.row).children()
+                            .slice(cellNav.getActiveX(),
+                                    cellNav.getActiveXEnd());
+                    }
+                }
+                else
+                {
+                    clearCellNav();
                 }
                 if ($newActive)
                 {
@@ -354,8 +347,23 @@
 
         var $activeContainer;
 
+        var hideActiveCell = function()
+        {
+            if ($activeContainer)
+            {
+                $activeContainer.css('top', -10000);
+                $activeContainer.css('left', -10000);
+            }
+        }
+
         var expandActiveCell = function()
         {
+            if (isEdit || !cellNav.isActive())
+            {
+                hideActiveCell();
+                return;
+            }
+
             // Obtain an expanding node in utility (off-screen) mode
             if (!$activeContainer)
             {
@@ -371,14 +379,7 @@
                 inside.append($activeContainer);
             }
 
-            if (!cellNav.isActive())
-            {
-                $activeContainer.css('top', -10000);
-                $activeContainer.css('left', -10000);
-                return;
-            }
-
-            var row = model.getByID(cellNav.getActiveY());
+            var row = model.get(cellNav.getActiveY());
             if (row.expanded) { $activeContainer.addClass('blist-tr-open'); }
             else { $activeContainer.removeClass('blist-tr-open'); }
             if (!$activeCells)
@@ -396,7 +397,7 @@
                 $activeContainer.width(width -
                     ($activeContainer.outerWidth() - $activeContainer.width()));
 
-                var rowIndex = model.index(cellNav.getActiveY());
+                var rowIndex = cellNav.getActiveY();
                 $activeContainer.css('top', rowIndex * rowOffset);
                 var left = lockedWidth;
                 for (var i = 0; i < cellNav.getActiveX(); i++)
@@ -451,6 +452,11 @@
             }
 
             var levelID = row.level || 0;
+            if (levelID < 0)
+            {
+                clearCellNav();
+                return false;
+            }
 
             // Check if we clicked in a locked section or on a nested table
             // header; ignore those for now
@@ -496,7 +502,8 @@
                 }
 
                 // Standard cell -- activate the cell
-                return cellNavToXY({ x: x, y: row.id }, event, selecting);
+                return cellNavToXY({ x: x, y: model.index(row) },
+                    event, selecting);
             }
 
             // Not a valid navigation target; ignore
@@ -514,6 +521,8 @@
             if (!cellNav.goTo(xy.x, xy.y, event, selecting, wrap)) {
                 return false;
             }
+            xy.x = cellNav.getActiveX();
+            xy.y = cellNav.getActiveY();
 
             // Scroll the active cell into view if it isn't visible vertically
             var scrollTop = $scrolls[0].scrollTop;
@@ -525,7 +534,7 @@
                 scrollHeight -= $footerScrolls.outerHeight() - 1;
             }
             var scrollBottom = scrollTop + scrollHeight;
-            var top = model.index(xy.y) * rowOffset;
+            var top = xy.y * rowOffset;
             var bottom = top + rowOffset;
             var origScrollTop = scrollTop;
 
@@ -548,7 +557,7 @@
             }
             var scrollRight = scrollLeft + scrollWidth;
 
-            var layoutLevel = layout[model.getByID(xy.y).level || 0];
+            var layoutLevel = layout[model.get(xy.y).level || 0];
             // Calculate left & right positions
             var cellLeft = lockedWidth;
             for (var i = 0; i < xy.x; i++)
@@ -583,109 +592,73 @@
         /*** CELL EDITING ***/
         var $editContainer;
         var isEdit = false;
+        var prevEdit = false;
 
         var editCell = function(cell)
         {
+            // Don't start another edit yet; and make sure they can edit
+            if (isEdit || !model.canWrite()) { return; }
+
             var row = getRow(cell);
             var col = getColumn(cell);
             if (!col || !row) { return; }
-            var value = getRowValue(row, col);
+            var value = model.getRowValue(row, col);
+            if (!value) { value = model.getInvalidValue(row, col); }
 
             // Obtain an expanding node in utility (off-screen) mode
-            if (!$editContainer)
-            {
-                $editContainer = $('<div class="blist-table-edit-container ' +
+            $editContainer = $('<div class="blist-table-edit-container ' +
                     'blist-table-util"></div>');
-                $editContainer.blistEditor();
-                $editContainer.bind('keydown.blistTableEdit', editorKeyDown);
-                inside.append($editContainer);
-            }
-            // If editContainer is not in the tree anywhere, stick it inside
-            else if ($editContainer[0].parentNode == null ||
-                    $editContainer[0].parentNode.nodeType == 11) // doc fragment
-            {
-                inside.append($editContainer);
-            }
+            var blistEditor = $editContainer.blistEditor(
+                {row: row, column: col, value: value});
+            if (!blistEditor) { return; }
 
-            var $editor = $editContainer.blistEditor().setEditor(row, col, value);
+            $editContainer.bind('edit_end', handleEditEnd);
+            inside.append($editContainer);
 
+            var $editor = blistEditor.$editor();
+
+            blistEditor.adjustSize();
             $editor.width('auto').height('auto');
             $editContainer.width('auto').height('auto');
 
             isEdit = true;
-            $(document).bind('mousedown.blistTableEdit', editMouseDown);
+
+            hideActiveCell();
 
             sizeCellOverlay($editContainer, $editor, $(cell));
             positionCellOverlay($editContainer, $(cell));
             $editContainer.removeClass('blist-table-util').addClass('shown');
 
-            $editor.find(':text').focus();
+            blistEditor.focus();
         };
 
-        var endEdit = function(isCancel)
+        var endEdit = function(isSave)
         {
+            prevEdit = isSave;
             isEdit = false;
-            $(document).unbind('.blistTableEdit');
             $navigator[0].focus();
 
             if (!$editContainer) { return; }
-            $editContainer.css('top', -10000);
-            $editContainer.css('left', -10000);
-            $editContainer.removeClass('shown');
-
-            if (isCancel) { return; }
 
             var editor = $editContainer.blistEditor();
+            editor.finishEdit();
+
             var origValue = editor.originalValue;
             var value = editor.currentValue();
-            if (origValue != value)
+            var row = editor.row;
+            var col = editor.column;
+            if (isSave && (origValue != value || model.isCellError(row, col)))
             {
-                var row = editor.row;
-                var col = editor.column;
-                setRowValue(value, row, col);
-                model.change([row]);
-
-                var data = {};
-                data[col.id] = value;
-                var url = '/views/' + model.meta().view.id + '/rows/';
-                if (col.nestedIn)
-                {
-                    var parCol = col.nestedIn.header;
-                    var childRow = getRowValue(row, parCol);
-                    url += row.parent.id +
-                        '/columns/' + parCol.id +
-                        '/subrows/' + (childRow.id || childRow[0]) +
-                        '.json';
-                }
-                else
-                {
-                    url += row.id + '.json';
-                }
-
-                $.ajax(
-                    { url: url,
-                    type: 'PUT',
-                    contentType: 'application/json',
-                    data: $.json.serialize(data)
-                });
+                model.saveRowValue(value, row, col, editor.isValid());
             }
+
+            $editContainer.remove();
+            $editContainer = null;
         };
 
-        var editMouseDown = function(event)
+        var handleEditEnd = function(event, isSave)
         {
-            if ($(event.target).parents().andSelf().index($editContainer) < 0)
-            {
-                endEdit();
-            }
-        };
-
-        var editorKeyDown = function(event)
-        {
-            if (event.keyCode == 13) // Enter
-            {
-                endEdit();
-                navigateY(1, event);
-            }
+            endEdit(isSave);
         };
 
         /*** CELL HOVER EXPANSION ***/
@@ -982,6 +955,7 @@
         var mouseDownAt;
         var dragHeaderLeft;
         var clickTarget;
+        var clickCell;
         var selectFrom;
 
         var findContainer = function(event, selector)
@@ -1015,39 +989,37 @@
         var findCell = function(event)
         {
             var cell = findContainer(event, '.blist-td, .blist-table-expander, ' +
-                '.blist-table-active-container');
-            if (!cell) {
-                return null;
-            }
+                '.blist-table-active-container, .blist-table-edit-container');
+            if (!cell) { return null; }
+
             var $cell = $(cell);
 
             // Can't interact with fill
-            if ($cell.is('.blist-tdfill, .blist-opener-space')) {
-                return null;
-            }
+            if ($cell.is('.blist-tdfill, .blist-opener-space'))
+            { return null; }
 
             // If we are looking at the selection expansion, return
             //  the first active cell
-            if ($activeContainer && $activeCells &&
-                ($cell[0] == $activeContainer[0] ||
-                $cell.parent()[0] == $activeContainer[0])) {
-                return $activeCells[0];
-            }
+            if ($activeCells &&
+                (($activeContainer &&
+                    ($cell[0] == $activeContainer[0] ||
+                    $cell.parent()[0] == $activeContainer[0])) ||
+                ($editContainer &&
+                    ($cell[0] == $editContainer[0] ||
+                    $cell.parent()[0] == $editContainer[0]))))
+            { return $activeCells[0]; }
 
             // Nested table header send focus to the opener
             if ($cell.hasClass('blist-tdh'))
             {
-                while (!$cell.hasClass('blist-opener')) {
-                    $cell = $(cell = cell.previousSibling);
-                }
+                while (!$cell.hasClass('blist-opener'))
+                { $cell = $(cell = cell.previousSibling); }
                 return cell;
             }
 
             // If the mouse strays over the hot expander return the hot cell
             if (cell == hotExpander || cell.parentNode == hotExpander)
-            {
-                return hotCell;
-            }
+            { return hotCell; }
 
             // Normal cell
             return cell;
@@ -1247,6 +1219,7 @@
                 if (clickTarget && Math.abs(event.clientX - mouseDownAt.x) > 3 || Math.abs(event.clientY - mouseDownAt.y > 3)) {
                     // No longer consider this a potential click event
                     clickTarget = null;
+                    clickCell = null;
                 }
 
                 // If we are selecting and can't be in a click then update the
@@ -1359,6 +1332,7 @@
             {
                 // Retrieve the row
                 var row = getRow(cell);
+                if (!row) { return; }
 
                 var skipSelect = false;
                 // If this is a row opener, invoke expand on the model
@@ -1400,7 +1374,11 @@
         var $prevActiveCells;
         var onMouseDown = function(event)
         {
+            // On any click, lose keyboard nav between edit cells
+            prevEdit = false;
+
             clickTarget = event.target;
+            clickCell = findCell(event);
             var $clickTarget = $(clickTarget);
             // IE & WebKit only detetct mousedown on scrollbars, not mouseup;
             // so we need to ignore clicks on the scrollbar to avoid having a
@@ -1421,6 +1399,7 @@
                 if ($clickTarget.closest('.action-item').length < 1)
                 {
                     clickTarget = null;
+                    clickCell = null;
                     hotHeaderDrag = true;
                     event.stopPropagation();
                     event.preventDefault();
@@ -1455,7 +1434,7 @@
                 }
                 if (cell && cellNavTo(cell, event))
                 {
-                    if (isEdit) { endEdit(); }
+                    if (isEdit) { endEdit(true); prevEdit = false; }
                     selectFrom = cell;
                 }
 
@@ -1485,27 +1464,32 @@
                 return true;
             }
 
+            var cell = findCell(event);
+            var editMode = false;
+            if (cellNav && options.editEnabled && cell == clickCell)
+            {
+                var curActiveCell = $activeCells ? $activeCells[0] : null;
+                if (curActiveCell && $prevActiveCells &&
+                        $prevActiveCells.index(curActiveCell) >= 0)
+                {
+                    // They clicked on a selected cell, go to edit mode
+                    editCell(curActiveCell);
+                    editMode = true;
+                }
+                else if (curActiveCell)
+                {
+                    $prevActiveCells = $activeCells;
+                }
+            }
+
             if (clickTarget && clickTarget == event.target &&
                 !$(clickTarget).is('a'))
             {
-                var editMode = false;
-                if (cellNav && options.editEnabled)
-                {
-                    var curActiveCell = $activeCells ? $activeCells[0] : null;
-                    if (curActiveCell && $prevActiveCells &&
-                        $prevActiveCells.index(curActiveCell) >= 0)
-                    {
-                        // They clicked on a selected cell, go to edit mode
-                        editCell(curActiveCell);
-                        editMode = true;
-                    }
-                }
-
                 $(clickTarget).trigger('table_click', event);
                 if (!editMode && cellNav) { $navigator[0].focus(); }
             }
 
-            if (cellNav) { expandActiveCell(); }
+            if (cellNav && !editMode) { expandActiveCell(); }
         };
 
         var onDoubleClick = function(event)
@@ -1531,7 +1515,11 @@
         {
             if (event.keyCode == 27) // ESC
             {
-                if (isEdit) { endEdit(true); }
+                if (isEdit)
+                {
+                    endEdit(false);
+                    expandActiveCell();
+                }
                 else { clearCellNav(); }
             }
         };
@@ -1560,10 +1548,32 @@
         // Page size is configured in renderRows()
         var pageSize = 1;
 
-        var onKeyPress = function(event) {
+        var onCopy = function(event) {
+            if (cellNav) {
+                $navigator.text(cellNav.getSelectionDoc());
+                $navigator[0].select();
+            }
+        }
+
+        var didNavKeyDown = false;
+        var navKeyDown = function(event)
+        {
+            didNavKeyDown = true;
+            doKeyNav(event);
+        };
+
+        var navKeyPress = function(event)
+        {
+            if (!didNavKeyDown) { doKeyNav(event); }
+            didNavKeyDown = false;
+        };
+
+        var doKeyNav = function(event)
+        {
             if (!cellNav) { return; }
-            
-            switch (event.keyCode || event.charCode) {
+
+            switch (event.keyCode)
+            {
                 case 34:
                     // Page up
                     navigateY(-pageSize, event);
@@ -1621,11 +1631,19 @@
                 default:
                     return true;
             }
-            setTimeout(expandActiveCell, 1);
+            var curActiveCell = $activeCells ? $activeCells[0] : null;
+            if (prevEdit && curActiveCell)
+            {
+                setTimeout(function() { editCell(curActiveCell); }, 0);
+            }
+            else
+            {
+                setTimeout(expandActiveCell, 0);
+            }
 
             return false;
         };
-        
+
         if (options.simpleCellExpand)
         {
             $('.blist-td:not(.blist-td-popout)').live('mouseover', function (event)
@@ -1775,10 +1793,18 @@
 
         // This guy receives focus when the user interacts with the grid
         var $navigator = $($outside.find('.blist-table-navigator'))
-            .keypress(onKeyPress);
+            .keydown(navKeyDown)
+            .keypress(navKeyPress)
+            .bind('copy', onCopy);
 
         // Set up initial top of locked section
         $locked.css('top', $header.outerHeight());
+
+        // Initialize cell navigation now that the navigator is rendered
+        cellNav = options.cellNav ?
+            new blist.data.TableNavigation(model, [], $navigator) : null;
+
+
 
         /*** SCROLLING AND SIZING ***/
 
@@ -2014,8 +2040,12 @@
                     completeStatement();
 
                     generatedCode +=
-                        "if (row" + mcol.dataLookupExpr + " && row" + mcol.dataLookupExpr + ".length)";
-                    colParts.push("\"<div class='blist-td blist-tdh blist-opener " + openerClass + "'></div>\"");
+                        "if (row" + mcol.dataLookupExpr +
+                        " && row" + mcol.dataLookupExpr + ".length || " +
+                        model.useBlankRows() + ")";
+                    colParts.push(
+                        "\"<div class='blist-td blist-tdh blist-opener " +
+                        openerClass + "'></div>\"");
                     var children = mcol.body.children;
                     lcols.push({
                         type: 'opener',
@@ -2085,27 +2115,54 @@
                                 "'></div>\"");
                         }
                     completeStatement();
-                } else if (mcol.type && mcol.type == 'fill') {
-                    // Fill column -- covers background for a range of columns that aren't present in this row
-                    colParts.push("\"<div class='blist-td blist-tdfill " + getColumnClass(mcol) + (j == 0 ? ' initial-tdfill' : '') + "'>&nbsp;</div>\"");
+                }
+                else if (mcol.type && mcol.type == 'fill')
+                {
+                    // Fill column -- covers background for a range of columns
+                    // that aren't present in this row
+                    colParts.push("\"<div class='blist-td blist-tdfill " +
+                      getColumnClass(mcol) + (j == 0 ? ' initial-tdfill' : '') +
+                      "'>&nbsp;</div>\"");
                     lcols.push({
                         type: 'fill',
                         canFocus: false
                     });
-                } else {
+                }
+                else
+                {
                     // Standard cell
-                    var type = blist.data.types[mcol.type] || blist.data.types.text;
+                    var type = blist.data.types[mcol.type] ||
+                        blist.data.types.text;
                     var renderer = mcol.renderer || type.renderGen;
+                    var invalidRenderer = blist.data.types.text.renderGen;
                     var cls = mcol.cls || type.cls;
                     cls = cls ? ' blist-td-' + cls : '';
                     var align = mcol.alignment ? ' align-' + mcol.alignment : '';
 
-                    renderer = renderer("row" + mcol.dataLookupExpr, mcol,
-                        contextVariables);
+                    var parCol = mcol.nestedIn ? mcol.nestedIn.header : mcol;
+                    var childLookup = mcol.nestedIn ? parCol.dataLookupExpr : '';
+                    var invalid = "(!row" + mcol.dataLookupExpr + " && row" +
+                        childLookup + ".meta && row" + childLookup +
+                        ".meta.invalidCells && row" + childLookup +
+                        ".meta.invalidCells[" + mcol.tableColumnId +
+                        "] ? ' invalid' : '')";
+
+                    renderer = "(row" + mcol.dataLookupExpr + " ? " +
+                        renderer("row" + mcol.dataLookupExpr, false, mcol,
+                                contextVariables) +
+                        " : (row" + childLookup + ".meta && row" + childLookup +
+                        ".meta.invalidCells ? " + invalidRenderer("row" +
+                            childLookup + ".meta.invalidCells[" +
+                                mcol.tableColumnId + "]") + " : ''))";
 
                     colParts.push(
                         "\"<div class='blist-td " + getColumnClass(mcol) + cls +
-                            align + "'>\", " +
+                            align + "\" + " + invalid +
+                            " + (row.saving && row.saving" +
+                            mcol.dataLookupExpr + " ? \" saving\" : \"\") + " +
+                            "(row.error && row.error" +
+                            mcol.dataLookupExpr + " ? \" error\" : \"\") + " +
+                            "\"'>\", " +
                             renderer + ", \"</div>\""
                     );
 
@@ -2115,16 +2172,15 @@
                     });
                 }
 
-                // Initialize column heights (TODO - we don't support variable heights; can we do this on a single
-                // style rather than for each column style individually?)
+                // Initialize column heights (TODO - we don't support variable
+                // heights; can we do this on a single style rather than for
+                // each column style individually?)
                 if (options.generateHeights)
-                {
-                    getColumnStyle(mcol).height = rowHeight + 'px';
-                }
+                { getColumnStyle(mcol).height = rowHeight + 'px'; }
             }
 
             completeStatement();
-            
+
             return generatedCode;
         };
 
@@ -2192,7 +2248,7 @@
                     dataIndex: 'rowNumber',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.rows().length, 100),
-                    renderer: '(index + 1)',
+                    renderer: '(row.type == "blank" ? "new" : index + 1)',
                     footerText: 'Totals'});
             }
             if (options.showRowHandle)
@@ -2287,14 +2343,23 @@
                 var lcols = layout[i] = [];
                 levelRender[i] = createColumnRendering(mcols, lcols, contextVariables);
             }
-            cellNav = options.cellNav ?
-                new blist.data.TableNavigation(model, layout) : null;
+            if (cellNav)
+            {
+                cellNav.updateModel(model);
+                cellNav.updateLayout(layout);
+            }
+            else
+            {
+                cellNav = options.cellNav ?
+                    new blist.data.TableNavigation(model, layout, $navigator) : null;
+            }
 
             var rowDivContents =
                 'class=\'blist-tr", ' +
                 '(index % 2 ? " blist-tr-even" : ""), ' +
-                '(row.level != undefined ? " blist-tr-level" + row.level : ""), ' +
+                '(row.level !== undefined ? " blist-tr-level" + row.level : ""), ' +
                 '(row.level > 0 ? " blist-tr-sub" : ""), ' +
+                '(row.type ? " blist-tr-" + row.type : ""), ' +
                 '(row.expanded ? " blist-tr-open" : ""), ' +
                 '(row.groupLast ? " last" : ""), ' +
                 '"\' style=\'top: ", ' +
@@ -2311,7 +2376,8 @@
                 '       );' +
                 '   switch (row.level || 0) {' +
                 '     case -1:' +
-                '       html.push(renderSpecial(row));' +
+                '       if (row.type == "group")' +
+                '       { html.push(renderSpecial(row)); }' +
                 '       break;';
             for (i = 0; i < levelRender.length; i++) {
                 renderFnSource += 'case ' + i + ':' +
@@ -3037,8 +3103,6 @@
          */
         var initRows = function(model)
         {
-            clearCellNav();
-
             if (handleDigits != calculateHandleDigits(model)) {
                 // The handle changed.  Reinitialize columns.
                 initMeta(model);
@@ -3056,18 +3120,21 @@
         /**
          * Re-render a set of rows (if visible).
          */
-        var updateRows = function(rows) {
-            for (var i = 0; i < rows.length; i++) {
+        var updateRows = function(rows)
+        {
+            for (var i = 0; i < rows.length; i++)
+            {
                 var row = rows[i];
                 var rowID = row.id || row[0];
                 var rendered = renderedRows[rowID];
-                if (rendered) {
+                if (rendered)
+                {
                     delete renderedRows[rowID];
                     dirtyRows[rowID] = rendered;
                 }
             }
             updateLayout();
-        }
+        };
 
 
         /*** MODEL ***/
@@ -3079,6 +3146,8 @@
             renderFooter();
             initRows(model);
         });
+        $this.bind('footer_change', function(event)
+        { renderFooter(); });
         $this.bind('header_change', function(event, model)
         {
             updateHeader(model);
@@ -3150,8 +3219,8 @@
         blistTable: function(options) {
             // Create the table
             return this.each(function() {
-                makeTable.apply(this,
-                    [ $.extend({}, blistTableDefaults, options) ]);
+                if (!$(this).is('.blist-table'))
+                    makeTable.apply(this, [ $.extend({}, blistTableDefaults, options) ]);
             });
         },
 

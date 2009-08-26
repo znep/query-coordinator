@@ -493,6 +493,7 @@ $(function ()
         {
             $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
                 columnPropertiesEnabled: blistGridNS.isOwner,
+                showAddColumns: blistGridNS.canAddColumns,
                 currentUserId: blist.currentUserId,
                 accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                 clearTempViewCallback: blistGridNS.clearTempViewTab,

@@ -35,6 +35,7 @@
             setTempViewCallback: function (tempView) {},
             showRowHandle: false,
             showRowNumbers: true,
+            showAddColumns: false,
             updateTempViewCallback: function (tempView) {},
             viewId: null
         },
@@ -73,6 +74,7 @@
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
+                        showAddColumns: datasetObj.settings.showAddColumns,
                         // This really ought to be linked to edit; but until
                         // edit is enabled, we'll check the user
                         //rowHandleRenderer: (datasetObj.settings.editEnabled ?

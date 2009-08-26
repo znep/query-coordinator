@@ -2075,14 +2075,17 @@
                         });
                     }
 
-                    lcols.push({
-                        type: 'adder',
-                        skippable: true,
-                        skipCount: children.length,
-                        mcol: mcol,
-                        logical: mcol.uid
-                    });
-                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
+                    if (options.showAddColumns)
+                    {
+                        lcols.push({
+                            type: 'adder',
+                            skippable: true,
+                            skipCount: children.length,
+                            mcol: mcol,
+                            logical: mcol.uid
+                        });
+                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
+                    }
                     completeStatement();
 
                     generatedCode += "else ";
@@ -2097,7 +2100,10 @@
                             "'></div>\""
                         );
                     }
-                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
+                    if (options.showAddColumns)
+                    {
+                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
+                    }
                     completeStatement();
                 } else if (mcol.children) {
                     // Nested table row -- render cells if the row is present or filler if not
@@ -2115,7 +2121,7 @@
                     });
                     generatedCode +=
                         "if (row" + mcol.header.dataLookupExpr + ") " +
-                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'", "'<div class=\"blist-td blist-column-adder-space blist-column-adder\"></div>'") +
+                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'", options.showAddColumns ? "'<div class=\"blist-td blist-column-adder-space blist-column-adder\"></div>'" : undefined) +
                         "else ";
 
                     colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
@@ -2124,7 +2130,10 @@
                             getColumnClass(children[i]) +
                             "'></div>\"");
                     }
-                    colParts.push("'<div class=\"blist-td blist-column-adder-space blist-column-adder blist-tdfill\"></div>'");
+                    if (options.showAddColumns)
+                    {
+                        colParts.push("'<div class=\"blist-td blist-column-adder-space blist-column-adder blist-tdfill\"></div>'");
+                    }
                     completeStatement();
                 }
                 else if (mcol.type && mcol.type == 'fill')
@@ -2330,12 +2339,14 @@
                 }
             });
 
-            measureUtilDOM.innerHTML = '<div class="blist-td blist-column-adder">x</div>';
-            $measureDiv = $(measureUtilDOM.firstChild);
-
             // Record the width of the opener for nested tables
             openerWidth = measuredInnerDims.width * 1.5;
-            adderWidth = $measureDiv.width() + paddingX; 
+            if (options.showAddColumns)
+            {
+                measureUtilDOM.innerHTML = '<div class="blist-td blist-column-adder">x</div>';
+                $measureDiv = $(measureUtilDOM.firstChild);
+                adderWidth = $measureDiv.width() + paddingX; 
+            }
             openerStyle.width = openerWidth + 'px';
             if (options.generateHeights) {
                 openerStyle.height = rowHeight + 'px';
@@ -2513,7 +2524,10 @@
                 {
                     // Nested table header -- set width based on child widths
                     colWidth = openerWidth + paddingX;
-                    colWidth += adderWidth;
+                    if (options.showAddColumns)
+                    {
+                        colWidth += adderWidth;
+                    }
                     var children = mcol.body.children;
                     for (var k = 0; k < children.length; k++)
                         colWidth += children[k].width + paddingX;
@@ -3230,7 +3244,8 @@
         showName: true,
         showRowNumbers: true,
         showRowHandle: false,
-        showTitle: true
+        showTitle: true,
+        showAddColumns: false
     };
 
     $.fn.extend({

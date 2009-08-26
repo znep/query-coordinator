@@ -10,6 +10,7 @@
 <% end %>
 
 <%- is_owner = current_user && @view && @view.owner.id == current_user.id -%>
+<%- is_blist = @view && @view.is_blist? %> 
 <%- can_edit = current_user && @view && @view.can_edit() -%>
 
 <div id='overlay'></div>
@@ -347,6 +348,7 @@
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
     blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
+    blist.blistGrid.canAddColumns = <%= is_owner && is_blist ? 'true' : 'false' %>;
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
     <%- end -%>

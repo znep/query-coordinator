@@ -776,6 +776,9 @@ blist.namespace.fetch('blist.data.types');
     {
         blist.data.types.text.editor = $.blistEditor.text;
         blist.data.types.number.editor = $.blistEditor.number;
+        blist.data.types.percent.editor = $.blistEditor.percent;
+        blist.data.types.money.editor = $.blistEditor.money;
+        blist.data.types.email.editor = $.blistEditor.email;
         blist.data.types.flag.editor = $.blistEditor.flag;
         blist.data.types.picklist.editor = $.blistEditor.picklist;
     }

@@ -21,10 +21,14 @@
                     this._$editor = $('<div class="blist-table-editor blist-td' +
                         ' type-' + this.column.type +
                         '"><input type="text" class="' + align +  '" value="' +
-                        (this.originalValue ? this.originalValue : '') +
-                        '" /></div>');
+                        this.originalTextValue() + '" /></div>');
                 }
                 return this._$editor;
+            },
+
+            originalTextValue: function()
+            {
+                return this.originalValue || '';
             },
 
             editorInserted: function()
@@ -36,18 +40,21 @@
 
             adjustSize: function()
             {
-                if (this.originalValue)
+                if (this.originalValue instanceof String)
                 {
                     this.$editor().css('min-width', this.originalValue
                         .visualLength(this.$editor().css('font-size')) + 1);
                 }
             },
 
-            currentValue: function()
+            textValue: function()
             {
                 var newVal = this.$editor().find(':text').val();
                 return newVal === '' ? null : newVal;
             },
+
+            currentValue: function()
+            { return this.textValue(); },
 
             focus: function()
             {

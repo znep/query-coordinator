@@ -1969,7 +1969,7 @@
             ghostStyle = addRule("." + ghostClass).style;
 
             // Dynamic style applied to nested table openers
-            openerStyle = addRule("." + openerClass).style;
+            openerStyle = addRule("div." + openerClass).style;
 
             // Dynamic style applied to rows
             rowStyle = addRule("#" + id + " .blist-tr").style;
@@ -2005,6 +2005,7 @@
         var paddingX;
         var lockedWidth;
         var openerWidth;
+        var adderWidth;
         var varMinWidth = [];
         var varDenom = [];
         var insideWidth;
@@ -2016,7 +2017,7 @@
         /**
          * Create rendering code for a series of columns.
          */
-        var createColumnRendering = function(mcols, lcols, contextVariables, prefix) {
+        var createColumnRendering = function(mcols, lcols, contextVariables, prefix, suffix) {
             var colParts = [];
             var generatedCode = '';
             if (prefix) {
@@ -2043,9 +2044,7 @@
                         "if (row" + mcol.dataLookupExpr +
                         " && row" + mcol.dataLookupExpr + ".length || " +
                         model.useBlankRows() + ")";
-                    colParts.push(
-                        "\"<div class='blist-td blist-tdh blist-opener " +
-                        openerClass + "'></div>\"");
+                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-opener " + openerClass + "'></div>\"");
                     var children = mcol.body.children;
                     lcols.push({
                         type: 'opener',
@@ -2075,10 +2074,19 @@
                             logical: mcol.uid
                         });
                     }
+
+                    lcols.push({
+                        type: 'adder',
+                        skippable: true,
+                        skipCount: children.length,
+                        mcol: mcol,
+                        logical: mcol.uid
+                    });
+                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
                     completeStatement();
 
                     generatedCode += "else ";
-                    colParts.push("\"<div class='blist-td blist-tdh blist-opener blist-opener-inactive " + openerClass + "'></div>\"");
+                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-opener blist-opener-inactive " + openerClass + "'></div>\"");
                     for (k = 0; k < children.length; k++) {
                         child = children[k];
                         colParts.push(
@@ -2089,6 +2097,7 @@
                             "'></div>\""
                         );
                     }
+                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
                     completeStatement();
                 } else if (mcol.children) {
                     // Nested table row -- render cells if the row is present or filler if not
@@ -2106,14 +2115,16 @@
                     });
                     generatedCode +=
                         "if (row" + mcol.header.dataLookupExpr + ") " +
-                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
+                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'", "'<div class=\"blist-td blist-column-adder-space blist-column-adder\"></div>'") +
                         "else ";
-                        colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
-                        for (var i = 0; i < children.length; i++) {
-                            colParts.push("\"<div class='blist-td blist-tdfill blist-td-colfill " +
-                                getColumnClass(children[i]) +
-                                "'></div>\"");
-                        }
+
+                    colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
+                    for (var i = 0; i < children.length; i++) {
+                        colParts.push("\"<div class='blist-td blist-tdfill blist-td-colfill " +
+                            getColumnClass(children[i]) +
+                            "'></div>\"");
+                    }
+                    colParts.push("'<div class=\"blist-td blist-column-adder-space blist-column-adder blist-tdfill\"></div>'");
                     completeStatement();
                 }
                 else if (mcol.type && mcol.type == 'fill')
@@ -2177,6 +2188,11 @@
                 // each column style individually?)
                 if (options.generateHeights)
                 { getColumnStyle(mcol).height = rowHeight + 'px'; }
+            }
+
+            if (suffix)
+            {
+              colParts.push(suffix);
             }
 
             completeStatement();
@@ -2314,8 +2330,12 @@
                 }
             });
 
+            measureUtilDOM.innerHTML = '<div class="blist-td blist-column-adder">x</div>';
+            $measureDiv = $(measureUtilDOM.firstChild);
+
             // Record the width of the opener for nested tables
             openerWidth = measuredInnerDims.width * 1.5;
+            adderWidth = $measureDiv.width() + paddingX; 
             openerStyle.width = openerWidth + 'px';
             if (options.generateHeights) {
                 openerStyle.height = rowHeight + 'px';
@@ -2493,6 +2513,7 @@
                 {
                     // Nested table header -- set width based on child widths
                     colWidth = openerWidth + paddingX;
+                    colWidth += adderWidth;
                     var children = mcol.body.children;
                     for (var k = 0; k < children.length; k++)
                         colWidth += children[k].width + paddingX;

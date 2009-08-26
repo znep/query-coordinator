@@ -1141,25 +1141,54 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        this.updateColumn = function(column)
+        this.updateColumn = function(column, parentId)
         {
             var isColumnPresent = false;
-            if (meta.view != null)
+
+            if (parentId != null)
             {
                 $.each(meta.view.columns, function(i, c)
                 {
-                    if (c.id == column.id)
+                    if (parentId == c.id)
                     {
-                        meta.view.columns[i] = column;
-                        isColumnPresent = true;
-                        return false;
+                        if (c.childColumns == undefined)
+                        {
+                            c.childColumns = [];
+                        }
+                    
+                        $.each(c.childColumns, function(j, child)
+                        {
+                            if (child.id == column.id)
+                            {
+                                meta.view.columns[i].childColumns[j] = column;
+                                isColumnPresent = true;
+                                return false;
+                            }
+                        });
+
+                        if (!isColumnPresent)
+                        {
+                            c.childColumns.push(column);
+                        }
                     }
                 });
+            }
+            else
+            {
+                    $.each(meta.view.columns, function(i, c)
+                    {
+                        if (c.id == column.id)
+                        {
+                            meta.view.columns[i] = column;
+                            isColumnPresent = true;
+                            return false;
+                        }
+                    });
 
-                if (!isColumnPresent)
-                {
-                    meta.view.columns.push(column);
-                }
+                    if (!isColumnPresent)
+                    {
+                        meta.view.columns.push(column);
+                    }
             }
 
 

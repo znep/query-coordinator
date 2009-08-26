@@ -368,7 +368,6 @@
     {
         var model = datasetObj.settings._model;
         if (!column || row.level > 0) { return; }
-
         if (column.dataIndex == 'rowNumber')
         {
             if (origEvent.shiftKey)
@@ -379,6 +378,11 @@
             {
                 model.toggleSelectRow(row);
             }
+        }
+        else if ($(origEvent.target).closest(".blist-column-adder-icon").length > 0)
+        {
+            // Display the add column dialog.
+            $('<a href="/blists/' + model.meta().view.id + '/columns/new?parent=' + column.id + '" rel="modal" />').click();
         }
     };
 

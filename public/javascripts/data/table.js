@@ -2683,7 +2683,9 @@
             {
                 html.push('<div class="blist-th blist-table-ghost ',
                     columns.length < 1 ? 'blist-th-first ' : '',
-                    ghostClass, '"></div>');
+                    ghostClass, '">' + 
+                    (options.showAddColumns ? '<div class="blist-column-adder add-column"></div>' : '') + 
+                    '</div>');
             }
             $header.html(html.join(''));
 

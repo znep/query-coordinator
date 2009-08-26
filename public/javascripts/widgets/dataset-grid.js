@@ -94,6 +94,10 @@
                 $('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle')
                     .live('mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
+                $('#' + $datasetGrid.attr('id') + ' .add-column')
+                    .live("click", function (e) { 
+                          $('<a href="/blists/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click() 
+                        });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
 

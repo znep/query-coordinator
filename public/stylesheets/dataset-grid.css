@@ -178,6 +178,23 @@ div.blist-th-first
     padding: 0 4px;
 }
 
+div.blist-table-ghost div.blist-column-adder
+{
+    margin-top: 1em;
+    float: right;
+    cursor: pointer;
+    background-image: url('/stylesheets/images/content/table/add_column_icons.gif');
+    background-repeat: no-repeat;
+    background-position: center 0px;
+    background-color: #e8e8e8;
+    width: 15px;
+    height: 15px;
+}
+div.blist-table-ghost div.blist-column-adder:hover
+{
+    background-position: center -15px;
+}
+
 div.blist-tr-open div.blist-column-adder,
 div.blist-tr.blist-hot-row div.blist-column-adder
 {

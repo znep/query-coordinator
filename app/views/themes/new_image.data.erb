@@ -77,8 +77,16 @@
     });
 
     $form.validate({
-      rules: { "new_image[name]": "required" },
-      messages: {  "new_image[name]": "You must name the image." }
+      rules: 
+      { 
+        "new_image[name]": "required",
+        "new_image[file_name]" : "required"
+      },
+      messages: 
+      {  
+        "new_image[name]": "You must name the image.",
+        "new_image[file_name]": "You must provide a file to upload."
+      }
     });
 
     $('#submitNewImage').click(function(event)

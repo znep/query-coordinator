@@ -29,6 +29,13 @@ class Column < Model
     end
 
     attributes = Column.to_core(attributes)
+
+    if attributes[:dataTypeName] == "nested_table"
+      attributes["childColumns"] = [
+          Column.to_core({"type" => "text", "width" => 100,"name" => "Sub-column"})
+      ]
+    end
+
     return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
 

@@ -349,7 +349,11 @@ class BlistsController < SwfController
     @view = View.find(params[:id])
     
     # TODO: Make @contacts_json of existing contacts.
-    
+    contacts_values = []
+    current_user.friends.each do |friend|
+      contacts_values << { :id => friend.id, :label => friend.displayName }
+    end
+    @contact_combo_values = contacts_values.to_json
     
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
@@ -368,6 +372,7 @@ class BlistsController < SwfController
       
         grant = Hash.new
         grant[:userEmail] = recipient["email"] || ""
+        grant[:userId] = recipient["userId"] || ""
         grant[:type] = recipient["type"]
         
         begin

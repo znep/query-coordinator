@@ -14,13 +14,11 @@
     var addedRecipients = new Array();
     var addedRecipientUID = 0;
     
-    // var contacts_json = <%= @contacts_json %>;
-    //     $("#add_recipient_email").autocomplete(contacts_json,
-    //       {
-    //         minChars: 0,
-    //         formatItem: function(row, i, max) { return row.displayName; }
-    //       });
-    
+    var contact_values = <%= @contact_combo_values %>;
+    $("#add_friends").combo({
+      name: "add_friends",
+      values: contact_values
+    });
     
     $("#add_type").combo({
       name: "add_type",
@@ -37,13 +35,11 @@
     $("#recipientsEditForm").validate({
       rules: {
         add_recipient_email: {
-            required: true,
             email: true
         }
       },
       messages: {
         add_recipient_email: {
-          required: "Email address is required.",
           email: "Please enter a valid email address."
         }
       },
@@ -53,15 +49,20 @@
         var newRecipient = {
           id: "remove_" + addedRecipientUID,
           email: $("#add_recipient_email").val(),
+          userId: $("#add_friends").value(),
           type: $("#add_type").value()
         };
         addedRecipients.push($.json.serialize(newRecipient));
 
+        var displayValue = $("#add_recipient_email").val() != "" ? 
+                                newRecipient.email : 
+                                $("#add_friends").valueObjectAccessor().selectedValueObject().label;
+        
         var addRow = "<tr>";
         addRow += "<td class=\"add_handle\">";
         addRow += "<a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>";
-        addRow += "<td class=\"add_email\"><span>" + newRecipient.email + "</span></td>";
-        addRow += "<td class=\"add_type\"><span>" + newRecipient.type + "</span></td>";
+        addRow += "<td class=\"add_email\"><span>" + displayValue + "</span></td>";
+        addRow += "<td class=\"add_type\"><span>" + newRecipient.type.toLowerCase().capitalize() + "</span></td>";
         addRow += "<td class=\"add_action\"></td>";
         addRow += "</tr>";
 

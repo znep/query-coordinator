@@ -233,6 +233,11 @@
 .recipientsEditTableContainer tbody td { vertical-align: top; }
 
 .recipientsWrapper table td.add_handle { padding: 0; }
+.recipientsWrapper table td.add_email { padding: .3em .5em; }
+
+.recipientsWrapper .recipientsEditTableContainer table td.add_type,
+.recipientsWrapper .recipientsEditTableContainer table td.add_action { padding: 1.5em .5em .3em; }
+
 .recipientsShowTableContainer table td.add_handle a,
 .recipientsEditTableContainer table td.add_handle span
 {
@@ -255,6 +260,10 @@
     font-size: 1.2em;
     width: 90%;
 }
+.recipientsWrapper .blist-combo-wrapper { width: 90%; }
+
+.recipientsWrapper td.add_email p:first-child { margin: 0; }
+.recipientsWrapper td.add_email p { margin: .5em 0 0; }
 
 .invitationPreviewContainer {
     background-color: #ececec;

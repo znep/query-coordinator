@@ -344,6 +344,29 @@ class BlistsController < SwfController
       format.data { render(:layout => "modal_dialog") }
     end
   end
+  
+  def meta_tab_header
+     if (!params[:tab])
+       return
+     end
+
+     @tabKey = params[:tab]
+     @view = View.find(params[:id])
+     render(:layout => 'main.data')
+   end
+
+   def meta_tab
+     if (!params[:tab])
+       return
+     end
+
+     @tabKey = params[:tab]
+     @view = View.find(params[:id])
+     if (@tabKey == "activity")
+       @view_activities = Activity.find({:viewId => @view.id})
+     end
+     render(:layout => 'main.data')
+   end
 
 private
 

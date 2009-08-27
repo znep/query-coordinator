@@ -140,6 +140,9 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
 
+  map.connect 'dataset/:id/meta_tab_header', :controller => 'blist', :action => 'meta_tab_header'
+  map.connect 'dataset/:id/meta_tab', :controller => 'blist', :action => 'meta_tab'
+
   map.connect 'widgets/:id/:variation/:options', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id/:variation/:options.data', :controller => 'widgets', :action => 'show', :format => 'data'
   map.connect 'widgets/:id/:variation', :controller => 'widgets', :action => 'show'

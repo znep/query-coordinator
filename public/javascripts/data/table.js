@@ -2167,7 +2167,7 @@
                         ".meta.invalidCells[" + mcol.tableColumnId +
                         "] ? ' invalid' : '')";
 
-                    renderer = "(row" + mcol.dataLookupExpr + " ? " +
+                    renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
                                 contextVariables) +
                         " : (row" + childLookup + ".meta && row" + childLookup +

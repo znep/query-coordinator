@@ -5,6 +5,7 @@ default: &default
   coreservice_uri: http://localhost:8080
   ie_port: 12345
   orbited_port: 9000
+  rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
 
 # Local development
 development:
@@ -32,6 +33,7 @@ production:
   google_analytics_id: UA-9046230-1
   ie_port: 80
   orbited_port: 80
+  rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
   <<: *default
 
 

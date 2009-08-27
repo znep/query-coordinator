@@ -89,6 +89,11 @@ class User < Model
     path = "/users/#{id}/followers.json"
     User.parse(CoreServer::Base.connection.get_request(path))
   end
+
+  def openid_identifiers
+    path = "/users/#{id}/open_id_identifiers.json"
+    OpenIdIdentifier.parse(CoreServer::Base.connection.get_request(path))
+  end
   
   def my_friend?
     return false if current_user.nil?

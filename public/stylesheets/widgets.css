@@ -1496,6 +1496,19 @@ table.gridList tr.filteredOut
     text-decoration: none;
 }
 
+.loginBox div.openid
+{
+    float: right;
+    margin-top: -15px;
+}
+.loginBox div.openid a.rpxnow
+{
+    font-size: 1.2em;
+    background-image: url(/stylesheets/images/openid-16x16.gif);
+    background-repeat: no-repeat;
+    padding-left: 20px;
+}
+
 /*** END: Login box ***/
 
 

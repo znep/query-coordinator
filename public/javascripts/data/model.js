@@ -1246,6 +1246,7 @@ blist.namespace.fetch('blist.data');
             }
             meta.columns = null;
             this.meta(meta);
+            configureActive();
             $(listeners).trigger('columns_updated', [this]);
         }
 

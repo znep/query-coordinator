@@ -64,6 +64,12 @@ $.capitalize = function(text)
 
 })(jQuery);
 
+String.prototype.startsWith = function(str)
+{ return this.indexOf(str) == 0; };
+
+String.prototype.endsWith = function(str)
+{ return this.lastIndexOf(str) == (this.length - str.length); };
+
 /* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
 String.prototype.visualLength = function(fontSize)
 {
@@ -77,4 +83,4 @@ String.prototype.visualLength = function(fontSize)
     $ruler.css('font-size', fontSize);
     $ruler.text(this + '');
     return $ruler.width();
-}
+};

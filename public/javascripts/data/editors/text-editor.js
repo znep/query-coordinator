@@ -33,6 +33,11 @@
 
             editorInserted: function()
             {
+                this.textValidationHookup();
+            },
+
+            textValidationHookup: function()
+            {
                 var editObj = this;
                 editObj.$dom().find(':input').keypress(function(e)
                     { setTimeout(function() { editObj.textModified(); }, 0); });

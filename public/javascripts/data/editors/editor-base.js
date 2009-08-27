@@ -79,6 +79,7 @@
                     $(document).unbind('.blistEditor_' + editObj._uid);
                     editObj._uid = null;
                 }
+                editObj.finishEditExtra();
             },
 
             $dom: function()
@@ -94,6 +95,11 @@
             },
 
             editorInserted: function()
+            {
+                // Override me if desired
+            },
+
+            finishEditExtra: function()
             {
                 // Override me if desired
             },

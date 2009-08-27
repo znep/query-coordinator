@@ -306,68 +306,20 @@ blist.namespace.fetch('blist.data.types');
         return "renderRichtext(" + value + " || '')";
     };
 
-    var renderDate = function(value, includeDate, includeTime) {
-        if (value == null) {
-            return '';
-        }
-        
-        // Note -- jQuery.dates would do a nicer job of this but it appears to be GPL so not sure if we can use it.
-        // Plus this is probably faster.
-        if (typeof value == 'number') {
-            value = new Date(value * 1000);
-        }
-
-        var result;
-
-        if (includeDate) {
-            var day = value.getMonth();
-            if (day < 10) {
-                day = '0' + day;
-            }
-            result = (value.getMonth() + 1) + '/' + value.getDate() + '/' + (value.getFullYear());
-        }
-        if (includeTime) {
-            var hour = value.getHours();
-            var meridian = hour < 12 ? ' am' : ' pm';
-            if (hour > 12) {
-                hour -= 12;
-            }
-            else if (!hour) {
-                hour = 12;
-            }
-            var minute = value.getMinutes();
-            if (minute < 10) {
-                minute = '0' + minute;
-            }
-            var time = hour + ':' + minute + meridian;
-            if (result) {
-                result += ' ' + time;
-            } else {
-                result = time;
-            }
-        }
-
-        return result;
+    var renderDate = function(value, format)
+    {
+        if (value == null) { return ''; }
+        var d;
+        if (typeof value == 'number') { d = new Date(value * 1000); }
+        else { d = Date.parse(value); }
+        return d ? d.format(format) : '';
     };
 
-    var renderGenDate = function(value, plain, column) {
-        var date, time;
-        switch (column && column.format) {
-            case 'date':
-                date = true;
-                time = false;
-                break;
-
-            case 'time':
-                date = false;
-                time = true;
-                break;
-
-            default:
-                date = time = true;
-                break;
-        }
-        return "renderDate(" + value + ", " + date + ", " + time + ")";
+    var renderGenDate = function(value, plain, column)
+    {
+        var format = blist.data.types.date.formats[column.format] ||
+            blist.data.types.date.formats['date_time'];
+        return "renderDate(" + value + ", '" + format + "')";
     };
 
     var renderGenPicklist = function(value, plain, column, context) {
@@ -519,24 +471,9 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterDate = function(value, column)
     {
-        var date, time;
-        switch (column && column.format)
-        {
-            case 'date':
-                date = true;
-                time = false;
-                break;
-
-            case 'time':
-                date = false;
-                time = true;
-                break;
-
-            default:
-                date = time = true;
-                break;
-        }
-        return renderDate(value, date, time);
+        var format = blist.data.types.date.formats[column.format] ||
+            blist.data.types.date.formats['date_time'];
+        return renderDate(value, format);
     };
 
     var renderFilterMoney = function(value, column)
@@ -625,6 +562,7 @@ blist.namespace.fetch('blist.data.types');
 
     /*** DATA TYPE DEFINITIONS ***/
 
+    var timeFormat = 'h:i:s A O';
     /**
      * This is our main map of data types.
      */
@@ -666,7 +604,18 @@ blist.namespace.fetch('blist.data.types');
             filterValue: renderFilterDate,
             sortable: true,
             filterable: true,
-            group: groupDate
+            group: groupDate,
+            formats: {
+                'date': 'm/d/Y',
+                'date_time': 'm/d/Y ' + timeFormat,
+                'date_dmy': 'd/m/Y',
+                'date_dmy_time': 'd/m/Y ' + timeFormat,
+                'date_ymd': 'Y/m/d',
+                'date_ymd_time': 'Y/m/d ' + timeFormat,
+                'date_monthdy': 'F d, Y',
+                'date_dmonthy': 'd F Y',
+                'date_ymonthd': 'Y F d'
+            }
         },
 
         photo: {
@@ -775,6 +724,7 @@ blist.namespace.fetch('blist.data.types');
     if ($.blistEditor)
     {
         blist.data.types.text.editor = $.blistEditor.text;
+        blist.data.types.date.editor = $.blistEditor.date;
         blist.data.types.number.editor = $.blistEditor.number;
         blist.data.types.percent.editor = $.blistEditor.percent;
         blist.data.types.money.editor = $.blistEditor.money;

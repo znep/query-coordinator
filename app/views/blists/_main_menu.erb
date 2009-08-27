@@ -45,9 +45,10 @@
         {'separator' => true},
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
         'submenu' => recent_blists_menu(@view, 5)},
-        {'separator' => true, 'owner_item' => true},
+        {'separator' => true, 'owner_item' => true, 'if' => @view.is_blist?},
         {'text' => "Change permissions...",
-        'class' => 'editPermissions', 'owner_item' => true, 'submenu' => { 'items' => [
+        'class' => 'editPermissions', 'owner_item' => true, 'if' => @view.is_blist?,
+        'submenu' => { 'items' => [
           {'text' => 'Publicly viewable', 'class' => "radioOption#{@view.is_public? ? 'Selected' : ''}",
           'href' => "#makePermissionPublic_#{@view.id}"},
           {'text' => 'Viewable only by owner and sharees', 'class' => "radioOption#{@view.is_public? ? '' : 'Selected'}",

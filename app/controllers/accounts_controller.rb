@@ -162,9 +162,7 @@ class AccountsController < ApplicationController
   def add_rpx_token
     OpenIdIdentifier.create(User.current_user.id, params[:token]) if params[:token]
   rescue CoreServer::CoreServerError => e
-    if (e.error_message =~ /^Validation failed: /)
-      flash[:openid_error] = e.error_message.gsub(/^Validation failed: /, '')
-    end
+    flash[:openid_error] = e.error_message
   ensure
     redirect_to account_url(:anchor => params[:section])
   end

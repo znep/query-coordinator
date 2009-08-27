@@ -6,25 +6,28 @@
         Styles for header/footer and full page background
  */
 
-html
-{
-    height: 100%;
-}
+html { height: 100%; }
 
 body
 {
     background: #ececec url(/stylesheets/images/header/mainlogo_background.png) 0 6px repeat-x;
-    border-top: 6px solid;
     height: 100%;
+}
+
+.bodyExterior
+{
+    min-height: 100%;
+}
+.bodyInterior
+{ 
+    border-top: 6px solid;
+    padding-bottom: 70px;
 }
 
 #outerContainer
 {
-    height: auto;
     margin: 0 auto;
     max-width: 140em;
-    min-height: 100%;
-    position: relative;
 }
 
 /******************
@@ -282,21 +285,23 @@ body.home #mainNav li.home a span {
 /*************
  *  FOOTER   *
  *************/
+.footerContainer
+{
+    background: #ececec url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
+    height: 60px;
+    margin: -61px 0 0;
+}
 
 #footer
 {
-    background: url(/stylesheets/images/header/mainlogo_background.png) repeat-x;
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
+    margin: 0 auto;
+    max-width: 140em;
     text-align: right;
-    width: 100%;
 }
 
 #footer ul
 {
-    padding: 2em 1em;
+    padding: 2em 1em 0;
 }
 
 #footer li

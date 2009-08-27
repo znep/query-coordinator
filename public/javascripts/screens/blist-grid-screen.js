@@ -161,13 +161,6 @@ blist.blistGrid.toggleAddColumns = function ()
     blist.common.forceWindowResize();
 };
 
-blist.blistGrid.dataTypeClickHandler = function (event)
-{
-    var href = $(event.currentTarget).attr('href');
-    var dt = href.slice(href.indexOf('#') + 1);
-    blist.util.flashInterface.addColumn(dt);
-};
-
 blist.blistGrid.flashPopupClickHandler = function (event)
 {
     event.preventDefault();
@@ -500,6 +493,7 @@ $(function ()
         {
             $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
                 columnPropertiesEnabled: blistGridNS.isOwner,
+                showAddColumns: blistGridNS.canAddColumns,
                 currentUserId: blist.currentUserId,
                 accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
                 clearTempViewCallback: blistGridNS.clearTempViewTab,
@@ -594,12 +588,6 @@ $(function ()
     {
         event.preventDefault();
         blistGridNS.toggleAddColumns();
-    });
-
-    $('#addColumnsMenu .column a').click(function (event)
-    {
-        event.preventDefault();
-        blistGridNS.dataTypeClickHandler(event);
     });
 
     $('a.showFlashPopup').click(blistGridNS.flashPopupClickHandler);

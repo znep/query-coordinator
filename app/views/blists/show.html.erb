@@ -10,6 +10,7 @@
 <% end %>
 
 <%- is_owner = current_user && @view && @view.owner.id == current_user.id -%>
+<%- is_blist = @view && @view.is_blist? %> 
 <%- can_edit = current_user && @view && @view.can_edit() -%>
 
 <div id='overlay'></div>
@@ -90,8 +91,11 @@
 
             <%# Table view options %>
             <%- if is_owner -%>
-            <li class='separator tableOption swfItem'><a href='#' 
-              class='addColumnsLink staticLink'><span class='linkIcon'>Add Column</span></a></li>
+            <li class='separator tableOption'>
+            <a href='#' class='addColumnsLink staticLink'>
+                <span class='linkIcon'>Add Column</span>
+            </a>
+            </li>
             <%- end -%>
             <%- if current_user -%>
             <li class='separator tableOption'>
@@ -185,58 +189,51 @@
               <li class='column'>
               <%# Text datatypes %>
                 <ul>
-                  <li><a href='#plainText'
-                    id='addColumn_plainText'>Plain Text</a></li>
-                  <li><a href='#formattedText'
-                    id='addColumn_formattedText'>Formatted Text</a></li>
+                    <li><%= get_add_column("Plain Text", @view.id, "text") %></li>
+                    <li><%= get_add_column("Formatted Text", @view.id, "richtext") %></li>
                 </ul>
               </li>
               <li class='column'>
               <%# Numeric datatypes %>
                 <ul>
-                  <li><a href='#number' id='addColumn_number'>Number</a></li>
-                  <li><a href='#money' id='addColumn_money'>Money</a></li>
-                  <li><a href='#percent' id='addColumn_percent'>Percent</a></li>
-                  <li><a href='#dateTime' id='addColumn_dateTime'>Date & Time</a></li>
+                    <li><%= get_add_column("Number", @view.id, "number") %></li>
+                    <li><%= get_add_column("Money", @view.id, "money") %></li>
+                    <li><%= get_add_column("Percent", @view.id, "percent") %></li>
+                    <li><%= get_add_column("Date &amp; Time", @view.id, "date") %></li>
                 </ul>
               </li>
               <li class='column'>
               <%# Address datatypes %>
                 <ul>
-                  <li><a href='#phone' id='addColumn_phone'>Phone</a></li>
-                  <li><a href='#email' id='addColumn_email'>Email</a></li>
-                  <li><a href='#url' id='addColumn_url'>Website URL</a></li>
+                    <li><%= get_add_column("Phone", @view.id, "phone") %></li>
+                    <li><%= get_add_column("Email", @view.id, "email") %></li>
+                    <li><%= get_add_column("Website URL", @view.id, "url") %></li>
                 </ul>
               </li>
-              <li class='column narrow'>
+              <li class='column'>
               <%# Chooser/explicit pick options datatypes %>
                 <ul>
-                  <li><a href='#checkbox' id='addColumn_checkbox'>Checkbox</a></li>
-                  <li><a href='#stars' id='addColumn_stars'>Star</a></li>
-                  <li><a href='#flag' id='addColumn_flag'>Flag</a></li>
+                    <li><%= get_add_column("Checkbox", @view.id, "checkbox") %></li>
+                    <li><%= get_add_column("Star", @view.id, "stars") %></li>
+                    <li><%= get_add_column("Flag", @view.id, "flag") %></li>
                 </ul>
               </li>
               <li class='column'>
               <%# Blob datatypes %>
                 <ul>
-                  <li><a href='#document' id='addColumn_document'>Document</a></li>
-                  <li><a href='#photo' id='addColumn_photo'>Photo (Image)</a></li>
+                    <li><%= get_add_column("Document", @view.id, "document") %></li>
+                    <li><%= get_add_column("Photo (Image)", @view.id, "photo") %></li>
                 </ul>
               </li>
-              <li class='column wide'>
+              <li class='column last'>
               <%# Complex/join datatypes %>
                 <ul>
-                  <li><a href='#picklist'
-                    id='addColumn_picklist'>Picklist (Drop-down)</a></li>
-                  <li><a href='#blist_in_blist'
-                    id='addColumn_nested_table'>Nested Table</a></li>
-                </ul>
-              </li>
-              <li class='column narrow last'>
-              <%# Existing columns to unhide %>
-                <ul>
-                  <li><a href='#rowTag'
-                    id='addColumn_rowTag'>Row Tag</a></li>
+                  <% if false %>
+                      <% # What to do about picklists? Are we just removing 
+                         # them for now? %>
+                    <li><%= get_add_column("Picklist", @view.id, "picklist") %></li>
+                  <% end %>
+                  <li><%= get_add_column("Nested Table", @view.id, "nested_table") %></li>
                 </ul>
               </li>
             </ul>
@@ -351,6 +348,7 @@
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
     blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
+    blist.blistGrid.canAddColumns = <%= is_owner && is_blist ? 'true' : 'false' %>;
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
     <%- end -%>

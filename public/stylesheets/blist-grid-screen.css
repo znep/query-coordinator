@@ -15,7 +15,6 @@ body#lensBody
     margin-right: 1em;
     min-width: 99.9em;
 }
-#lensMetaContainer { padding-bottom: 6em; }
 
 #lensContainer .tabList
 {
@@ -746,14 +745,9 @@ body#lensBody
     width: 14.5%;
 }
 
-#addColumnsMenu .column.narrow
+#addColumnsMenu .column
 {
-    width: 12%;
-}
-
-#addColumnsMenu .column.wide
-{
-    width: 17%;
+    width: 16%;
 }
 
 #addColumnsMenu .column.last
@@ -794,11 +788,11 @@ body#lensBody
     background-repeat: no-repeat;
 }
 
-#addColumn_plainText,
+#addColumn_text,
 #mainMenu .columnsMenu .plainText a
 { background-position: 5px -80px; }
 
-#addColumn_formattedText,
+#addColumn_richtext,
 #mainMenu .columnsMenu .formattedText a
 { background-position: 5px -60px; }
 
@@ -814,7 +808,7 @@ body#lensBody
 #mainMenu .columnsMenu .percent a
 { background-position: 5px 0; }
 
-#addColumn_dateTime,
+#addColumn_date,
 #mainMenu .columnsMenu .dateTime a
 { background-position: 5px -340px; }
 

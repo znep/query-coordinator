@@ -178,6 +178,65 @@ div.blist-th-first
     padding: 0 4px;
 }
 
+div.blist-table-ghost div.blist-column-adder
+{
+    margin-top: 1em;
+    float: right;
+    cursor: pointer;
+    background-image: url('/stylesheets/images/content/table/add_column_icons.gif');
+    background-repeat: no-repeat;
+    background-position: center 0px;
+    background-color: #e8e8e8;
+    width: 15px;
+    height: 15px;
+}
+div.blist-table-ghost div.blist-column-adder:hover
+{
+    background-position: center -15px;
+}
+
+div.blist-tr-open div.blist-column-adder,
+div.blist-tr.blist-hot-row div.blist-column-adder
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+div.blist-column-adder,
+div.blist-tr-sub.blist-hot-row div.blist-column-adder
+{
+    background: none;
+    width: 15px;
+    cursor: auto;
+}
+
+div.blist-tr-sub.blist-hot-row div.blist-column-adder.blist-tdfill
+{
+    background-color: #f8f8f8;
+}
+div.blist-tr .blist-column-adder-icon
+{
+    background: none;
+    width: 15px;
+    height: 15px;
+}
+
+div.blist-tr-open .blist-column-adder-icon,
+div.blist-tr.blist-hot-row .blist-column-adder-icon
+{
+    background-image: url('/stylesheets/images/content/table/add_column_icons.gif');
+    background-repeat: no-repeat;
+    background-position: center 0px;
+    background-color: #e8e8e8;
+    width: 15px;
+    height: 15px;
+}
+
+div.blist-tr.blist-hot-row div.blist-column-adder:hover .blist-column-adder-icon
+{
+    background-position: center -15px;
+}
+
 .dropIndicator
 {
     background-color: #333333;

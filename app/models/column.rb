@@ -21,6 +21,17 @@ class Column < Model
       "tag" => "Row Tag"
   };
 
+  def self.create(view_id, attributes, parent_id=nil)
+    if parent_id.nil?
+      path = "/views/#{view_id}/#{self.name.pluralize.downcase}.json"
+    else
+      path = "/views/#{view_id}/#{self.name.pluralize.downcase}/#{parent_id}/sub_columns"
+    end
+
+    attributes = Column.to_core(attributes)
+    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
+  end
+
   def convertable_types
     if dataType.type == "text"
       return [
@@ -125,6 +136,23 @@ class Column < Model
     elsif js.key?("decimalPlaces")
       update_data[:format]["precision"] = js["decimalPlaces"].to_i
     end
+  end
+
+  def self.to_core(js)
+    col = {
+      :name => js["name"],
+      :description => js["description"],
+      :width => js["width"],
+      :dataTypeName => js["type"]
+    }
+
+    if js["type"] == "richtext"
+      col[:dataTypeName] = "text"
+      col[:format] ||= {}
+      col[:format]["formatting_option"] = "Rich"
+    end
+
+    return col
   end
 
   # Convert the core server column data to what JS expects as a model so the

@@ -191,7 +191,7 @@ private
 
   def create_core_session_credentials(user)
     core_session.user_id = user.data['id']
-    core_session.expiration = Time.now + 1.hour
+    core_session.expiration = Time.now + 6.hours
     core_session.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{user.id}--")[0,12]
   end
 

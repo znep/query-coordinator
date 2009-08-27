@@ -29,11 +29,12 @@
     <%= f.label :remember_me %>
     </p>
 
+    <div class="openid clearfix">
+      <%= link_to_rpx "Sign in with OpenID" %>
+    </div>
+
     <div class='footer clearfix'>
-      <div style="float:left;">
-        <%= link_to "Forgot your password / username?", forgot_password_path%><br/>
-        <%= link_to_rpx "Sign in with OpenID" %>
-      </div>
+      <%= link_to "Forgot your password / username?", forgot_password_path%>
       <ul class='actionButtons clearfix'>
         <%- if local_assigns[:is_modal] -%>
         <li><a href='#close_login' class='close'>Cancel</a></li>

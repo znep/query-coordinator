@@ -62,7 +62,7 @@
 
 
 /*** Format Combo Lists ***/
-.blist-combo-wrapper.format_date_view { width: 300px; }
+.blist-combo-wrapper.format_date_view { width: 38em; }
 .blist-combo-wrapper.format_percent_view { width: 220px; }
 
 .format_percent_view .value

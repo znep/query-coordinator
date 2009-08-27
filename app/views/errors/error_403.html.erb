@@ -1,0 +1,20 @@
+<% content_for :head do %>
+  <title><%= th.site_title %></title>
+<% end %>
+
+<% dialog_content do %>
+  <div class='header'>
+    <h1><%=th.company%></h1>
+  </div>
+
+  <div class="mainContent">
+    <div class="title clearfix">
+      <h1>No permission to access resource</h1>
+    </div>
+
+    <p style="font-size: 1.5em">We're sorry, but it appears that you do not
+    have permission to access this page. If you believe this to be an error,
+    try logging out and log back in as a different user -
+    <a href="/login">Login</a>.
+  </div>
+<% end %>

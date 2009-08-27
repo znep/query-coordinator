@@ -29,12 +29,13 @@
             clearTempViewCallback: function () {},
             columnPropertiesEnabled: false,
             currentUserId: null,
-            editEnabled: true,
+            editEnabled: false,
             filterItem: null,
             manualResize: false,
             setTempViewCallback: function (tempView) {},
             showRowHandle: false,
             showRowNumbers: true,
+            showAddColumns: false,
             updateTempViewCallback: function (tempView) {},
             viewId: null
         },
@@ -73,6 +74,7 @@
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
+                        showAddColumns: datasetObj.settings.showAddColumns,
                         // This really ought to be linked to edit; but until
                         // edit is enabled, we'll check the user
                         //rowHandleRenderer: (datasetObj.settings.editEnabled ?
@@ -92,6 +94,10 @@
                 $('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle')
                     .live('mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
+                $('#' + $datasetGrid.attr('id') + ' .add-column')
+                    .live("click", function (e) { 
+                          $('<a href="/blists/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click() 
+                        });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
 
@@ -368,7 +374,6 @@
     {
         var model = datasetObj.settings._model;
         if (!column || row.level > 0) { return; }
-
         if (column.dataIndex == 'rowNumber')
         {
             if (origEvent.shiftKey)
@@ -379,6 +384,11 @@
             {
                 model.toggleSelectRow(row);
             }
+        }
+        else if ($(origEvent.target).closest(".blist-column-adder-icon").length > 0)
+        {
+            // Display the add column dialog.
+            $('<a href="/blists/' + model.meta().view.id + '/columns/new?parent=' + column.id + '" rel="modal" />').click();
         }
     };
 

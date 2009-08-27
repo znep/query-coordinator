@@ -1969,7 +1969,7 @@
             ghostStyle = addRule("." + ghostClass).style;
 
             // Dynamic style applied to nested table openers
-            openerStyle = addRule("." + openerClass).style;
+            openerStyle = addRule("div." + openerClass).style;
 
             // Dynamic style applied to rows
             rowStyle = addRule("#" + id + " .blist-tr").style;
@@ -2005,6 +2005,7 @@
         var paddingX;
         var lockedWidth;
         var openerWidth;
+        var adderWidth;
         var varMinWidth = [];
         var varDenom = [];
         var insideWidth;
@@ -2016,7 +2017,7 @@
         /**
          * Create rendering code for a series of columns.
          */
-        var createColumnRendering = function(mcols, lcols, contextVariables, prefix) {
+        var createColumnRendering = function(mcols, lcols, contextVariables, prefix, suffix) {
             var colParts = [];
             var generatedCode = '';
             if (prefix) {
@@ -2043,9 +2044,7 @@
                         "if (row" + mcol.dataLookupExpr +
                         " && row" + mcol.dataLookupExpr + ".length || " +
                         model.useBlankRows() + ")";
-                    colParts.push(
-                        "\"<div class='blist-td blist-tdh blist-opener " +
-                        openerClass + "'></div>\"");
+                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-opener " + openerClass + "'></div>\"");
                     var children = mcol.body.children;
                     lcols.push({
                         type: 'opener',
@@ -2075,10 +2074,22 @@
                             logical: mcol.uid
                         });
                     }
+
+                    if (options.showAddColumns)
+                    {
+                        lcols.push({
+                            type: 'adder',
+                            skippable: true,
+                            skipCount: children.length,
+                            mcol: mcol,
+                            logical: mcol.uid
+                        });
+                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
+                    }
                     completeStatement();
 
                     generatedCode += "else ";
-                    colParts.push("\"<div class='blist-td blist-tdh blist-opener blist-opener-inactive " + openerClass + "'></div>\"");
+                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-opener blist-opener-inactive " + openerClass + "'></div>\"");
                     for (k = 0; k < children.length; k++) {
                         child = children[k];
                         colParts.push(
@@ -2088,6 +2099,10 @@
                             child.uid +
                             "'></div>\""
                         );
+                    }
+                    if (options.showAddColumns)
+                    {
+                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
                     }
                     completeStatement();
                 } else if (mcol.children) {
@@ -2106,14 +2121,19 @@
                     });
                     generatedCode +=
                         "if (row" + mcol.header.dataLookupExpr + ") " +
-                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'") +
+                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'", options.showAddColumns ? "'<div class=\"blist-td blist-column-adder-space blist-column-adder\"></div>'" : undefined) +
                         "else ";
-                        colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
-                        for (var i = 0; i < children.length; i++) {
-                            colParts.push("\"<div class='blist-td blist-tdfill blist-td-colfill " +
-                                getColumnClass(children[i]) +
-                                "'></div>\"");
-                        }
+
+                    colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
+                    for (var i = 0; i < children.length; i++) {
+                        colParts.push("\"<div class='blist-td blist-tdfill blist-td-colfill " +
+                            getColumnClass(children[i]) +
+                            "'></div>\"");
+                    }
+                    if (options.showAddColumns)
+                    {
+                        colParts.push("'<div class=\"blist-td blist-column-adder-space blist-column-adder blist-tdfill\"></div>'");
+                    }
                     completeStatement();
                 }
                 else if (mcol.type && mcol.type == 'fill')
@@ -2147,7 +2167,7 @@
                         ".meta.invalidCells[" + mcol.tableColumnId +
                         "] ? ' invalid' : '')";
 
-                    renderer = "(row" + mcol.dataLookupExpr + " ? " +
+                    renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
                                 contextVariables) +
                         " : (row" + childLookup + ".meta && row" + childLookup +
@@ -2177,6 +2197,11 @@
                 // each column style individually?)
                 if (options.generateHeights)
                 { getColumnStyle(mcol).height = rowHeight + 'px'; }
+            }
+
+            if (suffix)
+            {
+              colParts.push(suffix);
             }
 
             completeStatement();
@@ -2316,6 +2341,12 @@
 
             // Record the width of the opener for nested tables
             openerWidth = measuredInnerDims.width * 1.5;
+            if (options.showAddColumns)
+            {
+                measureUtilDOM.innerHTML = '<div class="blist-td blist-column-adder">x</div>';
+                $measureDiv = $(measureUtilDOM.firstChild);
+                adderWidth = $measureDiv.width() + paddingX; 
+            }
             openerStyle.width = openerWidth + 'px';
             if (options.generateHeights) {
                 openerStyle.height = rowHeight + 'px';
@@ -2493,6 +2524,10 @@
                 {
                     // Nested table header -- set width based on child widths
                     colWidth = openerWidth + paddingX;
+                    if (options.showAddColumns)
+                    {
+                        colWidth += adderWidth;
+                    }
                     var children = mcol.body.children;
                     for (var k = 0; k < children.length; k++)
                         colWidth += children[k].width + paddingX;
@@ -2648,7 +2683,9 @@
             {
                 html.push('<div class="blist-th blist-table-ghost ',
                     columns.length < 1 ? 'blist-th-first ' : '',
-                    ghostClass, '"></div>');
+                    ghostClass, '">' + 
+                    (options.showAddColumns ? '<div class="blist-column-adder add-column"></div>' : '') + 
+                    '</div>');
             }
             $header.html(html.join(''));
 
@@ -3209,7 +3246,8 @@
         showName: true,
         showRowNumbers: true,
         showRowHandle: false,
-        showTitle: true
+        showTitle: true,
+        showAddColumns: false
     };
 
     $.fn.extend({

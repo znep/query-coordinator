@@ -1,0 +1,141 @@
+<% content_for :headline do %>
+<script>
+var column = <%= @column.to_js %>;
+</script>
+
+<h1 id="title"><span class="columnPropertiesIcon">Create a New Column</span></h1>
+<% end %>
+
+<div class="columnPropertiesWrapper">
+  <% form_tag "#", :id => "columnCreate" do %>
+      <div>
+        <table cellspacing="0">
+          <tbody>
+            <tr>
+              <td colspan="2"><h3 class="seperator">Column Details</h3></td>
+            </tr>
+            <tr>
+              <td class="labelColumn"><label for="name" class="required">Column Name:</label></td>
+              <td class="fieldColumn"><%= text_field_tag("name", @column.name, 
+                                                         :class => "textPrompt prompt",
+                                                         :title => "Enter a name.",
+                                                         :id => "name") %></td>
+            </tr>
+            <tr>
+              <td class="labelColumn"><label for="description">Column Description:</label></td>
+              <td class="fieldColumn"><%= text_area_tag("description", @column.description, 
+                                                        :class => "textPrompt prompt", 
+                                                        :title => "Enter a description.",
+                                                        :id => "description") %></td>
+            </tr>
+            <tr>
+              <td colspan="2"><h3 class="seperator">Type of Column</h3></td>
+            </tr>
+            <tr>
+              <td class="labelColumn"><label for="type">Type:</label></td>
+              <td class="fieldColumn">
+                <div class="blist-combo-wrapper lr_justified format_date_view">
+                  <div id="types" class="types"></div>
+                </div>
+              </td>
+            </tr>
+          <tbody>
+        </table>
+        </div>
+  <% end %>
+      <div class="createBar">
+        <div id="error" class="errorMessage"></div>
+        <h3 class="seperator"></h3>
+        <div class="required">Required Field</div> 
+        <a href="#" id="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
+      </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+$(function(){
+  // Since these widgets are created live, we have to populate the default
+  // text prompt values manually instead of relying on the plugin.
+  $(".textPrompt").example(function () { return $(this).attr("title"); });
+
+  var renderValueInfoFormatRow = function(value)
+  {
+      var $row = $(this);
+      var $span_value = $('<span class="typeSelect convert-' + value.id + '"></span>').html(value.label);
+      $row.empty().append($span_value);
+  };
+
+  var typeValues = [
+      {id: "text", label: "Plain Text"},
+      {id: "richtext", label: "Formatted Text"},
+      {id: "number", label: "Number"},
+      {id: "money", label: "Money"},
+      {id: "percent", label: "Percent"},
+      {id: "date", label: "Date & Time"},
+      {id: "phone", label: "Phone"},
+      {id: "email", label: "Email"},
+      {id: "url", label: "Website URL"},
+      {id: "checkbox", label: "Checkbox"},
+      {id: "stars", label: "Star"},
+      {id: "flag", label: "Flag"},
+      {id: "document", label: "Document"},
+      {id: "photo", label: "Photo (Image)"},
+      {id: "nested_table", label: "Nested Table"}
+  ];
+
+  column.type = "<%= @type.nil? ? "text" : @type %>";
+
+  $("#types").combo({
+    name: "types",
+    values: typeValues, 
+    value: column.type, 
+    renderFn: renderValueInfoFormatRow
+  });
+
+  var formEnabled = true;
+  var toggleEnabled = function()
+  {
+    $(".columnPropertiesWrapper :input").attr("disabled", formEnabled);
+    formEnabled = !formEnabled;
+  }
+
+  $("#name").change(function() { column.name = $(this).val() });
+  $("#description").change(function() { column.description = $(this).val() });
+  $("#types").change(function() { column.type = $(this).value() });
+
+  $("#columnCreate").submit( function() {
+    $("#save").click();
+    return false;
+  });
+
+  $("#save").click(function() {
+      if (!formEnabled) { return false; }
+      toggleEnabled();
+
+      $.ajax({
+        type: "POST",
+        url: '<%= blist_columns_url(@view_id) %><%= @parent.nil? ? '' : "?parent=#{@parent}" %>',
+        cache: false,
+        dataType: 'json',
+        data: {
+          json: $.json.serialize(column), 
+          authenticity_token: "<%= form_authenticity_token %>"
+          },
+        dataType: 'json',
+        error: function(request) { 
+            $("#error").html($.json.deserialize(request.responseText).error).show() 
+            toggleEnabled();
+        },
+        success: function(responseData) { 
+            $grid = $("#readGrid");
+            if ($grid.length != 0)
+            {
+              $("#readGrid").blistModel().updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
+            }
+            $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
+            $.Tache.DeleteAll();
+            $(".jqmClose").click();
+        }
+      });
+  });
+});
+</script>

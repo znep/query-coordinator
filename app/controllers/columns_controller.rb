@@ -1,14 +1,30 @@
 class ColumnsController < ApplicationController
-  # TODO: Customize this so that rendering an error also renders an error
-  # message instead of being relatively useless.
-  rescue_from('CoreServer::CoreServerError') { |exception| render_500_error(exception) }
-
   def render_500_error(exception)
-    set_locale
     respond_to do |format|
       format.all { render :text => {:error => exception.error_message}.to_json, :status => 500}
     end
     true
+  end
+
+  def create
+    column_json = JSON.parse(params[:json])
+    @parent = params[:parent]
+    respond_to do |format|
+      format.all { render(:json => Column.create(params[:blist_id], column_json, @parent)) }
+    end
+  rescue CoreServer::CoreServerError => e
+    render_500_error(e)
+  end
+
+  def new
+    @view_id = params[:blist_id]
+    @column = Column.parse("{}")
+    @parent = params[:parent]
+    @type = params[:type]
+
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
   end
 
   def show
@@ -28,5 +44,7 @@ class ColumnsController < ApplicationController
     respond_to do |format|
       format.data { render :json => @column.save!(params[:blist_id]) }
     end
+  rescue CoreServer::CoreServerError => e
+    render_500_error(e)
   end
 end

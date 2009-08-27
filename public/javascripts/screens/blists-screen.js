@@ -696,8 +696,8 @@ blist.myBlists.customHandle = function(value, column) {
         "</li>" +
         "<li class='addFavorite'>" +
         " <a class='favoriteLink' href='/blists/\"+" + value +
-        "+\"/create_favorite' title='Add to favorites'>" +
-        "   <span class='highlight'>Add to favorites</span>" +
+        "+\"/create_favorite' title='\" + (row.favorite ? 'Remove from favorites' : 'Add to favorites') + \"'>" +
+        "   <span class='highlight'>\" + (row.favorite ? 'Remove from favorites' : 'Add to favorites') + \"</span>" +
         " </a>" +
         "</li>" +
         "<li class='edit'>" +

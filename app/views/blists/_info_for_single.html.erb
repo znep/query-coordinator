@@ -5,8 +5,11 @@
 <%- 
   expander_class = page_single ? "expander expanded" : "expander" 
   div_shown = page_single ? "style='display:block;'" : ""
+  
+  # TODO: These variables and logic need to be consolidated somewhere
+  is_owner = (current_user && view.owner.id == current_user.id)
+  can_access_premium = (current_user && ((current_user.account_category == "premium_sdp" && is_owner) || current_user.flag?("admin")))
 -%>
-<%- is_owner = current_user && view.owner.id == current_user.id -%>
 <div class="header">
   <ul class="summaryTabs clearfix">
     <li id="tabComments" class="comments active">
@@ -218,6 +221,16 @@
     <%# Not supported
     <h2 class="panelHeader">3212 total views</h2>
     %>
+    
+    <%- if can_access_premium -%>
+      <ul class="headerActions actionButtons">
+        <li>
+          <a href="<%= "#{view.href}/publish" %>" class="arrowButton">
+            Create a Custom Data Player
+          </a>
+        </li>
+      </ul>
+    <%- end -%>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>

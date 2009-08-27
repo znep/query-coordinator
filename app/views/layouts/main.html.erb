@@ -41,7 +41,8 @@
 </head>
 
 <body id='<%= @body_id %>' class='<%= @body_class %> <%= th.active %>'>
-
+<div class="bodyExterior">
+<div class="bodyInterior">
   <div id='outerContainer'>
     <div id='header'>
       <h1 id='mainLogo' class='<%= @is_marketing_page ? "aboutLogo" : "appLogo" %>'>
@@ -88,18 +89,24 @@
 
     <%= yield :layout %>
 
-    <div id='footer'>
-      <%- if th.respond_to?('footer_html') && !th.footer_html.nil?-%>
-        <%= th.footer_html %>
-      <%- else -%>
-        <%- if is_gov_site? -%>
-          <%= render(:partial => "shared/gov_footer") %>
-        <%- else -%>
-          <%= render(:partial => "shared/footer") %>
-        <%- end -%>
-      <%- end -%>
-    </div>
+    
   </div>
+</div>
+</div>
+
+<div class="footerContainer">
+  <div id='footer' class="clearfix">
+    <%- if th.respond_to?('footer_html') && !th.footer_html.nil?-%>
+      <%= th.footer_html %>
+    <%- else -%>
+      <%- if is_gov_site? -%>
+        <%= render(:partial => "shared/gov_footer") %>
+      <%- else -%>
+        <%= render(:partial => "shared/footer") %>
+      <%- end -%>
+    <%- end -%>
+  </div>
+</div>
 
   <% dialog_content("jqmAlert") do %>
     <div class='header'>

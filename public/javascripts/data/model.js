@@ -89,6 +89,7 @@ blist.namespace.fetch('blist.data');
         var self = this;
 
         var curOptions = {
+            blankRow: false,
             filterMinChars: 3,
             pageSize: 50,
             progressiveLoading: false
@@ -156,6 +157,7 @@ blist.namespace.fetch('blist.data');
         {
             if (!activeOnly || rows == active)
             {
+                lookup = {};
                 // Count the total number of rows we have actual data for
                 rowsLoaded = 0;
                 for (var i = 0; i < rows.length; i++)
@@ -179,6 +181,7 @@ blist.namespace.fetch('blist.data');
             }
             if (rows != active)
             {
+                activeLookup = {};
                 for (i = 0; i < active.length; i++)
                 {
                     row = active[i];
@@ -195,15 +198,22 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        var setRowMetadata = function(newRows)
+        var setRowMetadata = function(newRows, metaCols)
         {
-            if (!meta.metaColumns) { return; }
+            if (!metaCols) { return; }
 
             $.each(newRows, function(i, r)
             {
-                $.each(meta.metaColumns, function(j, c)
+                $.each(metaCols, function(j, c)
                 {
-                    r[c.name] = r[c.index];
+                    if (c.name == 'meta')
+                    {
+                        var md = r[c.index];
+                        if (md !== null && md !== undefined)
+                        { r[c.name] = $.json.deserialize(md); }
+                    }
+                    else if (r[c.index] !== undefined)
+                    { r[c.name] = r[c.index]; }
                 });
             });
         };
@@ -275,6 +285,11 @@ blist.namespace.fetch('blist.data');
         {
             return meta.view && meta.view.rights &&
                 $.inArray('delete', meta.view.rights) >= 0;
+        };
+
+        this.useBlankRows = function()
+        {
+            return curOptions.blankRow && self.canAdd() && self.canWrite();
         };
 
         /**
@@ -394,7 +409,7 @@ blist.namespace.fetch('blist.data');
         {
             // Install the rows
             var supplement = response.data;
-            setRowMetadata(supplement);
+            setRowMetadata(supplement, meta.metaColumns);
             for (var i = 0; i < supplement.length; i++)
             {
                 var row = supplement[i];
@@ -469,11 +484,12 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < viewCols.length; i++)
             {
                 var v = viewCols[i];
-                if (v.dataType && v.dataType.type == 'meta_data')
+                if (v.dataType && (v.dataType.type == 'meta_data' ||
+                    v.dataType.type == 'tag'))
                 {
                     var adjName = v.name;
                     if (v.name == 'sid') { adjName = 'id'; }
-                    else if (v.name == 'id') { adjName = 'uid'; }
+                    else if (v.name == 'id') { adjName = 'uuid'; }
                     metaCols.push({name: adjName, index: i});
                 }
             }
@@ -518,6 +534,7 @@ blist.namespace.fetch('blist.data');
                     width: vcol.width || 100,
                     type: vcol.dataType && vcol.dataType.type ? vcol.dataType.type : "text",
                     id: vcol.id,
+                    tableColumnId: vcol.tableColumnId,
                     aggregate: meta.aggregateHash[vcol.id]
                 };
 
@@ -549,6 +566,8 @@ blist.namespace.fetch('blist.data');
                             children: children,
                             header: col
                         };
+                        col.metaChildren = [];
+                        translateMetaColumns(vcol.childColumns, col.metaChildren);
                         translateViewColumns(view, vcol.childColumns, columns, nestDepth + 1, col.body);
 
                         // Add the body column to the next nesting level
@@ -625,11 +644,17 @@ blist.namespace.fetch('blist.data');
                                 meta.columns, 0);
                         }
                     }
+                    // If there are rows, reset all child rows since there may
+                    // be new nested columns
+                    if (rows && rows.length > 0)
+                    {
+                        $.each(rows, function(i, r)
+                            { if (r instanceof Object) { resetChildRows(r); } });
+                    }
                 }
 
                 filterFn = null;
                 filterText = "";
-                filterCol = null;
                 orderCol = null;
                 orderFn = null;
                 sortConfigured = false;
@@ -730,7 +755,7 @@ blist.namespace.fetch('blist.data');
             {
                 expanded = {};
                 active = rows = newRows;
-                setRowMetadata(newRows);
+                setRowMetadata(newRows, meta.metaColumns);
                 installIDs();
 
                 // Apply sorting if so configured
@@ -766,15 +791,18 @@ blist.namespace.fetch('blist.data');
             {
                 active = active.concat(addedRows);
             }
-            setRowMetadata(addedRows);
+            $.each(addedRows, function(i, r)
+                { if (r instanceof Object) { rowsLoaded++; } });
+            setRowMetadata(addedRows, meta.metaColumns);
             installIDs();
+            configureActive();
             $(listeners).trigger('row_add', [ addedRows ]);
         };
 
         /**
          * Remove rows from the model.
          */
-        this.remove = function(delRows)
+        this.remove = function(delRows, serverDelete)
         {
             if (!(delRows instanceof Array) || delRows.id)
             { delRows = [delRows]; }
@@ -801,9 +829,304 @@ blist.namespace.fetch('blist.data');
                     }
                 }
                 this.unselectRow(row);
+
+                if (serverDelete)
+                {
+                    startRowChange();
+                    if (pendingRowEdits[id])
+                    {
+                        pendingRowDeletes[id] = true;
+                    }
+                    else
+                    {
+                        serverDeleteRow(id);
+                    }
+                }
+                // Update IDs after each loop, since positions have adjusted
+                installIDs();
             }
-            installIDs();
             $(listeners).trigger('row_remove', [ delRows ]);
+        };
+
+        var serverDeleteRow = function(rowId)
+        {
+            $.ajax({url: '/views/' + meta.view.id + '/rows/' +
+                    rowId + '.json',
+                    contentType: 'application/json', type: 'DELETE',
+                    complete: function() { finishRowChange(); }
+                    });
+        };
+
+        // Get the value in a row for a column
+        this.getRowValue = function(row, column)
+        {
+            var value;
+            eval('value = row' + column.dataLookupExpr + ';');
+            return value;
+        };
+
+        // Get the invalid value in a row for a column
+        this.getInvalidValue = function(row, column)
+        {
+            var parCol = column.nestedIn ? column.nestedIn.header : column;
+            var childLookup = column.nestedIn ? parCol.dataLookupExpr : '';
+            var realRow;
+            eval("realRow = row" + childLookup + ";");
+            return realRow.meta && realRow.meta.invalidCells &&
+                realRow.meta.invalidCells[column.tableColumnId] || null;
+        };
+
+        // Set the value in a row for a column
+        this.setRowValue = function(value, row, column)
+        {
+            eval('row' + column.dataLookupExpr + ' = value;');
+        };
+
+        this.setInvalidValue = function(value, row, column)
+        {
+            var parCol = column.nestedIn ? column.nestedIn.header : column;
+            var childLookup = column.nestedIn ? parCol.dataLookupExpr : '';
+            var realRow;
+            eval("realRow = row" + childLookup + ";");
+            if (!realRow.meta) { realRow.meta = {'invalidCells': {}}; }
+            if (!realRow.meta.invalidCells) { realRow.meta.invalidCells = {}; }
+            realRow.meta.invalidCells[column.tableColumnId] = value;
+        };
+
+        this.isCellError = function(row, column)
+        {
+            if (!row.error) { return false; }
+            var v;
+            eval('v = row.error' + column.dataLookupExpr + ';');
+            return v;
+        };
+
+        var resetChildRows = function(row)
+        {
+            if (row.expanded)
+            {
+                self.expand(row, false, true);
+                delete row.childRows;
+                self.expand(row, true, true);
+                installIDs();
+                configureActive();
+            }
+            else
+            { delete row.childRows; }
+        };
+
+        var saveUID = 0;
+        var isRowCreate = false;
+        var pendingRowCreates = [];
+        var pendingRowEdits = {};
+        var pendingRowDeletes = {};
+        var rowChangesPending = 0;
+        var startRowChange = function()
+        {
+            rowChangesPending++;
+        };
+
+        var finishRowChange = function()
+        {
+            rowChangesPending--;
+            if (rowChangesPending == 0)
+            {
+                $(listeners).trigger('server_row_change');
+            }
+        };
+
+        // Set the value for a row, save it to the server, and notify listeners
+        this.saveRowValue = function(value, row, column, isValid)
+        {
+            var validValue = isValid ? value : null;
+            var invalidValue = isValid ? null : value;
+
+            var isCreate = false;
+            if (row.type == 'blank')
+            {
+                row = $.extend(row, {id: 'saving' + saveUID++, isNew: true,
+                    type: null});
+                installIDs();
+                configureActive();
+                isCreate = true;
+            }
+            this.setRowValue(validValue, row, column);
+            this.setInvalidValue(invalidValue, row, column);
+
+            if (!row.saving) { row.saving = []; }
+            var data = {};
+            data[column.id] = validValue;
+            if (row.meta) { data.meta = $.json.serialize(row.meta); }
+            if (column.nestedIn)
+            {
+                var parCol = column.nestedIn.header;
+
+                var childRow = self.getRowValue(row, parCol);
+                isCreate = childRow.type == 'blank';
+                if (isCreate)
+                {
+                    var parRow = row.parent;
+                    // If we're in a blank row, create that row first
+                    if (parRow.type == 'blank')
+                    { this.saveRowValue(null, parRow, parCol, true); }
+
+                    // Add the new row to the parent
+                    if (!parRow[parCol.dataIndex])
+                    { parRow[parCol.dataIndex] = []; }
+                    parRow[parCol.dataIndex].push(childRow);
+
+                    // Now force refresh by collapsing, clearing
+                    // child rows, and then re-expanding
+                    resetChildRows(parRow);
+                }
+
+                row.saving[parCol.dataIndex][column.dataIndex] = true;
+                if (row.error && row.error[parCol.dataIndex])
+                { delete row.error[parCol.dataIndex][column.dataIndex]; }
+            }
+            else
+            {
+                row.saving[column.dataIndex] = true;
+                if (row.error) { delete row.error[column.dataIndex]; }
+            }
+
+            this.change([row]);
+
+            startRowChange();
+            if (pendingRowEdits[row.id])
+            {
+                pendingRowEdits[row.id].push({column: column, data: data});
+                return;
+            }
+            else if (isCreate)
+            {
+                if (isRowCreate)
+                {
+                    pendingRowCreates.push({row: row, column: column, data: data});
+                    return;
+                }
+                isRowCreate = true;
+            }
+
+            if (!pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
+            serverSaveRow(row, column, data);
+        };
+
+        var getSaveURL = function(row, column)
+        {
+            var url = '/views/' + self.meta().view.id + '/rows';
+            if (column.nestedIn)
+            {
+                var parCol = column.nestedIn.header;
+                var childRow = self.getRowValue(row, parCol);
+                url += '/' + row.parent.uuid +
+                    '/columns/' + parCol.id +
+                    '/subrows';
+                if (childRow.type != 'blank') { url += '/' + childRow.uuid; }
+                url += '.json';
+            }
+            else if (row.isNew) { url += '.json'; }
+            else { url += '/' + row.uuid + '.json'; }
+            return url;
+        };
+
+        var serverSaveRow = function(row, column, data)
+        {
+            var url = getSaveURL(row, column);
+            var model = self;
+            var newRow = row.isNew ? row : null;
+            var parCol;
+            var childRow;
+            if (column.nestedIn)
+            {
+                parCol = column.nestedIn.header;
+                childRow = self.getRowValue(row, parCol);
+                newRow = childRow.type == 'blank' ? childRow : null;
+            }
+            $.ajax({ url: url,
+                    type: newRow ? 'POST' : 'PUT',
+                    contentType: 'application/json', dataType: 'json',
+                    data: $.json.serialize(data),
+                    complete: function()
+                    {
+                        if (parCol)
+                        { delete row.saving[parCol.dataIndex][column.dataIndex]; }
+                        else
+                        { delete row.saving[column.dataIndex]; }
+
+                        // Are there any pending edits to this row?
+                        // If so, save the next one
+                        if (pendingRowEdits[row.id] &&
+                            pendingRowEdits[row.id].length > 0)
+                        {
+                            var u = pendingRowEdits[row.id].shift();
+                            serverSaveRow(row, u.column, u.data);
+                        }
+                        else
+                        {
+                            delete pendingRowEdits[row.id];
+                            if (pendingRowDeletes[row.id])
+                            {
+                                serverDeleteRow(row.id);
+                                delete pendingRowDeletes[row.id];
+                            }
+                        }
+
+                        finishRowChange();
+                        model.change([row]);
+                    },
+                    error: function()
+                    {
+                        if (!row.error) { row.error = []; }
+                        if (parCol)
+                        { row.error[parCol.dataIndex][column.dataIndex] = true; }
+                        else
+                        { row.error[column.dataIndex] = true; }
+                        model.change([row]);
+                    },
+                    success: function(resp)
+                    {
+                        if (newRow)
+                        {
+                            var oldID = newRow.id;
+                            // Add metadata to new row
+                            // FIXME: The server response for this should be
+                            // changing; we can run into problems if there is
+                            // a user column named something like '_id'
+                            $.each(resp, function(a, v)
+                            {
+                                if (a.charAt(0) == '_')
+                                {
+                                    newRow[a.slice(1)] = v;
+                                }
+                            });
+                            installIDs();
+                            delete newRow.isNew;
+                            delete newRow.type;
+
+                            pendingRowEdits[newRow.id] = pendingRowEdits[oldID];
+                            delete pendingRowEdits[oldID];
+                            if (pendingRowDeletes[oldID])
+                            {
+                                pendingRowDeletes[newRow.id] =
+                                    pendingRowDeletes[oldID];
+                                delete pendingRowDeletes[oldID];
+                            }
+
+                            if (pendingRowCreates.length > 0)
+                            {
+                                var c = pendingRowCreates.shift();
+                                serverSaveRow(c.row, c.column, c.data);
+                            }
+                            else
+                            {
+                                isRowCreate = false;
+                            }
+
+                            model.change([newRow]);
+                        }
+                    }
+                });
         };
 
         this.invalidateRows = function()
@@ -818,25 +1141,54 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        this.updateColumn = function(column)
+        this.updateColumn = function(column, parentId)
         {
             var isColumnPresent = false;
-            if (meta.view != null)
+
+            if (parentId != null)
             {
                 $.each(meta.view.columns, function(i, c)
                 {
-                    if (c.id == column.id)
+                    if (parentId == c.id)
                     {
-                        meta.view.columns[i] = column;
-                        isColumnPresent = true;
-                        return false;
+                        if (c.childColumns == undefined)
+                        {
+                            c.childColumns = [];
+                        }
+                    
+                        $.each(c.childColumns, function(j, child)
+                        {
+                            if (child.id == column.id)
+                            {
+                                meta.view.columns[i].childColumns[j] = column;
+                                isColumnPresent = true;
+                                return false;
+                            }
+                        });
+
+                        if (!isColumnPresent)
+                        {
+                            c.childColumns.push(column);
+                        }
                     }
                 });
+            }
+            else
+            {
+                    $.each(meta.view.columns, function(i, c)
+                    {
+                        if (c.id == column.id)
+                        {
+                            meta.view.columns[i] = column;
+                            isColumnPresent = true;
+                            return false;
+                        }
+                    });
 
-                if (!isColumnPresent)
-                {
-                    meta.view.columns.push(column);
-                }
+                    if (!isColumnPresent)
+                    {
+                        meta.view.columns.push(column);
+                    }
             }
 
 
@@ -998,6 +1350,13 @@ blist.namespace.fetch('blist.data');
         }
 
         /**
+         * Notify the model of footer data changes.
+         */
+        this.footerChange = function() {
+            $(listeners).trigger('footer_change', [ this ]);
+        }
+
+        /**
          * Notify listeners of row selectionchanges.
          */
         this.selectionChange = function(rows)
@@ -1071,13 +1430,14 @@ blist.namespace.fetch('blist.data');
          * Retrieve the total number of rows, excluding group headers or other
          *  special rows, but including all children of rows
          */
-        this.dataLength = function(id)
+        this.dataLength = function()
         {
             var total = 0;
             $.each(active, function(i, row)
                 {
                     // Count rows with level 0 and no level
-                    if (!(row.level != 0))
+                    if ((row.level === 0 || row.level === undefined) &&
+                        row.type != 'blank')
                     {
                         total += 1 + (row.childRows ? row.childRows.length : 0);
                     }
@@ -1089,19 +1449,19 @@ blist.namespace.fetch('blist.data');
          * Scan to find the next or previous row in the same level.
          */
         this.nextInLevel = function(from, backward) {
-            var pos = this.index(from);
-            if (pos == null)
+            var pos = from;
+            if (active[pos] == null)
                 return null;
             var level = active[pos].level || 0;
             if (backward) {
                 while (--pos >= 0)
                     if ((active[pos].level || 0) == level)
-                        return active[pos];
+                        return pos;
             } else {
                 var end = active.length;
                 while (++pos < end)
                     if ((active[pos].level || 0) == level)
-                        return active[pos];
+                        return pos;
             }
             return null;
         }
@@ -1123,7 +1483,7 @@ blist.namespace.fetch('blist.data');
 
         this.selectRow = function(row, suppressChange)
         {
-            if (row.level < 0)
+            if (row.level < 0 || row.type == 'blank')
             {
                 return;
             }
@@ -1194,7 +1554,8 @@ blist.namespace.fetch('blist.data');
             for (var i = minIndex; i <= maxIndex; i++)
             {
                 var curRow = active[i];
-                if (!(curRow.level < 0))
+                if ((curRow.level >= 0 || curRow.level === undefined) &&
+                    curRow.type != 'blank')
                 {
                     this.selectedRows[curRow.id] = i;
                     changedRows.push(curRow);
@@ -1308,78 +1669,111 @@ blist.namespace.fetch('blist.data');
 
             var cols = meta.columns[row.level || 0];
             var childRows = row.childRows = [];
+            var childLevel = (row.level || 0) + 1;
 
             for (var i = 0; i < cols.length; i++) {
                 var col = cols[i];
                 if (!col.body)
                     continue;
                 var cell = row[col.dataIndex];
-                if (!cell || !cell.length)
-                    continue;
-                for (var j = 0; j < cell.length; j++) {
-                    var childRow = childRows[j] || (childRows[j] = []);
-                    childRow.id = "t" + nextTempID++;
-                    childRow.level = (row.level || 0) + 1;
-                    childRow.parent = row;
+                if (!cell && !self.useBlankRows()) { continue; }
+                if (!cell) { cell = []; }
+
+                var numCells = (cell.length || 0) + (self.useBlankRows() ? 1 : 0);
+                for (var j = 0; j < numCells; j++) {
+                    var childRow = childRows[j];
+                    if (!childRow)
+                    {
+                        childRow = childRows[j] = [];
+                        childRow.id = "t" + nextTempID++;
+                        childRow.level = childLevel;
+                        childRow.parent = row;
+                    }
+
+                    // Set up saving & error arrays so we don't need to do
+                    // two level checks in the row renderer
+                    if (!childRow.saving) { childRow.saving = []; }
+                    childRow.saving[col.dataIndex] = [];
+                    if (!childRow.error) { childRow.error = []; }
+                    childRow.error[col.dataIndex] = [];
                     childRow[col.dataIndex] = cell[j];
+                    if (!childRow[col.dataIndex])
+                    {
+                        childRow[col.dataIndex] = [];
+                        childRow[col.dataIndex].type = 'blank';
+                    }
+                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren);
                 }
             }
-            
+
             if (childRows.length)
                 childRows[childRows.length - 1].groupLast = true;
             return childRows;
-        }
+        };
 
         /**
          * Open or close a row (open rows display nested records).
          */
         var nextTempID = 0;
-        this.expand = function(row, open) {
+        this.expand = function(row, open, skipEvent)
+        {
             // Determine whether to expand/open or unexpand/close the row
-            if (open == undefined)
-                open = !row.expanded;
-            if (open == row.expanded)
-                return;
+            if (open === undefined)
+            { open = !row.expanded; }
+            if (open === row.expanded)
+            { return; }
 
             // Create child rows
-            if (open) {
+            if (open)
+            {
                 // Create the child rows
                 var childRows = getChildRows(row);
 
                 // Install child rows into the active set if the row is open
                 if (active == rows)
-                    active = active.slice();
+                { active = active.slice(); }
                 for (var i = 0; i < active.length; i++)
-                    if (active[i] == row) {
+                {
+                    if (active[i] == row)
+                    {
                         var after = active.splice(i + 1, active.length - i + 1);
                         active = active.concat(childRows).concat(after);
                         break;
                     }
-            } else {
+                }
+            }
+            else
+            {
                 // Remove the child rows
                 if (row.childRows && row.childRows.length)
+                {
                     for (i = 0; i < active.length; i++)
-                        if (active[i] == row) {
+                    {
+                        if (active[i] == row)
+                        {
                             active.splice(i + 1, row.childRows.length);
                             break;
                         }
+                    }
+                }
             }
 
             // Record the new row state
             row.expanded = open;
-            if (open) {
-                if (!expanded)
-                    expanded = {};
+            if (open)
+            {
+                if (!expanded) { expanded = {}; }
                 expanded[row.id] = true;
-            } else if (expanded)
-                delete expanded[row.id];
+            }
+            else if (expanded)
+            { delete expanded[row.id]; }
 
             // Update IDs for the rows that moved
             installIDs(true);
 
             // Fire events
-            this.change([ row ]);
-        }
+            if (!skipEvent) { this.change([ row ]); }
+        };
 
         /**
          * Get or set the base URL for retrieving child documents.  This is set automatically when you use the ajax
@@ -1483,7 +1877,7 @@ blist.namespace.fetch('blist.data');
             // active is now the new set of rows from the server, and not
             //  linked-to or based-on rows
             active = config.rows || config.data;
-            setRowMetadata(active);
+            setRowMetadata(active, meta.metaColumns);
             for (var i = 0; i < active.length; i++)
             {
                 // If it is not an object, just an id, try to look it up from rows
@@ -1792,28 +2186,51 @@ blist.namespace.fetch('blist.data');
                 doFilter(filterSource);
                 idChange = true;
             }
-            if (groupFn) {
+            if (groupFn)
+            {
                 doGroup();
                 idChange = true;
             }
 
-            if (expanded) {
+            if (expanded)
+            {
                 doExpansion();
                 idChange = true;
             }
-            if (idChange)
-                installIDs(activeOnly);
-            dataChange();
-        }
 
-        // Remove "special" (non-data or nested) rows
+            // Add in blank row at the end
+            if (self.useBlankRows())
+            {
+                var blankRow = [];
+                blankRow.level = 0;
+                blankRow.type = 'blank';
+                blankRow.id = 'blank';
+                active.push(blankRow);
+            }
+
+            if (idChange)
+            { installIDs(activeOnly); }
+            dataChange();
+        };
+
+        // Remove "special" (non-top-level) rows
         var removeSpecialRows = function() {
             var i = 0;
-            while (i < active.length) {
-                if (active[i].level)
-                    active.splice(i, 1);
-                else
-                    i++;
+            while (i < active.length)
+            {
+                if (active[i].level || active[i].type == 'blank')
+                { active.splice(i, 1); }
+                else { i++; }
+            }
+            if (rows != active)
+            {
+                i = 0;
+                while (i < rows.length)
+                {
+                    if (rows[i].level || rows[i].type == 'blank')
+                    { rows.splice(i, 1); }
+                    else { i++; }
+                }
             }
         }
 

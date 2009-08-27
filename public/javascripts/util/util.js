@@ -63,3 +63,18 @@ $.capitalize = function(text)
 };
 
 })(jQuery);
+
+/* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
+String.prototype.visualLength = function(fontSize)
+{
+    var $ruler = $('#ruler');
+    if ($ruler.length < 1)
+    {
+        $('body').append('<span id="ruler"></span>');
+        $ruler = $('#ruler');
+    }
+    if (!fontSize) { fontSize = ''; }
+    $ruler.css('font-size', fontSize);
+    $ruler.text(this + '');
+    return $ruler.width();
+};

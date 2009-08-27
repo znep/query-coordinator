@@ -31,9 +31,11 @@ class BlistsController < SwfController
             ' cannot be found, or has been deleted.'
           return (render 'shared/error', :status => :not_found)
       rescue CoreServer::CoreServerError => e
-        if e.error_code == 'authentication_required' ||
-          e.error_code == 'permission_denied'
+        if e.error_code == 'authentication_required' 
           return require_user(true)
+        elsif e.error_code == 'permission_denied'
+          flash[:error] = e.error_message
+          return (render 'shared/error', :status => :forbidden)
         else
           flash[:error] = e.error_message
           return (render 'shared/error', :status => :internal_server_error)

@@ -178,6 +178,65 @@ div.blist-th-first
     padding: 0 4px;
 }
 
+div.blist-table-ghost div.blist-column-adder
+{
+    margin-top: 1em;
+    float: right;
+    cursor: pointer;
+    background-image: url('/stylesheets/images/content/table/add_column_icons.gif');
+    background-repeat: no-repeat;
+    background-position: center 0px;
+    background-color: #e8e8e8;
+    width: 15px;
+    height: 15px;
+}
+div.blist-table-ghost div.blist-column-adder:hover
+{
+    background-position: center -15px;
+}
+
+div.blist-tr-open div.blist-column-adder,
+div.blist-tr.blist-hot-row div.blist-column-adder
+{
+    background-color: #e8e8e8;
+    cursor: pointer;
+}
+
+div.blist-column-adder,
+div.blist-tr-sub.blist-hot-row div.blist-column-adder
+{
+    background: none;
+    width: 15px;
+    cursor: auto;
+}
+
+div.blist-tr-sub.blist-hot-row div.blist-column-adder.blist-tdfill
+{
+    background-color: #f8f8f8;
+}
+div.blist-tr .blist-column-adder-icon
+{
+    background: none;
+    width: 15px;
+    height: 15px;
+}
+
+div.blist-tr-open .blist-column-adder-icon,
+div.blist-tr.blist-hot-row .blist-column-adder-icon
+{
+    background-image: url('/stylesheets/images/content/table/add_column_icons.gif');
+    background-repeat: no-repeat;
+    background-position: center 0px;
+    background-color: #e8e8e8;
+    width: 15px;
+    height: 15px;
+}
+
+div.blist-tr.blist-hot-row div.blist-column-adder:hover .blist-column-adder-icon
+{
+    background-position: center -15px;
+}
+
 .dropIndicator
 {
     background-color: #333333;
@@ -291,6 +350,13 @@ div.blist-th-first
     border-left: solid 1px #e2e2e2;
 }
 
+.blist-td.invalid,
+.invalid .blist-td input
+{
+    color: #ff3333;
+    font-style: italic;
+}
+
 div.blist-tdh
 {
     color: #999999;
@@ -330,6 +396,9 @@ div.blist-tdh
     border-left-width: 0;
     padding-left: 5px;
 }
+
+.blist-table .blist-td.saving { background-color: #ffffcc; }
+.blist-table .blist-td.error { background-color: #ffb6c1; }
 
 div.blist-table-active-container
 {
@@ -380,14 +449,14 @@ div.blist-table-active-container .blist-td.blist-opener
 div.blist-table-edit-container
 {
     background-color: #ffffff;
-    border: solid 2px #ff3333;
+    border: solid 2px #06386a;
     overflow: hidden;
 }
 
 div.blist-table-editor
 {
     border: none;
-    padding: 0;
+    padding: 0 4px 0 0;
 }
 
 div.blist-table-edit-container input[type="text"],
@@ -396,8 +465,10 @@ div.blist-table-edit-container input.textInput
     border: none;
     font-size: 1em;
     height: 100%;
-    padding: 0.2em;
-    width: 8.333em; /* 100px */
+    min-width: 8.333em; /* 100px */
+    padding: 0.2em 0;
+    /*background-image: url(/stylesheets/images/content/table/bg_text.gif);*/
+    background-repeat: repeat-x;
 }
 
 div.blist-table-edit-container.shown input[type="text"],
@@ -548,3 +619,11 @@ ul.menu.rowMenu li
 { background-image: none; }
 .blist-table .blist-select-row .blist-td.blist-table-row-numbers
 { background-position: right -506px; }
+
+.blist-table .blist-hot-row.blist-tr-blank .blist-td.blist-table-row-numbers,
+.blist-table .blist-select-row.blist-tr-blank .blist-td.blist-table-row-numbers
+{
+    background-image: none;
+    text-align: right;
+    text-indent: 0;
+}

@@ -540,12 +540,17 @@
   padding: 0.6em;
 }
 
-.columnPropertiesWrapper .saveBar
+.columnPropertiesWrapper .saveBar,
+.columnPropertiesWrapper .createBar
 {
-  margin-left: 165px;
-  width: 525px;
   color: #666666;
   font-size: 1.1em;
+}
+
+.columnPropertiesWrapper .saveBar
+{
+  width: 525px;
+  margin-left: 165px;
   position: absolute;
   bottom: -5px;
 }
@@ -603,6 +608,11 @@
 .columnPropertiesWrapper textarea
 {
     width: 30em;
+}
+#columnCreate input[type="text"],
+#columnCreate textarea
+{
+    width: 42em;
 }
 .columnPropertiesWrapper input[type="radio"]
 {
@@ -679,6 +689,14 @@ ul.convertables li a:hover
 .convert-stars { background-position: 0 -140px; }
 .convert-flag { background-position: 0 -380px; }
 
+.typeSelect
+{
+    background-image:url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-repeat: no-repeat;
+    padding:0.2em;
+    padding-left: 1.75em; 
+}
+
 #typeReadOnly
 {
     background-image:url(/stylesheets/images/common/datatypes/data_type_sprites.png);
@@ -716,6 +734,27 @@ ul.convertables li a:hover
 .alignRight
 {
     background-position: 0 -26px;
+}
+
+#columnCreate table 
+{
+    width: 100%;
+}
+
+#columnCreate table td
+{
+    padding: 1em;
+}
+
+.createBar
+{
+    padding: 1em;
+    padding-bottom: 2em;
+}
+
+.createBar .seperator
+{
+    margin-bottom: 1em;
 }
 
 /*** END: Column properties***/

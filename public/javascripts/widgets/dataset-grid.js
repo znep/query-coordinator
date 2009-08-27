@@ -35,6 +35,7 @@
             setTempViewCallback: function (tempView) {},
             showRowHandle: false,
             showRowNumbers: true,
+            showAddColumns: false,
             updateTempViewCallback: function (tempView) {},
             viewId: null
         },
@@ -63,6 +64,8 @@
                         { columnsRearranged(datasetObj); })
                     .bind('column_filter_change', function (event, c)
                         { columnFilterChanged(datasetObj, c); })
+                    .bind('server_row_change', function(event)
+                        { updateAggregates(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -71,6 +74,7 @@
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
+                        showAddColumns: datasetObj.settings.showAddColumns,
                         // This really ought to be linked to edit; but until
                         // edit is enabled, we'll check the user
                         //rowHandleRenderer: (datasetObj.settings.editEnabled ?
@@ -80,7 +84,8 @@
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
-                    .options({filterMinChars: 0, progressiveLoading: true})
+                    .options({blankRow: datasetObj.settings.editEnabled,
+                        filterMinChars: 0, progressiveLoading: true})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
                                 '/rows.json', cache: false,
                             data: {accessType: datasetObj.settings.accessType},
@@ -89,6 +94,10 @@
                 $('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle')
                     .live('mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
+                $('#' + $datasetGrid.attr('id') + ' .add-column')
+                    .live("click", function (e) { 
+                          $('<a href="/blists/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click() 
+                        });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
 
@@ -289,7 +298,7 @@
 
             isTempView: false,
 
-            rowHandleRenderer: '(permissions.canDelete ? ' +
+            rowHandleRenderer: '(permissions.canDelete && row.type != "blank" ? ' +
                 '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
                 'row.id + "\'></a>' +
                 '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "\'>' +
@@ -339,21 +348,10 @@
         if (action == 'row-delete')
         {
             model.selectRow(model.getByID(rowId));
-            var successCount = 0;
-            var totalRows = 0;
+            var rows = [];
             $.each(model.selectedRows, function(id, index)
-            {
-                totalRows++;
-                $.ajax({url: '/views/' + view.id + '/rows/' + id + '.json',
-                    contentType: 'application/json', type: 'DELETE',
-                    complete: function()
-                    {
-                        successCount++;
-                        if (successCount == totalRows)
-                        { updateAggregates(datasetObj); }
-                    }});
-                model.remove(model.getByID(id));
-            });
+                { rows.push(model.getByID(id)); });
+            model.remove(rows, true);
             datasetObj.summaryStale = true;
         }
     };
@@ -363,12 +361,12 @@
         var model = datasetObj.settings._model;
         var view = model.meta().view;
         $.ajax({url: '/views/' + view.id + '/rows.json',
-            data: {include_aggregates: true, max_rows: 0}, cache: false,
+            data: {method: 'getAggregates'}, cache: false,
             contentType: 'application/json', dataType: 'json', type: 'GET',
             success: function(resp)
             {
-                model.updateAggregateHash(resp.meta.aggregates);
-                model.metaChange();
+                model.updateAggregateHash(resp);
+                model.footerChange();
             }});
     };
 
@@ -376,7 +374,6 @@
     {
         var model = datasetObj.settings._model;
         if (!column || row.level > 0) { return; }
-
         if (column.dataIndex == 'rowNumber')
         {
             if (origEvent.shiftKey)
@@ -387,6 +384,11 @@
             {
                 model.toggleSelectRow(row);
             }
+        }
+        else if ($(origEvent.target).closest(".blist-column-adder-icon").length > 0)
+        {
+            // Display the add column dialog.
+            $('<a href="/blists/' + model.meta().view.id + '/columns/new?parent=' + column.id + '" rel="modal" />').click();
         }
     };
 

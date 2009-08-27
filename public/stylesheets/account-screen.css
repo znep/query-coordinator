@@ -59,3 +59,130 @@
     width: 14em;
 }
 .jumpToActions .actionButtons li a { background-position: right -21px; }
+
+
+/*** START: OpenID edit table ***/
+.linksContent ul.userLinkActions.initialHide,
+.openIdTableContainer.initialHide { display: none; }
+
+
+.updateLinksContainer table
+{
+    table-layout: fixed;
+    width: 100%;
+}
+
+
+.updateLinksContainer table .edit_handle { width: 2.2em; }
+.updateLinksContainer table .edit_name { width: 100%; }
+
+.openIdTableContainer { margin: 1em 0; }
+.openIdTableContainer .gridList thead { background-color: #06386a; }
+.openIdTableContainer .gridList thead th {
+    background-color: #06386a;
+    border-right: 1px solid #d4d4d4;
+    color: #fff;
+    font-size: 1.2em;
+}
+.openIdTableContainer table tbody.hidden
+{
+    display: none;
+}
+.openIdTableContainer table.gridList td .cellInner { height: 32px; line-height: 32px; }
+.openIdTableContainer table th.edit_handle span
+{
+    background: url(/stylesheets/images/profile/profile_links_delete_header.png) no-repeat;
+    display: block;
+    height: 10px;
+    overflow: hidden;
+    text-indent: -9999px;
+    width: 10px;
+}
+.openIdTableContainer table td.edit_handle a
+{
+    background: url(/stylesheets/images/profile/profile_links_delete.png) center center no-repeat;
+    display: block;
+    height: 36px;
+    line-height: 36px;
+    margin: 0;
+    padding: 0;
+    text-indent: -9999px;
+    width: 22px;
+}
+
+.editLinksContainer
+{
+    border-top: 1px solid #ccc;
+    margin-top: 1em;
+    padding-top: 1em;
+}
+
+.updateLinksContainer table.gridList td.linkFormContainer > form
+{
+    font-size: 1em;
+    height: auto;
+    line-height: 1.3em;
+    margin: 0;
+    padding: 0;
+}
+
+.updateLinksContainer form table td { vertical-align: middle; }
+
+.updateLinksContainer form table td.edit_handle span
+{
+    background: url(/stylesheets/images/profile/profile_links_add.png) no-repeat;
+    display: block;
+    height: 14px;
+    line-height: 500px;
+    overflow: hidden;
+    width: 15px;
+}
+.updateLinksContainer table td input[type="text"]
+{
+    font-size: 1.2em;
+    width: 90%;
+}
+.updateLinksContainer table option { font-size: 1.2em; }
+.updateLinksContainer table.gridList table td { height: 3.1em; }
+.updateLinksContainer table.gridList table td .cellInner
+{
+    font-size: 1.2em;
+    height: auto;
+    line-height: 1.3em;
+    margin: 0;
+    padding: 0;
+}
+.updateLinksContainer table.gridList table td > select { font-size: 1.1em; }
+.updateLinksContainer table.gridList table td > input[type="text"]
+{
+    padding: 0.1em 0.2em;
+}
+.updateLinksContainer table.gridList table td > input[type="image"] {
+    height: 21px;
+    line-height: 21px;
+}
+
+#no_openid_identifiers td
+{
+    text-align: center;
+}
+/*** END: form list links edit table ***/
+
+.openIdSection .actionButtons li
+{
+    background-position: left -252px;
+}
+.openIdSection .actionButtons li a
+{
+    background-position: right -294px;
+    padding-right: 26px;
+}
+
+.openIdSection div.error p
+{
+    font-size: 1.2em;
+    background: #fcc;
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid #ccc;
+}

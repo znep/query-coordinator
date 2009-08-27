@@ -1,8 +1,11 @@
 class AccountsController < ApplicationController
-  ssl_required :new, :update, :create
+  ssl_required :new, :update, :create, :add_rpx_token
+  ssl_allowed :show
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
+  protect_from_forgery :except => [:add_rpx_token]
 
   def show
+    @openid_identifiers = current_user.openid_identifiers
   end
 
   def update
@@ -154,6 +157,16 @@ class AccountsController < ApplicationController
         redirect_to forgot_password_path
       end
     end
+  end
+
+  def add_rpx_token
+    OpenIdIdentifier.create(User.current_user.id, params[:token]) if params[:token]
+  rescue CoreServer::CoreServerError => e
+    if (e.error_message =~ /^Validation failed: /)
+      flash[:openid_error] = e.error_message.gsub(/^Validation failed: /, '')
+    end
+  ensure
+    redirect_to account_url(:anchor => params[:section])
   end
 
 private

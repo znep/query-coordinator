@@ -2084,7 +2084,7 @@
                             mcol: mcol,
                             logical: mcol.uid
                         });
-                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
+                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon' title='Add a new column...'></div></div>\"");
                     }
                     completeStatement();
 
@@ -2102,7 +2102,7 @@
                     }
                     if (options.showAddColumns)
                     {
-                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon'></div></div>\"");
+                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon' title='Add a new column...'></div></div>\"");
                     }
                     completeStatement();
                 } else if (mcol.children) {
@@ -2684,7 +2684,7 @@
                 html.push('<div class="blist-th blist-table-ghost ',
                     columns.length < 1 ? 'blist-th-first ' : '',
                     ghostClass, '">' + 
-                    (options.showAddColumns ? '<div class="blist-column-adder add-column"></div>' : '') + 
+                    (options.showAddColumns ? '<div class="blist-column-adder add-column" title="Add a new column..."></div>' : '') + 
                     '</div>');
             }
             $header.html(html.join(''));

@@ -261,6 +261,10 @@ class View < Model
   def is_fusion_map?
     !self.displayType.nil? && !self.displayType[/^FCMap_/].nil?
   end
+  
+  def owned_by?(user)
+    self.owner.id == user.id
+  end
 
   def chart_class
     case self.displayType

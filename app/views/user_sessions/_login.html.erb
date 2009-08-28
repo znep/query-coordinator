@@ -29,6 +29,10 @@
     <%= f.label :remember_me %>
     </p>
 
+    <div class="openid clearfix">
+      <%= link_to_rpx "Sign in with OpenID" %>
+    </div>
+
     <div class='footer clearfix'>
       <%= link_to "Forgot your password / username?", forgot_password_path%>
       <ul class='actionButtons clearfix'>
@@ -41,4 +45,13 @@
     </div>
     <% end %>
   </div>
+<% end %>
+
+<% content_for :js_footer do %>
+<script src="https://rpxnow.com/openid/v2/widget"
+        type="text/javascript"></script>
+<script type="text/javascript">
+  RPXNOW.overlay = true;
+  RPXNOW.language_preference = 'en';
+</script>
 <% end %>

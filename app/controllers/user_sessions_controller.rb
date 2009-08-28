@@ -1,7 +1,8 @@
 class UserSessionsController < ApplicationController
-  ssl_required :new, :create
+  ssl_required :new, :create, :rpx
   ssl_allowed :destroy
   skip_before_filter :require_user
+  protect_from_forgery :except => [:rpx]
 
   def index
     respond_to do |format|
@@ -45,5 +46,15 @@ class UserSessionsController < ApplicationController
     cookies.delete :remember_token
     flash[:notice] = "You have been logged out"
     redirect_to(login_path)
+  end
+
+  def rpx
+    @user_session = UserSession.rpx(params[:token])
+    if @user_session
+      redirect_back_or_default(home_path)
+    else
+      flash[:notice] = "OpenID not found"
+      redirect_to login_path
+    end
   end
 end

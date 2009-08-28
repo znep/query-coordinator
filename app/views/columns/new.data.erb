@@ -18,14 +18,14 @@ var column = <%= @column.to_js %>;
               <td class="labelColumn"><label for="name" class="required">Column Name:</label></td>
               <td class="fieldColumn"><%= text_field_tag("name", @column.name, 
                                                          :class => "textPrompt prompt",
-                                                         :title => "Enter a name.",
+                                                         :title => "Enter a name",
                                                          :id => "name") %></td>
             </tr>
             <tr>
               <td class="labelColumn"><label for="description">Column Description:</label></td>
               <td class="fieldColumn"><%= text_area_tag("description", @column.description, 
                                                         :class => "textPrompt prompt", 
-                                                        :title => "Enter a description.",
+                                                        :title => "Enter a description",
                                                         :id => "description") %></td>
             </tr>
             <tr>
@@ -132,6 +132,7 @@ $(function(){
               $("#readGrid").blistModel().updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
+            blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
             $.Tache.DeleteAll();
             $(".jqmClose").click();
         }

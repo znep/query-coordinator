@@ -92,7 +92,7 @@
             <%# Table view options %>
             <%- if is_owner -%>
             <li class='separator tableOption'>
-            <a href='#' class='addColumnsLink staticLink'>
+            <a href='#' class='addColumnsLink staticLink swfItem'>
                 <span class='linkIcon'>Add Column</span>
             </a>
             </li>
@@ -348,7 +348,8 @@
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
     blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
-    blist.blistGrid.canAddColumns = <%= is_owner && is_blist ? 'true' : 'false' %>;
+    // TODO: Change this when edit grid is finally working.
+    blist.blistGrid.canAddColumns = false; //<%= is_owner && is_blist ? 'true' : 'false' %>;
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
     <%- end -%>

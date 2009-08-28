@@ -112,11 +112,11 @@ class BlistsController < SwfController
       end
     end
     
-    if !@view.can_edit()
+    if !@view.can_edit() && !current_user.is_admin?
       return require_user(true)
     end
 
-    if (current_user.accountCategory != "premium_sdp")
+    if (current_user.accountCategory != "premium_sdp" || !current_user.is_admin?)
       redirect_to '/solution'
     end
 
@@ -388,6 +388,30 @@ class BlistsController < SwfController
       :errors => errors
     }
   end
+
+  def meta_tab_header
+     if (!params[:tab])
+       return
+     end
+
+     @tabKey = params[:tab]
+     @view = View.find(params[:id])
+     render(:layout => 'main.data')
+   end
+
+   def meta_tab
+     if (!params[:tab])
+       return
+     end
+
+     @tabKey = params[:tab]
+     @view = View.find(params[:id])
+     if (@tabKey == "activity")
+       @view_activities = Activity.find({:viewId => @view.id})
+     end
+     render(:layout => 'main.data')
+   end
+
 
 private
 

@@ -340,4 +340,10 @@ HREF
     out = state.map { |pair| pair.map{ |item| CGI::escape(item.to_s) }.join("=") }.join('&')
     "#{delimiter}#{out}"
   end
+
+  def link_to_rpx(name, return_url = rpx_url, html_options = {})
+    html_options.merge!({:class => 'rpxnow', :onclick => 'return false;'})
+
+    link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", html_options
+  end
 end

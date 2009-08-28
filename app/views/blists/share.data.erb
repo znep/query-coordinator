@@ -14,6 +14,16 @@
     var addedRecipients = new Array();
     var addedRecipientUID = 0;
     
+<<<<<<< Updated upstream:web/app/views/blists/share.data.erb
+=======
+    // var contacts_json = <%= @contacts_json %>;
+    //     $("#add_recipient_email").autocomplete(contacts_json,
+    //       {
+    //         minChars: 0,
+    //         formatItem: function(row, i, max) { return row.displayName; }
+    //       });
+    
+>>>>>>> Stashed changes:web/app/views/blists/share.data.erb
     var contact_values = <%= @contact_combo_values %>;
     $("#add_friends").combo({
       name: "add_friends",
@@ -61,8 +71,15 @@
         var addRow = "<tr>";
         addRow += "<td class=\"add_handle\">";
         addRow += "<a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>";
+<<<<<<< Updated upstream:web/app/views/blists/share.data.erb
         addRow += "<td class=\"add_email\"><span>" + displayValue + "</span></td>";
         addRow += "<td class=\"add_type\"><span>" + newRecipient.type.toLowerCase().capitalize() + "</span></td>";
+=======
+        
+        addRow += "<td class=\"add_email\"><span>" + displayValue + "</span></td>";
+        
+        addRow += "<td class=\"add_type\"><span>" + newRecipient.type + "</span></td>";
+>>>>>>> Stashed changes:web/app/views/blists/share.data.erb
         addRow += "<td class=\"add_action\"></td>";
         addRow += "</tr>";
 

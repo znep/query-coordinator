@@ -150,6 +150,9 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
 
+  map.connect 'dataset/:id/meta_tab_header', :controller => 'blist', :action => 'meta_tab_header'
+  map.connect 'dataset/:id/meta_tab', :controller => 'blist', :action => 'meta_tab'
+
   map.connect 'widgets/:id/:variation/:options', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id/:variation/:options.data', :controller => 'widgets', :action => 'show', :format => 'data'
   map.connect 'widgets/:id/:variation', :controller => 'widgets', :action => 'show'
@@ -192,6 +195,8 @@ ActionController::Routing::Routes.draw do |map|
     https.signup '/signup', :controller => 'accounts', :action => 'new'
     https.signup_json '/signup.json', :controller => 'accounts', :action => 'create', :format => 'json'
     https.accounts_json '/accounts.json', :controller => 'accounts', :action => 'update', :format => 'json'
+    https.rpx '/login/rpx', :controller => 'user_sessions', :action => 'rpx'
+    https.add_rpx_token '/account/add_rpx_token', :controller => 'accounts', :action => 'add_rpx_token'
   end
 
   map.resources :user_sessions

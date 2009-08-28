@@ -89,6 +89,11 @@ class User < Model
     path = "/users/#{id}/followers.json"
     User.parse(CoreServer::Base.connection.get_request(path))
   end
+
+  def openid_identifiers
+    path = "/users/#{id}/open_id_identifiers.json"
+    OpenIdIdentifier.parse(CoreServer::Base.connection.get_request(path))
+  end
   
   def my_friend?
     return false if current_user.nil?
@@ -117,6 +122,22 @@ class User < Model
 
   def public_blists
     View.find_for_user(self.id).reject {|v| !v.is_public? || v.owner.id != id}
+  end
+  
+  def is_owner?(view)
+    view.owner.id == self.id
+  end
+  
+  def is_admin?
+    self.flag?("admin")
+  end
+  
+  def is_premium?
+    self.accountCategory == "premium_sdp"
+  end
+  
+  def can_access_premium_on?(view)
+    (self.is_premium? && self.is_owner?(view)) || self.is_admin?
   end
 
   @@states = {

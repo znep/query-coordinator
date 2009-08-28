@@ -7,7 +7,7 @@
 <div class="modalContentWrapper newImageWrapper">
   <div class="errorMessage"></div>
   <% form_tag('/img.txt', :id => "newImageForm") do %>
-    <label for="new_image_name" class="required">Name The Image</label>
+    <label for="new_image_name" class="required">Name the Image</label>
     <%= text_field_tag('new_image[name]') %>
 
     <label for="new_image_file" class="required">Choose a File</label>
@@ -23,7 +23,7 @@
     <div class="submitLine clearfix">
       <span class="requiredText">Required Entry</span>
       <ul class="submitActions">
-        <li class="hide"><div class="loadingIndicator">Working...</div></li>
+        <li class="hide"><div class="loadingIndicator">Uploading...</div></li>
         <li>
           <ul class="actionButtons">
             <li><a class="arrowButton" href="#submit" id="submitNewImage">Create</a></li>
@@ -77,8 +77,16 @@
     });
 
     $form.validate({
-      rules: { "new_image[name]": "required" },
-      messages: {  "new_image[name]": "You must name the image." }
+      rules: 
+      { 
+        "new_image[name]": "required",
+        "new_image[file_name]" : "required"
+      },
+      messages: 
+      {  
+        "new_image[name]": "You must name the image.",
+        "new_image[file_name]": "You must provide a file to upload."
+      }
     });
 
     $('#submitNewImage').click(function(event)

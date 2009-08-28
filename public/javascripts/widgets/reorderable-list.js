@@ -36,7 +36,7 @@ $.fn.reorderableList = function(options) {
     var getRelativeOffset = function($elem, absoluteOffset)
     {
         return absoluteOffset - ($elem.data("reorderableList-initialOrder") * $elem.outerHeight(true));
-    }
+    };
 
     // Reposition and renumber the items while dragging is occurring
     var orderListItems = function($listItems, config, skipAnimation)

@@ -1,13 +1,8 @@
-<%- is_owner = current_user && view.owner.id == current_user.id -%>
-<%# You can only view statistics on a dataset if you're the owner 
-    and are premium or if you are a Socrata admin %>
-<%- can_access_stats = current_user && ((current_user.account_category == "premium_sdp" && is_owner) || current_user.flag?("admin")) -%>
-
 <h2 class="panelHeader">Activity</h2>
 <%- if (!in_widget) -%>
 <ul class="headerActions actionButtons">
   <li>
-    <%- if can_access_stats -%>
+    <%- if(current_user && current_user.can_access_premium_on?(view)) -%>
       <a href="<%= "#{view.href}/stats" %>" class="arrowButton">
         View Statistics
       </a>

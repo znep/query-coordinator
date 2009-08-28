@@ -169,14 +169,16 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         if (row.expanded && wrap &&
                 (col.type == 'opener' || col.type == 'header'))
         {
-            y = model.index(row.childRows[0]);
-            row = model.get(y);
-            layoutLevel = layout[rowLevel];
-            col = layoutLevel[x];
-            while (col.skippable)
+            var newXY = getAdjustedY(1, event, x, y, wrap);
+            if (newXY)
             {
-                x++;
+                x = newXY.x;
+                y = newXY.y;
+                row = model.get(y);
+                rowLevel = row.level || 0;
+                layoutLevel = layout[rowLevel];
                 col = layoutLevel[x];
+                uid = col.logical;
             }
         }
 
@@ -233,7 +235,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             $textarea[0].select();
         } else {
             $textarea.text('');
-		}
+        }
 
         return true;
     };
@@ -411,6 +413,28 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         return needRefresh;
     };
 
+    var getColumnInLevel = function(newMCol, row)
+    {
+        var newL = row.level || 0;
+        var newLevelLayout = layout[newL];
+        var x = null;
+        for (var i = 0; i < newLevelLayout.length; i++)
+        {
+            if (newLevelLayout[i].mcol == newMCol)
+            {
+                x = i;
+                break;
+            }
+        }
+        if (x == newLevelLayout.length)
+        {
+            // Bug -- selected model column does not reside in this
+            // level
+            return null;
+        }
+        return x;
+    };
+
     /**
      * Given a position and delta, adjust and return a new row.
      *
@@ -471,6 +495,36 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 }
 
                 var newY = y < 0 ? model.length() - 1 : 0;
+                // Moving into a different level -- find the physical
+                // position for the model column
+                if (oldCol.mcol && oldCol.mcol.nestedIn)
+                {
+                    x = getColumnInLevel(oldCol.mcol.nestedIn.header,
+                        model.get(newY));
+                    if (x === null) { return null; }
+                }
+                // Otherwise, if we're changing levels on the bottom, get the
+                // appropriate child column
+                else if ((model.get(newY).level || 0) > oldLevel)
+                {
+                    var adjHeader = layout[oldLevel][x + (deltaY < 0 ? -1 : 1)];
+                    if (adjHeader && adjHeader.type == 'header' &&
+                        adjHeader.mcol && adjHeader.mcol.nestedIn)
+                    {
+                        x = getColumnInLevel(adjHeader.mcol, model.get(newY));
+                        if (x === null) { return null; }
+                        // Re-adjust new X in preparation for getAdjustedX below
+                        x = x + (deltaY < 0 ? 1 : -1);
+                    }
+                    // Otherwise it's not a level change, so we need to find the
+                    // last parent row
+                    else
+                    {
+                        newY = model.nextInLevel(newY + (deltaY < 0 ? 1 : -1),
+                            deltaY < 0);
+                    }
+                }
+
                 var adjX = getAdjustedX(y < 0 ? -1 : 1, event, x, newY);
                 if (adjX && adjX.x != x)
                 {
@@ -505,8 +559,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 (oldCol.mcol.indexInLevel ==
                  oldCol.mcol.nestedIn.children.length - 1 && deltaY > 0))
             {
-                x += (deltaY < 0 ? 1 : -1) *
-                    (oldCol.mcol.nestedIn.children.length - 1);
+                x = getColumnInLevel(oldCol.mcol.nestedIn.header, newRow);
+                if (x === null) { return null; }
                 newCol = layout[newLevel][x];
             }
             else
@@ -624,24 +678,9 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             }
             else if (newMCol)
             {
-                // Moving into a different level -- find the physical
-                // position for the model column
-                var newLevelLayout = layout[newLevel];
-                for (var i = 0; i < newLevelLayout.length; i++)
-                {
-                    if (newLevelLayout[i].mcol == newMCol)
-                    {
-                        x = i;
-                        newCol = layout[newLevel][x];
-                        break;
-                    }
-                }
-                if (i == newLevelLayout.length)
-                {
-                    // Bug -- selected model column does not reside in this
-                    // level
-                    return null;
-                }
+                x = getColumnInLevel(newMCol, newRow);
+                if (x === null) { return null; }
+                newCol = layout[newLevel][x];
             }
             else
             {
@@ -760,8 +799,11 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                     }
 
                     y = model.index(newRow);
+                    x = getColumnInLevel(prevCol.mcol.nestedIn.header, newRow);
+                    if (x === null) { return null; }
                     layoutLevel = layout[newRow.level || 0];
-                    break;
+                    curCol = layoutLevel[x];
+                    return getAdjustedX(deltaX, event, x, y, wrap);
                 }
                 else if (curCol.canFocus !== false)
                 {

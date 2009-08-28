@@ -1532,28 +1532,24 @@ blist.namespace.fetch('blist.data');
          */
         this.nextInLevel = function(from, backward) {
             var pos = from;
-            if (active[pos] == null)
-			{
-                return null;
-			}
-            var level = active[pos].level || 0;
-            if (backward) {
-                while (--pos >= 0)	
-				{
+            var level = 0;
+            if (active[pos]) { level = active[pos].level || 0; }
+            if (backward)
+            {
+                while (--pos >= 0)
+                {
                     if ((active[pos].level || 0) == level)
-					{
-                        return pos;
-					}
-				}
-            } else {
+                    { return pos; }
+                }
+            }
+            else
+            {
                 var end = active.length;
                 while (++pos < end)
-				{
+                {
                     if ((active[pos].level || 0) == level)
-					{
-                        return pos;
-					}
-				}
+                    { return pos; }
+                }
             }
             return null;
         };

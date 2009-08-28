@@ -2,7 +2,7 @@ var accountNS = blist.namespace.fetch('blist.account');
 
 blist.account.toggleNoOpenId = function()
 {
-    var $table = $('div.openIdTableContainer table')
+    var $table = $('div.openIdTableContainer table');
     if ($table.find('tbody tr').length <= 1)
     {
         $table.find('#no_openid_identifiers').removeClass('hidden');

@@ -5,10 +5,10 @@
 
 var metaNS = blist.namespace.fetch('blist.meta');
 
-blist.meta.updateMeta = function(tabKey, viewId)
+blist.meta.updateMeta = function(tabKey, viewId, onHeaderSuccess, onTabSuccess)
 {
-    metaNS.updateMetaTabHeader(tabKey, viewId);
-    metaNS.updateMetaTab(tabKey, viewId);
+    metaNS.updateMetaTabHeader(tabKey, viewId, onHeaderSuccess);
+    metaNS.updateMetaTab(tabKey, viewId, onTabSuccess);
 };
 
 blist.meta.metaTabHeaderMap = {
@@ -17,7 +17,7 @@ blist.meta.metaTabHeaderMap = {
     "activity": ".singleInfoActivity .infoContentHeader",
     "sharing": ".singleInfoSharing .infoContentHeader"
 };
-blist.meta.updateMetaTabHeader = function(tabKey, viewId)
+blist.meta.updateMetaTabHeader = function(tabKey, viewId, onHeaderSuccess)
 {
     if (metaNS.metaTabHeaderMap[tabKey] != undefined)
     {
@@ -25,6 +25,7 @@ blist.meta.updateMetaTabHeader = function(tabKey, viewId)
             success: function(data)
             {
                 $(metaNS.metaTabHeaderMap[tabKey]).html(data);
+                if (onHeaderSuccess) onHeaderSuccess();
             }
         });
     }
@@ -36,7 +37,7 @@ blist.meta.metaTabMap = {
     "activity": ".singleInfoActivity .infoContent",
     "sharing": ".singleInfoSharing .infoContent"
 };
-blist.meta.updateMetaTab = function(tabKey, viewId)
+blist.meta.updateMetaTab = function(tabKey, viewId, onTabSuccess)
 {
     if (metaNS.metaTabMap[tabKey] != undefined)
     {
@@ -44,6 +45,7 @@ blist.meta.updateMetaTab = function(tabKey, viewId)
             success: function(data)
             {
                 $(metaNS.metaTabMap[tabKey]).html(data);
+                if (onTabSuccess) onTabSuccess();
             }
         });
     }

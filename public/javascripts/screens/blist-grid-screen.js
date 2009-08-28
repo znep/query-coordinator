@@ -564,7 +564,7 @@ $(function ()
     });
 
     $("#throbber").hide();
-    $('a#notifyAll').click(function(event)
+    $('a#notifyAll').live("click", function(event)
     {
         event.preventDefault();
         $("#throbber").show();

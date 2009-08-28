@@ -403,6 +403,16 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
             $.Tache.DeleteAll();
         }
     });
+    
+    $("#throbber").hide();
+    $('a#notifyAll').live("click", function(event)
+    {
+        event.preventDefault();
+        $("#throbber").show();
+        $.post($(this).closest("form").attr("action"), null, function(data, textStatus) {
+            $("#throbber").hide();
+        });
+    });
 	
 	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'),
 		forcePosition: true, closeOnResize: true});

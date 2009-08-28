@@ -60,6 +60,7 @@
     <p><strong>Customize your message:</strong></p>
   
     <div class="invitationPreviewContainer">
+      <%= hidden_field_tag("view_id", @view.id) %>
       <p>
         <%= text_area_tag("share_message", "Default share email text goes here.", :class => "shareText") %>
       </p>

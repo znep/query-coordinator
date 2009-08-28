@@ -109,104 +109,11 @@
 <%# *** START: SHARING *** %>
 <div class="infoContentOuter singleInfoSharing">
   <div class="infoContentHeader clearfix">
-    <%- shares = view.shares -%>
-    <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
-    <h2 class="panelHeader <%= shares.size > 0 ? '' : ' last' %> <%= get_permissions_icon_class_for_view(view) %>">
-      <%= view.is_public? ? "Public" : "Private" %>
-    </h2>
-    <%- if shares.size > 0 %>
-      <h2 class="panelHeader typeNotify last">
-        <% form_tag(url_for(:controller => :blists, 
-          :action => :notify_all_of_changes)) do %>
-          <a href="#" id="notifyAll">Notify all of changes</a>
-          <%= image_tag("/images/throbber.gif", 
-                      :size => "16x16", 
-                      :alt => "Notifying...", 
-                      :id => "throbber") %>
-        <% end %>
-      </h2>
-    <% end %>
-    <%- if is_owner -%>
-    <ul class="headerActions actionButtons">
-      <li><a href="<%= "#{view.href}/share" %>" class="arrowButton" title="Share" rel="modal">Share</a></li>
-    </ul>
-    <%- end -%>
-    <div class="socialActions">
-      <a href='#' title='Share on Social Networks' id='shareInfoLink'>Share on Social Networks</a>
-	    <%= menu_tag(socialize_menu_options(view, 'shareInfoMenu')) %>
-    </div>
-    
+    <%= render(:partial => "blists/info_sharing_header", :locals => {:view => view}) %>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <div class="sharingSummary">
-        <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
-          "privateShared" : "private") %>">
-        This <%= view.is_blist? ? t(:blist_name) : "filter" %> is
-        <%- if is_owner && view.tableAuthor.id == view.owner.id -%>
-        <a href='#toggle-permissions_<%= view.id %>'
-          class='switchPermsLink'><%= view.is_public? ?
-            "Public" : "Private" %></a>
-        <%- else -%>
-        <span><%= view.is_public? ? "Public" : "Private" %></span>
-        <%- end -%>
-        <%= view.is_shared? ? ' and shared with the following ' +
-        (shares.length == 1 ? 'friend' : 'friend'.pluralize) + ':' : '' %>
-        </p>
-      </div>
-
-      <div class="gridListContainer">
-        <table class="gridList" cellspacing="0">
-          <colgroup>
-            <col class='picture' />
-            <col class='contact' />
-            <col class='role' />
-            <col class='actionContainer' />
-          </colgroup>
-          <thead>
-            <tr>
-              <th class="picture" title="Friend"><div></div></th>
-              <th class="contact" title="Friend">
-                <div>Friend</div>
-              </th>
-              <th class="role" title="Role"><div>Role</div></th>
-              <%# Not supported
-              <th class="others"><div>Can Share w/ Others</div></th>
-              <th class="opened"><div>Last Opened</div></th>
-              %>
-              <th class="actionContainer last"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <%- shares.sort {|a,b|
-              a.type <=> b.type ||
-              a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
-            <tr class="item">
-              <td class="picture">
-                <div class="cellInner">
-                  <%- if s.member_id -%>
-                    <a href="<%= User.href(s.member_name, s.member_id) %>"><%= image_tag(s.member_image, :size => "24x24", :alt => h(s.member_name)) %></a>
-                  <%- else -%>
-                    <%= image_tag(s.member_image, :size => "24x24", :alt => h(s.member_name)) %>
-                  <%- end -%>
-                </div>
-              </td>
-              <td class="contact"><div class="cellInner"><%= h(s.member_name) %></div></td>
-              <td class="role"><div class="cellInner"><%= s.type %></div></td>
-              <%# Not supported
-              <td class="others"><div>Yes</div></td>
-              <td class="opened"><div>01/09/2009</div></td>
-              %>
-              <td class="actionContainer"><div class="cellInner">
-                  <%- if s.member_id -%>
-                    <a href="<%= User.href(s.member_name, s.member_id) %>" class="action"><span>View Profile</span></a>
-                  <%- end -%>
-              </div></td>
-            </tr>
-            <%- end -%>
-          </tbody>
-        </table>
-      </div>
+      <%= render(:partial => "blists/meta_tab_sharing", :locals => {:view => view}) %>
     </div>
   </div></div>
 </div>

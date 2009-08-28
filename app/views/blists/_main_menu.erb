@@ -1,7 +1,3 @@
-<%# You can only view statistics on a dataset if you're the owner 
-    and are premium or if you are a Socrata admin %>
-<%- can_access_stats = current_user && ((current_user.account_category == "premium_sdp" && is_owner) || current_user.flag?("admin")) -%>
-
 <ul id='mainMenu' class='menu multilevelMenu'>
   <li class='first blist active'>
     <dl><dt><a href='#menublist'><%= t(:blist_name).capitalize %></a></dt>
@@ -45,9 +41,10 @@
         {'separator' => true},
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
         'submenu' => recent_blists_menu(@view, 5)},
-        {'separator' => true, 'owner_item' => true},
+        {'separator' => true, 'owner_item' => true, 'if' => @view.is_blist?},
         {'text' => "Change permissions...",
-        'class' => 'editPermissions', 'owner_item' => true, 'submenu' => { 'items' => [
+        'class' => 'editPermissions', 'owner_item' => true, 'if' => @view.is_blist?,
+        'submenu' => { 'items' => [
           {'text' => 'Publicly viewable', 'class' => "radioOption#{@view.is_public? ? 'Selected' : ''}",
           'href' => "#makePermissionPublic_#{@view.id}"},
           {'text' => 'Viewable only by owner and sharees', 'class' => "radioOption#{@view.is_public? ? '' : 'Selected'}",
@@ -152,8 +149,8 @@
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'section_title' => 'Info Pages'},
         {'text' => "View Statistics", 'class' => 'statistics', 
-        'href' => (can_access_stats) ? "#{@view.href}/stats" : "/stats_popup", 
-        'modal' => (!can_access_stats)},
+        'href' => (current_user && current_user.can_access_premium_on?(@view)) ? "#{@view.href}/stats" : "/stats_popup", 
+        'modal' => (!current_user || !current_user.can_access_premium_on?(@view))},
         {'text' => "View More Info", 'class' => 'about',
         'href' => "#{@view.href}/about"},
         {'separator' => true},

@@ -36,10 +36,8 @@ blist.util.flashInterface.swf = function ()
 
 blist.util.flashInterface.columnPropertiesUpdated = function (columnId)
 {
-    if (flashIntNS.swf() != undefined)
-    {
-        flashIntNS.swf().columnPropertiesChanged(columnId);
-    }
+    flashIntNS.callSwf(function ()
+            { flashIntNS.swf().columnPropertiesChanged(columnId) });
 };
 
 blist.util.flashInterface.swfReady = function ()

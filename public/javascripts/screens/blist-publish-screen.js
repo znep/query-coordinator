@@ -1,5 +1,7 @@
 var publishNS = blist.namespace.fetch('blist.publish');
 
+/*jslint sub: true */
+
 /*  The structure of this hash matches that of the customization hash,
  *  but with a couple of key differences.  Instead of a value at the end,
  *  there is an array.  Each of the items in this array describe how the
@@ -164,7 +166,7 @@ blist.publish.applyLogo = function($elem, value)
 blist.publish.applyTabs = function($elem, subhash)
 {
     // $elem is the container of the tabs
-    var tabs = new Array();
+    var tabs = [];
     for (var key in subhash)
     {
         var value = subhash[key];

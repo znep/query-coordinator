@@ -6,7 +6,9 @@
          */
         valueManager: function(valueManager) {
             if (valueManager === undefined)
+			{
                 return this.data('value-manager');
+			}
             this.data('value-manager', valueManager);
             return this;
         },
@@ -19,9 +21,13 @@
             var name;
             var valueManager = this.data('value-manager');
             if (valueManager && valueManager.name)
+			{
                 name = (typeof valueManager.name == "function" ? valueManager.name() : valueManager.name);
-            if (name == null)
+            }
+			if (name == null)
+			{
                 name = this.attr('name') || this.attr('id');
+			}
             return name || undefined;
         },
 
@@ -39,24 +45,37 @@
                     var valueManager = $this.data('value-manager');
                     if (value === undefined) {
                         if (valueManager && valueManager.get)
+						{
                             returnValue = valueManager.get(value);
+						}
                         else if (this.tagName == 'TEXTAREA') {
                             returnValue = $this.text();
                             if (returnValue === '')
+							{
                                 // Convert empty textarea elements to a "null" value
                                 returnValue = null;
-                        } else if (this.tagName == 'INPUT')
+							}
+                        } 
+						else if (this.tagName == 'INPUT')
+						{
                             if ($this.attr('type') == 'checkbox')
+							{
                                 returnValue = $this.attr('checked') ? true : false;
-                            else {
+                            }
+ 							else {
                                 returnValue = this.value;
-                                if (returnValue === '')
+                                if (returnValue === '') 
+								{
                                     // Convert empty form elements to a "null" value
                                     returnValue = null;
+								}
                             }
+						}
                         if (returnValue !== undefined)
+						{
                             // Found a value
                             return false;
+						}
                     }
                 });
 
@@ -68,14 +87,21 @@
                 var $this = $(this);
                 var valueManager = $this.data('value-manager');
                 if (valueManager && valueManager.set)
+				{
                     valueManager.set(value);
+				}
                 else if (this.tagName == 'TEXTAREA')
+				{
                     $this.text(value == null ? '' : value);
-                else if (this.tagName == 'INPUT') {
+				}
+	            else if (this.tagName == 'INPUT') {
                     if ($this.attr('type') == 'checkbox')
+					{
                         $this.attr('checked', value ? true : false);
-                    else
+                    } else 
+					{
                         this.value = value == null ? '' : value;
+					}
                 }
             });
 
@@ -90,7 +116,9 @@
             if (values === undefined) {
                 values = {};
                 if (get == undefined)
+				{
                     get = true;
+				}
             }
 
             // Apply to each child
@@ -99,8 +127,10 @@
                 var hasValue = false;
                 var $this = $(this);
                 if ($this.data('value-manager'))
+				{
                     // Element manages values explicitly
                     hasValue = true;
+				}
                 else switch (this.tagName) {
                     case 'INPUT':
                     case 'SELECT':
@@ -115,9 +145,12 @@
                     var name = $this.name();
                     if (name) {
                         if (get)
+						{
                             values[name] = $this.value();
-                        else
+                        } else
+						{
                             $this.value(values[name]);
+						}
                     }
                 }
             });
@@ -125,8 +158,9 @@
             // Recurse
             var $children = $(this).children();
             if ($children.length)
+			{
                 $children.values(values, get);
-
+			}
             return values;
         },
 

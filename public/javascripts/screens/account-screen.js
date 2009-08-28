@@ -1,3 +1,18 @@
+var accountNS = blist.namespace.fetch('blist.account');
+
+blist.account.toggleNoOpenId = function()
+{
+    var $table = $('div.openIdTableContainer table')
+    if ($table.find('tbody tr').length <= 1)
+    {
+        $table.find('#no_openid_identifiers').removeClass('hidden');
+    }
+    else
+    {
+        $table.find('#no_openid_identifiers').addClass('hidden');
+    }
+};
+
 $(function ()
 {
     var cachedWindowHeight = 0;
@@ -25,8 +40,12 @@ $(function ()
             .val("")
           .end()
           .slideDown("fast");
-        $(this).closest(".listSection").find(".sectionEdit form").validate().resetForm();
-        $(this).closest(".listSection").find(".sectionEdit form .errorMessage").empty();
+        var $form = $(this).closest(".listSection").find(".sectionEdit form");
+        if ($form.length > 0)
+        {
+            $form.validate().resetForm();
+            $form.find('.errorMessage').empty();
+        }
     });
 
     $(".formListBoxClose a").click(function(event)
@@ -35,6 +54,12 @@ $(function ()
         $(this).closest(".sectionEdit").slideUp("fast");
         $(this).closest(".listSection").find(".sectionShow").slideDown("fast");
     });
+
+    if (window.location.hash)
+    {
+        var $elemToClick = $("a" + window.location.hash);
+        $elemToClick.click();
+    }
 
     // Form validation.
     $.validator.setDefaults({
@@ -98,4 +123,26 @@ $(function ()
         $(e.currentTarget).closest('form').find('.errorMessage').text('');
     });
 
+    // OpenID form.
+    $(".openIdSection td.edit_handle a").live("click", function(event)
+    {
+        event.preventDefault();
+        if (confirm("Are you sure you want to delete this identifier?"))
+        {
+            var $link = $(this);
+            $.ajax({
+                url: $link.attr("href"),
+                type: "DELETE",
+                dataType: "json",
+                data: {'identifier': $(this).closest('tr').find('td.edit_identifier p').text() },
+                contentType: "application/json",
+                success: function(data) {
+                    $("#openid_row_" + data.id).remove();
+                    accountNS.toggleNoOpenId();
+                }
+            });
+        }
+    });
+
+    accountNS.toggleNoOpenId();
 });

@@ -1541,9 +1541,7 @@
         var navigateX = function(deltaX, event, wrap)
         {
             var to = cellNav.navigateX(deltaX, event, wrap);
-            if (to) {
-                cellNavToXY(to, event, false, wrap);
-            }
+            if (to) { cellNavToXY(to, event, false, wrap); }
         };
 
         // Move the active cell an arbitrary number of rows.  Supports an value
@@ -2095,8 +2093,7 @@
                     {
                         lcols.push({
                             type: 'adder',
-                            skippable: true,
-                            skipCount: children.length,
+                            canFocus: false,
                             mcol: mcol,
                             logical: mcol.uid
                         });

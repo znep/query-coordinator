@@ -348,8 +348,7 @@
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
     blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
-    // TODO: Change this when edit grid is finally working.
-    blist.blistGrid.canAddColumns = false; //<%= is_owner && is_blist ? 'true' : 'false' %>;
+    blist.blistGrid.canAddColumns = <%= is_owner && is_blist ? 'true' : 'false' %>;
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
     <%- end -%>

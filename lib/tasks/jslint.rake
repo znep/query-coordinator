@@ -13,6 +13,9 @@ namespace :js do
       "The body of a for in",
       "The Function constructor is eval.",
       "Inner functions should be listed at the top",
+      "Expected a 'break' statement before 'case'",
+      "' was used before it was defined",
+      "' is already defined.",
       "Use '!==' to compare with ",
       "Use '===' to compare with " ]
 

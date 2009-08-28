@@ -96,7 +96,7 @@
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
                 $('#' + $datasetGrid.attr('id') + ' .add-column')
                     .live("click", function (e) { 
-                          $('<a href="/blists/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click() 
+                          $('<a href="/blists/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
                         });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
@@ -806,12 +806,12 @@
                 model.clearColumnFilter(colIdIndex);
                 break;
             case 'hide-column':
-                var selCols = $(datasetObj.currentGrid).blistTableAccessor()
+                var selHideCols = $(datasetObj.currentGrid).blistTableAccessor()
                     .getSelectedColumns();
-                selCols[colIdIndex] = true;
-                var cols = [];
-                $.each(selCols, function(colId, val) { cols.push(colId); });
-                datasetObj.showHideColumns(cols, true);
+                selHideCols[colIdIndex] = true;
+                var hideCols = [];
+                $.each(selHideCols, function(colId, val) { hideCols.push(colId); });
+                datasetObj.showHideColumns(hideCols, true);
                 break;
             case 'delete-column':
                 var view = model.meta().view;

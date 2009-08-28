@@ -205,8 +205,10 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenPercent = function(value, plain, column) {
         if (plain)
+		{
             return "renderNumber(" + value + ", " + column.decimalPlaces + ", null, '%')";
-        var renderText;
+        }
+		var renderText;
         var renderBar;
         switch (column.format || 'percent_bar') {
             case 'percent_bar':
@@ -253,7 +255,9 @@ blist.namespace.fetch('blist.data.types');
 
         if (plain) {
             if (number[1])
+			{
                 label += " (" + number[1].toLowerCase() + ")";
+			}
             return label;
         }
 
@@ -268,14 +272,18 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenCheckbox = function(value, plain, column) {
         if (plain)
-            return value + " ? '&#10003;' : ''"
-        var format = column.format || 'check';
+		{
+            return value + " ? '&#10003;' : ''";
+        }
+		var format = column.format || 'check';
         return "\"<div class='blist-cell blist-checkbox blist-" + format + "-\" + (" + value + " ? 'on' : 'off') + \"' title='\" + (" + value + " ? 'True' : 'False') + \"'></div>\"";
     };
 
     var renderGenFlag = function(value, plain) {
         if (plain)
+		{
             return value + " || ''";
+		}
         return value + " && (\"<div class='blist-flag blist-flag-\" + " + value + " + \"' title='\" + " + value + " + \"'></div>\")";
     };
 
@@ -377,8 +385,9 @@ blist.namespace.fetch('blist.data.types');
             for (var key in column.options) {
                 var option = column.options[key];
                 if (plain)
+				{
                     valueLookup[key.toLowerCase()] = option.text;
-                else {
+                } else {
                     var icon = option.icon;
                     if (icon) {
                         icon = "<img class='blist-table-option-icon' src='" + icon + "'> ";
@@ -417,7 +426,9 @@ blist.namespace.fetch('blist.data.types');
             url = 'http://' + url;
         }
         if (plain)
+		{
             return url || '';
+		}
         if (!captionIsHTML) {
             caption = htmlEscape(caption);
         }
@@ -430,7 +441,9 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenEmail = function(value, plain) {
         if (plain)
+		{
             return value;
+		}
         return "renderURL(" + value + " && ['mailto:' + " + value + ", " + value + "], false, " + plain + ")";
     };
 
@@ -451,13 +464,17 @@ blist.namespace.fetch('blist.data.types');
     var renderTextStars = function(value, range) {
         var rv = '';
         for (var i = 0; i < value; i++)
+		{
             rv += '*';
+		}
         return rv;
-    }
+    };
 
     var renderGenStars = function(value, plain, column) {
         if (plain)
+		{
             return "renderTextStars(" + value + ")";
+		}
         var range = parseFloat(column.range);
         if (range <= 0 || isNaN(range)) {
             range = 5;
@@ -468,8 +485,10 @@ blist.namespace.fetch('blist.data.types');
     var renderGenPhoto = function(value, plain, column) {
         var url = "'" + (column.base || '') + "' + " + value;
         if (plain)
+		{
             // TODO
             return url;
+		}
         return value + " && ('<img src=\"' + escape(" + url + ") + '\"></img>')";
     };
 
@@ -489,7 +508,9 @@ blist.namespace.fetch('blist.data.types');
             url = value;
         }
         if (plain)
+		{
             return name || '';
+		}
         var rv = renderURL([ (base || '') + url, name || 'Document' ]);
         if (size != null) {
             size = Math.round(size / 1024);

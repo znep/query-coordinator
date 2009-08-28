@@ -9,7 +9,7 @@
         // Initialize for rendering
         var values = options.values;
         var renderFn = options.renderFn || function(value)
-            { this.html(value.label || value); }
+            { this.html(value.label || value); };
         var rowRenderFn = options.rowRenderFn || renderFn;
 
         // Get the default value

@@ -32,7 +32,7 @@ $.addColors = function(a, b)
 
     var addComponent = function(a, b)
     {
-        return Math.min(a + b, 255)
+        return Math.min(a + b, 255);
     };
     return $.rgbToHex({
         r: addComponent(rgbA.r, rgbB.r),

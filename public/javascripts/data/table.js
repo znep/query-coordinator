@@ -363,7 +363,7 @@
                 $activeContainer.css('top', -10000);
                 $activeContainer.css('left', -10000);
             }
-        }
+        };
 
         var expandActiveCell = function()
         {
@@ -1563,7 +1563,7 @@
                 $navigator.text(cellNav.getSelectionDoc());
                 $navigator[0].select();
             }
-        }
+        };
 
         var didNavKeyDown = false;
         var navKeyDown = function(event)
@@ -1932,8 +1932,12 @@
         {
             // Add the rule
             var rules = css.cssRules || css.rules;
-            css.insertRule ? css.insertRule(selector + " {}", rules.length)
-                : css.addRule(selector, null, rules.length);
+            if (css.insertRule)
+ 			{
+			    css.insertRule(selector + " {}", rules.length);
+			} else {
+                css.addRule(selector, null, rules.length);
+			}
             rules = css.cssRules || css.rules;
 
             // Find the new rule
@@ -2446,11 +2450,11 @@
 
             $.each(lockedColumns, function (i, c)
             {
-                renderLockedFnSource += 'html.push(\
-                    "<div class=\'' + (c.cls || '') + ' blist-td ' +
+                renderLockedFnSource += 'html.push(' +
+                    '"<div class=\'' + (c.cls || '') + ' blist-td ' +
                         getColumnClass(c) + '\'>", ' +
-                        c.renderer + ', \
-                        "</div>");';
+                        c.renderer + ', ' +
+                       '"</div>");';
             });
             renderLockedFnSource += 'html.push("</div>");';
             renderLockedFnSource += '})';
@@ -2501,7 +2505,9 @@
             insideWidth = 0;
             var mcols = model.meta().columns;
             for (var i = 0; i < mcols.length; i++)
+			{
                 configureLevelWidths(mcols[i], i);
+			}
 
             // Configure grouping header column widths
             groupHeaderStyle.width = Math.max(0,
@@ -2546,7 +2552,9 @@
                     }
                     var children = mcol.body.children;
                     for (var k = 0; k < children.length; k++)
+					{
                         colWidth += children[k].width + paddingX;
+					}
                 }
                 else if (mcol.children)
                 {
@@ -2593,7 +2601,9 @@
 
             // Expand the inside width if the level is wider
             if (hpos > insideWidth)
+			{
                 insideWidth = hpos;
+			}
         };
 
         var configureVariableWidths = function(level, levelWidth)
@@ -2761,7 +2771,7 @@
                     .hover(function ()
                         { if (!hotHeaderDrag || hotHeaderMode != 4)
                             { $(this).addClass('hover'); } },
-                        function () { $(this).removeClass('hover') });
+                        function () { $(this).removeClass('hover'); });
 
                 if (options.columnDrag)
                 {
@@ -2835,7 +2845,7 @@
             if (x < $headers.eq(0).offset().left) { return 0; }
             var $lastHeader = $headers.eq($headers.length - 1);
             if (x > $lastHeader.offset().left + $lastHeader.outerWidth())
-            { return $headers.length }
+            { return $headers.length; }
 
             var dropPos;
             $headers.each(function(i)
@@ -2998,13 +3008,16 @@
                     var row = appendUtilDOM.firstChild;
                     var rowID = row.id.substring(id.length + 2); // + 2 for "-r" suffix prior to row ID
                     if (!renderedRows[rowID])
+					{
                         renderedRows[rowID] = {};
+					}
                     renderedRows[rowID].row = row;
                     if (dirtyRows[rowID]) {
                         insideDOM.replaceChild(row, dirtyRows[rowID].row);
                         delete dirtyRows[rowID];
-                    } else
+                    } else {
                         insideDOM.appendChild(row);
+					}
                 }
             };
 
@@ -3031,12 +3044,16 @@
                     // + 2 for "-l" suffix prior to row ID
                     var rowID = row.id.substring(id.length + 2);
                     if (!renderedRows[rowID])
+					{
                         renderedRows[rowID] = {};
+					}
                     renderedRows[rowID].locked = row;
                     if (dirtyRows[rowID])
+					{
                         $locked[0].replaceChild(row, dirtyRows[rowID].locked);
-                    else
+                    } else {
                         $locked[0].appendChild(row);
+					}
                 }
             };
 
@@ -3052,7 +3069,9 @@
          */
         var renderRows = function() {
             if (!model)
+			{
                 return;
+			}
 
             var top = $scrolls.scrollTop();
 
@@ -3071,12 +3090,16 @@
             var stop = start + count * 1.5;
             var rows = model.rows();
             if (start < 0)
-                start = 0;
+			{
+			   start = 0;
+			}
             if (rows) {
-                if (stop > rows.length)
+                if (stop > rows.length) {
                     stop = rows.length;
-            } else if (stop > 0)
+				}
+            } else if (stop > 0) {
                 stop = 0;
+			}
 
             // Render the rows that are newly visible
             var unusedRows = $.extend({}, renderedRows);
@@ -3100,7 +3123,9 @@
                         // Add a new row
                         rowRenderFn(html, i, row);
                         if (rowLockedRenderFn != null)
+						{
                             rowLockedRenderFn(lockedHtml, i, row);
+						}
                         rowIndices[rowID] = i;
                     }
                 }
@@ -3118,7 +3143,9 @@
                 row.parentNode.removeChild(row);
                 row = unusedRows[unusedID].locked;
                 if (row)
+				{
                     row.parentNode.removeChild(row);
+				}
                 delete renderedRows[unusedID];
             }
 
@@ -3131,7 +3158,9 @@
             // Load rows that aren't currently present
             if (rowsToLoad.length) {
                 if (rowLoadTimer)
+				{
                     clearTimeout(rowLoadTimer);
+				}
                 rowLoadTimer = setTimeout(loadMissingRows, MISSING_ROW_LOAD_DELAY);
                 rowLoadRows = rowsToLoad;
             }
@@ -3160,13 +3189,17 @@
 
         var loadMissingRows = function() {
             if (!rowLoadTimer)
+			{
                 return;
+			}
             rowLoadTimer = null;
             if (!rowLoadRows)
+			{
                 return;
+			}
             model.loadRows(rowLoadRows);
             rowLoadRows = null;
-        }
+        };
 
         /**
          * Initialize the row container for the current row set.
@@ -3259,7 +3292,7 @@
         };
 
         $this.data('blistTableObj', new blistTableObj());
-    }
+    };
 
     var blistTableDefaults = {
         cellExpandEnabled: true,
@@ -3291,7 +3324,9 @@
             // Create the table
             return this.each(function() {
                 if (!$(this).is('.blist-table'))
+				{
                     makeTable.apply(this, [ $.extend({}, blistTableDefaults, options) ]);
+				}
             });
         },
 

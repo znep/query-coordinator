@@ -43,15 +43,6 @@
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     };
 
-    // Determine whether we should be in tracing mode
-    var trace = window.console && window.console.time && window.console.timeEnd;
-
-    // Note entry into a block
-    var begin = trace ? function(what) { console.time(what); } : function() {}
-
-    // Note exit from a block
-    var end = trace ? function(what) { console.timeEnd(what); } : function() {}
-
     // Make a DOM element into a table
     var makeTable = function(options)
     {
@@ -1049,7 +1040,6 @@
 
             var $headers = $('.blist-th:not(.blist-table-ghost), .blist-tdh',
                     container);
-                    
             $headers.each(function(i)
                 {
                     var header = $(this);
@@ -1091,7 +1081,7 @@
                         return false;
                     }
                 });
-                
+
             if (hh)
             {
                 if (hh != hotHeader || hhm != hotHeaderMode)
@@ -1136,9 +1126,9 @@
 
         var unHotRow = function(rowID)
         {
-            $/*inside.find*/('#' + id + '-r' + rowID)
+            inside.find('#' + id + '-r' + rowID)
                 .removeClass('blist-hot-row');
-            $/*$locked.find*/('#' + id + '-l' + rowID)
+            $locked.find('#' + id + '-l' + rowID)
                 .removeClass('blist-hot-row');
         };
 
@@ -1293,9 +1283,9 @@
                 }
                 if (newHotID)
                 {
-                    $/*inside.find*/('#' + id + '-r' + newHotID)
+                    inside.find('#' + id + '-r' + newHotID)
                         .addClass('blist-hot-row');
-                    $/*$locked.find*/('#' + id + '-l' + newHotID)
+                    $locked.find('#' + id + '-l' + newHotID)
                         .addClass('blist-hot-row');
                 }
                 hotRowID = newHotID;
@@ -2224,7 +2214,6 @@
          */
         var initMeta = function(newModel)
         {
-            begin("initMeta");
             model = newModel;
 
             // Convert the model columns to table columns
@@ -2485,7 +2474,6 @@
                     }
                 });
             }
-            end("initMeta");
 
             configureWidths();
         };
@@ -2495,8 +2483,6 @@
          */
         var configureWidths = function()
         {
-            begin("configureWidths");
-
             // Compute the actual width for all columns with static widths
             insideWidth = 0;
             var mcols = model.meta().columns;
@@ -2520,8 +2506,6 @@
 
             $lockedScrolls.width(lockedWidth);
             $locked.width(lockedWidth);
-            
-            end("configureWidths");
         };
 
         var configureLevelWidths = function(mcols, level)
@@ -2645,8 +2629,6 @@
          */
         var renderHeader = function()
         {
-            begin("renderHeader-assemble");
-
             var html = [];
             for (var i = 0; i < columns.length; i++)
             {
@@ -2705,17 +2687,8 @@
                     (options.showAddColumns ? '<div class="blist-column-adder add-column"></div>' : '') + 
                     '</div>');
             }
-            html = html.join('');
-            end("renderHeader-assemble");
-            begin("renderHeader-render");
+            $header.html(html.join(''));
 
-            // JQuery version sucks wind, my profiler is horked so not sure why, but direct version appears to work
-            $header[0].innerHTML = html;
-            //$header.html(html);
-
-            end("renderHeader-render");
-
-            begin("renderHeader-augment");
             $(".blist-th", $header).each(function(index)
             {
                 if (index >= columns.length)
@@ -2821,8 +2794,6 @@
             // Render sort & filter headers
             configureSortHeader();
             configureFilterHeaders();
-            
-            end("renderHeader-augment");
         };
 
         var curDropPos = null;
@@ -2876,8 +2847,6 @@
 
         var updateHeader = function (model)
         {
-            begin("updateHeader");
-
             sortBy = -1;
             // Set up data for existing sort
             if (model.meta().sort)
@@ -2895,8 +2864,6 @@
             }
             configureSortHeader();
             configureFilterHeaders();
-
-            end("updateHeader");
         };
 
         /**
@@ -3152,8 +3119,8 @@
             $locked.find('.blist-select-row').removeClass('blist-select-row');
             $.each(model.selectedRows, function (k, v)
             {
-                $/*inside.find*/('#' + id + '-r' + k).addClass('blist-select-row');
-                $/*$locked.find*/('#' + id + '-l' + k).addClass('blist-select-row');
+                inside.find('#' + id + '-r' + k).addClass('blist-select-row');
+                $locked.find('#' + id + '-l' + k).addClass('blist-select-row');
             });
             updateCellNavCues();
         };

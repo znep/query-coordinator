@@ -219,25 +219,11 @@ blist.blistGrid.columnsChangedHandler = function (event, columnIds)
 
 blist.blistGrid.mainMenuLoaded = function (data)
 {
-    // Note -- commented lines are full jQuerified equivalents and are sloooow
-
-    //var $data = $(data);
-    var $menus = $(data).children();
-
+    var $data = $(data);
     // Swap out the main menu with whatever was loaded
-    //$('#mainMenu').replaceWith($data.filter("#mainMenuComponent"));
-    var $menu = $("#mainMenu");
-    var $container = $menu.parent();
-    $container[0].removeChild($menu[0]);
-    $container[0].appendChild($menus[0]);
-
+    $('#mainMenu').replaceWith($data.filter("#mainMenuComponent"));
     // Swap out the filter & view menu with whatever was loaded
-    //$('#filterViewMenu').replaceWith($data.filter("#filterViewMenuComponent"));
-    $menu = $("#filterViewMenu");
-    $container = $menu.parent();
-    $container[0].removeChild($menu[0]);
-    $container[0].appendChild($menus[1]);
-
+    $('#filterViewMenu').replaceWith($data.filter("#filterViewMenuComponent"));
     blistGridNS.hookUpMainMenu();
     blistGridNS.hookUpFilterViewMenu();
 };

@@ -436,107 +436,90 @@
     /* Callback when rendering the grid headers.  Set up column on-object menus */
     var headerMods = function(datasetObj, col)
     {
-        // Create an object containing flags describing what should be present in the menu
-        var features = {};
+        var displayMenu = false;
+        var $col = $(col.dom);
+        var htmlStr =
+            '<a class="menuLink action-item" href="#column-menu_' +
+            col.index + '"></a>' +
+            '<ul class="menu columnHeaderMenu action-item" id="column-menu_' +
+            col.index + '">';
+
+        // We support sort & filter, so if neither is available, don't show a menu
         if (blist.data.types[col.type].sortable)
         {
-            features.sort = true;
+            htmlStr +=
+                '<li class="sortAsc singleItem">' +
+                '<a href="#column-sort-asc_' + col.index + '">' +
+                '<span class="highlight">Sort Ascending</span>' +
+                '</a>' +
+                '</li>' +
+                '<li class="sortDesc singleItem">' +
+                '<a href="#column-sort-desc_' + col.index + '">' +
+                '<span class="highlight">Sort Descending</span>' +
+                '</a>' +
+                '</li>';
+            displayMenu = true;
         }
+
         if (blist.data.types[col.type].filterable)
         {
-            features.filter = true;
+            displayMenu = true;
         }
-        var view = datasetObj.settings._model.meta().view;
-        if (view && view.rights
-            && $.inArray('remove_column', view.rights) >= 0)
+
+        if (displayMenu)
         {
-            features.remove = true;
+            // There are already display items in the list, so we need to add
+            // a separator.
+            htmlStr += '<li class="separator singleItem" />';
         }
+        htmlStr += '<li class="hide" >' +
+            '<a href="#hide-column_' + col.id + '">' +
+            '<span class="highlight">Hide Column</span>' +
+            '</a></li>';
+        displayMenu = true;
+
+        var view = datasetObj.settings._model.meta().view;
+        if(view && view.rights &&
+            $.inArray('remove_column', view.rights) >= 0)
+        {
+            htmlStr += '<li class="delete" >' +
+                '<a href="#delete-column_' + col.id + '">' +
+                '<span class="highlight">Delete Column</span>' +
+                '</a></li>';
+            displayMenu = true;
+        }
+
         if (datasetObj.settings.columnPropertiesEnabled)
         {
-            features.properties = true;
-        }
-
-        // If we did not enable features, do not install the menu
-        var haveFeatures = false;
-        for (var x in features) {
-            haveFeatures = true;
-            break;
-        }
-        if (!haveFeatures)
-            return;
-
-        // Install the menu indicator DOM elements
-        var $col = $(col.dom);
-        $col.append('<a class="menuLink action-item" href="#column-menu_' +
-            col.index + '"></a>')
-
-        // Install an event handler that actually builds the menu on first mouse over
-        $col.one('mouseover', function() {
-            var htmlStr =
-                '<ul class="menu columnHeaderMenu action-item" id="column-menu_' +
-                col.index + '">';
-
-            // Render sorting
-            if (features.sort)
-            {
-                htmlStr +=
-                    '<li class="sortAsc singleItem">' +
-                    '<a href="#column-sort-asc_' + col.index + '">' +
-                    '<span class="highlight">Sort Ascending</span>' +
-                    '</a>' +
-                    '</li>' +
-                    '<li class="sortDesc singleItem">' +
-                    '<a href="#column-sort-desc_' + col.index + '">' +
-                    '<span class="highlight">Sort Descending</span>' +
-                    '</a>' +
-                    '</li>';
-            }
-
-            if (features.sort || features.filter)
+            if (displayMenu)
             {
                 // There are already display items in the list, so we need to add
                 // a separator.
                 htmlStr += '<li class="separator singleItem" />';
             }
-            htmlStr += '<li class="hide" >' +
-                '<a href="#hide-column_' + col.id + '">' +
-                '<span class="highlight">Hide Column</span>' +
-                '</a></li>';
+            htmlStr += '<li class="properties singleItem">' +
+                '<a href="/blists/' + view.id + '/columns/' + col.id +
+                '.json" rel="modal">' +
+                '<span class="highlight">Edit Column Properties</span>' +
+                '</a>' +
+                '</li>';
+            displayMenu = true;
+        }
 
-            if(features.remove)
-            {
-                htmlStr += '<li class="delete" >' +
-                    '<a href="#delete-column_' + col.id + '">' +
-                    '<span class="highlight">Delete Column</span>' +
-                    '</a></li>';
-            }
+        htmlStr +=
+            '<li class="footer"><div class="outerWrapper">' +
+            '<div class="innerWrapper"><span class="colorWrapper">' +
+            '</span></div>' +
+            '</div></li>' +
+            '</ul>';
 
-            if (features.properties)
-            {
-                // There are already display items in the list, so we need to add
-                // a separator.
-                htmlStr += '<li class="separator singleItem" />';
-                htmlStr += '<li class="properties singleItem">' +
-                    '<a href="/blists/' + view.id + '/columns/' + col.id +
-                    '.json" rel="modal">' +
-                    '<span class="highlight">Edit Column Properties</span>' +
-                    '</a>' +
-                    '</li>';
-            }
-
-            htmlStr +=
-                '<li class="footer"><div class="outerWrapper">' +
-                '<div class="innerWrapper"><span class="colorWrapper">' +
-                '</span></div>' +
-                '</div></li>' +
-                '</ul>';
-
+        if (displayMenu)
+        {
             $col.append(htmlStr);
             var $menu = $col.find('ul.columnHeaderMenu');
             hookUpHeaderMenu(datasetObj, $col, $menu);
             addFilterMenu(datasetObj, col, $menu);
-        });
+        }
     };
 
     /* Hook up JS behavior for menu.  This is safe to be applied multiple times */
@@ -721,7 +704,7 @@
                         $.htmlStrip(f.value + '');
                     f.renderedValue = curType.filterRender != null ?
                         curType.filterRender(f.value, col) : '';
-                    f.titleValue = $.htmlStrip(f.renderedValue + '');
+                    f.titleValue = $.htmlStrip(f.renderedValue);
                 });
 
             colSum.topFrequencies.sort(searchMethod);

@@ -471,8 +471,7 @@ div.blist-table-edit-container input.textInput
     background-repeat: repeat-x;
 }
 
-div.blist-table-edit-container.shown input[type="text"],
-div.blist-table-edit-container.shown input.textInput
+div.blist-table-edit-container.shown input[type="text"]
 {
     /* For some reason, interacting normally with this text field in FF
      * wasn't working properly until I pulled it just above the container
@@ -482,6 +481,37 @@ div.blist-table-edit-container.shown input.textInput
     width: 100%;
     z-index: 21;
 }
+
+div.blist-table-edit-container.shown .labels
+{
+    color: #999999;
+    font-size: 0.9167em; /* 1.1em */
+    height: 1.2727em; /* 14px */
+}
+
+div.blist-table-edit-container.shown .labels span
+{
+    padding-left: 0.5em;
+    position: absolute;
+}
+
+div.blist-table-edit-container.shown .blist-td.type-url input[type="text"]
+{
+    border-top: solid 1px #cccccc;
+    height: auto;
+    top: 1.25em; /* 15px */
+    width: 50%;
+}
+div.blist-table-edit-container.shown .blist-td.type-url input[type="text"].description
+{
+    border-left: solid 1px #cccccc;
+    color: #333333;
+    font-style: normal;
+    padding-left: 0.3em;
+}
+
+div.blist-table-edit-container.shown .blist-td.type-url .description
+{ left: 50%; }
 
 div.blist-percent,
 div.blist-percent .blist-percent-bar-pos

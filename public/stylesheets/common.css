@@ -76,7 +76,7 @@ input[type="text"]
     padding: 0.2em;     /* 2.4px */
 }
 
-form .textPrompt.prompt
+.textPrompt.prompt
 {
     color: #666666;
     font-style: italic;

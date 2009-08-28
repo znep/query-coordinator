@@ -84,3 +84,36 @@ String.prototype.visualLength = function(fontSize)
     $ruler.text(this + '');
     return $ruler.width();
 };
+
+/* Do a deep compare on two objects (if they are objects), or just compare
+   directly if they are normal values.  For this case, null == undefined, but
+   not 0, empty string or false.  Also, when comparing objects, both objects
+   must have all the same keys, even if they are null.  If one object has a key
+   with a null value and the other does not have the key, the objects are not
+   equal. */
+$.compareValues = function(obj1, obj2)
+{
+    // If directly equal, great
+    if (obj1 === obj2) { return true; }
+    // If obj1 is null/undef, then a quick check determines obj2
+    if (obj1 === null || obj1 === undefined)
+    {
+        if (obj2 === null || obj2 === undefined) { return true; }
+        return false;
+    }
+    // If obj1 exists, but obj2 doesn't, not equals
+    if (obj2 === null || obj2 === undefined) { return false; }
+
+    // If either is not an object, they aren't equal
+    if (!(obj1 instanceof Object) || !(obj2 instanceof Object)) { return false; }
+
+    // Now we have two real objects to check
+    var compareKey = function(o1, o2, k)
+    {
+        if (!o1.hasOwnProperty(k) || !o2.hasOwnProperty(k)) { return false; }
+        return $.compareValues(o1[k], o2[k]);
+    };
+    for (var v1 in obj1) { if (!compareKey(obj1, obj2, v1)) { return false; } }
+    for (var v2 in obj2) { if (!compareKey(obj2, obj1, v2)) { return false; } }
+    return true;
+};

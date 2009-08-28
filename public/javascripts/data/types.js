@@ -350,18 +350,15 @@ blist.namespace.fetch('blist.data.types');
         if (!value) {
             return '';
         }
-        else if (typeof value == "string") {
-            // Terrible legacy format
-            if (value.charAt(0) == '<') {
-                return value;
-            }
-            var url = value;
-            var caption = value;
-        }
-        else if (typeof value == "object")
+        else if (value instanceof Array)
         {
             url = value[0];
             caption = value[1] || url;
+        }
+        else if (value instanceof Object)
+        {
+            url = value.url;
+            caption = value.description || url;
         }
         if (url && url != '' && !url.match(/^([a-z]+):/i) &&
                 url.indexOf('/') != 0)
@@ -729,6 +726,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.percent.editor = $.blistEditor.percent;
         blist.data.types.money.editor = $.blistEditor.money;
         blist.data.types.email.editor = $.blistEditor.email;
+        blist.data.types.url.editor = $.blistEditor.url;
         blist.data.types.flag.editor = $.blistEditor.flag;
         blist.data.types.picklist.editor = $.blistEditor.picklist;
     }

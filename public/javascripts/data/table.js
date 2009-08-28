@@ -647,7 +647,8 @@
             var value = editor.currentValue();
             var row = editor.row;
             var col = editor.column;
-            if (isSave && (origValue != value || model.isCellError(row, col)))
+            if (isSave && (!$.compareValues(origValue, value) ||
+                model.isCellError(row, col)))
             {
                 model.saveRowValue(value, row, col, editor.isValid());
             }
@@ -1572,6 +1573,7 @@
         {
             if (!cellNav) { return; }
 
+            event.preventDefault();
             switch (event.keyCode)
             {
                 case 34:

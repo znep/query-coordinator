@@ -198,23 +198,51 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        var setRowMetadata = function(newRows, metaCols)
+        var setRowMetadata = function(newRows, metaCols, dataMungeCols)
         {
-            if (!metaCols) { return; }
-
             $.each(newRows, function(i, r)
             {
-                $.each(metaCols, function(j, c)
+                if (metaCols)
                 {
-                    if (c.name == 'meta')
+                    $.each(metaCols, function(j, c)
                     {
-                        var md = r[c.index];
-                        if (md !== null && md !== undefined)
-                        { r[c.name] = $.json.deserialize(md); }
-                    }
-                    else if (r[c.index] !== undefined)
-                    { r[c.name] = r[c.index]; }
-                });
+                        if (c.name == 'meta')
+                        {
+                            var md = r[c.index];
+                            if (md !== null && md !== undefined)
+                            { r[c.name] = $.json.deserialize(md); }
+                        }
+                        else if (r[c.index] !== undefined)
+                        { r[c.name] = r[c.index]; }
+                    });
+                }
+                if (dataMungeCols)
+                {
+                    $.each(dataMungeCols, function(j, c)
+                    {
+                        if (c.type == 'nullifyArrays' &&
+                            r[c.index] && r[c.index] instanceof Array)
+                        {
+                            var isEmpty = true;
+                            $.each(r[c.index], function(k, v)
+                                {
+                                    if (v !== null && v !== undefined)
+                                    { isEmpty = false; return false; }
+                                });
+                            if (isEmpty) { r[c.index] = null; }
+                        }
+                        if (c.type == 'arrayToObject' &&
+                            r[c.index] && r[c.index] instanceof Array)
+                        {
+                            var o = {};
+                            $.each(r[c.index], function(k, v)
+                                {
+                                    o[c.types[k]] = v;
+                                });
+                            r[c.index] = o;
+                        }
+                    });
+                }
             });
         };
 
@@ -409,7 +437,7 @@ blist.namespace.fetch('blist.data');
         {
             // Install the rows
             var supplement = response.data;
-            setRowMetadata(supplement, meta.metaColumns);
+            setRowMetadata(supplement, meta.metaColumns, meta.dataMungeColumns);
             for (var i = 0; i < supplement.length; i++)
             {
                 var row = supplement[i];
@@ -476,7 +504,7 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        var translateMetaColumns = function(viewCols, metaCols)
+        var translateMetaColumns = function(viewCols, metaCols, dataMungeCols)
         {
             if (!viewCols)
                 return;
@@ -492,6 +520,13 @@ blist.namespace.fetch('blist.data');
                     else if (v.name == 'id') { adjName = 'uuid'; }
                     metaCols.push({name: adjName, index: i});
                 }
+                if (v.dataType && (v.dataType.type == 'url' ||
+                    v.dataType.type == 'phone' ||
+                    v.dataType.type == 'document'))
+                { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
+                if (v.dataType && (v.dataType.type == 'url'))
+                { dataMungeCols.push({index: i, type: 'arrayToObject',
+                    types: v.subColumnTypes}); }
             }
         };
 
@@ -535,7 +570,8 @@ blist.namespace.fetch('blist.data');
                     type: vcol.dataType && vcol.dataType.type ? vcol.dataType.type : "text",
                     id: vcol.id,
                     tableColumnId: vcol.tableColumnId,
-                    aggregate: meta.aggregateHash[vcol.id]
+                    aggregate: meta.aggregateHash[vcol.id],
+                    subTypes: vcol.subColumnTypes
                 };
 
                 col.dataIndex = vcol.dataIndex;
@@ -567,7 +603,9 @@ blist.namespace.fetch('blist.data');
                             header: col
                         };
                         col.metaChildren = [];
-                        translateMetaColumns(vcol.childColumns, col.metaChildren);
+                        col.dataMungeChildren = [];
+                        translateMetaColumns(vcol.childColumns, col.metaChildren,
+                            col.dataMungeChildren);
                         translateViewColumns(view, vcol.childColumns, columns, nestDepth + 1, col.body);
 
                         // Add the body column to the next nesting level
@@ -633,13 +671,14 @@ blist.namespace.fetch('blist.data');
                 {
                     meta.columns = [[]];
                     meta.metaColumns = [];
+                    meta.dataMungeColumns = [];
                     if (meta.view)
                     {
                         this.updateAggregateHash(meta.aggregates);
                         if (meta.view.columns)
                         {
                             translateMetaColumns(meta.view.columns,
-                                meta.metaColumns);
+                                meta.metaColumns, meta.dataMungeColumns);
                             translateViewColumns(meta.view, meta.view.columns,
                                 meta.columns, 0);
                         }
@@ -755,7 +794,7 @@ blist.namespace.fetch('blist.data');
             {
                 expanded = {};
                 active = rows = newRows;
-                setRowMetadata(newRows, meta.metaColumns);
+                setRowMetadata(newRows, meta.metaColumns, meta.dataMungeColumns);
                 installIDs();
 
                 // Apply sorting if so configured
@@ -793,7 +832,7 @@ blist.namespace.fetch('blist.data');
             }
             $.each(addedRows, function(i, r)
                 { if (r instanceof Object) { rowsLoaded++; } });
-            setRowMetadata(addedRows, meta.metaColumns);
+            setRowMetadata(addedRows, meta.metaColumns, meta.dataMungeColumns);
             installIDs();
             configureActive();
             $(listeners).trigger('row_add', [ addedRows ]);
@@ -1703,7 +1742,8 @@ blist.namespace.fetch('blist.data');
                         childRow[col.dataIndex] = [];
                         childRow[col.dataIndex].type = 'blank';
                     }
-                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren);
+                    setRowMetadata([childRow[col.dataIndex]], col.metaChildren,
+                        col.dataMungeChildren);
                 }
             }
 
@@ -1878,7 +1918,7 @@ blist.namespace.fetch('blist.data');
             // active is now the new set of rows from the server, and not
             //  linked-to or based-on rows
             active = config.rows || config.data;
-            setRowMetadata(active, meta.metaColumns);
+            setRowMetadata(active, meta.metaColumns, meta.dataMungeColumns);
             for (var i = 0; i < active.length; i++)
             {
                 // If it is not an object, just an id, try to look it up from rows

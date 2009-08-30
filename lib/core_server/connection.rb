@@ -2,8 +2,9 @@ module CoreServer
   class Connection
     cattr_accessor :cache
 
-    def initialize(logger = nil)
+    def initialize(logger = nil, cookies = nil)
       @logger = logger
+      @cookies = cookies
       @runtime = 0
       @request_count = 0
     end
@@ -72,6 +73,15 @@ module CoreServer
       if requestor && requestor.session_token
         request['Cookie'] = "_blist_session_id=#{requestor.session_token.to_s}"
       end
+
+      # pass in the server session cookie
+      if !@cookies.nil?
+        server_session_cookie = @cookies[:socrata_session]
+        if !server_session_cookie.nil?
+          request.add_field 'Cookie', "socrata_session=#{server_session_cookie}"
+        end
+      end
+
       custom_headers.each { |key, value| request[key] = value }
 
       if (!json.blank?)

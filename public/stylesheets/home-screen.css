@@ -31,6 +31,12 @@
 {
     width: 115px;
 }
+
+#home .content .actionButtons li a.browse
+{
+    width: 160px;
+}
+
 #home .content .actionButtons li a.arrowButton
 {
     width: 100px;

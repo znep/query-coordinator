@@ -312,10 +312,8 @@
         }
 
         var $trigger = $menu.data("triggerButton");
-        if (config.pullToTop)
-        {
-            $menu.css(config._origPosition).insertAfter($trigger);
-        }
+        if (config.pullToTop && $trigger[0].parentNode)
+        { $menu.css(config._origPosition).insertAfter($trigger); }
 
         $menu.removeClass(config.menuOpenClass);
         // Close any submenus

@@ -447,8 +447,8 @@
             features.filter = true;
         }
         var view = datasetObj.settings._model.meta().view;
-        if (view && view.rights
-            && $.inArray('remove_column', view.rights) >= 0)
+        if (view && view.rights &&
+            $.inArray('remove_column', view.rights) >= 0)
         {
             features.remove = true;
         }
@@ -464,12 +464,14 @@
             break;
         }
         if (!haveFeatures)
+        {
             return;
+        }
 
         // Install the menu indicator DOM elements
         var $col = $(col.dom);
         $col.append('<a class="menuLink action-item" href="#column-menu_' +
-            col.index + '"></a>')
+            col.index + '"></a>');
 
         // Install an event handler that actually builds the menu on first mouse over
         $col.one('mouseover', function() {

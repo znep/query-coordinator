@@ -47,10 +47,10 @@
     var trace = window.console && window.console.time && window.console.timeEnd;
 
     // Note entry into a block
-    var begin = trace ? function(what) { console.time(what); } : function() {}
+    var begin = trace ? function(what) { console.time(what); } : function() {};
 
     // Note exit from a block
-    var end = trace ? function(what) { console.timeEnd(what); } : function() {}
+    var end = trace ? function(what) { console.timeEnd(what); } : function() {};
 
     // Make a DOM element into a table
     var makeTable = function(options)

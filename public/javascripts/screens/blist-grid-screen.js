@@ -137,8 +137,7 @@ blist.blistGrid.flashPopupShownHandler = function (popup)
         if (popup != 'MultipleFileUpload')
         {
             $('#swfWrapper').css('top', ($('#header').outerHeight() + 10) + 'px');
-            $('#swfWrapper').css('bottom',
-                    ($(document).height() - $(window).height()) + 'px');
+            $('#swfWrapper').css('bottom', 0);
         }
         $('#overlay').show();
     }

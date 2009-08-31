@@ -21,9 +21,9 @@ $(function ()
     // Signup form validation.
     $("#signup #signupForm").validate({
         rules: {
-            "firstName": "required",
-            "lastName": "required",
-            "email": {
+            "account[firstName]": "required",
+            "account[lastName]": "required",
+            "account[email]": {
                 required: true,
                 email: true
             },
@@ -31,20 +31,27 @@ $(function ()
                 required: true,
                 equalTo: "#account_email"
             },
-            "login": {
+            "account[login]": {
                 required: true,
                 loginRegex: true,
                 login4x4: true,
-                remote: "/users?method=loginAvailable"
+                remote: {
+                    url: "/users?method=loginAvailable",
+                    data: {
+                        login: function() { 
+                            return $("#account_login").val();
+                        }
+                    }
+                }
             },
-            "password": "required",
+            "account[password]": "required",
             "passwordConfirm": {
                 required: true,
                 equalTo: "#account_password"
             }
         },
         messages: {
-            "login": {
+            "account[login]": {
                 remote: $.format("'{0}' is already taken.")
             }
         }

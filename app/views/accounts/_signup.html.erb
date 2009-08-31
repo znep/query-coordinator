@@ -12,10 +12,71 @@
       <p>Before we get started, we need to know a little about you.</p>
     </div>
 
-    <% form_tag(account_path, :id => "signupForm", :multipart => true) do %>
+    <% form_for :account, @account, :url => account_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
       <div class="fieldContent clearfix">
-        <%= render(:partial => "accounts/new_account_form") %>
+        <%= display_standard_flashes %>
+        <fieldset>
+          <%= hidden_field_tag("inviteToken", @token) %>
+          <p>
+            <%= f.label :firstName, '*First Name' %>
+            <%= f.text_field :firstName %>
+          </p>
+          <p>
+            <%= f.label :lastName, '*Last Name' %>
+            <%= f.text_field :lastName %>
+          </p>
+          <p>
+            <%= f.label :email, '*Email Address' %>
+            <%= f.text_field :email %>
+          </p>
+          <p>
+            <%= label_tag :emailConfirm, '*Confirm Email' %>
+            <%= text_field_tag :emailConfirm %>
+          </p>
+          <p>
+            <%= f.label :login, '*Username' %>
+            <%= f.text_field :login, :maxlength => 40 %>
+          </p>
+          <p>
+            <%= f.label :password, '*Password' %>
+            <%= f.password_field :password %>
+          </p>
+          <p>
+            <%= label_tag :passwordConfirm, '*Confirm Password' %>
+            <%= password_field_tag :passwordConfirm %>
+          </p>
+        </fieldset>
+
+        <fieldset class="last">
+          <div class="fileInputContainer clearfix">
+            <%= label_tag :profile_image, 'Profile Picture' %>
+            <div class="fileInput">
+              <%= file_field_tag("profile_image", :class => "text") %>
+              <div class="fakeFile clearfix">
+                <input type="text" name="displayProfileImage" />
+                <%= image_tag("/stylesheets/images/account/button_browse.png", :size => "72x24", :alt => "Browse") %>
+              </div>
+            </div>
+          </div>
+          <p>
+            <%= f.label :company %>
+            <%= f.text_field :company %>
+          </p>
+          <p>
+            <%= f.label :title %>
+            <%= f.text_field :title %>
+          </p>
+          <p class="fieldInfo">
+          Share and collaborate with your friends and colleagues. Enter their email addresses and we'll send them an invite on your behalf.
+          </p>
+          <p>
+            <%= label_tag :inviteOthers, 'Invite Others' %>
+            <%= text_area_tag("inviteOthers", "", :class => "textPrompt", :title => "Enter email addresses separated by commas") %>
+          </p>
+        </fieldset>
+
       </div>
+
       <div class="submitLine clearfix">
         <%= image_submit_tag("/stylesheets/images/account/button_sign_up_now.png") %>
         <div class="buttonLinkLarge">

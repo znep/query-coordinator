@@ -41,6 +41,7 @@ class AccountsController < ApplicationController
   end
 
   def new
+    @account = User.new
     @body_class = 'signup'
     @token = params[:token] || ""
   end
@@ -48,7 +49,7 @@ class AccountsController < ApplicationController
   def create
     # First, try creating the user
     begin
-      user = User.create(account, params[:inviteToken])
+      user = User.create(params[:account], params[:inviteToken])
     rescue CoreServer::CoreServerError => e
       error = e.error_message
       respond_to do |format|
@@ -61,7 +62,7 @@ class AccountsController < ApplicationController
     end
 
     # Now, authenticate the user
-    @user_session = UserSession.new('login' => account[:login], 'password' => account[:password])
+    @user_session = UserSession.new('login' => params[:account][:login], 'password' => params[:account][:password])
     if @user_session.save
       # If they gave us a profile photo, upload that to the user's account
       # If the core server gives us an error, oh well... we've alredy created
@@ -165,18 +166,5 @@ class AccountsController < ApplicationController
     flash[:openid_error] = e.error_message
   ensure
     redirect_to account_url(:anchor => params[:section])
-  end
-
-private
-
-  def account
-    unless @account
-      @account = {}
-      [:firstName, :lastName, :email, :login, :password, :company, :title].each do |field|
-        @account[field] = params[field]
-      end
-    end
-
-    return @account
   end
 end

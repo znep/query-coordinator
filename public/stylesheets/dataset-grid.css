@@ -453,6 +453,8 @@ div.blist-table-edit-container
     overflow: hidden;
 }
 
+.blist-table-edit-container.combo-container { overflow: visible; }
+.blist-table-edit-container.combo-container .blist-combo-dd { font-size: 0.8333em; }
 div.blist-table-editor
 {
     border: none;
@@ -507,11 +509,26 @@ div.blist-table-edit-container.shown .blist-td.type-url input[type="text"].descr
     border-left: solid 1px #cccccc;
     color: #333333;
     font-style: normal;
+    left: 50%;
     padding-left: 0.3em;
 }
 
-div.blist-table-edit-container.shown .blist-td.type-url .description
-{ left: 50%; }
+.blist-table-editor.type-phone
+{
+    overflow: visible;
+    padding-right: 0;
+}
+.blist-table .blist-table-edit-container input[type="text"].number
+{
+    float: left;
+    height: auto;
+    width: 50%;
+}
+.blist-table .blist-table-edit-container .blist-td.type-phone .blist-combo-wrapper
+{
+    float: right;
+    width: 50%;
+}
 
 div.blist-percent,
 div.blist-percent .blist-percent-bar-pos

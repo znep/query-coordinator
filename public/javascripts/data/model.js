@@ -239,7 +239,7 @@ blist.namespace.fetch('blist.data');
                             var o = {};
                             $.each(r[c.index], function(k, v)
                                 {
-                                    o[c.types[k]] = v;
+                                    o[c.types[k]] = v === '' ? null : v;
                                 });
                             r[c.index] = o;
                         }
@@ -525,10 +525,7 @@ blist.namespace.fetch('blist.data');
 
         var translateMetaColumns = function(viewCols, metaCols, dataMungeCols)
         {
-            if (!viewCols)
-			{
-                return;
-			}
+            if (!viewCols) { return; }
 
             for (var i = 0; i < viewCols.length; i++)
             {
@@ -545,7 +542,8 @@ blist.namespace.fetch('blist.data');
                     v.dataType.type == 'phone' ||
                     v.dataType.type == 'document'))
                 { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
-                if (v.dataType && (v.dataType.type == 'url'))
+                if (v.dataType && (v.dataType.type == 'url' ||
+                    v.dataType.type == 'phone'))
                 { dataMungeCols.push({index: i, type: 'arrayToObject',
                     types: v.subColumnTypes}); }
             }
@@ -1220,6 +1218,7 @@ blist.namespace.fetch('blist.data');
                     rows[i] = rows[i].id;
                 }
             }
+            rowsLoaded = 0;
         };
 
         this.updateColumn = function(column, parentId)
@@ -1800,9 +1799,7 @@ blist.namespace.fetch('blist.data');
             }
 
             if (childRows.length)
-			{
-                childRows[childRows.length - 1].groupLast = true;
-			}
+            { childRows[childRows.length - 1].groupLast = true; }
             return childRows;
         };
 

@@ -132,7 +132,6 @@ $(function(){
               $("#readGrid").blistModel().updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
-            blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
             $.Tache.DeleteAll();
             $(".jqmClose").click();
         }

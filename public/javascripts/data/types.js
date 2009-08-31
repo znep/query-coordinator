@@ -203,12 +203,13 @@ blist.namespace.fetch('blist.data.types');
         return "<div class='blist-cell " + cls + "' style='width: " + value + "%'></div>";
     };
 
-    var renderGenPercent = function(value, plain, column) {
+    var renderGenPercent = function(value, plain, column)
+    {
         if (plain)
-		{
+        {
             return "renderNumber(" + value + ", " + column.decimalPlaces + ", null, '%')";
         }
-		var renderText;
+        var renderText;
         var renderBar;
         switch (column.format || 'percent_bar') {
             case 'percent_bar':
@@ -240,30 +241,46 @@ blist.namespace.fetch('blist.data.types');
         return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) + ", '$')";
     };
 
-    var renderPhone = function(number, plain) {
-        if (!number || !number[0]) {
-            return '';
+    var renderPhone = function(value, plain)
+    {
+        if (!value) { return ''; }
+
+        var num;
+        var type;
+        if (value instanceof Array)
+        {
+            num = value[0] || '';
+            type = value[1];
+        }
+        else if (value instanceof Object)
+        {
+            num = value.phone_number || '';
+            type = value.phone_type;
         }
 
-        var label = number[0] + "";
-        if (label.match(/^\d{10}$/)) {
-            label = "(" + label.substring(0, 3) + ") " + label.substring(3, 6) + "-" + label.substring(6, 10);
+        var label = num + "";
+        if (label.match(/^\d{10}$/))
+        {
+            label = "(" + label.substring(0, 3) + ") " +
+                label.substring(3, 6) + "-" + label.substring(6, 10);
         }
-        else if (label.match(/^\d{7}$/)) {
+        else if (label.match(/^\d{7}$/))
+        {
             label = label.substring(0, 3) + "-" + label.substring(3, 7);
         }
 
-        if (plain) {
-            if (number[1])
-			{
-                label += " (" + number[1].toLowerCase() + ")";
-			}
+        if (plain)
+        {
+            if (type) { label += " (" + type.toLowerCase() + ")"; }
             return label;
         }
 
-        label = "<div class='blist-phone-icon blist-phone-icon-" + (number[1] ? number[1].toLowerCase() : "unknown") + "'></div> " + htmlEscape(label);
+        label = "<div class='blist-phone-icon blist-phone-icon-" +
+            (type ? type.toLowerCase() : "unknown") + "'></div>&nbsp;" +
+            htmlEscape(label);
 
-        return renderURL([ "callto://" + number[0].replace(/[\-()\s]/g, ''), label ], true);
+        return renderURL([ "callto://" + num.replace(/[\-()\s]/g, ''), label ],
+            true);
     };
 
     var renderGenPhone = function(value, plain) {
@@ -271,19 +288,13 @@ blist.namespace.fetch('blist.data.types');
     };
 
     var renderGenCheckbox = function(value, plain, column) {
-        if (plain)
-		{
-            return value + " ? '&#10003;' : ''";
-        }
-		var format = column.format || 'check';
+        if (plain) { return value + " ? '&#10003;' : ''"; }
+        var format = column.format || 'check';
         return "\"<div class='blist-cell blist-checkbox blist-" + format + "-\" + (" + value + " ? 'on' : 'off') + \"' title='\" + (" + value + " ? 'True' : 'False') + \"'></div>\"";
     };
 
     var renderGenFlag = function(value, plain) {
-        if (plain)
-		{
-            return value + " || ''";
-		}
+        if (plain) { return value + " || ''"; }
         return value + " && (\"<div class='blist-flag blist-flag-\" + " + value + " + \"' title='\" + " + value + " + \"'></div>\")";
     };
 
@@ -748,6 +759,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.money.editor = $.blistEditor.money;
         blist.data.types.email.editor = $.blistEditor.email;
         blist.data.types.url.editor = $.blistEditor.url;
+        blist.data.types.phone.editor = $.blistEditor.phone;
         blist.data.types.flag.editor = $.blistEditor.flag;
         blist.data.types.picklist.editor = $.blistEditor.picklist;
     }

@@ -372,25 +372,25 @@ img.blist-table-option-icon
     margin: -2px 2px;
 }
 
-.blist-phone-icon-cell {
-    background-image: url(/stylesheets/images/content/table/phones/cell.png);
-}
+.blist-phone-icon-cell,
+.blist-table-edit-container .Cell .icon
+{ background-image: url(/stylesheets/images/content/table/phones/cell.png); }
 
-.blist-phone-icon-fax {
-    background-image: url(/stylesheets/images/content/table/phones/fax.png);
-}
+.blist-phone-icon-fax,
+.blist-table-edit-container .Fax .icon
+{ background-image: url(/stylesheets/images/content/table/phones/fax.png); }
 
-.blist-phone-icon-home {
-    background-image: url(/stylesheets/images/content/table/phones/home.png);
-}
+.blist-phone-icon-home,
+.blist-table-edit-container .Home .icon
+{ background-image: url(/stylesheets/images/content/table/phones/home.png); }
 
-.blist-phone-icon-other {
-    background-image: url(/stylesheets/images/content/table/phones/other.png);
-}
+.blist-phone-icon-other,
+.blist-table-edit-container .Other .icon
+{ background-image: url(/stylesheets/images/content/table/phones/other.png); }
 
-.blist-phone-icon-work {
-    background-image: url(/stylesheets/images/content/table/phones/work.png);
-}
+.blist-phone-icon-work,
+.blist-table-edit-container .Work .icon
+{ background-image: url(/stylesheets/images/content/table/phones/work.png); }
 
 .blist-tag
 {

@@ -223,7 +223,9 @@ $(function()
     return false;
   });
 
-  $("#save").click(function() {
+  $("#save").click(function(e)
+  {
+      e.preventDefault();
       if (!formEnabled) { return false; }
       toggleEnabled();
 
@@ -240,7 +242,6 @@ $(function()
             $("#error").html($.json.deserialize(request.responseText).error).show() 
         },
         success: function(responseData) { 
-            blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
             $grid = $("#readGrid");
             if ($grid.length != 0)
             {

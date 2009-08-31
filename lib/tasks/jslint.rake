@@ -40,8 +40,10 @@ namespace :js do
       puts line
       error_count += 1
     end
-
-    puts "JSLint error count: #{error_count}"
-    exit 1 if error_count > 0
+    if error_count > 0
+       puts "JSLint error count: #{error_count}" 
+       exit 1
+    end
+    puts "Passed JSLint Validation"
   end
 end

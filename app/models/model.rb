@@ -6,6 +6,12 @@ class Model
   attr_accessor :data
   attr_accessor :update_data
 
+
+  def initialize
+    @data = {}
+    @update_data = {}
+  end
+
   # Override super.id and return the id of the model
   def id
     data['id']
@@ -64,9 +70,6 @@ class Model
       end
       if assign_key == 'flags'
         raise TypeError.new("Flags can only be set through set_flag and unset_flag")
-      end
-      if data[assign_key].nil?
-        raise TypeError.new("#{assign_key} is not a valid property")
       end
       if self.class.non_serializable_attributes.include?(assign_key)
         raise "Cannot set non-serializeable attribute"

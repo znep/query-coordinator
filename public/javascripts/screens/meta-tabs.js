@@ -26,7 +26,7 @@ blist.meta.updateMetaTabHeader = function(tabKey, viewId, onHeaderSuccess)
             success: function(data)
             {
                 $(metaNS.metaTabHeaderMap[tabKey]).html(data);
-                if (onHeaderSuccess) onHeaderSuccess();
+                if (onHeaderSuccess) { onHeaderSuccess(); }
             }
         });
     }
@@ -47,7 +47,7 @@ blist.meta.updateMetaTab = function(tabKey, viewId, onTabSuccess)
             success: function(data)
             {
                 $(metaNS.metaTabMap[tabKey]).html(data);
-                if (onTabSuccess) onTabSuccess();
+                if (onTabSuccess) { onTabSuccess(); }
             }
         });
     }

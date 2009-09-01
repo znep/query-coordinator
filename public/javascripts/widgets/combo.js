@@ -285,8 +285,8 @@
             this.selectedValueObject = function()
             {
                 return getSelectedValueObject(value);
-            }
-        }
+            };
+        };
         $this.data('comboValueObj', new comboValueObj());
     };
 

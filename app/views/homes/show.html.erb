@@ -25,7 +25,8 @@
                     :class => "import",
                     :title => "Upload a CSV, TSV, XLS, XLSX, or XML file and we'll convert it into a #{t(:blist_name)}.") %>
               </li>
-              <li><%= link_to("Browse #{t(:blists_name).titleize}", root_path, :title => "See what #{t(:blist_name).pluralize} others have created") %></li>
+              <li><%= link_to("Browse Community #{t(:blists_name).titleize}", root_path, :title => "See what #{t(:blist_name).pluralize} others have created",
+                    :class => "browse") %></li>
               <li class="last"><%= link_to("Invite Others", invite_path, :title => "Invite others to try Socrata", :rel => "modal") %></li>
             </ul>
             

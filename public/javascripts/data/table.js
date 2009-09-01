@@ -44,7 +44,8 @@
     };
 
     // Determine whether we should be in tracing mode
-    var trace = window.console && window.console.time && window.console.timeEnd;
+    var trace = false; // Set this to enable/disable
+    trace = trace && window.console && window.console.time && window.console.timeEnd;
 
     // Note entry into a block
     var begin = trace ? function(what) { console.time(what); } : function() {};
@@ -85,6 +86,7 @@
         var sortDescending;
         var sort = function(index)
         {
+            begin("sort.configure");
             if (sortBy == index)
             {
                 sortDescending = !sortDescending;
@@ -95,7 +97,10 @@
                 sortDescending = false;
             }
             configureSortHeader();
+            end("sort.configure");
+            begin("sort.sort");
             model.sort(index, sortDescending);
+            end("sort.sort");
         };
 
         var configureSortHeader = function()
@@ -1887,6 +1892,7 @@
         // Window sizing
         var updateLayout = function()
         {
+            begin("updateLayout.size");
             $headerScrolls.height($header.outerHeight());
 
             // Size the scrolling area.  TODO - change to absolute positioning
@@ -1907,10 +1913,14 @@
             }
             inside.height(insideHeight);
             $locked.height(insideHeight);
+            end("updateLayout.size");
 
+            begin("updateLayout.render");
             renderRows();
             configureWidths();
+            end("updateLayout.render");
 
+            begin("updateLayout.footer");
             // Move footer up to bottom, or just above the scrollbar
             var lockedBottom = parseFloat($scrolls.css('border-bottom-width')) + 1;
             var footerBottom = parseFloat($scrolls.css('border-bottom-width')) +
@@ -1933,6 +1943,7 @@
                 marginR += scrollbarWidth;
             }
             $footerScrolls.css('margin-right', marginR);
+            end("updateLayout.footer");
         };
 
         if (options.manualResize)
@@ -1955,14 +1966,24 @@
                 $header[0].style.left = -scrollHoriz + 'px';
                 $footer[0].style.left = -scrollHoriz + 'px';
                 headerScrolledTo = scrollHoriz;
+                var horizontalChange;
             }
 
-            var scrollVert = $scrolls[0].scrollTop;
-            if (scrollVert != rowsScrolledTo)
-            {
-                $locked.css('top', $header.outerHeight() - scrollVert);
-                rowsScrolledTo = scrollVert;
+            var doVertScroll = function() {
+                var scrollVert = $scrolls[0].scrollTop;
+                if (scrollVert != rowsScrolledTo)
+                {
+                    $locked.css('top', $header.outerHeight() - scrollVert);
+                    rowsScrolledTo = scrollVert;
+                }
             }
+
+            // If we scrolled horizontally, delay the check for vertical scrolling.  Why?  Because if it hasn't changed
+            // then $scrolls[0].scrollTop is very expensive
+            if (horizontalChange)
+                setTimeout(doVertScroll, 50);
+            else
+                doVertScroll();
         };
 
 
@@ -2553,12 +2574,14 @@
             begin("configureWidths");
 
             // Compute the actual width for all columns with static widths
+            begin("configureWidths.levels");
             insideWidth = 0;
             var mcols = model.meta().columns;
             for (var i = 0; i < mcols.length; i++)
-			{
+            {
                 configureLevelWidths(mcols[i], i);
-			}
+            }
+            end("configureWidths.levels");
 
             // Configure grouping header column widths
             groupHeaderStyle.width = Math.max(0,
@@ -2603,9 +2626,9 @@
                     }
                     var children = mcol.body.children;
                     for (var k = 0; k < children.length; k++)
-					{
+                    {
                         colWidth += children[k].width + paddingX;
-					}
+                    }
                 }
                 else if (mcol.children)
                 {
@@ -2642,7 +2665,12 @@
                 {
                     hpos += colWidth;
                     var style = getColumnStyle(mcol);
-                    style.width = (colWidth - paddingX) + 'px';
+
+                    var widthStyle = (colWidth - paddingX) + 'px';
+
+                    // This test is incredibly important for perf. on Safari
+                    if (style.width != widthStyle)
+                        style.width = widthStyle;
                 }
             }
 
@@ -3059,22 +3087,26 @@
                     var row = appendUtilDOM.firstChild;
                     var rowID = row.id.substring(id.length + 2); // + 2 for "-r" suffix prior to row ID
                     if (!renderedRows[rowID])
-					{
+                    {
                         renderedRows[rowID] = {};
-					}
+                    }
                     renderedRows[rowID].row = row;
                     if (dirtyRows[rowID]) {
                         insideDOM.replaceChild(row, dirtyRows[rowID].row);
                         delete dirtyRows[rowID];
                     } else {
                         insideDOM.appendChild(row);
-					}
+                    }
                 }
             };
 
             // Call the append functions
+            begin("appendRows.render");
             appendRows_render();
+            end("appendRows.render");
+            begin("appendRows.append");
             appendRows_append();
+            end("appendRows.append");
         };
 
         // TODO: This should probably be consolidated with appendRows...
@@ -3120,10 +3152,11 @@
          */
         var renderRows = function() {
             if (!model)
-			{
+            {
                 return;
-			}
+            }
 
+            begin("renderRows.setup");
             var top = $scrolls.scrollTop();
 
             // Compute the first row to render
@@ -3151,8 +3184,10 @@
             } else if (stop > 0) {
                 stop = 0;
 			}
+            end("renderRows.setup");
 
             // Render the rows that are newly visible
+            begin("renderRows.render");
             var unusedRows = $.extend({}, renderedRows);
             var html = [];
             var lockedHtml = [];
@@ -3186,7 +3221,9 @@
                     rowsToLoad.push(row);
                 }
             }
+            end("renderRows.render");
 
+            begin("renderRows.destroy");
             // Destroy the rows that are no longer visible
             for (var unusedID in unusedRows)
             {
@@ -3199,13 +3236,19 @@
 				}
                 delete renderedRows[unusedID];
             }
+            end("renderRows.destroy")
 
             // Now add new/moved rows
             // appendLockedRows must be called first; it should probably
             //  be consolidated with appendRows
+            begin("renderRows.appendLocked");
             appendLockedRows(lockedHtml.join(''));
+            end("renderRows.appendLocked");
+            begin("renderRows.append");
             appendRows(html.join(''));
+            end("renderRows.append");
 
+            begin("renderRows.finalize");
             // Load rows that aren't currently present
             if (rowsToLoad.length) {
                 if (rowLoadTimer)
@@ -3224,6 +3267,7 @@
             }
             // Row selection
             updateRowSelection();
+            end("renderRows.finalize");
         };
 
         var updateRowSelection = function()
@@ -3257,18 +3301,24 @@
          */
         var initRows = function(model)
         {
+            //inside.css("display", "hidden");
+            begin("initRows.handle");
             if (handleDigits != calculateHandleDigits(model)) {
                 // The handle changed.  Reinitialize columns.
                 initMeta(model);
                 renderHeader();
                 renderFooter();
             }
+            end("initRows.handle");
 
+            begin("initRows.layout");
             $locked.empty();
             inside.empty();
             renderedRows = {};
 
             updateLayout();
+            end("initRows.layout");
+            //inside.css("display", "block");
         };
 
         /**
@@ -3310,7 +3360,9 @@
             $outside.addClass('blist-loading');
         });
         $this.bind('load', function(event, model) {
+            begin("load");
             initRows(model);
+            end("load");
         });
         $this.bind('after_load', function() {
             $outside.removeClass('blist-loading');
@@ -3319,7 +3371,9 @@
             updateRows(rows);
         });
         $this.bind('selection_change', function(event, rows) {
+            begin("selectionChange");
             updateRowSelection(rows);
+            end("selectionChange");
         });
         $this.bind('row_add', updateLayout);
         $this.bind('row_remove', updateLayout);

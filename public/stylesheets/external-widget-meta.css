@@ -14,6 +14,25 @@
     z-index: 30;
 }
 
+#widgetMeta .superHeader
+{
+    display: none;
+    padding: .3em .5em;
+}
+#widgetMeta .superHeader p
+{
+    font-size: .9em;
+    margin: 0;
+    text-align: right;
+}
+#widgetMeta .superHeader a
+{
+    background: url(/stylesheets/images/common/arrow_down.png) left center no-repeat;
+    color: #666;
+    padding-left: 11px;
+    text-transform: uppercase;
+}
+
 #widgetMeta .header
 {
     height: 21px;

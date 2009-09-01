@@ -20,8 +20,9 @@
 </div>
 
 <div class="gridListContainer">
-  <table class="gridList" cellspacing="0">
+  <table class="gridList" cellspacing="0" id="shares_<%= view.id %>">
     <colgroup>
+      <col class='handle' />
       <col class='picture' />
       <col class='contact' />
       <col class='role' />
@@ -29,6 +30,7 @@
     </colgroup>
     <thead>
       <tr>
+        <th class="handle"><div></div></th>
         <th class="picture" title="Friend"><div></div></th>
         <th class="contact" title="Friend">
           <div>Friend</div>
@@ -46,6 +48,16 @@
         a.type <=> b.type ||
         a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
       <tr class="item">
+        <td class="handle">
+          <div class="cellInner">
+            <%- userParam = s.is_user ? "userId" : "email" -%>
+            <a href="<%= view.href %>/delete_share?type=<%= s.type %>&<%= userParam %>=<%=s.member_id %>"
+              class="shareDelete"
+              title="Delete this share.">
+              Delete
+            </a>
+          </div>
+        </td>
         <td class="picture">
           <div class="cellInner">
             <%- if s.member_id -%>

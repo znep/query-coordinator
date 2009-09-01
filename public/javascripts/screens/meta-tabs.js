@@ -21,7 +21,8 @@ blist.meta.updateMetaTabHeader = function(tabKey, viewId, onHeaderSuccess)
 {
     if (metaNS.metaTabHeaderMap[tabKey] != undefined)
     {
-        $.Tache.Get({ url: '/dataset/' + viewId + '/meta_tab_header?tab=' + tabKey,
+        $.ajax({ url: '/dataset/' + viewId + '/meta_tab_header?tab=' + tabKey,
+            cache: false,
             success: function(data)
             {
                 $(metaNS.metaTabHeaderMap[tabKey]).html(data);
@@ -41,7 +42,8 @@ blist.meta.updateMetaTab = function(tabKey, viewId, onTabSuccess)
 {
     if (metaNS.metaTabMap[tabKey] != undefined)
     {
-        $.Tache.Get({ url: '/dataset/' + viewId + '/meta_tab?tab=' + tabKey,
+        $.ajax({ url: '/dataset/' + viewId + '/meta_tab?tab=' + tabKey,
+            cache: false,
             success: function(data)
             {
                 $(metaNS.metaTabMap[tabKey]).html(data);

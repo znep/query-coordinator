@@ -141,6 +141,11 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
       :category => /(\w|-)+/}
 
+  map.connect ':category/:view_name/:id/delete_share', :controller => 'blists',
+    :action => 'delete_share', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
   # Support /blists, /datasets, and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },

@@ -361,7 +361,7 @@ class BlistsController < SwfController
   end
   
   def create_share
-    message = params[:message]
+    message = params[:message] || ""
     recipientArray = params[:recipients]
     
     errors = Array.new
@@ -371,9 +371,14 @@ class BlistsController < SwfController
         recipient = JSON.parse(r)
       
         grant = Hash.new
-        grant[:userEmail] = recipient["email"] || ""
-        grant[:userId] = recipient["userId"] || ""
+        unless recipient["email"].blank?
+          grant[:userEmail] = recipient["email"]
+        end
+        unless recipient["userId"].blank?
+          grant[:userId] = recipient["userId"]
+        end
         grant[:type] = recipient["type"]
+        grant[:message] = message
         
         begin
           Grant.create(params[:id], grant)
@@ -386,6 +391,29 @@ class BlistsController < SwfController
     render :json => {
       :status => errors.length > 0 ? "failure" : "success",
       :errors => errors
+    }
+  end
+  
+  def delete_share
+    errors = Array.new
+    
+    grant = Hash.new
+    if params[:email]
+      grant[:userEmail] = params[:email]
+    end
+    if params[:userId]
+      grant[:userId] = params[:userId]
+    end
+    grant[:type] = params[:type].downcase
+    
+    begin
+      Grant.delete(params[:id], grant)
+    rescue CoreServer::CoreServerError => e
+      errors << { :grant => grant.to_json }
+    end
+    
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success"
     }
   end
 

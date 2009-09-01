@@ -499,6 +499,23 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 				$('.singleInfoPublishing .publishWarning').addClass('hide');
 			}
         });
+        
+    // Share deleting
+    $(".shareDelete").live("click", function(event)
+    {
+        event.preventDefault();
+
+        var $link = $(this);
+        var viewId = $link.closest("table").attr("id").split("_")[1];
+        $.getJSON($link.attr("href"),
+            function(data) {
+                blist.meta.updateMeta("sharing", viewId,
+                    function() { $("#throbber").hide(); },
+                    function() { $("#infoPane .gridList").blistListHoverItems(); }
+                );
+            }
+        );
+    });
 
     $(".favoriteAction a").click(function(event) {
         event.preventDefault();

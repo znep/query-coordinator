@@ -1109,6 +1109,17 @@ infoContentOuter table.gridList td.picture .cellInner
     width: 8.5em;
 }
 
+.singleInfoSharing td.handle .shareDelete
+{
+    background: url(/stylesheets/images/profile/profile_links_delete.png) 5px 5px no-repeat;
+    display: block;
+    height: 10px;
+    overflow: hidden;
+    padding: 5px;
+    text-indent: -9999px;
+    width: 10px;
+}
+
 /*** END: single info sharing tab ***/
 
 /*** START: single info publishing tab ***/

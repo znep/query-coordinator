@@ -85,6 +85,11 @@ String.prototype.visualLength = function(fontSize)
     return $ruler.width();
 };
 
+String.prototype.capitalize = function()
+{
+    return this.charAt(0).toUpperCase() + this.substring(1);
+};
+
 /* Do a deep compare on two objects (if they are objects), or just compare
    directly if they are normal values.  For this case, null == undefined, but
    not 0, empty string or false.  Also, when comparing objects, both objects

@@ -563,7 +563,7 @@ $(function ()
     });
 
     $("#throbber").hide();
-    $('a#notifyAll').click(function(event)
+    $('a#notifyAll').live("click", function(event)
     {
         event.preventDefault();
         $("#throbber").show();
@@ -704,7 +704,7 @@ $(function ()
 
     $("#infoPane .singleInfoPublishing").infoPanePublish();
     
-    $('.switchPermsLink').click(function (event)
+    $('.switchPermsLink').live("click", function (event)
     {
         event.preventDefault();
         var $link = $(this);
@@ -744,6 +744,23 @@ $(function ()
         {
             $('.singleInfoPublishing .publishWarning').addClass('hide');
         }
+    });
+    
+    // Share deleting
+    $(".shareDelete").live("click", function(event)
+    {
+        event.preventDefault();
+        
+        var $link = $(this);
+        var viewId = $link.closest("table").attr("id").split("_")[1];
+        $.getJSON($link.attr("href"),
+            function(data) {
+                blist.meta.updateMeta("sharing", viewId,
+                    function() { $("#throbber").hide(); },
+                    function() { $("#infoPane .gridList").blistListHoverItems(); }
+                );
+            }
+        );
     });
     
     var commentMatches = window.location.search.match(/comment=(\w+)/);

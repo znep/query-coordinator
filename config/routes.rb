@@ -130,6 +130,21 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'flag', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
       :category => /(\w|-)+/}
+  
+  map.connect ':category/:view_name/:id/share', :controller => 'blists',
+    :action => 'share', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+      :category => /(\w|-)+/}
+      
+  map.connect ':category/:view_name/:id/create_share', :controller => 'blists',
+    :action => 'create_share', :conditions => { :method => :post },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
+  map.connect ':category/:view_name/:id/delete_share', :controller => 'blists',
+    :action => 'delete_share', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+      :category => /(\w|-)+/}
 
   # Support /blists, /datasets, and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',
@@ -140,8 +155,8 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
 
-  map.connect 'dataset/:id/meta_tab_header', :controller => 'blist', :action => 'meta_tab_header'
-  map.connect 'dataset/:id/meta_tab', :controller => 'blist', :action => 'meta_tab'
+  map.connect 'dataset/:id/meta_tab_header', :controller => 'blists', :action => 'meta_tab_header'
+  map.connect 'dataset/:id/meta_tab', :controller => 'blists', :action => 'meta_tab'
 
   map.connect 'widgets/:id/:variation/:options', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id/:variation/:options.data', :controller => 'widgets', :action => 'show', :format => 'data'

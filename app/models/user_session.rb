@@ -223,7 +223,7 @@ private
 
   def post_rpx_authentication(token)
     uri = auth_uri.clone
-    uri.query = "method=findByRpxToken"
+    uri.query = "method=findOrCreateByRpxToken"
     post = Net::HTTP::Post.new(uri.request_uri)
     post.form_data = {'token' => token}
 

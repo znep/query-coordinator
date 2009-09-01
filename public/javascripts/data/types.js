@@ -677,7 +677,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterCheckbox,
             filterValue: valueFilterCheckbox,
             sortable: true,
-            filterable: true
+            filterable: true,
+            isInlineEdit: true
         },
 
         flag: {
@@ -762,6 +763,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.phone.editor = $.blistEditor.phone;
         blist.data.types.flag.editor = $.blistEditor.flag;
         blist.data.types.picklist.editor = $.blistEditor.picklist;
+        blist.data.types.checkbox.editor = $.blistEditor.checkbox;
     }
 
     for (var name in blist.data.types) {

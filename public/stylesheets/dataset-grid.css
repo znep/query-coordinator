@@ -350,6 +350,21 @@ div.blist-tr.blist-hot-row div.blist-column-adder:hover .blist-column-adder-icon
     border-left: solid 1px #e2e2e2;
 }
 
+div.blist-table-expander,
+div.blist-table-edit-container.mode-expand
+{
+    background-color: #ffffff;
+    border-top: none;
+    border-bottom: solid 1px #e2e2e2;
+    border-left: solid 1px #e2e2e2;
+    border-right: solid 1px #e2e2e2;
+}
+
+div.blist-table-expander .blist-td
+{
+    padding-right: 0.25em; /* 3px */
+}
+
 .blist-td.invalid,
 .invalid .blist-td input
 {
@@ -400,7 +415,8 @@ div.blist-tdh
 .blist-table .blist-td.saving { background-color: #ffffcc; }
 .blist-table .blist-td.error { background-color: #ffb6c1; }
 
-div.blist-table-active-container
+div.blist-table-active-container,
+div.blist-table-edit-container.mode-select
 {
     background-color: #ffffff;
     border: solid 2px #91abcc;
@@ -509,9 +525,11 @@ div.blist-table-edit-container.shown .blist-td.type-url input[type="text"].descr
     border-left: solid 1px #cccccc;
     color: #333333;
     font-style: normal;
-    left: 50%;
     padding-left: 0.3em;
 }
+
+div.blist-table-edit-container.shown .blist-td.type-url .description
+{ left: 50%; }
 
 .blist-table-editor.type-phone
 {

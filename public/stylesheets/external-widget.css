@@ -237,12 +237,6 @@
     font-weight: bold;
 }
 
-div.blist-table-expander
-{
-    border-left: solid 1px #cacaca;
-    border-top: solid 1px #cacaca;
-}
-
 div.blist-td p
 {
     margin: 0 0 6px 0;

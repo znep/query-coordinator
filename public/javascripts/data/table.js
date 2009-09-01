@@ -363,14 +363,27 @@
                 $activeContainer.css('top', -10000);
                 $activeContainer.css('left', -10000);
             }
+            endEdit(true, selectEditMode);
         };
 
         var expandActiveCell = function()
         {
-            if (isEdit || !cellNav.isActive())
+            if (isEdit[defaultEditMode] || !cellNav.isActive())
             {
                 hideActiveCell();
                 return;
+            }
+
+            if ($activeCells && $activeCells.length > 0)
+            {
+                var column = getColumn($activeCells[0]);
+                var type = column ? blist.data.types[column.type] : null;
+                // If this is an inline edit type in edit mode, then just
+                // launch the editor instead of select
+                if (type && type.isInlineEdit)
+                {
+                    if (editCell($activeCells[0], selectEditMode)) { return; }
+                }
             }
 
             // Obtain an expanding node in utility (off-screen) mode
@@ -599,57 +612,75 @@
 
 
         /*** CELL EDITING ***/
-        var $editContainer;
-        var isEdit = false;
+        var $editContainers = {};
+        var isEdit = {};
         var prevEdit = false;
+        var defaultEditMode = 'edit';
+        var expandEditMode = 'expand';
+        var selectEditMode = 'select';
 
-        var editCell = function(cell)
+        var canEdit = function()
+        { return options.editEnabled && model.canWrite(); };
+
+        var editCell = function(cell, mode)
         {
+            if (!mode) { mode = defaultEditMode; }
             // Don't start another edit yet; and make sure they can edit
-            if (isEdit || !model.canWrite()) { return; }
+            if (isEdit[mode] || !canEdit()) { return false; }
 
             var row = getRow(cell);
             var col = getColumn(cell);
-            if (!col || !row) { return; }
+            if (!col || !row) { return false; }
             var value = model.getRowValue(row, col);
             if (!value) { value = model.getInvalidValue(row, col); }
 
             // Obtain an expanding node in utility (off-screen) mode
-            $editContainer = $('<div class="blist-table-edit-container ' +
-                    'blist-table-util"></div>');
-            var blistEditor = $editContainer.blistEditor(
+            var $curEditContainer = $('<div class="blist-table-edit-container ' +
+                    'mode-' + mode + ' blist-table-util"></div>');
+            var blistEditor = $curEditContainer.blistEditor(
                 {row: row, column: col, value: value});
             if (!blistEditor) { return; }
 
-            $editContainer.bind('edit_end', handleEditEnd);
-            inside.append($editContainer);
+            $curEditContainer.bind('edit_end', function(e, isSave, oe)
+                { handleEditEnd(e, isSave, oe, mode); });
+            if (mode == selectEditMode)
+            { $curEditContainer.keydown(navKeyDown).keypress(navKeyPress); }
+            inside.append($curEditContainer);
 
             var $editor = blistEditor.$editor();
 
             blistEditor.adjustSize();
             $editor.width('auto').height('auto');
-            $editContainer.width('auto').height('auto');
+            $curEditContainer.width('auto').height('auto');
 
-            isEdit = true;
+            isEdit[mode] = true;
+            $editContainers[mode] = $curEditContainer;
 
-            hideActiveCell();
+            if (mode == defaultEditMode) { hideActiveCell(); }
 
-            sizeCellOverlay($editContainer, $editor, $(cell));
-            positionCellOverlay($editContainer, $(cell));
-            $editContainer.removeClass('blist-table-util').addClass('shown');
+            sizeCellOverlay($curEditContainer, $editor, $(cell));
+            positionCellOverlay($curEditContainer, $(cell));
+            $curEditContainer.removeClass('blist-table-util').addClass('shown');
 
-            blistEditor.focus();
+            if (mode != expandEditMode) { blistEditor.focus(); }
+
+            return true;
         };
 
-        var endEdit = function(isSave)
+        var endEdit = function(isSave, mode)
         {
-            prevEdit = isSave;
-            isEdit = false;
-            $navigator[0].focus();
+            if (!mode) { mode = defaultEditMode; }
+            if (mode == defaultEditMode)
+            {
+                prevEdit = isSave;
+                $navigator[0].focus();
+            }
+            delete isEdit[mode];
 
-            if (!$editContainer) { return; }
+            var $curEditContainer = $editContainers[mode];
+            if (!$curEditContainer) { return; }
 
-            var editor = $editContainer.blistEditor();
+            var editor = $curEditContainer.blistEditor();
             editor.finishEdit();
 
             var origValue = editor.originalValue;
@@ -659,16 +690,20 @@
             if (isSave && (!$.compareValues(origValue, value) ||
                 model.isCellError(row, col)))
             {
-                model.saveRowValue(value, row, col, editor.isValid());
+                // Wait for the end of the event cycle to process this to
+                // cut down on flickering due to an interrupted render of rows
+                setTimeout(function()
+                    { model.saveRowValue(value, row, col, editor.isValid()) }, 0);
             }
 
-            $editContainer.remove();
-            $editContainer = null;
+            $curEditContainer.remove();
+            delete $editContainers[mode];
         };
 
-        var handleEditEnd = function(event, isSave)
+        var handleEditEnd = function(event, isSave, origEvent, mode)
         {
-            endEdit(isSave);
+            endEdit(isSave, mode);
+            if (origEvent.type == 'keydown') { navKeyDown(origEvent); }
         };
 
         /*** CELL HOVER EXPANSION ***/
@@ -693,6 +728,7 @@
                 clearTimeout(hotCellTimer);
                 hotCellTimer = null;
             }
+            endEdit(true, expandEditMode);
             hideHotExpander();
         };
 
@@ -718,11 +754,17 @@
         {
             if (options.noExpand) { return; }
 
-            if (!hotCellTimer)
-            {
-                return;
-            }
+            if (!hotCellTimer) { return; }
             hotCellTimer = null;
+
+            var column = getColumn(hotCell);
+            var type = column ? blist.data.types[column.type] : null;
+            // If this is an inline edit type in edit mode, then just launch the
+            //  editor instead of hover
+            if (type && type.isInlineEdit)
+            {
+                if (editCell(hotCell, expandEditMode)) { return; }
+            }
 
             // Obtain an expanding node in utility (off-screen) mode
             if (!hotExpander)
@@ -855,9 +897,10 @@
             });
 
             // The expander must be at least as large as the hot cell
-            if (rc.width < refWidth)
+            if (rc.width < refWidth + 1)
             {
-                rc.width = refWidth;
+                // Add an exta pixel since the borders on cells are uneven
+                rc.width = refWidth + 1;
             }
             if (rc.height < refHeight)
             {
@@ -1014,9 +1057,10 @@
                 (($activeContainer &&
                     ($cell[0] == $activeContainer[0] ||
                     $cell.parent()[0] == $activeContainer[0])) ||
-                ($editContainer &&
-                    ($cell[0] == $editContainer[0] ||
-                    $cell.parent()[0] == $editContainer[0]))))
+                $cell.closest('.blist-table-edit-container.mode-' +
+                    defaultEditMode).length > 0 ||
+                $cell.closest('.blist-table-edit-container.mode-' +
+                    selectEditMode).length > 0))
             { return $activeCells[0]; }
 
             // Nested table header send focus to the opener
@@ -1028,7 +1072,9 @@
             }
 
             // If the mouse strays over the hot expander return the hot cell
-            if (cell == hotExpander || cell.parentNode == hotExpander)
+            if (cell == hotExpander || cell.parentNode == hotExpander ||
+                $cell.closest('.blist-table-edit-container.mode-' + expandEditMode)
+                    .length > 0)
             { return hotCell; }
 
             // Normal cell
@@ -1398,8 +1444,9 @@
             if ($clickTarget.is('.blist-table-scrolls, .blist-table-expander'))
             { return; }
 
-            if (isEdit &&
-                $clickTarget.parents().andSelf().index($editContainer) >= 0)
+            if (isEdit[defaultEditMode] &&
+                $clickTarget.parents().andSelf()
+                    .index($editContainers[defaultEditMode]) >= 0)
             { return; }
 
 
@@ -1445,7 +1492,11 @@
                 }
                 if (cell && cellNavTo(cell, event))
                 {
-                    if (isEdit) { endEdit(true); prevEdit = false; }
+                    if (isEdit[defaultEditMode])
+                    {
+                        endEdit(true);
+                        prevEdit = false;
+                    }
                     selectFrom = cell;
                 }
 
@@ -1456,7 +1507,7 @@
         {
             mouseDownAt = null;
 
-            if (isEdit) { return; }
+            if (isEdit[defaultEditMode]) { return; }
 
             if (hotHeaderDrag) {
                 $curHeaderSelect = null;
@@ -1477,15 +1528,14 @@
 
             var cell = findCell(event);
             var editMode = false;
-            if (cellNav && options.editEnabled && cell == clickCell)
+            if (cellNav && cell == clickCell)
             {
                 var curActiveCell = $activeCells ? $activeCells[0] : null;
                 if (curActiveCell && $prevActiveCells &&
                         $prevActiveCells.index(curActiveCell) >= 0)
                 {
                     // They clicked on a selected cell, go to edit mode
-                    editCell(curActiveCell);
-                    editMode = true;
+                    editMode = editCell(curActiveCell);
                 }
                 else if (curActiveCell)
                 {
@@ -1505,8 +1555,9 @@
 
         var onDoubleClick = function(event)
         {
-            if (isEdit &&
-                $(event.target).parents().andSelf().index($editContainer) >= 0)
+            if (isEdit[defaultEditMode] &&
+                $(event.target).parents().andSelf()
+                    .index($editContainers[defaultEditMode]) >= 0)
             { return; }
 
             clickTarget = event.target;
@@ -1514,7 +1565,7 @@
             if (cellNav)
             {
                 var cell = findCell(event);
-                if (options.editEnabled && cell)
+                if (cell)
                 {
                     // They clicked on a cell, go to edit mode
                     editCell(cell);
@@ -1526,7 +1577,7 @@
         {
             if (event.keyCode == 27) // ESC
             {
-                if (isEdit)
+                if (isEdit[defaultEditMode])
                 {
                     endEdit(false);
                     expandActiveCell();
@@ -1648,6 +1699,7 @@
             }
             else
             {
+                hideActiveCell();
                 setTimeout(expandActiveCell, 0);
             }
 

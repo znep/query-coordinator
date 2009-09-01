@@ -413,12 +413,14 @@ img.blist-table-option-icon
 }
 
 /* Alignment */
+.blist-table-edit-container .type-checkbox { text-align: center; }
+
 .blist-td.align-left,
-.blist-table-editor .align-left { text-align: left; }
+div.blist-table-editor .align-left { text-align: left; }
 .blist-td.align-center,
-.blist-table-editor .align-center { text-align: center; }
+div.blist-table-editor .align-center { text-align: center; }
 .blist-td.align-right,
-.blist-table-editor .align-right { text-align: right; }
+div.blist-table-editor .align-right { text-align: right; }
 
 .blist-td.align-left .blist-checkbox,
 .blist-td.align-left .blist-flag { background-position: left center; }

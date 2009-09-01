@@ -133,6 +133,7 @@
     {
         if (event.keyCode == 13 || event.keyCode == 9) // Enter or Tab
         {
+            event.stopPropagation();
             editObj.$dom().trigger('edit_end', [true, event]);
         }
     };

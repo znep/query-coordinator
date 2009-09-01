@@ -35,17 +35,6 @@
     font-weight: bold;
 }
 
-div.blist-table-expander
-{
-    background-color: #ffffff;
-    border-right: solid 1px #e2e2e2;
-}
-
-div.blist-table-expander .blist-td
-{
-    padding-right: 0.25em; /* 3px */
-}
-
 .blist-table .blist-td.blist-table-row-numbers
 {
     border-left-width: 0;

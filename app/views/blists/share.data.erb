@@ -1,0 +1,153 @@
+<%- content_for :headline do -%>
+  <h1>Sharing <%= h(@view.name) %></h1>
+<%- end -%>
+
+<div class="shareWrapper">
+  <p>Type anyone's email address or select from your existing contacts.</p>
+  <%= render(:partial => "share_form") %>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  
+  blist.common.modalReady = function()
+  {
+    var addedRecipients = new Array();
+    var addedRecipientUID = 0;
+    
+    var contact_values = <%= @contact_combo_values %>;
+    $("#add_friends").combo({
+      name: "add_friends",
+      values: contact_values
+    });
+    
+    $("#add_type").combo({
+      name: "add_type",
+      values: [
+        { id: "VIEWER", label: "Viewer" },
+        { id: "CONTRIBUTOR", label: "Contributor" },
+        { id: "OWNER", label: "Owner" }
+      ],
+      value: "VIEWER"
+    });
+    
+        
+    // ADD
+    $("#recipientsEditForm").validate({
+      rules: {
+        add_recipient_email: {
+            email: true
+        }
+      },
+      messages: {
+        add_recipient_email: {
+          email: "Please enter a valid email address."
+        }
+      },
+      submitHandler: function(form) {
+        var $form = $(form);
+        
+        var newRecipient = {
+          id: "remove_" + addedRecipientUID,
+          email: $("#add_recipient_email").val(),
+          userId: $("#add_friends").value(),
+          type: $("#add_type").value()
+        };
+        addedRecipients.push($.json.serialize(newRecipient));
+
+        var displayValue = $("#add_recipient_email").val() != "" ? 
+                                newRecipient.email : 
+                                $("#add_friends").valueObjectAccessor().selectedValueObject().label;
+        
+        var addRow = "<tr>";
+        addRow += "<td class=\"add_handle\">";
+        addRow += "<a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>";
+        addRow += "<td class=\"add_email\"><span>" + displayValue + "</span></td>";
+        addRow += "<td class=\"add_type\"><span>" + newRecipient.type.toLowerCase().capitalize() + "</span></td>";
+        addRow += "<td class=\"add_action\"></td>";
+        addRow += "</tr>";
+
+        addedRecipientUID++;
+
+        if ($(".recipientsShowTableContainer table tbody tr").length < 1)
+        {
+          $(".recipientsShowTableContainer").show();
+        }
+
+        $(".recipientsShowTableContainer table tbody").append($(addRow));
+
+        $(".recipientsShowTableContainer").attr({ 
+          scrollTop: $(".recipientsShowTableContainer").attr("scrollHeight") 
+        });
+        $(".recipientsEditTableContainer :input").val("").blur();
+        $("#add_friends").value("&nbsp;");
+        $("#add_recipient_email").focus();
+      }
+    });
+
+    // DELETE
+    $(".recipientsShowTableContainer td.add_handle a").live("click", function(event)
+    {
+      event.preventDefault();
+      
+      var $link = $(this);
+      
+      var recipientIndex = null;
+      var recipientId = $link.attr("id");
+      for (var i = 0; i < addedRecipients.length; i++)
+      {
+        if (recipientId == $.json.deserialize(addedRecipients[i]).id)
+        {
+          recipientIndex = i;
+        }
+      }
+      
+      if (recipientIndex != null)
+      {
+        addedRecipients.splice(recipientIndex, 1);
+        $link.closest("tr").remove();
+      }
+    });
+    
+    $("#shareForm").submit(function(event)
+    {
+      event.preventDefault();
+      var $form = $(this);
+      
+      var formData = {
+        message: $("#share_message").val(),
+        "recipients[]": addedRecipients,
+        authenticity_token: $("input[name='authenticity_token']").val()
+      };
+      
+      $.ajax({
+        url: $form.attr("action"),
+        type: "POST",
+        data: formData,
+        dataType: "json",
+        success: function(data) {
+          if (data.status == "failure")
+          {
+            $(".shareWrapper .errorMessage").append(
+              $("<p class=\"error\">Unable to share to the recipients indicated below in red.</p>")
+            );
+            $(data.errors).each(function()
+            {
+              var error = this;
+              $("#" + error.removeId).closest("tr").addClass("error");
+            });
+            $(".recipientsShowTableContainer table tbody tr:not('.error')").remove();
+          }
+          else
+          {
+            blist.meta.updateMeta("sharing", $("#view_id").val(), 
+              function() { $("#throbber").hide(); },
+              function() { $("#infoPane .gridList").blistListHoverItems(); }
+            );
+            
+            $("#modal").jqmHide();
+          }
+        }
+      });
+    });
+  };
+</script>

@@ -345,6 +345,78 @@ class BlistsController < SwfController
     end
   end
   
+  def share
+    @view = View.find(params[:id])
+    
+    # TODO: Make @contacts_json of existing contacts.
+    contacts_values = []
+    current_user.friends.each do |friend|
+      contacts_values << { :id => friend.id, :label => friend.displayName }
+    end
+    @contact_combo_values = contacts_values.to_json
+    
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+  
+  def create_share
+    message = params[:message] || ""
+    recipientArray = params[:recipients]
+    
+    errors = Array.new
+    
+    if (recipientArray)
+      recipientArray.each do |r|
+        recipient = JSON.parse(r)
+      
+        grant = Hash.new
+        unless recipient["email"].blank?
+          grant[:userEmail] = recipient["email"]
+        end
+        unless recipient["userId"].blank?
+          grant[:userId] = recipient["userId"]
+        end
+        grant[:type] = recipient["type"]
+        grant[:message] = message
+        
+        begin
+          Grant.create(params[:id], grant)
+        rescue CoreServer::CoreServerError => e
+          errors << { :removeId => recipient["id"] }
+        end
+      end
+    end
+
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success",
+      :errors => errors
+    }
+  end
+  
+  def delete_share
+    errors = Array.new
+    
+    grant = Hash.new
+    if params[:email]
+      grant[:userEmail] = params[:email]
+    end
+    if params[:userId]
+      grant[:userId] = params[:userId]
+    end
+    grant[:type] = params[:type].downcase
+    
+    begin
+      Grant.delete(params[:id], grant)
+    rescue CoreServer::CoreServerError => e
+      errors << { :grant => grant.to_json }
+    end
+    
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success"
+    }
+  end
+
   def meta_tab_header
      if (!params[:tab])
        return
@@ -367,6 +439,7 @@ class BlistsController < SwfController
      end
      render(:layout => 'main.data')
    end
+
 
 private
 

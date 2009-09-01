@@ -145,29 +145,35 @@
 
 /*** START: Invitation form ***/
 
-.invitationWrapper
+.invitationWrapper, .shareWrapper
 {
     padding: 1em;
 }
 
-.invitationWrapper p
+.invitationWrapper p, .shareWrapper p
 {
     font-size: 1.2em;
     margin-bottom: 1em;
 }
 
-.invitationWrapper input.textEmail { width: 27em; }
-.invitationWrapper input[type='checkbox'] { vertical-align: middle; }
-.invitationWrapper .invitationText {
+.invitationWrapper input.textEmail,
+.shareWrapper input.textEmail { width: 27em; }
+.invitationWrapper input[type='checkbox'],
+.shareWrapper input[type='checkbox'] { vertical-align: middle; }
+.invitationWrapper .invitationText,
+.shareWrapper .shareText
+{
     font-size: 1em;
     width: 45em;
 }
-.invitationWrapper input[type='image']
+.invitationWrapper input[type='image'],
+.shareWrapper input[type='image']
 {
     margin-right: 1em;
     vertical-align: middle;
 }
-.invitationWrapper .submitLine a
+.invitationWrapper .submitLine a,
+.shareWrapper .submitLine a
 {
     color: #333;
     font-size: 1.2em;
@@ -197,6 +203,11 @@
 .recipientsWrapper table .add_last_name { width: 25%; }
 .recipientsWrapper table .add_action { width: 90px; }
 
+.shareWrapper .recipientsWrapper table .add_email { width: 100%; }
+.shareWrapper .recipientsWrapper table .add_type { width: 172px }
+
+#add_type.blist-combo { width: 140px; }
+
 .recipientsWrapper thead { background-color: #06386a; }
 .recipientsWrapper thead th
 {
@@ -222,6 +233,11 @@
 .recipientsEditTableContainer tbody td { vertical-align: top; }
 
 .recipientsWrapper table td.add_handle { padding: 0; }
+.recipientsWrapper table td.add_email { padding: .3em .5em; }
+
+.recipientsWrapper .recipientsEditTableContainer table td.add_type,
+.recipientsWrapper .recipientsEditTableContainer table td.add_action { padding: 1.5em .5em .3em; }
+
 .recipientsShowTableContainer table td.add_handle a,
 .recipientsEditTableContainer table td.add_handle span
 {
@@ -244,6 +260,10 @@
     font-size: 1.2em;
     width: 90%;
 }
+.recipientsWrapper .blist-combo-wrapper { width: 90%; }
+
+.recipientsWrapper td.add_email p:first-child { margin: 0; }
+.recipientsWrapper td.add_email p { margin: .5em 0 0; }
 
 .invitationPreviewContainer {
     background-color: #ececec;

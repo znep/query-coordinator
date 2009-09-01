@@ -240,7 +240,10 @@ $(function()
             $("#error").html($.json.deserialize(request.responseText).error).show() 
         },
         success: function(responseData) { 
-            blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
+            if (blist.util.flashInterface.swf() !== undefined)
+            {
+                blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
+            }
             $grid = $("#readGrid");
             if ($grid.length != 0)
             {

@@ -4,7 +4,7 @@
 class ApplicationController < ActionController::Base
   include SslRequirement
 
-  before_filter :hook_auth_controller, :adjust_format, :require_user, :set_user, :configure_theme, :create_core_server_connection
+  before_filter :hook_auth_controller,  :create_core_server_connection, :adjust_format, :require_user, :set_user, :configure_theme
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -94,6 +94,7 @@ private
   # it through.
   def hook_auth_controller
     UserSession.controller = self
+    UserSession.update_current_user(nil, nil)
   end
 
   # create the connection that can be used by all core server calls

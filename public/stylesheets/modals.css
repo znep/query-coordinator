@@ -961,28 +961,61 @@ dl.versionInfo dd
 
 /*** START: Sort dialog ***/
 
-div.itemWrapper span.sort
+div.itemWrapper div.ascension
+{
+    position: absolute;
+    right: 0;
+    top: 1px;
+    width: 12px;
+    height: 12px;
+    padding: 0.3em;
+    margin: 0.2em;
+    border-left: 1px solid #666;
+    cursor: auto;
+}
+
+div.itemWrapper div.sort
 {
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
     height: 12px;
     width: 12px;
-    float: right;
 }
 div.itemWrapper .sort-asc 
 { 
     background-position: 0 -24px; 
     cursor: auto;
 }
-div.itemWrapper .sort-asc:hover 
+div.itemWrapper .sort-asc:hover,
+div.itemWrapper .ascension:hover .sort-asc
 { 
     background-position: 0 -12px; 
-    background-color: #fff;
     cursor: auto;
 }
-div.itemWrapper .sort-desc:hover 
+div.itemWrapper .sort-desc:hover, 
+div.itemWrapper .ascension:hover .sort-desc
 { 
     background-position: 0 -36px; 
     cursor: auto;
+}
+
+div#sortBysList .activeList,
+div#sortBysList .inactiveList
+{
+    height: 175px;
+    overflow: auto;
+    width: 27.5em;
+    padding-left: 3.5em;
+}
+
+div.activeList .removeAllLink
+{
+    position: absolute;
+    bottom: 0;
+}
+
+div#sortBysList.reorderList ul
+{
+    width: 20em;
 }
 
 /*** END: Sort dialog ***/

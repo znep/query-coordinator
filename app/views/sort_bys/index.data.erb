@@ -10,7 +10,9 @@
         <li>
           <div class="itemWrapper">
             <span class="orderIndex"><%= i + 1 %></span>
-            <span class="sort sort-<%= sort.asc? ? 'asc' : 'desc' %>" title="Click to sort <%= sort.asc? ? "descending" : "ascending" %>"></span>
+            <div class="ascension">
+                <div class="sort sort-<%= sort.asc? ? 'asc' : 'desc' %>" title="Click to sort <%= sort.asc? ? "descending" : "ascending" %>"></div>
+            </div>
             <% 
                 name = @view.column_by_id(sort.viewColumnId).name
             %>
@@ -34,7 +36,9 @@
         <li>
           <div class="itemWrapper">
             <span class="orderIndex hide"></span>
-            <span class="sort sort-asc hide" title="Click to sort descending"></span>
+            <div class="ascension hide">
+                <div class="sort sort-asc" title="Click to sort descending"></div>
+            </div>
             <% 
                 col = @view.column_by_id(sort["viewColumnId"])
             %>
@@ -60,25 +64,27 @@
         {
             $item.removeClass("sort-desc")
                 .addClass("sort-asc")
-                .attr("title", "Click to sort descending")
+                .attr("title", "Click to sort descending");
+            $item.parent()
                 .nextAll("input.asc").val("true");
         }
         else
         {
             $item.removeClass("sort-asc")
                 .addClass("sort-desc")
-                .attr("title", "Click to sort ascending")
+                .attr("title", "Click to sort ascending");
+            $item.parent()
                 .nextAll("input.asc").val("false");
         }
     };
 
     var valueChanged = function() {
-        $(".activeList span.sort").removeClass("hide");
-        $(".inactiveList span.sort").addClass("hide");
+        $(".activeList div.ascension").removeClass("hide");
+        $(".inactiveList div.ascension").addClass("hide");
     };
 
-    $("span.sort").click(function() {
-        toggleSortOrder($(this));
+    $("div.ascension").click(function() {
+        toggleSortOrder($(this).find(".sort"));
     });
 
     $('#sortBysList').reorderableList({onChange: valueChanged});
@@ -96,7 +102,7 @@
             }
             var sort = {
                 viewColumnId: $(sortItem).find("input.viewColumnId").val(),
-                // TODO: Fix the position problem.
+                position: parseInt($(sortItem).find(".orderIndex").text())
             };
 
             if (flags != undefined)

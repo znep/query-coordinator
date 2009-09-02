@@ -137,6 +137,30 @@ blist.namespace.fetch('blist.data');
         var baseURL = null;
         var supplementalAjaxOptions = null;
 
+        var findColumn = function(id) {
+            var column;
+            $.each(meta.view.columns, function(i, col) {
+                if (col.id == id)
+                {
+                    column = col;
+                    return false;
+                }
+            });
+            return column;
+        };
+
+        var findColumnIndex = function(id) {
+            var index;
+            $.each(meta.columns[0], function(i, col) {
+                if (col.id == id)
+                {
+                    index = i;
+                    return false;
+                }
+            });
+            return index;
+        };
+
         var columnType = function(index) {
             if (meta.columns) {
                 var column = meta.columns[0][index];
@@ -721,13 +745,14 @@ blist.namespace.fetch('blist.data');
 				}
 
                 var rootColumns = meta.columns[0];
+
                 // Configure root column sorting based on view configuration if
                 // a view is present
+                var sorts = {};
+                meta.sort = {};
+
                 if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
                 {
-                    var sorts = {};
-                    meta.sort = {};
-
                     $.each(meta.view.sortBys, function(i, sort) {
                         sorts[sort.viewColumnId] = sort;
                     });
@@ -1608,18 +1633,19 @@ blist.namespace.fetch('blist.data');
 
         this.multiSort = function(sortBys)
         {
+
             if (sortBys.length == 1)
             {
                 var sort = sortBys[0];
-                var col = columnLookup[sort.viewColumnId];
-                this.sort(col, !(sort.flags != null && $.inArray('asc', sort.flags) >= 0));
+                var colIndex = findColumnIndex(parseInt(sort.viewColumnId));
+                this.sort(colIndex, !(sort.flags != null && $.inArray('asc', sort.flags) >= 0));
                 return;
             }
 
             meta.view.sortBys = sortBys;
             meta.sort = {};
             $.each(meta.view.sortBys, function(i, sort) {
-                var col = columnLookup[sort.viewColumnId];
+                var col = findColumn(sort.viewColumnId);
                 meta.sort[sort.viewColumnId] = {
                     ascending: (sort.flags != null && $.inArray('asc', sort.flags) >= 0),
                     column: col 

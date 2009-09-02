@@ -251,6 +251,10 @@ blist.namespace.fetch('blist.data');
                 $.each(meta.columnFilters, function (i, v)
                     { if (v != null) { isProg = true; return false; } });
             }
+            if (meta.view.sortBys.length > 1)
+            {
+               isProg = true;
+            }
             return isProg;
         };
 
@@ -721,40 +725,23 @@ blist.namespace.fetch('blist.data');
                 // a view is present
                 if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
                 {
-                    var s = meta.view.sortBys[0];
-                    var sortCol;
-                    $.each(rootColumns, function (i, c)
+                    var sorts = {};
+                    meta.sort = {};
+
+                    $.each(meta.view.sortBys, function(i, sort) {
+                        sorts[sort.viewColumnId] = sort;
+                    });
+
+                    $.each(meta.view.columns, function (i, c)
                     {
-                        if (c.id == s.viewColumnId)
+                        if (sorts[c.id] != undefined)
                         {
-                            sortCol = c;
-                            return false;
+                            meta.sort[c.id] = {
+                                ascending: (sorts[c.id].flags != null && $.inArray('asc', sorts[c.id].flags) >= 0),
+                                column: c
+                              };
                         }
                     });
-                    if (sortCol)
-                    {
-                        meta.sort = {ascending: s.flags != null &&
-                            $.inArray('asc', s.flags) >= 0, column: sortCol};
-                    }
-                    else
-                    {
-                        var foundCol = false;
-                        $.each(meta.view.columns, function (i, c)
-                        {
-                            if (c.id == s.viewColumnId)
-                            {
-                                foundCol = true;
-                                return false;
-                            }
-                        });
-                        if (!foundCol)
-                        {
-                            // We're dealing with a sort on a column that doesn't
-                            // exist in our view; we can't post this back, so
-                            // clear it out
-                            meta.view.sortBys = null;
-                        }
-                    }
                 }
 
                 // For each column at the root nesting level, ensure that
@@ -1619,8 +1606,39 @@ blist.namespace.fetch('blist.data');
             return changedRows;
         };
 
+        this.multiSort = function(sortBys)
+        {
+            if (sortBys.length == 1)
+            {
+                var sort = sortBys[0];
+                var col = columnLookup[sort.viewColumnId];
+                this.sort(col, !(sort.flags != null && $.inArray('asc', sort.flags) >= 0));
+                return;
+            }
+
+            meta.view.sortBys = sortBys;
+            meta.sort = {};
+            $.each(meta.view.sortBys, function(i, sort) {
+                var col = columnLookup[sort.viewColumnId];
+                meta.sort[sort.viewColumnId] = {
+                    ascending: (sort.flags != null && $.inArray('asc', sort.flags) >= 0),
+                    column: col 
+                    };
+            });
+            sortConfigured = true;
+
+            $(listeners).trigger('sort_change');
+
+            // Sort
+            doSort();
+
+            // If there's an active filter, or grouping function, re-apply now
+            // that we're sorted
+            configureActive(active);
+        }
+
         /**
-         * Sort the data.
+         * Sort the data by a single column.
          *
          * @param order either a column index or a sort function
          * @param descending true to sort descending if order is a column index
@@ -1644,7 +1662,8 @@ blist.namespace.fetch('blist.data');
                     orderCol = meta.columns[0][order];
                 }
 
-                meta.sort = {column: orderCol, ascending: !descending};
+                meta.sort = {};
+                meta.sort[orderCol.id] = {column: orderCol, ascending: !descending};
 
                 // Update the view in-memory, so we can always serialize it to
                 //  the server and get the correct sort options

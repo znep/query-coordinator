@@ -308,9 +308,6 @@ blist.blistGrid.menuHandler = function(event)
         case 'filterShow':
             blist.util.flashInterface.showPopup('LensBuilder:Filter');
             break;
-        case 'sortShow':
-            blist.util.flashInterface.showPopup('LensBuilder:Sort');
-            break;
         case 'hide-show-col':
             var $li = $target.closest('li');
             $('#readGrid').datasetGrid().showHideColumns(actionId,

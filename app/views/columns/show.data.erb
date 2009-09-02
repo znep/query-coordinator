@@ -116,11 +116,11 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
         </table>
       </div>
         <div class="saveBar">
-            <div id="error" class="errorMessage"></div>
+            <div class="error errorMessage"></div>
           <h3 class="seperator"></h3>
           <div class="controlBar">
             <div class="required">Required Field</div> 
-            <a href="#" id="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
+            <a href="#" class="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
           </div>
         </div>
     </div>
@@ -131,7 +131,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
 $(function()
 {
   $("#loadingSpinner").hide();
-  $("#error").hide();
+  $(".error").hide();
   $("#convertables").hide();
 
   var loading = function()
@@ -203,7 +203,7 @@ $(function()
       dataType: 'json',
       contentType: "application/json",
       error: function(request) {
-        $("#error").html($.json.deserialize(request.responseText).message).show();
+        $(".error").html($.json.deserialize(request.responseText).message).show();
       },
       success: function (responseData) {
         $(".jqmClose").click();
@@ -219,11 +219,11 @@ $(function()
   });
 
   $("#columnProperties").submit( function() {
-    $("#save").click();
+    $(".save").click();
     return false;
   });
 
-  $("#save").click(function() {
+  $(".save").click(function() {
       if (!formEnabled) { return false; }
       toggleEnabled();
 
@@ -237,7 +237,7 @@ $(function()
           },
         dataType: 'json',
         error: function(request) { 
-            $("#error").html($.json.deserialize(request.responseText).error).show() 
+            $(".error").html($.json.deserialize(request.responseText).error).show() 
         },
         success: function(responseData) { 
             if (blist.util.flashInterface.swf() !== undefined)
@@ -250,7 +250,6 @@ $(function()
                 $("#readGrid").blistModel().updateColumn(responseData);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
-            $.Tache.DeleteAll();
             $(".jqmClose").click();
         }
       });

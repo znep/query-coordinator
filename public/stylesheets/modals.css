@@ -549,6 +549,7 @@
   padding: 0.6em;
 }
 
+.sortBysList .createBar,
 .columnPropertiesWrapper .saveBar,
 .columnPropertiesWrapper .createBar
 {
@@ -573,14 +574,16 @@
 {
     float: left;
 }
-.columnPropertiesWrapper #error
+.createBar .error,
+.columnPropertiesWrapper .error
 {
   padding: 0.3em;
   margin-right: 1em;
   vertical-align: middle;
   font-size: 1.2em;
 }
-.columnPropertiesWrapper #save
+.createBar .save,
+.columnPropertiesWrapper .save
 {
     float: right;
 }
@@ -955,3 +958,31 @@ dl.versionInfo dd
   padding-bottom: 10px;
 } 
 /*** END: Version Info ***/
+
+/*** START: Sort dialog ***/
+
+div.itemWrapper span.sort
+{
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
+    height: 12px;
+    width: 12px;
+    float: right;
+}
+div.itemWrapper .sort-asc 
+{ 
+    background-position: 0 -24px; 
+    cursor: auto;
+}
+div.itemWrapper .sort-asc:hover 
+{ 
+    background-position: 0 -12px; 
+    background-color: #fff;
+    cursor: auto;
+}
+div.itemWrapper .sort-desc:hover 
+{ 
+    background-position: 0 -36px; 
+    cursor: auto;
+}
+
+/*** END: Sort dialog ***/

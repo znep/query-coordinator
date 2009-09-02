@@ -24,6 +24,10 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def column_by_id(column_id)
+    self.columns.reject {|c| c.id != column_id}[0]
+  end
+
   def html
     CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
       "rows.html?template=bare_template.html", {})

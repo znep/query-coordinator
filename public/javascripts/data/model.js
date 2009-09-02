@@ -323,6 +323,7 @@ blist.namespace.fetch('blist.data');
          */
         this.load = function(config)
         {
+            //console.profile();
             if (config.meta)
 			{
                 this.meta(config.meta);
@@ -331,6 +332,7 @@ blist.namespace.fetch('blist.data');
 			{
                 this.rows(config.rows || config.data);
 			}
+            //console.profileEnd();
         };
 
         /**

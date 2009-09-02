@@ -223,6 +223,7 @@
             isWidget: false,
             scrollToTabOnActivate: true,
             widgetMetaContainerSelector: "#widgetMeta",
+            widgetMetaSuperHeaderSelector: "#widgetMeta .superHeader",
             widgetMetaHeaderSelector: "#widgetMeta .header",
             widgetOuterContainerSelector: ".gridInner", 
             initialMetaHeight: 0
@@ -279,6 +280,12 @@
                 {
                     tabNavigator.settings.initialMetaHeight = $metaContainer.height();
                 }
+                
+                $(tabNavigator.settings.widgetMetaSuperHeaderSelector).find("a").click(function(event)
+                {
+                    event.preventDefault();
+                    tabNavigator.expandWidgetTabPanels();
+                });
             },
             activateTab: function(tab, preventExpansion) {
                 var tabNavigator = this;
@@ -373,7 +380,8 @@
                 }
 
                 // Toggle all panels.
-                $container.find(tabNavigator.settings.allPanelsSelector).toggleClass(tabNavigator.settings.expandedClass);
+                $container.find(tabNavigator.settings.allPanelsSelector)
+                            .toggleClass(tabNavigator.settings.expandedClass);
             },
             expandWidgetTabPanels: function(openCallback) {
                 var tabNavigator = this;
@@ -431,8 +439,11 @@
                     
                 }
                 
+                $(tabNavigator.settings.widgetMetaSuperHeaderSelector).toggle();
+                
                 // Toggle all panels.
-                $container.find(tabNavigator.settings.allPanelsSelector).toggleClass(tabNavigator.settings.expandedClass);
+                $container.find(tabNavigator.settings.allPanelsSelector)
+                            .toggleClass(tabNavigator.settings.expandedClass);
             }
         }
     });

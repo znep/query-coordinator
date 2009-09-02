@@ -136,11 +136,8 @@
             $this.find(':input')[0].focus();
         };
 
-        // Render the current value (in the variable "value") into the value
-        // container (in the variable "$value")
-        var renderValue = function()
+        var getSelectedValueObject = function(value)
         {
-            // Locate the object associated with the value
             var valueObj;
             if (value != null && value != '')
             {
@@ -154,6 +151,16 @@
                 }
             }
 
+            return valueObj;
+        };
+
+        // Render the current value (in the variable "value") into the value
+        // container (in the variable "$value")
+        var renderValue = function() {
+            // Locate the object associated with the value
+            
+            var valueObj = getSelectedValueObject(value);
+            
             // Reset all classes on the value.
             $value.removeClass().addClass("blist-combo-value");
 
@@ -161,7 +168,7 @@
             if (valueObj === undefined)
             {
                 $this.addClass('blist-combo-empty');
-                $value.html('');
+                $value.html('&nbsp;');
                 return;
             }
 
@@ -272,6 +279,15 @@
             .find(':input')
             .keydown(onKeyDown);
         renderValue();
+        
+        var comboValueObj = function()
+        {
+            this.selectedValueObject = function()
+            {
+                return getSelectedValueObject(value);
+            };
+        };
+        $this.data('comboValueObj', new comboValueObj());
     };
 
     var blistComboDefaults = {
@@ -301,6 +317,10 @@
                         [ $.extend({}, blistComboDefaults, options) ]);
                 }
             });
+        },
+        valueObjectAccessor: function()
+        {
+            return this.data('comboValueObj');
         }
     });
 })(jQuery);

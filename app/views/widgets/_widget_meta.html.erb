@@ -1,6 +1,10 @@
 <%# locals: view, page_single  %>
 <%- is_owner = current_user && view.owner.id == current_user.id -%>
 
+<div class="superHeader">
+  <p><a href="#close_tab">Close Tab</a></p>
+</div>
+
 <div class="header">
   <ul class="summaryTabs clearfix">
   <%- is_first_tab = true -%>

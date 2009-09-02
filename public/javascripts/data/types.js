@@ -6,7 +6,7 @@
 blist.namespace.fetch('blist.data.types');
 
 (function($) {
-    STAR_WIDTH = 10;
+    STAR_WIDTH = 16;
 
     /*** UTILITY FUNCTIONS ***/
 
@@ -411,6 +411,7 @@ blist.namespace.fetch('blist.data.types');
         if (value == null) {
             return '';
         }
+        range *= STAR_WIDTH;
         var on = Math.round(value * STAR_WIDTH);
         if (on <= 0) {
             return '';
@@ -439,7 +440,7 @@ blist.namespace.fetch('blist.data.types');
         if (range <= 0 || isNaN(range)) {
             range = 5;
         }
-        return "renderStars(" + value + ", " + (range * 10) + ")";
+        return "renderStars(" + value + ", " + range + ")";
     };
 
     var renderGenPhoto = function(value, plain, column) {
@@ -536,7 +537,7 @@ blist.namespace.fetch('blist.data.types');
             range = 5;
         }
         return "<div class='blist-tstars-wrapper'>" +
-            renderStars(value, range * 10) + value + "</div>";
+            renderStars(value, range) + value + "</div>";
     };
 
     var renderFilterPercent = function(value, column)
@@ -690,12 +691,14 @@ blist.namespace.fetch('blist.data.types');
         },
 
         stars: {
+            cls: 'stars',
             renderGen: renderGenStars,
             sortGen: sortGenNumeric,
             filterRender: renderFilterStars,
             filterText: true,
             sortable: true,
-            filterable: true
+            filterable: true,
+            isInlineEdit: true
         },
 
         percent: {
@@ -764,6 +767,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.flag.editor = $.blistEditor.flag;
         blist.data.types.picklist.editor = $.blistEditor.picklist;
         blist.data.types.checkbox.editor = $.blistEditor.checkbox;
+        blist.data.types.stars.editor = $.blistEditor.stars;
     }
 
     for (var name in blist.data.types) {

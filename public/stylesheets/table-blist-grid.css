@@ -80,3 +80,5 @@ div.blist-richtext ul
     list-style-position: inside;
     list-style-type: disc;
 }
+
+.blist-tstars { margin: -0.3333em 0; }

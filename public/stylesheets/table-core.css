@@ -270,25 +270,24 @@ img.blist-table-option-icon
 
 .blist-tstars { display: inline-block; }
 
-.blist-tstar-on {
+.blist-tstar-on
+{
+    background-image: url(/stylesheets/images/content/table/grid_stars_sprites.png);
+    background-position: 0 0;
+    background-repeat: repeat-x;
     float: left;
-    background: transparent url(/stylesheets/images/content/table/star_on.png) center left repeat-x;
-    width: 10px;
-    height: 10px;
+    height: 16px;
+    width: 16px;
 }
 
-.blist-tstar-off {
+.blist-tstar-off
+{
+    background-image: url(/stylesheets/images/content/table/grid_stars_sprites.png);
+    background-position: 0 -16px;
+    background-repeat: repeat-x;
     float: left;
-    background: transparent url(/stylesheets/images/content/table/star_off.png) center left repeat-x;
-    width: 10px;
-    height: 10px;
-}
-
-.blist-tstar-over {
-    float: left;
-    background: transparent url(/stylesheets/images/content/table/star_over.png) center left repeat-x;
-    width: 10px;
-    height: 10px;
+    height: 16px;
+    width: 16px;
 }
 
 .blist-td-number,
@@ -489,3 +488,35 @@ div.blist-table-editor .align-right { text-align: right; }
     max-height: 1.5833em;
     padding-right: 5px;
 }
+
+.blist-table-editor.type-stars { padding: 0.1667em 0.25em 0; /* 2px 3px */ }
+
+.blist-table-edit-container.mode-expand .blist-table-editor.type-stars
+{ padding: 0.3333em 0.3333em 0; /* 4px 4px */ }
+
+.blist-table-editor.type-stars .star
+{
+    background-image: url(/stylesheets/images/content/table/grid_stars_sprites.png);
+    background-position: 0 -16px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: inline-block;
+    height: 16px;
+    width: 16px;
+}
+
+.blist-table-editor.type-stars .star.star-on
+{ background-position: 0 0; }
+
+.blist-table-editor.type-stars.hover .star.star-on
+{ background-position: 0 -32px; }
+
+.blist-table-editor.type-stars input
+{
+    height: 0;
+    left: -1000px;
+    padding: 0;
+    position: absolute;
+    width: 0;
+}
+

@@ -264,6 +264,7 @@ img.blist-table-option-icon
     text-decoration: underline;
 }
 
+.blist-tstars { margin: -4px 0; }
 
 .widgetFooterWrapper
 {

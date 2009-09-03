@@ -116,11 +116,10 @@ class UserSession
     return user
   end
 
-  def find_rpx_token(token)
+  def find_rpx_token(rpx_authentication)
     result = nil
-    response = post_rpx_authentication(token)
-    if response.is_a?(Net::HTTPSuccess)
-      user = User.parse(response.body)
+    if rpx_authentication.existing_account?
+      user = rpx_authentication.user
       create_core_session_credentials(user)
 
       # Plumb the cookie from the core server back to the user's browser
@@ -135,7 +134,6 @@ class UserSession
       result = self
     end
 
-    #yield result if result && block_given?
     result
   end
 
@@ -215,17 +213,6 @@ private
     uri = auth_uri.clone
     uri.query = "method=expireRememberToken"
     post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
-
-    Net::HTTP.start(uri.host, uri.port) do |http|
-      http.request post
-    end
-  end
-
-  def post_rpx_authentication(token)
-    uri = auth_uri.clone
-    uri.query = "method=findOrCreateByRpxToken"
-    post = Net::HTTP::Post.new(uri.request_uri)
-    post.form_data = {'token' => token}
 
     Net::HTTP.start(uri.host, uri.port) do |http|
       http.request post

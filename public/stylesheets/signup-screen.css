@@ -1,0 +1,14 @@
+div.title.openid
+{
+    padding-bottom: 2em;
+}
+
+div.title.openid p strong
+{
+    color: #ff6000;
+}
+
+#signupForm label.required
+{
+    background-position: 115px 0px;
+}

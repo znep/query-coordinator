@@ -7,10 +7,19 @@
   </div>
 
   <div class='mainContent'>
-    <div class='title clearfix'>
-      <h2><strong>Sign up!</strong> We're making data social.</h2>
-      <p>Before we get started, we need to know a little about you.</p>
-    </div>
+    <% if flash[:rpx_user] %>
+      <div class='title clearfix openid'>
+        <h2>Complete Your Signup</h2>
+        <p><strong>You still need to create a Socrata account.</strong> If you
+        want to link your OpenID with an existing account, login and add it on
+        your <%= link_to 'My Account', account_path %> page.</p>
+      </div>
+      <% else %>
+      <div class='title clearfix'>
+        <h2><strong>Sign up!</strong> We're making data social.</h2>
+        <p>Before we get started, we need to know a little about you.</p>
+      </div>
+    <% end %>
 
     <% form_for :account, @account, :url => account_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
       <div class="fieldContent clearfix">
@@ -18,31 +27,31 @@
         <fieldset>
           <%= hidden_field_tag("inviteToken", @token) %>
           <p>
-            <%= f.label :firstName, '*First Name' %>
+            <%= f.label :firstName, 'First Name', :class => 'required' %>
             <%= f.text_field :firstName %>
           </p>
           <p>
-            <%= f.label :lastName, '*Last Name' %>
+            <%= f.label :lastName, 'Last Name', :class => 'required' %>
             <%= f.text_field :lastName %>
           </p>
           <p>
-            <%= f.label :email, '*Email Address' %>
+            <%= f.label :email, 'Email Address', :class => 'required' %>
             <%= f.text_field :email %>
           </p>
           <p>
-            <%= label_tag :emailConfirm, '*Confirm Email' %>
+            <%= label_tag :emailConfirm, 'Confirm Email', :class => 'required' %>
             <%= text_field_tag :emailConfirm %>
           </p>
           <p>
-            <%= f.label :login, '*Username' %>
+            <%= f.label :login, 'Username', :class => 'required' %>
             <%= f.text_field :login, :maxlength => 40 %>
           </p>
           <p>
-            <%= f.label :password, '*Password' %>
+            <%= f.label :password, 'Password', :class => 'required' %>
             <%= f.password_field :password %>
           </p>
           <p>
-            <%= label_tag :passwordConfirm, '*Confirm Password' %>
+            <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required' %>
             <%= password_field_tag :passwordConfirm %>
           </p>
         </fieldset>
@@ -94,7 +103,7 @@
     <% end %>
 
     <div class="contentFooter">
-      <p>By signing up, you accept the <a href="/privacy">Privacy Policy</a> and <a href="/terms-of-service">Terms of Service</a> | *Required field</p>
+      <p>By signing up, you accept the <a href="/privacy">Privacy Policy</a> and <a href="/terms-of-service">Terms of Service</a> | <span class="required">Required field</span></p>
     </div>
   </div>
 <% end %>

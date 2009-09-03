@@ -41,15 +41,25 @@ class AccountsController < ApplicationController
   end
 
   def new
-    @account = User.new
+    @account = flash[:rpx_user] || User.new
     @body_class = 'signup'
     @token = params[:token] || ""
+
+    session[:openid_identifier_id] = @account.openIdIdentifierId
   end
 
   def create
     # First, try creating the user
     begin
-      user = User.create(params[:account], params[:inviteToken])
+      # Link their OpenID identifier, if any. The identifier is set in the
+      # session rather than as a hidden form param because we don't want it
+      # to be spoofable.
+      account = params[:account]
+      if session[:openid_identifier_id]
+        account[:openIdIdentifierId] = session[:openid_identifier_id]
+      end
+
+      user = User.create(account, params[:inviteToken])
     rescue CoreServer::CoreServerError => e
       error = e.error_message
       respond_to do |format|

@@ -16,6 +16,8 @@ module Theme
         theme = 'datasf'
       elsif host.include? 'gov'
         theme = 'gov'
+      elsif host.include? 'chicago'
+        theme = 'cityofchicago'
       end
 
       load_theme theme if theme
@@ -74,5 +76,4 @@ module Theme
   def self.favicon
     "/images/themes/#{Theme.active}/favicon.ico"
   end
-  
 end

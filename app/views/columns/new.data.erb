@@ -44,10 +44,10 @@ var column = <%= @column.to_js %>;
         </div>
   <% end %>
       <div class="createBar">
-        <div id="error" class="errorMessage"></div>
+        <div class="error errorMessage"></div>
         <h3 class="seperator"></h3>
         <div class="required">Required Field</div> 
-        <a href="#" id="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
+        <a href="#" class="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
       </div>
 </div>
 
@@ -103,11 +103,11 @@ $(function(){
   $("#types").change(function() { column.type = $(this).value() });
 
   $("#columnCreate").submit( function() {
-    $("#save").click();
+    $(".save").click();
     return false;
   });
 
-  $("#save").click(function() {
+  $(".save").click(function() {
       if (!formEnabled) { return false; }
       toggleEnabled();
 
@@ -120,9 +120,8 @@ $(function(){
           json: $.json.serialize(column), 
           authenticity_token: "<%= form_authenticity_token %>"
           },
-        dataType: 'json',
         error: function(request) { 
-            $("#error").html($.json.deserialize(request.responseText).error).show() 
+            $(".error").html($.json.deserialize(request.responseText).error).show() 
             toggleEnabled();
         },
         success: function(responseData) { 

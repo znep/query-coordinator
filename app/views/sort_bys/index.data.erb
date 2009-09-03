@@ -1,0 +1,121 @@
+<% content_for :headline do %>
+<h1><span class="sortOrderIcon">Sort Order</span></h1>
+<% end %>
+
+<div id="sortBysList" class="reorderList clearfix">
+  <div class="activeList">
+    <p>Sorted Columns and Sort Order</p>
+    <ul>
+      <% @selected.each_with_index do |sort, i| %>
+        <li>
+          <div class="itemWrapper">
+            <span class="orderIndex"><%= i + 1 %></span>
+            <div class="ascension">
+                <div class="sort sort-<%= sort.asc? ? 'asc' : 'desc' %>" title="Click to sort <%= sort.asc? ? "descending" : "ascending" %>"></div>
+            </div>
+            <% 
+                name = @view.column_by_id(sort.viewColumnId).name
+            %>
+            <%= name %>
+            <%= hidden_field_tag("sort-#{sort.viewColumnId}", true, :class => "viewColumnId", :value => "#{sort.viewColumnId}") %>
+            <%= hidden_field_tag("sort-#{sort.viewColumnId}-asc", true, :class => "asc", :value => "#{sort.asc?}") %>
+          </div>
+        </li>
+      <%- end -%>
+    </ul>
+    <a href="#removeAll" class="removeAllLink">Remove All</a>
+  </div>
+  <div class="swapArrows">
+    <a href="#addItem" class="addItemButton">Add</a>
+    <a href="#removeItem" class="removeItemButton">Remove</a>
+  </div>
+  <div class="inactiveList">
+    <p>Unsorted Columns</p>
+    <ul>
+      <% @unselected.each do |sort| %>
+        <li>
+          <div class="itemWrapper">
+            <span class="orderIndex hide"></span>
+            <div class="ascension hide">
+                <div class="sort sort-asc" title="Click to sort descending"></div>
+            </div>
+            <% 
+                col = @view.column_by_id(sort["viewColumnId"])
+            %>
+            <%= col.name %>
+            <%= hidden_field_tag("sort-#{col.id}", true, :class => "viewColumnId", :value => "#{col.id}") %>
+            <%= hidden_field_tag("sort-#{col.id}-asc", true, :class => "asc", :value => "true") %>
+          </div>
+        </li>
+      <%- end -%>
+    </ul>
+  </div>
+      <div class="createBar">
+        <div class="error errorMessage"></div>
+        <h3 class="seperator clearfix"></h3>
+        <a href="#" class="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
+      </div>
+</div>
+<div class="clearfix"></div>
+
+<script type="text/javascript" charset="utf-8">
+    var toggleSortOrder = function($item) {
+        if ($item.hasClass("sort-desc"))
+        {
+            $item.removeClass("sort-desc")
+                .addClass("sort-asc")
+                .attr("title", "Click to sort descending");
+            $item.parent()
+                .nextAll("input.asc").val("true");
+        }
+        else
+        {
+            $item.removeClass("sort-asc")
+                .addClass("sort-desc")
+                .attr("title", "Click to sort ascending");
+            $item.parent()
+                .nextAll("input.asc").val("false");
+        }
+    };
+
+    var valueChanged = function() {
+        $(".activeList div.ascension").removeClass("hide");
+        $(".inactiveList div.ascension").addClass("hide");
+    };
+
+    $("div.ascension").click(function() {
+        toggleSortOrder($(this).find(".sort"));
+    });
+
+    $('#sortBysList').reorderableList({onChange: valueChanged});
+
+    $(".save").click(function(event) {
+        event.preventDefault();
+        var sortBys = [];
+
+        $.each($(".activeList .itemWrapper"), function(i, sortItem) {
+            var asc = $(sortItem).find("input.asc").val() == "true";
+            var flags;
+            if (asc)
+            {
+                flags = ["asc"];
+            }
+            var sort = {
+                viewColumnId: $(sortItem).find("input.viewColumnId").val(),
+                position: parseInt($(sortItem).find(".orderIndex").text())
+            };
+
+            if (flags != undefined)
+            {
+                sort.flags = flags;
+            }
+
+            sortBys.push(sort);
+        });
+
+        sortBys.sort(function(s1, s2) { return s1.position - s2.position; });
+
+        $("#readGrid").blistModel().multiSort(sortBys);
+        $(".jqmClose").click();
+    });
+</script>

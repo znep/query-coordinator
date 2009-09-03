@@ -311,7 +311,6 @@
 .infoContentOuter.listContainer .infoContent dt.hover
 {
     background-color: #e3ecf7;
-    background-image: url(/stylesheets/images/info_pane/background_summary_list_title.png);
     background-repeat: no-repeat;
     color: #666;
 }

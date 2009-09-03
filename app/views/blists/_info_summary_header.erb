@@ -33,8 +33,7 @@
   <li><a href="#duplicate">Duplicate</a></li>
 <%- end -%>
   <%- if allow_edit && !in_widget -%>
-  <li><a href="<%= "#{view.href}?popup=SharingEditor" %>"
-    class="showFlashPopup">Share</a></li>
+  <li><a href="#share" class="tabLink sharing">Share</a></li>
   <%- end -%>
   <li><a href="<%= "#{view.href}/about" %>"<%= 'rel="external"' if (in_widget) %>>More Info</a></li>
 </ul>

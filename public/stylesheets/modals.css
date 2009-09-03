@@ -966,7 +966,23 @@ dl.versionInfo dd
 div.itemWrapper
 {
     overflow: hidden;
-    line-height: 1.3em;
+    line-height: 1.4em;
+}
+
+#sortBysList p
+{
+    position: absolute;
+    font-size: 1.2em;
+}
+
+#sortBysList p.left
+{
+    left: 3.5em; 
+}
+
+#sortBysList p.right
+{
+    left: 33em;
 }
 
 div.itemWrapper div.ascension
@@ -1013,6 +1029,7 @@ div#sortBysList .inactiveList
     overflow: auto;
     width: 27.5em;
     padding-left: 3.5em;
+    margin-top: 1.5em;
 }
 
 div.activeList .removeAllLink

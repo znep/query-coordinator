@@ -975,43 +975,43 @@ blist.myBlists.initializeGrid = function()
 
 blist.myBlists.columns = [[
   { width: 18, dataIndex: 'id', dataLookupExpr: '.id',
-    renderer: blist.myBlists.customHandle, sortable: false },
+renderer: blist.myBlists.customHandle, sortable: false, id: 1 },
   { cls: 'favorite', name: 'Favorite?', width: 22,
     dataIndex: 'favorite', dataLookupExpr: '.favorite',
-    renderer: blist.myBlists.customFav, sortable: true},
+    renderer: blist.myBlists.customFav, sortable: true, id: 2},
   { cls: 'type', name: 'Type', width: 31,
     dataIndex: 'isDefault', dataLookupExpr: '.isDefault',
-    renderer: blist.myBlists.customType, sortable: true },
+    renderer: blist.myBlists.customType, sortable: true, id: 3 },
   { name: 'Name', percentWidth: 20, dataIndex: 'name', dataLookupExpr: '.name',
-    renderer: blist.myBlists.customDatasetName, group: true, sortable: true },
+    renderer: blist.myBlists.customDatasetName, group: true, sortable: true, id: 4 },
   { name: 'Description', percentWidth: 40,
     dataIndex: 'description', dataLookupExpr: '.description',
-    renderer: blist.myBlists.customClipText, group: true, sortable: true },
+    renderer: blist.myBlists.customClipText, group: true, sortable: true, id: 5 },
   { name: 'Owner', percentWidth: 20,
     dataIndex: 'ownerName', dataLookupExpr: '.ownerName',
-    renderer: blist.myBlists.customClipText, group: true, sortable: true},
+    renderer: blist.myBlists.customClipText, group: true, sortable: true, id: 6},
   { name: 'Last Updated', percentWidth: 20,
     dataIndex: 'updatedAt', dataLookupExpr: '.updatedAt',
-    group: true, type: 'date', renderer: blist.myBlists.customDateMeta }
+    group: true, type: 'date', renderer: blist.myBlists.customDateMeta, id: 7 }
 ]];
 blist.myBlists.columns.push([
     { fillFor: [myBlistsNS.columns[0][0]],
         dataIndex: 'id', dataLookupExpr: '.id',
-        renderer: blist.myBlists.customHandle },
+        renderer: blist.myBlists.customHandle, id: 1 },
     { cls: 'favorite', name: 'Favorite?', fillFor: [myBlistsNS.columns[0][1]],
         dataIndex: 'favorite', dataLookupExpr: '.favorite',
-        renderer: blist.myBlists.customFav },
+        renderer: blist.myBlists.customFav, id: 2 },
     { cls: 'type', name: 'Type', fillFor: [myBlistsNS.columns[0][2]],
         dataIndex: 'isDefault', dataLookupExpr: '.isDefault',
-        renderer: blist.myBlists.customType },
+        renderer: blist.myBlists.customType, id: 3 },
     { cls: 'name', name: 'Name', fillFor: [myBlistsNS.columns[0][3]],
         dataIndex: 'name', dataLookupExpr: '.name',
-        renderer: blist.myBlists.customDatasetName },
+        renderer: blist.myBlists.customDatasetName, id: 4 },
     { name: 'Description', fillFor: [myBlistsNS.columns[0][4]],
         dataIndex: 'description', dataLookupExpr: '.description',
-        renderer: blist.myBlists.customClipText },
+        renderer: blist.myBlists.customClipText, id: 5 },
     { type: 'fill', fillFor: [myBlistsNS.columns[0][5],
-        myBlistsNS.columns[0][6] ] }
+        myBlistsNS.columns[0][6] ], id: 6 }
 ]);
 
 blist.myBlists.options = {

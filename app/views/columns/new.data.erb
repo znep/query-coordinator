@@ -107,7 +107,9 @@ $(function(){
     return false;
   });
 
-  $("#save").click(function() {
+  $("#save").click(function(event)
+  {
+      event.preventDefault();
       if (!formEnabled) { return false; }
       toggleEnabled();
 

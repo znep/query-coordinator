@@ -52,8 +52,7 @@
             {
                 var editObj = this;
                 var $domObj = editObj.$dom();
-                $domObj.bind('keydown.blistEditor',
-                    function (e) { handleKeyDown(editObj, e); });
+                $domObj.keydown(function (e) { handleKeyDown(editObj, e); })
                 $domObj.data("blistEditor", editObj);
 
                 editObj.row = editObj.settings.row;
@@ -131,10 +130,12 @@
     // Private methods
     var handleKeyDown = function(editObj, event)
     {
-        if (event.keyCode == 13 || event.keyCode == 9) // Enter or Tab
+        if (event.keyCode == 13 || event.keyCode == 9 || event.keyCode == 27 ||
+            event.keyCode == 113)
+        // Enter or Tab or Esc or F2
         {
             event.stopPropagation();
-            editObj.$dom().trigger('edit_end', [true, event]);
+            editObj.$dom().trigger('edit_end', [event.keyCode != 27, event]);
         }
     };
 

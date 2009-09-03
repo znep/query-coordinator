@@ -142,10 +142,7 @@ blist.namespace.fetch('blist.data');
                 var column = meta.columns[0][index];
                 if (column) {
                     var type = blist.data.types[column.type];
-                    if (type)
-					{
-                        return type;
-					}
+                    if (type) { return type; }
                 }
             }
             return blist.data.types.text;
@@ -243,6 +240,10 @@ blist.namespace.fetch('blist.data');
                                 });
                             r[c.index] = o;
                         }
+                        if (c.type == 'falseToNull' && r[c.index] === false)
+                        { r[c.index] = null; }
+                        if (c.type == 'zeroToNull' && r[c.index] === 0)
+                        { r[c.index] = null; }
                     });
                 }
             });
@@ -328,10 +329,7 @@ blist.namespace.fetch('blist.data');
         this.addListener = function(listener)
         {
             var pos = $.inArray(listener, listeners);
-            if (pos == -1)
-			{
-                listeners.push(listener);
-			}
+            if (pos == -1) { listeners.push(listener); }
         };
 
         /**
@@ -340,10 +338,7 @@ blist.namespace.fetch('blist.data');
         this.removeListener = function(listener)
         {
             var pos = $.inArray(listener, listeners);
-            if (pos == -1)
-			{
-                listeners = listeners.splice(pos, 1);
-			}
+            if (pos == -1) { listeners = listeners.splice(pos, 1); }
         };
 
         /**
@@ -351,14 +346,9 @@ blist.namespace.fetch('blist.data');
          */
         this.load = function(config)
         {
-            if (config.meta)
-			{
-                this.meta(config.meta);
-			}
+            if (config.meta) { this.meta(config.meta); }
             if (config.rows || config.data)
-			{
-                this.rows(config.rows || config.data);
-			}
+            { this.rows(config.rows || config.data); }
         };
 
         /**
@@ -392,42 +382,30 @@ blist.namespace.fetch('blist.data');
         {
             if (!ajaxOptions.success)
             {
-                if (!ajaxOptions.dataType)
-				{
-                    ajaxOptions.dataType = 'json';
-				}
+                if (!ajaxOptions.dataType) { ajaxOptions.dataType = 'json'; }
                 ajaxOptions.success = function(config) {
                     if (translateFn)
-					{
-                        config = translateFn.apply(this, [ config ]);
-					}
+                    { config = translateFn.apply(this, [ config ]); }
                     onLoad.apply(model, [ config ]);
                 };
                 ajaxOptions.complete = function() {
                     $(listeners).trigger('after_load');
                 };
             }
-            if (!$(listeners).trigger('before_load', [ ajaxOptions ]))
-			{
-                return;
-			}
+            if (!$(listeners).trigger('before_load', [ ajaxOptions ])) { return; }
 
-            if (autoBaseURL) {
+            if (autoBaseURL)
+            {
                 var url = ajaxOptions.url;
                 var endOfProt = url.indexOf('://');
-                if (endOfProt != -1) {
+                if (endOfProt != -1)
+                {
                     endOfProt += 3;
                     var endOfHost = url.indexOf('/', endOfProt);
-                    if (endOfHost == -1)
-					{
-                        baseURL = url;
-                    } else {
-                        baseURL = url.substring(0, endOfHost);
-					}
-
-                } else {
-                    baseURL = '';
-				}
+                    if (endOfHost == -1) { baseURL = url; }
+                    else { baseURL = url.substring(0, endOfHost); }
+                }
+                else { baseURL = ''; }
             }
             $.ajax(ajaxOptions);
         };
@@ -479,6 +457,27 @@ blist.namespace.fetch('blist.data');
 
             // Notify listeners of row load via the "change" event
             this.change(supplement);
+        };
+
+        var reloadView = function()
+        {
+            var ajaxOptions = $.extend({}, supplementalAjaxOptions);
+            if (curOptions.progressiveLoading)
+            {
+                ajaxOptions.data = $.extend({}, ajaxOptions.data,
+                        {max_rows: 1});
+            }
+            doLoad(self, viewReloaded, ajaxOptions);
+        };
+
+        var viewReloaded = function(config)
+        {
+            if (config.meta)
+            {
+                self.invalidateRows();
+                self.meta(config.meta);
+                $(listeners).trigger('columns_updated', [self]);
+            }
         };
 
         var translatePicklistFromView = function(col) {
@@ -546,40 +545,38 @@ blist.namespace.fetch('blist.data');
                     v.dataType.type == 'phone'))
                 { dataMungeCols.push({index: i, type: 'arrayToObject',
                     types: v.subColumnTypes}); }
+                if (v.dataType && v.dataType.type == 'checkbox')
+                { dataMungeCols.push({index: i, type: 'falseToNull'}); }
+                if (v.dataType && v.dataType.type == 'stars')
+                { dataMungeCols.push({index: i, type: 'zeroToNull'}); }
             }
         };
 
         var translateViewColumns = function(view, viewCols, columns, nestDepth, nestedIn) {
-            if (!viewCols)
-			{
-                return;
-			}
+            if (!viewCols) { return; }
 
             viewCols = viewCols.slice();
             for (var i = 0; i < viewCols.length; i++)
-			{
-                viewCols[i].dataIndex = i;
-			}
+            { viewCols[i].dataIndex = i; }
             viewCols.sort(function(col1, col2) { return col1.position - col2.position; });
 
             var levelCols = getColumnLevel(columns, nestDepth);
 
             var filledTo = 0;
-            var addNestFiller = function() {
-                if (filledTo < levelCols.length) {
+            var addNestFiller = function()
+            {
+                if (filledTo < levelCols.length)
+                {
                     var fillFor = [];
                     for (var i = filledTo; i < levelCols.length; i++)
-					{
-                        fillFor.push(levelCols[i]);
-					}
+                    { fillFor.push(levelCols[i]); }
                     filledTo = levelCols.length + 1;
                     getColumnLevel(columns, nestDepth + 1).push({
                         type: 'fill',
                         fillFor: fillFor
                     });
-                } else {
-                    filledTo++;
-				}
+                }
+                else { filledTo++; }
             };
 
             for (i = 0; i < viewCols.length; i++)
@@ -637,13 +634,11 @@ blist.namespace.fetch('blist.data');
                         // Add the body column to the next nesting level
                         addNestFiller();
                         if (columns[nestDepth + 1])
-						{
-                            columns[nestDepth + 1].push(col.body);
-						}
+                        { columns[nestDepth + 1].push(col.body); }
 
                         break;
                 }
-                
+
                 var format = vcol.format;
                 if (format)
                 {
@@ -675,19 +670,13 @@ blist.namespace.fetch('blist.data');
                     }
                 }
 
-                if (nestedIn)
-				{
-                    nestedIn.children.push(col);
-                } else {
-                    levelCols.push(col);
-				}
+                if (nestedIn) { nestedIn.children.push(col); }
+                else { levelCols.push(col); }
             }
 
-            // Add filler for trailing unnested columns to the next nesting depth if applicable
-            if (columns[nestDepth + 1])
-			{
-                addNestFiller();
-			}
+            // Add filler for trailing unnested columns to the next nesting
+            // depth if applicable
+            if (columns[nestDepth + 1]) { addNestFiller(); }
         };
 
         /**
@@ -740,16 +729,11 @@ blist.namespace.fetch('blist.data');
                         col.level = level;
                         col.indexInLevel = i;
                         columnLookup[col.uid] = col;
-                        if (col.children)
-						{
-                            assignIDs(col.children, level);
-						}
+                        if (col.children) { assignIDs(col.children, level); }
                     }
                 };
                 for (var i = 0; i < meta.columns.length; i++)
-				{
-                    assignIDs(meta.columns[i], meta.columns[i]);
-				}
+                { assignIDs(meta.columns[i], meta.columns[i]); }
 
                 var rootColumns = meta.columns[0];
                 // Configure root column sorting based on view configuration if
@@ -804,7 +788,7 @@ blist.namespace.fetch('blist.data');
                         dataIndex = col.dataIndex = i;
                     }
                     if (!col.dataLookupExpr)
-					{
+                    {
                         if (typeof dataIndex == "string")
                         {
                             col.dataLookupExpr = "['" + dataIndex + "']";
@@ -813,7 +797,7 @@ blist.namespace.fetch('blist.data');
                         {
                             col.dataLookupExpr = '[' + dataIndex + ']';
                         }
-					}
+                    }
                 }
 
                 // Notify listeners of the metadata change
@@ -854,9 +838,7 @@ blist.namespace.fetch('blist.data');
         this.index = function(rowOrRowID)
         {
             if (rowOrRowID instanceof Object)
-			{
-                return activeLookup[rowOrRowID.id];
-			}
+            { return activeLookup[rowOrRowID.id]; }
             return activeLookup[rowOrRowID];
         };
 
@@ -1235,7 +1217,7 @@ blist.namespace.fetch('blist.data');
                         {
                             c.childColumns = [];
                         }
-                    
+
                         $.each(c.childColumns, function(j, child)
                         {
                             if (child.id == column.id)
@@ -1245,30 +1227,20 @@ blist.namespace.fetch('blist.data');
                                 return false;
                             }
                         });
-
-                        if (!isColumnPresent)
-                        {
-                            c.childColumns.push(column);
-                        }
                     }
                 });
             }
             else
             {
-                    $.each(meta.view.columns, function(i, c)
+                $.each(meta.view.columns, function(i, c)
+                {
+                    if (c.id == column.id)
                     {
-                        if (c.id == column.id)
-                        {
-                            meta.view.columns[i] = column;
-                            isColumnPresent = true;
-                            return false;
-                        }
-                    });
-
-                    if (!isColumnPresent)
-                    {
-                        meta.view.columns.push(column);
+                        meta.view.columns[i] = column;
+                        isColumnPresent = true;
+                        return false;
                     }
+                });
             }
 
 
@@ -1305,10 +1277,18 @@ blist.namespace.fetch('blist.data');
                 }
             }
 
-            // Refresh the meta data and redraw the grid.
-            meta.columns = null;
-            this.meta(meta);
-            $(listeners).trigger('columns_updated', [this]);
+            if (!isColumnPresent)
+            {
+                // Reload columns from server
+                reloadView();
+            }
+            else
+            {
+                // Refresh the meta data and redraw the grid.
+                meta.columns = null;
+                this.meta(meta);
+                $(listeners).trigger('columns_updated', [this]);
+            }
         };
 
         this.convertColumn = function(oldId, newViewColumn)
@@ -1750,22 +1730,19 @@ blist.namespace.fetch('blist.data');
             configureActive(active);
         };
 
-        var getChildRows = function(row) {
-            if (row.childRows)
-			{
-                return row.childRows;
-			}
+        var getChildRows = function(row)
+        {
+            if (row.childRows) { return row.childRows; }
 
             var cols = meta.columns[row.level || 0];
             var childRows = row.childRows = [];
             var childLevel = (row.level || 0) + 1;
 
-            for (var i = 0; i < cols.length; i++) {
+            for (var i = 0; i < cols.length; i++)
+            {
                 var col = cols[i];
-                if (!col.body)
-				{
-                    continue;
-				}
+                if (!col.body) { continue; }
+
                 var cell = row[col.dataIndex];
                 if (!cell && !self.useBlankRows()) { continue; }
                 if (!cell) { cell = []; }
@@ -1885,10 +1862,7 @@ blist.namespace.fetch('blist.data');
         {
             removeSpecialRows();
 
-            if (!sortConfigured)
-			{
-                return;
-			}
+            if (!sortConfigured) { return; }
 
             if (self.isProgressiveLoading())
             {
@@ -1914,21 +1888,15 @@ blist.namespace.fetch('blist.data');
             }
 
             // Perform the actual sort
-            if (orderFn)
-			{
-                toSort.sort(orderFn);
-            } else {
-                toSort.sort();
-			}
+            if (orderFn) { toSort.sort(orderFn); }
+            else { toSort.sort(); }
 
             // If we sorted a preprocessed set, update the original set
             if (orderPrepro)
-			{
+            {
                 for (i = 0; i < toSort.length; i++)
-				{
-                    active[i] = toSort[i][1];
-				}
-			}
+                { active[i] = toSort[i][1]; }
+            }
 
             // Update ID lookup
             installIDs(true);
@@ -2028,19 +1996,13 @@ blist.namespace.fetch('blist.data');
          */
         this.filter = function(filter, timeout)
         {
-            if (filterTimer)
-			{
-                clearTimeout(filterTimer);
-			}
+            if (filterTimer) { clearTimeout(filterTimer); }
             // Configure for filtering.  toFilter is an optimized set that may
             // be a subset of all rows if a previous filter is in place.
             var toFilter = configureFilter(filter);
 
             // If there's nothing to filter, return now
-            if (!toFilter || !filterFn)
-			{
-                return;
-			}
+            if (!toFilter || !filterFn) { return; }
 
             // Filter
             if (timeout)
@@ -2060,20 +2022,11 @@ blist.namespace.fetch('blist.data');
         var configureFilter = function(filter)
         {
             var toFilter;
-            if (typeof filter == "function")
-            {
-	 			filterFn = filter; 
-			}
+            if (typeof filter == "function") { filterFn = filter; }
             else
             {
-                if (filter == null)
-                {
-	   				filter = "";
-				}
-                if (filter == filterText)
-               	{     
-					return null;
-				}
+                if (filter == null) { filter = ""; }
+                if (filter == filterText) { return null; }
 
                 // Clear the filter if it contains less than the minimum characters
                 if (filter.length < curOptions.filterMinChars || filter.length == 0)
@@ -2113,18 +2066,16 @@ blist.namespace.fetch('blist.data');
                         if (options) {
                             var matches = [];
                             for (var key in options)
-							{
+                            {
                                 if (options[key].text.match(regexp))
-                                {    
-									matches.push(key);
-								}
-							}
+                                { matches.push(key); }
+                            }
                             for (var j = 0; j < matches.length; j++)
-							{
+                            {
                                 filterParts.push(' || (r' +
                                     rootColumns[j].dataLookupExpr + ' == "' +
                                     matches[j] + '")');
-							}
+                            }
                         }
                     }
                 }
@@ -2135,9 +2086,7 @@ blist.namespace.fetch('blist.data');
                 // Filter the current filter set if the filter is a subset of
                 // the current filter
                 if (filter.substring(0, filterText.length) == filterText)
-                {
-					toFilter = active;
-				}
+                { toFilter = active; }
                 filterText = filter;
                 meta.view.searchString = filterText;
             }
@@ -2153,12 +2102,8 @@ blist.namespace.fetch('blist.data');
 
             // Detect case and perform case sensitive match if capital letters
             // are present
-            if (text.match(/[A-Z]/))
-            {
-	    		var modifiers = "";
-            } else {
-                modifiers = "i";
-			}
+            if (text.match(/[A-Z]/)) { var modifiers = ""; }
+            else { modifiers = "i"; }
 
             // Escape special characters and create the regexp
             return new RegExp(
@@ -2382,10 +2327,7 @@ blist.namespace.fetch('blist.data');
         var doGroup = function()
         {
             removeSpecialRows();
-            if (!groupFn || !orderCol)
-            {
-	    		return;
-			}
+            if (!groupFn || !orderCol) { return; }
             var i = 0;
             var currentGroup;
             var groupOn = orderCol.dataIndex;
@@ -2413,17 +2355,15 @@ blist.namespace.fetch('blist.data');
             var lastCopied = 0;
 
             for (var i = 0; i < active.length; i++)
-			{
-                if (expanded[active[i].id]) {
-                    if (!newActive)
-                    {
-	    				newActive = [];
-					}
+            {
+                if (expanded[active[i].id])
+                {
+                    if (!newActive) { newActive = []; }
                     newActive.push.apply(newActive, active.slice(lastCopied, lastCopied = i + 1));
                     var childRows = getChildRows(active[i]);
                     newActive.push.apply(newActive, childRows);
                 }
-			}
+            }
             if (newActive) {
                 newActive.push.apply(newActive, active.slice(lastCopied, active.length));
                 active = newActive;
@@ -2431,35 +2371,24 @@ blist.namespace.fetch('blist.data');
         };
 
         // Install initial metadata
-        if (meta)
-        {
-	    	this.meta(meta);
-		} else {
-            this.meta({});
-        }
+        if (meta) { this.meta(meta); }
+        else { this.meta({}); }
 
         // Install initial rows
-        if (rows)
-        {
-	   		this.rows(rows);
-		} else {
-            rows = [];
-		}
+        if (rows) { this.rows(rows); }
+        else { rows = []; }
     };
 
     $.fn.extend({
         /**
-         * Returns and (optionally) sets the Blist model for the element.  If the element has no model associated with it
-         * one is created.
+         * Returns and (optionally) sets the Blist model for the element.  If
+         * the element has no model associated with it one is created.
          */
         blistModel: function(model) {
             if (model) {
                 this.each(function() {
                     var currentModel = $(this).data('blistModel');
-                    if (currentModel)
-                   	{     
-						currentModel.removeListener(this);
-					}
+                    if (currentModel) { currentModel.removeListener(this); }
                 });
                 this.data('blistModel', model);
                 this.each(function() {
@@ -2470,10 +2399,7 @@ blist.namespace.fetch('blist.data');
                 return model;
             }
             var currentModel = this.data('blistModel');
-            if (currentModel)
-            {
-	    		return currentModel;
-			}
+            if (currentModel) { return currentModel; }
             return this.blistModel(new blist.data.Model());
         }
     });

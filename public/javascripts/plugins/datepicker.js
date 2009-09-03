@@ -455,8 +455,8 @@ data: options.locale.monthsShort,
             var width = tbl.offsetWidth;
             var height = tbl.offsetHeight;
             cal.css({
-                width: width + options.extraWidth + 'px',
-                height: height + options.extraHeight + 'px'
+                width: width + 'px',
+                height: height + 'px'
             }).find('div.datepickerContainer').css({
                 width: width + 'px',
                 height: height + 'px'

@@ -70,9 +70,9 @@
                         '<input />';
                     for (var i = 0; i < this.range(); i++)
                     {
-                        edHtml += '<div class="star' +
+                        edHtml += '<span class="star' +
                             (i < this.originalValue ? ' star-on' : '') +
-                            '"></div>';
+                            '"></span>';
                     }
                     edHtml += '</div>';
                     this._$editor = $(edHtml);

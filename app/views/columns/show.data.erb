@@ -189,7 +189,9 @@ $(function()
   $("#ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#precision").val() });
 
   var converting = false;
-  $("a.convert").click(function() { 
+  $("a.convert").click(function(event)
+  {
+    event.preventDefault();
     if (converting) return false;
     converting = true;
     $("a.convert").addClass("light");
@@ -212,7 +214,9 @@ $(function()
     });
   });
 
-  $("#converter").click(function() {
+  $("#converter").click(function(event)
+  {
+      event.preventDefault();
       toggleEnabled();
       $("#convertables").toggle();
       return false;

@@ -692,23 +692,31 @@
             var value = editor.currentValue();
             var row = editor.row;
             var col = editor.column;
-            if (isSave && (!$.compareValues(origValue, value) ||
-                model.isCellError(row, col)))
-            {
-                // Wait for the end of the event cycle to process this to
-                // cut down on flickering due to an interrupted render of rows
-                setTimeout(function()
-                    { model.saveRowValue(value, row, col, editor.isValid()) }, 0);
-            }
+            var isValid = editor.isValid();
 
             $curEditContainer.remove();
             delete $editContainers[mode];
+
+            if (isSave && (!$.compareValues(origValue, value) ||
+                model.isCellError(row, col)))
+            { model.saveRowValue(value, row, col, isValid); }
         };
 
         var handleEditEnd = function(event, isSave, origEvent, mode)
         {
             endEdit(isSave, mode);
-            if (origEvent.type == 'keydown') { navKeyDown(origEvent); }
+            if (origEvent.type == 'keydown')
+            {
+                // If they hit esc or F2,
+                // re-expand the active cell and prevent keyPress
+                if (mode == defaultEditMode &&
+                    (origEvent.keyCode == 27 || origEvent.keyCode == 113))
+                {
+                    didNavKeyDown = true;
+                    expandActiveCell();
+                }
+                else { navKeyDown(origEvent); }
+            }
         };
 
         /*** CELL HOVER EXPANSION ***/
@@ -1546,13 +1554,13 @@
                 {
                     $prevActiveCells = $activeCells;
                 }
+                if (!editMode) { $navigator[0].focus(); }
             }
 
             if (clickTarget && clickTarget == event.target &&
                 !$(clickTarget).is('a'))
             {
                 $(clickTarget).trigger('table_click', event);
-                if (!editMode && cellNav) { $navigator[0].focus(); }
             }
 
             if (cellNav && !editMode) { expandActiveCell(); }
@@ -1575,19 +1583,6 @@
                     // They clicked on a cell, go to edit mode
                     editCell(cell);
                 }
-            }
-        };
-
-        var onKeyDown = function(event)
-        {
-            if (event.keyCode == 27) // ESC
-            {
-                if (isEdit[defaultEditMode])
-                {
-                    endEdit(false);
-                    expandActiveCell();
-                }
-                else { clearCellNav(); }
             }
         };
 
@@ -1694,6 +1689,17 @@
                     }
                     break;
 
+                case 27:
+                    // Esc
+                    clearCellNav();
+                    break;
+
+                case 113:
+                    // F2
+                    var curActiveCell = $activeCells ? $activeCells[0] : null;
+                    if (curActiveCell) { editCell(curActiveCell); }
+                    break;
+
                 default:
                     return true;
             }
@@ -1791,7 +1797,6 @@
             .mousedown(onMouseDown)
             .mousemove(onMouseMove)
             .dblclick(onDoubleClick)
-            .keydown(onKeyDown)
             .html(headerStr);
 
         if (options.columnDrag)
@@ -1859,7 +1864,7 @@
         var measureUtilDOM = measureUtil[0];
 
         // This guy receives focus when the user interacts with the grid
-        var $navigator = $($outside.find('.blist-table-navigator'))
+        var $navigator = $outside.find('.blist-table-navigator')
             .keydown(navKeyDown)
             .keypress(navKeyPress)
             .bind('copy', onCopy);

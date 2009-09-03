@@ -349,6 +349,26 @@ blist.myBlists.itemMenuSetup = function()
     });
 };
 
+blist.myBlists.infoEditCallback = function(fieldType, fieldValue, itemId, responseData)
+{
+    if (fieldType == "description" || fieldType == "name")
+    {
+        var row = myBlistsNS.model.getByID(itemId);
+        row[fieldType] = fieldValue;
+        myBlistsNS.model.change([row]);
+    }
+    if (fieldType == 'name')
+    {
+        // Update in filtered view list
+        $('.singleInfoFiltered .gridList #filter-row_' + itemId +
+            ' .name a').text(fieldValue);
+    }
+
+    // If anything in the info pane is changed, make sure it reloads
+    $.Tache.DeleteAll();
+};
+blist.infoEditSubmitSuccess = myBlistsNS.infoEditCallback;
+
 blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 {
     // Load the info pane.
@@ -384,24 +404,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     });
 
     $("#infoPane .editItem").infoPaneItemEdit({
-        submitSuccessCallback: function(fieldType, fieldValue, itemId, responseData)
-        {
-            if (fieldType == "description" || fieldType == "name")
-            {
-                var row = myBlistsNS.model.getByID(itemId);
-                row[fieldType] = fieldValue;
-                myBlistsNS.model.change([row]);
-            }
-            if (fieldType == 'name')
-            {
-                // Update in filtered view list
-                $('.singleInfoFiltered .gridList #filter-row_' + itemId +
-                    ' .name a').text(fieldValue);
-            }
-
-            // If anything in the info pane is changed, make sure it reloads
-            $.Tache.DeleteAll();
-        }
+        submitSuccessCallback: myBlistsNS.infoEditCallback
     });
     
     $("#throbber").hide();
@@ -501,6 +504,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         });
         
     // Share deleting
+    $(".shareDelete").die("click");
     $(".shareDelete").live("click", function(event)
     {
         event.preventDefault();
@@ -512,6 +516,15 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
                 blist.meta.updateMeta("sharing", viewId,
                     function() { $("#throbber").hide(); },
                     function() { $("#infoPane .gridList").blistListHoverItems(); }
+                );
+                blist.meta.updateMeta("summary", viewId,
+                    function() {},
+                    function() {
+                      $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
+                      $("#infoPane .editItem").infoPaneItemEdit({
+                            submitSuccessCallback: myBlistsNS.infoEditCallback
+                        });
+                    }
                 );
             }
         );

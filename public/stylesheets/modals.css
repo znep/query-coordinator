@@ -257,6 +257,7 @@
 
 .recipientsWrapper table td input[type='text']
 {
+    display: block;
     font-size: 1.2em;
     width: 90%;
 }
@@ -276,6 +277,7 @@
 {
     background-color: #ffb2b2;
 }
+#shareErrors { display: none; }
 
 /*** END: Invitation form ***/
 

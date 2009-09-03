@@ -492,6 +492,8 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
     }
 };
 
+blist.infoEditSubmitSuccess = blistGridNS.infoEditCallback;
+
 
 /* Initial start-up calls, and setting up bindings */
 
@@ -755,6 +757,15 @@ $(function ()
                 blist.meta.updateMeta("sharing", viewId,
                     function() { $("#throbber").hide(); },
                     function() { $("#infoPane .gridList").blistListHoverItems(); }
+                );
+                blist.meta.updateMeta("summary", viewId,
+                    function() {},
+                    function() {
+                      $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
+                      $("#infoPane .editItem").infoPaneItemEdit({
+                            submitSuccessCallback: blistGridNS.infoEditCallback
+                        });
+                    }
                 );
             }
         );

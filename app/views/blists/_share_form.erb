@@ -33,7 +33,7 @@
           <tr>
             <td class="add_handle"><span>add</span></td>
             <td class="add_email">
-              <p>Choose from your friends.</p>
+              <p>Choose from your friends</p>
               <div class="blist-combo-wrapper">
                 <div id="add_friends"></div>
               </div>
@@ -64,6 +64,9 @@
       <p>
         <%= text_area_tag("share_message", "", :class => "shareText") %>
       </p>
+      <div id="shareErrors">
+        <p class="errorMessage">Please add at least on person to share with.</p>
+      </div>
     </div>
   </fieldset>
   <div class="submitLine clearfix">

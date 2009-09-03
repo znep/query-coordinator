@@ -6,7 +6,7 @@
 <h2 class="panelHeader <%= shares.size > 0 ? '' : ' last' %> <%= get_permissions_icon_class_for_view(view) %>">
   <%= view.is_public? ? "Public" : "Private" %>
 </h2>
-<%- if shares.size > 0 %>
+<%- if shares.size > 0 && view.can_edit %>
   <h2 class="panelHeader typeNotify last">
     <% form_tag(url_for(:controller => :blists, 
       :action => :notify_all_of_changes)) do %>

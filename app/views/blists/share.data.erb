@@ -35,17 +35,19 @@
     $("#recipientsEditForm").validate({
       rules: {
         add_recipient_email: {
+            required: function(element) { return $("#add_friends").value() == undefined; },
             email: true
         }
       },
       messages: {
         add_recipient_email: {
+          required: "Please select a friend or enter an email address.",
           email: "Please enter a valid email address."
         }
       },
       submitHandler: function(form) {
         var $form = $(form);
-        
+
         var newRecipient = {
           id: "remove_" + addedRecipientUID,
           email: $("#add_recipient_email").val(),
@@ -108,46 +110,61 @@
       }
     });
     
-    $("#shareForm").submit(function(event)
-    {
-      event.preventDefault();
-      var $form = $(this);
+    
+    $.validator.addMethod("recipientsExist", function(value, element) { return addedRecipients.length > 0; }, "");
       
-      var formData = {
-        message: $("#share_message").val(),
-        "recipients[]": addedRecipients,
-        authenticity_token: $("input[name='authenticity_token']").val()
-      };
+    $("#shareForm").validate({
+      rules: { share_message: "recipientsExist" },
+      errorContainer: "#shareErrors",
+      submitHandler: function(form)
+      {
+        var $form = $(form);
       
-      $.ajax({
-        url: $form.attr("action"),
-        type: "POST",
-        data: formData,
-        dataType: "json",
-        success: function(data) {
-          if (data.status == "failure")
-          {
-            $(".shareWrapper .errorMessage").append(
-              $("<p class=\"error\">Unable to share to the recipients indicated below in red.</p>")
-            );
-            $(data.errors).each(function()
+        var formData = {
+          message: $("#share_message").val(),
+          "recipients[]": addedRecipients,
+          authenticity_token: $("input[name='authenticity_token']").val()
+        };
+      
+        $.ajax({
+          url: $form.attr("action"),
+          type: "POST",
+          data: formData,
+          dataType: "json",
+          success: function(data) {
+            if (data.status == "failure")
             {
-              var error = this;
-              $("#" + error.removeId).closest("tr").addClass("error");
-            });
-            $(".recipientsShowTableContainer table tbody tr:not('.error')").remove();
-          }
-          else
-          {
-            blist.meta.updateMeta("sharing", $("#view_id").val(), 
-              function() { $("#throbber").hide(); },
-              function() { $("#infoPane .gridList").blistListHoverItems(); }
-            );
+              $(".shareWrapper .errorMessage").append(
+                $("<p class=\"error\">Unable to share to the recipients indicated below in red.</p>")
+              );
+              $(data.errors).each(function()
+              {
+                var error = this;
+                $("#" + error.removeId).closest("tr").addClass("error");
+              });
+              $(".recipientsShowTableContainer table tbody tr:not('.error')").remove();
+            }
+            else
+            {
+              blist.meta.updateMeta("sharing", $("#view_id").val(), 
+                function() { $("#throbber").hide(); },
+                function() { $("#infoPane .gridList").blistListHoverItems(); }
+              );
+              blist.meta.updateMeta("summary", $("#view_id").val(),
+                function() {},
+                function() {
+                  $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
+                  $("#infoPane .editItem").infoPaneItemEdit({
+                        submitSuccessCallback: blist.infoEditCallback
+                    });
+                }
+              );
             
-            $("#modal").jqmHide();
+              $("#modal").jqmHide();
+            }
           }
-        }
-      });
+        });
+      }
     });
   };
 </script>

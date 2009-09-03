@@ -1926,14 +1926,18 @@
                     $locked.css('top', $header.outerHeight() - scrollVert);
                     rowsScrolledTo = scrollVert;
                 }
-            }
+            };
 
             // If we scrolled horizontally, delay the check for vertical scrolling.  Why?  Because if it hasn't changed
             // then $scrolls[0].scrollTop is very expensive
             if (horizontalChange)
+            {
                 setTimeout(doVertScroll, 50);
+            }
             else
+            {
                 doVertScroll();
+            }
         };
 
 
@@ -2606,7 +2610,9 @@
 
                     // This test is incredibly important for perf. on Safari
                     if (style.width != widthStyle)
+                    {
                         style.width = widthStyle;
+                    }
                 }
             }
 
@@ -3157,7 +3163,7 @@
 				}
                 delete renderedRows[unusedID];
             }
-            end("renderRows.destroy")
+            end("renderRows.destroy");
 
             // Now add new/moved rows
             // appendLockedRows must be called first; it should probably

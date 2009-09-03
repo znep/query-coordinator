@@ -1637,7 +1637,7 @@ blist.namespace.fetch('blist.data');
             if (sortBys.length == 1)
             {
                 var sort = sortBys[0];
-                var colIndex = findColumnIndex(parseInt(sort.viewColumnId));
+                var colIndex = findColumnIndex(parseInt(sort.viewColumnId, 10));
                 this.sort(colIndex, !(sort.flags != null && $.inArray('asc', sort.flags) >= 0));
                 return;
             }
@@ -1661,7 +1661,7 @@ blist.namespace.fetch('blist.data');
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
             configureActive(active);
-        }
+        };
 
         /**
          * Sort the data by a single column.

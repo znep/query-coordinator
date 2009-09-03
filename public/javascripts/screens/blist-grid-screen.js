@@ -754,6 +754,11 @@ $(function ()
         var viewId = $link.closest("table").attr("id").split("_")[1];
         $.getJSON($link.attr("href"),
             function(data) {
+                // Replace the delete X with a throbber.
+                $link.closest(".cellInner").html(
+                    $("<img src=\"/images/throbber.gif\" width=\"16\" height=\"16\" alt=\"Deleting...\" />")
+                );
+                
                 blist.meta.updateMeta("sharing", viewId,
                     function() { $("#throbber").hide(); },
                     function() { $("#infoPane .gridList").blistListHoverItems(); }

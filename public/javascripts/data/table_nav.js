@@ -43,10 +43,10 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         for (var col in selectedColumns) {
             return true;
         }
-        if (model.selectedRows && model.selectedRows.length)
-		{
+        if (model.hasSelectedRows())
+        {
             return true;
-		}
+        }
         return false;
     };
 
@@ -102,7 +102,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         }
 
         return selectionMap;
-    };
+    }
 
     this.goTo = function(x, y, event, selecting, wrap)
     {
@@ -214,7 +214,14 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         activeCellXCount = xNum;
         activeCellY = y;
 
-        // Enable copy & paste
+        return true;
+    };
+
+    /**
+     * Update text area state to enable or disable copy in the native browser menus.  This is called by the table in
+     * updateCellNavCues which is called after any even that affects selection.
+     */
+    this.initCopy = function() {
         // If we can avoid this -- and we hope we can by hooking the "copy" event, then we just need to select enough
         // in the text area to enable the "copy" option in the browser
         /*
@@ -233,10 +240,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             $textarea[0].select();
         } else {
             $textarea.text('');
-		}
-
-        return true;
-    };
+        }
+    }
 
     /**
      * Walk the selection for a sequence of rows.
@@ -282,13 +287,13 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 modelRow = row;
             } else {
                 modelRow = model.get(index);
-			}
+            }
 
             // Skip the blank row
             if (!modelRow || modelRow.id == "blank")
-			{
+            {
                 continue;
-			}
+            }
 
             // Update the selection map, and clear the selection if there's no selection in the row
             if (model.selectedRows[modelRow.id] !== undefined)
@@ -917,9 +922,9 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                     var fn = type.renderGen("row" + model.column(activeCellXStart).dataLookupExpr, true, col);
                     var value = blist.data.types.compile(fn, renderContextVars);
                     if (value != undefined)
-					{
+                    {
                         return value;
-					}
+                    }
                 }
             }
             return '';
@@ -928,19 +933,23 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         // Locate all columns that will be present in the selection
         var usedCols;
         var layoutLevel = layout[selectionLevel];
-        if (model.selectedRows && model.selectedRows.length) {
+        if (model.hasSelectedRows()) {
             usedCols = [];
             for (var i = 0; i < layoutLevel.length; i++)
-			{
+            {
                 usedCols[i] = layoutLevel[i].mcol;
-			}
+            }
         } else {
             usedCols = [];
             var selectedCols = this.getSelectedColumns();
-            for (var id in selectedCols)
-			{
-                usedCols[id] = layoutLevel[id].mcol;
-			}
+            for (i = 0; i < layoutLevel.length; i++)
+            {
+                var mcol = layoutLevel[i].mcol;
+                if (selectedCols[mcol.id])
+                {
+                    usedCols[i] = mcol;
+                }
+            }
             var selBoxes = convertCellSelection();
             for (i = 0; i < selBoxes.length; i++) {
                 var box = selBoxes[i];
@@ -954,30 +963,30 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         var mapFnSrc = '(function(row, selmap) {';
         var didOne = false;
         for (i = 0; i < usedCols.length; i++) 
-		{
+        {
             if (usedCols[i]) {
                 col = usedCols[i];
                 if (col.type == 'nested_table' || col.type == 'fill' || (col.level.id || 0) != selectionLevel)
-				{
+                {
                     // TODO -- include body of nested tables?
                     continue;
-				}
+                }
                 if (!col.dataLookupExpr)
-				{
+                {
                     // This is a bug -- the column shouldn't be selected because it has no data.  Just ignore.
                     continue;
-				}
+                }
                 if (didOne)
-				{
+                {
                     mapFnSrc += 'rawDoc.push("\\t");';
                 } else
-				{
+                {
                     didOne = true;
-				}
+                }
                 type = blist.data.types[col.type] || blist.data.types.text;
                 mapFnSrc += 'if (selmap[' + i + ']) rawDoc.push(' + type.renderGen("row" + col.dataLookupExpr, true, col, renderContextVars) + ');';
             }
-		}
+        }
         mapFnSrc += 'rawDoc.push("\\r\\n");})';
 
         // Compile the function
@@ -987,10 +996,10 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         this.processSelection(model.rows(), mapFn, function() {});
         rawDoc.pop(); // Remove final carriage return
         if (rawDoc.length == 1)
-		{
+        {
             // Only a single cell selected
             return rawDoc[0];
-		}
+        }
         return rawDoc.join('');
     };
 

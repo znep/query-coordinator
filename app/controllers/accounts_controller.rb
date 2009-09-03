@@ -72,6 +72,9 @@ class AccountsController < ApplicationController
       end
     end
 
+    # Clear out the OpenId link, now that it's tied to an account.
+    session.delete :openid_identifier_id
+
     # Now, authenticate the user
     @user_session = UserSession.new('login' => params[:account][:login], 'password' => params[:account][:password])
     if @user_session.save

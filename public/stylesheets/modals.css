@@ -963,6 +963,12 @@ dl.versionInfo dd
 
 /*** START: Sort dialog ***/
 
+div.itemWrapper
+{
+    overflow: hidden;
+    line-height: 1.3em;
+}
+
 div.itemWrapper div.ascension
 {
     position: absolute;

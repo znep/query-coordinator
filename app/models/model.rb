@@ -7,8 +7,8 @@ class Model
   attr_accessor :update_data
 
 
-  def initialize
-    @data = {}
+  def initialize(data = {})
+    @data = data
     @update_data = {}
   end
 

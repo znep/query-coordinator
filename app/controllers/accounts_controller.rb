@@ -49,23 +49,24 @@ class AccountsController < ApplicationController
   end
 
   def create
+    @body_class = 'signup'
+    @token = params[:inviteToken] || ""
+
     # First, try creating the user
     begin
       # Link their OpenID identifier, if any. The identifier is set in the
       # session rather than as a hidden form param because we don't want it
       # to be spoofable.
-      account = params[:account]
-      if session[:openid_identifier_id]
-        account[:openIdIdentifierId] = session[:openid_identifier_id]
-      end
+      @account = User.new(params[:account])
+      @account.openIdIdentifierId = session[:openid_identifier_id] if session[:openid_identifier_id]
 
-      user = User.create(account, params[:inviteToken])
+      @account.create(params[:inviteToken])
     rescue CoreServer::CoreServerError => e
       error = e.error_message
       respond_to do |format|
         format.html do
           flash[:error] = error
-          return (redirect_to signup_path)
+          return (render :action => :new)
         end
         format.json { return (render :json => {:error => error}, :callback => params[:callback]) }
       end
@@ -80,7 +81,7 @@ class AccountsController < ApplicationController
       # profile photo.
       if params[:profile_image] && !params[:profile_image].blank?
         begin
-          user.profile_image = params[:profile_image]
+          @account.profile_image = params[:profile_image]
         rescue CoreServer::CoreServerError => e
           logger.warn "Unable to update profile photo: #{e.error_code} #{e.error_message}"
         end

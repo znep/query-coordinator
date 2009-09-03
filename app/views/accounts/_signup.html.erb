@@ -7,7 +7,7 @@
   </div>
 
   <div class='mainContent'>
-    <% if flash[:rpx_user] %>
+    <% if @account.openIdIdentifierId %>
       <div class='title clearfix openid'>
         <h2>Complete Your Signup</h2>
         <p><strong>You still need to create a Socrata account.</strong> If you
@@ -40,7 +40,7 @@
           </p>
           <p>
             <%= label_tag :emailConfirm, 'Confirm Email', :class => 'required' %>
-            <%= text_field_tag :emailConfirm %>
+            <%= text_field_tag :emailConfirm, params[:emailConfirm] %>
           </p>
           <p>
             <%= f.label :login, 'Username', :class => 'required' %>
@@ -52,7 +52,7 @@
           </p>
           <p>
             <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required' %>
-            <%= password_field_tag :passwordConfirm %>
+            <%= password_field_tag :passwordConfirm, params[:passwordConfirm] %>
           </p>
         </fieldset>
 
@@ -80,7 +80,7 @@
           </p>
           <p>
             <%= label_tag :inviteOthers, 'Invite Others' %>
-            <%= text_area_tag("inviteOthers", "", :class => "textPrompt", :title => "Enter email addresses separated by commas") %>
+            <%= text_area_tag("inviteOthers", params[:inviteOthers], :class => "textPrompt", :title => "Enter email addresses separated by commas") %>
           </p>
         </fieldset>
 

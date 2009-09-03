@@ -8,6 +8,7 @@ module ThemesHelper
         
     SUMMARY_INSIDE_BG = 'cacaca'
     SUMMARY_OUTSIDE_BG = 'ececec'
+    SUMMARY_HOVER_BG = 'e3ecf7'
 
     def main_button_inactive_bg
         box :h => 35, :r => 10, :ry => 10, :fc => :main_button_bg, :bc => MAIN_BUTTON_BG, :s => 'h'
@@ -25,6 +26,10 @@ module ThemesHelper
       # TODO: This should eventually be a gradient
       box :h => 3, :ry => 1, :rh => 1, :w => 150, :bc => :highlight_color
     end
+    
+    def background_summary_list_title
+      box :h => 19, :w => 19, :r => 9, :rw => 9, :bc => :highlight_color, :fc => SUMMARY_HOVER_BG
+    end
 
     def bottom_left_dark_bg
       box :w => 18, :h => 18, :r => 9, :rw => 9, :ry => 9, :bc => SUMMARY_OUTSIDE_BG, :fc => :highlight_color
@@ -39,11 +44,15 @@ module ThemesHelper
     end
 
     def summary_tab_bg
-        box :h => 23, :r => 3, :rh => 20, :fc => SUMMARY_OUTSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :ew => 1, :ec => :highlight_color, :s => 'h'
+      box :h => 23, :r => 3, :rh => 20, :fc => SUMMARY_OUTSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :ew => 1, :ec => :highlight_color, :s => 'h'
     end
 
     def summary_tab_active_bg
-        box :h => 23, :r => 3, :rh => 20, :fc => SUMMARY_INSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :ew => 1, :ec => :highlight_color, :s => 'h'
+      box :h => 23, :r => 3, :rh => 20, :fc => SUMMARY_INSIDE_BG, :bc => SUMMARY_OUTSIDE_BG, :ew => 1, :ec => :highlight_color, :s => 'h'
+    end
+    
+    def background_expanded_list
+      box :h => 3, :w => 150, :rh => 1, :ry => 1, :bc => :highlight_color
     end
     
     def button_hover_slice_bg

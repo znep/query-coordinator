@@ -151,7 +151,10 @@ blist.namespace.fetch('blist.data.types');
         if (value == null) {
             return '';
         }
-        value = parseFloat(value);
+        if (typeof value != "number") {
+            // Skip this if we already have a number as it is slow
+            value = parseFloat(value);
+        }
         if (decimalPlaces !== undefined) {
             value = value.toFixed(decimalPlaces);
         }

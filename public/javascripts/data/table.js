@@ -82,22 +82,18 @@
         };
 
         // Sort data
-        var sortBy = -1;
-        var sortDescending;
         var sort = function(index)
         {
             begin("sort.configure");
-            if (sortBy == index)
+            var columnSort = model.meta().sort[columns[index].id];
+
+            var sortDescending = false;
+            if (columnSort != undefined)
             {
-                sortDescending = !sortDescending;
+                sortDescending = columnSort.ascending;
             }
-            else
-            {
-                sortBy = index;
-                sortDescending = false;
-            }
-            configureSortHeader();
             end("sort.configure");
+
             begin("sort.sort");
             model.sort(index, sortDescending);
             end("sort.sort");
@@ -110,18 +106,24 @@
                 .attr('title', 'Sort ascending')
                 .removeClass('active')
                 .closest('.blist-th').removeClass('sorted');
-            if (sortBy >= 0 && columns[sortBy].dom)
+
+            for (var i=0; i < columns.length; i++)
             {
-                var col = columns[sortBy];
-                var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
-                var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
-                var newTitle = 'Sort ' +
-                    (sortDescending ? 'ascending' : 'descending');
-                $('.sort', col.dom)
-                    .removeClass(oldClass).addClass(newClass)
-                    .attr('title', newTitle)
-                    .addClass('active')
-                    .closest('.blist-th').addClass('sorted');
+                var columnSort = model.meta().sort[columns[i].id];
+                if (columns[i].dom && columnSort != undefined)
+                {
+                    var sortDescending = !columnSort.ascending;
+                    var col = columns[i];
+                    var oldClass = 'sort-' + (sortDescending ? 'asc' : 'desc');
+                    var newClass = 'sort-' + (sortDescending ? 'desc' : 'asc');
+                    var newTitle = 'Sort ' +
+                        (sortDescending ? 'ascending' : 'descending');
+                    $('.sort', col.dom)
+                        .removeClass(oldClass).addClass(newClass)
+                        .attr('title', newTitle)
+                        .addClass('active')
+                        .closest('.blist-th').addClass('sorted');
+                }
             }
         };
 
@@ -1981,14 +1983,18 @@
                     $locked.css('top', $header.outerHeight() - scrollVert);
                     rowsScrolledTo = scrollVert;
                 }
-            }
+            };
 
             // If we scrolled horizontally, delay the check for vertical scrolling.  Why?  Because if it hasn't changed
             // then $scrolls[0].scrollTop is very expensive
             if (horizontalChange)
+            {
                 setTimeout(doVertScroll, 50);
+            }
             else
+            {
                 doVertScroll();
+            }
         };
 
 
@@ -2551,21 +2557,6 @@
                 $nameLabel.html(model.title());
             }
 
-            sortBy = -1;
-            // Set up data for existing sort
-            if (model.meta().sort)
-            {
-                var s = model.meta().sort;
-                sortDescending = !s.ascending;
-                $.each(columns, function (i, c)
-                {
-                    if (s.column.dataIndex == c.dataIndex)
-                    {
-                        sortBy = i;
-                        return false;
-                    }
-                });
-            }
             end("initMeta");
 
             configureWidths();
@@ -2675,7 +2666,9 @@
 
                     // This test is incredibly important for perf. on Safari
                     if (style.width != widthStyle)
+                    {
                         style.width = widthStyle;
+                    }
                 }
             }
 
@@ -2972,21 +2965,6 @@
         {
             begin("updateHeader");
 
-            sortBy = -1;
-            // Set up data for existing sort
-            if (model.meta().sort)
-            {
-                var s = model.meta().sort;
-                sortDescending = !s.ascending;
-                $.each(columns, function (i, c)
-                {
-                    if (s.column.dataIndex == c.dataIndex)
-                    {
-                        sortBy = i;
-                        return false;
-                    }
-                });
-            }
             configureSortHeader();
             configureFilterHeaders();
 
@@ -3241,7 +3219,7 @@
 				}
                 delete renderedRows[unusedID];
             }
-            end("renderRows.destroy")
+            end("renderRows.destroy");
 
             // Now add new/moved rows
             // appendLockedRows must be called first; it should probably
@@ -3383,6 +3361,8 @@
         $this.bind('row_add', updateLayout);
         $this.bind('row_remove', updateLayout);
         $this.bind('col_width_change', configureWidths);
+
+        $this.bind('sort_change', configureSortHeader); 
 
         // Install the model
         $this.blistModel(options.model);

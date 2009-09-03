@@ -308,9 +308,6 @@ blist.blistGrid.menuHandler = function(event)
         case 'filterShow':
             blist.util.flashInterface.showPopup('LensBuilder:Filter');
             break;
-        case 'sortShow':
-            blist.util.flashInterface.showPopup('LensBuilder:Sort');
-            break;
         case 'hide-show-col':
             var $li = $target.closest('li');
             $('#readGrid').datasetGrid().showHideColumns(actionId,
@@ -494,6 +491,8 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
         }
     }
 };
+
+blist.infoEditSubmitSuccess = blistGridNS.infoEditCallback;
 
 
 /* Initial start-up calls, and setting up bindings */
@@ -755,9 +754,23 @@ $(function ()
         var viewId = $link.closest("table").attr("id").split("_")[1];
         $.getJSON($link.attr("href"),
             function(data) {
+                // Replace the delete X with a throbber.
+                $link.closest(".cellInner").html(
+                    $("<img src=\"/images/throbber.gif\" width=\"16\" height=\"16\" alt=\"Deleting...\" />")
+                );
+                
                 blist.meta.updateMeta("sharing", viewId,
                     function() { $("#throbber").hide(); },
                     function() { $("#infoPane .gridList").blistListHoverItems(); }
+                );
+                blist.meta.updateMeta("summary", viewId,
+                    function() {},
+                    function() {
+                      $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
+                      $("#infoPane .editItem").infoPaneItemEdit({
+                            submitSuccessCallback: blistGridNS.infoEditCallback
+                        });
+                    }
                 );
             }
         );

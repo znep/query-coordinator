@@ -38,8 +38,10 @@ blist.common.showModalHandler = function(hash)
         }
     });
     
-    $.Tache.Get({ 
+    $.ajax({ 
         url: $trigger.attr("href"),
+        cache: false,
+        type: "GET",
         success: function(data)
         {
             $modal.html(data).show();

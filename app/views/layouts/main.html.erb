@@ -96,7 +96,7 @@
 
 <div class="footerContainer">
   <div id='footer' class="clearfix">
-    <%- if th.respond_to?('footer_html') && !th.footer_html.nil?-%>
+    <%- if !th.footer_html.nil? -%>
       <%= th.footer_html %>
     <%- else -%>
       <%- if is_gov_site? -%>

@@ -268,6 +268,7 @@ $.fn.reorderableList = function(options) {
             $items.css('top', 0);
             $items.draggable('disable');
             $this.find('.inactiveList ul').append($items);
+            config.onChange();
         });
     });
 };

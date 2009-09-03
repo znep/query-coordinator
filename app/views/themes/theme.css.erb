@@ -70,6 +70,11 @@ body.discover #mainNav li.discover
     background-image: <%= expanded_list_bg %>;
 }
 
+.infoContentOuter.listContainer .infoContent dt.hover
+{
+    background-image: <%= background_summary_list_title %>;
+}
+
 .infoContentOuter
 {
     border-color: #<%= th.highlight_color %>;
@@ -113,6 +118,17 @@ body.discover #mainNav li.discover
 .metadataPane .summaryTabs li.active .tabInner
 {
     background-image: <%= summary_tab_active_bg %>;
+}
+
+/*** PUBLISH TOOL ***/
+<%= th.body_class %> #publishContent .publishHeader .publishCodeWrapper
+{
+    background-color: #<%= th.highlight_color %>;
+}
+
+#publishOptionsPane .infoContentRightBg
+{
+    background: <%= background_expanded_list %> -10px 0 repeat-y;
 }
 
 /*** DATASET BUTTON BAR ***/

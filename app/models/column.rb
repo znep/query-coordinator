@@ -39,6 +39,11 @@ class Column < Model
     return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
 
+  def is_sortable?
+    return client_type != "nested_table" && 
+      client_type != "tag"
+  end
+
   def convertable_types
     if dataType.type == "text"
       return [

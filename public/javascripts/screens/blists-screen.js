@@ -349,6 +349,26 @@ blist.myBlists.itemMenuSetup = function()
     });
 };
 
+blist.myBlists.infoEditCallback = function(fieldType, fieldValue, itemId, responseData)
+{
+    if (fieldType == "description" || fieldType == "name")
+    {
+        var row = myBlistsNS.model.getByID(itemId);
+        row[fieldType] = fieldValue;
+        myBlistsNS.model.change([row]);
+    }
+    if (fieldType == 'name')
+    {
+        // Update in filtered view list
+        $('.singleInfoFiltered .gridList #filter-row_' + itemId +
+            ' .name a').text(fieldValue);
+    }
+
+    // If anything in the info pane is changed, make sure it reloads
+    $.Tache.DeleteAll();
+};
+blist.infoEditSubmitSuccess = myBlistsNS.infoEditCallback;
+
 blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 {
     // Load the info pane.
@@ -384,24 +404,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     });
 
     $("#infoPane .editItem").infoPaneItemEdit({
-        submitSuccessCallback: function(fieldType, fieldValue, itemId, responseData)
-        {
-            if (fieldType == "description" || fieldType == "name")
-            {
-                var row = myBlistsNS.model.getByID(itemId);
-                row[fieldType] = fieldValue;
-                myBlistsNS.model.change([row]);
-            }
-            if (fieldType == 'name')
-            {
-                // Update in filtered view list
-                $('.singleInfoFiltered .gridList #filter-row_' + itemId +
-                    ' .name a').text(fieldValue);
-            }
-
-            // If anything in the info pane is changed, make sure it reloads
-            $.Tache.DeleteAll();
-        }
+        submitSuccessCallback: myBlistsNS.infoEditCallback
     });
     
     $("#throbber").hide();
@@ -501,6 +504,7 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         });
         
     // Share deleting
+    $(".shareDelete").die("click");
     $(".shareDelete").live("click", function(event)
     {
         event.preventDefault();
@@ -509,9 +513,23 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         var viewId = $link.closest("table").attr("id").split("_")[1];
         $.getJSON($link.attr("href"),
             function(data) {
+                // Replace the delete X with a throbber.
+                $link.closest(".cellInner").html(
+                    $("<img src=\"/images/throbber.gif\" width=\"16\" height=\"16\" alt=\"Deleting...\" />")
+                );
+                
                 blist.meta.updateMeta("sharing", viewId,
                     function() { $("#throbber").hide(); },
                     function() { $("#infoPane .gridList").blistListHoverItems(); }
+                );
+                blist.meta.updateMeta("summary", viewId,
+                    function() {},
+                    function() {
+                      $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
+                      $("#infoPane .editItem").infoPaneItemEdit({
+                            submitSuccessCallback: myBlistsNS.infoEditCallback
+                        });
+                    }
                 );
             }
         );
@@ -957,43 +975,43 @@ blist.myBlists.initializeGrid = function()
 
 blist.myBlists.columns = [[
   { width: 18, dataIndex: 'id', dataLookupExpr: '.id',
-    renderer: blist.myBlists.customHandle, sortable: false },
+renderer: blist.myBlists.customHandle, sortable: false, id: 1 },
   { cls: 'favorite', name: 'Favorite?', width: 22,
     dataIndex: 'favorite', dataLookupExpr: '.favorite',
-    renderer: blist.myBlists.customFav, sortable: true},
+    renderer: blist.myBlists.customFav, sortable: true, id: 2},
   { cls: 'type', name: 'Type', width: 31,
     dataIndex: 'isDefault', dataLookupExpr: '.isDefault',
-    renderer: blist.myBlists.customType, sortable: true },
+    renderer: blist.myBlists.customType, sortable: true, id: 3 },
   { name: 'Name', percentWidth: 20, dataIndex: 'name', dataLookupExpr: '.name',
-    renderer: blist.myBlists.customDatasetName, group: true, sortable: true },
+    renderer: blist.myBlists.customDatasetName, group: true, sortable: true, id: 4 },
   { name: 'Description', percentWidth: 40,
     dataIndex: 'description', dataLookupExpr: '.description',
-    renderer: blist.myBlists.customClipText, group: true, sortable: true },
+    renderer: blist.myBlists.customClipText, group: true, sortable: true, id: 5 },
   { name: 'Owner', percentWidth: 20,
     dataIndex: 'ownerName', dataLookupExpr: '.ownerName',
-    renderer: blist.myBlists.customClipText, group: true, sortable: true},
+    renderer: blist.myBlists.customClipText, group: true, sortable: true, id: 6},
   { name: 'Last Updated', percentWidth: 20,
     dataIndex: 'updatedAt', dataLookupExpr: '.updatedAt',
-    group: true, type: 'date', renderer: blist.myBlists.customDateMeta }
+    group: true, type: 'date', renderer: blist.myBlists.customDateMeta, id: 7 }
 ]];
 blist.myBlists.columns.push([
     { fillFor: [myBlistsNS.columns[0][0]],
         dataIndex: 'id', dataLookupExpr: '.id',
-        renderer: blist.myBlists.customHandle },
+        renderer: blist.myBlists.customHandle, id: 1 },
     { cls: 'favorite', name: 'Favorite?', fillFor: [myBlistsNS.columns[0][1]],
         dataIndex: 'favorite', dataLookupExpr: '.favorite',
-        renderer: blist.myBlists.customFav },
+        renderer: blist.myBlists.customFav, id: 2 },
     { cls: 'type', name: 'Type', fillFor: [myBlistsNS.columns[0][2]],
         dataIndex: 'isDefault', dataLookupExpr: '.isDefault',
-        renderer: blist.myBlists.customType },
+        renderer: blist.myBlists.customType, id: 3 },
     { cls: 'name', name: 'Name', fillFor: [myBlistsNS.columns[0][3]],
         dataIndex: 'name', dataLookupExpr: '.name',
-        renderer: blist.myBlists.customDatasetName },
+        renderer: blist.myBlists.customDatasetName, id: 4 },
     { name: 'Description', fillFor: [myBlistsNS.columns[0][4]],
         dataIndex: 'description', dataLookupExpr: '.description',
-        renderer: blist.myBlists.customClipText },
+        renderer: blist.myBlists.customClipText, id: 5 },
     { type: 'fill', fillFor: [myBlistsNS.columns[0][5],
-        myBlistsNS.columns[0][6] ] }
+        myBlistsNS.columns[0][6] ], id: 6 }
 ]);
 
 blist.myBlists.options = {

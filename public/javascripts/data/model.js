@@ -137,6 +137,30 @@ blist.namespace.fetch('blist.data');
         var baseURL = null;
         var supplementalAjaxOptions = null;
 
+        var findColumn = function(id) {
+            var column;
+            $.each(meta.view.columns, function(i, col) {
+                if (col.id == id)
+                {
+                    column = col;
+                    return false;
+                }
+            });
+            return column;
+        };
+
+        var findColumnIndex = function(id) {
+            var index;
+            $.each(meta.columns[0], function(i, col) {
+                if (col.id == id)
+                {
+                    index = i;
+                    return false;
+                }
+            });
+            return index;
+        };
+
         var columnType = function(index) {
             if (meta.columns) {
                 var column = meta.columns[0][index];
@@ -280,6 +304,10 @@ blist.namespace.fetch('blist.data');
                 $.each(meta.columnFilters, function (i, v)
                     { if (v != null) { isProg = true; return false; } });
             }
+            if (meta.view.sortBys.length > 1)
+            {
+               isProg = true;
+            }
             return isProg;
         };
 
@@ -346,9 +374,11 @@ blist.namespace.fetch('blist.data');
          */
         this.load = function(config)
         {
+            //console.profile();
             if (config.meta) { this.meta(config.meta); }
             if (config.rows || config.data)
             { this.rows(config.rows || config.data); }
+            //console.profileEnd();
         };
 
         /**
@@ -736,44 +766,28 @@ blist.namespace.fetch('blist.data');
                 { assignIDs(meta.columns[i], meta.columns[i]); }
 
                 var rootColumns = meta.columns[0];
+
                 // Configure root column sorting based on view configuration if
                 // a view is present
+                var sorts = {};
+                meta.sort = {};
+
                 if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
                 {
-                    var s = meta.view.sortBys[0];
-                    var sortCol;
-                    $.each(rootColumns, function (i, c)
+                    $.each(meta.view.sortBys, function(i, sort) {
+                        sorts[sort.viewColumnId] = sort;
+                    });
+
+                    $.each(meta.view.columns, function (i, c)
                     {
-                        if (c.id == s.viewColumnId)
+                        if (sorts[c.id] != undefined)
                         {
-                            sortCol = c;
-                            return false;
+                            meta.sort[c.id] = {
+                                ascending: (sorts[c.id].flags != null && $.inArray('asc', sorts[c.id].flags) >= 0),
+                                column: c
+                              };
                         }
                     });
-                    if (sortCol)
-                    {
-                        meta.sort = {ascending: s.flags != null &&
-                            $.inArray('asc', s.flags) >= 0, column: sortCol};
-                    }
-                    else
-                    {
-                        var foundCol = false;
-                        $.each(meta.view.columns, function (i, c)
-                        {
-                            if (c.id == s.viewColumnId)
-                            {
-                                foundCol = true;
-                                return false;
-                            }
-                        });
-                        if (!foundCol)
-                        {
-                            // We're dealing with a sort on a column that doesn't
-                            // exist in our view; we can't post this back, so
-                            // clear it out
-                            meta.view.sortBys = null;
-                        }
-                    }
                 }
 
                 // For each column at the root nesting level, ensure that
@@ -1632,8 +1646,40 @@ blist.namespace.fetch('blist.data');
             return changedRows;
         };
 
+        this.multiSort = function(sortBys)
+        {
+
+            if (sortBys.length == 1)
+            {
+                var sort = sortBys[0];
+                var colIndex = findColumnIndex(parseInt(sort.viewColumnId, 10));
+                this.sort(colIndex, !(sort.flags != null && $.inArray('asc', sort.flags) >= 0));
+                return;
+            }
+
+            meta.view.sortBys = sortBys;
+            meta.sort = {};
+            $.each(meta.view.sortBys, function(i, sort) {
+                var col = findColumn(sort.viewColumnId);
+                meta.sort[sort.viewColumnId] = {
+                    ascending: (sort.flags != null && $.inArray('asc', sort.flags) >= 0),
+                    column: col 
+                    };
+            });
+            sortConfigured = true;
+
+            $(listeners).trigger('sort_change');
+
+            // Sort
+            doSort();
+
+            // If there's an active filter, or grouping function, re-apply now
+            // that we're sorted
+            configureActive(active);
+        };
+
         /**
-         * Sort the data.
+         * Sort the data by a single column.
          *
          * @param order either a column index or a sort function
          * @param descending true to sort descending if order is a column index
@@ -1657,7 +1703,8 @@ blist.namespace.fetch('blist.data');
                     orderCol = meta.columns[0][order];
                 }
 
-                meta.sort = {column: orderCol, ascending: !descending};
+                meta.sort = {};
+                meta.sort[orderCol.id] = {column: orderCol, ascending: !descending};
 
                 // Update the view in-memory, so we can always serialize it to
                 //  the server and get the correct sort options

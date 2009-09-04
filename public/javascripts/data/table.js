@@ -1406,6 +1406,14 @@
                 var row = getRow(cell);
                 if (!row) { return; }
 
+                // Retrieve the column
+                var column = getColumn(cell);
+
+                // Notify listeners
+                var cellEvent = $.Event('cellclick');
+                $this.trigger(cellEvent, [ row, column, origEvent ]);
+                if (cellEvent.isDefaultPrevented()) { return; }
+
                 var skipSelect = false;
                 // If this is a row opener, invoke expand on the model
                 if ($(cell).hasClass('blist-opener') &&
@@ -1416,15 +1424,8 @@
                     skipSelect = true;
                 }
 
-                // Retrieve the column
-                var column = getColumn(cell);
-
-                // Notify listeners
-                var cellEvent = $.Event('cellclick');
-                $this.trigger(cellEvent, [ row, column, origEvent ]);
                 if (!skipSelect && (!cellNav || !cellNav.isActive()) &&
-                    options.selectionEnabled &&
-                    !cellEvent.isDefaultPrevented() && !(row.level < 0))
+                    options.selectionEnabled && !(row.level < 0))
                 {
                     if (origEvent.metaKey) // ctrl/cmd key
                     {
@@ -1540,6 +1541,8 @@
                 event.preventDefault();
                 return true;
             }
+
+            if ($(event.target).parents().index($outside) < 0) { return; }
 
             var cell = findCell(event);
             var editMode = false;
@@ -2908,7 +2911,7 @@
             // Render sort & filter headers
             configureSortHeader();
             configureFilterHeaders();
-            
+
             end("renderHeader-augment");
         };
 
@@ -3133,11 +3136,9 @@
          * Render all rows that should be visible but are not yet rendered.
          * Removes invisible rows.
          */
-        var renderRows = function() {
-            if (!model)
-            {
-                return;
-            }
+        var renderRows = function()
+        {
+            if (!model) { return; }
 
             begin("renderRows.setup");
             var top = $scrolls.scrollTop();
@@ -3156,17 +3157,12 @@
             var start = first;
             var stop = start + count * 1.5;
             var rows = model.rows();
-            if (start < 0)
-			{
-			   start = 0;
-			}
-            if (rows) {
-                if (stop > rows.length) {
-                    stop = rows.length;
-				}
-            } else if (stop > 0) {
-                stop = 0;
-			}
+            if (start < 0) { start = 0; }
+            if (rows)
+            {
+                if (stop > rows.length) { stop = rows.length; }
+            }
+            else if (stop > 0) { stop = 0; }
             end("renderRows.setup");
 
             // Render the rows that are newly visible
@@ -3192,9 +3188,7 @@
                         // Add a new row
                         rowRenderFn(html, i, row);
                         if (rowLockedRenderFn != null)
-						{
-                            rowLockedRenderFn(lockedHtml, i, row);
-						}
+                        { rowLockedRenderFn(lockedHtml, i, row); }
                         rowIndices[rowID] = i;
                     }
                 }
@@ -3213,10 +3207,7 @@
                 row = unusedRows[unusedID].row;
                 row.parentNode.removeChild(row);
                 row = unusedRows[unusedID].locked;
-                if (row)
-				{
-                    row.parentNode.removeChild(row);
-				}
+                if (row) { row.parentNode.removeChild(row); }
                 delete renderedRows[unusedID];
             }
             end("renderRows.destroy");
@@ -3231,13 +3222,15 @@
             appendRows(html.join(''));
             end("renderRows.append");
 
+            begin("renderRows.rowMods");
+            if (options.rowMods !== null) { options.rowMods(rows); }
+            end("renderRows.rowMods");
+
             begin("renderRows.finalize");
             // Load rows that aren't currently present
-            if (rowsToLoad.length) {
-                if (rowLoadTimer)
-				{
-                    clearTimeout(rowLoadTimer);
-				}
+            if (rowsToLoad.length)
+            {
+                if (rowLoadTimer) { clearTimeout(rowLoadTimer); }
                 rowLoadTimer = setTimeout(loadMissingRows, MISSING_ROW_LOAD_DELAY);
                 rowLoadRows = rowsToLoad;
             }
@@ -3397,6 +3390,7 @@
         resizeHandleAdjust: 3,
         rowHandleRenderer: '""',
         rowHandleWidth: 1,
+        rowMods: function(row) {},
         selectionEnabled: true,
         showGhostColumn: false,
         showName: true,

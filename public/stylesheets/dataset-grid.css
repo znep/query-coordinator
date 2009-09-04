@@ -131,7 +131,10 @@ div.blist-th-first
 .blist-th .filter { background-position: 0 -48px; }
 .blist-th .filter.active { display: block; }
 
-.blist-th .menuLink
+.blist-tdh { position: relative; }
+
+.blist-th .menuLink,
+.blist-tdh .menuLink
 {
     background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png?2);
     background-position: 0 0;
@@ -145,7 +148,9 @@ div.blist-th-first
 }
 
 .blist-th.hover .menuLink,
-.blist-th .menuLink.clicked
+.blist-hot-row .blist-tdh .menuLink,
+.blist-th .menuLink.clicked,
+.blist-tdh .menuLink.clicked
 {
     background-position: 0 -14px;
 }
@@ -644,11 +649,7 @@ ul.menu.rowMenu li
     display: block;
     height: 10px;
 }
-.columnHeaderMenu .blist-tstars-wrapper
-{
-    margin-top: 0.2em;
-    width: 50px;
-}
+.columnHeaderMenu .blist-tstars-wrapper { margin-top: 0.2em; }
 
 /* This is only used for initial positioning; the menu is pulled out, so real
  * styling needs to go directly on the menu */

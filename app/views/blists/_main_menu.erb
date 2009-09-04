@@ -138,7 +138,7 @@
                       #{'separator' => true},
                       {'section_title' => 'Add totals to:'}],
                   'submenu' => method(:column_aggregate_menu),
-                  'column_test' => proc {|c|
+                  'column_test' => proc {|c, p|
                   c.dataType.possible_aggregates.length > 1}})}
         ]}, is_owner, can_edit) %>
     </dd></dl>

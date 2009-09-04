@@ -120,24 +120,6 @@ module BlistsHelper
     menu_tag('id' => id, 'class' => 'contactsMenu', 'items' => items)
   end
 
-  def columns_show_menu(view, args=nil)
-    args ||= {}
-    items = [{'button' => true, 'text' => 'Previous',
-      'href' => '#prev', 'class' => 'prev'}]
-
-    view.columns.each do |c|
-      visible = !c.flag?('hidden')
-      items << {'text' => h(c.name),
-        'href' => "#hide-show-col_#{c.id}",
-        'class' => get_datatype_class(c) + ' scrollable ' + (visible ? "checked" : "")}
-    end
-
-    items << {'button' => true, 'text' => 'Next',
-      'href' => '#next', 'class' => 'next'}
-
-    {'id' => args['id'], 'class' => 'columnsMenu columnsShowMenu', 'checkbox_menu' => true,'items' => items}
-  end
-
   def columns_menu(view, args = nil)
     args = args || {}
     modal = args.key?("modal") ? args["modal"] : false
@@ -164,11 +146,13 @@ module BlistsHelper
         # display nested table children)
         if (!c.is_nested_table || c.is_list ||
             include_options['nested_table']) &&
-          (!args['column_test'] || args['column_test'].call(c))
+          (!args['column_test'] || args['column_test'].call(c, nil))
           cur_item = {'text' => h(c.name),
             'modal' => modal,
-            'href' => args['href_prefix'] + c.id.to_s, 
-            'class' => get_datatype_class(c) + ' scrollable'}
+            'href' => args['href_prefix'] + c.id.to_s,
+            'class' => get_datatype_class(c) + ' scrollable' +
+              (args['checkbox_callback'] &&
+               args['checkbox_callback'].call(c) ? ' checked' : '')}
           if (args['submenu'])
             cur_item['submenu'] = args['submenu'].call(c)
           end
@@ -181,11 +165,13 @@ module BlistsHelper
           include_options['nested_table_children']
           (c.childColumns || []).each do |cc|
             if (!cc.flag?('hidden') || include_options['hidden']) &&
-              (!args['column_test'] || args['column_test'].call(cc))
+              (!args['column_test'] || args['column_test'].call(cc, c))
               cur_item = {'text' => h(c.name) + ': ' + h(cc.name),
                 'modal' => modal,
-                'href' => args['href_prefix'] + cc.id.to_s, 
-                'class' => get_datatype_class(cc) + ' scrollable'}
+                'href' => args['href_prefix'] + cc.id.to_s,
+                'class' => get_datatype_class(cc) + ' scrollable' +
+                  (args['checkbox_callback'] &&
+                   args['checkbox_callback'].call(cc) ? ' checked' : '')}
               if (args['submenu'])
                 cur_item['submenu'] = args['submenu'].call(cc)
               end
@@ -199,7 +185,8 @@ module BlistsHelper
     items.push({'button' => true, 'text' => 'Next',
       'href' => '#next', 'class' => 'next'})
 
-    {'id' => args['id'], 'class' => 'columnsMenu', 'items' => items}
+    {'id' => args['id'], 'class' => 'columnsMenu', 'items' => items,
+      'checkbox_menu' => args['checkbox_menu']}
   end
 
   def column_aggregate_menu(column)

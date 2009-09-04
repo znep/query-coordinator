@@ -70,6 +70,7 @@
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },
+                        rowMods: function (rows) { rowMods(datasetObj, rows); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
@@ -234,11 +235,9 @@
                 var successCount = 0;
                 $.each(columns, function(i, colId)
                 {
-                    var matchCols = $.grep(view.columns, function(c, i)
-                            { return c.id == colId; });
-                    if (matchCols.length == 1)
+                    var col = datasetObj.settings._model.getColumnByID(colId);
+                    if (col)
                     {
-                        var col = matchCols[0];
                         if (!col.flags) { col.flags = []; }
                         if (hide)
                         { col.flags.push('hidden'); }
@@ -249,7 +248,7 @@
                         }
                         datasetObj.settings._model.updateColumn(col);
 
-                        var $li = $('.columnsShowMenu a[href*="_' + colId + '"]')
+                        var $li = $('#columnsShowMenu a[href*="_' + colId + '"]')
                             .closest('li');
                         if (hide) { $li.removeClass('checked'); }
                         else { $li.addClass('checked'); }
@@ -259,7 +258,7 @@
                             if (datasetObj.settings.currentUserId == view.owner.id)
                             {
                                 $.ajax({url: '/views/' + view.id + '/columns/' +
-                                    colId + '.json',
+                                    col.id + '.json',
                                     data: $.json.serialize({'hidden': hide}),
                                     type: 'PUT', dataType: 'json',
                                     contentType: 'application/json',
@@ -387,6 +386,7 @@
         }
         else if ($(origEvent.target).closest(".blist-column-adder-icon").length > 0)
         {
+            event.preventDefault();
             // Display the add column dialog.
             $('<a href="/blists/' + model.meta().view.id + '/columns/new?parent=' + column.id + '" rel="modal" />').click();
         }
@@ -433,16 +433,40 @@
         $(e.currentTarget).hide();
     };
 
+    var rowMods = function(datasetObj, rows)
+    {
+        $.each(rows, function(i, r)
+        {
+            $('#' + $(datasetObj.currentGrid).attr('id') + '-r' + r.id +
+                '.blist-tr-open .blist-tdh[uid]')
+                .each(function(i, tdh)
+                {
+                    var $tdh = $(tdh);
+                    if ($tdh.find('a.menuLink').length > 0) { return true; }
+                    var uid = $tdh.attr('uid');
+                    var col = datasetObj.settings._model.column(uid);
+                    if (col) { createHeaderMenu(datasetObj, col, $tdh); }
+                });
+        });
+    };
+
     /* Callback when rendering the grid headers.  Set up column on-object menus */
     var headerMods = function(datasetObj, col)
     {
-        // Create an object containing flags describing what should be present in the menu
+        createHeaderMenu(datasetObj, col, $(col.dom));
+    };
+
+    var createHeaderMenu = function(datasetObj, col, $colDom)
+    {
+        var isNested = col.nestedIn !== undefined;
+        // Create an object containing flags describing what should be present
+        // in the menu
         var features = {};
-        if (blist.data.types[col.type].sortable)
+        if (!isNested && blist.data.types[col.type].sortable)
         {
             features.sort = true;
         }
-        if (blist.data.types[col.type].filterable)
+        if (!isNested && blist.data.types[col.type].filterable)
         {
             features.filter = true;
         }
@@ -459,37 +483,37 @@
 
         // If we did not enable features, do not install the menu
         var haveFeatures = false;
-        for (var x in features) {
+        for (var x in features)
+        {
             haveFeatures = true;
             break;
         }
-        if (!haveFeatures)
-        {
-            return;
-        }
+        if (!haveFeatures) { return; }
 
         // Install the menu indicator DOM elements
-        var $col = $(col.dom);
-        $col.append('<a class="menuLink action-item" href="#column-menu_' +
-            col.index + '"></a>');
+        $colDom.append('<a class="menuLink action-item" href="#column-menu_' +
+            col.uid + '"></a>');
 
-        // Install an event handler that actually builds the menu on first mouse over
-        $col.one('mouseover', function() {
+        // Install an event handler that actually builds the menu on first
+        // mouse over
+        $colDom.one('mouseover', function()
+        {
+            if ($colDom.find('ul.menu').length > 0) { return; }
             var htmlStr =
                 '<ul class="menu columnHeaderMenu action-item" id="column-menu_' +
-                col.index + '">';
+                col.uid + '">';
 
             // Render sorting
             if (features.sort)
             {
                 htmlStr +=
                     '<li class="sortAsc singleItem">' +
-                    '<a href="#column-sort-asc_' + col.index + '">' +
+                    '<a href="#column-sort-asc_' + col.uid + '">' +
                     '<span class="highlight">Sort Ascending</span>' +
                     '</a>' +
                     '</li>' +
                     '<li class="sortDesc singleItem">' +
-                    '<a href="#column-sort-desc_' + col.index + '">' +
+                    '<a href="#column-sort-desc_' + col.uid + '">' +
                     '<span class="highlight">Sort Descending</span>' +
                     '</a>' +
                     '</li>';
@@ -521,7 +545,9 @@
                 htmlStr += '<li class="separator singleItem" />';
                 htmlStr += '<li class="properties singleItem">' +
                     '<a href="/blists/' + view.id + '/columns/' + col.id +
-                    '.json" rel="modal">' +
+                    '.json' + (col.nestedIn ?
+                        '?parent=' + col.nestedIn.header.id : '') +
+                    '" rel="modal">' +
                     '<span class="highlight">Edit Column Properties</span>' +
                     '</a>' +
                     '</li>';
@@ -534,9 +560,9 @@
                 '</div></li>' +
                 '</ul>';
 
-            $col.append(htmlStr);
-            var $menu = $col.find('ul.columnHeaderMenu');
-            hookUpHeaderMenu(datasetObj, $col, $menu);
+            $colDom.append(htmlStr);
+            var $menu = $colDom.find('ul.columnHeaderMenu');
+            hookUpHeaderMenu(datasetObj, $colDom, $menu);
             addFilterMenu(datasetObj, col, $menu);
         });
     };
@@ -564,7 +590,7 @@
         {
             $menu.find('.singleItem').show();
             var col = $colHeader.data('column');
-            loadFilterMenu(datasetObj, col, $menu);
+            if (col) { loadFilterMenu(datasetObj, col, $menu); }
         }
         else
         {
@@ -635,6 +661,9 @@
      * grid */
     var addFilterMenu = function(datasetObj, col, $menu)
     {
+        // If this column doesn't have a dom, we don't support it yet...
+        if (!col.dom) { return; }
+
         // Remove spinner
         $menu.children('.autofilter.loading').remove();
 
@@ -676,7 +705,7 @@
         {
             filterStr +=
                 '<li class="clearFilter">' +
-                '<a href="#clear-filter-column_' + col.index + '">' +
+                '<a href="#clear-filter-column_' + col.uid + '">' +
                 '<span class="highlight">Clear Column Filter</span>' +
                 '</a>' +
                 '</li>';
@@ -737,7 +766,7 @@
                             '<a href="' +
                             (f.isMatching ? '#clear-filter-column_' :
                                 '#filter-column_') +
-                            col.index + '_' + f.escapedValue + '" title="' +
+                            col.uid + '_' + f.escapedValue + '" title="' +
                             f.titleValue +
                             (f.count > 1 ? ' (' + f.count + ')' : '') +
                             '" class="clipText">' + f.renderedValue +

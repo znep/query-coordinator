@@ -108,6 +108,8 @@ blist.namespace.fetch('blist.data');
 
         // Column lookup by UID
         var columnLookup = [];
+        // Column lookup by ID
+        var columnIDLookup = {};
 
         // Event listeners
         var listeners = [];
@@ -136,18 +138,6 @@ blist.namespace.fetch('blist.data');
         var autoBaseURL = true;
         var baseURL = null;
         var supplementalAjaxOptions = null;
-
-        var findColumn = function(id) {
-            var column;
-            $.each(meta.view.columns, function(i, col) {
-                if (col.id == id)
-                {
-                    column = col;
-                    return false;
-                }
-            });
-            return column;
-        };
 
         var findColumnIndex = function(id) {
             var index;
@@ -484,6 +474,7 @@ blist.namespace.fetch('blist.data');
                     }
                 }
             }
+            installIDs();
 
             // Notify listeners of row load via the "change" event
             this.change(supplement);
@@ -506,6 +497,7 @@ blist.namespace.fetch('blist.data');
             {
                 self.invalidateRows();
                 self.meta(config.meta);
+                configureActive();
                 $(listeners).trigger('columns_updated', [self]);
             }
         };
@@ -723,6 +715,7 @@ blist.namespace.fetch('blist.data');
                     meta.columns = [[]];
                     meta.metaColumns = [];
                     meta.dataMungeColumns = [];
+                    columnIDLookup = {};
                     if (meta.view)
                     {
                         this.updateAggregateHash(meta.aggregates);
@@ -732,6 +725,19 @@ blist.namespace.fetch('blist.data');
                                 meta.metaColumns, meta.dataMungeColumns);
                             translateViewColumns(meta.view, meta.view.columns,
                                 meta.columns, 0);
+                            $.each(meta.view.columns, function(i, col)
+                            {
+                                if (col.id != -1)
+                                { columnIDLookup[col.id] = col; }
+                                if (col.childColumns)
+                                {
+                                    $.each(col.childColumns, function(j, cc)
+                                    {
+                                        if (cc.id != -1)
+                                        { columnIDLookup[cc.id] = cc; }
+                                    });
+                                }
+                            });
                         }
                     }
                     // If there are rows, reset all child rows since there may
@@ -1206,6 +1212,7 @@ blist.namespace.fetch('blist.data');
 
         this.invalidateRows = function()
         {
+            active = rows;
             removeSpecialRows();
             for (var i=0; i < rows.length; i++)
             {
@@ -1217,45 +1224,34 @@ blist.namespace.fetch('blist.data');
             rowsLoaded = 0;
         };
 
-        this.updateColumn = function(column, parentId)
+        this.updateColumn = function(column)
         {
             var isColumnPresent = false;
 
-            if (parentId != null)
+            $.each(meta.view.columns, function(i, c)
             {
-                $.each(meta.view.columns, function(i, c)
+                if (c.id == column.id)
                 {
-                    if (parentId == c.id)
+                    meta.view.columns[i] = column;
+                    isColumnPresent = true;
+                    return false;
+                }
+                else if (c.childColumns instanceof Array)
+                {
+                    var found = false;
+                    $.each(c.childColumns, function(j, cc)
                     {
-                        if (c.childColumns == undefined)
+                        if (cc.id == column.id)
                         {
-                            c.childColumns = [];
+                            c.childColumns[j] = column;
+                            isColumnPresent = true;
+                            found = true;
+                            return false;
                         }
-
-                        $.each(c.childColumns, function(j, child)
-                        {
-                            if (child.id == column.id)
-                            {
-                                meta.view.columns[i].childColumns[j] = column;
-                                isColumnPresent = true;
-                                return false;
-                            }
-                        });
-                    }
-                });
-            }
-            else
-            {
-                $.each(meta.view.columns, function(i, c)
-                {
-                    if (c.id == column.id)
-                    {
-                        meta.view.columns[i] = column;
-                        isColumnPresent = true;
-                        return false;
-                    }
-                });
-            }
+                    });
+                    if (found) { return false; }
+                }
+            });
 
 
             if (meta.aggregates === null || meta.aggregates === undefined)
@@ -1329,6 +1325,7 @@ blist.namespace.fetch('blist.data');
             if (meta.view != null)
             {
                 var removedData = [];
+                var subRemovedData = {};
                 $.each(cols, function(j, cId)
                 {
                     $.each(meta.view.columns, function(i, c)
@@ -1338,6 +1335,23 @@ blist.namespace.fetch('blist.data');
                             removedData.push(meta.view.columns[i].dataIndex);
                             meta.view.columns.splice(i, 1);
                             return false;
+                        }
+                        else if (c.childColumns instanceof Array)
+                        {
+                            var found = false;
+                            $.each(c.childColumns, function(j, cc)
+                            {
+                                if (cc.id == cId)
+                                {
+                                    if (subRemovedData[c.dataIndex] === undefined)
+                                    { subRemovedData[c.dataIndex] = []; }
+                                    subRemovedData[c.dataIndex].push(cc.dataIndex);
+                                    c.childColumns.splice(j, 1);
+                                    found = true;
+                                    return false;
+                                }
+                            });
+                            if (found) { return false; }
                         }
                     });
 
@@ -1366,6 +1380,24 @@ blist.namespace.fetch('blist.data');
                             r.splice(dataI, 1);
                         });
                     }
+                });
+                $.each(subRemovedData, function(index, subIndexes)
+                {
+                    subIndexes.sort(function(a, b) { return b - a; });
+                    $.each(rows, function(i, r)
+                    {
+                        if (r instanceof Object &&
+                            r[index] instanceof Object)
+                        {
+                            $.each(r[index], function(k, subRow)
+                            {
+                                $.each(subIndexes, function(j, dataI)
+                                {
+                                    subRow.splice(dataI, 1);
+                                });
+                            });
+                        }
+                    });
                 });
             }
 
@@ -1485,6 +1517,8 @@ blist.namespace.fetch('blist.data');
         this.column = function(uid) {
             return columnLookup[uid];
         };
+
+        this.getColumnByID = function(id) { return columnIDLookup[id]; };
 
         /**
          * Retrieve the total number of rows.
@@ -1660,7 +1694,7 @@ blist.namespace.fetch('blist.data');
             meta.view.sortBys = sortBys;
             meta.sort = {};
             $.each(meta.view.sortBys, function(i, sort) {
-                var col = findColumn(sort.viewColumnId);
+                var col = this.getColumnByID(sort.viewColumnId);
                 meta.sort[sort.viewColumnId] = {
                     ascending: (sort.flags != null && $.inArray('asc', sort.flags) >= 0),
                     column: col 

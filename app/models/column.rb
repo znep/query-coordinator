@@ -47,9 +47,14 @@ class Column < Model
   end
 
   def convertable_types
-    if dataType.type == "text"
+    if client_type == "text"
       return [
         "richtext", "number", "money", "percent", "date", "phone",
+        "email", "url", "checkbox", "stars", "flag"
+      ]
+    elsif client_type == "richtext"
+      return [
+        "text", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
     end
@@ -149,6 +154,12 @@ class Column < Model
       update_data[:format].delete "precision"
     elsif js.key?("decimalPlaces")
       update_data[:format]["precision"] = js["decimalPlaces"].to_i
+    end
+
+    if js.key?("type") && js["type"] == "richtext" && client_type == "text"
+      update_data[:format]["formatting_option"] = "Rich"
+    elsif js.key?("type") && js["type"] == "text" && client_type == "richtext"
+      update_data[:format].delete "formatting_option"
     end
   end
 

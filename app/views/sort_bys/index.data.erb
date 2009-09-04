@@ -3,8 +3,8 @@
 <% end %>
 
 <div id="sortBysList" class="reorderList clearfix">
+  <p class="left">Sorted Columns and Sort Order</p>
   <div class="activeList">
-    <p>Sorted Columns and Sort Order</p>
     <ul>
       <% @selected.each_with_index do |sort, i| %>
         <li>
@@ -23,14 +23,14 @@
         </li>
       <%- end -%>
     </ul>
-    <a href="#removeAll" class="removeAllLink">Remove All</a>
   </div>
+    <a href="#removeAll" class="removeAllLink">Remove All</a>
   <div class="swapArrows">
     <a href="#addItem" class="addItemButton">Add</a>
     <a href="#removeItem" class="removeItemButton">Remove</a>
   </div>
+  <p class="right">Unsorted Columns</p>
   <div class="inactiveList">
-    <p>Unsorted Columns</p>
     <ul>
       <% @unselected.each do |sort| %>
         <li>

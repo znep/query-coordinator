@@ -364,11 +364,18 @@ blist.namespace.fetch('blist.data');
          */
         this.load = function(config)
         {
-            //console.profile();
-            if (config.meta) { this.meta(config.meta); }
+            if (config.meta)
+            {
+                //console.profile();
+                this.meta(config.meta);
+                //console.profileEnd();
+            }
             if (config.rows || config.data)
-            { this.rows(config.rows || config.data); }
-            //console.profileEnd();
+            {
+                //console.profile();
+                this.rows(config.rows || config.data);
+                //console.profileEnd();
+            }
         };
 
         /**
@@ -1582,6 +1589,13 @@ blist.namespace.fetch('blist.data');
         };
 
         this.selectedRows = {};
+
+        this.hasSelectedRows = function() {
+            for (var i in this.selectedRows)
+            {
+                return true;
+            }
+        }
 
         this.toggleSelectRow = function(row)
         {

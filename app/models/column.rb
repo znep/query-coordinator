@@ -41,7 +41,9 @@ class Column < Model
 
   def is_sortable?
     return client_type != "nested_table" && 
-      client_type != "tag"
+      client_type != "tag" &&
+      client_type != "photo" &&
+      client_type != "document"
   end
 
   def convertable_types

@@ -41,27 +41,42 @@ class AccountsController < ApplicationController
   end
 
   def new
+    @account = flash[:rpx_user] || User.new
     @body_class = 'signup'
     @token = params[:token] || ""
+
+    session[:openid_identifier_id] = @account.openIdIdentifierId
   end
 
   def create
+    @body_class = 'signup'
+    @token = params[:inviteToken] || ""
+
     # First, try creating the user
     begin
-      user = User.create(account, params[:inviteToken])
+      # Link their OpenID identifier, if any. The identifier is set in the
+      # session rather than as a hidden form param because we don't want it
+      # to be spoofable.
+      @account = User.new(params[:account])
+      @account.openIdIdentifierId = session[:openid_identifier_id] if session[:openid_identifier_id]
+
+      @account.create(params[:inviteToken])
     rescue CoreServer::CoreServerError => e
       error = e.error_message
       respond_to do |format|
         format.html do
           flash[:error] = error
-          return (redirect_to signup_path)
+          return (render :action => :new)
         end
         format.json { return (render :json => {:error => error}, :callback => params[:callback]) }
       end
     end
 
+    # Clear out the OpenId link, now that it's tied to an account.
+    session.delete :openid_identifier_id
+
     # Now, authenticate the user
-    @user_session = UserSession.new('login' => account[:login], 'password' => account[:password])
+    @user_session = UserSession.new('login' => params[:account][:login], 'password' => params[:account][:password])
     if @user_session.save
       # If they gave us a profile photo, upload that to the user's account
       # If the core server gives us an error, oh well... we've alredy created
@@ -69,7 +84,7 @@ class AccountsController < ApplicationController
       # profile photo.
       if params[:profile_image] && !params[:profile_image].blank?
         begin
-          user.profile_image = params[:profile_image]
+          @account.profile_image = params[:profile_image]
         rescue CoreServer::CoreServerError => e
           logger.warn "Unable to update profile photo: #{e.error_code} #{e.error_message}"
         end
@@ -165,18 +180,5 @@ class AccountsController < ApplicationController
     flash[:openid_error] = e.error_message
   ensure
     redirect_to account_url(:anchor => params[:section])
-  end
-
-private
-
-  def account
-    unless @account
-      @account = {}
-      [:firstName, :lastName, :email, :login, :password, :company, :title].each do |field|
-        @account[field] = params[field]
-      end
-    end
-
-    return @account
   end
 end

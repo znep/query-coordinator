@@ -359,6 +359,11 @@
 
             // Update selection information
             cellNav.processSelection(rows, setRowSelection, clearRowSelection);
+
+            // These calls are not strictly related to cell navigation cues.  However, this code path is common to all
+            // of the places where the selection may change and/or the text area might lose focus.  So reset these now.
+            cellNav.initCopy();
+            $navigator[0].focus();
         };
 
         var $activeContainer;
@@ -610,7 +615,6 @@
             }
 
             // Reset standard grid state
-            $navigator[0].focus();
             killHotExpander();
             updateCellNavCues();
 

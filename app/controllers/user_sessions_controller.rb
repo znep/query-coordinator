@@ -49,12 +49,15 @@ class UserSessionsController < ApplicationController
   end
 
   def rpx
-    @user_session = UserSession.rpx(params[:token])
-    if @user_session
+    return (redirect_to login_path) unless params[:token]
+
+    rpx_authentication = RpxAuthentication.new(params[:token])
+    if (rpx_authentication.existing_account?)
+      user_session = UserSession.rpx(rpx_authentication)
       redirect_back_or_default(home_path)
     else
-      flash[:notice] = "OpenID not found"
-      redirect_to login_path
+      flash[:rpx_user] = rpx_authentication.user
+      redirect_to signup_url
     end
   end
 end

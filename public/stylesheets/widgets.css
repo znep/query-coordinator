@@ -1788,7 +1788,8 @@ table.gridList tr.filteredOut
 }
 .pageBlockHeaderCarousel.carouselWrapper { 
     background-position: 0 -235px;
-    min-height: 23.2em;
+    height: 235px;
+    overflow: hidden;
 }
 .pageBlockHeaderCarousel .carouselOuter {
     background-repeat: no-repeat;

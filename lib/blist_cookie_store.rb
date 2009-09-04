@@ -155,6 +155,23 @@ class BlistCookieStore
     def load_session(env)
       request = Rack::Request.new(env)
       cookie_data = request.cookies[@key]
+
+      # The wonderful thing about Base64 standards is that there are so
+      # many to choose from: http://en.wikipedia.org/wiki/Base64
+      # 
+      # It turns out that the core server, when writing out the
+      # _blist_session_id cookie, uses a "MIME" form of URL encoding where the
+      # 63rd and 64th characters in the encoding are '+' and '/', respectively.
+      # Rails, in its infinite wisdom, prefers a URL-encoding-safe variant of
+      # Base64, which translates the '+' to it's URL-safe "%2B" and '/' into
+      # "%2F". Trying to decode a string with a + or / fails, and when we CGI
+      # unescape the +, it became a space character instead, failing the digest
+      # check.
+      #
+      # This is a total hack - we should figure out a better solution.
+      cookie_data = cookie_data.gsub('+', '%2B') if cookie_data
+      cookie_data = cookie_data.gsub('/', '%2F') if cookie_data
+
       core_data, session_data = CGI.unescape(cookie_data).gsub('"', '').split('||') if cookie_data
       data = unmarshal(session_data) || persistent_session_id!({})
       [data[:session_id], data]

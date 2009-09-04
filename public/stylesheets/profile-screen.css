@@ -66,9 +66,14 @@
     top: 0;
 }
 
-#profile .editProfileContentActions a.action.first
+#profile .sectionShow .editProfileContentActions a.action
+{
+    padding-left: 1em;
+}
+#profile .sectionShow .editProfileContentActions a.action.first
 {
     border-right: solid 1px #333333;
+    padding-left: 0;
     padding-right: 1em;
 }
 
@@ -111,7 +116,15 @@
 {
     padding: 0;
     font-size: .833em; /* 10px */
+    font-weight: bold;
 }
+
+#profile .sectionShow .editContainer a.action
+{
+    background: url(/stylesheets/images/info_pane/icon_expand_double_chevron.png?1) right center no-repeat;
+    padding-right: 12px;
+}
+
 #profile .sectionEdit dl { float: left; }
 
 #profile .linksContent ul.userLinkActions { padding: 1em 0; }

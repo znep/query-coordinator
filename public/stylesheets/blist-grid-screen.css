@@ -10,6 +10,8 @@ body#lensBody
     max-width: 100%;
 }
 
+#lensBody #outerContainer { max-width: 100%; }
+
 #lensContainer, #lensMetaContainer
 {
     margin-right: 1em;

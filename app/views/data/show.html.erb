@@ -79,7 +79,7 @@
             <div class="wrapper"><a href="#SEARCH">Search Results</a></div>
           </li>
         <%- end -%>
-        <li id="tabPopular" class="<%= @search_views.nil? ? 'active' : '' %>">
+        <li id="tabPopular" class="<%= @search_views.nil? ? 'even active' : 'even' %>">
           <div class="wrapper"><a href="#POPULAR">Top 100</a></div>
         </li>
         <li id="tabAll"><div class="wrapper"><a href="#ALL">All <%= t(:blists_name) %></a></div></li>

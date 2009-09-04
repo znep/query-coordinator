@@ -4,7 +4,7 @@
     min-width: 98.9em;
 }
 
-
+.carouselItem .itemTitle { padding-right: 1.7em; }
 .carouselItem .itemTitle h3
 {
     color: #0071bc;
@@ -12,11 +12,13 @@
     font-weight: normal;
     margin-top: .277em; /* 5px */
     overflow: hidden;
+    text-align: center;
     text-transform: none;
 }
 .carouselItem .itemTitle img
 {
     display: block;
+    margin: 0 auto;
 }
 
 .carouselItem .itemMetaData { margin-top: .5em; }

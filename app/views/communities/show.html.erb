@@ -68,11 +68,11 @@
             <div class="wrapper"><a href="#SEARCH">Search Results</a></div>
           </li>
         <%- end -%>
-        <li id="tabTopMembers" class="<%= @search_members.nil? ? 'active' : '' %>">
+        <li id="tabTopMembers" class="<%= @search_members.nil? ? 'even active' : 'even' %>">
           <div class="wrapper"><a href="#TOPMEMBERS">Top 100</a></div>
         </li>
         <li id="tabTopUploaders"><div class="wrapper"><a href="#TOPUPLOADERS">Top Uploaders</a></div></li>
-        <li id="tabAllMembers"><div class="wrapper"><a href="#ALLMEMBERS">All Members</a></div></li>
+        <li id="tabAllMembers" class="even"><div class="wrapper"><a href="#ALLMEMBERS">All Members</a></div></li>
       </ul>
     </div>
     <div id="communityTabSearchResults" class="tabContentContainer clearfix<%= @search_members.nil? ? '' : ' active' %>">

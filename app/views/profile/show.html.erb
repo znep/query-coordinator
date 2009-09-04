@@ -61,8 +61,8 @@
                 
                 <%- if (@is_user_current) -%>
                   <p class="editProfileContentActions">
-                    <a class='first action showListBoxLink' href='#edit'>Edit</a>
-                    <a id='switchUsernameLink' class='action'
+                    <a class='first action showListBoxLink' href='#edit'>Edit</a><a 
+                    id='switchUsernameLink' class='action'
                       href='#show_<%= @user.privacyControl == "login" ?
                         'fullName' : 'login' %>'>
                       Display <%= current_user.privacyControl == "login" ?

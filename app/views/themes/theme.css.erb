@@ -15,9 +15,10 @@ h<%= level + 1 %>  {
 }
 
 /*** OUTER CHROME ***/
+#mainNav li,
 #mainNav li a span,
-#mainNav li.discover,
-#mainNav li.home
+body.home #mainNav li.home .subNav li,
+body.home #mainNav li.home .subNav li a span
 {
     background-image: <%= main_button_inactive_bg %>;
 }

@@ -16,6 +16,10 @@ class User < Model
     end
     return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
   end
+
+  def create(inviteToken = nil)
+    User.create(data_hash, inviteToken)
+  end
   
   # Needed for multiuser
   def multiuser_authentication_token(timestamp)

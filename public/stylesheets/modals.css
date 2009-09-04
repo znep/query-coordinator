@@ -963,6 +963,28 @@ dl.versionInfo dd
 
 /*** START: Sort dialog ***/
 
+div.itemWrapper
+{
+    overflow: hidden;
+    line-height: 1.4em;
+}
+
+#sortBysList p
+{
+    position: absolute;
+    font-size: 1.2em;
+}
+
+#sortBysList p.left
+{
+    left: 3.5em; 
+}
+
+#sortBysList p.right
+{
+    left: 33em;
+}
+
 div.itemWrapper div.ascension
 {
     position: absolute;
@@ -1005,19 +1027,25 @@ div#sortBysList .inactiveList
 {
     height: 175px;
     overflow: auto;
-    width: 27.5em;
+    width: 25.5em;
     padding-left: 3.5em;
+    margin-top: 1.5em;
+    position: relative;
 }
 
-div.activeList .removeAllLink
+#sortBysList .removeAllLink
 {
     position: absolute;
     bottom: 0;
+    left: 0;
+    color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 div#sortBysList.reorderList ul
 {
-    width: 20em;
+    width: 19em;
 }
 
 /*** END: Sort dialog ***/

@@ -4,7 +4,8 @@ label.required
     background-position: right top;
 }
 
-div.required
+div.required,
+span.required
 {
     background: url(/stylesheets/images/common/required.png) no-repeat;
     background-position: left top;

@@ -702,6 +702,9 @@ ul.convertables li a:hover
 .convert-checkbox { background-position: 0 -120px; }
 .convert-stars { background-position: 0 -140px; }
 .convert-flag { background-position: 0 -380px; }
+.convert-photo { background-position: 0 -100px; }
+.convert-document { background-position: 0 -280px; }
+.convert-nested_table { background-position: 0 -440px; }
 
 .typeSelect
 {

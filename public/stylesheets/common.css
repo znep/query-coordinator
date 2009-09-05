@@ -441,7 +441,7 @@ private
 .activityListContainer h2
 {
     border-bottom: 1px solid #ccc;
-    color: #666;
+    color: #600;
     font-size: 1.2em;
     margin-bottom: .8em;
     text-transform: uppercase;
@@ -469,8 +469,10 @@ private
 }
 .activityListContainer p.listAction a 
 {
+    background: transparent url(/stylesheets/images/common/arrow_more.png) no-repeat scroll right center;
     color: #666;
     font-weight: bold;
+    padding-right: 12px;
     text-transform: uppercase;
 }
 

@@ -8,12 +8,12 @@ class UserLink < Model
 
   def self.create(user_id, attributes)
     path = "/users/#{user_id}/links.json"
-    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
+    return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 
   def self.update(user_id, id, attributes)
     path = "/users/#{user_id}/links/#{id}.json"
-    return parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
+    return parse(CoreServer::Base.connection.update_request(path, attributes.to_json))
   end
   
   def self.delete(user_id, id)

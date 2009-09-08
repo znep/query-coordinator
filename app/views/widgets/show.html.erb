@@ -290,7 +290,7 @@
     blist.namespace.fetch('blist.widget');
     blist.widget.viewId = '<%= @view.id %>';
     
-    blist.widget.theme = <%= JSON.generate( @theme ) %>;
+    blist.widget.theme = <%= @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
   </script>
 

@@ -2,9 +2,9 @@ class WidgetCustomization < Model
   def self.create(attributes)
     path = "/widget_customization.json"
     unless attributes['customization'].nil?
-      attributes['customization'] = JSON.generate(attributes['customization'])
+      attributes['customization'] = attributes['customization'].to_json
     end
-    parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
+    parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
   
   def self.find( options = nil, custom_headers = {})
@@ -24,10 +24,10 @@ class WidgetCustomization < Model
   
   def save!
     unless @customization_hash.nil?
-      @update_data['customization'] = JSON.generate(@customization_hash)
+      @update_data['customization'] = @customization_hash.to_json
     end
     path = "/widget_customization/#{self.uid}.json"
-    WidgetCustomization.parse(CoreServer::Base.connection.update_request(path, JSON.generate(@update_data)))
+    WidgetCustomization.parse(CoreServer::Base.connection.update_request(path, @update_data.to_json))
   end
   
   def self.default_theme

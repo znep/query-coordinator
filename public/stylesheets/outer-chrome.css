@@ -40,6 +40,7 @@ body
     height: 44px;
     padding-bottom: .5em;
     position: relative;
+    z-index: 1;
 }
 
 #mainLogo
@@ -198,17 +199,12 @@ body
 }
 
 
-#mainNav ul
-{
-    height: 25px;
-    overflow: hidden;
-}
-
 #mainNav li
 {
     float: left;
     height: 25px;
     margin-right: 1px;
+    position: relative;
     text-align: center;
     width: 11em;
 }
@@ -218,6 +214,7 @@ body
     background-repeat: repeat-x;
     display: block;
     font-weight: bold;
+    min-height: 0;
 }
 #mainNav li.discover a span {
     margin-left: 10px;
@@ -259,7 +256,30 @@ body.home #mainNav li.home a span {
     display: block;
     font-size: 1.3em;
     line-height: 25px;
+    min-height: 0;
 }
+
+/*** Subnav ***/
+#mainNav ul.subNav
+{
+    display: none;
+    left: 0;
+    position: absolute;
+    z-index: 100;
+}
+#mainNav ul.subNav li
+{
+    background-position: right -25px;
+    display: block;
+    float: none;
+    text-align: left;
+}
+#mainNav ul.subNav li.last { background-position: right -50px; }
+
+#mainNav.currentUserNav li.home:hover { background-position: right -25px; }
+#mainNav.currentUserNav li.home:hover ul.subNav { display: block; }
+
+#mainNav ul.subNav li a span { font-weight: normal; }
 
 
 /**************

@@ -669,7 +669,7 @@
   <%= render(:partial => "shared/common_js") %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
-    blist.publish.currentTheme = <%= JSON.generate( @customization ) %>;
+    blist.publish.currentTheme = <%= @customization.to_json %>;
   </script>
   <%= javascript_include_tag "screens/info-pane", "plugins/colorpicker",
       "plugins/ui.core", "plugins/ui.draggable", "plugins/ajaxupload.3.0",

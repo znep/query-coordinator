@@ -119,7 +119,7 @@ class BlistsController < SwfController
       return require_user(true)
     end
 
-    if (current_user.accountCategory != "premium_sdp" || !current_user.is_admin?)
+    if (current_user.accountCategory != "premium_sdp" && !current_user.is_admin?)
       redirect_to '/solution'
     end
 

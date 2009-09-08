@@ -15,9 +15,10 @@ h<%= level + 1 %>  {
 }
 
 /*** OUTER CHROME ***/
+#mainNav li,
 #mainNav li a span,
-#mainNav li.discover,
-#mainNav li.home
+body.home #mainNav li.home .subNav li,
+body.home #mainNav li.home .subNav li a span
 {
     background-image: <%= main_button_inactive_bg %>;
 }
@@ -33,7 +34,12 @@ body.home #mainNav li.home,
 body.home #mainNav li.home a span,
 body.discover #mainNav li.discover a span,
 body.community #mainNav li.community a span,
-body.discover #mainNav li.discover
+body.discover #mainNav li.discover,
+#mainNav ul.subNav li:hover,
+#mainNav ul.subNav li:hover a span,
+body.home #mainNav li.home .subNav li:hover,
+body.home #mainNav li.home .subNav li:hover a span
+
 {
     background-image: <%= main_button_active_bg %>;
 }

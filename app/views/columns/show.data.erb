@@ -188,51 +188,7 @@ $(function()
   $("#precision").change(function() { column.decimalPlaces = $(this).val() });
   $("#ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#precision").val() });
 
-  var converting = false;
-  $("a.convert").click(function(event)
-  {
-    event.preventDefault();
-    if (converting) return false;
-    converting = true;
-    $("a.convert").addClass("light");
-    $(this).removeClass("light");
-    loading();
-
-    $.ajax({
-      type: "POST",
-      url: '<%= @column.convert_href(@view_id) %>&type=' + $(this).attr('id'), 
-      cache: false, 
-      dataType: 'json',
-      contentType: "application/json",
-      error: function(request) {
-        $(".error").html($.json.deserialize(request.responseText).message).show();
-      },
-      success: function (responseData) {
-        $(".jqmClose").click();
-        $("#readGrid").blistModel().convertColumn(<%= @column.id %>, responseData);
-      }
-    });
-  });
-
-  $("#converter").click(function(event)
-  {
-      event.preventDefault();
-      toggleEnabled();
-      $("#convertables").toggle();
-      return false;
-  });
-
-  $("#columnProperties").submit( function() {
-    $(".save").click();
-    return false;
-  });
-
-  $(".save").click(function(e)
-  {
-      e.preventDefault();
-      if (!formEnabled) { return false; }
-      toggleEnabled();
-
+  var save = function() {
       $.ajax({
         type: "PUT",
         url: '<%= @column.href(@view_id)%>',
@@ -255,6 +211,66 @@ $(function()
             $(".jqmClose").click();
         }
       });
+  };
+
+  var converting = false;
+  $("a.convert").click(function(e) {
+    e.preventDefault();
+    if (converting) return false;
+    converting = true;
+    $("a.convert").addClass("light");
+    $(this).removeClass("light");
+    loading();
+
+    var type = $(this).attr("id");
+
+    if (type == "richtext" && column.type == "text")
+    {
+      column.type = "richtext";
+      save();
+    }
+    else if (type == "text" && column.type == "richtext")
+    {
+      column.type = "text";
+      save();
+    }
+    else
+    {
+      $.ajax({
+        type: "POST",
+        url: '<%= @column.convert_href(@view_id) %>&type=' + $(this).attr('id'), 
+        cache: false, 
+        dataType: 'json',
+        contentType: "application/json",
+        error: function(request) {
+          $(".error").html($.json.deserialize(request.responseText).message).show();
+        },
+        success: function (responseData) {
+          $(".jqmClose").click();
+          $("#readGrid").blistModel().convertColumn(<%= @column.id %>, responseData);
+        }
+      });
+    }
+  });
+
+  $("#converter").click(function(e) {
+      e.preventDefault();
+      toggleEnabled();
+      $("#convertables").toggle();
+      return false;
+  });
+
+  $("#columnProperties").submit( function() {
+    $(".save").click();
+    return false;
+  });
+
+  $(".save").click(function(e) {
+      e.preventDefault();
+      if (!formEnabled) { return false; }
+      toggleEnabled();
+
+      save();
   });
 });
 </script>

@@ -49,11 +49,20 @@
         <%= link_to(th.company, root_path) %>
       </h1>
 
-      <div id='mainNav'>
+      <div id='mainNav'<%= " class='currentUserNav'" if current_user %>>
         <ul class="clearfix">
           <li class='discover'><%= link_to("<span>Public Data</span>", root_path) %></li>
           <li class='community'><%= link_to("<span>Community</span>", community_path) %></li>
-          <li class='home last'><%= link_to("<span>My #{th.company}</span>", home_path) %></li>
+          <li class='home last'>
+            <%= link_to("<span>My #{th.company}</span>", home_path) %>
+            <%- if (current_user) -%>
+              <ul class="subNav">
+                <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
+                <li><%= link_to "<span>Friends</span>", contacts_path %></li>
+                <li class="last"><%= link_to "<span>Profile</span>", current_user.href %></li>
+              </ul>
+            <%- end -%>
+          </li>
         </ul>
       </div>
 

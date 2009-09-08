@@ -6,7 +6,7 @@ class Grant < Model
   
   def self.create(view_id, attributes)
     path = "/views/#{view_id}/grants"
-    return Grant.parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
+    return Grant.parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
   
   def self.delete(view_id, attributes)
@@ -16,7 +16,7 @@ class Grant < Model
     # -pete
     #path = "/views/#{view_id}/grants?method=delete"
     path = "/views/#{view_id}/grants/i?method=delete"
-    return Grant.parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
+    return Grant.parse(CoreServer::Base.connection.update_request(path, attributes.to_json))
   end
 
 end

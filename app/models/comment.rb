@@ -23,7 +23,7 @@ class Comment < Model
     end
 
     path = "/views/#{view_id}/#{self.name.pluralize.downcase}.json"
-    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
+    return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 
   def self.update(view_id, attributes)
@@ -37,7 +37,7 @@ class Comment < Model
     if !attributes[:flags].nil? && !attributes[:flags].is_a?(Array)
       attributes[:flags] = [attributes[:flags]]
     end
-    return parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
+    return parse(CoreServer::Base.connection.update_request(path, attributes.to_json))
   end
 
   def self.rate(view_id, comment_id, rating)

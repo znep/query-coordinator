@@ -75,7 +75,7 @@ class ProfileController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(current_user.href) }
       format.data   { render :json => {:error => error_msg,
-        :user => current_user}.to_json }
+        :user => current_user} }
     end
   end
   

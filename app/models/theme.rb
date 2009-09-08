@@ -18,6 +18,8 @@ module Theme
         theme = 'gov'
       elsif host.include? 'chicago'
         theme = 'cityofchicago'
+      elsif host.include? 'nwpublic'
+        theme = 'nwpublic'
       end
 
       load_theme theme if theme

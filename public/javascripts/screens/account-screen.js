@@ -71,6 +71,7 @@ $(function ()
             $.ajax({
                 url: $form.attr("action"),
                 dataType: "jsonp",
+                contentType: "application/json",
                 data: requestData,
                 success: function(responseData)
                 {

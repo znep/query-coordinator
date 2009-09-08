@@ -172,8 +172,8 @@ class Model
     end
   end
 
-  def to_json
-    data_hash.to_json
+  def to_json(options = nil)
+    data_hash.to_json(options)
   end
 
   def flag?(flag_name)

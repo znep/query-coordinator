@@ -27,7 +27,7 @@ class User < Model
     return hmac.update("#{oid}:#{timestamp}").hexdigest
   end
 
-  def to_json
+  def to_json(options = nil)
     dhash = data_hash
     dhash["displayState"] = displayState
     dhash["displayCountry"] = displayCountry
@@ -35,7 +35,7 @@ class User < Model
     dhash["htmlDescription"] = htmlDescription
     dhash["profile_image"] = profile_image_path
 
-    dhash.to_json
+    dhash.to_json(options)
   end
   
   def href

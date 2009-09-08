@@ -92,6 +92,7 @@ Rails::Initializer.run do |config|
   # config.gem "sqlite3-ruby", :lib => "sqlite3"
   # config.gem "aws-s3", :lib => "aws/s3"
   config.gem "json"
+  require 'json'
 
   # Use gems in the vendor directory: http://errtheblog.com/post/2120
   config.load_paths += Dir["#{RAILS_ROOT}/vendor/gems/**"].map do |dir| 
@@ -108,3 +109,6 @@ ActionMailer::Base.smtp_settings = {
   :address => "mail",
   :domain => "socrata.com"
 }
+
+ActiveSupport::JSON.backend = "JSONGem" 
+

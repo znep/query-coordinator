@@ -1,0 +1,27 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "signup-screen", "form-common" %>
+  <title><%= th.site_title %></title>
+<% end %>
+
+<% dialog_content('signup', "signupBox") do %>
+  <div class='header'>
+    <h1><%= th.company %></h1>
+  </div>
+
+  <div class='mainContent'>
+    <div class='title clearfix openid'>
+      <h2>Complete Your Signup</h2>
+      <p><strong>You still need to create a Socrata account.</strong> If you
+      want to link your OpenID with an existing account, login and add it on
+      your <%= link_to 'My Account', account_path %> page.</p>
+    </div>
+
+    <%= render :partial => "accounts/signup_form" %>
+  </div>
+<% end %>
+
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
+<% end %>

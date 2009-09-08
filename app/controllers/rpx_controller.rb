@@ -12,8 +12,7 @@ class RpxController < ApplicationController
       user_session = UserSession.rpx(rpx_authentication)
       redirect_back_or_default(home_path)
     else
-      flash[:rpx_user] = rpx_authentication.user
-      redirect_to signup_url
+      @account = rpx_authentication.user
     end
   end
 

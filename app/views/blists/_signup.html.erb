@@ -1,0 +1,15 @@
+<% dialog_content('signup', "signupBox") do %>
+  <div class='header'>
+    <h1><%= th.company %></h1>
+    <a href='#close_dialog' class='close' title='Close'>Close</a>
+  </div>
+
+  <div class='mainContent'>
+    <div class='title clearfix'>
+      <h2><strong>Sign up!</strong> We're making data social.</h2>
+      <p>Before we get started, we need to know a little about you.</p>
+    </div>
+
+    <%= render :partial => "accounts/signup_form" %>
+  </div>
+<% end %>

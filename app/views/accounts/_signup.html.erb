@@ -1,9 +1,6 @@
 <% dialog_content('signup', "signupBox") do %>
   <div class='header'>
     <h1><%= th.company %></h1>
-    <%- if local_assigns[:is_modal] -%>
-    <a href='#close_dialog' class='close' title='Close'>Close</a>
-    <%- end -%>
   </div>
 
   <div class='mainContent'>
@@ -21,89 +18,6 @@
       </div>
     <% end %>
 
-    <% form_for :account, @account, :url => account_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
-      <div class="fieldContent clearfix">
-        <%= display_standard_flashes %>
-        <fieldset>
-          <%= hidden_field_tag("inviteToken", @token) %>
-          <p>
-            <%= f.label :firstName, 'First Name', :class => 'required' %>
-            <%= f.text_field :firstName %>
-          </p>
-          <p>
-            <%= f.label :lastName, 'Last Name', :class => 'required' %>
-            <%= f.text_field :lastName %>
-          </p>
-          <p>
-            <%= f.label :email, 'Email Address', :class => 'required' %>
-            <%= f.text_field :email %>
-          </p>
-          <p>
-            <%= label_tag :emailConfirm, 'Confirm Email', :class => 'required' %>
-            <%= text_field_tag :emailConfirm, params[:emailConfirm] %>
-          </p>
-          <p>
-            <%= f.label :login, 'Username', :class => 'required' %>
-            <%= f.text_field :login, :maxlength => 40 %>
-          </p>
-          <p>
-            <%= f.label :password, 'Password', :class => 'required' %>
-            <%= f.password_field :password %>
-          </p>
-          <p>
-            <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required' %>
-            <%= password_field_tag :passwordConfirm, params[:passwordConfirm] %>
-          </p>
-        </fieldset>
-
-        <fieldset class="last">
-          <div class="fileInputContainer clearfix">
-            <%= label_tag :profile_image, 'Profile Picture' %>
-            <div class="fileInput">
-              <%= file_field_tag("profile_image", :class => "text") %>
-              <div class="fakeFile clearfix">
-                <input type="text" name="displayProfileImage" />
-                <%= image_tag("/stylesheets/images/account/button_browse.png", :size => "72x24", :alt => "Browse") %>
-              </div>
-            </div>
-          </div>
-          <p>
-            <%= f.label :company %>
-            <%= f.text_field :company %>
-          </p>
-          <p>
-            <%= f.label :title %>
-            <%= f.text_field :title %>
-          </p>
-          <p class="fieldInfo">
-          Share and collaborate with your friends and colleagues. Enter their email addresses and we'll send them an invite on your behalf.
-          </p>
-          <p>
-            <%= label_tag :inviteOthers, 'Invite Others' %>
-            <%= text_area_tag("inviteOthers", params[:inviteOthers], :class => "textPrompt", :title => "Enter email addresses separated by commas") %>
-          </p>
-        </fieldset>
-
-      </div>
-
-      <div class="submitLine clearfix">
-        <%= image_submit_tag("/stylesheets/images/account/button_sign_up_now.png") %>
-        <div class="buttonLinkLarge">
-          <%= link_to("<span>Already Have an Account?</span>", login_url,
-            {:class => 'loginLink'}) %>
-        </div>
-
-        <%- if local_assigns[:is_modal] -%>
-        <div class="buttonLinkLarge">
-          <a href='#close_signup' class='close'><span>Cancel</span></a>
-        </div>
-        <%- end -%>
-      </div>
-
-    <% end %>
-
-    <div class="contentFooter">
-      <p>By signing up, you accept the <a href="/privacy">Privacy Policy</a> and <a href="/terms-of-service">Terms of Service</a> | <span class="required">Required field</span></p>
-    </div>
+    <%= render :partial => "accounts/signup_form" %>
   </div>
 <% end %>

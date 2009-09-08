@@ -221,7 +221,7 @@ class Model
       attributes['tags'] = parse_tags(attributes['tags'])
     end
     path = "/#{self.name.pluralize.downcase}/#{id}.json"
-    return parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
+    return parse(CoreServer::Base.connection.update_request(path, attributes.to_json))
   end
 
   def save!
@@ -238,7 +238,7 @@ class Model
       attributes['tags'] = parse_tags(attributes['tags'])
     end
     path = "/#{self.name.pluralize.downcase}.json"
-    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
+    return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 
   def self.parse(data)

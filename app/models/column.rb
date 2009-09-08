@@ -36,7 +36,7 @@ class Column < Model
       ]
     end
 
-    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
+    return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 
   def is_sortable?
@@ -123,7 +123,7 @@ class Column < Model
       end
     end
     path = "/views/#{view_id}/#{self.class.name.pluralize.downcase}/#{id}.json"
-    Column.parse(CoreServer::Base.connection.update_request(path, JSON.generate(attributes)))
+    Column.parse(CoreServer::Base.connection.update_request(path, attributes.to_json))
   end
 
   def update(js)

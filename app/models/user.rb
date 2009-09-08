@@ -14,7 +14,7 @@ class User < Model
     if (inviteToken && inviteToken != "")
       path += "?inviteToken=#{inviteToken}"
     end
-    return parse(CoreServer::Base.connection.create_request(path, JSON.generate(attributes)))
+    return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
 
   def create(inviteToken = nil)

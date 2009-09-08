@@ -936,13 +936,50 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('row_remove', [ delRows ]);
         };
 
-        var serverDeleteRow = function(rowId)
+        var serverDeleteRow = function(rowId, parColId, parRowId)
         {
-            $.ajax({url: '/views/' + meta.view.id + '/rows/' +
-                    rowId + '.json',
-                    contentType: 'application/json', type: 'DELETE',
-                    complete: function() { finishRowChange(); }
-                    });
+            var url = '/views/' + meta.view.id + '/rows/';
+            if (parRowId)
+            { url += parRowId + '/columns/' + parColId + '/subrows/'; }
+            url += rowId + '.json';
+            $.ajax({url: url, contentType: 'application/json', type: 'DELETE',
+                    complete: function() { finishRowChange(); }});
+        };
+
+        this.removeChildRows = function(fakeRows, parCol, serverDelete)
+        {
+            if (!(fakeRows instanceof Array) || fakeRows.id)
+            { fakeRows = [fakeRows]; }
+
+            $.each(fakeRows, function(i, fr)
+            {
+                var parRow = fr.parent;
+                var subRow = self.getRowValue(fr, parCol);
+                var subRowSet = self.getRowValue(parRow, parCol);
+                for (var j = 0; j < subRowSet.length; j++)
+                {
+                    if (subRow.id == subRowSet[j].id)
+                    {
+                        subRowSet.splice(j, 1);
+                        break;
+                    }
+                }
+                resetChildRows(parRow);
+
+                if (serverDelete)
+                {
+                    startRowChange();
+                    if (pendingRowEdits[fr.id])
+                    {
+                        pendingRowDeletes[fr.id] = {subRowId: subRow.uuid,
+                            parRowId: parRow.uuid, parColId: parCol.id};
+                    }
+                    else
+                    {
+                        serverDeleteRow(subRow.uuid, parCol.id, parRow.uuid);
+                    }
+                }
+            });
         };
 
         // Get the value in a row for a column
@@ -1064,8 +1101,12 @@ blist.namespace.fetch('blist.data');
                     parRow[parCol.dataIndex].push(childRow);
 
                     // Now force refresh by collapsing, clearing
-                    // child rows, and then re-expanding
+                    // child rows, and then re-expanding.  Since child rows
+                    // get re-created, save the index and pull out the new one
+                    var curRowI = this.index(row);
                     resetChildRows(parRow);
+                    row = this.get(curRowI);
+                    if (!row.saving) { row.saving = []; }
                 }
 
                 row.saving[parCol.dataIndex][column.dataIndex] = true;
@@ -1155,7 +1196,13 @@ blist.namespace.fetch('blist.data');
                             delete pendingRowEdits[row.id];
                             if (pendingRowDeletes[row.id])
                             {
-                                serverDeleteRow(row.id);
+                                var pd = pendingRowDeletes[row.id];
+                                if (pd === true) { serverDeleteRow(row.id); }
+                                else
+                                {
+                                    serverDeleteRow(pd.subRowId,
+                                        pd.parColId, pd.parRowId);
+                                }
                                 delete pendingRowDeletes[row.id];
                             }
                         }

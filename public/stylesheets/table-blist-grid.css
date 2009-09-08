@@ -46,11 +46,6 @@
     text-align: right;
 }
 
-.blist-table .blist-td.blist-table-row-handle
-{
-    border-left-width: 0;
-}
-
 .blist-tr .blist-td-first
 {
     border-left-width: 0;

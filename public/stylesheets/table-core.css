@@ -176,10 +176,6 @@ div.blist-table .blist-td.blist-tdh
     cursor: default;
 }
 
-.blist-td.blist-opener-space {
-    border-right-color: transparent;
-}
-
 div.blist-table-expander,
 div.blist-table-edit-container,
 div.blist-table-active-container

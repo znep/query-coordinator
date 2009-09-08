@@ -360,10 +360,12 @@
             // Update selection information
             cellNav.processSelection(rows, setRowSelection, clearRowSelection);
 
-            // These calls are not strictly related to cell navigation cues.  However, this code path is common to all
-            // of the places where the selection may change and/or the text area might lose focus.  So reset these now.
+            // These calls are not strictly related to cell navigation cues.
+            // However, this code path is common to all of the places where the
+            // selection may change and/or the text area might lose focus.  So
+            // reset these now.
             cellNav.initCopy();
-            $navigator[0].focus();
+            if (!isEdit[defaultEditMode]) { $navigator[0].focus(); }
         };
 
         var $activeContainer;
@@ -641,7 +643,7 @@
 
             var row = getRow(cell);
             var col = getColumn(cell);
-            if (!col || !row) { return false; }
+            if (!col || col.dataIndex == 'rowHandle' || !row) { return false; }
             var value = model.getRowValue(row, col);
             if (!value) { value = model.getInvalidValue(row, col); }
 
@@ -1206,6 +1208,7 @@
                 .removeClass('blist-hot-row');
             $/*$locked.find*/('#' + id + '-l' + rowID)
                 .removeClass('blist-hot-row');
+            if (rowID == hotRowID) { hotRowID = null; }
         };
 
         var isSelectingFrom = function(cell) {
@@ -1491,9 +1494,10 @@
             if (cellNav)
             {
                 var cell = findCell(event);
-                // If this is a row opener or header, we don't allow normal
-                // cell nav clicks on them; so skip the rest
-                if ($(cell).is('.blist-opener, .blist-tdh'))
+                // If this is a row opener, header, handle, or adder, we don't
+                // allow normal cell nav clicks on them; so skip the rest
+                if ($(cell).is('.blist-opener, .blist-tdh, ' +
+                    '.blist-table-row-handle, .blist-column-adder'))
                 {
                     return true;
                 }
@@ -2110,7 +2114,8 @@
         var paddingX;
         var lockedWidth;
         var openerWidth;
-        var adderWidth;
+        var handleWidth = 0;
+        var adderWidth = 0;
         var varMinWidth = [];
         var varDenom = [];
         var insideWidth;
@@ -2122,16 +2127,18 @@
         /**
          * Create rendering code for a series of columns.
          */
-        var createColumnRendering = function(mcols, lcols, contextVariables, prefix, suffix) {
+        var createColumnRendering = function(mcols, lcols, contextVariables,
+            prefix, suffix)
+        {
             var colParts = [];
             var generatedCode = '';
-            if (prefix) {
-                colParts.push(prefix);
-            }
+            if (prefix) { colParts.push(prefix); }
 
             // Utility function that writes a push for all column parts
-            var completeStatement = function() {
-                if (colParts.length) {
+            var completeStatement = function()
+            {
+                if (colParts.length)
+                {
                     generatedCode += 'html.push(' + colParts.join(',') + ');';
                     colParts = [];
                 }
@@ -2141,15 +2148,19 @@
             {
                 var mcol = mcols[j];
 
-                if (mcol.body) {
+                if (mcol.body)
+                {
                     // Nested table header -- render headers for child columns
                     completeStatement();
 
+                    // If there is data, render nested table headers for the row
                     generatedCode +=
                         "if (row" + mcol.dataLookupExpr +
                         " && row" + mcol.dataLookupExpr + ".length || " +
                         model.useBlankRows() + ")";
-                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-opener " + openerClass + "'></div>\"");
+                    colParts.push("\"<div class='" + getColumnClass(mcol) +
+                        " blist-td blist-tdh blist-opener " + openerClass +
+                        "'></div>\"");
                     var children = mcol.body.children;
                     lcols.push({
                         type: 'opener',
@@ -2158,7 +2169,22 @@
                         mcol: mcol,
                         logical: mcol.uid
                     });
-                    for (var k = 0; k < children.length; k++) {
+                    if (options.showRowHandle)
+                    {
+                        colParts.push("\"<div class='" +
+                            getColumnClass(rowHandleColumn) +
+                            " blist-td blist-tdh blist-table-row-handle'>" +
+                            "<div class='blist-th-icon'></div>" +
+                            "</div>\"");
+                        lcols.push({
+                            type: 'handle',
+                            canFocus: false,
+                            mcol: mcol,
+                            logical: mcol.uid
+                        });
+                    }
+                    for (var k = 0; k < children.length; k++)
+                    {
                         var child = children[k];
                         colParts.push(
                             "\"<div class='blist-td blist-tdh " +
@@ -2188,13 +2214,28 @@
                             mcol: mcol,
                             logical: mcol.uid
                         });
-                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon' title='Add a new column...'></div></div>\"");
+                        colParts.push("\"<div class='" + getColumnClass(mcol) +
+                            " blist-td blist-tdh blist-column-adder'>" +
+                            "<div class='blist-column-adder-icon' " +
+                            "title='Add a new column...'></div></div>\"");
                     }
                     completeStatement();
 
+                    // Else, the sub-table is empty, so render empty-space
+                    // headers
                     generatedCode += "else ";
-                    colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-opener blist-opener-inactive " + openerClass + "'></div>\"");
-                    for (k = 0; k < children.length; k++) {
+                    colParts.push("\"<div class='" + getColumnClass(mcol) +
+                        " blist-td blist-tdh blist-opener blist-opener-inactive " +
+                        openerClass + "'></div>\"");
+                    if (options.showRowHandle)
+                    {
+                        colParts.push("\"<div class='" +
+                                getColumnClass(rowHandleColumn) +
+                                " blist-td blist-tdh blist-table-row-handle " +
+                                "handle-inactive'></div>\"");
+                    }
+                    for (k = 0; k < children.length; k++)
+                    {
                         child = children[k];
                         colParts.push(
                             "\"<div class='blist-td blist-tdh " +
@@ -2206,15 +2247,21 @@
                     }
                     if (options.showAddColumns)
                     {
-                        colParts.push("\"<div class='" + getColumnClass(mcol) + " blist-td blist-tdh blist-column-adder'><div class='blist-column-adder-icon' title='Add a new column...'></div></div>\"");
+                        colParts.push("\"<div class='" + getColumnClass(mcol) +
+                            " blist-td blist-tdh blist-column-adder'>" +
+                            "<div class='blist-column-adder-icon' " +
+                            "title='Add a new column...'></div></div>\"");
                     }
                     completeStatement();
-                } else if (mcol.children) {
-                    // Nested table row -- render cells if the row is present or filler if not
+                }
+                else if (mcol.children)
+                {
+                    // Nested table row -- render cells if the row is present
+                    // or filler if not
                     completeStatement();
 
-                    // Add the code.  If no record is present we add a filler row; otherwise we add the rows
                     children = mcol.children;
+                    // First for opener
                     lcols.push({
                         type: 'nest-header',
                         canFocus: false,
@@ -2223,20 +2270,67 @@
                         mcol: mcol,
                         logical: mcol.uid
                     });
+                    if (options.showRowHandle)
+                    {
+                        // Second for handle
+                        lcols.push({
+                            type: 'nest-header',
+                            canFocus: false,
+                            skippable: true,
+                            mcol: mcol,
+                            logical: mcol.uid
+                        });
+                    }
+                    // If there is data, recursively render the row and add
+                    // the extra columns on the front and back
                     generatedCode +=
                         "if (row" + mcol.header.dataLookupExpr + ") " +
-                            createColumnRendering(children, lcols, contextVariables, "'<div class=\"blist-td blist-opener-space " + openerClass + "\"></div>'", options.showAddColumns ? "'<div class=\"blist-td blist-column-adder-space blist-column-adder\"></div>'" : undefined) +
+                        createColumnRendering(children, lcols, contextVariables,
+                            "'<div class=\"blist-td blist-opener-space " +
+                                openerClass + "\"></div>" +
+                            (options.showRowHandle ? "<div class=\"blist-td " +
+                                getColumnClass(rowHandleColumn) +
+                                " blist-table-row-handle\">' + " +
+                                options.rowHandleRenderer(mcol) +
+                                " + '</div>'" :  "'"),
+                            options.showAddColumns ?
+                                "'<div class=\"blist-td " +
+                                "blist-column-adder-space blist-column-adder\">" +
+                                "</div>'" : undefined) +
                         "else ";
+                    if (options.showAddColumns)
+                    {
+                        // Finally for adder
+                        lcols.push({
+                            type: 'nest-header',
+                            canFocus: false,
+                            skippable: true,
+                            mcol: mcol,
+                            logical: mcol.uid
+                        });
+                    }
 
-                    colParts.push("'<div class=\"blist-td blist-opener-space blist-tdfill " + openerClass + "\"></div>'");
-                    for (var i = 0; i < children.length; i++) {
-                        colParts.push("\"<div class='blist-td blist-tdfill blist-td-colfill " +
+                    // Otherwise just render filler
+                    colParts.push("'<div class=\"blist-td blist-opener-space " +
+                        "blist-tdfill " + openerClass + "\"></div>'");
+                    if (options.showRowHandle)
+                    {
+                        colParts.push("'<div class=\"blist-td blist-tdfill " +
+                                getColumnClass(rowHandleColumn) +
+                                " blist-table-row-handle\"></div>'");
+                    }
+                    for (var i = 0; i < children.length; i++)
+                    {
+                        colParts.push("\"<div class='blist-td blist-tdfill " +
+                            "blist-td-colfill " +
                             getColumnClass(children[i]) +
                             "'></div>\"");
                     }
                     if (options.showAddColumns)
                     {
-                        colParts.push("'<div class=\"blist-td blist-column-adder-space blist-column-adder blist-tdfill\"></div>'");
+                        colParts.push("'<div class=\"blist-td " +
+                            "blist-column-adder-space blist-column-adder " +
+                            "blist-tdfill\"></div>'");
                     }
                     completeStatement();
                 }
@@ -2387,7 +2481,7 @@
                     dataIndex: 'rowHandle',
                     cls: 'blist-table-row-handle',
                     width: options.rowHandleWidth,
-                    renderer: options.rowHandleRenderer});
+                    renderer: options.rowHandleRenderer()});
             }
 
             handleDigits = calculateHandleDigits(model);
@@ -2444,18 +2538,22 @@
                 }
             });
 
-            // Record the width of the opener for nested tables
+            // Record the width of extra nested table columns
             openerWidth = measuredInnerDims.width * 1.5;
             if (options.showAddColumns)
             {
-                measureUtilDOM.innerHTML = '<div class="blist-td blist-column-adder">x</div>';
+                measureUtilDOM.innerHTML =
+                    '<div class="blist-td blist-column-adder">x</div>';
                 $measureDiv = $(measureUtilDOM.firstChild);
-                adderWidth = $measureDiv.width() + paddingX; 
+                adderWidth = $measureDiv.width() + paddingX;
+            }
+            if (options.showRowHandle)
+            {
+                handleWidth =
+                    parseFloat(getColumnStyle(rowHandleColumn).width) + paddingX;
             }
             openerStyle.width = openerWidth + 'px';
-            if (options.generateHeights) {
-                openerStyle.height = rowHeight + 'px';
-            }
+            if (options.generateHeights) { openerStyle.height = rowHeight + 'px'; }
 
             // These variables are available to the rendering function
             var contextVariables = {
@@ -2623,10 +2721,8 @@
                 {
                     // Nested table header -- set width based on child widths
                     colWidth = openerWidth + paddingX;
-                    if (options.showAddColumns)
-                    {
-                        colWidth += adderWidth;
-                    }
+                    colWidth += handleWidth;
+                    colWidth += adderWidth;
                     var children = mcol.body.children;
                     for (var k = 0; k < children.length; k++)
                     {
@@ -3392,7 +3488,7 @@
         headerMods: function (col) {},
         manualResize: false,
         resizeHandleAdjust: 3,
-        rowHandleRenderer: '""',
+        rowHandleRenderer: function(col) { return '""'; },
         rowHandleWidth: 1,
         rowMods: function(row) {},
         selectionEnabled: true,

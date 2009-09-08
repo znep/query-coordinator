@@ -76,11 +76,9 @@
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
                         showAddColumns: datasetObj.settings.showAddColumns,
-                        // This really ought to be linked to edit; but until
-                        // edit is enabled, we'll check the user
-                        //rowHandleRenderer: (datasetObj.settings.editEnabled ?
-                        rowHandleRenderer: (datasetObj.settings.currentUserId ?
-                            datasetObj.rowHandleRenderer : '""'),
+                        rowHandleRenderer: (datasetObj.settings.editEnabled ?
+                            datasetObj.rowHandleRenderer :
+                            function() { return '""'; }),
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
@@ -297,17 +295,30 @@
 
             isTempView: false,
 
-            rowHandleRenderer: '(permissions.canDelete && row.type != "blank" ? ' +
-                '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
-                'row.id + "\'></a>' +
-                '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "\'>' +
-                '<li class=\'delete\'><a href=\'#row-delete_" + row.id + ' +
-                '"\'>Delete Row</a></li>' +
-                '<li class=\'footer\'><div class=\'outerWrapper\'>' +
-                '<div class=\'innerWrapper\'><span class=\'colorWrapper\'>' +
-                '</span></div>' +
-                '</div></li>' +
-                '</ul>" : "")'
+            rowHandleRenderer: function(col)
+            {
+                var colAdjust = '';
+                var subRowLookup = '';
+                if (col && col.header)
+                {
+                    colAdjust = '_' + col.header.indexInLevel;
+                    subRowLookup = col.header.dataLookupExpr;
+                }
+                return '(permissions.canDelete && row' + subRowLookup +
+                        '.type != "blank" ? ' +
+                        '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
+                        'row.id + "' + colAdjust + '\'></a>' +
+                        '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "' +
+                        colAdjust + '\'><li class=\'delete\'>' +
+                        '<a href=\'#row-delete_" + row.id + "' + colAdjust +
+                        '\'>Delete Row</a></li>' +
+                        '<li class=\'footer\'><div class=\'outerWrapper\'>' +
+                        '<div class=\'innerWrapper\'>' +
+                        '<span class=\'colorWrapper\'>' +
+                        '</span></div>' +
+                        '</div></li>' +
+                        '</ul>" : "")';
+            },
         }
     });
 
@@ -346,11 +357,19 @@
         var view = model.meta().view;
         if (action == 'row-delete')
         {
-            model.selectRow(model.getByID(rowId));
-            var rows = [];
-            $.each(model.selectedRows, function(id, index)
-                { rows.push(model.getByID(id)); });
-            model.remove(rows, true);
+            if (s[2] !== undefined)
+            {
+                model.removeChildRows(model.getByID(rowId),
+                    model.column(s[2]), true);
+            }
+            else
+            {
+                model.selectRow(model.getByID(rowId));
+                var rows = [];
+                $.each(model.selectedRows, function(id, index)
+                        { rows.push(model.getByID(id)); });
+                model.remove(rows, true);
+            }
             datasetObj.summaryStale = true;
         }
     };

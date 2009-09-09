@@ -32,7 +32,7 @@ class UserSessionsController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:notice] = notice
-          redirect_to login_path
+          render :action => :new
         end
         format.json { render :json => {:error => notice}, :callback => params[:callback] }
       end

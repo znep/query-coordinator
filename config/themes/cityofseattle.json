@@ -1,0 +1,26 @@
+{
+    // Company
+    "company": "Seattle",
+    "site title": "SeattleData.gov | Seattle's Data Site",
+    "logo": "main_logo.png",
+    "dialog logo" : "dialog_logo.png",
+    "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li></ul>",
+    
+    // Global
+    "link fg": "494A59",
+    "header fg": [ "494A59", "626377", "626377", "666", "333" ],
+    "highlight color" : "B6B7B7",
+    
+    // Chrome
+    "top border bg": "3F80C2",
+    "main button bg": "3F80C2:.286,9ACAFA",
+    "main button active bg": "9ACAFA:.286,3F80C2",
+    
+    // Discovery page
+    "carousel bg": "1D308A,3F80C2",
+    "carousel item title fg": "0071bc",
+    
+    // Dataset page
+    "menu button bg" : "FED759:.7,F4B668",
+    "menu button activated bg" : "F4B668,F4B668:.5,FED759:.5,FED759"
+}

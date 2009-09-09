@@ -1,0 +1,52 @@
+<% content_for :headline do %>
+  <h1><span class="filterIcon">Create a Filtered View</span></h1>
+  <%= javascript_include_tag "screens/filter-screen" %>
+<% end %>
+
+<div id="filterList" class="clearfix">
+  <p>Show rows that match 
+    <select id="filterOperator" name="operator">
+      <option value="and">all</option>
+      <option value="or">any</option>
+    </select> of the following rules:
+  </p>
+  <table id="filterTable">
+    <thead>
+    <tr>
+      <td>Column Name</td>
+      <td>Limit To</td>
+      <td>Cell Contents</td>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <div class="createBar">
+    <div class="error errorMessage"></div>
+    <h3 class="seperator clearfix"></h3>
+    <a href="#" class="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+    var columns = $("#readGrid").blistModel().meta().columns[0];
+    var view = $("#readGrid").blistModel().meta().view;
+
+    if (view.viewFilters != undefined)
+    {
+      $("#filterOperator").val(view.viewFilters.value.toLowerCase());
+      blist.filter.populate($("#filterTable tbody"), view.viewFilters, columns);
+    }
+    else
+    {
+      blist.filter.addFilterRow($("#filterTable tbody"), columns);
+    }
+
+    $("#filterList .createBar .save").click(function(event) {
+      event.preventDefault();
+      var update = blist.filter.json($("#filterTable tbody"));
+    });
+  });
+</script>

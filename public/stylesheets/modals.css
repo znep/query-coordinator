@@ -1053,3 +1053,12 @@ div#sortBysList.reorderList ul
 }
 
 /*** END: Sort dialog ***/
+
+/*** START: Filter dialog ***/
+.renderer .blist-td
+{
+  float: none;
+  overflow: default;
+  height: auto;
+}
+/*** END: Filter dialog ***/

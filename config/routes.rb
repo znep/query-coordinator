@@ -75,6 +75,7 @@ ActionController::Routing::Routes.draw do |map|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
       blist.resources :columns
       blist.resources :sort_bys
+      blist.resources :filters
     end
 
   map.connect 'profile/:profile_name/:id', :controller => 'profile',

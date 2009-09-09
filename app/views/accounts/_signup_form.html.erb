@@ -1,8 +1,8 @@
-<% form_for :account, @account, :url => account_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
+<% form_for :signup, @signup, :url => account_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
   <div class="fieldContent clearfix">
     <%= display_standard_flashes %>
     <fieldset>
-      <%= hidden_field_tag("inviteToken", @token) %>
+      <%= f.hidden_field :inviteToken %>
       <p>
         <%= f.label :firstName, 'First Name', :class => 'required' %>
         <%= f.text_field :firstName %>
@@ -17,7 +17,7 @@
       </p>
       <p>
         <%= label_tag :emailConfirm, 'Confirm Email', :class => 'required' %>
-        <%= text_field_tag :emailConfirm, params[:emailConfirm] %>
+        <%= f.text_field :emailConfirm %>
       </p>
       <p>
         <%= f.label :login, 'Username', :class => 'required' %>
@@ -29,7 +29,7 @@
       </p>
       <p>
         <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required' %>
-        <%= password_field_tag :passwordConfirm, params[:passwordConfirm] %>
+        <%= f.password_field :passwordConfirm %>
       </p>
     </fieldset>
 
@@ -37,7 +37,7 @@
       <div class="fileInputContainer clearfix">
         <%= label_tag :profile_image, 'Profile Picture' %>
         <div class="fileInput">
-          <%= file_field_tag("profile_image", :class => "text") %>
+          <%= f.file_field :profile_image, :class => "text" %>
           <div class="fakeFile clearfix">
             <input type="text" name="displayProfileImage" />
             <%= image_tag("/stylesheets/images/account/button_browse.png", :size => "72x24", :alt => "Browse") %>
@@ -57,7 +57,7 @@
       </p>
       <p>
         <%= label_tag :inviteOthers, 'Invite Others' %>
-        <%= text_area_tag("inviteOthers", params[:inviteOthers], :class => "textPrompt", :title => "Enter email addresses separated by commas") %>
+        <%= f.text_area :inviteOthers, :class => "textPrompt", :title => "Enter email addresses separated by commas" %>
       </p>
     </fieldset>
 

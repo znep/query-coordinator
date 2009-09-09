@@ -3,7 +3,20 @@
   <title><%= th.site_title %></title>
 <% end %>
 
-<%= render(:partial => "signup") %>
+<% dialog_content('signup', "signupBox") do %>
+  <div class='header'>
+    <h1><%= th.company %></h1>
+  </div>
+
+  <div class='mainContent'>
+    <div class='title clearfix'>
+      <h2><strong>Sign up!</strong> We're making data social.</h2>
+      <p>Before we get started, we need to know a little about you.</p>
+    </div>
+
+    <%= render :partial => "signup_form" %>
+  </div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>

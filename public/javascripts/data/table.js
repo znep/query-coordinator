@@ -1632,20 +1632,22 @@
         var navKeyDown = function(event)
         {
             didNavKeyDown = true;
-            doKeyNav(event);
+            return doKeyNav(event);
         };
 
         var navKeyPress = function(event)
         {
-            if (!didNavKeyDown) { doKeyNav(event); }
-            didNavKeyDown = false;
+            if (didNavKeyDown) {
+                didNavKeyDown = false;
+                return true;
+            }
+            return doKeyNav(event);
         };
 
         var doKeyNav = function(event)
         {
-            if (!cellNav) { return; }
+            if (!cellNav) { return true; }
 
-            event.preventDefault();
             switch (event.keyCode)
             {
                 case 34:
@@ -1716,6 +1718,7 @@
                 default:
                     return true;
             }
+
             var curActiveCell = $activeCells ? $activeCells[0] : null;
             if (prevEdit && curActiveCell)
             {

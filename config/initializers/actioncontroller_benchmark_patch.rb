@@ -1,14 +1,42 @@
 require 'benchmark'
 
-# Rewrite the benchmark code in ActionController to support logging CoreServer stuff
+
 module ActionController
+  # First, neuter the default logic that provides benchmarking.
+  #
+  # HACK: alias_method_chain is an abomination. It's pretty much impossible to
+  # modify the logic in the benchmark code; we want to preserve most functionality
+  # of the ActionController::Benchmarking class, but essentially remove the
+  # benchmark from the render and perform_action chains. Unfortunately, there's no
+  # good way to do that.
+  #
+  # You have to know that in the Rails initialization process, render is only
+  # called once for alias_method_chain as part of the benchmarking, so we override
+  # the render method directly to call render_without_benchmark. However,
+  # perform_action is chained a 2nd time in the Rescue module; so instead we write
+  # code that looks incorrect by redefining perform_action_without_rescue to call
+  # perform_action_without_benchmark. If we overrode perform_action directly, we'd
+  # lose a chunk of the alias_method_chain that provided things like rescue, flash
+  # hashes, etc.
+  #
+  # This code will need to be maintained very carefully during Rails upgrades, at
+  # least until we upgrade to Rails 3.0, which gets rid of alias_method_chain. For
+  # more information:
+  #
+  # https://rails.lighthouseapp.com/projects/8994/tickets/285-alias_method_chain-limits-extensibility
+  class Base
+    def render(options = nil, extra_options = {}, &block)
+      render_without_benchmark(options, extra_options, &block)
+    end
+
+    def perform_action_without_rescue
+      perform_action_without_benchmark
+    end
+  end
+
+  # Rewrite the benchmark code in ActionController to support logging CoreServer stuff
   module CoreServerBenchmarking
     def self.included(base)
-      base.class_eval do
-        alias_method :perform_action, :perform_action_without_benchmark
-        alias_method :render, :render_without_benchmark
-      end
-
       base.class_eval do
         alias_method_chain :perform_action, :core_benchmark
         alias_method_chain :render, :core_benchmark

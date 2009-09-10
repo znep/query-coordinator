@@ -261,6 +261,7 @@
     font-size: 1.2em;
     width: 90%;
 }
+.shareWrapper .recipientsWrapper table td input[type='text'] { width: 345px; }
 .recipientsWrapper .blist-combo-wrapper { width: 90%; }
 
 .recipientsWrapper td.add_email p:first-child { margin: 0; }

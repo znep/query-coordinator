@@ -22,18 +22,58 @@ blist.profile.updateInfo = function(responseData, $form)
     else
     {
         var user = responseData.user;
+        
         $(".userName h1").text(user.displayName);
         $(".userLocation h5").text(user.displayLocation);
-        $(".userCompany h5").text(user.company);
-        $(".userTitle h5").text(user.title);
-        if (user.tags)
+        
+        var $userCompany = $(".userCompany h5");
+        if (user.company && user.company != "")
         {
-            $(".userTags h5 .tagContent").text(user.tags.join(', '));
+            if ($userCompany.length > 0)
+            {
+                $userCompany.text(user.company);
+            }
+            else
+            {
+                $(".profileContent .sectionShow").append(
+                    "<div class='userCompany'><h5>" + user.company + "</h5></div>");
+            }
+        }
+        
+        var $userTitle = $(".userTitle h5");
+        if (user.title && user.title != "")
+        {
+            if ($userTitle.length > 0)
+            {
+                $userTitle.text(user.title);
+            }
+            else
+            {
+                $(".profileContent .sectionShow").append(
+                    "<div class='userTitle'><h5>" + user.title + "</h5></div>");
+            }
+        }
+        
+        var $userTags = $(".userTags h5 .tagContent");
+        if (user.tags && user.tags != "")
+        {
+            if ($userTags.length > 0)
+            {
+                $userTags.text(user.tags.join(', '));
+            }
+            else
+            {
+                $(".profileContent .sectionShow").append(
+                    "<div class='userTags'><h5>Tags: <span class='tagContent'>" +
+                    user.tags.join(', ') +
+                    "</span></h5></div>");
+            }
         }
         else
         {
-            $(".userTags h5 .tagContent").empty();
+            $userTags.empty();
         }
+        
         $('#switchUsernameLink').text('Display ' +
                 (user.privacyControl == "login" ?
                  "Full Name" : "Username"));
@@ -46,20 +86,6 @@ blist.profile.updateInfo = function(responseData, $form)
         $form.closest(".sectionContainer")
             .find(".sectionShow").slideDown("fast");
     }
-};
-
-blist.profile.updateLinkSubmit = function(event)
-{
-    event.preventDefault();
-    var $form = $(this);
-    var requestData = $.param($form.find(":input"));
-    var link_id = $.urlParam("link_id", $form.attr("action"));
-    $.ajax({
-        url: $form.attr("action"),
-        type: "PUT",
-        data: requestData,
-        success: function(data) { profileNS.updateLinkSuccess(data, link_id); }
-    });
 };
 
 blist.profile.updateLinkSuccess = function(data, link_id)
@@ -150,8 +176,13 @@ $(function ()
         $(this).closest(".sectionContainer").find(".sectionShow").slideDown("fast");
     });
 
-    // Form validation.
-    $.validator.setDefaults({
+    // Profile form.
+    $(".profileContent form").validate({
+        rules: {
+            'user[firstName]': "required",
+            'user[lastName]': "required",
+            'user[login]': "required"
+        },
         submitHandler: function(form)
         {
             var $form = $(form);
@@ -168,15 +199,6 @@ $(function ()
                     profileNS.updateInfo(responseData, $form);
                 }
             });
-        }
-    });
-
-    // Profile form.
-    $(".profileContent form").validate({
-        rules: {
-            'user[firstName]': "required",
-            'user[lastName]': "required",
-            'user[login]': "required"
         }
     });
 
@@ -242,17 +264,33 @@ $(function ()
     });
     
     // ADD
-    $(".editLinksContainer form").submit(function(event)
+    $(".editLinksContainer form").validate(
     {
-        event.preventDefault();
-        var $form = $(this);
-        var requestData = $.param($form.find(":input"));
-        $.ajax({
-            url: $form.attr("action"),
-            type: "POST",
-            data: requestData,
-            success: function(data) { profileNS.updateLinkSuccess(data, 0); }
-        });
+        rules: {
+            'link[linkType]': "required",
+            'link[url]': {
+                required: true,
+                url: true
+            }
+        },
+        messages: {
+            'link[url]': {
+                required: "Please enter a full URL.",
+                url: "Please enter a full URL (including 'http://')."
+            }
+        },
+        submitHandler: function(form)
+        {
+            var $form = $(form);
+            
+            var requestData = $.param($form.find(":input"));
+            $.ajax({
+                url: $form.attr("action"),
+                type: "POST",
+                data: requestData,
+                success: function(data) { profileNS.updateLinkSuccess(data, 0); }
+            });
+        }
     });
     
     
@@ -292,14 +330,42 @@ $(function ()
         $form.append($formAuth);
 
         $formTable
+            .find("label.error").html("").end()
             .find("select").val($row.find("td.edit_type p span").text()).end()
             .find(".edit_label input").val($row.find("td.edit_label p").text())
                 .removeClass("textPrompt prompt").end()
             .find(".edit_url input").val($row.find("td.edit_url p").text())
-                .removeClass("textPrompt prompt").end()
+                .removeClass("textPrompt prompt error").end()
             .find(".edit_action input").attr("src", "/images/button_update.png");
         $form.append($formTable);
-        $form.submit( profileNS.updateLinkSubmit );
+        
+        $form.validate({
+            rules: {
+                'link[linkType]': "required",
+                'link[url]': {
+                    required: true,
+                    url: true
+                }
+            },
+            messages: {
+                'link[url]': {
+                    required: "Please enter a full URL.",
+                    url: "Please enter a full URL (including 'http://')."
+                }
+            },
+            submitHandler: function(form)
+            {
+                var $form = $(form);
+                var requestData = $.param($form.find(":input"));
+                var link_id = $.urlParam("link_id", $form.attr("action"));
+                $.ajax({
+                    url: $form.attr("action"),
+                    type: "PUT",
+                    data: requestData,
+                    success: function(data) { profileNS.updateLinkSuccess(data, link_id); }
+                });
+            }
+        });
         
         $row.empty().append($cell);
         $cell.append($form);

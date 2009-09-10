@@ -877,14 +877,15 @@ ul.convertables li a:hover
 .newCustomizationWrapper input,
 .newCustomizationWrapper textarea
 {
-    margin-left: 16.5em;
+    margin-left: 200px;
     padding: 0.2em;
     width: 22em;
 }
 
 .newCustomizationWrapper select
 {
-    margin-left: 18em;
+    margin-left: 200px;
+    padding: 0;
     width: 22em;
 }
 

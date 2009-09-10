@@ -32,7 +32,7 @@ class UserSessionsController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:notice] = notice
-          redirect_to login_path
+          render :action => :new
         end
         format.json { render :json => {:error => notice}, :callback => params[:callback] }
       end
@@ -56,7 +56,7 @@ class UserSessionsController < ApplicationController
       user_session = UserSession.rpx(rpx_authentication)
       redirect_back_or_default(home_path)
     else
-      flash[:rpx_user] = rpx_authentication.user
+      session[:rpx_user] = rpx_authentication.user
       redirect_to signup_url
     end
   end

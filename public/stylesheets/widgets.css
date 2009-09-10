@@ -1479,13 +1479,15 @@ table.gridList tr.filteredOut
     float: none;
 }
 
+.loginBox .footer
+{
+    height: 40px;
+}
 .loginBox .footer a
 {
     color: #333333;
-    float: left;
     text-decoration: underline;
 }
-
 .loginBox .footer ul.actionButtons
 {
     float: right;
@@ -1503,19 +1505,37 @@ table.gridList tr.filteredOut
     text-decoration: none;
 }
 
-.loginBox div.openid
-{
-    float: right;
-    margin-top: -15px;
-}
-.loginBox div.openid a.rpxnow
+.loginBox div.openid a.rpxnow,
+.loginBox div.openid span
 {
     font-size: 1.2em;
-    background-image: url(/stylesheets/images/openid-16x16.gif);
-    background-repeat: no-repeat;
-    padding-left: 20px;
 }
-
+.loginBox div.openid .hidden
+{
+    display: none;
+}
+.loginBox ul.accountMaint
+{
+    padding-left: 6em;
+    font-size: 1.2em;
+}
+.loginBox ul.accountMaint li
+{
+    padding: 3px 0px;
+}
+.loginBox ul.rpx_buttons li
+{
+    display: inline;
+    padding: 0px 5px;
+}
+.loginBox ul.rpx_buttons form
+{
+    display: inline;
+}
+body#login .loginBox li#close_login
+{
+    display: none;
+}
 /*** END: Login box ***/
 
 

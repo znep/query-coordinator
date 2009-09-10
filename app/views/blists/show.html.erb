@@ -326,7 +326,7 @@
   <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "readGrid" }) %>
 
   <%- if !current_user -%>
-  <%= render(:partial => 'user_sessions/login', :locals => {:is_modal => true}) %>
+  <%= render :partial => 'login' %>
   <%= render(:partial => "accounts/signup", :locals => {:is_modal => true}) %>
   <%= javascript_include_tag "plugins/ajaxupload.3.0", "screens/signup-screen", 
     :cache => "cache/inline_accounts_new_all" %>

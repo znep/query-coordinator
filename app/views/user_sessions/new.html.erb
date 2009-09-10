@@ -2,7 +2,32 @@
   <title><%= th.site_title %></title>
 <% end %>
 
-<%= render(:partial => 'login') %>
+<% dialog_content('login', "loginBox") do %>
+  <div class='header'>
+    <h1><%= th.company %></h1>
+  </div>
+
+  <div class='mainContent'>
+    <div class='title clearfix'>
+      <h2>Sign in using your Socrata ID</h2> 
+    </div>
+
+    <%= render(:partial => 'login') %>
+
+    <div class='footer clearfix'>
+      <ul class="rpx_buttons">
+        <li><%= rpx_submit_facebook %></li>
+        <li><%= rpx_submit_google %></li>
+        <li><%= link_to_rpx(image_tag('/stylesheets/images/openid-16x16.gif', 
+                  :alt => "Sign in with a 3rd-party account",
+                  :title => "Sign in with a 3rd-party account")) %></li>
+      </ul>
+      <div class="openid clearfix">
+        <%= link_to_rpx "Sign in with your Facebook, Google, or other account" %>
+      </div>
+    </div>
+  </div>
+<% end %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
@@ -11,5 +36,11 @@
     {
         $('#user_session_login').focus();
     });
+  </script>
+  <script src="https://rpxnow.com/openid/v2/widget"
+          type="text/javascript"></script>
+  <script type="text/javascript">
+    RPXNOW.overlay = true;
+    RPXNOW.language_preference = 'en';
   </script>
 <% end %>

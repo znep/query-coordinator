@@ -346,4 +346,18 @@ HREF
 
     link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", html_options
   end
+
+  def rpx_submit_facebook(return_url = rpx_url)
+    %Q{<form id="fbrpx" method="post" action="#{APP_CONFIG['rpx_facebook_url']}?token_url=#{return_url}">
+         <input type="image" src="/images/rpx/facebook.png" value="Sign in with Facebook" alt="Sign in with Facebook" name="Sign in with Facebook" />
+       </form>
+    }
+  end
+
+  def rpx_submit_google(return_url = rpx_url)
+    %Q{<form id="googrpx" method="post" action="#{APP_CONFIG['rpx_openid_url']}?token_url=#{return_url}">
+         <input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
+         <input type="image" src="/images/rpx/google.png" value="Sign in with Google" alt="Sign in with Google" name="Sign in with Google" />
+       </form>}
+  end
 end

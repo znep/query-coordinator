@@ -26,7 +26,14 @@ blist.profile.updateInfo = function(responseData, $form)
         $(".userLocation h5").text(user.displayLocation);
         $(".userCompany h5").text(user.company);
         $(".userTitle h5").text(user.title);
-        $(".userTags h5 .tagContent").text(user.tags.join(', '));
+        if (user.tags)
+        {
+            $(".userTags h5 .tagContent").text(user.tags.join(', '));
+        }
+        else
+        {
+            $(".userTags h5 .tagContent").empty();
+        }
         $('#switchUsernameLink').text('Display ' +
                 (user.privacyControl == "login" ?
                  "Full Name" : "Username"));

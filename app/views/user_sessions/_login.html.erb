@@ -1,57 +1,30 @@
-<% dialog_content('login', "loginBox") do %>
-  <div class='header'>
-    <h1><%= th.company %></h1>
-    <%- if local_assigns[:is_modal] -%>
-    <a href='#close_dialog' class='close' title='Close'>Close</a>
-    <%- end -%>
-  </div>
+<%= display_standard_flashes %>
 
-  <div class='mainContent'>
-    <div class='title clearfix'>
-      <h2>Sign In</h2> <%= link_to("Sign Up", signup_url, {:class => 'signupLink'}) %>
-    </div>
 
-    <%= display_standard_flashes %>
+<% form_for @user_session do |f| %>
+  <%= f.error_messages %>
+  <p>
+  <%= f.label :login, 'Username' %>
+  <%= f.text_field :login %>
+  </p>
+  <p>
+  <%= f.label :password %>
+  <%= f.password_field :password %>
+  </p>
 
-    <% form_for @user_session do |f| %>
-    <%= f.error_messages %>
-    <p>
-    <%= f.label :login, 'Username' %>
-    <%= f.text_field :login %>
-    </p>
-    <p>
-    <%= f.label :password %>
-    <%= f.password_field :password %>
-    </p>
-   
-    <p class='rememberMe'>
-    <%= f.check_box :remember_me %>
-    <%= f.label :remember_me %>
-    </p>
+  <p class='rememberMe'>
+  <%= f.check_box :remember_me %>
+  <%= f.label :remember_me %>
+  </p>
 
-    <div class="openid clearfix">
-      <%= link_to_rpx "Sign in with OpenID" %>
-    </div>
-
-    <div class='footer clearfix'>
-      <%= link_to "Forgot your password / username?", forgot_password_path%>
-      <ul class='actionButtons clearfix'>
-        <%- if local_assigns[:is_modal] -%>
-        <li><a href='#close_login' class='close'>Cancel</a></li>
-        <%- end -%>
-        <li class='bare'><input type='image' name='submit'
-        src='<%= image_path("button_signin.png") %>' /></li>
-      </ul>
-    </div>
-    <% end %>
-  </div>
+  <ul class='actionButtons clearfix'>
+    <li id="close_login"><a href='#close_login' class='close'>Cancel</a></li>
+    <li class='bare'><input type='image' name='submit'
+    src='<%= image_path("button_signin.png") %>' /></li>
+  </ul>
 <% end %>
 
-<% content_for :js_footer do %>
-<script src="https://rpxnow.com/openid/v2/widget"
-        type="text/javascript"></script>
-<script type="text/javascript">
-  RPXNOW.overlay = true;
-  RPXNOW.language_preference = 'en';
-</script>
-<% end %>
+<ul class="accountMaint">
+  <li><%= link_to "Forgot your username or password?", forgot_password_path%></li>
+  <li><%= link_to("No account yet?", signup_url, {:class => 'signupLink'}) %></li>
+</ul>

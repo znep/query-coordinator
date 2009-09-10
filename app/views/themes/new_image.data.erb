@@ -51,7 +51,7 @@
       responseType: 'json',
       onChange: function (file, ext)
       {
-        $form.find('#new_image_name').val(file.replace(/[-_]/g, ' ').replace(/\.[^\.]+$/, ''));
+        $form.find('#new_image_name[value=""]').val(file.replace(/[-_]/g, ' ').replace(/\.[^\.]+$/, ''));
         $form.find('#new_image_file_name').val(file);
         if (!(ext && /^(gif|jpg|jpeg|png)$/.test(ext)))
         {

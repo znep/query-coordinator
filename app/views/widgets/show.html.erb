@@ -222,9 +222,11 @@
     
     <div class="widgetFooterWrapper"><div class="widgetFooterInner">
       <%- if @theme[:frame][:logo] != 'none' -%>
-        <p class="widgetLogoWrapper"><a href='http://www.socrata.com' rel='external' class='widgetLogo'>
+        <p class="widgetLogoWrapper">
+          <a href='<%= (@theme[:frame][:logo] == 'default') ? 'http://www.socrata.com/' : @theme[:frame][:footer_link][:url] %>' rel='external' class='widgetLogo'>
             Socrata Social Data Player
-        </a></p>
+          </a>
+        </p>
       
         <%- if @theme[:frame][:footer_link][:show] -%>
           <p class="getPlayerAction">

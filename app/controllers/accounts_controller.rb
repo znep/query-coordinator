@@ -41,12 +41,11 @@ class AccountsController < ApplicationController
   end
 
   def new
-    @account = session[:rpx_user] || User.new
+    @account = flash[:rpx_user] || User.new
     @body_class = 'signup'
     @token = params[:token] || ""
 
     session[:openid_identifier_id] = @account.openIdIdentifierId
-    session[:rpx_user] = nil
   end
 
   def create

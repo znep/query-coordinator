@@ -875,6 +875,15 @@ ul.convertables li a:hover
     width: 14em;
 }
 
+.newCustomizationWrapper label.error
+{
+    font-size: 1.1em;
+    height: 1.5em;
+    margin: 0.5em 0 0 18.5em;
+    text-align: left;
+    width: 30em;
+}
+
 .newCustomizationWrapper input,
 .newCustomizationWrapper textarea
 {
@@ -919,6 +928,15 @@ ul.convertables li a:hover
     padding-right: 1em;
     text-align: right;
     width: 10em;
+}
+
+.newImageWrapper label.error
+{
+    font-size: 1.1em;
+    height: 1.5em;
+    margin: 0.5em 0 0 14em;
+    text-align: left;
+    width: 30em;
 }
 
 .newImageWrapper input

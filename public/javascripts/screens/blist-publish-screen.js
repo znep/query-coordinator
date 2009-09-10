@@ -1,4 +1,5 @@
 var publishNS = blist.namespace.fetch('blist.publish');
+var widgetNS;
 
 /*jslint sub: true */
 
@@ -140,6 +141,18 @@ blist.publish.applyFrameColor = function($elem, values)
     }
 };
 
+blist.publish.applySubscribeMenu = function($elem, values)
+{
+    if (values['rss'] || values['atom'])
+    {
+        $elem.show();
+    }
+    else
+    {
+        $elem.hide();
+    }
+};
+
 blist.publish.applyLogo = function($elem, value)
 {
     if (value == 'none')
@@ -194,17 +207,30 @@ blist.publish.applyTabs = function($elem, subhash)
     {
         $elem.infoPaneNavigate().activateTab($elem.children('li:first-child'), true);
     }
+
+    var $meta = $elem.closest('#widgetMeta');
+    if ($elem.children('li:not(:hidden)').length === 0)
+    {
+        $meta.css('height', 0);
+        $meta.siblings('.gridContainer').css('height', $meta.closest('.gridInner').css('height'));
+    }
+    else
+    {
+        $meta.css('height', null);
+        $meta.siblings('.gridContainer').css('height', $meta.closest('.gridInner').css('height') - $meta.outerHeight(false));
+    }
+    widgetNS.sizeGrid();
 };
 
 blist.publish.applyInterstitial = function(value)
 {
     if (value)
     {
-        $('iframe').get()[0].contentWindow.blist.widget.enableInterstitial();
+        widgetNS.enableInterstitial();
     }
     else
     {
-        $('iframe').get()[0].contentWindow.blist.widget.disableInterstitial();
+        widgetNS.disableInterstitial();
     }
 };
 
@@ -215,8 +241,10 @@ blist.publish.customizationApplication = {
                                        grid_data_size:      [ { selector: '.blist-td', css: 'font-size', hasUnit: true }] } },
     frame:          { _group:                               [ { selector: 'body', properties: ['color', 'gradient', 'border'], callback: publishNS.applyFrameColor } ],
                       logo:                                 [ { selector: '.widgetLogoWrapper > a', callback: publishNS.applyLogo } ],
-                      footer_link:   { show:                [ { selector: '.getPlayerAction', hideShow: true } ],
-                                       url:                 [ { selector: '.getPlayerAction a', attr: 'href' } ],
+                      footer_link:   { show:                [ { selector: '.getPlayerAction', hideShow: true },
+                                                              { callback: function() { widgetNS.sizeGrid(); } } ],
+                                       url:                 [ { selector: '.getPlayerAction a', attr: 'href' },
+                                                              { selector: '.widgetLogoWrapper > a', attr: 'href' } ],
                                        text:                [ { selector: '.getPlayerAction a', callback: function($elem, value) { $elem.text(value); } } ] } },
     grid:           { row_numbers:                          [ { selector: '.blist-table-locked-scrolls:has(.blist-table-row-numbers)', hideShow: true },
                                                               { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { 'true': '49px', 'false': '0' } },
@@ -231,7 +259,8 @@ blist.publish.customizationApplication = {
                       zebra:                                [ { selector: '.blist-tr-even .blist-td', css: 'background-color' } ] },
     menu:           { email:                                [ { selector: '.headerMenu .email', hideShow: true } ],
                       subscribe:     { rss:                 [ { selector: '.headerMenu .subscribe .rss', hideShow: true } ],
-                                       atom:                [ { selector: '.headerMenu .subscribe .atom', hideShow: true } ] },
+                                       atom:                [ { selector: '.headerMenu .subscribe .atom', hideShow: true } ],
+                                       _group:              [ { selector: '.headerMenu .subscribe', properties: [ 'rss', 'atom' ], callback: publishNS.applySubscribeMenu } ] },
                       api:                                  [ { selector: '.headerMenu .api', hideShow: true } ],
                       download:                             [ { selector: '.headerMenu .export', hideShow: true } ],
                       print:                                [ { selector: '.headerMenu .print', hideShow: true } ],
@@ -369,6 +398,8 @@ blist.publish.applyCustomizationToPreview = function(hash)
     }
     else
     {
+        widgetNS = $('iframe').get()[0].contentWindow.blist.widget;
+
         recurse(publishNS.customizationApplication, hash);
         blist.publish.writeStylesBuffer();
 
@@ -619,7 +650,7 @@ blist.publish.loadCustomization = function()
     {
         clearTimeout(publishNS.saveTimeout);
         publishNS.populateForm(publishNS.currentTheme);
-        publishNS.saveCustomization(publishNS.currentTheme);
+        publishNS.valueChanged();
     });
 
     // Load in customization

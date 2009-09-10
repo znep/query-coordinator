@@ -571,7 +571,7 @@ blist.namespace.fetch('blist.data');
                     v.dataType.type == 'document'))
                 { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
                 if (v.dataType && (v.dataType.type == 'url' ||
-                    v.dataType.type == 'phone'))
+                    v.dataType.type == 'phone' || v.dataType.type == 'document'))
                 { dataMungeCols.push({index: i, type: 'arrayToObject',
                     types: v.subColumnTypes}); }
                 if (v.dataType && v.dataType.type == 'checkbox')

@@ -662,17 +662,24 @@
 
             var $editor = blistEditor.$editor();
 
-            blistEditor.adjustSize();
-            $editor.width('auto').height('auto');
-            $curEditContainer.width('auto').height('auto');
-
             isEdit[mode] = true;
             $editContainers[mode] = $curEditContainer;
 
             if (mode == defaultEditMode) { hideActiveCell(); }
 
-            sizeCellOverlay($curEditContainer, $editor, $(cell));
-            positionCellOverlay($curEditContainer, $(cell));
+            var resizeEditor = function()
+            {
+                blistEditor.adjustSize();
+                $editor.width('auto').height('auto');
+                $curEditContainer.width('auto').height('auto');
+
+                sizeCellOverlay($curEditContainer, $editor, $(cell));
+                positionCellOverlay($curEditContainer, $(cell));
+            };
+            resizeEditor();
+
+            $curEditContainer.bind('resize', function(e) { resizeEditor(); });
+
             $curEditContainer.removeClass('blist-table-util').addClass('shown');
 
             if (mode != expandEditMode) { blistEditor.focus(); }

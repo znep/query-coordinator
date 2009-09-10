@@ -369,10 +369,9 @@ blist.namespace.fetch('blist.data.types');
         return "'?'";
     };
 
-    var renderURL = function(value, captionIsHTML, plain) {
-        if (!value) {
-            return '';
-        }
+    var renderURL = function(value, captionIsHTML, plain)
+    {
+        if (!value) { return ''; }
         else if (value instanceof Array)
         {
             url = value[0];
@@ -385,17 +384,13 @@ blist.namespace.fetch('blist.data.types');
         }
         if (url && url != '' && !url.match(/^([a-z]+):/i) &&
                 url.indexOf('/') != 0)
-        {
-            url = 'http://' + url;
-        }
-        if (plain)
-		{
-            return url || '';
-		}
-        if (!captionIsHTML) {
-            caption = htmlEscape(caption);
-        }
-        return "<a target='blist-viewer' href='" + htmlEscape(url) + "'>" + caption + "</a>";
+        { url = 'http://' + url; }
+
+        if (plain) { return url || ''; }
+
+        if (!captionIsHTML) { caption = htmlEscape(caption); }
+        return "<a target='blist-viewer' href='" + htmlEscape(url) + "'>" +
+            caption + "</a>";
     };
 
     var renderGenURL = function(value, plain) {
@@ -434,53 +429,53 @@ blist.namespace.fetch('blist.data.types');
         return rv;
     };
 
-    var renderGenStars = function(value, plain, column) {
-        if (plain)
-		{
-            return "renderTextStars(" + value + ")";
-		}
+    var renderGenStars = function(value, plain, column)
+    {
+        if (plain) { return "renderTextStars(" + value + ")"; }
         var range = parseFloat(column.range);
-        if (range <= 0 || isNaN(range)) {
+        if (range <= 0 || isNaN(range))
+        {
             range = 5;
         }
         return "renderStars(" + value + ", " + range + ")";
     };
 
-    var renderGenPhoto = function(value, plain, column) {
+    var renderGenPhoto = function(value, plain, column)
+    {
         var url = "'" + (column.base || '') + "' + " + value;
         if (plain)
-		{
+        {
             // TODO
             return url;
-		}
+        }
         return value + " && ('<img src=\"' + escape(" + url + ") + '\"></img>')";
     };
 
-    var renderDocument = function(value, base, plain) {
+    var renderDocument = function(value, base, plain)
+    {
         var url, name, size;
-        if (value == null) {
-            return '';
-        }
-        if (typeof value == 'object') {
+        if (value == null) { return ''; }
+        if (value instanceof Array)
+        {
             url = value[2];
-            if (url == null) {
-                return '';
-            }
             name = value[1];
             size = value[3];
-        } else {
-            url = value;
         }
-        if (plain)
-		{
-            return name || '';
-		}
+        else if (value instanceof Object)
+        {
+            url = value.id;
+            name = value.filename;
+            size = value.size;
+        }
+        else { url = value; }
+        if (url == null) { return ''; }
+        if (plain) { return name || ''; }
+
         var rv = renderURL([ (base || '') + url, name || 'Document' ]);
-        if (size != null) {
+        if (size != null)
+        {
             size = Math.round(size / 1024);
-            if (size == 0) {
-                size = 1;
-            }
+            if (size == 0) { size = 1; }
             rv += "&nbsp;<span class='blist-document-size'>(" + size + "k)</span>";
         }
         return rv;
@@ -772,6 +767,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.checkbox.editor = $.blistEditor.checkbox;
         blist.data.types.stars.editor = $.blistEditor.stars;
         blist.data.types.richtext.editor = $.blistEditor.richtext;
+        blist.data.types.document.editor = $.blistEditor.document;
     }
 
     for (var name in blist.data.types) {

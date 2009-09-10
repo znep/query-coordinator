@@ -507,7 +507,8 @@ div.blist-table-editor .align-right { text-align: right; }
 .blist-table-editor.type-stars.hover .star.star-on
 { background-position: 0 -32px; }
 
-.blist-table-editor.type-stars input
+.blist-table-editor.type-stars input,
+.blist-table-editor.type-document input
 {
     height: 0;
     left: -1000px;

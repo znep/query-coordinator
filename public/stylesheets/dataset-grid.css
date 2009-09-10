@@ -567,6 +567,33 @@ img.blist-table-option-icon
     padding-right: 0.4em;
 }
 
+.blist-table-edit-container .type-document a.docLink
+{
+    line-height: 1.66667em;
+    margin-left: 0.5em;
+}
+
+.blist-table-edit-container .type-document a.button
+{
+    background-image: url(/stylesheets/images/content/table/blob_editor_sprites.png);
+    background-position: 0 20px;
+    background-repeat: no-repeat;
+    display: block;
+    float: left;
+    height: 20px;
+    margin-left: 0.25em;
+    margin-top: 1px;
+    text-indent: -9999px;
+    width: 20px;
+}
+
+.blist-table-edit-container .type-document a.button.add
+{ background-position: -2px 0; }
+.blist-table-edit-container .type-document a.button.replace
+{ background-position: -2px -60px; }
+.blist-table-edit-container .type-document a.button.remove
+{ background-position: -2px -80px; }
+
 .columnHeaderMenu { width: 17em; }
 
 ul.menu.columnHeaderMenu li,

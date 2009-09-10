@@ -1426,6 +1426,13 @@ table.gridList tr.filteredOut
 .dialogBox .actionButtons li a { background-position: right -84px; }
 .dialogBox .actionButtons li a.arrowButton { background-position: right -105px; }
 
+.dialogBox .error
+{
+    color: #ff0000;
+    font-size: 1.1em;
+    margin-bottom: 0.5em;
+}
+
 /*** END: Dialog boxes ***/
 
 
@@ -1734,6 +1741,42 @@ table.gridList tr.filteredOut
 
 /*** END: Signup box ***/
 
+
+/*** START: Upload Dialog ***/
+#jqmUpload { margin-left: -20em; }
+#jqmUpload, #jqmUpload .dialogWrapper { width: 40em; }
+#jqmUpload .dialogWrapper { margin: 10em auto 0; }
+#jqmUpload label { font-size: 1.2em; }
+
+#jqmUpload input[type="text"]
+{
+    background-color: transparent;
+    display: inline-block;
+}
+
+#jqmUpload .fileBrowseButtonListContainer { float: right; }
+
+#jqmUpload .fileBrowseButtonListContainer ul
+{
+    display: inline-block;
+    float: none;
+    margin-bottom: -0.65em;
+    margin-top: 0;
+}
+
+#jqmUpload .submitPending
+{
+    background: url(/images/throbber.gif) no-repeat;
+    background-position: 6px center;
+    float: left;
+    font-size: 1.2em;
+    line-height: 1.3333em;
+    padding-left: 30px;
+}
+
+#jqmUpload .cancelButton { float: right; }
+
+/*** END: Upload Dialog ***/
 
 /*** START: Page header block (top of discover and community) ***/
 .pageBlockHeaderOuter { background-color: #fff; }

@@ -26,10 +26,5 @@ blist.stats.initializeGrid = function ()
 };
 
 $(function() {
-    $("#print").click(function(event) {
-        event.preventDefault();
-        window.print();
-    });
-
     statsNS.initializeGrid();
 });

@@ -768,6 +768,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.stars.editor = $.blistEditor.stars;
         blist.data.types.richtext.editor = $.blistEditor.richtext;
         blist.data.types.document.editor = $.blistEditor.document;
+        blist.data.types.photo.editor = $.blistEditor.photo;
     }
 
     for (var name in blist.data.types) {

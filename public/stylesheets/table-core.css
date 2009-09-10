@@ -508,7 +508,8 @@ div.blist-table-editor .align-right { text-align: right; }
 { background-position: 0 -32px; }
 
 .blist-table-editor.type-stars input,
-.blist-table-editor.type-document input
+.blist-table-editor.type-document input,
+.blist-table-editor.type-photo input
 {
     height: 0;
     left: -1000px;

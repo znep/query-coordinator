@@ -107,7 +107,7 @@
             },
 
             // External interface methods
-            show: function(uploadURL, fileCallback, closeCallback)
+            show: function(uploadURL, fileCallback, closeCallback, extList)
             {
                 var currentObj = this;
                 currentObj._closeCallback = closeCallback;
@@ -127,8 +127,14 @@
                 $domObj.find(".submitPending").hide();
                 $domObj.find('.submitActions input[name="submit"]').hide();
                 $domObj.find(".error").text('');
+
+                var extRE;
+                if (extList instanceof Array && extList.length > 0)
+                { extRE = new RegExp('^(' + extList.join('|') + ')$'); }
+
                 var $uploadButton = $domObj.find('.fileBrowseButton');
-                currentObj._$uploader = new AjaxUpload($uploadButton, {
+                currentObj._$uploader = new AjaxUpload($uploadButton,
+                {
                     action: uploadURL,
                     autoSubmit: false,
                     name: 'uploadFileInput',
@@ -136,9 +142,19 @@
                     onChange: function (file, ext)
                     {
                         $domObj.find('input[name="file_upload"]').val(file);
-                        $domObj.find('.submitActions input[name="submit"]')
-                            .show();
-                        $domObj.find(".error").text('');
+                        if (extRE && !(ext && extRE.test(ext)))
+                        {
+                            $domObj.find('.error')
+                                .text('Please choose a file with any of ' +
+                                    'these extensions: ' + extList.join(', '));
+                            return false;
+                        }
+                        else
+                        {
+                            $domObj.find('.error').text('');
+                            $domObj.find('.submitActions input[name="submit"]')
+                                .show();
+                        }
                     },
                     onSubmit: function (file, ext)
                     { $domObj.find(".submitPending").show(); },

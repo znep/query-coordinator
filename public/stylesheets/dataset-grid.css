@@ -573,7 +573,8 @@ img.blist-table-option-icon
     margin-left: 0.5em;
 }
 
-.blist-table-edit-container .type-document a.button
+.blist-table-edit-container .type-document a.button,
+.blist-table-edit-container .type-photo a.button
 {
     background-image: url(/stylesheets/images/content/table/blob_editor_sprites.png);
     background-position: 0 20px;
@@ -589,10 +590,20 @@ img.blist-table-option-icon
 
 .blist-table-edit-container .type-document a.button.add
 { background-position: -2px 0; }
-.blist-table-edit-container .type-document a.button.replace
+.blist-table-edit-container .type-document a.button.replace,
+.blist-table-edit-container .type-photo a.button.replace
 { background-position: -2px -60px; }
-.blist-table-edit-container .type-document a.button.remove
+.blist-table-edit-container .type-document a.button.remove,
+.blist-table-edit-container .type-photo a.button.remove
 { background-position: -2px -80px; }
+.blist-table-edit-container .type-photo a.button.add
+{ background-position: -2px -20px; }
+.blist-table-edit-container .type-photo a.button.view
+{
+    background-position: 0 -40px;
+    width: 25px;
+}
+.blist-table-edit-container .type-photo img { margin-left: 0.5em; }
 
 .columnHeaderMenu { width: 17em; }
 

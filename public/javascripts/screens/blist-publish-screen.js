@@ -200,11 +200,11 @@ blist.publish.applyInterstitial = function(value)
 {
     if (value)
     {
-        $('a:not([href^=#]):not(.noInterstitial)').live('click', blist.widget.showInterstitial);
+        $('iframe').get()[0].contentWindow.blist.widget.enableInterstitial();
     }
     else
     {
-        $('a:not([href^=#]):not(.noInterstitial)').die('click');
+        $('iframe').get()[0].contentWindow.blist.widget.disableInterstitial();
     }
 };
 
@@ -359,7 +359,9 @@ blist.publish.applyCustomizationToPreview = function(hash)
     };
 
     clearTimeout(publishNS.loadFrameTimeout);
-    if ($('.previewPane iframe').contents().find('#customizationStyles').length === 0)
+    if ((typeof $('iframe').get()[0].contentWindow.blist === 'undefined') ||
+        (typeof $('iframe').get()[0].contentWindow.blist.widget === 'undefined') ||
+        ($('iframe').get()[0].contentWindow.blist.widget.ready !== true))
     {
         // iframe may not have loaded yet.
         publishNS.loadFrameTimeout = setTimeout(

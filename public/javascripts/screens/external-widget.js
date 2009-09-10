@@ -211,6 +211,16 @@ blist.widget.setUpViewHeader = function()
     });
 };
 
+blist.widget.enableInterstitial = function()
+{
+    $('a:not([href^=#]):not(.noInterstitial)').live('click', widgetNS.showInterstitial);
+};
+
+blist.widget.disableInterstitial = function()
+{
+    $('a:not([href^=#]):not(.noInterstitial)').die('click', widgetNS.showInterstitial);
+};
+
 blist.widget.showInterstitial = function (e)
 {
     var $link = $(this);
@@ -355,7 +365,7 @@ $(function ()
     // Wire up interstitials
     if (widgetNS.theme['behavior']['interstitial'])
     {
-        $('a:not([href^=#]):not(.noInterstitial)').live('click', widgetNS.showInterstitial);
+        blist.widget.enableInterstitial();
     }
 
     $('.interstitial a.closeLink').click(function (e)
@@ -406,3 +416,5 @@ $(function ()
         $("#widgetMeta .summaryTabs").scrollTabs();
     }
 });
+
+blist.widget.ready = true;

@@ -484,6 +484,12 @@ div.blist-table-editor
     padding: 0 4px 0 0;
 }
 
+div.blist-table-editor.type-richtext
+{
+    /* Eliminate 4px on the right for richtext controls so the iframe expands fully */
+    padding: 0;
+}
+
 div.blist-table-edit-container input[type="text"],
 div.blist-table-edit-container input.textInput
 {

@@ -123,6 +123,21 @@
             {
                 // Override me if desired
                 return true;
+            },
+
+            /**
+             * Derivatives may call this to notify listeners of command state changes.
+             */
+            actionStatesChanged: function()
+            {
+                this.$dom().trigger("action-state-change");
+            },
+
+            /**
+             * Derivatives can pass state of commands to the external world by overriding this method.
+             */
+            getActionStates: function() {
+                return {};
             }
         }
     });

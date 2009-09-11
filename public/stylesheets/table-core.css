@@ -518,3 +518,12 @@ div.blist-table-editor .align-right { text-align: right; }
     width: 0;
 }
 
+.blist-table-editor.type-richtext textarea
+{
+    visibility: hidden;
+}
+
+body.blist-richtext-document {
+    font-size: 12px;
+    padding: 2px 3px 3px 3px;
+}

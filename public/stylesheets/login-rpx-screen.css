@@ -4,25 +4,25 @@
     width: 74em;
 }
 
-
 p.chooseMessage
 {
     font-size: 1.4em;
-    padding-bottom: 2em;
+    margin-bottom: 2em;
 }
 
-li#close_login,
-ul.accountMaint
+li#close_login
 {
     display: none;
 }
 
-.dialogBox .actionButtons
+.dialogBox #tabs .actionButtons
 {
-    display: inline;
-    float: right;
     margin-top: -3em;
     margin-right: 5em;
+}
+.dialogBox #tabs .actionButtons li
+{
+    float: right;
 }
 
 div#loginTab
@@ -31,17 +31,30 @@ div#loginTab
     width: 40em;
 }
 
+.ui-tabs .ui-tabs-nav li span
+{
+    float: left;
+    padding: 1em 0;
+    height: 3em;
+    vertical-align: center;
+    text-decoration: none;
+}
 #tabs ul
 {
-    padding-left: 5em;
+    margin: 0 auto;
+    display: block;
+    width: 50.6em;
 }
 #tabs ul li
 {
     font-size: 1.8em;
+    height: 3em;
 }
 #tabs ul li a
 {
-    color: #ccc;
+    width: 10em;
+    text-align: center;
+    color: #888888;
 }
 #tabs ul li.ui-tabs-selected a,
 #tabs ul li a:hover

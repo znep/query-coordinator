@@ -10,10 +10,6 @@ $(function ()
         $("#signup .fileInputContainer input[type='text']").val($(this).val());
     });
 
-    $("#tabs").tabs({
-        fx: { opacity: "toggle"}
-    });
-
     $.validator.addMethod("loginRegex", function(value, element) {
         return this.optional(element) || /^[a-z0-9\-]+$/i.test(value);
     }, "Username must contain only letters, numbers, or dashes.");

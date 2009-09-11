@@ -9,6 +9,7 @@ class BlistsController < SwfController
     @args = params.reject {|k,v| !accept_keys.include?(k)}.inject({}) do |h,(k,v)|
       h[k] = CGI.unescape(v); h
     end
+    @title = get_title(@args)
   end
 
   def show

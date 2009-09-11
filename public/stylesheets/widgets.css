@@ -2197,6 +2197,7 @@ div.datepicker
     margin-top: 3px;
     position: absolute;
     top: 0;
+    z-index: 4000;
 }
 div.datepicker table table th,
 div.datepicker table table td { font-size: 1.1em; }

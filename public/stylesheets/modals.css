@@ -1055,10 +1055,18 @@ div#sortBysList.reorderList ul
 /*** END: Sort dialog ***/
 
 /*** START: Filter dialog ***/
-.renderer .blist-td
+#filterTable .renderer .blist-td
 {
+  line-height: normal;
   float: none;
   overflow: default;
+  height: auto;
+}
+
+#filterTable .renderer .blist-td input
+{
+  padding: 0;
+  line-height: 1em;
   height: auto;
 }
 /*** END: Filter dialog ***/

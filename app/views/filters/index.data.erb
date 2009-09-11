@@ -1,6 +1,5 @@
 <% content_for :headline do %>
   <h1><span class="filterIcon">Create a Filtered View</span></h1>
-  <%= javascript_include_tag "screens/filter-screen" %>
 <% end %>
 
 <div id="filterList" class="clearfix">
@@ -46,7 +45,11 @@
 
     $("#filterList .createBar .save").click(function(event) {
       event.preventDefault();
-      var update = blist.filter.json($("#filterTable tbody"));
+      var operator = $("#filterOperator").val();
+      var viewFilters = blist.filter.getFilter($("#filterTable tbody"), operator);
+
+      $("#readGrid").datasetGrid().updateFilter(viewFilters);
+      $(".jqmClose").click();
     });
   });
 </script>

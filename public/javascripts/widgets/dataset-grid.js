@@ -117,6 +117,15 @@
                 }
             },
 
+            updateFilter: function(filter)
+            {
+                var datasetObj = this;
+                datasetObj.settings._model.updateFilter(filter);
+                var view = datasetObj.settings._model.meta().view;
+
+                setTempView(this, view);
+            },
+
             updateView: function(newView)
             {
                 var datasetObj = this;

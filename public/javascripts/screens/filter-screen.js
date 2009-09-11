@@ -10,17 +10,21 @@ filterNS.conditions = {
 };
 
 filterNS.filterableClass = function(type) {
-  if ($.inArray(type, ["text", "richtext", "flag", "url", "email", "phone", "tag"]) > -1)
+  if ($.inArray(type, ["text", "richtext", "url", "email", "phone", "tag"]) > -1)
   {
     return "text";
   }
-  else if ($.inArray(type, ["number", "money", "percent", "stars"]) > -1)
+  else if ($.inArray(type, ["number", "money", "percent", "stars", "date", "picklist"]) > -1)
   {
     return "number";
   }
   else if ($.inArray(type, ["photo", "document"]) > -1)
   {
     return "photo";
+  }
+  else if ($.inArray(type, ["checkbox", "flag"]) > -1)
+  {
+    return "checkbox";
   }
   else
   {
@@ -33,8 +37,8 @@ filterNS.renderColumnSelect = function(columns) {
 
   for (var i=0; i < columns.length; i++)
   {
-    //TODO: bnb
     var col = columns[i];
+    if (col.type == "nested_table") continue;
     ret += '<option value="' + i + '">' + col.name + '</option>';
   }
 
@@ -68,11 +72,23 @@ filterNS.filterRemove = function(event) {
   }
 };
 
+filterNS.createEditor = function($renderer, column, value) {
+  var tempCol = $.extend({}, column); 
+  if (tempCol.type == "tag")
+  {
+    tempCol.type = "text";
+  }
+
+  $renderer.blistEditor({row: null, column: tempCol, value: value})
+};
+
 filterNS.filterColumnChanged = function() {
   column = filterNS.columns[$(this).val()];
   $(this).closest("tr").find(".renderer").remove();
   $(this).closest("tr").find(".rendererCell").append('<div class="renderer"></div>');
-  $(this).closest("tr").find(".renderer").blistEditor({row: null, column: column});
+
+  filterNS.createEditor($(this).closest("tr").find(".renderer"), column);
+
   $(this).closest("tr").find(".condition").html(filterNS.renderConditionSelect(column));
 };
 
@@ -87,7 +103,9 @@ filterNS.addFilterRow = function($table, columns) {
       '</td><td class="condition">' + filterNS.renderConditionSelect(columns[0]) + 
       '</td><td class="rendererCell"><div class="renderer"></div></td>' + 
       '<td><a href="#" class="add">+</a> / <a href="#" class="remove">-</a></td></tr>');
-  $table.find("#" + id + " .renderer").blistEditor({row: null, column: columns[0]});
+
+  filterNS.createEditor($table.find("#" + id + " .renderer"), columns[0]);
+
   $table.find("#" + id + " .columnSelect").change(filterNS.filterColumnChanged);
   $table.find("#" + id + " .remove").click(filterNS.filterRemove);
   $table.find("#" + id + " .add").click(filterNS.filterAdd);
@@ -96,32 +114,89 @@ filterNS.addFilterRow = function($table, columns) {
 };
 
 filterNS.row = function($row) {
-  var row = {type: "operator"};
+  var column = filterNS.columns[$row.find('.columnSelect').val()];
+  var value = $row.find(".renderer").blistEditor().currentValue();
+  var operator = $row.find(".conditionSelect").val().toUpperCase();
 
-  row.value = $row.find(".condition").val().toUpperCase();
+  // Translate values. Fuck you filters for not accepting the same format as
+  // rows.
+  if (column.type == "phone")
+  {
+    var filter = []
+    var children = [];
+    var phoneNumber = {type: "operator"};
+    var phoneType = {type: "operator"};
 
-  var children = [
+    // Number
+    if (value.phone_number != null)
     {
-      columnId: filterNS.columns[$row.find(".columnSelect").val()].id,
-      type: "column"
-    },
-    {type: "literal", value: $row.find(".renderer").blistEditor().currentValue()}
-  ];
+      children = [{columnId: column.id, type: "column", value: "phone_number"}, {type: "literal", value: value.phone_number}];
+      phoneNumber.value = operator; 
+      phoneNumber.children = children;
+      filter.push(phoneNumber);
+    }
 
-  row.children = children;
+    // Type
+    if (value.phone_type != null)
+    {
+      children = [{columnId: column.id, type: "column", value: "phone_type"}, {type: "literal", value: value.phone_type}];
+      phoneType.value = operator;
+      phoneType.children = children;
+      filter.push(phoneType);
+    }
 
-  return row;
+    return filter; 
+  }
+  else
+  {
+    var row = {type: "operator"};
+
+    if (column.type == "checkbox")
+    {
+      if (value == true)
+      {
+        value = "1";
+      }
+      else
+      {
+        value = "0";
+      }
+    }
+    else if (column.type == "url")
+    {
+      // TODO: Yeah, this doesn't work. But at least it doesn't crash.
+      var url = value.url == null ? "" : value.url;
+      var desc = value.description == null ? "" : value.description;
+      value = url + desc;
+    }
+
+    row.value = $row.find(".conditionSelect").val().toUpperCase();
+
+    var children = [
+      {
+        columnId: column.id,
+        type: "column"
+      },
+      {type: "literal", value: value} 
+    ];
+
+    row.children = children;
+
+    return row;
+  }
 };
 
-filterNS.json = function($table, operator) {
-  var j = {type: "operator", value: operator.toUpperCase(), children: []};
-  var children = j.children;
+filterNS.getFilter = function($table, operator) {
+  var j = {type: "operator", value: operator.toUpperCase()};
+  var children = [];
 
-  $table.find("tr").each(function(i, $row) {
-    children.push(filterNS.row($row));
+  $table.find("tr").each(function(i, row) {
+    var $row = $(row);
+    children = children.concat(filterNS.row($row));
   });
+  j.children = children;
 
-  return $.json.serialize(j);
+  return j;
 };
 
 filterNS.populate = function($table, filters, columns) {
@@ -134,6 +209,7 @@ filterNS.populate = function($table, filters, columns) {
     for (var j=0; j < filterRow.children.length; j++)
     {
       var sub = filterRow.children[j];
+      var subcolumn;
       var col;
       if (sub.type == "column")
       {
@@ -142,6 +218,11 @@ filterNS.populate = function($table, filters, columns) {
           if (sub.columnId == columns[k].id)
           {
             col = columns[k];
+            if (sub.value != undefined)
+            {
+              subcolumn = sub.value;
+            }
+
             $row.find(".columnSelect").val(k);
             $row.find(".columnSelect").change();
             $row.find(".conditionSelect").val(filterRow.value.toLowerCase());
@@ -153,7 +234,20 @@ filterNS.populate = function($table, filters, columns) {
       {
         $row.find(".renderer").remove();
         $row.find(".rendererCell").append('<div class="renderer"></div>');
-        $row.find(".renderer").blistEditor({row: null, column: col, value: sub.value});
+
+        var value;
+        if (subcolumn != null)
+        {
+          value = {};
+          value[subcolumn] = sub.value;
+          subcolumn = null;
+        }
+        else
+        {
+          value = sub.value;
+        }
+
+        filterNS.createEditor($row.find(".renderer"), col, value);
       }
     }
   }

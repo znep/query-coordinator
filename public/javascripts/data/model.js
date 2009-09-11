@@ -2289,6 +2289,17 @@ blist.namespace.fetch('blist.data');
             }
         };
 
+        this.updateFilter = function(filter)
+        {
+            meta.columnFilters = null;
+
+            meta.view.viewFilters = filter;
+
+            // TODO: Set column filters. Lame.
+
+            getTempView();
+        }
+
         /* Filter a single column (column obj or index) on a value.
          *  These filters are additive (all ANDed at the top level).
          *  Currently it only supports one filter per column.

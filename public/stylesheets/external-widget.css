@@ -232,6 +232,13 @@
     padding: 4px; /* .3636em */
 }
 
+/* disabled row height */
+.blist-td
+{
+    height: 16px;
+    line-height: 16px;
+}
+
 .blist-td-header
 {
     font-weight: bold;

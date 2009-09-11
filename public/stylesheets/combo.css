@@ -6,7 +6,7 @@
 .blist-combo
 {
     border: solid 1px #ccc;
-    background: url('images/content/select_arrow.png') center right no-repeat;
+    background: url('/stylesheets/images/content/select_arrow.png') center right no-repeat;
     padding-right: 20px;
 }
 .blist-combo-value

@@ -1,0 +1,50 @@
+#rpx-choose.dialogWrapper
+{
+    margin: 4em auto 0;
+    width: 74em;
+}
+
+
+p.chooseMessage
+{
+    font-size: 1.4em;
+    padding-bottom: 2em;
+}
+
+li#close_login,
+ul.accountMaint
+{
+    display: none;
+}
+
+.dialogBox .actionButtons
+{
+    display: inline;
+    float: right;
+    margin-top: -3em;
+    margin-right: 5em;
+}
+
+div#loginTab
+{
+    margin: 0 auto;
+    width: 40em;
+}
+
+#tabs ul
+{
+    padding-left: 5em;
+}
+#tabs ul li
+{
+    font-size: 1.8em;
+}
+#tabs ul li a
+{
+    color: #ccc;
+}
+#tabs ul li.ui-tabs-selected a,
+#tabs ul li a:hover
+{
+    color: #0071bc;
+}

@@ -12,13 +12,9 @@ class RpxController < ApplicationController
       user_session = UserSession.rpx(rpx_authentication)
       redirect_back_or_default(home_path)
     else
-      @account = rpx_authentication.user
+      @signup = SignupPresenter.new(nil, session)
+      @signup.user = rpx_authentication.user if rpx_authentication.user
+      @user_session = UserSession.new
     end
-  end
-
-  def signup
-  end
-
-  def login
   end
 end

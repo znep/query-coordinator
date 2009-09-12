@@ -235,6 +235,7 @@ $.fn.reorderableList = function(options) {
         $this.find('li').dblclick(function()
         {
             var $item = $(this);
+            $item.removeClass('hover');
             if ($item.parents('.activeList').length == 0)
             {
                 moveItemToActiveList($item, $this.find('.activeList ul'), config);
@@ -243,6 +244,16 @@ $.fn.reorderableList = function(options) {
             {
                 moveItemToInactiveList($item, $this.find('.inactiveList ul'), config);
             }
+        });
+
+        // Wire up manual hover for IE's sake, because IE is awesome
+        $this.find('li').mouseover(function()
+        {
+            $(this).addClass('hover');
+        });
+        $this.find('li').mouseout(function()
+        {
+            $(this).removeClass('hover');
         });
 
         // Wire up click behavior on arrow buttons

@@ -217,7 +217,7 @@ blist.publish.applyTabs = function($elem, subhash)
     else
     {
         $meta.css('height', null);
-        $meta.siblings('.gridContainer').css('height', $meta.closest('.gridInner').css('height') - $meta.outerHeight(false));
+        $meta.siblings('.gridContainer').css('height', $meta.closest('.gridInner').innerHeight() - $meta.outerHeight(false));
     }
 };
 
@@ -425,14 +425,17 @@ blist.publish.appendToStylesBuffer = function(selector, key, value)
 blist.publish.writeStylesBuffer = function()
 {
     clearTimeout(publishNS.stylesTimeout);
-    if ($('.previewPane iframe').contents().find('#customizationStyles')
-           .text(blist.publish.stylesBuffer).length === 0)
+    var $styleNode = $('.previewPane iframe').contents().find('#customizationStyles');
+    if ($styleNode.length === 0)
     {
         // iframe may not have loaded yet.
         publishNS.stylesTimeout = setTimeout(publishNS.writeStylesBuffer, 50);
     }
     else
     {
+        var $insert = $styleNode.prev();
+        $styleNode.empty().remove();
+        $('<style id="customizationStyles" type="text/css">\n' + publishNS.stylesBuffer + '\n</style>').insertAfter($insert);
         publishNS.stylesBuffer = '';
     }
 };
@@ -456,6 +459,7 @@ blist.publish.saveCustomization = function(hash)
     $.ajax({
         url: $('#publishOptionsPane form').attr('action') + $('#template_name').val(),
         type: "PUT",
+        contentType: "application/json",
         data: $.json.serialize({ 'customization': $.json.serialize(hash) }),
         dataType: "json",
         error: function(request, status, error)
@@ -639,7 +643,8 @@ blist.publish.loadCustomization = function()
     });
 
     // Save whenever the user changes something
-    $(':input[name^=customization]:not([type=text])').change(publishNS.valueChanged);
+    $('select[name^=customization]').change(publishNS.valueChanged);
+    $('input[name^=customization]:not([type=text])').click(publishNS.valueChanged);
     $(':input[name^=customization][type=text]').keyup(function() {
         publishNS.valueChanged();
         $(this).focus();

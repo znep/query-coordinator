@@ -2046,7 +2046,7 @@ body#login .loginBox li#close_login
     margin: 1em;
 }
 
-.reorderList .activeList.ui-draggable-not-dragging li:hover,
+.reorderList .activeList.ui-draggable-not-dragging li.hover,
 .reorderList .activeList li.ui-draggable-dragging
 {
     background: url(/stylesheets/images/widgets/reorder_list/reorder_handle.png) no-repeat;
@@ -2073,7 +2073,7 @@ body#login .loginBox li#close_login
     border-top-color: transparent;
 }
 
-.reorderList .activeList.ui-draggable-not-dragging li:hover .itemWrapper,
+.reorderList .activeList.ui-draggable-not-dragging li.hover .itemWrapper,
 .reorderList .activeList li.ui-draggable-dragging .itemWrapper
 {
     background-color: #c8e2f7;

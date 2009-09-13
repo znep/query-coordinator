@@ -102,7 +102,7 @@ filterNS.addFilterRow = function($table, columns) {
       filterNS.renderColumnSelect(columns) +
       '</td><td class="condition">' + filterNS.renderConditionSelect(columns[0]) + 
       '</td><td class="rendererCell"><div class="renderer"></div></td>' + 
-      '<td><a href="#" class="add">+</a> / <a href="#" class="remove">-</a></td></tr>');
+      '<td class="addRemove"><a href="#" class="add">+</a> / <a href="#" class="remove">-</a></td></tr>');
 
   filterNS.createEditor($table.find("#" + id + " .renderer"), columns[0]);
 

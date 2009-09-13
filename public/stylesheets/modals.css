@@ -1055,12 +1055,75 @@ div#sortBysList.reorderList ul
 /*** END: Sort dialog ***/
 
 /*** START: Filter dialog ***/
+
+#filterList
+{
+  padding: 1em;
+}
+
+#filterList p
+{
+  padding: 0.5em 0;
+  font-size: 1.2em;
+}
+
+#filterTable 
+{
+  table-layout: fixed;
+  width: 100%;
+}
+
+#filterTable thead th:first-child,
+#filterTable thead th:first-child + th
+{
+  border-right: solid 1px #fff;
+}
+
+#filterTable thead th
+{
+  padding: 0.5em;
+  color: #fff;
+  font-size: 1.3em;
+}
+
+#filterTable th.name,
+#filterTable th.condition
+{
+  width: 25%;
+}
+
+#filterTable th.editor
+{
+  width: 50%;
+}
+
+#filterTable .addRemove
+{
+  width: 40px;
+}
+
+#filterTable tbody td
+{
+  padding: 0.3em;
+}
+
 #filterTable .renderer .blist-td
 {
   line-height: normal;
   float: none;
   overflow: default;
   height: auto;
+}
+
+#filterTable .renderer .blist-td input
+{
+  width: 100%;
+}
+
+#filterTable .columnSelect,
+#filterTable .conditionSelect
+{
+  width: 100%;
 }
 
 #filterTable .renderer .blist-td input

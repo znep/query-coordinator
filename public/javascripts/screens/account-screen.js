@@ -39,6 +39,7 @@ $(function ()
           .find("form :input")
             .val("")
           .end()
+          .find('.error').remove().end()
           .slideDown("fast");
         var $form = $(this).closest(".listSection").find(".sectionEdit form");
         if ($form.length > 0)
@@ -58,7 +59,8 @@ $(function ()
     if (window.location.hash)
     {
         var $elemToClick = $("a" + window.location.hash);
-        $elemToClick.click();
+        $elemToClick.closest(".sectionShow").slideUp("fast");
+        $elemToClick.closest(".listSection").find(".sectionEdit").slideDown("fast");
     }
 
     // Form validation.

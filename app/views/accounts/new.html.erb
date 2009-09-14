@@ -14,7 +14,7 @@
       <p>Before we get started, we need to know a little about you.</p>
     </div>
 
-    <%= render :partial => "signup_form" %>
+    <%= render :partial => "signup_form", :locals => {:is_modal => false} %>
   </div>
 <% end %>
 

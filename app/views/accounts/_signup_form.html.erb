@@ -1,5 +1,5 @@
 <% form_for :signup, @signup, :url => account_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
- <%= render :partial => "accounts/signup_form_data", :locals => { :f => f, :is_modal => true } %>
+ <%= render :partial => "accounts/signup_form_data", :locals => { :f => f, :is_modal => is_modal } %>
 <% end %>
 
 <div class="contentFooter">

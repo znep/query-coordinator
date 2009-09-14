@@ -10,6 +10,6 @@
       <p>Before we get started, we need to know a little about you.</p>
     </div>
 
-    <%= render :partial => "accounts/signup_form" %>
+    <%= render :partial => "accounts/signup_form", :locals => {:is_modal => true} %>
   </div>
 <% end %>

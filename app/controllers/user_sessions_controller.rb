@@ -47,17 +47,4 @@ class UserSessionsController < ApplicationController
     flash[:notice] = "You have been logged out"
     redirect_to(login_path)
   end
-
-  def rpx
-    return (redirect_to login_path) unless params[:token]
-
-    rpx_authentication = RpxAuthentication.new(params[:token])
-    if (rpx_authentication.existing_account?)
-      user_session = UserSession.rpx(rpx_authentication)
-      redirect_back_or_default(home_path)
-    else
-      flash[:rpx_user] = rpx_authentication.user
-      redirect_to signup_url
-    end
-  end
 end

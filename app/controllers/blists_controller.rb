@@ -9,12 +9,10 @@ class BlistsController < SwfController
     @args = params.reject {|k,v| !accept_keys.include?(k)}.inject({}) do |h,(k,v)|
       h[k] = CGI.unescape(v); h
     end
+    @title = get_title(@args)
   end
 
   def show
-    # The dataset page can show an inline login form, so we need to set
-    # @account for the _signup partial...
-    @account = User.new
     @body_id = 'lensBody'
     case params[:id]
     when 'new_blist'

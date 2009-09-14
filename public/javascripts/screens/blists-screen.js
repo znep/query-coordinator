@@ -576,31 +576,7 @@ blist.myBlists.sidebar.initializeHandlers = function ()
 {
     $('#blistFilters').filterList({
             noRequest: true,
-            filterClickCallback: function (target)
-            {
-                var title = target.attr('title');
-                if (target.attr('q') != "" && target.attr('q') != "{}")
-                {
-                    var query = $.json.deserialize(target.attr('q').replace(/'/g, '"'));
-                    for (var type in query)
-                    {
-                        // http://yuiblog.com/blog/2006/09/26/for-in-intrigue/
-                    	if (query.hasOwnProperty(type))
-                    	{
-                            myBlistsNS.filterGen(type, query[type], blistsBarNS.filterCallback);
-                        }
-                    }
-                }
-                else
-                {
-                    myBlistsNS.model.filter(blist.myBlists.sidebar.defaultFilter);
-                }
-
-
-                // Set the title to whatever the filter is.
-                $('#listTitle').text(title);
-                $('#listTitle').attr('title', title);
-            }
+            filterClickCallback: blistsBarNS.filterClickHandler
         });
     $('#blistFilters a:not(.expander, ul.menu a)')
         .each(function ()
@@ -620,10 +596,44 @@ blist.myBlists.sidebar.filterMenuClickHandler = function (event, $menu,
 {
     event.preventDefault();
     var $target = $(event.currentTarget);
+   
     $triggerButton.attr('href', $target.attr('href'))
         .attr('title', $target.attr('title'))
         .attr('q', $target.attr('q'))
         .find('em').text($target.text());
+    
+    blistsBarNS.filterClickHandler($target, $triggerButton);
+};
+
+blist.myBlists.sidebar.filterClickHandler = function(target, $triggerButton)
+{
+    var title = target.attr('title');
+    if (target.attr('q') != "" && target.attr('q') != "{}")
+    {
+        var query = $.json.deserialize(target.attr('q').replace(/'/g, '"'));
+        for (var type in query)
+        {
+            // http://yuiblog.com/blog/2006/09/26/for-in-intrigue/
+        	if (query.hasOwnProperty(type))
+        	{
+                myBlistsNS.filterGen(type, query[type], blistsBarNS.filterCallback);
+            }
+        }
+    }
+    else
+    {
+        myBlistsNS.model.filter(blist.myBlists.sidebar.defaultFilter);
+    }
+
+    if ($triggerButton)
+    { 
+        $('#blistFilters a.hilight').removeClass("hilight");
+        $triggerButton.addClass("hilight");
+    }
+
+    // Set the title to whatever the filter is.
+    $('#listTitle').text(title);
+    $('#listTitle').attr('title', title);
 };
 
 /* Custom grid renderers */
@@ -965,6 +975,18 @@ blist.myBlists.initializeGrid = function()
     $('#blist-list').bind('load', blistsInfoNS.updateSummary)
         .bind('selection_change', blistsInfoNS.updateSummary)
         .bind('row_remove', blistsInfoNS.updateSummary);
+    
+    $('#blist-list').one('load', function(event)
+    {
+        var filterMatches = window.location.search.match(/type=(\w+)/);
+        if (filterMatches && filterMatches.length > 1)
+        {
+            if (filterMatches[1] == "favorite")
+            {
+                myBlistsNS.model.filter(myBlistsNS.favoriteFilter);
+            }
+        }
+    });
 
     // Install a translator that tweaks the view objects so they're more
     // conducive to grid display

@@ -1,0 +1,27 @@
+{
+    // Company
+    "company": "Ohia AG",
+    "site title": "Data.OhioAttorneyGeneral.gov | Ohio Attorney General Data",
+    "logo": "main_logo.png",
+    "dialog logo" : "dialog_logo.png",
+    "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li></ul>",
+    
+    // Global
+    "link fg": "494A59",
+    "header fg": [ "494A59", "626377", "626377", "666", "333" ],
+    "highlight color" : "cdd6de",
+    
+    // Chrome
+    "top border bg": "006699",
+    "main button bg": "006699:.286,6699cc",
+    "main button active bg": "6699cc:.286,006699",
+    "logo vertical offset": "0px",
+    
+    // Discovery page
+    "carousel bg": "1D3E71,12629D",
+    "carousel item title fg": "ccdbeb",
+    
+    // Dataset page
+    "menu button bg" : "FED759:.7,F4B668",
+    "menu button activated bg" : "F4B668,F4B668:.5,FED759:.5,FED759"
+}

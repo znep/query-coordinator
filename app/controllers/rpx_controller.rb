@@ -23,7 +23,7 @@ class RpxController < ApplicationController
     if @signup.create
       redirect_back_or_default(home_path)
     else
-      flash[:error] = @signup.errors.join(", ")
+      flash.now[:error] = @signup.errors.join(", ")
       render :action => :return_token
     end
   end
@@ -36,8 +36,8 @@ class RpxController < ApplicationController
       current_user.save!
       redirect_to(account_path(:anchor => "openid"))
     else
-      flash[:tab] = "loginTab"
-      flash[:notice_login] = "Unable to login with that username and password; please try again"
+      flash.now[:tab] = "loginTab"
+      flash.now[:notice_login] = "Unable to login with that username and password; please try again"
       render :action => :return_token
     end
   end

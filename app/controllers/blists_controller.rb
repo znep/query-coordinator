@@ -28,17 +28,17 @@ class BlistsController < SwfController
       begin
         @parent_view = @view = View.find(params[:id])
       rescue CoreServer::ResourceNotFound
-          flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+          flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' cannot be found, or has been deleted.'
           return (render 'shared/error', :status => :not_found)
       rescue CoreServer::CoreServerError => e
         if e.error_code == 'authentication_required' 
           return require_user(true)
         elsif e.error_code == 'permission_denied'
-          flash[:error] = e.error_message
+          flash.now[:error] = e.error_message
           return (render 'shared/error', :status => :forbidden)
         else
-          flash[:error] = e.error_message
+          flash.now[:error] = e.error_message
           return (render 'shared/error', :status => :internal_server_error)
         end
       end
@@ -100,7 +100,7 @@ class BlistsController < SwfController
     begin
       @view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
-        flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+        flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
           ' cannot be found, or has been deleted.'
         return (render 'shared/error', :status => :not_found)
     rescue CoreServer::CoreServerError => e
@@ -108,7 +108,7 @@ class BlistsController < SwfController
         e.error_code == 'permission_denied'
         return require_user(true)
       else
-        flash[:error] = e.error_message
+        flash.now[:error] = e.error_message
         return (render 'shared/error', :status => :internal_server_error)
       end
     end

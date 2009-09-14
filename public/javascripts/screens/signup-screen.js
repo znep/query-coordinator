@@ -2,7 +2,7 @@ $(function ()
 {
     if ($('body').is('.signup'))
     {
-        $("#signup #account_firstName").focus();
+        $("#signup #signup_firstName").focus();
     }
 
     $("#signup .fileInputContainer input[type='file']").change(function()
@@ -21,17 +21,17 @@ $(function ()
     // Signup form validation.
     $("#signup #signupForm").validate({
         rules: {
-            "account[firstName]": "required",
-            "account[lastName]": "required",
-            "account[email]": {
+            "signup[firstName]": "required",
+            "signup[lastName]": "required",
+            "signup[email]": {
                 required: true,
                 email: true
             },
-            "emailConfirm": {
+            "signup[emailConfirm]": {
                 required: true,
-                equalTo: "#account_email"
+                equalTo: "#signup_email"
             },
-            "account[login]": {
+            "signup[login]": {
                 required: true,
                 loginRegex: true,
                 login4x4: true,
@@ -39,19 +39,19 @@ $(function ()
                     url: "/users?method=loginAvailable",
                     data: {
                         login: function() { 
-                            return $("#account_login").val();
+                            return $("#signup_login").val();
                         }
                     }
                 }
             },
-            "account[password]": "required",
-            "passwordConfirm": {
+            "signup[password]": "required",
+            "signup[passwordConfirm]": {
                 required: true,
-                equalTo: "#account_password"
+                equalTo: "#signup_password"
             }
         },
         messages: {
-            "account[login]": {
+            "signup[login]": {
                 remote: $.format("'{0}' is already taken.")
             }
         }

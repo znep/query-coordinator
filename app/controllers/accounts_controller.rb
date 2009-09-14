@@ -41,18 +41,15 @@ class AccountsController < ApplicationController
   end
 
   def new
-    @signup = SignupPresenter.new({}, session, params[:token])
-    @signup.user = flash[:rpx_user] if flash[:rpx_user]
+    @signup = SignupPresenter.new({}, params[:token])
     @body_class = 'signup'
-
-    session[:openid_identifier_id] = @signup.user.openIdIdentifierId
   end
 
   def create
     @body_class = 'signup'
     @token = params[:inviteToken] || ""
 
-    @signup = SignupPresenter.new(params[:signup], session)
+    @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
       if @signup.create
         format.html { redirect_back_or_default(home_path) }

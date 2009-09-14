@@ -2,6 +2,7 @@
   <%= display_standard_flashes %>
   <fieldset>
     <%= f.hidden_field :inviteToken %>
+    <%= f.hidden_field :openIdIdentifierId %>
     <p>
       <%= f.label :firstName, 'First Name', :class => 'required' %>
       <%= f.text_field :firstName %>

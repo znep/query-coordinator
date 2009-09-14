@@ -1,8 +1,8 @@
 class SignupPresenter < Presenter
   include ActionView::Helpers::TranslationHelper
 
-  def_delegators :user,  :firstName,  :lastName,  :email,  :login,  :password,  :company,  :title,
-                 :user=, :firstName=, :lastName=, :email=, :login=, :password=, :company=, :title=
+  def_delegators :user,  :firstName,  :lastName,  :email,  :login,  :password,  :company,  :title,  :openIdIdentifierId,
+                 :user=, :firstName=, :lastName=, :email=, :login=, :password=, :company=, :title=, :openIdIdentifierId=
 
   attr_accessor :user
   attr_accessor :inviteToken
@@ -12,15 +12,12 @@ class SignupPresenter < Presenter
 
   attr_accessor :emailConfirm, :passwordConfirm
 
-  def initialize(params, session, inviteToken = nil)
-    @session = session
+  def initialize(params = {}, inviteToken = nil)
     @user = User.new
     @inviteToken = inviteToken
     @errors = []
-    
-    super(params)
 
-    @user.openIdIdentifierId = @session[:openid_identifier_id]
+    super(params)
   end
 
   def create
@@ -32,12 +29,12 @@ class SignupPresenter < Presenter
     return @errors.empty?
   end
 
+protected
+
   def create_user
     temp_password = user.password
     @user = user.create(inviteToken)
     @user.password = temp_password
-
-    @session.delete :openid_identifier_id
     true
   rescue CoreServer::CoreServerError => e
     @errors << e.error_message

@@ -12,32 +12,31 @@ class RpxController < ApplicationController
       user_session = UserSession.rpx(rpx_authentication)
       redirect_back_or_default(home_path)
     else
-      @signup = SignupPresenter.new(nil, session)
+      @signup = SignupPresenter.new
       @signup.user = rpx_authentication.user if rpx_authentication.user
-      session[:openid_identifier_id] = @signup.user.openIdIdentifierId
     end
   end
 
   def signup
-    @signup = SignupPresenter.new(params[:signup], session)
+    @signup = SignupPresenter.new(params[:signup])
     if @signup.create
       redirect_back_or_default(home_path)
     else
-      flash[:error] = @signup.errors.join(", ")
+      flash.now[:error] = @signup.errors.join(", ")
       render :action => :return_token
     end
   end
 
   def login
-    @signup = SignupPresenter.new(params[:signup], session)
+    @signup = SignupPresenter.new(params[:signup])
     @user_session = UserSession.new(params[:user_session])
     if @user_session.save
-      current_user.openIdIdentifierId = session[:openid_identifier_id]
+      current_user.openIdIdentifierId = @signup.openIdIdentifierId
       current_user.save!
       redirect_to(account_path(:anchor => "openid"))
     else
-      flash[:tab] = "loginTab"
-      flash[:notice_login] = "Unable to login with that username and password; please try again"
+      flash.now[:tab] = "loginTab"
+      flash.now[:notice_login] = "Unable to login with that username and password; please try again"
       render :action => :return_token
     end
   end

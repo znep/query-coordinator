@@ -102,13 +102,24 @@ filterNS.addFilterRow = function($table, columns) {
       filterNS.renderColumnSelect(columns) +
       '</td><td class="condition">' + filterNS.renderConditionSelect(columns[0]) + 
       '</td><td class="rendererCell"><div class="renderer"></div></td>' + 
-      '<td class="addRemove"><a href="#" class="add">+</a> / <a href="#" class="remove">-</a></td></tr>');
+      '<td class="addRemove"><a href="#" class="remove"></a><a href="#" class="add></a></td></tr>');
 
   filterNS.createEditor($table.find("#" + id + " .renderer"), columns[0]);
 
   $table.find("#" + id + " .columnSelect").change(filterNS.filterColumnChanged);
   $table.find("#" + id + " .remove").click(filterNS.filterRemove);
   $table.find("#" + id + " .add").click(filterNS.filterAdd);
+
+  $table.find("tr").
+    removeClass("last").
+    removeClass("only");
+
+  if ($table.find("tr").length == 1)
+  {
+    $table.find("tr").addClass("only");
+  }
+
+  $table.find("tr:last").addClass("last");
 
   return $table.find("#" + id);
 };

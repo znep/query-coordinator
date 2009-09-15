@@ -1081,6 +1081,7 @@ div#sortBysList.reorderList ul
 
 #filterTable thead th
 {
+  text-align: left;
   padding: 0.5em;
   color: #fff;
   font-size: 1.3em;
@@ -1099,12 +1100,18 @@ div#sortBysList.reorderList ul
 
 #filterTable .addRemove
 {
-  width: 40px;
+  width: 55px;
 }
 
 #filterTable tbody td
 {
   padding: 0.3em;
+  vertical-align: top;
+}
+
+#filterTable tbody td.addRemove
+{
+  padding: 0;
 }
 
 #filterTable .renderer .blist-td
@@ -1131,5 +1138,31 @@ div#sortBysList.reorderList ul
   padding: 0;
   line-height: 1em;
   height: auto;
+}
+
+#filterTable .add,
+#filterTable .remove
+{
+  height: 25px;
+  width: 27px;
+  display: block;
+  float: left;
+  background: url(/stylesheets/images/widgets/filter_add_remove_sprite.png) -2px 0 no-repeat;
+}
+
+#filterTable .add
+{
+  display: none;
+  background-position: -2px -29px;
+}
+
+#filterTable tr.last .add
+{
+  display: block;
+}
+
+#filterTable tr.only .remove
+{
+  display: none;
 }
 /*** END: Filter dialog ***/

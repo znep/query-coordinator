@@ -676,13 +676,14 @@
                 sizeCellOverlay($curEditContainer, $editor, $(cell));
                 positionCellOverlay($curEditContainer, $(cell));
             };
-            resizeEditor();
 
-            $curEditContainer.bind('resize', function(e) { resizeEditor(); });
+            var displayCallback = function() {
+                resizeEditor();
+                $curEditContainer.bind('resize', function() { resizeEditor(); });
+                $editor.closest('.blist-table-edit-container').removeClass('blist-table-util').addClass('shown');
+            }
 
-            $curEditContainer.removeClass('blist-table-util').addClass('shown');
-
-            if (mode != expandEditMode) { blistEditor.focus(); }
+            blistEditor.initComplete(displayCallback);
 
             return true;
         };
@@ -2038,11 +2039,13 @@
             // Add the rule
             var rules = css.cssRules || css.rules;
             if (css.insertRule)
- 			{
-			    css.insertRule(selector + " {}", rules.length);
-			} else {
+            {
+                css.insertRule(selector + " {}", rules.length);
+            }
+            else
+            {
                 css.addRule(selector, null, rules.length);
-			}
+            }
             rules = css.cssRules || css.rules;
 
             // Find the new rule
@@ -2791,9 +2794,9 @@
 
             // Expand the inside width if the level is wider
             if (hpos > insideWidth)
-			{
+            {
                 insideWidth = hpos;
-			}
+            }
         };
 
         var configureVariableWidths = function(level, levelWidth)
@@ -3223,16 +3226,16 @@
                     // + 2 for "-l" suffix prior to row ID
                     var rowID = row.id.substring(id.length + 2);
                     if (!renderedRows[rowID])
-					{
+                    {
                         renderedRows[rowID] = {};
-					}
+                    }
                     renderedRows[rowID].locked = row;
                     if (dirtyRows[rowID])
-					{
+                    {
                         $locked[0].replaceChild(row, dirtyRows[rowID].locked);
                     } else {
                         $locked[0].appendChild(row);
-					}
+                    }
                 }
             };
 
@@ -3370,14 +3373,14 @@
 
         var loadMissingRows = function() {
             if (!rowLoadTimer)
-			{
+            {
                 return;
-			}
+            }
             rowLoadTimer = null;
             if (!rowLoadRows)
-			{
+            {
                 return;
-			}
+            }
             model.loadRows(rowLoadRows);
             rowLoadRows = null;
         };
@@ -3518,9 +3521,9 @@
             // Create the table
             return this.each(function() {
                 if (!$(this).is('.blist-table'))
-				{
+                {
                     makeTable.apply(this, [ $.extend({}, blistTableDefaults, options) ]);
-				}
+                }
             });
         },
 

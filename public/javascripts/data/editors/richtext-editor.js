@@ -6,6 +6,9 @@
 // instance variable.
 (function($)
 {
+    var DEFAULT_FONT_FACE = "Arial";
+    var DEFAULT_FONT_SIZE = "12";
+
     var nextEditorID = 1;
 
     // We've got no use for TinyMCE themes.  Also, dynamically loading bits of JS is stupid.
@@ -38,6 +41,71 @@
         };
     });
     tinymce.ThemeManager.urls.blist_dummy = true;
+
+    // Hack -- to avoid a visual blip when our CSS loads, we install these base styles explicitly before we
+    // set the content.  Lots of error handling because this isn't critical and is likely to fail on untested
+    // browser configs
+    function initDoc(doc)
+    {
+        try {
+            if (doc)
+            {
+                // Create a stylesheet node in the header
+                var rulesNode = $(doc)
+                    .find('head')
+                    .append('<style type="text/css" id="init-styles"></style>')
+                    .children('#init-styles')[0];
+                var css;
+                for (var i = 0; i < doc.styleSheets.length; i++)
+                {
+                    css = doc.styleSheets[i];
+                    if ((css.ownerNode || css.owningElement) == rulesNode)
+                    {
+                        break;
+                    }
+                }
+
+                if (css)
+                {
+                    // Add the rule
+                    var rules = css.cssRules || css.rules;
+                    if (css.insertRule)
+                    {
+                        css.insertRule("body {}", rules.length);
+                        css.insertRule("p {}", rules.length);
+                    }
+                    else
+                    {
+                        css.addRule("body", null, rules.length);
+                        css.addRule("p", null, rules.length);
+                    }
+                    rules = css.cssRules || css.rules;
+
+                    // Add styles to the rule
+                    for (i = 0; i < rules.length; i++)
+                    {
+                        if (rules[i].selectorText.toLowerCase() == "body")
+                        {
+                            var style = rules[i].style;
+                            style.fontSize = "12px";
+                            style.padding = "2px 3px 3px 3px";
+                            style.margin = "0";
+                            style.fontFamily = "Arial,sans-serif";
+                            style.color = "#333333";
+                        }
+                        else if (rules[i].selectorText.toLowerCase() == "p")
+                        {
+                            style = rules[i].style;
+                            style.fontSize = "1.1em";
+                            style.lineHeight = "1.1em";
+                            style.padding = 0;
+                            style.margin = 0;
+                        }
+                    }
+                }
+            }
+        } catch (e) {}
+    }
 
     // Create the actual TinyMCE editor object
     var createRTE = function()
@@ -72,10 +140,6 @@
             // Revisit as necessary.  All built-in plugins are here:
             //   http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/template
             plugins: 'safari,style,inlinepopups,contextmenu,paste,directionality,visualchars,nonbreaking,xhtmlxtras'
-        });
-        rte.onInit.add(function() {
-            rte.setContent(rte._initValue);
-            rte.focus();
         });
         rte.$dom = $root;
         return rte;
@@ -114,7 +178,7 @@
         },
 
         fire: function(editor, name, value) {
-            editor.execCommand(name, value);
+            editor.execCommand(name, false, value);
         }
     }
 
@@ -157,6 +221,13 @@
                 {
                     this._editor = createRTE();
                     var me = this;
+                    this._editor.onInit.add(function() {
+                        initDoc(this.getDoc());
+                        this.setContent(this._initValue);
+                        if (me.showCallback)
+                            me.showCallback();
+                        this.focus();
+                    });
                     this._editor.onNodeChange.add(function() {
                         me.actionStatesChanged();
                     });
@@ -230,6 +301,11 @@
                     }
                 }
                 return false;
+            },
+
+            initComplete: function(showCallback) {
+                // Prevent default show-on-init
+                this.showCallback = showCallback;
             }
         }
     }));

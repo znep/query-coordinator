@@ -98,6 +98,12 @@
                 // Override me if desired
             },
 
+            initComplete: function(showCallback)
+            {
+                // Override me if desired to defer call to showCallback
+                showCallback();
+            },
+
             finishEditExtra: function()
             {
                 // Override me if desired

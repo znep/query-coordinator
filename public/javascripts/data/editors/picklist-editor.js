@@ -50,7 +50,8 @@
             currentValue: function()
             {
                 var val = this.$editor().find('.picklist-combo').value();
-                return val === 'null' ? null : val.toUpperCase();
+                return val === undefined || val === null || val === 'null' ?
+                    null : val.toUpperCase();
             },
 
             focus: function()

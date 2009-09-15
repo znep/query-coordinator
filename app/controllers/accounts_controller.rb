@@ -55,7 +55,7 @@ class AccountsController < ApplicationController
         format.html { redirect_back_or_default(home_path) }
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       else
-        flash[:error] = @signup.errors.join(", ")
+        flash.now[:error] = @signup.errors.join(", ")
         format.html { render :action => :new }
         format.json { render :json => {:error => flash[:error], :promptLogin => true}, :callback => params[:callback] }
       end
@@ -75,7 +75,7 @@ class AccountsController < ApplicationController
         flash[:notice] = "Thank you. An email has been sent to the account on file with further information."
         redirect_to login_path
       else
-        flash[:warning] = "There was a problem submitting your password reset request. Please try again."
+        flash.now[:warning] = "There was a problem submitting your password reset request. Please try again."
       end
     end
   end

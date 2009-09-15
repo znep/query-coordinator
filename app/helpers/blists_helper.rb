@@ -283,4 +283,47 @@ module BlistsHelper
     end
     embed_template += "</div>"
   end
+
+  # Create a drop down menu of formatting fonts
+  # Pass a font name to select it by default.
+  # TODO: This sucks keeping it in sync with our text editor; better place to
+  # code this?
+  def font_select_options(selected_font = nil)
+    out = ""
+    {'Andale Mono' => 'andale mono,times',
+      'Arial' => 'arial,helvetica,sans-serif',
+      'Arial Black' => 'arial black,avant garde',
+      'Book Antiqua' => 'book antiqua,palatino',
+      'Comic Sans MS' => 'comic sans ms,sans-serif',
+      'Courier New' => 'courier new,courier',
+      'Georgia' => 'georgia,palatino',
+      'Helvetica' => 'helvetica',
+      'Impact' => 'impact,chicago',
+      'Symbol' => 'symbol',
+      'Tahoma' => 'tahoma,arial,helvetica,sans-serif',
+      'Terminal' => 'terminal,monaco',
+      'Times New Roman' => 'times new roman,times',
+      'Trebuchet MS' => 'trebuchet ms,geneva',
+      'Verdana' => 'verdana,geneva',
+      'Webdings' => 'webdings',
+      'Wingdings' => 'wingdings,zapf dingbats'}.sort { |a,b| a[0] <=> b[0] }.
+        each do |font|
+      selected = selected_font == font[0] ? " selected=\"selected\"" : ""
+      out += "<option value=\"#{font[1]}\"#{selected}>#{font[0]}</option>"
+    end
+    out
+  end
+
+  # Create a drop down menu of formatting font sizes
+  # Pass a font size to select it by default.
+  # TODO: This sucks keeping it in sync with our text editor; better place to
+  # code this?
+  def font_size_select_options(selected_font_size = nil)
+    out = ""
+    [8, 10, 12, 14, 18, 24, 36].each do |size|
+      selected = selected_font_size == size ? " selected=\"selected\"" : ""
+      out += "<option value=\"#{size}\"#{selected}>#{size}</option>"
+    end
+    out
+  end
 end

@@ -19,6 +19,10 @@
         {'text' => 'As JSON', 'external' => true,
         'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
         ]}},
+        {'text' => 'API', 'class' => 'api',
+        'href' => "/views/#{@view.id}/rows.xml?accessType=API"},
+        {'text' => 'RSS', 'class' => 'rss',
+        'href' => "/views/#{@view.id}/rows.rss"},
         {'text' => "Email this #{t(:blist_name)}", 'class' => 'email',
         'href' => "#{@view.href}/email", 'modal' => true},
         # not supported for now

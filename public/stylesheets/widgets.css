@@ -593,7 +593,7 @@ ul.menu.checkboxMenu li.button a
     display: block;
 }
 
-.fixedMenu .outerWrapper
+.fixedMenu > .outerWrapper
 {
     background-image: url(/stylesheets/images/widgets/menu/corner_light_left_bottom_whitebg.png);
     background-position: bottom left;
@@ -601,7 +601,7 @@ ul.menu.checkboxMenu li.button a
     margin: 0 -1px -1px;
 }
 
-.fixedMenu .innerWrapper
+.fixedMenu ul.innerWrapper
 {
     background-image: url(/stylesheets/images/widgets/menu/corner_light_right_bottom_whitebg.png);
     background-position: bottom right;

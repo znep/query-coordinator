@@ -138,6 +138,13 @@
              */
             getActionStates: function() {
                 return {};
+            },
+
+            /**
+             * Trigger an action.  Returns true iff the action is executed.  Value is optional.
+             */
+            action: function(name, value) {
+                return false;
             }
         }
     });

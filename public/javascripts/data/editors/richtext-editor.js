@@ -88,6 +88,65 @@
         this.init();
     }
 
+    var booleanCommand = {
+        query: function(doc, name) {
+            return { enabled: doc.queryCommandEnabled(name), value: doc.queryCommandState(name) }
+        },
+
+        fire: function(editor, name) {
+            editor.execCommand(name);
+        }
+    }
+
+    var buttonCommand = {
+        query: function(doc, name) {
+            return { enabled: doc.queryCommandEnabled(name) }
+        },
+
+        fire: function(editor, name) {
+            editor.execCommand(name);
+        }
+    }
+
+    var valueCommand = {
+        query: function(doc, name) {
+            return { enabled: doc.queryCommandEnabled(name), value: doc.queryCommandValue(name) }
+        },
+
+        fire: function(editor, name, value) {
+            editor.execCommand(name, value);
+        }
+    }
+
+    // Command settings; see:
+    //   http://wiki.moxiecode.com/index.php/TinyMCE:Commands
+    //   http://msdn.microsoft.com/en-us/library/ms533049%28VS.85%29.aspx
+    //   https://developer.mozilla.org/en/Midas
+    // Doesn't map all commands, just those we need
+    var commandMap = {
+        bold: { id: 'Bold', type: booleanCommand },
+        italic: { id: 'Italic', type: booleanCommand },
+        strikethrough: { id: 'StrikeThrough', type: booleanCommand },
+        cut: { id: 'Cut', type: buttonCommand },
+        copy: { id: 'Copy', type: buttonCommand },
+        paste: { id: 'Paste', type: buttonCommand },
+        undo: { id: 'Undo', type: buttonCommand },
+        redo: { id: 'Redo', type: buttonCommand },
+        fontFamily: { id: 'FontName', type: valueCommand },
+        fontSize: { id: 'FontSize', type: valueCommand },
+        color: { id: 'ForeColor', type: valueCommand },
+        backgroundColor: { id: 'BackColor', type: valueCommand },
+        link: { id: 'CreateLink', type: buttonCommand },
+        unlink: { id: 'Unlink', type: buttonCommand },
+        justifyLeft: { id: 'JustifyLeft', type: booleanCommand },
+        justifyRight: { id: 'JustifyRight', type: booleanCommand },
+        justifyCenter: { id: 'JustifyCenter', type: booleanCommand },
+        indent: { id: 'Indent', type: buttonCommand },
+        outdent: { id: 'Outdent', type: buttonCommand },
+        unorderedList: { id: 'InsertUnorderedList', type: booleanCommand },
+        orderedList: { id: 'InsertOrderedList', type: booleanCommand }
+    };
+
     $.extend($.blistEditor.richtext, $.blistEditor.extend(
     {
         prototype:
@@ -147,21 +206,30 @@
             getActionStates: function()
             {
                 var e = this._editor;
-                if (this._e)
+                var rv = {};
+                if (e && e.getDoc())
                 {
-                    return {
-                        bold: e.queryCommandState("Bold"),
-                        italic: e.queryCommandState("Italic"),
-                        strikethrough: e.queryCommandState("StrikeThrough"),
-                        cut: e.queryCommandState("Cut"),
-                        copy: e.queryCommandState("Copy"),
-                        paste: e.queryCommandState("Paste"),
-                        undo: e.queryCommandState("Undo"),
-                        redo: e.queryCommandState("Redo")
-                        // etc. -- see http://wiki.moxiecode.com/index.php/TinyMCE:Commands
-                    };
+                    var doc = e.getDoc();
+                    for (var id in commandMap) {
+                        var command = commandMap[id];
+                        rv[id] = command.type.query(doc, command.id);
+                    }
                 }
-                return {};
+                return rv;
+            },
+
+            action: function(name, value)
+            {
+                var e = this._editor;
+                if (e)
+                {
+                    var command = commandMap[name];
+                    if (command)
+                    {
+                        return command.type.fire(e, command.id, value);
+                    }
+                }
+                return false;
             }
         }
     }));

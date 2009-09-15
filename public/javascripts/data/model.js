@@ -1080,8 +1080,11 @@ blist.namespace.fetch('blist.data');
 
             if (!row.saving) { row.saving = []; }
             var data = {};
-            data[column.id] = validValue;
+            if (column.type == 'tag')
+            { data['_tags'] = validValue; }
+            else { data[column.id] = validValue; }
             if (row.meta) { data.meta = $.json.serialize(row.meta); }
+
             if (column.nestedIn)
             {
                 var parCol = column.nestedIn.header;

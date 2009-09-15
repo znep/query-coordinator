@@ -153,8 +153,8 @@
     }
 
     var booleanCommand = {
-        query: function(doc, name) {
-            return { enabled: doc.queryCommandEnabled(name), value: doc.queryCommandState(name) }
+        query: function(editor, name) {
+            return { enabled: editor.getDoc().queryCommandEnabled(name), value: editor.queryCommandState(name) }
         },
 
         fire: function(editor, name) {
@@ -163,8 +163,8 @@
     }
 
     var buttonCommand = {
-        query: function(doc, name) {
-            return { enabled: doc.queryCommandEnabled(name) }
+        query: function(editor, name) {
+            return { enabled: editor.getDoc().queryCommandEnabled(name) }
         },
 
         fire: function(editor, name) {
@@ -173,8 +173,8 @@
     }
 
     var valueCommand = {
-        query: function(doc, name) {
-            return { enabled: doc.queryCommandEnabled(name), value: doc.queryCommandValue(name) }
+        query: function(editor, name) {
+            return { enabled: editor.getDoc().queryCommandEnabled(name), value: editor.queryCommandValue(name) }
         },
 
         fire: function(editor, name, value) {
@@ -280,10 +280,9 @@
                 var rv = {};
                 if (e && e.getDoc())
                 {
-                    var doc = e.getDoc();
                     for (var id in commandMap) {
                         var command = commandMap[id];
-                        rv[id] = command.type.query(doc, command.id);
+                        rv[id] = command.type.query(e, command.id);
                     }
                 }
                 return rv;

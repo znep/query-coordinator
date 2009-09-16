@@ -15,6 +15,14 @@
  * http://valums.com/ajax-upload-changelog/
  */
 
+/**
+ * Socrata changes:
+ * 2009-09-16: Fixed issue where hidden box didn't follow mouse when you lose
+ *   window focus in the browser, but later regain focus with the mouse already
+ *   inside the control. (Moving outside the file upload bounding box and then
+ *   back in "fixed" it before; now it always follows the mouse appropriately)
+ */
+
 (function(){
 	
 var d = document, w = window;
@@ -329,18 +337,12 @@ AjaxUpload.prototype = {
 		// });				
 
 		var box, over = false;			
-		addEvent(self._button, 'mouseover', function(e){
-			if (!self._input || over) return;
-			over = true;
-			box = getBox(self._button);
-								
-		});
 		
 		// we can't use mouseout on the button,
 		// because invisible input is over it
 		addEvent(document, 'mousemove', function(e){
 			var input = self._input;
-			if (!input || !over) return;
+			if (!input) return;
 			if (self._disabled){
 				removeClass(self._button, 'hover');
 				input.style.display = 'none';
@@ -348,9 +350,11 @@ AjaxUpload.prototype = {
 			}	
 										
 			var c = getMouseCoords(e);
+			box = getBox(self._button);
 
 			if ((c.x >= box.left) && (c.x <= box.right) && 
 			(c.y >= box.top) && (c.y <= box.bottom)){
+				over = true;
 			
 				input.style.top = c.y + 'px';
 				input.style.left = c.x + 'px';

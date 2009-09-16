@@ -292,6 +292,8 @@ class View < Model
       'google.visualization.Map'
     when 'piechart'
       'google.visualization.PieChart'
+    when 'motionchart'
+      'google.visualization.MotionChart'
     else
       nil
     end

@@ -97,7 +97,7 @@
             </a>
             </li>
             <%- end -%>
-            <%- if current_user -%>
+
             <li class='separator tableOption'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
@@ -107,7 +107,6 @@
               <%= render(:partial => "filter_view_menu",
                 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
-            <%- end -%>
 
             <%# Page view options %>
             <%- if is_owner -%>

@@ -1,4 +1,5 @@
 class SortBysController < ApplicationController
+  skip_before_filter :require_user, :only => [:index]
   def index
     @view = View.find(params[:blist_id])
     @selected = @view.sortBys || []

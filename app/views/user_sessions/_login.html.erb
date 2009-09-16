@@ -1,10 +1,13 @@
 <%= display_standard_flashes %>
 
-<% form_for @user_session do |f| %>
-  <%= render :partial => 'user_sessions/login_form_data', :locals => { :f => f } %>
-<% end %>
-
 <ul class="accountMaint">
   <li><%= link_to "Forgot your password?", forgot_password_path%></li>
   <li><%= link_to("No account yet?", signup_url, {:class => 'signupLink'}) %></li>
 </ul>
+
+
+<% form_for @user_session do |f| %>
+  <%= render :partial => 'user_sessions/login_form_data', :locals => { :f => f } %>
+<% end %>
+
+

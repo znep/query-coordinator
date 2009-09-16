@@ -1430,7 +1430,10 @@ table.gridList tr.filteredOut
 
 
 /*** START: Login box ***/
-
+#login.dialogWrapper
+{
+    width: 48em;
+}
 .loginBox .title a
 {
     color: #333333;
@@ -1446,58 +1449,31 @@ table.gridList tr.filteredOut
     line-height: 2em;
     margin-bottom: 0.5em;
 }
-
 .loginBox form label
 {
     float: left;
     font-size: 1.1em;
-    width: 5em;
+    width: 7em;
     margin-left: 0.5em;
     margin-right: 1em;
 }
 
-.loginBox form p.rememberMe
+form#new_user_session p.rememberMe input
 {
-    line-height: 2.3em;
-    margin-left: 6.5em;
+    margin: 3px 0;
 }
 
-.loginBox form p.rememberMe input
-{
-    float: left;
-}
-
-.loginBox form p.rememberMe label
-{
-    float: none;
-}
-
-.loginBox .footer
-{
-    height: 40px;
-}
 .loginBox .footer a
 {
-    color: #333333;
+    color: black;
     text-decoration: underline;
+    font-size: 1.2em;
 }
-.loginBox .footer ul.actionButtons
+.loginBox .actionButtons
 {
-    float: right;
+    float: none;
+    margin-left: 8em;
 }
-
-.loginBox .footer ul.actionButtons li
-{
-    background-position: left -63px;
-}
-
-.loginBox .footer ul.actionButtons a
-{
-    background-position: right -84px;
-    color: #ffffff;
-    text-decoration: none;
-}
-
 .loginBox div.openid a.rpxnow,
 .loginBox div.openid span
 {
@@ -1509,12 +1485,17 @@ table.gridList tr.filteredOut
 }
 .loginBox ul.accountMaint
 {
-    padding-left: 6em;
     font-size: 1.2em;
+    float: right;
 }
 .loginBox ul.accountMaint li
 {
     padding: 3px 0px;
+}
+.loginBox ul.accountMaint a
+{
+    color: black;
+    text-decoration: underline;
 }
 .loginBox ul.rpx_buttons li
 {
@@ -1524,6 +1505,11 @@ table.gridList tr.filteredOut
 .loginBox ul.rpx_buttons form
 {
     display: inline;
+}
+.loginBox ul.rpx_buttons form input,
+.loginBox ul.rpx_buttons img
+{
+    vertical-align: middle;
 }
 body#login .loginBox li#close_login
 {

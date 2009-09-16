@@ -219,6 +219,7 @@ ActionController::Routing::Routes.draw do |map|
     map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
   end
   map.sales '/sales', :controller => 'static', :action => 'sales'
+  map.about '/about', :controller => 'about'
   
   map.with_options :controller => 'invitation' do |invitation|
     invitation.invite             'invite',                 :action => 'invite'

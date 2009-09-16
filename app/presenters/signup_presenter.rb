@@ -64,7 +64,7 @@ protected
     # If the core server gives us an error, oh well... we've alredy created
     # the account, so we might as well send them to the main page, sans
     # profile photo.
-    unless profile_image.blank?
+    unless profile_image.blank? || !profile_image.kind_of?(Tempfile)
       user.profile_image = profile_image
     end
   rescue CoreServer::CoreServerError => e

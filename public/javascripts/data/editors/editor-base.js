@@ -78,6 +78,7 @@
                     $(document).unbind('.blistEditor_' + editObj._uid);
                     editObj._uid = null;
                 }
+                editObj.$dom().trigger("edit-finished");
                 editObj.finishEditExtra();
             },
 
@@ -151,7 +152,13 @@
              */
             action: function(name, value) {
                 return false;
-            }
+            },
+
+            /**
+             * Query whether this editor supports formatting
+             */
+            supportsFormatting: function()
+            { return false; }
         }
     });
 

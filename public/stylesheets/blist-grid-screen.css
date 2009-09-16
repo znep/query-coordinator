@@ -748,7 +748,7 @@ body#lensBody
 #formatMenu li.column > ul > li
 {
     float: left;
-    padding: 0.25em 0.25em;
+    padding: 0.25em;
 }
 
 #formatMenu li.column > ul > li.separator { border-right: 1px solid #cccccc; }
@@ -830,7 +830,6 @@ body#lensBody
     height: 17px;
     width: 15px;
 }
-#formatMenu .column li a.align .inner { background-position: 5px -140px; }
 
 #formatAlignMenu a
 {
@@ -843,8 +842,11 @@ body#lensBody
     width: 20px;
 }
 
+#formatMenu .column li a.align .inner,
 #formatAlignMenu .leftAlign a { background-position: 5px -140px; }
+#formatMenu .column li a.align.alignCenter .inner,
 #formatAlignMenu .centerAlign a { background-position: 5px -180px; }
+#formatMenu .column li a.align.alignRight .inner,
 #formatAlignMenu .rightAlign a { background-position: 5px -160px; }
 
 #formatAlignMenu a span { display: none; }

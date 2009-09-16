@@ -168,13 +168,13 @@
                     title='Underline'>Underline</a></li>
                   <li><a href='#format_italic' class='italic toggleButton'
                     title='Italic'>Italic</a></li>
-                  <li class='separator'><a href='#format_strike'
+                  <li class='separator'><a href='#format_strikethrough'
                     class='strike toggleButton' title='Strike'>Strike</a></li>
-                  <li><a href='#format_bulletedList'
+                  <li><a href='#format_unorderedList'
                     class='bulletedList toggleButton' title='Bulleted List'>
                     Bulleted List
                   </a></li>
-                  <li class='separator'><a href='#format_numberedList'
+                  <li class='separator'><a href='#format_orderedList'
                     class='numberedList toggleButton' title='Numbered List'>
                     Numbered List
                   </a></li>
@@ -185,12 +185,12 @@
               </li>
               <li class='column'>
                 <h6>Font</h6>
-                <%= select_tag("format_font",
+                <%= select_tag("format_fontFamily",
                   font_select_options('Arial')) %>
               </li>
               <li class='column'>
                 <h6>Size</h6>
-                <%= select_tag("format_size",
+                <%= select_tag("format_fontSize",
                   font_size_select_options(12)) %>
               </li>
               <li class='column'>
@@ -210,13 +210,13 @@
                     <%= menu_tag({'id' => 'formatAlignMenu', 'items' => [
                                  {'text' => 'Align Left',
                                    'class' => 'leftAlign',
-                                   'href' => '#format_align_left'},
+                                   'href' => '#format_justifyLeft'},
                                  {'text' => 'Align Center',
                                    'class' => 'centerAlign',
-                                   'href' => '#format_align_center'},
+                                   'href' => '#format_justifyCenter'},
                                  {'text' => 'Align Right',
                                    'class' => 'rightAlign',
-                                   'href' => '#format_align_right'}]}) %>
+                                   'href' => '#format_justifyRight'}]}) %>
                   </li>
                 </ul>
               </li>

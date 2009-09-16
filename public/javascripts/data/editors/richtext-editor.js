@@ -143,44 +143,83 @@
         });
         rte.$dom = $root;
         return rte;
-    }
+    };
 
     $.blistEditor.richtext = function(options, dom)
     {
         this.settings = $.extend({}, $.blistEditor.richtext.defaults, options);
         this.currentDom = dom;
         this.init();
-    }
+    };
 
     var booleanCommand = {
         query: function(editor, name) {
-            return { enabled: editor.getDoc().queryCommandEnabled(name), value: editor.queryCommandState(name) }
+            return { enabled: editor.getDoc().queryCommandEnabled(name), value: editor.queryCommandState(name) };
         },
 
         fire: function(editor, name) {
             editor.execCommand(name);
         }
-    }
+    };
 
     var buttonCommand = {
         query: function(editor, name) {
-            return { enabled: editor.getDoc().queryCommandEnabled(name) }
+            return { enabled: editor.getDoc().queryCommandEnabled(name) };
         },
 
         fire: function(editor, name) {
             editor.execCommand(name);
         }
-    }
+    };
 
     var valueCommand = {
         query: function(editor, name) {
-            return { enabled: editor.getDoc().queryCommandEnabled(name), value: editor.queryCommandValue(name) }
+            return { enabled: editor.getDoc().queryCommandEnabled(name), value: editor.queryCommandValue(name) };
         },
 
         fire: function(editor, name, value) {
             editor.execCommand(name, false, value);
         }
-    }
+    };
+
+    var colorCommand = {
+        query: function(editor, name)
+        {
+            var v;
+            var p = editor.dom.getParent(editor.selection.getNode(), 'span');
+            if (p) { v = p.style.color; }
+            return { enabled: editor.getDoc().queryCommandEnabled(name),
+                value: v || editor.editorCommands._queryVal(name) };
+        },
+
+        fire: function(editor, name, value) {
+            editor.execCommand(name, false, value);
+        }
+    };
+
+    var linkCommand = {
+        query: function(editor, name)
+        {
+            return { enabled: editor.getDoc().queryCommandEnabled(name),
+                value: $(editor.selection.getNode()).closest('a').attr('href') };
+        },
+
+        fire: function(editor, name, value) {
+            editor.execCommand(name, false, value);
+        }
+    };
+
+    var unlinkCommand = {
+        query: function(editor, name)
+        {
+            return {
+                enabled: $(editor.selection.getNode()).closest('a').length > 0
+            };
+        },
+
+        fire: function(editor, name)
+        { editor.execCommand(name); }
+    };
 
     // Command settings; see:
     //   http://wiki.moxiecode.com/index.php/TinyMCE:Commands
@@ -190,6 +229,7 @@
     var commandMap = {
         bold: { id: 'Bold', type: booleanCommand },
         italic: { id: 'Italic', type: booleanCommand },
+        underline: { id: 'Underline', type: booleanCommand },
         strikethrough: { id: 'StrikeThrough', type: booleanCommand },
         cut: { id: 'Cut', type: buttonCommand },
         copy: { id: 'Copy', type: buttonCommand },
@@ -198,10 +238,10 @@
         redo: { id: 'Redo', type: buttonCommand },
         fontFamily: { id: 'FontName', type: valueCommand },
         fontSize: { id: 'FontSize', type: valueCommand },
-        color: { id: 'ForeColor', type: valueCommand },
+        color: { id: 'ForeColor', type: colorCommand },
         backgroundColor: { id: 'BackColor', type: valueCommand },
-        link: { id: 'CreateLink', type: buttonCommand },
-        unlink: { id: 'Unlink', type: buttonCommand },
+        link: { id: 'CreateLink', type: linkCommand },
+        unlink: { id: 'UnLink', type: unlinkCommand },
         justifyLeft: { id: 'JustifyLeft', type: booleanCommand },
         justifyRight: { id: 'JustifyRight', type: booleanCommand },
         justifyCenter: { id: 'JustifyCenter', type: booleanCommand },
@@ -228,9 +268,8 @@
                             me.showCallback();
                         this.focus();
                     });
-                    this._editor.onNodeChange.add(function() {
-                        me.actionStatesChanged();
-                    });
+                    this._editor.onNodeChange.add(function()
+                    { me.actionStatesChanged(); });
                 }
                 this._value = this.originalValue;
                 this._editor._initValue = (this._value || '');
@@ -259,14 +298,16 @@
 
             currentValue: function()
             {
+                var v;
                 if (this._editor)
                 {
-                    return this._val();
+                    v = this._val();
                 }
                 else
                 {
-                    return this._value;
+                    v = this._value;
                 }
+                return v === '' ? null : v;
             },
 
             editorInserted: function()
@@ -305,7 +346,10 @@
             initComplete: function(showCallback) {
                 // Prevent default show-on-init
                 this.showCallback = showCallback;
-            }
+            },
+
+            supportsFormatting: function()
+            { return true; }
         }
     }));
 })(jQuery);

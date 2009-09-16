@@ -576,17 +576,174 @@ $(function ()
         blistGridNS.toggleFormatMenu();
     });
 
-    $('#formatAlignMenu').dropdownMenu(
-        {triggerButton: $('#formatMenu a.align')});
-
-    var $colorItem = $('#formatMenu a.color');
-    $colorItem.ColorPicker({
-        color: $colorItem.children('.inner').css('border-bottom-color'),
-        onChange: function(hsb, hex, rgb)
+    var formatEditor;
+    $('#formatLink, #formatMenu a, #formatMenu select').mousedown(function(e)
+        { e.stopPropagation(); });
+    $('#formatMenu a.toggleButton').click(function(e)
+    {
+        e.preventDefault();
+        var $button = $(this);
+        var action = $button.attr('href').split('_')[1];
+        if (formatEditor)
         {
-            $colorItem.children('.inner').css('border-bottom-color', '#' + hex);
+            var newVal = !$button.is('.active');
+            if (action == 'link')
+            {
+                if (!newVal) { formatEditor.action('unlink'); }
+                else
+                {
+                    var url = prompt('Enter a URL:');
+                    if (url !== null)
+                    {
+                        if (!url.match(/^(f|ht)tps?:\/\//))
+                        { url = "http://" + url; }
+                        formatEditor.action('link', url);
+                    }
+                }
+            }
+            else { formatEditor.action(action, newVal); }
         }
     });
+    $('#formatMenu select').change(function(e)
+    {
+        var $select = $(this);
+        var action = $select.attr('name').split('_')[1];
+        var val = $select.val();
+        if ($select.is('#format_fontSize'))
+        { val = (val / 10.0) + 'em'; }
+        if (formatEditor) { formatEditor.action(action, val); }
+    });
+
+    $('#formatAlignMenu').dropdownMenu({
+        triggerButton: $('#formatMenu a.align'),
+        linkCallback: function(event)
+        {
+            event.preventDefault();
+
+            var $target = $(event.currentTarget);
+            var href = $target.attr('href');
+            var s = href.slice(href.indexOf('#') + 1).split('_');
+            var action = s[1];
+            if (formatEditor) { formatEditor.action(action, true); }
+        }});
+
+    var $colorItem = $('#formatMenu a.color');
+    $colorItem
+        .ColorPicker({
+            color: '#000000',
+            onBeforeShow: function()
+            {
+                $(this).ColorPickerSetColor(
+                    $colorItem.children('.inner').css('border-bottom-color'));
+            },
+            onSubmit: function(hsb, hex, rgb, el)
+            {
+                if (formatEditor) { formatEditor.action('color', hex); }
+                $colorItem.children('.inner').css('border-bottom-color', '#' + hex);
+                $(el).ColorPickerHide();
+            }
+        });
+    $('.colorpicker').mousedown(function(e) { e.stopPropagation(); })
+
+    $('#readGrid').bind('action-state-change', function(e)
+    {
+        formatEditor = $(e.target).blistEditor();
+        var $fmt = $('#formatMenu');
+        if (!formatEditor.supportsFormatting())
+        {
+            $fmt.addClass('disabled');
+            return;
+        }
+
+        $fmt.removeClass('disabled');
+        var state = formatEditor.getActionStates();
+
+        var $bold = $fmt.find('a.bold');
+        state.bold.value ? $bold.addClass('active') : $bold.removeClass('active');
+        var $italic = $fmt.find('a.italic');
+        state.italic.value ? $italic.addClass('active') :
+            $italic.removeClass('active');
+        var $underline = $fmt.find('a.underline');
+        state.underline.value ? $underline.addClass('active') :
+            $underline.removeClass('active');
+        var $strike = $fmt.find('a.strike');
+        state.strikethrough.value ? $strike.addClass('active') :
+            $strike.removeClass('active');
+
+        var $bulletList = $fmt.find('a.bulletedList');
+        state.unorderedList.value ? $bulletList.addClass('active') :
+            $bulletList.removeClass('active');
+        var $numList = $fmt.find('a.numberedList');
+        state.orderedList.value ? $numList.addClass('active') :
+            $numList.removeClass('active');
+
+        var $link = $fmt.find('a.link');
+        state.unlink.enabled ? $link.addClass('active') :
+            $link.removeClass('active');
+
+        var $fontFamily = $fmt.find('#format_fontFamily');
+        var family = (state.fontFamily.value || 'arial').toLowerCase();
+        // First look for exact match
+        var $famOpt = $fontFamily.find('[value="' + family + '"]');
+        // If that is not found, look for something that starts with it
+        if ($famOpt.length < 1)
+        { $famOpt = $fontFamily.find('[value^="' + family + '"]'); }
+        // If that is not found, look for something that contains it
+        if ($famOpt.length < 1)
+        { $famOpt = $fontFamily.find('[value*="' + family + '"]'); }
+        if ($famOpt.length > 0) { $fontFamily.val($famOpt.eq(0).val()); }
+
+        var $fontSize = $fmt.find('#format_fontSize');
+        var size = state.fontSize.value || '12';
+        // Our size may be in ems or pxs; convert as appropriate
+        if (size.endsWith('em')) { size = parseFloat(size) * 10; }
+        else { size = parseFloat(size); }
+        var $sizeOpts = $fontSize.find('option');
+        var foundSize = false;
+        // Look through all the dropdown options and find which matches best
+        for (var i = 0; i < $sizeOpts.length - 1; i++)
+        {
+            var curVal = parseFloat($sizeOpts.eq(i).val());
+            if (curVal >= size)
+            {
+                $fontSize.val(curVal);
+                foundSize = true;
+                break;
+            }
+            var nextVal = parseFloat($sizeOpts.eq(i + 1).val());
+            if (nextVal > size)
+            {
+                if ((nextVal + curVal) / 2.0 > size) { $fontSize.val(curVal); }
+                else { $fontSize.val(nextVal); }
+                foundSize = true;
+                break;
+            }
+        }
+        // If none match, it is large; so choose the last one
+        if (!foundSize) { $fontSize.val($sizeOpts.eq($sizeOpts.length - 1).val()); }
+
+        var $color = $fmt.find('a.color .inner');
+        $color.css('border-bottom-color', state.color.value || '#000000');
+
+        var $alignment = $fmt.find('a.align').removeClass('alignRight alignCenter');
+        if (state.justifyRight.value) { $alignment.addClass('alignRight'); }
+        else if (state.justifyCenter.value) { $alignment.addClass('alignCenter'); }
+    });
+
+    $('#readGrid').bind('edit-finished', function(e)
+    {
+        $('#formatMenu').addClass('disabled')
+            .find('.active').removeClass('active')
+            .end()
+            .find('select').each(function(i, s)
+                { $(s).val($(s).find('.default').val()); })
+            .end()
+            .find('a.align').removeClass('alignRight alignCenter')
+            .end()
+            .find('a.color .inner').css('border-bottom-color', '#000000');
+        formatEditor = null;
+    });
+
 
     $('a.showFlashPopup').click(blistGridNS.flashPopupClickHandler);
 

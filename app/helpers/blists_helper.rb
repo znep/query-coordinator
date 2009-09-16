@@ -308,7 +308,8 @@ module BlistsHelper
       'Webdings' => 'webdings',
       'Wingdings' => 'wingdings,zapf dingbats'}.sort { |a,b| a[0] <=> b[0] }.
         each do |font|
-      selected = selected_font == font[0] ? " selected=\"selected\"" : ""
+      selected = selected_font == font[0] ?
+        " selected=\"selected\" class=\"default\"" : ""
       out += "<option value=\"#{font[1]}\"#{selected}>#{font[0]}</option>"
     end
     out
@@ -321,7 +322,8 @@ module BlistsHelper
   def font_size_select_options(selected_font_size = nil)
     out = ""
     [8, 10, 12, 14, 18, 24, 36].each do |size|
-      selected = selected_font_size == size ? " selected=\"selected\"" : ""
+      selected = selected_font_size == size ?
+        " selected=\"selected\" class=\"default\"" : ""
       out += "<option value=\"#{size}\"#{selected}>#{size}</option>"
     end
     out

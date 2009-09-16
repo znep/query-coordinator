@@ -294,7 +294,7 @@ blist.namespace.fetch('blist.data');
                 $.each(meta.columnFilters, function (i, v)
                     { if (v != null) { isProg = true; return false; } });
             }
-            if (meta.view.sortBys.length > 1)
+            if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 1)
             {
                isProg = true;
             }

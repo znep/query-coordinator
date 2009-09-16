@@ -21,7 +21,7 @@
               <%= image_tag("/stylesheets/images/common/back_arrow_icon_community.png", :size => "15x15") %>
               <%= link_to("Back to the #{t(:blist_name)}", @dataset.href, 
                           :title => @dataset.name, :class => "backButton") %>
-              <a id="print" href="#"><%= image_tag("/stylesheets/images/common/print_icon.png", :size => "15x15") %></a>
+              <a onclick="window.print()" href="#"><%= image_tag("/stylesheets/images/common/print_icon.png", :size => "15x15") %></a>
             </p>
             
         </div>

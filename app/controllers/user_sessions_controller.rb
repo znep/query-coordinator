@@ -32,7 +32,7 @@ class UserSessionsController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:notice] = notice
-          render :action => :new
+          redirect_to login_url
         end
         format.json { render :json => {:error => notice}, :callback => params[:callback] }
       end
@@ -46,18 +46,5 @@ class UserSessionsController < ApplicationController
     cookies.delete :remember_token
     flash[:notice] = "You have been logged out"
     redirect_to(login_path)
-  end
-
-  def rpx
-    return (redirect_to login_path) unless params[:token]
-
-    rpx_authentication = RpxAuthentication.new(params[:token])
-    if (rpx_authentication.existing_account?)
-      user_session = UserSession.rpx(rpx_authentication)
-      redirect_back_or_default(home_path)
-    else
-      session[:rpx_user] = rpx_authentication.user
-      redirect_to signup_url
-    end
   end
 end

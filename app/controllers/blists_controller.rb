@@ -9,12 +9,10 @@ class BlistsController < SwfController
     @args = params.reject {|k,v| !accept_keys.include?(k)}.inject({}) do |h,(k,v)|
       h[k] = CGI.unescape(v); h
     end
+    @title = get_title(@args)
   end
 
   def show
-    # The dataset page can show an inline login form, so we need to set
-    # @account for the _signup partial...
-    @account = User.new
     @body_id = 'lensBody'
     case params[:id]
     when 'new_blist'
@@ -30,17 +28,17 @@ class BlistsController < SwfController
       begin
         @parent_view = @view = View.find(params[:id])
       rescue CoreServer::ResourceNotFound
-          flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+          flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' cannot be found, or has been deleted.'
           return (render 'shared/error', :status => :not_found)
       rescue CoreServer::CoreServerError => e
         if e.error_code == 'authentication_required' 
           return require_user(true)
         elsif e.error_code == 'permission_denied'
-          flash[:error] = e.error_message
+          flash.now[:error] = e.error_message
           return (render 'shared/error', :status => :forbidden)
         else
-          flash[:error] = e.error_message
+          flash.now[:error] = e.error_message
           return (render 'shared/error', :status => :internal_server_error)
         end
       end
@@ -102,7 +100,7 @@ class BlistsController < SwfController
     begin
       @view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
-        flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+        flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
           ' cannot be found, or has been deleted.'
         return (render 'shared/error', :status => :not_found)
     rescue CoreServer::CoreServerError => e
@@ -110,7 +108,7 @@ class BlistsController < SwfController
         e.error_code == 'permission_denied'
         return require_user(true)
       else
-        flash[:error] = e.error_message
+        flash.now[:error] = e.error_message
         return (render 'shared/error', :status => :internal_server_error)
       end
     end

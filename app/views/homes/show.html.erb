@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "home-screen" %>
-  <title>My Socrata | <%= th.site_title %></title>
+  <title>My <%= th.company %> | <%= th.site_title %></title>
 <% end %>
 
 
@@ -52,7 +52,7 @@
                   <%= render( :partial => "blist_activity_list_item", 
                               :collection => @favorite_blists) %>
                 </ul>
-                <p class="listAction"><%= link_to("View All", blists_path) %></p>
+                <p class="listAction"><%= link_to("View All Favorites", "/blists?type=favorite") %></p>
               </div>
             <%- end -%>
             

@@ -1,30 +1,13 @@
 <%= display_standard_flashes %>
 
-
-<% form_for @user_session do |f| %>
-  <%= f.error_messages %>
-  <p>
-  <%= f.label :login, 'Username' %>
-  <%= f.text_field :login %>
-  </p>
-  <p>
-  <%= f.label :password %>
-  <%= f.password_field :password %>
-  </p>
-
-  <p class='rememberMe'>
-  <%= f.check_box :remember_me %>
-  <%= f.label :remember_me %>
-  </p>
-
-  <ul class='actionButtons clearfix'>
-    <li id="close_login"><a href='#close_login' class='close'>Cancel</a></li>
-    <li class='bare'><input type='image' name='submit'
-    src='<%= image_path("button_signin.png") %>' /></li>
-  </ul>
-<% end %>
-
 <ul class="accountMaint">
-  <li><%= link_to "Forgot your username or password?", forgot_password_path%></li>
+  <li><%= link_to "Forgot your password?", forgot_password_path%></li>
   <li><%= link_to("No account yet?", signup_url, {:class => 'signupLink'}) %></li>
 </ul>
+
+
+<% form_for @user_session do |f| %>
+  <%= render :partial => 'user_sessions/login_form_data', :locals => { :f => f } %>
+<% end %>
+
+

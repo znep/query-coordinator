@@ -11,14 +11,14 @@
     <%= text_field_tag('new_image[name]') %>
 
     <label for="new_image_file" class="required">Choose a File</label>
-    <%= text_field_tag('new_image[file_name]', '', :readonly => true) %>
     <div class="fileBrowseButtonListContainer">
       <ul id="fileBrowseButtonList" class="actionButtons">
         <li>
-          <a id="imageBrowseButton" href="#upload">Browse For Image</a>
+          <a id="imageBrowseButton" href="#upload">Browse for Image</a>
         </li>
       </ul>
     </div>
+    <%= text_field_tag('new_image[file_name]', '', :readonly => true) %>
 
     <div class="submitLine clearfix">
       <span class="requiredText">Required Entry</span>

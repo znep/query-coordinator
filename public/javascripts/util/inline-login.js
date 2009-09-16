@@ -87,12 +87,15 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     event.preventDefault();
                     var $form = $(this);
-                    $.ajax({
-                        url: blist.blistGrid.secureUrl + '/signup.json',
-                        data: $form.find(':input'),
-                        dataType: "jsonp",
-                        success: signupSuccess
-                    });
+                    if ($form.valid())
+                    {
+                        $.ajax({
+                            url: blist.blistGrid.secureUrl + '/signup.json',
+                            data: $form.find(':input'),
+                            dataType: "jsonp",
+                            success: signupSuccess
+                        });
+                    }
                 });
 
         var doProfileSubmit = false;

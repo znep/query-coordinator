@@ -219,6 +219,7 @@
     overflow: hidden;
     width: 15px;
 }
+.updateLinksContainer table td label.error { display: block; }
 .updateLinksContainer table td input[type="text"] 
 {
     font-size: 1.2em;

@@ -41,80 +41,23 @@ class AccountsController < ApplicationController
   end
 
   def new
-    @account = session[:rpx_user] || User.new
+    @signup = SignupPresenter.new({}, params[:token])
     @body_class = 'signup'
-    @token = params[:token] || ""
-
-    session[:openid_identifier_id] = @account.openIdIdentifierId
-    session[:rpx_user] = nil
   end
 
   def create
     @body_class = 'signup'
     @token = params[:inviteToken] || ""
 
-    # First, try creating the user
-    begin
-      # Link their OpenID identifier, if any. The identifier is set in the
-      # session rather than as a hidden form param because we don't want it
-      # to be spoofable.
-      @account = User.new(params[:account])
-      @account.openIdIdentifierId = session[:openid_identifier_id] if session[:openid_identifier_id]
-
-      @account.create(params[:inviteToken])
-    rescue CoreServer::CoreServerError => e
-      error = e.error_message
-      respond_to do |format|
-        format.html do
-          flash[:error] = error
-          return (render :action => :new)
-        end
-        format.json { return (render :json => {:error => error}, :callback => params[:callback]) }
-      end
-    end
-
-    # Clear out the OpenId link, now that it's tied to an account.
-    session.delete :openid_identifier_id
-
-    # Now, authenticate the user
-    @user_session = UserSession.new('login' => params[:account][:login], 'password' => params[:account][:password])
-    if @user_session.save
-      # If they gave us a profile photo, upload that to the user's account
-      # If the core server gives us an error, oh well... we've alredy created
-      # the account, so we might as well send them to the main page, sans
-      # profile photo.
-      if params[:profile_image] && !params[:profile_image].blank?
-        begin
-          @account.profile_image = params[:profile_image]
-        rescue CoreServer::CoreServerError => e
-          logger.warn "Unable to update profile photo: #{e.error_code} #{e.error_message}"
-        end
-      end
-
-      respond_to do |format|
+    @signup = SignupPresenter.new(params[:signup])
+    respond_to do |format|
+      if @signup.create
         format.html { redirect_back_or_default(home_path) }
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
-      end
-      
-      # If there were any email addresses in the Invite Others field, 
-      # create some invitations and send them to the core server.
-      if (params[:inviteOthers] && params[:inviteOthers] != "")
-        emails = params[:inviteOthers].split(",").map {|e| e.strip}
-        emails.each do |email|
-          begin
-            InvitationRecord.create({:recipientEmail => email, :message => t(:invitation_email_text)})
-          end
-        end
-      end
-      
-    else
-      warn = "We were able to create your account, but couldn't log you in."
-      respond_to do |format|
-        format.html do
-          flash[:warning] = warn
-          redirect_to login_path
-        end
-        format.json { render :json => {:error => warn, :promptLogin => true}, :callback => params[:callback]}
+      else
+        flash.now[:error] = @signup.errors.join(", ")
+        format.html { render :action => :new }
+        format.json { render :json => {:error => flash[:error], :promptLogin => true}, :callback => params[:callback] }
       end
     end
   end
@@ -132,7 +75,7 @@ class AccountsController < ApplicationController
         flash[:notice] = "Thank you. An email has been sent to the account on file with further information."
         redirect_to login_path
       else
-        flash[:warning] = "There was a problem submitting your password reset request. Please try again."
+        flash.now[:warning] = "There was a problem submitting your password reset request. Please try again."
       end
     end
   end

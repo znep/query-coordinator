@@ -1,0 +1,20 @@
+  <%= f.error_messages %>
+  <p>
+  <%= f.label :login, 'Username' %>
+  <%= f.text_field :login %>
+  </p>
+  <p>
+  <%= f.label :password %>
+  <%= f.password_field :password %>
+  </p>
+
+  <p class='rememberMe clearfix'>
+  <%= f.label :remember_me %>
+  <%= f.check_box :remember_me %>
+  </p>
+
+  <ul class='actionButtons clearfix'>
+    <li id="close_login"><a href='#close_login' class='close'>Cancel</a></li>
+    <li class='bare'><input type='image' name='submit'
+    src='<%= image_path("button_signin.png") %>' /></li>
+  </ul>

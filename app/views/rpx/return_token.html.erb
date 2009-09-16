@@ -1,0 +1,58 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "ui.tabs", "signup-screen", "form-common", "login-rpx-screen" %>
+  <title><%= th.site_title %></title>
+<% end %>
+
+<% dialog_content('rpx-choose', "signupBox") do %>
+  <div class='header'>
+    <h1><%= th.company %></h1>
+  </div>
+
+  <div class="mainContent">
+    <h1>Third-Party Account Association</h1>
+    <p class="chooseMessage">You just signed in with credentials from a third party.
+    Unfortunately, we don't have a record of that account yet. You can either create
+    a new account or link these credentials to an existing <%= th.company %>
+    account.</p>
+
+    <div id="tabs" class="ui-tabs">
+      <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all clearfix">
+        <li><a href="#signup">Sign up for a new <%= th.company %> Account</a></li>
+        <li><span>&mdash;OR&mdash;</span></li>
+        <li><a href="#loginTab">Link with an existing <%= th.company %> ID</a></li>
+      </ul>
+
+      <p class="clearfix"/>
+      <div id="signup" class="<%= flash[:tab] == 'loginTab' ? "ui-tabs-hide" : "" %>">
+        <% form_for :signup, @signup, :url => rpx_signup_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
+         <%= render :partial => "accounts/signup_form_data", :locals => { :f => f } %>
+        <% end %>
+        <div class="contentFooter">
+          <p>By signing up, you accept the <a href="/privacy">Privacy Policy</a> and <a href="/terms-of-service">Terms of Service</a> | <span class="required">Required field</span></p>
+        </div>
+      </div>
+
+      <div id="loginTab" class="<%= flash[:tab] == 'loginTab' ? "" : "ui-tabs-hide" %>">
+        <%= render(:partial => 'login') %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "plugins/ui.core", "plugins/ui.tabs", "plugins/effects.core", "screens/signup-screen", :cache => "cache/rpx_return_token_all" %>
+
+  <script type="text/javascript">
+    jQuery(document).ready(function()
+    {
+        $("#tabs").tabs({
+            fx: { opacity: "toggle"}
+            <% if flash[:tab] == "loginTab" %>,
+              selected: 1
+            <% end %>
+        });
+    });
+  </script>
+<% end %>

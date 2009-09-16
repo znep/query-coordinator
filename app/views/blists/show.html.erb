@@ -98,7 +98,7 @@
             </a>
             </li>
             <%- end -%>
-            <%- if current_user -%>
+
             <li class='separator tableOption'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
@@ -108,7 +108,6 @@
               <%= render(:partial => "filter_view_menu",
                 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
-            <%- end -%>
 
             <li class='separator'>
               <a id='formatLink' class='staticLink' href='#formatMenu'>
@@ -361,7 +360,7 @@
 
   <%- if !current_user -%>
   <%= render :partial => 'login' %>
-  <%= render(:partial => "accounts/signup", :locals => {:is_modal => true}) %>
+  <%= render :partial => "signup" %>
   <%= javascript_include_tag "plugins/ajaxupload.3.0", "screens/signup-screen", 
     :cache => "cache/inline_accounts_new_all" %>
   <%- end -%>

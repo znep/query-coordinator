@@ -122,11 +122,14 @@
     .blist-th-icon { display: none; }
     <%- end -%>
 
+  <%# disabled row height %>
+  <%- unless true -%>
     .blist-td
     {
         height: <%= @theme[:grid][:row_height][:value] %><%= @theme[:grid][:row_height][:unit] %>;
         line-height: <%= @theme[:grid][:row_height][:value] %><%= @theme[:grid][:row_height][:unit] %>;
     }
+  <%- end -%>
 
     <%- if @theme[:grid][:wrap_header_text] -%>
     .blist-th .info-container

@@ -678,6 +678,7 @@
 
                 sizeCellOverlay($curEditContainer, $editor, $(cell));
                 positionCellOverlay($curEditContainer, $(cell));
+                blistEditor.postAdjustSize();
             };
 
             var displayCallback = function() {

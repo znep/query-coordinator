@@ -126,6 +126,11 @@
                 // Override me if desired
             },
 
+            postAdjustSize: function()
+            {
+                // Override me if desired
+            },
+
             isValid: function()
             {
                 // Override me if desired

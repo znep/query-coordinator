@@ -45,7 +45,7 @@
 
             adjustSize: function()
             {
-                if (this.originalValue instanceof String)
+                if (typeof this.originalValue == 'string')
                 {
                     this.$editor().css('min-width', this.originalValue
                         .visualLength(this.$editor().css('font-size')) + 1);

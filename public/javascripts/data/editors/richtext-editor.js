@@ -126,6 +126,26 @@
         } catch (e) {}
     }
 
+    var measureText = function(value)
+    {
+        var ret;
+        if (typeof value == 'string')
+        {
+            var $mDiv = $('<div class="blist-td">' +
+                    '<div class="blist-richtext">' + value + '</div></div>');
+            // Don't allow them to execute script!
+            $mDiv.find('script').remove();
+            $mDiv.css('position', 'absolute');
+            $mDiv.css('top', '-10000px');
+            $mDiv.css('height', 'auto');
+            $('body').append($mDiv);
+            // Pad for body padding & extra space
+            ret = {width: $mDiv.width() + 10, height: $mDiv.height() + 3};
+            $mDiv.remove();
+        }
+        return ret;
+    };
+
     // Create the actual TinyMCE editor object
     var createRTE = function()
     {
@@ -341,6 +361,26 @@
             editorInserted: function()
             {
                 this._editor.render();
+            },
+
+            adjustSize: function()
+            {
+                var m = measureText(this._value);
+                if (m !== undefined)
+                {
+                    this.$editor().find('.blist-rte-container')
+                        .css('min-height', m.height)
+                        .css('min-width', m.width)
+                        .height('100%').width('100%')
+                        .find('iframe').height(m.height).width(m.width);
+                }
+            },
+
+            postAdjustSize: function()
+            {
+                this.$editor().find('iframe')
+                    .height(this.$dom().height())
+                    .width(this.$dom().width());
             },
 
             getActionStates: function()

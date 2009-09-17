@@ -321,6 +321,11 @@
             }
         };
 
+        var focus = function(obtain)
+        {
+            $navigator[0].focus();
+        }
+
         var updateCellNavCues = function()
         {
             if (!cellNav) { return; }
@@ -362,10 +367,8 @@
 
             // These calls are not strictly related to cell navigation cues.
             // However, this code path is common to all of the places where the
-            // selection may change and/or the text area might lose focus.  So
-            // reset these now.
+            // selection may change.  So reset these now.
             cellNav.initCopy();
-            if (!isEdit[defaultEditMode]) { $navigator[0].focus(); }
         };
 
         var $activeContainer;
@@ -694,7 +697,7 @@
             if (mode == defaultEditMode)
             {
                 prevEdit = isSave;
-                $navigator[0].focus();
+                focus();
             }
             delete isEdit[mode];
 
@@ -732,6 +735,14 @@
                     expandActiveCell();
                 }
                 else { navKeyDown(origEvent); }
+            }
+            if (origEvent.type != 'mousedown' || isElementInScrolls(origEvent.target))
+            {
+                focus();
+            }
+            else
+            {
+                cellNav.deactivate();
             }
         };
 
@@ -1022,6 +1033,7 @@
 
             return rc;
         };
+
 
         /*** MOUSE HANDLING ***/
 
@@ -1468,7 +1480,7 @@
             clickTarget = event.target;
             clickCell = findCell(event);
             var $clickTarget = $(clickTarget);
-            // IE & WebKit only detetct mousedown on scrollbars, not mouseup;
+            // IE & WebKit only detect mousedown on scrollbars, not mouseup;
             // so we need to ignore clicks on the scrollbar to avoid having a
             // false drag event
             // If they clicked on the scrollbar, ignore
@@ -1564,7 +1576,7 @@
             var editMode = false;
             if (cellNav && cell == clickCell)
             {
-                var curActiveCell = $activeCells ? $activeCells[0] : null;
+                var curActiveCell = (cellNav.isActive() && $activeCells) ? $activeCells[0] : null;
                 if (curActiveCell && $prevActiveCells &&
                         $prevActiveCells.index(curActiveCell) >= 0)
                 {
@@ -1575,7 +1587,7 @@
                 {
                     $prevActiveCells = $activeCells;
                 }
-                if (!editMode) { $navigator[0].focus(); }
+                if (!editMode) { focus(); }
             }
 
             if (clickTarget && clickTarget == event.target &&
@@ -1606,6 +1618,7 @@
                 }
             }
         };
+
 
         /*** KEYBOARD HANDLING ***/
 
@@ -1740,6 +1753,11 @@
 
             return false;
         };
+
+        var isElementInScrolls = function(element)
+        {
+            return $(element).closest('.blist-table-scrolls')[0] == $scrolls[0];
+        }
 
         if (options.simpleCellExpand)
         {
@@ -1900,6 +1918,18 @@
         cellNav = options.cellNav ?
             new blist.data.TableNavigation(model, [], $navigator) : null;
 
+        // Install global listener to disable the active cell indicator when we lose focus
+        if (cellNav) {
+            var onDocumentMouseDown = function(e) {
+                if (cellNav.isActive() && !isElementInScrolls(e.target))
+                {
+                    // Leaving table
+                    cellNav.deactivate();
+                    hideActiveCell();
+                }
+            }
+            $(document).mousedown(onDocumentMouseDown);
+        }
 
 
         /*** SCROLLING AND SIZING ***/

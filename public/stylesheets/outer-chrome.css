@@ -152,7 +152,7 @@ body
     margin: 0 .75em 0 0;
 }
 
-#header .userNav li.signInLink,
+#header .userNav li.signUpLink,
 #header .loggedInNav li.signOutLink
 {
     border-right: 0;
@@ -167,7 +167,8 @@ body
 }
 
 #header .userNav li.accountLink,
-#header .userNav li.signOutLink
+#header .userNav li.signOutLink,
+#header .loggedInNav li.signUpLink
 {
     display: none;
 }
@@ -178,7 +179,7 @@ body
     display: inline;
 }
 
-#header .userNav li.signInLink a
+#header .userNav li.signUpLink a
 {
   font-weight: bold;
 }

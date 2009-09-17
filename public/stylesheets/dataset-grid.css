@@ -484,6 +484,40 @@ div.blist-table-editor
     padding: 0 4px 0 0;
 }
 
+body.blist-richtext-document
+{
+    font-size: 10px;
+    padding: 2px 3px 3px 3px;
+}
+div.blist-richtext { font-size: 0.8333em; }
+div.blist-richtext p,
+body.blist-richtext-document p,
+div.blist-richtext ul,
+body.blist-richtext-document ul,
+div.blist-richtext ol,
+body.blist-richtext-document ol
+{
+    line-height: 1.4em;
+    margin: 0.3em 0;
+}
+div.blist-richtext p,
+body.blist-richtext-document p
+{ font-size: 1em; }
+
+div.blist-richtext ul,
+body.blist-richtext-document ul
+{
+    list-style-position: inside;
+    list-style-type: disc;
+}
+
+div.blist-richtext ol,
+body.blist-richtext-document ol
+{
+    list-style-position: inside;
+    list-style-type: decimal;
+}
+
 div.blist-table-editor.type-richtext
 {
     /* Eliminate 4px on the right for richtext controls so the iframe expands fully */

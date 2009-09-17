@@ -6,9 +6,6 @@
 // instance variable.
 (function($)
 {
-    var DEFAULT_FONT_FACE = "Arial";
-    var DEFAULT_FONT_SIZE = "12";
-
     var nextEditorID = 1;
 
     // We've got no use for TinyMCE themes.  Also, dynamically loading bits of JS is stupid.
@@ -73,11 +70,15 @@
                     {
                         css.insertRule("body {}", rules.length);
                         css.insertRule("p {}", rules.length);
+                        css.insertRule("ul {}", rules.length);
+                        css.insertRule("ol {}", rules.length);
                     }
                     else
                     {
                         css.addRule("body", null, rules.length);
                         css.addRule("p", null, rules.length);
+                        css.addRule("ul", null, rules.length);
+                        css.addRule("ol", null, rules.length);
                     }
                     rules = css.cssRules || css.rules;
 
@@ -87,7 +88,7 @@
                         if (rules[i].selectorText.toLowerCase() == "body")
                         {
                             var style = rules[i].style;
-                            style.fontSize = "12px";
+                            style.fontSize = "10px";
                             style.padding = "2px 3px 3px 3px";
                             style.margin = "0";
                             style.fontFamily = "Arial,sans-serif";
@@ -96,10 +97,28 @@
                         else if (rules[i].selectorText.toLowerCase() == "p")
                         {
                             style = rules[i].style;
-                            style.fontSize = "1.1em";
-                            style.lineHeight = "1.1em";
+                            style.fontSize = "1em";
+                            style.lineHeight = "1.4em";
                             style.padding = 0;
-                            style.margin = 0;
+                            style.margin = "0.3em 0";
+                        }
+                        else if (rules[i].selectorText.toLowerCase() == "ul")
+                        {
+                            style = rules[i].style;
+                            style.listStylePosition = 'inside';
+                            style.listStyleType = 'disc';
+                            style.lineHeight = "1.4em";
+                            style.padding = 0;
+                            style.margin = "0.3em 0";
+                        }
+                        else if (rules[i].selectorText.toLowerCase() == "ol")
+                        {
+                            style = rules[i].style;
+                            style.listStylePosition = 'inside';
+                            style.listStyleType = 'decimal';
+                            style.lineHeight = "1.4em";
+                            style.padding = 0;
+                            style.margin = "0.3em 0";
                         }
                     }
                 }
@@ -139,7 +158,7 @@
             // This is a relatively minimal list of default plugins we use.
             // Revisit as necessary.  All built-in plugins are here:
             //   http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/template
-            plugins: 'safari,style,inlinepopups,contextmenu,paste,directionality,visualchars,nonbreaking,xhtmlxtras'
+            plugins: 'safari,style,inlinepopups,paste,directionality,visualchars,nonbreaking,xhtmlxtras'
         });
         rte.$dom = $root;
         return rte;
@@ -270,6 +289,15 @@
                     });
                     this._editor.onNodeChange.add(function()
                     { me.actionStatesChanged(); });
+                    this._editor.onKeyDown.add(function(ed, e)
+                    {
+                        // Esc or F2
+                        if (e.keyCode == 27 || e.keyCode == 113)
+                        {
+                            me.$dom().trigger('edit_end', [e.keyCode != 27, e]);
+                            return false;
+                        }
+                    });
                 }
                 this._value = this.originalValue;
                 this._editor._initValue = (this._value || '');

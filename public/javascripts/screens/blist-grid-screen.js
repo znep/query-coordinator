@@ -694,7 +694,7 @@ $(function ()
         if ($famOpt.length > 0) { $fontFamily.val($famOpt.eq(0).val()); }
 
         var $fontSize = $fmt.find('#format_fontSize');
-        var size = state.fontSize.value || '12';
+        var size = state.fontSize.value || '10';
         // Our size may be in ems or pxs; convert as appropriate
         if (size.endsWith('em')) { size = parseFloat(size) * 10; }
         else { size = parseFloat(size); }

@@ -12,7 +12,9 @@ class DataController < ApplicationController
     @body_class = 'discover'
     @show_search_form = false
     @page_size = PAGE_SIZE
-    
+
+    @community_activity = Activity.find({:maxResults => 3}) unless Theme.revolutionize
+  
     # NOTE: Temporary hacks to get agency filtering working until we have org filtering
     @agency_id = Theme.agency_id
     @agency_mcache_key = (@agency_id.nil? ? "" : "-agency-#{@agency_id}")

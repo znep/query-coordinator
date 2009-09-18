@@ -23,6 +23,8 @@
     "carousel item title fg": "0071bc",
     "agency id" : 504, // This really should be an agency name, but ultimately this will be replaced by Orgs 
     
+    "discover header" : "Discover useful, unique and unusual datasets created by the community.",
+    
     // Dataset page
     "menu button bg" : "4584BB:.5,4383BD:.5,53A3EB",
     "menu button activated bg" : "53A3EB,4383BD:.5,4584BB:.5,4584BB"

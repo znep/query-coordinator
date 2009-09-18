@@ -1,5 +1,8 @@
 {
     "company": "data.gov",
     "site title": "data.gov | Find Government Data",
-    "logo": "data_gov_logo.png"
+    "logo": "data_gov_logo.png",
+    
+    
+    "discover header" : "Discover useful, informative and interesting data. View or copy and use for yourself!"
 }

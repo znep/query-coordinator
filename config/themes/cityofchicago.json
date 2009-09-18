@@ -22,5 +22,7 @@
     
     // Dataset page
     "menu button bg" : "494A59:.5,626377:.5,A4AAC1",
-    "menu button activated bg" : "A4AAC1,626377:.5,626377:.5,494A59"
+    "menu button activated bg" : "A4AAC1,626377:.5,626377:.5,494A59",
+    
+    "discover header" : "Discover useful, unique and unusual datasets created by the community."
 }

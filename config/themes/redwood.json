@@ -21,6 +21,8 @@
     "carousel bg": "9a9a9a,636363",
     "carousel item title fg": "0071bc",
     
+    "discover header" : "Discover useful, unique and unusual datasets created by the community.",
+    
     // Dataset page
     "menu button bg" : "8f2f2f:.5,6b1111:.5,8d2d2d",
     "menu button activated bg" : "8e2e2e,6c1212:.5,8e2f2f:.5,8f2f2f"

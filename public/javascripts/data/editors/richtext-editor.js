@@ -299,10 +299,12 @@
                 if (!this._editor)
                 {
                     this._editor = createRTE();
+                    this._editorInitDone = false;
                     var me = this;
                     this._editor.onInit.add(function() {
                         initDoc(this.getDoc());
                         this.setContent(this._initValue);
+                        me._editorInitDone = true;
                         if (me.showCallback)
                             me.showCallback();
                         this.focus();
@@ -330,7 +332,8 @@
 
             finishEditExtra: function()
             {
-                this._value = this._val();
+                if (this._editorInitDone)
+                { this._value = this._val(); }
                 this._editor.remove();
 
                 delete this._editor;

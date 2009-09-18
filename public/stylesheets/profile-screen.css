@@ -56,9 +56,9 @@
     font-style: italic;
     color: #666666;
 }
-#profile #linksEmpty a:hover,
+#profile #descriptionEmpty a:hover,
 #profile #interestsEmpty a:hover,
-#profile #linksEmpty a:hover
+#profile #linksEmpty a:hover,
 #profile .profileContent a.profileEdit:hover
 {
     color: #333333;

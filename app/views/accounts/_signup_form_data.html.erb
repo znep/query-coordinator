@@ -34,15 +34,18 @@
   </fieldset>
 
   <fieldset class="last">
-    <div class="fileInputContainer clearfix">
+    <div class="clearfix">
       <%= label_tag :profile_image, 'Profile Picture' %>
-      <div class="fileInput">
-        <%= f.file_field :profile_image, :class => "text" %>
-        <div class="fakeFile clearfix">
-          <input type="text" name="displayProfileImage" />
-          <%= image_tag("/stylesheets/images/account/button_browse.png", :size => "72x24", :alt => "Browse") %>
+      <div class="fileInputContainer clearfix">
+        <div class="fileInput">
+          <%= f.file_field :profile_image, :class => "text" %>
+          <div class="fakeFile clearfix">
+            <input type="text" name="displayProfileImage" />
+            <%= image_tag("/stylesheets/images/account/button_browse.png", :size => "72x24", :alt => "Browse") %>
+          </div>
         </div>
       </div>
+      <label for="signup_profile_image" class="error" generated="true"></label>
     </div>
     <p>
       <%= f.label :company %>

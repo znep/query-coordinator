@@ -21,5 +21,8 @@
     
     // Dataset page
     "menu button bg" : "2e5f8e:.5,285987:.5,113e6b",
-    "menu button activated bg" : "113f6c,164471:.5,2f5f8e:.5,509bdb"
+    "menu button activated bg" : "113f6c,164471:.5,2f5f8e:.5,509bdb",
+    "discover header" : "Discover useful, unique and unusual datasets created by the community.",
+    // Show "Revolutionize Your .GOV"?
+    "revolutionize": true
 }

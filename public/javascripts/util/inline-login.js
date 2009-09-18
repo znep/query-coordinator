@@ -1,5 +1,21 @@
 blist.namespace.fetch('blist.util.inlineLogin');
 
+blist.util.inlineLogin.checkFilename = function(file, extension)
+{
+    var $flash = $("#signup .flash");
+    if (!(extension && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(extension)))
+    {
+        $flash.text("Please choose an image file " +
+            "(jpg, gif, png, or tiff)");
+        return false;
+    }
+    else
+    {
+        $flash.text('');
+        return true;
+    }
+};
+
 blist.util.inlineLogin.verifyUser = function(callback, msg)
 {
     if (!blist.currentUserId)
@@ -87,7 +103,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     event.preventDefault();
                     var $form = $(this);
-                    if ($form.valid())
+                    if ($form.valid() && $form.find(".flash").text().length == 0)
                     {
                         $.ajax({
                             url: blist.blistGrid.secureUrl + '/signup.json',
@@ -140,24 +156,20 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
             }
         };
 
-        if ($("#signup #profile_image").length > 0)
+        if ($("#signup #signup_profile_image").length > 0)
         {
-            var profileUpload = new AjaxUpload($('#signup #profile_image'), {
+            var profileUpload = new AjaxUpload($('#signup #signup_profile_image'), {
                 autoSubmit: false,
                 name: 'signup_profileImageUpload',
                 responseType: 'json',
                 onChange: function (file, ext)
                 {
-                    if (!(ext && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(ext)))
-                    {
-                        $('#signup .flash').text('Please choose an image file ' +
-                            '(jpg, gif, png or tiff)');
-                        return false;
-                    }
-                    $('#signup .flash').text('');
                     $("#signup .fileInputContainer :text").val(file);
-                    doProfileSubmit = true;
+
+                    doProfileSubmit = blist.util.inlineLogin.checkFilename(file, ext);
+                    return doProfileSubmit;
                 },
+                onSubmit: blist.util.inlineLogin.checkFilename,
                 onComplete: function (file, response)
                 {
                     signupSuccess();

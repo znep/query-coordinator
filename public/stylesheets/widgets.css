@@ -1622,6 +1622,11 @@ body#login .loginBox li#close_login
 }
 
 .signupBox form fieldset.last label { width: 90px; }
+.signupBox form fieldset.last label.error
+{
+    width: 194px;
+    margin-left: 100px;
+}
 
 .signupBox form div.error
 {

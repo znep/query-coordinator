@@ -5,11 +5,6 @@ $(function ()
         $("#signup #signup_firstName").focus();
     }
 
-    $("#signup .fileInputContainer input[type='file']").change(function()
-    {
-        $("#signup .fileInputContainer input[type='text']").val($(this).val());
-    });
-
     $.validator.addMethod("loginRegex", function(value, element) {
         return this.optional(element) || /^[a-z0-9\-]+$/i.test(value);
     }, "Username must contain only letters, numbers, or dashes.");
@@ -19,7 +14,7 @@ $(function ()
     }, "Username cannot be in the form nnnn-nnnn.");
 
     // Signup form validation.
-    $("#signup #signupForm").validate({
+    var $validator = $("#signup #signupForm").validate({
         rules: {
             "signup[firstName]": "required",
             "signup[lastName]": "required",
@@ -48,6 +43,9 @@ $(function ()
             "signup[passwordConfirm]": {
                 required: true,
                 equalTo: "#signup_password"
+            },
+            "signup[profile_image]": {
+                accept: "jpg|png|jpeg|gif|tif|tiff"
             }
         },
         messages: {
@@ -56,4 +54,11 @@ $(function ()
             }
         }
     });
+
+    $("#signup .fileInputContainer input[type='file']").change(function()
+    {
+        $("#signup .fileInputContainer input[type='text']").val($(this).val());
+        $validator.element($(this));
+    });
+
 });

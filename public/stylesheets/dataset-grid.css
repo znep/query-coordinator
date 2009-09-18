@@ -518,6 +518,32 @@ body.blist-richtext-document ol
     list-style-type: decimal;
 }
 
+div.blist-richtext a,
+body.blist-richtext-document a
+{ color: inherit; }
+
+div.blist-richtext span,
+body.blist-richtext-document span,
+div.blist-richtext p,
+body.blist-richtext-document p,
+div.blist-richtext li,
+body.blist-richtext-document li,
+div.blist-richtext a,
+body.blist-richtext-document a,
+div.blist-richtext strong,
+body.blist-richtext-document strong,
+div.blist-richtext b,
+body.blist-richtext-document b,
+div.blist-richtext em,
+body.blist-richtext-document em,
+div.blist-richtext i,
+body.blist-richtext-document i,
+div.blist-richtext u,
+body.blist-richtext-document u,
+div.blist-richtext strike,
+body.blist-richtext-document strike
+{ font-family: inherit; }
+
 div.blist-table-editor.type-richtext
 {
     /* Eliminate 4px on the right for richtext controls so the iframe expands fully */

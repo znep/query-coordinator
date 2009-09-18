@@ -148,6 +148,12 @@ $(function ()
         $(this).closest(".sectionContainer").find(".sectionShow").slideDown("fast");
     });
 
+    $("#welcome .welcome-titlebar a").click(function(event)
+    {
+        event.preventDefault();
+        $("#welcome").slideUp("fast");
+    });
+
     // Profile form.
     $(".profileContent form").validate({
         rules: {

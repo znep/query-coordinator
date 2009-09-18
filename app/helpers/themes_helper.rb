@@ -10,6 +10,10 @@ module ThemesHelper
     SUMMARY_OUTSIDE_BG = 'ececec'
     SUMMARY_HOVER_BG = 'e3ecf7'
 
+    WELCOME_TOP_BG = '2f608f:.286,0f3c69'
+    WELCOME_BOTTOM_BG = 'd7ecf9'
+    WELCOME_EDGE = '9ba5a1'
+
     def main_button_inactive_bg
         box :h => 35, :r => 10, :ry => 10, :fc => :main_button_bg, :bc => MAIN_BUTTON_BG, :s => 'h'
     end
@@ -71,22 +75,30 @@ module ThemesHelper
       box :h => 24, :w => 5, :fc => :menu_button_activated_bg
     end
 
+    def welcome_top
+      box :rh =>34, :s => 'h', :h => 44, :r => 10, :fc => WELCOME_TOP_BG, :ec => WELCOME_EDGE, :ew => 1
+    end
+
+    def welcome_bottom
+      box :ry => 10, :rh => 78, :s => 'h', :h => 88, :r => 10, :fc => WELCOME_BOTTOM_BG, :ec => WELCOME_EDGE, :ew => 1
+    end
+
     def box(options)
-        ui_url :box, options
+      ui_url :box, options
     end
 
 private
 
     def ui_url type, options
-        "url(/ui/#{type}.png?#{make_arguments options})"
+      "url(/ui/#{type}.png?#{make_arguments options})"
     end
 
     def make_arguments(options)
-        options.collect do |key, value|
-            value = Theme.send value if value.is_a? Symbol
-            value = value.to_s
-            "#{CGI.escape key.to_s}=#{CGI.escape value}"
-        end.join '&'
+      options.collect do |key, value|
+        value = Theme.send value if value.is_a? Symbol
+        value = value.to_s
+        "#{CGI.escape key.to_s}=#{CGI.escape value}"
+      end.join '&'
     end
 end
 

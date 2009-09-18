@@ -68,8 +68,10 @@
 
       <div class='userNav'>
         <ul>
-          <li><%= link_to "About Socrata", about_path %></li>
-          <li><a href='http://www.getsatisfaction.com/socrata' rel='nofollow external'>Help</a></li>
+          <li><%= link_to "About #{th.company}", about_path %></li>
+          <%- if th.help_url -%>
+            <li><%= link_to 'Help', th.help_url, :class=> 'nofollow external' %></a></li>
+          <%- end -%>
           <li class='signInLink'><%= link_to "Sign In", login_url, :rel => 'nofollow' %></li>
           <li class='signUpLink'><%= link_to "Sign Up", signup_url, :rel => 'nofollow' %></li>
           <li class='accountLink'><%= link_to "My Account", account_path%></li>

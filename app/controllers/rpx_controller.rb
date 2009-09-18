@@ -61,6 +61,7 @@ private
       @body_id = 'signup'
       @signup = SignupPresenter.new
       @signup.user = rpx_authentication.user if rpx_authentication.user
+      @signup.emailConfirm = @signup.email
       render :template => 'rpx/return_login'
     end
   end

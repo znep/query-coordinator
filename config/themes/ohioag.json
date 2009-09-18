@@ -21,6 +21,8 @@
     "carousel bg": "1D3E71,12629D",
     "carousel item title fg": "ccdbeb",
     
+    "discover header" : "Discover useful, unique and unusual data from the Ohio Attorney General.",
+    
     // Dataset page
     "menu button bg" : "FED759:.7,F4B668",
     "menu button activated bg" : "F4B668,F4B668:.5,FED759:.5,FED759"

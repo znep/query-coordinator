@@ -4,7 +4,7 @@
     "site title": "SeattleData.gov | Seattle's Data Site",
     "logo": "main_logo.png",
     "dialog logo" : "dialog_logo.png",
-    "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li></ul>",
+    "footer html" : "<span class='copyright'>&copy; 2009 City of Seattle</span><ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li><a href=\"#\">City of Seattle</a></li></ul>",
     
     // Global
     "link fg": "494A59",
@@ -13,12 +13,14 @@
     
     // Chrome
     "top border bg": "3F80C2",
-    "main button bg": "3F80C2:.286,9ACAFA",
-    "main button active bg": "9ACAFA:.286,3F80C2",
+    "main button bg": "9ACAFA:.286,3F80C2",
+    "main button active bg": "3F80C2:.286,9ACAFA",
     
     // Discovery page
-    "carousel bg": "1D308A,3F80C2",
+    "carousel bg": "3F80C2,1D308A",
     "carousel item title fg": "0071bc",
+    // Header text for discover
+    "discover header": "Discover useful public datasets from the City of Seattle.",
     
     // Dataset page
     "menu button bg" : "FED759:.7,F4B668",

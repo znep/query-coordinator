@@ -10,7 +10,7 @@
   <div class="pageBlockHeaderBL"><div class="pageBlockHeaderBR">
     <div class="pageBlockHeaderContainer">
       <div class="pageBlockIntro">
-        <p><%= t(:discover_header_intro) %></p>
+        <p><%= th.discover_header %></p>
       </div>
       <div class="pageBlockSearch">
         <p class="searchIntro"><%= t(:discover_search_intro) %></p>
@@ -55,6 +55,7 @@
             </ul>
           </div>
         <%- else -%>
+          <%- if th.revolutionize -%>
           <div class="pageBlockHeaderSide discoverBugContainer">
             <h2>Revolutionize Your .GOV</h2>
             <h3>High Quality Data, Low Cost Delivery</h3>
@@ -65,6 +66,18 @@
               Latest News: <a href="/press/socrata-releases-first-social-data-player-platform"><strong>Socrata Releases First Social Data Player Platform</strong></a>
             </p>
           </div>
+          <%- else -%>
+          <div class="pageBlockHeaderSide">
+            <h2>Recent Activity</h2>
+            <ul class="activityList">
+              <%- @community_activity.each do |activity| -%>
+                <li>
+                  <%= get_html_for_activity(activity, "full") %>
+                </li>
+              <%- end -%>
+            </ul>
+          </div>
+          <%- end -%>
         <%- end -%>
       </div>
     </div>

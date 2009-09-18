@@ -465,7 +465,7 @@ div.blist-table-active-container .blist-td.blist-first
 }
 
 div.blist-table-active-container .blist-td.blist-last
-{ padding-right: 2px; }
+{ padding-right: 3px; }
 div.blist-table-active-container .blist-td.blist-opener
 { background-position: -2px 0; }
 
@@ -481,7 +481,7 @@ div.blist-table-edit-container
 div.blist-table-editor
 {
     border: none;
-    padding: 0 4px 0 0;
+    padding: 0;
 }
 
 body.blist-richtext-document
@@ -555,9 +555,9 @@ div.blist-table-edit-container input.textInput
 {
     border: none;
     font-size: 1em;
-    height: 100%;
-    min-width: 8.333em; /* 100px */
-    padding: 0.2em 0;
+    /*height: 100%;*/
+    width: 4.167em;
+    padding: 0.2em;
     /*background-image: url(/stylesheets/images/content/table/bg_text.gif);*/
     background-repeat: repeat-x;
 }
@@ -567,10 +567,11 @@ div.blist-table-edit-container.shown input[type="text"]
     /* For some reason, interacting normally with this text field in FF
      * wasn't working properly until I pulled it just above the container
      * it is in */
+    /*
     position: absolute;
     top: 0;
-    width: 100%;
     z-index: 21;
+    */
 }
 
 div.blist-table-edit-container.shown .labels
@@ -619,6 +620,11 @@ div.blist-table-edit-container.shown .blist-td.type-url .description
 {
     float: right;
     width: 50%;
+}
+
+.blist-table .blist-table-editor-container .blist-td
+{
+    -moz-user-select: text;
 }
 
 div.blist-percent,

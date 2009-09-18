@@ -27,7 +27,7 @@
             {
                 if (!this._$editor)
                 {
-                    this._$editor = $('<div class="blist-table-editor blist-td">' +
+                    this._$editor = $('<div class="blist-table-editor">' +
                         '<div class="picklist-combo"></div></div>');
                 }
                 return this._$editor;
@@ -45,6 +45,11 @@
                         this.originalValue.toLowerCase() : 'null',
                     renderFn: renderValue
                 });
+            },
+
+            getSizeElement: function()
+            {
+                return this.$editor().children(':first');
             },
 
             currentValue: function()

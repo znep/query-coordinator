@@ -97,6 +97,7 @@
                     rowRenderFn.apply($li, [ values[i] ]);
                 }
                 $dropdown.click(onDropdownClick)
+                    .mouseover(onDropdownMouseMove)
                     .mousemove(onDropdownMouseMove);
             }
 

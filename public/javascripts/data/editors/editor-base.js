@@ -121,14 +121,70 @@
                 // Implement me
             },
 
-            adjustSize: function()
+            /**
+             * Set the element's size given sizing constraints.
+             */
+            adjustSize: function(minWidth, minHeight, maxWidth, maxHeight)
             {
-                // Override me if desired
+                // Determine my desired size, if any
+                var size = this.querySize();
+                if (size) {
+                    var width = size.width;
+                    var height = size.height;
+                }
+                if (!width)
+                    width = 0;
+                if (!height)
+                    height = 0;
+
+                // Obtain the element we will size and the container.  We use the container to compute padding/border
+                // deltas so we can compensate for them in the CSS width/height properties.
+                var $sz = $(this.getSizeElement());
+                var outer = this.$dom()[0];
+
+                // Compute the minimum dimensions (reference dimensions - editor padding) and correct dimensions that
+                // are too small
+                minWidth = minWidth - (outer.offsetWidth - $sz.width());
+                minHeight = minHeight - (outer.offsetHeight - $sz.height());
+                if (width < minWidth)
+                    width = minWidth;
+                if (height < minHeight)
+                    height = minHeight;
+
+                // Correct dimensions that are too large
+                maxWidth = Math.floor(maxWidth || Infinity);
+                maxHeight = Math.floor(maxHeight || Infinity);
+                if (width > maxWidth)
+                    width = maxWidth;
+                if (height > maxHeight)
+                    height = maxHeight;
+
+                this.setSize(width, height);
             },
 
-            postAdjustSize: function()
+            /**
+             * Retrieve the element upon which sizing logic should be applied.
+             */
+            getSizeElement: function()
             {
-                // Override me if desired
+                return this.$editor()[0];
+            },
+
+            /**
+             * Set the size of the element based on sizing computation.  Derivatives may override if sizing requires
+             * more than simply setting a size.
+             */
+            setSize: function(width, height)
+            {
+                $(this.getSizeElement()).css({ width: width + 'px', height: height + 'px' });
+            },
+
+            /**
+             * Derivatives can override this function to convey a preferred size.
+             */
+            querySize: function()
+            {
+                return {};
             },
 
             isValid: function()

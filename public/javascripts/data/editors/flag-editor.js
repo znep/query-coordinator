@@ -33,7 +33,7 @@
             {
                 if (!this._$editor)
                 {
-                    this._$editor = $('<div class="blist-table-editor blist-td">' +
+                    this._$editor = $('<div class="blist-table-editor">' +
                         '<div class="flag-combo"></div></div>');
                 }
                 return this._$editor;

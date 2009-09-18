@@ -155,10 +155,36 @@
         textarea.id = "richtext_" + nextEditorID++;
         var container = $root.find('.blist-rte-container')[0];
         container.id = textarea.id + "_container";
+
+        // This is a tweaked version of tinymce's default element configuration.  Form elements and JS attrs removed,
+        // and marked more tags as "remove-if-empty".
+        // See http://wiki.moxiecode.com/index.php/TinyMCE:Configuration/valid_elements
+        VALID_ELEMENTS = "@[id|class|style|title|dir<ltr?rtl|lang|xml::lang],a[rel|rev|charset|hreflang|tabindex|accesskey|type|"
+            + "name|href|target|title|class],-strong/b,-em/i,-strike,-u,"
+            + "#p[align],-ol[type|compact],-ul[type|compact],-li,br,img[longdesc|usemap|"
+            + "src|border|alt=|title|hspace|vspace|width|height|align],-sub,-sup,"
+            + "-blockquote,-table[border=0|cellspacing|cellpadding|width|frame|rules|"
+            + "height|align|summary|bgcolor|background|bordercolor],-tr[rowspan|width|"
+            + "height|align|valign|bgcolor|background|bordercolor],tbody,thead,tfoot,"
+            + "#td[colspan|rowspan|width|height|align|valign|bgcolor|background|bordercolor"
+            + "|scope],#th[colspan|rowspan|width|height|align|valign|scope],caption,-div,"
+            + "-span,-code,-pre,-address,-h1,-h2,-h3,-h4,-h5,-h6,hr[size|noshade],-font[face"
+            + "|size|color],-dd,-dl,-dt,cite,abbr,acronym,del[datetime|cite],ins[datetime|cite],"
+            + "param[name|value|_value],map[name],area[shape|coords|href|alt|target],bdo,"
+            + "col[align|char|charoff|span|valign|width],colgroup[align|char|charoff|span|"
+            + "valign|width],dfn,"
+            + "kbd,legend,noscript,"
+            + "q[cite],samp,-small,"
+            + "textarea[cols|rows|disabled|name|readonly],tt,var,-big";
+
         var rte = new tinymce.Editor(textarea.id, {
             content_element: textarea,
             theme: 'blist_dummy',
             body_class: 'blist-richtext-document',
+            valid_elements: VALID_ELEMENTS,
+
+            // Prevent insertion of random crap at the end of the content
+            forced_root_block : '',
 
             // Disable as much random as possible.  These are lightly documented but I discovered some only after
             // stepping through TinyMCE initialization in a debugger.
@@ -366,26 +392,6 @@
                 this._editor.render();
             },
 
-            adjustSize: function()
-            {
-                var m = measureText(this._value);
-                if (m !== undefined)
-                {
-                    this.$editor().find('.blist-rte-container')
-                        .css('min-height', m.height)
-                        .css('min-width', m.width)
-                        .height('100%').width('100%')
-                        .find('iframe').height(m.height).width(m.width);
-                }
-            },
-
-            postAdjustSize: function()
-            {
-                this.$editor().find('iframe')
-                    .height(this.$dom().height())
-                    .width(this.$dom().width());
-            },
-
             getActionStates: function()
             {
                 var e = this._editor;
@@ -417,6 +423,10 @@
             initComplete: function(showCallback) {
                 // Prevent default show-on-init
                 this.showCallback = showCallback;
+            },
+
+            querySize: function() {
+                return { width: 400, height: 300 };
             },
 
             supportsFormatting: function()

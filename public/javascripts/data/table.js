@@ -17,7 +17,7 @@
  * regardless of the element on which they occur.  For example, a mouse down within a few pixels of a column heading
  * border is a resize, but the mouse may in fact be over a control.  Because of this and the fact that you can't
  * cancel click events in mouseup handlers we generally can't use the browser's built in "click" event.  Instead the
- * table fires a "table_click" event.  You should be able to use this anywhere you would instead handle "click".
+ * table fires a "table_click"ke event.  You should be able to use this anywhere you would instead handle "click".
  */
 
 (function($)
@@ -26,7 +26,7 @@
     var EXPAND_DELAY = 100;
 
     // Milliseconds in which expansion should occur
-    var EXPAND_DURATION = 200;
+    var EXPAND_DURATION = 100;
 
     // Millisecond delay before loading missing rows
     var MISSING_ROW_LOAD_DELAY = 100;
@@ -628,6 +628,7 @@
 
 
         /*** CELL EDITING ***/
+        
         var $editContainers = {};
         var isEdit = {};
         var prevEdit = false;
@@ -672,19 +673,16 @@
 
             var resizeEditor = function()
             {
-                blistEditor.adjustSize();
-                $editor.width('auto').height('auto');
-                $curEditContainer.width('auto').height('auto');
-
-                sizeCellOverlay($curEditContainer, $editor, $(cell));
-                positionCellOverlay($curEditContainer, $(cell));
-                blistEditor.postAdjustSize();
+                var $cell = $(cell);
+                blistEditor.adjustSize($cell[0].offsetWidth, $cell[0].offsetHeight, $scrolls.width() * 0.8, $scrolls.height() * 0.8);
+                positionCellOverlay($curEditContainer, $cell);
             };
 
             var displayCallback = function() {
                 resizeEditor();
                 $curEditContainer.bind('resize', function() { resizeEditor(); });
                 $editor.closest('.blist-table-edit-container').removeClass('blist-table-util').addClass('shown');
+                blistEditor.focus();
             }
 
             blistEditor.initComplete(displayCallback);
@@ -737,7 +735,7 @@
                 }
                 else { navKeyDown(origEvent); }
             }
-            if (origEvent.type != 'mousedown' || isElementInScrolls(origEvent.target))
+            if (!isEdit[defaultEditMode] && (origEvent.type != 'mousedown' || isElementInScrolls(origEvent.target)))
             {
                 focus();
             }
@@ -979,7 +977,6 @@
 
             var availW = rc.width;
             var countedScroll = false;
-            var numCells = $expandCells.length;
             var extraPadding = 0;
             $expandCells.each(function(i)
             {
@@ -1019,6 +1016,7 @@
                     $t.height(rc.height - innerPady);
                 }
             });
+
             // Account for the extra pixels already added for rounding to the
             // insides
             rc.width += extraPadding;
@@ -1028,6 +1026,7 @@
                 refWidth = rc.width;
                 refHeight = rc.height;
             }
+
             // Size the content wrapper
             $container.width(refWidth);
             $container.height(refHeight);
@@ -1765,6 +1764,7 @@
             else
             {
                 hideActiveCell();
+                focus();
                 setTimeout(expandActiveCell, 0);
             }
 

@@ -22,12 +22,16 @@
     font-size: 0.8333em;
 }
 
-.blist-td
+.blist-td, .blist-table-editor
 {
     font-size: 1.2em;
-    height: 1.3333em; /* 16px */
     line-height: 1.3333em;
     padding: 0.3333em; /* 4px */
+}
+
+.blist-td
+{
+    height: 1.3333em; /* 16px */
 }
 
 .blist-td-header

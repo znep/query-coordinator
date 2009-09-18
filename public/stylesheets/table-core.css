@@ -461,18 +461,15 @@ div.blist-table-editor .align-right { text-align: right; }
 .blist-table .blist-combo-wrapper
 {
     overflow: visible;
-    width: 100%;
 }
 .blist-table .blist-combo-wrapper .blist-table-editor { padding-right: 0; }
 .blist-table .blist-combo
 {
-    height: 100%;
     min-width: 7.5em;
 }
 .blist-table .blist-combo-value
 {
     font-size: 1em;
-    height: 100%;
     padding: 0;
 }
 .blist-table .blist-combo-dd li { height: 1.5833em; }

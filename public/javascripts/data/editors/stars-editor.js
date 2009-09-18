@@ -72,7 +72,7 @@
                 {
                     var align = this.column.alignment ?
                         ' align-' + this.column.alignment : '';
-                    var edHtml = '<div class="blist-table-editor blist-td ' +
+                    var edHtml = '<div class="blist-table-editor ' +
                         'type-' + this.column.type + align + '">' +
                         '<input />' +
                         '<div class="star star-clear" title="Clear"></div>';

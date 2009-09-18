@@ -17,7 +17,7 @@
                 {
                     var align = this.column.alignment ?
                         ' align-' + this.column.alignment : '';
-                    this._$editor = $('<div class="blist-table-editor blist-td ' +
+                    this._$editor = $('<div class="blist-table-editor ' +
                         'type-' + this.column.type + align + '">' +
                         '<input type="checkbox"' +
                         (this.originalValue ? ' checked="checked"' : '') +

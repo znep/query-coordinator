@@ -18,12 +18,17 @@
                 {
                     var align = this.column.alignment ?
                         ' align-' + this.column.alignment : '';
-                    this._$editor = $('<div class="blist-table-editor blist-td' +
+                    this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.type +
                         '"><input type="text" class="' + align +  '" value="' +
                         this.originalTextValue() + '" /></div>');
                 }
                 return this._$editor;
+            },
+
+            getSizeElement: function()
+            {
+                return this.$editor()[0].childNodes[0];
             },
 
             originalTextValue: function()
@@ -43,13 +48,17 @@
                     { setTimeout(function() { editObj.textModified(); }, 0); });
             },
 
-            adjustSize: function()
+            querySize: function()
             {
-                if (typeof this.originalValue == 'string')
-                {
-                    this.$editor().css('min-width', this.originalValue
-                        .visualLength(this.$editor().css('font-size')) + 1);
-                }
+                // Compute visual width of text
+                var width = ((this.originalValue || '') + '').visualLength(this.$editor().css('font-size'));
+
+                // Adjust width for cursor slop
+                // XXX - I don't know why this is nessary.  On FF w/out this the cursor disappears at the end of the
+                // line.  Maybe only necessary on FF?
+                width += 2;
+
+                return { width: width };
             },
 
             textValue: function()
@@ -73,5 +82,4 @@
             }
         }
     }));
-
 })(jQuery);

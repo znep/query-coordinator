@@ -370,7 +370,8 @@
     margin: 0.5em 0;
 }
 
-#profileBody #sidebar dl
+#profileBody #sidebar dl,
+#profileBody #sidebar div.content div
 {
     border-top: 1px solid #999;
 }

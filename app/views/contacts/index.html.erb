@@ -71,7 +71,17 @@
     <% render(:layout => "shared/sidebar_box") do %>
       <%= render(:partial => "shared/current_user_tile",
         :locals => { :user => current_user }) %>
+      <ul class="actionButtons blockList clearfix">
+        <li>
+          <%= link_to("Find Friends", community_path,
+              :title => "Search for other users") %>
+        </li>
+        <li>
+          <%= link_to("Invite Others", invite_path, :title => "Invite others to try Socrata", :rel => "modal") %>
+        </li>
+      </ul>
     <% end %>
+
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'contactFilters',
       :content_class => 'scrollContent' } ) do %>

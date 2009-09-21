@@ -674,7 +674,9 @@
             var resizeEditor = function()
             {
                 var $cell = $(cell);
-                blistEditor.adjustSize($cell[0].offsetWidth, $cell[0].offsetHeight, $scrolls.width() * 0.8, $scrolls.height() * 0.8);
+
+                // Note -- + 1 assumes 1px borders
+                blistEditor.adjustSize($cell[0].offsetWidth + 1, $cell[0].offsetHeight + 1, $scrolls.width() * 0.8, $scrolls.height() * 0.8);
                 positionCellOverlay($curEditContainer, $cell);
             };
 
@@ -872,8 +874,15 @@
             // Locate a position for the expansion.  We prefer the expansion to
             // align top-left with the cell but do our best to ensure the
             // expansion remains within the viewport
+            //
+            // Note that -1 on top but not left assumes top border is on cell
+            // above (and is 1px) but left border is on this cell.  More flexible
+            // alternative would be to subtract right border width on cell to the
+            // left and bottom border width on cell above.  Doesn't seem worth
+            // the pain, though -- our CSS is unlikely to change short of a major
+            // rewrite that would require this code to be revisited anyway.
             var left = $refCell.offset().left - inside.offset().left;
-            var top = $refCell.offset().top - inside.offset().top;
+            var top = $refCell.offset().top - inside.offset().top - 1;
             var origOffset = { top: top, left: left };
 
             // Ensure viewport is in the window horizontally
@@ -1001,11 +1010,13 @@
                 // Size the cell
                 // If necessary, bump up by one pixel to offset any text that
                 // is not exactly on a pixel boundary
+                /*
                 if (w > minW)
                 {
                     innerPadx--;
                     extraPadding++;
                 }
+                */
                 $t.width(Math.min(Math.max(minW, w), availW) - innerPadx);
 
                 availW -= $t.outerWidth();

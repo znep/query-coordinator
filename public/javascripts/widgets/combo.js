@@ -101,15 +101,22 @@
                     .mousemove(onDropdownMouseMove);
             }
 
-            // Display the drop-down
-            var pos = $this.position();
-            var left = pos.left;
-            var top = pos.top + $this.outerHeight() - 1;
-            $dropdown.css('left', left);
-            $dropdown.css('top', top);
 
+            // Compute the dropdown position
+            var pos = $this.position();
+            var layout = {
+                left: pos.left,
+                top: pos.top + $this.outerHeight() - 1,
+                width: $this.outerWidth() - 2
+            };
+            if (options.adjustDropdownLayout)
+                options.adjustDropdownLayout(layout);
+
+            // Display the drop-down
+            $dropdown.css('left', layout.left);
+            $dropdown.css('top', layout.top);
+            $dropdown.css('width', layout.width);
             dropdownOpen = true;
-            $dropdown.css({ width: ($this.outerWidth() - 2) + 'px' });
             $dropdown.slideDown(100);
         };
 

@@ -362,15 +362,10 @@ div.blist-table-expander,
 div.blist-table-edit-container.mode-expand
 {
     background-color: #ffffff;
-    border-top: none;
-    border-bottom: solid 1px #e2e2e2;
+    border-top: solid 1px #d0d0d0;
+    border-bottom: solid 1px #d0d0d0;
     border-left: solid 1px #e2e2e2;
     border-right: solid 1px #e2e2e2;
-}
-
-div.blist-table-expander .blist-td
-{
-    padding-right: 0.25em; /* 3px */
 }
 
 .blist-td.invalid,
@@ -476,6 +471,13 @@ div.blist-table-edit-container
     overflow: hidden;
 }
 
+div.blist-table-edit-container,
+div.blist-table-active-container
+{
+    /* Compensate for the fact that our border is shifted up one so it overlaps the previous row */
+    padding-top: 1px;
+}
+
 .blist-table-edit-container.combo-container { overflow: visible; }
 .blist-table-edit-container.combo-container .blist-combo-dd { font-size: 0.8333em; }
 div.blist-table-editor
@@ -555,23 +557,10 @@ div.blist-table-edit-container input.textInput
 {
     border: none;
     font-size: 1em;
-    /*height: 100%;*/
     width: 4.167em;
     padding: 0.2em;
     /*background-image: url(/stylesheets/images/content/table/bg_text.gif);*/
     background-repeat: repeat-x;
-}
-
-div.blist-table-edit-container.shown input[type="text"]
-{
-    /* For some reason, interacting normally with this text field in FF
-     * wasn't working properly until I pulled it just above the container
-     * it is in */
-    /*
-    position: absolute;
-    top: 0;
-    z-index: 21;
-    */
 }
 
 div.blist-table-edit-container.shown .labels

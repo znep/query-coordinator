@@ -46,7 +46,13 @@
                     name: 'flag-combo',
                     values: flagValues,
                     value: this.originalValue || 'null',
-                    renderFn: renderFlagValue
+                    renderFn: renderFlagValue,
+                    adjustDropdownLayout: function(layout) {
+                        // Move dropdown
+                        layout.top += 2;
+                        layout.left -= 3;
+                        layout.width += 4;
+                    }
                 });
             },
 

@@ -4,6 +4,7 @@
     "site title": "Socrata | Making Data Social",
     "logo": "socrata_logo.gif",
     "dialog logo" : "socrata_logo_light.png",
+    "about link" : true,
 
     // Global
     "link fg": "0071bc",

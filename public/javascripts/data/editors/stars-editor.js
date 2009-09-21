@@ -53,6 +53,11 @@
                 renderStars(editObj);
             }
         }
+        else if (event.keyCode == 46 || event.keyCode == 8) // Delete or Backspace
+        {
+            editObj.curValue = 0;
+            renderStars(editObj);
+        }
     };
 
     $.extend($.blistEditor.stars, $.blistEditor.extend(

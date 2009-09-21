@@ -1,6 +1,6 @@
 <% content_for :headline do %>
 <script>
-$(".dialogBL").addClass("dialogBLgray");
+$("#modal .dialogBL").addClass("dialogBLgray");
 
 blist.namespace.fetch('blist.columns.properties');
 var column = blist.columns.properties.column = <%= @column.to_js %>;
@@ -130,41 +130,41 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
 <script type="text/javascript" charset="utf-8">
 $(function()
 {
-  $("#loadingSpinner").hide();
-  $(".error").hide();
-  $("#convertables").hide();
+  $("#modal #loadingSpinner").hide();
+  $("#modal .error").hide();
+  $("#modal #convertables").hide();
 
   var loading = function()
   {
-    $("#loadingSpinner").css("left", 150 + $("#generalTab").width() / 2);
-    $("#loadingSpinner").show();
+    $("#modal #loadingSpinner").css("left", 150 + $("#modal #generalTab").width() / 2);
+    $("#modal #loadingSpinner").show();
   }
 
   var formEnabled = true;
   var toggleEnabled = function()
   {
-    $(".columnPropertiesWrapper :input").attr("disabled", formEnabled);
+    $("#modal .columnPropertiesWrapper :input").attr("disabled", formEnabled);
     formEnabled = !formEnabled;
   }
 
   // Since these widgets are created live, we have to populate the default
   // text prompt values manually instead of relying on the plugin.
-  $(".textPrompt").example(function () { return $(this).attr("title"); });
+  $("#modal .textPrompt").example(function () { return $(this).attr("title"); });
 
   var selectTab = function(which) 
   {
-    $("#generalTab").hide();
-    $("#formattingTab").hide();
-    $("#totalsTab").hide();
-    $("#defaultsTab").hide();
+    $("#modal #generalTab").hide();
+    $("#modal #formattingTab").hide();
+    $("#modal #totalsTab").hide();
+    $("#modal #defaultsTab").hide();
 
-    $("#" + which + "Tab").show();
+    $("#modal #" + which + "Tab").show();
   };
 
   // Select tabs on hover.
-  $("ul.tabSelector > li > a").hover(function() {
+  $("#modal ul.tabSelector > li > a").hover(function() {
     if (!formEnabled) { return false; }
-    $("ul.tabSelector > li > a").removeClass("selected");
+    $("#modal ul.tabSelector > li > a").removeClass("selected");
     $(this).addClass("selected");
     selectTab(this.id);
   });
@@ -173,20 +173,20 @@ $(function()
   selectTab("general");
 
   <% if @column.has_display_options? %>
-    $("#formattingTab").columnFormat(column);
+    $("#modal #formattingTab").columnFormat(column);
   <% end %>
   <% if @column.has_totals? %>
-    $("#totalsTab").columnTotals(column);
+    $("#modal #totalsTab").columnTotals(column);
   <% end %>
   
 
   // Keep the column model up to date so we don't have to read from the form to
   // update the properties.
-  $("#name").change(function() { column.name = $(this).val() });
-  $("#description").change(function() { column.description = $(this).val() });
-  $("#column_alignment_left,#column_alignment_center,#column_alignment_right").change(function() { column.alignment = $(this).val() });
-  $("#precision").change(function() { column.decimalPlaces = $(this).val() });
-  $("#ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#precision").val() });
+  $("#modal #name").change(function() { column.name = $(this).val() });
+  $("#modal #description").change(function() { column.description = $(this).val() });
+  $("#modal #column_alignment_left,#modal #column_alignment_center,#modal #column_alignment_right").change(function() { column.alignment = $(this).val() });
+  $("#modal #precision").change(function() { column.decimalPlaces = $(this).val() });
+  $("#modal #ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#modal #precision").val() });
 
   var save = function() {
       $.ajax({
@@ -199,7 +199,7 @@ $(function()
           },
         dataType: 'json',
         error: function(request) { 
-            $(".error").html($.json.deserialize(request.responseText).error).show() 
+            $("#modal .error").html($.json.deserialize(request.responseText).error).show() 
         },
         success: function(responseData) { 
             $grid = $("#readGrid");
@@ -208,17 +208,17 @@ $(function()
                 $("#readGrid").blistModel().updateColumn(responseData);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
-            $(".jqmClose").click();
+            $("#modal .jqmClose").click();
         }
       });
   };
 
   var converting = false;
-  $("a.convert").click(function(e) {
+  $("#modal a.convert").click(function(e) {
     e.preventDefault();
     if (converting) return false;
     converting = true;
-    $("a.convert").addClass("light");
+    $("#modal a.convert").addClass("light");
     $(this).removeClass("light");
     loading();
 
@@ -243,29 +243,29 @@ $(function()
         dataType: 'json',
         contentType: "application/json",
         error: function(request) {
-          $(".error").html($.json.deserialize(request.responseText).message).show();
+          $("#modal .error").html($.json.deserialize(request.responseText).message).show();
         },
         success: function (responseData) {
-          $(".jqmClose").click();
+          $("#modal .jqmClose").click();
           $("#readGrid").blistModel().convertColumn(<%= @column.id %>, responseData);
         }
       });
     }
   });
 
-  $("#converter").click(function(e) {
+  $("#modal #converter").click(function(e) {
       e.preventDefault();
       toggleEnabled();
-      $("#convertables").toggle();
+      $("#modal #convertables").toggle();
       return false;
   });
 
-  $("#columnProperties").submit( function() {
-    $(".save").click();
+  $("#modal #columnProperties").submit( function() {
+    $("#modal .save").click();
     return false;
   });
 
-  $(".save").click(function(e) {
+  $("#modal .save").click(function(e) {
       e.preventDefault();
       if (!formEnabled) { return false; }
       toggleEnabled();

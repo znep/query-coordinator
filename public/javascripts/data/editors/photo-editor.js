@@ -35,7 +35,8 @@
         $.uploadDialog().show(editObj.column.base,
                 function(id) { fileUploaded(editObj, id); },
                 function() { editObj.focus(); },
-                ['jpg', 'jpeg', 'gif', 'pjpeg', 'bmp', 'png', 'tif', 'tiff']);
+                ['jpg', 'jpeg', 'gif', 'pjpeg', 'bmp', 'png', 'tif', 'tiff'],
+                'Photo');
         editObj.focus();
     };
 

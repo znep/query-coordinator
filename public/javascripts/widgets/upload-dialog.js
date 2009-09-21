@@ -51,22 +51,24 @@
                         '<div class="dialogBR"><div class="dialogBL">' +
                         '<div class="dialogOuter"><div class="dialogBox">' +
                         '<div class="header">' +
-                        '<h1>Upload a File</h1>' +
+                        '<h1>Upload a <span class="fileType">File</span></h1>' +
                         '<a href="#close_dialog" class="close jqmClose" ' +
                         'title="Close">Close</a>' +
                         '</div>' +
                         '<div class="modalContentWrapper">' +
                         '<form>' +
-                        '<label for="file_upload">File to Upload:</label>' +
-                        '<input type="text" readonly="readonly" ' +
-                        'disabled="disabled" name="file_upload" />' +
                         '<div class="fileBrowseButtonListContainer">' +
                         '<ul class="actionButtons">' +
                         '<li>' +
-                        '<a class="fileBrowseButton">Browse For File</a>' +
+                        '<a class="fileBrowseButton">Browse For ' +
+                        '<span class="fileType">File</span></a>' +
                         '</li>' +
                         '</ul>' +
                         '</div>' +
+                        '<label for="file_upload">' +
+                        '<span class="fileType">File</span> to Upload:</label>' +
+                        '<input type="text" readonly="readonly" ' +
+                        'disabled="disabled" name="file_upload" />' +
                         '</form>' +
                         '<div class="submitLine clearfix">' +
                         '<div class="error"></div>' +
@@ -80,7 +82,6 @@
                         '</a>' +
                         '</li>' +
                         '</ul>' +
-                        '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div></div>' +
@@ -107,11 +108,16 @@
             },
 
             // External interface methods
-            show: function(uploadURL, fileCallback, closeCallback, extList)
+            show: function(uploadURL, fileCallback, closeCallback, extList,
+                fileTypeName)
             {
                 var currentObj = this;
                 currentObj._closeCallback = closeCallback;
                 var $domObj = currentObj.$dom();
+
+                if (!fileTypeName) { fileTypeName = 'File'; }
+                $domObj.find('.fileType').text(fileTypeName);
+
                 $domObj.jqmShow();
 
                 if (!uploadURL.endsWith('.txt'))

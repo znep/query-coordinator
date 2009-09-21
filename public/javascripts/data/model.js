@@ -1758,7 +1758,7 @@ blist.namespace.fetch('blist.data');
             meta.view.sortBys = sortBys;
             meta.sort = {};
             $.each(meta.view.sortBys, function(i, sort) {
-                var col = this.getColumnByID(sort.viewColumnId);
+                var col = self.getColumnByID(sort.viewColumnId);
                 meta.sort[sort.viewColumnId] = {
                     ascending: (sort.flags != null && $.inArray('asc', sort.flags) >= 0),
                     column: col 

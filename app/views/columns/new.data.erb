@@ -55,7 +55,7 @@ var column = <%= @column.to_js %>;
 $(function(){
   // Since these widgets are created live, we have to populate the default
   // text prompt values manually instead of relying on the plugin.
-  $(".textPrompt").example(function () { return $(this).attr("title"); });
+  $("#modal .textPrompt").example(function () { return $(this).attr("title"); });
 
   var renderValueInfoFormatRow = function(value)
   {
@@ -84,7 +84,7 @@ $(function(){
 
   column.type = "<%= @type.nil? ? "text" : @type %>";
 
-  $("#types").combo({
+  $("#modal #types").combo({
     name: "types",
     values: typeValues, 
     value: column.type, 
@@ -94,20 +94,20 @@ $(function(){
   var formEnabled = true;
   var toggleEnabled = function()
   {
-    $(".columnPropertiesWrapper :input").attr("disabled", formEnabled);
+    $("#modal .columnPropertiesWrapper :input").attr("disabled", formEnabled);
     formEnabled = !formEnabled;
   }
 
-  $("#name").change(function() { column.name = $(this).val() });
-  $("#description").change(function() { column.description = $(this).val() });
-  $("#types").change(function() { column.type = $(this).value() });
+  $("#modal #name").change(function() { column.name = $(this).val() });
+  $("#modal #description").change(function() { column.description = $(this).val() });
+  $("#modal #types").change(function() { column.type = $(this).value() });
 
-  $("#columnCreate").submit( function() {
-    $(".save").click();
+  $("#modal #columnCreate").submit( function() {
+    $("#modal .save").click();
     return false;
   });
 
-  $(".save").click(function(event)
+  $("#modal .save").click(function(event)
   {
       event.preventDefault();
       if (!formEnabled) { return false; }
@@ -123,7 +123,7 @@ $(function(){
           authenticity_token: "<%= form_authenticity_token %>"
           },
         error: function(request) { 
-            $(".error").html($.json.deserialize(request.responseText).error).show() 
+            $("#modal .error").html($.json.deserialize(request.responseText).error).show() 
             toggleEnabled();
         },
         success: function(responseData) { 
@@ -134,7 +134,7 @@ $(function(){
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
             $.Tache.DeleteAll();
-            $(".jqmClose").click();
+            $("#modal .jqmClose").click();
         }
       });
   });

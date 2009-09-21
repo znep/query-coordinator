@@ -79,21 +79,21 @@
     };
 
     var valueChanged = function() {
-        $(".activeList div.ascension").removeClass("hide");
-        $(".inactiveList div.ascension").addClass("hide");
+        $("#modal .activeList div.ascension").removeClass("hide");
+        $("#modal .inactiveList div.ascension").addClass("hide");
     };
 
-    $("div.ascension").click(function() {
+    $("#modal div.ascension").click(function() {
         toggleSortOrder($(this).find(".sort"));
     });
 
-    $('#sortBysList').reorderableList({onChange: valueChanged});
+    $('#modal #sortBysList').reorderableList({onChange: valueChanged});
 
-    $(".save").click(function(event) {
+    $("#modal .save").click(function(event) {
         event.preventDefault();
         var sortBys = [];
 
-        $.each($(".activeList .itemWrapper"), function(i, sortItem) {
+        $.each($("#modal .activeList .itemWrapper"), function(i, sortItem) {
             var asc = $(sortItem).find("input.asc").val() == "true";
             var flags;
             if (asc)
@@ -116,6 +116,6 @@
         sortBys.sort(function(s1, s2) { return s1.position - s2.position; });
 
         $("#readGrid").blistModel().multiSort(sortBys);
-        $(".jqmClose").click();
+        $("#modal .jqmClose").click();
     });
 </script>

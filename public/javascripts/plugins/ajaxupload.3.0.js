@@ -342,7 +342,7 @@ AjaxUpload.prototype = {
 		// because invisible input is over it
 		addEvent(document, 'mousemove', function(e){
 			var input = self._input;
-			if (!input) return;
+			if (!input || !self._button) return;
 			if (self._disabled){
 				removeClass(self._button, 'hover');
 				input.style.display = 'none';

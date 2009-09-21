@@ -1506,11 +1506,23 @@
                     event.stopPropagation();
                     event.preventDefault();
                 }
+
+                // Kill off edit & select modes
+                if (isEdit[defaultEditMode])
+                {
+                    endEdit(true);
+                    prevEdit = false;
+                }
+                if (cellNav) { clearCellNav(); }
                 return false;
             }
 
             selectFrom = null;
 
+            // We may have clicked in something that will get removed from
+            // the page before the document mouseDown handler can deal with;
+            // so provide a hint here
+            clickedInGrid = isElementInScrolls(clickTarget);
 
             if (cellNav)
             {
@@ -1920,14 +1932,17 @@
             new blist.data.TableNavigation(model, [], $navigator) : null;
 
         // Install global listener to disable the active cell indicator when we lose focus
+        var clickedInGrid = false;
         if (cellNav) {
             var onDocumentMouseDown = function(e) {
-                if (cellNav.isActive() && !isElementInScrolls(e.target))
+                if (cellNav.isActive() && !clickedInGrid &&
+                    !isElementInScrolls(e.target))
                 {
                     // Leaving table
                     cellNav.deactivate();
                     hideActiveCell();
                 }
+                clickedInGrid = false;
             }
             $(document).mousedown(onDocumentMouseDown);
         }

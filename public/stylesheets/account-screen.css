@@ -52,16 +52,6 @@
 
 .sectionEdit { display: none; }
 
-.jumpToActions .actionButtons { margin-top: 1em; }
-.jumpToActions .actionButtons li 
-{ 
-    background-position: 0 0;
-    float: none;
-    margin-left: 0;
-    width: 14em;
-}
-.jumpToActions .actionButtons li a { background-position: right -21px; }
-
 
 /*** START: OpenID edit table ***/
 .linksContent ul.userLinkActions.initialHide,

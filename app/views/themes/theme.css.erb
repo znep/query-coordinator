@@ -23,6 +23,19 @@ body.home #mainNav li.home .subNav li a span
     background-image: <%= main_button_inactive_bg %>;
 }
 
+<% if !th.home_tab_width.nil? %>
+/*** Makes the outer chrome tabs wider  ***/
+body #header #mainNav
+{
+  width: <%= th.home_tab_width * 3 + 0.3 %>em;
+}
+
+body #header #mainNav li
+{
+    width: <%= th.home_tab_width %>em;
+}
+<% end %>
+
 <% if !th.logo_vertical_offset.nil? %>
 <%= th.body_class %> #mainLogo
 {

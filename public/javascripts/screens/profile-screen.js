@@ -24,55 +24,26 @@ blist.profile.updateInfo = function(responseData, $form)
         var user = responseData.user;
         
         $(".userName h1").text(user.displayName);
-        $(".userLocation h5").text(user.displayLocation);
+
+        $(".userLocation h5 span").text(user.displayLocation || '');
+        $(".userLocation h5 a").toggleClass("initialHide", user.displayLocation !== undefined && user.displayLocation.length > 0);
         
-        var $userCompany = $(".userCompany h5");
-        if (user.company && user.company != "")
-        {
-            if ($userCompany.length > 0)
-            {
-                $userCompany.text(user.company);
-            }
-            else
-            {
-                $(".profileContent .sectionShow").append(
-                    "<div class='userCompany'><h5>" + user.company + "</h5></div>");
-            }
-        }
+        $(".userCompany h5 span").text(user.company || '');
+        $(".userCompany h5 a").toggleClass("initialHide", user.company !== undefined && user.company.length > 0);
         
-        var $userTitle = $(".userTitle h5");
-        if (user.title && user.title != "")
-        {
-            if ($userTitle.length > 0)
-            {
-                $userTitle.text(user.title);
-            }
-            else
-            {
-                $(".profileContent .sectionShow").append(
-                    "<div class='userTitle'><h5>" + user.title + "</h5></div>");
-            }
-        }
+        $(".userTitle h5 span").text(user.title || '');
+        $(".userTitle h5 a").toggleClass("initialHide", user.title !== undefined && user.title.length > 0);
         
-        var $userTags = $(".userTags h5 .tagContent");
+        var $userTags = $(".userTags h5 span");
         if (user.tags && user.tags != "")
         {
-            if ($userTags.length > 0)
-            {
-                $userTags.text(user.tags.join(', '));
-            }
-            else
-            {
-                $(".profileContent .sectionShow").append(
-                    "<div class='userTags'><h5>Tags: <span class='tagContent'>" +
-                    user.tags.join(', ') +
-                    "</span></h5></div>");
-            }
+            $userTags.text(user.tags.join(', '));
         }
         else
         {
             $userTags.empty();
         }
+        $(".userTags h5 a").toggleClass("initialHide", user.tags !== undefined && user.tags.length > 0)
         
         $('#switchUsernameLink').text('Display ' +
                 (user.privacyControl == "login" ?
@@ -114,8 +85,9 @@ blist.profile.updateLinkSuccess = function(data, link_id)
     }
     else
     {
-        $(".linksContent .userLinkActions").removeClass("initialHide").append($li);
+        $(".linksContent .userLinkActions").append($li);
     }
+    $('#linksEmpty').toggleClass('initialHide', $(".linksContent .userLinkActions").children().length > 0);
     
     $(".updateLinksContainer form").each(function(f) { this.reset(); });
 };
@@ -162,7 +134,7 @@ $(function ()
     });
     $(".infoContent").blistStretchWindow();
 
-    $(".showListBoxLink").click(function(event)
+    $(".showListBoxLink, .profileEdit").click(function(event)
     {
         event.preventDefault();
         $(this).closest(".sectionShow").slideUp("fast");
@@ -223,7 +195,9 @@ $(function ()
                 }
                 else
                 {
-                    $(".descriptionText").html(responseData.user.htmlDescription);
+                    var text = responseData.user.htmlDescription;
+                    $(".descriptionText").html(text || "");
+                    $("#descriptionEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
 
                     $form.find('.errorMessage').text('');
                     $form.closest(".sectionEdit").slideUp("fast");
@@ -252,7 +226,9 @@ $(function ()
                 }
                 else
                 {
-                    $(".interestsText").html(responseData.user.interests);
+                    var text = responseData.user.interests;
+                    $(".interestsText").html(text || "");
+                    $("#interestsEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
 
                     $form.find('.errorMessage').text('');
                     $form.closest(".sectionEdit").slideUp("fast");
@@ -310,6 +286,7 @@ $(function ()
                 success: function(data) { 
                     $("#link_row_" + data.link_id).remove();
                     $("#link_list_item_" + data.link_id).remove();
+                    $('#linksEmpty').toggleClass('initialHide', $(".linksContent .userLinkActions").children().length > 0);
                 }
             });
         }

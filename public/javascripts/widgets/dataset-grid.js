@@ -32,11 +32,10 @@
             editEnabled: true,
             filterItem: null,
             manualResize: false,
-            setTempViewCallback: function (tempView) {},
+            setTempViewCallback: function () {},
             showRowHandle: false,
             showRowNumbers: true,
             showAddColumns: false,
-            updateTempViewCallback: function (tempView) {},
             viewId: null
         },
 
@@ -123,7 +122,7 @@
                 datasetObj.settings._model.updateFilter(filter);
                 var view = datasetObj.settings._model.meta().view;
 
-                setTempView(this, view);
+                this.setTempView();
             },
 
             updateView: function(newView)
@@ -290,12 +289,64 @@
                             }
                             else
                             {
-                                setTempView(datasetObj, view,
-                                    'columnShowHide-' + colId);
+                                datasetObj.setTempView('columnShowHide-' + colId);
                             }
                         }
                     }
                 });
+            },
+
+            clearTempView: function(countId, forceAll)
+            {
+                var datasetObj = this;
+                if (!datasetObj.settings._filterIds)
+                {datasetObj.settings._filterIds = {};}
+                if (countId != null)
+                { delete datasetObj.settings._filterIds[countId]; }
+
+                datasetObj.settings._filterCount--;
+                if (forceAll)
+                {
+                    datasetObj.settings._filterCount = 0;
+                    datasetObj.settings._filterIds = {};
+                }
+                if (datasetObj.settings._filterCount > 0)
+                {
+                    return;
+                }
+
+                if (datasetObj.settings.clearTempViewCallback != null)
+                {
+                    datasetObj.settings.clearTempViewCallback();
+                }
+
+                datasetObj.isTempView = false;
+            },
+
+            setTempView: function(countId)
+            {
+                var datasetObj = this;
+                if (!datasetObj.settings._filterIds)
+                {datasetObj.settings._filterIds = {};}
+                if (countId == null ||
+                    datasetObj.settings._filterIds[countId] == null)
+                {
+                    datasetObj.settings._filterCount++;
+                    if (countId != null)
+                    { datasetObj.settings._filterIds[countId] = true; }
+                }
+
+                if (datasetObj.isTempView)
+                {
+                    return;
+                }
+
+                if (datasetObj.settings.setTempViewCallback != null)
+                {
+                    datasetObj.settings.setTempViewCallback();
+                }
+
+                datasetObj.isTempView = true;
             },
 
             // This keeps track of when the column summary data is stale and
@@ -435,12 +486,12 @@
                 model.filter(searchText, 250);
                 if (!searchText || searchText === '')
                 {
-                    clearTempView(datasetObj, 'searchString');
+                    datasetObj.clearTempView('searchString');
                     datasetObj.settings.clearFilterItem.hide();
                 }
                 else
                 {
-                    setTempView(datasetObj, model.meta().view, 'searchString');
+                    datasetObj.setTempView('searchString');
                     datasetObj.settings.clearFilterItem.show();
                 }
             }, 10);
@@ -457,7 +508,7 @@
         datasetObj.settings.filterItem.val('').blur();
         datasetObj.summaryStale = true;
         datasetObj.settings._model.filter('');
-        clearTempView(datasetObj, 'searchString');
+        datasetObj.clearTempView('searchString');
         $(e.currentTarget).hide();
     };
 
@@ -942,7 +993,7 @@
         }
         else
         {
-            setTempView(datasetObj, datasetObj.settings._model.meta().view, 'sort');
+            datasetObj.setTempView('sort');
         }
     };
 
@@ -966,58 +1017,12 @@
         datasetObj.summaryStale = true;
         if (!col)
         {
-            clearTempView(datasetObj);
+            datasetObj.clearTempView();
         }
         else
         {
-            setTempView(datasetObj, datasetObj.settings._model.meta().view);
+            datasetObj.setTempView();
         }
-    };
-
-    var clearTempView = function(datasetObj, countId)
-    {
-        if (!datasetObj.settings._filterIds) {datasetObj.settings._filterIds = {};}
-        if (countId != null) { delete datasetObj.settings._filterIds[countId]; }
-
-        datasetObj.settings._filterCount--;
-        if (datasetObj.settings._filterCount > 0)
-        {
-            return;
-        }
-
-        if (datasetObj.settings.clearTempViewCallback != null)
-        {
-            datasetObj.settings.clearTempViewCallback();
-        }
-
-        datasetObj.isTempView = false;
-    };
-
-    var setTempView = function(datasetObj, tempView, countId)
-    {
-        if (!datasetObj.settings._filterIds) {datasetObj.settings._filterIds = {};}
-        if (countId == null || datasetObj.settings._filterIds[countId] == null)
-        {
-            datasetObj.settings._filterCount++;
-            if (countId != null) { datasetObj.settings._filterIds[countId] = true; }
-        }
-
-        if (datasetObj.settings.updateTempViewCallback != null)
-        {
-            datasetObj.settings.updateTempViewCallback(tempView);
-        }
-
-        if (datasetObj.isTempView)
-        {
-            return;
-        }
-
-        if (datasetObj.settings.setTempViewCallback != null)
-        {
-            datasetObj.settings.setTempViewCallback(tempView);
-        }
-
-        datasetObj.isTempView = true;
     };
 
 })(jQuery);

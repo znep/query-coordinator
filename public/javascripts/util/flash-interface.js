@@ -101,34 +101,15 @@ blist.util.flashInterface.columnAggregate = function(columnId, aggregate)
 blist.util.flashInterface.eventFired = function (event, data)
 {
     var jsEvent;
-    if (event == 'VIEW_CHANGED_EVENT')
-    {
-        jsEvent = blist.events.VIEW_CHANGED;
-    }
     if (jsEvent !== null)
     {
         $(document).trigger(jsEvent, [data]);
     }
 };
 
-blist.util.flashInterface.updatePageNavigation = function (pageNav)
-{
-    $(document).trigger(blist.events.PAGE_LABEL_UPDATED, [pageNav]);
-};
-
-blist.util.flashInterface.openLens = function (viewId, popup)
-{
-    $(document).trigger(blist.events.OPEN_VIEW, [viewId, popup]);
-};
-
 blist.util.flashInterface.columnsChanged = function (columnIds)
 {
     $(document).trigger(blist.events.COLUMNS_CHANGED, [columnIds]);
-};
-
-blist.util.flashInterface.popupCanceled = function (popup)
-{
-    $(document).trigger(blist.events.POPUP_CANCELED, [popup]);
 };
 
 blist.util.flashInterface.addPopupHandlers = function (shownHandler,

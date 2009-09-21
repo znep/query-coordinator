@@ -177,7 +177,6 @@ body#lensBody
     overflow: hidden;
     text-align: left;
 }
-
 /* Header bar & Button styles */
 
 #lensContainer .headerBar
@@ -313,11 +312,6 @@ body#lensBody
 #lensBody #mainMenuLink .innerWrapper
 {
     background-position: right .35em;
-}
-
-#lensBody #editLink span.linkIcon
-{
-    background-position: 0 -259px;
 }
 
 #lensBody #undoLink, #lensBody #redoLink
@@ -1089,6 +1083,7 @@ body#lensBody
 #lensContainer .tabList .filter.tempViewTab .innerWrapper span
 {
     display: block;
+    float: left;
     padding-top: 5px;
 }
 
@@ -1104,6 +1099,21 @@ body#lensBody
     padding-top: 1px;
 }
 
+#lensContainer .tabList li.filter.tempViewTab a.close
+{
+    background-image: url(/stylesheets/images/content/section_close_button.png);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: block;
+    float: left;
+    height: 16px;
+    margin: 0.25em -12px 0 0.3em;
+    min-width: 0;
+    padding: 0;
+    text-indent: -9999px;
+    width: 16px;
+}
 /* Login overlay */
 #login
 {

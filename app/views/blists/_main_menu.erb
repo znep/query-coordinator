@@ -74,20 +74,15 @@
   <li class='edit'>
     <dl><dt><a href='#menuEdit'>Edit</a></dt>
         <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo',
-        'swf_item' => true},
-        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo',
-        'swf_item' => true},
-        {'separator' => true, 'swf_item' => true},
-        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut', 'swf_item' => true},
-        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy',
-        'swf_item' => true},
-        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste',
-        'swf_item' => true},
-        {'separator' => true, 'swf_item' => true},
-        {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete',
-        'swf_item' => true},
-        {'separator' => true, 'swf_item' => true},
+#        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
+#        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo'},
+#        {'separator' => true},
+#        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},
+#        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy'},
+#        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste'},
+#        {'separator' => true},
+#        {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete'},
+#        {'separator' => true},
         {'text' => 'Edit Column Options', 'class' => 'columnOptions',
             'submenu' => columns_menu(@view,
                  {'id' => 'columnOptionsMenu',
@@ -111,18 +106,16 @@
     <dl><dt><a href='#menuData'>Data</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Insert a Column', 'class' => 'insertColumn',
-        'href' => '#', 'owner_item' => true,
-        'submenu' => {'class' => 'noicon', 'items' => [
-        {'text' => 'At the Far Right', 'href' => '#addColumn_last'},
-        {'text' => 'At the Far Left', 'href' => '#addColumn_first'}]}},
+        'href' => "/blists/#{@view.id}/columns/new", 'modal' => true,
+        'owner_item' => true},
+#        'submenu' => {'class' => 'noicon', 'items' => [
+#        {'text' => 'At the Far Right', 'href' => '#addColumn_last'},
+#        {'text' => 'At the Far Left', 'href' => '#addColumn_first'}]}},
         # Not supported yet
 #        {'text' => 'Insert a Row', 'class' => 'insertRow',
 #        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
 #        {'text' => 'At the Top', 'href' => '#'},
 #        {'text' => 'At the Bottom', 'href' => '#'}]}},
-        {'separator' => true, 'owner_item' => true},
-        {'text' => 'Manage Pick Lists...', 'class' => 'picklists',
-        'href' => '#picklistBrowser'},
         {'separator' => true},
         {'text' => 'Show Row Tags', 'class' => 'rowTags',
         'href' => '#show-rowTags'},

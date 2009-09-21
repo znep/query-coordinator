@@ -290,7 +290,7 @@ class BlistsController < SwfController
     end
 
     respond_to do |format|
-      format.html { redirect_to(view.href + (is_import ? '' : "?mode=edit")) }
+      format.html { redirect_to(view.href) }
       format.data { render :json => {'url' => view.href}.to_json }
     end
   end

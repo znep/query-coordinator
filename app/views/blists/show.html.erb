@@ -47,6 +47,7 @@
           <%- form_tag(blists_path, :class => 'tempView') do -%>
           <%= text_field_tag("view[name]", '') %>
           <%- end -%>
+          <a href='#cancelFilter' class='close' title='Cancel'>Cancel</a>
         </div>
       </div></li>
       <%- end -%>
@@ -77,17 +78,12 @@
             :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
 
-            <%- if can_edit -%>
-            <li class='readItem separator'><a href='#editGrid' id='editLink' 
-              class='staticLink'><span class='linkIcon'>Edit this <%= t(:blist_name) %></span></a></li>
-            <%- end -%>
-
-            <%- if can_edit -%>
+            <%- if can_edit && false -%>
             <%# Undo/redo %>
-            <li class='swfItem'><a href='#Undo' id='undoLink'
-              class='flashAction staticLink' title='Undo'><span class='linkIcon'>Undo</span></a></li>
-            <li class='swfItem noSpacing separator'><a href='#Redo' id='redoLink'
-              class='flashAction staticLink' title='Redo'><span class='linkIcon'>Redo</span></a></li>
+            <li><a href='#Undo' id='undoLink'
+              class='staticLink' title='Undo'><span class='linkIcon'>Undo</span></a></li>
+            <li class='noSpacing separator'><a href='#Redo' id='redoLink'
+              class='staticLink' title='Redo'><span class='linkIcon'>Redo</span></a></li>
             <%- end -%>
 
             <%# Table view options %>

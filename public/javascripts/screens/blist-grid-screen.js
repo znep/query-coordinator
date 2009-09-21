@@ -2,11 +2,6 @@ var blistGridNS = blist.namespace.fetch('blist.blistGrid');
 
 blist.blistGrid.sizeSwf = function (event)
 {
-    if (blistGridNS.popupCount > 0)
-    {
-        return;
-    }
-
     var $target = $('#swfWrapper');
     if ($target.length < 1)
     {
@@ -112,45 +107,10 @@ blist.blistGrid.columnClickHandler = function (event)
             event.preventDefault();
             if (href_parts.length == 3)
             {
-                if (blist.util.flashInterface.swf() != undefined)
-                {
-                    blist.util.flashInterface.columnAggregate(href_parts[1],
-                            href_parts[2]);
-                }
-                else
-                {
-                    $('#readGrid').datasetGrid().setColumnAggregate(href_parts[1],
-                            href_parts[2]);
-                }
+                $('#readGrid').datasetGrid().setColumnAggregate(href_parts[1],
+                        href_parts[2]);
             }
             break;
-    }
-};
-
-blist.blistGrid.popupCount = 0;
-blist.blistGrid.flashPopupShownHandler = function (popup)
-{
-    if (blistGridNS.popupCount < 1)
-    {
-        // Resizing the grid causes the file upload dialog to close; it fits within
-        //  the window as-is, so don't resize for that
-        if (popup != 'MultipleFileUpload')
-        {
-            $('#swfWrapper').css('top', ($('#header').outerHeight() + 10) + 'px');
-            $('#swfWrapper').css('bottom', 0);
-        }
-        $('#overlay').show();
-    }
-    blistGridNS.popupCount++;
-};
-
-blist.blistGrid.flashPopupClosedHandler = function (popup)
-{
-    blistGridNS.popupCount--;
-    if (blistGridNS.popupCount < 1)
-    {
-        blistGridNS.sizeSwf();
-        $('#overlay').hide();
     }
 };
 
@@ -166,29 +126,6 @@ blist.blistGrid.toggleFormatMenu = function ()
     $('#formatMenu').toggleClass('shown');
     $('#addColumnMenu').removeClass('shown');
     blist.common.forceWindowResize();
-};
-
-blist.blistGrid.flashPopupClickHandler = function (event)
-{
-    event.preventDefault();
-    var href = $(event.currentTarget).attr('href');
-    var popup = '';
-    if (href.indexOf('#') >= 0)
-    {
-        popup = href.slice(href.indexOf('#') + 1);
-    }
-    else
-    {
-        var matches = href.match(/popup=(\w+)/);
-        if (matches && matches.length > 1)
-        {
-            popup = matches[1];
-        }
-    }
-    if (popup !== '')
-    {
-        blist.util.flashInterface.showPopup(popup);
-    }
 };
 
 blist.blistGrid.columnsChangedHandler = function (event, columnIds)
@@ -211,14 +148,12 @@ blist.blistGrid.mainMenuLoaded = function (data)
     var $menus = $(data).children();
 
     // Swap out the main menu with whatever was loaded
-    //$('#mainMenu').replaceWith($data.filter("#mainMenuComponent"));
     var $menu = $("#mainMenu");
     var $container = $menu.parent();
     $container[0].removeChild($menu[0]);
     $container[0].appendChild($menus[0]);
 
     // Swap out the filter & view menu with whatever was loaded
-    //$('#filterViewMenu').replaceWith($data.filter("#filterViewMenuComponent"));
     $menu = $("#filterViewMenu");
     $container = $menu.parent();
     $container[0].removeChild($menu[0]);
@@ -266,24 +201,6 @@ blist.blistGrid.menuHandler = function(event)
     event.preventDefault();
     switch (action)
     {
-        case 'picklistBrowser':
-            blist.util.flashInterface.showPopup('PickListBrowser');
-            break;
-        case 'permissions':
-            blist.util.flashInterface.showPopup('PermissionsDialog');
-            break;
-        case 'Undo':
-        case 'Redo':
-        case 'Copy':
-        case 'Cut':
-        case 'Paste':
-        case 'Delete':
-            blist.util.flashInterface.doAction(action);
-            break;
-        case 'addColumn':
-            var i = actionId == 'first' ? 0 : -1;
-            blist.util.flashInterface.addColumn('plainText', i);
-            break;
         case 'publish':
             $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab('#tabPublishing');
@@ -292,30 +209,22 @@ blist.blistGrid.menuHandler = function(event)
             $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab("#" + actionId);
             break;
-        case 'filterShow':
-            blist.util.flashInterface.showPopup('LensBuilder:Filter');
-            break;
         case 'hide-show-col':
             var $li = $target.closest('li');
             $('#readGrid').datasetGrid().showHideColumns(actionId,
                 $li.hasClass('checked'));
             break;
         case 'show-rowTags':
-            if (blist.util.flashInterface.swf() !== undefined)
-            { blist.util.flashInterface.addColumn('rowTag'); }
-            else
-            {
-                $.each($('#readGrid').blistModel().meta().view.columns,
-                    function(i, col)
+            $.each($('#readGrid').blistModel().meta().view.columns,
+                function(i, col)
+                {
+                    if (col.dataType && col.dataType.type == 'tag')
                     {
-                        if (col.dataType && col.dataType.type == 'tag')
-                        {
-                            $('#readGrid').datasetGrid().showHideColumns(col.id,
-                                false);
-                            return false;
-                        }
-                    });
-            }
+                        $('#readGrid').datasetGrid().showHideColumns(col.id,
+                            false);
+                        return false;
+                    }
+                });
             break;
         case 'makePermissionPublic':
           $.ajax({
@@ -355,19 +264,6 @@ blist.blistGrid.menuHandler = function(event)
     }
 };
 
-blist.blistGrid.openViewHandler = function(event, viewId, popup)
-{
-    blist.util.navigation.redirectToView(viewId, {popup: popup, mode: 'edit'});
-};
-
-blist.blistGrid.popupCanceledHandler = function(event, popup)
-{
-    if (popup == 'NewLens' && blistGridNS.referer && blistGridNS.referer !== '')
-    {
-        window.location = blistGridNS.referer;
-    }
-};
-
 blist.blistGrid.setInfoMenuItem = function ($tab)
 {
     if ($tab)
@@ -387,7 +283,7 @@ blist.blistGrid.clearTempViewTab = function ()
     $('#tempInfoPane').hide();
 };
 
-blist.blistGrid.setTempViewTab = function (tempView)
+blist.blistGrid.setTempViewTab = function ()
 {
     $('.tabList .active').addClass('origView').removeClass('active');
     $('.tabList .filter.tempViewTab').addClass('active').show();
@@ -519,13 +415,8 @@ $(function ()
         numVisible: 3
     });
 
-    blist.util.flashInterface.addPopupHandlers(blistGridNS.flashPopupShownHandler,
-        blistGridNS.flashPopupClosedHandler);
-
     $(document).bind(blist.events.COLUMNS_CHANGED,
         blistGridNS.columnsChangedHandler);
-    $(document).bind(blist.events.OPEN_VIEW, blistGridNS.openViewHandler);
-    $(document).bind(blist.events.POPUP_CANCELED, blistGridNS.popupCanceledHandler);
 
     blist.util.sizing.cachedInfoPaneHeight =
         $("#infoPane .header").height() +
@@ -540,10 +431,16 @@ $(function ()
     commonNS.adjustSize();
     $('#readGrid').trigger('resize');
 
-    $('.tabList .newViewLink a').click(function (event)
+    $('.tabList .newViewLink a, a[href=#createFilter]').click(function (event)
     {
         event.preventDefault();
-        blist.util.flashInterface.showPopup('SaveLens');
+        $('#readGrid').datasetGrid().setTempView();
+    });
+
+    $('.tempViewTab a.close').click(function (event)
+    {
+        event.preventDefault();
+        $('#readGrid').datasetGrid().clearTempView(null, true);
     });
 
     $("#throbber").hide();
@@ -554,14 +451,6 @@ $(function ()
         $.post($(this).closest("form").attr("action"), null, function(data, textStatus) {
             $("#throbber").hide();
         });
-    });
-
-    $('.flashAction').click(function (event)
-    {
-        event.preventDefault();
-        var href = $(event.currentTarget).attr('href');
-        blist.util.flashInterface.doAction(
-            href.slice(href.indexOf('#') + 1));
     });
 
     $('.addColumnsLink, #addColumnsMenu .close').click(function (event)
@@ -745,27 +634,6 @@ $(function ()
     });
 
 
-    $('a.showFlashPopup').click(blistGridNS.flashPopupClickHandler);
-
-    $('#lensContainer .headerBar form').submit(function (event)
-    {
-        event.preventDefault();
-        if (blist.util.flashInterface.swf() != undefined)
-        {
-            blist.util.flashInterface.lensSearch(
-                $(event.currentTarget).find('input[type="text"]').val());
-        }
-    });
-
-    $('#lensContainer .headerBar form .clearSearch')
-        .click(function (e)
-        {
-            if (blist.util.flashInterface.swf() != undefined)
-            {
-                blist.util.flashInterface.lensSearch('');
-            }
-        });
-
     blistGridNS.hookUpMainMenu();
     blistGridNS.hookUpFilterViewMenu();
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
@@ -928,11 +796,6 @@ $(function ()
         $('#lensBody').addClass('editMode').removeClass('readMode');
         $('#readGrid').remove();
         blistGridNS.sizeSwf();
-    });
-    $('#editLink').click(function (e)
-    {
-        e.preventDefault();
-        blist.util.flashInterface.callSwf();
     });
     if ($('#lensBody').hasClass('editMode'))
     {

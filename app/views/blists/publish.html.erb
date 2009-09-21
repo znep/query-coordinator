@@ -23,13 +23,14 @@
           <h1>Customize Your Social Data Player</h1> 
           <p>
             Use the controls at the bottom of this page to edit the look and 
-            function of this Social Data Player. You can apply an existing 
+            function of this Social Data Player. You can edit an existing 
             template or create a new one.
           </p>
           <p>
-            The Data Player below provides you with a preview of your changes.
+            Grab the embed code when things look right.
           </p>
         </div>
+        <p class="livePreviewText">Live Preview</p>
         <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
           <%= get_publish_embed_code_for_view(@view, {}, 'normal') %>
         </div>
@@ -124,11 +125,19 @@
         <h2 class="panelHeader clipText">
             Editing the <span class="templateName"><%= @widget_customization.name %></span> template
         </h2>
-        <ul class="headerActions">
-          <li>
+        <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <ul class="headerActions actionButtons">
+          <li class="noButton">
             <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
+          <li>
+            <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
+          </li>
         </ul>
+        <p class="changesWarning">
+          All changes to this template will affect each Data Player that uses it.
+          <a href="/customization/new" rel="modal" class="newTemplateLink">New Template &rsaquo;</a>
+        </p>
       </div>
       <div class="infoContentInner">
         <div class="infoContentWrapper">
@@ -194,6 +203,7 @@
                           @customization[:frame][:color]) %>
                       <div class="colorPickerContainer"></div>
                       <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:frame][:color] %>"></div>
+                      <div class="colorPickerLabel"><%= @customization[:frame][:color] %></div>
                     </span>
                   </div>
                 </dd>
@@ -207,6 +217,7 @@
                           @customization[:frame][:border]) %>
                       <div class="colorPickerContainer"></div>
                       <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:frame][:border] %>"></div>
+                      <div class="colorPickerLabel"><%= @customization[:frame][:border] %></div>
                     </span>
                   </div>
                 </dd>
@@ -278,7 +289,7 @@
                       <%= label_tag("customization_grid_wrap_header_text_true", "Wrap Text") %>
                       <%= radio_button_tag("customization[grid][wrap_header_text]", "false",
                           !@customization[:grid][:wrap_header_text]) %>
-                      <%= label_tag("customization_grid_wrap_header_text_false", "Don't Wrap Text") %>
+                      <%= label_tag("customization_grid_wrap_header_text_false", "Don't Wrap Text", :class => 'wideLabel') %>
                     </span>
                   </div>
                 </dd>
@@ -377,6 +388,7 @@
                           @customization[:grid][:zebra]) %>
                       <div class="colorPickerContainer"></div>
                       <div id="frameColorPickerTrigger" class="colorPickerTrigger" style="background-color:<%= @customization[:grid][:zebra] %>"></div>
+                      <div class="colorPickerLabel"><%= @customization[:grid][:zebra] %></div>
                     </span>
                   </div>
                 </dd>
@@ -396,7 +408,17 @@
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
-                      <%= select_tag("customization[frame][logo]", images_select_options(@customization[:frame][:logo]))%>
+                      <p>Logo images should be 92x35 pixels in size.</p>
+                      <div class="subform">
+                        <%= label_tag("customization_frame_logo", "Image") %>
+                        <%= select_tag("customization[frame][logo]", images_select_options(@customization[:frame][:logo]))%>
+                        <img class="logoPreview" src="/img/<%= @customization[:frame][:logo] %>?s=tiny" alt="logo preview" />
+                      </div>
+                      <div class="subform logoUrlForm" style="display: <%= @customization[:frame][:logo] == 'none' ? 'none' : 'block' %>">
+                        <%= label_tag("customization_frame_logo_url", "Link") %>
+                        <%= text_field_tag("customization[frame][logo_url]",
+                            @customization[:frame][:logo_url]) %>
+                      </div>
                     </span>
                   </div>
                 </dd>
@@ -449,11 +471,19 @@
         <h2 class="panelHeader clipText">
             Editing the <span class="templateName"><%= @widget_customization.name %></span> template
         </h2>
-        <ul class="headerActions">
-          <li>
+        <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <ul class="headerActions actionButtons">
+          <li class="noButton">
             <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
+          <li>
+            <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
+          </li>
         </ul>
+        <p class="changesWarning">
+          All changes to this template will affect each Data Player that uses it.
+          <a href="/customization/new" rel="modal" class="newTemplateLink">New Template &rsaquo;</a>
+        </p>
       </div>
       <div class="infoContentInner">
         <div class="infoContentWrapper">
@@ -583,11 +613,19 @@
         <h2 class="panelHeader clipText">
             Editing the <span class="templateName"><%= @widget_customization.name %></span> template
         </h2>
-        <ul class="headerActions">
-          <li>
+        <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <ul class="headerActions actionButtons">
+          <li class="noButton">
             <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
+          <li>
+            <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
+          </li>
         </ul>
+        <p class="changesWarning">
+          All changes to this template will affect each Data Player that uses it.
+          <a href="/customization/new" rel="modal" class="newTemplateLink">New Template &rsaquo;</a>
+        </p>
       </div>
       <div class="infoContentInner">
         <div class="infoContentWrapper">
@@ -640,11 +678,19 @@
         <h2 class="panelHeader clipText">
             Editing the <span class="templateName"><%= @widget_customization.name %></span> template
         </h2>
-        <ul class="headerActions">
-          <li>
+        <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
+        <ul class="headerActions actionButtons">
+          <li class="noButton">
             <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
           </li>
+          <li>
+            <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
+          </li>
         </ul>
+        <p class="changesWarning">
+          All changes to this template will affect each Data Player that uses it.
+          <a href="/customization/new" rel="modal" class="newTemplateLink">New Template &rsaquo;</a>
+        </p>
       </div>
       <div class="infoContentInner">
         <div class="infoContentWrapper">
@@ -657,6 +703,7 @@
                     <p>If you use Google Analytics you can embed your tracking code into your Social Data Player</p>
                     <%= text_field_tag("customization[behavior][ga_code]", @customization[:behavior][:ga_code], 
                         :class => "textPrompt", :title => "Paste tracking code here") %>
+                    <a class="clearGACodeLink" href="#clearGACode">clear</a>
                   </span>
                 </div>
               </dd>

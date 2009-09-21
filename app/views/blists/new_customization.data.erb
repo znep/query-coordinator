@@ -24,7 +24,6 @@
             <li><a class="arrowButton" href="#submit" id="submitNewCustomization">Create</a></li>
           </ul>
         </li>
-        <li class="cancelButton"><a href="#close_new" class="jqmClose"><span>Cancel</span></a></li>
       </ul>
     </div>
   <% end %>
@@ -59,6 +58,7 @@
               .append($('<option value="' + responseData['uid'] + '">' + responseData['name'] + '</option>'))
               .val(responseData['uid']);
             $('#modal').jqmHide();
+            $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabVisual');
           },
           error: function(request, status, error)
           {

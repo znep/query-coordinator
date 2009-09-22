@@ -91,7 +91,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
               <td class="labelColumn"><label for="type">Type:</label></td>
               <td class="fieldColumn middle">
                 <strong id="typeReadOnly" class="convert-<%= @column.client_type %>"><%= Column.types[@column.client_type] %></strong>
-                <% if @parent.nil? && @column.convertable_types.size > 0 %>
+                <% if @column.convertable_types.size > 0 %>
                   <a id="converter" class="convertDropdown" href="#">Change</a>
                 <% end %>
               </td>

@@ -1368,9 +1368,25 @@ blist.namespace.fetch('blist.data');
                     if (c.id == oldId)
                     {
                         meta.view.columns[i] = newViewColumn;
+                        return false;
+                    }
+                    else if (c.childColumns instanceof Array)
+                    {
+                        var found = false;
+                        $.each(c.childColumns, function(j, cc)
+                        {
+                            if (cc.id == oldId)
+                            {
+                                c.childColumns[j] = newViewColumn;
+                                found = true;
+                                return false;
+                            }
+                        });
+                        if (found) { return false; }
                     }
                 });
             }
+
             meta.columns = null;
             this.meta(meta);
             configureActive();

@@ -52,7 +52,7 @@ class AccountsController < ApplicationController
     @signup = SignupPresenter.new(params[:signup])
     respond_to do |format|
       if @signup.create
-        format.html { redirect_back_or_default(home_path) }
+        format.html { redirect_back_or_default(profile_path(@signup.user.id, :welcome => true)) }
         format.json { render :json => {:user_id => current_user.id}, :callback => params[:callback]}
       else
         flash.now[:error] = @signup.errors.join(", ")

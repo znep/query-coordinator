@@ -157,8 +157,6 @@ $(function ()
     // Profile form.
     $(".profileContent form").validate({
         rules: {
-            'user[firstName]': "required",
-            'user[lastName]': "required",
             'user[login]': "required"
         },
         submitHandler: function(form)

@@ -1,0 +1,11 @@
+<% action ||= "Sign in" %>
+<% return_url ||= rpx_return_login_url %>
+
+<ul class="rpx_buttons">
+  <li><%= rpx_submit_facebook(action, return_url) %></li>
+  <li><%= rpx_submit_google(action, return_url) %></li>
+  <li><%= link_to_rpx(image_tag('/stylesheets/images/openid-16x16.gif',
+            :alt => "#{action}  with a 3rd-party account",
+            :title => "#{action} with a 3rd-party account")) %></li>
+  <li><%= link_to_rpx("#{action} with your Facebook, Google, or other account", return_url) %></li>
+</ul>

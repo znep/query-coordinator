@@ -1,21 +1,5 @@
 blist.namespace.fetch('blist.util.inlineLogin');
 
-blist.util.inlineLogin.checkFilename = function(file, extension)
-{
-    var $flash = $("#signup .flash");
-    if (!(extension && /^(jpg|png|jpeg|gif|tif|tiff)$/.test(extension)))
-    {
-        $flash.text("Please choose an image file " +
-            "(jpg, gif, png, or tiff)");
-        return false;
-    }
-    else
-    {
-        $flash.text('');
-        return true;
-    }
-};
-
 blist.util.inlineLogin.verifyUser = function(callback, msg)
 {
     if (!blist.currentUserId)
@@ -114,7 +98,6 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     }
                 });
 
-        var doProfileSubmit = false;
         var signupSuccess = function(responseData)
         {
             if (responseData && responseData.error)
@@ -140,42 +123,12 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     blist.currentUserId = responseData.user_id;
                 }
 
-                if (doProfileSubmit && profileUpload)
-                {
-                    profileUpload._settings.action = '/users/' +
-                        blist.currentUserId + '/profile_images';
-                    doProfileSubmit = false;
-                    profileUpload.submit();
-                    return;
-                }
-
                 $('#signup').hide();
                 $('#login').jqmHide();
                 $('#header .userNav').addClass('loggedInNav');
                 callback(true, true);
             }
         };
-
-        if ($("#signup #signup_profile_image").length > 0)
-        {
-            var profileUpload = new AjaxUpload($('#signup #signup_profile_image'), {
-                autoSubmit: false,
-                name: 'signup_profileImageUpload',
-                responseType: 'json',
-                onChange: function (file, ext)
-                {
-                    $("#signup .fileInputContainer :text").val(file);
-
-                    doProfileSubmit = blist.util.inlineLogin.checkFilename(file, ext);
-                    return doProfileSubmit;
-                },
-                onSubmit: blist.util.inlineLogin.checkFilename,
-                onComplete: function (file, response)
-                {
-                    signupSuccess();
-                }
-            });
-        }
     }
     else
     {

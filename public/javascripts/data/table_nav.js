@@ -553,7 +553,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         // If we're leaving a child row, then we will either wrap back to
         // the top of the nested table, or go back to the first column in
         // the nested table in the next parent row
-        if (wrap && baseX == x && oldCol.mcol.nestedIn &&
+        if (wrap && baseX == x && oldCol.mcol && oldCol.mcol.nestedIn &&
             oldRow.parent && (!newRow.parent ||
                 newRow.parent != oldRow.parent))
         {

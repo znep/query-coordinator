@@ -1513,7 +1513,11 @@
                     endEdit(true);
                     prevEdit = false;
                 }
-                if (cellNav) { clearCellNav(); }
+                if (cellNav)
+                {
+                    cellNav.deactivate();
+                    hideActiveCell();
+                }
                 return false;
             }
 
@@ -2848,7 +2852,8 @@
 
         var configureVariableWidths = function(level, levelWidth)
         {
-            if (variableColumns[level].length > 0)
+            if (variableColumns[level] instanceof Array &&
+                variableColumns[level].length > 0)
             {
                 // Start with the total fixed width for this level
                 var pos = levelWidth;

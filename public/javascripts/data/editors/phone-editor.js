@@ -48,7 +48,7 @@
             {
                 if (!this._$editor)
                 {
-                    this._$editor = $('<div class="blist-table-editor blist-td' +
+                    this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.type +
                         '">' +
                         '<input type="text" class="number" value="' +
@@ -67,8 +67,14 @@
                     name: 'type-combo',
                     values: typeValues,
                     value: typeValue(editObj) || 'null',
-                    renderFn: renderTypeValue
-                });
+                    renderFn: renderTypeValue,
+                    adjustDropdownLayout: function(layout) {
+                        // Move dropdown
+                        layout.top += 4;
+                        layout.left -= 2;
+                        layout.width += 4;
+                    }
+               });
                 editObj.$dom().find(':text.number').keydown(function(e)
                     { if (e.keyCode == 9 && !e.shiftKey)
                         { e.stopPropagation(); } });
@@ -97,6 +103,10 @@
                 ret[this.column.subTypes[0]] = newNum;
                 ret[this.column.subTypes[1]] = newType;
                 return ret;
+            },
+
+            querySize: function() {
+                return { width: 240 };
             },
 
             focus: function()

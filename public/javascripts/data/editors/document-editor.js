@@ -96,7 +96,7 @@
                 if (!this._$editor)
                 {
                     this._curVal = this.originalValue;
-                    var html = '<div class="blist-table-editor blist-td ' +
+                    var html = '<div class="blist-table-editor ' +
                         'type-' + this.column.type + '">' +
                         '<a class="button add" href="#add" ' +
                         'title="Add a new document">Add</a>' +

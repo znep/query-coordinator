@@ -28,7 +28,7 @@
     background: #fff;
     border: 1px solid #ccc;
     display: none;
-    max-height: 150px;
+    max-height: 200px;
     overflow: auto;
     position: absolute;
     z-index: 100;

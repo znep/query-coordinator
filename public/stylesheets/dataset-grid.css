@@ -449,8 +449,9 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected,
 div.blist-table-active-container .blist-td
 {
     border-bottom: none;
-    padding-bottom: 3px;
-    padding-top: 2px;
+
+    /* Compensate for extra border on container */
+    padding: 3px;
 }
 
 div.blist-table-active-container .blist-td.blist-first
@@ -471,14 +472,23 @@ div.blist-table-edit-container
     overflow: hidden;
 }
 
-div.blist-table-edit-container,
-div.blist-table-active-container
+div.blist-table-edit-container
 {
-    /* Compensate for the fact that our border is shifted up one so it overlaps the previous row */
-    padding-top: 1px;
+    /* Layout is same as normal blist-td but with extra border so 1px less padding */
+    padding: 3px 2px;
 }
 
-.blist-table-edit-container.combo-container { overflow: visible; }
+div.blist-table-edit-container.combo-container {
+    overflow: visible;
+
+    /* Remove default padding because combo expands to fill space */
+    padding: 0;
+}
+
+div.blist-table-edit-container.photo-container {
+    padding: 0;
+}
+
 .blist-table-edit-container.combo-container .blist-combo-dd { font-size: 0.8333em; }
 div.blist-table-editor
 {
@@ -558,7 +568,7 @@ div.blist-table-edit-container input.textInput
     border: none;
     font-size: 1em;
     width: 4.167em;
-    padding: 0.2em;
+    padding: 0;
     /*background-image: url(/stylesheets/images/content/table/bg_text.gif);*/
     background-repeat: repeat-x;
 }
@@ -605,10 +615,18 @@ div.blist-table-edit-container.shown .blist-td.type-url .description
     height: auto;
     width: 50%;
 }
-.blist-table .blist-table-edit-container .blist-td.type-phone .blist-combo-wrapper
+.blist-table .blist-table-edit-container .type-phone .blist-combo-wrapper
 {
     float: right;
-    width: 50%;
+    width: 44%;
+    border-left: 2px solid #06386A;
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
+
+.blist-table-editor.type-phone input.number
+{
+    padding: 4px;
 }
 
 .blist-table .blist-table-editor-container .blist-td
@@ -634,6 +652,11 @@ img.blist-table-option-icon
     margin-left: 0.5em;
 }
 
+.blist-table-edit-container .buttons
+{
+    position: absolute;
+}
+
 .blist-table-edit-container .type-document a.button,
 .blist-table-edit-container .type-photo a.button
 {
@@ -648,7 +671,6 @@ img.blist-table-option-icon
     text-indent: -9999px;
     width: 16px;
 }
-
 .blist-table-edit-container .type-document a.button.add
 { background-position: -2px 0; }
 .blist-table-edit-container .type-document a.button.replace,
@@ -664,7 +686,11 @@ img.blist-table-option-icon
     background-position: 0 -32px;
     width: 20px;
 }
-.blist-table-edit-container .type-photo img { margin-left: 0.5em; }
+
+.blist-table-edit-container .type-photo img
+{
+    vertical-align: middle;
+}
 
 .columnHeaderMenu { width: 17em; }
 
@@ -794,4 +820,10 @@ ul.menu.rowMenu li
     background-image: none;
     text-align: right;
     text-indent: 0;
+}
+
+.blist-table-edit-container.mode-edit .blist-table-editor.type-stars,
+.blist-table-edit-container.mode-select .blist-table-editor.type-stars
+{
+    padding: 0 1px;
 }

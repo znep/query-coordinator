@@ -105,8 +105,8 @@
                 if (!this._$editor)
                 {
                     this._curVal = this.originalValue;
-                    var html = '<div class="blist-table-editor blist-td ' +
-                        'type-' + this.column.type + '">' +
+                    var html = '<div class="blist-table-editor ' +
+                        'type-' + this.column.type + '"><div class="buttons">' +
                         '<a class="button add" href="#add" ' +
                         'title="Add a new image">Add</a>' +
                         '<a class="button view" target="blist-viewer" ' +
@@ -114,7 +114,7 @@
                         '<a class="button replace" href="#replace" ' +
                         'title="Replace the image">Replace</a>' +
                         '<a class="button remove" href="#remove" ' +
-                        'title="Remove the image">Remove</a>' +
+                        'title="Remove the image">Remove</a></div>' +
                         '<img />' +
                         '<input />' +
                         '</div>';
@@ -125,6 +125,7 @@
 
             editorInserted: function()
             {
+                this.$dom().addClass('photo-container');
                 var editObj = this;
                 updateButtons(this);
                 editObj.$editor().find('a.button')
@@ -145,6 +146,9 @@
             finishEditExtra: function()
             {
                 $.uploadDialog().close();
+            },
+
+            setSize: function() {
             },
 
             focus: function()

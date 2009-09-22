@@ -47,7 +47,7 @@
     height: 1.4545em; /* 16px */
     line-height: 1.4545em;
     padding: 0.3636em; /* 4px */
-    text-align: right;
+    /*text-align: right;*/
 }
 
 .blist-tr .blist-td-first
@@ -65,6 +65,7 @@
 {
     text-decoration: underline;
 }
+
 
 .blist-star-0,
 .blist-tstars { margin: -0.3333em 0; }

@@ -869,6 +869,7 @@
 
 
         /***  CELL EXPANSION & POSITIONING  ***/
+        
         var positionCellOverlay = function($container, $refCell, animate, curSize)
         {
             // Locate a position for the expansion.  We prefer the expansion to
@@ -944,11 +945,15 @@
                 refHeight = Math.max(refHeight, $t.outerHeight());
             });
 
+            // Overlays are positioned on overlapping borders so we need to correct
+            // the reference dimensions
+            refWidth += 1;
+            refHeight += 1;
+
             // The expander must be at least as large as the hot cell
-            if (rc.width < refWidth + 1)
+            if (rc.width < refWidth)
             {
-                // Add an exta pixel since the borders on cells are uneven
-                rc.width = refWidth + 1;
+                rc.width = refWidth;
             }
             if (rc.height < refHeight)
             {
@@ -1010,13 +1015,11 @@
                 // Size the cell
                 // If necessary, bump up by one pixel to offset any text that
                 // is not exactly on a pixel boundary
-                /*
                 if (w > minW)
                 {
                     innerPadx--;
                     extraPadding++;
                 }
-                */
                 $t.width(Math.min(Math.max(minW, w), availW) - innerPadx);
 
                 availW -= $t.outerWidth();

@@ -41,7 +41,7 @@
 
             editorInserted: function()
             {
-                this.$dom().addClass('blist-combo-wrapper');
+                this.$dom().addClass('blist-combo-wrapper').addClass('combo-container');
                 this.$editor().find('.flag-combo').combo({
                     name: 'flag-combo',
                     values: flagValues,
@@ -49,8 +49,10 @@
                     renderFn: renderFlagValue,
                     adjustDropdownLayout: function(layout) {
                         // Move dropdown
-                        layout.top += 2;
-                        layout.left -= 3;
+                        layout.top += 5;
+
+                        // Compensate for cell borders
+                        layout.left -= 2;
                         layout.width += 4;
                     }
                 });

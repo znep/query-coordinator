@@ -308,7 +308,7 @@ div.blist-star-0,
 .blist-table-editor.type-percent input,
 .blist-td-date,
 .blist-table-editor.type-date input
-{ text-align: right; }
+{ /*text-align: right;*/ }
 
 
 .blist-percent {
@@ -425,11 +425,14 @@ div.blist-star-0,
 .blist-table-edit-container .type-checkbox { text-align: center; }
 
 .blist-td.align-left,
-div.blist-table-editor.align-left { text-align: left; }
+div.blist-table-editor.align-left,
+input.align-left { text-align: left; }
 .blist-td.align-center,
-div.blist-table-editor.align-center { text-align: center; }
+div.blist-table-editor.align-center,
+input.align-center { text-align: center; }
 .blist-td.align-right,
-div.blist-table-editor.align-right { text-align: right; }
+div.blist-table-editor.align-right,
+input.align-right { text-align: right; }
 
 .align-left .blist-checkbox,
 .align-left .blist-flag { background-position: left center; }
@@ -466,7 +469,6 @@ div.blist-table-editor.align-right { text-align: right; }
 .blist-table .blist-combo
 {
     border: none;
-    padding-bottom: 2px;
 }
 .blist-table-edit-container .blist-combo-dd
 {

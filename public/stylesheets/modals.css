@@ -910,6 +910,11 @@ ul.convertables li a:hover
 {
     margin-top: 0;
 }
+
+.newCustomizationWrapper .submitLine .submitActions
+{
+    width: 100px;
+}
 /*** END: New Customization Template ***/
 
 /*** START: New Image Template ***/
@@ -943,11 +948,6 @@ ul.convertables li a:hover
 {
     margin-left: 12.5em;
     padding: 0.2em;
-    width: 27.5em;
-}
-
-.newImageWrapper #new_image_file_name
-{
     width: 17em;
 }
 
@@ -968,6 +968,11 @@ ul.convertables li a:hover
 .newImageWrapper .actionButtons
 {
     margin-top: 0;
+}
+
+.newImageWrapper .submitLine .submitActions
+{
+    width: 100px;
 }
 /*** END: New Image Template ***/
 

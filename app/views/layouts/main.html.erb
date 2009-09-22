@@ -68,7 +68,9 @@
 
       <div class='userNav'>
         <ul>
-          <li><%= link_to "About #{th.company}", about_path %></li>
+          <%- unless th.about_link.nil? -%>
+            <li><%= link_to "About #{th.company}", about_path %></li>
+          <%- end -%>
           <%- if th.help_url -%>
             <li><%= link_to 'Help', th.help_url, :class=> 'nofollow external' %></a></li>
           <%- end -%>

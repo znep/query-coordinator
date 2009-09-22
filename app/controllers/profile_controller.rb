@@ -49,7 +49,7 @@ class ProfileController < ApplicationController
     end
     
     @user_links = UserLink.find(@user.id)
-
+    @welcome = params[:welcome] == 'true'
   end
 
   def update

@@ -10,7 +10,7 @@
   <%- unless @is_gov_widget -%>
   <style id="customizationStyles" type="text/css">
   /* font */
-    body { font-family: <%= @theme[:style][:font][:face] %>; }
+    html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { font-family: <%= @theme[:style][:font][:face] %>; }
 
     div.blist-th .info-container { font-size: <%= @theme[:style][:font][:grid_header_size][:value] %><%= @theme[:style][:font][:grid_header_size][:unit] %>; }
     .blist-td { font-size: <%= @theme[:style][:font][:grid_data_size][:value] %><%= @theme[:style][:font][:grid_data_size][:unit] %>; }
@@ -95,6 +95,11 @@
     {
       background-color: <%= @theme[:frame][:color] %>;
       border-color: <%= @theme[:frame][:color] %>;
+    }
+
+    .infoContentOuter .infoContentInner
+    {
+      background-image: url(/ui/box.png?w=150&h=1&fc=<%= @theme[:frame][:color].sub(/#/, '') %>);
     }
 
     <%- if @theme[:frame][:border] -%>
@@ -226,7 +231,7 @@
     <div class="widgetFooterWrapper"><div class="widgetFooterInner">
       <%- if @theme[:frame][:logo] != 'none' -%>
         <p class="widgetLogoWrapper">
-          <a href='<%= (@theme[:frame][:logo] == 'default') ? 'http://www.socrata.com/' : @theme[:frame][:footer_link][:url] %>' rel='external' class='widgetLogo'>
+          <a href='<%= @theme[:frame][:logo_url] %>' rel='external' class='widgetLogo'>
             Socrata Social Data Player
           </a>
         </p>

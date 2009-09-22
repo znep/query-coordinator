@@ -16,11 +16,6 @@
     <%= signup.hidden_field :email %>
     <%= signup.hidden_field :emailConfirm %>
     <%= signup.hidden_field :login %>
-    <%= signup.hidden_field :password %>
-    <%= signup.hidden_field :passwordConfirm %>
-    <%= signup.hidden_field :password %>
-    <%= signup.hidden_field :company %>
-    <%= signup.hidden_field :title %>
   <% end %>
   <%= render :partial => 'user_sessions/login_form_data', :locals => { :f => f } %>
 <% end %>

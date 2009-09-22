@@ -1,0 +1,49 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "signup-screen", "form-common", "login-rpx-screen" %>
+  <title>Create or Link Account | <%= th.site_title %></title>
+<% end %>
+
+<% dialog_content('rpx-choose', "signupBox") do %>
+  <div class='header'>
+    <h1><%= th.company %></h1>
+  </div>
+
+  <div class="mainContent">
+    <h1>Almost Ready</h1>
+    <p class="chooseMessage">
+    Before using these credentials, you must create a <%= th.company %> account
+    or link it to an existing <%= th.company %> ID. </p>
+
+    <div id="accordion">
+      <h2><a href="#signup">Sign up for a New <%= th.company %> Account</a></h2>
+      <div>
+        <% form_for :signup, @signup, :url => rpx_signup_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
+          <%= render :partial => "accounts/signup_form_data", :locals => { :f => f } %>
+        <% end %>
+      </div>
+
+      <h3>&mdash;OR&mdash;</h3>
+
+      <h2><a href="#login">Link to an Existing <%= th.company %> ID</a></h2>
+      <div>
+        <%= render(:partial => 'login') %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+<% content_for :js_footer do %>
+  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_tag "plugins/ui.core", "plugins/ui.accordion", "screens/signup-screen", :cache => "cache/rpx_return_login_all" %>
+  <script>
+    $(document).ready(function() {
+      $('#accordion').accordion({
+        'header': 'h2'
+        <% if flash[:notice_login] %>
+          ,'active': 1
+        <% end %>
+      });
+    });
+  </script>
+<% end %>

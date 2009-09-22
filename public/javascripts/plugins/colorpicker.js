@@ -175,6 +175,10 @@
 				current.preview = current.cal.data('colorpicker').livePreview;
 				$(document).bind('mouseup', current, upSelector);
 				$(document).bind('mousemove', current, moveSelector);
+
+				// 2009/09/18 ctseng — making the color change on mousedown
+				ev.data = current;
+				moveSelector(ev);
 			},
 			moveSelector = function (ev) {
 				change.apply(

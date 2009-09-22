@@ -16,6 +16,26 @@
       <div class='outerContent'>
         <div class='content'>
 
+          <% if @welcome %>
+          <div id="welcome">
+            <div class="welcomeTL">
+              <div class="welcomeTR">
+                <div class="welcome-titlebar">
+                  <h1>Welcome to <%= th.company %>!</h1>
+                  <a href="#close"><span class="close">Close</span></a>
+                </div>
+              </div>
+            </div>
+            <div class="welcomeBL">
+              <div class="welcomeBR">
+                <div class="welcome-content">
+                  <p>This is your personal profile page. Please take a moment to tell
+                  the <%= th.company %> community a little more about yourself.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% end %>
 
           <div class='userInfo clearfix'>
 

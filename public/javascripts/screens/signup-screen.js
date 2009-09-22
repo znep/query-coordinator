@@ -2,7 +2,7 @@ $(function ()
 {
     if ($('body').is('.signup'))
     {
-        $("#signup #signup_firstName").focus();
+        $("#signup #signup_login").focus();
     }
 
     $.validator.addMethod("loginRegex", function(value, element) {
@@ -13,11 +13,13 @@ $(function ()
         return this.optional(element) || !/^[a-z0-9]{4}-[a-z0-9]{4}$/i.test(value);
     }, "Username cannot be in the form nnnn-nnnn.");
 
+    $("#signup_submit").click(function() {
+        $("#signup #signupForm").submit();
+    });
+
     // Signup form validation.
     var $validator = $("#signup #signupForm").validate({
         rules: {
-            "signup[firstName]": "required",
-            "signup[lastName]": "required",
             "signup[email]": {
                 required: true,
                 email: true
@@ -44,8 +46,8 @@ $(function ()
                 required: true,
                 equalTo: "#signup_password"
             },
-            "signup[profile_image]": {
-                accept: "jpg|png|jpeg|gif|tif|tiff"
+            "signup[accept_terms]": {
+                required: true
             }
         },
         messages: {
@@ -54,11 +56,4 @@ $(function ()
             }
         }
     });
-
-    $("#signup .fileInputContainer input[type='file']").change(function()
-    {
-        $("#signup .fileInputContainer input[type='text']").val($(this).val());
-        $validator.element($(this));
-    });
-
 });

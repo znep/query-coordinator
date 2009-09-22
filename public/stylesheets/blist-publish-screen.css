@@ -7,7 +7,7 @@
 #publishContent .publishHeader
 {
     border-bottom: 1px solid #ccc;
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
 #publishContent .publishHeader h1
@@ -49,6 +49,13 @@
     width: 30em;
 }
 
+#publishContent .livePreviewText
+{
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 0 2em;
+}
+
 #publishContent .previewPane
 {
     margin: 3em auto 0;
@@ -68,9 +75,41 @@ h3 .infoText
     padding-bottom: 7em;
 }
 
-#publishOptionsPane .panelHeader
+#publishOptionsPane .infoContentHeader .panelHeader
 {
     background-position: 0 -820px;
+}
+
+#publishOptionsPane .infoContentHeader .changesWarning
+{
+    background: url(/stylesheets/images/common/info_small.png) no-repeat left center;
+    clear: both;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 18px;
+    height: 18px;
+    margin: 0.5em;
+    margin-left: 2.3em;
+    padding-left: 25px;
+}
+
+#publishOptionsPane .infoContentHeader .changeTemplateLink
+{
+    color: #666;
+    font-weight: bold;
+    margin-left: 2em;
+    position: relative;
+    text-transform: uppercase;
+    top: 1.6em;
+}
+
+#publishOptionsPane .infoContentHeader .changesWarning .newTemplateLink
+{
+    color: #666;
+    font-weight: bold;
+    font-size: 0.8em;
+    margin-left: 2em;
+    text-transform: uppercase;
 }
 
 #publishOptionsPane .summaryTabs li
@@ -92,10 +131,18 @@ h3 .infoText
 {
     background: url(/stylesheets/images/content/section_close_button.png) no-repeat;
     color: #333;
+    font-size: 0.7em;
     font-weight: bold;
+    height: 13px;
+    line-height: 13px;
     padding-left: 20px;
     padding-top: 2px;
     text-transform: uppercase;
+}
+
+#publishOptionsPane .headerActions .cancelCustomizationLink:hover
+{
+    text-decoration: underline;
 }
 
 #publishOptionsPane .singleInfoTab .infoContent
@@ -153,6 +200,11 @@ h3 .infoText
     top: 1px;
 }
 
+#publishOptionsPane .logoPreview
+{
+    margin-left: 1em;
+}
+
 #publishOptionsPane .infoContent dd
 {
     padding-top: 2px;
@@ -161,7 +213,22 @@ h3 .infoText
 #publishOptionsPane .singleInfoVisual label
 {
     display: inline-block;
+    width: 6em;
+}
+
+#publishOptionsPane .singleInfoVisual label.wideLabel
+{
     width: 8em;
+}
+
+#publishOptionsPane .singleInfoAdvanced .clearGACodeLink
+{
+    background: url(/stylesheets/images/content/section_close_button.png) no-repeat;
+    display: inline-block;
+    height: 13px;
+    margin: 4px;
+    text-indent: -9999px;
+    width: 13px;
 }
 
 #publishOptionsPane h3
@@ -181,7 +248,7 @@ h3 .infoText
 {
     margin: 0.5em;
     margin-left: 2.2em;
-    width: 25em;
+    width: 30em;
 }
 
 #publishOptionsPane .textContent .subform label
@@ -192,10 +259,24 @@ h3 .infoText
     width: 3em;
 }
 
-#publishOptionsPane .textContent .subform input
+#publishOptionsPane .textContent .subform input,
+#publishOptionsPane .textContent .subform select
 {
     margin-left: 4em;
+    top: -2px;
     width: 21em;
+}
+
+#publishOptionsPane .textContent .subform img
+{
+    position: relative;
+    top: -5px;
+}
+
+#publishOptionsPane .colorPickerLabel
+{
+    display: inline-block;
+    padding-left: 0.5em;
 }
 
 #publishOptionsPane .colorPickerTrigger
@@ -203,6 +284,7 @@ h3 .infoText
     background: url(/images/colorpicker/select_arrow.png) no-repeat bottom right;
     border: 2px solid #999;
     cursor: pointer;
+    display: inline-block;
     height: 18px;
     width: 25px;
 }

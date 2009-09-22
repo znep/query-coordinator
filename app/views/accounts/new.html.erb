@@ -24,4 +24,12 @@
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
+  <script src="https://rpxnow.com/openid/v2/widget"
+          type="text/javascript"></script>
+  <script type="text/javascript">
+    RPXNOW.overlay = true;
+    RPXNOW.language_preference = 'en';
+    RPXNOW.flags='show_provider_list';
+  </script>
+
 <% end %>

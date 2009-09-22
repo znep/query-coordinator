@@ -375,6 +375,15 @@ $(function ()
         var requestData = {"user[privacyControl]":
             $(e.currentTarget).attr('href').split('_')[1]};
         var $form = $('.userInfo .sectionEdit form');
+
+        if($form.find('#user_firstName').val() === "" &&
+           $form.find('#user_lastName').val() === "")
+        {
+            $(this).closest(".sectionShow").slideUp("fast");
+            $(this).closest(".sectionContainer").find(".sectionEdit").slideDown("fast");
+            return;
+        }
+
         var $authInput = $form.find(':input[name=authenticity_token]');
         requestData[$authInput.attr('name')] = $authInput.val();
 

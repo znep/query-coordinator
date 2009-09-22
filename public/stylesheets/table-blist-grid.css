@@ -39,17 +39,6 @@
     font-weight: bold;
 }
 
-.blist-table .blist-td.blist-table-row-numbers
-{
-    border-left-width: 0;
-    color: #a9cef2;
-    font-size: 1.1em;
-    height: 1.4545em; /* 16px */
-    line-height: 1.4545em;
-    padding: 0.3636em; /* 4px */
-    /*text-align: right;*/
-}
-
 .blist-tr .blist-td-first
 {
     border-left-width: 0;

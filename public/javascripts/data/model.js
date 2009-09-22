@@ -493,7 +493,7 @@ blist.namespace.fetch('blist.data');
             if (curOptions.progressiveLoading)
             {
                 ajaxOptions.data = $.extend({}, ajaxOptions.data,
-                        {max_rows: 1});
+                        { max_rows: 1, include_aggregates: true });
             }
             doLoad(self, viewReloaded, ajaxOptions);
         };

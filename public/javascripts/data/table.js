@@ -3182,8 +3182,19 @@
                         '<div class="blist-tf blist-opener ',
                         id,
                         '-opener"></div>');
+                    if (options.showRowHandle)
+                    {
+                        html.push('<div class="' +
+                            getColumnClass(rowHandleColumn) +
+                            ' blist-tf blist-table-row-handle"></div>');
+                    }
                     $.each(col.body.children,
                         function(i, cc) {renderColFooter(cc);});
+                    if (options.showAddColumns)
+                    {
+                        html.push('<div class="blist-tf blist-column-adder">' +
+                            '</div>');
+                    }
                 }
                 else
                 {

@@ -287,6 +287,19 @@ img.blist-table-option-icon
     width: 16px;
 }
 
+div.blist-star-0,
+.blist-table-editor.type-stars .star.star-clear
+{
+    background-position: left center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: inline-block;
+    height: 16px;
+    width: 11px;
+}
+.blist-table-editor.type-stars .star.star-clear
+{ background-image: url(/stylesheets/images/content/table/small_x.png); }
+
 .blist-td-number,
 .blist-table-editor.type-number input,
 .blist-td-money,

@@ -378,39 +378,38 @@ blist.namespace.fetch('blist.data.types');
             caption + "</a>";
     };
 
-    var renderGenURL = function(value, plain) {
+    var renderGenURL = function(value, plain)
+    {
         return "renderURL(" + value + ", false, " + plain + ")";
     };
 
-    var renderGenEmail = function(value, plain) {
-        if (plain)
-		{
-            return value;
-		}
-        return "renderURL(" + value + " && ['mailto:' + " + value + ", " + value + "], false, " + plain + ")";
+    var renderGenEmail = function(value, plain)
+    {
+        if (plain) { return value; }
+        return "renderURL(" + value + " && ['mailto:' + " + value + ", " +
+            value + "], false, " + plain + ")";
     };
 
-    var renderStars = function(value, range) {
-        if (value == null) {
-            return '';
-        }
+    var renderStars = function(value, range)
+    {
+        if (value == null) { return ''; }
         range *= STAR_WIDTH;
         var on = Math.round(value * STAR_WIDTH);
-        if (on <= 0) {
-            return '';
-        } else if (on > range) {
-            on = range;
-        }
+        if (on <= 0) { return ''; }
+        else if (on > range) { on = range; }
         var off = range - on;
-        return "<div class='blist-tstars' style='width: " + range + "px'><div class='blist-cell blist-tstar-on' style='width: " + on + "px'></div><div class='blist-cell blist-tstar-off' style='width: " + off + "px; background-position-x: " + -(on % STAR_WIDTH) + "px'></div></div>";
+        return (permissions.canEdit ? "<div class='blist-star-0'></div>" : "") +
+            "<div class='blist-tstars' style='width: " + range +
+            "px'><div class='blist-cell blist-tstar-on' style='width: " + on +
+            "px'></div><div class='blist-cell blist-tstar-off' style='width: " +
+            off + "px; background-position-x: " + -(on % STAR_WIDTH) +
+            "px'></div></div>";
     };
 
-    var renderTextStars = function(value, range) {
+    var renderTextStars = function(value, range)
+    {
         var rv = '';
-        for (var i = 0; i < value; i++)
-		{
-            rv += '*';
-		}
+        for (var i = 0; i < value; i++) { rv += '*'; }
         return rv;
     };
 

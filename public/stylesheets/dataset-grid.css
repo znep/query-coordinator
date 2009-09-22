@@ -756,6 +756,7 @@ ul.menu.rowMenu li
     height: 10px;
 }
 .columnHeaderMenu .blist-tstars-wrapper { margin-top: 0.2em; }
+.columnHeaderMenu .blist-star-0 { display: none; }
 
 /* This is only used for initial positioning; the menu is pulled out, so real
  * styling needs to go directly on the menu */

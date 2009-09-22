@@ -2624,7 +2624,8 @@
                     canRead: model.canRead(),
                     canWrite: model.canWrite(),
                     canAdd: model.canAdd(),
-                    canDelete: model.canDelete()
+                    canDelete: model.canDelete(),
+                    canEdit: canEdit()
                 }
             };
 

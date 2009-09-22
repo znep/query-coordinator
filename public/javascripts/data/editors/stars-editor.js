@@ -10,13 +10,15 @@
     var renderStars = function(editObj)
     {
         editObj.$editor().find('.star').removeClass('star-on')
-            .slice(0, editObj.curValue).addClass('star-on');
+            .slice(1, editObj.curValue + 1).addClass('star-on');
     };
 
     var starHover = function(editObj, event)
     {
         editObj.$editor().addClass('hover').find('.star').removeClass('star-on');
-        $(event.currentTarget).prevAll('.star').andSelf().addClass('star-on');
+        if ($(event.currentTarget).is('.star-clear')) { return; }
+        $(event.currentTarget).prevAll('.star:not(.star-clear)')
+            .andSelf().addClass('star-on');
     };
 
     var starOut = function(editObj, event)
@@ -28,7 +30,7 @@
     var starClick = function(editObj, event)
     {
         editObj.curValue = editObj.$editor().removeClass('hover')
-            .find('.star').index($(event.currentTarget)) + 1;
+            .find('.star').index($(event.currentTarget));
     };
 
     var starKeyDown = function(editObj, event)
@@ -72,7 +74,8 @@
                         ' align-' + this.column.alignment : '';
                     var edHtml = '<div class="blist-table-editor blist-td ' +
                         'type-' + this.column.type + align + '">' +
-                        '<input />';
+                        '<input />' +
+                        '<div class="star star-clear" title="Clear"></div>';
                     for (var i = 0; i < this.range(); i++)
                     {
                         edHtml += '<span class="star' +

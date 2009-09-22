@@ -29,6 +29,7 @@
     margin-left: 1em;
     overflow: hidden;
 }
+
 .actionButtons li a
 {
     background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);

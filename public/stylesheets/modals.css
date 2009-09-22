@@ -528,7 +528,7 @@
   display: inline;
 }
 
-.columnPropertiesWrapper .seperator
+#modal .seperator
 {
   border-bottom: solid 2px #ccc;
 }
@@ -691,21 +691,21 @@ ul.convertables li a:hover
     width: 45px;
 }
 
-.convert-text { background-position: 0 -80px; }
-.convert-richtext { background-position: 0 -60px; }
-.convert-number { background-position: 0 -20px; }
-.convert-money { background-position: 0 -40px; }
-.convert-percent { background-position: 0 0; }
-.convert-date { background-position: 0 -340px; }
-.convert-phone { background-position: 0 -240px; }
-.convert-email { background-position: 0 -260px; }
-.convert-url { background-position: 0 -360px; }
-.convert-checkbox { background-position: 0 -120px; }
-.convert-stars { background-position: 0 -140px; }
-.convert-flag { background-position: 0 -380px; }
-.convert-photo { background-position: 0 -100px; }
-.convert-document { background-position: 0 -280px; }
-.convert-nested_table { background-position: 0 -440px; }
+.datatype-text { background-position: 0 -80px; }
+.datatype-richtext { background-position: 0 -60px; }
+.datatype-number { background-position: 0 -20px; }
+.datatype-money { background-position: 0 -40px; }
+.datatype-percent { background-position: 0 0; }
+.datatype-date { background-position: 0 -340px; }
+.datatype-phone { background-position: 0 -240px; }
+.datatype-email { background-position: 0 -260px; }
+.datatype-url { background-position: 0 -360px; }
+.datatype-checkbox { background-position: 0 -120px; }
+.datatype-stars { background-position: 0 -140px; }
+.datatype-flag { background-position: 0 -380px; }
+.datatype-photo { background-position: 0 -100px; }
+.datatype-document { background-position: 0 -280px; }
+.datatype-nested_table { background-position: 0 -440px; }
 
 .typeSelect
 {
@@ -991,6 +991,79 @@ dl.versionInfo dd
 
 /*** START: Sort dialog ***/
 
+#sortBysList p#sortOrderLabel
+{
+    left: 20.6666em;
+}
+
+#sortBysList .seperator
+{
+   padding: 20px; 
+}
+
+#modal .subHeader
+{
+    padding: 1em;
+    padding-bottom: 0;
+    font-size: 1.2em;
+    color: #666;
+}
+
+#sortBysList .border,
+#sortBysList .border-right
+{
+    height: 176px;
+    width: 239px; 
+    border: 1px solid #999;
+    position: absolute;
+    left: 44px;
+    top: 13px;
+}
+
+#sortBysList .border-right
+{
+    left: 379px;
+}
+
+#modal .sortOrderIcon
+{
+    background-image: url(/stylesheets/images/content/sort_modal_icon.png);
+    background-repeat: no-repeat;
+    background-position: 2px 4px;
+    padding-left: 30px;
+}
+
+#sortBysList .inactiveList .type
+{
+   right: 210px; 
+}
+
+#sortBysList .inactiveList .itemWrapper
+{
+    padding-left: 28px;
+}
+
+#sortBysList .orderIndex
+{
+    margin-right: 25px;
+}
+
+#sortBysList.reorderList .swapArrows a
+{
+    top: 100px;
+    background: transparent url(/stylesheets/images/widgets/reorder_list/reorder_buttons_white.png) repeat scroll 0 0;
+}
+
+#sortBysList .type
+{
+    height: 18px;
+    width: 18px;
+    position: absolute;
+    top: 0.33em;
+    right: 16.25em;
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+}
+
 div.itemWrapper
 {
     overflow: hidden;
@@ -999,18 +1072,19 @@ div.itemWrapper
 
 #sortBysList p
 {
+    color: #999;
     position: absolute;
     font-size: 1.2em;
 }
 
 #sortBysList p.left
 {
-    left: 3.5em; 
+    left: 3.75em;
 }
 
 #sortBysList p.right
 {
-    left: 33em;
+    left: 31.583em;
 }
 
 div.itemWrapper div.ascension
@@ -1018,42 +1092,44 @@ div.itemWrapper div.ascension
     position: absolute;
     right: 0;
     top: 1px;
-    width: 12px;
+    width: 25px;
     height: 12px;
     padding: 0.3em;
     margin: 0.2em;
-    border-left: 1px solid #666;
+    border-left: 1px solid #999;
     cursor: auto;
 }
 
 div.itemWrapper div.sort
 {
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
+    background-repeat: no-repeat;
+    background-position: 5px 0;
     height: 12px;
-    width: 12px;
+    width: 25px;
 }
-div.itemWrapper .sort-asc 
+div.itemWrapper div.sort.sort-asc 
 { 
-    background-position: 0 -24px; 
+    background-position: 5px -24px; 
     cursor: auto;
 }
-div.itemWrapper .sort-asc:hover,
-div.itemWrapper .ascension:hover .sort-asc
+div.itemWrapper div.sort.sort-asc:hover,
+div.itemWrapper div.sort.ascension:hover .sort-asc
 { 
-    background-position: 0 -12px; 
+    background-position: 5px -12px; 
     cursor: auto;
 }
-div.itemWrapper .sort-desc:hover, 
-div.itemWrapper .ascension:hover .sort-desc
+div.itemWrapper div.sort.sort-desc:hover, 
+div.itemWrapper div.sort.ascension:hover .sort-desc
 { 
-    background-position: 0 -36px; 
+    background-position: 5px -36px; 
     cursor: auto;
 }
 
 div#sortBysList .activeList,
 div#sortBysList .inactiveList
 {
-    height: 175px;
+    height: 17.5em;
     overflow: auto;
     width: 25.5em;
     padding-left: 3.5em;
@@ -1064,16 +1140,33 @@ div#sortBysList .inactiveList
 #sortBysList .removeAllLink
 {
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: -0.5em;
+    left: 4.5em;
     color: #333;
     font-weight: bold;
     text-transform: uppercase;
 }
 
-div#sortBysList.reorderList ul
+div#sortBysList.reorderList ul.reorder
 {
-    width: 19em;
+    width: 239px;
+    border: none;
+}
+
+div#sortBysList .swapArrows
+{
+    margin-left: 8px;
+}
+
+div#sortBysList.reorderList li .itemWrapper
+{
+    border-top: none;
+    border-bottom: 1px solid #D0D0D0;
+}
+
+#sortBysList ul.saveButton
+{
+    margin-top: 0;
 }
 
 /*** END: Sort dialog ***/

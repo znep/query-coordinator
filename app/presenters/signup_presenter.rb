@@ -43,7 +43,6 @@ protected
   end
 
   def login!
-    user_session = UserSession.new('login' => login, 'password' => password)
-    user_session.save
+    user_session = UserSession.user_no_security_check(@user)
   end
 end

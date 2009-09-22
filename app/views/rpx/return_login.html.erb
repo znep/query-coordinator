@@ -39,7 +39,8 @@
   <script>
     $(document).ready(function() {
       $('#accordion').accordion({
-        'header': 'h2'
+        'header': 'h2',
+        'autoHeight': false
         <% if flash[:notice_login] %>
           ,'active': 1
         <% end %>

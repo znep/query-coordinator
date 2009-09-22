@@ -177,6 +177,17 @@ $(function ()
             });
         }
     });
+    $("#user_firstName, #user_lastName").keyup(function() {
+       if($("#user_firstName").val() === '' &&
+          $("#user_lastName").val() === '')
+       {
+           $('#user_privacyControl_login').attr('checked', 'checked');
+       }
+       else
+       {
+           $("#user_privacyControl_fullname").attr('checked', 'checked');
+       }
+    });
 
     $("#user_country").change(function() { profileNS.updateStateCombo($(this)); });
     profileNS.updateStateCombo($('#user_country'));

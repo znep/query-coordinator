@@ -1,3 +1,9 @@
+<%# When our JS is bundled, tinymce can't figure out where to load components from;
+    so we have to tell it before it loads up %>
+<script type="text/javascript">
+  window.tinyMCEPreInit = {base: '/javascripts/tiny_mce', suffix: '', query: ''};
+</script>
+
 <%= javascript_include_tag "data/editors/editor-base", "data/editors/text-editor",
   "plugins/datepicker", "data/editors/date-editor",
   "data/editors/number-editor", "data/editors/percent-editor",

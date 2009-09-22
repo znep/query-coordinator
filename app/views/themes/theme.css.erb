@@ -23,6 +23,19 @@ body.home #mainNav li.home .subNav li a span
     background-image: <%= main_button_inactive_bg %>;
 }
 
+<% if !th.home_tab_width.nil? %>
+/*** Makes the outer chrome tabs wider  ***/
+body #header #mainNav
+{
+  width: <%= th.home_tab_width * 3 + 0.3 %>em;
+}
+
+body #header #mainNav li
+{
+    width: <%= th.home_tab_width %>em;
+}
+<% end %>
+
 <% if !th.logo_vertical_offset.nil? %>
 <%= th.body_class %> #mainLogo
 {
@@ -174,3 +187,63 @@ a.dropdownLink.clicked .midWrapper
   background: <%= button_hover_slice_bg %>;
   background-repeat: repeat-x;
 }
+
+/*** PROFILE PAGE ***/
+#profile #welcome .welcomeTL
+{
+    background: <%= welcome_top %>  no-repeat;
+    padding-left: 10px
+}
+#profile #welcome .welcomeTR
+{
+    background: <%= welcome_top %>  no-repeat;
+    background-position: right -68px;
+    padding-right: 10px;
+}
+#profile #welcome .welcome-titlebar
+{
+    background: <%= welcome_top %>  repeat-x;
+    background-position: right -34px;
+    position: relative;
+
+}
+#profile #welcome .welcome-titlebar h1
+{
+    color: white;
+    font-size: 1.4em;
+    font-weight: bold;
+    padding: 0.5em 1em;
+    margin-bottom: 0;
+}
+#profile #welcome .welcome-titlebar span.close
+{
+    position: absolute;
+    right: 0px;
+    top: 9px;
+    background: url(/stylesheets/images/content/dialog_close_button.png) no-repeat;
+    line-height: 100px;
+    overflow: hidden;
+    width: 16px;
+    height: 16px;
+}
+#profile #welcome .welcomeBL
+{
+    border-top: 1px solid #9ba5a1;
+    background: <%= welcome_bottom %>  no-repeat;
+    height: 78px;
+    padding-left: 10px;
+}
+#profile #welcome .welcomeBR
+{
+    background: <%= welcome_bottom %> no-repeat;
+    height: 78px;
+    background-position: right -156px;
+    padding-right: 10px;
+}
+#profile #welcome .welcome-content
+{
+    background: <%= welcome_bottom %> repeat-x;
+    height: 78px;
+    background-position: right -78px;
+}
+

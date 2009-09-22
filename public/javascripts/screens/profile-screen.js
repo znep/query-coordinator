@@ -24,55 +24,26 @@ blist.profile.updateInfo = function(responseData, $form)
         var user = responseData.user;
         
         $(".userName h1").text(user.displayName);
-        $(".userLocation h5").text(user.displayLocation);
+
+        $(".userLocation h5 span").text(user.displayLocation || '');
+        $(".userLocation h5 a").toggleClass("initialHide", user.displayLocation !== undefined && user.displayLocation.length > 0);
         
-        var $userCompany = $(".userCompany h5");
-        if (user.company && user.company != "")
-        {
-            if ($userCompany.length > 0)
-            {
-                $userCompany.text(user.company);
-            }
-            else
-            {
-                $(".profileContent .sectionShow").append(
-                    "<div class='userCompany'><h5>" + user.company + "</h5></div>");
-            }
-        }
+        $(".userCompany h5 span").text(user.company || '');
+        $(".userCompany h5 a").toggleClass("initialHide", user.company !== undefined && user.company.length > 0);
         
-        var $userTitle = $(".userTitle h5");
-        if (user.title && user.title != "")
-        {
-            if ($userTitle.length > 0)
-            {
-                $userTitle.text(user.title);
-            }
-            else
-            {
-                $(".profileContent .sectionShow").append(
-                    "<div class='userTitle'><h5>" + user.title + "</h5></div>");
-            }
-        }
+        $(".userTitle h5 span").text(user.title || '');
+        $(".userTitle h5 a").toggleClass("initialHide", user.title !== undefined && user.title.length > 0);
         
-        var $userTags = $(".userTags h5 .tagContent");
+        var $userTags = $(".userTags h5 span");
         if (user.tags && user.tags != "")
         {
-            if ($userTags.length > 0)
-            {
-                $userTags.text(user.tags.join(', '));
-            }
-            else
-            {
-                $(".profileContent .sectionShow").append(
-                    "<div class='userTags'><h5>Tags: <span class='tagContent'>" +
-                    user.tags.join(', ') +
-                    "</span></h5></div>");
-            }
+            $userTags.text(user.tags.join(', '));
         }
         else
         {
             $userTags.empty();
         }
+        $(".userTags h5 a").toggleClass("initialHide", user.tags !== undefined && user.tags.length > 0)
         
         $('#switchUsernameLink').text('Display ' +
                 (user.privacyControl == "login" ?
@@ -114,8 +85,9 @@ blist.profile.updateLinkSuccess = function(data, link_id)
     }
     else
     {
-        $(".linksContent .userLinkActions").removeClass("initialHide").append($li);
+        $(".linksContent .userLinkActions").append($li);
     }
+    $('#linksEmpty').toggleClass('initialHide', $(".linksContent .userLinkActions").children().length > 0);
     
     $(".updateLinksContainer form").each(function(f) { this.reset(); });
 };
@@ -162,7 +134,7 @@ $(function ()
     });
     $(".infoContent").blistStretchWindow();
 
-    $(".showListBoxLink").click(function(event)
+    $(".showListBoxLink, .profileEdit").click(function(event)
     {
         event.preventDefault();
         $(this).closest(".sectionShow").slideUp("fast");
@@ -176,11 +148,15 @@ $(function ()
         $(this).closest(".sectionContainer").find(".sectionShow").slideDown("fast");
     });
 
+    $("#welcome .welcome-titlebar a").click(function(event)
+    {
+        event.preventDefault();
+        $("#welcome").slideUp("fast");
+    });
+
     // Profile form.
     $(".profileContent form").validate({
         rules: {
-            'user[firstName]': "required",
-            'user[lastName]': "required",
             'user[login]': "required"
         },
         submitHandler: function(form)
@@ -200,6 +176,17 @@ $(function ()
                 }
             });
         }
+    });
+    $("#user_firstName, #user_lastName").keyup(function() {
+       if($("#user_firstName").val() === '' &&
+          $("#user_lastName").val() === '')
+       {
+           $('#user_privacyControl_login').attr('checked', 'checked');
+       }
+       else
+       {
+           $("#user_privacyControl_fullname").attr('checked', 'checked');
+       }
     });
 
     $("#user_country").change(function() { profileNS.updateStateCombo($(this)); });
@@ -223,7 +210,9 @@ $(function ()
                 }
                 else
                 {
-                    $(".descriptionText").html(responseData.user.htmlDescription);
+                    var text = responseData.user.htmlDescription;
+                    $(".descriptionText").html(text || "");
+                    $("#descriptionEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
 
                     $form.find('.errorMessage').text('');
                     $form.closest(".sectionEdit").slideUp("fast");
@@ -252,7 +241,9 @@ $(function ()
                 }
                 else
                 {
-                    $(".interestsText").html(responseData.user.interests);
+                    var text = responseData.user.interests;
+                    $(".interestsText").html(text || "");
+                    $("#interestsEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
 
                     $form.find('.errorMessage').text('');
                     $form.closest(".sectionEdit").slideUp("fast");
@@ -310,6 +301,7 @@ $(function ()
                 success: function(data) { 
                     $("#link_row_" + data.link_id).remove();
                     $("#link_list_item_" + data.link_id).remove();
+                    $('#linksEmpty').toggleClass('initialHide', $(".linksContent .userLinkActions").children().length > 0);
                 }
             });
         }
@@ -394,6 +386,15 @@ $(function ()
         var requestData = {"user[privacyControl]":
             $(e.currentTarget).attr('href').split('_')[1]};
         var $form = $('.userInfo .sectionEdit form');
+
+        if($form.find('#user_firstName').val() === "" &&
+           $form.find('#user_lastName').val() === "")
+        {
+            $(this).closest(".sectionShow").slideUp("fast");
+            $(this).closest(".sectionContainer").find(".sectionEdit").slideDown("fast");
+            return;
+        }
+
         var $authInput = $form.find(':input[name=authenticity_token]');
         requestData[$authInput.attr('name')] = $authInput.val();
 

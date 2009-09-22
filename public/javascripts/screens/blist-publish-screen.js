@@ -135,6 +135,10 @@ blist.publish.applyFrameColor = function($elem, values)
         publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
             'border-color', values['color']);
 
+    // meta left bar bg
+        publishNS.appendToStylesBuffer('.infoContentOuter .infoContentInner', 'background-image',
+            'url(/ui/box.png?w=150&h=1&fc=' + values['color'].slice(1) + ')');
+
     if (values['border'] !== false)
     {
         publishNS.appendToStylesBuffer('.gridOuter, .widgetFooterInner', 'border-color', values['border']);
@@ -155,24 +159,33 @@ blist.publish.applySubscribeMenu = function($elem, values)
 
 blist.publish.applyLogo = function($elem, value)
 {
+    var $logoPreview = $('#publishOptionsPane .logoPreview');
+    var $urlSubForm = $('#publishOptionsPane .logoUrlForm').show();
     if (value == 'none')
     {
         $elem.addClass('hide');
+        $logoPreview.addClass('hide');
+        $urlSubForm.hide();
     }
     else if (value == 'default')
     {
         $elem.removeClass('hide')
              .css('background-image', 'url(/stylesheets/images/widgets/socrata_logo_player.png)');
+        $logoPreview.addClass('hide');
     }
     else if (value.match(/[\dA-F]{8}-([\dA-F]{4}-){3}[\dA-F]{12}/))
     {
         $elem.removeClass('hide')
              .css('background-image', 'url(/img/' + value + ')');
+        $logoPreview.removeClass('hide')
+             .attr('src', '/img/' + value + '?s=tiny');
     }
     else
     {
         $elem.removeClass('hide')
              .css('background-image', 'url(' + value + ')');
+        $logoPreview.removeClass('hide')
+             .attr('src', value);
     }
 };
 
@@ -240,9 +253,9 @@ blist.publish.customizationApplication = {
                                        grid_data_size:      [ { selector: '.blist-td', css: 'font-size', hasUnit: true }] } },
     frame:          { _group:                               [ { selector: 'body', properties: ['color', 'gradient', 'border'], callback: publishNS.applyFrameColor } ],
                       logo:                                 [ { selector: '.widgetLogoWrapper > a', callback: publishNS.applyLogo } ],
+                      logo_url:                             [ { selector: '.widgetLogoWrapper > a', attr: 'href' } ],
                       footer_link:   { show:                [ { selector: '.getPlayerAction', hideShow: true } ],
-                                       url:                 [ { selector: '.getPlayerAction a', attr: 'href' },
-                                                              { selector: '.widgetLogoWrapper > a', attr: 'href' } ],
+                                       url:                 [ { selector: '.getPlayerAction a', attr: 'href' } ],
                                        text:                [ { selector: '.getPlayerAction a', callback: function($elem, value) { $elem.text(value); } } ] } },
     grid:           { row_numbers:                          [ { selector: '.blist-table-locked-scrolls:has(.blist-table-row-numbers)', hideShow: true },
                                                               { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { 'true': '49px', 'false': '0' } },
@@ -613,6 +626,7 @@ blist.publish.loadCustomization = function()
             flat: true,
             color: $this.siblings('.colorPickerTrigger').css('background-color'),
             onChange: function(hsb, hex, rgb) {
+                $this.siblings('.colorPickerLabel').text('#' + hex);
                 $this.siblings('.colorPickerTrigger').css('background-color', '#' + hex);
                 $this.siblings('input').val('#' + hex);
             }
@@ -642,23 +656,56 @@ blist.publish.loadCustomization = function()
         onChange: publishNS.valueChanged
     });
 
-    // Save whenever the user changes something
+    // Save whenever the user changes something; highlight textboxes on click
     $('select[name^=customization]').change(publishNS.valueChanged);
     $('input[name^=customization]:not([type=text])').click(publishNS.valueChanged);
-    $(':input[name^=customization][type=text]').keyup(function() {
-        publishNS.valueChanged();
-        $(this).focus();
-    });
+    $(':input[name^=customization][type=text]')
+        .change(publishNS.valueChanged)
+        .focus(function() {
+            $(this).select();
+        });
 
     // Load customizations when user chooses one
     $('#template_name').change(publishNS.loadCustomization);
 
     // Cancel changes link
-    $('.cancelCustomizationLink').click(function()
+    $('.cancelCustomizationLink').click(function(event)
     {
+        event.preventDefault();
         clearTimeout(publishNS.saveTimeout);
         publishNS.populateForm(publishNS.currentTheme);
         publishNS.valueChanged();
+        $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabTemplates');
+    });
+
+    // Change template link (trust the timer to finish and save the template for us)
+    $('.changeTemplateLink').click(function(event)
+    {
+        event.preventDefault();
+        $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabTemplates');
+    });
+    
+    // New template link needs to revert changes
+    $('.newTemplateLink').click(function(event)
+    {
+        event.preventDefault();
+        clearTimeout(publishNS.saveTimeout);
+        publishNS.populateForm(publishNS.currentTheme);
+        publishNS.valueChanged();
+    });
+
+    // On clicking done, force a save before bailing
+    $('.submitLink').click(function()
+    {
+        // Clear existing
+        clearTimeout(publishNS.saveTimeout);
+        var hash = publishNS.serializeForm();
+
+        // Make a true deep clone of the merge
+        var clone = $.extend(true, {}, publishNS.currentTheme);
+        $.extend(true, clone, hash);
+
+        publishNS.saveCustomization(clone);
     });
 
     // Load in customization
@@ -713,6 +760,16 @@ blist.publish.loadCustomization = function()
                 // Courtesy unbind
                 blist.common.imageUploadedHandler = null;
             };
+        }
+    });
+    
+    // Clear GA Code button
+    $('#publishOptionsPane .singleInfoAdvanced .clearGACodeLink').click(function() {
+        var $textbox = $(this).siblings('input[type="text"]');
+        if (!$textbox.is('.prompt'))
+        {
+            $textbox.val('Paste tracking code here');
+            $textbox.addClass('prompt');
         }
     });
 })(jQuery);

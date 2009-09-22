@@ -10,15 +10,26 @@
 
   <div class='mainContent'>
     <div class='title clearfix'>
-      <h2><strong>Sign up!</strong> We're making data social.</h2>
-      <p>Before we get started, we need to know a little about you.</p>
+      <h2><strong>We're glad you want to join <%= th.company %>!</strong></h2>
     </div>
 
+    <h3>Create a new <%= th.company %> ID</h3>
     <%= render :partial => "signup_form", :locals => {:is_modal => false} %>
+
+    <h3 class="signup">Sign up using another account</h3>
+    <%= render :partial => "rpx/buttons", :locals => {:action => "Sign up"} %>
   </div>
 <% end %>
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
   <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
+  <script src="https://rpxnow.com/openid/v2/widget"
+          type="text/javascript"></script>
+  <script type="text/javascript">
+    RPXNOW.overlay = true;
+    RPXNOW.language_preference = 'en';
+    RPXNOW.flags='show_provider_list';
+  </script>
+
 <% end %>

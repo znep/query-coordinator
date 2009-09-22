@@ -16,6 +16,26 @@
       <div class='outerContent'>
         <div class='content'>
 
+          <% if @welcome %>
+          <div id="welcome">
+            <div class="welcomeTL">
+              <div class="welcomeTR">
+                <div class="welcome-titlebar">
+                  <h1>Welcome to <%= th.company %>!</h1>
+                  <a href="#close"><span class="close">Close</span></a>
+                </div>
+              </div>
+            </div>
+            <div class="welcomeBL">
+              <div class="welcomeBR">
+                <div class="welcome-content">
+                  <p>This is your personal profile page. Please take a moment to tell
+                  the <%= th.company %> community a little more about yourself.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% end %>
 
           <div class='userInfo clearfix'>
 
@@ -38,26 +58,10 @@
                     <%= h(@user.displayName) %>
                   </h1>
                 </div>
-                <div class='userLocation'>
-                  <h5><%= h(@user.displayLocation) %></h5>
-                </div>
-                <%- unless @user.company.blank? -%>
-                  <div class='userCompany'>
-                    <h5><%= h(@user.company) %></h5>
-                  </div>
-                <%- end -%>
-                <%- unless @user.title.blank? -%>
-                  <div class='userTitle'>
-                    <h5><%= h(@user.title) %></h5>
-                  </div>
-                <%- end -%>
-                <%- unless @user.tags.blank? -%>
-                  <div class='userTags'>
-                    <h5>Tags: <span class='tagContent'>
-                        <%= @user.tag_display_string %>
-                    </span></h5>
-                  </div>
-                <%- end -%>
+                <%= profile_item 'userLocation', h(@user.displayLocation), 'Add your City and Country', @is_user_current %>
+                <%= profile_item 'userCompany', h(@user.company), 'Add your company or agency name here', @is_user_current %>
+                <%= profile_item 'userTitle', h(@user.title), 'Add your title here', @is_user_current %>
+                <%= profile_item 'userTags', @user.tag_display_string, 'Add some tags here so others in the community can find you', @is_user_current %>
                 
                 <%- if (@is_user_current) -%>
                   <p class="editProfileContentActions">
@@ -182,6 +186,11 @@
                 <p class="editContainer">
                   <a class='action showListBoxLink' href='#edit'>Edit</a>
                 </p>
+                <p id="descriptionEmpty" class="<%= @user.htmlDescription.blank? ? '' : 'initialHide' %>">
+                  <a class="showListBoxLink" href="#edit">
+                    Tell us about yourself
+                  </a>
+                </p>
               <%- end -%>
             </div>
             <%- if (@is_user_current) -%>
@@ -216,6 +225,11 @@
                 <p class="editContainer">
                   <a class='action showListBoxLink' href='#edit'>Edit</a>
                 </p>
+                <p id="interestsEmpty" class="<%= @user.interests.blank? ? '' : 'initialHide' %>">
+                  <a class="showListBoxLink" href="#edit">
+                    Add some interests here
+                  </a>
+                </p>
               <%- end -%>
             </div>
             <%- if (@is_user_current) -%>
@@ -245,12 +259,17 @@
           <h3>External Links</h3>
           <div class="linksContent sectionContainer">
             <div class="sectionShow">
-              <ul class="userLinkActions clearfix<%= (@user_links.nil? || @user_links.length < 1) ? " initialHide" : "" %>">
+              <ul class="userLinkActions clearfix">
                 <%= render(:partial => "user_link_item", :collection => @user_links) %>
               </ul>
               <%- if (@is_user_current) -%>
                 <p class="editContainer">
                   <a class='action showListBoxLink' href='#edit'>Edit</a>
+                </p>
+                <p id="linksEmpty" class="<%= (@user_links.nil? || @user_links.length < 1) ? "" : "initialHide" %>">
+                  <a class="showListBoxLink" href="#edit">
+                    Add links to your other online profiles, interests, personal blog or website
+                  </a>
                 </p>
               <%- end -%>
             </div>
@@ -388,7 +407,18 @@
           <dt><strong>Public <%= t(:blists_name).titleize %> &amp; Filtered Views:</strong> <%= @user.publicTables + @user.publicViews %></dt>
           <dd><%= pluralize(@user.publicViews, 'Filtered View') %></dd>
           <dd><%= @shared_views.length %> Shared</dd>
+        </dl>
 
+        <%- if @is_user_current -%>
+        <ul class="actionButtons blockList clearfix">
+          <li>
+            <%= link_to("Design a #{t(:blist_name).titleize}", {:controller => "blists", :action => "new"},
+                :title => "Design a new #{t(:blist_name)}.") %>
+          </li>
+        </ul>
+        <%- end -%>
+
+        <dl>
           <dt><strong>Friends:</strong> <%= @user.numberOfFriends %></dt>
           <%- if (@user.numberOfFriends > 0) -%>
           <dd class="userList">
@@ -406,6 +436,27 @@
           </dd>
           <%- end -%>
         </dl>
+
+
+        <%- if @is_user_current -%>
+          <ul class="actionButtons blockList clearfix">
+            <li>
+              <%= link_to("Find Friends", community_path,
+                  :title => "Search for other users") %>
+            </li>
+          </ul>
+
+          <div>
+            <p><strong>Invite others</strong> to use <%= th.company %> and share your <%= t(:blist_name).pluralize %> with them</p>
+            <ul class="actionButtons blockList clearfix">
+                <li>
+                <%= link_to("Invite Others", invite_path, :title => "Invite others to try Socrata", :rel => "modal") %>
+              </li>
+            </ul>
+          </div>
+        <%- end -%>
+
+
     <% end %>
   </div>
 </div>

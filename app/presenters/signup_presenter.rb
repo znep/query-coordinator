@@ -7,8 +7,8 @@ class SignupPresenter < Presenter
   attr_accessor :user
   attr_accessor :inviteToken
   attr_accessor :profile_image
-  attr_accessor :inviteOthers
   attr_accessor :errors
+  attr_accessor :accept_terms
 
   attr_accessor :emailConfirm, :passwordConfirm
 
@@ -21,9 +21,10 @@ class SignupPresenter < Presenter
   end
 
   def create
-    if create_user && login!
-      send_invites
-      update_profile_photo
+    if accept_terms
+      create_user && login!
+    else
+      @errors << "You must accept the terms of service and privacy policy."
     end
 
     return @errors.empty?
@@ -44,30 +45,5 @@ protected
   def login!
     user_session = UserSession.new('login' => login, 'password' => password)
     user_session.save
-  end
-
-  def send_invites
-    # If there were any email addresses in the Invite Others field,
-    # create some invitations and send them to the core server.
-    unless inviteOthers.blank?
-      emails = inviteOthers.split(",").map {|e| e.strip}
-      emails.each do |email|
-        begin
-          InvitationRecord.create({:recipientEmail => email, :message => t(:invitation_email_text)})
-        end
-      end
-    end
-  end
-
-  def update_profile_photo
-    # If they gave us a profile photo, upload that to the user's account
-    # If the core server gives us an error, oh well... we've alredy created
-    # the account, so we might as well send them to the main page, sans
-    # profile photo.
-    unless profile_image.blank? || !profile_image.kind_of?(Tempfile)
-      user.profile_image = profile_image
-    end
-  rescue CoreServer::CoreServerError => e
-    @errors << "Unable to update profile photo: #{e.error_code} #{e.error_message}"
   end
 end

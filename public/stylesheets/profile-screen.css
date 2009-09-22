@@ -1,3 +1,12 @@
+#profile #welcome p
+{
+    font-size: 1.3em;
+    padding: 1.5em 1em 2em 5em;
+    background: url(/stylesheets/images/profile/info.png) no-repeat;
+    background-position: left 1em;
+}
+
+
 #profile .userInfo
 {
     margin: 1em 0 0.5em;
@@ -48,7 +57,27 @@
     position: relative;
 }
 
-#profile .userName, #profile .userLocation { display: inline; }
+#profile #descriptionEmpty a,
+#profile #interestsEmpty a,
+#profile #linksEmpty a,
+#profile .profileContent a.profileEdit
+{
+    font-style: italic;
+    color: #666666;
+}
+#profile #descriptionEmpty a:hover,
+#profile #interestsEmpty a:hover,
+#profile #linksEmpty a:hover,
+#profile .profileContent a.profileEdit:hover
+{
+    color: #333333;
+}
+
+#profile .sectionShow .initialHide
+{
+    display: none;
+}
+
 #profile .userName h1
 {
     color: #333;
@@ -58,7 +87,10 @@
 }
 
 #profile .userCompany, #profile .userTitle, #profile .userTags { margin-right: 16em; } 
-
+#profile .userTags span:before
+{
+    content: "Tags: ";
+}
 #profile .editProfileContentActions
 {
     position: absolute;
@@ -127,11 +159,16 @@
 
 #profile .sectionEdit dl { float: left; }
 
-#profile .linksContent ul.userLinkActions { padding: 1em 0; }
+#profile .linksContent ul.userLinkActions
+{
+    font-size: 1.2em;
+    padding: 0.5em 0;
+}
 #profile .linksContent ul.userLinkActions li
 {
     float: left;
     margin-right: 1em;
+    padding-top: 0.5em;
 }
 
 
@@ -342,7 +379,8 @@
     margin: 0.5em 0;
 }
 
-#profileBody #sidebar dl
+#profileBody #sidebar dl,
+#profileBody #sidebar div.content div
 {
     border-top: 1px solid #999;
 }

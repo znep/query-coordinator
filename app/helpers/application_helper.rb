@@ -340,22 +340,22 @@ HREF
     "#{delimiter}#{out}"
   end
 
-  def link_to_rpx(name, return_url = rpx_url, html_options = {})
+  def link_to_rpx(name, return_url = rpx_return_login_url, html_options = {})
     html_options.merge!({:class => 'rpxnow', :onclick => 'return false;'})
 
     link_to name, "#{APP_CONFIG['rpx_signin_url']}?token_url=#{return_url}", html_options
   end
 
-  def rpx_submit_facebook(return_url = rpx_url)
+  def rpx_submit_facebook(action = "Sign in", return_url = rpx_return_login_url)
     content_tag(:form, {:action => "#{APP_CONFIG['rpx_facebook_url']}?token_url=#{return_url}", :method => 'post'}) do
-      image_submit_tag(image_path('rpx/facebook.png'), :title => "Sign in with Facebook")
+      image_submit_tag(image_path('rpx/facebook.png'), :title => "#{action} with Facebook")
     end
   end
 
-  def rpx_submit_google(return_url = rpx_url)
+  def rpx_submit_google(action = "Sign in", return_url = rpx_return_login_url)
     content_tag(:form, {:action => "#{APP_CONFIG['rpx_openid_url']}?token_url=#{return_url}", :id => 'googrpx', :method => 'post'}) do
       hidden_field_tag('openid_identifier', 'https://www.google.com/accounts/o8/id') +
-      image_submit_tag(image_path('rpx/google.png'), :title => "Sign in with Google")
+      image_submit_tag(image_path('rpx/google.png'), :title => "#{action} with Google")
     end
   end
 end

@@ -3,14 +3,23 @@
   <fieldset>
     <%= f.hidden_field :inviteToken %>
     <%= f.hidden_field :openIdIdentifierId %>
+    <%= f.hidden_field :firstName %>
+    <%= f.hidden_field :lastName %>
+    
     <p>
-      <%= f.label :firstName, 'First Name', :class => 'required' %>
-      <%= f.text_field :firstName %>
+      <%= f.label :login, 'Username', :class => 'required' %>
+      <%= f.text_field :login, :maxlength => 40 %>
     </p>
-    <p>
-      <%= f.label :lastName, 'Last Name', :class => 'required' %>
-      <%= f.text_field :lastName %>
-    </p>
+    <% unless local_assigns[:hide_password] %>
+      <p>
+        <%= f.label :password, 'Password', :class => 'required' %>
+        <%= f.password_field :password %>
+      </p>
+      <p>
+        <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required' %>
+        <%= f.password_field :passwordConfirm %>
+      </p>
+    <% end %>
     <p>
       <%= f.label :email, 'Email Address', :class => 'required' %>
       <%= f.text_field :email %>
@@ -20,62 +29,23 @@
       <%= f.text_field :emailConfirm %>
     </p>
     <p>
-      <%= f.label :login, 'Username', :class => 'required' %>
-      <%= f.text_field :login, :maxlength => 40 %>
-    </p>
-    <p>
-      <%= f.label :password, 'Password', :class => 'required' %>
-      <%= f.password_field :password %>
-    </p>
-    <p>
-      <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required' %>
-      <%= f.password_field :passwordConfirm %>
+      <span><%= check_box_tag 'signup[accept_terms]', "1", false, :class => 'required' %>
+      I agree to the <a href="/terms-of-service">Terms of Service</a> and
+      <a href="/privacy">Privacy Policy</a></span>
+      <label class="error" for="signup[accept_terms]" generated="true"></label>
     </p>
   </fieldset>
-
-  <fieldset class="last">
-    <div class="clearfix">
-      <%= label_tag :profile_image, 'Profile Picture' %>
-      <div class="fileInputContainer clearfix">
-        <div class="fileInput">
-          <%= f.file_field :profile_image, :class => "text" %>
-          <div class="fakeFile clearfix">
-            <input type="text" name="displayProfileImage" />
-            <%= image_tag("/stylesheets/images/account/button_browse.png", :size => "72x24", :alt => "Browse") %>
-          </div>
-        </div>
-      </div>
-      <label for="signup_profile_image" class="error" generated="true"></label>
-    </div>
-    <p>
-      <%= f.label :company %>
-      <%= f.text_field :company %>
-    </p>
-    <p>
-      <%= f.label :title %>
-      <%= f.text_field :title %>
-    </p>
-    <p class="fieldInfo">
-    Share and collaborate with your friends and colleagues. Enter their email addresses and we'll send them an invite on your behalf.
-    </p>
-    <p>
-      <%= label_tag :inviteOthers, 'Invite Others' %>
-      <%= f.text_area :inviteOthers, :class => "textPrompt", :title => "Enter email addresses separated by commas" %>
-    </p>
-  </fieldset>
-
 </div>
 
 <div class="submitLine clearfix">
-  <%= image_submit_tag("/stylesheets/images/account/button_sign_up_now.png") %>
-  <div class="buttonLinkLarge">
-    <%= link_to("<span>Already Have an Account?</span>", login_url,
-      {:class => 'loginLink'}) %>
-  </div>
-
-  <%- if local_assigns[:is_modal] -%>
-  <div class="buttonLinkLarge">
-    <a href='#close_signup' class='close'><span>Cancel</span></a>
-  </div>
-  <%- end -%>
+  <ul class="actionButtons clearfix">
+    <li>
+      <a id="signup_submit" class="arrowButton" href="javascript:void(0)"><span>Sign Up</span></a>
+    </li>
+    <%- if local_assigns[:is_modal] -%>
+      <li>
+        <a href='#close_signup' class='close'><span>Cancel</span></a>
+      </li>
+    <%- end -%>
+  </ul>
 </div>

@@ -1,14 +1,18 @@
-div.title.openid
-{
-    padding-bottom: 2em;
-}
-
-div.title.openid p strong
-{
-    color: #ff6000;
-}
-
 #signupForm label.required
 {
     background-position: 115px 0px;
+}
+.signupBox h3
+{
+    margin-bottom: 1em;
+}
+.signupBox .mainContent p
+{
+    margin-bottom: 1em;
+}
+.signupBox h3.signup
+{
+    margin-top: 1.5em;
+    border-top: 1px solid #cccccc;
+    padding-top: 1em;
 }

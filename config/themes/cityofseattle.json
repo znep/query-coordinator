@@ -1,6 +1,6 @@
 {
     // Company
-    "company": "Seattle",
+    "company": "Seattle Data",
     "site title": "SeattleData.gov | Seattle's Data Site",
     "logo": "main_logo.png",
     "dialog logo" : "dialog_logo.png",
@@ -15,6 +15,9 @@
     "top border bg": "3F80C2",
     "main button bg": "9ACAFA:.286,3F80C2",
     "main button active bg": "3F80C2:.286,9ACAFA",
+    
+    // Width of tabs for outer chrome in em's
+    "home tab width" : 12,
     
     // Discovery page
     "carousel bg": "3F80C2,1D308A",

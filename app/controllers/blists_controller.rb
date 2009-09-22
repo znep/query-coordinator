@@ -130,7 +130,12 @@ class BlistsController < SwfController
     @widget_customizations = WidgetCustomization.find
     if @widget_customizations.empty?
       @widget_customization = WidgetCustomization.create({
-        'customization' => WidgetCustomization.default_theme, 'name' => "Default" })
+        'customization' => WidgetCustomization.default_theme, 'name' => "Default Blue Socrata" })
+      @widget_customizations << @widget_customization
+      @widget_customizations <<
+        WidgetCustomization.create({
+          'customization' => WidgetCustomization.default_theme.deep_merge({:frame => {:color => '#000000'}}),
+          'name' => "Default Black Socrata" })
     else
       @widget_customization = @widget_customizations.first
     end

@@ -1,7 +1,6 @@
 #rpx-choose.dialogWrapper
 {
     margin: 4em auto 0;
-    width: 74em;
 }
 
 p.chooseMessage
@@ -15,49 +14,37 @@ li#close_login
     display: none;
 }
 
-.dialogBox #tabs .actionButtons
+h3
 {
-    margin-top: -3em;
-    margin-right: 5em;
-}
-.dialogBox #tabs .actionButtons li
-{
-    float: right;
-}
-
-div#loginTab
-{
-    margin: 0 auto;
-    width: 40em;
-}
-
-.ui-tabs .ui-tabs-nav li span
-{
-    float: left;
-    padding: 1em 0;
-    height: 3em;
-    vertical-align: center;
-    text-decoration: none;
-}
-#tabs ul
-{
-    margin: 0 auto;
-    display: block;
-    width: 50.6em;
-}
-#tabs ul li
-{
-    font-size: 1.8em;
-    height: 3em;
-}
-#tabs ul li a
-{
-    width: 10em;
     text-align: center;
-    color: #888888;
+    margin-top: 1em;
 }
-#tabs ul li.ui-tabs-selected a,
-#tabs ul li a:hover
+
+h2
+{
+    background-repeat: no-repeat;
+    padding-left: 20px;
+
+}
+h2.ui-state-active
+{
+    background-image: url(/stylesheets/images/content/table/expand_opened.png);
+}
+h2.ui-state-default
+{
+    background-image: url(/stylesheets/images/content/table/expand_closed.png);
+}
+h2.ui-state-active a
+{
+    color: #0071bc;
+    text-decoration: none;
+    cursor: default;
+}
+h2.ui-state-default a
+{
+    color: #7a7a7a;
+}
+h2.ui-state-default a:hover
 {
     color: #0071bc;
 }

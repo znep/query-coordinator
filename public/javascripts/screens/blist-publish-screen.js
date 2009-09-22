@@ -88,60 +88,60 @@ blist.publish.applyFrameColor = function($elem, values)
         }
 
         // top gradients
-        publishNS.appendToStylesBuffer('#header .wrapperT', 'background-image',
+        publishNS.writeStyle('#header .wrapperT', 'background-image',
             $.urlToImageBuilder($.extend({ w: 3, rw: 1, rx: 1 }, baseGradient), 'png', true));
-        publishNS.appendToStylesBuffer('#header .wrapperTR', 'background-image',
+        publishNS.writeStyle('#header .wrapperTR', 'background-image',
             $.urlToImageBuilder($.extend({ r: 8, rx: 8 }, baseGradient), 'png', true));
-        publishNS.appendToStylesBuffer('#header', 'background-image',
+        publishNS.writeStyle('#header', 'background-image',
             $.urlToImageBuilder($.extend({ r: 8, rw: 8 }, baseGradient), 'png', true));
 
         // lower gradient
-        publishNS.appendToStylesBuffer('.widgetFooterWrapper', 'background-image',
+        publishNS.writeStyle('.widgetFooterWrapper', 'background-image',
             $.urlToImageBuilder($.extend({}, baseGradient,
             { h: 80, rh: 80, w: 3, rw: 1, rx: 1, fc: $.gradientString([ [ values['color'], 0.8 ], $.addColors(values['color'], '3f3f3f') ] ) }), 'png', true));
     }
     else
     {
         // frame
-        publishNS.appendToStylesBuffer('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
+        publishNS.writeStyle('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
             'background-color', values['color']);
-        publishNS.appendToStylesBuffer('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
+        publishNS.writeStyle('#header, #header .wrapperT, #header .wrapperTR, .widgetFooterWrapper',
             'background-image', 'none');
 
         if (values['border'] !== false)
         {
-            publishNS.appendToStylesBuffer('#header', 'border', '1px solid ' + values['border']);
-            publishNS.appendToStylesBuffer('#header', 'border-bottom', 'none');
+            publishNS.writeStyle('#header', 'border', '1px solid ' + values['border']);
+            publishNS.writeStyle('#header', 'border-bottom', 'none');
         }
     }
     
     // sides
-    publishNS.appendToStylesBuffer('.gridInner', 'border-color', values['color']);
+    publishNS.writeStyle('.gridInner', 'border-color', values['color']);
 
     // meta border
       // general borders
-        publishNS.appendToStylesBuffer('.infoContentOuter, .metadataPane .summaryTabs li, .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter, .metadataPane .summaryTabs',
+        publishNS.writeStyle('.infoContentOuter, .metadataPane .summaryTabs li, .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter, .metadataPane .summaryTabs',
             'border-color', values['color']);
       // inactive tab corners sprite
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li .tabOuter, .metadataPane .summaryTabs li .tabInner',
+        publishNS.writeStyle('.metadataPane .summaryTabs li .tabOuter, .metadataPane .summaryTabs li .tabInner',
             'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=ececec&h=23&r=3&s=h&bc=ececec)');
       // active tab corners sprite
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.active .tabOuter, .metadataPane .summaryTabs li.active .tabInner',
+        publishNS.writeStyle('.metadataPane .summaryTabs li.active .tabOuter, .metadataPane .summaryTabs li.active .tabInner',
             'background-image', 'url(/ui/box.png?ew=1&rh=20&ec=' + values['color'].slice(1) + '&fc=cacaca&h=23&r=3&s=h&bc=ececec)');
       // tab scroll buttons background color
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
+        publishNS.writeStyle('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
             'background-color', values['color']);
       // tab scroll buttons border color
-        publishNS.appendToStylesBuffer('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
+        publishNS.writeStyle('.metadataPane .summaryTabs li.scrollArrow a, .metadataPane .summaryTabs li.scrollArrow.disabled a, .metadataPane .summaryTabs li.scrollArrow.disabled a:hover',
             'border-color', values['color']);
 
     // meta left bar bg
-        publishNS.appendToStylesBuffer('.infoContentOuter .infoContentInner', 'background-image',
+        publishNS.writeStyle('.infoContentOuter .infoContentInner', 'background-image',
             'url(/ui/box.png?w=150&h=1&fc=' + values['color'].slice(1) + ')');
 
     if (values['border'] !== false)
     {
-        publishNS.appendToStylesBuffer('.gridOuter, .widgetFooterInner', 'border-color', values['border']);
+        publishNS.writeStyle('.gridOuter, .widgetFooterInner', 'border-color', values['border']);
     }
 };
 
@@ -248,7 +248,7 @@ blist.publish.applyInterstitial = function(value)
 
 // builder hash!
 blist.publish.customizationApplication = {
-    style:          { font:          { face:                [ { selector: 'html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td', css: 'font-family' } ],
+    style:          { font:          { face:                [ { selector: 'html', css: 'font-family' } ],
                                        grid_header_size:    [ { selector: 'div.blist-th .info-container', css: 'font-size', hasUnit: true }],
                                        grid_data_size:      [ { selector: '.blist-td', css: 'font-size', hasUnit: true }] } },
     frame:          { _group:                               [ { selector: 'body', properties: ['color', 'gradient', 'border'], callback: publishNS.applyFrameColor } ],
@@ -334,17 +334,17 @@ blist.publish.applyCustomizationToPreview = function(hash)
                         {
                             if (value['hasUnit'] !== undefined)
                             {
-                                publishNS.appendToStylesBuffer(value['selector'], value['css'],
+                                publishNS.writeStyle(value['selector'], value['css'],
                                     subhash[key]['value'] + subhash[key]['unit']);
                             }
                             else if (value['map'] !== undefined)
                             {
-                                publishNS.appendToStylesBuffer(value['selector'], value['css'],
+                                publishNS.writeStyle(value['selector'], value['css'],
                                     value['map'][subhash[key].toString()]);
                             }
                             else
                             {
-                                publishNS.appendToStylesBuffer(value['selector'], value['css'],
+                                publishNS.writeStyle(value['selector'], value['css'],
                                     subhash[key]);
                             }
                         }
@@ -400,9 +400,9 @@ blist.publish.applyCustomizationToPreview = function(hash)
     };
 
     clearTimeout(publishNS.loadFrameTimeout);
-    if ((typeof $('iframe').get()[0].contentWindow.blist === 'undefined') ||
-        (typeof $('iframe').get()[0].contentWindow.blist.widget === 'undefined') ||
-        ($('iframe').get()[0].contentWindow.blist.widget.ready !== true))
+    if ((typeof $('.previewPane iframe').get()[0].contentWindow.blist === 'undefined') ||
+        (typeof $('.previewPane iframe').get()[0].contentWindow.blist.widget === 'undefined') ||
+        ($('.previewPane iframe').get()[0].contentWindow.blist.widget.ready !== true))
     {
         // iframe may not have loaded yet.
         publishNS.loadFrameTimeout = setTimeout(
@@ -410,10 +410,9 @@ blist.publish.applyCustomizationToPreview = function(hash)
     }
     else
     {
-        widgetNS = $('iframe').get()[0].contentWindow.blist.widget;
+        widgetNS = $('.previewPane iframe').get()[0].contentWindow.blist.widget;
 
         recurse(publishNS.customizationApplication, hash);
-        blist.publish.writeStylesBuffer();
         widgetNS.sizeGrid();
 
         // Update copy code
@@ -427,29 +426,68 @@ blist.publish.applyCustomizationToPreview = function(hash)
     }
 };
 
-blist.publish.stylesBuffer = '';
-blist.publish.appendToStylesBuffer = function(selector, key, value)
+blist.publish.stylesheet = null;
+blist.publish.styleRules = {};
+blist.publish.writeStyle = function(selector, key, value)
 {
-    if (value !== '')
+    if (publishNS.stylesheet === null)
     {
-        publishNS.stylesBuffer += selector + ' {' + key + ': ' + value + '; }\n';
+        // initialize the stylesheet
+        $('.previewPane iframe').contents().find('#customizationStyles').empty().remove();
+
+        var styleNode =
+            $('.previewPane iframe').contents().find('head')
+                .append('<style id="customizationStyles" type="text/css"></style>')
+                .children('#customizationStyles')[0];
+
+        var stylesheets = $('.previewPane iframe').get()[0].contentWindow.document.styleSheets;
+        for (var i = 0; i < stylesheets.length; i++)
+        {
+            publishNS.stylesheet = stylesheets[i];
+            if ((publishNS.stylesheet.ownerNode || publishNS.stylesheet.owningElement) == styleNode)
+            {
+                break;
+            }
+        }
     }
-};
-blist.publish.writeStylesBuffer = function()
-{
-    clearTimeout(publishNS.stylesTimeout);
-    var $styleNode = $('.previewPane iframe').contents().find('#customizationStyles');
-    if ($styleNode.length === 0)
+
+    var selectors = selector.split(/,\s*/);
+    for (var i = 0; i < selectors.length; i++)
     {
-        // iframe may not have loaded yet.
-        publishNS.stylesTimeout = setTimeout(publishNS.writeStylesBuffer, 50);
-    }
-    else
-    {
-        var $insert = $styleNode.prev();
-        $styleNode.empty().remove();
-        $('<style id="customizationStyles" type="text/css">\n' + publishNS.stylesBuffer + '\n</style>').insertAfter($insert);
-        publishNS.stylesBuffer = '';
+        if (publishNS.styleRules[selectors[i]] === undefined)
+        {
+            // Define and store the rule if it does not already exist
+            var rules = publishNS.stylesheet.cssRules || publishNS.stylesheet.rules;
+            var compare = selectors[i].toLowerCase();
+            if (publishNS.stylesheet.insertRule)
+    		{
+    		    publishNS.stylesheet.insertRule(selectors[i] + " {}", rules.length);
+    		}
+    		else
+    		{
+                publishNS.stylesheet.addRule(selectors[i], null, rules.length);
+                compare = selectors[i].toLowerCase().replace(/(\.\w+)+/g, function(match)
+                {
+                    // IE reverses the order of the classes
+                    return '.' + match.slice(1).split('.').reverse().join('.');
+                });
+    		}
+            rules = publishNS.stylesheet.cssRules || publishNS.stylesheet.rules;
+
+            // Find the new rule
+            for (var j = 0; j < rules.length; j++)
+            {
+                if (rules[j].selectorText.toLowerCase() === compare)
+                {
+                    publishNS.styleRules[selectors[i]] = rules[j];
+                }
+            }
+        }
+
+        // Grab the appropriate rule and set the appropriate style
+        eval('publishNS.styleRules[selectors[i]].style.' +
+              key.replace(/-[a-z]/g, function(match) { return match.charAt(1).toUpperCase(); }) +
+              ' = "' + value + '";');
     }
 };
 

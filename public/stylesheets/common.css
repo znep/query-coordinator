@@ -345,6 +345,7 @@ form.search.large input.submit
 #directories .tabList li.directories,
 #solution .tabList li.solution,
 #sales .tabList li.sales,
+#try-it-free .tabList li.try-it-free,
 .tabList li.active
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
@@ -361,6 +362,7 @@ form.search.large input.submit
 #directories .tabList li.directories .wrapper,
 #solution .tabList li.solution .wrapper,
 #sales .tabList li.sales .wrapper,
+#try-it-free .tabList li.try-it-free .wrapper,
 .tabList li.active .wrapper
 {
     background-image: url(/stylesheets/images/content/tabs/tab_large_sprites.png);
@@ -377,6 +379,7 @@ form.search.large input.submit
 #directories .tabList li.directories a,
 #solution .tabList li.solution a,
 #sales .tabList li.sales a,
+#try-it-free .tabList li.try-it-free a,
 .tabList li.active a,
 .tabList li.active .innerWrapper
 {

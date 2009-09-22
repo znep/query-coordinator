@@ -84,6 +84,7 @@
     display: inline;
     margin-bottom: 0;
     margin-right: .5em;
+    line-height: 1em;
 }
 
 #profile .userCompany, #profile .userTitle, #profile .userTags { margin-right: 16em; } 

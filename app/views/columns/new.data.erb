@@ -60,7 +60,7 @@ $(function(){
   var renderValueInfoFormatRow = function(value)
   {
       var $row = $(this);
-      var $span_value = $('<span class="typeSelect convert-' + value.id + '"></span>').html(value.label);
+      var $span_value = $('<span class="typeSelect datatype-' + value.id + '"></span>').html(value.label);
       $row.empty().append($span_value);
   };
 

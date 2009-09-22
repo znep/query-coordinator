@@ -12,6 +12,11 @@
  */
 /* v1.0 | 20080212 */
 
+html
+{
+    font-family: Arial, sans-serif;
+}
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -26,7 +31,6 @@ table, caption, tbody, tfoot, thead, tr, th, td
     padding: 0;
     border: 0;
     outline: 0;
-    font-family: Arial, sans-serif;
     vertical-align: baseline;
     background: transparent;
 }

@@ -7,10 +7,11 @@
     <select id="filterOperator" name="operator">
       <option value="and">all</option>
       <option value="or">any</option>
-    </select> of the following rules:
+    </select> of the following conditions:
   </p>
   <table id="filterTable">
     <colgroup>
+        <col class="delete" />
         <col class="name" />
         <col class="condition" />
         <col class="editor" />
@@ -18,10 +19,11 @@
     </colgroup>
     <thead>
       <tr>
-        <th class="name">Column Name</col>
-        <th class="condition">Limit To</col>
-        <th class="editor" >Cell Contents</col>
-        <th class="addRemove"></col>
+        <th class="delete">x</th>
+        <th class="name">Column Name</th>
+        <th class="condition">Limit To</th>
+        <th class="editor">Cell Contents</th>
+        <th class="addRemove"></th>
       </tr>
     </thead>
     <tbody>
@@ -31,7 +33,11 @@
   <div class="createBar">
     <div class="error errorMessage"></div>
     <h3 class="seperator clearfix"></h3>
-    <a href="#" class="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
+    <ul class="actionButtons">
+      <li>
+        <a href="#" class="save arrowButton">Create Filter</a>
+      </li>
+    </ul>
   </div>
 </div>
 

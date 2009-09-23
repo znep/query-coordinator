@@ -4,9 +4,10 @@ filterNS.uid = 0;
 
 filterNS.conditions = {
   text: ["equals", "not equals", "starts with", "contains"],
+  date: ["on", "not on", "before", "after", "between"],
   checkbox: ["equals"],
   photo: ["blank", "not blank"],
-  number: ["equals", "not equals", "less than", "less than or equals", "greater than", "greater than or equals"]
+  number: ["equals", "not equals", "less than", "less than or equals", "greater than", "greater than or equals", "between"]
 };
 
 filterNS.filterableClass = function(type) {
@@ -14,7 +15,7 @@ filterNS.filterableClass = function(type) {
   {
     return "text";
   }
-  else if ($.inArray(type, ["number", "money", "percent", "stars", "date", "picklist"]) > -1)
+  else if ($.inArray(type, ["number", "money", "percent", "stars", "picklist"]) > -1)
   {
     return "number";
   }
@@ -82,14 +83,35 @@ filterNS.createEditor = function($renderer, column, value) {
   $renderer.blistEditor({row: null, column: tempCol, value: value})
 };
 
+filterNS.filterEditor = function($row) {
+  var operator = $row.closest("tr").find(".conditionSelect").val();
+
+  $row.closest("tr").find(".rendererCell").html("");
+  if (operator == "between")
+  {
+    $row.closest("tr").find(".rendererCell").append('<div class="renderer renderer1 between"></div><div class="ampersand">&amp;</div><div class="renderer renderer2 between"></div>');
+
+    var renderer1 = $row.closest("tr").find(".renderer1");
+    var renderer2 = $row.closest("tr").find(".renderer2");
+    filterNS.createEditor(renderer1, column);
+    filterNS.createEditor(renderer2, column);
+  }
+  else
+  {
+    $row.closest("tr").find(".rendererCell").append('<div class="renderer"></div>');
+    filterNS.createEditor($row.closest("tr").find(".renderer"), filterNS.columns[$(this).val()]);
+  }
+};
+
 filterNS.filterColumnChanged = function() {
   column = filterNS.columns[$(this).val()];
-  $(this).closest("tr").find(".renderer").remove();
-  $(this).closest("tr").find(".rendererCell").append('<div class="renderer"></div>');
-
-  filterNS.createEditor($(this).closest("tr").find(".renderer"), column);
-
   $(this).closest("tr").find(".condition").html(filterNS.renderConditionSelect(column));
+
+  $(this).closest("tr").find(".conditionSelect").change(function() {
+    filterNS.filterEditor($(this));
+  });
+
+  filterNS.filterEditor($(this));
 };
 
 filterNS.addFilterRow = function($table, columns) {
@@ -98,15 +120,19 @@ filterNS.addFilterRow = function($table, columns) {
   filterNS.uid += 1;
 
   //TODO: what if there's no columns
-  $table.append('<tr id="' + id + '"><td>' + 
+  $table.append('<tr id="' + id + '"><td class="delete">x</td><td>' +
       filterNS.renderColumnSelect(columns) +
       '</td><td class="condition">' + filterNS.renderConditionSelect(columns[0]) + 
-      '</td><td class="rendererCell"><div class="renderer"></div></td>' + 
-      '<td class="addRemove"><a href="#" class="remove"></a><a href="#" class="add></a></td></tr>');
+      '</td><td class="rendererCell"><div class="renderer"></div></td>' +
+      '<td class="addRemove"></td></tr>');
 
   filterNS.createEditor($table.find("#" + id + " .renderer"), columns[0]);
 
   $table.find("#" + id + " .columnSelect").change(filterNS.filterColumnChanged);
+  $table.find("#" + id + " .conditionSelect").change(function() {
+    var $row = $table.find('#' + id + '.columnSelect');
+    filterNS.filterEditor($row);
+  });
   $table.find("#" + id + " .remove").click(filterNS.filterRemove);
   $table.find("#" + id + " .add").click(filterNS.filterAdd);
 
@@ -124,10 +150,50 @@ filterNS.addFilterRow = function($table, columns) {
   return $table.find("#" + id);
 };
 
+filterNS.realToDisplayCondition = function(condition, type) {
+  condition = condition.toLowerCase();
+  if (type == "date")
+  {
+    var map = {
+      "equals": "on",
+      "not_equals": "not on",
+      "less_than": "before",
+      "greater_than": "after"
+    };
+
+    return map[condition].toLowerCase();
+  }
+
+  return condition.toLowerCase();
+}
+
+filterNS.displayToRealCondition = function(condition) {
+  condition = condition.toLowerCase();
+  var map = {
+    "on": "equals",
+    "not on": "not_equals",
+    "before": "less_than",
+    "after": "greater_than"
+  };
+
+  if (map[condition] == undefined)
+  {
+      return condition.toUpperCase();
+  }
+  else
+  {
+      return map[condition].toUpperCase();
+  }
+}
+
 filterNS.row = function($row) {
   var column = filterNS.columns[$row.find('.columnSelect').val()];
-  var value = $row.find(".renderer").blistEditor().currentValue();
   var operator = $row.find(".conditionSelect").val().toUpperCase();
+
+  var value = [];
+  $.each($row.find(".renderer"), function(i, r) {
+    value.push($(r).blistEditor().currentValue());
+  });
 
   // Translate values. Fuck you filters for not accepting the same format as
   // rows.
@@ -161,6 +227,7 @@ filterNS.row = function($row) {
   else
   {
     var row = {type: "operator"};
+    row.value = filterNS.displayToRealCondition($row.find(".conditionSelect").val().toUpperCase());
 
     if (column.type == "checkbox")
     {
@@ -181,15 +248,16 @@ filterNS.row = function($row) {
       value = url + desc;
     }
 
-    row.value = $row.find(".conditionSelect").val().toUpperCase();
-
     var children = [
       {
         columnId: column.id,
         type: "column"
-      },
-      {type: "literal", value: value} 
+      }
     ];
+
+    $.each(value, function(i, v) {
+      children.push({type: "literal", value: v});
+    });
 
     row.children = children;
 
@@ -236,15 +304,27 @@ filterNS.populate = function($table, filters, columns) {
 
             $row.find(".columnSelect").val(k);
             $row.find(".columnSelect").change();
-            $row.find(".conditionSelect").val(filterRow.value.toLowerCase());
+            $row.find(".renderer").remove();
+            $row.find(".conditionSelect").val(filterNS.realToDisplayCondition(filterRow.value.toLowerCase(), columns[k].type));
             break;
           }
         }
       }
       else if (sub.type == "literal")
       {
-        $row.find(".renderer").remove();
-        $row.find(".rendererCell").append('<div class="renderer"></div>');
+        if (j > 1)
+        {
+          $row.find(".rendererCell").append('<div class="ampersand">&amp;</div>');
+        }
+        
+        if (filterRow.value.toLowerCase() == "between")
+        {
+          $row.find(".rendererCell").append('<div class="renderer renderer' + j + ' between"></div>');
+        }
+        else
+        {
+          $row.find(".rendererCell").append('<div class="renderer renderer' + j + '"></div>');
+        }
 
         var value;
         if (subcolumn != null)
@@ -258,9 +338,8 @@ filterNS.populate = function($table, filters, columns) {
           value = sub.value;
         }
 
-        filterNS.createEditor($row.find(".renderer"), col, value);
+        filterNS.createEditor($row.find(".renderer" + j), col, value);
       }
     }
   }
 };
-

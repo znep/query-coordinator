@@ -1204,10 +1204,15 @@ div#sortBysList.reorderList li .itemWrapper
   font-size: 1.3em;
 }
 
+#filterTable th.delete
+{
+  width: 1%;
+}
+
 #filterTable th.name,
 #filterTable th.condition
 {
-  width: 25%;
+  width: 24%;
 }
 
 #filterTable th.editor
@@ -1229,6 +1234,19 @@ div#sortBysList.reorderList li .itemWrapper
 #filterTable tbody td.addRemove
 {
   padding: 0;
+}
+
+#filterTable .renderer.between 
+{
+    float: left;
+    width: 40%;
+}
+
+#filterTable .ampersand
+{
+    float: left;
+    font-size: 1.2em;
+    padding: 0.2em;
 }
 
 #filterTable .renderer .blist-td

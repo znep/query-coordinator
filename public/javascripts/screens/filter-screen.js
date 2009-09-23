@@ -83,7 +83,7 @@ filterNS.createEditor = function($renderer, column, value) {
   $renderer.blistEditor({row: null, column: tempCol, value: value})
 };
 
-filterNS.filterEditor = function($row) {
+filterNS.filterEditor = function($row, column) {
   var operator = $row.closest("tr").find(".conditionSelect").val();
 
   $row.closest("tr").find(".rendererCell").html("");
@@ -99,7 +99,7 @@ filterNS.filterEditor = function($row) {
   else
   {
     $row.closest("tr").find(".rendererCell").append('<div class="renderer"></div>');
-    filterNS.createEditor($row.closest("tr").find(".renderer"), filterNS.columns[$(this).val()]);
+    filterNS.createEditor($row.closest("tr").find(".renderer"), column);
   }
 };
 
@@ -108,10 +108,10 @@ filterNS.filterColumnChanged = function() {
   $(this).closest("tr").find(".condition").html(filterNS.renderConditionSelect(column));
 
   $(this).closest("tr").find(".conditionSelect").change(function() {
-    filterNS.filterEditor($(this));
+    filterNS.filterEditor($(this), column);
   });
 
-  filterNS.filterEditor($(this));
+  filterNS.filterEditor($(this), column);
 };
 
 filterNS.addFilterRow = function($table, columns) {
@@ -131,7 +131,7 @@ filterNS.addFilterRow = function($table, columns) {
   $table.find("#" + id + " .columnSelect").change(filterNS.filterColumnChanged);
   $table.find("#" + id + " .conditionSelect").change(function() {
     var $row = $table.find('#' + id + '.columnSelect');
-    filterNS.filterEditor($row);
+    filterNS.filterEditor($row, columns[0]);
   });
   $table.find("#" + id + " .remove").click(filterNS.filterRemove);
   $table.find("#" + id + " .add").click(filterNS.filterAdd);
@@ -336,6 +336,11 @@ filterNS.populate = function($table, filters, columns) {
         else
         {
           value = sub.value;
+        }
+        
+        if (col.type == "date")
+        {
+            value = new Date(value);
         }
 
         filterNS.createEditor($row.find(".renderer" + j), col, value);

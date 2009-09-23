@@ -12,7 +12,8 @@ class RpxController < ApplicationController
       redirect_back_or_default(profile_path(@signup.user.id, :welcome => true))
     else
       flash.now[:error] = @signup.errors.join(", ")
-      render :action => :return_signup
+      @body_id = 'signup'
+      render :template => 'rpx/return_login'
     end
   end
 
@@ -33,7 +34,8 @@ class RpxController < ApplicationController
       redirect_to(account_path(:anchor => "openid"))
     else
       flash.now[:notice_login] = "Unable to login with that username and password; please try again"
-      render :action => :return_login
+      @body_id = 'signup'
+      render :template => 'rpx/return_login'
     end
   end
 

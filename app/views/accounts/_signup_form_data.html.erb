@@ -6,29 +6,29 @@
     <%= f.hidden_field :firstName %>
     <%= f.hidden_field :lastName %>
     
-    <p>
+    <p class="clearfix">
       <%= f.label :login, 'Username', :class => 'required' %>
       <%= f.text_field :login, :maxlength => 40 %>
     </p>
     <% unless local_assigns[:hide_password] %>
-      <p>
+      <p class="clearfix">
         <%= f.label :password, 'Password', :class => 'required' %>
         <%= f.password_field :password %>
       </p>
-      <p>
+      <p class="clearfix">
         <%= label_tag :passwordConfirm, 'Confirm Password', :class => 'required' %>
         <%= f.password_field :passwordConfirm %>
       </p>
     <% end %>
-    <p>
+    <p class="clearfix">
       <%= f.label :email, 'Email Address', :class => 'required' %>
       <%= f.text_field :email %>
     </p>
-    <p>
+    <p class="clearfix">
       <%= label_tag :emailConfirm, 'Confirm Email', :class => 'required' %>
       <%= f.text_field :emailConfirm %>
     </p>
-    <p>
+    <p class="clearfix">
       <span><%= check_box_tag 'signup[accept_terms]', "1", false, :class => 'required' %>
       I agree to the <a href="/terms-of-service">Terms of Service</a> and
       <a href="/privacy">Privacy Policy</a></span>

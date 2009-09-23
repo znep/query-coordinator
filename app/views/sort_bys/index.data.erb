@@ -2,12 +2,17 @@
 <h1><span class="sortOrderIcon">Sort Order</span></h1>
 <% end %>
 
+<p class="subHeader">Drag columns on the left in the order you want them sorted</p>
+
 <div id="sortBysList" class="reorderList clearfix">
-  <p class="left">Sorted Columns and Sort Order</p>
+  <p class="left">Sorted</p>
+  <p id="sortOrderLabel" class="left order">Order</p>
+  <div class="border"></div>
   <div class="activeList">
-    <ul>
+    <ul class="reorder">
       <% @selected.each_with_index do |sort, i| %>
         <li>
+          <div class="type datatype-<%= @view.column_by_id(sort.viewColumnId).client_type %>"></div>
           <div class="itemWrapper">
             <span class="orderIndex"><%= i + 1 %></span>
             <div class="ascension">
@@ -29,11 +34,13 @@
     <a href="#addItem" class="addItemButton">Add</a>
     <a href="#removeItem" class="removeItemButton">Remove</a>
   </div>
-  <p class="right">Unsorted Columns</p>
+  <p class="right">Unsorted</p>
+  <div class="border-right"></div>
   <div class="inactiveList">
-    <ul>
+    <ul class="reorder">
       <% @unselected.each do |sort| %>
         <li>
+          <div class="type datatype-<%= @view.column_by_id(sort["viewColumnId"]).client_type %>"></div>
           <div class="itemWrapper">
             <span class="orderIndex hide"></span>
             <div class="ascension hide">
@@ -50,15 +57,35 @@
       <%- end -%>
     </ul>
   </div>
-      <div class="createBar">
-        <div class="error errorMessage"></div>
-        <h3 class="seperator clearfix"></h3>
-        <a href="#" class="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
-      </div>
 </div>
+
+  <div class="createBar">
+    <div class="error errorMessage"></div>
+    <h3 class="seperator clearfix"></h3>
+    <ul class="saveButton actionButtons">
+      <li>
+        <a href="#" class="arrowButton save">Sort</a>
+      </li>
+    </ul>
+  </div>
+
 <div class="clearfix"></div>
 
 <script type="text/javascript" charset="utf-8">
+    var toggleOrderLabel = function()
+    {
+        if ($(".activeList li").length > 0)
+        {
+            $("#sortOrderLabel").show();
+        }
+        else
+        {
+            $("#sortOrderLabel").hide();
+        }
+    }
+
+    toggleOrderLabel();
+
     var toggleSortOrder = function($item) {
         if ($item.hasClass("sort-desc"))
         {
@@ -81,6 +108,8 @@
     var valueChanged = function() {
         $(".activeList div.ascension").removeClass("hide");
         $(".inactiveList div.ascension").addClass("hide");
+
+        toggleOrderLabel();
     };
 
     $("div.ascension").click(function() {

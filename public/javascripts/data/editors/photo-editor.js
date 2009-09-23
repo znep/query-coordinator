@@ -148,7 +148,17 @@
                 $.uploadDialog().close();
             },
 
-            setSize: function() {
+            querySize: function()
+            {
+                var w = 1;
+                var h = this.$editor().find('a:visible')
+                    .each(function(i, a)
+                            { w += $(a).outerWidth(true); })
+                    .outerHeight(true);
+                var $photo = this.$editor().find('img');
+                w = Math.max(w, $photo.outerWidth(true));
+                h = Math.max(h, $photo.outerHeight(true));
+                return { width: w, height: h };
             },
 
             focus: function()

@@ -122,6 +122,14 @@
                 return this.curValue === 0 ? null : this.curValue;
             },
 
+            querySize: function()
+            {
+                return { width:
+                    this.$editor().find('.star-clear').outerWidth(true) +
+                    this.$editor().find('.star').eq(1).outerWidth(true) *
+                        this.range() };
+            },
+
             focus: function()
             {
                 this.$dom().find(':input').focus();

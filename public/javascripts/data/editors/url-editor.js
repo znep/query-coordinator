@@ -31,7 +31,7 @@
             {
                 if (!this._$editor)
                 {
-                    this._$editor = $('<div class="blist-table-editor blist-td' +
+                    this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.type +
                         '"><div class="labels"><span class="href">URL</span>' +
                         '<span class="description">Description</span></div>' +
@@ -47,7 +47,8 @@
             editorInserted: function()
             {
                 var editObj = this;
-                editObj.$dom().find(':text.href').keydown(function(e)
+                editObj.$dom().addClass('full-size')
+                    .find(':text.href').keydown(function(e)
                     { if (e.keyCode == 9 && !e.shiftKey)
                         { e.stopPropagation(); } });
                 editObj.$dom().find(':text.description').keydown(function(e)
@@ -90,6 +91,17 @@
                 ret[this.column.subTypes[0]] = newHref;
                 ret[this.column.subTypes[1]] = newDesc;
                 return ret;
+            },
+
+            querySize: function()
+            {
+                return { width: Math.max(120, hrefValue(this)
+                        .visualLength(this.$editor().css('font-size'))) +
+                        Math.max(120, descValue(this)
+                        .visualLength(this.$editor().css('font-size'))),
+                    height: this.$editor()
+                        .find('.labels').outerHeight(true) +
+                        this.$editor().find(':input').outerHeight(true) };
             },
 
             focus: function()

@@ -133,6 +133,14 @@
                 $.uploadDialog().close();
             },
 
+            querySize: function()
+            {
+                var w = 1;
+                this.$editor().find('a:visible').each(function(i, a)
+                { w += $(a).outerWidth(true); });
+                return { width: w };
+            },
+
             focus: function()
             {
                 this.$dom().find(':input').focus();

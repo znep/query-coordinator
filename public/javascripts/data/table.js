@@ -732,12 +732,14 @@
                 if (mode == defaultEditMode &&
                     (origEvent.keyCode == 27 || origEvent.keyCode == 113))
                 {
+                    prevEdit = false;
                     didNavKeyDown = true;
                     expandActiveCell();
                 }
                 else { navKeyDown(origEvent); }
             }
-            if (!isEdit[defaultEditMode] && (origEvent.type != 'mousedown' || isElementInScrolls(origEvent.target)))
+            if (!isEdit[defaultEditMode] && (origEvent.type != 'mousedown' ||
+                isElementInScrolls(origEvent.target)))
             {
                 focus();
             }

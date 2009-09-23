@@ -369,7 +369,7 @@ div.blist-table-edit-container.mode-expand
 }
 
 .blist-td.invalid,
-.invalid .blist-td input
+.invalid .blist-table-editor input
 {
     color: #ff3333;
     font-style: italic;
@@ -562,6 +562,8 @@ div.blist-table-editor.type-richtext
     padding: 0;
 }
 
+div.blist-table-edit-container.full-size { padding: 0; }
+
 div.blist-table-edit-container input[type="text"],
 div.blist-table-edit-container input.textInput
 {
@@ -573,35 +575,35 @@ div.blist-table-edit-container input.textInput
     background-repeat: repeat-x;
 }
 
-div.blist-table-edit-container.shown .labels
+div.blist-table-edit-container .labels
 {
+    border-bottom: 1px solid #06386a;
     color: #999999;
     font-size: 0.9167em; /* 1.1em */
     height: 1.2727em; /* 14px */
 }
 
-div.blist-table-edit-container.shown .labels span
+div.blist-table-edit-container .labels span
 {
     padding-left: 0.5em;
     position: absolute;
 }
 
-div.blist-table-edit-container.shown .blist-td.type-url input[type="text"]
+div.blist-table-edit-container .blist-table-editor.type-url input[type="text"]
 {
-    border-top: solid 1px #cccccc;
     height: auto;
+    padding: 3px;
     top: 1.25em; /* 15px */
-    width: 50%;
+    width: 47%;
 }
-div.blist-table-edit-container.shown .blist-td.type-url input[type="text"].description
+div.blist-table-edit-container .blist-table-editor.type-url input[type="text"].description
 {
-    border-left: solid 1px #cccccc;
+    border-left: 1px solid #06386a;
     color: #333333;
     font-style: normal;
-    padding-left: 0.3em;
 }
 
-div.blist-table-edit-container.shown .blist-td.type-url .description
+div.blist-table-edit-container .blist-table-editor.type-url .description
 { left: 50%; }
 
 .blist-table-editor.type-phone

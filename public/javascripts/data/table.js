@@ -1683,21 +1683,22 @@
         var navKeyDown = function(event)
         {
             didNavKeyDown = true;
-            return doKeyNav(event);
+            doKeyNav(event);
         };
 
         var navKeyPress = function(event)
         {
-            if (didNavKeyDown) {
+            if (didNavKeyDown)
+            {
                 didNavKeyDown = false;
-                return true;
+                return;
             }
-            return doKeyNav(event);
+            doKeyNav(event);
         };
 
         var doKeyNav = function(event)
         {
-            if (!cellNav) { return true; }
+            if (!cellNav) { return; }
 
             switch (event.keyCode)
             {
@@ -1763,11 +1764,18 @@
                 case 113:
                     // F2
                     var curActiveCell = $activeCells ? $activeCells[0] : null;
-                    if (curActiveCell) { editCell(curActiveCell); }
+                    if (curActiveCell)
+                    {
+                        if (editCell(curActiveCell))
+                        {
+                            event.preventDefault();
+                            return;
+                        }
+                    }
                     break;
 
                 default:
-                    return true;
+                    return;
             }
 
             var curActiveCell = $activeCells ? $activeCells[0] : null;
@@ -1782,7 +1790,7 @@
                 setTimeout(expandActiveCell, 0);
             }
 
-            return false;
+            event.preventDefault();
         };
 
         var isElementInScrolls = function(element)

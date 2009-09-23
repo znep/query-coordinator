@@ -125,9 +125,6 @@ blist.namespace.fetch('blist.data');
         var filterText = "";
         var filterTimer;
 
-        // Expanded row configuration
-        var expanded;
-
         // Grouping configuration
         var groupFn;
 
@@ -841,7 +838,6 @@ blist.namespace.fetch('blist.data');
         {
             if (newRows)
             {
-                expanded = {};
                 active = rows = newRows;
                 setRowMetadata(newRows, meta.metaColumns, meta.dataMungeColumns);
                 installIDs();
@@ -1075,17 +1071,23 @@ blist.namespace.fetch('blist.data');
                 configureActive();
                 isCreate = true;
             }
-            this.setRowValue(validValue, row, column);
-            this.setInvalidValue(invalidValue, row, column);
+            if (column)
+            {
+                this.setRowValue(validValue, row, column);
+                this.setInvalidValue(invalidValue, row, column);
+            }
 
             if (!row.saving) { row.saving = []; }
             var data = {};
-            if (column.type == 'tag')
-            { data['_tags'] = validValue; }
-            else { data[column.id] = validValue; }
+            if (column)
+            {
+                if (column.type == 'tag')
+                { data['_tags'] = validValue; }
+                else { data[column.id] = validValue; }
+            }
             if (row.meta) { data.meta = $.json.serialize(row.meta); }
 
-            if (column.nestedIn)
+            if (column && column.nestedIn)
             {
                 var parCol = column.nestedIn.header;
 
@@ -1094,9 +1096,14 @@ blist.namespace.fetch('blist.data');
                 if (isCreate)
                 {
                     var parRow = row.parent;
+
+                    // Since child rows get re-created, save the index and pull
+                    // out the new one
+                    var curRowI = this.index(row);
+
                     // If we're in a blank row, create that row first
                     if (parRow.type == 'blank')
-                    { this.saveRowValue(null, parRow, parCol, true); }
+                    { this.saveRowValue(null, parRow, null, true); }
 
                     // Add the new row to the parent
                     if (!parRow[parCol.dataIndex])
@@ -1104,19 +1111,19 @@ blist.namespace.fetch('blist.data');
                     parRow[parCol.dataIndex].push(childRow);
 
                     // Now force refresh by collapsing, clearing
-                    // child rows, and then re-expanding.  Since child rows
-                    // get re-created, save the index and pull out the new one
-                    var curRowI = this.index(row);
+                    // child rows, and then re-expanding.
                     resetChildRows(parRow);
                     row = this.get(curRowI);
                     if (!row.saving) { row.saving = []; }
                 }
 
+                if (!row.saving[parCol.dataIndex])
+                { row.saving[parCol.dataIndex] = []; }
                 row.saving[parCol.dataIndex][column.dataIndex] = true;
                 if (row.error && row.error[parCol.dataIndex])
                 { delete row.error[parCol.dataIndex][column.dataIndex]; }
             }
-            else
+            else if (column)
             {
                 row.saving[column.dataIndex] = true;
                 if (row.error) { delete row.error[column.dataIndex]; }
@@ -1147,7 +1154,7 @@ blist.namespace.fetch('blist.data');
         var getSaveURL = function(row, column)
         {
             var url = '/views/' + self.meta().view.id + '/rows';
-            if (column.nestedIn)
+            if (column && column.nestedIn)
             {
                 var parCol = column.nestedIn.header;
                 var childRow = self.getRowValue(row, parCol);
@@ -1169,7 +1176,7 @@ blist.namespace.fetch('blist.data');
             var newRow = row.isNew ? row : null;
             var parCol;
             var childRow;
-            if (column.nestedIn)
+            if (column && column.nestedIn)
             {
                 parCol = column.nestedIn.header;
                 childRow = self.getRowValue(row, parCol);
@@ -1183,7 +1190,7 @@ blist.namespace.fetch('blist.data');
                     {
                         if (parCol)
                         { delete row.saving[parCol.dataIndex][column.dataIndex]; }
-                        else
+                        else if (column)
                         { delete row.saving[column.dataIndex]; }
 
                         // Are there any pending edits to this row?
@@ -1218,7 +1225,7 @@ blist.namespace.fetch('blist.data');
                         if (!row.error) { row.error = []; }
                         if (parCol)
                         { row.error[parCol.dataIndex][column.dataIndex] = true; }
-                        else
+                        else if (column)
                         { row.error[column.dataIndex] = true; }
                         model.change([row]);
                     },
@@ -1990,13 +1997,6 @@ blist.namespace.fetch('blist.data');
 
             // Record the new row state
             row.expanded = open;
-            if (open)
-            {
-                if (!expanded) { expanded = {}; }
-                expanded[row.id] = true;
-            }
-            else if (expanded)
-            { delete expanded[row.id]; }
 
             // Update IDs for the rows that moved
             installIDs(true);
@@ -2429,11 +2429,7 @@ blist.namespace.fetch('blist.data');
                 idChange = true;
             }
 
-            if (expanded)
-            {
-                doExpansion();
-                idChange = true;
-            }
+            if (doExpansion()) { idChange = true; }
 
             // Add in blank row at the end
             if (self.useBlankRows())
@@ -2443,6 +2439,7 @@ blist.namespace.fetch('blist.data');
                 blankRow.type = 'blank';
                 blankRow.id = 'blank';
                 active.push(blankRow);
+                idChange = true;
             }
 
             if (idChange)
@@ -2522,24 +2519,31 @@ blist.namespace.fetch('blist.data');
         };
 
         // Expand rows that the user has opened
-        var doExpansion = function() {
+        var doExpansion = function()
+        {
             var newActive;
             var lastCopied = 0;
+            var didExpansion = false;
 
             for (var i = 0; i < active.length; i++)
             {
-                if (expanded[active[i].id])
+                if (active[i].expanded)
                 {
+                    didExpansion = true;
                     if (!newActive) { newActive = []; }
-                    newActive.push.apply(newActive, active.slice(lastCopied, lastCopied = i + 1));
+                    newActive.push.apply(newActive,
+                        active.slice(lastCopied, lastCopied = i + 1));
                     var childRows = getChildRows(active[i]);
                     newActive.push.apply(newActive, childRows);
                 }
             }
-            if (newActive) {
-                newActive.push.apply(newActive, active.slice(lastCopied, active.length));
+            if (newActive)
+            {
+                newActive.push.apply(newActive,
+                    active.slice(lastCopied, active.length));
                 active = newActive;
             }
+            return didExpansion;
         };
 
         // Install initial metadata

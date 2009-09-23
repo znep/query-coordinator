@@ -612,7 +612,17 @@ $(function ()
         if (!foundSize) { $fontSize.val($sizeOpts.eq($sizeOpts.length - 1).val()); }
 
         var $color = $fmt.find('a.color .inner');
-        $color.css('border-bottom-color', state.color.value || '#000000');
+        // IE7 is very strict in what it accepts for colors, so do a bunch
+        // of munging to make it a 6-digit hex string
+        var hexColor = state.color.value + '';
+        if (!hexColor.startsWith('#') && !hexColor.startsWith('rgb('))
+        {
+            var hexColor = (parseInt(state.color.value) || 0).toString(16);
+            var hexPad = 6 - hexColor.length;
+            for (var i = 0; i < hexPad; i ++) { hexColor = '0' + hexColor; }
+            hexColor = '#' + hexColor.slice(0, 6);
+        }
+        $color.css('border-bottom-color', hexColor);
 
         var $alignment = $fmt.find('a.align').removeClass('alignRight alignCenter');
         if (state.justifyRight.value) { $alignment.addClass('alignRight'); }

@@ -263,6 +263,7 @@ img.blist-table-option-icon
 {
     overflow: hidden;
     text-indent: -9999px;
+    line-height: 100px;
 }
 
 .blist-tstars { display: inline-block; }
@@ -294,6 +295,7 @@ div.blist-star-0,
     background-repeat: no-repeat;
     cursor: pointer;
     display: inline-block;
+    float: left;
     height: 16px;
     width: 11px;
 }

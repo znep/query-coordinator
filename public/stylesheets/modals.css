@@ -1053,6 +1053,8 @@ dl.versionInfo dd
     top: 100px;
     background: transparent url(/stylesheets/images/widgets/reorder_list/reorder_buttons_white.png) repeat scroll 0 0;
 }
+#sortBysList.reorderList .swapArrows a.removeItemButton { background-position: 0 -21px; }
+
 
 #sortBysList .type
 {

@@ -22,6 +22,8 @@
     // Discovery page
     "carousel bg": "3F80C2,1D308A",
     "carousel item title fg": "0071bc",
+    "agency id" : 506,
+    
     // Header text for discover
     "discover header": "Discover useful public datasets from the City of Seattle.",
     

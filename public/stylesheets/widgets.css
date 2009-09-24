@@ -502,6 +502,7 @@ ul.menu li.button .innerWrapper
     background-position: left center;
     background-repeat: no-repeat;
     display: block;
+    min-width: 20px;
 }
 
 ul.menu li.button.prev .innerWrapper

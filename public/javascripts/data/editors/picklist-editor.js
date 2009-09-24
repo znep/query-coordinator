@@ -37,7 +37,9 @@
             {
                 $.each(this.column.options, function(id, v)
                     { valuesList.push({id: id, label: v.text, icon: v.icon}); });
-                this.$dom().addClass('blist-combo-wrapper');
+                this.setFullSize();
+                this.$dom().addClass('blist-combo-wrapper')
+                    .addClass('combo-container');
                 this.$editor().find('.picklist-combo').combo({
                     name: 'picklist-combo',
                     values: valuesList,

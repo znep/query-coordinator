@@ -125,7 +125,7 @@
 
             editorInserted: function()
             {
-                this.$dom().addClass('photo-container');
+                this.setFullSize();
                 var editObj = this;
                 updateButtons(this);
                 editObj.$editor().find('a.button')

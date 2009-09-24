@@ -121,6 +121,11 @@
                 // Implement me
             },
 
+            setFullSize: function()
+            {
+                this.$dom().addClass('full-size');
+            },
+
             /**
              * Set the element's size given sizing constraints.
              */

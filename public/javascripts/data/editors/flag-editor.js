@@ -41,7 +41,9 @@
 
             editorInserted: function()
             {
-                this.$dom().addClass('blist-combo-wrapper').addClass('combo-container');
+                this.setFullSize();
+                this.$dom().addClass('blist-combo-wrapper')
+                    .addClass('combo-container');
                 this.$editor().find('.flag-combo').combo({
                     name: 'flag-combo',
                     values: flagValues,

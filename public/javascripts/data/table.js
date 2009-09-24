@@ -1743,8 +1743,7 @@
                     break;
 
                 case 13:
-                case 32:
-                    // Enter/Space
+                    // Enter
                     if (!event.shiftKey &&
                         $activeCells && $activeCells.hasClass('blist-opener') &&
                         !$activeCells.hasClass('blist-opener-inactive'))

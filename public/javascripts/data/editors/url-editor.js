@@ -47,8 +47,8 @@
             editorInserted: function()
             {
                 var editObj = this;
-                editObj.$dom().addClass('full-size')
-                    .find(':text.href').keydown(function(e)
+                editObj.setFullSize();
+                editObj.$dom().find(':text.href').keydown(function(e)
                     { if (e.keyCode == 9 && !e.shiftKey)
                         { e.stopPropagation(); } });
                 editObj.$dom().find(':text.description').keydown(function(e)

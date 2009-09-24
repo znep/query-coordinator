@@ -480,13 +480,6 @@ div.blist-table-edit-container
 
 div.blist-table-edit-container.combo-container {
     overflow: visible;
-
-    /* Remove default padding because combo expands to fill space */
-    padding: 0;
-}
-
-div.blist-table-edit-container.photo-container {
-    padding: 0;
 }
 
 .blist-table-edit-container.combo-container .blist-combo-dd { font-size: 0.8333em; }

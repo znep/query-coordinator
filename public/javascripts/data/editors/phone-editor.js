@@ -62,6 +62,7 @@
             editorInserted: function()
             {
                 var editObj = this;
+                editObj.setFullSize();
                 editObj.$dom().addClass('combo-container');
                 editObj.$editor().find('.type-combo').combo({
                     name: 'type-combo',

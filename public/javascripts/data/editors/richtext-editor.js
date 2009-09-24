@@ -140,7 +140,7 @@
             $mDiv.css('height', 'auto');
             $('body').append($mDiv);
             // Pad for body padding & extra space
-            ret = {width: $mDiv.width() + 10, height: $mDiv.height() + 3};
+            ret = {width: $mDiv.width() + 10, height: $mDiv.height() + 5};
             $mDiv.remove();
         }
         return ret;
@@ -389,6 +389,7 @@
 
             editorInserted: function()
             {
+                this.setFullSize();
                 this._editor.render();
             },
 
@@ -425,8 +426,18 @@
                 this.showCallback = showCallback;
             },
 
-            querySize: function() {
-                return { width: 400, height: 300 };
+            querySize: function()
+            {
+                var s = measureText(this._value) || {width: 0, height: 0};
+                s.width = Math.max(150, s.width);
+                s.height = Math.max(75, s.height);
+                return s;
+            },
+
+            setSize: function(width, height)
+            {
+                $(this.getSizeElement()).width(width).height(height);
+                this.$editor().find('iframe').width(width).height(height);
             },
 
             supportsFormatting: function()

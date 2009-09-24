@@ -55,8 +55,8 @@ $(function ()
         $(this).closest(".listSection").find(".sectionEdit")
           .find("form :input")
             .val("")
+            .removeClass('error')
           .end()
-          .find('.error').remove().end()
           .slideDown("fast");
         var $form = $(this).closest(".listSection").find(".sectionEdit form");
         if ($form.length > 0)

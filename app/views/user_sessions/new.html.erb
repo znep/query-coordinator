@@ -15,15 +15,7 @@
     <%= render(:partial => 'login') %>
 
     <div class='footer clearfix'>
-      <ul class="rpx_buttons">
-        <li><%= rpx_submit_facebook %></li>
-        <li><%= rpx_submit_google %></li>
-        <li><%= link_to_rpx(image_tag('/stylesheets/images/openid-16x16.gif', 
-                  :alt => "Sign in with a 3rd-party account",
-                  :title => "Sign in with a 3rd-party account")) %></li>
-        <li><%= link_to_rpx "Sign in with your Facebook, Google, or other account" %></li>
-      </ul>
-      </div>
+      <%= render :partial => "rpx/buttons" %>
     </div>
   </div>
 <% end %>

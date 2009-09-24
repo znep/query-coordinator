@@ -7,6 +7,7 @@ default: &default
   orbited_port: 9000
   rpx_signin_url: https://socrata-test.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
+  rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
 
 # Local development
@@ -37,6 +38,7 @@ production:
   orbited_port: 80
   rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
+  rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start
   rpx_openid_url: https://socrata.rpxnow.com/openid/start
   <<: *default
 

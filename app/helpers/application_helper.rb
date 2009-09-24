@@ -359,4 +359,17 @@ HREF
       image_submit_tag(image_path('rpx/google.png'), :title => "#{action} with Google")
     end
   end
+
+  def rpx_submit_yahoo(action = "Sign in", return_url = rpx_return_login_url)
+    content_tag(:form, {:action => "#{APP_CONFIG['rpx_openid_url']}?token_url=#{return_url}", :id => 'googrpx', :method => 'post'}) do
+      hidden_field_tag('openid_identifier', 'yahoo.com') +
+      image_submit_tag(image_path('rpx/yahoo.gif'), :title => "#{action} with Yahoo")
+    end
+  end
+
+  def rpx_submit_windowslive(action = "Sign in", return_url = rpx_return_login_url)
+    content_tag(:form, {:action => "#{APP_CONFIG['rpx_windowslive_url']}?token_url=#{return_url}", :method => 'post'}) do
+      image_submit_tag(image_path('rpx/windowslive.gif'), :title => "#{action} with Windows Live ID")
+    end
+  end
 end

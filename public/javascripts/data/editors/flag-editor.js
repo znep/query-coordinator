@@ -47,14 +47,14 @@
                     values: flagValues,
                     value: this.originalValue || 'null',
                     renderFn: renderFlagValue,
-                    adjustDropdownLayout: function(layout) {
+                    adjustDropdownLayout: this.inContainer() ? function(layout) {
                         // Move dropdown
                         layout.top += 5;
 
                         // Compensate for cell borders
                         layout.left -= 2;
                         layout.width += 4;
-                    }
+                    } : null
                 });
             },
 

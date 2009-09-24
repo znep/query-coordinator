@@ -468,8 +468,18 @@ div.blist-table-editor .align-right { text-align: right; }
     overflow: visible;
 }
 .blist-table .blist-combo-wrapper .blist-table-editor { padding-right: 0; }
-.blist-table .blist-combo
+.blist-table-editor .blist-combo, .blist-table-editor input
 {
+    border: none;
+}
+.blist-table-editor
+{
+    /* Standalone editors (outside of the table) */
+    border: 1px solid #CACACA;
+}
+.blist-table .blist-table-editor
+{
+    /* In-table editors */
     border: none;
 }
 .blist-table-edit-container .blist-combo-dd

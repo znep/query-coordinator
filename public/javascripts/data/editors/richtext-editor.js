@@ -131,7 +131,7 @@
         var ret;
         if (typeof value == 'string')
         {
-            var $mDiv = $('<div class="blist-td">' +
+            var $mDiv = $('<div>' +
                     '<div class="blist-richtext">' + value + '</div></div>');
             // Don't allow them to execute script!
             $mDiv.find('script').remove();
@@ -149,7 +149,7 @@
     // Create the actual TinyMCE editor object
     var createRTE = function()
     {
-        var $root = $('<div class="blist-table-editor blist-td' +
+        var $root = $('<div class="blist-table-editor' +
             ' type-richtext"><textarea class="tinymce"></textarea><div class="blist-rte-container"></div></div>');
         var textarea = $root.find('textarea')[0];
         textarea.id = "richtext_" + nextEditorID++;

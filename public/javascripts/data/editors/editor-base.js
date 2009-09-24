@@ -216,6 +216,13 @@
             },
 
             /**
+             * Am I embedded in a table edit container?
+             */
+            inContainer: function() {
+                return this.$editor() && this.$editor().closest('.blist-table-edit-container').length ? true : false;
+            },
+
+            /**
              * Query whether this editor supports formatting
              */
             supportsFormatting: function()

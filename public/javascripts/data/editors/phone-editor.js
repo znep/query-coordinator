@@ -68,12 +68,12 @@
                     values: typeValues,
                     value: typeValue(editObj) || 'null',
                     renderFn: renderTypeValue,
-                    adjustDropdownLayout: function(layout) {
+                    adjustDropdownLayout: this.inContainer() ? function(layout) {
                         // Move dropdown
                         layout.top += 4;
                         layout.left -= 2;
                         layout.width += 4;
-                    }
+                    } : null
                });
                 editObj.$dom().find(':text.number').keydown(function(e)
                     { if (e.keyCode == 9 && !e.shiftKey)

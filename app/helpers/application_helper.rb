@@ -234,7 +234,7 @@ HREF
       if value.is_a? Array
         value = value.join(',')
       end
-      %Q[<meta name="#{key.to_s}" value="#{sanitize(value)}" />]
+      %Q[<meta name="#{key.to_s}" value="#{escape_once(value)}" />]
     end.join("\n")
   end
 

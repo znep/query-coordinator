@@ -20,6 +20,11 @@ class User < Model
   def create(inviteToken = nil)
     User.create(data_hash, inviteToken)
   end
+
+  def update_password(params)
+    path = "/users/#{id}.json"
+    return self.class.parse(CoreServer::Base.connection.update_request(path, params.to_json))
+  end
   
   # Needed for multiuser
   def multiuser_authentication_token(timestamp)

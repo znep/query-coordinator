@@ -33,6 +33,15 @@ class UserSession
       end
     end
 
+    def user_no_security_check(user)
+      session = new()
+      if session.find_user(user)
+        session
+      else
+        nil
+      end
+    end
+
     def controller=(value)
       Thread.current[:session_controller] = value
     end
@@ -116,19 +125,25 @@ class UserSession
     return user
   end
 
+  # Obtain a UserSession based on an RpxAuthentication object
+  # If the RpxAuthentication has a valid user associated with it, log in
+  # that user.
   def find_rpx_token(rpx_authentication)
     result = nil
     if rpx_authentication.existing_account?
-      user = rpx_authentication.user
+      result = find_user(rpx_authentication.user)
+    end
+
+    result
+  end
+
+  # Obtain a UserSession initialized based on a User object.
+  # WARNING: This doesn't offer any authentication checks. You better know that
+  # this user should be logged in before you go calling it.
+  def find_user(user)
+    result = nil
+    unless user.nil?
       create_core_session_credentials(user)
-
-      # Plumb the cookie from the core server back to the user's browser
-      #response.get_fields('set-cookie').each do |cookie_header|
-      #  if match = /^remember_token=([A-Za-z0-9]+)/.match(cookie_header)
-      #    cookies['remember_token'] = { :value => match[1], :expires => 2.weeks.from_now }
-      #  end
-      #end
-
       self.new_session = false
       UserSession.update_current_user(user, core_session)
       result = self

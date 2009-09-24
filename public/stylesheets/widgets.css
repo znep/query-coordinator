@@ -84,6 +84,26 @@
 .actionButtons.blockList li a { background-position: right -21px; }
 .actionButtons.blockList li a.arrowButton { background-position: right -42px; }
 
+.actionButtons.ff li { background-position: left -63px;}
+.actionButtons.ff li a { background-position: right -84px;}
+.actionButtons.ff li a.arrowButton { background-position: right -105px;}
+
+.actionButtons.ca li { background-position: left -126px;}
+.actionButtons.ca li a { background-position: right -147px;}
+.actionButtons.ca li a.arrowButton { background-position: right -168px;}
+
+.actionButtons.e7 li { background-position: left -189px;}
+.actionButtons.e7 li a { background-position: right -210px;}
+.actionButtons.e7 li a.arrowButton { background-position: right -231px;}
+
+.actionButtons.ec li { background-position: left -252px;}
+.actionButtons.ec li a { background-position: right -273px;}
+.actionButtons.ec li a.arrowButton { background-position: right -294px;}
+
+.actionButtons.e3ecf7 li { background-position: left -315px;}
+.actionButtons.e3ecf7 li a { background-position: right -336px;}
+.actionButtons.e3ecf7 li a.arrowButton { background-position: right -357px;}
+
 /*** END: action buttons ***/
 
 /*** START: small buttons ***/

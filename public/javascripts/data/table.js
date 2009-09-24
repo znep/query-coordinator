@@ -684,7 +684,8 @@
                 resizeEditor();
                 $curEditContainer.bind('resize', function() { resizeEditor(); });
                 $editor.closest('.blist-table-edit-container').removeClass('blist-table-util').addClass('shown');
-                blistEditor.focus();
+                if (mode != expandEditMode)
+                    blistEditor.focus();
             }
 
             blistEditor.initComplete(displayCallback);

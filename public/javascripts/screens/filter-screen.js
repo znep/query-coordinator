@@ -70,6 +70,7 @@ filterNS.filterRemove = function(event) {
   event.preventDefault();
   var $this = $(this);
   var $row = $this.closest("tr");
+  var $table = $this.closest("tbody");
   if ($this.closest("table").find("tbody tr").length > 1)
   {
     if ($row.siblings('tr').length === 0)
@@ -304,6 +305,10 @@ filterNS.row = function($row) {
     ];
 
     $.each(value, function(i, v) {
+      if (v == null)
+      {
+        v = "";
+      }
       children.push({type: "literal", value: v});
     });
 

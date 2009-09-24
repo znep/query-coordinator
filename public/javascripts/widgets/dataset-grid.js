@@ -309,6 +309,7 @@
                 {
                     datasetObj.settings._filterCount = 0;
                     datasetObj.settings._filterIds = {};
+                    datasetObj.settings._model.reloadView();
                 }
                 if (datasetObj.settings._filterCount > 0)
                 {

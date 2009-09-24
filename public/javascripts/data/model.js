@@ -484,7 +484,7 @@ blist.namespace.fetch('blist.data');
             this.change(supplement);
         };
 
-        var reloadView = function()
+        this.reloadView = function()
         {
             var ajaxOptions = $.extend({}, supplementalAjaxOptions);
             if (curOptions.progressiveLoading)
@@ -1354,7 +1354,7 @@ blist.namespace.fetch('blist.data');
             if (!isColumnPresent)
             {
                 // Reload columns from server
-                reloadView();
+                this.reloadView();
             }
             else
             {

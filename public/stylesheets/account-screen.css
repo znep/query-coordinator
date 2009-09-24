@@ -1,3 +1,21 @@
+.no_password .oldpassword,
+.no_password .passwordSection p.has_password,
+.has_password .passwordSection p.no_password,
+.no_password ul.actionButtons li#passwordFormClear,
+.no_openid ul.actionButtons li#passwordFormClear
+{
+    display: none;
+}
+
+#mainColumnContent ul.actionButtons
+{
+    margin-left: 144px;
+}
+#mainColumnContent ul.actionButtons li
+{
+    width: 9em;
+}
+
 .listSection
 {
     border-top: 1px dotted #999;

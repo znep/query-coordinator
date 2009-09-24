@@ -6,10 +6,27 @@ blist.account.toggleNoOpenId = function()
     if ($table.find('tbody tr').length <= 1)
     {
         $table.find('#no_openid_identifiers').removeClass('hidden');
+        $("#accountEditSection").removeClass("has_openid").addClass("no_openid");
     }
     else
     {
         $table.find('#no_openid_identifiers').addClass('hidden');
+        $("#accountEditSection").removeClass("no_openid").addClass("has_openid");
+    }
+};
+
+blist.account.handleResponseErrors = function(responseData, form)
+{
+    if (responseData.error)
+    {
+        form.find('.errorMessage').text(responseData.error);
+    }
+    else
+    {
+        form.find('.errorMessage').text('');
+        form.closest(".sectionEdit").slideUp("fast");
+        form.closest(".listSection")
+            .find(".sectionShow").slideDown("fast");
     }
 };
 
@@ -77,19 +94,7 @@ $(function ()
                 data: requestData,
                 success: function(responseData)
                 {
-                    if (responseData.error)
-                    {
-                        $form.find('.errorMessage').text(responseData.error);
-                    }
-                    else
-                    {
-                        $(".dataEmail").text(responseData.user.email);
-
-                        $form.find('.errorMessage').text('');
-                        $form.closest(".sectionEdit").slideUp("fast");
-                        $form.closest(".listSection")
-                            .find(".sectionShow").slideDown("fast");
-                    }
+                    blist.account.handleResponseErrors(responseData, $form);
                 }
             });
         }
@@ -107,18 +112,85 @@ $(function ()
                 equalTo: "#user_email"
             },
             'user[email_password]': "required"
+        },
+        submitHandler: function(form)
+        {
+            $form = $(form);
+
+            var requestData = $.param($form.find(":input"));
+            $.ajax({
+                url: $form.attr("action"),
+                dataType: "jsonp",
+                contentType: "application/json",
+                data: requestData,
+                success: function(responseData)
+                {
+                    blist.account.handleResponseErrors(responseData, $form);
+                    if (!responseData.error)
+                    {
+                        $(".dataEmail").text(responseData.user.email);
+                    }
+                }
+            });
         }
     });
+
     // Password form.
-    $(".passwordSection form").validate({
+    $passwordForm = $(".passwordSection form");
+    $passwordForm.validate({
         rules: {
-            'user[password_old]': "required",
             'user[password_new]': "required",
             'user[password_confirm]': {
                 required: true,
                 equalTo: "#user_password_new"
             }
+        },
+        submitHandler: function(form)
+        {
+            $form = $(form);
+
+            var requestData = $.param($form.find(":input"));
+            $.ajax({
+                url: $form.attr("action"),
+                dataType: "jsonp",
+                contentType: "application/json",
+                data: requestData,
+                success: function(responseData)
+                {
+                    blist.account.handleResponseErrors(responseData, $form);
+                    if (!responseData.error)
+                    {
+                        $("#accountEditSection").removeClass("no_password").addClass("has_password");
+                    }
+                }
+            });
         }
+    });
+    $passwordForm.find("#passwordFormSave").click(function() {
+        $passwordForm.submit();
+    });
+    $passwordForm.find("#passwordFormClear").click(function() {
+        rules1 = $passwordForm.find('#user_password_new').rules('remove');
+        rules2 = $passwordForm.find('#user_password_confirm').rules('remove');
+
+        $passwordForm.find(":input").not("#user_password_old").val("");
+        var requestData = $.param($passwordForm.find(":input"));
+        $.ajax({
+            url: $passwordForm.attr("action"),
+            dataType: "jsonp",
+            data: requestData,
+            success: function(responseData)
+            {
+                blist.account.handleResponseErrors(responseData, $passwordForm);
+                if (!responseData.error)
+                {
+                    $("#accountEditSection").removeClass("has_password").addClass("no_password");
+                }
+            }
+        });
+
+        $passwordForm.find('#user_password_new').rules('add', rules1);
+        $passwordForm.find('#user_password_confirm').rules('add', rules2);
     });
 
     $('.sectionEdit form input').keypress(function (e)

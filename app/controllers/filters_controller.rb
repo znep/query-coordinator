@@ -1,4 +1,6 @@
 class FiltersController < ApplicationController
+  skip_before_filter :require_user
+
   def index
     @view = View.find(params[:blist_id])
 

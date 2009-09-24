@@ -1200,6 +1200,12 @@ div#sortBysList.reorderList li .itemWrapper
     padding: 0.5em 0;
 }
 
+#filterList .information
+{
+    display: none;
+    text-align: center;
+}
+
 #filterTable 
 {
     table-layout: fixed;

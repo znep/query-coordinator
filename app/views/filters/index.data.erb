@@ -29,6 +29,10 @@
     <tbody>
     </tbody>
   </table>
+  
+  <p class="information">
+    There are no columns to sort yet. Please add some data, then try again.
+  </p>
 
   <div class="createBar">
     <div class="error errorMessage"></div>
@@ -46,7 +50,24 @@
     var columns = $("#readGrid").blistModel().meta().columns[0];
     var view = $("#readGrid").blistModel().meta().view;
 
-    if (view.viewFilters != undefined)
+    for (var i = 0; i < columns.length; i++)
+    {
+        // remove nested table entries from the array
+        if (columns[i].type == 'nested_table')
+        {
+            columns.splice(i, 1);
+            i--; // go back an index if we removed something
+        }
+    }
+
+    if (columns.length === 0)
+    {
+      $('#filterTable, #filterList > *').hide();
+      $('#filterList p.information, #filterList .createBar').show();
+      $('#filterList .createBar .actionButtons a').text('Continue');
+      return;
+    }
+    else if (view.viewFilters != undefined)
     {
       $("#filterOperator").val(view.viewFilters.value.toLowerCase());
       blist.filter.populate($("#filterTable tbody"), view.viewFilters, columns);

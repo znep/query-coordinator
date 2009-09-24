@@ -147,6 +147,7 @@ filterNS.filterColumnChanged = function() {
 
 filterNS.addFilterRow = function($table, columns) {
   filterNS.columns = columns;
+
   var id = "filter-row-" + filterNS.uid;
   filterNS.uid += 1;
 
@@ -227,8 +228,7 @@ filterNS.row = function($row) {
     value.push($(r).blistEditor().currentValue());
   });
 
-  // Translate values. Fuck you filters for not accepting the same format as
-  // rows.
+  // Translate values. Filters have a different format which is awesome.
   if (column.type == "phone")
   {
     var filter = []
@@ -261,9 +261,21 @@ filterNS.row = function($row) {
     var row = {type: "operator"};
     row.value = filterNS.displayToRealCondition($row.find(".conditionSelect").val().toUpperCase());
 
+    var hasValue = false;
+    $.each(value, function(i, v) {
+      if ((v !== null) || (column.type == 'checkbox'))
+      {
+          hasValue = true;
+      }
+    });
+    if (!hasValue)
+    {
+        return false;
+    }
+
     if (column.type == "checkbox")
     {
-      if (value == true)
+      if (value[0] == true)
       {
         value = "1";
       }
@@ -305,10 +317,6 @@ filterNS.row = function($row) {
     ];
 
     $.each(value, function(i, v) {
-      if (v == null)
-      {
-        v = "";
-      }
       children.push({type: "literal", value: v});
     });
 
@@ -324,7 +332,11 @@ filterNS.getFilter = function($table, operator) {
 
   $table.find("tr").each(function(i, row) {
     var $row = $(row);
-    children = children.concat(filterNS.row($row));
+    var rowResult = filterNS.row($row);
+    if (rowResult !== false)
+    {
+        children = children.concat(rowResult);
+    }
   });
   j.children = children;
 
@@ -393,7 +405,7 @@ filterNS.populate = function($table, filters, columns) {
         
         if (col.type == "date")
         {
-            value = new Date(value);
+            value = new Date(value).getTime() / 1000;
         }
 
         filterNS.createEditor($row.find(".renderer" + j), col, value);

@@ -1100,6 +1100,13 @@ div.itemWrapper div.ascension
     margin: 0.2em;
     border-left: 1px solid #999;
     cursor: auto;
+    background-color: white;
+}
+
+div.activeList li.hover div.itemWrapper div.ascension,
+div.activeList li.reorderList-selected div.itemWrapper div.ascension
+{
+    background-color: #c8e2f7;
 }
 
 div.itemWrapper div.sort

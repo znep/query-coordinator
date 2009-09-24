@@ -137,7 +137,7 @@ $(function ()
 
     // Password form.
     $passwordForm = $(".passwordSection form");
-    $passwordForm.validate({
+    $passwordValidator = $passwordForm.validate({
         rules: {
             'user[password_new]': "required",
             'user[password_confirm]': {
@@ -170,8 +170,9 @@ $(function ()
         $passwordForm.submit();
     });
     $passwordForm.find("#passwordFormClear").click(function() {
-        rules1 = $passwordForm.find('#user_password_new').rules('remove');
-        rules2 = $passwordForm.find('#user_password_confirm').rules('remove');
+        old_password = $passwordForm.find('#user_password_old').val();
+        $passwordValidator.resetForm();
+        $passwordForm.find('#user_password_old').val(old_password);
 
         $passwordForm.find(":input").not("#user_password_old").val("");
         var requestData = $.param($passwordForm.find(":input"));
@@ -188,9 +189,6 @@ $(function ()
                 }
             }
         });
-
-        $passwordForm.find('#user_password_new').rules('add', rules1);
-        $passwordForm.find('#user_password_confirm').rules('add', rules2);
     });
 
     $('.sectionEdit form input').keypress(function (e)

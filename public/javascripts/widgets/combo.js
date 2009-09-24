@@ -21,7 +21,7 @@
         var value = options.value;
         if (value == null)
         { value = defaultValue; }
-        var $value = $('<div class="blist-combo-value"></div>');
+        var $value = $('<div class="blist-combo-value clearfix"></div>');
         var $input = $('<input class="blist-combo-keyhandler" />');
 
         // This object handles value management for the element.  See values.js
@@ -92,7 +92,7 @@
                 $this.closest(".blist-combo-wrapper").append($dropdown);
                 for (var i = 0; i < values.length; i++)
                 {
-                    var $li = $('<li></li>');
+                    var $li = $('<li class="clearfix"></li>');
                     $dropdown.append($li);
                     rowRenderFn.apply($li, [ values[i] ]);
                 }
@@ -166,11 +166,11 @@
         // container (in the variable "$value")
         var renderValue = function() {
             // Locate the object associated with the value
-            
+
             var valueObj = getSelectedValueObject(value);
-            
+
             // Reset all classes on the value.
-            $value.removeClass().addClass("blist-combo-value");
+            $value.removeClass().addClass("blist-combo-value clearfix");
 
             // Render empty values
             if (valueObj === undefined)

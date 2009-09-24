@@ -2500,6 +2500,8 @@
         var initMeta = function(newModel)
         {
             begin("initMeta");
+            killHotExpander();
+
             model = newModel;
 
             // Convert the model columns to table columns

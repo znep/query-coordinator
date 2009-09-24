@@ -398,12 +398,13 @@ blist.namespace.fetch('blist.data.types');
         if (on <= 0) { return ''; }
         else if (on > range) { on = range; }
         var off = range - on;
-        return (permissions.canEdit ? "<div class='blist-star-0'></div>" : "") +
+        return "<div class='blist-tstars-render-wrapper' style='width:" + range + "px'>" +
+            (permissions.canEdit ? "<div class='blist-star-0'></div>" : "") +
             "<div class='blist-tstars' style='width: " + range +
             "px'><div class='blist-cell blist-tstar-on' style='width: " + on +
             "px'></div><div class='blist-cell blist-tstar-off' style='width: " +
             off + "px; background-position-x: " + -(on % STAR_WIDTH) +
-            "px'></div></div>";
+            "px'></div></div></div>";
     };
 
     var renderTextStars = function(value, range)

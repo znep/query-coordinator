@@ -75,7 +75,7 @@
                     var edHtml = '<div class="blist-table-editor ' +
                         'type-' + this.column.type + align + '">' +
                         '<input />' +
-                        '<div class="star star-clear" title="Clear"></div>';
+                        '<span class="star star-clear" title="Clear"></span>';
                     for (var i = 0; i < this.range(); i++)
                     {
                         edHtml += '<span class="star' +

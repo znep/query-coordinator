@@ -765,11 +765,13 @@ ul.menu.rowMenu li
 .columnHeaderMenu .blist-flag { width: 25px; }
 
 .columnHeaderMenu .blist-tstars-wrapper,
+.columnHeaderMenu .blist-tstars-render-wrapper,
 .columnHeaderMenu .blist-tstars
 {
     display: block;
     height: 16px;
 }
+.columnHeaderMenu .blist-tstars-render-wrapper { padding: 0; }
 .columnHeaderMenu .blist-star-0 { display: none; }
 
 /* This is only used for initial positioning; the menu is pulled out, so real

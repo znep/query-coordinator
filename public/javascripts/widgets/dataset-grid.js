@@ -64,7 +64,7 @@
                     .bind('column_filter_change', function (event, c)
                         { columnFilterChanged(datasetObj, c); })
                     .bind('server_row_change', function(event)
-                        { updateAggregates(datasetObj); })
+                        { serverRowChange(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -432,6 +432,12 @@
             }
             datasetObj.summaryStale = true;
         }
+    };
+
+    var serverRowChange = function(datasetObj)
+    {
+        datasetObj.summaryStale = true;
+        updateAggregates(datasetObj);
     };
 
     var updateAggregates = function(datasetObj)

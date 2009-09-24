@@ -47,7 +47,6 @@
 .blist-combo-wrapper.lr_justified .blist-combo-value,
 .blist-combo-wrapper.lr_justified li
 {
-    overflow: auto;
     clear: both;
 }
 

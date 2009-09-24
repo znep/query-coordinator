@@ -339,10 +339,12 @@
                     { me.actionStatesChanged(); });
                     this._editor.onKeyDown.add(function(ed, e)
                     {
-                        // Esc or F2
-                        if (e.keyCode == 27 || e.keyCode == 113)
+                        // Esc, F2 or tab
+                        if (e.keyCode == 27 || e.keyCode == 113 || e.keyCode == 9)
                         {
-                            me.$dom().trigger('edit_end', [e.keyCode != 27, e]);
+                            // Note -- convert original event from native to jQuery;
+                            // handling logic in the table requires this
+                            me.$dom().trigger('edit_end', [e.keyCode != 27, $.event.fix(e)]);
                             return false;
                         }
                     });

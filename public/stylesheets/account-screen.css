@@ -11,7 +11,7 @@
 {
     margin-left: 144px;
 }
-.passwordSection ul.actionButtons li
+.passwordSection ul.actionButtons li#passwordFormSave
 {
     width: 9em;
 }

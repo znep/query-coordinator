@@ -200,7 +200,13 @@ $(function ()
     $(".openIdSection td.edit_handle a").live("click", function(event)
     {
         event.preventDefault();
-        if (confirm("Are you sure you want to delete this identifier?"))
+
+        if ($('#accountEditSection').hasClass('no_password') &&
+            $(this).closest('table').find('tbody tr').length <= 2)
+        {
+            alert("You cannot delete your last OpenID identifier without first setting a password.");
+        }
+        else if (confirm("Are you sure you want to delete this identifier?"))
         {
             var $link = $(this);
             $.ajax({

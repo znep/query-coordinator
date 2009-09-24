@@ -24,9 +24,7 @@ blist.account.handleResponseErrors = function(responseData, form)
     else
     {
         form.find('.errorMessage').text('');
-        form.closest(".sectionEdit").slideUp("fast");
-        form.closest(".listSection")
-            .find(".sectionShow").slideDown("fast");
+        form.closest(".listSection").showEdit("displayShowSection");
     }
 };
 
@@ -48,8 +46,7 @@ $(function ()
     if (window.location.hash)
     {
         var $elemToClick = $("a" + window.location.hash);
-        $elemToClick.closest(".sectionShow").slideUp("fast");
-        $elemToClick.closest(".listSection").find(".sectionEdit").slideDown("fast");
+        $elemToClick.closest(".listSection").showEdit("displayEditSection");
     }
 
     // Form validation.

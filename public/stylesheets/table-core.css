@@ -429,7 +429,7 @@ div.blist-star-0
 }
 
 .blist-table-navigator {
-    position: absolute;
+    position: fixed;
     left: -10000px;
 }
 
@@ -553,9 +553,9 @@ div.blist-table-editor .align-right { text-align: right; }
 .blist-table-editor.type-photo input
 {
     height: 0;
-    left: -1000px;
+    left: -10000px;
     padding: 0;
-    position: absolute;
+    position: fixed;
     width: 0;
 }
 

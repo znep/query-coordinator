@@ -1177,71 +1177,148 @@ div#sortBysList.reorderList li .itemWrapper
 
 #filterList
 {
-  padding: 1em;
+    padding: 1em;
 }
 
 #filterList p
 {
-  padding: 0.5em 0;
-  font-size: 1.2em;
+    font-size: 1.2em;
+    padding: 0.5em 0;
 }
 
 #filterTable 
 {
-  table-layout: fixed;
-  width: 100%;
-}
-
-#filterTable thead th:first-child,
-#filterTable thead th:first-child + th
-{
-  border-right: solid 1px #fff;
+    table-layout: fixed;
+    width: 100%;
 }
 
 #filterTable thead th
 {
-  text-align: left;
-  padding: 0.5em;
-  color: #fff;
-  font-size: 1.3em;
+    border-left: solid 1px #fff;
+    color: #fff;
+    font-size: 1.3em;
+    padding: 0.5em;
+    text-align: left;
+}
+
+#filterTable thead th:first-child
+{
+    border-left: none;
 }
 
 #filterTable th.delete
 {
-  width: 1%;
+    text-indent: -9999px;
+    width: 16px;
 }
 
-#filterTable th.name,
+#filterTable th.name
+{
+    width: 10em;
+}
+
 #filterTable th.condition
 {
-  width: 24%;
-}
-
-#filterTable th.editor
-{
-  width: 50%;
+    width: 10.5em;
 }
 
 #filterTable .addRemove
 {
-  width: 55px;
+    width: 13.1em;
+}
+
+#filterTable tbody
+{
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 #filterTable tbody td
 {
-  padding: 0.3em;
-  vertical-align: top;
+    background-color: #ececec;
+    padding: 0.3em;
+    vertical-align: top;
+}
+
+#filterTable tbody tr td.delete a
+{
+    background: transparent url(/stylesheets/images/content/section_close_button.png) no-repeat scroll 0 0;
+    display: block;
+    height: 16px;
+    margin: 2px;
+    text-indent: -9999px;
+    width: 16px;
+}
+
+#filterTable tbody tr.only td.delete a
+{
+    display: none;
 }
 
 #filterTable tbody td.addRemove
 {
-  padding: 0;
+    padding: 0;
+}
+
+#filterTable tbody tr td.addRemove ul.actionButtons
+{
+    display: none;
+}
+
+#filterTable tbody tr.last td.addRemove ul.actionButtons
+{
+    display: block;
+    margin-right: 2.5em;
+    margin-top: 0.3em;
+}
+
+#filterTable tbody tr td.addRemove ul.actionButtons li
+{
+    background-position: 0 -252px;
+}
+
+#filterTable tbody tr td.addRemove ul.actionButtons li a
+{
+    background-position: right -273px;
+}
+
+#filterTable input[type="text"]
+{
+    font-size: 1em;
+    padding: 0.1em;
+    width: 18em;
+}
+
+#filterTable .between input[type="text"]
+{
+    font-size: 1em;
+    padding: 0.1em;
+    width: 9em;
 }
 
 #filterTable .renderer.between 
 {
     float: left;
-    width: 40%;
+}
+
+#filterTable .type-url .labels
+{
+    position: absolute;
+    text-align: right;
+    width: 5em;
+}
+
+#filterTable .type-url .labels span
+{
+    display: block;
+    margin-top: 0.2em;
+}
+#filterTable .type-url input
+{
+    display: block;
+    margin-left: 6em;
+    margin-top: 0.1em;
+    width: 12em;
 }
 
 #filterTable .ampersand
@@ -1253,53 +1330,48 @@ div#sortBysList.reorderList li .itemWrapper
 
 #filterTable .renderer .blist-td
 {
-  line-height: normal;
-  float: none;
-  overflow: default;
-  height: auto;
-}
-
-#filterTable .renderer .blist-td input
-{
-  width: 100%;
+    float: none;
+    height: auto;
+    line-height: normal;
+    overflow: default;
 }
 
 #filterTable .columnSelect,
 #filterTable .conditionSelect
 {
-  width: 100%;
+    width: 100%;
 }
 
 #filterTable .renderer .blist-td input
 {
-  padding: 0;
-  line-height: 1em;
-  height: auto;
+    height: auto;
+    line-height: 1em;
+    padding: 0;
 }
 
 #filterTable .add,
 #filterTable .remove
 {
-  height: 25px;
-  width: 27px;
-  display: block;
-  float: left;
-  background: url(/stylesheets/images/widgets/filter_add_remove_sprite.png) -2px 0 no-repeat;
+    background: url(/stylesheets/images/widgets/filter_add_remove_sprite.png) -2px 0 no-repeat;
+    display: block;
+    float: left;
+    height: 25px;
+    width: 27px;
 }
 
 #filterTable .add
 {
-  display: none;
-  background-position: -2px -29px;
+    background-position: -2px -29px;
+    display: none;
 }
 
 #filterTable tr.last .add
 {
-  display: block;
+    display: block;
 }
 
 #filterTable tr.only .remove
 {
-  display: none;
+    display: none;
 }
 /*** END: Filter dialog ***/

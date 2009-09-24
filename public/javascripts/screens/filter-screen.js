@@ -63,14 +63,44 @@ filterNS.filterAdd = function(event) {
   event.preventDefault();
   var $table = $(this).closest("tbody");
   filterNS.addFilterRow($table, filterNS.columns);
+  filterNS.setTableScroll($table);
 };
 
 filterNS.filterRemove = function(event) {
   event.preventDefault();
-  if ($(this).closest("table").find("tbody tr").length > 1)
+  var $this = $(this);
+  var $row = $this.closest("tr");
+  if ($this.closest("table").find("tbody tr").length > 1)
   {
-    $(this).closest("tr").remove();
+    if ($row.siblings('tr').length === 0)
+    {
+        // TODO: clear contents of the row
+    }
+    else
+    {
+        $row.remove();
+    }
   }
+  filterNS.setTableScroll($table);
+};
+
+filterNS.setTableScroll = function($table)
+{
+    // tbody max-height doesn't work on a lot of browsers
+    totalHeight = 0;
+    $table.children('tr').each(function()
+    {
+        totalHeight += $(this).outerHeight(true);
+    });
+
+    if (totalHeight > 300)
+    {
+        $table.height(300);
+    }
+    else
+    {
+        $table.height(null);
+    }
 };
 
 filterNS.createEditor = function($renderer, column, value) {
@@ -120,11 +150,12 @@ filterNS.addFilterRow = function($table, columns) {
   filterNS.uid += 1;
 
   //TODO: what if there's no columns
-  $table.append('<tr id="' + id + '"><td class="delete">x</td><td>' +
+  $table.append('<tr id="' + id + '"><td class="delete"><a href="#delete">delete</a></td><td>' +
       filterNS.renderColumnSelect(columns) +
       '</td><td class="condition">' + filterNS.renderConditionSelect(columns[0]) + 
       '</td><td class="rendererCell"><div class="renderer"></div></td>' +
-      '<td class="addRemove"></td></tr>');
+      '<td class="addRemove"><ul class="actionButtons"><li>' +
+      '<a href="#addCondition">Add Condition</a></li></ul></td></tr>');
 
   filterNS.createEditor($table.find("#" + id + " .renderer"), columns[0]);
 
@@ -242,10 +273,27 @@ filterNS.row = function($row) {
     }
     else if (column.type == "url")
     {
-      // TODO: Yeah, this doesn't work. But at least it doesn't crash.
-      var url = value.url == null ? "" : value.url;
-      var desc = value.description == null ? "" : value.description;
-      value = url + desc;
+      // TODO: I've been told that this is the proper format, but
+      // it seems to just filter everything out.
+      value = ['<a href="' + (value[0].url || '') + '">' + (value[0].description || '') + '</a>'];
+    }
+    else if (column.type == "date")
+    {
+      $.each(value, function(i, v) {
+        var dateObj = new Date();
+        dateObj.setTime(v * 1000);
+        var mm = dateObj.getMonth() + 1;
+        if (mm < 10)
+        {
+            mm = '0' + mm;
+        }
+        var dd = dateObj.getDate();
+        if (dd < 10)
+        {
+            dd = '0' + dd;
+        }
+        value[i] = mm + '/' + dd + '/' + dateObj.getFullYear();
+      });
     }
 
     var children = [

@@ -64,5 +64,8 @@
       $("#readGrid").datasetGrid().updateFilter(viewFilters);
       $("#modal .jqmClose").click();
     });
+    
+    $('#filterList td.addRemove a').live('click', blist.filter.filterAdd);
+    $('#filterList td.delete a').live('click', blist.filter.filterRemove);
   });
 </script>

@@ -1013,16 +1013,16 @@ dl.versionInfo dd
 #sortBysList .border-right
 {
     height: 176px;
-    width: 239px; 
+    width: 25.2em; 
     border: 1px solid #999;
     position: absolute;
-    left: 44px;
+    left: 4em;
     top: 13px;
 }
 
 #sortBysList .border-right
 {
-    left: 379px;
+    left: 38.3em;
 }
 
 #modal .sortOrderIcon
@@ -1133,7 +1133,7 @@ div#sortBysList .inactiveList
 {
     height: 17.5em;
     overflow: auto;
-    width: 25.5em;
+    width: 26em;
     padding-left: 3.5em;
     margin-top: 1.5em;
     position: relative;
@@ -1142,7 +1142,7 @@ div#sortBysList .inactiveList
 #sortBysList .removeAllLink
 {
     position: absolute;
-    bottom: -0.5em;
+    bottom: -1.2em;
     left: 4.5em;
     color: #333;
     font-weight: bold;
@@ -1166,9 +1166,16 @@ div#sortBysList.reorderList li .itemWrapper
     border-bottom: 1px solid #D0D0D0;
 }
 
-#sortBysList ul.saveButton
+.createBar ul.saveButton
 {
+    width: 14em;
     margin-top: 0;
+    margin-right: 1em;
+}
+
+.createBar ul.saveButton li
+{
+    width: 14em;
 }
 
 /*** END: Sort dialog ***/

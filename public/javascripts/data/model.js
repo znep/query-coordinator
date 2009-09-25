@@ -2100,7 +2100,9 @@ blist.namespace.fetch('blist.data');
         {
             if (config.meta)
             {
-                this.updateAggregateHash(config.meta.aggregates);
+                meta.columns = null;
+                config.meta.columnFilters = meta.columnFilters;
+                this.meta(config.meta);
             }
 
             var installActiveOnly = true;
@@ -2287,7 +2289,7 @@ blist.namespace.fetch('blist.data');
 
             if (meta.columnFilters != null)
             {
-                var cf = meta.columnFilters[filterCol.dataIndex];
+                var cf = meta.columnFilters[filterCol.id];
                 // First check if this is the only viewFilter; if so, clear it
                 if (meta.view.viewFilters == cf.viewFilter)
                 {
@@ -2305,7 +2307,7 @@ blist.namespace.fetch('blist.data');
                         meta.view.viewFilters = null;
                     }
                 }
-                meta.columnFilters[filterCol.dataIndex] = null;
+                meta.columnFilters[filterCol.id] = null;
             }
         };
 
@@ -2338,7 +2340,7 @@ blist.namespace.fetch('blist.data');
             }
 
             // If there is already a filter for this column, clear it out
-            if (meta.columnFilters[filterCol.dataIndex])
+            if (meta.columnFilters[filterCol.id])
             {
                 clearColumnFilterData(filterCol);
             }
@@ -2376,7 +2378,7 @@ blist.namespace.fetch('blist.data');
 
             // Store the filter in an easier format to deal with elsewhere;
             //  also keep a pointer back to the viewFilter
-            meta.columnFilters[filterCol.dataIndex] =
+            meta.columnFilters[filterCol.id] =
                 {column: filterCol, value: filterVal, viewFilter: filterItem};
 
             this.columnFilterChange(filterCol);
@@ -2400,7 +2402,7 @@ blist.namespace.fetch('blist.data');
                 meta.columnFilters = {};
             }
 
-            if (meta.columnFilters[filterCol.dataIndex])
+            if (meta.columnFilters[filterCol.id])
             {
                 clearColumnFilterData(filterCol);
             }

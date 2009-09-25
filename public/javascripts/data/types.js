@@ -260,6 +260,7 @@ blist.namespace.fetch('blist.data.types');
             num = value.phone_number || '';
             type = value.phone_type;
         }
+        else { num = value + ''; }
 
         var label = num + "";
         if (label.match(/^\d{10}$/))
@@ -357,7 +358,8 @@ blist.namespace.fetch('blist.data.types');
     var renderURL = function(value, captionIsHTML, plain)
     {
         if (!value) { return ''; }
-        else if (value instanceof Array)
+        var url;
+        if (value instanceof Array)
         {
             url = value[0];
             caption = value[1] || url;
@@ -367,6 +369,8 @@ blist.namespace.fetch('blist.data.types');
             url = value.url;
             caption = value.description || url;
         }
+        else { url = value + ''; }
+
         if (url && url != '' && !url.match(/^([a-z]+):/i) &&
                 url.indexOf('/') != 0)
         { url = 'http://' + url; }
@@ -439,8 +443,8 @@ blist.namespace.fetch('blist.data.types');
     var renderDocument = function(value, base, plain)
     {
         var url, name, size;
-        if (value == null) { return ''; }
-        if (value instanceof Array)
+        if (!value) { return ''; }
+        else if (value instanceof Array)
         {
             url = value[2];
             name = value[1];
@@ -452,8 +456,9 @@ blist.namespace.fetch('blist.data.types');
             name = value.filename;
             size = value.size;
         }
-        else { url = value; }
-        if (url == null) { return ''; }
+        else { url = value + ''; }
+
+        if (!url) { return ''; }
         if (plain) { return name || ''; }
 
         var rv = renderURL([ (base || '') + url, name || 'Document' ]);

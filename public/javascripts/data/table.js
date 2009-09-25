@@ -136,7 +136,7 @@
             {
                 $.each(columns, function (i, c)
                 {
-                    if (colFilters[c.dataIndex] != null)
+                    if (colFilters[c.id] != null)
                     {
                         $('.filter', c.dom).addClass('active')
                             .closest('.blist-th').addClass('filtered');
@@ -2580,6 +2580,8 @@
         {
             begin("initMeta");
             killHotExpander();
+            hideActiveCell();
+            endEdit(DEFAULT_EDIT_MODE);
 
             model = newModel;
 

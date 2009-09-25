@@ -105,11 +105,13 @@
                 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
 
+            <%- if @view && @view.can_edit() -%>
             <li class='separator'>
               <a id='formatLink' class='staticLink' href='#formatMenu'>
                 <span class='linkIcon'>Format</span>
               </a>
             </li>
+            <%- end -%>
 
             <%# Export/access options %>
             <%- if !@view.nil? -%>

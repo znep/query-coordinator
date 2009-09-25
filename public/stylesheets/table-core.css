@@ -384,13 +384,22 @@ div.blist-star-0
 .blist-table-edit-container .yellow .icon
 { background-image: url(/stylesheets/images/content/table/flags/yellow.png); }
 
-.blist-td-phone a { display: inline-block; }
+.blist-td-phone a
+{
+    display: inline-block;
+    margin: -2px 0;
+    overflow: hidden;
+    padding: 2px 0 2px 27px;
+    position: relative;
+}
 
-.blist-phone-icon {
-    float: left;
-    width: 25px;
+.blist-phone-icon
+{
     height: 20px;
+    left: 0;
     margin: -2px 2px;
+    position: absolute;
+    width: 25px;
 }
 
 .blist-phone-icon-cell,

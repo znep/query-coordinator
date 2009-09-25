@@ -43,7 +43,7 @@ blist.profile.updateInfo = function(responseData, $form)
         {
             $userTags.empty();
         }
-        $(".userTags h5 a").toggleClass("initialHide", user.tags !== undefined && user.tags.length > 0)
+        $(".userTags h5 a").toggleClass("initialHide", user.tags !== undefined && user.tags.length > 0);
         
         $('#switchUsernameLink').text('Display ' +
                 (user.privacyControl == "login" ?

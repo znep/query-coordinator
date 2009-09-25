@@ -1302,18 +1302,24 @@ div#sortBysList.reorderList li .itemWrapper
     background-position: right -273px;
 }
 
+#filterTable .blist-table-editor
+{
+    border: none;
+}
+
 #filterTable input[type="text"]
 {
+    border: 1px solid #cacaca;
     font-size: 1em;
     padding: 0.1em;
-    width: 18em;
+    width: 16.6em;
 }
 
 #filterTable .between input[type="text"]
 {
     font-size: 1em;
     padding: 0.1em;
-    width: 8.4em;
+    width: 7.5em;
 }
 
 #filterTable .renderer.between 
@@ -1333,12 +1339,13 @@ div#sortBysList.reorderList li .itemWrapper
     display: block;
     margin-top: 0.2em;
 }
+
 #filterTable .type-url input
 {
     display: block;
     margin-left: 6em;
     margin-top: 0.1em;
-    width: 12em;
+    width: 10.5em;
 }
 
 #filterTable .ampersand
@@ -1393,5 +1400,15 @@ div#sortBysList.reorderList li .itemWrapper
 #filterTable tr.only .remove
 {
     display: none;
+}
+
+.modalContentWrapper.filterDatasetWrapper .submitLine .submitActions
+{
+    width: 150px;
+}
+
+.modalContentWrapper.filterDatasetWrapper .submitLine .submitActions li
+{
+        width: 125px;
 }
 /*** END: Filter dialog ***/

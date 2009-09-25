@@ -75,11 +75,11 @@ filterNS.filterRemove = function(event) {
     {
         if ($row.siblings('tr').length === 0)
         {
-                // TODO: clear contents of the row
+            // TODO: clear contents of the row
         }
         else
         {
-                $row.remove();
+            $row.remove();
         }
     }
     //filterNS.setTableScroll($table);
@@ -92,16 +92,16 @@ filterNS.setTableScroll = function($table)
         totalHeight = 0;
         $table.children('tr').each(function()
         {
-                totalHeight += $(this).outerHeight(true);
+            totalHeight += $(this).outerHeight(true);
         });
 
         if (totalHeight > 300)
         {
-                $table.height(300);
+            $table.height(300);
         }
         else
         {
-                $table.height(null);
+            $table.height(null);
         }
 };
 
@@ -110,6 +110,10 @@ filterNS.createEditor = function($renderer, column, value) {
     if (tempCol.type == "tag")
     {
         tempCol.type = "text";
+    }
+    else if (tempCol.type == "date")
+    {
+        tempCol.format = "date";
     }
 
     $renderer.blistEditor({row: null, column: tempCol, value: value})
@@ -212,11 +216,11 @@ filterNS.displayToRealCondition = function(condition) {
 
     if (map[condition] == undefined)
     {
-            return condition.toUpperCase();
+        return condition.toUpperCase();
     }
     else
     {
-            return map[condition].toUpperCase();
+        return map[condition].toUpperCase();
     }
 }
 
@@ -302,12 +306,12 @@ filterNS.row = function($row) {
         $.each(value, function(i, v) {
             if ((v !== null) || (column.type == 'checkbox'))
             {
-                    hasValue = true;
+                hasValue = true;
             }
         });
         if (!hasValue)
         {
-                return false;
+            return false;
         }
 
         if (column.type == "checkbox")
@@ -329,12 +333,12 @@ filterNS.row = function($row) {
                 var mm = dateObj.getMonth() + 1;
                 if (mm < 10)
                 {
-                        mm = '0' + mm;
+                    mm = '0' + mm;
                 }
                 var dd = dateObj.getDate();
                 if (dd < 10)
                 {
-                        dd = '0' + dd;
+                    dd = '0' + dd;
                 }
                 value[i] = mm + '/' + dd + '/' + dateObj.getFullYear();
             });
@@ -366,7 +370,7 @@ filterNS.getFilter = function($table, operator) {
         var rowResult = filterNS.row($row);
         if (rowResult !== false)
         {
-                children = children.concat(rowResult);
+            children = children.concat(rowResult);
         }
     });
     j.children = children;
@@ -436,7 +440,7 @@ filterNS.populate = function($table, filters, columns) {
                 
                 if (col.type == "date")
                 {
-                        value = new Date(value).getTime() / 1000;
+                    value = new Date(value).getTime() / 1000;
                 }
 
                 filterNS.createEditor($row.find(".renderer" + j), col, value);

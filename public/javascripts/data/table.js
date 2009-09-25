@@ -380,12 +380,12 @@
                 $activeContainer.css('top', -10000);
                 $activeContainer.css('left', -10000);
             }
-            endEdit(true, selectEditMode);
+            endEdit(true, SELECT_EDIT_MODE);
         };
 
         var expandActiveCell = function()
         {
-            if (isEdit[defaultEditMode] || !cellNav.isActive())
+            if (isEdit[DEFAULT_EDIT_MODE] || isEdit[SELECT_EDIT_MODE] || !cellNav.isActive())
             {
                 hideActiveCell();
                 return;
@@ -399,7 +399,7 @@
                 // launch the editor instead of select
                 if (type && type.isInlineEdit)
                 {
-                    if (editCell($activeCells[0], selectEditMode)) { return; }
+                    if (editCell($activeCells[0], SELECT_EDIT_MODE)) { return; }
                 }
             }
 
@@ -501,12 +501,15 @@
             // header; ignore those for now
             // Also ignore clicking in the expander -- that means they clicked
             // on the scrollbar
-            var $target = $(event.target);
-            if ($target.closest('.blist-table-locked').length > 0 ||
-                (!selecting && $target.closest('.blist-tdh') > 0) ||
-                $target.is('.blist-table-expander'))
+            if (event)
             {
-                return false;
+                var $target = $(event.target);
+                if ($target.closest('.blist-table-locked').length > 0 ||
+                    (!selecting && $target.closest('.blist-tdh') > 0) ||
+                    $target.is('.blist-table-expander'))
+                {
+                    return false;
+                }
             }
 
             // Find the index of the cell in the layout level
@@ -532,7 +535,7 @@
             if (lcol)
             {
                 model.unselectAllRows();
-                if ($target.is('a') && !selecting)
+                if ($target && $target.is('a') && !selecting)
                 {
                     // Special case for anchor clicks -- do not select the cell
                     // immediately but do enter "possible drag" mode
@@ -563,60 +566,65 @@
             xy.x = cellNav.getActiveX();
             xy.y = cellNav.getActiveY();
 
-            // Scroll the active cell into view if it isn't visible vertically
-            var scrollTop = $scrolls[0].scrollTop;
-            var scrollHeight = $scrolls.height();
-            if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth) {
-                scrollHeight -= scrollbarWidth;
-            }
-            if ($footerScrolls.is(':visible')) {
-                scrollHeight -= $footerScrolls.outerHeight() - 1;
-            }
-            var scrollBottom = scrollTop + scrollHeight;
-            var top = xy.y * rowOffset;
-            var bottom = top + rowOffset;
-            var origScrollTop = scrollTop;
-
-            if (scrollBottom < bottom) {
-                scrollTop = bottom - scrollHeight;
-            }
-            if (scrollTop > top) {
-                scrollTop = top;
-            }
-            if (scrollTop != origScrollTop) {
-                $scrolls.scrollTop(scrollTop);
-            }
-
-            // Scroll the active cell into view if it isn't visible horizontally
-            // Set up scroll variables to use
-            var scrollLeft = $scrolls.scrollLeft();
-            var scrollWidth = $scrolls.width();
-            if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight) {
-                scrollWidth -= scrollbarWidth;
-            }
-            var scrollRight = scrollLeft + scrollWidth;
-
-            var layoutLevel = layout[model.get(xy.y).level || 0];
-            // Calculate left & right positions
-            var cellLeft = lockedWidth;
-            for (var i = 0; i < xy.x; i++)
+            // If we have an event this call was triggered by explicit user
+            // navigation.  In this case we scroll the window as necessary
+            if (event)
             {
-                cellLeft += getColumnWidthPx(layoutLevel[i]);
-            }
-            var cellRight = cellLeft;
-            for (var j = 0; j < cellNav.getActiveWidth(); j++)
-            {
-                cellRight += getColumnWidthPx(layoutLevel[xy.x + j]);
-            }
+                // Scroll the active cell into view if it isn't visible vertically
+                var scrollTop = $scrolls[0].scrollTop;
+                var scrollHeight = $scrolls.height();
+                if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth) {
+                    scrollHeight -= scrollbarWidth;
+                }
+                if ($footerScrolls.is(':visible')) {
+                    scrollHeight -= $footerScrolls.outerHeight() - 1;
+                }
+                var scrollBottom = scrollTop + scrollHeight;
+                var top = xy.y * rowOffset;
+                var bottom = top + rowOffset;
+                var origScrollTop = scrollTop;
 
-            if (cellRight > scrollRight)
-            {
-                $scrolls.scrollLeft(cellRight - scrollWidth);
-            }
-            // Check the left, to make sure it is in view
-            if (cellLeft - lockedWidth < scrollLeft)
-            {
-                $scrolls.scrollLeft(cellLeft - lockedWidth);
+                if (scrollBottom < bottom) {
+                    scrollTop = bottom - scrollHeight;
+                }
+                if (scrollTop > top) {
+                    scrollTop = top;
+                }
+                if (scrollTop != origScrollTop) {
+                    $scrolls.scrollTop(scrollTop);
+                }
+
+                // Scroll the active cell into view if it isn't visible horizontally
+                // Set up scroll variables to use
+                var scrollLeft = $scrolls.scrollLeft();
+                var scrollWidth = $scrolls.width();
+                if ($scrolls[0].scrollHeight > $scrolls[0].clientHeight) {
+                    scrollWidth -= scrollbarWidth;
+                }
+                var scrollRight = scrollLeft + scrollWidth;
+
+                var layoutLevel = layout[model.get(xy.y).level || 0];
+                // Calculate left & right positions
+                var cellLeft = lockedWidth;
+                for (var i = 0; i < xy.x; i++)
+                {
+                    cellLeft += getColumnWidthPx(layoutLevel[i]);
+                }
+                var cellRight = cellLeft;
+                for (var j = 0; j < cellNav.getActiveWidth(); j++)
+                {
+                    cellRight += getColumnWidthPx(layoutLevel[xy.x + j]);
+                }
+
+                if (cellRight > scrollRight)
+                {
+                    $scrolls.scrollLeft(cellRight - scrollWidth);
+                }
+                // Check the left, to make sure it is in view
+                if (cellLeft - lockedWidth < scrollLeft)
+                {
+                    $scrolls.scrollLeft(cellLeft - lockedWidth);
+                }
             }
 
             // Reset standard grid state
@@ -632,16 +640,16 @@
         var $editContainers = {};
         var isEdit = {};
         var prevEdit = false;
-        var defaultEditMode = 'edit';
-        var expandEditMode = 'expand';
-        var selectEditMode = 'select';
+        var DEFAULT_EDIT_MODE = 'edit';
+        var EXPAND_EDIT_MODE = 'expand';
+        var SELECT_EDIT_MODE = 'select';
 
         var canEdit = function()
         { return options.editEnabled && model.canWrite(); };
 
         var editCell = function(cell, mode)
         {
-            if (!mode) { mode = defaultEditMode; }
+            if (!mode) { mode = DEFAULT_EDIT_MODE; }
             // Don't start another edit yet; and make sure they can edit
             if (isEdit[mode] || !canEdit()) { return false; }
 
@@ -659,9 +667,49 @@
                 {row: row, column: col, value: value});
             if (!blistEditor) { return; }
 
+            configureEditor(cell, $curEditContainer, mode);
+
+            // We upgrade expand mode editors when the user interacts with them
+            if (mode == EXPAND_EDIT_MODE)
+            {
+                $curEditContainer.bind('editor-change', function() {
+                    reconfigureEditor(cell, $curEditContainer, mode, SELECT_EDIT_MODE);
+                });
+            }
+
+            return true;
+        }
+
+        var reconfigureEditor = function(cell, $curEditContainer, oldMode, newMode)
+        {
+            // Deconfigure the editor
+            $curEditContainer.unbind();
+            $curEditContainer.removeClass('mode-' + oldMode);
+            isEdit[oldMode] = false;
+            delete $editContainers[oldMode];
+
+            // Terminate any existing editors in static modes
+            if (isEdit[SELECT_EDIT_MODE])
+                endEdit(true, SELECT_EDIT_MODE);
+            if (isEdit[DEFAULT_EDIT_MODE])
+                endEdit(true, DEFAULT_EDIT_MODE);
+
+            // Activate the cell
+            clearCellNav();
+            cellNavTo(cell);
+            hideHotExpander();
+
+            // Reconfigure
+            $curEditContainer.addClass('mode-' + newMode);
+            configureEditor(cell, $curEditContainer, newMode);
+        }
+
+        var configureEditor = function(cell, $curEditContainer, mode)
+        {
+            var blistEditor = $curEditContainer.blistEditor();
             $curEditContainer.bind('edit_end', function(e, isSave, oe)
                 { handleEditEnd(e, isSave, oe, mode); });
-            if (mode == selectEditMode)
+            if (mode == SELECT_EDIT_MODE)
             { $curEditContainer.keydown(navKeyDown).keypress(navKeyPress); }
 
             var $editor = blistEditor.$editor();
@@ -669,7 +717,7 @@
             isEdit[mode] = true;
             $editContainers[mode] = $curEditContainer;
 
-            if (mode == defaultEditMode) { hideActiveCell(); }
+            if (mode == DEFAULT_EDIT_MODE) { hideActiveCell(); }
 
             var resizeEditor = function()
             {
@@ -684,19 +732,17 @@
                 resizeEditor();
                 $curEditContainer.bind('resize', function() { resizeEditor(); });
                 $editor.closest('.blist-table-edit-container').removeClass('blist-table-util').addClass('shown');
-                if (mode != expandEditMode)
+                if (mode != EXPAND_EDIT_MODE)
                     blistEditor.focus();
             }
 
             blistEditor.initComplete(displayCallback);
-
-            return true;
         };
 
         var endEdit = function(isSave, mode)
         {
-            if (!mode) { mode = defaultEditMode; }
-            if (mode == defaultEditMode)
+            if (!mode) { mode = DEFAULT_EDIT_MODE; }
+            if (mode == DEFAULT_EDIT_MODE)
             {
                 prevEdit = isSave;
                 focus();
@@ -730,7 +776,7 @@
             {
                 // If they hit esc or F2,
                 // re-expand the active cell and prevent keyPress
-                if (mode == defaultEditMode &&
+                if (mode == DEFAULT_EDIT_MODE &&
                     (origEvent.keyCode == 27 || origEvent.keyCode == 113))
                 {
                     prevEdit = false;
@@ -739,7 +785,7 @@
                 }
                 else { navKeyDown(origEvent); }
             }
-            if (!isEdit[defaultEditMode] && (origEvent.type != 'mousedown' ||
+            if (!isEdit[DEFAULT_EDIT_MODE] && (origEvent.type != 'mousedown' ||
                 isElementInScrolls(origEvent.target)))
             {
                 focus();
@@ -772,7 +818,7 @@
                 clearTimeout(hotCellTimer);
                 hotCellTimer = null;
             }
-            endEdit(true, expandEditMode);
+            endEdit(true, EXPAND_EDIT_MODE);
             hideHotExpander();
         };
 
@@ -807,7 +853,7 @@
             //  editor instead of hover
             if (type && type.isInlineEdit)
             {
-                if (editCell(hotCell, expandEditMode)) { return; }
+                if (editCell(hotCell, EXPAND_EDIT_MODE)) { return; }
             }
 
             // Obtain an expanding node in utility (off-screen) mode
@@ -1116,9 +1162,9 @@
                     ($cell[0] == $activeContainer[0] ||
                     $cell.parent()[0] == $activeContainer[0])) ||
                 $cell.closest('.blist-table-edit-container.mode-' +
-                    defaultEditMode).length > 0 ||
+                    DEFAULT_EDIT_MODE).length > 0 ||
                 $cell.closest('.blist-table-edit-container.mode-' +
-                    selectEditMode).length > 0))
+                    SELECT_EDIT_MODE).length > 0))
             { return $activeCells[0]; }
 
             // Nested table header send focus to the opener
@@ -1131,7 +1177,7 @@
 
             // If the mouse strays over the hot expander return the hot cell
             if (cell == hotExpander || cell.parentNode == hotExpander ||
-                $cell.closest('.blist-table-edit-container.mode-' + expandEditMode)
+                $cell.closest('.blist-table-edit-container.mode-' + EXPAND_EDIT_MODE)
                     .length > 0)
             { return hotCell; }
 
@@ -1504,9 +1550,9 @@
             if ($clickTarget.is('.blist-table-scrolls, .blist-table-expander'))
             { return; }
 
-            if (isEdit[defaultEditMode] &&
+            if (isEdit[DEFAULT_EDIT_MODE] &&
                 $clickTarget.parents().andSelf()
-                    .index($editContainers[defaultEditMode]) >= 0)
+                    .index($editContainers[DEFAULT_EDIT_MODE]) >= 0)
             { return; }
 
 
@@ -1524,7 +1570,7 @@
                 }
 
                 // Kill off edit & select modes
-                if (isEdit[defaultEditMode])
+                if (isEdit[DEFAULT_EDIT_MODE])
                 {
                     endEdit(true);
                     prevEdit = false;
@@ -1569,7 +1615,7 @@
                 }
                 if (cell && cellNavTo(cell, event))
                 {
-                    if (isEdit[defaultEditMode])
+                    if (isEdit[DEFAULT_EDIT_MODE])
                     {
                         endEdit(true);
                         prevEdit = false;
@@ -1584,7 +1630,7 @@
         {
             mouseDownAt = null;
 
-            if (isEdit[defaultEditMode]) { return; }
+            if (isEdit[DEFAULT_EDIT_MODE]) { return; }
 
             if (hotHeaderDrag) {
                 $curHeaderSelect = null;
@@ -1634,9 +1680,9 @@
 
         var onDoubleClick = function(event)
         {
-            if (isEdit[defaultEditMode] &&
+            if (isEdit[DEFAULT_EDIT_MODE] &&
                 $(event.target).parents().andSelf()
-                    .index($editContainers[defaultEditMode]) >= 0)
+                    .index($editContainers[DEFAULT_EDIT_MODE]) >= 0)
             { return; }
 
             clickTarget = event.target;
@@ -1963,6 +2009,7 @@
         var clickedInGrid = false;
         if (cellNav) {
             var onDocumentMouseDown = function(e) {
+                // Process clicks outside of the grid
                 if (cellNav.isActive() && !clickedInGrid &&
                     !isElementInScrolls(e.target))
                 {

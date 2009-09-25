@@ -31,6 +31,7 @@
     {
         editObj.curValue = editObj.$editor().removeClass('hover')
             .find('.star').index($(event.currentTarget));
+        editObj.changed();
     };
 
     var starKeyDown = function(editObj, event)

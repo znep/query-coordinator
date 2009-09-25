@@ -231,7 +231,16 @@
              * Query whether this editor supports formatting
              */
             supportsFormatting: function()
-            { return false; }
+            { return false; },
+
+            /**
+             * Derivatives may call this to convey that the user changed the control's value.  This is currently only
+             * required for "expand" editors -- the table upgrades these to "select" editors when this occurs.
+             */
+            changed: function()
+            {
+                this.$dom().trigger('editor-change');
+            }
         }
     });
 

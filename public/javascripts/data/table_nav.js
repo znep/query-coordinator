@@ -106,6 +106,12 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
 
     this.goTo = function(x, y, event, selecting, wrap)
     {
+        if (!event)
+        {
+            // We only use event for flags so setting to {} makes it optional
+            event = {};
+        }
+
         // Decide what affect this navigation has on the selection
         var selectionMode;
         if (selecting || event.shiftKey)

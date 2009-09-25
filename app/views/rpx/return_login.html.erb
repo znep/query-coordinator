@@ -18,7 +18,7 @@
       <h2><a href="#signup">Sign up for a New <%= th.company %> Account</a></h2>
       <div>
         <% form_for :signup, @signup, :url => rpx_signup_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
-          <%= render :partial => "accounts/signup_form_data", :locals => { :f => f } %>
+          <%= render :partial => "accounts/signup_form_data", :locals => { :f => f, :hide_password => true } %>
         <% end %>
       </div>
 

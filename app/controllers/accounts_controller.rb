@@ -2,10 +2,22 @@ class AccountsController < ApplicationController
   ssl_required :new, :update, :create, :add_rpx_token
   ssl_allowed :show
   skip_before_filter :require_user, :only => [:new, :create, :forgot_password, :reset_password]
+  skip_before_filter :adjust_format, :only => [:update]
   protect_from_forgery :except => [:add_rpx_token]
 
   def show
     @openid_identifiers = current_user.openid_identifiers
+    @accountEditClasses = ['content']
+    if @openid_identifiers.length > 0
+      @accountEditClasses << 'has_openid'
+    else
+      @accountEditClasses << 'no_openid'
+    end
+    if current_user.flag?('nopassword')
+      @accountEditClasses << 'no_password'
+    else
+      @accountEditClasses << 'has_password'
+    end
   end
 
   def update
@@ -23,7 +35,7 @@ class AccountsController < ApplicationController
         if params[:user][:password_new] != params[:user][:password_confirm]
           error_msg = "New passwords do not match"
         else
-          current_user.update_attributes!(
+          current_user.update_password(
               {:newPassword => params[:user][:password_new],
                 :password => params[:user][:password_old]})
         end
@@ -34,9 +46,9 @@ class AccountsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to(account_path) }
-      format.json   { render :json => {:error => error_msg,
-                                       :user => current_user},
-                             :callback => params[:callback] }
+      format.json { render :json => {:error => error_msg,
+                                     :user => current_user},
+                           :callback => params[:callback] }
     end
   end
 

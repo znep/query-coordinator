@@ -10,7 +10,7 @@
       <%= render(:partial => "shared/account_tabs") %>
 
       <div class='outerContent'>
-        <div class='content'>
+        <div id="accountEditSection" class='<%= @accountEditClasses.join(' ') %>'>
           <h3>Email Address</h3>
           <div class="listSection emailSection">
             <div class="sectionShow">
@@ -52,9 +52,13 @@
           <h3>Password</h3>
           <div class="listSection passwordSection">
             <div class="sectionShow">
-              <p>
-                Change your password
-                <a href="#change" class="showAction"><span>Change</span></a>
+              <p class="no_password">
+                  Create a password
+                  <a href="#change" class="showAction"><span>Create</span></a>
+              </p>
+              <p class="has_password">
+                  Change your password
+                  <a href="#change" class="showAction"><span>Change</span></a>
               </p>
             </div>
             <div class="sectionEdit formListBox">
@@ -62,18 +66,19 @@
               <div class="formListBoxBL"><div class="formListBoxBR">
                 <% form_tag(accounts_json_url) do %>
                   <dl class="clearfix">
-                    <dt><label for="user_password_old">Old Password</label></dt>
-                    <dd><%= password_field_tag("user[password_old]") %></dd>
+                    <dt class="oldpassword"><label for="user_password_old">Old Password</label></dt>
+                    <dd class="oldpassword"><%= password_field_tag("user[password_old]") %></dd>
                     <dt><label for="user_password_new">New Password</label></dt>
-                    <dd><%= password_field_tag("user[password_new]") %></dd>
+                    <dd><%= password_field_tag("user[password_new]", nil, :class => 'newpassword') %></dd>
                     <dt>
                       <label for="user_password_confirm">Retype Password</label>
                     </dt>
-                    <dd><%= password_field_tag("user[password_confirm]") %></dd>
+                    <dd><%= password_field_tag("user[password_confirm]", nil, :class => 'newpassword') %></dd>
                   </dl>
-                  <p class="formListBoxSubmit">
-                    <%= image_submit_tag("button_save.png") %>
-                  </p>
+                  <ul class="actionButtons ec">
+                    <li id="passwordFormSave"><a class="arrowButton" href="#">Save</a></li>
+                    <li id="passwordFormClear"><a href="#" title="Disable the ability to login with a password; you must use an OpenID identifier">Remove Password</a></li>
+                  </ul>
                   <p class='errorMessage'></p>
                 <% end %>
                 <p class="formListBoxClose"><a href="#close">Close</a></p>
@@ -156,8 +161,8 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= javascript_include_tag "util/sizing", "plugins/jquery.validate", 
-    "plugins/jquery.example.min", "widgets/text-prompt",
+  <%= javascript_include_tag "util/sizing", "plugins/jqModal", "util/alert-override", "plugins/jquery.validate",
+    "plugins/jquery.example.min", "widgets/text-prompt", "plugins/ui.core", "plugins/ui.showedit",
     "screens/account-screen", :cache => "cache/accounts_show_all" %>
   <script src="https://rpxnow.com/openid/v2/widget"
           type="text/javascript"></script>

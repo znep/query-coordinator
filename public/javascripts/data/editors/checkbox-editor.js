@@ -36,7 +36,8 @@
                     .keydown(function(e)
                         { if (e.keyCode == 32) { e.stopPropagation(); } })
                     .keypress(function(e)
-                        { if (e.keyCode == 32) { e.stopPropagation(); } });
+                        { if (e.keyCode == 32) { e.stopPropagation(); } })
+                    .click(function() { editObj.changed(); });
             },
 
             currentValue: function()

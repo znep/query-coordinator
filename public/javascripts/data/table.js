@@ -373,21 +373,30 @@
 
         var $activeContainer;
 
-        var hideActiveCell = function()
+        var hideActiveCell = function(activeOnly)
         {
             if ($activeContainer)
             {
                 $activeContainer.css('top', -10000);
                 $activeContainer.css('left', -10000);
             }
-            endEdit(true, SELECT_EDIT_MODE);
+            if (!activeOnly)
+                endEdit(true, SELECT_EDIT_MODE);
         };
 
         var expandActiveCell = function()
         {
-            if (isEdit[DEFAULT_EDIT_MODE] || isEdit[SELECT_EDIT_MODE] || !cellNav.isActive())
+            if (isEdit[DEFAULT_EDIT_MODE] || !cellNav.isActive())
             {
+                // In these modes there should be no visible navigation cues
                 hideActiveCell();
+                return;
+            }
+
+            if (isEdit[SELECT_EDIT_MODE])
+            {
+                // Hide the active cell but do not mess with the select mode editor
+                hideActiveCell(true);
                 return;
             }
 
@@ -689,13 +698,13 @@
             delete $editContainers[oldMode];
 
             // Terminate any existing editors in static modes
+            clearCellNav();
             if (isEdit[SELECT_EDIT_MODE])
                 endEdit(true, SELECT_EDIT_MODE);
             if (isEdit[DEFAULT_EDIT_MODE])
                 endEdit(true, DEFAULT_EDIT_MODE);
 
             // Activate the cell
-            clearCellNav();
             cellNavTo(cell);
             hideHotExpander();
 

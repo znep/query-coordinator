@@ -554,7 +554,7 @@ div.blist-table-editor .align-right { text-align: right; }
 {
     height: 0;
     left: -10000px;
-    padding: 0;
+    /* padding: 0; -- This causes key events to not fire in Safari.  Yes, really */
     position: fixed;
     width: 0;
 }

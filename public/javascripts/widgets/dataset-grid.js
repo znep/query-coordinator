@@ -120,7 +120,6 @@
             {
                 var datasetObj = this;
                 datasetObj.settings._model.updateFilter(filter);
-                var view = datasetObj.settings._model.meta().view;
 
                 this.setTempView();
             },
@@ -162,30 +161,29 @@
 
             getViewCopy: function(includeColumns)
             {
-                var view = $.extend({}, this.settings._model.meta().view);
+                var view = $.extend(true, {}, this.settings._model.meta().view);
 
                 if (includeColumns)
                 {
-                    var viewCols = $.extend([], view.columns);
                     // Update all the widths from the meta columns
                     $.each(this.settings._model.meta().columns[0], function(i, c)
                     {
-                        viewCols[c.dataIndex].width = c.width;
+                        view.columns[c.dataIndex].width = c.width;
                         if (c.body && c.body.children)
                         {
                             $.each(c.body.children, function(j, cc)
                             {
-                                viewCols[c.dataIndex]
+                                view.columns[c.dataIndex]
                                     .childColumns[cc.dataIndex].width = cc.width;
                             });
                         }
                     });
                     // Filter out all metadata columns
-                    viewCols = $.grep(viewCols, function(c, i)
+                    view.columns = $.grep(view.columns, function(c, i)
                         { return c.id != -1; });
                     // Sort by position, because the attribute is ignored when
                     // saving columns
-                    viewCols.sort(function(a, b)
+                    view.columns.sort(function(a, b)
                         { return a.position - b.position; });
                     var cleanColumn = function(col)
                     {
@@ -197,7 +195,7 @@
                         }
                     };
                     // Clean out dataIndexes, and clean out child metadata columns
-                    $.each(viewCols, function(i, c)
+                    $.each(view.columns, function(i, c)
                     {
                         cleanColumn(c);
                         if (c.childColumns)
@@ -208,7 +206,6 @@
                                 { cleanColumn(cc); });
                         }
                     });
-                    view.columns = viewCols;
                 }
                 else
                 {

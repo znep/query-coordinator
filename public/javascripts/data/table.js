@@ -485,22 +485,58 @@
             }
         };
 
+        var cellXY = function(cell)
+        {
+            var row = getRow(cell);
+            if (!row) { return null; }
+
+            var levelID = row.level || 0;
+            if (levelID < 0) { return null; }
+
+            var rowLayout = layout[levelID];
+            var x;
+            var node;
+            var lcol;
+            for (x = 0, node = cell.parentNode.firstChild; node;
+                node = node.nextSibling)
+            {
+                lcol = rowLayout[x];
+                if (!lcol) { break; }
+                if (node == cell) { break; }
+                if (lcol.skippable && $(node).hasClass('blist-skip'))
+                {
+                    // Children aren't rendered, so skip them
+                    x += lcol.skipCount;
+                }
+                x++;
+            }
+            if (lcol === undefined) { return null; }
+
+            return { x: x, y: model.index(row) };
+        };
+
+        var cellFromXY = function(x, y)
+        {
+            var row = model.get(y);
+            if (row)
+            {
+                var physActive = renderedRows[row.id];
+                if (physActive)
+                {
+                    return $(physActive.row).children().eq(x);
+                }
+            }
+            return null;
+        };
+
         /**
          * Navigate to a particular cell (a DOM element).  Returns true iff the
          * cell is a focusable table cell.  This is used for mouse handling.
          */
         var cellNavTo = function(cell, event, selecting)
         {
-            // Obtain the row for the cell
-            var row = getRow(cell);
-            if (!row)
-            {
-                clearCellNav();
-                return false;
-            }
-
-            var levelID = row.level || 0;
-            if (levelID < 0)
+            var cellLoc = cellXY(cell);
+            if (!cellLoc)
             {
                 clearCellNav();
                 return false;
@@ -521,45 +557,17 @@
                 }
             }
 
-            // Find the index of the cell in the layout level
-            var rowLayout = layout[levelID];
-            for (var x = 0, node = cell.parentNode.firstChild; node;
-                node = node.nextSibling)
+            model.unselectAllRows();
+            if ($target && $target.is('a') && !selecting)
             {
-                var lcol = rowLayout[x];
-                if (!lcol) {
-                    break;
-                }
-                if (node == cell) {
-                    break;
-                }
-                if (lcol.skippable && $(node).hasClass('blist-skip')) {
-                    // Children aren't rendered, so skip them
-                    x += lcol.skipCount;
-                }
-                x++;
+                // Special case for anchor clicks -- do not select the cell
+                // immediately but do enter "possible drag" mode
+                clearCellNav();
+                return true;
             }
 
-            // If we found the column, focus now
-            if (lcol)
-            {
-                model.unselectAllRows();
-                if ($target && $target.is('a') && !selecting)
-                {
-                    // Special case for anchor clicks -- do not select the cell
-                    // immediately but do enter "possible drag" mode
-                    clearCellNav();
-                    return true;
-                }
-
-                // Standard cell -- activate the cell
-                return cellNavToXY({ x: x, y: model.index(row) },
-                    event, selecting);
-            }
-
-            // Not a valid navigation target; ignore
-            clearCellNav();
-            return false;
+            // Standard cell -- activate the cell
+            return cellNavToXY(cellLoc, event, selecting);
         };
 
         /**
@@ -728,21 +736,32 @@
 
             if (mode == DEFAULT_EDIT_MODE) { hideActiveCell(); }
 
+            var cellLoc = cellXY(cell);
+
             var resizeEditor = function()
             {
-                var $cell = $(cell);
-
-                // Note -- + 1 assumes 1px borders
-                blistEditor.adjustSize($cell[0].offsetWidth + 1, $cell[0].offsetHeight + 1, $scrolls.width() * 0.8, $scrolls.height() * 0.8);
-                positionCellOverlay($curEditContainer, $cell);
+                if (cellLoc)
+                {
+                    var $cell = cellFromXY(cellLoc.x, cellLoc.y);
+                    if ($cell)
+                    {
+                        // Note -- + 1 assumes 1px borders
+                        blistEditor.adjustSize($cell[0].offsetWidth + 1,
+                                $cell[0].offsetHeight + 1,
+                                $scrolls.width() * 0.8, $scrolls.height() * 0.8);
+                        positionCellOverlay($curEditContainer, $cell);
+                    }
+                }
             };
 
-            var displayCallback = function() {
+            var displayCallback = function()
+            {
                 resizeEditor();
                 $curEditContainer.bind('resize', function() { resizeEditor(); });
-                $editor.closest('.blist-table-edit-container').removeClass('blist-table-util').addClass('shown');
+                $editor.closest('.blist-table-edit-container')
+                    .removeClass('blist-table-util').addClass('shown');
                 if (mode != EXPAND_EDIT_MODE)
-                    blistEditor.focus();
+                { blistEditor.focus(); }
             }
 
             blistEditor.initComplete(displayCallback);
@@ -1847,7 +1866,11 @@
                 setTimeout(expandActiveCell, 0);
             }
 
-            event.preventDefault();
+            // We may be handling an event from the rich text editor iframe,
+            //  which in IE we cannot access.  If it throws an error, just ignore
+            //  it, and we'll manage OK
+            try { event.preventDefault(); }
+            catch (err) {}
         };
 
         var isElementInScrolls = function(element)

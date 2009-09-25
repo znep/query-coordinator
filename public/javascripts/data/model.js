@@ -1277,7 +1277,7 @@ blist.namespace.fetch('blist.data');
         this.invalidateRows = function()
         {
             active = rows;
-            removeSpecialRows();
+            var idChange = removeSpecialRows();
             for (var i=0; i < rows.length; i++)
             {
                 if (rows[i] instanceof Object)
@@ -1286,6 +1286,7 @@ blist.namespace.fetch('blist.data');
                 }
             }
             rowsLoaded = 0;
+            if (idChange) { installIDs(); }
         };
 
         this.updateColumn = function(column)
@@ -2021,9 +2022,9 @@ blist.namespace.fetch('blist.data');
         // fire events
         var doSort = function()
         {
-            removeSpecialRows();
-
             if (!sortConfigured) { return; }
+
+            removeSpecialRows();
 
             if (self.isProgressiveLoading())
             {
@@ -2414,9 +2415,7 @@ blist.namespace.fetch('blist.data');
         // listeners of the data change.
         var configureActive = function(filterSource, loadedTempView)
         {
-            var activeOnly = active != rows;
-            removeSpecialRows();
-            var idChange;
+            var idChange = removeSpecialRows();
             // If we just loaded a temp view, the set is already filtered
             if (!loadedTempView && filterFn)
             {
@@ -2442,18 +2441,22 @@ blist.namespace.fetch('blist.data');
                 idChange = true;
             }
 
-            if (idChange)
-            { installIDs(activeOnly); }
+            if (idChange) { installIDs(); }
             dataChange();
         };
 
         // Remove "special" (non-top-level) rows
-        var removeSpecialRows = function() {
+        var removeSpecialRows = function()
+        {
+            var removed = false;
             var i = 0;
             while (i < active.length)
             {
                 if (active[i].level || active[i].type == 'blank')
-                { active.splice(i, 1); }
+                {
+                    active.splice(i, 1);
+                    removed = true;
+                }
                 else { i++; }
             }
             if (rows != active)
@@ -2462,10 +2465,14 @@ blist.namespace.fetch('blist.data');
                 while (i < rows.length)
                 {
                     if (rows[i].level || rows[i].type == 'blank')
-                    { rows.splice(i, 1); }
+                    {
+                        rows.splice(i, 1);
+                        removed = true;
+                    }
                     else { i++; }
                 }
             }
+            return removed;
         };
 
         // Run filtering based on current filter configuration
@@ -2495,7 +2502,6 @@ blist.namespace.fetch('blist.data');
         // in progressive rendering mode.
         var doGroup = function()
         {
-            removeSpecialRows();
             if (!groupFn || !orderCol) { return; }
             var i = 0;
             var currentGroup;

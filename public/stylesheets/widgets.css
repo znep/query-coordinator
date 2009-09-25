@@ -2194,3 +2194,63 @@ td.datepickerDisabled a:hover { color: #333; }
 td.datepickerSpecial a { background: #700; }
 td.datepickerSpecial.datepickerSelected a { background: #a00; }
 /*** END: datepicker styles ***/
+
+
+/*** START: colorpicker styles ***/
+div#color_selector
+{
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 10px 5px;
+    position: absolute;
+    width: 137px;
+}
+
+div#color_custom
+{
+    float: left;
+    margin-top: -10px;
+    width: 100%;
+}
+
+div#color_custom label
+{
+    color: #2F2F2F;
+    font-size: 0.95em;
+    margin: 5px 2px;
+    width: 25%;
+}
+
+div#color_custom input
+{
+    border: 1px solid #000;
+    font-size: 0.95em;
+    margin: 5px 2px 0;
+    width: 65%;
+}
+
+div.color_block
+{
+    border: 1px solid #666666;
+    border-right: none;
+    margin-bottom: 10px;
+}
+
+div.color_swatch
+{
+    border-right: 1px solid #666666;
+    cursor: pointer;
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    width: 16px;
+}
+
+div.color_swatch .inner
+{
+    height: 14px;
+    width: 14px;
+}
+div.color_swatch.selected .inner { border: 1px solid #20608f; }
+div.color_swatch.hover .inner { border: 1px solid #ffffff; }
+/*** END: colorpicker styles ***/

@@ -517,22 +517,14 @@ $(function ()
         }});
 
     var $colorItem = $('#formatMenu a.color');
-    $colorItem
-        .ColorPicker({
-            color: '#000000',
-            onBeforeShow: function()
-            {
-                $(this).ColorPickerSetColor(
-                    $colorItem.children('.inner').css('border-bottom-color'));
-            },
-            onSubmit: function(hsb, hex, rgb, el)
-            {
-                if (formatEditor) { formatEditor.action('color', hex); }
-                $colorItem.children('.inner').css('border-bottom-color', '#' + hex);
-                $(el).ColorPickerHide();
-            }
-        });
-    $('.colorpicker').mousedown(function(e) { e.stopPropagation(); })
+    $colorItem.colorPicker().bind('color_change', function(e, newColor)
+    {
+        if (formatEditor) { formatEditor.action('color', newColor); }
+        $colorItem.children('.inner').css('border-bottom-color', newColor);
+    }).mousedown(function(e)
+    { $colorItem.data('colorpicker-color',
+        $colorItem.find('.inner').css('border-bottom-color')); });
+    $('#color_selector').mousedown(function(e) { e.stopPropagation(); })
 
     $('#readGrid').bind('action-state-change', function(e)
     {

@@ -115,6 +115,10 @@ filterNS.createEditor = function($renderer, column, value) {
     {
         tempCol.format = "date";
     }
+    else if ((tempCol.type == "document") || (tempCol.type == "photo"))
+    {
+        return;
+    }
 
     $renderer.blistEditor({row: null, column: tempCol, value: value})
 };
@@ -201,6 +205,15 @@ filterNS.realToDisplayCondition = function(condition, type) {
 
         return map[condition].toLowerCase();
     }
+    else if ((type == "document") || (type == "photo"))
+    {
+        var map = {
+            "is_blank": "blank",
+            "is_not_blank": "not_blank"
+        };
+        
+        return map[condition].toLowerCase();
+    }
 
     return condition.toLowerCase();
 }
@@ -211,7 +224,9 @@ filterNS.displayToRealCondition = function(condition) {
         "on": "equals",
         "not on": "not_equals",
         "before": "less_than",
-        "after": "greater_than"
+        "after": "greater_than",
+        "blank": "is_blank",
+        "not_blank": "is_not_blank"
     };
 
     if (map[condition] == undefined)
@@ -227,6 +242,22 @@ filterNS.displayToRealCondition = function(condition) {
 filterNS.row = function($row) {
     var column = filterNS.columns[$row.find('.columnSelect').val()];
     var operator = $row.find(".conditionSelect").val().toUpperCase();
+
+    if ((column.type == "document") || (column.type == "photo"))
+    {
+        return [
+            {
+                type: 'operator',
+                value: filterNS.displayToRealCondition($row.find(".conditionSelect").val().toUpperCase()),
+                children: [
+                    {
+                        columnId: column.id,
+                        type: "column"
+                    }
+                ]
+            }
+        ];
+    }
 
     var value = [];
     $.each($row.find(".renderer"), function(i, r) {

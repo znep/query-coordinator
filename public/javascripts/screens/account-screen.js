@@ -41,7 +41,13 @@ $(function ()
     });
     $(".outerContent").blistStretchWindow();
 
-    $(".emailSection, .passwordSection, .openIdSection").showEdit();
+
+    $(".emailSection, .passwordSection").showEdit({
+        displayEdit: function(event, ui) {
+            $(this).showEdit("clear");
+        }
+    });
+    $(".openIdSection").showEdit();
 
     if (window.location.hash)
     {

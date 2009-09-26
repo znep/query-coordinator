@@ -107,7 +107,7 @@ filterNS.setTableScroll = function($table)
 
 filterNS.createEditor = function($renderer, column, value) {
     var tempCol = $.extend({}, column); 
-    if (tempCol.type == "tag")
+    if ((tempCol.type == "tag") || (tempCol.type == "email"))
     {
         tempCol.type = "text";
     }

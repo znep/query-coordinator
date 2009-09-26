@@ -41,11 +41,28 @@ $(function ()
     });
     $(".outerContent").blistStretchWindow();
 
-    $(".emailSection, .passwordSection, .openIdSection").showEdit();
 
-    if (window.location.hash)
+    $(".emailSection").showEdit({
+        displayEdit: function(event, ui) {
+            $(this).showEdit("clear");
+        }
+    });
+    $(".passwordSection").showEdit({
+        // IE7 doesn't hide the buttons, so hide them for it.
+        displayShow: function(event, ui) {
+            $(this).find('.actionButtons').css('display', 'none');
+        },
+        displayEdit: function(event, ui) {
+            $(this).showEdit("clear");
+            $(this).find('.actionButtons').css('display', '');
+        }
+    });
+    $(".openIdSection").showEdit();
+
+    var hash = window.location.href.match(/#/) ? window.location.href.replace(/^.*#/, '') : '';
+    if (hash !== '')
     {
-        var $elemToClick = $("a" + window.location.hash);
+        var $elemToClick = $("a#" + hash);
         $elemToClick.closest(".listSection").showEdit("displayEditSection");
     }
 

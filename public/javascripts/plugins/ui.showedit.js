@@ -24,16 +24,23 @@ $.widget("ui.showEdit", {
   displayShowSection: function() {
     this.element.find(".sectionEdit").slideUp("fast");
     this.element.find(".sectionShow").slideDown("fast");
+
+    this._trigger("displayShow", 0, this);
   },
 
   displayEditSection: function() {
     this.element.find(".sectionShow").slideUp("fast");
+    this.element.find(".sectionEdit").slideDown("fast");
+
+    this._trigger("displayEdit", 0, this);
+  },
+
+  clear: function() {
     this.element.find(".sectionEdit")
       .find("form :input")
         .val("")
         .removeClass('error')
       .end()
-      .slideDown("fast");
     var $form = this.element.find(".sectionEdit form");
     if ($form.length > 0)
     {

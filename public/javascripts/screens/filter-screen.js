@@ -1,13 +1,25 @@
 var filterNS = blist.namespace.fetch('blist.filter');
 
-filterNS.uid = 0;
-
 filterNS.conditions = {
-    text: ["equals", "not equals", "starts with", "contains"],
-    date: ["on", "not on", "before", "after", "between"],
-    checkbox: ["equals"],
-    photo: ["blank", "not blank"],
-    number: ["equals", "not equals", "less than", "less than or equals", "greater than", "greater than or equals", "between"]
+    text:     [ { operator: "EQUALS", label: "equals" },
+                { operator: "NOT_EQUALS", label: "does not equal" },
+                { operator: "STARTS_WITH", label: "starts with" },
+                { operator: "CONTAINS", label: "contains" } ],
+    date:     [ { operator: "EQUALS", label: "on" },
+                { operator: "NOT_EQUALS", label: "not on" },
+                { operator: "LESS_THAN", label: "before" },
+                { operator: "GREATER_THAN", label: "after" },
+                { operator: "BETWEEN", label: "between" } ],
+    checkbox: [ { operator: "EQUALS", label: "equals" } ],
+    photo:    [ { operator: "IS_BLANK", label: "is empty" },
+                { operator: "IS_NOT_BLANK", label: "exists" } ],
+    number:   [ { operator: "EQUALS", label: "equals" },
+                { operator: "NOT_EQUALS", label: "not equals" },
+                { operator: "LESS_THAN", label: "less than" },
+                { operator: "LESS_THAN_OR_EQUALS", label: "less than or equal to" },
+                { operator: "GREATER_THAN", label: "greater than" },
+                { operator: "GREATER_THAN_OR_EQUALS", label: "greater than or equal to" },
+                { operator: "BETWEEN", label: "between" } ]
 };
 
 filterNS.filterableClass = function(type) {
@@ -33,81 +45,19 @@ filterNS.filterableClass = function(type) {
     }
 };
 
-filterNS.renderColumnSelect = function(columns) {
-    var ret = '<select class="columnSelect">';
-
-    for (var i=0; i < columns.length; i++)
-    {
-        var col = columns[i];
-        if (col.type == "nested_table") continue;
-        ret += '<option value="' + i + '">' + col.name + '</option>';
-    }
-
-    return ret + "</select>";
-};
-
-filterNS.renderConditionSelect = function(column) {
-    var ret = '<select class="conditionSelect">';
-    var conditionType = filterNS.filterableClass(column.type);
-    var conditions = filterNS.conditions[conditionType];
-
-    for (var i=0; i < conditions.length; i++)
-    {
-        ret += '<option value="' + conditions[i].replace(/ /g, "_") + '">' + conditions[i] + '</option>';
-    }
-
-    return ret + "</select>";
-};
-
 filterNS.filterAdd = function(event) {
     event.preventDefault();
-    var $table = $(this).closest("tbody");
-    filterNS.addFilterRow($table, filterNS.columns);
-    //filterNS.setTableScroll($table);
+    filterNS.addFilterRow($(this).closest("#filterTable"), filterNS.columns);
 };
 
 filterNS.filterRemove = function(event) {
     event.preventDefault();
-    var $this = $(this);
-    var $row = $this.closest("tr");
-    var $table = $this.closest("tbody");
-    if ($this.closest("table").find("tbody tr").length > 1)
-    {
-        if ($row.siblings('tr').length === 0)
-        {
-            // TODO: clear contents of the row
-        }
-        else
-        {
-            $row.remove();
-        }
-    }
-    //filterNS.setTableScroll($table);
-    $table.find("tr:last").addClass("last");
-};
-
-filterNS.setTableScroll = function($table)
-{
-        // tbody max-height doesn't work on a lot of browsers
-        totalHeight = 0;
-        $table.children('tr').each(function()
-        {
-            totalHeight += $(this).outerHeight(true);
-        });
-
-        if (totalHeight > 300)
-        {
-            $table.height(300);
-        }
-        else
-        {
-            $table.height(null);
-        }
+    $(this).closest(".filterTableRow").remove();
 };
 
 filterNS.createEditor = function($renderer, column, value) {
-    var tempCol = $.extend({}, column); 
-    if ((tempCol.type == "tag") || (tempCol.type == "email"))
+    var tempCol = $.extend({}, column);
+    if ((tempCol.type == "tag") || (tempCol.type == "email") || (tempCol.type == 'richtext'))
     {
         tempCol.type = "text";
     }
@@ -124,131 +74,114 @@ filterNS.createEditor = function($renderer, column, value) {
 };
 
 filterNS.filterEditor = function($row, column) {
-    var operator = $row.closest("tr").find(".conditionSelect").val();
+    var condition = $row.find(".filterTable-conditionDropDown").value();
 
-    $row.closest("tr").find(".rendererCell").html("");
-    if (operator == "between")
+    var $editorContainer = $row.find(".filterTable-editor");
+    $editorContainer.empty();
+    if (condition.operator == "BETWEEN")
     {
-        $row.closest("tr").find(".rendererCell").append('<div class="renderer renderer1 between"></div><div class="ampersand">&amp;</div><div class="renderer renderer2 between"></div>');
+        $editorContainer.append('<div class="renderer renderer1 between"></div>' +
+            '<div class="ampersand">&amp;</div><div class="renderer renderer2 between"></div>');
 
-        var renderer1 = $row.closest("tr").find(".renderer1");
-        var renderer2 = $row.closest("tr").find(".renderer2");
+        var renderer1 = $editorContainer.find(".renderer1");
+        var renderer2 = $editorContainer.find(".renderer2");
         filterNS.createEditor(renderer1, column);
         filterNS.createEditor(renderer2, column);
     }
     else
     {
-        $row.closest("tr").find(".rendererCell").append('<div class="renderer"></div>');
-        filterNS.createEditor($row.closest("tr").find(".renderer"), column);
+        $editorContainer.append('<div class="renderer"></div>');
+        filterNS.createEditor($editorContainer.find(".renderer"), column);
     }
 };
 
-filterNS.filterColumnChanged = function() {
-    column = filterNS.columns[$(this).val()];
-    $(this).closest("tr").find(".condition").html(filterNS.renderConditionSelect(column));
-
-    $(this).closest("tr").find(".conditionSelect").change(function() {
-        filterNS.filterEditor($(this), column);
-    });
-
-    filterNS.filterEditor($(this), column);
+filterNS.setColumns = function(columns)
+{
+    filterNS.columns = columns;
+    filterNS.columnsValues = $.map(columns, function(col, i) {
+        return { index: i, label: col.name, type: col.type };
+    })
 };
 
 filterNS.addFilterRow = function($table, columns) {
-    filterNS.columns = columns;
+    filterNS.setColumns(columns);
 
-    var id = "filter-row-" + filterNS.uid;
-    filterNS.uid += 1;
+    var $template = $table.find('.filterTableRowTemplate');
+    $template.siblings('.filterTableRow').appendTo($table.find('.filterTableBody'));
 
-    //TODO: what if there's no columns
-    $table.append('<tr id="' + id + '"><td class="delete"><a href="#delete">delete</a></td><td>' +
-            filterNS.renderColumnSelect(columns) +
-            '</td><td class="condition">' + filterNS.renderConditionSelect(columns[0]) + 
-            '</td><td class="rendererCell"><div class="renderer"></div></td>' +
-            '<td class="addRemove"><ul class="actionButtons"><li>' +
-            '<a href="#addCondition">Add Condition</a></li></ul></td></tr>');
-
-    filterNS.createEditor($table.find("#" + id + " .renderer"), columns[0]);
-
-    $table.find("#" + id + " .columnSelect").change(filterNS.filterColumnChanged);
-    $table.find("#" + id + " .conditionSelect").change(function() {
-        var $row = $table.find('#' + id + '.columnSelect');
-        filterNS.filterEditor($row, columns[0]);
-    });
-    $table.find("#" + id + " .remove").click(filterNS.filterRemove);
-    $table.find("#" + id + " .add").click(filterNS.filterAdd);
-
-    $table.find("tr").
-        removeClass("last").
-        removeClass("only");
-
-    if ($table.find("tr").length == 1)
-    {
-        $table.find("tr").addClass("only");
-    }
-
-    $table.find("tr:last").addClass("last");
-
-    return $table.find("#" + id);
+    var $newRow = filterNS.cloneTemplateRow($table, columns);
+    $newRow.insertBefore($template);
+    return $newRow;
 };
 
-filterNS.realToDisplayCondition = function(condition, type) {
-    condition = condition.toLowerCase();
-    if (type == "date")
-    {
-        var map = {
-            "equals": "on",
-            "not_equals": "not on",
-            "less_than": "before",
-            "greater_than": "after"
-        };
+filterNS.cloneTemplateRow = function($table, columns)
+{
+    var $template = $table.find('.filterTableRowTemplate');
+    var $newRow = $('<div class="filterTableRow">' + $template.html() + '</div>');
 
-        return map[condition].toLowerCase();
-    }
-    else if ((type == "document") || (type == "photo"))
-    {
-        var map = {
-            "is_blank": "blank",
-            "is_not_blank": "not_blank"
-        };
-        
-        return map[condition].toLowerCase();
-    }
+    textPromptEntry = { index: -1, label: 'Pick a Column', type: 'none' };
+    $newRow.find('.filterTable-nameDropDown')
+        .combo({
+            name: 'columnName',
+            values: [textPromptEntry].concat(filterNS.columnsValues),
+            value: textPromptEntry,
+            renderFn: function(value)
+                {
+                    $(this).empty().append('<span class="typeSelect datatype-' +
+                        value.type + '">' + value.label + '</span>');
+                }
+        })
+        .bind('change', function(event) {
+            var $this = $(this);
+            var selectedValue = $this.value();
+            if (selectedValue.index >= 0)
+            {
+                var $conditionDropDown = $('<div class="blist-combo-wrapper">' +
+                    '<div class="filterTable-conditionDropDown"></div></div>');
+                $this.closest('.filterTableRow')
+                    .find('.filterTable-condition')
+                    .empty()
+                    .append($conditionDropDown);
 
-    return condition.toLowerCase();
-}
+                var column = filterNS.columns[selectedValue.index];
+                var conditions = filterNS.conditions[filterNS.filterableClass(column.type)];
+                $conditionDropDown.find('.filterTable-conditionDropDown')
+                    .combo({
+                        name: 'condition',
+                        values: conditions,
+                        value: conditions[0]
+                    }).bind('change', function(event) {
+                        filterNS.filterEditor($newRow, column);
+                    });
 
-filterNS.displayToRealCondition = function(condition) {
-    condition = condition.toLowerCase();
-    var map = {
-        "on": "equals",
-        "not on": "not_equals",
-        "before": "less_than",
-        "after": "greater_than",
-        "blank": "is_blank",
-        "not_blank": "is_not_blank"
-    };
+                filterNS.filterEditor($newRow, column);
+            }
+            else
+            {
+                filterNS.cloneTemplateRow($table, columns).insertBefore($newRow);
+                $newRow.remove();
+            }
+        });
 
-    if (map[condition] == undefined)
-    {
-        return condition.toUpperCase();
-    }
-    else
-    {
-        return map[condition].toUpperCase();
-    }
-}
+    return $newRow;
+};
 
 filterNS.row = function($row) {
-    var column = filterNS.columns[$row.find('.columnSelect').val()];
-    var operator = $row.find(".conditionSelect").val().toUpperCase();
+    var selectedColumn = $row.find(".filterTable-nameDropDown").value();
+    if ((selectedColumn === undefined) || (selectedColumn.index < 0))
+    {
+        return false;
+    }
+
+    var column = filterNS.columns[selectedColumn.index];
+    var operator = $row.find(".filterTable-conditionDropDown").value().operator;
 
     if ((column.type == "document") || (column.type == "photo"))
     {
         return [
             {
                 type: 'operator',
-                value: filterNS.displayToRealCondition($row.find(".conditionSelect").val().toUpperCase()),
+                value: operator,
                 children: [
                     {
                         columnId: column.id,
@@ -331,7 +264,7 @@ filterNS.row = function($row) {
     else
     {
         var row = {type: "operator"};
-        row.value = filterNS.displayToRealCondition($row.find(".conditionSelect").val().toUpperCase());
+        row.value = operator;
 
         var hasValue = false;
         $.each(value, function(i, v) {
@@ -396,9 +329,8 @@ filterNS.getFilter = function($table, operator) {
     var j = {type: "operator", value: operator.toUpperCase()};
     var children = [];
 
-    $table.find("tr").each(function(i, row) {
-        var $row = $(row);
-        var rowResult = filterNS.row($row);
+    $table.find(".filterTableRow").each(function(i, row) {
+        var rowResult = filterNS.row($(row));
         if (rowResult !== false)
         {
             children = children.concat(rowResult);
@@ -433,10 +365,16 @@ filterNS.populate = function($table, filters, columns) {
                             subcolumn = sub.value;
                         }
 
-                        $row.find(".columnSelect").val(k);
-                        $row.find(".columnSelect").change();
-                        $row.find(".renderer").remove();
-                        $row.find(".conditionSelect").val(filterNS.realToDisplayCondition(filterRow.value.toLowerCase(), columns[k].type));
+                        $row.find(".filterTable-nameDropDown").value($.grep(filterNS.columnsValues,
+                            function(columnValue) {
+                                return columnValue.index === k;
+                            })[0]);
+                        $row.find(".filterTable-conditionDropDown")
+                            .value($.grep(filterNS.conditions[filterNS.filterableClass(col.type)],
+                            function(condition) {
+                                return condition.operator == filterRow.value.toUpperCase();
+                            })[0]);
+                        $row.find(".filterTable-editor").empty();
                         break;
                     }
                 }
@@ -445,16 +383,16 @@ filterNS.populate = function($table, filters, columns) {
             {
                 if (j > 1)
                 {
-                    $row.find(".rendererCell").append('<div class="ampersand">&amp;</div>');
+                    $row.find(".filterTable-editor").append('<div class="ampersand">&amp;</div>');
                 }
                 
                 if (filterRow.value.toLowerCase() == "between")
                 {
-                    $row.find(".rendererCell").append('<div class="renderer renderer' + j + ' between"></div>');
+                    $row.find(".filterTable-editor").append('<div class="renderer renderer' + j + ' between"></div>');
                 }
                 else
                 {
-                    $row.find(".rendererCell").append('<div class="renderer renderer' + j + '"></div>');
+                    $row.find(".filterTable-editor").append('<div class="renderer renderer' + j + '"></div>');
                 }
 
                 var value;
@@ -478,4 +416,7 @@ filterNS.populate = function($table, filters, columns) {
             }
         }
     }
+
+    // add empty row
+    filterNS.addFilterRow($table, columns);
 };

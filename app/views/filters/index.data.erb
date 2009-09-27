@@ -10,32 +10,52 @@
         <option value="or">any</option>
       </select> of the following conditions:
     </p>
-    <table id="filterTable">
-      <colgroup>
-          <col class="delete" />
-          <col class="name" />
-          <col class="condition" />
-          <col class="editor" />
-          <col class="addRemove" />
-      </colgroup>
-      <thead>
-        <tr>
-          <th class="delete">x</th>
-          <th class="name">Column Name</th>
-          <th class="condition">Limit To</th>
-          <th class="editor">Cell Contents</th>
-          <th class="addRemove"></th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    
-    <p class="information">
-      There are no columns to sort yet. Please add some data, then try again.
-    </p>
   </div>
-  
+  <div id="filterTable" class="clearfix">
+    <div class="filterTableRow filterTableHeaderRow">
+      <div class="filterTableCell filterTable-delete">Remove</div>
+      <div class="filterTableCell filterTable-name">Column Name</div>
+      <div class="filterTableCell filterTable-condition">Limit To</div>
+      <div class="filterTableCell filterTable-editor">Cell Contents</div>
+      <div class="filterTableCell filterTable-add">Add Button</div>
+    </div>
+    <div class="filterTableBody clearfix">
+    </div>
+    <div class="filterTableFooter">
+      <div class="filterTableRowTemplate">
+        <div class="filterTableCell filterTable-delete">
+          <a href="#delete">Delete</a>
+        </div>
+        <div class="filterTableCell filterTable-name">
+          <div class="blist-combo-wrapper">
+            <div class="filterTable-nameDropDown"></div>
+          </div>
+        </div>
+        <div class="filterTableCell filterTable-condition">
+          <div class="blist-combo-wrapper">
+            <div class="filterTable-conditionDropDown blist-combo">
+              <div class="blist-combo-value clearfix">
+                <span class="blist-combo-disabled">Choose</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="filterTableCell filterTable-editor">
+          <input type="text" class="textPrompt prompt" value="Enter a Value" disabled="disabled" />
+        </div>
+        <div class="filterTableCell filterTable-add">
+          <ul class="actionButtons">
+            <li><a href="#addCondition">Add Condition</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="information">
+    There are no columns to sort yet. Please add some data, then try again.
+  </p>
+
   <div class="submitLine clearfix">
     <ul class="submitActions">
       <li>
@@ -52,42 +72,34 @@
     var columns = $("#readGrid").blistModel().meta().columns[0];
     var view = $("#readGrid").blistModel().meta().view;
 
-    for (var i = 0; i < columns.length; i++)
-    {
-        // remove nested table entries from the array
-        if (columns[i].type == 'nested_table')
-        {
-            columns.splice(i, 1);
-            i--; // go back an index if we removed something
-        }
-    }
+    columns = $.grep(columns, function(column) { return column.type !== 'nested_table'; });
 
     if (columns.length === 0)
     {
-      $('#filterTable, #filterList > *').hide();
-      $('#filterList p.information, #filterList .createBar').show();
-      $('#filterList .createBar .actionButtons a').text('Continue');
+      $('.filterDatasetWrapper #filterTable, .filterDatasetWrapper #filterList').hide();
+      $('.filterDatasetWrapper p.information').show();
+      $('.filterDatasetWrapper .submitActions .actionButtons a').text('Continue');
       return;
     }
     else if (view.viewFilters != undefined)
     {
       $("#filterOperator").val(view.viewFilters.value.toLowerCase());
-      blist.filter.populate($("#filterTable tbody"), view.viewFilters, columns);
+      blist.filter.populate($(".filterDatasetWrapper #filterTable"), view.viewFilters, columns);
     }
     else
     {
-      blist.filter.addFilterRow($("#filterTable tbody"), columns);
+      blist.filter.addFilterRow($(".filterDatasetWrapper #filterTable"), columns);
     }
 
     $(".filterDatasetWrapper .submitActions a").click(function(event) {
       event.preventDefault();
       var operator = $("#filterOperator").val();
-      var viewFilters = blist.filter.getFilter($("#filterTable tbody"), operator);
+      var viewFilters = blist.filter.getFilter($(".filterDatasetWrapper #filterTable"), operator);
 
       $("#readGrid").datasetGrid().updateFilter(viewFilters);
     });
     
-    $('#filterList td.addRemove a').live('click', blist.filter.filterAdd);
-    $('#filterList td.delete a').live('click', blist.filter.filterRemove);
+    $('#filterTable .filterTableFooter .filterTable-add a').live('click', blist.filter.filterAdd);
+    $('#filterTable .filterTableBody .filterTable-delete a').live('click', blist.filter.filterRemove);
   });
 </script>

@@ -691,6 +691,7 @@ ul.convertables li a:hover
     width: 45px;
 }
 
+.datatype-none { background-position: 0 20px; }
 .datatype-text { background-position: 0 -80px; }
 .datatype-richtext { background-position: 0 -60px; }
 .datatype-number { background-position: 0 -20px; }
@@ -1189,78 +1190,93 @@ div#sortBysList.reorderList li .itemWrapper
 
 /*** START: Filter dialog ***/
 
-#filterList
+.filterDatasetWrapper #filterList
 {
     padding: 1em;
 }
 
-#filterList p
+.filterDatasetWrapper p
 {
     font-size: 1.2em;
     padding: 0.5em 0;
 }
 
-#filterList .information
+.filterDatasetWrapper .information
 {
     display: none;
     text-align: center;
 }
 
-#filterTable 
+.filterDatasetWrapper .submitLine
 {
-    table-layout: fixed;
-    width: 100%;
+    clear: both;
 }
 
-#filterTable thead th
+.filterDatasetWrapper .submitLine .submitActions
 {
-    border-left: solid 1px #fff;
+    width: 150px;
+}
+
+.filterDatasetWrapper .submitLine .submitActions li
+{
+        width: 125px;
+}
+
+/* table styles */
+.filterDatasetWrapper .filterTableHeaderRow
+{
     color: #fff;
-    font-size: 1.3em;
-    padding: 0.5em;
-    text-align: left;
+    height: 24px;
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
-#filterTable thead th:first-child
+.filterDatasetWrapper .filterTableHeaderRow .filterTableCell
 {
-    border-left: none;
+    height: 24px;
+    line-height: 20px;
 }
 
-#filterTable th.delete
-{
-    text-indent: -9999px;
-    width: 16px;
-}
-
-#filterTable th.name
-{
-    width: 10em;
-}
-
-#filterTable th.condition
-{
-    width: 10.5em;
-}
-
-#filterTable .addRemove
-{
-    width: 13.1em;
-}
-
-#filterTable tbody
-{
-    overflow-x: hidden;
-    overflow-y: auto;
-}
-
-#filterTable tbody td
+.filterDatasetWrapper .filterTableBody
 {
     background-color: #ececec;
-    padding: 0.3em;
-    vertical-align: top;
+    margin-bottom: 0.5em;
+    padding-bottom: 0.3em;
 }
 
-#filterTable tbody tr td.delete a
+.filterDatasetWrapper .filterTableRow
+{
+    clear: both;
+}
+
+.filterDatasetWrapper .filterTableCell
+{
+    float: left;
+    padding: 0.3em;
+}
+
+.filterDatasetWrapper .filterTableRowTemplate
+{
+    display: none;
+}
+
+.filterDatasetWrapper #filterTable
+{
+    padding-bottom: 1em;
+}
+
+.filterDatasetWrapper .blist-combo
+{
+    background-color: #fff;
+}
+
+/* table: specific columns */
+.filterDatasetWrapper .filterTable-delete
+{
+    width: 18px;
+}
+
+.filterDatasetWrapper .filterTable-delete a
 {
     background: transparent url(/stylesheets/images/content/section_close_button.png) no-repeat scroll 0 0;
     display: block;
@@ -1270,77 +1286,82 @@ div#sortBysList.reorderList li .itemWrapper
     width: 16px;
 }
 
-#filterTable tbody tr.only td.delete a
+.filterDatasetWrapper .filterTableFooter .filterTable-delete a
 {
     display: none;
 }
 
-#filterTable tbody td.addRemove
+.filterDatasetWrapper .filterTable-name
 {
-    padding: 0;
+    width: 175px;
 }
 
-#filterTable tbody tr td.addRemove ul.actionButtons
+.filterDatasetWrapper .filterTable-name .blist-combo-dd
 {
-    display: none;
+    overflow-x: hidden;
 }
 
-#filterTable tbody tr.last td.addRemove ul.actionButtons
+.filterDatasetWrapper .filterTable-name .typeSelect
 {
-    display: block;
-    margin-right: 2.5em;
-    margin-top: 0.3em;
+    white-space: nowrap;
 }
 
-#filterTable tbody tr td.addRemove ul.actionButtons li
+.filterDatasetWrapper .filterTable-name .datatype-none,
+.filterDatasetWrapper .filterTable-condition .blist-combo-disabled
 {
-    background-position: 0 -252px;
+    color: #888;
+    font-style: italic;
 }
 
-#filterTable tbody tr td.addRemove ul.actionButtons li a
+.filterDatasetWrapper .filterTable-condition
 {
-    background-position: right -273px;
+    width: 125px;
 }
 
-#filterTable .blist-table-editor
+.filterDatasetWrapper .filterTable-editor input,
+.filterDatasetWrapper .filterTable-editor .blist-combo-value,
+.filterDatasetWrapper .filterTable-editor .blist-combo-dd li
 {
-    border: none;
+    font-size: 1em;
 }
 
-#filterTable input[type="text"]
+.filterDatasetWrapper .filterTable-editor input,
+.filterDatasetWrapper .filterTable-editor .blist-combo
 {
     border: 1px solid #cacaca;
-    font-size: 1em;
-    padding: 0.1em;
-    width: 16.6em;
 }
 
-#filterTable .between input[type="text"]
+.filterDatasetWrapper #filterTable .between input
 {
     font-size: 1em;
     padding: 0.1em;
     width: 7.5em;
 }
 
-#filterTable .renderer.between 
+.filterDatasetWrapper #filterTable .renderer.between 
 {
     float: left;
 }
 
-#filterTable .type-url .labels
+.filterDatasetWrapper #filterTable .blist-table-editor
+{
+    border: none;
+}
+
+.filterDatasetWrapper #filterTable .type-url .labels
 {
     position: absolute;
     text-align: right;
     width: 5em;
 }
 
-#filterTable .type-url .labels span
+.filterDatasetWrapper #filterTable .type-url .labels span
 {
     display: block;
-    margin-top: 0.2em;
+    margin-top: 0.4em;
 }
 
-#filterTable .type-url input
+.filterDatasetWrapper #filterTable .type-url input
 {
     display: block;
     margin-left: 6em;
@@ -1348,67 +1369,34 @@ div#sortBysList.reorderList li .itemWrapper
     width: 10.5em;
 }
 
-#filterTable .ampersand
+.filterDatasetWrapper #filterTable .ampersand
 {
     float: left;
     font-size: 1.2em;
     padding: 0.2em;
 }
 
-#filterTable .renderer .blist-td
+.filterDatasetWrapper .filterTable-add
 {
-    float: none;
-    height: auto;
-    line-height: normal;
-    overflow: default;
+    float: right;
 }
 
-#filterTable .columnSelect,
-#filterTable .conditionSelect
-{
-    width: 100%;
-}
-
-#filterTable .renderer .blist-td input
-{
-    height: auto;
-    line-height: 1em;
-    padding: 0;
-}
-
-#filterTable .add,
-#filterTable .remove
-{
-    background: url(/stylesheets/images/widgets/filter_add_remove_sprite.png) -2px 0 no-repeat;
-    display: block;
-    float: left;
-    height: 25px;
-    width: 27px;
-}
-
-#filterTable .add
-{
-    background-position: -2px -29px;
-    display: none;
-}
-
-#filterTable tr.last .add
+.filterDatasetWrapper .filterTable-add ul.actionButtons
 {
     display: block;
+    margin-right: 2.5em;
+    margin-top: 0em;
 }
 
-#filterTable tr.only .remove
+.filterDatasetWrapper .filterTableBody .filterTable-add ul.actionButtons
 {
     display: none;
 }
 
-.modalContentWrapper.filterDatasetWrapper .submitLine .submitActions
+.filterDatasetWrapper .filterTableHeaderRow .filterTable-delete,
+.filterDatasetWrapper .filterTableHeaderRow .filterTable-add
 {
-    width: 150px;
+    text-indent: -9999px;
 }
 
-.modalContentWrapper.filterDatasetWrapper .submitLine .submitActions li
-{
-        width: 125px;
-}
 /*** END: Filter dialog ***/

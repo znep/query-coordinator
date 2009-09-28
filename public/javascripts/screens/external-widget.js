@@ -327,6 +327,14 @@ blist.widget.updateMetaTab = function(tabKey)
             {
                 $("#widgetMeta .singleInfoPublishing").infoPanePublish();
             }
+
+            if (tabKey == "filtered")
+            {
+                var $filteredGrid = $('.singleInfoFiltered .infoContent table');
+                var length = $filteredGrid.find('tbody tr').length;
+                $('.filteredViewCount').text(length);
+                $("#filteredViewsPanel").toggleClass('plural', length !== 1);
+            }
         }
     });
 };

@@ -217,6 +217,14 @@
     padding-top: 1px;
 }
 
+#filteredViewsPanel .plural
+{
+    display: none;
+}
+#filteredViewsPanel.plural .plural
+{
+    display: inline;
+}
 .blist-table { height: 100%; }
 
 .blist-table-header-scrolls { background-color: #e8e8e2; }

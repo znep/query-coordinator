@@ -110,7 +110,7 @@ class WidgetsController < ApplicationController
     
     @tabKey = params[:tab]
     @view = View.find(params[:id])
-    render(:layout => 'main.data')
+    render_tab_header(@tabKey, @view)
   end
   
   def meta_tab
@@ -123,7 +123,35 @@ class WidgetsController < ApplicationController
     if (@tabKey == "activity")
       @view_activities = Activity.find({:viewId => @view.id})
     end
-    render(:layout => 'main.data')
+    render_tab(@tabKey, @view)
+  end
+
+private
+  def render_tab_header(name, view)
+    locals = {:view => view, :page_single => false,
+                        :allow_edit => false, :in_widget => true,
+                        :allow_commenting => false }
+
+    widget_partial_path = File.join(Rails.root, 'app', 'views', 'widgets', "_info_#{name}_header.erb")
+    if File.exist? widget_partial_path
+      render :partial => "info_#{name}_header", :locals => locals
+    else
+      render :partial => "blists/info_#{name}_header", :locals => locals
+    end
+  end
+
+  def render_tab(name, view)
+    locals = { :view => view, :page_single => false,
+                            :allow_edit => false, :in_widget => true,
+                            :allow_commenting => false,
+                            :customization_id => params[:customization_id] }
+
+    widget_partial_path = File.join(Rails.root, 'app', 'views', 'widgets', "_meta_tab_#{name}.erb")
+    if File.exist? widget_partial_path
+      render :partial => "meta_tab_#{name}", :locals => locals
+    else
+      render :partial => "blists/meta_tab_#{name}", :locals => locals
+    end
   end
 end
 

@@ -52,7 +52,14 @@ filterNS.filterAdd = function(event) {
 
 filterNS.filterRemove = function(event) {
     event.preventDefault();
-    $(this).closest(".filterTableRow").remove();
+    var $this = $(this);
+    if ($this.closest('.filterTableBody').find('.filterTableRow').length == 10)
+    {
+        filterNS.cloneTemplateRow($this.closest('#filterTable'), filterNS.columns).insertBefore(
+            $this.closest('#filterTable').find('.filterTableRowTemplate'));
+    }
+
+    $this.closest(".filterTableRow").remove();
 };
 
 filterNS.createEditor = function($renderer, column, value) {
@@ -109,9 +116,13 @@ filterNS.addFilterRow = function($table, columns) {
     var $template = $table.find('.filterTableRowTemplate');
     $template.siblings('.filterTableRow').appendTo($table.find('.filterTableBody'));
 
-    var $newRow = filterNS.cloneTemplateRow($table, columns);
-    $newRow.insertBefore($template);
-    return $newRow;
+    if ($table.find('.filterTableBody .filterTableRow').length < 10)
+    {
+        var $newRow = filterNS.cloneTemplateRow($table, columns);
+        $newRow.insertBefore($template);
+        return $newRow;
+    }
+    return null;
 };
 
 filterNS.cloneTemplateRow = function($table, columns)

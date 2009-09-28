@@ -1219,7 +1219,7 @@ div#sortBysList.reorderList li .itemWrapper
 
 .filterDatasetWrapper .submitLine .submitActions li
 {
-        width: 125px;
+    width: 125px;
 }
 
 /* table styles */
@@ -1296,9 +1296,22 @@ div#sortBysList.reorderList li .itemWrapper
     width: 175px;
 }
 
+.filterDatasetWrapper .filterTable-name .blist-combo
+{
+    padding-right: 0;
+    width: 175px;
+}
+
+.filterDatasetWrapper .filterTable-name .blist-combo-value
+{
+    overflow: hidden;
+    width: 146px;
+}
+
 .filterDatasetWrapper .filterTable-name .blist-combo-dd
 {
     overflow-x: hidden;
+    text-align: left;
 }
 
 .filterDatasetWrapper .filterTable-name .typeSelect
@@ -1329,6 +1342,11 @@ div#sortBysList.reorderList li .itemWrapper
 .filterDatasetWrapper .filterTable-editor .blist-combo
 {
     border: 1px solid #cacaca;
+}
+
+.filterDatasetWrapper .filterTable-editor > input
+{
+    font-size: 1.3em;
 }
 
 .filterDatasetWrapper #filterTable .between input

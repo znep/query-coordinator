@@ -253,8 +253,7 @@ img.blist-table-option-icon
     text-indent: -9999px;
 }
 
-.blist-check-on,
-.blist-boolean_checkbox-on
+.blist-checkbox-on
 {
     background-image: url(/stylesheets/images/content/table/check.png);
 }
@@ -565,7 +564,7 @@ div.blist-table-editor .align-right { text-align: right; }
     left: -10000px;
     /* padding: 0; -- This causes key events to not fire in Safari.  Yes, really */
     position: fixed;
-    width: 0;
+    /* width: 0; -- This causes key events to not fire in Chrome. */
 }
 
 .blist-table-editor.type-richtext textarea

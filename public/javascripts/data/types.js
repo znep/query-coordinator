@@ -287,29 +287,36 @@ blist.namespace.fetch('blist.data.types');
             true);
     };
 
-    var renderGenPhone = function(value, plain) {
+    var renderGenPhone = function(value, plain)
+    {
         return "renderPhone(" + value + ", " + plain + ")";
     };
 
-    var renderGenCheckbox = function(value, plain, column) {
+    var renderGenCheckbox = function(value, plain, column)
+    {
         if (plain) { return value + " ? '&#10003;' : ''"; }
-        var format = column.format || 'check';
-        return "\"<div class='blist-cell blist-checkbox blist-" + format + "-\" + (" + value + " ? 'on' : 'off') + \"' title='\" + (" + value + " ? 'True' : 'False') + \"'></div>\"";
+        return "\"<div class='blist-cell blist-checkbox blist-checkbox-\" + (" +
+            value + " ? 'on' : 'off') + \"' title='\" + (" + value +
+            " ? 'True' : 'False') + \"'></div>\"";
     };
 
-    var renderGenFlag = function(value, plain) {
+    var renderGenFlag = function(value, plain)
+    {
         if (plain) { return value + " || ''"; }
-        return value + " && (\"<div class='blist-flag blist-flag-\" + " + value + " + \"' title='\" + " + value + " + \"'></div>\")";
+        return value + " && (\"<div class='blist-flag blist-flag-\" + " +
+            value + " + \"' title='\" + " + value + " + \"'></div>\")";
     };
 
-    var renderRichtext = function(value) {
+    var renderRichtext = function(value)
+    {
         if (value == null) { return ''; }
         // Add an extra wrapper so we can tweak the display to something
         // reasoanble
         return '<div class="blist-richtext">' + value + '</div>';
     };
 
-    var renderGenRichtext = function(value, plain) {
+    var renderGenRichtext = function(value, plain)
+    {
         // TODO -- in plain text mode, strip out HTML?
         return "renderRichtext(" + value + " || '')";
     };

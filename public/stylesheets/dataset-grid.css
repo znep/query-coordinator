@@ -648,6 +648,8 @@ img.blist-table-option-icon
 
 .blist-table-edit-container .buttons
 {
+    background-color: white;
+    padding: 0 2px 2px 0;
     position: absolute;
 }
 

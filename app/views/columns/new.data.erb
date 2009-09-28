@@ -127,10 +127,10 @@ $(function(){
             toggleEnabled();
         },
         success: function(responseData) { 
-            $grid = $("#readGrid");
+            $grid = $("#dataGrid");
             if ($grid.length != 0)
             {
-              $("#readGrid").blistModel().updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
+              $("#dataGrid").blistModel().updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
             $.Tache.DeleteAll();

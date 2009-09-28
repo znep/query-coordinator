@@ -1,4 +1,4 @@
-class BlistsController < SwfController
+class BlistsController < ApplicationController
   helper_method :get_title
   skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag]
   
@@ -14,78 +14,64 @@ class BlistsController < SwfController
 
   def show
     @body_id = 'lensBody'
-    case params[:id]
-    when 'new_blist'
-      redirect_to(:controller => 'blists', :action => 'new', :status => 301)
-      # Use this to modal instead
-      #if !current_user
-      #  return require_user
-      #end
-      #@new_dataset = true;
-    else
-      @body_class = params[:mode] && params[:mode] == 'edit' ?
-        'editMode' : 'readMode'
-      begin
-        @parent_view = @view = View.find(params[:id])
-      rescue CoreServer::ResourceNotFound
-          flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
+    begin
+      @parent_view = @view = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' cannot be found, or has been deleted.'
-          return (render 'shared/error', :status => :not_found)
-      rescue CoreServer::CoreServerError => e
-        if e.error_code == 'authentication_required' 
-          return require_user(true)
-        elsif e.error_code == 'permission_denied'
-          flash.now[:error] = e.error_message
-          return (render 'shared/error', :status => :forbidden)
-        else
-          flash.now[:error] = e.error_message
-          return (render 'shared/error', :status => :internal_server_error)
-        end
-      end
-
-      if !@view.can_read()
+            return (render 'shared/error', :status => :not_found)
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required' 
         return require_user(true)
+      elsif e.error_code == 'permission_denied'
+        flash.now[:error] = e.error_message
+        return (render 'shared/error', :status => :forbidden)
+      else
+        flash.now[:error] = e.error_message
+        return (render 'shared/error', :status => :internal_server_error)
       end
+    end
 
-      # See if it matches the authoritative URL; if not, redirect
-      if request.path != @view.href
-        # Log redirects in development
-        if ENV["RAILS_ENV"] != 'production' &&
-          request.path =~ /^\/dataset\/\w{4}-\w{4}/
-          logger.info("Doing a dataset redirect from #{request.referrer}")
-        end
-        redirect_to(@view.href + '?' + request.query_string)
+    if !@view.can_read()
+      return require_user(true)
+    end
+
+    # See if it matches the authoritative URL; if not, redirect
+    if request.path != @view.href
+      # Log redirects in development
+      if ENV["RAILS_ENV"] != 'production' &&
+        request.path =~ /^\/dataset\/\w{4}-\w{4}/
+        logger.info("Doing a dataset redirect from #{request.referrer}")
       end
+      redirect_to(@view.href + '?' + request.query_string)
+    end
 
-      if !@view.is_blist?
-        par_view = View.find({'tableId' => @view.tableId,
+    if !@view.is_blist?
+      par_view = View.find({'tableId' => @view.tableId,
           'method' => 'getByTableId'}, true).
           find {|v| v.is_blist?}
-        if (!par_view.nil?)
-          @is_child_view = true
-          @parent_view = par_view
-        end
+      if (!par_view.nil?)
+        @is_child_view = true
+        @parent_view = par_view
       end
-      @view.register_opening
-      @view_activities = Activity.find({:viewId => @view.id})
-
-      if !current_user
-        @user_session = UserSession.new
-      end
-
-      # If we're displaying a single dataset, set the title to the description.
-      @meta_description = help.meta_description(@view)
-      
-      # Shuffle the default tags into the keywords list
-      @meta_keywords = help.meta_keywords(@view)
     end
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
+
+    if !current_user
+      @user_session = UserSession.new
+    end
+
+    # If we're displaying a single dataset, set the title to the description.
+    @meta_description = help.meta_description(@view)
+
+    # Shuffle the default tags into the keywords list
+    @meta_keywords = help.meta_keywords(@view)
 
     @data_component = params[:dataComponent]
     @popup = params[:popup]
-
-    @swf_url = swf_url('v3embed.swf')
   end
-  
+
   # To build a url to this action, use View.about_href.
   # Do not use about_blist_path (it doesn't exist).
   def about

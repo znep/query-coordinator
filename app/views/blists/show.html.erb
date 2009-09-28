@@ -1,18 +1,16 @@
 <% content_for :head do %>
-  <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") : '' %>
+  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
   <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
     "ui.spinner", "blist-grid-screen", "form-common", "combo",
     :cache => "cache/blists_show_all" %>
-  <title><%= @view ? h(@view.name) : 'Design a Dataset' %> | <%= th.site_title %></title>
+  <title><%= h(@view.name) %> | <%= th.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
-  <%- if @view -%>
-    <link rel="canonical" href="<%= @view.href %>" />
-  <%- end -%>
+  <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 
-<%- is_owner = current_user && @view && @view.owner.id == current_user.id -%>
-<%- is_blist = @view && @view.is_blist? %> 
-<%- can_edit = current_user && @view && @view.can_edit() -%>
+<%- is_owner = current_user && @view.owner.id == current_user.id -%>
+<%- is_blist = @view.is_blist? %>
+<%- can_edit = current_user && @view.can_edit() -%>
 
 <div id='overlay'></div>
 
@@ -40,7 +38,6 @@
       <li class='prevTabLink'><a href='#prev_tab' title='Previous View'>
         Previous View
       </a></li>
-      <%- if @view -%>
       <li class='tempViewTab filter inlineEdit'><div class='wrapper'>
         <div class='innerWrapper'>
           <span title='Click to name and save your filtered view'>[Unsaved Filter]</span>
@@ -50,7 +47,6 @@
           <a href='#cancelFilter' class='close' title='Cancel'>Cancel</a>
         </div>
       </div></li>
-      <%- end -%>
       <%- if @is_child_view -%>
       <li class='active filter'><div class='wrapper'>
         <a class='clipText' href='<%= @view.href %>'
@@ -65,7 +61,6 @@
     <div class='outerContent'>
       <div class='content'>
         <div class='headerBar clearfix'>
-          <%- if !@view.nil? -%>
           <ul>
             <%# Main menu %>
             <li class='separator'>
@@ -105,7 +100,7 @@
                 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
 
-            <%- if @view && @view.can_edit() -%>
+            <%- if @view.can_edit() -%>
             <li class='separator'>
               <a id='formatLink' class='staticLink' href='#formatMenu'>
                 <span class='linkIcon'>Format</span>
@@ -114,12 +109,10 @@
             <%- end -%>
 
             <%# Export/access options %>
-            <%- if !@view.nil? -%>
             <li class='separator'>
               <a id='rssLink' class='staticLink'
                 href='/views/<%= @view.id %>/rows.rss'><span class='linkIcon'>RSS</span></a>
             </li>
-            <%- end -%>
 
             <li>
               <a href='#' id='shareTopLink' class='dropdownLink'>
@@ -149,10 +142,9 @@
               </div>
             </div>
           </form>
-          <%- end -%>
         </div>
 
-        <%- if @view && @view.can_edit() -%>
+        <%- if @view.can_edit() -%>
         <div id='formatMenu' class='fixedMenu disabled'>
           <div class='outerWrapper'>
             <ul class='innerWrapper clearfix'>
@@ -287,14 +279,7 @@
         </div>
         <%- end -%>
 
-        <div id='outerSwfWrapper' class='scrollContent'>
-          <div id='readGrid' class='readItem'></div>
-          <%- if current_user -%>
-          <div id='swfWrapper' class='swfItem'>
-            <%= render(:partial => "shared/swf") %>
-          </div>
-          <%- end -%>
-        </div>
+        <div id='dataGrid' class='scrollContent'></div>
 
       </div>
     </div>
@@ -304,13 +289,10 @@
     <div id="mainColumnContent" class="column">
 
       <div id='infoPane' class='metadataPane'>
-      <%- if !@view.nil? -%>
-      <%= render(:partial => "info_for_single",
-      :locals => { :view => @view, :page_single => true }) %>
-      <%- end -%>
+        <%= render(:partial => "info_for_single",
+          :locals => { :view => @view, :page_single => true }) %>
       </div>
 
-      <%- if @view -%>
       <div id='tempInfoPane' class='metadataPane'>
         <div class="header">
           <ul class="summaryTabs clearfix">
@@ -346,7 +328,6 @@
           </div>
         </div>
       </div>
-      <%- end -%>
 
     </div>
   </div>
@@ -354,7 +335,8 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "readGrid" }) %>
+  <%= render(:partial => "shared/visualization",
+    :locals => { :view => @view, :grid_div => "dataGrid" }) %>
 
   <%- if !current_user -%>
   <%= render :partial => 'login' %>
@@ -374,7 +356,6 @@
     blist.blistGrid.newDataset = true;
     <%- end -%>
     blist.blistGrid.secureUrl = "https://<%= request.host %>:<%= SslRequirement.port_for_protocol('https') %>";
-    <%- if !@view.nil? -%>
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
@@ -383,13 +364,12 @@
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
     <%- end -%>
-    <%- end -%>
   </script>
 
   <%= render(:partial => 'shared/table_editor_js') %>
   <%= javascript_include_tag "plugins/ui.core", "plugins/ui.draggable",
-    "plugins/ui.spinner", "util/extMouseWheel", "util/flash-interface",
-    "util/navigation", "util/inline-login", "util/swfobject", "plugins/date",
+    "plugins/ui.spinner", "util/extMouseWheel",
+    "util/navigation", "util/inline-login", "plugins/date",
     "plugins/jquery.colorPicker", "data/types", "data/model", "data/table",
     "data/table_nav", "widgets/inline-edit", "widgets/dropdown-menu",
     "widgets/selectable-list", "widgets/pagination", "widgets/column-format",

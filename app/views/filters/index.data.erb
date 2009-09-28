@@ -69,8 +69,8 @@
 
 <script type="text/javascript" charset="utf-8">
   $(function() {
-    var columns = $("#readGrid").blistModel().meta().columns[0];
-    var view = $("#readGrid").blistModel().meta().view;
+    var columns = $("#dataGrid").blistModel().meta().columns[0];
+    var view = $("#dataGrid").blistModel().meta().view;
 
     columns = $.grep(columns, function(column) { return column.type !== 'nested_table'; });
 
@@ -96,7 +96,7 @@
       var operator = $("#filterOperator").val();
       var viewFilters = blist.filter.getFilter($(".filterDatasetWrapper #filterTable"), operator);
 
-      $("#readGrid").datasetGrid().updateFilter(viewFilters);
+      $("#dataGrid").datasetGrid().updateFilter(viewFilters);
     });
     
     $('#filterTable .filterTableFooter .filterTable-add a').live('click', blist.filter.filterAdd);

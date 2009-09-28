@@ -202,10 +202,10 @@ $(function()
             $("#modal .error").html($.json.deserialize(request.responseText).error).show() 
         },
         success: function(responseData) { 
-            $grid = $("#readGrid");
+            $grid = $("#dataGrid");
             if ($grid.length != 0)
             {
-                $("#readGrid").blistModel().updateColumn(responseData);
+                $("#dataGrid").blistModel().updateColumn(responseData);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
             $("#modal .jqmClose").click();
@@ -247,7 +247,7 @@ $(function()
         },
         success: function (responseData) {
           $("#modal .jqmClose").click();
-          $("#readGrid").blistModel().convertColumn(<%= @column.id %>, responseData);
+          $("#dataGrid").blistModel().convertColumn(<%= @column.id %>, responseData);
         }
       });
     }

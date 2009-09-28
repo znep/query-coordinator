@@ -986,46 +986,6 @@ body#lensBody
     padding-bottom: 1em;
 }
 
-#lensContainer #outerSwfWrapper
-{
-    /* Override overflow: auto for .scrollContent so that Firefox on Windows
-     * doesn't get screwed up in regards to cursor positioning in Flash */
-    overflow: visible;
-    /* Override position:relative for .scrollContent to allow this content
-     * to expand beyond its borders */
-    position: static;
-}
-
-#lensContainer #swfWrapper
-{
-    overflow: hidden;
-    position: absolute;
-    z-index: 100;
-}
-
-/* Position container so it will fit the wrapper */
-#lensContainer #swfContent
-{
-    position: absolute;
-    bottom: 0;
-    top: 0;
-}
-
-/* Styling for message when missing JS or Flash */
-#lensContainer #swfContent
-{
-    background-color: #ffffff;
-    font-size: 1.4em;
-    font-weight: bold;
-}
-
-#lensContainer #swfWrapper p
-{
-    font-size: 1.4em;
-    margin-top: 2em;
-    text-align: center;
-}
-
 /* Modify sidebar to lie below grid */
 
 #lensBody #sidebar
@@ -1046,19 +1006,8 @@ body#lensBody
 
 #infoPane { display: none; }
 
-/* SWF/Non-SWF */
-#lensBody.readMode .swfItem
-{
-    display: none;
-}
-
-#lensBody.editMode .readItem
-{
-    display: none;
-}
-
 /* Grid styling */
-#lensBody #readGrid
+#lensBody #dataGrid
 {
     height: 100%;
     left: 0;

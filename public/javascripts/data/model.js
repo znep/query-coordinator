@@ -563,16 +563,20 @@ blist.namespace.fetch('blist.data');
                     else if (v.name == 'id') { adjName = 'uuid'; }
                     metaCols.push({name: adjName, index: i});
                 }
+
                 if (v.dataType && (v.dataType.type == 'url' ||
                     v.dataType.type == 'phone' ||
                     v.dataType.type == 'document'))
                 { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
+
                 if (v.dataType && (v.dataType.type == 'url' ||
                     v.dataType.type == 'phone' || v.dataType.type == 'document'))
                 { dataMungeCols.push({index: i, type: 'arrayToObject',
                     types: v.subColumnTypes}); }
+
                 if (v.dataType && v.dataType.type == 'checkbox')
                 { dataMungeCols.push({index: i, type: 'falseToNull'}); }
+
                 if (v.dataType && v.dataType.type == 'stars')
                 { dataMungeCols.push({index: i, type: 'zeroToNull'}); }
             }
@@ -1067,6 +1071,8 @@ blist.namespace.fetch('blist.data');
             {
                 row = $.extend(row, {id: 'saving' + saveUID++, isNew: true,
                     type: null});
+                if (rows.length < 1 || !rows[rows.length - 1].isNew)
+                { rows.push(row); }
                 installIDs();
                 configureActive();
                 isCreate = true;
@@ -1095,6 +1101,8 @@ blist.namespace.fetch('blist.data');
                 isCreate = childRow.type == 'blank';
                 if (isCreate)
                 {
+                    delete childRow.type;
+                    childRow.isNew = true;
                     var parRow = row.parent;
 
                     // Since child rows get re-created, save the index and pull
@@ -1161,7 +1169,7 @@ blist.namespace.fetch('blist.data');
                 url += '/' + row.parent.uuid +
                     '/columns/' + parCol.id +
                     '/subrows';
-                if (childRow.type != 'blank') { url += '/' + childRow.uuid; }
+                if (!childRow.isNew) { url += '/' + childRow.uuid; }
                 url += '.json';
             }
             else if (row.isNew) { url += '.json'; }
@@ -1180,7 +1188,7 @@ blist.namespace.fetch('blist.data');
             {
                 parCol = column.nestedIn.header;
                 childRow = self.getRowValue(row, parCol);
-                newRow = childRow.type == 'blank' ? childRow : null;
+                newRow = childRow.isNew ? childRow : null;
             }
             $.ajax({ url: url,
                     type: newRow ? 'POST' : 'PUT',
@@ -2102,6 +2110,7 @@ blist.namespace.fetch('blist.data');
             {
                 meta.columns = null;
                 config.meta.columnFilters = meta.columnFilters;
+                config.meta.view.id = meta.view.id;
                 this.meta(config.meta);
             }
 

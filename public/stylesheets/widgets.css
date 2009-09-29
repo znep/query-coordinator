@@ -522,6 +522,7 @@ ul.menu li.button .innerWrapper
     background-position: left center;
     background-repeat: no-repeat;
     display: block;
+    min-width: 20px;
 }
 
 ul.menu li.button.prev .innerWrapper
@@ -616,7 +617,7 @@ ul.menu.checkboxMenu li.button a
     display: block;
 }
 
-.fixedMenu .outerWrapper
+.fixedMenu > .outerWrapper
 {
     background-image: url(/stylesheets/images/widgets/menu/corner_light_left_bottom_whitebg.png);
     background-position: bottom left;
@@ -624,7 +625,7 @@ ul.menu.checkboxMenu li.button a
     margin: 0 -1px -1px;
 }
 
-.fixedMenu .innerWrapper
+.fixedMenu ul.innerWrapper
 {
     background-image: url(/stylesheets/images/widgets/menu/corner_light_right_bottom_whitebg.png);
     background-position: bottom right;
@@ -1449,6 +1450,13 @@ table.gridList tr.filteredOut
 .dialogBox .actionButtons li a { background-position: right -84px; }
 .dialogBox .actionButtons li a.arrowButton { background-position: right -105px; }
 
+.dialogBox .error
+{
+    color: #ff0000;
+    font-size: 1.1em;
+    margin-bottom: 0.5em;
+}
+
 /*** END: Dialog boxes ***/
 
 
@@ -1552,7 +1560,7 @@ body#login .loginBox li#close_login
 #signup.dialogWrapper
 {
     margin: 4em auto 0;
-    width: 48em;
+    width: 50em;
 }
 
 .signupBox .mainContent
@@ -1673,6 +1681,42 @@ body#login .loginBox li#close_login
 
 /*** END: Signup box ***/
 
+
+/*** START: Upload Dialog ***/
+#jqmUpload { margin-left: -20em; }
+#jqmUpload, #jqmUpload .dialogWrapper { width: 40em; }
+#jqmUpload .dialogWrapper { margin: 10em auto 0; }
+#jqmUpload label { font-size: 1.2em; }
+
+#jqmUpload input[type="text"]
+{
+    background-color: transparent;
+    display: inline-block;
+}
+
+#jqmUpload .fileBrowseButtonListContainer { float: right; }
+
+#jqmUpload .fileBrowseButtonListContainer ul
+{
+    display: inline-block;
+    float: none;
+    margin-bottom: -0.65em;
+    margin-top: 0;
+}
+
+#jqmUpload .submitPending
+{
+    background: url(/images/throbber.gif) no-repeat;
+    background-position: 6px center;
+    float: left;
+    font-size: 1.2em;
+    line-height: 1.3333em;
+    padding-left: 30px;
+}
+
+#jqmUpload .cancelButton { float: right; }
+
+/*** END: Upload Dialog ***/
 
 /*** START: Page header block (top of discover and community) ***/
 .pageBlockHeaderOuter { background-color: #fff; }
@@ -2061,3 +2105,152 @@ body#login .loginBox li#close_login
 }
 
 /*** END: reorderable list ***/
+
+
+
+/*** START: datepicker styles ***/
+div.datepicker
+{
+    display: none;
+    left: 0;
+    margin-left: -2px;
+    margin-top: 3px;
+    position: absolute;
+    top: 0;
+    z-index: 4000;
+}
+div.datepicker table table th,
+div.datepicker table table td { font-size: 1.1em; }
+.datepickerContainer { background-color: #e8e8e8; }
+.datepickerHidden { display: none; }
+div.datepicker table { border-collapse: collapse; padding: 3px; }
+div.datepicker a
+{
+    color: #333333;
+    cursor: default;
+    text-decoration: none;
+}
+div.datepicker table td
+{
+    padding: 0.5em;
+    text-align: right;
+}
+div.datepicker table td table td { padding: 0; }
+div.datepicker th
+{
+    color: #666666;
+    font-weight: normal;
+    text-align: center;
+}
+div.datepicker tbody th { text-align: left; }
+div.datepicker tbody a { display: block; }
+.datepickerDays a
+{
+    height: 1.6em;
+    line-height: 1.6em;
+    padding-right: 0.2em;
+    width: 2em;
+}
+.datepickerYears a,
+.datepickerMonths a
+{
+    height: 3.6em;
+    line-height: 3.6em;
+    text-align: center;
+    width: 4em;
+}
+td.datepickerNotInMonth a { color: #999999; }
+tbody.datepickerDays td.datepickerSelected { background-color: #20608f; }
+tbody.datepickerDays td.datepickerSelected a { color: #ffffff; }
+tbody.datepickerDays td.datepickerNotInMonth.datepickerSelected
+{ background-color: #10304f; }
+tbody.datepickerYears td.datepickerSelected,
+tbody.datepickerMonths td.datepickerSelected { background-color: #20608f; }
+div.datepicker a:hover,
+div.datepicker a:hover { color: #660000; }
+div.datepicker td.datepickerNotInMonth a:hover { color: #660000; }
+.datepickerSpace div { width: 2em; }
+.datepickerGoNext a,
+.datepickerGoPrev a,
+.datepickerMonth a
+{
+    height: 2em;
+    line-height: 2em;
+    text-align: center;
+}
+.datepickerGoNext a,
+.datepickerGoPrev a { width: 2em; }
+table.datepickerViewDays tbody.datepickerMonths,
+table.datepickerViewDays tbody.datepickerYears { display: none; }
+table.datepickerViewMonths tbody.datepickerDays,
+table.datepickerViewMonths tbody.datepickerYears,
+table.datepickerViewMonths tr.datepickerDoW { display: none; }
+table.datepickerViewYears tbody.datepickerDays,
+table.datepickerViewYears tbody.datepickerMonths,
+table.datepickerViewYears tr.datepickerDoW { display: none; }
+td.datepickerDisabled a,
+td.datepickerDisabled.datepickerNotInMonth a { color: #333; }
+td.datepickerDisabled a:hover { color: #333; }
+td.datepickerSpecial a { background: #700; }
+td.datepickerSpecial.datepickerSelected a { background: #a00; }
+/*** END: datepicker styles ***/
+
+
+/*** START: colorpicker styles ***/
+div#color_selector
+{
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    padding: 10px 5px;
+    position: absolute;
+    width: 137px;
+}
+
+div#color_custom
+{
+    float: left;
+    margin-top: -10px;
+    width: 100%;
+}
+
+div#color_custom label
+{
+    color: #2F2F2F;
+    font-size: 0.95em;
+    margin: 5px 2px;
+    width: 25%;
+}
+
+div#color_custom input
+{
+    border: 1px solid #000;
+    font-size: 0.95em;
+    margin: 5px 2px 0;
+    width: 65%;
+}
+
+div.color_block
+{
+    border: 1px solid #666666;
+    border-right: none;
+    margin-bottom: 10px;
+}
+
+div.color_swatch
+{
+    border-right: 1px solid #666666;
+    cursor: pointer;
+    float: left;
+    height: 16px;
+    line-height: 16px;
+    width: 16px;
+}
+
+div.color_swatch .inner
+{
+    height: 14px;
+    width: 14px;
+}
+div.color_swatch.selected .inner { border: 1px solid #20608f; }
+div.color_swatch.hover .inner { border: 1px solid #ffffff; }
+/*** END: colorpicker styles ***/

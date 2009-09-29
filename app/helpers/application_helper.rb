@@ -50,8 +50,8 @@ module ApplicationHelper
     last_item_was_separator = true
 
     items.each do |i|
-      if (i['owner_item'] && !is_owner) || (i['owner_item'] == false && is_owner) || (i['swf_item'] && !can_edit) ||
-        (i['user_required'] && !current_user) || (!i['if'].nil? && !i['if']) || 
+      if (i['owner_item'] && !is_owner) || (i['owner_item'] == false && is_owner) ||
+        (i['user_required'] && !current_user) || (!i['if'].nil? && !i['if']) ||
         (last_item_was_separator && i['separator'])
         next
       end
@@ -66,8 +66,7 @@ module ApplicationHelper
         i['title'] = i['text']
       end
       if i['separator']
-        ret << "<li class='separator" << (i['swf_item'] ? ' swfItem' : '') <<
-        "'></li>"
+        ret << "<li class='separator" << "'></li>"
         last_item_was_separator = true
       elsif i['section_title']
         ret << "<li class='sectionTitle #{i['class']}'>#{i['section_title']}</li>"
@@ -79,7 +78,7 @@ module ApplicationHelper
           "#{i['text']}</span></div></div></a></li>"
       else
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
-          (i['swf_item'] ? ' swfItem' : '') << "'><a title='#{i['title']}' " <<
+          "'><a title='#{i['title']}' " <<
           "href='#{i['href']}' q=\"#{i['q']}\" class=\"#{i['link_class']}\"" <<
           (i['external'] ? ' rel="external"' : (i['modal'] ? ' rel="modal"' : '')) << ">" <<
           "<span class='highlight'>#{i['text']}</span></a>"
@@ -234,7 +233,7 @@ HREF
       if value.is_a? Array
         value = value.join(',')
       end
-      %Q[<meta name="#{key.to_s}" value="#{sanitize(value)}" />]
+      %Q[<meta name="#{key.to_s}" value="#{escape_once(value)}" />]
     end.join("\n")
   end
 
@@ -357,6 +356,19 @@ HREF
     content_tag(:form, {:action => "#{APP_CONFIG['rpx_openid_url']}?token_url=#{return_url}", :id => 'googrpx', :method => 'post'}) do
       hidden_field_tag('openid_identifier', 'https://www.google.com/accounts/o8/id') +
       image_submit_tag(image_path('rpx/google.png'), :title => "#{action} with Google")
+    end
+  end
+
+  def rpx_submit_yahoo(action = "Sign in", return_url = rpx_return_login_url)
+    content_tag(:form, {:action => "#{APP_CONFIG['rpx_openid_url']}?token_url=#{return_url}", :id => 'googrpx', :method => 'post'}) do
+      hidden_field_tag('openid_identifier', 'yahoo.com') +
+      image_submit_tag(image_path('rpx/yahoo.gif'), :title => "#{action} with Yahoo")
+    end
+  end
+
+  def rpx_submit_windowslive(action = "Sign in", return_url = rpx_return_login_url)
+    content_tag(:form, {:action => "#{APP_CONFIG['rpx_windowslive_url']}?token_url=#{return_url}", :method => 'post'}) do
+      image_submit_tag(image_path('rpx/windowslive.gif'), :title => "#{action} with Windows Live ID")
     end
   end
 end

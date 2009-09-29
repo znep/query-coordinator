@@ -77,7 +77,7 @@
                   </dl>
                   <ul class="actionButtons ec">
                     <li id="passwordFormSave"><a class="arrowButton" href="#">Save</a></li>
-                    <li id="passwordFormClear"><a href="#" title="Disable the ability to login with a password; you must use an OpenID identifier">Clear</a></li>
+                    <li id="passwordFormClear"><a href="#" title="Disable the ability to login with a password; you must use an OpenID identifier">Remove Password</a></li>
                   </ul>
                   <p class='errorMessage'></p>
                 <% end %>
@@ -161,8 +161,8 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= javascript_include_tag "util/sizing", "plugins/jquery.validate", 
-    "plugins/jquery.example.min", "widgets/text-prompt",
+  <%= javascript_include_tag "util/sizing", "plugins/jqModal", "util/alert-override", "plugins/jquery.validate",
+    "plugins/jquery.example.min", "widgets/text-prompt", "plugins/ui.core", "plugins/ui.showedit",
     "screens/account-screen", :cache => "cache/accounts_show_all" %>
   <script src="https://rpxnow.com/openid/v2/widget"
           type="text/javascript"></script>

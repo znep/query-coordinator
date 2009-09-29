@@ -21,7 +21,7 @@
         var value = options.value;
         if (value == null)
         { value = defaultValue; }
-        var $value = $('<div class="blist-combo-value"></div>');
+        var $value = $('<div class="blist-combo-value clearfix"></div>');
         var $input = $('<input class="blist-combo-keyhandler" />');
 
         // This object handles value management for the element.  See values.js
@@ -92,23 +92,31 @@
                 $this.closest(".blist-combo-wrapper").append($dropdown);
                 for (var i = 0; i < values.length; i++)
                 {
-                    var $li = $('<li></li>');
+                    var $li = $('<li class="clearfix"></li>');
                     $dropdown.append($li);
                     rowRenderFn.apply($li, [ values[i] ]);
                 }
                 $dropdown.click(onDropdownClick)
+                    .mouseover(onDropdownMouseMove)
                     .mousemove(onDropdownMouseMove);
             }
 
-            // Display the drop-down
-            var pos = $this.position();
-            var left = pos.left;
-            var top = pos.top + $this.outerHeight() - 1;
-            $dropdown.css('left', left);
-            $dropdown.css('top', top);
 
+            // Compute the dropdown position
+            var pos = $this.position();
+            var layout = {
+                left: pos.left,
+                top: pos.top + $this.outerHeight() - 1,
+                width: $this.outerWidth() - 2
+            };
+            if (options.adjustDropdownLayout)
+                options.adjustDropdownLayout(layout);
+
+            // Display the drop-down
+            $dropdown.css('left', layout.left);
+            $dropdown.css('top', layout.top);
+            $dropdown.css('width', layout.width);
             dropdownOpen = true;
-            $dropdown.css({ width: ($this.outerWidth() - 2) + 'px' });
             $dropdown.slideDown(100);
         };
 
@@ -158,11 +166,11 @@
         // container (in the variable "$value")
         var renderValue = function() {
             // Locate the object associated with the value
-            
+
             var valueObj = getSelectedValueObject(value);
-            
+
             // Reset all classes on the value.
-            $value.removeClass().addClass("blist-combo-value");
+            $value.removeClass().addClass("blist-combo-value clearfix");
 
             // Render empty values
             if (valueObj === undefined)

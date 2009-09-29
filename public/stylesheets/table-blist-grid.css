@@ -22,44 +22,21 @@
     font-size: 0.8333em;
 }
 
-.blist-td
+.blist-td, .blist-table-editor
 {
     font-size: 1.2em;
-    height: 1.3333em; /* 16px */
     line-height: 1.3333em;
     padding: 0.3333em; /* 4px */
+}
+
+.blist-td
+{
+    height: 1.3333em; /* 16px */
 }
 
 .blist-td-header
 {
     font-weight: bold;
-}
-
-div.blist-table-expander
-{
-    background-color: #ffffff;
-    border-right: solid 1px #e2e2e2;
-}
-
-div.blist-table-expander .blist-td
-{
-    padding-right: 0.25em; /* 3px */
-}
-
-.blist-table .blist-td.blist-table-row-numbers
-{
-    border-left-width: 0;
-    color: #a9cef2;
-    font-size: 1.1em;
-    height: 1.4545em; /* 16px */
-    line-height: 1.4545em;
-    padding: 0.3636em; /* 4px */
-    text-align: right;
-}
-
-.blist-table .blist-td.blist-table-row-handle
-{
-    border-left-width: 0;
 }
 
 .blist-tr .blist-td-first
@@ -76,18 +53,4 @@ div.blist-table-expander .blist-td
 .blist-table a:hover
 {
     text-decoration: underline;
-}
-
-div.blist-richtext p,
-div.blist-richtext ul
-{
-    font-size: 0.7692em;
-    line-height: 1.4em;
-    margin: 0.3em 0;
-}
-
-div.blist-richtext ul
-{
-    list-style-position: inside;
-    list-style-type: disc;
 }

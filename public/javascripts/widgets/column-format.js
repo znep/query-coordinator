@@ -80,11 +80,6 @@ columnFormatNS.percentFormatValues = [
     { id: "percent_text", label: "90%", info: "Text Only" }
 ];
 
-columnFormatNS.dateFormatValues = [
-    { id: "date", label: "11/22/2009", info: "(Date)" },
-    { id: "date_time", label: "11/22/2009 5:45 PM GMT+0100", info: "(Date &amp; Time)" }
-];
-
 columnFormatNS.dateView = '<select id="date-view">';
 $.each(columnFormatNS.dateFormats, function() { columnFormatNS.dateView += '<option value="' + this[0] + '">' + this[1] + '</option>'; });
 columnFormatNS.dateView += '</select>';
@@ -233,4 +228,21 @@ $(function() {
     {
         eval("columnFormatNS.render_" + column.type + "($(this));");
     };
+
+    var today = new Date();
+    var dateViews = [
+        {id: 'date', info: '(Date [month/day/year])'},
+        {id: 'date_time', info: '(Date &amp; Time [month/day/year])'},
+        {id: 'date_dmy', info: '(Date [day/month/year])'},
+        {id: 'date_dmy_time', info: '(Date &amp; Time [day/month/year])'},
+        {id: 'date_ymd', info: '(Date [year/month/day])'},
+        {id: 'date_ymd_time', info: '(Date &amp; Time [year/month/day])'},
+        {id: 'date_monthdy', info: '(Date [month day, year])'},
+        {id: 'date_dmonthy', info: '(Date [day month year])'},
+        {id: 'date_ymonthd', info: '(Date [year month day])'}
+    ];
+    columnFormatNS.dateFormatValues = $.map(dateViews, function(v)
+        { return $.extend(v,
+            {label: today.format(blist.data.types.date.formats[v.id])}); });
+
 });

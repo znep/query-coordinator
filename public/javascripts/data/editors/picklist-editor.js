@@ -27,7 +27,7 @@
             {
                 if (!this._$editor)
                 {
-                    this._$editor = $('<div class="blist-table-editor blist-td">' +
+                    this._$editor = $('<div class="blist-table-editor">' +
                         '<div class="picklist-combo"></div></div>');
                 }
                 return this._$editor;
@@ -37,7 +37,9 @@
             {
                 $.each(this.column.options, function(id, v)
                     { valuesList.push({id: id, label: v.text, icon: v.icon}); });
-                this.$dom().addClass('blist-combo-wrapper');
+                this.setFullSize();
+                this.$dom().addClass('blist-combo-wrapper')
+                    .addClass('combo-container');
                 this.$editor().find('.picklist-combo').combo({
                     name: 'picklist-combo',
                     values: valuesList,
@@ -47,10 +49,16 @@
                 });
             },
 
+            getSizeElement: function()
+            {
+                return this.$editor().children(':first');
+            },
+
             currentValue: function()
             {
                 var val = this.$editor().find('.picklist-combo').value();
-                return val === 'null' ? null : val.toUpperCase();
+                return val === undefined || val === null || val === 'null' ?
+                    null : val.toUpperCase();
             },
 
             focus: function()

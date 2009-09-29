@@ -24,9 +24,7 @@ blist.account.handleResponseErrors = function(responseData, form)
     else
     {
         form.find('.errorMessage').text('');
-        form.closest(".sectionEdit").slideUp("fast");
-        form.closest(".listSection")
-            .find(".sectionShow").slideDown("fast");
+        form.closest(".listSection").showEdit("displayShowSection");
     }
 };
 
@@ -43,41 +41,29 @@ $(function ()
     });
     $(".outerContent").blistStretchWindow();
 
-    $(".sectionShow p").hover(
-        function() { $(this).addClass("hover"); },
-        function() { $(this).removeClass("hover"); }
-    );
 
-    $(".sectionShow p, .sectionShow a.showAction").click(function(event)
-    {
-        event.preventDefault();
-        $(this).closest(".sectionShow").slideUp("fast");
-        $(this).closest(".listSection").find(".sectionEdit")
-          .find("form :input")
-            .val("")
-          .end()
-          .find('.error').remove().end()
-          .slideDown("fast");
-        var $form = $(this).closest(".listSection").find(".sectionEdit form");
-        if ($form.length > 0)
-        {
-            $form.validate().resetForm();
-            $form.find('.errorMessage').empty();
+    $(".emailSection").showEdit({
+        displayEdit: function(event, ui) {
+            $(this).showEdit("clear");
         }
     });
-
-    $(".formListBoxClose a").click(function(event)
-    {
-        event.preventDefault();
-        $(this).closest(".sectionEdit").slideUp("fast");
-        $(this).closest(".listSection").find(".sectionShow").slideDown("fast");
+    $(".passwordSection").showEdit({
+        // IE7 doesn't hide the buttons, so hide them for it.
+        displayShow: function(event, ui) {
+            $(this).find('.actionButtons').css('display', 'none');
+        },
+        displayEdit: function(event, ui) {
+            $(this).showEdit("clear");
+            $(this).find('.actionButtons').css('display', '');
+        }
     });
+    $(".openIdSection").showEdit();
 
-    if (window.location.hash)
+    var hash = window.location.href.match(/#/) ? window.location.href.replace(/^.*#/, '') : '';
+    if (hash !== '')
     {
-        var $elemToClick = $("a" + window.location.hash);
-        $elemToClick.closest(".sectionShow").slideUp("fast");
-        $elemToClick.closest(".listSection").find(".sectionEdit").slideDown("fast");
+        var $elemToClick = $("a#" + hash);
+        $elemToClick.closest(".listSection").showEdit("displayEditSection");
     }
 
     // Form validation.
@@ -137,7 +123,7 @@ $(function ()
 
     // Password form.
     $passwordForm = $(".passwordSection form");
-    $passwordForm.validate({
+    $passwordValidator = $passwordForm.validate({
         rules: {
             'user[password_new]': "required",
             'user[password_confirm]': {
@@ -170,8 +156,9 @@ $(function ()
         $passwordForm.submit();
     });
     $passwordForm.find("#passwordFormClear").click(function() {
-        rules1 = $passwordForm.find('#user_password_new').rules('remove');
-        rules2 = $passwordForm.find('#user_password_confirm').rules('remove');
+        old_password = $passwordForm.find('#user_password_old').val();
+        $passwordValidator.resetForm();
+        $passwordForm.find('#user_password_old').val(old_password);
 
         $passwordForm.find(":input").not("#user_password_old").val("");
         var requestData = $.param($passwordForm.find(":input"));
@@ -188,9 +175,6 @@ $(function ()
                 }
             }
         });
-
-        $passwordForm.find('#user_password_new').rules('add', rules1);
-        $passwordForm.find('#user_password_confirm').rules('add', rules2);
     });
 
     $('.sectionEdit form input').keypress(function (e)
@@ -202,7 +186,14 @@ $(function ()
     $(".openIdSection td.edit_handle a").live("click", function(event)
     {
         event.preventDefault();
-        if (confirm("Are you sure you want to delete this identifier?"))
+
+        if ($('#accountEditSection').hasClass('no_password') &&
+            $(this).closest('table').find('tbody tr').length <= 2)
+        {
+            alert("You cannot delete your last OpenID identifier without first setting a password.");
+            $(".passwordSection").showEdit("displayEditSection");
+        }
+        else if (confirm("Are you sure you want to delete this identifier?"))
         {
             var $link = $(this);
             $.ajax({

@@ -25,12 +25,6 @@ class User < Model
     path = "/users/#{id}.json"
     return self.class.parse(CoreServer::Base.connection.update_request(path, params.to_json))
   end
-  
-  # Needed for multiuser
-  def multiuser_authentication_token(timestamp)
-    hmac = HMAC::SHA1.new(MULTIUSER_SECRET)
-    return hmac.update("#{oid}:#{timestamp}").hexdigest
-  end
 
   def to_json(options = nil)
     dhash = data_hash

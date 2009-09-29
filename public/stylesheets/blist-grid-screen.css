@@ -177,7 +177,6 @@ body#lensBody
     overflow: hidden;
     text-align: left;
 }
-
 /* Header bar & Button styles */
 
 #lensContainer .headerBar
@@ -196,7 +195,7 @@ body#lensBody
 
 #lensContainer .headerBar > ul > li.separator
 {
-	padding: 0 0.5em;
+    padding: 0 0.5em;
 }
 
 #lensContainer .headerBar > ul > li.noSpacing
@@ -216,8 +215,8 @@ body#lensBody
 #lensContainer .headerBar form.search
 {
     float: right;
+    margin-top: 3px;
     width: 20em;
-	margin-top: 3px;
 }
 
 #lensContainer .headerBar form.search .searchContainer
@@ -278,19 +277,19 @@ body#lensBody
 {
     background: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png) no-repeat;
     display: block;
-	line-height: 21px;
-	padding-left: 25px;
+    line-height: 21px;
+    padding-left: 25px;
 }
 
 #lensBody .headerBar a
 {
-	margin-top: 1px;
+    margin-top: 1px;
 }
 
 #lensBody .headerBar .staticLink
 {
-	margin-top: 0;
-	padding: 1px 5px 0 3px;
+    margin-top: 0;
+    padding: 1px 5px 0 3px;
 }
 
 #lensBody .headerBar .staticLink:hover
@@ -300,32 +299,27 @@ body#lensBody
 
 #lensBody .headerBar .staticLink span.linkIcon
 {
-	padding-top: 1px;
+    padding-top: 1px;
 }
 
 #lensBody #mainMenuLink
 {
-	line-height: 25px;
-	margin-bottom: -2px;
-	margin-top: -1px;
+    line-height: 25px;
+    margin-bottom: -2px;
+    margin-top: -1px;
 }
 
 #lensBody #mainMenuLink .innerWrapper
 {
-	background-position: right .35em;
-}
-
-#lensBody #editLink span.linkIcon
-{
-	background-position: 0 -259px;
+    background-position: right .35em;
 }
 
 #lensBody #undoLink, #lensBody #redoLink
 {
-	overflow: hidden;
+    overflow: hidden;
     padding: 0;
-	padding-left: 5px;
-	padding-right: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
     text-indent: -9999px;
     width: 20px;
 }
@@ -376,71 +370,29 @@ body#lensBody
     background-position: 5px -370px;
 }
 
-#lensBody .headerBar #filterViewMenu .columnsShowMenu li > a
+#lensBody .headerBar #filterViewMenu #columnsShowMenu li > a
 {
     background-image: none;
 }
-#lensBody .headerBar #filterViewMenu .columnsShowMenu li.scrollable a
+#lensBody .headerBar #filterViewMenu #columnsShowMenu li.scrollable a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
     background-position: 5px -899px;
     background-repeat: no-repeat;
 }
-#lensBody .headerBar #filterViewMenu .columnsShowMenu li.checked a
+#lensBody .headerBar #filterViewMenu #columnsShowMenu li.checked a
 {
     background-position: 5px -508px;
 }
 
-#lensBody .headerBar #newPageLink span.linkIcon
+#lensBody .headerBar #formatLink span.linkIcon
 {
-    background-position: 0 -100px;
-}
-
-#lensBody .headerBar #defaultLayoutLink span.linkIcon
-{
-    background-position: 0 -120px;
-}
-
-#lensBody .headerBar #apiLink span.linkIcon
-{
-    background-position: 0 -220px;
+    background-position: 0 -79px;
 }
 
 #lensBody .headerBar #rssLink span.linkIcon
 {
     background-position: 0 -240px;
-}
-
-#lensBody .headerBar #displayLink span.linkIcon.table
-{
-	background-position: 0 -300px;
-}
-
-#lensBody .headerBar #displayLink span.linkIcon.page
-{
-	background-position: 0 -320px;
-}
-
-#lensBody .headerBar #displayMenu li a
-{
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
-    background-position: 5px -853px;
-    background-repeat: no-repeat;
-}
-
-#lensBody .headerBar #displayMenu li.checked a
-{
-    background-position: 5px -508px;
-}
-
-#lensBody .headerBar #displayMenu .table a
-{
-    background-position: 5px -853px;
-}
-
-#lensBody .headerBar #displayMenu .page a
-{
-    background-position: 5px -876px;
 }
 
 #lensBody #shareTopLink span.linkIcon
@@ -450,28 +402,28 @@ body#lensBody
 
 #lensBody .headerBar #shareTopMenu li a
 {
-	background-position: 5px center;
-	background-repeat: no-repeat;
+    background-position: 5px center;
+    background-repeat: no-repeat;
 }
 
 #lensBody .headerBar #shareTopMenu .delicious a
 {
-	background-image: url(/images/icons/social_icon_delicious_small.png);
+    background-image: url(/images/icons/social_icon_delicious_small.png);
 }
 
 #lensBody .headerBar #shareTopMenu .digg a
 {
-	background-image: url(/images/icons/social_icon_digg_small.png);
+    background-image: url(/images/icons/social_icon_digg_small.png);
 }
 
 #lensBody .headerBar #shareTopMenu .twitter a
 {
-	background-image: url(/images/icons/social_icon_twitter_small.png);
+    background-image: url(/images/icons/social_icon_twitter_small.png);
 }
 
 #lensBody .headerBar #shareTopMenu .facebook a
 {
-	background-image: url(/images/icons/social_icon_facebook_small.png);
+    background-image: url(/images/icons/social_icon_facebook_small.png);
 }
 
 /* Icons & styling for main menu */
@@ -498,6 +450,9 @@ body#lensBody
 {
     background-position: 5px -117px;
 }
+
+#mainMenu li.blist .api > a { background-position: 5px -1083px; }
+#mainMenu li.blist .rss > a { background-position: 5px -1060px; }
 
 #mainMenu li.blist .email > a
 {
@@ -721,16 +676,174 @@ body#lensBody
 }
 
 
-/* Table view & page view changes */
+/* Format menu */
 
-#lensContainer.tableView #pageViewHeader,
-#lensContainer.tableView #pageViewFooter,
-#lensContainer.tableView .pageOption,
-#lensContainer.pageView .tableOption
+.colorpicker { display: none; }
+
+#formatMenu { width: 62em; }
+
+#formatMenu .disabledOverlay
 {
     display: none;
+    background-color: #ffffff;
+    filter: alpha(opacity=80);
+    height: 105%;
+    left: -1px;
+    opacity: 0.8;
+    position: absolute;
+    top: -1px;
+    width: 101%;
+    z-index: 1;
 }
 
+#formatMenu .disabledText
+{
+    display: none;
+    font-size: 1.2em;
+    font-style: italic;
+    left: 1em;
+    position: absolute;
+    top: 1em;
+    z-index: 5;
+}
+
+#formatMenu.disabled .disabledOverlay,
+#formatMenu.disabled .disabledText
+{ display: block; }
+
+#formatMenu .close { z-index: 10; }
+
+#formatMenu ul.innerWrapper { padding: 0.5em; }
+
+#formatMenu .column
+{
+    float: left;
+    padding: 0 0.5em;
+    line-height: 2.7em;
+}
+
+#formatMenu .column h6
+{
+    color: #999999;
+    font-size: 1.2em;
+    font-weight: normal;
+    text-align: center;
+}
+
+#formatMenu .column > a
+{
+    color: #333333;
+    font-size: 1.2em;
+    position: relative;
+    text-decoration: none;
+    top: 2.4em;
+}
+
+#formatMenu li.column > ul > li
+{
+    float: left;
+    padding: 0.25em;
+}
+
+#formatMenu li.column > ul > li.separator { border-right: 1px solid #cccccc; }
+
+#formatMenu li.column > ul > li > a,
+#formatMenu li.column > ul > li > a .inner
+{
+    background-image: url(/stylesheets/images/content/table_menu/rich_text_format_sprites.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 20px;
+    text-decoration: none;
+    text-indent: -9999px;
+    width: 20px;
+}
+
+#formatMenu li.column a.toggleButton
+{
+    margin: 2px;
+}
+
+#formatMenu li.column a.toggleButton:hover,
+#formatMenu li.column a.toggleButton.active:hover
+{
+    border: 2px solid #cccccc;
+    margin: 0;
+}
+
+#formatMenu li.column a.toggleButton.active
+{
+    border: 1px solid #cccccc;
+    background-color: #ffd6d1;
+    margin: 1px;
+}
+#formatMenu li.column a.toggleButton.link
+{
+    margin-right: 20px;
+    padding: 0.25em;
+}
+#formatMenu li.column a.toggleButton.link:hover,
+#formatMenu li.column a.toggleButton.active.link:hover
+{ margin-right: 18px; }
+#formatMenu li.column a.toggleButton.active.link { margin-right: 19px; }
+
+#formatMenu .column li a.bold { background-position: 5px 0; }
+#formatMenu .column li a.underline { background-position: 5px -20px; }
+#formatMenu .column li a.italic { background-position: 5px -40px; }
+#formatMenu .column li a.strike
+{
+    background-position: 5px -60px;
+    width: 34px;
+}
+#formatMenu .column li a.bulletedList { background-position: 5px -80px; }
+#formatMenu .column li a.numberedList { background-position: 5px -100px; }
+#formatMenu .column li a.bulletedList,
+#formatMenu .column li a.numberedList,
+#formatMenu .column li a.align
+{ width: 25px; }
+
+#formatMenu .column li a.color
+{
+    margin-left: 2em;
+    width: 15px;
+}
+#formatMenu .column li a.color,
+#formatMenu .column li a.align
+{
+    background-image: url(/stylesheets/images/widgets/dropdown_button/menu_bar_arrow.png);
+    background-position: right center;
+    background-repeat: no-repeat;
+    padding-left: 0;
+    padding-right: 20px;
+}
+
+#formatMenu .column li a.color .inner
+{
+    background-position: 2px -120px;
+    border-bottom: 3px solid #000000;
+    height: 17px;
+    width: 15px;
+}
+
+#formatAlignMenu a
+{
+    background-image: url(/stylesheets/images/content/table_menu/rich_text_format_sprites.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 20px;
+    padding: 0 5px;
+    text-decoration: none;
+    width: 20px;
+}
+
+#formatMenu .column li a.align .inner,
+#formatAlignMenu .leftAlign a { background-position: 5px -140px; }
+#formatMenu .column li a.align.alignCenter .inner,
+#formatAlignMenu .centerAlign a { background-position: 5px -180px; }
+#formatMenu .column li a.align.alignRight .inner,
+#formatAlignMenu .rightAlign a { background-position: 5px -160px; }
+
+#formatAlignMenu a span { display: none; }
 
 /* Add Columns menu */
 
@@ -873,124 +986,6 @@ body#lensBody
     padding-bottom: 1em;
 }
 
-#lensContainer #outerSwfWrapper
-{
-    /* Override overflow: auto for .scrollContent so that Firefox on Windows
-     * doesn't get screwed up in regards to cursor positioning in Flash */
-    overflow: visible;
-    /* Override position:relative for .scrollContent to allow this content
-     * to expand beyond its borders */
-    position: static;
-}
-
-#lensContainer #swfWrapper
-{
-    overflow: hidden;
-    position: absolute;
-    z-index: 100;
-}
-
-/* Position container so it will fit the wrapper */
-#lensContainer #swfContent
-{
-    position: absolute;
-    bottom: 0;
-    top: 0;
-}
-
-/* Styling for message when missing JS or Flash */
-#lensContainer #swfContent
-{
-    background-color: #ffffff;
-    font-size: 1.4em;
-    font-weight: bold;
-}
-
-#lensContainer #swfWrapper p
-{
-    font-size: 1.4em;
-    margin-top: 2em;
-    text-align: center;
-}
-
-
-/* Page view */
-
-#pageViewHeader
-{
-    background-color: #e8e8e8;
-    background-image: url(/stylesheets/images/content/table_menu/light_corner_left_top.png);
-    background-position: center left;
-    background-repeat: no-repeat;
-    height: 9px;
-}
-
-#pageViewHeader .innerWrapper
-{
-    background-image: url(/stylesheets/images/content/table_menu/light_corner_right_top.png);
-    background-position: center right;
-    background-repeat: no-repeat;
-    height: 9px;
-}
-
-#pageViewFooter
-{
-    background-color: #e3ecf7;
-    height: 20px;
-    line-height: 20px;
-    padding: 1em 0;
-    text-align: center;
-}
-
-#pageViewFooter a
-{
-    background-image: url(/stylesheets/images/content/table_menu/menu_bar_sprites.png);
-    background-repeat: no-repeat;
-    /* This is for support in FF2 */
-    display: -moz-inline-stack;
-    display: inline-block;
-    height: 20px;
-    line-height: 100px;
-    margin: 0 auto;
-    overflow: hidden;
-    vertical-align: middle;
-    width: 20px;
-}
-
-#pageViewFooter #pageInfo
-{
-    color: #8d8d8d;
-    /* This is for support in FF2 */
-    display: -moz-inline-stack;
-    display: inline-block;
-    font-size: 1.2em;
-    margin: 0 auto;
-    padding: 0 2em;
-    text-align: center;
-    vertical-align: middle;
-    width: 7em;
-}
-
-#pageViewFooter a#firstPageLink
-{
-    background-position: 0 -180px;
-}
-
-#pageViewFooter a#prevPageLink
-{
-    background-position: 0 -140px;
-}
-
-#pageViewFooter a#nextPageLink
-{
-    background-position: 0 -160px;
-}
-
-#pageViewFooter a#lastPageLink
-{
-    background-position: 0 -200px;
-}
-
 /* Modify sidebar to lie below grid */
 
 #lensBody #sidebar
@@ -1011,19 +1006,8 @@ body#lensBody
 
 #infoPane { display: none; }
 
-/* SWF/Non-SWF */
-#lensBody.readMode .swfItem
-{
-    display: none;
-}
-
-#lensBody.editMode .readItem
-{
-    display: none;
-}
-
 /* Grid styling */
-#lensBody #readGrid
+#lensBody #dataGrid
 {
     height: 100%;
     left: 0;
@@ -1048,6 +1032,7 @@ body#lensBody
 #lensContainer .tabList .filter.tempViewTab .innerWrapper span
 {
     display: block;
+    float: left;
     padding-top: 5px;
 }
 
@@ -1063,6 +1048,21 @@ body#lensBody
     padding-top: 1px;
 }
 
+#lensContainer .tabList li.filter.tempViewTab a.close
+{
+    background-image: url(/stylesheets/images/content/section_close_button.png);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: block;
+    float: left;
+    height: 16px;
+    margin: 0.25em -12px 0 0.3em;
+    min-width: 0;
+    padding: 0;
+    text-indent: -9999px;
+    width: 16px;
+}
 /* Login overlay */
 #login
 {

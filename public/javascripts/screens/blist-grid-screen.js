@@ -1,30 +1,5 @@
 var blistGridNS = blist.namespace.fetch('blist.blistGrid');
 
-blist.blistGrid.sizeSwf = function (event)
-{
-    if (blistGridNS.popupCount > 0)
-    {
-        return;
-    }
-
-    var $target = $('#swfWrapper');
-    if ($target.length < 1)
-    {
-        return;
-    }
-    var $container = $('#outerSwfWrapper');
-    var $parent = $target.offsetParent();
-    var containerTop = $container.offset().top;
-    var containerLeft = $container.offset().left;
-
-    $target.css('top', containerTop + 'px');
-    $target.css('bottom',
-        ($parent.height() - (containerTop + $container.height())) + 'px');
-    $target.css('left', containerLeft + 'px');
-    $target.css('right',
-        ($parent.width() - (containerLeft + $container.width())) + 'px');
-};
-
 blist.blistGrid.setUpTabs = function ()
 {
     var cookieStr = $.cookies.get('viewTabs');
@@ -112,96 +87,25 @@ blist.blistGrid.columnClickHandler = function (event)
             event.preventDefault();
             if (href_parts.length == 3)
             {
-                if (blist.util.flashInterface.swf() != undefined)
-                {
-                    blist.util.flashInterface.columnAggregate(href_parts[1],
-                            href_parts[2]);
-                }
-                else
-                {
-                    $('#readGrid').datasetGrid().setColumnAggregate(href_parts[1],
-                            href_parts[2]);
-                }
+                $('#dataGrid').datasetGrid().setColumnAggregate(href_parts[1],
+                        href_parts[2]);
             }
             break;
-    }
-};
-
-blist.blistGrid.popupCount = 0;
-blist.blistGrid.flashPopupShownHandler = function (popup)
-{
-    if (blistGridNS.popupCount < 1)
-    {
-        // Resizing the grid causes the file upload dialog to close; it fits within
-        //  the window as-is, so don't resize for that
-        if (popup != 'MultipleFileUpload')
-        {
-            $('#swfWrapper').css('top', ($('#header').outerHeight() + 10) + 'px');
-            $('#swfWrapper').css('bottom', 0);
-        }
-        $('#overlay').show();
-    }
-    blistGridNS.popupCount++;
-};
-
-blist.blistGrid.flashPopupClosedHandler = function (popup)
-{
-    blistGridNS.popupCount--;
-    if (blistGridNS.popupCount < 1)
-    {
-        blistGridNS.sizeSwf();
-        $('#overlay').hide();
     }
 };
 
 blist.blistGrid.toggleAddColumns = function ()
 {
     $('#addColumnsMenu').toggleClass('shown');
+    $('#formatMenu').removeClass('shown');
     blist.common.forceWindowResize();
 };
 
-blist.blistGrid.flashPopupClickHandler = function (event)
+blist.blistGrid.toggleFormatMenu = function ()
 {
-    event.preventDefault();
-    var href = $(event.currentTarget).attr('href');
-    var popup = '';
-    if (href.indexOf('#') >= 0)
-    {
-        popup = href.slice(href.indexOf('#') + 1);
-    }
-    else
-    {
-        var matches = href.match(/popup=(\w+)/);
-        if (matches && matches.length > 1)
-        {
-            popup = matches[1];
-        }
-    }
-    if (popup !== '')
-    {
-        blist.util.flashInterface.showPopup(popup);
-    }
-};
-
-blist.blistGrid.viewChangedHandler = function (event, data)
-{
-    var $main = $('#lensContainer');
-    if (data == 'grid')
-    {
-        $main.removeClass('pageView');
-        $main.addClass('tableView');
-    }
-    else if (data == 'page')
-    {
-        $main.removeClass('tableView');
-        $main.addClass('pageView');
-    }
+    $('#formatMenu').toggleClass('shown');
+    $('#addColumnMenu').removeClass('shown');
     blist.common.forceWindowResize();
-};
-
-blist.blistGrid.pageLabelHandler = function (event, newLabel)
-{
-    $('#pageInfo').text(newLabel);
 };
 
 blist.blistGrid.columnsChangedHandler = function (event, columnIds)
@@ -224,14 +128,12 @@ blist.blistGrid.mainMenuLoaded = function (data)
     var $menus = $(data).children();
 
     // Swap out the main menu with whatever was loaded
-    //$('#mainMenu').replaceWith($data.filter("#mainMenuComponent"));
     var $menu = $("#mainMenu");
     var $container = $menu.parent();
     $container[0].removeChild($menu[0]);
     $container[0].appendChild($menus[0]);
 
     // Swap out the filter & view menu with whatever was loaded
-    //$('#filterViewMenu').replaceWith($data.filter("#filterViewMenuComponent"));
     $menu = $("#filterViewMenu");
     $container = $menu.parent();
     $container[0].removeChild($menu[0]);
@@ -279,24 +181,6 @@ blist.blistGrid.menuHandler = function(event)
     event.preventDefault();
     switch (action)
     {
-        case 'picklistBrowser':
-            blist.util.flashInterface.showPopup('PickListBrowser');
-            break;
-        case 'permissions':
-            blist.util.flashInterface.showPopup('PermissionsDialog');
-            break;
-        case 'Undo':
-        case 'Redo':
-        case 'Copy':
-        case 'Cut':
-        case 'Paste':
-        case 'Delete':
-            blist.util.flashInterface.doAction(action);
-            break;
-        case 'addColumn':
-            var i = actionId == 'first' ? 0 : -1;
-            blist.util.flashInterface.addColumn('plainText', i);
-            break;
         case 'publish':
             $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab('#tabPublishing');
@@ -305,30 +189,22 @@ blist.blistGrid.menuHandler = function(event)
             $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab("#" + actionId);
             break;
-        case 'filterShow':
-            blist.util.flashInterface.showPopup('LensBuilder:Filter');
-            break;
         case 'hide-show-col':
             var $li = $target.closest('li');
-            $('#readGrid').datasetGrid().showHideColumns(actionId,
+            $('#dataGrid').datasetGrid().showHideColumns(actionId,
                 $li.hasClass('checked'));
             break;
         case 'show-rowTags':
-            if (blist.util.flashInterface.swf() !== undefined)
-            { blist.util.flashInterface.addColumn('rowTag'); }
-            else
-            {
-                $.each($('#readGrid').blistModel().meta().view.columns,
-                    function(i, col)
+            $.each($('#dataGrid').blistModel().meta().view.columns,
+                function(i, col)
+                {
+                    if (col.dataType && col.dataType.type == 'tag')
                     {
-                        if (col.dataType && col.dataType.type == 'tag')
-                        {
-                            $('#readGrid').datasetGrid().showHideColumns(col.id,
-                                false);
-                            return false;
-                        }
-                    });
-            }
+                        $('#dataGrid').datasetGrid().showHideColumns(col.id,
+                            false);
+                        return false;
+                    }
+                });
             break;
         case 'makePermissionPublic':
           $.ajax({
@@ -368,19 +244,6 @@ blist.blistGrid.menuHandler = function(event)
     }
 };
 
-blist.blistGrid.openViewHandler = function(event, viewId, popup)
-{
-    blist.util.navigation.redirectToView(viewId, {popup: popup, mode: 'edit'});
-};
-
-blist.blistGrid.popupCanceledHandler = function(event, popup)
-{
-    if (popup == 'NewLens' && blistGridNS.referer && blistGridNS.referer !== '')
-    {
-        window.location = blistGridNS.referer;
-    }
-};
-
 blist.blistGrid.setInfoMenuItem = function ($tab)
 {
     if ($tab)
@@ -400,7 +263,7 @@ blist.blistGrid.clearTempViewTab = function ()
     $('#tempInfoPane').hide();
 };
 
-blist.blistGrid.setTempViewTab = function (tempView)
+blist.blistGrid.setTempViewTab = function ()
 {
     $('.tabList .active').addClass('origView').removeClass('active');
     $('.tabList .filter.tempViewTab').addClass('active').show();
@@ -413,7 +276,7 @@ blist.blistGrid.newViewCreated = function($iEdit, responseData)
 {
     if (!blist.widgets.visualization.isVisualization)
     {
-        $('#readGrid').datasetGrid().isTempView = false;
+        $('#dataGrid').datasetGrid().isTempView = false;
     }
     blist.util.navigation.redirectToView(responseData.id);
 };
@@ -499,29 +362,22 @@ blist.infoEditSubmitSuccess = blistGridNS.infoEditCallback;
 
 $(function ()
 {
-    if (blistGridNS.viewId)
+    if (!blist.widgets.visualization.isVisualization)
     {
-        if (!blist.widgets.visualization.isVisualization)
-        {
-            $('#readGrid').datasetGrid({viewId: blistGridNS.viewId,
-                columnPropertiesEnabled: blistGridNS.isOwner,
-                showAddColumns: blistGridNS.canAddColumns,
-                currentUserId: blist.currentUserId,
-                accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-                clearTempViewCallback: blistGridNS.clearTempViewTab,
-                setTempViewCallback: blistGridNS.setTempViewTab,
-                filterItem: '#lensContainer .headerBar form :text',
-                clearFilterItem: '#lensContainer .headerBar form .clearSearch'
-            });
-        }
-        else
-        {
-            $('#readGrid').visualization();
-        }
+        $('#dataGrid').datasetGrid({viewId: blistGridNS.viewId,
+            columnPropertiesEnabled: blistGridNS.isOwner,
+            showAddColumns: blistGridNS.canAddColumns,
+            currentUserId: blist.currentUserId,
+            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
+            clearTempViewCallback: blistGridNS.clearTempViewTab,
+            setTempViewCallback: blistGridNS.setTempViewTab,
+            filterItem: '#lensContainer .headerBar form :text',
+            clearFilterItem: '#lensContainer .headerBar form .clearSearch'
+        });
     }
-    else if (blistGridNS.newDataset)
+    else
     {
-        $("#modal").jqmShow($("<a href='/blists/new'></a>"));
+        $('#dataGrid').visualization();
     }
 
     blistGridNS.setUpTabs();
@@ -532,15 +388,8 @@ $(function ()
         numVisible: 3
     });
 
-    blist.util.flashInterface.addPopupHandlers(blistGridNS.flashPopupShownHandler,
-        blistGridNS.flashPopupClosedHandler);
-
-    $(document).bind(blist.events.VIEW_CHANGED, blistGridNS.viewChangedHandler);
-    $(document).bind(blist.events.PAGE_LABEL_UPDATED, blistGridNS.pageLabelHandler);
     $(document).bind(blist.events.COLUMNS_CHANGED,
         blistGridNS.columnsChangedHandler);
-    $(document).bind(blist.events.OPEN_VIEW, blistGridNS.openViewHandler);
-    $(document).bind(blist.events.POPUP_CANCELED, blistGridNS.popupCanceledHandler);
 
     blist.util.sizing.cachedInfoPaneHeight =
         $("#infoPane .header").height() +
@@ -548,17 +397,22 @@ $(function ()
     $(window).resize(function (event)
     {
         commonNS.adjustSize();
-        blistGridNS.sizeSwf(event);
-        $('#readGrid').trigger('resize');
+        $('#dataGrid').trigger('resize');
     });
     $('#infoPane').show();
     commonNS.adjustSize();
-    $('#readGrid').trigger('resize');
+    $('#dataGrid').trigger('resize');
 
-    $('.tabList .newViewLink a').click(function (event)
+    $('.tabList .newViewLink a, a[href=#createFilter]').click(function (event)
     {
         event.preventDefault();
-        blist.util.flashInterface.showPopup('SaveLens');
+        $('#dataGrid').datasetGrid().setTempView();
+    });
+
+    $('.tempViewTab a.close').click(function (event)
+    {
+        event.preventDefault();
+        $('#dataGrid').datasetGrid().clearTempView(null, true);
     });
 
     $("#throbber").hide();
@@ -571,62 +425,191 @@ $(function ()
         });
     });
 
-    $('#displayMenu .table').click(function (event)
-    {
-        event.preventDefault();
-		$('#displayLink .linkIcon')
-			.removeClass('page')
-			.addClass('table');
-        blist.util.flashInterface.doAction('TableView');
-    });
-    $('#displayMenu .page').click(function (event)
-    {
-        event.preventDefault();
-		$('#displayLink .linkIcon')
-			.removeClass('table')
-			.addClass('page');
-        blist.util.flashInterface.doAction('PageView');
-    });
-
-    $('.flashAction').click(function (event)
-    {
-        event.preventDefault();
-        var href = $(event.currentTarget).attr('href');
-        blist.util.flashInterface.doAction(
-            href.slice(href.indexOf('#') + 1));
-    });
-
     $('.addColumnsLink, #addColumnsMenu .close').click(function (event)
     {
         event.preventDefault();
         blistGridNS.toggleAddColumns();
     });
 
-    $('a.showFlashPopup').click(blistGridNS.flashPopupClickHandler);
-
-    $('#lensContainer .headerBar form').submit(function (event)
+    $('#formatLink, #formatMenu .close').click(function (event)
     {
         event.preventDefault();
-        if (blist.util.flashInterface.swf() != undefined)
-        {
-            blist.util.flashInterface.lensSearch(
-                $(event.currentTarget).find('input[type="text"]').val());
-        }
+        blistGridNS.toggleFormatMenu();
     });
 
-    $('#lensContainer .headerBar form .clearSearch')
-        .click(function (e)
+    var formatEditor;
+    $('#formatLink, #formatMenu a, #formatMenu select').mousedown(function(e)
+        { e.stopPropagation(); });
+    $('#formatMenu a.toggleButton').click(function(e)
+    {
+        e.preventDefault();
+        var $button = $(this);
+        var action = $button.attr('href').split('_')[1];
+        if (formatEditor)
         {
-            if (blist.util.flashInterface.swf() != undefined)
+            var newVal = !$button.is('.active');
+            if (action == 'link')
             {
-                blist.util.flashInterface.lensSearch('');
+                if (!newVal) { formatEditor.action('unlink'); }
+                else
+                {
+                    var url = prompt('Enter a URL:');
+                    if (url !== null)
+                    {
+                        if (!url.match(/^(f|ht)tps?:\/\//))
+                        { url = "http://" + url; }
+                        formatEditor.action('link', url);
+                    }
+                }
             }
-        });
+            else { formatEditor.action(action, newVal); }
+        }
+    });
+    $('#formatMenu select').change(function(e)
+    {
+        var $select = $(this);
+        var action = $select.attr('name').split('_')[1];
+        var val = $select.val();
+        if ($select.is('#format_fontSize'))
+        { val = (val / 10.0) + 'em'; }
+        if (formatEditor) { formatEditor.action(action, val); }
+    });
+
+    $('#formatAlignMenu').dropdownMenu({
+        triggerButton: $('#formatMenu a.align'),
+        linkCallback: function(event)
+        {
+            event.preventDefault();
+
+            var $target = $(event.currentTarget);
+            var href = $target.attr('href');
+            var s = href.slice(href.indexOf('#') + 1).split('_');
+            var action = s[1];
+            if (formatEditor) { formatEditor.action(action, true); }
+        }});
+
+    var $colorItem = $('#formatMenu a.color');
+    $colorItem.colorPicker().bind('color_change', function(e, newColor)
+    {
+        if (formatEditor) { formatEditor.action('color', newColor); }
+        $colorItem.children('.inner').css('border-bottom-color', newColor);
+    }).mousedown(function(e)
+    { $colorItem.data('colorpicker-color',
+        $colorItem.find('.inner').css('border-bottom-color')); });
+    $('#color_selector').mousedown(function(e) { e.stopPropagation(); })
+
+    $('#dataGrid').bind('action-state-change', function(e)
+    {
+        formatEditor = $(e.target).blistEditor();
+        var $fmt = $('#formatMenu');
+        if (!formatEditor.supportsFormatting())
+        {
+            $fmt.addClass('disabled');
+            return;
+        }
+
+        $fmt.removeClass('disabled');
+        var state = formatEditor.getActionStates();
+
+        var $bold = $fmt.find('a.bold');
+        state.bold.value ? $bold.addClass('active') : $bold.removeClass('active');
+        var $italic = $fmt.find('a.italic');
+        state.italic.value ? $italic.addClass('active') :
+            $italic.removeClass('active');
+        var $underline = $fmt.find('a.underline');
+        state.underline.value ? $underline.addClass('active') :
+            $underline.removeClass('active');
+        var $strike = $fmt.find('a.strike');
+        state.strikethrough.value ? $strike.addClass('active') :
+            $strike.removeClass('active');
+
+        var $bulletList = $fmt.find('a.bulletedList');
+        state.unorderedList.value ? $bulletList.addClass('active') :
+            $bulletList.removeClass('active');
+        var $numList = $fmt.find('a.numberedList');
+        state.orderedList.value ? $numList.addClass('active') :
+            $numList.removeClass('active');
+
+        var $link = $fmt.find('a.link');
+        state.unlink.enabled ? $link.addClass('active') :
+            $link.removeClass('active');
+
+        var $fontFamily = $fmt.find('#format_fontFamily');
+        var family = (state.fontFamily.value || 'arial').toLowerCase();
+        // First look for exact match
+        var $famOpt = $fontFamily.find('[value="' + family + '"]');
+        // If that is not found, look for something that starts with it
+        if ($famOpt.length < 1)
+        { $famOpt = $fontFamily.find('[value^="' + family + '"]'); }
+        // If that is not found, look for something that contains it
+        if ($famOpt.length < 1)
+        { $famOpt = $fontFamily.find('[value*="' + family + '"]'); }
+        if ($famOpt.length > 0) { $fontFamily.val($famOpt.eq(0).val()); }
+
+        var $fontSize = $fmt.find('#format_fontSize');
+        var size = state.fontSize.value || '10';
+        // Our size may be in ems or pxs; convert as appropriate
+        if (size.endsWith('em')) { size = parseFloat(size) * 10; }
+        else { size = parseFloat(size); }
+        var $sizeOpts = $fontSize.find('option');
+        var foundSize = false;
+        // Look through all the dropdown options and find which matches best
+        for (var i = 0; i < $sizeOpts.length - 1; i++)
+        {
+            var curVal = parseFloat($sizeOpts.eq(i).val());
+            if (curVal >= size)
+            {
+                $fontSize.val(curVal);
+                foundSize = true;
+                break;
+            }
+            var nextVal = parseFloat($sizeOpts.eq(i + 1).val());
+            if (nextVal > size)
+            {
+                if ((nextVal + curVal) / 2.0 > size) { $fontSize.val(curVal); }
+                else { $fontSize.val(nextVal); }
+                foundSize = true;
+                break;
+            }
+        }
+        // If none match, it is large; so choose the last one
+        if (!foundSize) { $fontSize.val($sizeOpts.eq($sizeOpts.length - 1).val()); }
+
+        var $color = $fmt.find('a.color .inner');
+        // IE7 is very strict in what it accepts for colors, so do a bunch
+        // of munging to make it a 6-digit hex string
+        var hexColor = state.color.value + '';
+        if (!hexColor.startsWith('#') && !hexColor.startsWith('rgb('))
+        {
+            var hexColor = (parseInt(state.color.value) || 0).toString(16);
+            var hexPad = 6 - hexColor.length;
+            for (var i = 0; i < hexPad; i ++) { hexColor = '0' + hexColor; }
+            hexColor = '#' + hexColor.slice(0, 6);
+        }
+        $color.css('border-bottom-color', hexColor);
+
+        var $alignment = $fmt.find('a.align').removeClass('alignRight alignCenter');
+        if (state.justifyRight.value) { $alignment.addClass('alignRight'); }
+        else if (state.justifyCenter.value) { $alignment.addClass('alignCenter'); }
+    });
+
+    $('#dataGrid').bind('edit-finished', function(e)
+    {
+        $('#formatMenu').addClass('disabled')
+            .find('.active').removeClass('active')
+            .end()
+            .find('select').each(function(i, s)
+                { $(s).val($(s).find('.default').val()); })
+            .end()
+            .find('a.align').removeClass('alignRight alignCenter')
+            .end()
+            .find('a.color .inner').css('border-bottom-color', '#000000');
+        formatEditor = null;
+    });
+
 
     blistGridNS.hookUpMainMenu();
     blistGridNS.hookUpFilterViewMenu();
-    $('#displayMenu').dropdownMenu({triggerButton: $('#displayLink'),
-        menuBar: $('#lensContainer .headerBar')});
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
         menuBar: $('#lensContainer .headerBar')});
     $('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'),
@@ -650,7 +633,6 @@ $(function ()
         switchCompleteCallback: function ($tab)
         {
             blistGridNS.setInfoMenuItem($tab);
-            blistGridNS.sizeSwf();
         },
         initialTab: paneMatches && paneMatches.length > 1 ? paneMatches[1] : null
     });
@@ -683,7 +665,7 @@ $(function ()
         requestDataCallback: function($form, name)
         {
             // Get the view with columns
-            var view = $('#readGrid').datasetGrid().getViewCopy(true);
+            var view = $('#dataGrid').datasetGrid().getViewCopy(true);
             view.name = name;
             return $.json.serialize(view);
         },
@@ -702,7 +684,7 @@ $(function ()
     $('.attributionEdit').attributionEdit();
 
     $("#infoPane .singleInfoPublishing").infoPanePublish();
-    
+
     $('.switchPermsLink').live("click", function (event)
     {
         event.preventDefault();
@@ -710,13 +692,13 @@ $(function ()
         var curState = $link.text().toLowerCase();
         var newState = curState == 'private' ?
             'public' : 'private';
-    
+
         var viewId = $link.attr('href').split('_')[1];
         $.get('/views/' + viewId, {'method': 'setPermission',
             'value': newState});
-    
+
         var capState = $.capitalize(newState);
-    
+
         // Update link & icon
         $link.closest('p.' + curState)
             .removeClass(curState).addClass(newState);
@@ -744,12 +726,12 @@ $(function ()
             $('.singleInfoPublishing .publishWarning').addClass('hide');
         }
     });
-    
+
     // Share deleting
     $(".shareDelete").live("click", function(event)
     {
         event.preventDefault();
-        
+
         var $link = $(this);
         var viewId = $link.closest("table").attr("id").split("_")[1];
         $.getJSON($link.attr("href"),
@@ -758,7 +740,7 @@ $(function ()
                 $link.closest(".cellInner").html(
                     $("<img src=\"/images/throbber.gif\" width=\"16\" height=\"16\" alt=\"Deleting...\" />")
                 );
-                
+
                 blist.meta.updateMeta("sharing", viewId,
                     function() { $("#throbber").hide(); },
                     function() { $("#infoPane .gridList").blistListHoverItems(); }
@@ -775,34 +757,18 @@ $(function ()
             }
         );
     });
-    
+
     var commentMatches = window.location.search.match(/comment=(\w+)/);
     $('#infoPane .singleInfoComments').infoPaneComments({
         initialComment: commentMatches && commentMatches.length > 1 ?
             commentMatches[1] : null
     });
 
-    $(document).bind('swf_load', function ()
-    {
-        $('#lensBody').addClass('editMode').removeClass('readMode');
-        $('#readGrid').remove();
-        blistGridNS.sizeSwf();
-    });
-    $('#editLink').click(function (e)
-    {
-        e.preventDefault();
-        blist.util.flashInterface.callSwf();
-    });
-    if ($('#lensBody').hasClass('editMode'))
-    {
-        blist.util.flashInterface.callSwf();
-    }
-
     $(".favoriteAction a").click( blistGridNS.favoriteActionClick );
 
     window.onbeforeunload = function ()
     {
-        var $grid = $('#readGrid');
+        var $grid = $('#dataGrid');
         if (!blist.widgets.visualization.isVisualization &&
             $grid.length > 0 && $grid.datasetGrid().isTempView)
         {

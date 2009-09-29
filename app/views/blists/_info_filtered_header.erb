@@ -3,6 +3,6 @@
 </h2>
 <%- if current_user && !in_widget -%>
 <ul class="headerActions actionButtons">
-  <li><%= link_to("Create", view.href + "?popup=SaveLens", :class => "arrowButton showFlashPopup") %></li>
+  <li><%= link_to("Create", '#createFilter', :class => "arrowButton") %></li>
 </ul>
 <%- end -%>

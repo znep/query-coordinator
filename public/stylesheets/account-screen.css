@@ -7,13 +7,17 @@
     display: none;
 }
 
-#mainColumnContent ul.actionButtons
+.passwordSection ul.actionButtons
 {
     margin-left: 144px;
 }
-#mainColumnContent ul.actionButtons li
+.passwordSection ul.actionButtons li#passwordFormSave
 {
     width: 9em;
+}
+.passwordSection .errorMessage
+{
+    padding-top: 1em;
 }
 
 .listSection

@@ -126,3 +126,7 @@ div.blist-type-filterSharedBy
 {
     background-image: url(/stylesheets/images/content/table/icon_type_sprites_on_white.gif);
 }
+
+div.blist-tstar-on,
+div.blist-tstar-off
+{ background-image: url(/stylesheets/images/content/table/grid_stars_sprites.gif); }

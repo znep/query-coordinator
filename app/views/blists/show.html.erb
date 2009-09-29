@@ -1,22 +1,21 @@
 <% content_for :head do %>
-  <%= @view ? auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") : '' %>
-  <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid', "ui.spinner",
-    "blist-grid-screen", "form-common", "combo", :cache => "cache/blists_show_all" %>
-  <title><%= @view ? @view.name : 'Design a Dataset' %> | <%= th.site_title %></title>
+  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
+    "ui.spinner", "blist-grid-screen", "form-common", "combo",
+    :cache => "cache/blists_show_all" %>
+  <title><%= h(@view.name) %> | <%= th.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
-  <%- if @view -%>
-    <link rel="canonical" href="<%= @view.href %>" />
-  <%- end -%>
+  <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 
-<%- is_owner = current_user && @view && @view.owner.id == current_user.id -%>
-<%- is_blist = @view && @view.is_blist? %> 
-<%- can_edit = current_user && @view && @view.can_edit() -%>
+<%- is_owner = current_user && @view.owner.id == current_user.id -%>
+<%- is_blist = @view.is_blist? %>
+<%- can_edit = current_user && @view.can_edit() -%>
 
 <div id='overlay'></div>
 
 <div class="scrollContentColumn">
-  <div id='lensContainer' class='mainContent tableView'>
+  <div id='lensContainer' class='mainContent'>
     <ul class='tabList'>
       <li class='backLink'><a title='Back to <%= t :blists_name %>'
         href='<%= blists_path() %>'>Back to <%= t :blists_name %></a></li>
@@ -39,16 +38,15 @@
       <li class='prevTabLink'><a href='#prev_tab' title='Previous View'>
         Previous View
       </a></li>
-      <%- if @view -%>
       <li class='tempViewTab filter inlineEdit'><div class='wrapper'>
         <div class='innerWrapper'>
           <span title='Click to name and save your filtered view'>[Unsaved Filter]</span>
           <%- form_tag(blists_path, :class => 'tempView') do -%>
           <%= text_field_tag("view[name]", '') %>
           <%- end -%>
+          <a href='#cancelFilter' class='close' title='Cancel'>Cancel</a>
         </div>
       </div></li>
-      <%- end -%>
       <%- if @is_child_view -%>
       <li class='active filter'><div class='wrapper'>
         <a class='clipText' href='<%= @view.href %>'
@@ -63,7 +61,6 @@
     <div class='outerContent'>
       <div class='content'>
         <div class='headerBar clearfix'>
-          <%- if !@view.nil? -%>
           <ul>
             <%# Main menu %>
             <li class='separator'>
@@ -76,23 +73,18 @@
             :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
 
-            <%- if can_edit -%>
-            <li class='readItem separator'><a href='#editGrid' id='editLink' 
-              class='staticLink'><span class='linkIcon'>Edit this <%= t(:blist_name) %></span></a></li>
-            <%- end -%>
-
-            <%- if can_edit -%>
+            <%- if can_edit && false -%>
             <%# Undo/redo %>
-            <li class='swfItem'><a href='#Undo' id='undoLink'
-              class='flashAction staticLink' title='Undo'><span class='linkIcon'>Undo</span></a></li>
-            <li class='swfItem noSpacing separator'><a href='#Redo' id='redoLink'
-              class='flashAction staticLink' title='Redo'><span class='linkIcon'>Redo</span></a></li>
+            <li><a href='#Undo' id='undoLink'
+              class='staticLink' title='Undo'><span class='linkIcon'>Undo</span></a></li>
+            <li class='noSpacing separator'><a href='#Redo' id='redoLink'
+              class='staticLink' title='Redo'><span class='linkIcon'>Redo</span></a></li>
             <%- end -%>
 
             <%# Table view options %>
             <%- if is_owner && is_blist -%>
             <li class='separator tableOption'>
-            <a href='#' class='addColumnsLink staticLink swfItem'>
+            <a href='#' class='addColumnsLink staticLink'>
                 <span class='linkIcon'>Add Column</span>
             </a>
             </li>
@@ -108,57 +100,29 @@
                 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
 
-            <%# Page view options %>
-            <%- if is_owner -%>
-            <li class='pageOption'>
-              <a class='addColumnsLink staticLink' href='#'><span class='linkIcon'>Add Field</span></a>
+            <%- if @view.can_edit() -%>
+            <li class='separator'>
+              <a id='formatLink' class='staticLink' href='#formatMenu'>
+                <span class='linkIcon'>Format</span>
+              </a>
             </li>
-            <%- end -%>
-            <%- if can_edit -%>
-            <li class='separator pageOption'><a id='newPageLink'
-              class='flashAction staticLink' href='#NewPage'><span class='linkIcon'>New Page</span></a></li>
-            <li class='separator pageOption'><a id='defaultLayoutLink'
-              class='flashAction staticLink'
-              href='#DefaultLayout'><span class='linkIcon'>Default Layout</span></a></li>
             <%- end -%>
 
             <%# Export/access options %>
-            <%- if !@view.nil? -%>
-            <li>
-              <%- if true -%>
-              <a id='apiLink' class='staticLink'
-                href='/views/<%= @view.id %>/rows.xml?accessType=API'><span class='linkIcon'>API</span></a>
-              <%- else -%>
-              <a id='apiLink' class='staticLink'
-                href='/data/api_popup' rel='modal'><span class='linkIcon'>API</span></a>
-              <%- end -%>
-            </li>
             <li class='separator'>
               <a id='rssLink' class='staticLink'
                 href='/views/<%= @view.id %>/rows.rss'><span class='linkIcon'>RSS</span></a>
             </li>
-            <%- end -%>
-
-            <%# Display menu %>
-            <%- if current_user -%>
-            <li class='separator'>
-              <a href='#' id='displayLink' class='dropdownLink'>
-                <div class='outerWrapper'><div class='midWrapper'>
-                    <div class='innerWrapper'>
-                      <span class='linkIcon table'>Display As</span></div></div></div></a>
-              <%= menu_tag({'id' => 'displayMenu', 'option_menu' => true,
-              'items' => [
-              {'text' => 'A table', 'class' => 'table checked', 'href' => '#'},
-              {'text' => 'A page', 'class' => 'page', 'href' => '#'}]}) %>
-            </li>
-            <%- end -%>
 
             <li>
-					    <a href='#' id='shareTopLink' class='dropdownLink'>
-					      <div class='outerWrapper'><div class='midWrapper'>
-					          <div class='innerWrapper'>
-					            <span class='linkIcon'>Socialize This</span></div></div></div></a>
-					    <%= menu_tag(socialize_menu_options(@view, 'shareTopMenu')) %>
+              <a href='#' id='shareTopLink' class='dropdownLink'>
+                <div class='outerWrapper'><div class='midWrapper'>
+                    <div class='innerWrapper'>
+                      <span class='linkIcon'>Socialize This</span>
+                    </div>
+                </div></div>
+              </a>
+              <%= menu_tag(socialize_menu_options(@view, 'shareTopMenu')) %>
             </li>
           </ul>
 
@@ -178,8 +142,82 @@
               </div>
             </div>
           </form>
-          <%- end -%>
         </div>
+
+        <%- if @view.can_edit() -%>
+        <div id='formatMenu' class='fixedMenu disabled'>
+          <div class='outerWrapper'>
+            <ul class='innerWrapper clearfix'>
+              <li class='column'>
+                <h6>Text Style</h6>
+                <ul class='clearfix'>
+                  <li><a href='#format_bold' class='bold toggleButton'
+                    title='Bold'>Bold</a></li>
+                  <li><a href='#format_underline' class='underline toggleButton'
+                    title='Underline'>Underline</a></li>
+                  <li><a href='#format_italic' class='italic toggleButton'
+                    title='Italic'>Italic</a></li>
+                  <li class='separator'><a href='#format_strikethrough'
+                    class='strike toggleButton' title='Strike'>Strike</a></li>
+                  <li><a href='#format_unorderedList'
+                    class='bulletedList toggleButton' title='Bulleted List'>
+                    Bulleted List
+                  </a></li>
+                  <li class='separator'><a href='#format_orderedList'
+                    class='numberedList toggleButton' title='Numbered List'>
+                    Numbered List
+                  </a></li>
+                </ul>
+              </li>
+              <li class='column'>
+                <a href='#format_link' class='link toggleButton'>Link</a>
+              </li>
+              <li class='column'>
+                <h6>Font</h6>
+                <%= select_tag("format_fontFamily",
+                  font_select_options('Arial')) %>
+              </li>
+              <li class='column'>
+                <h6>Size</h6>
+                <%= select_tag("format_fontSize",
+                  font_size_select_options(10)) %>
+              </li>
+              <li class='column'>
+                <h6>Color</h6>
+                <ul class='clearfix'>
+                  <li><a href='#format_color' class='color' title='Font Color'>
+                    <span class='inner'>Font Color</span>
+                  </a></li>
+                </ul>
+              </li>
+              <li class='column'>
+                <h6>Align</h6>
+                <ul class='clearfix'>
+                  <li>
+                    <a href='#format_align' class='align'
+                      title='Alignment'><span class='inner'>Alignment</span></a>
+                    <%= menu_tag({'id' => 'formatAlignMenu', 'items' => [
+                                 {'text' => 'Align Left',
+                                   'class' => 'leftAlign',
+                                   'href' => '#format_justifyLeft'},
+                                 {'text' => 'Align Center',
+                                   'class' => 'centerAlign',
+                                   'href' => '#format_justifyCenter'},
+                                 {'text' => 'Align Right',
+                                   'class' => 'rightAlign',
+                                   'href' => '#format_justifyRight'}]}) %>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <a href='#Close_Format' title='Close' class='close'>Close</a>
+          </div>
+          <div class='disabledOverlay'></div>
+          <div class='disabledText'>
+            Formatting is not yet available for this type of column
+          </div>
+        </div>
+        <%- end -%>
 
         <%- if is_owner -%>
         <div id='addColumnsMenu' class='fixedMenu'>
@@ -241,28 +279,7 @@
         </div>
         <%- end -%>
 
-        <div id='pageViewHeader'><div class='innerWrapper'></div></div>
-
-        <div id='outerSwfWrapper' class='scrollContent'>
-          <div id='readGrid' class='readItem'></div>
-          <%- if current_user -%>
-          <div id='swfWrapper' class='swfItem'>
-            <%= render(:partial => "shared/swf") %>
-          </div>
-          <%- end -%>
-        </div>
-
-        <div id='pageViewFooter'>
-          <a href='#FirstPage' id='firstPageLink' class='flashAction'
-            title='First Page'>First Page</a>
-          <a href='#PrevPage' id='prevPageLink' class='flashAction'
-            title='Previous Page'>Previous Page</a>
-          <span id='pageInfo'>Page</span>
-          <a href='#NextPage' id='nextPageLink' class='flashAction'
-            title='Next Page'>Next Page</a>
-          <a href='#LastPage' id='lastPageLink' class='flashAction'
-            title='Last Page'>Last Page</a>
-        </div>
+        <div id='dataGrid' class='scrollContent'></div>
 
       </div>
     </div>
@@ -272,13 +289,10 @@
     <div id="mainColumnContent" class="column">
 
       <div id='infoPane' class='metadataPane'>
-      <%- if !@view.nil? -%>
-      <%= render(:partial => "info_for_single",
-      :locals => { :view => @view, :page_single => true }) %>
-      <%- end -%>
+        <%= render(:partial => "info_for_single",
+          :locals => { :view => @view, :page_single => true }) %>
       </div>
 
-      <%- if @view -%>
       <div id='tempInfoPane' class='metadataPane'>
         <div class="header">
           <ul class="summaryTabs clearfix">
@@ -314,7 +328,6 @@
           </div>
         </div>
       </div>
-      <%- end -%>
 
     </div>
   </div>
@@ -322,7 +335,8 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "readGrid" }) %>
+  <%= render(:partial => "shared/visualization",
+    :locals => { :view => @view, :grid_div => "dataGrid" }) %>
 
   <%- if !current_user -%>
   <%= render :partial => 'login' %>
@@ -342,30 +356,28 @@
     blist.blistGrid.newDataset = true;
     <%- end -%>
     blist.blistGrid.secureUrl = "https://<%= request.host %>:<%= SslRequirement.port_for_protocol('https') %>";
-    <%- if !@view.nil? -%>
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= h(@view.name) %>";
     blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
-    // TODO: Change this when edit grid is finally working.
-    blist.blistGrid.canAddColumns = false; //<%= is_owner && is_blist ? 'true' : 'false' %>;
+    blist.blistGrid.canAddColumns = <%= is_owner && is_blist ? 'true' : 'false' %>;
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
-    <%- end -%>
     <%- end -%>
   </script>
 
   <%= render(:partial => 'shared/table_editor_js') %>
-  <%= javascript_include_tag "plugins/ui.core", "plugins/ui.draggable", "plugins/ui.spinner",
-    "util/extMouseWheel", "util/flash-interface", "util/navigation",
-    "util/inline-login", "util/swfobject", "data/types", "data/model",
-    "data/table", "data/table_nav", "widgets/inline-edit",
-    "widgets/dropdown-menu", "widgets/selectable-list", "widgets/pagination",
-    "widgets/column-format", "widgets/reorderable-list",
-    "data/table", "widgets/inline-edit", "widgets/dropdown-menu",
-    "widgets/column-format", "widgets/column-totals",
+  <%= javascript_include_tag "plugins/ui.core", "plugins/ui.draggable",
+    "plugins/ui.spinner", "util/extMouseWheel",
+    "util/navigation", "util/inline-login", "plugins/date",
+    "plugins/jquery.colorPicker", "data/types", "data/model", "data/table",
+    "data/table_nav", "widgets/inline-edit", "widgets/dropdown-menu",
+    "widgets/selectable-list", "widgets/pagination", "widgets/column-format",
+    "widgets/reorderable-list", "data/table", "widgets/inline-edit",
+    "widgets/dropdown-menu", "widgets/column-format", "widgets/column-totals",
     "widgets/info-pane-comments", "widgets/info-pane-publish", 
     "widgets/scrollable", "widgets/dataset-grid",
+    "screens/filter-screen",
     "widgets/visualization", "screens/info-pane", "screens/meta-tabs", 
     "screens/attribution-edit", "screens/blist-grid-screen", "widgets/column-format", 
     "widgets/column-totals", "widgets/combo", "widgets/values",

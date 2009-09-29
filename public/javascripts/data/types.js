@@ -6,7 +6,7 @@
 blist.namespace.fetch('blist.data.types');
 
 (function($) {
-    STAR_WIDTH = 10;
+    STAR_WIDTH = 16;
 
     /*** UTILITY FUNCTIONS ***/
 
@@ -206,12 +206,13 @@ blist.namespace.fetch('blist.data.types');
         return "<div class='blist-cell " + cls + "' style='width: " + value + "%'></div>";
     };
 
-    var renderGenPercent = function(value, plain, column) {
+    var renderGenPercent = function(value, plain, column)
+    {
         if (plain)
-		{
+        {
             return "renderNumber(" + value + ", " + column.decimalPlaces + ", null, '%')";
         }
-		var renderText;
+        var renderText;
         var renderBar;
         switch (column.format || 'percent_bar') {
             case 'percent_bar':
@@ -243,142 +244,97 @@ blist.namespace.fetch('blist.data.types');
         return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) + ", '$')";
     };
 
-    var renderPhone = function(number, plain) {
-        if (!number || !number[0]) {
-            return '';
-        }
+    var renderPhone = function(value, plain)
+    {
+        if (!value) { return ''; }
 
-        var label = number[0] + "";
-        if (label.match(/^\d{10}$/)) {
-            label = "(" + label.substring(0, 3) + ") " + label.substring(3, 6) + "-" + label.substring(6, 10);
+        var num;
+        var type;
+        if (value instanceof Array)
+        {
+            num = value[0] || '';
+            type = value[1];
         }
-        else if (label.match(/^\d{7}$/)) {
+        else if (value instanceof Object)
+        {
+            num = value.phone_number || '';
+            type = value.phone_type;
+        }
+        else { num = value + ''; }
+
+        var label = num + "";
+        if (label.match(/^\d{10}$/))
+        {
+            label = "(" + label.substring(0, 3) + ") " +
+                label.substring(3, 6) + "-" + label.substring(6, 10);
+        }
+        else if (label.match(/^\d{7}$/))
+        {
             label = label.substring(0, 3) + "-" + label.substring(3, 7);
         }
 
-        if (plain) {
-            if (number[1])
-			{
-                label += " (" + number[1].toLowerCase() + ")";
-			}
+        if (plain)
+        {
+            if (type) { label += " (" + type.toLowerCase() + ")"; }
             return label;
         }
 
-        label = "<div class='blist-phone-icon blist-phone-icon-" + (number[1] ? number[1].toLowerCase() : "unknown") + "'></div> " + htmlEscape(label);
+        label = "<div class='blist-phone-icon blist-phone-icon-" +
+            (type ? type.toLowerCase() : "unknown") + "'></div>&nbsp;" +
+            htmlEscape(label);
 
-        return renderURL([ "callto://" + number[0].replace(/[\-()\s]/g, ''), label ], true);
+        return renderURL([ "callto://" + num.replace(/[\-()\s]/g, ''), label ],
+            true);
     };
 
-    var renderGenPhone = function(value, plain) {
+    var renderGenPhone = function(value, plain)
+    {
         return "renderPhone(" + value + ", " + plain + ")";
     };
 
-    var renderGenCheckbox = function(value, plain, column) {
-        if (plain)
-		{
-            return value + " ? '&#10003;' : ''";
-        }
-		var format = column.format || 'check';
-        return "\"<div class='blist-cell blist-checkbox blist-" + format + "-\" + (" + value + " ? 'on' : 'off') + \"' title='\" + (" + value + " ? 'True' : 'False') + \"'></div>\"";
+    var renderGenCheckbox = function(value, plain, column)
+    {
+        if (plain) { return value + " ? '&#10003;' : ''"; }
+        return "\"<div class='blist-cell blist-checkbox blist-checkbox-\" + (" +
+            value + " ? 'on' : 'off') + \"' title='\" + (" + value +
+            " ? 'True' : 'False') + \"'></div>\"";
     };
 
-    var renderGenFlag = function(value, plain) {
-        if (plain)
-		{
-            return value + " || ''";
-		}
-        return value + " && (\"<div class='blist-flag blist-flag-\" + " + value + " + \"' title='\" + " + value + " + \"'></div>\")";
+    var renderGenFlag = function(value, plain)
+    {
+        if (plain) { return value + " || ''"; }
+        return value + " && (\"<div class='blist-flag blist-flag-\" + " +
+            value + " + \"' title='\" + " + value + " + \"'></div>\")";
     };
 
-    var renderRichtext = function(value) {
-        // TODO -- sanitize insecure HTML...  This should happen on the server but currently doesn't.
-        if (value == null) {
-            return '';
-        }
-        value = value + '';
-        // If there is font-size, add an extra wrapper so we can tweak the
-        //  display to something reasoanble
-        if (value.indexOf('font-size:') >= 0)
-        {
-            value = '<div class="blist-richtext">' + value + '</div>';
-        }
-        // TODO: Remove these munging rules once the server returns better HTML
-        // Swap out pt font sizing for ems divided by 10
-        value = value.replace(/font-size\:\s*(\d*)(\d)pt/g, 'font-size:$1.$2em');
-        if (value.substring(0, 11) == '<TEXTFORMAT') {
-            // XXX  - HACK - clean up terrible Flash markup
-            return value.replace(/<\/?textformat[^>]*>/gi, '').replace(/ size="\d+"/gi, '');
-        }
-        return value;
+    var renderRichtext = function(value)
+    {
+        if (value == null) { return ''; }
+        // Add an extra wrapper so we can tweak the display to something
+        // reasoanble
+        return '<div class="blist-richtext">' + value + '</div>';
     };
 
-    var renderGenRichtext = function(value, plain) {
+    var renderGenRichtext = function(value, plain)
+    {
         // TODO -- in plain text mode, strip out HTML?
         return "renderRichtext(" + value + " || '')";
     };
 
-    var renderDate = function(value, includeDate, includeTime) {
-        if (value == null) {
-            return '';
-        }
-        
-        // Note -- jQuery.dates would do a nicer job of this but it appears to be GPL so not sure if we can use it.
-        // Plus this is probably faster.
-        if (typeof value == 'number') {
-            value = new Date(value * 1000);
-        }
-
-        var result;
-
-        if (includeDate) {
-            var day = value.getMonth();
-            if (day < 10) {
-                day = '0' + day;
-            }
-            result = (value.getMonth() + 1) + '/' + value.getDate() + '/' + (value.getFullYear());
-        }
-        if (includeTime) {
-            var hour = value.getHours();
-            var meridian = hour < 12 ? ' am' : ' pm';
-            if (hour > 12) {
-                hour -= 12;
-            }
-            else if (!hour) {
-                hour = 12;
-            }
-            var minute = value.getMinutes();
-            if (minute < 10) {
-                minute = '0' + minute;
-            }
-            var time = hour + ':' + minute + meridian;
-            if (result) {
-                result += ' ' + time;
-            } else {
-                result = time;
-            }
-        }
-
-        return result;
+    var renderDate = function(value, format)
+    {
+        if (value == null) { return ''; }
+        var d;
+        if (typeof value == 'number') { d = new Date(value * 1000); }
+        else { d = Date.parse(value); }
+        return d ? d.format(format) : '';
     };
 
-    var renderGenDate = function(value, plain, column) {
-        var date, time;
-        switch (column && column.format) {
-            case 'date':
-                date = true;
-                time = false;
-                break;
-
-            case 'time':
-                date = false;
-                time = true;
-                break;
-
-            default:
-                date = time = true;
-                break;
-        }
-        return "renderDate(" + value + ", " + date + ", " + time + ")";
+    var renderGenDate = function(value, plain, column)
+    {
+        var format = blist.data.types.date.formats[column.format] ||
+            blist.data.types.date.formats['date_time'];
+        return "renderDate(" + value + ", '" + format + "')";
     };
 
     var renderGenPicklist = function(value, plain, column, context) {
@@ -406,120 +362,117 @@ blist.namespace.fetch('blist.data.types');
         return "'?'";
     };
 
-    var renderURL = function(value, captionIsHTML, plain) {
-        if (!value) {
-            return '';
-        }
-        else if (typeof value == "string") {
-            // Terrible legacy format
-            if (value.charAt(0) == '<') {
-                return value;
-            }
-            var url = value;
-            var caption = value;
-        }
-        else if (typeof value == "object")
+    var renderURL = function(value, captionIsHTML, plain)
+    {
+        if (!value) { return ''; }
+        var url;
+        if (value instanceof Array)
         {
             url = value[0];
             caption = value[1] || url;
         }
+        else if (value instanceof Object)
+        {
+            url = value.url;
+            caption = value.description || url;
+        }
+        else { url = value + ''; }
+
         if (url && url != '' && !url.match(/^([a-z]+):/i) &&
                 url.indexOf('/') != 0)
-        {
-            url = 'http://' + url;
-        }
-        if (plain)
-		{
-            return url || '';
-		}
-        if (!captionIsHTML) {
-            caption = htmlEscape(caption);
-        }
-        return "<a target='blist-viewer' href='" + htmlEscape(url) + "'>" + caption + "</a>";
+        { url = 'http://' + url; }
+
+        if (plain) { return url || ''; }
+
+        if (!captionIsHTML) { caption = htmlEscape(caption); }
+        return "<a target='blist-viewer' href='" + htmlEscape(url) + "'>" +
+            caption + "</a>";
     };
 
-    var renderGenURL = function(value, plain) {
+    var renderGenURL = function(value, plain)
+    {
         return "renderURL(" + value + ", false, " + plain + ")";
     };
 
-    var renderGenEmail = function(value, plain) {
-        if (plain)
-		{
-            return value;
-		}
-        return "renderURL(" + value + " && ['mailto:' + " + value + ", " + value + "], false, " + plain + ")";
+    var renderGenEmail = function(value, plain)
+    {
+        if (plain) { return value; }
+        return "renderURL(" + value + " && ['mailto:' + " + value + ", " +
+            value + "], false, " + plain + ")";
     };
 
-    var renderStars = function(value, range) {
-        if (value == null) {
-            return '';
-        }
+    var renderStars = function(value, range)
+    {
+        if (value == null) { return ''; }
+        range *= STAR_WIDTH;
         var on = Math.round(value * STAR_WIDTH);
-        if (on <= 0) {
-            return '';
-        } else if (on > range) {
-            on = range;
-        }
+        if (on <= 0) { return ''; }
+        else if (on > range) { on = range; }
         var off = range - on;
-        return "<div class='blist-tstars' style='width: " + range + "px'><div class='blist-cell blist-tstar-on' style='width: " + on + "px'></div><div class='blist-cell blist-tstar-off' style='width: " + off + "px; background-position-x: " + -(on % STAR_WIDTH) + "px'></div></div>";
+        return "<div class='blist-tstars-render-wrapper' style='width:" + range + "px'>" +
+            (permissions.canEdit ? "<div class='blist-star-0'></div>" : "") +
+            "<div class='blist-tstars' style='width: " + range +
+            "px'><div class='blist-cell blist-tstar-on' style='width: " + on +
+            "px'></div><div class='blist-cell blist-tstar-off' style='width: " +
+            off + "px; background-position-x: " + -(on % STAR_WIDTH) +
+            "px'></div></div></div>";
     };
 
-    var renderTextStars = function(value, range) {
+    var renderTextStars = function(value, range)
+    {
         var rv = '';
-        for (var i = 0; i < value; i++)
-		{
-            rv += '*';
-		}
+        for (var i = 0; i < value; i++) { rv += '*'; }
         return rv;
     };
 
-    var renderGenStars = function(value, plain, column) {
-        if (plain)
-		{
-            return "renderTextStars(" + value + ")";
-		}
+    var renderGenStars = function(value, plain, column)
+    {
+        if (plain) { return "renderTextStars(" + value + ")"; }
         var range = parseFloat(column.range);
-        if (range <= 0 || isNaN(range)) {
+        if (range <= 0 || isNaN(range))
+        {
             range = 5;
         }
-        return "renderStars(" + value + ", " + (range * 10) + ")";
+        return "renderStars(" + value + ", " + range + ")";
     };
 
-    var renderGenPhoto = function(value, plain, column) {
+    var renderGenPhoto = function(value, plain, column)
+    {
         var url = "'" + (column.base || '') + "' + " + value;
         if (plain)
-		{
+        {
             // TODO
             return url;
-		}
+        }
         return value + " && ('<img src=\"' + escape(" + url + ") + '\"></img>')";
     };
 
-    var renderDocument = function(value, base, plain) {
+    var renderDocument = function(value, base, plain)
+    {
         var url, name, size;
-        if (value == null) {
-            return '';
-        }
-        if (typeof value == 'object') {
+        if (!value) { return ''; }
+        else if (value instanceof Array)
+        {
             url = value[2];
-            if (url == null) {
-                return '';
-            }
             name = value[1];
             size = value[3];
-        } else {
-            url = value;
         }
-        if (plain)
-		{
-            return name || '';
-		}
+        else if (value instanceof Object)
+        {
+            url = value.id;
+            name = value.filename;
+            size = value.size;
+        }
+        else { url = value + ''; }
+
+        if (!url) { return ''; }
+        if (plain) { return name || ''; }
+
         var rv = renderURL([ (base || '') + url, name || 'Document' ]);
-        if (size != null) {
+        if (size != null)
+        {
             size = Math.round(size / 1024);
-            if (size == 0) {
-                size = 1;
-            }
+            if (size == 0) { size = 1; }
             rv += "&nbsp;<span class='blist-document-size'>(" + size + "k)</span>";
         }
         return rv;
@@ -543,24 +496,9 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterDate = function(value, column)
     {
-        var date, time;
-        switch (column && column.format)
-        {
-            case 'date':
-                date = true;
-                time = false;
-                break;
-
-            case 'time':
-                date = false;
-                time = true;
-                break;
-
-            default:
-                date = time = true;
-                break;
-        }
-        return renderDate(value, date, time);
+        var format = blist.data.types.date.formats[column.format] ||
+            blist.data.types.date.formats['date_time'];
+        return renderDate(value, format);
     };
 
     var renderFilterMoney = function(value, column)
@@ -594,7 +532,7 @@ blist.namespace.fetch('blist.data.types');
             range = 5;
         }
         return "<div class='blist-tstars-wrapper'>" +
-            renderStars(value, range * 10) + value + "</div>";
+            renderStars(value, range) + value + "</div>";
     };
 
     var renderFilterPercent = function(value, column)
@@ -649,6 +587,7 @@ blist.namespace.fetch('blist.data.types');
 
     /*** DATA TYPE DEFINITIONS ***/
 
+    var timeFormat = 'h:i:s A O';
     /**
      * This is our main map of data types.
      */
@@ -690,7 +629,18 @@ blist.namespace.fetch('blist.data.types');
             filterValue: renderFilterDate,
             sortable: true,
             filterable: true,
-            group: groupDate
+            group: groupDate,
+            formats: {
+                'date': 'm/d/Y',
+                'date_time': 'm/d/Y ' + timeFormat,
+                'date_dmy': 'd/m/Y',
+                'date_dmy_time': 'd/m/Y ' + timeFormat,
+                'date_ymd': 'Y/m/d',
+                'date_ymd_time': 'Y/m/d ' + timeFormat,
+                'date_monthdy': 'F d, Y',
+                'date_dmonthy': 'd F Y',
+                'date_ymonthd': 'Y F d'
+            }
         },
 
         photo: {
@@ -723,7 +673,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterCheckbox,
             filterValue: valueFilterCheckbox,
             sortable: true,
-            filterable: true
+            filterable: true,
+            isInlineEdit: true
         },
 
         flag: {
@@ -735,12 +686,14 @@ blist.namespace.fetch('blist.data.types');
         },
 
         stars: {
+            cls: 'stars',
             renderGen: renderGenStars,
             sortGen: sortGenNumeric,
             filterRender: renderFilterStars,
             filterText: true,
             sortable: true,
-            filterable: true
+            filterable: true,
+            isInlineEdit: true
         },
 
         percent: {
@@ -799,9 +752,21 @@ blist.namespace.fetch('blist.data.types');
     if ($.blistEditor)
     {
         blist.data.types.text.editor = $.blistEditor.text;
+        blist.data.types.date.editor = $.blistEditor.date;
         blist.data.types.number.editor = $.blistEditor.number;
+        blist.data.types.percent.editor = $.blistEditor.percent;
+        blist.data.types.money.editor = $.blistEditor.money;
+        blist.data.types.email.editor = $.blistEditor.email;
+        blist.data.types.url.editor = $.blistEditor.url;
+        blist.data.types.phone.editor = $.blistEditor.phone;
         blist.data.types.flag.editor = $.blistEditor.flag;
         blist.data.types.picklist.editor = $.blistEditor.picklist;
+        blist.data.types.checkbox.editor = $.blistEditor.checkbox;
+        blist.data.types.stars.editor = $.blistEditor.stars;
+        blist.data.types.richtext.editor = $.blistEditor.richtext;
+        blist.data.types.document.editor = $.blistEditor.document;
+        blist.data.types.photo.editor = $.blistEditor.photo;
+        blist.data.types.tag.editor = $.blistEditor.tag;
     }
 
     for (var name in blist.data.types) {

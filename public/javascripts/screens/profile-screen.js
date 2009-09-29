@@ -43,7 +43,7 @@ blist.profile.updateInfo = function(responseData, $form)
         {
             $userTags.empty();
         }
-        $(".userTags h5 a").toggleClass("initialHide", user.tags !== undefined && user.tags.length > 0)
+        $(".userTags h5 a").toggleClass("initialHide", user.tags !== undefined && user.tags.length > 0);
         
         $('#switchUsernameLink').text('Display ' +
                 (user.privacyControl == "login" ?
@@ -53,9 +53,7 @@ blist.profile.updateInfo = function(responseData, $form)
                  "fullName" : "login"));
 
         $form.find('.errorMessage').text('');
-        $form.closest(".sectionEdit").slideUp("fast");
-        $form.closest(".sectionContainer")
-            .find(".sectionShow").slideDown("fast");
+        $form.closest(".sectionContainer").showEdit("displayShowSection");
     }
 };
 
@@ -134,18 +132,11 @@ $(function ()
     });
     $(".infoContent").blistStretchWindow();
 
+    $(".sectionContainer").showEdit();
     $(".showListBoxLink, .profileEdit").click(function(event)
     {
         event.preventDefault();
-        $(this).closest(".sectionShow").slideUp("fast");
-        $(this).closest(".sectionContainer").find(".sectionEdit").slideDown("fast");
-    });
-
-    $(".formListBoxClose a").click(function(event)
-    {
-        event.preventDefault();
-        $(this).closest(".sectionEdit").slideUp("fast");
-        $(this).closest(".sectionContainer").find(".sectionShow").slideDown("fast");
+        $(this).closest(".sectionContainer").showEdit("displayEditSection");
     });
 
     $("#welcome .welcome-titlebar a").click(function(event)
@@ -215,9 +206,7 @@ $(function ()
                     $("#descriptionEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
 
                     $form.find('.errorMessage').text('');
-                    $form.closest(".sectionEdit").slideUp("fast");
-                    $form.closest(".sectionContainer")
-                        .find(".sectionShow").slideDown("fast");
+                    $form.closest(".sectionContainer").showEdit("displayShowSection");
                 }
             }
         });
@@ -246,9 +235,7 @@ $(function ()
                     $("#interestsEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
 
                     $form.find('.errorMessage').text('');
-                    $form.closest(".sectionEdit").slideUp("fast");
-                    $form.closest(".sectionContainer")
-                        .find(".sectionShow").slideDown("fast");
+                    $form.closest(".sectionContainer").showEdit("displayShowSection");
                 }
             }
         });
@@ -390,8 +377,7 @@ $(function ()
         if($form.find('#user_firstName').val() === "" &&
            $form.find('#user_lastName').val() === "")
         {
-            $(this).closest(".sectionShow").slideUp("fast");
-            $(this).closest(".sectionContainer").find(".sectionEdit").slideDown("fast");
+            $(this).closest(".sectionContainer").showEdit("displayEditSection");
             return;
         }
 

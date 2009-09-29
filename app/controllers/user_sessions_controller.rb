@@ -5,6 +5,11 @@ class UserSessionsController < ApplicationController
   protect_from_forgery :except => [:rpx]
 
   def index
+    HoptoadNotifier.notify(
+      :error_class => "Deprecation",
+      :error_message => "Called UserSessionsController#index - deprecated function",
+      :request => { :params => params }
+    )
     respond_to do |format|
       format.data { render :json => {:user_id => current_user.nil? ? nil : current_user.id} }
     end

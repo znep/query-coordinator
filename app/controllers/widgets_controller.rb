@@ -1,6 +1,5 @@
 class WidgetsController < ApplicationController
   skip_before_filter :require_user
-  caches_page :show
   layout 'widgets'
 
   GOV_OVERRIDES = %w{
@@ -41,7 +40,6 @@ class WidgetsController < ApplicationController
       end
       
       return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => @variation))
-      
     end
     
     # HACK: Support old template options

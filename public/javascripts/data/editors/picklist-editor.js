@@ -7,8 +7,6 @@
         this.init();
     };
 
-    var valuesList = [ { id: 'null', label: '(Blank)'} ];
-
     var renderValue = function(value)
     {
         var $row = $(this);
@@ -35,16 +33,20 @@
 
             editorInserted: function()
             {
-                $.each(this.column.options, function(id, v)
-                    { valuesList.push({id: id, label: v.text, icon: v.icon}); });
-                this.setFullSize();
-                this.$dom().addClass('blist-combo-wrapper')
+                var editObj = this;
+                editObj._valuesList = [ { id: 'null', label: '(Blank)'} ];
+
+                $.each(editObj.column.options, function(id, v)
+                    { editObj._valuesList.push(
+                        {id: id, label: v.text, icon: v.icon}); });
+                editObj.setFullSize();
+                editObj.$dom().addClass('blist-combo-wrapper')
                     .addClass('combo-container');
-                this.$editor().find('.picklist-combo').combo({
+                editObj.$editor().find('.picklist-combo').combo({
                     name: 'picklist-combo',
-                    values: valuesList,
-                    value: this.originalValue ?
-                        this.originalValue.toLowerCase() : 'null',
+                    values: editObj._valuesList,
+                    value: editObj.originalValue ?
+                        editObj.originalValue.toLowerCase() : 'null',
                     renderFn: renderValue
                 });
             },
@@ -72,9 +74,12 @@
                 if (curVal === null) { return true; }
 
                 var found = false;
-                $.each(valuesList, function(i, v)
-                        { if (v.id.toUpperCase() == curVal)
-                            { found = true; return false; } });
+                if (this._valuesList)
+                {
+                    $.each(this._valuesList, function(i, v)
+                            { if (v.id.toUpperCase() == curVal)
+                                { found = true; return false; } });
+                }
                 return found;
             }
         }

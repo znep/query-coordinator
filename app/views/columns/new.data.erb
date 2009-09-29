@@ -78,9 +78,11 @@ $(function(){
       {id: "stars", label: "Star"},
       {id: "flag", label: "Flag"},
       {id: "document", label: "Document"},
-      {id: "photo", label: "Photo (Image)"},
-      {id: "nested_table", label: "Nested Table"}
+      {id: "photo", label: "Photo (Image)"}
   ];
+  <%- if @parent.nil? -%>
+  typeValues.push({id: "nested_table", label: "Nested Table"});
+  <%- end -%>
 
   column.type = "<%= @type.nil? ? "text" : @type %>";
 

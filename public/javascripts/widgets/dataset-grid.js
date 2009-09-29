@@ -516,12 +516,13 @@
         $(e.currentTarget).hide();
     };
 
-    var rowMods = function(datasetObj, rows)
+    var rowMods = function(datasetObj, renderedRows)
     {
-        $.each(rows, function(i, r)
+        $.each(renderedRows, function(i, r)
         {
-            $('#' + $(datasetObj.currentGrid).attr('id') + '-r' + r.id +
-                '.blist-tr-open .blist-tdh[uid]')
+            var $row = $(r.row);
+            if (!$row.is('.blist-tr-open')) { return true; }
+            $row.find('.blist-tdh[uid]')
                 .each(function(i, tdh)
                 {
                     var $tdh = $(tdh);

@@ -3514,7 +3514,7 @@
             end("renderRows.append");
 
             begin("renderRows.rowMods");
-            if (options.rowMods !== null) { options.rowMods(rows); }
+            if (options.rowMods !== null) { options.rowMods(renderedRows); }
             end("renderRows.rowMods");
 
             begin("renderRows.finalize");
@@ -3681,7 +3681,7 @@
         resizeHandleAdjust: 3,
         rowHandleRenderer: function(col) { return '""'; },
         rowHandleWidth: 1,
-        rowMods: function(row) {},
+        rowMods: function(renderedRows) {},
         selectionEnabled: true,
         showGhostColumn: false,
         showName: true,

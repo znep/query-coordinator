@@ -241,6 +241,11 @@ private
   end
 
   def self.update_current_user(user, session_token)
+    # I thought we only needed this line to make old rails work (which is now
+    # gone) but without this line we're getting InvalidAuthenticityToken
+    # exceptions when trying to create a new dataset.
+    controller.session[:user] = user.nil? ? nil : user.oid
+
     user.session_token = session_token if user
     User.current_user = user
   end

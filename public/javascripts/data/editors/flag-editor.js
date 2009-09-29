@@ -33,7 +33,7 @@
             {
                 if (!this._$editor)
                 {
-                    this._$editor = $('<div class="blist-table-editor blist-td">' +
+                    this._$editor = $('<div class="blist-table-editor">' +
                         '<div class="flag-combo"></div></div>');
                 }
                 return this._$editor;
@@ -41,12 +41,22 @@
 
             editorInserted: function()
             {
-                this.$dom().addClass('blist-combo-wrapper');
+                this.setFullSize();
+                this.$dom().addClass('blist-combo-wrapper')
+                    .addClass('combo-container');
                 this.$editor().find('.flag-combo').combo({
                     name: 'flag-combo',
                     values: flagValues,
                     value: this.originalValue || 'null',
-                    renderFn: renderFlagValue
+                    renderFn: renderFlagValue,
+                    adjustDropdownLayout: this.inContainer() ? function(layout) {
+                        // Move dropdown
+                        layout.top += 5;
+
+                        // Compensate for cell borders
+                        layout.left -= 2;
+                        layout.width += 4;
+                    } : null
                 });
             },
 

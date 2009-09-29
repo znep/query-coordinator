@@ -7,8 +7,6 @@
         this.init();
     };
 
-    var valuesList = [ { id: 'null', label: '(Blank)'} ];
-
     var renderValue = function(value)
     {
         var $row = $(this);
@@ -27,7 +25,7 @@
             {
                 if (!this._$editor)
                 {
-                    this._$editor = $('<div class="blist-table-editor blist-td">' +
+                    this._$editor = $('<div class="blist-table-editor">' +
                         '<div class="picklist-combo"></div></div>');
                 }
                 return this._$editor;
@@ -35,22 +33,34 @@
 
             editorInserted: function()
             {
-                $.each(this.column.options, function(id, v)
-                    { valuesList.push({id: id, label: v.text, icon: v.icon}); });
-                this.$dom().addClass('blist-combo-wrapper');
-                this.$editor().find('.picklist-combo').combo({
+                var editObj = this;
+                editObj._valuesList = [ { id: 'null', label: '(Blank)'} ];
+
+                $.each(editObj.column.options, function(id, v)
+                    { editObj._valuesList.push(
+                        {id: id, label: v.text, icon: v.icon}); });
+                editObj.setFullSize();
+                editObj.$dom().addClass('blist-combo-wrapper')
+                    .addClass('combo-container');
+                editObj.$editor().find('.picklist-combo').combo({
                     name: 'picklist-combo',
-                    values: valuesList,
-                    value: this.originalValue ?
-                        this.originalValue.toLowerCase() : 'null',
+                    values: editObj._valuesList,
+                    value: editObj.originalValue ?
+                        editObj.originalValue : 'null',
                     renderFn: renderValue
                 });
+            },
+
+            getSizeElement: function()
+            {
+                return this.$editor().children(':first');
             },
 
             currentValue: function()
             {
                 var val = this.$editor().find('.picklist-combo').value();
-                return val === 'null' ? null : val.toUpperCase();
+                return val === undefined || val === null || val === 'null' ?
+                    null : val;
             },
 
             focus: function()
@@ -64,9 +74,12 @@
                 if (curVal === null) { return true; }
 
                 var found = false;
-                $.each(valuesList, function(i, v)
-                        { if (v.id.toUpperCase() == curVal)
-                            { found = true; return false; } });
+                if (this._valuesList)
+                {
+                    $.each(this._valuesList, function(i, v)
+                            { if (v.id == curVal)
+                                { found = true; return false; } });
+                }
                 return found;
             }
         }

@@ -5,7 +5,7 @@
 <p class="subHeader">Drag columns on the left in the order you want them sorted</p>
 
 <div id="sortBysList" class="reorderList clearfix">
-  <p class="left">Sorted</p>
+  <p class="left">Sorted Columns</p>
   <p id="sortOrderLabel" class="left order">Order</p>
   <div class="border"></div>
   <div class="activeList">
@@ -34,7 +34,7 @@
     <a href="#addItem" class="addItemButton">Add</a>
     <a href="#removeItem" class="removeItemButton">Remove</a>
   </div>
-  <p class="right">Unsorted</p>
+  <p class="right">Unsorted Columns</p>
   <div class="border-right"></div>
   <div class="inactiveList">
     <ul class="reorder">
@@ -106,23 +106,23 @@
     };
 
     var valueChanged = function() {
-        $(".activeList div.ascension").removeClass("hide");
-        $(".inactiveList div.ascension").addClass("hide");
+        $("#modal .activeList div.ascension").removeClass("hide");
+        $("#modal .inactiveList div.ascension").addClass("hide");
 
         toggleOrderLabel();
     };
 
-    $("div.ascension").click(function() {
+    $("#modal div.ascension").click(function() {
         toggleSortOrder($(this).find(".sort"));
     });
 
-    $('#sortBysList').reorderableList({onChange: valueChanged});
+    $('#modal #sortBysList').reorderableList({onChange: valueChanged});
 
-    $(".save").click(function(event) {
+    $("#modal .save").click(function(event) {
         event.preventDefault();
         var sortBys = [];
 
-        $.each($(".activeList .itemWrapper"), function(i, sortItem) {
+        $.each($("#modal .activeList .itemWrapper"), function(i, sortItem) {
             var asc = $(sortItem).find("input.asc").val() == "true";
             var flags;
             if (asc)
@@ -144,7 +144,7 @@
 
         sortBys.sort(function(s1, s2) { return s1.position - s2.position; });
 
-        $("#readGrid").blistModel().multiSort(sortBys);
-        $(".jqmClose").click();
+        $("#dataGrid").blistModel().multiSort(sortBys);
+        $("#modal .jqmClose").click();
     });
 </script>

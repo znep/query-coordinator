@@ -19,16 +19,16 @@
 {
     height: 0;
     left: -1000px;
-    padding: 0;
+    /* padding: 0; -- This causes key events to not fire in Safari.  Yes, really */
     position: absolute;
-    width: 0;
+    /* width: 0; -- This causes key events to not fire in Chrome. */
 }
 
 .blist-combo-dd {
     background: #fff;
     border: 1px solid #ccc;
     display: none;
-    max-height: 150px;
+    max-height: 200px;
     overflow: auto;
     position: absolute;
     z-index: 100;
@@ -47,7 +47,6 @@
 .blist-combo-wrapper.lr_justified .blist-combo-value,
 .blist-combo-wrapper.lr_justified li
 {
-    overflow: auto;
     clear: both;
 }
 
@@ -62,7 +61,7 @@
 
 
 /*** Format Combo Lists ***/
-.blist-combo-wrapper.format_date_view { width: 300px; }
+.blist-combo-wrapper.format_date_view { width: 38em; }
 .blist-combo-wrapper.format_percent_view { width: 220px; }
 
 .format_percent_view .value

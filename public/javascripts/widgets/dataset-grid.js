@@ -29,14 +29,13 @@
             clearTempViewCallback: function () {},
             columnPropertiesEnabled: false,
             currentUserId: null,
-            editEnabled: false,
+            editEnabled: true,
             filterItem: null,
             manualResize: false,
-            setTempViewCallback: function (tempView) {},
+            setTempViewCallback: function () {},
             showRowHandle: false,
             showRowNumbers: true,
             showAddColumns: false,
-            updateTempViewCallback: function (tempView) {},
             viewId: null
         },
 
@@ -65,21 +64,20 @@
                     .bind('column_filter_change', function (event, c)
                         { columnFilterChanged(datasetObj, c); })
                     .bind('server_row_change', function(event)
-                        { updateAggregates(datasetObj); })
+                        { serverRowChange(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
                         headerMods: function (col) { headerMods(datasetObj, col); },
+                        rowMods: function (rows) { rowMods(datasetObj, rows); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
                         showRowHandle: datasetObj.settings.showRowHandle,
                         rowHandleWidth: 15,
                         showAddColumns: datasetObj.settings.showAddColumns,
-                        // This really ought to be linked to edit; but until
-                        // edit is enabled, we'll check the user
-                        //rowHandleRenderer: (datasetObj.settings.editEnabled ?
-                        rowHandleRenderer: (datasetObj.settings.currentUserId ?
-                            datasetObj.rowHandleRenderer : '""'),
+                        rowHandleRenderer: (datasetObj.settings.editEnabled ?
+                            datasetObj.rowHandleRenderer :
+                            function() { return '""'; }),
                         showRowNumbers: datasetObj.settings.showRowNumbers})
                     .bind('cellclick', function (e, r, c, o)
                         { cellClick(datasetObj, e, r, c, o); })
@@ -116,6 +114,14 @@
                         .click(function (e) { clearFilterInput(datasetObj, e); })
                         .hide();
                 }
+            },
+
+            updateFilter: function(filter)
+            {
+                var datasetObj = this;
+                datasetObj.settings._model.updateFilter(filter);
+
+                this.setTempView();
             },
 
             updateView: function(newView)
@@ -155,30 +161,29 @@
 
             getViewCopy: function(includeColumns)
             {
-                var view = $.extend({}, this.settings._model.meta().view);
+                var view = $.extend(true, {}, this.settings._model.meta().view);
 
                 if (includeColumns)
                 {
-                    var viewCols = $.extend([], view.columns);
                     // Update all the widths from the meta columns
                     $.each(this.settings._model.meta().columns[0], function(i, c)
                     {
-                        viewCols[c.dataIndex].width = c.width;
+                        view.columns[c.dataIndex].width = c.width;
                         if (c.body && c.body.children)
                         {
                             $.each(c.body.children, function(j, cc)
                             {
-                                viewCols[c.dataIndex]
+                                view.columns[c.dataIndex]
                                     .childColumns[cc.dataIndex].width = cc.width;
                             });
                         }
                     });
                     // Filter out all metadata columns
-                    viewCols = $.grep(viewCols, function(c, i)
+                    view.columns = $.grep(view.columns, function(c, i)
                         { return c.id != -1; });
                     // Sort by position, because the attribute is ignored when
                     // saving columns
-                    viewCols.sort(function(a, b)
+                    view.columns.sort(function(a, b)
                         { return a.position - b.position; });
                     var cleanColumn = function(col)
                     {
@@ -190,7 +195,7 @@
                         }
                     };
                     // Clean out dataIndexes, and clean out child metadata columns
-                    $.each(viewCols, function(i, c)
+                    $.each(view.columns, function(i, c)
                     {
                         cleanColumn(c);
                         if (c.childColumns)
@@ -201,7 +206,6 @@
                                 { cleanColumn(cc); });
                         }
                     });
-                    view.columns = viewCols;
                 }
                 else
                 {
@@ -234,11 +238,9 @@
                 var successCount = 0;
                 $.each(columns, function(i, colId)
                 {
-                    var matchCols = $.grep(view.columns, function(c, i)
-                            { return c.id == colId; });
-                    if (matchCols.length == 1)
+                    var col = datasetObj.settings._model.getColumnByID(colId);
+                    if (col)
                     {
-                        var col = matchCols[0];
                         if (!col.flags) { col.flags = []; }
                         if (hide)
                         { col.flags.push('hidden'); }
@@ -249,7 +251,7 @@
                         }
                         datasetObj.settings._model.updateColumn(col);
 
-                        var $li = $('.columnsShowMenu a[href*="_' + colId + '"]')
+                        var $li = $('#columnsShowMenu a[href*="_' + colId + '"]')
                             .closest('li');
                         if (hide) { $li.removeClass('checked'); }
                         else { $li.addClass('checked'); }
@@ -259,7 +261,7 @@
                             if (datasetObj.settings.currentUserId == view.owner.id)
                             {
                                 $.ajax({url: '/views/' + view.id + '/columns/' +
-                                    colId + '.json',
+                                    col.id + '.json',
                                     data: $.json.serialize({'hidden': hide}),
                                     type: 'PUT', dataType: 'json',
                                     contentType: 'application/json',
@@ -284,12 +286,65 @@
                             }
                             else
                             {
-                                setTempView(datasetObj, view,
-                                    'columnShowHide-' + colId);
+                                datasetObj.setTempView('columnShowHide-' + colId);
                             }
                         }
                     }
                 });
+            },
+
+            clearTempView: function(countId, forceAll)
+            {
+                var datasetObj = this;
+                if (!datasetObj.settings._filterIds)
+                {datasetObj.settings._filterIds = {};}
+                if (countId != null)
+                { delete datasetObj.settings._filterIds[countId]; }
+
+                datasetObj.settings._filterCount--;
+                if (forceAll)
+                {
+                    datasetObj.settings._filterCount = 0;
+                    datasetObj.settings._filterIds = {};
+                    datasetObj.settings._model.reloadView();
+                }
+                if (datasetObj.settings._filterCount > 0)
+                {
+                    return;
+                }
+
+                if (datasetObj.settings.clearTempViewCallback != null)
+                {
+                    datasetObj.settings.clearTempViewCallback();
+                }
+
+                datasetObj.isTempView = false;
+            },
+
+            setTempView: function(countId)
+            {
+                var datasetObj = this;
+                if (!datasetObj.settings._filterIds)
+                {datasetObj.settings._filterIds = {};}
+                if (countId == null ||
+                    datasetObj.settings._filterIds[countId] == null)
+                {
+                    datasetObj.settings._filterCount++;
+                    if (countId != null)
+                    { datasetObj.settings._filterIds[countId] = true; }
+                }
+
+                if (datasetObj.isTempView)
+                {
+                    return;
+                }
+
+                if (datasetObj.settings.setTempViewCallback != null)
+                {
+                    datasetObj.settings.setTempViewCallback();
+                }
+
+                datasetObj.isTempView = true;
             },
 
             // This keeps track of when the column summary data is stale and
@@ -298,17 +353,30 @@
 
             isTempView: false,
 
-            rowHandleRenderer: '(permissions.canDelete && row.type != "blank" ? ' +
-                '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
-                'row.id + "\'></a>' +
-                '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "\'>' +
-                '<li class=\'delete\'><a href=\'#row-delete_" + row.id + ' +
-                '"\'>Delete Row</a></li>' +
-                '<li class=\'footer\'><div class=\'outerWrapper\'>' +
-                '<div class=\'innerWrapper\'><span class=\'colorWrapper\'>' +
-                '</span></div>' +
-                '</div></li>' +
-                '</ul>" : "")'
+            rowHandleRenderer: function(col)
+            {
+                var colAdjust = '';
+                var subRowLookup = '';
+                if (col && col.header)
+                {
+                    colAdjust = '_' + col.header.indexInLevel;
+                    subRowLookup = col.header.dataLookupExpr;
+                }
+                return '(permissions.canDelete && row' + subRowLookup +
+                        '.type != "blank" ? ' +
+                        '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
+                        'row.id + "' + colAdjust + '\'></a>' +
+                        '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "' +
+                        colAdjust + '\'><li class=\'delete\'>' +
+                        '<a href=\'#row-delete_" + row.id + "' + colAdjust +
+                        '\'>Delete Row</a></li>' +
+                        '<li class=\'footer\'><div class=\'outerWrapper\'>' +
+                        '<div class=\'innerWrapper\'>' +
+                        '<span class=\'colorWrapper\'>' +
+                        '</span></div>' +
+                        '</div></li>' +
+                        '</ul>" : "")';
+            }
         }
     });
 
@@ -347,13 +415,27 @@
         var view = model.meta().view;
         if (action == 'row-delete')
         {
-            model.selectRow(model.getByID(rowId));
-            var rows = [];
-            $.each(model.selectedRows, function(id, index)
-                { rows.push(model.getByID(id)); });
-            model.remove(rows, true);
+            if (s[2] !== undefined)
+            {
+                model.removeChildRows(model.getByID(rowId),
+                    model.column(s[2]), true);
+            }
+            else
+            {
+                model.selectRow(model.getByID(rowId));
+                var rows = [];
+                $.each(model.selectedRows, function(id, index)
+                        { rows.push(model.getByID(id)); });
+                model.remove(rows, true);
+            }
             datasetObj.summaryStale = true;
         }
+    };
+
+    var serverRowChange = function(datasetObj)
+    {
+        datasetObj.summaryStale = true;
+        updateAggregates(datasetObj);
     };
 
     var updateAggregates = function(datasetObj)
@@ -387,6 +469,7 @@
         }
         else if ($(origEvent.target).closest(".blist-column-adder-icon").length > 0)
         {
+            event.preventDefault();
             // Display the add column dialog.
             $('<a href="/blists/' + model.meta().view.id + '/columns/new?parent=' + column.id + '" rel="modal" />').click();
         }
@@ -407,12 +490,12 @@
                 model.filter(searchText, 250);
                 if (!searchText || searchText === '')
                 {
-                    clearTempView(datasetObj, 'searchString');
+                    datasetObj.clearTempView('searchString');
                     datasetObj.settings.clearFilterItem.hide();
                 }
                 else
                 {
-                    setTempView(datasetObj, model.meta().view, 'searchString');
+                    datasetObj.setTempView('searchString');
                     datasetObj.settings.clearFilterItem.show();
                 }
             }, 10);
@@ -429,20 +512,45 @@
         datasetObj.settings.filterItem.val('').blur();
         datasetObj.summaryStale = true;
         datasetObj.settings._model.filter('');
-        clearTempView(datasetObj, 'searchString');
+        datasetObj.clearTempView('searchString');
         $(e.currentTarget).hide();
+    };
+
+    var rowMods = function(datasetObj, renderedRows)
+    {
+        $.each(renderedRows, function(i, r)
+        {
+            var $row = $(r.row);
+            if (!$row.is('.blist-tr-open')) { return true; }
+            $row.find('.blist-tdh[uid]')
+                .each(function(i, tdh)
+                {
+                    var $tdh = $(tdh);
+                    if ($tdh.find('a.menuLink').length > 0) { return true; }
+                    var uid = $tdh.attr('uid');
+                    var col = datasetObj.settings._model.column(uid);
+                    if (col) { createHeaderMenu(datasetObj, col, $tdh); }
+                });
+        });
     };
 
     /* Callback when rendering the grid headers.  Set up column on-object menus */
     var headerMods = function(datasetObj, col)
     {
-        // Create an object containing flags describing what should be present in the menu
+        createHeaderMenu(datasetObj, col, $(col.dom));
+    };
+
+    var createHeaderMenu = function(datasetObj, col, $colDom)
+    {
+        var isNested = col.nestedIn !== undefined;
+        // Create an object containing flags describing what should be present
+        // in the menu
         var features = {};
-        if (blist.data.types[col.type].sortable)
+        if (!isNested && blist.data.types[col.type].sortable)
         {
             features.sort = true;
         }
-        if (blist.data.types[col.type].filterable)
+        if (!isNested && blist.data.types[col.type].filterable)
         {
             features.filter = true;
         }
@@ -459,37 +567,37 @@
 
         // If we did not enable features, do not install the menu
         var haveFeatures = false;
-        for (var x in features) {
+        for (var x in features)
+        {
             haveFeatures = true;
             break;
         }
-        if (!haveFeatures)
-        {
-            return;
-        }
+        if (!haveFeatures) { return; }
 
         // Install the menu indicator DOM elements
-        var $col = $(col.dom);
-        $col.append('<a class="menuLink action-item" href="#column-menu_' +
-            col.index + '"></a>');
+        $colDom.append('<a class="menuLink action-item" href="#column-menu_' +
+            col.uid + '"></a>');
 
-        // Install an event handler that actually builds the menu on first mouse over
-        $col.one('mouseover', function() {
+        // Install an event handler that actually builds the menu on first
+        // mouse over
+        $colDom.one('mouseover', function()
+        {
+            if ($colDom.find('ul.menu').length > 0) { return; }
             var htmlStr =
                 '<ul class="menu columnHeaderMenu action-item" id="column-menu_' +
-                col.index + '">';
+                col.uid + '">';
 
             // Render sorting
             if (features.sort)
             {
                 htmlStr +=
                     '<li class="sortAsc singleItem">' +
-                    '<a href="#column-sort-asc_' + col.index + '">' +
+                    '<a href="#column-sort-asc_' + col.uid + '">' +
                     '<span class="highlight">Sort Ascending</span>' +
                     '</a>' +
                     '</li>' +
                     '<li class="sortDesc singleItem">' +
-                    '<a href="#column-sort-desc_' + col.index + '">' +
+                    '<a href="#column-sort-desc_' + col.uid + '">' +
                     '<span class="highlight">Sort Descending</span>' +
                     '</a>' +
                     '</li>';
@@ -521,7 +629,9 @@
                 htmlStr += '<li class="separator singleItem" />';
                 htmlStr += '<li class="properties singleItem">' +
                     '<a href="/blists/' + view.id + '/columns/' + col.id +
-                    '.json" rel="modal">' +
+                    '.json' + (col.nestedIn ?
+                        '?parent=' + col.nestedIn.header.id : '') +
+                    '" rel="modal">' +
                     '<span class="highlight">Edit Column Properties</span>' +
                     '</a>' +
                     '</li>';
@@ -534,9 +644,9 @@
                 '</div></li>' +
                 '</ul>';
 
-            $col.append(htmlStr);
-            var $menu = $col.find('ul.columnHeaderMenu');
-            hookUpHeaderMenu(datasetObj, $col, $menu);
+            $colDom.append(htmlStr);
+            var $menu = $colDom.find('ul.columnHeaderMenu');
+            hookUpHeaderMenu(datasetObj, $colDom, $menu);
             addFilterMenu(datasetObj, col, $menu);
         });
     };
@@ -564,7 +674,7 @@
         {
             $menu.find('.singleItem').show();
             var col = $colHeader.data('column');
-            loadFilterMenu(datasetObj, col, $menu);
+            if (col) { loadFilterMenu(datasetObj, col, $menu); }
         }
         else
         {
@@ -635,6 +745,9 @@
      * grid */
     var addFilterMenu = function(datasetObj, col, $menu)
     {
+        // If this column doesn't have a dom, we don't support it yet...
+        if (!col.dom) { return; }
+
         // Remove spinner
         $menu.children('.autofilter.loading').remove();
 
@@ -676,7 +789,7 @@
         {
             filterStr +=
                 '<li class="clearFilter">' +
-                '<a href="#clear-filter-column_' + col.index + '">' +
+                '<a href="#clear-filter-column_' + col.uid + '">' +
                 '<span class="highlight">Clear Column Filter</span>' +
                 '</a>' +
                 '</li>';
@@ -737,7 +850,7 @@
                             '<a href="' +
                             (f.isMatching ? '#clear-filter-column_' :
                                 '#filter-column_') +
-                            col.index + '_' + f.escapedValue + '" title="' +
+                            col.uid + '_' + f.escapedValue + '" title="' +
                             f.titleValue +
                             (f.count > 1 ? ' (' + f.count + ')' : '') +
                             '" class="clipText">' + f.renderedValue +
@@ -885,7 +998,7 @@
         }
         else
         {
-            setTempView(datasetObj, datasetObj.settings._model.meta().view, 'sort');
+            datasetObj.setTempView('sort');
         }
     };
 
@@ -909,58 +1022,12 @@
         datasetObj.summaryStale = true;
         if (!col)
         {
-            clearTempView(datasetObj);
+            datasetObj.clearTempView();
         }
         else
         {
-            setTempView(datasetObj, datasetObj.settings._model.meta().view);
+            datasetObj.setTempView();
         }
-    };
-
-    var clearTempView = function(datasetObj, countId)
-    {
-        if (!datasetObj.settings._filterIds) {datasetObj.settings._filterIds = {};}
-        if (countId != null) { delete datasetObj.settings._filterIds[countId]; }
-
-        datasetObj.settings._filterCount--;
-        if (datasetObj.settings._filterCount > 0)
-        {
-            return;
-        }
-
-        if (datasetObj.settings.clearTempViewCallback != null)
-        {
-            datasetObj.settings.clearTempViewCallback();
-        }
-
-        datasetObj.isTempView = false;
-    };
-
-    var setTempView = function(datasetObj, tempView, countId)
-    {
-        if (!datasetObj.settings._filterIds) {datasetObj.settings._filterIds = {};}
-        if (countId == null || datasetObj.settings._filterIds[countId] == null)
-        {
-            datasetObj.settings._filterCount++;
-            if (countId != null) { datasetObj.settings._filterIds[countId] = true; }
-        }
-
-        if (datasetObj.settings.updateTempViewCallback != null)
-        {
-            datasetObj.settings.updateTempViewCallback(tempView);
-        }
-
-        if (datasetObj.isTempView)
-        {
-            return;
-        }
-
-        if (datasetObj.settings.setTempViewCallback != null)
-        {
-            datasetObj.settings.setTempViewCallback(tempView);
-        }
-
-        datasetObj.isTempView = true;
     };
 
 })(jQuery);

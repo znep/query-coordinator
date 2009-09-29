@@ -241,13 +241,15 @@ private
   end
 
   def self.update_current_user(user, session_token)
-    # We only need to set the session here for the old Rails project.
-    # When we finally get rid of it, you can get rid of this line.
+    # I thought we only needed this line to make old rails work (which is now
+    # gone) but without this line we're getting InvalidAuthenticityToken
+    # exceptions when trying to create a new dataset.
     controller.session[:user] = user.nil? ? nil : user.oid
+
     user.session_token = session_token if user
     User.current_user = user
   end
-  
+
   # Accessor helper to access the controller's private cookie store.
   def cookies
     controller.send(:cookies)

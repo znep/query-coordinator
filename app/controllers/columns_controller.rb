@@ -30,6 +30,7 @@ class ColumnsController < ApplicationController
   def show
     @view_id = params[:blist_id]
     @column = Column.find(params[:blist_id], params[:id])
+    @parent = params[:parent]
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
     end

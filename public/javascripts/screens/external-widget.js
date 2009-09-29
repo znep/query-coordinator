@@ -94,7 +94,7 @@ blist.widget.clearTempViewTab = function ()
     widgetNS.sizeGrid();
 };
 
-blist.widget.setTempViewTab = function (tempView)
+blist.widget.setTempViewTab = function ()
 {
     if (blist.currentUserId)
     {

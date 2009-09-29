@@ -55,7 +55,7 @@ var column = <%= @column.to_js %>;
 $(function(){
   // Since these widgets are created live, we have to populate the default
   // text prompt values manually instead of relying on the plugin.
-  $(".textPrompt").example(function () { return $(this).attr("title"); });
+  $("#modal .textPrompt").example(function () { return $(this).attr("title"); });
 
   var renderValueInfoFormatRow = function(value)
   {
@@ -78,13 +78,15 @@ $(function(){
       {id: "stars", label: "Star"},
       {id: "flag", label: "Flag"},
       {id: "document", label: "Document"},
-      {id: "photo", label: "Photo (Image)"},
-      {id: "nested_table", label: "Nested Table"}
+      {id: "photo", label: "Photo (Image)"}
   ];
+  <%- if @parent.nil? -%>
+  typeValues.push({id: "nested_table", label: "Nested Table"});
+  <%- end -%>
 
   column.type = "<%= @type.nil? ? "text" : @type %>";
 
-  $("#types").combo({
+  $("#modal #types").combo({
     name: "types",
     values: typeValues, 
     value: column.type, 
@@ -94,20 +96,22 @@ $(function(){
   var formEnabled = true;
   var toggleEnabled = function()
   {
-    $(".columnPropertiesWrapper :input").attr("disabled", formEnabled);
+    $("#modal .columnPropertiesWrapper :input").attr("disabled", formEnabled);
     formEnabled = !formEnabled;
   }
 
-  $("#name").change(function() { column.name = $(this).val() });
-  $("#description").change(function() { column.description = $(this).val() });
-  $("#types").change(function() { column.type = $(this).value() });
+  $("#modal #name").change(function() { column.name = $(this).val() });
+  $("#modal #description").change(function() { column.description = $(this).val() });
+  $("#modal #types").change(function() { column.type = $(this).value() });
 
-  $("#columnCreate").submit( function() {
-    $(".save").click();
+  $("#modal #columnCreate").submit( function() {
+    $("#modal .save").click();
     return false;
   });
 
-  $(".save").click(function() {
+  $("#modal .save").click(function(event)
+  {
+      event.preventDefault();
       if (!formEnabled) { return false; }
       toggleEnabled();
 
@@ -121,19 +125,18 @@ $(function(){
           authenticity_token: "<%= form_authenticity_token %>"
           },
         error: function(request) { 
-            $(".error").html($.json.deserialize(request.responseText).error).show() 
+            $("#modal .error").html($.json.deserialize(request.responseText).error).show() 
             toggleEnabled();
         },
         success: function(responseData) { 
-            $grid = $("#readGrid");
+            $grid = $("#dataGrid");
             if ($grid.length != 0)
             {
-              $("#readGrid").blistModel().updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
+              $("#dataGrid").blistModel().updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
-            blist.util.flashInterface.columnPropertiesUpdated(responseData.id);
             $.Tache.DeleteAll();
-            $(".jqmClose").click();
+            $("#modal .jqmClose").click();
         }
       });
   });

@@ -54,6 +54,14 @@ blist.common.showModalHandler = function(hash)
     });
 };
 
+blist.common.hideModalHandler = function(hash)
+{
+    hash.w.hide();
+    hash.o.remove();
+    // HACK to undo Sam's terrible code
+    $('#modal .dialogBL').removeClass('dialogBLgray');
+};
+
 $(function ()
 {
     // Make all links with rel="external" open in a new window.
@@ -62,7 +70,8 @@ $(function ()
     
     $("#modal").jqm({ 
         trigger: false,
-        onShow: blist.common.showModalHandler
+        onShow: blist.common.showModalHandler,
+        onHide: blist.common.hideModalHandler
     });
     $("a[rel$='modal']").live("click", function(event)
     {

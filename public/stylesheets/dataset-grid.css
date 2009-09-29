@@ -131,7 +131,10 @@ div.blist-th-first
 .blist-th .filter { background-position: 0 -48px; }
 .blist-th .filter.active { display: block; }
 
-.blist-th .menuLink
+.blist-tdh { position: relative; }
+
+.blist-th .menuLink,
+.blist-tdh .menuLink
 {
     background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png?2);
     background-position: 0 0;
@@ -145,7 +148,9 @@ div.blist-th-first
 }
 
 .blist-th.hover .menuLink,
-.blist-th .menuLink.clicked
+.blist-hot-row .blist-tdh .menuLink,
+.blist-th .menuLink.clicked,
+.blist-tdh .menuLink.clicked
 {
     background-position: 0 -14px;
 }
@@ -158,7 +163,8 @@ div.blist-th-first
     padding: 0 4px;
 }
 
-.blist-table-locked-header .blist-table-row-handle .blist-th-icon
+.blist-table-locked-header .blist-table-row-handle .blist-th-icon,
+.blist-tdh.blist-table-row-handle .blist-th-icon
 {
     background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png?2);
     background-position: center -28px;
@@ -166,6 +172,7 @@ div.blist-th-first
     display: block;
     height: 14px;
     left: 4px;
+    margin-top: -7px;
     width: 14px;
 }
 
@@ -326,7 +333,8 @@ div.blist-tr.blist-hot-row div.blist-column-adder:hover .blist-column-adder-icon
     padding: 0.3636em; /* 4px */
     text-align: right;
 }
-.blist-table .blist-tr .blist-table-row-handle { border-left-width: 0; }
+.blist-tr .blist-table-row-handle { border-left-width: 0; }
+.blist-table-inside .blist-tr .blist-table-row-handle { border-left-width: 1px; }
 .blist-tr .blist-table-row-handle .menuLink
 {
     background-image: url(/stylesheets/images/content/table/column_menu_arrow_sprite.png?2);
@@ -341,7 +349,7 @@ div.blist-tr.blist-hot-row div.blist-column-adder:hover .blist-column-adder-icon
 .blist-tr .blist-table-row-handle .menuLink.clicked
 { display: block; }
 
-.blist-tr.blist-hot-row.blist-tr-sub .blist-table-row-handle .menuLink
+.blist-table-locked .blist-hot-row.blist-tr-sub .blist-table-row-handle .menuLink
 { display: none; }
 
 .blist-td
@@ -350,17 +358,24 @@ div.blist-tr.blist-hot-row div.blist-column-adder:hover .blist-column-adder-icon
     border-left: solid 1px #e2e2e2;
 }
 
+div.blist-table-expander,
+div.blist-table-edit-container.mode-expand
+{
+    background-color: #ffffff;
+    border-top: solid 1px #d0d0d0;
+    border-bottom: solid 1px #d0d0d0;
+    border-left: solid 1px #e2e2e2;
+    border-right: solid 1px #e2e2e2;
+}
+
 .blist-td.invalid,
-.invalid .blist-td input
+.invalid .blist-table-editor input
 {
     color: #ff3333;
     font-style: italic;
 }
 
-div.blist-tdh
-{
-    color: #999999;
-}
+div.blist-tdh { color: #999999; }
 
 .blist-tdh .blist-th-icon
 {
@@ -368,11 +383,13 @@ div.blist-tdh
     float: left;
     margin-top: -2px;
 }
-
-.blist-tdh .blist-th-name
+div.blist-tdh.blist-table-row-handle .blist-th-icon
 {
-    margin-left: 4px;
+    display: none;
+    margin-top: 1px;
 }
+
+.blist-tdh .blist-th-name { margin-left: 4px; }
 
 .blist-tr-open .blist-tdh
 {
@@ -380,15 +397,11 @@ div.blist-tdh
     background-color: #e8e8e8;
 }
 
-.blist-tr-open .blist-tdh .blist-th-icon
-{
-    display: block;
-}
+.blist-tr-open .blist-tdh .blist-th-icon,
+.blist-tr-open div.blist-tdh.blist-table-row-handle .blist-th-icon
+{ display: block; }
 
-.blist-tr-open .blist-td
-{
-    border-bottom-color: #f8f8f8;
-}
+.blist-tr-open .blist-td { border-bottom-color: #f8f8f8; }
 
 .blist-tr .blist-td-colfill,
 .blist-tr .initial-tdfill
@@ -400,7 +413,8 @@ div.blist-tdh
 .blist-table .blist-td.saving { background-color: #ffffcc; }
 .blist-table .blist-td.error { background-color: #ffb6c1; }
 
-div.blist-table-active-container
+div.blist-table-active-container,
+div.blist-table-edit-container.mode-select
 {
     background-color: #ffffff;
     border: solid 2px #91abcc;
@@ -415,6 +429,10 @@ div.blist-table-active-container
     text-align: left;
     text-indent: -9999px;
 }
+
+.blist-table-inside .blist-tr .blist-tdfill.blist-table-row-handle,
+.blist-table-inside .blist-tr .blist-tdfill.blist-column-adder-space
+{ border-left-color: #f8f8f8; }
 
 .blist-table .last .blist-td.blist-tdfill,
 .blist-table-locked .blist-tr-sub.last .blist-td
@@ -431,8 +449,9 @@ div.blist-table .blist-tr-open .blist-td.blist-tdh.blist-cell-selected,
 div.blist-table-active-container .blist-td
 {
     border-bottom: none;
-    padding-bottom: 3px;
-    padding-top: 2px;
+
+    /* Compensate for extra border on container */
+    padding: 3px;
 }
 
 div.blist-table-active-container .blist-td.blist-first
@@ -442,7 +461,7 @@ div.blist-table-active-container .blist-td.blist-first
 }
 
 div.blist-table-active-container .blist-td.blist-last
-{ padding-right: 2px; }
+{ padding-right: 3px; }
 div.blist-table-active-container .blist-td.blist-opener
 { background-position: -2px 0; }
 
@@ -453,34 +472,160 @@ div.blist-table-edit-container
     overflow: hidden;
 }
 
+div.blist-table-edit-container
+{
+    /* Layout is same as normal blist-td but with extra border so 1px less padding */
+    padding: 3px 2px;
+}
+
+div.blist-table-edit-container.combo-container {
+    overflow: visible;
+}
+
+.blist-table-edit-container.combo-container .blist-combo-dd { font-size: 0.8333em; }
 div.blist-table-editor
 {
-    border: none;
-    padding: 0 4px 0 0;
+    padding: 0;
 }
+
+body.blist-richtext-document
+{
+    font-size: 10px;
+    padding: 2px 3px 3px 3px;
+}
+div.blist-richtext { font-size: 0.8333em; }
+div.blist-richtext p,
+body.blist-richtext-document p,
+div.blist-richtext ul,
+body.blist-richtext-document ul,
+div.blist-richtext ol,
+body.blist-richtext-document ol
+{
+    line-height: 1.4em;
+    margin: 0.3em 0;
+}
+div.blist-richtext p,
+body.blist-richtext-document p
+{ font-size: 1em; }
+
+div.blist-richtext ul,
+body.blist-richtext-document ul
+{
+    list-style-position: inside;
+    list-style-type: disc;
+}
+
+div.blist-richtext ol,
+body.blist-richtext-document ol
+{
+    list-style-position: inside;
+    list-style-type: decimal;
+}
+
+div.blist-richtext a,
+body.blist-richtext-document a
+{ color: inherit; }
+
+div.blist-richtext span,
+body.blist-richtext-document span,
+div.blist-richtext p,
+body.blist-richtext-document p,
+div.blist-richtext li,
+body.blist-richtext-document li,
+div.blist-richtext a,
+body.blist-richtext-document a,
+div.blist-richtext strong,
+body.blist-richtext-document strong,
+div.blist-richtext b,
+body.blist-richtext-document b,
+div.blist-richtext em,
+body.blist-richtext-document em,
+div.blist-richtext i,
+body.blist-richtext-document i,
+div.blist-richtext u,
+body.blist-richtext-document u,
+div.blist-richtext strike,
+body.blist-richtext-document strike
+{ font-family: inherit; }
+
+div.blist-table-editor.type-richtext
+{
+    /* Eliminate 4px on the right for richtext controls so the iframe expands fully */
+    padding: 0;
+}
+
+div.blist-table-edit-container.full-size { padding: 0; }
 
 div.blist-table-edit-container input[type="text"],
 div.blist-table-edit-container input.textInput
 {
     border: none;
     font-size: 1em;
-    height: 100%;
-    min-width: 8.333em; /* 100px */
-    padding: 0.2em 0;
+    width: 4.167em;
+    padding: 0;
     /*background-image: url(/stylesheets/images/content/table/bg_text.gif);*/
     background-repeat: repeat-x;
 }
 
-div.blist-table-edit-container.shown input[type="text"],
-div.blist-table-edit-container.shown input.textInput
+div.blist-table-edit-container .labels
 {
-    /* For some reason, interacting normally with this text field in FF
-     * wasn't working properly until I pulled it just above the container
-     * it is in */
+    border-bottom: 1px solid #06386a;
+    color: #999999;
+    font-size: 0.9167em; /* 1.1em */
+    height: 1.2727em; /* 14px */
+}
+
+div.blist-table-edit-container .labels span
+{
+    padding-left: 0.5em;
     position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 21;
+}
+
+div.blist-table-edit-container .blist-table-editor.type-url input[type="text"]
+{
+    height: auto;
+    padding: 3px;
+    top: 1.25em; /* 15px */
+    width: 47%;
+}
+div.blist-table-edit-container .blist-table-editor.type-url input[type="text"].description
+{
+    border-left: 1px solid #06386a;
+    color: #333333;
+    font-style: normal;
+}
+
+div.blist-table-edit-container .blist-table-editor.type-url .description
+{ left: 50%; }
+
+.blist-table-editor.type-phone
+{
+    overflow: visible;
+    padding-right: 0;
+}
+.blist-table .blist-table-edit-container input[type="text"].number
+{
+    float: left;
+    height: auto;
+    width: 50%;
+}
+.blist-table .blist-table-edit-container .type-phone .blist-combo-wrapper
+{
+    float: right;
+    width: 44%;
+    border-left: 2px solid #06386A;
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
+
+.blist-table-editor.type-phone input.number
+{
+    padding: 4px;
+}
+
+.blist-table .blist-table-editor-container .blist-td
+{
+    -moz-user-select: text;
 }
 
 div.blist-percent,
@@ -493,6 +638,54 @@ img.blist-table-option-icon
 {
     margin-bottom: -4px;
     padding-right: 0.4em;
+}
+
+.blist-table-edit-container .type-document a.docLink
+{
+    line-height: 1.66667em;
+    margin-left: 0.5em;
+}
+
+.blist-table-edit-container .buttons
+{
+    background-color: white;
+    padding: 0 2px 2px 0;
+    position: absolute;
+}
+
+.blist-table-edit-container .type-document a.button,
+.blist-table-edit-container .type-photo a.button
+{
+    background-image: url(/stylesheets/images/content/table/blob_editor_sprites.png);
+    background-position: 0 16px;
+    background-repeat: no-repeat;
+    display: block;
+    float: left;
+    height: 16px;
+    margin-left: 0.25em;
+    margin-top: 2px;
+    text-indent: -9999px;
+    width: 16px;
+}
+.blist-table-edit-container .type-document a.button.add
+{ background-position: -2px 0; }
+.blist-table-edit-container .type-document a.button.replace,
+.blist-table-edit-container .type-photo a.button.replace
+{ background-position: -2px -48px; }
+.blist-table-edit-container .type-document a.button.remove,
+.blist-table-edit-container .type-photo a.button.remove
+{ background-position: -2px -64px; }
+.blist-table-edit-container .type-photo a.button.add
+{ background-position: -2px -16px; }
+.blist-table-edit-container .type-photo a.button.view
+{
+    background-position: 0 -32px;
+    width: 20px;
+}
+
+.blist-table-edit-container .type-photo img
+{
+    vertical-align: middle;
 }
 
 .columnHeaderMenu { width: 17em; }
@@ -574,16 +767,14 @@ ul.menu.rowMenu li
 .columnHeaderMenu .blist-flag { width: 25px; }
 
 .columnHeaderMenu .blist-tstars-wrapper,
+.columnHeaderMenu .blist-tstars-render-wrapper,
 .columnHeaderMenu .blist-tstars
 {
     display: block;
-    height: 10px;
+    height: 16px;
 }
-.columnHeaderMenu .blist-tstars-wrapper
-{
-    margin-top: 0.2em;
-    width: 50px;
-}
+.columnHeaderMenu .blist-tstars-render-wrapper { padding: 0; }
+.columnHeaderMenu .blist-star-0 { display: none; }
 
 /* This is only used for initial positioning; the menu is pulled out, so real
  * styling needs to go directly on the menu */
@@ -626,4 +817,10 @@ ul.menu.rowMenu li
     background-image: none;
     text-align: right;
     text-indent: 0;
+}
+
+.blist-table-edit-container.mode-edit .blist-table-editor.type-stars,
+.blist-table-edit-container.mode-select .blist-table-editor.type-stars
+{
+    padding: 0 1px;
 }

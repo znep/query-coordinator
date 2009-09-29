@@ -73,9 +73,9 @@
     <h2 class="panelHeader">
       <%= pluralize(view.filters.length, "Filtered View") %>
     </h2>
-    <%- if current_user -%>
+    <%- if current_user && page_single -%>
     <ul class="headerActions actionButtons">
-      <li><%= link_to("Create", view.href + "?popup=SaveLens", :class => "arrowButton showFlashPopup") %></li>
+      <li><%= link_to("Create", '#createFilter', :class => "arrowButton") %></li>
     </ul>
     <%- end -%>
   </div>

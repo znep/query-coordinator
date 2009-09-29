@@ -2030,6 +2030,14 @@
             .keypress(navKeyPress)
             .bind('copy', onCopy);
 
+        // Safari (and presumably Chrome) needs the navigator to be position
+        // absolute to avoid window jumping (FF requires fixed to do the same,
+        // so this is the default.  IE appears to work fine w/ fixed as well)
+        if ($.browser.safari)
+        {
+            $navigator.css('position', 'absolute');
+        }
+
         // Set up initial top of locked section
         $locked.css('top', $header.outerHeight());
 

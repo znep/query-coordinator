@@ -512,7 +512,7 @@ blist.namespace.fetch('blist.data');
                 var options = col.options = {};
                 for (var j = 0; j < values.length; j++) {
                     var value = values[j];
-                    options[typeof value.id == "string" ? value.id.toLowerCase() : value.id] = { text: value.description, icon: value.icon };
+                    options[value.id] = { text: value.description, icon: value.icon };
                 }
             }
             return options;

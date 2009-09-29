@@ -46,7 +46,7 @@
                     name: 'picklist-combo',
                     values: editObj._valuesList,
                     value: editObj.originalValue ?
-                        editObj.originalValue.toLowerCase() : 'null',
+                        editObj.originalValue : 'null',
                     renderFn: renderValue
                 });
             },
@@ -60,7 +60,7 @@
             {
                 var val = this.$editor().find('.picklist-combo').value();
                 return val === undefined || val === null || val === 'null' ?
-                    null : val.toUpperCase();
+                    null : val;
             },
 
             focus: function()
@@ -77,7 +77,7 @@
                 if (this._valuesList)
                 {
                     $.each(this._valuesList, function(i, v)
-                            { if (v.id.toUpperCase() == curVal)
+                            { if (v.id == curVal)
                                 { found = true; return false; } });
                 }
                 return found;

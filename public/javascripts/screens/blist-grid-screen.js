@@ -274,7 +274,7 @@ blist.blistGrid.setTempViewTab = function ()
 
 blist.blistGrid.newViewCreated = function($iEdit, responseData)
 {
-    if (!blist.widgets.visualization.isVisualization)
+    if (!blistGridNS.isAltView)
     {
         $('#dataGrid').datasetGrid().isTempView = false;
     }
@@ -362,7 +362,7 @@ blist.infoEditSubmitSuccess = blistGridNS.infoEditCallback;
 
 $(function ()
 {
-    if (!blist.widgets.visualization.isVisualization)
+    if (!blist.blistGrid.isAltView)
     {
         $('#dataGrid').datasetGrid({viewId: blistGridNS.viewId,
             columnPropertiesEnabled: blistGridNS.isOwner,
@@ -375,10 +375,10 @@ $(function ()
             clearFilterItem: '#lensContainer .headerBar form .clearSearch'
         });
     }
-    else
-    {
-        $('#dataGrid').visualization();
-    }
+    else if (blist.calendar.isCalendar)
+    { $('#dataGrid').removeClass('scrollContent'); }
+    else if (blist.widgets.visualization.isVisualization)
+    { $('#dataGrid').visualization(); }
 
     blistGridNS.setUpTabs();
     $('.tabList').scrollable({
@@ -769,7 +769,7 @@ $(function ()
     window.onbeforeunload = function ()
     {
         var $grid = $('#dataGrid');
-        if (!blist.widgets.visualization.isVisualization &&
+        if (!blistGridNS.isAltView &&
             $grid.length > 0 && $grid.datasetGrid().isTempView)
         {
             return 'You will lose your temporary filter.';

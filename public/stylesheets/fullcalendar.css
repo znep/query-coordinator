@@ -8,23 +8,27 @@
  */
 
 
-.fc,
-.fc .fc-header,
-.fc .fc-content {
-	font-size: 1em;
-	}
-	
-.fc table {
-	border-collapse: collapse;
-	border-spacing: 0;
-	}
-	
-.fc td, .fc th {
-	padding: 0;
-	vertical-align: top;
-	}
+.fc table
+{
+    border-collapse: collapse;
+    border-spacing: 0;
+}
 
+.fc td, .fc th
+{
+    padding: 0;
+    vertical-align: top;
+}
 
+.fc-content td, .fc-content th
+{ font-size: 1.2em; }
+
+.fc .loadingSpinner
+{
+    left: 50%;
+    margin: -24px 0 0 -24px;
+    top: 50%;
+}
 
 /* Header
 ------------------------------------------------------------------------*/
@@ -72,113 +76,37 @@ table.fc-header {
 	direction: rtl;
 	}
 
-
-
 /* Buttons
-------------------------------------------------------------------------*/
+-----------------------------------*/
 
-.fc-header .fc-state-default,
-.fc-header .ui-state-default {
-	margin-bottom: 1em;
-	cursor: pointer;
-	}
-	
-.fc-header .fc-state-default {
-	border-width: 1px 0;
-	padding: 0 1px;
-	}
-	
-.fc-header .fc-state-default,
-.fc-header .fc-state-default a {
-	border-style: solid;
-	}
-	
-.fc-header .fc-state-default a {
-	display: block;
-	position: relative;
-	border-width: 0 1px;
-	margin: 0 -1px;
-	width: 100%;
-	text-decoration: none;
-	}
-	
-.fc-header .fc-state-default span {
-	display: block;
-	border-style: solid;
-	border-width: 1px 0 1px 1px;
-	padding: 3px 5px;
-	}
-	
-.fc-header .ui-state-default {
-	padding: 4px 6px;
-	}
-	
-/* for adjacent buttons */
-	
-.fc-header .fc-no-right {
-	padding-right: 0;
-	border-right: 0;
-	}
-	
-.fc-header .ui-no-right {
-	border-right: 0;
-	}
-	
-/* for fake rounded corners */
-	
-.fc-header .fc-corner-left {
-	margin-left: 1px;
-	padding-left: 0;
-	}
-	
-.fc-header .fc-corner-right {
-	margin-right: 1px;
-	padding-right: 0;
-	}
-	
-/* DEFAULT button COLORS */
-	
-.fc-header .fc-state-default,
-.fc-header .fc-state-default a {
-	border-color: #777; /* outer border */
-	color: #333;
-	}
+.fc-header .fc-state-default
+{
+    background-color: #656565;
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
+    background-position: 0 -63px;
+    background-repeat: no-repeat;
+    height: 21px;
+    margin-left: 1px;
+    overflow: hidden;
+}
 
-.fc-header .fc-state-default span {
-	border-color: #fff #fff #cecece; /* inner border */
-	background: #e8e8e8;
-	}
-	
-/* PRESSED button COLORS (down and active) */
-	
-.fc-header .fc-state-active a {
-	color: #fff;
-	}
-	
-.fc-header .fc-state-down span,
-.fc-header .fc-state-active span {
-	background: #888;
-	border-color: #808080 #808080 #909090; /* inner border */
-	}
-	
-/* DISABLED button COLORS */
-	
-.fc-header .fc-state-disabled a {
-	color: #999;
-	}
-	
-.fc-header .fc-state-disabled,
-.fc-header .fc-state-disabled a {
-	border-color: #ccc; /* outer border */
-	}
-	
-.fc-header .fc-state-disabled span {
-	border-color: #fff #fff #f0f0f0; /* inner border */
-	background: #f0f0f0;
-	}
-	
-	
-	
+.fc-header .fc-state-default a
+{
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png);
+    background-position: right -84px;
+    background-repeat: no-repeat;
+    color: #fff;
+    cursor: pointer;
+    display: block;
+    font-size: 1.2em;
+    height: 21px;
+    line-height: 21px;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-decoration: none;
+}
+
+
 /* Content Area & Global Cell Styles
 ------------------------------------------------------------------------*/
 	
@@ -223,8 +151,8 @@ table.fc-header {
 .fc-event a {
 	color: #fff;
 	border-style: solid;
-	border-color: #36c;     /* DEFAULT EVENT COLOR */
-	background-color: #36c; /*                     */
+	border-color: #20608f;     /* DEFAULT EVENT COLOR */
+	background-color: #20608f; /*                     */
 	}
 	
 	/* Use the 'className' CalEvent property and the following
@@ -239,10 +167,9 @@ table.fc-header {
 	
 .fc-event a {
 	overflow: hidden;
-	font-size: .85em;
+	font-size: 1.2em;
 	text-decoration: none;
 	text-align: left;
-	cursor: pointer;
 	}
 	
 .fc-event-editable {

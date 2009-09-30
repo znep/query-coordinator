@@ -337,6 +337,8 @@
   <div class="jqmWindow" id="columnPropertiesModal"></div>
   <%= render(:partial => "shared/visualization",
     :locals => { :view => @view, :grid_div => "dataGrid" }) %>
+  <%= render(:partial => "shared/calendar",
+    :locals => { :view => @view, :grid_div => "dataGrid" }) %>
 
   <%- if !current_user -%>
   <%= render :partial => 'login' %>
@@ -352,9 +354,6 @@
     blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
     blist.blistGrid.referer = "<%= request.referer %>";
-    <%- if @new_dataset -%>
-    blist.blistGrid.newDataset = true;
-    <%- end -%>
     blist.blistGrid.secureUrl = "https://<%= request.host %>:<%= SslRequirement.port_for_protocol('https') %>";
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
@@ -364,6 +363,7 @@
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
     <%- end -%>
+    blist.blistGrid.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
   </script>
 
   <%= render(:partial => 'shared/table_editor_js') %>

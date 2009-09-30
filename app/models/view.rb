@@ -251,11 +251,19 @@ class View < Model
     end
   end
 
+  def is_alt_view?
+    !self.displayType.nil?
+  end
+
+  def is_calendar?
+    self.displayType == 'calendar'
+  end
+
   # return true if this view is a visualization (not a table)
   # the displayType contains the type of visualization
   # a nil value indicates that it needs to be rendered as a table
   def is_visualization?
-    !self.displayType.nil?
+    !self.displayType.nil? && @@visualization_types.has_key?(self.displayType)
   end
 
   def is_map?
@@ -278,33 +286,22 @@ class View < Model
   end
   
   def chart_class
-    case self.displayType
-    when 'geomap'
-      'google.visualization.GeoMap'
-    when 'annotatedtimeline'
-      'google.visualization.AnnotatedTimeLine'
-    when 'imagesparkline'
-      'google.visualization.ImageSparkLine'
-    when 'areachart'
-      'google.visualization.AreaChart'
-    when 'barchart'
-      'google.visualization.BarChart'
-    when 'columnchart'
-      'google.visualization.ColumnChart'
-    when 'intensitymap'
-      'google.visualization.IntensityMap'
-    when 'linechart'
-      'google.visualization.LineChart'
-    when 'map'
-      'google.visualization.Map'
-    when 'piechart'
-      'google.visualization.PieChart'
-    when 'motionchart'
-      'google.visualization.MotionChart'
-    else
-      nil
-    end
+    @@visualization_types[self.displayType]
   end
+
+  @@visualization_types = {
+    'geomap' => 'google.visualization.GeoMap',
+    'annotatedtimeline' => 'google.visualization.AnnotatedTimeLine',
+    'imagesparkline' => 'google.visualization.ImageSparkLine',
+    'areachart' => 'google.visualization.AreaChart',
+    'barchart' => 'google.visualization.BarChart',
+    'columnchart' => 'google.visualization.ColumnChart',
+    'intensitymap' => 'google.visualization.IntensityMap',
+    'linechart' => 'google.visualization.LineChart',
+    'map' => 'google.visualization.Map',
+    'piechart' => 'google.visualization.PieChart',
+    'motionchart' => 'google.visualization.MotionChart'
+  }
 
   @@categories = {
     "" => "-- No category --",

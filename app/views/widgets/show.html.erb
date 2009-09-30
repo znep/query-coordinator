@@ -304,9 +304,10 @@
       blist.currentUserId = "<%= current_user.id %>";
     <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
-    
+
     blist.widget.theme = <%= @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
+    blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
   </script>
 
   <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",

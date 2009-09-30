@@ -15,8 +15,16 @@
     or link it to an existing <%= th.company %> ID. </p>
 
     <div id="accordion">
-      <h2><a href="#signup">Sign up for a New <%= th.company %> Account</a></h2>
-      <div>
+      <% content_tag :h2, :class => (flash[:notice_login] ? 'ui-state-default' : 'ui-state-active')  do %>
+        <a href="#signup">Sign up for a New <%= th.company %> Account</a>
+      <% end %>
+
+      <% if flash[:notice_login] %>
+        <div style="display: none;">
+      <% else %>
+        <div>
+      <% end %>
+
         <% form_for :signup, @signup, :url => rpx_signup_path, :html => {:id => 'signupForm', :multipart => true} do |f| %>
           <%= render :partial => "accounts/signup_form_data", :locals => { :f => f, :hide_password => true } %>
         <% end %>
@@ -24,8 +32,16 @@
 
       <h3>&mdash;OR&mdash;</h3>
 
-      <h2><a href="#login">Link to an Existing <%= th.company %> ID</a></h2>
-      <div>
+      <% content_tag :h2, :class => (flash[:notice_login] ? 'ui-state-active' : 'ui-state-default')  do %>
+        <a href="#login">Link to an Existing <%= th.company %> ID</a>
+      <% end %>
+
+      <% if flash[:notice_login] %>
+        <div>
+      <% else %>
+        <div style="display: none;">
+      <% end %>
+
         <%= render(:partial => 'login') %>
       </div>
     </div>
@@ -35,15 +51,12 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/ui.core", "plugins/ui.accordion", "screens/signup-screen", :cache => "cache/rpx_return_login_all" %>
+  <%= javascript_include_tag "plugins/ui.core", "screens/signup-screen", :cache => "cache/rpx_return_login_all" %>
   <script>
     $(document).ready(function() {
-      $('#accordion').accordion({
-        'header': 'h2',
-        'autoHeight': false
-        <% if flash[:notice_login] %>
-          ,'active': 1
-        <% end %>
+      $('#accordion h2').click(function() {
+        $('#accordion > div').slideToggle('normal');
+        $('#accordion h2').toggleClass('ui-state-active').toggleClass('ui-state-default');
       });
     });
   </script>

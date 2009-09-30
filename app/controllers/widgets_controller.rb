@@ -1,6 +1,5 @@
 class WidgetsController < ApplicationController
   skip_before_filter :require_user
-  caches_page :show
   layout 'widgets'
 
   GOV_OVERRIDES = %w{
@@ -41,7 +40,6 @@ class WidgetsController < ApplicationController
       end
       
       return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => @variation))
-      
     end
     
     # HACK: Support old template options
@@ -54,7 +52,7 @@ class WidgetsController < ApplicationController
       begin
         @theme.merge!(WidgetCustomization.find(params[:customization_id]).customization)
       rescue CoreServer::CoreServerError => e
-        flash[:error] = e.error_message
+        flash.now[:error] = e.error_message
         return (render 'shared/error', :status => :internal_server_error)
       end
     end
@@ -62,22 +60,22 @@ class WidgetsController < ApplicationController
     begin
       @view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
-      flash[:error] = 'This ' + I18n.t(:blist_name).downcase +
+      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
         ' cannot be found, or has been deleted.'
       return (render 'shared/error', :status => :not_found)
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required' ||
         e.error_code == 'permission_denied'
-        flash[:error] = 'You do not have permissions to view this ' +
+        flash.now[:error] = 'You do not have permissions to view this ' +
           I18n.t(:blist_name).downcase
         return (render 'shared/error', :status => :unauthorized )
       else
-        flash[:error] = e.error_message
+        flash.now[:error] = e.error_message
         return (render 'shared/error', :status => :internal_server_error)
       end
     end
     if !@view.can_read()
-      flash[:error] = 'You do not have permissions to view this ' +
+      flash.now[:error] = 'You do not have permissions to view this ' +
         I18n.t(:blist_name).downcase
       return (render 'shared/error', :status => :unauthorized)
     end
@@ -110,7 +108,7 @@ class WidgetsController < ApplicationController
     
     @tabKey = params[:tab]
     @view = View.find(params[:id])
-    render(:layout => 'main.data')
+    render_tab_header(@tabKey, @view)
   end
   
   def meta_tab
@@ -123,7 +121,35 @@ class WidgetsController < ApplicationController
     if (@tabKey == "activity")
       @view_activities = Activity.find({:viewId => @view.id})
     end
-    render(:layout => 'main.data')
+    render_tab(@tabKey, @view)
+  end
+
+private
+  def render_tab_header(name, view)
+    locals = {:view => view, :page_single => false,
+                        :allow_edit => false, :in_widget => true,
+                        :allow_commenting => false }
+
+    widget_partial_path = File.join(Rails.root, 'app', 'views', 'widgets', "_info_#{name}_header.erb")
+    if File.exist? widget_partial_path
+      render :partial => "info_#{name}_header", :locals => locals
+    else
+      render :partial => "blists/info_#{name}_header", :locals => locals
+    end
+  end
+
+  def render_tab(name, view)
+    locals = { :view => view, :page_single => false,
+                            :allow_edit => false, :in_widget => true,
+                            :allow_commenting => false,
+                            :customization_id => params[:customization_id] }
+
+    widget_partial_path = File.join(Rails.root, 'app', 'views', 'widgets', "_meta_tab_#{name}.erb")
+    if File.exist? widget_partial_path
+      render :partial => "meta_tab_#{name}", :locals => locals
+    else
+      render :partial => "blists/meta_tab_#{name}", :locals => locals
+    end
   end
 end
 

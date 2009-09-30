@@ -162,6 +162,33 @@ blist.widget.widgetDataLoaded = function (data)
 
 blist.widget.sizeGrid = function ()
 {
+    // Delay-load tab content when switching to it.
+    var $outerContent = $(this.allPanelsSelector + '.' + this.activationClass);
+    var $infoContent = $outerContent.find(this.expandableSelector);
+    if ($outerContent.length > 0 && $infoContent.children().length === 0)
+    {
+        if ($outerContent.is('.singleInfoSummary'))
+        {
+            widgetNS.updateMetaTabHeader('summary');
+        }
+        else if($outerContent.is('.singleInfoFiltered'))
+        {
+            widgetNS.updateMetaTabHeader("filtered");
+        }
+        else if($outerContent.is('.singleInfoComments'))
+        {
+            widgetNS.updateMetaTabHeader("comments");
+        }
+        else if($outerContent.is('.singleInfoActivity'))
+        {
+            widgetNS.updateMetaTabHeader("activity");
+        }
+        else if($outerContent.is('.singleInfoPublishing'))
+        {
+            widgetNS.updateMetaTab("publishing");
+        }
+    }
+
     var $grid = $('#data-grid');
     var $container = $grid.closest(".gridOuter");
     var $innerContainer = $grid.closest(".gridInner");
@@ -300,6 +327,14 @@ blist.widget.updateMetaTab = function(tabKey)
             {
                 $("#widgetMeta .singleInfoPublishing").infoPanePublish();
             }
+
+            if (tabKey == "filtered")
+            {
+                var $filteredGrid = $('.singleInfoFiltered .infoContent table');
+                var length = $filteredGrid.find('tbody tr').length;
+                $('.filteredViewCount').text(length);
+                $("#filteredViewsPanel").toggleClass('plural', length !== 1);
+            }
         }
     });
 };
@@ -316,11 +351,6 @@ blist.widget.commentExpanderClick = function($commentPane, e)
 
 $(function ()
 {
-    // Very first thing, request the user ID
-    $.ajax({url: '/user_sessions', cache: false,
-        contentType: 'application/json', type: 'GET', dataType: 'json',
-        success: function(resp) { blist.currentUserId = resp.user_id; }});
-
     widgetNS.sizeGrid();
     $(window).resize(function() { widgetNS.sizeGrid(); });
 
@@ -404,13 +434,6 @@ $(function ()
             switchCompleteCallback: widgetNS.sizeGrid,
             scrollToTabOnActivate: false
         });
-
-        // Update meta data tab headers.
-        widgetNS.updateMetaTabHeader("comments");
-        widgetNS.updateMetaTabHeader("filtered");
-        widgetNS.updateMetaTab("publishing");
-        widgetNS.updateMetaTabHeader("activity");
-        widgetNS.updateMetaTabHeader("summary");
 
         // Make tabs scrollable.
         $("#widgetMeta .summaryTabs").scrollTabs();

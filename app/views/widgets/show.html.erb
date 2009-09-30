@@ -212,8 +212,10 @@
             <h3><a href="<%= @view.href %>"><%= h(@view.name) %></a></h3>
     
             <p><%= h(@view.description) %></p>
-    
-            <%= @view.html %>
+
+            <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
+              <%= @view.html %>
+            <% end %>
           </noscript>
         </div>
       </div>
@@ -298,6 +300,9 @@
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.widget');
+    <%- if !current_user.nil? -%>
+      blist.currentUserId = "<%= current_user.id %>";
+    <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
     
     blist.widget.theme = <%= @theme.to_json %>;

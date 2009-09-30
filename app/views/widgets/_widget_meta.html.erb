@@ -42,8 +42,8 @@
 <%- if theme[:meta][:filtered][:show] -%>
   <div class="infoContentOuter singleInfoFiltered">
     <div class="infoContentHeader clearfix">
-      <%= render(:partial => "blists/info_filtered_header", 
-                  :locals => {:view => view , :in_widget => true}) %>
+      <%= render(:partial => "info_filtered_header.erb",
+                 :locals => {:view => view}) %>
     </div>
     <div class="infoContentInner"><div class="infoContentWrapper">
       <div class="infoContent"></div>

@@ -17,7 +17,7 @@
     "main button active bg": "3F80C2:.286,9ACAFA",
     
     // Width of tabs for outer chrome in em's
-    "home tab width" : 12,
+    "home tab width" : 12.5,
     
     // Discovery page
     "carousel bg": "3F80C2,1D308A",

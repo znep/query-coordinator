@@ -10,12 +10,14 @@
 -%>
 <div class="header">
   <ul class="summaryTabs clearfix">
-    <li id="tabComments" class="comments active">
-      <div class="tabOuter"><div class="tabInner active">
-        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#comments">Comments</a>
-      </div></div>
-    </li>
+    <%- if !@view.hide_comments? -%>
+      <li id="tabComments" class="comments active">
+        <div class="tabOuter"><div class="tabInner active">
+          <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
+          <a href="#comments">Comments</a>
+        </div></div>
+      </li>
+    <%- end -%>
     <li id="tabFiltered">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
@@ -40,8 +42,8 @@
         <a href="#activity">Activity</a>
       </div></div>
     </li>
-    <li id="tabSummary">
-      <div class="tabOuter"><div class="tabInner">
+    <li id="tabSummary" class="<%= @view.hide_comments? ? "active" : "" %>">
+      <div class="tabOuter"><div class="tabInner <%= @view.hide_comments? ? "active" : "" %>">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#summary">Summary</a>
       </div></div>
@@ -51,7 +53,7 @@
 
 
 <%# *** START: SUMMARY *** %>
-<div class="infoContentOuter singleInfoSummary listContainer <%= page_single ? ' expanded' : '' %>">
+<div class="infoContentOuter singleInfoSummary listContainer <%= page_single ? ' expanded' : '' %> <%= @view.hide_comments? ? "active" : "" %>">
   <div class="infoContentHeader clearfix">
     <%= render(:partial => "blists/info_summary_header",
                 :locals => {:view => view, :page_single => page_single, 
@@ -90,19 +92,21 @@
 
 
 <%# *** START: COMMENTS *** %>
-<div class="infoContentOuter singleInfoComments listContainer
-  active <%= page_single ? 'expanded' : '' %>">
-  <div class="infoContentHeader clearfix">
-    <%= render(:partial => "blists/info_comments_header", 
-                :locals => {:view => view, :allow_commenting => true, :in_widget => false }) %>
-  </div>
-  <div class="infoContentInner"><div class="infoContentWrapper">
-    <div class="infoContent"<%= div_shown %>>
-      <%= render( :partial => "blists/meta_tab_comments", 
-                  :locals => {:view => view, :allow_commenting => true }) %>
+<%- if !@view.hide_comments? -%>
+  <div class="infoContentOuter singleInfoComments listContainer
+    active <%= page_single ? 'expanded' : '' %>">
+    <div class="infoContentHeader clearfix">
+      <%= render(:partial => "blists/info_comments_header", 
+                  :locals => {:view => view, :allow_commenting => true, :in_widget => false }) %>
     </div>
-  </div></div>
-</div>
+    <div class="infoContentInner"><div class="infoContentWrapper">
+      <div class="infoContent"<%= div_shown %>>
+        <%= render( :partial => "blists/meta_tab_comments", 
+                    :locals => {:view => view, :allow_commenting => true }) %>
+      </div>
+    </div></div>
+  </div>
+<%- end -%>
 <%# *** END: COMMENTS *** %>
 
 

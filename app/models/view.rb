@@ -270,6 +270,13 @@ class View < Model
     self.owner.id == user.id
   end
 
+  # HACK: NYSS wanted the comments tab hidden, so we're manually hiding comments for them
+  # Org ID 2 => NYSS
+  ORGS_WITH_COMMENTS_HIDDEN = [ 2 ]
+  def hide_comments?
+    ORGS_WITH_COMMENTS_HIDDEN.include? self.owner.organizationId.to_i
+  end
+  
   def chart_class
     case self.displayType
     when 'geomap'

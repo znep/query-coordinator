@@ -1,0 +1,20 @@
+<%- if view.is_calendar? -%>
+<%= stylesheet_link_tag 'fullcalendar', :cache => 'cache/calendar_all' %>
+<%= javascript_include_tag 'plugins/fullcalendar', 'widgets/blist-calendar',
+  :cache => 'cache/calendar_all' %>
+<%- end -%>
+
+<script type="text/javascript">
+  blist.namespace.fetch('blist.calendar');
+  blist.calendar.isCalendar = <%= view.is_calendar? ? 'true' : 'false' %>;
+
+  $(function()
+  {
+    if (blist.calendar.isCalendar)
+    {
+      $('#<%= grid_div %>').blistCalendar({viewId: '<%= view.id %>',
+        <%# This is a hack until it returns an object %>
+        displayFormat: { <%= [view.displayFormat].compact.join(', ') %> }});
+    }
+  });
+</script>

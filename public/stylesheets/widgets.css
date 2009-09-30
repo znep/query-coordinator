@@ -2254,3 +2254,18 @@ div.color_swatch .inner
 div.color_swatch.selected .inner { border: 1px solid #20608f; }
 div.color_swatch.hover .inner { border: 1px solid #ffffff; }
 /*** END: colorpicker styles ***/
+
+
+/*** START: loading spinner styles ***/
+.loadingSpinner
+{
+    background: transparent url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center;
+    height: 48px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 48px;
+    z-index: 100;
+}
+.loadingSpinner.hidden { display: none; }
+/*** END: loading spinner styles ***/

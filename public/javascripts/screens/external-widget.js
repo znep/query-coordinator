@@ -110,7 +110,7 @@ blist.widget.newViewCreated = function($iEdit, responseData)
     $('#viewHeader .viewName span').attr('title', '');
     $('#viewHeader .inlineEdit').removeClass('inlineEdit');
     widgetNS.previousViewHeader = $('#viewHeader').clone();
-    if (!blist.widgets.visualization.isVisualization)
+    if (!widgetNS.isAltView)
     {
         $('#data-grid').datasetGrid().isTempView = false;
     }
@@ -142,7 +142,7 @@ blist.widget.loadNewView = function(newViewId)
             }
     });
 
-    if (!blist.widgets.visualization.isVisualization)
+    if (!widgetNS.isAltView)
     {
         $('#data-grid').datasetGrid().updateView(newViewId);
     }
@@ -363,7 +363,7 @@ $(function ()
 
     $('#header form').submit(function (event) { event.preventDefault(); });
 
-    if (!blist.widgets.visualization.isVisualization)
+    if (!widgetNS.isAltView)
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
             accessType: 'WIDGET',
@@ -376,7 +376,7 @@ $(function ()
             setTempViewCallback: widgetNS.setTempViewTab
             });
     }
-    else
+    else if (blist.widgets.visualization.isVisualization)
     {
         $('#data-grid').visualization();
     }

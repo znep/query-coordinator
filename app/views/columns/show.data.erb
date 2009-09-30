@@ -248,6 +248,7 @@ $(function()
         success: function (responseData) {
           $("#modal .jqmClose").click();
           $("#dataGrid").blistModel().convertColumn(<%= @column.id %>, responseData);
+          $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
         }
       });
     }

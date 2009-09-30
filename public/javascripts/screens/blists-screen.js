@@ -755,12 +755,6 @@ blist.myBlists.customHandle = function(value, column) {
         "   <span class='highlight'>\" + (row.favorite ? 'Remove from favorites' : 'Add to favorites') + \"</span>" +
         " </a>" +
         "</li>" +
-        "<li class='edit'>" +
-        "  <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + " +
-        "    $.urlSafe(row.name) + \"/\"+" + value + "+\"?mode=edit' title='Edit'>" +
-        "   <span class='highlight'>Edit</span>" +
-        " </a>" +
-        "</li>" +
         "\" + ((row.owner.id == '" + myBlistsNS.currentUserId + "') ? \"" +
         "<li class='rename renameLink'>" +
         "  <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + " +

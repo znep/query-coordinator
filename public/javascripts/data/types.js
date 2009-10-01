@@ -369,6 +369,7 @@ blist.namespace.fetch('blist.data.types');
     {
         if (!value) { return ''; }
         var url;
+        var caption;
         if (value instanceof Array)
         {
             url = value[0];
@@ -379,7 +380,7 @@ blist.namespace.fetch('blist.data.types');
             url = value.url;
             caption = value.description || url;
         }
-        else { url = value + ''; }
+        else { caption = url = value + ''; }
 
         if (url && url != '' && !url.match(/^([a-z]+):/i) &&
                 url.indexOf('/') != 0)

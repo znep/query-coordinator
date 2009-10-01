@@ -511,6 +511,8 @@ private
           'my favorite ' + t(:blists_name)
         when 'filter'
           'filters'
+        when 'calendar'
+          'calendar views'
         end
     end
 

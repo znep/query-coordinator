@@ -16,7 +16,8 @@ module BlistsHelper
 
   # Used for individual views, to determine permission levels
   def get_permissions_icon_class_for_view(view)
-    icon_class = view.is_blist? ? "typeBlist" : "typeFilter"
+    icon_class = 'type' + (view.is_blist? ? "Blist" :
+                           (view.is_calendar? ? 'Calendar' : "Filter"))
 
     if !view.is_public?
       icon_class += view.is_shared? ? " privateShared" : " private"
@@ -220,7 +221,7 @@ module BlistsHelper
         b.last_viewed <=> a.last_viewed
       end.slice(0, num_recent).map do |v|
         {'text' => v.name, 'href' => v.href,
-        'class' => v.is_blist? ? 'blist' : 'filter'}
+        'class' => v.is_blist? ? 'blist' : (v.is_calendar? ? 'calendar' : 'filter')}
       end }
     else
       nil

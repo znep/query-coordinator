@@ -117,12 +117,17 @@
           <%= menu_tag({'id' => 'typeMenu', 'items' => [
             { 'text' => 'Favorites', 'href' => '?type=favorite',
                 'title' => h(get_title({'type' => 'favorite'})),
-                'q' => "{'type': 'favorite'}" 
+                'q' => "{'type': 'favorite'}", 'class' => 'favorite'
             },
             { 'text' => 'Filtered Views', 'href' => '?type=filter',
                 'title' => h(get_title({'type' => 'filter'})),
-                'q' => "{'type': 'filter'}"
-            }]}) %>
+                'q' => "{'type': 'filter'}", 'class' => 'filter'
+            },
+            { 'text' => 'Calendar Views', 'href' => '?type=calendar',
+                'title' => h(get_title({'type' => 'calendar'})),
+                'q' => "{'type': 'calendar'}", 'class' => 'calendar'
+            }
+            ]}) %>
           </li>
           <%# Deleted items not yet supported, but styled for future
           <li class="deleted"><a href='?filter=deleted:true'><span>Deleted Items</span></a></li>

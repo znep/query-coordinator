@@ -288,6 +288,16 @@ ul.menu.contactsMenu li.sectionTitle.sortHeader
     padding: 0 5px;
 }
 
+#typeMenu li a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
+    background-position: 5px 23px;
+    background-repeat: no-repeat;
+}
+#typeMenu li.calendar a { background-position: 5px -761px; }
+#typeMenu li.favorite a { background-position: 5px -1152px; }
+#typeMenu li.filter a { background-position: 5px -531px; }
+
 /*** START: User tile ***/
 .userTile .userPhoto
 {

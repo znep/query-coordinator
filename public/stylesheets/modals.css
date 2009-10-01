@@ -1296,18 +1296,6 @@ div#sortBysList.reorderList li .itemWrapper
     width: 175px;
 }
 
-.filterDatasetWrapper .filterTable-name .blist-combo
-{
-    padding-right: 0;
-    width: 175px;
-}
-
-.filterDatasetWrapper .filterTable-name .blist-combo-value
-{
-    overflow: hidden;
-    width: 146px;
-}
-
 .filterDatasetWrapper .filterTable-name .blist-combo-dd
 {
     overflow-x: hidden;

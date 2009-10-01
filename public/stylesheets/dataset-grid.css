@@ -488,6 +488,11 @@ div.blist-table-editor
     padding: 0;
 }
 
+div.blist-table-edit-container.combo-container .blist-combo
+{
+    min-height: 1.667em;
+}
+
 body.blist-richtext-document
 {
     font-size: 10px;

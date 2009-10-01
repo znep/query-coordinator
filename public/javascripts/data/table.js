@@ -2526,7 +2526,7 @@
                     var type = blist.data.types[mcol.type] ||
                         blist.data.types.text;
                     var renderer = mcol.renderer || type.renderGen;
-                    var invalidRenderer = blist.data.types.text.renderGen;
+                    var invalidRenderer = blist.data.types.invalid.renderGen;
                     var cls = mcol.cls || type.cls;
                     cls = cls ? ' blist-td-' + cls : '';
                     var align = mcol.alignment ? ' align-' + mcol.alignment : '';

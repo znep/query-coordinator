@@ -129,6 +129,9 @@ blist.namespace.fetch('blist.data.types');
         return "(" + value + " || '')";
     };
 
+    var renderGenEscapedText = function(value)
+    { return "htmlEscape(" + value + " || '')"; };
+
     var renderGenTags = function(value) {
         return value + ' && ' + value + ' != "" ? "<div class=\'blist-tag\' ' +
             'title=\'" + htmlEscape(' + value + ' || "") + "\'></div>" : ""';
@@ -592,6 +595,8 @@ blist.namespace.fetch('blist.data.types');
      * This is our main map of data types.
      */
     $.extend(blist.data.types, {
+        invalid: { renderGen: renderGenEscapedText },
+
         text: {
             renderGen: renderGenText,
             sortGen: sortGenText,

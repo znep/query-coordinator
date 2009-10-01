@@ -222,8 +222,7 @@
                 var view = datasetObj.settings._model.meta().view;
                 $.ajax({url: '/views/' + view.id + '/columns/' + columnId + '.json',
                     dataType: 'json', type: 'PUT', contentType: 'application/json',
-                    data: $.json.serialize({'format': {'aggregate':
-                        (aggregate == 'none' ? null : aggregate)}}),
+                    data: $.json.serialize({'format': {'aggregate': aggregate}}),
                     success: function(retCol)
                     {
                         datasetObj.settings._model.updateColumn(retCol);

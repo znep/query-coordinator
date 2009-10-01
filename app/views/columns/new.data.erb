@@ -52,7 +52,7 @@ var column = <%= @column.to_js %>;
 </div>
 
 <script type="text/javascript" charset="utf-8">
-$(function(){
+blist.common.modalReady = function() {
   // Since these widgets are created live, we have to populate the default
   // text prompt values manually instead of relying on the plugin.
   $("#modal .textPrompt").example(function () { return $(this).attr("title"); });
@@ -140,5 +140,7 @@ $(function(){
         }
       });
   });
-});
+
+  $('#columnCreate input#name').focus();
+};
 </script>

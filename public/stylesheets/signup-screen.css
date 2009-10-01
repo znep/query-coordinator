@@ -16,3 +16,11 @@
     border-top: 1px solid #cccccc;
     padding-top: 1em;
 }
+.signupBox h3 strong
+{
+    font-size: 1.6em;
+    font-weight: bold;
+    line-height: 1.1em;
+    color: #333333;
+    padding-right: 0.25em;
+}

@@ -17,8 +17,10 @@
 <div class="scrollContentColumn">
   <div id='lensContainer' class='mainContent'>
     <ul class='tabList'>
+      <%- if current_user -%>
       <li class='backLink'><a title='Back to <%= t :blists_name %>'
         href='<%= blists_path() %>'>Back to <%= t :blists_name %></a></li>
+      <%- end -%>
       <li class='main even <%= @is_child_view ? '' : 'active' %>'>
         <div class='wrapper'>
           <a class='clipText'
@@ -29,7 +31,7 @@
           </a>
         </div>
       </li>
-      <%- if current_user -%>
+      <%- if current_user && !@view.is_alt_view? -%>
       <li class='newViewLink'>
         <a href='#newView' title='New View'>New View</a>
       </li>
@@ -49,7 +51,8 @@
       </div></li>
       <%- if @is_child_view -%>
       <li class='active filter'><div class='wrapper'>
-        <a class='clipText' href='<%= @view.href %>'
+        <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>'
+          href='<%= @view.href %>'
           title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
       </div></li>
       <%- end -%>
@@ -90,6 +93,7 @@
             </li>
             <%- end -%>
 
+            <%- if !@view.is_alt_view? -%>
             <li class='separator tableOption'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
@@ -99,8 +103,9 @@
               <%= render(:partial => "filter_view_menu",
                 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
             </li>
+            <%- end -%>
 
-            <%- if @view.can_edit() -%>
+            <%- if @view.can_edit() && !@view.is_alt_view? -%>
             <li class='separator'>
               <a id='formatLink' class='staticLink' href='#formatMenu'>
                 <span class='linkIcon'>Format</span>
@@ -126,6 +131,7 @@
             </li>
           </ul>
 
+          <%- if !@view.is_alt_view? -%>
           <form class='search' action='#'>
             <div class='searchContainer'>
               <input type='text' class='textPrompt'
@@ -142,9 +148,10 @@
               </div>
             </div>
           </form>
+          <%- end -%>
         </div>
 
-        <%- if @view.can_edit() -%>
+        <%- if @view.can_edit() && !@view.is_alt_view? -%>
         <div id='formatMenu' class='fixedMenu disabled'>
           <div class='outerWrapper'>
             <ul class='innerWrapper clearfix'>
@@ -219,7 +226,7 @@
         </div>
         <%- end -%>
 
-        <%- if is_owner -%>
+        <%- if is_owner && @view.is_blist? -%>
         <div id='addColumnsMenu' class='fixedMenu'>
           <div class='outerWrapper'>
             <ul class='innerWrapper clearfix'>

@@ -139,7 +139,7 @@
 }
 .infoContentHeader h2.panelHeader
 {
-    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?1) left top no-repeat;
+    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?2) left top no-repeat;
     color: #333;
     float: left;
     font-size: 1.4em;
@@ -169,6 +169,7 @@
 .infoContentHeader h2.panelHeader.typeFilter { background-position: left -451px; }
 .infoContentHeader h2.panelHeader.typeFilter.private { background-position: left -492px; }
 .infoContentHeader h2.panelHeader.typeFilter.privateShared { background-position: left -533px; }
+.infoContentHeader h2.panelHeader.typeCalendar { background-position: left -861px; }
 .infoContentHeader h2.panelHeader.typeSharedIn { background-position: left -738px; }
 .infoContentHeader h2.panelHeader.typeSharedOut { background-position: left -779px; }
 .infoContentHeader h2.panelHeader.typeNotify { background-position: left -410px; }

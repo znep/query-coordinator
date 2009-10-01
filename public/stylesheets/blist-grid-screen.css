@@ -177,6 +177,7 @@ body#lensBody
     overflow: hidden;
     text-align: left;
 }
+#lensContainer .tabList li.filter a.calendar { background-position: 0 -759px; }
 /* Header bar & Button styles */
 
 #lensContainer .headerBar
@@ -491,6 +492,7 @@ body#lensBody
 
 #mainMenu li.blist .recent .blist > a { background-position: 5px -94px; }
 #mainMenu li.blist .recent .filter > a { background-position: 5px -531px; }
+#mainMenu li.blist .recent .calendar > a { background-position: 5px -761px; }
 
 #mainMenu li.blist .editPermissions > a
 {

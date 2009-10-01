@@ -119,12 +119,16 @@ blist.myBlists.defaultFilter = function(view)
 
 blist.myBlists.filterFilter = function(view)
 {
-    if (!view.flags || $.inArray('default', view.flags) == -1)
+    if ((!view.flags || $.inArray('default', view.flags) == -1) &&
+        !view.displayType)
     {
         return true;
     }
     return false;
 };
+
+blist.myBlists.calendarFilter = function(view)
+{ return view.displayType == 'calendar'; };
 
 blist.myBlists.untaggedFilter = function(view)
 {
@@ -201,7 +205,11 @@ blist.myBlists.filterGen = function(type, argument, callback)
             };
             return $.get("/groups/" + argument + ".json", null, filterGenCallbackGroup);
         case 'type':
-            if (argument == 'filter')
+            if (argument == 'calendar')
+            {
+                return callback(myBlistsNS.calendarFilter);
+            }
+            else if (argument == 'filter')
             {
                 return callback(myBlistsNS.filterFilter);
             }
@@ -666,7 +674,11 @@ blist.myBlists.getTypeClassName = function(value)
 {
     var cls = "";
 
-    if (myBlistsNS.filterFilter(value))
+    if (myBlistsNS.calendarFilter(value))
+    {
+        cls += "calendar";
+    }
+    else if (myBlistsNS.filterFilter(value))
     {
         cls += "filter";
     }

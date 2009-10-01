@@ -295,14 +295,17 @@
     	      <span class="linkIcon">Access via API</span>
     	    </a>
     	  </li>
+          <%- if !@view.is_alt_view? -%>
     	  <li>
     	    <a href="<%= "#{@view.href}/print" %>" class="socialActionLink" title="Print out a copy of this dataset" id="printLink" rel="modal">
     	      <span class="linkIcon">Print</span>
     	    </a>
     	  </li>
+          <%- end -%>
       </ul>
     <% end %>
 
+    <%- if !@view.is_alt_view? -%>
     <% render(:layout => "shared/sidebar_box") do %>
       <h4>Columns</h4>
       <ul class="columnList">
@@ -318,6 +321,7 @@
                                           :title => "View all columns in the full #{t(:blist_name)} grid") %></li>
       </ul>
     <% end %>
+    <%- end -%>
   </div>
 </div>
 

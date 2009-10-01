@@ -22,7 +22,8 @@ blist.blistGrid.setUpTabs = function ()
             { return v.id == blistGridNS.viewId ; }).length < 1)
         {
             cookieObj.views.push({name: blistGridNS.viewName,
-                id: blistGridNS.viewId, path: window.location.pathname});
+                id: blistGridNS.viewId, path: window.location.pathname,
+                displayType: (blist.calendar.isCalendar ? 'calendar' : 'filter')});
             $.cookies.set('viewTabs', $.json.serialize(cookieObj));
         }
     }
@@ -51,6 +52,7 @@ blist.blistGrid.setUpTabs = function ()
         $newA.attr('href', v.path);
         $newA.attr('title', v.name);
         $newA.text(v.name);
+        $newA.addClass(v.displayType);
         $refTab.before($newTab);
     });
 };
@@ -63,7 +65,8 @@ blist.blistGrid.createTabCookie = function()
         $.cookies.set('viewTabs', $.json.serialize({
             blistId: blistGridNS.blistId,
             views: [{name: blistGridNS.viewName, id: blistGridNS.viewId,
-                path: window.location.pathname}]
+                path: window.location.pathname,
+                displayType: (blist.calendar.isCalendar ? 'calendar' : 'filter')}]
         }));
     }
 };

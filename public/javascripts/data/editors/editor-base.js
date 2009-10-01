@@ -58,6 +58,7 @@
                 editObj.row = editObj.settings.row;
                 editObj.column = editObj.settings.column;
                 editObj.originalValue = editObj.settings.value;
+                editObj.newValue = this.settings.newValue;
                 if (!editObj._uid)
                 { editObj._uid = editorUID++; }
 

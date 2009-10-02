@@ -432,6 +432,11 @@ private
 .itemType.typeFilter.sharedIn { background-position: 0 -186px; }
 .itemType.typeFilter.private { background-position: 0 -217px; }
 .itemType.typeFilter.privateShared { background-position: 0 -248px; }
+.itemType.typeCalendar { background-position: 0 -341px; }
+.itemType.typeCalendar.sharedOut { background-position: 0 -374px; }
+.itemType.typeCalendar.sharedIn { background-position: 0 -405px; }
+.itemType.typeCalendar.private { background-position: 0 -434px; }
+.itemType.typeCalendar.privateShared { background-position: 0 -475px; },
 
 /*** END: item type icons ***/
 

@@ -170,6 +170,8 @@
 .infoContentHeader h2.panelHeader.typeFilter.private { background-position: left -492px; }
 .infoContentHeader h2.panelHeader.typeFilter.privateShared { background-position: left -533px; }
 .infoContentHeader h2.panelHeader.typeCalendar { background-position: left -861px; }
+.infoContentHeader h2.panelHeader.typeCalendar.private { background-position: left -902px; }
+.infoContentHeader h2.panelHeader.typeCalendar.privateShared { background-position: left -943px; }
 .infoContentHeader h2.panelHeader.typeSharedIn { background-position: left -738px; }
 .infoContentHeader h2.panelHeader.typeSharedOut { background-position: left -779px; }
 .infoContentHeader h2.panelHeader.typeNotify { background-position: left -410px; }
@@ -193,43 +195,43 @@
 
 .infoContentHeader .socialActions #shareInfoMenu li a
 {
-	background-repeat: no-repeat;
-	background-position: 5px center;
+    background-repeat: no-repeat;
+    background-position: 5px center;
 }
 
 .infoContentHeader .socialActions #shareInfoLink
 {
-	background: url(/images/button_share_menu.png) no-repeat;
-	width: 35px;
-	height: 21px;
-	overflow: hidden;
-	display: block;
-	text-indent: -999px;
+    background: url(/images/button_share_menu.png) no-repeat;
+    width: 35px;
+    height: 21px;
+    overflow: hidden;
+    display: block;
+    text-indent: -999px;
 }
 
 .infoContentHeader .socialActions #shareInfoMenu
 {
-	width: 10em;
+    width: 10em;
 }
 
 .infoContentHeader .socialActions #shareInfoMenu .delicious a
 {
-	background-image: url(/images/icons/social_icon_delicious_small.png);
+    background-image: url(/images/icons/social_icon_delicious_small.png);
 }
 
 .infoContentHeader .socialActions #shareInfoMenu .digg a
 {
-	background-image: url(/images/icons/social_icon_digg_small.png);
+    background-image: url(/images/icons/social_icon_digg_small.png);
 }
 
 .infoContentHeader .socialActions #shareInfoMenu .twitter a
 {
-	background-image: url(/images/icons/social_icon_twitter_small.png);
+    background-image: url(/images/icons/social_icon_twitter_small.png);
 }
 
 .infoContentHeader .socialActions #shareInfoMenu .facebook a
 {
-	background-image: url(/images/icons/social_icon_facebook_small.png);
+    background-image: url(/images/icons/social_icon_facebook_small.png);
 }
 
 .infoContentHeader .headerActions
@@ -633,6 +635,15 @@ infoContentOuter table.gridList td.picture .cellInner
 {
     background-position: left -41px;
 }
+
+#createViewMenu li a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
+    background-position: 5px 23px;
+    background-repeat: no-repeat;
+}
+#createViewMenu li.filter a { background-position: 5px -531px; }
+#createViewMenu li.calendar a { background-position: 5px -761px; }
 
 /*** END: single info filtered tab ***/
 

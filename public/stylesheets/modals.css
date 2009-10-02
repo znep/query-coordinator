@@ -4,11 +4,9 @@
 {
     display: none;
     left: 50%;
-    margin-left: -40em;
     min-height: 0;
     position: fixed;
     top: 0;
-    width: 80em;
 }
 .jqmOverlay { background-color: #000; }
 
@@ -57,6 +55,8 @@
 }
 
 .modalContentWrapper { padding: 1em; }
+
+.modalContentWrapper .subtitle { color: #999999; }
 
 /*** END: Modal Dialogs ***/
 
@@ -321,6 +321,14 @@
 
 /*** START: Print Dataset form ***/
 
+.modalDialog .dialogBox .header .printDialogIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -77px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
 .printDatasetWrapper .columnLeft
 {
     float: left;
@@ -386,6 +394,14 @@
 
 
 /*** START: Email this Dataset form ***/
+
+.modalDialog .dialogBox .header .emailDialogIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -104px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
 
 .emailDatasetWrapper .submitLine .actionButtons { margin-top: 0; }
 
@@ -528,10 +544,7 @@
   display: inline;
 }
 
-#modal .seperator
-{
-  border-bottom: solid 2px #ccc;
-}
+#modal .seperator { border-bottom: solid 1px #ccc; }
 .columnPropertiesWrapper tr.seperator td
 {
   padding: 0;
@@ -728,9 +741,10 @@ ul.convertables li a:hover
     vertical-align: middle;
 }
 
-.columnPropertiesIcon
+.modalDialog .dialogBox .header .columnPropertiesIcon
 {
-    background-image:url(/stylesheets/images/content/GearIcon_color.png);
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 4px;
     background-repeat: no-repeat;
     padding-left: 35px;
 }
@@ -1028,12 +1042,12 @@ dl.versionInfo dd
     left: 38.3em;
 }
 
-#modal .sortOrderIcon
+.modalDialog .dialogBox .header .sortOrderIcon
 {
-    background-image: url(/stylesheets/images/content/sort_modal_icon.png);
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -27px;
     background-repeat: no-repeat;
-    background-position: 2px 4px;
-    padding-left: 30px;
+    padding-left: 35px;
 }
 
 #sortBysList .inactiveList .type
@@ -1408,3 +1422,62 @@ div#sortBysList.reorderList li .itemWrapper
 }
 
 /*** END: Filter dialog ***/
+
+
+/*** START: Create calendar dialog ***/
+.modalDialog .dialogBox .header .calendarIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -50px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
+.calendarWrapper .subtitle { padding-bottom: 0.5em; }
+
+.calendarWrapper form { margin-top: 1em; }
+
+.calendarWrapper .section { margin-bottom: 3em; }
+
+.calendarWrapper h3
+{
+    font-size: 1.3em;
+    font-weight: normal;
+    padding-bottom: 0.3em;
+}
+
+.calendarWrapper .seperator { margin-bottom: 0.5em; }
+.calendarWrapper form p { font-size: 1.1em; }
+
+.calendarWrapper .line { margin: 0.5em 0; }
+.calendarWrapper .line .helpie { line-height: 1.7em; }
+
+.calendarWrapper label
+{
+    display: inline-block;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-align: right;
+    width: 6.5em;
+}
+
+.calendarWrapper .line select,
+.calendarWrapper .line input
+{
+    font-size: 1.2em;
+    margin-bottom: 0;
+    width: 17em;
+}
+.calendarWrapper .line input { width: 16.4333em; }
+
+.calendarWrapper span.error
+{
+    float: right;
+    font-size: 1em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+}
+
+.calendarWrapper div.required { float: left; }
+.calendarWrapper ul.actionButtons { margin-top: 0; }
+/*** END: Create calendar dialog ***/

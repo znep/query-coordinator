@@ -1,0 +1,133 @@
+<%- content_for(:wrapper_class, "narrowDialog") -%>
+<%- content_for :headline do -%>
+<h1 class='calendarIcon'>Create a Calendar View</h1>
+<%- end -%>
+
+<div class='modalContentWrapper calendarWrapper'>
+  <p class='subtitle'>
+  Datasets with dates can displayed in a monthly calendar format.
+  </p>
+
+  <% form_tag("#{@view.href}/create_calendar") do %>
+    <div class='section'>
+      <h3>Name</h3>
+      <p class='subtitle seperator'>
+      Give a name to your new calendar view
+      </p>
+      <div class='line'>
+        <label class='required' for='calendarName'>Name</label>
+        <input type='text' id='calendarName' name='viewName' />
+      </div>
+    </div>
+
+    <div class='section'>
+      <%- date_cols = @view.columns.select {|c| c.dataType.type == 'date'} -%>
+      <%- is_multi_date = date_cols.length > 1 -%>
+      <h3 class='<%= is_multi_date ? '' : 'seperator' %>'>
+        Date<%= is_multi_date ? '(s)' : ' Column' %>
+      </h3>
+      <%- if is_multi_date -%>
+      <p class='subtitle seperator'>
+      Select up to two date columns to set the start and end dates for
+      your calendar events
+      </p>
+      <%- end -%>
+      <div class='line'>
+        <label class='required' for='calendarStartDate'>Starting Date</label>
+        <select id='calendarStartDate' name='startDate' class='prompt'>
+          <option class='prompt' value=''>Select a Column</option>
+          <%- date_cols.each do |c| -%>
+          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <%- end -%>
+        </select>
+      </div>
+      <%- if is_multi_date -%>
+      <div class='line'>
+        <label for='calendarEndDate'>Ending Date</label>
+        <select id='calendarEndDate' name='endDate' class='prompt'>
+          <option class='prompt' value=''>Optional</option>
+          <%- date_cols.each do |c| -%>
+          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <%- end -%>
+        </select>
+      </div>
+      <%- end -%>
+    </div>
+
+    <div class='section'>
+      <h3>Event Information</h3>
+      <p class='subtitle seperator'>
+      Select the column that provides details for the event
+      </p>
+      <div class='line'>
+        <label class='required' for='calendarEventTitle'>Event Title</label>
+        <select id='calendarEventTitle' name='eventTitle' class='prompt'>
+          <option class='prompt' value=''>Select a Column</option>
+          <%- @view.columns.select {|c| c.dataType.type == 'text'}.each do |c| -%>
+          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <%- end -%>
+        </select>
+         <span class="helpie" title="Displays in the calendar cells">?</span>
+      </div>
+    </div>
+  <%- end -%>
+
+  <div class='submitLine clearfix'>
+    <div class="required">Required Field</div>
+    <ul class='actionButtons clearfix'>
+      <li><a href='#create' class='create arrowButton'>Create Calendar</a></li>
+    </ul>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    $.validator.addMethod('notEqualTo', function(value, element, param)
+        { return this.optional(element) || value != $(param).val(); },
+        'A different value is required.');
+    $('.calendarWrapper form').validate({
+        rules: {
+          viewName: 'required',
+          startDate: 'required',
+          endDate: { 'notEqualTo': '#calendarStartDate' },
+          eventTitle: 'required'
+        },
+        errorElement: 'span'
+      });
+
+    var adjustSelectPrompt = function(event)
+    {
+      var $sel = $(this);
+      setTimeout(function()
+          {
+            $sel.toggleClass('prompt', $sel.val() === '');
+          }, 0);
+    };
+
+    $('.calendarWrapper select').change(adjustSelectPrompt)
+      .keypress(adjustSelectPrompt).click(adjustSelectPrompt);
+
+    var formSubmit = function(event)
+    {
+      event.preventDefault();
+      var $form = $('.calendarWrapper form');
+      if (!$form.valid()) { return; }
+
+      $.ajax({
+          url: $form.attr("action"),
+          type: "POST",
+          data: $form.serialize(),
+          dataType: "json",
+          success: function(data)
+          {
+            $("#modal").jqmHide();
+            blist.util.navigation.redirectToView(data.newViewId);
+          }
+      });
+    };
+
+    $('.calendarWrapper form').submit(formSubmit);
+    $('.calendarWrapper a.create').click(formSubmit);
+  };
+</script>

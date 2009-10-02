@@ -161,58 +161,23 @@ div.blist-favorite
     background-position: center 25px;
 }
 
-div.blist-type-default
+div.blist-td-type div.blist-type
 {
     background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -7px;
     background-repeat: no-repeat;
-    overflow: visible;
-}
-
-div.blist-type-filter
-{
-    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -131px;
-    background-repeat: no-repeat;
-    overflow: visible;
-}
-
-div.blist-type-defaultSharedTo
-{
-    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -69px;
-    background-repeat: no-repeat;
-    overflow: visible;
-}
-
-div.blist-type-defaultSharedBy
-{
-    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -38px;
-    background-repeat: no-repeat;
-    overflow: visible;
-}
-
-div.blist-type-filterSharedTo
-{
-    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -193px;
-    background-repeat: no-repeat;
-    overflow: visible;
-}
-
-div.blist-type-filterSharedBy
-{
-    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
-    background-position: center -162px;
-    background-repeat: no-repeat;
-    overflow: visible;
-}
-
-div.blist-td-type > div
-{
     height: 27px;
+    overflow: visible;
 }
+
+div.blist-type-default { background-position: center -7px; }
+div.blist-type-filter { background-position: center -131px; }
+div.blist-type-calendar { background-position: center -348px; }
+div.blist-type-defaultSharedTo { background-position: center -69px; }
+div.blist-type-defaultSharedBy { background-position: center -38px; }
+div.blist-type-filterSharedTo { background-position: center -193px; }
+div.blist-type-filterSharedBy { background-position: center -162px; }
+div.blist-type-calendarSharedTo { background-position: center -410px; }
+div.blist-type-calendarSharedBy { background-position: center -379px; }
 
 .blist-td .blist-opener
 {

@@ -5,6 +5,15 @@
         {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
         'href' => "#{@view.href}/print", 'modal' => true,
         'if' => !@view.is_alt_view?},
+        {'text' => 'Create a New View', 'class' => 'newView',
+        'if' => !@view.is_alt_view?, 'href' => '#', 'submenu' => {'items' => [
+        {'text' => 'Filtered View', 'class' => 'filter',
+        'href' => '#createFilter'},
+        {'text' => 'Calendar', 'href' => "#{@view.href}/calendar",
+        'class' => 'calendar' + (@view.can_add_calendar? ? '' : ' disabled'),
+        'title' => (@view.can_add_calendar? ? '' :
+          'This dataset does not have both a date column and text column')}
+        ]}},
         {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
         {'text' => 'As CSV', 'external' => true,

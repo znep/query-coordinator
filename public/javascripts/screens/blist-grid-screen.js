@@ -406,11 +406,20 @@ $(function ()
     commonNS.adjustSize();
     $('#dataGrid').trigger('resize');
 
-    $('.tabList .newViewLink a, a[href=#createFilter]').click(function (event)
-    {
-        event.preventDefault();
-        $('#dataGrid').datasetGrid().setTempView();
-    });
+    $('.tabList .newViewLink a, a[href=#createFilter]')
+        .live('click', function (event)
+        {
+            event.preventDefault();
+            $('#dataGrid').datasetGrid().setTempView();
+        });
+
+    $('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a')
+        .live('click', function (event)
+        {
+            event.preventDefault();
+            if ($(this).closest('li').is('.disabled')) { return; }
+            $("#modal").jqmShow($(this));
+        });
 
     $('.tempViewTab a.close').click(function (event)
     {
@@ -685,6 +694,10 @@ $(function ()
 
     // Wire up attribution edit box
     $('.attributionEdit').attributionEdit();
+
+    $('#createViewMenu').dropdownMenu(
+        {triggerButton: $('.singleInfoFiltered .createViewLink'),
+            forcePosition: true});
 
     $("#infoPane .singleInfoPublishing").infoPanePublish();
 

@@ -664,7 +664,7 @@
         var canEdit = function()
         { return options.editEnabled && model.canWrite(); };
 
-        var editCell = function(cell, mode)
+        var editCell = function(cell, mode, newValue)
         {
             if (!mode) { mode = DEFAULT_EDIT_MODE; }
             // Don't start another edit yet; and make sure they can edit
@@ -681,7 +681,7 @@
                     'mode-' + mode + ' blist-table-util"></div>');
             inside.append($curEditContainer);
             var blistEditor = $curEditContainer.blistEditor(
-                {row: row, column: col, value: value});
+                {row: row, column: col, value: value, newValue: newValue});
             if (!blistEditor) { return; }
 
             configureEditor(cell, $curEditContainer, mode);
@@ -1729,6 +1729,12 @@
 
         /*** KEYBOARD HANDLING ***/
 
+        // Page size is configured in renderRows()
+        var pageSize = 1;
+
+        // Is the navigator focused?
+        var navFocused = false;
+
         // Move the active cell an arbitrary number of columns
         var navigateX = function(deltaX, event, wrap)
         {
@@ -1746,9 +1752,6 @@
             }
         };
 
-        // Page size is configured in renderRows()
-        var pageSize = 1;
-
         var onCopy = function(event) {
             if (cellNav) {
                 $navigator.text(cellNav.getSelectionDoc());
@@ -1763,8 +1766,77 @@
             doKeyNav(event);
         };
 
+        var navFocus = function()
+        {
+            navFocused = true;
+        }
+
+        var navBlur = function()
+        {
+            navFocused = false;
+        }
+
+        var navHasSelection = function()
+        {
+            if (!navFocused)
+            {
+                return false;
+            }
+
+            if (document.selection)
+            {
+                // IE
+                return document.selection.createRange().text.length > 0;
+            }
+
+            return Math.abs($navigator.selectionEnd - $navigator.selectStart) > 0;
+        }
+
+        // This call fires immediately after certain events that may indicate user input
+        var checkForEditorInput = function()
+        {
+            // If the navigator has selection then the user didn't enter anything.  Otherwise the selection would have
+            // been replaced
+            if (navHasSelection())
+            {
+                return;
+            }
+
+            // If the value is empty then the user didn't enter anything.  Otherwise it would be present
+            var newValue = $navigator.val();
+            if (!newValue)
+            {
+                return;
+            }
+
+            // OK, we determined the user entered something.
+            editCurrentCell(newValue);
+        }
+
+        // Begin editing the current cell in default edit mode, optionally replacing the value in the cell
+        var editCurrentCell = function(newValue) {
+            // Find the cell that will receive the input
+            var curActiveCell = (cellNav.isActive() && $activeCells) ? $activeCells[0] : null;
+            if (!curActiveCell)
+            {
+                return;
+            }
+
+            // Enter edit mode
+            editCell(curActiveCell, null, newValue);
+        }
+
         var navKeyPress = function(event)
         {
+            if (cellNav && cellNav.isActive())
+            {
+                if (!navHasSelection())
+                {
+                    $navigator.val('');
+                }
+                setTimeout(checkForEditorInput, 1);
+            }
+            
             if (didNavKeyDown)
             {
                 didNavKeyDown = false;
@@ -1779,12 +1851,12 @@
 
             switch (event.keyCode)
             {
-                case 34:
+                case 33:
                     // Page up
                     navigateY(-pageSize, event);
                     break;
 
-                case 35:
+                case 34:
                     // Page down
                     navigateY(pageSize, event);
                     break;
@@ -1807,6 +1879,11 @@
                 case 40:
                     // Down
                     navigateY(1, event);
+                    break;
+
+                case 8:
+                    // Backspace
+                    editCurrentCell('');
                     break;
 
                 case 9:
@@ -2028,7 +2105,9 @@
         var $navigator = $outside.find('.blist-table-navigator')
             .keydown(navKeyDown)
             .keypress(navKeyPress)
-            .bind('copy', onCopy);
+            .bind('copy', onCopy)
+            .bind('focus', navFocus)
+            .bind('blur', navBlur);
 
         // Safari (and presumably Chrome) needs the navigator to be position
         // absolute to avoid window jumping (FF requires fixed to do the same,
@@ -3543,8 +3622,8 @@
             $locked.find('.blist-select-row').removeClass('blist-select-row');
             $.each(model.selectedRows, function (k, v)
             {
-                $/*inside.find*/('#' + id + '-r' + k).addClass('blist-select-row');
-                $/*$locked.find*/('#' + id + '-l' + k).addClass('blist-select-row');
+                $('#' + id + '-r' + k).addClass('blist-select-row');
+                $('#' + id + '-l' + k).addClass('blist-select-row');
             });
             updateCellNavCues();
         };

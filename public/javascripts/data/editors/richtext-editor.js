@@ -349,7 +349,16 @@
                         }
                     });
                 }
-                this._value = this.originalValue;
+                if (this.newValue != null)
+                {
+                    this._value = this.newValue;
+                    this.goToEndOnFocus = true;
+                }
+                else
+                {
+                    this._value = this.originalValue;
+                }
+
                 this._editor._initValue = (this._value || '');
                 return this._editor.$dom;
             },
@@ -371,7 +380,13 @@
             {
                 if (this._editor.getWin())
                 {
+                    this._editor.execCommand("selectall");
                     this._editor.focus();
+                    if (this.goToEndOnFocus)
+                    {
+                        delete this.goToEndOnFocus;
+                        this._editor.selection.collapse(false);
+                    }
                 }
             },
 

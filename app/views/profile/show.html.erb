@@ -458,6 +458,16 @@
 
 
     <% end %>
+
+    <% if @is_user_current %>
+      <% render(:layout => "shared/sidebar_box", :locals => {:box_class => "jumpToActions"}) do %>
+        <h4>Jump To</h4>
+        <ul class="actionButtons blockList clearfix">
+          <li><%= link_to("Manage Account", account_path) %></li>
+        </ul>
+      <% end %>
+    <% end %>
+
   </div>
 </div>
 

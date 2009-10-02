@@ -16,12 +16,13 @@
             {
                 if (!this._$editor)
                 {
+                    var value = this.newValue || this.originalTextValue();
                     var align = this.column.alignment ?
                         ' align-' + this.column.alignment : '';
                     this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.type +
                         '"><input type="text" class="' + align +  '" value="' +
-                        this.originalTextValue() + '" /></div>');
+                        value + '" /></div>');
                 }
                 return this._$editor;
             },
@@ -72,7 +73,29 @@
 
             focus: function()
             {
-                this.$editor().find(':text').focus().select();
+                var $text = this.$editor().find(':text').focus();
+                if (this.newValue != null)
+                {
+                    delete this.newValue;
+                    var vallen = this.textValue().length;
+                    var text = $text[0];
+                    if (text.createTextRange)
+                    {
+                        var range = text.createTextRange();
+                        range.collapse(true);
+                        range.moveEnd('character', vallen);
+                        range.moveStart('character', vallen);
+                        range.select();
+                    }
+                    else
+                    {
+                        text.setSelectionRange(vallen, vallen);
+                    }
+                }
+                else
+                {
+                    $text.select();
+                }
             },
 
             textModified: function()

@@ -9,7 +9,7 @@ $.widget("ui.showEdit", {
       function() { $(this).removeClass("hover"); }
     );
 
-    this.element.find(".sectionShow p, .sectionShow a.showAction").click(function(event) {
+    this.element.find(".sectionShow > p, .sectionShow a.showAction").click(function(event) {
       event.preventDefault();
       self.displayEditSection();
     });

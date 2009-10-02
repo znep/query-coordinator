@@ -3,6 +3,10 @@
     cursor: default;
     position: relative;
 }
+.blist-combo-wrapper.active
+{
+    z-index: 100;
+}
 .blist-combo
 {
     border: solid 1px #ccc;

@@ -81,6 +81,9 @@
             $dropdown.scrollTop(0);
             $dropdown.children('li.selected').removeClass('selected');
             $dropdown.slideUp(100);
+
+            $this.closest('.blist-combo-wrapper').removeClass('active');
+            $(document).unbind('click.combo');
         };
 
         var showDropdown = function()
@@ -118,6 +121,23 @@
             $dropdown.css('width', layout.width);
             dropdownOpen = true;
             $dropdown.slideDown(100);
+            $this.closest('.blist-combo-wrapper').addClass('active');
+
+            // Register for cancel clicks outside the dropdown
+            $(document).bind('click.combo', function(event)
+            {
+                var $target = $(event.target);
+                if ($target.parents().index($this.closest(".blist-combo-wrapper")) < 0)
+                {
+                    // they clicked outside the control; collapse.
+                    hideDropdown();
+                    var $inputs = $this.find(':input');
+                    if ($inputs.length > 0)
+                    {
+                        $inputs[0].focus();
+                    }
+                }
+            });
         };
 
         // Handle clicks on the drop-down

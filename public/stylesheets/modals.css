@@ -707,6 +707,8 @@ ul.convertables li a:hover
 .datatype-photo { background-position: 0 -100px; }
 .datatype-document { background-position: 0 -280px; }
 .datatype-nested_table { background-position: 0 -440px; }
+.datatype-tag { background-position: 0 -180px; }
+.datatype-picklist { background-position: 0 -400px; }
 
 .typeSelect
 {

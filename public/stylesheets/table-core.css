@@ -431,10 +431,7 @@ div.blist-star-0
 
 /* Quick & cheap way to thumbnail photos; won't work right for
  * really wide images */
-.blist-td-photo img
-{
-    height: 100%;
-}
+.blist-tr .blist-td-photo img { height: 100%; }
 
 .blist-table-navigator {
     position: fixed;

@@ -49,6 +49,20 @@
     width: 30em;
 }
 
+#publishContent .publishHeader .backToDatasetLink
+{
+    background: url(/stylesheets/images/common/back_arrow_icon_community.png) no-repeat left center;
+    color: #333;
+    display: block;
+    float: right;
+    font-weight: bold;
+    height: 1.5em;
+    line-height: 1.5em;
+    margin: 1em;
+    padding-left: 20px;
+    text-transform: uppercase;
+}
+
 #publishContent .livePreviewText
 {
     font-size: 1.3em;

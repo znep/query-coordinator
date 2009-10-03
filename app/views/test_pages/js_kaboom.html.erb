@@ -1,0 +1,56 @@
+<% content_for :head do %>
+  <title>Javascript Error Tests | <%= th.site_title %></title>
+<% end %>
+
+<% fullpage_content do %>
+
+  <script type="text/javascript">
+  throw new Error("inline error");
+  </script>
+
+  <h1>Javascript Errors</h1>
+
+  <p>We use an error-reporting system that's styled off of the framework provided
+    by <a href="http://blogs.cozi.com/tech/2008/04/javascript-error-tracking-why-windowonerror-is-not-enough.html">Cozi</a>.
+  </p>
+
+  <p>We change our error reporting strategy depending on the environment loaded:</p>
+  <ul>
+    <li>In production, no error is displayed to the user, but we send the details
+    of the error to the core server for logging purposes.</li>
+    <li>In staging, the error is displayed client-side AND the error is sent to the
+    core server for logging.</li>
+    <li>In development, the error is displayed client-side, but not logged.</li>
+  </ul>
+
+  <p>This page throws a few different styles of errors to help test:</p>
+    <ol>
+        <li>An <strong>inline error</strong> in Javascript mid-page.</li>
+        <li>An error in the <strong>document ready handler</strong> that runs
+        after the DOM has finished loading.</li>
+        <li>An error trigger by a <strong>jQuery event</strong> that happens on
+        user action. Press the button to cause this.</li>
+    </ol>
+
+  <div id="badButtonDiv">
+    <button id="badButton">click me to generate an error</button>
+  </div>
+<% end %>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    $(document).ready( function() {
+        try
+        {
+             $('#badButton').click(function() { throw new Error("bad button error") } );
+             throw new Error("inside document ready handler");
+        }
+        catch (ex)
+        {
+            trackError(ex.message, ex.fileName, ex.lineNumber);
+            // re-throw ex iff error should propogate
+            // throw ex;
+        }
+    });
+  </script>
+<% end %>

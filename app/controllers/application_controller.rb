@@ -30,20 +30,13 @@ class ApplicationController < ActionController::Base
     @is_marketing_page = false
   end
 
+  hide_action :current_user, :current_user_session, :prerendered_fragment_for
   def current_user
     @current_user ||= current_user_session ? current_user_session.user : nil
   end
 
   def current_user_session
     @current_user_session ||= UserSession.find
-  end
-
-  def render_404
-    render_error(404)
-  end
-
-  def render_500
-    render_error(500)
   end
 
   def prerendered_fragment_for(buffer, name = {}, prerendered_content = nil, options = nil, &block)
@@ -73,6 +66,14 @@ class ApplicationController < ActionController::Base
   end
 
 protected
+  def render_404
+    render_error(404)
+  end
+
+  def render_500
+    render_error(500)
+  end
+
   # We use a custom page_cache_directory based on the theme of the site.
   # The builtin rails page_cache_file function is broken with this type of
   # implementation...

@@ -229,6 +229,11 @@ ActionController::Routing::Routes.draw do |map|
     invitation.show_invitation    'invitation/show/:id',    :action => 'show'
     invitation.accept_invitation  'invitation/accept/:id',  :action => 'accept'
   end
+
+  # Non-production environments get a special controller for test actions
+  unless Rails.env.production?
+    map.connect '/test_page/:action', :controller => 'test_pages'
+  end
   
   # See how all your routes lay out with "rake routes"
 end

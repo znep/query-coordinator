@@ -229,17 +229,19 @@ ul.menu li a
     padding: 0.2em 10px 0.2em 30px;
     text-decoration: none;
 }
+
+ul.menu li.disabled a
+{
+    color: #999999;
+    cursor: auto;
+}
+
 ul.menu.noicon li a { padding-left: 5px; }
 
-ul.menu li > a > .highlight
-{
-    display: block;
-}
+ul.menu li > a > .highlight { display: block; }
 
-ul.menu li > a:hover
-{
-    background-color: #cacaca;
-}
+ul.menu li > a:hover { background-color: #cacaca; }
+ul.menu li.disabled > a:hover { background-color: transparent; }
 
 ul.menu li.separator
 {
@@ -1326,8 +1328,13 @@ table.gridList tr.filteredOut
 }
 .dialogWrapper.modalDialog
 {
-    margin: 5em;
+    margin: 5em 0 0 -35em;
     width: 70.5em;
+}
+.dialogWrapper.modalDialog.narrowDialog
+{
+    margin: 5em 0 0 -22.5em;
+    width: 45em;
 }
 .dialogTL
 {
@@ -1348,7 +1355,7 @@ table.gridList tr.filteredOut
     padding: 0 0 23px 16px;
     background: url(/stylesheets/images/content/modal_corner_BL.png) left bottom no-repeat;
 }
-.dialogBL.dialogBLgray
+.dialogGrayColumn .dialogBL
 {
     background-image: url(/stylesheets/images/content/modal_corner_gray_BL.png);
 }

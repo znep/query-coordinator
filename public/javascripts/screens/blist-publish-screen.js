@@ -115,6 +115,9 @@ blist.publish.applyFrameColor = function($elem, values)
         }
     }
     
+    // dialog headers
+    publishNS.writeStyle('.dialogBox .header', 'background-color', values['color']);
+    
     // sides
     publishNS.writeStyle('.gridInner', 'border-color', values['color']);
 
@@ -412,6 +415,7 @@ blist.publish.applyCustomizationToPreview = function(hash)
     {
         widgetNS = $('.previewPane iframe').get()[0].contentWindow.blist.widget;
 
+        publishNS.clearStyles();
         recurse(publishNS.customizationApplication, hash);
         widgetNS.sizeGrid();
 
@@ -489,6 +493,34 @@ blist.publish.writeStyle = function(selector, key, value)
               key.replace(/-[a-z]/g, function(match) { return match.charAt(1).toUpperCase(); }) +
               ' = "' + value + '";');
     }
+};
+
+blist.publish.clearStyles = function()
+{
+    if (publishNS.stylesheet === null)
+    {
+        return;
+    }
+
+    var rules = publishNS.stylesheet.cssRules || publishNS.stylesheet.rules;
+
+    // Firefox doesn't like using a function pointer here.
+    if (typeof publishNS.stylesheet.deleteRule === 'function')
+    {
+        for (var j = 0; j < rules.length; j++)
+        {
+            publishNS.stylesheet.deleteRule(j);
+        }
+    }
+    else
+    {
+        for (var j = 0; j < rules.length; j++)
+        {
+            publishNS.stylesheet.removeRule(j);
+        }
+    }
+
+    publishNS.styleRules = {};
 };
 
 blist.publish.valueChanged = function()

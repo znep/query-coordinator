@@ -20,6 +20,7 @@
                     { :dimensions => { :width => '%width%', :height => '%height%' } }, '%variation%')) %>
             </div>
           </div>
+          <a href="<%= @view.href %>" class="backToDatasetLink">Back to the Dataset</a>
           <h1>Customize Your Social Data Player</h1> 
           <p>
             Use the controls at the bottom of this page to edit the look and 
@@ -104,6 +105,7 @@
                 </div>
               </dd>
             </dl>
+          <%- if false -%>
             <dl class="summaryList">
               <dt>Players Using Template</dt>
               <dd>
@@ -116,6 +118,7 @@
                 </div>
               </dd>
             </dl>
+          <%- end -%>
           </div>
         </div>
       </div>

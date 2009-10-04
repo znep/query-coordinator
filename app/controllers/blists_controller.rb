@@ -318,7 +318,7 @@ class BlistsController < ApplicationController
   def flag
     @view = View.find(params[:id])
     @type = params[:type]
-    
+
     # Pick our subject line
     @subject = "A visitor has sent you a message about your \"#{@view.name}\" Socrata #{t(:blist_name)}"
     case @type
@@ -331,37 +331,37 @@ class BlistsController < ApplicationController
     when 'personal_information'
       @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for containing personal information"
     end
-    
+
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
     end
   end
-  
+
   def share
     @view = View.find(params[:id])
-    
+
     # TODO: Make @contacts_json of existing contacts.
     contacts_values = []
     current_user.friends.each do |friend|
       contacts_values << { :id => friend.id, :label => friend.displayName }
     end
     @contact_combo_values = contacts_values.to_json
-    
+
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
     end
   end
-  
+
   def create_share
     message = params[:message] || ""
     recipientArray = params[:recipients]
-    
+
     errors = Array.new
-    
+
     if (recipientArray)
       recipientArray.each do |r|
         recipient = JSON.parse(r)
-      
+
         grant = Hash.new
         unless recipient["email"].blank?
           grant[:userEmail] = recipient["email"]
@@ -371,7 +371,7 @@ class BlistsController < ApplicationController
         end
         grant[:type] = recipient["type"]
         grant[:message] = message
-        
+
         begin
           Grant.create(params[:id], grant)
         rescue CoreServer::CoreServerError => e
@@ -385,10 +385,10 @@ class BlistsController < ApplicationController
       :errors => errors
     }
   end
-  
+
   def delete_share
     errors = Array.new
-    
+
     grant = Hash.new
     if params[:email]
       grant[:userEmail] = params[:email]
@@ -397,16 +397,38 @@ class BlistsController < ApplicationController
       grant[:userId] = params[:userId]
     end
     grant[:type] = params[:type].downcase
-    
+
     begin
       Grant.delete(params[:id], grant)
     rescue CoreServer::CoreServerError => e
       errors << { :grant => grant.to_json }
     end
-    
+
     render :json => {
       :status => errors.length > 0 ? "failure" : "success"
     }
+  end
+
+  def calendar
+    @view = View.find(params[:id])
+
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
+  def create_calendar
+    view = View.create({:name => params[:viewName], :originalViewId => params[:id]})
+    fmt = {:startDateId => view.columns.select {|c|
+        c.tableColumnId.to_s == params[:startDate].to_s}[0].id,
+      :titleId => view.columns.select {|c|
+        c.tableColumnId.to_s == params[:eventTitle].to_s}[0].id}
+    if !params[:endDate].blank?
+      fmt[:endDateId] = view.columns.select {|c|
+        c.tableColumnId.to_s == params[:endDate].to_s}[0].id
+    end
+    view.update_attributes!({:displayType => 'calendar', :displayFormat => fmt})
+    render :json => { :status => "success", :newViewId => view.id }
   end
 
   def meta_tab_header

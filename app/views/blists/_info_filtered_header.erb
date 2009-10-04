@@ -1,8 +1,16 @@
 <h2 class="panelHeader">
   <%= pluralize(view.filters.length, "Filtered View") %>
 </h2>
-<%- if current_user && !in_widget -%>
+<%- if current_user && page_single && !in_widget && !view.is_alt_view? -%>
 <ul class="headerActions actionButtons">
-  <li><%= link_to("Create", '#createFilter', :class => "arrowButton") %></li>
+  <li><%= link_to("Create", '#createMenu',
+    :class => "createViewLink arrowButton") %></li>
 </ul>
+<%= menu_tag({'id' => 'createViewMenu', 'items' => [
+  {'text' => 'Filtered View', 'class' => 'filter', 'href' => '#createFilter'},
+  {'text' => 'Calendar', 'href' => "#{view.href}/calendar",
+  'class' => 'calendar' + (view.can_add_calendar? ? '' : ' disabled'),
+  'title' => (view.can_add_calendar? ? '' :
+    'This dataset does not have both a date column and text column')}
+]}) %>
 <%- end -%>

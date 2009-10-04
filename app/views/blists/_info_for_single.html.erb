@@ -72,18 +72,13 @@
 <%# *** START: FILTERED *** %>
 <div class="infoContentOuter singleInfoFiltered">
   <div class="infoContentHeader clearfix">
-    <h2 class="panelHeader">
-      <%= pluralize(view.filters.length, "Filtered View") %>
-    </h2>
-    <%- if current_user && page_single -%>
-    <ul class="headerActions actionButtons">
-      <li><%= link_to("Create", '#createFilter', :class => "arrowButton") %></li>
-    </ul>
-    <%- end -%>
+    <%= render(:partial => "blists/info_filtered_header",
+                :locals => {:view => view, :in_widget => false,
+                :page_single => page_single }) %>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
-      <%= render( :partial => "blists/meta_tab_filtered", 
+      <%= render( :partial => "blists/meta_tab_filtered",
                   :locals => {:view => view, :in_widget => false }) %>
     </div>
   </div></div>

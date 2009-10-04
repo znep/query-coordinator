@@ -129,8 +129,17 @@
             );
             $this.find(opts.clickItemSelector).click(function(event)
             {
+                var $this = $(this);
+                if ($this.closest('a').length > 0)
+                {
+                    // Take the performance hit when the user clicks something
+                    // rather than upfront (4 seconds saved with 50 comments!)
+                    event.stopPropagation();
+                    return;
+                }
+
                 event.preventDefault();
-                var $link = $(this).closest(opts.hoverItemSelector).find(opts.actionSelector);
+                var $link = $this.closest(opts.hoverItemSelector).find(opts.actionSelector);
                 window.location = $link.attr("href");
             });
         });
@@ -139,7 +148,7 @@
     // default options
     $.fn.blistListHoverItems.defaults = {
         hoverItemSelector: "tr.item",
-        clickItemSelector: "tr.item td:not(.actionContainer) > *:not(a, :has(a))",
+        clickItemSelector: "tr.item *",
         actionSelector: ".actionContainer a"
     };
 

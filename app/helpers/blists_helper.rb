@@ -6,7 +6,8 @@ module BlistsHelper
   # Used for lists of views, to determine shared in/out
   def get_share_direction_icon_class_for_view(view)
     icon_class = "itemType"
-    icon_class += view.is_blist? ? " typeBlist" : " typeFilter"
+    icon_class += " type" + (view.is_blist? ? "Blist" :
+                              (view.is_calendar? ? "Calendar" : "Filter"))
 
     if view.is_shared?
       icon_class += view.owner.id == current_user.id ? " sharedOut" : " sharedIn"

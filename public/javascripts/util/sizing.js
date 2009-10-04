@@ -50,7 +50,8 @@ $.fn.blistFitWindow = function(options) {
 $.fn.blistFitWindow.defaults = {
     columnSelector: ".scrollContentColumn",
     expandableSelector: "#infoPane:not(:empty)",
-    isExpandedSelector: "#infoPane:not(:empty):has(.expanded)",
+    // was: #infoPane:not(:empty):has(.expanded) -- 6.7 seconds saved with 50 comments.
+    isExpandedSelector: "#infoPane .expanded",
     cachedExpandableSelectorHeight: 0,
     footerSelector: "#footer"
 };

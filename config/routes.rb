@@ -132,12 +132,12 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'flag', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
       :category => /(\w|-)+/}
-  
+
   map.connect ':category/:view_name/:id/share', :controller => 'blists',
     :action => 'share', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
       :category => /(\w|-)+/}
-      
+
   map.connect ':category/:view_name/:id/create_share', :controller => 'blists',
     :action => 'create_share', :conditions => { :method => :post },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
@@ -145,6 +145,16 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect ':category/:view_name/:id/delete_share', :controller => 'blists',
     :action => 'delete_share', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
+  map.connect ':category/:view_name/:id/calendar', :controller => 'blists',
+    :action => 'calendar', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
+  map.connect ':category/:view_name/:id/create_calendar', :controller => 'blists',
+    :action => 'create_calendar', :conditions => { :method => :post },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
       :category => /(\w|-)+/}
 

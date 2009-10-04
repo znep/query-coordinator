@@ -768,7 +768,7 @@
         var cf;
         if (colFilters)
         {
-            cf = colFilters[col.dataIndex];
+            cf = colFilters[col.id];
         }
 
         // Remove the old filter menu if necessary

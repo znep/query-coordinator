@@ -242,7 +242,7 @@ class View < Model
   def comments
     Comment.find(id)
   end
-  
+
   def share_date_for_contact(contact)
     out = ""
     contact_grant = grants.find {|g| g.userId == contact.id}
@@ -259,6 +259,11 @@ class View < Model
     self.displayType == 'calendar'
   end
 
+  def can_add_calendar?
+    columns.any? {|c| c.dataType.type == 'date'} &&
+      columns.any? {|c| c.dataType.type == 'text'}
+  end
+
   # return true if this view is a visualization (not a table)
   # the displayType contains the type of visualization
   # a nil value indicates that it needs to be rendered as a table
@@ -273,7 +278,7 @@ class View < Model
   def is_fusion_map?
     !self.displayType.nil? && !self.displayType[/^FCMap_/].nil?
   end
-  
+
   def owned_by?(user)
     self.owner.id == user.id
   end

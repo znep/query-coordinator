@@ -20,10 +20,17 @@ label
     padding-right: 15px;
 }
 
-select
+select { color: #333; }
+select.prompt,
+select.prompt option.prompt
 {
-    border: 1px solid #CACACA;
-    color: #333;
+    color: #999999;
+    font-style: italic;
+}
+select.prompt option
+{
+    color: #333333;
+    font-style: normal;
 }
 
 #precision

@@ -56,16 +56,7 @@
           </div>
         <%- else -%>
           <%- if th.revolutionize -%>
-          <div class="pageBlockHeaderSide discoverBugContainer">
-            <h2>Revolutionize Your .GOV</h2>
-            <h3>High Quality Data, Low Cost Delivery</h3>
-            <p class="bugActionButton">
-              <a href="/about">About <%= th.company %></a>
-            </p>
-            <p class="footnote">
-              Latest News: <a href="/press/socrata-showcased-on-appsgov"><strong>Socrata Showcased on Apps.gov</strong></a>
-            </p>
-          </div>
+            <%= render :partial => 'static/revolutionize_box' %>
           <%- else -%>
           <div class="pageBlockHeaderSide">
             <h2>Recent Activity</h2>

@@ -58,7 +58,7 @@
     {
         currentObj.$dom().find('.loadingSpinner').removeClass('hidden');
         $.ajax({url: '/views/' + currentObj.settings.viewId + '/rows.json',
-                dataType: 'json', data: data,
+                dataType: 'json', data: data, cache: false,
                 success: function(r)
                 {
                     currentObj.$dom().find('.loadingSpinner').addClass('hidden');
@@ -95,7 +95,7 @@
             {
                 var ce = {id: r[currentObj._idIndex],
                     start: r[currentObj._startIndex],
-                    title: r[currentObj._titleIndex]};
+                    title: $.htmlStrip(r[currentObj._titleIndex])};
                 if (currentObj._endIndex !== undefined)
                 { ce.end = r[currentObj._endIndex]; }
                 events.push(ce);

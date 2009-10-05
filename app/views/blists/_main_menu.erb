@@ -6,6 +6,7 @@
         'href' => "#{@view.href}/print", 'modal' => true,
         'if' => !@view.is_alt_view?},
         {'text' => 'Create a New View', 'class' => 'newView',
+        'user_required' => true,
         'if' => !@view.is_alt_view?, 'href' => '#', 'submenu' => {'items' => [
         {'text' => 'Filtered View', 'class' => 'filter',
         'href' => '#createFilter'},
@@ -167,11 +168,11 @@
         {'text' => 'Show More Views', 'class' => 'views',
         'href' => '#infoPane_tabFiltered'},
         {'text' => 'Show Comments', 'class' => 'comments',
-        'href' => '#infoPane_tabComments'},
+        'href' => '#infoPane_tabComments', 'if' => !@view.hide_comments?},
         {'text' => 'Show Shares', 'class' => 'shares',
         'href' => '#infoPane_tabSharing'},
         {'text' => 'Show Publishing', 'class' => 'publishing',
-        'href' => '#infoPane_tabPublishing'},
+        'href' => '#infoPane_tabPublishing', 'if' => !@view.is_alt_view?},
         {'text' => 'Show Activity', 'class' => 'activity',
         'href' => '#infoPane_tabActivity'}
       ]}, is_owner, can_edit) %>

@@ -21,16 +21,17 @@ label
 }
 
 select { color: #333; }
-select.prompt,
-select.prompt option.prompt
-{
-    color: #999999;
-    font-style: italic;
-}
 select.prompt option
 {
     color: #333333;
     font-style: normal;
+}
+select.prompt,
+select option.prompt,
+select.prompt option.prompt
+{
+    color: #999999;
+    font-style: italic;
 }
 
 #precision

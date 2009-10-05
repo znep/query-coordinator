@@ -413,9 +413,9 @@ privateSchema
 private
 */
 
-.itemType 
+.itemType
 {
-    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png?2);
     background-position: 0 0;
     background-repeat: no-repeat;
     height: 31px;

@@ -40,17 +40,11 @@
 <% content_for :js_footer do %>
   <script type="text/javascript">
     $(document).ready( function() {
-        try
-        {
-             $('#badButton').click(function() { throw new Error("bad button error") } );
-             throw new Error("inside document ready handler");
-        }
-        catch (ex)
-        {
-            trackError(ex.message, ex.fileName, ex.lineNumber);
-            // re-throw ex iff error should propogate
-            // throw ex;
-        }
+        $('#badButton').click(function() { throw new Error("bad button error") } );
+        throw new Error("inside document ready handler");
+    });
+    $(function() {
+        throw new Error("inside shortcut document ready handler");
     });
   </script>
 <% end %>

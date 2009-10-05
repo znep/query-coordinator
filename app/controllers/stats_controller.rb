@@ -9,6 +9,11 @@ class StatsController < ApplicationController
     @dataset = View.find(params[:id])
     @show_search_form = false
 
+    if(!current_user || !current_user.can_access_premium_on?(@dataset))
+      # User is not logged on or cannot access stats, redirect them to the solution page
+      redirect_to '/solution'
+    end
+
     if (@dataset.createdAt.nil?)
       default_since = Time.now - 3.month
     else

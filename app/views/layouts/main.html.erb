@@ -154,12 +154,6 @@
   It will update the header appropriately based on your logged-in state %>
   <%= javascript_include_tag "plugins/jquery.cookies.2.1.0.min" %>
   <script type="text/javascript">
-    blist.versionInfo = function ()
-    {
-        alert("Build time: " +
-            "<%= REVISION_DATE ? Time.at(REVISION_DATE).to_s : '' %>\n" +
-            "Build version: <%= REVISION_NUMBER %>");
-    };
     jQuery((function ($)
     {
         var blistCookie = $.cookies.get('_blist_session_id');

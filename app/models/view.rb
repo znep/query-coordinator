@@ -260,8 +260,8 @@ class View < Model
   end
 
   def can_add_calendar?
-    columns.any? {|c| c.dataType.type == 'date'} &&
-      columns.any? {|c| c.dataType.type == 'text'}
+    columns.any? {|c| c.dataType.type == 'date' && !c.flag?('hidden')} &&
+      columns.any? {|c| c.dataType.type == 'text' && !c.flag?('hidden')}
   end
 
   # return true if this view is a visualization (not a table)

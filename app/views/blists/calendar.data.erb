@@ -5,7 +5,7 @@
 
 <div class='modalContentWrapper calendarWrapper'>
   <p class='subtitle'>
-  Datasets with dates can displayed in a monthly calendar format.
+  Datasets with dates can be displayed in a monthly calendar format.
   </p>
 
   <% form_tag("#{@view.href}/create_calendar") do %>
@@ -21,7 +21,8 @@
     </div>
 
     <div class='section'>
-      <%- date_cols = @view.columns.select {|c| c.dataType.type == 'date'} -%>
+      <%- date_cols = @view.columns.select {|c| c.dataType.type == 'date' &&
+        !c.flag?('hidden')} -%>
       <%- is_multi_date = date_cols.length > 1 -%>
       <h3 class='<%= is_multi_date ? '' : 'seperator' %>'>
         Date<%= is_multi_date ? '(s)' : ' Column' %>
@@ -63,7 +64,8 @@
         <label class='required' for='calendarEventTitle'>Event Title</label>
         <select id='calendarEventTitle' name='eventTitle' class='prompt'>
           <option class='prompt' value=''>Select a Column</option>
-          <%- @view.columns.select {|c| c.dataType.type == 'text'}.each do |c| -%>
+          <%- @view.columns.select {|c| c.dataType.type == 'text' &&
+            !c.flag?('hidden')}.each do |c| -%>
           <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
           <%- end -%>
         </select>
@@ -71,6 +73,8 @@
       </div>
     </div>
   <%- end -%>
+
+  <div class='error mainError'></div>
 
   <div class='submitLine clearfix'>
     <div class="required">Required Field</div>
@@ -111,6 +115,7 @@
     var formSubmit = function(event)
     {
       event.preventDefault();
+      $('.calendarWrapper .mainError').text('');
       var $form = $('.calendarWrapper form');
       if (!$form.valid()) { return; }
 
@@ -121,8 +126,15 @@
           dataType: "json",
           success: function(data)
           {
-            $("#modal").jqmHide();
-            blist.util.navigation.redirectToView(data.newViewId);
+            if (data.status == 'failure')
+            {
+              $('.calendarWrapper .mainError').text(data.errors.join('; '));
+            }
+            else
+            {
+              $("#modal").jqmHide();
+              blist.util.navigation.redirectToView(data.newViewId);
+            }
           }
       });
     };

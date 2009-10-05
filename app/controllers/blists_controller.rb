@@ -418,17 +418,29 @@ class BlistsController < ApplicationController
   end
 
   def create_calendar
-    view = View.create({:name => params[:viewName], :originalViewId => params[:id]})
-    fmt = {:startDateId => view.columns.select {|c|
+    errors = []
+    begin
+      view = View.create({:name => params[:viewName],
+                         :originalViewId => params[:id]})
+
+      fmt = {:startDateId => view.columns.select {|c|
         c.tableColumnId.to_s == params[:startDate].to_s}[0].id,
-      :titleId => view.columns.select {|c|
-        c.tableColumnId.to_s == params[:eventTitle].to_s}[0].id}
-    if !params[:endDate].blank?
-      fmt[:endDateId] = view.columns.select {|c|
-        c.tableColumnId.to_s == params[:endDate].to_s}[0].id
+          :titleId => view.columns.select {|c|
+          c.tableColumnId.to_s == params[:eventTitle].to_s}[0].id}
+      if !params[:endDate].blank?
+        fmt[:endDateId] = view.columns.select {|c|
+          c.tableColumnId.to_s == params[:endDate].to_s}[0].id
+      end
+      view.update_attributes!({:displayType => 'calendar', :displayFormat => fmt})
+    rescue CoreServer::CoreServerError => e
+      errors << e.error_message
     end
-    view.update_attributes!({:displayType => 'calendar', :displayFormat => fmt})
-    render :json => { :status => "success", :newViewId => view.id }
+
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success",
+      :errors => errors,
+      :newViewId => view.nil? ? '' : view.id
+    }
   end
 
   def meta_tab_header

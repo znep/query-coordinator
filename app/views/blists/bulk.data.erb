@@ -1,0 +1,116 @@
+<%- content_for(:wrapper_class, "bulk") -%>
+
+<%- content_for :headline do -%>
+  <h1>
+    <span class="bulkIcon">
+      <% if @type == 'append' %>
+        Append Data to <%= @view.name %>
+      <% elsif @type == 'replace' %>
+        Replace Data in <%= @view.name %>
+      <% end %>
+    </span>
+  </h1>
+<%- end -%>
+
+<div class="modalContentWrapper bulkOperationWrapper">
+  <div class="errorMessage"></div>
+  
+  <div class="helpText">
+    <%- if @type == 'append' -%>
+      The rows in the file that you select will be appended 
+      to the current dataset.
+    <%- elsif @type == 'replace' -%>
+      The rows in the file that you select will be used to
+      replace all of the rows in the current dataset. The existing 
+      rows in <%= @view.name %> will be replaced, and <strong>cannot be recovered</strong>.
+    <%- end -%>
+  </div>
+  
+  <% form_tag("/views/#{@view.id}/rows", :id => "bulkOperationForm") do %>
+    <label for="upload_file" class="required">Choose a File</label>
+
+    <div class="fileBrowseButtonListContainer">
+      <ul id="fileBrowseButtonList" class="actionButtons">
+        <li>
+          <a id="fileBrowseButton" href="#upload">Browse for File</a>
+        </li>
+      </ul>
+    </div>
+    <span class="helpie" title="For best results, the data file you select should have the same columns in the same order as the current dataset">?</span>
+    <%= text_field_tag('upload_file_name', '', :readonly => true) %>
+    
+    <div class="submitLine clearfix">
+      <span class="requiredText">Required Entry</span>
+      <ul class="submitActions">
+        <li class="hide"><div class="loadingIndicator">Uploading...</div></li>
+        <li>
+          <ul class="actionButtons">
+            <li><a class="arrowButton" href="#submit" id="submitBulkUpload">Upload</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    var $form = $('#bulkOperationForm');
+    var fileValid = false;
+
+    var $uploader = new AjaxUpload($('#fileBrowseButton'), {
+      action: $form.attr('action'),
+      autoSubmit: false,
+      name: 'bulkOperationFileInput',
+      responseType: 'json',
+      onChange: function (file, ext)
+      {
+        $form.find('#upload_file_name').val(file);
+        if (!(ext && /^(tsv|csv|xml|xls|xlsx)$/.test(ext)))
+        {
+          $('.bulkOperationWrapper .errorMessage')
+            .text('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
+            .show();
+          fileValid = false;
+        }
+        else
+        {
+          $('.bulkOperationWrapper .errorMessage').text('').hide();
+          fileValid = true;
+        }
+      },
+      onComplete: function (file, response)
+      {
+        $('#modal').jqmHide();
+              
+        // Reload the view after we hide the modal
+        $('#dataGrid').blistModel().reloadView();
+      }
+    });
+
+    $form.validate({
+      rules: 
+      { 
+        "upload_file_name" : "required"
+      },
+      messages: 
+      {  
+        "upload_file_name": "You must provide a file to upload."
+      }
+    });
+
+    $('#submitBulkUpload').click(function(event)
+    {
+      event.preventDefault();
+      if ($form.valid() && fileValid)
+      {
+        $uploader._settings.action = $form.attr('action') + '?method=<%= @type %>'
+        $uploader.submit();
+
+        $('.bulkOperationWrapper .submitActions li:has(.loadingIndicator)').removeClass('hide');
+        $('.bulkOperationWrapper .submitActions li:has(.actionButtons #submitNewImage)').hide();
+      }
+    });
+  };
+</script>

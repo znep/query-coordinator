@@ -337,6 +337,15 @@ class BlistsController < ApplicationController
     end
   end
 
+  def bulk
+    @view = View.find(params[:id])
+    @type = params[:type]
+
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
   def share
     @view = View.find(params[:id])
 

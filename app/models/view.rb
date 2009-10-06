@@ -268,7 +268,7 @@ class View < Model
   # the displayType contains the type of visualization
   # a nil value indicates that it needs to be rendered as a table
   def is_visualization?
-    !self.displayType.nil? && @@visualization_types.has_key?(self.displayType)
+    is_fusion_map? || @@visualization_types.has_key?(self.displayType)
   end
 
   def is_map?

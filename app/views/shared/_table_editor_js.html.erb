@@ -4,16 +4,4 @@
   window.tinyMCEPreInit = {base: '/javascripts/tiny_mce', suffix: '', query: ''};
 </script>
 
-<%= javascript_include_tag "data/editors/editor-base", "data/editors/text-editor",
-  "plugins/datepicker", "data/editors/date-editor",
-  "data/editors/number-editor", "data/editors/percent-editor",
-  "data/editors/money-editor", "data/editors/email-editor",
-  "data/editors/tag-editor",
-  "data/editors/url-editor", "data/editors/phone-editor",
-  "widgets/combo", "widgets/values", "data/editors/flag-editor",
-  "data/editors/picklist-editor",
-  "data/editors/checkbox-editor", "data/editors/stars-editor",
-  "tiny_mce/tiny_mce_jquery_src.js", "data/editors/richtext-editor",
-  "plugins/ajaxupload.3.0", "widgets/upload-dialog",
-  "data/editors/document-editor", "data/editors/photo-editor",
-  :cache => "cache/table_editors_all" %>
+<%= javascript_include_merged 'shared-table-editor' %>

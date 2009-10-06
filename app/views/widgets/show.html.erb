@@ -1,6 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag 'table-core', 'dataset-grid', 'external-widget', 'info-pane',
-    'external-widget-meta', :cache => "cache/widgets_show_all" %>
+  <%= stylesheet_link_merged 'widgets-show' %>
   
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <%- if @view -%>
@@ -315,14 +314,7 @@
     blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
   </script>
 
-  <%= javascript_include_tag "plugins/jqModal", "plugins/jquery.example.min",
-    "plugins/jquery.json", "plugins/ui.core", "plugins/ui.draggable",
-    "plugins/jquery.tache", "util/navigation", "util/util", "plugins/date",
-    "data/types", "data/model", "data/table", "data/table_nav",
-    "widgets/text-prompt", "widgets/dropdown-menu",
-    "widgets/scrollable", "widgets/scrollTabs", "widgets/inline-edit",
-    "widgets/dataset-grid", "widgets/info-pane-publish", "widgets/visualization",
-    "screens/external-widget", "screens/info-pane", :cache => "cache/widgets_show_all" %>
+  <%= javascript_include_merged 'widgets-show' %>
 
   <%- if !@is_gov_widget && !APP_CONFIG['google_analytics_id'].blank? -%>
     <script type="text/javascript">

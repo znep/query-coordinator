@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "table-core", "stats-screen" %>
+  <%= stylesheet_link_merged 'stats-index' %>
   <title>Stats for '<%= h(@dataset.name) %>' | <%= th.site_title %></title>
 <% end %>
 
@@ -139,8 +139,7 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/date", "data/types", "data/model",
-  "data/table", "screens/stats-screen", :cache => "cache/stats_index_all" %>
+  <%= javascript_include_merged 'stats-index' %>
   <script type="text/javascript" charset="utf-8">
     blist.namespace.fetch('blist.stats');
     blist.stats.urlData = [];

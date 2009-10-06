@@ -1,2 +1,5 @@
 public/javascripts/cache
+public/javascripts/*_packaged.js
 public/stylesheets/cache
+public/stylesheets/*_packaged.css
+

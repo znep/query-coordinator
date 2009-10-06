@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "signup-screen", "form-common", "login-rpx-screen" %>
+  <%= stylesheet_link_merged 'rpx-return-login' %>
   <title>Create or Link Account | <%= th.site_title %></title>
 <% end %>
 
@@ -51,7 +51,7 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/ui.core", "screens/signup-screen", :cache => "cache/rpx_return_login_all" %>
+  <%= javascript_include_merged 'rpx-return' %>
   <script>
     $(document).ready(function() {
       $('#accordion h2').click(function() {

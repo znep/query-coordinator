@@ -1,6 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "community-activities-screen",
-    :cache => "cache/community_activites_all" %>
+  <%= stylesheet_link_tag "community-activities-screen" %>
   <title><%= th.site_title %></title>
 <% end %>
 
@@ -49,5 +48,5 @@
 
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "screens/community-activities-screen", :cache => "cache/community_activites_all" %>
+  <%= javascript_include_tag "screens/community-activities-screen" %>
 <% end %>

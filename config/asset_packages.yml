@@ -1,0 +1,261 @@
+--- 
+javascripts: 
+- base:
+  - plugins/jquery.sizes.min
+  - util/namespace
+  - plugins/jquery.cookies.2.1.0.min
+- shared-common-all:
+  - util/events
+  - util/sizing
+  - util/util
+  - plugins/jquery.tache
+  - plugins/jquery.json
+  - plugins/jquery.example.min
+  - plugins/jqModal
+  - plugins/jquery.validate
+  - widgets/text-prompt
+  - util/alert-override
+  - widgets/clipped-text
+  - screens/common-layout
+- shared-calendar:
+  - plugins/fullcalendar
+  - widgets/blist-calendar
+- shared-table-editor:
+  - data/editors/editor-base
+  - data/editors/text-editor
+  - plugins/datepicker
+  - data/editors/date-editor
+  - data/editors/number-editor
+  - data/editors/percent-editor
+  - data/editors/money-editor
+  - data/editors/email-editor
+  - data/editors/tag-editor
+  - data/editors/url-editor
+  - data/editors/phone-editor
+  - widgets/combo
+  - widgets/values
+  - data/editors/flag-editor
+  - data/editors/picklist-editor
+  - data/editors/checkbox-editor
+  - data/editors/stars-editor
+  - tiny_mce/tiny_mce_jquery_src
+  - data/editors/richtext-editor
+  - plugins/ajaxupload.3.0
+  - widgets/upload-dialog
+  - data/editors/document-editor
+  - data/editors/photo-editor
+- accounts-show:
+  - plugins/ui.core
+  - plugins/ui.showedit
+  - screens/account-screen
+- blists-about:
+  - screens/blist-about-screen
+  - screens/attribution-edit
+  - widgets/dropdown-menu
+- blists-index:
+  - plugins/ui.core
+  - plugins/ui.draggable
+  - util/humane-date
+  - plugins/date
+  - data/types
+  - data/model
+  - data/table
+  - widgets/panel-expander
+  - widgets/dropdown-menu
+  - widgets/selectable-list
+  - widgets/sidebar-filter
+  - widgets/pagination
+  - widgets/info-pane-comments
+  - widgets/info-pane-publish
+  - screens/blists-screen
+  - screens/info-pane
+  - screens/meta-tabs
+  - screens/attribution-edit
+  - widgets/combo
+  - widgets/values
+- blists-new:
+  - plugins/ajaxupload.3.0
+  - screens/blist-new-screen
+- blists-publish:
+  - screens/info-pane
+  - plugins/colorpicker
+  - plugins/ui.core
+  - plugins/ui.draggable
+  - plugins/ajaxupload.3.0
+  - util/color
+  - widgets/reorderable-list
+  - screens/blist-publish-screen
+- blists-show:
+  - plugins/ui.core
+  - plugins/ui.draggable
+  - plugins/ui.spinner
+  - util/extMouseWheel
+  - util/navigation
+  - util/inline-login
+  - plugins/date
+  - plugins/jquery.colorPicker
+  - data/types
+  - data/model
+  - data/table
+  - data/table_nav
+  - widgets/inline-edit
+  - widgets/dropdown-menu
+  - widgets/selectable-list
+  - widgets/pagination
+  - widgets/column-format
+  - widgets/reorderable-list
+  - data/table
+  - widgets/inline-edit
+  - widgets/dropdown-menu
+  - widgets/column-format
+  - widgets/column-totals
+  - widgets/info-pane-comments
+  - widgets/info-pane-publish
+  - widgets/scrollable
+  - widgets/dataset-grid
+  - screens/filter-screen
+  - widgets/visualization
+  - screens/info-pane
+  - screens/meta-tabs
+  - screens/attribution-edit
+  - screens/blist-grid-screen
+  - screens/signup-screen
+  - widgets/column-format
+  - widgets/column-totals
+  - widgets/combo
+  - widgets/values
+- communities-show:
+  - plugins/jquery.jcarousel
+  - plugins/jquery.tagcloud
+  - plugins/jquery.history
+  - widgets/simple-tab-navigate
+  - screens/community-screen
+- contacts-index:
+  - plugins/jquery.tablesorter
+  - plugins/jquery.searchable
+  - util/humane-date
+  - widgets/panel-expander
+  - widgets/selectable-list
+  - widgets/combination-list
+  - widgets/sidebar-filter
+  - screens/contacts-screen
+  - screens/info-pane
+- data-show:
+  - plugins/jquery.jcarousel
+  - plugins/jquery.tagcloud
+  - plugins/jquery.history
+  - widgets/simple-tab-navigate
+  - screens/discover-screen
+- profiles-show:
+  - plugins/jquery.tablesorter
+  - plugins/ajaxupload.3.0
+  - widgets/selectable-list
+  - widgets/combination-list
+  - plugins/ui.core
+  - plugins/ui.showedit
+  - screens/profile-screen
+- rpx-return:
+  - plugins/ui.core
+  - screens/signup-screen
+- stats-index:
+  - plugins/date
+  - data/types
+  - data/model
+  - data/table
+  - screens/stats-screen
+- widgets-show:
+  - plugins/jqModal
+  - plugins/jquery.example.min
+  - plugins/jquery.json
+  - plugins/ui.core
+  - plugins/ui.draggable
+  - plugins/jquery.tache
+  - util/navigation
+  - util/util
+  - plugins/date
+  - data/types
+  - data/model
+  - data/table
+  - data/table_nav
+  - widgets/text-prompt
+  - widgets/dropdown-menu
+  - widgets/scrollable
+  - widgets/scrollTabs
+  - widgets/inline-edit
+  - widgets/dataset-grid
+  - widgets/info-pane-publish
+  - widgets/visualization
+  - screens/external-widget
+  - screens/info-pane
+
+
+
+
+
+stylesheets: 
+- base: 
+  - base
+  - common
+  - info-pane
+  - layout
+  - outer-chrome
+  - sidebar
+  - widgets
+  - modals
+  - splash
+- base-widgets:
+  - base
+  - common
+  - widgets
+- base-widgets-preview:
+  - base
+  - common
+  - widgets-preview
+- accounts-new:
+  - signup-screen
+  - form-common
+- blists-index:
+  - table-core
+  - table-blist-list
+  - list-screen
+  - blists-screen
+  - combo
+- blists-new:
+  - blist-new-screen
+  - form-common
+- blists-publish:
+  - blist-publish-screen
+  - colorpicker
+  - form-common
+- blists-show:
+  - table-core
+  - table-blist-grid
+  - dataset-grid
+  - ui.spinner
+  - blist-grid-screen
+  - form-common
+  - combo
+- communities-show:
+  - community-screen
+  - carousel/jquery.jcarousel
+  - carousel/discover-carousel-skin
+- contacts-index:
+  - list-screen
+  - contacts-screen
+- data-show:
+  - discover-screen
+  - carousel/jquery.jcarousel
+  - carousel/discover-carousel-skin
+- rpx-return-login:
+  - signup-screen
+  - form-common
+  - login-rpx-screen
+- stats-index:
+  - table-core
+  - stats-screen
+- widgets-show:
+  - table-core
+  - dataset-grid
+  - external-widget
+  - info-pane
+  - external-widget-meta

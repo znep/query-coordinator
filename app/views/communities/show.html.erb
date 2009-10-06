@@ -1,7 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "community-screen",
-    "carousel/jquery.jcarousel", "carousel/discover-carousel-skin",
-    :cache => "cache/community_show_all" %>
+  <%= stylesheet_link_merged 'communities-show' %>
   <title>Community | <%= th.site_title %></title>
 <% end %>
 
@@ -117,8 +115,7 @@
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="tagCloud"></div>
   <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud", "plugins/jquery.history", 
-  "widgets/simple-tab-navigate", "screens/community-screen", :cache => "cache/community_show_all" %>
+  <%= javascript_include_merged 'communities-show' %>
   
   <script type="text/javascript" charset="utf-8">
     communityNS.filterUrl = "<%= filter_community_path %>";

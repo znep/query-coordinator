@@ -106,6 +106,12 @@
 /*** END: Modal form submit line ***/
 
 /*** START: Tag Cloud ***/
+#tagCloud
+{
+    margin-left: -40em;
+    top: 5em;
+    width: 80em;
+}
 
 .tagCloudContainer
 {
@@ -479,7 +485,8 @@
 .emailDatasetWrapper .successMessage p { margin: 2em; font-size: 1.3em; }
 .emailDatasetWrapper .successMessage .submitActions { width: 100px; }
 
-/*** END: Print this form ***/
+/*** END: Email this Dataset form ***/
+
 /*** START: Column properties***/
 .columnPropertiesWrapper .tabWrapper
 {

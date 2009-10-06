@@ -5,8 +5,8 @@
 .blist-th .dragHandle
 { height: 3.5em; }
 
-.sorted .th-inner-container .info-container,
-.filtered .th-inner-container .info-container
+.sorted div.info-container,
+.filtered div.info-container
 {
     margin-top: 0;
     top: 15px;
@@ -15,6 +15,7 @@
 .blist-th
 {
     border-left: solid 1px #e2e2e2;
+    overflow: hidden;
     padding: 0 0.4em;
 }
 
@@ -27,12 +28,6 @@ div.blist-th-first
 .blist-table-header .hover,
 .blist-table-header .blist-select-col
 { background-color: #ddeaf0; }
-
-.blist-th .th-inner-container
-{
-    margin: 0 -0.4em; /* 4px */
-    position: relative;
-}
 
 .blist-th .info-container
 {
@@ -87,6 +82,7 @@ div.blist-th-first
 .blist-th .dragHandle
 {
     cursor: move;
+    left: 0;
     position: absolute;
     width: 10px;
     z-index: 10;

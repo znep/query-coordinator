@@ -2146,8 +2146,9 @@
 
         // Safari (and presumably Chrome) needs the navigator to be position
         // absolute to avoid window jumping (FF requires fixed to do the same,
-        // so this is the default.  IE appears to work fine w/ fixed as well)
-        if ($.browser.safari)
+        // so this is the default.  IE appears to work fine w/ fixed as well,
+        // but IE6 draws the text field if position is fixed)
+        if ($.browser.safari || $.browser.msie)
         {
             $navigator.css('position', 'absolute');
         }
@@ -3154,7 +3155,6 @@
                         openerClass,
                         '"></div>');
                 }
-                html.push('<div class="th-inner-container">');
                 if (options.columnDrag)
                 {
                     html.push(
@@ -3181,7 +3181,7 @@
                     options.generateHeights ? ' style="height: ' +
                         rowOffset + 'px"' : '',
                     '></div>',
-                    '</div></div>');
+                    '</div>');
             }
             if (options.showGhostColumn)
             {
@@ -3327,16 +3327,16 @@
             $colHeader.removeClass('narrow narrower');
             var $infoC = $colHeader.find('.info-container');
             var infoW = $infoC.outerWidth(true);
-            var innerW = $colHeader.find('.th-inner-container').width();
+            var innerW = $colHeader.width();
             // Make an initial guess & do checks incrementally to shave off ms
             if (infoW + 20 > innerW)
             {
                 infoW += parseInt($infoC.css('left'));
                 if (infoW > innerW)
                 {
-                    $orig.toggleClass('narrower', infoW -
-                        $colHeader.find('.blist-th-icon').outerWidth(true) >
-                        innerW);
+                    var iconW =
+                        $colHeader.find('.blist-th-icon').outerWidth(true) || 0;
+                    $orig.toggleClass('narrower', infoW - iconW > innerW);
                     $orig.addClass('narrow');
                 }
                 else if (useClone) { $orig.removeClass('narrow narrower'); }

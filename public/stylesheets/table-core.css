@@ -100,9 +100,8 @@
     position: relative;
 }
 
-.th-inner-container
+.info-container
 {
-    height: 100%;
     -khtml-user-select: none;
     -moz-user-select: none;
     overflow: hidden;

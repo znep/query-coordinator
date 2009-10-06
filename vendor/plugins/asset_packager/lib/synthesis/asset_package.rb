@@ -21,12 +21,12 @@ module Synthesis
       end
 
       def find_by_type(asset_type)
-        @@asset_packages_yml[asset_type].map { |p| self.new(asset_type, p) }
+        @@asset_packages_yml[asset_type].map { |p| self.new(asset_type, p, config_for_type(asset_type)) }
       end
 
       def find_by_target(asset_type, target)
         package_hash = @@asset_packages_yml[asset_type].find {|p| p.keys.first == target }
-        package_hash ? self.new(asset_type, package_hash) : nil
+        package_hash ? self.new(asset_type, package_hash, config_for_type(asset_type)) : nil
       end
 
       def find_by_source(asset_type, source)
@@ -35,7 +35,7 @@ module Synthesis
           key = p.keys.first
           p[key].include?(path_parts[2]) && (parse_path(key)[1] == path_parts[1])
         end
-        package_hash ? self.new(asset_type, package_hash) : nil
+        package_hash ? self.new(asset_type, package_hash, config_for_type(asset_type)) : nil
       end
 
       def targets_from_sources(asset_type, sources)
@@ -59,21 +59,29 @@ module Synthesis
       end
 
       def lint_all
-        @@asset_packages_yml.keys.each do |asset_type|
-          @@asset_packages_yml[asset_type].each { |p| self.new(asset_type, p).lint }
+        @@asset_packages_yml.keys.reject{|key| key == 'config'}.each do |asset_type|
+          @@asset_packages_yml[asset_type].each { |p| self.new(asset_type, p, config_for_type(asset_type)).lint }
         end
       end
 
       def build_all
         @@asset_host = Rails.configuration.action_controller.asset_host
-        @@asset_packages_yml.keys.each do |asset_type|
-          @@asset_packages_yml[asset_type].each { |p| self.new(asset_type, p).build }
+        @@asset_packages_yml.keys.reject{|key| key == 'config'}.each do |asset_type|
+          @@asset_packages_yml[asset_type].each { |p| self.new(asset_type, p, config_for_type(asset_type)).build }
         end
       end
 
       def delete_all
-        @@asset_packages_yml.keys.each do |asset_type|
-          @@asset_packages_yml[asset_type].each { |p| self.new(asset_type, p).delete_previous_build }
+        @@asset_packages_yml.keys.reject{|key| key == 'config'}.each do |asset_type|
+          @@asset_packages_yml[asset_type].each { |p| self.new(asset_type, p, config_for_type(asset_type)).delete_previous_build }
+        end
+      end
+
+      def config_for_type(asset_type)
+        if @@asset_packages_yml['config'] && @@asset_packages_yml['config'][asset_type]
+          @@asset_packages_yml['config'][asset_type]
+        else
+          {}
         end
       end
 
@@ -100,7 +108,7 @@ module Synthesis
     # instance methods
     attr_accessor :asset_type, :target, :target_dir, :sources
   
-    def initialize(asset_type, package_hash)
+    def initialize(asset_type, package_hash, config = {})
       target_parts = self.class.parse_path(package_hash.keys.first)
       @target_dir = target_parts[1].to_s
       @target = target_parts[2].to_s
@@ -109,7 +117,8 @@ module Synthesis
       @asset_path = ($asset_base_path ? "#{$asset_base_path}/" : "#{RAILS_ROOT}/public/") +
           "#{@asset_type}#{@target_dir.gsub(/^(.+)$/, '/\1')}"
       @extension = get_extension
-      @file_name = "#{@target}_packaged.#{@extension}"
+      @cache_dir = config['cache_dir'] || ''
+      @file_name = File.join(@cache_dir, "#{@target}_packaged.#{@extension}")
       @full_path = File.join(@asset_path, @file_name)
     end
   
@@ -120,8 +129,7 @@ module Synthesis
     def current_file
       build unless package_exists?
 
-      path = @target_dir.gsub(/^(.+)$/, '\1/')
-      "#{path}#{@target}_packaged"
+      File.join([@cache_dir, @target_dir, "#{@target}_packaged"].reject{|elem| elem.empty?})
     end
 
     def build
@@ -145,12 +153,12 @@ module Synthesis
 
     private
       def create_new_build
-        new_build_path = "#{@asset_path}/#{@target}_packaged.#{@extension}"
-        if File.exists?(new_build_path)
-          log "Latest version already exists: #{new_build_path}"
+        if File.exists?(@full_path)
+          log "Latest version already exists: #{@full_path}"
         else
-          File.open(new_build_path, "w") {|f| f.write(compressed_file) }
-          log "Created #{new_build_path}"
+          Dir.mkdir(File.dirname(@full_path)) unless File.directory?(File.dirname(@full_path))
+          File.open(@full_path, "w") {|f| f.write(compressed_file) }
+          log "Created #{@full_path}"
         end
       end
       

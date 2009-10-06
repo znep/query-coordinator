@@ -1,4 +1,9 @@
 --- 
+config:
+  javascripts:
+    cache_dir: cache
+  stylesheets:
+    cache_dir: cache
 javascripts: 
 - base:
   - plugins/jquery.sizes.min

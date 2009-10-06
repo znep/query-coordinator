@@ -350,7 +350,7 @@
   <%= render :partial => "signup" %>
   <%- end -%>
 
-  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_merged 'shared-common-all' %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.blistGrid');
     <%- if !current_user.nil? -%>

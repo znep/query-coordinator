@@ -126,7 +126,7 @@
   <div class="jqmWindow" id="tagCloud"></div>
   <div class="jqmWindow" id="redirectedModal"></div>
   <div class="jqmWindow" id="splashModal"></div>
-  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_merged 'shared-common-all' %>
   <%= javascript_include_merged 'data-show' %>
   <script type="text/javascript" charset="utf-8">
     discoverNS.filterUrl = "<%= data_filter_path %>";

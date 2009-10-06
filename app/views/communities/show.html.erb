@@ -114,7 +114,7 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="tagCloud"></div>
-  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_merged 'shared-common-all' %>
   <%= javascript_include_merged 'communities-show' %>
   
   <script type="text/javascript" charset="utf-8">

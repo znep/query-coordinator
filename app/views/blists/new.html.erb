@@ -147,6 +147,6 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_merged 'shared-common-all' %>
   <%= javascript_include_merged 'blists-new' %>
 <% end %>

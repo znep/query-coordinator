@@ -371,4 +371,15 @@ HREF
       image_submit_tag(image_path('rpx/windowslive.gif'), :title => "#{action} with Windows Live ID")
     end
   end
+
+  def javascript_error_helper_tag
+    case Rails.env
+    when 'production'
+      javascript_include_tag 'util/errors-production'
+    when 'staging'
+      javascript_include_tag 'util/errors-staging'
+    else
+      javascript_include_tag 'util/errors-development'
+    end
+  end
 end

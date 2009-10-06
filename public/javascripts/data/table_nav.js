@@ -34,6 +34,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
 
     // Column selection.  Contains "true" for each selected column ID
     var selectedColumns = {};
+    this.lastSelectedColumn = null;
 
     // Is there a selection?
     var hasSelection = function() {
@@ -134,6 +135,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             // No modifier keys -- remove the selection
             selectionBoxes = [];
             selectedColumns = {};
+            this.lastSelectedColumn = null;
         }
 
         var row = model.get(y);
@@ -416,6 +418,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         {
             selectionBoxes = [];
             selectedColumns = {};
+            this.lastSelectedColumn = null;
             needRefresh = true;
         }
 
@@ -930,6 +933,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             selectionLevel = 0;
         }
         selectedColumns[column.id] = value;
+        if (value) { this.lastSelectedColumn = column; }
     };
 
     /**
@@ -947,6 +951,12 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         $.each(selectedColumns, function(colId, val)
                 { if (val) { rv[colId] = val; } });
         return rv;
+    };
+
+    this.clearColumnSelection = function()
+    {
+        selectedColumns = {};
+        this.lastSelectedColumn = null;
     };
 
     /**

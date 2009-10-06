@@ -632,7 +632,7 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenDate,
             sortGen: sortGenNumeric,
             filterRender: renderFilterDate,
-            filterValue: renderFilterDate,
+            filterValue: function(v) { return v; },
             sortable: true,
             filterable: true,
             group: groupDate,

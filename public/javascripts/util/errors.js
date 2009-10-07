@@ -1,6 +1,25 @@
 function trackError(msg, url, line)
 {
-    alert('Tracking error at ' + url + ': ' + msg + ':' + line);
+    if (blistEnv != 'production')
+    { alert('Tracking error at ' + url + ': ' + msg + ':' + line); }
+    if (blistEnv == 'staging' || blistEnv == 'production')
+    {
+        try
+        {
+            $.ajax({
+                data: {
+                    date: new Date(),
+                    message: msg,
+                    url: url,
+                    line: line
+                },
+                global: false,
+                type: 'POST',
+                url: '/errors'
+            })
+        }
+        catch(ignore) {}
+    }
 };
 
 // Override jQuery.event.proxy to wrap events with error-reporting.  This was
@@ -21,7 +40,7 @@ jQuery.event.proxy = function(fn, proxy)
         catch(ex)
         {
             trackError(ex.message, ex.fileName, ex.lineNumber);
-            throw ex;
+            if (blistEnv != 'production') { throw ex; }
         }
     };
     newProxy.guid = origProxy.guid;
@@ -41,11 +60,11 @@ jQuery.fn.ready = function(fn) {
         catch(ex)
         {
             trackError(ex.message, ex.fileName, ex.lineNumber);
-            throw ex;
+            if (blistEnv != 'production') { throw ex; }
         }
     };
     fn = wrappedFn;
-    
+
     return jQueryReady.call(this, wrappedFn);
 }
 
@@ -54,6 +73,6 @@ jQuery.fn.ready = function(fn) {
 window.onerror = function(msg, url, lineNo)
 {
     trackError(msg, url, lineNo);
-    return false;
+    return blistEnv == 'production';
 };
 

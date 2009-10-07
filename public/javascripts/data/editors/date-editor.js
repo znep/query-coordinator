@@ -46,7 +46,7 @@
                             editObj.textModified();
                             editObj.focus();
                         },
-                        start: 0, eventName: 'focus'});
+                        starts: 0, eventName: 'focus'});
             },
 
             finishEditExtra: function()

@@ -2120,8 +2120,7 @@ div.datepicker
 {
     display: none;
     left: 0;
-    margin-left: -2px;
-    margin-top: 3px;
+    margin-left: -4px;
     position: absolute;
     top: 0;
     z-index: 4000;
@@ -2149,7 +2148,7 @@ div.datepicker th
     font-weight: normal;
     text-align: center;
 }
-div.datepicker tbody th { text-align: left; }
+div.datepicker tbody th { text-align: right; }
 div.datepicker tbody a { display: block; }
 .datepickerDays a
 {

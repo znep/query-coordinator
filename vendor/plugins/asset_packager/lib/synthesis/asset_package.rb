@@ -120,6 +120,7 @@ module Synthesis
       @cache_dir = config['cache_dir'] || ''
       @file_name = File.join(@cache_dir, "#{@target}_packaged.#{@extension}")
       @full_path = File.join(@asset_path, @file_name)
+      @@asset_host = Rails.configuration.action_controller.asset_host
     end
   
     def package_exists?

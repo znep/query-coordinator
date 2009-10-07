@@ -1214,6 +1214,13 @@ div#sortBysList.reorderList li .itemWrapper
 /*** END: Sort dialog ***/
 
 /*** START: Filter dialog ***/
+.modalDialog .dialogBox .header .filterIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -160px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
 
 .filterDatasetWrapper #filterList
 {
@@ -1490,3 +1497,107 @@ div#sortBysList.reorderList li .itemWrapper
 .calendarWrapper div.required { float: left; }
 .calendarWrapper ul.actionButtons { margin-top: 0; }
 /*** END: Create calendar dialog ***/
+
+/*** START: Message the owner of this dataset ***/
+.modalDialog .dialogBox .header .bulkIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -135px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
+.dialogWrapper.modalDialog.bulk 
+{
+    width: 56.5em;
+}
+
+.bulkOperationWrapper .helpText 
+{
+    font-size: 1.2em;
+    line-height: 1.3em; /* 21px */
+    margin-right: 3em;
+    padding-bottom: 1em;
+    text-align: justify;
+}
+
+.bulkOperationWrapper label
+{
+    display: block;
+    font-size: 1.3em;
+    height: 2.5em;
+    margin: 0.5em 0 -2.7em;
+    padding-right: 1em;
+    text-align: right;
+    width: 10em;
+}
+
+.bulkOperationWrapper label.error
+{
+    font-size: 1.1em;
+    height: 1.5em;
+    margin: 0.5em 0 0 14em;
+    text-align: left;
+    width: 30em;
+}
+
+.bulkOperationWrapper input
+{
+    margin-left: 12.5em;
+    padding: 0.2em;
+    padding-bottom: 1.5em;
+    width: 17em;
+}
+
+.bulkOperationWrapper .fileBrowseButtonListContainer
+{
+    display: inline;
+    position: absolute;
+    right: 7em;
+}
+
+.bulkOperationWrapper .fileBrowseButtonListContainer .actionButtons
+{
+    margin-top: 0;
+}
+
+.bulkOperationWrapper span.helpie
+{
+    position: absolute;
+    right: 5em;
+}
+
+.bulkOperationWrapper .requiredText
+{
+    background: url(/stylesheets/images/common/required.png) no-repeat;
+    padding-left: 1.5em;
+    position: absolute;
+}
+
+.bulkOperationWrapper #error,
+.bulkOperationWrapper .errorMessage
+{
+    font-size: 1.2em;
+    margin-right: 1em;
+    padding: 0.3em;
+    padding-bottom: 0.7em;
+    vertical-align: middle;
+}
+
+.bulkOperationWrapper .submitLine 
+{
+    width: 53.8em;
+}
+
+.bulkOperationWrapper .submitLine .requiredText
+{
+    position: absolute;
+}
+
+.bulkOperationWrapper .submitLine .submitActions
+{
+    width: 100px;
+}
+
+
+/*** END: Message the owner of this dataset ***/

@@ -611,6 +611,21 @@ body#lensBody
     background-position: 5px -945px;
 }
 
+#mainMenu li.data .importRows > a
+{
+    background-position: 5px -25px;
+}
+
+#mainMenu li.data .importRows .append > a
+{
+    background-position: 5px -1175px;
+}
+
+#mainMenu li.data .importRows .replace > a
+{
+    background-position: 5px -1198px;
+}
+
 #mainMenu li.info .statistics > a
 {
     background-position: 5px -1012px;

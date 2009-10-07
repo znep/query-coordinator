@@ -147,7 +147,15 @@
                       {'section_title' => 'Add totals to:'}],
                   'submenu' => method(:column_aggregate_menu),
                   'column_test' => proc {|c, p|
-                  c.dataType.possible_aggregates.length > 1}})}
+                  c.dataType.possible_aggregates.length > 1}})},
+        {'separator' => true},
+        {'text' => 'Import More Rows', 'class' => 'importRows',
+          'href' => '#', 'submenu' => {'items' => [
+            {'text' => 'Append From a File', 'class' => 'append',
+            'href' => "#{@view.href}/bulk/append", 'modal' => true},
+            {'text' => 'Replace With a File', 'class' => 'replace',
+            'href' => "#{@view.href}/bulk/replace", 'modal' => true}
+          ]}}
         ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>

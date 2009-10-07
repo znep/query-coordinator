@@ -140,6 +140,11 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
       :category => /(\w|-)+/}
 
+  map.connect ':category/:view_name/:id/bulk/:type', :controller => 'blists',
+    :action => 'bulk', :conditions => { :method => :get },
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+      :category => /(\w|-)+/}
+
   map.connect ':category/:view_name/:id/share', :controller => 'blists',
     :action => 'share', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,

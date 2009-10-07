@@ -572,6 +572,8 @@
   padding: 0.6em;
 }
 
+.columnPropertiesWrapper .hidden { display: none; }
+
 .sortBysList .createBar,
 .columnPropertiesWrapper .saveBar,
 .columnPropertiesWrapper .createBar

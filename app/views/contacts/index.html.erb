@@ -1,7 +1,6 @@
 <%- isAddingEnabled = false -%>
 <% content_for :head do %>
-  <%= stylesheet_link_tag "list-screen", "contacts-screen",
-    :cache => "cache/contacts_index_all" %>
+  <%= stylesheet_link_merged 'contacts-index' %>
   <title><%= th.site_title %></title>
 <% end %>
 
@@ -127,11 +126,6 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.tablesorter",
-    "plugins/jquery.searchable", "util/humane-date",
-    "widgets/panel-expander", "widgets/selectable-list",
-    "widgets/combination-list", "widgets/sidebar-filter",
-    "screens/contacts-screen", "screens/info-pane",
-    :cache => "cache/contacts_index_all" %>
+  <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_merged 'contacts-index' %>
 <% end %>

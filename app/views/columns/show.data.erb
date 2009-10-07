@@ -124,6 +124,8 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           </div>
         </div>
     </div>
+    <%# Firefox won't trigger submit events unless there is a submit button %>
+    <input class='hidden' type='submit' />
   <% end %>
 </div>
 
@@ -189,6 +191,9 @@ $(function()
   $("#modal #ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#modal #precision").val() });
 
   var save = function() {
+      if (!formEnabled) { return false; }
+      toggleEnabled();
+
       $.ajax({
         type: "PUT",
         url: '<%= @column.href(@view_id)%>',
@@ -261,16 +266,13 @@ $(function()
       return false;
   });
 
-  $("#modal #columnProperties").submit( function() {
-    $("#modal .save").click();
-    return false;
+  $("#modal #columnProperties").submit( function(e) {
+      e.preventDefault();
+      save();
   });
 
   $("#modal .save").click(function(e) {
       e.preventDefault();
-      if (!formEnabled) { return false; }
-      toggleEnabled();
-
       save();
   });
 });

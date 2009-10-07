@@ -42,6 +42,8 @@ var column = <%= @column.to_js %>;
           <tbody>
         </table>
         </div>
+        <%# Firefox won't trigger submit events unless there is a submit button %>
+        <input class='hidden' type='submit' />
   <% end %>
       <div class="createBar">
         <div class="error errorMessage"></div>
@@ -104,14 +106,8 @@ blist.common.modalReady = function() {
   $("#modal #description").change(function() { column.description = $(this).val() });
   $("#modal #types").change(function() { column.type = $(this).value() });
 
-  $("#modal #columnCreate").submit( function() {
-    $("#modal .save").click();
-    return false;
-  });
-
-  $("#modal .save").click(function(event)
+  var saveForm = function()
   {
-      event.preventDefault();
       if (!formEnabled) { return false; }
       toggleEnabled();
 
@@ -139,6 +135,17 @@ blist.common.modalReady = function() {
             $("#modal .jqmClose").click();
         }
       });
+  };
+
+  $("#modal #columnCreate").submit( function(e) {
+      e.preventDefault();
+      saveForm();
+  });
+
+  $("#modal .save").click(function(event)
+  {
+      event.preventDefault();
+      saveForm();
   });
 
   $('#columnCreate input#name').focus();

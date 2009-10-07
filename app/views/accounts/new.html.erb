@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "signup-screen", "form-common" %>
+  <%= stylesheet_link_merged 'accounts-new' %>
   <title><%= th.site_title %></title>
 <% end %>
 
@@ -22,8 +22,8 @@
 <% end %>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "screens/signup-screen", :cache => "cache/accounts_new_all" %>
+  <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_tag "screens/signup-screen" %>
   <script src="https://rpxnow.com/openid/v2/widget"
           type="text/javascript"></script>
   <script type="text/javascript">

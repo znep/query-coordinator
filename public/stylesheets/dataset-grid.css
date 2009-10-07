@@ -464,6 +464,10 @@ div.blist-table-editor
     padding: 0;
 }
 
+.blist-table-edit-container div.blist-table-editor.type-date { margin: -5px 0; }
+.blist-table-edit-container div.blist-table-editor.type-date input
+{ padding: 5px 0; }
+
 div.blist-table-edit-container.combo-container .blist-combo
 {
     min-height: 1.667em;

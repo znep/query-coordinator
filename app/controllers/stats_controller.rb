@@ -36,10 +36,16 @@ class StatsController < ApplicationController
   end
   
   def popup
-    render(:layout => "splash")
+    respond_to do |format|
+      format.html { render }
+      format.data { render(:layout => "splash") }
+    end
   end
   
   def screenshot
-    render(:layout => "screenshot")
+    respond_to do |format|
+      format.html { render }
+      format.data { render(:layout => "screenshot") }
+    end
   end
 end

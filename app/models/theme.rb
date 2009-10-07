@@ -20,6 +20,8 @@ module Theme
         theme = 'gov'
       elsif host.include? 'chicago'
         theme = 'cityofchicago'
+      elsif host.include? 'austin'
+        theme = 'cityofaustin'
       elsif host.include? 'nwpublic'
         theme = 'nwpublic'
       elsif host.include? 'seattle'

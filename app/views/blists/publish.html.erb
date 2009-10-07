@@ -1,6 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blist-publish-screen", "colorpicker", "form-common",
-      :cache => "cache/blists_publish_screen" %>
+  <%= stylesheet_link_merged 'blists-publish' %>
   <title>Publishing <%= @view.name %> | <%= th.site_title %></title>
 <% end %>
 
@@ -719,13 +718,10 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_merged 'shared-common-all' %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
     blist.publish.currentTheme = <%= @customization.to_json %>;
   </script>
-  <%= javascript_include_tag "screens/info-pane", "plugins/colorpicker",
-      "plugins/ui.core", "plugins/ui.draggable", "plugins/ajaxupload.3.0",
-      "util/color", "widgets/reorderable-list", "screens/blist-publish-screen",
-      :cache => "cache/blists_publish" %>
+  <%= javascript_include_merged 'blists-publish' %>
 <% end %>

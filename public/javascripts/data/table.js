@@ -1407,39 +1407,6 @@
                     return;
                 }
                 else if (hotHeaderMode == 4) { return; }
-                else if (hotHeaderMode == 1 && cellNav ||
-                    hotHeaderMode == 5)
-                {
-                    if (!origColSelects)
-                    {
-                        origColSelects = cellNav.getSelectedColumns();
-                    }
-
-                    var $curHeader = getHeaderUnderMouse(event.pageX);
-                    if ($curHeader && $curHeader.index($curHeaderSelect) < 0)
-                    {
-                        var curCol = $curHeader.data('column');
-                        if ($curHeaderSelect && curColSelects[curCol.id])
-                        {
-                            var prevCol = $curHeaderSelect.data('column');
-                            delete curColSelects[prevCol.id];
-                            if (!origColSelects[prevCol.id])
-                            {
-                                selectColumn(prevCol, false);
-                            }
-                        }
-                        else
-                        {
-                            curColSelects[curCol.id] = true;
-                            if (!origColSelects[curCol.id])
-                            {
-                                selectColumn(curCol, true);
-                            }
-                        }
-                        $curHeaderSelect = $curHeader;
-                        hotHeaderMode = 5;
-                    }
-                }
             }
 
             // Handle mouse down movement
@@ -1474,14 +1441,12 @@
                 return;
             }
 
-            if (handleHeaderHover(event)) {
-                if (hotCell)
-                {
-                    onCellOut(event);
-                }
-                return;
+            if (handleHeaderHover(event))
+            {
+                if (hotCell) { onCellOut(event); }
             }
-            if (hotHeader) {
+            else if (hotHeader)
+            {
                 hotHeader = null;
                 $outside.css('cursor', 'auto');
             }
@@ -2486,7 +2451,8 @@
                             "' uid='" +
                             child.uid +
                             "'>" +
-                            "<div class='blist-th-icon'></div>" +
+                            (canEdit() ?
+                                "<div class='blist-th-icon'></div>" : "") +
                             "<span class='blist-th-name'>" +
                             htmlEscape(child.name) +
                             "</span></div>\""

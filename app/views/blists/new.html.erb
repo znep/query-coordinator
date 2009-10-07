@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "blist-new-screen", "form-common", :cache => "cache/blists_new_all" %>
+  <%= stylesheet_link_merged 'blists-new' %>
   <title>New <%= t(:blist_name).capitalize %> | <%= th.site_title %></title>
 <% end %>
 
@@ -147,7 +147,6 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/ajaxupload.3.0", "screens/blist-new-screen.js",
-  :cache => "cache/blists_new" %>
+  <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_merged 'blists-new' %>
 <% end %>

@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
-  <%= stylesheet_link_tag "blist-about-screen", :cache => "cache/blists_about_all" %>
+  <%= stylesheet_link_tag "blist-about-screen" %>
   <title><%= @view.name %> | <%= th.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <link rel="canonical" href="<%= @view.about_href %>" />
@@ -326,8 +326,6 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "screens/blist-about-screen", "screens/attribution-edit",
-      "widgets/dropdown-menu",
-      :cache => "cache/blists_about" %>
+  <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_merged 'blists-about' %>
 <% end %>

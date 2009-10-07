@@ -1,8 +1,6 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
-  <%= stylesheet_link_tag 'table-core', 'table-blist-grid', 'dataset-grid',
-    "ui.spinner", "blist-grid-screen", "form-common", "combo",
-    :cache => "cache/blists_show_all" %>
+  <%= stylesheet_link_merged 'blists-show' %>
   <title><%= h(@view.name) %> | <%= th.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <link rel="canonical" href="<%= @view.href %>" />
@@ -350,11 +348,9 @@
   <%- if !current_user -%>
   <%= render :partial => 'login' %>
   <%= render :partial => "signup" %>
-  <%= javascript_include_tag "plugins/ajaxupload.3.0", "screens/signup-screen", 
-    :cache => "cache/inline_accounts_new_all" %>
   <%- end -%>
 
-  <%= render(:partial => "shared/common_js") %>
+  <%= javascript_include_merged 'shared-common-all' %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.blistGrid');
     <%- if !current_user.nil? -%>
@@ -374,19 +370,5 @@
   </script>
 
   <%= render(:partial => 'shared/table_editor_js') %>
-  <%= javascript_include_tag "plugins/ui.core", "plugins/ui.draggable",
-    "plugins/ui.spinner", "util/extMouseWheel",
-    "util/navigation", "util/inline-login", "plugins/date",
-    "plugins/jquery.colorPicker", "data/types", "data/model", "data/table",
-    "data/table_nav", "widgets/inline-edit", "widgets/dropdown-menu",
-    "widgets/selectable-list", "widgets/pagination", "widgets/column-format",
-    "widgets/reorderable-list", "data/table", "widgets/inline-edit",
-    "widgets/dropdown-menu", "widgets/column-format", "widgets/column-totals",
-    "widgets/info-pane-comments", "widgets/info-pane-publish", 
-    "widgets/scrollable", "widgets/dataset-grid",
-    "screens/filter-screen",
-    "widgets/visualization", "screens/info-pane", "screens/meta-tabs", 
-    "screens/attribution-edit", "screens/blist-grid-screen", "widgets/column-format", 
-    "widgets/column-totals", "widgets/combo", "widgets/values",
-    :cache => "cache/blists_show_all" %>
+  <%= javascript_include_merged 'blists-show' %>
 <% end %>

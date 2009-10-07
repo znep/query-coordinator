@@ -1,7 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "discover-screen",
-    "carousel/jquery.jcarousel", "carousel/discover-carousel-skin",
-    :cache => "cache/data_show_all" %>
+  <%= stylesheet_link_merged 'data-show' %>
   <title><%= th.site_title %></title>
 <% end %>
 
@@ -128,11 +126,8 @@
   <div class="jqmWindow" id="tagCloud"></div>
   <div class="jqmWindow" id="redirectedModal"></div>
   <div class="jqmWindow" id="splashModal"></div>
-  <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.jcarousel", "plugins/jquery.tagcloud",
-    "plugins/jquery.history",
-    "widgets/simple-tab-navigate", "screens/discover-screen",
-    :cache => "cache/data_show_all" %>
+  <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_merged 'data-show' %>
   <script type="text/javascript" charset="utf-8">
     discoverNS.filterUrl = "<%= data_filter_path %>";
   </script>

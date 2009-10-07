@@ -1,7 +1,6 @@
 <%- if view.is_calendar? -%>
-<%= stylesheet_link_tag 'fullcalendar', :cache => 'cache/calendar_all' %>
-<%= javascript_include_tag 'plugins/fullcalendar', 'widgets/blist-calendar',
-  :cache => 'cache/calendar_all' %>
+<%= stylesheet_link_tag 'fullcalendar' %>
+<%= javascript_include_merged 'shared-calendar' %>
 <%- end -%>
 
 <script type="text/javascript">

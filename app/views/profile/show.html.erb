@@ -472,10 +472,8 @@
 </div>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/common_js") %>
-  <%= javascript_include_tag "plugins/jquery.tablesorter", "plugins/ajaxupload.3.0",
-  "widgets/selectable-list", "widgets/combination-list", "plugins/ui.core", "plugins/ui.showedit",
-  "screens/profile-screen", :cache => "cache/profiles_show_all" %>
+  <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_merged 'profiles-show' %>
   <% if @is_user_current %>
     <%= javascript_include_tag "screens/profile-screen-edit" %>
   <% end %>

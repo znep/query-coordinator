@@ -1259,7 +1259,7 @@
 
             var $headers = $('.blist-th:not(.blist-table-ghost), .blist-tdh',
                     container);
-                    
+
             $headers.each(function(i)
                 {
                     var header = $(this);
@@ -1268,7 +1268,8 @@
                     var width = header.outerWidth();
                     var right = left + width;
 
-                    var isCtl = header.is('.blist-opener');
+                    var isCtl = header.is('.blist-opener, ' +
+                        '.blist-table-row-handle, .blist-table-ghost');
                     var isSizable = !isCtl && !header.is('.nested_table') &&
                         !(options.disableLastColumnResize &&
                             (i == ($headers.length - 1)));
@@ -1279,7 +1280,8 @@
                         hh = header[0];
                         hhm = 2;
                         dragHeaderLeft = left;
-                        foundRealHeader = header.is('.blist-th');
+                        foundRealHeader =
+                            header.is('.blist-th, .blist-tr-open .blist-tdh');
                         return false;
                     }
 
@@ -1297,11 +1299,12 @@
                         {
                             hhm = isCtl ? 3 : 1;
                         }
-                        foundRealHeader = header.is('.blist-th');
+                        foundRealHeader =
+                            header.is('.blist-th, .blist-tr-open .blist-tdh');
                         return false;
                     }
                 });
-                
+
             if (hh)
             {
                 if (hh != hotHeader || hhm != hotHeaderMode)
@@ -1623,7 +1626,9 @@
 
             if (hotHeader && hotHeaderMode != 3)
             {
-                if ($clickTarget.closest('.action-item').length < 1)
+                if ($clickTarget.closest('.action-item').length < 1 &&
+                    ($clickTarget.closest('.blist-tdh').length < 1 ||
+                        hotHeaderMode == 2))
                 {
                     clickTarget = null;
                     clickCell = null;

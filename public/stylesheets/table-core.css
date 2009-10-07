@@ -167,6 +167,7 @@ div.blist-table .blist-td.blist-tdh
 .blist-tr-open .blist-td.blist-opener {
     background-image: url('/stylesheets/images/content/table/expand_opened.png?1');
     border-right-color: #eeeeee;
+    cursor: pointer;
 }
 
 .blist-table-scrolls .blist-td.blist-opener-inactive,

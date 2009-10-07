@@ -368,8 +368,9 @@ div.blist-tdh.blist-table-row-handle .blist-th-icon
 
 .blist-tr-open .blist-tdh
 {
-    color: #333333;
     background-color: #e8e8e8;
+    color: #333333;
+    cursor: inherit;
 }
 
 .blist-tr-open .blist-tdh .blist-th-icon,

@@ -230,9 +230,7 @@
 
         var selectColumn = function(column, state)
         {
-            if (!cellNav) {
-                return;
-            }
+            if (!cellNav) { return; }
 
             cellNav.setColumnSelection(column, state);
 
@@ -243,6 +241,38 @@
 
             updateColumnSelection();
             updateCellNavCues();
+        };
+
+        var selectColumnTo = function(column)
+        {
+            if (!cellNav) { return; }
+
+            if (cellNav.lastSelectedColumn === null)
+            {
+                selectColumn(column, true);
+                return;
+            }
+
+            var inSelect = false;
+            var lastCol = cellNav.lastSelectedColumn.id;
+            $.each(columns, function(i, c)
+            {
+                if (c.id == column.id || c.id == lastCol)
+                {
+                    inSelect = !inSelect;
+                    if (!inSelect) { return false; }
+                }
+                if (inSelect) { cellNav.setColumnSelection(c, true); }
+            });
+            selectColumn(column, true);
+        };
+
+        var selectOnlyColumn = function(column)
+        {
+            if (!cellNav) { return; }
+
+            cellNav.clearColumnSelection();
+            selectColumn(column, true);
         };
 
         var updateColumnSelection = function()
@@ -260,10 +290,11 @@
                         var colLeft = col.addClass('blist-select-col')
                             .offset().left;
                         inside.append('<div class="col-select-holder ' +
+                            'blist-table-util ' +
                             colClass + '"/>')
                             .find('.col-select-holder.' + colClass)
                             .css('left', colLeft - $header.offset().left +
-                                lockedWidth);
+                                lockedWidth).removeClass('blist-table-util');
                     }
                 }
                 else
@@ -1228,7 +1259,7 @@
 
             var $headers = $('.blist-th:not(.blist-table-ghost), .blist-tdh',
                     container);
-                    
+
             $headers.each(function(i)
                 {
                     var header = $(this);
@@ -1237,7 +1268,8 @@
                     var width = header.outerWidth();
                     var right = left + width;
 
-                    var isCtl = header.is('.blist-opener');
+                    var isCtl = header.is('.blist-opener, ' +
+                        '.blist-table-row-handle, .blist-table-ghost');
                     var isSizable = !isCtl && !header.is('.nested_table') &&
                         !(options.disableLastColumnResize &&
                             (i == ($headers.length - 1)));
@@ -1248,7 +1280,8 @@
                         hh = header[0];
                         hhm = 2;
                         dragHeaderLeft = left;
-                        foundRealHeader = header.is('.blist-th');
+                        foundRealHeader =
+                            header.is('.blist-th, .blist-tr-open .blist-tdh');
                         return false;
                     }
 
@@ -1266,11 +1299,12 @@
                         {
                             hhm = isCtl ? 3 : 1;
                         }
-                        foundRealHeader = header.is('.blist-th');
+                        foundRealHeader =
+                            header.is('.blist-th, .blist-tr-open .blist-tdh');
                         return false;
                     }
                 });
-                
+
             if (hh)
             {
                 if (hh != hotHeader || hhm != hotHeaderMode)
@@ -1297,6 +1331,9 @@
                 width = MINIMUM_HEADER_SIZE;
             }
             var col = getColumnForHeader(hotHeader);
+            if (col.hasOwnProperty('minWidth') && width < col.minWidth)
+            { width = col.minWidth; }
+
             if (col.hasOwnProperty('percentWidth'))
             {
                 varDenom[0] -= col.percentWidth;
@@ -1309,6 +1346,7 @@
                 }
             }
             col.width = width;
+            adjustHeaderStyling($(columns[col.indexInLevel].dom), true);
             model.colWidthChange(col, isFinished);
             updateColumnSelection();
         };
@@ -1588,7 +1626,9 @@
 
             if (hotHeader && hotHeaderMode != 3)
             {
-                if ($clickTarget.closest('.action-item').length < 1)
+                if ($clickTarget.closest('.action-item').length < 1 &&
+                    ($clickTarget.closest('.blist-tdh').length < 1 ||
+                        hotHeaderMode == 2))
                 {
                     clickTarget = null;
                     clickCell = null;
@@ -2111,8 +2151,9 @@
 
         // Safari (and presumably Chrome) needs the navigator to be position
         // absolute to avoid window jumping (FF requires fixed to do the same,
-        // so this is the default.  IE appears to work fine w/ fixed as well)
-        if ($.browser.safari)
+        // so this is the default.  IE appears to work fine w/ fixed as well,
+        // but IE6 draws the text field if position is fixed)
+        if ($.browser.safari || $.browser.msie)
         {
             $navigator.css('position', 'absolute');
         }
@@ -2427,7 +2468,6 @@
                         colParts.push("\"<div class='" +
                             getColumnClass(rowHandleColumn) +
                             " blist-td blist-tdh blist-table-row-handle'>" +
-                            "<div class='blist-th-icon'></div>" +
                             "</div>\"");
                         lcols.push({
                             type: 'handle',
@@ -2959,7 +2999,7 @@
 
             $lockedScrolls.width(lockedWidth);
             $locked.width(lockedWidth);
-            
+
             end("configureWidths");
         };
 
@@ -3120,7 +3160,6 @@
                         openerClass,
                         '"></div>');
                 }
-                html.push('<div class="th-inner-container">');
                 if (options.columnDrag)
                 {
                     html.push(
@@ -3129,9 +3168,12 @@
                             rowOffset + 'px"' : '',
                             '></div>');
                 }
+                html.push('<div class="info-container',
+                    canEdit() ? ' icon-display' : '',
+                    '">');
+                if (canEdit())
+                { html.push('<span class="blist-th-icon"></span>'); }
                 html.push(
-                    '<div class="info-container">',
-                    '<span class="blist-th-icon"></span>',
                     '<div class="name-wrapper"><span class="blist-th-name">',
                     colName,
                     '</span></div>',
@@ -3144,7 +3186,7 @@
                     options.generateHeights ? ' style="height: ' +
                         rowOffset + 'px"' : '',
                     '></div>',
-                    '</div></div>');
+                    '</div>');
             }
             if (options.showGhostColumn)
             {
@@ -3174,7 +3216,8 @@
                 }
                 columns[index].dom = this;
 
-                $(this)
+                var $col = $(this);
+                $col
                     .data('column', columns[index])
                     .bind('click', function(event)
                     {
@@ -3186,26 +3229,29 @@
 
                         var $target = $(event.target);
                         var col = $target.closest('.blist-th').data('column');
-                        if (cellNav &&
-                            $target.closest('.blist-th-icon').length > 0)
-                        {
-                            selectColumn(col, !cellNav.isColumnSelected(col));
-                            return;
-                        }
-
                         $(this).removeClass('hover');
+
                         if ($target.closest('.filter').length > 0)
                         {
                             model.clearColumnFilter(col.index);
                             return;
                         }
 
-                        if ((blist.data.types[col.type] != undefined &&
-                                blist.data.types[col.type].sortable) ||
-                            col.sortable)
+                        if ($target.closest('.sort').length > 0 &&
+                                ((blist.data.types[col.type] !== undefined &&
+                                  blist.data.types[col.type].sortable) ||
+                                 col.sortable))
                         {
                             sort(col.index);
+                            return;
                         }
+
+                        if (event.metaKey) // ctrl/cmd key
+                        { selectColumn(col, !cellNav.isColumnSelected(col)); }
+                        else if (event.shiftKey)
+                        { selectColumnTo(col); }
+                        else
+                        { selectOnlyColumn(col); }
                     })
                     .hover(function ()
                         { if (!hotHeaderDrag || hotHeaderMode != 4)
@@ -3214,7 +3260,7 @@
 
                 if (options.columnDrag)
                 {
-                    $(this)
+                    $col
                         .draggable({
                             appendTo: '.blist-table', axis: 'x',
                             drag: function(event, ui)
@@ -3251,6 +3297,7 @@
                             }});
                 }
 
+                adjustHeaderStyling($col);
                 if (options.headerMods != null)
                 {
                     options.headerMods(columns[index]);
@@ -3263,7 +3310,7 @@
             {
                 lockedHtml += '<div class="blist-th ' + (c.cls || '') +
                     ' ' + getColumnClass(c) +
-                    '"><div class="blist-th-icon"></div></div>';
+                    '"></div>';
             });
             $lockedHeader.html(lockedHtml);
 
@@ -3272,6 +3319,35 @@
             configureFilterHeaders();
 
             end("renderHeader-augment");
+        };
+
+        var adjustHeaderStyling = function($colHeader, useClone)
+        {
+            var $orig = $colHeader;
+            if (useClone)
+            {
+                $colHeader = $orig.clone();
+                measureUtil.append($colHeader);
+            }
+            $colHeader.removeClass('narrow narrower');
+            var $infoC = $colHeader.find('.info-container');
+            var infoW = $infoC.outerWidth(true);
+            var innerW = $colHeader.width();
+            // Make an initial guess & do checks incrementally to shave off ms
+            if (infoW + 20 > innerW)
+            {
+                infoW += parseInt($infoC.css('left'));
+                if (infoW > innerW)
+                {
+                    var iconW =
+                        $colHeader.find('.blist-th-icon').outerWidth(true) || 0;
+                    $orig.toggleClass('narrower', infoW - iconW > innerW);
+                    $orig.addClass('narrow');
+                }
+                else if (useClone) { $orig.removeClass('narrow narrower'); }
+            }
+            else if (useClone) { $orig.removeClass('narrow narrower'); }
+            if (useClone) { $colHeader.remove(); }
         };
 
         var curDropPos = null;

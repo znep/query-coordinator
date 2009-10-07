@@ -11,7 +11,7 @@ class StatsController < ApplicationController
 
     if(!current_user || !current_user.can_access_premium_on?(@dataset))
       # User is not logged on or cannot access stats, redirect them to the solution page
-      redirect_to '/solution'
+      return redirect_to('/solution')
     end
 
     if (@dataset.createdAt.nil?)

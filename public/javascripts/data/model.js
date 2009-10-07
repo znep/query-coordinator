@@ -619,7 +619,8 @@ blist.namespace.fetch('blist.data');
                 var col = {
                     name: vcol.name,
                     description: vcol.description,
-                    width: vcol.width || 100,
+                    width: Math.max(50, vcol.width || 100),
+                    minWidth: 50,
                     type: vcol.dataType && vcol.dataType.type ? vcol.dataType.type : "text",
                     id: vcol.id,
                     tableColumnId: vcol.tableColumnId,

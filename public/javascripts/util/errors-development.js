@@ -3,31 +3,29 @@ function trackError(msg, url, line)
     alert('Tracking error at ' + url + ': ' + msg + ':' + line);
 };
 
-// override jQuery.fn.bind to wrap every provided function in try/catch
-var jQueryBind = jQuery.fn.bind;
-jQuery.fn.bind = function(type, data, fn) {
-    if(!fn && data && typeof data == 'function')
+// Override jQuery.event.proxy to wrap events with error-reporting.  This was
+//  originally done by overriding bind; however, that messed with unbinding since
+//  the original function was hidden from jQuery.  By hooking proxy, we can
+//  hook in after jQuery has gotten the original function and given it a guid,
+//  so this should be safer
+var jQueryEventProxy = jQuery.event.proxy;
+jQuery.event.proxy = function(fn, proxy)
+{
+    var origProxy = jQueryEventProxy(fn, proxy);
+    var newProxy = function()
     {
-        fn = data;
-        data = null;
-    }
-    if(fn)
-    {
-        var origFn = fn;
-        var wrappedFn = function() {
-            try
-            {
-                origFn.apply(this, arguments);
-            }
-            catch(ex)
-            {
-                trackError(ex.message, ex.fileName, ex.lineNumber);
-                throw ex;
-           }
-        };
-        fn = wrappedFn;
-    }
-    return jQueryBind.call(this, type, data, fn);
+        try
+        {
+            return origProxy.apply(this, arguments);
+        }
+        catch(ex)
+        {
+            trackError(ex.message, ex.fileName, ex.lineNumber);
+            throw ex;
+        }
+    };
+    newProxy.guid = origProxy.guid;
+    return newProxy;
 };
 
 // override jQuery.ready to wrap every $(function() {}); or

@@ -31,6 +31,13 @@ ActionController::Routing::Routes.draw do |map|
   #   end
   UID_REGEXP = /\w{4}-\w{4}/
 
+  # Stop the "Microsoft Data Access Internet Publishing Provider Protocol Discovery" agent from
+  # spewing errors in our log, by just telling it everything is okay. :-)
+  map.connect '*path',
+    :controller => 'microsoft_office',
+    :action => 'options_for_mopd',
+    :conditions => {:method => :options}
+
   map.resources :contacts,
     :collection => {
       :detail => :get,

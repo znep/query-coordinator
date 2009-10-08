@@ -38,7 +38,9 @@
                 currentObj._rowsToLoad = [];
 
                 $domObj.fullCalendar({disableDragging: true, aspectRatio: 2,
-                        disableResizing: true, editable: false})
+                        disableResizing: true, editable: false,
+                        eventRender: function(ce, e, v)
+                            { eventRender(currentObj, ce, e, v); }})
                     .append('<div class="loadingSpinner"></div>');
                 ajaxLoad(currentObj,
                     { include_ids_after: currentObj.settings.pageSize });
@@ -81,6 +83,8 @@
                 else if (c.id == fmt.startDateId) { currentObj._startIndex = i; }
                 else if (c.id == fmt.endDateId) { currentObj._endIndex = i; }
                 else if (c.id == fmt.titleId) { currentObj._titleIndex = i; }
+                else if (c.id == fmt.descriptionId)
+                { currentObj._descriptionIndex = i; }
             });
         }
 
@@ -98,6 +102,8 @@
                     title: $.htmlStrip(r[currentObj._titleIndex])};
                 if (currentObj._endIndex !== undefined)
                 { ce.end = r[currentObj._endIndex]; }
+                if (currentObj._descriptionIndex !== undefined)
+                { ce.description = r[currentObj._descriptionIndex]; }
                 events.push(ce);
             }
             else { currentObj._rowsToLoad.push(r); }
@@ -117,4 +123,13 @@
         if (toLoad.length > 0) { ajaxLoad(currentObj, { ids: toLoad }); }
     };
 
+    var eventRender = function(currentObj, calEvent, element, view)
+    {
+        if (calEvent.description)
+        {
+            $(element).qtip({content: calEvent.description,
+                    style: { name: 'blist' },
+                    position: { target: 'mouse' } });
+        }
+    };
 })(jQuery);

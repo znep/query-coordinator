@@ -22,7 +22,9 @@ javascripts:
   - util/alert-override
   - widgets/clipped-text
   - screens/common-layout
+  - util/styling
 - shared-calendar:
+  - plugins/jquery.qtip
   - plugins/fullcalendar
   - widgets/blist-calendar
 - shared-table-editor:

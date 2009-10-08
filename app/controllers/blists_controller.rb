@@ -440,6 +440,10 @@ class BlistsController < ApplicationController
         fmt[:endDateId] = view.columns.select {|c|
           c.tableColumnId.to_s == params[:endDate].to_s}[0].id
       end
+      if !params[:eventDescription].blank?
+        fmt[:descriptionId] = view.columns.select {|c|
+          c.tableColumnId.to_s == params[:eventDescription].to_s}[0].id
+      end
       view.update_attributes!({:displayType => 'calendar', :displayFormat => fmt})
     rescue CoreServer::CoreServerError => e
       errors << e.error_message

@@ -1407,6 +1407,18 @@ blist.namespace.fetch('blist.data');
                 });
             }
 
+            if (newViewColumn.format.aggregate !== null &&
+                newViewColumn.format.aggregate !== undefined)
+            {
+                $.each(meta.aggregates, function(i, a) {
+                    if (a.columnId == oldId)
+                    {
+                        a.columnId = newViewColumn.id;
+                        return false;
+                    }
+                });
+            }
+
             meta.columns = null;
             this.meta(meta);
             configureActive();

@@ -666,13 +666,13 @@
     {
         var selCols = $(datasetObj.currentGrid).blistTableAccessor()
             .getSelectedColumns();
-        var hasSel = false;
-        $.each(selCols, function() { hasSel = true; return false; });
+        var col = $colHeader.data('column');
+        var numSel = 0;
+        $.each(selCols, function() { numSel++; });
 
-        if (!hasSel)
+        if (numSel < 1 || (numSel == 1 && selCols[col.id] !== undefined))
         {
             $menu.find('.singleItem').show();
-            var col = $colHeader.data('column');
             if (col) { loadFilterMenu(datasetObj, col, $menu); }
         }
         else

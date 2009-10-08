@@ -6,7 +6,7 @@ var column = <%= @column.to_js %>;
 <h1 id="title" class="columnPropertiesIcon">Create a New Column</h1>
 <% end %>
 
-<div class="columnPropertiesWrapper">
+<div id='columnCreateDialog' class="columnPropertiesWrapper">
   <% form_tag "#", :id => "columnCreate" do %>
       <div>
         <table cellspacing="0">
@@ -15,18 +15,24 @@ var column = <%= @column.to_js %>;
               <td colspan="2"><h3 class="seperator">Column Details</h3></td>
             </tr>
             <tr>
-              <td class="labelColumn"><label for="name" class="required">Column Name:</label></td>
-              <td class="fieldColumn"><%= text_field_tag("name", @column.name, 
-                                                         :class => "textPrompt prompt",
-                                                         :title => "Enter a name",
-                                                         :id => "name") %></td>
+              <td class="labelColumn">
+                <label for="name" class="required">Column Name:</label>
+              </td>
+              <td class="fieldColumn">
+                <%= text_field_tag("name", @column.name,
+                :class => "textPrompt prompt", :title => "Enter a name",
+                :id => "name") %>
+              </td>
             </tr>
             <tr>
-              <td class="labelColumn"><label for="description">Column Description:</label></td>
-              <td class="fieldColumn"><%= text_area_tag("description", @column.description, 
-                                                        :class => "textPrompt prompt", 
-                                                        :title => "Enter a description",
-                                                        :id => "description") %></td>
+              <td class="labelColumn">
+                <label for="description">Column Description:</label>
+              </td>
+              <td class="fieldColumn">
+                <%= text_area_tag("description", @column.description,
+                :class => "textPrompt prompt", :title => "Enter a description",
+                :id => "description") %>
+              </td>
             </tr>
             <tr>
               <td colspan="2"><h3 class="seperator">Type of Column</h3></td>
@@ -39,30 +45,34 @@ var column = <%= @column.to_js %>;
                 </div>
               </td>
             </tr>
-          <tbody>
+          </tbody>
         </table>
-        </div>
-        <%# Firefox won't trigger submit events unless there is a submit button %>
-        <input class='hidden' type='submit' />
-  <% end %>
-      <div class="createBar">
-        <div class="error errorMessage"></div>
-        <h3 class="seperator"></h3>
-        <div class="required">Required Field</div> 
-        <a href="#" class="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
       </div>
+      <%# Firefox won't trigger submit events unless there is a submit button %>
+      <input class='hidden' type='submit' />
+  <% end %>
+  <div class="createBar">
+    <div class="error errorMessage"></div>
+    <h3 class="seperator"></h3>
+    <div class="required">Required Field</div>
+    <ul class='actionButtons clearfix'>
+      <li><a href='#' class='save arrowButton'>Save</a></li>
+    </ul>
+  </div>
 </div>
 
 <script type="text/javascript" charset="utf-8">
 blist.common.modalReady = function() {
   // Since these widgets are created live, we have to populate the default
   // text prompt values manually instead of relying on the plugin.
-  $("#modal .textPrompt").example(function () { return $(this).attr("title"); });
+  $("#columnCreateDialog .textPrompt")
+    .example(function () { return $(this).attr("title"); });
 
   var renderValueInfoFormatRow = function(value)
   {
       var $row = $(this);
-      var $span_value = $('<span class="typeSelect datatype-' + value.id + '"></span>').html(value.label);
+      var $span_value = $('<span class="typeSelect datatype-' +
+          value.id + '"></span>').html(value.label);
       $row.empty().append($span_value);
   };
 
@@ -88,23 +98,27 @@ blist.common.modalReady = function() {
 
   column.type = "<%= @type.nil? ? "text" : @type %>";
 
-  $("#modal #types").combo({
+  $("#columnCreateDialog #types").combo({
     name: "types",
-    values: typeValues, 
-    value: column.type, 
+    values: typeValues,
+    value: column.type,
     renderFn: renderValueInfoFormatRow
   });
 
   var formEnabled = true;
   var toggleEnabled = function()
   {
-    $("#modal .columnPropertiesWrapper :input").attr("disabled", formEnabled);
+    $("#columnCreateDialog .columnPropertiesWrapper :input")
+      .attr("disabled", formEnabled);
     formEnabled = !formEnabled;
   }
 
-  $("#modal #name").change(function() { column.name = $(this).val() });
-  $("#modal #description").change(function() { column.description = $(this).val() });
-  $("#modal #types").change(function() { column.type = $(this).value() });
+  $("#columnCreateDialog #name")
+    .change(function() { column.name = $(this).val() });
+  $("#columnCreateDialog #description")
+    .change(function() { column.description = $(this).val() });
+  $("#columnCreateDialog #types")
+    .change(function() { column.type = $(this).value() });
 
   var saveForm = function()
   {
@@ -113,22 +127,25 @@ blist.common.modalReady = function() {
 
       $.ajax({
         type: "POST",
-        url: '<%= blist_columns_url(@view_id) %><%= @parent.nil? ? '' : "?parent=#{@parent}" %>',
+        url: '<%= blist_columns_url(@view_id) %><%= @parent.nil? ?
+          '' : "?parent=#{@parent}" %>',
         cache: false,
         dataType: 'json',
         data: {
-          json: $.json.serialize(column), 
+          json: $.json.serialize(column),
           authenticity_token: "<%= form_authenticity_token %>"
-          },
-        error: function(request) { 
-            $("#modal .error").html($.json.deserialize(request.responseText).error).show() 
-            toggleEnabled();
         },
-        success: function(responseData) { 
-            $grid = $("#dataGrid");
+        error: function(request) {
+          $("#columnCreateDialog .error")
+            .html($.json.deserialize(request.responseText).error).show();
+          toggleEnabled();
+        },
+        success: function(responseData) {
+            var $grid = $("#dataGrid");
             if ($grid.length != 0)
             {
-              $("#dataGrid").blistModel().updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
+              $grid.blistModel()
+                .updateColumn(responseData, <%= @parent.nil? ? 'null' : @parent %>);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
             $.Tache.DeleteAll();
@@ -137,12 +154,12 @@ blist.common.modalReady = function() {
       });
   };
 
-  $("#modal #columnCreate").submit( function(e) {
+  $("#columnCreateDialog #columnCreate").submit( function(e) {
       e.preventDefault();
       saveForm();
   });
 
-  $("#modal .save").click(function(event)
+  $("#columnCreateDialog .save").click(function(event)
   {
       event.preventDefault();
       saveForm();

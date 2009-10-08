@@ -684,7 +684,7 @@
 
 
         /*** CELL EDITING ***/
-        
+
         var $editContainers = {};
         var isEdit = {};
         var DEFAULT_EDIT_MODE = 'edit';
@@ -702,7 +702,8 @@
 
             var row = getRow(cell);
             var col = getColumn(cell);
-            if (!col || col.dataIndex == 'rowHandle' || !row) { return false; }
+            if (!col || col.dataIndex == 'rowHandle' ||
+                col.dataIndex == 'rowNumber' || !row) { return false; }
             var value = model.getRowValue(row, col);
             if (!value) { value = model.getInvalidValue(row, col); }
 
@@ -2101,10 +2102,6 @@
         // Set up initial top of locked section
         $locked.css('top', $header.outerHeight());
 
-        // Initialize cell navigation now that the navigator is rendered
-        cellNav = options.cellNav ?
-            new blist.data.TableNavigation(model, [], $navigator) : null;
-
         // Install global listener to disable the active cell indicator when we lose focus
         var clickedInGrid = false;
         if (cellNav) {
@@ -2647,11 +2644,11 @@
         var initMeta = function(newModel)
         {
             begin("initMeta");
-            killHotExpander();
-            hideActiveCell();
-            endEdit(DEFAULT_EDIT_MODE);
 
             model = newModel;
+
+            clearCellNav();
+            endEdit(DEFAULT_EDIT_MODE);
 
             // Convert the model columns to table columns
             columns = [];

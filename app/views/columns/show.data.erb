@@ -9,7 +9,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
 <h1 id="title" class="columnPropertiesIcon"><%= h(@column.name) %></h1>
 <% end %>
 
-<div class="columnPropertiesWrapper">
+<div id='columnPropertiesDialog' class="columnPropertiesWrapper">
   <div id="loadingSpinner"></div>
   <% form_tag "#", :id => "columnProperties" do %>
     <div class="tabWrapper">
@@ -18,25 +18,23 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           <li><a id="general" href="#" class="selected">General</a></li>
           <% if @column.has_formatting? %>
               <li><a id="formatting" href="#">Formatting</a></li>
-          <% end %> 
+          <% end %>
           <% if @column.has_totals? %>
               <li><a id="totals" href="#">Column Totals</a></li>
           <% end %>
-          <%- #<li><a id="defaults" href="#">Default Values</a></li> %>
+          <%#<li><a id="defaults" href="#">Default Values</a></li> %>
         </ul>
       </div>
 
-      <%- # Default values tab %>
-      <%-
-        ' 
+      <%# Default values tab %>
+      <%#
         <div id="defaultsTab" class="tabContent">
           <h3>Apply a Default Cell Value</h3>
           <h4 class="subtitle seperator">What you enter here will appear by default in every cell for this column</h4>
         </div>
-        '
-      -%>
+      %>
 
-      <%- # Column totals tab %>
+      <%# Column totals tab %>
       <%- if @column.has_totals? %>
       <div id="totalsTab" class="tabContent">
         <h3>Column Total Options</h3>
@@ -44,29 +42,34 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       </div>
       <% end %>
 
-      <%- # Formatting tab %>
+      <%# Formatting tab %>
       <%- if @column.has_formatting? %>
       <div id="formattingTab" class="tabContent">
         <h3 class="seperator">Alignment Options</h3>
         <ul class="alignment">
           <li><p>Justify:</p></li>
           <li>
-            <%= radio_button("column", "alignment", "left", :checked => @column.alignment == "left") %>
+            <%= radio_button("column", "alignment", "left",
+            :checked => @column.alignment == "left") %>
             <label for="column_alignment_left" class="align alignLeft">Left</label>
           </li>
           <li>
-            <%= radio_button("column", "alignment", "center", :checked => @column.alignment == "center") %>
-            <label for="column_alignment_center" class="align alignCenter">Centered</label>
+            <%= radio_button("column", "alignment", "center",
+            :checked => @column.alignment == "center") %>
+            <label for="column_alignment_center"
+              class="align alignCenter">Centered</label>
           </li>
           <li>
-            <%= radio_button("column", "alignment", "right", :checked => @column.alignment == "right") %>
-            <label for="column_alignment_right" class="align alignRight">Right</label>
+            <%= radio_button("column", "alignment", "right",
+            :checked => @column.alignment == "right") %>
+            <label for="column_alignment_right"
+              class="align alignRight">Right</label>
           </li>
         </ul>
       </div>
       <%- end %>
 
-      <%- # General properties tab %>
+      <%# General properties tab %>
       <div id="generalTab" class="tabContent">
         <table cellspacing="0">
           <tbody>
@@ -74,15 +77,23 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
               <td colspan="2"><h3 class="seperator">Column Details</h3></td>
             </tr>
             <tr>
-              <td class="labelColumn"><label for="name" class="required">Column Name:</label></td>
-              <td class="fieldColumn"><%= text_field_tag("name", @column.name, :id => "name") %></td>
+              <td class="labelColumn">
+                <label for="name" class="required">Column Name:</label>
+              </td>
+              <td class="fieldColumn">
+                <%= text_field_tag("name", @column.name, :id => "name") %>
+              </td>
             </tr>
             <tr>
-              <td class="labelColumn"><label for="description">Column Description:</label></td>
-              <td class="fieldColumn"><%= text_area_tag("description", @column.description, 
-                                                        :class => "textPrompt" + (@column.description.blank? ? " prompt": ""), 
-                                                        :title => "Enter a description.",
-                                                        :id => "description") %></td>
+              <td class="labelColumn">
+                <label for="description">Column Description:</label>
+              </td>
+              <td class="fieldColumn">
+                <%= text_area_tag("description", @column.description,
+                :class => "textPrompt" +
+                  (@column.description.blank? ? " prompt": ""),
+                :title => "Enter a description.", :id => "description") %>
+              </td>
             </tr>
             <tr>
               <td colspan="2"><h3 class="seperator">Type of Column</h3></td>
@@ -90,7 +101,10 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
             <tr>
               <td class="labelColumn"><label for="type">Type:</label></td>
               <td class="fieldColumn middle">
-                <strong id="typeReadOnly" class="datatype-<%= @column.client_type %>"><%= Column.types[@column.client_type] %></strong>
+                <strong id="typeReadOnly"
+                  class="datatype-<%= @column.client_type %>">
+                  <%= Column.types[@column.client_type] %>
+                </strong>
                 <% if @column.convertable_types.size > 0 %>
                   <a id="converter" class="convertDropdown" href="#">Change</a>
                 <% end %>
@@ -103,24 +117,27 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
                       <ul class="convertables">
                         <% @column.convertable_types.each do |type| %>
                           <li>
-                            <a id="<%=type%>" class="convert datatype-<%=type%>" href="#">
+                            <a id="<%=type%>"
+                              class="convert datatype-<%=type%>" href="#">
                               <%= Column.types[type] %>
                             </a>
                           </li>
-                        <% end %> 
+                        <% end %>
                       </ul>
                     </div>
                 </td>
             </tr>
-          <tbody>
+          </tbody>
         </table>
       </div>
-        <div class="saveBar">
-            <div class="error errorMessage"></div>
-          <h3 class="seperator"></h3>
-          <div class="controlBar">
-            <div class="required">Required Field</div> 
-            <a href="#" class="save"><%= image_tag("button_save.png", :alt => "Save") %></a>
+      <div class="saveBar">
+        <div class="error errorMessage"></div>
+        <h3 class="seperator"></h3>
+        <div class="controlBar">
+          <div class="required">Required Field</div>
+          <ul class='actionButtons clearfix'>
+            <li><a href='#' class='save arrowButton'>Save</a></li>
+          </ul>
           </div>
         </div>
     </div>
@@ -132,41 +149,44 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
 <script type="text/javascript" charset="utf-8">
 $(function()
 {
-  $("#modal #loadingSpinner").hide();
-  $("#modal .error").hide();
-  $("#modal #convertables").hide();
+  $("#columnPropertiesDialog #loadingSpinner").hide();
+  $("#columnPropertiesDialog .error").hide();
+  $("#columnPropertiesDialog #convertables").hide();
 
   var loading = function()
   {
-    $("#modal #loadingSpinner").css("left", 150 + $("#modal #generalTab").width() / 2);
-    $("#modal #loadingSpinner").show();
+    $("#columnPropertiesDialog #loadingSpinner")
+      .css("left", 150 + $("#columnPropertiesDialog #generalTab").width() / 2);
+    $("#columnPropertiesDialog #loadingSpinner").show();
   }
 
   var formEnabled = true;
   var toggleEnabled = function()
   {
-    $("#modal .columnPropertiesWrapper :input").attr("disabled", formEnabled);
+    $("#columnPropertiesDialog.columnPropertiesWrapper :input")
+      .attr("disabled", formEnabled);
     formEnabled = !formEnabled;
   }
 
   // Since these widgets are created live, we have to populate the default
   // text prompt values manually instead of relying on the plugin.
-  $("#modal .textPrompt").example(function () { return $(this).attr("title"); });
+  $("#columnPropertiesDialog .textPrompt")
+    .example(function () { return $(this).attr("title"); });
 
-  var selectTab = function(which) 
+  var selectTab = function(which)
   {
-    $("#modal #generalTab").hide();
-    $("#modal #formattingTab").hide();
-    $("#modal #totalsTab").hide();
-    $("#modal #defaultsTab").hide();
+    $("#columnPropertiesDialog #generalTab").hide();
+    $("#columnPropertiesDialog #formattingTab").hide();
+    $("#columnPropertiesDialog #totalsTab").hide();
+    $("#columnPropertiesDialog #defaultsTab").hide();
 
-    $("#modal #" + which + "Tab").show();
+    $("#columnPropertiesDialog #" + which + "Tab").show();
   };
 
   // Select tabs on hover.
-  $("#modal ul.tabSelector > li > a").hover(function() {
+  $("#columnPropertiesDialog ul.tabSelector > li > a").hover(function() {
     if (!formEnabled) { return false; }
-    $("#modal ul.tabSelector > li > a").removeClass("selected");
+    $("#columnPropertiesDialog ul.tabSelector > li > a").removeClass("selected");
     $(this).addClass("selected");
     selectTab(this.id);
   });
@@ -175,20 +195,28 @@ $(function()
   selectTab("general");
 
   <% if @column.has_display_options? %>
-    $("#modal #formattingTab").columnFormat(column);
+    $("#columnPropertiesDialog #formattingTab").columnFormat(column);
   <% end %>
   <% if @column.has_totals? %>
-    $("#modal #totalsTab").columnTotals(column);
+    $("#columnPropertiesDialog #totalsTab").columnTotals(column);
   <% end %>
-  
+
 
   // Keep the column model up to date so we don't have to read from the form to
   // update the properties.
-  $("#modal #name").change(function() { column.name = $(this).val() });
-  $("#modal #description").change(function() { column.description = $(this).val() });
-  $("#modal #column_alignment_left,#modal #column_alignment_center,#modal #column_alignment_right").change(function() { column.alignment = $(this).val() });
-  $("#modal #precision").change(function() { column.decimalPlaces = $(this).val() });
-  $("#modal #ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#modal #precision").val() });
+  $("#columnPropertiesDialog #name")
+    .change(function() { column.name = $(this).val() });
+  $("#columnPropertiesDialog #description")
+    .change(function() { column.description = $(this).val() });
+  $('#columnPropertiesDialog #column_alignment_left,' +
+      '#columnPropertiesDialog #column_alignment_center,' +
+      '#columnPropertiesDialog #column_alignment_right')
+    .change(function() { column.alignment = $(this).val() });
+  $("#columnPropertiesDialog #precision")
+    .change(function() { column.decimalPlaces = $(this).val() });
+  $("#columnPropertiesDialog #ui-spinner-precision > .ui-spinner-button")
+    .click(function() { column.decimalPlaces =
+        $("#columnPropertiesDialog #precision").val() });
 
   var save = function() {
       $.ajax({
@@ -196,18 +224,19 @@ $(function()
         url: '<%= @column.href(@view_id)%>',
         cache: false,
         data: {
-          json: $.json.serialize(column), 
+          json: $.json.serialize(column),
           authenticity_token: "<%= form_authenticity_token %>"
           },
         dataType: 'json',
-        error: function(request) { 
-            $("#modal .error").html($.json.deserialize(request.responseText).error).show() 
+        error: function(request) {
+          $("#columnPropertiesDialog .error")
+            .html($.json.deserialize(request.responseText).error).show();
         },
-        success: function(responseData) { 
-            $grid = $("#dataGrid");
+        success: function(responseData) {
+            var $grid = $("#dataGrid");
             if ($grid.length != 0)
             {
-                $("#dataGrid").blistModel().updateColumn(responseData);
+                $grid.blistModel().updateColumn(responseData);
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
             $("#modal .jqmClose").click();
@@ -216,11 +245,11 @@ $(function()
   };
 
   var converting = false;
-  $("#modal a.convert").click(function(e) {
+  $("#columnPropertiesDialog a.convert").click(function(e) {
     e.preventDefault();
-    if (converting) return false;
+    if (converting) { return false; }
     converting = true;
-    $("#modal a.convert").addClass("light");
+    $("#columnPropertiesDialog a.convert").addClass("light");
     $(this).removeClass("light");
     loading();
 
@@ -240,30 +269,32 @@ $(function()
     {
       $.ajax({
         type: "POST",
-        url: '<%= @column.convert_href(@view_id) %>&type=' + $(this).attr('id'), 
-        cache: false, 
+        url: '<%= @column.convert_href(@view_id) %>&type=' + $(this).attr('id'),
+        cache: false,
         dataType: 'json',
         contentType: "application/json",
         error: function(request) {
-          $("#modal .error").html($.json.deserialize(request.responseText).message).show();
+          $("#columnPropertiesDialog .error")
+            .html($.json.deserialize(request.responseText).message).show();
         },
         success: function (responseData) {
           $("#modal .jqmClose").click();
-          $("#dataGrid").blistModel().convertColumn(<%= @column.id %>, responseData);
+          $("#dataGrid").blistModel()
+            .convertColumn(<%= @column.id %>, responseData);
           $(document).trigger(blist.events.COLUMNS_CHANGED, [<%= @column.id %>]);
         }
       });
     }
   });
 
-  $("#modal #converter").click(function(e) {
+  $("#columnPropertiesDialog #converter").click(function(e) {
       e.preventDefault();
       toggleEnabled();
-      $("#modal #convertables").toggle();
+      $("#columnPropertiesDialog #convertables").toggle();
       return false;
   });
 
-  $("#modal #columnProperties").submit( function(e) {
+  $("#columnPropertiesDialog #columnProperties").submit( function(e) {
       e.preventDefault();
       if (!formEnabled) { return false; }
       toggleEnabled();
@@ -271,7 +302,7 @@ $(function()
       save();
   });
 
-  $("#modal .save").click(function(e) {
+  $("#columnPropertiesDialog .save").click(function(e) {
       e.preventDefault();
       if (!formEnabled) { return false; }
       toggleEnabled();

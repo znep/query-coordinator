@@ -71,33 +71,6 @@
             currentValue: function()
             { return this.textValue(); },
 
-            focus: function()
-            {
-                var $text = this.$editor().find(':text').focus();
-                if (this.newValue != null)
-                {
-                    delete this.newValue;
-                    var vallen = this.textValue().length;
-                    var text = $text[0];
-                    if (text.createTextRange)
-                    {
-                        var range = text.createTextRange();
-                        range.collapse(true);
-                        range.moveEnd('character', vallen);
-                        range.moveStart('character', vallen);
-                        range.select();
-                    }
-                    else
-                    {
-                        text.setSelectionRange(vallen, vallen);
-                    }
-                }
-                else
-                {
-                    $text.select();
-                }
-            },
-
             textModified: function()
             {
                 if (this.isValid()) { this.$dom().removeClass('invalid'); }

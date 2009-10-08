@@ -687,7 +687,6 @@
         
         var $editContainers = {};
         var isEdit = {};
-        var prevEdit = false;
         var DEFAULT_EDIT_MODE = 'edit';
         var EXPAND_EDIT_MODE = 'expand';
         var SELECT_EDIT_MODE = 'select';
@@ -801,11 +800,7 @@
         var endEdit = function(isSave, mode)
         {
             if (!mode) { mode = DEFAULT_EDIT_MODE; }
-            if (mode == DEFAULT_EDIT_MODE)
-            {
-                prevEdit = isSave;
-                focus();
-            }
+            if (mode == DEFAULT_EDIT_MODE) { focus(); }
             delete isEdit[mode];
 
             var $curEditContainer = $editContainers[mode];
@@ -838,7 +833,6 @@
                 if (mode == DEFAULT_EDIT_MODE &&
                     (origEvent.keyCode == 27 || origEvent.keyCode == 113))
                 {
-                    prevEdit = false;
                     didNavKeyDown = true;
                     expandActiveCell();
                 }
@@ -1568,9 +1562,6 @@
         var $prevActiveCells;
         var onMouseDown = function(event)
         {
-            // On any click, lose keyboard nav between edit cells
-            prevEdit = false;
-
             clickTarget = event.target;
             clickCell = findCell(event);
             var $clickTarget = $(clickTarget);
@@ -1603,11 +1594,7 @@
                 }
 
                 // Kill off edit & select modes
-                if (isEdit[DEFAULT_EDIT_MODE])
-                {
-                    endEdit(true);
-                    prevEdit = false;
-                }
+                if (isEdit[DEFAULT_EDIT_MODE]) { endEdit(true); }
                 if (cellNav)
                 {
                     cellNav.deactivate();
@@ -1648,11 +1635,7 @@
                 }
                 if (cell && cellNavTo(cell, event))
                 {
-                    if (isEdit[DEFAULT_EDIT_MODE])
-                    {
-                        endEdit(true);
-                        prevEdit = false;
-                    }
+                    if (isEdit[DEFAULT_EDIT_MODE]) { endEdit(true); }
                     selectFrom = cell;
                 }
 
@@ -1936,17 +1919,9 @@
                     return;
             }
 
-            var curActiveCell = $activeCells ? $activeCells[0] : null;
-            if (prevEdit && curActiveCell)
-            {
-                setTimeout(function() { editCell(curActiveCell); }, 0);
-            }
-            else
-            {
-                hideActiveCell();
-                focus();
-                setTimeout(expandActiveCell, 0);
-            }
+            hideActiveCell();
+            focus();
+            setTimeout(expandActiveCell, 0);
 
             // We may be handling an event from the rich text editor iframe,
             //  which in IE we cannot access.  If it throws an error, just ignore

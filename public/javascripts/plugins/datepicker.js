@@ -684,7 +684,9 @@ l : window.pageXOffset || (m ? document.documentElement.scrollLeft : document.bo
                 }
                 $(document).bind('mousedown', {cal: cal, trigger: this}, hide);
             }
-            return false;
+            // We don't want to prevent the default here, so text fields
+            // still get focus
+            //return false;
         },
         hide = function (ev) {
             if (ev.target != ev.data.trigger && !isChildOf(ev.data.cal.get(0), ev.target, ev.data.cal.get(0))) {

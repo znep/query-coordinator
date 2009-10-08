@@ -56,21 +56,37 @@
     </div>
 
     <div class='section'>
+      <%- text_cols = @view.columns.select {|c| c.dataType.type == 'text' &&
+        !c.flag?('hidden')} -%>
+      <%- is_multi_text = text_cols.length > 1 -%>
       <h3>Event Information</h3>
       <p class='subtitle seperator'>
-      Select the column that provides details for the event
+      Select the column<%= is_multi_text ? 's' : '' %>
+      that provide<%= is_multi_text ? '' : 's' %> details for the event
       </p>
       <div class='line'>
         <label class='required' for='calendarEventTitle'>Event Title</label>
         <select id='calendarEventTitle' name='eventTitle' class='prompt'>
           <option class='prompt' value=''>Select a Column</option>
-          <%- @view.columns.select {|c| c.dataType.type == 'text' &&
-            !c.flag?('hidden')}.each do |c| -%>
+          <%- text_cols.each do |c| -%>
           <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
           <%- end -%>
         </select>
          <span class="helpie" title="Displays in the calendar cells">?</span>
       </div>
+      <%- if is_multi_text -%>
+        <div class='line'>
+          <label for='calendarEventDescription'>Description</label>
+          <select id='calendarEventDescription' name='eventDescription'
+            class='prompt'>
+            <option class='prompt' value=''>Optional</option>
+            <%- text_cols.each do |c| -%>
+            <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+            <%- end -%>
+          </select>
+           <span class="helpie" title="Additional text that appears upon placing your mouse over the title">?</span>
+        </div>
+      <%- end -%>
     </div>
   <%- end -%>
 
@@ -95,7 +111,8 @@
           viewName: 'required',
           startDate: 'required',
           endDate: { 'notEqualTo': '#calendarStartDate' },
-          eventTitle: 'required'
+          eventTitle: 'required',
+          eventDescription: { 'notEqualTo': '#calendarEventTitle' }
         },
         errorElement: 'span'
       });

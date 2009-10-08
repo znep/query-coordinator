@@ -191,9 +191,6 @@ $(function()
   $("#modal #ui-spinner-precision > .ui-spinner-button").click(function() { column.decimalPlaces = $("#modal #precision").val() });
 
   var save = function() {
-      if (!formEnabled) { return false; }
-      toggleEnabled();
-
       $.ajax({
         type: "PUT",
         url: '<%= @column.href(@view_id)%>',
@@ -268,11 +265,17 @@ $(function()
 
   $("#modal #columnProperties").submit( function(e) {
       e.preventDefault();
+      if (!formEnabled) { return false; }
+      toggleEnabled();
+
       save();
   });
 
   $("#modal .save").click(function(e) {
       e.preventDefault();
+      if (!formEnabled) { return false; }
+      toggleEnabled();
+
       save();
   });
 });

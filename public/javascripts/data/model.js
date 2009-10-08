@@ -490,7 +490,7 @@ blist.namespace.fetch('blist.data');
             if (curOptions.progressiveLoading)
             {
                 ajaxOptions.data = $.extend({}, ajaxOptions.data,
-                        { max_rows: 1, include_aggregates: true });
+                        { include_ids_after: 1, include_aggregates: true });
             }
             doLoad(self, viewReloaded, ajaxOptions);
         };
@@ -499,7 +499,10 @@ blist.namespace.fetch('blist.data');
         {
             if (config.meta)
             {
-                self.invalidateRows();
+                if (config.rows || config.data)
+                {
+                    this.rows(config.rows || config.data);
+                }
                 self.meta(config.meta);
                 configureActive();
                 $(listeners).trigger('columns_updated', [self]);

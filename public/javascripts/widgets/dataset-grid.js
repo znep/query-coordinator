@@ -678,12 +678,15 @@
         if (numSel < 1 || (numSel == 1 && selCols[col.id] !== undefined))
         {
             $menu.find('.singleItem').show();
-            if (col) { loadFilterMenu(datasetObj, col, $menu); }
+            if (col)
+            {
+                loadFilterMenu(datasetObj, col, $menu);
 
-            var curSort = datasetObj.settings._model.meta().sort[col.id];
-            $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
-            $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
-            $menu.find('.sortClear').toggle(curSort !== undefined);
+                var curSort = datasetObj.settings._model.meta().sort[col.id];
+                $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
+                $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
+                $menu.find('.sortClear').toggle(curSort !== undefined);
+            }
         }
         else
         {

@@ -1407,8 +1407,7 @@ blist.namespace.fetch('blist.data');
                 });
             }
 
-            if (newViewColumn.format.aggregate !== null &&
-                newViewColumn.format.aggregate !== undefined)
+            if (newViewColumn.format && newViewColumn.format.aggregate)
             {
                 $.each(meta.aggregates, function(i, a) {
                     if (a.columnId == oldId)
@@ -1962,11 +1961,16 @@ blist.namespace.fetch('blist.data');
             sortConfigured = true;
             orderCol = null;
             orderFn = null;
+            orderPrepro = null;
 
             $(listeners).trigger('sort_change');
 
-            // Sort
-            doSort();
+            var hasSort = false;
+            $.each(meta.sort, function() { hasSort = true; return false; });
+            if (hasSort) { doSort(); }
+            // The only way to guarantee a correct ordering of rows (right now)
+            //  when clearing all sorts is to go to the server
+            else { this.reloadView(); }
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted

@@ -377,4 +377,14 @@ HREF
     return '<script type="text/javascript">blistEnv = "' + Rails.env +
       '";</script>' + javascript_include_tag('util/errors')
   end
+
+  # Simple technique to do nested layouts. If you want to include one layout
+  # inside of another, in the inner layout, put the following at the bottom
+  # of your layouts/foo.html.erb:
+  #
+  # <% parent_layout('outer') %>
+  def parent_layout(layout)
+    @content_for_layout = self.output_buffer
+    self.output_buffer = render(:file => "layouts/#{layout}")
+  end
 end

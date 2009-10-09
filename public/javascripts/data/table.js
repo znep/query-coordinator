@@ -3171,6 +3171,7 @@
 
                         if ($target.closest('.filter').length > 0)
                         {
+                            clearCellNav();
                             model.clearColumnFilter(col.index);
                             return;
                         }
@@ -3181,6 +3182,7 @@
                                   blist.data.types[col.type].sortable) ||
                                  col.sortable))
                         {
+                            clearCellNav();
                             sort(col.index);
                             return;
                         }
@@ -3189,6 +3191,8 @@
                         { selectColumn(col, !cellNav.isColumnSelected(col)); }
                         else if (event.shiftKey)
                         { selectColumnTo(col); }
+                        else
+                        { clearCellNav(); }
                     })
                     .hover(function ()
                         { if (!hotHeaderDrag || hotHeaderMode != 4)

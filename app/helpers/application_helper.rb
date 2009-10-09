@@ -51,6 +51,7 @@ module ApplicationHelper
 
     items.each do |i|
       if (i['owner_item'] && !is_owner) || (i['owner_item'] == false && is_owner) ||
+        (i['edit_item'] && !can_edit) || (i['edit_item'] == false && can_edit) ||
         (i['user_required'] && !current_user) || (!i['if'].nil? && !i['if']) ||
         (last_item_was_separator && i['separator'])
         next

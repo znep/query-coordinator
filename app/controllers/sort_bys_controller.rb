@@ -18,6 +18,7 @@ class SortBysController < ApplicationController
 
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
+      format.html { redirect_to @view.href }
     end
   end
 end

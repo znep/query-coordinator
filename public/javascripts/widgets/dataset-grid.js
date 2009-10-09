@@ -599,6 +599,11 @@
                     '<a href="#column-sort-desc_' + col.uid + '">' +
                     '<span class="highlight">Sort Descending</span>' +
                     '</a>' +
+                    '</li>' +
+                    '<li class="sortClear singleItem">' +
+                    '<a href="#column-sort-clear_' + col.uid + '">' +
+                    '<span class="highlight">Clear Sort</span>' +
+                    '</a>' +
                     '</li>';
             }
 
@@ -606,7 +611,7 @@
             {
                 // There are already display items in the list, so we need to add
                 // a separator.
-                htmlStr += '<li class="separator singleItem" />';
+                htmlStr += '<li class="filterSeparator separator singleItem" />';
             }
             htmlStr += '<li class="hide" >' +
                 '<a href="#hide-column_' + col.id + '">' +
@@ -674,6 +679,11 @@
         {
             $menu.find('.singleItem').show();
             if (col) { loadFilterMenu(datasetObj, col, $menu); }
+
+            var curSort = datasetObj.settings._model.meta().sort[col.id];
+            $menu.find('.sortAsc').toggle(!curSort || !curSort.ascending);
+            $menu.find('.sortDesc').toggle(!curSort || curSort.ascending);
+            $menu.find('.sortClear').toggle(curSort !== undefined);
         }
         else
         {
@@ -706,10 +716,10 @@
 
         var spinnerStr = '<li class="autofilter loading"></li>';
         // Find the correct spot to add it; either after sort descending, or the top
-        var $sortItem = $menu.find('li.sortDesc');
+        var $sortItem = $menu.find('li.filterSeparator');
         if ($sortItem.length > 0)
         {
-            $sortItem.after(spinnerStr);
+            $sortItem.before(spinnerStr);
         }
         else
         {
@@ -873,11 +883,11 @@
             '</li>';
 
         // Find the correct spot to add it; either after sort descending, or the top
-        var $sortItem = $menu.find('li.sortDesc');
+        var $sortItem = $menu.find('li.filterSeparator');
         if ($sortItem.length > 0)
         {
             filterStr = '<li class="separator singleItem" />' + filterStr;
-            $sortItem.after(filterStr);
+            $sortItem.before(filterStr);
         }
         else
         {
@@ -910,6 +920,9 @@
                 break;
             case 'column-sort-desc':
                 model.sort(colIdIndex, true);
+                break;
+            case 'column-sort-clear':
+                model.clearSort(colIdIndex);
                 break;
             case 'filter-column':
                 // Rejoin remainder of parts in case the filter value had _

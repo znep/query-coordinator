@@ -1923,6 +1923,56 @@ blist.namespace.fetch('blist.data');
             configureActive(active);
         };
 
+        this.clearSort = function(order)
+        {
+            if (typeof order == 'function') { order = null; }
+
+            if (order && typeof order != 'object')
+            {
+                order = meta.columns[0][order];
+            }
+
+            if (typeof order == 'object')
+            {
+                delete meta.sort[order.id];
+
+                for (var i = 0; i < meta.view.sortBys.length; i++)
+                {
+                    if (meta.view.sortBys[i].viewColumnId == order.id)
+                    {
+                        meta.view.sortBys.splice(i, 1);
+                        break;
+                    }
+                }
+
+                if (meta.view.sortBys.length == 1)
+                {
+                    var newSort = meta.view.sortBys[0];
+                    this.sort(findColumnIndex(newSort.viewColumnId),
+                        !(newSort.flags != null &&
+                            $.inArray('asc', newSort.flags) >= 0));
+                    return;
+                }
+            }
+            else
+            {
+                meta.sort = {};
+                meta.view.sortBys = [];
+            }
+            sortConfigured = true;
+            orderCol = null;
+            orderFn = null;
+
+            $(listeners).trigger('sort_change');
+
+            // Sort
+            doSort();
+
+            // If there's an active filter, or grouping function, re-apply now
+            // that we're sorted
+            configureActive();
+        };
+
         var getChildRows = function(row)
         {
             if (row.childRows) { return row.childRows; }

@@ -3175,7 +3175,8 @@
                             return;
                         }
 
-                        if ($target.closest('.sort').length > 0 &&
+                        if (($target.closest('.sort').length > 0 ||
+                            (!event.metaKey && !event.shiftKey)) &&
                                 ((blist.data.types[col.type] !== undefined &&
                                   blist.data.types[col.type].sortable) ||
                                  col.sortable))
@@ -3188,8 +3189,6 @@
                         { selectColumn(col, !cellNav.isColumnSelected(col)); }
                         else if (event.shiftKey)
                         { selectColumnTo(col); }
-                        else
-                        { selectOnlyColumn(col); }
                     })
                     .hover(function ()
                         { if (!hotHeaderDrag || hotHeaderMode != 4)

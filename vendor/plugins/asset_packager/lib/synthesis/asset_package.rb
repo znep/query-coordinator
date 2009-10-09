@@ -148,6 +148,7 @@ module Synthesis
         (@sources - %w(prototype effects dragdrop controls)).each do |s|
           puts "==================== #{s}.#{@extension} ========================"
           system("java -jar #{yui_path}/yuicompressor-2.4.2.jar --type js -v #{full_asset_path(s)} >/dev/null")
+          exit($?.exitstatus) unless $?.success?
         end
       end
     end
@@ -231,12 +232,13 @@ module Synthesis
         result = ""
         begin
           # attempt to use YUI compressor
-          IO.popen "java -jar #{jsmin_path}/yuicompressor-2.4.2.jar --type js 2>/dev/null", "r+" do |f|
+          IO.popen "java -jar #{jsmin_path}/yuicompressor-2.4.2.jar --type js --nomunge --line-break 0 2>/dev/null", "r+" do |f|
             f.write source
             f.close_write
             result = f.read
           end
-          return result if $?.success?
+          throw "fallback to jsmin below" unless $?.success?
+          return result
         rescue
           # fallback to included ruby compressor
           tmp_path = "#{RAILS_ROOT}/tmp/#{@target}_packaged"

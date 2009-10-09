@@ -490,7 +490,7 @@ blist.namespace.fetch('blist.data');
             if (curOptions.progressiveLoading)
             {
                 ajaxOptions.data = $.extend({}, ajaxOptions.data,
-                        { max_rows: 1, include_aggregates: true });
+                        { include_ids_after: 1, include_aggregates: true });
             }
             doLoad(self, viewReloaded, ajaxOptions);
         };
@@ -499,7 +499,10 @@ blist.namespace.fetch('blist.data');
         {
             if (config.meta)
             {
-                self.invalidateRows();
+                if (config.rows || config.data)
+                {
+                    this.rows(config.rows || config.data);
+                }
                 self.meta(config.meta);
                 configureActive();
                 $(listeners).trigger('columns_updated', [self]);
@@ -1404,6 +1407,18 @@ blist.namespace.fetch('blist.data');
                 });
             }
 
+            if (newViewColumn.format.aggregate !== null &&
+                newViewColumn.format.aggregate !== undefined)
+            {
+                $.each(meta.aggregates, function(i, a) {
+                    if (a.columnId == oldId)
+                    {
+                        a.columnId = newViewColumn.id;
+                        return false;
+                    }
+                });
+            }
+
             meta.columns = null;
             this.meta(meta);
             configureActive();
@@ -1906,6 +1921,56 @@ blist.namespace.fetch('blist.data');
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
             configureActive(active);
+        };
+
+        this.clearSort = function(order)
+        {
+            if (typeof order == 'function') { order = null; }
+
+            if (order && typeof order != 'object')
+            {
+                order = meta.columns[0][order];
+            }
+
+            if (typeof order == 'object')
+            {
+                delete meta.sort[order.id];
+
+                for (var i = 0; i < meta.view.sortBys.length; i++)
+                {
+                    if (meta.view.sortBys[i].viewColumnId == order.id)
+                    {
+                        meta.view.sortBys.splice(i, 1);
+                        break;
+                    }
+                }
+
+                if (meta.view.sortBys.length == 1)
+                {
+                    var newSort = meta.view.sortBys[0];
+                    this.sort(findColumnIndex(newSort.viewColumnId),
+                        !(newSort.flags != null &&
+                            $.inArray('asc', newSort.flags) >= 0));
+                    return;
+                }
+            }
+            else
+            {
+                meta.sort = {};
+                meta.view.sortBys = [];
+            }
+            sortConfigured = true;
+            orderCol = null;
+            orderFn = null;
+
+            $(listeners).trigger('sort_change');
+
+            // Sort
+            doSort();
+
+            // If there's an active filter, or grouping function, re-apply now
+            // that we're sorted
+            configureActive();
         };
 
         var getChildRows = function(row)

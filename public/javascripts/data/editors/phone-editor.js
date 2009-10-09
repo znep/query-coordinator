@@ -48,11 +48,12 @@
             {
                 if (!this._$editor)
                 {
+                    var value = this.newValue || numberValue(this);
                     this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.type +
                         '">' +
                         '<input type="text" class="number" value="' +
-                        numberValue(this) + '" />' +
+                        value + '" />' +
                         '<div class="blist-combo-wrapper">' +
                         '<div class="type-combo"></div></div></div>');
                 }
@@ -75,7 +76,7 @@
                         layout.left -= 2;
                         layout.width += 4;
                     } : null
-               });
+                });
                 editObj.$dom().find(':text.number').keydown(function(e)
                     { if (e.keyCode == 9 && !e.shiftKey)
                         { e.stopPropagation(); } });
@@ -108,11 +109,6 @@
 
             querySize: function() {
                 return { width: 240 };
-            },
-
-            focus: function()
-            {
-                this.$editor().find(':text:first').focus().select();
             }
         }
     }));

@@ -607,14 +607,10 @@
   vertical-align: middle;
   font-size: 1.2em;
 }
-.createBar .save,
-.columnPropertiesWrapper .save
-{
-    float: right;
-}
+.columnPropertiesWrapper ul.actionButtons { margin-top: 0; }
 
 .modalContentWrapper.columnPropertiesWrapper { padding-bottom: 0; }
-.columnPropertiesWrapper p, .columnPropertiesWrapper label 
+.columnPropertiesWrapper p, .columnPropertiesWrapper label
 {
     font-size: 1.2em;
     line-height: 1.75em; /* 21px */

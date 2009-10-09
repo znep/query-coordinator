@@ -39,9 +39,9 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 {
     height: 2.5em; /* 30px or so */
     margin-top: -1.25em;
+    white-space: normal;
 }
 .blist-th .name-wrapper { height: 2.5em; }
-div.th-inner-container { white-space: normal; }
 .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
 
 div.blist-td

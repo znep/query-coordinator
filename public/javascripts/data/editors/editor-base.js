@@ -117,9 +117,23 @@
                 return this.originalValue;
             },
 
+            /**
+             * Set focus to the control.  The default implementation works for any control in which the first text
+             * field should receive the focus.
+             */
             focus: function()
             {
-                // Implement me
+                var $text = this.$editor().find(":text:first");
+                $text.focus();
+                if (this.newValue != null)
+                {
+                    delete this.newValue;
+                    setCursorPosition($text[0]);
+                }
+                else
+                {
+                    $text.select();
+                }
             },
 
             setFullSize: function()
@@ -245,18 +259,79 @@
         }
     });
 
-    // Private methods
+    // Detect key events that terminate editing
     var handleKeyDown = function(editObj, event)
     {
-        if (event.keyCode == 13 || event.keyCode == 9 || event.keyCode == 27 ||
-            event.keyCode == 113)
-        // Enter or Tab or Esc or F2
-        {
-            event.stopPropagation();
-            editObj.$dom().trigger('edit_end', [event.keyCode != 27, event]);
+        var save = true;
+        switch (event.keyCode) {
+            case 9: // Tab
+            case 13: // Enter
+            case 33: // Page up
+            case 34: // Page down
+            case 113: // F2
+                break;
+                
+            case 27: // Escape
+                save = false;
+                break;
+
+            case 38: // Up
+            case 40: // Down
+                if ($(event.target).is(":text") && !$(event.target).is(".blist-combo-keyhandler"))
+                {
+                    break;
+                }
+                return;
+                
+            case 37: // Left
+                if ($(event.target).is(":text"))
+                {
+                    if (!getCursorPosition(event.target))
+                    {
+                        // User hit left arrow at the left edge of the field
+                        var $prev = $(event.target).prev(":text");
+                        if ($prev.length)
+                        {
+                            // Jump to previous text box
+                            $prev.focus();
+                            setCursorPosition($prev[0]);
+                            event.preventDefault();
+                            return;
+                        }
+                        break;
+                    }
+                }
+                return;
+                
+            case 39: // Right
+                if ($(event.target).is(":text"))
+                {
+                    if (getCursorPosition(event.target) == $(event.target).val().length)
+                    {
+                        // User hit right arrow at the right edge of the field
+                        var $next = $(event.target).next(":text");
+                        if ($next.length)
+                        {
+                            // Jump to next text box
+                            $next.focus();
+                            setCursorPosition($next[0], 0);
+                            event.preventDefault();
+                            return;
+                        }
+                        break;
+                    }
+                }
+                return;
+
+            default:
+                return;
         }
+        
+        event.stopPropagation();
+        editObj.$dom().trigger('edit_end', [save, event]);
     };
 
+    // Detect mouse events that terminate editing
     var docMouseDown = function(editObj, event)
     {
         if ($(event.target).parents().andSelf().index(editObj.$dom()) < 0)
@@ -265,5 +340,45 @@
         }
     };
 
+    // Set the cursor position within a text input (default position is the end of the text)
+    var setCursorPosition = function(text, pos)
+    {
+        if (pos == null)
+            pos = $(text).val().length;
+        if (text.createTextRange)
+        {
+            var range = text.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', pos);
+            range.moveStart('character', pos);
+            range.select();
+        }
+        else
+        {
+            text.setSelectionRange(pos, pos);
+        }
+    }
 
+    // Determine a cursor's position within a text input
+    var getCursorPosition = function(text)
+    {
+        // IE
+        if (text.createTextRange)
+        {
+            var range = text.createTextRange();
+            if (range.text.length)
+            {
+                return -1;
+            }
+            range.moveStart(0);
+            return range.text.length;
+        }
+
+        // Normal browsers
+        if (text.selectionStart != text.selectionEnd)
+        {
+            return -1;
+        }
+        return text.selectionStart;
+    };
 })(jQuery);

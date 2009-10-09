@@ -31,12 +31,13 @@
             {
                 if (!this._$editor)
                 {
+                    var hrefVal = this.newValue || hrefValue(this);
                     this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.type +
                         '"><div class="labels"><span class="href">URL</span>' +
                         '<span class="description">Description</span></div>' +
                         '<input type="text" class="href" value="' +
-                        hrefValue(this) + '" />' +
+                        hrefVal + '" />' +
                         '<input type="text" ' +
                         'class="description" value="' +
                         descValue(this) + '" /></div>');
@@ -102,11 +103,6 @@
                     height: this.$editor()
                         .find('.labels').outerHeight(true) +
                         this.$editor().find(':input').outerHeight(true) };
-            },
-
-            focus: function()
-            {
-                this.$editor().find(':text:first').focus().select();
             }
         }
     }));

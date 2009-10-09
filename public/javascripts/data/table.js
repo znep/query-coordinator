@@ -684,10 +684,9 @@
 
 
         /*** CELL EDITING ***/
-        
+
         var $editContainers = {};
         var isEdit = {};
-        var prevEdit = false;
         var DEFAULT_EDIT_MODE = 'edit';
         var EXPAND_EDIT_MODE = 'expand';
         var SELECT_EDIT_MODE = 'select';
@@ -703,7 +702,8 @@
 
             var row = getRow(cell);
             var col = getColumn(cell);
-            if (!col || col.dataIndex == 'rowHandle' || !row) { return false; }
+            if (!col || col.dataIndex == 'rowHandle' ||
+                col.dataIndex == 'rowNumber' || !row) { return false; }
             var value = model.getRowValue(row, col);
             if (!value) { value = model.getInvalidValue(row, col); }
 
@@ -801,11 +801,7 @@
         var endEdit = function(isSave, mode)
         {
             if (!mode) { mode = DEFAULT_EDIT_MODE; }
-            if (mode == DEFAULT_EDIT_MODE)
-            {
-                prevEdit = isSave;
-                focus();
-            }
+            if (mode == DEFAULT_EDIT_MODE) { focus(); }
             delete isEdit[mode];
 
             var $curEditContainer = $editContainers[mode];
@@ -838,7 +834,6 @@
                 if (mode == DEFAULT_EDIT_MODE &&
                     (origEvent.keyCode == 27 || origEvent.keyCode == 113))
                 {
-                    prevEdit = false;
                     didNavKeyDown = true;
                     expandActiveCell();
                 }
@@ -1568,9 +1563,6 @@
         var $prevActiveCells;
         var onMouseDown = function(event)
         {
-            // On any click, lose keyboard nav between edit cells
-            prevEdit = false;
-
             clickTarget = event.target;
             clickCell = findCell(event);
             var $clickTarget = $(clickTarget);
@@ -1603,11 +1595,7 @@
                 }
 
                 // Kill off edit & select modes
-                if (isEdit[DEFAULT_EDIT_MODE])
-                {
-                    endEdit(true);
-                    prevEdit = false;
-                }
+                if (isEdit[DEFAULT_EDIT_MODE]) { endEdit(true); }
                 if (cellNav)
                 {
                     cellNav.deactivate();
@@ -1648,11 +1636,7 @@
                 }
                 if (cell && cellNavTo(cell, event))
                 {
-                    if (isEdit[DEFAULT_EDIT_MODE])
-                    {
-                        endEdit(true);
-                        prevEdit = false;
-                    }
+                    if (isEdit[DEFAULT_EDIT_MODE]) { endEdit(true); }
                     selectFrom = cell;
                 }
 
@@ -1936,17 +1920,9 @@
                     return;
             }
 
-            var curActiveCell = $activeCells ? $activeCells[0] : null;
-            if (prevEdit && curActiveCell)
-            {
-                setTimeout(function() { editCell(curActiveCell); }, 0);
-            }
-            else
-            {
-                hideActiveCell();
-                focus();
-                setTimeout(expandActiveCell, 0);
-            }
+            hideActiveCell();
+            focus();
+            setTimeout(expandActiveCell, 0);
 
             // We may be handling an event from the rich text editor iframe,
             //  which in IE we cannot access.  If it throws an error, just ignore
@@ -2125,10 +2101,6 @@
 
         // Set up initial top of locked section
         $locked.css('top', $header.outerHeight());
-
-        // Initialize cell navigation now that the navigator is rendered
-        cellNav = options.cellNav ?
-            new blist.data.TableNavigation(model, [], $navigator) : null;
 
         // Install global listener to disable the active cell indicator when we lose focus
         var clickedInGrid = false;
@@ -2672,11 +2644,11 @@
         var initMeta = function(newModel)
         {
             begin("initMeta");
-            killHotExpander();
-            hideActiveCell();
-            endEdit(DEFAULT_EDIT_MODE);
 
             model = newModel;
+
+            clearCellNav();
+            endEdit(DEFAULT_EDIT_MODE);
 
             // Convert the model columns to table columns
             columns = [];
@@ -3203,7 +3175,8 @@
                             return;
                         }
 
-                        if ($target.closest('.sort').length > 0 &&
+                        if (($target.closest('.sort').length > 0 ||
+                            (!event.metaKey && !event.shiftKey)) &&
                                 ((blist.data.types[col.type] !== undefined &&
                                   blist.data.types[col.type].sortable) ||
                                  col.sortable))
@@ -3216,8 +3189,6 @@
                         { selectColumn(col, !cellNav.isColumnSelected(col)); }
                         else if (event.shiftKey)
                         { selectColumnTo(col); }
-                        else
-                        { selectOnlyColumn(col); }
                     })
                     .hover(function ()
                         { if (!hotHeaderDrag || hotHeaderMode != 4)

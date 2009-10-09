@@ -689,11 +689,9 @@ ul.menu.rowMenu li
     background-repeat: no-repeat;
 }
 
-.columnHeaderMenu .sortDesc a
-{
-    background-position: 7px 4px;
-}
+.columnHeaderMenu .sortDesc a { background-position: 7px 4px; }
 
+.columnHeaderMenu .sortClear a,
 .columnHeaderMenu .autofilter a,
 .columnHeaderMenu .properties a,
 .columnHeaderMenu .hide a,
@@ -703,6 +701,7 @@ ul.menu.rowMenu li
     background-repeat: no-repeat;
 }
 
+.columnHeaderMenu .sortClear a { background-position: 5px -324px; }
 .columnHeaderMenu .autofilter a { background-position: 5px -531px; }
 .columnHeaderMenu .properties a { background-position: 5px -347px; }
 .columnHeaderMenu .hide a { background-position: 5px -1106px; }

@@ -1,0 +1,174 @@
+.mainContent .outerContent
+{
+    overflow: hidden; /*[CR]*/
+}
+
+.headerBar .headerActions .approveButton
+{
+    background: transparent url(/stylesheets/images/content/approval_menu_icons.png) no-repeat scroll left 0;
+}
+
+.headerBar .headerActions .rejectButton
+{
+    background: transparent url(/stylesheets/images/content/approval_menu_icons.png) no-repeat scroll left -23px;
+}
+
+.commentList
+{
+    clear: both;
+    padding-top: 1em;
+}
+
+.commentList .commentList-headerRow
+{
+    background: #e8e8e8 url(/stylesheets/images/content/table/header_right_top.png) no-repeat scroll right top;
+    height: 38px;
+}
+
+.commentList .commentList-headerRow .commentList-cell
+{
+    border-left: 1px solid #cacaca;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.commentList .commentList-headerRow .commentList-cell:first-child
+{
+    background: #e8e8e8 url(/stylesheets/images/content/table/header_left_top.png) no-repeat scroll left top;
+    border-left: none;
+}
+
+.commentList .commentList-cell.commentList-actionColumn
+{
+    padding: 0.5em 1em 0;
+}
+
+.commentList .commentList-templateRow
+{
+    display: none;
+}
+
+.commentList .commentList-row
+{
+    clear: both;
+}
+
+.commentList .commentList-row:hover
+{
+    background-color: #E3ECF7;
+}
+
+.commentList .commentList-cell
+{
+    float: left;
+    font-size: 1.2em;
+    padding: 1em;
+}
+
+.commentList .commentList-body .commentList-cell
+{
+    position: absolute;
+}
+
+.commentList .commentList-statusColumn
+{
+    float: right;
+    right: 13px;
+    width: 100px;
+}
+
+.commentList .commentList-actionColumn
+{
+    left: 21px;
+    width: 45px;
+}
+
+.commentList .commentList-actionColumn .checkbox
+{
+    background: transparent url(/stylesheets/images/content/table_menu/menu_icon_sprites.png) no-repeat scroll left -897px;
+    display: inline-block;
+    height: 23px;
+    text-indent: -9999px;
+    width: 23px;
+}
+
+.commentList .commentList-actionColumn .checkbox.checked
+{
+    background-position: 0 -506px;
+}
+
+.commentList .commentList-actionColumn .commentMenuButton
+{
+    background: transparent url(/stylesheets/images/content/table/column_menu_arrow_sprite.png) no-repeat scroll left -28px;
+    display: inline-block;
+    height: 14px;
+    position: relative;
+    text-indent: -9999px;
+    top: 5px;
+    visibility: hidden;
+    width: 14px;
+}
+
+.commentList .commentList-actionColumn .commentMenuButton:hover
+{
+    background-position: left -14px;
+}
+
+.commentList .commentList-row:hover .commentList-actionColumn .commentMenuButton
+{
+    visibility: visible;
+}
+
+.commentList .commentList-actionColumn .commentMenu li a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-repeat: no-repeat;
+    font-size: 0.8em;
+}
+
+.commentList .commentList-actionColumn .commentMenu li.approveComment a
+{
+    background-position: left -1219px;
+}
+
+.commentList .commentList-actionColumn .commentMenu li.rejectComment a
+{
+    background-position: left -322px;
+}
+
+.commentList .commentList-authorColumn
+{
+    left: 87px;
+    width: 150px;
+}
+
+.commentList .commentList-authorColumn .commentAuthorImage
+{
+    float: left;
+    margin-right: 0.7em;
+}
+
+.commentList .commentList-authorColumn .commentAuthorName
+{
+    font-weight: bold;
+}
+
+.commentList .commentList-body .commentList-commentColumn
+{
+    margin-left: 250px;
+    margin-right: 140px;
+    position: static;
+}
+
+.commentList .commentList-commentColumn .commentTimestamp
+{
+    color: #888;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.commentList .commentList-commentColumn .commentTitle
+{
+    font-size: 1.4em;
+    font-weight: bold;
+}

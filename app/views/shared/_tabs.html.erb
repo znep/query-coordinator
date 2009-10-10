@@ -11,4 +11,9 @@
   <li class='profile'><div class='wrapper'>
     <%= link_to "Profile", current_user.href %>
   </div></li>
+<%- if current_user.accountCategory == "premium_sdp" -%>
+  <li class='approval even'><div class='wrapper'>
+    <%= link_to 'Approval', approval_path %>
+  </div></li>
+<%- end -%>
 </ul>

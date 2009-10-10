@@ -1,0 +1,85 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag 'list-screen', 'approval-screen' %>
+  <title>My <%= th.company %> | <%= th.site_title %></title>
+<% end %>
+
+<div class="twoColumnContainer tabContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent">
+    <div id='approval'>
+      <%= render(:partial => "shared/tabs") %>
+      <div class='outerContent'>
+        <div class='contentHighlight'>
+          <div class='content'>
+            <div class="headerBar">
+              <h3 id='listTitle' class='clipText'>All Comments</h3>
+
+              <ul class="headerActions">
+                <li><a href="#approve" class="approveButton">Approve</a></li>
+                <li><a href="#reject" class="rejectButton">Reject</a></li>
+              </ul>
+            </div>
+
+            <div class="commentList" id="moderationQueue">
+              <div class="commentList-headerRow">
+                <div class="commentList-cell commentList-actionColumn">
+                  <a class="checkbox">Select</a>
+                </div>
+                <div class="commentList-cell commentList-authorColumn">
+                  Author
+                </div>
+                <div class="commentList-cell commentList-commentColumn">
+                  Comment
+                </div>
+                <div class="commentList-cell commentList-statusColumn">
+                  Status
+                </div>
+              </div>
+              <div class="commentList-body">
+                <div class="commentList-templateRow">
+                  <div class="commentList-cell commentList-actionColumn">
+                    <a class="checkbox">Select</a>
+                    <a class="commentMenuButton">Menu</a>
+                    <%= menu_tag(
+                      { 'class' => 'commentMenu',
+                        'items' => [
+                          {'text' => 'Approve', 'class' => 'approveComment', 'href' => '#approveComment'},
+                          {'text' => 'Reject', 'class' => 'rejectComment', 'href' => '#rejectComment'}]}
+                    ) %>
+                  </div>
+                  <div class="commentList-cell commentList-authorColumn">
+                    <img class="commentAuthorImage" />
+                    <p class="commentAuthorName"></p>
+                    <p class="commentAuthorCompany"></p>
+                  </div>
+                  <div class="commentList-cell commentList-commentColumn">
+                    <p class="commentTimestamp"></p>
+                    <p class="commentTitle"></p>
+                    <p class="commentBody"></p>
+                  </div>
+                  <div class="commentList-cell commentList-statusColumn">
+                    <p class="commentStatus"></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="column">
+    <% render(:layout => "shared/sidebar_box") do %>
+      <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    var approvalNS = blist.namespace.fetch("blist.approval");
+    approvalNS.servicePath = '/users/<%= current_user.id %>/comments/';
+  </script>
+  <%= javascript_include_merged 'shared-common-all' %>
+  <%= javascript_include_merged 'approval-show' %>
+<% end %>

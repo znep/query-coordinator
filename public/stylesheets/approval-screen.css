@@ -1,6 +1,6 @@
 .mainContent .outerContent
 {
-    overflow: hidden; /*[CR]*/
+   overflow: hidden;
 }
 
 .headerBar .headerActions .approveButton
@@ -73,14 +73,14 @@
 .commentList .commentList-statusColumn
 {
     float: right;
-    right: 13px;
-    width: 100px;
+    right: 1.5em;
+    width: 7.69em;
 }
 
 .commentList .commentList-actionColumn
 {
-    left: 21px;
-    width: 45px;
+    left: 1.7em;
+    width: 3.5em;
 }
 
 .commentList .commentList-actionColumn .checkbox
@@ -138,8 +138,8 @@
 
 .commentList .commentList-authorColumn
 {
-    left: 87px;
-    width: 150px;
+    left: 7.3em;
+    width: 11.7em;
 }
 
 .commentList .commentList-authorColumn .commentAuthorImage
@@ -155,8 +155,8 @@
 
 .commentList .commentList-body .commentList-commentColumn
 {
-    margin-left: 250px;
-    margin-right: 140px;
+    margin-left: 21em;
+    margin-right: 10.5em;
     position: static;
 }
 

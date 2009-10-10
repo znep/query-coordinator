@@ -52,7 +52,7 @@ approvalNS.updateCommentStatus = function($row, status)
         dataType: "json",
         contentType: "application/json",
         success: function(response, responseStatus) {
-            $row.find('.commentStatus').text($.capitalize(status));
+            $row.find('.commentStatus').text($.capitalize(response.status));
         }
     });
 };
@@ -70,14 +70,7 @@ $(function() {
 
     $('.commentList-headerRow .checkbox').click(function(event) {
         event.preventDefault();
-        if ($(this).is('.checked'))
-        {
-            $('.checkbox').removeClass('checked');
-        }
-        else
-        {
-            $('.checkbox').addClass('checked');
-        }
+        $('.checkbox').toggleClass('checked', !$(this).is('.checked'));
     });
 
     $('.commentList-body .checkbox').live('click', function(event) {
@@ -93,5 +86,23 @@ $(function() {
     $('.commentList-row .commentMenu .rejectComment a').live('click', function(event) {
         event.preventDefault();
         approvalNS.updateCommentStatus($(this).closest('.commentList-row'), 'rejected');
+    });
+    
+    $('.headerActions .approveButton').click(function(event) {
+        event.preventDefault();
+        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)').each(function() {
+            approvalNS.updateCommentStatus($(this), 'approved');
+        });
+
+        $('.commentList .checkbox').removeClass('checked');
+    });
+
+    $('.headerActions .rejectButton').click(function(event) {
+        event.preventDefault();
+        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)').each(function() {
+            approvalNS.updateCommentStatus($(this), 'rejected');
+        });
+
+        $('.commentList .checkbox').removeClass('checked');
     });
 });

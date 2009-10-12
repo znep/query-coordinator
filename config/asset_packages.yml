@@ -55,6 +55,9 @@ javascripts:
   - plugins/ui.core
   - plugins/ui.showedit
   - screens/account-screen
+- approval-show:
+  - widgets/dropdown-menu
+  - screens/approval-screen
 - blists-about:
   - screens/blist-about-screen
   - screens/attribution-edit

@@ -69,6 +69,7 @@ ActionController::Routing::Routes.draw do |map|
     :delete_friend => :get
   }
 
+  map.resource :approval
   map.resources :blists,
     :collection => { :detail => :get },
     :member => {

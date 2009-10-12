@@ -56,11 +56,11 @@ javascripts:
   - plugins/ui.showedit
   - screens/account-screen
 - approval-show:
-  - util/urls.js
+  - util/urls
   - widgets/dropdown-menu
   - screens/approval-screen
 - blists-about:
-  - util/urls.js
+  - util/urls
   - screens/blist-about-screen
   - screens/attribution-edit
   - widgets/dropdown-menu

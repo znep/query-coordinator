@@ -3,12 +3,12 @@
    overflow: hidden;
 }
 
-.headerBar .headerActions .approveButton
+.headerBar .headerActions .approveComment
 {
     background: transparent url(/stylesheets/images/content/approval_menu_icons.png) no-repeat scroll left 0;
 }
 
-.headerBar .headerActions .rejectButton
+.headerBar .headerActions .rejectComment
 {
     background: transparent url(/stylesheets/images/content/approval_menu_icons.png) no-repeat scroll left -23px;
 }
@@ -36,6 +36,14 @@
 {
     background: #e8e8e8 url(/stylesheets/images/content/table/header_left_top.png) no-repeat scroll left top;
     border-left: none;
+}
+
+.commentList .commentList-body.commentsLoading
+{
+    background-image: url(/stylesheets/images/common/BrandedSpinner.gif);
+    background-repeat: no-repeat;
+    background-position: center 10em;
+    min-height: 30em;
 }
 
 .commentList .commentList-cell.commentList-actionColumn
@@ -68,13 +76,6 @@
 .commentList .commentList-body .commentList-cell
 {
     position: absolute;
-}
-
-.commentList .commentList-statusColumn
-{
-    float: right;
-    right: 1.5em;
-    width: 7.69em;
 }
 
 .commentList .commentList-actionColumn
@@ -142,6 +143,11 @@
     width: 11.7em;
 }
 
+.commentList .commentList-authorColumn .commentAuthorLink
+{
+    color: #000;
+}
+
 .commentList .commentList-authorColumn .commentAuthorImage
 {
     float: left;
@@ -156,19 +162,34 @@
 .commentList .commentList-body .commentList-commentColumn
 {
     margin-left: 21em;
-    margin-right: 10.5em;
+    margin-right: 18em;
     position: static;
 }
 
 .commentList .commentList-commentColumn .commentTimestamp
 {
+    border-bottom: 1px solid #ccc;
     color: #888;
     font-size: 1em;
-    font-weight: bold;
+    margin-bottom: 0.4em;
+    padding: 0.4em 0;
 }
 
 .commentList .commentList-commentColumn .commentTitle
 {
-    font-size: 1.4em;
-    font-weight: bold;
+    font-size: 1.35em;
+}
+
+.commentList .commentList-datasetColumn
+{
+    float: right;
+    right: 9.2em;
+    width: 7.5em;
+}
+
+.commentList .commentList-statusColumn
+{
+    float: right;
+    right: 1.5em;
+    width: 5em;
 }

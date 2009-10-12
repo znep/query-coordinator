@@ -14,8 +14,8 @@
               <h3 id='listTitle' class='clipText'>All Comments</h3>
 
               <ul class="headerActions">
-                <li><a href="#approve" class="approveButton">Approve</a></li>
-                <li><a href="#reject" class="rejectButton">Reject</a></li>
+                <li><a href="#approve" class="approveComment">Approve</a></li>
+                <li><a href="#reject" class="rejectComment">Reject</a></li>
               </ul>
             </div>
 
@@ -33,8 +33,11 @@
                 <div class="commentList-cell commentList-statusColumn">
                   Status
                 </div>
+                <div class="commentList-cell commentList-datasetColumn">
+                  Dataset
+                </div>
               </div>
-              <div class="commentList-body">
+              <div class="commentList-body commentsLoading">
                 <div class="commentList-templateRow">
                   <div class="commentList-cell commentList-actionColumn">
                     <a class="checkbox">Select</a>
@@ -47,17 +50,22 @@
                     ) %>
                   </div>
                   <div class="commentList-cell commentList-authorColumn">
-                    <img class="commentAuthorImage" />
-                    <p class="commentAuthorName"></p>
+                    <a class="commentAuthorLink">
+                      <img class="commentAuthorImage" />
+                      <p class="commentAuthorName"></p>
+                    </a>
                     <p class="commentAuthorCompany"></p>
                   </div>
                   <div class="commentList-cell commentList-commentColumn">
-                    <p class="commentTimestamp"></p>
                     <p class="commentTitle"></p>
+                    <p class="commentTimestamp"></p>
                     <p class="commentBody"></p>
                   </div>
                   <div class="commentList-cell commentList-statusColumn">
                     <p class="commentStatus"></p>
+                  </div>
+                  <div class="commentList-cell commentList-datasetColumn">
+                    <p class="commentParent"></p>
                   </div>
                 </div>
               </div>

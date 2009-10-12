@@ -34,12 +34,7 @@ $(function ()
             dataType: "json",
             success: function(responseData)
             {
-                var viewHref = 'http://' +
-                    location.host + '/' +
-                      (responseData['category'] || 'dataset') + '/' +
-                      responseData['name'].replace(/\s+/g, '-').replace(/[^a-zA-Z0-9_\-]/g, '-')
-                        .replace(/\-+/g, '-').slice(0, 50) + '/' +
-                      responseData['id'];
+                var viewHref = 'http://' + location.host + $.generateViewUrl(responseData);
                 $('.dataName a, .linkToDataset, .linkAndTextToDataset')
                     .attr('href', viewHref);
                 $('.dataName a').text(responseData['name']);

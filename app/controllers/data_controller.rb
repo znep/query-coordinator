@@ -48,10 +48,16 @@ class DataController < ApplicationController
 
     if (params[:search])
       @search_term = params[:search]
-      search_results = SearchResult.search("views", { :q => @search_term, :limit => PAGE_SIZE, :page => 1 })
-      @search_views = search_results[0].results
-      @search_views_total = search_results[0].count
       @search_debug = params[:search_debug]
+      begin
+        search_results = SearchResult.search("views", { :q => @search_term, :limit => PAGE_SIZE, :page => 1 })
+        @search_views = search_results[0].results
+        @search_views_total = search_results[0].count
+      rescue CoreServer::CoreServerError => e
+        # An error was encountered during the search, so we return an empty search
+        @search_views = []
+        @search_views_total = 0
+      end
     end
 
     # build current state string

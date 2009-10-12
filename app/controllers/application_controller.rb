@@ -4,7 +4,8 @@
 class ApplicationController < ActionController::Base
   include SslRequirement
 
-  before_filter :hook_auth_controller,  :create_core_server_connection, :adjust_format, :require_user, :set_user, :configure_theme
+  before_filter :hook_auth_controller,  :create_core_server_connection, :adjust_format,
+    :patch_microsoft_office, :require_user, :set_user, :configure_theme
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -154,6 +155,13 @@ private
 
   def adjust_format
     request.format = :data if request.xhr?
+  end
+
+  def patch_microsoft_office
+    if request.method == :options
+      render :nothing => true, :status => :ok
+      return false
+    end
   end
 
   def configure_theme

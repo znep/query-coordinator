@@ -85,7 +85,7 @@
 
 .commentList .commentList-actionColumn .checkbox
 {
-    background: transparent url(/stylesheets/images/content/table_menu/menu_icon_sprites.png) no-repeat scroll left -897px;
+    background: transparent url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4) no-repeat scroll left -897px;
     display: inline-block;
     height: 23px;
     text-indent: -9999px;
@@ -121,7 +121,7 @@
 
 .commentList .commentList-actionColumn .commentMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
     background-repeat: no-repeat;
     font-size: 0.8em;
 }

@@ -31,13 +31,6 @@ ActionController::Routing::Routes.draw do |map|
   #   end
   UID_REGEXP = /\w{4}-\w{4}/
 
-  # Stop the "Microsoft Data Access Internet Publishing Provider Protocol Discovery" agent from
-  # spewing errors in our log, by just telling it everything is okay. :-)
-  map.connect '*path',
-    :controller => 'microsoft_office',
-    :action => 'options_for_mopd',
-    :conditions => {:method => :options}
-
   map.resources :contacts,
     :collection => {
       :detail => :get,
@@ -252,6 +245,8 @@ ActionController::Routing::Routes.draw do |map|
     invitation.show_invitation    'invitation/show/:id',    :action => 'show'
     invitation.accept_invitation  'invitation/accept/:id',  :action => 'accept'
   end
+
+  map.connect '/favicon.ico', :controller => 'favicon', :action => 'show'
 
   # Non-production environments get a special controller for test actions
   unless Rails.env.production?

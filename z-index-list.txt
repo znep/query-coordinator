@@ -1,0 +1,14 @@
+Please list z-indexes of elements in the site so we can keep track of how elements should appear above/below other elements.
+
+1 bottom tab in .tabList
+2 second-to-bottom tab in .tabList
+3 next tab in .tabList
+4 next tab in .tabList
+5 next tab in .tabList
+6 next tab in .tabList
+7 top unselected tab in .tabList
+8
+9
+10 active tab in .tabList
+20 #header
+2999 #modal overlay

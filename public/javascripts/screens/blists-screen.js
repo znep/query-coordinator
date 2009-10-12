@@ -708,8 +708,7 @@ blist.myBlists.customType = function(value, column)
 
 blist.myBlists.customDatasetName = function(value)
 {
-    var form = '\'<form action="/\' + $.urlSafe(row.category || "dataset") + ' +
-      '  \'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" ' +
+    var form = '\'<form action="\' + $.generateViewUrl(row) + \'" ' +
       'class="noselect" method="post">' +
       '<input name="authenticity_token" type="hidden" value="' +
       form_authenticity_token + '"/>' +
@@ -727,8 +726,7 @@ blist.myBlists.customDatasetName = function(value)
         ') : \'\') + \'<div id="name-cell-\' + row.id + \'" ' +
         'class="name-cell clipText" ' +
         'title="\' + $.htmlEscape(' + value +
-        ' || "") + \'"><a href="/\' + $.urlSafe(row.category || "dataset") + ' +
-        '\'/\' + $.urlSafe(' + value + ') + \'/\' + row.id + \'" ' +
+        ' || "") + \'"><a href="\' + $.generateViewUrl(row) + \'" ' +
         'class="dataset-name">\' + $.htmlEscape(' + value + ') + \'</a></div>\' + ' +
         form;
 };
@@ -756,8 +754,7 @@ blist.myBlists.listDropdown = function()
 blist.myBlists.customHandle = function(value, column) {
     var menu = "<ul class='blistItemMenu menu' id='itemMenu-\"+" + value + "+\"'>" +
         "<li class='open'>" +
-        " <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + " +
-        "   $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Open'>" +
+        " <a href='\" + $.generateViewUrl(row) +\"' title='Open'>" +
         "   <span class='highlight'>Open</span>" +
         "  </a>" +
         "</li>" +
@@ -769,8 +766,7 @@ blist.myBlists.customHandle = function(value, column) {
         "</li>" +
         "\" + ((row.owner.id == '" + myBlistsNS.currentUserId + "') ? \"" +
         "<li class='rename renameLink'>" +
-        "  <a href='/\" + $.urlSafe(row.category || 'dataset') + \"/\" + " +
-        "   $.urlSafe(row.name) + \"/\"+" + value + "+\"' title='Rename'>" +
+        "  <a href='\" + $.generateViewUrl(row) + \"' title='Rename'>" +
         "   <span class='highlight'>Rename</span>" +
         " </a>" +
         "</li>" +

@@ -1039,9 +1039,18 @@ body#lensBody
 /* Special temp view styling */
 #tempInfoPane,
 #lensContainer .tabList .filter.tempViewTab
-{
-    display: none;
-}
+{ display: none; }
+
+.unsavedView #tempInfoPane,
+.unsavedView #lensContainer .tabList .filter.tempViewTab
+{ display: block; }
+
+.unsavedView .mainViewOption,
+.unsavedView .add-column
+{ display: none; }
+
+.unsavedView #lensContainer .headerBar .mainViewSeparator
+{ border-right: none; }
 
 #lensContainer .tabList li.filter.tempViewTab div.innerWrapper
 {

@@ -63,7 +63,7 @@ class WidgetCustomization < Model
                    :logo => 'default',
                    :logo_url => 'http://www.socrata.com/',
                    :footer_link => { :show => true,
-                                     :url => 'http://www.socrata.com/solution/social-data-player-basic',
+                                     :url => 'http://www.socrata.com/try-it-free',
                                      :text => 'Get a Data Player of Your Own' } },
     :grid     => { :row_numbers => true,
                    :wrap_header_text => false,

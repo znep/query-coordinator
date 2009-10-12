@@ -13,6 +13,8 @@ approvalNS.populateTable = function(comments)
 
         // fill data in
         $newRow.data('approval-commentData', this);
+        $newRow.find('.commentAuthorLink')
+            .attr('href', $.generateProfileUrl(this.user));
         $newRow.find('.commentAuthorImage')
             .attr('src', '/users/' + this.user.id + '/profile_images/small')
             .attr('alt', this.user.displayName);
@@ -29,6 +31,10 @@ approvalNS.populateTable = function(comments)
             $newRow.find('.commentTitle').text(this.title);
         }
         $newRow.find('.commentBody').text(this.body);
+
+        $newRow.find('.commentParent')
+               .empty()
+               .append('<a href="' + $.generateViewUrl(this.view) + '">' + this.view.name + '</a>');
 
         $newRow.find('.commentStatus')
             .addClass(this.status)
@@ -64,6 +70,7 @@ $(function() {
         dataType: "json",
         contentType: "application/json",
         success: function(response, status) {
+            $('.commentList-body').removeClass('commentsLoading');
             approvalNS.populateTable(response);
         }
     });
@@ -77,18 +84,8 @@ $(function() {
         event.preventDefault();
         $(this).toggleClass('checked');
     });
-
-    $('.commentList-row .commentMenu .approveComment a').live('click', function(event) {
-        event.preventDefault();
-        approvalNS.updateCommentStatus($(this).closest('.commentList-row'), 'approved');
-    });
-
-    $('.commentList-row .commentMenu .rejectComment a').live('click', function(event) {
-        event.preventDefault();
-        approvalNS.updateCommentStatus($(this).closest('.commentList-row'), 'rejected');
-    });
     
-    $('.headerActions .approveButton').click(function(event) {
+    $('.approveComment').live('click', function(event) {
         event.preventDefault();
         $('.commentList-body .commentList-row:visible:has(.checkbox.checked)').each(function() {
             approvalNS.updateCommentStatus($(this), 'approved');
@@ -97,7 +94,7 @@ $(function() {
         $('.commentList .checkbox').removeClass('checked');
     });
 
-    $('.headerActions .rejectButton').click(function(event) {
+    $('.rejectComment').live('click', function(event) {
         event.preventDefault();
         $('.commentList-body .commentList-row:visible:has(.checkbox.checked)').each(function() {
             approvalNS.updateCommentStatus($(this), 'rejected');

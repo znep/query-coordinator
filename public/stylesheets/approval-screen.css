@@ -46,6 +46,15 @@
     min-height: 30em;
 }
 
+.commentList .commentList-body .emptyListMessage
+{
+    display: none;
+    font-size: 1.3em;
+    min-height: 10em;
+    padding-top: 2em;
+    text-align: center;
+}
+
 .commentList .commentList-cell.commentList-actionColumn
 {
     padding: 0.5em 1em 0;

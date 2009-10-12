@@ -40,7 +40,7 @@ body
     height: 44px;
     padding-bottom: .5em;
     position: relative;
-    z-index: 1;
+    z-index: 20;
 }
 
 #mainLogo
@@ -275,7 +275,6 @@ body.home #mainNav li.home a span {
     float: none;
     text-align: left;
 }
-#mainNav ul.subNav li.last { background-position: right -50px; }
 
 #mainNav.currentUserNav li.home:hover { background-position: right -25px; }
 #mainNav.currentUserNav li.home:hover ul.subNav { display: block; }

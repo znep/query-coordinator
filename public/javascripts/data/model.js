@@ -2181,6 +2181,7 @@ blist.namespace.fetch('blist.data');
                 meta.columns = null;
                 config.meta.columnFilters = meta.columnFilters;
                 config.meta.view.id = meta.view.id;
+                config.meta.view.owner = meta.view.owner;
                 this.meta(config.meta);
             }
 

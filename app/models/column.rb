@@ -32,7 +32,7 @@ class Column < Model
 
     if attributes[:dataTypeName] == "nested_table"
       attributes["childColumns"] = [
-          Column.to_core({"type" => "text", "width" => 100,"name" => "Sub-column"})
+          Column.to_core({"type" => "text", "width" => 100,"name" => "Untitled"})
       ]
     end
 

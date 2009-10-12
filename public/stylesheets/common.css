@@ -268,7 +268,7 @@ form.search.large input.submit
     height: 26px;
     margin: 0 -7px;
     position: relative;
-    z-index: 5;
+    z-index: 7;
 }
 
 .tabList li:first-child
@@ -276,25 +276,12 @@ form.search.large input.submit
     margin-left: 0;
 }
 
-.tabList li + li
-{
-    z-index: 4;
-}
-
-.tabList li + li + li
-{
-    z-index: 3;
-}
-
-.tabList li + li + li + li
-{
-    z-index: 2;
-}
-
-.tabList li + li + li + li + li
-{
-    z-index: 1;
-}
+.tabList li + li { z-index: 6; }
+.tabList li + li + li { z-index: 5; }
+.tabList li + li + li + li { z-index: 4; }
+.tabList li + li + li + li + li { z-index: 3; }
+.tabList li + li + li + li + li + li { z-index: 2; }
+.tabList li + li + li + li + li + li + li { z-index: 1; }
 
 .tabList li.even
 {

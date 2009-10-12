@@ -118,7 +118,7 @@
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Insert a Column', 'class' => 'insertColumn',
         'href' => "/blists/#{@view.id}/columns/new", 'modal' => true,
-        'owner_item' => true},
+        'owner_item' => true, 'if' => @view.is_blist?},
 #        'submenu' => {'class' => 'noicon', 'items' => [
 #        {'text' => 'At the Far Right', 'href' => '#addColumn_last'},
 #        {'text' => 'At the Far Left', 'href' => '#addColumn_first'}]}},

@@ -31,7 +31,7 @@
         'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
         ]}},
         {'text' => 'API', 'class' => 'api',
-        'href' => "/views/#{@view.id}/rows.xml?accessType=API"},
+        'href' => "/popup/api", 'modal' => true},
         {'text' => 'RSS', 'class' => 'rss',
         'href' => "/views/#{@view.id}/rows.rss"},
         {'text' => "Email this #{t(:blist_name)}", 'class' => 'email',
@@ -155,7 +155,8 @@
             {'text' => 'Append From a File...', 'class' => 'append',
             'href' => "#{@view.href}/bulk/append", 'modal' => true},
             {'text' => 'Refresh From a File...', 'class' => 'replace',
-            'href' => "#{@view.href}/bulk/replace", 'modal' => true}
+            'href' => (current_user && current_user.can_access_premium_on?(@view)) ? "#{@view.href}/bulk/replace" : '/popup/premium',
+            'modal' => (!current_user || !current_user.can_access_premium_on?(@view))}
           ]}}
         ]}, is_owner, can_edit) %>
     </dd></dl>
@@ -166,7 +167,7 @@
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'section_title' => 'Info Pages'},
         {'text' => "View Statistics", 'class' => 'statistics', 
-        'href' => (current_user && current_user.can_access_premium_on?(@view)) ? "#{@view.href}/stats" : "/stats_popup", 
+        'href' => (current_user && current_user.can_access_premium_on?(@view)) ? "#{@view.href}/stats" : "/popup/stats", 
         'modal' => (!current_user || !current_user.can_access_premium_on?(@view))},
         {'text' => "View More Info", 'class' => 'about',
         'href' => "#{@view.href}/about"},

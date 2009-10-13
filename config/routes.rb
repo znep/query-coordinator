@@ -48,7 +48,6 @@ ActionController::Routing::Routes.draw do |map|
     data.data_splash        'data/splash',      :action => 'splash'
     data.data_noie          'data/noie',        :action => 'noie'
     data.data_redirected    'data/redirected',  :action => 'redirected'
-    data.data_api_popup     'data/api_popup',   :action => 'api_popup'
   end
   
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
@@ -82,15 +81,15 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
      :action => 'show', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
-   map.connect 'profile/:profile_name/:id', :controller => 'profile',
-     :action => 'update', :conditions => { :method => :put },
-     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id', :controller => 'profile',
+   :action => 'update', :conditions => { :method => :put },
+   :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
 
-   # This needs to be more specific than the dataset routes, which will all
-   # accept anything/anything/4-4, which matches our widget customization
-   # path of widgets/4-4/4-4
-   map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
-     :action => 'show', :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
+  # This needs to be more specific than the dataset routes, which will all
+  # accept anything/anything/4-4, which matches our widget customization
+  # path of widgets/4-4/4-4
+  map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
+   :action => 'show', :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
 
   map.connect ':category/:view_name/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
@@ -197,11 +196,11 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'stylesheets/theme/:id.css', :controller => 'themes', :action => 'theme'
   
-  map.connect 'stats_popup', :controller => 'stats', :action => 'popup'
-  map.connect 'stats_screenshot', :controller => 'stats', :action => 'screenshot'
-
   # The /version page
   map.connect '/version', :controller => "version", :action => "index"
+  
+  # Popups
+  map.connect '/popup/:action', :controller => 'popup'
   
   map.root :controller => "data", :action => "show"
 

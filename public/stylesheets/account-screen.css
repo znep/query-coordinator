@@ -114,7 +114,7 @@
 }
 .openIdTableContainer table td.edit_handle a
 {
-    background: url(/stylesheets/images/profile/profile_links_delete.png) center center no-repeat;
+    background: url(/stylesheets/images/common/delete.png) center center no-repeat;
     display: block;
     height: 36px;
     line-height: 36px;

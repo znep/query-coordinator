@@ -47,6 +47,7 @@ var column = <%= @column.to_js %>;
             </tr>
           </tbody>
         </table>
+        <%= render(:partial => 'picklist_manager')%>
       </div>
       <%# Firefox won't trigger submit events unless there is a submit button %>
       <input class='hidden' type='submit' />
@@ -90,7 +91,8 @@ blist.common.modalReady = function() {
       {id: "stars", label: "Star"},
       {id: "flag", label: "Flag"},
       {id: "document", label: "Document"},
-      {id: "photo", label: "Photo (Image)"}
+      {id: "photo", label: "Photo (Image)"},
+      {id: 'picklist', label: 'Picklist'}
   ];
   <%- if @parent.nil? -%>
   typeValues.push({id: "nested_table", label: "Nested Table"});
@@ -105,20 +107,29 @@ blist.common.modalReady = function() {
     renderFn: renderValueInfoFormatRow
   });
 
+  $('#columnCreateDialog #picklistManager').toggleClass('hidden',
+      column.type != 'picklist');
+  picklistManagerSetup();
+
   var formEnabled = true;
   var toggleEnabled = function()
   {
     $("#columnCreateDialog .columnPropertiesWrapper :input")
       .attr("disabled", formEnabled);
     formEnabled = !formEnabled;
-  }
+  };
 
   $("#columnCreateDialog #name")
-    .change(function() { column.name = $(this).val() });
+    .change(function() { column.name = $(this).val(); });
   $("#columnCreateDialog #description")
-    .change(function() { column.description = $(this).val() });
+    .change(function() { column.description = $(this).val(); });
   $("#columnCreateDialog #types")
-    .change(function() { column.type = $(this).value() });
+    .change(function()
+    {
+        column.type = $(this).value();
+        $('#columnCreateDialog #picklistManager').toggleClass('hidden',
+            column.type != 'picklist');
+    });
 
   var saveForm = function()
   {

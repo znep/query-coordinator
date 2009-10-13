@@ -15,7 +15,7 @@
           <div class="type datatype-<%= @view.column_by_id(sort.viewColumnId).client_type %>"></div>
           <div class="itemWrapper">
             <span class="orderIndex"><%= i + 1 %></span>
-            <div class="ascension">
+            <div class="controls">
                 <div class="sort sort-<%= sort.asc? ? 'asc' : 'desc' %>" title="Click to sort <%= sort.asc? ? "descending" : "ascending" %>"></div>
             </div>
             <% 
@@ -43,7 +43,7 @@
           <div class="type datatype-<%= @view.column_by_id(sort["viewColumnId"]).client_type %>"></div>
           <div class="itemWrapper">
             <span class="orderIndex hide"></span>
-            <div class="ascension hide">
+            <div class="controls hide">
                 <div class="sort sort-asc" title="Click to sort descending"></div>
             </div>
             <% 
@@ -106,13 +106,13 @@
     };
 
     var valueChanged = function() {
-        $("#modal .activeList div.ascension").removeClass("hide");
-        $("#modal .inactiveList div.ascension").addClass("hide");
+        $("#modal .activeList div.controls").removeClass("hide");
+        $("#modal .inactiveList div.controls").addClass("hide");
 
         toggleOrderLabel();
     };
 
-    $("#modal div.ascension").click(function() {
+    $("#modal div.controls").click(function() {
         toggleSortOrder($(this).find(".sort"));
     });
 

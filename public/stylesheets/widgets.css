@@ -2047,16 +2047,38 @@ body#login .loginBox li#close_login
 .reorderList .activeList li.ui-draggable-dragging .itemWrapper
 {
     background-color: #c8e2f7;
+    border-bottom: 1px solid #c8e2f7;
     border-top-color: transparent;
     height: 11px;
-    margin: 0 0 1px;
+    margin: 0;
     padding: 7px 12px;
 }
 
 .reorderList .activeList li .orderIndex
 {
     color: #0071bc;
-    margin-right: 1em;
+    display: inline-block;
+    width: 2em;
+}
+
+.reorderList .itemWrapper .controls
+{
+    position: absolute;
+    right: 0;
+    top: 1px;
+    width: 25px;
+    height: 12px;
+    padding: 0.3em;
+    margin: 0.2em;
+    border-left: 1px solid #999;
+    cursor: auto;
+    background-color: white;
+}
+
+.activeList li.hover .itemWrapper .controls,
+.activeList li.reorderList-selected .itemWrapper .controls
+{
+    background-color: #c8e2f7;
 }
 
 .reorderList .activeList .removeAllLink

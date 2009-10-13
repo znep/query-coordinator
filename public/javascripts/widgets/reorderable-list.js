@@ -107,6 +107,7 @@ $.fn.reorderableList = function(options) {
             var $item = $(this);
             $item.data("reorderableList-initialOrder", i);
             $item.data("reorderableList-order", i);
+            $item.css('top', '');
 
             if (i === 0)
             {
@@ -190,7 +191,8 @@ $.fn.reorderableList = function(options) {
         $this.data("config-reorderableList", config);
 
         // Make items in both lists draggable
-        $this.find(".activeList li, .inactiveList li").draggable({
+        $this.find(".activeList li" +
+            (config.enableInactiveList ? ", .inactiveList li" : '')).draggable({
             axis: 'y',
             containment: 'parent',
             distance: 3,
@@ -209,42 +211,53 @@ $.fn.reorderableList = function(options) {
                 var $item = $(this);
                 $item.stop()
                      .animate(
-                          { top: getRelativeOffset($item, 
-                                ($item.data("reorderableList-order") * ($item.outerHeight(true) + 1))) + 'px' },
+                          { top: getRelativeOffset($item,
+                                ($item.data("reorderableList-order") *
+                                ($item.outerHeight(true) + 1))) + 'px' },
                           'fast',
                           'linear'
                      );
             }
         });
-        
+
         // Set not dragging class
         $this.find(".activeList").addClass("ui-draggable-not-dragging");
-        
-        // Disable dragging on the inactive list items
-        $this.find(".inactiveList li").draggable('disable');
-        
+
+        if (config.enableInactiveList)
+        {
+            // Disable dragging on the inactive list items
+            $this.find(".inactiveList li").draggable('disable');
+        }
+
         // Set default data on list items
         initListItems($this.find(".activeList li"), config);
 
-        // Wire up click behavior on list items
-        $this.find('li').mousedown(function()
+        if (config.enableInactiveList)
         {
-            $this.find('.' + config.selectedListItemClass).removeClass(config.selectedListItemClass);
-            $(this).addClass(config.selectedListItemClass);
-        });
-        $this.find('li').dblclick(function()
-        {
-            var $item = $(this);
-            $item.removeClass('hover');
-            if ($item.parents('.activeList').length == 0)
+            // Wire up click behavior on list items
+            $this.find('li').mousedown(function()
             {
-                moveItemToActiveList($item, $this.find('.activeList ul'), config);
-            }
-            else
+                $this.find('.' + config.selectedListItemClass)
+                    .removeClass(config.selectedListItemClass);
+                $(this).addClass(config.selectedListItemClass);
+            });
+
+            $this.find('li').dblclick(function()
             {
-                moveItemToInactiveList($item, $this.find('.inactiveList ul'), config);
-            }
-        });
+                var $item = $(this);
+                $item.removeClass('hover');
+                if ($item.parents('.activeList').length == 0)
+                {
+                    moveItemToActiveList($item, $this.find('.activeList ul'),
+                        config);
+                }
+                else
+                {
+                    moveItemToInactiveList($item, $this.find('.inactiveList ul'),
+                        config);
+                }
+            });
+        }
 
         // Wire up manual hover for IE's sake, because IE is awesome
         $this.find('li').mouseover(function()
@@ -256,31 +269,37 @@ $.fn.reorderableList = function(options) {
             $(this).removeClass('hover');
         });
 
-        // Wire up click behavior on arrow buttons
-        $this.find(config.addItemButtonSelector).click(function(event)
+        if (config.enableInactiveList)
         {
-            event.preventDefault();
-            moveItemToActiveList($this.find('.' + config.selectedListItemClass), $this.find('.activeList ul'), config);
-        });
-        $this.find(config.removeItemButtonSelector).click(function(event)
-        {
-            event.preventDefault();
-            moveItemToInactiveList($this.find('.' + config.selectedListItemClass), $this.find('.inactiveList ul'), config);
-        });
+            // Wire up click behavior on arrow buttons
+            $this.find(config.addItemButtonSelector).click(function(event)
+            {
+                event.preventDefault();
+                moveItemToActiveList($this.find('.' + config.selectedListItemClass),
+                    $this.find('.activeList ul'), config);
+            });
+            $this.find(config.removeItemButtonSelector).click(function(event)
+            {
+                event.preventDefault();
+                moveItemToInactiveList($this.find('.' +
+                    config.selectedListItemClass), $this.find('.inactiveList ul'),
+                    config);
+            });
 
-        // Wire up behavior on remove all button
-        $this.find(config.removeAllLinkSelector).click(function(event)
-        {
-            event.preventDefault();
-            var $items = $this.find('.activeList li');
-            $items.find(config.orderSpanSelector).addClass('hide');
-            $items.find(config.activeFieldSelector).val(false);
-            $items.removeClass(config.firstListItemClass);
-            $items.css('top', 0);
-            $items.draggable('disable');
-            $this.find('.inactiveList ul').append($items);
-            config.onChange();
-        });
+            // Wire up behavior on remove all button
+            $this.find(config.removeAllLinkSelector).click(function(event)
+            {
+                event.preventDefault();
+                var $items = $this.find('.activeList li');
+                $items.find(config.orderSpanSelector).addClass('hide');
+                $items.find(config.activeFieldSelector).val(false);
+                $items.removeClass(config.firstListItemClass);
+                $items.css('top', 0);
+                $items.draggable('disable');
+                $this.find('.inactiveList ul').append($items);
+                config.onChange();
+            });
+        }
     });
 };
 
@@ -290,7 +309,8 @@ $.fn.reorderableList_updateFromData = function()
     var config = $this.data('config-reorderableList');
     var $sorted = $($this.find('li').get().sort(function(a, b)
     {
-        return $(a).find(config.orderFieldSelector).val() - $(b).find(config.orderFieldSelector).val();
+        return $(a).find(config.orderFieldSelector).val() -
+            $(b).find(config.orderFieldSelector).val();
     }));
 
     $this.find('.inactiveList ul').append($sorted);
@@ -299,7 +319,8 @@ $.fn.reorderableList_updateFromData = function()
     $sorted.draggable('disable');
     $sorted.css('top', 0);
 
-    $sorted.filter(':has(' + config.activeFieldSelector + '[value="true"])').each(function(i)
+    $sorted.filter(':has(' + config.activeFieldSelector + '[value="true"])')
+        .each(function(i)
     {
         var $item = $(this);
         $this.find('.activeList ul').append($item);
@@ -327,6 +348,7 @@ $.fn.reorderableList.defaults = {
     addItemButtonSelector: '.addItemButton',
     removeItemButtonSelector: '.removeItemButton',
     removeAllLinkSelector: '.removeAllLink',
+    enableInactiveList: true,
     onChange: function() { }
 };
 

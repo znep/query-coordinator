@@ -3,6 +3,8 @@
     "company": "DataSF",
     "site title": "DataSF | Open San Francisco",
     "logo": "data_sf_logo.png",
+    "logo height": "39",
+    "logo width": "193",
     "dialog logo" : "data_sf_logo_square.png",
     "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li class=\"last\"><a href=\"#\">SFGov.org</a></li></ul>",
     

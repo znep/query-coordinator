@@ -148,9 +148,9 @@
                   'submenu' => method(:column_aggregate_menu),
                   'column_test' => proc {|c, p|
                   c.dataType.possible_aggregates.length > 1}})},
-        {'separator' => true},
+        {'separator' => true, 'edit_item' => true, 'if' => @view.is_blist?},
         {'text' => 'Upload More Rows', 'class' => 'uploadRows',
-          'edit_item' => true,
+          'edit_item' => true, 'if' => @view.is_blist?,
           'href' => '#', 'submenu' => {'items' => [
             {'text' => 'Append From a File...', 'class' => 'append',
             'href' => "#{@view.href}/bulk/append", 'modal' => true},

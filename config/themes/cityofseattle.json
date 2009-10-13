@@ -3,6 +3,8 @@
     "company": "Seattle Data",
     "site title": "SeattleData.gov | Seattle's Data Site",
     "logo": "main_logo.png",
+    "logo height": "39",
+    "logo width": "205",
     "dialog logo" : "dialog_logo.png",
     "footer html" : "<span class='copyright'>&copy; 2009 City of Seattle</span><ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li><a href=\"#\">City of Seattle</a></li></ul>",
     

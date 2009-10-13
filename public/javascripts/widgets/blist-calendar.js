@@ -83,7 +83,7 @@
                 else if (c.id == fmt.startDateId) { currentObj._startIndex = i; }
                 else if (c.id == fmt.endDateId) { currentObj._endIndex = i; }
                 else if (c.id == fmt.titleId) { currentObj._titleIndex = i; }
-                else if (c.id == fmt.descriptionId)
+                if (c.id == fmt.descriptionId)
                 { currentObj._descriptionIndex = i; }
             });
         }

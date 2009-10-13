@@ -41,7 +41,7 @@
 #        'href' => '#copy_blist', 'user_required' => true},
         {'separator' => true, 'user_required' => true},
         {'text' => "Design a New #{t(:blist_name).titleize}...", 'class' => 'create',
-        'href' => "#{new_blist_path}", 'user_required' => true },
+        'href' => "#{new_blist_path}"},
         # Submenu for Create blist when we support different types
 #        , 'submenu' => {'items' => [
 #        {'text' => 'Start As a Table', 'class' => 'table',
@@ -116,7 +116,7 @@
   <li class='data'>
     <dl><dt><a href='#menuData'>Data</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => 'Insert a Column', 'class' => 'insertColumn',
+        {'text' => 'Add a Column', 'class' => 'insertColumn',
         'href' => "/blists/#{@view.id}/columns/new", 'modal' => true,
         'owner_item' => true, 'if' => @view.is_blist?},
 #        'submenu' => {'class' => 'noicon', 'items' => [
@@ -149,12 +149,12 @@
                   'column_test' => proc {|c, p|
                   c.dataType.possible_aggregates.length > 1}})},
         {'separator' => true},
-        {'text' => 'Import More Rows', 'class' => 'importRows',
+        {'text' => 'Upload More Rows', 'class' => 'uploadRows',
           'edit_item' => true,
           'href' => '#', 'submenu' => {'items' => [
-            {'text' => 'Append From a File', 'class' => 'append',
+            {'text' => 'Append From a File...', 'class' => 'append',
             'href' => "#{@view.href}/bulk/append", 'modal' => true},
-            {'text' => 'Replace With a File', 'class' => 'replace',
+            {'text' => 'Refresh From a File...', 'class' => 'replace',
             'href' => "#{@view.href}/bulk/replace", 'modal' => true}
           ]}}
         ]}, is_owner, can_edit) %>

@@ -178,6 +178,11 @@
     background-position: 0 -154px;
 }
 
+#sidebar .filterSection.comments h4 a
+{
+    background-position: 0 -176px;
+}
+
 #sidebar .filterSection > ul,
 #sidebar .filterSection ul.expandable
 {
@@ -240,6 +245,11 @@
 #sidebar .filterSection.groups > ul > li > a
 {
     background-position: 0 -154px;
+}
+
+#sidebar .filterSection.comments > ul > li > a
+{
+    background-position: 0 -66px;
 }
 
 #sidebar .filterSection > ul > li > a span,

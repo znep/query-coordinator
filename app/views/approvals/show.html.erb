@@ -1,5 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag 'list-screen', 'approval-screen' %>
+    <%= stylesheet_link_tag 'list-screen', 'sidebar', 'approval-screen' %>
   <title>Approvals | <%= th.site_title %></title>
 <% end %>
 
@@ -38,6 +38,9 @@
                 </div>
               </div>
               <div class="commentList-body commentsLoading">
+                <p class="emptyListMessage">
+                  There are no comments to show at this time for the filter you have selected.
+                </p>
                 <div class="commentList-templateRow">
                   <div class="commentList-cell commentList-actionColumn">
                     <a class="checkbox">Select</a>
@@ -79,6 +82,39 @@
   <div id="sidebar" class="column">
     <% render(:layout => "shared/sidebar_box") do %>
       <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+    <% end %>
+
+    <% render(:layout => "shared/sidebar_box") do %>
+      <div class='filterSection comments expandableContainer'>
+        <a href="#expand_items" class="expander">expand</a>
+        <h4>
+          <a href="#">
+            <span>By Comments</span>
+          </a>
+        </h4>
+        <ul class="expandable">
+          <li>
+            <a href="#all" class="filterLink hilight">
+              <span>All Comments</span>
+            </a>
+          </li>
+          <li>
+            <a href="#pending" class="filterLink">
+              <span>Pending Comments</span>
+            </a>
+          </li>
+          <li>
+            <a href="#approved" class="filterLink">
+              <span>Approved Comments</span>
+            </a>
+          </li>
+          <li>
+            <a href="#rejected" class="filterLink">
+              <span>Rejected Comments</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     <% end %>
   </div>
 </div>

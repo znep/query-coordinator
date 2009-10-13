@@ -274,11 +274,7 @@
               <li class='column last'>
               <%# Complex/join datatypes %>
                 <ul>
-                  <% if false %>
-                      <% # What to do about picklists? Are we just removing 
-                         # them for now? %>
-                    <li><%= get_add_column("Picklist", @view.id, "picklist") %></li>
-                  <% end %>
+                  <li><%= get_add_column("Picklist", @view.id, "picklist") %></li>
                   <li><%= get_add_column("Nested Table", @view.id, "nested_table") %></li>
                 </ul>
               </li>

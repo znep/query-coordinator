@@ -101,6 +101,7 @@ javascripts:
 - blists-show:
   - plugins/ui.core
   - plugins/ui.draggable
+  - plugins/ui.resizable
   - plugins/ui.spinner
   - util/extMouseWheel
   - util/navigation

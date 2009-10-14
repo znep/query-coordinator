@@ -3,6 +3,8 @@
     "site title": "data.gov | Find Government Data",
     "logo": "data_gov_logo.png",
     
+    // Global
+    "header fg": [ "600", "600", "600", "666", "333" ],
     
     "discover header" : "Discover useful, informative and interesting data. View or copy and use for yourself!"
 }

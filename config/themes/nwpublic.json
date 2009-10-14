@@ -3,6 +3,8 @@
     "company": "NWP Data",
     "site title": "NWPublicData | North West Public Data",
     "logo": "main_logo.png",
+    "logo height": "39",
+    "logo width": "210",
     "dialog logo" : "dialog_logo.png",
     "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li></ul>",
     

@@ -119,9 +119,13 @@
             {
                 var ce = {id: r[currentObj._idIndex],
                     start: r[currentObj._startIndex],
-                    title: $.htmlStrip(r[currentObj._titleIndex])};
+                    title: $.htmlStrip(r[currentObj._titleIndex]),
+                    row: r};
                 if (currentObj._endIndex !== undefined)
-                { ce.end = r[currentObj._endIndex]; }
+                {
+                    ce.end = r[currentObj._endIndex];
+                    if (ce.start === null) { ce.start = ce.end; }
+                }
                 if (currentObj._descriptionIndex !== undefined)
                 { ce.description = r[currentObj._descriptionIndex]; }
                 events.push(ce);
@@ -172,7 +176,17 @@
     {
         var fmt = currentObj.settings.displayFormat;
         var data = {};
-        data[fmt.startDateId] = calEvent.start.valueOf() / 1000;
+
+        // Make sure we have a start date, and make sure it either was originally
+        //  set in the row, or is now different than the end date (meaning it
+        //  was a resize) -- otherwise the date was originally null, so don't
+        //  update it.
+        if (calEvent.start !== null &&
+            (calEvent.row[currentObj._startIndex] !== null ||
+             (calEvent.end !== null &&
+                calEvent.start.valueOf() != calEvent.end.valueOf())))
+        { data[fmt.startDateId] = calEvent.start.valueOf() / 1000; }
+
         if (fmt.endDateId !== undefined && calEvent.end !== null)
         { data[fmt.endDateId] = calEvent.end.valueOf() / 1000; }
 

@@ -414,19 +414,6 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     $("#infoPane .editItem").infoPaneItemEdit({
         submitSuccessCallback: myBlistsNS.infoEditCallback
     });
-    
-    $("#throbber").hide();
-    $('a#notifyAll').live("click", function(event)
-    {
-        event.preventDefault();
-        $("#throbber").show();
-        $.post($(this).closest("form").attr("action"), null, function(data, textStatus) {
-            $("#throbber").hide();
-        });
-    });
-	
-	$('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'),
-		forcePosition: true, closeOnResize: true});
 
     $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
 
@@ -469,78 +456,16 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 
     $("#infoPane .singleInfoPublishing").infoPanePublish();
 
-    $('.switchPermsLink').click(function (event)
+    $('#infoPane .singleInfoSharing').infoPaneSharing({
+        $publishingPane: $('#infoPane .singleInfoPublishing'),
+        $summaryPane: $('#infoPane .singleInfoSummary'),
+        summaryUpdateCallback: function()
         {
-            event.preventDefault();
-            var $link = $(this);
-            var curState = $link.text().toLowerCase();
-            var newState = curState == 'private' ?
-                'public' : 'private';
-
-            var viewId = $link.attr('href').split('_')[1];
-            $.get('/views/' + viewId, {'method': 'setPermission',
-                'value': newState});
-
-            var capState = $.capitalize(newState);
-
-            // Update link & icon
-            $link.closest('p.' + curState)
-                .removeClass(curState).addClass(newState);
-            $link.text(capState);
-            // Update panel header & icon
-            $link.closest('.singleInfoSharing')
-                .find('.panelHeader.' + curState).text(capState)
-                .removeClass(curState).addClass(newState);
-            // Update line in summary pane
-            $link.closest('#infoPane')
-                .find('.singleInfoSummary .permissions .itemContent > *')
-                .text(capState);
-            // Update summary panel header icon
-            $link.closest('#infoPane')
-                .find('.singleInfoSummary .panelHeader.' + curState)
-                .removeClass(curState).addClass(newState);
-			// Update publishing panel view
-			$('.singleInfoPublishing .infoContent > .hide').removeClass('hide');
-			if (newState == 'private')
-			{
-				$('.singleInfoPublishing .publishContent').addClass('hide');
-			}
-			else
-			{
-				$('.singleInfoPublishing .publishWarning').addClass('hide');
-			}
-        });
-        
-    // Share deleting
-    $(".shareDelete").die("click");
-    $(".shareDelete").live("click", function(event)
-    {
-        event.preventDefault();
-
-        var $link = $(this);
-        var viewId = $link.closest("table").attr("id").split("_")[1];
-        $.getJSON($link.attr("href"),
-            function(data) {
-                // Replace the delete X with a throbber.
-                $link.closest(".cellInner").html(
-                    $("<img src=\"/images/throbber.gif\" width=\"16\" height=\"16\" alt=\"Deleting...\" />")
-                );
-                
-                blist.meta.updateMeta("sharing", viewId,
-                    function() { $("#throbber").hide(); },
-                    function() { $("#infoPane .gridList").blistListHoverItems(); }
-                );
-                blist.meta.updateMeta("summary", viewId,
-                    function() {},
-                    function() {
-                      $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
-                      $("#infoPane .editItem").infoPaneItemEdit({
-                            submitSuccessCallback: myBlistsNS.infoEditCallback
-                        });
-                    }
-                );
-            }
-        );
+            $(".infoContent dl.actionList, .infoContentHeader")
+                .infoPaneItemHighlight();
+            $("#infoPane .editItem").infoPaneItemEdit(
+                { submitSuccessCallback: myBlistsNS.infoEditCallback });
+        }
     });
 
     $(".favoriteAction a").click(function(event) {

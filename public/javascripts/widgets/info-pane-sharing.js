@@ -29,9 +29,10 @@
             infoLinkSelector: '#shareInfoLink',
             infoMenuSelector: '#shareInfoMenu',
             hoverListSelector: '.gridList',
+            notifyThrobberSelector: '.typeNotify .throbber',
             summaryUpdateCallback: null,
             switchPermsSelector: '.switchPermsLink',
-            throbberSelector: '.throbber'
+            switchPermsThrobberSelector: '.sharingSummary .throbber'
         },
 
         prototype:
@@ -70,12 +71,12 @@
         $domObj.find(s.notifySelector).click(function(event)
         {
             event.preventDefault();
-            $domObj.find(s.throbberSelector).removeClass('hidden');
+            $domObj.find(s.notifyThrobberSelector).removeClass('hidden');
             var $notifyLink = $(this);
             $.post($notifyLink.closest("form").attr("action"), null,
                 function(data, textStatus)
                 {
-                    $domObj.find(s.throbberSelector).addClass('hidden');
+                    $domObj.find(s.notifyThrobberSelector).addClass('hidden');
                     $notifyLink.blistAlert(
                         {message: 'Notification emails have been sent'});
                 });
@@ -90,56 +91,67 @@
         $domObj.find(s.switchPermsSelector).click(function (event)
         {
             event.preventDefault();
+            var $throbber = $domObj.find(s.switchPermsThrobberSelector);
+            if (!$throbber.is('.hidden')) { return; }
+            $throbber.removeClass('hidden');
+
             var $link = $(this);
             var curState = $link.text().toLowerCase();
             var newState = curState == 'private' ?
                 'public' : 'private';
             var viewId = $link.attr('href').split('_')[1];
-            $.get('/views/' + viewId, {'method': 'setPermission',
-                'value': newState});
-
-            var capState = $.capitalize(newState);
-
-            if ($link.closest('p.shared').length > 0)
-            {
-                if (curState == 'private') { curState += 'Shared'; }
-                if (newState == 'private') { newState += 'Shared'; }
-            }
-
-            // Update link & icon
-            $link.closest('p.' + curState)
-                .removeClass(curState).addClass(newState);
-            $link.text(capState);
-            // Update panel header & icon
-            $domObj.find('.panelHeader.' + curState).text(capState)
-                .removeClass(curState).addClass(newState);
-
-            if (currentObj.settings.$summaryPane !== null)
-            {
-                // Update line in summary pane
-                currentObj.settings.$summaryPane
-                    .find('.permissions .itemContent > *').text(capState);
-                // Update summary panel header icon
-                currentObj.settings.$summaryPane.find('.panelHeader')
-                    .removeClass(curState).addClass(newState);
-            }
-
-            if (currentObj.settings.$publishingPane)
-            {
-                // Update publishing panel view
-                currentObj.settings.$publishingPane
-                    .find('.infoContent > .hide').removeClass('hide');
-                if (newState == 'private')
+            $.ajax({url: '/views/' + viewId,
+                data: {'method': 'setPermission', 'value': newState},
+                complete: function()
+                { $throbber.addClass('hidden'); },
+                error: function()
+                { alert('There was a problem changing the permissions'); },
+                success: function()
                 {
-                    currentObj.settings.$publishingPane
-                        .find('.publishContent').addClass('hide');
+                    var capState = $.capitalize(newState);
+
+                    if ($link.closest('p.shared').length > 0)
+                    {
+                        if (curState == 'private') { curState += 'Shared'; }
+                        if (newState == 'private') { newState += 'Shared'; }
+                    }
+
+                    // Update link & icon
+                    $link.closest('p.' + curState)
+                        .removeClass(curState).addClass(newState);
+                    $link.text(capState);
+                    // Update panel header & icon
+                    $domObj.find('.panelHeader.' + curState).text(capState)
+                        .removeClass(curState).addClass(newState);
+
+                    if (currentObj.settings.$summaryPane !== null)
+                    {
+                        // Update line in summary pane
+                        currentObj.settings.$summaryPane
+                            .find('.permissions .itemContent > *').text(capState);
+                        // Update summary panel header icon
+                        currentObj.settings.$summaryPane.find('.panelHeader')
+                            .removeClass(curState).addClass(newState);
+                    }
+
+                    if (currentObj.settings.$publishingPane)
+                    {
+                        // Update publishing panel view
+                        currentObj.settings.$publishingPane
+                            .find('.infoContent > .hide').removeClass('hide');
+                        if (newState == 'private')
+                        {
+                            currentObj.settings.$publishingPane
+                                .find('.publishContent').addClass('hide');
+                        }
+                        else
+                        {
+                            currentObj.settings.$publishingPane
+                                .find('.publishWarning').addClass('hide');
+                        }
+                    }
                 }
-                else
-                {
-                    currentObj.settings.$publishingPane
-                        .find('.publishWarning').addClass('hide');
-                }
-            }
+            });
         });
 
         // List hover

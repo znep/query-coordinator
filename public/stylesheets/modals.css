@@ -807,9 +807,9 @@ ul.convertables li a:hover
   padding-left: 37px;
 }
 
-.dialogWrapper.modalDialog.flagDataset 
+.dialogWrapper.modalDialog.flagDataset
 {
-    margin-left: 12em;
+    margin: 5em 0 0 -28.25em;
     width: 56.5em;
 }
 .flagDatasetWrapper label,

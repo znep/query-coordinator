@@ -117,7 +117,7 @@
       event.preventDefault();
       if ($form.valid() && fileValid)
       {
-        $uploader._settings.action = $form.attr('action') + '?method=<%= @type %>'
+        $uploader._settings.action = $form.attr('action') + '?method=<%= @type %>';
         $uploader.submit();
 
         $('.bulkOperationWrapper .submitActions li:has(.loadingIndicator)').removeClass('hide');

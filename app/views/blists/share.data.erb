@@ -146,20 +146,9 @@
             }
             else
             {
-              blist.meta.updateMeta("sharing", $("#view_id").val(), 
-                function() { $("#throbber").hide(); },
-                function() { $("#infoPane .gridList").blistListHoverItems(); }
-              );
-              blist.meta.updateMeta("summary", $("#view_id").val(),
-                function() {},
-                function() {
-                  $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
-                  $("#infoPane .editItem").infoPaneItemEdit({
-                        submitSuccessCallback: blist.infoEditCallback
-                    });
-                }
-              );
-            
+              $('#infoPane .singleInfoSharing').infoPaneSharing()
+                .refresh($("#view_id").val());
+
               $("#modal").jqmHide();
             }
           }

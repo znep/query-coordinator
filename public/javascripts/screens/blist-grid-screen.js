@@ -425,16 +425,6 @@ $(function ()
         $('#dataGrid').datasetGrid().clearTempView(null, true);
     });
 
-    $("#throbber").hide();
-    $('a#notifyAll').live("click", function(event)
-    {
-        event.preventDefault();
-        $("#throbber").show();
-        $.post($(this).closest("form").attr("action"), null, function(data, textStatus) {
-            $("#throbber").hide();
-        });
-    });
-
     $('.addColumnsLink, #addColumnsMenu .close').click(function (event)
     {
         event.preventDefault();
@@ -622,8 +612,6 @@ $(function ()
     blistGridNS.hookUpFilterViewMenu();
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
         menuBar: $('#lensContainer .headerBar')});
-    $('#shareInfoMenu').dropdownMenu({triggerButton: $('#shareInfoLink'),
-        forcePosition: true, closeOnResize: true});
 
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);
@@ -699,83 +687,22 @@ $(function ()
 
     $("#infoPane .singleInfoPublishing").infoPanePublish();
 
-    $('.switchPermsLink').live("click", function (event)
-    {
-        event.preventDefault();
-        var $link = $(this);
-        var curState = $link.text().toLowerCase();
-        var newState = curState == 'private' ?
-            'public' : 'private';
-
-        var viewId = $link.attr('href').split('_')[1];
-        $.get('/views/' + viewId, {'method': 'setPermission',
-            'value': newState});
-
-        var capState = $.capitalize(newState);
-
-        // Update link & icon
-        $link.closest('p.' + curState)
-            .removeClass(curState).addClass(newState);
-        $link.text(capState);
-        // Update panel header & icon
-        $link.closest('.singleInfoSharing')
-            .find('.panelHeader.' + curState).text(capState)
-            .removeClass(curState).addClass(newState);
-        // Update line in summary pane
-        $link.closest('#infoPane')
-            .find('.singleInfoSummary .permissions .itemContent > *')
-            .text(capState);
-        // Update summary panel header icon
-        $link.closest('#infoPane')
-            .find('.singleInfoSummary .panelHeader.' + curState)
-            .removeClass(curState).addClass(newState);
-        // Update publishing panel view
-        $('.singleInfoPublishing .infoContent > .hide').removeClass('hide');
-        if (newState == 'private')
-        {
-            $('.singleInfoPublishing .publishContent').addClass('hide');
-        }
-        else
-        {
-            $('.singleInfoPublishing .publishWarning').addClass('hide');
-        }
-    });
-
-    // Share deleting
-    $(".shareDelete").live("click", function(event)
-    {
-        event.preventDefault();
-
-        var $link = $(this);
-        var viewId = $link.closest("table").attr("id").split("_")[1];
-        $.getJSON($link.attr("href"),
-            function(data) {
-                // Replace the delete X with a throbber.
-                $link.closest(".cellInner").html(
-                    $("<img src=\"/images/throbber.gif\" width=\"16\" height=\"16\" alt=\"Deleting...\" />")
-                );
-
-                blist.meta.updateMeta("sharing", viewId,
-                    function() { $("#throbber").hide(); },
-                    function() { $("#infoPane .gridList").blistListHoverItems(); }
-                );
-                blist.meta.updateMeta("summary", viewId,
-                    function() {},
-                    function() {
-                      $(".infoContent dl.actionList, .infoContentHeader").infoPaneItemHighlight();
-                      $("#infoPane .editItem").infoPaneItemEdit({
-                            submitSuccessCallback: blistGridNS.infoEditCallback
-                        });
-                    }
-                );
-            }
-        );
-    });
-
     var commentMatches = window.location.search.match(/comment=(\w+)/);
     $('#infoPane .singleInfoComments').infoPaneComments({
         initialComment: commentMatches && commentMatches.length > 1 ?
             commentMatches[1] : null
+    });
+
+    $('#infoPane .singleInfoSharing').infoPaneSharing({
+        $publishingPane: $('#infoPane .singleInfoPublishing'),
+        $summaryPane: $('#infoPane .singleInfoSummary'),
+        summaryUpdateCallback: function()
+        {
+            $(".infoContent dl.actionList, .infoContentHeader")
+                .infoPaneItemHighlight();
+            $("#infoPane .editItem").infoPaneItemEdit(
+                { submitSuccessCallback: blistGridNS.infoEditCallback });
+        }
     });
 
     $(".favoriteAction a").click( blistGridNS.favoriteActionClick );

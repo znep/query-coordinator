@@ -23,8 +23,9 @@ javascripts:
   - widgets/clipped-text
   - screens/common-layout
   - util/styling
-- shared-calendar:
   - plugins/jquery.qtip
+  - widgets/blist-alert
+- shared-calendar:
   - plugins/fullcalendar
   - widgets/blist-calendar
 - shared-table-editor:
@@ -79,6 +80,7 @@ javascripts:
   - widgets/sidebar-filter
   - widgets/pagination
   - widgets/info-pane-comments
+  - widgets/info-pane-sharing
   - widgets/info-pane-publish
   - screens/blists-screen
   - screens/info-pane
@@ -124,6 +126,7 @@ javascripts:
   - widgets/column-format
   - widgets/column-totals
   - widgets/info-pane-comments
+  - widgets/info-pane-sharing
   - widgets/info-pane-publish
   - widgets/scrollable
   - widgets/dataset-grid

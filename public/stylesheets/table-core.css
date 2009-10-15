@@ -539,7 +539,7 @@ div.blist-table-editor .align-right { text-align: right; }
 .blist-table-editor.type-stars .star
 {
     background-image: url(/stylesheets/images/content/table/grid_stars_sprites.png);
-    background-position: 0 -16.5px;
+    background-position: 0 -16px;
     background-repeat: no-repeat;
     cursor: pointer;
     display: inline-block;
@@ -551,7 +551,7 @@ div.blist-table-editor .align-right { text-align: right; }
 { background-position: 0 0; }
 
 .blist-table-editor.type-stars.hover .star.star-on
-{ background-position: 0 -32.5px; }
+{ background-position: 0 -32px; }
 
 .blist-table-editor.type-stars input,
 .blist-table-editor.type-document input,

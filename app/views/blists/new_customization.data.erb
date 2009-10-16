@@ -40,7 +40,7 @@
       messages: {  "new_customization[name]": "You must name the template." }
     });
 
-    $('#submitNewCustomization').click(function(event)
+    var submitForm = function(event)
     {
       event.preventDefault();
       if ($form.valid())
@@ -52,13 +52,20 @@
           dataType: 'json',
           success: function(responseData)
           {
-            publishNS.populateForm($.json.deserialize(responseData['customization']));
-            $('.templateName').text(responseData['name']);
-            $('#template_name, #new_customization_from')
-              .append($('<option value="' + responseData['uid'] + '">' + responseData['name'] + '</option>'))
-              .val(responseData['uid']);
-            $('#modal').jqmHide();
-            $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabVisual');
+            if (responseData['error'] !== undefined)
+            {
+              $('.newCustomizationWrapper .errorMessage').text(responseData['error']);
+            }
+            else
+            {
+              publishNS.populateForm($.json.deserialize(responseData['customization']));
+              $('.templateName').text(responseData['name']);
+              $('#template_name, #new_customization_from')
+                .append($('<option value="' + responseData['uid'] + '">' + responseData['name'] + '</option>'))
+                .val(responseData['uid']);
+              $('#modal').jqmHide();
+              $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabVisual');
+            }
           },
           error: function(request, status, error)
           {
@@ -66,6 +73,9 @@
           }
         });
       }
-    });
+    };
+
+    $('#submitNewCustomization').click(submitForm);
+    $form.submit(submitForm);
   };
 </script>

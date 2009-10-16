@@ -305,19 +305,29 @@
             var $form = $link.closest('form');
             var reqObj = {'comment[id]': hrefPieces[1]};
             var isAjaxAction = true;
+            var onSuccess = function() {};
             switch (hrefPieces[0])
             {
                 case 'flagComment':
                     reqObj['comment[flags]'] = ['flag'];
-                    $link.text('Flagged');
+                    onSuccess = function()
+                    {
+                        $link.text('Flagged');
+                    };
                     break;
                 case 'rateUp':
                     reqObj['comment[rating]'] = true;
-                    updateCommentRating($commentPane, $link);
+                    onSuccess = function()
+                    {
+                        updateCommentRating($commentPane, $link);
+                    };
                     break;
                 case 'rateDown':
                     reqObj['comment[rating]'] = false;
-                    updateCommentRating($commentPane, $link);
+                    onSuccess = function()
+                    {
+                        updateCommentRating($commentPane, $link);
+                    };
                     break;
                 case 'reply':
                     isAjaxAction = false;
@@ -340,19 +350,19 @@
                             if (isSuccess)
                             {
                                 doAction($commentPane, $link, $form,
-                                    reqObj, didLogin);
+                                    reqObj, onSuccess, didLogin);
                             }
                         },
                         'You must have an account to flag or rate a comment');
                 }
                 else
                 {
-                    doAction($commentPane, $link, $form, reqObj);
+                    doAction($commentPane, $link, $form, reqObj, onSuccess);
                 }
             }
         };
 
-        function doAction($commentPane, $link, $form, reqObj, redirectAfter)
+        function doAction($commentPane, $link, $form, reqObj, callback, redirectAfter)
         {
             var config = $commentPane.data('config-infoPaneComments');
             $link.addClass(config.actionDoneClass);
@@ -365,6 +375,7 @@
                 data: requestData,
                 success: function()
                 {
+                    callback();
                     if (redirectAfter)
                     {
                         redirect($form, reqObj['comment[id]']);

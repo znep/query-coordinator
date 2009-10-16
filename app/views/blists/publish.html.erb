@@ -33,6 +33,9 @@
         <p class="livePreviewText">Live Preview</p>
         <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
           <%= get_publish_embed_code_for_view(@view, {}, 'normal') %>
+          <div class="loadingIndicator">
+            Loading your Data Player Customization...
+          </div>
         </div>
       </div>
     </div>

@@ -609,6 +609,11 @@ $(function ()
 
 
     blistGridNS.hookUpMainMenu();
+    $('#undoLink').click(function (event)
+    {
+        event.preventDefault();
+        $('#dataGrid').blistModel().undo();
+    });
     blistGridNS.hookUpFilterViewMenu();
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
         menuBar: $('#lensContainer .headerBar')});

@@ -136,6 +136,9 @@ blist.namespace.fetch('blist.data');
         var baseURL = null;
         var supplementalAjaxOptions = null;
 
+        // Undo/redo buffer
+        var undoBuffer = [];
+
         var findColumnIndex = function(id) {
             var index;
             $.each(meta.columns[0], function(i, col) {
@@ -894,10 +897,13 @@ blist.namespace.fetch('blist.data');
         /**
          * Remove rows from the model.
          */
-        this.remove = function(delRows, serverDelete)
+        this.remove = function(delRows, serverDelete, skipUndo)
         {
             if (!(delRows instanceof Array) || delRows.id)
             { delRows = [delRows]; }
+
+            if (!skipUndo && serverDelete)
+            { undoBuffer.push({type: 'delete', rows: delRows}); }
 
             for (var i = 0; i < delRows.length; i++)
             {
@@ -905,6 +911,7 @@ blist.namespace.fetch('blist.data');
                 if (row.expanded) { this.expand(row, false); }
                 var id = row.id;
                 var index = lookup[id];
+                row.origPosition = index;
                 if (index !== undefined)
                 {
                     delete lookup[id];
@@ -914,6 +921,7 @@ blist.namespace.fetch('blist.data');
                 if (rows != active)
                 {
                     index = activeLookup[id];
+                    row.origActivePosition = index;
                     if (index !== undefined)
                     {
                         delete activeLookup[id];
@@ -950,11 +958,12 @@ blist.namespace.fetch('blist.data');
                     complete: function() { finishRowChange(); }});
         };
 
-        this.removeChildRows = function(fakeRows, parCol, serverDelete)
+        this.removeChildRows = function(fakeRows, parCol, serverDelete, skipUndo)
         {
             if (!(fakeRows instanceof Array) || fakeRows.id)
             { fakeRows = [fakeRows]; }
 
+            var removedRows = [];
             $.each(fakeRows, function(i, fr)
             {
                 var parRow = fr.parent;
@@ -965,6 +974,8 @@ blist.namespace.fetch('blist.data');
                     if (subRow.id == subRowSet[j].id)
                     {
                         subRowSet.splice(j, 1);
+                        subRow.origPosition = j;
+                        removedRows.push({row: subRow, parentRow: parRow});
                         break;
                     }
                 }
@@ -984,6 +995,13 @@ blist.namespace.fetch('blist.data');
                     }
                 }
             });
+
+            if (!skipUndo && serverDelete)
+            {
+                undoBuffer.push({type: 'childDelete', rows: removedRows,
+                    parentColumn: parCol});
+            }
+
         };
 
         // Get the value in a row for a column
@@ -1065,7 +1083,7 @@ blist.namespace.fetch('blist.data');
         };
 
         // Set the value for a row, save it to the server, and notify listeners
-        this.saveRowValue = function(value, row, column, isValid)
+        this.saveRowValue = function(value, row, column, isValid, skipUndo)
         {
             var validValue = isValid ? value : null;
             var invalidValue = isValid ? null : value;
@@ -1080,9 +1098,13 @@ blist.namespace.fetch('blist.data');
                 installIDs();
                 configureActive();
                 isCreate = true;
+                if (!skipUndo) { undoBuffer.push({type: 'create', row: row}); }
             }
+
+            var prevValue;
             if (column)
             {
+                prevValue = this.getRowValue(row, column);
                 this.setRowValue(validValue, row, column);
                 this.setInvalidValue(invalidValue, row, column);
             }
@@ -1127,6 +1149,9 @@ blist.namespace.fetch('blist.data');
                     resetChildRows(parRow);
                     row = this.get(curRowI);
                     if (!row.saving) { row.saving = []; }
+
+                    if (!skipUndo) { undoBuffer.push({type: 'childCreate',
+                        row: row, parentColumn: parCol}); }
                 }
 
                 if (!row.saving[parCol.dataIndex])
@@ -1139,6 +1164,12 @@ blist.namespace.fetch('blist.data');
             {
                 row.saving[column.dataIndex] = true;
                 if (row.error) { delete row.error[column.dataIndex]; }
+            }
+
+            if (!skipUndo && !isCreate)
+            {
+                undoBuffer.push({type: 'edit', column: column,
+                        row: row, prevValue: prevValue});
             }
 
             this.change([row]);
@@ -1165,26 +1196,31 @@ blist.namespace.fetch('blist.data');
 
         var getSaveURL = function(row, column)
         {
-            var url = '/views/' + self.meta().view.id + '/rows';
             if (column && column.nestedIn)
             {
                 var parCol = column.nestedIn.header;
-                var childRow = self.getRowValue(row, parCol);
-                url += '/' + row.parent.uuid +
-                    '/columns/' + parCol.id +
-                    '/subrows';
+                return getChildSaveURL(self.getRowValue(row, parCol),
+                    row.parent, parCol);
+            }
+
+            var url = '/views/' + self.meta().view.id + '/rows';
+            if (row.isNew) { url += '.json'; }
+            else { url += '/' + row.uuid + '.json'; }
+            return url;
+        };
+
+        var getChildSaveURL = function(childRow, parentRow, parentColumn)
+        {
+            var url = '/views/' + self.meta().view.id + '/rows/' +
+                parentRow.uuid + '/columns/' + parentColumn.id + '/subrows';
                 if (!childRow.isNew) { url += '/' + childRow.uuid; }
                 url += '.json';
-            }
-            else if (row.isNew) { url += '.json'; }
-            else { url += '/' + row.uuid + '.json'; }
             return url;
         };
 
         var serverSaveRow = function(row, column, data)
         {
             var url = getSaveURL(row, column);
-            var model = self;
             var newRow = row.isNew ? row : null;
             var parCol;
             var childRow;
@@ -1194,14 +1230,25 @@ blist.namespace.fetch('blist.data');
                 childRow = self.getRowValue(row, parCol);
                 newRow = childRow.isNew ? childRow : null;
             }
+            rawSaveRow(url, row, column, data, newRow, parCol);
+        };
+
+        var rawSaveRow = function(url, row, column, data, newRow, parentColumn)
+        {
+            var model = self;
             $.ajax({ url: url,
                     type: newRow ? 'POST' : 'PUT',
                     contentType: 'application/json', dataType: 'json',
                     data: $.json.serialize(data),
                     complete: function()
                     {
-                        if (parCol)
-                        { delete row.saving[parCol.dataIndex][column.dataIndex]; }
+                        if (parentColumn && column == 'all')
+                        { row.saving[parentColumn.dataIndex] = []; }
+                        else if (parentColumn)
+                        { delete row.saving[parentColumn.dataIndex]
+                            [column.dataIndex]; }
+                        else if (column == 'all')
+                        { delete row.saving; }
                         else if (column)
                         { delete row.saving[column.dataIndex]; }
 
@@ -1235,8 +1282,19 @@ blist.namespace.fetch('blist.data');
                     error: function()
                     {
                         if (!row.error) { row.error = []; }
-                        if (parCol)
-                        { row.error[parCol.dataIndex][column.dataIndex] = true; }
+                        if (column == 'all')
+                        {
+                            var errorArray = parentColumn === undefined ?
+                                row.error : row.error[parentColumn.dataIndex];
+                            var columns = parentColumn === undefined ?
+                                meta.view.columns : parentColumn.body.children;
+                            $.each(columns, function(i, c)
+                            { if ((c.dataType && c.dataType.type == 'tag') ||
+                                c.id > -1) { errorArray[c.dataIndex] = true; } });
+                        }
+                        else if (parentColumn)
+                        { row.error[parentColumn.dataIndex]
+                            [column.dataIndex] = true; }
                         else if (column)
                         { row.error[column.dataIndex] = true; }
                         model.change([row]);
@@ -1284,6 +1342,114 @@ blist.namespace.fetch('blist.data');
                         }
                     }
                 });
+        };
+
+        var undeleteRow = function(row, parentRow, parentColumn)
+        {
+            // First set up the data we're sending, and include the original
+            //  position
+            var data = {};
+            data.position = row.position;
+
+            // We need to set up the columns & array to record saving info
+            //  in, based on whether or not we are a child row
+            var columns = parentColumn === undefined ?
+                meta.view.columns : parentColumn.body.children;
+            var fakeRow;
+            var savingArray;
+            if (parentRow !== undefined)
+            {
+                fakeRow = parentRow.childRows[row.origPosition];
+                if (!fakeRow.saving) { fakeRow.saving = []; }
+                fakeRow.saving[parentColumn.dataIndex] = [];
+                savingArray = fakeRow.saving[parentColumn.dataIndex];
+            }
+            else { savingArray = row.saving = []; }
+
+            // Now set up all the data to be saved -- skip nested tables for now
+            $.each(columns, function(i, c)
+            {
+                if (c.dataType && c.dataType.type == 'tag')
+                {
+                    data['_tags'] = row[c.dataIndex];
+                    savingArray[c.dataIndex] = true;
+                }
+                else if (c.dataType && c.dataType.type == 'nested_table')
+                {
+                    // do nothing -- trying to post an nt back to the core
+                    // server doesn't work
+                }
+                else if (c.id > -1)
+                {
+                    data[c.id] = row[c.dataIndex];
+                    savingArray[c.dataIndex] = true;
+                }
+            });
+
+            // Set it up like a new row
+            row.isNew = true;
+            delete row.id;
+            delete row.uuid;
+
+            if (parentRow !== undefined)
+            {
+                // If we are a child row, then stick the row back into the
+                //  parent, and update rows
+                var subRowSet = self.getRowValue(parentRow, parentColumn);
+                subRowSet.splice(row.origPosition, 0, row);
+                resetChildRows(parentRow);
+
+                fakeRow = parentRow.childRows[row.origPosition];
+                // Copy over the saving info for the UI
+                fakeRow.saving[parentColumn.dataIndex] = savingArray;
+                self.change([fakeRow]);
+
+                rawSaveRow(getChildSaveURL(row, parentRow, parentColumn),
+                        fakeRow, 'all', data, row, parentColumn);
+            }
+            else
+            {
+                // Stick the row back in and update things
+                rows.splice(row.origPosition, 0, row);
+                if (active != rows)
+                { active.splice(row.origActivePosition, 0, row); }
+                installIDs();
+                configureActive();
+                $(listeners).trigger('row_add', [ [row] ]);
+
+                serverSaveRow(row, 'all', data);
+            }
+        };
+
+        this.undo = function()
+        {
+            if (undoBuffer.length < 1) { return; }
+
+            var undoItem = undoBuffer.pop();
+            switch (undoItem.type)
+            {
+                case 'edit':
+                    this.saveRowValue(undoItem.prevValue, undoItem.row,
+                            undoItem.column, true, true);
+                    break;
+                case 'create':
+                    this.remove(undoItem.row, true, true);
+                    break;
+                case 'childCreate':
+                    this.removeChildRows(undoItem.row, undoItem.parentColumn,
+                        true, true);
+                    break;
+                case 'delete':
+                    undoItem.rows.reverse();
+                    $.each(undoItem.rows, function(i, r) { undeleteRow(r); });
+                    break;
+                case 'childDelete':
+                    undoItem.rows.reverse();
+                    $.each(undoItem.rows, function(i, r)
+                        { undeleteRow(r.row, r.parentRow,
+                            undoItem.parentColumn); });
+                    break;
+            }
         };
 
         this.invalidateRows = function()

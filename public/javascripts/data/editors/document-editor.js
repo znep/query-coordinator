@@ -105,7 +105,7 @@
                         '<a class="button remove" href="#remove" ' +
                         'title="Remove the document">Remove</a>' +
                         '<a class="docLink" target="blist-viewer"></a>' +
-                        '<input />' +
+                        '<input class="hiddenTextField" />' +
                         '</div>';
                     this._$editor = $(html);
                 }

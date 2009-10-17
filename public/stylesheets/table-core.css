@@ -439,10 +439,7 @@ div.blist-star-0
     padding: 0;
 }
 
-.blist-table-navigator {
-    position: fixed;
-    left: -10000px;
-}
+textarea.blist-table-navigator { position: fixed; }
 
 /* Alignment */
 .blist-table-edit-container .type-checkbox { text-align: center; }
@@ -558,17 +555,6 @@ div.blist-table-editor .align-right { text-align: right; }
 
 .blist-table-editor.type-stars.hover .star.star-on
 { background-position: 0 -32px; }
-
-.blist-table-editor.type-stars input,
-.blist-table-editor.type-document input,
-.blist-table-editor.type-photo input
-{
-    height: 0;
-    left: -10000px;
-    /* padding: 0; -- This causes key events to not fire in Safari.  Yes, really */
-    position: fixed;
-    /* width: 0; -- This causes key events to not fire in Chrome. */
-}
 
 .blist-table-editor.type-richtext textarea
 {

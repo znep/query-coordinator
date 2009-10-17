@@ -22,7 +22,7 @@
         if (value == null)
         { value = defaultValue; }
         var $value = $('<div class="blist-combo-value clearfix"></div>');
-        var $input = $('<input class="blist-combo-keyhandler" />');
+        var $input = $('<input class="hiddenTextField" />');
 
         // This object handles value management for the element.  See values.js
         // for details on how this works

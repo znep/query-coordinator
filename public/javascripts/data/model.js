@@ -210,12 +210,14 @@ blist.namespace.fetch('blist.data');
 
         var setRowMetadata = function(newRows, metaCols, dataMungeCols)
         {
-            $.each(newRows, function(i, r)
+            for (var i = 0; i < newRows.length; i++)
             {
+                var r = newRows[i];
                 if (metaCols)
                 {
-                    $.each(metaCols, function(j, c)
+                    for (var j = 0; j < metaCols.length; j++)
                     {
+                        var c = metaCols[j];
                         if (c.name == 'meta')
                         {
                             var md = r[c.index];
@@ -224,12 +226,13 @@ blist.namespace.fetch('blist.data');
                         }
                         else if (r[c.index] !== undefined)
                         { r[c.name] = r[c.index]; }
-                    });
+                    }
                 }
                 if (dataMungeCols)
                 {
-                    $.each(dataMungeCols, function(j, c)
+                    for (var j = 0; j < dataMungeCols.length; j++)
                     {
+                        var c = dataMungeCols[j];
                         if (c.type == 'nullifyArrays' &&
                             r[c.index] && r[c.index] instanceof Array)
                         {
@@ -255,9 +258,9 @@ blist.namespace.fetch('blist.data');
                         { r[c.index] = null; }
                         if (c.type == 'zeroToNull' && r[c.index] === 0)
                         { r[c.index] = null; }
-                    });
+                    }
                 }
-            });
+            }
         };
 
         var dataChange = function()

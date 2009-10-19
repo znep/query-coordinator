@@ -136,7 +136,7 @@ class User < Model
   end
   
   def is_premium?
-    self.accountCategory == "premium_sdp"
+    self.accountCategory == "premium_sdp" || self.accountCategory == "premium_sdn"
   end
   
   def can_access_premium_on?(view)

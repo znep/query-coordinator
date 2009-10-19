@@ -386,9 +386,9 @@ div.blist-star-0
 .blist-td-phone a
 {
     display: inline-block;
-    margin: -2px 0;
+    margin: -6px 0 -6px 0;
     overflow: hidden;
-    padding: 2px 0 2px 27px;
+    padding: 4px 0 2px 27px;
     position: relative;
 }
 
@@ -433,10 +433,13 @@ div.blist-star-0
  * really wide images */
 .blist-tr .blist-td-photo img { height: 100%; }
 
-.blist-table-navigator {
-    position: fixed;
-    left: -10000px;
+.blist-table div.blist-table-active-container .blist-td.blist-td-photo,
+.blist-table div.blist-table-expander .blist-td.blist-td-photo
+{
+    padding: 0;
 }
+
+textarea.blist-table-navigator { position: fixed; }
 
 /* Alignment */
 .blist-table-edit-container .type-checkbox { text-align: center; }
@@ -513,13 +516,13 @@ div.blist-table-editor .align-right { text-align: right; }
 .blist-table .blist-combo-value .icon,
 .blist-table .blist-combo-dd .icon
 {
-    background-position: center center;
+    background-position: 3px -1px;
     background-repeat: no-repeat;
     display: block;
     float: left;
-    height: 1.5833em;
+    height: 21px;
     padding-right: 5px;
-    width: 30px;
+    width: 26px;
 }
 .blist-table .blist-combo-wrapper .icon-filler
 { padding-left: 5px; }
@@ -539,7 +542,7 @@ div.blist-table-editor .align-right { text-align: right; }
 .blist-table-editor.type-stars .star
 {
     background-image: url(/stylesheets/images/content/table/grid_stars_sprites.png);
-    background-position: 0 -16.5px;
+    background-position: 0 -16px;
     background-repeat: no-repeat;
     cursor: pointer;
     display: inline-block;
@@ -551,18 +554,7 @@ div.blist-table-editor .align-right { text-align: right; }
 { background-position: 0 0; }
 
 .blist-table-editor.type-stars.hover .star.star-on
-{ background-position: 0 -32.5px; }
-
-.blist-table-editor.type-stars input,
-.blist-table-editor.type-document input,
-.blist-table-editor.type-photo input
-{
-    height: 0;
-    left: -10000px;
-    /* padding: 0; -- This causes key events to not fire in Safari.  Yes, really */
-    position: fixed;
-    /* width: 0; -- This causes key events to not fire in Chrome. */
-}
+{ background-position: 0 -32px; }
 
 .blist-table-editor.type-richtext textarea
 {

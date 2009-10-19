@@ -193,7 +193,13 @@
 {
     float: right;
     right: 9.2em;
+    overflow: hidden;
     width: 7.5em;
+}
+
+.commentList .commentList-datasetColumn *
+{
+    text-overflow: ellipsis;
 }
 
 .commentList .commentList-statusColumn

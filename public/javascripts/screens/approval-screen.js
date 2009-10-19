@@ -59,7 +59,11 @@ approvalNS.updateCommentStatus = function($row, status)
         dataType: "json",
         contentType: "application/json",
         success: function(response, responseStatus) {
-            $row.find('.commentStatus').text($.capitalize(response.status));
+            $row.find('.commentStatus')
+                .removeClass()
+                .addClass('commentStatus')
+                .addClass(response.status)
+                .text($.capitalize(response.status));
         }
     });
 };
@@ -110,7 +114,8 @@ $(function() {
     
     $('.approveComment').live('click', function(event) {
         event.preventDefault();
-        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)').each(function() {
+        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)')
+            .add($(this).closest('.commentList-row')).each(function() {
             approvalNS.updateCommentStatus($(this), 'approved');
         });
 
@@ -119,7 +124,8 @@ $(function() {
 
     $('.rejectComment').live('click', function(event) {
         event.preventDefault();
-        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)').each(function() {
+        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)')
+            .add($(this).closest('.commentList-row')).each(function() {
             approvalNS.updateCommentStatus($(this), 'rejected');
         });
 
@@ -132,6 +138,7 @@ $(function() {
 
         var $this = $(this);
         $this.addClass('hilight');
+        $('#listTitle').text($this.find('span').text());
         approvalNS.filterComments($this.attr('href').replace(/^.*#([^#]+)$/i, '$1'));
     });
     

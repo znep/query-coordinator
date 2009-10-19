@@ -21,6 +21,8 @@ form.search input.submit
     background: transparent url(/stylesheets/images/common/find_button.gif) no-repeat top left;
 }
 
+textarea.blist-table-navigator { position: absolute; }
+
 #home .tabList li.home,
 #blists .tabList li.blists,
 #contacts .tabList li.contacts,

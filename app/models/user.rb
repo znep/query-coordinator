@@ -143,6 +143,11 @@ class User < Model
     (self.is_premium? && self.is_owner?(view)) || self.is_admin?
   end
 
+  # !!!HACK
+  def are_comments_moderated?
+    self.accountCategory == "premium_sdn"
+  end
+
   @@states = {
                 '--' => '------',
                 'AK' => 'Alaska',

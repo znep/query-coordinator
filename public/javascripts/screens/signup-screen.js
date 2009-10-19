@@ -17,6 +17,13 @@ $(function ()
         $("#signup #signupForm").submit();
     });
 
+    $("#signup #signupForm").submit(function() {
+        if ($(this).valid())
+        {
+            $('.actionButtons .signup_loadingIndicatorContainer').show();
+        }
+    });
+
     // Signup form validation.
     var $validator = $("#signup #signupForm").validate({
         rules: {

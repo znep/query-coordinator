@@ -116,7 +116,7 @@
                         '<a class="button remove" href="#remove" ' +
                         'title="Remove the image">Remove</a></div>' +
                         '<img />' +
-                        '<input />' +
+                        '<input class="hiddenTextField" />' +
                         '</div>';
                     this._$editor = $(html);
                 }

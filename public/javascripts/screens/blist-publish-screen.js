@@ -285,7 +285,7 @@ blist.publish.customizationApplication = {
     behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none !important' } } ],
                       interstitial:                         [ { callback: publishNS.applyInterstitial } ] },
     publish:        { dimensions:   { width:                [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('width', value + 'px'); } } ],
-                                      height:               [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('height', value + 'px'); } } ] },
+                                      height:               [ { selector: '.previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('height', value + 'px'); } } ] },
                       show_title:                           [ { selector: '.previewPane p:first-child', outsideWidget: true, hideShow: true } ],
                       show_powered_by:                      [ { selector: '.previewPane p:last-child', outsideWidget: true, hideShow: true } ] }
 };
@@ -427,6 +427,9 @@ blist.publish.applyCustomizationToPreview = function(hash)
                 .replace('%height%', hash['publish']['dimensions']['height'])
                 .replace((hash['publish']['show_title'] ? /^<div>/ : /^<div><p.*?<\/p>/), '<div>')
                 .replace((hash['publish']['show_powered_by'] ? /<\/div>$/ : /<p>.*<\/p><\/div>$/), '</div>'));
+
+        // Hide initial loading splash
+        $('.previewPane .loadingIndicator').hide();
     }
 };
 
@@ -650,6 +653,9 @@ blist.publish.populateForm = function(hash)
 
     // Save loaded theme
     publishNS.currentTheme = hash;
+
+    // Update preview
+    publishNS.valueChanged();
 };
 
 blist.publish.loadCustomization = function()
@@ -662,7 +668,6 @@ blist.publish.loadCustomization = function()
         {
             publishNS.populateForm($.json.deserialize(responseData['customization']));
             $('.templateName').text(responseData['name']);
-            publishNS.applyCustomizationToPreview(publishNS.currentTheme);
         },
         error: function(request, status, error)
         {
@@ -744,7 +749,6 @@ blist.publish.loadCustomization = function()
         event.preventDefault();
         clearTimeout(publishNS.saveTimeout);
         publishNS.populateForm(publishNS.currentTheme);
-        publishNS.valueChanged();
         $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabTemplates');
     });
 
@@ -761,7 +765,6 @@ blist.publish.loadCustomization = function()
         event.preventDefault();
         clearTimeout(publishNS.saveTimeout);
         publishNS.populateForm(publishNS.currentTheme);
-        publishNS.valueChanged();
     });
 
     // On clicking done, force a save before bailing

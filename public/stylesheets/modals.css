@@ -882,7 +882,7 @@ ul.convertables li a:hover
 /*** START: New Customization Template ***/
 .dialogWrapper.modalDialog.newCustomization 
 {
-    margin-left: 12em;
+    margin-left: -28.25em;
     width: 56.5em;
 }
 
@@ -942,8 +942,8 @@ ul.convertables li a:hover
 /*** START: New Image Template ***/
 .dialogWrapper.modalDialog.newImage 
 {
-    margin-left: 12em;
-    width: 56.5em;
+    margin-left: -25.25em;
+    width: 50.5em;
 }
 
 .newImageWrapper label
@@ -977,7 +977,7 @@ ul.convertables li a:hover
 {
     display: inline;
     position: absolute;
-    right: 7em;
+    right: 1em;
 }
 
 .newImageWrapper .requiredText

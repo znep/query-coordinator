@@ -75,7 +75,7 @@
                         ' align-' + this.column.alignment : '';
                     var edHtml = '<div class="blist-table-editor ' +
                         'type-' + this.column.type + align + '">' +
-                        '<input />' +
+                        '<input class="hiddenTextField" />' +
                         '<span class="star star-clear" title="Clear"></span>';
                     for (var i = 0; i < this.range(); i++)
                     {

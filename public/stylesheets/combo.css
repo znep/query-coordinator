@@ -24,15 +24,6 @@
     right: 20px;
 }
 
-.blist-combo input.blist-combo-keyhandler
-{
-    height: 0;
-    left: -10000px;
-    /* padding: 0; -- This causes key events to not fire in Safari.  Yes, really */
-    position: absolute;
-    /* width: 0; -- This causes key events to not fire in Chrome. */
-}
-
 .blist-combo-dd {
     background: #fff;
     border: 1px solid #ccc;

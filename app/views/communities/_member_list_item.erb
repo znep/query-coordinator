@@ -31,7 +31,7 @@
       </ul>
 <% end %>
       <ul class="memberActions actionButtons clearfix">
-        <%- if (!@current_user.nil? && @current_user.id != member.id) -%>
+        <%- if (!@current_user.nil? && @current_user.id != member.id && @current_user.privacyControl != 'anonymousPerson') -%>
           <li>
             <%- if (member.my_friend?) -%>
               <%= link_to("<span>Remove</end>", 

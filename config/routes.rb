@@ -63,7 +63,7 @@ ActionController::Routing::Routes.draw do |map|
   }
 
   map.resource :approval
-  map.resources :blists,
+  map.resources :blists, :as => 'datasets',
     :collection => { :detail => :get },
     :member => {
       :detail => :get,
@@ -164,7 +164,7 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
       :category => /(\w|-)+/}
 
-  # Support /blists, /datasets, and /d short URLs
+  # Support /dataset and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}

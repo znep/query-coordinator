@@ -321,7 +321,7 @@ blist.myBlists.infoPane.updateSummary = function ()
 
     if (selectedItems.length == 1)
     {
-        $.Tache.Get({ url: '/blists/' + selectedItems[0] + '/detail',
+        $.Tache.Get({ url: '/datasets/' + selectedItems[0] + '/detail',
             success: blistsInfoNS.updateSummarySuccessHandler
         });
     }
@@ -332,7 +332,7 @@ blist.myBlists.infoPane.updateSummary = function ()
             $('#infoPane .infoContent .selectPrompt').show();
             itemState = 'total';
 
-            $.Tache.Get({ url: '/blists/detail',
+            $.Tache.Get({ url: '/datasets/detail',
                 data: 'items=' + myBlistsNS.model.dataLength(),
                 success: blistsInfoNS.updateSummarySuccessHandler
             });
@@ -341,7 +341,7 @@ blist.myBlists.infoPane.updateSummary = function ()
         else
         {
             var multi = selectedItems.join(':');
-            $.Tache.Get({ url: '/blists/detail',
+            $.Tache.Get({ url: '/datasets/detail',
                 data: 'multi=' + multi,
                 success: blistsInfoNS.updateSummarySuccessHandler
             });
@@ -684,7 +684,7 @@ blist.myBlists.customHandle = function(value, column) {
         "  </a>" +
         "</li>" +
         "<li class='addFavorite'>" +
-        " <a class='favoriteLink' href='/blists/\"+" + value +
+        " <a class='favoriteLink' href='/datasets/\"+" + value +
         "+\"/create_favorite' title='\" + (row.favorite ? 'Remove from favorites' : 'Add to favorites') + \"'>" +
         "   <span class='highlight'>\" + (row.favorite ? 'Remove from favorites' : 'Add to favorites') + \"</span>" +
         " </a>" +
@@ -696,7 +696,7 @@ blist.myBlists.customHandle = function(value, column) {
         " </a>" +
         "</li>" +
         "<li class='delete'>" +
-        "  <a href='/blists/\"+" + value + "+\"' class='deleteLink' title='Delete'>" +
+        "  <a href='/datasets/\"+" + value + "+\"' class='deleteLink' title='Delete'>" +
         "   <span class='highlight'>Delete</span>" +
         " </a>" +
         "</li>" +
@@ -721,11 +721,11 @@ blist.myBlists.favoriteClick = function(row)
 {
     if (!row.favorite)
     {
-        $.get("/blists/" + row.id + "/create_favorite");
+        $.get("/datasets/" + row.id + "/create_favorite");
     }
     else
     {
-        $.get("/blists/" + row.id + "/delete_favorite");
+        $.get("/datasets/" + row.id + "/delete_favorite");
     }
 
     row.favorite = !row.favorite;

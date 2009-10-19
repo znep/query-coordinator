@@ -94,7 +94,7 @@
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
                 $('#' + $datasetGrid.attr('id') + ' .add-column')
                     .live("click", function (e) { 
-                          $('<a href="/blists/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
+                          $('<a href="/datasets/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
                         });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
@@ -470,7 +470,7 @@
         {
             event.preventDefault();
             // Display the add column dialog.
-            $('<a href="/blists/' + model.meta().view.id + '/columns/new?parent=' + column.id + '" rel="modal" />').click();
+            $('<a href="/datasets/' + model.meta().view.id + '/columns/new?parent=' + column.id + '" rel="modal" />').click();
         }
     };
 
@@ -632,7 +632,7 @@
                 // a separator.
                 htmlStr += '<li class="separator singleItem" />';
                 htmlStr += '<li class="properties singleItem">' +
-                    '<a href="/blists/' + view.id + '/columns/' + col.id +
+                    '<a href="/datasets/' + view.id + '/columns/' + col.id +
                     '.json' + (col.nestedIn ?
                         '?parent=' + col.nestedIn.header.id : '') +
                     '" rel="modal">' +

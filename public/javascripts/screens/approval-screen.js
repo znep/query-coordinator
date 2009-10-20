@@ -4,6 +4,12 @@ approvalNS.populateTable = function(comments)
 {
     var $table = $('#moderationQueue');
     $.each(comments, function() {
+        if (this.view === undefined)
+        {
+            // temporary hack to account for core server not cascading comment deletes
+            return;
+        }
+
         // clone template row
         var $newRow = $('<div class="commentList-row clearfix">' +
             $table.find('.commentList-templateRow').html() + '</div>');

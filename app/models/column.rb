@@ -99,7 +99,7 @@ class Column < Model
   end
 
   def href(view_id)
-    "/blists/#{view_id}/columns/#{id}"
+    "/datasets/#{view_id}/columns/#{id}"
   end
 
   def self.find(view_id, column_id=nil)

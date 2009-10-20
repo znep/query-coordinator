@@ -1,6 +1,6 @@
 class ApprovalsController < ApplicationController
   def show
-    if(ENV["RAILS_ENV"] == "production")
+    unless current_user.are_comments_moderated?
       return redirect_to('/home')
     end
   end

@@ -41,10 +41,10 @@
 <%- if (!@current_user.nil? && !in_widget) -%>
   <%-
     if view.flag?("favorite")
-      favorite_action = "/blists/#{view.id}/delete_favorite"
+      favorite_action = "/datasets/#{view.id}/delete_favorite"
       favorite_action_text = "Remove from favorites"
     else
-      favorite_action = "/blists/#{view.id}/create_favorite"
+      favorite_action = "/datasets/#{view.id}/create_favorite"
       favorite_action_text = "Add to favorites"
     end
   -%>

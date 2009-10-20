@@ -97,7 +97,7 @@
         {'text' => 'Edit Column Properties', 'class' => 'columnOptions',
             'submenu' => columns_menu(@view,
                  {'id' => 'columnOptionsMenu',
-                  'href_prefix' => "/blists/#{@view.id}/columns/",
+                  'href_prefix' => "/datasets/#{@view.id}/columns/",
                   'modal' => true,
                   'include_options' =>
                    {'nested_table' => true,
@@ -117,7 +117,7 @@
     <dl><dt><a href='#menuData'>Data</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => 'Add a Column', 'class' => 'insertColumn',
-        'href' => "/blists/#{@view.id}/columns/new", 'modal' => true,
+        'href' => "/datasets/#{@view.id}/columns/new", 'modal' => true,
         'owner_item' => true, 'if' => @view.is_blist?},
 #        'submenu' => {'class' => 'noicon', 'items' => [
 #        {'text' => 'At the Far Right', 'href' => '#addColumn_last'},

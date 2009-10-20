@@ -245,6 +245,7 @@
                         hideDropdown();
                         break;
                     case 38: // Up arrow
+                        event.preventDefault();
                         var $sel = $dropdown.find('li.selected');
                         i = $dropdown.children('li').index($sel);
                         if (i < 0) { i = values.length; }
@@ -252,6 +253,7 @@
                         if (i >= 0) { updateSelectedItem(i); }
                         break;
                     case 40: // Down arrow
+                        event.preventDefault();
                         var $sel = $dropdown.find('li.selected');
                         i = $dropdown.children('li').index($sel) + 1;
                         if (i < values.length) { updateSelectedItem(i); }
@@ -276,11 +278,13 @@
                         showDropdown();
                         break;
                     case 38: // Up arrow
+                        event.preventDefault();
                         i = getValueIndex();
                         if (i >= 0)
                         { setValueIndex(i - 1); }
                         break;
                     case 40: // Down arrow
+                        event.preventDefault();
                         setValueIndex(getValueIndex() + 1);
                         break;
                     default:

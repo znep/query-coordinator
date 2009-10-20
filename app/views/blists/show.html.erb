@@ -76,14 +76,15 @@
 
             <%# Undo/redo %>
             <%- if can_edit && !@view.is_alt_view? -%>
-            <li><a href='#Undo' id='undoLink'
+            <li class='disabled undoItem'><a href='#Undo' id='undoLink'
               class='staticLink' title='Undo'>
               <span class='linkIcon'>Undo</span>
             </a></li>
-            <li class='noSpacing separator'><a href='#Redo' id='redoLink'
-              class='staticLink' title='Redo'>
-              <span class='linkIcon'>Redo</span>
-            </a></li>
+            <li class='noSpacing separator disabled redoItem'>
+              <a href='#Redo' id='redoLink' class='staticLink' title='Redo'>
+                <span class='linkIcon'>Redo</span>
+              </a>
+            </li>
             <%- end -%>
 
             <%# Table view options %>

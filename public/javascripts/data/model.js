@@ -1496,19 +1496,31 @@ blist.namespace.fetch('blist.data');
         {
             redoBuffer.length = 0;
             undoBuffer.push(itemHash);
+            this.undoRedoChange();
         };
 
         this.undo = function()
         {
             var oppItem = doUndoRedo(undoBuffer);
-            if (oppItem !== null) { redoBuffer.push(oppItem); }
+            if (oppItem !== null)
+            {
+                redoBuffer.push(oppItem);
+                this.undoRedoChange();
+            }
         };
 
         this.redo = function()
         {
             var oppItem = doUndoRedo(redoBuffer);
-            if (oppItem !== null) { undoBuffer.push(oppItem); }
+            if (oppItem !== null)
+            {
+                undoBuffer.push(oppItem);
+                this.undoRedoChange();
+            }
         };
+
+        this.canUndo = function() { return undoBuffer.length > 0; }
+        this.canRedo = function() { return redoBuffer.length > 0; }
 
         var childRowToFake = function(parentRow, childRowPos)
         {
@@ -1823,6 +1835,11 @@ blist.namespace.fetch('blist.data');
         this.columnFilterChange = function(col)
         {
             $(listeners).trigger('column_filter_change', [ col ]);
+        };
+
+        this.undoRedoChange = function()
+        {
+            $(listeners).trigger('undo_redo_change');
         };
 
         /**

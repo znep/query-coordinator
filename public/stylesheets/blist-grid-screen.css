@@ -303,6 +303,14 @@ body#lensBody
     padding-top: 1px;
 }
 
+#lensBody .headerBar li.disabled .staticLink
+{
+    background: none;
+    cursor: auto;
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+}
+
 #lensBody #mainMenuLink
 {
     line-height: 25px;

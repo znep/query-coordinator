@@ -285,7 +285,8 @@ class View < Model
 
   # HACK: NYSS wanted the comments tab hidden, so we're manually hiding comments for them
   # Org ID 2 => NYSS
-  ORGS_WITH_COMMENTS_HIDDEN = [ 2 ]
+  # Org ID 5 => Ohio AG // The saga continues
+  ORGS_WITH_COMMENTS_HIDDEN = [ 2, 5 ]
   def hide_comments?
     ORGS_WITH_COMMENTS_HIDDEN.include? self.owner.organizationId.to_i
   end

@@ -138,6 +138,7 @@ blist.namespace.fetch('blist.data');
 
         // Undo/redo buffer
         var undoBuffer = [];
+        var redoBuffer = [];
 
         var findColumnIndex = function(id) {
             var index;
@@ -906,7 +907,7 @@ blist.namespace.fetch('blist.data');
             { delRows = [delRows]; }
 
             if (!skipUndo && serverDelete)
-            { undoBuffer.push({type: 'delete', rows: delRows}); }
+            { this.addUndoItem({type: 'delete', rows: delRows}); }
 
             for (var i = 0; i < delRows.length; i++)
             {
@@ -1001,7 +1002,7 @@ blist.namespace.fetch('blist.data');
 
             if (!skipUndo && serverDelete)
             {
-                undoBuffer.push({type: 'childDelete', rows: removedRows,
+                this.addUndoItem({type: 'childDelete', rows: removedRows,
                     parentColumn: parCol});
             }
 
@@ -1101,7 +1102,7 @@ blist.namespace.fetch('blist.data');
                 installIDs();
                 configureActive();
                 isCreate = true;
-                if (!skipUndo) { undoBuffer.push({type: 'create', row: row}); }
+                if (!skipUndo) { this.addUndoItem({type: 'create', rows: [row]}); }
             }
 
             var prevValue;
@@ -1153,8 +1154,8 @@ blist.namespace.fetch('blist.data');
                     row = this.get(curRowI);
                     if (!row.saving) { row.saving = []; }
 
-                    if (!skipUndo) { undoBuffer.push({type: 'childCreate',
-                        row: row, parentColumn: parCol}); }
+                    if (!skipUndo) { this.addUndoItem({type: 'childCreate',
+                        rows: [row], parentColumn: parCol}); }
                 }
 
                 if (!row.saving[parCol.dataIndex])
@@ -1171,8 +1172,8 @@ blist.namespace.fetch('blist.data');
 
             if (!skipUndo && !isCreate)
             {
-                undoBuffer.push({type: 'edit', column: column,
-                        row: row, prevValue: prevValue});
+                this.addUndoItem({type: 'edit', column: column,
+                        row: row, value: prevValue});
             }
 
             this.change([row]);
@@ -1424,35 +1425,86 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        this.undo = function()
+        var doUndoRedo = function(buffer)
         {
-            if (undoBuffer.length < 1) { return; }
+            if (buffer.length < 1) { return null; }
 
-            var undoItem = undoBuffer.pop();
-            switch (undoItem.type)
+            var item = buffer.pop();
+            var oppItem = null;
+            switch (item.type)
             {
                 case 'edit':
-                    this.saveRowValue(undoItem.prevValue, undoItem.row,
-                            undoItem.column, true, true);
+                    oppItem = {type: 'edit',
+                        value: self.getRowValue(item.row, item.column),
+                        row: item.row, column: item.column};
+
+                    self.saveRowValue(item.value, item.row,
+                            item.column, true, true);
                     break;
                 case 'create':
-                    this.remove(undoItem.row, true, true);
+                    oppItem = {type: 'delete', rows: item.rows};
+
+                    self.remove(item.rows, true, true);
                     break;
                 case 'childCreate':
-                    this.removeChildRows(undoItem.row, undoItem.parentColumn,
+                    oppItem = {type: 'childDelete',
+                        rows: $.map(item.rows, function(r, i)
+                            { return {parentRow: r.parent,
+                                row: fakeRowToChild(r, item.parentColumn)}; }),
+                        parentColumn: item.parentColumn};
+
+                    self.removeChildRows(item.rows, item.parentColumn,
                         true, true);
                     break;
                 case 'delete':
-                    undoItem.rows.reverse();
-                    $.each(undoItem.rows, function(i, r) { undeleteRow(r); });
+                    oppItem = {type: 'create', rows: item.rows.slice()};
+
+                    item.rows.reverse();
+                    $.each(item.rows, function(i, r) { undeleteRow(r); });
                     break;
                 case 'childDelete':
-                    undoItem.rows.reverse();
-                    $.each(undoItem.rows, function(i, r)
+                    var reversedRows = item.rows.slice();
+                    reversedRows.reverse();
+                    $.each(reversedRows, function(i, r)
                         { undeleteRow(r.row, r.parentRow,
-                            undoItem.parentColumn); });
+                            item.parentColumn); });
+
+                    oppItem = {type: 'childCreate',
+                        rows: $.map(item.rows, function(r, i)
+                                { return [childRowToFake(r.parentRow,
+                                    r.row.origPosition)]; }),
+                        parentColumn: item.parentColumn};
                     break;
             }
+            return oppItem;
+        };
+
+        this.addUndoItem = function(itemHash)
+        {
+            redoBuffer.length = 0;
+            undoBuffer.push(itemHash);
+        };
+
+        this.undo = function()
+        {
+            var oppItem = doUndoRedo(undoBuffer);
+            if (oppItem !== null) { redoBuffer.push(oppItem); }
+        };
+
+        this.redo = function()
+        {
+            var oppItem = doUndoRedo(redoBuffer);
+            if (oppItem !== null) { undoBuffer.push(oppItem); }
+        };
+
+        var childRowToFake = function(parentRow, childRowPos)
+        {
+            return parentRow.childRows[childRowPos];
+        };
+
+        var fakeRowToChild = function(fakeRow, parentColumn)
+        {
+            return fakeRow[parentColumn.dataIndex];
         };
 
         this.invalidateRows = function()

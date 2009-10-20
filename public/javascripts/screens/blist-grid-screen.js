@@ -614,6 +614,11 @@ $(function ()
         event.preventDefault();
         $('#dataGrid').blistModel().undo();
     });
+    $('#redoLink').click(function (event)
+    {
+        event.preventDefault();
+        $('#dataGrid').blistModel().redo();
+    });
     blistGridNS.hookUpFilterViewMenu();
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
         menuBar: $('#lensContainer .headerBar')});

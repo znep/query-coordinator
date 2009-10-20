@@ -1106,9 +1106,15 @@ blist.namespace.fetch('blist.data');
             }
 
             var prevValue;
+            var prevValueInvalid = false;
             if (column)
             {
                 prevValue = this.getRowValue(row, column);
+                if (prevValue === null || prevValue === undefined)
+                {
+                    prevValue = this.getInvalidValue(row, column);
+                    prevValueInvalid = prevValue !== null;
+                }
                 this.setRowValue(validValue, row, column);
                 this.setInvalidValue(invalidValue, row, column);
             }
@@ -1173,7 +1179,7 @@ blist.namespace.fetch('blist.data');
             if (!skipUndo && !isCreate)
             {
                 this.addUndoItem({type: 'edit', column: column,
-                        row: row, value: prevValue});
+                        row: row, value: prevValue, invalid: prevValueInvalid});
             }
 
             this.change([row]);
@@ -1389,6 +1395,7 @@ blist.namespace.fetch('blist.data');
                     savingArray[c.dataIndex] = true;
                 }
             });
+            if (row.meta) { data.meta = $.json.serialize(row.meta); }
 
             // Set it up like a new row
             row.isNew = true;
@@ -1434,12 +1441,18 @@ blist.namespace.fetch('blist.data');
             switch (item.type)
             {
                 case 'edit':
-                    oppItem = {type: 'edit',
-                        value: self.getRowValue(item.row, item.column),
+                    var curValue = self.getRowValue(item.row, item.column);
+                    var isInvalid = false;
+                    if (curValue === null || curValue === undefined)
+                    {
+                        curValue = self.getInvalidValue(item.row, item.column);
+                        isInvalid = curValue !== null;
+                    }
+                    oppItem = {type: 'edit', value: curValue, invalid: isInvalid,
                         row: item.row, column: item.column};
 
                     self.saveRowValue(item.value, item.row,
-                            item.column, true, true);
+                            item.column, !item.invalid, true);
                     break;
                 case 'create':
                     oppItem = {type: 'delete', rows: item.rows};

@@ -16,6 +16,8 @@ module Theme
         theme = 'datasf'
       elsif host.include? 'ohioag'
         theme = 'ohioag'
+      elsif host.include? 'ers'
+        theme = 'ers'
       elsif host.include? 'gov'
         theme = 'gov'
       elsif host.include? 'chicago'

@@ -481,6 +481,9 @@
             return;
         }
 
+        // If they tab out of the field, we don't want to search
+        if (e.keyCode == 9) { return; }
+
         setTimeout(function ()
             {
                 var searchText = $(e.currentTarget).val();

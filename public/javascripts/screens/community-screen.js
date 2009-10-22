@@ -262,7 +262,7 @@ $(function ()
             var $link = $(this);
             $link.closest(".searchContainer").find("input[type='text']").val("").focus();
             $link.hide();
-            $("#tabSearch").hide();
+            $("#tabSearch").remove();
             $.historyLoad('');
         });
     if ($.urlParam("search", window.location.href) === 0)

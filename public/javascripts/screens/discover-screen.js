@@ -358,7 +358,8 @@ $(function ()
     }
 
     // Default to the normal splash
-    if($.cookies.get('show_splash') != "false")
+    // HACK: Only show splash if we're on the default Socrata theme
+    if($.cookies.get('show_splash') != "false" && $('body').hasClass('socrata'))
     {
         if (show_redirect)
         {

@@ -11,7 +11,7 @@
     // Global
     "link fg": "000099",
     "header fg": [ "be2333", "be2333", "be2333", "666", "333" ],
-    "highlight color" : "DAD9CF",
+    "highlight color" : "939072",
     
     
     // Chrome
@@ -20,7 +20,7 @@
     "main button active bg": "ec9e6e:.286,be292e",
     
     // Discovery page
-    "carousel bg": "DAD9C4,c8c7bb",
+    "carousel bg": "b9b8a5,8e8c6f",
     "carousel item title fg": "0071bc",
     
     "discover header" : "Discover Data About the Economics of Food, Farming, Natural Resources and Rural America.",

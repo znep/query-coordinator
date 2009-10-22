@@ -136,11 +136,16 @@ class User < Model
   end
   
   def is_premium?
-    self.accountCategory == "premium_sdp"
+    self.accountCategory == "premium_sdp" || self.accountCategory == "premium_sdn"
   end
   
   def can_access_premium_on?(view)
     (self.is_premium? && self.is_owner?(view)) || self.is_admin?
+  end
+
+  # !!!HACK
+  def are_comments_moderated?
+    self.accountCategory == "premium_sdn"
   end
 
   @@states = {

@@ -872,9 +872,9 @@ ul.convertables li a:hover
   padding-left: 37px;
 }
 
-.dialogWrapper.modalDialog.flagDataset 
+.dialogWrapper.modalDialog.flagDataset
 {
-    margin-left: 12em;
+    margin: 5em 0 0 -28.25em;
     width: 56.5em;
 }
 .flagDatasetWrapper label,
@@ -947,7 +947,7 @@ ul.convertables li a:hover
 /*** START: New Customization Template ***/
 .dialogWrapper.modalDialog.newCustomization 
 {
-    margin-left: 12em;
+    margin-left: -28.25em;
     width: 56.5em;
 }
 
@@ -1007,8 +1007,8 @@ ul.convertables li a:hover
 /*** START: New Image Template ***/
 .dialogWrapper.modalDialog.newImage 
 {
-    margin-left: 12em;
-    width: 56.5em;
+    margin-left: -25.25em;
+    width: 50.5em;
 }
 
 .newImageWrapper label
@@ -1042,7 +1042,7 @@ ul.convertables li a:hover
 {
     display: inline;
     position: absolute;
-    right: 7em;
+    right: 1em;
 }
 
 .newImageWrapper .requiredText
@@ -1570,7 +1570,7 @@ div#sortBysList.reorderList li .itemWrapper
     margin: 0.5em 0 -2.7em;
     padding-right: 1em;
     text-align: right;
-    width: 10em;
+    width: 8em;
 }
 
 .bulkOperationWrapper label.error

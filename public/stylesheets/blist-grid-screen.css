@@ -178,6 +178,16 @@ body#lensBody
     text-align: left;
 }
 #lensContainer .tabList li.filter a.calendar { background-position: 0 -759px; }
+
+#lensContainer ul.tabList li.filter .wrapper a,
+#lensContainer ul.tabList li.filter.active .wrapper a { padding-right: 23px; }
+#lensContainer ul.tabList li.filter .wrapper a.close
+{
+    margin-left: -18px;
+    padding: 0;
+}
+#lensContainer ul.tabList li.main .wrapper a.close { display: none; }
+
 /* Header bar & Button styles */
 
 #lensContainer .headerBar
@@ -437,7 +447,7 @@ body#lensBody
 #mainMenu dl > dd > ul > li > a,
 #mainMenu dl > dd > ul > li > ul > li > a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
     background-position: 5px 23px; /* default to show no icon */
     background-repeat: no-repeat;
 }
@@ -602,7 +612,7 @@ body#lensBody
 
 #mainMenu li.data .columnTotals .optionMenu li > a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
     background-position: 5px -922px;
     background-repeat: no-repeat;
 }
@@ -611,17 +621,17 @@ body#lensBody
     background-position: 5px -945px;
 }
 
-#mainMenu li.data .importRows > a
+#mainMenu li.data .uploadRows > a
 {
     background-position: 5px -25px;
 }
 
-#mainMenu li.data .importRows .append > a
+#mainMenu li.data .uploadRows .append > a
 {
     background-position: 5px -1175px;
 }
 
-#mainMenu li.data .importRows .replace > a
+#mainMenu li.data .uploadRows .replace > a
 {
     background-position: 5px -1198px;
 }
@@ -1078,7 +1088,7 @@ body#lensBody
     padding-top: 1px;
 }
 
-#lensContainer .tabList li.filter.tempViewTab a.close
+#lensContainer .tabList li.filter a.close
 {
     background-image: url(/stylesheets/images/content/section_close_button.png);
     background-position: 0 0;

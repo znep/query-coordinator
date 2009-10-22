@@ -5,12 +5,14 @@
 
 <div class="sharingSummary">
   <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
-    "privateShared" : "private") %>">
+    "privateShared" : "private") %><%= view.is_shared? ? ' shared' : '' %>">
   This <%= view.is_blist? ? t(:blist_name) : "filter" %> is
   <%- if is_owner && view.tableAuthor.id == view.owner.id -%>
   <a href='#toggle-permissions_<%= view.id %>'
     class='switchPermsLink'><%= view.is_public? ?
       "Public" : "Private" %></a>
+  <%= image_tag("/images/throbber.gif", :size => "16x16", :alt => "Saving...",
+    :class => "throbber hidden") %>
   <%- else -%>
   <span><%= view.is_public? ? "Public" : "Private" %></span>
   <%- end -%>

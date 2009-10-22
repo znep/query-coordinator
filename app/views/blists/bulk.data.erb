@@ -6,7 +6,7 @@
       <% if @type == 'append' %>
         Append Data to <%= @view.name %>
       <% elsif @type == 'replace' %>
-        Replace Data in <%= @view.name %>
+        Refresh Data in <%= @view.name %>
       <% end %>
     </span>
   </h1>
@@ -117,7 +117,7 @@
       event.preventDefault();
       if ($form.valid() && fileValid)
       {
-        $uploader._settings.action = $form.attr('action') + '?method=<%= @type %>'
+        $uploader._settings.action = $form.attr('action') + '?method=<%= @type %>';
         $uploader.submit();
 
         $('.bulkOperationWrapper .submitActions li:has(.loadingIndicator)').removeClass('hide');

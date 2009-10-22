@@ -27,6 +27,7 @@
             <%= !@parent_view.nil? ? h(@parent_view.name) :
               'New ' + t(:blist_name) %>
           </a>
+          <a href='#closeFilter' class='close' title='Close'>Close</a>
         </div>
       </li>
       <%- if current_user && !@view.is_alt_view? -%>
@@ -48,11 +49,14 @@
         </div>
       </div></li>
       <%- if @is_child_view -%>
-      <li class='active filter'><div class='wrapper'>
-        <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>'
-          href='<%= @view.href %>'
-          title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
-      </div></li>
+      <li class='active filter' id='viewId_<%= @view.id %>'>
+        <div class='wrapper'>
+          <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>'
+            href='<%= @view.href %>'
+            title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
+          <a href='#closeFilter' class='close' title='Close'>Close</a>
+        </div>
+      </li>
       <%- end -%>
       <li class='nextTabLink'><a href='#next_tab' title='Next View'>
         Next View

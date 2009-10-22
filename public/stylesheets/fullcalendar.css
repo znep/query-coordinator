@@ -191,6 +191,7 @@ table.fc-header {
 	height: 100%;
 	}
 	
+.fc-content .ui-draggable a { cursor: move; }
 /* right-to-left */
 
 .fc-rtl .fc-event a {

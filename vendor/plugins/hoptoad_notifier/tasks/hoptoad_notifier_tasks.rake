@@ -5,7 +5,8 @@ namespace :hoptoad do
     HoptoadTasks.deploy(:rails_env      => ENV['TO'], 
                         :scm_revision   => ENV['REVISION'],
                         :scm_repository => ENV['REPO'],
-                        :local_username => ENV['USER'])
+                        :local_username => ENV['USER'],
+                        :api_key        => ENV['API_KEY'])
   end
 
   desc "Verify your plugin installation by sending a test exception to the hoptoad service"

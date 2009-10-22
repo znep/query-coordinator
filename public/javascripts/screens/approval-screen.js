@@ -4,6 +4,12 @@ approvalNS.populateTable = function(comments)
 {
     var $table = $('#moderationQueue');
     $.each(comments, function() {
+        if (this.view === undefined)
+        {
+            // temporary hack to account for core server not cascading comment deletes
+            return;
+        }
+
         // clone template row
         var $newRow = $('<div class="commentList-row clearfix">' +
             $table.find('.commentList-templateRow').html() + '</div>');
@@ -13,6 +19,8 @@ approvalNS.populateTable = function(comments)
 
         // fill data in
         $newRow.data('approval-commentData', this);
+        $newRow.find('.commentAuthorLink')
+            .attr('href', $.generateProfileUrl(this.user));
         $newRow.find('.commentAuthorImage')
             .attr('src', '/users/' + this.user.id + '/profile_images/small')
             .attr('alt', this.user.displayName);
@@ -30,11 +38,16 @@ approvalNS.populateTable = function(comments)
         }
         $newRow.find('.commentBody').text(this.body);
 
+        $newRow.find('.commentParent')
+               .empty()
+               .append('<a href="' + $.generateViewUrl(this.view) + '">' + this.view.name + '</a>');
+
         $newRow.find('.commentStatus')
             .addClass(this.status)
             .text($.capitalize(this.status));
         $newRow.appendTo($table.find('.commentList-body'));
     });
+    approvalNS.emptyGridCheck();
 };
 
 approvalNS.updateCommentStatus = function($row, status)
@@ -52,9 +65,35 @@ approvalNS.updateCommentStatus = function($row, status)
         dataType: "json",
         contentType: "application/json",
         success: function(response, responseStatus) {
-            $row.find('.commentStatus').text($.capitalize(response.status));
+            $row.find('.commentStatus')
+                .removeClass()
+                .addClass('commentStatus')
+                .addClass(response.status)
+                .text($.capitalize(response.status));
         }
     });
+};
+
+approvalNS.filterComments = function(status)
+{
+    if (status === 'all')
+    {
+        $('.commentList-body .commentList-row')
+            .show();
+    }
+    else
+    {
+        $('.commentList-body .commentList-row')
+            .hide()
+            .filter(':has(.commentStatus.' + status + ')')
+                .show();
+    }
+    approvalNS.emptyGridCheck();
+};
+
+approvalNS.emptyGridCheck = function()
+{
+    $('.commentList-body .emptyListMessage').toggle($('.commentList-body .commentList-row:visible').length === 0);
 };
 
 $(function() {
@@ -64,6 +103,7 @@ $(function() {
         dataType: "json",
         contentType: "application/json",
         success: function(response, status) {
+            $('.commentList-body').removeClass('commentsLoading');
             approvalNS.populateTable(response);
         }
     });
@@ -77,32 +117,41 @@ $(function() {
         event.preventDefault();
         $(this).toggleClass('checked');
     });
-
-    $('.commentList-row .commentMenu .approveComment a').live('click', function(event) {
-        event.preventDefault();
-        approvalNS.updateCommentStatus($(this).closest('.commentList-row'), 'approved');
-    });
-
-    $('.commentList-row .commentMenu .rejectComment a').live('click', function(event) {
-        event.preventDefault();
-        approvalNS.updateCommentStatus($(this).closest('.commentList-row'), 'rejected');
-    });
     
-    $('.headerActions .approveButton').click(function(event) {
+    $('.approveComment').live('click', function(event) {
         event.preventDefault();
-        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)').each(function() {
+        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)')
+            .add($(this).closest('.commentList-row')).each(function() {
             approvalNS.updateCommentStatus($(this), 'approved');
         });
 
         $('.commentList .checkbox').removeClass('checked');
     });
 
-    $('.headerActions .rejectButton').click(function(event) {
+    $('.rejectComment').live('click', function(event) {
         event.preventDefault();
-        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)').each(function() {
+        $('.commentList-body .commentList-row:visible:has(.checkbox.checked)')
+            .add($(this).closest('.commentList-row')).each(function() {
             approvalNS.updateCommentStatus($(this), 'rejected');
         });
 
         $('.commentList .checkbox').removeClass('checked');
+    });
+
+    $('.filterLink').click(function(event) {
+        event.preventDefault();
+        $('.filterLink').removeClass('hilight');
+
+        var $this = $(this);
+        $this.addClass('hilight');
+        $('#listTitle').text($this.find('span').text());
+        approvalNS.filterComments($this.attr('href').replace(/^.*#([^#]+)$/i, '$1'));
+    });
+    
+    $('.expander').click(function(event) {
+        event.preventDefault();
+        var $this = $(this);
+        $this.siblings('.expandable').slideToggle('fast');
+        $this.closest('.expandableContainer').toggleClass('closed');
     });
 });

@@ -103,7 +103,7 @@ class BlistsController < ApplicationController
       return require_user(true)
     end
 
-    if (current_user.accountCategory != "premium_sdp" && !current_user.is_admin?)
+    unless current_user.can_access_premium_on?(@view)
       redirect_to '/solution'
     end
 
@@ -138,8 +138,15 @@ class BlistsController < ApplicationController
   def create_customization
     from = WidgetCustomization.find(params[:new_customization][:from])
     from.customization[:description] = params[:new_customization][:description]
-    new_customization = WidgetCustomization.create({
-      'customization' => from.customization, 'name' => params[:new_customization][:name] })
+
+    begin
+      new_customization = WidgetCustomization.create({
+        'customization' => from.customization, 'name' => params[:new_customization][:name] })
+    rescue CoreServer::CoreServerError => e
+      return respond_to do |format|
+        format.data { render :json => {'error' => e.error_message}.to_json }
+      end
+    end
     respond_to do |format|
       format.data { render :json => new_customization.to_json() }
     end

@@ -600,7 +600,7 @@ div.blist-table-edit-container .blist-table-editor.type-url .description
     width: 44%;
     border-left: 2px solid #06386A;
     padding-top: 1px;
-    padding-bottom: 2px;
+    padding-bottom: 1px;
 }
 
 .blist-table-editor.type-phone input.number
@@ -668,6 +668,8 @@ img.blist-table-option-icon
     width: 20px;
 }
 
+.blist-table-expander .blist-td-photo img,
+.blist-table-active-container .blist-td-photo img,
 .blist-table-edit-container .type-photo img
 {
     vertical-align: middle;

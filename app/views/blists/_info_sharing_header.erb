@@ -8,13 +8,13 @@
 </h2>
 <%- if shares.size > 0 && view.can_edit %>
   <h2 class="panelHeader typeNotify last">
-    <% form_tag(url_for(:controller => :blists, 
+    <% form_tag(url_for(:controller => :blists,
       :action => :notify_all_of_changes)) do %>
       <a href="#" id="notifyAll">Notify all of changes</a>
-      <%= image_tag("/images/throbber.gif", 
-                  :size => "16x16", 
-                  :alt => "Notifying...", 
-                  :id => "throbber") %>
+      <%= image_tag("/images/throbber.gif",
+                  :size => "16x16",
+                  :alt => "Notifying...",
+                  :class => "throbber hidden") %>
     <% end %>
   </h2>
 <% end %>

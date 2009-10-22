@@ -277,7 +277,8 @@
 
             case 38: // Up
             case 40: // Down
-                if ($(event.target).is(":text") && !$(event.target).is(".blist-combo-keyhandler"))
+                if ($(event.target).is(":text") &&
+                    $(event.target).closest(".blist-combo").length < 1)
                 {
                     break;
                 }

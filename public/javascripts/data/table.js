@@ -801,7 +801,7 @@
         var endEdit = function(isSave, mode)
         {
             if (!mode) { mode = DEFAULT_EDIT_MODE; }
-            if (mode == DEFAULT_EDIT_MODE) { focus(); }
+            if (mode == DEFAULT_EDIT_MODE && isEdit[mode]) { focus(); }
             delete isEdit[mode];
 
             var $curEditContainer = $editContainers[mode];
@@ -1972,7 +1972,7 @@
         /*** HTML RENDERING ***/
 
         var headerStr =
-            '<textarea class="blist-table-navigator"></textarea>' +
+            '<textarea class="blist-table-navigator hiddenTextField"></textarea>' +
             '<div class="blist-table-locked-scrolls">' +
             '   <div class="blist-table-locked-header">&nbsp;</div>' +
             '   <div class="blist-table-locked">&nbsp;</div>' +
@@ -2087,17 +2087,7 @@
             .keydown(navKeyDown)
             .keypress(navKeyPress)
             .bind('copy', onCopy)
-            .bind('focus', navFocus)
             .bind('blur', navBlur);
-
-        // Safari (and presumably Chrome) needs the navigator to be position
-        // absolute to avoid window jumping (FF requires fixed to do the same,
-        // so this is the default.  IE appears to work fine w/ fixed as well,
-        // but IE6 draws the text field if position is fixed)
-        if ($.browser.safari || $.browser.msie)
-        {
-            $navigator.css('position', 'absolute');
-        }
 
         // Set up initial top of locked section
         $locked.css('top', $header.outerHeight());

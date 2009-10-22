@@ -1679,6 +1679,17 @@ body#login .loginBox li#close_login
 {
     margin-left: 5px;
 }
+.signupBox .actionButtons .signup_loadingIndicatorContainer
+{
+    background: transparent;
+}
+.signupBox .actionButtons .signup_loadingIndicator
+{
+    background: url(/images/throbber.gif) no-repeat;
+    display: block;
+    height: 16px;
+    width: 16px;
+}
 .signupBox .contentFooter p { text-align: center; }
 .signupBox .contentFooter p a
 {
@@ -1920,6 +1931,10 @@ body#login .loginBox li#close_login
 .hilightList li
 {
     margin-bottom: .3em;
+}
+.hilightList li *
+{
+    cursor: pointer;
 }
 .hilightList li a
 {

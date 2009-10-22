@@ -63,7 +63,7 @@ ActionController::Routing::Routes.draw do |map|
   }
 
   map.resource :approval
-  map.resources :blists,
+  map.resources :blists, :as => 'datasets',
     :collection => { :detail => :get },
     :member => {
       :detail => :get,
@@ -164,7 +164,7 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
       :category => /(\w|-)+/}
 
-  # Support /blists, /datasets, and /d short URLs
+  # Support /dataset and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP}
@@ -233,10 +233,9 @@ ActionController::Routing::Routes.draw do |map|
     map.connect "/#{static_section}", :controller => controller_name
     map.connect "/#{static_section}/:page", :controller => controller_name, :action => 'show'
   end
-  ['terms-of-service', 'privacy', 'contact-us', 'try-it-free'].each do |static_toplevel|
+  ['terms-of-service', 'privacy', 'contact-us', 'try-it-free', 'sales'].each do |static_toplevel|
     map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
   end
-  map.sales '/sales', :controller => 'static', :action => 'sales'
   map.about '/about', :controller => 'about'
   
   map.with_options :controller => 'invitation' do |invitation|

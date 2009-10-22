@@ -1030,7 +1030,14 @@
                     data: $.json.serialize(modView),
                     type: 'PUT', contentType: 'application/json',
                     success: function()
-                        { $(document).trigger(blist.events.COLUMNS_CHANGED); }
+                        {
+                            $(document).trigger(blist.events.COLUMNS_CHANGED);
+                            // If we change the column order on the server,
+                            // data will come back in a different order;
+                            // so reload the view with the proper order of
+                            // columns & row data
+                            datasetObj.settings._model.reloadView();
+                        }
                     });
         }
     };

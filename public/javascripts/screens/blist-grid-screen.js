@@ -48,6 +48,7 @@ blist.blistGrid.setUpTabs = function ()
         {
             $newTab.addClass('even');
         }
+        $newTab.attr('id', 'viewId_' + v.id);
         var $newA = $newTab.find('a');
         $newA.attr('href', v.path);
         $newA.attr('title', v.name);
@@ -69,6 +70,27 @@ blist.blistGrid.createTabCookie = function()
                 displayType: (blist.calendar.isCalendar ? 'calendar' : 'filter')}]
         }));
     }
+};
+
+blist.blistGrid.removeTabCookie = function(viewId)
+{
+    var cookieStr = $.cookies.get('viewTabs');
+    if (!cookieStr || cookieStr === undefined || cookieStr === "" ||
+        cookieStr == "undefined")
+    { return; }
+
+    var cookieObj = $.json.deserialize(cookieStr);
+    if (cookieObj.blistId != blistGridNS.blistId) { return; }
+
+    $.each(cookieObj.views, function(i, v)
+    {
+      if (v.id == viewId)
+      {
+          cookieObj.views.splice(i, 1);
+          return false;
+      }
+    });
+    $.cookies.set('viewTabs', $.json.serialize(cookieObj));
 };
 
 blist.blistGrid.columnClickHandler = function (event)
@@ -423,6 +445,16 @@ $(function ()
     {
         event.preventDefault();
         $('#dataGrid').datasetGrid().clearTempView(null, true);
+    });
+
+    $('.filter a.close').live('click', function(event)
+    {
+        event.preventDefault();
+        var $tab = $(event.target).closest('li.filter');
+        blistGridNS.removeTabCookie($tab.attr('id').split('_')[1]);
+        $tab.remove();
+        if ($tab.is('.active'))
+        { window.location = $('.tabList .main a:first').attr('href'); }
     });
 
     $('.addColumnsLink, #addColumnsMenu .close').click(function (event)

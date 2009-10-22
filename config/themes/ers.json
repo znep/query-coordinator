@@ -4,14 +4,14 @@
     "site title": "Economic Research Service | USDA",
     "logo": "main_logo.png",
     "logo height": "39",
-    "logo width": "280",
+    "logo width": "310",
     "dialog logo" : "dialog_logo.png",
     "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li class=\"last\"><a href=\"#\">ERS.USDA.gov</a></li></ul>",
     
     // Global
     "link fg": "000099",
     "header fg": [ "be2333", "be2333", "be2333", "666", "333" ],
-    "highlight color" : "939072",
+    "highlight color" : "015001",
     
     
     // Chrome

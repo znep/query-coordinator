@@ -178,6 +178,26 @@ body#lensBody
     text-align: left;
 }
 #lensContainer .tabList li.filter a.calendar { background-position: 0 -759px; }
+
+#lensContainer ul.tabList li.filter .wrapper a,
+#lensContainer ul.tabList li.filter.active .wrapper a { padding-right: 23px; }
+#lensContainer ul.tabList li.filter .wrapper a.close
+{
+    background-image: url(/stylesheets/images/content/section_close_button.png);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: block;
+    float: left;
+    height: 16px;
+    min-width: 0;
+    margin: 0.25em -12px 0 -18px;
+    padding: 0;
+    text-indent: -9999px;
+    width: 16px;
+}
+#lensContainer ul.tabList li.main .wrapper a.close { display: none; }
+
 /* Header bar & Button styles */
 
 #lensContainer .headerBar
@@ -586,11 +606,6 @@ body#lensBody
     background-position: 5px -393px;
 }
 
-#mainMenu li.data .picklists > a
-{
-    background-position: 5px -416px;
-}
-
 #mainMenu li.data .rowTags > a
 {
     background-position: 5px -439px;
@@ -989,7 +1004,9 @@ body#lensBody
 { background-position: 5px -100px; }
 
 #addColumn_picklist,
-#mainMenu .columnsMenu .picklist a
+#addColumn_drop_down_list,
+#mainMenu .columnsMenu .picklist a,
+#mainMenu .columnsMenu .drop_down_list a
 { background-position: 5px -400px; }
 
 #addColumn_nested_table,
@@ -1086,21 +1103,9 @@ body#lensBody
     padding-top: 1px;
 }
 
-#lensContainer .tabList li.filter.tempViewTab a.close
-{
-    background-image: url(/stylesheets/images/content/section_close_button.png);
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    display: block;
-    float: left;
-    height: 16px;
-    margin: 0.25em -12px 0 0.3em;
-    min-width: 0;
-    padding: 0;
-    text-indent: -9999px;
-    width: 16px;
-}
+#lensContainer ul.tabList li.filter.tempViewTab .wrapper a.close
+{ margin-left: 0.3em; }
+
 /* Login overlay */
 #login
 {

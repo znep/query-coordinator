@@ -1124,7 +1124,7 @@ infoContentOuter table.gridList td.picture .cellInner
 
 .singleInfoSharing td.handle .shareDelete
 {
-    background: url(/stylesheets/images/profile/profile_links_delete.png) 5px 5px no-repeat;
+    background: url(/stylesheets/images/common/delete.png) 5px 5px no-repeat;
     display: block;
     height: 10px;
     overflow: hidden;

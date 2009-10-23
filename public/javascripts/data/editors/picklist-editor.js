@@ -37,8 +37,8 @@
                 editObj._valuesList = [ { id: 'null', label: '(Blank)'} ];
 
                 $.each(editObj.column.options, function(id, v)
-                    { editObj._valuesList.push(
-                        {id: id, label: v.text, icon: v.icon}); });
+                    { if (!v.deleted) { editObj._valuesList.push(
+                        {id: id, label: v.text, icon: v.icon}); } });
                 editObj.setFullSize();
                 editObj.$dom().addClass('blist-combo-wrapper')
                     .addClass('combo-container');

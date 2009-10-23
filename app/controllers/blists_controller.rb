@@ -103,7 +103,7 @@ class BlistsController < ApplicationController
       return require_user(true)
     end
 
-    if (current_user.accountCategory != "premium_sdp" && !current_user.is_admin?)
+    unless current_user.can_access_premium_on?(@view)
       redirect_to '/solution'
     end
 

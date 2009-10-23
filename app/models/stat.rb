@@ -27,8 +27,8 @@ class Stat < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
-  def url_activity
-    return data_hash["urlActivity"]
+  def publish_activity 
+    return data_hash["publishActivity"]
   end
 
   def rows_accessed

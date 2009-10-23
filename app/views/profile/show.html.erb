@@ -75,7 +75,7 @@
                   </p>
                 <%- else -%>
                   <div class="publicProfileContentActions">
-                    <%- if (!@current_user.nil?) -%>
+                    <%- if (!@current_user.nil? && @current_user.privacyControl != 'anonymousPerson') -%>
                       <ul class="actionButtons clearfix">
                         <li>
                           <%- if (@user.my_friend?) -%>

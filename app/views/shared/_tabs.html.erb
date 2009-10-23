@@ -11,8 +11,7 @@
   <li class='profile'><div class='wrapper'>
     <%= link_to "Profile", current_user.href %>
   </div></li>
-<%#- if current_user.accountCategory == "premium_sdp" -%>
-<%- if ENV["RAILS_ENV"] != "production" -%>
+<%- if current_user.are_comments_moderated? -%>
   <li class='approval even'><div class='wrapper'>
     <%= link_to 'Approval', approval_path %>
   </div></li>

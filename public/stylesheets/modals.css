@@ -247,7 +247,7 @@
 .recipientsShowTableContainer table td.add_handle a,
 .recipientsEditTableContainer table td.add_handle span
 {
-    background: url(/stylesheets/images/profile/profile_links_delete.png) center center no-repeat;
+    background: url(/stylesheets/images/common/delete.png) center center no-repeat;
     display: block;
     height: 22px;
     line-height: 22px;
@@ -535,9 +535,9 @@
   text-decoration: none;
 }
 
-.columnPropertiesWrapper .currencies, .alignment
+.columnPropertiesWrapper .currencies, .columnPropertiesWrapper .alignment
 {
-  padding: 0.6em;
+  padding: 0.6em 0.6em 1.6em;
 }
 .columnPropertiesWrapper .alignment li
 {
@@ -653,11 +653,76 @@
     vertical-align: middle;
 }
 
+.columnPropertiesWrapper #picklistManager { margin: 0; }
+#columnProperties #picklistManager { margin-top: 1em; }
+.columnPropertiesWrapper #picklistManager .activeListWrapper
+{
+    display: block;
+    float: none;
+    margin: 0 auto;
+    max-height: 11em;
+    overflow: auto;
+    padding-left: 35px;
+    width: 33.5em;
+}
+.columnPropertiesWrapper #picklistManager .activeList { margin: 0; }
+.columnPropertiesWrapper #picklistManager .templateList { display: none; }
+
+.columnPropertiesWrapper #picklistManager .itemWrapper
+{
+    padding-bottom: 12px;
+    padding-top: 2px;
+}
+
+.columnPropertiesWrapper #picklistManager input.plValue
+{
+    background-color: transparent;
+    font-size: 1em;
+    width: 18em;
+}
+
+.columnPropertiesWrapper #picklistManager input.orderField { display: none; }
+
+.columnPropertiesWrapper #picklistManager .controls { width: 20px; }
+.columnPropertiesWrapper #picklistManager .remove
+{
+    background-image: url(/stylesheets/images/common/delete.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: block;
+    height: 12px;
+    text-indent: -9999px;
+    width: 12px;
+}
+
+.columnPropertiesWrapper #picklistManager .defaultMessage
+{
+    color: #666666;
+    display: none;
+    font-size: 1.2em;
+    font-style: italic;
+    left: 50%;
+    margin-left: -15em;
+    position: absolute;
+    text-align: center;
+    top: 8px;
+    width: 30em;
+}
+
+.columnPropertiesWrapper #picklistManager .newValueWrapper
+{
+    margin: 1em auto 0;
+    width: 30.3em;
+}
+
+.columnPropertiesWrapper #picklistManager input.newValue { font-size: 1.2em; }
+.columnPropertiesWrapper #picklistManager input.newValueSubmit { width: 7em; }
+
 .convertDropdown
 {
     margin-left: 1em;
     text-transform: uppercase;
-    background-image:url(/stylesheets/images/widgets/dropdown_button/menu_bar_arrow.png); 
+    background-image:url(/stylesheets/images/widgets/dropdown_button/menu_bar_arrow.png);
     background-repeat: no-repeat;
     background-position: 45px -4px;
     padding-right: 25px;
@@ -726,7 +791,7 @@ ul.convertables li a:hover
 .datatype-document { background-position: 0 -280px; }
 .datatype-nested_table { background-position: 0 -440px; }
 .datatype-tag { background-position: 0 -180px; }
-.datatype-picklist { background-position: 0 -400px; }
+.datatype-picklist, .datatype-drop_down_list { background-position: 0 -400px; }
 
 .typeSelect
 {
@@ -1111,27 +1176,7 @@ div.itemWrapper
     left: 31.583em;
 }
 
-div.itemWrapper div.ascension
-{
-    position: absolute;
-    right: 0;
-    top: 1px;
-    width: 25px;
-    height: 12px;
-    padding: 0.3em;
-    margin: 0.2em;
-    border-left: 1px solid #999;
-    cursor: auto;
-    background-color: white;
-}
-
-div.activeList li.hover div.itemWrapper div.ascension,
-div.activeList li.reorderList-selected div.itemWrapper div.ascension
-{
-    background-color: #c8e2f7;
-}
-
-div.itemWrapper div.sort
+#sortBysList div.itemWrapper div.sort
 {
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
     background-repeat: no-repeat;
@@ -1139,21 +1184,21 @@ div.itemWrapper div.sort
     height: 12px;
     width: 25px;
 }
-div.itemWrapper div.sort.sort-asc 
-{ 
-    background-position: 5px -24px; 
+#sortBysList div.itemWrapper div.sort.sort-asc
+{
+    background-position: 5px -24px;
     cursor: auto;
 }
-div.itemWrapper div.sort.sort-asc:hover,
-div.itemWrapper div.sort.ascension:hover .sort-asc
-{ 
-    background-position: 5px -12px; 
+#sortBysList div.itemWrapper div.sort.sort-asc:hover,
+#sortBysList div.itemWrapper div.sort.controls:hover .sort-asc
+{
+    background-position: 5px -12px;
     cursor: auto;
 }
-div.itemWrapper div.sort.sort-desc:hover, 
-div.itemWrapper div.sort.ascension:hover .sort-desc
-{ 
-    background-position: 5px -36px; 
+#sortBysList div.itemWrapper div.sort.sort-desc:hover,
+#sortBysList div.itemWrapper div.sort.controls:hover .sort-desc
+{
+    background-position: 5px -36px;
     cursor: auto;
 }
 
@@ -1306,7 +1351,7 @@ div#sortBysList.reorderList li .itemWrapper
 
 .filterDatasetWrapper .filterTable-delete a
 {
-    background: transparent url(/stylesheets/images/content/section_close_button.png) no-repeat scroll 0 0;
+    background: transparent url(/stylesheets/images/common/delete.png) no-repeat scroll center center;
     display: block;
     height: 16px;
     margin: 2px;
@@ -1346,6 +1391,8 @@ div#sortBysList.reorderList li .itemWrapper
 {
     width: 125px;
 }
+
+.filterDatasetWrapper .filterTable-editor { min-width: 18em; }
 
 .filterDatasetWrapper .filterTable-editor input,
 .filterDatasetWrapper .filterTable-editor .blist-combo-value,

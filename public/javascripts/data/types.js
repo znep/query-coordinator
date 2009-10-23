@@ -751,6 +751,13 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPicklist,
             sortable: true,
             filterable: true
+        },
+        drop_down_list: {
+            renderGen: renderGenPicklist,
+            sortPreprocessor: sortPicklistPrepro,
+            filterRender: renderFilterPicklist,
+            sortable: true,
+            filterable: true
         }
     });
 
@@ -767,6 +774,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.phone.editor = $.blistEditor.phone;
         blist.data.types.flag.editor = $.blistEditor.flag;
         blist.data.types.picklist.editor = $.blistEditor.picklist;
+        blist.data.types.drop_down_list.editor = $.blistEditor.picklist;
         blist.data.types.checkbox.editor = $.blistEditor.checkbox;
         blist.data.types.stars.editor = $.blistEditor.stars;
         blist.data.types.richtext.editor = $.blistEditor.richtext;

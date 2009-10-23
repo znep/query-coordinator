@@ -59,11 +59,11 @@ class ApplicationController < ActionController::Base
   # the configure_theme parameter, and Apache uses the domain name of the
   # request to determine which directory to serve.)
   def self.cache_page(content, path)
-    super(content, I18n.locale + path)
+    super(content, Theme.active + path)
   end
 
   def self.expire_page(path)
-    super(I18n.locale + path)
+    super(Theme.active + path)
   end
 
 protected

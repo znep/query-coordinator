@@ -801,7 +801,7 @@
         var endEdit = function(isSave, mode)
         {
             if (!mode) { mode = DEFAULT_EDIT_MODE; }
-            if (mode == DEFAULT_EDIT_MODE) { focus(); }
+            if (mode == DEFAULT_EDIT_MODE && isEdit[mode]) { focus(); }
             delete isEdit[mode];
 
             var $curEditContainer = $editContainers[mode];
@@ -2087,7 +2087,6 @@
             .keydown(navKeyDown)
             .keypress(navKeyPress)
             .bind('copy', onCopy)
-            .bind('focus', navFocus)
             .bind('blur', navBlur);
 
         // Set up initial top of locked section

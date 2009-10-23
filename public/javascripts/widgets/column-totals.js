@@ -84,6 +84,7 @@ columnTotalsNS.render_checkbox =
 columnTotalsNS.render_date =
 columnTotalsNS.render_tag = 
 columnTotalsNS.render_picklist =
+columnTotalsNS.render_drop_down_list =
 function($container) {
     var render = '<div id="columnTotals" class="displayOptions">';
     render += '<p>Display the following:</p>';

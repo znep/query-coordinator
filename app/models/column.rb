@@ -17,6 +17,7 @@ class Column < Model
       "document" => "Document",
       "photo" => "Photo (Image)",
       "picklist" => "Picklist (Drop-down)",
+      "drop_down_list" => "Picklist (Drop-down)",
       "nested_table" => "Nested Table",
       "tag" => "Row Tag"
   };
@@ -46,6 +47,32 @@ class Column < Model
       client_type != "document"
   end
 
+  def possible_aggregates
+    aggs = [
+      {'title' => 'None', 'name' => 'none'},
+      {'title' => 'Average', 'name' => 'average'},
+      {'title' => 'Count', 'name' => 'count'},
+      {'title' => 'Sum', 'name' => 'sum'},
+      {'title' => 'Maximum', 'name' => 'maximum'},
+      {'title' => 'Minimum', 'name' => 'minimum'}
+    ]
+
+    case dataTypeName.downcase
+    when "nested_table", "picklist", "drop_down_list"
+      aggs.reject! {|a| a['name'] != 'none'}
+    when "text", "photo", "phone", "checkbox", "flag", "url",
+      "email", "document", "tag"
+      aggs.reject! {|a|
+        ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
+    when "date"
+      aggs.reject! {|a| ['average', 'sum'].any? {|n| n == a['name']}}
+    when "stars"
+      aggs.reject! {|a| 'sum' == a['name']}
+    end
+
+    aggs
+  end
+
   def convertable_types
     if client_type == "text"
       return [
@@ -59,13 +86,13 @@ class Column < Model
       ]
     end
 
-    if ["percent", "money", "number", "stars"].include?(dataType.type)
+    if ["percent", "money", "number", "stars"].include?(dataTypeName)
       return [
         "text", "number", "money", "percent", "stars"
-      ].reject { |i| i == dataType.type }
+      ].reject { |i| i == dataTypeName }
     end
 
-    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(dataType.type)
+    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(dataTypeName)
       return ["text"]
     end
 
@@ -77,20 +104,21 @@ class Column < Model
 
     return types_with_display_options.include?(client_type)
   end
-  
+
   def has_formatting?
-    types_with_formatting = ["text", "date", "number", 
-        "money", "percent", "phone", "email", 
-        "url", "checkbox", "stars", "flag", "picklist"]
+    types_with_formatting = ["text", "date", "number",
+        "money", "percent", "phone", "email",
+        "url", "checkbox", "stars", "flag", "picklist", "drop_down_list"]
 
     return types_with_formatting.include?(client_type)
   end
 
   def has_totals?
-    types_with_totals = ["text", "richtext", "number", "money", "percent", 
-                         "date", "phone", "email", "url", "checkbox", "stars", 
-                         "flag", "document", "photo", "picklist", "tag"]
-    
+    types_with_totals = ["text", "richtext", "number", "money", "percent",
+                         "date", "phone", "email", "url", "checkbox", "stars",
+                         "flag", "document", "photo", "picklist",
+                         "drop_down_list", "tag"]
+
     return types_with_totals.include?(client_type)
   end
 
@@ -99,7 +127,7 @@ class Column < Model
   end
 
   def href(view_id)
-    "/blists/#{view_id}/columns/#{id}"
+    "/datasets/#{view_id}/columns/#{id}"
   end
 
   def self.find(view_id, column_id=nil)
@@ -130,6 +158,8 @@ class Column < Model
     update_data[:name] = js["name"] if js.key?("name")
     update_data[:description] = js["description"] if js.key?("description")
     update_data[:width] = js["width"] if js.key?("width")
+
+    update_data[:dropDownList] = js["dropDownList"] if js.key?("dropDownList")
 
     update_data[:format] = self.format.nil? ? {} : self.format.data.clone
     if js.key?("aggregate") && js["aggregate"].blank?
@@ -168,7 +198,8 @@ class Column < Model
       :name => js["name"],
       :description => js["description"],
       :width => js["width"],
-      :dataTypeName => js["type"]
+      :dataTypeName => js["type"],
+      :dropDownList => js['dropDownList']
     }
 
     if js["type"] == "richtext"
@@ -187,8 +218,8 @@ class Column < Model
       :name => name,
       :description => description,
       :width => width || 100,
-      :type => dataType && dataType.type ? dataType.type : "text",
-      :id => id,
+      :type => dataTypeName || "text",
+      :id => id
     }
 
     if aggregate != 'none'
@@ -215,14 +246,14 @@ class Column < Model
 
   def client_type
     if !self.format.nil?
-      if dataType.type == "text" && self.format.formatting_option == "Rich"
+      if dataTypeName == "text" && self.format.formatting_option == "Rich"
         return "richtext"
-      elsif dataType.type == "stars" && self.format.view == "stars_number"
+      elsif dataTypeName == "stars" && self.format.view == "stars_number"
         return "number"
       end
     end
 
-    return dataType.type
+    return dataTypeName
   end
 
   def text_format
@@ -244,7 +275,7 @@ class Column < Model
   end
 
   def is_nested_table
-    dataType.type.downcase == 'nested_table'
+    dataTypeName.downcase == 'nested_table'
   end
 
   def is_list

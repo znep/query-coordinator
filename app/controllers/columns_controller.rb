@@ -28,7 +28,7 @@ class ColumnsController < ApplicationController
   end
 
   def show
-    @view_id = params[:blist_id]
+    @view = View.find(params[:blist_id])
     @column = Column.find(params[:blist_id], params[:id])
     @parent = params[:parent]
     respond_to do |format|

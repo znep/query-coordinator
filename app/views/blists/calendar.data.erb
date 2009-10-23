@@ -21,7 +21,7 @@
     </div>
 
     <div class='section'>
-      <%- date_cols = @view.columns.select {|c| c.dataType.type == 'date' &&
+      <%- date_cols = @view.columns.select {|c| c.dataTypeName == 'date' &&
         !c.flag?('hidden')} -%>
       <%- is_multi_date = date_cols.length > 1 -%>
       <h3 class='<%= is_multi_date ? '' : 'seperator' %>'>
@@ -56,7 +56,7 @@
     </div>
 
     <div class='section'>
-      <%- text_cols = @view.columns.select {|c| c.dataType.type == 'text' &&
+      <%- text_cols = @view.columns.select {|c| c.dataTypeName == 'text' &&
         !c.flag?('hidden')} -%>
       <%- is_multi_text = text_cols.length > 1 -%>
       <h3>Event Information</h3>

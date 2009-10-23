@@ -192,7 +192,7 @@ module BlistsHelper
   end
 
   def column_aggregate_menu(column)
-    aggs = column.dataType.possible_aggregates
+    aggs = column.possible_aggregates
     items = []
     aggs.each do |a|
       items << {'text' => a['title'],
@@ -203,7 +203,7 @@ module BlistsHelper
   end
 
   def get_datatype_class(column)
-    dtt = column.dataType.type.downcase
+    dtt = column.dataTypeName.downcase
     if dtt == 'date'
       dtt = 'dateTime'
     elsif dtt == 'text'

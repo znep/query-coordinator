@@ -67,7 +67,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           </li>
         </ul>
 
-        <%- if @column.dataType.type == 'picklist' -%>
+        <%- if @column.dataTypeName == 'picklist' -%>
         <h3 class='seperator'>Picklist Values</h3>
         <%= render(:partial => 'picklist_manager') %>
         <%- end -%>
@@ -158,7 +158,7 @@ $(function()
   $("#columnPropertiesDialog .error").hide();
   $("#columnPropertiesDialog #convertables").hide();
 
-  <%- if @column.dataType.type == 'picklist' -%>
+  <%- if @column.dataTypeName == 'picklist' -%>
   picklistManagerSetup();
   <%- end -%>
 

@@ -46,6 +46,32 @@ class Column < Model
       client_type != "document"
   end
 
+  def possible_aggregates
+    aggs = [
+      {'title' => 'None', 'name' => 'none'},
+      {'title' => 'Average', 'name' => 'average'},
+      {'title' => 'Count', 'name' => 'count'},
+      {'title' => 'Sum', 'name' => 'sum'},
+      {'title' => 'Maximum', 'name' => 'maximum'},
+      {'title' => 'Minimum', 'name' => 'minimum'}
+    ]
+
+    case dataTypeName.downcase
+    when "nested_table", "picklist"
+      aggs.reject! {|a| a['name'] != 'none'}
+    when "text", "photo", "phone", "checkbox", "flag", "url",
+      "email", "document", "tag"
+      aggs.reject! {|a|
+        ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
+    when "date"
+      aggs.reject! {|a| ['average', 'sum'].any? {|n| n == a['name']}}
+    when "stars"
+      aggs.reject! {|a| 'sum' == a['name']}
+    end
+
+    aggs
+  end
+
   def convertable_types
     if client_type == "text"
       return [
@@ -59,13 +85,13 @@ class Column < Model
       ]
     end
 
-    if ["percent", "money", "number", "stars"].include?(dataType.type)
+    if ["percent", "money", "number", "stars"].include?(dataTypeName)
       return [
         "text", "number", "money", "percent", "stars"
-      ].reject { |i| i == dataType.type }
+      ].reject { |i| i == dataTypeName }
     end
 
-    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(dataType.type)
+    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(dataTypeName)
       return ["text"]
     end
 
@@ -187,7 +213,7 @@ class Column < Model
       :name => name,
       :description => description,
       :width => width || 100,
-      :type => dataType && dataType.type ? dataType.type : "text",
+      :type => dataTypeName || "text",
       :id => id,
     }
 
@@ -215,14 +241,14 @@ class Column < Model
 
   def client_type
     if !self.format.nil?
-      if dataType.type == "text" && self.format.formatting_option == "Rich"
+      if dataTypeName == "text" && self.format.formatting_option == "Rich"
         return "richtext"
-      elsif dataType.type == "stars" && self.format.view == "stars_number"
+      elsif dataTypeName == "stars" && self.format.view == "stars_number"
         return "number"
       end
     end
 
-    return dataType.type
+    return dataTypeName
   end
 
   def text_format
@@ -244,7 +270,7 @@ class Column < Model
   end
 
   def is_nested_table
-    dataType.type.downcase == 'nested_table'
+    dataTypeName.downcase == 'nested_table'
   end
 
   def is_list

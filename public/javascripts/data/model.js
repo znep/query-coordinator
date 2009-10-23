@@ -521,7 +521,7 @@ blist.namespace.fetch('blist.data');
         };
 
         var translatePicklistFromView = function(col) {
-            var values = col.dataType && col.dataType.picklist && col.dataType.picklist.values;
+            var values = col.dropDown && col.dropDown.values;
             if (values) {
                 var options = col.options = {};
                 for (var j = 0; j < values.length; j++) {
@@ -569,8 +569,8 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < viewCols.length; i++)
             {
                 var v = viewCols[i];
-                if (v.dataType && (v.dataType.type == 'meta_data' ||
-                    v.dataType.type == 'tag'))
+                if (v.dataTypeName == 'meta_data' ||
+                    v.dataTypeName == 'tag')
                 {
                     var adjName = v.name;
                     if (v.name == 'sid') { adjName = 'id'; }
@@ -578,20 +578,20 @@ blist.namespace.fetch('blist.data');
                     metaCols.push({name: adjName, index: i});
                 }
 
-                if (v.dataType && (v.dataType.type == 'url' ||
-                    v.dataType.type == 'phone' ||
-                    v.dataType.type == 'document'))
+                if (v.dataTypeName == 'url' ||
+                    v.dataTypeName == 'phone' ||
+                    v.dataTypeName == 'document')
                 { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
 
-                if (v.dataType && (v.dataType.type == 'url' ||
-                    v.dataType.type == 'phone' || v.dataType.type == 'document'))
+                if (v.dataTypeName == 'url' ||
+                    v.dataTypeName == 'phone' || v.dataTypeName == 'document')
                 { dataMungeCols.push({index: i, type: 'arrayToObject',
                     types: v.subColumnTypes}); }
 
-                if (v.dataType && v.dataType.type == 'checkbox')
+                if (v.dataTypeName == 'checkbox')
                 { dataMungeCols.push({index: i, type: 'falseToNull'}); }
 
-                if (v.dataType && v.dataType.type == 'stars')
+                if (v.dataTypeName == 'stars')
                 { dataMungeCols.push({index: i, type: 'zeroToNull'}); }
             }
         };
@@ -626,7 +626,7 @@ blist.namespace.fetch('blist.data');
             for (i = 0; i < viewCols.length; i++)
             {
                 var vcol = viewCols[i];
-                if ((vcol.dataType && vcol.dataType.type == 'meta_data') ||
+                if (vcol.dataTypeName == 'meta_data' ||
                     (vcol.flags && $.inArray("hidden", vcol.flags) != -1))
                 { continue; }
 
@@ -635,7 +635,7 @@ blist.namespace.fetch('blist.data');
                     description: vcol.description,
                     width: Math.max(50, vcol.width || 100),
                     minWidth: 50,
-                    type: vcol.dataType && vcol.dataType.type ? vcol.dataType.type : "text",
+                    type: vcol.dataTypeName || "text",
                     id: vcol.id,
                     tableColumnId: vcol.tableColumnId,
                     aggregate: meta.aggregateHash[vcol.id],
@@ -1533,7 +1533,7 @@ blist.namespace.fetch('blist.data');
 
             // Filter view columns down to just the visible, and sort them
             var viewCols = $.grep(meta.view.columns, function(c)
-                { return (!c.dataType || c.dataType.type != 'meta_data') &&
+                { return c.dataTypeName != 'meta_data' &&
                     (!c.flags || $.inArray('hidden', c.flags) < 0); });
             viewCols.sort(function(col1, col2)
                 { return col1.position - col2.position; });

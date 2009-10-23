@@ -223,7 +223,7 @@ blist.blistGrid.menuHandler = function(event)
             $.each($('#dataGrid').blistModel().meta().view.columns,
                 function(i, col)
                 {
-                    if (col.dataType && col.dataType.type == 'tag')
+                    if (col.dataTypeName == 'tag')
                     {
                         $('#dataGrid').datasetGrid().showHideColumns(col.id,
                             false);

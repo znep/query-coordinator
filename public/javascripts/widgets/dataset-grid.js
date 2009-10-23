@@ -189,10 +189,7 @@
                     {
                         delete col.dataIndex;
                         delete col.options;
-                        if (col.dataType)
-                        {
-                            delete col.dataType.picklist;
-                        }
+                        delete col.dropDown;
                     };
                     // Clean out dataIndexes, and clean out child metadata columns
                     $.each(view.columns, function(i, c)

@@ -27,7 +27,7 @@ filterNS.filterableClass = function(type) {
     {
         return "text";
     }
-    else if ($.inArray(type, ["number", "money", "percent", "stars", "picklist"]) > -1)
+    else if ($.inArray(type, ["number", "money", "percent", "stars", "picklist", "drop_down_list"]) > -1)
     {
         return "number";
     }

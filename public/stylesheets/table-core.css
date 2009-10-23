@@ -476,7 +476,8 @@ div.blist-table-editor .align-right { text-align: right; }
 .flag .blist-th-icon { background-position: 0 -380px; }
 .document .blist-th-icon { background-position: 0 -280px; }
 .photo .blist-th-icon { background-position: 0 -100px; }
-.picklist .blist-th-icon { background-position: 0 -400px; }
+.picklist .blist-th-icon, .drop_down_list .blist-th-icon
+{ background-position: 0 -400px; }
 .nested_table .blist-th-icon { background-position: 0 -440px; }
 .tag .blist-th-icon { background-position: 0 -180px; }
 

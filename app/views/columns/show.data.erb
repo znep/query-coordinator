@@ -67,7 +67,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
           </li>
         </ul>
 
-        <%- if @column.dataTypeName == 'picklist' -%>
+        <%- if @column.dataTypeName == 'drop_down_list' -%>
         <h3 class='seperator'>Picklist Values</h3>
         <%= render(:partial => 'picklist_manager') %>
         <%- end -%>
@@ -158,8 +158,8 @@ $(function()
   $("#columnPropertiesDialog .error").hide();
   $("#columnPropertiesDialog #convertables").hide();
 
-  <%- if @column.dataTypeName == 'picklist' -%>
-  picklistManagerSetup();
+  <%- if @column.dataTypeName == 'drop_down_list' -%>
+  var picklistManagerCallback = picklistManagerSetup();
   <%- end -%>
 
   var loading = function()
@@ -228,6 +228,9 @@ $(function()
         $("#columnPropertiesDialog #precision").val() });
 
   var save = function() {
+      <%- if @column.dataTypeName == 'drop_down_list' -%>
+      column.dropDownList = {values: picklistManagerCallback()};
+      <%- end -%>
       $.ajax({
         type: "PUT",
         url: '<%= @column.href(@view_id)%>',

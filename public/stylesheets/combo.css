@@ -30,6 +30,7 @@
     display: none;
     max-height: 200px;
     overflow: auto;
+    overflow-x: hidden;
     position: absolute;
     z-index: 100;
 }
@@ -81,7 +82,8 @@
 }
 .type_combo_list .photo { background-position: 0 -100px; }
 .type_combo_list .money { background-position: 0 -40px; }
-.type_combo_list .picklist { background-position: 0 -400px; }
+.type_combo_list .picklist, .type_combo_list .drop_down_list
+{ background-position: 0 -400px; }
 .type_combo_list .number { background-position: 0 -20px; }
 .type_combo_list .richtext { background-position: 0 -60px; }
 .type_combo_list .text { background-position: 0 -80px; }

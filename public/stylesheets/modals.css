@@ -791,7 +791,7 @@ ul.convertables li a:hover
 .datatype-document { background-position: 0 -280px; }
 .datatype-nested_table { background-position: 0 -440px; }
 .datatype-tag { background-position: 0 -180px; }
-.datatype-picklist { background-position: 0 -400px; }
+.datatype-picklist, .datatype-drop_down_list { background-position: 0 -400px; }
 
 .typeSelect
 {
@@ -1391,6 +1391,8 @@ div#sortBysList.reorderList li .itemWrapper
 {
     width: 125px;
 }
+
+.filterDatasetWrapper .filterTable-editor { min-width: 18em; }
 
 .filterDatasetWrapper .filterTable-editor input,
 .filterDatasetWrapper .filterTable-editor .blist-combo-value,

@@ -1,13 +1,14 @@
 <div id='picklistManager' class='<%= local_assigns[:classes] %> reorderList'>
   <div class='activeListWrapper'>
     <ul class='activeList'>
-      <%- pl_values = [{'value' => 'foo'}] -%>
+      <%- pl_values = !@column.nil? && !@column.dropDown.nil? ?
+        @column.dropDown.values.reject {|p| p['deleted'] == true} : [] -%>
       <%- count = 0 -%>
       <%- pl_values.each do |p| -%>
       <li><div class='itemWrapper'>
         <span class='orderIndex'><%= count + 1 %></span>
-        <input type='text' name='plValue-<%= count %>' class='plValue'
-        value='<%= p['value'] %>' />
+        <input type='text' name='plValue_<%= count %>_<%= p['id'] %>'
+          class='plValue' value='<%= p['description'] %>' />
         <div class='controls'>
           <a href='#remove' class='remove' title='Remove Value'>Remove Value</a>
         </div>
@@ -20,7 +21,7 @@
   <ul class='templateList'>
     <li class='templateNode'><div class='itemWrapper'>
       <span class='orderIndex'></span>
-      <input type='text' name='plValue-' class='plValue' value='' />
+      <input type='text' name='plValue_' class='plValue' value='' />
       <div class='controls'>
         <a href='#remove' class='remove' title='Remove Value'>Remove Value</a>
       </div>
@@ -77,7 +78,7 @@ var picklistManagerSetup = function()
     $('#picklistManager .templateNode').clone(true).removeClass('templateNode')
       .find('.orderIndex').text(newOrder + 1).end()
       .find('.orderField').val(newOrder).end()
-      .find('input.plValue').attr('name', 'plValue-' + plGuid++)
+      .find('input.plValue').attr('name', 'plValue_' + plGuid++)
         .val($newText.val()).end()
       .appendTo('#picklistManager ul.activeList');
     $newText.val('').focus();
@@ -106,5 +107,23 @@ var picklistManagerSetup = function()
   $('#picklistManager .remove').click(removeValue);
   $('#picklistManager input').keydown(inputKeyDown);
   $('#picklistManager :submit').click(submitClick);
+
+  return function()
+  {
+    var $sorted = $($('#picklistManager .activeList li').get().sort(function(a, b)
+    { return $(a).find('.orderField').val() - $(b).find('.orderField').val(); }));
+
+    var values = [];
+    $sorted.each(function (i)
+    {
+      var $val = $(this).find('.plValue');
+      var newVal = {description: $val.val()};
+      var nameSplit = $val.attr('name').split('_');
+      if (nameSplit.length > 2) { newVal.id = nameSplit[2]; }
+      values.push(newVal);
+    });
+
+    return values;
+  };
 };
 </script>

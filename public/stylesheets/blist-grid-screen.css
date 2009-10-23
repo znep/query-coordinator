@@ -183,8 +183,18 @@ body#lensBody
 #lensContainer ul.tabList li.filter.active .wrapper a { padding-right: 23px; }
 #lensContainer ul.tabList li.filter .wrapper a.close
 {
-    margin-left: -18px;
+    background-image: url(/stylesheets/images/content/section_close_button.png);
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    display: block;
+    float: left;
+    height: 16px;
+    min-width: 0;
+    margin: 0.25em -12px 0 -18px;
     padding: 0;
+    text-indent: -9999px;
+    width: 16px;
 }
 #lensContainer ul.tabList li.main .wrapper a.close { display: none; }
 
@@ -1085,21 +1095,9 @@ body#lensBody
     padding-top: 1px;
 }
 
-#lensContainer .tabList li.filter a.close
-{
-    background-image: url(/stylesheets/images/content/section_close_button.png);
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    cursor: pointer;
-    display: block;
-    float: left;
-    height: 16px;
-    margin: 0.25em -12px 0 0.3em;
-    min-width: 0;
-    padding: 0;
-    text-indent: -9999px;
-    width: 16px;
-}
+#lensContainer ul.tabList li.filter.tempViewTab .wrapper a.close
+{ margin-left: 0.3em; }
+
 /* Login overlay */
 #login
 {

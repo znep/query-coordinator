@@ -994,8 +994,8 @@ blist.namespace.fetch('blist.data');
                     startRowChange();
                     if (pendingRowEdits[fr.id])
                     {
-                        pendingRowDeletes[fr.id] = {subRowId: subRow.uuid,
-                            parRowId: parRow.uuid, parColId: parCol.id};
+                        pendingRowDeletes[fr.id] = {subRow: subRow,
+                            parRow: parRow, parCol: parCol};
                     }
                     else
                     {
@@ -1142,7 +1142,6 @@ blist.namespace.fetch('blist.data');
                 if (isCreate)
                 {
                     delete childRow.type;
-                    childRow.isNew = true;
                     var parRow = row.parent;
 
                     // Since child rows get re-created, save the index and pull
@@ -1188,70 +1187,74 @@ blist.namespace.fetch('blist.data');
 
             this.change([row]);
 
+            registerRowSave(row, column, data, isCreate);
+        };
+
+        var registerRowSave = function(row, column, data, isCreate, parentColumn)
+        {
             startRowChange();
-            if (pendingRowEdits[row.id])
+            if (!isCreate && pendingRowEdits[row.id])
             {
-                pendingRowEdits[row.id].push({column: column, data: data});
+                pendingRowEdits[row.id].push({column: column,
+                    parentColumn: parentColumn, data: data});
                 return;
             }
-            else if (isCreate)
+
+            if (!pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
+
+            if (isCreate)
             {
                 if (isRowCreate)
                 {
-                    pendingRowCreates.push({row: row, column: column, data: data});
+                    pendingRowCreates.push({row: row, column: column,
+                        parentColumn: parentColumn, data: data});
                     return;
                 }
                 isRowCreate = true;
             }
 
-            if (!pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
-            serverSaveRow(row, column, data);
+            serverSaveRow(row, column, data, isCreate, parentColumn);
         };
 
-        var getSaveURL = function(row, column)
+        var getSaveURL = function(row, column, isCreate, parentColumn)
         {
-            if (column && column.nestedIn)
+            if (parentColumn || column && column.nestedIn)
             {
-                var parCol = column.nestedIn.header;
-                return getChildSaveURL(self.getRowValue(row, parCol),
-                    row.parent, parCol);
+                parentColumn = parentColumn || column.nestedIn.header;
+                return getChildSaveURL(self.getRowValue(row, parentColumn),
+                    row.parent, parentColumn, isCreate);
             }
 
             var url = '/views/' + self.meta().view.id + '/rows';
-            if (row.isNew) { url += '.json'; }
+            if (isCreate) { url += '.json'; }
             else { url += '/' + row.uuid + '.json'; }
             return url;
         };
 
-        var getChildSaveURL = function(childRow, parentRow, parentColumn)
+        var getChildSaveURL = function(childRow, parentRow, parentColumn, isCreate)
         {
             var url = '/views/' + self.meta().view.id + '/rows/' +
                 parentRow.uuid + '/columns/' + parentColumn.id + '/subrows';
-                if (!childRow.isNew) { url += '/' + childRow.uuid; }
+                if (!isCreate) { url += '/' + childRow.uuid; }
                 url += '.json';
             return url;
         };
 
-        var serverSaveRow = function(row, column, data)
+        var serverSaveRow = function(row, column, data, isCreate, parentColumn)
         {
-            var url = getSaveURL(row, column);
-            var newRow = row.isNew ? row : null;
-            var parCol;
+            var url = getSaveURL(row, column, isCreate, parentColumn);
+            var newRow = isCreate ? row : null;
             var childRow;
-            if (column && column.nestedIn)
+            if (parentColumn || column && column.nestedIn)
             {
-                parCol = column.nestedIn.header;
-                childRow = self.getRowValue(row, parCol);
-                newRow = childRow.isNew ? childRow : null;
+                parentColumn = parentColumn || column.nestedIn.header;
+                childRow = self.getRowValue(row, parentColumn);
+                newRow = isCreate ? childRow : null;
             }
-            rawSaveRow(url, row, column, data, newRow, parCol);
-        };
 
-        var rawSaveRow = function(url, row, column, data, newRow, parentColumn)
-        {
             var model = self;
             $.ajax({ url: url,
-                    type: newRow ? 'POST' : 'PUT',
+                    type: isCreate ? 'POST' : 'PUT',
                     contentType: 'application/json', dataType: 'json',
                     data: $.json.serialize(data),
                     complete: function()
@@ -1263,7 +1266,7 @@ blist.namespace.fetch('blist.data');
                             [column.dataIndex]; }
                         else if (column == 'all')
                         { delete row.saving; }
-                        else if (column)
+                        else if (column && row.saving)
                         { delete row.saving[column.dataIndex]; }
 
                         // Are there any pending edits to this row?
@@ -1272,7 +1275,8 @@ blist.namespace.fetch('blist.data');
                             pendingRowEdits[row.id].length > 0)
                         {
                             var u = pendingRowEdits[row.id].shift();
-                            serverSaveRow(row, u.column, u.data);
+                            serverSaveRow(row, u.column, u.data, false,
+                                u.parentColumn);
                         }
                         else
                         {
@@ -1283,8 +1287,8 @@ blist.namespace.fetch('blist.data');
                                 if (pd === true) { serverDeleteRow(row.id); }
                                 else
                                 {
-                                    serverDeleteRow(pd.subRowId,
-                                        pd.parColId, pd.parRowId);
+                                    serverDeleteRow(pd.subRow.uuid,
+                                        pd.parCol.id, pd.parRow.uuid);
                                 }
                                 delete pendingRowDeletes[row.id];
                             }
@@ -1322,13 +1326,15 @@ blist.namespace.fetch('blist.data');
                             // FIXME: The server response for this should be
                             // changing; we can run into problems if there is
                             // a user column named something like '_id'
-                            $.each(resp, function(a, v)
+                            var metaCols = parentColumn ?
+                                parentColumn.metaChildren : meta.metaColumns;
+                            $.each(metaCols, function(i, c)
                             {
-                                if (a.charAt(0) == '_')
-                                {
-                                    newRow[a.slice(1)] = v;
-                                }
+                                var n = '_' + c.name;
+                                if (resp[n] !== undefined)
+                                { newRow[c.name] = newRow[c.index] = resp[n]; }
                             });
+
                             installIDs();
                             delete newRow.isNew;
                             delete newRow.type;
@@ -1345,7 +1351,8 @@ blist.namespace.fetch('blist.data');
                             if (pendingRowCreates.length > 0)
                             {
                                 var c = pendingRowCreates.shift();
-                                serverSaveRow(c.row, c.column, c.data);
+                                serverSaveRow(c.row, c.column, c.data, true,
+                                    c.parentColumn);
                             }
                             else
                             {
@@ -1403,8 +1410,14 @@ blist.namespace.fetch('blist.data');
 
             // Set it up like a new row
             row.isNew = true;
-            delete row.id;
+            var oldID = row.id;
+            row.id = 'saving' + saveUID++;
             delete row.uuid;
+
+            pendingRowEdits[row.id] = pendingRowEdits[oldID];
+            delete pendingRowEdits[oldID];
+            pendingRowDeletes[row.id] = pendingRowDeletes[oldID];
+            delete pendingRowDeletes[oldID];
 
             if (parentRow !== undefined)
             {
@@ -1419,8 +1432,7 @@ blist.namespace.fetch('blist.data');
                 fakeRow.saving[parentColumn.dataIndex] = savingArray;
                 self.change([fakeRow]);
 
-                rawSaveRow(getChildSaveURL(row, parentRow, parentColumn),
-                        fakeRow, 'all', data, row, parentColumn);
+                registerRowSave(fakeRow, 'all', data, true, parentColumn);
             }
             else
             {
@@ -1432,7 +1444,7 @@ blist.namespace.fetch('blist.data');
                 configureActive();
                 $(listeners).trigger('row_add', [ [row] ]);
 
-                serverSaveRow(row, 'all', data);
+                registerRowSave(row, 'all', data, true);
             }
         };
 

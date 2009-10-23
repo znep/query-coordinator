@@ -526,7 +526,8 @@ blist.namespace.fetch('blist.data');
                 var options = col.options = {};
                 for (var j = 0; j < values.length; j++) {
                     var value = values[j];
-                    options[value.id] = { text: value.description, icon: value.icon };
+                    options[value.id] = { text: value.description,
+                        icon: value.icon, deleted: value.deleted };
                 }
             }
             return options;
@@ -654,6 +655,7 @@ blist.namespace.fetch('blist.data');
                 switch (col.type)
                 {
                     case 'picklist':
+                    case 'drop_down_list':
                         col.options = translatePicklistFromView(vcol);
                         break;
 
@@ -2308,7 +2310,8 @@ blist.namespace.fetch('blist.data');
                         // each instance
                         filterParts.push(' || (r', rootColumns[i].dataLookupExpr, ' + "").match(regexp)');
                     }
-                    else if (rootColumns[i] == "picklist")
+                    else if (rootColumns[i].type == "picklist" ||
+                        rootColumns[i].type == 'drop_down_list')
                     {
                         // Picklist column -- prefilter and then search by ID
                         var options = rootColumns[i].options;

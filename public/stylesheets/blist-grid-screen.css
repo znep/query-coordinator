@@ -588,11 +588,6 @@ body#lensBody
     background-position: 5px -393px;
 }
 
-#mainMenu li.data .picklists > a
-{
-    background-position: 5px -416px;
-}
-
 #mainMenu li.data .rowTags > a
 {
     background-position: 5px -439px;
@@ -991,7 +986,9 @@ body#lensBody
 { background-position: 5px -100px; }
 
 #addColumn_picklist,
-#mainMenu .columnsMenu .picklist a
+#addColumn_drop_down_list,
+#mainMenu .columnsMenu .picklist a,
+#mainMenu .columnsMenu .drop_down_list a
 { background-position: 5px -400px; }
 
 #addColumn_nested_table,

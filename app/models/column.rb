@@ -17,6 +17,7 @@ class Column < Model
       "document" => "Document",
       "photo" => "Photo (Image)",
       "picklist" => "Picklist (Drop-down)",
+      "drop_down_list" => "Picklist (Drop-down)",
       "nested_table" => "Nested Table",
       "tag" => "Row Tag"
   };
@@ -57,7 +58,7 @@ class Column < Model
     ]
 
     case dataTypeName.downcase
-    when "nested_table", "picklist"
+    when "nested_table", "picklist", "drop_down_list"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "photo", "phone", "checkbox", "flag", "url",
       "email", "document", "tag"
@@ -103,20 +104,21 @@ class Column < Model
 
     return types_with_display_options.include?(client_type)
   end
-  
+
   def has_formatting?
-    types_with_formatting = ["text", "date", "number", 
-        "money", "percent", "phone", "email", 
-        "url", "checkbox", "stars", "flag", "picklist"]
+    types_with_formatting = ["text", "date", "number",
+        "money", "percent", "phone", "email",
+        "url", "checkbox", "stars", "flag", "picklist", "drop_down_list"]
 
     return types_with_formatting.include?(client_type)
   end
 
   def has_totals?
-    types_with_totals = ["text", "richtext", "number", "money", "percent", 
-                         "date", "phone", "email", "url", "checkbox", "stars", 
-                         "flag", "document", "photo", "picklist", "tag"]
-    
+    types_with_totals = ["text", "richtext", "number", "money", "percent",
+                         "date", "phone", "email", "url", "checkbox", "stars",
+                         "flag", "document", "photo", "picklist",
+                         "drop_down_list", "tag"]
+
     return types_with_totals.include?(client_type)
   end
 
@@ -157,6 +159,8 @@ class Column < Model
     update_data[:description] = js["description"] if js.key?("description")
     update_data[:width] = js["width"] if js.key?("width")
 
+    update_data[:dropDownList] = js["dropDownList"] if js.key?("dropDownList")
+
     update_data[:format] = self.format.nil? ? {} : self.format.data.clone
     if js.key?("aggregate") && js["aggregate"].blank?
       update_data[:format].delete "aggregate"
@@ -194,7 +198,8 @@ class Column < Model
       :name => js["name"],
       :description => js["description"],
       :width => js["width"],
-      :dataTypeName => js["type"]
+      :dataTypeName => js["type"],
+      :dropDownList => js['dropDownList']
     }
 
     if js["type"] == "richtext"
@@ -214,7 +219,7 @@ class Column < Model
       :description => description,
       :width => width || 100,
       :type => dataTypeName || "text",
-      :id => id,
+      :id => id
     }
 
     if aggregate != 'none'

@@ -178,6 +178,16 @@ body#lensBody
     text-align: left;
 }
 #lensContainer .tabList li.filter a.calendar { background-position: 0 -759px; }
+
+#lensContainer ul.tabList li.filter .wrapper a,
+#lensContainer ul.tabList li.filter.active .wrapper a { padding-right: 23px; }
+#lensContainer ul.tabList li.filter .wrapper a.close
+{
+    margin-left: -18px;
+    padding: 0;
+}
+#lensContainer ul.tabList li.main .wrapper a.close { display: none; }
+
 /* Header bar & Button styles */
 
 #lensContainer .headerBar
@@ -1078,7 +1088,7 @@ body#lensBody
     padding-top: 1px;
 }
 
-#lensContainer .tabList li.filter.tempViewTab a.close
+#lensContainer .tabList li.filter a.close
 {
     background-image: url(/stylesheets/images/content/section_close_button.png);
     background-position: 0 0;

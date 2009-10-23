@@ -808,7 +808,9 @@ blist.namespace.fetch('blist.data');
                         if (sorts[c.id] != undefined)
                         {
                             meta.sort[c.id] = {
-                                ascending: (sorts[c.id].flags != null && $.inArray('asc', sorts[c.id].flags) >= 0),
+                                ascending: (sorts[c.id].asc ||
+                                    (sorts[c.id].flags != null &&
+                                    $.inArray('asc', sorts[c.id].flags) >= 0)),
                                 column: c
                               };
                         }
@@ -1414,6 +1416,8 @@ blist.namespace.fetch('blist.data');
                 });
             }
 
+            var isSorted = meta.sort[oldId] !== undefined;
+
             if (newViewColumn.format && newViewColumn.format.aggregate)
             {
                 $.each(meta.aggregates, function(i, a) {
@@ -1427,6 +1431,17 @@ blist.namespace.fetch('blist.data');
 
             meta.columns = null;
             this.meta(meta);
+
+            if (isSorted)
+            {
+                $.each(meta.view.sortBys, function(i, s)
+                {
+                    if (s.viewColumnId == oldId)
+                    { s.viewColumnId = newViewColumn.id; }
+                });
+                this.multiSort(meta.view.sortBys);
+            }
+
             configureActive();
             $(listeners).trigger('columns_updated', [this]);
         };
@@ -1805,7 +1820,8 @@ blist.namespace.fetch('blist.data');
             {
                 var sort = sortBys[0];
                 var colIndex = findColumnIndex(parseInt(sort.viewColumnId, 10));
-                this.sort(colIndex, !(sort.flags != null && $.inArray('asc', sort.flags) >= 0));
+                this.sort(colIndex, !(sort.asc ||
+                    (sort.flags != null && $.inArray('asc', sort.flags) >= 0)));
                 return;
             }
 
@@ -1814,8 +1830,9 @@ blist.namespace.fetch('blist.data');
             $.each(meta.view.sortBys, function(i, sort) {
                 var col = self.getColumnByID(sort.viewColumnId);
                 meta.sort[sort.viewColumnId] = {
-                    ascending: (sort.flags != null && $.inArray('asc', sort.flags) >= 0),
-                    column: col 
+                    ascending: (sort.asc ||
+                        (sort.flags != null && $.inArray('asc', sort.flags) >= 0)),
+                    column: col
                     };
             });
             sortConfigured = true;
@@ -1955,8 +1972,8 @@ blist.namespace.fetch('blist.data');
                 {
                     var newSort = meta.view.sortBys[0];
                     this.sort(findColumnIndex(newSort.viewColumnId),
-                        !(newSort.flags != null &&
-                            $.inArray('asc', newSort.flags) >= 0));
+                        !(newSort.asc || (newSort.flags != null &&
+                            $.inArray('asc', newSort.flags) >= 0)));
                     return;
                 }
             }

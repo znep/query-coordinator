@@ -10,8 +10,9 @@
 .blist-combo
 {
     border: solid 1px #ccc;
-    background: url('/stylesheets/images/content/select_arrow.png') center right no-repeat;
+    background: #ffffff url('/stylesheets/images/content/select_arrow.png') center right no-repeat;
     min-height: 2em;
+    overflow: hidden;
     position: relative;
 }
 .blist-combo-value
@@ -51,6 +52,7 @@
 .blist-combo-wrapper.lr_justified li
 {
     clear: both;
+    overflow: hidden;
 }
 
 .blist-combo-wrapper.lr_justified .value {

@@ -95,7 +95,7 @@
                 $this.closest(".blist-combo-wrapper").append($dropdown);
                 for (var i = 0; i < values.length; i++)
                 {
-                    var $li = $('<li class="clearfix"></li>');
+                    var $li = $('<li></li>');
                     $dropdown.append($li);
                     rowRenderFn.apply($li, [ values[i] ]);
                 }
@@ -190,7 +190,7 @@
             var valueObj = getSelectedValueObject(value);
 
             // Reset all classes on the value.
-            $value.removeClass().addClass("blist-combo-value clearfix");
+            $value.removeClass().addClass("blist-combo-value");
 
             // Render empty values
             if (valueObj === undefined)

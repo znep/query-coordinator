@@ -68,7 +68,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
         </ul>
 
         <%- if @column.dataTypeName == 'drop_down_list' -%>
-        <h3 class='seperator'>Picklist Values</h3>
+        <h3 class='seperator'>Multiple Choice Values</h3>
         <%= render(:partial => 'picklist_manager') %>
         <%- end -%>
       </div>

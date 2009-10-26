@@ -16,8 +16,8 @@ class Column < Model
       "flag" => "Flag",
       "document" => "Document",
       "photo" => "Photo (Image)",
-      "picklist" => "Picklist (Drop-down)",
-      "drop_down_list" => "Picklist (Drop-down)",
+      "picklist" => "Multiple Choice",
+      "drop_down_list" => "Multiple Choice",
       "nested_table" => "Nested Table",
       "tag" => "Row Tag"
   };

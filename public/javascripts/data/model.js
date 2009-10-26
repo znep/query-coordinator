@@ -510,11 +510,9 @@ blist.namespace.fetch('blist.data');
         {
             if (config.meta)
             {
-                if (config.rows || config.data)
-                {
-                    this.rows(config.rows || config.data);
-                }
                 self.meta(config.meta);
+                if (config.rows || config.data)
+                { this.rows(config.rows || config.data); }
                 configureActive();
                 $(listeners).trigger('columns_updated', [self]);
             }
@@ -1994,7 +1992,7 @@ blist.namespace.fetch('blist.data');
             if (hasSort) { doSort(); }
             // The only way to guarantee a correct ordering of rows (right now)
             //  when clearing all sorts is to go to the server
-            else { this.reloadView(); }
+            else { getTempView(); }
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted

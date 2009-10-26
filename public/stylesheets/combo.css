@@ -17,6 +17,7 @@
 .blist-combo-value
 {
     font-size: 1.2em;
+    height: 100%;
     left: 0;
     overflow: hidden;
     padding: 4px 5px;
@@ -39,6 +40,7 @@
 {
     font-size: 1.2em;
     padding: 4px 5px;
+    white-space: nowrap;
 }
 
 .blist-combo-dd li.selected { background-color: #e3ecf7; }

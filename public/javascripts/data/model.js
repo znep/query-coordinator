@@ -2342,7 +2342,7 @@ blist.namespace.fetch('blist.data');
                             for (var j = 0; j < matches.length; j++)
                             {
                                 filterParts.push(' || (r' +
-                                    rootColumns[j].dataLookupExpr + ' == "' +
+                                    rootColumns[i].dataLookupExpr + ' == "' +
                                     matches[j] + '")');
                             }
                         }

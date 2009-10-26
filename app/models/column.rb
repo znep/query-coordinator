@@ -58,10 +58,10 @@ class Column < Model
     ]
 
     case dataTypeName.downcase
-    when "nested_table", "picklist", "drop_down_list"
+    when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "photo", "phone", "checkbox", "flag", "url",
-      "email", "document", "tag"
+      "email", "document", "tag", "picklist", "drop_down_list"
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
     when "date"

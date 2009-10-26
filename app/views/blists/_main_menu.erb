@@ -156,7 +156,7 @@
             'href' => "#{@view.href}/bulk/append", 'modal' => true},
             {'text' => 'Refresh From a File...', 'class' => 'replace',
             'href' => (current_user && current_user.can_access_premium_on?(@view)) ? "#{@view.href}/bulk/replace" : '/popup/premium',
-            'modal' => (!current_user || !current_user.can_access_premium_on?(@view))}
+            'modal' => true}
           ]}}
         ]}, is_owner, can_edit) %>
     </dd></dl>

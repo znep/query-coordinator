@@ -1012,13 +1012,6 @@ body#lensBody
 
 /* Main content */
 
-#lensContainer .outerContent
-{
-    /* Override overflow: auto so that Firefox on Windows doesn't get screwed
-     * up in regards to cursor positioning in Flash */
-    overflow: visible;
-}
-
 #lensContainer .content
 {
     padding-bottom: 1em;

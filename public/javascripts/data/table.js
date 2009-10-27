@@ -710,7 +710,7 @@
             // Obtain an expanding node in utility (off-screen) mode
             var $curEditContainer = $('<div class="blist-table-edit-container ' +
                     'mode-' + mode + ' blist-table-util"></div>');
-            inside.append($curEditContainer);
+            $scrolls.append($curEditContainer);
             var blistEditor = $curEditContainer.blistEditor(
                 {row: row, column: col, value: value, newValue: newValue});
             if (!blistEditor) { return; }
@@ -801,7 +801,9 @@
         var endEdit = function(isSave, mode)
         {
             if (!mode) { mode = DEFAULT_EDIT_MODE; }
-            if (mode == DEFAULT_EDIT_MODE && isEdit[mode]) { focus(); }
+            if (!isEdit[mode]) { return; }
+
+            if (mode == DEFAULT_EDIT_MODE) { focus(); }
             delete isEdit[mode];
 
             var $curEditContainer = $editContainers[mode];

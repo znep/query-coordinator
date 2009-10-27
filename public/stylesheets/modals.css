@@ -678,7 +678,7 @@
 {
     background-color: transparent;
     font-size: 1em;
-    width: 18em;
+    width: 16em;
 }
 
 .columnPropertiesWrapper #picklistManager input.orderField { display: none; }
@@ -716,7 +716,11 @@
 }
 
 .columnPropertiesWrapper #picklistManager input.newValue { font-size: 1.2em; }
-.columnPropertiesWrapper #picklistManager input.newValueSubmit { width: 7em; }
+.columnPropertiesWrapper #picklistManager input.newValueSubmit
+{
+    padding: 0;
+    width: 7em;
+}
 
 .convertDropdown
 {
@@ -1395,13 +1399,6 @@ div#sortBysList.reorderList li .itemWrapper
 .filterDatasetWrapper .filterTable-editor { min-width: 18em; }
 
 .filterDatasetWrapper .filterTable-editor input,
-.filterDatasetWrapper .filterTable-editor .blist-combo-value,
-.filterDatasetWrapper .filterTable-editor .blist-combo-dd li
-{
-    font-size: 1em;
-}
-
-.filterDatasetWrapper .filterTable-editor input,
 .filterDatasetWrapper .filterTable-editor .blist-combo
 {
     border: 1px solid #cacaca;
@@ -1427,6 +1424,7 @@ div#sortBysList.reorderList li .itemWrapper
 .filterDatasetWrapper #filterTable .blist-table-editor
 {
     border: none;
+    font-size: 1em;
 }
 
 .filterDatasetWrapper #filterTable .type-url .labels

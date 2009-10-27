@@ -95,7 +95,7 @@
                 $this.closest(".blist-combo-wrapper").append($dropdown);
                 for (var i = 0; i < values.length; i++)
                 {
-                    var $li = $('<li class="clearfix"></li>');
+                    var $li = $('<li></li>');
                     $dropdown.append($li);
                     rowRenderFn.apply($li, [ values[i] ]);
                 }
@@ -190,7 +190,7 @@
             var valueObj = getSelectedValueObject(value);
 
             // Reset all classes on the value.
-            $value.removeClass().addClass("blist-combo-value clearfix");
+            $value.removeClass().addClass("blist-combo-value");
 
             // Render empty values
             if (valueObj === undefined)
@@ -300,6 +300,16 @@
             }
         };
 
+        var fieldFocus = function(event)
+        {
+            $this.addClass('blist-combo-focused');
+        };
+
+        var fieldBlur = function(event)
+        {
+            $this.removeClass('blist-combo-focused');
+        };
+
         // Initialize the component
         $this
             .html($value)
@@ -309,7 +319,9 @@
             .append($input)
             .focus(onFocus)
             .find(':input')
-            .keydown(onKeyDown);
+                .keydown(onKeyDown)
+                .focus(fieldFocus)
+                .blur(fieldBlur);
         renderValue();
         
         var comboValueObj = function()

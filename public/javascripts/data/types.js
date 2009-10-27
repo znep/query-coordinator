@@ -347,7 +347,7 @@ blist.namespace.fetch('blist.data.types');
             for (var key in column.options) {
                 var option = column.options[key];
                 if (plain)
-				{
+                {
                     valueLookup[key.toLowerCase()] = option.text;
                 } else {
                     var icon = option.icon;
@@ -359,8 +359,8 @@ blist.namespace.fetch('blist.data.types');
                     valueLookup[key.toLowerCase()] = icon + htmlEscape(option.text);
                 }
             }
-            return "(" + valueLookupVariable + "[(" + value +
-                " || '').toLowerCase()] || '')";
+            return "(" + valueLookupVariable + "[(typeof " + value +
+                " == 'string' ? " + value + " : '').toLowerCase()] || '')";
         }
         return "'?'";
     };

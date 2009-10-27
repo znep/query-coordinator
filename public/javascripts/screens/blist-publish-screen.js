@@ -282,7 +282,7 @@ blist.publish.customizationApplication = {
                       fullscreen:                           [ { selector: '.headerMenu .fullscreen, .fullScreenButton', hideShow: true } ],
                       republish:                            [ { selector: '.headerMenu .publish', hideShow: true } ] },
     meta:                                                   [ { selector: '#widgetMeta .summaryTabs', callback: publishNS.applyTabs }],
-    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none !important' } } ],
+    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none' } } ],
                       interstitial:                         [ { callback: publishNS.applyInterstitial } ] },
     publish:        { dimensions:   { width:                [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('width', value + 'px'); } } ],
                                       height:               [ { selector: '.previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('height', value + 'px'); } } ] },

@@ -1,4 +1,4 @@
-<%- if !comment.body.blank? -%>
+<%- unless comment.body.blank? && comment.title.blank? -%>
 <li id='comment_<%= comment.id %>' class='comment <%= comment.user.id == view.owner.id ? "ownerComment" : "" %> clearfix'>
 <div class='userInfo'>
   <div class='primaryInfo'>
@@ -24,7 +24,9 @@
             <%= blist_long_date(comment.createdAt) %>
             <span>(<%= friendly_relative_time(comment.createdAt) %>)</span>
           </div>
+        <%- unless comment.body.blank? -%>
           <p class='commentBody'><%= h(comment.body) %></p>
+        <%- end -%>
           
           <%= render(:partial => 'blists/comment_actions',
           :locals => {:comment => comment, :view => view, :allow_commenting => allow_commenting}) %>

@@ -300,6 +300,16 @@
             }
         };
 
+        var fieldFocus = function(event)
+        {
+            $this.addClass('blist-combo-focused');
+        };
+
+        var fieldBlur = function(event)
+        {
+            $this.removeClass('blist-combo-focused');
+        };
+
         // Initialize the component
         $this
             .html($value)
@@ -309,7 +319,9 @@
             .append($input)
             .focus(onFocus)
             .find(':input')
-            .keydown(onKeyDown);
+                .keydown(onKeyDown)
+                .focus(fieldFocus)
+                .blur(fieldBlur);
         renderValue();
         
         var comboValueObj = function()

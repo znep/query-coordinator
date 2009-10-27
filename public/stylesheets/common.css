@@ -212,7 +212,7 @@ form.search.large input.submit
     background-position: top left;
     background-repeat: no-repeat;
     margin-left: 1em;
-    overflow: auto;
+    overflow: visible;
 }
 
 .mainContent .content

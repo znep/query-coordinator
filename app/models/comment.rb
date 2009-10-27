@@ -18,7 +18,7 @@ class Comment < Model
       attributes[:body] = nil
     end
 
-    if attributes[:body].nil? && attributes[:viewRating].nil?
+    if attributes[:body].nil? && attributes[:viewRating].nil? && attributes[:title].nil?
       return nil
     end
 

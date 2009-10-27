@@ -505,7 +505,8 @@ div.blist-table-editor .align-right { text-align: right; }
 {
     border-top: none;
 }
-.blist-table .blist-combo-value
+.blist-table .blist-combo-value,
+.blist-table .blist-combo-focused .blist-combo-value
 {
     font-size: 1em;
     padding: 0;

@@ -12,7 +12,7 @@
     html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { font-family: <%= @theme[:style][:font][:face] %>; }
 
     div.blist-th .info-container { font-size: <%= @theme[:style][:font][:grid_header_size][:value] %><%= @theme[:style][:font][:grid_header_size][:unit] %>; }
-    .blist-td { font-size: <%= @theme[:style][:font][:grid_data_size][:value] %><%= @theme[:style][:font][:grid_data_size][:unit] %>; }
+    .blist-td, .blist-table-editor, .blist-table .blist-combo-dd li { font-size: <%= @theme[:style][:font][:grid_data_size][:value] %><%= @theme[:style][:font][:grid_data_size][:unit] %>; }
   
   /* frame */
     <%- if @theme[:frame][:gradient] -%>
@@ -129,6 +129,7 @@
 
     <%- if !@theme[:grid][:header_icons] -%>
     .blist-th-icon { display: none; }
+    .blist-th .icon-display .name-wrapper { padding-left: 0; }
     <%- end -%>
 
   <%# disabled row height %>
@@ -314,6 +315,9 @@
     blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
   </script>
 
+  <%- if @view.can_edit() -%>
+  <%= render(:partial => 'shared/table_editor_js') %>
+  <%- end -%>
   <%= javascript_include_merged 'widgets-show' %>
 
   <%- if !@is_gov_widget && !APP_CONFIG['google_analytics_id'].blank? -%>

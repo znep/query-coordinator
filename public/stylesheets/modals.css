@@ -663,6 +663,7 @@
     max-height: 11em;
     overflow: auto;
     padding-left: 35px;
+    position: relative;
     width: 33.5em;
 }
 .columnPropertiesWrapper #picklistManager .activeList { margin: 0; }
@@ -1396,11 +1397,12 @@ div#sortBysList.reorderList li .itemWrapper
     width: 125px;
 }
 
-.filterDatasetWrapper .filterTable-editor { min-width: 18em; }
+.filterDatasetWrapper .filterTable-editor { width: 18em; }
 
 .filterDatasetWrapper .filterTable-editor input,
 .filterDatasetWrapper .filterTable-editor .blist-combo
 {
+    width: 100%;
     border: 1px solid #cacaca;
 }
 

@@ -118,11 +118,7 @@ javascripts:
   - widgets/dropdown-menu
   - widgets/selectable-list
   - widgets/pagination
-  - widgets/column-format
   - widgets/reorderable-list
-  - data/table
-  - widgets/inline-edit
-  - widgets/dropdown-menu
   - widgets/column-format
   - widgets/column-totals
   - widgets/info-pane-comments
@@ -137,8 +133,6 @@ javascripts:
   - screens/attribution-edit
   - screens/blist-grid-screen
   - screens/signup-screen
-  - widgets/column-format
-  - widgets/column-totals
   - widgets/combo
   - widgets/values
 - communities-show:
@@ -224,6 +218,7 @@ stylesheets:
   - base
   - common
   - widgets
+  - modals
 - base-widgets-preview:
   - base
   - common
@@ -276,3 +271,5 @@ stylesheets:
   - external-widget
   - info-pane
   - external-widget-meta
+  - form-common
+  - combo

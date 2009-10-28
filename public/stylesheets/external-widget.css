@@ -241,11 +241,8 @@
 }
 
 /* disabled row height */
-.blist-td
-{
-    height: 16px;
-    line-height: 16px;
-}
+.blist-td { height: 16px; }
+.blist-td, .blist-table-editor, .blist-table .blist-combo-dd li { line-height: 16px; }
 
 .blist-td-header
 {
@@ -387,6 +384,12 @@ img.blist-table-option-icon
     font-size: 1.2em;
 	width: 100%;
 	word-wrap: break-word;
+}
+
+.jqmWindow .dialogWrapper
+{
+    display: block;
+    position: static;
 }
 
 .dialogWrapper

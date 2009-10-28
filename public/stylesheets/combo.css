@@ -10,7 +10,9 @@
 .blist-combo
 {
     border: solid 1px #ccc;
-    background: #ffffff url('/stylesheets/images/content/select_arrow.png') center right no-repeat;
+    background-image: url(/stylesheets/images/content/select_arrow.png);
+    background-position: center right;
+    background-repeat: no-repeat;
     min-height: 2em;
     overflow: hidden;
     position: relative;

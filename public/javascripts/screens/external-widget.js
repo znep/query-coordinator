@@ -369,7 +369,7 @@ $(function ()
             accessType: 'WIDGET',
             showRowNumbers: widgetNS.theme['grid']['row_numbers'],
             showRowHandle: widgetNS.theme['grid']['row_numbers'],
-            editEnabled: false, manualResize: true,
+            editEnabled: typeof(isOldIE) === 'undefined', manualResize: true,
             filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch',
             clearTempViewCallback: widgetNS.clearTempViewTab,

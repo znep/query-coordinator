@@ -524,8 +524,8 @@ blist.namespace.fetch('blist.data');
                 var options = col.options = {};
                 for (var j = 0; j < values.length; j++) {
                     var value = values[j];
-                    options[value.id] = { text: value.description,
-                        icon: value.icon, deleted: value.deleted };
+                    options[value.id] = { text: value.description || '',
+                        icon: value.icon, deleted: value.deleted || false };
                 }
             }
             return options;

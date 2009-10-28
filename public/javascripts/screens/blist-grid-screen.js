@@ -403,6 +403,9 @@ $(function ()
     else if (blist.widgets.visualization.isVisualization)
     { $('#dataGrid').visualization(); }
 
+    $('#lensContainer .headerBar form').submit(function(e)
+        { e.preventDefault(); });
+
     blistGridNS.setUpTabs();
     $('.tabList').scrollable({
         selector: '.filter',

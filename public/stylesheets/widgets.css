@@ -273,6 +273,7 @@ ul.menu li.footer
     padding: 0;
     position: absolute;
     width: 100%;
+    z-index: -1;
 }
 
 ul.menu li.footer .outerWrapper

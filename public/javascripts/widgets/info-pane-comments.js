@@ -5,6 +5,8 @@
 // Protect $.
 (function($)
 {
+    var instances = 0;
+
     // Hook up all the behavior for the comments pane in the info pane
     $.fn.infoPaneComments = function(options)
     {
@@ -49,22 +51,22 @@
             }
         };
 
-        function ratingMouseleave($commentPane, e)
+        function ratingMouseleave($commentPane, e, linkElem)
         {
             var config = $commentPane.data('config-infoPaneComments');
-            updateRating($(e.currentTarget),
+            updateRating($(linkElem),
                 $commentPane.find(config.ratingInputSelector).val());
         };
 
-        function ratingMousemove($commentPane, e)
+        function ratingMousemove($commentPane, e, linkElem)
         {
-            var $this = $(e.currentTarget);
+            var $this = $(linkElem);
             updateRating($this, mousedOverRating($this, e));
         };
 
-        function ratingClick($commentPane, e)
+        function ratingClick($commentPane, e, linkElem)
         {
-            var $this = $(e.currentTarget);
+            var $this = $(linkElem);
             var config = $commentPane.data('config-infoPaneComments');
             var newRating = mousedOverRating($this, e);
             updateRating($this, newRating);
@@ -91,11 +93,11 @@
                 ($ratingUI.width() + 1) * 5);
         };
 
-        function submitCommentRating($commentPane, event)
+        function submitCommentRating($commentPane, event, formElem)
         {
             var config = $commentPane.data('config-infoPaneComments');
             event.preventDefault();
-            var $form = $(event.currentTarget);
+            var $form = $(formElem);
             if ($form.hasClass(config.disabledClass))
             {
                 return;
@@ -150,23 +152,7 @@
                         $newComment
                             .prependTo(
                                 $commentPane.find(config.commentListSelector)
-                            )
-                            .find(config.actionSelector +
-                              ':not(.' + config.skipActionClass + ')')
-                            .click(function (e) { actionClick($commentPane, e); })
-                            .end()
-                            .find(config.replySelector +
-                              ':not(.' + config.skipActionClass + ')')
-                            .submit(function (e) { submitReply($commentPane, e); })
-                            .end()
-                            .find(config.cancelSelector).click(function (e)
-                            {
-                                e.preventDefault();
-                                hideAllForms($commentPane);
-                            })
-                            .end()
-                            .find(config.expanderSelector)
-                            .click(function (e) { expanderClick($commentPane, e); });
+                            );
                         $commentPane.find(config.commentListSelector)
                             .pagination().update();
                     }
@@ -190,11 +176,11 @@
             });
         };
 
-        function submitReply($commentPane, event)
+        function submitReply($commentPane, event, formElem)
         {
             var config = $commentPane.data('config-infoPaneComments');
             event.preventDefault();
-            var $form = $(event.currentTarget);
+            var $form = $(formElem);
             if ($form.hasClass(config.disabledClass))
             {
                 return;
@@ -271,9 +257,6 @@
                             .addClass(config.expandedClass)
                             .siblings(config.childContainerSelector)
                             .removeClass(config.collapsedClass);
-                        $addedItem.find(config.actionSelector +
-                              ':not(.' + config.skipActionClass + ')')
-                            .click(function (e) { actionClick($commentPane, e); });
                     }
 
                     hideAllForms($commentPane);
@@ -290,11 +273,11 @@
             });
         };
 
-        function actionClick($commentPane, e)
+        function actionClick($commentPane, e, linkElem)
         {
             var config = $commentPane.data('config-infoPaneComments');
             e.preventDefault();
-            var $link = $(e.currentTarget);
+            var $link = $(linkElem);
             if ($link.hasClass(config.actionDoneClass))
             {
                 return;
@@ -406,11 +389,11 @@
                 (parseInt($ratingSpan.text().match(/(\d+)/)[1], 10) + 1));
         };
 
-        function expanderClick($commentPane, e)
+        function expanderClick($commentPane, e, linkElem)
         {
             var config = $commentPane.data('config-infoPaneComments');
             e.preventDefault();
-            $(e.currentTarget).toggleClass(config.expandedClass)
+            $(linkElem).toggleClass(config.expandedClass)
                 .siblings(config.childContainerSelector)
                 .toggleClass(config.collapsedClass);
             $(window).resize();
@@ -424,34 +407,58 @@
             var config = $.meta ? $.extend({}, opts, $commentPane.data()) : opts;
             $commentPane.data('config-infoPaneComments', config);
 
-            $commentPane.find(config.showFormSelector).click(
+            var sandboxClass = 'infoPaneComments-id' + (instances++);
+            $commentPane.addClass(sandboxClass);
+
+            // reduce concats later
+            sandboxClass = '.' + sandboxClass + ' ';
+
+            $.live(sandboxClass + config.showFormSelector, 'click',
                 function (e) { showFormClick($commentPane, e); });
 
-            $commentPane.find(config.ratingUISelector)
-                .mouseleave(function (e) { ratingMouseleave($commentPane, e); })
-                .mousemove(function (e) { ratingMousemove($commentPane, e); })
-                .click(function (e) { ratingClick($commentPane, e); });
+            $.live(sandboxClass + config.ratingUISelector, 'mouseleave',
+                function (e) { ratingMouseleave($commentPane, e, this); });
+            $.live(sandboxClass + config.ratingUISelector, 'mousemove',
+                function (e) { ratingMousemove($commentPane, e, this); });
+            $.live(sandboxClass + config.ratingUISelector, 'click',
+                function (e) { ratingClick($commentPane, e, this); });
 
-            $commentPane.find(config.cancelSelector).click(function (e)
-            {
-                e.preventDefault();
-                hideAllForms($commentPane);
-            });
+            $.live(sandboxClass + config.cancelSelector, 'click',
+                function (e)
+                {
+                    e.preventDefault();
+                    hideAllForms($commentPane);
+                });
 
-            $commentPane.find(config.topFormSelector +
-                ':not(.' + config.skipActionClass + ')')
-                .submit(function (e) { submitCommentRating($commentPane, e); });
+            $.live(sandboxClass + config.topFormSelector, 'submit',
+                function (e)
+                {
+                    if (!$(this).is('.' + config.skipActionClass))
+                    {
+                        submitCommentRating($commentPane, e, this);
+                    }
+                });
 
-            $commentPane.find(config.replySelector +
-                ':not(.' + config.skipActionClass + ')')
-                .submit(function (e) { submitReply($commentPane, e); });
+            $.live(sandboxClass + config.replySelector, 'submit',
+                function (e)
+                {
+                    if (!$(this).is('.' + config.skipActionClass))
+                    {
+                        submitReply($commentPane, e, this);
+                    }
+                });
 
-            $commentPane.find(config.actionSelector +
-                ':not(.' + config.skipActionClass + ')')
-                .click(function (e) { actionClick($commentPane, e); });
+            $.live(sandboxClass + config.actionSelector, 'click',
+                function (e)
+                {
+                    if (!$(this).is('.' + config.skipActionClass))
+                    {
+                        actionClick($commentPane, e, this);
+                    }
+                });
 
-            $commentPane.find(config.expanderSelector)
-                .click(function (e) { expanderClick($commentPane, e); });
+            $.live(sandboxClass + config.expanderSelector, 'click',
+                function (e) { expanderClick($commentPane, e, this); });
 
             $commentPane.find(config.commentListSelector)
                 .pagination({paginationContainer:

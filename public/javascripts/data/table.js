@@ -1537,8 +1537,9 @@
                 if ($(cell).hasClass('blist-opener') &&
                     !$(cell).hasClass('blist-opener-inactive'))
                 {
-                    model.expand(row);
                     clearCellNav();
+                    endEdit(DEFAULT_EDIT_MODE);
+                    model.expand(row);
                     skipSelect = true;
                 }
 

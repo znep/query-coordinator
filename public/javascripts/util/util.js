@@ -62,6 +62,14 @@ $.capitalize = function(text)
     return text.charAt(0).toUpperCase() + text.substring(1);
 };
 
+$.live = function(selector, type, fn)
+{
+    var $obj = $([]);
+    $obj.selector = selector;
+    $obj.live(type, fn);
+    return $obj;
+};
+
 })(jQuery);
 
 String.prototype.startsWith = function(str)

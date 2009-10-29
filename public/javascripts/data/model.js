@@ -1606,9 +1606,9 @@ blist.namespace.fetch('blist.data');
         /**
          * Notify listeners of column filter changes
          */
-        this.columnFilterChange = function(col)
+        this.columnFilterChange = function(col, setFilter)
         {
-            $(listeners).trigger('column_filter_change', [ col ]);
+            $(listeners).trigger('column_filter_change', [ col, setFilter ]);
         };
 
         /**
@@ -2429,7 +2429,7 @@ blist.namespace.fetch('blist.data');
          *  These filters are additive (all ANDed at the top level).
          *  Currently it only supports one filter per column.
          */
-        this.filterColumn = function(filterCol, filterVal)
+        this.filterColumn = function(filterCol, filterVal, subColumnType)
         {
             // Turn index into obj
             if (typeof filterCol != 'object')
@@ -2451,9 +2451,8 @@ blist.namespace.fetch('blist.data');
             // Update the view in-memory, so we can always serialize it to
             //  the server and get the correct filter
             var filterItem = { type: 'operator', value: 'EQUALS', children: [
-                { type: 'column', columnId: filterCol.id  },
+                { type: 'column', columnId: filterCol.id, value: subColumnType },
                 { type: 'literal', value: filterVal } ] };
-                //{ type: 'subColumnType', value: },
             if (meta.view.viewFilters == null)
             {
                 // Make it the top-level filter
@@ -2484,7 +2483,7 @@ blist.namespace.fetch('blist.data');
             meta.columnFilters[filterCol.id] =
                 {column: filterCol, value: filterVal, viewFilter: filterItem};
 
-            this.columnFilterChange(filterCol);
+            this.columnFilterChange(filterCol, true);
 
             // Reload the view from the server; eventually we should do this
             //  locally if not in progressiveLoading mode
@@ -2510,7 +2509,7 @@ blist.namespace.fetch('blist.data');
                 clearColumnFilterData(filterCol);
             }
 
-            this.columnFilterChange();
+            this.columnFilterChange(filterCol, false);
 
             getTempView();
         };

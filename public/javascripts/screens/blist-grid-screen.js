@@ -454,6 +454,8 @@ $(function ()
     {
         event.preventDefault();
         var $tab = $(event.target).closest('li.filter');
+        if ($tab.is('.tempViewTab')) { return; }
+
         blistGridNS.removeTabCookie($tab.attr('id').split('_')[1]);
         $tab.remove();
         if ($tab.is('.active'))

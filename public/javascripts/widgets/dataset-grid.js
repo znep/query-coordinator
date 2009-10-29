@@ -61,8 +61,8 @@
                         { sortChanged(datasetObj); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
-                    .bind('column_filter_change', function (event, c)
-                        { columnFilterChanged(datasetObj, c); })
+                    .bind('column_filter_change', function (event, c, s)
+                        { columnFilterChanged(datasetObj, c, s); })
                     .bind('server_row_change', function(event)
                         { serverRowChange(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
@@ -696,16 +696,18 @@
 
     var loadFilterMenu = function(datasetObj, col, $menu)
     {
-        if (datasetObj.summaryStale || datasetObj.settings._columnSummaries == null)
+        if (datasetObj.summaryStale ||
+            datasetObj.settings._columnSummaries === undefined)
         {
             datasetObj.settings._columnSummaries = {};
             datasetObj.summaryStale = false;
         }
 
+        var colSum = datasetObj.settings._columnSummaries;
+
         if (!blist.data.types[col.type].filterable) { return; }
 
-        if (datasetObj.settings._columnSummaries[col.id] != null &&
-            datasetObj.settings._columnSummaries[col.id].topFrequencies != null)
+        if (colSum[col.id] !== undefined)
         {
             addFilterMenu(datasetObj, col, $menu);
             return;
@@ -718,22 +720,18 @@
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
 
         var spinnerStr = '<li class="autofilter loading"></li>';
-        // Find the correct spot to add it; either after sort descending, or the top
+        // Find the correct spot to add it; either after sort descending, or
+        // the top
         var $sortItem = $menu.find('li.filterSeparator');
-        if ($sortItem.length > 0)
-        {
-            $sortItem.before(spinnerStr);
-        }
-        else
-        {
-            $menu.prepend(spinnerStr);
-        }
+        if ($sortItem.length > 0) { $sortItem.before(spinnerStr); }
+        else { $menu.prepend(spinnerStr); }
 
         // Set up the current view to send to the server to get the appropriate
         //  summary data back
         var tempView = $.extend({}, modView,
                 {originalViewId: modView.id, columns: null});
-        $.ajax({url: '/views/INLINE/rows.json?method=getSummary&columnId=' + col.id,
+        $.ajax({url: '/views/INLINE/rows.json?method=getSummary&columnId=' +
+                    col.id,
                 dataType: 'json',
                 cache: false,
                 type: 'POST',
@@ -745,7 +743,13 @@
                     //  in an array)
                     $.each(data.columnSummaries, function (i, s)
                     {
-                        datasetObj.settings._columnSummaries[s.columnId] = s;
+                        if (s.topFrequencies === undefined ||
+                            s.topFrequencies.length < 1) { return true; }
+
+                        if (colSum[s.columnId] === undefined)
+                        { colSum[s.columnId] = {}; }
+
+                        colSum[s.columnId][s.subColumnType] = s;
                     });
                     // Then update the column header menu
                     addFilterMenu(datasetObj, col, $menu);
@@ -764,40 +768,27 @@
         $menu.children('.autofilter.loading').remove();
 
         // Make sure this column is filterable, and we have data for it
-        if (datasetObj.settings._columnSummaries == null ||
+        if (datasetObj.settings._columnSummaries === undefined ||
                 !blist.data.types[col.type].filterable)
-        {
-            return;
-        }
-        var colSum = datasetObj.settings._columnSummaries[col.id];
-        if (colSum == null)
-        {
-            return;
-        }
+        { return; }
 
         // Get the current filter for this column (if it exists)
         var colFilters = datasetObj.settings._model
             .meta().columnFilters;
-        var cf;
-        if (colFilters)
-        {
-            cf = colFilters[col.id];
-        }
+        var cf = colFilters ? colFilters[col.id] || undefined : undefined;
 
         // Remove the old filter menu if necessary
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
-        if (cf == null && (colSum.topFrequencies == null ||
-                    colSum.topFrequencies.length < 1))
-        {
-            return;
-        }
+
+        var colSum = datasetObj.settings._columnSummaries[col.id];
+        if (cf === undefined && colSum === undefined) { return; }
 
         var filterStr =
             '<li class="autofilter submenu singleItem">' +
             '<a href="#"><span class="highlight">Filter This Column</span></a>' +
             '<ul class="menu optionMenu">';
         // If we already have a filter for this column, give them a clear link
-        if (cf != null)
+        if (cf !== undefined)
         {
             filterStr +=
                 '<li class="clearFilter">' +
@@ -805,9 +796,10 @@
                 '<span class="highlight">Clear Column Filter</span>' +
                 '</a>' +
                 '</li>';
-            if (colSum.topFrequencies == null)
+            if (colSum === undefined)
             {
-                colSum.topFrequencies = [{value: cf.value, count: 0}];
+                colSum = {curVal:
+                    { topFrequencies: [{value: cf.value, count: 0}] } };
             }
         }
         // Previous button for scrolling
@@ -818,59 +810,70 @@
             '</div></div>' +
             '</a></li>';
 
-        var searchMethod = function(a, b)
+        var sumSections = [];
+        $.each(colSum, function(k, cs)
         {
-            var av = a.titleValue.toUpperCase();
-            var bv = b.titleValue.toUpperCase();
-            return av > bv ? 1 : av < bv ? -1 : 0;
-        };
-        if (colSum.subColumnType == "number" ||
-                colSum.subColumnType == "money" ||
-                colSum.subColumnType == "date" ||
-                colSum.subColumnType == "percent")
-        {
-            searchMethod = function(a, b)
+            var section = '';
+
+            var searchMethod = function(a, b)
             {
-                return a.value - b.value;
+                var av = a.titleValue.toUpperCase();
+                var bv = b.titleValue.toUpperCase();
+                return av > bv ? 1 : av < bv ? -1 : 0;
             };
-        }
-        if (colSum.topFrequencies != null)
-        {
-            // First loop through and set up variations on the value
-            // to use in the menu
-            $.each(colSum.topFrequencies, function (i, f)
-                {
-                    f.isMatching = cf != null && cf.value == f.value;
-                    var curType = blist.data.types[col.type] ||
-                        blist.data.types['text'];
-                    f.escapedValue = curType.filterValue != null ?
-                        curType.filterValue(f.value, col) :
-                        $.htmlStrip(f.value + '');
-                    f.renderedValue = curType.filterRender != null ?
-                        curType.filterRender(f.value, col) : '';
-                    f.titleValue = $.htmlStrip(f.renderedValue + '');
-                });
+            if (cs.subColumnType == "number" ||
+                    cs.subColumnType == "money" ||
+                    cs.subColumnType == "date" ||
+                    cs.subColumnType == "percent")
+            {
+                searchMethod = function(a, b) { return a.value - b.value; };
+            }
 
-            colSum.topFrequencies.sort(searchMethod);
+            if (cs.topFrequencies !== undefined)
+            {
+                // First loop through and set up variations on the value
+                // to use in the menu
+                $.each(cs.topFrequencies, function (i, f)
+                    {
+                        f.isMatching = cf !== undefined && cf.value == f.value;
+                        var curType = blist.data.types[col.type] ||
+                            blist.data.types['text'];
+                        f.escapedValue = curType.filterValue !== undefined ?
+                            curType.filterValue(f.value, col) :
+                            $.htmlStrip(f.value + '');
+                        f.renderedValue = curType.filterRender !== undefined ?
+                            curType.filterRender(f.value, col, cs.subColumnType) :
+                            '';
+                        f.titleValue = $.htmlStrip(f.renderedValue + '');
+                    });
 
-            // Add an option for each filter item
-            $.each(colSum.topFrequencies, function (i, f)
-                {
-                    filterStr +=
-                        '<li class="filterItem' + (f.isMatching ? ' active' : '') +
-                        ' scrollable">' +
-                            '<a href="' +
-                            (f.isMatching ? '#clear-filter-column_' :
-                                '#filter-column_') +
-                            col.uid + '_' + f.escapedValue + '" title="' +
-                            f.titleValue +
-                            (f.count > 1 ? ' (' + f.count + ')' : '') +
-                            '" class="clipText">' + f.renderedValue +
-                            (f.count > 1 ? ' (' + f.count + ')' : '') +
-                            '</a>' +
-                        '</li>';
-                });
-        }
+                cs.topFrequencies.sort(searchMethod);
+
+                // Add an option for each filter item
+                $.each(cs.topFrequencies, function (i, f)
+                    {
+                        if (f.renderedValue === '') { return true; }
+                        section +=
+                            '<li class="filterItem' +
+                            (f.isMatching ? ' active' : '') +
+                            ' scrollable">' +
+                                '<a href="' +
+                                (f.isMatching ? '#clear-filter-column_' :
+                                    '#filter-column_') +
+                                col.uid + '_' + cs.subColumnType + ':' +
+                                f.escapedValue + '" title="' +
+                                f.titleValue +
+                                (f.count > 1 ? ' (' + f.count + ')' : '') +
+                                '" class="clipText">' + f.renderedValue +
+                                (f.count > 1 ? ' (' + f.count + ')' : '') +
+                                '</a>' +
+                            '</li>';
+                    });
+            }
+            sumSections.push(section);
+        });
+
+        filterStr += sumSections.join('<li class="separator scrollable"></li>');
 
         // Next button for scrolling & menu footer
         filterStr +=
@@ -885,17 +888,15 @@
             '</ul>' +
             '</li>';
 
-        // Find the correct spot to add it; either after sort descending, or the top
+        // Find the correct spot to add it; either after sort descending, or
+        // the top
         var $sortItem = $menu.find('li.filterSeparator');
         if ($sortItem.length > 0)
         {
             filterStr = '<li class="separator singleItem" />' + filterStr;
             $sortItem.before(filterStr);
         }
-        else
-        {
-            $menu.prepend(filterStr);
-        }
+        else { $menu.prepend(filterStr); }
         hookUpHeaderMenu(datasetObj, $(col.dom), $menu);
     };
 
@@ -929,8 +930,11 @@
                 break;
             case 'filter-column':
                 // Rejoin remainder of parts in case the filter value had _
+                // The sub-column type is separated by a colon, so split on that,
+                // pull it off, then rejoin the remainder
+                var p = s.slice(2).join('_').split(':');
                 model.filterColumn(colIdIndex,
-                    $.htmlUnescape(s.slice(2).join('_')));
+                    $.htmlUnescape(p.slice(1).join(':')), p[0]);
                 break;
             case 'clear-filter-column':
                 model.clearColumnFilter(colIdIndex);
@@ -1039,17 +1043,11 @@
         }
     };
 
-    var columnFilterChanged = function(datasetObj, col)
+    var columnFilterChanged = function(datasetObj, col, setFilter)
     {
         datasetObj.summaryStale = true;
-        if (!col)
-        {
-            datasetObj.clearTempView();
-        }
-        else
-        {
-            datasetObj.setTempView();
-        }
+        if (!setFilter) { datasetObj.clearTempView('filter_' + col.id); }
+        else { datasetObj.setTempView('filter_' + col.id); }
     };
 
 })(jQuery);

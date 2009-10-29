@@ -761,6 +761,12 @@ ul.menu.rowMenu li
 .columnHeaderMenu .blist-tstars-render-wrapper { padding: 0; }
 .columnHeaderMenu .blist-star-0 { display: none; }
 
+.columnHeaderMenu .blist-phone-icon
+{
+    float: left;
+    position: static;
+}
+
 /* This is only used for initial positioning; the menu is pulled out, so real
  * styling needs to go directly on the menu */
 .blist-th .columnHeaderMenu

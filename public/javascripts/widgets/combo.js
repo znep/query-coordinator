@@ -46,7 +46,12 @@
         $.each(values, function(i, v)
         {
             var val = v instanceof String ? v : v.label;
-            if (val) { valueLookup[val.charAt(0)] = i; }
+            if (val)
+            {
+                var c = val.charAt(0).toLowerCase();
+                if (valueLookup[c] === undefined) { valueLookup[c] = []; }
+                valueLookup[c].push(i);
+            }
         });
 
         var getValueIndex = function()
@@ -226,6 +231,24 @@
             { $dropdown.scrollTop(liT); }
         };
 
+        var getNextCharItem = function(c, curI)
+        {
+            var l = valueLookup[c.toLowerCase()];
+            if (l === undefined) { return -1; }
+
+            var newI = l[0];
+            $.each(l, function(j, i)
+            {
+                if (i > curI)
+                {
+                    newI = i;
+                    return false;
+                }
+            });
+
+            return newI;
+        };
+
         var onKeyDown = function(event)
         {
             var i;
@@ -263,8 +286,10 @@
                         if (event.keyCode >= 65 && event.keyCode <= 90 ||
                             event.keyCode >= 48 && event.keyCode <= 57)
                         {
-                            updateSelectedItem(valueLookup[String.fromCharCode(
-                                event.keyCode)]);
+                            var $sel = $dropdown.find('li.selected');
+                            i = $dropdown.children('li').index($sel);
+                            updateSelectedItem(getNextCharItem(
+                                String.fromCharCode(event.keyCode), i));
                         }
                         break;
                 }
@@ -292,8 +317,8 @@
                         if (event.keyCode >= 65 && event.keyCode <= 90 ||
                             event.keyCode >= 48 && event.keyCode <= 57)
                         {
-                            setValueIndex(valueLookup[String.fromCharCode(
-                                event.keyCode)]);
+                            setValueIndex(getNextCharItem(String.fromCharCode(
+                                event.keyCode), getValueIndex()));
                         }
                         break;
                 }
@@ -323,7 +348,7 @@
                 .focus(fieldFocus)
                 .blur(fieldBlur);
         renderValue();
-        
+
         var comboValueObj = function()
         {
             this.selectedValueObject = function()

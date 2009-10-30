@@ -1165,7 +1165,6 @@ dl.versionInfo dd
 
 #sortBysList.reorderList .swapArrows a
 {
-    top: 100px;
     background: transparent url(/stylesheets/images/widgets/reorder_list/reorder_buttons_white.png) repeat scroll 0 0;
 }
 #sortBysList.reorderList .swapArrows a.removeItemButton { background-position: 0 -21px; }
@@ -1259,7 +1258,8 @@ div#sortBysList.reorderList ul.reorder
 
 div#sortBysList .swapArrows
 {
-    margin-left: 8px;
+    height: 1px;
+    width: 21px;
 }
 
 div#sortBysList.reorderList li .itemWrapper

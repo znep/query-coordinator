@@ -65,6 +65,10 @@
                         { columnFilterChanged(datasetObj, c, s); })
                     .bind('server_row_change', function(event)
                         { serverRowChange(datasetObj); })
+                    .bind('columns_update', function(event)
+                        { columnsUpdated(datasetObj); })
+                    .bind('full_load', function(event)
+                        { viewLoaded(datasetObj); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -426,6 +430,11 @@
             }
             datasetObj.summaryStale = true;
         }
+    };
+
+    var columnsUpdated = function(datasetObj)
+    {
+        datasetObj.summaryStale = true;
     };
 
     var serverRowChange = function(datasetObj)
@@ -1017,7 +1026,28 @@
         }
         else
         {
-            datasetObj.setTempView('sort');
+            var oldSorts = datasetObj.origSortBys;
+            var newSorts = view.sortBys;
+            var matches = oldSorts.length == newSorts.length;
+            if (matches)
+            {
+                for (var i = 0; i < oldSorts.length; i++)
+                {
+                    var o = oldSorts[i];
+                    var n = newSorts[i];
+                    if (o.columnId != n.viewColumnId ||
+                            o.ascending != (n.asc ||
+                                (n.flags !== undefined &&
+                                 $.inArray('asc', n.flags) >= 0)))
+                    {
+                        matches = false;
+                        break;
+                    }
+                }
+            }
+
+            if (matches) { datasetObj.clearTempView('sort'); }
+            else { datasetObj.setTempView('sort'); }
         }
     };
 
@@ -1048,6 +1078,22 @@
         datasetObj.summaryStale = true;
         if (!setFilter) { datasetObj.clearTempView('filter_' + col.id); }
         else { datasetObj.setTempView('filter_' + col.id); }
+    };
+
+    var viewLoaded = function(datasetObj)
+    {
+        datasetObj.origSortBys = [];
+        var view = datasetObj.settings._model.meta().view;
+        if (view.sortBys !== undefined)
+        {
+            $.each(view.sortBys, function(i, s)
+            {
+                var curS = {columnId: s.viewColumnId};
+                curS.ascending = (s.asc ||
+                    (s.flags !== undefined && $.inArray('asc', s.flags) >= 0));
+                datasetObj.origSortBys.push(curS);
+            });
+        }
     };
 
 })(jQuery);

@@ -285,6 +285,7 @@ blist.blistGrid.clearTempViewTab = function ()
     $('.tabList .origView').addClass('active').removeClass('origView');
     $('body').removeClass('unsavedView');
     $('#infoPane').show();
+    $(document).trigger(blist.events.COLUMNS_CHANGED);
 };
 
 blist.blistGrid.setTempViewTab = function ()

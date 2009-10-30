@@ -398,6 +398,7 @@ div.blist-star-0
     left: 0;
     margin: -2px 2px;
     position: absolute;
+    text-indent: -9999px;
     width: 25px;
 }
 

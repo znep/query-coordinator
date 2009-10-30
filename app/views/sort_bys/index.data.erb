@@ -7,27 +7,29 @@
 <div id="sortBysList" class="reorderList clearfix">
   <p class="left">Sorted Columns</p>
   <p id="sortOrderLabel" class="left order">Order</p>
-  <div class="border"></div>
-  <div class="activeList">
-    <ul class="reorder">
-      <% @selected.each_with_index do |sort, i| %>
-        <li>
-          <div class="type datatype-<%= @view.column_by_id(sort.viewColumnId).client_type %>"></div>
-          <div class="itemWrapper">
-            <span class="orderIndex"><%= i + 1 %></span>
-            <div class="controls">
-                <div class="sort sort-<%= sort.asc? ? 'asc' : 'desc' %>" title="Click to sort <%= sort.asc? ? "descending" : "ascending" %>"></div>
+  <div class='listWrapper clearfix'>
+    <div class="border"></div>
+    <div class="activeList">
+      <ul class="reorder">
+        <% @selected.each_with_index do |sort, i| %>
+          <li>
+            <div class="type datatype-<%= @view.column_by_id(sort.viewColumnId).client_type %>"></div>
+            <div class="itemWrapper">
+              <span class="orderIndex"><%= i + 1 %></span>
+              <div class="controls">
+                  <div class="sort sort-<%= sort.asc? ? 'asc' : 'desc' %>" title="Click to sort <%= sort.asc? ? "descending" : "ascending" %>"></div>
+              </div>
+              <% 
+                  name = @view.column_by_id(sort.viewColumnId).name
+              %>
+              <%= name %>
+              <%= hidden_field_tag("sort-#{sort.viewColumnId}", true, :class => "viewColumnId", :value => "#{sort.viewColumnId}") %>
+              <%= hidden_field_tag("sort-#{sort.viewColumnId}-asc", true, :class => "asc", :value => "#{sort.asc?}") %>
             </div>
-            <% 
-                name = @view.column_by_id(sort.viewColumnId).name
-            %>
-            <%= name %>
-            <%= hidden_field_tag("sort-#{sort.viewColumnId}", true, :class => "viewColumnId", :value => "#{sort.viewColumnId}") %>
-            <%= hidden_field_tag("sort-#{sort.viewColumnId}-asc", true, :class => "asc", :value => "#{sort.asc?}") %>
-          </div>
-        </li>
-      <%- end -%>
-    </ul>
+          </li>
+        <%- end -%>
+      </ul>
+    </div>
   </div>
     <a href="#removeAll" class="removeAllLink">Remove All</a>
   <div class="swapArrows">
@@ -35,27 +37,29 @@
     <a href="#removeItem" class="removeItemButton">Remove</a>
   </div>
   <p class="right">Unsorted Columns</p>
-  <div class="border-right"></div>
-  <div class="inactiveList">
-    <ul class="reorder">
-      <% @unselected.each do |sort| %>
-        <li>
-          <div class="type datatype-<%= @view.column_by_id(sort["viewColumnId"]).client_type %>"></div>
-          <div class="itemWrapper">
-            <span class="orderIndex hide"></span>
-            <div class="controls hide">
-                <div class="sort sort-asc" title="Click to sort descending"></div>
+  <div class='listWrapper clearfix'>
+    <div class="border"></div>
+    <div class="inactiveList">
+      <ul class="reorder">
+        <% @unselected.each do |sort| %>
+          <li>
+            <div class="type datatype-<%= @view.column_by_id(sort["viewColumnId"]).client_type %>"></div>
+            <div class="itemWrapper">
+              <span class="orderIndex hide"></span>
+              <div class="controls hide">
+                  <div class="sort sort-asc" title="Click to sort descending"></div>
+              </div>
+              <% 
+                  col = @view.column_by_id(sort["viewColumnId"])
+              %>
+              <%= col.name %>
+              <%= hidden_field_tag("sort-#{col.id}", true, :class => "viewColumnId", :value => "#{col.id}") %>
+              <%= hidden_field_tag("sort-#{col.id}-asc", true, :class => "asc", :value => "true") %>
             </div>
-            <% 
-                col = @view.column_by_id(sort["viewColumnId"])
-            %>
-            <%= col.name %>
-            <%= hidden_field_tag("sort-#{col.id}", true, :class => "viewColumnId", :value => "#{col.id}") %>
-            <%= hidden_field_tag("sort-#{col.id}-asc", true, :class => "asc", :value => "true") %>
-          </div>
-        </li>
-      <%- end -%>
-    </ul>
+          </li>
+        <%- end -%>
+      </ul>
+    </div>
   </div>
 </div>
 

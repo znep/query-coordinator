@@ -1,22 +1,25 @@
 <div id='picklistManager' class='<%= local_assigns[:classes] %> reorderList'>
-  <div class='activeListWrapper'>
-    <ul class='activeList'>
-      <%- pl_values = !@column.nil? && !@column.dropDown.nil? ?
-        @column.dropDown.values.reject {|p| p['deleted'] == true} : [] -%>
-      <%- count = 0 -%>
-      <%- pl_values.each do |p| -%>
-      <li><div class='itemWrapper'>
-        <span class='orderIndex'><%= count + 1 %></span>
-        <input type='text' name='plValue_<%= count %>_<%= p['id'] %>'
-          class='plValue' value='<%= p['description'] %>' />
-        <div class='controls'>
-          <a href='#remove' class='remove' title='Remove Value'>Remove Value</a>
-        </div>
-        <input type='text' value='<%= count %>' class='orderField' />
-      </div></li>
-      <%- count += 1 -%>
-      <%- end -%>
-    </ul>
+  <div class='activeOuterWrapper'>
+    <div class='activeBorder'></div>
+    <div class='activeListWrapper'>
+      <ul class='activeList'>
+        <%- pl_values = !@column.nil? && !@column.dropDown.nil? ?
+          @column.dropDown.values.reject {|p| p['deleted'] == true} : [] -%>
+        <%- count = 0 -%>
+        <%- pl_values.each do |p| -%>
+        <li><div class='itemWrapper'>
+          <span class='orderIndex'><%= count + 1 %></span>
+          <input type='text' name='plValue_<%= count %>_<%= p['id'] %>'
+            class='plValue' value='<%= p['description'] %>' />
+          <div class='controls'>
+            <a href='#remove' class='remove' title='Remove Value'>Remove Value</a>
+          </div>
+          <input type='text' value='<%= count %>' class='orderField' />
+        </div></li>
+        <%- count += 1 -%>
+        <%- end -%>
+      </ul>
+    </div>
   </div>
   <ul class='templateList'>
     <li class='templateNode'><div class='itemWrapper'>

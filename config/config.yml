@@ -32,7 +32,7 @@ staging:
 # www.socrata.com
 production:
   bridge_host: multiuser
-  coreservice_uri: http://alpha-api.tuk.blist.com
+  coreservice_uri: http://core-lb.tuk.socrata.com
   google_analytics_id: UA-9046230-1
   ie_port: 80
   orbited_port: 80

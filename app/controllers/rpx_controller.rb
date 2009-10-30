@@ -9,7 +9,7 @@ class RpxController < ApplicationController
   def signup
     @signup = SignupPresenter.new(params[:signup])
     if @signup.create
-      redirect_back_or_default(profile_path(@signup.user.id, :welcome => true))
+      redirect_to(profile_path(@signup.user.id, :welcome => true))
     else
       flash.now[:error] = @signup.errors.join(", ")
       @body_id = 'signup'

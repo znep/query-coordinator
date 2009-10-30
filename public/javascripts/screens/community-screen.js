@@ -205,7 +205,7 @@ $(function ()
         preventDefault: false
     });
     
-    $(".simpleTabs li#tabSearch a").live("click", function(event){
+    $.live(".simpleTabs li#tabSearch a", "click", function(event){
         event.preventDefault();
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabSearch");
     });
@@ -226,17 +226,17 @@ $(function ()
         trigger: false,
         onShow: communityNS.tagModalShowHandler
     });
-    $(".moreTagsLink").live("click", function(event)
+    $.live(".moreTagsLink", "click", function(event)
     {
         event.preventDefault();
         $("#tagCloud").jqmShow($(this));
     });
-    $(".closeContainer a").live("click", function(event)
+    $.live(".closeContainer a", "click", function(event)
     {
         event.preventDefault();
         $("#tagCloud").jqmHide();
     });
-    $(".tagCloudContainer a").live("click", function(event)
+    $.live(".tagCloudContainer a", "click", function(event)
     {
         $("#tagCloud").jqmHide();
     });
@@ -271,5 +271,5 @@ $(function ()
         $(".clearSearch").hide();
     }
 
-    $(".memberActions .followAction").live("click", communityNS.addFriendClick);
+    $.live(".memberActions .followAction", "click", communityNS.addFriendClick);
 });

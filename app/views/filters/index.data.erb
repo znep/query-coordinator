@@ -99,7 +99,7 @@
       $("#dataGrid").datasetGrid().updateFilter(viewFilters);
     });
     
-    $('#filterTable .filterTableFooter .filterTable-add a').live('click', blist.filter.filterAdd);
-    $('#filterTable .filterTableBody .filterTable-delete a').live('click', blist.filter.filterRemove);
+    $.live('#filterTable .filterTableFooter .filterTable-add a', 'click', blist.filter.filterAdd);
+    $.live('#filterTable .filterTableBody .filterTable-delete a', 'click', blist.filter.filterRemove);
   });
 </script>

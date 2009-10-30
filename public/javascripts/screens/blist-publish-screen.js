@@ -678,7 +678,7 @@ blist.publish.loadCustomization = function()
 
 (function($) {
     // Highlight copy code on click
-    $('.publishCode textarea').live('click', function() { $(this).select(); });
+    $.live('.publishCode textarea', 'click', function() { $(this).select(); });
 
     // Tab behavior
     $("#publishOptionsPane .summaryTabs").infoPaneNavigate({

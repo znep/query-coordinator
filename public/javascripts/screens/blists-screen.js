@@ -846,7 +846,7 @@ blist.myBlists.initializeGrid = function()
 
     $('#blist-list .blist-dropdown-container')
         .live('mouseover', myBlistsNS.listDropdown);
-    $('.favoriteLink').live('click', function(event)
+    $.live('.favoriteLink', 'click', function(event)
     {
         // When clicking on the menu item, do a favorite ajax request
         event.preventDefault();
@@ -873,7 +873,7 @@ blist.myBlists.initializeGrid = function()
         }
     };
 
-    $('.blist-td .blist-opener').live('click', myBlistsNS.openerClick);
+    $.live('.blist-td .blist-opener', 'click', myBlistsNS.openerClick);
 
     $('form.blistsFind')
         .keyup(applyFilter)
@@ -890,9 +890,9 @@ blist.myBlists.initializeGrid = function()
             $(e.currentTarget).hide();
         }).hide();
 
-    $('.renameLink').live('click', myBlistsNS.renameClick);
+    $.live('.renameLink', 'click', myBlistsNS.renameClick);
 
-    $('.deleteLink').live('click', myBlistsNS.deleteClick);
+    $.live('.deleteLink', 'click', myBlistsNS.deleteClick);
 
     // Configure columns for the view list
     myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});

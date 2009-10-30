@@ -151,5 +151,5 @@ $(function ()
     });
 
     
-    $(".publicProfileContentActions .actionButtons a").live("click", profileNS.addFriendClick);
+    $.live(".publicProfileContentActions .actionButtons a", "click", profileNS.addFriendClick);
 });

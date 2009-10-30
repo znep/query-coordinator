@@ -454,14 +454,9 @@ div.blist-table-edit-container
     padding: 3px 2px;
 }
 
-div.blist-table-edit-container.combo-container {
-    overflow: visible;
-}
+div.blist-table-edit-container.combo-container { overflow: visible; }
 
-div.blist-table-editor
-{
-    padding: 0;
-}
+div.blist-table-editor { padding: 0; }
 
 .blist-table-edit-container div.blist-table-editor.type-date { margin: -5px 0; }
 .blist-table-edit-container div.blist-table-editor.type-date input
@@ -604,8 +599,11 @@ div.blist-table-edit-container .blist-table-editor.type-url .description
 
 .blist-table-editor.type-phone input.number
 {
+    margin: 0;
     padding: 4px;
 }
+
+.blist-table-editor .blist-combo-dd li { font-size: 1em; }
 
 .blist-table .blist-table-editor-container .blist-td
 {

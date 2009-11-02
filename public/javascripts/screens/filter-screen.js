@@ -217,30 +217,33 @@ filterNS.row = function($row) {
         var phoneType = {type: "operator"};
 
         // Number
-        if (value[0].phone_number != null)
+        if (value[0] !== null && value[0].phone_number !== null)
         {
-            children = [{columnId: column.id, type: "column", value: "phone_number"}, {type: "literal", value: value[0].phone_number}];
+            children = [{columnId: column.id, type: "column",
+                    value: "phone_number"},
+                {type: "literal", value: value[0].phone_number}];
             phoneNumber.value = operator; 
             phoneNumber.children = children;
             filter.push(phoneNumber);
         }
 
         // Type
-        if (value[0].phone_type != null)
+        if (value[0] !== null && value[0].phone_type !== null)
         {
-            children = [{columnId: column.id, type: "column", value: "phone_type"}, {type: "literal", value: value[0].phone_type}];
+            children = [{columnId: column.id, type: "column", value: "phone_type"},
+                {type: "literal", value: value[0].phone_type}];
             phoneType.value = operator;
             phoneType.children = children;
             filter.push(phoneType);
         }
 
-        return filter; 
+        return filter;
     }
     else if (column.type == "url")
     {
         var filter = [];
 
-        if (value[0].url !== null)
+        if (value[0] !== null && value[0].url !== null)
         {
             filter.push({
                 type: "operator",
@@ -254,8 +257,8 @@ filterNS.row = function($row) {
                 ]
             });
         }
-        
-        if (value[0].description !== null)
+
+        if (value[0] !== null && value[0].description !== null)
         {
             filter.push({
                 type: "operator",
@@ -269,7 +272,7 @@ filterNS.row = function($row) {
                 ]
             });
         }
-        
+
         return filter;
     }
     else

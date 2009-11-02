@@ -285,6 +285,7 @@ blist.blistGrid.clearTempViewTab = function ()
     $('.tabList .origView').addClass('active').removeClass('origView');
     $('body').removeClass('unsavedView');
     $('#infoPane').show();
+    $(document).trigger(blist.events.COLUMNS_CHANGED);
 };
 
 blist.blistGrid.setTempViewTab = function ()
@@ -429,15 +430,15 @@ $(function ()
     commonNS.adjustSize();
     $('#dataGrid').trigger('resize');
 
-    $('.tabList .newViewLink a, a[href=#createFilter]')
-        .live('click', function (event)
+    $.live('.tabList .newViewLink a, a[href=#createFilter]', 'click',
+        function (event)
         {
             event.preventDefault();
             $('#dataGrid').datasetGrid().setTempView();
         });
 
-    $('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a')
-        .live('click', function (event)
+    $.live('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a', 'click',
+        function (event)
         {
             event.preventDefault();
             if ($(this).closest('li').is('.disabled')) { return; }
@@ -450,7 +451,7 @@ $(function ()
         $('#dataGrid').datasetGrid().clearTempView(null, true);
     });
 
-    $('.filter a.close').live('click', function(event)
+    $.live('.filter a.close', 'click', function(event)
     {
         event.preventDefault();
         var $tab = $(event.target).closest('li.filter');

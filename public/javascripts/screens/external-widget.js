@@ -19,7 +19,7 @@ blist.widget.setUpDialogs = function()
     $('#emailDialog form').submit(widgetNS.submitEmail);
 
     $('#publishDialog').jqm({trigger: false});
-    $("#publishDialog textarea").live('click', function() { $(this).select(); });
+    $.live("#publishDialog textarea", 'click', function() { $(this).select(); });
 };
 
 blist.widget.headerMenuHandler = function (event)
@@ -355,7 +355,7 @@ $(function ()
     $(window).resize(function() { widgetNS.sizeGrid(); });
 
     // Make all links with rel="external" open in a new window.
-    $("a[rel$='external']").live("mouseover",
+    $.live("a[rel$='external']", "mouseover",
         function(){ this.target = "_blank"; });
 
     widgetNS.setUpMenu();
@@ -369,7 +369,7 @@ $(function ()
             accessType: 'WIDGET',
             showRowNumbers: widgetNS.theme['grid']['row_numbers'],
             showRowHandle: widgetNS.theme['grid']['row_numbers'],
-            editEnabled: typeof(isOldIE) === 'undefined', manualResize: true,
+            editEnabled: false, manualResize: true,
             filterItem: '#header form :text',
             clearFilterItem: '#header form .clearSearch',
             clearTempViewCallback: widgetNS.clearTempViewTab,

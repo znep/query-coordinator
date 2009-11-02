@@ -93,7 +93,7 @@
     });
 
     // Remove an email from or clear the last field
-    $('.emailFormRemoveButton').live('click', function(event)
+    $.live('.emailFormRemoveButton', 'click', function(event)
     {
       event.preventDefault();
       if ($('.formContainer input').size() == 1)

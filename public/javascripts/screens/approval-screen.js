@@ -113,12 +113,12 @@ $(function() {
         $('.checkbox').toggleClass('checked', !$(this).is('.checked'));
     });
 
-    $('.commentList-body .checkbox').live('click', function(event) {
+    $.live('.commentList-body .checkbox', 'click', function(event) {
         event.preventDefault();
         $(this).toggleClass('checked');
     });
     
-    $('.approveComment').live('click', function(event) {
+    $.live('.approveComment', 'click', function(event) {
         event.preventDefault();
         $('.commentList-body .commentList-row:visible:has(.checkbox.checked)')
             .add($(this).closest('.commentList-row')).each(function() {
@@ -128,7 +128,7 @@ $(function() {
         $('.commentList .checkbox').removeClass('checked');
     });
 
-    $('.rejectComment').live('click', function(event) {
+    $.live('.rejectComment', 'click', function(event) {
         event.preventDefault();
         $('.commentList-body .commentList-row:visible:has(.checkbox.checked)')
             .add($(this).closest('.commentList-row')).each(function() {

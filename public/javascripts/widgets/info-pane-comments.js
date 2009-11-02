@@ -93,11 +93,11 @@
                 ($ratingUI.width() + 1) * 5);
         };
 
-        function submitCommentRating($commentPane, event, formElem)
+        function submitCommentRating($commentPane, event)
         {
             var config = $commentPane.data('config-infoPaneComments');
             event.preventDefault();
-            var $form = $(formElem);
+            var $form = $(event.currentTarget);
             if ($form.hasClass(config.disabledClass))
             {
                 return;
@@ -151,8 +151,9 @@
                     {
                         $newComment
                             .prependTo(
-                                $commentPane.find(config.commentListSelector)
-                            );
+                                $commentPane.find(config.commentListSelector))
+                            .find(config.replySelector)
+                                .submit(function (e) { submitReply($commentPane, e); });
                         $commentPane.find(config.commentListSelector)
                             .pagination().update();
                     }
@@ -176,11 +177,11 @@
             });
         };
 
-        function submitReply($commentPane, event, formElem)
+        function submitReply($commentPane, event)
         {
             var config = $commentPane.data('config-infoPaneComments');
             event.preventDefault();
-            var $form = $(formElem);
+            var $form = $(event.currentTarget);
             if ($form.hasClass(config.disabledClass))
             {
                 return;
@@ -430,21 +431,21 @@
                     hideAllForms($commentPane);
                 });
 
-            $.live(sandboxClass + config.topFormSelector, 'submit',
+            $commentPane.find(config.topFormSelector).submit(
                 function (e)
                 {
                     if (!$(this).is('.' + config.skipActionClass))
                     {
-                        submitCommentRating($commentPane, e, this);
+                        submitCommentRating($commentPane, e);
                     }
                 });
 
-            $.live(sandboxClass + config.replySelector, 'submit',
+            $commentPane.find(config.replySelector).submit(
                 function (e)
                 {
                     if (!$(this).is('.' + config.skipActionClass))
                     {
-                        submitReply($commentPane, e, this);
+                        submitReply($commentPane, e);
                     }
                 });
 

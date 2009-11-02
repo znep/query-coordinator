@@ -136,7 +136,7 @@ $(function ()
 
 
     // DELETE
-    $(".linksTableContainer td.edit_handle a").live("click", function(event)
+    $.live(".linksTableContainer td.edit_handle a", "click", function(event)
     {
         event.preventDefault();
         if (confirm("Are you sure you want to delete this link?"))
@@ -158,7 +158,7 @@ $(function ()
     });
 
     // EDIT
-    $(".linksTableContainer td.edit_action a").live("click", function(event)
+    $.live(".linksTableContainer td.edit_action a", "click", function(event)
     {
         event.preventDefault();
         var $link = $(this);
@@ -221,7 +221,6 @@ $(function ()
     $('#switchUsernameLink').click(function (e)
     {
         e.preventDefault();
-        e.stopPropagation();
         var requestData = {"user[privacyControl]":
             $(e.currentTarget).attr('href').split('_')[1]};
         var $form = $('.userInfo .sectionEdit form');

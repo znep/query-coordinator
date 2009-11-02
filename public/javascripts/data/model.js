@@ -384,6 +384,7 @@ blist.namespace.fetch('blist.data');
                 this.rows(config.rows || config.data);
                 //console.profileEnd();
             }
+            $(listeners).trigger('full_load');
         };
 
         /**
@@ -515,6 +516,7 @@ blist.namespace.fetch('blist.data');
                 { this.rows(config.rows || config.data); }
                 configureActive();
                 $(listeners).trigger('columns_updated', [self]);
+                $(listeners).trigger('full_load');
             }
         };
 
@@ -1604,6 +1606,14 @@ blist.namespace.fetch('blist.data');
         };
 
         /**
+         * Notify listeners of column sort changes
+         */
+        this.columnSortChange = function()
+        {
+            $(listeners).trigger('sort_change');
+        };
+
+        /**
          * Notify listeners of column filter changes
          */
         this.columnFilterChange = function(col, setFilter)
@@ -1835,7 +1845,7 @@ blist.namespace.fetch('blist.data');
             });
             sortConfigured = true;
 
-            $(listeners).trigger('sort_change');
+            this.columnSortChange();
 
             // Sort
             doSort();
@@ -1934,7 +1944,7 @@ blist.namespace.fetch('blist.data');
                 sortConfigured = true;
             }
 
-            $(listeners).trigger('sort_change');
+            this.columnSortChange();
 
             // Sort
             doSort();
@@ -1969,10 +1979,14 @@ blist.namespace.fetch('blist.data');
                 if (meta.view.sortBys.length == 1)
                 {
                     var newSort = meta.view.sortBys[0];
-                    this.sort(findColumnIndex(newSort.viewColumnId),
-                        !(newSort.asc || (newSort.flags != null &&
-                            $.inArray('asc', newSort.flags) >= 0)));
-                    return;
+                    var colIndex = findColumnIndex(newSort.viewColumnId);
+                    if (colIndex !== undefined)
+                    {
+                        this.sort(colIndex,
+                                !(newSort.asc || (newSort.flags != null &&
+                                        $.inArray('asc', newSort.flags) >= 0)));
+                        return;
+                    }
                 }
             }
             else
@@ -1985,7 +1999,7 @@ blist.namespace.fetch('blist.data');
             orderFn = null;
             orderPrepro = null;
 
-            $(listeners).trigger('sort_change');
+            this.columnSortChange();
 
             var hasSort = false;
             $.each(meta.sort, function() { hasSort = true; return false; });

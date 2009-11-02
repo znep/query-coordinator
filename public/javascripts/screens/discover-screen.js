@@ -193,13 +193,13 @@ $(function ()
         preventDefault: false
     });
     
-    $(".simpleTabs li#tabSearch a").live("click", function(event){
+    $.live(".simpleTabs li#tabSearch a", "click", function(event){
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabSearch");
     });
-    $(".tabLink.popular").live("click", function(event){
+    $.live(".tabLink.popular", "click", function(event){
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabPopular");
     });
-    $(".tabLink.all").live("click", function(event){
+    $.live(".tabLink.all", "click", function(event){
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabAll");
     });
 
@@ -219,17 +219,17 @@ $(function ()
         trigger: false,
         onShow: discoverNS.tagModalShowHandler
     });
-    $(".moreTagsLink").live("click", function(event)
+    $.live(".moreTagsLink", "click", function(event)
     {
         event.preventDefault();
         $("#tagCloud").jqmShow($(this));
     });
-    $(".closeContainer a").live("click", function(event)
+    $.live(".closeContainer a", "click", function(event)
     {
         event.preventDefault();
         $("#tagCloud").jqmHide();
     });
-    $(".tagCloudContainer a").live("click", function(event)
+    $.live(".tagCloudContainer a", "click", function(event)
     {
         $("#tagCloud").jqmHide();
     });
@@ -285,18 +285,18 @@ $(function ()
         }
     });
     
-    $("#splashModal .closeContainer a").live("click", function(event)
+    $.live("#splashModal .closeContainer a", "click", function(event)
     {
         event.preventDefault();
         $("#splashModal").jqmHide();
     });
-    $("#splashModal .splashActionDiscover").live("click", function(event)
+    $.live("#splashModal .splashActionDiscover", "click", function(event)
     {
         event.preventDefault();
         $("#splashModal").jqmHide();
         $("#discover .pageBlockSearch form #search").focus();
     });
-    $("#splashModal .splashActionBox").live("click", function(event)
+    $.live("#splashModal .splashActionBox", "click", function(event)
     {
         var $this = $(this);
         var $target = $(event.target);
@@ -331,7 +331,7 @@ $(function ()
             });
         }
     });
-    $("#redirectedModal .closeContainer a").live("click", function(event)
+    $.live("#redirectedModal .closeContainer a", "click", function(event)
     {
         event.preventDefault();
         $("#redirectedModal").jqmHide();

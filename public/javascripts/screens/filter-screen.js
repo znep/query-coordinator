@@ -339,7 +339,9 @@ filterNS.row = function($row) {
     }
 };
 
-filterNS.getFilter = function($table, operator) {
+filterNS.getFilter = function($table, operator)
+{
+    var hasConditions = false;
     var j = {type: "operator", value: operator.toUpperCase()};
     var children = [];
 
@@ -348,17 +350,19 @@ filterNS.getFilter = function($table, operator) {
         if (rowResult !== false)
         {
             children = children.concat(rowResult);
+            hasConditions = true;
         }
     });
     j.children = children;
 
-    return j;
+    return hasConditions ? j : null;
 };
 
-filterNS.populate = function($table, filters, columns) {
+filterNS.populate = function($table, filters, columns)
+{
     for (var i=0; i < filters.children.length; i++)
     {
-        filterRow = filters.children[i];
+        var filterRow = filters.children[i];
 
         var $row = filterNS.addFilterRow($table, columns);
 
@@ -399,7 +403,7 @@ filterNS.populate = function($table, filters, columns) {
                 {
                     $row.find(".filterTable-editor").append('<div class="ampersand">&amp;</div>');
                 }
-                
+
                 if (filterRow.value.toLowerCase() == "between")
                 {
                     $row.find(".filterTable-editor").append('<div class="renderer renderer' + j + ' between"></div>');
@@ -410,17 +414,17 @@ filterNS.populate = function($table, filters, columns) {
                 }
 
                 var value;
-                if (subcolumn != null)
+                if (subcolumn !== undefined)
                 {
                     value = {};
                     value[subcolumn] = sub.value;
-                    subcolumn = null;
+                    subcolumn = undefined;
                 }
                 else
                 {
                     value = sub.value;
                 }
-                
+
                 if (col.type == "date")
                 {
                     value = new Date(value).getTime() / 1000;

@@ -2439,8 +2439,6 @@ blist.namespace.fetch('blist.data');
 
             meta.view.viewFilters = filter;
 
-            // TODO: Set column filters. Lame.
-
             getTempView();
         }
 

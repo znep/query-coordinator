@@ -370,6 +370,8 @@ body#lensBody
     background-position: 0 -60px;
 }
 
+#lensBody .headerBar #filterViewMenu { min-width: 17em; }
+
 #lensBody .headerBar #filterViewMenu li a
 {
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);

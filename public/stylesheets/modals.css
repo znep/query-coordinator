@@ -1313,16 +1313,6 @@ div#sortBysList.reorderList li .itemWrapper
     clear: both;
 }
 
-.filterDatasetWrapper .submitLine .submitActions
-{
-    width: 150px;
-}
-
-.filterDatasetWrapper .submitLine .submitActions li
-{
-    width: 125px;
-}
-
 /* table styles */
 .filterDatasetWrapper .filterTableHeaderRow
 {

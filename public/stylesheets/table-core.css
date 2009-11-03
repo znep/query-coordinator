@@ -402,6 +402,10 @@ div.blist-star-0
     width: 25px;
 }
 
+.blist-td.align-right .blist-phone-icon,
+div.blist-table-editor.align-right .blist-phone-icon,
+div.blist-table-editor .align-right .blist-phone-icon { text-align: left; }
+
 .blist-phone-icon-cell,
 .blist-table-edit-container .Cell .icon
 { background-image: url(/stylesheets/images/content/table/phones/cell.png); }

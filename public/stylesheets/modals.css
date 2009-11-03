@@ -1313,16 +1313,6 @@ div#sortBysList.reorderList li .itemWrapper
     clear: both;
 }
 
-.filterDatasetWrapper .submitLine .submitActions
-{
-    width: 150px;
-}
-
-.filterDatasetWrapper .submitLine .submitActions li
-{
-    width: 125px;
-}
-
 /* table styles */
 .filterDatasetWrapper .filterTableHeaderRow
 {
@@ -1450,10 +1440,13 @@ div#sortBysList.reorderList li .itemWrapper
 {
     border: none;
     font-size: 1em;
+    position: relative;
 }
 
 .filterDatasetWrapper #filterTable .type-url .labels
 {
+    font-size: 1.2em;
+    left: 0;
     position: absolute;
     text-align: right;
     width: 5em;
@@ -1462,7 +1455,7 @@ div#sortBysList.reorderList li .itemWrapper
 .filterDatasetWrapper #filterTable .type-url .labels span
 {
     display: block;
-    margin-top: 0.4em;
+    margin-top: 0.5em;
 }
 
 .filterDatasetWrapper #filterTable .type-url input

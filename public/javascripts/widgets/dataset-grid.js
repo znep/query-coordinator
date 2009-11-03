@@ -120,12 +120,21 @@
                 }
             },
 
-            updateFilter: function(filter)
+            updateFilter: function(filter, saveExisting)
             {
                 var datasetObj = this;
                 datasetObj.settings._model.updateFilter(filter);
 
-                this.setTempView();
+                var view = datasetObj.settings._model.meta().view;
+                if (saveExisting && (view.flags === undefined ||
+                    $.inArray('default', view.flags) < 0) &&
+                    datasetObj.settings.currentUserId == view.owner.id)
+                {
+                    $.ajax({url: '/views/' + view.id + '.json',
+                        data: $.json.serialize({viewFilters: view.viewFilters}),
+                        type: 'PUT', contentType: 'application/json'});
+                }
+                else { this.setTempView(); }
             },
 
             updateView: function(newView)

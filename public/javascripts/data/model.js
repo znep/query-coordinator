@@ -1832,6 +1832,11 @@ blist.namespace.fetch('blist.data');
                     (sort.flags != null && $.inArray('asc', sort.flags) >= 0)));
                 return;
             }
+            else if (sortBys.length === 0)
+            {
+                this.clearSort();
+                return;
+            }
 
             meta.view.sortBys = sortBys;
             meta.sort = {};
@@ -2433,8 +2438,6 @@ blist.namespace.fetch('blist.data');
             meta.columnFilters = null;
 
             meta.view.viewFilters = filter;
-
-            // TODO: Set column filters. Lame.
 
             getTempView();
         }

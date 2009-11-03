@@ -390,6 +390,7 @@ $(function ()
     {
         $('#dataGrid').datasetGrid({viewId: blistGridNS.viewId,
             columnPropertiesEnabled: blistGridNS.isOwner,
+            columnNameEdit: blistGridNS.isOwner,
             showAddColumns: blistGridNS.canAddColumns,
             currentUserId: blist.currentUserId,
             accessType: 'WEBSITE', manualResize: true, showRowHandle: true,

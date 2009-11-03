@@ -53,12 +53,27 @@ div.blist-th-first
 .blist-th .icon-display .name-wrapper { padding-left: 25px; }
 .blist-th.narrow .icon-display .name-wrapper { padding-left: 0; }
 
-.blist-th .blist-th-name
+.blist-th .name-wrapper form { display: none; }
+.blist-th .name-wrapper input
+{
+    border: none;
+    padding: 2px 0;
+    width: 100%;
+}
+.blist-th.editable .info-container { -moz-user-select: text; }
+.blist-th.editable .name-wrapper span { display: none; }
+.blist-th.editable .name-wrapper form { display: block; }
+
+.blist-th.error .name-wrapper input { background-color: #ffb6c1; }
+
+.blist-th .blist-th-name,
+.blist-th .name-wrapper input
 {
     font-size: 1.0833em;  /* 1.0833 * 1.2 = 1.3 */
     font-weight: bold;
 }
-.blist-th.narrower .blist-th-name { font-weight: normal; }
+.blist-th.narrower .blist-th-name,
+.blist-th.narrower .name-wrapper input { font-weight: normal; }
 
 .blist-th-icon
 {

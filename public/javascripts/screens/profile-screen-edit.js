@@ -221,6 +221,7 @@ $(function ()
     $('#switchUsernameLink').click(function (e)
     {
         e.preventDefault();
+        e.stopPropagation();
         var requestData = {"user[privacyControl]":
             $(e.currentTarget).attr('href').split('_')[1]};
         var $form = $('.userInfo .sectionEdit form');

@@ -76,6 +76,8 @@
 <div class="clearfix"></div>
 
 <script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
     var toggleOrderLabel = function()
     {
         if ($(".activeList li").length > 0)
@@ -151,4 +153,5 @@
         $("#dataGrid").blistModel().multiSort(sortBys);
         $("#modal .jqmClose").click();
     });
+  };
 </script>

@@ -1142,6 +1142,9 @@
 
     var columnEditEnd = function(datasetObj, $th)
     {
+        // This doesn't actually give keyboard-nav in the grid; but it does
+        // get the cursor out of the now-hidden edit field
+        datasetObj.$dom().focus();
         $th.removeClass('editable error');
         $(document).unbind('.columnNameEdit-' + $th.data('column').id);
     };
@@ -1184,6 +1187,7 @@
             {
                 columnEditEnd(datasetObj, $th);
                 model.updateColumn(newCol);
+                $(document).trigger(blist.events.COLUMNS_CHANGED);
             }});
     };
 

@@ -3205,7 +3205,6 @@
                         {
                             if ($col.data('column-clicked'))
                             {
-                                $col.data('column-clicked', false);
                                 // We don't really do anything here, since we
                                 // have to listen to the real double-click event.
                                 // That is fired in all browsers, but IE only
@@ -3228,7 +3227,10 @@
                             { $(this).addClass('hover'); } },
                         function () { $(this).removeClass('hover'); })
                     .find('.blist-th-name').bind('dblclick', function(event)
-                            { $this.trigger('column_name_dblclick', [ event ]); });
+                            {
+                                $col.data('column-clicked', false);
+                                $this.trigger('column_name_dblclick', [ event ]);
+                            });
 
                 if (options.columnDrag)
                 {

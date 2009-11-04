@@ -1604,7 +1604,12 @@
                     cellNav.deactivate();
                     hideActiveCell();
                 }
-                return false;
+
+                // Don't stop the click if they clicked on an action item
+                if ($clickTarget.closest('.action-item').length < 1)
+                { event.preventDefault(); }
+
+                return;
             }
 
             selectFrom = null;
@@ -1622,7 +1627,7 @@
                 if ($(cell).is('.blist-opener, .blist-tdh, ' +
                     '.blist-table-row-handle, .blist-column-adder'))
                 {
-                    return true;
+                    return;
                 }
 
                 if (cell && $activeCells && $activeCells.index(cell) >= 0)
@@ -1669,13 +1674,16 @@
                 return true;
             }
 
-            if ($(event.target).parents().index($outside) < 0) { return; }
+            var $target = $(event.target);
+            if ($target.closest('.action-item').length > 0) { return; }
+            if ($target.parents().index($outside) < 0) { return; }
 
             var cell = findCell(event);
             var editMode = false;
             if (cellNav && cell == clickCell)
             {
-                var curActiveCell = (cellNav.isActive() && $activeCells) ? $activeCells[0] : null;
+                var curActiveCell = (cellNav.isActive() && $activeCells) ?
+                    $activeCells[0] : null;
                 if (curActiveCell && $prevActiveCells &&
                         $prevActiveCells.index(curActiveCell) >= 0)
                 {
@@ -3059,6 +3067,38 @@
             }
         };
 
+        var columnHeaderClick = function(event, $target)
+        {
+            var col = $target.closest('.blist-th').data('column');
+            $(event.currentTarget).removeClass('hover')
+                .data('column-clicked', false);
+
+            if ($target.closest('.filter').length > 0)
+            {
+                clearCellNav();
+                model.clearColumnFilter(col.index);
+                return;
+            }
+
+            if (($target.closest('.sort').length > 0 ||
+                        (!event.metaKey && !event.shiftKey)) &&
+                    ((blist.data.types[col.type] !== undefined &&
+                      blist.data.types[col.type].sortable) ||
+                     col.sortable))
+            {
+                clearCellNav();
+                sort(col.index);
+                return;
+            }
+
+            if (event.metaKey) // ctrl/cmd key
+            { selectColumn(col, !cellNav.isColumnSelected(col)); }
+            else if (event.shiftKey)
+            { selectColumnTo(col); }
+            else
+            { clearCellNav(); }
+        };
+
         /**
          * Create column header elements for the current row configuration and
          * install event handlers.
@@ -3109,7 +3149,7 @@
                     colName,
                     '</span></div>',
                     '</div>',
-                    '<div class="filter action-item" title="Remove filter"',
+                    '<div class="filter" title="Remove filter"',
                     options.generateHeights ? ' style="height: ' +
                     rowOffset + 'px"' : '',
                     '></div>',
@@ -3159,38 +3199,36 @@
                         }
 
                         var $target = $(event.target);
-                        var col = $target.closest('.blist-th').data('column');
-                        $(this).removeClass('hover');
+                        if ($target.closest('.action-item').length > 0) { return; }
 
-                        if ($target.closest('.filter').length > 0)
+                        if ($target.closest('.blist-th-name').length > 0)
                         {
-                            clearCellNav();
-                            model.clearColumnFilter(col.index);
-                            return;
+                            if ($col.data('column-clicked'))
+                            {
+                                $col.data('column-clicked', false);
+                                // We don't really do anything here, since we
+                                // have to listen to the real double-click event.
+                                // That is fired in all browsers, but IE only
+                                // fires that -- it never gets here
+                            }
+                            else
+                            {
+                                $col.data('column-clicked', true);
+                                setTimeout(function()
+                                    {
+                                        if ($col.data('column-clicked'))
+                                        { columnHeaderClick(event, $target); }
+                                    }, 500);
+                            }
                         }
-
-                        if (($target.closest('.sort').length > 0 ||
-                            (!event.metaKey && !event.shiftKey)) &&
-                                ((blist.data.types[col.type] !== undefined &&
-                                  blist.data.types[col.type].sortable) ||
-                                 col.sortable))
-                        {
-                            clearCellNav();
-                            sort(col.index);
-                            return;
-                        }
-
-                        if (event.metaKey) // ctrl/cmd key
-                        { selectColumn(col, !cellNav.isColumnSelected(col)); }
-                        else if (event.shiftKey)
-                        { selectColumnTo(col); }
-                        else
-                        { clearCellNav(); }
+                        else { columnHeaderClick(event, $target); }
                     })
                     .hover(function ()
                         { if (!hotHeaderDrag || hotHeaderMode != 4)
                             { $(this).addClass('hover'); } },
-                        function () { $(this).removeClass('hover'); });
+                        function () { $(this).removeClass('hover'); })
+                    .find('.blist-th-name').bind('dblclick', function(event)
+                            { $this.trigger('column_name_dblclick', [ event ]); });
 
                 if (options.columnDrag)
                 {

@@ -27,6 +27,7 @@
             accessType: 'DEFAULT',
             clearFilterItem: null,
             clearTempViewCallback: function () {},
+            columnNameEdit: false,
             columnPropertiesEnabled: false,
             currentUserId: null,
             editEnabled: true,
@@ -44,7 +45,7 @@
             init: function ()
             {
                 var datasetObj = this;
-                var $datasetGrid = $(datasetObj.currentGrid);
+                var $datasetGrid = datasetObj.$dom();
                 $datasetGrid.data("datasetGrid", datasetObj);
 
                 datasetObj.settings._filterCount = 0;
@@ -69,6 +70,8 @@
                         { columnsUpdated(datasetObj); })
                     .bind('full_load', function(event)
                         { viewLoaded(datasetObj); })
+                    .bind('column_name_dblclick', function(event, origEvent)
+                        { columnNameEdit(datasetObj, event, origEvent); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
@@ -118,6 +121,13 @@
                         .click(function (e) { clearFilterInput(datasetObj, e); })
                         .hide();
                 }
+            },
+
+            $dom: function()
+            {
+                if (!this._$dom)
+                { this._$dom = $(this.currentGrid); }
+                return this._$dom;
             },
 
             updateFilter: function(filter, saveExisting)
@@ -1103,6 +1113,101 @@
                 datasetObj.origSortBys.push(curS);
             });
         }
+    };
+
+    var columnNameEdit = function(datasetObj, event, origEvent)
+    {
+        if (!datasetObj.settings.columnNameEdit) { return; }
+
+        var $target = $(origEvent.target);
+        var $th = $target.closest('.blist-th').addClass('editable');
+        var $container = $target.closest('.name-wrapper');
+        var $edit = $container.find('form');
+        if ($edit.length < 1)
+        {
+            $container.append('<form class="action-item">' +
+                '<input type="text" /></form>');
+            $edit = $container.find('form');
+            $edit.submit(function(e) { columnEditSubmit(datasetObj, e); })
+                .find(':input').keydown(function(e)
+                    { columnEditKeyHandler(datasetObj, e); });
+        }
+        $edit.find(':input').removeAttr('disabled')
+            .val($target.text()).focus().select();
+        $(document).bind('mousedown.columnNameEdit-' + $th.data('column').id,
+                function(e) { columnEditDocMouse(datasetObj, e, $th); })
+            .bind('mouseup.columnNameEdit-' + $th.data('column').id,
+                function(e) { columnEditDocMouse(datasetObj, e, $th); });
+    };
+
+    var columnEditEnd = function(datasetObj, $th)
+    {
+        $th.removeClass('editable error');
+        $(document).unbind('.columnNameEdit-' + $th.data('column').id);
+    };
+
+    var columnEditSave = function(datasetObj, $th)
+    {
+        var $input = $th.find(':input');
+        var newName = $input.val();
+        if (newName === '')
+        {
+            alert('You must enter a name for this column');
+            $th.addClass('error');
+            return;
+        }
+
+        var origName = $th.find('.blist-th-name').text();
+        if (origName == newName)
+        {
+            columnEditEnd(datasetObj, $th);
+            return;
+        }
+
+        var model = datasetObj.settings._model;
+        var col = model.getColumnByID($th.data('column').id);
+        col.name = newName;
+        $input.attr('disabled', 'disabled');
+
+        $.ajax({url: '/views/' + model.meta().view.id + '/columns/' +
+            col.id + '.json',
+            data: $.json.serialize({name: col.name}),
+            type: 'PUT', dataType: 'json', contentType: 'application/json',
+            error: function(xhr)
+            {
+                var errBody = $.json.deserialize(xhr.responseText);
+                alert(errBody.message);
+                $th.addClass('error');
+                $input.removeAttr('disabled');
+            },
+            success: function(newCol)
+            {
+                columnEditEnd(datasetObj, $th);
+                model.updateColumn(newCol);
+            }});
+    };
+
+    var columnEditDocMouse = function(datasetObj, event, $th)
+    {
+        var $target = $(event.target);
+        if (($target.is('.name-wrapper :input') &&
+            $target.parents().index($th) >= 0) ||
+            $target.closest('#jqmAlert').length > 0) { return; }
+
+        columnEditSave(datasetObj, $th);
+    };
+
+    var columnEditSubmit = function(datasetObj, event)
+    {
+        event.preventDefault();
+
+        columnEditSave(datasetObj, $(event.target).closest('.blist-th'));
+    };
+
+    var columnEditKeyHandler = function(datasetObj, event)
+    {
+        if (event.keyCode == 27)
+        { columnEditEnd(datasetObj, $(event.target).closest('.blist-th')); }
     };
 
 })(jQuery);

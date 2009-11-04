@@ -675,7 +675,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPhone,
             filterText: true,
             sortable: true,
-            filterable: true
+            filterable: true,
+            isObject: true
         },
 
         checkbox: {
@@ -723,11 +724,13 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterURL,
             filterText: true,
             sortable: true,
-            filterable: true
+            filterable: true,
+            isObject: true
         },
 
         document: {
-            renderGen: renderGenDocument
+            renderGen: renderGenDocument,
+            isObject: true
         },
 
         tag: {

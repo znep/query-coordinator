@@ -579,13 +579,11 @@ blist.namespace.fetch('blist.data');
                     metaCols.push({name: adjName, index: i});
                 }
 
-                if (v.dataTypeName == 'url' ||
-                    v.dataTypeName == 'phone' ||
-                    v.dataTypeName == 'document')
+                var type = blist.data.types[v.dataTypeName];
+                if (type && type.isObject)
                 { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
 
-                if (v.dataTypeName == 'url' ||
-                    v.dataTypeName == 'phone' || v.dataTypeName == 'document')
+                if (type && type.isObject)
                 { dataMungeCols.push({index: i, type: 'arrayToObject',
                     types: v.subColumnTypes}); }
 

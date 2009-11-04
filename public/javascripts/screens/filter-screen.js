@@ -371,6 +371,7 @@ filterNS.populate = function($table, filters, columns)
             var sub = filterRow.children[j];
             var subcolumn;
             var col;
+            var type;
             if (sub.type == "column")
             {
                 for (var k=0; k < columns.length; k++)
@@ -378,19 +379,23 @@ filterNS.populate = function($table, filters, columns)
                     if (sub.columnId == columns[k].id)
                     {
                         col = columns[k];
-                        if (sub.value != undefined)
+                        type = blist.data.types[col.type];
+                        if (type && type.isObject && sub.value !== undefined)
                         {
-                            subcolumn = sub.value;
+                            subcolumn = sub.value.toLowerCase();
                         }
 
-                        $row.find(".filterTable-nameDropDown").value($.grep(filterNS.columnsValues,
-                            function(columnValue) {
-                                return columnValue.index === k;
-                            })[0]);
+                        $row.find(".filterTable-nameDropDown")
+                            .value($.grep(filterNS.columnsValues,
+                                function(columnValue) {
+                                    return columnValue.index === k;
+                                })[0]);
                         $row.find(".filterTable-conditionDropDown")
-                            .value($.grep(filterNS.conditions[filterNS.filterableClass(col.type)],
+                            .value($.grep(filterNS.conditions
+                                [filterNS.filterableClass(col.type)],
                             function(condition) {
-                                return condition.operator == filterRow.value.toUpperCase();
+                                return condition.operator ==
+                                    filterRow.value.toUpperCase();
                             })[0]);
                         $row.find(".filterTable-editor").empty();
                         break;
@@ -401,16 +406,20 @@ filterNS.populate = function($table, filters, columns)
             {
                 if (j > 1)
                 {
-                    $row.find(".filterTable-editor").append('<div class="ampersand">&amp;</div>');
+                    $row.find(".filterTable-editor")
+                        .append('<div class="ampersand">&amp;</div>');
                 }
 
                 if (filterRow.value.toLowerCase() == "between")
                 {
-                    $row.find(".filterTable-editor").append('<div class="renderer renderer' + j + ' between"></div>');
+                    $row.find(".filterTable-editor")
+                        .append('<div class="renderer renderer' + j +
+                            ' between"></div>');
                 }
                 else
                 {
-                    $row.find(".filterTable-editor").append('<div class="renderer renderer' + j + '"></div>');
+                    $row.find(".filterTable-editor")
+                        .append('<div class="renderer renderer' + j + '"></div>');
                 }
 
                 var value;

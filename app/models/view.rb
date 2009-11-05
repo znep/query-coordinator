@@ -1,5 +1,6 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons, :sorts, :search_sorts
+  cattr_accessor :visualization_config, :categories, :licenses,
+    :creative_commons, :sorts, :search_sorts
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -268,7 +269,7 @@ class View < Model
   # the displayType contains the type of visualization
   # a nil value indicates that it needs to be rendered as a table
   def is_visualization?
-    is_fusion_map? || @@visualization_types.has_key?(self.displayType)
+    is_fusion_map? || @@visualization_config.has_key?(self.displayType)
   end
 
   def is_map?
@@ -277,6 +278,11 @@ class View < Model
 
   def is_fusion_map?
     !self.displayType.nil? && !self.displayType[/^FCMap_/].nil?
+  end
+
+  def can_add_visualization?
+    # TODO: Implement me
+    true
   end
 
   def owned_by?(user)
@@ -290,23 +296,57 @@ class View < Model
   def hide_comments?
     ORGS_WITH_COMMENTS_HIDDEN.include? self.owner.organizationId.to_i
   end
-  
+
   def chart_class
-    @@visualization_types[self.displayType]
+    @@visualization_config.has_key?(self.displayType) ?
+      @@visualization_config[self.displayType]['library'] : nil
   end
 
-  @@visualization_types = {
-    'geomap' => 'google.visualization.GeoMap',
-    'annotatedtimeline' => 'google.visualization.AnnotatedTimeLine',
-    'imagesparkline' => 'google.visualization.ImageSparkLine',
-    'areachart' => 'google.visualization.AreaChart',
-    'barchart' => 'google.visualization.BarChart',
-    'columnchart' => 'google.visualization.ColumnChart',
-    'intensitymap' => 'google.visualization.IntensityMap',
-    'linechart' => 'google.visualization.LineChart',
-    'map' => 'google.visualization.Map',
-    'piechart' => 'google.visualization.PieChart',
-    'motionchart' => 'google.visualization.MotionChart'
+  @@visualization_config = {
+    'barchart' => {
+      'library' => 'google.visualization.BarChart',
+      'label' => 'Bar Chart',
+      'groupName' => 'Bar',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
+      'dataColumns' => [{'dataType' => 'number', 'label' => 'Values'}],
+      'dataColumnOptions' => [{'label' => 'Bar Color', 'name' => 'colors',
+        'type' => 'color', 'default' => '#3366ff'}],
+      'globalOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ],
+        'default' => 'right'},
+        {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
+        'default' => false},
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ]
+    },
+    'geomap' => {'library' => 'google.visualization.GeoMap',
+      'hidden' => true},
+    'annotatedtimeline' => {'library' => 'google.visualization.AnnotatedTimeLine',
+      'hidden' => true},
+    'imagesparkline' => {'library' => 'google.visualization.ImageSparkLine',
+      'hidden' => true},
+    'areachart' => {'library' => 'google.visualization.AreaChart',
+      'hidden' => true},
+    'columnchart' => {'library' => 'google.visualization.ColumnChart',
+      'hidden' => true},
+    'intensitymap' => {'library' => 'google.visualization.IntensityMap',
+      'hidden' => true},
+    'linechart' => {'library' => 'google.visualization.LineChart',
+      'hidden' => true},
+    'map' => {'library' => 'google.visualization.Map',
+      'hidden' => true},
+    'piechart' => {'library' => 'google.visualization.PieChart',
+      'hidden' => true},
+    'motionchart' => {'library' => 'google.visualization.MotionChart',
+      'hidden' => true}
   }
 
   @@categories = {
@@ -317,13 +357,13 @@ class View < Model
     "Education" => "Education",
     "Government" => "Government"
   }
-  
+
   @@licenses = {
     "" => "-- No License --",
     "PUBLIC_DOMAIN" => "Public Domain",
     "CC" => "Creative Commons"
   }
-  
+
   @@creative_commons = {
     "CC0_10" => "1.0 Universal",
     "CC_30_BY" => "Attribution 3.0 Unported",
@@ -333,7 +373,7 @@ class View < Model
     "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
-  
+
   @@sorts = [
     ["POPULAR", "Popularity"],
     ["AVERAGE_RATING", "Rating"],

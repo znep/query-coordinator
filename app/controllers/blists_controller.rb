@@ -463,6 +463,44 @@ class BlistsController < ApplicationController
     }
   end
 
+  def visualization
+    @view = View.find(params[:id])
+
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
+  def create_visualization
+    errors = []
+    begin
+      view = View.create({:name => params[:viewName],
+                         :originalViewId => params[:id]})
+
+#      fmt = {:startDateId => view.columns.select {|c|
+#        c.tableColumnId.to_s == params[:startDate].to_s}[0].id,
+#          :titleId => view.columns.select {|c|
+#          c.tableColumnId.to_s == params[:eventTitle].to_s}[0].id}
+#      if !params[:endDate].blank?
+#        fmt[:endDateId] = view.columns.select {|c|
+#          c.tableColumnId.to_s == params[:endDate].to_s}[0].id
+#      end
+#      if !params[:eventDescription].blank?
+#        fmt[:descriptionId] = view.columns.select {|c|
+#          c.tableColumnId.to_s == params[:eventDescription].to_s}[0].id
+#      end
+#      view.update_attributes!({:displayType => 'calendar', :displayFormat => fmt})
+    rescue CoreServer::CoreServerError => e
+      errors << e.error_message
+    end
+
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success",
+      :errors => errors,
+      :newViewId => view.nil? ? '' : view.id
+    }
+  end
+
   def meta_tab_header
      if (!params[:tab])
        return

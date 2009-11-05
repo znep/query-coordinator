@@ -1,0 +1,303 @@
+<%- content_for(:wrapper_class, "narrowDialog") -%>
+<%- content_for :headline do -%>
+<h1 class='vizIcon'>Create a Visualization</h1>
+<%- end -%>
+
+<div class='modalContentWrapper vizWrapper viewSetupWrapper'>
+  <p class='subtitle'>
+  Datasets can be displayed in a variety of visual formats.
+  </p>
+
+  <% form_tag("#{@view.href}/create_visualization") do %>
+    <div class='section'>
+      <h3>Name</h3>
+      <p class='subtitle seperator'>
+      Give a name to your new visualization
+      </p>
+      <div class='line'>
+        <label class='required' for='vizName'>Name</label>
+        <input type='text' id='vizName' name='viewName' />
+      </div>
+    </div>
+
+    <div class='section'>
+      <%- viz_types = View.visualization_config.reject {|k,v| v['hidden'] == true}.
+        sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
+      <h3>Visualization Type</h3>
+      <p class='subtitle seperator'>Choose a chart to create</p>
+      <div class='line'>
+        <label class='required' for='vizType'>Type</label>
+        <select id='vizType' name='vizType' class='prompt'>
+          <option class='prompt' value=''>Select a Chart</option>
+          <%- viz_types.each do |t| -%>
+          <option value='<%= t[0] %>'><%= h t[1]['label'] %></option>
+          <%- end -%>
+        </select>
+      </div>
+    </div>
+
+    <%- cols = {} -%>
+    <%- viz_types.each do |t| -%>
+    <%- type_config = t[1] -%>
+    <div class='typeBlock type-<%= t[0] %>'>
+
+      <div class='section'>
+        <h3>Required Columns</h3>
+        <p class='subtitle seperator'>
+        Choose the required columns for this <%= h type_config['label'].downcase %>
+        </p>
+
+        <%- count = 0 -%>
+        <%- type_config['fixedColumns'].each do |fcol| -%>
+        <%- if cols[fcol['dataType']].nil?
+              cols[fcol['dataType']] = @view.columns.select {|c|
+                c.dataTypeName == fcol['dataType'] && !c.flag?('hidden')}
+            end -%>
+        <%- fc_name = 'fixedColumn-' + t[0] + '-' + count.to_s -%>
+
+        <div class='line'>
+          <label class='required' for='<%= fc_name %>'>
+            <%= h fcol['label'] %>
+          </label>
+          <select id='<%= fc_name %>' name='<%= fc_name %>' class='prompt'>
+            <option class='prompt' value=''>Select a Column</option>
+            <%- cols[fcol['dataType']].each do |c| -%>
+            <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+            <%- end -%>
+          </select>
+        </div>
+        <%- count += 1 -%>
+        <%- end -%>
+      </div>
+
+      <div class='section'>
+        <h3>Data Columns</h3>
+        <p class='subtitle seperator'>
+        Choose the columns for this <%= h type_config['label'].downcase %> that
+        contain the data to display
+        </p>
+
+        <div class='dataColumnBlock soloBlock'>
+          <a class='removeButton' href='#removeDataBlock' title='Remove'>Remove</a>
+
+          <%- count = 0 -%>
+          <%- type_config['dataColumns'].each do |dcol| -%>
+          <%- if cols[dcol['dataType']].nil?
+                cols[dcol['dataType']] = @view.columns.select {|c|
+                  c.dataTypeName == dcol['dataType'] && !c.flag?('hidden')}
+              end -%>
+          <%- dc_name = 'dataColumn-' + t[0] + '-' + count.to_s + '-0' -%>
+
+          <div class='line'>
+            <label class='required' for='<%= dc_name %>'>
+              <%= h dcol['label'] %>
+            </label>
+            <select id='<%= dc_name %>' name='<%= dc_name %>' class='prompt'>
+              <option class='prompt' value=''>Select a Column</option>
+              <%- cols[dcol['dataType']].each do |c| -%>
+              <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+              <%- end -%>
+            </select>
+          </div>
+
+          <%- count += 1 -%>
+          <%- end -%>
+        </div>
+        <ul class='actionButtons'>
+          <li><a class='button addDataBlock'
+            href='#addDataBlock-<%= t[0] %>'>Add Data Column</a></li>
+        </ul>
+      </div>
+
+    </div>
+    <%- end -%>
+
+    <!--
+    <div class='section'>
+      <%- date_cols = @view.columns.select {|c| c.dataTypeName == 'date' &&
+        !c.flag?('hidden')} -%>
+      <%- is_multi_date = date_cols.length > 1 -%>
+      <h3 class='<%= is_multi_date ? '' : 'seperator' %>'>
+        Date<%= is_multi_date ? '(s)' : ' Column' %>
+      </h3>
+      <%- if is_multi_date -%>
+      <p class='subtitle seperator'>
+      Select up to two date columns to set the start and end dates for
+      your calendar events
+      </p>
+      <%- end -%>
+      <div class='line'>
+        <label class='required' for='calendarStartDate'>Starting Date</label>
+        <select id='calendarStartDate' name='startDate' class='prompt'>
+          <option class='prompt' value=''>Select a Column</option>
+          <%- date_cols.each do |c| -%>
+          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <%- end -%>
+        </select>
+      </div>
+      <%- if is_multi_date -%>
+      <div class='line'>
+        <label for='calendarEndDate'>Ending Date</label>
+        <select id='calendarEndDate' name='endDate' class='prompt'>
+          <option class='prompt' value=''>Optional</option>
+          <%- date_cols.each do |c| -%>
+          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <%- end -%>
+        </select>
+      </div>
+      <%- end -%>
+    </div>
+
+    <div class='section'>
+      <%- text_cols = @view.columns.select {|c| c.dataTypeName == 'text' &&
+        !c.flag?('hidden')} -%>
+      <%- is_multi_text = text_cols.length > 1 -%>
+      <h3>Event Information</h3>
+      <p class='subtitle seperator'>
+      Select the column<%= is_multi_text ? 's' : '' %>
+      that provide<%= is_multi_text ? '' : 's' %> details for the event
+      </p>
+      <div class='line'>
+        <label class='required' for='calendarEventTitle'>Event Title</label>
+        <select id='calendarEventTitle' name='eventTitle' class='prompt'>
+          <option class='prompt' value=''>Select a Column</option>
+          <%- text_cols.each do |c| -%>
+          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <%- end -%>
+        </select>
+         <span class="helpie" title="Displays in the calendar cells">?</span>
+      </div>
+      <%- if is_multi_text -%>
+        <div class='line'>
+          <label for='calendarEventDescription'>Description</label>
+          <select id='calendarEventDescription' name='eventDescription'
+            class='prompt'>
+            <option class='prompt' value=''>Optional</option>
+            <%- text_cols.each do |c| -%>
+            <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+            <%- end -%>
+          </select>
+           <span class="helpie" title="Additional text that appears upon placing your mouse over the title">?</span>
+        </div>
+      <%- end -%>
+    </div>
+    -->
+  <%- end -%>
+
+  <div class='error mainError'></div>
+
+  <div class='submitLine clearfix'>
+    <div class="required">Required Field</div>
+    <ul class='actionButtons clearfix'>
+      <li><a href='#create' class='create arrowButton'>Create Visualization</a></li>
+    </ul>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    /*
+    $.validator.addMethod('notEqualTo', function(value, element, param)
+        { return this.optional(element) || value != $(param).val(); },
+        'A different value is required.');
+    $('.calendarWrapper form').validate({
+        rules: {
+          viewName: 'required',
+          startDate: 'required',
+          endDate: { 'notEqualTo': '#calendarStartDate' },
+          eventTitle: 'required'
+        },
+        errorElement: 'span'
+      });
+      */
+
+    var adjustSelectPrompt = function(event)
+    {
+      var $sel = $(this);
+      setTimeout(function()
+          {
+            $sel.toggleClass('prompt', $sel.val() === '');
+          }, 0);
+    };
+
+    $('.vizWrapper select').change(adjustSelectPrompt)
+      .keypress(adjustSelectPrompt).click(adjustSelectPrompt);
+
+    var adjustVizType = function(event)
+    {
+      var $sel = $(this);
+      setTimeout(function()
+          {
+            var v = $sel.val();
+            $('.vizWrapper .typeBlock').hide();
+            $('.vizWrapper .typeBlock.type-' + v).show();
+          }, 0);
+    };
+
+    $('.vizWrapper #vizType').change(adjustVizType)
+      .keypress(adjustVizType).click(adjustVizType);
+
+    $('.vizWrapper a.removeButton').click(function(event)
+    {
+      event.preventDefault();
+      var $section = $(event.target).closest('.section');
+      $(event.target).closest('.dataColumnBlock').remove();
+      var $blocks = $section.find('.dataColumnBlock');
+      if ($blocks.length == 1) { $blocks.addClass('soloBlock'); }
+    });
+
+    $('.vizWrapper a.addDataBlock').click(function(event)
+    {
+      event.preventDefault();
+      var $button = $(event.target).closest('ul');
+
+      $('.vizWrapper .dataColumnBlock.soloBlock').removeClass('soloBlock');
+      var $block = $button.prev('.dataColumnBlock').clone(true);
+      $block.find('.line').each(function(i, l)
+      {
+        var $sel = $(this).find('select');
+
+        var splitName = $sel.attr('id').split('-');
+        splitName[splitName.length - 1] =
+          parseInt(splitName[splitName.length - 1]) + 1;
+        var newName = splitName.join('-');
+
+        $sel.attr('id', newName).attr('name', newName);
+        $(this).find('label').attr('for', newName);
+      });
+
+      $button.before($block);
+    });
+
+    var formSubmit = function(event)
+    {
+      event.preventDefault();
+      $('.vizWrapper .mainError').text('');
+      var $form = $('.vizWrapper form');
+      if (!$form.valid()) { return; }
+
+      $.ajax({
+          url: $form.attr("action"),
+          type: "POST",
+          data: $form.serialize(),
+          dataType: "json",
+          success: function(data)
+          {
+            if (data.status == 'failure')
+            {
+              $('.vizWrapper .mainError').text(data.errors.join('; '));
+            }
+            else
+            {
+              $("#modal").jqmHide();
+              blist.util.navigation.redirectToView(data.newViewId);
+            }
+          }
+      });
+    };
+
+    $('.vizWrapper form').submit(formSubmit);
+    $('.vizWrapper a.create').click(formSubmit);
+  };
+</script>

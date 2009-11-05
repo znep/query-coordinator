@@ -472,6 +472,7 @@ body#lensBody
 #mainMenu li.blist .newView > a { background-position: 5px -531px; }
 #mainMenu li.blist .newView .filter > a { background-position: 5px -531px; }
 #mainMenu li.blist .newView .calendar > a { background-position: 5px -761px; }
+#mainMenu li.blist .newView .viz > a { background-position: 5px -784px; }
 
 #mainMenu li.blist .export > a
 {

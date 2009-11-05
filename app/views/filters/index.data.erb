@@ -69,7 +69,15 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
-  $(function() {
+  blist.common.modalReady = function()
+  {
+    if ($('#dataGrid').datasetGrid().isTempView)
+    {
+        $('.filterDatasetWrapper .submitLine a[href="#update"]').hide();
+        $('.filterDatasetWrapper .submitLine a[href="#create"]')
+          .text('Update Unsaved Filter');
+    }
+
     var columns = $("#dataGrid").blistModel().meta().columns[0];
     var view = $("#dataGrid").blistModel().meta().view;
 
@@ -103,5 +111,5 @@
 
     $.live('#filterTable .filterTableFooter .filterTable-add a', 'click', blist.filter.filterAdd);
     $.live('#filterTable .filterTableBody .filterTable-delete a', 'click', blist.filter.filterRemove);
-  });
+  };
 </script>

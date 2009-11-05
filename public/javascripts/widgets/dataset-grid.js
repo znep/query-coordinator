@@ -587,7 +587,7 @@
         {
             features.remove = true;
         }
-        if (datasetObj.settings.columnPropertiesEnabled)
+        if (datasetObj.settings.columnPropertiesEnabled && !datasetObj.isTempView)
         {
             features.properties = true;
         }
@@ -1037,7 +1037,8 @@
     var sortChanged = function(datasetObj)
     {
         var view = datasetObj.settings._model.meta().view;
-        if (datasetObj.settings.currentUserId == view.owner.id)
+        if (datasetObj.settings.currentUserId == view.owner.id &&
+            !datasetObj.isTempView)
         {
             $.ajax({url: '/views/' + view.id + '.json',
                 data: $.json.serialize({sortBys: view.sortBys}),
@@ -1117,7 +1118,8 @@
 
     var columnNameEdit = function(datasetObj, event, origEvent)
     {
-        if (!datasetObj.settings.columnNameEdit) { return; }
+        if (!datasetObj.settings.columnNameEdit || datasetObj.isTempView)
+        { return; }
 
         var $target = $(origEvent.target);
         var $th = $target.closest('.blist-th').addClass('editable');

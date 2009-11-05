@@ -551,8 +551,8 @@
   display: inline;
 }
 
-#modal .seperator { border-bottom: solid 1px #ccc; }
-.columnPropertiesWrapper tr.seperator td
+#modal .separator { border-bottom: solid 1px #ccc; }
+.columnPropertiesWrapper tr.separator td
 {
   padding: 0;
 }
@@ -884,7 +884,7 @@ ul.convertables li a:hover
     padding-bottom: 2em;
 }
 
-.createBar .seperator
+.createBar .separator
 {
     margin-bottom: 1em;
 }
@@ -1110,7 +1110,7 @@ dl.versionInfo dd
     left: 20.6666em;
 }
 
-#sortBysList .seperator
+#sortBysList .separator
 {
    padding: 20px; 
 }
@@ -1513,7 +1513,7 @@ div#sortBysList.reorderList li .itemWrapper
     padding-bottom: 0.3em;
 }
 
-.viewSetupWrapper .seperator { margin-bottom: 0.5em; }
+.viewSetupWrapper .separator { margin-bottom: 0.5em; }
 .viewSetupWrapper form p { font-size: 1.1em; }
 
 .viewSetupWrapper .line { margin: 0.5em 0; }

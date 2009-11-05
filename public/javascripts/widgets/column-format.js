@@ -107,7 +107,7 @@ columnFormatNS.picklistView += '</select>';
 
 columnFormatNS.render_number = function($container)
 {
-  var render = '<h3 class="seperator">Display Options</h3>';
+  var render = '<h3 class="separator">Display Options</h3>';
   render += '<div class="number displayOptions"><table colspacing="0"><tbody>';
   render += columnFormatNS.precision(column.decimalPlaces); 
   render += '</tbody></table></div>';
@@ -117,13 +117,13 @@ columnFormatNS.render_number = function($container)
 
 columnFormatNS.render_money = function($container)
 {
-  var render = '<h3 class="seperator">Display Options</h3>';
+  var render = '<h3 class="separator">Display Options</h3>';
   render += '<div class="money displayOptions"><table colspacing="0"><tbody>';
   render += columnFormatNS.precision(column.decimalPlaces); 
   //render += '<tr><td class="labelColumn"><label for="precision">Number Style:</label></td><td><select id="number-style"><option value="standard">1,000.12 (Standard)</option><option value="scientific">1.01E+03 (Scientific)</option></select></td></tr>';
   render += '</tbody></table></div>';
   /* TODO: Add me back in when we get rid of flash (god let that be soon...)
-  render += '<h3 class="seperator">Currencies</h3>';
+  render += '<h3 class="separator">Currencies</h3>';
   render += '<div class="currencies">';
   render += '<label for="currency">Currency:</label>';
   render += columnFormatNS.currencySelect; 
@@ -134,7 +134,7 @@ columnFormatNS.render_money = function($container)
 
 columnFormatNS.render_percent = function($container)
 {
-    var render = '<h3 class="seperator">Display Options</h3>';
+    var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += columnFormatNS.precision(column.decimalPlaces); 
     render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td>';
@@ -157,7 +157,7 @@ columnFormatNS.render_percent = function($container)
 
 columnFormatNS.render_date = function($container)
 {
-    var render = '<h3 class="seperator">Display Options</h3>';
+    var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += '<tr><td class="labelColumn"><label for="view">Date View Style:</label></td><td>';
     render += '<div class="blist-combo-wrapper lr_justified format_date_view">';
@@ -186,7 +186,7 @@ columnFormatNS.renderValueInfoFormatRow = function(value)
 
 columnFormatNS.render_checkbox = function($container)
 {
-    var render = '<h3 class="seperator">Display Options</h3>';
+    var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += '<tr><td class="labelColumn"><label for="view">Check Style:</label></td><td>' + columnFormatNS.checkView + '</td></tr>';
     render += '</tbody></table></div>';
@@ -196,7 +196,7 @@ columnFormatNS.render_checkbox = function($container)
 
 columnFormatNS.render_picklist = function($container)
 {
-    var render = '<h3 class="seperator">Display Options</h3>';
+    var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += '<tr><td class="labelColumn"><label for="view">Menu Style:</label></td><td>' + columnFormatNS.picklistView + '</td></tr>';
     render += '</tbody></table></div>';

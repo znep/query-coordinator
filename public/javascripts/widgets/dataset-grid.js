@@ -96,11 +96,10 @@
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
 
-                $('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle')
-                    .live('mouseover',
+                $.live('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle', 'mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
-                $('#' + $datasetGrid.attr('id') + ' .add-column')
-                    .live("click", function (e) { 
+                $.live('#' + $datasetGrid.attr('id') + ' .add-column', "click",
+                        function (e) { 
                           $('<a href="/datasets/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
                         });
 

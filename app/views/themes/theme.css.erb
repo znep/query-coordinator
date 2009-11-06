@@ -16,11 +16,31 @@ h<%= level + 1 %>  {
 
 /*** OUTER CHROME ***/
 #mainNav li,
-#mainNav li a span,
+#mainNav li a span
+{
+    background-image: <%= main_button_inactive_bg %>;
+}
+
+#mainNav li.home .subNav li,
+#mainNav li.home .subNav li a span
+{
+    background-image: none;
+    background-color: #<%= last_color(th.main_button_bg) %>;
+}
 body.home #mainNav li.home .subNav li,
 body.home #mainNav li.home .subNav li a span
 {
-    background-image: <%= main_button_inactive_bg %>;
+    background-image: none;
+    background-color: #<%= last_color(th.main_button_active_bg) %>;
+}
+
+#mainNav li.home .subNav li.last
+{
+    background: <%= main_submenu_last_bg(last_color(th.main_button_bg)) %> bottom right;
+}
+body.home #mainNav li.home .subNav li.last
+{
+    background: <%= main_submenu_last_bg(last_color(th.main_button_active_bg)) %> bottom right;
 }
 
 <% if !th.home_tab_width.nil? %>
@@ -52,9 +72,13 @@ body.discover #mainNav li.discover,
 #mainNav ul.subNav li:hover a span,
 body.home #mainNav li.home .subNav li:hover,
 body.home #mainNav li.home .subNav li:hover a span
-
 {
     background-image: <%= main_button_active_bg %>;
+}
+
+#mainNav li.home .subNav li.last:hover
+{
+    background-image: <%= main_submenu_last_bg(th.main_button_active_bg) %>;
 }
 
 #mainLogo a

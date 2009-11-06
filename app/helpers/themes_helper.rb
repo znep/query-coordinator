@@ -21,6 +21,10 @@ module ThemesHelper
     def main_button_active_bg
         box :h => 35, :r => 10, :ry => 10, :fc => :main_button_active_bg, :bc => MAIN_BUTTON_BG, :s => 'h'
     end
+    
+    def main_submenu_last_bg(color)
+      box :h => 35, :w => 20, :r => 10, :ry => 10, :rx => 10, :fc => color
+    end
 
     def carousel_bg
         box :h => 235, :r => 5, :bc => 'ffffff', :fc => :carousel_bg, :s => 'h'
@@ -85,6 +89,10 @@ module ThemesHelper
 
     def box(options)
       ui_url :box, options
+    end
+    
+    def last_color(gradient_str)
+      gradient_str.split(',').last.split(':').first
     end
 
 private

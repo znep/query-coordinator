@@ -13,9 +13,9 @@
   </div></li>
   <li class='approval even'><div class='wrapper'>
     <%- if current_user.are_comments_moderated? -%>
-      <%= link_to 'Approval', approval_path %>
+      <%= link_to 'Approvals', approval_path %>
     <%- else -%>
-      <%= link_to 'Approval', '/popup/premium', :rel => "modal" %>
+      <%= link_to 'Approvals', '/popup/premium', :rel => "modal" %>
     <%- end -%>
   </div></li>
 </ul>

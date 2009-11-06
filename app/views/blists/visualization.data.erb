@@ -109,79 +109,49 @@
         </ul>
       </div>
 
+      <div class='section'>
+        <h3 class='separator'>Configuration</h3>
+
+        <%- type_config['globalOptions'].each do |gopt| -%>
+        <%- gname = t[0] + '-' + gopt['name'] -%>
+        <div class='line'>
+          <label for='<%= gname %>'><%= gopt['label'] %></label>
+          <%- if gopt['type'] == 'boolean' -%>
+          <input type='checkbox' id='<%= gname %>' name='<%= gname %>'
+            <%- trueVal = gopt['booleanTrueValue'] -%>
+            <%= trueVal.nil? ? '' : "trueValue='" + trueVal + "'" %>
+            <%= gopt['booleanFalseValue'].nil? ? '' :
+              "falseValue='" + gopt['booleanFalseValue'] + "'" %>
+            <%= trueVal.nil? ?
+              gopt['default'] ? "checked='checked'" : '' :
+              gopt['default'] == trueVal ? "checked='checked'" : '' %> />
+          <%- elsif gopt['type'] == 'string' || gopt['type'] == 'number' -%>
+          <input type='text' id='<%= gname %>' name='<%= gname %>'
+            <%= gopt['default'].nil? ? '' : "value='" + gopt['default'] + "'" %> />
+          <%- elsif gopt['type'] == 'dropdown' -%>
+          <select id='<%= gname %>' name='<%= gname %>'>
+            <%- gopt['dropdownOptions'].each do |dval| -%>
+            <option value='<%= dval['value'] %>'
+              <%= gopt['default'] == dval['value'] ?
+                "selected='selected'" : '' %>><%= h dval['label'] %></option>
+            <%- end -%>
+          </select>
+          <%- elsif gopt['type'] == 'color' -%>
+          <a class='colorOption' href='#<%= gname %>' title='Choose color'
+            <%= gopt['default'].nil? ? '' :
+              "style='background-color:" + gopt['default'] + ";'" %>>
+            Choose color
+          </a>
+          <input id='<%= gname %>' name='<%= gname %>' type='hidden'
+            <%= gopt['default'].nil? ? '' : "value='" + gopt['default'] + "'" %> />
+          <%- end -%>
+        </div>
+        <%- end -%>
+      </div>
+
     </div>
     <%- end -%>
 
-    <!--
-    <div class='section'>
-      <%- date_cols = @view.columns.select {|c| c.dataTypeName == 'date' &&
-        !c.flag?('hidden')} -%>
-      <%- is_multi_date = date_cols.length > 1 -%>
-      <h3 class='<%= is_multi_date ? '' : 'separator' %>'>
-        Date<%= is_multi_date ? '(s)' : ' Column' %>
-      </h3>
-      <%- if is_multi_date -%>
-      <p class='subtitle separator'>
-      Select up to two date columns to set the start and end dates for
-      your calendar events
-      </p>
-      <%- end -%>
-      <div class='line'>
-        <label class='required' for='calendarStartDate'>Starting Date</label>
-        <select id='calendarStartDate' name='startDate' class='prompt'>
-          <option class='prompt' value=''>Select a Column</option>
-          <%- date_cols.each do |c| -%>
-          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
-          <%- end -%>
-        </select>
-      </div>
-      <%- if is_multi_date -%>
-      <div class='line'>
-        <label for='calendarEndDate'>Ending Date</label>
-        <select id='calendarEndDate' name='endDate' class='prompt'>
-          <option class='prompt' value=''>Optional</option>
-          <%- date_cols.each do |c| -%>
-          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
-          <%- end -%>
-        </select>
-      </div>
-      <%- end -%>
-    </div>
-
-    <div class='section'>
-      <%- text_cols = @view.columns.select {|c| c.dataTypeName == 'text' &&
-        !c.flag?('hidden')} -%>
-      <%- is_multi_text = text_cols.length > 1 -%>
-      <h3>Event Information</h3>
-      <p class='subtitle separator'>
-      Select the column<%= is_multi_text ? 's' : '' %>
-      that provide<%= is_multi_text ? '' : 's' %> details for the event
-      </p>
-      <div class='line'>
-        <label class='required' for='calendarEventTitle'>Event Title</label>
-        <select id='calendarEventTitle' name='eventTitle' class='prompt'>
-          <option class='prompt' value=''>Select a Column</option>
-          <%- text_cols.each do |c| -%>
-          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
-          <%- end -%>
-        </select>
-         <span class="helpie" title="Displays in the calendar cells">?</span>
-      </div>
-      <%- if is_multi_text -%>
-        <div class='line'>
-          <label for='calendarEventDescription'>Description</label>
-          <select id='calendarEventDescription' name='eventDescription'
-            class='prompt'>
-            <option class='prompt' value=''>Optional</option>
-            <%- text_cols.each do |c| -%>
-            <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
-            <%- end -%>
-          </select>
-           <span class="helpie" title="Additional text that appears upon placing your mouse over the title">?</span>
-        </div>
-      <%- end -%>
-    </div>
-    -->
   <%- end -%>
 
   <div class='error mainError'></div>
@@ -269,6 +239,21 @@
 
       $button.before($block);
     });
+
+
+    $('.vizWrapper .colorOption').colorPicker().bind('color_change',
+        function(e, newColor)
+        {
+            var $target = $(e.target);
+            $target.css('background-color', newColor)
+              .siblings(':input').val(newColor);
+        })
+    .mousedown(function(e)
+        {
+            var $target = $(e.target);
+            $target.data('colorpicker-color', $target.siblings(':input').val());
+        });
+
 
     var formSubmit = function(event)
     {

@@ -1579,6 +1579,16 @@ div#sortBysList.reorderList li .itemWrapper
 .vizWrapper .dataColumnBlock.soloBlock .removeButton { display: none; }
 .vizWrapper .dataColumnBlock.soloBlock label { width: 6.5em; }
 
+.vizWrapper .line input[type="checkbox"] { width: auto; }
+.vizWrapper .line .colorOption
+{
+    border: 2px ridge #000000;
+    display: inline-block;
+    height: 16px;
+    text-indent: -9999px;
+    width: 16px;
+}
+
 /*** END: Create visualization dialog ***/
 
 

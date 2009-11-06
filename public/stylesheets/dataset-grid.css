@@ -175,6 +175,15 @@ div.blist-th-first
     padding: 0 4px;
 }
 
+.blist-th-tooltip .blist-th-icon { float: left; }
+.blist-th-tooltip .name
+{
+    font-weight: bold;
+    line-height: 20px;
+    padding-left: 20px;
+}
+.blist-th-tooltip .description { margin-top: 0.5em; }
+
 div.blist-table-ghost div.blist-column-adder
 {
     margin-top: 1em;

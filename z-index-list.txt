@@ -11,4 +11,5 @@ Please list z-indexes of elements in the site so we can keep track of how elemen
 9
 10 active tab in .tabList
 20 #header
+25 Unsaved changes notification bar on /publish page
 2999 #modal overlay

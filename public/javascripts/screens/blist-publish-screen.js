@@ -526,7 +526,7 @@ blist.publish.clearStyles = function()
     publishNS.styleRules = {};
 };
 
-blist.publish.valueChanged = function()
+blist.publish.valueChanged = function(suppressMessage)
 {
     var hash = publishNS.serializeForm();
 
@@ -536,8 +536,15 @@ blist.publish.valueChanged = function()
 
     publishNS.applyCustomizationToPreview(clone);
 
-    clearTimeout(publishNS.saveTimeout);
-    publishNS.saveTimeout = setTimeout(function() { publishNS.saveCustomization(clone); }, 2000);
+    publishNS.unsavedTheme = clone;
+    if (suppressMessage !== true)
+    {
+        $('.unsavedChangesBar').slideDown('normal');
+        $('body').animate({
+            paddingTop: '35px',
+            backgroundPosition: '0 41px'
+        });
+    }
 };
 
 blist.publish.saveCustomization = function(hash)
@@ -655,7 +662,7 @@ blist.publish.populateForm = function(hash)
     publishNS.currentTheme = hash;
 
     // Update preview
-    publishNS.valueChanged();
+    publishNS.valueChanged(true);
 };
 
 blist.publish.loadCustomization = function()
@@ -666,6 +673,7 @@ blist.publish.loadCustomization = function()
         dataType: "json",
         success: function(responseData)
         {
+            publishNS.hideUnsavedChangesBar();
             publishNS.populateForm($.json.deserialize(responseData['customization']));
             $('.templateName').text(responseData['name']);
         },
@@ -673,6 +681,15 @@ blist.publish.loadCustomization = function()
         {
             // TODO: wait and retry and/or notify user
         } 
+    });
+};
+
+blist.publish.hideUnsavedChangesBar = function()
+{
+    $('.unsavedChangesBar').slideUp();
+    $('body').animate({
+        paddingTop: '0',
+        backgroundPosition: '0 6px'
     });
 };
 
@@ -743,15 +760,6 @@ blist.publish.loadCustomization = function()
     // Load customizations when user chooses one
     $('#template_name').change(publishNS.loadCustomization);
 
-    // Cancel changes link
-    $('.cancelCustomizationLink').click(function(event)
-    {
-        event.preventDefault();
-        clearTimeout(publishNS.saveTimeout);
-        publishNS.populateForm(publishNS.currentTheme);
-        $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabTemplates');
-    });
-
     // Change template link (trust the timer to finish and save the template for us)
     $('.changeTemplateLink').click(function(event)
     {
@@ -770,8 +778,6 @@ blist.publish.loadCustomization = function()
     // On clicking done, force a save before bailing
     $('.submitLink').click(function()
     {
-        // Clear existing
-        clearTimeout(publishNS.saveTimeout);
         var hash = publishNS.serializeForm();
 
         // Make a true deep clone of the merge
@@ -779,6 +785,20 @@ blist.publish.loadCustomization = function()
         $.extend(true, clone, hash);
 
         publishNS.saveCustomization(clone);
+    });
+
+    // Discard/save bar
+    $('.unsavedChangesBar .discardChangesButton').click(function(event)
+    {
+        event.preventDefault();
+        publishNS.populateForm(publishNS.currentTheme);
+        publishNS.hideUnsavedChangesBar();
+    });
+    $('.unsavedChangesBar .saveChangesButton').click(function(event)
+    {
+        event.preventDefault();
+        publishNS.saveCustomization(publishNS.unsavedTheme);
+        publishNS.hideUnsavedChangesBar();
     });
 
     // Load in customization
@@ -845,4 +865,12 @@ blist.publish.loadCustomization = function()
             $textbox.addClass('prompt');
         }
     });
+    
+    window.onbeforeunload = function()
+    {
+        if ($('.unsavedChangesBar').is(':visible'))
+        {
+            return 'You will lose your changes to the current theme.';
+        }
+    };
 })(jQuery);

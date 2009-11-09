@@ -348,28 +348,32 @@ HREF
   end
 
   def rpx_submit_facebook(action = "Sign in", return_url = rpx_return_login_url)
+    description = "#{action} with Facebook"
     content_tag(:form, {:action => "#{APP_CONFIG['rpx_facebook_url']}?token_url=#{return_url}", :method => 'post'}) do
-      image_submit_tag(image_path('rpx/facebook.png'), :title => "#{action} with Facebook")
+      image_submit_tag(image_path('rpx/facebook.png'), :title => description, :alt => description)
     end
   end
 
   def rpx_submit_google(action = "Sign in", return_url = rpx_return_login_url)
+    description = "#{action} with Google"
     content_tag(:form, {:action => "#{APP_CONFIG['rpx_openid_url']}?token_url=#{return_url}", :id => 'googrpx', :method => 'post'}) do
       hidden_field_tag('openid_identifier', 'https://www.google.com/accounts/o8/id') +
-      image_submit_tag(image_path('rpx/google.png'), :title => "#{action} with Google")
+      image_submit_tag(image_path('rpx/google.png'), :title => description, :alt => description)
     end
   end
 
   def rpx_submit_yahoo(action = "Sign in", return_url = rpx_return_login_url)
+    description = "#{action} with Yahoo"
     content_tag(:form, {:action => "#{APP_CONFIG['rpx_openid_url']}?token_url=#{return_url}", :id => 'googrpx', :method => 'post'}) do
       hidden_field_tag('openid_identifier', 'yahoo.com') +
-      image_submit_tag(image_path('rpx/yahoo.gif'), :title => "#{action} with Yahoo")
+      image_submit_tag(image_path('rpx/yahoo.gif'), :title => description, :alt => description)
     end
   end
 
   def rpx_submit_windowslive(action = "Sign in", return_url = rpx_return_login_url)
+    description = "#{action} with Windows Live ID"
     content_tag(:form, {:action => "#{APP_CONFIG['rpx_windowslive_url']}?token_url=#{return_url}", :method => 'post'}) do
-      image_submit_tag(image_path('rpx/windowslive.gif'), :title => "#{action} with Windows Live ID")
+      image_submit_tag(image_path('rpx/windowslive.gif'), :title => description, :alt => description)
     end
   end
 

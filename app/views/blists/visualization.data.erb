@@ -66,6 +66,7 @@
             <%- end -%>
           </select>
         </div>
+
         <%- count += 1 -%>
         <%- end -%>
       </div>
@@ -100,6 +101,10 @@
             </select>
           </div>
 
+          <%= render(:partial => 'viz_opts',
+            :locals => {:options => type_config['dataColumnOptions'],
+            :name_prefix => t[0], :name_postfix => '0'}) %>
+
           <%- count += 1 -%>
           <%- end -%>
         </div>
@@ -112,41 +117,9 @@
       <div class='section'>
         <h3 class='separator'>Configuration</h3>
 
-        <%- type_config['globalOptions'].each do |gopt| -%>
-        <%- gname = t[0] + '-' + gopt['name'] -%>
-        <div class='line'>
-          <label for='<%= gname %>'><%= gopt['label'] %></label>
-          <%- if gopt['type'] == 'boolean' -%>
-          <input type='checkbox' id='<%= gname %>' name='<%= gname %>'
-            <%- trueVal = gopt['booleanTrueValue'] -%>
-            <%= trueVal.nil? ? '' : "trueValue='" + trueVal + "'" %>
-            <%= gopt['booleanFalseValue'].nil? ? '' :
-              "falseValue='" + gopt['booleanFalseValue'] + "'" %>
-            <%= trueVal.nil? ?
-              gopt['default'] ? "checked='checked'" : '' :
-              gopt['default'] == trueVal ? "checked='checked'" : '' %> />
-          <%- elsif gopt['type'] == 'string' || gopt['type'] == 'number' -%>
-          <input type='text' id='<%= gname %>' name='<%= gname %>'
-            <%= gopt['default'].nil? ? '' : "value='" + gopt['default'] + "'" %> />
-          <%- elsif gopt['type'] == 'dropdown' -%>
-          <select id='<%= gname %>' name='<%= gname %>'>
-            <%- gopt['dropdownOptions'].each do |dval| -%>
-            <option value='<%= dval['value'] %>'
-              <%= gopt['default'] == dval['value'] ?
-                "selected='selected'" : '' %>><%= h dval['label'] %></option>
-            <%- end -%>
-          </select>
-          <%- elsif gopt['type'] == 'color' -%>
-          <a class='colorOption' href='#<%= gname %>' title='Choose color'
-            <%= gopt['default'].nil? ? '' :
-              "style='background-color:" + gopt['default'] + ";'" %>>
-            Choose color
-          </a>
-          <input id='<%= gname %>' name='<%= gname %>' type='hidden'
-            <%= gopt['default'].nil? ? '' : "value='" + gopt['default'] + "'" %> />
-          <%- end -%>
-        </div>
-        <%- end -%>
+        <%= render(:partial => 'viz_opts',
+          :locals => {:options => type_config['globalOptions'],
+          :name_prefix => t[0]}) %>
       </div>
 
     </div>
@@ -226,15 +199,17 @@
       var $block = $button.prev('.dataColumnBlock').clone(true);
       $block.find('.line').each(function(i, l)
       {
-        var $sel = $(this).find('select');
+        var $label = $(this).find('label');
 
-        var splitName = $sel.attr('id').split('-');
+        var oldName = $label.attr('for');
+        var splitName = oldName.split('-');
         splitName[splitName.length - 1] =
           parseInt(splitName[splitName.length - 1]) + 1;
         var newName = splitName.join('-');
 
-        $sel.attr('id', newName).attr('name', newName);
-        $(this).find('label').attr('for', newName);
+        $label.attr('for', newName);
+        $(this).find(':input').attr('id', newName).attr('name', newName);
+        $(this).find('a[href=#' + oldName + ']').attr('href', '#' + newName);
       });
 
       $button.before($block);

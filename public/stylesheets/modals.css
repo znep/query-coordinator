@@ -1575,7 +1575,9 @@ div#sortBysList.reorderList li .itemWrapper
     width: 16px;
 }
 
+.vizWrapper .dataColumnBlock .line { padding-left: 20px; }
 .vizWrapper .dataColumnBlock label { width: 4.8em; }
+.vizWrapper .dataColumnBlock.soloBlock .line { padding-left: 0; }
 .vizWrapper .dataColumnBlock.soloBlock .removeButton { display: none; }
 .vizWrapper .dataColumnBlock.soloBlock label { width: 6.5em; }
 

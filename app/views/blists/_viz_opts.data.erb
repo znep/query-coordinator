@@ -1,0 +1,38 @@
+<%- options.each do |opt| -%>
+<%- oname = name_prefix + '-' + opt['name'] -%>
+<%- if !local_assigns[:name_postfix].nil? -%>
+<%-   oname += '-' + local_assigns[:name_postfix] -%>
+<%- end -%>
+<div class='line'>
+  <label for='<%= oname %>'><%= opt['label'] %></label>
+  <%- if opt['type'] == 'boolean' -%>
+  <input type='checkbox' id='<%= oname %>' name='<%= oname %>'
+    <%- trueVal = opt['booleanTrueValue'] -%>
+    <%= trueVal.nil? ? '' : "trueValue='" + trueVal + "'" %>
+    <%= opt['booleanFalseValue'].nil? ? '' :
+      "falseValue='" + opt['booleanFalseValue'] + "'" %>
+    <%= trueVal.nil? ?
+      opt['default'] ? "checked='checked'" : '' :
+      opt['default'] == trueVal ? "checked='checked'" : '' %> />
+  <%- elsif opt['type'] == 'string' || opt['type'] == 'number' -%>
+  <input type='text' id='<%= oname %>' name='<%= oname %>'
+    <%= opt['default'].nil? ? '' : "value='" + opt['default'] + "'" %> />
+  <%- elsif opt['type'] == 'dropdown' -%>
+  <select id='<%= oname %>' name='<%= oname %>'>
+    <%- opt['dropdownOptions'].each do |dval| -%>
+    <option value='<%= dval['value'] %>'
+      <%= opt['default'] == dval['value'] ?
+        "selected='selected'" : '' %>><%= h dval['label'] %></option>
+    <%- end -%>
+  </select>
+  <%- elsif opt['type'] == 'color' -%>
+  <a class='colorOption' href='#<%= oname %>' title='Choose color'
+    <%= opt['default'].nil? ? '' :
+      "style='background-color:" + opt['default'] + ";'" %>>
+    Choose color
+  </a>
+  <input id='<%= oname %>' name='<%= oname %>' type='hidden'
+    <%= opt['default'].nil? ? '' : "value='" + opt['default'] + "'" %> />
+  <%- end -%>
+</div>
+<%- end -%>

@@ -105,6 +105,7 @@ $(function() {
         success: function(response, status) {
             $('.commentList-body').removeClass('commentsLoading');
             approvalNS.populateTable(response);
+            approvalNS.filterComments('pending');
         }
     });
 

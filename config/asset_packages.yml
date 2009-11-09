@@ -181,6 +181,8 @@ javascripts:
   - plugins/ui.core
   - plugins/ui.draggable
   - plugins/jquery.tache
+  - util/styling
+  - plugins/jquery.qtip
   - util/navigation
   - util/util
   - plugins/date

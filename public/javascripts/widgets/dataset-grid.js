@@ -75,7 +75,8 @@
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
-                        headerMods: function (col) { headerMods(datasetObj, col); },
+                        headerMods: function (col)
+                            { headerMods(datasetObj, col); },
                         rowMods: function (rows) { rowMods(datasetObj, rows); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
@@ -96,11 +97,10 @@
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
 
-                $('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle')
-                    .live('mouseover',
+                $.live('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle', 'mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
-                $('#' + $datasetGrid.attr('id') + ' .add-column')
-                    .live("click", function (e) { 
+                $.live('#' + $datasetGrid.attr('id') + ' .add-column', "click",
+                        function (e) { 
                           $('<a href="/datasets/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
                         });
 
@@ -556,15 +556,37 @@
                     if ($tdh.find('a.menuLink').length > 0) { return true; }
                     var uid = $tdh.attr('uid');
                     var col = datasetObj.settings._model.column(uid);
-                    if (col) { createHeaderMenu(datasetObj, col, $tdh); }
+                    if (col) { setupHeader(datasetObj, col, $tdh, false); }
                 });
         });
+    };
+
+    var setupHeader = function(datasetObj, col, $col, qtipsRef)
+    {
+        createHeaderMenu(datasetObj, col, $col);
+
+        if (qtipsRef)
+        {
+            if (qtipsRef[col.id] && qtipsRef[col.id].data('qtip'))
+            { qtipsRef[col.id].qtip('destroy'); }
+            qtipsRef[col.id] = $col;
+
+            var tooltipContent = '<div class="blist-th-tooltip ' + col.type +
+                '"><div class="blist-th-icon"></div><p class="name">' +
+                col.name + '</p>' + (col.description !== undefined ?
+                    '<p class="description">' + col.description + '</p>' : '') +
+                '</div>';
+            $col.removeAttr('title').qtip({content: tooltipContent,
+                    style: { name: 'blist' },
+                    position: { target: 'mouse' } });
+        }
     };
 
     /* Callback when rendering the grid headers.  Set up column on-object menus */
     var headerMods = function(datasetObj, col)
     {
-        createHeaderMenu(datasetObj, col, $(col.dom));
+        if (!datasetObj.settings._colQtips) { datasetObj.settings._colQtips = {}; }
+        setupHeader(datasetObj, col, $(col.dom), datasetObj.settings._colQtips);
     };
 
     var createHeaderMenu = function(datasetObj, col, $colDom)

@@ -302,6 +302,9 @@ class View < Model
       @@visualization_config[self.displayType]['library'] : nil
   end
 
+  @@color_defaults = ['#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff',
+    '#0000ff', '#9900ff', '#ff00ff']
+
   @@visualization_config = {
     'barchart' => {
       'library' => 'google.visualization.BarChart',
@@ -310,8 +313,13 @@ class View < Model
       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
       'dataColumns' => [{'dataType' => 'number', 'label' => 'Values'}],
       'dataColumnOptions' => [{'label' => 'Bar Color', 'name' => 'colors',
-        'type' => 'color', 'default' => '#3366ff'}],
-      'globalOptions' => [
+        'type' => 'color', 'default' =>  @@color_defaults[0],
+        'colorArray' => @@color_defaults}],
+      'mainOptions' => [
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ],
+      'advancedOptions' => [
         {'label' => 'Legend', 'name' => 'legend',
         'type' => 'dropdown', 'dropdownOptions' => [
           {'value' => 'right', 'label' => 'Right'},
@@ -322,9 +330,7 @@ class View < Model
         ],
         'default' => 'right'},
         {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-        'default' => false},
-        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
-        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+        'default' => false}
       ]
     },
     'geomap' => {'library' => 'google.visualization.GeoMap',

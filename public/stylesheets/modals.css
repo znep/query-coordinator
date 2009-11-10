@@ -1562,24 +1562,60 @@ div#sortBysList.reorderList li .itemWrapper
 
 
 /*** START: Create visualization dialog ***/
+.vizWrapper .column
+{
+    float: left;
+    width: 30em;
+}
+.vizWrapper .column.right
+{
+    float: right;
+    width: 34em;
+}
+
 .vizWrapper .typeBlock { display: none; }
+.vizWrapper .typeBlock.type-
+{
+    color: #999999;
+    display: block;
+    font-size: 1.2em;
+    font-style: italic;
+    text-align: center;
+}
+
+.vizWrapper .scrollBlock
+{
+    margin-bottom: 0.5em;
+    max-height: 30em;
+    overflow: auto;
+}
+
+.vizWrapper .dataColumnBlock
+{
+    background-color: #ececec;
+    margin: 0.2em 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.vizWrapper .dataColumnBlock .line { float: left; }
+.vizWrapper .dataColumnBlock.soloBlock .line { padding-left: 0; }
 
 .vizWrapper .removeButton
 {
     background: transparent url(/stylesheets/images/common/delete.png) no-repeat scroll center center;
     display: block;
-    float: left;
     height: 16px;
-    margin: 2px;
+    left: 2px;
+    position: absolute;
     text-indent: -9999px;
+    top: 0.75em;
     width: 16px;
 }
-
-.vizWrapper .dataColumnBlock .line { padding-left: 20px; }
-.vizWrapper .dataColumnBlock label { width: 4.8em; }
-.vizWrapper .dataColumnBlock.soloBlock .line { padding-left: 0; }
 .vizWrapper .dataColumnBlock.soloBlock .removeButton { display: none; }
-.vizWrapper .dataColumnBlock.soloBlock label { width: 6.5em; }
+
+.vizWrapper .dataColumnBlock select { margin-right: 0.75em; }
+.vizWrapper .dataColumnBlock .color label { display: none; }
 
 .vizWrapper .line input[type="checkbox"] { width: auto; }
 .vizWrapper .line .colorOption
@@ -1590,6 +1626,20 @@ div#sortBysList.reorderList li .itemWrapper
     text-indent: -9999px;
     width: 16px;
 }
+
+.vizWrapper .sectionToggle
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_expand_sprites.png);
+    background-position: -5px -25px;
+    background-repeat: no-repeat;
+    height: 22px;
+    padding-left: 15px;
+}
+.vizWrapper .closed .sectionToggle { background-position: -7px -3px; }
+.vizWrapper h3 .sectionToggle { color: #660000; }
+
+#modal .vizWrapper .closed .separator { border-bottom: none; }
+.vizWrapper .closed .content { display: none; }
 
 /*** END: Create visualization dialog ***/
 

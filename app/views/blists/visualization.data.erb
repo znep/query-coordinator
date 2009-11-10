@@ -1,4 +1,3 @@
-<%- content_for(:wrapper_class, "narrowDialog") -%>
 <%- content_for :headline do -%>
 <h1 class='vizIcon'>Create a Visualization</h1>
 <%- end -%>
@@ -8,23 +7,20 @@
   Datasets can be displayed in a variety of visual formats.
   </p>
 
-  <% form_tag("#{@view.href}/create_visualization") do %>
+  <% form_tag("#{@view.href}/create_visualization", :class => 'clearfix') do %>
+  <div class='column'>
+
     <div class='section'>
-      <h3>Name</h3>
+      <%- viz_types = View.visualization_config.reject {|k,v| v['hidden'] == true}.
+        sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
+      <h3>Setup</h3>
       <p class='subtitle separator'>
-      Give a name to your new visualization
+      Enter a name and choose a chart type
       </p>
       <div class='line'>
         <label class='required' for='vizName'>Name</label>
         <input type='text' id='vizName' name='viewName' />
       </div>
-    </div>
-
-    <div class='section'>
-      <%- viz_types = View.visualization_config.reject {|k,v| v['hidden'] == true}.
-        sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
-      <h3>Visualization Type</h3>
-      <p class='subtitle separator'>Choose a chart to create</p>
       <div class='line'>
         <label class='required' for='vizType'>Type</label>
         <select id='vizType' name='vizType' class='prompt'>
@@ -42,9 +38,9 @@
     <div class='typeBlock type-<%= t[0] %>'>
 
       <div class='section'>
-        <h3>Required Columns</h3>
+        <h3>Configuration</h3>
         <p class='subtitle separator'>
-        Choose the required columns for this <%= h type_config['label'].downcase %>
+        Choose the data to chart against, and set other options
         </p>
 
         <%- count = 0 -%>
@@ -69,61 +65,85 @@
 
         <%- count += 1 -%>
         <%- end -%>
+
+        <%= render(:partial => 'viz_opts',
+          :locals => {:options => type_config['mainOptions'],
+          :name_prefix => t[0]}) %>
       </div>
 
+      <div class='section closed'>
+        <h3 class='separator'><a href='#toggle-advanced' class='sectionToggle'>
+            Advanced Configuration
+        </a></h3>
+
+        <div class='content'>
+          <%= render(:partial => 'viz_opts',
+            :locals => {:options => type_config['advancedOptions'],
+            :name_prefix => t[0]}) %>
+        </div>
+      </div>
+    </div>
+    <%- end -%>
+
+    </div>
+
+    <div class='column right'>
+      <div class='typeBlock type-'>
+        (Choose a chart type to see more details)
+      </div>
+
+    <%- viz_types.each do |t| -%>
+    <%- type_config = t[1] -%>
+    <div class='typeBlock type-<%= t[0] %>'>
       <div class='section'>
         <h3>Data Columns</h3>
         <p class='subtitle separator'>
-        Choose the columns for this <%= h type_config['label'].downcase %> that
-        contain the data to display
+        Choose the data to display for this <%= h type_config['label'].downcase %>
         </p>
 
-        <div class='dataColumnBlock soloBlock'>
-          <a class='removeButton' href='#removeDataBlock' title='Remove'>Remove</a>
+        <div class='scrollBlock'>
+          <div class='dataColumnBlock soloBlock clearfix'>
+            <a class='removeButton' href='#removeDataBlock'
+              title='Remove'>Remove</a>
 
-          <%- count = 0 -%>
-          <%- type_config['dataColumns'].each do |dcol| -%>
-          <%- if cols[dcol['dataType']].nil?
-                cols[dcol['dataType']] = @view.columns.select {|c|
-                  c.dataTypeName == dcol['dataType'] && !c.flag?('hidden')}
-              end -%>
-          <%- dc_name = 'dataColumn-' + t[0] + '-' + count.to_s + '-0' -%>
+            <%- count = 0 -%>
+            <%- type_config['dataColumns'].each do |dcol| -%>
+            <%- if cols[dcol['dataType']].nil?
+                  cols[dcol['dataType']] = @view.columns.select {|c|
+                    c.dataTypeName == dcol['dataType'] && !c.flag?('hidden')}
+                end -%>
+            <%- dc_name = 'dataColumn-' + t[0] + '-' + count.to_s + '-0' -%>
 
-          <div class='line'>
-            <label class='required' for='<%= dc_name %>'>
-              <%= h dcol['label'] %>
-            </label>
-            <select id='<%= dc_name %>' name='<%= dc_name %>' class='prompt'>
-              <option class='prompt' value=''>Select a Column</option>
-              <%- cols[dcol['dataType']].each do |c| -%>
-              <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
-              <%- end -%>
-            </select>
+            <div class='line'>
+              <label class='required' for='<%= dc_name %>'>
+                <%= h dcol['label'] %>
+              </label>
+              <select id='<%= dc_name %>' name='<%= dc_name %>' class='prompt'>
+                <option class='prompt' value=''>Select a Column</option>
+                <%- cols[dcol['dataType']].each do |c| -%>
+                <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+                <%- end -%>
+              </select>
+            </div>
+
+            <%= render(:partial => 'viz_opts',
+              :locals => {:options => type_config['dataColumnOptions'],
+              :name_prefix => t[0], :name_postfix => '0'}) %>
+
+            <%- count += 1 -%>
+            <%- end -%>
           </div>
-
-          <%= render(:partial => 'viz_opts',
-            :locals => {:options => type_config['dataColumnOptions'],
-            :name_prefix => t[0], :name_postfix => '0'}) %>
-
-          <%- count += 1 -%>
-          <%- end -%>
         </div>
+
         <ul class='actionButtons'>
           <li><a class='button addDataBlock'
             href='#addDataBlock-<%= t[0] %>'>Add Data Column</a></li>
         </ul>
       </div>
-
-      <div class='section'>
-        <h3 class='separator'>Configuration</h3>
-
-        <%= render(:partial => 'viz_opts',
-          :locals => {:options => type_config['globalOptions'],
-          :name_prefix => t[0]}) %>
-      </div>
-
     </div>
     <%- end -%>
+
+    </div>
 
   <%- end -%>
 
@@ -181,6 +201,12 @@
     $('.vizWrapper #vizType').change(adjustVizType)
       .keypress(adjustVizType).click(adjustVizType);
 
+    $('.vizWrapper a.sectionToggle').click(function(event)
+    {
+      event.preventDefault();
+       $(event.target).closest('.section').toggleClass('closed');
+    });
+
     $('.vizWrapper a.removeButton').click(function(event)
     {
       event.preventDefault();
@@ -193,26 +219,36 @@
     $('.vizWrapper a.addDataBlock').click(function(event)
     {
       event.preventDefault();
-      var $button = $(event.target).closest('ul');
+      var $scrollBlock = $(event.target).closest('ul').prev('.scrollBlock');
 
       $('.vizWrapper .dataColumnBlock.soloBlock').removeClass('soloBlock');
-      var $block = $button.prev('.dataColumnBlock').clone(true);
+      var $block = $scrollBlock.find('.dataColumnBlock:last').clone(true);
       $block.find('.line').each(function(i, l)
       {
-        var $label = $(this).find('label');
+        var $this = $(this);
+        var $label = $this.find('label');
 
         var oldName = $label.attr('for');
         var splitName = oldName.split('-');
-        splitName[splitName.length - 1] =
+        var newIndex =
           parseInt(splitName[splitName.length - 1]) + 1;
+        splitName[splitName.length - 1] = newIndex;
         var newName = splitName.join('-');
 
         $label.attr('for', newName);
-        $(this).find(':input').attr('id', newName).attr('name', newName);
-        $(this).find('a[href=#' + oldName + ']').attr('href', '#' + newName);
+        $this.find(':input').attr('id', newName).attr('name', newName);
+        $this.find('a[href=#' + oldName + ']').attr('href', '#' + newName);
+        var $color = $this.find('a.colorOption');
+        if ($color.length > 0 && $color.attr('colorDefaults') !== undefined)
+        {
+          var colors = $.json.deserialize($color.attr('colorDefaults'));
+          var newColor = colors[newIndex % colors.length];
+          $color.css('background-color', newColor);
+          $this.find('input[type=hidden]').val(newColor);
+        }
       });
 
-      $button.before($block);
+      $scrollBlock.append($block);
     });
 
 

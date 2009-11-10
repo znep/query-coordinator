@@ -30,6 +30,21 @@
             Grab the embed code when things look right.
           </p>
         </div>
+        <div class="unsavedChangesBar">
+          <ul class="actionButtons clearfix">
+            <li>
+              <a class="discardChangesButton" title="Discard your unsaved changes" href="#discard">
+                Discard
+              </a>
+            </li>
+            <li>
+              <a class="saveChangesButton arrowButton" title="Save the changes and apply them to existing players using this template" href="#save">
+                Save
+              </a>
+            </li>
+          </ul>
+          <p>You have unsaved changes to this template.</p>
+        </div>
         <p class="livePreviewText">Live Preview</p>
         <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
           <%= get_publish_embed_code_for_view(@view, {}, 'normal') %>
@@ -132,9 +147,6 @@
         </h2>
         <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
         <ul class="headerActions actionButtons">
-          <li class="noButton">
-            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
-          </li>
           <li>
             <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
           </li>
@@ -478,9 +490,6 @@
         </h2>
         <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
         <ul class="headerActions actionButtons">
-          <li class="noButton">
-            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
-          </li>
           <li>
             <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
           </li>
@@ -620,9 +629,6 @@
         </h2>
         <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
         <ul class="headerActions actionButtons">
-          <li class="noButton">
-            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
-          </li>
           <li>
             <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
           </li>
@@ -685,9 +691,6 @@
         </h2>
         <a href="#changeTemplate" class="changeTemplateLink">Change &rsaquo;</a>
         <ul class="headerActions actionButtons">
-          <li class="noButton">
-            <a href="#cancel" class="cancelCustomizationLink">Cancel Changes</a>
-          </li>
           <li>
             <a class="arrowButton submitLink" href="<%= @view.href %>">Done</a>
           </li>

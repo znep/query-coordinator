@@ -109,7 +109,7 @@ var picklistManagerSetup = function()
   setUpList();
   $('#picklistManager .remove').click(removeValue);
   $('#picklistManager input').keydown(inputKeyDown);
-  $('#picklistManager :submit').click(submitClick);
+  $('#picklistManager input[type=submit]').click(submitClick);
 
   return function()
   {

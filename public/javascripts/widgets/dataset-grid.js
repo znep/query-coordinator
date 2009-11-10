@@ -572,13 +572,37 @@
             qtipsRef[col.id] = $col;
 
             var tooltipContent = '<div class="blist-th-tooltip ' + col.type +
-                '"><div class="blist-th-icon"></div><p class="name">' +
-                col.name + '</p>' + (col.description !== undefined ?
+                '">' + '<p class="name">' + col.name + '</p>' +
+                '<div class="blist-th-icon">' + col.type.displayable() + '</div>' +
+                (col.description !== undefined ?
                     '<p class="description">' + col.description + '</p>' : '') +
                 '</div>';
+            var contentIsMain = true;
+            var adjustContent = function(e)
+            {
+                if (e && $(e.target).is('.menuLink'))
+                {
+                    if (contentIsMain)
+                    {
+                        var api = $col.qtip('api');
+                        api.updateContent('Click for Menu', false);
+                        contentIsMain = false;
+                    }
+                }
+                else if (!contentIsMain)
+                {
+                    var api = $col.qtip('api');
+                    api.updateContent(tooltipContent, false);
+                    contentIsMain = true;
+                }
+            };
             $col.removeAttr('title').qtip({content: tooltipContent,
                     style: { name: 'blist' },
-                    position: { target: 'mouse' } });
+                    position: { target: 'mouse' },
+                    api: {
+                        onPositionUpdate: adjustContent,
+                        beforeShow: adjustContent
+                    } });
         }
     };
 

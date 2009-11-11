@@ -45,37 +45,38 @@
                     var valueManager = $this.data('value-manager');
                     if (value === undefined) {
                         if (valueManager && valueManager.get)
-						{
+                        {
                             returnValue = valueManager.get(value);
-						}
+                        }
                         else if (this.tagName == 'TEXTAREA') {
                             returnValue = $this.text();
                             if (returnValue === '')
-							{
+                            {
                                 // Convert empty textarea elements to a "null" value
                                 returnValue = null;
-							}
-                        } 
-						else if (this.tagName == 'INPUT')
-						{
+                            }
+                        }
+                        else if (this.tagName == 'INPUT' || this.tagName == 'SELECT')
+                        {
                             if ($this.attr('type') == 'checkbox')
-							{
+                            {
                                 returnValue = $this.attr('checked') ? true : false;
                             }
- 							else {
+                            else
+                            {
                                 returnValue = this.value;
-                                if (returnValue === '') 
-								{
+                                if (returnValue === '')
+                                {
                                     // Convert empty form elements to a "null" value
                                     returnValue = null;
-								}
+                                }
                             }
-						}
+                        }
                         if (returnValue !== undefined)
-						{
+                        {
                             // Found a value
                             return false;
-						}
+                        }
                     }
                 });
 

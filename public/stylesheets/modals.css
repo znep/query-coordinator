@@ -1599,7 +1599,6 @@ div#sortBysList.reorderList li .itemWrapper
 }
 
 .vizWrapper .dataColumnBlock .line { float: left; }
-.vizWrapper .dataColumnBlock.soloBlock .line { padding-left: 0; }
 
 .vizWrapper .removeButton
 {
@@ -1620,11 +1619,22 @@ div#sortBysList.reorderList li .itemWrapper
 .vizWrapper .line input[type="checkbox"] { width: auto; }
 .vizWrapper .line .colorOption
 {
+    background-image: url(/images/colorpicker/select_arrow.png);
+    background-position: right bottom;
+    background-repeat: no-repeat;
     border: 2px ridge #000000;
     display: inline-block;
     height: 16px;
     text-indent: -9999px;
-    width: 16px;
+    width: 20px;
+}
+
+.vizWrapper span.error
+{
+    display: block;
+    float: none;
+    padding-left: 15px;
+    margin-left: 7.8em;
 }
 
 .vizWrapper .sectionToggle

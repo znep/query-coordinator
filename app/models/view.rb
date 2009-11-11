@@ -309,7 +309,6 @@ class View < Model
     'barchart' => {
       'library' => 'google.visualization.BarChart',
       'label' => 'Bar Chart',
-      'groupName' => 'Bar',
       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
       'dataColumns' => [{'dataType' => 'number', 'label' => 'Values'}],
       'dataColumnOptions' => [{'label' => 'Bar Color', 'name' => 'colors',

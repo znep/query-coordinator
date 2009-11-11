@@ -475,21 +475,10 @@ class BlistsController < ApplicationController
     errors = []
     begin
       view = View.create({:name => params[:viewName],
+                         :columns => JSON.parse(params[:columns]),
+                         :displayType => params[:vizType],
+                         :displayFormat => JSON.parse(params[:options]),
                          :originalViewId => params[:id]})
-
-#      fmt = {:startDateId => view.columns.select {|c|
-#        c.tableColumnId.to_s == params[:startDate].to_s}[0].id,
-#          :titleId => view.columns.select {|c|
-#          c.tableColumnId.to_s == params[:eventTitle].to_s}[0].id}
-#      if !params[:endDate].blank?
-#        fmt[:endDateId] = view.columns.select {|c|
-#          c.tableColumnId.to_s == params[:endDate].to_s}[0].id
-#      end
-#      if !params[:eventDescription].blank?
-#        fmt[:descriptionId] = view.columns.select {|c|
-#          c.tableColumnId.to_s == params[:eventDescription].to_s}[0].id
-#      end
-#      view.update_attributes!({:displayType => 'calendar', :displayFormat => fmt})
     rescue CoreServer::CoreServerError => e
       errors << e.error_message
     end

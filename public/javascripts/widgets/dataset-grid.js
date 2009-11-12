@@ -743,6 +743,8 @@
 
     var columnMenuOpenCallback = function(datasetObj, $colHeader, $menu)
     {
+        if ($colHeader.data('qtip')) { $colHeader.qtip('hide'); }
+
         var selCols = $(datasetObj.currentGrid).blistTableAccessor()
             .getSelectedColumns();
         var col = $colHeader.data('column');

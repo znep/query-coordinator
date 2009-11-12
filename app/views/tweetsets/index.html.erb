@@ -59,7 +59,7 @@
           <%- unless @example_set.nil? %>
             <div id='sampleSet'>
               <h2>Here's a Sample tweetset</h2>
-              <iframe src="<%= @example_set %>" width='<%= @example_width %>px' height='<%= @example_height %>px'></iframe>
+              <iframe src="<%= @example_set %>" width='<%= @example_width %>px' height='<%= @example_height %>px' frameborder="0" scrolling="no"></iframe>
             </div>
           <%- end -%>
         </div>

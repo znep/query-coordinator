@@ -29,6 +29,7 @@ div.tweetsetContainer
 {
    float: left;
    padding-right: 2em;
+   padding-bottom: 0.4em;
 }
 
 .tweetsetContainer #tweetsetIntro #introExplanation
@@ -74,7 +75,7 @@ div.tweetsetContainer
 
 .tweetsetContainer #rightColumn
 {
-    width: 30em;
+    width: 20em;
     float: right;
 }
 

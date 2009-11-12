@@ -272,7 +272,7 @@ stylesheets:
 - tweetsets-index:
   - form-common
   - carousel/discover-carousel-skin
-  - tweetsets
+  - tweetsets-screen
 - widgets-show:
   - table-core
   - dataset-grid

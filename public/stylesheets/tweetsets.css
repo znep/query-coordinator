@@ -1,0 +1,96 @@
+div.tweetsetContainer
+{
+    margin: 0em 1em;
+    padding-top: 1em;
+}
+
+.tweetsetContainer #leftColumn
+{
+    margin: 1.5em 1.5em;
+    padding: 1em;
+}
+
+.tweetsetContainer #tweetsetIntro .lessSpace
+{
+    padding-top: 1em;
+}
+
+.tweetsetContainer #tweetsetIntro .spaceAbove
+{
+    padding-top: 2em;
+}
+
+.tweetsetContainer #tweetsetIntro
+{
+  margin-bottom: 3em;
+}
+
+.tweetsetContainer #tweetsetIntro img#preview
+{
+   float: left;
+   padding-right: 2em;
+}
+
+.tweetsetContainer #tweetsetIntro #introExplanation
+{
+    color: #000;
+    padding-left: 2.5em;
+    padding-top: 3em;
+}
+
+.tweetsetContainer #tweetsetIntro h2.bigger
+{
+    font-size: 2.3em;
+}
+
+.tweetsetContainer .loginText,
+.tweetsetContainer .loginText a
+{
+    color: #fff;
+}
+
+.tweetsetContainer .loginText, 
+.tweetsetContainer #searchArea .searchText
+{
+    font-size: 1.4em;
+}
+
+.tweetsetContainer #searchArea .searchText
+{
+    margin-right: 1em;
+}
+
+.tweetsetContainer #searchArea #searchLine input[type='text']
+{
+    width: 20em;
+}
+
+.tweetsetContainer #searchArea .actionButtons
+{
+    display: inline-block;
+    position: relative;
+    top: 0.6em;
+}
+
+.tweetsetContainer #rightColumn
+{
+    width: 30em;
+    float: right;
+}
+
+.tweetsetContainer #leftColumn #sampleSet
+{
+    margin-top: 3em;
+}
+
+.tweetsetContainer .recentSets
+{
+   padding-top: 1em;
+}
+
+.tweetsetContainer .recentSets li
+{
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+

@@ -24,17 +24,9 @@
     blist.widgets.visualization.displayType = '<%= view.displayType %>';
     blist.widgets.visualization.displayFormat = { <%= [view.displayFormat, "'wmode': 'opaque'"].compact.join(', ') %> };
     $(function ()
-    { 
-        blist.widgets.visualization.chartClass = <%= view.chart_class || "''" %>; 
-
-        if (blist.widgets.visualization.isFusionMap)
-        {
-            var map = new FusionMaps("/fusionMaps/"+blist.widgets.visualization.fusionMapSwf,
-                "Map1Id", "100%" , "100%", "0", "0");
-            map.setDataURL("/views/"+blist.widgets.visualization.viewId+"/rows.fmap");
-            map.addParam("wmode", "opaque");
-            map.render('<%= grid_div %>');
-        }
+    {
+        // We're assigning an object, so make sure it is loaded before we use it
+        blist.widgets.visualization.chartClass = <%= view.chart_class || "''" %>;
     });
   </script>
 <%- end -%>

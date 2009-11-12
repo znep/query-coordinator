@@ -340,8 +340,7 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
-  <%= render(:partial => "shared/visualization",
-    :locals => { :view => @view, :grid_div => "dataGrid" }) %>
+  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
   <%= render(:partial => "shared/calendar",
     :locals => { :view => @view, :grid_div => "dataGrid" }) %>
 

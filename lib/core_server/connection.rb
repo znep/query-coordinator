@@ -41,6 +41,34 @@ module CoreServer
         'file' => UploadIO.new(file, file.content_type, File.basename(file.original_path))
       generic_request(req).body
     end
+    
+    # For creating tweetsets only
+    def create_tweetset(query, name, follow = true)
+      request = Net::HTTP::Post.new('/views.json')
+      request.basic_auth APP_CONFIG['tweetsets_user'], APP_CONFIG['tweetsets_password']
+      
+      request.body = {
+        :name => name, :tags => ['tweetset', query],
+        :flags => ['dataPublic']
+        }.to_json
+      request.content_type = "application/json"
+
+
+      @request_count += 1
+      
+      result = log(request) do
+        Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
+          http.request(request)
+        end
+      end
+      
+      # DEBUG
+      RAILS_DEFAULT_LOGGER.error "Result from core create: #{result.body.inspect}"
+      raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
+      
+      json = JSON.parse(result.body) unless result.nil?
+      json['id']
+    end
 
     def log_info(message, ms)
       if @logger && @logger.debug?

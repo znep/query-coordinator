@@ -1641,6 +1641,8 @@ div#sortBysList.reorderList li .itemWrapper
     width: 20px;
 }
 
+.vizWrapper .line.number input { width: 14.2em; }
+
 .vizWrapper .line.hidden { display: none; }
 
 .vizWrapper span.error

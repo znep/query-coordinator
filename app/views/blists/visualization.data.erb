@@ -248,6 +248,7 @@
       $scrollBlock.append($block);
     });
 
+    $('.vizWrapper .number input').spinner({min: 0});
 
     $('.vizWrapper .colorOption').colorPicker().bind('color_change',
         function(e, newColor)

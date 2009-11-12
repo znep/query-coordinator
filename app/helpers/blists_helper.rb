@@ -85,6 +85,18 @@ module BlistsHelper
       {'text' => 'Facebook', 'class' => 'facebook', 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}", 'external' => true}]}
   end
 
+  def view_create_menu_options(view)
+    [{'text' => 'Filtered View', 'class' => 'filter', 'href' => '#createFilter'},
+      {'text' => 'Calendar', 'href' => "#{view.href}/calendar",
+      'class' => 'calendar' + (view.can_add_calendar? ? '' : ' disabled'),
+      'title' => (view.can_add_calendar? ? '' :
+        'This dataset does not have both a date column and text column')},
+      {'text' => 'Visualization', 'href' => "#{view.href}/visualization",
+      'class' => 'viz' + (view.can_add_visualization? ? '' : ' disabled'),
+      'title' => (view.can_add_visualization? ? '' :
+        'This dataset does not have the appropriate columns for visualizations')}]
+  end
+
   def contacts_filter_menu(href_prefix, href_group_prefix,
                            title_key, title_group_key, id)
     items = [{'text' => 'Me', 'href' => href_prefix + current_user.id,

@@ -11,8 +11,9 @@
   <div class='column'>
 
     <div class='section common'>
-      <%- viz_types = View.visualization_config.reject {|k,v| v['hidden'] == true}.
-        sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
+      <%- viz_types = View.visualization_config.reject {|k,v|
+          v['hidden'] == true || !@view.can_create_visualization_type?(k)}.
+          sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
       <h3>Setup</h3>
       <p class='subtitle separator'>
       Enter a name and choose a chart type

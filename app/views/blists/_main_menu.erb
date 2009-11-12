@@ -7,18 +7,8 @@
         'if' => !@view.is_alt_view?},
         {'text' => 'Create a New View', 'class' => 'newView',
         'user_required' => true,
-        'if' => !@view.is_alt_view?, 'href' => '#', 'submenu' => {'items' => [
-        {'text' => 'Filtered View', 'class' => 'filter',
-        'href' => '#createFilter'},
-        {'text' => 'Calendar', 'href' => "#{@view.href}/calendar",
-        'class' => 'calendar' + (@view.can_add_calendar? ? '' : ' disabled'),
-        'title' => (@view.can_add_calendar? ? '' :
-          'This dataset does not have both a date column and text column')},
-        {'text' => 'Visualization', 'href' => "#{@view.href}/visualization",
-        'class' => 'viz' + (@view.can_add_visualization? ? '' : ' disabled'),
-        'title' => (@view.can_add_visualization? ? '' :
-          'This dataset does not have the appropriate columns for visualizations')}
-        ]}},
+        'if' => !@view.is_alt_view?, 'href' => '#',
+        'submenu' => {'items' => view_create_menu_options(@view)} },
         {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
         {'text' => 'As CSV', 'external' => true,

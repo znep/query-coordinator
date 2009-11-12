@@ -147,9 +147,6 @@ blist.blistGrid.columnsChangedHandler = function (event, columnIds)
 
 blist.blistGrid.mainMenuLoaded = function (data)
 {
-    // Note -- commented lines are full jQuerified equivalents and are sloooow
-
-    //var $data = $(data);
     var $menus = $(data).children();
 
     // Swap out the main menu with whatever was loaded
@@ -157,6 +154,10 @@ blist.blistGrid.mainMenuLoaded = function (data)
     var $container = $menu.parent();
     $container[0].removeChild($menu[0]);
     $container[0].appendChild($menus[0]);
+
+    // Update the Create menu in More Views tab
+    $('#createViewMenu')[0].innerHTML =
+        $menus.eq(0).find('li.blist li.newView ul.menu')[0].innerHTML;
 
     // Swap out the filter & view menu with whatever was loaded
     $menu = $("#filterViewMenu");

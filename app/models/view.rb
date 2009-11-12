@@ -281,8 +281,35 @@ class View < Model
   end
 
   def can_add_visualization?
-    # TODO: Implement me
-    true
+    @@visualization_config.each do |k, v|
+      return true if can_create_visualization_type?(k)
+    end
+    return false
+  end
+
+  def can_create_visualization_type?(viz_type)
+    config = @@visualization_config[viz_type]
+    if config.nil? || config['hidden']
+      return false
+    end
+
+    to_check = []
+    if config.has_key?('fixedColumns')
+      to_check.concat(config['fixedColumns'])
+    end
+    if config.has_key?('dataColumns')
+      to_check.concat(config['dataColumns'])
+    end
+
+    to_check.each do |tc|
+      next if tc['optional']
+
+      if !columns.any? {|c| c.dataTypeName == tc['dataType'] && !c.flag?('hidden')}
+        return false
+      end
+    end
+
+    return true
   end
 
   def owned_by?(user)

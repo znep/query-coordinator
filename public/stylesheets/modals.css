@@ -1562,10 +1562,18 @@ div#sortBysList.reorderList li .itemWrapper
 
 
 /*** START: Create visualization dialog ***/
+.modalDialog .dialogBox .header .vizIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -186px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
 .vizWrapper .column
 {
     float: left;
-    width: 30em;
+    width: 32em;
 }
 .vizWrapper .column.right
 {
@@ -1598,8 +1606,6 @@ div#sortBysList.reorderList li .itemWrapper
     position: relative;
 }
 
-.vizWrapper .dataColumnBlock .line { float: left; }
-
 .vizWrapper .removeButton
 {
     background: transparent url(/stylesheets/images/common/delete.png) no-repeat scroll center center;
@@ -1614,6 +1620,12 @@ div#sortBysList.reorderList li .itemWrapper
 .vizWrapper .dataColumnBlock.soloBlock .removeButton { display: none; }
 
 .vizWrapper .dataColumnBlock select { margin-right: 0.75em; }
+.vizWrapper .dataColumnBlock .color
+{
+    position: absolute;
+    right: 0.25em;
+    top: 0;
+}
 .vizWrapper .dataColumnBlock .color label { display: none; }
 
 .vizWrapper .line input[type="checkbox"] { width: auto; }
@@ -1628,6 +1640,8 @@ div#sortBysList.reorderList li .itemWrapper
     text-indent: -9999px;
     width: 20px;
 }
+
+.vizWrapper .line.hidden { display: none; }
 
 .vizWrapper span.error
 {

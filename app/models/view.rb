@@ -253,7 +253,7 @@ class View < Model
   end
 
   def is_alt_view?
-    !self.displayType.nil?
+    is_calendar? || is_visualization?
   end
 
   def is_calendar?
@@ -305,15 +305,17 @@ class View < Model
   @@color_defaults = ['#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff',
     '#0000ff', '#9900ff', '#ff00ff']
 
+  @@def_color_option = {'label' => 'Color', 'name' => 'colors',
+        'type' => 'color', 'default' =>  @@color_defaults[0],
+        'colorArray' => @@color_defaults}
+
   @@visualization_config = {
     'barchart' => {
       'library' => 'google.visualization.BarChart',
       'label' => 'Bar Chart',
       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
       'dataColumns' => [{'dataType' => 'number', 'label' => 'Values'}],
-      'dataColumnOptions' => [{'label' => 'Bar Color', 'name' => 'colors',
-        'type' => 'color', 'default' =>  @@color_defaults[0],
-        'colorArray' => @@color_defaults}],
+      'dataColumnOptions' => [@@def_color_option],
       'mainOptions' => [
         {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
         {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
@@ -332,24 +334,145 @@ class View < Model
         'default' => false}
       ]
     },
-    'geomap' => {'library' => 'google.visualization.GeoMap',
-      'hidden' => true},
+
     'annotatedtimeline' => {'library' => 'google.visualization.AnnotatedTimeLine',
-      'hidden' => true},
+      'label' => 'Time Line',
+      'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
+      'dataColumns' => [{'dataType' => 'number', 'label' => 'Value'},
+        {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
+        {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [{'name' => 'displayAnnotations', 'type' => 'hidden',
+        'default' => true}]
+    },
+
     'imagesparkline' => {'library' => 'google.visualization.ImageSparkLine',
-      'hidden' => true},
+      'label' => 'Sparkline',
+      'dataColumns' => [{'dataType' => 'number', 'label' => 'Value'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'advancedOptions' => [{'name' => 'labelPosition', 'label' => 'Label',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'none', 'label' => 'Hidden'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'right', 'label' => 'Right'}
+        ], 'default' => 'none'},
+        {'name' => 'layout', 'label' => 'Vertical', 'type' => 'boolean',
+          'booleanTrueValue' => 'v', 'booleanFalseValue' => 'h', 'default' => 'v'}
+      ]
+    },
+
     'areachart' => {'library' => 'google.visualization.AreaChart',
-      'hidden' => true},
+      'label' => 'Area Chart',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
+      'dataColumns' => [{'dataType' => 'number', 'label' => 'Value'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ], 'default' => 'right'},
+        {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
+        'default' => false},
+        {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
+          'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
+        {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
+          'booleanTrueValue' => '3', 'booleanFalseValue' => '0', 'default' => '3'}
+      ]
+      },
+
     'columnchart' => {'library' => 'google.visualization.ColumnChart',
-      'hidden' => true},
+      'label' => 'Column Chart',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
+      'dataColumns' => [{'dataType' => 'number', 'label' => 'Values'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ],
+        'default' => 'right'},
+        {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
+        'default' => false}
+      ]
+    },
+
+    'linechart' => {'library' => 'google.visualization.LineChart',
+      'label' => 'Line Chart',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
+      'dataColumns' => [{'dataType' => 'number', 'label' => 'Value'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ], 'default' => 'right'},
+        {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
+        'default' => false},
+        {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
+          'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
+        {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
+          'booleanTrueValue' => '3', 'booleanFalseValue' => '0', 'default' => '3'},
+        {'label' => 'Smooth Line', 'name' => 'smoothLine', 'type' => 'boolean',
+        'default' => false},
+      ]
+      },
+
+    'piechart' => {'library' => 'google.visualization.PieChart',
+      'label' => 'Pie Chart',
+      'dataColumns' => [{'dataType' => 'text', 'label' => 'Label'},
+        {'dataType' => 'number', 'label' => 'Values'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ],
+        'default' => 'right'},
+        {'label' => 'Min. Angle', 'name' => 'pieJoinAngle', 'type' => 'number',
+        'default' => 1,
+        'help' => 'Slices below this angle will be combined into an "Other" slice'}
+      ]
+      },
+
     'intensitymap' => {'library' => 'google.visualization.IntensityMap',
       'hidden' => true},
-    'linechart' => {'library' => 'google.visualization.LineChart',
-      'hidden' => true},
+
     'map' => {'library' => 'google.visualization.Map',
       'hidden' => true},
-    'piechart' => {'library' => 'google.visualization.PieChart',
+
+    'geomap' => {'library' => 'google.visualization.GeoMap',
       'hidden' => true},
+
+    # This chart is really confusing, so I don't think it is worth exposing
+    # unless we have specific requests/use cases for it
     'motionchart' => {'library' => 'google.visualization.MotionChart',
       'hidden' => true}
   }

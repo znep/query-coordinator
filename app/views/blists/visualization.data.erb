@@ -37,12 +37,15 @@
     <%- type_config = t[1] -%>
     <div class='typeBlock type-<%= t[0] %>'>
 
+      <%- if !type_config['fixedColumns'].nil? ||
+        !type_config['mainOptions'].nil? -%>
       <div class='section'>
         <h3>Configuration</h3>
         <p class='subtitle separator'>
         Choose the data to chart against, and set other options
         </p>
 
+        <%- if !type_config['fixedColumns'].nil? -%>
         <%- count = 0 -%>
         <%- type_config['fixedColumns'].each do |fcol| -%>
         <%- if cols[fcol['dataType']].nil?
@@ -65,12 +68,15 @@
 
         <%- count += 1 -%>
         <%- end -%>
+        <%- end -%>
 
         <%= render(:partial => 'viz_opts',
           :locals => {:options => type_config['mainOptions'],
           :name_prefix => t[0]}) %>
       </div>
+      <%- end -%>
 
+      <%- if !type_config['advancedOptions'].nil? -%>
       <div class='section closed'>
         <h3 class='separator'><a href='#toggle-advanced' class='sectionToggle'>
             Advanced Configuration
@@ -82,7 +88,9 @@
             :name_prefix => t[0]}) %>
         </div>
       </div>
+      <%- end -%>
     </div>
+
     <%- end -%>
 
     </div>
@@ -115,11 +123,10 @@
             <%- dc_name = t[0] + '-dataColumn-' + count.to_s + '-0' -%>
 
             <div class='line'>
-              <label class='required' for='<%= dc_name %>'>
-                <%= h dcol['label'] %>
-              </label>
+              <label <%= dcol['optional'] ? '' : "class='required'" %>
+                for='<%= dc_name %>'><%= h dcol['label'] %></label>
               <select id='<%= dc_name %>' name='<%= dc_name %>'
-                class='prompt required'>
+                class='prompt <%= dcol['optional'] ? '' : 'required' %>'>
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
                 <option value='<%= c.id %>'><%= h c.name %></option>
@@ -127,12 +134,13 @@
               </select>
             </div>
 
+            <%- count += 1 -%>
+            <%- end -%>
+
             <%= render(:partial => 'viz_opts',
               :locals => {:options => type_config['dataColumnOptions'],
               :name_prefix => t[0] + '-dataColumn', :name_postfix => '0'}) %>
 
-            <%- count += 1 -%>
-            <%- end -%>
           </div>
         </div>
 

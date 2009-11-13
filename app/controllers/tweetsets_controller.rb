@@ -11,7 +11,7 @@ class TweetsetsController < ApplicationController
         v.tags.any? {|t| t.data == 'tweetset'} &&
         v.flags.any? {|f| f.data == 'schemaPublic'} }.sort{|a, b| b.createdAt <=> a.createdAt}
     rescue
-      notify_hoptoad "Error searching for tweetets: No user with id #{tweetset_user} exists."
+      notify_hoptoad :error_message => "Error searching for tweetets: No user with id #{tweetset_user} exists."
     end
     
     # Look for sets tagged 'example' to show up on the front page

@@ -28,7 +28,7 @@
                 var $link = $(this);
                 var width = $(config.widthSelector).val();
                 var height = $(config.heightSelector).val();
-                if (parseInt(width,10) < 425 || parseInt(height,10) < 344 || width == '' || height == '')
+                if (parseInt(width,10) < 500 || parseInt(height,10) < 425 || width == '' || height == '')
                 {
                     return;
                 }
@@ -55,8 +55,8 @@
                         .replace('#height#', height)
                         .replace('#variation#', $(config.variationSelector).val()));
 
-                // Restrict size to >= 425x344 px
-                if (parseInt(width,10) < 425 || parseInt(height,10) < 344 || width == '' || height == '')
+                // Restrict size to >= 500x425 px
+                if (parseInt(width,10) < 500 || parseInt(height,10) < 425 || width == '' || height == '')
                 {
                     $(config.sizeErrorSelector).removeClass('hide');
                     $(config.textareaSelector).attr('disabled', true);

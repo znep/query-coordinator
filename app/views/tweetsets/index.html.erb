@@ -22,7 +22,6 @@
           </div>
         </div>
       </div>
-      
       <div class='twoColumns clearfix'>
         
         <div id='rightColumn'>
@@ -39,14 +38,16 @@
         </div>
         
         <div id='leftColumn'>
-          <%# TODO: Remove me! %>
-          <%- unless @message.nil? -%>
-            <div class='message'><%= @message %></div>
+          <%- if @created -%>
+            <div class='tweetsetCreated'>
+              <h2>Please wait while your tweetset is being created</h2>
+              <p class='tweetsetPara'>You will receive an e-mail when the tweetset is ready to be viewed.</p>
+            </div>
           <%- end -%>
           <div id='searchArea'>
             <% form_tag( {:action => 'create'} , {:method => 'get', :id => 'tweetsetForm' }) do %>
               <div id='searchLine'>
-                <h2>Create a <%= th.company %> tweetset now.</h2>
+                <h2>Create a <%= th.company %> tweetset now</h2>
                 <span class='searchText'>Enter your hashtag:</span>
                 <%= text_field_tag("query", "", :title => 'enter your hashtag (i.e. #gov20)', :class => 'textPrompt') %>
                  <ul class="actionButtons">
@@ -56,7 +57,7 @@
             <% end %>
           </div>
           
-          <%- unless @example_set.nil? %>
+          <%- unless @example_set.blank? %>
             <div id='sampleSet'>
               <h2>Here's a Sample tweetset</h2>
               <iframe src="<%= @example_set %>" width='<%= @example_width %>px' height='<%= @example_height %>px' frameborder="0" scrolling="no"></iframe>

@@ -47,12 +47,8 @@ module CoreServer
       request = Net::HTTP::Post.new('/views.json')
       request.basic_auth APP_CONFIG['tweetsets_user'], APP_CONFIG['tweetsets_password']
       
-      request.body = {
-        :name => name, :tags => ['tweetset', query],
-        :flags => ['dataPublic']
-        }.to_json
+      request.body = {:name => name, :tags => ['tweetset', query]}.to_json
       request.content_type = "application/json"
-
 
       @request_count += 1
       
@@ -62,8 +58,6 @@ module CoreServer
         end
       end
       
-      # DEBUG
-      RAILS_DEFAULT_LOGGER.error "Result from core create: #{result.body.inspect}"
       raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
       
       json = JSON.parse(result.body) unless result.nil?

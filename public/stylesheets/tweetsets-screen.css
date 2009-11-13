@@ -50,6 +50,7 @@ div.tweetsetContainer
     color: #fff;
 }
 
+.tweetsetContainer .tweetsetPara,
 .tweetsetContainer .loginText, 
 .tweetsetContainer #searchArea .searchText
 {
@@ -82,6 +83,11 @@ div.tweetsetContainer
 .tweetsetContainer #leftColumn #sampleSet
 {
     margin-top: 3em;
+}
+
+.tweetsetContainer .tweetsetCreated
+{
+    margin-bottom: 2em;
 }
 
 .tweetsetContainer .recentSets

@@ -8,12 +8,10 @@ class TweetsetsController < ApplicationController
     # Fetch tweetsets from Core Server, newest first
     begin
       @recent_sets = View.find_for_user(tweetset_user).select{|v| v.tags && 
-        v.tags.any? {|t| t.data == 'tweetset'} &&
-        v.flags.any? {|f| f.data == 'schemaPublic'} }.sort{|a, b| b.createdAt <=> a.createdAt}
+        v.tags.any? {|t| t.data == 'tweetset'} && v.is_public? }.sort{|a, b| b.createdAt <=> a.createdAt}
     rescue
       notify_hoptoad :error_message => "Error searching for tweetets: No user with id #{tweetset_user} exists."
     end
-    
     # Look for sets tagged 'example' to show up on the front page
     example_sets = @recent_sets.select{|v| v.tags.any? {|t| t.data == 'example'}}
     example_view = example_sets.first unless example_sets.blank?
@@ -30,9 +28,9 @@ class TweetsetsController < ApplicationController
     query = params[:query]   
 
     # Redirect them to the existing one if somebody's performed the query already
-    href = check_existing_tweetset(query)
-    if href
-      redirect_to(href)
+    existing_href = check_existing_tweetset(query)
+    unless existing_href.nil?
+      redirect_to(existing_href) 
       return
     end
   
@@ -41,14 +39,13 @@ class TweetsetsController < ApplicationController
       resulting_id = CoreServer::Base.connection.create_tweetset(query, view_name)
       @created = true
     rescue
-      RAILS_DEFAULT_LOGGER.error "Error creating set!"
+      notify_hoptoad :error_message => "Error creating tweetset for query '#{query}'"
     end
-    
-    render :action => :index
   end
   
   private
-
+    # Note: if one user has requested a tweetset, and it hasn't been fulfilled yet,
+    # this will return nil because the user can't see it
     def check_existing_tweetset(search)
       begin
         # Searching for multiple tags does an OR not an AND

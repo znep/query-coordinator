@@ -323,10 +323,12 @@ module BlistsHelper
   # code this?
   def font_size_select_options(selected_font_size = nil)
     out = ""
-    [8, 10, 12, 14, 18, 24, 36].each do |size|
-      selected = selected_font_size == size ?
+    {8 => 6, 10 => 8, 12 => 10, 14 => 12, 18 => 16, 24 => 22,
+      36 => 34}.sort {|a,b| a[0] <=> b[0]}.
+      each do |size|
+      selected = selected_font_size == size[0] ?
         " selected=\"selected\" class=\"default\"" : ""
-      out += "<option value=\"#{size}\"#{selected}>#{size}</option>"
+      out += "<option value=\"#{size[1]}\"#{selected}>#{size[0]}</option>"
     end
     out
   end

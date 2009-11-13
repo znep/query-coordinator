@@ -500,10 +500,9 @@ div.blist-table-edit-container.combo-container .blist-combo
 
 body.blist-richtext-document
 {
-    font-size: 10px;
+    font-size: 12px;
     padding: 2px 3px 3px 3px;
 }
-div.blist-richtext { font-size: 0.8333em; }
 div.blist-richtext p,
 body.blist-richtext-document p,
 div.blist-richtext ul,

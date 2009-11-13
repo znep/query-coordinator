@@ -22,7 +22,7 @@
     blist.widgets.visualization.isFusionMap = <%= view.is_fusion_map? %>;
     blist.widgets.visualization.fusionMapSwf = '<%= view.displayType %>'+'.swf';
     blist.widgets.visualization.displayType = '<%= view.displayType %>';
-    blist.widgets.visualization.displayFormat = { <%= [view.displayFormat, "'wmode': 'opaque'"].compact.join(', ') %> };
+    blist.widgets.visualization.displayFormat = $.extend(<%= view.displayFormat %>, {wmode: 'opaque'});
     $(function ()
     {
         // We're assigning an object, so make sure it is loaded before we use it

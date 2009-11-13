@@ -19,6 +19,7 @@ blist.widget.setUpDialogs = function()
     $('#emailDialog form').submit(widgetNS.submitEmail);
 
     $('#publishDialog').jqm({trigger: false});
+    $('#publishDialog .publishCode').infoPanePublish();
     $.live("#publishDialog textarea", 'click', function() { $(this).select(); });
 };
 
@@ -309,7 +310,8 @@ blist.widget.metaTabMap = {
 blist.widget.updateMetaTab = function(tabKey)
 {
     $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab?tab=' + tabKey +
-                       '&customization_id=' + widgetNS.customizationId,
+                       '&customization_id=' + widgetNS.customizationId +
+                       '&cur_id=' + $.urlParam('cur', window.location.href),
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);

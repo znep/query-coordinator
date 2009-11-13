@@ -108,9 +108,6 @@ private
   def require_user(force_login = false)
     unless current_user_session && !force_login
       store_location
-      if request.method == :post
-        session[:return_post_params] = params
-      end
       flash[:notice] = "You must be logged in to access this page"
       redirect_to login_path
       return false
@@ -128,29 +125,8 @@ private
   end
 
   def redirect_back_or_default(path)
-    return_params = session[:return_post_params]
-    session[:return_post_params] = nil
-    if return_params
-      redirect_post(return_params)
-    else
-      redirect_to(session[:return_to] || path)
-    end
+    redirect_to(session[:return_to] || path)
     session[:return_to] = nil
-  end
-
-  # Borrowed from http://last10percent.com/2008/05/26/post-redirects-in-rails/
-  def redirect_post(redirect_post_params)
-    controller_name = redirect_post_params[:controller]
-    controller = "#{controller_name.camelize}Controller".constantize
-    # Throw out existing params and merge the stored ones
-    request.parameters.reject! { true }
-    request.parameters.merge!(redirect_post_params)
-    controller.process(request, response)
-    if response.redirected_to
-      @performed_redirect = true
-    else
-      @performed_render = true
-    end
   end
 
   def adjust_format

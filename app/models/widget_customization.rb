@@ -7,7 +7,7 @@ class WidgetCustomization < Model
     parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
   
-  def self.find( options = nil, custom_headers = {})
+  def self.find(options = nil, custom_headers = {})
     if options.nil?
       options = Hash.new
     end

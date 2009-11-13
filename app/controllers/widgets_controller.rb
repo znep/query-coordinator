@@ -142,7 +142,8 @@ private
     locals = { :view => view, :page_single => false,
                             :allow_edit => false, :in_widget => true,
                             :allow_commenting => false,
-                            :customization_id => params[:customization_id] }
+                            :customization_id => params[:customization_id],
+                            :cur_id => (params[:cur_id] || 'w') }
 
     widget_partial_path = File.join(Rails.root, 'app', 'views', 'widgets', "_meta_tab_#{name}.erb")
     if File.exist? widget_partial_path

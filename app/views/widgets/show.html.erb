@@ -306,7 +306,8 @@
           <%= text_area_tag("publishCode") %>
           <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(@view,
               {:dimensions => { :width => "#width#",  :height => "#height#" }},
-              (params[:customization_id].nil? ? "#variation#" : params[:customization_id] ))) %>
+              (params[:customization_id].nil? ? "#variation#" : params[:customization_id] ),
+              (params[:cur] || 'w'))) %>
           <ul class="actionButtons clearfix">
             <li><a class="jqmClose" href="#close">Close</a></li>
             <li><a id="previewWidgetLink" href="<%= "/widgets_preview/#{@view.id}" %>" class="noInterstitial arrowButton">See Preview</a></li>

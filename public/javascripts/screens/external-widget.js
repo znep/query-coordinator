@@ -310,7 +310,8 @@ blist.widget.metaTabMap = {
 blist.widget.updateMetaTab = function(tabKey)
 {
     $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab?tab=' + tabKey +
-                       '&customization_id=' + widgetNS.customizationId,
+                       '&customization_id=' + widgetNS.customizationId +
+                       '&cur_id=' + $.urlParam('cur', window.location.href),
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);

@@ -19,6 +19,7 @@ blist.widget.setUpDialogs = function()
     $('#emailDialog form').submit(widgetNS.submitEmail);
 
     $('#publishDialog').jqm({trigger: false});
+    $('#publishDialog .publishCode').infoPanePublish();
     $.live("#publishDialog textarea", 'click', function() { $(this).select(); });
 };
 

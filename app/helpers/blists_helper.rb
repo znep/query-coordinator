@@ -263,7 +263,12 @@ module BlistsHelper
   end
 
   def get_publish_embed_code_for_view(view, options = {}, variation = "")
-    options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]
+    theme = WidgetCustomization.find(variation) if variation =~ /\w{4}-\w{4}/
+    if theme.nil?
+      options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]
+    else
+      options = theme.customization[:publish].deep_merge(options)
+    end
 
     root_path = request.protocol + request.host_with_port
     embed_template =  "<div>"
@@ -275,10 +280,9 @@ module BlistsHelper
     end
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
-                      "/widgets/#{view.id}/#{variation}\" frameborder=\"0\" scrolling=\"no\">" +
-                      "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
-                      "target=\"_blank\">" +
-                      "#{h(view.name)}</a></iframe>"
+                      "/widgets/#{view.id}/#{variation.empty? ? 'normal' : variation}\"" +
+                      " frameborder=\"0\" scrolling=\"no\"><a href=\"#{root_path + view.href}\"" +
+                      "title=\"#{h(view.name)}\" target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
         "Powered by #{th.company}</a></p>"

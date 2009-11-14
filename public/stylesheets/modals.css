@@ -1582,10 +1582,10 @@ div#sortBysList.reorderList li .itemWrapper
 }
 
 .vizWrapper .typeBlock { display: none; }
+.vizWrapper .typeBlock.default { display: block; }
 .vizWrapper .typeBlock.type-
 {
     color: #999999;
-    display: block;
     font-size: 1.2em;
     font-style: italic;
     text-align: center;

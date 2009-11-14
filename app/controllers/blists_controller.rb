@@ -465,6 +465,7 @@ class BlistsController < ApplicationController
 
   def visualization
     @view = View.find(params[:id])
+    @is_edit = params[:edit] == 'true'
 
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
@@ -474,11 +475,18 @@ class BlistsController < ApplicationController
   def create_visualization
     errors = []
     begin
-      view = View.create({:name => params[:viewName],
-                         :columns => JSON.parse(params[:columns]),
-                         :displayType => params[:vizType],
-                         :displayFormat => JSON.parse(params[:options]),
-                         :originalViewId => params[:id]})
+      if params[:edit] == 'true'
+        view = View.update_attributes!(params[:id],
+               {:columns => JSON.parse(params[:columns]),
+                 :displayType => params[:vizType],
+                 :displayFormat => JSON.parse(params[:options])})
+      else
+        view = View.create({:name => params[:viewName],
+                           :columns => JSON.parse(params[:columns]),
+                           :displayType => params[:vizType],
+                           :displayFormat => JSON.parse(params[:options]),
+                           :originalViewId => params[:id]})
+      end
     rescue CoreServer::CoreServerError => e
       errors << e.error_message
     end

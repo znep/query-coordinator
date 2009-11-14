@@ -4,10 +4,17 @@
 <%- if !local_assigns[:name_postfix].nil? -%>
 <%-   oname += '-' + local_assigns[:name_postfix] -%>
 <%- end -%>
+<%- def_value = (local_assigns[:existing_values].nil? ? nil :
+  local_assigns[:existing_values][opt['name']]) || opt['default'] -%>
+<%- if !local_assigns[:value_index].nil? && def_value.is_a?(Array) -%>
+<%-   def_value = def_value[local_assigns[:value_index]] -%>
+<%- end -%>
+
 <div class='line <%= opt['type'] %>'>
   <%- if opt['type'] == 'hidden' -%>
   <input id='<%= oname %>' name='<%= oname %>' type='hidden'
-    value='<%= opt['default'] %>' />
+    value='<%= def_value %>' />
+
   <%- else -%>
   <label for='<%= oname %>'><%= opt['label'] %></label>
   <%- if opt['type'] == 'boolean' -%>
@@ -17,33 +24,38 @@
     <%= opt['booleanFalseValue'].nil? ? '' :
       "falseValue='" + opt['booleanFalseValue'] + "'" %>
     <%= trueVal.nil? ?
-      opt['default'] ? "checked='checked'" : '' :
-      opt['default'] == trueVal ? "checked='checked'" : '' %> />
+      def_value ? "checked='checked'" : '' :
+      def_value == trueVal ? "checked='checked'" : '' %> />
+
   <%- elsif opt['type'] == 'string' || opt['type'] == 'number' -%>
   <input type='text' id='<%= oname %>' name='<%= oname %>'
-    <%= opt['default'].nil? ? '' : "value='" + opt['default'].to_s + "'" %> />
+    <%= def_value.nil? ? '' : "value='" + def_value.to_s + "'" %> />
+
   <%- elsif opt['type'] == 'dropdown' -%>
   <select id='<%= oname %>' name='<%= oname %>'>
     <%- opt['dropdownOptions'].each do |dval| -%>
     <option value='<%= dval['value'] %>'
-      <%= opt['default'] == dval['value'] ?
+      <%= def_value == dval['value'] ?
         "selected='selected'" : '' %>><%= h dval['label'] %></option>
     <%- end -%>
   </select>
+
   <%- elsif opt['type'] == 'color' -%>
   <a class='colorOption' href='#<%= oname %>' title='Choose color'
-    <%= opt['default'].nil? ? '' :
-      "style='background-color:" + opt['default'] + ";'" %>
+    <%= def_value.nil? ? '' :
+      "style='background-color:" + def_value + ";'" %>
     <%= opt['colorArray'].nil? ? '' :
       "colorDefaults='" + opt['colorArray'].to_json + "'" %>>
     Choose color
   </a>
   <input id='<%= oname %>' name='<%= oname %>' type='hidden'
-    <%= opt['default'].nil? ? '' : "value='" + opt['default'] + "'" %> />
+    <%= def_value.nil? ? '' : "value='" + def_value + "'" %> />
   <%- end -%>
+
   <%- if !opt['help'].nil? -%>
   <span class='helpie' title='<%= opt['help'] %>'>?</span>
   <%- end -%>
+
   <%- end -%>
 </div>
 <%- end -%>

@@ -1,5 +1,5 @@
 <%- content_for :headline do -%>
-<h1 class='vizIcon'>Create a Visualization</h1>
+<h1 class='vizIcon'><%= @is_edit ? 'Edit this' : 'Create a' %> Visualization</h1>
 <%- end -%>
 
 <div class='modalContentWrapper vizWrapper viewSetupWrapper'>
@@ -7,7 +7,8 @@
   Datasets can be displayed in a variety of visual formats.
   </p>
 
-  <% form_tag("#{@view.href}/create_visualization", :class => 'clearfix') do %>
+  <% form_tag("#{@view.href}/create_visualization?edit=#{@is_edit}",
+    :class => 'clearfix') do %>
   <div class='column'>
 
     <div class='section common'>
@@ -18,25 +19,33 @@
       <p class='subtitle separator'>
       Enter a name and choose a chart type
       </p>
+      <%- if !@is_edit -%>
       <div class='line'>
         <label class='required' for='vizName'>Name</label>
         <input type='text' id='vizName' name='viewName' class='required' />
       </div>
+      <%- end -%>
       <div class='line'>
         <label class='required' for='vizType'>Type</label>
-        <select id='vizType' name='vizType' class='prompt required'>
+        <select id='vizType' name='vizType'
+          <%= @is_edit ? "disabled='disabled'" : '' %>
+          class='<%= @is_edit ? '' : 'prompt' %> required'>
           <option class='prompt' value=''>Select a Chart</option>
           <%- viz_types.each do |t| -%>
-          <option value='<%= t[0] %>'><%= h t[1]['label'] %></option>
+          <option value='<%= t[0] %>'
+            <%= @is_edit && @view.displayType == t[0] ?
+              "selected='selected'" : '' %>><%= h t[1]['label'] %></option>
           <%- end -%>
         </select>
       </div>
     </div>
 
+    <%- cur_cols = @is_edit ? @view.columns.select {|c| !c.flag?('hidden')} : [] -%>
     <%- cols = {} -%>
     <%- viz_types.each do |t| -%>
     <%- type_config = t[1] -%>
-    <div class='typeBlock type-<%= t[0] %>'>
+    <%- is_edit_block = @is_edit && @view.displayType == t[0] -%>
+    <div class='typeBlock type-<%= t[0] %> <%= is_edit_block ? 'default' : '' %>'>
 
       <%- if !type_config['fixedColumns'].nil? ||
         !type_config['mainOptions'].nil? -%>
@@ -49,6 +58,11 @@
         <%- if !type_config['fixedColumns'].nil? -%>
         <%- count = 0 -%>
         <%- type_config['fixedColumns'].each do |fcol| -%>
+
+        <%- cur_id = is_edit_block && cur_cols.length > 0 &&
+          cur_cols[0].dataTypeName == fcol['dataType'] ?
+          cur_cols.shift.id : nil -%>
+
         <%- if cols[fcol['dataType']].nil?
               cols[fcol['dataType']] = @view.columns.select {|c|
                 c.dataTypeName == fcol['dataType'] && !c.flag?('hidden')}
@@ -59,10 +73,12 @@
           <label class='required' for='<%= fc_name %>'>
             <%= h fcol['label'] %>
           </label>
-          <select id='<%= fc_name %>' name='<%= fc_name %>' class='prompt required'>
+          <select id='<%= fc_name %>' name='<%= fc_name %>'
+            class='<%= cur_id.nil? ? 'prompt' : '' %> required'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
-            <option value='<%= c.id %>'><%= h c.name %></option>
+            <option value='<%= c.id %>' <%= c.id == cur_id ?
+              "selected='selected'" : '' %>><%= h c.name %></option>
             <%- end -%>
           </select>
         </div>
@@ -73,7 +89,8 @@
 
         <%= render(:partial => 'viz_opts',
           :locals => {:options => type_config['mainOptions'],
-          :name_prefix => t[0]}) %>
+          :name_prefix => t[0], :existing_values => is_edit_block ?
+            @view.displayFormat.data : nil}) %>
       </div>
       <%- end -%>
 
@@ -86,7 +103,8 @@
         <div class='content'>
           <%= render(:partial => 'viz_opts',
             :locals => {:options => type_config['advancedOptions'],
-            :name_prefix => t[0]}) %>
+            :name_prefix => t[0], :existing_values => is_edit_block ?
+              @view.displayFormat.data : nil}) %>
         </div>
       </div>
       <%- end -%>
@@ -97,13 +115,14 @@
     </div>
 
     <div class='column right'>
-      <div class='typeBlock type-'>
+      <div class='typeBlock type- <%= @is_edit ? '' : 'default' %>'>
         (Choose a chart type to see more details)
       </div>
 
     <%- viz_types.each do |t| -%>
     <%- type_config = t[1] -%>
-    <div class='typeBlock type-<%= t[0] %>'>
+    <%- is_edit_block = @is_edit && @view.displayType == t[0] -%>
+    <div class='typeBlock type-<%= t[0] %> <%= is_edit_block ? 'default' : '' %>'>
       <div class='section'>
         <h3>Data Columns</h3>
         <p class='subtitle separator'>
@@ -111,6 +130,8 @@
         </p>
 
         <div class='scrollBlock'>
+          <%- dcb_count = 0 -%>
+          <%- while true -%>
           <div class='dataColumnBlock soloBlock clearfix'>
             <a class='removeButton' href='#removeDataBlock'
               title='Remove'>Remove</a>
@@ -121,16 +142,23 @@
                   cols[dcol['dataType']] = @view.columns.select {|c|
                     c.dataTypeName == dcol['dataType'] && !c.flag?('hidden')}
                 end -%>
-            <%- dc_name = t[0] + '-dataColumn-' + count.to_s + '-0' -%>
+            <%- dc_name = t[0] + '-dataColumn-' + count.to_s + '-' +
+              dcb_count.to_s -%>
+
+            <%- cur_id = is_edit_block && cur_cols.length > 0 &&
+              cur_cols[0].dataTypeName == dcol['dataType'] ?
+              cur_cols.shift.id : nil -%>
 
             <div class='line'>
               <label <%= dcol['optional'] ? '' : "class='required'" %>
                 for='<%= dc_name %>'><%= h dcol['label'] %></label>
               <select id='<%= dc_name %>' name='<%= dc_name %>'
-                class='prompt <%= dcol['optional'] ? '' : 'required' %>'>
+                class='<%= cur_id.nil? ? 'prompt' : '' %>
+                  <%= dcol['optional'] ? '' : 'required' %>'>
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
-                <option value='<%= c.id %>'><%= h c.name %></option>
+                <option value='<%= c.id %>' <%= c.id == cur_id ?
+                  "selected='selected'" : '' %>><%= h c.name %></option>
                 <%- end -%>
               </select>
             </div>
@@ -140,9 +168,19 @@
 
             <%= render(:partial => 'viz_opts',
               :locals => {:options => type_config['dataColumnOptions'],
-              :name_prefix => t[0] + '-dataColumn', :name_postfix => '0'}) %>
+              :name_prefix => t[0] + '-dataColumn',
+              :name_postfix => dcb_count.to_s,
+              :value_index => dcb_count,
+              :existing_values => is_edit_block ?
+                @view.displayFormat.data : nil
+              }) %>
 
           </div>
+          <%- break if !is_edit_block || cur_cols.length < 1 ||
+            cur_cols[0].dataTypeName !=
+              type_config['dataColumns'][0]['dataType'] -%>
+          <%- dcb_count += 1 -%>
+          <%- end -%>
         </div>
 
         <ul class='actionButtons'>
@@ -162,7 +200,9 @@
   <div class='submitLine clearfix'>
     <div class="required">Required Field</div>
     <ul class='actionButtons clearfix'>
-      <li><a href='#create' class='create arrowButton'>Create Visualization</a></li>
+      <li><a href='#create' class='create arrowButton'>
+        <%= @is_edit ? 'Save' : 'Create' %> Visualization
+      </a></li>
     </ul>
   </div>
 </div>
@@ -354,6 +394,7 @@
           if (o instanceof Array) { $.compact(o); }
       });
 
+      var origOptions = data.options;
       data.options = $.json.serialize(data.options);
       data.columns = $.json.serialize(data.columns);
 
@@ -371,7 +412,13 @@
             else
             {
               $("#modal").jqmHide();
+              <%- if @is_edit -%>
+              blist.widgets.visualization.displayFormat = $.extend(origOptions,
+                  {wmode: 'opaque'});
+              $('.chartContainer').visualization();
+              <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
+              <%- end -%>
             }
           }
       });

@@ -408,6 +408,11 @@ body#lensBody
     background-position: 5px -508px;
 }
 
+#lensBody #editViz span.linkIcon
+{
+    background-position: 0 -60px;
+}
+
 #lensBody .headerBar #formatLink span.linkIcon
 {
     background-position: 0 -79px;

@@ -13,6 +13,7 @@
             var config = $.meta ? $.extend({}, opts, $visualization.data()) : opts;
             $visualization.data("config-visualization", config);
 
+            $visualization.addClass('chartContainer');
             $visualization.bind('resize',
                 function(e) { handleResize($visualization, e); });
 

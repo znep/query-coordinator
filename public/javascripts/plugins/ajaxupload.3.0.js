@@ -46,7 +46,7 @@ function addEvent(el, type, fn){
 		var f = function(){
 		  fn.call(el, w.event);
 		};			
-		el.attachEvent('on' + type, f)
+		el.attachEvent('on' + type, f);
 	}
 }
 
@@ -129,7 +129,7 @@ if (document.documentElement["getBoundingClientRect"]){
 			left: left,
 			top: top
 		};
-	}
+	};
 }
 
 function getBox(el){
@@ -185,7 +185,7 @@ var getUID = function(){
 	var id = 0;
 	return function(){
 		return 'ValumsAjaxUpload' + id++;
-	}
+	};
 }();
 
 function fileFromPath(file){
@@ -241,7 +241,7 @@ Ajax_upload = AjaxUpload = function(button, options){
 	
 	this._createInput();
 	this._rerouteClicks();
-}
+};
 			
 // assigning methods to our class
 AjaxUpload.prototype = {
@@ -491,7 +491,7 @@ AjaxUpload.prototype = {
 					// delete the frame
 					toDeleteFlag = true;				
 					iframe.src = "about:blank"; //load event fired	
-				}				 								
+                }
 			});
 	
 		} else {

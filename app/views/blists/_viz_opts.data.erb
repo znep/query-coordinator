@@ -40,16 +40,22 @@
     <%- end -%>
   </select>
 
-  <%- elsif opt['type'] == 'color' -%>
-  <a class='colorOption' href='#<%= oname %>' title='Choose color'
-    <%= def_value.nil? ? '' :
-      "style='background-color:" + def_value + ";'" %>
+  <%- elsif opt['type'] == 'color' || opt['type'] == 'colorArray' -%>
+  <%- def_value = [def_value] if !def_value.is_a?(Array) -%>
+  <%- col_count = 0 -%>
+  <%- def_value.each do |def_color| -%>
+  <%- cname = oname + '-' + col_count.to_s -%>
+  <%- col_count += 1 -%>
+  <a class='colorOption' href='#<%= cname %>' title='Choose color'
+    <%= def_color.nil? ? '' :
+      "style='background-color:" + def_color + ";'" %>
     <%= opt['colorArray'].nil? ? '' :
       "colorDefaults='" + opt['colorArray'].to_json + "'" %>>
     Choose color
   </a>
-  <input id='<%= oname %>' name='<%= oname %>' type='hidden'
-    <%= def_value.nil? ? '' : "value='" + def_value + "'" %> />
+  <input id='<%= cname %>' name='<%= cname %>' type='hidden'
+    <%= def_color.nil? ? '' : "value='" + def_color + "'" %> />
+  <%- end -%>
   <%- end -%>
 
   <%- if !opt['help'].nil? -%>

@@ -115,14 +115,18 @@
     </div>
 
     <div class='column right'>
-      <div class='typeBlock type- <%= @is_edit ? '' : 'default' %>'>
+      <div class='typeBlock type- <%= @is_edit ? '' : 'default' %> empty'>
         (Choose a chart type to see more details)
       </div>
 
     <%- viz_types.each do |t| -%>
     <%- type_config = t[1] -%>
     <%- is_edit_block = @is_edit && @view.displayType == t[0] -%>
-    <div class='typeBlock type-<%= t[0] %> <%= is_edit_block ? 'default' : '' %>'>
+
+    <div class='typeBlock type-<%= t[0] %> <%= is_edit_block ? 'default' : '' %>
+      <%= type_config['dataColumns'].nil? ? 'empty' : '' %>'>
+
+      <%- if !type_config['dataColumns'].nil? -%>
       <div class='section'>
         <h3>Data Columns</h3>
         <p class='subtitle separator'>
@@ -188,7 +192,12 @@
             href='#addDataBlock-<%= t[0] %>'>Add Data Column</a></li>
         </ul>
       </div>
+
+      <%- else -%>
+      (There is no additional configuration available)
+      <%- end -%>
     </div>
+
     <%- end -%>
 
     </div>
@@ -267,9 +276,8 @@
 
         var oldName = $label.attr('for');
         var splitName = oldName.split('-');
-        var newIndex =
-          parseInt(splitName[splitName.length - 1]) + 1;
-        splitName[splitName.length - 1] = newIndex;
+        var newIndex = parseInt(splitName[3]) + 1;
+        splitName[3] = newIndex;
         var newName = splitName.join('-');
 
         $label.attr('for', newName);
@@ -374,7 +382,16 @@
 
           else
           {
-              data.options[splitN[1]] = getValue($t);
+              // Handle arrays of fixed options; these have extra parts to
+              // their names for identifying between them
+              if (splitN.length > 2)
+              {
+                  if (data.options[splitN[1]] === undefined)
+                  { data.options[splitN[1]] = []; }
+                  data.options[splitN[1]][splitN[2]] = getValue($t);
+              }
+              else
+              { data.options[splitN[1]] = getValue($t); }
           }
       });
 

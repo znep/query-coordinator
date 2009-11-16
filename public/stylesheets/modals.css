@@ -1583,7 +1583,7 @@ div#sortBysList.reorderList li .itemWrapper
 
 .vizWrapper .typeBlock { display: none; }
 .vizWrapper .typeBlock.default { display: block; }
-.vizWrapper .typeBlock.type-
+.vizWrapper .typeBlock.empty
 {
     color: #999999;
     font-size: 1.2em;

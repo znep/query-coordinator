@@ -470,9 +470,10 @@ class View < Model
 
     'piechart' => {'library' => 'google.visualization.PieChart',
       'label' => 'Pie Chart',
-      'dataColumns' => [{'dataType' => 'text', 'label' => 'Label'},
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
         {'dataType' => 'number', 'label' => 'Values'}],
-      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
+        'type' => 'colorArray', 'default' =>  @@color_defaults}],
       'advancedOptions' => [
         {'label' => 'Legend', 'name' => 'legend',
         'type' => 'dropdown', 'dropdownOptions' => [

@@ -396,11 +396,11 @@ img.blist-table-option-icon
 {
     display: none;
     left: 50%;
-    margin-left: -15em;
+    margin-left: -20em;
     margin-top: 0;
     position: absolute;
     top: 5em;
-    width: 30em;
+    width: 40em;
 }
 
 .dialogWrapper .header h1
@@ -442,5 +442,28 @@ img.blist-table-option-icon
 #publishDialog textarea
 {
     font-size: 1.2em;
-    width: 23em;
+    margin-top: 0.5em;
+    width: 31.5em;
+}
+
+#publishDialog input[type="text"]
+{
+    width: 2em;
+}
+
+#publishDialog label
+{
+    padding-right: 0.5em;
+}
+
+#publishDialog .field
+{
+    display: inline;
+    margin: 0 1em;
+}
+
+#publishDialog #sizeError
+{
+    color: #f00;
+    margin-top: 0.5em;
 }

@@ -363,8 +363,6 @@ $(function ()
     widgetNS.setUpMenu();
     widgetNS.setUpDialogs();
 
-    $('#header form').submit(function (event) { event.preventDefault(); });
-
     if (!widgetNS.isAltView)
     {
         $('#data-grid').datasetGrid({viewId: widgetNS.viewId,
@@ -373,7 +371,7 @@ $(function ()
             showRowHandle: widgetNS.theme['grid']['row_numbers'],
             editEnabled: typeof(isOldIE) === 'undefined', manualResize: true,
             columnNameEdit: typeof(isOldIE) === 'undefined' && blist.isOwner,
-            filterItem: '#header form :text',
+            filterForm: '#header form',
             clearFilterItem: '#header form .clearSearch',
             clearTempViewCallback: widgetNS.clearTempViewTab,
             setTempViewCallback: widgetNS.setTempViewTab

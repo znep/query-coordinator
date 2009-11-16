@@ -207,6 +207,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'stylesheets/theme/:id.css', :controller => 'themes', :action => 'theme'
   
+  map.connect '/tweetsets/:action', :controller => 'tweetsets'
+  map.connect '/tweetsets', :controller => 'tweetsets', :action => 'index'
+  
   # The /version page
   map.connect '/version', :controller => "version", :action => "index"
   

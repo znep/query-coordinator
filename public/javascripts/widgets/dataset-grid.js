@@ -31,7 +31,7 @@
             columnPropertiesEnabled: false,
             currentUserId: null,
             editEnabled: true,
-            filterItem: null,
+            filterForm: null,
             manualResize: false,
             setTempViewCallback: function () {},
             showRowHandle: false,
@@ -106,12 +106,12 @@
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
 
-                if (datasetObj.settings.filterItem)
+                if (datasetObj.settings.filterForm)
                 {
-                    datasetObj.settings.filterItem =
-                        $(datasetObj.settings.filterItem);
-                    datasetObj.settings.filterItem
-                        .keydown(function (e) { filterTextInput(datasetObj, e); });
+                    datasetObj.settings.filterForm =
+                        $(datasetObj.settings.filterForm);
+                    datasetObj.settings.filterForm
+                        .submit(function (e) { filterFormSubmit(datasetObj, e); });
                 }
                 if (datasetObj.settings.clearFilterItem)
                 {
@@ -499,33 +499,29 @@
         }
     };
 
-    var filterTextInput = function (datasetObj, e)
+    var filterFormSubmit = function (datasetObj, e)
     {
+        e.preventDefault();
+
         if ($(datasetObj.currentGrid).closest('body').length < 1)
         {
             return;
         }
 
-        // If they tab out of the field, we don't want to search
-        if (e.keyCode == 9) { return; }
-
-        setTimeout(function ()
-            {
-                var searchText = $(e.currentTarget).val();
-                datasetObj.summaryStale = true;
-                var model = datasetObj.settings._model;
-                model.filter(searchText, 250);
-                if (!searchText || searchText === '')
-                {
-                    datasetObj.clearTempView('searchString');
-                    datasetObj.settings.clearFilterItem.hide();
-                }
-                else
-                {
-                    datasetObj.setTempView('searchString');
-                    datasetObj.settings.clearFilterItem.show();
-                }
-            }, 10);
+        var searchText = $(e.currentTarget).find(':input').val();
+        datasetObj.summaryStale = true;
+        var model = datasetObj.settings._model;
+        model.filter(searchText);
+        if (!searchText || searchText === '')
+        {
+            datasetObj.clearTempView('searchString');
+            datasetObj.settings.clearFilterItem.hide();
+        }
+        else
+        {
+            datasetObj.setTempView('searchString');
+            datasetObj.settings.clearFilterItem.show();
+        }
     };
 
     var clearFilterInput = function(datasetObj, e)
@@ -536,7 +532,8 @@
         }
 
         e.preventDefault();
-        datasetObj.settings.filterItem.val('').blur();
+        if (datasetObj.settings.filterForm)
+        { datasetObj.settings.filterForm.find(':input').val('').blur(); }
         datasetObj.summaryStale = true;
         datasetObj.settings._model.filter('');
         datasetObj.clearTempView('searchString');

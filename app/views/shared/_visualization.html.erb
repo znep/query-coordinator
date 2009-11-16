@@ -22,9 +22,9 @@
     blist.widgets.visualization.isFusionMap = <%= view.is_fusion_map? %>;
     blist.widgets.visualization.fusionMapSwf = '<%= view.displayType %>'+'.swf';
     blist.widgets.visualization.displayType = '<%= view.displayType %>';
-    blist.widgets.visualization.displayFormat = $.extend(<%= view.displayFormat %>, {wmode: 'opaque'});
+    blist.widgets.visualization.displayFormat = $.extend(<%= view.displayFormat || '{}' %>, {wmode: 'opaque'});
     $(function ()
-    { 
+    {
         blist.widgets.visualization.chartClass = <%= view.chart_class || "''" %>; 
 
         if (blist.widgets.visualization.isFusionMap)

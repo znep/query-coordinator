@@ -396,7 +396,7 @@ $(function ()
             accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
             clearTempViewCallback: blistGridNS.clearTempViewTab,
             setTempViewCallback: blistGridNS.setTempViewTab,
-            filterItem: '#lensContainer .headerBar form :text',
+            filterForm: '#lensContainer .headerBar form',
             clearFilterItem: '#lensContainer .headerBar form .clearSearch'
         });
     }
@@ -404,9 +404,6 @@ $(function ()
     { $('#dataGrid').removeClass('scrollContent'); }
     else if (blist.widgets.visualization.isVisualization)
     { $('#dataGrid').visualization(); }
-
-    $('#lensContainer .headerBar form').submit(function(e)
-        { e.preventDefault(); });
 
     blistGridNS.setUpTabs();
     $('.tabList').scrollable({

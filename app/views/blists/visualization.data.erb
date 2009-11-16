@@ -60,12 +60,11 @@
         <%- type_config['fixedColumns'].each do |fcol| -%>
 
         <%- cur_id = is_edit_block && cur_cols.length > 0 &&
-          cur_cols[0].dataTypeName == fcol['dataType'] ?
-          cur_cols.shift.id : nil -%>
+          @view.datatypes_match(cur_cols[0], fcol['dataType']) ?
+            cur_cols.shift.id : nil -%>
 
         <%- if cols[fcol['dataType']].nil?
-              cols[fcol['dataType']] = @view.columns.select {|c|
-                c.dataTypeName == fcol['dataType'] && !c.flag?('hidden')}
+              cols[fcol['dataType']] = @view.columns_for_datatypes(fcol['dataType'])
             end -%>
         <%- fc_name = t[0] + '-fixedColumn-' + count.to_s -%>
 
@@ -143,15 +142,15 @@
             <%- count = 0 -%>
             <%- type_config['dataColumns'].each do |dcol| -%>
             <%- if cols[dcol['dataType']].nil?
-                  cols[dcol['dataType']] = @view.columns.select {|c|
-                    c.dataTypeName == dcol['dataType'] && !c.flag?('hidden')}
+                  cols[dcol['dataType']] =
+                    @view.columns_for_datatypes(dcol['dataType'])
                 end -%>
             <%- dc_name = t[0] + '-dataColumn-' + count.to_s + '-' +
               dcb_count.to_s -%>
 
             <%- cur_id = is_edit_block && cur_cols.length > 0 &&
-              cur_cols[0].dataTypeName == dcol['dataType'] ?
-              cur_cols.shift.id : nil -%>
+              @view.datatypes_match(cur_cols[0], dcol['dataType']) ?
+                cur_cols.shift.id : nil -%>
 
             <div class='line'>
               <label <%= dcol['optional'] ? '' : "class='required'" %>
@@ -181,8 +180,8 @@
 
           </div>
           <%- break if !is_edit_block || cur_cols.length < 1 ||
-            cur_cols[0].dataTypeName !=
-              type_config['dataColumns'][0]['dataType'] -%>
+            !@view.datatypes_match(cur_cols[0],
+              type_config['dataColumns'][0]['dataType']) -%>
           <%- dcb_count += 1 -%>
           <%- end -%>
         </div>

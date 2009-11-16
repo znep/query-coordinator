@@ -304,7 +304,7 @@ class View < Model
     to_check.each do |tc|
       next if tc['optional']
 
-      if !columns.any? {|c| c.dataTypeName == tc['dataType'] && !c.flag?('hidden')}
+      if columns_for_datatypes(tc['dataType']).length < 1
         return false
       end
     end
@@ -314,6 +314,17 @@ class View < Model
 
   def owned_by?(user)
     self.owner.id == user.id
+  end
+
+  def columns_for_datatypes(datatypes)
+    columns.select do |c|
+      !c.flag?('hidden') && datatypes_match(c, datatypes)
+    end
+  end
+
+  def datatypes_match(column, datatypes)
+    datatypes.is_a?(Array) && datatypes.include?(column.dataTypeName) ||
+      column.dataTypeName == datatypes
   end
 
   # HACK: NYSS wanted the comments tab hidden, so we're manually hiding comments for them
@@ -336,12 +347,14 @@ class View < Model
         'type' => 'color', 'default' =>  @@color_defaults[0],
         'colorArray' => @@color_defaults}
 
+  @@numeric_types = ['number', 'percent', 'money']
+
   @@visualization_config = {
     'barchart' => {
       'library' => 'google.visualization.BarChart',
       'label' => 'Bar Chart',
       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
-      'dataColumns' => [{'dataType' => 'number', 'label' => 'Values'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Values'}],
       'dataColumnOptions' => [@@def_color_option],
       'mainOptions' => [
         {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
@@ -365,7 +378,7 @@ class View < Model
     'annotatedtimeline' => {'library' => 'google.visualization.AnnotatedTimeLine',
       'label' => 'Time Line',
       'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
-      'dataColumns' => [{'dataType' => 'number', 'label' => 'Value'},
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Value'},
         {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
         {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}],
       'dataColumnOptions' => [@@def_color_option],
@@ -375,7 +388,7 @@ class View < Model
 
     'imagesparkline' => {'library' => 'google.visualization.ImageSparkLine',
       'label' => 'Sparkline',
-      'dataColumns' => [{'dataType' => 'number', 'label' => 'Value'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Value'}],
       'dataColumnOptions' => [@@def_color_option],
       'advancedOptions' => [{'name' => 'labelPosition', 'label' => 'Label',
         'type' => 'dropdown', 'dropdownOptions' => [
@@ -391,7 +404,7 @@ class View < Model
     'areachart' => {'library' => 'google.visualization.AreaChart',
       'label' => 'Area Chart',
       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
-      'dataColumns' => [{'dataType' => 'number', 'label' => 'Value'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Value'}],
       'dataColumnOptions' => [@@def_color_option],
       'mainOptions' => [
         {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
@@ -418,7 +431,7 @@ class View < Model
     'columnchart' => {'library' => 'google.visualization.ColumnChart',
       'label' => 'Column Chart',
       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
-      'dataColumns' => [{'dataType' => 'number', 'label' => 'Values'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Values'}],
       'dataColumnOptions' => [@@def_color_option],
       'mainOptions' => [
         {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
@@ -442,7 +455,7 @@ class View < Model
     'linechart' => {'library' => 'google.visualization.LineChart',
       'label' => 'Line Chart',
       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
-      'dataColumns' => [{'dataType' => 'number', 'label' => 'Value'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Value'}],
       'dataColumnOptions' => [@@def_color_option],
       'mainOptions' => [
         {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
@@ -471,7 +484,7 @@ class View < Model
     'piechart' => {'library' => 'google.visualization.PieChart',
       'label' => 'Pie Chart',
       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
-        {'dataType' => 'number', 'label' => 'Values'}],
+        {'dataType' => @@numeric_types, 'label' => 'Values'}],
       'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
         'type' => 'colorArray', 'default' =>  @@color_defaults}],
       'advancedOptions' => [

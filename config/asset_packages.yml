@@ -183,6 +183,7 @@ javascripts:
   - plugins/ui.core
   - plugins/ui.draggable
   - plugins/jquery.tache
+  - plugins/jquery.validate
   - util/styling
   - plugins/jquery.qtip
   - util/navigation
@@ -281,3 +282,4 @@ stylesheets:
   - external-widget-meta
   - form-common
   - combo
+  - modals-widget

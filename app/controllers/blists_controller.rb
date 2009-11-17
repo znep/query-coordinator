@@ -231,6 +231,13 @@ class BlistsController < ApplicationController
     end
   end
 
+  def republish
+    @view = View.find(params[:id])
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
   def new
     respond_to do |format|
       format.html { render }

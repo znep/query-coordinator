@@ -1,4 +1,5 @@
 var widgetNS = blist.namespace.fetch('blist.widget');
+var commonNS = blist.namespace.fetch('blist.common');
 
 blist.widget.setUpMenu = function()
 {
@@ -10,40 +11,6 @@ blist.widget.setUpMenu = function()
             closeOnKeyup: true,
             linkCallback: widgetNS.headerMenuHandler,
             pullToTop: true});
-};
-
-blist.widget.setUpDialogs = function()
-{
-    $('#emailDialog').jqm({trigger: false});
-    $('#emailDialog a.submit').click(widgetNS.submitEmail);
-    $('#emailDialog form').submit(widgetNS.submitEmail);
-
-    $('#publishDialog').jqm({trigger: false});
-    $('#publishDialog .publishCode').infoPanePublish();
-    $.live("#publishDialog textarea", 'click', function() { $(this).select(); });
-};
-
-blist.widget.headerMenuHandler = function (event)
-{
-    // Href that we care about starts with # and parts are separated with _
-    // IE sticks the full thing, so slice everything up to #
-    var href = $(event.currentTarget).attr('href');
-    if (href.indexOf('#') < 0)
-    {
-        return;
-    }
-
-    var action = href.slice(href.indexOf('#') + 1);
-    event.preventDefault();
-    switch (action)
-    {
-        case 'email':
-            $('#emailDialog').jqmShow().find('input').focus();
-            break;
-        case 'publish':
-            $('#publishDialog').jqmShow();
-            break;
-    }
 };
 
 blist.widget.submitEmail = function (event)
@@ -241,12 +208,12 @@ blist.widget.setUpViewHeader = function()
 
 blist.widget.enableInterstitial = function()
 {
-    $('a:not([href^=#]):not(.noInterstitial)').live('click', widgetNS.showInterstitial);
+    $('a:not([href^=#]):not(.noInterstitial):not([rel$="modal"])').live('click', widgetNS.showInterstitial);
 };
 
 blist.widget.disableInterstitial = function()
 {
-    $('a:not([href^=#]):not(.noInterstitial)').die('click', widgetNS.showInterstitial);
+    $('a:not([href^=#]):not(.noInterstitial):not([rel$="modal"])').die('click', widgetNS.showInterstitial);
 };
 
 blist.widget.showInterstitial = function (e)
@@ -278,6 +245,31 @@ blist.widget.showInterstitial = function (e)
         .show()
         .css('left', ($(window).width() - $inter.outerWidth(true)) / 2)
         .css('top', ($(window).height() - $inter.outerHeight(true)) / 2);
+};
+
+blist.widget.loadRemoteModal = function(hash)
+{
+    var $modal = hash.w;
+    var $trigger = $(hash.t);
+
+    $.ajax({ 
+        url: $trigger.attr("href"),
+        cache: false,
+        type: "GET",
+        success: function(data)
+        {
+            $modal.html(data).show();
+
+            if (commonNS.modalReady)
+                { commonNS.modalReady(); }
+
+            $scrollContent = $modal.find('.modalScrollContent');
+            $scrollContent.css('height', 0);
+            $scrollContent.css('max-height',
+                ($('.gridOuter').outerHeight(true) - $modal.outerHeight(false)) + 'px');
+            $scrollContent.css('height', 'auto');
+        }
+    });
 };
 
 blist.widget.metaTabHeaderMap = {
@@ -361,7 +353,6 @@ $(function ()
         function(){ this.target = "_blank"; });
 
     widgetNS.setUpMenu();
-    widgetNS.setUpDialogs();
 
     if (!widgetNS.isAltView)
     {
@@ -408,10 +399,27 @@ $(function ()
     $(document).keyup(function (e)
     {
         // 27 is ESC
-        if (e.keyCode == 27 && $('.interstitial:visible').length > 0)
+        if (e.keyCode == 27)
         {
             $('.interstitial').hide();
+            $('#modal').jqmHide();
         }
+    });
+    
+    // Set up modals
+    $("#modal").jqm({
+        trigger: false,
+        onShow: widgetNS.loadRemoteModal
+    });
+    $.live("a[rel$='modal']", "click", function(event)
+    {
+        event.preventDefault();
+        $("#modal").jqmShow($(this));
+    });
+    $.live("a.jqmClose", "click", function(event)
+    {
+        event.preventDefault();
+        $("#modal").jqmHide();
     });
     
     if ($("#widgetMeta").length > 0)

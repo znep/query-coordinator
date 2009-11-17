@@ -100,68 +100,19 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
 
-  # NOTE: I'm not sure if there's a way to map a child resource to a connected
-  # route without restating this ugly route definition. If there is, we should
-  # probably use that instead of this.
   map.connect ':category/:view_name/:id/stats', :controller => 'stats',
     :action => 'index', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
       
-  map.connect ':category/:view_name/:id/about', :controller => 'blists',
-    :action => 'about', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
+  map.connect ':category/:view_name/:id/:action', :controller => 'blists',
+    :conditions => { :method => :get }, :requirements => {:id => UID_REGEXP,
+      :view_name => /(\w|-)+/, :category => /(\w|-)+/}
 
-  map.connect ':category/:view_name/:id/publish', :controller => 'blists',
-    :action => 'publish', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
+  map.connect ':category/:view_name/:id/:action/:type', :controller => 'blists',
+    :conditions => { :method => :get }, :requirements => {:id => UID_REGEXP,
+      :view_name => /(\w|-)+/, :type => /(\w|-)+/, :category => /(\w|-)+/}
 
-  map.connect ':category/:view_name/:id/print', :controller => 'blists',
-    :action => 'print', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/email', :controller => 'blists',
-    :action => 'email', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/flag/:type', :controller => 'blists',
-    :action => 'flag', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/bulk/:type', :controller => 'blists',
-    :action => 'bulk', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/share', :controller => 'blists',
-    :action => 'share', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/create_share', :controller => 'blists',
-    :action => 'create_share', :conditions => { :method => :post },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/delete_share', :controller => 'blists',
-    :action => 'delete_share', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/calendar', :controller => 'blists',
-    :action => 'calendar', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-      :category => /(\w|-)+/}
-
-  map.connect ':category/:view_name/:id/create_calendar', :controller => 'blists',
-    :action => 'create_calendar', :conditions => { :method => :post },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
-      :category => /(\w|-)+/}
 
   # Support /dataset and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',

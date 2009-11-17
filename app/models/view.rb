@@ -316,9 +316,9 @@ class View < Model
     self.owner.id == user.id
   end
 
-  def columns_for_datatypes(datatypes)
+  def columns_for_datatypes(datatypes, include_hidden = false)
     columns.select do |c|
-      !c.flag?('hidden') && datatypes_match(c, datatypes)
+      (include_hidden || !c.flag?('hidden')) && datatypes_match(c, datatypes)
     end
   end
 

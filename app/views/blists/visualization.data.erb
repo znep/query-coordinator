@@ -64,7 +64,8 @@
             cur_cols.shift.id : nil -%>
 
         <%- if cols[fcol['dataType']].nil?
-              cols[fcol['dataType']] = @view.columns_for_datatypes(fcol['dataType'])
+              cols[fcol['dataType']] =
+                @view.columns_for_datatypes(fcol['dataType'], @is_edit)
             end -%>
         <%- fc_name = t[0] + '-fixedColumn-' + count.to_s -%>
 
@@ -143,7 +144,7 @@
             <%- type_config['dataColumns'].each do |dcol| -%>
             <%- if cols[dcol['dataType']].nil?
                   cols[dcol['dataType']] =
-                    @view.columns_for_datatypes(dcol['dataType'])
+                    @view.columns_for_datatypes(dcol['dataType'], @is_edit)
                 end -%>
             <%- dc_name = t[0] + '-dataColumn-' + count.to_s + '-' +
               dcb_count.to_s -%>
@@ -261,6 +262,9 @@
       if ($blocks.length == 1) { $blocks.addClass('soloBlock'); }
     });
 
+    var $dblocks = $('.vizWrapper .soloBlock:visible');
+    if ($dblocks.length > 1) { $dblocks.removeClass('soloBlock'); }
+
     $('.vizWrapper a.addDataBlock').click(function(event)
     {
       event.preventDefault();
@@ -353,7 +357,7 @@
               if (id !== '')
               {
                   fixedCols[parseInt(splitN[2])] = {id: id,
-                      name: $t.find(':selected').text()};
+                    name: $t.find(':selected').text(), hidden: false};
               }
           }
 
@@ -368,7 +372,7 @@
                   if (id !== '')
                   {
                       dataCols[groupNum][num] = {id: id,
-                          name: $t.find(':selected').text()};
+                        name: $t.find(':selected').text(), hidden: false};
                   }
               }
               else

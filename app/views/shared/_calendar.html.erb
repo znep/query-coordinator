@@ -13,7 +13,6 @@
     {
       $('#<%= grid_div %>').blistCalendar({viewId: '<%= view.id %>',
         editable: <%= view.can_edit() %>,
-        <%# This is a hack until it returns an object %>
         displayFormat: <%= view.displayFormat || '{}' %> });
     }
   });

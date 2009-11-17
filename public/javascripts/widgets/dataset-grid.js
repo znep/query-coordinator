@@ -568,8 +568,8 @@
             { qtipsRef[col.id].qtip('destroy'); }
             qtipsRef[col.id] = $col;
 
-            var tooltipContent = '<div class="blist-th-tooltip ' + col.type +
-                '">' + '<p class="name">' + col.name + '</p>' +
+            var tooltipContent = '<div class="blist-th-tooltip ' + col.type + '">'
+                + '<p class="name">' + col.name.replace(/ /, '&nbsp;') + '</p>' +
                 '<div class="blist-th-icon">' + col.type.displayable() + '</div>' +
                 (col.description !== undefined ?
                     '<p class="description">' + col.description + '</p>' : '') +

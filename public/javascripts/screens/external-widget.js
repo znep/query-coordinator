@@ -13,37 +13,6 @@ blist.widget.setUpMenu = function()
             pullToTop: true});
 };
 
-blist.widget.setUpDialogs = function()
-{
-    $('#emailDialog').jqm({trigger: false});
-    $('#emailDialog a.submit').click(widgetNS.submitEmail);
-    $('#emailDialog form').submit(widgetNS.submitEmail);
-
-    $('#publishDialog').jqm({trigger: false});
-    $('#publishDialog .publishCode').infoPanePublish();
-    $.live("#publishDialog textarea", 'click', function() { $(this).select(); });
-};
-
-blist.widget.headerMenuHandler = function (event)
-{
-    // Href that we care about starts with # and parts are separated with _
-    // IE sticks the full thing, so slice everything up to #
-    var href = $(event.currentTarget).attr('href');
-    if (href.indexOf('#') < 0)
-    {
-        return;
-    }
-
-    var action = href.slice(href.indexOf('#') + 1);
-    event.preventDefault();
-    switch (action)
-    {
-        case 'publish':
-            $('#publishDialog').jqmShow();
-            break;
-    }
-};
-
 blist.widget.submitEmail = function (event)
 {
     event.preventDefault();
@@ -294,8 +263,11 @@ blist.widget.loadRemoteModal = function(hash)
             if (commonNS.modalReady)
                 { commonNS.modalReady(); }
 
-            $modal.find('.modalScrollContent').css('max-height',
-                ($('.gridOuter').outerHeight(true) - 150) + 'px');
+            $scrollContent = $modal.find('.modalScrollContent');
+            $scrollContent.css('height', 0);
+            $scrollContent.css('max-height',
+                ($('.gridOuter').outerHeight(true) - $modal.outerHeight(false)) + 'px');
+            $scrollContent.css('height', 'auto');
         }
     });
 };
@@ -381,7 +353,6 @@ $(function ()
         function(){ this.target = "_blank"; });
 
     widgetNS.setUpMenu();
-    widgetNS.setUpDialogs();
 
     if (!widgetNS.isAltView)
     {

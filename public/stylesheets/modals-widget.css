@@ -5,6 +5,13 @@
     width: 40em;
 }
 
+.widgetModal .submitLine
+{
+    border: none;
+    margin-top: 0;
+    padding-top: 1em;
+}
+
 .widgetModal .modalScrollContent
 {
     overflow: auto;

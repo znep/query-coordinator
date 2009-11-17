@@ -256,67 +256,6 @@
       <div class="clearBoth"></div>
     </div></div>
 
-    <% dialog_content("emailDialog") do %>
-    <div class='header'>
-      <h1>Email This <%= t(:blist_name).capitalize %></h1>
-    </div>
-
-    <div class="mainContent clearfix">
-      <form action="/views/<%= @view.id %>/rows.html?method=email">
-        <label for="emailInput">Email this <%= t(:blist_name) %> to:</label>
-        <input id="emailInput" name="email" type="text" />
-      </form>
-      <p class="error"></p>
-      <ul class="actionButtons">
-        <li><a href="#close" class="jqmClose">Close</a></li>
-        <li><a href="#send-email" class="submit arrowButton">Send Email</a></li>
-      </ul>
-    </div>
-    <% end %>
-
-    <% dialog_content("publishDialog") do %>
-    <div class='header'>
-      <h1>Republish This Dataset</h1>
-    </div>
-
-    <div class="mainContent clearfix">
-      <p>
-      You can publish this <%= t(:blist_name).downcase %> on your blog website by embedding 
-      it in a Social Data Player.  Simply copy and paste the below HTML into your site.
-      </p>
-      <div class="publishCode">
-        <div class="sizeOptions">
-          <p class="field">
-            <label for="publishWidth">Width</label>
-            <%= text_field_tag("publishWidth", "500") %> px
-          </p>
-          <p class="field">
-            <label for="publishHeight">Height</label>
-            <%= text_field_tag("publishHeight", "425") %> px
-          </p>
-          <p class="field">
-            <%- if params[:customization_id].nil? -%>
-              <label for="publishVariation">Color</label>
-              <%= select_tag("publishVariation", options_for_select({ 'Blue' => 'normal', 'Black' => 'black' })) %>
-            <%- end -%>
-          </p>
-          <p id="sizeError" class="hide">The player must be at least 500 pixels wide by 425 pixels tall.</p>
-        </div>
-        <div class="copyCode">
-          <%= text_area_tag("publishCode") %>
-          <%= hidden_field_tag("publishCodeTemplate", get_publish_embed_code_for_view(@view,
-              {:dimensions => { :width => "#width#",  :height => "#height#" }},
-              (params[:customization_id].nil? ? "#variation#" : params[:customization_id] ),
-              (params[:cur] || 'w'))) %>
-          <ul class="actionButtons clearfix">
-            <li><a class="jqmClose" href="#close">Close</a></li>
-            <li><a id="previewWidgetLink" href="<%= "/widgets_preview/#{@view.id}" %>" class="noInterstitial arrowButton">See Preview</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <% end %>
-
     <div class='interstitial'>
       <a class='closeLink' href='#close'>Close</a>
       <span class='closeKeyText'>or ESC key</span>

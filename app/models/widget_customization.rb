@@ -68,6 +68,7 @@ class WidgetCustomization < Model
     :grid     => { :row_numbers => true,
                    :wrap_header_text => false,
                    :header_icons => false,
+                   :title_bold => false,
                    :row_height => { :value => '16',
                                     :unit => 'px' },
                    :zebra => '#e7ebf2' },

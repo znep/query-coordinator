@@ -625,7 +625,7 @@
             features.filter = true;
         }
         var view = datasetObj.settings._model.meta().view;
-        if (view && view.rights &&
+        if (blist.data.types[col.type].deleteable && view && view.rights &&
             $.inArray('remove_column', view.rights) >= 0)
         {
             features.remove = true;

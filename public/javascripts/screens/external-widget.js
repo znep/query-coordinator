@@ -1,4 +1,5 @@
 var widgetNS = blist.namespace.fetch('blist.widget');
+var commonNS = blist.namespace.fetch('blist.common');
 
 blist.widget.setUpMenu = function()
 {
@@ -37,9 +38,6 @@ blist.widget.headerMenuHandler = function (event)
     event.preventDefault();
     switch (action)
     {
-        case 'email':
-            $('#emailDialog').jqmShow().find('input').focus();
-            break;
         case 'publish':
             $('#publishDialog').jqmShow();
             break;
@@ -241,12 +239,12 @@ blist.widget.setUpViewHeader = function()
 
 blist.widget.enableInterstitial = function()
 {
-    $('a:not([href^=#]):not(.noInterstitial)').live('click', widgetNS.showInterstitial);
+    $('a:not([href^=#]):not(.noInterstitial):not([rel$="modal"])').live('click', widgetNS.showInterstitial);
 };
 
 blist.widget.disableInterstitial = function()
 {
-    $('a:not([href^=#]):not(.noInterstitial)').die('click', widgetNS.showInterstitial);
+    $('a:not([href^=#]):not(.noInterstitial):not([rel$="modal"])').die('click', widgetNS.showInterstitial);
 };
 
 blist.widget.showInterstitial = function (e)
@@ -278,6 +276,28 @@ blist.widget.showInterstitial = function (e)
         .show()
         .css('left', ($(window).width() - $inter.outerWidth(true)) / 2)
         .css('top', ($(window).height() - $inter.outerHeight(true)) / 2);
+};
+
+blist.widget.loadRemoteModal = function(hash)
+{
+    var $modal = hash.w;
+    var $trigger = $(hash.t);
+
+    $.ajax({ 
+        url: $trigger.attr("href"),
+        cache: false,
+        type: "GET",
+        success: function(data)
+        {
+            $modal.html(data).show();
+
+            if (commonNS.modalReady)
+                { commonNS.modalReady(); }
+
+            $modal.find('.modalScrollContent').css('max-height',
+                ($('.gridOuter').outerHeight(true) - 150) + 'px');
+        }
+    });
 };
 
 blist.widget.metaTabHeaderMap = {
@@ -408,10 +428,27 @@ $(function ()
     $(document).keyup(function (e)
     {
         // 27 is ESC
-        if (e.keyCode == 27 && $('.interstitial:visible').length > 0)
+        if (e.keyCode == 27)
         {
             $('.interstitial').hide();
+            $('#modal').jqmHide();
         }
+    });
+    
+    // Set up modals
+    $("#modal").jqm({
+        trigger: false,
+        onShow: widgetNS.loadRemoteModal
+    });
+    $.live("a[rel$='modal']", "click", function(event)
+    {
+        event.preventDefault();
+        $("#modal").jqmShow($(this));
+    });
+    $.live("a.jqmClose", "click", function(event)
+    {
+        event.preventDefault();
+        $("#modal").jqmHide();
     });
     
     if ($("#widgetMeta").length > 0)

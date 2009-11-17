@@ -2,14 +2,13 @@
 {'text' => 'Socialize this ' + t(:blist_name).capitalize, 'class' => 'share',
   'href' => '#', 'submenu' => socialize_menu_options(@view)},
 {'text' => 'Email this ' + t(:blist_name).capitalize + '...', 'class' => 'email',
-  'href' => '#email', 'if' => theme[:menu][:email]},
+  'href' => "#{@view.href}/email", 'modal' => true, 'if' => theme[:menu][:email]},
 {'separator' => true},
 {'text' => 'Republish this ' + t(:blist_name).capitalize + '...' ,
   'class' => 'publish', 'href' => '#publish', 'if' => theme[:menu][:republish]},
 {'separator' => true},
-{'text' => 'Print as PDF', 'class' => 'print', 'external' => true,
-  'link_class' => 'noInterstitial', 'href' => '/views/' + @view.id +
-    '/rows.pdf?print=true&headers_on_every_page=true', 'if' => theme[:menu][:print]},
+{'text' => "Print this #{t(:blist_name).capitalize}...", 'class' => 'print',
+  'href' => "#{@view.href}/print", 'modal' => true, 'if' => theme[:menu][:print]},
 {'text' => 'Download ' + t(:blist_name).capitalize + ' as', 'class' => 'export',
   'href' => '#', 'if' => theme[:menu][:download], 'submenu' => 
   {'class' => 'noicon', 'items' => [

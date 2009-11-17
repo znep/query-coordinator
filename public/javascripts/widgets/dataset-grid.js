@@ -27,6 +27,7 @@
             accessType: 'DEFAULT',
             clearFilterItem: null,
             clearTempViewCallback: function () {},
+            columnDeleteEnabled: false,
             columnNameEdit: false,
             columnPropertiesEnabled: false,
             currentUserId: null,
@@ -625,7 +626,8 @@
             features.filter = true;
         }
         var view = datasetObj.settings._model.meta().view;
-        if (blist.data.types[col.type].deleteable && view && view.rights &&
+        if (datasetObj.settings.columnDeleteEnabled &&
+            blist.data.types[col.type].deleteable && view && view.rights &&
             $.inArray('remove_column', view.rights) >= 0)
         {
             features.remove = true;

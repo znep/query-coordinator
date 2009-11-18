@@ -18,7 +18,7 @@ module Theme
         theme = 'ohioag'
       elsif host.include? 'utah'
         theme = 'utah'
-      elsif host.include? 'az'
+      elsif host.match(/^az\.(?:.+\.)?socrata\.com$/)
         theme = 'arizona'
       elsif host.include? 'redmond'
         theme = 'redmond'

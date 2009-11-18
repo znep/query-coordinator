@@ -609,7 +609,8 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             group: groupText,
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         },
 
         richtext: {
@@ -618,7 +619,8 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenText,
             filterText: true,
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         },
 
         number: {
@@ -628,7 +630,8 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             cls: 'number',
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         },
 
         date: {
@@ -639,6 +642,7 @@ blist.namespace.fetch('blist.data.types');
             filterValue: function(v) { return v; },
             sortable: true,
             filterable: true,
+            deleteable: true,
             group: groupDate,
             formats: {
                 'date': 'm/d/Y',
@@ -655,7 +659,8 @@ blist.namespace.fetch('blist.data.types');
 
         photo: {
             renderGen: renderGenPhoto,
-            cls: 'photo'
+            cls: 'photo',
+            deleteable: true
         },
 
         money: {
@@ -665,7 +670,8 @@ blist.namespace.fetch('blist.data.types');
             cls: 'money',
             filterText: true,
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         },
 
         phone: {
@@ -676,6 +682,7 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             sortable: true,
             filterable: true,
+            deleteable: true,
             isObject: true
         },
 
@@ -686,6 +693,7 @@ blist.namespace.fetch('blist.data.types');
             filterValue: valueFilterCheckbox,
             sortable: true,
             filterable: true,
+            deleteable: true,
             isInlineEdit: true
         },
 
@@ -694,7 +702,8 @@ blist.namespace.fetch('blist.data.types');
             sortGen: sortGenText,
             filterRender: renderFilterFlag,
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         },
 
         stars: {
@@ -705,6 +714,7 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             sortable: true,
             filterable: true,
+            deleteable: true,
             isInlineEdit: true
         },
 
@@ -715,7 +725,8 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterPercent,
             filterText: true,
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         },
 
         url: {
@@ -725,11 +736,13 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             sortable: true,
             filterable: true,
+            deleteable: true,
             isObject: true
         },
 
         document: {
             renderGen: renderGenDocument,
+            deleteable: true,
             isObject: true
         },
 
@@ -746,11 +759,13 @@ blist.namespace.fetch('blist.data.types');
             filterRender: renderFilterText,
             filterText: true,
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         },
 
         nested_table: {
-            renderGen: renderGenText
+            renderGen: renderGenText,
+            deleteable: true
         },
 
         picklist: {
@@ -758,14 +773,16 @@ blist.namespace.fetch('blist.data.types');
             sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         },
         drop_down_list: {
             renderGen: renderGenPicklist,
             sortPreprocessor: sortPicklistPrepro,
             filterRender: renderFilterPicklist,
             sortable: true,
-            filterable: true
+            filterable: true,
+            deleteable: true
         }
     });
 

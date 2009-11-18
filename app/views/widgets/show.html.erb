@@ -152,6 +152,10 @@
     .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
     <%- end -%>
 
+    <%- if @theme[:grid][:title_bold] -%>
+    .blist-th .blist-th-name { font-weight: bold; }
+    <%- end -%>
+
     <%- if @theme[:grid][:zebra] -%>
       .blist-tr-even .blist-td
       {

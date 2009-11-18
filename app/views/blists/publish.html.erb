@@ -312,6 +312,21 @@
                 </dd>
               </dl>
               <dl class="summaryList">
+                <dt>Title Font Weight</dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <%= radio_button_tag("customization[grid][title_bold]", "true",
+                          @customization[:grid][:title_bold]) %>
+                      <%= label_tag("customization_grid_title_bold_true", "Bold") %>
+                      <%= radio_button_tag("customization[grid][title_bold]", "false",
+                          !@customization[:grid][:title_bold]) %>
+                      <%= label_tag("customization_grid_title_bold_false", "Normal") %>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
+              <dl class="summaryList">
                 <dt>Title Text Size</dt>
                 <dd>
                   <div class="itemContent">

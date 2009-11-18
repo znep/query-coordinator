@@ -213,6 +213,8 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < newRows.length; i++)
             {
                 var r = newRows[i];
+                if (typeof r != 'object') { continue; }
+
                 if (metaCols)
                 {
                     for (var j = 0; j < metaCols.length; j++)

@@ -123,11 +123,6 @@ ActionController::Routing::Routes.draw do |map|
   :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
     :category => /(\w|-)+/}
 
-  map.connect ':category/:view_name/:id/visualization', :controller => 'blists',
-    :action => 'visualization', :conditions => { :method => :get },
-    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
-      :type => /(\w|-)+/, :category => /(\w|-)+/}
-
   map.connect ':category/:view_name/:id/create_visualization',
     :controller => 'blists', :action => 'create_visualization',
     :conditions => { :method => :post },

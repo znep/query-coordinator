@@ -267,6 +267,30 @@ class Model
     raise "You probably wanted the class method instead."
   end
 
+  def self.batch(reqs)
+    reqs.each {|r| r['body'] = r['body'].to_json if !r['body'].nil? }
+    resp = JSON.parse(CoreServer::Base.connection.
+                 create_request('/batches', {'requests' => reqs}.to_json))
+    r_count = 0
+    resp.map do |r|
+      req = reqs[r_count]
+      r_count += 1
+      if r['error']
+        Rails.logger.info("Error: #{req['requestType']} " +
+                      "#{CORESERVICE_URI.to_s}#{req['url']}: " +
+                      (r['errorCode'] || '') + " : " +
+                        (r['errorMessage'] || ''))
+        raise CoreServer::CoreServerError.new(
+          "#{req['requestType']} #{CORESERVICE_URI.to_s}#{req['url']}",
+          r['errorCode'],
+          r['errorMessage'])
+      else
+        klass = req['class'] || self
+        klass.parse(r['response'])
+      end
+    end
+  end
+
 protected
 
   def self.parse_tags(val)

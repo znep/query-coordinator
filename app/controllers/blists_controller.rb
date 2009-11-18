@@ -483,10 +483,19 @@ class BlistsController < ApplicationController
     errors = []
     begin
       if params[:edit] == 'true'
-        view = View.update_attributes!(params[:id],
-               {:columns => JSON.parse(params[:columns]),
-                 :displayType => params[:vizType],
-                 :displayFormat => JSON.parse(params[:options])})
+        batch_reqs = []
+        cols = JSON.parse(params[:columns])
+        # TODO: It would be nice to make some convenience methods for generating
+        # these requests
+        cols.each do |c|
+          batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + c['id'],
+            'requestType' => 'PUT', 'body' => {'hidden' => false},
+            'class' => Column}
+        end
+        batch_reqs << {'url' => '/views/' + params[:id], 'requestType' => 'PUT',
+          'body' => {'columns' => cols, 'displayType' => params[:vizType],
+            'displayFormat' => JSON.parse(params[:options])}, 'class' => View}
+        Model.batch(batch_reqs)
       else
         view = View.create({:name => params[:viewName],
                            :columns => JSON.parse(params[:columns]),

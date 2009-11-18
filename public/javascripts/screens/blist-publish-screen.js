@@ -267,6 +267,7 @@ blist.publish.customizationApplication = {
                                                               { selector: '.blist-th .info-container', css: 'margin-top', map: { 'true': '-1.25em', 'false': '' } },
                                                               { selector: 'div.th-inner-container', css: 'white-space', map: { 'true': 'normal', 'false': '' } },
                                                               { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { 'true': '4.5em', 'false': '' } } ],
+                      title_bold:                           [ { selector: '.blist-th .blist-th-name', css: 'font-weight', map: { 'true': 'bold', 'false' : 'normal' } } ],
                       header_icons:                         [ { selector: '.blist-th-icon', hideShow: true } ],
                       /* disabled row height
                       row_height:                           [ { selector: '.blist-td', css: 'height', hasUnit: true },

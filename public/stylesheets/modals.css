@@ -404,7 +404,7 @@
 .modalDialog .dialogBox .header .emailDialogIcon
 {
     background-image: url(/stylesheets/images/content/dialog_header_icons.png);
-    background-position: 0 -104px;
+    background-position: 0 -103px;
     background-repeat: no-repeat;
     padding-left: 35px;
 }
@@ -1773,3 +1773,42 @@ div#sortBysList.reorderList li .itemWrapper
 
 
 /*** END: Message the owner of this dataset ***/
+
+/*** START: Republish dialog ***/
+
+.republishDialogWrapper p
+{
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+.republishDialogWrapper textarea
+{
+    font-size: 1.2em;
+    margin-top: 0.5em;
+    width: 29.5em;
+}
+
+.republishDialogWrapper input[type="text"]
+{
+    width: 2em;
+}
+
+.republishDialogWrapper label
+{
+    padding-right: 0.5em;
+}
+
+.republishDialogWrapper .field
+{
+    display: inline;
+    margin: 0 0.7em;
+}
+
+.republishDialogWrapper #sizeError
+{
+    color: #f00;
+    margin-top: 0.5em;
+}
+
+/*** END: Republish dialog ***/

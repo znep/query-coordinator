@@ -27,6 +27,7 @@ body#lensBody
 {
     background-image: none;
     margin-right: 0;
+    width: 23px;
 }
 
 #lensContainer .tabList .backLink a,

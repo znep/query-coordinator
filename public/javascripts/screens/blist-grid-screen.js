@@ -390,6 +390,7 @@ $(function ()
     if (!blist.blistGrid.isAltView)
     {
         $('#dataGrid').datasetGrid({viewId: blistGridNS.viewId,
+            columnDeleteEnabled: blistGridNS.isOwner,
             columnPropertiesEnabled: blistGridNS.isOwner,
             columnNameEdit: blistGridNS.isOwner,
             showAddColumns: blistGridNS.canAddColumns,

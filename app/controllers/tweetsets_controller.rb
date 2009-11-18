@@ -1,5 +1,4 @@
 class TweetsetsController < ApplicationController
-  include HoptoadNotifier::Catcher
   skip_before_filter :require_user, :only => [:index]
   
   def index
@@ -9,7 +8,7 @@ class TweetsetsController < ApplicationController
     begin
       @recent_sets = View.find_for_user(tweetset_user).select{|v| v.tags && 
         v.tags.any? {|t| t.data == 'tweetset'} && v.is_public? }.sort{|a, b| b.createdAt <=> a.createdAt}
-    rescue
+    rescue => ex
       notify_hoptoad :error_message => "Error searching for tweetets: No user with id #{tweetset_user} exists."
     end
     # Look for sets tagged 'example' to show up on the front page
@@ -36,7 +35,7 @@ class TweetsetsController < ApplicationController
   
     view_name = params[:tweetsetName] || "Socrata #{query} tweetset"
     begin
-      resulting_id = CoreServer::Base.connection.create_tweetset(query, view_name)
+      resulting_id = CoreServer::Base.connection.create_tweetset(query, view_name, current_user)
       @created = true
     rescue
       notify_hoptoad :error_message => "Error creating tweetset for query '#{query}'"

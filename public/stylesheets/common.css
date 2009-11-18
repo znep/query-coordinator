@@ -99,8 +99,8 @@ form textarea.text_wide { width: 30em; }
     /* Colors need to be transparent, otherwise Firefox & IE show the field;
      * while trying to get rid of the border stops events from registering in
      * WebKit */
-    background-color: transparent;
-    border-color: transparent;
+    background-color: transparent !important;
+    border-color: transparent !important;
     /* Shrink the height, and hide it just off the edge.  We need more than
      * -1px to the left or the blinking cursor shows in IE.  And top needs
      * to be just -1px or Safari will scroll on focus. */
@@ -109,6 +109,7 @@ form textarea.text_wide { width: 30em; }
     top: -1px;
     /* position: absolute so Safari doesn't scroll */
     position: absolute;
+    width: 1px !important;
     /* Big negative z-index to hide it in IE8 */
     z-index: -100;
 }
@@ -212,7 +213,7 @@ form.search.large input.submit
     background-position: top left;
     background-repeat: no-repeat;
     margin-left: 1em;
-    overflow: auto;
+    overflow: visible;
 }
 
 .mainContent .content

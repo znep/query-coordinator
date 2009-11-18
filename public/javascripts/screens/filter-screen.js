@@ -217,30 +217,33 @@ filterNS.row = function($row) {
         var phoneType = {type: "operator"};
 
         // Number
-        if (value[0].phone_number != null)
+        if (value[0] !== null && value[0].phone_number !== null)
         {
-            children = [{columnId: column.id, type: "column", value: "phone_number"}, {type: "literal", value: value[0].phone_number}];
+            children = [{columnId: column.id, type: "column",
+                    value: "phone_number"},
+                {type: "literal", value: value[0].phone_number}];
             phoneNumber.value = operator; 
             phoneNumber.children = children;
             filter.push(phoneNumber);
         }
 
         // Type
-        if (value[0].phone_type != null)
+        if (value[0] !== null && value[0].phone_type !== null)
         {
-            children = [{columnId: column.id, type: "column", value: "phone_type"}, {type: "literal", value: value[0].phone_type}];
+            children = [{columnId: column.id, type: "column", value: "phone_type"},
+                {type: "literal", value: value[0].phone_type}];
             phoneType.value = operator;
             phoneType.children = children;
             filter.push(phoneType);
         }
 
-        return filter; 
+        return filter;
     }
     else if (column.type == "url")
     {
         var filter = [];
 
-        if (value[0].url !== null)
+        if (value[0] !== null && value[0].url !== null)
         {
             filter.push({
                 type: "operator",
@@ -254,8 +257,8 @@ filterNS.row = function($row) {
                 ]
             });
         }
-        
-        if (value[0].description !== null)
+
+        if (value[0] !== null && value[0].description !== null)
         {
             filter.push({
                 type: "operator",
@@ -269,7 +272,7 @@ filterNS.row = function($row) {
                 ]
             });
         }
-        
+
         return filter;
     }
     else
@@ -336,7 +339,9 @@ filterNS.row = function($row) {
     }
 };
 
-filterNS.getFilter = function($table, operator) {
+filterNS.getFilter = function($table, operator)
+{
+    var hasConditions = false;
     var j = {type: "operator", value: operator.toUpperCase()};
     var children = [];
 
@@ -345,17 +350,19 @@ filterNS.getFilter = function($table, operator) {
         if (rowResult !== false)
         {
             children = children.concat(rowResult);
+            hasConditions = true;
         }
     });
     j.children = children;
 
-    return j;
+    return hasConditions ? j : null;
 };
 
-filterNS.populate = function($table, filters, columns) {
+filterNS.populate = function($table, filters, columns)
+{
     for (var i=0; i < filters.children.length; i++)
     {
-        filterRow = filters.children[i];
+        var filterRow = filters.children[i];
 
         var $row = filterNS.addFilterRow($table, columns);
 
@@ -364,6 +371,7 @@ filterNS.populate = function($table, filters, columns) {
             var sub = filterRow.children[j];
             var subcolumn;
             var col;
+            var type;
             if (sub.type == "column")
             {
                 for (var k=0; k < columns.length; k++)
@@ -371,19 +379,23 @@ filterNS.populate = function($table, filters, columns) {
                     if (sub.columnId == columns[k].id)
                     {
                         col = columns[k];
-                        if (sub.value != undefined)
+                        type = blist.data.types[col.type];
+                        if (type && type.isObject && sub.value !== undefined)
                         {
-                            subcolumn = sub.value;
+                            subcolumn = sub.value.toLowerCase();
                         }
 
-                        $row.find(".filterTable-nameDropDown").value($.grep(filterNS.columnsValues,
-                            function(columnValue) {
-                                return columnValue.index === k;
-                            })[0]);
+                        $row.find(".filterTable-nameDropDown")
+                            .value($.grep(filterNS.columnsValues,
+                                function(columnValue) {
+                                    return columnValue.index === k;
+                                })[0]);
                         $row.find(".filterTable-conditionDropDown")
-                            .value($.grep(filterNS.conditions[filterNS.filterableClass(col.type)],
+                            .value($.grep(filterNS.conditions
+                                [filterNS.filterableClass(col.type)],
                             function(condition) {
-                                return condition.operator == filterRow.value.toUpperCase();
+                                return condition.operator ==
+                                    filterRow.value.toUpperCase();
                             })[0]);
                         $row.find(".filterTable-editor").empty();
                         break;
@@ -394,30 +406,34 @@ filterNS.populate = function($table, filters, columns) {
             {
                 if (j > 1)
                 {
-                    $row.find(".filterTable-editor").append('<div class="ampersand">&amp;</div>');
+                    $row.find(".filterTable-editor")
+                        .append('<div class="ampersand">&amp;</div>');
                 }
-                
+
                 if (filterRow.value.toLowerCase() == "between")
                 {
-                    $row.find(".filterTable-editor").append('<div class="renderer renderer' + j + ' between"></div>');
+                    $row.find(".filterTable-editor")
+                        .append('<div class="renderer renderer' + j +
+                            ' between"></div>');
                 }
                 else
                 {
-                    $row.find(".filterTable-editor").append('<div class="renderer renderer' + j + '"></div>');
+                    $row.find(".filterTable-editor")
+                        .append('<div class="renderer renderer' + j + '"></div>');
                 }
 
                 var value;
-                if (subcolumn != null)
+                if (subcolumn !== undefined)
                 {
                     value = {};
                     value[subcolumn] = sub.value;
-                    subcolumn = null;
+                    subcolumn = undefined;
                 }
                 else
                 {
                     value = sub.value;
                 }
-                
+
                 if (col.type == "date")
                 {
                     value = new Date(value).getTime() / 1000;

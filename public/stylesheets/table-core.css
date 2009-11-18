@@ -398,8 +398,13 @@ div.blist-star-0
     left: 0;
     margin: -2px 2px;
     position: absolute;
+    text-indent: -9999px;
     width: 25px;
 }
+
+.blist-td.align-right .blist-phone-icon,
+div.blist-table-editor.align-right .blist-phone-icon,
+div.blist-table-editor .align-right .blist-phone-icon { text-align: left; }
 
 .blist-phone-icon-cell,
 .blist-table-edit-container .Cell .icon
@@ -505,7 +510,8 @@ div.blist-table-editor .align-right { text-align: right; }
 {
     border-top: none;
 }
-.blist-table .blist-combo-value
+.blist-table .blist-combo-value,
+.blist-table .blist-combo-focused .blist-combo-value
 {
     font-size: 1em;
     padding: 0;

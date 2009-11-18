@@ -27,10 +27,12 @@
             accessType: 'DEFAULT',
             clearFilterItem: null,
             clearTempViewCallback: function () {},
+            columnDeleteEnabled: false,
+            columnNameEdit: false,
             columnPropertiesEnabled: false,
             currentUserId: null,
             editEnabled: true,
-            filterItem: null,
+            filterForm: null,
             manualResize: false,
             setTempViewCallback: function () {},
             showRowHandle: false,
@@ -44,7 +46,7 @@
             init: function ()
             {
                 var datasetObj = this;
-                var $datasetGrid = $(datasetObj.currentGrid);
+                var $datasetGrid = datasetObj.$dom();
                 $datasetGrid.data("datasetGrid", datasetObj);
 
                 datasetObj.settings._filterCount = 0;
@@ -61,14 +63,21 @@
                         { sortChanged(datasetObj); })
                     .bind('columns_rearranged', function (event)
                         { columnsRearranged(datasetObj); })
-                    .bind('column_filter_change', function (event, c)
-                        { columnFilterChanged(datasetObj, c); })
+                    .bind('column_filter_change', function (event, c, s)
+                        { columnFilterChanged(datasetObj, c, s); })
                     .bind('server_row_change', function(event)
                         { serverRowChange(datasetObj); })
+                    .bind('columns_update', function(event)
+                        { columnsUpdated(datasetObj); })
+                    .bind('full_load', function(event)
+                        { viewLoaded(datasetObj); })
+                    .bind('column_name_dblclick', function(event, origEvent)
+                        { columnNameEdit(datasetObj, event, origEvent); })
                     .blistTable({cellNav: true, selectionEnabled: false,
                         generateHeights: false, columnDrag: true,
                         editEnabled: datasetObj.settings.editEnabled,
-                        headerMods: function (col) { headerMods(datasetObj, col); },
+                        headerMods: function (col)
+                            { headerMods(datasetObj, col); },
                         rowMods: function (rows) { rowMods(datasetObj, rows); },
                         manualResize: datasetObj.settings.manualResize,
                         showGhostColumn: true, showTitle: false,
@@ -89,22 +98,21 @@
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
 
-                $('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle')
-                    .live('mouseover',
+                $.live('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle', 'mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
-                $('#' + $datasetGrid.attr('id') + ' .add-column')
-                    .live("click", function (e) { 
+                $.live('#' + $datasetGrid.attr('id') + ' .add-column', "click",
+                        function (e) { 
                           $('<a href="/datasets/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
                         });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
 
-                if (datasetObj.settings.filterItem)
+                if (datasetObj.settings.filterForm)
                 {
-                    datasetObj.settings.filterItem =
-                        $(datasetObj.settings.filterItem);
-                    datasetObj.settings.filterItem
-                        .keydown(function (e) { filterTextInput(datasetObj, e); });
+                    datasetObj.settings.filterForm =
+                        $(datasetObj.settings.filterForm);
+                    datasetObj.settings.filterForm
+                        .submit(function (e) { filterFormSubmit(datasetObj, e); });
                 }
                 if (datasetObj.settings.clearFilterItem)
                 {
@@ -116,12 +124,28 @@
                 }
             },
 
-            updateFilter: function(filter)
+            $dom: function()
+            {
+                if (!this._$dom)
+                { this._$dom = $(this.currentGrid); }
+                return this._$dom;
+            },
+
+            updateFilter: function(filter, saveExisting)
             {
                 var datasetObj = this;
                 datasetObj.settings._model.updateFilter(filter);
 
-                this.setTempView();
+                var view = datasetObj.settings._model.meta().view;
+                if (saveExisting && (view.flags === undefined ||
+                    $.inArray('default', view.flags) < 0) &&
+                    datasetObj.settings.currentUserId == view.owner.id)
+                {
+                    $.ajax({url: '/views/' + view.id + '.json',
+                        data: $.json.serialize({viewFilters: view.viewFilters}),
+                        type: 'PUT', contentType: 'application/json'});
+                }
+                else { this.setTempView(); }
             },
 
             updateView: function(newView)
@@ -428,6 +452,11 @@
         }
     };
 
+    var columnsUpdated = function(datasetObj)
+    {
+        datasetObj.summaryStale = true;
+    };
+
     var serverRowChange = function(datasetObj)
     {
         datasetObj.summaryStale = true;
@@ -471,33 +500,29 @@
         }
     };
 
-    var filterTextInput = function (datasetObj, e)
+    var filterFormSubmit = function (datasetObj, e)
     {
+        e.preventDefault();
+
         if ($(datasetObj.currentGrid).closest('body').length < 1)
         {
             return;
         }
 
-        // If they tab out of the field, we don't want to search
-        if (e.keyCode == 9) { return; }
-
-        setTimeout(function ()
-            {
-                var searchText = $(e.currentTarget).val();
-                datasetObj.summaryStale = true;
-                var model = datasetObj.settings._model;
-                model.filter(searchText, 250);
-                if (!searchText || searchText === '')
-                {
-                    datasetObj.clearTempView('searchString');
-                    datasetObj.settings.clearFilterItem.hide();
-                }
-                else
-                {
-                    datasetObj.setTempView('searchString');
-                    datasetObj.settings.clearFilterItem.show();
-                }
-            }, 10);
+        var searchText = $(e.currentTarget).find(':input').val();
+        datasetObj.summaryStale = true;
+        var model = datasetObj.settings._model;
+        model.filter(searchText);
+        if (!searchText || searchText === '')
+        {
+            datasetObj.clearTempView('searchString');
+            datasetObj.settings.clearFilterItem.hide();
+        }
+        else
+        {
+            datasetObj.setTempView('searchString');
+            datasetObj.settings.clearFilterItem.show();
+        }
     };
 
     var clearFilterInput = function(datasetObj, e)
@@ -508,7 +533,8 @@
         }
 
         e.preventDefault();
-        datasetObj.settings.filterItem.val('').blur();
+        if (datasetObj.settings.filterForm)
+        { datasetObj.settings.filterForm.find(':input').val('').blur(); }
         datasetObj.summaryStale = true;
         datasetObj.settings._model.filter('');
         datasetObj.clearTempView('searchString');
@@ -528,15 +554,61 @@
                     if ($tdh.find('a.menuLink').length > 0) { return true; }
                     var uid = $tdh.attr('uid');
                     var col = datasetObj.settings._model.column(uid);
-                    if (col) { createHeaderMenu(datasetObj, col, $tdh); }
+                    if (col) { setupHeader(datasetObj, col, $tdh, false); }
                 });
         });
+    };
+
+    var setupHeader = function(datasetObj, col, $col, qtipsRef)
+    {
+        createHeaderMenu(datasetObj, col, $col);
+
+        if (qtipsRef)
+        {
+            if (qtipsRef[col.id] && qtipsRef[col.id].data('qtip'))
+            { qtipsRef[col.id].qtip('destroy'); }
+            qtipsRef[col.id] = $col;
+
+            var tooltipContent = '<div class="blist-th-tooltip ' + col.type + '">'
+                + '<p class="name">' + col.name.replace(/ /, '&nbsp;') + '</p>' +
+                '<div class="blist-th-icon">' + col.type.displayable() + '</div>' +
+                (col.description !== undefined ?
+                    '<p class="description">' + col.description + '</p>' : '') +
+                '</div>';
+            var contentIsMain = true;
+            var adjustContent = function(e)
+            {
+                if (e && $(e.target).is('.menuLink'))
+                {
+                    if (contentIsMain)
+                    {
+                        var api = $col.qtip('api');
+                        api.updateContent('Click for Menu', false);
+                        contentIsMain = false;
+                    }
+                }
+                else if (!contentIsMain)
+                {
+                    var api = $col.qtip('api');
+                    api.updateContent(tooltipContent, false);
+                    contentIsMain = true;
+                }
+            };
+            $col.removeAttr('title').qtip({content: tooltipContent,
+                    style: { name: 'blist' },
+                    position: { target: 'mouse' },
+                    api: {
+                        onPositionUpdate: adjustContent,
+                        beforeShow: adjustContent
+                    } });
+        }
     };
 
     /* Callback when rendering the grid headers.  Set up column on-object menus */
     var headerMods = function(datasetObj, col)
     {
-        createHeaderMenu(datasetObj, col, $(col.dom));
+        if (!datasetObj.settings._colQtips) { datasetObj.settings._colQtips = {}; }
+        setupHeader(datasetObj, col, $(col.dom), datasetObj.settings._colQtips);
     };
 
     var createHeaderMenu = function(datasetObj, col, $colDom)
@@ -554,12 +626,13 @@
             features.filter = true;
         }
         var view = datasetObj.settings._model.meta().view;
-        if (view && view.rights &&
+        if (datasetObj.settings.columnDeleteEnabled &&
+            blist.data.types[col.type].deleteable && view && view.rights &&
             $.inArray('remove_column', view.rights) >= 0)
         {
             features.remove = true;
         }
-        if (datasetObj.settings.columnPropertiesEnabled)
+        if (datasetObj.settings.columnPropertiesEnabled && !datasetObj.isTempView)
         {
             features.properties = true;
         }
@@ -669,6 +742,8 @@
 
     var columnMenuOpenCallback = function(datasetObj, $colHeader, $menu)
     {
+        if ($colHeader.data('qtip')) { $colHeader.qtip('hide'); }
+
         var selCols = $(datasetObj.currentGrid).blistTableAccessor()
             .getSelectedColumns();
         var col = $colHeader.data('column');
@@ -696,16 +771,18 @@
 
     var loadFilterMenu = function(datasetObj, col, $menu)
     {
-        if (datasetObj.summaryStale || datasetObj.settings._columnSummaries == null)
+        if (datasetObj.summaryStale ||
+            datasetObj.settings._columnSummaries === undefined)
         {
             datasetObj.settings._columnSummaries = {};
             datasetObj.summaryStale = false;
         }
 
+        var colSum = datasetObj.settings._columnSummaries;
+
         if (!blist.data.types[col.type].filterable) { return; }
 
-        if (datasetObj.settings._columnSummaries[col.id] != null &&
-            datasetObj.settings._columnSummaries[col.id].topFrequencies != null)
+        if (colSum[col.id] !== undefined)
         {
             addFilterMenu(datasetObj, col, $menu);
             return;
@@ -718,22 +795,18 @@
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
 
         var spinnerStr = '<li class="autofilter loading"></li>';
-        // Find the correct spot to add it; either after sort descending, or the top
+        // Find the correct spot to add it; either after sort descending, or
+        // the top
         var $sortItem = $menu.find('li.filterSeparator');
-        if ($sortItem.length > 0)
-        {
-            $sortItem.before(spinnerStr);
-        }
-        else
-        {
-            $menu.prepend(spinnerStr);
-        }
+        if ($sortItem.length > 0) { $sortItem.before(spinnerStr); }
+        else { $menu.prepend(spinnerStr); }
 
         // Set up the current view to send to the server to get the appropriate
         //  summary data back
         var tempView = $.extend({}, modView,
                 {originalViewId: modView.id, columns: null});
-        $.ajax({url: '/views/INLINE/rows.json?method=getSummary&columnId=' + col.id,
+        $.ajax({url: '/views/INLINE/rows.json?method=getSummary&columnId=' +
+                    col.id,
                 dataType: 'json',
                 cache: false,
                 type: 'POST',
@@ -745,7 +818,13 @@
                     //  in an array)
                     $.each(data.columnSummaries, function (i, s)
                     {
-                        datasetObj.settings._columnSummaries[s.columnId] = s;
+                        if (s.topFrequencies === undefined ||
+                            s.topFrequencies.length < 1) { return true; }
+
+                        if (colSum[s.columnId] === undefined)
+                        { colSum[s.columnId] = {}; }
+
+                        colSum[s.columnId][s.subColumnType] = s;
                     });
                     // Then update the column header menu
                     addFilterMenu(datasetObj, col, $menu);
@@ -764,40 +843,27 @@
         $menu.children('.autofilter.loading').remove();
 
         // Make sure this column is filterable, and we have data for it
-        if (datasetObj.settings._columnSummaries == null ||
+        if (datasetObj.settings._columnSummaries === undefined ||
                 !blist.data.types[col.type].filterable)
-        {
-            return;
-        }
-        var colSum = datasetObj.settings._columnSummaries[col.id];
-        if (colSum == null)
-        {
-            return;
-        }
+        { return; }
 
         // Get the current filter for this column (if it exists)
         var colFilters = datasetObj.settings._model
             .meta().columnFilters;
-        var cf;
-        if (colFilters)
-        {
-            cf = colFilters[col.id];
-        }
+        var cf = colFilters ? colFilters[col.id] || undefined : undefined;
 
         // Remove the old filter menu if necessary
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
-        if (cf == null && (colSum.topFrequencies == null ||
-                    colSum.topFrequencies.length < 1))
-        {
-            return;
-        }
+
+        var colSum = datasetObj.settings._columnSummaries[col.id];
+        if (cf === undefined && colSum === undefined) { return; }
 
         var filterStr =
             '<li class="autofilter submenu singleItem">' +
             '<a href="#"><span class="highlight">Filter This Column</span></a>' +
             '<ul class="menu optionMenu">';
         // If we already have a filter for this column, give them a clear link
-        if (cf != null)
+        if (cf !== undefined)
         {
             filterStr +=
                 '<li class="clearFilter">' +
@@ -805,9 +871,10 @@
                 '<span class="highlight">Clear Column Filter</span>' +
                 '</a>' +
                 '</li>';
-            if (colSum.topFrequencies == null)
+            if (colSum === undefined)
             {
-                colSum.topFrequencies = [{value: cf.value, count: 0}];
+                colSum = {curVal:
+                    { topFrequencies: [{value: cf.value, count: 0}] } };
             }
         }
         // Previous button for scrolling
@@ -818,59 +885,70 @@
             '</div></div>' +
             '</a></li>';
 
-        var searchMethod = function(a, b)
+        var sumSections = [];
+        $.each(colSum, function(k, cs)
         {
-            var av = a.titleValue.toUpperCase();
-            var bv = b.titleValue.toUpperCase();
-            return av > bv ? 1 : av < bv ? -1 : 0;
-        };
-        if (colSum.subColumnType == "number" ||
-                colSum.subColumnType == "money" ||
-                colSum.subColumnType == "date" ||
-                colSum.subColumnType == "percent")
-        {
-            searchMethod = function(a, b)
+            var section = '';
+
+            var searchMethod = function(a, b)
             {
-                return a.value - b.value;
+                var av = a.titleValue.toUpperCase();
+                var bv = b.titleValue.toUpperCase();
+                return av > bv ? 1 : av < bv ? -1 : 0;
             };
-        }
-        if (colSum.topFrequencies != null)
-        {
-            // First loop through and set up variations on the value
-            // to use in the menu
-            $.each(colSum.topFrequencies, function (i, f)
-                {
-                    f.isMatching = cf != null && cf.value == f.value;
-                    var curType = blist.data.types[col.type] ||
-                        blist.data.types['text'];
-                    f.escapedValue = curType.filterValue != null ?
-                        curType.filterValue(f.value, col) :
-                        $.htmlStrip(f.value + '');
-                    f.renderedValue = curType.filterRender != null ?
-                        curType.filterRender(f.value, col) : '';
-                    f.titleValue = $.htmlStrip(f.renderedValue + '');
-                });
+            if (cs.subColumnType == "number" ||
+                    cs.subColumnType == "money" ||
+                    cs.subColumnType == "date" ||
+                    cs.subColumnType == "percent")
+            {
+                searchMethod = function(a, b) { return a.value - b.value; };
+            }
 
-            colSum.topFrequencies.sort(searchMethod);
+            if (cs.topFrequencies !== undefined)
+            {
+                // First loop through and set up variations on the value
+                // to use in the menu
+                $.each(cs.topFrequencies, function (i, f)
+                    {
+                        f.isMatching = cf !== undefined && cf.value == f.value;
+                        var curType = blist.data.types[col.type] ||
+                            blist.data.types['text'];
+                        f.escapedValue = curType.filterValue !== undefined ?
+                            curType.filterValue(f.value, col) :
+                            $.htmlStrip(f.value + '');
+                        f.renderedValue = curType.filterRender !== undefined ?
+                            curType.filterRender(f.value, col, cs.subColumnType) :
+                            '';
+                        f.titleValue = $.htmlStrip(f.renderedValue + '');
+                    });
 
-            // Add an option for each filter item
-            $.each(colSum.topFrequencies, function (i, f)
-                {
-                    filterStr +=
-                        '<li class="filterItem' + (f.isMatching ? ' active' : '') +
-                        ' scrollable">' +
-                            '<a href="' +
-                            (f.isMatching ? '#clear-filter-column_' :
-                                '#filter-column_') +
-                            col.uid + '_' + f.escapedValue + '" title="' +
-                            f.titleValue +
-                            (f.count > 1 ? ' (' + f.count + ')' : '') +
-                            '" class="clipText">' + f.renderedValue +
-                            (f.count > 1 ? ' (' + f.count + ')' : '') +
-                            '</a>' +
-                        '</li>';
-                });
-        }
+                cs.topFrequencies.sort(searchMethod);
+
+                // Add an option for each filter item
+                $.each(cs.topFrequencies, function (i, f)
+                    {
+                        if (f.renderedValue === '') { return true; }
+                        section +=
+                            '<li class="filterItem' +
+                            (f.isMatching ? ' active' : '') +
+                            ' scrollable">' +
+                                '<a href="' +
+                                (f.isMatching ? '#clear-filter-column_' :
+                                    '#filter-column_') +
+                                col.uid + '_' + cs.subColumnType + ':' +
+                                f.escapedValue + '" title="' +
+                                f.titleValue +
+                                (f.count > 1 ? ' (' + f.count + ')' : '') +
+                                '" class="clipText">' + f.renderedValue +
+                                (f.count > 1 ? ' (' + f.count + ')' : '') +
+                                '</a>' +
+                            '</li>';
+                    });
+            }
+            sumSections.push(section);
+        });
+
+        filterStr += sumSections.join('<li class="separator scrollable"></li>');
 
         // Next button for scrolling & menu footer
         filterStr +=
@@ -885,17 +963,15 @@
             '</ul>' +
             '</li>';
 
-        // Find the correct spot to add it; either after sort descending, or the top
+        // Find the correct spot to add it; either after sort descending, or
+        // the top
         var $sortItem = $menu.find('li.filterSeparator');
         if ($sortItem.length > 0)
         {
             filterStr = '<li class="separator singleItem" />' + filterStr;
             $sortItem.before(filterStr);
         }
-        else
-        {
-            $menu.prepend(filterStr);
-        }
+        else { $menu.prepend(filterStr); }
         hookUpHeaderMenu(datasetObj, $(col.dom), $menu);
     };
 
@@ -929,8 +1005,11 @@
                 break;
             case 'filter-column':
                 // Rejoin remainder of parts in case the filter value had _
+                // The sub-column type is separated by a colon, so split on that,
+                // pull it off, then rejoin the remainder
+                var p = s.slice(2).join('_').split(':');
                 model.filterColumn(colIdIndex,
-                    $.htmlUnescape(s.slice(2).join('_')));
+                    $.htmlUnescape(p.slice(1).join(':')), p[0]);
                 break;
             case 'clear-filter-column':
                 model.clearColumnFilter(colIdIndex);
@@ -1005,7 +1084,8 @@
     var sortChanged = function(datasetObj)
     {
         var view = datasetObj.settings._model.meta().view;
-        if (datasetObj.settings.currentUserId == view.owner.id)
+        if (datasetObj.settings.currentUserId == view.owner.id &&
+            !datasetObj.isTempView)
         {
             $.ajax({url: '/views/' + view.id + '.json',
                 data: $.json.serialize({sortBys: view.sortBys}),
@@ -1013,7 +1093,28 @@
         }
         else
         {
-            datasetObj.setTempView('sort');
+            var oldSorts = datasetObj.origSortBys;
+            var newSorts = view.sortBys;
+            var matches = oldSorts.length == newSorts.length;
+            if (matches)
+            {
+                for (var i = 0; i < oldSorts.length; i++)
+                {
+                    var o = oldSorts[i];
+                    var n = newSorts[i];
+                    if (o.columnId != n.viewColumnId ||
+                            o.ascending != (n.asc ||
+                                (n.flags !== undefined &&
+                                 $.inArray('asc', n.flags) >= 0)))
+                    {
+                        matches = false;
+                        break;
+                    }
+                }
+            }
+
+            if (matches) { datasetObj.clearTempView('sort'); }
+            else { datasetObj.setTempView('sort'); }
         }
     };
 
@@ -1039,17 +1140,127 @@
         }
     };
 
-    var columnFilterChanged = function(datasetObj, col)
+    var columnFilterChanged = function(datasetObj, col, setFilter)
     {
         datasetObj.summaryStale = true;
-        if (!col)
+        if (!setFilter) { datasetObj.clearTempView('filter_' + col.id); }
+        else { datasetObj.setTempView('filter_' + col.id); }
+    };
+
+    var viewLoaded = function(datasetObj)
+    {
+        datasetObj.origSortBys = [];
+        var view = datasetObj.settings._model.meta().view;
+        if (view.sortBys !== undefined)
         {
-            datasetObj.clearTempView();
+            $.each(view.sortBys, function(i, s)
+            {
+                var curS = {columnId: s.viewColumnId};
+                curS.ascending = (s.asc ||
+                    (s.flags !== undefined && $.inArray('asc', s.flags) >= 0));
+                datasetObj.origSortBys.push(curS);
+            });
         }
-        else
+    };
+
+    var columnNameEdit = function(datasetObj, event, origEvent)
+    {
+        if (!datasetObj.settings.columnNameEdit || datasetObj.isTempView)
+        { return; }
+
+        var $target = $(origEvent.target);
+        var $th = $target.closest('.blist-th').addClass('editable');
+        var $container = $target.closest('.name-wrapper');
+        var $edit = $container.find('form');
+        if ($edit.length < 1)
         {
-            datasetObj.setTempView();
+            $container.append('<form class="action-item">' +
+                '<input type="text" /></form>');
+            $edit = $container.find('form');
+            $edit.submit(function(e) { columnEditSubmit(datasetObj, e); })
+                .find(':input').keydown(function(e)
+                    { columnEditKeyHandler(datasetObj, e); });
         }
+        $edit.find(':input').removeAttr('disabled')
+            .val($target.text()).focus().select();
+        $(document).bind('mousedown.columnNameEdit-' + $th.data('column').id,
+                function(e) { columnEditDocMouse(datasetObj, e, $th); })
+            .bind('mouseup.columnNameEdit-' + $th.data('column').id,
+                function(e) { columnEditDocMouse(datasetObj, e, $th); });
+    };
+
+    var columnEditEnd = function(datasetObj, $th)
+    {
+        // This doesn't actually give keyboard-nav in the grid; but it does
+        // get the cursor out of the now-hidden edit field
+        datasetObj.$dom().focus();
+        $th.removeClass('editable error');
+        $(document).unbind('.columnNameEdit-' + $th.data('column').id);
+    };
+
+    var columnEditSave = function(datasetObj, $th)
+    {
+        var $input = $th.find(':input');
+        var newName = $input.val();
+        if (newName === '')
+        {
+            alert('You must enter a name for this column');
+            $th.addClass('error');
+            return;
+        }
+
+        var origName = $th.find('.blist-th-name').text();
+        if (origName == newName)
+        {
+            columnEditEnd(datasetObj, $th);
+            return;
+        }
+
+        var model = datasetObj.settings._model;
+        var col = model.getColumnByID($th.data('column').id);
+        col.name = newName;
+        $input.attr('disabled', 'disabled');
+
+        $.ajax({url: '/views/' + model.meta().view.id + '/columns/' +
+            col.id + '.json',
+            data: $.json.serialize({name: col.name}),
+            type: 'PUT', dataType: 'json', contentType: 'application/json',
+            error: function(xhr)
+            {
+                var errBody = $.json.deserialize(xhr.responseText);
+                alert(errBody.message);
+                $th.addClass('error');
+                $input.removeAttr('disabled');
+            },
+            success: function(newCol)
+            {
+                columnEditEnd(datasetObj, $th);
+                model.updateColumn(newCol);
+                $(document).trigger(blist.events.COLUMNS_CHANGED);
+            }});
+    };
+
+    var columnEditDocMouse = function(datasetObj, event, $th)
+    {
+        var $target = $(event.target);
+        if (($target.is('.name-wrapper :input') &&
+            $target.parents().index($th) >= 0) ||
+            $target.closest('#jqmAlert').length > 0) { return; }
+
+        columnEditSave(datasetObj, $th);
+    };
+
+    var columnEditSubmit = function(datasetObj, event)
+    {
+        event.preventDefault();
+
+        columnEditSave(datasetObj, $(event.target).closest('.blist-th'));
+    };
+
+    var columnEditKeyHandler = function(datasetObj, event)
+    {
+        if (event.keyCode == 27)
+        { columnEditEnd(datasetObj, $(event.target).closest('.blist-th')); }
     };
 
 })(jQuery);

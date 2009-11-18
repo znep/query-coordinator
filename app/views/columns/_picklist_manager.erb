@@ -1,22 +1,25 @@
 <div id='picklistManager' class='<%= local_assigns[:classes] %> reorderList'>
-  <div class='activeListWrapper'>
-    <ul class='activeList'>
-      <%- pl_values = !@column.nil? && !@column.dropDown.nil? ?
-        @column.dropDown.values.reject {|p| p['deleted'] == true} : [] -%>
-      <%- count = 0 -%>
-      <%- pl_values.each do |p| -%>
-      <li><div class='itemWrapper'>
-        <span class='orderIndex'><%= count + 1 %></span>
-        <input type='text' name='plValue_<%= count %>_<%= p['id'] %>'
-          class='plValue' value='<%= p['description'] %>' />
-        <div class='controls'>
-          <a href='#remove' class='remove' title='Remove Value'>Remove Value</a>
-        </div>
-        <input type='text' value='<%= count %>' class='orderField' />
-      </div></li>
-      <%- count += 1 -%>
-      <%- end -%>
-    </ul>
+  <div class='activeOuterWrapper'>
+    <div class='activeBorder'></div>
+    <div class='activeListWrapper'>
+      <ul class='activeList'>
+        <%- pl_values = !@column.nil? && !@column.dropDown.nil? ?
+          @column.dropDown.values.reject {|p| p['deleted'] == true} : [] -%>
+        <%- count = 0 -%>
+        <%- pl_values.each do |p| -%>
+        <li><div class='itemWrapper'>
+          <span class='orderIndex'><%= count + 1 %></span>
+          <input type='text' name='plValue_<%= count %>_<%= p['id'] %>'
+            class='plValue' value='<%= p['description'] %>' />
+          <div class='controls'>
+            <a href='#remove' class='remove' title='Remove Value'>Remove Value</a>
+          </div>
+          <input type='text' value='<%= count %>' class='orderField' />
+        </div></li>
+        <%- count += 1 -%>
+        <%- end -%>
+      </ul>
+    </div>
   </div>
   <ul class='templateList'>
     <li class='templateNode'><div class='itemWrapper'>
@@ -28,10 +31,10 @@
       <input type='text' value='' class='orderField' />
     </div></li>
   </ul>
-  <div class='defaultMessage'>Add picklist values below</div>
+  <div class='defaultMessage'>Add values below</div>
   <div class='newValueWrapper'>
     <input type='text' name='newValue' class='textPrompt plValue newValue'
-    title='Enter a picklist value' />
+    title='Enter a new value' />
     <input type='submit' class='newValueSubmit' value='Add Value' />
   </div>
 </div>
@@ -73,7 +76,7 @@ var picklistManagerSetup = function()
   var addNewValue = function()
   {
     var $newText = $('#picklistManager input.newValue');
-    if ($newText.val() === '') { return; }
+    if ($newText.val() === '' || $newText.is('.prompt')) { return; }
     var newOrder = $('#picklistManager ul.activeList li').length;
     $('#picklistManager .templateNode').clone(true).removeClass('templateNode')
       .find('.orderIndex').text(newOrder + 1).end()
@@ -106,7 +109,7 @@ var picklistManagerSetup = function()
   setUpList();
   $('#picklistManager .remove').click(removeValue);
   $('#picklistManager input').keydown(inputKeyDown);
-  $('#picklistManager :submit').click(submitClick);
+  $('#picklistManager input[type=submit]').click(submitClick);
 
   return function()
   {

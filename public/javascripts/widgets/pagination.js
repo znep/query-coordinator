@@ -199,7 +199,6 @@
             .slice(pageStart, pageStart + paginate.settings.pageSize)
             .removeClass(paginate.settings.hiddenClass);
         paginate.settings._currentPage = pageNum;
-        $(window).resize();
 
         var lower = Math.max(0, pageNum - paginate.settings.numAdjacent);
         var upper = Math.min(paginate.settings._pageLinks.length,

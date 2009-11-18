@@ -62,7 +62,7 @@
 {
     display: inline-block;
     margin-left: 230px;
-    width: 350px;
+    width: 330px;
 }
 
 .newBlistContent .prompt
@@ -85,7 +85,7 @@
     border: 1px solid #CACACA;
     color: #333;
     height: 20px;
-    width: 356px;
+    width: 336px;
 }
 
 .newBlistContent #licensingCreativeCommons hr
@@ -117,7 +117,7 @@
     background: url(/stylesheets/images/info_pane/icon_help_highlight.png) no-repeat;
     display: block;
     height: 16px;
-    left: 615px;
+    left: 595px;
     margin-top: -17px;
     position: absolute;
     text-indent: -9999px;
@@ -127,7 +127,7 @@
 
 .newBlistContent span.helpie.fileUploadHelpie
 {
-    left: 730px;
+    left: 710px;
 }
 
 .newBlistContent span.additionalHelp

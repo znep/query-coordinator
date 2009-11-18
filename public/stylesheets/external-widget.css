@@ -241,11 +241,8 @@
 }
 
 /* disabled row height */
-.blist-td
-{
-    height: 16px;
-    line-height: 16px;
-}
+.blist-td { height: 16px; }
+.blist-td, .blist-table-editor, .blist-table .blist-combo-dd li { line-height: 16px; }
 
 .blist-td-header
 {
@@ -309,7 +306,7 @@ img.blist-table-option-icon
     height: 35px;
     overflow: hidden;
     text-indent: -9999px;
-    width: 92px;
+    width: 150px;
 }
 
 .widgetLogo.hide
@@ -389,15 +386,21 @@ img.blist-table-option-icon
 	word-wrap: break-word;
 }
 
+.jqmWindow .dialogWrapper
+{
+    display: block;
+    position: static;
+}
+
 .dialogWrapper
 {
     display: none;
     left: 50%;
-    margin-left: -15em;
+    margin-left: -20em;
     margin-top: 0;
     position: absolute;
     top: 5em;
-    width: 30em;
+    width: 40em;
 }
 
 .dialogWrapper .header h1
@@ -416,28 +419,4 @@ img.blist-table-option-icon
 .dialogBox .header
 {
     background-color: #20608F;
-}
-
-#emailDialog label
-{
-    display: block;
-    font-size: 1.2em;
-    margin-bottom: 0.5em;
-}
-
-#emailDialog input
-{
-    width: 22.5em;
-}
-
-#publishDialog p
-{
-    font-size: 1.2em;
-    margin-bottom: 1em;
-}
-
-#publishDialog textarea
-{
-    font-size: 1.2em;
-    width: 23em;
 }

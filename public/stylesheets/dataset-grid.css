@@ -53,12 +53,24 @@ div.blist-th-first
 .blist-th .icon-display .name-wrapper { padding-left: 25px; }
 .blist-th.narrow .icon-display .name-wrapper { padding-left: 0; }
 
-.blist-th .blist-th-name
+.blist-th .name-wrapper form { display: none; }
+.blist-th .name-wrapper input
+{
+    border: none;
+    padding: 2px 0;
+    width: 100%;
+}
+.blist-th.editable .info-container { -moz-user-select: text; }
+.blist-th.editable .name-wrapper span { display: none; }
+.blist-th.editable .name-wrapper form { display: block; }
+
+.blist-th.error .name-wrapper input { background-color: #ffb6c1; }
+
+.blist-th .blist-th-name,
+.blist-th .name-wrapper input
 {
     font-size: 1.0833em;  /* 1.0833 * 1.2 = 1.3 */
-    font-weight: bold;
 }
-.blist-th.narrower .blist-th-name { font-weight: normal; }
 
 .blist-th-icon
 {
@@ -159,6 +171,22 @@ div.blist-th-first
     margin-left: -4px;
     padding: 0 4px;
 }
+
+.blist-th-tooltip .name
+{
+    font-weight: bold;
+    text-align: center;
+}
+
+.blist-th-tooltip .blist-th-icon
+{
+    display: block;
+    line-height: 20px;
+    padding-left: 25px;
+    width: auto;
+}
+
+.blist-th-tooltip .description { margin-top: 0.5em; }
 
 div.blist-table-ghost div.blist-column-adder
 {
@@ -454,15 +482,9 @@ div.blist-table-edit-container
     padding: 3px 2px;
 }
 
-div.blist-table-edit-container.combo-container {
-    overflow: visible;
-}
+div.blist-table-edit-container.combo-container { overflow: visible; }
 
-.blist-table-edit-container.combo-container .blist-combo-dd { font-size: 0.8333em; }
-div.blist-table-editor
-{
-    padding: 0;
-}
+div.blist-table-editor { padding: 0; }
 
 .blist-table-edit-container div.blist-table-editor.type-date { margin: -5px 0; }
 .blist-table-edit-container div.blist-table-editor.type-date input
@@ -475,10 +497,9 @@ div.blist-table-edit-container.combo-container .blist-combo
 
 body.blist-richtext-document
 {
-    font-size: 10px;
+    font-size: 12px;
     padding: 2px 3px 3px 3px;
 }
-div.blist-richtext { font-size: 0.8333em; }
 div.blist-richtext p,
 body.blist-richtext-document p,
 div.blist-richtext ul,
@@ -605,8 +626,11 @@ div.blist-table-edit-container .blist-table-editor.type-url .description
 
 .blist-table-editor.type-phone input.number
 {
+    margin: 0;
     padding: 4px;
 }
+
+.blist-table-editor .blist-combo-dd li { font-size: 1em; }
 
 .blist-table .blist-table-editor-container .blist-td
 {
@@ -761,6 +785,12 @@ ul.menu.rowMenu li
 }
 .columnHeaderMenu .blist-tstars-render-wrapper { padding: 0; }
 .columnHeaderMenu .blist-star-0 { display: none; }
+
+.columnHeaderMenu .blist-phone-icon
+{
+    float: left;
+    position: static;
+}
 
 /* This is only used for initial positioning; the menu is pulled out, so real
  * styling needs to go directly on the menu */

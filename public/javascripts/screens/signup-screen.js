@@ -48,7 +48,10 @@ $(function ()
                     }
                 }
             },
-            "signup[password]": "required",
+            "signup[password]": {
+                required: true,
+                minlength: 4
+            },
             "signup[passwordConfirm]": {
                 required: true,
                 equalTo: "#signup_password"

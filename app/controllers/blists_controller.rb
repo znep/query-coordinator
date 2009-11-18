@@ -1,6 +1,6 @@
 class BlistsController < ApplicationController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag]
+  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag, :republish]
   
   def index
     @body_class = 'home'
@@ -225,6 +225,13 @@ class BlistsController < ApplicationController
   end
 
   def print
+    @view = View.find(params[:id])
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
+  def republish
     @view = View.find(params[:id])
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }

@@ -262,8 +262,18 @@ module BlistsHelper
     options_for_select(image_options, selected_image)
   end
 
-  def get_publish_embed_code_for_view(view, options = {}, variation = "")
-    options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]
+  def get_publish_embed_code_for_view(view, options = {}, variation = "", from_tracking_id = nil)
+    # merge publish options with theme options if extant
+    theme = WidgetCustomization.find(variation) if variation =~ /\w{4}-\w{4}/
+    if theme.nil?
+      options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]
+    else
+      options = theme.customization[:publish].deep_merge(options)
+    end
+
+    # generate a new tracking ID param set
+    tracking_params = { :cur => ActiveSupport::SecureRandom.base64(9).slice(0..10) }
+    tracking_params[:from] = from_tracking_id unless from_tracking_id.blank?
 
     root_path = request.protocol + request.host_with_port
     embed_template =  "<div>"
@@ -275,10 +285,10 @@ module BlistsHelper
     end
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
-                      "/widgets/#{view.id}/#{variation}\" frameborder=\"0\" scrolling=\"no\">" +
+                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
+                      "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
-                      "target=\"_blank\">" +
-                      "#{h(view.name)}</a></iframe>"
+                      "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
         "Powered by #{th.company}</a></p>"
@@ -323,10 +333,12 @@ module BlistsHelper
   # code this?
   def font_size_select_options(selected_font_size = nil)
     out = ""
-    [8, 10, 12, 14, 18, 24, 36].each do |size|
-      selected = selected_font_size == size ?
+    {8 => 6, 10 => 8, 12 => 10, 14 => 12, 18 => 16, 24 => 22,
+      36 => 34}.sort {|a,b| a[0] <=> b[0]}.
+      each do |size|
+      selected = selected_font_size == size[0] ?
         " selected=\"selected\" class=\"default\"" : ""
-      out += "<option value=\"#{size}\"#{selected}>#{size}</option>"
+      out += "<option value=\"#{size[1]}\"#{selected}>#{size[0]}</option>"
     end
     out
   end

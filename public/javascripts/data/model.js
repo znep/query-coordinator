@@ -217,6 +217,8 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < newRows.length; i++)
             {
                 var r = newRows[i];
+                if (typeof r != 'object') { continue; }
+
                 if (metaCols)
                 {
                     for (var j = 0; j < metaCols.length; j++)
@@ -388,6 +390,7 @@ blist.namespace.fetch('blist.data');
                 this.rows(config.rows || config.data);
                 //console.profileEnd();
             }
+            $(listeners).trigger('full_load');
         };
 
         /**
@@ -514,13 +517,12 @@ blist.namespace.fetch('blist.data');
         {
             if (config.meta)
             {
-                if (config.rows || config.data)
-                {
-                    this.rows(config.rows || config.data);
-                }
                 self.meta(config.meta);
+                if (config.rows || config.data)
+                { this.rows(config.rows || config.data); }
                 configureActive();
                 $(listeners).trigger('columns_updated', [self]);
+                $(listeners).trigger('full_load');
             }
         };
 
@@ -530,8 +532,8 @@ blist.namespace.fetch('blist.data');
                 var options = col.options = {};
                 for (var j = 0; j < values.length; j++) {
                     var value = values[j];
-                    options[value.id] = { text: value.description,
-                        icon: value.icon, deleted: value.deleted };
+                    options[value.id] = { text: value.description || '',
+                        icon: value.icon, deleted: value.deleted || false };
                 }
             }
             return options;
@@ -583,13 +585,11 @@ blist.namespace.fetch('blist.data');
                     metaCols.push({name: adjName, index: i});
                 }
 
-                if (v.dataTypeName == 'url' ||
-                    v.dataTypeName == 'phone' ||
-                    v.dataTypeName == 'document')
+                var type = blist.data.types[v.dataTypeName];
+                if (type && type.isObject)
                 { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
 
-                if (v.dataTypeName == 'url' ||
-                    v.dataTypeName == 'phone' || v.dataTypeName == 'document')
+                if (type && type.isObject)
                 { dataMungeCols.push({index: i, type: 'arrayToObject',
                     types: v.subColumnTypes}); }
 
@@ -812,7 +812,9 @@ blist.namespace.fetch('blist.data');
                         if (sorts[c.id] != undefined)
                         {
                             meta.sort[c.id] = {
-                                ascending: (sorts[c.id].flags != null && $.inArray('asc', sorts[c.id].flags) >= 0),
+                                ascending: (sorts[c.id].asc ||
+                                    (sorts[c.id].flags != null &&
+                                    $.inArray('asc', sorts[c.id].flags) >= 0)),
                                 column: c
                               };
                         }
@@ -1669,6 +1671,8 @@ blist.namespace.fetch('blist.data');
                 });
             }
 
+            var isSorted = meta.sort[oldId] !== undefined;
+
             if (newViewColumn.format && newViewColumn.format.aggregate)
             {
                 $.each(meta.aggregates, function(i, a) {
@@ -1682,6 +1686,17 @@ blist.namespace.fetch('blist.data');
 
             meta.columns = null;
             this.meta(meta);
+
+            if (isSorted)
+            {
+                $.each(meta.view.sortBys, function(i, s)
+                {
+                    if (s.viewColumnId == oldId)
+                    { s.viewColumnId = newViewColumn.id; }
+                });
+                this.multiSort(meta.view.sortBys);
+            }
+
             configureActive();
             $(listeners).trigger('columns_updated', [this]);
         };
@@ -1846,11 +1861,19 @@ blist.namespace.fetch('blist.data');
         };
 
         /**
+         * Notify listeners of column sort changes
+         */
+        this.columnSortChange = function()
+        {
+            $(listeners).trigger('sort_change');
+        };
+
+        /**
          * Notify listeners of column filter changes
          */
-        this.columnFilterChange = function(col)
+        this.columnFilterChange = function(col, setFilter)
         {
-            $(listeners).trigger('column_filter_change', [ col ]);
+            $(listeners).trigger('column_filter_change', [ col, setFilter ]);
         };
 
         this.undoRedoChange = function()
@@ -2065,7 +2088,13 @@ blist.namespace.fetch('blist.data');
             {
                 var sort = sortBys[0];
                 var colIndex = findColumnIndex(parseInt(sort.viewColumnId, 10));
-                this.sort(colIndex, !(sort.flags != null && $.inArray('asc', sort.flags) >= 0));
+                this.sort(colIndex, !(sort.asc ||
+                    (sort.flags != null && $.inArray('asc', sort.flags) >= 0)));
+                return;
+            }
+            else if (sortBys.length === 0)
+            {
+                this.clearSort();
                 return;
             }
 
@@ -2074,13 +2103,14 @@ blist.namespace.fetch('blist.data');
             $.each(meta.view.sortBys, function(i, sort) {
                 var col = self.getColumnByID(sort.viewColumnId);
                 meta.sort[sort.viewColumnId] = {
-                    ascending: (sort.flags != null && $.inArray('asc', sort.flags) >= 0),
-                    column: col 
+                    ascending: (sort.asc ||
+                        (sort.flags != null && $.inArray('asc', sort.flags) >= 0)),
+                    column: col
                     };
             });
             sortConfigured = true;
 
-            $(listeners).trigger('sort_change');
+            this.columnSortChange();
 
             // Sort
             doSort();
@@ -2179,7 +2209,7 @@ blist.namespace.fetch('blist.data');
                 sortConfigured = true;
             }
 
-            $(listeners).trigger('sort_change');
+            this.columnSortChange();
 
             // Sort
             doSort();
@@ -2214,10 +2244,14 @@ blist.namespace.fetch('blist.data');
                 if (meta.view.sortBys.length == 1)
                 {
                     var newSort = meta.view.sortBys[0];
-                    this.sort(findColumnIndex(newSort.viewColumnId),
-                        !(newSort.flags != null &&
-                            $.inArray('asc', newSort.flags) >= 0));
-                    return;
+                    var colIndex = findColumnIndex(newSort.viewColumnId);
+                    if (colIndex !== undefined)
+                    {
+                        this.sort(colIndex,
+                                !(newSort.asc || (newSort.flags != null &&
+                                        $.inArray('asc', newSort.flags) >= 0)));
+                        return;
+                    }
                 }
             }
             else
@@ -2230,14 +2264,14 @@ blist.namespace.fetch('blist.data');
             orderFn = null;
             orderPrepro = null;
 
-            $(listeners).trigger('sort_change');
+            this.columnSortChange();
 
             var hasSort = false;
             $.each(meta.sort, function() { hasSort = true; return false; });
             if (hasSort) { doSort(); }
             // The only way to guarantee a correct ordering of rows (right now)
             //  when clearing all sorts is to go to the server
-            else { this.reloadView(); }
+            else { getTempView(); }
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
@@ -2585,7 +2619,7 @@ blist.namespace.fetch('blist.data');
                             for (var j = 0; j < matches.length; j++)
                             {
                                 filterParts.push(' || (r' +
-                                    rootColumns[j].dataLookupExpr + ' == "' +
+                                    rootColumns[i].dataLookupExpr + ' == "' +
                                     matches[j] + '")');
                             }
                         }
@@ -2665,8 +2699,6 @@ blist.namespace.fetch('blist.data');
 
             meta.view.viewFilters = filter;
 
-            // TODO: Set column filters. Lame.
-
             getTempView();
         }
 
@@ -2674,7 +2706,7 @@ blist.namespace.fetch('blist.data');
          *  These filters are additive (all ANDed at the top level).
          *  Currently it only supports one filter per column.
          */
-        this.filterColumn = function(filterCol, filterVal)
+        this.filterColumn = function(filterCol, filterVal, subColumnType)
         {
             // Turn index into obj
             if (typeof filterCol != 'object')
@@ -2696,9 +2728,8 @@ blist.namespace.fetch('blist.data');
             // Update the view in-memory, so we can always serialize it to
             //  the server and get the correct filter
             var filterItem = { type: 'operator', value: 'EQUALS', children: [
-                { type: 'column', columnId: filterCol.id  },
+                { type: 'column', columnId: filterCol.id, value: subColumnType },
                 { type: 'literal', value: filterVal } ] };
-                //{ type: 'subColumnType', value: },
             if (meta.view.viewFilters == null)
             {
                 // Make it the top-level filter
@@ -2729,7 +2760,7 @@ blist.namespace.fetch('blist.data');
             meta.columnFilters[filterCol.id] =
                 {column: filterCol, value: filterVal, viewFilter: filterItem};
 
-            this.columnFilterChange(filterCol);
+            this.columnFilterChange(filterCol, true);
 
             // Reload the view from the server; eventually we should do this
             //  locally if not in progressiveLoading mode
@@ -2755,7 +2786,7 @@ blist.namespace.fetch('blist.data');
                 clearColumnFilterData(filterCol);
             }
 
-            this.columnFilterChange();
+            this.columnFilterChange(filterCol, false);
 
             getTempView();
         };

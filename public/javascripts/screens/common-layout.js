@@ -57,24 +57,24 @@ blist.common.showModalHandler = function(hash)
 $(function ()
 {
     // Make all links with rel="external" open in a new window.
-    $("a[rel$='external']").live("mouseover",
+    $.live("a[rel$='external']", "mouseover",
         function(){ this.target = "_blank"; });
     
     $("#modal").jqm({ 
         trigger: false,
         onShow: blist.common.showModalHandler
     });
-    $("a[rel$='modal']").live("click", function(event)
+    $.live("a[rel$='modal']", "click", function(event)
     {
         event.preventDefault();
         $("#modal").jqmShow($(this));
     });
-    $("a.jqmClose").live("click", function(event)
+    $.live("a.jqmClose", "click", function(event)
     {
         event.preventDefault();
         $("#modal").jqmHide();
     });
-    $("a[rel$='screenPop']").live("click", function(event)
+    $.live("a[rel$='screenPop']", "click", function(event)
     {
         event.preventDefault();
         var $link = $(this);

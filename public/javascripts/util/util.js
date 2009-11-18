@@ -62,6 +62,14 @@ $.capitalize = function(text)
     return text.charAt(0).toUpperCase() + text.substring(1);
 };
 
+$.live = function(selector, type, fn)
+{
+    var $obj = $([]);
+    $obj.selector = selector;
+    $obj.live(type, fn);
+    return $obj;
+};
+
 })(jQuery);
 
 String.prototype.startsWith = function(str)
@@ -88,6 +96,11 @@ String.prototype.visualLength = function(fontSize)
 String.prototype.capitalize = function()
 {
     return this.charAt(0).toUpperCase() + this.substring(1);
+};
+
+String.prototype.displayable = function()
+{
+    return $.map(this.replace(/_/g, ' ').split(' '), $.capitalize).join(' ');
 };
 
 /* Do a deep compare on two objects (if they are objects), or just compare

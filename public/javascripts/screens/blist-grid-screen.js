@@ -285,6 +285,7 @@ blist.blistGrid.clearTempViewTab = function ()
     $('.tabList .origView').addClass('active').removeClass('origView');
     $('body').removeClass('unsavedView');
     $('#infoPane').show();
+    $(document).trigger(blist.events.COLUMNS_CHANGED);
 };
 
 blist.blistGrid.setTempViewTab = function ()
@@ -388,13 +389,15 @@ $(function ()
     if (!blist.blistGrid.isAltView)
     {
         $('#dataGrid').datasetGrid({viewId: blistGridNS.viewId,
+            columnDeleteEnabled: blistGridNS.isOwner,
             columnPropertiesEnabled: blistGridNS.isOwner,
+            columnNameEdit: blistGridNS.isOwner,
             showAddColumns: blistGridNS.canAddColumns,
             currentUserId: blist.currentUserId,
             accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
             clearTempViewCallback: blistGridNS.clearTempViewTab,
             setTempViewCallback: blistGridNS.setTempViewTab,
-            filterItem: '#lensContainer .headerBar form :text',
+            filterForm: '#lensContainer .headerBar form',
             clearFilterItem: '#lensContainer .headerBar form .clearSearch'
         });
     }
@@ -426,15 +429,15 @@ $(function ()
     commonNS.adjustSize();
     $('#dataGrid').trigger('resize');
 
-    $('.tabList .newViewLink a, a[href=#createFilter]')
-        .live('click', function (event)
+    $.live('.tabList .newViewLink a, a[href=#createFilter]', 'click',
+        function (event)
         {
             event.preventDefault();
             $('#dataGrid').datasetGrid().setTempView();
         });
 
-    $('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a')
-        .live('click', function (event)
+    $.live('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a', 'click',
+        function (event)
         {
             event.preventDefault();
             if ($(this).closest('li').is('.disabled')) { return; }
@@ -447,10 +450,12 @@ $(function ()
         $('#dataGrid').datasetGrid().clearTempView(null, true);
     });
 
-    $('.filter a.close').live('click', function(event)
+    $.live('.filter a.close', 'click', function(event)
     {
         event.preventDefault();
         var $tab = $(event.target).closest('li.filter');
+        if ($tab.is('.tempViewTab')) { return; }
+
         blistGridNS.removeTabCookie($tab.attr('id').split('_')[1]);
         $tab.remove();
         if ($tab.is('.active'))

@@ -46,7 +46,12 @@
         $.each(values, function(i, v)
         {
             var val = v instanceof String ? v : v.label;
-            if (val) { valueLookup[val.charAt(0)] = i; }
+            if (val)
+            {
+                var c = val.charAt(0).toLowerCase();
+                if (valueLookup[c] === undefined) { valueLookup[c] = []; }
+                valueLookup[c].push(i);
+            }
         });
 
         var getValueIndex = function()
@@ -95,7 +100,7 @@
                 $this.closest(".blist-combo-wrapper").append($dropdown);
                 for (var i = 0; i < values.length; i++)
                 {
-                    var $li = $('<li class="clearfix"></li>');
+                    var $li = $('<li></li>');
                     $dropdown.append($li);
                     rowRenderFn.apply($li, [ values[i] ]);
                 }
@@ -190,7 +195,7 @@
             var valueObj = getSelectedValueObject(value);
 
             // Reset all classes on the value.
-            $value.removeClass().addClass("blist-combo-value clearfix");
+            $value.removeClass().addClass("blist-combo-value");
 
             // Render empty values
             if (valueObj === undefined)
@@ -224,6 +229,24 @@
             { $dropdown.scrollTop(liB - ddH); }
             else if (liT < ddST)
             { $dropdown.scrollTop(liT); }
+        };
+
+        var getNextCharItem = function(c, curI)
+        {
+            var l = valueLookup[c.toLowerCase()];
+            if (l === undefined) { return -1; }
+
+            var newI = l[0];
+            $.each(l, function(j, i)
+            {
+                if (i > curI)
+                {
+                    newI = i;
+                    return false;
+                }
+            });
+
+            return newI;
         };
 
         var onKeyDown = function(event)
@@ -263,8 +286,10 @@
                         if (event.keyCode >= 65 && event.keyCode <= 90 ||
                             event.keyCode >= 48 && event.keyCode <= 57)
                         {
-                            updateSelectedItem(valueLookup[String.fromCharCode(
-                                event.keyCode)]);
+                            var $sel = $dropdown.find('li.selected');
+                            i = $dropdown.children('li').index($sel);
+                            updateSelectedItem(getNextCharItem(
+                                String.fromCharCode(event.keyCode), i));
                         }
                         break;
                 }
@@ -292,12 +317,22 @@
                         if (event.keyCode >= 65 && event.keyCode <= 90 ||
                             event.keyCode >= 48 && event.keyCode <= 57)
                         {
-                            setValueIndex(valueLookup[String.fromCharCode(
-                                event.keyCode)]);
+                            setValueIndex(getNextCharItem(String.fromCharCode(
+                                event.keyCode), getValueIndex()));
                         }
                         break;
                 }
             }
+        };
+
+        var fieldFocus = function(event)
+        {
+            $this.addClass('blist-combo-focused');
+        };
+
+        var fieldBlur = function(event)
+        {
+            $this.removeClass('blist-combo-focused');
         };
 
         // Initialize the component
@@ -309,9 +344,11 @@
             .append($input)
             .focus(onFocus)
             .find(':input')
-            .keydown(onKeyDown);
+                .keydown(onKeyDown)
+                .focus(fieldFocus)
+                .blur(fieldBlur);
         renderValue();
-        
+
         var comboValueObj = function()
         {
             this.selectedValueObject = function()

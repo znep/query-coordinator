@@ -1,0 +1,74 @@
+/* General modal tweaks */
+.widgetModal .modalDialog
+{
+    margin: 5em 0 0 -20em;
+    width: 40em;
+}
+
+.widgetModal .submitLine
+{
+    border: none;
+    margin-top: 0;
+    padding-top: 1em;
+}
+
+.widgetModal .modalScrollContent
+{
+    overflow: auto;
+    width: 100%;
+}
+
+/*** START: Email This Dataset ***/
+
+.widgetModal .emailDatasetWrapper .submitLine .submitActions
+{
+    width: 200px;
+}
+
+.widgetModal .emailDatasetWrapper .formHeader
+{
+    float: none;
+    margin: 1em 0;
+    text-align: left;
+    width: auto;
+}
+
+.widgetModal .emailDatasetWrapper .formContainer
+{
+    margin: 1em 0 0 5.5em;
+    padding-bottom: 1.5em;
+}
+
+/*** END: Email This Dataset ***/
+
+/*** START: Print This Dataset ***/
+
+.widgetModal .printDatasetWrapper form
+{
+    margin-top: -1em;
+}
+
+.widgetModal .printDatasetWrapper .columnLeft,
+.widgetModal .printDatasetWrapper .columnRight
+{
+    border: none;
+    float: none;
+    margin: 0;
+    margin-left: 1.5em;
+    padding: 0;
+}
+
+.widgetModal .printDatasetWrapper label.formHeader
+{
+    margin: 1em 0 0.5em;
+    padding: 0;
+}
+
+.widgetModal .printDatasetWrapper .formSection
+{
+    float: left;
+    margin-right: 1em;
+    padding-bottom: 1em;
+}
+
+/*** END: Print This Dataset ***/

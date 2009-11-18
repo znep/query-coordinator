@@ -267,6 +267,7 @@ blist.publish.customizationApplication = {
                                                               { selector: '.blist-th .info-container', css: 'margin-top', map: { 'true': '-1.25em', 'false': '' } },
                                                               { selector: 'div.th-inner-container', css: 'white-space', map: { 'true': 'normal', 'false': '' } },
                                                               { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { 'true': '4.5em', 'false': '' } } ],
+                      title_bold:                           [ { selector: '.blist-th .blist-th-name', css: 'font-weight', map: { 'true': 'bold', 'false' : 'normal' } } ],
                       header_icons:                         [ { selector: '.blist-th-icon', hideShow: true } ],
                       /* disabled row height
                       row_height:                           [ { selector: '.blist-td', css: 'height', hasUnit: true },
@@ -282,7 +283,7 @@ blist.publish.customizationApplication = {
                       fullscreen:                           [ { selector: '.headerMenu .fullscreen, .fullScreenButton', hideShow: true } ],
                       republish:                            [ { selector: '.headerMenu .publish', hideShow: true } ] },
     meta:                                                   [ { selector: '#widgetMeta .summaryTabs', callback: publishNS.applyTabs }],
-    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none !important' } } ],
+    behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none' } } ],
                       interstitial:                         [ { callback: publishNS.applyInterstitial } ] },
     publish:        { dimensions:   { width:                [ { selector: '.previewPane, .previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('width', value + 'px'); } } ],
                                       height:               [ { selector: '.previewPane iframe', outsideWidget: true, callback: function($elem, value) { $elem.css('height', value + 'px'); } } ] },
@@ -526,7 +527,7 @@ blist.publish.clearStyles = function()
     publishNS.styleRules = {};
 };
 
-blist.publish.valueChanged = function()
+blist.publish.valueChanged = function(suppressMessage)
 {
     var hash = publishNS.serializeForm();
 
@@ -536,8 +537,15 @@ blist.publish.valueChanged = function()
 
     publishNS.applyCustomizationToPreview(clone);
 
-    clearTimeout(publishNS.saveTimeout);
-    publishNS.saveTimeout = setTimeout(function() { publishNS.saveCustomization(clone); }, 2000);
+    publishNS.unsavedTheme = clone;
+    if (suppressMessage !== true)
+    {
+        $('.unsavedChangesBar').slideDown('normal');
+        $('body').animate({
+            paddingTop: '35px',
+            backgroundPosition: '0 41px'
+        });
+    }
 };
 
 blist.publish.saveCustomization = function(hash)
@@ -655,7 +663,7 @@ blist.publish.populateForm = function(hash)
     publishNS.currentTheme = hash;
 
     // Update preview
-    publishNS.valueChanged();
+    publishNS.valueChanged(true);
 };
 
 blist.publish.loadCustomization = function()
@@ -666,6 +674,7 @@ blist.publish.loadCustomization = function()
         dataType: "json",
         success: function(responseData)
         {
+            publishNS.hideUnsavedChangesBar();
             publishNS.populateForm($.json.deserialize(responseData['customization']));
             $('.templateName').text(responseData['name']);
         },
@@ -676,9 +685,18 @@ blist.publish.loadCustomization = function()
     });
 };
 
+blist.publish.hideUnsavedChangesBar = function()
+{
+    $('.unsavedChangesBar').slideUp();
+    $('body').animate({
+        paddingTop: '0',
+        backgroundPosition: '0 6px'
+    });
+};
+
 (function($) {
     // Highlight copy code on click
-    $('.publishCode textarea').live('click', function() { $(this).select(); });
+    $.live('.publishCode textarea', 'click', function() { $(this).select(); });
 
     // Tab behavior
     $("#publishOptionsPane .summaryTabs").infoPaneNavigate({
@@ -743,15 +761,6 @@ blist.publish.loadCustomization = function()
     // Load customizations when user chooses one
     $('#template_name').change(publishNS.loadCustomization);
 
-    // Cancel changes link
-    $('.cancelCustomizationLink').click(function(event)
-    {
-        event.preventDefault();
-        clearTimeout(publishNS.saveTimeout);
-        publishNS.populateForm(publishNS.currentTheme);
-        $("#publishOptionsPane .summaryTabs").infoPaneNavigate().activateTab('#tabTemplates');
-    });
-
     // Change template link (trust the timer to finish and save the template for us)
     $('.changeTemplateLink').click(function(event)
     {
@@ -770,8 +779,6 @@ blist.publish.loadCustomization = function()
     // On clicking done, force a save before bailing
     $('.submitLink').click(function()
     {
-        // Clear existing
-        clearTimeout(publishNS.saveTimeout);
         var hash = publishNS.serializeForm();
 
         // Make a true deep clone of the merge
@@ -779,6 +786,20 @@ blist.publish.loadCustomization = function()
         $.extend(true, clone, hash);
 
         publishNS.saveCustomization(clone);
+    });
+
+    // Discard/save bar
+    $('.unsavedChangesBar .discardChangesButton').click(function(event)
+    {
+        event.preventDefault();
+        publishNS.populateForm(publishNS.currentTheme);
+        publishNS.hideUnsavedChangesBar();
+    });
+    $('.unsavedChangesBar .saveChangesButton').click(function(event)
+    {
+        event.preventDefault();
+        publishNS.saveCustomization(publishNS.unsavedTheme);
+        publishNS.hideUnsavedChangesBar();
     });
 
     // Load in customization
@@ -845,4 +866,12 @@ blist.publish.loadCustomization = function()
             $textbox.addClass('prompt');
         }
     });
+    
+    window.onbeforeunload = function()
+    {
+        if ($('.unsavedChangesBar').is(':visible'))
+        {
+            return 'You will lose your changes to the current theme.';
+        }
+    };
 })(jQuery);

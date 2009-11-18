@@ -9,12 +9,14 @@ default: &default
   rpx_facebook_url: https://socrata-test.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
+  tweetsets_user: tweetsets
 
 # Local development
 development:
   ssl_port: 9443
   http_port: 9292
   max_core_server_requests: 15
+  tweetsets_password: tweetsets
   <<: *default
 
 # Running unit tests; NOT test.socrata.com
@@ -27,12 +29,13 @@ staging:
   google_analytics_id: UA-9046230-2
   orbited_port: 4817
   max_core_server_requests: 15
+  tweetsets_password: tw3etsets!
   <<: *default
 
 # www.socrata.com
 production:
   bridge_host: multiuser
-  coreservice_uri: http://alpha-api.tuk.blist.com
+  coreservice_uri: http://core-lb.tuk.socrata.com
   google_analytics_id: UA-9046230-1
   ie_port: 80
   orbited_port: 80
@@ -40,6 +43,7 @@ production:
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start
   rpx_windowslive_url: https://socrata.rpxnow.com/liveid/start
   rpx_openid_url: https://socrata.rpxnow.com/openid/start
+  tweetsets_password: tw3etsets!
   <<: *default
 
 

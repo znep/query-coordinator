@@ -20,7 +20,8 @@
                     this._$editor = $('<div class="blist-table-editor ' +
                         'type-' + this.column.type + align + '">' +
                         '<input type="checkbox"' +
-                        (this.originalValue ? ' checked="checked"' : '') +
+                        (this.originalValue && this.originalValue != '0' ?
+                            ' checked="checked"' : '') +
                         ' /></div>');
                 }
                 return this._$editor;

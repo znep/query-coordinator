@@ -68,7 +68,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
         </ul>
 
         <%- if @column.dataTypeName == 'drop_down_list' -%>
-        <h3 class='seperator'>Picklist Values</h3>
+        <h3 class='seperator'>Multiple Choice Values</h3>
         <%= render(:partial => 'picklist_manager') %>
         <%- end -%>
       </div>
@@ -110,7 +110,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
                   class="datatype-<%= @column.client_type %>">
                   <%= Column.types[@column.client_type] %>
                 </strong>
-                <% if @column.convertable_types.size > 0 %>
+                <% if @view.is_blist? && @column.convertable_types.size > 0 %>
                   <a id="converter" class="convertDropdown" href="#">Change</a>
                 <% end %>
               </td>
@@ -233,7 +233,7 @@ $(function()
       <%- end -%>
       $.ajax({
         type: "PUT",
-        url: '<%= @column.href(@view_id)%>',
+        url: '<%= @column.href(@view.id)%>',
         cache: false,
         data: {
           json: $.json.serialize(column),
@@ -281,7 +281,7 @@ $(function()
     {
       $.ajax({
         type: "POST",
-        url: '<%= @column.convert_href(@view_id) %>&type=' + $(this).attr('id'),
+        url: '<%= @column.convert_href(@view.id) %>&type=' + $(this).attr('id'),
         cache: false,
         dataType: 'json',
         contentType: "application/json",

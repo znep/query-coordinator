@@ -404,7 +404,7 @@
 .modalDialog .dialogBox .header .emailDialogIcon
 {
     background-image: url(/stylesheets/images/content/dialog_header_icons.png);
-    background-position: 0 -104px;
+    background-position: 0 -103px;
     background-repeat: no-repeat;
     padding-left: 35px;
 }
@@ -655,6 +655,22 @@
 
 .columnPropertiesWrapper #picklistManager { margin: 0; }
 #columnProperties #picklistManager { margin-top: 1em; }
+
+.columnPropertiesWrapper #picklistManager .activeOuterWrapper
+{ position: relative; }
+
+.columnPropertiesWrapper #picklistManager .activeBorder
+{
+    border: solid 1px #8d8d8d;
+    height: 100%;
+    font-size: 1.2em;
+    left: 50%;
+    margin-left: -12.5em;
+    position: absolute;
+    top: -1px;
+    width: 25em;
+}
+
 .columnPropertiesWrapper #picklistManager .activeListWrapper
 {
     display: block;
@@ -663,9 +679,16 @@
     max-height: 11em;
     overflow: auto;
     padding-left: 35px;
+    position: relative;
     width: 33.5em;
 }
-.columnPropertiesWrapper #picklistManager .activeList { margin: 0; }
+
+.columnPropertiesWrapper #picklistManager .activeList
+{
+    border-width: 0 0 0 1px;
+    margin: 0;
+}
+
 .columnPropertiesWrapper #picklistManager .templateList { display: none; }
 
 .columnPropertiesWrapper #picklistManager .itemWrapper
@@ -678,7 +701,7 @@
 {
     background-color: transparent;
     font-size: 1em;
-    width: 18em;
+    width: 16em;
 }
 
 .columnPropertiesWrapper #picklistManager input.orderField { display: none; }
@@ -716,7 +739,11 @@
 }
 
 .columnPropertiesWrapper #picklistManager input.newValue { font-size: 1.2em; }
-.columnPropertiesWrapper #picklistManager input.newValueSubmit { width: 7em; }
+.columnPropertiesWrapper #picklistManager input.newValueSubmit
+{
+    padding: 0;
+    width: 7em;
+}
 
 .convertDropdown
 {
@@ -1096,20 +1123,21 @@ dl.versionInfo dd
     color: #666;
 }
 
-#sortBysList .border,
-#sortBysList .border-right
+#sortBysList .listWrapper
 {
-    height: 176px;
-    width: 25.2em; 
-    border: 1px solid #999;
-    position: absolute;
-    left: 4em;
-    top: 13px;
+    float: left;
+    margin: 1.5em 1em 1em;
+    position: relative;
 }
 
-#sortBysList .border-right
+#sortBysList .border
 {
-    left: 38.3em;
+    border: 1px solid #999;
+    height: 100%;
+    left: 3.5em;
+    position: absolute;
+    top: -1px;
+    width: 24em;
 }
 
 .modalDialog .dialogBox .header .sortOrderIcon
@@ -1122,7 +1150,7 @@ dl.versionInfo dd
 
 #sortBysList .inactiveList .type
 {
-   right: 210px; 
+   right: 210px;
 }
 
 #sortBysList .inactiveList .itemWrapper
@@ -1137,7 +1165,6 @@ dl.versionInfo dd
 
 #sortBysList.reorderList .swapArrows a
 {
-    top: 100px;
     background: transparent url(/stylesheets/images/widgets/reorder_list/reorder_buttons_white.png) repeat scroll 0 0;
 }
 #sortBysList.reorderList .swapArrows a.removeItemButton { background-position: 0 -21px; }
@@ -1205,12 +1232,12 @@ div.itemWrapper
 div#sortBysList .activeList,
 div#sortBysList .inactiveList
 {
-    height: 17.5em;
+    height: 19em;
+    margin: 0;
     overflow: auto;
-    width: 26em;
     padding-left: 3.5em;
-    margin-top: 1.5em;
     position: relative;
+    width: 26em;
 }
 
 #sortBysList .removeAllLink
@@ -1225,13 +1252,14 @@ div#sortBysList .inactiveList
 
 div#sortBysList.reorderList ul.reorder
 {
-    width: 239px;
-    border: none;
+    border-width: 0 0 0 1px;
+    width: 20em;
 }
 
 div#sortBysList .swapArrows
 {
-    margin-left: 8px;
+    height: 1px;
+    width: 21px;
 }
 
 div#sortBysList.reorderList li .itemWrapper
@@ -1283,16 +1311,6 @@ div#sortBysList.reorderList li .itemWrapper
 .filterDatasetWrapper .submitLine
 {
     clear: both;
-}
-
-.filterDatasetWrapper .submitLine .submitActions
-{
-    width: 150px;
-}
-
-.filterDatasetWrapper .submitLine .submitActions li
-{
-    width: 125px;
 }
 
 /* table styles */
@@ -1392,18 +1410,12 @@ div#sortBysList.reorderList li .itemWrapper
     width: 125px;
 }
 
-.filterDatasetWrapper .filterTable-editor { min-width: 18em; }
-
-.filterDatasetWrapper .filterTable-editor input,
-.filterDatasetWrapper .filterTable-editor .blist-combo-value,
-.filterDatasetWrapper .filterTable-editor .blist-combo-dd li
-{
-    font-size: 1em;
-}
+.filterDatasetWrapper .filterTable-editor { width: 18em; }
 
 .filterDatasetWrapper .filterTable-editor input,
 .filterDatasetWrapper .filterTable-editor .blist-combo
 {
+    width: 100%;
     border: 1px solid #cacaca;
 }
 
@@ -1427,10 +1439,14 @@ div#sortBysList.reorderList li .itemWrapper
 .filterDatasetWrapper #filterTable .blist-table-editor
 {
     border: none;
+    font-size: 1em;
+    position: relative;
 }
 
 .filterDatasetWrapper #filterTable .type-url .labels
 {
+    font-size: 1.2em;
+    left: 0;
     position: absolute;
     text-align: right;
     width: 5em;
@@ -1439,7 +1455,7 @@ div#sortBysList.reorderList li .itemWrapper
 .filterDatasetWrapper #filterTable .type-url .labels span
 {
     display: block;
-    margin-top: 0.4em;
+    margin-top: 0.5em;
 }
 
 .filterDatasetWrapper #filterTable .type-url input
@@ -1644,3 +1660,42 @@ div#sortBysList.reorderList li .itemWrapper
 
 
 /*** END: Message the owner of this dataset ***/
+
+/*** START: Republish dialog ***/
+
+.republishDialogWrapper p
+{
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+.republishDialogWrapper textarea
+{
+    font-size: 1.2em;
+    margin-top: 0.5em;
+    width: 29.5em;
+}
+
+.republishDialogWrapper input[type="text"]
+{
+    width: 2em;
+}
+
+.republishDialogWrapper label
+{
+    padding-right: 0.5em;
+}
+
+.republishDialogWrapper .field
+{
+    display: inline;
+    margin: 0 0.7em;
+}
+
+.republishDialogWrapper #sizeError
+{
+    color: #f00;
+    margin-top: 0.5em;
+}
+
+/*** END: Republish dialog ***/

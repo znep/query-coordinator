@@ -3,7 +3,6 @@
 <%- end -%>
 
 <div class="modalContentWrapper printDatasetWrapper">
-  <div class="errorMessage"></div>
   <% form_tag("/views/#{@view.id}/rows.pdf", :method => :get, :target => "_blank") do %>
     <input type="hidden" id="print" name="print" value="true" />
     <div class="columnLeft">
@@ -32,21 +31,25 @@
       </div>
     </div>
     <div class="columnRight">
-      <label class="formHeader">Orientation:</label>
-      <fieldset>
-        <input type="radio" id="landscape" name="portrait" value="false" checked="checked" />
-        <label for="landscape">Landscape</label>
-        <input type="radio" id="portrait" name="portrait" value="true" />
-        <label for="portrait">Portrait</label>
-      </fieldset>
+      <div class="formSection">
+        <label class="formHeader">Orientation:</label>
+        <fieldset>
+          <input type="radio" id="landscape" name="portrait" value="false" checked="checked" />
+          <label for="landscape">Landscape</label>
+          <input type="radio" id="portrait" name="portrait" value="true" />
+          <label for="portrait">Portrait</label>
+        </fieldset>
+      </div>
 
-      <label class="formHeader">Options:</label>
-      <input type="checkbox" id="fit" name="fit" value="true" />
-      <label for="fit">Shrink to fit <%= t(:blist_name).downcase %> on one page</label>
-      <input type="checkbox" id="headers_on_every_page" name="headers_on_every_page" value="true" />
-      <label for="headers_on_every_page">Print column titles on each page</label>
-      <input type="checkbox" id="header_icons" name="header_icons" value="true" />
-      <label for="header_icons">Display icons in column header</label>
+      <div class="formSection">
+        <label class="formHeader">Options:</label>
+        <input type="checkbox" id="fit" name="fit" value="true" checked="checked" />
+        <label for="fit">Shrink to fit <%= t(:blist_name).downcase %> on one page</label>
+        <input type="checkbox" id="headers_on_every_page" name="headers_on_every_page" value="true" checked="checked" />
+        <label for="headers_on_every_page">Print column titles on each page</label>
+        <input type="checkbox" id="header_icons" name="header_icons" value="true" />
+        <label for="header_icons">Display icons in column header</label>
+      </div>
     </div>
     <div class="submitLine clearfix">
       <ul class="submitActions">

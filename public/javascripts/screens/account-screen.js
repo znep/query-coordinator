@@ -183,7 +183,7 @@ $(function ()
     });
 
     // OpenID form.
-    $(".openIdSection td.edit_handle a").live("click", function(event)
+    $.live(".openIdSection td.edit_handle a", "click", function(event)
     {
         event.preventDefault();
 

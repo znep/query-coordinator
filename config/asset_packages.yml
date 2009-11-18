@@ -118,11 +118,7 @@ javascripts:
   - widgets/dropdown-menu
   - widgets/selectable-list
   - widgets/pagination
-  - widgets/column-format
   - widgets/reorderable-list
-  - data/table
-  - widgets/inline-edit
-  - widgets/dropdown-menu
   - widgets/column-format
   - widgets/column-totals
   - widgets/info-pane-comments
@@ -137,8 +133,6 @@ javascripts:
   - screens/attribution-edit
   - screens/blist-grid-screen
   - screens/signup-screen
-  - widgets/column-format
-  - widgets/column-totals
   - widgets/combo
   - widgets/values
 - communities-show:
@@ -180,6 +174,8 @@ javascripts:
   - data/model
   - data/table
   - screens/stats-screen
+- tweetsets:
+  - screens/tweetsets-screen
 - widgets-show:
   - plugins/jqModal
   - plugins/jquery.example.min
@@ -187,6 +183,9 @@ javascripts:
   - plugins/ui.core
   - plugins/ui.draggable
   - plugins/jquery.tache
+  - plugins/jquery.validate
+  - util/styling
+  - plugins/jquery.qtip
   - util/navigation
   - util/util
   - plugins/date
@@ -224,6 +223,7 @@ stylesheets:
   - base
   - common
   - widgets
+  - modals
 - base-widgets-preview:
   - base
   - common
@@ -270,9 +270,16 @@ stylesheets:
 - stats-index:
   - table-core
   - stats-screen
+- tweetsets-index:
+  - form-common
+  - carousel/discover-carousel-skin
+  - tweetsets-screen
 - widgets-show:
   - table-core
   - dataset-grid
   - external-widget
   - info-pane
   - external-widget-meta
+  - form-common
+  - combo
+  - modals-widget

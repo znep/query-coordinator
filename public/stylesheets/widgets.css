@@ -248,7 +248,7 @@ ul.menu li.separator
     border-top: solid 1px #999;
     height: 0;
     line-height: 0;
-    margin: 0 10px;
+    margin: -1px 10px -2px;
     padding: 0;
 }
 
@@ -273,6 +273,7 @@ ul.menu li.footer
     padding: 0;
     position: absolute;
     width: 100%;
+    z-index: -1;
 }
 
 ul.menu li.footer .outerWrapper

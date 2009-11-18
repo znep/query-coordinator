@@ -7,7 +7,6 @@
 #publishContent .publishHeader
 {
     border-bottom: 1px solid #ccc;
-    margin-bottom: 1em;
 }
 
 #publishContent .publishHeader h1
@@ -67,7 +66,7 @@
 {
     font-size: 1.3em;
     font-weight: bold;
-    margin: 0 2em;
+    margin: 1em 2em 0;
 }
 
 #publishContent .previewPane
@@ -76,6 +75,34 @@
     overflow: hidden;
     position: relative;
 }
+
+#publishContent .unsavedChangesBar
+{
+    background: #fff8c7 url(/stylesheets/images/common/info_small.png) no-repeat 1em center;
+    border-bottom: 1px solid #cac49e;
+    display: none;
+    left: 0;
+    padding: 1em;
+    padding-left: 3.5em;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 25;
+}
+#publishContent .unsavedChangesBar p
+{
+    font-size: 1.3em;
+    font-weight: bold;
+}
+#publishContent .unsavedChangesBar .actionButtons
+{
+    float: right;
+    margin: -0.3em 0;
+}
+#publishContent .unsavedChangesBar .actionButtons li { background-position: 0 -378px; }
+#publishContent .unsavedChangesBar .actionButtons li a { background-position: right -399px; }
+#publishContent .unsavedChangesBar .actionButtons li a.arrowButton { background-position: right -420px; }
+
 
 #publishContent .previewPane .loadingIndicator
 {
@@ -153,24 +180,6 @@ h3 .infoText
 #publishOptionsPane .active .infoContent
 {
     display: block;
-}
-
-#publishOptionsPane .headerActions .cancelCustomizationLink
-{
-    background: url(/stylesheets/images/content/section_close_button.png) no-repeat;
-    color: #333;
-    font-size: 0.7em;
-    font-weight: bold;
-    height: 13px;
-    line-height: 13px;
-    padding-left: 20px;
-    padding-top: 2px;
-    text-transform: uppercase;
-}
-
-#publishOptionsPane .headerActions .cancelCustomizationLink:hover
-{
-    text-decoration: underline;
 }
 
 #publishOptionsPane .singleInfoTab .infoContent

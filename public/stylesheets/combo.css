@@ -10,18 +10,28 @@
 .blist-combo
 {
     border: solid 1px #ccc;
-    background: url('/stylesheets/images/content/select_arrow.png') center right no-repeat;
+    background-image: url(/stylesheets/images/content/select_arrow.png);
+    background-position: center right;
+    background-repeat: no-repeat;
     min-height: 2em;
+    overflow: hidden;
     position: relative;
+}
+.blist-combo-focused .blist-combo-value
+{
+    border: 1px dotted #ccc;
+    padding: 3px 4px;
 }
 .blist-combo-value
 {
+    bottom: 0;
     font-size: 1.2em;
     left: 0;
     overflow: hidden;
     padding: 4px 5px;
     position: absolute;
     right: 20px;
+    top: 0;
 }
 
 .blist-combo-dd {
@@ -39,6 +49,7 @@
 {
     font-size: 1.2em;
     padding: 4px 5px;
+    white-space: nowrap;
 }
 
 .blist-combo-dd li.selected { background-color: #e3ecf7; }
@@ -49,6 +60,7 @@
 .blist-combo-wrapper.lr_justified li
 {
     clear: both;
+    overflow: hidden;
 }
 
 .blist-combo-wrapper.lr_justified .value {

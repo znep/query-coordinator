@@ -27,6 +27,7 @@ body#lensBody
 {
     background-image: none;
     margin-right: 0;
+    width: 23px;
 }
 
 #lensContainer .tabList .backLink a,
@@ -168,7 +169,7 @@ body#lensBody
 #lensContainer .tabList li.filter a,
 #lensContainer .tabList li.filter .innerWrapper
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
     background-position: 0 -529px;
     background-repeat: no-repeat;
     min-width: 5em;
@@ -378,20 +379,22 @@ body#lensBody
     background-position: 0 -60px;
 }
 
+#lensBody .headerBar #filterViewMenu { min-width: 17em; }
+
 #lensBody .headerBar #filterViewMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
     background-repeat: no-repeat;
 }
 
 #lensBody .headerBar #filterViewMenu .filter a
 {
-    background-position: 5px -715px;
+    background-position: 5px -529px;
 }
 
 #lensBody .headerBar #filterViewMenu .sort a
 {
-    background-position: 5px -738px;
+    background-position: 5px -1242px;
 }
 
 #lensBody .headerBar #filterViewMenu .showHide a
@@ -405,7 +408,7 @@ body#lensBody
 }
 #lensBody .headerBar #filterViewMenu #columnsShowMenu li.scrollable a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
     background-position: 5px -899px;
     background-repeat: no-repeat;
 }
@@ -1019,13 +1022,6 @@ body#lensBody
 
 
 /* Main content */
-
-#lensContainer .outerContent
-{
-    /* Override overflow: auto so that Firefox on Windows doesn't get screwed
-     * up in regards to cursor positioning in Flash */
-    overflow: visible;
-}
 
 #lensContainer .content
 {

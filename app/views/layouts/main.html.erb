@@ -13,6 +13,9 @@
       var isOldIE = true;
     </script>
   <![endif]-->
+  <!--[if IE 7]>
+    <link href="/stylesheets/core-ie7.css" rel="stylesheet" type="text/css">
+  <![endif]-->
 
   <% if ENV["RAILS_ENV"] != 'production' %>
   <script src="/javascripts/jquery-1.3.2.js" type="text/javascript"
@@ -58,7 +61,14 @@
               <ul class="subNav">
                 <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
                 <li><%= link_to "<span>Friends</span>", contacts_path %></li>
-                <li class="last"><%= link_to "<span>Profile</span>", current_user.href %></li>
+                <li><%= link_to "<span>Profile</span>", current_user.href %></li>
+                <li class="last">
+                  <%- if current_user.are_comments_moderated? -%>
+                    <%= link_to '<span>Approvals</span>', approval_path %>
+                  <%- else -%>
+                    <%= link_to '<span>Approvals</span>', '/popup/premium', :rel => "modal" %>
+                  <%- end -%>
+                </li>
               </ul>
             <%- end -%>
           </li>

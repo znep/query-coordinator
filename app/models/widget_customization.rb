@@ -7,7 +7,7 @@ class WidgetCustomization < Model
     parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
   
-  def self.find( options = nil, custom_headers = {})
+  def self.find(options = nil, custom_headers = {})
     if options.nil?
       options = Hash.new
     end
@@ -68,6 +68,7 @@ class WidgetCustomization < Model
     :grid     => { :row_numbers => true,
                    :wrap_header_text => false,
                    :header_icons => false,
+                   :title_bold => false,
                    :row_height => { :value => '16',
                                     :unit => 'px' },
                    :zebra => '#e7ebf2' },

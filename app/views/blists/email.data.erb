@@ -3,33 +3,35 @@
 <%- end -%>
 
 <div class="modalContentWrapper emailDatasetWrapper">
-  <div class="errorMessage"></div>
-  <% form_tag("/views/#{@view.id}/rows.html") do %>
-    <label class="formHeader" for="emailAddress">Email address to send this <%= t(:blist_name).downcase %> to:</label>
-    <div class="formContainer">
-      <ul class="emailFields">
-        <li>
-          <%= text_field_tag("emailAddress", (current_user ? current_user.email : "")) %>
-          <a class="emailFormRemoveButton" href="#remove">Remove</a>
-        </li>
-      </ul>
-      <ul class="actionButtons">
-        <li><a id="emailFormMoreButton" href="#add">Add More</a></li>
-      </ul>
-    </div>
-  
-    <div class="submitLine clearfix">
-      <ul class="submitActions">
-        <li><div class="loadingIndicator hide">Sending...</div></li>
-        <li>
-          <ul class="actionButtons">
-            <li><a id="emailFormSubmitButton" class="arrowButton" href="#submit">Send Email</a></li>
-          </ul>
-        </li>
-        <li class="cancelButton"><a href="#close_print" class="jqmClose"><span>Cancel</span></a></li>
-      </ul>
-    </div>
-  <% end %>
+  <div class="modalScrollContent">
+    <div class="errorMessage"></div>
+    <% form_tag("/views/#{@view.id}/rows.html") do %>
+      <label class="formHeader" for="emailAddress">Email address to send this <%= t(:blist_name).downcase %> to:</label>
+      <div class="formContainer">
+        <ul class="emailFields">
+          <li>
+            <%= text_field_tag("emailAddress", (current_user ? current_user.email : "")) %>
+            <a class="emailFormRemoveButton" href="#remove">Remove</a>
+          </li>
+        </ul>
+        <ul class="actionButtons">
+          <li><a id="emailFormMoreButton" href="#add">Add More</a></li>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="submitLine clearfix">
+    <ul class="submitActions">
+      <li class="loadingContainer" style="display:none"><div class="loadingIndicator">Sending...</div></li>
+      <li>
+        <ul class="actionButtons">
+          <li><a id="emailFormSubmitButton" class="arrowButton" href="#submit">Send Email</a></li>
+        </ul>
+      </li>
+      <li class="cancelButton"><a href="#close_print" class="jqmClose"><span>Cancel</span></a></li>
+    </ul>
+  </div>
   <div class="successMessage hide">
     <p>The requested email has been successfully sent.</p>
     <div class="submitLine clearfix">
@@ -90,10 +92,20 @@
       {
         $(this).addClass("disabled");
       }
+
+      // Scroll to the bottom of the container if applicable
+      $scrollContent = $('.modalScrollContent');
+      if ($scrollContent.length > 0)
+      {
+        $scrollContent[0].scrollTop = $scrollContent[0].scrollHeight;
+      }
+
+      // Highlight the new text field
+      $container.find('input').select();
     });
 
     // Remove an email from or clear the last field
-    $('.emailFormRemoveButton').live('click', function(event)
+    $.live('.emailFormRemoveButton', 'click', function(event)
     {
       event.preventDefault();
       if ($('.formContainer input').size() == 1)
@@ -131,14 +143,16 @@
 
       if ($form.valid())
       {
-        $('.emailDatasetWrapper .loadingIndicator').removeClass('hide');
+        $('.emailDatasetWrapper .loadingContainer').show();
+        $('.emailDatasetWrapper .submitLine .cancelButton').hide();
 
         var $fields = $('.formContainer input');
         var totalRequests = $fields.size();
         var completed = 0;
         var requestComplete = function()
         {
-          $('.emailDatasetWrapper .loadingIndicator').addClass('hide');
+          $('.emailDatasetWrapper .loadingContainer').hide();
+          $('.emailDatasetWrapper .submitLine .cancelButton').show();
           if ($('.formContainer input').length > 0)
           {
             $('.emailDatasetWrapper .errorMessage')
@@ -147,8 +161,9 @@
           }
           else
           {
-            $('.emailDatasetWrapper form').hide();
-            $('.emailDatasetWrapper .successMessage').show();
+            $('.emailDatasetWrapper .successMessage')
+              .show()
+              .siblings().hide();
           }
         };
         $fields.each(function()

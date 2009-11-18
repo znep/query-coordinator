@@ -123,11 +123,9 @@
             // Support for the Metadata Plugin.
             var o = $.meta ? $.extend({}, opts, $this.data()) : opts;
 
-            $this.find(opts.hoverItemSelector).hover(
-                function() { $(this).addClass("hover"); },
-                function() { $(this).removeClass("hover"); }
-            );
-            $this.find(opts.clickItemSelector).click(function(event)
+            $.live(opts.hoverItemSelector, 'mouseover', function() { $(this).addClass("hover"); });
+            $.live(opts.hoverItemSelector, 'mouseout', function() { $(this).removeClass("hover"); });
+            $.live(opts.clickItemSelector, 'click', function(event)
             {
                 var $this = $(this);
                 if ($this.closest('a').length > 0)

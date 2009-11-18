@@ -88,7 +88,7 @@
                         if (rules[i].selectorText.toLowerCase() == "body")
                         {
                             var style = rules[i].style;
-                            style.fontSize = "10px";
+                            style.fontSize = "12px";
                             style.padding = "2px 3px 3px 3px";
                             style.margin = "0";
                             style.fontFamily = "Arial,sans-serif";

@@ -205,13 +205,13 @@ $(function ()
         preventDefault: false
     });
     
-    $(".simpleTabs li#tabSearch a").live("click", function(event){
+    $.live(".simpleTabs li#tabSearch a", "click", function(event){
         event.preventDefault();
         $(".simpleTabs").simpleTabNavigate().activateTab("#tabSearch");
     });
 
     $.historyInit(communityNS.historyChangeHandler);
-    $('a').live('click', function(event)
+    $('a:not(.noHistory)').live('click', function(event)
     {
         if ($(this).attr('href').match(/#/))
         {
@@ -226,17 +226,17 @@ $(function ()
         trigger: false,
         onShow: communityNS.tagModalShowHandler
     });
-    $(".moreTagsLink").live("click", function(event)
+    $.live(".moreTagsLink", "click", function(event)
     {
         event.preventDefault();
         $("#tagCloud").jqmShow($(this));
     });
-    $(".closeContainer a").live("click", function(event)
+    $.live(".closeContainer a", "click", function(event)
     {
         event.preventDefault();
         $("#tagCloud").jqmHide();
     });
-    $(".tagCloudContainer a").live("click", function(event)
+    $.live(".tagCloudContainer a", "click", function(event)
     {
         $("#tagCloud").jqmHide();
     });
@@ -263,6 +263,7 @@ $(function ()
             $link.closest(".searchContainer").find("input[type='text']").val("").focus();
             $link.hide();
             $("#tabSearch").remove();
+            window.location.hash = ''; // only webkit/ie understand this, but only they need to
             $.historyLoad('');
         });
     if ($.urlParam("search", window.location.href) === 0)
@@ -270,5 +271,5 @@ $(function ()
         $(".clearSearch").hide();
     }
 
-    $(".memberActions .followAction").live("click", communityNS.addFriendClick);
+    $.live(".memberActions .followAction", "click", communityNS.addFriendClick);
 });

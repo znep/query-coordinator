@@ -5,6 +5,26 @@ require 'thread'
 require 'zlib'
 require 'digest/sha1'
 require 'net/protocol'
+require 'timeout'
+
+begin
+  # Try to use the SystemTimer gem instead of Ruby's timeout library
+  # when running on something that looks like Ruby 1.8.x. See:
+  #   http://ph7spot.com/articles/system_timer
+  # We don't want to bother trying to load SystemTimer on jruby and
+  # ruby 1.9+
+  if defined?(JRUBY_VERSION) || (RUBY_VERSION >= '1.9')
+    require 'timeout'
+    MemCacheTimer = Timeout
+  else
+    require 'system_timer'
+    MemCacheTimer = SystemTimer
+  end
+rescue LoadError => e
+  require 'timeout'
+  MemCacheTimer = Timeout
+end
+
 
 ##
 # A Ruby client library for memcached.
@@ -842,7 +862,7 @@ class MemCache
 
   def handle_error(server, error)
     raise error if error.is_a?(MemCacheError)
-    server.close if server
+    server.close if server && server.status == "CONNECTED"
     new_error = MemCacheError.new error.message
     new_error.set_backtrace error.backtrace
     raise new_error
@@ -992,7 +1012,7 @@ class MemCache
         @sock.setsockopt Socket::IPPROTO_TCP, Socket::TCP_NODELAY, 1
         @retry  = nil
         @status = 'CONNECTED'
-      rescue SocketError, SystemCallError, IOError => err
+      rescue SocketError, SystemCallError, IOError, Timeout::Error => err
         logger.warn { "Unable to open socket: #{err.class.name}, #{err.message}" } if logger
         mark_dead err
       end
@@ -1001,7 +1021,16 @@ class MemCache
     end
 
     def connect_to(host, port, timeout=nil)
-      io = MemCache::BufferedIO.new(TCPSocket.new(host, port))
+      sock = nil
+      if timeout
+        MemCacheTimer.timeout(timeout) do
+          sock = TCPSocket.new(host, port)
+        end
+      else
+        sock = TCPSocket.new(host, port)
+      end
+
+      io = MemCache::BufferedIO.new(sock)
       io.read_timeout = timeout
       io
     end

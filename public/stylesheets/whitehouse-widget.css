@@ -63,3 +63,8 @@ div.blist-td
 .dialogBox .header h1 { color: #333; }
 
 #data-grid, #viewHeader .innerWrapper { border-color: #DAE2F2; }
+
+#publishDialog textarea
+{
+    margin-top: 0;
+}

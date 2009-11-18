@@ -16,6 +16,12 @@ module Theme
         theme = 'datasf'
       elsif host.include? 'ohioag'
         theme = 'ohioag'
+      elsif host.include? 'utah'
+        theme = 'utah'
+      elsif host.match(/^az\.(?:.+\.)?socrata\.com$/)
+        theme = 'arizona'
+      elsif host.include? 'redmond'
+        theme = 'redmond'
       elsif host.include? 'ers'
         theme = 'ers'
       elsif host.include? 'gov'

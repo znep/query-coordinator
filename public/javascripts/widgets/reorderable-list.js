@@ -99,7 +99,8 @@ $.fn.reorderableList = function(options) {
     {
         var $sorted = $($listItems.get().sort(function(a, b)
         {
-            return $(a).find(config.orderFieldSelector).val() - $(b).find(config.orderFieldSelector).val();
+            return ($(a).find(config.orderFieldSelector).val() || 0) -
+              ($(b).find(config.orderFieldSelector).val() || 0);
         }));
 
         $sorted.each(function(i)
@@ -309,8 +310,8 @@ $.fn.reorderableList_updateFromData = function()
     var config = $this.data('config-reorderableList');
     var $sorted = $($this.find('li').get().sort(function(a, b)
     {
-        return $(a).find(config.orderFieldSelector).val() -
-            $(b).find(config.orderFieldSelector).val();
+        return ($(a).find(config.orderFieldSelector).val() || 0) -
+            ($(b).find(config.orderFieldSelector).val() || 0);
     }));
 
     $this.find('.inactiveList ul').append($sorted);

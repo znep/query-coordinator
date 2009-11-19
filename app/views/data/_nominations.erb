@@ -1,0 +1,57 @@
+<% @nominations.each do |nomnomnom| %>
+<div class="nominationList-row clearfix">
+
+  <div class="nominationList-cell nominationList-authorColumn">
+    <a href="<%= nomnomnom.user.href%>" class="nominationAuthorLink">
+      <%= image_tag nomnomnom.user.profile_image_path("small"), 
+                    :alt => nomnomnom.user.displayName,
+                    :class => "nominationAuthorImage" %>
+      <p class="nominationAuthorName"><%= nomnomnom.user.displayName %></p>
+    </a>
+  </div>
+
+  <div class="nominationList-cell nominationList-nominationColumn">
+    <div class="nominationVotes">
+      <p class="nominationNet"><%= nomnomnom.netVotes %></p>
+      <a class="rateNomination rateUp" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=true" title="I like it">I like it</a>
+      <a class="rateNomination rateDown" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=false" title="I don't like it">I like it</a>
+    </div>
+    <p class="nominationTitle">
+      <%= h(nomnomnom.title) %>
+    </p>
+    <p class="nominationTimestamp">
+      <%= blist_long_date(nomnomnom.createdAt) %>
+      <span>(<%= friendly_relative_time(nomnomnom.createdAt) %>)</span>
+    </p>
+    <p class="nominationBody">
+      <%= auto_link(h(nomnomnom.description)) %>
+    </p>
+
+    <% if !nomnomnom.attachments.nil? %>
+    <div class="attachmentsTitle">
+      <div class="title">Attachments</div>
+      <ul class="attachments">
+          <% nomnomnom.attachments.each do |a| %>
+            <li>
+            <%= 
+              filename = truncate(a.filename, :omission => " ...", :length => 55)
+              link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename) 
+            %>
+            </li>
+          <% end %>
+      </ul>
+    </div>
+    <% end %>
+  </div>
+
+  <div class="nominationList-cell nominationList-statusColumn">
+    <div class="<%= friendly_status(nomnomnom).downcase %>">
+      <%= friendly_status(nomnomnom) %>
+    </div>
+  </div>
+</div>
+<% end %>
+
+<div class="nominationPager">
+    <%= create_pagination(total, page_size, current_page, "/data/nominations" + (!status.nil? ? "?status=#{status}": "")) %>
+</div>

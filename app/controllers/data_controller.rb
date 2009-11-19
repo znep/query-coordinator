@@ -12,6 +12,8 @@ class DataController < ApplicationController
     @body_class = 'discover'
     @show_search_form = false
     @page_size = PAGE_SIZE
+    @nominations = Nomination.find_page(1, PAGE_SIZE)
+    @nominations_count = Nomination.count()
 
     @community_activity = Activity.find({:maxResults => 3}) unless Theme.revolutionize
   
@@ -214,6 +216,26 @@ class DataController < ApplicationController
   
   def redirected
     render(:layout => "splash")
+  end
+
+  def suggest
+    respond_to do |format|
+      format.data { render(:partial => "suggest", :layout => "modal_dialog") }
+    end
+  end
+
+  def nominations
+    page = params["page"].nil? ? 1 : params["page"].to_i
+    count = Nomination.count(params["status"])
+    status = params["status"]
+    @nominations = Nomination.find_page(page, PAGE_SIZE, params["status"])
+
+    respond_to do |format|
+      format.data { 
+        render(:partial => "nominations", 
+               :locals => {:current_page => page, :total => count, :page_size => PAGE_SIZE, :status => status}) 
+      }
+    end
   end
 
   protected

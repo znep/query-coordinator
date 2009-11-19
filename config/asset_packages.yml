@@ -157,6 +157,12 @@ javascripts:
   - plugins/jquery.history
   - widgets/simple-tab-navigate
   - screens/discover-screen
+  - util/urls
+  - widgets/dropdown-menu
+  - screens/nominations-screen
+  - widgets/text-prompt
+  - plugins/date
+  - plugins/ajaxupload.3.0
 - profiles-show:
   - plugins/jquery.tablesorter
   - plugins/ajaxupload.3.0
@@ -260,6 +266,8 @@ stylesheets:
   - list-screen
   - contacts-screen
 - data-show:
+  - nominations-screen
+  - form-common
   - discover-screen
   - carousel/jquery.jcarousel
   - carousel/discover-carousel-skin

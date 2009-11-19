@@ -48,11 +48,14 @@ ActionController::Routing::Routes.draw do |map|
     data.data_splash        'data/splash',      :action => 'splash'
     data.data_noie          'data/noie',        :action => 'noie'
     data.data_redirected    'data/redirected',  :action => 'redirected'
+    data.nominations        'data/nominations', :action => 'nominations'
+    data.suggest            'data/suggest',     :action => 'suggest'
   end
   
   map.resource :community, :member => { :filter => :get, :activities => :get, :tags => :get }
   map.resource :home
   map.resource :account
+  map.resources :suggestions
   map.resources :profile, :member => { 
     :create_link => :post, 
     :delete_link => :delete,

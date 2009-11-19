@@ -1,6 +1,6 @@
 class BlistsController < ApplicationController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag]
+  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag, :republish]
   
   def index
     @body_class = 'home'

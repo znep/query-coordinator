@@ -24,6 +24,8 @@ module Theme
         theme = 'redmond'
       elsif host.include? 'ers'
         theme = 'ers'
+      elsif host.include? 'portland'
+        theme = 'portland'
       elsif host.include? 'gov'
         theme = 'gov'
       elsif host.include? 'chicago'

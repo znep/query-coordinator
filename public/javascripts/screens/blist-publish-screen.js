@@ -553,6 +553,7 @@ blist.publish.saveCustomization = function(hash)
     $.ajax({
         url: $('#publishOptionsPane form').attr('action') + $('#template_name').val(),
         type: "PUT",
+        cache: false,
         contentType: "application/json",
         data: $.json.serialize({ 'customization': $.json.serialize(hash) }),
         dataType: "json",
@@ -671,6 +672,7 @@ blist.publish.loadCustomization = function()
     $.ajax({
         url: $('#publishOptionsPane form').attr('action') + $('#template_name').val(),
         type: "GET",
+        cache: false,
         dataType: "json",
         success: function(responseData)
         {

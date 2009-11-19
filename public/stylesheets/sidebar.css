@@ -307,6 +307,7 @@ ul.menu.contactsMenu li.sectionTitle.sortHeader
 #typeMenu li.calendar a { background-position: 5px -761px; }
 #typeMenu li.favorite a { background-position: 5px -1152px; }
 #typeMenu li.filter a { background-position: 5px -531px; }
+#typeMenu li.visualization a { background-position: 5px -784px; }
 
 /*** START: User tile ***/
 .userTile .userPhoto

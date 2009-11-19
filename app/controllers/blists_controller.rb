@@ -618,6 +618,8 @@ private
           'filters'
         when 'calendar'
           'calendar views'
+        when 'visualization'
+          'visualizations'
         end
     end
 

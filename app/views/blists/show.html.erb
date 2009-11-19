@@ -51,7 +51,8 @@
       <%- if @is_child_view -%>
       <li class='active filter' id='viewId_<%= @view.id %>'>
         <div class='wrapper'>
-          <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>'
+          <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>
+            <%= @view.is_visualization? ? " visualization" : "" %>'
             href='<%= @view.href %>'
             title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
           <a href='#closeFilter' class='close' title='Close'>Close</a>

@@ -3,11 +3,22 @@ module BlistsHelper
     link_to(desc, new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
   end
 
+  def dataset_view_type(view)
+    if view.is_blist?
+      'blist'
+    elsif view.is_calendar?
+      'calendar'
+    elsif view.is_visualization?
+      'visualization'
+    else
+      'filter'
+    end
+  end
+
   # Used for lists of views, to determine shared in/out
   def get_share_direction_icon_class_for_view(view)
     icon_class = "itemType"
-    icon_class += " type" + (view.is_blist? ? "Blist" :
-                              (view.is_calendar? ? "Calendar" : "Filter"))
+    icon_class += " type" + dataset_view_type(view).capitalize
 
     if view.is_shared?
       icon_class += view.owner.id == current_user.id ? " sharedOut" : " sharedIn"
@@ -17,8 +28,7 @@ module BlistsHelper
 
   # Used for individual views, to determine permission levels
   def get_permissions_icon_class_for_view(view)
-    icon_class = 'type' + (view.is_blist? ? "Blist" :
-                           (view.is_calendar? ? 'Calendar' : "Filter"))
+    icon_class = 'type' + dataset_view_type(view).capitalize
 
     if !view.is_public?
       icon_class += view.is_shared? ? " privateShared" : " private"
@@ -35,7 +45,7 @@ module BlistsHelper
       sharing_type = view.owner.id == current_user.id ? " shared out" : " shared in"
     end
 
-    blist_type = view.is_blist? ? "blist" : "filter"
+    blist_type = dataset_view_type(view)
     privacy_type = !view.is_public? ? "private" : ""
 
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
@@ -233,8 +243,7 @@ module BlistsHelper
       {'items' => View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
         b.last_viewed <=> a.last_viewed
       end.slice(0, num_recent).map do |v|
-        {'text' => v.name, 'href' => v.href,
-        'class' => v.is_blist? ? 'blist' : (v.is_calendar? ? 'calendar' : 'filter')}
+        {'text' => v.name, 'href' => v.href, 'class' => dataset_view_type(v)}
       end }
     else
       nil

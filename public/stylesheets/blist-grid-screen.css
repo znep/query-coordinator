@@ -1057,6 +1057,14 @@ body#lensBody
     top: 0;
 }
 
+#lensBody .chartContainer .error
+{
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-top: 5em;
+    text-align: center;
+}
+
 /* Special temp view styling */
 #tempInfoPane,
 #lensContainer .tabList .filter.tempViewTab

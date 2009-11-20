@@ -17,10 +17,17 @@
             $visualization.bind('resize',
                 function(e) { handleResize($visualization, e); });
 
+            if (blist.widgets.visualization.invalid)
+            {
+                $visualization.html("<div class='error'>There are not enough columns to display this visualization.  If you are the owner, please choose new columns.</div>");
+                return;
+            }
+
             if (!blist.widgets.visualization.isFusionMap)
             {
                 var query = new google.visualization.Query('/views/' +
-                  blist.widgets.visualization.viewId + '/rows.gvds');
+                  blist.widgets.visualization.viewId + '/rows.gvds?_=' +
+                    new Date().valueOf());
                 // Send the query with a callback function.
                 query.send(function(r) { handleQueryResponse($visualization, r); });
             }

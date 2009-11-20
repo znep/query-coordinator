@@ -287,9 +287,9 @@ class View < Model
     return false
   end
 
-  def can_create_visualization_type?(viz_type)
+  def has_columns_for_visualization_type?(viz_type, include_hidden = false)
     config = @@visualization_config[viz_type]
-    if config.nil? || config['hidden']
+    if config.nil?
       return false
     end
 
@@ -304,12 +304,20 @@ class View < Model
     to_check.each do |tc|
       next if tc['optional']
 
-      if columns_for_datatypes(tc['dataType']).length < 1
+      if columns_for_datatypes(tc['dataType'], include_hidden).length < 1
         return false
       end
     end
-
     return true
+  end
+
+  def can_create_visualization_type?(viz_type, include_hidden = false)
+    config = @@visualization_config[viz_type]
+    if config.nil? || config['hidden']
+      return false
+    end
+
+    return has_columns_for_visualization_type?(viz_type, include_hidden)
   end
 
   def owned_by?(user)

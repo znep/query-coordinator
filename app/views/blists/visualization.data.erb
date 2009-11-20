@@ -13,7 +13,7 @@
 
     <div class='section common'>
       <%- viz_types = View.visualization_config.reject {|k,v|
-          v['hidden'] == true || !@view.can_create_visualization_type?(k)}.
+          v['hidden'] == true || !@view.can_create_visualization_type?(k, @is_edit)}.
           sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
       <h3>Setup</h3>
       <p class='subtitle separator'>
@@ -260,6 +260,7 @@
       $(event.target).closest('.dataColumnBlock').remove();
       var $blocks = $section.find('.dataColumnBlock');
       if ($blocks.length == 1) { $blocks.addClass('soloBlock'); }
+      $('.vizWrapper a.addDataBlock').show();
     });
 
     var $dblocks = $('.vizWrapper .soloBlock:visible');
@@ -297,6 +298,10 @@
       });
 
       $scrollBlock.append($block);
+
+      if ($block.find('select:first option:not(.prompt)').length <=
+          $scrollBlock.find('.dataColumnBlock').length)
+      { $('.vizWrapper a.addDataBlock').hide(); }
     });
 
     $('.vizWrapper .number input').spinner({min: 0});
@@ -306,12 +311,12 @@
         {
             var $target = $(e.target);
             $target.css('background-color', newColor)
-              .siblings(':input').val(newColor);
+              .next(':input').val(newColor);
         })
     .mousedown(function(e)
         {
             var $target = $(e.target);
-            $target.data('colorpicker-color', $target.siblings(':input').val());
+            $target.data('colorpicker-color', $target.next(':input').val());
         });
 
     var getValue = function($input)
@@ -433,6 +438,7 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
+              blist.widgets.visualization.invalid = false;
               blist.widgets.visualization.displayFormat = $.extend(origOptions,
                   {wmode: 'opaque'});
               $('.chartContainer').visualization();

@@ -74,7 +74,8 @@
             <%= h fcol['label'] %>
           </label>
           <select id='<%= fc_name %>' name='<%= fc_name %>'
-            class='<%= cur_id.nil? ? 'prompt' : '' %> required'>
+            class='<%= cur_id.nil? ? 'prompt' : '' %> required
+            <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
             <option value='<%= c.id %>' <%= c.id == cur_id ?
@@ -158,7 +159,8 @@
                 for='<%= dc_name %>'><%= h dcol['label'] %></label>
               <select id='<%= dc_name %>' name='<%= dc_name %>'
                 class='<%= cur_id.nil? ? 'prompt' : '' %>
-                  <%= dcol['optional'] ? '' : 'required' %>'>
+                  <%= dcol['optional'] ? '' : 'required' %>
+                  <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
                 <option value='<%= c.id %>' <%= c.id == cur_id ?
@@ -219,6 +221,23 @@
 <script type="text/javascript" charset="utf-8">
   blist.common.modalReady = function()
   {
+    $.validator.addMethod('notEqualTo', function(value, element, param)
+        {
+            if (this.optional(element)) { return true; }
+            var isEqual = false;
+            var $e = $(element);
+            $(param).each(function(i, p)
+            {
+                var $p = $(p);
+                if ($e.index($p) < 0 && $p.val() == value)
+                {
+                    isEqual = true;
+                    return false;
+                }
+            });
+            return !isEqual;
+        },
+        'A different value is required.');
     $('.vizWrapper form').validate({ignore: ':hidden', errorElement: 'span'});
 
     var adjustSelectPrompt = function(event)
@@ -260,11 +279,19 @@
       $(event.target).closest('.dataColumnBlock').remove();
       var $blocks = $section.find('.dataColumnBlock');
       if ($blocks.length == 1) { $blocks.addClass('soloBlock'); }
-      $('.vizWrapper a.addDataBlock').show();
+      $section.find('a.addDataBlock').show();
     });
 
     var $dblocks = $('.vizWrapper .soloBlock:visible');
     if ($dblocks.length > 1) { $dblocks.removeClass('soloBlock'); }
+
+    $('.vizWrapper .scrollBlock').each(function(i, s)
+    {
+        var $s = $(s);
+        if ($s.find('.dataColumnBlock:first select:first option:not(.prompt)')
+          .length <= $s.find('.dataColumnBlock').length)
+        { $s.closest('.section').find('a.addDataBlock').hide(); }
+    });
 
     $('.vizWrapper a.addDataBlock').click(function(event)
     {
@@ -301,7 +328,7 @@
 
       if ($block.find('select:first option:not(.prompt)').length <=
           $scrollBlock.find('.dataColumnBlock').length)
-      { $('.vizWrapper a.addDataBlock').hide(); }
+      { $scrollBlock.closest('.section').find('a.addDataBlock').hide(); }
     });
 
     $('.vizWrapper .number input').spinner({min: 0});

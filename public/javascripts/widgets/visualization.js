@@ -19,7 +19,9 @@
 
             if (blist.widgets.visualization.invalid)
             {
-                $visualization.html("<div class='error'>There are not enough columns to display this visualization.  If you are the owner, please choose new columns.</div>");
+                $visualization.html("<div class='error'>There are not enough " +
+                    "columns to display this visualization.  " +
+                    "If you are the owner, please choose new columns.</div>");
                 return;
             }
 
@@ -54,8 +56,11 @@
         $viz.width($viz.width());
 
         var config = $viz.data("config-visualization");
-        if (!config._resizeTimer)
+        if (!config._resizeTimer && (config._prevWidth !== $viz.width() ||
+            config._prevHeight !== $viz.height()))
         {
+            config._prevWidth = $viz.width();
+            config._prevHeight = $viz.height();
             config._resizeTimer = true;
             setTimeout(function() { renderViz($viz); }, 300);
         }

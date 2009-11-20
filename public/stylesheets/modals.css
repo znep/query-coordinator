@@ -1673,7 +1673,7 @@ div#sortBysList.reorderList li .itemWrapper
 {
     font-size: 1.2em;
     margin-top: 0.5em;
-    width: 29.5em;
+    width: 100%;
 }
 
 .republishDialogWrapper input[type="text"]

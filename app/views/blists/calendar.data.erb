@@ -3,7 +3,7 @@
 <h1 class='calendarIcon'>Create a Calendar View</h1>
 <%- end -%>
 
-<div class='modalContentWrapper calendarWrapper'>
+<div class='modalContentWrapper calendarWrapper viewSetupWrapper'>
   <p class='subtitle'>
   Datasets with dates can be displayed in a monthly calendar format.
   </p>
@@ -11,7 +11,7 @@
   <% form_tag("#{@view.href}/create_calendar") do %>
     <div class='section'>
       <h3>Name</h3>
-      <p class='subtitle seperator'>
+      <p class='subtitle separator'>
       Give a name to your new calendar view
       </p>
       <div class='line'>
@@ -24,11 +24,11 @@
       <%- date_cols = @view.columns.select {|c| c.dataTypeName == 'date' &&
         !c.flag?('hidden')} -%>
       <%- is_multi_date = date_cols.length > 1 -%>
-      <h3 class='<%= is_multi_date ? '' : 'seperator' %>'>
+      <h3 class='<%= is_multi_date ? '' : 'separator' %>'>
         Date<%= is_multi_date ? '(s)' : ' Column' %>
       </h3>
       <%- if is_multi_date -%>
-      <p class='subtitle seperator'>
+      <p class='subtitle separator'>
       Select up to two date columns to set the start and end dates for
       your calendar events
       </p>
@@ -60,7 +60,7 @@
         !c.flag?('hidden')} -%>
       <%- is_multi_text = text_cols.length > 1 -%>
       <h3>Event Information</h3>
-      <p class='subtitle seperator'>
+      <p class='subtitle separator'>
       Select the column<%= is_multi_text ? 's' : '' %>
       that provide<%= is_multi_text ? '' : 's' %> details for the event
       </p>

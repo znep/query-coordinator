@@ -141,7 +141,7 @@
 }
 .infoContentHeader h2.panelHeader
 {
-    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?2) left top no-repeat;
+    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?3) left top no-repeat;
     color: #333;
     float: left;
     font-size: 1.4em;
@@ -174,6 +174,9 @@
 .infoContentHeader h2.panelHeader.typeCalendar { background-position: left -861px; }
 .infoContentHeader h2.panelHeader.typeCalendar.private { background-position: left -902px; }
 .infoContentHeader h2.panelHeader.typeCalendar.privateShared { background-position: left -943px; }
+.infoContentHeader h2.panelHeader.typeVisualization { background-position: left -984px; }
+.infoContentHeader h2.panelHeader.typeVisualization.private { background-position: left -1025px; }
+.infoContentHeader h2.panelHeader.typeVisualization.privateShared { background-position: left -1066px; }
 .infoContentHeader h2.panelHeader.typeSharedIn { background-position: left -738px; }
 .infoContentHeader h2.panelHeader.typeSharedOut { background-position: left -779px; }
 .infoContentHeader h2.panelHeader.typeNotify { background-position: left -410px; }
@@ -646,6 +649,7 @@ infoContentOuter table.gridList td.picture .cellInner
 }
 #createViewMenu li.filter a { background-position: 5px -531px; }
 #createViewMenu li.calendar a { background-position: 5px -761px; }
+#createViewMenu li.viz a { background-position: 5px -784px; }
 
 /*** END: single info filtered tab ***/
 

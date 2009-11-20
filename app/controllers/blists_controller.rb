@@ -470,6 +470,50 @@ class BlistsController < ApplicationController
     }
   end
 
+  def visualization
+    @view = View.find(params[:id])
+    @is_edit = params[:edit] == 'true'
+
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
+  def create_visualization
+    errors = []
+    begin
+      if params[:edit] == 'true'
+        batch_reqs = []
+        cols = JSON.parse(params[:columns])
+        # TODO: It would be nice to make some convenience methods for generating
+        # these requests
+        cols.each do |c|
+          batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + c['id'],
+            'requestType' => 'PUT', 'body' => {'hidden' => false},
+            'class' => Column}
+        end
+        batch_reqs << {'url' => '/views/' + params[:id], 'requestType' => 'PUT',
+          'body' => {'columns' => cols, 'displayType' => params[:vizType],
+            'displayFormat' => JSON.parse(params[:options])}, 'class' => View}
+        Model.batch(batch_reqs)
+      else
+        view = View.create({:name => params[:viewName],
+                           :columns => JSON.parse(params[:columns]),
+                           :displayType => params[:vizType],
+                           :displayFormat => JSON.parse(params[:options]),
+                           :originalViewId => params[:id]})
+      end
+    rescue CoreServer::CoreServerError => e
+      errors << e.error_message
+    end
+
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success",
+      :errors => errors,
+      :newViewId => view.nil? ? '' : view.id
+    }
+  end
+
   def meta_tab_header
      if (!params[:tab])
        return
@@ -574,6 +618,8 @@ private
           'filters'
         when 'calendar'
           'calendar views'
+        when 'visualization'
+          'visualizations'
         end
     end
 

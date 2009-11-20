@@ -40,49 +40,11 @@ columnFormatNS.currencySelect = '<select id="currency">';
 $.each(columnFormatNS.currencies, function() { columnFormatNS.currencySelect += '<option value="' + this[0] + '">' + this[0] + ", " + this[1] + '</option>'; });
 columnFormatNS.currencySelect += '</select>';
 
-/* TODO: Uncomment when we move out of flex completely.
- *
-columnFormatNS.dateFormats = [
-    ["MM/dd/yyyy hh:mm a", "11/22/2009 5:45 pm (Date &amp; Time)"],
-    ["MM/dd/yyyy HH:mm:ss", "11/22/2009 17:45:01 (Date &amp; Time)"],
-    ["dd/MM/yyyy hh:mm a", "11/22/2009 5:45 pm (Date &amp; Time)"],
-    ["dd/MM/yyyy HH:mm:ss", "11/22/2009 17:45:01 (Date &amp; Time)"],
-    ["MM/dd/yyyy", "11/22/2009 (Date)"],
-    ["dd/MM/yyyy", "22/11/2009 (Date)"],
-    ["yyyy-MM-dd", "2009-11-22 (Date)"],
-    ["MM/dd", "11/22 (Date)"],
-    ["MMMM d, yyyy", "November 22, 2009 (Date)"],
-    ["MMMM d", "November 22 (Date)"],
-    ["dd-MMM-yyyy", "22-Nov-2009 (Date)"],
-    ["dd-MMM", "22-Nov (Date)"],
-    ["HH:mm:ss", "17:45:01 (Time)"],
-    ["HH:mm", "17:45 (Time)"],
-    ["hh:mm a", "5:45 pm (Time)"],
-];*/
-
-// XXX: Remove me after getting rid of flex.
-columnFormatNS.dateFormats = [
-    ["date", "11/22/2009 (Date)"],
-    // TODO: Waiting on the grid to support these.
-    //["date_dmy", "22/11/2009 (Date)"],
-    //["date_ymd", "2009/11/22 (Date)"],
-    //["date_monthdy", "November 22, 2009 (Date)"],
-    //["date_dmonthy", "22 November 2009 (Date)"],
-    //["date_ymonthd", "2009 November 22 (Date)"],
-    ["date_time", "11/22/2009 5:45 PM GMT+0100 (Date &amp; Time)"]
-    //["date_dmy_time", "22/11/2009 5:45 PM GMT+0100 (Date &amp; Time)"],
-    //["date_ymd_time", "2009/11/22 5:45 PM GMT+0100 (Date &amp; Time)"]
-];
-
 columnFormatNS.percentFormatValues = [
     { id: "percent_bar_and_text", label: "90%", info: "Bar &amp; Text" },
     { id: "percent_bar", label: "&nbsp;", info: "Bar Only" },
     { id: "percent_text", label: "90%", info: "Text Only" }
 ];
-
-columnFormatNS.dateView = '<select id="date-view">';
-$.each(columnFormatNS.dateFormats, function() { columnFormatNS.dateView += '<option value="' + this[0] + '">' + this[1] + '</option>'; });
-columnFormatNS.dateView += '</select>';
 
 columnFormatNS.checkFormats = [
     ["boolean_checkbox", "Checkbox"],
@@ -107,7 +69,7 @@ columnFormatNS.picklistView += '</select>';
 
 columnFormatNS.render_number = function($container)
 {
-  var render = '<h3 class="seperator">Display Options</h3>';
+  var render = '<h3 class="separator">Display Options</h3>';
   render += '<div class="number displayOptions"><table colspacing="0"><tbody>';
   render += columnFormatNS.precision(column.decimalPlaces); 
   render += '</tbody></table></div>';
@@ -117,13 +79,13 @@ columnFormatNS.render_number = function($container)
 
 columnFormatNS.render_money = function($container)
 {
-  var render = '<h3 class="seperator">Display Options</h3>';
+  var render = '<h3 class="separator">Display Options</h3>';
   render += '<div class="money displayOptions"><table colspacing="0"><tbody>';
   render += columnFormatNS.precision(column.decimalPlaces); 
   //render += '<tr><td class="labelColumn"><label for="precision">Number Style:</label></td><td><select id="number-style"><option value="standard">1,000.12 (Standard)</option><option value="scientific">1.01E+03 (Scientific)</option></select></td></tr>';
   render += '</tbody></table></div>';
   /* TODO: Add me back in when we get rid of flash (god let that be soon...)
-  render += '<h3 class="seperator">Currencies</h3>';
+  render += '<h3 class="separator">Currencies</h3>';
   render += '<div class="currencies">';
   render += '<label for="currency">Currency:</label>';
   render += columnFormatNS.currencySelect; 
@@ -134,30 +96,30 @@ columnFormatNS.render_money = function($container)
 
 columnFormatNS.render_percent = function($container)
 {
-    var render = '<h3 class="seperator">Display Options</h3>';
+    var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += columnFormatNS.precision(column.decimalPlaces); 
     render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td>';
     render += '<div class="blist-combo-wrapper lr_justified format_percent_view">';
     render += '<div id="percent-view"></div></div>';
     render += '</td></tr></tbody></table></div>';
-    
+
     $container.append(render);
     $("#precision").spinner({min: 0});
-    
+
     $("#percent-view").combo({
         name: "percent-view",
         values: columnFormatNS.percentFormatValues,
         value: column.format || 'percent_bar',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
-    
-    $("#percent-view").change(function() { column.format = $("#percent-view").value(); });    
+
+    $("#percent-view").change(function() { column.format = $("#percent-view").value(); });
 };
 
 columnFormatNS.render_date = function($container)
 {
-    var render = '<h3 class="seperator">Display Options</h3>';
+    var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += '<tr><td class="labelColumn"><label for="view">Date View Style:</label></td><td>';
     render += '<div class="blist-combo-wrapper lr_justified format_date_view">';
@@ -165,14 +127,14 @@ columnFormatNS.render_date = function($container)
     render += '</td></tr>';
     render += '</tbody></table></div>';
     $container.append(render);
-    
+
     $("#date-view").combo({
       name: "date-view",
       values: columnFormatNS.dateFormatValues,
       value: column.format || 'date_time',
       renderFn: columnFormatNS.renderValueInfoFormatRow
     });
-    
+
     $("#date-view").change(function() { column.format = $("#date-view").value(); });
 };
 
@@ -186,7 +148,7 @@ columnFormatNS.renderValueInfoFormatRow = function(value)
 
 columnFormatNS.render_checkbox = function($container)
 {
-    var render = '<h3 class="seperator">Display Options</h3>';
+    var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += '<tr><td class="labelColumn"><label for="view">Check Style:</label></td><td>' + columnFormatNS.checkView + '</td></tr>';
     render += '</tbody></table></div>';
@@ -196,7 +158,7 @@ columnFormatNS.render_checkbox = function($container)
 
 columnFormatNS.render_picklist = function($container)
 {
-    var render = '<h3 class="seperator">Display Options</h3>';
+    var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
     render += '<tr><td class="labelColumn"><label for="view">Menu Style:</label></td><td>' + columnFormatNS.picklistView + '</td></tr>';
     render += '</tbody></table></div>';
@@ -212,14 +174,14 @@ columnFormatNS.updateView = function(container, id)
     });
 };
 
-columnFormatNS.render_phone = 
-columnFormatNS.render_email = 
+columnFormatNS.render_phone =
+columnFormatNS.render_email =
 columnFormatNS.render_url =
 columnFormatNS.render_document =
-columnFormatNS.render_photo = 
+columnFormatNS.render_photo =
 columnFormatNS.render_stars =
 columnFormatNS.render_flag =
-columnFormatNS.render_text = 
+columnFormatNS.render_text =
 columnFormatNS.render_richtext =
 columnFormatNS.render_bnb = function($container) {};
 

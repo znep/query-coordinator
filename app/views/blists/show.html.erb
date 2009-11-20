@@ -51,7 +51,8 @@
       <%- if @is_child_view -%>
       <li class='active filter' id='viewId_<%= @view.id %>'>
         <div class='wrapper'>
-          <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>'
+          <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>
+            <%= @view.is_visualization? ? " visualization" : "" %>'
             href='<%= @view.href %>'
             title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
           <a href='#closeFilter' class='close' title='Close'>Close</a>
@@ -109,6 +110,15 @@
               </div></a>
               <%= render(:partial => "filter_view_menu",
                 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+            </li>
+            <%- end -%>
+
+            <%- if @view.is_visualization? && is_owner -%>
+            <li class='separator'>
+              <a rel='modal' href="<%= @view.href %>/visualization?edit=true"
+                id='editViz' class='staticLink'>
+                <span class='linkIcon'>Edit Visualization</span>
+              </a>
             </li>
             <%- end -%>
 
@@ -345,8 +355,7 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
-  <%= render(:partial => "shared/visualization",
-    :locals => { :view => @view, :grid_div => "dataGrid" }) %>
+  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
   <%= render(:partial => "shared/calendar",
     :locals => { :view => @view, :grid_div => "dataGrid" }) %>
 

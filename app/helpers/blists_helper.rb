@@ -3,11 +3,22 @@ module BlistsHelper
     link_to(desc, new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
   end
 
+  def dataset_view_type(view)
+    if view.is_blist?
+      'blist'
+    elsif view.is_calendar?
+      'calendar'
+    elsif view.is_visualization?
+      'visualization'
+    else
+      'filter'
+    end
+  end
+
   # Used for lists of views, to determine shared in/out
   def get_share_direction_icon_class_for_view(view)
     icon_class = "itemType"
-    icon_class += " type" + (view.is_blist? ? "Blist" :
-                              (view.is_calendar? ? "Calendar" : "Filter"))
+    icon_class += " type" + dataset_view_type(view).capitalize
 
     if view.is_shared?
       icon_class += view.owner.id == current_user.id ? " sharedOut" : " sharedIn"
@@ -17,8 +28,7 @@ module BlistsHelper
 
   # Used for individual views, to determine permission levels
   def get_permissions_icon_class_for_view(view)
-    icon_class = 'type' + (view.is_blist? ? "Blist" :
-                           (view.is_calendar? ? 'Calendar' : "Filter"))
+    icon_class = 'type' + dataset_view_type(view).capitalize
 
     if !view.is_public?
       icon_class += view.is_shared? ? " privateShared" : " private"
@@ -35,7 +45,7 @@ module BlistsHelper
       sharing_type = view.owner.id == current_user.id ? " shared out" : " shared in"
     end
 
-    blist_type = view.is_blist? ? "blist" : "filter"
+    blist_type = dataset_view_type(view)
     privacy_type = !view.is_public? ? "private" : ""
 
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
@@ -83,6 +93,18 @@ module BlistsHelper
       {'text' => 'Digg', 'class' => 'digg', 'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
       {'text' => 'Twitter', 'class' => 'twitter', 'href' => "http://www.twitter.com/home?status=#{tweet + short_path}", 'external' => true},
       {'text' => 'Facebook', 'class' => 'facebook', 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}", 'external' => true}]}
+  end
+
+  def view_create_menu_options(view)
+    [{'text' => 'Filtered View', 'class' => 'filter', 'href' => '#createFilter'},
+      {'text' => 'Calendar', 'href' => "#{view.href}/calendar",
+      'class' => 'calendar' + (view.can_add_calendar? ? '' : ' disabled'),
+      'title' => (view.can_add_calendar? ? '' :
+        'This dataset does not have both a date column and text column')},
+      {'text' => 'Visualization', 'href' => "#{view.href}/visualization",
+      'class' => 'viz' + (view.can_add_visualization? ? '' : ' disabled'),
+      'title' => (view.can_add_visualization? ? '' :
+        'This dataset does not have the appropriate columns for visualizations')}]
   end
 
   def contacts_filter_menu(href_prefix, href_group_prefix,
@@ -221,8 +243,7 @@ module BlistsHelper
       {'items' => View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
         b.last_viewed <=> a.last_viewed
       end.slice(0, num_recent).map do |v|
-        {'text' => v.name, 'href' => v.href,
-        'class' => v.is_blist? ? 'blist' : (v.is_calendar? ? 'calendar' : 'filter')}
+        {'text' => v.name, 'href' => v.href, 'class' => dataset_view_type(v)}
       end }
     else
       nil

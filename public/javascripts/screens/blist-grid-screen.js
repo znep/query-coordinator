@@ -1,5 +1,15 @@
 var blistGridNS = blist.namespace.fetch('blist.blistGrid');
 
+blist.blistGrid.getCookieHash = function()
+{
+    var dispType = 'filter';
+    if (blist.calendar.isCalendar) { dispType = 'calendar'; }
+    else if (blist.widgets.visualization.isVisualization)
+    { dispType = 'visualization'; }
+    return {name: blistGridNS.viewName, id: blistGridNS.viewId,
+        path: window.location.pathname, displayType: dispType};
+};
+
 blist.blistGrid.setUpTabs = function ()
 {
     var cookieStr = $.cookies.get('viewTabs');
@@ -21,9 +31,7 @@ blist.blistGrid.setUpTabs = function ()
         if ($.grep(cookieObj.views, function (v)
             { return v.id == blistGridNS.viewId ; }).length < 1)
         {
-            cookieObj.views.push({name: blistGridNS.viewName,
-                id: blistGridNS.viewId, path: window.location.pathname,
-                displayType: (blist.calendar.isCalendar ? 'calendar' : 'filter')});
+            cookieObj.views.push(blistGridNS.getCookieHash());
             $.cookies.set('viewTabs', $.json.serialize(cookieObj));
         }
     }
@@ -65,9 +73,7 @@ blist.blistGrid.createTabCookie = function()
     {
         $.cookies.set('viewTabs', $.json.serialize({
             blistId: blistGridNS.blistId,
-            views: [{name: blistGridNS.viewName, id: blistGridNS.viewId,
-                path: window.location.pathname,
-                displayType: (blist.calendar.isCalendar ? 'calendar' : 'filter')}]
+            views: [blistGridNS.getCookieHash()]
         }));
     }
 };
@@ -147,9 +153,6 @@ blist.blistGrid.columnsChangedHandler = function (event, columnIds)
 
 blist.blistGrid.mainMenuLoaded = function (data)
 {
-    // Note -- commented lines are full jQuerified equivalents and are sloooow
-
-    //var $data = $(data);
     var $menus = $(data).children();
 
     // Swap out the main menu with whatever was loaded
@@ -157,6 +160,10 @@ blist.blistGrid.mainMenuLoaded = function (data)
     var $container = $menu.parent();
     $container[0].removeChild($menu[0]);
     $container[0].appendChild($menus[0]);
+
+    // Update the Create menu in More Views tab
+    $('#createViewMenu')[0].innerHTML =
+        $menus.eq(0).find('li.blist li.newView ul.menu')[0].innerHTML;
 
     // Swap out the filter & view menu with whatever was loaded
     $menu = $("#filterViewMenu");
@@ -436,7 +443,8 @@ $(function ()
             $('#dataGrid').datasetGrid().setTempView();
         });
 
-    $.live('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a', 'click',
+    $.live('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a, ' +
+        '#createViewMenu li.viz a, #mainMenu .newView .viz > a', 'click',
         function (event)
         {
             event.preventDefault();

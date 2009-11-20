@@ -30,7 +30,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       <%#
         <div id="defaultsTab" class="tabContent">
           <h3>Apply a Default Cell Value</h3>
-          <h4 class="subtitle seperator">What you enter here will appear by default in every cell for this column</h4>
+          <h4 class="subtitle separator">What you enter here will appear by default in every cell for this column</h4>
         </div>
       %>
 
@@ -38,14 +38,14 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       <%- if @column.has_totals? %>
       <div id="totalsTab" class="tabContent">
         <h3>Column Total Options</h3>
-        <h4 class="subtitle seperator">Totals will appear at the bottom of the column while in table display mode</h4>
+        <h4 class="subtitle separator">Totals will appear at the bottom of the column while in table display mode</h4>
       </div>
       <% end %>
 
       <%# Formatting tab %>
       <%- if @column.has_formatting? %>
       <div id="formattingTab" class="tabContent">
-        <h3 class="seperator">Alignment Options</h3>
+        <h3 class="separator">Alignment Options</h3>
         <ul class="alignment">
           <li><p>Justify:</p></li>
           <li>
@@ -68,7 +68,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
         </ul>
 
         <%- if @column.dataTypeName == 'drop_down_list' -%>
-        <h3 class='seperator'>Multiple Choice Values</h3>
+        <h3 class='separator'>Multiple Choice Values</h3>
         <%= render(:partial => 'picklist_manager') %>
         <%- end -%>
       </div>
@@ -79,7 +79,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
         <table cellspacing="0">
           <tbody>
             <tr>
-              <td colspan="2"><h3 class="seperator">Column Details</h3></td>
+              <td colspan="2"><h3 class="separator">Column Details</h3></td>
             </tr>
             <tr>
               <td class="labelColumn">
@@ -101,7 +101,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
               </td>
             </tr>
             <tr>
-              <td colspan="2"><h3 class="seperator">Type of Column</h3></td>
+              <td colspan="2"><h3 class="separator">Type of Column</h3></td>
             </tr>
             <tr>
               <td class="labelColumn"><label for="type">Type:</label></td>
@@ -137,7 +137,7 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
       </div>
       <div class="saveBar">
         <div class="error errorMessage"></div>
-        <h3 class="seperator"></h3>
+        <h3 class="separator"></h3>
         <div class="controlBar">
           <div class="required">Required Field</div>
           <ul class='actionButtons clearfix'>

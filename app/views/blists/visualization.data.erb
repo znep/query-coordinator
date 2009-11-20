@@ -1,0 +1,483 @@
+<%- content_for :headline do -%>
+<h1 class='vizIcon'><%= @is_edit ? 'Edit this' : 'Create a' %> Visualization</h1>
+<%- end -%>
+
+<div class='modalContentWrapper vizWrapper viewSetupWrapper'>
+  <p class='subtitle'>
+  Datasets can be displayed in a variety of visual formats.
+  </p>
+
+  <% form_tag("#{@view.href}/create_visualization?edit=#{@is_edit}",
+    :class => 'clearfix') do %>
+  <div class='column'>
+
+    <div class='section common'>
+      <%- viz_types = View.visualization_config.reject {|k,v|
+          v['hidden'] == true || !@view.can_create_visualization_type?(k, @is_edit)}.
+          sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
+      <h3>Setup</h3>
+      <p class='subtitle separator'>
+      Enter a name and choose a chart type
+      </p>
+      <%- if !@is_edit -%>
+      <div class='line'>
+        <label class='required' for='vizName'>Name</label>
+        <input type='text' id='vizName' name='viewName' class='required' />
+      </div>
+      <%- end -%>
+      <div class='line'>
+        <label class='required' for='vizType'>Type</label>
+        <select id='vizType' name='vizType'
+          <%= @is_edit ? "disabled='disabled'" : '' %>
+          class='<%= @is_edit ? '' : 'prompt' %> required'>
+          <option class='prompt' value=''>Select a Chart</option>
+          <%- viz_types.each do |t| -%>
+          <option value='<%= t[0] %>'
+            <%= @is_edit && @view.displayType == t[0] ?
+              "selected='selected'" : '' %>><%= h t[1]['label'] %></option>
+          <%- end -%>
+        </select>
+      </div>
+    </div>
+
+    <%- cur_cols = @is_edit ? @view.columns.select {|c| !c.flag?('hidden')} : [] -%>
+    <%- cols = {} -%>
+    <%- viz_types.each do |t| -%>
+    <%- type_config = t[1] -%>
+    <%- is_edit_block = @is_edit && @view.displayType == t[0] -%>
+    <div class='typeBlock type-<%= t[0] %> <%= is_edit_block ? 'default' : '' %>'>
+
+      <%- if !type_config['fixedColumns'].nil? ||
+        !type_config['mainOptions'].nil? -%>
+      <div class='section'>
+        <h3>Configuration</h3>
+        <p class='subtitle separator'>
+        Choose the data to chart against, and set other options
+        </p>
+
+        <%- if !type_config['fixedColumns'].nil? -%>
+        <%- count = 0 -%>
+        <%- type_config['fixedColumns'].each do |fcol| -%>
+
+        <%- cur_id = is_edit_block && cur_cols.length > 0 &&
+          @view.datatypes_match(cur_cols[0], fcol['dataType']) ?
+            cur_cols.shift.id : nil -%>
+
+        <%- if cols[fcol['dataType']].nil?
+              cols[fcol['dataType']] =
+                @view.columns_for_datatypes(fcol['dataType'], @is_edit)
+            end -%>
+        <%- fc_name = t[0] + '-fixedColumn-' + count.to_s -%>
+
+        <div class='line'>
+          <label class='required' for='<%= fc_name %>'>
+            <%= h fcol['label'] %>
+          </label>
+          <select id='<%= fc_name %>' name='<%= fc_name %>'
+            class='<%= cur_id.nil? ? 'prompt' : '' %> required
+            <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
+            <option class='prompt' value=''>Select a Column</option>
+            <%- cols[fcol['dataType']].each do |c| -%>
+            <option value='<%= c.id %>' <%= c.id == cur_id ?
+              "selected='selected'" : '' %>><%= h c.name %></option>
+            <%- end -%>
+          </select>
+        </div>
+
+        <%- count += 1 -%>
+        <%- end -%>
+        <%- end -%>
+
+        <%= render(:partial => 'viz_opts',
+          :locals => {:options => type_config['mainOptions'],
+          :name_prefix => t[0], :existing_values => is_edit_block ?
+            @view.displayFormat.data : nil}) %>
+      </div>
+      <%- end -%>
+
+      <%- if !type_config['advancedOptions'].nil? -%>
+      <div class='section closed'>
+        <h3 class='separator'><a href='#toggle-advanced' class='sectionToggle'>
+            Advanced Configuration
+        </a></h3>
+
+        <div class='content'>
+          <%= render(:partial => 'viz_opts',
+            :locals => {:options => type_config['advancedOptions'],
+            :name_prefix => t[0], :existing_values => is_edit_block ?
+              @view.displayFormat.data : nil}) %>
+        </div>
+      </div>
+      <%- end -%>
+    </div>
+
+    <%- end -%>
+
+    </div>
+
+    <div class='column right'>
+      <div class='typeBlock type- <%= @is_edit ? '' : 'default' %> empty'>
+        (Choose a chart type to see more details)
+      </div>
+
+    <%- viz_types.each do |t| -%>
+    <%- type_config = t[1] -%>
+    <%- is_edit_block = @is_edit && @view.displayType == t[0] -%>
+
+    <div class='typeBlock type-<%= t[0] %> <%= is_edit_block ? 'default' : '' %>
+      <%= type_config['dataColumns'].nil? ? 'empty' : '' %>'>
+
+      <%- if !type_config['dataColumns'].nil? -%>
+      <div class='section'>
+        <h3>Data Columns</h3>
+        <p class='subtitle separator'>
+        Choose the data to display for this <%= h type_config['label'].downcase %>
+        </p>
+
+        <div class='scrollBlock'>
+          <%- dcb_count = 0 -%>
+          <%- while true -%>
+          <div class='dataColumnBlock soloBlock clearfix'>
+            <a class='removeButton' href='#removeDataBlock'
+              title='Remove'>Remove</a>
+
+            <%- count = 0 -%>
+            <%- type_config['dataColumns'].each do |dcol| -%>
+            <%- if cols[dcol['dataType']].nil?
+                  cols[dcol['dataType']] =
+                    @view.columns_for_datatypes(dcol['dataType'], @is_edit)
+                end -%>
+            <%- dc_name = t[0] + '-dataColumn-' + count.to_s + '-' +
+              dcb_count.to_s -%>
+
+            <%- cur_id = is_edit_block && cur_cols.length > 0 &&
+              @view.datatypes_match(cur_cols[0], dcol['dataType']) ?
+                cur_cols.shift.id : nil -%>
+
+            <div class='line'>
+              <label <%= dcol['optional'] ? '' : "class='required'" %>
+                for='<%= dc_name %>'><%= h dcol['label'] %></label>
+              <select id='<%= dc_name %>' name='<%= dc_name %>'
+                class='<%= cur_id.nil? ? 'prompt' : '' %>
+                  <%= dcol['optional'] ? '' : 'required' %>
+                  <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
+                <option class='prompt' value=''>Select a Column</option>
+                <%- cols[dcol['dataType']].each do |c| -%>
+                <option value='<%= c.id %>' <%= c.id == cur_id ?
+                  "selected='selected'" : '' %>><%= h c.name %></option>
+                <%- end -%>
+              </select>
+            </div>
+
+            <%- count += 1 -%>
+            <%- end -%>
+
+            <%= render(:partial => 'viz_opts',
+              :locals => {:options => type_config['dataColumnOptions'],
+              :name_prefix => t[0] + '-dataColumn',
+              :name_postfix => dcb_count.to_s,
+              :value_index => dcb_count,
+              :existing_values => is_edit_block ?
+                @view.displayFormat.data : nil
+              }) %>
+
+          </div>
+          <%- break if !is_edit_block || cur_cols.length < 1 ||
+            !@view.datatypes_match(cur_cols[0],
+              type_config['dataColumns'][0]['dataType']) -%>
+          <%- dcb_count += 1 -%>
+          <%- end -%>
+        </div>
+
+        <ul class='actionButtons'>
+          <li><a class='button addDataBlock'
+            href='#addDataBlock-<%= t[0] %>'>Add Data Column</a></li>
+        </ul>
+      </div>
+
+      <%- else -%>
+      (There is no additional configuration available)
+      <%- end -%>
+    </div>
+
+    <%- end -%>
+
+    </div>
+
+  <%- end -%>
+
+  <div class='error mainError'></div>
+
+  <div class='submitLine clearfix'>
+    <div class="required">Required Field</div>
+    <ul class='actionButtons clearfix'>
+      <li><a href='#create' class='create arrowButton'>
+        <%= @is_edit ? 'Save' : 'Create' %> Visualization
+      </a></li>
+    </ul>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    $.validator.addMethod('notEqualTo', function(value, element, param)
+        {
+            if (this.optional(element)) { return true; }
+            var isEqual = false;
+            var $e = $(element);
+            $(param).each(function(i, p)
+            {
+                var $p = $(p);
+                if ($e.index($p) < 0 && $p.val() == value)
+                {
+                    isEqual = true;
+                    return false;
+                }
+            });
+            return !isEqual;
+        },
+        'A different value is required.');
+    $('.vizWrapper form').validate({ignore: ':hidden', errorElement: 'span'});
+
+    var adjustSelectPrompt = function(event)
+    {
+      var $sel = $(this);
+      setTimeout(function()
+          {
+            $sel.toggleClass('prompt', $sel.val() === '');
+          }, 0);
+    };
+
+    $('.vizWrapper select').change(adjustSelectPrompt)
+      .keypress(adjustSelectPrompt).click(adjustSelectPrompt);
+
+    var adjustVizType = function(event)
+    {
+      var $sel = $(this);
+      setTimeout(function()
+          {
+            var v = $sel.val();
+            $('.vizWrapper .typeBlock').hide();
+            $('.vizWrapper .typeBlock.type-' + v).show();
+          }, 0);
+    };
+
+    $('.vizWrapper #vizType').change(adjustVizType)
+      .keypress(adjustVizType).click(adjustVizType);
+
+    $('.vizWrapper a.sectionToggle').click(function(event)
+    {
+      event.preventDefault();
+       $(event.target).closest('.section').toggleClass('closed');
+    });
+
+    $('.vizWrapper a.removeButton').click(function(event)
+    {
+      event.preventDefault();
+      var $section = $(event.target).closest('.section');
+      $(event.target).closest('.dataColumnBlock').remove();
+      var $blocks = $section.find('.dataColumnBlock');
+      if ($blocks.length == 1) { $blocks.addClass('soloBlock'); }
+      $section.find('a.addDataBlock').show();
+    });
+
+    var $dblocks = $('.vizWrapper .soloBlock:visible');
+    if ($dblocks.length > 1) { $dblocks.removeClass('soloBlock'); }
+
+    $('.vizWrapper .scrollBlock').each(function(i, s)
+    {
+        var $s = $(s);
+        if ($s.find('.dataColumnBlock:first select:first option:not(.prompt)')
+          .length <= $s.find('.dataColumnBlock').length)
+        { $s.closest('.section').find('a.addDataBlock').hide(); }
+    });
+
+    $('.vizWrapper a.addDataBlock').click(function(event)
+    {
+      event.preventDefault();
+      var $scrollBlock = $(event.target).closest('ul').prev('.scrollBlock');
+
+      $('.vizWrapper .dataColumnBlock.soloBlock').removeClass('soloBlock');
+      var $block = $scrollBlock.find('.dataColumnBlock:last').clone(true);
+      $block.find('.line').each(function(i, l)
+      {
+        var $this = $(this);
+        var $label = $this.find('label');
+
+        var oldName = $label.attr('for');
+        var splitName = oldName.split('-');
+        var newIndex = parseInt(splitName[3]) + 1;
+        splitName[3] = newIndex;
+        var newName = splitName.join('-');
+
+        $label.attr('for', newName);
+        $this.find(':input').attr('id', newName).attr('name', newName);
+        $this.find('a[href=#' + oldName + ']').attr('href', '#' + newName);
+        var $color = $this.find('a.colorOption');
+        if ($color.length > 0 && $color.attr('colorDefaults') !== undefined)
+        {
+          var colors = $.json.deserialize($color.attr('colorDefaults'));
+          var newColor = colors[newIndex % colors.length];
+          $color.css('background-color', newColor);
+          $this.find('input[type=hidden]').val(newColor);
+        }
+      });
+
+      $scrollBlock.append($block);
+
+      if ($block.find('select:first option:not(.prompt)').length <=
+          $scrollBlock.find('.dataColumnBlock').length)
+      { $scrollBlock.closest('.section').find('a.addDataBlock').hide(); }
+    });
+
+    $('.vizWrapper .number input').spinner({min: 0});
+
+    $('.vizWrapper .colorOption').colorPicker().bind('color_change',
+        function(e, newColor)
+        {
+            var $target = $(e.target);
+            $target.css('background-color', newColor)
+              .next(':input').val(newColor);
+        })
+    .mousedown(function(e)
+        {
+            var $target = $(e.target);
+            $target.data('colorpicker-color', $target.next(':input').val());
+        });
+
+    var getValue = function($input)
+    {
+        var val = $input.val();
+        if ($input.attr('type') == 'checkbox')
+        {
+            val = $input.attr('checked') ? true : false;
+            if ($input.attr('trueValue') !== undefined && val === true)
+            { val = $input.attr('trueValue'); }
+            else if ($input.attr('falseValue') !== undefined && val === false)
+            { val = $input.attr('falseValue'); }
+        }
+        return val;
+    };
+
+
+    var formSubmit = function(event)
+    {
+      event.preventDefault();
+      $('.vizWrapper .mainError').text('');
+      var $form = $('.vizWrapper form');
+      if (!$form.valid()) { return; }
+
+      var data = {options:{}, columns:[]};
+      $('.vizWrapper .section.common :input').each(function()
+      {
+          var $t = $(this);
+          data[$t.attr('name')] = getValue($t);
+      });
+
+      var fixedCols = [];
+      var dataCols = [];
+      $('.vizWrapper .typeBlock:visible :input').each(function()
+      {
+          var $t = $(this);
+          var splitN = $t.attr('name').split('-');
+          if (splitN.length < 2) { return true; }
+
+          if (splitN[1] == 'fixedColumn')
+          {
+              var id = getValue($t);
+              if (id !== '')
+              {
+                  fixedCols[parseInt(splitN[2])] = {id: id,
+                    name: $t.find(':selected').text(), hidden: false};
+              }
+          }
+
+          else if (splitN[1] == 'dataColumn')
+          {
+              var groupNum = parseInt(splitN[3]);
+              var num = parseInt(splitN[2]);
+              if (!isNaN(num))
+              {
+                  if (dataCols[groupNum] === undefined) { dataCols[groupNum] = []; }
+                  var id = getValue($t);
+                  if (id !== '')
+                  {
+                      dataCols[groupNum][num] = {id: id,
+                        name: $t.find(':selected').text(), hidden: false};
+                  }
+              }
+              else
+              {
+                  if (data.options[splitN[2]] === undefined)
+                  { data.options[splitN[2]] = []; }
+                  data.options[splitN[2]][splitN[3]] = getValue($t);
+              }
+          }
+
+          else
+          {
+              // Handle arrays of fixed options; these have extra parts to
+              // their names for identifying between them
+              if (splitN.length > 2)
+              {
+                  if (data.options[splitN[1]] === undefined)
+                  { data.options[splitN[1]] = []; }
+                  data.options[splitN[1]][splitN[2]] = getValue($t);
+              }
+              else
+              { data.options[splitN[1]] = getValue($t); }
+          }
+      });
+
+      $.each(fixedCols, function(i, c)
+      { if (c !== undefined) { data.columns.push(c); } });
+      $.each(dataCols, function(j, g)
+      {
+          if (g !== undefined)
+          {
+              $.each(g, function(i, c)
+                { if (c !== undefined) { data.columns.push(c); } });
+          }
+      });
+
+      $.each(data.options, function(i, o)
+      {
+          if (o instanceof Array) { $.compact(o); }
+      });
+
+      var origOptions = data.options;
+      data.options = $.json.serialize(data.options);
+      data.columns = $.json.serialize(data.columns);
+
+      $.ajax({
+          url: $form.attr("action"),
+          type: "POST",
+          data: data,
+          dataType: "json",
+          success: function(data)
+          {
+            if (data.status == 'failure')
+            {
+              $('.vizWrapper .mainError').text(data.errors.join('; '));
+            }
+            else
+            {
+              $("#modal").jqmHide();
+              <%- if @is_edit -%>
+              blist.widgets.visualization.invalid = false;
+              blist.widgets.visualization.displayFormat = $.extend(origOptions,
+                  {wmode: 'opaque'});
+              $('.chartContainer').visualization();
+              <%- else -%>
+              blist.util.navigation.redirectToView(data.newViewId);
+              <%- end -%>
+            }
+          }
+      });
+    };
+
+    $('.vizWrapper form').submit(formSubmit);
+    $('.vizWrapper a.create').click(formSubmit);
+  };
+</script>

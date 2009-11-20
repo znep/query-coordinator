@@ -89,8 +89,8 @@ class WidgetCustomization < Model
                    :save_public_views => true,
                    :interstitial => false,
                    :ga_code => '' },
-    :publish  => { :dimensions => { :width => 425,
-                                    :height => 344 },
+    :publish  => { :dimensions => { :width => 500,
+                                    :height => 425 },
                    :show_title => true,
                    :show_powered_by => true }
   }

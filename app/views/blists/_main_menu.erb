@@ -7,14 +7,8 @@
         'if' => !@view.is_alt_view?},
         {'text' => 'Create a New View', 'class' => 'newView',
         'user_required' => true,
-        'if' => !@view.is_alt_view?, 'href' => '#', 'submenu' => {'items' => [
-        {'text' => 'Filtered View', 'class' => 'filter',
-        'href' => '#createFilter'},
-        {'text' => 'Calendar', 'href' => "#{@view.href}/calendar",
-        'class' => 'calendar' + (@view.can_add_calendar? ? '' : ' disabled'),
-        'title' => (@view.can_add_calendar? ? '' :
-          'This dataset does not have both a date column and text column')}
-        ]}},
+        'if' => !@view.is_alt_view?, 'href' => '#',
+        'submenu' => {'items' => view_create_menu_options(@view)} },
         {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
         {'text' => 'As CSV', 'external' => true,
@@ -42,16 +36,6 @@
         {'separator' => true, 'user_required' => true},
         {'text' => "Design a New #{t(:blist_name).titleize}...", 'class' => 'create',
         'href' => "#{new_blist_path}"},
-        # Submenu for Create blist when we support different types
-#        , 'submenu' => {'items' => [
-#        {'text' => 'Start As a Table', 'class' => 'table',
-#        'href' => '#'},
-#        {'text' => 'Start As a Page', 'class' => 'page',
-#        'href' => '#'},
-#        {'text' => 'Start New Calendar', 'class' => 'calendar',
-#        'href' => '#'},
-#        {'text' => 'Start New Form', 'class' => 'form',
-#        'href' => '#'}]}
         {'text' => 'Upload...', 'class' => 'import', 'href' => '/upload'},
         {'separator' => true},
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',

@@ -18,7 +18,18 @@
     width: 100%;
 }
 
+.widgetModal .header h1
+{
+    font-size: 1.8em;
+    height: auto;
+}
+
 /*** START: Email This Dataset ***/
+
+.widgetModal .dialogBox .header .emailDialogIcon
+{
+    background-position: 0 -109px;
+}
 
 .widgetModal .emailDatasetWrapper .submitLine .submitActions
 {
@@ -42,6 +53,11 @@
 /*** END: Email This Dataset ***/
 
 /*** START: Print This Dataset ***/
+
+.widgetModal .dialogBox .header .printDialogIcon
+{
+    background-position: 0 -82px;
+}
 
 .widgetModal .printDatasetWrapper form
 {

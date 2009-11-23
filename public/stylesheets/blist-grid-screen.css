@@ -179,6 +179,7 @@ body#lensBody
     text-align: left;
 }
 #lensContainer .tabList li.filter a.calendar { background-position: 0 -759px; }
+#lensContainer .tabList li.filter a.visualization { background-position: 0 -782px; }
 
 #lensContainer ul.tabList li.filter .wrapper a,
 #lensContainer ul.tabList li.filter.active .wrapper a { padding-right: 23px; }
@@ -409,6 +410,11 @@ body#lensBody
     background-position: 5px -508px;
 }
 
+#lensBody #editViz span.linkIcon
+{
+    background-position: 0 -340px;
+}
+
 #lensBody .headerBar #formatLink span.linkIcon
 {
     background-position: 0 -79px;
@@ -473,6 +479,7 @@ body#lensBody
 #mainMenu li.blist .newView > a { background-position: 5px -531px; }
 #mainMenu li.blist .newView .filter > a { background-position: 5px -531px; }
 #mainMenu li.blist .newView .calendar > a { background-position: 5px -761px; }
+#mainMenu li.blist .newView .viz > a { background-position: 5px -784px; }
 
 #mainMenu li.blist .export > a
 {
@@ -520,6 +527,7 @@ body#lensBody
 #mainMenu li.blist .recent .blist > a { background-position: 5px -94px; }
 #mainMenu li.blist .recent .filter > a { background-position: 5px -531px; }
 #mainMenu li.blist .recent .calendar > a { background-position: 5px -761px; }
+#mainMenu li.blist .recent .visualization > a { background-position: 5px -784px; }
 
 #mainMenu li.blist .editPermissions > a
 {
@@ -1047,6 +1055,14 @@ body#lensBody
     left: 0;
     position: relative;
     top: 0;
+}
+
+#lensBody .chartContainer .error
+{
+    font-size: 1.6em;
+    font-weight: bold;
+    margin-top: 5em;
+    text-align: center;
 }
 
 /* Special temp view styling */

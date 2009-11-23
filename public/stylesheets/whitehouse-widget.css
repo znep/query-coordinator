@@ -64,7 +64,7 @@ div.blist-td
 
 #data-grid, #viewHeader .innerWrapper { border-color: #DAE2F2; }
 
-#publishDialog textarea
+#modal .modalContentWrapper
 {
-    margin-top: 0;
+    font-size: 0.9em;
 }

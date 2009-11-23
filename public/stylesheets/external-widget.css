@@ -12,6 +12,14 @@
     position: relative;
 }
 
+.chartContainer .error
+{
+    font-size: 1.4em;
+    font-weight: bold;
+    padding-top: 3em;
+    text-align: center;
+}
+
 .blist-table
 {
     color: #212121;

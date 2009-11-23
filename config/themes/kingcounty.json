@@ -1,0 +1,34 @@
+{
+    // Company
+    "company": "King County Data",
+    "site title": "Data.KingCounty.gov",
+    "logo": "main_logo.png",
+    "logo height": "39",
+    "logo width": "310",
+    "dialog logo" : "dialog_logo.png",
+    "footer html" : "<ul><li><a href=\"#\">Data Policy</a></li><li><a href=\"#\">Accessibility</a></li><li><a href=\"#\">Contact Info</a></li><li><a href=\"#\">Privacy Policy</a></li><li class=\"last\"><a href=\"#\">ERS.USDA.gov</a></li></ul>",
+    
+    // Global
+    "link fg": "000099",
+    "header fg": [ "2c3c52", "2c3c52", "8498b2", "666", "333" ],
+    "highlight color" : "4976cb",
+    
+    
+    // Chrome
+    "top border bg": "090750",
+    "main button bg": "375798:.286,090750",
+    "main button active bg": "090750:.286,375798",
+    
+    // Width of tabs for outer chrome in em's
+    "home tab width" : 16,
+    
+    // Discovery page
+    "carousel bg": "375798,1c197b",
+    "carousel item title fg": "0071bc",
+    
+    "discover header" : "Discover useful, unique and unusual datasets from King County.",
+    
+    // Dataset page
+    "menu button bg" : "ffcc66:.5,dd8c2a:.5,dd8c2a",
+    "menu button activated bg" : "dd8c2a,dd8c2a:.5,ffcc66:.5"
+}

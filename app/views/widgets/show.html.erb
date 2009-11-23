@@ -275,7 +275,7 @@
     <div class="jqmWindow widgetModal" id="modal"></div>
   
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view, :grid_div => "data-grid" }) %>
+  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
 
   <script type="text/javascript">
     blist.namespace.fetch('blist.widget');

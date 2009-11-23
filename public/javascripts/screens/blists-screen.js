@@ -130,6 +130,15 @@ blist.myBlists.filterFilter = function(view)
 blist.myBlists.calendarFilter = function(view)
 { return view.displayType == 'calendar'; };
 
+blist.myBlists.visualizationFilter = function(view)
+{
+    if ($.inArray(view.displayType, ['barchart', 'annotatedtimeline',
+            'imagesparkline', 'areachart', 'columnchart', 'linechart',
+            'piechart', 'intensitymap', 'map', 'geomap', 'motionchart']) > -1)
+    { return true; }
+    return view.displayType && view.displayType.startsWith('FCMap_');
+};
+
 blist.myBlists.untaggedFilter = function(view)
 {
     if (view.tags && view.tags.length == 0)
@@ -208,6 +217,10 @@ blist.myBlists.filterGen = function(type, argument, callback)
             if (argument == 'calendar')
             {
                 return callback(myBlistsNS.calendarFilter);
+            }
+            if (argument == 'visualization')
+            {
+                return callback(myBlistsNS.visualizationFilter);
             }
             else if (argument == 'filter')
             {
@@ -602,6 +615,10 @@ blist.myBlists.getTypeClassName = function(value)
     if (myBlistsNS.calendarFilter(value))
     {
         cls += "calendar";
+    }
+    else if (myBlistsNS.visualizationFilter(value))
+    {
+        cls += "visualization";
     }
     else if (myBlistsNS.filterFilter(value))
     {

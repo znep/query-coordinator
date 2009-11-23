@@ -21,6 +21,9 @@
  *   window focus in the browser, but later regain focus with the mouse already
  *   inside the control. (Moving outside the file upload bounding box and then
  *   back in "fixed" it before; now it always follows the mouse appropriately)
+ *
+ * 2009-11-20: Changed eval() to use the much safer json parse jQuery plugin
+ *   instead (was throwing exceptions on invalid input).
  */
 
 (function(){
@@ -477,7 +480,14 @@ AjaxUpload.prototype = {
 							response = doc.body.innerHTML;
 						}
 						if (settings.responseType == 'json'){
-							response = window["eval"]("(" + response + ")");
+						    try
+						    {
+						        response = $.json.deserialize(response);
+						    }
+							catch (ex)
+							{
+							    response = { error: true, message: response };
+							}
 						}
 					} else {
 						// response is a xml document

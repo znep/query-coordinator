@@ -70,6 +70,14 @@ $.live = function(selector, type, fn)
     return $obj;
 };
 
+$.compact = function(a)
+{
+    for (var i = a.length - 1; i >= 0; i--)
+    {
+        if (a[i] === undefined || a[i] === null) { a.splice(i, 1); }
+    }
+};
+
 })(jQuery);
 
 String.prototype.startsWith = function(str)

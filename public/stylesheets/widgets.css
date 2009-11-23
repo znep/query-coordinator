@@ -2248,6 +2248,7 @@ div#color_selector
     padding: 10px 5px;
     position: absolute;
     width: 137px;
+    z-index: 3001;
 }
 
 div#color_custom
@@ -2313,3 +2314,8 @@ div.color_swatch.hover .inner { border: 1px solid #ffffff; }
 }
 .loadingSpinner.hidden { display: none; }
 /*** END: loading spinner styles ***/
+
+
+/*** START: Visualization styles ***/
+.chartContainer .annotationsdiv { float: left; }
+/*** END: Visualization styles ***/

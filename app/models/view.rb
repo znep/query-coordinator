@@ -1,5 +1,6 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons, :sorts, :search_sorts
+  cattr_accessor :visualization_config, :categories, :licenses,
+    :creative_commons, :sorts, :search_sorts
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -252,7 +253,7 @@ class View < Model
   end
 
   def is_alt_view?
-    !self.displayType.nil?
+    is_calendar? || is_visualization?
   end
 
   def is_calendar?
@@ -268,7 +269,7 @@ class View < Model
   # the displayType contains the type of visualization
   # a nil value indicates that it needs to be rendered as a table
   def is_visualization?
-    is_fusion_map? || @@visualization_types.has_key?(self.displayType)
+    is_fusion_map? || @@visualization_config.has_key?(self.displayType)
   end
 
   def is_map?
@@ -279,8 +280,59 @@ class View < Model
     !self.displayType.nil? && !self.displayType[/^FCMap_/].nil?
   end
 
+  def can_add_visualization?
+    @@visualization_config.each do |k, v|
+      return true if can_create_visualization_type?(k)
+    end
+    return false
+  end
+
+  def has_columns_for_visualization_type?(viz_type, include_hidden = false)
+    config = @@visualization_config[viz_type]
+    if config.nil?
+      return false
+    end
+
+    to_check = []
+    if config.has_key?('fixedColumns')
+      to_check.concat(config['fixedColumns'])
+    end
+    if config.has_key?('dataColumns')
+      to_check.concat(config['dataColumns'])
+    end
+
+    to_check.each do |tc|
+      next if tc['optional']
+
+      if columns_for_datatypes(tc['dataType'], include_hidden).length < 1
+        return false
+      end
+    end
+    return true
+  end
+
+  def can_create_visualization_type?(viz_type, include_hidden = false)
+    config = @@visualization_config[viz_type]
+    if config.nil? || config['hidden']
+      return false
+    end
+
+    return has_columns_for_visualization_type?(viz_type, include_hidden)
+  end
+
   def owned_by?(user)
     self.owner.id == user.id
+  end
+
+  def columns_for_datatypes(datatypes, include_hidden = false)
+    columns.select do |c|
+      (include_hidden || !c.flag?('hidden')) && datatypes_match(c, datatypes)
+    end
+  end
+
+  def datatypes_match(column, datatypes)
+    datatypes.is_a?(Array) && datatypes.include?(column.dataTypeName) ||
+      column.dataTypeName == datatypes
   end
 
   # HACK: NYSS wanted the comments tab hidden, so we're manually hiding comments for them
@@ -290,23 +342,188 @@ class View < Model
   def hide_comments?
     ORGS_WITH_COMMENTS_HIDDEN.include? self.owner.organizationId.to_i
   end
-  
+
   def chart_class
-    @@visualization_types[self.displayType]
+    @@visualization_config.has_key?(self.displayType) ?
+      @@visualization_config[self.displayType]['library'] : nil
   end
 
-  @@visualization_types = {
-    'geomap' => 'google.visualization.GeoMap',
-    'annotatedtimeline' => 'google.visualization.AnnotatedTimeLine',
-    'imagesparkline' => 'google.visualization.ImageSparkLine',
-    'areachart' => 'google.visualization.AreaChart',
-    'barchart' => 'google.visualization.BarChart',
-    'columnchart' => 'google.visualization.ColumnChart',
-    'intensitymap' => 'google.visualization.IntensityMap',
-    'linechart' => 'google.visualization.LineChart',
-    'map' => 'google.visualization.Map',
-    'piechart' => 'google.visualization.PieChart',
-    'motionchart' => 'google.visualization.MotionChart'
+  @@color_defaults = ['#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff',
+    '#0000ff', '#9900ff', '#ff00ff']
+
+  @@def_color_option = {'label' => 'Color', 'name' => 'colors',
+        'type' => 'color', 'default' =>  @@color_defaults[0],
+        'colorArray' => @@color_defaults}
+
+  @@numeric_types = ['number', 'percent', 'money']
+
+  @@visualization_config = {
+    'barchart' => {
+      'library' => 'google.visualization.BarChart',
+      'label' => 'Bar Chart',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Values'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ],
+        'default' => 'right'},
+        {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
+        'default' => false}
+      ]
+    },
+
+    'annotatedtimeline' => {'library' => 'google.visualization.AnnotatedTimeLine',
+      'label' => 'Time Line',
+      'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Value'},
+        {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
+        {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [{'name' => 'displayAnnotations', 'type' => 'hidden',
+        'default' => true}]
+    },
+
+    'imagesparkline' => {'library' => 'google.visualization.ImageSparkLine',
+      'label' => 'Sparkline',
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Value'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'advancedOptions' => [{'name' => 'labelPosition', 'label' => 'Label',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'none', 'label' => 'Hidden'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'right', 'label' => 'Right'}
+        ], 'default' => 'none'},
+        {'name' => 'layout', 'label' => 'Vertical', 'type' => 'boolean',
+          'booleanTrueValue' => 'v', 'booleanFalseValue' => 'h', 'default' => 'v'}
+      ]
+    },
+
+    'areachart' => {'library' => 'google.visualization.AreaChart',
+      'label' => 'Area Chart',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Value'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ], 'default' => 'right'},
+        {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
+        'default' => false},
+        {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
+          'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
+        {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
+          'booleanTrueValue' => '3', 'booleanFalseValue' => '0', 'default' => '3'}
+      ]
+      },
+
+    'columnchart' => {'library' => 'google.visualization.ColumnChart',
+      'label' => 'Column Chart',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Values'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ],
+        'default' => 'right'},
+        {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
+        'default' => false}
+      ]
+    },
+
+    'linechart' => {'library' => 'google.visualization.LineChart',
+      'label' => 'Line Chart',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
+      'dataColumns' => [{'dataType' => @@numeric_types, 'label' => 'Value'}],
+      'dataColumnOptions' => [@@def_color_option],
+      'mainOptions' => [
+        {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+        {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+      ],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ], 'default' => 'right'},
+        {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
+        'default' => false},
+        {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
+          'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
+        {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
+          'booleanTrueValue' => '3', 'booleanFalseValue' => '0', 'default' => '3'},
+        {'label' => 'Smooth Line', 'name' => 'smoothLine', 'type' => 'boolean',
+        'default' => false},
+      ]
+      },
+
+    'piechart' => {'library' => 'google.visualization.PieChart',
+      'label' => 'Pie Chart',
+      'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
+        {'dataType' => @@numeric_types, 'label' => 'Values'}],
+      'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
+        'type' => 'colorArray', 'default' =>  @@color_defaults}],
+      'advancedOptions' => [
+        {'label' => 'Legend', 'name' => 'legend',
+        'type' => 'dropdown', 'dropdownOptions' => [
+          {'value' => 'right', 'label' => 'Right'},
+          {'value' => 'left', 'label' => 'Left'},
+          {'value' => 'top', 'label' => 'Top'},
+          {'value' => 'bottom', 'label' => 'Bottom'},
+          {'value' => 'none', 'label' => 'Hidden'}
+        ],
+        'default' => 'right'},
+        {'label' => 'Min. Angle', 'name' => 'pieJoinAngle', 'type' => 'number',
+        'default' => 1,
+        'help' => 'Slices below this angle will be combined into an "Other" slice'}
+      ]
+      },
+
+    'intensitymap' => {'library' => 'google.visualization.IntensityMap',
+      'hidden' => true},
+
+    'map' => {'library' => 'google.visualization.Map',
+      'hidden' => true},
+
+    'geomap' => {'library' => 'google.visualization.GeoMap',
+      'hidden' => true},
+
+    # This chart is really confusing, so I don't think it is worth exposing
+    # unless we have specific requests/use cases for it
+    'motionchart' => {'library' => 'google.visualization.MotionChart',
+      'hidden' => true}
   }
 
   @@categories = {
@@ -317,13 +534,13 @@ class View < Model
     "Education" => "Education",
     "Government" => "Government"
   }
-  
+
   @@licenses = {
     "" => "-- No License --",
     "PUBLIC_DOMAIN" => "Public Domain",
     "CC" => "Creative Commons"
   }
-  
+
   @@creative_commons = {
     "CC0_10" => "1.0 Universal",
     "CC_30_BY" => "Attribution 3.0 Unported",
@@ -333,7 +550,7 @@ class View < Model
     "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
-  
+
   @@sorts = [
     ["POPULAR", "Popularity"],
     ["AVERAGE_RATING", "Rating"],

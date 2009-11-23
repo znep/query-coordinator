@@ -551,8 +551,8 @@
   display: inline;
 }
 
-#modal .seperator { border-bottom: solid 1px #ccc; }
-.columnPropertiesWrapper tr.seperator td
+#modal .separator { border-bottom: solid 1px #ccc; }
+.columnPropertiesWrapper tr.separator td
 {
   padding: 0;
 }
@@ -884,7 +884,7 @@ ul.convertables li a:hover
     padding-bottom: 2em;
 }
 
-.createBar .seperator
+.createBar .separator
 {
     margin-bottom: 1em;
 }
@@ -1110,7 +1110,7 @@ dl.versionInfo dd
     left: 20.6666em;
 }
 
-#sortBysList .seperator
+#sortBysList .separator
 {
    padding: 20px; 
 }
@@ -1499,35 +1499,27 @@ div#sortBysList.reorderList li .itemWrapper
 /*** END: Filter dialog ***/
 
 
-/*** START: Create calendar dialog ***/
-.modalDialog .dialogBox .header .calendarIcon
-{
-    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
-    background-position: 0 -50px;
-    background-repeat: no-repeat;
-    padding-left: 35px;
-}
+/*** START: View create/setup dialogs ***/
+.viewSetupWrapper .subtitle { padding-bottom: 0.5em; }
 
-.calendarWrapper .subtitle { padding-bottom: 0.5em; }
+.viewSetupWrapper form { margin-top: 1em; }
 
-.calendarWrapper form { margin-top: 1em; }
+.viewSetupWrapper .section { margin-bottom: 3em; }
 
-.calendarWrapper .section { margin-bottom: 3em; }
-
-.calendarWrapper h3
+.viewSetupWrapper h3
 {
     font-size: 1.3em;
     font-weight: normal;
     padding-bottom: 0.3em;
 }
 
-.calendarWrapper .seperator { margin-bottom: 0.5em; }
-.calendarWrapper form p { font-size: 1.1em; }
+.viewSetupWrapper .separator { margin-bottom: 0.5em; }
+.viewSetupWrapper form p { font-size: 1.1em; }
 
-.calendarWrapper .line { margin: 0.5em 0; }
-.calendarWrapper .line .helpie { line-height: 1.7em; }
+.viewSetupWrapper .line { margin: 0.5em 0; }
+.viewSetupWrapper .line .helpie { line-height: 1.7em; }
 
-.calendarWrapper label
+.viewSetupWrapper label
 {
     display: inline-block;
     font-size: 1.2em;
@@ -1536,16 +1528,16 @@ div#sortBysList.reorderList li .itemWrapper
     width: 6.5em;
 }
 
-.calendarWrapper .line select,
-.calendarWrapper .line input
+.viewSetupWrapper .line select,
+.viewSetupWrapper .line input
 {
     font-size: 1.2em;
     margin-bottom: 0;
     width: 17em;
 }
-.calendarWrapper .line input { width: 16.4333em; }
+.viewSetupWrapper .line input { width: 16.4333em; }
 
-.calendarWrapper span.error
+.viewSetupWrapper span.error
 {
     float: right;
     font-size: 1em;
@@ -1553,9 +1545,130 @@ div#sortBysList.reorderList li .itemWrapper
     margin-bottom: 0;
 }
 
-.calendarWrapper div.required { float: left; }
-.calendarWrapper ul.actionButtons { margin-top: 0; }
+.viewSetupWrapper div.required { float: left; }
+.viewSetupWrapper ul.actionButtons { margin-top: 0; }
+/*** END: View create/setup dialog ***/
+
+
+/*** START: Create calendar dialog ***/
+.modalDialog .dialogBox .header .calendarIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -50px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
 /*** END: Create calendar dialog ***/
+
+
+/*** START: Create visualization dialog ***/
+.modalDialog .dialogBox .header .vizIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -186px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
+.vizWrapper .column
+{
+    float: left;
+    width: 32em;
+}
+.vizWrapper .column.right
+{
+    float: right;
+    width: 34em;
+}
+
+.vizWrapper .typeBlock { display: none; }
+.vizWrapper .typeBlock.default { display: block; }
+.vizWrapper .typeBlock.empty
+{
+    color: #999999;
+    font-size: 1.2em;
+    font-style: italic;
+    text-align: center;
+}
+
+.vizWrapper .scrollBlock
+{
+    margin-bottom: 0.5em;
+    max-height: 30em;
+    overflow: auto;
+}
+
+.vizWrapper .dataColumnBlock
+{
+    background-color: #ececec;
+    margin: 0.2em 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.vizWrapper .removeButton
+{
+    background: transparent url(/stylesheets/images/common/delete.png) no-repeat scroll center center;
+    display: block;
+    height: 16px;
+    left: 2px;
+    position: absolute;
+    text-indent: -9999px;
+    top: 0.75em;
+    width: 16px;
+}
+.vizWrapper .dataColumnBlock.soloBlock .removeButton { display: none; }
+
+.vizWrapper .dataColumnBlock select { margin-right: 0.75em; }
+.vizWrapper .dataColumnBlock .color
+{
+    position: absolute;
+    right: 0.25em;
+    top: 0;
+}
+.vizWrapper .dataColumnBlock .color label { display: none; }
+
+.vizWrapper .line input[type="checkbox"] { width: auto; }
+.vizWrapper .line .colorOption
+{
+    background-image: url(/images/colorpicker/select_arrow.png);
+    background-position: right bottom;
+    background-repeat: no-repeat;
+    border: 2px ridge #000000;
+    display: inline-block;
+    height: 16px;
+    text-indent: -9999px;
+    width: 20px;
+}
+
+.vizWrapper .line.number input { width: 14.2em; }
+
+.vizWrapper .line.hidden { display: none; }
+
+.vizWrapper span.error
+{
+    display: block;
+    float: none;
+    padding-left: 15px;
+    margin-left: 7.8em;
+}
+
+.vizWrapper .sectionToggle
+{
+    background-image: url(/stylesheets/images/sidebar/blists_filter/icon_expand_sprites.png);
+    background-position: -5px -25px;
+    background-repeat: no-repeat;
+    height: 22px;
+    padding-left: 15px;
+}
+.vizWrapper .closed .sectionToggle { background-position: -7px -3px; }
+.vizWrapper h3 .sectionToggle { color: #660000; }
+
+#modal .vizWrapper .closed .separator { border-bottom: none; }
+.vizWrapper .closed .content { display: none; }
+
+/*** END: Create visualization dialog ***/
+
 
 /*** START: Message the owner of this dataset ***/
 .modalDialog .dialogBox .header .bulkIcon
@@ -1673,7 +1786,7 @@ div#sortBysList.reorderList li .itemWrapper
 {
     font-size: 1.2em;
     margin-top: 0.5em;
-    width: 29.5em;
+    width: 100%;
 }
 
 .republishDialogWrapper input[type="text"]

@@ -19,22 +19,16 @@
     blist.namespace.fetch('blist.widgets.visualization');
     blist.widgets.visualization.viewId = '<%= view.id %>';
     blist.widgets.visualization.isVisualization = <%= view.is_visualization? %>;
+    blist.widgets.visualization.invalid =
+      <%= !@view.has_columns_for_visualization_type?(@view.displayType) -%>;
     blist.widgets.visualization.isFusionMap = <%= view.is_fusion_map? %>;
     blist.widgets.visualization.fusionMapSwf = '<%= view.displayType %>'+'.swf';
     blist.widgets.visualization.displayType = '<%= view.displayType %>';
     blist.widgets.visualization.displayFormat = $.extend(<%= view.displayFormat || '{}' %>, {wmode: 'opaque'});
     $(function ()
     {
-        blist.widgets.visualization.chartClass = <%= view.chart_class || "''" %>; 
-
-        if (blist.widgets.visualization.isFusionMap)
-        {
-            var map = new FusionMaps("/fusionMaps/"+blist.widgets.visualization.fusionMapSwf,
-                "Map1Id", "100%" , "100%", "0", "0");
-            map.setDataURL("/views/"+blist.widgets.visualization.viewId+"/rows.fmap");
-            map.addParam("wmode", "opaque");
-            map.render('<%= grid_div %>');
-        }
+        // We're assigning an object, so make sure it is loaded before we use it
+        blist.widgets.visualization.chartClass = <%= view.chart_class || "''" %>;
     });
   </script>
 <%- end -%>

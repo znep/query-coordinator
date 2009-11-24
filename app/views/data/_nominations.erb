@@ -1,6 +1,22 @@
 <% @nominations.each do |nomnomnom| %>
 <div class="nominationList-row clearfix">
 
+  <div class="nominationList-cell nominationList-statusColumn">
+    <div class="<%= friendly_status(nomnomnom).downcase %>">
+      <%= friendly_status(nomnomnom) %>
+
+      <% if Nomination.editable %>
+        <% if nomnomnom.status == "pending" || nomnomnom.status == "rejected" %>
+          <%= link_to("Accept", "/nominations/#{nomnomnom.id}.json", :title => "Accept this nomination", :class => "acceptNomination") %>
+        <% end %>
+
+        <% if nomnomnom.status == "pending" || nomnomnom.status == "approved" %>
+          <%= link_to("Reject", "/nominations/#{nomnomnom.id}.json", :title => "Reject this nomination", :class => "rejectNomination") %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
   <div class="nominationList-cell nominationList-authorColumn">
     <a href="<%= nomnomnom.user.href%>" class="nominationAuthorLink">
       <%= image_tag nomnomnom.user.profile_image_path("small"), 
@@ -13,30 +29,49 @@
   <div class="nominationList-cell nominationList-nominationColumn">
     <div class="nominationVotes">
       <p class="nominationNet"><%= nomnomnom.netVotes %></p>
-      <a class="rateNomination rateUp" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=true" title="I like it">I like it</a>
-      <a class="rateNomination rateDown" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=false" title="I don't like it">I like it</a>
+      <% if !current_user.nil? %>
+          <a class="rateNomination rateUp" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=true" title="I like it">I like it</a>
+          <a class="rateNomination rateDown" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=false" title="I don't like it">I like it</a>
+      <% end %>
     </div>
-    <p class="nominationTitle">
-      <%= h(nomnomnom.title) %>
-    </p>
+    <div class="<%= Nomination.editable ? 'inlineEdit' : '' %>">
+      <span class="nominationTitle"><%= h(nomnomnom.title) %></span>
+      <% if Nomination.editable %>
+        <% form_tag("/nominations/#{nomnomnom.id}.json", :class => "title") do %>
+          <%= text_field_tag("title", nomnomnom.title) %>
+          <a href="#cancel" class="close" title="Cancel">Cancel</a>
+        <% end %>
+      <% end %>
+    </div>
     <p class="nominationTimestamp">
       <%= blist_long_date(nomnomnom.createdAt) %>
       <span>(<%= friendly_relative_time(nomnomnom.createdAt) %>)</span>
     </p>
-    <p class="nominationBody">
-      <%= auto_link(h(nomnomnom.description)) %>
-    </p>
+    <div class="<%= Nomination.editable ? 'inlineEdit' : '' %>">
+      <p class="nominationBody">
+        <%= auto_link(h(nomnomnom.description)) %>
+      </p>
+      <% if Nomination.editable %>
+        <% form_tag("/nominations/#{nomnomnom.id}.json", :class => "description") do %>
+          <%= text_area_tag("description", nomnomnom.description) %>
+          <a href="#cancel" class="close" title="Cancel">Cancel</a>
+        <% end %>
+      <% end %>
+    </div>
 
     <% if !nomnomnom.attachments.nil? %>
     <div class="attachmentsTitle">
-      <div class="title">Attachments</div>
+      <div class="title">Attachment</div>
       <ul class="attachments">
           <% nomnomnom.attachments.each do |a| %>
             <li>
-            <%= 
-              filename = truncate(a.filename, :omission => " ...", :length => 55)
-              link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename) 
-            %>
+              <%= 
+                filename = truncate(a.filename, :omission => " ...", :length => 55)
+                link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename) 
+              %>
+              <% if Nomination.editable %>
+                (<%= link_to("Delete", "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => "Delete", :class => "delete") %>)
+              <% end %>
             </li>
           <% end %>
       </ul>
@@ -44,11 +79,6 @@
     <% end %>
   </div>
 
-  <div class="nominationList-cell nominationList-statusColumn">
-    <div class="<%= friendly_status(nomnomnom).downcase %>">
-      <%= friendly_status(nomnomnom) %>
-    </div>
-  </div>
 </div>
 <% end %>
 

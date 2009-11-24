@@ -2,23 +2,26 @@
     <div id="approval" class="tabContentTL">
       <div class='tabContentBL'>
         <div class='tabContent'>
+            <h3 class="suggestTitle">Dataset Nominations</h3>
+            <% if !current_user.nil? %>
               <a class="suggestLink" href="/data/suggest" rel="modal">Suggest a dataset</a>
-              <div id="moderationQueue" class="nominationList">
-                  <div class="nominationList-headerRow">
-                      <div class="nominationList-cell nominationList-authorColumn">
-                          Author
-                      </div>
-                      <div class="nominationList-cell nominationList-nominationColumn">
-                          Details
-                      </div>
-                      <div class="nominationList-cell nominationList-statusColumn">
-                          Status
-                      </div>
-                  </div>
-                  <div class="nominationList-body">
-                      <%= render(:partial => "nominations", :locals => {:current_page => 1, :total => total, :page_size => page_size, :status => nil}) %>
-                  </div>
+            <% end %>
+            <div id="moderationQueue" class="nominationList">
+              <div class="nominationList-headerRow">
+                <div class="nominationList-cell nominationList-authorColumn">
+                    Author
+                </div>
+                <div class="nominationList-cell nominationList-nominationColumn">
+                    Details
+                </div>
+                <div class="nominationList-cell nominationList-statusColumn">
+                    Status
+                </div>
               </div>
+              <div class="nominationList-body">
+                <%= render(:partial => "nominations", :locals => {:current_page => 1, :total => total, :page_size => page_size, :status => nil}) %>
+              </div>
+            </div>
         </div>
       </div>
     </div>

@@ -64,6 +64,7 @@
 <script type="text/javascript" charset="utf-8">
 $(function()
 {
+    var fileSelected = false;
     $form = $("#attachmentForm");
     var $uploader = new AjaxUpload($('#fileBrowseButton'), {
       action: $form.attr('action'),
@@ -72,6 +73,7 @@ $(function()
       responseType: 'json',
       onChange: function (file, ext)
       {
+        fileSelected = true;
         $form.find('#view_file').val(file);
       },
       onComplete: function (file, response)
@@ -87,7 +89,14 @@ $(function()
 
   var saveForm = function()
   {
-    $uploader.submit();
+    if (fileSelected)
+    {
+      $uploader.submit();
+    }
+    else
+    {
+      createNomination([]);
+    }
   };
 
   var createNomination = function(attachments)

@@ -156,6 +156,7 @@ javascripts:
   - plugins/jquery.tagcloud
   - plugins/jquery.history
   - widgets/simple-tab-navigate
+  - widgets/inline-edit
   - screens/discover-screen
   - util/urls
   - widgets/dropdown-menu

@@ -1,6 +1,63 @@
 var nominationsNS = blist.namespace.fetch("blist.nominations");
 nominationsNS.servicePath = '/data/nominations';
 
+nominationsNS.changeStatus = function(url, newStatus)
+{
+    $.ajax({
+        type: "PUT",
+        url: url, 
+        data: $.json.serialize({status: newStatus}),
+        contentType: "application/json",
+        success: function(response, status) {
+            nominationsNS.loadData(nominationsNS.servicePath);
+        }
+    });
+}
+
+nominationsNS.configureEditing = function()
+{
+    $(".nominationList-row .acceptNomination").click(function(event) {
+        event.preventDefault();
+        nominationsNS.changeStatus($(this).attr("href"), "approved");
+    });
+    
+    $(".nominationList-row .rejectNomination").click(function(event) {
+        event.preventDefault();
+        nominationsNS.changeStatus($(this).attr("href"), "rejected");
+    });
+
+    $(".nominationList-row .delete").click(function(event) {
+        event.preventDefault();
+        var $a = $(this);
+
+        $.ajax({
+            type: "DELETE",
+            url: $a.attr("href"),
+            success: function(response, status) {
+                $a.closest(".attachmentsTitle").remove();
+            }
+        });
+    });
+
+    $(".nominationList-row .inlineEdit").inlineEdit({
+        requestType: "PUT",
+        editClickSelector: "span,p",
+        displaySelector: "span,p",
+        requestContentType: "application/json",
+        editCancelSelector: ".close",
+        requestDataCallback: function($form, fieldValue) {
+            if ($form.hasClass("title"))
+            {
+                return $.json.serialize({title: fieldValue});
+            }
+            else if ($form.hasClass("description"))
+            {
+                return $.json.serialize({description: fieldValue});
+            }
+        }
+    });
+};
+
 nominationsNS.configureVoting = function()
 {
     $(".nominationList-row").each(function() {
@@ -70,6 +127,7 @@ nominationsNS.loadData = function(url)
 $(function() {
     nominationsNS.configureVoting();
     nominationsNS.configurePaging();
+    nominationsNS.configureEditing();
 
     $(".nominationFilter").click(function(event) {
         event.preventDefault();

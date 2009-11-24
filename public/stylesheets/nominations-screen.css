@@ -1,12 +1,21 @@
+.suggestTitle
+{
+    float: left;
+}
 .suggestLink
 {
-    font-size: 1.4em;
+    float: right;
+    color:#333333;
+    display:block;
+    font-size:1em;
+    text-decoration:none;
+    text-transform:uppercase;
 }
 
 .nominationList
 {
     clear: both;
-    width: 70em;
+    width: 100%;
     padding-top: 1em;
 }
 
@@ -70,9 +79,8 @@
 .nominationList .nominationList-body .nominationList-nominationColumn
 {
     margin-left: 14.7em;
-    margin-right: 18em;
     position: static;
-    width: 34em;
+    width: 38em;
 }
 
 .nominationList .nominationList-nominationColumn .nominationTimestamp
@@ -89,18 +97,10 @@
     font-size: 1.35em;
 }
 
-.nominationList .nominationList-datasetColumn
+.nominationList .nominationList-cell.nominationList-statusColumn
 {
     float: right;
-    right: 9.2em;
-    overflow: hidden;
-    width: 7.5em;
-}
-
-.nominationList .nominationList-statusColumn
-{
-    float: right;
-    left: 53.5em;
+    position: static;
     width: 5em;
     font-weight: bold;
     text-align: center;
@@ -181,3 +181,12 @@
     padding-right: 5px;
 }
 
+.nominationList .inlineEdit:hover
+{
+    background-color: #ffffd3;
+}
+
+.nominationList textarea
+{
+    width: 95%;
+}

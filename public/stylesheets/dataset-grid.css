@@ -630,7 +630,7 @@ div.blist-table-edit-container .blist-table-editor.type-url .description
     padding: 4px;
 }
 
-.blist-table-editor .blist-combo-dd li { font-size: 1em; }
+.blist-combo-dd.table-editor-combo li { font-size: 1.2em; }
 
 .blist-table .blist-table-editor-container .blist-td
 {

@@ -360,27 +360,33 @@ div.blist-star-0
 }
 
 .blist-flag-blue,
-.blist-table-edit-container .blue .icon
+.blist-table-edit-container .blue .icon,
+.blist-combo-dd.table-editor-combo .blue .icon
 { background-image: url(/stylesheets/images/content/table/flags/blue.png); }
 
 .blist-flag-green,
-.blist-table-edit-container .green .icon
+.blist-table-edit-container .green .icon,
+.blist-combo-dd.table-editor-combo .green .icon
 { background-image: url(/stylesheets/images/content/table/flags/green.png); }
 
 .blist-flag-orange,
-.blist-table-edit-container .orange .icon
+.blist-table-edit-container .orange .icon,
+.blist-combo-dd.table-editor-combo .orange .icon
 { background-image: url(/stylesheets/images/content/table/flags/orange.png); }
 
 .blist-flag-purple,
-.blist-table-edit-container .purple .icon
+.blist-table-edit-container .purple .icon,
+.blist-combo-dd.table-editor-combo .purple .icon
 { background-image: url(/stylesheets/images/content/table/flags/purple.png); }
 
 .blist-flag-red,
-.blist-table-edit-container .red .icon
+.blist-table-edit-container .red .icon,
+.blist-combo-dd.table-editor-combo .red .icon
 { background-image: url(/stylesheets/images/content/table/flags/red.png); }
 
 .blist-flag-yellow,
-.blist-table-edit-container .yellow .icon
+.blist-table-edit-container .yellow .icon,
+.blist-combo-dd.table-editor-combo .yellow .icon
 { background-image: url(/stylesheets/images/content/table/flags/yellow.png); }
 
 .blist-td-phone a
@@ -407,23 +413,28 @@ div.blist-table-editor.align-right .blist-phone-icon,
 div.blist-table-editor .align-right .blist-phone-icon { text-align: left; }
 
 .blist-phone-icon-cell,
-.blist-table-edit-container .Cell .icon
+.blist-table-edit-container .Cell .icon,
+.blist-combo-dd.table-editor-combo .Cell .icon
 { background-image: url(/stylesheets/images/content/table/phones/cell.png); }
 
 .blist-phone-icon-fax,
-.blist-table-edit-container .Fax .icon
+.blist-table-edit-container .Fax .icon,
+.blist-combo-dd.table-editor-combo .Fax .icon
 { background-image: url(/stylesheets/images/content/table/phones/fax.png); }
 
 .blist-phone-icon-home,
-.blist-table-edit-container .Home .icon
+.blist-table-edit-container .Home .icon,
+.blist-combo-dd.table-editor-combo .Home .icon
 { background-image: url(/stylesheets/images/content/table/phones/home.png); }
 
 .blist-phone-icon-other,
-.blist-table-edit-container .Other .icon
+.blist-table-edit-container .Other .icon,
+.blist-combo-dd.table-editor-combo .Other .icon
 { background-image: url(/stylesheets/images/content/table/phones/other.png); }
 
 .blist-phone-icon-work,
-.blist-table-edit-container .Work .icon
+.blist-table-edit-container .Work .icon,
+.blist-combo-dd.table-editor-combo .Work .icon
 { background-image: url(/stylesheets/images/content/table/phones/work.png); }
 
 .blist-tag
@@ -506,7 +517,7 @@ div.blist-table-editor .align-right { text-align: right; }
     /* In-table editors */
     border: none;
 }
-.blist-table-edit-container .blist-combo-dd
+.blist-combo-dd.table-editor-combo
 {
     border-top: none;
 }
@@ -516,12 +527,12 @@ div.blist-table-editor .align-right { text-align: right; }
     font-size: 1em;
     padding: 0;
 }
-.blist-table .blist-combo-dd li { height: 1.5833em; }
+.blist-combo-dd.table-editor-combo li { height: 1.5833em; }
 .blist-table .blist-combo-value .label,
-.blist-table .blist-combo-dd .label
+.blist-combo-dd.table-editor-combo .label
 { line-height: 1.5833em; }
 .blist-table .blist-combo-value .icon,
-.blist-table .blist-combo-dd .icon
+.blist-combo-dd.table-editor-combo .icon
 {
     background-position: 3px -1px;
     background-repeat: no-repeat;
@@ -533,7 +544,8 @@ div.blist-table-editor .align-right { text-align: right; }
 }
 .blist-table .blist-combo-wrapper .icon-filler
 { padding-left: 5px; }
-.blist-table .blist-combo-wrapper .icon-img
+.blist-table .blist-combo-wrapper .icon-img,
+.blist-combo-dd.table-editor-combo .icon-img
 {
     float: left;
     max-height: 1.5833em;

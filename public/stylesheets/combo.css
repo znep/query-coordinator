@@ -42,7 +42,7 @@
     overflow: auto;
     overflow-x: hidden;
     position: absolute;
-    z-index: 100;
+    z-index: 5000;
 }
 
 .blist-combo-dd li
@@ -57,17 +57,21 @@
 /*** Left/Right Justified Combo List ***/
 
 .blist-combo-wrapper.lr_justified .blist-combo-value,
-.blist-combo-wrapper.lr_justified li
+.blist-combo-dd.lr_justified li
 {
     clear: both;
     overflow: hidden;
 }
 
-.blist-combo-wrapper.lr_justified .value {
+.blist-combo-wrapper.lr_justified .value,
+.blist-combo-dd.lr_justified .value
+{
     display: block;
     float: left;
 }
-.blist-combo-wrapper.lr_justified .value_info {
+.blist-combo-wrapper.lr_justified .value_info,
+.blist-combo-dd.lr_justified .value_info
+{
     display: block;
     float: right;
 }

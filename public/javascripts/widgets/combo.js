@@ -171,7 +171,7 @@
             var $win = $(window);
             var winHeight = $win.height() + $win.scrollTop();
             if (ddBottom > winHeight)
-            { $dropdown.css('max-height', winHeight - ddTop); }
+            { $dropdown.css('max-height', Math.max(0, winHeight - ddTop)); }
             else
             { $dropdown.css('max-height', ''); }
         };

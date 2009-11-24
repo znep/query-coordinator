@@ -167,6 +167,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect '/tweetsets/:action', :controller => 'tweetsets'
   map.connect '/tweetsets', :controller => 'tweetsets', :action => 'index'
+  map.connect '/tweetset', :controller => 'tweetsets', :action => 'redirect'
   
   # The /version page
   map.connect '/version', :controller => "version", :action => "index"

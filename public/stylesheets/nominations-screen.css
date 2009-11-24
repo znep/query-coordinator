@@ -190,3 +190,10 @@
 {
     width: 95%;
 }
+
+.nominationList p.noItems
+{
+    font-size: 1.4em;
+    text-align: center;
+    padding: 1em;
+}

@@ -120,6 +120,7 @@ nominationsNS.loadData = function(url)
             $(".nominationList-body").append(response);
             nominationsNS.configureVoting();
             nominationsNS.configurePaging();
+            nominationsNS.configureEditing();
         }
     });
 };

@@ -5,7 +5,7 @@
     <div class="<%= friendly_status(nomnomnom).downcase %>">
       <%= friendly_status(nomnomnom) %>
 
-      <% if Nomination.editable %>
+      <% if false # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS %> 
         <% if nomnomnom.status == "pending" || nomnomnom.status == "rejected" %>
           <%= link_to("Accept", "/nominations/#{nomnomnom.id}.json", :title => "Accept this nomination", :class => "acceptNomination") %>
         <% end %>
@@ -34,9 +34,9 @@
           <a class="rateNomination rateDown" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=false" title="I don't like it">I like it</a>
       <% end %>
     </div>
-    <div class="<%= Nomination.editable ? 'inlineEdit' : '' %>">
+    <div class="<%= false ? 'inlineEdit' : '' %>">
       <span class="nominationTitle"><%= h(nomnomnom.title) %></span>
-      <% if Nomination.editable %>
+      <% if false # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS %> 
         <% form_tag("/nominations/#{nomnomnom.id}.json", :class => "title") do %>
           <%= text_field_tag("title", nomnomnom.title) %>
           <a href="#cancel" class="close" title="Cancel">Cancel</a>
@@ -47,11 +47,11 @@
       <%= blist_long_date(nomnomnom.createdAt) %>
       <span>(<%= friendly_relative_time(nomnomnom.createdAt) %>)</span>
     </p>
-    <div class="<%= Nomination.editable ? 'inlineEdit' : '' %>">
+    <div class="<%= false ? 'inlineEdit' : '' %>">
       <p class="nominationBody">
         <%= auto_link(h(nomnomnom.description)) %>
       </p>
-      <% if Nomination.editable %>
+      <% if false # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS %> 
         <% form_tag("/nominations/#{nomnomnom.id}.json", :class => "description") do %>
           <%= text_area_tag("description", nomnomnom.description) %>
           <a href="#cancel" class="close" title="Cancel">Cancel</a>
@@ -69,7 +69,7 @@
                 filename = truncate(a.filename, :omission => " ...", :length => 55)
                 link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename) 
               %>
-              <% if Nomination.editable %>
+              <% if false # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS %> 
                 (<%= link_to("Delete", "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => "Delete", :class => "delete") %>)
               <% end %>
             </li>

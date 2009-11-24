@@ -1,14 +1,4 @@
 class Nomination < Model
-  def self.enabled
-    # TODO: Remove me.
-    return true
-  end
-
-  def self.editable
-    # TODO: Remove me.
-    return true 
-  end
-
   def self.find_page(page_no=1, limit=nil, status=nil)
     opts = {"page" => (page_no-1).to_s, "limit" => limit}
     opts["status"] = status unless status.nil?

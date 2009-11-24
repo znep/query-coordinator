@@ -1387,12 +1387,6 @@ div#sortBysList.reorderList li .itemWrapper
     width: 175px;
 }
 
-.filterDatasetWrapper .filterTable-name .blist-combo-dd
-{
-    overflow-x: hidden;
-    text-align: left;
-}
-
 .filterDatasetWrapper .filterTable-name .typeSelect
 {
     white-space: nowrap;

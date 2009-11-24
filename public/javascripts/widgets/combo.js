@@ -5,6 +5,7 @@
     {
         var $this = $(this);
         var $dropdown;
+        var $scrollBindings;
 
         // Initialize for rendering
         var values = options.values;
@@ -86,9 +87,13 @@
             $dropdown.scrollTop(0);
             $dropdown.children('li.selected').removeClass('selected');
             $dropdown.slideUp(100);
+            $dropdown.remove();
+            $dropdown = undefined;
 
             $this.closest('.blist-combo-wrapper').removeClass('active');
-            $(document).unbind('click.combo');
+            $(document).unbind('.combo');
+            if ($scrollBindings !== undefined)
+            { $scrollBindings.unbind('scroll.combo'); }
         };
 
         var showDropdown = function()
@@ -96,8 +101,9 @@
             // Create the drop-down
             if (!$dropdown)
             {
-                $dropdown = $('<ul class="blist-combo-dd"></ul>');
-                $this.closest(".blist-combo-wrapper").append($dropdown);
+                $dropdown = $('<ul class="blist-combo-dd ' + options.ddClass +
+                    '"></ul>');
+                $('body').append($dropdown);
                 for (var i = 0; i < values.length; i++)
                 {
                     var $li = $('<li></li>');
@@ -105,31 +111,19 @@
                     rowRenderFn.apply($li, [ values[i] ]);
                 }
                 $dropdown.click(onDropdownClick)
+                    .mousedown(onDropdownMouseDown)
                     .mouseover(onDropdownMouseMove)
                     .mousemove(onDropdownMouseMove);
             }
 
-
-            // Compute the dropdown position
-            var pos = $this.position();
-            var layout = {
-                left: pos.left,
-                top: pos.top + $this.outerHeight() - 1,
-                width: $this.outerWidth() - 2
-            };
-            if (options.adjustDropdownLayout)
-                options.adjustDropdownLayout(layout);
-
-            // Display the drop-down
-            $dropdown.css('left', layout.left);
-            $dropdown.css('top', layout.top);
-            $dropdown.css('width', layout.width);
+            positionDropdown();
             dropdownOpen = true;
-            $dropdown.slideDown(100);
+            $dropdown.slideDown(100, function() { sizeDropdownHeight(); });
+
             $this.closest('.blist-combo-wrapper').addClass('active');
 
             // Register for cancel clicks outside the dropdown
-            $(document).bind('click.combo', function(event)
+            $(document).bind('mousedown.combo', function(event)
             {
                 var $target = $(event.target);
                 if ($target.parents().index($this.closest(".blist-combo-wrapper")) < 0)
@@ -143,6 +137,43 @@
                     }
                 }
             });
+
+            $scrollBindings = $this.parents().add(window);
+            $scrollBindings.bind('scroll.combo', function(event)
+            {
+                positionDropdown();
+                sizeDropdownHeight();
+            });
+        };
+
+        var positionDropdown = function()
+        {
+            // Compute the dropdown position
+            var pos = $this.offset();
+            var layout = {
+                left: pos.left,
+                top: pos.top + $this.outerHeight() - 1,
+                width: $this.outerWidth() - 2
+            };
+            if (options.adjustDropdownLayout)
+                options.adjustDropdownLayout(layout);
+
+            // Display the drop-down
+            $dropdown.css('left', layout.left);
+            $dropdown.css('top', layout.top);
+            $dropdown.css('width', layout.width);
+        };
+
+        var sizeDropdownHeight = function()
+        {
+            var ddTop = $dropdown.offset().top;
+            var ddBottom = $dropdown.height() + ddTop;
+            var $win = $(window);
+            var winHeight = $win.height() + $win.scrollTop();
+            if (ddBottom > winHeight)
+            { $dropdown.css('max-height', winHeight - ddTop); }
+            else
+            { $dropdown.css('max-height', ''); }
         };
 
         // Handle clicks on the drop-down
@@ -152,6 +183,11 @@
                 .index($(event.target).closest("li")));
             hideDropdown();
             $this.find(':input')[0].focus();
+        };
+
+        var onDropdownMouseDown = function(event)
+        {
+            event.stopPropagation();
         };
 
         // Handles mousing over a list item
@@ -360,6 +396,7 @@
     };
 
     var blistComboDefaults = {
+        ddClass: '',
         name: undefined,    // Value name, or this.name or this.id
         renderFn: null,     // Value rendering function, or defaults to
                             // (value).label or (value)

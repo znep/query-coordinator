@@ -1387,12 +1387,6 @@ div#sortBysList.reorderList li .itemWrapper
     width: 175px;
 }
 
-.filterDatasetWrapper .filterTable-name .blist-combo-dd
-{
-    overflow-x: hidden;
-    text-align: left;
-}
-
 .filterDatasetWrapper .filterTable-name .typeSelect
 {
     white-space: nowrap;
@@ -1812,3 +1806,66 @@ div#sortBysList.reorderList li .itemWrapper
 }
 
 /*** END: Republish dialog ***/
+
+/*** BEGIN: Nominations dialog **/
+.nominationPropertiesWrapper .hidden { display: none; }
+
+.nominationPropertiesWrapper .createBar
+{
+  color: #666666;
+  font-size: 1.1em;
+}
+
+.nominationPropertiesWrapper div.required
+{
+    float: left;
+}
+
+.createBar .error,
+.nominationPropertiesWrapper .error
+{
+  padding: 0.3em;
+  margin-right: 1em;
+  vertical-align: middle;
+  font-size: 1.2em;
+}
+.nominationPropertiesWrapper ul.actionButtons { margin-top: 0; }
+
+.nominationPropertiesWrapper p, .nominationPropertiesWrapper label
+{
+    font-size: 1.2em;
+    line-height: 1.75em; /* 21px */
+    vertical-align: middle;
+}
+
+.nominationPropertiesWrapper td 
+{
+    padding: 0.5em;
+    vertical-align: top;
+}
+
+.nominationPropertiesWrapper td.middle
+{
+    vertical-align: middle;
+}
+.nominationPropertiesWrapper td.fieldColumn strong
+{
+    font-size: 1.2em;
+}
+.nominationPropertiesWrapper .labelColumn
+{
+    padding-right: 1em;
+    text-align: right;
+}
+
+.nominationPropertiesWrapper input[type="text"],
+.nominationPropertiesWrapper textarea
+{
+    width: 49em;
+}
+
+.nominationPropertiesWrapper #view_file 
+{
+    width: 38em;
+}
+/*** END: Nominations dialog **/

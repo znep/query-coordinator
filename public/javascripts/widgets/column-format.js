@@ -108,6 +108,7 @@ columnFormatNS.render_percent = function($container)
     $("#precision").spinner({min: 0});
 
     $("#percent-view").combo({
+        ddClass: 'lr_justified format_percent_view',
         name: "percent-view",
         values: columnFormatNS.percentFormatValues,
         value: column.format || 'percent_bar',
@@ -129,6 +130,7 @@ columnFormatNS.render_date = function($container)
     $container.append(render);
 
     $("#date-view").combo({
+      ddClass: 'lr_justified format_date_view',
       name: "date-view",
       values: columnFormatNS.dateFormatValues,
       value: column.format || 'date_time',

@@ -11,12 +11,14 @@ blist.discover.historyChangeHandler = function (hash)
     var tabs = {
         "SEARCH": "#tabSearch",
         "POPULAR": "#tabPopular",
-        "ALL": "#tabAll"
+        "ALL": "#tabAll",
+        "NOMINATIONS": "#tabNominations"
     };
     var tabContainers = {
         "SEARCH": "#discoverTabSearchResults",
         "POPULAR": "#discoverTabPopular",
-        "ALL": "#discoverTabAll"
+        "ALL": "#discoverTabAll", 
+        "NOMINATIONS": "#discoverNominations"
     };
 
     // Special cases to handle default tab actions
@@ -188,7 +190,8 @@ $(function ()
         tabMap: {
             "tabSearch" : "#discoverTabSearchResults",
             "tabPopular" : "#discoverTabPopular",
-            "tabAll" : "#discoverTabAll"
+            "tabAll" : "#discoverTabAll",
+            "tabNominations" : "#discoverNominations"
         },
         preventDefault: false
     });

@@ -45,6 +45,7 @@
                 this.$dom().addClass('blist-combo-wrapper')
                     .addClass('combo-container');
                 this.$editor().find('.flag-combo').combo({
+                    ddClass: 'table-editor-combo',
                     name: 'flag-combo',
                     values: flagValues,
                     value: this.originalValue || 'null',

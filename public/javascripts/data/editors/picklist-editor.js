@@ -46,6 +46,7 @@
                 editObj.$dom().addClass('blist-combo-wrapper')
                     .addClass('combo-container');
                 editObj.$editor().find('.picklist-combo').combo({
+                    ddClass: 'table-editor-combo',
                     name: 'picklist-combo',
                     values: editObj._valuesList,
                     value: editObj.originalValue ?

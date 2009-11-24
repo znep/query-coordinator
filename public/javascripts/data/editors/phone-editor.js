@@ -66,6 +66,7 @@
                 editObj.setFullSize();
                 editObj.$dom().addClass('combo-container');
                 editObj.$editor().find('.type-combo').combo({
+                    ddClass: 'table-editor-combo',
                     name: 'type-combo',
                     values: typeValues,
                     value: typeValue(editObj) || 'null',

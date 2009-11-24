@@ -250,7 +250,8 @@
 
 /* disabled row height */
 .blist-td { height: 16px; }
-.blist-td, .blist-table-editor, .blist-table .blist-combo-dd li { line-height: 16px; }
+.blist-td, .blist-table-editor, .blist-combo-dd.table-editor-combo li
+{ line-height: 16px; }
 
 .blist-td-header
 {

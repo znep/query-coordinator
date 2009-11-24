@@ -140,9 +140,11 @@ blist.namespace.fetch('blist.data');
         var undoBuffer = [];
         var redoBuffer = [];
 
-        var findColumnIndex = function(id) {
+        var findColumnIndex = function(id)
+        {
             var index;
-            $.each(meta.columns[0], function(i, col) {
+            $.each(meta.columns[0], function(i, col)
+            {
                 if (col.id == id)
                 {
                     index = i;
@@ -152,8 +154,10 @@ blist.namespace.fetch('blist.data');
             return index;
         };
 
-        var columnType = function(index) {
-            if (meta.columns) {
+        var columnType = function(index)
+        {
+            if (meta.columns)
+            {
                 var column = meta.columns[0][index];
                 if (column) {
                     var type = blist.data.types[column.type];
@@ -452,6 +456,65 @@ blist.namespace.fetch('blist.data');
             $.ajax(ajaxOptions);
         };
 
+        var batchRequests = [];
+        var addBatchRequest = function(req)
+        { batchRequests.push(req); };
+
+        var runBatch = function()
+        {
+            if (batchRequests.length < 1) { return; }
+
+            if (batchRequests.length == 1)
+            {
+                $.ajax($.extend(batchRequests.shift(),
+                    { dataType: 'json', contentType: 'application/json' }));
+                return;
+            }
+
+            var serverReqs = [];
+            var br = batchRequests;
+            batchRequests = [];
+            $.each(br, function(i, r)
+                { serverReqs.push({url: r.url,
+                    requestType: r.type, body: r.data}); });
+
+            $.ajax({url: '/batches',
+                    dataType: 'json', contentType: 'application/json',
+                    type: 'POST',
+                    data: $.json.serialize({requests: serverReqs}),
+                    success: function(resp)
+                    {
+                        $.each(resp, function(i, r)
+                        {
+                            if (r.error)
+                            {
+                                if (typeof br[i].error == 'function')
+                                { br[i].error(r.errorMessage); }
+                            }
+                            else if (typeof br[i].success == 'function')
+                            {
+                                br[i].success($.json.deserialize(r.response));
+                            }
+                        });
+                    },
+                    complete: function()
+                    {
+                        $.each(br, function(i, r)
+                        {
+                            if (typeof r.complete == 'function') { r.complete(); }
+                        });
+                    },
+                    error: function(xhr)
+                    {
+                        var errBody = $.json.deserialize(xhr.responseText);
+                        $.each(br, function(i, r)
+                        {
+                            if (typeof r.error == 'function')
+                            { r.error(errBody.message); }
+                        });
+                    }});
+        };
+
         /**
          * Load a set of rows.  The table must have been populated via AJAX for this to succeed.  Supplementary
          * requests will be requested of the original URL using ids[] query parameters in the POST body.
@@ -601,13 +664,16 @@ blist.namespace.fetch('blist.data');
             }
         };
 
-        var translateViewColumns = function(view, viewCols, columns, nestDepth, nestedIn) {
+        var translateViewColumns = function(view, viewCols, columns, allColumns,
+            nestDepth, nestedIn)
+        {
             if (!viewCols) { return; }
 
             viewCols = viewCols.slice();
             for (var i = 0; i < viewCols.length; i++)
             { viewCols[i].dataIndex = i; }
-            viewCols.sort(function(col1, col2) { return col1.position - col2.position; });
+            viewCols.sort(function(col1, col2)
+                { return col1.position - col2.position; });
 
             var levelCols = getColumnLevel(columns, nestDepth);
 
@@ -631,8 +697,7 @@ blist.namespace.fetch('blist.data');
             for (i = 0; i < viewCols.length; i++)
             {
                 var vcol = viewCols[i];
-                if (vcol.dataTypeName == 'meta_data' ||
-                    (vcol.flags && $.inArray("hidden", vcol.flags) != -1))
+                if (vcol.dataTypeName == 'meta_data')
                 { continue; }
 
                 var col = {
@@ -680,12 +745,16 @@ blist.namespace.fetch('blist.data');
                         col.dataMungeChildren = [];
                         translateMetaColumns(vcol.childColumns, col.metaChildren,
                             col.dataMungeChildren);
-                        translateViewColumns(view, vcol.childColumns, columns, nestDepth + 1, col.body);
+                        translateViewColumns(view, vcol.childColumns, columns,
+                            allColumns, nestDepth + 1, col.body);
 
-                        // Add the body column to the next nesting level
-                        addNestFiller();
-                        if (columns[nestDepth + 1])
-                        { columns[nestDepth + 1].push(col.body); }
+                        if (!vcol.flags || $.inArray("hidden", vcol.flags) < 0)
+                        {
+                            // Add the body column to the next nesting level
+                            addNestFiller();
+                            if (columns[nestDepth + 1])
+                            { columns[nestDepth + 1].push(col.body); }
+                        }
 
                         break;
                 }
@@ -721,8 +790,12 @@ blist.namespace.fetch('blist.data');
                     }
                 }
 
-                if (nestedIn) { nestedIn.children.push(col); }
-                else { levelCols.push(col); }
+                if (!vcol.flags || $.inArray("hidden", vcol.flags) < 0)
+                {
+                    if (nestedIn) { nestedIn.children.push(col); }
+                    else { levelCols.push(col); }
+                }
+                allColumns[col.id] = col;
             }
 
             // Add filler for trailing unnested columns to the next nesting
@@ -742,6 +815,7 @@ blist.namespace.fetch('blist.data');
                 if (!meta.columns)
                 {
                     meta.columns = [[]];
+                    meta.allColumns = {};
                     meta.metaColumns = [];
                     meta.dataMungeColumns = [];
                     columnIDLookup = {};
@@ -753,7 +827,7 @@ blist.namespace.fetch('blist.data');
                             translateMetaColumns(meta.view.columns,
                                 meta.metaColumns, meta.dataMungeColumns);
                             translateViewColumns(meta.view, meta.view.columns,
-                                meta.columns, 0);
+                                meta.columns, meta.allColumns, 0);
                             $.each(meta.view.columns, function(i, col)
                             {
                                 if (col.id != -1)
@@ -1018,7 +1092,8 @@ blist.namespace.fetch('blist.data');
         this.getRowValue = function(row, column)
         {
             var value;
-            eval('value = row' + column.dataLookupExpr + ';');
+            eval('value = row' + (column.dataLookupExpr ||
+                ('[' + column.dataIndex + ']')) + ';');
             return value;
         };
 
@@ -1152,7 +1227,10 @@ blist.namespace.fetch('blist.data');
 
                     // If we're in a blank row, create that row first
                     if (parRow.type == 'blank')
-                    { this.saveRowValue(null, parRow, null, true); }
+                    {
+                        this.saveRowValue(null, parRow, null, true);
+                        skipUndo = true;
+                    }
 
                     // Add the new row to the parent
                     if (!parRow[parCol.dataIndex])
@@ -1192,39 +1270,51 @@ blist.namespace.fetch('blist.data');
             registerRowSave(row, column, data, isCreate);
         };
 
-        var registerRowSave = function(row, column, data, isCreate, parentColumn)
+        var registerRowSave = function(row, column, data, isCreate, childRow,
+            parentRow, parentColumn)
         {
             startRowChange();
-            if (!isCreate && pendingRowEdits[row.id])
+            if (!isCreate && row && pendingRowEdits[row.id])
             {
                 pendingRowEdits[row.id].push({column: column,
                     parentColumn: parentColumn, data: data});
                 return;
             }
+            else if (isCreate && parentRow && pendingRowEdits[parentRow.id])
+            {
+                pendingRowEdits[parentRow.id].push({row: row, column: column,
+                        childRow: childRow, parentRow: parentRow,
+                        parentColumn: parentColumn, data: data, isCreate: true});
+                return;
+            }
 
-            if (!pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
+            if (row && !pendingRowEdits[row.id]) { pendingRowEdits[row.id] = []; }
 
             if (isCreate)
             {
                 if (isRowCreate)
                 {
                     pendingRowCreates.push({row: row, column: column,
+                        childRow: childRow, parentRow: parentRow,
                         parentColumn: parentColumn, data: data});
                     return;
                 }
                 isRowCreate = true;
             }
 
-            serverSaveRow(row, column, data, isCreate, parentColumn);
+            serverSaveRow(row, column, data, isCreate, childRow, parentRow,
+                parentColumn);
         };
 
-        var getSaveURL = function(row, column, isCreate, parentColumn)
+        var getSaveURL = function(row, column, isCreate, childRow, parentRow,
+            parentColumn)
         {
             if (parentColumn || column && column.nestedIn)
             {
                 parentColumn = parentColumn || column.nestedIn.header;
-                return getChildSaveURL(self.getRowValue(row, parentColumn),
-                    row.parent, parentColumn, isCreate);
+                return getChildSaveURL(childRow ||
+                        self.getRowValue(row, parentColumn),
+                    parentRow || row.parent, parentColumn, isCreate);
             }
 
             var url = '/views/' + self.meta().view.id + '/rows';
@@ -1242,43 +1332,58 @@ blist.namespace.fetch('blist.data');
             return url;
         };
 
-        var serverSaveRow = function(row, column, data, isCreate, parentColumn)
+        var serverSaveRow = function(row, column, data, isCreate, childRow,
+            parentRow, parentColumn, skipBatchRequest)
         {
-            var url = getSaveURL(row, column, isCreate, parentColumn);
+            var url = getSaveURL(row, column, isCreate, childRow, parentRow,
+                parentColumn);
             var newRow = isCreate ? row : null;
-            var childRow;
             if (parentColumn || column && column.nestedIn)
             {
                 parentColumn = parentColumn || column.nestedIn.header;
-                childRow = self.getRowValue(row, parentColumn);
+                if (childRow === undefined || childRow === null)
+                { childRow = self.getRowValue(row, parentColumn); }
                 newRow = isCreate ? childRow : null;
             }
 
             var model = self;
-            $.ajax({ url: url,
+            addBatchRequest(
+                    { url: url,
                     type: isCreate ? 'POST' : 'PUT',
-                    contentType: 'application/json', dataType: 'json',
                     data: $.json.serialize(data),
                     complete: function()
                     {
-                        if (parentColumn && column == 'all')
-                        { row.saving[parentColumn.dataIndex] = []; }
-                        else if (parentColumn)
-                        { delete row.saving[parentColumn.dataIndex]
-                            [column.dataIndex]; }
-                        else if (column == 'all')
-                        { delete row.saving; }
-                        else if (column && row.saving)
-                        { delete row.saving[column.dataIndex]; }
+                        if (row === null || row === undefined)
+                        {
+                            finishRowChange();
+                            return;
+                        }
+
+                        if (row.saving !== undefined)
+                        {
+                            if (parentColumn && column == 'all')
+                            { row.saving[parentColumn.dataIndex] = []; }
+                            else if (parentColumn)
+                            { delete row.saving[parentColumn.dataIndex]
+                                [column.dataIndex]; }
+                            else if (column == 'all')
+                            { delete row.saving; }
+                            else if (column && row.saving)
+                            { delete row.saving[column.dataIndex]; }
+                        }
 
                         // Are there any pending edits to this row?
                         // If so, save the next one
                         if (pendingRowEdits[row.id] &&
                             pendingRowEdits[row.id].length > 0)
                         {
-                            var u = pendingRowEdits[row.id].shift();
-                            serverSaveRow(row, u.column, u.data, false,
-                                u.parentColumn);
+                            while (pendingRowEdits[row.id].length > 0)
+                            {
+                                var u = pendingRowEdits[row.id].shift();
+                                serverSaveRow(row, u.column, u.data, u.isCreate,
+                                    u.childRow, u.parentRow, u.parentColumn, true);
+                            }
+                            runBatch();
                         }
                         else
                         {
@@ -1354,7 +1459,7 @@ blist.namespace.fetch('blist.data');
                             {
                                 var c = pendingRowCreates.shift();
                                 serverSaveRow(c.row, c.column, c.data, true,
-                                    c.parentColumn);
+                                    c.childRow, c.parentRow, c.parentColumn);
                             }
                             else
                             {
@@ -1365,9 +1470,11 @@ blist.namespace.fetch('blist.data');
                         }
                     }
                 });
+
+            if (!skipBatchRequest) { runBatch(); }
         };
 
-        var undeleteRow = function(row, parentRow, parentColumn)
+        var undeleteRow = function(row, parentRow, parentColumn, childCascade)
         {
             // First set up the data we're sending, and include the original
             //  position
@@ -1377,19 +1484,24 @@ blist.namespace.fetch('blist.data');
             // We need to set up the columns & array to record saving info
             //  in, based on whether or not we are a child row
             var columns = parentColumn === undefined ?
-                meta.view.columns : parentColumn.body.children;
+                meta.view.columns : parentColumn.body === undefined ?
+                    parentColumn.childColumns : parentColumn.body.children;
             var fakeRow;
             var savingArray;
-            if (parentRow !== undefined)
+            if (parentRow !== undefined && parentRow.childRows !== undefined)
             {
                 fakeRow = parentRow.childRows[row.origPosition];
-                if (!fakeRow.saving) { fakeRow.saving = []; }
-                fakeRow.saving[parentColumn.dataIndex] = [];
-                savingArray = fakeRow.saving[parentColumn.dataIndex];
+                if (fakeRow)
+                {
+                    if (!fakeRow.saving) { fakeRow.saving = []; }
+                    fakeRow.saving[parentColumn.dataIndex] = [];
+                    savingArray = fakeRow.saving[parentColumn.dataIndex];
+                }
             }
             else { savingArray = row.saving = []; }
 
-            // Now set up all the data to be saved -- skip nested tables for now
+            var undeleteChildren = [];
+            // Now set up all the data to be saved
             $.each(columns, function(i, c)
             {
                 if (c.dataType && c.dataType.type == 'tag')
@@ -1399,8 +1511,14 @@ blist.namespace.fetch('blist.data');
                 }
                 else if (c.dataType && c.dataType.type == 'nested_table')
                 {
-                    // do nothing -- trying to post an nt back to the core
-                    // server doesn't work
+                    // keep track of nested rows so we can re-post them along
+                    // with the parent row
+                    $.each(row[c.dataIndex], function(j, cr)
+                    {
+                        cr.origPosition = j;
+                        undeleteChildren.push({parentRow: row, row: cr,
+                            parentColumn: meta.allColumns[c.id]});
+                    });
                 }
                 else if (c.id > -1)
                 {
@@ -1425,16 +1543,23 @@ blist.namespace.fetch('blist.data');
             {
                 // If we are a child row, then stick the row back into the
                 //  parent, and update rows
-                var subRowSet = self.getRowValue(parentRow, parentColumn);
-                subRowSet.splice(row.origPosition, 0, row);
+                if (!childCascade)
+                {
+                    var subRowSet = self.getRowValue(parentRow, parentColumn);
+                    subRowSet.splice(row.origPosition, 0, row);
+                }
                 resetChildRows(parentRow);
 
-                fakeRow = parentRow.childRows[row.origPosition];
-                // Copy over the saving info for the UI
-                fakeRow.saving[parentColumn.dataIndex] = savingArray;
-                self.change([fakeRow]);
+                if (parentRow.childRows !== undefined)
+                {
+                    fakeRow = parentRow.childRows[row.origPosition];
+                    // Copy over the saving info for the UI
+                    fakeRow.saving[parentColumn.dataIndex] = savingArray;
+                    self.change([fakeRow]);
+                }
 
-                registerRowSave(fakeRow, 'all', data, true, parentColumn);
+                registerRowSave(fakeRow, 'all', data, true, row, parentRow,
+                    parentColumn);
             }
             else
             {
@@ -1447,6 +1572,11 @@ blist.namespace.fetch('blist.data');
                 $(listeners).trigger('row_add', [ [row] ]);
 
                 registerRowSave(row, 'all', data, true);
+
+                $.each(undeleteChildren, function(i, cr)
+                {
+                    undeleteRow(cr.row, cr.parentRow, cr.parentColumn, true);
+                });
             }
         };
 

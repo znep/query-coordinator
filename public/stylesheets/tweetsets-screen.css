@@ -1,6 +1,6 @@
 div.tweetsetContainer
 {
-    margin: 0em 1em;
+    margin: 0 1em;
     padding-top: 1em;
 }
 
@@ -10,19 +10,26 @@ div.tweetsetContainer
     padding: 1em;
 }
 
-.tweetsetContainer #tweetsetIntro .lessSpace
+.tweetsetContainer #tweetsetIntro h1
+{
+    color: #fff;
+    font-size: 4em;
+    line-height: 1.1em;
+}
+
+.tweetsetContainer #tweetsetIntro .showLoginText
 {
     padding-top: 1em;
 }
 
-.tweetsetContainer #tweetsetIntro .spaceAbove
+.tweetsetContainer #tweetsetIntro .noLoginText
 {
     padding-top: 2em;
 }
 
 .tweetsetContainer #tweetsetIntro
 {
-  margin-bottom: 3em;
+    margin-bottom: 3em;
 }
 
 .tweetsetContainer #tweetsetIntro img#preview
@@ -35,26 +42,26 @@ div.tweetsetContainer
 .tweetsetContainer #tweetsetIntro #introExplanation
 {
     color: #000;
-    padding-left: 2.5em;
-    padding-top: 3em;
+    padding: 3em 2em 0 2.5em;
 }
 
-.tweetsetContainer #tweetsetIntro h2.bigger
+.tweetsetContainer #tweetsetIntro h2
 {
-    font-size: 2.3em;
+    font-size: 2em;
 }
 
 .tweetsetContainer .loginText,
-.tweetsetContainer .loginText a
+.tweetsetContainer .loginText a,
+.tweetsetContainer .searchText
 {
     color: #fff;
 }
 
-.tweetsetContainer .tweetsetPara,
+.tweetsetContainer .tweetsetCreated p,
 .tweetsetContainer .loginText, 
 .tweetsetContainer #searchArea .searchText
 {
-    font-size: 1.4em;
+    font-size: 1.6em;
 }
 
 .tweetsetContainer #searchArea .searchText
@@ -67,17 +74,34 @@ div.tweetsetContainer
     width: 20em;
 }
 
-.tweetsetContainer #searchArea .actionButtons
+.tweetsetContainer #searchArea .buttons
 {
     display: inline-block;
     position: relative;
     top: 0.6em;
 }
 
+.tweetsetContainer #searchArea .buttons .generateButton {
+    background: transparent url(/stylesheets/images/static/red-btn-140.png) no-repeat scroll left top;
+    color: #FFFFFF;
+    display: block;
+    float: right;
+    font-size: 1.4em;
+    font-weight:normal;
+    height: 1.9em;
+    letter-spacing: 0.08em;
+    margin-left: 1.2em;
+    padding-left: 2em;
+    padding-top: 0.58em;
+    position: relative;
+    top: 0.5em;
+    width: 10em;
+}
+
 .tweetsetContainer #rightColumn
 {
-    width: 20em;
     float: right;
+    width: 20em;
 }
 
 .tweetsetContainer #leftColumn #sampleSet
@@ -93,7 +117,7 @@ div.tweetsetContainer
 
 .tweetsetContainer .recentSets
 {
-   padding-top: 1em;
+    padding-top: 1em;
 }
 
 .tweetsetContainer .recentSets li
@@ -102,3 +126,37 @@ div.tweetsetContainer
     margin-bottom: 0.5em;
 }
 
+.searchContent .carouselWrapper 
+{
+    height: 360px;
+    background-position: 0 -360px;
+}
+
+.tweetsetContainer #searchArea 
+{
+    clear: both;
+    padding-top: 3em;
+}
+
+.searchContent .pageBlockHeaderCarousel.carouselWrapper,
+.searchContent .pageBlockHeaderCarousel .carouselOuter,
+.searchContent .pageBlockHeaderCarousel .carouselInner
+{
+    background-image: url(/ui/box.png?fc=10406e%3A.1%2C1879be%3A.9&s=h&h=360&r=10&bc=ffffff)
+}
+
+.searchContent .carouselInner
+{
+    min-height: 40em;
+}
+.searchContent .carouselInner
+{
+    background-position: right -720px;
+}
+
+.createTweeetset .pageBlockHeaderCarousel.carouselWrapper,
+.createTweeetset .pageBlockHeaderCarousel .carouselOuter,
+.createTweeetset .pageBlockHeaderCarousel .carouselInner
+{
+    background-image: url(/ui/box.png?fc=10406e%3A.1%2C1879be%3A.9&s=h&h=235&r=5&bc=ffffff)
+}

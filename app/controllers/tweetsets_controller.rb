@@ -24,7 +24,12 @@ class TweetsetsController < ApplicationController
   end
   
   def create
-    query = params[:query]   
+    query = params[:query]  
+    
+    if query.blank?
+      redirect_to :action => :index
+      return
+    end 
 
     # Redirect them to the existing one if somebody's performed the query already
     existing_href = check_existing_tweetset(query)
@@ -40,6 +45,10 @@ class TweetsetsController < ApplicationController
     rescue
       notify_hoptoad :error_message => "Error creating tweetset for query '#{query}'"
     end
+  end
+  
+  def redirect
+    redirect_to :action => :index
   end
   
   private

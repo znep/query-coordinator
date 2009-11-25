@@ -1,0 +1,48 @@
+  <div class="tabContentOuter">
+    <div id="approval" class="tabContentTL">
+      <div class='tabContentBL'>
+        <div class='tabContent'>
+            <h3 class="suggestTitle">Dataset Nominations</h3>
+            <% if !current_user.nil? %>
+              <a class="suggestLink" href="/data/suggest" rel="modal">Suggest a dataset</a>
+            <% end %>
+            <div id="moderationQueue" class="nominationList">
+              <div class="nominationList-headerRow">
+                <div class="nominationList-cell nominationList-authorColumn">
+                    Author
+                </div>
+                <div class="nominationList-cell nominationList-nominationColumn">
+                    Details
+                </div>
+                <div class="nominationList-cell nominationList-statusColumn">
+                    Status
+                </div>
+              </div>
+              <div class="nominationList-body">
+                <%= render(:partial => "nominations", :locals => {:current_page => 1, :total => total, :page_size => page_size, :status => nil}) %>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="tabContentNavTR"><div class="tabContentNavBR">
+  <div class="tabContentNav">
+      <h2>Show nominations</h2>
+      <ul class="filterList hilightList">
+          <li>
+              <a class="tabLink nominationFilter" href="/data/nominations"><span>All nominations</span></a>
+          </li>
+          <li>
+              <a class="tabLink nominationFilter" href="/data/nominations?status=pending"><span>Open nominations</span></a>
+          </li>
+          <li>
+              <a class="tabLink nominationFilter" href="/data/nominations?status=approved"><span>Approved nominations</span></a>
+          </li>
+          <li>
+              <a class="tabLink nominationFilter" href="/data/nominations?status=rejected"><span>Rejected nominations</span></a>
+          </li>
+      </ul>
+  </div>
+</div></div>
+  

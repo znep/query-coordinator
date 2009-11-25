@@ -25,7 +25,7 @@
             {
                 if (event.keyCode == 27) { closeAllForms($iEdit); }
             });
-            $form.show().find(":text").focus().select();
+            $form.show().find(":text,textarea").focus().select();
         };
 
         function closeAllForms($iEdit)
@@ -50,7 +50,7 @@
             var config = $iEdit.data("config-inlineEdit");
 
             var $form = $iEdit.find(config.editSubmitSelector);
-            var fieldValue = $form.find(":text").val();
+            var fieldValue = $form.find(":text,textarea").val();
             if (!fieldValue || fieldValue === '')
             {
                 closeAllForms($iEdit);

@@ -13,7 +13,7 @@
     <div class="<%= friendly_status(nomnomnom).downcase %>">
       <%= friendly_status(nomnomnom) %>
 
-      <% if current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
+      <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
       %> 
         <% if nomnomnom.status == "pending" || nomnomnom.status == "rejected" %>
           <%= link_to("Accept", "/nominations/#{nomnomnom.id}.json", :title => "Accept this nomination", :class => "acceptNomination") %>
@@ -43,9 +43,9 @@
           <a class="rateNomination rateDown" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=false" title="I don't like it">I like it</a>
       <% end %>
     </div>
-    <div class="<%= current_user.is_premium? ? 'inlineEdit' : '' %>">
+    <div class="<%= current_user && current_user.is_premium? ? 'inlineEdit' : '' %>">
       <span class="nominationTitle"><%= h(nomnomnom.title) %></span>
-      <% if current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
+      <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
       %> 
         <% form_tag("/nominations/#{nomnomnom.id}.json", :class => "title") do %>
           <%= text_field_tag("title", nomnomnom.title) %>
@@ -57,11 +57,11 @@
       <%= blist_long_date(nomnomnom.createdAt) %>
       <span>(<%= friendly_relative_time(nomnomnom.createdAt) %>)</span>
     </p>
-    <div class="<%= current_user.is_premium? ? 'inlineEdit' : '' %>">
+    <div class="<%= current_user && current_user.is_premium? ? 'inlineEdit' : '' %>">
       <p class="nominationBody">
         <%= auto_link(h(nomnomnom.description)) %>
       </p>
-      <% if current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
+      <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
       %> 
         <% form_tag("/nominations/#{nomnomnom.id}.json", :class => "description") do %>
           <%= text_area_tag("description", nomnomnom.description) %>
@@ -80,7 +80,7 @@
                 filename = truncate(a.filename, :omission => " ...", :length => 55)
                 link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename) 
               %>
-              <% if current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
+              <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
               %> 
                 (<%= link_to("Delete", "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => "Delete", :class => "delete") %>)
               <% end %>

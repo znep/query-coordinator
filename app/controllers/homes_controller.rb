@@ -1,5 +1,6 @@
 require 'rss'
 require 'open-uri'
+require 'timeout'
 
 class HomesController < ApplicationController
   def show
@@ -20,12 +21,16 @@ class HomesController < ApplicationController
     @contacts_activities = Activity.find({:maxResults => 5, :inNetwork => true})
 
     begin
-      rss = RSS::Parser.parse(BLIST_RSS, false)
-      @feed_items = rss.items.sort { |a,b|
-        b.pubDate <=> a.pubDate
-      }.slice(0..2)
+      Timeout::timeout(1) do
+        rss = RSS::Parser.parse(BLIST_RSS, false)
+        @feed_items = rss.items.sort { |a,b|
+          b.pubDate <=> a.pubDate
+        }.slice(0..2)
+      end
     rescue StandardError => err
       logger.fatal("Cannot open the feed: " + err)
+    rescue Timeout::Error
+      logger.warn("Timed out accessing #{BLIST_RSS}")
     ensure
       @feed_items = Hash.new unless @feed_items
     end

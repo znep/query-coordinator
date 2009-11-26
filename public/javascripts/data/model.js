@@ -1568,6 +1568,42 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('columns_rearranged', [ this ]);
         };
 
+        this.updateVisibleColumns = function(visCols)
+        {
+            // First update widths on view columns, since they may have been
+            // updated on the model columns
+            $.each(meta.columns, function(i, colList)
+            {
+                $.each(colList, function(j, c)
+                {
+                    if (c.dataIndex)
+                    {
+                        meta.view.columns[c.dataIndex].width = c.width;
+                    }
+                });
+            });
+
+            var visHash = {};
+            $.each(visCols, function(i, cId) { visHash[cId] = i; });
+
+            $.each(meta.view.columns, function(i, c)
+            {
+                if (!c.flags) { c.flags = []; }
+                if (visHash[c.id] !== undefined)
+                {
+                    c.position = visHash[c.id];
+                    var ind = $.inArray('hidden', c.flags);
+                    if (ind > -1) { c.flags.splice(ind, 1); }
+                }
+                else { c.flags.push('hidden'); }
+            });
+
+            // Null out the meta columns, and then force a reset
+            meta.columns = null;
+            this.meta(meta);
+            $(listeners).trigger('columns_rearranged', [ this ]);
+        };
+
         /**
          * Notify the model of row changes.
          */

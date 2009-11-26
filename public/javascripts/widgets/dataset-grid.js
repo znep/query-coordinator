@@ -313,6 +313,39 @@
                 });
             },
 
+            updateVisibleColumns: function(columns)
+            {
+                var datasetObj = this;
+                var view = datasetObj.settings._model.meta().view;
+
+                if (datasetObj.settings.currentUserId == view.owner.id)
+                {
+                    var serverCols = [];
+                    $.each(columns, function(i, colId)
+                    {
+                        var col = datasetObj.settings._model.getColumnByID(colId);
+                        if (col)
+                        {
+                            $.socrataServer.addRequest(
+                                {url: '/views/' + view.id + '/columns/' +
+                                    col.id + '.json', type: 'PUT',
+                                data: $.json.serialize({'hidden': false})});
+                            serverCols.push({id: col.id, name: col.name});
+                        }
+                    });
+
+                    $.socrataServer.addRequest(
+                        { url: '/views/' + view.id + '.json', type: 'PUT',
+                            data: $.json.serialize({columns: serverCols})});
+
+                    $.socrataServer.runRequests({complete: function()
+                    {
+                        datasetObj.settings._model.reloadView();
+                        $(document).trigger(blist.events.COLUMNS_CHANGED);
+                    }});
+                }
+            },
+
             clearTempView: function(countId, forceAll)
             {
                 var datasetObj = this;

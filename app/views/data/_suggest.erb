@@ -1,0 +1,143 @@
+<% content_for :headline do %>
+<h1 id="title">Suggest a dataset</h1>
+<% end %>
+
+<div id="nominationCreateDialog" class="nominationPropertiesWrapper clearfix">
+  <% form_tag "#", :id => "nominationCreate" do %>
+      <div>
+        <table cellspacing="0">
+          <tbody>
+            <tr>
+              <td colspan="2"><h3 class="seperator">Suggestion Details</h3></td>
+            </tr>
+            <tr>
+              <td class="labelNomination">
+                <label for="name" class="required">Title:</label>
+              </td>
+              <td class="fieldNomination">
+                <%= text_field_tag("nominationTitle", nil,
+                :class => "textPrompt prompt", :title => "Enter a title",
+                :id => "nominationTitle") %>
+              </td>
+            </tr>
+            <tr>
+              <td class="labelNomination">
+                <label for="description">Description:</label>
+              </td>
+              <td class="fieldNomination">
+                <%= text_area_tag("nominationDescription", nil,
+                :class => "textPrompt prompt", :title => "Enter a description",
+                :id => "nominationDescription") %>
+              </td>
+            </tr>
+            <tr>
+              <td class="labelNomination">
+                <label for="attachments">Attachment:</label>
+              </td>
+              <td class="fieldNomination">
+                <div id="attachmentForm" action="/nominations/INLINE/attachments.txt">
+                  <%= text_field_tag("view_file", nil, :class => "textPrompt", :readonly => true) %>
+                  <ul class="fileBrowseButtonList actionButtons">
+                    <li>
+                      <a id="fileBrowseButton" href="#browse">Browse for File</a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <%# Firefox won't trigger submit events unless there is a submit button %>
+      <input class='hidden' type='submit' />
+  <% end %>
+  <div class="createBar">
+    <div class="error errorMessage"></div>
+    <h3 class="seperator"></h3>
+    <div class="required">Required Field</div>
+    <ul class='actionButtons clearfix'>
+      <li><a href='#' class='save arrowButton'>Nominate</a></li>
+    </ul>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+$(function()
+{
+    var fileSelected = false;
+    $form = $("#attachmentForm");
+    var $uploader = new AjaxUpload($('#fileBrowseButton'), {
+      action: $form.attr('action'),
+      autoSubmit: false,
+      name: 'bulkOperationFileInput',
+      responseType: 'json',
+      onChange: function (file, ext)
+      {
+        fileSelected = true;
+        $form.find('#view_file').val(file);
+      },
+      onComplete: function (file, response)
+      {
+        createNomination([response.id]);
+      }
+    });
+
+  // Since these widgets are created live, we have to populate the default
+  // text prompt values manually instead of relying on the plugin.
+  $("#nominationCreateDialog .textPrompt")
+    .example(function () { return $(this).attr("title"); });
+
+  var saveForm = function()
+  {
+    if (fileSelected)
+    {
+      $uploader.submit();
+    }
+    else
+    {
+      createNomination([]);
+    }
+  };
+
+  var createNomination = function(attachments)
+  {
+      $(".prompt").val("");
+
+      var nomination = {
+          title: $("#nominationTitle").val(),
+          description: $("#nominationDescription").val()
+      };
+
+      $.ajax({
+        type: "POST",
+        url: "/nominations.json?attachmentIds=" + attachments.join(","),
+        cache: false,
+        dataType: "json",
+        contentType: "application/json",
+        data: $.json.serialize(nomination),
+        error: function(request) {
+          $("#nominationCreateDialog .error")
+            .html($.json.deserialize(request.responseText).message).show();
+        },
+        success: function(responseData) {
+            nominationsNS.loadData(nominationsNS.servicePath);
+            $("#modal .jqmClose").click();
+        }
+      });
+  };
+
+  $("#nominationCreateDialog").submit( function(e) {
+      e.preventDefault();
+      saveForm();
+  });
+
+  $("#nominationCreateDialog .save").click(function(event)
+  {
+      event.preventDefault();
+      saveForm();
+  });
+
+  $("#nominationCreateDialog input#name").focus();
+});
+</script>
+

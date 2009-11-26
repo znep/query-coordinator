@@ -148,7 +148,7 @@ module BlistsHelper
     args = args || {}
     modal = args.key?("modal") ? args["modal"] : false
     include_options = args['include_options'] || {}
-    items = args['initial_items'] || []
+    items = []
     items.unshift({'button' => true, 'text' => 'Previous',
       'href' => '#prev', 'class' => 'prev'})
 
@@ -208,6 +208,8 @@ module BlistsHelper
 
     items.push({'button' => true, 'text' => 'Next',
       'href' => '#next', 'class' => 'next'})
+
+    items = (args['initial_items'] || []) + items + (args['post_items'] || [])
 
     {'id' => args['id'], 'class' => 'columnsMenu', 'items' => items,
       'checkbox_menu' => args['checkbox_menu']}

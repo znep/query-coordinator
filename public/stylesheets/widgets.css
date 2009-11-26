@@ -342,6 +342,23 @@ ul.menu.checkboxMenu li
     margin-left: 30px;
 }
 
+ul.menu.optionMenu li.sectionTitle,
+ul.menu.checkboxMenu li.sectionTitle
+{
+    margin-bottom: -1px;
+    padding-left: 5px;
+}
+
+ul.menu.optionMenu li.separator,
+ul.menu.checkboxMenu li.separator
+{
+    background-color: transparent;
+    border: none;
+    height: 1px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
 ul.menu.optionMenu li a,
 ul.menu.checkboxMenu li a
 {

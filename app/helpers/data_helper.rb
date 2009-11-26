@@ -1,5 +1,16 @@
 module DataHelper
 
+  def friendly_status(nomination)
+    if (nomination.status == "pending" &&
+        Time.parse((nomination.createdAt*1000).to_s) > (Time.now() - 7.days))
+      "new"
+    elsif (nomination.status == "pending")
+      "open"
+    else
+      nomination.status
+    end
+  end
+
   def sort_select_options(current_sort = nil)
     sort_select_options_internal(View.sorts, current_sort)
   end

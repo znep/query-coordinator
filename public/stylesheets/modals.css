@@ -1493,6 +1493,102 @@ div#sortBysList.reorderList li .itemWrapper
 /*** END: Filter dialog ***/
 
 
+/*** START: Show/hide dialog ***/
+.showHideWrapper .subtitle
+{
+    color: #666666;
+    font-size: 1.2em;
+}
+
+.showHideWrapper h4
+{
+    color: #999999;
+    font-weight: bold;
+    margin-left: 0.8333em;
+}
+
+.showHideWrapper .listBlock { float: left; }
+
+.showHideWrapper .listWrapper
+{
+    margin: 1em;
+    position: relative;
+}
+
+.showHideWrapper .border
+{
+    border: 1px solid #999;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: -1px;
+    width: 26em;
+}
+
+.showHideWrapper .list
+{
+    height: 19em;
+    margin: 0;
+    overflow: auto;
+    position: relative;
+    width: 28.1em;
+}
+
+.showHideWrapper .reorderList ul
+{
+    border-width: 0 0 0 1px;
+    width: 21.6667em;
+}
+
+.showHideWrapper .reorderList li .itemWrapper
+{
+    height: 20px;
+    padding-top: 0;
+}
+
+.showHideWrapper .reorderList .activeList.ui-draggable-not-dragging li.hover .itemWrapper,
+.showHideWrapper .reorderList .activeList li.ui-draggable-dragging .itemWrapper
+{
+    height: 20px;
+    padding-top: 0;
+}
+
+.showHideWrapper .reorderList .activeList li .orderIndex { width: 1em; }
+
+.showHideWrapper ul .type
+{
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    display: inline-block;
+    height: 20px;
+    position: relative;
+    top: 5px;
+    width: 20px;
+}
+
+.showHideWrapper .addAllLink,
+.showHideWrapper .removeAllLink
+{
+    color: #333333;
+    font-weight: bold;
+    margin-left: 1em;
+    text-transform: uppercase;
+}
+
+.showHideWrapper .activeBlock h4 { margin-left: 3.75em; }
+.showHideWrapper .activeBlock .removeAllLink { margin-left: 4.5em; }
+.showHideWrapper .activeBlock .border { left: 3.5em; }
+.showHideWrapper .activeBlock .list { padding-left: 3.5em; }
+
+.showHideWrapper .swapArrows
+{
+    float: left;
+    margin-top: 11em;
+}
+
+.showHideWrapper .swapArrows a { position: static; }
+/*** END: Show/hide dialog ***/
+
+
 /*** START: View create/setup dialogs ***/
 .viewSetupWrapper .subtitle { padding-bottom: 0.5em; }
 
@@ -1806,3 +1902,66 @@ div#sortBysList.reorderList li .itemWrapper
 }
 
 /*** END: Republish dialog ***/
+
+/*** BEGIN: Nominations dialog **/
+.nominationPropertiesWrapper .hidden { display: none; }
+
+.nominationPropertiesWrapper .createBar
+{
+  color: #666666;
+  font-size: 1.1em;
+}
+
+.nominationPropertiesWrapper div.required
+{
+    float: left;
+}
+
+.createBar .error,
+.nominationPropertiesWrapper .error
+{
+  padding: 0.3em;
+  margin-right: 1em;
+  vertical-align: middle;
+  font-size: 1.2em;
+}
+.nominationPropertiesWrapper ul.actionButtons { margin-top: 0; }
+
+.nominationPropertiesWrapper p, .nominationPropertiesWrapper label
+{
+    font-size: 1.2em;
+    line-height: 1.75em; /* 21px */
+    vertical-align: middle;
+}
+
+.nominationPropertiesWrapper td 
+{
+    padding: 0.5em;
+    vertical-align: top;
+}
+
+.nominationPropertiesWrapper td.middle
+{
+    vertical-align: middle;
+}
+.nominationPropertiesWrapper td.fieldColumn strong
+{
+    font-size: 1.2em;
+}
+.nominationPropertiesWrapper .labelColumn
+{
+    padding-right: 1em;
+    text-align: right;
+}
+
+.nominationPropertiesWrapper input[type="text"],
+.nominationPropertiesWrapper textarea
+{
+    width: 49em;
+}
+
+.nominationPropertiesWrapper #view_file 
+{
+    width: 38em;
+}
+/*** END: Nominations dialog **/

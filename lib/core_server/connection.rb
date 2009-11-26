@@ -43,12 +43,12 @@ module CoreServer
     end
     
     # For creating tweetsets only
-    def create_tweetset(query, name, for_user, follow = true)
+    def create_tweetset(query, name, for_user, follow = false)
       request = Net::HTTP::Post.new('/views.json')
       request.basic_auth APP_CONFIG['tweetsets_user'], APP_CONFIG['tweetsets_password']
       
-      dhash = {:name => name, :tags => ['tweetset', query]}
-      dhash[:tags] << 'completed' unless follow
+      dhash = {:name => name, :tags => ['tweetset', query], :category => APP_CONFIG['tweetsets_category']}
+      dhash[:tags] << 'live-updates' if follow
       dhash[:tags].insert(0, for_user.email.tr("A-Za-z@", "N-ZA-Mn-za-m#").reverse) if for_user
       
       request.body = dhash.to_json

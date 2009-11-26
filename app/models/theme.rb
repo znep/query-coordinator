@@ -42,13 +42,6 @@ module Theme
 
       load_theme theme if theme
 
-      # Legacy theme config (to be phased out)
-      if (host.match('gov'))
-        I18n.locale = 'gov'
-      else
-        # Force the locale back to blist if we're not datagov
-        I18n.locale = 'blist'
-      end
     end
   end
 

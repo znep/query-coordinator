@@ -11,11 +11,14 @@
   <li class='profile'><div class='wrapper'>
     <%= link_to "Profile", current_user.href %>
   </div></li>
+<%- module! :comment_moderation do -%>
   <li class='approval even'><div class='wrapper'>
-    <%- if current_user.are_comments_moderated? -%>
       <%= link_to 'Approvals', approval_path %>
-    <%- else -%>
-      <%= link_to 'Approvals', '/popup/premium', :rel => "modal" %>
-    <%- end -%>
   </div></li>
+<%- end -%>
+<%- upsell do -%>
+  <li class='approval even'><div class='wrapper'>
+      <%= link_to 'Approvals', '/popup/premium', :rel => "modal" %>
+  </div></li>
+<%- end -%>
 </ul>

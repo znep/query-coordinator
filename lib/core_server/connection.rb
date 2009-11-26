@@ -108,6 +108,9 @@ module CoreServer
         end
       end
 
+      # pass/spoof in the current domain cname
+      request['Host'] = CurrentDomain.cname
+
       custom_headers.each { |key, value| request[key] = value }
 
       if (!json.blank?)

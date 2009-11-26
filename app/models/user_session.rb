@@ -219,6 +219,9 @@ private
     uri.query = "method=findByRememberToken"
     post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
 
+    # pass/spoof in the current domain cname
+    post['Host'] = CurrentDomain.cname
+
     Net::HTTP.start(uri.host, uri.port) do |http|
       http.request post
     end
@@ -228,6 +231,9 @@ private
     uri = auth_uri.clone
     uri.query = "method=expireRememberToken"
     post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
+
+    # pass/spoof in the current domain cname
+    post['Host'] = CurrentDomain.cname
 
     Net::HTTP.start(uri.host, uri.port) do |http|
       http.request post

@@ -61,14 +61,22 @@
               <ul class="subNav">
                 <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
                 <li><%= link_to "<span>Friends</span>", contacts_path %></li>
-                <li><%= link_to "<span>Profile</span>", current_user.href %></li>
+                <li class="<%= 'last' unless CurrentDomain.upsell ||
+                                            (CurrentDomain.module?(:moderate_comments) && 
+                                             CurrentDomain.moderate_comments?) %>">
+                  <%= link_to "<span>Profile</span>", current_user.href %>
+                </li>
+              <%- module! :moderate_comments do -%>
                 <li class="last">
-                  <%- if current_user.are_comments_moderated? -%>
                     <%= link_to '<span>Approvals</span>', approval_path %>
-                  <%- else -%>
-                    <%= link_to '<span>Approvals</span>', '/popup/premium', :rel => "modal" %>
                   <%- end -%>
                 </li>
+              <%- end -%>
+              <%- upsell do -%>
+                <li class="last">
+                  <%= link_to '<span>Approvals</span>', '/popup/premium', :rel => "modal" %>
+                </li>
+              <%- end -%>
               </ul>
             <%- end -%>
           </li>

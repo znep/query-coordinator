@@ -4,8 +4,8 @@
 class ApplicationController < ActionController::Base
   include SslRequirement
 
-  before_filter :hook_auth_controller,  :create_core_server_connection, :adjust_format,
-    :patch_microsoft_office, :require_user, :set_user, :configure_theme
+  before_filter :hook_auth_controller,  :create_core_server_connection, :set_web_property,
+    :adjust_format, :patch_microsoft_office, :require_user, :set_user, :configure_theme
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     @is_marketing_page = false
   end
 
-  hide_action :current_user, :current_user_session, :prerendered_fragment_for
+  hide_action :current_user, :current_user_session, :prerendered_fragment_for, :require_feature
   def current_user
     @current_user ||= current_user_session ? current_user_session.user : nil
   end
@@ -52,6 +52,15 @@ class ApplicationController < ActionController::Base
     else
       block.call
     end
+  end
+
+  def require_module!(name)
+    render_404 unless CurrentDomain.feature?(name.to_s) &&
+                      CurrentDomain.module?(name.to_s)
+  end
+
+  def require_that(enabled)
+    render_404 unless enabled
   end
 
   # Patch the page caching support to handle our dynamic domain support.
@@ -144,6 +153,15 @@ private
     logger.info "Request domain: #{request.host}, Current locale: #{I18n.locale}"
 
     Theme.configure request
+  end
+
+  def set_web_property
+    unless CurrentDomain.set(request.host)
+      # We failed at trying to find the current domain.
+      # Log it, then just redir them to Socrata.
+      notify_hoptoad :error_message => "Attempted access with CNAME #{request.host}, which we have no record of."
+      redirect_to 'http://socrata.com/'
+    end
   end
 
   # Custom logic for rendering a 404 page with our pretty templates.

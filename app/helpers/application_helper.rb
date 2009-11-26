@@ -259,13 +259,30 @@ HREF
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
-  
+
+  def module(name, &block)
+    capture(&block) if CurrentDomain.module?(name.to_s)
+  end
+
+  def feature(name, &block)
+    capture(&block) if CurrentDomain.feature?(name.to_s)
+  end
+
+  def module!(name, &block)
+    capture(&block) if CurrentDomain.module?(name.to_s) &&
+                       CurrentDomain.feature?(name.to_s)
+  end
+
+  def upsell(&block)
+    capture(&block) if CurrentDomain.upsell?
+  end
+
   # Returns the meta keyword tags for this view that we'll use in headers
   @@default_meta_tags = ["public", "data", "statistics", "dataset"]
   def meta_keywords(view)
     view.nil? ? nil : (view.tags.nil? ? @@default_meta_tags : view.tags + @@default_meta_tags).sort_by {rand}
   end
-  
+
   # Return the description we'll use in the meta description header
   def meta_description(view)
     return nil if(view.nil? || !view.is_a?(View))

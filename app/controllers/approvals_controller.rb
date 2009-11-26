@@ -1,7 +1,6 @@
 class ApprovalsController < ApplicationController
+  before_filter { |c| c.require_module! CurrentDomain.comment_moderation? }
+
   def show
-    unless current_user.are_comments_moderated?
-      return redirect_to('/home')
-    end
   end
 end

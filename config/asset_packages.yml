@@ -25,6 +25,7 @@ javascripts:
   - util/styling
   - plugins/jquery.qtip
   - widgets/blist-alert
+  - util/socrata-server
 - shared-calendar:
   - plugins/fullcalendar
   - widgets/blist-calendar

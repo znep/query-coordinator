@@ -291,7 +291,7 @@ body#lensBody
 }
 
 
-#lensContainer .headerBar .separator
+#lensContainer .headerBar > ul > .separator
 {
     border-right: 2px solid #e8e8e8;
 }
@@ -394,6 +394,8 @@ body#lensBody
 {
     background-position: 5px -370px;
 }
+
+#lensBody .headerBar #filterViewMenu #columnsShowMenu { width: 20em; }
 
 #lensBody .headerBar #filterViewMenu #columnsShowMenu li > a
 {

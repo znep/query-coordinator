@@ -4,6 +4,12 @@
 {'text' => 'Show or Hide Columns', 'class' => 'showHide', 'href' => '#',
   'submenu' => columns_menu(@view,
       {'id' => 'columnsShowMenu',
+        'initial_items' => [{'section_title' => 'Check/Uncheck to Show/Hide'},
+          {'separator' => true}],
+          'post_items' => (current_user && @view.owner.id == current_user.id) ?
+          [{'separator' => true},
+          {'text' => 'Advanced...', 'class' => 'advancedShowHide',
+            'href' => blist_show_hides_path(@view.id), 'modal' => true}] : [],
         'href_prefix' => "#hide-show-col_",
         'checkbox_menu' => true,
         'checkbox_callback' => proc { |c| !c.flag?('hidden') },

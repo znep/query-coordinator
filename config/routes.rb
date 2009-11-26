@@ -78,6 +78,7 @@ ActionController::Routing::Routes.draw do |map|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
       blist.resources :columns
       blist.resources :sort_bys
+      blist.resources :show_hides
       blist.resources :filters
     end
 

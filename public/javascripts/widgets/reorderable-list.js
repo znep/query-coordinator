@@ -287,6 +287,33 @@ $.fn.reorderableList = function(options) {
                     config);
             });
 
+            // Wire up behavior on add all button
+            $this.find(config.addAllLinkSelector).click(function(event)
+            {
+                event.preventDefault();
+                var $items = $this.find('.inactiveList li');
+                $items.find(config.orderSpanSelector).removeClass('hide');
+                $items.find(config.activeFieldSelector).val(true);
+                $items.css('top', 0);
+                $items.draggable('enable');
+                var activeNum = $('.activeList li').length;
+
+                $items.each(function(i, item)
+                {
+                    var curI = i + activeNum;
+                    var $item = $(item);
+                    $item.find(config.orderFieldSelector).val(curI);
+                    $item.find(config.orderSpanSelector).text(curI + 1);
+                    $item.data("reorderableList-order", curI);
+                    $item.data("reorderableList-initialOrder", curI);
+                });
+
+                $this.find('.activeList ul').append($items);
+                $('.activeList li:first').addClass(config.firstListItemClass);
+
+                config.onChange();
+            });
+
             // Wire up behavior on remove all button
             $this.find(config.removeAllLinkSelector).click(function(event)
             {
@@ -347,6 +374,7 @@ $.fn.reorderableList.defaults = {
     firstListItemClass: 'first-child',
     selectedListItemClass: 'reorderList-selected',
     addItemButtonSelector: '.addItemButton',
+    addAllLinkSelector: '.addAllLink',
     removeItemButtonSelector: '.removeItemButton',
     removeAllLinkSelector: '.removeAllLink',
     enableInactiveList: true,

@@ -290,7 +290,9 @@ class View < Model
   def has_columns_for_visualization_type?(viz_type, include_hidden = false)
     config = @@visualization_config[viz_type]
     if config.nil?
-      return false
+      # If it is a Fusion Map, we can't do any verification; so just return true
+      # Otherwise it is an invalid viz type, so return false
+      return is_fusion_map?
     end
 
     to_check = []

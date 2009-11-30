@@ -18,7 +18,7 @@
             <li>
             <div class="itemWrapper">
               <span class="orderIndex"><%= i + 1 %></span>
-              <div class="type datatype-<%= col.client_type %>"></div>
+              <span class="type datatype-<%= col.client_type %>"></span>
               <span class='name'><%= col.name %></span>
               <%= hidden_field_tag("sort-#{col.id}", true,
               :class => "columnId", :value => "#{col.id}") %>
@@ -47,7 +47,7 @@
             <li>
             <div class="itemWrapper">
               <span class="orderIndex hide"></span>
-              <div class="type datatype-<%= col.client_type %>"></div>
+              <span class="type datatype-<%= col.client_type %>"></span>
               <span class='name'><%= col.name %></span>
               <%= hidden_field_tag("sort-#{col.id}", true,
               :class => "columnId", :value => "#{col.id}") %>

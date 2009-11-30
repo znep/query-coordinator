@@ -90,7 +90,8 @@
       $('.filterDatasetWrapper .submitLine .actionButtons a').text('Continue');
       return;
     }
-    else if (view.viewFilters != undefined)
+    else if (view.viewFilters !== undefined &&
+        view.viewFilters.children !== undefined)
     {
       $("#filterOperator").val(view.viewFilters.value.toLowerCase());
       blist.filter.populate($(".filterDatasetWrapper #filterTable"), view.viewFilters, columns);

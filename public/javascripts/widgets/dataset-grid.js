@@ -918,9 +918,17 @@
             '</div></div>' +
             '</a></li>';
 
+        // Sort type keys in a specific order for URL and phone
+        var typeKeys = $.keys(colSum);
+        if (col.type == 'url')
+        { typeKeys.sort(); }
+        else if (col.type == 'phone')
+        { typeKeys.sort().reverse(); }
+
         var sumSections = [];
-        $.each(colSum, function(k, cs)
+        $.each(typeKeys, function(i, k)
         {
+            var cs = colSum[k];
             var section = '';
 
             var searchMethod = function(a, b)

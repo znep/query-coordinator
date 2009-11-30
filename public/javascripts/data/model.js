@@ -735,6 +735,9 @@ blist.namespace.fetch('blist.data');
             {
                 // Ensure the meta has a columns object, even if it is empty
                 meta = newMeta;
+
+                meta.sort = {};
+
                 if (!meta.columns)
                 {
                     meta.columns = [[]];
@@ -795,7 +798,6 @@ blist.namespace.fetch('blist.data');
                 // Configure root column sorting based on view configuration if
                 // a view is present
                 var sorts = {};
-                meta.sort = {};
 
                 if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
                 {

@@ -2230,7 +2230,7 @@ blist.namespace.fetch('blist.data');
             //  don't need to send all that extra data over or modify columns
             //  accidentally
             var tempView = $.extend({}, meta.view,
-                    {originalViewId: meta.view.id, columns: null});
+                    {originalViewId: meta.view.id, columns: null, query: null});
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(

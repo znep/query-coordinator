@@ -1,2 +1,0 @@
-class AccountTier < Model
-end

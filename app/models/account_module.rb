@@ -1,2 +1,0 @@
-class AccountModule < Model
-end

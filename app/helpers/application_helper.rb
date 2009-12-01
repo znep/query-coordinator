@@ -261,20 +261,20 @@ HREF
   end
 
   def module(name, &block)
-    capture(&block) if CurrentDomain.module?(name.to_s)
+    concat(capture(&block)) if CurrentDomain.module?(name.to_s)
   end
 
   def feature(name, &block)
-    capture(&block) if CurrentDomain.feature?(name.to_s)
+    concat(capture(&block)) if CurrentDomain.feature?(name.to_s)
   end
 
   def module!(name, &block)
-    capture(&block) if CurrentDomain.module?(name.to_s) &&
-                       CurrentDomain.feature?(name.to_s)
+    concat(capture(&block)) if CurrentDomain.module?(name.to_s) &&
+                               CurrentDomain.feature?(name.to_s)
   end
 
   def upsell(&block)
-    capture(&block) if CurrentDomain.upsell?
+    concat(capture(&block)) if CurrentDomain.upsell?
   end
 
   # Returns the meta keyword tags for this view that we'll use in headers

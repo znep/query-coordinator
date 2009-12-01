@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     @is_marketing_page = false
   end
 
-  hide_action :current_user, :current_user_session, :prerendered_fragment_for, :require_feature
+  hide_action :current_user, :current_user_session, :prerendered_fragment_for, :require_module!, :require_that
   def current_user
     @current_user ||= current_user_session ? current_user_session.user : nil
   end

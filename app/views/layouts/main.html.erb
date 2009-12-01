@@ -61,15 +61,14 @@
               <ul class="subNav">
                 <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
                 <li><%= link_to "<span>Friends</span>", contacts_path %></li>
-                <li class="<%= 'last' unless CurrentDomain.upsell ||
-                                            (CurrentDomain.module?(:moderate_comments) && 
-                                             CurrentDomain.moderate_comments?) %>">
+                <li class="<%= 'last' unless CurrentDomain.upsell? ||
+                                            (CurrentDomain.module?(:comment_moderation) &&
+                                             CurrentDomain.comment_moderation?) %>">
                   <%= link_to "<span>Profile</span>", current_user.href %>
                 </li>
-              <%- module! :moderate_comments do -%>
+              <%- module! :comment_moderation do -%>
                 <li class="last">
                     <%= link_to '<span>Approvals</span>', approval_path %>
-                  <%- end -%>
                 </li>
               <%- end -%>
               <%- upsell do -%>

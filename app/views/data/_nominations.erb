@@ -78,7 +78,7 @@
             <li>
               <%= 
                 filename = truncate(a.filename, :omission => " ...", :length => 55)
-                link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename) 
+                link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename, :rel => "external") 
               %>
               <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
               %> 

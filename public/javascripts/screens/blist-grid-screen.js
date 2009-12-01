@@ -162,8 +162,10 @@ blist.blistGrid.mainMenuLoaded = function (data)
     $container[0].appendChild($menus[0]);
 
     // Update the Create menu in More Views tab
-    $('#createViewMenu')[0].innerHTML =
-        $menus.eq(0).find('li.blist li.newView ul.menu')[0].innerHTML;
+    var $cvMenu = $('#createViewMenu');
+    var $newViewSubmenu = $menus.eq(0).find('li.blist li.newView ul.menu');
+    if ($cvMenu.length > 0 && $newViewSubmenu.length > 0)
+    { $cvMenu[0].innerHTML = $newViewSubmenu[0].innerHTML; }
 
     // Swap out the filter & view menu with whatever was loaded
     $menu = $("#filterViewMenu");

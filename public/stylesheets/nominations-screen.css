@@ -40,6 +40,7 @@
 
 .nominationList .nominationList-row
 {
+    position: relative;
     clear: both;
 }
 
@@ -57,6 +58,7 @@
 
 .nominationList .nominationList-authorColumn
 {
+    left: 0;
     width: 11.7em;
 }
 

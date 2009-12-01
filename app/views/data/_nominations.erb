@@ -38,7 +38,11 @@
   <div class="nominationList-cell nominationList-nominationColumn">
     <div class="nominationVotes">
       <p class="nominationNet"><%= nomnomnom.netVotes %></p>
-      <% if !current_user.nil? %>
+      <% 
+          # Only allow users to vote when they're logged in and when the status
+          # of the bug is still pending rejection/acceptance
+      %>
+      <% if !current_user.nil? && nomnomnom.status == "pending" %>
           <a class="rateNomination rateUp" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=true" title="I like it">I like it</a>
           <a class="rateNomination rateDown" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=false" title="I don't like it">I like it</a>
       <% end %>

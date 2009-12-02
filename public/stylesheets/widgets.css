@@ -305,7 +305,7 @@ ul.menu li.submenu
 ul.menu li.submenu > a > .highlight
 {
     background-image: url(/stylesheets/images/widgets/menu/submenu_arrow.png);
-    background-position: right center;
+    background-position: right 0.2em;
     background-repeat: no-repeat;
 }
 
@@ -1410,8 +1410,10 @@ table.gridList tr.filteredOut
 {
     background-image: none;
     height: auto;
-    margin: 0;
+    margin: 0 20px 0 0;
+    overflow: hidden;
     text-indent: 0;
+    white-space: nowrap;
 }
 
 .dialogBox .header .close

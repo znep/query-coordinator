@@ -101,7 +101,8 @@
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
                     <div class='innerWrapper'>
-                      <span class='linkIcon'>Filter &amp; View</span></div></div>
+                      <span class='linkIcon'>Filter, Visualize &amp; More</span>
+                  </div></div>
               </div></a>
               <%= render(:partial => "filter_view_menu",
                 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
@@ -125,21 +126,16 @@
             </li>
             <%- end -%>
 
-            <%# Export/access options %>
-            <li class='separator mainViewOption'>
-              <a id='rssLink' class='staticLink'
-                href='/views/<%= @view.id %>/rows.rss'><span class='linkIcon'>RSS</span></a>
-            </li>
-
             <li class='mainViewOption'>
               <a href='#' id='shareTopLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
                     <div class='innerWrapper'>
-                      <span class='linkIcon'>Socialize This</span>
+                      <span class='linkIcon'>Share &amp; Socialize</span>
                     </div>
                 </div></div>
               </a>
-              <%= menu_tag(socialize_menu_options(@view, 'shareTopMenu')) %>
+              <%= menu_tag({'id' => 'shareTopMenu', 'class' => 'shareSocialize',
+                'items' => share_menu_options(@view)}, is_owner, can_edit) %>
             </li>
           </ul>
 

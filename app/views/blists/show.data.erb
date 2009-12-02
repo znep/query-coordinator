@@ -9,4 +9,9 @@
 <%= render(:partial => "filter_view_menu",
 :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
 </div>
+
+<div id='createViewMenuComponent'>
+<%= menu_tag({'id' => 'createViewMenu',
+  'items' => view_create_menu_options(@view) }) %>
 <%- end -%>
+</div>

@@ -1,56 +1,20 @@
 <ul id='mainMenu' class='menu multilevelMenu'>
-  <li class='first blist active'>
-    <dl><dt><a href='#menublist'><%= t(:blist_name).capitalize %></a></dt>
+  <li class='first basic active'>
+    <dl><dt><a href='#menuBasic'>Basic</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
         {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
         'href' => "#{@view.href}/print", 'modal' => true,
         'if' => !@view.is_alt_view?},
-        {'text' => 'Create a New View', 'class' => 'newView',
-        'user_required' => true,
-        'if' => !@view.is_alt_view?, 'href' => '#',
-        'submenu' => {'items' => view_create_menu_options(@view)} },
-        {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
-        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-        {'text' => 'As CSV', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
-        {'text' => 'As PDF', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
-        {'text' => 'As XLS', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
-        {'text' => 'As XLSX (beta)', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-        # {'text' => 'As XLSX', 'external' => true,
-        # 'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-        {'text' => 'As XML', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
-        {'text' => 'As JSON', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
-        ]}},
-        {'text' => 'API', 'class' => 'api',
-        'href' => "/popup/api", 'modal' => true},
-        {'text' => 'RSS', 'class' => 'rss',
-        'href' => "/views/#{@view.id}/rows.rss"},
-        {'text' => "Email this #{t(:blist_name)}", 'class' => 'email',
-        'href' => "#{@view.href}/email", 'modal' => true},
-        # not supported for now
-#        {'text' => "Copy this #{t(:blist_name)}", 'class' => 'copy',
-#        'href' => '#copy_blist', 'user_required' => true},
         {'separator' => true, 'user_required' => true},
-        {'text' => "Design a New #{t(:blist_name).titleize}...", 'class' => 'create',
-        'href' => "#{new_blist_path}"},
-        {'text' => 'Upload...', 'class' => 'import', 'href' => '/upload'},
-        {'separator' => true},
+
+        {'text' => "Design a New #{t(:blist_name).titleize}...",
+        'class' => 'create', 'href' => "#{new_blist_path}"},
+        {'text' => "Upload a New #{t(:blist_name).titleize}...",
+        'class' => 'import', 'href' => '/upload'},
+        {'separator' => true, 'user_required' => true},
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
-        'submenu' => recent_blists_menu(@view, 5)},
-        {'separator' => true, 'owner_item' => true, 'if' => @view.is_blist?},
-        {'text' => "Change permissions...",
-        'class' => 'editPermissions', 'owner_item' => true, 'if' => @view.is_blist?,
-        'submenu' => { 'items' => [
-          {'text' => 'Publicly viewable', 'class' => "radioOption#{@view.is_public? ? 'Selected' : ''}",
-          'href' => "#makePermissionPublic_#{@view.id}"},
-          {'text' => 'Viewable only by owner and sharees', 'class' => "radioOption#{@view.is_public? ? '' : 'Selected'}",
-          'href' => "#makePermissionPrivate_#{@view.id}"},
-          ]}},
+        'user_required' => true, 'submenu' => recent_blists_menu(@view, 5)},
+
         {'text' => "Flag #{t(:blist_name).capitalize} as",
         'class' => 'flag', 'owner_item' => false, 'submenu' => {'items' => [
           {'text' => 'Copyright Violation', 'class' => 'radioOption',
@@ -67,19 +31,72 @@
         ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
-  <%- if can_edit && !@view.is_alt_view? -%>
-  <li class='edit'>
-    <dl><dt><a href='#menuEdit'>Edit</a></dt>
+
+  <li class='filterView'>
+    <dl><dt><a href='#menuFilterView'>Filter, Visualize &amp; More</a></dt>
+        <dd><%= menu_tag({'bare_menu' => true, 'items' => filter_submenu(@view)
+        }, is_owner, can_edit) %>
+    </dd></dl>
+  </li>
+
+  <li class='shareSocialize'>
+    <dl><dt><a href='#menuShareSocialize'>Publish, Share &amp; Socialize</a></dt>
+        <dd><%= menu_tag({'bare_menu' => true, 'items' => share_menu_options(@view)
+        }, is_owner, can_edit) %>
+    </dd></dl>
+  </li>
+
+
+  <li class='download'>
+    <dl><dt><a href='#menuDownload'>Download, API &amp; RSS</a></dt>
         <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-#        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
-#        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo'},
-#        {'separator' => true},
-#        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},
-#        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy'},
-#        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste'},
-#        {'separator' => true},
-#        {'text' => 'Delete', 'class' => 'delete', 'href' => '#Delete'},
-#        {'separator' => true},
+        {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
+        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+        {'text' => 'as CSV', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
+        {'text' => 'as JSON', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"},
+        {'text' => 'as PDF', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
+        {'text' => 'as XLS', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
+        {'text' => 'As XLSX (beta)', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
+        {'text' => 'as XML', 'external' => true,
+        'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"}
+        ]}},
+        {'text' => "Access this #{t(:blist_name).titleize} via the API...",
+        'class' => 'api', 'href' => "/popup/api", 'modal' => true},
+        {'separator' => true},
+        {'text' => 'Subscribe to Updates', 'class' => 'subscribe',
+        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
+          {'text' => 'RSS', 'external' => true, 'class' => 'rss',
+          'href' => "/views/#{@view.id}/rows.rss"},
+          {'text' => 'Atom', 'external' => true, 'class' => 'atom',
+          'href' => "/views/#{@view.id}/rows.atom"}
+        ]}}
+        ]}, is_owner, can_edit) %>
+    </dd></dl>
+  </li>
+
+  <%- if can_edit && !@view.is_alt_view? -%>
+  <li class='modify'>
+    <dl><dt><a href='#menuModify'>Modify</a></dt>
+      <dd><%= menu_tag({'bare_menu' => true, 'items' => [
+        {'text' => "Permissions",
+        'class' => 'editPermissions', 'owner_item' => true, 'if' => @view.is_blist?,
+        'submenu' => { 'items' => [
+          {'text' => 'Publicly viewable',
+           'class' => "radioOption#{@view.is_public? ? 'Selected' : ''}",
+           'href' => "#makePermissionPublic_#{@view.id}"},
+          {'text' => 'Viewable only by owner and sharees',
+           'class' => "radioOption#{@view.is_public? ? '' : 'Selected'}",
+           'href' => "#makePermissionPrivate_#{@view.id}"},
+          ]}},
+        {'separator' => true, 'owner_item' => true},
+        {'text' => 'Add a Column...', 'class' => 'insertColumn',
+        'href' => "/datasets/#{@view.id}/columns/new", 'modal' => true,
+        'owner_item' => true, 'if' => @view.is_blist?},
         {'text' => 'Edit Column Properties', 'class' => 'columnOptions',
             'submenu' => columns_menu(@view,
                  {'id' => 'columnOptionsMenu',
@@ -87,111 +104,68 @@
                   'modal' => true,
                   'include_options' =>
                    {'nested_table' => true,
-                    'nested_table_children' => true, 'list' => true},
-                    'initial_items' => [
-                      {'section_title' => 'Select a Column'},
-                      {'separator' => true}]})}
-        # There are no row options
-#        {'text' => 'Edit Row Options', 'class' => 'rowOptions',
-#        'href' => '#'}
-        ]}, is_owner, can_edit) %>
-    </dd></dl>
-  </li>
-  <%- end -%>
-  <%- if current_user && !@view.is_alt_view? -%>
-  <li class='data'>
-    <dl><dt><a href='#menuData'>Data</a></dt>
-      <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => 'Add a Column', 'class' => 'insertColumn',
-        'href' => "/datasets/#{@view.id}/columns/new", 'modal' => true,
-        'owner_item' => true, 'if' => @view.is_blist?},
-#        'submenu' => {'class' => 'noicon', 'items' => [
-#        {'text' => 'At the Far Right', 'href' => '#addColumn_last'},
-#        {'text' => 'At the Far Left', 'href' => '#addColumn_first'}]}},
-        # Not supported yet
-#        {'text' => 'Insert a Row', 'class' => 'insertRow',
-#        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-#        {'text' => 'At the Top', 'href' => '#'},
-#        {'text' => 'At the Bottom', 'href' => '#'}]}},
-        {'separator' => true},
-        {'text' => 'Show Row Tags', 'class' => 'rowTags',
-        'href' => '#show-rowTags'},
-        # Not supported
-#        {'text' => 'Show Row IDs', 'class' => 'rowIDs', 'href' => '#'},
-        {'separator' => true},
-        {'text' => 'Column Totals', 'class' => 'columnTotals',
-        'href' => '#', 'submenu' => columns_menu(@view,
-                 {'id' => 'columnTotalsMenu',
-                  'href_prefix' => "#column_totals:",
+                    'nested_table_children' => true, 'list' => true}})},
+        {'text' => 'Delete a Column', 'class' => 'columnDelete',
+            'submenu' => columns_menu(@view,
+                 {'id' => 'columnDeleteMenu',
+                  'href_prefix' => "#delete-col_",
+                  'column_test' => proc {|c, p| c.client_type != 'tag'},
                   'include_options' =>
-                   {'nested_table_children' => true, 'list' => true},
-                    'initial_items' => [
-                      # Not supported yet
-                      #{'text' => 'Show Totals Bar',
-                      #'class' => 'showTotals', 'href' => '#'},
-                      #{'separator' => true},
-                      {'section_title' => 'Add totals to:'}],
-                  'submenu' => method(:column_aggregate_menu),
-                  'column_test' => proc {|c, p|
-                  c.possible_aggregates.length > 1}})},
-        {'separator' => true, 'edit_item' => true, 'if' => @view.is_blist?},
+                  {'nested_table' => true,
+                    'nested_table_children' => true, 'list' => true}})},
+        {'separator' => true, 'owner_item' => true},
         {'text' => 'Upload More Rows', 'class' => 'uploadRows',
-          'edit_item' => true, 'if' => @view.is_blist?,
-          'href' => '#', 'submenu' => {'items' => [
+          'if' => @view.is_blist?, 'href' => '#', 'submenu' => {'items' => [
             {'text' => 'Append From a File...', 'class' => 'append',
             'href' => "#{@view.href}/bulk/append", 'modal' => true},
             {'text' => 'Refresh From a File...', 'class' => 'replace',
-            'href' => (current_user && current_user.can_access_premium_on?(@view)) ? "#{@view.href}/bulk/replace" : '/popup/premium',
+            'href' => (current_user && current_user.can_access_premium_on?(@view)) ?
+              "#{@view.href}/bulk/replace" : '/popup/premium',
             'modal' => true}
           ]}}
+#        {'separator' => true},
+#        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},
+#        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy'},
+#        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste'},
+#        {'separator' => true},
+#        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
+#        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo'},
         ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
   <%- end -%>
+
   <li class='info'>
     <dl><dt><a href='#menuInfo'>Info</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'section_title' => 'Info Pages'},
-        {'text' => "View Statistics", 'class' => 'statistics', 
-        'href' => (current_user && current_user.can_access_premium_on?(@view)) ? "#{@view.href}/stats" : "/popup/stats", 
-        'modal' => (!current_user || !current_user.can_access_premium_on?(@view))},
-        {'text' => "View More Info", 'class' => 'about',
-        'href' => "#{@view.href}/about"},
+        {'text' => "About this #{t(:blist_name).titleize}...", 'class' => 'about',
+          'href' => "#{@view.href}/about"},
+        {'text' => "#{t(:blist_name).titleize} Analytics...",
+          'class' => 'statistics',
+          'href' => (current_user && current_user.can_access_premium_on?(@view)) ?
+            "#{@view.href}/stats" : "/popup/stats",
+            'modal' => (!current_user ||
+              !current_user.can_access_premium_on?(@view))},
         {'separator' => true},
-        {'section_title' => 'Tabs'},
-        {'text' => 'Show Summary', 'class' => 'summary activePane',
-        'href' => '#infoPane_tabSummary'},
-        {'text' => 'Show More Views', 'class' => 'views',
-        'href' => '#infoPane_tabFiltered'},
-        {'text' => 'Show Comments', 'class' => 'comments',
-        'href' => '#infoPane_tabComments', 'if' => !@view.hide_comments?},
-        {'text' => 'Show Shares', 'class' => 'shares',
-        'href' => '#infoPane_tabSharing'},
-        {'text' => 'Show Publishing', 'class' => 'publishing',
-        'href' => '#infoPane_tabPublishing', 'if' => !@view.is_alt_view?},
-        {'text' => 'Show Activity', 'class' => 'activity',
-        'href' => '#infoPane_tabActivity'}
+        {'text' => 'Jump to', 'class' => 'tabJump', 'href' => '#',
+        'submenu' => {'items' => [
+          {'text' => 'Comments', 'class' => 'comments',
+          'href' => '#infoPane_tabComments', 'if' => !@view.hide_comments?},
+          {'text' => 'More Views', 'class' => 'views',
+          'href' => '#infoPane_tabFiltered'},
+          {'text' => 'Sharing', 'class' => 'shares',
+          'href' => '#infoPane_tabSharing'},
+          {'text' => 'Publishing', 'class' => 'publishing',
+          'href' => '#infoPane_tabPublishing', 'if' => !@view.is_alt_view?},
+          {'text' => 'Activity', 'class' => 'activity',
+          'href' => '#infoPane_tabActivity'},
+          {'text' => 'Summary', 'class' => 'summary activePane',
+          'href' => '#infoPane_tabSummary'}
+          ]}}
       ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
-  <%- if current_user && !@view.is_alt_view? -%>
-  <li class='publish'>
-    <dl><dt><a href='#menuPublish'>Publish</a></dt>
-      <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-      {'section_title' => "Embed #{t(:blists_name)} on the Web"},
-        {'text' => 'Grid Only', 'class' => 'grid', 'href' => '#publish_grid'},
-        # Not supported
-#        {'text' => 'Grid + Page', 'class' => 'gridPage', 'href' => '#'},
-#        {'text' => 'Page Only', 'class' => 'page', 'href' => '#'},
-#        {'separator' => true},
-#        {'text' => 'As a Form', 'class' => 'form', 'href' => '#publish_form'}
-        # Not supported
-#        {'text' => 'As a Social Data Player', 'class' => 'search',
-#        'href' => '#'}
-        ]}, is_owner, can_edit) %>
-    </dd></dl>
-  </li>
-  <%- end -%>
+
   <li class='footer'><div class='outerWrapper'>
     <div class='innerWrapper'><span class='colorWrapper'></span>
   </div></div></li>

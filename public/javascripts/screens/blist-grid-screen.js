@@ -99,32 +99,6 @@ blist.blistGrid.removeTabCookie = function(viewId)
     $.cookies.set('viewTabs', $.json.serialize(cookieObj));
 };
 
-blist.blistGrid.columnClickHandler = function (event)
-{
-    var $target = $(event.currentTarget);
-    var href = $target.attr('href');
-    var href_parts = href.slice(href.indexOf('#') + 1).split(':');
-    if (href_parts.length < 2)
-    {
-        return;
-    }
-
-    switch (href_parts[0])
-    {
-        case 'column_totals':
-            event.preventDefault();
-            break;
-        case 'aggregate':
-            event.preventDefault();
-            if (href_parts.length == 3)
-            {
-                $('#dataGrid').datasetGrid().setColumnAggregate(href_parts[1],
-                        href_parts[2]);
-            }
-            break;
-    }
-};
-
 blist.blistGrid.toggleAddColumns = function ()
 {
     $('#addColumnsMenu').toggleClass('shown');
@@ -162,10 +136,14 @@ blist.blistGrid.mainMenuLoaded = function (data)
     $container[0].appendChild($menus[0]);
 
     // Update the Create menu in More Views tab
-    var $cvMenu = $('#createViewMenu');
-    var $newViewSubmenu = $menus.eq(0).find('li.blist li.newView ul.menu');
-    if ($cvMenu.length > 0 && $newViewSubmenu.length > 0)
-    { $cvMenu[0].innerHTML = $newViewSubmenu[0].innerHTML; }
+    $menu = $('#createViewMenu');
+    if ($menu.length > 0)
+    {
+        $container = $menu.parent();
+        $container[0].removeChild($menu[0]);
+        $container[0].appendChild($menus.filter('#createViewMenu')[0]);
+        blistGridNS.hookUpCreateViewMenu();
+    }
 
     // Swap out the filter & view menu with whatever was loaded
     $menu = $("#filterViewMenu");
@@ -177,13 +155,20 @@ blist.blistGrid.mainMenuLoaded = function (data)
     blistGridNS.hookUpFilterViewMenu();
 };
 
+blist.blistGrid.hookUpCreateViewMenu = function()
+{
+    $('#createViewMenu').dropdownMenu(
+        {triggerButton: $('.singleInfoFiltered .createViewLink'),
+            forcePosition: true});
+};
+
 blist.blistGrid.hookUpFilterViewMenu = function()
 {
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
         linkCallback: blistGridNS.menuHandler,
         menuBar: $('#lensContainer .headerBar')});
 
-    $("#filterViewMenu .columnsMenu").scrollable();
+    $("#filterViewMenu .columnsMenu, #filterViewMenu .scrollableMenu").scrollable();
 };
 
 blist.blistGrid.hookUpMainMenu = function()
@@ -191,11 +176,7 @@ blist.blistGrid.hookUpMainMenu = function()
     $('#mainMenu').dropdownMenu({triggerButton: $('#mainMenuLink'),
             menuBar: $('#lensContainer .headerBar'),
             linkCallback: blistGridNS.menuHandler});
-    $('#mainMenu .columnsMenu').scrollable();
-    $('#mainMenu .columnsMenu a').click(function (event)
-    {
-        blistGridNS.columnClickHandler(event);
-    });
+    $('#mainMenu .columnsMenu, #mainMenu .scrollableMenu').scrollable();
     blistGridNS.setInfoMenuItem($('#infoPane .summaryTabs li.active'));
 };
 
@@ -215,6 +196,10 @@ blist.blistGrid.menuHandler = function(event)
     event.preventDefault();
     switch (action)
     {
+        case 'aggregate':
+            if (s.length == 3)
+            { $('#dataGrid').datasetGrid().setColumnAggregate(actionId, s[2]); }
+            break;
         case 'publish':
             $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab('#tabPublishing');
@@ -227,6 +212,9 @@ blist.blistGrid.menuHandler = function(event)
             var $li = $target.closest('li');
             $('#dataGrid').datasetGrid().showHideColumns(actionId,
                 $li.hasClass('checked'));
+            break;
+        case 'delete-col':
+            $('#dataGrid').datasetGrid().deleteColumns(actionId);
             break;
         case 'show-rowTags':
             $.each($('#dataGrid').blistModel().meta().view.columns,
@@ -658,6 +646,7 @@ $(function ()
     blistGridNS.hookUpMainMenu();
     blistGridNS.hookUpFilterViewMenu();
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
+        linkCallback: blistGridNS.menuHandler,
         menuBar: $('#lensContainer .headerBar')});
 
     // Set up the info pane tab switching.
@@ -728,9 +717,7 @@ $(function ()
     // Wire up attribution edit box
     $('.attributionEdit').attributionEdit();
 
-    $('#createViewMenu').dropdownMenu(
-        {triggerButton: $('.singleInfoFiltered .createViewLink'),
-            forcePosition: true});
+    blistGridNS.hookUpCreateViewMenu();
 
     $("#infoPane .singleInfoPublishing").infoPanePublish();
 

@@ -82,17 +82,35 @@ module BlistsHelper
       "title='#{rating}'><span>#{rating}</span></div>"
   end
 
-  def socialize_menu_options(view, menu_id = '')
+  def share_menu_options(view)
+    [{'text' => "Publish this #{t(:blist_name).titleize}...",
+      'class' => 'publish', 'href' => '#publish'},
+      {'text' => "Email this #{t(:blist_name).titleize}...", 'class' => 'email',
+        'href' => "#{@view.href}/email", 'modal' => true},
+      {'separator' => true, 'owner_item' => true},
+      {'text' => "Share this #{t(:blist_name).titleize}...", 'class' => 'share',
+      'href' => "#{@view.href}/share", 'modal' => true, 'owner_item' => true},
+      {'separator' => true},
+      {'text' => "Socialize this #{t(:blist_name).titleize}",
+      'class' => 'socialize', 'href' => '#', 'submenu' =>
+        {'class' => 'socializeMenu', 'option_menu' => true,
+        'items' => socialize_menu_options(view)}}
+    ]
+  end
+
+  def socialize_menu_options(view)
     tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{th.company} - ")
     seo_path = "#{request.protocol + request.host_with_port + view.href}"
     short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href}"
 
-    {'id' => menu_id, 'option_menu' => true,
-      'items' => [
-      {'text' => 'Delicious', 'class' => 'delicious', 'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
-      {'text' => 'Digg', 'class' => 'digg', 'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(@view.name)}", 'external' => true},
-      {'text' => 'Twitter', 'class' => 'twitter', 'href' => "http://www.twitter.com/home?status=#{tweet + short_path}", 'external' => true},
-      {'text' => 'Facebook', 'class' => 'facebook', 'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}", 'external' => true}]}
+    [{'text' => 'Delicious', 'class' => 'delicious', 'external' => true,
+      'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}"},
+      {'text' => 'Digg', 'class' => 'digg', 'external' => true,
+      'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(view.name)}"},
+      {'text' => 'Facebook', 'class' => 'facebook', 'external' => true,
+      'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
+      {'text' => 'Twitter', 'class' => 'twitter', 'external' => true,
+      'href' => "http://www.twitter.com/home?status=#{tweet + short_path}"}]
   end
 
   def view_create_menu_options(view)
@@ -105,6 +123,59 @@ module BlistsHelper
       'class' => 'viz' + (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')}]
+  end
+
+  def filter_submenu(view)
+    filters = view.filters
+    [{'text' => 'Show Row Tags', 'class' => 'rowTags', 'href' => '#show-rowTags'},
+      {'text' => 'Column Totals', 'class' => 'columnTotals',
+      'href' => '#', 'submenu' => columns_menu(view,
+        {'href_prefix' => "#column_totals:", 'include_options' =>
+          {'nested_table_children' => true, 'list' => true},
+        'initial_items' => [{'section_title' => 'Add totals to:'}],
+        'submenu' => method(:column_aggregate_menu),
+        'column_test' => proc {|c, p| c.possible_aggregates.length > 1}})},
+      {'separator' => true},
+      {'text' => 'Filter...', 'class' => 'filter',
+      'href' => blist_filters_path(view.id), 'modal' => true},
+      {'text' => 'Sort Columns...', 'class' => 'sort',
+      'href' => blist_sort_bys_path(view.id), 'modal' => true},
+      {'text' => 'Show or Hide Columns', 'class' => 'showHide', 'href' => '#',
+      'submenu' => columns_menu(view,
+        {'initial_items' => [{'section_title' => 'Check/Uncheck to Show/Hide'},
+            {'separator' => true}],
+          'post_items' => (current_user && view.owner.id == current_user.id) ?
+            [{'separator' => true},
+          {'text' => 'Advanced...', 'class' => 'advancedShowHide',
+          'href' => blist_show_hides_path(view.id), 'modal' => true}] : [],
+          'href_prefix' => "#hide-show-col_", 'checkbox_menu' => true,
+          'checkbox_callback' => proc { |c| !c.flag?('hidden') },
+          'column_test' => proc {|c, p| p.nil? || !p.flag?('hidden')},
+          'include_options' =>
+            {'nested_table' => true, 'hidden' => true,
+            'nested_table_children' => true, 'list' => true}
+            })},
+      {'separator' => true},
+      {'text' => 'Create a Calendar View...', 'href' => "#{view.href}/calendar",
+      'class' => 'calendar' + (view.can_add_calendar? ? '' : ' disabled'),
+      'title' => (view.can_add_calendar? ? '' :
+        'This dataset does not have both a date column and text column')},
+      {'text' => 'Create a Chart View...', 'href' => "#{view.href}/visualization",
+      'class' => 'visualization' + (view.can_add_visualization? ? '' : ' disabled'),
+      'title' => (view.can_add_visualization? ? '' :
+        'This dataset does not have the appropriate columns for visualizations')},
+      # Map item
+      {'separator' => true, 'if' => filters.length > 0},
+      {'text' => 'More Views', 'class' => 'moreViews', 'href' => '#',
+      'submenu' => {'class' => 'scrollableMenu', 'items' => [
+        {'button' => true, 'text' => 'Previous',
+        'href' => '#prev', 'class' => 'prev'}] +
+        filters.sort {|a,b| a.name <=> b.name }.map do |v|
+        {'text' => v.name, 'href' => v.href,
+        'class' => dataset_view_type(v) + ' scrollable'}
+      end + [{'button' => true, 'text' => 'Next',
+      'href' => '#next', 'class' => 'next'}]}
+    }]
   end
 
   def contacts_filter_menu(href_prefix, href_group_prefix,
@@ -221,7 +292,7 @@ module BlistsHelper
     aggs.each do |a|
       items << {'text' => a['title'],
         'class' => column.aggregate == a['name'] ? 'checked' : '',
-        'href' => '#aggregate:' + column.id.to_s + ':' + a['name']}
+        'href' => '#aggregate_' + column.id.to_s + '_' + a['name']}
     end
     {'option_menu' => true, 'items' => items}
   end

@@ -247,6 +247,7 @@
                     success: function(retCol)
                     {
                         datasetObj.settings._model.updateColumn(retCol);
+                        $(document).trigger(blist.events.COLUMNS_CHANGED);
                     }});
             },
 
@@ -271,7 +272,7 @@
                         }
                         datasetObj.settings._model.updateColumn(col);
 
-                        var $li = $('#columnsShowMenu a[href*="_' + colId + '"]')
+                        var $li = $('.columnsShow a[href*="_' + colId + '"]')
                             .closest('li');
                         if (hide) { $li.removeClass('checked'); }
                         else { $li.addClass('checked'); }
@@ -311,6 +312,42 @@
                         }
                     }
                 });
+            },
+
+            deleteColumns: function(columns)
+            {
+                if (!(columns instanceof Array)) { columns = [columns]; }
+                var datasetObj = this;
+                var model = datasetObj.settings._model;
+                var view = model.meta().view;
+                var successCount = 0;
+
+                var multiCols = columns.length > 1;
+                if (confirm('Do you want to delete the ' +
+                    (multiCols ? columns.length + ' selected columns' :
+                        'selected column') + '? All data in ' +
+                    (multiCols ? 'these columns' : 'this column') +
+                    ' will be removed!'))
+                {
+                    $.each(columns, function(i, colId)
+                    {
+                        $.ajax({url: '/views/' + view.id + '/columns/' +
+                            colId + '.json', type: 'DELETE',
+                            contentType: 'application/json',
+                            complete: function()
+                            {
+                                successCount++;
+                                if (successCount == columns.length)
+                                {
+                                    model.deleteColumns(columns);
+                                    $(document)
+                                        .trigger(blist.events.COLUMNS_CHANGED);
+                                }
+                            }});
+                    });
+                    // Hide columns so they disappear immediately
+                    datasetObj.showHideColumns(columns, true, true);
+                }
             },
 
             updateVisibleColumns: function(columns)
@@ -1070,35 +1107,9 @@
                 selCols[colIdIndex] = true;
 
                 var cols = [];
-                var successCount = 0;
                 $.each(selCols, function(colId, val)
                         { cols.push(colId); });
-                var multiCols = cols.length > 1;
-                if (confirm('Do you want to delete the ' +
-                    (multiCols ? cols.length + ' selected columns' :
-                        'selected column') + '? All data in ' +
-                    (multiCols ? 'these columns' : 'this column') +
-                    ' will be removed!'))
-                {
-                    $.each(cols, function(i, colId)
-                    {
-                        $.ajax({url: '/views/' + view.id + '/columns/' +
-                            colId + '.json', type: 'DELETE',
-                            contentType: 'application/json',
-                            complete: function()
-                            {
-                                successCount++;
-                                if (successCount == cols.length)
-                                {
-                                    model.deleteColumns(cols);
-                                    $(document)
-                                        .trigger(blist.events.COLUMNS_CHANGED);
-                                }
-                            }});
-                    });
-                    // Hide columns so they disappear immediately
-                    datasetObj.showHideColumns(cols, true, true);
-                }
+                datasetObj.deleteColumns(cols);
                 break;
         }
         // Update the grid header to reflect updated sorting, filtering

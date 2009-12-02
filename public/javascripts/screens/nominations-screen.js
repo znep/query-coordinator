@@ -16,6 +16,17 @@ nominationsNS.changeStatus = function(url, newStatus)
 
 nominationsNS.configureEditing = function()
 {
+    $(".nominationList-row a.deleteMe").click(function(event) {
+        event.preventDefault();
+        var $a = $(this);
+        $a.closest(".nominationList-row").remove();
+
+        $.ajax({
+            type: "DELETE",
+            url: $a.attr("href"), 
+            contentType: "application/json",
+        });
+    });
     $(".nominationList-row .acceptNomination").click(function(event) {
         event.preventDefault();
         nominationsNS.changeStatus($(this).attr("href"), "approved");
@@ -76,6 +87,8 @@ nominationsNS.configureVoting = function()
                     var net = parseInt($newRow.find(".nominationNet").html());
                     var delta = 0;
 
+                    $anchor.siblings().removeClass("rated");
+                    $anchor.addClass("rated");
                     if ($anchor.hasClass("rateUp"))
                     {
                         delta += 1;

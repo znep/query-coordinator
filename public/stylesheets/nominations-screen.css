@@ -199,3 +199,9 @@
     text-align: center;
     padding: 1em;
 }
+
+.nominationList div.delete
+{
+    font-size: 1.2em;
+    float: right;
+}

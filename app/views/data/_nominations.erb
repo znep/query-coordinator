@@ -46,6 +46,12 @@
           <a class="rateNomination rateUp" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=true" title="I like it">I like it</a>
           <a class="rateNomination rateDown" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=false" title="I don't like it">I like it</a>
       <% end %>
+
+      <% if current_user && current_user.is_premium? %>
+          <div class="delete">
+              (<a class="deleteMe" href="/nominations/<%= nomnomnom.id %>.json">Delete this suggestion</a>)
+          </div>
+      <% end %>
     </div>
     <div class="<%= current_user && current_user.is_premium? ? 'inlineEdit' : '' %>">
       <span class="nominationTitle"><%= h(nomnomnom.title) %></span>

@@ -126,8 +126,11 @@ module BlistsHelper
   end
 
   def filter_submenu(view)
+    tag_show_hide = view.columns.find {|c| c.client_type == 'tag'}.
+      flag?('hidden') ? 'show' : 'hide'
     filters = view.filters
-    [{'text' => 'Show Row Tags', 'class' => 'rowTags', 'href' => '#show-rowTags'},
+    [{'text' => "#{ tag_show_hide.titleize} Row Tags", 'class' => 'rowTags',
+      'href' => "##{tag_show_hide}-rowTags"},
       {'text' => 'Column Totals', 'class' => 'columnTotals',
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>

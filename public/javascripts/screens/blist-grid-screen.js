@@ -194,6 +194,7 @@ blist.blistGrid.menuHandler = function(event)
     var actionId = s[1];
 
     event.preventDefault();
+    var hideTags = true;
     switch (action)
     {
         case 'aggregate':
@@ -217,13 +218,15 @@ blist.blistGrid.menuHandler = function(event)
             $('#dataGrid').datasetGrid().deleteColumns(actionId);
             break;
         case 'show-rowTags':
+            hideTags = false;
+        case 'hide-rowTags':
             $.each($('#dataGrid').blistModel().meta().view.columns,
                 function(i, col)
                 {
                     if (col.dataTypeName == 'tag')
                     {
                         $('#dataGrid').datasetGrid().showHideColumns(col.id,
-                            false);
+                            hideTags);
                         return false;
                     }
                 });

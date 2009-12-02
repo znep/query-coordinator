@@ -352,11 +352,9 @@ ul.menu.checkboxMenu li.sectionTitle
 ul.menu.optionMenu li.separator,
 ul.menu.checkboxMenu li.separator
 {
-    background-color: transparent;
-    border: none;
-    height: 1px;
-    margin-bottom: 0;
-    margin-top: 0;
+    height: 2px;
+    margin-right: 0;
+    padding: 0;
 }
 
 ul.menu.optionMenu li a,
@@ -506,12 +504,12 @@ ul.menu li.button
 
 ul.menu li.button.prev
 {
-    border-bottom: solid 1px #cacaca;
+    border-bottom: solid 1px #999999;
 }
 
 ul.menu li.button.next
 {
-    border-top: solid 1px #cacaca;
+    border-top: solid 1px #999999;
 }
 
 ul.menu li.button a

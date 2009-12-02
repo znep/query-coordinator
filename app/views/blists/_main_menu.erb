@@ -60,7 +60,7 @@
         'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
         {'text' => 'as XLS', 'external' => true,
         'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
-        {'text' => 'As XLSX (beta)', 'external' => true,
+        {'text' => 'as XLSX (beta)', 'external' => true,
         'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
         {'text' => 'as XML', 'external' => true,
         'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"}
@@ -70,10 +70,10 @@
         {'separator' => true},
         {'text' => 'Subscribe to Updates', 'class' => 'subscribe',
         'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-          {'text' => 'RSS', 'external' => true, 'class' => 'rss',
-          'href' => "/views/#{@view.id}/rows.rss"},
           {'text' => 'Atom', 'external' => true, 'class' => 'atom',
-          'href' => "/views/#{@view.id}/rows.atom"}
+          'href' => "/views/#{@view.id}/rows.atom"},
+          {'text' => 'RSS', 'external' => true, 'class' => 'rss',
+          'href' => "/views/#{@view.id}/rows.rss"}
         ]}}
         ]}, is_owner, can_edit) %>
     </dd></dl>
@@ -101,7 +101,7 @@
             'submenu' => columns_menu(@view,
                  {'id' => 'columnOptionsMenu',
                   'href_prefix' => "/datasets/#{@view.id}/columns/",
-                  'modal' => true,
+                  'modal' => true, 'text_postfix' => '...',
                   'include_options' =>
                    {'nested_table' => true,
                     'nested_table_children' => true, 'list' => true}})},

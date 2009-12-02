@@ -132,7 +132,8 @@ module BlistsHelper
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>
           {'nested_table_children' => true, 'list' => true},
-        'initial_items' => [{'section_title' => 'Add totals to:'}],
+        'initial_items' => [{'section_title' => 'Add totals to:'},
+          {'separator' => true}],
         'submenu' => method(:column_aggregate_menu),
         'column_test' => proc {|c, p| c.possible_aggregates.length > 1}})},
       {'separator' => true},
@@ -242,7 +243,7 @@ module BlistsHelper
         if (!c.is_nested_table || c.is_list ||
             include_options['nested_table']) &&
           (!args['column_test'] || args['column_test'].call(c, nil))
-          cur_item = {'text' => h(c.name),
+          cur_item = {'text' => h(c.name + (args['text_postfix'] || '')),
             'modal' => modal,
             'href' => args['href_prefix'] + c.id.to_s,
             'class' => get_datatype_class(c) + ' scrollable' +
@@ -261,7 +262,8 @@ module BlistsHelper
           (c.childColumns || []).each do |cc|
             if (!cc.flag?('hidden') || include_options['hidden']) &&
               (!args['column_test'] || args['column_test'].call(cc, c))
-              cur_item = {'text' => h(c.name) + ': ' + h(cc.name),
+              cur_item = {'text' => h(c.name + ': ' +
+                cc.name + (args['text_postfix'] || '')),
                 'modal' => modal,
                 'href' => args['href_prefix'] + cc.id.to_s,
                 'class' => get_datatype_class(cc) + ' scrollable' +

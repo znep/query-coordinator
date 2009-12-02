@@ -11,7 +11,7 @@
 
   <div class="nominationList-cell nominationList-statusColumn">
     <div class="<%= friendly_status(nomnomnom).downcase %>">
-      <%= friendly_status(nomnomnom) %>
+      <%= friendly_status(nomnomnom).titleize %>
 
       <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
       %> 
@@ -38,7 +38,11 @@
   <div class="nominationList-cell nominationList-nominationColumn">
     <div class="nominationVotes">
       <p class="nominationNet"><%= nomnomnom.netVotes %></p>
-      <% if !current_user.nil? %>
+      <% 
+          # Only allow users to vote when they're logged in and when the status
+          # of the bug is still pending rejection/acceptance
+      %>
+      <% if !current_user.nil? && nomnomnom.status == "pending" %>
           <a class="rateNomination rateUp" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=true" title="I like it">I like it</a>
           <a class="rateNomination rateDown" href="/nominations/<%= nomnomnom.id %>/ratings.json?thumbsUp=false" title="I don't like it">I like it</a>
       <% end %>
@@ -78,7 +82,7 @@
             <li>
               <%= 
                 filename = truncate(a.filename, :omission => " ...", :length => 55)
-                link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename) 
+                link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename, :rel => "external") 
               %>
               <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
               %> 

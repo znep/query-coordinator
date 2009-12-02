@@ -87,6 +87,8 @@ nominationsNS.configureVoting = function()
                     var net = parseInt($newRow.find(".nominationNet").html());
                     var delta = 0;
 
+                    $anchor.siblings().removeClass("rated");
+                    $anchor.addClass("rated");
                     if ($anchor.hasClass("rateUp"))
                     {
                         delta += 1;

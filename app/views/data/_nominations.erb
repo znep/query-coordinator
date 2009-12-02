@@ -1,7 +1,7 @@
 <% if @nominations.size == 0 %>
 <div class="nominationList-row clearfix">
     <p class="noItems">
-    There are no nomintations at this time. 
+    There are no nominations at this time. 
     </p>
 </div>
 <% end %>
@@ -78,7 +78,7 @@
             <li>
               <%= 
                 filename = truncate(a.filename, :omission => " ...", :length => 55)
-                link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename) 
+                link_to(filename, "/nominations/#{nomnomnom.id}/attachments/#{a.id}", :title => a.filename, :rel => "external") 
               %>
               <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
               %> 

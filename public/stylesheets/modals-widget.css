@@ -88,3 +88,32 @@
 }
 
 /*** END: Print This Dataset ***/
+
+/*** START: About SDP ***/
+.widgetModal .aboutSDPWrapper .mainContent
+{
+    padding-bottom: 0;
+    padding-top: 0.5em;
+}
+
+.widgetModal .aboutSDPWrapper .logo
+{
+    background-image: url(/stylesheets/images/common/socrata_logo_about.png);
+    background-repeat: no-repeat;
+    float: right;
+    height: 34px;
+    margin: 0 0 10px 15px;
+    width: 120px;
+}
+
+.widgetModal .aboutSDPWrapper p
+{
+    font-size: 1.3em;
+    line-height: 1.3em;
+    margin-bottom: 1em;
+    text-align: justify;
+}
+
+.widgetModal .aboutSDPWrapper .submitLine { padding-top: 0; }
+.widgetModal .aboutSDPWrapper .actionButtons { margin-top: 0; }
+/*** END: About SDP ***/

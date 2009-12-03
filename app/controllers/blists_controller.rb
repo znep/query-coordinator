@@ -1,7 +1,7 @@
 class BlistsController < ApplicationController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag, :republish]
-  
+  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag, :republish, :about_sdp]
+
   def index
     @body_class = 'home'
     accept_keys = ['owner', 'owner_group', 'shared_to', 'shared_to_group',
@@ -238,13 +238,19 @@ class BlistsController < ApplicationController
     end
   end
 
+  def about_sdp
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
   def new
     respond_to do |format|
       format.html { render }
       format.data { render(:layout => "modal_dialog") }
     end
   end
-  
+
   def upload
     @is_upload = true
     respond_to do |format|
@@ -252,10 +258,10 @@ class BlistsController < ApplicationController
       format.data { render(:action => "new", :layout => "modal_dialog") }
     end
   end
-  
+
   def create
     new_view = params[:view].reject { |key,value| value.blank? }
-    
+
     flags = Array.new
     case (params[:privacy])
     when "public_view"
@@ -266,9 +272,9 @@ class BlistsController < ApplicationController
       # Don't need to set any flags for private
     when "adult_content"
       flags << "adultContent"
-    end  
+    end
     new_view[:flags] = flags
-    
+
     # if there is CC license type selected then we need to
     # populate from the creative commons dropdown
     if new_view[:licenseId] == "CC"

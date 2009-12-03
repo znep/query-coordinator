@@ -18,6 +18,6 @@
   menu_options['about'],
 
   {'text' => 'About the Social Data Player...', 'class' => 'aboutSDP',
-  'modal' => true,
+  'modal' => true, 'href' => "#{@view.href}/about_sdp",
   'if' => (!current_user || !current_user.can_access_premium_on?(@view))}
 ]}) %>

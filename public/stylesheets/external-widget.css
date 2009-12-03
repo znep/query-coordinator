@@ -53,58 +53,15 @@
     float: left;
     font-size: 1.1em;
     font-weight: bold;
+    margin-right: 1em;
     padding: 10px 12px 5px 7px;
     text-transform: uppercase;
 }
 
-.headerMenu { width: 17em; }
-.headerMenu .submenu .menu { width: 10em; }
+.headerMenu { width: 22em; }
+.headerMenu .submenu .menu { width: 12em; }
 
 .headerMenu .submenu.export .menu { width: 19em; }
-
-.headerMenu a
-{
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?2);
-    background-repeat: no-repeat;
-}
-
-.headerMenu .share a { background-position: 5px -968px; }
-.headerMenu .email a { background-position: 5px -48px; }
-.headerMenu .export a { background-position: 5px -117px; }
-.headerMenu .export .menu a { background-position: 5px 23px; }
-.headerMenu .publish a { background-position: 5px -577px; }
-.headerMenu .fullscreen a { background-position: 5px -992px; }
-.headerMenu .print a { background-position: 5px -2px; }
-.headerMenu .newDataset a { background-position: 5px -94px; }
-.headerMenu .subscribe a { background-position: 5px -1058px; }
-.headerMenu .subscribe .menu a { background-position: 5px 23px; }
-.headerMenu .api a { background-position: 5px -1081px; }
-
-.headerMenu li.share .menu a
-{
-    background-repeat: no-repeat;
-    background-position: 5px center;
-}
-.headerMenu .share .delicious a
-{
-    background-image: url(/images/icons/social_icon_delicious_small.png);
-}
-
-.headerMenu .share .digg a
-{
-	background-image: url(/images/icons/social_icon_digg_small.png);
-}
-
-.headerMenu .share .twitter a
-{
-	background-image: url(/images/icons/social_icon_twitter_small.png);
-}
-
-.headerMenu .share .facebook a
-{
-	background-image: url(/images/icons/social_icon_facebook_small.png);
-}
-
 
 #header .fullScreenButton
 {

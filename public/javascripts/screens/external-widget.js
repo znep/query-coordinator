@@ -4,15 +4,67 @@ var commonNS = blist.namespace.fetch('blist.common');
 blist.widget.setUpMenu = function()
 {
     // pullToTop here to account for Firefox 3.0.10 Windows bug
-    $('#header ul.headerMenu')
+    $('#header #mainMenu')
         .dropdownMenu({
-            triggerButton: $('#header').find('a.menuLink'),
+            triggerButton: $('#header #mainLink'),
             forcePosition: true,
             closeOnKeyup: true,
             linkCallback: widgetNS.headerMenuHandler,
             pullToTop: true});
+
+    $('#header #viewsMenu')
+        .dropdownMenu({
+            triggerButton: $('#header #viewsLink'),
+            forcePosition: true,
+            closeOnKeyup: true,
+            linkCallback: widgetNS.headerMenuHandler,
+            pullToTop: true});
+
+    $('#header #shareMenu')
+        .dropdownMenu({
+            triggerButton: $('#header #shareLink'),
+            forcePosition: true,
+            closeOnKeyup: true,
+            linkCallback: widgetNS.headerMenuHandler,
+            pullToTop: true});
+
+    $('#header .scrollableMenu').scrollable();
 };
 
+blist.widget.headerMenuHandler = function(event)
+{
+    var $target = $(event.currentTarget);
+    var href = $target.attr('href');
+    if (href.indexOf('#') < 0)
+    {
+        return;
+    }
+
+    event.preventDefault();
+
+    var s = href.slice(href.indexOf('#') + 1).split('_');
+    var action = s[0];
+    var actionId = s[1];
+
+    var hideTags = true;
+    switch (action)
+    {
+        case 'show-rowTags':
+            hideTags = false;
+        case 'hide-rowTags':
+            $.each($('#data-grid').blistModel().meta().view.columns,
+                function(i, col)
+                {
+                    if (col.dataTypeName == 'tag')
+                    {
+                        $('#data-grid').datasetGrid().showHideColumns(col.id,
+                            hideTags);
+                        return false;
+                    }
+                });
+            break;
+    }
+};
 blist.widget.submitEmail = function (event)
 {
     event.preventDefault();
@@ -58,7 +110,7 @@ blist.widget.clearTempViewTab = function ()
     {
         $('#viewHeader').hide();
     }
-    
+
     widgetNS.sizeGrid();
 };
 
@@ -163,14 +215,14 @@ blist.widget.sizeGrid = function ()
     var $gridContainer = $grid.closest(".gridContainer");
     var $metaContainer = $("#widgetMeta");
     var $viewHeader = $("#viewHeader");
-    
+
     var newContainerHeight = $container.next().offset().top - $container.offset().top;
     var newGridHeight = newContainerHeight - $metaContainer.height();
     if ($viewHeader.is(":visible"))
     {
         newGridHeight -= $viewHeader.outerHeight();
     }
-    
+
     $innerContainer.height(newContainerHeight);
     $gridContainer.height(newGridHeight);
     $grid.height(newGridHeight);
@@ -235,7 +287,7 @@ blist.widget.showInterstitial = function (e)
     {
         href = "http://" + href;
     }
-	$('.interstitial .exitBox').width($(window).width() - 125);
+    $('.interstitial .exitBox').width($(window).width() - 125);
     $('.interstitial .exitBox .externalLink')
         .attr('href', href)
         .text(href)
@@ -307,7 +359,7 @@ blist.widget.updateMetaTab = function(tabKey)
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);
-            
+
             if (tabKey == "comments")
             {
                 // Set up reply expanders in comments tab.
@@ -316,7 +368,7 @@ blist.widget.updateMetaTab = function(tabKey)
                     .click(function (e) { 
                         widgetNS.commentExpanderClick($commentPane, e); });
             }
-            
+
             if (tabKey == "publishing")
             {
                 $("#widgetMeta .singleInfoPublishing").infoPanePublish();
@@ -383,7 +435,7 @@ $(function ()
               referrer: document.referrer
             }
     });
-    
+
     // Wire up interstitials
     if (widgetNS.theme['behavior']['interstitial'])
     {
@@ -405,7 +457,7 @@ $(function ()
             $('#modal').jqmHide();
         }
     });
-    
+
     // Set up modals
     $("#modal").jqm({
         trigger: false,
@@ -421,7 +473,7 @@ $(function ()
         event.preventDefault();
         $("#modal").jqmHide();
     });
-    
+
     if ($("#widgetMeta").length > 0)
     {
         var tabMap = {

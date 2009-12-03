@@ -214,6 +214,7 @@ ul.menu li.sectionTitle
 {
     color: #959393;
     font-size: 1.1em;
+    line-height: 1.2em;
     padding-left: 30px;
     padding-right: 10px;
 }
@@ -302,7 +303,7 @@ ul.menu li.submenu
     position: relative;
 }
 
-ul.menu li.submenu > a > .highlight
+ul.menu a.submenuLink .highlight
 {
     background-image: url(/stylesheets/images/widgets/menu/submenu_arrow.png);
     background-position: right 0.2em;

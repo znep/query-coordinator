@@ -1,10 +1,8 @@
-<ul id='mainMenu' class='menu multilevelMenu'>
+<ul id='mainMenu' class='menu multilevelMenu headerMenu'>
   <li class='first basic active'>
     <dl><dt><a href='#menuBasic'>Basic</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
-        'href' => "#{@view.href}/print", 'modal' => true,
-        'if' => !@view.is_alt_view?},
+        menu_options['print'],
         {'separator' => true, 'user_required' => true},
 
         {'text' => "Design a New #{t(:blist_name).titleize}...",
@@ -32,17 +30,17 @@
     </dd></dl>
   </li>
 
-  <li class='filterView'>
+  <li>
     <dl><dt><a href='#menuFilterView'>Filter, Visualize &amp; More</a></dt>
-        <dd><%= menu_tag({'bare_menu' => true, 'items' => filter_submenu(@view)
-        }, is_owner, can_edit) %>
+      <dd><%= menu_tag({'bare_menu' => true, 'class' => 'filterView',
+      'items' => filter_submenu(@view)}, is_owner, can_edit) %>
     </dd></dl>
   </li>
 
-  <li class='shareSocialize'>
+  <li>
     <dl><dt><a href='#menuShareSocialize'>Publish, Share &amp; Socialize</a></dt>
-        <dd><%= menu_tag({'bare_menu' => true, 'items' => share_menu_options(@view)
-        }, is_owner, can_edit) %>
+      <dd><%= menu_tag({'bare_menu' => true, 'class' => 'shareSocialize',
+      'items' => share_menu_options(@view, menu_options)}, is_owner, can_edit) %>
     </dd></dl>
   </li>
 
@@ -50,31 +48,10 @@
   <li class='download'>
     <dl><dt><a href='#menuDownload'>Download, API &amp; RSS</a></dt>
         <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => 'Download this ' + t(:blist_name), 'class' => 'export',
-        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-        {'text' => 'as CSV', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
-        {'text' => 'as JSON', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"},
-        {'text' => 'as PDF', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
-        {'text' => 'as XLS', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
-        {'text' => 'as XLSX (beta)', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-        {'text' => 'as XML', 'external' => true,
-        'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"}
-        ]}},
-        {'text' => "Access this #{t(:blist_name).titleize} via the API...",
-        'class' => 'api', 'href' => "/popup/api", 'modal' => true},
-        {'separator' => true},
-        {'text' => 'Subscribe to Updates', 'class' => 'subscribe',
-        'href' => '#', 'submenu' => {'class' => 'noicon', 'items' => [
-          {'text' => 'Atom', 'external' => true, 'class' => 'atom',
-          'href' => "/views/#{@view.id}/rows.atom"},
-          {'text' => 'RSS', 'external' => true, 'class' => 'rss',
-          'href' => "/views/#{@view.id}/rows.rss"}
-        ]}}
+        menu_options['download'],
+        menu_options['api'],
+        menu_options['separator'],
+        menu_options['subscribe']
         ]}, is_owner, can_edit) %>
     </dd></dl>
   </li>
@@ -123,11 +100,11 @@
               "#{@view.href}/bulk/replace" : '/popup/premium',
             'modal' => true}
           ]}}
-#        {'separator' => true},
+#        menu_options['separator'],
 #        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},
 #        {'text' => 'Copy', 'class' => 'copy', 'href' => '#Copy'},
 #        {'text' => 'Paste', 'class' => 'paste', 'href' => '#Paste'},
-#        {'separator' => true},
+#        menu_options['separator'],
 #        {'text' => 'Undo', 'class' => 'undo', 'href' => '#Undo'},
 #        {'text' => 'Redo', 'class' => 'redo', 'href' => '#Redo'},
         ]}, is_owner, can_edit) %>
@@ -138,15 +115,9 @@
   <li class='info'>
     <dl><dt><a href='#menuInfo'>Info</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
-        {'text' => "About this #{t(:blist_name).titleize}...", 'class' => 'about',
-          'href' => "#{@view.href}/about"},
-        {'text' => "#{t(:blist_name).titleize} Analytics...",
-          'class' => 'statistics',
-          'href' => (current_user && current_user.can_access_premium_on?(@view)) ?
-            "#{@view.href}/stats" : "/popup/stats",
-            'modal' => (!current_user ||
-              !current_user.can_access_premium_on?(@view))},
-        {'separator' => true},
+        menu_options['about'],
+        menu_options['analytics'],
+        menu_options['separator'],
         {'text' => 'Jump to', 'class' => 'tabJump', 'href' => '#',
         'submenu' => {'items' => [
           {'text' => 'Comments', 'class' => 'comments',

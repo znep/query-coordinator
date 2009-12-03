@@ -80,7 +80,8 @@ module ApplicationHelper
       else
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
           "'><a title='#{i['title']}' " <<
-          "href='#{i['href']}' q=\"#{i['q']}\" class=\"#{i['link_class']}\"" <<
+          "href='#{i['href']}' q=\"#{i['q']}\" class=\"#{i['link_class']}" <<
+          (i['submenu'] ? ' submenuLink' : '') << "\"" <<
           (i['external'] ? ' rel="external"' : (i['modal'] ? ' rel="modal"' : '')) << ">" <<
           "<span class='highlight'>#{i['text']}</span></a>"
         if i['submenu']

@@ -256,6 +256,7 @@ stylesheets:
   - table-core
   - table-blist-grid
   - dataset-grid
+  - dataset-menus
   - ui.spinner
   - blist-grid-screen
   - form-common
@@ -287,6 +288,7 @@ stylesheets:
 - widgets-show:
   - table-core
   - dataset-grid
+  - dataset-menus
   - external-widget
   - info-pane
   - external-widget-meta

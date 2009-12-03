@@ -75,8 +75,10 @@
                   <span class='innerWrapper'>Menu</span>
               </div></div>
             </a>
+            <%- menu_options = dataset_menu_lookup(@view) -%>
             <%= render(:partial => "main_menu",
-            :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+            :locals => {:is_owner => is_owner, :can_edit => can_edit,
+            :menu_options => menu_options}) %>
             </li>
 
             <%- if can_edit && false -%>
@@ -134,8 +136,10 @@
                     </div>
                 </div></div>
               </a>
-              <%= menu_tag({'id' => 'shareTopMenu', 'class' => 'shareSocialize',
-                'items' => share_menu_options(@view)}, is_owner, can_edit) %>
+              <%= menu_tag({'id' => 'shareTopMenu',
+              'class' => 'shareSocialize headerMenu',
+              'items' => share_menu_options(@view, menu_options)},
+              is_owner, can_edit) %>
             </li>
           </ul>
 

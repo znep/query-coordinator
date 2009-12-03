@@ -82,11 +82,101 @@ module BlistsHelper
       "title='#{rating}'><span>#{rating}</span></div>"
   end
 
-  def share_menu_options(view)
-    [{'text' => "Publish this #{t(:blist_name).titleize}...",
-      'class' => 'publish', 'href' => '#publish'},
-      {'text' => "Email this #{t(:blist_name).titleize}...", 'class' => 'email',
-        'href' => "#{@view.href}/email", 'modal' => true},
+  def dataset_menu_lookup(view, is_widget = false, theme = nil)
+    {
+    'separator' => {'separator' => true},
+
+    'print' => {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
+      'href' => "#{view.href}/print", 'modal' => true,
+      'if' => (is_widget && !theme.nil? ? theme[:menu][:print] :
+        !@view.is_alt_view?)},
+
+    'full_screen' => {'text' => 'View Full Screen', 'class' => 'fullscreen',
+      'href' => @view.href, 'external' => true,
+      'if' => (!theme.nil? ? theme[:menu][:fullscreen] : true)},
+
+    'download' => {'text' => 'Download this ' + t(:blist_name).titleize,
+      'if' => (!theme.nil? ? theme[:menu][:download] : true),
+      'class' => 'export', 'href' => '#', 'submenu' =>
+        {'class' => 'noicon', 'items' => [
+          {'text' => 'as CSV', 'external' => true,
+          'link_class' => is_widget ? 'noInterstitial' : '',
+          'href' => "/views/#{view.id}/rows.csv?accessType=DOWNLOAD"},
+          {'text' => 'as JSON', 'external' => true,
+          'link_class' => is_widget ? 'noInterstitial' : '',
+          'href' => "/views/#{view.id}/rows.json?accessType=DOWNLOAD"},
+          {'text' => 'as PDF', 'external' => true,
+          'link_class' => is_widget ? 'noInterstitial' : '',
+          'href' => "/views/#{view.id}/rows.pdf?accessType=DOWNLOAD"},
+          {'text' => 'as XLS', 'external' => true,
+          'link_class' => is_widget ? 'noInterstitial' : '',
+          'href' => "/views/#{view.id}/rows.xls?accessType=DOWNLOAD"},
+          {'text' => 'as XLSX (beta)', 'external' => true,
+          'link_class' => is_widget ? 'noInterstitial' : '',
+          'href' => "/views/#{view.id}/rows.xlsx?accessType=DOWNLOAD"},
+          {'text' => 'as XML', 'external' => true,
+          'link_class' => is_widget ? 'noInterstitial' : '',
+          'href' => "/views/#{view.id}/rows.xml?accessType=DOWNLOAD"}
+        ]}},
+
+    'api' => {'text' => "Access this #{t(:blist_name).titleize} via the API...",
+      'class' => 'api', 'href' => "/popup/api", 'modal' => !is_widget,
+      'external' => is_widget, 'if' => (!theme.nil? ? theme[:menu][:api] : true)},
+
+    'subscribe' => {'text' => 'Subscribe to Updates', 'class' => 'subscribe',
+      'href' => '#', 'if' => (!theme.nil? ?
+        theme[:menu][:subscribe].any?{ |key, value| value } : true),
+      'submenu' =>
+        {'class' => 'noicon', 'items' => [
+          {'text' => 'Atom', 'external' => true, 'class' => 'atom',
+          'href' => "/views/#{view.id}/rows.atom",
+          'if' => (!theme.nil? ? theme[:menu][:subscribe][:atom] : true)},
+          {'text' => 'RSS', 'external' => true, 'class' => 'rss',
+          'href' => "/views/#{view.id}/rows.rss",
+          'if' => (!theme.nil? ? theme[:menu][:subscribe][:rss] : true)}
+      ]}},
+
+    'analytics' => {'text' => (is_widget ? 'Advanced ' : '' ) +
+      "#{t(:blist_name).titleize} Analytics...", 'class' => 'statistics',
+      'href' => (current_user && current_user.can_access_premium_on?(view)) ?
+        "#{view.href}/stats" : "/popup/stats",
+      'modal' => !is_widget &&
+        (!current_user || !current_user.can_access_premium_on?(view)),
+      'external' => is_widget ||
+        (!current_user || !current_user.can_access_premium_on?(view))
+      },
+
+    'basic_analytics' => {'text' => "Basic #{t(:blist_name).titleize} Analytics...",
+      'class' => 'statistics',
+      'href' => (current_user && current_user.can_access_premium_on?(view)) ?
+        "#{view.href}/simple_stats" : "/popup/stats",
+      'modal' => !is_widget &&
+        (!current_user || !current_user.can_access_premium_on?(view)),
+      'external' => is_widget &&
+        (!current_user || !current_user.can_access_premium_on?(view))
+      },
+
+    'about' => {'text' => "About this #{t(:blist_name).titleize}...",
+      'class' => 'about', 'href' => "#{@view.href}/about", 'external' => is_widget},
+
+    'email' => {'text' => "Email this #{t(:blist_name).titleize}...",
+      'class' => 'email', 'href' => "#{@view.href}/email", 'modal' => true,
+      'if' => (!theme.nil? ? theme[:menu][:email] : true)},
+
+    'publish' => {'text' => "Publish this #{t(:blist_name).titleize}...",
+      'class' => 'publish', 'modal' => is_widget,
+      'href' => (is_widget ?  "#{@view.href}/republish" : '#publish'),
+      'if' => (!theme.nil? ? theme[:menu][:republish] : true)},
+    }
+  end
+
+  def share_menu_options(view, menu_options = nil)
+    if menu_options.nil?
+      menu_options = dataset_menu_lookup(view)
+    end
+
+    [menu_options['publish'],
+      menu_options['email'],
       {'separator' => true, 'owner_item' => true},
       {'text' => "Share this #{t(:blist_name).titleize}...", 'class' => 'share',
       'href' => "#{@view.href}/share", 'modal' => true, 'owner_item' => true},
@@ -125,12 +215,13 @@ module BlistsHelper
         'This dataset does not have the appropriate columns for visualizations')}]
   end
 
-  def filter_submenu(view)
+  def filter_submenu(view, is_widget = false)
     tag_show_hide = view.columns.find {|c| c.client_type == 'tag'}.
       flag?('hidden') ? 'show' : 'hide'
     filters = view.filters
     [{'text' => "#{ tag_show_hide.titleize} Row Tags", 'class' => 'rowTags',
-      'href' => "##{tag_show_hide}-rowTags"},
+      'href' => "##{tag_show_hide}-rowTags"}] +
+      (is_widget ? [] : [
       {'text' => 'Column Totals', 'class' => 'columnTotals',
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>
@@ -169,13 +260,14 @@ module BlistsHelper
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
       # Map item
+      ]) + [
       {'separator' => true, 'if' => filters.length > 0},
       {'text' => 'More Views', 'class' => 'moreViews', 'href' => '#',
       'submenu' => {'class' => 'scrollableMenu', 'items' => [
         {'button' => true, 'text' => 'Previous',
         'href' => '#prev', 'class' => 'prev'}] +
         filters.sort {|a,b| a.name <=> b.name }.map do |v|
-        {'text' => v.name, 'href' => v.href,
+        {'text' => v.name, 'href' => v.href, 'external' => is_widget,
         'class' => dataset_view_type(v) + ' scrollable'}
       end + [{'button' => true, 'text' => 'Next',
       'href' => '#next', 'class' => 'next'}]}

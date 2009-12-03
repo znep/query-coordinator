@@ -166,6 +166,9 @@
 
         var sizeDropdownHeight = function()
         {
+            // Protect against race conditions
+            if ($dropdown === null || $dropdown === undefined) { return; }
+
             var ddTop = $dropdown.offset().top;
             var ddBottom = $dropdown.height() + ddTop;
             var $win = $(window);

@@ -220,6 +220,9 @@ blist.blistGrid.menuHandler = function(event)
         case 'show-rowTags':
             hideTags = false;
         case 'hide-rowTags':
+            var curText = $target.text();
+            var oldText = hideTags ? 'Hide' : 'Show';
+            var newText = hideTags ? 'Show' : 'Hide';
             $.each($('#dataGrid').blistModel().meta().view.columns,
                 function(i, col)
                 {
@@ -227,6 +230,9 @@ blist.blistGrid.menuHandler = function(event)
                     {
                         $('#dataGrid').datasetGrid().showHideColumns(col.id,
                             hideTags);
+                        $('.headerMenu .rowTags a').attr('href', hideTags ?
+                            '#show-rowTags' : '#hide-rowTags')
+                            .find('span').text(curText.replace(oldText, newText));
                         return false;
                     }
                 });

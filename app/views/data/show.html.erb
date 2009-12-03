@@ -142,6 +142,7 @@
   <%= javascript_include_merged 'shared-common-all' %>
   <%= javascript_include_merged 'data-show' %>
   <script type="text/javascript" charset="utf-8">
+    var discoverNS = blist.namespace.fetch('blist.discover');
     discoverNS.filterUrl = "<%= data_filter_path %>";
   </script>
 <% end %>

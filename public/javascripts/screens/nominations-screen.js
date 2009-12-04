@@ -23,15 +23,15 @@ nominationsNS.configureEditing = function()
 
         $.ajax({
             type: "DELETE",
-            url: $a.attr("href"), 
-            contentType: "application/json",
+            url: $a.attr("href"),
+            contentType: "application/json"
         });
     });
     $(".nominationList-row .acceptNomination").click(function(event) {
         event.preventDefault();
         nominationsNS.changeStatus($(this).attr("href"), "approved");
     });
-    
+
     $(".nominationList-row .rejectNomination").click(function(event) {
         event.preventDefault();
         nominationsNS.changeStatus($(this).attr("href"), "rejected");

@@ -525,54 +525,235 @@
                     <span class="textContent">
                       <h3>
                         Main Menu:
-                        <span class="infoText">Select the menu options to allow</span>
+                        <span class="infoText">
+                          Select the menu options to allow
+                        </span>
                       </h3>
                     </span>
                   </div>
                 </dd>
               </dl>
               <dl class="summaryList">
-                <dt>Menu Options</dt>
+                <dt></dt>
                 <dd>
                   <div class="itemContent">
                     <span class="textContent">
                       <ul>
                         <li>
-                          <%= check_box_tag("customization[menu][email]", true, @customization[:menu][:email]) %>
-                          <%= label_tag("customization_menu_email", "Email this Dataset") %>
+                          <%= check_box_tag("customization[menu][print]", true,
+                            @customization[:menu][:print]) %>
+                          <%= label_tag("customization_menu_print",
+                            "Print this #{t(:blist_name).titleize}") %>
                         </li>
                         <li>
-                          <%= check_box_tag("customization[menu][republish]", true, @customization[:menu][:republish]) %>
-                          <%= label_tag("customization_menu_republish", "Republish this Dataset") %>
+                          <%= check_box_tag("customization[menu][fullscreen]",
+                            true, @customization[:menu][:fullscreen]) %>
+                          <%= label_tag("customization_menu_fullscreen",
+                            "View Full Screen") %>
+                        </li>
+
+                        <li>
+                          <%= check_box_tag("customization[menu][download_menu][csv]",
+                            true, @customization[:menu][:download_menu][:csv]) %>
+                          <%= label_tag("customization_menu_download_menu_csv",
+                            "Download this #{t(:blist_name).titleize} as CSV") %>
                         </li>
                         <li>
-                          <%= check_box_tag("customization[menu][print]", true, @customization[:menu][:print]) %>
-                          <%= label_tag("customization_menu_print", "Print") %>
+                          <%= check_box_tag("customization[menu][download_menu][json]",
+                            true, @customization[:menu][:download_menu][:json]) %>
+                          <%= label_tag("customization_menu_download_menu_json",
+                            "Download this #{t(:blist_name).titleize} as JSON") %>
                         </li>
                         <li>
-                          <%= check_box_tag("customization[menu][subscribe][rss]", true, @customization[:menu][:subscribe][:rss]) %>
-                          <%= label_tag("customization_menu_subscribe_rss", "Subscribe via RSS") %>
+                          <%= check_box_tag("customization[menu][download_menu][pdf]",
+                            true, @customization[:menu][:download_menu][:pdf]) %>
+                          <%= label_tag("customization_menu_download_menu_pdf",
+                            "Download this #{t(:blist_name).titleize} as PDF") %>
                         </li>
                         <li>
-                          <%= check_box_tag("customization[menu][subscribe][atom]", true, @customization[:menu][:subscribe][:atom]) %>
-                          <%= label_tag("customization_menu_subscribe_atom", "Subscribe via Atom") %>
+                          <%= check_box_tag("customization[menu][download_menu][xls]",
+                            true, @customization[:menu][:download_menu][:xls]) %>
+                          <%= label_tag("customization_menu_download_menu_xls",
+                            "Download this #{t(:blist_name).titleize} as XLS") %>
                         </li>
                         <li>
-                          <%= check_box_tag("customization[menu][api]", true, @customization[:menu][:api]) %>
-                          <%= label_tag("customization_menu_api", "Access via API") %>
+                          <%= check_box_tag("customization[menu][download_menu][xlsx]",
+                            true, @customization[:menu][:download_menu][:xlsx]) %>
+                          <%= label_tag("customization_menu_download_menu_xlsx",
+                            "Download this #{t(:blist_name).titleize} as XLSX") %>
                         </li>
                         <li>
-                          <%= check_box_tag("customization[menu][fullscreen]", true, @customization[:menu][:fullscreen]) %>
-                          <%= label_tag("customization_menu_fullscreen", "View Full Screen") %>
+                          <%= check_box_tag("customization[menu][download_menu][xml]",
+                            true, @customization[:menu][:download_menu][:xml]) %>
+                          <%= label_tag("customization_menu_download_menu_xml",
+                            "Download this #{t(:blist_name).titleize} as XML") %>
+                        </li>
+
+                        <li>
+                          <%= check_box_tag("customization[menu][api]", true,
+                            @customization[:menu][:api]) %>
+                          <%= label_tag("customization_menu_api",
+                            "Access this #{t(:blist_name).titleize} via the API") %>
+                        </li>
+
+                        <li>
+                          <%= check_box_tag("customization[menu][subscribe][atom]",
+                            true, @customization[:menu][:subscribe][:atom]) %>
+                          <%= label_tag("customization_menu_subscribe_atom",
+                            "Subscribe to Updates via Atom") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][subscribe][rss]",
+                            true, @customization[:menu][:subscribe][:rss]) %>
+                          <%= label_tag("customization_menu_subscribe_rss",
+                            "Subscribe to Updates via RSS") %>
+                        </li>
+
+                        <li>
+                          <%= check_box_tag("customization[menu][basic_analytics]",
+                            true, @customization[:menu][:basic_analytics]) %>
+                          <%= label_tag("customization_menu_basic_analytics",
+                            "Basic Analytics") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][adv_analytics]",
+                            true, @customization[:menu][:adv_analytics]) %>
+                          <%= label_tag("customization_menu_adv_analytics",
+                            "Advanced Analytics") %>
+                        </li>
+
+                        <li>
+                          <%= check_box_tag("customization[menu][about]",
+                            true, @customization[:menu][:about]) %>
+                          <%= label_tag("customization_menu_about",
+                            "About this #{t(:blist_name).titleize}") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][about_sdp]",
+                            true, @customization[:menu][:about_sdp]) %>
+                          <%= label_tag("customization_menu_about_sdp",
+                            "About the Social Data Player") %>
                         </li>
                       </ul>
                     </span>
                   </div>
                 </dd>
               </dl>
+
+              <dl class="summaryList">
+                <dt></dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <h3>
+                        More Views Menu:
+                        <span class="infoText">
+                          Select the menu options to allow
+                        </span>
+                      </h3>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
+              <dl class="summaryList">
+                <dt></dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <ul>
+                        <li>
+                          <%= check_box_tag("customization[menu][show_tags]",
+                            true, @customization[:menu][:show_tags]) %>
+                          <%= label_tag("customization_menu_show_tags",
+                            "Show/Hide Row Tags") %>
+                        </li>
+
+                        <li>
+                          <%= check_box_tag("customization[menu][more_views]",
+                            true, @customization[:menu][:more_views]) %>
+                          <%= label_tag("customization_menu_more_views",
+                            "More Views") %>
+                        </li>
+
+                        <li>
+                          <%= check_box_tag("customization[menu][views_fullscreen]",
+                            true, @customization[:menu][:views_fullscreen]) %>
+                          <%= label_tag("customization_menu_views_fullscreen",
+                            "View Full Screen") %>
+                        </li>
+                      </ul>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
+
             </div>
             <div class="infoContentRightBg"></div>
             <div class="infoContentRight">
+              <dl class="summaryList">
+                <dt></dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <h3>
+                        Share Menu:
+                        <span class="infoText">
+                          Select the menu options to allow
+                        </span>
+                      </h3>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
+              <dl class="summaryList">
+                <dt></dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <ul>
+                        <li>
+                          <%= check_box_tag("customization[menu][republish]", true,
+                            @customization[:menu][:republish]) %>
+                          <%= label_tag("customization_menu_republish",
+                            "Publish this Dataset") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][email]", true,
+                            @customization[:menu][:email]) %>
+                          <%= label_tag("customization_menu_email",
+                            "Email this Dataset") %>
+                        </li>
+
+                        <li>
+                          <%= check_box_tag("customization[menu][socialize][delicious]",
+                            true, @customization[:menu][:socialize][:delicious]) %>
+                          <%= label_tag("customization_menu_socialize_delicious",
+                          "Socialize this #{t(:blist_name).titleize} via Delicious") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][socialize][digg]",
+                            true, @customization[:menu][:socialize][:digg]) %>
+                          <%= label_tag("customization_menu_socialize_digg",
+                          "Socialize this #{t(:blist_name).titleize} via Digg") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][socialize][facebook]",
+                            true, @customization[:menu][:socialize][:facebook]) %>
+                          <%= label_tag("customization_menu_socialize_facebook",
+                          "Socialize this #{t(:blist_name).titleize} via Facebook") %>
+                        </li>
+                        <li>
+                          <%= check_box_tag("customization[menu][socialize][twitter]",
+                            true, @customization[:menu][:socialize][:twitter]) %>
+                          <%= label_tag("customization_menu_socialize_twitter",
+                          "Socialize this #{t(:blist_name).titleize} via Twitter") %>
+                        </li>
+                      </ul>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
+
               <dl class="summaryList">
                 <dt></dt>
                 <dd>
@@ -600,6 +781,25 @@
                 </dd>
               </dl>
             <%- end -%>
+              <dl class="summaryList">
+                <dt>View Full Screen</dt>
+                <dd>
+                  <div class="itemContent">
+                    <span class="textContent">
+                      <p>Displays a button next to the search box to view the
+                        <%= t(:blist_name) %> full screen</p>
+                      <%= radio_button_tag("customization[menu][top_fullscreen]",
+                        "true", @customization[:menu][:top_fullscreen]) %>
+                      <%= label_tag("customization_menu_top_fullscreen_true",
+                        "Show") %>
+                      <%= radio_button_tag("customization[menu][top_fullscreen]",
+                        "false", !@customization[:menu][:top_fullscreen]) %>
+                      <%= label_tag("customization_menu_top_fullscreen_false",
+                        "Don't Show") %>
+                    </span>
+                  </div>
+                </dd>
+              </dl>
               <dl class="summaryList">
                 <dt>Public Views (Filters)</dt>
                 <dd>

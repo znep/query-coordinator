@@ -9,7 +9,8 @@
 </div>
 <div id="filterViewMenuComponent">
 <%= render(:partial => "filter_view_menu",
-:locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+:locals => {:is_owner => is_owner, :can_edit => can_edit,
+  :menu_options => menu_options}) %>
 </div>
 
 <div id='createViewMenuComponent'>

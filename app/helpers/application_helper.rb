@@ -48,6 +48,7 @@ module ApplicationHelper
     (options['checkbox_menu'] ? " checkboxMenu" : '') << "'>"
 
     last_item_was_separator = true
+    prev_separator = ''
 
     items.each do |i|
       if (i['owner_item'] && !is_owner) || (i['owner_item'] == false && is_owner) ||
@@ -61,13 +62,16 @@ module ApplicationHelper
                                    i['submenu']['items'].length < 1)
         next
       end
+
+      ret << prev_separator
       last_item_was_separator = false
+      prev_separator = ''
 
       if i['title'].nil?
         i['title'] = i['text']
       end
       if i['separator']
-        ret << "<li class='separator" << "'></li>"
+        prev_separator = "<li class='separator" << "'></li>"
         last_item_was_separator = true
       elsif i['section_title']
         ret << "<li class='sectionTitle #{i['class']}'>#{i['section_title']}</li>"

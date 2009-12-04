@@ -107,7 +107,8 @@
                   </div></div>
               </div></a>
               <%= render(:partial => "filter_view_menu",
-                :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+                :locals => {:is_owner => is_owner, :can_edit => can_edit,
+                :menu_options => menu_options}) %>
             </li>
             <%- end -%>
 

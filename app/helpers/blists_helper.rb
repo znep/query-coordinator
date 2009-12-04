@@ -83,61 +83,79 @@ module BlistsHelper
   end
 
   def dataset_menu_lookup(view, is_widget = false, theme = nil)
-    {
+    tag_show_hide = view.columns.find {|c| c.client_type == 'tag'}.
+      flag?('hidden') ? 'show' : 'hide'
+
+    filters = (theme.nil? || theme[:menu][:more_views]) ? view.filters : []
+
+    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{th.company} - ")
+    seo_path = "#{request.protocol + request.host_with_port + view.href}"
+    short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') +
+      view.short_href}"
+
+    options = {
     'separator' => {'separator' => true},
 
-    'print' => {'text' => "Print this #{t(:blist_name)}...", 'class' => 'print',
-      'href' => "#{view.href}/print", 'modal' => true,
-      'if' => (is_widget && !theme.nil? ? theme[:menu][:print] :
-        !@view.is_alt_view?)},
+    'print' => {'text' => "Print this #{t(:blist_name).titleize}...",
+      'class' => 'print', 'href' => "#{view.href}/print", 'modal' => true,
+      'if' => ((theme.nil? || theme[:menu][:print]) && !@view.is_alt_view?)},
 
     'full_screen' => {'text' => 'View Full Screen', 'class' => 'fullscreen',
       'href' => @view.href, 'external' => true,
-      'if' => (!theme.nil? ? theme[:menu][:fullscreen] : true)},
+      'if' => (theme.nil? || theme[:menu][:fullscreen])},
 
     'download' => {'text' => 'Download this ' + t(:blist_name).titleize,
-      'if' => (!theme.nil? ? theme[:menu][:download] : true),
+      'if' => (theme.nil? ||
+        theme[:menu][:download_menu].any?{ |key, value| value }),
       'class' => 'export', 'href' => '#', 'submenu' =>
         {'class' => 'noicon', 'items' => [
-          {'text' => 'as CSV', 'external' => true,
+          {'text' => 'as CSV', 'external' => true, 'class' => 'csv',
           'link_class' => is_widget ? 'noInterstitial' : '',
+          'if' => (theme.nil? || theme[:menu][:download_menu][:csv]),
           'href' => "/views/#{view.id}/rows.csv?accessType=DOWNLOAD"},
-          {'text' => 'as JSON', 'external' => true,
+          {'text' => 'as JSON', 'external' => true, 'class' => 'json',
           'link_class' => is_widget ? 'noInterstitial' : '',
+          'if' => (theme.nil? || theme[:menu][:download_menu][:json]),
           'href' => "/views/#{view.id}/rows.json?accessType=DOWNLOAD"},
-          {'text' => 'as PDF', 'external' => true,
+          {'text' => 'as PDF', 'external' => true, 'class' => 'pdf',
           'link_class' => is_widget ? 'noInterstitial' : '',
+          'if' => (theme.nil? || theme[:menu][:download_menu][:pdf]),
           'href' => "/views/#{view.id}/rows.pdf?accessType=DOWNLOAD"},
-          {'text' => 'as XLS', 'external' => true,
+          {'text' => 'as XLS', 'external' => true, 'class' => 'xls',
           'link_class' => is_widget ? 'noInterstitial' : '',
+          'if' => (theme.nil? || theme[:menu][:download_menu][:xls]),
           'href' => "/views/#{view.id}/rows.xls?accessType=DOWNLOAD"},
-          {'text' => 'as XLSX (beta)', 'external' => true,
+          {'text' => 'as XLSX (beta)', 'external' => true, 'class' => 'xlsx',
           'link_class' => is_widget ? 'noInterstitial' : '',
+          'if' => (theme.nil? || theme[:menu][:download_menu][:xlsx]),
           'href' => "/views/#{view.id}/rows.xlsx?accessType=DOWNLOAD"},
-          {'text' => 'as XML', 'external' => true,
+          {'text' => 'as XML', 'external' => true, 'class' => 'xml',
           'link_class' => is_widget ? 'noInterstitial' : '',
+          'if' => (theme.nil? || theme[:menu][:download_menu][:xml]),
           'href' => "/views/#{view.id}/rows.xml?accessType=DOWNLOAD"}
         ]}},
 
     'api' => {'text' => "Access this #{t(:blist_name).titleize} via the API...",
       'class' => 'api', 'href' => "/popup/api", 'modal' => !is_widget,
-      'external' => is_widget, 'if' => (!theme.nil? ? theme[:menu][:api] : true)},
+      'external' => is_widget, 'if' => (theme.nil? || theme[:menu][:api])},
 
     'subscribe' => {'text' => 'Subscribe to Updates', 'class' => 'subscribe',
-      'href' => '#', 'if' => (!theme.nil? ?
-        theme[:menu][:subscribe].any?{ |key, value| value } : true),
+      'href' => '#', 'if' => (theme.nil? ||
+        theme[:menu][:subscribe].any?{ |key, value| value }),
       'submenu' =>
         {'class' => 'noicon', 'items' => [
           {'text' => 'Atom', 'external' => true, 'class' => 'atom',
           'href' => "/views/#{view.id}/rows.atom",
-          'if' => (!theme.nil? ? theme[:menu][:subscribe][:atom] : true)},
+          'if' => (theme.nil? || theme[:menu][:subscribe][:atom])},
           {'text' => 'RSS', 'external' => true, 'class' => 'rss',
           'href' => "/views/#{view.id}/rows.rss",
-          'if' => (!theme.nil? ? theme[:menu][:subscribe][:rss] : true)}
+          'if' => (theme.nil? || theme[:menu][:subscribe][:rss])}
       ]}},
 
     'analytics' => {'text' => (is_widget ? 'Advanced ' : '' ) +
-      "#{t(:blist_name).titleize} Analytics...", 'class' => 'statistics',
+      "#{t(:blist_name).titleize} Analytics...",
+      'class' => 'adv_analytics statistics',
+      'if' => (theme.nil? || theme[:menu][:basic_analytics]),
       'href' => (current_user && current_user.can_access_premium_on?(view)) ?
         "#{view.href}/stats" : "/popup/stats",
       'modal' => !is_widget &&
@@ -147,7 +165,8 @@ module BlistsHelper
       },
 
     'basic_analytics' => {'text' => "Basic #{t(:blist_name).titleize} Analytics...",
-      'class' => 'statistics',
+      'class' => 'basic_analytics statistics',
+      'if' => (theme.nil? || theme[:menu][:adv_analytics]),
       'href' => (current_user && current_user.can_access_premium_on?(view)) ?
         "#{view.href}/simple_stats" : "/popup/stats",
       'modal' => !is_widget &&
@@ -157,50 +176,79 @@ module BlistsHelper
       },
 
     'about' => {'text' => "About this #{t(:blist_name).titleize}...",
+      'if' => (theme.nil? || theme[:menu][:about]),
       'class' => 'about', 'href' => "#{@view.href}/about", 'external' => is_widget},
 
     'email' => {'text' => "Email this #{t(:blist_name).titleize}...",
       'class' => 'email', 'href' => "#{@view.href}/email", 'modal' => true,
-      'if' => (!theme.nil? ? theme[:menu][:email] : true)},
+      'if' => (theme.nil? || theme[:menu][:email])},
 
     'publish' => {'text' => "Publish this #{t(:blist_name).titleize}...",
       'class' => 'publish', 'modal' => is_widget,
       'href' => (is_widget ?  "#{@view.href}/republish" : '#publish'),
-      'if' => (!theme.nil? ? theme[:menu][:republish] : true)},
+      'if' => (theme.nil? || theme[:menu][:republish])},
+
+    'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
+      'class' => 'rowTags', 'if' => (theme.nil? || theme[:menu][:show_tags]),
+      'href' => "##{tag_show_hide}-rowTags"},
+
+    'more_views' => {'text' => 'More Views', 'class' => 'moreViews', 'href' => '#',
+      'if' => ((theme.nil? || theme[:menu][:more_views]) && filters.length > 0),
+      'submenu' => {'class' => 'scrollableMenu', 'items' => [
+        {'button' => true, 'text' => 'Previous',
+        'href' => '#prev', 'class' => 'prev'}] +
+        filters.sort {|a,b| a.name <=> b.name }.map do |v|
+        {'text' => v.name, 'href' => v.href, 'external' => is_widget,
+        'class' => dataset_view_type(v) + ' scrollable'}
+      end + [{'button' => true, 'text' => 'Next',
+      'href' => '#next', 'class' => 'next'}]}},
+
+    'delicious' => {'text' => 'Delicious', 'class' => 'delicious',
+      'external' => true,
+      'if' => (theme.nil? || theme[:menu][:socialize][:delicious]),
+      'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}"},
+
+    'digg' => {'text' => 'Digg', 'class' => 'digg', 'external' => true,
+      'if' => (theme.nil? || theme[:menu][:socialize][:digg]),
+      'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(view.name)}"},
+
+    'facebook' => {'text' => 'Facebook', 'class' => 'facebook', 'external' => true,
+      'if' => (theme.nil? || theme[:menu][:socialize][:facebook]),
+      'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
+
+    'twitter' => {'text' => 'Twitter', 'class' => 'twitter', 'external' => true,
+      'if' => (theme.nil? || theme[:menu][:socialize][:twitter]),
+      'href' => "http://www.twitter.com/home?status=#{tweet + short_path}"}
     }
+
+    options.merge({
+    'socialize' => {'text' => "Socialize this #{t(:blist_name).titleize}",
+      'if' => (theme.nil? || theme[:menu][:socialize].any?{ |key, value| value }),
+      'class' => 'socialize', 'href' => '#', 'submenu' =>
+        {'class' => 'socializeMenu', 'option_menu' => true,
+        'items' => socialize_menu_options(view, options)}}})
   end
 
   def share_menu_options(view, menu_options = nil)
-    if menu_options.nil?
-      menu_options = dataset_menu_lookup(view)
-    end
+    menu_options ||= dataset_menu_lookup(view)
 
     [menu_options['publish'],
       menu_options['email'],
-      {'separator' => true, 'owner_item' => true},
+      menu_options['separator'],
       {'text' => "Share this #{t(:blist_name).titleize}...", 'class' => 'share',
       'href' => "#{@view.href}/share", 'modal' => true, 'owner_item' => true},
-      {'separator' => true},
-      {'text' => "Socialize this #{t(:blist_name).titleize}",
-      'class' => 'socialize', 'href' => '#', 'submenu' =>
-        {'class' => 'socializeMenu', 'option_menu' => true,
-        'items' => socialize_menu_options(view)}}
+      menu_options['separator'],
+      menu_options['socialize']
     ]
   end
 
-  def socialize_menu_options(view)
-    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{th.company} - ")
-    seo_path = "#{request.protocol + request.host_with_port + view.href}"
-    short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href}"
+  def socialize_menu_options(view, menu_options = nil)
+    menu_options ||= dataset_menu_lookup(view)
 
-    [{'text' => 'Delicious', 'class' => 'delicious', 'external' => true,
-      'href' => "http://del.icio.us/post?url=#{seo_path}&title=#{h(view.name)}"},
-      {'text' => 'Digg', 'class' => 'digg', 'external' => true,
-      'href' => "http://digg.com/submit?phase=2&url=#{seo_path}&title=#{h(view.name)}"},
-      {'text' => 'Facebook', 'class' => 'facebook', 'external' => true,
-      'href' => "http://www.facebook.com/share.php?u=#{h(seo_path)}"},
-      {'text' => 'Twitter', 'class' => 'twitter', 'external' => true,
-      'href' => "http://www.twitter.com/home?status=#{tweet + short_path}"}]
+    [menu_options['delicious'],
+      menu_options['digg'],
+      menu_options['facebook'],
+      menu_options['twitter']]
   end
 
   def view_create_menu_options(view)
@@ -215,22 +263,20 @@ module BlistsHelper
         'This dataset does not have the appropriate columns for visualizations')}]
   end
 
-  def filter_submenu(view, is_widget = false)
-    tag_show_hide = view.columns.find {|c| c.client_type == 'tag'}.
-      flag?('hidden') ? 'show' : 'hide'
-    filters = view.filters
-    [{'text' => "#{ tag_show_hide.titleize} Row Tags", 'class' => 'rowTags',
-      'href' => "##{tag_show_hide}-rowTags"}] +
+  def filter_submenu(view, is_widget = false, menu_options = nil)
+    menu_options ||= dataset_menu_lookup(view)
+
+    [menu_options['show_tags']] +
       (is_widget ? [] : [
       {'text' => 'Column Totals', 'class' => 'columnTotals',
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>
           {'nested_table_children' => true, 'list' => true},
         'initial_items' => [{'section_title' => 'Add totals to:'},
-          {'separator' => true}],
+          menu_options['separator']],
         'submenu' => method(:column_aggregate_menu),
         'column_test' => proc {|c, p| c.possible_aggregates.length > 1}})},
-      {'separator' => true},
+      menu_options['separator'],
       {'text' => 'Filter...', 'class' => 'filter',
       'href' => blist_filters_path(view.id), 'modal' => true},
       {'text' => 'Sort Columns...', 'class' => 'sort',
@@ -238,9 +284,9 @@ module BlistsHelper
       {'text' => 'Show or Hide Columns', 'class' => 'showHide', 'href' => '#',
       'submenu' => columns_menu(view,
         {'initial_items' => [{'section_title' => 'Check/Uncheck to Show/Hide'},
-            {'separator' => true}],
+          menu_options['separator']],
           'post_items' => (current_user && view.owner.id == current_user.id) ?
-            [{'separator' => true},
+            [menu_options['separator'],
           {'text' => 'Advanced...', 'class' => 'advancedShowHide',
           'href' => blist_show_hides_path(view.id), 'modal' => true}] : [],
           'href_prefix' => "#hide-show-col_", 'checkbox_menu' => true,
@@ -250,7 +296,7 @@ module BlistsHelper
             {'nested_table' => true, 'hidden' => true,
             'nested_table_children' => true, 'list' => true}
             })},
-      {'separator' => true},
+      menu_options['separator'],
       {'text' => 'Create a Calendar View...', 'href' => "#{view.href}/calendar",
       'class' => 'calendar' + (view.can_add_calendar? ? '' : ' disabled'),
       'title' => (view.can_add_calendar? ? '' :
@@ -260,18 +306,8 @@ module BlistsHelper
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
       # Map item
-      ]) + [
-      {'separator' => true, 'if' => filters.length > 0},
-      {'text' => 'More Views', 'class' => 'moreViews', 'href' => '#',
-      'submenu' => {'class' => 'scrollableMenu', 'items' => [
-        {'button' => true, 'text' => 'Previous',
-        'href' => '#prev', 'class' => 'prev'}] +
-        filters.sort {|a,b| a.name <=> b.name }.map do |v|
-        {'text' => v.name, 'href' => v.href, 'external' => is_widget,
-        'class' => dataset_view_type(v) + ' scrollable'}
-      end + [{'button' => true, 'text' => 'Next',
-      'href' => '#next', 'class' => 'next'}]}
-    }]
+      ]) + [menu_options['separator'],
+      menu_options['more_views']]
   end
 
   def contacts_filter_menu(href_prefix, href_group_prefix,

@@ -182,17 +182,20 @@
 
           <a id='viewsLink' class='menuLink' href='#views-menu'>More Views</a>
           <%= menu_tag({'id' => 'viewsMenu', 'class' => 'headerMenu filterView',
-          'items' => filter_submenu(@view, true) + [{'separator' => true},
+          'items' => filter_submenu(@view, true, menu_options) +
+            [menu_options['separator'],
             {'section_title' => 'Advanced sorting, filtering, formatting and ' +
-            'more are available in Full Screen mode'},
-            menu_options['full_screen']
+            'more are available in Full Screen mode',
+            'if' => @theme[:menu][:views_fullscreen]},
+            menu_options['full_screen'].merge({
+              'if' => @theme[:menu][:views_fullscreen]})
             ]}) %>
 
           <a id='shareLink' class='menuLink' href='#share-menu'>Share</a>
           <%= menu_tag({'id' => 'shareMenu', 'class' => 'headerMenu shareSocialize',
           'items' => share_menu_options(@view, menu_options)}) %>
 
-          <%- if @theme[:menu][:fullscreen] -%>
+          <%- if @theme[:menu][:top_fullscreen] -%>
           <p class="fullScreenButton">
             <a href="<%= @view.href %>" rel="external" title="View Full Screen">View Full Screen</a>
           </p>

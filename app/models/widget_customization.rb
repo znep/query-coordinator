@@ -6,7 +6,7 @@ class WidgetCustomization < Model
     end
     parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
   end
-  
+
   def self.find(options = nil, custom_headers = {})
     if options.nil?
       options = Hash.new
@@ -21,7 +21,7 @@ class WidgetCustomization < Model
 
     parse(CoreServer::Base.connection.get_request(path, custom_headers))
   end
-  
+
   def save!
     unless @customization_hash.nil?
       @update_data['customization'] = @customization_hash.to_json
@@ -29,11 +29,11 @@ class WidgetCustomization < Model
     path = "/widget_customization/#{self.uid}.json"
     WidgetCustomization.parse(CoreServer::Base.connection.update_request(path, @update_data.to_json))
   end
-  
+
   def self.default_theme
     Marshal::load(Marshal.dump(@@default_theme))
   end
-  
+
   def self.merge_theme_with_default(theme)
     @@default_theme.deep_merge(theme)
   end
@@ -72,14 +72,39 @@ class WidgetCustomization < Model
                    :row_height => { :value => '16',
                                     :unit => 'px' },
                    :zebra => '#e7ebf2' },
-    :menu     => { :email => true,
-                   :subscribe  => { :rss => true,
-                                    :atom => true },
-                   :api => true,
-                   :download => true,
+    :menu     => {
+                   :top_fullscreen => true,
+
+                   # Main menu
                    :print => true,
                    :fullscreen => true,
-                   :republish => true },
+                   :download_menu => { :csv => true,
+                                       :json => true,
+                                       :pdf => true,
+                                       :xls => true,
+                                       :xlsx => true,
+                                       :xml => true },
+                   :api => true,
+                   :subscribe  => { :atom => true,
+                                    :rss => true },
+                   :basic_analytics => true,
+                   :adv_analytics => true,
+                   :about => true,
+                   :about_sdp => true,
+
+                   # More Views menu
+                   :show_tags => true,
+                   :more_views => true,
+                   :views_fullscreen => true,
+
+                   # Share menu
+                   :republish => true,
+                   :email => true,
+                   :socialize => { :delicious => true,
+                                   :digg => true,
+                                   :facebook => true,
+                                   :twitter => true }
+                 },
     :meta     => { :comments   => { :show => true, :order => 0, :display_name => 'Comments' },
                    :filtered   => { :show => true, :order => 1, :display_name => 'More Views' },
                    :publishing => { :show => true, :order => 2, :display_name => 'Publishing' },

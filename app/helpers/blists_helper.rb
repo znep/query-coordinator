@@ -160,8 +160,7 @@ module BlistsHelper
         "#{view.href}/stats" : "/popup/stats",
       'modal' => !is_widget &&
         (!current_user || !current_user.can_access_premium_on?(view)),
-      'external' => is_widget ||
-        (!current_user || !current_user.can_access_premium_on?(view))
+      'external' => is_widget
       },
 
     'basic_analytics' => {'text' => "Basic #{t(:blist_name).titleize} Analytics...",
@@ -171,8 +170,7 @@ module BlistsHelper
         "#{view.href}/simple_stats" : "/popup/stats",
       'modal' => !is_widget &&
         (!current_user || !current_user.can_access_premium_on?(view)),
-      'external' => is_widget &&
-        (!current_user || !current_user.can_access_premium_on?(view))
+      'external' => is_widget
       },
 
     'about' => {'text' => "About this #{t(:blist_name).titleize}...",

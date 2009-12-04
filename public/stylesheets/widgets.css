@@ -299,10 +299,10 @@ ul.menu li.footer .innerWrapper
 ul.menu a.externalLink .highlight
 {
     background-image: url(/stylesheets/images/content/external.png);
-    background-position: right 2px;
+    background-position: right 0;
     background-repeat: no-repeat;
 }
-ul.menu a.externalLink:hover .highlight { background-position: right -13px; }
+ul.menu a.externalLink:hover .highlight { background-position: right -15px; }
 
 /* Support for submenus */
 

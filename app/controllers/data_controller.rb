@@ -15,17 +15,10 @@ class DataController < ApplicationController
     @nominations = Nomination.find_page(1, PAGE_SIZE)
     @nominations_count = Nomination.count()
 
-    @community_activity = Activity.find({:maxResults => 3}) unless Theme.revolutionize
-  
-    # NOTE: Temporary hacks to get agency filtering working until we have org filtering
-    @agency_id = Theme.agency_id
-    @agency_mcache_key = (@agency_id.nil? ? "" : "-agency-#{@agency_id}")
+    @community_activity = Activity.find({:maxResults => 3}) unless CurrentDomain.revolutionize?
 
     unless @all_views_rendered = read_fragment("discover-tab-all#{@agency_mcache_key}")
       opts = {:limit => PAGE_SIZE}
-      if !@agency_id.nil?
-        opts.merge!({:agencyId => @agency_id})
-      end
       
       @all_views_total = View.find(opts.merge({:count => true }), true).count
       @all_views = View.find(opts, true)
@@ -35,9 +28,6 @@ class DataController < ApplicationController
     end
     unless @popular_views_rendered = read_fragment("discover-tab-popular#{@agency_mcache_key}")
       opts = {:top100 => true, :limit => PAGE_SIZE, :page => 1}
-      if !@agency_id.nil?
-        opts.merge!({:agencyId => @agency_id})
-      end
       
       @popular_views_total = 100
       @popular_views = View.find_filtered(opts)
@@ -74,7 +64,6 @@ class DataController < ApplicationController
     tag = params[:tag]
     search_term = params[:search]
     search_debug = params[:search_debug]
-    agency_id = Theme.agency_id
 
     sort_by = sort_by_selection
     is_asc = true
@@ -106,10 +95,6 @@ class DataController < ApplicationController
     
     if (!tag.nil?)
       opts.update({:tags => tag})
-    end
-    
-    if !agency_id.nil?
-      opts.update({:agencyId => agency_id})
     end
     
     tab_title = type == "POPULAR" ? "Popular" : "All"

@@ -30,7 +30,7 @@ cert_chain:
   ZR7qHIpykzr3ezcNiWtBWw==
   -----END CERTIFICATE-----
 
-date: 2008-10-04 00:00:00 +13:00
+date: 2008-10-03 04:00:00 -07:00
 default_executable: 
 dependencies: 
 - !ruby/object:Gem::Dependency 
@@ -75,6 +75,7 @@ files:
 - tasks/rspec.rake
 has_rdoc: true
 homepage: http://googlecharts.rubyforge.org
+licenses: 
 post_install_message: 
 rdoc_options: 
 - --main
@@ -96,7 +97,7 @@ required_rubygems_version: !ruby/object:Gem::Requirement
 requirements: []
 
 rubyforge_project: googlecharts
-rubygems_version: 1.3.1
+rubygems_version: 1.3.5
 signing_key: 
 specification_version: 2
 summary: description of gem

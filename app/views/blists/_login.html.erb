@@ -1,12 +1,12 @@
 <% dialog_content('login', "loginBox") do %>
   <div class='header'>
-    <h1><%= th.company %></h1>
+    <h1><%= CurrentDomain.strings.company %></h1>
     <a href='#close_dialog' class='close' title='Close'>Close</a>
   </div>
 
   <div class='mainContent'>
     <div class='title clearfix'>
-      <h2>Sign in using your <%= th.company %> ID</h2>
+      <h2>Sign in using your <%= CurrentDomain.strings.company %> ID</h2>
     </div>
 
     <%= render(:partial => 'user_sessions/login') %>

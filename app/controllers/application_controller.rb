@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include SslRequirement
 
   before_filter :hook_auth_controller,  :create_core_server_connection, :set_web_property,
-    :adjust_format, :patch_microsoft_office, :require_user, :set_user, :configure_theme
+    :adjust_format, :patch_microsoft_office, :require_user, :set_user
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -68,11 +68,11 @@ class ApplicationController < ActionController::Base
   # the configure_theme parameter, and Apache uses the domain name of the
   # request to determine which directory to serve.)
   def self.cache_page(content, path)
-    super(content, Theme.active + path)
+    super(content, CurrentDomain.cname + path)
   end
 
   def self.expire_page(path)
-    super(Theme.active + path)
+    super(CurrentDomain.cname + path)
   end
 
 protected
@@ -149,12 +149,6 @@ private
     end
   end
 
-  def configure_theme
-    logger.info "Request domain: #{request.host}, Current locale: #{I18n.locale}"
-
-    Theme.configure request
-  end
-
   def set_web_property
     unless CurrentDomain.set(request.host)
       # We failed at trying to find the current domain.
@@ -176,7 +170,6 @@ private
   end
 
   def render_error(code)
-    configure_theme
     respond_to do |format|
       format.html { render :template => "errors/error_#{code}", :layout => 'main', :status => code }
       format.all { render :nothing => true, :status => code }

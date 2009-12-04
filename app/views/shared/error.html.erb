@@ -1,11 +1,11 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "error-screen" %>
-  <title><%= th.site_title %></title>
+  <title><%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% dialog_content("errorBox") do %>
   <div class='header'>
-    <h1><%=th.company%></h1>
+    <h1><%=CurrentDomain.strings.company%></h1>
   </div>
 
   <div class='mainContent'>

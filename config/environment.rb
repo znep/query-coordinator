@@ -102,6 +102,7 @@ Rails::Initializer.run do |config|
   # These gems are required, but should be available in the vendor/gems directory.
   config.gem 'multipart-post', :lib => 'net/http/post/multipart'
   config.gem 'googlecharts', :lib => 'gchart'
+  config.gem 'hashie', :lib => 'hashie'
 end
 
 ActionMailer::Base.smtp_settings = {

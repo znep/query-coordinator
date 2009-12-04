@@ -1,11 +1,12 @@
+require 'hashie'
+
 class CurrentDomain
   def self.load_all
     @@property_store = {}
 
     domains = Domain.find
     domains.each do |domain|
-      @@property_store[domain.cname] = { :data => domain,
-                                         :namespaces => {} }
+      @@property_store[domain.cname] = { :data => domain }
     end
   end
 
@@ -14,8 +15,7 @@ class CurrentDomain
 
     if !@@property_store.has_key?(cname)
       begin
-        @@property_store[cname] = { :data => Domain.find(cname),
-                                    :namespaces => {} }
+        @@property_store[cname] = { :data => Domain.find(cname) }
       rescue CoreServer::ResourceNotFound
         return false
       end
@@ -33,7 +33,7 @@ class CurrentDomain
     # We need to account for the case where we make a generic_request
     # before we know what domain we're on (eg to get the domain obj).
     if defined? @@current_domain
-      @@current_domain[:data].cname
+      @@current_domain[:data].CName
     else
       ''
     end
@@ -41,6 +41,18 @@ class CurrentDomain
 
   def self.accountTier
     @@current_domain[:data].accountTier
+  end
+
+  def self.theme
+    if @@current_domain[:theme].nil?
+      if self['theme'].nil?
+        @@current_domain[:theme] = Hashie::Mash.new(@@default_theme)
+      else
+        self['theme'].deep_symbolize_keys!
+        @@current_domain[:theme] = Hashie::Mash.new(@@default_theme.deep_merge(self['theme']))
+      end
+    end
+    @@current_domain[:theme]
   end
 
   def self.modules
@@ -59,7 +71,7 @@ class CurrentDomain
     self.features[feature_name] == 'true'
   end
 
-  # CurrentDomain['preference name'] should return preferences
+  # CurrentDomain['preference name'] returns preferences
   def self.[](key)
     if @@current_domain[:data].preferences.nil?
       return nil
@@ -76,18 +88,37 @@ class CurrentDomain
       return (self['features.' + key.gsub(/\?$/, '')] == 'true')
     end
 
-    # Allow easy access to namespaced keys
-    unless @@current_domain[:namespaces].has_key?(key)
-      @@current_domain[:namespaces][key] = {}
-
-      unless @@current_domain[:data].preferences.nil?
-        @@current_domain[:data].preferences.data.each do |full_key, property|
-          if full_key.index(key + '.') == 0
-            @@current_domain[:namespaces][key][full_key[(key.size + 1)..-1]] = property
-          end
-        end
-      end
-    end
-    @@current_domain[:namespaces][key]
+    # Otherwise, mash it up with themes
+    self.theme.send key
   end
+
+  @@default_theme = {
+    :colors  => { :link => '0071bc',
+                  :headers =>  [ '600', '600', '600', '666', '333' ],
+                  :header =>   { :line => '06386a',
+                                 :inactive_highlight => '2e5f8e',
+                                 :active_highlight => '509bdb' },
+                  :carousel => { :background => [ { :color => '2f608f' },
+                                                  { :color => '0f3c69' } ],
+                                 :text => '0071bc' },
+                  :buttons =>  { :hover =>      [ { :color => '2e5f8e', :position => '.5' },
+                                                  { :color => '285987', :position => '.5' },
+                                                  { :color => '113e6b' } ],
+                                 :active =>     [ { :color => '113f6c' },
+                                                  { :color => '164471', :position => '.5' },
+                                                  { :color => '2f5f8e', :position => '.5' },
+                                                  { :color => '509bdb' } ] } },
+    :images  => {}, # our fallback images are Socrata images, which are in CSS
+    :strings => { :company => 'Socrata',
+                  :site_title => 'Socrata | Making Data Social',
+                  :discover_header => 'Discover useful, unique, and unusual dataset created by the community.',
+                  :copyright_string => '&copy; 2009 Socrata, Inc.' },
+    :urls    => { :header => [ { :text => 'About Socrata', :href => 'http://www.socrata.com/about' },
+                               { :text => 'Help', :href => 'http://www.getsatisfaction.com/socrata' } ],
+                  :footer => [ { :text => 'Blog', :href => 'http://blog.socrata.com/', :class => 'rss' },
+                               { :text => 'Company Info', :href => 'http://www.socrata.com/company-info', :rel => 'nofollow' },
+                               { :text => 'Terms of Service', :href => 'http://www.socrata.com/terms-of-service', :rel => 'nofollow' },
+                               { :text => 'Privacy', :href => 'http://www.socrata.com/privacy', :rel => 'nofollow' },
+                               { :text => 'Contact Us', :href => 'http://www.socrata.com/contact-us', :rel => 'nofollow' } ] }
+  }
 end

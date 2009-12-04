@@ -1,19 +1,19 @@
 <% content_for :head do %>
   <%= stylesheet_link_merged 'accounts-new' %>
-  <title><%= th.site_title %></title>
+  <title><%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% dialog_content('signup', "signupBox") do %>
   <div class='header'>
-    <h1><%= th.company %></h1>
+    <h1><%= CurrentDomain.strings.company %></h1>
   </div>
 
   <div class='mainContent'>
     <div class='title clearfix'>
-      <h2><strong>We're glad you want to join <%= th.company %>!</strong></h2>
+      <h2><strong>We're glad you want to join <%= CurrentDomain.strings.company %>!</strong></h2>
     </div>
 
-    <h3>Create a new <%= th.company %> ID</h3>
+    <h3>Create a new <%= CurrentDomain.strings.company %> ID</h3>
     <%= render :partial => "signup_form", :locals => {:is_modal => false} %>
 
     <h3 class="signup"><strong>OR</strong> Sign up using an external account</h3>

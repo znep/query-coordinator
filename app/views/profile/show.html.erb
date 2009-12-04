@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "profile-screen" %>
-  <title><%= @user.displayName %> | <%= th.site_title %></title>
+  <title><%= @user.displayName %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 
@@ -21,7 +21,7 @@
             <div class="welcomeTL">
               <div class="welcomeTR">
                 <div class="welcome-titlebar">
-                  <h1>Welcome to <%= th.company %>!</h1>
+                  <h1>Welcome to <%= CurrentDomain.strings.company %>!</h1>
                   <a href="#close"><span class="close">Close</span></a>
                 </div>
               </div>
@@ -30,7 +30,7 @@
               <div class="welcomeBR">
                 <div class="welcome-content">
                   <p>This is your personal profile page. Please take a moment to tell
-                  the <%= th.company %> community a little more about yourself.</p>
+                  the <%= CurrentDomain.strings.company %> community a little more about yourself.</p>
                 </div>
               </div>
             </div>
@@ -92,7 +92,7 @@
                         </li>
                       </ul>
                     <%- end -%>
-                    <p><%= link_to("Go to #{th.company} community", community_path, :class => "action") %></p>
+                    <p><%= link_to("Go to #{CurrentDomain.strings.company} community", community_path, :class => "action") %></p>
                   </div>
                 <%- end -%>
                 
@@ -447,7 +447,7 @@
           </ul>
 
           <div>
-            <p><strong>Invite others</strong> to use <%= th.company %> and share your <%= t(:blist_name).pluralize %> with them</p>
+            <p><strong>Invite others</strong> to use <%= CurrentDomain.strings.company %> and share your <%= t(:blist_name).pluralize %> with them</p>
             <ul class="actionButtons blockList clearfix">
                 <li>
                 <%= link_to("Invite Others", invite_path, :title => "Invite others to try Socrata", :rel => "modal") %>

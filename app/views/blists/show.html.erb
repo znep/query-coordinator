@@ -1,7 +1,7 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
   <%= stylesheet_link_merged 'blists-show' %>
-  <title><%= h(@view.name) %> | <%= th.site_title %></title>
+  <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>

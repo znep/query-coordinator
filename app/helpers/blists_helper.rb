@@ -83,7 +83,7 @@ module BlistsHelper
   end
 
   def socialize_menu_options(view, menu_id = '')
-    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{th.company} - ")
+    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{CurrentDomain.strings.company} - ")
     seo_path = "#{request.protocol + request.host_with_port + view.href}"
     short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') + view.short_href}"
 
@@ -314,7 +314,7 @@ module BlistsHelper
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
-        "Powered by #{th.company}</a></p>"
+        "Powered by #{CurrentDomain.strings.company}</a></p>"
     end
     embed_template += "</div>"
   end

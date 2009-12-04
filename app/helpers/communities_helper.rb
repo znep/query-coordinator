@@ -24,7 +24,7 @@ module CommunitiesHelper
     when "edit_blist"
       out = "edited"
     when "join_blist"
-      out = "joined #{th.company}"
+      out = "joined #{CurrentDomain.strings.company}"
     when "comment"
       out = "commented on"
     when "rate"

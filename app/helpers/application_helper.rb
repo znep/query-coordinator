@@ -1,9 +1,5 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  def th
-    Theme
-  end
-
   # Return a string that represents the specified menu.  The only required option
   # is 'items'
   #
@@ -325,7 +321,7 @@ HREF
       </object>
     EOF
   end
-  
+
   # Generate a parameter hash given a current page state and additional flags
   def generate_filter_url(current_state, type, additional_flags = {}, delimiter = '#')
     if current_state.nil?

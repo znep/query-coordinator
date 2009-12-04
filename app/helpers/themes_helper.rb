@@ -95,6 +95,12 @@ module ThemesHelper
       gradient_str.split(',').last.split(':').first
     end
 
+    def link_from_theme(options)
+      text = options[:text]
+      options.delete(:text)
+      return content_tag('a', text, options)
+    end
+
 private
 
     def ui_url type, options
@@ -103,8 +109,9 @@ private
 
     def make_arguments(options)
       options.collect do |key, value|
-        value = Theme.send value if value.is_a? Symbol
-        value = value.to_s
+        #TODO!!
+        #value = Theme.send value if value.is_a? Symbol
+        #value = value.to_s
         "#{CGI.escape key.to_s}=#{CGI.escape value}"
       end.join '&'
     end

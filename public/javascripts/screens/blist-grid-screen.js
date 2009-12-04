@@ -165,7 +165,7 @@ blist.blistGrid.hookUpCreateViewMenu = function()
 blist.blistGrid.hookUpFilterViewMenu = function()
 {
     $('#filterViewMenu').dropdownMenu({triggerButton: $('#filterLink'),
-        linkCallback: blistGridNS.menuHandler,
+        linkCallback: blist.datasetMenu.menuHandler,
         menuBar: $('#lensContainer .headerBar')});
 
     $("#filterViewMenu .columnsMenu, #filterViewMenu .scrollableMenu").scrollable();
@@ -175,104 +175,9 @@ blist.blistGrid.hookUpMainMenu = function()
 {
     $('#mainMenu').dropdownMenu({triggerButton: $('#mainMenuLink'),
             menuBar: $('#lensContainer .headerBar'),
-            linkCallback: blistGridNS.menuHandler});
+            linkCallback: blist.datasetMenu.menuHandler});
     $('#mainMenu .columnsMenu, #mainMenu .scrollableMenu').scrollable();
     blistGridNS.setInfoMenuItem($('#infoPane .summaryTabs li.active'));
-};
-
-blist.blistGrid.menuHandler = function(event)
-{
-    var $target = $(event.currentTarget);
-    var href = $target.attr('href');
-    if (href.indexOf('#') < 0)
-    {
-        return;
-    }
-
-    var s = href.slice(href.indexOf('#') + 1).split('_');
-    var action = s[0];
-    var actionId = s[1];
-
-    event.preventDefault();
-    var hideTags = true;
-    switch (action)
-    {
-        case 'aggregate':
-            if (s.length == 3)
-            { $('#dataGrid').datasetGrid().setColumnAggregate(actionId, s[2]); }
-            break;
-        case 'publish':
-            $("#infoPane .summaryTabs").infoPaneNavigate()
-                .activateTab('#tabPublishing');
-            break;
-        case 'infoPane':
-            $("#infoPane .summaryTabs").infoPaneNavigate()
-                .activateTab("#" + actionId);
-            break;
-        case 'hide-show-col':
-            var $li = $target.closest('li');
-            $('#dataGrid').datasetGrid().showHideColumns(actionId,
-                $li.hasClass('checked'));
-            break;
-        case 'delete-col':
-            $('#dataGrid').datasetGrid().deleteColumns(actionId);
-            break;
-        case 'show-rowTags':
-            hideTags = false;
-        case 'hide-rowTags':
-            var curText = $target.text();
-            var oldText = hideTags ? 'Hide' : 'Show';
-            var newText = hideTags ? 'Show' : 'Hide';
-            $.each($('#dataGrid').blistModel().meta().view.columns,
-                function(i, col)
-                {
-                    if (col.dataTypeName == 'tag')
-                    {
-                        $('#dataGrid').datasetGrid().showHideColumns(col.id,
-                            hideTags);
-                        $('.headerMenu .rowTags a').attr('href', hideTags ?
-                            '#show-rowTags' : '#hide-rowTags')
-                            .find('span').text(curText.replace(oldText, newText));
-                        return false;
-                    }
-                });
-            break;
-        case 'makePermissionPublic':
-          $.ajax({
-            url: "/views/" + actionId,
-            cache: false,
-            data: {
-              'method': 'setPermission',
-              'value': 'public'
-            },
-            success: function (responseData) {
-              alert("Your dataset is now publicly viewable.");
-            },
-            error: function (request, textStatus, errorThrown)
-            {
-              alert("An error occurred while changing your dataset permissions. Please try again later");
-            }
-          });
-          break;
-        case 'makePermissionPrivate':
-          $.ajax({
-            url: "/views/" + actionId,
-            cache: false,
-            data: {
-              'method': 'setPermission',
-              'value': 'private'
-            },
-            success: function (responseData)
-            {
-              alert("Your dataset is now viewable to only the dataset owner and any sharees.");
-            },
-            error: function (request, textStatus, errorThrown)
-            {
-              alert("An error occurred while changing your dataset permissions. Please try again later");
-            }
-          });
-          break;
-    }
 };
 
 blist.blistGrid.setInfoMenuItem = function ($tab)
@@ -655,7 +560,7 @@ $(function ()
     blistGridNS.hookUpMainMenu();
     blistGridNS.hookUpFilterViewMenu();
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
-        linkCallback: blistGridNS.menuHandler,
+        linkCallback: blist.datasetMenu.menuHandler,
         menuBar: $('#lensContainer .headerBar')});
 
     // Set up the info pane tab switching.

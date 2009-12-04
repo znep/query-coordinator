@@ -136,6 +136,7 @@ javascripts:
   - screens/signup-screen
   - widgets/combo
   - widgets/values
+  - screens/dataset-menu
 - communities-show:
   - plugins/jquery.jcarousel
   - plugins/jquery.tagcloud
@@ -211,6 +212,7 @@ javascripts:
   - widgets/visualization
   - screens/external-widget
   - screens/info-pane
+  - screens/dataset-menu
 
 
 

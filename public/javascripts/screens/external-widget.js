@@ -9,7 +9,7 @@ blist.widget.setUpMenu = function()
             triggerButton: $('#header #mainLink'),
             forcePosition: true,
             closeOnKeyup: true,
-            linkCallback: widgetNS.headerMenuHandler,
+            linkCallback: blist.datasetMenu.menuHandler,
             pullToTop: true});
 
     $('#header #viewsMenu')
@@ -17,7 +17,7 @@ blist.widget.setUpMenu = function()
             triggerButton: $('#header #viewsLink'),
             forcePosition: true,
             closeOnKeyup: true,
-            linkCallback: widgetNS.headerMenuHandler,
+            linkCallback: blist.datasetMenu.menuHandler,
             pullToTop: true});
 
     $('#header #shareMenu')
@@ -25,46 +25,12 @@ blist.widget.setUpMenu = function()
             triggerButton: $('#header #shareLink'),
             forcePosition: true,
             closeOnKeyup: true,
-            linkCallback: widgetNS.headerMenuHandler,
+            linkCallback: blist.datasetMenu.menuHandler,
             pullToTop: true});
 
     $('#header .scrollableMenu').scrollable();
 };
 
-blist.widget.headerMenuHandler = function(event)
-{
-    var $target = $(event.currentTarget);
-    var href = $target.attr('href');
-    if (href.indexOf('#') < 0)
-    {
-        return;
-    }
-
-    event.preventDefault();
-
-    var s = href.slice(href.indexOf('#') + 1).split('_');
-    var action = s[0];
-    var actionId = s[1];
-
-    var hideTags = true;
-    switch (action)
-    {
-        case 'show-rowTags':
-            hideTags = false;
-        case 'hide-rowTags':
-            $.each($('#data-grid').blistModel().meta().view.columns,
-                function(i, col)
-                {
-                    if (col.dataTypeName == 'tag')
-                    {
-                        $('#data-grid').datasetGrid().showHideColumns(col.id,
-                            hideTags);
-                        return false;
-                    }
-                });
-            break;
-    }
-};
 blist.widget.submitEmail = function (event)
 {
     event.preventDefault();

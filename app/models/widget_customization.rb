@@ -88,7 +88,6 @@ class WidgetCustomization < Model
                    :subscribe  => { :atom => true,
                                     :rss => true },
                    :basic_analytics => true,
-                   :adv_analytics => true,
                    :about => true,
                    :about_sdp => true,
 

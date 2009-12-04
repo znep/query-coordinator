@@ -167,10 +167,11 @@ module BlistsHelper
       'class' => 'basic_analytics statistics',
       'if' => (theme.nil? || theme[:menu][:adv_analytics]),
       'href' => (current_user && current_user.can_access_premium_on?(view)) ?
-        "#{view.href}/simple_stats" : "/popup/stats",
-      'modal' => !is_widget &&
+        "#{view.href}/stats" : "/popup/stats",
+      'modal' => !is_widget ||
+        (current_user && current_user.can_access_premium_on?(view)),
+      'external' => is_widget &&
         (!current_user || !current_user.can_access_premium_on?(view)),
-      'external' => is_widget
       },
 
     'about' => {'text' => "About this #{t(:blist_name).titleize}...",

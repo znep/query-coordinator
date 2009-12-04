@@ -304,7 +304,6 @@ blist.publish.customizationApplication = {
                                        rss:                 [ { selector: '.headerMenu .subscribe .rss', hideShow: true } ],
                                        _group:              [ { selector: '.headerMenu .subscribe', properties: [ 'atom', 'rss' ], callback: publishNS.applySubscribeMenu } ] },
                       basic_analytics:                      [ { selector: '.headerMenu .basic_analytics', hideShow: true } ],
-                      adv_analytics:                        [ { selector: '.headerMenu .adv_analytics', hideShow: true } ],
                       about:                                [ { selector: '.headerMenu .about', hideShow: true } ],
                       about_sdp:                            [ { selector: '.headerMenu .aboutSDP', hideShow: true } ],
 

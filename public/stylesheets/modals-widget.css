@@ -1,8 +1,8 @@
 /* General modal tweaks */
 .widgetModal .modalDialog
 {
-    margin: 5em 0 0 -20em;
-    width: 40em;
+    margin: 5em 0 0 -21em;
+    width: 42em;
 }
 
 .widgetModal .submitLine
@@ -117,3 +117,6 @@
 .widgetModal .aboutSDPWrapper .submitLine { padding-top: 0; }
 .widgetModal .aboutSDPWrapper .actionButtons { margin-top: 0; }
 /*** END: About SDP ***/
+
+.widgetModal .dialogBox .header .analyticsDialogIcon
+{ background-position: 0 -190px; }

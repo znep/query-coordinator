@@ -1,0 +1,59 @@
+<%- content_for :headline do -%>
+<h1 class='analyticsDialogIcon'>Analytics for <%= h(@dataset.name) %></h1>
+<%- end -%>
+
+<div class="modalContentWrapper basicStatsWrapper">
+  <div class="mainContent">
+    <div class='pageViews'>
+      <h2>Page Views: <span class='value'>
+          <%= number_with_delimiter(@stat.view || 0, ',') %>
+      </span></h2>
+    </div>
+
+    <div class="statsBlock clearfix">
+      <h3>Records Accessed</h3>
+
+      <img class='graph' src="<%= @stat.row_access_chart_href %>" />
+
+      <%#
+      Create the legend for the graph
+      %>
+      <div class="legend clearfix">
+        <%
+        Stat::ROW_ACCESS_LEGEND.each_slice(2) do |pair|
+        %>
+        <% pair.each do |desc, color| %>
+        <div class='item clearfix'>
+          <div class="legendColor">
+            <div style="background-color: #<%= color %>"></div>
+          </div>
+          <div class="legendDesc">
+            Via <%= Stat::HUMAN_READABLE_ROW_ACCESS_LEGEND[desc] %>:
+          </div>
+          <div class="legendValue">
+            <%= number_with_delimiter(@stat.rows_accessed[desc] || 0, ',') %>
+          </div>
+        </div>
+        <% end %>
+        <% end %>
+      </div>
+
+      <div class="totalRowsAccessed">
+        <h2>Total: <span class='value'>
+            <%= number_with_delimiter(@stat.total_rows_accessed, ',') %>
+        </span></h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="submitLine clearfix">
+    <a class='fullStats' rel='external' href="<%= @dataset.href %>/stats">
+      Advanced Analytics
+    </a>
+    <ul class="actionButtons">
+      <li class=""><a href="#close" class="jqmClose arrowButton">
+        <span>Close</span>
+      </a></li>
+    </ul>
+  </div>
+</div>

@@ -108,6 +108,12 @@
                 return ret;
             },
 
+            setSize: function(width, height)
+            {
+                $(this.getSizeElement())
+                    .css({ width: width + 'px', height: height + 'px' });
+            },
+
             querySize: function() {
                 return { width: 240 };
             }

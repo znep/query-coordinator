@@ -2042,11 +2042,15 @@ div#sortBysList.reorderList li .itemWrapper
 
 .basicStatsWrapper .fullStats
 {
+    background-image: url(/stylesheets/images/content/external.png);
+    background-position: right -32px;
+    background-repeat: no-repeat;
     color: #660000;
     font-size: 1.2em;
     font-weight: bold;
     line-height: 2em;
-    padding-top: 0.5em;
+    margin-top: 0.5em;
+    padding-right: 15px;
     text-transform: uppercase;
 }
 /*** END: Basic analytics dialog **/

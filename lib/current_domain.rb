@@ -64,10 +64,12 @@ class CurrentDomain
   end
 
   def self.module?(module_name)
+    return false if self.modules.nil?
     self.modules.any?{ |account_module| account_module['name'] == module_name.to_s }
   end
 
   def self.feature?(feature_name)
+    return false if self.features.nil?
     self.features[feature_name] == 'true'
   end
 
@@ -94,10 +96,15 @@ class CurrentDomain
 
   @@default_theme = {
     :colors  => { :link => '0071bc',
+                  :accent => '20608f',
                   :headers =>  [ '600', '600', '600', '666', '333' ],
                   :header =>   { :line => '06386a',
-                                 :inactive_highlight => '2e5f8e',
-                                 :active_highlight => '509bdb' },
+                                 :active =>     [ { :color => '2e5f8e', :position => '.286' },
+                                                  { :color => '113e6b' } ],
+                                 :inactive =>   [ { :color => '113f6c', :position => '.286' },
+                                                  { :color => '509bdb' } ],
+                                 :background => [ { :color => 'c7c8ca', :position => '.286' },
+                                                  { :color => 'e6e7e7' } ] },
                   :carousel => { :background => [ { :color => '2f608f' },
                                                   { :color => '0f3c69' } ],
                                  :text => '0071bc' },
@@ -107,8 +114,22 @@ class CurrentDomain
                                  :active =>     [ { :color => '113f6c' },
                                                   { :color => '164471', :position => '.5' },
                                                   { :color => '2f5f8e', :position => '.5' },
-                                                  { :color => '509bdb' } ] } },
-    :images  => {}, # our fallback images are Socrata images, which are in CSS
+                                                  { :color => '509bdb' } ] },
+                  :summary =>  { :active => 'cacaca',
+                                 :inactive => 'ececec',
+                                 :hover => 'e3ecf7' },
+                  :welcome =>  { :border => '9ba5a1',
+                                 :title =>      [ { :color => '2f608f', :position => '.286' },
+                                                  { :color => '0f3c69' } ],
+                                 :body => 'd7ecf9' } },
+    :images  => { :logo =>     { :source => '/stylesheets/images/common/socrata_logo.png',
+                                 :type => :static,
+                                 :width => '129px',
+                                 :height => '34px' },
+                  :dialog_logo => { :source => '/stylesheets/images/common/socrata_logo_light.png',
+                                    :type => :static },
+                  :favicon =>  { :source => '/stylesheets/images/common/favicon.ico',
+                                 :type => :static } },
     :strings => { :company => 'Socrata',
                   :site_title => 'Socrata | Making Data Social',
                   :discover_header => 'Discover useful, unique, and unusual dataset created by the community.',

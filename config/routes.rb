@@ -218,8 +218,6 @@ ActionController::Routing::Routes.draw do |map|
     invitation.accept_invitation  'invitation/accept/:id',  :action => 'accept'
   end
 
-  map.connect '/favicon.ico', :controller => 'favicon', :action => 'show'
-
   # Non-production environments get a special controller for test actions
   unless Rails.env.production?
     map.connect '/test_page/:action', :controller => 'test_pages'

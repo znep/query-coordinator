@@ -17,6 +17,11 @@ blist.datasetMenu.menuHandler = function(event)
     var hideTags = true;
     switch (action)
     {
+        case 'share':
+            $("#infoPane .summaryTabs").infoPaneNavigate()
+                .activateTab("#tabSharing");
+            $('#modal').jqmShow($('<a href="' + actionId + '"></a>'));
+            break;
         case 'aggregate':
             if (s.length == 3)
             { $('.blist-table').datasetGrid().setColumnAggregate(actionId, s[2]); }

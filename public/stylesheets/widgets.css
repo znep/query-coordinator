@@ -324,11 +324,6 @@ ul.menu li.submenu .menu
     top: 0;
 }
 
-ul.menu li.submenu .menu.opposite
-{
-    left: -97%;
-}
-
 
 /* If you have an option menu (dark on the left under the icons, and the
  *  icons change to checkboxes for the selected item), add the optionMenu

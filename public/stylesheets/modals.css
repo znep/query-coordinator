@@ -1999,6 +1999,7 @@ div#sortBysList.reorderList li .itemWrapper
     text-transform: capitalize;
 }
 
+.basicStatsWrapper img { float: left; }
 .basicStatsWrapper .legend { float: right; }
 
 .basicStatsWrapper .item
@@ -2036,7 +2037,10 @@ div#sortBysList.reorderList li .itemWrapper
 }
 
 .basicStatsWrapper .totalRowsAccessed
-{ margin-left: 5em; }
+{
+    clear: both;
+    margin-left: 5em;
+}
 
 .basicStatsWrapper .actionButtons { margin-top: 0; }
 

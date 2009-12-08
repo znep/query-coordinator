@@ -144,10 +144,10 @@ module BlistsHelper
         theme[:menu][:subscribe].any?{ |key, value| value }),
       'submenu' =>
         {'class' => 'noicon', 'items' => [
-          {'text' => 'Atom', 'external' => true, 'class' => 'atom',
+          {'text' => 'via Atom', 'external' => true, 'class' => 'atom',
           'href' => "/views/#{view.id}/rows.atom",
           'if' => (theme.nil? || theme[:menu][:subscribe][:atom])},
-          {'text' => 'RSS', 'external' => true, 'class' => 'rss',
+          {'text' => 'via RSS', 'external' => true, 'class' => 'rss',
           'href' => "/views/#{view.id}/rows.rss",
           'if' => (theme.nil? || theme[:menu][:subscribe][:rss])}
       ]}},
@@ -155,7 +155,7 @@ module BlistsHelper
     'analytics' => {'text' => (is_widget ? 'Advanced ' : '' ) +
       "#{t(:blist_name).titleize} Analytics...",
       'class' => 'adv_analytics statistics',
-      'if' => (theme.nil? || theme[:menu][:basic_analytics]),
+      'if' => (theme.nil? || theme[:menu][:adv_analytics]),
       'href' => (current_user && current_user.can_access_premium_on?(view)) ?
         "#{view.href}/stats" : "/popup/stats",
       'modal' => !is_widget &&
@@ -165,7 +165,7 @@ module BlistsHelper
 
     'basic_analytics' => {'text' => "Basic #{t(:blist_name).titleize} Analytics...",
       'class' => 'basic_analytics statistics',
-      'if' => (theme.nil? || theme[:menu][:adv_analytics]),
+      'if' => (theme.nil? || theme[:menu][:basic_analytics]),
       'href' => (current_user && current_user.can_access_premium_on?(view)) ?
         "#{view.href}/stats" : "/popup/stats",
       'modal' => !is_widget ||
@@ -185,10 +185,11 @@ module BlistsHelper
     'publish' => {'text' => "Publish this #{t(:blist_name).titleize}...",
       'class' => 'publish', 'modal' => is_widget,
       'href' => (is_widget ?  "#{@view.href}/republish" : '#publish'),
-      'if' => (theme.nil? || theme[:menu][:republish])},
+      'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.is_calendar?)},
 
     'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
-      'class' => 'rowTags', 'if' => (theme.nil? || theme[:menu][:show_tags]),
+      'class' => 'rowTags',
+      'if' => ((theme.nil? || theme[:menu][:show_tags]) && !view.is_alt_view?),
       'href' => "##{tag_show_hide}-rowTags"},
 
     'more_views' => {'text' => 'More Views', 'class' => 'moreViews', 'href' => '#',
@@ -235,7 +236,7 @@ module BlistsHelper
       menu_options['email'],
       menu_options['separator'],
       {'text' => "Share this #{t(:blist_name).titleize}...", 'class' => 'share',
-      'href' => "#{@view.href}/share", 'modal' => true, 'owner_item' => true},
+      'href' => "#share_#{@view.href}/share", 'owner_item' => true},
       menu_options['separator'],
       menu_options['socialize']
     ]
@@ -268,6 +269,7 @@ module BlistsHelper
     [menu_options['show_tags']] +
       (is_widget ? [] : [
       {'text' => 'Column Totals', 'class' => 'columnTotals',
+      'if' => !view.is_alt_view?,
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>
           {'nested_table_children' => true, 'list' => true},
@@ -276,11 +278,12 @@ module BlistsHelper
         'submenu' => method(:column_aggregate_menu),
         'column_test' => proc {|c, p| c.possible_aggregates.length > 1}})},
       menu_options['separator'],
-      {'text' => 'Filter...', 'class' => 'filter',
+      {'text' => 'Filter...', 'class' => 'filter', 'if' => !view.is_alt_view?,
       'href' => blist_filters_path(view.id), 'modal' => true},
-      {'text' => 'Sort Columns...', 'class' => 'sort',
+      {'text' => 'Sort Columns...', 'class' => 'sort', 'if' => !view.is_alt_view?,
       'href' => blist_sort_bys_path(view.id), 'modal' => true},
       {'text' => 'Show or Hide Columns', 'class' => 'showHide', 'href' => '#',
+      'if' => !view.is_alt_view?,
       'submenu' => columns_menu(view,
         {'initial_items' => [{'section_title' => 'Check/Uncheck to Show/Hide'},
           menu_options['separator']],
@@ -297,10 +300,12 @@ module BlistsHelper
             })},
       menu_options['separator'],
       {'text' => 'Create a Calendar View...', 'href' => "#{view.href}/calendar",
+      'modal' => true, 'if' => !view.is_alt_view?,
       'class' => 'calendar' + (view.can_add_calendar? ? '' : ' disabled'),
       'title' => (view.can_add_calendar? ? '' :
         'This dataset does not have both a date column and text column')},
       {'text' => 'Create a Chart View...', 'href' => "#{view.href}/visualization",
+      'modal' => true, 'if' => !view.is_alt_view?,
       'class' => 'visualization' + (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
@@ -353,6 +358,7 @@ module BlistsHelper
     items = []
     items.unshift({'button' => true, 'text' => 'Previous',
       'href' => '#prev', 'class' => 'prev'})
+    has_columns = false
 
     view.columns.each do |c|
       # Check for whether or not to display hidden columns and list columns
@@ -383,6 +389,7 @@ module BlistsHelper
             cur_item['submenu'] = args['submenu'].call(c)
           end
           items << cur_item
+          has_columns = true
         end
 
         # If we are displaying nested table children, loop through those (and
@@ -403,6 +410,7 @@ module BlistsHelper
                 cur_item['submenu'] = args['submenu'].call(cc)
               end
               items << cur_item
+              has_columns = true
             end
           end
         end
@@ -414,8 +422,8 @@ module BlistsHelper
 
     items = (args['initial_items'] || []) + items + (args['post_items'] || [])
 
-    {'id' => args['id'], 'class' => 'columnsMenu', 'items' => items,
-      'checkbox_menu' => args['checkbox_menu']}
+    {'id' => args['id'], 'class' => 'columnsMenu',
+      'items' => has_columns ? items : [], 'checkbox_menu' => args['checkbox_menu']}
   end
 
   def column_aggregate_menu(column)

@@ -239,7 +239,11 @@ ul.menu li.disabled a
 
 ul.menu.noicon li a { padding-left: 5px; }
 
-ul.menu li > a > .highlight { display: block; }
+ul.menu li > a > .highlight
+{
+    display: block;
+    overflow: hidden;
+}
 
 ul.menu li > a:hover { background-color: #cacaca; }
 ul.menu li.disabled > a:hover { background-color: transparent; }
@@ -301,6 +305,8 @@ ul.menu a.externalLink .highlight
     background-image: url(/stylesheets/images/content/external.png);
     background-position: right 0;
     background-repeat: no-repeat;
+    height: 15px;
+    padding-right: 11px;
 }
 ul.menu a.externalLink:hover .highlight { background-position: right -15px; }
 

@@ -3,14 +3,7 @@
 .blist-table-header,
 .blist-th,
 .blist-th .dragHandle
-{ height: 3.5em; }
-
-.sorted div.info-container,
-.filtered div.info-container
-{
-    margin-top: 0;
-    top: 15px;
-}
+{ height: 3.7em; }
 
 .blist-th
 {
@@ -28,6 +21,8 @@ div.blist-th-first
 .blist-table-header .hover,
 .blist-table-header .blist-select-col
 { background-color: #ddeaf0; }
+.blist-table-header .hover .indicator-container
+{ background-color: #cddae0; }
 
 .blist-th .info-container
 {
@@ -35,20 +30,17 @@ div.blist-th-first
     height: 1.6667em; /* 20px or so */
     left: 12px;
     line-height: 1;
-    margin-top: -0.8333em;
     overflow: hidden;
     position: absolute;
     text-overflow: ellipsis;
-    top: 50%;
+    top: 3px;
 }
 .blist-th.narrow .info-container { left: 10px; }
 .blist-th.narrower .info-container { left: 1px; }
 
 .blist-th .name-wrapper
 {
-    display: table-cell;
     height: 1.6667em;
-    vertical-align: middle;
 }
 .blist-th .icon-display .name-wrapper { padding-left: 25px; }
 .blist-th.narrow .icon-display .name-wrapper { padding-left: 0; }
@@ -71,6 +63,11 @@ div.blist-th-first
 {
     font-size: 1.0833em;  /* 1.0833 * 1.2 = 1.3 */
 }
+.blist-th .blist-th-name
+{
+    position: relative;
+    top: 3px;
+}
 
 .blist-th-icon
 {
@@ -85,9 +82,8 @@ div.blist-th-first
 .blist-th .blist-th-icon
 {
     left: 0;
-    margin-top: -10px;
     position: absolute;
-    top: 50%;
+    top: 0;
 }
 .blist-th.narrow .blist-th-icon { display: none; }
 
@@ -113,23 +109,29 @@ div.blist-th-first
     z-index: 100;
 }
 
+.blist-table .indicator-container
+{
+    background-color: #dcdcdc;
+    border-top: 1px solid #cccccc;
+}
+.blist-th .indicator-container { margin: 0 -0.4em; }
+
 .blist-th .sort,
 .blist-th .filter
 {
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png?1);
     background-position: 0 0;
     height: 12px;
-    top: 2px;
+    top: 0;
     width: 12px;
 }
-.blist-th .sort { left: 50%; }
 .blist-th .filter { right: 50%; }
 
 .blist-th .sort-asc { background-position: 0 -24px; }
 .blist-th.hover .sort-asc { background-position: 0 -12px; }
 .blist-th.hover .sort-desc { background-position: 0 -36px; }
 
-.blist-th .filter { background-position: 0 -48px; }
+.blist-th .filter { background-position: 0 -50px; }
 .blist-th .filter.active { display: block; }
 
 .blist-tdh { position: relative; }
@@ -142,10 +144,9 @@ div.blist-th-first
     background-repeat: no-repeat;
     display: none;
     height: 14px;
-    margin-top: -7px;
     position: absolute;
     right: 1px;
-    top: 50%;
+    top: 5px;
     width: 14px;
 }
 
@@ -190,15 +191,15 @@ div.blist-th-first
 
 div.blist-table-ghost div.blist-column-adder
 {
-    margin-top: 1em;
-    float: right;
-    cursor: pointer;
-    background-image: url('/stylesheets/images/content/table/add_column_icons.gif');
-    background-repeat: no-repeat;
-    background-position: center 0px;
     background-color: #e8e8e8;
-    width: 15px;
+    background-image: url('/stylesheets/images/content/table/add_column_icons.gif');
+    background-position: center 0;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    float: right;
     height: 15px;
+    margin-top: 5px;
+    width: 15px;
 }
 div.blist-table-ghost div.blist-column-adder:hover
 {

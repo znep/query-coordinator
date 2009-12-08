@@ -1965,3 +1965,92 @@ div#sortBysList.reorderList li .itemWrapper
     width: 38em;
 }
 /*** END: Nominations dialog **/
+
+
+/*** START: Basic analytics dialog **/
+.modalDialog .dialogBox .header .analyticsDialogIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -185px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
+.basicStatsWrapper .mainContent { padding: 0; }
+
+.basicStatsWrapper .pageViews h2,
+.basicStatsWrapper .totalRowsAccessed h2
+{
+    color: #666666;
+    font-size: 1.6em;
+    font-weight: normal;
+}
+
+.basicStatsWrapper .pageViews .value,
+.basicStatsWrapper .totalRowsAccessed .value
+{ font-weight: bold; }
+
+.basicStatsWrapper h3
+{
+    border-bottom: 1px solid #666666;
+    color: #660000;
+    font-size: 1.8em;
+    margin-bottom: 1em;
+    text-transform: capitalize;
+}
+
+.basicStatsWrapper .legend { float: right; }
+
+.basicStatsWrapper .item
+{
+    color: #666666;
+    font-size: 1.2em;
+    margin-bottom: 0.75em;
+}
+
+.basicStatsWrapper .legendColor
+{
+    float: left;
+    margin-right: 0.5em;
+    margin-top: -2px;
+}
+
+.basicStatsWrapper .legendColor div
+{
+    border: 1px solid #535353;
+    height: 12px;
+    width: 12px;
+}
+
+.basicStatsWrapper .legendDesc
+{
+    float: left;
+    margin-right: 0.75em;
+}
+
+.basicStatsWrapper .legendValue
+{
+    float: right;
+    font-weight: bold;
+    text-align: right;
+}
+
+.basicStatsWrapper .totalRowsAccessed
+{ margin-left: 5em; }
+
+.basicStatsWrapper .actionButtons { margin-top: 0; }
+
+.basicStatsWrapper .fullStats
+{
+    background-image: url(/stylesheets/images/content/external.png);
+    background-position: right -32px;
+    background-repeat: no-repeat;
+    color: #660000;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 2em;
+    margin-top: 0.5em;
+    padding-right: 15px;
+    text-transform: uppercase;
+}
+/*** END: Basic analytics dialog **/

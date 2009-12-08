@@ -144,11 +144,10 @@
     <%- if @theme[:grid][:wrap_header_text] -%>
     .blist-th .info-container
     {
-        height: 2.5em; /* 30px or so */
-        margin-top: -1.25em;
+        height: 2.45em; /* 30px or so */
         white-space: normal;
     }
-    .blist-th .name-wrapper { height: 2.5em; }
+    .blist-th .name-wrapper { height: 2.45em; }
     .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
     <%- end -%>
 
@@ -172,16 +171,35 @@
   <title><%= @view.name %> | <%= th.site_title %></title>
 
 <% end %>
-    <div id='header'><div class='wrapperTR'><div class='wrapperT clearfix'>
-          <a class="menuLink" href="#header-menu" title="Click for more options">Menu</a>
-          <%= render(:partial => "widget_menu", :locals => { :theme => @theme }) %>
+<div id='header' class='headerBar'><div class='wrapperTR'>
+    <div class='wrapperT clearfix'>
+          <%- menu_options = dataset_menu_lookup(@view, true, @theme) -%>
+          <a id='mainLink' class="menuLink" href="#main-menu"
+            title="Click for more options">Menu</a>
+          <%= render(:partial => "widget_menu",
+            :locals => { :theme => @theme, :menu_options => menu_options }) %>
 
-          <%- if @theme[:menu][:fullscreen] -%>
+          <a id='viewsLink' class='menuLink' href='#views-menu'>More Views</a>
+          <%= menu_tag({'id' => 'viewsMenu', 'class' => 'headerMenu filterView',
+          'items' => filter_submenu(@view, true, menu_options) +
+            [menu_options['separator'],
+            {'section_title' => 'Advanced sorting, filtering, formatting and ' +
+            'more are available in Full Screen mode',
+            'if' => @theme[:menu][:views_fullscreen]},
+            menu_options['full_screen'].merge({
+              'if' => @theme[:menu][:views_fullscreen]})
+            ]}) %>
+
+          <a id='shareLink' class='menuLink' href='#share-menu'>Share</a>
+          <%= menu_tag({'id' => 'shareMenu', 'class' => 'headerMenu shareSocialize',
+          'items' => share_menu_options(@view, menu_options)}) %>
+
+          <%- if @theme[:menu][:top_fullscreen] -%>
           <p class="fullScreenButton">
             <a href="<%= @view.href %>" rel="external" title="View Full Screen">View Full Screen</a>
           </p>
           <%- end -%>
-          
+
           <form class='search' action='#'>
             <div class='searchContainer clearfix'>
               <input type='text' class='textInput textPrompt' title='Find Inside' />
@@ -196,8 +214,9 @@
               </div>
             </div>
           </form>
-          
-    </div></div></div>
+
+    </div>
+</div></div>
 
     <div class="gridOuter"><div class="gridInner">
       <%- if (@theme[:behavior][:save_public_views]) -%>

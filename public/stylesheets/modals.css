@@ -1493,6 +1493,102 @@ div#sortBysList.reorderList li .itemWrapper
 /*** END: Filter dialog ***/
 
 
+/*** START: Show/hide dialog ***/
+.showHideWrapper .subtitle
+{
+    color: #666666;
+    font-size: 1.2em;
+}
+
+.showHideWrapper h4
+{
+    color: #999999;
+    font-weight: bold;
+    margin-left: 0.8333em;
+}
+
+.showHideWrapper .listBlock { float: left; }
+
+.showHideWrapper .listWrapper
+{
+    margin: 1em;
+    position: relative;
+}
+
+.showHideWrapper .border
+{
+    border: 1px solid #999;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: -1px;
+    width: 26em;
+}
+
+.showHideWrapper .list
+{
+    height: 19em;
+    margin: 0;
+    overflow: auto;
+    position: relative;
+    width: 28.1em;
+}
+
+.showHideWrapper .reorderList ul
+{
+    border-width: 0 0 0 1px;
+    width: 21.6667em;
+}
+
+.showHideWrapper .reorderList li .itemWrapper
+{
+    height: 20px;
+    padding-top: 0;
+}
+
+.showHideWrapper .reorderList .activeList.ui-draggable-not-dragging li.hover .itemWrapper,
+.showHideWrapper .reorderList .activeList li.ui-draggable-dragging .itemWrapper
+{
+    height: 20px;
+    padding-top: 0;
+}
+
+.showHideWrapper .reorderList .activeList li .orderIndex { width: 1em; }
+
+.showHideWrapper ul .type
+{
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    display: inline-block;
+    height: 20px;
+    position: relative;
+    top: 5px;
+    width: 20px;
+}
+
+.showHideWrapper .addAllLink,
+.showHideWrapper .removeAllLink
+{
+    color: #333333;
+    font-weight: bold;
+    margin-left: 1em;
+    text-transform: uppercase;
+}
+
+.showHideWrapper .activeBlock h4 { margin-left: 3.75em; }
+.showHideWrapper .activeBlock .removeAllLink { margin-left: 4.5em; }
+.showHideWrapper .activeBlock .border { left: 3.5em; }
+.showHideWrapper .activeBlock .list { padding-left: 3.5em; }
+
+.showHideWrapper .swapArrows
+{
+    float: left;
+    margin-top: 11em;
+}
+
+.showHideWrapper .swapArrows a { position: static; }
+/*** END: Show/hide dialog ***/
+
+
 /*** START: View create/setup dialogs ***/
 .viewSetupWrapper .subtitle { padding-bottom: 0.5em; }
 
@@ -1869,3 +1965,96 @@ div#sortBysList.reorderList li .itemWrapper
     width: 38em;
 }
 /*** END: Nominations dialog **/
+
+
+/*** START: Basic analytics dialog **/
+.modalDialog .dialogBox .header .analyticsDialogIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png);
+    background-position: 0 -185px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
+.basicStatsWrapper .mainContent { padding: 0; }
+
+.basicStatsWrapper .pageViews h2,
+.basicStatsWrapper .totalRowsAccessed h2
+{
+    color: #666666;
+    font-size: 1.6em;
+    font-weight: normal;
+}
+
+.basicStatsWrapper .pageViews .value,
+.basicStatsWrapper .totalRowsAccessed .value
+{ font-weight: bold; }
+
+.basicStatsWrapper h3
+{
+    border-bottom: 1px solid #666666;
+    color: #660000;
+    font-size: 1.8em;
+    margin-bottom: 1em;
+    text-transform: capitalize;
+}
+
+.basicStatsWrapper img { float: left; }
+.basicStatsWrapper .legend { float: right; }
+
+.basicStatsWrapper .item
+{
+    color: #666666;
+    font-size: 1.2em;
+    margin-bottom: 0.75em;
+}
+
+.basicStatsWrapper .legendColor
+{
+    float: left;
+    margin-right: 0.5em;
+    margin-top: -2px;
+}
+
+.basicStatsWrapper .legendColor div
+{
+    border: 1px solid #535353;
+    height: 12px;
+    width: 12px;
+}
+
+.basicStatsWrapper .legendDesc
+{
+    float: left;
+    margin-right: 0.75em;
+}
+
+.basicStatsWrapper .legendValue
+{
+    float: right;
+    font-weight: bold;
+    text-align: right;
+}
+
+.basicStatsWrapper .totalRowsAccessed
+{
+    clear: both;
+    margin-left: 5em;
+}
+
+.basicStatsWrapper .actionButtons { margin-top: 0; }
+
+.basicStatsWrapper .fullStats
+{
+    background-image: url(/stylesheets/images/content/external.png);
+    background-position: right -32px;
+    background-repeat: no-repeat;
+    color: #660000;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 2em;
+    margin-top: 0.5em;
+    padding-right: 15px;
+    text-transform: uppercase;
+}
+/*** END: Basic analytics dialog **/

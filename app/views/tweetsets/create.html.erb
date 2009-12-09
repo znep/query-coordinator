@@ -1,16 +1,17 @@
 <% content_for :head do %>
   <%= stylesheet_link_merged 'tweetsets-index' %>
-  <title>Generate a <%= th.company %> tweetsets</title>
+  <title>Generate a <%= th.company %> tweetset</title>
 <% end %>
 
-<div class='oneColumnContainer tweetsetContainer'>
+<div class='oneColumnContainer tweetsetContainer createTweetset'>
   <% fullpage_content do %>
     <div class='content'>
       <%= render :partial => 'tweetset_intro' %>
+      <%= render :partial => 'tweetset_intro_bottom' %>
       <div class='tweetsetCreated'>
         <h2>Please wait while your tweetset is being created</h2>
-        <p class='tweetsetPara'>You will receive an e-mail when the tweetset is ready to be viewed.</p>
-        <p class='tweetsetPara'><%= link_to 'Create another tweetset', :action => :index %></p>
+        <p>You will receive an e-mail when the tweetset is ready to be viewed.</p>
+        <p><%= link_to 'Create another tweetset', :action => :index %></p>
       </div>
     </div>
   <% end %>

@@ -2022,6 +2022,7 @@
         headerStr +=
             '  <div class="blist-table-header-scrolls">' +
             '    <div class="blist-table-header">&nbsp;</div>' +
+            '    <div class="indicator-container"></div>' +
             '</div></div>' +
             '<div class="blist-table-scrolls">' +
             '  <div class="blist-table-inside">&nbsp;</div></div>' +
@@ -3161,6 +3162,7 @@
                     colName,
                     '</span></div>',
                     '</div>',
+                    '<div class="indicator-container">',
                     '<div class="filter" title="Remove filter"',
                     options.generateHeights ? ' style="height: ' +
                     rowOffset + 'px"' : '',
@@ -3169,14 +3171,18 @@
                     options.generateHeights ? ' style="height: ' +
                         rowOffset + 'px"' : '',
                     '></div>',
+                    '</div>',
                     '</div>');
             }
             if (options.showGhostColumn)
             {
                 html.push('<div class="blist-th blist-table-ghost ',
                     columns.length < 1 ? 'blist-th-first ' : '',
-                    ghostClass, '">' + 
-                    (options.showAddColumns ? '<div class="blist-column-adder add-column" title="Add a new column..."></div>' : '') + 
+                    ghostClass, '">' +
+                    (options.showAddColumns ?
+                        '<div class="blist-column-adder add-column" ' +
+                        'title="Add a new column..."></div>' : '') +
+                    '<div class="indicator-container"></div>' +
                     '</div>');
             }
             html = html.join('');
@@ -3296,7 +3302,9 @@
             {
                 lockedHtml += '<div class="blist-th ' + (c.cls || '') +
                     ' ' + getColumnClass(c) +
-                    '"></div>';
+                    '">' +
+                    '<div class="indicator-container"></div>' +
+                    '</div>';
             });
             $lockedHeader.html(lockedHtml);
 

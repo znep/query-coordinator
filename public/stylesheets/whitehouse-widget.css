@@ -29,6 +29,8 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     background: url(/stylesheets/images/sdp/whitehouse/button_fullscreen_player.png) no-repeat;
 }
 
+.headerMenu { width: 23em; }
+
 .blist-table div.blist-th .info-container
 {
     font-size: 1.1em;
@@ -37,11 +39,10 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 /* Extra tall, wrapped headers */
 .blist-th .info-container
 {
-    height: 2.5em; /* 30px or so */
-    margin-top: -1.25em;
+    height: 2.45em; /* 30px or so */
     white-space: normal;
 }
-.blist-th .name-wrapper { height: 2.5em; }
+.blist-th .name-wrapper { height: 2.45em; }
 .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
 
 div.blist-td

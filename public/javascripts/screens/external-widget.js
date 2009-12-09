@@ -4,13 +4,31 @@ var commonNS = blist.namespace.fetch('blist.common');
 blist.widget.setUpMenu = function()
 {
     // pullToTop here to account for Firefox 3.0.10 Windows bug
-    $('#header ul.headerMenu')
+    $('#header #mainMenu')
         .dropdownMenu({
-            triggerButton: $('#header').find('a.menuLink'),
+            triggerButton: $('#header #mainLink'),
             forcePosition: true,
             closeOnKeyup: true,
-            linkCallback: widgetNS.headerMenuHandler,
+            linkCallback: blist.datasetMenu.menuHandler,
             pullToTop: true});
+
+    $('#header #viewsMenu')
+        .dropdownMenu({
+            triggerButton: $('#header #viewsLink'),
+            forcePosition: true,
+            closeOnKeyup: true,
+            linkCallback: blist.datasetMenu.menuHandler,
+            pullToTop: true});
+
+    $('#header #shareMenu')
+        .dropdownMenu({
+            triggerButton: $('#header #shareLink'),
+            forcePosition: true,
+            closeOnKeyup: true,
+            linkCallback: blist.datasetMenu.menuHandler,
+            pullToTop: true});
+
+    $('#header .scrollableMenu').scrollable();
 };
 
 blist.widget.submitEmail = function (event)
@@ -58,7 +76,7 @@ blist.widget.clearTempViewTab = function ()
     {
         $('#viewHeader').hide();
     }
-    
+
     widgetNS.sizeGrid();
 };
 
@@ -163,14 +181,14 @@ blist.widget.sizeGrid = function ()
     var $gridContainer = $grid.closest(".gridContainer");
     var $metaContainer = $("#widgetMeta");
     var $viewHeader = $("#viewHeader");
-    
+
     var newContainerHeight = $container.next().offset().top - $container.offset().top;
     var newGridHeight = newContainerHeight - $metaContainer.height();
     if ($viewHeader.is(":visible"))
     {
         newGridHeight -= $viewHeader.outerHeight();
     }
-    
+
     $innerContainer.height(newContainerHeight);
     $gridContainer.height(newGridHeight);
     $grid.height(newGridHeight);
@@ -235,7 +253,7 @@ blist.widget.showInterstitial = function (e)
     {
         href = "http://" + href;
     }
-	$('.interstitial .exitBox').width($(window).width() - 125);
+    $('.interstitial .exitBox').width($(window).width() - 125);
     $('.interstitial .exitBox .externalLink')
         .attr('href', href)
         .text(href)
@@ -307,7 +325,7 @@ blist.widget.updateMetaTab = function(tabKey)
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);
-            
+
             if (tabKey == "comments")
             {
                 // Set up reply expanders in comments tab.
@@ -316,7 +334,7 @@ blist.widget.updateMetaTab = function(tabKey)
                     .click(function (e) { 
                         widgetNS.commentExpanderClick($commentPane, e); });
             }
-            
+
             if (tabKey == "publishing")
             {
                 $("#widgetMeta .singleInfoPublishing").infoPanePublish();
@@ -383,7 +401,7 @@ $(function ()
               referrer: document.referrer
             }
     });
-    
+
     // Wire up interstitials
     if (widgetNS.theme['behavior']['interstitial'])
     {
@@ -405,7 +423,7 @@ $(function ()
             $('#modal').jqmHide();
         }
     });
-    
+
     // Set up modals
     $("#modal").jqm({
         trigger: false,
@@ -421,7 +439,7 @@ $(function ()
         event.preventDefault();
         $("#modal").jqmHide();
     });
-    
+
     if ($("#widgetMeta").length > 0)
     {
         var tabMap = {

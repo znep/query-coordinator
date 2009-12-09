@@ -1,12 +1,22 @@
-ul.menu li
+#lensBody ul.menu li
 {
     margin-bottom: -1px;
     margin-top: -1px;
     padding: 0;
 }
+#lensBody ul.menu li.sectionTitle { padding: 4px 10px 4px 30px; }
 ul.menu.multilevelMenu dd > ul > li.separator
 {
     margin-bottom: 0;
     margin-top: 0;
 }
-#filterViewMenu, #filterViewMenu ul.menu, #columnTotalsMenu { width: 20em; }
+ul.menu li.button.next { margin-top: 1px; }
+ul.menu.optionMenu li.separator,
+ul.menu.checkboxMenu li.separator
+{
+    margin-bottom: -4px;
+    margin-top: -10px;
+}
+
+#filterViewMenu, #filterViewMenu ul.menu, #lensBody .columnTotals > ul.menu
+{ width: 20em; }

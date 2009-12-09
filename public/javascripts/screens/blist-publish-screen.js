@@ -148,6 +148,13 @@ blist.publish.applyFrameColor = function($elem, values)
     }
 };
 
+blist.publish.applyDownloadMenu = function($elem, values)
+{
+    if (values['csv'] || values['json'] || values['pdf'] || values['xls'] ||
+        values['xlsx'] || values['xml']) { $elem.show(); }
+    else { $elem.hide(); }
+};
+
 blist.publish.applySubscribeMenu = function($elem, values)
 {
     if (values['rss'] || values['atom'])
@@ -158,6 +165,13 @@ blist.publish.applySubscribeMenu = function($elem, values)
     {
         $elem.hide();
     }
+};
+
+blist.publish.applySocializeMenu = function($elem, values)
+{
+    if (values['delicious'] || values['digg'] || values['facebook'] ||
+        values['twitter']) { $elem.show(); }
+    else { $elem.hide(); }
 };
 
 blist.publish.applyLogo = function($elem, value)
@@ -263,25 +277,49 @@ blist.publish.customizationApplication = {
     grid:           { row_numbers:                          [ { selector: '.blist-table-locked-scrolls:has(.blist-table-row-numbers)', hideShow: true },
                                                               { selector: '.blist-table-header-scrolls, .blist-table-footer-scrolls', css: 'margin-left', map: { 'true': '49px', 'false': '0' } },
                                                               { selector: '#data-grid .blist-table-inside .blist-tr', css: 'left', map: { 'true': '49px', 'false': '0' } } ],
-                      wrap_header_text:                     [ { selector: '.blist-th .info-container, .blist-th .name-wrapper', css: 'height', map: { 'true': '2.5em', 'false': '' } },
-                                                              { selector: '.blist-th .info-container', css: 'margin-top', map: { 'true': '-1.25em', 'false': '' } },
-                                                              { selector: 'div.th-inner-container', css: 'white-space', map: { 'true': 'normal', 'false': '' } },
-                                                              { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { 'true': '4.5em', 'false': '' } } ],
+                      wrap_header_text:                     [ { selector: '.blist-th .info-container, .blist-th .name-wrapper', css: 'height', map: { 'true': '2.45em', 'false': '1.6667em' } },
+                                                              { selector: '.blist-th .info-container', css: 'white-space', map: { 'true': 'normal', 'false': 'nowrap' } },
+                                                              { selector: '.blist-table-header, .blist-th, .blist-th .dragHandle', css: 'height', map: { 'true': '4.5em', 'false': '3.5em' } } ],
                       title_bold:                           [ { selector: '.blist-th .blist-th-name', css: 'font-weight', map: { 'true': 'bold', 'false' : 'normal' } } ],
                       header_icons:                         [ { selector: '.blist-th-icon', hideShow: true } ],
                       /* disabled row height
                       row_height:                           [ { selector: '.blist-td', css: 'height', hasUnit: true },
                                                               { selector: '.blist-td', css: 'line-height', hasUnit: true } ],*/
                       zebra:                                [ { selector: '.blist-tr-even .blist-td', css: 'background-color' } ] },
-    menu:           { email:                                [ { selector: '.headerMenu .email', hideShow: true } ],
-                      subscribe:     { rss:                 [ { selector: '.headerMenu .subscribe .rss', hideShow: true } ],
-                                       atom:                [ { selector: '.headerMenu .subscribe .atom', hideShow: true } ],
-                                       _group:              [ { selector: '.headerMenu .subscribe', properties: [ 'rss', 'atom' ], callback: publishNS.applySubscribeMenu } ] },
-                      api:                                  [ { selector: '.headerMenu .api', hideShow: true } ],
-                      download:                             [ { selector: '.headerMenu .export', hideShow: true } ],
+    menu:           {
+                      top_fullscreen:                       [ { selector: '.fullScreenButton', hideShow: true } ],
+                      // Main menu
                       print:                                [ { selector: '.headerMenu .print', hideShow: true } ],
-                      fullscreen:                           [ { selector: '.headerMenu .fullscreen, .fullScreenButton', hideShow: true } ],
-                      republish:                            [ { selector: '.headerMenu .publish', hideShow: true } ] },
+                      fullscreen:                           [ { selector: '#mainMenu .fullscreen', hideShow: true } ],
+                      download_menu: { csv:                 [ { selector: '.headerMenu .export .csv', hideShow: true } ],
+                                       json:                [ { selector: '.headerMenu .export .json', hideShow: true } ],
+                                       pdf:                 [ { selector: '.headerMenu .export .pdf', hideShow: true } ],
+                                       xls:                 [ { selector: '.headerMenu .export .xls', hideShow: true } ],
+                                       xlsx:                [ { selector: '.headerMenu .export .xlsx', hideShow: true } ],
+                                       xml:                 [ { selector: '.headerMenu .export .xml', hideShow: true } ],
+                                       _group:              [ { selector: '.headerMenu .export', properties: ['csv', 'json', 'pdf', 'xls', 'xlsx', 'xml'], callback: publishNS.applyDownloadMenu } ] },
+                      api:                                  [ { selector: '.headerMenu .api', hideShow: true } ],
+                      subscribe:     { atom:                [ { selector: '.headerMenu .subscribe .atom', hideShow: true } ],
+                                       rss:                 [ { selector: '.headerMenu .subscribe .rss', hideShow: true } ],
+                                       _group:              [ { selector: '.headerMenu .subscribe', properties: [ 'atom', 'rss' ], callback: publishNS.applySubscribeMenu } ] },
+                      basic_analytics:                      [ { selector: '.headerMenu .basic_analytics', hideShow: true } ],
+                      about:                                [ { selector: '.headerMenu .about', hideShow: true } ],
+                      about_sdp:                            [ { selector: '.headerMenu .aboutSDP', hideShow: true } ],
+
+                      // More Views menu
+                      show_tags:                            [ { selector: '.headerMenu .rowTags', hideShow: true } ],
+                      more_views:                           [ { selector: '.headerMenu .moreViews', hideShow: true } ],
+                      views_fullscreen:                     [ { selector: '#viewsMenu .fullscreen, #viewsMenu > .sectionTitle', hideShow: true } ],
+
+                      // Share menu
+                      republish:                            [ { selector: '.headerMenu .publish', hideShow: true } ],
+                      email:                                [ { selector: '.headerMenu .email', hideShow: true } ],
+                      socialize:     { delicious:           [ { selector: '.headerMenu .socialize .delicious', hideShow: true } ],
+                                       digg:                [ { selector: '.headerMenu .socialize .digg', hideShow: true } ],
+                                       facebook:            [ { selector: '.headerMenu .socialize .facebook', hideShow: true } ],
+                                       twitter:             [ { selector: '.headerMenu .socialize .twitter', hideShow: true } ],
+                                       _group:              [ { selector: '.headerMenu .socialize', properties: [ 'delicious', 'digg', 'facebook', 'twitter' ], callback: publishNS.applySocializeMenu } ] }
+                      },
     meta:                                                   [ { selector: '#widgetMeta .summaryTabs', callback: publishNS.applyTabs }],
     behavior:       { save_public_views:                    [ { selector: '#viewHeader', css: 'display', map: { 'true': '', 'false': 'none' } } ],
                       interstitial:                         [ { callback: publishNS.applyInterstitial } ] },

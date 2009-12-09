@@ -247,6 +247,7 @@
                     success: function(retCol)
                     {
                         datasetObj.settings._model.updateColumn(retCol);
+                        $(document).trigger(blist.events.COLUMNS_CHANGED);
                     }});
             },
 
@@ -271,7 +272,7 @@
                         }
                         datasetObj.settings._model.updateColumn(col);
 
-                        var $li = $('#columnsShowMenu a[href*="_' + colId + '"]')
+                        var $li = $('.columnsShow a[href*="_' + colId + '"]')
                             .closest('li');
                         if (hide) { $li.removeClass('checked'); }
                         else { $li.addClass('checked'); }
@@ -311,6 +312,75 @@
                         }
                     }
                 });
+            },
+
+            deleteColumns: function(columns)
+            {
+                if (!(columns instanceof Array)) { columns = [columns]; }
+                var datasetObj = this;
+                var model = datasetObj.settings._model;
+                var view = model.meta().view;
+                var successCount = 0;
+
+                var multiCols = columns.length > 1;
+                if (confirm('Do you want to delete the ' +
+                    (multiCols ? columns.length + ' selected columns' :
+                        'selected column') + '? All data in ' +
+                    (multiCols ? 'these columns' : 'this column') +
+                    ' will be removed!'))
+                {
+                    $.each(columns, function(i, colId)
+                    {
+                        $.ajax({url: '/views/' + view.id + '/columns/' +
+                            colId + '.json', type: 'DELETE',
+                            contentType: 'application/json',
+                            complete: function()
+                            {
+                                successCount++;
+                                if (successCount == columns.length)
+                                {
+                                    model.deleteColumns(columns);
+                                    $(document)
+                                        .trigger(blist.events.COLUMNS_CHANGED);
+                                }
+                            }});
+                    });
+                    // Hide columns so they disappear immediately
+                    datasetObj.showHideColumns(columns, true, true);
+                }
+            },
+
+            updateVisibleColumns: function(columns)
+            {
+                var datasetObj = this;
+                var view = datasetObj.settings._model.meta().view;
+
+                if (datasetObj.settings.currentUserId == view.owner.id)
+                {
+                    var serverCols = [];
+                    $.each(columns, function(i, colId)
+                    {
+                        var col = datasetObj.settings._model.getColumnByID(colId);
+                        if (col)
+                        {
+                            $.socrataServer.addRequest(
+                                {url: '/views/' + view.id + '/columns/' +
+                                    col.id + '.json', type: 'PUT',
+                                data: $.json.serialize({'hidden': false})});
+                            serverCols.push({id: col.id, name: col.name});
+                        }
+                    });
+
+                    $.socrataServer.addRequest(
+                        { url: '/views/' + view.id + '.json', type: 'PUT',
+                            data: $.json.serialize({columns: serverCols})});
+
+                    $.socrataServer.runRequests({complete: function()
+                    {
+                        datasetObj.settings._model.reloadView();
+                        $(document).trigger(blist.events.COLUMNS_CHANGED);
+                    }});
+                }
             },
 
             clearTempView: function(countId, forceAll)
@@ -885,9 +955,17 @@
             '</div></div>' +
             '</a></li>';
 
+        // Sort type keys in a specific order for URL and phone
+        var typeKeys = $.keys(colSum);
+        if (col.type == 'url')
+        { typeKeys.sort(); }
+        else if (col.type == 'phone')
+        { typeKeys.sort().reverse(); }
+
         var sumSections = [];
-        $.each(colSum, function(k, cs)
+        $.each(typeKeys, function(i, k)
         {
+            var cs = colSum[k];
             var section = '';
 
             var searchMethod = function(a, b)
@@ -1029,35 +1107,9 @@
                 selCols[colIdIndex] = true;
 
                 var cols = [];
-                var successCount = 0;
                 $.each(selCols, function(colId, val)
                         { cols.push(colId); });
-                var multiCols = cols.length > 1;
-                if (confirm('Do you want to delete the ' +
-                    (multiCols ? cols.length + ' selected columns' :
-                        'selected column') + '? All data in ' +
-                    (multiCols ? 'these columns' : 'this column') +
-                    ' will be removed!'))
-                {
-                    $.each(cols, function(i, colId)
-                    {
-                        $.ajax({url: '/views/' + view.id + '/columns/' +
-                            colId + '.json', type: 'DELETE',
-                            contentType: 'application/json',
-                            complete: function()
-                            {
-                                successCount++;
-                                if (successCount == cols.length)
-                                {
-                                    model.deleteColumns(cols);
-                                    $(document)
-                                        .trigger(blist.events.COLUMNS_CHANGED);
-                                }
-                            }});
-                    });
-                    // Hide columns so they disappear immediately
-                    datasetObj.showHideColumns(cols, true, true);
-                }
+                datasetObj.deleteColumns(cols);
                 break;
         }
         // Update the grid header to reflect updated sorting, filtering

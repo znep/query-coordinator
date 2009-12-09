@@ -143,3 +143,13 @@ $.compareValues = function(obj1, obj2)
     for (var v2 in obj2) { if (!compareKey(obj2, obj1, v2)) { return false; } }
     return true;
 };
+
+/* Get all the keys for an object as an array */
+$.keys = function(obj)
+{
+    if (typeof obj !== 'object') { return []; }
+
+    var keys = [];
+    $.each(obj, function(k, v) { keys.push(k); });
+    return keys;
+};

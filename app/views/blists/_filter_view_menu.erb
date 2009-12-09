@@ -1,15 +1,2 @@
-<%= menu_tag({'id' => 'filterViewMenu', 'items' => [
-{'text' => 'Filter...', 'class' => 'filter', 'href' => blist_filters_path(@view.id), 'modal' => true},
-{'text' => 'Sort Columns...', 'class' => 'sort', 'href' => blist_sort_bys_path(@view.id), 'modal' => true},
-{'text' => 'Show or Hide Columns', 'class' => 'showHide', 'href' => '#',
-  'submenu' => columns_menu(@view,
-      {'id' => 'columnsShowMenu',
-        'href_prefix' => "#hide-show-col_",
-        'checkbox_menu' => true,
-        'checkbox_callback' => proc { |c| !c.flag?('hidden') },
-        'column_test' => proc {|c, p| p.nil? || !p.flag?('hidden')},
-        'include_options' =>
-        {'nested_table' => true, 'hidden' => true,
-          'nested_table_children' => true, 'list' => true}
-          })
-}]}) %>
+<%= menu_tag({'id' => 'filterViewMenu', 'class' => 'filterView headerMenu',
+  'items' => filter_submenu(@view, false, menu_options)}) %>

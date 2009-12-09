@@ -35,9 +35,6 @@
  *      or styling more difficult.  Also, the menuBar option does not work with
  *      this option.  Defaults to false.
  *
- *  submenuFlipClass: Class to add to a submenu when it should display on the
- *      other (left) side of the parent
- *
  *  triggerButton: (no default) jQuery object that is the button to use to show
  *      the menu
  *
@@ -368,11 +365,11 @@
             $(window).height() + $(window).scrollTop() -
                 ($submenus.offsetParent().offset().top +
                     $submenus.outerHeight(true))));
-        $submenus.removeClass(config.submenuFlipClass);
+        $submenus.css('left', '');
         if ($(window).width() < $submenus.offset().left +
             $submenus.outerWidth(true))
         {
-            $submenus.addClass(config.submenuFlipClass);
+            $submenus.css('left', -$submenus.outerWidth(true) + 5);
         }
     };
 
@@ -392,7 +389,6 @@
         optionMenuSelector: '.optionMenu',
         pullToTop: false,
         selectedItemClass: 'checked',
-        submenuFlipClass: 'opposite',
         submenuSelector: '.submenu',
         topLevelLinkSelector: 'dt a',
         triggerButtonSelector: "a.dropdownLink",

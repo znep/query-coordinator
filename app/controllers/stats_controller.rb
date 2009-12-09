@@ -34,5 +34,10 @@ class StatsController < ApplicationController
       @total_players = @stat.publish_activity.size
       @total_player_views = @stat.publish_activity.values.inject(0) {|total, v| total + v}
     end
+
+    respond_to do |format|
+      format.html { render }
+      format.data { render(:layout => "modal_dialog") }
+    end
   end
 end

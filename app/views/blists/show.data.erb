@@ -2,11 +2,19 @@
 <div id="mainMenuComponent">
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
 <%- can_edit = @view.can_edit() -%>
+<%- menu_options = dataset_menu_lookup(@view) -%>
 <%= render(:partial => "main_menu",
-:locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+:locals => {:is_owner => is_owner, :can_edit => can_edit,
+  :menu_options => menu_options}) %>
 </div>
 <div id="filterViewMenuComponent">
 <%= render(:partial => "filter_view_menu",
-:locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+:locals => {:is_owner => is_owner, :can_edit => can_edit,
+  :menu_options => menu_options}) %>
+</div>
+
+<div id='createViewMenuComponent'>
+<%= menu_tag({'id' => 'createViewMenu',
+  'items' => view_create_menu_options(@view) }) %>
 </div>
 <%- end -%>

@@ -196,7 +196,15 @@
              */
             setSize: function(width, height)
             {
-                $(this.getSizeElement()).css({ width: width + 'px', height: height + 'px' });
+                var $outer = this.$dom();
+                var $sz = $(this.getSizeElement());
+                var outerWidth = width + ($outer.width() - $sz.width());
+                var outerHeight = height + ($outer.height() - $sz.height());
+
+                $sz.css({ width: width + 'px', height: height + 'px' });
+                // When scrolled horizontally in IE7, it will cut editors short
+                // unless we force the size of the container
+                $outer.width(outerWidth).height(outerHeight);
             },
 
             /**

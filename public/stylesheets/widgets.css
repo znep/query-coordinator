@@ -214,6 +214,7 @@ ul.menu li.sectionTitle
 {
     color: #959393;
     font-size: 1.1em;
+    line-height: 1.2em;
     padding-left: 30px;
     padding-right: 10px;
 }
@@ -238,7 +239,11 @@ ul.menu li.disabled a
 
 ul.menu.noicon li a { padding-left: 5px; }
 
-ul.menu li > a > .highlight { display: block; }
+ul.menu li > a > .highlight
+{
+    display: block;
+    overflow: hidden;
+}
 
 ul.menu li > a:hover { background-color: #cacaca; }
 ul.menu li.disabled > a:hover { background-color: transparent; }
@@ -295,6 +300,16 @@ ul.menu li.footer .innerWrapper
     height: 8px;
 }
 
+ul.menu a.externalLink .highlight
+{
+    background-image: url(/stylesheets/images/content/external.png);
+    background-position: right 0;
+    background-repeat: no-repeat;
+    height: 15px;
+    padding-right: 11px;
+}
+ul.menu a.externalLink:hover .highlight { background-position: right -15px; }
+
 /* Support for submenus */
 
 ul.menu li.submenu
@@ -302,10 +317,10 @@ ul.menu li.submenu
     position: relative;
 }
 
-ul.menu li.submenu > a > .highlight
+ul.menu a.submenuLink .highlight
 {
     background-image: url(/stylesheets/images/widgets/menu/submenu_arrow.png);
-    background-position: right center;
+    background-position: right 0.2em;
     background-repeat: no-repeat;
 }
 
@@ -313,11 +328,6 @@ ul.menu li.submenu .menu
 {
     left: 97%;
     top: 0;
-}
-
-ul.menu li.submenu .menu.opposite
-{
-    left: -97%;
 }
 
 
@@ -340,6 +350,21 @@ ul.menu.checkboxMenu li
 {
     background-color: #ececec;
     margin-left: 30px;
+}
+
+ul.menu.optionMenu li.sectionTitle,
+ul.menu.checkboxMenu li.sectionTitle
+{
+    margin-bottom: -1px;
+    padding-left: 5px;
+}
+
+ul.menu.optionMenu li.separator,
+ul.menu.checkboxMenu li.separator
+{
+    height: 2px;
+    margin-right: 0;
+    padding: 0;
 }
 
 ul.menu.optionMenu li a,
@@ -489,12 +514,12 @@ ul.menu li.button
 
 ul.menu li.button.prev
 {
-    border-bottom: solid 1px #cacaca;
+    border-bottom: solid 1px #999999;
 }
 
 ul.menu li.button.next
 {
-    border-top: solid 1px #cacaca;
+    border-top: solid 1px #999999;
 }
 
 ul.menu li.button a
@@ -1393,8 +1418,10 @@ table.gridList tr.filteredOut
 {
     background-image: none;
     height: auto;
-    margin: 0;
+    margin: 0 20px 0 0;
+    overflow: hidden;
     text-indent: 0;
+    white-space: nowrap;
 }
 
 .dialogBox .header .close

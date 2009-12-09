@@ -1,12 +1,25 @@
 <% content_for :head do %>
   <%= stylesheet_link_merged 'tweetsets-index' %>
-  <title>Generate a <%= th.company %> tweetsets</title>
+  <title>Generate a <%= th.company %> tweetset</title>
 <% end %>
 
 <div class='oneColumnContainer tweetsetContainer'>
   <% fullpage_content do %>
-    <div class='content'>
+    <div class='content searchContent'>
       <%= render :partial => 'tweetset_intro' %>
+       <div id='searchArea'>
+         <% form_tag( {:action => 'create'} , {:method => 'get', :id => 'tweetsetForm' }) do %>
+         <div id='searchLine'>
+           <h2>Create a <%= th.company %> tweetset now</h2>
+           <span class='searchText'>Enter your hashtag:</span>
+           <%= text_field_tag("query", "", :title => 'enter your hashtag (i.e. #gov20)', :class => 'textPrompt') %>
+            <ul class='buttons'>
+               <li><a class="generateButton" href="#create">Generate</a></li>
+           </ul>
+         </div>
+       <% end %>
+     </div>
+      <%= render :partial => 'tweetset_intro_bottom' %>
       <div class='twoColumns clearfix'>
         
         <div id='rightColumn'>
@@ -23,18 +36,7 @@
         </div>
         
         <div id='leftColumn'>
-          <div id='searchArea'>
-            <% form_tag( {:action => 'create'} , {:method => 'get', :id => 'tweetsetForm' }) do %>
-              <div id='searchLine'>
-                <h2>Create a <%= th.company %> tweetset now</h2>
-                <span class='searchText'>Enter your hashtag:</span>
-                <%= text_field_tag("query", "", :title => 'enter your hashtag (i.e. #gov20)', :class => 'textPrompt') %>
-                 <ul class="actionButtons">
-                    <li><a class="arrowButton generateButton" href="#create">Generate</a></li>
-                </ul>
-              </div>
-            <% end %>
-          </div>
+          
           
           <%- unless @example_set.blank? %>
             <div id='sampleSet'>

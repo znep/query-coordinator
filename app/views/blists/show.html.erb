@@ -75,8 +75,10 @@
                   <span class='innerWrapper'>Menu</span>
               </div></div>
             </a>
+            <%- menu_options = dataset_menu_lookup(@view) -%>
             <%= render(:partial => "main_menu",
-            :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+            :locals => {:is_owner => is_owner, :can_edit => can_edit,
+            :menu_options => menu_options}) %>
             </li>
 
             <%# Undo/redo %>
@@ -101,17 +103,17 @@
             </li>
             <%- end -%>
 
-            <%- if !@view.is_alt_view? -%>
             <li class='separator'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
                     <div class='innerWrapper'>
-                      <span class='linkIcon'>Filter &amp; View</span></div></div>
+                      <span class='linkIcon'>Filter, Visualize &amp; More</span>
+                  </div></div>
               </div></a>
               <%= render(:partial => "filter_view_menu",
-                :locals => {:is_owner => is_owner, :can_edit => can_edit}) %>
+                :locals => {:is_owner => is_owner, :can_edit => can_edit,
+                :menu_options => menu_options}) %>
             </li>
-            <%- end -%>
 
             <%- if @view.is_visualization? && is_owner -%>
             <li class='separator'>
@@ -130,21 +132,18 @@
             </li>
             <%- end -%>
 
-            <%# Export/access options %>
-            <li class='separator mainViewOption'>
-              <a id='rssLink' class='staticLink'
-                href='/views/<%= @view.id %>/rows.rss'><span class='linkIcon'>RSS</span></a>
-            </li>
-
             <li class='mainViewOption'>
               <a href='#' id='shareTopLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
                     <div class='innerWrapper'>
-                      <span class='linkIcon'>Socialize This</span>
+                      <span class='linkIcon'>Share &amp; Socialize</span>
                     </div>
                 </div></div>
               </a>
-              <%= menu_tag(socialize_menu_options(@view, 'shareTopMenu')) %>
+              <%= menu_tag({'id' => 'shareTopMenu',
+              'class' => 'shareSocialize headerMenu',
+              'items' => share_menu_options(@view, menu_options)},
+              is_owner, can_edit) %>
             </li>
           </ul>
 

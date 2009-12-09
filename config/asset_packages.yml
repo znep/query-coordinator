@@ -25,6 +25,7 @@ javascripts:
   - util/styling
   - plugins/jquery.qtip
   - widgets/blist-alert
+  - util/socrata-server
 - shared-calendar:
   - plugins/fullcalendar
   - widgets/blist-calendar
@@ -135,6 +136,7 @@ javascripts:
   - screens/signup-screen
   - widgets/combo
   - widgets/values
+  - screens/dataset-menu
 - communities-show:
   - plugins/jquery.jcarousel
   - plugins/jquery.tagcloud
@@ -210,6 +212,7 @@ javascripts:
   - widgets/visualization
   - screens/external-widget
   - screens/info-pane
+  - screens/dataset-menu
 
 
 
@@ -255,6 +258,7 @@ stylesheets:
   - table-core
   - table-blist-grid
   - dataset-grid
+  - dataset-menus
   - ui.spinner
   - blist-grid-screen
   - form-common
@@ -286,6 +290,7 @@ stylesheets:
 - widgets-show:
   - table-core
   - dataset-grid
+  - dataset-menus
   - external-widget
   - info-pane
   - external-widget-meta

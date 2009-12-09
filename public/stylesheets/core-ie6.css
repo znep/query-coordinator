@@ -48,7 +48,7 @@ textarea.blist-table-navigator { position: absolute; }
 .blist-th .sort,
 .blist-th .filter
 {
-    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif);
+    background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.gif?1);
 }
 
 .breadcrumbItem { background-image: url(/stylesheets/images/common/breadcrumb_arrow.gif); }

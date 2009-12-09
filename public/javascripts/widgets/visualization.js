@@ -28,7 +28,7 @@
             if (!blist.widgets.visualization.isFusionMap)
             {
                 var query = new google.visualization.Query('/views/' +
-                  blist.widgets.visualization.viewId + '/rows.gvds?_=' +
+                  blist.widgets.visualization.viewId + '/rows.gvds?accessType=WEBSITE&_=' +
                     new Date().valueOf());
                 // Send the query with a callback function.
                 query.send(function(r) { handleQueryResponse($visualization, r); });

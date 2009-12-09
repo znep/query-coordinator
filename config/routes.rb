@@ -78,6 +78,7 @@ ActionController::Routing::Routes.draw do |map|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
       blist.resources :columns
       blist.resources :sort_bys
+      blist.resources :show_hides
       blist.resources :filters
     end
 
@@ -167,6 +168,7 @@ ActionController::Routing::Routes.draw do |map|
   
   map.connect '/tweetsets/:action', :controller => 'tweetsets'
   map.connect '/tweetsets', :controller => 'tweetsets', :action => 'index'
+  map.connect '/tweetset', :controller => 'tweetsets', :action => 'redirect'
   
   # The /version page
   map.connect '/version', :controller => "version", :action => "index"

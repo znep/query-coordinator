@@ -10,6 +10,7 @@ default: &default
   rpx_windowslive_url: https://socrata-test.rpxnow.com/liveid/start
   rpx_openid_url: https://socrata-test.rpxnow.com/openid/start
   tweetsets_user: tweetsets
+  tweetsets_category: Fun
 
 # Local development
 development:

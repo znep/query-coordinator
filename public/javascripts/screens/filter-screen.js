@@ -347,7 +347,8 @@ filterNS.getFilter = function($table, operator)
 
     $table.find(".filterTableRow").each(function(i, row) {
         var rowResult = filterNS.row($(row));
-        if (rowResult !== false)
+        if (rowResult !== false && (!(rowResult instanceof Array) ||
+            rowResult.length > 0))
         {
             children = children.concat(rowResult);
             hasConditions = true;

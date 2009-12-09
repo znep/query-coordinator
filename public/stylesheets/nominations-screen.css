@@ -40,6 +40,7 @@
 
 .nominationList .nominationList-row
 {
+    position: relative;
     clear: both;
 }
 
@@ -57,6 +58,7 @@
 
 .nominationList .nominationList-authorColumn
 {
+    left: 0;
     width: 11.7em;
 }
 
@@ -168,7 +170,21 @@
   font-weight: bold;
 }
 
+.nominationList .nominationList-nominationColumn a.rateNomination.rateUp
+{
+    background-position: 0 -36px;
+}
+
 .nominationList .nominationList-nominationColumn a.rateNomination.rateDown
+{
+    background-position: 0 -54px;
+}
+
+.nominationList .nominationList-nominationColumn a.rateNomination.rateUp.rated
+{
+    background-position: 0 0;
+}
+.nominationList .nominationList-nominationColumn a.rateNomination.rateDown.rated
 {
     background-position: 0 -18px;
 }
@@ -189,4 +205,17 @@
 .nominationList textarea
 {
     width: 95%;
+}
+
+.nominationList p.noItems
+{
+    font-size: 1.4em;
+    text-align: center;
+    padding: 1em;
+}
+
+.nominationList div.delete
+{
+    font-size: 1.2em;
+    float: right;
 }

@@ -76,7 +76,7 @@
               :title => "Search for other users") %>
         </li>
         <li>
-          <%= link_to("Invite Others", invite_path, :title => "Invite others to try Socrata", :rel => "modal") %>
+          <%= link_to("Invite Others", invite_path, :title => "Invite others to try #{CurrentDomain.strings.company}", :rel => "modal") %>
         </li>
       </ul>
     <% end %>

@@ -126,7 +126,7 @@
 
 <div class="footerContainer">
   <div id='footer' class="clearfix">
-    <span class='copyright'>&copy; 2009 Socrata, Inc.</span>
+    <span class='copyright'><%= CurrentDomain.strings.copyright_string %></span>
     <ul class="clearfix">
       <%- CurrentDomain.urls.footer.each do |link| -%>
         <li><%= link_from_theme(link) %></li>

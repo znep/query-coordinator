@@ -21,9 +21,9 @@ module ThemesHelper
 
     def theme_image(options)
       if options[:type] == :static
-        return options[:source]
+        return "url(#{options[:source]})"
       elsif options[:type] == :hosted
-        return "/img/#{options[:source]}"
+        return "url(/img/#{options[:source]})"
       end
     end
 

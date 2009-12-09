@@ -340,7 +340,7 @@ class BlistsController < ApplicationController
     @type = params[:type]
 
     # Pick our subject line
-    @subject = "A visitor has sent you a message about your \"#{@view.name}\" Socrata #{t(:blist_name)}"
+    @subject = "A visitor has sent you a message about your \"#{@view.name}\" #{CurrentDomain.strings.company} #{t(:blist_name)}"
     case @type
     when 'copyright_violation'
       @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for copyright violation"

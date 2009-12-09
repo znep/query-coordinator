@@ -27,7 +27,7 @@
               </li>
               <li><%= link_to("Browse Community #{t(:blists_name).titleize}", root_path, :title => "See what #{t(:blist_name).pluralize} others have created",
                     :class => "browse") %></li>
-              <li class="last"><%= link_to("Invite Others", invite_path, :title => "Invite others to try Socrata", :rel => "modal") %></li>
+              <li class="last"><%= link_to("Invite Others", invite_path, :title => "Invite others to try #{CurrentDomain.strings.company}", :rel => "modal") %></li>
             </ul>
             
             <%- if (!current_user.is_established?) -%>

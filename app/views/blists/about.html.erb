@@ -261,7 +261,7 @@
               <span class="linkIcon">Socialize</span>
             </span>
           </a>
-    	    <%= menu_tag(socialize_menu_options(@view, 'shareMenu')) %>
+          <%= menu_tag({'id' => 'shareMenu', 'items' => socialize_menu_options(@view)}) %>
     	  </li>
     	  <li>
     	    <a href="#" class="socialActionLink"

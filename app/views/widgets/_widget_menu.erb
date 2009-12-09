@@ -1,53 +1,22 @@
-<%= menu_tag({'class' => 'headerMenu', 'items' => [
-{'text' => 'Socialize this ' + t(:blist_name).capitalize, 'class' => 'share',
-  'href' => '#', 'submenu' => socialize_menu_options(@view)},
-{'text' => 'Email this ' + t(:blist_name).capitalize + '...', 'class' => 'email',
-  'href' => "#{@view.href}/email", 'modal' => true, 'if' => theme[:menu][:email]},
-{'separator' => true},
-{'text' => 'Republish this ' + t(:blist_name).capitalize + '...' , 'class' => 'publish',
-  'href' => "#{@view.href}/republish", 'modal' => true, 'if' => theme[:menu][:republish]},
-{'separator' => true},
-{'text' => "Print this #{t(:blist_name).capitalize}...", 'class' => 'print',
-  'href' => "#{@view.href}/print", 'modal' => true, 'if' => theme[:menu][:print]},
-{'text' => 'Download ' + t(:blist_name).capitalize + ' as', 'class' => 'export',
-  'href' => '#', 'if' => theme[:menu][:download], 'submenu' => 
-  {'class' => 'noicon', 'items' => [
-  {'text' => 'Comma Separated Values (.csv)', 'link_class' => 'noInterstitial',
-    'external' => true,
-    'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
-  {'text' => 'Adobe PDF (.pdf)', 'link_class' => 'noInterstitial',
-    'external' => true,
-    'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
-  {'text' => 'Excel 97 - 2003 Workbook (.xls)', 'link_class' => 'noInterstitial',
-    'external' => true,
-    'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
-# {'text' => 'Excel Workbook (.xlsx)', 'link_class' => 'noInterstitial',
-# 'external' => true,
-# 'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-  {'text' => 'XML Data (.xml)', 'link_class' => 'noInterstitial',
-    'external' => true,
-    'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
-  {'text' => 'Java Script Object Notation (.json)',
-    'link_class' => 'noInterstitial', 'external' => true,
-    'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
-  ]}},
-{'text' => 'Subscribe via', 'class' => 'subscribe',
-  'href' => '#', 'if' => theme[:menu][:subscribe].any?{ |key, value| value }, 'submenu' =>
-  {'class' => 'noicon', 'items' => [
-  {'text' => 'RSS',
-    'external' => true, 'class' => 'rss',
-    'href' => "/views/#{@view.id}/rows.rss",
-    'if' => theme[:menu][:subscribe][:rss]},
-  {'text' => 'Atom',
-    'external' => true, 'class' => 'atom',
-    'href' => "/views/#{@view.id}/rows.atom",
-    'if' => theme[:menu][:subscribe][:atom]}
-  ]}},
-{'text' => 'Access Via API', 'class' => 'api', 'external' => 'true',
-  'href' => "/views/#{@view.id}/rows.xml?accessType=API", 'if' => theme[:menu][:api]},
-{'separator' => true},
-{'text' => 'View Full Screen', 'class' => 'fullscreen',
-  'href' => @view.href, 'external' => true, 'if' => theme[:menu][:fullscreen]},
-{'text' => 'Design a New ' + t(:blist_name).capitalize, 'class' => 'newDataset',
-  'href' => blist_href_new_blist, 'external' => true},
+<%= menu_tag({'id' => 'mainMenu', 'class' => 'headerMenu', 'items' => [
+  menu_options['print'],
+  menu_options['full_screen'],
+  menu_options['download'],
+  menu_options['api'],
+
+  menu_options['separator'],
+
+  menu_options['subscribe'],
+
+  menu_options['separator'],
+
+  menu_options['basic_analytics'],
+
+  menu_options['separator'],
+
+  menu_options['about'],
+  {'text' => 'About the Social Data Player...', 'class' => 'aboutSDP',
+  'modal' => true, 'href' => "#{@view.href}/about_sdp",
+  'if' => theme[:menu][:about_sdp] &&
+    (!current_user || !current_user.can_access_premium_on?(@view))}
 ]}) %>

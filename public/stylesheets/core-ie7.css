@@ -4,6 +4,7 @@
     margin-top: -1px;
     padding: 0;
 }
+#lensBody ul.menu li.sectionTitle { padding: 4px 10px 4px 30px; }
 ul.menu.multilevelMenu dd > ul > li.separator
 {
     margin-bottom: 0;

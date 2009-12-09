@@ -1,0 +1,218 @@
+<% content_for :headline do %>
+<h1><span class="groupingIcon">Grouping &amp; Aggregate Functions</span></h1>
+<% end %>
+
+<div class='modalContentWrapper groupingWrapper columnPickerModal'>
+  <p class='subtitle'>
+  Grouping &amp; Aggregate Functions is an advanced feature that allows you to
+  create a new view by grouping columns containing repeated values so that you
+  can sum, count or average other columns.  For example, you might group census
+  data by state, summing the population column.
+  </p>
+
+  <div id="groupingList" class="reorderList clearfix">
+    <div class='activeBlock listBlock'>
+      <h4>Group by These Column(s)</h4>
+      <div class='listWrapper clearfix'>
+        <div class="border"></div>
+        <div class="activeList list">
+          <ul class="reorder">
+            <%- @grouped.each_with_index do |col, i| -%>
+            <li>
+            <div class="itemWrapper">
+              <span class="orderIndex"><%= i + 1 %></span>
+              <span class="type datatype-<%= col.client_type %>"></span>
+              <span class='name'><%= col.name %></span>
+              <%= hidden_field_tag("sort-#{col.id}", true,
+              :class => "columnId", :value => "#{col.id}") %>
+            </div>
+            </li>
+            <%- end -%>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="swapArrows">
+      <a href="#addItem" class="addItemButton">Add</a>
+      <a href="#removeItem" class="removeItemButton">Remove</a>
+    </div>
+
+    <div class='listBlock'>
+      <h4>Columns Available for Grouping</h4>
+      <div class='listWrapper clearfix'>
+        <div class="border"></div>
+        <div class="inactiveList list">
+          <ul class="reorder">
+            <%- @ungrouped.each do |col| -%>
+            <li>
+            <div class="itemWrapper">
+              <span class="orderIndex hide"></span>
+              <span class="type datatype-<%= col.client_type %>"></span>
+              <span class='name'><%= col.name %></span>
+              <%= hidden_field_tag("sort-#{col.id}", true,
+              :class => "columnId", :value => "#{col.id}") %>
+            </div>
+            </li>
+            <%- end -%>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="aggregateList" class="reorderList clearfix">
+    <div class='activeBlock listBlock'>
+      <h4>Aggregate These Column(s)</h4>
+      <div class='listWrapper clearfix'>
+        <div class="border"></div>
+        <div class="activeList list">
+          <ul class="reorder">
+            <%- @agged.each_with_index do |col, i| -%>
+            <li>
+            <div class="itemWrapper">
+              <span class="orderIndex"><%= i + 1 %></span>
+              <span class="type datatype-<%= col.client_type %>"></span>
+              <span class='name'><%= col.name %></span>
+              <div class='controls'>
+                <select class='aggregateFunction'
+                  name='aggregateType-<%= col.id %>'>
+                  <%- @aggregate_functions.each do |at| -%>
+                  <option value='<%= at['value'] %>'><%= at['name'] %></option>
+                  <%- end -%>
+                </select>
+              </div>
+              <%= hidden_field_tag("sort-#{col.id}", true,
+              :class => "columnId", :value => "#{col.id}") %>
+            </div>
+            </li>
+            <%- end -%>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="swapArrows">
+      <a href="#addItem" class="addItemButton">Add</a>
+      <a href="#removeItem" class="removeItemButton">Remove</a>
+    </div>
+
+    <div class='listBlock'>
+      <h4>Columns Without Aggregates</h4>
+      <div class='listWrapper clearfix'>
+        <div class="border"></div>
+        <div class="inactiveList list">
+          <ul class="reorder">
+            <%- @unagged.each do |col| -%>
+            <li>
+            <div class="itemWrapper">
+              <span class="orderIndex hide"></span>
+              <span class="type datatype-<%= col.client_type %>"></span>
+              <span class='name'><%= col.name %></span>
+              <div class='controls'>
+                <select class='aggregateFunction'
+                  name='aggregateType-<%= col.id %>'>
+                  <%- @aggregate_functions.each do |at| -%>
+                  <option value='<%= at['value'] %>'><%= at['name'] %></option>
+                  <%- end -%>
+                </select>
+              </div>
+              <%= hidden_field_tag("sort-#{col.id}", true,
+              :class => "columnId", :value => "#{col.id}") %>
+            </div>
+            </li>
+            <%- end -%>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class='error mainError'></div>
+
+  <div class='submitLine clearfix'>
+    <ul class='actionButtons clearfix'>
+      <li><a href='#saveAs' class='update'>Save As</a></li>
+      <%- if current_user && @view.owner.id == current_user.id &&
+        @grouped.length > 0 -%>
+      <li><a href='#save' class='update arrowButton'>Save</a></li>
+      <%- else -%>
+      <li><a href='#update' class='update arrowButton'>OK</a></li>
+      <%- end -%>
+      <li><a href='#cancel' class='jqmClose'>Cancel</a></li>
+    </ul>
+  </div>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    $('.groupingWrapper .reorderList').reorderableList();
+
+    $(".groupingWrapper .update").click(function(event)
+    {
+        event.preventDefault();
+        var href = $(event.target).attr('href');
+        var action = href.slice(href.indexOf('#') + 1);
+
+        $('.groupingWrapper .mainError').text('');
+
+        var groupCols = [];
+        $(".groupingWrapper #groupingList .activeList .itemWrapper")
+          .each(function(i, item)
+        {
+            var $item = $(item);
+
+            groupCols.push({
+                id: $item.find("input.columnId").val(),
+                position: parseInt($item.find(".orderIndex").text())
+            });
+        });
+        groupCols.sort(function(s1, s2) { return s1.position - s2.position; });
+
+        var aggCols = [];
+        $(".groupingWrapper #aggregateList .activeList .itemWrapper")
+          .each(function(i, item)
+        {
+            var $item = $(item);
+
+            aggCols.push({
+                id: $item.find("input.columnId").val(),
+                position: parseInt($item.find(".orderIndex").text()),
+                func: $item.find('select.aggregateFunction')
+            });
+        });
+        aggCols.sort(function(s1, s2) { return s1.position - s2.position; });
+
+        switch (action)
+        {
+            case 'saveAs':
+                var newName = prompt('Enter a name for a new view:');
+                if (newName !== null)
+                {
+                    if (newName === '')
+                    {
+                        $('.groupingWrapper .mainError')
+                            .text('Please enter a name for the view');
+                    }
+                    else
+                    {
+                        // create view
+                        $("#modal").jqmHide();
+                    }
+                }
+                break;
+            case 'save':
+                // sav to view
+                $("#modal").jqmHide();
+                break;
+            case 'update':
+                // do temp view
+                $("#modal").jqmHide();
+                break;
+        }
+    });
+  };
+</script>

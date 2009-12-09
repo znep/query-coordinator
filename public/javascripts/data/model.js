@@ -810,6 +810,9 @@ blist.namespace.fetch('blist.data');
         {
             if (newMeta)
             {
+                // Columns may be different, so our undo/redo is no longer valid
+                resetUndo();
+
                 // Ensure the meta has a columns object, even if it is empty
                 meta = newMeta;
 
@@ -1513,14 +1516,17 @@ blist.namespace.fetch('blist.data');
                 }
                 else if (c.dataType && c.dataType.type == 'nested_table')
                 {
-                    // keep track of nested rows so we can re-post them along
-                    // with the parent row
-                    $.each(row[c.dataIndex], function(j, cr)
+                    if (row[c.dataIndex] instanceof Array)
                     {
-                        cr.origPosition = j;
-                        undeleteChildren.push({parentRow: row, row: cr,
-                            parentColumn: meta.allColumns[c.id]});
-                    });
+                        // keep track of nested rows so we can re-post them along
+                        // with the parent row
+                        $.each(row[c.dataIndex], function(j, cr)
+                        {
+                            cr.origPosition = j;
+                            undeleteChildren.push({parentRow: row, row: cr,
+                                parentColumn: meta.allColumns[c.id]});
+                        });
+                    }
                 }
                 else if (c.id > -1)
                 {
@@ -1671,6 +1677,13 @@ blist.namespace.fetch('blist.data');
 
         this.canUndo = function() { return undoBuffer.length > 0; }
         this.canRedo = function() { return redoBuffer.length > 0; }
+
+        var resetUndo = function()
+        {
+            redoBuffer.length = 0;
+            undoBuffer.length = 0;
+            self.undoRedoChange();
+        };
 
         var childRowToFake = function(parentRow, childRowPos)
         {

@@ -211,6 +211,7 @@
 {
     background: url(/stylesheets/images/common/required.png) no-repeat;
     padding-left: 15px;
+    float: left;
 }
 
 /* Privacy */

@@ -525,7 +525,7 @@ module BlistsHelper
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
-        "Powered by #{CurrentDomain.strings.company}</a></p>"
+        "Powered by Socrata</a></p>"
     end
     embed_template += "</div>"
   end

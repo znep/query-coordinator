@@ -1687,6 +1687,8 @@ blist.namespace.fetch('blist.data');
 
         var childRowToFake = function(parentRow, childRowPos)
         {
+            if (parentRow.childRows === undefined || parentRow.childRows === null)
+            { getChildRows(parentRow); }
             return parentRow.childRows[childRowPos];
         };
 

@@ -3,6 +3,8 @@
 <% end %>
 
 <div class='modalContentWrapper groupingWrapper columnPickerModal'>
+  <div class='loading'></div>
+
   <p class='subtitle'>
   Grouping &amp; Aggregate Functions is an advanced feature that allows you to
   create a new view by grouping columns containing repeated values so that you
@@ -17,19 +19,8 @@
         <div class="border"></div>
         <div class="activeList list">
           <ul class="reorder">
-            <%- @grouped.each_with_index do |col, i| -%>
-            <li>
-            <div class="itemWrapper">
-              <span class="orderIndex"><%= i + 1 %></span>
-              <span class="type datatype-<%= col.client_type %>"></span>
-              <span class='name'><%= col.name %></span>
-              <%= hidden_field_tag("sort-#{col.id}", true,
-              :class => "columnId", :value => "#{col.id}") %>
-              <%= hidden_field_tag("format-#{col.id}", true,
-              :class => "format", :value => col.format.to_json) %>
-            </div>
-            </li>
-            <%- end -%>
+            <%= render(:partial => 'list_item', :collection => @grouped,
+              :locals => {:type => 'group', :is_inactive => false}) %>
           </ul>
         </div>
       </div>
@@ -46,19 +37,8 @@
         <div class="border"></div>
         <div class="inactiveList list">
           <ul class="reorder">
-            <%- @ungrouped.each do |col| -%>
-            <li>
-            <div class="itemWrapper">
-              <span class="orderIndex hide"></span>
-              <span class="type datatype-<%= col.client_type %>"></span>
-              <span class='name'><%= col.name %></span>
-              <%= hidden_field_tag("sort-#{col.id}", true,
-              :class => "columnId", :value => "#{col.id}") %>
-              <%= hidden_field_tag("format-#{col.id}", true,
-              :class => "format", :value => col.format.to_json) %>
-            </div>
-            </li>
-            <%- end -%>
+            <%= render(:partial => 'list_item', :collection => @ungrouped,
+              :locals => {:type => 'group', :is_inactive => true}) %>
           </ul>
         </div>
       </div>
@@ -73,30 +53,8 @@
         <div class="border"></div>
         <div class="activeList list">
           <ul class="reorder">
-            <%- @agged.each_with_index do |col, i| -%>
-            <li>
-            <div class="itemWrapper">
-              <span class="orderIndex"><%= i + 1 %></span>
-              <span class="type datatype-<%= col.client_type %>"></span>
-              <span class='name'><%= col.name %></span>
-              <div class='controls'>
-                <select class='aggregateFunction'
-                  name='aggregateType-<%= col.id %>'>
-                  <%- col.possible_aggregates.
-                    reject {|a| a['name'] == 'none'}.each do |at| -%>
-                  <option value='<%= at['name'] %>'
-                    <%= col.format.grouping_aggregate == at['name'] ?
-                    "selected='selected'" : "" %>><%= at['title'] %></option>
-                  <%- end -%>
-                </select>
-              </div>
-              <%= hidden_field_tag("sort-#{col.id}", true,
-              :class => "columnId", :value => "#{col.id}") %>
-              <%= hidden_field_tag("format-#{col.id}", true,
-              :class => "format", :value => col.format.to_json) %>
-            </div>
-            </li>
-            <%- end -%>
+            <%= render(:partial => 'list_item', :collection => @agged,
+              :locals => {:type => 'aggregate', :is_inactive => false}) %>
           </ul>
         </div>
       </div>
@@ -113,28 +71,8 @@
         <div class="border"></div>
         <div class="inactiveList list">
           <ul class="reorder">
-            <%- @unagged.each do |col| -%>
-            <li>
-            <div class="itemWrapper">
-              <span class="orderIndex hide"></span>
-              <span class="type datatype-<%= col.client_type %>"></span>
-              <span class='name'><%= col.name %></span>
-              <div class='controls'>
-                <select class='aggregateFunction'
-                  name='aggregateType-<%= col.id %>'>
-                  <%- col.possible_aggregates.
-                    reject {|a| a['name'] == 'none'}.each do |at| -%>
-                  <option value='<%= at['name'] %>'><%= at['title'] %></option>
-                  <%- end -%>
-                </select>
-              </div>
-              <%= hidden_field_tag("sort-#{col.id}", true,
-              :class => "columnId", :value => "#{col.id}") %>
-              <%= hidden_field_tag("format-#{col.id}", true,
-              :class => "format", :value => col.format.to_json) %>
-            </div>
-            </li>
-            <%- end -%>
+            <%= render(:partial => 'list_item', :collection => @unagged,
+              :locals => {:type => 'aggregate', :is_inactive => true}) %>
           </ul>
         </div>
       </div>
@@ -217,6 +155,17 @@
             });
         });
 
+        var successCallback = function()
+        {
+            $("#modal").jqmHide();
+        };
+
+        var errorCallback = function(error)
+        {
+            $('.groupingWrapper .loading').hide();
+            $('.groupingWrapper .mainError').text(error);
+        };
+
         switch (action)
         {
             case 'saveAs':
@@ -230,23 +179,25 @@
                     }
                     else
                     {
+                        $('.groupingWrapper .loading').show();
                         // create view
                         $('#dataGrid').datasetGrid()
-                            .groupAggregate(groupCols, aggCols, true, newName);
-                        $("#modal").jqmHide();
+                            .groupAggregate(groupCols, aggCols, true, newName,
+                                successCallback, errorCallback);
                     }
                 }
                 break;
             case 'save':
                 // save to view
+                $('.groupingWrapper .loading').show();
                 $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols,
-                    true);
-                $("#modal").jqmHide();
+                    true, null, successCallback, errorCallback);
                 break;
             case 'update':
                 // do temp view
-                $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols);
-                $("#modal").jqmHide();
+                $('.groupingWrapper .loading').show();
+                $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols,
+                    false, null, successCallback, errorCallback);
                 break;
         }
     });

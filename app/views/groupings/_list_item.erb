@@ -1,0 +1,27 @@
+<li>
+<div class="itemWrapper">
+  <span class="orderIndex <%= is_inactive ? 'hide' : '' %>">
+    <%= list_item_counter + 1 %>
+  </span>
+  <span class="type datatype-<%= list_item.client_type %>"></span>
+  <span class='name'><%= list_item.name %></span>
+  <%- if type == 'aggregate' -%>
+  <div class='controls'>
+    <select class='aggregateFunction'
+      name='aggregateType-<%= list_item.id %>'>
+      <%- list_item.possible_aggregates.
+        reject {|a| a['name'] == 'none'}.each do |at| -%>
+      <option value='<%= at['name'] %>'
+        <%= !list_item.format.nil? &&
+          list_item.format.grouping_aggregate == at['name'] ?
+          "selected='selected'" : "" %>><%= at['title'] %></option>
+      <%- end -%>
+    </select>
+  </div>
+  <%- end -%>
+  <%= hidden_field_tag("#{type}-sort-#{list_item.id}", true,
+    :class => "columnId", :value => "#{list_item.id}") %>
+  <%= hidden_field_tag("#{type}-format-#{list_item.id}", true,
+    :class => "format", :value => list_item.format.to_json) %>
+</div>
+</li>

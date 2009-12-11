@@ -1593,6 +1593,20 @@ div#sortBysList.reorderList li .itemWrapper
 
 
 /*** START: Grouping & Aggregates dialog ***/
+.groupingWrapper .loading
+{
+    background: white url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center;
+    display: none;
+    height: 90%;
+    filter: alpha(opacity=60); /* for IE */
+    margin-left: -1em;
+    margin-top: -1em;
+    opacity: 0.6;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+}
+
 .groupingWrapper .list { height: 10em; }
 .groupingWrapper .swapArrows { margin-top: 8em; }
 
@@ -1603,6 +1617,8 @@ div#sortBysList.reorderList li .itemWrapper
     padding-top: 0.15em;
     width: 7em;
 }
+
+.groupingWrapper .itemWrapper .controls select { width: 8em; }
 
 .groupingWrapper .inactiveList .itemWrapper .controls { display: none; }
 /*** END: Grouping & Aggregates dialog ***/

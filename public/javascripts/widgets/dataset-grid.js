@@ -388,7 +388,8 @@
                 }
             },
 
-            groupAggregate: function(grouped, aggregates, doSave, newName)
+            groupAggregate: function(grouped, aggregates, doSave, newName,
+                successCallback, errorCallback)
             {
                 var datasetObj = this;
                 var model = datasetObj.settings._model;
@@ -439,7 +440,8 @@
                         $.socrataServer.addRequest(
                             {url: '/views/' + view.id + '/columns/' +
                                 c.id + '.json', type: 'PUT',
-                            data: $.json.serialize({hidden: c.hidden})});
+                            data: $.json.serialize({hidden: c.hidden}),
+                            error: errorCallback});
                     });
                 }
 
@@ -451,6 +453,8 @@
 
                 if (!doSave)
                 {
+                    if (typeof successCallback == 'function')
+                    { successCallback(); }
                     model.getTempView(view);
                     datasetObj.setTempView('grouping');
                 }
@@ -459,8 +463,16 @@
                     $.ajax({url: '/views.json', type: 'POST',
                         contentType: 'application/json', dataType: 'json',
                         data: $.json.serialize(view),
+                        error: function(xhr)
+                        {
+                            if (typeof errorCallback == 'function')
+                            { errorCallback($.json.deserialize(xhr.responseText)
+                                .message); }
+                        },
                         success: function(resp)
                         {
+                            if (typeof successCallback == 'function')
+                            { successCallback(); }
                             blist.util.navigation.redirectToView(resp.id);
                         }});
                 }
@@ -468,11 +480,12 @@
                 {
                     $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
                         type: 'PUT', data: $.json.serialize(view),
+                        error: errorCallback,
                         success: function(resp)
                         {
                             model.reloadView();
                         }});
-                    $.socrataServer.runRequests();
+                    $.socrataServer.runRequests({success: successCallback()});
                 }
             },
 

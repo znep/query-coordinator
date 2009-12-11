@@ -3,23 +3,40 @@ class GroupingsController < ApplicationController
   def index
     @view = View.find(params[:blist_id])
 
+    groups = !params[:groups].nil? ? params[:groups].split(',') :
+      !@view.query.nil? && !@view.query.groupBys.nil? ?
+      @view.query.groupBys.map {|g| g['columnId'].to_s} : []
     @grouped = []
-    @ungrouped = []
     groupIds = {}
-    @view.query.groupBys.each do |g|
-      @grouped << @view.columns.find {|c| c.id == g['columnId']}
-      groupIds[g['columnId']] = true
+    groups.each do |g|
+      @grouped << @view.columns.find {|c| c.id.to_s == g}
+      groupIds[g] = true
     end
 
+    aggs = !params[:aggs].nil? ? params[:aggs].split(',').map do |a|
+        parts = a.split(':')
+        {'id' => parts[0], 'func' => parts[1]}
+      end :
+      @view.columns.find_all {|c| !c.format.nil? &&
+        !c.format.grouping_aggregate.nil?}.map {|c|
+          {'id' => c.id.to_s, 'func' => c.format.grouping_aggregate}}
     @agged = []
+    aggedIds = {}
+    aggs.each do |a|
+      col = @view.columns.find {|c| c.id.to_s == a['id']}
+      col.data['format'] ||= {}
+      col.data['format']['grouping_aggregate'] = a['func']
+      @agged << col
+      aggedIds[a['id']] = true
+    end
+
     @unagged = []
+    @ungrouped = []
     @view.columns.each do |c|
-      if !c.format.nil? && c.format.data.has_key?('grouping_aggregate')
-        @agged << c
-      else
+      if aggedIds[c.id.to_s].nil?
         @unagged << c
       end
-      if !groupIds[c.id]
+      if groupIds[c.id.to_s].nil?
         @ungrouped << c
       end
     end

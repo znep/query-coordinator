@@ -2049,7 +2049,7 @@ blist.namespace.fetch('blist.data');
             if (hasSort) { doSort(); }
             // The only way to guarantee a correct ordering of rows (right now)
             //  when clearing all sorts is to go to the server
-            else { getTempView(); }
+            else { this.getTempView(); }
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
@@ -2185,7 +2185,7 @@ blist.namespace.fetch('blist.data');
 
             if (self.isProgressiveLoading())
             {
-                getTempView();
+                self.getTempView();
                 // Bail out early, since the server does the sorting
                 return;
             }
@@ -2221,7 +2221,7 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
         };
 
-        var getTempView = function()
+        this.getTempView = function(tempView)
         {
             // If we're doing progressive loading, set up a temporary
             //  view, then construct a query with a special URL and
@@ -2229,8 +2229,10 @@ blist.namespace.fetch('blist.data');
             // Don't include columns since we want them all back, and we
             //  don't need to send all that extra data over or modify columns
             //  accidentally
-            var tempView = $.extend({}, meta.view,
-                    {originalViewId: meta.view.id, columns: null, query: null});
+            tempView = tempView || $.extend({}, meta.view,
+                    {originalViewId: meta.view.id, columns: null,
+                    query: $.extend({}, meta.view.query,
+                        {filterCondition: null, orderBys: null})});
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -2312,6 +2314,23 @@ blist.namespace.fetch('blist.data');
         };
 
         /**
+         * Group columns
+         */
+
+        this.group = function(columns)
+        {
+            if (!columns instanceof Array) { columns = [columns]; }
+            meta.view.query = meta.view.query || {};
+            meta.view.query.groupBys = [];
+
+            $.each(columns, function(i, c)
+            {
+                meta.view.query.groupBys.push
+                    ({columnId: c.id || c, type: 'column'});
+            });
+        };
+
+        /**
          * Filter the data.
          *
          * @param filter either filter text or a filtering function
@@ -2359,7 +2378,7 @@ blist.namespace.fetch('blist.data');
                     meta.view.searchString = null;
                     if (self.isProgressiveLoading())
                     {
-                        getTempView();
+                        self.getTempView();
                     }
                     else if (active != rows)
                     {
@@ -2477,7 +2496,7 @@ blist.namespace.fetch('blist.data');
 
             meta.view.viewFilters = filter;
 
-            getTempView();
+            this.getTempView();
         }
 
         /* Filter a single column (column obj or index) on a value.
@@ -2542,7 +2561,7 @@ blist.namespace.fetch('blist.data');
 
             // Reload the view from the server; eventually we should do this
             //  locally if not in progressiveLoading mode
-            getTempView();
+            this.getTempView();
         };
 
         /* Clear out the filtr for a particular column */
@@ -2566,7 +2585,7 @@ blist.namespace.fetch('blist.data');
 
             this.columnFilterChange(filterCol, false);
 
-            getTempView();
+            this.getTempView();
         };
 
         // Apply filtering, grouping, and sub-row expansion to the active set.
@@ -2646,7 +2665,7 @@ blist.namespace.fetch('blist.data');
 
             if (self.isProgressiveLoading())
             {
-                getTempView();
+                self.getTempView();
                 // Bail out early, since the server does the sorting
                 return;
             }

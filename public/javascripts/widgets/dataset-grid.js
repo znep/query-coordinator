@@ -185,23 +185,28 @@
 
             getViewCopy: function(includeColumns)
             {
-                var view = $.extend(true, {}, this.settings._model.meta().view);
+                var datasetObj = this;
+                var model = datasetObj.settings._model;
+                var view = model.meta().view;
+                // Update all the widths from the meta columns
+                $.each(this.settings._model.meta().columns[0], function(i, c)
+                {
+                    model.getColumnByID(c.id).width = c.width;
+                    if (c.body && c.body.children)
+                    {
+                        $.each(c.body.children, function(j, cc)
+                        {
+                            model.getColumnByID(cc.id).width = cc.width;
+                        });
+                    }
+                });
+
+                view = $.extend(true, {}, view);
+                view.query = $.extend({}, view.query,
+                        {filterCondition: null, orderBys: null});
 
                 if (includeColumns)
                 {
-                    // Update all the widths from the meta columns
-                    $.each(this.settings._model.meta().columns[0], function(i, c)
-                    {
-                        view.columns[c.dataIndex].width = c.width;
-                        if (c.body && c.body.children)
-                        {
-                            $.each(c.body.children, function(j, cc)
-                            {
-                                view.columns[c.dataIndex]
-                                    .childColumns[cc.dataIndex].width = cc.width;
-                            });
-                        }
-                    });
                     // Filter out all metadata columns
                     view.columns = $.grep(view.columns, function(c, i)
                         { return c.id != -1; });
@@ -380,6 +385,94 @@
                         datasetObj.settings._model.reloadView();
                         $(document).trigger(blist.events.COLUMNS_CHANGED);
                     }});
+                }
+            },
+
+            groupAggregate: function(grouped, aggregates, doSave, newName)
+            {
+                var datasetObj = this;
+                var model = datasetObj.settings._model;
+                var view = model.meta().view;
+                var isNew = newName !== null && newName !== undefined;
+                var isUpdate = doSave && !isNew &&
+                    datasetObj.settings.currentUserId == view.owner.id;
+
+                var newCols = [];
+                var usedCols = {};
+                if (grouped instanceof Array && grouped.length > 0)
+                {
+                    model.group(grouped);
+                    $.each(grouped, function(i, c)
+                    {
+                        newCols.push({id: c.id, name: c.name, hidden: false,
+                            format: c.format});
+                        usedCols[c.id] = true;
+                    });
+                }
+
+                if (aggregates instanceof Array && aggregates.length > 0)
+                {
+                    $.each(aggregates, function(i, a)
+                    {
+                        var format = $.extend({}, a.format,
+                            {grouping_aggregate: a.func});
+                        if (format.grouping_aggregate === null)
+                        { delete format.grouping_aggregate; }
+                        if (usedCols[a.id] === undefined)
+                        {
+                            newCols.push({id: a.id, name: a.name,
+                                hidden: a.hidden !== undefined ? a.hidden : false,
+                                format: format});
+                        }
+                        else
+                        {
+                             $.each(newCols, function(j, c)
+                             { if (c.id == a.id) { c.format = format; } })
+                        }
+                    });
+                }
+
+                if (isUpdate)
+                {
+                    $.each(newCols, function(i, c)
+                    {
+                        $.socrataServer.addRequest(
+                            {url: '/views/' + view.id + '/columns/' +
+                                c.id + '.json', type: 'PUT',
+                            data: $.json.serialize({hidden: c.hidden})});
+                    });
+                }
+
+                model.meta().view.columns = newCols;
+
+                view = datasetObj.getViewCopy(true);
+
+                if (isNew) { view = $.extend(view, {name: newName}); }
+
+                if (!doSave)
+                {
+                    model.getTempView(view);
+                    datasetObj.setTempView('grouping');
+                }
+                else if (isNew)
+                {
+                    $.ajax({url: '/views.json', type: 'POST',
+                        contentType: 'application/json', dataType: 'json',
+                        data: $.json.serialize(view),
+                        success: function(resp)
+                        {
+                            blist.util.navigation.redirectToView(resp.id);
+                        }});
+                }
+                else
+                {
+                    $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
+                        type: 'PUT', data: $.json.serialize(view),
+                        success: function(resp)
+                        {
+                            model.reloadView();
+                        }});
+                    $.socrataServer.runRequests();
                 }
             },
 

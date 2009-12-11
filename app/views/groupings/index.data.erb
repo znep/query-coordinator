@@ -25,6 +25,8 @@
               <span class='name'><%= col.name %></span>
               <%= hidden_field_tag("sort-#{col.id}", true,
               :class => "columnId", :value => "#{col.id}") %>
+              <%= hidden_field_tag("format-#{col.id}", true,
+              :class => "format", :value => col.format.to_json) %>
             </div>
             </li>
             <%- end -%>
@@ -52,6 +54,8 @@
               <span class='name'><%= col.name %></span>
               <%= hidden_field_tag("sort-#{col.id}", true,
               :class => "columnId", :value => "#{col.id}") %>
+              <%= hidden_field_tag("format-#{col.id}", true,
+              :class => "format", :value => col.format.to_json) %>
             </div>
             </li>
             <%- end -%>
@@ -78,13 +82,18 @@
               <div class='controls'>
                 <select class='aggregateFunction'
                   name='aggregateType-<%= col.id %>'>
-                  <%- @aggregate_functions.each do |at| -%>
-                  <option value='<%= at['value'] %>'><%= at['name'] %></option>
+                  <%- col.possible_aggregates.
+                    reject {|a| a['name'] == 'none'}.each do |at| -%>
+                  <option value='<%= at['name'] %>'
+                    <%= col.format.grouping_aggregate == at['name'] ?
+                    "selected='selected'" : "" %>><%= at['title'] %></option>
                   <%- end -%>
                 </select>
               </div>
               <%= hidden_field_tag("sort-#{col.id}", true,
               :class => "columnId", :value => "#{col.id}") %>
+              <%= hidden_field_tag("format-#{col.id}", true,
+              :class => "format", :value => col.format.to_json) %>
             </div>
             </li>
             <%- end -%>
@@ -113,13 +122,16 @@
               <div class='controls'>
                 <select class='aggregateFunction'
                   name='aggregateType-<%= col.id %>'>
-                  <%- @aggregate_functions.each do |at| -%>
-                  <option value='<%= at['value'] %>'><%= at['name'] %></option>
+                  <%- col.possible_aggregates.
+                    reject {|a| a['name'] == 'none'}.each do |at| -%>
+                  <option value='<%= at['name'] %>'><%= at['title'] %></option>
                   <%- end -%>
                 </select>
               </div>
               <%= hidden_field_tag("sort-#{col.id}", true,
               :class => "columnId", :value => "#{col.id}") %>
+              <%= hidden_field_tag("format-#{col.id}", true,
+              :class => "format", :value => col.format.to_json) %>
             </div>
             </li>
             <%- end -%>
@@ -167,6 +179,8 @@
 
             groupCols.push({
                 id: $item.find("input.columnId").val(),
+                name: $item.find('.name').text(),
+                format: $.json.deserialize($item.find('.format').val()),
                 position: parseInt($item.find(".orderIndex").text())
             });
         });
@@ -180,11 +194,28 @@
 
             aggCols.push({
                 id: $item.find("input.columnId").val(),
+                name: $item.find('.name').text(),
+                format: $.json.deserialize($item.find('.format').val()),
+                hidden: false,
                 position: parseInt($item.find(".orderIndex").text()),
-                func: $item.find('select.aggregateFunction')
+                func: $item.find('select.aggregateFunction').val()
             });
         });
         aggCols.sort(function(s1, s2) { return s1.position - s2.position; });
+
+        $(".groupingWrapper #aggregateList .inactiveList .itemWrapper")
+          .each(function(i, item)
+        {
+            var $item = $(item);
+
+            aggCols.push({
+                id: $item.find("input.columnId").val(),
+                name: $item.find('.name').text(),
+                format: $.json.deserialize($item.find('.format').val()),
+                hidden: true,
+                func: null
+            });
+        });
 
         switch (action)
         {
@@ -200,16 +231,21 @@
                     else
                     {
                         // create view
+                        $('#dataGrid').datasetGrid()
+                            .groupAggregate(groupCols, aggCols, true, newName);
                         $("#modal").jqmHide();
                     }
                 }
                 break;
             case 'save':
-                // sav to view
+                // save to view
+                $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols,
+                    true);
                 $("#modal").jqmHide();
                 break;
             case 'update':
                 // do temp view
+                $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols);
                 $("#modal").jqmHide();
                 break;
         }

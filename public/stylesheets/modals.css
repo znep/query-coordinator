@@ -178,11 +178,15 @@
     margin-right: 1em;
     vertical-align: middle;
 }
+.invitationWrapper .submitLine,
+.shareWrapper .submitLine
+{
+    float: right;
+}
 .invitationWrapper .submitLine a,
 .shareWrapper .submitLine a
 {
     color: #333;
-    font-size: 1.2em;
     text-transform: uppercase;
 }
 

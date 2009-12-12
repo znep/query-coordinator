@@ -296,7 +296,8 @@ module BlistsHelper
           'href' => blist_show_hides_path(view.id), 'modal' => true}] : [],
           'href_prefix' => "#hide-show-col_", 'checkbox_menu' => true,
           'checkbox_callback' => proc { |c| !c.flag?('hidden') },
-          'column_test' => proc {|c, p| p.nil? || !p.flag?('hidden')},
+          'column_test' => proc {|c, p| (p.nil? || !p.flag?('hidden')) &&
+            (!view.is_grouped? || c.is_group_aggregate? || c.is_grouped?(view))},
           'include_options' =>
             {'nested_table' => true, 'hidden' => true,
             'nested_table_children' => true, 'list' => true}

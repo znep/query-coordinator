@@ -2,6 +2,7 @@ class GroupingsController < ApplicationController
   skip_before_filter :require_user, :only => [:index]
   def index
     @view = View.find(params[:blist_id])
+    @is_temp = params[:isTempView] == 'true'
 
     groups = !params[:groups].nil? ? params[:groups].split(',') :
       !@view.query.nil? && !@view.query.groupBys.nil? ?
@@ -33,6 +34,8 @@ class GroupingsController < ApplicationController
     @unagged = []
     @ungrouped = []
     @view.columns.each do |c|
+      next if c.is_nested_table
+
       if aggedIds[c.id.to_s].nil?
         @unagged << c
       end

@@ -144,6 +144,10 @@ class View < Model
     grants && grants.any? {|p| !p.flag?('public')}
   end
 
+  def is_grouped?
+    !self.query.nil? && !self.query.groupBys.nil? && self.query.groupBys.length > 0
+  end
+
   def last_updated_user
     begin
       return rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)

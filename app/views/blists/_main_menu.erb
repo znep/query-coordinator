@@ -86,7 +86,8 @@
             'submenu' => columns_menu(@view,
                  {'id' => 'columnDeleteMenu',
                   'href_prefix' => "#delete-col_",
-                  'column_test' => proc {|c, p| c.client_type != 'tag'},
+                  'column_test' => proc {|c, p| c.client_type != 'tag' &&
+                    !c.is_grouped?(@view)},
                   'include_options' =>
                   {'nested_table' => true,
                     'nested_table_children' => true, 'list' => true}})},

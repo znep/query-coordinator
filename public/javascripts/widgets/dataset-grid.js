@@ -460,21 +460,40 @@
                 }
                 else if (isNew)
                 {
-                    $.ajax({url: '/views.json', type: 'POST',
-                        contentType: 'application/json', dataType: 'json',
-                        data: $.json.serialize(view),
-                        error: function(xhr)
-                        {
-                            if (typeof errorCallback == 'function')
-                            { errorCallback($.json.deserialize(xhr.responseText)
-                                .message); }
-                        },
-                        success: function(resp)
-                        {
-                            if (typeof successCallback == 'function')
-                            { successCallback(); }
-                            blist.util.navigation.redirectToView(resp.id);
-                        }});
+                    var saveNewView = function()
+                    {
+                        $.ajax({url: '/views.json', type: 'POST',
+                            contentType: 'application/json', dataType: 'json',
+                            data: $.json.serialize(view),
+                            error: function(xhr)
+                            {
+                                if (typeof errorCallback == 'function')
+                                { errorCallback($.json.deserialize
+                                    (xhr.responseText).message); }
+                            },
+                            success: function(resp)
+                            {
+                                if (typeof successCallback == 'function')
+                                { successCallback(); }
+                                blist.util.navigation.redirectToView(resp.id);
+                            }});
+                    };
+
+                    if (blist.util && blist.util.inlineLogin)
+                    {
+                        var loginMessage =
+                            'You must be logged into create a new view';
+                        blist.util.inlineLogin.verifyUser(
+                            function (isSuccess) {
+                                if (isSuccess) { saveNewView() }
+                                else
+                                {
+                                    if (typeof errorCallback == 'function')
+                                    { errorCallback(loginMessage); }
+                                }
+                            }, loginMessage);
+                    }
+                    else { saveNewView(); }
                 }
                 else
                 {
@@ -789,6 +808,7 @@
 
     var createHeaderMenu = function(datasetObj, col, $colDom)
     {
+        var view = datasetObj.settings._model.meta().view;
         var isNested = col.nestedIn !== undefined;
         // Create an object containing flags describing what should be present
         // in the menu
@@ -797,14 +817,18 @@
         {
             features.sort = true;
         }
-        if (!isNested && blist.data.types[col.type].filterable)
+        if (!isNested && blist.data.types[col.type].filterable &&
+            (view.query === undefined || view.query.groupBys === undefined ||
+                view.query.groupBys.length < 1))
         {
             features.filter = true;
         }
-        var view = datasetObj.settings._model.meta().view;
         if (datasetObj.settings.columnDeleteEnabled &&
             blist.data.types[col.type].deleteable && view && view.rights &&
-            $.inArray('remove_column', view.rights) >= 0)
+            $.inArray('remove_column', view.rights) >= 0 &&
+            (view.query === undefined || view.query.groupBys === undefined ||
+                $.grep(view.query.groupBys, function(g, i)
+                    { return g.columnId == col.id; }).length < 1))
         {
             features.remove = true;
         }
@@ -955,17 +979,19 @@
         }
 
         var colSum = datasetObj.settings._columnSummaries;
+        var modView = datasetObj.settings._model.meta().view;
+        if (!modView) { return; }
 
-        if (!blist.data.types[col.type].filterable) { return; }
+        if (!blist.data.types[col.type].filterable ||
+            (modView.query !== undefined && modView.query.groupBys !== undefined &&
+                modView.query.groupBys.length > 0))
+        { return; }
 
         if (colSum[col.id] !== undefined)
         {
             addFilterMenu(datasetObj, col, $menu);
             return;
         }
-
-        var modView = datasetObj.settings._model.meta().view;
-        if (!modView) { return; }
 
         // Remove the old filter menu if necessary
         $menu.children('.autofilter').prev('.separator').andSelf().remove();

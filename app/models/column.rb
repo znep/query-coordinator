@@ -284,4 +284,13 @@ class Column < Model
     end
     false
   end
+
+  def is_grouped?(view)
+    !view.query.nil? && !view.query.groupBys.nil? &&
+      view.query.groupBys.any? {|g| g['columnId'] == self.id}
+  end
+
+  def is_group_aggregate?
+    !self.format.nil? && !self.format.grouping_aggregate.nil?
+  end
 end

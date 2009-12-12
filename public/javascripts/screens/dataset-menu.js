@@ -38,6 +38,9 @@ blist.datasetMenu.menuHandler = function(event)
             });
             if (aggs.length > 0) { params.push('aggs=' + aggs.join(',')); }
 
+            if ($('.blist-table').datasetGrid().isTempView)
+            { params.push('isTempView=true'); }
+
             if (params.length > 0) { actionId += '?' + params.join('&'); }
             $('#modal').jqmShow($('<a href="' + actionId + '"></a>'));
             break;

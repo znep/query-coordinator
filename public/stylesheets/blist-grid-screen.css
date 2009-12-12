@@ -790,7 +790,7 @@ body#lensBody
     margin-top: 0;
     position: fixed;
     top: 20em;
-    z-index: 100;
+    z-index: 5000;
 }
 
 div#signup.dialogWrapper

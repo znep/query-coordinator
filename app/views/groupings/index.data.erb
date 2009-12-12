@@ -85,7 +85,7 @@
     <ul class='actionButtons clearfix'>
       <li><a href='#saveAs' class='update'>Save As</a></li>
       <%- if current_user && @view.owner.id == current_user.id &&
-        @grouped.length > 0 -%>
+        !@is_temp && @grouped.length > 0 -%>
       <li><a href='#save' class='update arrowButton'>Save</a></li>
       <%- else -%>
       <li><a href='#update' class='update arrowButton'>OK</a></li>

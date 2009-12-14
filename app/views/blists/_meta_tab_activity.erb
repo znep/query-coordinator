@@ -18,7 +18,7 @@
             <td class="when"><div class="cellInner"><%= blist_date(activity.createdAt) %></div></td>
             <td class="picture">
               <a href='<%= activity.actor.href %>' class="cellInner" <%= "rel='external'" if in_widget %>>
-                <%= image_tag(activity.actor.profile_image_path,
+                <%= image_tag(activity.actor.profile_image_path('medium'),
                 :size => "24x24", :alt => h(activity.actor.displayName)) %>
             </a></td>
             <td class="who"><div class='cellInner clipText'>

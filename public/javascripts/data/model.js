@@ -311,6 +311,13 @@ blist.namespace.fetch('blist.data');
             return meta.title || (meta.view && meta.view.name) || "";
         };
 
+        this.isGrouped = function()
+        {
+            return meta.view !== undefined && meta.view.query !== undefined &&
+                meta.view.query.groupBys !== undefined &&
+                meta.view.query.groupBys.length > 0;
+        };
+
         /**
          * Get rights for this view
          */
@@ -322,19 +329,19 @@ blist.namespace.fetch('blist.data');
 
         this.canWrite = function()
         {
-            return meta.view && meta.view.rights &&
+            return meta.view && !this.isGrouped() && meta.view.rights &&
                 $.inArray('write', meta.view.rights) >= 0;
         };
 
         this.canAdd = function()
         {
-            return meta.view && meta.view.rights &&
+            return meta.view && !this.isGrouped() && meta.view.rights &&
                 $.inArray('add', meta.view.rights) >= 0;
         };
 
         this.canDelete = function()
         {
-            return meta.view && meta.view.rights &&
+            return meta.view && !this.isGrouped() && meta.view.rights &&
                 $.inArray('delete', meta.view.rights) >= 0;
         };
 
@@ -715,6 +722,8 @@ blist.namespace.fetch('blist.data');
                     {
                         col.alignment = format.align;
                     }
+                    if (format.grouping_aggregate)
+                    { col.grouping_aggregate = format.grouping_aggregate; }
                 }
 
                 if (nestedIn) { nestedIn.children.push(col); }

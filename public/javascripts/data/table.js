@@ -2584,6 +2584,9 @@
                     // Standard cell
                     var type = blist.data.types[mcol.type] ||
                         blist.data.types.text;
+                    if (mcol.grouping_aggregate !== undefined)
+                    { type = blist.data.types.number; }
+
                     var renderer = mcol.renderer || type.renderGen;
                     var invalidRenderer = blist.data.types.invalid.renderGen;
                     var cls = mcol.cls || type.cls;

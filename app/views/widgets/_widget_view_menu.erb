@@ -1,0 +1,9 @@
+<%= menu_tag({'id' => 'viewsMenu', 'class' => 'headerMenu filterView',
+    'items' => filter_submenu(@view, true, menu_options) +
+    [menu_options['separator'],
+    {'section_title' => 'Advanced sorting, filtering, formatting and ' +
+    'more are available in Full Screen mode',
+    'if' => theme[:menu][:views_fullscreen]},
+    menu_options['full_screen'].merge({
+      'if' => theme[:menu][:views_fullscreen]})
+    ]}) %>

@@ -930,7 +930,8 @@
 
         var filterStr =
             '<li class="autofilter submenu singleItem">' +
-            '<a href="#"><span class="highlight">Filter This Column</span></a>' +
+            '<a class="submenuLink" href="#">' +
+            '<span class="highlight">Filter This Column</span></a>' +
             '<ul class="menu optionMenu">';
         // If we already have a filter for this column, give them a clear link
         if (cf !== undefined)

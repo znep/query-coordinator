@@ -156,7 +156,8 @@
                 datasetObj.settings._filterCount = 0;
                 datasetObj.isTempView = false;
 
-                datasetObj.settings.filterItem.val('').blur();
+                if (datasetObj.settings.filterForm)
+                { datasetObj.settings.filterForm.find(':input').val('').blur(); }
                 datasetObj.settings.clearFilterItem.hide();
                 datasetObj.summaryStale = true;
 

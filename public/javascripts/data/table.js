@@ -1836,7 +1836,7 @@
                 }
                 setTimeout(checkForEditorInput, 1);
             }
-            
+
             if (didNavKeyDown)
             {
                 didNavKeyDown = false;
@@ -1851,6 +1851,18 @@
 
             switch (event.keyCode)
             {
+                case 90:
+                    // Ctrl-z
+                    if (event.metaKey) { if (model.canUndo()) { model.undo(); } }
+                    else { return; }
+                    break;
+
+                case 89:
+                    // Ctrl-y
+                    if (event.metaKey) { if (model.canRedo()) { model.redo(); } }
+                    else { return; }
+                    break;
+
                 case 33:
                     // Page up
                     navigateY(-pageSize, event);

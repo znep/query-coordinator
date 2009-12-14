@@ -558,6 +558,26 @@ $(function ()
 
 
     blistGridNS.hookUpMainMenu();
+
+    $('#undoLink').click(function (event)
+    {
+        event.preventDefault();
+        if ($(event.target).closest('li.disabled').length < 1)
+        { $('#dataGrid').blistModel().undo(); }
+    });
+    $('#redoLink').click(function (event)
+    {
+        event.preventDefault();
+        if ($(event.target).closest('li.disabled').length < 1)
+        { $('#dataGrid').blistModel().redo(); }
+    });
+    $('#dataGrid').bind('undo_redo_change', function(e)
+    {
+        var model = $('#dataGrid').blistModel();
+        $('.headerBar li.undoItem').toggleClass('disabled', !model.canUndo());
+        $('.headerBar li.redoItem').toggleClass('disabled', !model.canRedo());
+    });
+
     blistGridNS.hookUpFilterViewMenu();
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
         linkCallback: blist.datasetMenu.menuHandler,

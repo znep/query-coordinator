@@ -70,7 +70,7 @@ class CurrentDomain
 
   def self.feature?(feature_name)
     return false if self.features.nil?
-    self.features[feature_name] == 'true'
+    self.features[feature_name]
   end
 
   # CurrentDomain['preference name'] returns preferences
@@ -87,7 +87,7 @@ class CurrentDomain
 
     # If they ask for .something?, assume they're asking about the something feature
     if key =~ /\?$/
-      return (self['features.' + key.gsub(/\?$/, '')] == 'true')
+      return (self['features.' + key.gsub(/\?$/, '')])
     end
 
     # Otherwise, mash it up with themes

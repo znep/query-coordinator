@@ -4,9 +4,12 @@ class GroupingsController < ApplicationController
     @view = View.find(params[:blist_id])
     @is_temp = params[:isTempView] == 'true'
 
-    groups = !params[:groups].nil? ? params[:groups].split(',') :
-      !@view.query.nil? && !@view.query.groupBys.nil? ?
-      @view.query.groupBys.map {|g| g['columnId'].to_s} : []
+    groups = []
+    if !params[:groups].nil?
+      groups = params[:groups].split(',')
+    elsif !@view.query.nil? && !@view.query.groupBys.nil?
+      groups = @view.query.groupBys.map {|g| g['columnId'].to_s}
+    end
     @grouped = []
     groupIds = {}
     groups.each do |g|
@@ -14,13 +17,17 @@ class GroupingsController < ApplicationController
       groupIds[g] = true
     end
 
-    aggs = !params[:aggs].nil? ? params[:aggs].split(',').map do |a|
+    aggs = []
+    if !params[:aggs].nil?
+      aggs = params[:aggs].split(',').map do |a|
         parts = a.split(':')
         {'id' => parts[0], 'func' => parts[1]}
-      end :
-      @view.columns.find_all {|c| !c.format.nil? &&
+      end
+    else
+      aggs = @view.columns.find_all {|c| !c.format.nil? &&
         !c.format.grouping_aggregate.nil?}.map {|c|
           {'id' => c.id.to_s, 'func' => c.format.grouping_aggregate}}
+    end
     @agged = []
     aggedIds = {}
     aggs.each do |a|

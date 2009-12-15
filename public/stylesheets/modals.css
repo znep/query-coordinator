@@ -1612,6 +1612,7 @@ div#sortBysList.reorderList li .itemWrapper
 
 .groupingWrapper .itemWrapper .controls
 {
+    border-left: none;
     height: 1.2em;
     padding-bottom: 0.5em;
     padding-top: 0.15em;

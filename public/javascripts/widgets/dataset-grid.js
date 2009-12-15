@@ -818,15 +818,14 @@
             features.sort = true;
         }
         if (!isNested && blist.data.types[col.type].filterable &&
-            (view.query === undefined || view.query.groupBys === undefined ||
-                view.query.groupBys.length < 1))
+            !datasetObj.settings._model.isGrouped())
         {
             features.filter = true;
         }
         if (datasetObj.settings.columnDeleteEnabled &&
             blist.data.types[col.type].deleteable && view && view.rights &&
             $.inArray('remove_column', view.rights) >= 0 &&
-            (view.query === undefined || view.query.groupBys === undefined ||
+            (!datasetObj.settings._model.isGrouped() ||
                 $.grep(view.query.groupBys, function(g, i)
                     { return g.columnId == col.id; }).length < 1))
         {
@@ -983,8 +982,7 @@
         if (!modView) { return; }
 
         if (!blist.data.types[col.type].filterable ||
-            (modView.query !== undefined && modView.query.groupBys !== undefined &&
-                modView.query.groupBys.length > 0))
+            datasetObj.settings._model.isGrouped())
         { return; }
 
         if (colSum[col.id] !== undefined)

@@ -1008,6 +1008,10 @@
                 $.each(cs.topFrequencies, function (i, f)
                     {
                         if (f.renderedValue === '') { return true; }
+                        // Add an extra | at the end of the URL in case there
+                        // are spaces at the end of the value, which IE7
+                        // automatically strips off, leading to a failure
+                        // of autofilter
                         section +=
                             '<li class="filterItem' +
                             (f.isMatching ? ' active' : '') +
@@ -1016,7 +1020,7 @@
                                 (f.isMatching ? '#clear-filter-column_' :
                                     '#filter-column_') +
                                 col.uid + '_' + cs.subColumnType + ':' +
-                                f.escapedValue + '" title="' +
+                                f.escapedValue + '|" title="' +
                                 f.titleValue +
                                 (f.count > 1 ? ' (' + f.count + ')' : '') +
                                 '" class="clipText">' + f.renderedValue +
@@ -1086,10 +1090,11 @@
             case 'filter-column':
                 // Rejoin remainder of parts in case the filter value had _
                 // The sub-column type is separated by a colon, so split on that,
-                // pull it off, then rejoin the remainder
+                // pull it off, then rejoin the remainder.  Finally, strip off
+                // the ending | in case there are spaces at the end of the value
                 var p = s.slice(2).join('_').split(':');
                 model.filterColumn(colIdIndex,
-                    $.htmlUnescape(p.slice(1).join(':')), p[0]);
+                    $.htmlUnescape(p.slice(1).join(':').slice(0, -1)), p[0]);
                 break;
             case 'clear-filter-column':
                 model.clearColumnFilter(colIdIndex);

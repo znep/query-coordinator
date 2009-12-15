@@ -14,11 +14,11 @@ module CoreServer
     end
 
     def get_request(path, custom_headers = {})
-      result_body = cache.read(path)
+      result_body = cache.read("#{CurrentDomain.cname}:#{path}")
       if result_body.nil?
         result_body = generic_request(Net::HTTP::Get.new(path),
                                       nil, custom_headers).body
-        cache.write(path, result_body)
+        cache.write("#{CurrentDomain.cname}:#{path}", result_body)
       end
 
       result_body
@@ -81,7 +81,7 @@ module CoreServer
         result = nil
         ms = Benchmark.ms { result = yield }
         @runtime += ms
-        log_info(request.path, ms)
+        log_info("#{request['Host']}:#{request.path}", ms)
         result
       else
         log_info(request.path, 0)

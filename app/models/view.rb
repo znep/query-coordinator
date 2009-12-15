@@ -9,7 +9,7 @@ class View < Model
       return self.find_under_user(options)
     end
   end
-  
+
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))
@@ -19,7 +19,7 @@ class View < Model
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     parse(CoreServer::Base.connection.get_request(path))
   end
-  
+
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
     parse(CoreServer::Base.connection.get_request(path))

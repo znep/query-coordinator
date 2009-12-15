@@ -29,7 +29,7 @@
         <% end %>
       </div>
       <div class="pageBlockHeaderContent clearfix">
-        <% prerendered_cache "discover-carousel", @carousel_views_rendered, :expires_in => 15.minutes do %>
+        <% prerendered_cache "discover-carousel_#{CurrentDomain.cname}", @carousel_views_rendered, :expires_in => 15.minutes do %>
           <div class="pageBlockHeaderCarousel carouselWrapper">
             <div class="carouselOuter"><div class="carouselInner">
               <h2><%= t(:discover_carousel_header) %></h2>
@@ -105,23 +105,23 @@
       <%- end -%>
     </div>
     <div id="discoverTabPopular" class="tabContentContainer clearfix<%= @search_views.nil? ? ' active' : '' %>">
-	  <% prerendered_cache "discover-tab-popular#{@agency_mcache_key}", @popular_views_rendered, :expires_in => 15.minutes do %>
-		<%= render(:partial => "view_list_tab", :locals => {
-		  :tab_title => t(:discover_popular_content_header),
-		  :views => @popular_views, :views_total => @popular_views_total,
-		  :current_page => 1, :type => "POPULAR", :current_filter => nil,
-		  :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil,
-                  :search_term => nil, :search_debug => nil }) %>
-	  <% end %>
+      <% prerendered_cache "discover-tab-popular_#{CurrentDomain.cname}", @popular_views_rendered, :expires_in => 15.minutes do %>
+        <%= render(:partial => "view_list_tab", :locals => {
+          :tab_title => t(:discover_popular_content_header),
+          :views => @popular_views, :views_total => @popular_views_total,
+          :current_page => 1, :type => "POPULAR", :current_filter => nil,
+          :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil,
+          :search_term => nil, :search_debug => nil }) %>
+      <% end %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix">
-	  <% prerendered_cache "discover-tab-all#{@agency_mcache_key}", @all_views_rendered, :expires_in => 15.minutes do %>
-		<%= render(:partial => "view_list_tab", :locals => {
-		  :tab_title => "All #{t(:blists_name)}",
-		  :views => @all_views, :views_total => @all_views_total,
-		  :current_page => 1, :type => "ALL", :current_filter => nil,
-		  :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil,
-                  :search_term => nil, :search_debug => nil }) %>
+      <% prerendered_cache "discover-tab-all_#{CurrentDomain.cname}", @all_views_rendered, :expires_in => 15.minutes do %>
+        <%= render(:partial => "view_list_tab", :locals => {
+          :tab_title => "All #{t(:blists_name)}",
+          :views => @all_views, :views_total => @all_views_total,
+          :current_page => 1, :type => "ALL", :current_filter => nil,
+          :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil,
+          :search_term => nil, :search_debug => nil }) %>
       <% end %>
     </div>
 

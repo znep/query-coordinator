@@ -262,7 +262,7 @@ HREF
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
 
-  def module(name, &block)
+  def module_available(name, &block)
     concat(capture(&block)) if CurrentDomain.module?(name.to_s)
   end
 

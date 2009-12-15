@@ -49,7 +49,7 @@ blist.datasetMenu.menuHandler = function(event)
         case 'share':
             $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab("#tabSharing");
-            $('#modal').jqmShow($('<a href="' + actionId + '"></a>'));
+            $('#modal').jqmShow($('<a href="' + s.slice(1).join('_') + '"></a>'));
             break;
         case 'aggregate':
             if (s.length == 3)

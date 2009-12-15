@@ -4,7 +4,7 @@ var commonNS = blist.namespace.fetch('blist.common');
 blist.widget.setUpMenu = function()
 {
     // pullToTop here to account for Firefox 3.0.10 Windows bug
-    $('#header #mainMenu')
+    $('#mainMenu')
         .dropdownMenu({
             triggerButton: $('#header #mainLink'),
             forcePosition: true,
@@ -12,7 +12,7 @@ blist.widget.setUpMenu = function()
             linkCallback: blist.datasetMenu.menuHandler,
             pullToTop: true});
 
-    $('#header #viewsMenu')
+    $('#viewsMenu')
         .dropdownMenu({
             triggerButton: $('#header #viewsLink'),
             forcePosition: true,
@@ -20,7 +20,7 @@ blist.widget.setUpMenu = function()
             linkCallback: blist.datasetMenu.menuHandler,
             pullToTop: true});
 
-    $('#header #shareMenu')
+    $('#shareMenu')
         .dropdownMenu({
             triggerButton: $('#header #shareLink'),
             forcePosition: true,
@@ -115,11 +115,6 @@ blist.widget.loadNewView = function(newViewId)
     $.ajax({ url: newPath, cache: false,
             success: widgetNS.widgetDataLoaded});
 
-    // Replace form action in Email dialog
-    var $emailForm = $('#emailDialog .mainContent form');
-    $emailForm.attr('action', $emailForm.attr('action')
-        .replace(widgetNS.viewId, newViewId));
-
     $.ajax({url: '/views/' + newViewId + '.json',
             data: {
               method: 'opening',
@@ -139,7 +134,9 @@ blist.widget.loadNewView = function(newViewId)
 blist.widget.widgetDataLoaded = function (data)
 {
     // Swap out the main menu with whatever was loaded
-    $('#header ul.headerMenu').replaceWith($(data).filter('ul.headerMenu'));
+    $('#mainMenu').replaceWith($(data).filter('#mainMenu'));
+    $('#viewsMenu').replaceWith($(data).filter('#viewsMenu'));
+    $('#shareMenu').replaceWith($(data).filter('#shareMenu'));
     widgetNS.setUpMenu();
 
     // Swap out the embed code

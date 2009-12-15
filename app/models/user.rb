@@ -3,12 +3,12 @@ class User < Model
   attr_accessor :session_token
 
   non_serializable :displayName
-  
+
   def self.find_profile(id)
     path = "/users/#{id}.json"
     parse(CoreServer::Base.connection.get_request(path))
   end
-  
+
   def self.create(attributes, inviteToken = nil)
     path = "/#{self.name.pluralize.downcase}.json"
     if (inviteToken && inviteToken != "")
@@ -36,11 +36,11 @@ class User < Model
 
     dhash.to_json(options)
   end
-  
+
   def href
     "/profile/#{displayName.convert_to_url}/#{id}"
   end
-  
+
   def self.href(member_name, member_id)
     "/profile/#{member_name.convert_to_url}/#{member_id}"
   end
@@ -80,14 +80,14 @@ class User < Model
   def htmlDescription
     description.blank? ? '' : CGI.escapeHTML(description).gsub("\n", '<br/>')
   end
-  
+
   def friends
     return @friends if @friends
-    
+
     path = "/users/#{id}/contacts.json"
     @friends = User.parse(CoreServer::Base.connection.get_request(path))
   end
-  
+
   def followers
     path = "/users/#{id}/followers.json"
     User.parse(CoreServer::Base.connection.get_request(path))
@@ -97,14 +97,14 @@ class User < Model
     path = "/users/#{id}/open_id_identifiers.json"
     OpenIdIdentifier.parse(CoreServer::Base.connection.get_request(path))
   end
-  
+
   def my_friend?
     return false if current_user.nil?
     return current_user.friends.any? { |friend|
       friend.id == id
     }
   end
-  
+
   def self.login(login,password)
     parse(CoreServer::Base.connection.get_request("/authenticate/#{login}.json?password=#{password}"))
   end
@@ -114,9 +114,15 @@ class User < Model
     View.find(Hash.new).length > 3
   end
 
-  # size can be "large", "medium", or "small"
-  def profile_image_path(size = "large")
-    "/users/#{self.id}/profile_images/#{size}"
+  # size can be "medium", or "small"
+  def profile_image_path(size = "medium")
+    if size == 'medium'
+      return profileImageUrlMedium || '/images/large-profile.png'
+    elsif size == 'small'
+      return profileImageUrlSmall || '/images/small-profile.png'
+    else
+     return "/users/#{self.id}/profile_images/#{size}"
+    end
   end
 
   def profile_image=(file)

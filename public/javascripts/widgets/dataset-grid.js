@@ -247,14 +247,21 @@
             {
                 var datasetObj = this;
                 var view = datasetObj.settings._model.meta().view;
-                $.ajax({url: '/views/' + view.id + '/columns/' + columnId + '.json',
-                    dataType: 'json', type: 'PUT', contentType: 'application/json',
-                    data: $.json.serialize({'format': {'aggregate': aggregate}}),
-                    success: function(retCol)
-                    {
-                        datasetObj.settings._model.updateColumn(retCol);
-                        $(document).trigger(blist.events.COLUMNS_CHANGED);
-                    }});
+                var col = datasetObj.settings._model.getColumnByID(columnId);
+                if (col)
+                {
+                    $.ajax({url: '/views/' + view.id + '/columns/' + columnId +
+                        '.json', dataType: 'json', type: 'PUT',
+                        contentType: 'application/json',
+                        data: $.json.serialize({'format':
+                            $.extend({}, col.format, {'aggregate': aggregate})}),
+                        success: function(retCol)
+                        {
+                            datasetObj.settings._model.updateColumn(retCol);
+                            $(document).trigger(blist.events.COLUMNS_CHANGED);
+                        }
+                    });
+                }
             },
 
             showHideColumns: function(columns, hide, skipRequest)
@@ -407,7 +414,7 @@
                     $.each(grouped, function(i, c)
                     {
                         newCols.push({id: c.id, name: c.name, hidden: false,
-                            format: c.format});
+                            position: newCols.length + 1, format: c.format});
                         usedCols[c.id] = true;
                     });
                 }
@@ -424,7 +431,7 @@
                         {
                             newCols.push({id: a.id, name: a.name,
                                 hidden: a.hidden !== undefined ? a.hidden : false,
-                                format: format});
+                                position: newCols.length + 1, format: format});
                         }
                         else
                         {

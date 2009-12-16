@@ -189,7 +189,8 @@ module BlistsHelper
 
     'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
       'class' => 'rowTags',
-      'if' => ((theme.nil? || theme[:menu][:show_tags]) && !view.is_alt_view?),
+      'if' => ((theme.nil? || theme[:menu][:show_tags]) && !view.is_alt_view? &&
+               !view.is_grouped?),
       'href' => "##{tag_show_hide}-rowTags"},
 
     'more_views' => {'text' => 'More Views', 'class' => 'moreViews', 'href' => '#',

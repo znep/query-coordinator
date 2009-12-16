@@ -56,7 +56,7 @@
     </dd></dl>
   </li>
 
-  <%- if can_edit && !@view.is_alt_view? -%>
+  <%- if (can_edit && @view.is_blist? || is_owner) && !@view.is_alt_view? -%>
   <li class='modify'>
     <dl><dt><a href='#menuModify'>Modify</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'items' => [
@@ -93,7 +93,8 @@
                     'nested_table_children' => true, 'list' => true}})},
         menu_options['separator'],
         {'text' => 'Upload More Rows', 'class' => 'uploadRows',
-          'if' => @view.is_blist?, 'href' => '#', 'submenu' => {'items' => [
+        'if' => @view.is_blist?, 'edit_item' => true,
+        'href' => '#', 'submenu' => {'items' => [
             {'text' => 'Append From a File...', 'class' => 'append',
             'href' => "#{@view.href}/bulk/append", 'modal' => true},
             {'text' => 'Refresh From a File...', 'class' => 'replace',

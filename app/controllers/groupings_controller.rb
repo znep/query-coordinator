@@ -41,7 +41,7 @@ class GroupingsController < ApplicationController
     @unagged = []
     @ungrouped = []
     @view.columns.each do |c|
-      next if c.is_nested_table
+      next if c.is_nested_table || c.client_type == 'tag'
 
       if aggedIds[c.id.to_s].nil?
         @unagged << c

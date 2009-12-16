@@ -254,6 +254,7 @@ blist.namespace.fetch('blist.data');
                                 });
                             if (isEmpty) { r[c.index] = null; }
                         }
+
                         if (c.type == 'arrayToObject' &&
                             r[c.index] && r[c.index] instanceof Array)
                         {
@@ -264,6 +265,11 @@ blist.namespace.fetch('blist.data');
                                 });
                             r[c.index] = o;
                         }
+
+                        if (c.type == 'arrayToFirstValue' &&
+                            r[c.index] && r[c.index] instanceof Array)
+                        { r[c.index] = r[c.index][0]; }
+
                         if (c.type == 'falseToNull' && r[c.index] === false)
                         { r[c.index] = null; }
                         if (c.type == 'zeroToNull' && r[c.index] === 0)
@@ -657,11 +663,16 @@ blist.namespace.fetch('blist.data');
 
                 var type = blist.data.types[v.dataTypeName];
                 if (type && type.isObject)
-                { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
+                {
+                    dataMungeCols.push({index: i, type: 'nullifyArrays'});
+                    if (v.format !== undefined &&
+                        v.format.grouping_aggregate !== undefined)
+                    { dataMungeCols.push({index: i, type: 'arrayToFirstValue'}); }
+                    else
+                    { dataMungeCols.push({index: i, type: 'arrayToObject',
+                        types: v.subColumnTypes}); }
+                }
 
-                if (type && type.isObject)
-                { dataMungeCols.push({index: i, type: 'arrayToObject',
-                    types: v.subColumnTypes}); }
 
                 if (v.dataTypeName == 'checkbox')
                 { dataMungeCols.push({index: i, type: 'falseToNull'}); }

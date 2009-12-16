@@ -186,7 +186,7 @@ class View < Model
   def can_edit()
     data['rights'] && (data['rights'].include?('write') ||
       data['rights'].include?('add') ||
-      data['rights'].include?('delete'))
+      data['rights'].include?('delete')) && !is_grouped?
   end
 
   def can_read()
@@ -337,8 +337,8 @@ class View < Model
   end
 
   def datatypes_match(column, datatypes)
-    datatypes.is_a?(Array) && datatypes.include?(column.dataTypeName) ||
-      column.dataTypeName == datatypes
+    dt = column.is_group_aggregate? ? 'number' : column.client_type
+    datatypes.is_a?(Array) && datatypes.include?(dt) || dt == datatypes
   end
 
   # HACK: NYSS wanted the comments tab hidden, so we're manually hiding comments for them

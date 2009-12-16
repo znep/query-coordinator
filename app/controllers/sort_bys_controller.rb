@@ -3,15 +3,16 @@ class SortBysController < ApplicationController
   def index
     @view = View.find(params[:blist_id])
     @selected = @view.sortBys || []
-    @unselected = @view.columns.reject do |c| 
+    @unselected = @view.columns.reject do |c|
       @selected.select { |s| c.id == s.viewColumnId }.size > 0 ||
-      !c.is_sortable?
+      !c.is_sortable? || (@view.is_grouped? && !c.is_grouped?(@view) &&
+                          !c.is_group_aggregate?)
     end
 
-    @unselected.collect! do |s| 
+    @unselected.collect! do |s|
       {
-       "id" => nil, 
-       "position" => 0, 
+       "id" => nil,
+       "position" => 0,
        "viewColumnId" => s.id,
       }
     end

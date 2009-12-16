@@ -1616,10 +1616,10 @@ div#sortBysList.reorderList li .itemWrapper
     height: 1.2em;
     padding-bottom: 0.5em;
     padding-top: 0.15em;
-    width: 7em;
+    width: 7.5em;
 }
 
-.groupingWrapper .itemWrapper .controls select { width: 8em; }
+.groupingWrapper .itemWrapper .controls select { width: 100%; }
 
 .groupingWrapper .inactiveList .itemWrapper .controls { display: none; }
 /*** END: Grouping & Aggregates dialog ***/

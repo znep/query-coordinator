@@ -68,7 +68,7 @@
                                              CurrentDomain.comment_moderation?) %>">
                   <%= link_to "<span>Profile</span>", current_user.href %>
                 </li>
-              <%- module! :comment_moderation do -%>
+              <%- module_enabled :comment_moderation do -%>
                 <li class="last">
                     <%= link_to '<span>Approvals</span>', approval_path %>
                 </li>

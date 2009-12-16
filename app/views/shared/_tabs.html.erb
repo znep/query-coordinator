@@ -11,7 +11,7 @@
   <li class='profile'><div class='wrapper'>
     <%= link_to "Profile", current_user.href %>
   </div></li>
-<%- module! :comment_moderation do -%>
+<%- module_enabled :comment_moderation do -%>
   <li class='approval even'><div class='wrapper'>
       <%= link_to 'Approvals', approval_path %>
   </div></li>

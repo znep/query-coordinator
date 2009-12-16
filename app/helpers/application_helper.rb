@@ -262,17 +262,35 @@ HREF
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
 
+  # Convenience functions for orgs & themes
+  def module_available?(name)
+    CurrentDomain.module(name.to_s)
+  end
+
+  def module_enabled?(name)
+    CurrentDomain.module?(name.to_s) &&
+      CurrentDomain.feature?(name.to_s)
+  end
+
+  def feature?(name)
+    CurrentDomain.feature?(name.to_s)
+  end
+
+  def upsell?
+    CurrentDomain.upsell?
+  end
+
   def module_available(name, &block)
     concat(capture(&block)) if CurrentDomain.module?(name.to_s)
   end
 
-  def feature(name, &block)
-    concat(capture(&block)) if CurrentDomain.feature?(name.to_s)
-  end
-
-  def module!(name, &block)
+  def module_enabled(name, &block)
     concat(capture(&block)) if CurrentDomain.module?(name.to_s) &&
                                CurrentDomain.feature?(name.to_s)
+  end
+
+  def feature(name, &block)
+    concat(capture(&block)) if CurrentDomain.feature?(name.to_s)
   end
 
   def upsell(&block)
@@ -288,7 +306,7 @@ HREF
   # Return the description we'll use in the meta description header
   def meta_description(view)
     return nil if(view.nil? || !view.is_a?(View))
-    
+
     if view.description.blank?
       desc = "View this dataset"
       updated_at = view.rowsUpdatedAt.nil? ? nil : blist_long_date(view.rowsUpdatedAt)
@@ -300,7 +318,7 @@ HREF
       return view.description
     end
   end
-  
+
   def flash_clipboard_button(text)
     html = <<-EOF
       <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"

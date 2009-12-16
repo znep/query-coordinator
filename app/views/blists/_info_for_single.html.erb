@@ -10,7 +10,7 @@
 -%>
 <div class="header">
   <ul class="summaryTabs clearfix">
-    <%- if !@view.hide_comments? -%>
+    <%- if ! module_enabled? :block_comments -%>
       <li id="tabComments" class="comments active">
         <div class="tabOuter"><div class="tabInner active">
           <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
@@ -44,8 +44,8 @@
         <a href="#activity">Activity</a>
       </div></div>
     </li>
-    <li id="tabSummary" class="<%= @view.hide_comments? ? "active" : "" %>">
-      <div class="tabOuter"><div class="tabInner <%= @view.hide_comments? ? "active" : "" %>">
+    <li id="tabSummary" class="<%= module_enabled? :block_comments ? "active" : "" %>">
+      <div class="tabOuter"><div class="tabInner <%= module_enabled? :block_comments ? "active" : "" %>">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#summary">Summary</a>
       </div></div>
@@ -89,7 +89,7 @@
 
 
 <%# *** START: COMMENTS *** %>
-<%- if !@view.hide_comments? -%>
+<%- if !module_enabled? :block_comments -%>
   <div class="infoContentOuter singleInfoComments listContainer
     active <%= page_single ? 'expanded' : '' %>">
     <div class="infoContentHeader clearfix">
@@ -130,31 +130,25 @@
     %>
 
     <%# Only members of the same org can access the premium publisher %>
-    <%- if(current_user && current_user.organizationId == view.owner.organizationId) -%>
-    <ul class="headerActions actionButtons">
-      <li>
-        <%- module_available :sdp_customizer do -%>
+    <%- if (CurrentDomain.member?(current_user) && module_available?(:sdp_customizer)) -%>
+      <ul class="headerActions actionButtons">
+        <li>
           <a href="<%= "#{view.href}/publish" %>" class="arrowButton">
             Create a Custom Data Player
           </a>
-        <%- end -%>
-      </li>
-    </ul>
-    <%- end -%>
-
-    <%# TODO: We really need a "module_or_upsell" block... %>
-    <%- upsell do -%>
-      <%- if(current_user && current_user.id == view.owner.id) -%>
-        <ul class="headerActions actionButtons">
-          <li>
-            <a href="/popup/premium" rel="modal" class="arrowButton">
-              Create a Custom Data Player
-            </a>
-          </li>
-        </ul>
-      <%- end -%>
+        </li>
+      </ul>
+    <%- elsif (upsell? && view.owned_by?(current_user)) -%>
+      <ul class="headerActions actionButtons">
+        <li>
+          <a href="/popup/premium" rel="modal" class="arrowButton">
+            Create a Custom Data Player
+          </a>
+        </li>
+      </ul>
     <%- end -%>
   </div>
+
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
       <%= render( :partial => "blists/meta_tab_publishing", 

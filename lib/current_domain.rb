@@ -33,7 +33,7 @@ class CurrentDomain
     # We need to account for the case where we make a generic_request
     # before we know what domain we're on (eg to get the domain obj).
     if defined? @@current_domain
-      @@current_domain[:data].CName
+      @@current_domain[:data].cname
     else
       ''
     end
@@ -41,6 +41,10 @@ class CurrentDomain
 
   def self.accountTier
     @@current_domain[:data].accountTier
+  end
+
+  def self.organizationId
+    @@current_domain[:data].organizationId
   end
 
   def self.theme
@@ -70,7 +74,7 @@ class CurrentDomain
 
   def self.feature?(feature_name)
     return false if self.features.nil?
-    self.features[feature_name]
+    self.features[feature_name] == true
   end
 
   # CurrentDomain['preference name'] returns preferences
@@ -87,11 +91,19 @@ class CurrentDomain
 
     # If they ask for .something?, assume they're asking about the something feature
     if key =~ /\?$/
-      return (self['features.' + key.gsub(/\?$/, '')])
+      return (self['features.' + key.gsub(/\?$/, '')] == true)
     end
 
     # Otherwise, mash it up with themes
     self.theme.send key
+  end
+
+  def self.member?(user)
+    if user.nil?
+      false
+    else
+      self.organizationId == user.organizationId
+    end
   end
 
   @@default_theme = {

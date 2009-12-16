@@ -81,7 +81,7 @@ module CoreServer
         result = nil
         ms = Benchmark.ms { result = yield }
         @runtime += ms
-        log_info("#{request['Host']}:#{request.path}", ms)
+        log_info("#{CurrentDomain.cname}:#{request.path}", ms)
         result
       else
         log_info(request.path, 0)

@@ -323,7 +323,11 @@ class View < Model
   end
 
   def owned_by?(user)
-    self.owner.id == user.id
+    if user.nil?
+      false
+    else
+      self.owner.id == user.id
+    end
   end
 
   def columns_for_datatypes(datatypes, include_hidden = false)
@@ -335,14 +339,6 @@ class View < Model
   def datatypes_match(column, datatypes)
     datatypes.is_a?(Array) && datatypes.include?(column.dataTypeName) ||
       column.dataTypeName == datatypes
-  end
-
-  # HACK: NYSS wanted the comments tab hidden, so we're manually hiding comments for them
-  # Org ID 2 => NYSS
-  # Org ID 5 => Ohio AG // The saga continues
-  ORGS_WITH_COMMENTS_HIDDEN = [ 2, 5 ]
-  def hide_comments?
-    ORGS_WITH_COMMENTS_HIDDEN.include? self.owner.organizationId.to_i
   end
 
   def chart_class

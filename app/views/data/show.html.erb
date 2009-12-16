@@ -85,9 +85,13 @@
           <div class="wrapper"><a href="#POPULAR">Top 100</a></div>
         </li>
         <li id="tabAll"><div class="wrapper"><a href="#ALL">All <%= t(:blists_name) %></a></div></li>
-        <% module! :nominations do %> 
+        <% if module_enabled? :nominations %>
           <li id="tabNominations" class="even">
             <div class="wrapper"><a href="#NOMINATIONS">Suggested <%= t(:blists_name) %></a></div>
+          </li>
+        <% elsif upsell? %>
+          <li id="tabNominations" class="even disabled">
+            <div class="wrapper"><a href="/popup/premium" rel="modal">Suggested <%= t(:blists_name) %></a></div>
           </li>
         <% end %>
       </ul>
@@ -125,7 +129,7 @@
       <% end %>
     </div>
 
-    <% module! :nominations do %> 
+    <% module_enabled :nominations do %> 
       <div id="discoverNominations" class="tabContentContainer clearfix">
         <%= render(:partial => "nominations_tab", :locals => {:nominations => @all_nominations, :total => @nominations_count, :page_size => @page_size}) %>
       </div>

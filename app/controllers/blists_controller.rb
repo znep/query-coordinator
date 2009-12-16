@@ -98,12 +98,12 @@ class BlistsController < ApplicationController
         return (render 'shared/error', :status => :internal_server_error)
       end
     end
-    
+
     if !@view.can_edit() && !current_user.is_admin?
       return require_user(true)
     end
 
-    unless current_user.can_access_premium_on?(@view)
+    unless CurrentDomain.member?(current_user) && CurrentDomain.module_available?(:sdp_customizer)
       redirect_to '/solution'
     end
 

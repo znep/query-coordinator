@@ -67,14 +67,17 @@ class CurrentDomain
     @@current_domain[:modules]
   end
 
-  def self.module?(module_name)
+  def self.module_available?(module_name)
     return false if self.modules.nil?
     self.modules.any?{ |account_module| account_module['name'] == module_name.to_s }
   end
 
+  def self.module_enabled?(name)
+    self.module_available?(name.to_s) && self.feature?(name.to_s)
+  end
+
   def self.feature?(feature_name)
-    return false if self.features.nil?
-    self.features[feature_name] == true
+    self["features.#{feature_name}"] == true
   end
 
   # CurrentDomain['preference name'] returns preferences
@@ -86,14 +89,15 @@ class CurrentDomain
     end
   end
 
+  # TODO: Remove this if it doesn't break anything
   def self.method_missing(key, *args)
     key = key.to_s
-
+  
     # If they ask for .something?, assume they're asking about the something feature
     if key =~ /\?$/
       return (self['features.' + key.gsub(/\?$/, '')] == true)
     end
-
+  
     # Otherwise, mash it up with themes
     self.theme.send key
   end

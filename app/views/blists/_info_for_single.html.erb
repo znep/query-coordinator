@@ -1,16 +1,14 @@
 <%# locals: view, page_single  %>
-<%- 
+<%-
   isDuplicateEnabled = false
--%>
-<%- 
   expander_class = page_single ? "expander expanded" : "expander" 
   div_shown = page_single ? "style='display:block;'" : ""
-  
+
   is_owner = (current_user && current_user.is_owner?(view))
 -%>
 <div class="header">
   <ul class="summaryTabs clearfix">
-    <%- if ! module_enabled? :block_comments -%>
+    <%- if !module_enabled? :block_comments -%>
       <li id="tabComments" class="comments active">
         <div class="tabOuter"><div class="tabInner active">
           <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
@@ -44,8 +42,8 @@
         <a href="#activity">Activity</a>
       </div></div>
     </li>
-    <li id="tabSummary" class="<%= module_enabled? :block_comments ? "active" : "" %>">
-      <div class="tabOuter"><div class="tabInner <%= module_enabled? :block_comments ? "active" : "" %>">
+    <li id="tabSummary" class="<%= module_enabled?(:block_comments) ? "active" : "" %>">
+      <div class="tabOuter"><div class="tabInner <%= module_enabled?(:block_comments) ? "active" : "" %>">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#summary">Summary</a>
       </div></div>
@@ -55,7 +53,7 @@
 
 
 <%# *** START: SUMMARY *** %>
-<div class="infoContentOuter singleInfoSummary listContainer <%= page_single ? ' expanded' : '' %> <%= @view.hide_comments? ? "active" : "" %>">
+<div class="infoContentOuter singleInfoSummary listContainer <%= page_single ? ' expanded' : '' %> <%= module_enabled?(:block_comments) ? "active" : "" %>">
   <div class="infoContentHeader clearfix">
     <%= render(:partial => "blists/info_summary_header",
                 :locals => {:view => view, :page_single => page_single, 

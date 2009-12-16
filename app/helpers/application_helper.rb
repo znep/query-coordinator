@@ -262,39 +262,36 @@ HREF
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
 
-  # Convenience functions for orgs & themes
-  def module_available?(name)
-    CurrentDomain.module(name.to_s)
-  end
-
-  def module_enabled?(name)
-    CurrentDomain.module?(name.to_s) &&
-      CurrentDomain.feature?(name.to_s)
-  end
-
-  def feature?(name)
-    CurrentDomain.feature?(name.to_s)
-  end
-
-  def upsell?
-    CurrentDomain.upsell?
-  end
-
   def module_available(name, &block)
-    concat(capture(&block)) if CurrentDomain.module?(name.to_s)
+    concat(capture(&block)) if CurrentDomain.module_available?(name.to_s)
+  end
+
+  def module_available?(name)
+    CurrentDomain.module_available?(name.to_s)
   end
 
   def module_enabled(name, &block)
-    concat(capture(&block)) if CurrentDomain.module?(name.to_s) &&
-                               CurrentDomain.feature?(name.to_s)
+    concat(capture(&block)) if CurrentDomain.module_enabled?(name.to_s)
+  end
+
+  def module_enabled?(name)
+    CurrentDomain.module_enabled?(name.to_s)
   end
 
   def feature(name, &block)
     concat(capture(&block)) if CurrentDomain.feature?(name.to_s)
   end
 
+  def feature?(name)
+    CurrentDomain.feature?(name.to_s)
+  end
+
   def upsell(&block)
     concat(capture(&block)) if CurrentDomain.upsell?
+  end
+
+  def upsell?
+    CurrentDomain.upsell?
   end
 
   # Returns the meta keyword tags for this view that we'll use in headers

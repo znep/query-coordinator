@@ -512,7 +512,13 @@
                         {
                             model.reloadView();
                         }});
-                    $.socrataServer.runRequests({success: successCallback()});
+                    $.socrataServer.runRequests({success: function()
+                    {
+                        if (typeof successCallback == 'function')
+                        { successCallback(); }
+                        $(document).trigger(blist.events.COLUMNS_CHANGED);
+                    }
+                    });
                 }
             },
 

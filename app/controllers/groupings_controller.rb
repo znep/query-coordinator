@@ -13,7 +13,8 @@ class GroupingsController < ApplicationController
     @grouped = []
     groupIds = {}
     groups.each do |g|
-      @grouped << @view.columns.find {|c| c.id.to_s == g}
+      col = @view.columns.find {|c| c.id.to_s == g}
+      @grouped << col if !col.nil?
       groupIds[g] = true
     end
 

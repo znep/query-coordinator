@@ -270,7 +270,7 @@ module BlistsHelper
     [menu_options['show_tags']] +
       (is_widget ? [] : [
       {'text' => 'Column Totals', 'class' => 'columnTotals',
-      'if' => !view.is_alt_view?,
+      'if' => !view.is_alt_view? && !view.is_grouped?,
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>
           {'nested_table_children' => true, 'list' => true},

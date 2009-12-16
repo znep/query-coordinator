@@ -9,7 +9,7 @@ class View < Model
       return self.find_under_user(options)
     end
   end
-  
+
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))
@@ -19,7 +19,7 @@ class View < Model
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     parse(CoreServer::Base.connection.get_request(path))
   end
-  
+
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
     parse(CoreServer::Base.connection.get_request(path))
@@ -160,11 +160,11 @@ class View < Model
     prefix = self.category || 'dataset'
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
   end
-  
+
   def short_href
     "/d/#{id}"
   end
-  
+
   def about_href
     self.href + "/about"
   end
@@ -337,7 +337,8 @@ class View < Model
   end
 
   def datatypes_match(column, datatypes)
-    dt = column.is_group_aggregate? ? 'number' : column.client_type
+    dt = column.is_group_aggregate? && column.format.grouping_aggregate == 'count' ?
+      'number' : column.client_type
     datatypes.is_a?(Array) && datatypes.include?(dt) || dt == datatypes
   end
 

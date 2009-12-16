@@ -5,8 +5,8 @@
 
 <div class="twoColumnContainer clearfix">
   <div id="mainColumnContent" class="column mainContent scrollContentColumn">
-    <div class='outerContent'>
-      <div class='content newBlistContent'>
+    <div class="outerContent">
+      <div class="content newBlistContent">
         <% form_tag(blists_path, :id => "newDatasetForm") do %>
           <%- if @is_upload -%>
             <h1>Upload a New Dataset</h1>
@@ -122,18 +122,20 @@
           </div>
       
           <hr />
-          <ul class="submitActions">
-            <li>
-              <ul class="actionButtons">
-                <li><a id="submitButton" class="arrowButton" href="#submit">Create Dataset</a></li>
-              </ul>
-            </li>
-            <li class="cancelButton"><a href="<%= blists_url %>"><span>Cancel</span></a></li>
-          </ul>
+          <div class="requiredEntryText">Required Entry</div>
+          <div class="clearfix">
+            <ul class="submitActions">
+              <li>
+                <ul class="actionButtons">
+                  <li><a id="submitButton" class="arrowButton" href="#submit">Create Dataset</a></li>
+                </ul>
+              </li>
+              <li class="cancelButton"><a href="<%= blists_url %>"><span>Cancel</span></a></li>
+            </ul>
+          </div>
           <div class="submitPending hide">
             Your data is being uploaded to our servers.  Please wait.
           </div>
-          <div class="requiredEntryText">Required Entry</div>
         <%- end -%>
       </div>
     </div>

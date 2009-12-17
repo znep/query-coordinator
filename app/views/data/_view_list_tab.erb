@@ -24,9 +24,9 @@
       <ul class="discoverContentList">
         <%= render(:partial => "view_list_item", :collection => views) %>
       </ul>
-    
+
       <div class="viewPager">
-        <%= create_pagination(views_total, @page_size, current_page, generate_filter_url(@current_state, type)) %>
+        <%= create_pagination(views_total, page_size, current_page, generate_filter_url(@current_state, type)) %>
       </div>
     <%- else -%>
       <p class="clearBoth">

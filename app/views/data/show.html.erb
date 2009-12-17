@@ -39,7 +39,7 @@
             </div></div>
           </div>
         <% end %>
-        
+
         <%- if !@current_user.nil? -%>
           <div class="pageBlockHeaderSide">
             <h2>In My Network</h2>
@@ -72,7 +72,7 @@
     </div>
   </div></div>
   </div></div></div>
-  
+
   <div class="simpleTabsContainer">
     <div class="simpleTabNav">
       <ul class="simpleTabs tabList clearfix">
@@ -98,12 +98,13 @@
     </div>
     <div id="discoverTabSearchResults" class="tabContentContainer clearfix<%= @search_views.nil? ? '' : ' active' %>">
       <%- if (@search_views && @search_views.length > 0) -%>
-        <%= render(:partial => "view_list_tab", :locals => { 
+        <%= render(:partial => "view_list_tab", :locals => {
           :tab_title => "Search Results for \"#{@search_term}\"",
           :views => @search_views, :views_total => @search_views_total,
-          :current_page => 1, :type => "SEARCH", :current_filter => nil, 
+          :current_page => 1, :type => "SEARCH", :current_filter => nil,
           :sort_by => nil, :tag_list => nil, :current_tag => nil,
-          :search_term => @search_term, :search_debug => @search_debug } ) %>
+          :search_term => @search_term, :search_debug => @search_debug, 
+          :page_size => @page_size } ) %>
       <%- else -%>
         <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>
       <%- end -%>
@@ -115,7 +116,7 @@
           :views => @popular_views, :views_total => @popular_views_total,
           :current_page => 1, :type => "POPULAR", :current_filter => nil,
           :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil,
-          :search_term => nil, :search_debug => nil }) %>
+          :search_term => nil, :search_debug => nil, :page_size => @page_size }) %>
       <% end %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix">
@@ -125,7 +126,7 @@
           :views => @all_views, :views_total => @all_views_total,
           :current_page => 1, :type => "ALL", :current_filter => nil,
           :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil,
-          :search_term => nil, :search_debug => nil }) %>
+          :search_term => nil, :search_debug => nil, :page_size => @page_size }) %>
       <% end %>
     </div>
 

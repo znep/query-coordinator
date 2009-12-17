@@ -36,8 +36,8 @@ class DataController < ApplicationController
     unless @popular_views_rendered = read_fragment("discover-tab-popular_#{CurrentDomain.cname}")
       opts = {:top100 => true, :limit => PAGE_SIZE, :page => 1}
 
-      @popular_views_total = 100
       @popular_views = View.find_filtered(opts)
+      @popular_views_total = @popular_views.size
       @popular_views_tags = Tag.find({ :method => "viewsTags", :top100 => true, :limit => 5 })
     end
 
@@ -166,7 +166,8 @@ class DataController < ApplicationController
               :tag_list => tag_list,
               :current_tag => tag,
               :search_term => search_term,
-              :search_debug => search_debug
+              :search_debug => search_debug,
+              :page_size => @page_size
             })
         else
           render(:partial => "data/view_list_tab_noresult",

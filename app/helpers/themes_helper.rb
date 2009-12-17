@@ -20,9 +20,9 @@ module ThemesHelper
     end
 
     def theme_image(options)
-      if options[:type] == "static"
+      if options[:type].to_s == "static"
         return "url(#{options[:source]})"
-      elsif options[:type] == "hosted"
+      elsif options[:type].to_s == "hosted"
         return "url(/img/#{options[:source]})"
       end
     end

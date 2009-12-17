@@ -35,6 +35,7 @@
             filterForm: null,
             manualResize: false,
             setTempViewCallback: function () {},
+            updateTempViewCallback: function () {},
             showRowHandle: false,
             showRowNumbers: true,
             showAddColumns: false,
@@ -134,7 +135,10 @@
             updateFilter: function(filter, saveExisting)
             {
                 var datasetObj = this;
-                datasetObj.settings._model.updateFilter(filter);
+                var model = datasetObj.settings._model;
+                model.meta().columnFilters = null;
+                model.meta().view.viewFilters = filter;
+                model.getTempView(datasetObj.getViewCopy(true));
 
                 var view = datasetObj.settings._model.meta().view;
                 if (saveExisting && (view.flags === undefined ||
@@ -405,10 +409,11 @@
                 var isNew = newName !== null && newName !== undefined;
                 var isUpdate = doSave && !isNew &&
                     datasetObj.settings.currentUserId == view.owner.id;
+                var isGrouping = grouped instanceof Array && grouped.length > 0;
 
                 var newCols = [];
                 var usedCols = {};
-                if (grouped instanceof Array && grouped.length > 0)
+                if (isGrouping)
                 {
                     model.group(grouped);
                     $.each(grouped, function(i, c)
@@ -418,8 +423,11 @@
                         usedCols[c.id] = true;
                     });
                 }
+                else if (view.query !== undefined)
+                { delete view.query.groupBys; }
 
-                if (aggregates instanceof Array && aggregates.length > 0)
+                if (isGrouping &&
+                    aggregates instanceof Array && aggregates.length > 0)
                 {
                     $.each(aggregates, function(i, a)
                     {
@@ -441,21 +449,24 @@
                     });
                 }
 
-                if (isUpdate)
+                if (isGrouping)
                 {
-                    $.each(newCols, function(i, c)
+                    if (isUpdate)
                     {
-                        $.socrataServer.addRequest(
-                            {url: '/views/' + view.id + '/columns/' +
-                                c.id + '.json', type: 'PUT',
-                            data: $.json.serialize({hidden: c.hidden}),
-                            error: errorCallback});
-                    });
+                        $.each(newCols, function(i, c)
+                                {
+                                $.socrataServer.addRequest(
+                                    {url: '/views/' + view.id + '/columns/' +
+                                    c.id + '.json', type: 'PUT',
+                                    data: $.json.serialize({hidden: c.hidden}),
+                                    error: errorCallback});
+                                });
+                    }
+
+                    model.meta().view.columns = newCols;
                 }
 
-                model.meta().view.columns = newCols;
-
-                view = datasetObj.getViewCopy(true);
+                view = datasetObj.getViewCopy(isGrouping);
 
                 if (isNew) { view = $.extend(view, {name: newName}); }
 
@@ -565,6 +576,8 @@
 
                 if (datasetObj.isTempView)
                 {
+                    if (datasetObj.settings.updateTempViewCallback != null)
+                    { datasetObj.settings.updateTempViewCallback(); }
                     return;
                 }
 

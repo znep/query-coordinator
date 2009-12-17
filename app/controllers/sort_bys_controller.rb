@@ -10,7 +10,7 @@ class SortBysController < ApplicationController
         {'id' => parts[0].to_i, 'viewColumnId' => parts[1].to_i,
           'asc' => parts[2] == 'asc'}
       end
-    else
+    elsif !@view.sortBys.nil?
       @selected = @view.sortBys.map {|s|
           {'id' => s.id, 'viewColumnId' => s.viewColumnId,
             'asc' => s.asc?}}

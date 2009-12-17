@@ -122,12 +122,6 @@
                 position: parseInt($item.find(".orderIndex").text())
             });
         });
-        if (groupCols.length < 1)
-        {
-            $('.groupingWrapper .mainError')
-                .text('At least one grouped column is required');
-            return;
-        }
         groupCols.sort(function(s1, s2) { return s1.position - s2.position; });
 
         var aggCols = [];
@@ -146,6 +140,13 @@
             });
         });
         aggCols.sort(function(s1, s2) { return s1.position - s2.position; });
+
+        if (aggCols.length > 0 && groupCols.length < 1)
+        {
+            $('.groupingWrapper .mainError')
+                .text('At least one grouped column is required for grouping');
+            return;
+        }
 
         $(".groupingWrapper #aggregateList .inactiveList .itemWrapper")
           .each(function(i, item)

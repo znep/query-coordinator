@@ -209,6 +209,11 @@ blist.blistGrid.setTempViewTab = function ()
     $('#infoPane').hide();
 };
 
+blist.blistGrid.updateTempViewTab = function()
+{
+    $('body').toggleClass('groupedView', $('#dataGrid').blistModel().isGrouped());
+};
+
 blist.blistGrid.newViewCreated = function($iEdit, responseData)
 {
     if (!blistGridNS.isAltView)
@@ -310,6 +315,7 @@ $(function ()
             accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
             clearTempViewCallback: blistGridNS.clearTempViewTab,
             setTempViewCallback: blistGridNS.setTempViewTab,
+            updateTempViewCallback: blistGridNS.updateTempViewTab,
             filterForm: '#lensContainer .headerBar form',
             clearFilterItem: '#lensContainer .headerBar form .clearSearch'
         });

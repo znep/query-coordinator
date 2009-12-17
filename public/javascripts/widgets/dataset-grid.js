@@ -207,8 +207,8 @@
                 });
 
                 view = $.extend(true, {}, view);
-                view.query = $.extend({}, view.query,
-                        {filterCondition: null, orderBys: null});
+                delete view.sortBys;
+                view.query = $.extend({}, view.query, {filterCondition: null});
 
                 if (includeColumns)
                 {
@@ -423,8 +423,7 @@
                         usedCols[c.id] = true;
                     });
                 }
-                else if (view.query !== undefined)
-                { delete view.query.groupBys; }
+                else { delete view.query.groupBys; }
 
                 if (isGrouping &&
                     aggregates instanceof Array && aggregates.length > 0)
@@ -1303,13 +1302,16 @@
             !datasetObj.isTempView)
         {
             $.ajax({url: '/views/' + view.id + '.json',
-                data: $.json.serialize({sortBys: view.sortBys}),
+                data: $.json.serialize({query: view.query}),
                 type: 'PUT', contentType: 'application/json'});
         }
         else
         {
-            var oldSorts = datasetObj.origSortBys;
-            var newSorts = view.sortBys;
+            var oldSorts = datasetObj.origOrderBys;
+            var newSorts = [];
+            if (view.query.orderBys !== undefined)
+            { newSorts = view.query.orderBys; }
+
             var matches = oldSorts.length == newSorts.length;
             if (matches)
             {
@@ -1317,10 +1319,8 @@
                 {
                     var o = oldSorts[i];
                     var n = newSorts[i];
-                    if (o.columnId != n.viewColumnId ||
-                            o.ascending != (n.asc ||
-                                (n.flags !== undefined &&
-                                 $.inArray('asc', n.flags) >= 0)))
+                    if (o.columnId != n.expression.columnId ||
+                            o.ascending != n.ascending)
                     {
                         matches = false;
                         break;
@@ -1364,16 +1364,15 @@
 
     var viewLoaded = function(datasetObj)
     {
-        datasetObj.origSortBys = [];
+        datasetObj.origOrderBys = [];
         var view = datasetObj.settings._model.meta().view;
-        if (view.sortBys !== undefined)
+        if (view.query.orderBys !== undefined)
         {
-            $.each(view.sortBys, function(i, s)
+            $.each(view.query.orderBys, function(i, o)
             {
-                var curS = {columnId: s.viewColumnId};
-                curS.ascending = (s.asc ||
-                    (s.flags !== undefined && $.inArray('asc', s.flags) >= 0));
-                datasetObj.origSortBys.push(curS);
+                var curO = {columnId: o.expression.columnId};
+                curO.ascending = o.ascending;
+                datasetObj.origOrderBys.push(curO);
             });
         }
     };

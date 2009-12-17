@@ -18,7 +18,7 @@
             # exist in the view's top level columns so View#column_by_id fails
             # to find them and we need to fail gracefully. When the new sort bys
             # are POSTed to the server, the legacy data will be removed.
-            col = @view.column_by_id(sort['viewColumnId'])
+            col = @view.column_by_id(sort['columnId'])
             if !col.nil?
           -%>
             <li>
@@ -31,9 +31,9 @@
                       "descending" : "ascending" %>"></div>
                 </div>
                 <%= col.name %>
-                <%= hidden_field_tag("sort-#{sort['viewColumnId']}", true,
-                  :class => "viewColumnId", :value => sort['viewColumnId']) %>
-                <%= hidden_field_tag("sort-#{sort['viewColumnId']}-asc", true,
+                <%= hidden_field_tag("sort-#{sort['columnId']}", true,
+                  :class => "viewColumnId", :value => sort['columnId']) %>
+                <%= hidden_field_tag("sort-#{sort['columnId']}-asc", true,
                   :class => "asc", :value => sort['asc']) %>
               </div>
             </li>
@@ -53,7 +53,7 @@
     <div class="inactiveList">
       <ul class="reorder">
         <% @unselected.each do |sort| %>
-        <%- col = @view.column_by_id(sort['viewColumnId']) -%>
+        <%- col = @view.column_by_id(sort['columnId']) -%>
           <li>
             <div class="type datatype-<%= col.client_type %>"></div>
             <div class="itemWrapper">
@@ -137,31 +137,24 @@
 
     $("#modal .save").click(function(event) {
         event.preventDefault();
-        var sortBys = [];
+        var orderBys = [];
 
         $.each($("#modal .activeList .itemWrapper"), function(i, sortItem) {
-            var asc = $(sortItem).find("input.asc").val() == "true";
-            var flags;
-            if (asc)
-            {
-                flags = ["asc"];
-            }
-            var sort = {
-                viewColumnId: $(sortItem).find("input.viewColumnId").val(),
+            var order = {
+                expression:
+                { columnId: $(sortItem).find("input.viewColumnId").val(),
+                  type: 'column' },
+                ascending: $(sortItem).find("input.asc").val() == "true",
                 position: parseInt($(sortItem).find(".orderIndex").text())
             };
 
-            if (flags != undefined)
-            {
-                sort.flags = flags;
-            }
-
-            sortBys.push(sort);
+            orderBys.push(order);
         });
 
-        sortBys.sort(function(s1, s2) { return s1.position - s2.position; });
+        orderBys.sort(function(s1, s2) { return s1.position - s2.position; });
+        $.each(orderBys, function(i, o) { delete o.position; });
 
-        $("#dataGrid").blistModel().multiSort(sortBys);
+        $("#dataGrid").blistModel().multiSort(orderBys);
         $("#modal .jqmClose").click();
     });
   };

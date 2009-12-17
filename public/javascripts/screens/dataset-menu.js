@@ -24,14 +24,13 @@ blist.datasetMenu.menuHandler = function(event)
             var params = [];
 
             var sortIds = {};
-            if (view.sortBys !== undefined)
+            if (view.query.orderBys !== undefined)
             {
-                var sorts = $.map(view.sortBys, function(s, i)
+                var sorts = $.map(view.query.orderBys, function(o, i)
                 {
-                    sortIds[s.viewColumnId] = true;
-                    return s.id + ':' + s.viewColumnId + ':' +
-                        ((s.asc || s.flags !== undefined &&
-                            $.inArray('asc', s.flags) > -1) ? 'asc' : 'desc');
+                    sortIds[o.expression.columnId] = true;
+                    return o.expression.columnId + ':' +
+                        (o.ascending ? 'asc' : 'desc');
                 });
                 if (sorts.length > 0) { params.push('sorts=' + sorts.join(',')); }
             }

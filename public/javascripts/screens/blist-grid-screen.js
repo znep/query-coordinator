@@ -194,7 +194,7 @@ blist.blistGrid.clearTempViewTab = function ()
 {
     $('.tabList .filter.tempViewTab').removeClass('active');
     $('.tabList .origView').addClass('active').removeClass('origView');
-    $('body').removeClass('unsavedView');
+    $('body').removeClass('unsavedView groupedView');
     $('#infoPane').show();
     $(document).trigger(blist.events.COLUMNS_CHANGED);
 };
@@ -204,6 +204,8 @@ blist.blistGrid.setTempViewTab = function ()
     $('.tabList .active').addClass('origView').removeClass('active');
     $('.tabList .filter.tempViewTab').addClass('active');
     $('body').addClass('unsavedView');
+    if ($('#dataGrid').blistModel().isGrouped())
+    { $('body').addClass('groupedView'); }
     $('#infoPane').hide();
 };
 

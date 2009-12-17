@@ -83,11 +83,12 @@
 
             <%# Undo/redo %>
             <%- if can_edit && !@view.is_alt_view? -%>
-            <li class='disabled undoItem'><a href='#Undo' id='undoLink'
-              class='staticLink' title='Undo'>
-              <span class='linkIcon'>Undo</span>
-            </a></li>
-            <li class='noSpacing separator disabled redoItem'>
+            <li class='disabled undoItem ungroupedOption'>
+              <a href='#Undo' id='undoLink' class='staticLink' title='Undo'>
+                <span class='linkIcon'>Undo</span>
+              </a>
+            </li>
+            <li class='noSpacing separator disabled redoItem ungroupedOption'>
               <a href='#Redo' id='redoLink' class='staticLink' title='Redo'>
                 <span class='linkIcon'>Redo</span>
               </a>
@@ -125,7 +126,7 @@
             <%- end -%>
 
             <%- if @view.can_edit() && !@view.is_alt_view? -%>
-            <li class='separator mainViewSeparator'>
+            <li class='separator mainViewSeparator ungroupedOption'>
               <a id='formatLink' class='staticLink' href='#formatMenu'>
                 <span class='linkIcon'>Format</span>
               </a>
@@ -168,7 +169,7 @@
         </div>
 
         <%- if @view.can_edit() && !@view.is_alt_view? -%>
-        <div id='formatMenu' class='fixedMenu disabled'>
+        <div id='formatMenu' class='fixedMenu disabled ungroupedOption'>
           <div class='outerWrapper'>
             <ul class='innerWrapper clearfix'>
               <li class='column'>

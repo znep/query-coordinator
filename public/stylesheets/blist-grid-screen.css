@@ -754,7 +754,8 @@ body#lensBody
 { display: block; }
 
 .unsavedView .mainViewOption,
-.unsavedView .add-column
+.unsavedView .add-column,
+.groupedView .ungroupedOption
 { display: none; }
 
 .unsavedView #lensContainer .headerBar .mainViewSeparator

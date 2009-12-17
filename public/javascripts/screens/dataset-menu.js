@@ -17,6 +17,36 @@ blist.datasetMenu.menuHandler = function(event)
     var hideTags = true;
     switch (action)
     {
+        case 'sort':
+            var url = s.slice(1).join('_');
+            var model = $('.blist-table').blistModel();
+            var view = model.meta().view;
+            var params = [];
+
+            var sortIds = {};
+            var sorts = $.map(view.sortBys, function(s, i)
+            {
+                sortIds[s.viewColumnId] = true;
+                return s.id + ':' + s.viewColumnId + ':' +
+                    ((s.asc || s.flags !== undefined &&
+                        $.inArray('asc', s.flags) > -1) ? 'asc' : 'desc');
+            });
+            if (sorts.length > 0) { params.push('sorts=' + sorts.join(',')); }
+
+            if (model.isGrouped())
+            {
+                var unsorts = $.map(view.columns, function(c, i)
+                {
+                    if (c.dataTypeName !== 'meta_data' && !sortIds[c.id])
+                    { return c.id; }
+                });
+                if (unsorts.length > 0)
+                { params.push('unsorts=' + unsorts.join(',')); }
+            }
+
+            if (params.length > 0) { url += '?' + params.join('&'); }
+            $('#modal').jqmShow($('<a href="' + url + '"></a>'));
+            break;
         case 'group':
             var url = s.slice(1).join('_');
             var model = $('.blist-table').blistModel();

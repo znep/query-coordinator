@@ -188,7 +188,7 @@ module BlistsHelper
       'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.is_calendar?)},
 
     'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
-      'class' => 'rowTags',
+      'class' => 'rowTags ungroupedOption',
       'if' => ((theme.nil? || theme[:menu][:show_tags]) && !view.is_alt_view? &&
                !view.is_grouped?),
       'href' => "##{tag_show_hide}-rowTags"},
@@ -269,7 +269,7 @@ module BlistsHelper
 
     [menu_options['show_tags']] +
       (is_widget ? [] : [
-      {'text' => 'Column Totals', 'class' => 'columnTotals',
+      {'text' => 'Column Totals', 'class' => 'columnTotals ungroupedOption',
       'if' => !view.is_alt_view? && !view.is_grouped?,
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>
@@ -282,13 +282,12 @@ module BlistsHelper
       {'text' => 'Filter...', 'class' => 'filter', 'if' => !view.is_alt_view?,
       'href' => blist_filters_path(view.id), 'modal' => true},
       {'text' => 'Sort Columns...', 'class' => 'sort', 'if' => !view.is_alt_view?,
-      'href' => blist_sort_bys_path(view.id), 'modal' => true},
+      'href' => '#sort_' + blist_sort_bys_path(view.id)},
       {'text' => 'Grouping &amp; Aggregates...', 'class' => 'grouping',
       'if' => !view.is_alt_view?,
       'href' => '#group_' + blist_groupings_path(view.id)},
-      {'text' => 'Show or Hide Columns', 'class' => 'showHide', 'href' => '#',
-      'if' => !view.is_alt_view?,
-      'submenu' => columns_menu(view,
+      {'text' => 'Show or Hide Columns', 'class' => 'showHide ungroupedOption',
+      'href' => '#', 'if' => !view.is_alt_view?, 'submenu' => columns_menu(view,
         {'initial_items' => [{'section_title' => 'Check/Uncheck to Show/Hide'},
           menu_options['separator']],
           'post_items' => (current_user && view.owner.id == current_user.id) ?

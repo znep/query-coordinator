@@ -95,6 +95,8 @@ module ThemesHelper
       gradient_str.split(',').last.split(':').first
     end
 
+    safe_helper :box
+
 private
 
     def ui_url type, options

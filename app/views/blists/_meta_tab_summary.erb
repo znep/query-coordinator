@@ -6,7 +6,7 @@
   </dt>
   <dd class="editItem">
     <div class="itemContent">
-      <span class="textContent"><%= h(view.description) %></span>
+      <span class="textContent"><%= view.description %></span>
       <%- if allow_edit -%>
       <%- form_tag(view.href) do -%>
         <%= hidden_field_tag("fieldType", "description") %>
@@ -30,7 +30,7 @@
   </dt>
   <dd class="editItem">
     <div class="itemContent">
-      <span class="textContent"><%= h(view.tag_display_string) %></span>
+      <span class="textContent"><%= view.tag_display_string %></span>
       <%- if allow_edit -%>
       <%- form_tag(view.href) do -%>
         <%= hidden_field_tag("fieldType", "tags") %>
@@ -54,7 +54,7 @@
   </dt>
   <dd class="editItem">
     <div class="itemContent">
-      <span class="textContent"><%= h(view.category.nil? ? '' : view.category.capitalize) %></span>
+      <span class="textContent"><%= view.category.nil? ? '' : view.category.capitalize %></span>
       <%- if allow_edit -%>
       <%- form_tag(view.href) do -%>
         <%= hidden_field_tag("fieldType", "category") %>
@@ -82,7 +82,7 @@
     <div class="itemContent">
       <span class="textContent">
         <a href="<%= view.owner.href %>" <%= 'rel="external"' if (in_widget) %>>
-              <%= h(view.owner.displayName) %>
+              <%= view.owner.displayName %>
         </a>
       </span>
     </div>
@@ -107,7 +107,7 @@
   <dd>
     <div class="itemContent">
       <span class="textContent"><%= up_user = view.last_updated_user
-        h(up_user.nil? ? '' : up_user.displayName + ':') %>
+        up_user.nil? ? '' : up_user.displayName + ':' %>
         <%= blist_date(view.last_activity) %>
       </span>
     </div>
@@ -251,9 +251,9 @@
         <span class="infoLicensing textContent">
           <%- if view.license -%>
             <%- if view.license.logoUrl.nil? || view.license.logoUrl.empty? -%>
-              <%= h(view.license.name) %>
+              <%= view.license.name %>
             <%- else -%>
-              <a href="<%= h(view.license.termsLink) %>" <%= 'rel="external"' if (in_widget) %>>
+              <a href="<%= view.license.termsLink %>" <%= 'rel="external"' if (in_widget) %>>
                 <img src="/<%= view.license.logoUrl %>" alt="<%= view.license.name %>" />
               </a>
             <%- end -%>
@@ -276,7 +276,7 @@
       <div class="itemContent">
         <span class="infoAttribution textContent">
           <%- attr_link_opts = in_widget ? { :rel => "external" } : {} -%>
-          <%= (view.attributionLink.nil? || view.attributionLink.empty?) ? h(view.attribution) : link_to(h(view.attribution), h(view.attributionLink), attr_link_opts) %>
+          <%= (view.attributionLink.nil? || view.attributionLink.empty?) ? view.attribution : link_to(h(view.attribution), h(view.attributionLink), attr_link_opts) %>
         </span>
       </div>
       <%- if allow_edit -%>

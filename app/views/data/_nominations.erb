@@ -54,7 +54,7 @@
       <% end %>
     </div>
     <div class="<%= current_user && current_user.is_premium? ? 'inlineEdit' : '' %>">
-      <span class="nominationTitle"><%= h(nomnomnom.title) %></span>
+      <span class="nominationTitle"><%= nomnomnom.title %></span>
       <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
       %> 
         <% form_tag("/nominations/#{nomnomnom.id}.json", :class => "title") do %>

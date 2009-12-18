@@ -34,7 +34,7 @@
           <%- viz_types.each do |t| -%>
           <option value='<%= t[0] %>'
             <%= @is_edit && @view.displayType == t[0] ?
-              "selected='selected'" : '' %>><%= h t[1]['label'] %></option>
+              "selected='selected'" : '' %>><%= t[1]['label'] %></option>
           <%- end -%>
         </select>
       </div>
@@ -71,7 +71,7 @@
 
         <div class='line'>
           <label class='required' for='<%= fc_name %>'>
-            <%= h fcol['label'] %>
+            <%= fcol['label'] %>
           </label>
           <select id='<%= fc_name %>' name='<%= fc_name %>'
             class='<%= cur_id.nil? ? 'prompt' : '' %> required
@@ -79,7 +79,7 @@
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
             <option value='<%= c.id %>' <%= c.id == cur_id ?
-              "selected='selected'" : '' %>><%= h c.name %></option>
+              "selected='selected'" : '' %>><%= c.name %></option>
             <%- end -%>
           </select>
         </div>
@@ -131,7 +131,7 @@
       <div class='section'>
         <h3>Data Columns</h3>
         <p class='subtitle separator'>
-        Choose the data to display for this <%= h type_config['label'].downcase %>
+        Choose the data to display for this <%= type_config['label'].downcase %>
         </p>
 
         <div class='scrollBlock'>
@@ -156,7 +156,7 @@
 
             <div class='line'>
               <label <%= dcol['optional'] ? '' : "class='required'" %>
-                for='<%= dc_name %>'><%= h dcol['label'] %></label>
+                for='<%= dc_name %>'><%= dcol['label'] %></label>
               <select id='<%= dc_name %>' name='<%= dc_name %>'
                 class='<%= cur_id.nil? ? 'prompt' : '' %>
                   <%= dcol['optional'] ? '' : 'required' %>
@@ -164,7 +164,7 @@
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
                 <option value='<%= c.id %>' <%= c.id == cur_id ?
-                  "selected='selected'" : '' %>><%= h c.name %></option>
+                  "selected='selected'" : '' %>><%= c.name %></option>
                 <%- end -%>
               </select>
             </div>

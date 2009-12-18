@@ -5,10 +5,10 @@
     <a href="<%= comment.user.href %>">
       <%= image_tag(comment.user.profile_image_path("small"), :size => "24x24",
         :alt => h(comment.user.displayName)) %>
-      <h5><%= h(comment.user.displayName) %></h5>
+      <h5><%= comment.user.displayName %></h5>
     </a>
-    <span><%= h(comment.user.title) %></span>
-    <span><%= h(comment.user.company) %></span>
+    <span><%= comment.user.title %></span>
+    <span><%= comment.user.company %></span>
   </div>
   <div class='secondaryInfo'>
     <span><%= view.user_role(comment.user.id) %></span>
@@ -19,13 +19,13 @@
   <div class='cornerTL'><div class='cornerTR'>
       <div class='cornerBR'><div class='cornerBL'>
           <%= get_comment_rating_html(comment) %>
-          <h4><%= h(comment.title) %></h4>
+          <h4><%= comment.title %></h4>
           <div class='dateLine'>
             <%= blist_long_date(comment.createdAt) %>
             <span>(<%= friendly_relative_time(comment.createdAt) %>)</span>
           </div>
         <%- unless comment.body.blank? -%>
-          <p class='commentBody'><%= h(comment.body) %></p>
+          <p class='commentBody'><%= comment.body %></p>
         <%- end -%>
           
           <%= render(:partial => 'blists/comment_actions',

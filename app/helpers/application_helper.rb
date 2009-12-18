@@ -44,7 +44,7 @@ module ApplicationHelper
     ret = StringIO.new
     ret << "<ul id='" << options['id'].to_s << "' class='" <<
     options['class'].to_s << (options['bare_menu'] ? '' : ' menu') <<
-    (options['option_menu'] ? " optionMenu" : '') << 
+    (options['option_menu'] ? " optionMenu" : '') <<
     (options['checkbox_menu'] ? " checkboxMenu" : '') << "'>"
 
     last_item_was_separator = true
@@ -74,21 +74,23 @@ module ApplicationHelper
         prev_separator = "<li class='separator" << "'></li>"
         last_item_was_separator = true
       elsif i['section_title']
-        ret << "<li class='sectionTitle #{i['class']}'>#{i['section_title']}</li>"
+        ret <<
+          "<li class='sectionTitle #{i['class']}'>#{h(i['section_title'])}</li>"
       elsif i['button']
         ret << "<li class='button #{i['class']}'>" <<
-          "<a title='#{i['title']}' href='#{i['href']}' q=\"#{i['q']}\">" <<
+          "<a title='#{h(i['title'])}' href='#{i['href']}' q=\"#{i['q']}\">" <<
           "<div class='outerWrapper'><div class='midWrapper'>" <<
           "<span class='innerWrapper'>" <<
-          "#{i['text']}</span></div></div></a></li>"
+          "#{h(i['text'])}</span></div></div></a></li>"
       else
         ret << "<li class='#{i['class']}" << (i['submenu'] ? ' submenu' : '') <<
-          "'><a title='#{i['title']}' " <<
+          "'><a title='#{h(i['title'])}' " <<
           "href='#{i['href']}' q=\"#{i['q']}\" class=\"#{i['link_class']}" <<
           (i['submenu'] ? ' submenuLink' : '') <<
           (i['external'] ? ' externalLink' : '') << "\"" <<
-          (i['external'] ? ' rel="external"' : (i['modal'] ? ' rel="modal"' : '')) << ">" <<
-          "<span class='highlight'>#{i['text']}</span></a>"
+          (i['external'] ? ' rel="external"' :
+            (i['modal'] ? ' rel="modal"' : '')) << ">" <<
+          "<span class='highlight'>#{h(i['text'])}</span></a>"
         if i['submenu']
           ret << menu_tag(i['submenu'], is_owner, can_edit)
         end
@@ -99,7 +101,8 @@ module ApplicationHelper
     if !options['bare_menu']
       ret << "<li class='footer'><div class='outerWrapper'>" <<
         "<div class='innerWrapper'>"
-      ret << (options['option_menu'] || options['checkbox_menu'] ? "<span class='colorWrapper'></span>" : '')
+      ret << (options['option_menu'] || options['checkbox_menu'] ?
+        "<span class='colorWrapper'></span>" : '')
       ret << "</div></div></li>"
     end
     ret << "</ul>"
@@ -137,7 +140,7 @@ module ApplicationHelper
     cls = (params == current_params || (current_params.empty? && is_default) ? 'hilight' : '')
 
     return <<HREF
-<a href="?#{href}" title="#{title}" class="#{cls}" q="#{params.to_json.gsub(/"/, "'")}">#{content}</a>
+<a href="?#{href}" title="#{title}" class="#{cls}" q="#{params.to_json.gsub(/"/, "'")}">#{h(content)}</a>
 HREF
   end
   
@@ -298,7 +301,7 @@ HREF
       <param name="allowScriptAccess" value="always" />
       <param name="quality" value="high" />
       <param name="scale" value="noscale" />
-      <param NAME="FlashVars" value="text=#{text}">
+      <param NAME="FlashVars" value="text=#{h(text)}">
       <param name="wmode" value="transparent">
       <embed src="/clippy.swf"
              width="110"
@@ -308,7 +311,7 @@ HREF
              allowScriptAccess="always"
              type="application/x-shockwave-flash"
              pluginspage="http://www.macromedia.com/go/getflashplayer"
-             FlashVars="text=#{text}"
+             FlashVars="text=#{h(text)}"
              wmode="transparent"
       />
       </object>
@@ -397,4 +400,7 @@ HREF
     @content_for_layout = self.output_buffer
     self.output_buffer = render(:file => "layouts/#{layout}")
   end
+
+  safe_helper :menu_tag, :meta_tags, :javascript_error_helper_tag,
+    :create_pagination, :sidebar_filter_link, :flash_clipboard_button
 end

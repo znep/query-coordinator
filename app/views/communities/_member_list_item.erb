@@ -10,16 +10,16 @@
   <div class="memberInfo">
     <h3 class="clipText"><%= link_to(h(member.displayName), member.href, :title => h(member.displayName)) %></h3>
     <ul>
-      <li><%= h(member.displayLocation) %></li>
-      <li><%= h(member.company) %></li>
-      <li><%= h(member.title) %></li>
+      <li><%= member.displayLocation %></li>
+      <li><%= member.company %></li>
+      <li><%= member.title %></li>
     </ul>
   </div>
   <div class="memberRight">
     <div class="memberMeta">
       <ul>
         <li><strong>Tags:</strong> <%= member.tag_display_string %></li>
-        <li><strong>Interests:</strong> <%= h(member.interests) %></li>
+        <li><strong>Interests:</strong> <%= member.interests %></li>
       </ul>
     </div>
     <div class="memberData">

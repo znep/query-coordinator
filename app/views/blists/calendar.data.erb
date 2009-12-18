@@ -38,7 +38,7 @@
         <select id='calendarStartDate' name='startDate' class='prompt'>
           <option class='prompt' value=''>Select a Column</option>
           <%- date_cols.each do |c| -%>
-          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <option value='<%= c.tableColumnId %>'><%= c.name %></option>
           <%- end -%>
         </select>
       </div>
@@ -48,7 +48,7 @@
         <select id='calendarEndDate' name='endDate' class='prompt'>
           <option class='prompt' value=''>Optional</option>
           <%- date_cols.each do |c| -%>
-          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <option value='<%= c.tableColumnId %>'><%= c.name %></option>
           <%- end -%>
         </select>
       </div>
@@ -69,7 +69,7 @@
         <select id='calendarEventTitle' name='eventTitle' class='prompt'>
           <option class='prompt' value=''>Select a Column</option>
           <%- text_cols.each do |c| -%>
-          <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+          <option value='<%= c.tableColumnId %>'><%= c.name %></option>
           <%- end -%>
         </select>
          <span class="helpie" title="Displays in the calendar cells">?</span>
@@ -81,7 +81,7 @@
             class='prompt'>
             <option class='prompt' value=''>Optional</option>
             <%- text_cols.each do |c| -%>
-            <option value='<%= c.tableColumnId %>'><%= h c.name %></option>
+            <option value='<%= c.tableColumnId %>'><%= c.name %></option>
             <%- end -%>
           </select>
            <span class="helpie" title="Additional text that appears upon placing your mouse over the title">?</span>

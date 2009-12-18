@@ -5,11 +5,11 @@
       <%= get_type_string_for_view(view) %></div>
   </td>
   <td class="name"><div class="cellInner"><%= link_to(h(view.name), view.href) %></div></td>
-  <td class="views"><div class="cellInner"><%= h(view.viewCount) %></div></td>
-  <td class="comments"><div class="cellInner"><%= h(view.numberOfComments) %></div></td>
+  <td class="views"><div class="cellInner"><%= view.viewCount %></div></td>
+  <td class="comments"><div class="cellInner"><%= view.numberOfComments %></div></td>
   <td class="averageRating"><div class="cellInner"><%= get_blist_rating_html(view) %></div></td>
   <td class="actionContainer"><div class="cellInner"><a
         href="<%= view.href %>" class="action"
-        title="<%= h(view.name) %>"><span>View</span></a>
+        title="<%= view.name %>"><span>View</span></a>
   </div></td>
 </tr>

@@ -3,9 +3,9 @@ module CommunitiesHelper
   def get_html_for_activity(activity, style = "short")
     out = Array.new
     unless (style == "short")
-      out << "<a href=#{activity.actor.href}><img src='/users/#{activity.actor.id}/profile_images/medium' width='40' height='40' alt='#{activity.actor.displayName}' /></a>"
+      out << "<a href=#{activity.actor.href}><img src='/users/#{activity.actor.id}/profile_images/medium' width='40' height='40' alt='#{h(activity.actor.displayName)}' /></a>"
     end
-    out << "<a href=#{activity.actor.href}>#{activity.actor.displayName}</a> "
+    out << "<a href=#{activity.actor.href}>#{h(activity.actor.displayName)}</a> "
     out << get_verb_for_activity_action(activity.action)
     out << get_html_for_action_object(activity)
     unless (style == "short")
@@ -91,4 +91,5 @@ module CommunitiesHelper
   end
 
 
+  safe_helper :get_html_for_activity, :get_html_for_action_object
 end

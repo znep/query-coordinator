@@ -215,8 +215,8 @@ class Column < Model
   # JS doesn't have to do it itself.
   def to_js
     col = {
-      :name => name,
-      :description => description,
+      :name => CGI.escapeHTML(name),
+      :description => CGI.escapeHTML(description),
       :width => width || 100,
       :type => dataTypeName || "text",
       :id => id
@@ -241,7 +241,7 @@ class Column < Model
       col[:alignment] = alignment unless aligment.nil?
     end
 
-    return col.to_json
+    return col.to_json.html_safe!
   end
 
   def client_type

@@ -14,7 +14,7 @@
         <div class='content'>
           <div class='headerBar clearfix'>
             <h3 id='listTitle' class='clipText'
-              title='<%= h(@title) %>'><%= h(@title) %></h3>
+              title='<%= @title %>'><%= @title %></h3>
 
             <form class='search blistsFind' action='#'>
               <div class='searchContainer'>
@@ -115,19 +115,19 @@
               {'type' => 'favorite'}, @args) %>
           <%= menu_tag({'id' => 'typeMenu', 'items' => [
             { 'text' => 'Favorites', 'href' => '?type=favorite',
-                'title' => h(get_title({'type' => 'favorite'})),
+                'title' => get_title({'type' => 'favorite'}),
                 'q' => "{'type': 'favorite'}", 'class' => 'favorite'
             },
             { 'text' => 'Filtered Views', 'href' => '?type=filter',
-                'title' => h(get_title({'type' => 'filter'})),
+                'title' => get_title({'type' => 'filter'}),
                 'q' => "{'type': 'filter'}", 'class' => 'filter'
             },
             { 'text' => 'Calendar Views', 'href' => '?type=calendar',
-                'title' => h(get_title({'type' => 'calendar'})),
+                'title' => get_title({'type' => 'calendar'}),
                 'q' => "{'type': 'calendar'}", 'class' => 'calendar'
             },
             { 'text' => 'Visualizations', 'href' => '?type=visualization',
-                'title' => h(get_title({'type' => 'visualization'})),
+                'title' => get_title({'type' => 'visualization'}),
                 'q' => "{'type': 'visualization'}", 'class' => 'visualization'
             }
             ]}) %>

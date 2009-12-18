@@ -936,7 +936,7 @@
   <%= javascript_include_merged 'shared-common-all' %>
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
-    blist.publish.currentTheme = <%= @customization.to_json %>;
+    blist.publish.currentTheme = <%= raw @customization.to_json %>;
   </script>
   <%= javascript_include_merged 'blists-publish' %>
 <% end %>

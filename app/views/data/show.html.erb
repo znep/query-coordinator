@@ -47,7 +47,7 @@
               <%- @network_views.each do |view| -%>
                 <li class="clearfix">
                   <%= link_to(h(view.name), view.href, :title => h(view.name), :class => "clipText") %> 
-                  <span class="authorLine">by <%= h(view.owner.displayName) %></span>
+                  <span class="authorLine">by <%= view.owner.displayName %></span>
                 </li>
               <%- end -%>
             </ul>

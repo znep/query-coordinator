@@ -23,8 +23,8 @@
         <div class='wrapper'>
           <a class='clipText'
             href='<%= !@parent_view.nil? ? @parent_view.href : '#' %>'
-            title='<%= !@parent_view.nil? ? h(@parent_view.name) : '' %>'>
-            <%= !@parent_view.nil? ? h(@parent_view.name) :
+            title='<%= !@parent_view.nil? ? @parent_view.name : '' %>'>
+            <%= !@parent_view.nil? ? @parent_view.name :
               'New ' + t(:blist_name) %>
           </a>
           <a href='#closeFilter' class='close' title='Close'>Close</a>
@@ -54,7 +54,7 @@
           <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>
             <%= @view.is_visualization? ? " visualization" : "" %>'
             href='<%= @view.href %>'
-            title='<%= h(@view.name) %>'><%= h(@view.name) %></a>
+            title='<%= @view.name %>'><%= @view.name %></a>
           <a href='#closeFilter' class='close' title='Close'>Close</a>
         </div>
       </li>
@@ -373,7 +373,7 @@
     blist.blistGrid.secureUrl = "https://<%= request.host %>:<%= SslRequirement.port_for_protocol('https') %>";
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
-    blist.blistGrid.viewName = "<%= h(@view.name) %>";
+    blist.blistGrid.viewName = "<%= @view.name %>";
     blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
     blist.blistGrid.canAddColumns = <%= is_owner && is_blist ? 'true' : 'false' %>;
     <%- if @is_child_view -%>

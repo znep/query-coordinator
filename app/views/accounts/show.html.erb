@@ -15,7 +15,7 @@
           <div class="listSection emailSection">
             <div class="sectionShow">
               <p>
-                <span class="dataEmail"><%= h(current_user.email) %></span>
+                <span class="dataEmail"><%= current_user.email %></span>
                 <a href="#change" class="showAction"><span>Change</span></a>
               </p>
             </div>
@@ -25,7 +25,7 @@
                 <% form_tag(accounts_json_url) do %>
                   <dl class="clearfix">
                     <dt>Current Email</dt>
-                    <dd class="dataEmail"><%= h(current_user.email) %></dd>
+                    <dd class="dataEmail"><%= current_user.email %></dd>
                     <dt><label for="user_email">New Email</label></dt>
                     <dd><%= text_field_tag("user[email]") %></dd>
                     <dt>

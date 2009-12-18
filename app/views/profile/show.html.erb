@@ -55,7 +55,7 @@
               <div class="sectionShow">
                 <div class='userName'>
                   <h1>
-                    <%= h(@user.displayName) %>
+                    <%= @user.displayName %>
                   </h1>
                 </div>
                 <%= profile_item 'userLocation', h(@user.displayLocation), 'Add your City and Country', @is_user_current %>
@@ -220,7 +220,7 @@
           <h3>Interests</h3>
           <div class="interestsContent sectionContainer">
             <div class="sectionShow">
-              <p class="interestsText"><%= h(@user.interests) %></p>
+              <p class="interestsText"><%= @user.interests %></p>
               <%- if (@is_user_current) -%>
                 <p class="editContainer">
                   <a class='action showListBoxLink' href='#edit'>Edit</a>

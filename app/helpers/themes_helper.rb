@@ -27,6 +27,8 @@ module ThemesHelper
       end
     end
 
+    safe_helper :box
+
 private
 
     def ui_url(type, options)

@@ -48,7 +48,7 @@
                 <a class="editLink editGeneral<%= is_owner ? "" : " hide" %>" href="#edit">Edit</a>
                 <%- if is_owner || (@view.tags && @view.tags.length > 0) -%>
                   <li>Tags
-                    <span class="tagsField fieldValue"><%= h(@view.tag_display_string.empty? ? "None" : @view.tag_display_string) %></span>
+                    <span class="tagsField fieldValue"><%= @view.tag_display_string.empty? ? "None" : @view.tag_display_string %></span>
                   </li>
                 <%- end -%>
               </ul>
@@ -59,7 +59,7 @@
               <%- if @view.description.nil? || @view.description.empty? -%>
                 No Description Provided
               <%- else -%>
-                <%= h(@view.description) %>
+                <%= @view.description %>
               <%- end -%>
               </p>
             </div>
@@ -129,7 +129,7 @@
                   <%- if @view.attribution.nil? || @view.attribution.empty? -%>
                     None specified
                   <%- else -%>
-                    <%= h(@view.attribution) %>
+                    <%= @view.attribution %>
                   <%- end -%>
                   </span>
                 </li>
@@ -152,7 +152,7 @@
                 <%- elsif @view.license.logoUrl.nil? || @view.license.logoUrl.empty? -%>
                   <%= @view.license.name %>
                 <%- else -%>
-                  <a href="<%= h(@view.license.termsLink) %>">
+                  <a href="<%= @view.license.termsLink %>">
                     <img src="/<%= @view.license.logoUrl %>" alt="<%= @view.license.name %>" />
                   </a>
                 <%- end -%>
@@ -311,7 +311,7 @@
       <ul class="columnList">
         <%- @view.columns.slice(0, 20).each do |column| -%>
           <%- unless (column.flags.any? {|flag| flag.data == "hidden"}) -%>
-            <li class="<%= get_datatype_class(column) %> clipText" title="<%= h(column.name) %>"><%= h(column.name) %></li>
+            <li class="<%= get_datatype_class(column) %> clipText" title="<%= column.name %>"><%= column.name %></li>
           <%- end -%>
         <%- end -%>
         <%- if (@view.columns.length > 20) -%>

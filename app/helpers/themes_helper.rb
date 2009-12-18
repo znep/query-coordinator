@@ -71,11 +71,11 @@ class Color
     if hex.size < 6
       hex.gsub!(/([0-9a-fA-F])/, "$1$1")
     end
-  	hex = hex.gsub(/#/, '').to_i(16)
+    hex = hex.gsub(/#/, '').to_i(16)
 
-  	return [ (hex >> 16), (hex & 0x00FF00) >> 8, (hex & 0x0000FF) ]
+    return [ (hex >> 16), (hex & 0x00FF00) >> 8, (hex & 0x0000FF) ]
   end
-  
+
   def self.rgb_to_hex(rgb)
     rgb.map{ |value| "%02x" % value }.join
   end

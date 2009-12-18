@@ -19,7 +19,7 @@ class Hash
 
     result
   end
-  
+
   def deep_merge!(other)
     other.each_key do |key|
       if self[key].is_a?(Hash) && other[key].is_a?(Hash)

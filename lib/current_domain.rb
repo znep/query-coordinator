@@ -47,16 +47,24 @@ class CurrentDomain
     @@current_domain[:data].organizationId
   end
 
-  def self.theme
-    if @@current_domain[:theme].nil?
-      if self['theme'].nil?
-        @@current_domain[:theme] = Hashie::Mash.new(@@default_theme)
+  def self.preferences
+    if @@current_domain[:preferences].nil?
+      if @@current_domain[:data].preferences.nil?
+        # No configured preferences, use only defaults
+        @@current_domain[:preferences] = Hashie::Mash.new(@@default_prefs)
+
       else
-        self['theme'].deep_symbolize_keys!
-        @@current_domain[:theme] = Hashie::Mash.new(@@default_theme.deep_merge(self['theme']))
+        # Merge our prefs with default prefs
+        @@current_domain[:data].preferences.data.deep_symbolize_keys!
+        @@current_domain[:preferences] =
+          Hashie::Mash.new(@@default_prefs.deep_merge(@@current_domain[:data].preferences.data))
       end
     end
-    @@current_domain[:theme]
+    @@current_domain[:preferences]
+  end
+
+  def self.theme
+    self.preferences.theme
   end
 
   def self.modules
@@ -65,6 +73,19 @@ class CurrentDomain
         (@@current_domain[:data].accountTier.data['accountModules'] || [])).uniq
     end
     @@current_domain[:modules]
+  end
+
+  def self.strings
+    if @@current_domain[:strings].nil?
+      strings = Hash.new
+      self.preferences.keys.each do |key|
+        if key =~ /^strings\.(\w+)$/
+          strings[$1] = self.preferences[key]
+        end
+      end
+      @@current_domain[:strings] = Hashie::Mash.new(strings)
+    end
+    @@current_domain[:strings]
   end
 
   def self.module_available?(module_name)
@@ -77,29 +98,24 @@ class CurrentDomain
   end
 
   def self.feature?(feature_name)
-    self["features.#{feature_name}"] == true
+    self.preferences["features.#{feature_name}"] == true
   end
 
   # CurrentDomain['preference name'] returns preferences
   def self.[](key)
-    if @@current_domain[:data].preferences.nil?
-      return nil
-    else
-      @@current_domain[:data].preferences[key.to_s]
-    end
+    self.preferences.send key
   end
 
-  # TODO: Remove this if it doesn't break anything
   def self.method_missing(key, *args)
     key = key.to_s
-  
+
     # If they ask for .something?, assume they're asking about the something feature
     if key =~ /\?$/
-      return (self['features.' + key.gsub(/\?$/, '')] == true)
+      return (self.preferences['features.' + key.gsub(/\?$/, '')] == true)
     end
-  
-    # Otherwise, mash it up with themes
-    self.theme.send key
+
+    ## Otherwise, assume we're looking for a preference
+    self.preferences.send key
   end
 
   def self.member?(user)
@@ -110,52 +126,54 @@ class CurrentDomain
     end
   end
 
-  @@default_theme = {
-    :colors  => { :link => '0071bc',
-                  :accent => '20608f',
-                  :headers =>  [ '600', '600', '600', '666', '333' ],
-                  :header =>   { :line => '06386a',
-                                 :active =>     [ { :color => '2e5f8e', :position => '.286' },
-                                                  { :color => '113e6b' } ],
-                                 :inactive =>   [ { :color => '113f6c', :position => '.286' },
-                                                  { :color => '509bdb' } ],
-                                 :background => [ { :color => 'c7c8ca', :position => '.286' },
-                                                  { :color => 'e6e7e7' } ] },
-                  :carousel => { :background => [ { :color => '2f608f' },
-                                                  { :color => '0f3c69' } ],
-                                 :text => '0071bc' },
-                  :buttons =>  { :hover =>      [ { :color => '2e5f8e', :position => '.5' },
-                                                  { :color => '285987', :position => '.5' },
-                                                  { :color => '113e6b' } ],
-                                 :active =>     [ { :color => '113f6c' },
-                                                  { :color => '164471', :position => '.5' },
-                                                  { :color => '2f5f8e', :position => '.5' },
-                                                  { :color => '509bdb' } ] },
-                  :summary =>  { :active => 'cacaca',
-                                 :inactive => 'ececec',
-                                 :hover => 'e3ecf7' },
-                  :welcome =>  { :border => '9ba5a1',
-                                 :title =>      [ { :color => '2f608f', :position => '.286' },
-                                                  { :color => '0f3c69' } ],
-                                 :body => 'd7ecf9' } },
-    :images  => { :logo =>     { :source => '/stylesheets/images/common/socrata_logo.png',
-                                 :type => :static,
-                                 :width => '129px',
-                                 :height => '34px' },
-                  :dialog_logo => { :source => '/stylesheets/images/common/socrata_logo_light.png',
-                                    :type => :static },
-                  :favicon =>  { :source => '/stylesheets/images/common/favicon.ico',
-                                 :type => :static } },
-    :strings => { :company => 'Socrata',
-                  :site_title => 'Socrata | Making Data Social',
-                  :discover_header => 'Discover useful, unique, and unusual dataset created by the community.',
-                  :copyright_string => '&copy; 2009 Socrata, Inc.' },
-    :urls    => { :header => [ { :text => 'About Socrata', :href => 'http://www.socrata.com/about' },
-                               { :text => 'Help', :href => 'http://www.getsatisfaction.com/socrata' } ],
-                  :footer => [ { :text => 'Blog', :href => 'http://blog.socrata.com/', :class => 'rss' },
-                               { :text => 'Company Info', :href => 'http://www.socrata.com/company-info', :rel => 'nofollow' },
-                               { :text => 'Terms of Service', :href => 'http://www.socrata.com/terms-of-service', :rel => 'nofollow' },
-                               { :text => 'Privacy', :href => 'http://www.socrata.com/privacy', :rel => 'nofollow' },
-                               { :text => 'Contact Us', :href => 'http://www.socrata.com/contact-us', :rel => 'nofollow' } ] }
+  @@default_prefs = {
+    :theme => { :colors  => { :link => '0071bc',
+                              :accent => '20608f',
+                              :headers =>  [ '600', '600', '600', '666', '333' ],
+                              :header =>   { :line => '06386a',
+                                             :active =>     [ { :color => '2e5f8e', :position => '.286' },
+                                                              { :color => '113e6b' } ],
+                                             :inactive =>   [ { :color => '113f6c', :position => '.286' },
+                                                              { :color => '509bdb' } ],
+                                             :background => [ { :color => 'c7c8ca', :position => '.286' },
+                                                              { :color => 'e6e7e7' } ] },
+                              :carousel => { :background => [ { :color => '2f608f' },
+                                                              { :color => '0f3c69' } ],
+                                             :text => '0071bc' },
+                              :buttons =>  { :hover =>      [ { :color => '2e5f8e', :position => '.5' },
+                                                              { :color => '285987', :position => '.5' },
+                                                              { :color => '113e6b' } ],
+                                             :active =>     [ { :color => '113f6c' },
+                                                              { :color => '164471', :position => '.5' },
+                                                              { :color => '2f5f8e', :position => '.5' },
+                                                              { :color => '509bdb' } ] },
+                              :summary =>  { :active => 'cacaca',
+                                             :inactive => 'ececec',
+                                             :hover => 'e3ecf7' },
+                              :welcome =>  { :border => '9ba5a1',
+                                             :title =>      [ { :color => '2f608f', :position => '.286' },
+                                                              { :color => '0f3c69' } ],
+                                             :body => 'd7ecf9' } },
+                              :images  => { :logo =>     { :source => '/stylesheets/images/common/socrata_logo.png',
+                                                           :type => :static,
+                                                           :width => '129px',
+                                                           :height => '34px' },
+                                            :dialog_logo => { :source => '/stylesheets/images/common/socrata_logo_light.png',
+                                                              :type => :static },
+                                            :favicon =>  { :source => '/stylesheets/images/common/favicon.ico',
+                                                           :type => :static } },
+                              :urls    => { :header => [ { :text => 'About Socrata', :href => 'http://www.socrata.com/about' },
+                                                         { :text => 'Help', :href => 'http://www.getsatisfaction.com/socrata' } ],
+                                            :footer => [ { :text => 'Blog', :href => 'http://blog.socrata.com/', :class => 'rss' },
+                                                         { :text => 'Company Info', :href => 'http://www.socrata.com/company-info', :rel => 'nofollow' },
+                                                         { :text => 'Terms of Service', :href => 'http://www.socrata.com/terms-of-service', :rel => 'nofollow' },
+                                                         { :text => 'Privacy', :href => 'http://www.socrata.com/privacy', :rel => 'nofollow' },
+                                                         { :text => 'Contact Us', :href => 'http://www.socrata.com/contact-us', :rel => 'nofollow' } ] }
+    },
+    # Oh, symbols. What a pain.
+    :'strings.company' => 'Socrata',
+    :'strings.site_title' => 'Socrata | Making Data Social',
+    :'strings.discover_header' => 'Discover useful, unique, and unusual dataset created by the community.',
+    :'strings.copyright_string' => '&copy; 2009 Socrata, Inc.'
   }
 end

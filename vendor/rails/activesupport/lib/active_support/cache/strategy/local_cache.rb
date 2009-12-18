@@ -96,6 +96,13 @@ module ActiveSupport
           end
 
           def local_cache
+            # I think this is a terrible hack to create it here; but
+            # the class initialization only initializes it for one key
+            # (the first loaded class; in this case, mem_cache_store),
+            # and we need it to exist for a second key.  It seems to kill this
+            # off and replace it for each request; but it seems a bit sketchy
+            # since we aren't explicitly setting to nil like the class init does
+            Thread.current[thread_local_key] ||= MemoryStore.new
             Thread.current[thread_local_key]
           end
       end

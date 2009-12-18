@@ -58,29 +58,29 @@
                 <p class="listAction"><%= link_to("View All Favorites", "/datasets?type=favorite") %></p>
               </div>
             <%- end -%>
-            
+
             <%- if (@contacts_activities.length > 0) -%>
               <div class="activityListContainer">
                 <h2>Friends Updates</h2>
                 <ul class="contactList">
-                  <%= render( :partial => "contact_activity_list_item", 
+                  <%= render( :partial => "contact_activity_list_item",
                               :collection => @contacts_activities) %>
                 </ul>
                 <p class="listAction"><%= link_to("View All", activities_community_path) %></p>
               </div>
             <%- end -%>
-            
-            <%- if (@feed_items.length > 0) -%>
+
+            <%- if (@feed_items.present? && @feed_items.length > 0) -%>
               <div class="activityListContainer">
                 <h2>From the Blog</h2>
                 <ul>
-                  <%= render( :partial => "blog_activity_list_item", 
+                  <%= render( :partial => "blog_activity_list_item",
                               :collection => @feed_items) %>
                 </ul>
-                <p class="listAction"><a href="http://blog.socrata.com">View Blog</a></p>
+                <p class="listAction"><a href="<%= @feed_url %>">View Blog</a></p>
               </div>
             <%- end -%>
-            
+
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@
       <% end %>
     <%- end -%>
     <%- end -%>
-    
+
     <%- # Storage space used is not yet applicable -%>
     <%- if false -%>
       <% render(:layout => "shared/sidebar_box") do %>

@@ -1,12 +1,12 @@
 <%# Locals: view, allow_edit, in_widget, page_single %>
 <%- isDuplicateEnabled = false -%>
 
-<h2 title='<%= h(view.name) %>'
+<h2 title='<%= view.name %>'
   class="panelHeader clipText <%= get_permissions_icon_class_for_view(view) %>
   <%= allow_edit ? 'editItem' : '' %>">
   <div class='itemContent'>
     <%- title_opts = in_widget ? {:rel => "external"} : {} -%>
-    <span><%= page_single ? h(view.name) :
+    <span><%= page_single ? view.name :
       link_to(h(view.name), view.href, title_opts) %></span>
     <%- if allow_edit -%>
     <%- form_tag(view.href) do -%>

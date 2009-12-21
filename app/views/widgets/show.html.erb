@@ -215,7 +215,7 @@
       <%- if (@theme[:behavior][:save_public_views]) -%>
         <div id='viewHeader' class='clearfix'>
           <a class='datasetLink breadcrumbItem'
-            href='#view_<%= @view.id %>'><%= h(@view.name) %></a>
+            href='#view_<%= @view.id %>'><%= @view.name %></a>
           <div class='viewName inlineEdit' href='#new_view'>
             <span title='Click to name and save your filtered view'>
               [Unsaved Filter]
@@ -230,9 +230,9 @@
       <div class="gridContainer">
         <div id="data-grid">
           <noscript>
-            <h3><a href="<%= @view.href %>"><%= h(@view.name) %></a></h3>
+            <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
     
-            <p><%= h(@view.description) %></p>
+            <p><%= @view.description %></p>
 
             <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
               <%= @view.html %>
@@ -297,7 +297,7 @@
     <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
 
-    blist.widget.theme = <%= @theme.to_json %>;
+    blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
   </script>

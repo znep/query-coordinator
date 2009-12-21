@@ -35,16 +35,16 @@
   <td class='picture'>
     <a href='<%= contact.href %>' class="cellInner">
       <img src="<%= contact.profile_image_path("small") %>" width="24" height="24"
-      alt="<%= h(contact.displayName) %>" />
+      alt="<%= contact.displayName %>" />
     </a>
   </td>
   <td class='name'>
     <div class='cellInner clipText'>
-      <a href='<%= contact.href %>'><%= h(contact.displayName) %></a>
+      <a href='<%= contact.href %>'><%= contact.displayName %></a>
     </div>
   </td>
   <td class='tags'><div class='cellInner clipText'>
-      <%= h(contact.tag_display_string) %>
+      <%= contact.tag_display_string %>
   </div></td>
   <td class='activityDate last'><div class="cellInner">
       <%= blist_date(contact.lastLogin || contact.updatedAt) %>

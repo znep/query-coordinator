@@ -6,7 +6,7 @@ blist.namespace.fetch('blist.columns.properties');
 var column = blist.columns.properties.column = <%= @column.to_js %>;
 </script>
 
-<h1 id="title" class="columnPropertiesIcon"><%= h(@column.name) %></h1>
+<h1 id="title" class="columnPropertiesIcon"><%= @column.name %></h1>
 <% end %>
 
 <div id='columnPropertiesDialog' class="columnPropertiesWrapper">

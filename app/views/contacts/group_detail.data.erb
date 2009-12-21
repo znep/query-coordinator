@@ -43,7 +43,7 @@
 <div class="infoContentOuter singleInfoSummary listContainer active">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader groupPanelHeader">
-      <%= h(@group.name) %>
+      <%= @group.name %>
     </h2>
   </div>
   <div class="infoContentInner">
@@ -136,10 +136,10 @@
               <tr class="item">
                 <td class="picture"><div>
                   <img src="<%= member.profile_image_path("small") %>" width="24" height="24"
-                  alt="<%= h(member.displayName) %>" />
+                  alt="<%= member.displayName %>" />
                 </div></td>
-                <td class="name"><div class="clipText"><%= h(member.displayName) %></div></td>
-                <td class="description"><div class="clipText"><%= h(member.description) %></div></td>
+                <td class="name"><div class="clipText"><%= member.displayName %></div></td>
+                <td class="description"><div class="clipText"><%= member.description %></div></td>
                 <td class="dateAdded"><div>[10/18/2008]</div></td>
                 <td class="actionContainer"><div><a
                       href="#remove" class="action"
@@ -159,7 +159,7 @@
 <div class="infoContentOuter singleInfoShares">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader typeSharedIn first"><%= @shares_by_group.length %> Shared to you</h2>
-    <h2 class="panelHeader typeSharedOut"><%= @shares_to_group.length %> Shared to <%= h(@group.name) %></h2>
+    <h2 class="panelHeader typeSharedOut"><%= @shares_to_group.length %> Shared to <%= @group.name %></h2>
   </div>
   <div class="infoContentInner">
     <div class="infoContent">
@@ -196,11 +196,11 @@
                 <td class="name"><div class="clipText">
                   <%= link_to(h(share.name), share.href) %>
                 </div></td>
-                <td class="description"><div class="clipText"><%= h(share.description) %></div></td>
+                <td class="description"><div class="clipText"><%= share.description %></div></td>
                 <td class="sharedOn"><div>[10/18/2008]</div></td>
                 <td class="actionContainer"><div><a
                       href="<%= share.href %>" class="action"
-                      title="<%= h(share.name) %>"><span>View</span></a>
+                      title="<%= share.name %>"><span>View</span></a>
                 </div></td>
               </tr>
             <%- end -%>
@@ -253,7 +253,7 @@
                 </div></td>
                 <td class="actionContainer"><div><a
                       href="<%= blist.href %>" class="action"
-                      title="<%= h(blist.name) %>"><span>View</span></a>
+                      title="<%= blist.name %>"><span>View</span></a>
                 </div></td>
               </tr>
             <%- end -%>

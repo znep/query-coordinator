@@ -78,7 +78,8 @@ class User < Model
   end
 
   def htmlDescription
-    description.blank? ? '' : CGI.escapeHTML(description).gsub("\n", '<br/>')
+    (description.blank? ? '' :
+      CGI.escapeHTML(description).gsub("\n", '<br/>')).html_safe!
   end
 
   def friends

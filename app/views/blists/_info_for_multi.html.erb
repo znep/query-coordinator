@@ -35,7 +35,7 @@
         <%- views.each do |view| -%>
           <dd class="<%= get_share_direction_icon_class_for_view(view) %>">
             <div class="itemContent">
-              <a href="<%= view.href %>" class="textContent"><%= h(view.name) %></a>
+              <a href="<%= view.href %>" class="textContent"><%= view.name %></a>
             </div>
             <div class="itemActions">
               <a href="#<%= view.id %>" class="action unselector"><span>unselect</span></a>

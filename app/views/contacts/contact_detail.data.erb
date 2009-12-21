@@ -38,8 +38,8 @@
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader noHeaderIcon">
       <img src="<%= @contact.profile_image_path("small") %>" width="24" height="24"
-        alt="<%= h(@contact.displayName) %>" />
-      <%= h(@contact.displayName) %>
+        alt="<%= @contact.displayName %>" />
+      <%= @contact.displayName %>
     </h2>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
@@ -65,7 +65,7 @@
         </dt>
         <dd class="editItem">
           <div class="itemContent">
-            <span class="textContent"><%= h(@contact.tag_display_string) %></span>
+            <span class="textContent"><%= @contact.tag_display_string %></span>
           </div>
           <div class="itemActions">
             <%= link_to("<span>View profile</span>", @contact.href, :class => "action") %>
@@ -112,7 +112,7 @@
 <div class="infoContentOuter singleInfoShares">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader typeSharedIn first"><%= @shares_by_contact.length %> Shared to You</h2>
-    <h2 class="panelHeader typeSharedOut"><%= @shares_to_contact.length %> Shared to <%= h(@contact.displayName) %></h2>
+    <h2 class="panelHeader typeSharedOut"><%= @shares_to_contact.length %> Shared to <%= @contact.displayName %></h2>
   </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent">
@@ -149,12 +149,12 @@
                 <td class="name"><div class="cellInner clipText">
                   <%= link_to(h(share.name), share.href) %>
                 </div></td>
-                <td class="description"><div class="cellInner clipText"><%= h(share.description) %></div></td>
+                <td class="description"><div class="cellInner clipText"><%= share.description %></div></td>
                 <td class="sharedOn"><div class="cellInner">
                   <%= blist_date(share.share_date_for_contact(share.owner.id == current_user.id ? @contact : current_user)) %></div></td>
                 <td class="actionContainer"><div class="cellInner"><a
                       href="<%= share.href %>" class="action"
-                      title="<%= h(share.name) %>"><span>View</span></a>
+                      title="<%= share.name %>"><span>View</span></a>
                 </div></td>
               </tr>
             <%- end -%>
@@ -207,7 +207,7 @@
                 </div></td>
                 <td class="actionContainer"><div class="cellInner"><a
                       href="<%= blist.href %>" class="action"
-                      title="<%= h(blist.name) %>"><span>View</span></a>
+                      title="<%= blist.name %>"><span>View</span></a>
                 </div></td>
               </tr>
             <%- end -%>

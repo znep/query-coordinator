@@ -372,7 +372,7 @@ class BlistsController < ApplicationController
     # TODO: Make @contacts_json of existing contacts.
     contacts_values = []
     current_user.friends.each do |friend|
-      contacts_values << { :id => friend.id, :label => friend.displayName }
+      contacts_values << { :id => friend.id, :label => CGI.escapeHTML(friend.displayName) }
     end
     @contact_combo_values = contacts_values.to_json
 

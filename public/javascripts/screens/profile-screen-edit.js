@@ -94,7 +94,7 @@ $(function ()
                 else
                 {
                     var text = responseData.user.interests;
-                    $(".interestsText").html(text || "");
+                    $(".interestsText").html($.htmlEscape(text || ""));
                     $("#interestsEmpty").toggleClass('initialHide', text !== undefined && text.length > 0);
 
                     $form.find('.errorMessage').text('');

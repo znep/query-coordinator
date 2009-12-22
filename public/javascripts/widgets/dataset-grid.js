@@ -641,10 +641,12 @@
             qtipsRef[col.id] = $col;
 
             var tooltipContent = '<div class="blist-th-tooltip ' + col.type + '">'
-                + '<p class="name">' + col.name.replace(/ /, '&nbsp;') + '</p>' +
+                + '<p class="name">' +
+                $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
                 '<div class="blist-th-icon">' + col.type.displayable() + '</div>' +
                 (col.description !== undefined ?
-                    '<p class="description">' + col.description + '</p>' : '') +
+                    '<p class="description">' + $.htmlEscape(col.description) +
+                    '</p>' : '') +
                 '</div>';
             var contentIsMain = true;
             var adjustContent = function(e)

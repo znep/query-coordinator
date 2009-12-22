@@ -136,7 +136,7 @@ module ApplicationHelper
     cls = (params == current_params || (current_params.empty? && is_default) ? 'hilight' : '')
 
     return <<HREF
-<a href="?#{href}" title="#{title}" class="#{cls}" q="#{params.to_json.gsub(/"/, "'")}">#{h(content)}</a>
+<a href="?#{href}" title="#{title}" class="#{cls}" q="#{params.to_json.gsub(/"/, "'")}">#{content}</a>
 HREF
   end
   

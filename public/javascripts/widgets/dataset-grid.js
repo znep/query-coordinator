@@ -137,7 +137,7 @@
                 var datasetObj = this;
                 var model = datasetObj.settings._model;
                 model.meta().columnFilters = null;
-                model.meta().view.viewFilters = filter;
+                model.meta().view.query.filterCondition = filter;
                 model.getTempView(datasetObj.getViewCopy(true));
 
                 var view = datasetObj.settings._model.meta().view;
@@ -146,7 +146,7 @@
                     datasetObj.settings.currentUserId == view.owner.id)
                 {
                     $.ajax({url: '/views/' + view.id + '.json',
-                        data: $.json.serialize({viewFilters: view.viewFilters}),
+                        data: $.json.serialize({query: view.query}),
                         type: 'PUT', contentType: 'application/json'});
                 }
                 else { this.setTempView(); }
@@ -208,7 +208,7 @@
 
                 view = $.extend(true, {}, view);
                 delete view.sortBys;
-                view.query = $.extend({}, view.query, {filterCondition: null});
+                delete view.viewFilters;
 
                 if (includeColumns)
                 {

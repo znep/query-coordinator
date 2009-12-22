@@ -55,11 +55,11 @@ class View < Model
   end
 
   def self.create(attributes)
-    if attributes['viewFilters'].blank? || attributes['viewFilters'] == '""' ||
-      attributes['viewFilters'] == "''" || attributes['viewFilters'] == "null"
-      attributes['viewFilters'] = nil
+    if attributes['query'].blank? || attributes['query'] == '""' ||
+      attributes['query'] == "''" || attributes['query'] == "null"
+      attributes['query'] = nil
     else
-      attributes['viewFilters'] = JSON.parse(attributes['viewFilters'])
+      attributes['query'] = JSON.parse(attributes['query'])
     end
     if attributes['searchString'].blank? || attributes['searchString'] == '""' ||
       attributes['searchString'] == "''" || attributes['searchString'] == "null"

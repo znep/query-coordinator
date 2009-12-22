@@ -2662,10 +2662,9 @@ blist.namespace.fetch('blist.data');
             //  don't need to send all that extra data over or modify columns
             //  accidentally
             tempView = tempView || $.extend({}, meta.view,
-                    {originalViewId: meta.view.id, columns: null,
-                    query: $.extend({}, meta.view.query,
-                        {filterCondition: null})});
+                    {originalViewId: meta.view.id, columns: null});
             delete tempView.sortBys;
+            delete tempView.viewFilters;
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -2889,7 +2888,8 @@ blist.namespace.fetch('blist.data');
         /* Clear out the filter for a particular column.  Takes a column obj
          *  or a column index.
          * This clears both the short version stored on the meta obj, and
-         * updates the meta.view.viewFilters that is sent to the server. */
+         * updates the meta.view.query.filterCondition that is sent to the
+         * server. */
         var clearColumnFilterData = function(filterCol)
         {
             // Turn index into obj
@@ -2902,20 +2902,20 @@ blist.namespace.fetch('blist.data');
             {
                 var cf = meta.columnFilters[filterCol.id];
                 // First check if this is the only viewFilter; if so, clear it
-                if (meta.view.viewFilters == cf.viewFilter)
+                if (meta.view.query.filterCondition == cf.viewFilter)
                 {
-                    meta.view.viewFilters = null;
+                    meta.view.query.filterCondition = null;
                 }
                 else
                 {
                     // Else it is a child of the top-level filter; splice it out
-                    meta.view.viewFilters.children.splice(
+                    meta.view.query.filterCondition.children.splice(
                             $.inArray(cf.viewFilter,
-                                meta.view.viewFilters.children), 1);
+                                meta.view.query.filterCondition.children), 1);
                     // If the top-level filter is empty, get rid of it
-                    if (meta.view.viewFilters.children.length < 1)
+                    if (meta.view.query.filterCondition.children.length < 1)
                     {
-                        meta.view.viewFilters = null;
+                        meta.view.query.filterCondition = null;
                     }
                 }
                 meta.columnFilters[filterCol.id] = null;
@@ -2950,29 +2950,29 @@ blist.namespace.fetch('blist.data');
             var filterItem = { type: 'operator', value: 'EQUALS', children: [
                 { type: 'column', columnId: filterCol.id, value: subColumnType },
                 { type: 'literal', value: filterVal } ] };
-            if (meta.view.viewFilters == null)
+            if (meta.view.query.filterCondition == null)
             {
                 // Make it the top-level filter
-                meta.view.viewFilters = filterItem;
+                meta.view.query.filterCondition = filterItem;
             }
-            else if (meta.view.viewFilters.type == 'operator' &&
-                meta.view.viewFilters.value == 'AND')
+            else if (meta.view.query.filterCondition.type == 'operator' &&
+                meta.view.query.filterCondition.value == 'AND')
             {
                 // Add it to the top-level filter
-                if (!meta.view.viewFilters.children)
+                if (!meta.view.query.filterCondition.children)
                 {
-                    meta.view.viewFilters.children = [];
+                    meta.view.query.filterCondition.children = [];
                 }
-                meta.view.viewFilters.children.push(filterItem);
+                meta.view.query.filterCondition.children.push(filterItem);
             }
             else
             {
                 // Else push the top-level filter down one level, and
                 //  add this to the new top-level filter
                 var topF = { type: 'operator', value: 'AND', children: [
-                    meta.view.viewFilters, filterItem
+                    meta.view.query.filterCondition, filterItem
                 ] };
-                meta.view.viewFilters = topF;
+                meta.view.query.filterCondition = topF;
             }
 
             // Store the filter in an easier format to deal with elsewhere;

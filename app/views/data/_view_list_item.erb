@@ -27,10 +27,10 @@
         <p class="viewCategory"><%= view.category.nil? ? '' : view.category.capitalize %></p>
       <%- end -%>
       <%- unless (view.description.nil? || view.description.length == 0 ) -%>
-        <p class="viewDescription clipText"><%= h(view.description) %></p>
+        <p class="viewDescription clipText"><%= view.description %></p>
       <%- end -%>
       <%- if (view.tags && view.tags.length > 0) -%>
-        <p class="viewTags"><span>Tags: </span><%= h(view.tag_display_string) %></p>
+        <p class="viewTags"><span>Tags: </span><%= view.tag_display_string %></p>
       <%- end -%>
     </div>
     <div class="itemActionContainer">

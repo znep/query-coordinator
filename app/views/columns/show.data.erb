@@ -2,11 +2,11 @@
 <% content_for :headline do %>
 <script>
 
-blist.namespace.fetch('blist.columns.properties');
-var column = blist.columns.properties.column = <%= @column.to_js %>;
+var columnsNS = blist.namespace.fetch('blist.columns.properties');
+blist.columns.properties.column = <%= @column.to_js %>;
 </script>
 
-<h1 id="title" class="columnPropertiesIcon"><%= h(@column.name) %></h1>
+<h1 id="title" class="columnPropertiesIcon"><%= @column.name %></h1>
 <% end %>
 
 <div id='columnPropertiesDialog' class="columnPropertiesWrapper">
@@ -154,6 +154,12 @@ var column = blist.columns.properties.column = <%= @column.to_js %>;
 <script type="text/javascript" charset="utf-8">
 $(function()
 {
+  // Unescape these because they are escaped for rendering out above; but we need
+  // to send the real value to the core server
+  columnsNS.column.name = $.htmlUnescape(columnsNS.column.name);
+  if (columnsNS.column.description !== null)
+  { columnsNS.column.description = $.htmlUnescape(columnsNS.column.description); }
+
   $("#columnPropertiesDialog #loadingSpinner").hide();
   $("#columnPropertiesDialog .error").hide();
   $("#columnPropertiesDialog #convertables").hide();
@@ -204,39 +210,39 @@ $(function()
   selectTab("general");
 
   <% if @column.has_display_options? %>
-    $("#columnPropertiesDialog #formattingTab").columnFormat(column);
+    $("#columnPropertiesDialog #formattingTab").columnFormat(columnsNS.column);
   <% end %>
   <% if @column.has_totals? %>
-    $("#columnPropertiesDialog #totalsTab").columnTotals(column);
+    $("#columnPropertiesDialog #totalsTab").columnTotals(columnsNS.column);
   <% end %>
 
 
   // Keep the column model up to date so we don't have to read from the form to
   // update the properties.
   $("#columnPropertiesDialog #name")
-    .change(function() { column.name = $(this).val() });
+    .change(function() { columnsNS.column.name = $(this).val() });
   $("#columnPropertiesDialog #description")
-    .change(function() { column.description = $(this).val() });
+    .change(function() { columnsNS.column.description = $(this).val() });
   $('#columnPropertiesDialog #column_alignment_left,' +
       '#columnPropertiesDialog #column_alignment_center,' +
       '#columnPropertiesDialog #column_alignment_right')
-    .change(function() { column.alignment = $(this).val() });
+    .change(function() { columnsNS.column.alignment = $(this).val() });
   $("#columnPropertiesDialog #precision")
-    .change(function() { column.decimalPlaces = $(this).val() });
+    .change(function() { columnsNS.column.decimalPlaces = $(this).val() });
   $("#columnPropertiesDialog #ui-spinner-precision > .ui-spinner-button")
-    .click(function() { column.decimalPlaces =
+    .click(function() { columnsNS.column.decimalPlaces =
         $("#columnPropertiesDialog #precision").val() });
 
   var save = function() {
       <%- if @column.dataTypeName == 'drop_down_list' -%>
-      column.dropDownList = {values: picklistManagerCallback()};
+      columnsNS.column.dropDownList = {values: picklistManagerCallback()};
       <%- end -%>
       $.ajax({
         type: "PUT",
         url: '<%= @column.href(@view.id)%>',
         cache: false,
         data: {
-          json: $.json.serialize(column),
+          json: $.json.serialize(columnsNS.column),
           authenticity_token: "<%= form_authenticity_token %>"
           },
         dataType: 'json',
@@ -267,14 +273,14 @@ $(function()
 
     var type = $(this).attr("id");
 
-    if (type == "richtext" && column.type == "text")
+    if (type == "richtext" && columnsNS.column.type == "text")
     {
-      column.type = "richtext";
+      columnsNS.column.type = "richtext";
       save();
     }
-    else if (type == "text" && column.type == "richtext")
+    else if (type == "text" && columnsNS.column.type == "richtext")
     {
-      column.type = "text";
+      columnsNS.column.type = "text";
       save();
     }
     else

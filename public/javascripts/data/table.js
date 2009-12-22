@@ -3086,6 +3086,8 @@
         var columnHeaderClick = function(event, $target)
         {
             var col = $target.closest('.blist-th').data('column');
+            if (col === undefined || col === null) { return; }
+
             $(event.currentTarget).removeClass('hover')
                 .data('column-clicked', false);
 
@@ -3222,7 +3224,9 @@
                         var $target = $(event.target);
                         if ($target.closest('.action-item').length > 0) { return; }
 
-                        if ($target.closest('.blist-th-name').length > 0)
+                        if ($target.closest('.blist-th .indicator-container, ' +
+                            '.blist-th .dragHandle, ' +
+                            '.blist-th .action-item').length < 1)
                         {
                             if ($col.data('column-clicked'))
                             {
@@ -3247,11 +3251,17 @@
                         { if (!hotHeaderDrag || hotHeaderMode != 4)
                             { $(this).addClass('hover'); } },
                         function () { $(this).removeClass('hover'); })
-                    .find('.blist-th-name').bind('dblclick', function(event)
+                    .bind('dblclick', function(event)
+                        {
+                            if ($(event.target).closest(
+                                '.blist-th .indicator-container, ' +
+                                '.blist-th .dragHandle, ' +
+                                '.blist-th .action-item').length < 1)
                             {
                                 $col.data('column-clicked', false);
                                 $this.trigger('column_name_dblclick', [ event ]);
-                            });
+                            }
+                        });
 
                 if (options.columnDrag)
                 {

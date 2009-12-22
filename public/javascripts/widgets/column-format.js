@@ -1,3 +1,4 @@
+var columnsNS = blist.namespace.fetch('blist.columns');
 var columnFormatNS = blist.namespace.fetch('blist.columns.properties.format');
 
 columnFormatNS.precision = function(value)
@@ -71,7 +72,7 @@ columnFormatNS.render_number = function($container)
 {
   var render = '<h3 class="separator">Display Options</h3>';
   render += '<div class="number displayOptions"><table colspacing="0"><tbody>';
-  render += columnFormatNS.precision(column.decimalPlaces); 
+  render += columnFormatNS.precision(columnsNS.column.decimalPlaces);
   render += '</tbody></table></div>';
   $container.append(render);
   $("#precision").spinner({min: 0});
@@ -81,7 +82,7 @@ columnFormatNS.render_money = function($container)
 {
   var render = '<h3 class="separator">Display Options</h3>';
   render += '<div class="money displayOptions"><table colspacing="0"><tbody>';
-  render += columnFormatNS.precision(column.decimalPlaces); 
+  render += columnFormatNS.precision(columnsNS.column.decimalPlaces);
   //render += '<tr><td class="labelColumn"><label for="precision">Number Style:</label></td><td><select id="number-style"><option value="standard">1,000.12 (Standard)</option><option value="scientific">1.01E+03 (Scientific)</option></select></td></tr>';
   render += '</tbody></table></div>';
   /* TODO: Add me back in when we get rid of flash (god let that be soon...)
@@ -98,7 +99,7 @@ columnFormatNS.render_percent = function($container)
 {
     var render = '<h3 class="separator">Display Options</h3>';
     render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
-    render += columnFormatNS.precision(column.decimalPlaces); 
+    render += columnFormatNS.precision(columnsNS.column.decimalPlaces);
     render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td>';
     render += '<div class="blist-combo-wrapper lr_justified format_percent_view">';
     render += '<div id="percent-view"></div></div>';
@@ -111,11 +112,11 @@ columnFormatNS.render_percent = function($container)
         ddClass: 'lr_justified format_percent_view',
         name: "percent-view",
         values: columnFormatNS.percentFormatValues,
-        value: column.format || 'percent_bar',
+        value: columnsNS.column.format || 'percent_bar',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 
-    $("#percent-view").change(function() { column.format = $("#percent-view").value(); });
+    $("#percent-view").change(function() { columnsNS.column.format = $("#percent-view").value(); });
 };
 
 columnFormatNS.render_date = function($container)
@@ -133,11 +134,11 @@ columnFormatNS.render_date = function($container)
       ddClass: 'lr_justified format_date_view',
       name: "date-view",
       values: columnFormatNS.dateFormatValues,
-      value: column.format || 'date_time',
+      value: columnsNS.column.format || 'date_time',
       renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 
-    $("#date-view").change(function() { column.format = $("#date-view").value(); });
+    $("#date-view").change(function() { columnsNS.column.format = $("#date-view").value(); });
 };
 
 columnFormatNS.renderValueInfoFormatRow = function(value)
@@ -170,9 +171,9 @@ columnFormatNS.render_picklist = function($container)
 
 columnFormatNS.updateView = function(container, id)
 {
-    container.find(id).val(column.format);
+    container.find(id).val(columnsNS.column.format);
     container.find(id).change(function (event) {
-        column.format = $(this).val();
+        columnsNS.column.format = $(this).val();
     });
 };
 

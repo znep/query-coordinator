@@ -201,13 +201,13 @@ class BlistsController < ApplicationController
     if (params[:id])
       @view = View.find(params[:id])
       @view_activities = Activity.find({:viewId => @view.id})
+      render(:partial => "blists/info_for_single.html", :locals => { :view => @view, :page_single => false })
     elsif (params[:multi])
-      args = Array.new
-      multiParam = params[:multi]
-      args = multiParam.split(':')
-      @views = get_views_with_ids(args)
+      @views = get_views_with_ids(params[:multi].split(':'))
+      render(:partial => "blists/info_for_multi.html", :locals => { :views => @views })
     elsif (params[:items])
-      @item_count = params[:items]
+      @item_count = params[:items].to_i
+      render(:partial => "blists/info_for_list.html", :locals => { :item_count => @item_count })
     end
   end
 
@@ -372,7 +372,7 @@ class BlistsController < ApplicationController
     # TODO: Make @contacts_json of existing contacts.
     contacts_values = []
     current_user.friends.each do |friend|
-      contacts_values << { :id => friend.id, :label => friend.displayName }
+      contacts_values << { :id => friend.id, :label => CGI.escapeHTML(friend.displayName) }
     end
     @contact_combo_values = contacts_values.to_json
 

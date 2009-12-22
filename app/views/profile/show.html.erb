@@ -55,13 +55,13 @@
               <div class="sectionShow">
                 <div class='userName'>
                   <h1>
-                    <%= h(@user.displayName) %>
+                    <%= @user.displayName %>
                   </h1>
                 </div>
                 <%= profile_item 'userLocation', h(@user.displayLocation), 'Add your City and Country', @is_user_current %>
                 <%= profile_item 'userCompany', h(@user.company), 'Add your company or agency name here', @is_user_current %>
                 <%= profile_item 'userTitle', h(@user.title), 'Add your title here', @is_user_current %>
-                <%= profile_item 'userTags', @user.tag_display_string, 'Add some tags here so others in the community can find you', @is_user_current %>
+                <%= profile_item 'userTags', h(@user.tag_display_string), 'Add some tags here so others in the community can find you', @is_user_current %>
                 
                 <%- if (@is_user_current) -%>
                   <p class="editProfileContentActions">
@@ -220,7 +220,7 @@
           <h3>Interests</h3>
           <div class="interestsContent sectionContainer">
             <div class="sectionShow">
-              <p class="interestsText"><%= h(@user.interests) %></p>
+              <p class="interestsText"><%= @user.interests %></p>
               <%- if (@is_user_current) -%>
                 <p class="editContainer">
                   <a class='action showListBoxLink' href='#edit'>Edit</a>
@@ -394,7 +394,7 @@
   <div id="sidebar" class="column scrollContentColumn<%= @is_user_current ? "" : " notabs" %>">
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'blistStats' } ) do %>
-        <h4><%= @is_user_current ? "My" : "#{h(@user.displayName)}'s" %> Stats</h4>
+        <h4><%= @is_user_current ? "My" : "#{@user.displayName}'s" %> Stats</h4>
         
         <p><strong>Joined on:</strong> <%= blist_date(@user.createdAt) %></p>
         <p><strong>Last login:</strong> <%= blist_date(@user.lastLogin) %></p>

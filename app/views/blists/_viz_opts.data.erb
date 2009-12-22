@@ -36,7 +36,7 @@
     <%- opt['dropdownOptions'].each do |dval| -%>
     <option value='<%= dval['value'] %>'
       <%= def_value == dval['value'] ?
-        "selected='selected'" : '' %>><%= h dval['label'] %></option>
+        "selected='selected'" : '' %>><%= dval['label'] %></option>
     <%- end -%>
   </select>
 

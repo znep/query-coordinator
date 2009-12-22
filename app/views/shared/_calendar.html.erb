@@ -13,7 +13,7 @@
     {
       $('#<%= grid_div %>').blistCalendar({viewId: '<%= view.id %>',
         editable: <%= view.can_edit() %>,
-        displayFormat: <%= view.displayFormat || '{}' %> });
+        displayFormat: <%= raw view.displayFormat || '{}' %> });
     }
   });
 </script>

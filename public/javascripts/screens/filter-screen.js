@@ -106,7 +106,7 @@ filterNS.setColumns = function(columns)
 {
     filterNS.columns = columns;
     filterNS.columnsValues = $.map(columns, function(col, i) {
-        return { index: i, label: col.name, type: col.type };
+        return { index: i, label: $.htmlEscape(col.name), type: col.type };
     })
 };
 

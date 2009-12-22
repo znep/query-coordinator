@@ -1,5 +1,5 @@
 <%- content_for :headline do -%>
-  <h1>Sharing <%= h(@view.name) %></h1>
+  <h1>Sharing <%= @view.name %></h1>
 <%- end -%>
 
 <div class="shareWrapper">
@@ -14,7 +14,7 @@
     var addedRecipients = new Array();
     var addedRecipientUID = 0;
     
-    var contact_values = <%= @contact_combo_values %>;
+    var contact_values = <%= raw @contact_combo_values %>;
     $("#add_friends").combo({
       name: "add_friends",
       values: contact_values

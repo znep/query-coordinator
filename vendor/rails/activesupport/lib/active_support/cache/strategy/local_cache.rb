@@ -5,6 +5,9 @@ module ActiveSupport
         # this allows caching of the fact that there is nothing in the remote cache
         NULL = 'remote_cache_store:null'
 
+        # Keep track of all classes that are extending this module
+        ThreadKeys = []
+
         def with_local_cache
           Thread.current[thread_local_key] = MemoryStore.new
           yield
@@ -12,24 +15,32 @@ module ActiveSupport
           Thread.current[thread_local_key] = nil
         end
 
-        def middleware
-          @middleware ||= begin
-            klass = Class.new do
-              include MiddlewareMethods
-            end
-          end
+        # Store off the thread key for this class, to use for per-request init
+        # and reset
+        def self.extended(base)
+          ThreadKeys.push(base.thread_local_key)
         end
 
-        module MiddlewareMethods
-          def initialize(app)
-            @app = app
-          end
+        def middleware
+          @middleware ||= begin
+            klass = Class.new
+            klass.class_eval(<<-EOS, __FILE__, __LINE__)
+              def initialize(app)
+                @app = app
+              end
 
-          def call(env)
-            Thread.current[:local_core_server_connection_cache] = MemoryStore.new
-            @app.call(env)
-          ensure
-            Thread.current[:local_core_server_connection_cache] = nil
+              def call(env)
+                ThreadKeys.each do |tkey|
+                  Thread.current[tkey] = MemoryStore.new
+                end
+                @app.call(env)
+              ensure
+                ThreadKeys.each do |tkey|
+                  Thread.current[tkey] = nil
+                end
+              end
+            EOS
+            klass
           end
         end
 
@@ -39,7 +50,7 @@ module ActiveSupport
             nil
           elsif value.nil?
             value = super
-            local_cache.write(key, value || NULL) if local_cache
+            local_cache.mute { local_cache.write(key, value || NULL) } if local_cache
             value.duplicable? ? value.dup : value
           else
             # forcing the value to be immutable
@@ -49,12 +60,12 @@ module ActiveSupport
 
         def write(key, value, options = nil)
           value = value.to_s if respond_to?(:raw?) && raw?(options)
-          local_cache.write(key, value || NULL) if local_cache
+          local_cache.mute { local_cache.write(key, value || NULL) } if local_cache
           super
         end
 
         def delete(key, options = nil)
-          local_cache.write(key, NULL) if local_cache
+          local_cache.mute { local_cache.write(key, NULL) } if local_cache
           super
         end
 
@@ -71,7 +82,7 @@ module ActiveSupport
 
         def increment(key, amount = 1)
           if value = super
-            local_cache.write(key, value.to_s) if local_cache
+            local_cache.mute { local_cache.write(key, value.to_s) } if local_cache
             value
           else
             nil
@@ -80,7 +91,7 @@ module ActiveSupport
 
         def decrement(key, amount = 1)
           if value = super
-            local_cache.write(key, value.to_s) if local_cache
+            local_cache.mute { local_cache.write(key, value.to_s) } if local_cache
             value
           else
             nil
@@ -92,10 +103,11 @@ module ActiveSupport
           super
         end
 
+        def thread_local_key
+          @thread_local_key ||= "#{self.class.name.underscore}_local_cache".gsub("/", "_").to_sym
+        end
+
         private
-          def thread_local_key
-            :local_core_server_connection_cache
-          end
 
           def local_cache
             Thread.current[thread_local_key]

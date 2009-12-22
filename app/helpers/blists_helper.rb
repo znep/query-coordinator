@@ -304,13 +304,13 @@ module BlistsHelper
             })},
       menu_options['separator'],
       {'text' => 'Create a Calendar View...', 'href' => "#{view.href}/calendar",
-      'modal' => true, 'if' => !view.is_alt_view?,
+      'modal' => true, 'if' => !view.is_alt_view?, 'user_required' => true,
       'class' => 'calendar mainViewOption' +
         (view.can_add_calendar? ? '' : ' disabled'),
       'title' => (view.can_add_calendar? ? '' :
         'This dataset does not have both a date column and text column')},
       {'text' => 'Create a Chart View...', 'href' => "#{view.href}/visualization",
-      'modal' => true, 'if' => !view.is_alt_view?,
+      'modal' => true, 'if' => !view.is_alt_view?, 'user_required' => true,
       'class' => 'visualization mainViewOption' +
         (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
@@ -525,7 +525,7 @@ module BlistsHelper
     end
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
-                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
+                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : CGI.escape(variation)}?" +
                       "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
@@ -582,4 +582,7 @@ module BlistsHelper
     end
     out
   end
+
+  safe_helper :get_blist_rating_html, :get_comment_rating_html,
+    :get_publish_embed_code_for_view
 end

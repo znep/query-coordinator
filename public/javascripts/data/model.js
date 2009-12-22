@@ -1441,7 +1441,7 @@ blist.namespace.fetch('blist.data');
                             var columns = parentColumn === undefined ?
                                 meta.view.columns : parentColumn.body.children;
                             $.each(columns, function(i, c)
-                            { if ((c.dataType && c.dataType.type == 'tag') ||
+                            { if ((c.dataTypeName == 'tag') ||
                                 c.id > -1) { errorArray[c.dataIndex] = true; } });
                         }
                         else if (parentColumn)
@@ -1531,12 +1531,12 @@ blist.namespace.fetch('blist.data');
             // Now set up all the data to be saved
             $.each(columns, function(i, c)
             {
-                if (c.dataType && c.dataType.type == 'tag')
+                if (c.dataTypeName == 'tag')
                 {
                     data['_tags'] = row[c.dataIndex];
                     savingArray[c.dataIndex] = true;
                 }
-                else if (c.dataType && c.dataType.type == 'nested_table')
+                else if (c.dataTypeName == 'nested_table')
                 {
                     if (row[c.dataIndex] instanceof Array)
                     {

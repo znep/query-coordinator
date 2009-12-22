@@ -146,7 +146,7 @@
 
 <div class="footerContainer">
   <div id='footer' class="clearfix">
-    <span class='copyright'><%= CurrentDomain.strings.copyright_string %></span>
+    <span class='copyright'><%= raw CurrentDomain.strings.copyright_string %></span>
     <ul class="clearfix">
       <%- CurrentDomain.theme.urls.footer.each do |link| -%>
         <li><%= link_from_theme(link) %></li>

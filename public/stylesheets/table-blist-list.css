@@ -77,6 +77,15 @@
     border-right: none;
 }
 
+.blist-th .info-container { overflow: visible; }
+
+.blist-th .indicator-container
+{
+    bottom: 50%;
+    right: 14px;
+    width: auto;
+}
+
 .blist-td
 {
     border-right: 1px solid #ffffff;

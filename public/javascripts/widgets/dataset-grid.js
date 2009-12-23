@@ -1229,7 +1229,7 @@
         if (!datasetObj.settings.columnNameEdit || datasetObj.isTempView)
         { return; }
 
-        var $target = $(origEvent.target);
+        var $target = $(origEvent.currentTarget).find('.blist-th-name');
         var $th = $target.closest('.blist-th').addClass('editable');
         var $container = $target.closest('.name-wrapper');
         var $edit = $container.find('form');

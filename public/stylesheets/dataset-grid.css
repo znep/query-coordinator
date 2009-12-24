@@ -850,7 +850,7 @@ ul.menu.rowMenu li
 }
 .viewErrorContainer .actionButtons li
 {
+    display: inline-block;
     float: none;
-    margin: 0 auto;
     width: 15em;
 }

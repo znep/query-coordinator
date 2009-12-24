@@ -311,6 +311,8 @@ class BlistsController < ApplicationController
       result = View.delete(blist_id)
 
       respond_to do |format|
+        format.html { redirect_to(params[:redirect_id].nil? ?
+                          blists_path : View.find(params[:redirect_id]).href) }
         format.data { render :text => blist_id }
       end
   end

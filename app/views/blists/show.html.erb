@@ -312,6 +312,10 @@
             <li><a href='<%= blist_filters_path(@view.id) %>'
               rel='modal' class='arrowButton'>Edit Filters</a></li>
             <%- end -%>
+            <li><a class='removeViewLink'
+              href='#remove-view_<%= @view.id %>_<%= @view.parent_dataset.id %>'>
+              Remove this View
+            </a></li>
           </ul>
 
           <%- else -%>

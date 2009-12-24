@@ -332,6 +332,23 @@ $(function ()
     else if (blist.widgets.visualization.isVisualization)
     { $('#dataGrid').visualization(); }
 
+    $('.viewErrorContainer .removeViewLink').click(function(event)
+    {
+        event.preventDefault();
+        var $target = $(event.currentTarget);
+        var href = $target.attr('href');
+        var s = href.slice(href.indexOf('#') + 1).split('_');
+        $.ajax({url: '/datasets/' + s[1],
+            type: 'DELETE',
+            success: function()
+            {
+                if (s.length > 2)
+                { window.location = blist.util.navigation.getViewUrl(s[2]); }
+                else
+                { window.location = '/datasets'; }
+        }});
+    });
+
     blistGridNS.setUpTabs();
     $('.tabList').scrollable({
         selector: '.filter',

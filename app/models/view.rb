@@ -248,6 +248,12 @@ class View < Model
       reject {|l| l.is_blist?}
   end
 
+  def parent_dataset
+    return self if is_blist?
+    View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
+      find {|l| l.is_blist?}
+  end
+
   def comments
     Comment.find(id)
   end

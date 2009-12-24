@@ -223,6 +223,12 @@ blist.blistGrid.newViewCreated = function($iEdit, responseData)
     blist.util.navigation.redirectToView(responseData.id);
 };
 
+blist.blistGrid.updateValidView = function(view)
+{
+    $('.viewErrorContainer').hide();
+    $('.invalidView').removeClass('invalidView');
+};
+
 // The favorite action in the info for single panel - when one blist is selected.
 blist.blistGrid.favoriteActionClick = function (event)
 {
@@ -299,7 +305,6 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
 
 blist.infoEditSubmitSuccess = blistGridNS.infoEditCallback;
 
-
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -317,7 +322,9 @@ $(function ()
             setTempViewCallback: blistGridNS.setTempViewTab,
             updateTempViewCallback: blistGridNS.updateTempViewTab,
             filterForm: '#lensContainer .headerBar form',
-            clearFilterItem: '#lensContainer .headerBar form .clearSearch'
+            clearFilterItem: '#lensContainer .headerBar form .clearSearch',
+            isInvalid: blist.blistGrid.isInvalidView,
+            validViewCallback: blistGridNS.updateValidView
         });
     }
     else if (blist.calendar.isCalendar)

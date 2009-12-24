@@ -3321,6 +3321,9 @@
             });
             $lockedHeader.html(lockedHtml);
 
+            // Readjust locked position since the header height may have changed
+            $locked.css('top', $header.outerHeight() - $scrolls[0].scrollTop);
+
             // Render sort & filter headers
             configureSortHeader();
             configureFilterHeaders();

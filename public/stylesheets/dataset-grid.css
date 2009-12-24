@@ -841,3 +841,16 @@ ul.menu.rowMenu li
 {
     padding: 0 1px;
 }
+
+.viewErrorContainer { text-align: center; }
+.viewError
+{
+    font-size: 1.4em;
+    padding: 1em;
+}
+.viewErrorContainer .actionButtons li
+{
+    float: none;
+    margin: 0 auto;
+    width: 15em;
+}

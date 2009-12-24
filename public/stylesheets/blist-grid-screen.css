@@ -755,7 +755,8 @@ body#lensBody
 
 .unsavedView .mainViewOption,
 .unsavedView .add-column,
-.groupedView .ungroupedOption
+.groupedView .ungroupedOption,
+.invalidView .gridItem
 { display: none; }
 
 .unsavedView #lensContainer .headerBar .mainViewSeparator

@@ -1,7 +1,8 @@
 <%- can_update = !@view.is_blist? && current_user &&
   @view.owner.id == current_user.id -%>
+<%- can_create = !@view.is_invalid? -%>
 <% content_for :headline do %>
-<h1><span class="filterIcon"><%= can_update ? 'Update or ' : '' %>Create a Filtered View</span></h1>
+<h1><span class="filterIcon"><%= can_update ? 'Update ' : '' %><%= can_update && can_create ? 'or ' : '' %><%=  can_create ? 'Create ' : '' %>a Filtered View</span></h1>
 <% end %>
 
 <div class="modalContentWrapper filterDatasetWrapper">
@@ -55,7 +56,7 @@
   </div>
 
   <p class="information">
-    There are no columns to sort yet. Please add some data, then try again.
+    There are no columns to filter yet. Please add some data, then try again.
   </p>
 
   <div class="submitLine clearfix">
@@ -63,7 +64,9 @@
       <%- if can_update -%>
       <li><a class="button jqmClose" href="#update">Update Filter</a></li>
       <%- end -%>
+      <%- if can_create -%>
       <li><a class="arrowButton jqmClose" href="#create">Create Filter</a></li>
+      <%- end -%>
     </ul>
   </div>
 </div>

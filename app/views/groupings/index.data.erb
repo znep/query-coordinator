@@ -83,9 +83,12 @@
 
   <div class='submitLine clearfix'>
     <ul class='actionButtons clearfix'>
+      <%- if !@view.is_invalid? -%>
       <li><a href='#saveAs' class='update'>Save As</a></li>
+      <%- end -%>
       <%- if current_user && @view.owner.id == current_user.id &&
-        !@is_temp && @grouped.length > 0 -%>
+        !@is_temp && (@grouped.length > 0 ||
+          @view.is_invalid? && @view.message.include?('group')) -%>
       <li><a href='#save' class='update arrowButton'>Save</a></li>
       <%- else -%>
       <li><a href='#update' class='update arrowButton'>OK</a></li>

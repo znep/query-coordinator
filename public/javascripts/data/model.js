@@ -445,6 +445,8 @@ blist.namespace.fetch('blist.data');
             {
                 if (!ajaxOptions.dataType) { ajaxOptions.dataType = 'json'; }
                 ajaxOptions.success = function(config) {
+                    if (config.id !== undefined)
+                    { config = {meta: {view: config}}; }
                     if (translateFn)
                     { config = translateFn.apply(this, [ config ]); }
                     onLoad.apply(model, [ config ]);

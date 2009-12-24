@@ -174,6 +174,13 @@ class CurrentDomain
     :'strings.company' => 'Socrata',
     :'strings.site_title' => 'Socrata | Making Data Social',
     :'strings.discover_header' => 'Discover useful, unique, and unusual dataset created by the community.',
-    :'strings.copyright_string' => '&copy; 2009 Socrata, Inc.'
+    :'strings.copyright_string' => '&copy; 2009 Socrata, Inc.',
+
+    # Features that are enabled by default on socrata.com
+    :'features.upsell' => true,
+    :'features.revolutionize' => true,
+    :'features.discovery_module' => true,
+    :'features.community_module' => true,
+    :'features.community_creation' => true
   }
 end

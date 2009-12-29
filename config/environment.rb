@@ -55,7 +55,7 @@ Rails::Initializer.run do |config|
   config.action_controller.session = {
     :session_key => '_blist_session_id',
     :cookie_only => false,
-    :session_http_only => false,
+    :session_http_only => true,
     :secret      => ')c)]? ?+7?BpJ4qbKi8@-D)T`@]])x'
   }
 

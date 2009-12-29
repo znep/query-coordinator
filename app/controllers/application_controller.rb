@@ -84,6 +84,15 @@ protected
     render_error(500)
   end
 
+  # Render a 404 error, or redirect to '/solution' if upsell is enabled
+  def upsell_or_404
+    if CurrentDomain.upsell?
+      redirect_to '/solution'
+    else
+      render_404
+    end
+  end
+
   # We use a custom page_cache_directory based on the theme of the site.
   # The builtin rails page_cache_file function is broken with this type of
   # implementation...

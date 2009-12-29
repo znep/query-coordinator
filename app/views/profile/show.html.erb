@@ -444,12 +444,14 @@
         <%- end -%>
 
         <%- if @is_user_current -%>
-          <ul class="actionButtons blockList clearfix">
-            <li>
-              <%= link_to("Find Friends", community_path,
-                  :title => "Search for other users") %>
-            </li>
-          </ul>
+          <%- if module_enabled? :community_module %>
+            <ul class="actionButtons blockList clearfix">
+              <li>
+                <%= link_to("Find Friends", community_path,
+                          :title => "Search for other users") %>
+              </li>
+            </ul>
+          <%- end -%>
 
           <div>
             <p><strong>Invite others</strong> to use <%= CurrentDomain.strings.company %> and share your <%= t(:blist_name).pluralize %> with them</p>

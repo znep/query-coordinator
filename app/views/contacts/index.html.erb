@@ -13,9 +13,9 @@
 
       <div class='outerContent'>
         <div class='content'>
-          
+
           <%- if @contacts.length > 0 -%>
-          
+
           <div class='headerBar clearfix'>
             <h3 id='listTitle' class='clipText'
               title='<%= @title %>'><%= @title %></h3>
@@ -44,19 +44,19 @@
               <%= render(:partial => "contact_list") %>
             </div>
           </div>
-          
+
           <%- else -%>
-          
+
           <div class='headerBar clearfix'>
             <h3 id='listTitle' class='clipText'
               title='<%= @title %>'><%= @title %></h3>
           </div>
-          
+
           <div class='noContactsContainer'>
             <p>You haven't added any friends yet. Add friends by clicking the <strong>Add Friend</strong> button on a member's profile page.</p>
             <p>You can view our Top Members or search for Friends on the <%= link_to("Community page", community_path) %>.</p>
           </div>
-          
+
           <%- end -%>
 
         </div>

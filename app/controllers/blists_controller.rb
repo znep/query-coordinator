@@ -104,7 +104,8 @@ class BlistsController < ApplicationController
     end
 
     unless CurrentDomain.member?(current_user) && CurrentDomain.module_available?(:sdp_customizer)
-      redirect_to '/solution'
+      # Not a member of the org or the org doesn't have SDP customization
+      return upsell_or_404
     end
 
     # TODO[ORGS]:
@@ -245,6 +246,11 @@ class BlistsController < ApplicationController
   end
 
   def new
+    if (!CurrentDomain.member?(current_user) || !CurrentDomain.module_enabled?(:community_creation))
+      # User doesn't have access to create new datasets
+      return upsell_or_404
+    end
+
     respond_to do |format|
       format.html { render }
       format.data { render(:layout => "modal_dialog") }

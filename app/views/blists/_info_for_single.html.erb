@@ -136,7 +136,7 @@
           </a>
         </li>
       </ul>
-    <%- elsif (upsell? && view.owned_by?(current_user)) -%>
+    <%- elsif upsell? -%>
       <ul class="headerActions actionButtons">
         <li>
           <a href="/popup/premium" rel="modal" class="arrowButton">

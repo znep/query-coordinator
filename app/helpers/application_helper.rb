@@ -47,15 +47,28 @@ module ApplicationHelper
     prev_separator = ''
 
     items.each do |i|
+      if i.has_key?('upsell') && upsell?
+        # upsell item, so merge upsell options in as override
+        i.deep_merge!(i['upsell'])
+      else
+        # only do feature/module related checks if we're not upselling
+        if (i.has_key?('module_available') && !(module_available? i['module_available'])) ||
+           (i.has_key?('module_enabled') && !(module_enabled? i['module_enabled'])) ||
+           (i.has_key?('feature') && !(feature? i['feature']))
+          next
+        end
+      end
+
+      # always do these checks
       if (i['owner_item'] && !is_owner) || (i['owner_item'] == false && is_owner) ||
         (i['edit_item'] && !can_edit) || (i['edit_item'] == false && can_edit) ||
-        (i['user_required'] && !current_user) || (!i['if'].nil? && !i['if']) ||
-        (last_item_was_separator && i['separator'])
-        next
-      end
-      if i.has_key?('submenu') && (i['submenu'].nil? ||
+        (i['user_required'] && !current_user) ||
+        (!i['if'].nil? && !i['if']) ||
+        (last_item_was_separator && i['separator']) ||
+        (i.has_key?('submenu') && (i['submenu'].nil? ||
                                    i['submenu']['items'].nil? ||
-                                   i['submenu']['items'].length < 1)
+                                   i['submenu']['items'].length < 1)) ||
+        (i['user_in_domain'] && !(CurrentDomain.member? current_user))
         next
       end
 

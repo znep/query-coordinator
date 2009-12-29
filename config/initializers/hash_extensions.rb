@@ -25,7 +25,7 @@ class Hash
       if self[key].is_a?(Hash) && other[key].is_a?(Hash)
         self[key].deep_merge!(other[key])
       else
-        self[key] = second[key]
+        self[key] = other[key]
       end
     end
   end

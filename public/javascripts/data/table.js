@@ -1357,44 +1357,6 @@
             if (rowID == hotRowID) { hotRowID = null; }
         };
 
-        var isSelectingFrom = function(cell) {
-            if (!cellNav.length || !cell || !cell.parentNode) {
-                return false;
-            }
-            var row = getRow(cell);
-            var sel = cellNav[cellNav.length - 1];
-            return cell.parentNode.childNodes[sel[0]] == cell && sel[1] == model.index(row);
-        };
-
-        var getHeaderUnderMouse = function(pageX)
-        {
-            var $headers = $('.blist-th:not' +
-                '(.ui-draggable-dragging, .blist-table-ghost)', $header);
-            if (pageX < $headers.eq(0).offset().left) { return null; }
-            var $lastHeader = $headers.eq($headers.length - 1);
-            if (pageX > $lastHeader.offset().left + $lastHeader.outerWidth())
-            { return null; }
-
-            var $curHeader;
-            $headers.each(function(i)
-            {
-                var $col = $(this);
-                var left = $col.offset().left;
-                if (pageX < left) { return true; }
-
-                var width = $col.outerWidth();
-                var right = left + width;
-                if (pageX > right) { return true; }
-
-                $curHeader = $col;
-                return false;
-            });
-            return $curHeader;
-        };
-
-        var $curHeaderSelect;
-        var origColSelects = null;
-        var curColSelects = {};
         var onMouseMove = function(event)
         {
             if (hotHeaderDrag)
@@ -1420,9 +1382,7 @@
                 {
                     // Ensure that the cell we started dragging from is the
                     // beginning of the current selection
-                    if (!isSelectingFrom(selectFrom))
-                    {
-                        cellNav.deactivate();
+                    if (!cellNav.selectionInit(cellXY(selectFrom))) {
                         cellNavTo(selectFrom, event);
                     }
 
@@ -3083,6 +3043,8 @@
         var columnHeaderClick = function(event, $target)
         {
             var col = $target.closest('.blist-th').data('column');
+            if (col === undefined || col === null) { return; }
+
             $(event.currentTarget).removeClass('hover')
                 .data('column-clicked', false);
 
@@ -3219,7 +3181,9 @@
                         var $target = $(event.target);
                         if ($target.closest('.action-item').length > 0) { return; }
 
-                        if ($target.closest('.blist-th-name').length > 0)
+                        if ($target.closest('.blist-th .indicator-container, ' +
+                            '.blist-th .dragHandle, ' +
+                            '.blist-th .action-item').length < 1)
                         {
                             if ($col.data('column-clicked'))
                             {
@@ -3244,11 +3208,17 @@
                         { if (!hotHeaderDrag || hotHeaderMode != 4)
                             { $(this).addClass('hover'); } },
                         function () { $(this).removeClass('hover'); })
-                    .find('.blist-th-name').bind('dblclick', function(event)
+                    .bind('dblclick', function(event)
+                        {
+                            if ($(event.target).closest(
+                                '.blist-th .indicator-container, ' +
+                                '.blist-th .dragHandle, ' +
+                                '.blist-th .action-item').length < 1)
                             {
                                 $col.data('column-clicked', false);
                                 $this.trigger('column_name_dblclick', [ event ]);
-                            });
+                            }
+                        });
 
                 if (options.columnDrag)
                 {

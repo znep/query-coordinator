@@ -182,7 +182,7 @@
                 up_user = @view.last_updated_user
               %>
               <dd>
-                <%= up_user.nil? ? '' : link_to(h(up_user.displayName), up_user.href) + ':' %>
+                <%= raw up_user.nil? ? '' : link_to(h(up_user.displayName), up_user.href) + ':' %>
                 <%= blist_date(@view.last_activity) %>
               </dd>
               <dt>Filtered Views</dt>

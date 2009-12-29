@@ -65,8 +65,6 @@ files:
 - test/test_packr.rb
 has_rdoc: true
 homepage: http://github.com/jcoglan/packr
-licenses: []
-
 post_install_message: 
 rdoc_options: 
 - --main

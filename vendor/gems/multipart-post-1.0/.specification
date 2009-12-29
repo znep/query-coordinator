@@ -43,8 +43,6 @@ files:
 - test/net/http/post/test_multipart.rb
 has_rdoc: true
 homepage: http://github.com/nicksieger/multipart-post
-licenses: []
-
 post_install_message: 
 rdoc_options: 
 - --main

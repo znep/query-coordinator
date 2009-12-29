@@ -410,6 +410,8 @@
                 }
 
                 datasetObj.isTempView = false;
+
+                datasetObj.settings._model.reloadView();
             },
 
             setTempView: function(countId)
@@ -641,10 +643,12 @@
             qtipsRef[col.id] = $col;
 
             var tooltipContent = '<div class="blist-th-tooltip ' + col.type + '">'
-                + '<p class="name">' + col.name.replace(/ /, '&nbsp;') + '</p>' +
+                + '<p class="name">' +
+                $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
                 '<div class="blist-th-icon">' + col.type.displayable() + '</div>' +
                 (col.description !== undefined ?
-                    '<p class="description">' + col.description + '</p>' : '') +
+                    '<p class="description">' + $.htmlEscape(col.description) +
+                    '</p>' : '') +
                 '</div>';
             var contentIsMain = true;
             var adjustContent = function(e)
@@ -1180,11 +1184,12 @@
     var columnsRearranged = function(datasetObj)
     {
         var view = datasetObj.settings._model.meta().view;
-        if (datasetObj.settings.currentUserId == view.owner.id)
+        if (datasetObj.settings.currentUserId == view.owner.id &&
+            !datasetObj.isTempView)
         {
             var modView = datasetObj.getViewCopy(true);
             $.ajax({url: '/views/' + view.id + '.json',
-                    data: $.json.serialize(modView),
+                    data: $.json.serialize({columns: modView.columns}),
                     type: 'PUT', contentType: 'application/json',
                     success: function()
                         {
@@ -1227,7 +1232,7 @@
         if (!datasetObj.settings.columnNameEdit || datasetObj.isTempView)
         { return; }
 
-        var $target = $(origEvent.target);
+        var $target = $(origEvent.currentTarget).find('.blist-th-name');
         var $th = $target.closest('.blist-th').addClass('editable');
         var $container = $target.closest('.name-wrapper');
         var $edit = $container.find('form');

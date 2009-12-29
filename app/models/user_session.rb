@@ -174,6 +174,7 @@ class UserSession
 
       self.new_session = false
       UserSession.update_current_user(user, core_session)
+      cookies[:logged_in] = true
       result = self
     end
 
@@ -187,6 +188,7 @@ class UserSession
     UserSession.update_current_user(nil, nil)
     post_expire_cookie_authentication if cookies['remember_token']
     cookies.delete(:remember_token)
+    cookies.delete(:logged_in)
   end
 
   def user

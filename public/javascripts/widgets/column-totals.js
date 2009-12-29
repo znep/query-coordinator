@@ -1,3 +1,4 @@
+var columnsNS = blist.namespace.fetch('blist.columns');
 var columnTotalsNS = blist.namespace.fetch('blist.columns.properties.totals');
 
 columnTotalsNS.totals = {
@@ -11,9 +12,9 @@ columnTotalsNS.totals = {
 
 columnTotalsNS.populate = function($container)
 {
-    if (column.aggregate)
+    if (columnsNS.column.aggregate)
     {
-      $container.find("#" + column.aggregate.type).each(function() {
+      $container.find("#" + columnsNS.column.aggregate.type).each(function() {
           this.checked = true;
       });
     }
@@ -25,11 +26,11 @@ columnTotalsNS.populate = function($container)
     $("#columnTotals :input[type=radio]").change(function() { 
         if ($(this).val() != "")
         {
-          column.aggregate = {type: $(this).val()}; 
+          columnsNS.column.aggregate = {type: $(this).val()}; 
         }
         else
         {
-          column.aggregate = null;
+          columnsNS.column.aggregate = null;
         }
     });
 };

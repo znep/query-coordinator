@@ -184,14 +184,10 @@
   <script type="text/javascript">
     jQuery((function ($)
     {
-        var blistCookie = $.cookies.get('_blist_session_id');
-        if (blistCookie && blistCookie !== "")
+        var loggedInCookie = $.cookies.get('logged_in');
+        if (loggedInCookie && loggedInCookie == "true")
         {
-            var coreCookie = unescape(blistCookie).split("||");
-            if (coreCookie[0] && coreCookie[0] !== "")
-            {
-                $('#header .userNav').addClass('loggedInNav');
-            }
+            $('#header .userNav').addClass('loggedInNav');
         }
     })(jQuery));
   </script>

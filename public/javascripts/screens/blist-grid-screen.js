@@ -6,7 +6,7 @@ blist.blistGrid.getCookieHash = function()
     if (blist.calendar.isCalendar) { dispType = 'calendar'; }
     else if (blist.widgets.visualization.isVisualization)
     { dispType = 'visualization'; }
-    return {name: blistGridNS.viewName, id: blistGridNS.viewId,
+    return {name: $.htmlUnescape(blistGridNS.viewName), id: blistGridNS.viewId,
         path: window.location.pathname, displayType: dispType};
 };
 

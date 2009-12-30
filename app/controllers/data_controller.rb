@@ -64,6 +64,9 @@ class DataController < ApplicationController
       end
     end
 
+    # Hide logo if theme specifies so
+    @hide_logo = " style='display:none'" if CurrentDomain.theme.no_logo_on_discover
+
     # build current state string
     @current_state = { :search => @search_term , :search_debug => @search_debug}
   end

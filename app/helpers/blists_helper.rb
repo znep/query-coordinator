@@ -3,22 +3,10 @@ module BlistsHelper
     link_to(desc, new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
   end
 
-  def dataset_view_type(view)
-    if view.is_blist?
-      'blist'
-    elsif view.is_calendar?
-      'calendar'
-    elsif view.is_visualization?
-      'visualization'
-    else
-      'filter'
-    end
-  end
-
   # Used for lists of views, to determine shared in/out
   def get_share_direction_icon_class_for_view(view)
     icon_class = "itemType"
-    icon_class += " type" + dataset_view_type(view).capitalize
+    icon_class += " type" + view.display.type.capitalize
 
     if view.is_shared?
       icon_class += view.owner.id == current_user.id ? " sharedOut" : " sharedIn"
@@ -28,7 +16,7 @@ module BlistsHelper
 
   # Used for individual views, to determine permission levels
   def get_permissions_icon_class_for_view(view)
-    icon_class = 'type' + dataset_view_type(view).capitalize
+    icon_class = 'type' + view.display.type.capitalize
 
     if !view.is_public?
       icon_class += view.is_shared? ? " privateShared" : " private"
@@ -45,7 +33,7 @@ module BlistsHelper
       sharing_type = view.owner.id == current_user.id ? " shared out" : " shared in"
     end
 
-    blist_type = dataset_view_type(view)
+    blist_type = view.display.type
     privacy_type = !view.is_public? ? "private" : ""
 
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
@@ -185,7 +173,7 @@ module BlistsHelper
     'publish' => {'text' => "Publish this #{t(:blist_name).titleize}...",
       'class' => 'publish', 'modal' => is_widget,
       'href' => (is_widget ?  "#{@view.href}/republish" : '#publish'),
-      'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.is_calendar?)},
+      'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.display.can_publish?)},
 
     'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
       'class' => 'rowTags',
@@ -199,7 +187,7 @@ module BlistsHelper
         'href' => '#prev', 'class' => 'prev'}] +
         filters.sort {|a,b| a.name <=> b.name }.map do |v|
         {'text' => v.name, 'href' => v.href, 'external' => is_widget,
-        'class' => dataset_view_type(v) + ' scrollable'}
+        'class' => v.display.type + ' scrollable'}
       end + [{'button' => true, 'text' => 'Next',
       'href' => '#next', 'class' => 'next'}]}},
 
@@ -458,7 +446,7 @@ module BlistsHelper
       {'items' => View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
         b.last_viewed <=> a.last_viewed
       end.slice(0, num_recent).map do |v|
-        {'text' => v.name, 'href' => v.href, 'class' => dataset_view_type(v)}
+        {'text' => v.name, 'href' => v.href, 'class' => v.display.type}
       end }
     else
       nil

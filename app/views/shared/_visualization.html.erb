@@ -18,7 +18,6 @@
   <script type="text/javascript">
     blist.namespace.fetch('blist.widgets.visualization');
     blist.widgets.visualization.viewId = '<%= view.id %>';
-    blist.widgets.visualization.isVisualization = <%= view.is_visualization? %>;
     blist.widgets.visualization.invalid =
       <%= !@view.has_columns_for_visualization_type?(@view.displayType) -%>;
     blist.widgets.visualization.isFusionMap = <%= view.is_fusion_map? %>;

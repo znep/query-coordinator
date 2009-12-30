@@ -384,7 +384,7 @@ $(function ()
             initialResponse: $.unescapeObject(widgetNS.viewJson)
             });
     }
-    else if (blist.widgets.visualization.isVisualization)
+    else if (blist.display.type == 'visualization')
     {
         $('#data-grid').visualization();
     }

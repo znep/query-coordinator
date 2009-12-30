@@ -127,7 +127,7 @@
           {'text' => 'Sharing', 'class' => 'shares',
           'href' => '#infoPane_tabSharing'},
           {'text' => 'Publishing', 'class' => 'publishing',
-          'href' => '#infoPane_tabPublishing', 'if' => !@view.is_calendar?},
+          'href' => '#infoPane_tabPublishing', 'if' => @view.display.can_publish?},
           {'text' => 'Activity', 'class' => 'activity',
           'href' => '#infoPane_tabActivity'},
           {'text' => 'Summary', 'class' => 'summary activePane',

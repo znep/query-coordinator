@@ -28,7 +28,7 @@
         <a href="#sharing_permissions">Sharing</a>
       </div></div>
     </li>
-    <%- if !@view.is_calendar? -%>
+    <%- if @view.display.can_publish? -%>
     <li id="tabPublishing">
       <div class="tabOuter"><div class="tabInner">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
@@ -119,7 +119,7 @@
 <%# *** END: SHARING *** %>
 
 <%# *** START: PUBLISHING *** %>
-<%- if !@view.is_calendar? -%>
+<%- if @view.display.can_publish? -%>
 <div class="infoContentOuter singleInfoPublishing">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader">Publishing</h2>

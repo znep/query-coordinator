@@ -290,6 +290,7 @@
   <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
 
   <script type="text/javascript">
+    <%= raw @display.render_inline_setup_js self %>
     blist.namespace.fetch('blist.widget');
     <%- if !current_user.nil? -%>
       blist.currentUserId = "<%= current_user.id %>";
@@ -333,4 +334,7 @@
 
     <%= render(:partial => "shared/quantcast") %>
   <%- end -%>
+  <script type="text/javascript">
+    <%= raw @display.render_inline_runtime_js self %>
+  </script>
 <% end %>

@@ -70,6 +70,7 @@ class BlistsController < ApplicationController
 
     @data_component = params[:dataComponent]
     @popup = params[:popup]
+    @display = @view.display
   end
 
   # To build a url to this action, use View.about_href.

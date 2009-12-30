@@ -33,6 +33,7 @@
             currentUserId: null,
             editEnabled: true,
             filterForm: null,
+            initialResponse: null,
             manualResize: false,
             setTempViewCallback: function () {},
             showRowHandle: false,
@@ -92,7 +93,8 @@
                         { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
                     .options({blankRow: datasetObj.settings.editEnabled,
-                        filterMinChars: 0, progressiveLoading: true})
+                        filterMinChars: 0, progressiveLoading: true,
+                        initialResponse: datasetObj.settings.initialResponse})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
                                 '/rows.json', cache: false,
                             data: {accessType: datasetObj.settings.accessType},

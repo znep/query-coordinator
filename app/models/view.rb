@@ -34,6 +34,15 @@ class View < Model
       "rows.html?template=bare_template.html", {})
   end
 
+  def json(params)
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"
+    if !params.nil?
+      url += '?' + params.to_param
+    end
+    escape_object(JSON.parse(CoreServer::Base.connection.get_request(url, {}))).
+      to_json.html_safe!
+  end
+
   def self.notify_all_of_changes(id)
     path = "/#{self.name.pluralize.downcase}/#{id}.json?" + 
         {"method" => "notifyUsers"}.to_param

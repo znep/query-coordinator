@@ -380,7 +380,8 @@ $(function ()
             filterForm: '#header form',
             clearFilterItem: '#header form .clearSearch',
             clearTempViewCallback: widgetNS.clearTempViewTab,
-            setTempViewCallback: widgetNS.setTempViewTab
+            setTempViewCallback: widgetNS.setTempViewTab,
+            initialResponse: $.unescapeObject(widgetNS.viewJson)
             });
     }
     else if (blist.widgets.visualization.isVisualization)

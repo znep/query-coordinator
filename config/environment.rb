@@ -99,6 +99,8 @@ Rails::Initializer.run do |config|
     File.directory?(lib = "#{dir}/lib") ? lib : dir
   end
 
+  config.gem "erubis", :version => '>= 2.6.4'
+
   # These gems are required, but should be available in the vendor/gems directory.
   config.gem 'multipart-post', :lib => 'net/http/post/multipart'
   config.gem 'googlecharts', :lib => 'gchart'

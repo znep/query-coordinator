@@ -302,7 +302,7 @@
     </div>
 
     <div class="jqmWindow widgetModal" id="modal"></div>
-  
+
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
 
@@ -317,6 +317,11 @@
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
+
+    <%# Hard-code parameters for initial call here; if the Javascript ever
+    changes, these will need to be updated %>
+    blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
+        'include_ids_after' => 50, 'include_aggregates' => true}) %>;
   </script>
 
   <%- if @view.can_edit() -%>
@@ -342,7 +347,7 @@
       pageTracker2._trackPageview();
       } catch(err) {}</script>
     <%- end -%>
-    
+
     <%= render(:partial => "shared/quantcast") %>
   <%- end -%>
 <% end %>

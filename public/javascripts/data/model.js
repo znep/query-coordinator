@@ -91,6 +91,7 @@ blist.namespace.fetch('blist.data');
         var curOptions = {
             blankRow: false,
             filterMinChars: 3,
+            initialResponse: null,
             pageSize: 50,
             progressiveLoading: false
         };
@@ -470,7 +471,19 @@ blist.namespace.fetch('blist.data');
                 }
                 else { baseURL = ''; }
             }
-            $.ajax(ajaxOptions);
+
+            if (curOptions.initialResponse !== null)
+            {
+                // Make sure things calling this have a chance to finish their
+                // init, just like they would for an async ajax call
+                setTimeout(function()
+                {
+                    ajaxOptions.success(curOptions.initialResponse);
+                    ajaxOptions.complete();
+                    curOptions.initialResponse = null;
+                }, 0);
+            }
+            else { $.ajax(ajaxOptions); }
         };
 
         var batchRequests = [];

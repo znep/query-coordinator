@@ -1357,44 +1357,6 @@
             if (rowID == hotRowID) { hotRowID = null; }
         };
 
-        var isSelectingFrom = function(cell) {
-            if (!cellNav.length || !cell || !cell.parentNode) {
-                return false;
-            }
-            var row = getRow(cell);
-            var sel = cellNav[cellNav.length - 1];
-            return cell.parentNode.childNodes[sel[0]] == cell && sel[1] == model.index(row);
-        };
-
-        var getHeaderUnderMouse = function(pageX)
-        {
-            var $headers = $('.blist-th:not' +
-                '(.ui-draggable-dragging, .blist-table-ghost)', $header);
-            if (pageX < $headers.eq(0).offset().left) { return null; }
-            var $lastHeader = $headers.eq($headers.length - 1);
-            if (pageX > $lastHeader.offset().left + $lastHeader.outerWidth())
-            { return null; }
-
-            var $curHeader;
-            $headers.each(function(i)
-            {
-                var $col = $(this);
-                var left = $col.offset().left;
-                if (pageX < left) { return true; }
-
-                var width = $col.outerWidth();
-                var right = left + width;
-                if (pageX > right) { return true; }
-
-                $curHeader = $col;
-                return false;
-            });
-            return $curHeader;
-        };
-
-        var $curHeaderSelect;
-        var origColSelects = null;
-        var curColSelects = {};
         var onMouseMove = function(event)
         {
             if (hotHeaderDrag)
@@ -1420,9 +1382,7 @@
                 {
                     // Ensure that the cell we started dragging from is the
                     // beginning of the current selection
-                    if (!isSelectingFrom(selectFrom))
-                    {
-                        cellNav.deactivate();
+                    if (!cellNav.selectionInit(cellXY(selectFrom))) {
                         cellNavTo(selectFrom, event);
                     }
 

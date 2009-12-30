@@ -33,6 +33,7 @@
             currentUserId: null,
             editEnabled: true,
             filterForm: null,
+            initialResponse: null,
             isInvalid: false,
             manualResize: false,
             setTempViewCallback: function () {},
@@ -95,7 +96,8 @@
                         { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
                     .options({blankRow: datasetObj.settings.editEnabled,
-                        filterMinChars: 0, progressiveLoading: true})
+                        filterMinChars: 0, progressiveLoading: true,
+                        initialResponse: datasetObj.settings.initialResponse})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
                                 (datasetObj.settings.isInvalid ? '.json' :
                                 '/rows.json'), cache: false,
@@ -569,6 +571,8 @@
                 }
 
                 datasetObj.isTempView = false;
+
+                datasetObj.settings._model.reloadView();
             },
 
             setTempView: function(countId)
@@ -1350,11 +1354,12 @@
     var columnsRearranged = function(datasetObj)
     {
         var view = datasetObj.settings._model.meta().view;
-        if (datasetObj.settings.currentUserId == view.owner.id)
+        if (datasetObj.settings.currentUserId == view.owner.id &&
+            !datasetObj.isTempView)
         {
             var modView = datasetObj.getViewCopy(true);
             $.ajax({url: '/views/' + view.id + '.json',
-                    data: $.json.serialize(modView),
+                    data: $.json.serialize({columns: modView.columns}),
                     type: 'PUT', contentType: 'application/json',
                     success: function()
                         {

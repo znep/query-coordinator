@@ -291,6 +291,18 @@ class Model
     end
   end
 
+  def escape_object(obj)
+    if obj.is_a?(String)
+      return CGI.escapeHTML(obj)
+    elsif obj.is_a?(Array)
+      return obj.map {|v| escape_object(v)}
+    elsif obj.is_a?(Hash)
+      return obj.merge(obj) {|k, v| escape_object(v)}
+    else
+      return obj
+    end
+  end
+
 protected
 
   def self.parse_tags(val)

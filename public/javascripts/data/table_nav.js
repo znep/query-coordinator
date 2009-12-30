@@ -228,6 +228,28 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
     };
 
     /**
+     * Ensure that the last selection box is properly anchored.  Returns true if this is the case; returns false if
+     * navigation needs to restart at the new location.
+     */
+    this.selectionInit = function(selectFrom) {
+        var needInit = true;
+
+        if (selectionBoxes.length) {
+            var box = selectionBoxes[selectionBoxes.length - 1];
+            if (box[0] == selectFrom.x && box[1] == selectFrom.y) {
+                needInit = false;
+            }
+        }
+
+        if (needInit)
+        {
+            this.deactivate();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Update text area state to enable or disable copy in the native browser menus.  This is called by the table in
      * updateCellNavCues which is called after any even that affects selection.
      */

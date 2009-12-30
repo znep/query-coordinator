@@ -16,8 +16,10 @@
     <h3>Create a new <%= CurrentDomain.strings.company %> ID</h3>
     <%= render :partial => "signup_form", :locals => {:is_modal => false} %>
 
-    <h3 class="signup"><strong>OR</strong> Sign up using an external account</h3>
-    <%= render :partial => "rpx/buttons", :locals => {:action => "Sign up", :return_url => rpx_return_signup_url} %>
+    <%- if module_enabled? :openid_login -%>
+      <h3 class="signup"><strong>OR</strong> Sign up using an external account</h3>
+      <%= render :partial => "rpx/buttons", :locals => {:action => "Sign up", :return_url => rpx_return_signup_url} %>
+    <%- end -%>
   </div>
 <% end %>
 

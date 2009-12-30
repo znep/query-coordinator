@@ -246,7 +246,7 @@ class BlistsController < ApplicationController
   end
 
   def new
-    if (!CurrentDomain.member?(current_user) || !CurrentDomain.module_enabled?(:community_creation))
+    if (!CurrentDomain.member?(current_user) && !CurrentDomain.module_enabled?(:community_creation))
       # User doesn't have access to create new datasets
       return upsell_or_404
     end
@@ -258,6 +258,11 @@ class BlistsController < ApplicationController
   end
 
   def upload
+    if (!CurrentDomain.member?(current_user) && !CurrentDomain.module_enabled?(:community_creation))
+      # User doesn't have access to create new datasets
+      return upsell_or_404
+    end
+
     @is_upload = true
     respond_to do |format|
       format.html { render(:action => "new") }

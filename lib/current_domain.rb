@@ -47,6 +47,25 @@ class CurrentDomain
     @@current_domain[:data].organizationId
   end
 
+  def self.default_widget_customization
+    # Return empty if the current domain doesn't have the customizer
+    if !self.module_available?(:sdp_customizer)
+      return ""
+    end
+
+    if @@current_domain[:widget_customization].nil?
+      # Pull the default customization. Assume it is the first
+      customizations = WidgetCustomization.find
+      if !customizations.nil? && customizations.size > 0
+        @@current_domain[:widget_customization] = customizations.first.uid
+      else
+        # If they don't have any customizations, default to empty
+        @@current_domain[:widget_customization] = ""
+      end
+    end
+    @@current_domain[:widget_customization]
+  end
+
   def self.preferences
     if @@current_domain[:preferences].nil?
       if @@current_domain[:data].preferences.nil?

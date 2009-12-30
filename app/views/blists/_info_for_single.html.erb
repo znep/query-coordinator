@@ -151,7 +151,7 @@
     <div class="infoContent"<%= div_shown %>>
       <%= render( :partial => "blists/meta_tab_publishing", 
                   :locals => {:view => view, :in_widget => false,
-                              :customization_id => "", :cur_id => ""}) %>
+                              :customization_id => CurrentDomain.default_widget_customization, :cur_id => ""}) %>
     </div>
   </div></div>
 </div>

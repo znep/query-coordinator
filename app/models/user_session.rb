@@ -146,6 +146,7 @@ class UserSession
       create_core_session_credentials(user)
       self.new_session = false
       UserSession.update_current_user(user, core_session)
+      cookies[:logged_in] = true
       result = self
     end
 

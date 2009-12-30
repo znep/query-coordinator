@@ -1,6 +1,6 @@
 class View < Model
   cattr_accessor :visualization_config, :categories, :licenses,
-    :creative_commons, :sorts, :search_sorts
+    :creative_commons
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -9,7 +9,7 @@ class View < Model
       return self.find_under_user(options)
     end
   end
-  
+
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))
@@ -19,7 +19,7 @@ class View < Model
     path = "/#{self.name.pluralize.downcase}.json?" + {'ids' => ids}.to_param
     parse(CoreServer::Base.connection.get_request(path))
   end
-  
+
   def self.find_for_user(id)
     path = "/users/#{id}/views.json"
     parse(CoreServer::Base.connection.get_request(path))
@@ -332,7 +332,11 @@ class View < Model
   end
 
   def owned_by?(user)
-    self.owner.id == user.id
+    if user.nil?
+      false
+    else
+      self.owner.id == user.id
+    end
   end
 
   def columns_for_datatypes(datatypes, include_hidden = false)
@@ -344,14 +348,6 @@ class View < Model
   def datatypes_match(column, datatypes)
     datatypes.is_a?(Array) && datatypes.include?(column.dataTypeName) ||
       column.dataTypeName == datatypes
-  end
-
-  # HACK: NYSS wanted the comments tab hidden, so we're manually hiding comments for them
-  # Org ID 2 => NYSS
-  # Org ID 5 => Ohio AG // The saga continues
-  ORGS_WITH_COMMENTS_HIDDEN = [ 2, 5 ]
-  def hide_comments?
-    ORGS_WITH_COMMENTS_HIDDEN.include? self.owner.organizationId.to_i
   end
 
   def chart_class
@@ -562,25 +558,70 @@ class View < Model
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
 
+  # Sorts are enabled and disabled by feature modules
   @@sorts = [
-    ["POPULAR", "Popularity"],
-    ["AVERAGE_RATING", "Rating"],
-    ["ALPHA", "A - Z"],
-    ["ALPHA_DESC", "Z - A"],
-    ["NUM_OF_VIEWS", "# of times Visited"],
-    ["COMMENTS", "# of Comments"],
-    ["LAST_CHANGED", "Date"],
-    ["CATEGORY", "Category"]
+    { :key => "POPULAR",
+      :name => "Popularity"
+    },
+    { :key => "AVERAGE_RATING",
+      :name => "Rating",
+      :module => :allow_comments
+    },
+    { :key => "ALPHA",
+      :name => "A - Z"
+    },
+    { :key => "ALPHA_DESC",
+      :name => "Z - A"
+    },
+    { :key => "NUM_OF_VIEWS",
+      :name => "# of times Visited"
+    },
+    { :key => "COMMENTS",
+      :name => "# of Comments",
+      :module => :allow_comments
+    },
+    { :key => "LAST_CHANGED",
+      :name => "Date"
+    },
+    { :key => "CATEGORY",
+      :name => "Category"
+    }
   ]
 
+  def self.sorts
+    sorts = Array.new
+    @@sorts.each do |sort|
+      next if(!sort[:module].nil? && !CurrentDomain.module_enabled?(sort[:module]))
+
+      sorts.push [sort[:key], sort[:name]]
+    end
+    sorts
+  end
+
   @@search_sorts = [
-    ["RELEVANCE", "Relevance"],
-    ["SCORE", "Popularity"],
-    ["NEWEST", "Recently updated"],
-    ["OLDEST", "Oldest"],
-    ["RATING", "Rating"],
-    ["COMMENTS", "# of Comments"]
+    { :key => "RELEVANCE",  :name => "Relevance" },
+    { :key => "SCORE",      :name => "Popularity" },
+    { :key => "NEWEST",     :name => "Recently updated" },
+    { :key => "OLDEST",     :name => "Oldest" },
+    { :key => "RATING",
+      :name => "Rating",
+      :module => :allow_comments
+    },
+    { :key => "COMMENTS",
+      :name => "# of Comments",
+      :module => :allow_comments
+    }
   ]
+
+  def self.search_sorts
+    sorts = Array.new
+    @@search_sorts.each do |sort|
+      next if(!sort[:module].nil? && !CurrentDomain.module_enabled?(sort[:module]))
+
+      sorts.push [sort[:key], sort[:name]]
+    end
+    sorts
+  end
 
 
   memoize :href

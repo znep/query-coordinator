@@ -1,9 +1,5 @@
 # Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
-  def th
-    Theme
-  end
-
   # Return a string that represents the specified menu.  The only required option
   # is 'items'
   #
@@ -51,15 +47,28 @@ module ApplicationHelper
     prev_separator = ''
 
     items.each do |i|
+      if i.has_key?('upsell') && upsell?
+        # upsell item, so merge upsell options in as override
+        i.deep_merge!(i['upsell'])
+      else
+        # only do feature/module related checks if we're not upselling
+        if (i.has_key?('module_available') && !(module_available? i['module_available'])) ||
+           (i.has_key?('module_enabled') && !(module_enabled? i['module_enabled'])) ||
+           (i.has_key?('feature') && !(feature? i['feature']))
+          next
+        end
+      end
+
+      # always do these checks
       if (i['owner_item'] && !is_owner) || (i['owner_item'] == false && is_owner) ||
         (i['edit_item'] && !can_edit) || (i['edit_item'] == false && can_edit) ||
-        (i['user_required'] && !current_user) || (!i['if'].nil? && !i['if']) ||
-        (last_item_was_separator && i['separator'])
-        next
-      end
-      if i.has_key?('submenu') && (i['submenu'].nil? ||
+        (i['user_required'] && !current_user) ||
+        (!i['if'].nil? && !i['if']) ||
+        (last_item_was_separator && i['separator']) ||
+        (i.has_key?('submenu') && (i['submenu'].nil? ||
                                    i['submenu']['items'].nil? ||
-                                   i['submenu']['items'].length < 1)
+                                   i['submenu']['items'].length < 1)) ||
+        (i['user_in_domain'] && !(CurrentDomain.member? current_user))
         next
       end
 
@@ -188,6 +197,8 @@ HREF
   
   
   def create_pagination(total_count, page_count, current_page, base_href)
+    puts "######## create_pagination(#{total_count}, #{page_count}, #{current_page}, #{base_href})"
+
     num_pages = (total_count.to_f / page_count).ceil
     base_href.sub!(/([?&])page=[0-9]*/, '\1')
     base_href = (base_href.include?("?") || base_href.include?("#")) ? "#{base_href}&page=" : "#{base_href}?page="
@@ -268,17 +279,49 @@ HREF
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
-  
+
+  def module_available(name, &block)
+    concat(capture(&block)) if CurrentDomain.module_available?(name.to_s)
+  end
+
+  def module_available?(name)
+    CurrentDomain.module_available?(name.to_s)
+  end
+
+  def module_enabled(name, &block)
+    concat(capture(&block)) if CurrentDomain.module_enabled?(name.to_s)
+  end
+
+  def module_enabled?(name)
+    CurrentDomain.module_enabled?(name.to_s)
+  end
+
+  def feature(name, &block)
+    concat(capture(&block)) if CurrentDomain.feature?(name.to_s)
+  end
+
+  def feature?(name)
+    CurrentDomain.feature?(name.to_s)
+  end
+
+  def upsell(&block)
+    concat(capture(&block)) if CurrentDomain.upsell?
+  end
+
+  def upsell?
+    CurrentDomain.upsell?
+  end
+
   # Returns the meta keyword tags for this view that we'll use in headers
   @@default_meta_tags = ["public", "data", "statistics", "dataset"]
   def meta_keywords(view)
     view.nil? ? nil : (view.tags.nil? ? @@default_meta_tags : view.tags + @@default_meta_tags).sort_by {rand}
   end
-  
+
   # Return the description we'll use in the meta description header
   def meta_description(view)
     return nil if(view.nil? || !view.is_a?(View))
-    
+
     if view.description.blank?
       desc = "View this dataset"
       updated_at = view.rowsUpdatedAt.nil? ? nil : blist_long_date(view.rowsUpdatedAt)
@@ -290,7 +333,7 @@ HREF
       return view.description
     end
   end
-  
+
   def flash_clipboard_button(text)
     html = <<-EOF
       <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
@@ -317,7 +360,7 @@ HREF
       </object>
     EOF
   end
-  
+
   # Generate a parameter hash given a current page state and additional flags
   def generate_filter_url(current_state, type, additional_flags = {}, delimiter = '#')
     if current_state.nil?

@@ -24,9 +24,9 @@
       <ul class="discoverContentList">
         <%= render(:partial => "view_list_item", :collection => views) %>
       </ul>
-    
+
       <div class="viewPager">
-        <%= create_pagination(views_total, @page_size, current_page, generate_filter_url(@current_state, type)) %>
+        <%= create_pagination(views_total, page_size, current_page, generate_filter_url(@current_state, type)) %>
       </div>
     <%- else -%>
       <p class="clearBoth">
@@ -67,18 +67,16 @@
                 :class => "moreTagsLink") %>
         </li>
       </ul>
-    
-      <%- if (!is_gov_site?) -%>
+
         <h2>Browse by Category</h2>
         <ul class="categoryList hilightList">
-          
-          <%- View.categories.keys.sort.each do |category| -%>
-            <%- next if category.nil? || category.length == 0 -%>
-            <li><%= link_to("<span>#{category}</span>", generate_filter_url(@current_state, type, {:filter => {"category" => category}}),
-                    :class => "filterLink#{get_filter_hilight_class({'category' => category}, current_filter, ' hilight')}") %></li>
-          <%- end -%>
-        </ul>
-      <%- end -%>
+
+        <%- View.categories.keys.sort.each do |category| -%>
+          <%- next if category.nil? || category.length == 0 -%>
+          <li><%= link_to("<span>#{category}</span>", generate_filter_url(@current_state, type, {:filter => {"category" => category}}),
+                  :class => "filterLink#{get_filter_hilight_class({'category' => category}, current_filter, ' hilight')}") %></li>
+        <%- end -%>
+      </ul>
     <%- end -%>
   </div>
 </div></div>

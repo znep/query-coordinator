@@ -17,3 +17,5 @@ rescue
   REVISION_DATE = nil
 end
 
+DEFAULT_DOMAIN_PREFS = YAML.load_file("#{RAILS_ROOT}/config/domain_prefs.yml") || {}
+DEFAULT_DOMAIN_PREFS.deep_symbolize_keys!

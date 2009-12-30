@@ -1,16 +1,17 @@
 <h2 class="panelHeader">Activity</h2>
 <%- if (!in_widget) -%>
-<ul class="headerActions actionButtons">
-  <li>
-    <%- if(current_user && current_user.can_access_premium_on?(view)) -%>
-      <a href="<%= "#{view.href}/stats" %>" class="arrowButton">
-        View Statistics
-      </a>
-    <%- else -%>
-      <a href="/popup/stats" class="arrowButton" rel="modal">
-        View Statistics
-      </a>
-    <%- end -%>
-  </li>
-</ul>
+  <%- if (CurrentDomain.member?(current_user) && module_available?(:advanced_metrics)) -%>
+    <ul class="headerActions actionButtons">
+      <li>
+        <a href="<%= "#{view.href}/stats" %>" class="arrowButton">View Statistics</a>
+      </li>
+    </ul>
+  <%- elsif (upsell? && CurrentDomain.member?(current_user)) -%>
+    <ul class="headerActions actionButtons">
+      <li>
+        <a href="/popup/stats" class="arrowButton" rel="modal">View Statistics</a>
+      </li>
+    </ul>
+  <%- end -%>
 <%- end -%>
+

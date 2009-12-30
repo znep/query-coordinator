@@ -214,13 +214,21 @@ private
   end
 
   def post_core_authentication
-    Net::HTTP.post_form(auth_uri, credentials_for_post)
+    post = Net::HTTP::Post.new(auth_uri.request_uri)
+    post['X-Socrata-Host'] = CurrentDomain.cname
+    post.set_form_data credentials_for_post
+    Net::HTTP.start(auth_uri.host, auth_uri.port) do |http|
+      http.request post
+    end
   end
 
   def post_cookie_authentication
     uri = auth_uri.clone
     uri.query = "method=findByRememberToken"
     post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
+
+    # pass/spoof in the current domain cname
+    post['X-Socrata-Host'] = CurrentDomain.cname
 
     Net::HTTP.start(uri.host, uri.port) do |http|
       http.request post
@@ -231,6 +239,9 @@ private
     uri = auth_uri.clone
     uri.query = "method=expireRememberToken"
     post = Net::HTTP::Post.new(uri.request_uri, {'Cookie' => "remember_token=#{cookies['remember_token']}"})
+
+    # pass/spoof in the current domain cname
+    post['X-Socrata-Host'] = CurrentDomain.cname
 
     Net::HTTP.start(uri.host, uri.port) do |http|
       http.request post

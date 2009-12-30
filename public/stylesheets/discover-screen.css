@@ -4,6 +4,23 @@
     min-width: 98.9em;
 }
 
+.carouselInner h2.welcomeHeader
+{
+  padding-left: 10px;
+}
+
+.carouselInner p
+{
+  padding: 10px;
+  font-size: 1.4em;
+  color: #ffffff;
+}
+
+.carouselInner p a
+{
+  color: #dddddd;
+}
+
 .carouselItem .itemTitle h3
 {
     float: left;

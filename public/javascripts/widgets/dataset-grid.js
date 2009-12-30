@@ -157,12 +157,12 @@
                             if (datasetObj.settings.isInvalid)
                             { updateValidity(datasetObj, newView); }
                             else
-                            { model.getTempView(datasetObj.getViewCopy(true)); }
+                            { model.getTempView(model.getViewCopy(true)); }
                         }});
                 }
                 else
                 {
-                    model.getTempView(datasetObj.getViewCopy(true));
+                    model.getTempView(model.getViewCopy(true));
                     this.setTempView();
                 }
             },
@@ -201,65 +201,6 @@
                     datasetObj.settings._model.meta(o.meta);
                     datasetObj.settings._model.rows(o.data);
                 }
-            },
-
-            getViewCopy: function(includeColumns)
-            {
-                var datasetObj = this;
-                var model = datasetObj.settings._model;
-                var view = model.meta().view;
-                // Update all the widths from the meta columns
-                $.each(this.settings._model.meta().columns[0], function(i, c)
-                {
-                    model.getColumnByID(c.id).width = c.width;
-                    if (c.body && c.body.children)
-                    {
-                        $.each(c.body.children, function(j, cc)
-                        {
-                            model.getColumnByID(cc.id).width = cc.width;
-                        });
-                    }
-                });
-
-                view = $.extend(true, {}, view);
-                delete view.sortBys;
-                delete view.viewFilters;
-
-                if (includeColumns)
-                {
-                    // Filter out all metadata columns
-                    view.columns = $.grep(view.columns, function(c, i)
-                        { return c.id != -1; });
-                    // Sort by position, because the attribute is ignored when
-                    // saving columns
-                    view.columns.sort(function(a, b)
-                        { return a.position - b.position; });
-                    var cleanColumn = function(col)
-                    {
-                        delete col.dataIndex;
-                        delete col.options;
-                        delete col.dropDown;
-                    };
-                    // Clean out dataIndexes, and clean out child metadata columns
-                    $.each(view.columns, function(i, c)
-                    {
-                        cleanColumn(c);
-                        if (c.childColumns)
-                        {
-                            c.childColumns = $.grep(c.childColumns, function(cc, j)
-                                { return cc.id != -1; });
-                            $.each(c.childColumns, function(j, cc)
-                                { cleanColumn(cc); });
-                        }
-                    });
-                }
-                else
-                {
-                    view.columns = null;
-                }
-                delete view['grants'];
-                view.originalViewId = view.id;
-                return view;
             },
 
             setColumnAggregate: function(columnId, aggregate)
@@ -465,7 +406,7 @@
 
                 if (isGrouping) { model.meta().view.columns = newCols; }
 
-                view = datasetObj.getViewCopy(isGrouping);
+                view = model.getViewCopy(isGrouping);
 
                 if (isNew) { view = $.extend(view, {name: newName}); }
 
@@ -805,10 +746,13 @@
             { qtipsRef[col.id].qtip('destroy'); }
             qtipsRef[col.id] = $col;
 
-            var tooltipContent = '<div class="blist-th-tooltip ' + col.type + '">'
+            var tooltipContent = '<div class="blist-th-tooltip ' +
+                (col.originalType || col.type) + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
-                '<div class="blist-th-icon">' + col.type.displayable() + '</div>' +
+                '<div class="blist-th-icon">' +
+                (col.originalType || col.type).displayable() +
+                '</div>' +
                 (col.description !== undefined ?
                     '<p class="description">' + $.htmlEscape(col.description) +
                     '</p>' : '') +
@@ -1357,7 +1301,7 @@
         if (datasetObj.settings.currentUserId == view.owner.id &&
             !datasetObj.isTempView)
         {
-            var modView = datasetObj.getViewCopy(true);
+            var modView = datasetObj.settings._model.getViewCopy(true);
             $.ajax({url: '/views/' + view.id + '.json',
                     data: $.json.serialize({columns: modView.columns}),
                     type: 'PUT', contentType: 'application/json',

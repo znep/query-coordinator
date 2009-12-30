@@ -682,12 +682,8 @@ blist.namespace.fetch('blist.data');
                 if (type && type.isObject)
                 {
                     dataMungeCols.push({index: i, type: 'nullifyArrays'});
-                    if (v.format !== undefined &&
-                        v.format.grouping_aggregate !== undefined)
-                    { dataMungeCols.push({index: i, type: 'arrayToFirstValue'}); }
-                    else
-                    { dataMungeCols.push({index: i, type: 'arrayToObject',
-                        types: v.subColumnTypes}); }
+                    dataMungeCols.push({index: i, type: 'arrayToObject',
+                        types: v.subColumnTypes});
                 }
 
 
@@ -741,6 +737,7 @@ blist.namespace.fetch('blist.data');
                     width: Math.max(50, vcol.width || 100),
                     minWidth: 50,
                     type: vcol.dataTypeName || "text",
+                    originalType: vcol.originalDataTypeName,
                     id: vcol.id,
                     tableColumnId: vcol.tableColumnId,
                     aggregate: meta.aggregateHash[vcol.id],
@@ -2668,18 +2665,72 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
         };
 
+        this.getViewCopy = function(includeColumns)
+        {
+            var view = meta.view;
+            // Update all the widths from the meta columns
+            $.each(meta.columns[0], function(i, c)
+            {
+                self.getColumnByID(c.id).width = c.width;
+                if (c.body && c.body.children)
+                {
+                    $.each(c.body.children, function(j, cc)
+                    {
+                        self.getColumnByID(cc.id).width = cc.width;
+                    });
+                }
+            });
+
+            view = $.extend(true, {}, view);
+            delete view.sortBys;
+            delete view.viewFilters;
+
+            if (includeColumns)
+            {
+                // Filter out all metadata columns
+                view.columns = $.grep(view.columns, function(c, i)
+                    { return c.id != -1; });
+                // Sort by position, because the attribute is ignored when
+                // saving columns
+                view.columns.sort(function(a, b)
+                    { return a.position - b.position; });
+                var cleanColumn = function(col)
+                {
+                    delete col.dataIndex;
+                    delete col.options;
+                    delete col.dropDown;
+                };
+                // Clean out dataIndexes, and clean out child metadata columns
+                $.each(view.columns, function(i, c)
+                {
+                    cleanColumn(c);
+                    if (c.childColumns)
+                    {
+                        c.childColumns = $.grep(c.childColumns, function(cc, j)
+                            { return cc.id != -1; });
+                        $.each(c.childColumns, function(j, cc)
+                            { cleanColumn(cc); });
+                    }
+                });
+            }
+            else
+            {
+                view.columns = null;
+            }
+            delete view['grants'];
+            view.originalViewId = view.id;
+            return view;
+        };
+
         this.getTempView = function(tempView)
         {
             // If we're doing progressive loading, set up a temporary
             //  view, then construct a query with a special URL and
             //  appropriate params to get rows back for the specified view
-            // Don't include columns since we want them all back, and we
-            //  don't need to send all that extra data over or modify columns
-            //  accidentally
-            tempView = tempView || $.extend({}, meta.view,
-                    {originalViewId: meta.view.id, columns: null});
-            delete tempView.sortBys;
-            delete tempView.viewFilters;
+            // Only include columns if this view is grouped; otherwise, don't
+            // include columns since we want them all back, and we don't need
+            // to send all that extra data over or modify columns accidentally
+            tempView = tempView || this.getViewCopy(this.isGrouped());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(

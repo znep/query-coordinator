@@ -33,7 +33,9 @@ blist.datasetMenu.menuHandler = function(event)
                         (o.ascending ? 'asc' : 'desc');
                 });
                 if (sorts.length > 0) { params.push('sorts=' + sorts.join(',')); }
+                else { params.push('sorts='); }
             }
+            else { params.push('sorts='); }
 
             if (model.isGrouped())
             {

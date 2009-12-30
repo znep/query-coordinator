@@ -356,8 +356,7 @@ class View < Model
   end
 
   def datatypes_match(column, datatypes)
-    dt = column.is_group_aggregate? && column.format.grouping_aggregate == 'count' ?
-      'number' : column.client_type
+    dt = column.client_type
     datatypes.is_a?(Array) && datatypes.include?(dt) || dt == datatypes
   end
 

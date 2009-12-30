@@ -2556,8 +2556,6 @@
                     // Standard cell
                     var type = blist.data.types[mcol.type] ||
                         blist.data.types.text;
-                    if (mcol.grouping_aggregate == 'count')
-                    { type = blist.data.types.number; }
 
                     var renderer = mcol.renderer || type.renderGen;
                     var invalidRenderer = blist.data.types.invalid.renderGen;
@@ -3094,7 +3092,7 @@
                 html.push(
                     '<div class="blist-th ',
                     !i ? 'blist-th-first ' : '',
-                    col.type,
+                    (col.originalType || col.type),
                     ' ',
                     getColumnClass(col),
                     cls,

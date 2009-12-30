@@ -665,7 +665,7 @@ $(function ()
         requestDataCallback: function($form, name)
         {
             // Get the view with columns
-            var view = $('#dataGrid').datasetGrid().getViewCopy(true);
+            var view = $('#dataGrid').blistModel().getViewCopy(true);
             view.name = name;
             return $.json.serialize(view);
         },

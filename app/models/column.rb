@@ -31,7 +31,7 @@ class Column < Model
 
     attributes = Column.to_core(attributes)
 
-    if attributes[:dataTypeName] == "nested_table"
+    if attributes[:originalDataTypeName] == "nested_table"
       attributes["childColumns"] = [
           Column.to_core({"type" => "text", "width" => 100,"name" => "Untitled"})
       ]
@@ -198,12 +198,12 @@ class Column < Model
       :name => js["name"],
       :description => js["description"],
       :width => js["width"],
-      :dataTypeName => js["type"],
+      :originalDataTypeName => js["type"],
       :dropDownList => js['dropDownList']
     }
 
     if js["type"] == "richtext"
-      col[:dataTypeName] = "text"
+      col[:originalDataTypeName] = "text"
       col[:format] ||= {}
       col[:format]["formatting_option"] = "Rich"
     end

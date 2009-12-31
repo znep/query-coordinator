@@ -1,15 +1,15 @@
 <% dialog_content('signup', "signupBox") do %>
   <div class='header'>
-    <h1><%= th.company %></h1>
+    <h1><%= CurrentDomain.strings.company %></h1>
     <a href='#close_dialog' class='close' title='Close'>Close</a>
   </div>
 
   <div class='mainContent'>
     <div class='title clearfix'>
-      <h2><strong>We're glad you want to join <%= th.company %>!</strong></h2>
+      <h2><strong>We're glad you want to join <%= CurrentDomain.strings.company %>!</strong></h2>
     </div>
 
-    <h3>Create a new <%= th.company %> ID</h3>
+    <h3>Create a new <%= CurrentDomain.strings.company %> ID</h3>
     <%= render :partial => "accounts/signup_form", :locals => {:is_modal => true} %>
   </div>
 <% end %>

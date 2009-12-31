@@ -126,11 +126,11 @@ $(function ()
     {
         if ($(window).height() != cachedWindowHeight)
         {
-            $(".infoContent").blistStretchWindow();
+            $(".outerContent").blistStretchWindow();
             cachedWindowHeight = $(window).height();
         }
     });
-    $(".infoContent").blistStretchWindow();
+    $(".outerContent").blistStretchWindow();
 
     $("#welcome .welcome-titlebar a").click(function(event)
     {

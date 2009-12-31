@@ -1,67 +1,47 @@
 /*** GENERAL ***/
 
 a {
-    color: #<%= th.link_fg %>;
+    color: #<%= CurrentDomain.theme.colors.link %>;
 }
 
 <% 5.times do |level| %>
 h<%= level + 1 %>  {
-    color: #<%= th.header_fg[level] || '333333' %>;
+    color: #<%= CurrentDomain.theme.colors.header[level] || '333333' %>;
 }
 <% end %>
 
 .bodyInterior {
-    border-top-color: #<%= th.top_border_bg %>;
+    border-top-color: #<%= CurrentDomain.theme.colors.header.line %>;
 }
 
 /*** OUTER CHROME ***/
 #mainNav li,
 #mainNav li a span
 {
-    background-image: <%= main_button_inactive_bg %>;
+    background-image: <%= box :h => 35, :r => 10, :ry => 10, :fc => CurrentDomain.theme.colors.header.inactive, :bc => CurrentDomain.theme.colors.header.background, :s => 'h' %>;
 }
 
 #mainNav li.home .subNav li,
 #mainNav li.home .subNav li a span
 {
     background-image: none;
-    background-color: #<%= last_color(th.main_button_bg) %>;
+    background-color: #<%= CurrentDomain.theme.colors.header.inactive.last[:color] %>;
 }
 body.home #mainNav li.home .subNav li,
 body.home #mainNav li.home .subNav li a span
 {
     background-image: none;
-    background-color: #<%= last_color(th.main_button_active_bg) %>;
+    background-color: #<%= CurrentDomain.theme.colors.header.active.last[:color] %>;
 }
 
 #mainNav li.home .subNav li.last
 {
-    background: <%= main_submenu_last_bg(last_color(th.main_button_bg)) %> bottom right;
+    background: <%= main_submenu_last_bg(CurrentDomain.theme.colors.header.inactive.last[:color]) %> bottom right;
 }
 body.home #mainNav li.home .subNav li.last
 {
-    background: <%= main_submenu_last_bg(last_color(th.main_button_active_bg)) %> bottom right;
+    background: <%= main_submenu_last_bg(CurrentDomain.theme.colors.header.active.last[:color]) %> bottom right;
 }
-
-<% if !th.home_tab_width.nil? %>
-/*** Makes the outer chrome tabs wider  ***/
-body #header #mainNav
-{
-  width: <%= th.home_tab_width * 3 + 0.3 %>em;
-}
-
-body #header #mainNav li
-{
-    width: <%= th.home_tab_width %>em;
-}
-<% end %>
-
-<% if !th.logo_vertical_offset.nil? %>
-<%= th.body_class %> #mainLogo
-{
-  top: <%= th.logo_vertical_offset %>;
-}
-<% end %>
 
 body.home #mainNav li.home,
 body.home #mainNav li.home a span,
@@ -73,30 +53,30 @@ body.discover #mainNav li.discover,
 body.home #mainNav li.home .subNav li:hover,
 body.home #mainNav li.home .subNav li:hover a span
 {
-    background-image: <%= main_button_active_bg %>;
+    background-image: <%= box :h => 35, :r => 10, :ry => 10, :fc => CurrentDomain.theme.colors.header.active, :bc => CurrentDomain.theme.colors.header.background, :s => 'h' %>;
 }
 
 #mainNav li.home .subNav li.last:hover
 {
-    background-image: <%= main_submenu_last_bg(th.main_button_active_bg) %>;
+    background-image: <%= main_submenu_last_bg(CurrentDomain.theme.colors.header.active) %>;
 }
 
 #mainLogo a
 {
-    background-image: <%= th.image :logo %>;
-    height: <%= th.logo_height %>px;
-    width: <%= th.logo_width %>px;
+    background-image: <%= theme_image(CurrentDomain.theme.images.logo) %>;
+    height: <%= CurrentDomain.theme.images.logo.height %>;
+    width: <%= CurrentDomain.theme.images.logo.width %>;
 }
 
 /*** DIALOG BOXEN ***/
 .dialogBox .header
 {
-    background-color: #<%= th.highlight_color %>;
+    background-color: #<%= CurrentDomain.theme.colors.accent %>;
 }
 
 .dialogBox .header h1 
 {
-    background-image: <%= th.image :dialog_logo %>;
+    background-image: <%= theme_image(CurrentDomain.theme.images.dialog_logo) %>;
 }
 
 /*** CAROUSEL ***/
@@ -105,139 +85,122 @@ body.home #mainNav li.home .subNav li:hover a span
 .pageBlockHeaderCarousel .carouselOuter,
 .pageBlockHeaderCarousel .carouselInner
 {
-    background-image: <%= carousel_bg %>;
+    background-image: <%= box :h => 235, :r => 5, :bc => 'ffffff', :fc => CurrentDomain.theme.colors.carousel.background, :s => 'h' %>;
 }
 
 /*** META TABS ***/
 .infoContentOuter.listContainer.expanded .infoContentInner,
 .infoContentOuter.listContainer .infoContent
 {
-    background-image: <%= expanded_list_bg %>;
+    background-image: <%= box :h => 3, :ry => 1, :rh => 1, :w => 150, :bc => CurrentDomain.theme.colors.accent %>;
 }
 
 .infoContentOuter.listContainer .infoContent dt.hover
 {
-    background-image: <%= background_summary_list_title %>;
+    background-image: <%= box :h => 19, :w => 19, :r => 9, :rw => 9, :bc => CurrentDomain.theme.colors.accent, :fc => CurrentDomain.theme.colors.summary.hover %>;
 }
 
-.infoContentOuter
+.infoContentOuter,
+.metadataPane .summaryTabs li,
+.singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter
 {
-    border-color: #<%= th.highlight_color %>;
+    border-color: #<%= CurrentDomain.theme.colors.accent %>;
 }
 
 .metadataPane .summaryTabs 
 {
-    border-bottom-color: #<%= th.highlight_color %>;
-}
-
-.metadataPane .summaryTabs li 
-{
-    border-color: #<%= th.highlight_color %>;
-}
-
-.singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter { 
-    border-color: #<%= th.highlight_color %>;
+    border-bottom-color: #<%= CurrentDomain.theme.colors.accent %>;
 }
 
 .infoContentOuter.listContainer .infoContent
 {
-    background-image: <%= bottom_left_dark_bg %>;
+    background-image: <%= box :w => 18, :h => 18, :r => 9, :rw => 9, :ry => 9, :bc => CurrentDomain.theme.colors.inactive, :fc => CurrentDomain.theme.colors.accent %>;
 }
 .infoContentOuter .infoContentInner
 {
-    background-image: <%= summary_bottom_left_bg %>;
+    background-image: <%= box :w => 18, :h => 18, :fc => CurrentDomain.theme.colors.summary.active, :bc => CurrentDomain.theme.colors.summary.inactive, :r => 9, :rw => 9, :ry => 9, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
 }
 
 .infoContentOuter .infoContentWrapper
 {
-    background-image: <%= summary_bottom_right_bg %>;
+    background-image: <%= box :w => 18, :h => 18, :fc => CurrentDomain.theme.colors.summary.active, :bc => CurrentDomain.theme.colors.summary.inactive, :r => 9, :rx => 9, :rw => 9, :ry => 9, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
 }
 
 .metadataPane .summaryTabs li .tabOuter,
 .metadataPane .summaryTabs li .tabInner
 {
-    background-image: <%= summary_tab_bg %>;
+    background-image: <%= box :h => 23, :r => 3, :rh => 20, :fc => CurrentDomain.theme.colors.summary.inactive, :bc => CurrentDomain.theme.colors.summary.inactive, :ew => 1, :ec => CurrentDomain.theme.colors.accent, :s => 'h' %>;
 }
 
 .metadataPane .summaryTabs li.active .tabOuter,
 .metadataPane .summaryTabs li.active .tabInner
 {
-    background-image: <%= summary_tab_active_bg %>;
+    background-image: <%= box :h => 23, :r => 3, :rh => 20, :fc => CurrentDomain.theme.colors.summary.active, :bc => CurrentDomain.theme.colors.summary.inactive, :ew => 1, :ec => CurrentDomain.theme.colors.accent, :s => 'h' %>;
 }
 
 /*** PUBLISH TOOL ***/
-<%= th.body_class %> #publishContent .publishHeader .publishCodeWrapper
+#publishContent .publishHeader .publishCodeWrapper
 {
-    background-color: #<%= th.highlight_color %>;
+    background-color: #<%= CurrentDomain.theme.colors.accent %>;
 }
 
 #publishOptionsPane .infoContentRightBg
 {
-    background: <%= background_expanded_list %> -10px 0 repeat-y;
+    background: <%= box :h => 3, :w => 150, :rh => 1, :ry => 1, :bc => CurrentDomain.theme.colors.accent %> -10px 0 repeat-y;
 }
 
 /*** DATASET BUTTON BAR ***/
 #lensBody .headerBar .staticLink:hover,
-a.dropdownLink:hover .midWrapper
+a.dropdownLink:hover .midWrapper,
+.filterDatasetWrapper .filterTableHeaderRow
 {
-    background: <%= button_hover_slice_bg %> repeat-x;
-}
-
-a.dropdownLink:hover
-{
-    background-image: <%= button_hover_endcap_bg %>;
-}
-
-a.dropdownLink:hover .outerWrapper
-{
-    background-image: <%= button_hover_endcap_bg %>;
-}
-
-a.dropdownLink.clicked
-{
-    background-image: <%= button_activated_endcap_bg %>;
-}
-
-a.dropdownLink.clicked .outerWrapper
-{
-    background-image: <%= button_activated_endcap_bg %>;
+    background: <%= box :h => 24, :w => 3, :rx => 1, :rw => 1, :fc => CurrentDomain.theme.colors.accent %> repeat-x;
 }
 
 a.dropdownLink.clicked .midWrapper
 {
-    background-image: <%= button_activated_slice_bg %>;
+    background: <%= box :h => 24, :w => 3, :rx => 1, :rw => 1, :fc => CurrentDomain.theme.colors.buttons.active %> repeat-x;
 }
 
-.filterDatasetWrapper .filterTableHeaderRow
+a.dropdownLink:hover,
+a.dropdownLink:hover .outerWrapper
 {
-  background: <%= button_hover_slice_bg %>;
-  background-repeat: repeat-x;
+    background-image: <%= box :h => 24, :w => 5, :fc => CurrentDomain.theme.colors.buttons.hover %>;
+}
+
+a.dropdownLink.clicked,
+a.dropdownLink.clicked .outerWrapper
+{
+    background-image: <%= box :h => 24, :w => 5, :fc => CurrentDomain.theme.colors.buttons.active %>;
 }
 
 /*** PROFILE PAGE ***/
 #profile #welcome .welcomeTL
+#profile #welcome .welcomeTR
+#profile #welcome .welcome-titlebar
 {
-    background: <%= welcome_top %>  no-repeat;
+    background: <%= box :rh =>34, :s => 'h', :h => 44, :r => 10, :fc => CurrentDomain.theme.colors.welcome.title, :ec => CurrentDomain.theme.colors.welcome.border, :ew => 1 %>  no-repeat;
+    zoom: 1;    
+}
+
+#profile #welcome .welcomeTL
+{
     padding-left: 10px;
     zoom: 1;
 }
 #profile #welcome .welcomeTR
 {
-    background: <%= welcome_top %>  no-repeat;
     background-position: right -68px;
     padding-right: 10px;
-    zoom: 1;
 }
 #profile #welcome .welcome-titlebar
 {
-    background: <%= welcome_top %>  repeat-x;
     background-position: right -34px;
     position: relative;
-    zoom: 1;
 }
 #profile #welcome .welcome-titlebar h1
 {
-    color: white;
+    color: #fff;
     font-size: 1.4em;
     font-weight: bold;
     padding: 0.5em 1em;
@@ -255,23 +218,24 @@ a.dropdownLink.clicked .midWrapper
     height: 16px;
 }
 #profile #welcome .welcomeBL
+#profile #welcome .welcomeBR
+#profile #welcome .welcome-content
+{
+    background: <%= box :ry => 10, :rh => 78, :s => 'h', :h => 88, :r => 10, :fc => CurrentDomain.theme.colors.welcome.body, :ec => CurrentDomain.theme.colors.welcome.border, :ew => 1 %>  no-repeat;    
+    height: 78px;
+}
+#profile #welcome .welcomeBL
 {
     border-top: 1px solid #9ba5a1;
-    background: <%= welcome_bottom %>  no-repeat;
-    height: 78px;
     padding-left: 10px;
 }
 #profile #welcome .welcomeBR
 {
-    background: <%= welcome_bottom %> no-repeat;
-    height: 78px;
     background-position: right -156px;
     padding-right: 10px;
 }
 #profile #welcome .welcome-content
 {
-    background: <%= welcome_bottom %> repeat-x;
-    height: 78px;
     background-position: right -78px;
 }
 

@@ -79,6 +79,10 @@ class AccountsController < ApplicationController
     if request.post?
       req = Net::HTTP::Post.new('/users')
       req.set_form_data({'method' => 'forgotPassword', 'login' => params[:login]})
+
+      # pass/spoof in the current domain cname
+      req['Host'] = CurrentDomain.cname
+
       result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
         http.request(req)
       end
@@ -105,6 +109,10 @@ class AccountsController < ApplicationController
                          'uid' => params[:uid], 
                          'reset_code' => params[:reset_code], 
                          'password' => params[:password]})
+
+      # pass/spoof in the current domain cname
+      request['Host'] = CurrentDomain.cname
+
       result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
         http.request(req)
       end

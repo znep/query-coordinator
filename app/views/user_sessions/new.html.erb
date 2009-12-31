@@ -1,22 +1,24 @@
 <% content_for :head do %>
-  <title><%= th.site_title %></title>
+  <title><%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% dialog_content('login', "loginBox") do %>
   <div class='header'>
-    <h1><%= th.company %></h1>
+    <h1><%= CurrentDomain.strings.company %></h1>
   </div>
 
   <div class='mainContent'>
     <div class='title clearfix'>
-      <h2>Sign in using your <%= th.company %> ID</h2> 
+      <h2>Sign in using your <%= CurrentDomain.strings.company %> ID</h2> 
     </div>
 
     <%= render(:partial => 'login') %>
 
-    <div class='footer clearfix'>
-      <%= render :partial => "rpx/buttons" %>
-    </div>
+    <%- if module_enabled? :openid_login -%>
+      <div class='footer clearfix'>
+        <%= render :partial => "rpx/buttons" %>
+      </div>
+    <%- end -%>
   </div>
 <% end %>
 

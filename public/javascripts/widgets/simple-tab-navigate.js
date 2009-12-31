@@ -49,6 +49,12 @@ $.extend($.simpleTabNavigator, {
         activateTab: function(tab) {
             var tabNavigator = this;
             var $tab = $(tab);
+
+            // Get out of here if the tab has been marked disabled
+            if ($tab.hasClass("disabled")) {
+              return;
+            }
+
             var $tabLink = $tab.find("a");
             var $panel = $(tabNavigator.settings.tabMap[$tab.attr("id")]);
 

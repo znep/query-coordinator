@@ -14,11 +14,11 @@ module CoreServer
     end
 
     def get_request(path, custom_headers = {})
-      result_body = cache.read(path)
+      result_body = cache.read("#{CurrentDomain.cname}:#{path}")
       if result_body.nil?
         result_body = generic_request(Net::HTTP::Get.new(path),
                                       nil, custom_headers).body
-        cache.write(path, result_body)
+        cache.write("#{CurrentDomain.cname}:#{path}", result_body)
       end
 
       result_body
@@ -41,29 +41,29 @@ module CoreServer
         'file' => UploadIO.new(file, file.content_type, File.basename(file.original_path))
       generic_request(req).body
     end
-    
+
     # For creating tweetsets only
     def create_tweetset(query, name, for_user, follow = false)
       request = Net::HTTP::Post.new('/views.json')
       request.basic_auth APP_CONFIG['tweetsets_user'], APP_CONFIG['tweetsets_password']
-      
+
       dhash = {:name => name, :tags => ['tweetset', query], :category => APP_CONFIG['tweetsets_category']}
       dhash[:tags] << 'live-updates' if follow
       dhash[:tags].insert(0, for_user.email.tr("A-Za-z@", "N-ZA-Mn-za-m#").reverse) if for_user
-      
+
       request.body = dhash.to_json
       request.content_type = "application/json"
 
       @request_count += 1
-      
+
       result = log(request) do
         Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
           http.request(request)
         end
       end
-      
+
       raise CoreServer::ResourceNotFound.new(result) if result.is_a?(Net::HTTPNotFound)
-      
+
       json = JSON.parse(result.body) unless result.nil?
       json['id']
     end
@@ -81,7 +81,7 @@ module CoreServer
         result = nil
         ms = Benchmark.ms { result = yield }
         @runtime += ms
-        log_info(request.path, ms)
+        log_info("#{CurrentDomain.cname}:#{request.path}", ms)
         result
       else
         log_info(request.path, 0)
@@ -107,6 +107,9 @@ module CoreServer
           request.add_field 'Cookie', "socrata_session=#{server_session_cookie}"
         end
       end
+
+      # pass/spoof in the current domain cname
+      request['Host'] = CurrentDomain.cname
 
       custom_headers.each { |key, value| request[key] = value }
 

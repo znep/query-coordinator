@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "community-activities-screen" %>
-  <title><%= th.site_title %></title>
+  <title><%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 
@@ -10,9 +10,9 @@
       <div class="fullPageContent">
       
         <div class="activitiesHeader clearfix">
-          <h1>The <%= th.company %> Community Feed</h1>
+          <h1>The <%= CurrentDomain.strings.company %> Community Feed</h1>
           <p class="communityBackLink">
-            <%= link_to("Back to the #{th.company} community", community_path) %>
+            <%= link_to("Back to the #{CurrentDomain.strings.company} community", community_path) %>
           </p>
         </div>
       

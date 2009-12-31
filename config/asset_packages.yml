@@ -166,6 +166,8 @@ javascripts:
   - widgets/text-prompt
   - plugins/date
   - plugins/ajaxupload.3.0
+- homes-show:
+  - screens/home-screen
 - profiles-show:
   - plugins/jquery.tablesorter
   - plugins/ajaxupload.3.0

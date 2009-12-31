@@ -4,8 +4,8 @@
 class ApplicationController < ActionController::Base
   include SslRequirement
 
-  before_filter :hook_auth_controller,  :create_core_server_connection, :adjust_format,
-    :patch_microsoft_office, :require_user, :set_user, :configure_theme
+  before_filter :hook_auth_controller,  :create_core_server_connection, :set_web_property,
+    :adjust_format, :patch_microsoft_office, :require_user, :set_user
   helper :all # include all helpers, all the time
   helper_method :current_user
   helper_method :current_user_session
@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
     @is_marketing_page = false
   end
 
-  hide_action :current_user, :current_user_session, :prerendered_fragment_for
+  hide_action :current_user, :current_user_session, :prerendered_fragment_for, :require_module!, :require_that
   def current_user
     @current_user ||= current_user_session ? current_user_session.user : nil
   end
@@ -54,16 +54,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def require_module!(name)
+    render_404 unless CurrentDomain.feature?(name.to_s) &&
+                      CurrentDomain.module_available?(name.to_s)
+  end
+
+  def require_that(enabled)
+    render_404 unless enabled
+  end
+
   # Patch the page caching support to handle our dynamic domain support.
   # (ie: the cache ends up in a directory based on the locale set via
   # the configure_theme parameter, and Apache uses the domain name of the
   # request to determine which directory to serve.)
   def self.cache_page(content, path)
-    super(content, Theme.active + path)
+    super(content, CurrentDomain.cname + path)
   end
 
   def self.expire_page(path)
-    super(Theme.active + path)
+    super(CurrentDomain.cname + path)
   end
 
 protected
@@ -73,6 +82,15 @@ protected
 
   def render_500
     render_error(500)
+  end
+
+  # Render a 404 error, or redirect to '/solution' if upsell is enabled
+  def upsell_or_404
+    if CurrentDomain.upsell?
+      redirect_to '/solution'
+    else
+      render_404
+    end
   end
 
   # We use a custom page_cache_directory based on the theme of the site.
@@ -140,10 +158,13 @@ private
     end
   end
 
-  def configure_theme
-    logger.info "Request domain: #{request.host}, Current locale: #{I18n.locale}"
-
-    Theme.configure request
+  def set_web_property
+    unless CurrentDomain.set(request.host)
+      # We failed at trying to find the current domain.
+      # Log it, then just redir them to Socrata.
+      notify_hoptoad :error_message => "Attempted access with CNAME #{request.host}, which we have no record of."
+      redirect_to 'http://socrata.com/'
+    end
   end
 
   # Custom logic for rendering a 404 page with our pretty templates.
@@ -158,7 +179,6 @@ private
   end
 
   def render_error(code)
-    configure_theme
     respond_to do |format|
       format.html { render :template => "errors/error_#{code}", :layout => 'main', :status => code }
       format.all { render :nothing => true, :status => code }

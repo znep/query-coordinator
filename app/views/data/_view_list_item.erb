@@ -2,7 +2,7 @@
 <%- view = view_list_item -%>
 
 <li class="viewListItem clearfix">
-  
+
   <div class="itemHeader clearfix">
     <div class="itemTitle">
       <div class="itemTitleInner clearfix">
@@ -15,12 +15,18 @@
       </div>
     </div>
     <ul class="itemMeta clearfix">
-      <li class="ratingContainer"><strong><%= get_blist_rating_html(view) %> <%= pluralize(view.totalTimesRated, "Rating") %></strong></li>
+      <% if module_enabled?(:allow_comments) %>
+        <li class="ratingContainer"><strong><%= get_blist_rating_html(view) %> <%= pluralize(view.totalTimesRated, "Rating") %></strong></li>
+      <% end %>
+
       <li>Visits <strong><%= view.viewCount %></strong></li>
-      <li class="last">Comments <strong><%= view.numberOfComments %></strong></li>
+
+      <% if module_enabled?(:allow_comments) %>
+        <li class="last">Comments <strong><%= view.numberOfComments %></strong></li>
+      <% end %>
     </ul>
   </div>
-  
+
   <div class="itemBody">
     <div class="itemContent">
       <%- unless (view.category == "") -%>

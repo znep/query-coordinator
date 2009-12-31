@@ -88,7 +88,7 @@ module BlistsHelper
 
     filters = (theme.nil? || theme[:menu][:more_views]) ? view.filters : []
 
-    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{th.company} - ")
+    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{CurrentDomain.strings.company} - ")
     seo_path = "#{request.protocol + request.host_with_port + view.href}"
     short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') +
       view.short_href}"
@@ -156,11 +156,11 @@ module BlistsHelper
       "#{t(:blist_name).titleize} Analytics...",
       'class' => 'adv_analytics statistics',
       'if' => (theme.nil? || theme[:menu][:adv_analytics]),
-      'href' => (current_user && current_user.can_access_premium_on?(view)) ?
-        "#{view.href}/stats" : "/popup/stats",
-      'modal' => !is_widget &&
-        (!current_user || !current_user.can_access_premium_on?(view)),
-      'external' => is_widget
+      'href' => "#{view.href}/stats",
+      'external' => is_widget,
+      'module_enabled' => 'advanced_metrics',
+      'owner_item' => true,
+      'upsell' => { 'href' => '/popup/stats', 'modal' => true }
       },
 
     'basic_analytics' => {'text' => "Basic #{t(:blist_name).titleize} Analytics...",
@@ -512,7 +512,7 @@ module BlistsHelper
     end
 
     # generate a new tracking ID param set
-    tracking_params = { :cur => ActiveSupport::SecureRandom.base64(9).slice(0..10) }
+    tracking_params = { :cur => ActiveSupport::SecureRandom.base64(9).slice(0..10).gsub(/\//, '-').gsub(/\+/, '_') }
     tracking_params[:from] = from_tracking_id unless from_tracking_id.blank?
 
     root_path = request.protocol + request.host_with_port
@@ -525,13 +525,13 @@ module BlistsHelper
     end
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
-                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : CGI.escape(variation)}?" +
+                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
                       "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
-        "Powered by #{th.company}</a></p>"
+        "Powered by Socrata</a></p>"
     end
     embed_template += "</div>"
   end

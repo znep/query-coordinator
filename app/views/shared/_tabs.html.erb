@@ -1,21 +1,37 @@
 <ul class='tabList'>
-  <li class='home even'><div class='wrapper'>
-    <%= link_to 'Home', home_path %>
-  </div></li>
-  <li class='blists'><div class='wrapper'>
-    <%= link_to t(:blists_name).titleize, blists_path %>
-  </div></li>
-  <li class='contacts even'><div class='wrapper'>
-    <%= link_to 'Friends', contacts_path %>
-  </div></li>
-  <li class='profile'><div class='wrapper'>
-    <%= link_to "Profile", current_user.href %>
-  </div></li>
-  <li class='approval even'><div class='wrapper'>
-    <%- if current_user.are_comments_moderated? -%>
-      <%= link_to 'Approvals', approval_path %>
-    <%- else -%>
-      <%= link_to 'Approvals', '/popup/premium', :rel => "modal" %>
-    <%- end -%>
-  </div></li>
+  <%# Everybody gets /home %>
+  <li class='home even'>
+    <div class='wrapper'><%= link_to 'Home', home_path %></div>
+  </li>
+
+  <%# Only show the datasets subtab if they're a member of the org or if the
+  org has :community_creation %>
+  <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
+    <li class='blists'>
+      <div class='wrapper'><%= link_to t(:blists_name).titleize, blists_path %></div>
+    </li>
+  <% end %>
+
+  <%# Only show "Friends" if they have community or are a member of the org %>
+  <% if (module_enabled?(:community_module) || CurrentDomain.member?(current_user)) %>
+    <li class='contacts even'><div class='wrapper'>
+      <%= link_to 'Friends', contacts_path %>
+    </div></li>
+  <% end %>
+
+  <%# "Profile" is always displayed %>
+  <li class='profile'>
+    <div class='wrapper'><%= link_to "Profile", current_user.href %></div>
+  </li>
+
+  <%# Only showed to org members when the module is enabled %>
+  <%- if (CurrentDomain.member?(current_user) && module_enabled?(:publisher_comment_moderation)) -%>
+    <li class='approval even'>
+      <div class='wrapper'><%= link_to 'Approvals', approval_path %></div>
+    </li>
+  <%- elsif upsell?-%>
+    <li class='approval even'>
+      <div class='wrapper'><%= link_to 'Approvals', '/popup/premium', :rel => "modal" %></div>
+    </li>
+  <%- end -%>
 </ul>

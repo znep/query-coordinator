@@ -1,0 +1,2 @@
+class Accounttier < Model
+end

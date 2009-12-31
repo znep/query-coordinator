@@ -1,16 +1,14 @@
 <%# locals: view, page_single  %>
-<%- 
+<%-
   isDuplicateEnabled = false
--%>
-<%- 
   expander_class = page_single ? "expander expanded" : "expander" 
   div_shown = page_single ? "style='display:block;'" : ""
-  
+
   is_owner = (current_user && current_user.is_owner?(view))
 -%>
 <div class="header">
   <ul class="summaryTabs clearfix">
-    <%- if !@view.hide_comments? -%>
+    <%- if module_enabled?(:allow_comments) -%>
       <li id="tabComments" class="comments active">
         <div class="tabOuter"><div class="tabInner active">
           <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
@@ -44,8 +42,8 @@
         <a href="#activity">Activity</a>
       </div></div>
     </li>
-    <li id="tabSummary" class="<%= @view.hide_comments? ? "active" : "" %>">
-      <div class="tabOuter"><div class="tabInner <%= @view.hide_comments? ? "active" : "" %>">
+    <li id="tabSummary" class="<%= module_enabled?(:allow_comments) ? "" : "active" %>">
+      <div class="tabOuter"><div class="tabInner <%= module_enabled?(:allow_comments) ? "" : "active" %>">
         <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
         <a href="#summary">Summary</a>
       </div></div>
@@ -55,7 +53,7 @@
 
 
 <%# *** START: SUMMARY *** %>
-<div class="infoContentOuter singleInfoSummary listContainer <%= page_single ? ' expanded' : '' %> <%= @view.hide_comments? ? "active" : "" %>">
+<div class="infoContentOuter singleInfoSummary listContainer <%= page_single ? ' expanded' : '' %> <%= module_enabled?(:allow_comments) ? "" : "active" %>">
   <div class="infoContentHeader clearfix">
     <%= render(:partial => "blists/info_summary_header",
                 :locals => {:view => view, :page_single => page_single, 
@@ -89,7 +87,7 @@
 
 
 <%# *** START: COMMENTS *** %>
-<%- if !@view.hide_comments? -%>
+<%- if module_enabled?(:allow_comments) -%>
   <div class="infoContentOuter singleInfoComments listContainer
     active <%= page_single ? 'expanded' : '' %>">
     <div class="infoContentHeader clearfix">
@@ -128,8 +126,9 @@
     <%# Not supported
     <h2 class="panelHeader">3212 total views</h2>
     %>
-    
-    <%- if(current_user && current_user.can_access_premium_on?(view)) -%>
+
+    <%# Only members of the same org can access the premium publisher %>
+    <%- if (CurrentDomain.member?(current_user) && module_available?(:sdp_customizer)) -%>
       <ul class="headerActions actionButtons">
         <li>
           <a href="<%= "#{view.href}/publish" %>" class="arrowButton">
@@ -137,13 +136,22 @@
           </a>
         </li>
       </ul>
+    <%- elsif upsell? -%>
+      <ul class="headerActions actionButtons">
+        <li>
+          <a href="/popup/premium" rel="modal" class="arrowButton">
+            Create a Custom Data Player
+          </a>
+        </li>
+      </ul>
     <%- end -%>
   </div>
+
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
       <%= render( :partial => "blists/meta_tab_publishing", 
                   :locals => {:view => view, :in_widget => false,
-                              :customization_id => "", :cur_id => ""}) %>
+                              :customization_id => CurrentDomain.default_widget_customization, :cur_id => ""}) %>
     </div>
   </div></div>
 </div>

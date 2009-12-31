@@ -5,7 +5,7 @@ class DataPolicyController < ApplicationController
 
   def index
     if !CurrentDomain.cname.match /seattle/
-      redirect_to '/login'
+      render_404
     end
   end
 end

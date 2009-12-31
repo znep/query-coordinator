@@ -52,6 +52,9 @@ theme:
       source: /stylesheets/images/common/favicon.ico
       type: :static
   urls:
+    signup:
+    - { text: Terms of Service, href: /terms-of-service }
+    - { text: Privacy Policy, href: /privacy }
     header:
     - { text: About Socrata, href: http://www.socrata.com/about }
     - { text: Help, href: http://www.getsatisfaction.com/socrata }

@@ -156,7 +156,8 @@ module BlistsHelper
       'if' => (theme.nil? || theme[:menu][:basic_analytics]),
       'owner_item' => true,
       'href' => "#{view.href}/stats",
-      'external' => !is_widget
+      'external' => !is_widget,
+      'modal' => is_widget
       },
 
     'about' => {'text' => "About this #{t(:blist_name).titleize}...",

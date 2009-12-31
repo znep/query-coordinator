@@ -56,7 +56,7 @@ blist.namespace.fetch('blist.display');
 blist.display.name = '#{name}';
 blist.display.type = '#{type}';
 blist.display.viewId = '#{@view.id}';
-blist.display.options = #{@options};
+blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit};
 END
 

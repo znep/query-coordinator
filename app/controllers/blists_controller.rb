@@ -115,6 +115,10 @@ class BlistsController < ApplicationController
     # template on behalf of the user the first time we load this page and then
     # automatically load the first template for them after that.
     # Eventually, we should be by default fetching the org's default template.
+
+    # TODO[ORG SETUP]:
+    # When we have an orgs setup process, move this into there instead of here
+    # so that orgs don't default to the basic level theme.
     @widget_customizations = WidgetCustomization.find
     if @widget_customizations.empty?
       @widget_customization = WidgetCustomization.create({

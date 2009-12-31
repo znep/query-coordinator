@@ -71,10 +71,12 @@
       <%= render(:partial => "shared/current_user_tile",
         :locals => { :user => current_user }) %>
       <ul class="actionButtons blockList clearfix">
-        <li>
-          <%= link_to("Find Friends", community_path,
-              :title => "Search for other users") %>
-        </li>
+        <%- if module_enabled?(:community_module) -%>
+          <li>
+            <%= link_to("Find Friends", community_path,
+                :title => "Search for other users") %>
+          </li>
+        <%- end -%>
         <li>
           <%= link_to("Invite Others", invite_path, :title => "Invite others to try #{CurrentDomain.strings.company}", :rel => "modal") %>
         </li>

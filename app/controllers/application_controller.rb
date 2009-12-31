@@ -97,7 +97,7 @@ protected
   # The builtin rails page_cache_file function is broken with this type of
   # implementation...
   def self.page_cache_file(path)
-    if path == I18n.locale || path == I18n.locale + '/'
+    if path == CurrentDomain.cname || path == CurrentDomain.cname + '/'
       name = path += "/index"
     else
       name = URI.unescape(path.chomp('/'))

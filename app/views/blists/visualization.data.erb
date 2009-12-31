@@ -12,6 +12,7 @@
   <div class='column'>
 
     <div class='section common'>
+      <input type='hidden' name='view_query' value='<%= @view.query.to_json %>' />
       <%- viz_types = View.visualization_config.reject {|k,v|
           v['hidden'] == true || !@view.can_create_visualization_type?(k, @is_edit)}.
           sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
@@ -78,8 +79,9 @@
             <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
-            <option value='<%= c.id %>' <%= c.id == cur_id ?
-              "selected='selected'" : '' %>><%= c.name %></option>
+            <option format='<%= c.format.to_json %>'
+              value='<%= c.id %>' <%= c.id == cur_id ?
+                "selected='selected'" : '' %>><%= c.name %></option>
             <%- end -%>
           </select>
         </div>
@@ -163,8 +165,9 @@
                   <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
-                <option value='<%= c.id %>' <%= c.id == cur_id ?
-                  "selected='selected'" : '' %>><%= c.name %></option>
+                <option format='<%= c.format.to_json %>'
+                  value='<%= c.id %>' <%= c.id == cur_id ?
+                    "selected='selected'" : '' %>><%= c.name %></option>
                 <%- end -%>
               </select>
             </div>
@@ -388,8 +391,10 @@
               var id = getValue($t);
               if (id !== '')
               {
+                  var $c = $t.find(':selected');
                   fixedCols[parseInt(splitN[2])] = {id: id,
-                    name: $t.find(':selected').text(), hidden: false};
+                    format: $.json.deserialize($.htmlUnescape($c.attr('format'))),
+                    name: $c.text(), hidden: false};
               }
           }
 
@@ -403,8 +408,11 @@
                   var id = getValue($t);
                   if (id !== '')
                   {
+                      var $c = $t.find(':selected');
                       dataCols[groupNum][num] = {id: id,
-                        name: $t.find(':selected').text(), hidden: false};
+                        format: $.json.deserialize($.htmlUnescape
+                            ($c.attr('format'))),
+                        name: $c.text(), hidden: false};
                   }
               }
               else

@@ -2699,6 +2699,8 @@ blist.namespace.fetch('blist.data');
                     delete col.dataIndex;
                     delete col.options;
                     delete col.dropDown;
+                    delete col.dataTypeName;
+                    delete col.originalDataTypeName;
                 };
                 // Clean out dataIndexes, and clean out child metadata columns
                 $.each(view.columns, function(i, c)

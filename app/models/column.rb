@@ -57,7 +57,7 @@ class Column < Model
       {'title' => 'Minimum', 'name' => 'minimum'}
     ]
 
-    case dataTypeName.downcase
+    case (originalDataTypeName || dataTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "photo", "phone", "checkbox", "flag", "url",

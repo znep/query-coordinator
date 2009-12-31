@@ -310,8 +310,8 @@ module BlistsHelper
       'title' => (view.can_add_calendar? ? '' :
         'This dataset does not have both a date column and text column')},
       {'text' => 'Create a Chart View...', 'href' => "#{view.href}/visualization",
-      'modal' => true, 'if' => !view.is_alt_view?, 'user_required' => true,
-      'class' => 'visualization mainViewOption' +
+      'modal' => true, 'if' => !view.is_alt_view? && !view.is_grouped?,
+      'user_required' => true, 'class' => 'visualization mainViewOption' +
         (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},

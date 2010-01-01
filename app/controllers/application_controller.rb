@@ -163,7 +163,7 @@ private
       # We failed at trying to find the current domain.
       # Log it, then just redir them to Socrata.
       notify_hoptoad :error_message => "Attempted access with CNAME #{request.host}, which we have no record of."
-      redirect_to 'http://socrata.com/'
+      redirect_to 'http://www.socrata.com/'
     end
   end
 

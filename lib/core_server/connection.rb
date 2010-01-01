@@ -53,6 +53,7 @@ module CoreServer
 
       request.body = dhash.to_json
       request.content_type = "application/json"
+      request['X-Socrata-Host'] = CurrentDomain.cname
 
       @request_count += 1
 
@@ -109,7 +110,7 @@ module CoreServer
       end
 
       # pass/spoof in the current domain cname
-      request['Host'] = CurrentDomain.cname
+      request['X-Socrata-Host'] = CurrentDomain.cname
 
       custom_headers.each { |key, value| request[key] = value }
 

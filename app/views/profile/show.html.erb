@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "profile-screen" %>
-  <title><%= @user.displayName %> | <%= th.site_title %></title>
+  <title><%= @user.displayName %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 
@@ -8,7 +8,7 @@
 <div class="twoColumnContainer <%= @is_user_current ? "tabContainer" : " " %> clearfix">
   <div id="mainColumnContent" class="column mainContent">
     <div id='profile'>
-      
+
       <%- if (@is_user_current) -%>
         <%= render(:partial => "shared/tabs") %>
       <%- end -%>
@@ -21,7 +21,7 @@
             <div class="welcomeTL">
               <div class="welcomeTR">
                 <div class="welcome-titlebar">
-                  <h1>Welcome to <%= th.company %>!</h1>
+                  <h1>Welcome to <%= CurrentDomain.strings.company %>!</h1>
                   <a href="#close"><span class="close">Close</span></a>
                 </div>
               </div>
@@ -30,7 +30,7 @@
               <div class="welcomeBR">
                 <div class="welcome-content">
                   <p>This is your personal profile page. Please take a moment to tell
-                  the <%= th.company %> community a little more about yourself.</p>
+                  the <%= CurrentDomain.strings.company %> community a little more about yourself.</p>
                 </div>
               </div>
             </div>
@@ -62,7 +62,6 @@
                 <%= profile_item 'userCompany', h(@user.company), 'Add your company or agency name here', @is_user_current %>
                 <%= profile_item 'userTitle', h(@user.title), 'Add your title here', @is_user_current %>
                 <%= profile_item 'userTags', h(@user.tag_display_string), 'Add some tags here so others in the community can find you', @is_user_current %>
-                
                 <%- if (@is_user_current) -%>
                   <p class="editProfileContentActions">
                     <a class='first action showListBoxLink' href='#edit'>Edit</a><a 
@@ -73,7 +72,7 @@
                         'Full Name' : 'Username' %>
                     </a>
                   </p>
-                <%- else -%>
+                <%- elsif module_enabled? :community_module -%>
                   <div class="publicProfileContentActions">
                     <%- if (!@current_user.nil? && @current_user.privacyControl != 'anonymousPerson') -%>
                       <ul class="actionButtons clearfix">
@@ -92,11 +91,11 @@
                         </li>
                       </ul>
                     <%- end -%>
-                    <p><%= link_to("Go to #{th.company} community", community_path, :class => "action") %></p>
+                    <p><%= link_to("Go to #{CurrentDomain.strings.company} community", community_path, :class => "action") %></p>
                   </div>
                 <%- end -%>
-                
-                
+
+
               </div>
               <%- if (@is_user_current) -%>
                 <div class="sectionEdit formListBox">
@@ -341,50 +340,51 @@
             <%- end -%>
           </div>
 
+          <% if( module_enabled?(:community_creation) || CurrentDomain.member?(@user)) %>
+            <div class='publicBlists'>
+              <h3>My public <%= t(:blists_name) %> &amp; filtered views</h3>
+              <div class='infoContentOuter active'><div class="infoContentInner">
+                  <div class='infoContent'>
+                    <div class='infoContentHeader'>
+                      <div class='infoContentHeaderInner clearfix'>
+                        <h2 class='panelHeader'>
+                          <%= pluralize(@public_views.length, 'item') %> total
+                        </h2>
+                      </div>
+                    </div>
 
-          <div class='publicBlists'>
-            <h3>My public <%= t(:blists_name) %> &amp; filtered views</h3>
-            <div class='infoContentOuter active'><div class="infoContentInner">
-              <div class='infoContent'>
-                <div class='infoContentHeader'>
-                  <div class='infoContentHeaderInner clearfix'>
-                    <h2 class='panelHeader'>
-                      <%= pluralize(@public_views.length, 'item') %> total
-                    </h2>
+                    <div class="gridListContainer">
+                      <table class="gridList" cellspacing="0">
+                        <colgroup>
+                          <col class='type' />
+                          <col class='name' />
+                          <col class='views' />
+                          <col class='comments' />
+                          <col class='averageRating' />
+                          <col class='actionContainer' />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            <th class="type first" title="Type"><div>Type</div></th>
+                            <th class="name"><div>Name</div></th>
+                            <th class="views"><div>Visits</div></th>
+                            <th class="comments"><div>Comments</div></th>
+                            <th class="averageRating"><div>Rating</div></th>
+                            <th class="actionContainer last"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <%= render( :partial => "public_blist_row", 
+                                      :collection => @public_views) %>
+                        </tbody>
+                      </table>
+                    </div>
+
                   </div>
                 </div>
-
-                <div class="gridListContainer">
-                  <table class="gridList" cellspacing="0">
-                    <colgroup>
-                      <col class='type' />
-                      <col class='name' />
-                      <col class='views' />
-                      <col class='comments' />
-                      <col class='averageRating' />
-                      <col class='actionContainer' />
-                    </colgroup>
-                    <thead>
-                      <tr>
-                        <th class="type first" title="Type"><div>Type</div></th>
-                        <th class="name"><div>Name</div></th>
-                        <th class="views"><div>Visits</div></th>
-                        <th class="comments"><div>Comments</div></th>
-                        <th class="averageRating"><div>Rating</div></th>
-                        <th class="actionContainer last"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <%= render( :partial => "public_blist_row", 
-                        :collection => @public_views) %>
-                    </tbody>
-                  </table>
-                </div>
-
               </div>
-            </div></div>
-          </div>
-
+            </div>
+          <% end %>
 
         </div>
       </div>
@@ -394,63 +394,68 @@
   <div id="sidebar" class="column scrollContentColumn<%= @is_user_current ? "" : " notabs" %>">
     <% render(:layout => "shared/sidebar_box",
       :locals => { :id => 'blistStats' } ) do %>
-        <h4><%= @is_user_current ? "My" : "#{@user.displayName}'s" %> Stats</h4>
-        
+        <h4><%= @is_user_current ? "My" : "#{h(@user.displayName)}'s" %> Stats</h4>
         <p><strong>Joined on:</strong> <%= blist_date(@user.createdAt) %></p>
         <p><strong>Last login:</strong> <%= blist_date(@user.lastLogin) %></p>
-        
-        <dl>
-          <%- if (@is_user_current &&  @private_blists && @private_views) -%>
-            <dt><strong>Private <%= t(:blists_name).titleize %>:</strong> <%= @private_blists.length %></dt>
-            <dd><%= pluralize(@private_views.length, 'View') %></dd>
-          <%- end -%>
-          <dt><strong>Public <%= t(:blists_name).titleize %> &amp; Filtered Views:</strong> <%= @public_views.size %></dt>
-          <dd><%= pluralize(@public_views.size, 'Filtered View') %></dd>
-          <dd><%= @shared_views.length %> Shared</dd>
-        </dl>
 
-        <%- if @is_user_current -%>
-        <ul class="actionButtons blockList clearfix">
-          <li>
-            <%= link_to("Design a #{t(:blist_name).titleize}", {:controller => "blists", :action => "new"},
-                :title => "Design a new #{t(:blist_name)}.") %>
-          </li>
-        </ul>
+
+        <%- if( module_enabled?(:community_creation) || CurrentDomain.member?(@user)) -%>
+          <dl>
+            <%- if (@is_user_current &&  @private_blists && @private_views) -%>
+              <dt><strong>Private <%= t(:blists_name).titleize %>:</strong> <%= @private_blists.length %></dt>
+              <dd><%= pluralize(@private_views.length, 'View') %></dd>
+            <%- end -%>
+            <dt><strong>Public <%= t(:blists_name).titleize %> &amp; Filtered Views:</strong> <%= @public_views.size %></dt>
+            <dd><%= pluralize(@public_views.size, 'Filtered View') %></dd>
+            <dd><%= @shared_views.length %> Shared</dd>
+          </dl>
         <%- end -%>
 
-        <dl>
-          <dt><strong>Friends:</strong> <%= @user.numberOfFriends %></dt>
-          <%- if (@user.numberOfFriends > 0) -%>
-          <dd class="userList">
-            <ul class="userIconList clearfix">
-              <%= render(:partial => "user_icon_item", :collection => @friends) %>
-            </ul>
-          </dd>
-          <%- end -%>
-          <dt><strong>Followers:</strong> <%= @user.numberOfFollowers %></dt>
-          <%- if (@user.numberOfFollowers > 0) -%>
-          <dd class="userList">
-            <ul class="userIconList clearfix">
-              <%= render(:partial => "user_icon_item", :collection => @followers) %>
-            </ul>
-          </dd>
-          <%- end -%>
-        </dl>
-
-
-        <%- if @is_user_current -%>
+        <%- if (@is_user_current && module_enabled?(:community_creation)) -%>
           <ul class="actionButtons blockList clearfix">
             <li>
-              <%= link_to("Find Friends", community_path,
-                  :title => "Search for other users") %>
+              <%= link_to("Design a #{t(:blist_name).titleize}", {:controller => "blists", :action => "new"},
+                          :title => "Design a new #{t(:blist_name)}.") %>
             </li>
           </ul>
+        <%- end -%>
+
+        <%- if module_enabled? :community_module %>
+          <dl>
+            <dt><strong>Friends:</strong> <%= @user.numberOfFriends %></dt>
+            <%- if (@user.numberOfFriends > 0) -%>
+            <dd class="userList">
+              <ul class="userIconList clearfix">
+                <%= render(:partial => "user_icon_item", :collection => @friends) %>
+              </ul>
+            </dd>
+            <%- end -%>
+            <dt><strong>Followers:</strong> <%= @user.numberOfFollowers %></dt>
+            <%- if (@user.numberOfFollowers > 0) -%>
+            <dd class="userList">
+              <ul class="userIconList clearfix">
+                <%= render(:partial => "user_icon_item", :collection => @followers) %>
+              </ul>
+            </dd>
+            <%- end -%>
+          </dl>
+        <%- end -%>
+
+        <%- if @is_user_current -%>
+          <%- if module_enabled? :community_module %>
+            <ul class="actionButtons blockList clearfix">
+              <li>
+                <%= link_to("Find Friends", community_path,
+                          :title => "Search for other users") %>
+              </li>
+            </ul>
+          <%- end -%>
 
           <div>
-            <p><strong>Invite others</strong> to use <%= th.company %> and share your <%= t(:blist_name).pluralize %> with them</p>
+            <p><strong>Invite others</strong> to use <%= CurrentDomain.strings.company %> and share your <%= t(:blist_name).pluralize %> with them</p>
             <ul class="actionButtons blockList clearfix">
                 <li>
-                <%= link_to("Invite Others", invite_path, :title => "Invite others to try Socrata", :rel => "modal") %>
+                <%= link_to("Invite Others", invite_path, :title => "Invite others to try #{CurrentDomain.strings.company}", :rel => "modal") %>
               </li>
             </ul>
           </div>

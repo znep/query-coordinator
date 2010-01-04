@@ -168,7 +168,7 @@
     <%= stylesheet_link_tag @theme[:style][:custom_stylesheet] + "-widget" %>
   <%- end -%>
 
-  <title><%= @view.name %> | <%= th.site_title %></title>
+  <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
 
 <% end %>
 <div id='header' class='headerBar'><div class='wrapperTR'>
@@ -285,11 +285,12 @@
     </div>
 
     <div class="jqmWindow widgetModal" id="modal"></div>
-  
+
 <% content_for :js_footer do %>
   <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
 
   <script type="text/javascript">
+    <%= raw @display.render_inline_setup_js self %>
     blist.namespace.fetch('blist.widget');
     <%- if !current_user.nil? -%>
       blist.currentUserId = "<%= current_user.id %>";
@@ -300,6 +301,11 @@
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
+
+    <%# Hard-code parameters for initial call here; if the Javascript ever
+    changes, these will need to be updated %>
+    blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
+        'include_ids_after' => 50, 'include_aggregates' => true}) %>;
   </script>
 
   <%- if @view.can_edit() -%>
@@ -325,7 +331,10 @@
       pageTracker2._trackPageview();
       } catch(err) {}</script>
     <%- end -%>
-    
+
     <%= render(:partial => "shared/quantcast") %>
   <%- end -%>
+  <script type="text/javascript">
+    <%= raw @display.render_inline_runtime_js self %>
+  </script>
 <% end %>

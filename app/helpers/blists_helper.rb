@@ -3,22 +3,10 @@ module BlistsHelper
     link_to(desc, new_blist_column_path(view_id) + "?type=#{type}", :rel => "modal", :id => "addColumn_#{type}")
   end
 
-  def dataset_view_type(view)
-    if view.is_blist?
-      'blist'
-    elsif view.is_calendar?
-      'calendar'
-    elsif view.is_visualization?
-      'visualization'
-    else
-      'filter'
-    end
-  end
-
   # Used for lists of views, to determine shared in/out
   def get_share_direction_icon_class_for_view(view)
     icon_class = "itemType"
-    icon_class += " type" + dataset_view_type(view).capitalize
+    icon_class += " type" + view.display.type.capitalize
 
     if view.is_shared?
       icon_class += view.owner.id == current_user.id ? " sharedOut" : " sharedIn"
@@ -28,7 +16,7 @@ module BlistsHelper
 
   # Used for individual views, to determine permission levels
   def get_permissions_icon_class_for_view(view)
-    icon_class = 'type' + dataset_view_type(view).capitalize
+    icon_class = 'type' + view.display.type.capitalize
 
     if !view.is_public?
       icon_class += view.is_shared? ? " privateShared" : " private"
@@ -45,7 +33,7 @@ module BlistsHelper
       sharing_type = view.owner.id == current_user.id ? " shared out" : " shared in"
     end
 
-    blist_type = dataset_view_type(view)
+    blist_type = view.display.type
     privacy_type = !view.is_public? ? "private" : ""
 
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
@@ -88,7 +76,7 @@ module BlistsHelper
 
     filters = (theme.nil? || theme[:menu][:more_views]) ? view.filters : []
 
-    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{th.company} - ")
+    tweet = CGI::escape("Check out the #{h(view.name)} dataset on #{CurrentDomain.strings.company} - ")
     seo_path = "#{request.protocol + request.host_with_port + view.href}"
     short_path = "#{request.protocol + request.host_with_port.gsub(/www\./, '') +
       view.short_href}"
@@ -156,22 +144,20 @@ module BlistsHelper
       "#{t(:blist_name).titleize} Analytics...",
       'class' => 'adv_analytics statistics',
       'if' => (theme.nil? || theme[:menu][:adv_analytics]),
-      'href' => (current_user && current_user.can_access_premium_on?(view)) ?
-        "#{view.href}/stats" : "/popup/stats",
-      'modal' => !is_widget &&
-        (!current_user || !current_user.can_access_premium_on?(view)),
-      'external' => is_widget
+      'href' => "#{view.href}/stats",
+      'external' => is_widget,
+      'module_enabled' => 'advanced_metrics',
+      'owner_item' => true,
+      'upsell' => { 'href' => '/popup/stats', 'modal' => true }
       },
 
     'basic_analytics' => {'text' => "Basic #{t(:blist_name).titleize} Analytics...",
       'class' => 'basic_analytics statistics',
       'if' => (theme.nil? || theme[:menu][:basic_analytics]),
-      'href' => (current_user && current_user.can_access_premium_on?(view)) ?
-        "#{view.href}/stats" : "/popup/stats",
-      'modal' => !is_widget ||
-        (current_user && current_user.can_access_premium_on?(view)),
-      'external' => is_widget &&
-        (!current_user || !current_user.can_access_premium_on?(view)),
+      'owner_item' => true,
+      'href' => "#{view.href}/stats",
+      'external' => !is_widget,
+      'modal' => is_widget
       },
 
     'about' => {'text' => "About this #{t(:blist_name).titleize}...",
@@ -185,7 +171,7 @@ module BlistsHelper
     'publish' => {'text' => "Publish this #{t(:blist_name).titleize}...",
       'class' => 'publish', 'modal' => is_widget,
       'href' => (is_widget ?  "#{@view.href}/republish" : '#publish'),
-      'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.is_calendar?)},
+      'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.display.can_publish?)},
 
     'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
       'class' => 'rowTags',
@@ -199,7 +185,7 @@ module BlistsHelper
         'href' => '#prev', 'class' => 'prev'}] +
         filters.sort {|a,b| a.name <=> b.name }.map do |v|
         {'text' => v.name, 'href' => v.href, 'external' => is_widget,
-        'class' => dataset_view_type(v) + ' scrollable'}
+        'class' => v.display.type + ' scrollable'}
       end + [{'button' => true, 'text' => 'Next',
       'href' => '#next', 'class' => 'next'}]}},
 
@@ -458,7 +444,7 @@ module BlistsHelper
       {'items' => View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
         b.last_viewed <=> a.last_viewed
       end.slice(0, num_recent).map do |v|
-        {'text' => v.name, 'href' => v.href, 'class' => dataset_view_type(v)}
+        {'text' => v.name, 'href' => v.href, 'class' => v.display.type}
       end }
     else
       nil
@@ -508,7 +494,7 @@ module BlistsHelper
     end
 
     # generate a new tracking ID param set
-    tracking_params = { :cur => ActiveSupport::SecureRandom.base64(9).slice(0..10) }
+    tracking_params = { :cur => ActiveSupport::SecureRandom.base64(9).slice(0..10).gsub(/\//, '-').gsub(/\+/, '_') }
     tracking_params[:from] = from_tracking_id unless from_tracking_id.blank?
 
     root_path = request.protocol + request.host_with_port
@@ -521,13 +507,13 @@ module BlistsHelper
     end
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
-                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : CGI.escape(variation)}?" +
+                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
                       "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"no\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]
       embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
-        "Powered by #{th.company}</a></p>"
+        "Powered by Socrata</a></p>"
     end
     embed_template += "</div>"
   end

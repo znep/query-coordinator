@@ -185,7 +185,7 @@ $(function ()
             $(".jcarousel-skin-discover").hide().css("visibility", "visible").fadeIn("slow");
         }
     });
-    
+
     $(".simpleTabs").simpleTabNavigate({
         tabMap: {
             "tabSearch" : "#discoverTabSearchResults",

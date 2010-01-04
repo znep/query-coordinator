@@ -1,7 +1,7 @@
 class DataController < ApplicationController
   caches_page :splash, :noie, :redirected
   skip_before_filter :require_user
-  
+
   PAGE_SIZE = 10
 
   def redirect_to_root
@@ -12,42 +12,44 @@ class DataController < ApplicationController
     @body_class = 'discover'
     @show_search_form = false
     @page_size = PAGE_SIZE
+
+    # TODO: We shouldn't bother retrieving nominations if it isn't enabled for
+    # this domain
     @nominations = Nomination.find_page(1, PAGE_SIZE)
     @nominations_count = Nomination.count()
 
-    @community_activity = Activity.find({:maxResults => 3}) unless Theme.revolutionize
-  
-    # NOTE: Temporary hacks to get agency filtering working until we have org filtering
-    @agency_id = Theme.agency_id
-    @agency_mcache_key = (@agency_id.nil? ? "" : "-agency-#{@agency_id}")
+    # TODO: Community activity needs to be filtered by domain
+    @community_activity = Activity.find({:maxResults => 3}) unless CurrentDomain.revolutionize?
 
-    unless @all_views_rendered = read_fragment("discover-tab-all#{@agency_mcache_key}")
+    # "All Views" tab
+    unless @all_views_rendered = read_fragment("discover-tab-all_#{CurrentDomain.cname}")
       opts = {:limit => PAGE_SIZE}
-      if !@agency_id.nil?
-        opts.merge!({:agencyId => @agency_id})
-      end
-      
+
       @all_views_total = View.find(opts.merge({:count => true }), true).count
       @all_views = View.find(opts, true)
-      
+
       # TODO: Tags should also allow filtering by org
       @all_views_tags = Tag.find({ :method => "viewsTags", :limit => 5 })
     end
-    unless @popular_views_rendered = read_fragment("discover-tab-popular#{@agency_mcache_key}")
+
+    # "Top 100" tab
+    unless @popular_views_rendered = read_fragment("discover-tab-popular_#{CurrentDomain.cname}")
       opts = {:top100 => true, :limit => PAGE_SIZE, :page => 1}
-      if !@agency_id.nil?
-        opts.merge!({:agencyId => @agency_id})
-      end
-      
-      @popular_views_total = 100
+
       @popular_views = View.find_filtered(opts)
+      @popular_views_total = @popular_views.size
       @popular_views_tags = Tag.find({ :method => "viewsTags", :top100 => true, :limit => 5 })
     end
-    unless @carousel_views_rendered = read_fragment("discover-carousel")
+
+    # "Featured Datasets" carousel
+    unless @carousel_views_rendered = read_fragment("discover-carousel_#{CurrentDomain.cname}")
       @carousel_views = View.find_filtered({ :featured => true, :limit => 10 })
     end
+
+    # "In Your Network" (Not Cached)
     @network_views = View.find_filtered({ :inNetwork => true, :limit => 5 })
 
+    # If a search was specified
     if (params[:search])
       @search_term = params[:search]
       @search_debug = params[:search_debug]
@@ -62,10 +64,13 @@ class DataController < ApplicationController
       end
     end
 
+    # Hide logo if theme specifies so
+    @hide_logo = " style='display:none'" if CurrentDomain.theme.no_logo_on_discover
+
     # build current state string
     @current_state = { :search => @search_term , :search_debug => @search_debug}
   end
-  
+
   def filter
     type = params[:type]
     filter = params[:filter]
@@ -74,7 +79,6 @@ class DataController < ApplicationController
     tag = params[:tag]
     search_term = params[:search]
     search_debug = params[:search_debug]
-    agency_id = Theme.agency_id
 
     sort_by = sort_by_selection
     is_asc = true
@@ -85,12 +89,12 @@ class DataController < ApplicationController
     when "NUM_OF_VIEWS", "AVERAGE_RATING", "COMMENTS", "LAST_CHANGED", "POPULAR"
       is_asc = false
     end
-    
+
     opts = Hash.new
     opts.update({:page => page, :limit => PAGE_SIZE})
     tag_opts = Hash.new
     tag_opts.update({ :method => "viewsTags", :limit => 5 })
-        
+
     if (type == "POPULAR")
       opts.update({:top100 => true})
       tag_opts.update({:top100 => true})
@@ -103,19 +107,15 @@ class DataController < ApplicationController
     if type == "POPULAR" ? sort_by != "POPULAR" : sort_by != "LAST_CHANGED"
       opts.update({:sortBy => sort_by, :isAsc => is_asc})
     end
-    
+
     if (!tag.nil?)
       opts.update({:tags => tag})
     end
-    
-    if !agency_id.nil?
-      opts.update({:agencyId => agency_id})
-    end
-    
+
     tab_title = type == "POPULAR" ? "Popular" : "All"
     unless(filter.nil?)
       opts.update(filter)
-      
+
       if (filter[:inNetwork])
         tab_title += " #{t(:blists_name)} in my network"
       elsif (filter[:category])
@@ -124,11 +124,11 @@ class DataController < ApplicationController
     else
       tab_title += " #{t(:blists_name)}"
     end
-    
+
     unless(tag.nil?)
       tab_title += " tagged '#{tag}'"
     end
-    
+
     @page_size = PAGE_SIZE
     if type == "SEARCH"
       tab_title = "Search Results for \"#{search_term}\""
@@ -169,7 +169,8 @@ class DataController < ApplicationController
               :tag_list => tag_list,
               :current_tag => tag,
               :search_term => search_term,
-              :search_debug => search_debug
+              :search_debug => search_debug,
+              :page_size => @page_size
             })
         else
           render(:partial => "data/view_list_tab_noresult",
@@ -177,43 +178,43 @@ class DataController < ApplicationController
         end
       }
     end
-    
+
   end
-  
+
   def tags
     @type = params[:type]
-    
+
     opts = Hash.new
     opts.update({ :method => "viewsTags" })
-    
+
     if (@type == "POPULAR")
       opts.update({:top100 => true})
     end
-        
+
     unless(@current_filter.nil?)
       opts.update(@current_filter)
     end
-    
+
     @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
-    
+
     # build current state string
     @current_state = { :filter => params[:filter], :page => params[:page],
       :sort_by => params[:sort_by], :search => params[:search] }
-    
+
     respond_to do |format|
       format.html { render }
       format.data { render(:layout => "modal") }
     end
   end
-  
+
   def splash
     render(:layout => "splash")
   end
-  
+
   def noie
     render(:layout => "splash")
   end
-  
+
   def redirected
     render(:layout => "splash")
   end

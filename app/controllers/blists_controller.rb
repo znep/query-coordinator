@@ -70,6 +70,7 @@ class BlistsController < ApplicationController
 
     @data_component = params[:dataComponent]
     @popup = params[:popup]
+    @display = @view.display
   end
 
   # To build a url to this action, use View.about_href.
@@ -98,13 +99,14 @@ class BlistsController < ApplicationController
         return (render 'shared/error', :status => :internal_server_error)
       end
     end
-    
+
     if !@view.can_edit() && !current_user.is_admin?
       return require_user(true)
     end
 
-    unless current_user.can_access_premium_on?(@view)
-      redirect_to '/solution'
+    unless CurrentDomain.member?(current_user) && CurrentDomain.module_available?(:sdp_customizer)
+      # Not a member of the org or the org doesn't have SDP customization
+      return upsell_or_404
     end
 
     # TODO[ORGS]:
@@ -113,6 +115,10 @@ class BlistsController < ApplicationController
     # template on behalf of the user the first time we load this page and then
     # automatically load the first template for them after that.
     # Eventually, we should be by default fetching the org's default template.
+
+    # TODO[ORG SETUP]:
+    # When we have an orgs setup process, move this into there instead of here
+    # so that orgs don't default to the basic level theme.
     @widget_customizations = WidgetCustomization.find
     if @widget_customizations.empty?
       @widget_customization = WidgetCustomization.create({
@@ -245,6 +251,11 @@ class BlistsController < ApplicationController
   end
 
   def new
+    if (!CurrentDomain.member?(current_user) && !CurrentDomain.module_enabled?(:community_creation))
+      # User doesn't have access to create new datasets
+      return upsell_or_404
+    end
+
     respond_to do |format|
       format.html { render }
       format.data { render(:layout => "modal_dialog") }
@@ -252,6 +263,11 @@ class BlistsController < ApplicationController
   end
 
   def upload
+    if (!CurrentDomain.member?(current_user) && !CurrentDomain.module_enabled?(:community_creation))
+      # User doesn't have access to create new datasets
+      return upsell_or_404
+    end
+
     @is_upload = true
     respond_to do |format|
       format.html { render(:action => "new") }
@@ -340,7 +356,7 @@ class BlistsController < ApplicationController
     @type = params[:type]
 
     # Pick our subject line
-    @subject = "A visitor has sent you a message about your \"#{@view.name}\" Socrata #{t(:blist_name)}"
+    @subject = "A visitor has sent you a message about your \"#{@view.name}\" #{CurrentDomain.strings.company} #{t(:blist_name)}"
     case @type
     when 'copyright_violation'
       @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for copyright violation"

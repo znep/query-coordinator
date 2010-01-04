@@ -70,9 +70,11 @@ jQuery.fn.ready = function(fn) {
 
 // Attach trackError to window's onerror event;
 // use onerror instead of $(window).error( ... ) in order to get url and lineNo
-window.onerror = function(msg, url, lineNo)
+if (blistEnv != 'development')
 {
-    trackError(msg, url, lineNo);
-    return blistEnv == 'production';
-};
-
+    window.onerror = function(msg, url, lineNo)
+    {
+        trackError(msg, url, lineNo);
+        return blistEnv == 'production';
+    }
+}

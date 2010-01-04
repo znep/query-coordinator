@@ -6,7 +6,10 @@
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=8" />
   <%= stylesheet_link_merged 'base' %>
-  <%= stylesheet_link_tag "theme/#{Theme.active}" %>
+  <%= stylesheet_link_tag "theme/#{CurrentDomain.cname.gsub(/\./, '_')}.css" %>
+  <%# TODO: assets service here instead of pathed %>
+  <%= stylesheet_link_tag "custom/#{CurrentDomain.theme.stylesheet}" unless CurrentDomain.theme.stylesheet.nil? %>
+
   <!--[if lt IE 7]>
     <link href="/stylesheets/core-ie6.css" rel="stylesheet" type="text/css">
     <script type="text/javascript" charset="utf-8">
@@ -32,43 +35,68 @@
   <%= javascript_error_helper_tag %>
 
   <%= yield :head %>
-  
+
   <%- if is_gov_site? -%>
   <%= stylesheet_link_tag "gov-override" %>
   <%- end -%>
 
-  <link rel="shortcut icon" href="/favicon.ico" />
-
-  
+  <link rel="shortcut icon" href="<%= theme_image(CurrentDomain.theme.images.favicon) %>" />
 </head>
 
-<body id='<%= @body_id %>' class='<%= @body_class %> <%= th.active %>'>
+<body id='<%= @body_id %>' class='<%= @body_class %>'>
 <div class="bodyExterior">
 <div class="bodyInterior">
   <div id='outerContainer'>
     <div id='header'>
-      <h1 id='mainLogo' class='<%= @is_marketing_page ? "aboutLogo" : "appLogo" %>'>
-        <%= link_to(th.company, root_path) %>
+      <h1 id='mainLogo' class='<%= @is_marketing_page ? "aboutLogo" : "appLogo" %>'<%= @hide_logo %>>
+        <%= link_to(CurrentDomain.strings.company, root_path) %>
       </h1>
 
       <div id='mainNav'<%= " class='currentUserNav'" if current_user %>>
         <ul class="clearfix">
-          <li class='discover'><%= link_to("<span>Public Data</span>", root_path) %></li>
-          <li class='community'><%= link_to("<span>Community</span>", community_path) %></li>
+          <%# Discovery Module %>
+          <% module_enabled :discovery_module do %>
+            <li class='discover'><%= link_to("<span>Public Data</span>", root_path) %></li>
+          <% end %>
+
+          <%# Community Module %>
+          <% module_enabled :community_module do %>
+            <li class='community'><%= link_to("<span>Community</span>", community_path) %></li>
+          <% end %>
+
+          <%# Home (Features enabled/disabled within this tab) %>
           <li class='home last'>
-            <%= link_to("<span>My #{th.company}</span>", home_path) %>
+            <%= link_to("<span>My #{CurrentDomain.strings.company}</span>", home_path) %>
+
             <%- if (current_user) -%>
               <ul class="subNav">
-                <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
-                <li><%= link_to "<span>Friends</span>", contacts_path %></li>
-                <li><%= link_to "<span>Profile</span>", current_user.href %></li>
-                <li class="last">
-                  <%- if current_user.are_comments_moderated? -%>
-                    <%= link_to '<span>Approvals</span>', approval_path %>
-                  <%- else -%>
-                    <%= link_to '<span>Approvals</span>', '/popup/premium', :rel => "modal" %>
-                  <%- end -%>
+                <%# Only show the datasets subtab if they're a member of the org or if the
+                    org has :community_creation %>
+                <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
+                  <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
+                <% end %>
+
+                <%# Only show "Friends" if they have community or are a member of the org %>
+                <% if (module_enabled?(:community_module) || CurrentDomain.member?(current_user)) %>
+                  <li><%= link_to "<span>Friends</span>", contacts_path %></li>
+                <% end %>
+
+                <%# "Profile" is always displayed %>
+                <li class="<%= 'last' unless (upsell? || 
+                      (module_enabled?(:publisher_comment_moderation) && CurrentDomain.member?(current_user))) %>">
+                  <%= link_to "<span>Profile</span>", current_user.href %>
                 </li>
+
+                <%# Only showed to org members when the module is enabled %>
+                <%- if (CurrentDomain.member?(current_user) && module_enabled?(:publisher_comment_moderation)) -%>
+                  <li class="last">
+                  <%= link_to '<span>Approvals</span>', approval_path %>
+                  </li>
+                <%- elsif upsell?-%>
+                  <li class="last">
+                  <%= link_to '<span>Approvals</span>', '/popup/premium', :rel => "modal" %>
+                  </li>
+                <%- end -%>
               </ul>
             <%- end -%>
           </li>
@@ -77,11 +105,8 @@
 
       <div class='userNav'>
         <ul>
-          <%- unless th.about_link.nil? -%>
-            <li><%= link_to "About #{th.company}", about_path %></li>
-          <%- end -%>
-          <%- if th.help_url -%>
-            <li><%= link_to 'Help', th.help_url, :class=> 'nofollow external' %></li>
+          <%- CurrentDomain.theme.urls.header.each do |link| -%>
+            <li><%= link_from_theme(link) %></li>
           <%- end -%>
           <li class='signInLink'><%= link_to "Sign In", login_url, :rel => 'nofollow' %></li>
           <li class='signUpLink'><%= link_to "Sign Up", signup_url, :rel => 'nofollow' %></li>
@@ -120,15 +145,12 @@
 
 <div class="footerContainer">
   <div id='footer' class="clearfix">
-    <%- if !th.footer_html.nil? -%>
-      <%= th.footer_html %>
-    <%- else -%>
-      <%- if is_gov_site? -%>
-        <%= render(:partial => "shared/gov_footer") %>
-      <%- else -%>
-        <%= render(:partial => "shared/footer") %>
+    <span class='copyright'><%= raw CurrentDomain.strings.copyright_string %></span>
+    <ul class="clearfix">
+      <%- CurrentDomain.theme.urls.footer.each do |link| -%>
+        <li><%= link_from_theme(link) %></li>
       <%- end -%>
-    <%- end -%>
+    </ul>
   </div>
 </div>
 

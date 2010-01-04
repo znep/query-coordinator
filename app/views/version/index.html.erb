@@ -1,11 +1,11 @@
 <% content_for :head do %>
-  <title>Current Version | <%= th.site_title %></title>
+  <title>Current Version | <%= CurrentDomain.strings.site_title %></title>
   <!--[if IE 7]><style type="text/css">@import "/stylesheets/ie7.css";</style><![endif]-->
 <% end %>
 
 <% dialog_content("versionBox") do %>
   <div class='header'>
-    <h1><%= th.company %></h1>
+    <h1><%= CurrentDomain.strings.company %></h1>
   </div>
 
   <div class='mainContent'>

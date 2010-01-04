@@ -31,6 +31,22 @@ $.htmlUnescape = function(text)
         .replace(/&amp;/g, '&');
 };
 
+$.unescapeObject = function(obj)
+{
+    if (obj === null || obj === undefined) { return obj; }
+
+    else if (typeof obj == 'string') { return $.htmlUnescape(obj); }
+
+    else if (typeof obj == 'object')
+    {
+        var newObj = obj instanceof Array ? [] : {};
+        $.each(obj, function(k, v) { newObj[k] = $.unescapeObject(v); })
+        return newObj;
+    }
+
+    else { return obj; }
+};
+
 $.htmlStrip = function(text)
 {
   try

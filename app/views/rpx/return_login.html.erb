@@ -1,22 +1,22 @@
 <% content_for :head do %>
   <%= stylesheet_link_merged 'rpx-return-login' %>
-  <title>Create or Link Account | <%= th.site_title %></title>
+  <title>Create or Link Account | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <% dialog_content('rpx-choose', "signupBox") do %>
   <div class='header'>
-    <h1><%= th.company %></h1>
+    <h1><%= CurrentDomain.strings.company %></h1>
   </div>
 
   <div class="mainContent">
     <h1>Almost Ready</h1>
     <p class="chooseMessage">
-    Before using these credentials, you must create a <%= th.company %> account
-    or link it to an existing <%= th.company %> ID. </p>
+    Before using these credentials, you must create a <%= CurrentDomain.strings.company %> account
+    or link it to an existing <%= CurrentDomain.strings.company %> ID. </p>
 
     <div id="accordion">
       <% content_tag :h2, :class => (flash[:notice_login] ? 'ui-state-default' : 'ui-state-active')  do %>
-        <a href="#signup">Sign up for a New <%= th.company %> Account</a>
+        <a href="#signup">Sign up for a New <%= CurrentDomain.strings.company %> Account</a>
       <% end %>
 
       <% if flash[:notice_login] %>
@@ -33,7 +33,7 @@
       <h3>&mdash;OR&mdash;</h3>
 
       <% content_tag :h2, :class => (flash[:notice_login] ? 'ui-state-active' : 'ui-state-default')  do %>
-        <a href="#login">Link to an Existing <%= th.company %> ID</a>
+        <a href="#login">Link to an Existing <%= CurrentDomain.strings.company %> ID</a>
       <% end %>
 
       <% if flash[:notice_login] %>

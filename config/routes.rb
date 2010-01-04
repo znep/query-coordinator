@@ -169,7 +169,10 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/tweetsets/:action', :controller => 'tweetsets'
   map.connect '/tweetsets', :controller => 'tweetsets', :action => 'index'
   map.connect '/tweetset', :controller => 'tweetsets', :action => 'redirect'
-  
+
+  # Seattle Data-Policy hack
+  map.connect '/data-policy', :controller => "data_policy", :action => "index"
+
   # The /version page
   map.connect '/version', :controller => "version", :action => "index"
   
@@ -217,8 +220,6 @@ ActionController::Routing::Routes.draw do |map|
     invitation.show_invitation    'invitation/show/:id',    :action => 'show'
     invitation.accept_invitation  'invitation/accept/:id',  :action => 'accept'
   end
-
-  map.connect '/favicon.ico', :controller => 'favicon', :action => 'show'
 
   # Non-production environments get a special controller for test actions
   unless Rails.env.production?

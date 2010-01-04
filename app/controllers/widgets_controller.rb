@@ -30,7 +30,7 @@ class WidgetsController < ApplicationController
       if !request.referrer.nil? 
         # Check the referrer
         m = request.referrer.match(/^\w+:\/\/([a-zA-Z0-9_\-.]+\.(\w{3}))(:|\/)/)
-        
+
         # TLD Check, until we have GSA approval marking
         if m && m[1].include?("whitehouse.gov")
           @variation = 'whitehouse'
@@ -38,16 +38,16 @@ class WidgetsController < ApplicationController
           @variation = 'gov'
         end
       end
-      
+
       return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => @variation))
     end
-    
+
     # HACK: Support old template options
     if (!params[:template].blank? &&
         (tm = params[:template].match(/(\w+)_template\.html/)))
       return redirect_to('/widgets/' + params[:id] + '/' + tm[1])
     end
-    
+
     if params[:customization_id]
       begin
         @theme.merge!(WidgetCustomization.find(params[:customization_id]).customization)
@@ -82,9 +82,9 @@ class WidgetsController < ApplicationController
 
     @meta_description = Helper.instance.meta_description(@view)
     @meta_keywords = Helper.instance.meta_keywords(@view)
-    
+
     @is_gov_widget = @variation == 'gov' || @variation == 'whitehouse'
-    
+
     # Wire in custom behaviors for whitehouse/gov
     @theme[:style][:custom_stylesheet] = @variation
     if @variation == 'whitehouse'
@@ -99,23 +99,25 @@ class WidgetsController < ApplicationController
     if @variation == 'black'
       @theme[:frame][:color] = '#666666'
     end
+    
+    @display = @view.display
   end
-  
+
   def meta_tab_header
     if (!params[:tab])
       return
     end
-    
+
     @tabKey = params[:tab]
     @view = View.find(params[:id])
     render_tab_header(@tabKey, @view)
   end
-  
+
   def meta_tab
     if (!params[:tab])
       return
     end
-    
+
     @tabKey = params[:tab]
     @view = View.find(params[:id])
     if (@tabKey == "activity")

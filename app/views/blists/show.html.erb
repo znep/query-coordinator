@@ -1,7 +1,10 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
   <%= stylesheet_link_merged 'blists-show' %>
-  <title><%= @view.name %> | <%= th.site_title %></title>
+  <% @display.required_stylesheets.each do |css| %>
+    <%= stylesheet_link_merged css %>
+  <% end %>
+  <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
@@ -15,9 +18,9 @@
 <div class="scrollContentColumn">
   <div id='lensContainer' class='mainContent'>
     <ul class='tabList'>
-      <%- if current_user -%>
-      <li class='backLink'><a title='Back to <%= t :blists_name %>'
-        href='<%= blists_path() %>'>Back to <%= t :blists_name %></a></li>
+      <%- if (CurrentDomain.member?(current_user) || (current_user && module_enabled?(:community_creation))) -%>
+        <li class='backLink'><a title='Back to <%= t :blists_name %>'
+          href='<%= blists_path() %>'>Back to <%= t :blists_name %></a></li>
       <%- end -%>
       <li class='main even <%= @is_child_view ? '' : 'active' %>'>
         <div class='wrapper'>
@@ -51,8 +54,7 @@
       <%- if @is_child_view -%>
       <li class='active filter' id='viewId_<%= @view.id %>'>
         <div class='wrapper'>
-          <a class='clipText<%= @view.is_calendar? ? " calendar" : "" %>
-            <%= @view.is_visualization? ? " visualization" : "" %>'
+          <a class='clipText <%= @view.display.link_css_class %>'
             href='<%= @view.href %>'
             title='<%= @view.name %>'><%= @view.name %></a>
           <a href='#closeFilter' class='close' title='Close'>Close</a>
@@ -298,7 +300,7 @@
         </div>
         <%- end -%>
 
-        <div id='dataGrid' class='scrollContent'></div>
+        <div id='dataGrid' class='scrollContent'><%= raw @display.render_body self %></div>
 
       </div>
     </div>
@@ -355,8 +357,6 @@
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
   <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
-  <%= render(:partial => "shared/calendar",
-    :locals => { :view => @view, :grid_div => "dataGrid" }) %>
 
   <%- if !current_user -%>
   <%= render :partial => 'login' %>
@@ -365,6 +365,7 @@
 
   <%= javascript_include_merged 'shared-common-all' %>
   <script type="text/javascript">
+    <%= raw @display.render_inline_setup_js self %>
     blist.namespace.fetch('blist.blistGrid');
     <%- if !current_user.nil? -%>
     blist.currentUserId = "<%= current_user.id %>";
@@ -383,4 +384,12 @@
 
   <%= render(:partial => 'shared/table_editor_js') %>
   <%= javascript_include_merged 'blists-show' %>
+  <% @display.required_javascripts.each do |js| %>
+    <%= javascript_include_merged js %>
+  <% end %>
+  <script type="text/javascript">
+$(function() {
+    <%= raw @display.render_inline_runtime_js self %>
+});
+  </script>
 <% end %>

@@ -9,9 +9,9 @@ class StatsController < ApplicationController
     @dataset = View.find(params[:id])
     @show_search_form = false
 
-    if(!current_user || !current_user.can_access_premium_on?(@dataset))
-      # User is not logged on or cannot access stats, redirect them to the solution page
-      return redirect_to('/solution')
+    if (!CurrentDomain.member?(current_user) || !CurrentDomain.module_available?(:advanced_metrics))
+      # Current user is not a member of the org or the org doesn't have metrics
+      return upsell_or_404
     end
 
     if (@dataset.createdAt.nil?)

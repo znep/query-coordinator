@@ -90,7 +90,7 @@
         $viz.empty();
         $viz.css('overflow', 'hidden');
         var chart = new blist.widgets.visualization.chartClass($viz[0]);
-        chart.draw(config._data, $.extend({},
+        chart.draw(config._data, $.extend({legendFontSize: 12},
             blist.widgets.visualization.displayFormat,
             {height: $viz.height(), width: $viz.width()}) );
     };

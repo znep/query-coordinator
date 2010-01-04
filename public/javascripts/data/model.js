@@ -1265,6 +1265,9 @@ blist.namespace.fetch('blist.data');
                         rows: [row], parentColumn: parCol}); }
                 }
 
+                setRowMetadata([row], parCol.metaChildren,
+                    parCol.dataMungeChildren);
+
                 if (!row.saving[parCol.dataIndex])
                 { row.saving[parCol.dataIndex] = []; }
                 row.saving[parCol.dataIndex][column.dataIndex] = true;
@@ -1273,6 +1276,8 @@ blist.namespace.fetch('blist.data');
             }
             else if (column)
             {
+                setRowMetadata([row], meta.metaColumns, meta.dataMungeColumns);
+
                 row.saving[column.dataIndex] = true;
                 if (row.error) { delete row.error[column.dataIndex]; }
             }
@@ -1463,6 +1468,11 @@ blist.namespace.fetch('blist.data');
                             installIDs();
                             delete newRow.isNew;
                             delete newRow.type;
+
+                            setRowMetadata([newRow], metaCols,
+                                    parentColumn ?
+                                        parentColumn.dataMungeChildren :
+                                        meta.dataMungeColumns);
 
                             pendingRowEdits[newRow.id] = pendingRowEdits[oldID];
                             delete pendingRowEdits[oldID];

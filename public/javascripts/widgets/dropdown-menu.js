@@ -110,6 +110,10 @@
                 }
             });
 
+            $menu.unbind('close.dropdownMenu');
+            $menu.bind('close.dropdownMenu', function (event)
+            { hideMenu($menu); });
+
             // If they want a callback when a link is clicked, add it
             if (config.linkCallback !== undefined)
             {
@@ -340,8 +344,8 @@
     {
         var $target = $(event.target);
         if ($target.parents('*').index($menu[0]) < 0 ||
-            $target.is('a') ||
-            $target.parents('a').length > 0)
+            $target.is('a:not(.noClose)') ||
+            $target.parents('a:not(.noClose)').length > 0)
         {
             hideMenu($menu);
         }

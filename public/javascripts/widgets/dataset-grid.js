@@ -457,15 +457,29 @@
                     colAdjust = '_' + col.header.indexInLevel;
                     subRowLookup = col.header.dataLookupExpr;
                 }
-                return '(permissions.canDelete && row' + subRowLookup +
-                        '.type != "blank" ? ' +
+                return '((permissions.canDelete || ' +
+                            'permissions.canEdit && !(row.level > 0)) && row' +
+                        subRowLookup + '.type != "blank" ? ' +
                         '"<a class=\'menuLink\' href=\'#row-menu_" + ' +
                         'row.id + "' + colAdjust + '\'></a>' +
                         '<ul class=\'menu rowMenu\' id=\'row-menu_" + row.id + "' +
-                        colAdjust + '\'><li class=\'delete\'>' +
+                        colAdjust + '\'>" + ' +
+                        '(permissions.canEdit && !(row.level > 0) ? ' +
+                        '"<li class=\'tags\'>' +
+                        '<a href=\'#row-tag_" + row.id + "' + colAdjust +
+                        '\' class=\'noClose\'>Tag Row</a>' +
+                        '<form class=\'editContainer\'>' +
+                        '<input />' +
+                        '<a class=\'tagSubmit\' href=\'#saveTags\' ' +
+                        'title=\'Save\'>Save Tags</a>' +
+                        '<a class=\'tagCancel noClose\' href=\'#cancelTags\' ' +
+                        'title=\'Cancel\'>Cancel</a>' +
+                        '</form>' +
+                        '</li>" : "") + ' +
+                        '(permissions.canDelete ? "<li class=\'delete\'>' +
                         '<a href=\'#row-delete_" + row.id + "' + colAdjust +
-                        '\'>Delete Row</a></li>' +
-                        '<li class=\'footer\'><div class=\'outerWrapper\'>' +
+                        '\'>Delete Row</a></li>" : "") + ' +
+                        '"<li class=\'footer\'><div class=\'outerWrapper\'>' +
                         '<div class=\'innerWrapper\'>' +
                         '<span class=\'colorWrapper\'>' +
                         '</span></div>' +
@@ -480,50 +494,121 @@
         var $cell = $(curCell);
         if (!$cell.data('row-menu-applied'))
         {
-            $cell.find('ul.menu').dropdownMenu({
+            var $menu = $cell.find('ul.menu');
+            $menu.dropdownMenu({
                 menuContainerSelector: ".blist-table-row-handle",
                 triggerButtonSelector: "a.menuLink",
+                openCallback: function ($menu)
+                    { rowMenuOpenCallback(datasetObj, $menu); },
                 linkCallback: function (e)
                     { rowMenuHandler(datasetObj, e); },
                 pullToTop: true
             });
+
+            $menu.find('li.tags .editContainer a').click(function(e)
+            {
+                e.preventDefault();
+                var $link = $(e.currentTarget);
+                // Href that we care about starts with # and parts are
+                // separated with _ IE sticks the full thing, so slice
+                // everything up to #
+                var href = $link.attr('href');
+                switch(href.slice(href.indexOf('#') + 1))
+                {
+                    case 'saveTags':
+                        submitRowTagsMenu(datasetObj, $menu);
+                        break;
+                    case 'cancelTags':
+                        hideRowTagsMenu($menu);
+                        break;
+                }
+            });
+
+            $menu.find('li.tags .editContainer input').keypress(function(e)
+            {
+                if (e.keyCode == 27) // ESC
+                {
+                    hideRowTagsMenu($menu);
+                    $menu.focus();
+                }
+            });
+
+            $menu.find('li.tags form.editContainer').submit(function(e)
+            {
+                e.preventDefault();
+                submitRowTagsMenu(datasetObj, $menu);
+            });
+
             $cell.data('row-menu-applied', true);
         }
     };
+
+    var submitRowTagsMenu = function(datasetObj, $menu)
+    {
+        $menu.trigger('close');
+
+        var model = datasetObj.settings._model;
+
+        var newVal = $.map($menu.find('li.tags .editContainer input')
+            .val().split(','), function(t, i) { return $.trim(t); });
+        var row = model.getByID($menu.attr('id').split('_')[1]);
+        if ($.compareValues(row.tags, newVal)) { return; }
+
+        var column = $.grep(model.meta().view.columns, function(c, i)
+            { return c.dataTypeName == 'tag'; });
+
+        model.saveRowValue(newVal, row, model.meta().allColumns[column[0].id],
+            true);
+    };
+
+    var hideRowTagsMenu = function($menu)
+    { $menu.removeClass('tagsShown'); };
+
+    var rowMenuOpenCallback = function(datasetObj, $menu)
+    { hideRowTagsMenu($menu); };
 
     /* Handle clicks in the row menus */
     var rowMenuHandler = function(datasetObj, event)
     {
         event.preventDefault();
+        var $link = $(event.currentTarget);
         // Href that we care about starts with # and parts are separated with _
         // IE sticks the full thing, so slice everything up to #
-        var href = $(event.currentTarget).attr('href');
+        var href = $link.attr('href');
         var s = href.slice(href.indexOf('#') + 1).split('_');
         if (s.length < 2)
-        {
-            return;
-        }
+        { return; }
 
+        var $menu = $link.closest('.rowMenu');
         var action = s[0];
         var rowId = s[1];
         var model = datasetObj.settings._model;
         var view = model.meta().view;
-        if (action == 'row-delete')
+        switch (action)
         {
-            if (s[2] !== undefined)
-            {
-                model.removeChildRows(model.getByID(rowId),
-                    model.column(s[2]), true);
-            }
-            else
-            {
-                model.selectRow(model.getByID(rowId));
-                var rows = [];
-                $.each(model.selectedRows, function(id, index)
-                        { rows.push(model.getByID(id)); });
-                model.remove(rows, true);
-            }
-            datasetObj.summaryStale = true;
+            case 'row-delete':
+                if (s[2] !== undefined)
+                {
+                    model.removeChildRows(model.getByID(rowId),
+                            model.column(s[2]), true);
+                }
+                else
+                {
+                    model.selectRow(model.getByID(rowId));
+                    var rows = [];
+                    $.each(model.selectedRows, function(id, index)
+                            { rows.push(model.getByID(id)); });
+                    model.remove(rows, true);
+                }
+                datasetObj.summaryStale = true;
+                break;
+            case 'row-tag':
+                var row = model.getByID($menu.attr('id').split('_')[1]);
+                $menu.find('li.tags .editContainer input')
+                    .val(row.tags.join(', '));
+
+                $link.closest('.rowMenu').toggleClass('tagsShown');
+                break;
         }
     };
 

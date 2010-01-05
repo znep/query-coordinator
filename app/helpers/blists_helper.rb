@@ -256,6 +256,7 @@ module BlistsHelper
       (is_widget ? [] : [
       {'text' => 'Column Totals', 'class' => 'columnTotals',
       'if' => !view.is_alt_view?,
+      'owner_item' => true,
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>
           {'nested_table_children' => true, 'list' => true},

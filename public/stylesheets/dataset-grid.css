@@ -810,6 +810,36 @@ ul.menu.rowMenu li
     background-repeat: no-repeat;
 }
 
+.rowMenu li.tags a
+{
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png);
+    background-position: 2px -439px;
+}
+.rowMenu li.tags .editContainer
+{
+    display: none;
+    padding-left: 30px;
+}
+.rowMenu li.tags .editContainer input
+{
+    vertical-align: top;
+    width: 65%;
+}
+.rowMenu li.tags .editContainer a
+{
+    display: inline-block;
+    height: 23px;
+    padding: 0;
+    text-indent: -9999px;
+    width: 23px;
+}
+.rowMenu li.tags .editContainer a.tagSubmit { background-position: 0 -1221px; }
+.rowMenu li.tags .editContainer a.tagCancel { background-position: 0 -324px; }
+
+.rowMenu.tagsShown { width: 20em; }
+.rowMenu.tagsShown li.tags .editContainer { display: block; }
+
+
 .rowMenu li.delete a { background-position: 5px -57px; }
 
 .blist-table .blist-hot-row .blist-td.blist-table-row-numbers,

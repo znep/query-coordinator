@@ -656,7 +656,8 @@ blist.namespace.fetch('blist.data');
                     v.dataTypeName == 'tag')
                 {
                     var adjName = v.name;
-                    if (v.name == 'sid') { adjName = 'id'; }
+                    if (v.dataTypeName == 'tag') { adjName = 'tags'; }
+                    else if (v.name == 'sid') { adjName = 'id'; }
                     else if (v.name == 'id') { adjName = 'uuid'; }
                     metaCols.push({name: adjName, index: i});
                 }

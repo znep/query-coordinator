@@ -42,8 +42,13 @@ class Displays::Base
         []
     end
 
-    # Render the body of the view as HTML.  Context is the "self" for the view in which the display is embedded.  You
-    # can use this to render partials if so desired.
+    # Name of partial to render if you don't want to write all your HTML in strings
+    def render_partial
+      return nil
+    end
+
+    # Render the body of the view as HTML.  Context is the "self" for the view
+    # in which the display is embedded
     def render_body(context)
         return ''
     end

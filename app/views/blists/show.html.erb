@@ -325,7 +325,10 @@
           <%- end -%>
         </div>
         <%- end -%>
-        <div id='dataGrid' class='scrollContent gridItem'><%= raw @display.render_body self %></div>
+        <div id='dataGrid' class='scrollContent gridItem'>
+          <%= raw @display.render_body self %>
+          <%= render(:partial => @display.render_partial) %>
+        </div>
 
       </div>
     </div>

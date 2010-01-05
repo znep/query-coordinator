@@ -286,9 +286,9 @@ class View < Model
 
   # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.
   def display
-    if self.displayType
-      return @display if @display
+    return @display if @display
 
+    if self.displayType
       begin
         display_class = eval "Displays::#{self.displayType.camelize}"
       rescue NameError

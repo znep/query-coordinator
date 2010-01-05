@@ -1,0 +1,16 @@
+.formView .line { margin: 0.5em 0; }
+
+.formView label
+{
+    float: left;
+    font-size: 1.2em;
+    line-height: 1.2em;
+    padding-top: 0.3em;
+    text-align: right;
+    width: 10em;
+}
+
+.formView .fieldInput
+{
+    width: 20em;
+}

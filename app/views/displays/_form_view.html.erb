@@ -1,0 +1,9 @@
+<div class='formView'>
+  <%- @view.columns.each do |c| -%>
+  <%- next if c.client_type == 'meta_data' || c.flag?('hidden') -%>
+  <div class='line clearfix'>
+    <label><%= c.name %></label>
+    <input type='text' class='fieldInput' />
+  </div>
+  <%- end -%>
+</div>

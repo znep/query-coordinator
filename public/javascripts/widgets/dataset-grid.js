@@ -472,7 +472,7 @@
                         '<input />' +
                         '<a class=\'tagSubmit\' href=\'#saveTags\' ' +
                         'title=\'Save\'>Save Tags</a>' +
-                        '<a class=\'tagCancel noClose\' href=\'#cancelTags\' ' +
+                        '<a class=\'tagCancel\' href=\'#cancelTags\' ' +
                         'title=\'Cancel\'>Cancel</a>' +
                         '</form>' +
                         '</li>" : "") + ' +
@@ -565,7 +565,11 @@
     { $menu.removeClass('tagsShown'); };
 
     var rowMenuOpenCallback = function(datasetObj, $menu)
-    { hideRowTagsMenu($menu); };
+    {
+        $menu.find('li.tags')
+            .toggle(!datasetObj.settings._model.hasSelectedRows());
+        hideRowTagsMenu($menu);
+    };
 
     /* Handle clicks in the row menus */
     var rowMenuHandler = function(datasetObj, event)

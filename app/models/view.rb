@@ -367,6 +367,10 @@ class View < Model
     @@visualization_config.has_key?(self.displayType) ?
       @@visualization_config[self.displayType]['library'] : nil
   end
+  
+  def displayFormat
+    '{showTip: true, enableScrollWheel: true}' if self.displayType == 'map'
+  end
 
   @@color_defaults = ['#ff0000', '#ff9900', '#ffff00', '#00ff00', '#00ffff',
     '#0000ff', '#9900ff', '#ff00ff']

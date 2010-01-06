@@ -1,9 +1,12 @@
 <div class='formView'>
-  <%- @view.columns.each do |c| -%>
-  <%- next if c.client_type == 'meta_data' || c.flag?('hidden') -%>
-  <div class='line clearfix'>
-    <label><%= c.name %></label>
-    <input type='text' class='fieldInput' />
-  </div>
-  <%- end -%>
+  <form action='/views/<%= @view.id %>/rows?method=createFormPost' method='POST'>
+    <%- @view.columns.each do |c| -%>
+    <%- next if c.client_type == 'meta_data' || c.flag?('hidden') -%>
+    <div class='line clearfix'>
+      <label><%= c.name %></label>
+      <input type='text' class='fieldInput' name='<%= c.id %>' />
+    </div>
+    <%- end -%>
+    <input type='submit' />
+  </form>
 </div>

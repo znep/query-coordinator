@@ -1,5 +1,5 @@
 <div class='formView'>
-  <form action='/views/<%= @view.id %>/rows?method=createFormPost' method='POST'>
+  <form action='/views/<%= @view.id %>/rows.html?method=createFormPost' method='POST'>
     <%- @view.columns.each do |c| -%>
     <%- next if c.client_type == 'meta_data' || c.flag?('hidden') -%>
     <div class='line clearfix'>

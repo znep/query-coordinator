@@ -99,6 +99,8 @@ class WidgetsController < ApplicationController
     if @variation == 'black'
       @theme[:frame][:color] = '#666666'
     end
+    
+    @display = @view.display
   end
 
   def meta_tab_header

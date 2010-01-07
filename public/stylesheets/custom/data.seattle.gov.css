@@ -1,0 +1,56 @@
+#discover .seattleWelcomeHeader
+{
+    background: #fff url(/stylesheets/images/domains/data.seattle.gov/header_bg.jpg) no-repeat right bottom;
+}
+
+#discover .seattleWelcomeHeader .pageBlockHeaderBR
+{
+    min-height: 26em;
+    padding: 2em;
+}
+
+#discover .seattleWelcomeHeader .pageBlockSearch
+{
+    margin-right: 0;
+}
+
+#discover .seattleWelcomeHeader .seattleTitle
+{
+    color: #555;
+    font-family: "Times New Roman", Times, Serif;
+    font-size: 1.8em;
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+#discover .seattleWelcomeHeader .seattleLogo
+{
+    background: transparent url(/stylesheets/images/domains/data.seattle.gov/logo_large.png) no-repeat;
+    height: 39px;
+    margin: 0.7em 1.3em;
+    text-indent: -9999px;
+    width: 426px;
+}
+
+#discover .seattleWelcomeHeader .seattleText
+{
+    color: #888;
+    font-size: 1.3em;
+    margin: 1.5em 1.8em;
+    width: 35em;
+}
+
+#discover .seattleWelcomeHeader .seattleText a
+{
+    color: #555;
+}
+
+#discover .seattleWelcomeHeader .seattleMain
+{
+    color: #555;
+    font-size: 1.4em;
+    font-weight: bold;
+    margin: 1em 1.5em 0.5em;
+    width: 50em;
+}

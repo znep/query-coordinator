@@ -276,16 +276,29 @@ class View < Model
   end
 
   def is_alt_view?
-    is_calendar? || is_visualization?
-  end
-
-  def is_calendar?
-    self.displayType == 'calendar'
+    is_visualization? || !display.is_a?(Displays::Legacy)
   end
 
   def can_add_calendar?
     columns.any? {|c| c.dataTypeName == 'date' && !c.flag?('hidden')} &&
       columns.any? {|c| c.dataTypeName == 'text' && !c.flag?('hidden')}
+  end
+
+  # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.
+  def display
+    if self.displayType
+      return @display if @display
+
+      begin
+        display_class = eval "Displays::#{self.displayType.camelize}"
+      rescue NameError
+        # Legacy display type -- rendering is handled by conditional view logic so this is primarily stubs
+        # TODO -- this is an actual error once all conditional view logic is removed
+      end
+    end
+    display_class = Displays::Legacy unless display_class
+
+    @display = display_class.new(self)
   end
 
   # return true if this view is a visualization (not a table)

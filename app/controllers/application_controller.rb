@@ -97,7 +97,7 @@ protected
   # The builtin rails page_cache_file function is broken with this type of
   # implementation...
   def self.page_cache_file(path)
-    if path == I18n.locale || path == I18n.locale + '/'
+    if path == CurrentDomain.cname || path == CurrentDomain.cname + '/'
       name = path += "/index"
     else
       name = URI.unescape(path.chomp('/'))
@@ -163,7 +163,7 @@ private
       # We failed at trying to find the current domain.
       # Log it, then just redir them to Socrata.
       notify_hoptoad :error_message => "Attempted access with CNAME #{request.host}, which we have no record of."
-      redirect_to 'http://socrata.com/'
+      redirect_to 'http://www.socrata.com/'
     end
   end
 

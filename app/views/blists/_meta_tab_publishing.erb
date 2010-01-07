@@ -30,6 +30,8 @@
         <%- if customization_id.empty? -%>
           <label for="publishVariation">Color</label>
           <%= select_tag("publishVariation", options_for_select({ 'Blue' => 'normal', 'Black' => 'black' })) %>
+        <%- else -%>
+          <%= hidden_field_tag("publishVariation", customization_id) %>
         <%- end -%>
       </p>
       <p id="sizeError" class="hide">The player must be at least 500 pixels wide by 425 pixels tall.</p>

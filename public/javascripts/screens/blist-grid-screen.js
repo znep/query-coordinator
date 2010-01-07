@@ -2,10 +2,10 @@ var blistGridNS = blist.namespace.fetch('blist.blistGrid');
 
 blist.blistGrid.getCookieHash = function()
 {
-    var dispType = 'filter';
-    if (blist.calendar.isCalendar) { dispType = 'calendar'; }
-    else if (blist.widgets.visualization.isVisualization)
-    { dispType = 'visualization'; }
+    var dispType = blist.display.type;
+    if (dispType != 'calendar' && dispType != 'visualization') {
+        dispType = 'filter';
+    }
     return {name: $.htmlUnescape(blistGridNS.viewName), id: blistGridNS.viewId,
         path: window.location.pathname, displayType: dispType};
 };
@@ -327,9 +327,7 @@ $(function ()
             validViewCallback: blistGridNS.updateValidView
         });
     }
-    else if (blist.calendar.isCalendar)
-    { $('#dataGrid').removeClass('scrollContent'); }
-    else if (blist.widgets.visualization.isVisualization)
+    else if (blist.display.type == 'visualization')
     { $('#dataGrid').visualization(); }
 
     $('.viewErrorContainer .removeViewLink').click(function(event)

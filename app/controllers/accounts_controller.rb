@@ -81,7 +81,7 @@ class AccountsController < ApplicationController
       req.set_form_data({'method' => 'forgotPassword', 'login' => params[:login]})
 
       # pass/spoof in the current domain cname
-      req['Host'] = CurrentDomain.cname
+      req['X-Socrata-Host'] = CurrentDomain.cname
 
       result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
         http.request(req)
@@ -111,7 +111,7 @@ class AccountsController < ApplicationController
                          'password' => params[:password]})
 
       # pass/spoof in the current domain cname
-      request['Host'] = CurrentDomain.cname
+      request['X-Socrata-Host'] = CurrentDomain.cname
 
       result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
         http.request(req)

@@ -319,10 +319,12 @@
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
 
+    <%- if !@view.is_invalid? -%>
     <%# Hard-code parameters for initial call here; if the Javascript ever
     changes, these will need to be updated %>
     blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
         'include_ids_after' => 50, 'include_aggregates' => true}) %>;
+    <%- end -%>
   </script>
 
   <%- if @view.can_edit() -%>

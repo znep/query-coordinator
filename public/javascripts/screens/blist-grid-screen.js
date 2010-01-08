@@ -333,11 +333,16 @@ $(function ()
     $('.viewErrorContainer .removeViewLink').click(function(event)
     {
         event.preventDefault();
+        if (!confirm('Are you sure you want to remove this view?'))
+        { return; }
         var $target = $(event.currentTarget);
         var href = $target.attr('href');
         var s = href.slice(href.indexOf('#') + 1).split('_');
         $.ajax({url: '/datasets/' + s[1],
             type: 'DELETE',
+            // we need to pass in empty data or Chrome screws up the request
+            data: " ",
+            contentType: "application/json",
             success: function()
             {
                 if (s.length > 2)

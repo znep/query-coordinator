@@ -16,12 +16,12 @@ blist.columns.properties.column = <%= @column.to_js %>;
       <div class="tabs">
         <ul class="tabSelector">
           <li><a id="general" href="#" class="selected">General</a></li>
-          <% if @column.has_formatting? %>
+          <%- if @column.has_formatting? -%>
               <li><a id="formatting" href="#">Formatting</a></li>
-          <% end %>
-          <% if @column.has_totals? %>
+          <%- end -%>
+          <%- if @column.has_totals? && !@view.is_grouped? -%>
               <li><a id="totals" href="#">Column Totals</a></li>
-          <% end %>
+          <%- end -%>
           <%#<li><a id="defaults" href="#">Default Values</a></li> %>
         </ul>
       </div>
@@ -35,15 +35,15 @@ blist.columns.properties.column = <%= @column.to_js %>;
       %>
 
       <%# Column totals tab %>
-      <%- if @column.has_totals? %>
+      <%- if @column.has_totals? && !@view.is_grouped? -%>
       <div id="totalsTab" class="tabContent">
         <h3>Column Total Options</h3>
         <h4 class="subtitle separator">Totals will appear at the bottom of the column while in table display mode</h4>
       </div>
-      <% end %>
+      <%- end -%>
 
       <%# Formatting tab %>
-      <%- if @column.has_formatting? %>
+      <%- if @column.has_formatting? -%>
       <div id="formattingTab" class="tabContent">
         <h3 class="separator">Alignment Options</h3>
         <ul class="alignment">
@@ -72,7 +72,7 @@ blist.columns.properties.column = <%= @column.to_js %>;
         <%= render(:partial => 'picklist_manager') %>
         <%- end -%>
       </div>
-      <%- end %>
+      <%- end -%>
 
       <%# General properties tab %>
       <div id="generalTab" class="tabContent">

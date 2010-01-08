@@ -1496,30 +1496,29 @@ div#sortBysList.reorderList li .itemWrapper
 
 /*** END: Filter dialog ***/
 
-
-/*** START: Show/hide dialog ***/
-.showHideWrapper .subtitle
+/*** START: Common styles for modals with column picker lists ***/
+.columnPickerModal .subtitle
 {
     color: #666666;
     font-size: 1.2em;
 }
 
-.showHideWrapper h4
+.columnPickerModal h4
 {
     color: #999999;
     font-weight: bold;
     margin-left: 0.8333em;
 }
 
-.showHideWrapper .listBlock { float: left; }
+.columnPickerModal .listBlock { float: left; }
 
-.showHideWrapper .listWrapper
+.columnPickerModal .listWrapper
 {
     margin: 1em;
     position: relative;
 }
 
-.showHideWrapper .border
+.columnPickerModal .border
 {
     border: 1px solid #999;
     height: 100%;
@@ -1529,7 +1528,7 @@ div#sortBysList.reorderList li .itemWrapper
     width: 26em;
 }
 
-.showHideWrapper .list
+.columnPickerModal .list
 {
     height: 19em;
     margin: 0;
@@ -1538,28 +1537,28 @@ div#sortBysList.reorderList li .itemWrapper
     width: 28.1em;
 }
 
-.showHideWrapper .reorderList ul
+.columnPickerModal .reorderList ul
 {
     border-width: 0 0 0 1px;
     width: 21.6667em;
 }
 
-.showHideWrapper .reorderList li .itemWrapper
+.columnPickerModal .reorderList li .itemWrapper
 {
     height: 20px;
     padding-top: 0;
 }
 
-.showHideWrapper .reorderList .activeList.ui-draggable-not-dragging li.hover .itemWrapper,
-.showHideWrapper .reorderList .activeList li.ui-draggable-dragging .itemWrapper
+.columnPickerModal .reorderList .activeList.ui-draggable-not-dragging li.hover .itemWrapper,
+.columnPickerModal .reorderList .activeList li.ui-draggable-dragging .itemWrapper
 {
     height: 20px;
     padding-top: 0;
 }
 
-.showHideWrapper .reorderList .activeList li .orderIndex { width: 1em; }
+.columnPickerModal .reorderList .activeList li .orderIndex { width: 1em; }
 
-.showHideWrapper ul .type
+.columnPickerModal ul .type
 {
     background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
     display: inline-block;
@@ -1569,8 +1568,8 @@ div#sortBysList.reorderList li .itemWrapper
     width: 20px;
 }
 
-.showHideWrapper .addAllLink,
-.showHideWrapper .removeAllLink
+.columnPickerModal .addAllLink,
+.columnPickerModal .removeAllLink
 {
     color: #333333;
     font-weight: bold;
@@ -1578,19 +1577,52 @@ div#sortBysList.reorderList li .itemWrapper
     text-transform: uppercase;
 }
 
-.showHideWrapper .activeBlock h4 { margin-left: 3.75em; }
-.showHideWrapper .activeBlock .removeAllLink { margin-left: 4.5em; }
-.showHideWrapper .activeBlock .border { left: 3.5em; }
-.showHideWrapper .activeBlock .list { padding-left: 3.5em; }
+.columnPickerModal .activeBlock h4 { margin-left: 3.75em; }
+.columnPickerModal .activeBlock .removeAllLink { margin-left: 4.5em; }
+.columnPickerModal .activeBlock .border { left: 3.5em; }
+.columnPickerModal .activeBlock .list { padding-left: 3.5em; }
 
-.showHideWrapper .swapArrows
+.columnPickerModal .swapArrows
 {
     float: left;
     margin-top: 11em;
 }
 
-.showHideWrapper .swapArrows a { position: static; }
-/*** END: Show/hide dialog ***/
+.columnPickerModal .swapArrows a { position: static; }
+/*** END: Common styles for modals with column picker lists ***/
+
+
+/*** START: Grouping & Aggregates dialog ***/
+.groupingWrapper .loading
+{
+    background: white url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center;
+    display: none;
+    height: 90%;
+    filter: alpha(opacity=60); /* for IE */
+    margin-left: -1em;
+    margin-top: -1em;
+    opacity: 0.6;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+}
+
+.groupingWrapper .list { height: 10em; }
+.groupingWrapper .swapArrows { margin-top: 8em; }
+
+.groupingWrapper .itemWrapper .controls
+{
+    border-left: none;
+    height: 1.2em;
+    padding-bottom: 0.5em;
+    padding-top: 0.15em;
+    width: 7.5em;
+}
+
+.groupingWrapper .itemWrapper .controls select { width: 100%; }
+
+.groupingWrapper .inactiveList .itemWrapper .controls { display: none; }
+/*** END: Grouping & Aggregates dialog ***/
 
 
 /*** START: View create/setup dialogs ***/

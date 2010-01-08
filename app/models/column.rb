@@ -57,7 +57,7 @@ class Column < Model
       {'title' => 'Minimum', 'name' => 'minimum'}
     ]
 
-    case dataTypeName.downcase
+    case (originalDataTypeName || dataTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "photo", "phone", "checkbox", "flag", "url",
@@ -283,5 +283,14 @@ class Column < Model
       return !self.format.nil? && self.format.isList
     end
     false
+  end
+
+  def is_grouped?(view)
+    !view.query.nil? && !view.query.groupBys.nil? &&
+      view.query.groupBys.any? {|g| g['columnId'] == self.id}
+  end
+
+  def is_group_aggregate?
+    !self.format.nil? && !self.format.grouping_aggregate.nil?
   end
 end

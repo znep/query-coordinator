@@ -9,6 +9,7 @@
   </p>
 
   <% form_tag("#{@view.href}/create_calendar") do %>
+    <input type='hidden' name='view_query' value='<%= @view.query.to_json %>' />
     <div class='section'>
       <h3>Name</h3>
       <p class='subtitle separator'>

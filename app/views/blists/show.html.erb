@@ -15,7 +15,7 @@
 
 <div id='overlay'></div>
 
-<div class="scrollContentColumn">
+<div class="scrollContentColumn <%= @view.is_invalid? ? 'invalidView' : '' %>">
   <div id='lensContainer' class='mainContent'>
     <ul class='tabList'>
       <%- if (CurrentDomain.member?(current_user) || (current_user && module_enabled?(:community_creation))) -%>
@@ -68,7 +68,7 @@
 
     <div class='outerContent'>
       <div class='content'>
-        <div class='headerBar clearfix'>
+        <div class='headerBar clearfix gridItem'>
           <ul>
             <%# Main menu %>
             <li class='separator mainViewOption'>
@@ -85,11 +85,12 @@
 
             <%# Undo/redo %>
             <%- if can_edit && !@view.is_alt_view? -%>
-            <li class='disabled undoItem'><a href='#Undo' id='undoLink'
-              class='staticLink' title='Undo'>
-              <span class='linkIcon'>Undo</span>
-            </a></li>
-            <li class='noSpacing separator disabled redoItem'>
+            <li class='disabled undoItem ungroupedOption'>
+              <a href='#Undo' id='undoLink' class='staticLink' title='Undo'>
+                <span class='linkIcon'>Undo</span>
+              </a>
+            </li>
+            <li class='noSpacing separator disabled redoItem ungroupedOption'>
               <a href='#Redo' id='redoLink' class='staticLink' title='Redo'>
                 <span class='linkIcon'>Redo</span>
               </a>
@@ -127,7 +128,7 @@
             <%- end -%>
 
             <%- if @view.can_edit() && !@view.is_alt_view? -%>
-            <li class='separator mainViewSeparator'>
+            <li class='separator mainViewSeparator ungroupedOption'>
               <a id='formatLink' class='staticLink' href='#formatMenu'>
                 <span class='linkIcon'>Format</span>
               </a>
@@ -170,7 +171,7 @@
         </div>
 
         <%- if @view.can_edit() && !@view.is_alt_view? -%>
-        <div id='formatMenu' class='fixedMenu disabled'>
+        <div id='formatMenu' class='fixedMenu disabled ungroupedOption'>
           <div class='outerWrapper'>
             <ul class='innerWrapper clearfix'>
               <li class='column'>
@@ -300,7 +301,31 @@
         </div>
         <%- end -%>
 
-        <div id='dataGrid' class='scrollContent'><%= raw @display.render_body self %></div>
+        <%- if @view.is_invalid? -%>
+        <div class='viewErrorContainer scrollContent'>
+
+          <%- if is_owner -%>
+          <div class='viewError'><%= @view.message %></div>
+          <ul class='actionButtons clearfix'>
+            <%- if @view.message.include? 'group' -%>
+            <li><a href='<%= blist_groupings_path(@view.id) %>'
+              rel='modal' class='arrowButton'>Edit Grouping</a></li>
+            <%- elsif @view.message.include? 'filter' -%>
+            <li><a href='<%= blist_filters_path(@view.id) %>'
+              rel='modal' class='arrowButton'>Edit Filters</a></li>
+            <%- end -%>
+            <li><a class='removeViewLink'
+              href='#remove-view_<%= @view.id %>_<%= @view.parent_dataset.id %>'>
+              Remove this View
+            </a></li>
+          </ul>
+
+          <%- else -%>
+          <div class='viewError'>This view is unable to be displayed</div>
+          <%- end -%>
+        </div>
+        <%- end -%>
+        <div id='dataGrid' class='scrollContent gridItem'><%= raw @display.render_body self %></div>
 
       </div>
     </div>
@@ -374,12 +399,13 @@
     blist.blistGrid.blistId = "<%= @view.tableId %>";
     blist.blistGrid.viewId = "<%= @view.id %>";
     blist.blistGrid.viewName = "<%= @view.name %>";
-    blist.blistGrid.isOwner = <%= is_owner ? 'true' : 'false' %>;
-    blist.blistGrid.canAddColumns = <%= is_owner && is_blist ? 'true' : 'false' %>;
+    blist.blistGrid.isOwner = <%= is_owner.to_s %>;
+    blist.blistGrid.canAddColumns = <%= is_owner && is_blist.to_s %>;
     <%- if @is_child_view -%>
     blist.blistGrid.isFilter = true;
     <%- end -%>
-    blist.blistGrid.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
+    blist.blistGrid.isAltView = <%= @view.is_alt_view?.to_s %>;
+    blist.blistGrid.isInvalidView = <%= @view.is_invalid?.to_s %>;
   </script>
 
   <%= render(:partial => 'shared/table_editor_js') %>

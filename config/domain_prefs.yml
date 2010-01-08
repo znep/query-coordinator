@@ -67,7 +67,7 @@ theme:
 
 strings.company: Socrata
 strings.site_title: Socrata | Making Data Social
-strings.discover_header: Discover useful, unique, and unusual dataset created by the community.
+strings.discover_header: Discover useful, unique, and unusual datasets created by the community.
 strings.copyright_string: '&copy; 2009 Socrata, Inc.'
 
 features.upsell: true

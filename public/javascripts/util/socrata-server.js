@@ -27,7 +27,7 @@ $(function ()
                 {
                     var errBody = $.json.deserialize(xhr.responseText);
                     if (typeof origBR.error == 'function')
-                    { origBR.error(errBody); }
+                    { origBR.error(errBody.message); }
                     if (typeof callbacks.error == 'function')
                     { callbacks.error(); }
                 },

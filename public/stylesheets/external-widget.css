@@ -12,7 +12,8 @@
     position: relative;
 }
 
-.chartContainer .error
+.chartContainer .error,
+.viewError
 {
     font-size: 1.4em;
     font-weight: bold;

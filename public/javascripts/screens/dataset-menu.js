@@ -17,6 +17,69 @@ blist.datasetMenu.menuHandler = function(event)
     var hideTags = true;
     switch (action)
     {
+        case 'sort':
+            var url = s.slice(1).join('_');
+            var model = $('.blist-table').blistModel();
+            var view = model.meta().view;
+            var params = [];
+
+            var sortIds = {};
+            if (view.query.orderBys !== undefined)
+            {
+                var sorts = $.map(view.query.orderBys, function(o, i)
+                {
+                    sortIds[o.expression.columnId] = true;
+                    return o.expression.columnId + ':' +
+                        (o.ascending ? 'asc' : 'desc');
+                });
+                if (sorts.length > 0) { params.push('sorts=' + sorts.join(',')); }
+                else { params.push('sorts='); }
+            }
+            else { params.push('sorts='); }
+
+            if (model.isGrouped())
+            {
+                var unsorts = $.map(view.columns, function(c, i)
+                {
+                    if (c.dataTypeName !== 'meta_data' && !sortIds[c.id])
+                    { return c.id; }
+                });
+                if (unsorts.length > 0)
+                { params.push('unsorts=' + unsorts.join(',')); }
+            }
+
+            if (params.length > 0) { url += '?' + params.join('&'); }
+            $('#modal').jqmShow($('<a href="' + url + '"></a>'));
+            break;
+        case 'group':
+            var url = s.slice(1).join('_');
+            var model = $('.blist-table').blistModel();
+            var view = model.meta().view;
+            var params = [];
+            if (model.isGrouped())
+            {
+                var groups = $.map(view.query.groupBys, function(g, i)
+                    { return g.columnId; }).join(',');
+                params.push('groups=' + groups);
+            }
+
+            var aggs = [];
+            $.each(view.columns, function(i, c)
+            {
+                if (c.format !== undefined &&
+                    c.format.grouping_aggregate !== undefined)
+                {
+                    aggs.push(c.id + ':' + c.format.grouping_aggregate);
+                }
+            });
+            if (aggs.length > 0) { params.push('aggs=' + aggs.join(',')); }
+
+            if ($('.blist-table').datasetGrid().isTempView)
+            { params.push('isTempView=true'); }
+
+            if (params.length > 0) { url += '?' + params.join('&'); }
+            $('#modal').jqmShow($('<a href="' + url + '"></a>'));
+            break;
         case 'share':
             $("#infoPane .summaryTabs").infoPaneNavigate()
                 .activateTab("#tabSharing");

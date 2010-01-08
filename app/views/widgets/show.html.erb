@@ -173,6 +173,7 @@
 <% end %>
 <div id='header' class='headerBar'><div class='wrapperTR'>
     <div class='wrapperT clearfix'>
+      <%- if !@view.is_invalid? -%>
           <%- menu_options = dataset_menu_lookup(@view, true, @theme) -%>
           <a id='mainLink' class="menuLink" href="#main-menu"
             title="Click for more options">Menu</a>
@@ -207,6 +208,7 @@
               </div>
             </div>
           </form>
+      <%- end -%>
 
     </div>
 </div></div>
@@ -226,12 +228,13 @@
           </div>
         </div>
       <%- end -%>
-      
+
       <div class="gridContainer">
+        <%- if !@view.is_invalid? -%>
         <div id="data-grid">
           <noscript>
             <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
-    
+
             <p><%= @view.description %></p>
 
             <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
@@ -239,18 +242,32 @@
             <% end %>
           </noscript>
         </div>
+        <%- else -%>
+        <div class='viewErrorContainer content'>
+          <%- if current_user.id == @view.owner.id -%>
+          <div class='viewError'><%= @view.message %></div>
+          <ul class='actionButtons clearfix'>
+            <li><a href="<%= @view.href %>" rel="external"
+              class='arrowButton'>Edit View</a></li>
+          </ul>
+          <%- else -%>
+          <div class='viewError'>This view is unable to be displayed</div>
+          <%- end -%>
+        </div>
+        <%- end -%>
       </div>
-      
+
       <%- if @theme[:meta].any?{ |name, properties| properties[:show] } -%>
         <div id="widgetMeta" class="metadataPane">
-          <%- if !@view.nil? -%>
+          <%- if !@view.nil? && !@view.is_invalid? -%>
             <%= render(:partial => "widget_meta",
-                  :locals => { :view => @view, :page_single => false, :theme => @theme }) %>
+              :locals => { :view => @view, :page_single => false,
+                :theme => @theme }) %>
           <%- end -%>
         </div>
       <%- end -%>
     </div></div>
-    
+
     <div class="widgetFooterWrapper"><div class="widgetFooterInner">
       <%- if @theme[:frame][:logo] != 'none' -%>
         <p class="widgetLogoWrapper">
@@ -258,7 +275,7 @@
             Socrata Social Data Player
           </a>
         </p>
-      
+
         <%- if @theme[:frame][:footer_link][:show] -%>
           <p class="getPlayerAction">
             <a href="<%= @theme[:frame][:footer_link][:url] %>" rel="external">

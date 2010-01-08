@@ -5,6 +5,7 @@ class ShowHidesController < ApplicationController
     @selected = []
     @unselected = []
     @view.columns.each do |c|
+      next if (@view.is_grouped? && !c.is_grouped?(@view) && !c.is_group_aggregate?)
       if c.flag?('hidden')
         @unselected << c
       else

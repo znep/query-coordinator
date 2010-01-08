@@ -255,6 +255,7 @@ blist.namespace.fetch('blist.data');
                                 });
                             if (isEmpty) { r[c.index] = null; }
                         }
+
                         if (c.type == 'arrayToObject' &&
                             r[c.index] && r[c.index] instanceof Array)
                         {
@@ -265,6 +266,11 @@ blist.namespace.fetch('blist.data');
                                 });
                             r[c.index] = o;
                         }
+
+                        if (c.type == 'arrayToFirstValue' &&
+                            r[c.index] && r[c.index] instanceof Array)
+                        { r[c.index] = r[c.index][0]; }
+
                         if (c.type == 'falseToNull' && r[c.index] === false)
                         { r[c.index] = null; }
                         if (c.type == 'zeroToNull' && r[c.index] === 0)
@@ -305,7 +311,9 @@ blist.namespace.fetch('blist.data');
                 $.each(meta.columnFilters, function (i, v)
                     { if (v != null) { isProg = true; return false; } });
             }
-            if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 1)
+            if (meta.view !== undefined && meta.view.query !== undefined &&
+                meta.view.query.orderBys !== undefined &&
+                meta.view.query.orderBys.length > 1)
             {
                isProg = true;
             }
@@ -320,6 +328,13 @@ blist.namespace.fetch('blist.data');
             return meta.title || (meta.view && meta.view.name) || "";
         };
 
+        this.isGrouped = function()
+        {
+            return meta.view !== undefined && meta.view.query !== undefined &&
+                meta.view.query.groupBys !== undefined &&
+                meta.view.query.groupBys.length > 0;
+        };
+
         /**
          * Get rights for this view
          */
@@ -331,19 +346,19 @@ blist.namespace.fetch('blist.data');
 
         this.canWrite = function()
         {
-            return meta.view && meta.view.rights &&
+            return meta.view && !this.isGrouped() && meta.view.rights &&
                 $.inArray('write', meta.view.rights) >= 0;
         };
 
         this.canAdd = function()
         {
-            return meta.view && meta.view.rights &&
+            return meta.view && !this.isGrouped() && meta.view.rights &&
                 $.inArray('add', meta.view.rights) >= 0;
         };
 
         this.canDelete = function()
         {
-            return meta.view && meta.view.rights &&
+            return meta.view && !this.isGrouped() && meta.view.rights &&
                 $.inArray('delete', meta.view.rights) >= 0;
         };
 
@@ -431,6 +446,8 @@ blist.namespace.fetch('blist.data');
             {
                 if (!ajaxOptions.dataType) { ajaxOptions.dataType = 'json'; }
                 ajaxOptions.success = function(config) {
+                    if (config.id !== undefined)
+                    { config = {meta: {view: config}}; }
                     if (translateFn)
                     { config = translateFn.apply(this, [ config ]); }
                     onLoad.apply(model, [ config ]);
@@ -664,11 +681,12 @@ blist.namespace.fetch('blist.data');
 
                 var type = blist.data.types[v.dataTypeName];
                 if (type && type.isObject)
-                { dataMungeCols.push({index: i, type: 'nullifyArrays'}); }
+                {
+                    dataMungeCols.push({index: i, type: 'nullifyArrays'});
+                    dataMungeCols.push({index: i, type: 'arrayToObject',
+                        types: v.subColumnTypes});
+                }
 
-                if (type && type.isObject)
-                { dataMungeCols.push({index: i, type: 'arrayToObject',
-                    types: v.subColumnTypes}); }
 
                 if (v.dataTypeName == 'checkbox')
                 { dataMungeCols.push({index: i, type: 'falseToNull'}); }
@@ -720,6 +738,7 @@ blist.namespace.fetch('blist.data');
                     width: Math.max(50, vcol.width || 100),
                     minWidth: 50,
                     type: vcol.dataTypeName || "text",
+                    originalType: vcol.originalDataTypeName,
                     id: vcol.id,
                     tableColumnId: vcol.tableColumnId,
                     aggregate: meta.aggregateHash[vcol.id],
@@ -802,6 +821,8 @@ blist.namespace.fetch('blist.data');
                     {
                         col.alignment = format.align;
                     }
+                    if (format.grouping_aggregate)
+                    { col.grouping_aggregate = format.grouping_aggregate; }
                 }
 
                 if (!vcol.flags || $.inArray("hidden", vcol.flags) < 0)
@@ -894,10 +915,12 @@ blist.namespace.fetch('blist.data');
                 // a view is present
                 var sorts = {};
 
-                if (meta.view && meta.view.sortBys && meta.view.sortBys.length > 0)
+                if (meta.view !== undefined && meta.view.query !== undefined &&
+                        meta.view.query.orderBys !== undefined &&
+                        meta.view.query.orderBys.length > 0)
                 {
-                    $.each(meta.view.sortBys, function(i, sort) {
-                        sorts[sort.viewColumnId] = sort;
+                    $.each(meta.view.query.orderBys, function(i, order) {
+                        sorts[order.expression.columnId] = order;
                     });
 
                     $.each(meta.view.columns, function (i, c)
@@ -905,9 +928,7 @@ blist.namespace.fetch('blist.data');
                         if (sorts[c.id] != undefined)
                         {
                             meta.sort[c.id] = {
-                                ascending: (sorts[c.id].asc ||
-                                    (sorts[c.id].flags != null &&
-                                    $.inArray('asc', sorts[c.id].flags) >= 0)),
+                                ascending: sorts[c.id].ascending,
                                 column: c
                               };
                         }
@@ -1860,12 +1881,12 @@ blist.namespace.fetch('blist.data');
 
             if (isSorted)
             {
-                $.each(meta.view.sortBys, function(i, s)
+                $.each(meta.view.query.orderBys, function(i, o)
                 {
-                    if (s.viewColumnId == oldId)
-                    { s.viewColumnId = newViewColumn.id; }
+                    if (o.expression.columnId == oldId)
+                    { o.expression.columnId = newViewColumn.id; }
                 });
-                this.multiSort(meta.view.sortBys);
+                this.multiSort(meta.view.query.orderBys);
             }
 
             configureActive();
@@ -2288,30 +2309,29 @@ blist.namespace.fetch('blist.data');
             return changedRows;
         };
 
-        this.multiSort = function(sortBys)
+        this.multiSort = function(orderBys)
         {
 
-            if (sortBys.length == 1)
+            if (orderBys.length == 1)
             {
-                var sort = sortBys[0];
-                var colIndex = findColumnIndex(parseInt(sort.viewColumnId, 10));
-                this.sort(colIndex, !(sort.asc ||
-                    (sort.flags != null && $.inArray('asc', sort.flags) >= 0)));
+                var sort = orderBys[0];
+                var colIndex = findColumnIndex(
+                    parseInt(sort.expression.columnId, 10));
+                this.sort(colIndex, sort.ascending);
                 return;
             }
-            else if (sortBys.length === 0)
+            else if (orderBys.length === 0)
             {
                 this.clearSort();
                 return;
             }
 
-            meta.view.sortBys = sortBys;
+            meta.view.query.orderBys = orderBys;
             meta.sort = {};
-            $.each(meta.view.sortBys, function(i, sort) {
-                var col = self.getColumnByID(sort.viewColumnId);
-                meta.sort[sort.viewColumnId] = {
-                    ascending: (sort.asc ||
-                        (sort.flags != null && $.inArray('asc', sort.flags) >= 0)),
+            $.each(meta.view.query.orderBys, function(i, sort) {
+                var col = self.getColumnByID(sort.expression.columnId);
+                meta.sort[sort.expression.columnId] = {
+                    ascending: sort.ascending,
                     column: col
                     };
             });
@@ -2357,10 +2377,13 @@ blist.namespace.fetch('blist.data');
 
                 // Update the view in-memory, so we can always serialize it to
                 //  the server and get the correct sort options
-                meta.view.sortBys = [{
-                    viewColumnId: orderCol.id,
-                    asc: !descending
-                }];
+                if (meta.view.query !== undefined)
+                {
+                    meta.view.query.orderBys = [{
+                        expression: {columnId: orderCol.id, type: 'column'},
+                        ascending: !descending
+                    }];
+                }
 
                 var r1 = "a" + orderCol.dataLookupExpr;
                 var r2 = "b" + orderCol.dataLookupExpr;
@@ -2439,32 +2462,35 @@ blist.namespace.fetch('blist.data');
             {
                 delete meta.sort[order.id];
 
-                for (var i = 0; i < meta.view.sortBys.length; i++)
-                {
-                    if (meta.view.sortBys[i].viewColumnId == order.id)
+                if (meta.view.query.orderBys !== undefined)
                     {
-                        meta.view.sortBys.splice(i, 1);
-                        break;
+                    for (var i = 0; i < meta.view.query.orderBys.length; i++)
+                    {
+                        if (meta.view.query.orderBys[i]
+                            .expression.columnId == order.id)
+                        {
+                            meta.view.query.orderBys.splice(i, 1);
+                            break;
+                        }
                     }
-                }
 
-                if (meta.view.sortBys.length == 1)
-                {
-                    var newSort = meta.view.sortBys[0];
-                    var colIndex = findColumnIndex(newSort.viewColumnId);
-                    if (colIndex !== undefined)
+                    if (meta.view.query.orderBys.length == 1)
                     {
-                        this.sort(colIndex,
-                                !(newSort.asc || (newSort.flags != null &&
-                                        $.inArray('asc', newSort.flags) >= 0)));
-                        return;
+                        var newSort = meta.view.query.orderBys[0];
+                        var colIndex =
+                            findColumnIndex(newSort.expression.columnId);
+                        if (colIndex !== undefined)
+                        {
+                            this.sort(colIndex, !newSort.ascending);
+                            return;
+                        }
                     }
                 }
             }
             else
             {
                 meta.sort = {};
-                meta.view.sortBys = [];
+                delete meta.view.query.orderBys;
             }
             sortConfigured = true;
             orderCol = null;
@@ -2478,7 +2504,7 @@ blist.namespace.fetch('blist.data');
             if (hasSort) { doSort(); }
             // The only way to guarantee a correct ordering of rows (right now)
             //  when clearing all sorts is to go to the server
-            else { getTempView(); }
+            else { this.getTempView(); }
 
             // If there's an active filter, or grouping function, re-apply now
             // that we're sorted
@@ -2614,7 +2640,7 @@ blist.namespace.fetch('blist.data');
 
             if (self.isProgressiveLoading())
             {
-                getTempView();
+                self.getTempView();
                 // Bail out early, since the server does the sorting
                 return;
             }
@@ -2650,16 +2676,74 @@ blist.namespace.fetch('blist.data');
             installIDs(true);
         };
 
-        var getTempView = function()
+        this.getViewCopy = function(includeColumns)
+        {
+            var view = meta.view;
+            // Update all the widths from the meta columns
+            $.each(meta.columns[0], function(i, c)
+            {
+                self.getColumnByID(c.id).width = c.width;
+                if (c.body && c.body.children)
+                {
+                    $.each(c.body.children, function(j, cc)
+                    {
+                        self.getColumnByID(cc.id).width = cc.width;
+                    });
+                }
+            });
+
+            view = $.extend(true, {}, view);
+            delete view.sortBys;
+            delete view.viewFilters;
+
+            if (includeColumns)
+            {
+                // Filter out all metadata columns
+                view.columns = $.grep(view.columns, function(c, i)
+                    { return c.id != -1; });
+                // Sort by position, because the attribute is ignored when
+                // saving columns
+                view.columns.sort(function(a, b)
+                    { return a.position - b.position; });
+                var cleanColumn = function(col)
+                {
+                    delete col.dataIndex;
+                    delete col.options;
+                    delete col.dropDown;
+                    delete col.dataTypeName;
+                    delete col.originalDataTypeName;
+                };
+                // Clean out dataIndexes, and clean out child metadata columns
+                $.each(view.columns, function(i, c)
+                {
+                    cleanColumn(c);
+                    if (c.childColumns)
+                    {
+                        c.childColumns = $.grep(c.childColumns, function(cc, j)
+                            { return cc.id != -1; });
+                        $.each(c.childColumns, function(j, cc)
+                            { cleanColumn(cc); });
+                    }
+                });
+            }
+            else
+            {
+                view.columns = null;
+            }
+            delete view['grants'];
+            view.originalViewId = view.id;
+            return view;
+        };
+
+        this.getTempView = function(tempView)
         {
             // If we're doing progressive loading, set up a temporary
             //  view, then construct a query with a special URL and
             //  appropriate params to get rows back for the specified view
-            // Don't include columns since we want them all back, and we
-            //  don't need to send all that extra data over or modify columns
-            //  accidentally
-            var tempView = $.extend({}, meta.view,
-                    {originalViewId: meta.view.id, columns: null, query: null});
+            // Only include columns if this view is grouped; otherwise, don't
+            // include columns since we want them all back, and we don't need
+            // to send all that extra data over or modify columns accidentally
+            tempView = tempView || this.getViewCopy(this.isGrouped());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -2741,6 +2825,22 @@ blist.namespace.fetch('blist.data');
         };
 
         /**
+         * Group columns
+         */
+
+        this.group = function(columns)
+        {
+            if (!columns instanceof Array) { columns = [columns]; }
+            meta.view.query.groupBys = [];
+
+            $.each(columns, function(i, c)
+            {
+                meta.view.query.groupBys.push
+                    ({columnId: c.id || c, type: 'column'});
+            });
+        };
+
+        /**
          * Filter the data.
          *
          * @param filter either filter text or a filtering function
@@ -2788,7 +2888,7 @@ blist.namespace.fetch('blist.data');
                     meta.view.searchString = null;
                     if (self.isProgressiveLoading())
                     {
-                        getTempView();
+                        self.getTempView();
                     }
                     else if (active != rows)
                     {
@@ -2867,7 +2967,8 @@ blist.namespace.fetch('blist.data');
         /* Clear out the filter for a particular column.  Takes a column obj
          *  or a column index.
          * This clears both the short version stored on the meta obj, and
-         * updates the meta.view.viewFilters that is sent to the server. */
+         * updates the meta.view.query.filterCondition that is sent to the
+         * server. */
         var clearColumnFilterData = function(filterCol)
         {
             // Turn index into obj
@@ -2880,34 +2981,25 @@ blist.namespace.fetch('blist.data');
             {
                 var cf = meta.columnFilters[filterCol.id];
                 // First check if this is the only viewFilter; if so, clear it
-                if (meta.view.viewFilters == cf.viewFilter)
+                if (meta.view.query.filterCondition == cf.viewFilter)
                 {
-                    meta.view.viewFilters = null;
+                    meta.view.query.filterCondition = null;
                 }
                 else
                 {
                     // Else it is a child of the top-level filter; splice it out
-                    meta.view.viewFilters.children.splice(
+                    meta.view.query.filterCondition.children.splice(
                             $.inArray(cf.viewFilter,
-                                meta.view.viewFilters.children), 1);
+                                meta.view.query.filterCondition.children), 1);
                     // If the top-level filter is empty, get rid of it
-                    if (meta.view.viewFilters.children.length < 1)
+                    if (meta.view.query.filterCondition.children.length < 1)
                     {
-                        meta.view.viewFilters = null;
+                        meta.view.query.filterCondition = null;
                     }
                 }
                 meta.columnFilters[filterCol.id] = null;
             }
         };
-
-        this.updateFilter = function(filter)
-        {
-            meta.columnFilters = null;
-
-            meta.view.viewFilters = filter;
-
-            getTempView();
-        }
 
         /* Filter a single column (column obj or index) on a value.
          *  These filters are additive (all ANDed at the top level).
@@ -2937,29 +3029,29 @@ blist.namespace.fetch('blist.data');
             var filterItem = { type: 'operator', value: 'EQUALS', children: [
                 { type: 'column', columnId: filterCol.id, value: subColumnType },
                 { type: 'literal', value: filterVal } ] };
-            if (meta.view.viewFilters == null)
+            if (meta.view.query.filterCondition == null)
             {
                 // Make it the top-level filter
-                meta.view.viewFilters = filterItem;
+                meta.view.query.filterCondition = filterItem;
             }
-            else if (meta.view.viewFilters.type == 'operator' &&
-                meta.view.viewFilters.value == 'AND')
+            else if (meta.view.query.filterCondition.type == 'operator' &&
+                meta.view.query.filterCondition.value == 'AND')
             {
                 // Add it to the top-level filter
-                if (!meta.view.viewFilters.children)
+                if (!meta.view.query.filterCondition.children)
                 {
-                    meta.view.viewFilters.children = [];
+                    meta.view.query.filterCondition.children = [];
                 }
-                meta.view.viewFilters.children.push(filterItem);
+                meta.view.query.filterCondition.children.push(filterItem);
             }
             else
             {
                 // Else push the top-level filter down one level, and
                 //  add this to the new top-level filter
                 var topF = { type: 'operator', value: 'AND', children: [
-                    meta.view.viewFilters, filterItem
+                    meta.view.query.filterCondition, filterItem
                 ] };
-                meta.view.viewFilters = topF;
+                meta.view.query.filterCondition = topF;
             }
 
             // Store the filter in an easier format to deal with elsewhere;
@@ -2971,7 +3063,7 @@ blist.namespace.fetch('blist.data');
 
             // Reload the view from the server; eventually we should do this
             //  locally if not in progressiveLoading mode
-            getTempView();
+            this.getTempView();
         };
 
         /* Clear out the filtr for a particular column */
@@ -2995,7 +3087,7 @@ blist.namespace.fetch('blist.data');
 
             this.columnFilterChange(filterCol, false);
 
-            getTempView();
+            this.getTempView();
         };
 
         // Apply filtering, grouping, and sub-row expansion to the active set.
@@ -3075,7 +3167,7 @@ blist.namespace.fetch('blist.data');
 
             if (self.isProgressiveLoading())
             {
-                getTempView();
+                self.getTempView();
                 // Bail out early, since the server does the sorting
                 return;
             }

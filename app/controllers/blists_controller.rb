@@ -327,6 +327,8 @@ class BlistsController < ApplicationController
       result = View.delete(blist_id)
 
       respond_to do |format|
+        format.html { redirect_to(params[:redirect_id].nil? ?
+                          blists_path : View.find(params[:redirect_id]).href) }
         format.data { render :text => blist_id }
       end
   end
@@ -465,8 +467,9 @@ class BlistsController < ApplicationController
   def create_calendar
     errors = []
     begin
-      view = View.create({:name => params[:viewName],
-                         :originalViewId => params[:id]})
+      view = View.create({'name' => params[:viewName],
+                         'originalViewId' => params[:id],
+                         'query' => CGI.unescapeHTML(params[:view_query])})
 
       fmt = {:startDateId => view.columns.select {|c|
         c.tableColumnId.to_s == params[:startDate].to_s}[0].id,
@@ -516,14 +519,16 @@ class BlistsController < ApplicationController
         end
         batch_reqs << {'url' => '/views/' + params[:id], 'requestType' => 'PUT',
           'body' => {'columns' => cols, 'displayType' => params[:vizType],
+            'query' => JSON.parse(CGI.unescapeHTML(params[:view_query])),
             'displayFormat' => JSON.parse(params[:options])}, 'class' => View}
         Model.batch(batch_reqs)
       else
-        view = View.create({:name => params[:viewName],
-                           :columns => JSON.parse(params[:columns]),
-                           :displayType => params[:vizType],
-                           :displayFormat => JSON.parse(params[:options]),
-                           :originalViewId => params[:id]})
+        view = View.create({'name' => params[:viewName],
+                           'columns' => JSON.parse(params[:columns]),
+                           'displayType' => params[:vizType],
+                           'displayFormat' => JSON.parse(params[:options]),
+                           'query' => CGI.unescapeHTML(params[:view_query]),
+                           'originalViewId' => params[:id]})
       end
     rescue CoreServer::CoreServerError => e
       errors << e.error_message

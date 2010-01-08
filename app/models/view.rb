@@ -64,11 +64,11 @@ class View < Model
   end
 
   def self.create(attributes)
-    if attributes['viewFilters'].blank? || attributes['viewFilters'] == '""' ||
-      attributes['viewFilters'] == "''" || attributes['viewFilters'] == "null"
-      attributes['viewFilters'] = nil
+    if attributes['query'].blank? || attributes['query'] == '""' ||
+      attributes['query'] == "''" || attributes['query'] == "null"
+      attributes['query'] = nil
     else
-      attributes['viewFilters'] = JSON.parse(attributes['viewFilters'])
+      attributes['query'] = JSON.parse(attributes['query'])
     end
     if attributes['searchString'].blank? || attributes['searchString'] == '""' ||
       attributes['searchString'] == "''" || attributes['searchString'] == "null"
@@ -153,6 +153,14 @@ class View < Model
     grants && grants.any? {|p| !p.flag?('public')}
   end
 
+  def is_grouped?
+    !self.query.nil? && !self.query.groupBys.nil? && self.query.groupBys.length > 0
+  end
+
+  def is_invalid?
+    !message.blank?
+  end
+
   def last_updated_user
     begin
       return rowsUpdatedBy.blank? ? nil : User.find(rowsUpdatedBy)
@@ -165,11 +173,11 @@ class View < Model
     prefix = self.category || 'dataset'
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
   end
-  
+
   def short_href
     "/d/#{id}"
   end
-  
+
   def about_href
     self.href + "/about"
   end
@@ -191,7 +199,7 @@ class View < Model
   def can_edit()
     data['rights'] && (data['rights'].include?('write') ||
       data['rights'].include?('add') ||
-      data['rights'].include?('delete'))
+      data['rights'].include?('delete')) && !is_grouped?
   end
 
   def can_read()
@@ -247,6 +255,12 @@ class View < Model
   def filters
     View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
       reject {|l| l.is_blist?}
+  end
+
+  def parent_dataset
+    return self if is_blist?
+    View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
+      find {|l| l.is_blist?}
   end
 
   def comments
@@ -359,8 +373,8 @@ class View < Model
   end
 
   def datatypes_match(column, datatypes)
-    datatypes.is_a?(Array) && datatypes.include?(column.dataTypeName) ||
-      column.dataTypeName == datatypes
+    dt = column.client_type
+    datatypes.is_a?(Array) && datatypes.include?(dt) || dt == datatypes
   end
 
   def chart_class

@@ -194,7 +194,7 @@ blist.blistGrid.clearTempViewTab = function ()
 {
     $('.tabList .filter.tempViewTab').removeClass('active');
     $('.tabList .origView').addClass('active').removeClass('origView');
-    $('body').removeClass('unsavedView');
+    $('body').removeClass('unsavedView groupedView');
     $('#infoPane').show();
     $(document).trigger(blist.events.COLUMNS_CHANGED);
 };
@@ -204,7 +204,14 @@ blist.blistGrid.setTempViewTab = function ()
     $('.tabList .active').addClass('origView').removeClass('active');
     $('.tabList .filter.tempViewTab').addClass('active');
     $('body').addClass('unsavedView');
+    if ($('#dataGrid').blistModel().isGrouped())
+    { $('body').addClass('groupedView'); }
     $('#infoPane').hide();
+};
+
+blist.blistGrid.updateTempViewTab = function()
+{
+    $('body').toggleClass('groupedView', $('#dataGrid').blistModel().isGrouped());
 };
 
 blist.blistGrid.newViewCreated = function($iEdit, responseData)
@@ -214,6 +221,12 @@ blist.blistGrid.newViewCreated = function($iEdit, responseData)
         $('#dataGrid').datasetGrid().isTempView = false;
     }
     blist.util.navigation.redirectToView(responseData.id);
+};
+
+blist.blistGrid.updateValidView = function(view)
+{
+    $('.viewErrorContainer').hide();
+    $('.invalidView').removeClass('invalidView');
 };
 
 // The favorite action in the info for single panel - when one blist is selected.
@@ -292,7 +305,6 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
 
 blist.infoEditSubmitSuccess = blistGridNS.infoEditCallback;
 
-
 /* Initial start-up calls, and setting up bindings */
 
 $(function ()
@@ -308,12 +320,32 @@ $(function ()
             accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
             clearTempViewCallback: blistGridNS.clearTempViewTab,
             setTempViewCallback: blistGridNS.setTempViewTab,
+            updateTempViewCallback: blistGridNS.updateTempViewTab,
             filterForm: '#lensContainer .headerBar form',
-            clearFilterItem: '#lensContainer .headerBar form .clearSearch'
+            clearFilterItem: '#lensContainer .headerBar form .clearSearch',
+            isInvalid: blist.blistGrid.isInvalidView,
+            validViewCallback: blistGridNS.updateValidView
         });
     }
     else if (blist.display.type == 'visualization')
     { $('#dataGrid').visualization(); }
+
+    $('.viewErrorContainer .removeViewLink').click(function(event)
+    {
+        event.preventDefault();
+        var $target = $(event.currentTarget);
+        var href = $target.attr('href');
+        var s = href.slice(href.indexOf('#') + 1).split('_');
+        $.ajax({url: '/datasets/' + s[1],
+            type: 'DELETE',
+            success: function()
+            {
+                if (s.length > 2)
+                { window.location = blist.util.navigation.getViewUrl(s[2]); }
+                else
+                { window.location = '/datasets'; }
+        }});
+    });
 
     blistGridNS.setUpTabs();
     $('.tabList').scrollable({
@@ -631,7 +663,7 @@ $(function ()
         requestDataCallback: function($form, name)
         {
             // Get the view with columns
-            var view = $('#dataGrid').datasetGrid().getViewCopy(true);
+            var view = $('#dataGrid').blistModel().getViewCopy(true);
             view.name = name;
             return $.json.serialize(view);
         },

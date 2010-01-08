@@ -2556,6 +2556,7 @@
                     // Standard cell
                     var type = blist.data.types[mcol.type] ||
                         blist.data.types.text;
+
                     var renderer = mcol.renderer || type.renderGen;
                     var invalidRenderer = blist.data.types.invalid.renderGen;
                     var cls = mcol.cls || type.cls;
@@ -3091,7 +3092,7 @@
                 html.push(
                     '<div class="blist-th ',
                     !i ? 'blist-th-first ' : '',
-                    col.type,
+                    (col.originalType || col.type),
                     ' ',
                     getColumnClass(col),
                     cls,
@@ -3277,6 +3278,9 @@
                     '</div>';
             });
             $lockedHeader.html(lockedHtml);
+
+            // Readjust locked position since the header height may have changed
+            $locked.css('top', $header.outerHeight() - $scrolls[0].scrollTop);
 
             // Render sort & filter headers
             configureSortHeader();

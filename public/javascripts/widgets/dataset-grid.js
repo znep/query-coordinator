@@ -34,11 +34,14 @@
             editEnabled: true,
             filterForm: null,
             initialResponse: null,
+            isInvalid: false,
             manualResize: false,
             setTempViewCallback: function () {},
+            updateTempViewCallback: function () {},
             showRowHandle: false,
             showRowNumbers: true,
             showAddColumns: false,
+            validViewCallback: function (view) {},
             viewId: null
         },
 
@@ -96,7 +99,8 @@
                         filterMinChars: 0, progressiveLoading: true,
                         initialResponse: datasetObj.settings.initialResponse})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
-                                '/rows.json', cache: false,
+                                (datasetObj.settings.isInvalid ? '.json' :
+                                '/rows.json'), cache: false,
                             data: {accessType: datasetObj.settings.accessType},
                             dataType: 'json'});
 
@@ -136,7 +140,9 @@
             updateFilter: function(filter, saveExisting)
             {
                 var datasetObj = this;
-                datasetObj.settings._model.updateFilter(filter);
+                var model = datasetObj.settings._model;
+                model.meta().columnFilters = null;
+                model.meta().view.query.filterCondition = filter;
 
                 var view = datasetObj.settings._model.meta().view;
                 if (saveExisting && (view.flags === undefined ||
@@ -144,10 +150,21 @@
                     datasetObj.settings.currentUserId == view.owner.id)
                 {
                     $.ajax({url: '/views/' + view.id + '.json',
-                        data: $.json.serialize({viewFilters: view.viewFilters}),
-                        type: 'PUT', contentType: 'application/json'});
+                        data: $.json.serialize({query: view.query}),
+                        type: 'PUT', contentType: 'application/json',
+                        success: function(newView)
+                        {
+                            if (datasetObj.settings.isInvalid)
+                            { updateValidity(datasetObj, newView); }
+                            else
+                            { model.getTempView(model.getViewCopy(true)); }
+                        }});
                 }
-                else { this.setTempView(); }
+                else
+                {
+                    model.getTempView(model.getViewCopy(true));
+                    this.setTempView();
+                }
             },
 
             updateView: function(newView)
@@ -186,72 +203,25 @@
                 }
             },
 
-            getViewCopy: function(includeColumns)
-            {
-                var view = $.extend(true, {}, this.settings._model.meta().view);
-
-                if (includeColumns)
-                {
-                    // Update all the widths from the meta columns
-                    $.each(this.settings._model.meta().columns[0], function(i, c)
-                    {
-                        view.columns[c.dataIndex].width = c.width;
-                        if (c.body && c.body.children)
-                        {
-                            $.each(c.body.children, function(j, cc)
-                            {
-                                view.columns[c.dataIndex]
-                                    .childColumns[cc.dataIndex].width = cc.width;
-                            });
-                        }
-                    });
-                    // Filter out all metadata columns
-                    view.columns = $.grep(view.columns, function(c, i)
-                        { return c.id != -1; });
-                    // Sort by position, because the attribute is ignored when
-                    // saving columns
-                    view.columns.sort(function(a, b)
-                        { return a.position - b.position; });
-                    var cleanColumn = function(col)
-                    {
-                        delete col.dataIndex;
-                        delete col.options;
-                        delete col.dropDown;
-                    };
-                    // Clean out dataIndexes, and clean out child metadata columns
-                    $.each(view.columns, function(i, c)
-                    {
-                        cleanColumn(c);
-                        if (c.childColumns)
-                        {
-                            c.childColumns = $.grep(c.childColumns, function(cc, j)
-                                { return cc.id != -1; });
-                            $.each(c.childColumns, function(j, cc)
-                                { cleanColumn(cc); });
-                        }
-                    });
-                }
-                else
-                {
-                    view.columns = null;
-                }
-                delete view['grants'];
-                view.originalViewId = view.id;
-                return view;
-            },
-
             setColumnAggregate: function(columnId, aggregate)
             {
                 var datasetObj = this;
                 var view = datasetObj.settings._model.meta().view;
-                $.ajax({url: '/views/' + view.id + '/columns/' + columnId + '.json',
-                    dataType: 'json', type: 'PUT', contentType: 'application/json',
-                    data: $.json.serialize({'format': {'aggregate': aggregate}}),
-                    success: function(retCol)
-                    {
-                        datasetObj.settings._model.updateColumn(retCol);
-                        $(document).trigger(blist.events.COLUMNS_CHANGED);
-                    }});
+                var col = datasetObj.settings._model.getColumnByID(columnId);
+                if (col)
+                {
+                    $.ajax({url: '/views/' + view.id + '/columns/' + columnId +
+                        '.json', dataType: 'json', type: 'PUT',
+                        contentType: 'application/json',
+                        data: $.json.serialize({'format':
+                            $.extend({}, col.format, {'aggregate': aggregate})}),
+                        success: function(retCol)
+                        {
+                            datasetObj.settings._model.updateColumn(retCol);
+                            $(document).trigger(blist.events.COLUMNS_CHANGED);
+                        }
+                    });
+                }
             },
 
             showHideColumns: function(columns, hide, skipRequest)
@@ -386,6 +356,136 @@
                 }
             },
 
+            groupAggregate: function(grouped, aggregates, doSave, newName,
+                successCallback, errorCallback)
+            {
+                var datasetObj = this;
+                var model = datasetObj.settings._model;
+                var view = model.meta().view;
+                var isNew = newName !== null && newName !== undefined;
+                var isUpdate = doSave && !isNew &&
+                    datasetObj.settings.currentUserId == view.owner.id;
+                var isGrouping = grouped instanceof Array && grouped.length > 0;
+
+                var newCols = [];
+                var usedCols = {};
+                if (isGrouping)
+                {
+                    model.group(grouped);
+                    $.each(grouped, function(i, c)
+                    {
+                        newCols.push({id: c.id, name: c.name, hidden: false,
+                            position: newCols.length + 1, format: c.format});
+                        usedCols[c.id] = true;
+                    });
+                }
+                else { delete view.query.groupBys; }
+
+                if (isGrouping &&
+                    aggregates instanceof Array && aggregates.length > 0)
+                {
+                    $.each(aggregates, function(i, a)
+                    {
+                        var format = $.extend({}, a.format,
+                            {grouping_aggregate: a.func});
+                        if (format.grouping_aggregate === null)
+                        { delete format.grouping_aggregate; }
+                        if (usedCols[a.id] === undefined)
+                        {
+                            newCols.push({id: a.id, name: a.name,
+                                hidden: a.hidden !== undefined ? a.hidden : false,
+                                position: newCols.length + 1, format: format});
+                        }
+                        else
+                        {
+                             $.each(newCols, function(j, c)
+                             { if (c.id == a.id) { c.format = format; } })
+                        }
+                    });
+                }
+
+                if (isGrouping) { model.meta().view.columns = newCols; }
+
+                view = model.getViewCopy(isGrouping);
+
+                if (isNew) { view = $.extend(view, {name: newName}); }
+
+                if (!doSave)
+                {
+                    if (typeof successCallback == 'function')
+                    { successCallback(); }
+                    model.getTempView(view);
+                    datasetObj.setTempView('grouping');
+                }
+                else if (isNew)
+                {
+                    var saveNewView = function()
+                    {
+                        $.ajax({url: '/views.json', type: 'POST',
+                            contentType: 'application/json', dataType: 'json',
+                            data: $.json.serialize(view),
+                            error: function(xhr)
+                            {
+                                if (typeof errorCallback == 'function')
+                                { errorCallback($.json.deserialize
+                                    (xhr.responseText).message); }
+                            },
+                            success: function(resp)
+                            {
+                                if (typeof successCallback == 'function')
+                                { successCallback(); }
+                                blist.util.navigation.redirectToView(resp.id);
+                            }});
+                    };
+
+                    if (blist.util && blist.util.inlineLogin)
+                    {
+                        var loginMessage =
+                            'You must be logged into create a new view';
+                        blist.util.inlineLogin.verifyUser(
+                            function (isSuccess) {
+                                if (isSuccess) { saveNewView() }
+                                else
+                                {
+                                    if (typeof errorCallback == 'function')
+                                    { errorCallback(loginMessage); }
+                                }
+                            }, loginMessage);
+                    }
+                    else { saveNewView(); }
+                }
+                else
+                {
+                    $.socrataServer.addRequest({url: '/views/' + view.id + '.json',
+                        type: 'PUT', data: $.json.serialize(view),
+                        error: errorCallback,
+                        success: function(newView)
+                        {
+                            if (datasetObj.settings.isInvalid)
+                            { updateValidity(datasetObj, newView); }
+                            else
+                            { model.reloadView(); }
+                        }});
+
+                    $.each(newCols, function(i, c)
+                        {
+                            $.socrataServer.addRequest(
+                                {url: '/views/' + view.id + '/columns/' +
+                                c.id + '.json', type: 'PUT',
+                                data: $.json.serialize({hidden: c.hidden}),
+                                error: errorCallback});
+                        });
+
+                    $.socrataServer.runRequests({success: function()
+                    {
+                        if (typeof successCallback == 'function')
+                        { successCallback(); }
+                        $(document).trigger(blist.events.COLUMNS_CHANGED);
+                    }
+                    });
+                }
+            },
+
             clearTempView: function(countId, forceAll)
             {
                 var datasetObj = this;
@@ -431,6 +531,8 @@
 
                 if (datasetObj.isTempView)
                 {
+                    if (datasetObj.settings.updateTempViewCallback != null)
+                    { datasetObj.settings.updateTempViewCallback(); }
                     return;
                 }
 
@@ -733,10 +835,13 @@
             { qtipsRef[col.id].qtip('destroy'); }
             qtipsRef[col.id] = $col;
 
-            var tooltipContent = '<div class="blist-th-tooltip ' + col.type + '">'
+            var tooltipContent = '<div class="blist-th-tooltip ' +
+                (col.originalType || col.type) + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
-                '<div class="blist-th-icon">' + col.type.displayable() + '</div>' +
+                '<div class="blist-th-icon">' +
+                (col.originalType || col.type).displayable() +
+                '</div>' +
                 (col.description !== undefined ?
                     '<p class="description">' + $.htmlEscape(col.description) +
                     '</p>' : '') +
@@ -779,6 +884,7 @@
 
     var createHeaderMenu = function(datasetObj, col, $colDom)
     {
+        var view = datasetObj.settings._model.meta().view;
         var isNested = col.nestedIn !== undefined;
         // Create an object containing flags describing what should be present
         // in the menu
@@ -787,14 +893,18 @@
         {
             features.sort = true;
         }
-        if (!isNested && blist.data.types[col.type].filterable)
+        if (!isNested && blist.data.types[col.type].filterable &&
+            !datasetObj.settings._model.isGrouped())
         {
             features.filter = true;
         }
-        var view = datasetObj.settings._model.meta().view;
         if (datasetObj.settings.columnDeleteEnabled &&
+            view.flags !== undefined && $.inArray('default', view.flags) >= 0 &&
             blist.data.types[col.type].deleteable && view && view.rights &&
-            $.inArray('remove_column', view.rights) >= 0)
+            $.inArray('remove_column', view.rights) >= 0 &&
+            (!datasetObj.settings._model.isGrouped() ||
+                $.grep(view.query.groupBys, function(g, i)
+                    { return g.columnId == col.id; }).length < 1))
         {
             features.remove = true;
         }
@@ -945,17 +1055,18 @@
         }
 
         var colSum = datasetObj.settings._columnSummaries;
+        var modView = datasetObj.settings._model.meta().view;
+        if (!modView) { return; }
 
-        if (!blist.data.types[col.type].filterable) { return; }
+        if (!blist.data.types[col.type].filterable ||
+            datasetObj.settings._model.isGrouped())
+        { return; }
 
         if (colSum[col.id] !== undefined)
         {
             addFilterMenu(datasetObj, col, $menu);
             return;
         }
-
-        var modView = datasetObj.settings._model.meta().view;
-        if (!modView) { return; }
 
         // Remove the old filter menu if necessary
         $menu.children('.autofilter').prev('.separator').andSelf().remove();
@@ -1242,13 +1353,16 @@
             !datasetObj.isTempView)
         {
             $.ajax({url: '/views/' + view.id + '.json',
-                data: $.json.serialize({sortBys: view.sortBys}),
+                data: $.json.serialize({query: view.query}),
                 type: 'PUT', contentType: 'application/json'});
         }
         else
         {
-            var oldSorts = datasetObj.origSortBys;
-            var newSorts = view.sortBys;
+            var oldSorts = datasetObj.origOrderBys;
+            var newSorts = [];
+            if (view.query.orderBys !== undefined)
+            { newSorts = view.query.orderBys; }
+
             var matches = oldSorts.length == newSorts.length;
             if (matches)
             {
@@ -1256,10 +1370,8 @@
                 {
                     var o = oldSorts[i];
                     var n = newSorts[i];
-                    if (o.columnId != n.viewColumnId ||
-                            o.ascending != (n.asc ||
-                                (n.flags !== undefined &&
-                                 $.inArray('asc', n.flags) >= 0)))
+                    if (o.columnId != n.expression.columnId ||
+                            o.ascending != n.ascending)
                     {
                         matches = false;
                         break;
@@ -1278,7 +1390,7 @@
         if (datasetObj.settings.currentUserId == view.owner.id &&
             !datasetObj.isTempView)
         {
-            var modView = datasetObj.getViewCopy(true);
+            var modView = datasetObj.settings._model.getViewCopy(true);
             $.ajax({url: '/views/' + view.id + '.json',
                     data: $.json.serialize({columns: modView.columns}),
                     type: 'PUT', contentType: 'application/json',
@@ -1304,16 +1416,15 @@
 
     var viewLoaded = function(datasetObj)
     {
-        datasetObj.origSortBys = [];
+        datasetObj.origOrderBys = [];
         var view = datasetObj.settings._model.meta().view;
-        if (view.sortBys !== undefined)
+        if (view.query.orderBys !== undefined)
         {
-            $.each(view.sortBys, function(i, s)
+            $.each(view.query.orderBys, function(i, o)
             {
-                var curS = {columnId: s.viewColumnId};
-                curS.ascending = (s.asc ||
-                    (s.flags !== undefined && $.inArray('asc', s.flags) >= 0));
-                datasetObj.origSortBys.push(curS);
+                var curO = {columnId: o.expression.columnId};
+                curO.ascending = o.ascending;
+                datasetObj.origOrderBys.push(curO);
             });
         }
     };
@@ -1418,4 +1529,26 @@
         { columnEditEnd(datasetObj, $(event.target).closest('.blist-th')); }
     };
 
+    var updateValidity = function(datasetObj, view)
+    {
+        if (!datasetObj.settings.isInvalid) { return true; }
+
+        if (view.message === undefined || view.message === '')
+        {
+            datasetObj.settings.isInvalid = false;
+            datasetObj.settings.validViewCallback(view);
+            datasetObj.settings._model
+                .ajax({url: '/views/' + datasetObj.settings.viewId +
+                    '/rows.json', cache: false,
+                    data: {accessType: datasetObj.settings.accessType},
+                    dataType: 'json'});
+            $(window).resize();
+            return true;
+        }
+        else
+        {
+            datasetObj.settings.isInvalid = true;
+            return false;
+        }
+    };
 })(jQuery);

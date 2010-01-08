@@ -130,7 +130,7 @@ $.fn.reorderableList = function(options) {
         $elem.find(config.orderSpanSelector).removeClass('hide');
         $elem.draggable('enable');
 
-        var itemCount = $('.activeList li').length;
+        var itemCount = $list.find('li').length;
         $elem.find(config.orderFieldSelector).val(itemCount - 1);
         $elem.find(config.activeFieldSelector).val(true);
         $elem.find(config.orderSpanSelector).text(itemCount);
@@ -296,7 +296,7 @@ $.fn.reorderableList = function(options) {
                 $items.find(config.activeFieldSelector).val(true);
                 $items.css('top', 0);
                 $items.draggable('enable');
-                var activeNum = $('.activeList li').length;
+                var activeNum = $this.find('.activeList li').length;
 
                 $items.each(function(i, item)
                 {
@@ -309,7 +309,8 @@ $.fn.reorderableList = function(options) {
                 });
 
                 $this.find('.activeList ul').append($items);
-                $('.activeList li:first').addClass(config.firstListItemClass);
+                $this.find('.activeList li:first')
+                    .addClass(config.firstListItemClass);
 
                 config.onChange();
             });

@@ -174,8 +174,9 @@ module BlistsHelper
       'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.display.can_publish?)},
 
     'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
-      'class' => 'rowTags',
-      'if' => ((theme.nil? || theme[:menu][:show_tags]) && !view.is_alt_view?),
+      'class' => 'rowTags ungroupedOption',
+      'if' => ((theme.nil? || theme[:menu][:show_tags]) && !view.is_alt_view? &&
+               !view.is_grouped?),
       'href' => "##{tag_show_hide}-rowTags"},
 
     'more_views' => {'text' => 'More Views', 'class' => 'moreViews', 'href' => '#',
@@ -254,8 +255,8 @@ module BlistsHelper
 
     [menu_options['show_tags']] +
       (is_widget ? [] : [
-      {'text' => 'Column Totals', 'class' => 'columnTotals',
-      'if' => !view.is_alt_view?,
+      {'text' => 'Column Totals', 'class' => 'columnTotals ungroupedOption',
+      'if' => !view.is_alt_view? && !view.is_grouped?,
       'owner_item' => true,
       'href' => '#', 'submenu' => columns_menu(view,
         {'href_prefix' => "#column_totals:", 'include_options' =>
@@ -268,10 +269,12 @@ module BlistsHelper
       {'text' => 'Filter...', 'class' => 'filter', 'if' => !view.is_alt_view?,
       'href' => blist_filters_path(view.id), 'modal' => true},
       {'text' => 'Sort Columns...', 'class' => 'sort', 'if' => !view.is_alt_view?,
-      'href' => blist_sort_bys_path(view.id), 'modal' => true},
-      {'text' => 'Show or Hide Columns', 'class' => 'showHide', 'href' => '#',
+      'href' => '#sort_' + blist_sort_bys_path(view.id)},
+      {'text' => 'Grouping & Aggregates...', 'class' => 'grouping',
       'if' => !view.is_alt_view?,
-      'submenu' => columns_menu(view,
+      'href' => '#group_' + blist_groupings_path(view.id)},
+      {'text' => 'Show or Hide Columns', 'class' => 'showHide ungroupedOption',
+      'href' => '#', 'if' => !view.is_alt_view?, 'submenu' => columns_menu(view,
         {'initial_items' => [{'section_title' => 'Check/Uncheck to Show/Hide'},
           menu_options['separator']],
           'post_items' => (current_user && view.owner.id == current_user.id) ?
@@ -280,7 +283,8 @@ module BlistsHelper
           'href' => blist_show_hides_path(view.id), 'modal' => true}] : [],
           'href_prefix' => "#hide-show-col_", 'checkbox_menu' => true,
           'checkbox_callback' => proc { |c| !c.flag?('hidden') },
-          'column_test' => proc {|c, p| p.nil? || !p.flag?('hidden')},
+          'column_test' => proc {|c, p| (p.nil? || !p.flag?('hidden')) &&
+            (!view.is_grouped? || c.is_group_aggregate? || c.is_grouped?(view))},
           'include_options' =>
             {'nested_table' => true, 'hidden' => true,
             'nested_table_children' => true, 'list' => true}
@@ -293,8 +297,8 @@ module BlistsHelper
       'title' => (view.can_add_calendar? ? '' :
         'This dataset does not have both a date column and text column')},
       {'text' => 'Create a Chart View...', 'href' => "#{view.href}/visualization",
-      'modal' => true, 'if' => !view.is_alt_view?, 'user_required' => true,
-      'class' => 'visualization mainViewOption' +
+      'modal' => true, 'if' => !view.is_alt_view?,
+      'user_required' => true, 'class' => 'visualization mainViewOption' +
         (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},

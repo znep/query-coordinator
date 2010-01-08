@@ -12,27 +12,29 @@
     <div class="activeList">
       <ul class="reorder">
         <% @selected.each_with_index do |sort, i| %>
-          <% 
+          <%-
             # There appears to be some legacy data which has sort bys on child
             # (something we no longer support). Either way, these columns don't
             # exist in the view's top level columns so View#column_by_id fails
             # to find them and we need to fail gracefully. When the new sort bys
             # are POSTed to the server, the legacy data will be removed.
-            if !@view.column_by_id(sort.viewColumnId).nil? 
-          %>
+            col = @view.column_by_id(sort['columnId'])
+            if !col.nil?
+          -%>
             <li>
-              <div class="type datatype-<%= @view.column_by_id(sort.viewColumnId).client_type %>"></div>
+              <div class="type datatype-<%= col.client_type %>"></div>
               <div class="itemWrapper">
                 <span class="orderIndex"><%= i + 1 %></span>
                 <div class="controls">
-                    <div class="sort sort-<%= sort.asc? ? 'asc' : 'desc' %>" title="Click to sort <%= sort.asc? ? "descending" : "ascending" %>"></div>
+                  <div class="sort sort-<%= sort['asc'] ? 'asc' : 'desc' %>"
+                    title="Click to sort <%= sort['asc'] ?
+                      "descending" : "ascending" %>"></div>
                 </div>
-                <% 
-                    name = @view.column_by_id(sort.viewColumnId).name
-                %>
-                <%= name %>
-                <%= hidden_field_tag("sort-#{sort.viewColumnId}", true, :class => "viewColumnId", :value => "#{sort.viewColumnId}") %>
-                <%= hidden_field_tag("sort-#{sort.viewColumnId}-asc", true, :class => "asc", :value => "#{sort.asc?}") %>
+                <%= col.name %>
+                <%= hidden_field_tag("sort-#{sort['columnId']}", true,
+                  :class => "viewColumnId", :value => sort['columnId']) %>
+                <%= hidden_field_tag("sort-#{sort['columnId']}-asc", true,
+                  :class => "asc", :value => sort['asc']) %>
               </div>
             </li>
           <% end %>
@@ -51,19 +53,19 @@
     <div class="inactiveList">
       <ul class="reorder">
         <% @unselected.each do |sort| %>
+        <%- col = @view.column_by_id(sort['columnId']) -%>
           <li>
-            <div class="type datatype-<%= @view.column_by_id(sort["viewColumnId"]).client_type %>"></div>
+            <div class="type datatype-<%= col.client_type %>"></div>
             <div class="itemWrapper">
               <span class="orderIndex hide"></span>
               <div class="controls hide">
                   <div class="sort sort-asc" title="Click to sort descending"></div>
               </div>
-              <% 
-                  col = @view.column_by_id(sort["viewColumnId"])
-              %>
               <%= col.name %>
-              <%= hidden_field_tag("sort-#{col.id}", true, :class => "viewColumnId", :value => "#{col.id}") %>
-              <%= hidden_field_tag("sort-#{col.id}-asc", true, :class => "asc", :value => "true") %>
+              <%= hidden_field_tag("sort-#{col.id}", true,
+                :class => "viewColumnId", :value => "#{col.id}") %>
+              <%= hidden_field_tag("sort-#{col.id}-asc", true,
+                :class => "asc", :value => "true") %>
             </div>
           </li>
         <%- end -%>
@@ -135,31 +137,24 @@
 
     $("#modal .save").click(function(event) {
         event.preventDefault();
-        var sortBys = [];
+        var orderBys = [];
 
         $.each($("#modal .activeList .itemWrapper"), function(i, sortItem) {
-            var asc = $(sortItem).find("input.asc").val() == "true";
-            var flags;
-            if (asc)
-            {
-                flags = ["asc"];
-            }
-            var sort = {
-                viewColumnId: $(sortItem).find("input.viewColumnId").val(),
+            var order = {
+                expression:
+                { columnId: $(sortItem).find("input.viewColumnId").val(),
+                  type: 'column' },
+                ascending: $(sortItem).find("input.asc").val() == "true",
                 position: parseInt($(sortItem).find(".orderIndex").text())
             };
 
-            if (flags != undefined)
-            {
-                sort.flags = flags;
-            }
-
-            sortBys.push(sort);
+            orderBys.push(order);
         });
 
-        sortBys.sort(function(s1, s2) { return s1.position - s2.position; });
+        orderBys.sort(function(s1, s2) { return s1.position - s2.position; });
+        $.each(orderBys, function(i, o) { delete o.position; });
 
-        $("#dataGrid").blistModel().multiSort(sortBys);
+        $("#dataGrid").blistModel().multiSort(orderBys);
         $("#modal .jqmClose").click();
     });
   };

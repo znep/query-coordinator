@@ -206,6 +206,10 @@ class View < Model
     data['rights'] && data['rights'].include?('read')
   end
 
+  def can_add()
+    data['rights'] && data['rights'].include?('add')
+  end
+
   def contributor_users
     (grants || []).select {|g| !g.flag?('public') && g.type.downcase == 'contributor'}.
       collect do |g|
@@ -277,6 +281,10 @@ class View < Model
 
   def is_alt_view?
     is_visualization? || !display.is_a?(Displays::Legacy)
+  end
+
+  def is_form?
+    display.is_a?(Displays::Form)
   end
 
   def can_add_calendar?

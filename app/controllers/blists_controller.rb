@@ -32,7 +32,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_read()
+    if !@view.can_read() && (!@view.is_form? || !@view.can_add())
       return require_user(true)
     end
 

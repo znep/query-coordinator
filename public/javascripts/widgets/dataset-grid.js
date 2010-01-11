@@ -492,9 +492,13 @@
                 if (!datasetObj.settings._filterIds)
                 {datasetObj.settings._filterIds = {};}
                 if (countId != null)
-                { delete datasetObj.settings._filterIds[countId]; }
+                {
+                    if (datasetObj.settings._filterIds[countId])
+                    { datasetObj.settings._filterCount--; }
+                    delete datasetObj.settings._filterIds[countId];
+                }
+                else { datasetObj.settings._filterCount--; }
 
-                datasetObj.settings._filterCount--;
                 if (forceAll)
                 {
                     datasetObj.settings._filterCount = 0;

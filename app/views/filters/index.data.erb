@@ -93,7 +93,9 @@
       $('.filterDatasetWrapper .submitLine .actionButtons a').text('Continue');
       return;
     }
-    else if (view.query !== undefined && view.query.filterCondition !== undefined &&
+    else if (view.query !== undefined &&
+        view.query.filterCondition !== undefined &&
+        view.query.filterCondition !== null &&
         view.query.filterCondition.children !== undefined)
     {
       $("#filterOperator").val(view.query.filterCondition.value.toLowerCase());

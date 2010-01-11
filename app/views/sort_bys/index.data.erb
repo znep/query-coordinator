@@ -35,6 +35,8 @@
                   :class => "viewColumnId", :value => sort['columnId']) %>
                 <%= hidden_field_tag("sort-#{sort['columnId']}-asc", true,
                   :class => "asc", :value => sort['asc']) %>
+                <%= hidden_field_tag("sort-#{sort['columnId']}-order", i,
+                  :class => 'orderField') %>
               </div>
             </li>
           <% end %>
@@ -66,6 +68,8 @@
                 :class => "viewColumnId", :value => "#{col.id}") %>
               <%= hidden_field_tag("sort-#{col.id}-asc", true,
                 :class => "asc", :value => "true") %>
+              <%= hidden_field_tag("sort-#{col.id}-order", i,
+                :class => 'orderField') %>
             </div>
           </li>
         <%- end -%>

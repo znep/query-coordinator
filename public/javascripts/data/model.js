@@ -799,11 +799,23 @@ blist.namespace.fetch('blist.data');
                     {
                         col.type = "richtext";
                     }
+                    if (col.originalType == "text" &&
+                        format.formatting_option == "Rich")
+                    {
+                        col.originalType = "richtext";
+                    }
+
                     if (col.type == "stars" &&
                         format.view == "stars_number")
                     {
                         col.type = "number";
                     }
+                    if (col.originalType == "stars" &&
+                        format.view == "stars_number")
+                    {
+                        col.originalType = "number";
+                    }
+
                     else if (format.view)
                     {
                         col.format = vcol.format.view;

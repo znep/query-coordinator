@@ -208,6 +208,8 @@ blist.publish.applyLogo = function($elem, value)
 
 blist.publish.applyTabs = function($elem, subhash)
 {
+    if ($elem.length < 1) { return; }
+
     // $elem is the container of the tabs
     var tabs = [];
     for (var key in subhash)

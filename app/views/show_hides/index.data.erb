@@ -22,6 +22,8 @@
               <span class='name'><%= col.name %></span>
               <%= hidden_field_tag("sort-#{col.id}", true,
               :class => "columnId", :value => "#{col.id}") %>
+              <%= hidden_field_tag("sort-#{col.id}-order", i,
+              :class => "orderField") %>
             </div>
             </li>
             <%- end -%>
@@ -43,7 +45,7 @@
         <div class="border"></div>
         <div class="inactiveList list">
           <ul class="reorder">
-            <% @unselected.each do |col| %>
+            <% @unselected.each_with_index do |col, i| %>
             <li>
             <div class="itemWrapper">
               <span class="orderIndex hide"></span>
@@ -51,6 +53,8 @@
               <span class='name'><%= col.name %></span>
               <%= hidden_field_tag("sort-#{col.id}", true,
               :class => "columnId", :value => "#{col.id}") %>
+              <%= hidden_field_tag("sort-#{col.id}-order", i,
+              :class => "orderField") %>
             </div>
             </li>
             <%- end -%>

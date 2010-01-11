@@ -1,6 +1,6 @@
 <%- 
   shares = view.shares
-  can_share = (current_user && view.can_edit)
+  can_share = current_user && @view.owner.id == current_user.id
 -%>
 <h2 class="panelHeader first"><%= pluralize(shares.length, 'Share') %></h2>
 <h2 class="panelHeader <%= shares.size > 0 ? '' : ' last' %> <%= get_permissions_icon_class_for_view(view) %>">

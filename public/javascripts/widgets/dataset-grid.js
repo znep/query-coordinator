@@ -441,7 +441,7 @@
                     if (blist.util && blist.util.inlineLogin)
                     {
                         var loginMessage =
-                            'You must be logged into create a new view';
+                            'You must be logged in to create a new view';
                         blist.util.inlineLogin.verifyUser(
                             function (isSuccess) {
                                 if (isSuccess) { saveNewView() }

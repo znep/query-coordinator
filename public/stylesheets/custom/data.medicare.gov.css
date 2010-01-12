@@ -1,0 +1,178 @@
+/* LAYOUT */
+body
+{
+    background: #e7e7e7 url(/stylesheets/images/domains/data.medicare.gov/header_slice.png) repeat-x;
+}
+
+/* HEADER */
+#outerContainer #header
+{
+    background: none;
+    height: 88px;
+}
+
+.bodyInterior
+{
+    border-top: none;
+}
+
+#medicareLogo a
+{
+    background: transparent url(/stylesheets/images/domains/data.medicare.gov/medicare_logo.png) no-repeat;
+    display: block;
+    height: 88px;
+    text-indent: -9999px;
+    width: 392px;
+}
+
+#outerContainer #header .userNav
+{
+    right: 10px;
+    top: 11px;
+}
+
+#outerContainer #header .userNav li
+{
+    border-color: #bbb;
+}
+
+#outerContainer #header .userNav a
+{
+    color: #fff;
+    font-size: 1.2em;
+}
+
+#outerContainer #header form.search
+{
+    position: absolute;
+    right: 25px;
+    top: 44px;
+    width: auto;
+}
+
+/* FOOTER */
+.footerContainer
+{
+    background-image: url(/stylesheets/images/domains/data.medicare.gov/footer_slice.png);
+    height: 82px;
+    margin-top: -82px;
+}
+
+.footerContainer #footer .copyright
+{
+    background: transparent url(/stylesheets/images/domains/data.medicare.gov/footer_logo.png) no-repeat;
+    bottom: 0;
+    display: block;
+    height: 104px;
+    margin-left: 5em;
+    padding: 0;
+    position: absolute;
+    text-align: left;
+    text-indent: -9999px;
+    width: 91px;
+}
+
+.footerContainer #footer ul
+{
+    margin-left: 15em;
+    position: relative;
+    text-align: left;
+    top: 1em;
+}
+
+.footerContainer #footer ul li
+{
+    border-left: 1px solid #bbb;
+    margin: 0;
+    padding: 0 0.8em;
+}
+.footerContainer #footer ul li:first-child
+{
+    border: none;
+}
+
+.footerContainer #footer ul li a
+{
+    color: #fff;
+    font-size: 1.2em;
+}
+
+/* WIDGETS */
+form.search.large .searchContainer
+{
+    background: #fff url(/stylesheets/images/domains/data.medicare.gov/search_icon.png) no-repeat;
+    height: 28px;
+    overflow: visible;
+    padding-left: 0;
+    width: 350px;
+}
+
+form.search.large #search
+{
+    background: transparent;
+    border: 1px solid #284d18;
+    border-right: none;
+    height: 23px;
+    font-size: 1.8em;
+    padding-left: 30px;
+    width: 289px;
+}
+
+form.search.large .actionsBox
+{
+    margin-right: -91px;
+    width: 91px;
+}
+
+form.search.large .actionsBox .clearBox
+{
+    border-color: #284d18;
+    height: 26px;
+}
+
+form.search.large .actionsBox .clearBox .clearSearch
+{
+    margin-top: 6px;
+}
+
+form.search.large .actionsBox input
+{
+    background: transparent url(/stylesheets/images/domains/data.medicare.gov/search_button.png) no-repeat;
+    width: 75px;
+}
+
+/* DISCOVER */
+#discover .medicareWelcomeHeader
+{
+    background: #e7f2f8 url(/stylesheets/images/domains/data.medicare.gov/home_box.jpg) no-repeat right bottom;
+}
+
+#discover .medicareWelcomeHeader .pageBlockHeaderBL
+{
+    height: 204px;
+    padding: 20px;
+}
+
+#discover .medicareWelcomeHeader .pageBlockHeaderTL
+{
+    background-image: url(/stylesheets/images/domains/data.medicare.gov/background_corner_left.png);
+}
+
+#discover .medicareWelcomeHeader .pageBlockHeaderBL
+{
+    background-image: url(/stylesheets/images/domains/data.medicare.gov/background_corner_bottom_left.png);
+}
+
+#discover .medicareWelcomeHeader .medicareTitle
+{
+    font-size: 2em;
+    font-weight: bold;
+}
+
+#discover .medicareWelcomeHeader .medicareText
+{
+    font-size: 1.4em;
+    margin-left: 1em;
+    margin-top: 1.5em;
+    width: 40em;
+}

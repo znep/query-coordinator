@@ -193,9 +193,9 @@ blist.publish.applyLogo = function($elem, value)
     else if (value.match(/[\dA-F]{8}-([\dA-F]{4}-){3}[\dA-F]{12}/))
     {
         $elem.removeClass('hide')
-             .css('background-image', 'url(/img/' + value + ')');
+             .css('background-image', 'url(/assets/' + value + ')');
         $logoPreview.removeClass('hide')
-             .attr('src', '/img/' + value + '?s=tiny');
+             .attr('src', '/assets/' + value + '?s=tiny');
     }
     else
     {
@@ -208,6 +208,8 @@ blist.publish.applyLogo = function($elem, value)
 
 blist.publish.applyTabs = function($elem, subhash)
 {
+    if ($elem.length < 1) { return; }
+
     // $elem is the container of the tabs
     var tabs = [];
     for (var key in subhash)

@@ -53,6 +53,8 @@ javascripts:
   - widgets/upload-dialog
   - data/editors/document-editor
   - data/editors/photo-editor
+- shared-map:
+  - widgets/blist-map
 - accounts-show:
   - plugins/ui.core
   - plugins/ui.showedit

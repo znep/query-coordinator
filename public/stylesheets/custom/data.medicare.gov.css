@@ -4,11 +4,17 @@ body
     background: #e7e7e7 url(/stylesheets/images/domains/data.medicare.gov/header_slice.png) repeat-x;
 }
 
+.bodyInterior
+{
+    padding-bottom: 90px;
+}
+
 /* HEADER */
 #outerContainer #header
 {
     background: none;
     height: 88px;
+    margin-bottom: 1.5em;
 }
 
 .bodyInterior
@@ -56,6 +62,7 @@ body
     background-image: url(/stylesheets/images/domains/data.medicare.gov/footer_slice.png);
     height: 82px;
     margin-top: -82px;
+    position: relative;
 }
 
 .footerContainer #footer .copyright

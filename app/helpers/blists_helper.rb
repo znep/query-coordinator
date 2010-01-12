@@ -481,7 +481,7 @@ module BlistsHelper
 
   def images_select_options(selected_image = nil)
     image_options = [['None', 'none'], ['Socrata', 'default'], ['Upload a New Logo...', 'upload']]
-    images = Image.find
+    images = Asset.find(:type => "WIDGET_CUSTOMIZATION_LOGO")
     if images.size > 0
       image_options << ['', 'none']
       images.each { |image| image_options << [image.nameForOutput, image.id] }

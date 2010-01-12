@@ -366,6 +366,7 @@
                 var isUpdate = doSave && !isNew &&
                     datasetObj.settings.currentUserId == view.owner.id;
                 var isGrouping = grouped instanceof Array && grouped.length > 0;
+                var wasGrouped = model.isGrouped();
 
                 var newCols = [];
                 var usedCols = {};
@@ -381,13 +382,16 @@
                 }
                 else { delete view.query.groupBys; }
 
-                if (isGrouping &&
+                if ((isGrouping || wasGrouped) &&
                     aggregates instanceof Array && aggregates.length > 0)
                 {
                     $.each(aggregates, function(i, a)
                     {
                         var format = $.extend({}, a.format,
                             {grouping_aggregate: a.func});
+                        // Column Totals don't work properly on grouped views,
+                        // so clear them out instead of inheriting them
+                        delete format.aggregate;
                         if (format.grouping_aggregate === null)
                         { delete format.grouping_aggregate; }
                         if (usedCols[a.id] === undefined)
@@ -404,9 +408,10 @@
                     });
                 }
 
-                if (isGrouping) { model.meta().view.columns = newCols; }
+                if (isGrouping || wasGrouped)
+                { model.meta().view.columns = newCols; }
 
-                view = model.getViewCopy(isGrouping);
+                view = model.getViewCopy(isGrouping || wasGrouped);
 
                 if (isNew) { view = $.extend(view, {name: newName}); }
 

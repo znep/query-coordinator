@@ -223,7 +223,9 @@ module BlistsHelper
       menu_options['email'],
       menu_options['separator'],
       {'text' => "Share this #{t(:blist_name).titleize}...", 'class' => 'share',
-      'href' => "#share_#{@view.href}/share", 'owner_item' => true},
+      'if' => @view.owned_by?(current_user) &&
+        @view.parent_dataset.owned_by?(current_user),
+      'href' => "#share_#{@view.href}/share"},
       menu_options['separator'],
       menu_options['socialize']
     ]

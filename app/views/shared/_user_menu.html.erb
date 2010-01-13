@@ -1,5 +1,5 @@
 <%- if (current_user) -%>
-  <ul class="subNav">
+  <ul class="<%= menu_class %>">
     <%# Only show the datasets subtab if they're a member of the org or if the
         org has :community_creation %>
     <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>

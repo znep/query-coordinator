@@ -1,19 +1,21 @@
-<div class="featureBoxes">
-  <ul class="clearfix">
-    <li>
-      <h2>Collaborate &amp; Publish</h2>
-      <p><%= image_tag("home/feature_collaborate.png", :size => "199x63", :alt => "Collaborate and Publish") %></p>
-      <p>Share your <%= t(:blists_name) %> with friends, family, colleagues or the world. Then work together on the same <%= t(:blist_name) %> simultaneously!</p>
-    </li>
-    <li>
-    <h2>Visualize your <%= t(:blist_name) %></h2>
-      <p><%= image_tag("home/feature_visualize.png", :size => "199x63", :alt => "Visualize your " + t(:blist_name)) %></p>
-      <p>Filtered views make it easy to see and share different views of your data.  Charts and reports coming soon!</p>
-    </li>
-    <li class="last">
-      <h2>Search for Templates</h2>
-      <p><%= image_tag("home/feature_templates.png", :size => "199x63", :alt => "Search for Templates") %></p>
-      <p>Why start from scratch when someone inside the <%= CurrentDomain.strings.company %> community has done the hard part for you?</p>
-    </li>
-  </ul>
-</div>
+<%- unless upsell? -%>
+  <div class="featureBoxes">
+    <ul class="clearfix">
+      <li>
+        <h2>Collaborate &amp; Publish</h2>
+        <p><%= image_tag("home/feature_collaborate.png", :size => "199x63", :alt => "Collaborate and Publish") %></p>
+        <p>Share your <%= t(:blists_name) %> with friends, family, colleagues or the world. Then work together on the same <%= t(:blist_name) %> simultaneously!</p>
+      </li>
+      <li>
+      <h2>Visualize your <%= t(:blist_name) %></h2>
+        <p><%= image_tag("home/feature_visualize.png", :size => "199x63", :alt => "Visualize your " + t(:blist_name)) %></p>
+        <p>Filtered views make it easy to see and share different views of your data.</p>
+      </li>
+      <li class="last">
+        <h2>Search for Templates</h2>
+        <p><%= image_tag("home/feature_templates.png", :size => "199x63", :alt => "Search for Templates") %></p>
+        <p>Why start from scratch when someone inside the <%= CurrentDomain.strings.company %> community has done the hard part for you?</p>
+      </li>
+    </ul>
+  </div>
+<%- end -%>

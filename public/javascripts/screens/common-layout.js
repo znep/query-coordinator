@@ -82,6 +82,22 @@ $(function ()
             $link.attr('href'), "Screenshot", "location=0,menubar=0,resizable=0,status=0,toolbar=0"
         );
     });
+
+    $("#search").focus(function(){ $(this).select(); });
+    $("#search").keyup(function()
+    {
+        var $searchField = $(this);
+        $searchField.parent().find(".clearSearch")
+            .toggleClass('hide', $searchField.hasClass("prompt") || !($searchField.val() != ""));
+    });
+    $(".clearSearch")
+        .click(function(event)
+        {
+            event.preventDefault();
+            var $link = $(this);
+            $link.closest(".searchContainer").find("input[type='text']").val("").focus();
+            $link.hide();
+        });
     
     $.validator.addMethod("customUrl", function(value, element)
     {

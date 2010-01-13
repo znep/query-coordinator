@@ -434,7 +434,7 @@ module BlistsHelper
   end
 
   def get_datatype_class(column)
-    dtt = column.dataTypeName.downcase
+    dtt = column.renderTypeName.downcase
     if dtt == 'date'
       dtt = 'dateTime'
     elsif dtt == 'text'

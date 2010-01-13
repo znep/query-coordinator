@@ -57,7 +57,7 @@ class Column < Model
       {'title' => 'Minimum', 'name' => 'minimum'}
     ]
 
-    case (originalDataTypeName || dataTypeName).downcase
+    case (originalDataTypeName || renderTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "photo", "phone", "checkbox", "flag", "url",
@@ -74,25 +74,25 @@ class Column < Model
   end
 
   def convertable_types
-    if client_type == "text"
+    if originalDataTypeName == "text"
       return [
         "richtext", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
-    elsif client_type == "richtext"
+    elsif originalDataTypeName == "richtext"
       return [
         "text", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
     end
 
-    if ["percent", "money", "number", "stars"].include?(dataTypeName)
+    if ["percent", "money", "number", "stars"].include?(originalDataTypeName)
       return [
         "text", "number", "money", "percent", "stars"
-      ].reject { |i| i == dataTypeName }
+      ].reject { |i| i == originalDataTypeName }
     end
 
-    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(dataTypeName)
+    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(originalDataTypeName)
       return ["text"]
     end
 
@@ -218,7 +218,7 @@ class Column < Model
       :name => CGI.escapeHTML(name),
       :description => CGI.escapeHTML(description),
       :width => width || 100,
-      :type => dataTypeName || "text",
+      :type => renderTypeName || "text",
       :id => id
     }
 
@@ -246,7 +246,7 @@ class Column < Model
 
   def client_type(type = nil)
     if type.nil?
-      type = dataTypeName
+      type = renderTypeName
     end
 
     if !self.format.nil?
@@ -279,7 +279,7 @@ class Column < Model
   end
 
   def is_nested_table
-    dataTypeName.downcase == 'nested_table'
+    originalDataTypeName.downcase == 'nested_table'
   end
 
   def is_list

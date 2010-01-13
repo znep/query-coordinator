@@ -280,8 +280,8 @@ class View < Model
   end
 
   def can_add_calendar?
-    columns.any? {|c| c.dataTypeName == 'date' && !c.flag?('hidden')} &&
-      columns.any? {|c| c.dataTypeName == 'text' && !c.flag?('hidden')}
+    columns.any? {|c| c.renderTypeName == 'date' && !c.flag?('hidden')} &&
+      columns.any? {|c| c.renderTypeName == 'text' && !c.flag?('hidden')}
   end
 
   # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.

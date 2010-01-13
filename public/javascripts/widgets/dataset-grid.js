@@ -666,7 +666,7 @@
         if ($.compareValues(row.tags, newVal)) { return; }
 
         var column = $.grep(model.meta().view.columns, function(c, i)
-            { return c.dataTypeName == 'tag'; });
+            { return c.originalDataTypeName == 'tag'; });
 
         model.saveRowValue(newVal, row, model.meta().allColumns[column[0].id],
             true);

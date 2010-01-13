@@ -36,16 +36,50 @@ body
     right: 10px;
     top: 11px;
 }
+#outerContainer #header .userNav .accountLink:hover .userMenu
+{
+    display: block;
+}
 
 #outerContainer #header .userNav li
 {
     border-color: #bbb;
 }
 
-#outerContainer #header .userNav a
+#outerContainer #header .userNav li a
 {
     color: #fff;
     font-size: 1.2em;
+}
+
+#outerContainer #header .userNav .accountLink .userMenu
+{
+    background-color: #ececec;
+    border: 1px solid #8d8d8d;
+    display: none;
+    position: absolute;
+    z-index: 200;
+}
+#outerContainer #header .userNav .accountLink .userMenu li
+{
+    border: none;
+    display: block;
+    margin: 0.2em 0;
+    padding: 0.3em 1em;
+    width: 10em;
+}
+#outerContainer #header .userNav .accountLink .userMenu li:hover
+{
+    background-color: #cacaca;
+}
+#outerContainer #header .userNav .accountLink .userMenu li a
+{
+    color: #333;
+    font-size: 1.3em;
+}
+#outerContainer #header .userNav .accountLink .userMenu li a:hover
+{
+    text-decoration: none;
 }
 
 #outerContainer #header form.search

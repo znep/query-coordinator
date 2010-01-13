@@ -17,8 +17,8 @@
 
         function updateMap(settings)
         {
-            // Can't save settings w/ out view
-            if (!blist.display.viewId)
+            // Can't save settings w/ out editable view
+            if (!blist.display.viewId || !blist.display.editable)
                 return;
 
             // Gather state information

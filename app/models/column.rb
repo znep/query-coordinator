@@ -244,16 +244,20 @@ class Column < Model
     return col.to_json.html_safe!
   end
 
-  def client_type
+  def client_type(type = nil)
+    if type.nil?
+      type = dataTypeName
+    end
+
     if !self.format.nil?
-      if dataTypeName == "text" && self.format.formatting_option == "Rich"
+      if type == "text" && self.format.formatting_option == "Rich"
         return "richtext"
-      elsif dataTypeName == "stars" && self.format.view == "stars_number"
+      elsif type == "stars" && self.format.view == "stars_number"
         return "number"
       end
     end
 
-    return dataTypeName
+    return type
   end
 
   def text_format

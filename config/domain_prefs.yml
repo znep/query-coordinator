@@ -76,3 +76,4 @@ features.discovery_module: true
 features.community_module: true
 features.community_creation: true
 features.allow_comments: true
+features.remember_me: true

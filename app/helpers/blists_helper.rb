@@ -171,7 +171,8 @@ module BlistsHelper
     'publish' => {'text' => "Publish this #{t(:blist_name).titleize}...",
       'class' => 'publish', 'modal' => is_widget,
       'href' => (is_widget ?  "#{@view.href}/republish" : '#publish'),
-      'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.display.can_publish?)},
+      'if' => ((theme.nil? || theme[:menu][:republish]) &&
+               @view.display.can_publish?)},
 
     'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
       'class' => 'rowTags ungroupedOption',
@@ -223,7 +224,9 @@ module BlistsHelper
       menu_options['email'],
       menu_options['separator'],
       {'text' => "Share this #{t(:blist_name).titleize}...", 'class' => 'share',
-      'href' => "#share_#{@view.href}/share", 'owner_item' => true},
+      'if' => @view.owned_by?(current_user) &&
+        @view.parent_dataset.owned_by?(current_user),
+      'href' => "#share_#{@view.href}/share"},
       menu_options['separator'],
       menu_options['socialize']
     ]
@@ -431,7 +434,7 @@ module BlistsHelper
   end
 
   def get_datatype_class(column)
-    dtt = column.dataTypeName.downcase
+    dtt = column.renderTypeName.downcase
     if dtt == 'date'
       dtt = 'dateTime'
     elsif dtt == 'text'
@@ -481,7 +484,7 @@ module BlistsHelper
 
   def images_select_options(selected_image = nil)
     image_options = [['None', 'none'], ['Socrata', 'default'], ['Upload a New Logo...', 'upload']]
-    images = Image.find
+    images = Asset.find(:type => "WIDGET_CUSTOMIZATION_LOGO")
     if images.size > 0
       image_options << ['', 'none']
       images.each { |image| image_options << [image.nameForOutput, image.id] }

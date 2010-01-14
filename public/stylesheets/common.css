@@ -186,6 +186,11 @@ form.search.large .clearSearch
     width: 16px;
 }
 
+form.search.large .clearSearch.hide
+{
+    display: none;
+}
+
 form.search input.submit
 {
     background: transparent url(/stylesheets/images/common/find_button.png) no-repeat top left;

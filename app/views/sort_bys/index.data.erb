@@ -54,7 +54,7 @@
     <div class="border"></div>
     <div class="inactiveList">
       <ul class="reorder">
-        <% @unselected.each do |sort| %>
+        <% @unselected.each_with_index do |sort, i| %>
         <%- col = @view.column_by_id(sort['columnId']) -%>
           <li>
             <div class="type datatype-<%= col.client_type %>"></div>

@@ -31,7 +31,7 @@ class Column < Model
 
     attributes = Column.to_core(attributes)
 
-    if attributes[:originalDataTypeName] == "nested_table"
+    if attributes[:dataTypeName] == "nested_table"
       attributes["childColumns"] = [
           Column.to_core({"type" => "text", "width" => 100,"name" => "Untitled"})
       ]
@@ -57,7 +57,7 @@ class Column < Model
       {'title' => 'Minimum', 'name' => 'minimum'}
     ]
 
-    case (originalDataTypeName || dataTypeName).downcase
+    case (dataTypeName || renderTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "photo", "phone", "checkbox", "flag", "url",
@@ -74,12 +74,12 @@ class Column < Model
   end
 
   def convertable_types
-    if client_type == "text"
+    if dataTypeName == "text"
       return [
         "richtext", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
-    elsif client_type == "richtext"
+    elsif dataTypeName == "richtext"
       return [
         "text", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
@@ -198,12 +198,12 @@ class Column < Model
       :name => js["name"],
       :description => js["description"],
       :width => js["width"],
-      :originalDataTypeName => js["type"],
+      :dataTypeName => js["type"],
       :dropDownList => js['dropDownList']
     }
 
     if js["type"] == "richtext"
-      col[:originalDataTypeName] = "text"
+      col[:dataTypeName] = "text"
       col[:format] ||= {}
       col[:format]["formatting_option"] = "Rich"
     end
@@ -218,7 +218,7 @@ class Column < Model
       :name => CGI.escapeHTML(name),
       :description => CGI.escapeHTML(description),
       :width => width || 100,
-      :type => dataTypeName || "text",
+      :type => renderTypeName || "text",
       :id => id
     }
 
@@ -244,16 +244,20 @@ class Column < Model
     return col.to_json.html_safe!
   end
 
-  def client_type
+  def client_type(type = nil)
+    if type.nil?
+      type = renderTypeName
+    end
+
     if !self.format.nil?
-      if dataTypeName == "text" && self.format.formatting_option == "Rich"
+      if type == "text" && self.format.formatting_option == "Rich"
         return "richtext"
-      elsif dataTypeName == "stars" && self.format.view == "stars_number"
+      elsif type == "stars" && self.format.view == "stars_number"
         return "number"
       end
     end
 
-    return dataTypeName
+    return type
   end
 
   def text_format

@@ -23,7 +23,7 @@ module ThemesHelper
       if options[:type].to_s == "static"
         return "url(#{options[:source]})"
       elsif options[:type].to_s == "hosted"
-        return "url(/img/#{options[:source]})"
+        return "url(/assets/#{options[:source]})"
       end
     end
 

@@ -444,7 +444,7 @@
                       <div class="subform">
                         <%= label_tag("customization_frame_logo", "Image") %>
                         <%= select_tag("customization[frame][logo]", images_select_options(@customization[:frame][:logo]))%>
-                        <img class="logoPreview" src="/img/<%= @customization[:frame][:logo] %>?s=tiny" alt="logo preview" />
+                        <img class="logoPreview" src="/assets/<%= @customization[:frame][:logo] %>?s=tiny" alt="logo preview" />
                       </div>
                       <div class="subform logoUrlForm" style="display: <%= @customization[:frame][:logo] == 'none' ? 'none' : 'block' %>">
                         <%= label_tag("customization_frame_logo_url", "Link") %>

@@ -33,6 +33,11 @@
     <p class="seattleText">Please note that by accessing the data catalog and feeds, you agree to our <a href="/data-policy">Terms of Use</a>. Please read before accessing the data.</p>
   </div></div>
   </div></div></div>
+<%- elsif CurrentDomain.cname.match(/medicare/) -%>
+  <div class="pageBlockHeaderOuter medicareWelcomeHeader"><div class="pageBlockHeaderTL"><div class="pageBlockHeaderBL">
+    <p class="medicareTitle">Welcome To Data.Medicare.Gov</p>
+    <p class="medicareText">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </div></div></div>
 <%- else -%>
   <div class="pageBlockHeaderOuter"><div class="pageBlockHeaderTL"><div class="pageBlockHeaderTR">
   <div class="pageBlockHeaderBL"><div class="pageBlockHeaderBR">

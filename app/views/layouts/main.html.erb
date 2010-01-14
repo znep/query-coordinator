@@ -48,91 +48,94 @@
 <div class="bodyInterior">
   <div id='outerContainer'>
     <div id='header'>
-      <h1 id='mainLogo' class='<%= @is_marketing_page ? "aboutLogo" : "appLogo" %>'<%= @hide_logo %>>
-        <%= link_to(CurrentDomain.strings.company, root_path) %>
-      </h1>
+      <%- if CurrentDomain.cname =~ /medicare/ -%>
+        <h1 id='medicareLogo'>
+          <%= link_to(CurrentDomain.strings.company, root_path) %>
+        </h1>
+        <div class='userNav'>
+          <ul>
+            <li class='signInLink'><%= link_to "Sign In to Data.Medicare.Gov", login_url, :rel => 'nofollow' %></li>
+            <li class='signUpLink'><%= link_to "Create An Account", signup_url, :rel => 'nofollow' %></li>
+            <li class='accountLink'>
+              <%= link_to "My Data.Medicare.Gov", home_path %>
+              <%= render :partial => 'shared/user_menu', :locals => { :menu_class => 'userMenu' } %>
+            </li>
+            <li class='accountLink'><%= link_to "My Account", account_path %></li>
+            <li class='signOutLink'><a href='/logout' rel='nofollow'>Sign Out</a></li>
+          </ul>
+        </div>
+        <% form_tag(data_filter_path, :class => "search large") do %>
+          <div class="searchContainer">
+            <%= text_field_tag("search", @search_term, :class => "textPrompt", :title => "Search Medicare Datasets") %>
+            <%= hidden_field_tag("type", "SEARCH") %>
 
-      <div id='mainNav'<%= " class='currentUserNav'" if current_user %>>
-        <ul class="clearfix">
-          <%# Discovery Module %>
-          <% module_enabled :discovery_module do %>
-            <li class='discover'><%= link_to("<span>Public Data</span>", root_path) %></li>
-          <% end %>
-
-          <%# Community Module %>
-          <% module_enabled :community_module do %>
-            <li class='community'><%= link_to("<span>Community</span>", community_path) %></li>
-          <% end %>
-
-          <%# Home (Features enabled/disabled within this tab) %>
-          <li class='home last'>
-            <%= link_to("<span>My #{CurrentDomain.strings.company}</span>", home_path) %>
-
-            <%- if (current_user) -%>
-              <ul class="subNav">
-                <%# Only show the datasets subtab if they're a member of the org or if the
-                    org has :community_creation %>
-                <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
-                  <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
-                <% end %>
-
-                <%# Only show "Friends" if they have community or are a member of the org %>
-                <% if (module_enabled?(:community_module) || CurrentDomain.member?(current_user)) %>
-                  <li><%= link_to "<span>Friends</span>", contacts_path %></li>
-                <% end %>
-
-                <%# "Profile" is always displayed %>
-                <li class="<%= 'last' unless (upsell? || 
-                      (module_enabled?(:publisher_comment_moderation) && CurrentDomain.member?(current_user))) %>">
-                  <%= link_to "<span>Profile</span>", current_user.href %>
-                </li>
-
-                <%# Only showed to org members when the module is enabled %>
-                <%- if (CurrentDomain.member?(current_user) && module_enabled?(:publisher_comment_moderation)) -%>
-                  <li class="last">
-                  <%= link_to '<span>Approvals</span>', approval_path %>
-                  </li>
-                <%- elsif upsell?-%>
-                  <li class="last">
-                  <%= link_to '<span>Approvals</span>', '/popup/premium', :rel => "modal" %>
-                  </li>
-                <%- end -%>
-              </ul>
-            <%- end -%>
-          </li>
-        </ul>
-      </div>
-
-      <div class='userNav'>
-        <ul>
-          <%- CurrentDomain.theme.urls.header.each do |link| -%>
-            <li><%= link_from_theme(link) %></li>
-          <%- end -%>
-          <li class='signInLink'><%= link_to "Sign In", login_url, :rel => 'nofollow' %></li>
-          <li class='signUpLink'><%= link_to "Sign Up", signup_url, :rel => 'nofollow' %></li>
-          <li class='accountLink'><%= link_to "My Account", account_path%></li>
-          <li class='signOutLink'><a href='/logout' rel='nofollow'>Sign Out</a></li>
-        </ul>
-      </div>
-
-      <%# This is not supported yet
-      <div class='notifications'>
-        <ul>
-          <li><a href='#' class='messages' title='Messages'>1</a></li>
-          <li><a href='#' class='requests' title='Requests'>3</a></li>
-        </ul>
-      </div>
-      %>
-
-      <%- if @show_search_form -%>
-        <% form_tag(root_path, :method => :get, :class => "search") do %>
-          <p>
-            <input type='text' class='textPrompt' name='search'
-              title='<%= t(:search_prompt_text) %>'
-              value='<%= @discover_search %>' />
-            <input type='image' class='submit' name='discoverSubmit' src='/stylesheets/images/common/empty.gif' />
-          </p>
+            <div class="actionsBox">
+              <div class="clearBox">
+                <a class="clearSearch noHistory hide" title="Clear Search" href="#clear_search">
+                  Clear Search
+                </a>
+              </div>
+              <%= image_submit_tag("empty.gif", :name => "discoverSubmit", :class => "submit") %>
+            </div>
+          </div>
         <% end %>
+      <%- else -%>
+        <h1 id='mainLogo' class='<%= @is_marketing_page ? "aboutLogo" : "appLogo" %>'<%= @hide_logo %>>
+          <%= link_to(CurrentDomain.strings.company, root_path) %>
+        </h1>
+
+        <div id='mainNav'<%= " class='currentUserNav'" if current_user %>>
+          <ul class="clearfix">
+            <%# Discovery Module %>
+            <% module_enabled :discovery_module do %>
+              <li class='discover'><%= link_to("<span>Public Data</span>", root_path) %></li>
+            <% end %>
+
+            <%# Community Module %>
+            <% module_enabled :community_module do %>
+              <li class='community'><%= link_to("<span>Community</span>", community_path) %></li>
+            <% end %>
+
+            <%# Home (Features enabled/disabled within this tab) %>
+            <li class='home last'>
+              <%= link_to("<span>My #{CurrentDomain.strings.company}</span>", home_path) %>
+
+              <%= render :partial => 'shared/user_menu', :locals => { :menu_class => 'subNav' } %>
+            </li>
+          </ul>
+        </div>
+
+        <div class='userNav'>
+          <ul>
+            <%- CurrentDomain.theme.urls.header.each do |link| -%>
+              <li><%= link_from_theme(link) %></li>
+            <%- end -%>
+            <li class='signInLink'><%= link_to "Sign In", login_url, :rel => 'nofollow' %></li>
+            <li class='signUpLink'><%= link_to "Sign Up", signup_url, :rel => 'nofollow' %></li>
+            <li class='accountLink'><%= link_to "My Account", account_path%></li>
+            <li class='signOutLink'><a href='/logout' rel='nofollow'>Sign Out</a></li>
+          </ul>
+        </div>
+
+        <%# This is not supported yet
+        <div class='notifications'>
+          <ul>
+            <li><a href='#' class='messages' title='Messages'>1</a></li>
+            <li><a href='#' class='requests' title='Requests'>3</a></li>
+          </ul>
+        </div>
+        %>
+
+        <%- if @show_search_form -%>
+          <% form_tag(root_path, :method => :get, :class => "search") do %>
+            <p>
+              <input type='text' class='textPrompt' name='search'
+                title='<%= t(:search_prompt_text) %>'
+                value='<%= @discover_search %>' />
+              <input type='image' class='submit' name='discoverSubmit' src='/stylesheets/images/common/empty.gif' />
+            </p>
+          <% end %>
+        <%- end -%>
       <%- end -%>
     </div>
 
@@ -193,7 +196,15 @@
 
 
   <%= yield :js_footer %>
-  
+
+  <%- unless CurrentDomain.theme.js.nil? -%>
+    <%- if CurrentDomain.theme.js[:type].to_s == 'static' -%>
+      <script type="text/javascript" src="<%= CurrentDomain.theme.js.source %>"></script>
+    <%- elsif CurrentDomain.theme.js[:type].to_s == 'hosted' -%>
+      <script type="text/javascript" src="/assets/<%= CurrentDomain.theme.js.source %>"></script>
+    <%- end -%>
+  <%- end -%>
+
   <div class="jqmWindow" id="modal"></div>
 
   <% unless APP_CONFIG['google_analytics_id'].blank? %>

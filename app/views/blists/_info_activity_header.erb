@@ -6,7 +6,7 @@
         <a href="<%= "#{view.href}/stats" %>" class="arrowButton">View Statistics</a>
       </li>
     </ul>
-  <%- elsif (upsell? && CurrentDomain.member?(current_user)) -%>
+  <%- elsif upsell? -%>
     <ul class="headerActions actionButtons">
       <li>
         <a href="/popup/stats" class="arrowButton" rel="modal">View Statistics</a>

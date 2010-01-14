@@ -56,12 +56,13 @@ blist.datasetMenu.menuHandler = function(event)
             var model = $('.blist-table').blistModel();
             var view = model.meta().view;
             var params = [];
+            var groups = '';
             if (model.isGrouped())
             {
-                var groups = $.map(view.query.groupBys, function(g, i)
+                groups = $.map(view.query.groupBys, function(g, i)
                     { return g.columnId; }).join(',');
-                params.push('groups=' + groups);
             }
+            params.push('groups=' + groups);
 
             var aggs = [];
             $.each(view.columns, function(i, c)
@@ -72,7 +73,7 @@ blist.datasetMenu.menuHandler = function(event)
                     aggs.push(c.id + ':' + c.format.grouping_aggregate);
                 }
             });
-            if (aggs.length > 0) { params.push('aggs=' + aggs.join(',')); }
+            params.push('aggs=' + aggs.join(','));
 
             if ($('.blist-table').datasetGrid().isTempView)
             { params.push('isTempView=true'); }

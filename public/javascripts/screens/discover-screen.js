@@ -237,34 +237,18 @@ $(function ()
         $("#tagCloud").jqmHide();
     });
 
-    $("#discover .pageBlockSearch form").submit(discoverNS.searchSubmitHandler);
-    $("#search").focus(function(){ $(this).select(); });
-    $("#search").keyup(function()
-    {
-        var $searchField = $(this);
-        if (!$searchField.hasClass("prompt") && ($searchField.val() != ""))
-        {
-            $searchField.parent().find(".clearSearch").show();
-        }
-        else
-        {
-            $searchField.parent().find(".clearSearch").hide();
-        }
-    });
+    $("#discover form").submit(discoverNS.searchSubmitHandler);
     $(".clearSearch")
         .click(function(event)
         {
             event.preventDefault();
-            var $link = $(this);
-            $link.closest(".searchContainer").find("input[type='text']").val("").focus();
-            $link.hide();
             $("#tabSearch").remove();
             window.location.hash = ''; // only webkit/ie understand this, but only they need to
             $.historyLoad('');
         });
-    if ($.urlParam("search", window.location.href) === 0)
+    if ($.urlParam("search", window.location.href) !== 0)
     {
-        $(".clearSearch").hide();
+        $(".clearSearch").show();
     }
     
     $("#splashModal").jqm({

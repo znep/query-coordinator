@@ -171,7 +171,8 @@ module BlistsHelper
     'publish' => {'text' => "Publish this #{t(:blist_name).titleize}...",
       'class' => 'publish', 'modal' => is_widget,
       'href' => (is_widget ?  "#{@view.href}/republish" : '#publish'),
-      'if' => ((theme.nil? || theme[:menu][:republish]) && !@view.display.can_publish?)},
+      'if' => ((theme.nil? || theme[:menu][:republish]) &&
+               @view.display.can_publish?)},
 
     'show_tags' => {'text' => "#{tag_show_hide.titleize} Row Tags",
       'class' => 'rowTags ungroupedOption',
@@ -433,7 +434,7 @@ module BlistsHelper
   end
 
   def get_datatype_class(column)
-    dtt = column.dataTypeName.downcase
+    dtt = column.renderTypeName.downcase
     if dtt == 'date'
       dtt = 'dateTime'
     elsif dtt == 'text'

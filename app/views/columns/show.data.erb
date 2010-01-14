@@ -67,7 +67,7 @@ blist.columns.properties.column = <%= @column.to_js %>;
           </li>
         </ul>
 
-        <%- if @column.dataTypeName == 'drop_down_list' -%>
+        <%- if @column.renderTypeName == 'drop_down_list' -%>
         <h3 class='separator'>Multiple Choice Values</h3>
         <%= render(:partial => 'picklist_manager') %>
         <%- end -%>
@@ -164,7 +164,7 @@ $(function()
   $("#columnPropertiesDialog .error").hide();
   $("#columnPropertiesDialog #convertables").hide();
 
-  <%- if @column.dataTypeName == 'drop_down_list' -%>
+  <%- if @column.renderTypeName == 'drop_down_list' -%>
   var picklistManagerCallback = picklistManagerSetup();
   <%- end -%>
 
@@ -234,7 +234,7 @@ $(function()
         $("#columnPropertiesDialog #precision").val() });
 
   var save = function() {
-      <%- if @column.dataTypeName == 'drop_down_list' -%>
+      <%- if @column.renderTypeName == 'drop_down_list' -%>
       columnsNS.column.dropDownList = {values: picklistManagerCallback()};
       <%- end -%>
       $.ajax({

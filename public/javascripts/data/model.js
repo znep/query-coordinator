@@ -679,7 +679,7 @@ blist.namespace.fetch('blist.data');
                     metaCols.push({name: adjName, index: i});
                 }
 
-                var type = blist.data.types[v.dataTypeName];
+                var type = blist.data.types[v.renderTypeName];
                 if (type && type.isObject)
                 {
                     dataMungeCols.push({index: i, type: 'nullifyArrays'});
@@ -688,10 +688,10 @@ blist.namespace.fetch('blist.data');
                 }
 
 
-                if (v.dataTypeName == 'checkbox')
+                if (v.renderTypeName == 'checkbox')
                 { dataMungeCols.push({index: i, type: 'falseToNull'}); }
 
-                if (v.dataTypeName == 'stars')
+                if (v.renderTypeName == 'stars')
                 { dataMungeCols.push({index: i, type: 'zeroToNull'}); }
             }
         };
@@ -737,8 +737,8 @@ blist.namespace.fetch('blist.data');
                     description: vcol.description,
                     width: Math.max(50, vcol.width || 100),
                     minWidth: 50,
-                    type: vcol.dataTypeName || "text",
-                    originalType: vcol.originalDataTypeName,
+                    type: vcol.renderTypeName || "text",
+                    originalType: vcol.dataTypeName,
                     id: vcol.id,
                     tableColumnId: vcol.tableColumnId,
                     aggregate: meta.aggregateHash[vcol.id],
@@ -2722,8 +2722,8 @@ blist.namespace.fetch('blist.data');
                     delete col.dataIndex;
                     delete col.options;
                     delete col.dropDown;
+                    delete col.renderTypeName;
                     delete col.dataTypeName;
-                    delete col.originalDataTypeName;
                 };
                 // Clean out dataIndexes, and clean out child metadata columns
                 $.each(view.columns, function(i, c)

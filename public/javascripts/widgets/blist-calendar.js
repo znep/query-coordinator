@@ -98,7 +98,7 @@
             var fmt = currentObj.settings.displayFormat;
             $.each(resp.meta.view.columns, function(i, c)
             {
-                if (c.originalDataTypeName == 'meta_data' && c.name == 'sid')
+                if (c.dataTypeName == 'meta_data' && c.name == 'sid')
                 { currentObj._idIndex = i; }
                 else if (c.id == fmt.startDateId) { currentObj._startIndex = i; }
                 else if (c.id == fmt.endDateId) { currentObj._endIndex = i; }

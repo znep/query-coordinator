@@ -669,11 +669,11 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < viewCols.length; i++)
             {
                 var v = viewCols[i];
-                if (v.originalDataTypeName == 'meta_data' ||
-                    v.originalDataTypeName == 'tag')
+                if (v.dataTypeName == 'meta_data' ||
+                    v.dataTypeName == 'tag')
                 {
                     var adjName = v.name;
-                    if (v.originalDataTypeName == 'tag') { adjName = 'tags'; }
+                    if (v.dataTypeName == 'tag') { adjName = 'tags'; }
                     else if (v.name == 'sid') { adjName = 'id'; }
                     else if (v.name == 'id') { adjName = 'uuid'; }
                     metaCols.push({name: adjName, index: i});
@@ -729,7 +729,7 @@ blist.namespace.fetch('blist.data');
             for (i = 0; i < viewCols.length; i++)
             {
                 var vcol = viewCols[i];
-                if (vcol.originalDataTypeName == 'meta_data')
+                if (vcol.dataTypeName == 'meta_data')
                 { continue; }
 
                 var col = {
@@ -738,7 +738,7 @@ blist.namespace.fetch('blist.data');
                     width: Math.max(50, vcol.width || 100),
                     minWidth: 50,
                     type: vcol.renderTypeName || "text",
-                    originalType: vcol.originalDataTypeName,
+                    originalType: vcol.dataTypeName,
                     id: vcol.id,
                     tableColumnId: vcol.tableColumnId,
                     aggregate: meta.aggregateHash[vcol.id],
@@ -1471,7 +1471,7 @@ blist.namespace.fetch('blist.data');
                             var columns = parentColumn === undefined ?
                                 meta.view.columns : parentColumn.body.children;
                             $.each(columns, function(i, c)
-                            { if ((c.originalDataTypeName == 'tag') ||
+                            { if ((c.dataTypeName == 'tag') ||
                                 c.id > -1) { errorArray[c.dataIndex] = true; } });
                         }
                         else if (parentColumn)
@@ -1566,12 +1566,12 @@ blist.namespace.fetch('blist.data');
             // Now set up all the data to be saved
             $.each(columns, function(i, c)
             {
-                if (c.originalDataTypeName == 'tag')
+                if (c.dataTypeName == 'tag')
                 {
                     data['_tags'] = row[c.dataIndex];
                     savingArray[c.dataIndex] = true;
                 }
-                else if (c.originalDataTypeName == 'nested_table')
+                else if (c.dataTypeName == 'nested_table')
                 {
                     if (row[c.dataIndex] instanceof Array)
                     {
@@ -2009,7 +2009,7 @@ blist.namespace.fetch('blist.data');
 
             // Filter view columns down to just the visible, and sort them
             var viewCols = $.grep(meta.view.columns, function(c)
-                { return c.originalDataTypeName != 'meta_data' &&
+                { return c.dataTypeName != 'meta_data' &&
                     (!c.flags || $.inArray('hidden', c.flags) < 0); });
             viewCols.sort(function(col1, col2)
                 { return col1.position - col2.position; });
@@ -2723,7 +2723,7 @@ blist.namespace.fetch('blist.data');
                     delete col.options;
                     delete col.dropDown;
                     delete col.renderTypeName;
-                    delete col.originalDataTypeName;
+                    delete col.dataTypeName;
                 };
                 // Clean out dataIndexes, and clean out child metadata columns
                 $.each(view.columns, function(i, c)

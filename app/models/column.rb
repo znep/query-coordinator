@@ -31,7 +31,7 @@ class Column < Model
 
     attributes = Column.to_core(attributes)
 
-    if attributes[:originalDataTypeName] == "nested_table"
+    if attributes[:dataTypeName] == "nested_table"
       attributes["childColumns"] = [
           Column.to_core({"type" => "text", "width" => 100,"name" => "Untitled"})
       ]
@@ -57,7 +57,7 @@ class Column < Model
       {'title' => 'Minimum', 'name' => 'minimum'}
     ]
 
-    case (originalDataTypeName || renderTypeName).downcase
+    case (dataTypeName || renderTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "photo", "phone", "checkbox", "flag", "url",
@@ -74,25 +74,25 @@ class Column < Model
   end
 
   def convertable_types
-    if originalDataTypeName == "text"
+    if dataTypeName == "text"
       return [
         "richtext", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
-    elsif originalDataTypeName == "richtext"
+    elsif dataTypeName == "richtext"
       return [
         "text", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
     end
 
-    if ["percent", "money", "number", "stars"].include?(originalDataTypeName)
+    if ["percent", "money", "number", "stars"].include?(dataTypeName)
       return [
         "text", "number", "money", "percent", "stars"
-      ].reject { |i| i == originalDataTypeName }
+      ].reject { |i| i == dataTypeName }
     end
 
-    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(originalDataTypeName)
+    if ["date", "phone", "email", "url", "checkbox", "flag"].include?(dataTypeName)
       return ["text"]
     end
 
@@ -198,12 +198,12 @@ class Column < Model
       :name => js["name"],
       :description => js["description"],
       :width => js["width"],
-      :originalDataTypeName => js["type"],
+      :dataTypeName => js["type"],
       :dropDownList => js['dropDownList']
     }
 
     if js["type"] == "richtext"
-      col[:originalDataTypeName] = "text"
+      col[:dataTypeName] = "text"
       col[:format] ||= {}
       col[:format]["formatting_option"] = "Rich"
     end
@@ -279,7 +279,7 @@ class Column < Model
   end
 
   def is_nested_table
-    originalDataTypeName.downcase == 'nested_table'
+    dataTypeName.downcase == 'nested_table'
   end
 
   def is_list

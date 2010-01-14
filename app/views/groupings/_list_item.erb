@@ -3,8 +3,8 @@
   <span class="orderIndex <%= is_inactive ? 'hide' : '' %>">
     <%= list_item_counter + 1 %>
   </span>
-  <span class="type datatype-<%= list_item.client_type(
-      list_item.originalDataTypeName) || list_item.client_type %>"></span>
+  <span class="type datatype-<%= list_item.client_type(list_item.dataTypeName) ||
+    list_item.client_type %>"></span>
   <span class='name'><%= list_item.name %></span>
   <%- if type == 'aggregate' -%>
   <div class='controls'>

@@ -41,7 +41,7 @@ blist.datasetMenu.menuHandler = function(event)
             {
                 var unsorts = $.map(view.columns, function(c, i)
                 {
-                    if (c.originalDataTypeName !== 'meta_data' && !sortIds[c.id])
+                    if (c.dataTypeName !== 'meta_data' && !sortIds[c.id])
                     { return c.id; }
                 });
                 if (unsorts.length > 0)
@@ -115,7 +115,7 @@ blist.datasetMenu.menuHandler = function(event)
             $.each($('.blist-table').blistModel().meta().view.columns,
                 function(i, col)
                 {
-                    if (col.originalDataTypeName == 'tag')
+                    if (col.dataTypeName == 'tag')
                     {
                         $('.blist-table').datasetGrid().showHideColumns(col.id,
                             hideTags);

@@ -1175,6 +1175,16 @@ blist.namespace.fetch('blist.data');
             if (!realRow.meta) { realRow.meta = {'invalidCells': {}}; }
             if (!realRow.meta.invalidCells) { realRow.meta.invalidCells = {}; }
             realRow.meta.invalidCells[column.tableColumnId] = value;
+            var metaCols = column.nestedIn ? parCol.metaChildren :
+                meta.metaColumns;
+            $.each(metaCols, function(i, c)
+                {
+                    if (c.name == 'meta')
+                    {
+                        realRow[c.index] = $.json.serialize(realRow.meta);
+                        return false;
+                    }
+                });
         };
 
         this.isCellError = function(row, column)

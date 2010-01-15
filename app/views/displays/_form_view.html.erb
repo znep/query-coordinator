@@ -1,10 +1,13 @@
 <div class='formView'>
   <form action='/views/<%= @view.id %>/rows.html' method='POST'>
     <%- @view.columns.each do |c| -%>
-    <%- next if c.client_type == 'meta_data' || c.flag?('hidden') -%>
+    <%- next if c.client_type == 'meta_data' ||
+      c.client_type == 'nested_table' || c.client_type == 'document' ||
+      c.client_type == 'photo' || c.flag?('hidden') -%>
+
     <div class='line clearfix'>
-      <label><%= c.name %></label>
-      <input type='text' class='fieldInput' name='<%= c.id %>' />
+      <label for='form_field_<%= c.id %>'><%= c.name %></label>
+      <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
     </div>
     <%- end -%>
     <input type='submit' />

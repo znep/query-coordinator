@@ -74,12 +74,12 @@ class Column < Model
   end
 
   def convertable_types
-    if dataTypeName == "text"
+    if client_type(dataTypeName) == "text"
       return [
         "richtext", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
-    elsif dataTypeName == "richtext"
+    elsif client_type(dataTypeName) == "richtext"
       return [
         "text", "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"

@@ -817,7 +817,6 @@
             var row = editor.row;
             var col = editor.column;
             var isValid = editor.isValid();
-            if (isValid && typeof value == 'string') { value = htmlEscape(value); }
 
             $curEditContainer.remove();
             delete $editContainers[mode];

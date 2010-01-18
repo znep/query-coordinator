@@ -191,6 +191,11 @@ module BlistsHelper
       end + [{'button' => true, 'text' => 'Next',
       'href' => '#next', 'class' => 'next'}]}},
 
+    'share' => {'text' => "Share this #{t(:blist_name).titleize}...",
+      'class' => 'share', 'if' => @view.owned_by?(current_user) &&
+        @view.parent_dataset.owned_by?(current_user) && !is_widget,
+      'href' => "#share_#{@view.href}/share"},
+
     'delicious' => {'text' => 'Delicious', 'class' => 'delicious',
       'external' => true,
       'if' => (theme.nil? || theme[:menu][:socialize][:delicious]),
@@ -223,10 +228,7 @@ module BlistsHelper
     [menu_options['publish'],
       menu_options['email'],
       menu_options['separator'],
-      {'text' => "Share this #{t(:blist_name).titleize}...", 'class' => 'share',
-      'if' => @view.owned_by?(current_user) &&
-        @view.parent_dataset.owned_by?(current_user),
-      'href' => "#share_#{@view.href}/share"},
+      menu_options['share'],
       menu_options['separator'],
       menu_options['socialize']
     ]

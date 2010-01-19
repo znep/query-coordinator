@@ -9,8 +9,9 @@
 
 #profile .userInfo
 {
-    margin: 1em 0 0.5em;
-    padding-bottom: 1em;
+    margin: 0;
+    margin-bottom: 0.5em;
+    padding: 1em 0;
 }
 
 #profile a.action
@@ -299,52 +300,18 @@
     margin-bottom: 1em;
 }
 
-#profile .publicBlists .infoContentOuter
-{
-    border-top-width: 1px;
-}
-#profile .publicBlists .infoContentInner
-{
-    background-image: url(/stylesheets/images/profile/info_bottom_right_white.png);
-    background-position: right bottom;
-    background-repeat: no-repeat;
-    margin: 0 -1px -1px 0;
-    padding: 0 1px 1px 0;
-}
-
-#profile .publicBlists .infoContent
-{
-    background-image: url(/stylesheets/images/profile/info_bottom_left_white.png);
-    background-position: bottom left;
-    background-repeat: no-repeat;
-    display: block;
-    margin: 0 0 -1px -1px;
-    padding: 0 0 1px 1px;
-}
-
 #profile .publicBlists .infoContentHeader
 {
-    background-image: url(/stylesheets/images/profile/info_top_left_white.png);
-    background-position: top left;
-    background-repeat: no-repeat;
-    margin: -1px 0 0 -1px;
-    min-height: 0;
-    padding: 1px 0 0 1px;
+    padding-top: 0;
 }
-
-#profile .publicBlists .infoContentHeaderInner
+#profile .publicBlists .infoContent
 {
-    background-image: url(/stylesheets/images/profile/info_top_right_white.png);
-    background-position: top right;
-    background-repeat: no-repeat;
-    margin: -1px -1px 0 0;
-    min-height: 0;
-    padding: 1px 1px 0 0;
+    display: block;
 }
 
 #profile .publicBlists .gridListContainer
 {
-    padding: 0.5em 1em;
+    padding: 0.5em 1em 0;
     width: auto;
 }
 

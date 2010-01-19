@@ -18,7 +18,7 @@ h<%= level + 1 %>  {
 #mainNav li,
 #mainNav li a span
 {
-    background-image: <%= box :h => 35, :r => 10, :ry => 10, :fc => CurrentDomain.theme.colors.header.inactive, :bc => CurrentDomain.theme.colors.header.background, :s => 'h' %>;
+    background-image: <%= box :h => 35, :r => 10, :ry => 10, :fc => CurrentDomain.theme.colors.header.inactive, :s => 'h' %>;
 }
 
 #mainNav li.home .subNav li,
@@ -53,7 +53,7 @@ body.discover #mainNav li.discover,
 body.home #mainNav li.home .subNav li:hover,
 body.home #mainNav li.home .subNav li:hover a span
 {
-    background-image: <%= box :h => 35, :r => 10, :ry => 10, :fc => CurrentDomain.theme.colors.header.active, :bc => CurrentDomain.theme.colors.header.background, :s => 'h' %>;
+    background-image: <%= box :h => 35, :r => 10, :ry => 10, :fc => CurrentDomain.theme.colors.header.active, :s => 'h' %>;
 }
 
 #mainNav li.home .subNav li.last:hover
@@ -100,10 +100,16 @@ body.home #mainNav li.home .subNav li:hover a span
     background-image: <%= box :h => 19, :w => 19, :r => 9, :rw => 9, :bc => CurrentDomain.theme.colors.accent, :fc => CurrentDomain.theme.colors.summary.hover %>;
 }
 
-.infoContentOuter,
 .metadataPane .summaryTabs li,
 .singleInfoComments li.comment.ownerComment .commentBlock .cornerOuter
 {
+    border-color: #<%= CurrentDomain.theme.colors.accent %>;
+}
+
+.infoContentOuter .infoContentInner,
+.infoContentHeader
+{
+    background-color: #<%= CurrentDomain.theme.colors.summary.active %>;
     border-color: #<%= CurrentDomain.theme.colors.accent %>;
 }
 
@@ -112,30 +118,52 @@ body.home #mainNav li.home .subNav li:hover a span
     border-bottom-color: #<%= CurrentDomain.theme.colors.accent %>;
 }
 
-.infoContentOuter.listContainer .infoContent
+.infoContentOuter .infoContentTR,
+.infoContentOuter .infoContentTL,
+.infoContentOuter .infoContentBR,
+.infoContentOuter .infoContentBL
 {
-    background-image: <%= box :w => 18, :h => 18, :r => 9, :rw => 9, :ry => 9, :bc => CurrentDomain.theme.colors.inactive, :fc => CurrentDomain.theme.colors.accent %>;
-}
-.infoContentOuter .infoContentInner
-{
-    background-image: <%= box :w => 18, :h => 18, :fc => CurrentDomain.theme.colors.summary.active, :bc => CurrentDomain.theme.colors.summary.inactive, :r => 9, :rw => 9, :ry => 9, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
-}
-
-.infoContentOuter .infoContentWrapper
-{
-    background-image: <%= box :w => 18, :h => 18, :fc => CurrentDomain.theme.colors.summary.active, :bc => CurrentDomain.theme.colors.summary.inactive, :r => 9, :rx => 9, :rw => 9, :ry => 9, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
+    background-image: <%= box :w => 2000, :h => 18, :fc => CurrentDomain.theme.colors.summary.active, :r => 9, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
 }
 
+.infoContentOuter.listContainer.expanded .infoContentBL
+{
+    background-image: <%= box :w => 150, :h => 18, :fc => CurrentDomain.theme.colors.accent, :r => 9, :ry => 9, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
+}
+
+/* old-style tab corners for IE6/widget */
 .metadataPane .summaryTabs li .tabOuter,
 .metadataPane .summaryTabs li .tabInner
 {
-    background-image: <%= box :h => 23, :r => 3, :rh => 20, :fc => CurrentDomain.theme.colors.summary.inactive, :bc => CurrentDomain.theme.colors.summary.inactive, :ew => 1, :ec => CurrentDomain.theme.colors.accent, :s => 'h' %>;
+    background-image: <%= box :h => 23, :r => 3, :rh => 20, :fc => CurrentDomain.theme.colors.summary.inactive, :ew => 1, :ec => CurrentDomain.theme.colors.accent, :s => 'h' %>;
 }
 
 .metadataPane .summaryTabs li.active .tabOuter,
 .metadataPane .summaryTabs li.active .tabInner
 {
-    background-image: <%= box :h => 23, :r => 3, :rh => 20, :fc => CurrentDomain.theme.colors.summary.active, :bc => CurrentDomain.theme.colors.summary.inactive, :ew => 1, :ec => CurrentDomain.theme.colors.accent, :s => 'h' %>;
+    background-image: <%= box :h => 23, :r => 3, :rh => 20, :fc => CurrentDomain.theme.colors.summary.active, :ew => 1, :ec => CurrentDomain.theme.colors.accent, :s => 'h' %>;
+}
+
+/* new-style tab corners with tx */
+.metadataPane .summaryTabs li .summaryTab
+{
+    background-image: <%= box :h => 23, :r => 3, :rh => 20, :fc => CurrentDomain.theme.colors.summary.inactive, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
+}
+.metadataPane .summaryTabs li .summaryTabContent
+{
+    background-image: <%= box :h => 23, :r => 3, :rh => 20, :w => 300, :fc => CurrentDomain.theme.colors.summary.inactive, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
+}
+.metadataPane .summaryTabs li.active .summaryTab
+{
+    background-image: <%= box :h => 23, :r => 3, :rh => 20, :fc => CurrentDomain.theme.colors.summary.active, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
+}
+.metadataPane .summaryTabs li.active .summaryTabContent
+{
+    background-image: <%= box :h => 23, :r => 3, :rh => 20, :w => 300, :fc => CurrentDomain.theme.colors.summary.active, :ew => 1, :ec => CurrentDomain.theme.colors.accent %>;
+}
+.metadataPane .summaryTabs li.active .summaryTab
+{
+    border-bottom: 1px solid #<%= CurrentDomain.theme.colors.summary.active %>;
 }
 
 /*** PUBLISH TOOL ***/

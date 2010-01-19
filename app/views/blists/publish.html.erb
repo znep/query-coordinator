@@ -60,34 +60,19 @@
   <div class="header">
     <ul class="summaryTabs clearfix">
       <li id="tabTemplates">
-        <div class="tabOuter"><div class="tabInner active">
-          <a class="expander expanded" title="more info" href="#expand">more info</a>
-          <a href="#templates">Templates</a>
-        </div></div>
+        <%= summary_tab 'Templates', 'templates' %>
       </li>
       <li id="tabVisual">
-        <div class="tabOuter"><div class="tabInner">
-          <a class="expander expanded" title="more info" href="#expand">more info</a>
-          <a href="#visual">Visual Options</a>
-        </div></div>
+        <%= summary_tab 'Visual Options', 'visual' %>
       </li>
       <li id="tabMenuControl">
-        <div class="tabOuter"><div class="tabInner">
-          <a class="expander expanded" title="more info" href="#expand">more info</a>
-          <a href="#menuControl">Menu &amp; Control Options</a>
-        </div></div>
+        <%= summary_tab 'Menu &amp; Control Options', 'menuControl' %>
       </li>
       <li id="tabTab">
-        <div class="tabOuter"><div class="tabInner">
-          <a class="expander expanded" title="more info" href="#expand">more info</a>
-          <a href="#tab">Tab Options</a>
-        </div></div>
+        <%= summary_tab 'Tab Options', 'tab' %>
       </li>
       <li id="tabAdvanced">
-        <div class="tabOuter"><div class="tabInner">
-          <a class="expander expanded" title="more info" href="#expand">more info</a>
-          <a href="#advanced">Advanced Options</a>
-        </div></div>
+        <%= summary_tab 'Advanced Options', 'advanced' %>
       </li>
     </ul>
   </div>
@@ -139,6 +124,7 @@
           </div>
         </div>
       </div>
+      <div class="infoContentBR"><div class="infoContentBL"></div></div>
     </div>
     <div class="infoContentOuter singleInfoVisual listContainer expanded">
       <div class="infoContentHeader clearfix">
@@ -497,6 +483,7 @@
           </div>
         </div>
       </div>
+      <div class="infoContentBR"><div class="infoContentBL"></div></div>
     </div>
     <div class="infoContentOuter singleInfoMenuControl listContainer expanded">
       <div class="infoContentHeader clearfix">
@@ -830,6 +817,7 @@
           </div>
         </div>
       </div>
+      <div class="infoContentBR"><div class="infoContentBL"></div></div>
     </div>
     <div class="infoContentOuter singleInfoTab expanded">
       <div class="infoContentHeader clearfix">
@@ -892,6 +880,7 @@
           </div>
         </div>
       </div>
+      <div class="infoContentBR"><div class="infoContentBL"></div></div>
     </div>
     <div class="infoContentOuter singleInfoAdvanced listContainer expanded">
       <div class="infoContentHeader clearfix">
@@ -928,6 +917,7 @@
           </div>
         </div>
       </div>
+      <div class="infoContentBR"><div class="infoContentBL"></div></div>
     </div>
   <%- end -%>
 </div>

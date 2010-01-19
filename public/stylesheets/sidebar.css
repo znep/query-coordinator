@@ -12,35 +12,42 @@
 
 #sidebar .box
 {
-    background-color: #cacaca;
-    background-image: url(/stylesheets/images/sidebar/sidebar_corner_top_left.png);
-    background-position: top left;
-    background-repeat: no-repeat;
     margin-bottom: 0.5em;
     min-height: 0;
 }
 
-#sidebar .box > .outerWrapper
+#sidebar .box .boxTL,
+#sidebar .box .boxTR,
+#sidebar .box .boxBL,
+#sidebar .box .boxBR
 {
-    background-image: url(/stylesheets/images/sidebar/sidebar_corner_top_right.png);
-    background-position: top right;
-    background-repeat: no-repeat;
-    min-height: 0;
+    background: transparent url(/stylesheets/images/sidebar/tx_corners_sidebar.png) no-repeat top left;
+    height: 9px;
+    margin: 0;
 }
 
-#sidebar .box > .outerWrapper > .innerWrapper
+#sidebar .box .boxTL,
+#sidebar .box .boxBL
 {
-    background-image: url(/stylesheets/images/sidebar/sidebar_corner_bottom_left.png);
-    background-position: bottom left;
-    background-repeat: no-repeat;
+    left: -9px;
+    position: relative;
+    width: 9px;
 }
 
-#sidebar .box .contentWrapper
+#sidebar .box .boxTR,
+#sidebar .box .boxBR
 {
-    background-image: url(/stylesheets/images/sidebar/sidebar_corner_bottom_right.png);
-    background-position: bottom right;
-    background-repeat: no-repeat;
-    padding: 1em;
+    margin-left: 9px;
+}
+
+#sidebar .box .boxTR { background-position: top right; }
+#sidebar .box .boxBR { background-position: bottom right; }
+#sidebar .box .boxBL { background-position: bottom left; }
+
+#sidebar .box > .content
+{
+    background-color: #cacaca;
+    padding: 0 1em;
 }
 
 #sidebar .box.last

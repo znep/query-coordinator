@@ -1765,16 +1765,39 @@ body#login .loginBox li#close_login
 /*** END: Upload Dialog ***/
 
 /*** START: Page header block (top of discover and community) ***/
-.pageBlockHeaderOuter { background-color: #fff; }
-.pageBlockHeaderTL { background: url(/stylesheets/images/content/background_corner_left.png) top left no-repeat; }
-.pageBlockHeaderTR { background: url(/stylesheets/images/content/background_corner_right.png) top right no-repeat; }
-.pageBlockHeaderBL { background: url(/stylesheets/images/content/background_corner_bottom_left.png) bottom left no-repeat; }
-.pageBlockHeaderBR { background: url(/stylesheets/images/content/background_corner_bottom_right.png) bottom right no-repeat; }
+.pageBlockHeaderTL,
+.pageBlockHeaderTR,
+.pageBlockHeaderBL,
+.pageBlockHeaderBR
+{
+    background: transparent url(/stylesheets/images/content/tx_corners_white.png) no-repeat top left;
+    height: 9px;
+    margin: 0;
+}
+
+.pageBlockHeaderTL,
+.pageBlockHeaderBL
+{
+    left: -9px;
+    position: relative;
+    width: 9px;
+}
+
+.pageBlockHeaderTR,
+.pageBlockHeaderBR
+{
+    margin-left: 9px;
+}
+
+.pageBlockHeaderTR { background-position: top right; }
+.pageBlockHeaderBR { background-position: bottom right; }
+.pageBlockHeaderBL { background-position: bottom left; }
 
 .pageBlockHeaderContainer
 {
+    background-color: #fff;
     min-height: 0;
-    padding: 1em 34em 1em 1em;
+    padding: 0 34em 0 1em;
 }
 
 
@@ -1888,31 +1911,32 @@ body#login .loginBox li#close_login
 
 .tabContentContainer
 {
-    background: #cacaca url(/stylesheets/images/sidebar/sidebar_corner_bottom_right.png) bottom right no-repeat;
     display: none;
     padding-right: 17.5em;
+    position: relative;
 }
 .tabContentContainer.active { display: block; }
 
 .tabContentOuter 
-{ 
-    background-color: #fff;
+{
     border-right: 1px solid #8d8d8d;
     float: left;
     width: 100%;
 }
-.tabContentTL
+.tabContentT,
+.tabContentB
 {
-    background: url(/stylesheets/images/content/background_corner_left.png) no-repeat;
-    min-height: 0;
+    background: transparent url(/stylesheets/images/content/tx_corners_white.png) no-repeat top left;
+    height: 9px;
+    margin: 0;
 }
-.tabContentBL
-{
-    background: url(/stylesheets/images/content/background_corner_bottom_left.png) bottom left no-repeat;
-    min-height: 0;
-}
+.tabContentB { background-position: bottom left; }
 
-.tabContent { padding: 1.5em; }
+.tabContent
+{
+    background-color: #fff;
+    padding: 0.5em 1.5em;
+}
 .tabContent h2
 {
     float: left;
@@ -1930,16 +1954,26 @@ body#login .loginBox li#close_login
 .tabContent.noresult p { font-size: 1.2em; }
 
 
-
-.tabContentNavTR
+.tabContentNavT
 {
-    background: url(/stylesheets/images/sidebar/sidebar_corner_top_right.png) top right no-repeat;
-    float: left;
-    margin-right: -17.5em;
+    background: url(/stylesheets/images/sidebar/tx_corners_sidebar.png) no-repeat top right;
+    height: 9px;
+    position: absolute;
+    right: 0;
+    top: 0;
     width: 17.4em;
 }
 
-.tabContentNav { padding: 1em; }
+.tabContentNav
+{
+    background-color: #cacaca;
+    bottom: 9px;
+    padding: 0 1em;
+    position: absolute;
+    right: 0;
+    top: 9px;
+    width: 15.4em;
+}
 .tabContentNav h2
 {
     border-bottom: 1px solid #999;
@@ -1950,6 +1984,16 @@ body#login .loginBox li#close_login
 .tabContentNav ul
 {
     margin-bottom: 3em;
+}
+
+.tabContentNavB
+{
+    background: url(/stylesheets/images/sidebar/tx_corners_sidebar.png) no-repeat bottom right;
+    bottom: 0;
+    height: 9px;
+    position: absolute;
+    right: 0;
+    width: 17.4em;
 }
 
 /*** END: Tab content ***/

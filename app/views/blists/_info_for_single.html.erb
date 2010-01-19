@@ -1,7 +1,6 @@
 <%# locals: view, page_single  %>
 <%-
   isDuplicateEnabled = false
-  expander_class = page_single ? "expander expanded" : "expander" 
   div_shown = page_single ? "style='display:block;'" : ""
 
   is_owner = (current_user && current_user.is_owner?(view))
@@ -10,43 +9,25 @@
   <ul class="summaryTabs clearfix">
     <%- if module_enabled?(:allow_comments) -%>
       <li id="tabComments" class="comments active">
-        <div class="tabOuter"><div class="tabInner active">
-          <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-          <a href="#comments">Comments</a>
-        </div></div>
+        <%= summary_tab 'Comments', 'comments' %>
       </li>
     <%- end -%>
     <li id="tabFiltered">
-      <div class="tabOuter"><div class="tabInner">
-        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#filtered_views">More Views</a>
-      </div></div>
+      <%= summary_tab 'More Views', 'filtered_views' %>
     </li>
     <li id="tabSharing">
-      <div class="tabOuter"><div class="tabInner">
-        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#sharing_permissions">Sharing</a>
-      </div></div>
+      <%= summary_tab 'Sharing', 'sharing_permissions' %>
     </li>
     <%- if @view.display.can_publish? -%>
     <li id="tabPublishing">
-      <div class="tabOuter"><div class="tabInner">
-        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#publishing">Publishing</a>
-      </div></div>
+      <%= summary_tab 'Publishing', 'publishing' %>
     </li>
     <%- end -%>
     <li id="tabActivity">
-      <div class="tabOuter"><div class="tabInner">
-        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#activity">Activity</a>
-      </div></div>
+      <%= summary_tab 'Activity', 'activity' %>
     </li>
     <li id="tabSummary" class="<%= module_enabled?(:allow_comments) ? "" : "active" %>">
-      <div class="tabOuter"><div class="tabInner <%= module_enabled?(:allow_comments) ? "" : "active" %>">
-        <a href="#expand" class="<%= expander_class %>" title="more info">more info</a>
-        <a href="#summary">Summary</a>
-      </div></div>
+      <%= summary_tab 'Summary', 'summary' %>
     </li>
   </ul>
 </div>
@@ -66,6 +47,7 @@
                               :allow_edit => is_owner, :in_widget => false }) %>
     </div> <!-- /.infoContent -->
   </div></div> <!-- /.infoContentInner -->
+  <div class="infoContentBR"><div class="infoContentBL"></div></div>
 </div>
 <%# *** END: SUMMARY *** %>
 
@@ -82,6 +64,7 @@
                   :locals => {:view => view, :in_widget => false }) %>
     </div>
   </div></div>
+  <div class="infoContentBR"><div class="infoContentBL"></div></div>
 </div>
 <%# *** END: FILTERED *** %>
 
@@ -100,6 +83,7 @@
                     :locals => {:view => view, :allow_commenting => true }) %>
       </div>
     </div></div>
+    <div class="infoContentBR"><div class="infoContentBL"></div></div>
   </div>
 <%- end -%>
 <%# *** END: COMMENTS *** %>
@@ -115,6 +99,7 @@
       <%= render(:partial => "blists/meta_tab_sharing", :locals => {:view => view}) %>
     </div>
   </div></div>
+  <div class="infoContentBR"><div class="infoContentBL"></div></div>
 </div>
 <%# *** END: SHARING *** %>
 
@@ -154,6 +139,7 @@
                               :customization_id => CurrentDomain.default_widget_customization, :cur_id => ""}) %>
     </div>
   </div></div>
+  <div class="infoContentBR"><div class="infoContentBL"></div></div>
 </div>
 <%- end -%>
 <%# *** END: PUBLISHING *** %>
@@ -170,5 +156,6 @@
                   :locals => {:view => view, :in_widget => false }) %>
     </div>
   </div></div>
+  <div class="infoContentBR"><div class="infoContentBL"></div></div>
 </div>
 <%# *** END: ACTIVITY *** %>

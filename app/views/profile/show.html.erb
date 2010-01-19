@@ -14,6 +14,7 @@
       <%- end -%>
 
       <div class='outerContent'>
+        <div class="contentTR"><div class="contentTL"></div></div>
         <div class='content'>
 
           <% if @welcome %>
@@ -343,16 +344,17 @@
           <% if( module_enabled?(:community_creation) || CurrentDomain.member?(@user)) %>
             <div class='publicBlists'>
               <h3>My public <%= t(:blists_name) %> &amp; filtered views</h3>
-              <div class='infoContentOuter active'><div class="infoContentInner">
+              <div class='infoContentOuter active'>
+                <div class="infoContentTR"><div class="infoContentTL"></div></div>
+                <div class='infoContentHeader'>
+                  <div class='infoContentHeaderInner clearfix'>
+                    <h2 class='panelHeader'>
+                      <%= pluralize(@public_views.length, 'item') %> total
+                    </h2>
+                  </div>
+                </div>
+                <div class="infoContentInner">
                   <div class='infoContent'>
-                    <div class='infoContentHeader'>
-                      <div class='infoContentHeaderInner clearfix'>
-                        <h2 class='panelHeader'>
-                          <%= pluralize(@public_views.length, 'item') %> total
-                        </h2>
-                      </div>
-                    </div>
-
                     <div class="gridListContainer">
                       <table class="gridList" cellspacing="0">
                         <colgroup>
@@ -382,6 +384,7 @@
 
                   </div>
                 </div>
+                <div class="infoContentBR"><div class="infoContentBL"></div></div>
               </div>
             </div>
           <% end %>

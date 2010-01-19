@@ -3,8 +3,12 @@
     background: #fff url(/stylesheets/images/domains/data.seattle.gov/header_bg.jpg) no-repeat right bottom;
 }
 
-#discover .seattleWelcomeHeader .pageBlockHeaderBR
+#discover .seattleWelcomeHeader .seattleBlockHeaderTL { background: url(/stylesheets/images/content/background_corner_left.png) no-repeat top left; }
+#discover .seattleWelcomeHeader .seattleBlockHeaderTR { background: url(/stylesheets/images/content/background_corner_right.png) no-repeat top right; }
+#discover .seattleWelcomeHeader .seattleBlockHeaderBL { background: url(/stylesheets/images/content/background_corner_bottom_left.png) no-repeat bottom left; }
+#discover .seattleWelcomeHeader .seattleBlockHeaderBR
 {
+    background: url(/stylesheets/images/content/background_corner_bottom_right.png) no-repeat bottom right;
     min-height: 26em;
     padding: 2em;
 }

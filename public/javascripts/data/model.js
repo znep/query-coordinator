@@ -2339,7 +2339,7 @@ blist.namespace.fetch('blist.data');
                 var sort = orderBys[0];
                 var colIndex = findColumnIndex(
                     parseInt(sort.expression.columnId, 10));
-                this.sort(colIndex, sort.ascending);
+                this.sort(colIndex, !sort.ascending);
                 return;
             }
             else if (orderBys.length === 0)

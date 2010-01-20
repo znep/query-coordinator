@@ -10,7 +10,7 @@
       <col class='description' />
       <col class='picture' />
       <%- if (!in_widget) -%>
-      
+
         <col class='owner' />
         <col class='viewed' />
         <col class='actionContainer' />
@@ -37,10 +37,19 @@
       <%- view.filters.each do |filter| -%>
         <tr class="item" id="filter-row_<%= filter.id %>">
           <%- if (!in_widget) -%>
-            <td class="handle"><div class="cellInner"></div></td>
-            <td class="favorite <%= filter.flag?('favorite') %>"><div class="cellInner">
-                <span class="favoriteMarker"><%= filter.flag?('favorite') ? "favorite" : "" %></span>
-            </div></td>
+          <td class="handle"><div class="cellInner">
+              <%- if filter.owned_by?(current_user) -%>
+              <a href='#delete_<%= filter.id %><%= filter.id == @view.id ?
+                '_' + @view.parent_dataset.id : '' %>' class='deleteLink'
+                title='Delete <%= filter.name %>'>Delete</a>
+              <%- end -%>
+          </div></td>
+          <td class="favorite <%= filter.flag?('favorite') %>">
+            <div class="cellInner">
+              <span class="favoriteMarker"><%= filter.flag?('favorite') ?
+                "favorite" : "" %></span>
+            </div>
+          </td>
           <%- end -%>
           <td class="type"><div class="cellInner <%=
             get_share_direction_icon_class_for_view(filter) %>">

@@ -696,6 +696,8 @@ $(function ()
             commentMatches[1] : null
     });
 
+    $('#infoPane .singleInfoFiltered').infoPaneFiltered();
+
     $('#infoPane .singleInfoSharing').infoPaneSharing({
         $publishingPane: $('#infoPane .singleInfoPublishing'),
         $summaryPane: $('#infoPane .singleInfoSummary'),

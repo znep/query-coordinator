@@ -49,6 +49,7 @@
   <div id="aggregateList" class="reorderList clearfix">
     <div class='activeBlock listBlock'>
       <h4>Aggregate These Column(s)</h4>
+      <h4 class='actionLabel'>Function</h4>
       <div class='listWrapper clearfix'>
         <div class="border"></div>
         <div class="activeList list">
@@ -66,7 +67,7 @@
     </div>
 
     <div class='listBlock'>
-      <h4>Columns Without Aggregates</h4>
+      <h4>Columns Available for Aggregation</h4>
       <div class='listWrapper clearfix'>
         <div class="border"></div>
         <div class="inactiveList list">
@@ -127,11 +128,31 @@
         });
         groupCols.sort(function(s1, s2) { return s1.position - s2.position; });
 
+        var successCallback = function()
+        {
+            $("#modal").jqmHide();
+        };
+
+        var errorCallback = function(error)
+        {
+            $('.groupingWrapper .loading').hide();
+            $('.groupingWrapper .mainError').text(error);
+        };
+
         var aggCols = [];
+        var failed = false;
         $(".groupingWrapper #aggregateList .activeList .itemWrapper")
           .each(function(i, item)
         {
             var $item = $(item);
+
+            var func = $item.find('select.aggregateFunction').val();
+            if (func === '')
+            {
+                errorCallback("A function is required for each aggregate column");
+                failed = true;
+                return false;
+            }
 
             aggCols.push({
                 id: $item.find("input.columnId").val(),
@@ -139,9 +160,10 @@
                 format: $.json.deserialize($item.find('.format').val()),
                 hidden: false,
                 position: parseInt($item.find(".orderIndex").text()),
-                func: $item.find('select.aggregateFunction').val()
+                func: func
             });
         });
+        if (failed) { return; }
         aggCols.sort(function(s1, s2) { return s1.position - s2.position; });
 
         if (aggCols.length > 0 && groupCols.length < 1)
@@ -164,17 +186,6 @@
                 func: null
             });
         });
-
-        var successCallback = function()
-        {
-            $("#modal").jqmHide();
-        };
-
-        var errorCallback = function(error)
-        {
-            $('.groupingWrapper .loading').hide();
-            $('.groupingWrapper .mainError').text(error);
-        };
 
         switch (action)
         {

@@ -9,25 +9,25 @@
   <ul class="summaryTabs clearfix">
     <%- if module_enabled?(:allow_comments) -%>
       <li id="tabComments" class="comments active">
-        <%= summary_tab 'Comments', 'comments' %>
+        <%= summary_tab 'Comments', 'comments', page_single %>
       </li>
     <%- end -%>
     <li id="tabFiltered">
-      <%= summary_tab 'More Views', 'filtered_views' %>
+      <%= summary_tab 'More Views', 'filtered_views', page_single %>
     </li>
     <li id="tabSharing">
-      <%= summary_tab 'Sharing', 'sharing_permissions' %>
+      <%= summary_tab 'Sharing', 'sharing_permissions', page_single %>
     </li>
     <%- if @view.display.can_publish? -%>
     <li id="tabPublishing">
-      <%= summary_tab 'Publishing', 'publishing' %>
+      <%= summary_tab 'Publishing', 'publishing', page_single %>
     </li>
     <%- end -%>
     <li id="tabActivity">
-      <%= summary_tab 'Activity', 'activity' %>
+      <%= summary_tab 'Activity', 'activity', page_single %>
     </li>
     <li id="tabSummary" class="<%= module_enabled?(:allow_comments) ? "" : "active" %>">
-      <%= summary_tab 'Summary', 'summary' %>
+      <%= summary_tab 'Summary', 'summary', page_single %>
     </li>
   </ul>
 </div>

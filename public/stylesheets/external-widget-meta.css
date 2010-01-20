@@ -152,8 +152,14 @@
 
 .infoContentHeader
 {
+    background-color: #cacaca;
     height: 41px;
     padding: 0 1em 0 0;
+}
+
+.infoContentOuter .infoContentBR
+{
+    display: none;
 }
 
 /*** START: Gridlist styles - override for widget ***/

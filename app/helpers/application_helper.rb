@@ -276,9 +276,9 @@ HREF
     )
   end
 
-  def summary_tab(tab_label, tab_name = nil)
+  def summary_tab(tab_label, tab_name = nil, is_expanded = false)
     return "<div class=\"summaryTab\"><div class=\"summaryTabContent\">" +
-          "<a href=\"#expand\" class=\"expander\" title=\"more info\">more info</a>" +
+          "<a href=\"#expand\" class=\"expander#{is_expanded ? ' expanded' : ''}\" title=\"more info\">more info</a>" +
           "<a href=\"##{tab_name}\">#{tab_label}</a>" +
         "</div></div>"
   end

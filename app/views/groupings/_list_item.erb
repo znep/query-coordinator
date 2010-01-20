@@ -11,7 +11,8 @@
     <select class='aggregateFunction'
       name='aggregateType-<%= list_item.id %>'>
       <%- list_item.possible_aggregates.
-        reject {|a| a['name'] == 'none'}.each do |at| -%>
+        reject {|a| a['name'] == 'none'}.unshift({'name' => '',
+          'title' => '(Choose)'}).each do |at| -%>
       <option value='<%= at['name'] %>'
         <%= !list_item.format.nil? &&
           list_item.format.grouping_aggregate == at['name'] ?

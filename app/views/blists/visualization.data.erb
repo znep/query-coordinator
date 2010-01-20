@@ -66,7 +66,8 @@
 
         <%- if cols[fcol['dataType']].nil?
               cols[fcol['dataType']] =
-                @view.columns_for_datatypes(fcol['dataType'], @is_edit)
+                @view.columns_for_datatypes(fcol['dataType'],
+                  @is_edit && !@view.is_grouped?)
             end -%>
         <%- fc_name = t[0] + '-fixedColumn-' + count.to_s -%>
 
@@ -147,7 +148,8 @@
             <%- type_config['dataColumns'].each do |dcol| -%>
             <%- if cols[dcol['dataType']].nil?
                   cols[dcol['dataType']] =
-                    @view.columns_for_datatypes(dcol['dataType'], @is_edit)
+                    @view.columns_for_datatypes(dcol['dataType'],
+                      @is_edit && !@view.is_grouped?)
                 end -%>
             <%- dc_name = t[0] + '-dataColumn-' + count.to_s + '-' +
               dcb_count.to_s -%>

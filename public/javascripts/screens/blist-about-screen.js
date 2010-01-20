@@ -1,6 +1,6 @@
 $(function ()
 {
-    $(".outerContent").blistStretchWindow();
+    $(".outerContent .content").blistStretchWindow();
     
     // Wire up sidebar menus
     $('#shareMenu').dropdownMenu({triggerButton: $('#shareLink'), matchTriggerWidth: true});

@@ -72,14 +72,18 @@
     background-position: right -105px;
 }
 
+.actionButtons.blockList
+{
+    padding-top: 1em;
+}
+
 .actionButtons.blockList li 
 { 
     background-position: 0 0;
     float: none;
     margin-left: 0;
     width: 14em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
 }
 .actionButtons.blockList li a { background-position: right -21px; }
 .actionButtons.blockList li a.arrowButton { background-position: right -42px; }

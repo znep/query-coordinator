@@ -383,7 +383,8 @@ $(function ()
         });
 
     $.live('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a, ' +
-        '#createViewMenu li.viz a, #mainMenu .newView .viz > a', 'click',
+        '#createViewMenu li.viz a, #mainMenu .newView .viz > a, ' +
+        '#createViewMenu li.form a, #mainMenu .newView .form > a', 'click',
         function (event)
         {
             event.preventDefault();

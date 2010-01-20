@@ -541,6 +541,31 @@ class BlistsController < ApplicationController
     }
   end
 
+  def form
+    @view = View.find(params[:id])
+
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
+  def create_form
+    errors = []
+    begin
+      view = View.create({'name' => params[:viewName],
+                          'originalViewId' => params[:id],
+                          'displayType' => 'form'})
+    rescue CoreServer::CoreServerError => e
+      errors << e.error_message
+    end
+
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success",
+      :errors => errors,
+      :newViewId => view.nil? ? '' : view.id
+    }
+  end
+
   def meta_tab_header
      if (!params[:tab])
        return

@@ -252,7 +252,12 @@ module BlistsHelper
       {'text' => 'Visualization', 'href' => "#{view.href}/visualization",
       'class' => 'viz' + (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
-        'This dataset does not have the appropriate columns for visualizations')}]
+        'This dataset does not have the appropriate columns for visualizations')},
+      {'text' => 'Form', 'href' => "#{view.href}/form",
+      'if' => CurrentDomain.member?(current_user) &&
+               module_available?(:form_publish),
+      'class' => 'form'}
+    ]
   end
 
   def filter_submenu(view, is_widget = false, menu_options = nil)
@@ -307,6 +312,10 @@ module BlistsHelper
         (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
+      {'text' => 'Create a Form View...', 'href' => "#{view.href}/form",
+      'modal' => true, 'if' => !view.is_alt_view? &&
+        (CurrentDomain.member?(current_user) && module_available?(:form_publish)),
+      'user_required' => true, 'class' => 'form mainViewOption'}
       # Map item
       ]) + [menu_options['separator'],
       menu_options['more_views']]

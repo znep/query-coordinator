@@ -54,6 +54,9 @@
         </h1>
         <div class='userNav'>
           <ul>
+            <%- CurrentDomain.theme.urls.header.each do |link| -%>
+              <li><%= link_from_theme(link) %></li>
+            <%- end -%>
             <li class='signInLink'><%= link_to "Sign In to Data.Medicare.Gov", login_url, :rel => 'nofollow' %></li>
             <li class='signUpLink'><%= link_to "Create An Account", signup_url, :rel => 'nofollow' %></li>
             <li class='accountLink'>

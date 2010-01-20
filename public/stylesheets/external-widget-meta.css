@@ -56,6 +56,17 @@
     width: 3000px;
 }
 
+.metadataPane .summaryTabs li
+{
+    background-color: #ececec;
+    border: 1px solid;
+}
+
+.metadataPane .summaryTabs li.active
+{
+    background-color: #cacaca;
+}
+
 .metadataPane .summaryTabs li.scrollArrow
 {
     border-width: 0;
@@ -141,8 +152,14 @@
 
 .infoContentHeader
 {
+    background-color: #cacaca;
     height: 41px;
     padding: 0 1em 0 0;
+}
+
+.infoContentOuter .infoContentBR
+{
+    display: none;
 }
 
 /*** START: Gridlist styles - override for widget ***/

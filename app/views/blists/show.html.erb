@@ -67,6 +67,7 @@
     </ul>
 
     <div class='outerContent'>
+      <div class="contentTR"><div class="contentTL"></div></div>
       <div class='content'>
         <div class='headerBar clearfix gridItem'>
           <ul>
@@ -321,7 +322,7 @@
           </ul>
 
           <%- else -%>
-          <div class='viewError'>This view is unable to be displayed</div>
+          <div class='viewError'>This view cannot be displayed</div>
           <%- end -%>
         </div>
         <%- end -%>
@@ -346,9 +347,7 @@
         <div class="header">
           <ul class="summaryTabs clearfix">
             <li class="summary active">
-            <div class="tabOuter"><div class="tabInner">
-                <a href="#">Summary</a>
-            </div></div>
+              <%= summary_tab('Summary') %>
             </li>
           </ul>
         </div>
@@ -375,6 +374,7 @@
           <div class='infoContentInner'>
             <div class='infoContentWrapper'></div>
           </div>
+          <div class="infoContentBR"><div class="infoContentBL"></div></div>
         </div>
       </div>
 

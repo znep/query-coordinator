@@ -24,6 +24,7 @@ $.htmlEscape = function(text)
 
 $.htmlUnescape = function(text)
 {
+    if (typeof text !== 'string') { return text; }
     return text
         .replace(/&quot;/g, '"')
         .replace(/&gt;/g, '>')

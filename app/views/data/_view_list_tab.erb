@@ -1,6 +1,5 @@
-
-<div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
-  <div class="tabContent">
+<div class="tabContentOuter"><div class="tabContentT"></div>
+  <div class="tabContent<%= views_total == 0 ? ' noresult' : '' %>">
     <h2><%= tab_title %></h2>
 
     <%- if "true" == search_debug -%>
@@ -34,9 +33,10 @@
       </p>
     <%- end -%>
   </div>
-</div></div></div>
+<div class="tabContentB"></div></div>
 
-<div class="tabContentNavTR"><div class="tabContentNavBR">
+<div class="tabContentNavOuter">
+  <div class="tabContentNavT"></div>
   <div class="tabContentNav">
     <%- unless (type == "SEARCH") -%>
       <h2>Show <%= t(:blists_name) %></h2>
@@ -79,4 +79,5 @@
       </ul>
     <%- end -%>
   </div>
-</div></div>
+  <div class="tabContentNavB"></div>
+</div>

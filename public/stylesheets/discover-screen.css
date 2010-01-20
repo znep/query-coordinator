@@ -158,6 +158,10 @@ ul.myNetworkList li span
     border-bottom: 1px solid #ccc;
 }
 
+.tabContent.noresult
+{
+    min-height: 30em;
+}
 
 .viewListItem .itemHeader 
 {

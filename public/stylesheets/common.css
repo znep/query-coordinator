@@ -213,22 +213,34 @@ form.search.large input.submit
 
 .mainContent .outerContent
 {
-    background-color: #ffffff;
-    background-image: url(/stylesheets/images/content/background_corner_left.png);
-    background-position: top left;
-    background-repeat: no-repeat;
     margin-left: 1em;
     overflow: visible;
 }
 
+.mainContent .contentTL,
+.mainContent .contentTR
+{
+    background: transparent url(/stylesheets/images/content/tx_corners_white.png) no-repeat top left;
+    height: 9px;
+    margin: 0;
+}
+.mainContent .contentTL
+{
+    left: -9px;
+    position: relative;
+    width: 9px;
+}
+.mainContent .contentTR
+{
+    background-position: top right;
+    margin-left: 9px;
+}
+
 .mainContent .content
 {
-    background-image: url(/stylesheets/images/content/background_corner_right.png);
-    background-position: top right;
-    background-repeat: no-repeat;
+    background-color: #ffffff;
     min-height: 0;
-    padding: 1em;
-    padding-bottom: 0;
+    padding: 0 1em 1em;
 }
 
 .fullPageContentContainer, .tabPageContentContainer

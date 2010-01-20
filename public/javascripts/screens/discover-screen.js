@@ -82,17 +82,17 @@ blist.discover.historyChangeHandler = function (hash)
     // Display loading message
     $(".tabContentContainer").removeClass("active");
     $(tabContainerSelector).addClass("active").html(
-        "<div class=\"tabContentOuter\"><div class=\"tabContentTL\"><div class=\"tabContentBL\">" +
+        "<div class=\"tabContentOuter\"><div class=\"tabContentTR\"></div>" +
         "  <div class=\"tabContent noresult\">" +
         "    <h2>Searching...</h2>" +
         "    <p class=\"clearBoth\">" +
         "        <img src=\"/stylesheets/images/common/BrandedSpinner.gif\" width=\"31\" height=\"31\" alt=\"Searching...\" />" +
         "    </p>" +
         "  </div>" +
-        "</div></div></div>" +
-        "<div class=\"tabContentNavTR\"><div class=\"tabContentNavBR\">" +
+        "<div class=\"tabContentB\"><div class=\"tabContentBL\"></div></div></div>" +
+        "<div class=\"tabContentNavOuter\"><div class=\"tabContentNavT\"></div>" +
         "  <div class=\"tabContentNav\"></div>" +
-        "</div></div>"
+        "<div class=\"tabContentNavB\"></div></div>"
     );
 
     // Fetch data

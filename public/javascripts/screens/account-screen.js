@@ -35,11 +35,11 @@ $(function ()
     {
         if ($(window).height() != cachedWindowHeight)
         {
-            $(".outerContent").blistStretchWindow();
+            $(".outerContent .content").blistStretchWindow();
             cachedWindowHeight = $(window).height();
         }
     });
-    $(".outerContent").blistStretchWindow();
+    $(".outerContent .content").blistStretchWindow();
 
 
     $(".emailSection").showEdit({

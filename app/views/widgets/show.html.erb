@@ -149,6 +149,10 @@
     }
     .blist-th .name-wrapper { height: 2.45em; }
     .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
+    .indicators-inactive .blist-table-header,
+    .indicators-inactive .blist-th,
+    .indicators-inactive .blist-th .dragHandle
+    { height: 3.3em; }
     <%- end -%>
 
     <%- if @theme[:grid][:title_bold] -%>
@@ -351,7 +355,9 @@
       } catch(err) {}</script>
     <%- end -%>
 
-    <%= render(:partial => "shared/quantcast") %>
+    <%- if feature? "persistent_analytics" -%>
+      <%= render(:partial => "shared/analytics") %>
+    <%- end -%>
   <%- end -%>
   <script type="text/javascript">
     <%= raw @display.render_inline_runtime_js self %>

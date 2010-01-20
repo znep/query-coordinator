@@ -5,6 +5,11 @@
 .blist-th .dragHandle
 { height: 3.7em; }
 
+.indicators-inactive .blist-table-header,
+.indicators-inactive .blist-th,
+.indicators-inactive .blist-th .dragHandle
+{ height: 2.5em; }
+
 .blist-th
 {
     border-left: solid 1px #e2e2e2;
@@ -115,6 +120,8 @@ div.blist-th-first
     border-top: 1px solid #cccccc;
 }
 .blist-th .indicator-container { margin: 0 -0.4em; }
+
+.indicators-inactive .indicator-container { display: none; }
 
 .blist-th .sort,
 .blist-th .filter

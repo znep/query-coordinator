@@ -1,4 +1,4 @@
-<div class="tabContentOuter"><div class="tabContentTL"><div class="tabContentBL">
+<div class="tabContentOuter"><div class="tabContentT"></div>
   <div class="tabContent">
     <h2><%= tab_title %></h2>
     <%- if "true" == search_debug -%>
@@ -32,9 +32,10 @@
       </p>
     <%- end -%>
   </div>
-</div></div></div>
+<div class="tabContentB"></div></div>
 
-<div class="tabContentNavTR"><div class="tabContentNavBR">
+<div class="tabContentNavOuter">
+  <div class="tabContentNavT"></div>
   <div class="tabContentNav">
     <%- unless (type == "SEARCH") -%>
       <h2>Show People</h2>
@@ -43,7 +44,7 @@
                 generate_filter_url(@current_state, type, {:filter => {"publicOnly" => "true"}}),
                 :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
       </ul>
-    
+  
       <h2>Browse by Tag</h2>
       <ul class="tagList hilightList">
         <%- tag_list.each do |tag| -%>
@@ -61,4 +62,5 @@
       </ul>
     <%- end -%>
   </div>
-</div></div>
+  <div class="tabContentNavB"></div>
+</div>

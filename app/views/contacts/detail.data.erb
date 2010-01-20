@@ -2,21 +2,20 @@
 <div class="header">
   <ul class="summaryTabs clearfix">
     <li class="summary active last">
-      <div class="tabOuter"><div class="tabInner">
-        <span>Summary</span>
-      </div></div>
+      <%= summary_tab('Summary') %>
     </li>
   </ul>
 </div>
 
 <div class="infoContentOuter listPane active">
+  <div class="infoContentHeader clearfix">
+    <h2 class="panelHeader contactPanelHeader">
+      <%= pluralize(@item_count, "friend") %>
+    </h2>
+    <span class="selectPrompt">Select a specific friend or friends above for more information</span>
+  </div>
   <div class="infoContentInner"><div class="infoContentWrapper">
-    <div class="infoContentHeader clearfix">
-      <h2 class="panelHeader contactPanelHeader">
-        <%= pluralize(@item_count, "friend") %>
-      </h2>
-      <span class="selectPrompt">Select a specific friend or friends above for more information</span>
-    </div>
     <div class="infoContent"></div>
   </div></div>
+  <div class="infoContentBR"><div class="infoContentBL"></div></div>
 </div>

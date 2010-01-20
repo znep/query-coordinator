@@ -276,6 +276,13 @@ HREF
     )
   end
 
+  def summary_tab(tab_label, tab_name = nil, is_expanded = false)
+    return "<div class=\"summaryTab\"><div class=\"summaryTabContent\">" +
+          "<a href=\"#expand\" class=\"expander#{is_expanded ? ' expanded' : ''}\" title=\"more info\">more info</a>" +
+          "<a href=\"##{tab_name}\">#{tab_label}</a>" +
+        "</div></div>"
+  end
+
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
@@ -445,5 +452,5 @@ HREF
   end
 
   safe_helper :menu_tag, :meta_tags, :javascript_error_helper_tag,
-    :create_pagination, :sidebar_filter_link, :flash_clipboard_button
+    :create_pagination, :sidebar_filter_link, :flash_clipboard_button, :summary_tab
 end

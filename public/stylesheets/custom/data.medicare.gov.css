@@ -188,20 +188,16 @@ form.search.large .actionsBox input
     background: #e7f2f8 url(/stylesheets/images/domains/data.medicare.gov/home_box.jpg) no-repeat right bottom;
 }
 
-#discover .medicareWelcomeHeader .pageBlockHeaderBL
+#discover .medicareWelcomeHeader .medicareBlockHeaderBL
 {
+    background: transparent url(/stylesheets/images/domains/data.medicare.gov/background_corner_bottom_left.png) no-repeat bottom left;
     height: 204px;
     padding: 20px;
 }
 
-#discover .medicareWelcomeHeader .pageBlockHeaderTL
+#discover .medicareWelcomeHeader .medicareBlockHeaderTL
 {
-    background-image: url(/stylesheets/images/domains/data.medicare.gov/background_corner_left.png);
-}
-
-#discover .medicareWelcomeHeader .pageBlockHeaderBL
-{
-    background-image: url(/stylesheets/images/domains/data.medicare.gov/background_corner_bottom_left.png);
+    background: transparent url(/stylesheets/images/domains/data.medicare.gov/background_corner_left.png) no-repeat top left;
 }
 
 #discover .medicareWelcomeHeader .medicareTitle

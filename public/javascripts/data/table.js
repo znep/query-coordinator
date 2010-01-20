@@ -3279,14 +3279,22 @@
             });
             $lockedHeader.html(lockedHtml);
 
-            // Readjust locked position since the header height may have changed
-            $locked.css('top', $header.outerHeight() - $scrolls[0].scrollTop);
-
             // Render sort & filter headers
-            configureSortHeader();
-            configureFilterHeaders();
+            adjustHeaderIndicators();
 
             end("renderHeader-augment");
+        };
+
+        var adjustHeaderIndicators = function()
+        {
+            configureSortHeader();
+            configureFilterHeaders();
+            $outside.toggleClass('indicators-inactive',
+                    $.keys(model.meta().sort).length <= 0 &&
+                        $.keys(model.meta().columnFilters).length <= 0);
+
+            // Readjust locked position since the header height may have changed
+            $locked.css('top', $header.outerHeight() - $scrolls[0].scrollTop);
         };
 
         var adjustHeaderStyling = function($colHeader, useClone)
@@ -3371,8 +3379,7 @@
         {
             begin("updateHeader");
 
-            configureSortHeader();
-            configureFilterHeaders();
+            adjustHeaderIndicators();
 
             end("updateHeader");
         };
@@ -3769,7 +3776,7 @@
         $this.bind('row_remove', updateLayout);
         $this.bind('col_width_change', configureWidths);
 
-        $this.bind('sort_change', configureSortHeader); 
+        $this.bind('sort_change', updateHeader);
 
         // Install the model
         $this.blistModel(options.model);

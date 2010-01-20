@@ -109,6 +109,7 @@ blist.namespace.fetch('blist.data');
 
         // Column lookup by UID
         var columnLookup = [];
+
         // Column lookup by ID
         var columnIDLookup = {};
 
@@ -1175,6 +1176,16 @@ blist.namespace.fetch('blist.data');
             if (!realRow.meta) { realRow.meta = {'invalidCells': {}}; }
             if (!realRow.meta.invalidCells) { realRow.meta.invalidCells = {}; }
             realRow.meta.invalidCells[column.tableColumnId] = value;
+            var metaCols = column.nestedIn ? parCol.metaChildren :
+                meta.metaColumns;
+            $.each(metaCols, function(i, c)
+                {
+                    if (c.name == 'meta')
+                    {
+                        realRow[c.index] = $.json.serialize(realRow.meta);
+                        return false;
+                    }
+                });
         };
 
         this.isCellError = function(row, column)
@@ -2152,6 +2163,13 @@ blist.namespace.fetch('blist.data');
             return columnLookup[uid];
         };
 
+        /**
+         * Retrieve all columns in visual order.
+         */
+        this.columns = function() {
+            return columnLookup;
+        }
+
         this.getColumnByID = function(id) { return columnIDLookup[id]; };
 
         /**
@@ -2329,7 +2347,7 @@ blist.namespace.fetch('blist.data');
                 var sort = orderBys[0];
                 var colIndex = findColumnIndex(
                     parseInt(sort.expression.columnId, 10));
-                this.sort(colIndex, sort.ascending);
+                this.sort(colIndex, !sort.ascending);
                 return;
             }
             else if (orderBys.length === 0)
@@ -3101,6 +3119,44 @@ blist.namespace.fetch('blist.data');
 
             this.getTempView();
         };
+
+        /**
+         * Find a column based on a user configuration value.  If the value is not present, an optional list of names
+         * is used to locate the column in the dataset.
+         */
+        this.findConfiguredColumn = function(idOrName, autoNames) {
+            // Look for column using the
+            var col;
+
+            if (idOrName != undefined) {
+                // Search for the configured value as an ID
+                col = this.getColumnByID(idOrName);
+                if (col != undefined)
+                    return col;
+
+                // Search for the configured value as a name
+                idOrName = ("" + idOrName).toLowerCase().replace(/[\s\-]/g, '_');
+                var columns = this.columns();
+                for (var i = 0; i < columns.length; i++) {
+                    var column = columns[i];
+                    if (column.name.toLowerCase().replace(/\s\-/g, '_') == idOrName)
+                        return column;
+                }
+            }
+
+            // Search for the column in the given set of names
+            if (autoNames)
+                columns = this.columns();
+                for (i = 0; i < columns.length; i++) {
+                    column = columns[i];
+                    var name = column.name.toLowerCase().replace(/\s\-/g, '_');
+                    if ($.inArray(name, autoNames) != -1)
+                        return column;
+                }
+
+            // Found no suitable column
+            return undefined;
+        }
 
         // Apply filtering, grouping, and sub-row expansion to the active set.
         // This applies current settings to the active set and then notifies

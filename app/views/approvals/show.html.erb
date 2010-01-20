@@ -8,72 +8,71 @@
     <div id='approval'>
       <%= render(:partial => "shared/tabs") %>
       <div class='outerContent'>
-        <div class='contentHighlight'>
-          <div class='content'>
-            <div class="headerBar">
-              <h3 id='listTitle' class='clipText'>All Comments</h3>
+        <div class="contentTR"><div class="contentTL"></div></div>
+        <div class='content'>
+          <div class="headerBar clearfix">
+            <h3 id='listTitle' class='clipText'>All Comments</h3>
 
-              <ul class="headerActions">
-                <li><a href="#approve" class="approveComment" title="Approve all checked comments">
-                  Approve
-                </a></li>
-                <li><a href="#reject" class="rejectComment" title="Reject all checked comments">
-                  Reject
-                </a></li>
-              </ul>
+            <ul class="headerActions">
+              <li><a href="#approve" class="approveComment" title="Approve all checked comments">
+                Approve
+              </a></li>
+              <li><a href="#reject" class="rejectComment" title="Reject all checked comments">
+                Reject
+              </a></li>
+            </ul>
+          </div>
+
+          <div class="commentList" id="moderationQueue">
+            <div class="commentList-headerRow">
+              <div class="commentList-cell commentList-actionColumn">
+                <a class="checkbox">Select</a>
+              </div>
+              <div class="commentList-cell commentList-authorColumn">
+                Author
+              </div>
+              <div class="commentList-cell commentList-commentColumn">
+                Comment
+              </div>
+              <div class="commentList-cell commentList-statusColumn">
+                Status
+              </div>
+              <div class="commentList-cell commentList-datasetColumn">
+                Dataset
+              </div>
             </div>
-
-            <div class="commentList" id="moderationQueue">
-              <div class="commentList-headerRow">
+            <div class="commentList-body commentsLoading">
+              <p class="emptyListMessage">
+                There are no comments to show at this time for the filter you have selected.
+              </p>
+              <div class="commentList-templateRow">
                 <div class="commentList-cell commentList-actionColumn">
                   <a class="checkbox">Select</a>
+                  <a class="commentMenuButton">Menu</a>
+                  <%= menu_tag(
+                    { 'class' => 'commentMenu',
+                      'items' => [
+                        {'text' => 'Approve', 'class' => 'approveComment', 'href' => '#approveComment'},
+                        {'text' => 'Reject', 'class' => 'rejectComment', 'href' => '#rejectComment'}]}
+                  ) %>
                 </div>
                 <div class="commentList-cell commentList-authorColumn">
-                  Author
+                  <a class="commentAuthorLink">
+                    <img class="commentAuthorImage" />
+                    <p class="commentAuthorName"></p>
+                  </a>
+                  <p class="commentAuthorCompany"></p>
                 </div>
                 <div class="commentList-cell commentList-commentColumn">
-                  Comment
+                  <p class="commentTitle"></p>
+                  <p class="commentTimestamp"></p>
+                  <p class="commentBody"></p>
                 </div>
                 <div class="commentList-cell commentList-statusColumn">
-                  Status
+                  <p class="commentStatus"></p>
                 </div>
                 <div class="commentList-cell commentList-datasetColumn">
-                  Dataset
-                </div>
-              </div>
-              <div class="commentList-body commentsLoading">
-                <p class="emptyListMessage">
-                  There are no comments to show at this time for the filter you have selected.
-                </p>
-                <div class="commentList-templateRow">
-                  <div class="commentList-cell commentList-actionColumn">
-                    <a class="checkbox">Select</a>
-                    <a class="commentMenuButton">Menu</a>
-                    <%= menu_tag(
-                      { 'class' => 'commentMenu',
-                        'items' => [
-                          {'text' => 'Approve', 'class' => 'approveComment', 'href' => '#approveComment'},
-                          {'text' => 'Reject', 'class' => 'rejectComment', 'href' => '#rejectComment'}]}
-                    ) %>
-                  </div>
-                  <div class="commentList-cell commentList-authorColumn">
-                    <a class="commentAuthorLink">
-                      <img class="commentAuthorImage" />
-                      <p class="commentAuthorName"></p>
-                    </a>
-                    <p class="commentAuthorCompany"></p>
-                  </div>
-                  <div class="commentList-cell commentList-commentColumn">
-                    <p class="commentTitle"></p>
-                    <p class="commentTimestamp"></p>
-                    <p class="commentBody"></p>
-                  </div>
-                  <div class="commentList-cell commentList-statusColumn">
-                    <p class="commentStatus"></p>
-                  </div>
-                  <div class="commentList-cell commentList-datasetColumn">
-                    <p class="commentParent"></p>
-                  </div>
+                  <p class="commentParent"></p>
                 </div>
               </div>
             </div>

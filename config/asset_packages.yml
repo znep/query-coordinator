@@ -83,6 +83,7 @@ javascripts:
   - widgets/sidebar-filter
   - widgets/pagination
   - widgets/info-pane-comments
+  - widgets/info-pane-filtered
   - widgets/info-pane-sharing
   - widgets/info-pane-publish
   - screens/blists-screen
@@ -125,6 +126,7 @@ javascripts:
   - widgets/column-format
   - widgets/column-totals
   - widgets/info-pane-comments
+  - widgets/info-pane-filtered
   - widgets/info-pane-sharing
   - widgets/info-pane-publish
   - widgets/scrollable

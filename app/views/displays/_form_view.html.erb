@@ -1,5 +1,5 @@
 <div class='formView'>
-  <form action='/views/<%= @view.id %>/rows.html' method='POST'>
+  <form action='/views/<%= @view.id %>/forms.html' method='POST'>
     <%- @view.columns.each do |c| -%>
     <%- next if c.client_type == 'meta_data' ||
       c.client_type == 'nested_table' || c.client_type == 'document' ||

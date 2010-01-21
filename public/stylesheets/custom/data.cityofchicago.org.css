@@ -1,0 +1,130 @@
+/* LAYOUT */
+body
+{
+    background: #0c6794 url(/stylesheets/images/domains/data.cityofchicago.org/background.jpg) repeat-x 0 0;
+}
+
+/* HEADER */
+#outerContainer #header
+{
+    background: none;
+    height: 55px;
+}
+
+.bodyInterior
+{
+    border-top: none;
+}
+
+#header #mainSubtitle
+{
+    color: #fff;
+    font-size: 1.6em;
+    font-weight: normal;
+    left: 19em;
+    position: absolute;
+    top: 1.3em;
+}
+
+#header .userNav li
+{
+    border-color: #ddd;
+}
+#header .userNav a
+{
+    color: #fff;
+}
+
+#header form.search
+{
+    background: transparent url(/stylesheets/images/domains/data.cityofchicago.org/chicago_search_cap.png) no-repeat;
+    right: 0;
+}
+#header form.search .searchContainer
+{
+    padding-left: 12px;
+    padding-right: 49px;
+}
+
+#discover .chicagoWelcomeHeader
+{
+    background: transparent url(/stylesheets/images/domains/data.cityofchicago.org/chicago_header.png) no-repeat left bottom;
+    height: 300px;
+    position: relative;
+}
+
+#discover .chicagoWelcomeHeader .pageBlockHeaderContainer
+{
+    background-color: #000;
+    color: #ddd;
+    height: 280px;
+    margin-left: 600px;
+    margin-right: 9px;
+    padding: 20px 2em 0 0;
+}
+
+#discover .chicagoWelcomeHeader .pageBlockHeaderR
+{
+    background: transparent url(/stylesheets/images/domains/data.cityofchicago.org/chicago_header_right.png) no-repeat;
+    height: 300px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 9px;
+}
+#discover .chicagoWelcomeHeader p.chicagoTitle
+{
+    font-size: 2em;
+    padding-bottom: 0;
+}
+#discover .chicagoWelcomeHeader p.chicagoSubtitle
+{
+    padding-top: 0.2em;
+}
+#discover .chicagoWelcomeHeader p.chicagoText
+{
+    color: #bbb;
+    width: 30em;
+}
+#discover .chicagoWelcomeHeader p
+{
+    font-size: 1.4em;
+    padding: 1em 0;
+}
+
+/* FOOTER */
+.footerContainer
+{
+    background: transparent url(/stylesheets/images/domains/data.cityofchicago.org/chicago_footer.png) repeat-x;
+}
+
+#footer .copyright
+{
+    color: #fff;
+    padding: 4em 2em 0;
+}
+#footer ul
+{
+    padding: 4em 1em 0;
+}
+#footer a
+{
+    color: #fff;
+}
+
+/* COLORS
+
+#home .tabList li.home a, #blists .tabList li.blists a, #contacts .tabList li.contacts a, #profile .tabList li.profile a, #approval .tabList li.approval a, #overview .tabList li.overview a, #directories .tabList li.directories a, #solution .tabList li.solution a, #sales .tabList li.sales a, #try-it-free .tabList li.try-it-free a, .tabList li.active a, .tabList li.active .innerWrapper { background-color: #c9e5f4; }
+.tabList a, .tabList .innerWrapper { background-color: #6ba1c8; }
+.tabList li.even a, .tabList li.even .innerWrapper { background-color: #659bc2; }
+
+.mainContent .content,
+.tabContent { background-color: #c9e5f4; }
+
+#sidebar .box > .content,
+.tabContentNav { background-color: #6ba1c8; }
+.tabContentNav h2 { color: #fff;
+                    border-bottom-color: #c9e5f4; }
+
+.hilightList li a { color: #fff; }
+.hilightList li a.hilight { color: #333; } */

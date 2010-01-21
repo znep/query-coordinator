@@ -44,6 +44,10 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 }
 .blist-th .name-wrapper { height: 2.45em; }
 .blist-table-header, .blist-th, .blist-th .dragHandle { height: 4.5em; }
+.indicators-inactive .blist-table-header,
+.indicators-inactive .blist-th,
+.indicators-inactive .blist-th .dragHandle
+{ height: 3.3em; }
 
 div.blist-td
 {

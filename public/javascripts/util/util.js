@@ -164,7 +164,7 @@ $.compareValues = function(obj1, obj2)
 /* Get all the keys for an object as an array */
 $.keys = function(obj)
 {
-    if (typeof obj !== 'object') { return []; }
+    if (obj === null || typeof obj != 'object') { return []; }
 
     var keys = [];
     $.each(obj, function(k, v) { keys.push(k); });

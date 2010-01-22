@@ -69,7 +69,7 @@
                 // Update count of filtered views
                 var $headerTitle = $target.closest('.singleInfoFiltered')
                     .find('.infoContentHeader h2');
-                var textParts = $headerTitle.text().trim().split(' ');
+                var textParts = $.trim($headerTitle.text()).split(' ');
 
                 textParts[0] = parseInt(textParts[0]) - 1;
                 if (textParts[0] == 1 && textParts[2].endsWith('s'))

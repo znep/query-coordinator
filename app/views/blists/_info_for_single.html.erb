@@ -61,7 +61,8 @@
   <div class="infoContentInner"><div class="infoContentWrapper">
     <div class="infoContent"<%= div_shown %>>
       <%= render( :partial => "blists/meta_tab_filtered",
-                  :locals => {:view => view, :in_widget => false }) %>
+                  :locals => {:view => view, :in_widget => false,
+                              :page_single => page_single}) %>
     </div>
   </div></div>
   <div class="infoContentBR"><div class="infoContentBL"></div></div>

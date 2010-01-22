@@ -66,9 +66,26 @@
             contentType: "application/json",
             success: function(responseText, textStatus)
             {
+                // Update count of filtered views
+                var $headerTitle = $target.closest('.singleInfoFiltered')
+                    .find('.infoContentHeader h2');
+                var textParts = $headerTitle.text().trim().split(' ');
+
+                textParts[0] = parseInt(textParts[0]) - 1;
+                if (textParts[0] == 1 && textParts[2].endsWith('s'))
+                { textParts[2] = textParts[2].slice(0, -1); }
+                else if (textParts[0] == 0 && !textParts[2].endsWith('s'))
+                { textParts[2] = textParts[2] + 's'; }
+
+                $headerTitle.text(textParts.join(' '));
+
                 $target.closest('tr').remove();
+
                 if (s.length > 2)
                 { window.location = blist.util.navigation.getViewUrl(s[2]); }
+                // Reload menu for More Views under FVM
+                else
+                { $(document).trigger(blist.events.COLUMNS_CHANGED); }
             }
         });
     };

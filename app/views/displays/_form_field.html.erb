@@ -27,6 +27,9 @@
   </select>
 </div>
 
+<%- when 'document', 'photo' -%>
+<input type='file' id='<%= id %>' name='<%= column.id %>' />
+
 <%- when 'flag' -%>
 <select class='fieldInput' id='<%= id %>' name='<%= column.id %>'>
   <option value=''>(Blank)</option>

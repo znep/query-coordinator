@@ -2,8 +2,7 @@
   <form action='/views/<%= @view.id %>/rows.html' method='POST'>
     <%- @view.columns.each do |c| -%>
     <%- next if c.client_type == 'meta_data' ||
-      c.client_type == 'nested_table' || c.client_type == 'document' ||
-      c.client_type == 'photo' || c.flag?('hidden') -%>
+      c.client_type == 'nested_table' || c.flag?('hidden') -%>
 
     <div class='line clearfix'>
       <label for='form_field_<%= c.id %>'><%= c.name %></label>

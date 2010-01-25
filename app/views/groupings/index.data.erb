@@ -12,6 +12,16 @@
   data by state, summing the population column.
   </p>
 
+  <%- is_empty = @grouped.length < 1 && @ungrouped.length < 1 &&
+      @agged.length < 1 && @unagged.length < 1 -%>
+
+  <%- if is_empty -%>
+  <p class='emptyMessage'>
+    There are no visible columns to group on.  Please create or unhide some
+    columns, then try again.
+  </p>
+
+  <%- else -%>
   <div id="groupingList" class="reorderList clearfix">
     <div class='activeBlock listBlock'>
       <h4>Group by These Column(s)</h4>
@@ -81,9 +91,11 @@
 
   </div>
   <div class='error mainError'></div>
+  <%- end -%>
 
   <div class='submitLine clearfix'>
     <ul class='actionButtons clearfix'>
+      <%- if !is_empty -%>
       <%- if !@view.is_invalid? -%>
       <li><a href='#saveAs' class='update'>Save As</a></li>
       <%- end -%>
@@ -94,12 +106,16 @@
       <%- else -%>
       <li><a href='#update' class='update arrowButton'>OK</a></li>
       <%- end -%>
-      <li><a href='#cancel' class='jqmClose'>Cancel</a></li>
+      <%- end -%>
+      <li><a href='#cancel' class='jqmClose <%= is_empty ? 'arrowButton' : '' %>'>
+        <%= is_empty ? 'Continue' : 'Cancel' %>
+      </a></li>
     </ul>
   </div>
 </div>
 
 
+<%- if !is_empty -%>
 <script type="text/javascript" charset="utf-8">
   blist.common.modalReady = function()
   {
@@ -224,3 +240,4 @@
     });
   };
 </script>
+<%- end -%>

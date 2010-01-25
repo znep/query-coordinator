@@ -46,6 +46,19 @@
         }
     });
 
+    var decrementViewCount = function(viewText)
+    {
+        var textParts = $.trim(viewText).split(' ');
+        textParts[0] = parseInt(textParts[0]) - 1;
+
+        if (textParts[0] == 1 && textParts[2].endsWith('s'))
+        { textParts[2] = textParts[2].slice(0, -1); }
+        else if (textParts[0] == 0 && !textParts[2].endsWith('s'))
+        { textParts[2] = textParts[2] + 's'; }
+
+        return textParts.join(' ');
+    };
+
     var deleteView = function (filterObj, event)
     {
         event.preventDefault();
@@ -69,15 +82,11 @@
                 // Update count of filtered views
                 var $headerTitle = $target.closest('.singleInfoFiltered')
                     .find('.infoContentHeader h2');
-                var textParts = $.trim($headerTitle.text()).split(' ');
+                $headerTitle.text(decrementViewCount($headerTitle.text()));
 
-                textParts[0] = parseInt(textParts[0]) - 1;
-                if (textParts[0] == 1 && textParts[2].endsWith('s'))
-                { textParts[2] = textParts[2].slice(0, -1); }
-                else if (textParts[0] == 0 && !textParts[2].endsWith('s'))
-                { textParts[2] = textParts[2] + 's'; }
-
-                $headerTitle.text(textParts.join(' '));
+                var $summaryItem = $target.closest('#infoPane')
+                    .find('.singleInfoSummary .filterItem .textContent');
+                $summaryItem.text(decrementViewCount($summaryItem.text()));
 
                 $target.closest('tr').remove();
 

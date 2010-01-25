@@ -1109,41 +1109,6 @@ dl.versionInfo dd
 
 /*** START: Sort dialog ***/
 
-#sortBysList p#sortOrderLabel
-{
-    left: 20.6666em;
-}
-
-#sortBysList .separator
-{
-   padding: 20px; 
-}
-
-#modal .subHeader
-{
-    padding: 1em;
-    padding-bottom: 0;
-    font-size: 1.2em;
-    color: #666;
-}
-
-#sortBysList .listWrapper
-{
-    float: left;
-    margin: 1.5em 1em 1em;
-    position: relative;
-}
-
-#sortBysList .border
-{
-    border: 1px solid #999;
-    height: 100%;
-    left: 3.5em;
-    position: absolute;
-    top: -1px;
-    width: 24em;
-}
-
 .modalDialog .dialogBox .header .sortOrderIcon
 {
     background-image: url(/stylesheets/images/content/dialog_header_icons.png);
@@ -1152,62 +1117,7 @@ dl.versionInfo dd
     padding-left: 35px;
 }
 
-#sortBysList .inactiveList .type
-{
-   right: 210px;
-}
-
-#sortBysList .inactiveList .itemWrapper
-{
-    padding-left: 28px;
-}
-
-#sortBysList .orderIndex
-{
-    margin-right: 25px;
-}
-
-#sortBysList.reorderList .swapArrows a
-{
-    background: transparent url(/stylesheets/images/widgets/reorder_list/reorder_buttons_white.png) repeat scroll 0 0;
-}
-#sortBysList.reorderList .swapArrows a.removeItemButton { background-position: 0 -21px; }
-
-
-#sortBysList .type
-{
-    height: 18px;
-    width: 18px;
-    position: absolute;
-    top: 0.33em;
-    right: 16.25em;
-    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
-}
-
-div.itemWrapper
-{
-    overflow: hidden;
-    line-height: 1.4em;
-}
-
-#sortBysList p
-{
-    color: #999;
-    position: absolute;
-    font-size: 1.2em;
-}
-
-#sortBysList p.left
-{
-    left: 3.75em;
-}
-
-#sortBysList p.right
-{
-    left: 31.583em;
-}
-
-#sortBysList div.itemWrapper div.sort
+.sortWrapper div.itemWrapper div.sort
 {
     background-image: url(/stylesheets/images/content/table/sort_arrow_sprites.png);
     background-repeat: no-repeat;
@@ -1215,73 +1125,22 @@ div.itemWrapper
     height: 12px;
     width: 25px;
 }
-#sortBysList div.itemWrapper div.sort.sort-asc
+.sortWrapper div.itemWrapper div.sort.sort-asc
 {
     background-position: 5px -24px;
     cursor: auto;
 }
-#sortBysList div.itemWrapper div.sort.sort-asc:hover,
-#sortBysList div.itemWrapper div.sort.controls:hover .sort-asc
+.sortWrapper div.itemWrapper div.sort.sort-asc:hover,
+.sortWrapper div.itemWrapper div.sort.controls:hover .sort-asc
 {
     background-position: 5px -12px;
     cursor: auto;
 }
-#sortBysList div.itemWrapper div.sort.sort-desc:hover,
-#sortBysList div.itemWrapper div.sort.controls:hover .sort-desc
+.sortWrapper div.itemWrapper div.sort.sort-desc:hover,
+.sortWrapper div.itemWrapper div.sort.controls:hover .sort-desc
 {
     background-position: 5px -36px;
     cursor: auto;
-}
-
-div#sortBysList .activeList,
-div#sortBysList .inactiveList
-{
-    height: 19em;
-    margin: 0;
-    overflow: auto;
-    padding-left: 3.5em;
-    position: relative;
-    width: 26em;
-}
-
-#sortBysList .removeAllLink
-{
-    position: absolute;
-    bottom: -1.2em;
-    left: 4.5em;
-    color: #333;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-div#sortBysList.reorderList ul.reorder
-{
-    border-width: 0 0 0 1px;
-    width: 20em;
-}
-
-div#sortBysList .swapArrows
-{
-    height: 1px;
-    width: 21px;
-}
-
-div#sortBysList.reorderList li .itemWrapper
-{
-    border-top: none;
-    border-bottom: 1px solid #D0D0D0;
-}
-
-.createBar ul.saveButton
-{
-    width: 14em;
-    margin-top: 0;
-    margin-right: 1em;
-}
-
-.createBar ul.saveButton li
-{
-    width: 14em;
 }
 
 /*** END: Sort dialog ***/
@@ -1501,6 +1360,15 @@ div#sortBysList.reorderList li .itemWrapper
 {
     color: #666666;
     font-size: 1.2em;
+}
+
+.columnPickerModal .emptyMessage
+{
+    font-size: 1.3em;
+    font-weight: bold;
+    line-height: 1.3em;
+    margin: 1em;
+    text-align: center;
 }
 
 .columnPickerModal h4

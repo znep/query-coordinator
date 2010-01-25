@@ -56,16 +56,16 @@
   </div>
 
   <p class="information">
-    There are no columns to filter yet. Please add some data, then try again.
+    There are no visible columns to filter on. Please add some data or unhide columns, then try again.
   </p>
 
   <div class="submitLine clearfix">
     <ul class="actionButtons clearfix">
       <%- if can_update -%>
-      <li><a class="button jqmClose" href="#update">Update Filter</a></li>
+      <li><a class="button jqmClose update" href="#update">Update Filter</a></li>
       <%- end -%>
       <%- if can_create -%>
-      <li><a class="arrowButton jqmClose" href="#create">Create Filter</a></li>
+      <li><a class="arrowButton jqmClose create" href="#create">Create Filter</a></li>
       <%- end -%>
     </ul>
   </div>
@@ -76,20 +76,25 @@
   {
     if ($('#dataGrid').datasetGrid().isTempView)
     {
-        $('.filterDatasetWrapper .submitLine a[href="#update"]').hide();
-        $('.filterDatasetWrapper .submitLine a[href="#create"]')
+        $('.filterDatasetWrapper .submitLine a.update').hide();
+        $('.filterDatasetWrapper .submitLine a.create')
           .text('Update Unsaved Filter');
     }
 
-    var columns = $("#dataGrid").blistModel().meta().columns[0];
-    var view = $("#dataGrid").blistModel().meta().view;
+    var model = $('#dataGrid').blistModel();
+    var columns = model.meta().columns[0];
+    var view = model.meta().view;
 
     columns = $.grep(columns, function(column) { return column.type !== 'nested_table'; });
 
-    if (columns.length === 0)
+    if ((view.query === undefined || view.query.filterCondition === undefined ||
+          view.query.filterCondition === null ||
+          view.query.filterCondition.children === undefined) &&
+        columns.length === 0)
     {
       $('.filterDatasetWrapper #filterTable, .filterDatasetWrapper #filterList').hide();
       $('.filterDatasetWrapper p.information').show();
+      $('.filterDatasetWrapper .submitLine .actionButtons a.update').hide();
       $('.filterDatasetWrapper .submitLine .actionButtons a').text('Continue');
       return;
     }
@@ -100,7 +105,7 @@
     {
       $("#filterOperator").val(view.query.filterCondition.value.toLowerCase());
       blist.filter.populate($(".filterDatasetWrapper #filterTable"),
-          view.query.filterCondition, columns);
+          view.query.filterCondition, columns, model.meta().allColumns);
     }
     else
     {

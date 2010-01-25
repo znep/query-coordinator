@@ -2,17 +2,28 @@
 <h1><span class="sortOrderIcon">Sort Order</span></h1>
 <% end %>
 
-<p class="subHeader">Drag columns on the left in the order you want them sorted</p>
+<div class='modalContentWrapper sortWrapper columnPickerModal'>
+  <p class="subtitle">Drag columns on the left in the order you want them sorted</p>
 
-<div id="sortBysList" class="reorderList clearfix">
-  <p class="left">Sorted Columns</p>
-  <p id="sortOrderLabel" class="left order">Order</p>
-  <div class='listWrapper clearfix'>
-    <div class="border"></div>
-    <div class="activeList">
-      <ul class="reorder">
-        <% @selected.each_with_index do |sort, i| %>
-          <%-
+  <%- is_empty = @selected.length < 1 && @unselected.length < 1 -%>
+
+  <%- if is_empty -%>
+  <p class='emptyMessage'>
+  There are no visible columns to group on.  Please create or unhide some
+  columns, then try again.
+  </p>
+
+  <%- else -%>
+  <div id="sortBysList" class="reorderList clearfix">
+    <div class='activeBlock listBlock'>
+      <h4>Sorted Columns</h4>
+      <h4 class="actionLabel">Order</h4>
+      <div class='listWrapper clearfix'>
+        <div class="border"></div>
+        <div class="activeList list">
+          <ul class="reorder">
+            <% @selected.each_with_index do |sort, i| %>
+            <%-
             # There appears to be some legacy data which has sort bys on child
             # (something we no longer support). Either way, these columns don't
             # exist in the view's top level columns so View#column_by_id fails
@@ -20,76 +31,88 @@
             # are POSTed to the server, the legacy data will be removed.
             col = @view.column_by_id(sort['columnId'])
             if !col.nil?
-          -%>
+            -%>
             <li>
-              <div class="type datatype-<%= col.client_type %>"></div>
-              <div class="itemWrapper">
-                <span class="orderIndex"><%= i + 1 %></span>
-                <div class="controls">
-                  <div class="sort sort-<%= sort['asc'] ? 'asc' : 'desc' %>"
-                    title="Click to sort <%= sort['asc'] ?
-                      "descending" : "ascending" %>"></div>
-                </div>
-                <%= col.name %>
-                <%= hidden_field_tag("sort-#{sort['columnId']}", true,
-                  :class => "viewColumnId", :value => sort['columnId']) %>
-                <%= hidden_field_tag("sort-#{sort['columnId']}-asc", true,
-                  :class => "asc", :value => sort['asc']) %>
-                <%= hidden_field_tag("sort-#{sort['columnId']}-order", i,
-                  :class => 'orderField') %>
+            <div class="itemWrapper">
+              <span class="orderIndex"><%= i + 1 %></span>
+              <div class="type datatype-<%= col.client_type(col.dataTypeName) ||
+                col.client_type %>"></div>
+              <span class='name'><%= col.name %></span>
+              <div class="controls">
+                <div class="sort sort-<%= sort['asc'] ? 'asc' : 'desc' %>"
+                  title="Click to sort <%= sort['asc'] ?
+                  "descending" : "ascending" %>"></div>
               </div>
+              <%= hidden_field_tag("sort-#{sort['columnId']}", true,
+              :class => "viewColumnId", :value => sort['columnId']) %>
+              <%= hidden_field_tag("sort-#{sort['columnId']}-asc", true,
+              :class => "asc", :value => sort['asc']) %>
+              <%= hidden_field_tag("sort-#{sort['columnId']}-order", i,
+              :class => 'orderField') %>
+            </div>
             </li>
-          <% end %>
-        <%- end -%>
-      </ul>
+            <%- end -%>
+            <%- end -%>
+          </ul>
+        </div>
+      </div>
+      <a href="#removeAll" class="removeAllLink">Remove All</a>
     </div>
-  </div>
-    <a href="#removeAll" class="removeAllLink">Remove All</a>
-  <div class="swapArrows">
-    <a href="#addItem" class="addItemButton">Add</a>
-    <a href="#removeItem" class="removeItemButton">Remove</a>
-  </div>
-  <p class="right">Unsorted Columns</p>
-  <div class='listWrapper clearfix'>
-    <div class="border"></div>
-    <div class="inactiveList">
-      <ul class="reorder">
-        <% @unselected.each_with_index do |sort, i| %>
-        <%- col = @view.column_by_id(sort['columnId']) -%>
-          <li>
-            <div class="type datatype-<%= col.client_type %>"></div>
+
+
+    <div class="swapArrows">
+      <a href="#addItem" class="addItemButton">Add</a>
+      <a href="#removeItem" class="removeItemButton">Remove</a>
+    </div>
+
+    <div class='listBlock'>
+      <h4>Unsorted Columns</h4>
+      <div class='listWrapper clearfix'>
+        <div class="border"></div>
+        <div class="inactiveList list">
+          <ul class="reorder">
+            <%- @unselected.each_with_index do |sort, i| -%>
+            <%- col = @view.column_by_id(sort['columnId']) -%>
+            <li>
             <div class="itemWrapper">
               <span class="orderIndex hide"></span>
+              <div class="type datatype-<%= col.client_type(col.dataTypeName) ||
+                col.client_type %>"></div>
+              <span class='name'><%= col.name %></span>
               <div class="controls hide">
-                  <div class="sort sort-asc" title="Click to sort descending"></div>
+                <div class="sort sort-asc" title="Click to sort descending"></div>
               </div>
-              <%= col.name %>
               <%= hidden_field_tag("sort-#{col.id}", true,
-                :class => "viewColumnId", :value => "#{col.id}") %>
+              :class => "viewColumnId", :value => "#{col.id}") %>
               <%= hidden_field_tag("sort-#{col.id}-asc", true,
-                :class => "asc", :value => "true") %>
+              :class => "asc", :value => "true") %>
               <%= hidden_field_tag("sort-#{col.id}-order", i,
-                :class => 'orderField') %>
+              :class => 'orderField') %>
             </div>
-          </li>
-        <%- end -%>
-      </ul>
+            </li>
+            <%- end -%>
+          </ul>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="error mainError"></div>
+  <%- end -%>
+
+  <div class='submitLine clearfix'>
+    <ul class='actionButtons clearfix'>
+      <%- if !is_empty -%>
+      <li><a href="#" class="arrowButton save">Sort</a></li>
+      <%- end -%>
+      <li><a href='#cancel' class='jqmClose <%= is_empty ? 'arrowButton' : '' %>'>
+        <%= is_empty ? 'Continue' : 'Cancel' %>
+      </a></li>
+    </ul>
   </div>
 </div>
 
-  <div class="createBar">
-    <div class="error errorMessage"></div>
-    <h3 class="separator clearfix"></h3>
-    <ul class="saveButton actionButtons">
-      <li>
-        <a href="#" class="arrowButton save">Sort</a>
-      </li>
-    </ul>
-  </div>
-
-<div class="clearfix"></div>
-
+<%- if !is_empty -%>
 <script type="text/javascript" charset="utf-8">
   blist.common.modalReady = function()
   {
@@ -97,11 +120,11 @@
     {
         if ($(".activeList li").length > 0)
         {
-            $("#sortOrderLabel").show();
+            $(".sortWrapper .actionLabel").show();
         }
         else
         {
-            $("#sortOrderLabel").hide();
+            $(".sortWrapper .actionLabel").hide();
         }
     }
 
@@ -163,3 +186,4 @@
     });
   };
 </script>
+<%- end -%>

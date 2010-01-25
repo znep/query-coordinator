@@ -46,6 +46,19 @@
         }
     });
 
+    var decrementViewCount = function(viewText)
+    {
+        var textParts = $.trim(viewText).split(' ');
+        textParts[0] = parseInt(textParts[0]) - 1;
+
+        if (textParts[0] == 1 && textParts[2].endsWith('s'))
+        { textParts[2] = textParts[2].slice(0, -1); }
+        else if (textParts[0] == 0 && !textParts[2].endsWith('s'))
+        { textParts[2] = textParts[2] + 's'; }
+
+        return textParts.join(' ');
+    };
+
     var deleteView = function (filterObj, event)
     {
         event.preventDefault();
@@ -66,9 +79,22 @@
             contentType: "application/json",
             success: function(responseText, textStatus)
             {
+                // Update count of filtered views
+                var $headerTitle = $target.closest('.singleInfoFiltered')
+                    .find('.infoContentHeader h2');
+                $headerTitle.text(decrementViewCount($headerTitle.text()));
+
+                var $summaryItem = $target.closest('#infoPane')
+                    .find('.singleInfoSummary .filterItem .textContent');
+                $summaryItem.text(decrementViewCount($summaryItem.text()));
+
                 $target.closest('tr').remove();
+
                 if (s.length > 2)
                 { window.location = blist.util.navigation.getViewUrl(s[2]); }
+                // Reload menu for More Views under FVM
+                else
+                { $(document).trigger(blist.events.COLUMNS_CHANGED); }
             }
         });
     };

@@ -1003,7 +1003,7 @@ table.gridList th.favorite
 table.gridList .favorite .favoriteMarker {
     background: url(/stylesheets/images/content/table/icon_favorite_sprite.png) left 27px no-repeat;
     display: block;
-    height: 27px;
+    height: 20px;
     line-height: 100px;
     overflow: hidden;
     width: 27px;
@@ -1011,11 +1011,11 @@ table.gridList .favorite .favoriteMarker {
 table.gridList td.favorite.true .favoriteMarker,
 table.gridList tr.hover td.favorite.true .favoriteMarker
 {
-    background-position: 0 -27px;
+    background-position: 0 -31px;
 }
 table.gridList tr.hover td.favorite .favoriteMarker
 {
-    background-position: 0 0;
+    background-position: 0 -4px;
 }
 
 table.gridList .type,
@@ -1955,6 +1955,7 @@ body#login .loginBox li#close_login
 .tabContent
 {
     background-color: #fff;
+    min-height: 40em;
     padding: 0.5em 1.5em;
 }
 .tabContent h2

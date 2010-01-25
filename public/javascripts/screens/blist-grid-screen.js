@@ -382,8 +382,8 @@ $(function ()
             $('#dataGrid').datasetGrid().setTempView();
         });
 
-    $.live('#createViewMenu li.calendar a, #mainMenu .newView .calendar > a, ' +
-        '#createViewMenu li.viz a, #mainMenu .newView .viz > a', 'click',
+    $.live('#createViewMenu li.calendar a, .filterView .calendar > a, ' +
+        '#createViewMenu li.viz a, .filterView .visualization > a', 'click',
         function (event)
         {
             event.preventDefault();

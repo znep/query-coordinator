@@ -106,7 +106,8 @@ filterNS.setColumns = function(columns)
 {
     filterNS.columns = columns;
     filterNS.columnsValues = $.map(columns, function(col, i) {
-        return { index: i, label: $.htmlEscape(col.name), type: col.type };
+        return { index: i, column: col, label: $.htmlEscape(col.name),
+            type: col.type };
     })
 };
 
@@ -154,7 +155,7 @@ filterNS.cloneTemplateRow = function($table, columns)
                     .empty()
                     .append($conditionDropDown);
 
-                var column = filterNS.columns[selectedValue.index];
+                var column = selectedValue.column;
                 var conditions = filterNS.conditions[filterNS.filterableClass(column.type)];
                 $conditionDropDown.find('.filterTable-conditionDropDown')
                     .combo({
@@ -184,7 +185,7 @@ filterNS.row = function($row) {
         return false;
     }
 
-    var column = filterNS.columns[selectedColumn.index];
+    var column = selectedColumn.column;
     var operator = $row.find(".filterTable-conditionDropDown").value().operator;
 
     if ((column.type == "document") || (column.type == "photo"))
@@ -359,53 +360,54 @@ filterNS.getFilter = function($table, operator)
     return hasConditions ? j : null;
 };
 
-filterNS.populate = function($table, filters, columns)
+filterNS.populate = function($table, filters, columns, allColumns)
 {
     for (var i=0; i < filters.children.length; i++)
     {
         var filterRow = filters.children[i];
 
-        var $row = filterNS.addFilterRow($table, columns);
+        var curColumns = columns.slice();
 
-        for (var j=0; j < filterRow.children.length; j++)
+        var colChild = $.grep(filterRow.children, function(child)
+            { return child.type == 'column'; })[0];
+        var colMatches = $.grep(columns, function(c)
+            { return c.id == colChild.columnId; });
+        var col;
+        if (colMatches.length < 1)
         {
-            var sub = filterRow.children[j];
-            var subcolumn;
-            var col;
-            var type;
-            if (sub.type == "column")
-            {
-                for (var k=0; k < columns.length; k++)
-                {
-                    if (sub.columnId == columns[k].id)
-                    {
-                        col = columns[k];
-                        type = blist.data.types[col.type];
-                        if (type && type.isObject && sub.value !== undefined)
-                        {
-                            subcolumn = sub.value.toLowerCase();
-                        }
+            col = allColumns[colChild.columnId];
+            curColumns.push(col);
+        }
+        else { col = colMatches[0]; }
 
-                        $row.find(".filterTable-nameDropDown")
-                            .value($.grep(filterNS.columnsValues,
-                                function(columnValue) {
-                                    return columnValue.index === k;
-                                })[0]);
-                        $row.find(".filterTable-conditionDropDown")
-                            .value($.grep(filterNS.conditions
-                                [filterNS.filterableClass(col.type)],
-                            function(condition) {
-                                return condition.operator ==
-                                    filterRow.value.toUpperCase();
-                            })[0]);
-                        $row.find(".filterTable-editor").empty();
-                        break;
-                    }
-                }
-            }
-            else if (sub.type == "literal")
+        var $row = filterNS.addFilterRow($table, curColumns);
+
+        // Now set up column data
+        var subcolumn;
+        var type = blist.data.types[col.type];
+        if (type && type.isObject && colChild.value !== undefined)
+        {
+            subcolumn = colChild.value.toLowerCase();
+        }
+
+        $row.find(".filterTable-nameDropDown")
+            .value($.grep(filterNS.columnsValues,
+                        function(columnValue) {
+                        return columnValue.column.id === col.id;
+                        })[0]);
+        $row.find(".filterTable-conditionDropDown")
+            .value($.grep(filterNS.conditions
+                        [filterNS.filterableClass(col.type)],
+                        function(condition) {
+                        return condition.operator ==
+                        filterRow.value.toUpperCase();
+                        })[0]);
+        $row.find(".filterTable-editor").empty();
+
+        $.each($.grep(filterRow.children, function(child)
+            { return child.type == 'literal'; }), function(j, child)
             {
-                if (j > 1)
+                if (j > 0)
                 {
                     $row.find(".filterTable-editor")
                         .append('<div class="ampersand">&amp;</div>');
@@ -427,12 +429,12 @@ filterNS.populate = function($table, filters, columns)
                 if (subcolumn !== undefined)
                 {
                     value = {};
-                    value[subcolumn] = sub.value;
+                    value[subcolumn] = child.value;
                     subcolumn = undefined;
                 }
                 else
                 {
-                    value = sub.value;
+                    value = child.value;
                 }
 
                 if (col.type == "date")
@@ -441,10 +443,17 @@ filterNS.populate = function($table, filters, columns)
                 }
 
                 filterNS.createEditor($row.find(".renderer" + j), col, value);
-            }
-        }
+            });
     }
 
     // add empty row
     filterNS.addFilterRow($table, columns);
+
+    // If there are no columns available, hide the ability to add a new row
+    // and show an info message
+    if (columns.length < 1)
+    {
+        $('.filterTableFooter').hide();
+        $('.filterDatasetWrapper .information').show();
+    }
 };

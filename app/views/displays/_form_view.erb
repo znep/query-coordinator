@@ -11,5 +11,11 @@
     <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
   </div>
   <%- end -%>
-  <input type='submit' />
+  <div class='submitLine'>
+    <input type='submit' />
+  </div>
+  <%- if local_assigns[:show_powered_tag] -%>
+  <a href="http://www.socrata.com/" class='poweredLink'
+    target="_blank">Powered by Socrata</a>
+  <%- end -%>
 </form>

@@ -84,7 +84,8 @@
       <h5>Embed this form with plain HTML:</h5>
       <div class="copyCode">
         <%- form_string = render({:partial => 'displays/form_view',
-          :locals => {:prefix => request.protocol + request.host_with_port}}) -%>
+        :locals => {:prefix => request.protocol + request.host_with_port,
+          :show_powered_tag => true}}) -%>
         <%# By adding an empty string to the form text, we make it un-html_safe,
         which allows us to escape it before rendering it inside a textarea %>
         <%= text_area_tag("publishCode_html", h(form_string + '')

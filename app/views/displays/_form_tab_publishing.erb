@@ -25,9 +25,10 @@
     <div class="publishCode">
       <%- iframe_width = 500 -%>
       <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
+      <%- num_rt = form_columns.select {|c| c.client_type == 'richtext'}.count -%>
       <%- num_url = form_columns.select {|c| c.client_type == 'url'}.count -%>
-      <%- iframe_height = [425,
-        (form_columns.count - num_url) * 31 + num_url * 49 + 30].max -%>
+      <%- iframe_height = [425, (form_columns.count - num_rt - num_url) * 31 +
+        num_rt * 77 + num_url * 49 + 30].max -%>
       <h5>Embed this form as a Social Data Player:</h5>
       <div class="copyCode">
         <%= text_area_tag("publishCode") %>
@@ -82,9 +83,11 @@
     <div class="publishCode">
       <h5>Embed this form with plain HTML:</h5>
       <div class="copyCode">
-        <%= text_area_tag("publishCode_html",
-        render(:partial => 'displays/form_view',
-          :locals => {:prefix => request.protocol + request.host_with_port})
+        <%- form_string = render({:partial => 'displays/form_view',
+          :locals => {:prefix => request.protocol + request.host_with_port}}) -%>
+        <%# By adding an empty string to the form text, we make it un-html_safe,
+        which allows us to escape it before rendering it inside a textarea %>
+        <%= text_area_tag("publishCode_html", h(form_string + '')
           ) %>
       </div>
     </div>

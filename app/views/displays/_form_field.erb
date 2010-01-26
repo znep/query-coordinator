@@ -63,6 +63,9 @@
   <%- end -%>
 </select>
 
+<%- when 'richtext' -%>
+<textarea class='fieldInput' id='<%= id %>' name='<%= column.id %>'></textarea>
+
 <%- when 'stars' -%>
 <select class='fieldInput' id='<%= id %>' name='<%= column.id %>'>
   <option value=''>(Blank)</option>

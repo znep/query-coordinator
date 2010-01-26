@@ -10,4 +10,9 @@ class Displays::Form < Displays::Base
   def render_partial
     return 'displays/form_view'
   end
+
+  def render_publishing_partial
+    return 'displays/form_tab_publishing'
+  end
+
 end

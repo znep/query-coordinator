@@ -27,6 +27,12 @@ class Displays::Base
         true
     end
 
+    # Whether or not the display type has an advanced option that loads a
+    # separate UI for configuration
+    def can_advanced_publish?
+        false
+    end
+
     # Does the display scroll inline?  Return false to disable default management of the display container's size
     def scrolls_inline?
         true
@@ -74,6 +80,11 @@ END
     # Render inline javascript to be included *after* the bulk of javascript initializes.
     def render_inline_runtime_js(context)
         ''
+    end
+
+    # Partial for the publishing tab content
+    def render_publishing_partial
+      return 'displays/base_tab_publishing'
     end
 
     protected

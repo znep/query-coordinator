@@ -527,7 +527,7 @@ module BlistsHelper
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
                       "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
-                      "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"no\">" +
+                      "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"#{view.display.can_publish? && view.display.scrolls_inline? ? 'no' : 'auto'}\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]

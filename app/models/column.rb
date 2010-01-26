@@ -47,6 +47,11 @@ class Column < Model
       client_type != "document"
   end
 
+  def form_enabled?
+    return client_type != 'meta_data' &&
+      client_type != 'nested_table' && !flag?('hidden')
+  end
+
   def possible_aggregates
     aggs = [
       {'title' => 'None', 'name' => 'none'},

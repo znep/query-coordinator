@@ -1,14 +1,10 @@
-<div class='formView'>
-  <form action='/views/<%= @view.id %>/rows.html' method='POST'>
-    <%- @view.columns.each do |c| -%>
-    <%- next if c.client_type == 'meta_data' ||
-      c.client_type == 'nested_table' || c.flag?('hidden') -%>
-
-    <div class='line clearfix'>
-      <label for='form_field_<%= c.id %>'><%= c.name %></label>
-      <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
-    </div>
-    <%- end -%>
-    <input type='submit' />
-  </form>
-</div>
+<form class='formView socrataForm' method='POST'
+  action='<%= local_assigns[:prefix] || '' %>/views/<%= @view.id %>/rows.html'>
+  <%- @view.columns.select {|c| c.form_enabled?}.each do |c| -%>
+  <div class='line clearfix'>
+    <label for='form_field_<%= c.id %>'><%= c.name %></label>
+    <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
+  </div>
+  <%- end -%>
+  <input type='submit' />
+</form>

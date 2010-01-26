@@ -1198,9 +1198,9 @@ infoContentOuter table.gridList td.picture .cellInner
 }
 .singleInfoPublishing .publishWarning
 {
-	background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?1) no-repeat left -287px;
-	margin: 2em;
-	padding-left: 46px;
+    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites.png?1) no-repeat left -287px;
+    margin: 2em;
+    padding-left: 46px;
 }
 
 .singleInfoPublishing .publishContent
@@ -1209,43 +1209,53 @@ infoContentOuter table.gridList td.picture .cellInner
     padding-top: 1em;
 }
 .singleInfoPublishing .publishContent p
-{
-    font-size: 1.2em;
-}
+{ font-size: 1.2em; }
 .singleInfoPublishing .publishContent .publishCode
 {
-	margin-bottom: 1em;
-	margin-top: 2em;
-}
-.singleInfoPublishing .publishContent .publishCode p
-{
-    font-size: 1.4em;
+    margin-bottom: 1em;
+    margin-top: 2em;
 }
 .singleInfoPublishing .publishContent .sizeOptions
 {
-	font-size: 0.8em;
-	padding-bottom: 0.5em;
-	padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
 }
-.singleInfoPublishing .publishContent .sizeOptions p.field
+.singleInfoPublishing .publishContent .sizeOptions .field
 {
-	display: inline;
-	margin: 0.5em 1.7em 0.5em 0;
+    display: inline;
+    margin: 0.5em 1em 0.5em 0;
 }
+.singleInfoPublishing .publishContent .sizeOptions .field label
+{
+    font-size: 1.2em;
+    padding-right: 5px;
+}
+.singleInfoPublishing .publishContent .sizeOptions .field .postfix
+{ font-size: 1.1em; }
 .singleInfoPublishing .publishContent .sizeOptions #sizeError
 {
-	color: red;
-	margin: 0.5em;
+    color: red;
+    margin: 0.5em;
 }
 .singleInfoPublishing .publishContent .sizeOptions input
+{ width: 3em; }
+.singleInfoPublishing .publishContent .actionButtons
 {
-	width: 4em;
+    display: inline-block;
+    margin-bottom: -0.5em;
 }
+.singleInfoPublishing .publishContent .actionButtons li
+{
+    display: inline-block
+    float: none;
+    margin: 0;
+}
+.singleInfoPublishing .publishContent .copyCode
+{ margin-top: 1em; }
 .singleInfoPublishing .publishContent .copyCode textarea
 {
     font-size: 1.1em;
     height: 7em;
-	margin-bottom: 5px;
     overflow: hidden;
     padding: .5em;
     width: 45.5em;
@@ -1253,8 +1263,39 @@ infoContentOuter table.gridList td.picture .cellInner
 
 .singleInfoPublishing .publishContent #previewWidgetLink.disabled
 {
-	color: #888;
-	cursor: default;
+    color: #888;
+    cursor: default;
+}
+
+.singleInfoPublishing .publishForm h4
+{
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 1em;
+}
+
+.singleInfoPublishing .publishForm .publishOption,
+.singleInfoPublishing .publishContent.publishForm .optionInfo
+{
+    float: left;
+    width: 46%;
+}
+
+.singleInfoPublishing .publishContent.publishForm .optionInfo
+{ position: absolute; }
+
+.singleInfoPublishing .publishContent.publishForm .publishCode
+{ margin-top: 7em; }
+
+.singleInfoPublishing .publishContent.publishForm .copyCode textarea
+{ width: 100%; }
+
+.singleInfoPublishing .publishForm .divider
+{
+    float: left;
+    font-size: 2.0em;
+    margin: 5em 0.5em 0 1em;
+    text-transform: uppercase;
 }
 
 /*  The following rules define styles for stuff that isn't currently implemented. 

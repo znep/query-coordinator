@@ -53,30 +53,33 @@
         <%- end -%>
       </ul>
 
-      <h2>Browse by tag</h2>
-      <ul class="tagList hilightList">
-        <%- tag_list.each do |tag| -%>
-          <li>
-            <%= link_to("<span>#{h(tag.name)}</span>", generate_filter_url(@current_state, type, {:tag => tag.name}),
-                  :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
+      <%- if feature? :show_tags -%>
+        <h2>Browse by tag</h2>
+        <ul class="tagList hilightList">
+          <%- tag_list.each do |tag| -%>
+            <li>
+              <%= link_to("<span>#{h(tag.name)}</span>", generate_filter_url(@current_state, type, {:tag => tag.name}),
+                    :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
+            </li>
+          <%- end -%>
+          <li class="moreLink">
+            <%= link_to("More", 
+                data_tags_path + generate_filter_url(@current_state, type, {}, '?'), 
+                  :class => "moreTagsLink") %>
           </li>
-        <%- end -%>
-        <li class="moreLink">
-          <%= link_to("More", 
-              data_tags_path + generate_filter_url(@current_state, type, {}, '?'), 
-                :class => "moreTagsLink") %>
-        </li>
-      </ul>
+        </ul>
+      <%- end -%>
 
+      <%- if feature? :show_categories %>
         <h2>Browse by Category</h2>
         <ul class="categoryList hilightList">
-
-        <%- View.categories.keys.sort.each do |category| -%>
-          <%- next if category.nil? || category.length == 0 -%>
-          <li><%= link_to("<span>#{category}</span>", generate_filter_url(@current_state, type, {:filter => {"category" => category}}),
-                  :class => "filterLink#{get_filter_hilight_class({'category' => category}, current_filter, ' hilight')}") %></li>
-        <%- end -%>
-      </ul>
+          <%- View.categories.keys.sort.each do |category| -%>
+            <%- next if category.nil? || category.length == 0 -%>
+            <li><%= link_to("<span>#{category}</span>", generate_filter_url(@current_state, type, {:filter => {"category" => category}}),
+                    :class => "filterLink#{get_filter_hilight_class({'category' => category}, current_filter, ' hilight')}") %></li>
+          <%- end -%>
+        </ul>
+      <%- end -%>
     <%- end -%>
   </div>
   <div class="tabContentNavB"></div>

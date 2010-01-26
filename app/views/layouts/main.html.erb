@@ -89,13 +89,16 @@
         <a id="hhsLink" href="http://www.hhs.gov/">www.hhs.gov</a>
         <div class='userNav'>
           <ul>
-            <%- CurrentDomain.theme.urls.header.each do |link| -%>
-              <li><%= link_from_theme(link) %></li>
-            <%- end -%>
-            <li class='signInLink'><%= link_to "Sign In to Data.Medicare.Gov", login_url, :rel => 'nofollow' %></li>
+            <li class='favoriteLink'>
+              <script src="http://s7.addthis.com/js/250/addthis_widget.js?pub=cmsgov" type="text/javascript"></script>
+              <a title="Bookmark &amp; Share this page" onclick="return addthis_sendto()" onmouseout="addthis_close()" onmouseover="return addthis_open(this, '', '[URL]', '[TITLE]')" class="BannerToolsShareLink" href="http://www.addthis.com/bookmark.php?v=250&amp;pub=cmsgov">
+                Bookmark &amp; Share
+              </a>
+            </li>
+            <li class='signInLink'><%= link_to "Sign In to Data.CMS.Gov", login_url, :rel => 'nofollow' %></li>
             <li class='signUpLink'><%= link_to "Create An Account", signup_url, :rel => 'nofollow' %></li>
-            <li class='accountLink'>
-              <%= link_to "My Data.Medicare.Gov", home_path %>
+            <li class='accountLink dataLink'>
+              <%= link_to "My Data.CMS.Gov", home_path %>
               <%= render :partial => 'shared/user_menu', :locals => { :menu_class => 'userMenu' } %>
             </li>
             <li class='accountLink'><%= link_to "My Account", account_path %></li>

@@ -24,9 +24,10 @@
 
     <div class="publishCode">
       <%- iframe_width = 500 -%>
+      <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
+      <%- num_url = form_columns.select {|c| c.client_type == 'url'}.count -%>
       <%- iframe_height = [425,
-        @view.columns.select {|c| c.form_enabled?}.count * 31 + 20].max -%>
-        <%# TODO: Need to increase the measurement by appropriate padding for chrome %>
+        (form_columns.count - num_url) * 31 + num_url * 49 + 30].max -%>
       <h5>Embed this form as a Social Data Player:</h5>
       <div class="copyCode">
         <%= text_area_tag("publishCode") %>

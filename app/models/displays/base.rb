@@ -38,6 +38,15 @@ class Displays::Base
         true
     end
 
+    # Controls for displaying the widget
+    def render_widget_chrome?
+      true
+    end
+
+    def render_widget_tabs?
+      true
+    end
+
     # Retrieve a list of stylesheet asset bundles that must be included for this display
     def required_stylesheets
         []

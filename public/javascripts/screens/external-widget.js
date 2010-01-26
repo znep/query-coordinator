@@ -360,9 +360,6 @@ blist.widget.commentExpanderClick = function($commentPane, e)
 
 $(function ()
 {
-    widgetNS.sizeGrid();
-    $(window).resize(function() { widgetNS.sizeGrid(); });
-
     // Make all links with rel="external" open in a new window.
     $.live("a[rel$='external']", "mouseover",
         function(){ this.target = "_blank"; });
@@ -371,6 +368,9 @@ $(function ()
 
     if (!widgetNS.isAltView)
     {
+        widgetNS.sizeGrid();
+        $(window).resize(function() { widgetNS.sizeGrid(); });
+
         var $dataGrid = $('#data-grid');
         if ($dataGrid.length > 0)
         {

@@ -1,4 +1,10 @@
-.formView .line { margin: 0.5em 0; }
+.formView { padding: 0.5em; }
+
+.formView .line
+{
+    height: 2.3em;
+    margin: 0 0 0.75em;
+}
 
 .formView label
 {
@@ -39,6 +45,7 @@
 .formView .phoneInput input { width: 12.7em; }
 .formView .phoneInput select { width: 7em; }
 
+.formView .line.url { height: 4.2em; }
 .formView .urlInput label
 {
     padding-right: 0.5em;

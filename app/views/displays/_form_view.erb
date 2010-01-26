@@ -1,7 +1,7 @@
 <form class='formView socrataForm' method='POST'
   action='<%= local_assigns[:prefix] || '' %>/views/<%= @view.id %>/rows.html'>
   <%- @view.columns.select {|c| c.form_enabled?}.each do |c| -%>
-  <div class='line clearfix'>
+  <div class='line clearfix <%= c.client_type %>'>
     <label for='form_field_<%= c.id %>'><%= c.name %></label>
     <%= render(:partial => 'displays/form_field', :locals => {:column => c}) %>
   </div>

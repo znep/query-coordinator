@@ -3,6 +3,14 @@ class Displays::Form < Displays::Base
     false
   end
 
+  def render_widget_chrome?
+    false
+  end
+
+  def render_widget_tabs?
+    false
+  end
+
   def required_stylesheets
     [ 'displays-form' ]
   end

@@ -14,6 +14,7 @@
 .headerMenu .recent .filter a { background-position: 5px -531px; }
 .headerMenu .recent .calendar a { background-position: 5px -761px; }
 .headerMenu .recent .visualization a { background-position: 5px -784px; }
+.headerMenu .recent .grouped a { background-position: 5px -1267px; }
 .headerMenu .flag a { background-position: 5px -1129px; }
 
 /* Filter, Visualize, Views menu */

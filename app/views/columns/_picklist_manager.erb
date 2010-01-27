@@ -35,7 +35,7 @@
   <div class='newValueWrapper'>
     <input type='text' name='newValue' class='textPrompt plValue newValue'
     title='Enter a new value' />
-    <input type='submit' class='newValueSubmit' value='Add Value' />
+    <input type='button' class='newValueSubmit' value='Add Value' />
   </div>
 </div>
 
@@ -109,7 +109,7 @@ var picklistManagerSetup = function()
   setUpList();
   $('#picklistManager .remove').click(removeValue);
   $('#picklistManager input').keydown(inputKeyDown);
-  $('#picklistManager input[type=submit]').click(submitClick);
+  $('#picklistManager input.newValueSubmit').click(submitClick);
 
   return function()
   {

@@ -39,15 +39,18 @@
 
           <div class="aboutBody">
             <div class="dataGeneral">
-              <%- if is_owner || ((@view.category && @view.category != "") || (@view.tags && @view.tags.length > 0)) -%>
+              <%# Category %>
+              <%- if (is_owner || ((@view.category && @view.category != "") || (@view.tags && @view.tags.length > 0))) && (feature?(:show_categories) || feature?(:show_tags)) -%>
               <ul class="aboutCategoryList">
-                <%- if is_owner || (@view.category && @view.category != "") -%>
+                <%- if (is_owner || (@view.category && @view.category != "")) && feature?(:show_categories) -%>
                   <li>Category
                     <span class="categoryField fieldValue"><%= @view.category.nil? ? "None" : @view.category.capitalize %></span>
                   </li>
                 <%- end -%>
                 <a class="editLink editGeneral<%= is_owner ? "" : " hide" %>" href="#edit">Edit</a>
-                <%- if is_owner || (@view.tags && @view.tags.length > 0) -%>
+
+                <%# Tags %>
+                <%- if (is_owner || (@view.tags && @view.tags.length > 0)) && feature?(:show_tags) -%>
                   <li>Tags
                     <span class="tagsField fieldValue"><%= @view.tag_display_string.empty? ? "None" : @view.tag_display_string %></span>
                   </li>
@@ -67,31 +70,37 @@
             <div class="editGeneralForm hide">
               <a href="#close" class="closeButton closeGeneral">close</a>
               <%= form_tag(@view.href) %>
-                <dl class="summaryList">
-                  <dt>
-                    Category
-                  </dt>
-                  <dd>
-                    <div class="itemContent">
-                      <div>
-                        <%= select_tag("view[category]", category_select_options(
-                          h(@view.category.nil? ? '' : @view.category.capitalize))) %>
+                <%- if feature? :show_categories -%>
+                  <dl class="summaryList">
+                    <dt>
+                      Category
+                    </dt>
+                    <dd>
+                      <div class="itemContent">
+                        <div>
+                          <%= select_tag("view[category]", category_select_options(
+                            h(@view.category.nil? ? '' : @view.category.capitalize))) %>
+                        </div>
                       </div>
-                    </div>
-                  </dd>
-                </dl>
-                <dl class="summaryList">
-                  <dt>
-                    Tags
-                  </dt>
-                  <dd>
-                    <div class="itemContent">
-                      <div>
-                        <%= text_field_tag("view[tags]", h(@view.tag_display_string)) %>
+                    </dd>
+                  </dl>
+                <%- end -%>
+
+                <%- if feature? :show_tags -%>
+                  <dl class="summaryList">
+                    <dt>
+                      Tags
+                    </dt>
+                    <dd>
+                      <div class="itemContent">
+                        <div>
+                          <%= text_field_tag("view[tags]", h(@view.tag_display_string)) %>
+                        </div>
                       </div>
-                    </div>
-                  </dd>
-                </dl>
+                    </dd>
+                  </dl>
+                <%- end -%>
+
                 <dl class="summaryList">
                   <dt>
                     Description

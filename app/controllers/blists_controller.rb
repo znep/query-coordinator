@@ -647,6 +647,8 @@ private
           'calendar views'
         when 'visualization'
           'visualizations'
+        when 'grouped'
+          'grouped views'
         end
     end
 

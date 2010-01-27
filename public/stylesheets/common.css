@@ -436,7 +436,7 @@ private
 
 .itemType
 {
-    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png?3);
+    background-image: url(/stylesheets/images/content/table/icon_type_sprites.png?4);
     background-position: 0 0;
     background-repeat: no-repeat;
     height: 31px;
@@ -463,6 +463,11 @@ private
 .itemType.typeVisualization.sharedIn { background-position: 0 -561px; }
 .itemType.typeVisualization.private { background-position: 0 -591px; }
 .itemType.typeVisualization.privateShared { background-position: 0 -622px; }
+.itemType.typeGrouped { background-position: 0 -652px; }
+.itemType.typeGrouped.sharedOut { background-position: 0 -684px; }
+.itemType.typeGrouped.sharedIn { background-position: 0 -715px; }
+.itemType.typeGrouped.private { background-position: 0 -746px; }
+.itemType.typeGrouped.privateShared { background-position: 0 -777px; }
 
 /*** END: item type icons ***/
 

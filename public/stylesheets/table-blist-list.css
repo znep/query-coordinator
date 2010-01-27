@@ -172,7 +172,7 @@ div.blist-favorite
 
 div.blist-td-type div.blist-type
 {
-    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png);
+    background-image:url(/stylesheets/images/content/table/icon_type_sprites.png?4);
     background-repeat: no-repeat;
     height: 27px;
     overflow: visible;
@@ -182,6 +182,7 @@ div.blist-type-default { background-position: center -4px; }
 div.blist-type-filter { background-position: center -128px; }
 div.blist-type-calendar { background-position: center -345px; }
 div.blist-type-visualization { background-position: center -500px; }
+div.blist-type-grouped { background-position: 0 -654px; }
 div.blist-type-defaultSharedTo { background-position: center -66px; }
 div.blist-type-defaultSharedBy { background-position: center -35px; }
 div.blist-type-filterSharedTo { background-position: center -190px; }
@@ -190,6 +191,8 @@ div.blist-type-calendarSharedTo { background-position: center -407px; }
 div.blist-type-calendarSharedBy { background-position: center -376px; }
 div.blist-type-visualizationSharedTo { background-position: center -562px; }
 div.blist-type-visualizationSharedBy { background-position: center -531px; }
+div.blist-type-groupedSharedTo { background-position: 0 -716px; }
+div.blist-type-groupedSharedBy { background-position: 0 -685px; }
 
 .blist-td .blist-opener
 {

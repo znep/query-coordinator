@@ -8,6 +8,8 @@ class Displays::Legacy < Displays::Base
           'blist'
         elsif @view.is_visualization?
           'visualization'
+        elsif @view.is_grouped?
+          'grouped'
         else
           'filter'
         end

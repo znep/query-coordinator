@@ -24,55 +24,59 @@
   </dd>
 </dl>
 
-<dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
-  <dt>
-    Tags
-  </dt>
-  <dd class="editItem">
-    <div class="itemContent">
-      <span class="textContent"><%= view.tag_display_string %></span>
+<%- if feature? :show_tags -%>
+  <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
+    <dt>
+      Tags
+    </dt>
+    <dd class="editItem">
+      <div class="itemContent">
+        <span class="textContent"><%= view.tag_display_string %></span>
+        <%- if allow_edit -%>
+        <%- form_tag(view.href) do -%>
+          <%= hidden_field_tag("fieldType", "tags") %>
+          <%= text_field_tag("view[tags]", h(view.tag_display_string)) %>
+          <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+          <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+        <%- end -%>
+        <%- end -%>
+      </div>
       <%- if allow_edit -%>
-      <%- form_tag(view.href) do -%>
-        <%= hidden_field_tag("fieldType", "tags") %>
-        <%= text_field_tag("view[tags]", h(view.tag_display_string)) %>
-        <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-        <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+      <div class="itemActions">
+        <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+      </div>
       <%- end -%>
-      <%- end -%>
-    </div>
-    <%- if allow_edit -%>
-    <div class="itemActions">
-      <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
-    </div>
-    <%- end -%>
-  </dd>
-</dl>
+    </dd>
+  </dl>
+<%- end -%>
 
-<dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
-  <dt>
-    Category
-  </dt>
-  <dd class="editItem">
-    <div class="itemContent">
-      <span class="textContent"><%= view.category.nil? ? '' : view.category.capitalize %></span>
+<%- if feature? :show_categories -%>
+  <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
+    <dt>
+      Category
+    </dt>
+    <dd class="editItem">
+      <div class="itemContent">
+        <span class="textContent"><%= view.category.nil? ? '' : view.category.capitalize %></span>
+        <%- if allow_edit -%>
+        <%- form_tag(view.href) do -%>
+          <%= hidden_field_tag("fieldType", "category") %>
+          <%= select_tag("view[category]",
+            category_select_options(h(view.category.nil? ?
+            '' : view.category.capitalize))) %>
+          <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
+          <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+        <%- end -%>
+        <%- end -%>
+      </div>
       <%- if allow_edit -%>
-      <%- form_tag(view.href) do -%>
-        <%= hidden_field_tag("fieldType", "category") %>
-        <%= select_tag("view[category]",
-          category_select_options(h(view.category.nil? ?
-          '' : view.category.capitalize))) %>
-        <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
-        <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"), blists_path, :title => "Cancel", :class => "formCancelLink") %>
+      <div class="itemActions">
+        <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
+      </div>
       <%- end -%>
-      <%- end -%>
-    </div>
-    <%- if allow_edit -%>
-    <div class="itemActions">
-      <a href="<%= view.href %>" class="action editLink"><span>Edit</span></a>
-    </div>
-    <%- end -%>
-  </dd>
-</dl>
+    </dd>
+  </dl>
+<%- end -%>
 
 <dl class="summaryList">
   <dt>

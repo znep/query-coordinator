@@ -80,11 +80,12 @@ body
 #discover .chicagoWelcomeHeader p.chicagoSubtitle
 {
     padding-top: 0.2em;
+    width: 40em;
 }
 #discover .chicagoWelcomeHeader p.chicagoText
 {
     color: #bbb;
-    width: 30em;
+    width: 36em;
 }
 #discover .chicagoWelcomeHeader p
 {

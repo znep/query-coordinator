@@ -1419,6 +1419,7 @@ dl.versionInfo dd
 {
     height: 20px;
     padding-top: 0;
+    white-space: nowrap;
 }
 
 .columnPickerModal .reorderList .activeList.ui-draggable-not-dragging li.hover .itemWrapper,
@@ -1471,6 +1472,14 @@ dl.versionInfo dd
 
 
 /*** START: Grouping & Aggregates dialog ***/
+.modalDialog .dialogBox .header .groupingIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png?1);
+    background-position: 0 -216px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+
 .groupingWrapper .loading
 {
     background: white url(/stylesheets/images/common/BrandedSpinner.gif) no-repeat center center;

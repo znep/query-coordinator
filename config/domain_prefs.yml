@@ -78,3 +78,5 @@ features.community_creation: true
 features.allow_comments: true
 features.remember_me: true
 features.persistent_analytics: true
+features.show_categories: true
+features.show_tags: true

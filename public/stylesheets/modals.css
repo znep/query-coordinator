@@ -1683,6 +1683,17 @@ dl.versionInfo dd
 /*** END: Create visualization dialog ***/
 
 
+/*** START: Create form dialog ***/
+.modalDialog .dialogBox .header .formIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png?1);
+    background-position: 0 -297px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+/*** END: Create form dialog ***/
+
+
 /*** START: Message the owner of this dataset ***/
 .modalDialog .dialogBox .header .bulkIcon
 {

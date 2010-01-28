@@ -664,16 +664,18 @@ private
     if !params['type'].nil?
       title_type =
         case params['type']
+        when 'calendar'
+          'calendar views'
         when 'favorite'
           'my favorite ' + t(:blists_name)
         when 'filter'
           'filters'
-        when 'calendar'
-          'calendar views'
-        when 'visualization'
-          'visualizations'
+        when 'form'
+          'forms'
         when 'grouped'
           'grouped views'
+        when 'visualization'
+          'visualizations'
         end
     end
 

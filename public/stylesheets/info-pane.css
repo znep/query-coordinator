@@ -187,6 +187,9 @@
 .infoContentHeader h2.panelHeader.typeGrouped { background-position: left -1107px; }
 .infoContentHeader h2.panelHeader.typeGrouped.private { background-position: left -1148px; }
 .infoContentHeader h2.panelHeader.typeGrouped.privateShared { background-position: left -1189px; }
+.infoContentHeader h2.panelHeader.typeForm { background-position: left -1476px; }
+.infoContentHeader h2.panelHeader.typeForm.private { background-position: left -1517px; }
+.infoContentHeader h2.panelHeader.typeForm.privateShared { background-position: left -1558px; }
 .infoContentHeader h2.panelHeader.typeSharedIn { background-position: left -738px; }
 .infoContentHeader h2.panelHeader.typeSharedOut { background-position: left -779px; }
 .infoContentHeader h2.panelHeader.typeNotify { background-position: left -410px; }
@@ -686,13 +689,14 @@ infoContentOuter table.gridList td.picture .cellInner
 
 #createViewMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?3);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
     background-position: 5px 23px;
     background-repeat: no-repeat;
 }
 #createViewMenu li.filter a { background-position: 5px -531px; }
 #createViewMenu li.calendar a { background-position: 5px -761px; }
 #createViewMenu li.viz a { background-position: 5px -784px; }
+#createViewMenu li.form a { background-position: 5px -1313px; }
 
 /*** END: single info filtered tab ***/
 

@@ -179,6 +179,7 @@ body#lensBody
     text-align: left;
 }
 #lensContainer .tabList li.filter a.calendar { background-position: 0 -759px; }
+#lensContainer .tabList li.filter a.form { background-position: 0 -1310px; }
 #lensContainer .tabList li.filter a.visualization { background-position: 0 -782px; }
 
 #lensContainer ul.tabList li.filter .wrapper a,

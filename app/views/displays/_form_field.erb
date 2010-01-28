@@ -13,13 +13,13 @@
     <option value='<%= i + 1 %>'><%= Date::ABBR_MONTHNAMES[i+1] %></option>
     <%- end -%>
   </select>
-  <input class='dayInput' maxlength='2' min='1' max='31'
+  <input type='text' class='dayInput' maxlength='2' min='1' max='31'
     name='<%= column.id %>:day' />
-  <input class='yearInput' maxlength='4' name='<%= column.id %>:year' />
-  <input class='hourInput' maxlength='2' min='1' max='12'
+  <input type='text' class='yearInput' maxlength='4' name='<%= column.id %>:year' />
+  <input type='text' class='hourInput' maxlength='2' min='1' max='12'
     name='<%= column.id %>:hour' />
   <span class='hourSplit'>:</span>
-  <input class='minuteInput' maxlength='2' min='0' max='59'
+  <input type='text' class='minuteInput' maxlength='2' min='0' max='59'
     name='<%= column.id %>:minute' />
   <select class='ampmInput' name='<%= column.id %>:pm'>
     <option value=''>AM</option>

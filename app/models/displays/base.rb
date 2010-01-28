@@ -1,5 +1,7 @@
 # Base class for all displays
 class Displays::Base
+  attr_reader :options
+
     # Access the human readable name for this type of display
     def name
         self.class.name[10..-1]

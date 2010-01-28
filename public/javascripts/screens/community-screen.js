@@ -39,7 +39,7 @@ blist.community.historyChangeHandler = function (hash)
     }
 
     // Find active tab
-    var activeTab = $.urlParam("type", "?" + hash);
+    var activeTab = $.urlParam("?" + hash, "type");
     var tabSelector = tabs[activeTab];
     var tabContainerSelector = tabContainers[activeTab];
 
@@ -66,7 +66,7 @@ blist.community.historyChangeHandler = function (hash)
         {
             $("#tabTopMembers").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
             $("form.search #search")
-                .val($.urlParam("search", "?" + hash))
+                .val($.urlParam("?" + hash, "search"))
                 .removeClass("prompt");
         }
     }
@@ -250,7 +250,7 @@ $(function ()
             window.location.hash = ''; // only webkit/ie understand this, but only they need to
             $.historyLoad('');
         });
-    if ($.urlParam("search", window.location.href) !== 0)
+    if ($.urlParam(window.location.href, "search") !== 0)
     {
         $(".clearSearch").show();
     }

@@ -4,7 +4,11 @@
     c.client_type == 'photo'} -%>
   enctype='multipart/form-data'
   <%- end -%>
-  action='<%= local_assigns[:prefix] || '' %>/views/<%= @view.id %>/rows.html'>
+  <%- success_redirect = @view.display.options.successRedirect -%>
+  <%- success_redirect = request.protocol + request.host_with_port + @view.href +
+    '/form_success' if success_redirect.blank? -%>
+  action='<%= local_assigns[:prefix] || '' %>/views/<%=
+    @view.id %>/rows.html?successRedirect=<%= CGI.escape(success_redirect) %>'>
   <%- form_columns.each do |c| -%>
   <div class='line clearfix <%= c.client_type %>'>
     <label for='form_field_<%= c.id %>'><%= c.name %></label>

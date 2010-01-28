@@ -380,10 +380,8 @@ body#lensBody
 
 #lensBody .headerBar #filterViewMenu { min-width: 22em; }
 
-#lensBody #editViz span.linkIcon
-{
-    background-position: 0 -340px;
-}
+#lensBody #editForm span.linkIcon { background-position: 0 -319px; }
+#lensBody #editViz span.linkIcon { background-position: 0 -340px; }
 
 #lensBody .headerBar #formatLink span.linkIcon
 {

@@ -1,6 +1,6 @@
 <%- content_for(:wrapper_class, "narrowDialog") -%>
 <%- content_for :headline do -%>
-<h1 class='formIcon'>Create a Form View</h1>
+<h1 class='formIcon'><%= @is_edit ? 'Edit this' : 'Create a' %> Form View</h1>
 <%- end -%>
 
 <div class='modalContentWrapper formWrapper viewSetupWrapper'>
@@ -8,7 +8,8 @@
   Forms allow you to gather data directly from your website into a datset
   </p>
 
-  <% form_tag("#{@view.href}/create_form") do %>
+  <% form_tag("#{@view.href}/create_form?edit=#{@is_edit}") do %>
+    <%- if !@is_edit -%>
     <div class='section'>
       <h3>Name</h3>
       <p class='subtitle separator'>
@@ -17,6 +18,20 @@
       <div class='line'>
         <label class='required' for='formName'>Name</label>
         <input type='text' id='formName' name='viewName' class='required' />
+      </div>
+    </div>
+    <%- end -%>
+
+    <div class='section'>
+      <h3>Success Page</h3>
+      <p class='subtitle separator'>
+      After data is submitted, you can choose what page should be displayed
+      </p>
+      <div class='line'>
+        <label for='form_successRedirect'>URL</label>
+        <input type='text' id='form_successRedirect' name='successRedirect'
+          class='url'
+          value='<%= @is_edit ? @view.display.options.successRedirect : '' %>' />
       </div>
     </div>
 
@@ -42,7 +57,9 @@
   <div class='submitLine clearfix'>
     <div class="required">Required Field</div>
     <ul class='actionButtons clearfix'>
-      <li><a href='#create' class='create arrowButton'>Create Form</a></li>
+      <li><a href='#create' class='create arrowButton'>
+        <%= @is_edit ? 'Save' : 'Create' %> Form
+      </a></li>
     </ul>
   </div>
 </div>
@@ -73,7 +90,14 @@
             else
             {
               $("#modal").jqmHide();
+              <%- if @is_edit -%>
+              var $dataForm = $('#dataGrid form');
+              $dataForm.attr('action',
+                $.urlParam($dataForm.attr('action'), 'successRedirect',
+                  escape($form.find('#form_successRedirect').val())));
+              <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
+              <%- end -%>
             }
           }
       });

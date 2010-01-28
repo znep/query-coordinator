@@ -202,6 +202,17 @@ class BlistsController < ApplicationController
     end
   end
 
+  def form_success
+    begin
+      @view = View.find(params[:id])
+    rescue
+      # Do nothing; if there is no view, render a generic message
+    end
+
+    respond_to do |format|
+      format.html { render(:layout => "plain") }
+    end
+  end
 
   def detail
     if (params[:id])
@@ -543,6 +554,7 @@ class BlistsController < ApplicationController
 
   def form
     @view = View.find(params[:id])
+    @is_edit = params[:edit] == 'true'
 
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
@@ -552,9 +564,16 @@ class BlistsController < ApplicationController
   def create_form
     errors = []
     begin
-      view = View.create({'name' => params[:viewName],
+      if params[:edit] == 'true'
+        view = View.update_attributes!(params[:id], {'displayFormat' =>
+                                  {'successRedirect' => params[:successRedirect]}})
+      else
+        view = View.create({'name' => params[:viewName],
                           'originalViewId' => params[:id],
-                          'displayType' => 'form'})
+                          'displayType' => 'form',
+                          'displayFormat' =>
+                            {'successRedirect' => params[:successRedirect]}})
+      end
     rescue CoreServer::CoreServerError => e
       errors << e.error_message
     end

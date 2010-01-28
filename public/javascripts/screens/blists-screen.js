@@ -477,6 +477,8 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         }
     });
 
+    $('#infoPane .singleInfoFiltered').infoPaneFiltered();
+
     $("#infoPane .singleInfoPublishing").infoPanePublish();
 
     $('#infoPane .singleInfoSharing').infoPaneSharing({

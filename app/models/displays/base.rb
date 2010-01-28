@@ -18,7 +18,7 @@ class Displays::Base
 
     # This CSS class is applied to HTML anchors that reference views of this display type
     def link_css_class
-        @view.displayType
+        type
     end
 
     # Is this display type publishable as a widget?  Theoretically all display types should be publishable but

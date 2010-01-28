@@ -307,7 +307,7 @@ ul.menu.contactsMenu li.sectionTitle.sortHeader
 
 #typeMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?5);
     background-position: 5px 23px;
     background-repeat: no-repeat;
 }
@@ -315,6 +315,7 @@ ul.menu.contactsMenu li.sectionTitle.sortHeader
 #typeMenu li.favorite a { background-position: 5px -1152px; }
 #typeMenu li.filter a { background-position: 5px -531px; }
 #typeMenu li.visualization a { background-position: 5px -784px; }
+#typeMenu li.grouped a { background-position: 5px -1267px; }
 
 /*** START: User tile ***/
 .userTile .userPhoto

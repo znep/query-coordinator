@@ -1,6 +1,6 @@
 .headerMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?5);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?6);
     background-position: 5px 23px; /* default to show no icon */
     background-repeat: no-repeat;
 }
@@ -14,6 +14,7 @@
 .headerMenu .recent .filter a { background-position: 5px -531px; }
 .headerMenu .recent .calendar a { background-position: 5px -761px; }
 .headerMenu .recent .visualization a { background-position: 5px -784px; }
+.headerMenu .recent .grouped a { background-position: 5px -1267px; }
 .headerMenu .flag a { background-position: 5px -1129px; }
 
 /* Filter, Visualize, Views menu */
@@ -41,7 +42,7 @@
     background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
     background-position: 5px -899px;
 }
-.headerMenu .grouping a { background-position: 5px -347px; }
+.headerMenu .grouping a { background-position: 5px -1267px; }
 .headerMenu .showHide .columnsMenu li.checked a
 { background-position: 5px -508px; }
 .headerMenu .calendar a { background-position: 5px -761px; }

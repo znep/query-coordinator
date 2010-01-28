@@ -36,6 +36,10 @@ body
     right: 10px;
     top: 11px;
 }
+#outerContainer #header .userNav .accountLink
+{
+    position: relative;
+}
 #outerContainer #header .userNav .accountLink:hover .userMenu
 {
     display: block;
@@ -57,6 +61,7 @@ body
     background-color: #ececec;
     border: 1px solid #8d8d8d;
     display: none;
+    left: 0;
     position: absolute;
     z-index: 200;
 }

@@ -139,6 +139,12 @@ blist.myBlists.visualizationFilter = function(view)
     return view.displayType && view.displayType.startsWith('FCMap_');
 };
 
+blist.myBlists.groupedFilter = function(view)
+{
+    return view.query !== undefined && view.query.groupBys !== undefined &&
+        view.query.groupBys.length > 0;
+};
+
 blist.myBlists.untaggedFilter = function(view)
 {
     if (view.tags && view.tags.length == 0)
@@ -221,6 +227,10 @@ blist.myBlists.filterGen = function(type, argument, callback)
             if (argument == 'visualization')
             {
                 return callback(myBlistsNS.visualizationFilter);
+            }
+            if (argument == 'grouped')
+            {
+                return callback(myBlistsNS.groupedFilter);
             }
             else if (argument == 'filter')
             {
@@ -619,6 +629,10 @@ blist.myBlists.getTypeClassName = function(value)
     else if (myBlistsNS.visualizationFilter(value))
     {
         cls += "visualization";
+    }
+    else if (myBlistsNS.groupedFilter(value))
+    {
+        cls += "grouped";
     }
     else if (myBlistsNS.filterFilter(value))
     {

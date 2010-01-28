@@ -7,7 +7,7 @@ var column = <%= @column.to_js %>;
 <% end %>
 
 <div id='columnCreateDialog' class="columnPropertiesWrapper">
-  <% form_tag "#", :id => "columnCreate" do %>
+  <% form_tag "#", :class => "columnCreate" do %>
       <div>
         <table cellspacing="0">
           <tbody>
@@ -16,12 +16,12 @@ var column = <%= @column.to_js %>;
             </tr>
             <tr>
               <td class="labelColumn">
-                <label for="name" class="required">Column Name:</label>
+                <label for="columnCreate_name" class="required">Column Name:</label>
               </td>
               <td class="fieldColumn">
                 <%= text_field_tag("name", @column.name,
                 :class => "textPrompt prompt", :title => "Enter a name",
-                :id => "name") %>
+                :id => "columnCreate_name") %>
               </td>
             </tr>
             <tr>
@@ -119,7 +119,7 @@ blist.common.modalReady = function() {
     formEnabled = !formEnabled;
   };
 
-  $("#columnCreateDialog #name")
+  $("#columnCreateDialog #columnCreate_name")
     .change(function() { column.name = $(this).val(); });
   $("#columnCreateDialog #description")
     .change(function() { column.description = $(this).val(); });
@@ -168,7 +168,7 @@ blist.common.modalReady = function() {
       });
   };
 
-  $("#columnCreateDialog #columnCreate").submit( function(e) {
+  $("#columnCreateDialog .columnCreate").submit( function(e) {
       e.preventDefault();
       saveForm();
   });
@@ -179,6 +179,6 @@ blist.common.modalReady = function() {
       saveForm();
   });
 
-  $('#columnCreate input#name').focus();
+  $('#columnCreateDialog .columnCreate input#columnCreate_name').focus();
 };
 </script>

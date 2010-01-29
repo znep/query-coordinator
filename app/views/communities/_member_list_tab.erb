@@ -11,7 +11,7 @@
       <div class="contentSort">
         <% form_tag(filter_community_path(:type => type, :filter => current_filter, :tag => current_tag, :search => search_term), :class => "sortForm") do %>
           <p>
-            Sort by
+            <label for="sort_by_<%= type %>">Sort by</label>
             <%= select_tag("sort_by", (type == "SEARCH") ? 
                            community_sort_select_options_for_search(sort_by) : community_sort_select_options(sort_by), 
                            :id => "sort_by_" + type) %>

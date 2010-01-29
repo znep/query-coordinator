@@ -44,6 +44,9 @@
 </head>
 
 <body id='<%= @body_id %>' class='<%= @body_class %>'>
+
+<div id="skipLinks"><a href="#content">Skip to main content</a><a href="#footerLinks">Skip to footer links</a></div>
+
 <div class="bodyExterior">
 <div class="bodyInterior">
   <div id='outerContainer'>
@@ -78,7 +81,7 @@
                   Clear Search
                 </a>
               </div>
-              <%= image_submit_tag("empty.gif", :name => "discoverSubmit", :class => "submit") %>
+              <%= image_submit_tag("empty.gif", :name => "discoverSubmit", :class => "submit", :alt => "search") %>
             </div>
           </div>
         <% end %>
@@ -116,7 +119,7 @@
                   Clear Search
                 </a>
               </div>
-              <%= image_submit_tag("empty.gif", :name => "discoverSubmit", :class => "submit") %>
+              <%= image_submit_tag("empty.gif", :name => "discoverSubmit", :class => "submit", :alt => "search") %>
             </div>
           </div>
         <% end %>
@@ -164,7 +167,7 @@
                   Clear Search
                 </a>
               </div>
-              <%= image_submit_tag("/stylesheets/images/domains/data.cityofchicago.org/chicago_search.png", :name => "discoverSubmit", :class => "submit") %>
+              <%= image_submit_tag("/stylesheets/images/domains/data.cityofchicago.org/chicago_search.png", :name => "discoverSubmit", :class => "submit", :alt => "search") %>
             </div>
           </div>
         <% end %>
@@ -221,13 +224,14 @@
               <input type='text' class='textPrompt' name='search'
                 title='<%= t(:search_prompt_text) %>'
                 value='<%= @discover_search %>' />
-              <input type='image' class='submit' name='discoverSubmit' src='/stylesheets/images/common/empty.gif' />
+              <input type='image' class='submit' name='discoverSubmit' src='/stylesheets/images/common/empty.gif' alt="search" />
             </p>
           <% end %>
         <%- end -%>
       <%- end -%>
     </div>
 
+    <a name="content"></a>
     <%= yield :layout %>
 
     
@@ -235,6 +239,7 @@
 </div>
 </div>
 
+<a name="footerLinks"></a>
 <%- if CurrentDomain.cname.match(/cms/) -%>
   <div class="footerContainer">
     <div class="cmsFooterUpper">

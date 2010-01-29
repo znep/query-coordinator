@@ -686,7 +686,8 @@ blist.myBlists.customDatasetName = function(value)
       form_authenticity_token + '"/>' +
       '<input id="view_\'+ row.id + \'_name" name="view_\' + row.id + ' +
       '\'[name]" type="text" value="\' + $.htmlEscape(' + value + ') + \'"/>' +
-      '<input src="/images/submit_button_mini.png" title="Rename" type="image" />' +
+      '<input src="/images/submit_button_mini.png" title="Rename" type="image"' +
+      'alt="rename" />' +
     '</form>\'';
 
     var expansion =

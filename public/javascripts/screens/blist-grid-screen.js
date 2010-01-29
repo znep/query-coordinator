@@ -299,7 +299,8 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
     }
 };
 
-blist.infoEditSubmitSuccess = blistGridNS.infoEditCallback;
+blist.blistGrid.infoEditErrorCallback = function(fieldType, message)
+{ alert(message); };
 
 /* Initial start-up calls, and setting up bindings */
 
@@ -661,7 +662,8 @@ $(function ()
         {clickSelector: '#n/a'});
 
     $("#infoPane .editItem").infoPaneItemEdit({
-        submitSuccessCallback: blistGridNS.infoEditCallback});
+        submitSuccessCallback: blistGridNS.infoEditCallback,
+        submitErrorCallback: blistGridNS.infoEditErrorCallback});
     var inlineEditArgs = {
         requestUrl: '/views.json',
         requestDataCallback: function($form, name)
@@ -705,7 +707,8 @@ $(function ()
             $(".infoContent dl.actionList, .infoContentHeader")
                 .infoPaneItemHighlight();
             $("#infoPane .editItem").infoPaneItemEdit(
-                { submitSuccessCallback: blistGridNS.infoEditCallback });
+                { submitSuccessCallback: blistGridNS.infoEditCallback,
+                    submitErrorCallback: blistGridNS.infoEditErrorCallback});
         }
     });
 

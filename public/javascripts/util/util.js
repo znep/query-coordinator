@@ -83,6 +83,7 @@ $.capitalize = function(text)
 $.live = function(selector, type, fn)
 {
     var $obj = $([]);
+    $obj.context = document;
     $obj.selector = selector;
     $obj.live(type, fn);
     return $obj;

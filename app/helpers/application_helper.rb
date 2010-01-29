@@ -436,6 +436,24 @@ HREF
     end
   end
 
+  def jquery_include
+    if ENV["RAILS_ENV"] != 'production'
+      return '<script src="/javascripts/jquery-1.4.1.js" type="text/javascript" ' +
+        'charset="utf-8"></script>'
+    else
+      return <<-EOS
+        <script type="text/javascript">
+          document.write([
+            "\\<script src='",
+            ("https:" == document.location.protocol) ? "https://" : "http://",
+            "ajax.googleapis.com/ajax/libs/jquery/1.4.1/jquery.min.js'",
+            " type='text/javascript'>\\<\\/script>"
+          ].join(''));
+        </script>
+      EOS
+    end
+  end
+
   def javascript_error_helper_tag
     return '<script type="text/javascript">blistEnv = "' + Rails.env +
       '";</script>' + javascript_include_tag('util/errors')
@@ -451,6 +469,6 @@ HREF
     self.output_buffer = render(:file => "layouts/#{layout}")
   end
 
-  safe_helper :menu_tag, :meta_tags, :javascript_error_helper_tag,
+  safe_helper :menu_tag, :meta_tags, :jquery_include, :javascript_error_helper_tag,
     :create_pagination, :sidebar_filter_link, :flash_clipboard_button, :summary_tab
 end

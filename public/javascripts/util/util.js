@@ -15,6 +15,7 @@ $.urlParam = function(name, url)
 
 $.htmlEscape = function(text)
 {
+    if (typeof text !== 'string') { return text; }
     return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')

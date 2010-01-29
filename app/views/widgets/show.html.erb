@@ -178,6 +178,7 @@
 <div id='header' class='headerBar'><div class='wrapperTR'>
     <div class='wrapperT clearfix'>
       <%- if !@view.is_invalid? -%>
+        <div class='headerBar <%= !@view.is_alt_view? ? 'hide' : '' %>'>
           <%- menu_options = dataset_menu_lookup(@view, true, @theme) -%>
           <a id='mainLink' class="menuLink" href="#main-menu"
             title="Click for more options">Menu</a>
@@ -212,6 +213,7 @@
               </div>
             </div>
           </form>
+        </div>
       <%- end -%>
 
     </div>

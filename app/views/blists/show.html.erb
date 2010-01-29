@@ -69,7 +69,8 @@
     <div class='outerContent'>
       <div class="contentTR"><div class="contentTL"></div></div>
       <div class='content'>
-        <div class='headerBar clearfix gridItem'>
+        <div class='headerBar clearfix gridItem <%= !@view.is_alt_view? ?
+          'hide' : '' %>'>
           <ul>
             <%# Main menu %>
             <li class='separator mainViewOption'>

@@ -307,21 +307,24 @@ $(function ()
 {
     if (!blist.blistGrid.isAltView)
     {
-        $('#dataGrid').datasetGrid({viewId: blistGridNS.viewId,
-            columnDeleteEnabled: blistGridNS.isOwner,
-            columnPropertiesEnabled: blistGridNS.isOwner,
-            columnNameEdit: blistGridNS.isOwner,
-            showAddColumns: blistGridNS.canAddColumns,
-            currentUserId: blist.currentUserId,
-            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-            clearTempViewCallback: blistGridNS.clearTempViewTab,
-            setTempViewCallback: blistGridNS.setTempViewTab,
-            updateTempViewCallback: blistGridNS.updateTempViewTab,
-            filterForm: '#lensContainer .headerBar form',
-            clearFilterItem: '#lensContainer .headerBar form .clearSearch',
-            isInvalid: blist.blistGrid.isInvalidView,
-            validViewCallback: blistGridNS.updateValidView
-        });
+        $('#dataGrid')
+            .bind('full_load',
+                function(){ $('#lensContainer .headerBar').removeClass('hide'); })
+            .datasetGrid({viewId: blistGridNS.viewId,
+                columnDeleteEnabled: blistGridNS.isOwner,
+                columnPropertiesEnabled: blistGridNS.isOwner,
+                columnNameEdit: blistGridNS.isOwner,
+                showAddColumns: blistGridNS.canAddColumns,
+                currentUserId: blist.currentUserId,
+                accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
+                clearTempViewCallback: blistGridNS.clearTempViewTab,
+                setTempViewCallback: blistGridNS.setTempViewTab,
+                updateTempViewCallback: blistGridNS.updateTempViewTab,
+                filterForm: '#lensContainer .headerBar form',
+                clearFilterItem: '#lensContainer .headerBar form .clearSearch',
+                isInvalid: blist.blistGrid.isInvalidView,
+                validViewCallback: blistGridNS.updateValidView
+            });
     }
     else if (blist.display.type == 'visualization')
     { $('#dataGrid').visualization(); }

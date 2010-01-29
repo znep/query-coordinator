@@ -2,12 +2,8 @@ var blistGridNS = blist.namespace.fetch('blist.blistGrid');
 
 blist.blistGrid.getCookieHash = function()
 {
-    var dispType = blist.display.type;
-    if (dispType != 'calendar' && dispType != 'visualization') {
-        dispType = 'filter';
-    }
     return {name: $.htmlUnescape(blistGridNS.viewName), id: blistGridNS.viewId,
-        path: window.location.pathname, displayType: dispType};
+        path: window.location.pathname, displayType: blist.display.type};
 };
 
 blist.blistGrid.setUpTabs = function ()

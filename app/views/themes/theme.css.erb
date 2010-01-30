@@ -3,6 +3,11 @@
 a {
     color: #<%= CurrentDomain.theme.colors.link %>;
 }
+a:focus,
+a:active
+{
+    border-bottom: 1px dotted #<%= CurrentDomain.theme.colors.link %>;
+}
 
 <% 5.times do |level| %>
 h<%= level + 1 %>  {
@@ -12,6 +17,11 @@ h<%= level + 1 %>  {
 
 .bodyInterior {
     border-top-color: #<%= CurrentDomain.theme.colors.header.line %>;
+}
+
+#skipLinks a
+{
+    background-color: #<%= CurrentDomain.theme.colors.header.line %>;
 }
 
 /*** OUTER CHROME ***/

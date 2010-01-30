@@ -113,8 +113,15 @@
         function closeAllForms()
         {
             var $allItemContainers = $(opts.allItemSelector);
-            $allItemContainers.find("form").hide();
-            $allItemContainers.find("span").show();
+            $allItemContainers.each(function(i, item)
+            {
+                var $item = $(item);
+                var oldText = $item.find('span').text();
+                var $form = $item.find("form").hide();
+                var fieldType = $form.find("input[name='fieldType']").val();
+                $form.find(":input[name*='" + fieldType + "']").val(oldText);
+                $item.find("span").show();
+            });
         };
 
         function editSubmit(event)
@@ -132,13 +139,24 @@
                 dataType: "json",
                 success: function(responseData)
                 {
-                    $form.hide();
-                    $form.closest(opts.itemContentSelector).find("span").text(fieldValue).show();
-                    opts.submitSuccessCallback(fieldType, fieldValue, responseData.id, responseData);
+                    if (responseData.error !== undefined &&
+                        responseData.error !== null)
+                    {
+                        opts.submitErrorCallback(fieldType, responseData.error);
+                    }
+                    else
+                    {
+                        $form.hide();
+                        $form.closest(opts.itemContentSelector)
+                            .find("span").text(fieldValue).show();
+                        opts.submitSuccessCallback(fieldType, fieldValue,
+                            responseData.id, responseData);
+                    }
                 },
                 error: function(request, textStatus, errorThrown)
                 {
-                    opts.submitErrorCallback(fieldType, request);
+                    opts.submitErrorCallback(fieldType,
+                            $.json.deserialize(request.responseText).message);
                 }
             });
         };

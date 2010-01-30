@@ -75,7 +75,7 @@
                         '<div class="submitPending hide">Uploading...</div>' +
                         '<ul class="submitActions">' +
                         '<li><input type="image" name="submit" class="hide" ' +
-                        'src="/images/button_ok.png" /></li>' +
+                        'src="/images/button_ok.png" alt="upload" /></li>' +
                         '<li class="cancelButton">' +
                         '<a class="jqmClose" href="#cancel">' +
                         '<span>Cancel</span>' +

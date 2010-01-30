@@ -22,30 +22,9 @@ function trackError(msg, url, line)
     }
 };
 
-// Override jQuery.event.proxy to wrap events with error-reporting.  This was
-//  originally done by overriding bind; however, that messed with unbinding since
-//  the original function was hidden from jQuery.  By hooking proxy, we can
-//  hook in after jQuery has gotten the original function and given it a guid,
-//  so this should be safer
-var jQueryEventProxy = jQuery.event.proxy;
-jQuery.event.proxy = function(fn, proxy)
-{
-    var origProxy = jQueryEventProxy(fn, proxy);
-    var newProxy = function()
-    {
-        try
-        {
-            return origProxy.apply(this, arguments);
-        }
-        catch(ex)
-        {
-            trackError(ex.message, ex.fileName, ex.lineNumber);
-            if (blistEnv != 'production') { throw ex; }
-        }
-    };
-    newProxy.guid = origProxy.guid;
-    return newProxy;
-};
+// We'd like to catch errors on events; but jQuery 1.4 changed error handling,
+// and we can no longer easily wrap everything by hooking proxy.
+// So this feature is taken out for now
 
 // override jQuery.ready to wrap every $(function() {}); or
 // $(document).ready(function() {});

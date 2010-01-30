@@ -374,17 +374,22 @@ $(function ()
         var $dataGrid = $('#data-grid');
         if ($dataGrid.length > 0)
         {
-            $dataGrid.datasetGrid({viewId: widgetNS.viewId,
-                accessType: 'WIDGET',
-                showRowNumbers: widgetNS.theme['grid']['row_numbers'],
-                showRowHandle: widgetNS.theme['grid']['row_numbers'],
-                editEnabled: typeof(isOldIE) === 'undefined', manualResize: true,
-                columnNameEdit: typeof(isOldIE) === 'undefined' && blist.isOwner,
-                filterForm: '#header form',
-                clearFilterItem: '#header form .clearSearch',
-                clearTempViewCallback: widgetNS.clearTempViewTab,
-                setTempViewCallback: widgetNS.setTempViewTab,
-                initialResponse: $.unescapeObject(widgetNS.viewJson)
+            $dataGrid
+                .bind('full_load',
+                    function(){ $('#header .headerBar').removeClass('hide'); })
+                .datasetGrid({viewId: widgetNS.viewId,
+                    accessType: 'WIDGET',
+                    showRowNumbers: widgetNS.theme['grid']['row_numbers'],
+                    showRowHandle: widgetNS.theme['grid']['row_numbers'],
+                    editEnabled: typeof(isOldIE) === 'undefined',
+                    manualResize: true,
+                    columnNameEdit: typeof(isOldIE) === 'undefined' &&
+                        blist.isOwner,
+                    filterForm: '#header form',
+                    clearFilterItem: '#header form .clearSearch',
+                    clearTempViewCallback: widgetNS.clearTempViewTab,
+                    setTempViewCallback: widgetNS.setTempViewTab,
+                    initialResponse: $.unescapeObject(widgetNS.viewJson)
                 });
         }
     }

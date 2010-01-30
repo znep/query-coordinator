@@ -178,13 +178,14 @@
 <div id='header' class='headerBar'><div class='wrapperTR'>
     <div class='wrapperT clearfix'>
       <%- if !@view.is_invalid? -%>
+        <div class='headerBar <%= !@view.is_alt_view? ? 'hide' : '' %>'>
           <%- menu_options = dataset_menu_lookup(@view, true, @theme) -%>
           <a id='mainLink' class="menuLink" href="#main-menu"
             title="Click for more options">Menu</a>
           <%= render(:partial => "widget_menu",
             :locals => { :theme => @theme, :menu_options => menu_options }) %>
 
-          <a id='viewsLink' class='menuLink' href='#views-menu'>More Views</a>
+          <a id='viewsLink' class='menuLink' href='#views-menu'>Views</a>
           <%= render(:partial => "widget_view_menu",
             :locals => { :theme => @theme, :menu_options => menu_options }) %>
 
@@ -212,6 +213,7 @@
               </div>
             </div>
           </form>
+        </div>
       <%- end -%>
 
     </div>

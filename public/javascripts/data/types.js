@@ -603,7 +603,7 @@ blist.namespace.fetch('blist.data.types');
         invalid: { renderGen: renderGenEscapedText },
 
         text: {
-            renderGen: renderGenText,
+            renderGen: renderGenEscapedText,
             sortGen: sortGenText,
             filterRender: renderFilterText,
             filterText: true,

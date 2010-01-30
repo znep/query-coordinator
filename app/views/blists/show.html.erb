@@ -69,7 +69,8 @@
     <div class='outerContent'>
       <div class="contentTR"><div class="contentTL"></div></div>
       <div class='content'>
-        <div class='headerBar clearfix gridItem'>
+        <div class='headerBar clearfix gridItem <%= !@view.is_alt_view? ?
+          'hide' : '' %>'>
           <ul>
             <%# Main menu %>
             <li class='separator mainViewOption'>
@@ -164,7 +165,8 @@
                 </a>
               </div>
               <input type="image" class="submit" name="findSubmit"
-                src="/stylesheets/images/content/table_menu/button_find.png" />
+                src="/stylesheets/images/content/table_menu/button_find.png"
+                alt="search" />
               </div>
             </div>
           </form>

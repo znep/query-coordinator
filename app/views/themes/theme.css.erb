@@ -3,10 +3,9 @@
 a {
     color: #<%= CurrentDomain.theme.colors.link %>;
 }
-a:focus,
-a:active
+a:focus
 {
-    border-bottom: 1px dotted #<%= CurrentDomain.theme.colors.link %>;
+    text-decoration: underline;
 }
 
 <% 5.times do |level| %>

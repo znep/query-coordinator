@@ -106,17 +106,41 @@ class CurrentDomain
     @@current_domain[:strings]
   end
 
-  def self.module_available?(module_name)
+  def self.module_names
+    @@current_domain[:module_names] ||= self.modules.collect{|m| m['name']}
+  end
+
+  def self.module_available?(name_or_set)
     return false if self.modules.nil?
-    self.modules.any?{ |account_module| account_module['name'] == module_name.to_s }
+
+    if name_or_set.is_a? Array
+      name_or_set.any?{|mod| self.module_names.include? mod.to_s }
+    else
+      self.module_names.include? name_or_set.to_s
+    end
   end
 
-  def self.module_enabled?(name)
-    self.module_available?(name.to_s) && self.feature?(name.to_s)
+  def self.features
+    if @@current_domain[:features].nil?
+      @@current_domain[:features] = self.preferences.collect { |pref|
+        if pref[0] =~ /^features\./ && pref[1] == true
+          pref[0].gsub(/^features\./, '')
+        end
+      }.compact
+    end
+    @@current_domain[:features]
   end
 
-  def self.feature?(feature_name)
-    self.preferences["features.#{feature_name}"] == true
+  def self.feature?(name_or_set)
+    if name_or_set.is_a? Array
+      name_or_set.any?{|mod| self.features.include? mod.to_s }
+    else
+      self.features.include? name_or_set.to_s
+    end
+  end
+
+  def self.module_enabled?(name_or_set)
+    self.module_available?(name_or_set) && self.feature?(name_or_set)
   end
 
   # CurrentDomain['preference name'] returns preferences

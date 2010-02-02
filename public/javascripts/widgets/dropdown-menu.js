@@ -82,7 +82,11 @@
         {
             var $menu = $(this);
             // build element specific options and store them on the menu
-            var config = $.meta ? $.extend({}, opts, $menu.data()) : opts;
+            // Dropdown menu can get re-called on an existing menu, and if
+            // there are any pieces of data saved in the config, we need to carry
+            // them over when we re-apply the config
+            var config = $.meta ? $.extend({}, opts, $menu.data()) :
+                $.extend({}, $menu.data('config-dropdownMenu'), opts);
             $menu.data("config-dropdownMenu", config);
 
             var $trigger = config.triggerButton ||

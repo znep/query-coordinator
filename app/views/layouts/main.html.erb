@@ -29,7 +29,7 @@
   <%= stylesheet_link_tag "gov-override" %>
   <%- end -%>
 
-  <link rel="shortcut icon" href="<%= theme_image(CurrentDomain.theme.images.favicon) %>" />
+  <link rel="shortcut icon" href="<%= theme_image_url(CurrentDomain.theme.images.favicon) %>" />
 </head>
 
 <body id='<%= @body_id %>' class='<%= @body_class %>'>
@@ -66,7 +66,7 @@
 
             <div class="actionsBox">
               <div class="clearBox">
-                <a class="clearSearch noHistory hide" title="Clear Search" href="#clear_search">
+                <a class="clearSearch noHistory" title="Clear Search" href="#clear_search">
                   Clear Search
                 </a>
               </div>
@@ -104,7 +104,7 @@
 
             <div class="actionsBox">
               <div class="clearBox">
-                <a class="clearSearch noHistory hide" title="Clear Search" href="#clear_search">
+                <a class="clearSearch noHistory" title="Clear Search" href="#clear_search">
                   Clear Search
                 </a>
               </div>
@@ -152,7 +152,7 @@
 
             <div class="actionsBox">
               <div class="clearBox">
-                <a class="clearSearch noHistory hide" title="Clear Search" href="#clear_search">
+                <a class="clearSearch noHistory" title="Clear Search" href="#clear_search">
                   Clear Search
                 </a>
               </div>

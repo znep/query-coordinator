@@ -170,13 +170,17 @@ blist.common.modalReady = function() {
 
   $("#columnCreateDialog .columnCreate").submit( function(e) {
       e.preventDefault();
-      saveForm();
+      // We need to make sure this fires after the change events on any inputs that
+      // were being modified
+      setTimeout(saveForm, 0);
   });
 
   $("#columnCreateDialog .save").click(function(event)
   {
       event.preventDefault();
-      saveForm();
+      // We need to make sure this fires after the change events on any inputs that
+      // were being modified
+      setTimeout(saveForm, 0);
   });
 
   $('#columnCreateDialog .columnCreate input#columnCreate_name').focus();

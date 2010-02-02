@@ -96,8 +96,9 @@ $(function ()
             event.preventDefault();
             var $link = $(this);
             $link.closest(".searchContainer").find("input[type='text']").val("").focus();
-            $link.hide();
-        });
+            $link.addClass('hide');
+        })
+        .toggleClass('hide', $(".clearSearch").closest(".searchContainer").find("input[type='text']").hasClass('prompt'));
     
     $.validator.addMethod("customUrl", function(value, element)
     {

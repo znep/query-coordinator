@@ -492,7 +492,7 @@ blist.namespace.fetch('blist.data.types');
     /** FILTER RENDERERS ***/
     var renderFilterText = function(value)
     {
-        return htmlStrip(value || '');
+        return htmlEscape(htmlStrip(value || ''));
     };
 
     var renderFilterNumber = function(value, column)

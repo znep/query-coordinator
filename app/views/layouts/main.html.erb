@@ -52,38 +52,7 @@
 </div>
 
 <a name="footerLinks"></a>
-<%- if CurrentDomain.cname.match(/cms/) -%>
-  <div class="footerContainer">
-    <div class="cmsFooterUpper">
-      <ul>
-        <li><a href="http://www.hhs.gov/">Department of Health and Human Services</a></li>
-        <li><a href="http://www.medicare.gov/">Medicare.gov</a></li>
-        <li><a href="http://www.usa.gov/">USA.gov</a></li>
-        <li><a href="http://www.cms.gov/aboutwebsite">Web Policies &amp; Important Links</a></li>
-        <li><a href="http://www.cms.gov/AboutWebsite/02_Privacy%20Policy.asp">Privacy Policy</a></li>
-      </ul>
-      <ul>
-        <li><a href="http://www.cms.gov/AboutWebsite/04_FOIA.asp">Freedom of Information Act</a></li>
-        <li><a href="http://www.cms.gov/AboutWebsite/06_NoFearAct.asp">No Fear Act</a></li>
-        <li><a href="http://www.cms.gov/ContactCMS">Contact CMS</a></li>
-      </ul>
-    </div>
-    <div class="cmsFooterLower">
-      Centers for Medicare &amp; Medicaid Services, 7500 Security Boulevard, Baltimore, MD 21244
-    </div>
-  </div>
-<%- else -%>
-  <div class="footerContainer">
-    <div id='footer' class="clearfix">
-      <span class='copyright'><%= raw CurrentDomain.strings.copyright_string %></span>
-      <ul class="clearfix">
-        <%- CurrentDomain.theme.urls.footer.each do |link| -%>
-          <li><%= link_from_theme(link) %></li>
-        <%- end -%>
-      </ul>
-    </div>
-  </div>
-<%- end -%>
+<%= domain_footer %>
 
   <% dialog_content("jqmAlert") do %>
     <div class='header'>

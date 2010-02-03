@@ -469,6 +469,18 @@ HREF
     self.output_buffer = render(:file => "layouts/#{layout}")
   end
 
+  def render_domain_template(tmpl)
+    files = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|
+      f.match(/\/_(\w+)\.html\.erb$/)[1]
+    end
+    files.each do |subst|
+      pattern = '{{' + subst + '}}'
+      tmpl.gsub!(pattern, render(:partial => 'shared/template/' + subst)) if
+        tmpl.include?(pattern)
+    end
+    return tmpl
+  end
+
   def domain_header
     header_tmpl =
       case
@@ -555,18 +567,60 @@ HREF
         EOS
       end
 
-    files = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|
-      f.match(/\/_(\w+)\.html\.erb$/)[1]
-    end
-    files.each do |subst|
-      pattern = '{{' + subst + '}}'
-      header_tmpl.gsub!(pattern, render(:partial => 'shared/template/' + subst)) if
-        header_tmpl.include?(pattern)
-    end
-    return header_tmpl
+    return render_domain_template(header_tmpl)
+  end
+
+  def domain_footer
+    footer_tmpl =
+      case
+      when CurrentDomain.cname.match(/cms/)
+        <<-EOS
+        <div class="footerContainer">
+          <div class="cmsFooterUpper">
+            <ul>
+              <li><a href="http://www.hhs.gov/">
+                Department of Health and Human Services
+              </a></li>
+              <li><a href="http://www.medicare.gov/">Medicare.gov</a></li>
+              <li><a href="http://www.usa.gov/">USA.gov</a></li>
+              <li><a href="http://www.cms.gov/aboutwebsite">
+                Web Policies &amp; Important Links
+              </a></li>
+              <li><a href="http://www.cms.gov/AboutWebsite/02_Privacy%20Policy.asp">
+                Privacy Policy
+              </a></li>
+            </ul>
+            <ul>
+              <li><a href="http://www.cms.gov/AboutWebsite/04_FOIA.asp">
+                Freedom of Information Act
+              </a></li>
+              <li><a href="http://www.cms.gov/AboutWebsite/06_NoFearAct.asp">
+                No Fear Act
+              </a></li>
+              <li><a href="http://www.cms.gov/ContactCMS">Contact CMS</a></li>
+            </ul>
+          </div>
+          <div class="cmsFooterLower">
+            Centers for Medicare &amp; Medicaid Services,
+            7500 Security Boulevard, Baltimore, MD 21244
+          </div>
+        </div>
+        EOS
+      else
+        <<-EOS
+        <div class="footerContainer">
+          <div id='footer' class="clearfix">
+            {{copyright}}
+            {{footer_urls}}
+          </div>
+        </div>
+        EOS
+      end
+
+    return render_domain_template(footer_tmpl)
   end
 
   safe_helper :menu_tag, :meta_tags, :jquery_include, :javascript_error_helper_tag,
     :create_pagination, :sidebar_filter_link, :flash_clipboard_button, :summary_tab,
-    :domain_header
+    :render_domain_template
 end

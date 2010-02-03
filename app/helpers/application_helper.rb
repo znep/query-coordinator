@@ -469,6 +469,104 @@ HREF
     self.output_buffer = render(:file => "layouts/#{layout}")
   end
 
+  def domain_header
+    header_tmpl =
+      case
+      when CurrentDomain.cname.match(/medicare/)
+        <<-EOS
+          {{main_logo}}
+
+          <div class='userNav'>
+            <ul>
+              {{header_urls}}
+              {{sign_in_link}}
+              {{sign_up_link}}
+              {{user_home_link}}
+              {{account_link}}
+              {{sign_out_link}}
+            </ul>
+          </div>
+
+          {{data_search_field}}
+        EOS
+
+      when CurrentDomain.cname.match(/cms/)
+        <<-EOS
+          {{main_logo}}
+
+          <a id="hhsLink" href="http://www.hhs.gov/">www.hhs.gov</a>
+
+          <div class='userNav'>
+            <ul>
+              <li class='favoriteLink'>
+                <script src="http://s7.addthis.com/js/250/addthis_widget.js?pub=cmsgov" type="text/javascript"></script>
+                <a title="Bookmark &amp; Share this page" onclick="return addthis_sendto()" onmouseout="addthis_close()" onmouseover="return addthis_open(this, '', '[URL]', '[TITLE]')" class="BannerToolsShareLink" href="http://www.addthis.com/bookmark.php?v=250&amp;pub=cmsgov">
+                  Bookmark &amp; Share
+                </a>
+              </li>
+              {{sign_in_link}}
+              {{sign_up_link}}
+              {{user_home_link}}
+              {{account_link}}
+              {{sign_out_link}}
+            </ul>
+          </div>
+
+          {{data_search_field}}
+        EOS
+
+      when CurrentDomain.cname.match(/chicago/)
+        <<-EOS
+          {{main_logo}}
+
+          <h2 id="mainSubtitle">Data Portal</h2>
+
+          <div class='userNav'>
+            <ul>
+              {{sign_in_link}}
+              {{sign_up_link}}
+              {{account_link}}
+              {{sign_out_link}}
+            </ul>
+          </div>
+
+          {{main_nav}}
+
+          {{data_search_field}}
+        EOS
+
+      else
+        <<-EOS
+          {{main_logo}}
+
+          {{main_nav}}
+
+          <div class='userNav'>
+            <ul>
+              {{header_urls}}
+              {{sign_in_link}}
+              {{sign_up_link}}
+              {{account_link}}
+              {{sign_out_link}}
+            </ul>
+          </div>
+
+          {{header_search_field}}
+        EOS
+      end
+
+    files = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|
+      f.match(/\/_(\w+)\.html\.erb$/)[1]
+    end
+    files.each do |subst|
+      pattern = '{{' + subst + '}}'
+      header_tmpl.gsub!(pattern, render(:partial => 'shared/template/' + subst)) if
+        header_tmpl.include?(pattern)
+    end
+    return header_tmpl
+  end
+
   safe_helper :menu_tag, :meta_tags, :jquery_include, :javascript_error_helper_tag,
-    :create_pagination, :sidebar_filter_link, :flash_clipboard_button, :summary_tab
+    :create_pagination, :sidebar_filter_link, :flash_clipboard_button, :summary_tab,
+    :domain_header
 end

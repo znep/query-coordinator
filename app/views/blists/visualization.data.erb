@@ -13,8 +13,7 @@
 
     <div class='section common'>
       <input type='hidden' name='view_query' value='<%= @view.query.to_json %>' />
-      <%- viz_types = View.visualization_config.reject {|k,v|
-          v['hidden'] == true || !@view.can_create_visualization_type?(k, @is_edit)}.
+      <%- viz_types = Displays::Config.for_view(@view, @is_edit).
           sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
       <h3>Setup</h3>
       <p class='subtitle separator'>
@@ -475,8 +474,8 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
-              blist.widgets.visualization.invalid = false;
-              blist.widgets.visualization.displayFormat = $.extend(origOptions,
+              blist.display.invalid = false;
+              blist.display.displayFormat = $.extend(origOptions,
                   {wmode: 'opaque'});
               $('.chartContainer').visualization();
               <%- else -%>

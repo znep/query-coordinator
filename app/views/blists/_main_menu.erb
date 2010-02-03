@@ -94,14 +94,18 @@
                     'nested_table_children' => true, 'list' => true}})},
         menu_options['separator'],
         {'text' => 'Upload More Rows', 'class' => 'uploadRows',
-        'if' => @view.is_blist?, 'edit_item' => true,
-        'href' => '#', 'submenu' => {'items' => [
+          'if' => @view.is_blist?,
+          'module_available' => [:dataset_append, :dataset_refresh],
+          'edit_item' => true,
+          'href' => '#', 'submenu' => {'items' => [
             {'text' => 'Append From a File...', 'class' => 'append',
-            'href' => "#{@view.href}/bulk/append", 'modal' => true},
+              'module_available' => :dataset_append,
+              'href' => "#{@view.href}/bulk/append", 'modal' => true,
+              'upsell' =>  { 'href' => '/popup/stats', 'modal' => true }},
             {'text' => 'Refresh From a File...', 'class' => 'replace',
-            'href' => (current_user && current_user.can_access_premium_on?(@view)) ?
-              "#{@view.href}/bulk/replace" : '/popup/premium',
-            'modal' => true}
+              'module_available' => :dataset_refresh,
+              'href' => "#{@view.href}/bulk/replace", 'modal' => true,
+              'upsell' =>  { 'href' => '/popup/stats', 'modal' => true }},
           ]}}
 #        menu_options['separator'],
 #        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},

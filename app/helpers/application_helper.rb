@@ -287,28 +287,28 @@ HREF
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
 
-  def module_available(name, &block)
-    concat(capture(&block)) if CurrentDomain.module_available?(name.to_s)
+  def module_available(name_or_set, &block)
+    concat(capture(&block)) if CurrentDomain.module_available?(name_or_set)
   end
 
-  def module_available?(name)
-    CurrentDomain.module_available?(name.to_s)
+  def module_available?(name_or_set)
+    CurrentDomain.module_available?(name_or_set)
   end
 
-  def module_enabled(name, &block)
-    concat(capture(&block)) if CurrentDomain.module_enabled?(name.to_s)
+  def module_enabled(name_or_set, &block)
+    concat(capture(&block)) if CurrentDomain.module_enabled?(name_or_set)
   end
 
-  def module_enabled?(name)
-    CurrentDomain.module_enabled?(name.to_s)
+  def module_enabled?(name_or_set)
+    CurrentDomain.module_enabled?(name_or_set)
   end
 
-  def feature(name, &block)
-    concat(capture(&block)) if CurrentDomain.feature?(name.to_s)
+  def feature(name_or_set, &block)
+    concat(capture(&block)) if CurrentDomain.feature?(name_or_set)
   end
 
-  def feature?(name)
-    CurrentDomain.feature?(name.to_s)
+  def feature?(name_or_set)
+    CurrentDomain.feature?(name_or_set)
   end
 
   def upsell(&block)

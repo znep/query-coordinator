@@ -136,6 +136,15 @@ blist.common.modalReady = function() {
       if (!formEnabled) { return false; }
       toggleEnabled();
 
+      // Force change events to make sure the data is updated.  These don't always
+      // seem to be firing in IE with jQuery 1.4, which is probably a bug.
+      // In reality, we shouldn't be listening to change events at all -- we
+      // should just read/serialize the form when they click save and not
+      // worry about listening on a bunch of events
+      $('#columnCreateDialog #columnCreate_name').change();
+      $("#columnCreateDialog #description").change();
+      $("#columnCreateDialog #types").change();
+
       if (column.type == 'drop_down_list')
       { column.dropDownList = {values: picklistManagerCallback()}; }
 

@@ -1212,11 +1212,11 @@
                             curType.filterValue !== undefined ?
                                 curType.filterValue(f.value, col) :
                                 $.htmlStrip(f.value + ''));
-                        f.renderedValue = $.htmlEscape(
+                        f.renderedValue =
                             curType.filterRender !== undefined ?
                                 curType.filterRender(f.value, col,
                                     cs.subColumnType) :
-                                '');
+                                '';
                         f.titleValue = $.htmlStrip(f.renderedValue + '');
                     });
 

@@ -1,8 +1,4 @@
 class Displays::Calendar < Displays::Base
-    def can_publish?
-        false
-    end
-
     def scrolls_inline?
         false
     end
@@ -17,7 +13,7 @@ class Displays::Calendar < Displays::Base
 
     def render_inline_runtime_js(context)
         js = <<END
-$('#dataGrid').blistCalendar({
+blist.$display.blistCalendar({
     viewId: blist.display.viewId,
     editable: blist.display.editable,
     displayFormat: blist.display.options

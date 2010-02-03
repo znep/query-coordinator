@@ -327,7 +327,7 @@ $(function ()
                 validViewCallback: blistGridNS.updateValidView
             });
     }
-    else if (blist.display.type == 'visualization')
+    else if (blist.display.invokeVisualization)
     { $('#dataGrid').visualization(); }
 
     $('.viewErrorContainer .removeViewLink').click(function(event)

@@ -89,7 +89,11 @@ class Model
         define_hash_accessor(method_name, klass)
         return send(method_name)
       elsif value.is_a?(Array)
-        klass = Object.const_get(method_name.singularize.capitalize.to_sym)
+        begin
+          klass = Object.const_get(method_name.singularize.capitalize.to_sym)
+        rescue NameError
+          return value
+        end
         define_array_accessor(method_name, klass)
         return send(method_name)
       else

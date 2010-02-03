@@ -72,6 +72,7 @@ strings.copyright_string: '&copy; 2009 Socrata, Inc.'
 strings.sign_up: Sign Up
 strings.sign_in: Sign In
 strings.search_prompt: Search
+strings.discover_search_intro: Search for Public Datasets
 
 features.upsell: true
 features.revolutionize: true

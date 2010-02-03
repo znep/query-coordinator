@@ -1,0 +1,29 @@
+<%- if !@current_user.nil? -%>
+  <div class="pageBlockHeaderSide">
+    <h2>In My Network</h2>
+    <ul class="myNetworkList">
+      <%- @network_views.each do |view| -%>
+        <li class="clearfix">
+          <%= link_to(h(view.name), view.href, :title => h(view.name),
+            :class => "clipText") %>
+          <span class="authorLine">by <%= view.owner.displayName %></span>
+        </li>
+      <%- end -%>
+    </ul>
+  </div>
+<%- else -%>
+  <%- if feature? :revolutionize -%>
+    <%= render :partial => 'static/revolutionize_box' %>
+  <%- else -%>
+  <div class="pageBlockHeaderSide">
+    <h2>Recent Activity</h2>
+    <ul class="activityList">
+      <%- @community_activity.each do |activity| -%>
+        <li>
+          <%= get_html_for_activity(activity, "full") %>
+        </li>
+      <%- end -%>
+    </ul>
+  </div>
+  <%- end -%>
+<%- end -%>

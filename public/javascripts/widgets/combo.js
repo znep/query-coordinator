@@ -196,8 +196,11 @@
         // Handles mousing over a list item
         var onDropdownMouseMove = function(event)
         {
-            updateSelectedItem($dropdown.children('li')
-                .index($(event.target).closest("li")));
+            if ($.contains($dropdown[0], event.target))
+            {
+                updateSelectedItem($dropdown.children('li')
+                        .index($(event.target).closest("li")));
+            }
         };
 
         // Handle clicks on the control (the part that's always visible)

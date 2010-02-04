@@ -1,0 +1,26 @@
+<div id='mainNav'<%= " class='currentUserNav'" if current_user %>>
+  <ul class="clearfix">
+    <%# Discovery Module %>
+    <% module_enabled :discovery_module do %>
+    <li class='discover'>
+      <%= link_to("<span>Public Data</span>", root_path) %>
+    </li>
+    <% end %>
+
+    <%# Community Module %>
+    <% module_enabled :community_module do %>
+    <li class='community'>
+      <%= link_to("<span>Community</span>", community_path) %>
+    </li>
+    <% end %>
+
+    <%# Home (Features enabled/disabled within this tab) %>
+    <li class='home last'>
+      <%= link_to("<span>My #{CurrentDomain.strings.company}</span>",
+        home_path) %>
+
+      <%= render :partial => 'shared/template/user_menu',
+        :locals => { :menu_class => 'subNav' } %>
+    </li>
+  </ul>
+</div>

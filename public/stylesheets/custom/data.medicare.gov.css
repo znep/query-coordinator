@@ -22,7 +22,9 @@ body
     border-top: none;
 }
 
-#medicareLogo a
+#mainLogo { position: static; }
+
+#mainLogo a
 {
     background: transparent url(/stylesheets/images/domains/data.medicare.gov/medicare_logo.png) no-repeat;
     display: block;

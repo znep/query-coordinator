@@ -470,16 +470,19 @@ HREF
   end
 
   def render_domain_template(tmpl)
-    files = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|
-      f.match(/\/_(\w+)\.html\.erb$/)[1]
-    end
-    files.each do |subst|
+    DOMAIN_TEMPLATES.each do |subst|
       pattern = '{{' + subst + '}}'
       tmpl.gsub!(pattern, render(:partial => 'shared/template/' + subst)) if
         tmpl.include?(pattern)
     end
 
-    tmpl.gsub!(/\{\{string\.(\w+)\}\}/) {|s| CurrentDomain.strings[$1]}
+    tmpl.gsub!(/\{\{string\.(\w+)\}\}/) {|match| CurrentDomain.strings[$1]}
+
+    tmpl.gsub!(/\{\{urls\.(\w+)\}\}/) do |match|
+      (CurrentDomain.theme.urls[$1] || []).map do |url|
+        '<li>' + link_from_theme(url) + '</li>'
+      end.join('')
+    end
 
     return tmpl
   end
@@ -493,7 +496,7 @@ HREF
 
           <div class='userNav'>
             <ul>
-              {{header_urls}}
+              {{urls.header}}
               {{sign_in_link}}
               {{sign_up_link}}
               {{user_home_link}}
@@ -558,7 +561,7 @@ HREF
 
           <div class='userNav'>
             <ul>
-              {{header_urls}}
+              {{urls.header}}
               {{sign_in_link}}
               {{sign_up_link}}
               {{account_link}}
@@ -613,8 +616,10 @@ HREF
         <<-EOS
         <div class="footerContainer">
           <div id='footer' class="clearfix">
-            {{copyright}}
-            {{footer_urls}}
+            <span class='copyright'>{{string.copyright_string}}</span>
+            <ul class='clearfix'>
+              {{urls.footer}}
+            </ul>
           </div>
         </div>
         EOS

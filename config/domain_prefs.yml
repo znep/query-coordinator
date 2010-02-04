@@ -84,3 +84,4 @@ features.remember_me: true
 features.persistent_analytics: true
 features.show_categories: true
 features.show_tags: true
+features.marketing_pages: true

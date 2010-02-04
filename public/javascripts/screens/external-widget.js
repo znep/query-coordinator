@@ -393,10 +393,8 @@ $(function ()
                 });
         }
     }
-    else if (blist.display.type == 'visualization')
-    {
-        $('#data-grid').visualization();
-    }
+    else if (blist.display.invokeVisualization)
+    { $('#data-grid').visualization(); }
 
     widgetNS.storedViewHeader = $('#viewHeader').clone();
     widgetNS.originalViewId = widgetNS.viewId;

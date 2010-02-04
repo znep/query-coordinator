@@ -1,9 +1,8 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
   <%= stylesheet_link_merged 'blists-show' %>
-  <% @display.required_stylesheets.each do |css| %>
-    <%= stylesheet_link_merged css %>
-  <% end %>
+  <%= raw @display.render_stylesheet_includes %>
+
   <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <link rel="canonical" href="<%= @view.href %>" />
@@ -120,7 +119,7 @@
                 :menu_options => menu_options}) %>
             </li>
 
-            <%- if @view.is_visualization? && is_owner -%>
+            <%- if Displays::Config[@view.displayType] && is_owner -%>
             <li class='separator'>
               <a rel='modal' href="<%= @view.href %>/visualization?edit=true"
                 id='editViz' class='staticLink'>
@@ -383,7 +382,6 @@
 
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
 
   <%- if !current_user -%>
   <%= render :partial => 'login' %>
@@ -392,7 +390,7 @@
 
   <%= javascript_include_merged 'shared-common-all' %>
   <script type="text/javascript">
-    <%= raw @display.render_inline_setup_js self %>
+    <%= raw @display.render_inline_setup_js 'dataGrid', self %>
     blist.namespace.fetch('blist.blistGrid');
     <%- if !current_user.nil? -%>
     blist.currentUserId = "<%= current_user.id %>";
@@ -412,12 +410,5 @@
 
   <%= render(:partial => 'shared/table_editor_js') %>
   <%= javascript_include_merged 'blists-show' %>
-  <% @display.required_javascripts.each do |js| %>
-    <%= javascript_include_merged js %>
-  <% end %>
-  <script type="text/javascript">
-$(function() {
-    <%= raw @display.render_inline_runtime_js self %>
-});
-  </script>
+  <%= raw @display.render_javascript_includes self %>
 <% end %>

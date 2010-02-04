@@ -1286,6 +1286,8 @@
                     {
                         hh = header[0];
                         var $dragHandle = header.find('.dragHandle');
+                        if ($dragHandle.length < 1) { return false; }
+
                         var dragLeft = $dragHandle.offset().left;
                         var dragRight = dragLeft + $dragHandle.outerWidth();
                         if (x >= dragLeft && x < dragRight)

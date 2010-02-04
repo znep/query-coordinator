@@ -1,11 +1,11 @@
+// This class implements Google Charts, Google Maps, and Fusion Maps displays.
+// TODO - factor code for each type of display into separate files
 (function($)
 {
     $.fn.visualization = function(options)
     {
-        // build main options before element iteration
         var opts = $.extend({}, $.fn.visualization.defaults, options);
 
-        // iterate and do stuff to each matched element
         return this.each(function()
         {
             var $visualization = $(this);
@@ -17,7 +17,7 @@
             $visualization.bind('resize',
                 function(e) { handleResize($visualization, e); });
 
-            if (blist.widgets.visualization.invalid)
+            if (blist.display.invalid)
             {
                 $visualization.html("<div class='error'>There are not enough " +
                     "columns to display this visualization.  " +
@@ -25,10 +25,10 @@
                 return;
             }
 
-            if (!blist.widgets.visualization.isFusionMap)
+            if (!blist.display.isFusionMap)
             {
                 var query = new google.visualization.Query('/views/' +
-                  blist.widgets.visualization.viewId + '/rows.gvds?accessType=WEBSITE&_=' +
+                  blist.display.viewId + '/rows.gvds?accessType=WEBSITE&_=' +
                     new Date().valueOf());
                 // Send the query with a callback function.
                 query.send(function(r) { handleQueryResponse($visualization, r); });
@@ -36,9 +36,9 @@
             else
             {
                 var map = new FusionMaps("/fusionMaps/" +
-                    blist.widgets.visualization.fusionMapSwf,
+                    blist.display.fusionMapSwf,
                     "Map1Id", "100%" , "100%", "0", "0");
-                map.setDataURL("/views/" + blist.widgets.visualization.viewId +
+                map.setDataURL("/views/" + blist.display.viewId +
                     "/rows.fmap");
                 map.addParam("wmode", "opaque");
                 map.render($visualization[0]);
@@ -46,9 +46,6 @@
         });
     };
 
-    //
-    // private functions
-    //
     function handleResize($viz, event)
     {
         // Some viz require height & width explicitly set on the container
@@ -89,9 +86,9 @@
 
         $viz.empty();
         $viz.css('overflow', 'hidden');
-        var chart = new blist.widgets.visualization.chartClass($viz[0]);
+        var chart = new blist.display.chartClass($viz[0]);
         chart.draw(config._data, $.extend({legendFontSize: 12},
-            blist.widgets.visualization.displayFormat,
+            blist.display.options,
             {height: $viz.height(), width: $viz.width()}) );
     };
 

@@ -66,6 +66,39 @@ class CurrentDomain
     @@current_domain[:widget_customization]
   end
 
+  def self.configurations(type)
+    if @@current_domain[:configs].nil?
+      @@current_domain[:configs] = Hash.new
+    end
+
+    if @@current_domain[:configs][type].nil?
+      @@current_domain[:configs][type] = Configuration.find_by_type(type)
+    end
+
+    return @@current_domain[:configs][type]
+  end
+
+  def self.default_configuration(type)
+    if @@current_domain[:default_configs].nil?
+      @@current_domain[:default_configs] = Hash.new
+    end
+
+    if @@current_domain[:default_configs][type].nil?
+      @@current_domain[:default_configs][type] =
+        Configuration.find_by_type(type, true)[0]
+    end
+
+    return @@current_domain[:default_configs][type]
+  end
+
+  def self.templates
+    def_config = self.default_configuration('site_theme')
+    if def_config.nil?
+      return Hashie::Mash.new
+    end
+    return def_config.properties.templates
+  end
+
   def self.preferences
     if @@current_domain[:preferences].nil?
       if @@current_domain[:data].preferences.nil?

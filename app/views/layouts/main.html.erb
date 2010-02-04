@@ -40,7 +40,7 @@
 <div class="bodyInterior">
   <div id='outerContainer'>
     <div id='header'>
-      <%= domain_header %>
+      <%= render_domain_template('header') %>
     </div>
 
     <a name="content"></a>
@@ -52,7 +52,7 @@
 </div>
 
 <a name="footerLinks"></a>
-<%= domain_footer %>
+<%= render_domain_template('footer') %>
 
   <% dialog_content("jqmAlert") do %>
     <div class='header'>

@@ -91,31 +91,26 @@ class CurrentDomain
     return @@current_domain[:default_configs][type]
   end
 
-  def self.templates
-    def_config = self.default_configuration('site_theme')
-    if def_config.nil?
-      return Hashie::Mash.new
-    end
-    return def_config.properties.templates
+  def self.properties
+    conf = self.default_configuration('site_theme')
+    return conf.nil? ? Hashie::Mash.new : conf.properties
   end
 
-  def self.preferences
-    if @@current_domain[:preferences].nil?
-      if @@current_domain[:data].preferences.nil?
-        # No configured preferences, use only defaults
-        @@current_domain[:preferences] = Hashie::Mash.new(DEFAULT_DOMAIN_PREFS)
-      else
-        # Merge our prefs with default prefs
-        @@current_domain[:data].preferences.data.deep_symbolize_keys!
-        @@current_domain[:preferences] =
-          Hashie::Mash.new(DEFAULT_DOMAIN_PREFS.deep_merge(@@current_domain[:data].preferences.data))
-      end
-    end
-    @@current_domain[:preferences]
+  def self.templates
+    return self.properties.templates || Hashie::Mash.new
   end
 
   def self.theme
-    self.preferences.theme
+    return self.properties.theme || Hashie::Mash.new
+  end
+
+  def self.strings
+    return self.properties.strings || Hashie::Mash.new
+  end
+
+  def self.features
+    conf = self.default_configuration('featureset')
+    return conf.nil? ? Hashie::Mash.new : conf.properties
   end
 
   def self.modules
@@ -124,19 +119,6 @@ class CurrentDomain
         (@@current_domain[:data].accountTier.data['accountModules'] || [])).uniq
     end
     @@current_domain[:modules]
-  end
-
-  def self.strings
-    if @@current_domain[:strings].nil?
-      strings = Hash.new
-      self.preferences.keys.each do |key|
-        if key =~ /^strings\.(\w+)$/
-          strings[$1] = self.preferences[key]
-        end
-      end
-      @@current_domain[:strings] = Hashie::Mash.new(strings)
-    end
-    @@current_domain[:strings]
   end
 
   def self.module_names
@@ -153,17 +135,6 @@ class CurrentDomain
     end
   end
 
-  def self.features
-    if @@current_domain[:features].nil?
-      @@current_domain[:features] = self.preferences.collect { |pref|
-        if pref[0] =~ /^features\./ && pref[1] == true
-          pref[0].gsub(/^features\./, '')
-        end
-      }.compact
-    end
-    @@current_domain[:features]
-  end
-
   def self.feature?(name_or_set)
     if name_or_set.is_a? Array
       name_or_set.any?{|mod| self.features.include? mod.to_s }
@@ -176,9 +147,9 @@ class CurrentDomain
     self.module_available?(name_or_set) && self.feature?(name_or_set)
   end
 
-  # CurrentDomain['preference name'] returns preferences
+  # CurrentDomain['preference name'] returns properties
   def self.[](key)
-    self.preferences.send key
+    self.properties.send key
   end
 
   def self.method_missing(key, *args)
@@ -186,11 +157,11 @@ class CurrentDomain
 
     # If they ask for .something?, assume they're asking about the something feature
     if key =~ /\?$/
-      return (self.preferences['features.' + key.gsub(/\?$/, '')] == true)
+      return (self.properties['features.' + key.gsub(/\?$/, '')] == true)
     end
 
-    ## Otherwise, assume we're looking for a preference
-    self.preferences.send key
+    ## Otherwise, assume we're looking for a property
+    self.properties.send key
   end
 
   def self.member?(user)

@@ -7,6 +7,8 @@ class Configuration < Model
 
   def properties
     props = Hashie::Mash.new
+    return props if data['properties'].nil?
+
     data['properties'].each do |p|
       name_parts = p['name'].split('.')
       p_hash = props

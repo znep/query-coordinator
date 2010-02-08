@@ -33,6 +33,14 @@ class View < Model
       "rows.html?template=bare_template.html", {})
   end
 
+  def get_rows(params = {})
+    # default params
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
+  end
+
   def json(params)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"
     if !params.nil?

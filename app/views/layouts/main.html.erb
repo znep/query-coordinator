@@ -34,7 +34,11 @@
 
 <body id='<%= @body_id %>' class='<%= @body_class %>'>
 
-<div id="skipLinks"><a href="#content">Skip to main content</a><a href="#footerLinks">Skip to footer links</a></div>
+<div id="skipLinks">
+  <a href="#content">Skip to main content</a>
+  <a href="#footerLinks">Skip to footer links</a>
+  <%= yield :skip_links %>
+</div>
 
 <div class="bodyExterior">
 <div class="bodyInterior">

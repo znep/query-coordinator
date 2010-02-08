@@ -1,0 +1,81 @@
+<% content_for :head do %>
+  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%= stylesheet_link_merged 'blist-show-alt' %>
+  <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <link rel="canonical" href="<%= @view.href %>" />
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="#dataGrid">Skip to data</a>
+  <a href="#metaTabs">Skip to metadata information</a>
+<% end %>
+
+<%- is_owner = current_user && @view.owner.id == current_user.id -%>
+<%- is_blist = @view.is_blist? %>
+<%- can_edit = current_user && @view.can_edit() -%>
+
+<div class="altShowContainer oneColumnContainer <%= @view.is_invalid? ? 'invalidView' : '' %>">
+  <div class="fullPageContentContainer">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class="outerContent">
+          <div class="contentTR"><div class="contentTL"></div></div>
+          <div class="content">
+            <ul id="datasetMenu">
+              <li><a href="<%= @view.href %>/about">About this Dataset...</a></li>
+              <li><a href="<%= @view.href %>/print">Print...</a></li>
+              <li><a href="<%= @view.href %>/email">Email...</a></li>
+              <li><a href="<%= @view.href %>/import">Append or Refresh data...</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
+            <%- socialize_menu_options(@view).each do |item| -%>
+              <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
+            <%- end -%>
+              <li><a href=""></a></li>
+              <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.xls?accessType=DOWNLOAD">Export To XLS</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
+            </ul>
+            <a name="dataGrid"></a>
+            <div class="dataGridWrapper">
+              <table id="dataGrid">
+                <thead>
+                  <tr>
+                    <th id="header_sid">Row number</th>
+                    <%- @show_columns.each_index do |i| -%>
+                      <%- next unless @show_columns[i] -%>
+                      <%- column = @view.columns[i] -%>
+
+                      <th id="header_<%= column.id %>" class="<%= column.dataTypeName %>">
+                        <%= column.name %>
+                      </th>
+                    <%- end -%>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%# This is somewhat ugly but is inline for perf reasons %>
+                  <%- @data.each do |row| -%>
+                    <tr>
+                      <th header="header_sid"><%= row[0] %></th>
+                      <%- @show_columns.each_index do |i| -%>
+                        <%- next unless @show_columns[i] -%>
+                        <%- column = @view.columns[i] -%>
+
+                        <td header="header_<%= column.id %>">
+                          <%- case column.renderTypeName -%>
+                            <%- when 'text' -%>
+                              <%= row[i].to_s %>
+                          <%- end -%>
+                        </td>
+                      <%- end -%>
+                    </tr>
+                  <%- end -%>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

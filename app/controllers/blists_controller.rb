@@ -1,6 +1,6 @@
 class BlistsController < ApplicationController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag, :republish, :about_sdp]
+  skip_before_filter :require_user, :only => [:show, :alt, :about, :print, :email, :flag, :republish, :about_sdp]
 
   def index
     @body_class = 'home'
@@ -71,6 +71,41 @@ class BlistsController < ApplicationController
     @data_component = params[:dataComponent]
     @popup = params[:popup]
     @display = @view.display
+  end
+
+  def alt
+    @body_id = 'lensBody'
+    begin
+      @parent_view = @view = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
+            ' or view cannot be found, or has been deleted.'
+            return (render 'shared/error', :status => :not_found)
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required' 
+        return require_user(true)
+      elsif e.error_code == 'permission_denied'
+        flash.now[:error] = e.error_message
+        return (render 'shared/error', :status => :forbidden)
+      else
+        flash.now[:error] = e.error_message
+        return (render 'shared/error', :status => :internal_server_error)
+      end
+    end
+
+    if !@view.can_read()
+      return require_user(true)
+    end
+
+    if !@view.is_blist?
+      # SoL. Display a message and redir to parent?
+    end
+
+    @show_columns = @view.columns.map{ |column| column.dataTypeName != 'meta_data' }
+    @data = @view.get_rows({:include_ids_after => 50})
+
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
   end
 
   # To build a url to this action, use View.about_href.

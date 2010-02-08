@@ -10,12 +10,13 @@ class CurrentDomain
     end
   end
 
-  def self.set(cname)
+  def self.set(cname, site_config_id = nil)
     @@property_store = {} unless defined? @@property_store
 
     if !@@property_store.has_key?(cname)
       begin
-        @@property_store[cname] = { :data => Domain.find(cname) }
+        @@property_store[cname] = { :data => Domain.find(cname),
+          :site_config_id => site_config_id }
       rescue CoreServer::ResourceNotFound
         return false
       end
@@ -92,8 +93,16 @@ class CurrentDomain
   end
 
   def self.properties
-    conf = self.default_configuration('site_theme')
-    return conf.nil? ? Hashie::Mash.new : conf.properties
+    if @@current_domain[:site_properties].nil?
+      if @@current_domain[:site_config_id].nil?
+        conf = self.default_configuration('site_theme')
+      else
+        conf = Configuration.find(@@current_domain[:site_config_id].to_s)
+      end
+      @@current_domain[:site_properties] = conf.nil? ?
+        Hashie::Mash.new : conf.properties
+    end
+    return @@current_domain[:site_properties]
   end
 
   def self.templates

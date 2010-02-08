@@ -203,6 +203,10 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resources :user_sessions
+  map.connect '/site_config/:config_id',
+    :controller => 'user_sessions', :action => 'site_config'
+  map.connect '/clear_site_config',
+    :controller => 'user_sessions', :action => 'clear_site_config'
 
   # Static content
   ['about', 'solution', 'company-info', 'press'].each do |static_section|

@@ -159,7 +159,7 @@ private
   end
 
   def set_web_property
-    unless CurrentDomain.set(request.host)
+    unless CurrentDomain.set(request.host, session[:custom_site_config])
       # We failed at trying to find the current domain.
       # Log it, then just redir them to Socrata.
       notify_hoptoad :error_message => "Attempted access with CNAME #{request.host}, which we have no record of."

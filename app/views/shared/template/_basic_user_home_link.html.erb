@@ -1,0 +1,5 @@
+<% if !module_enabled? [:discovery_module, :community_module] %>
+  <li class='accountLink dataLink'>
+  <%= link_to "My #{CurrentDomain.strings.company}", home_path %>
+  </li>
+<% end %>

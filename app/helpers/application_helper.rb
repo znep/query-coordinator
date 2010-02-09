@@ -564,6 +564,7 @@ HREF
               {{urls.header}}
               {{sign_in_link}}
               {{sign_up_link}}
+              {{basic_user_home_link}}
               {{account_link}}
               {{sign_out_link}}
             </ul>

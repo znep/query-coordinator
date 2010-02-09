@@ -15,12 +15,14 @@
     <% end %>
 
     <%# Home (Features enabled/disabled within this tab) %>
-    <li class='home last'>
-      <%= link_to("<span>My #{CurrentDomain.strings.company}</span>",
-        home_path) %>
+    <% module_enabled [:discovery_module, :community_module] do %>
+      <li class='home last'>
+        <%= link_to("<span>My #{CurrentDomain.strings.company}</span>",
+          home_path) %>
 
-      <%= render :partial => 'shared/template/user_menu',
-        :locals => { :menu_class => 'subNav' } %>
-    </li>
+        <%= render :partial => 'shared/template/user_menu',
+          :locals => { :menu_class => 'subNav' } %>
+        </li>
+    <% end %>
   </ul>
 </div>

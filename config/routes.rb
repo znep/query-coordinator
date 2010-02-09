@@ -31,6 +31,22 @@ ActionController::Routing::Routes.draw do |map|
   #   end
   UID_REGEXP = /\w{4}-\w{4}/
 
+  map.connect '/internal', :controller => 'internal', :action => 'index'
+  map.connect '/internal/orgs', :controller => 'internal', :action => 'index_orgs'
+  map.connect '/internal/orgs/:id', :controller => 'internal',
+    :action => 'show_org'
+  map.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
+    :action => 'show_domain', :requirements => {:id => /(\w|\.)+/}
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id',
+    :controller => 'internal', :action => 'show_config',
+    :requirements => {:domain_id => /(\w|\.)+/}
+  map.connect '/internal/tiers', :controller => 'internal',
+    :action => 'index_tiers'
+  map.connect '/internal/tiers/:name', :controller => 'internal',
+    :action => 'show_tier'
+  map.connect '/internal/modules', :controller => 'internal',
+    :action => 'index_modules'
+
   map.resources :contacts,
     :collection => {
       :detail => :get,

@@ -1,0 +1,33 @@
+<% content_for :head do %>
+<%= stylesheet_link_merged 'internal-shared' %>
+<title>Tiers | Admin Panel | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="twoColumnContainer tabContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent">
+    <ul class='tabList'>
+      <li class='even active'><div class='wrapper'>
+        <%= link_to 'Admin Home', '/internal' %>
+      </div></li>
+    </ul>
+
+    <div class='outerContent'>
+      <div class="contentTR"><div class="contentTL"></div></div>
+      <div class='content'>
+
+        <h1>All Tiers:</h1>
+
+        <% if @tiers.nil? || @tiers.size <= 0 %>
+          <p>No tiers found.</p>
+        <% else %>
+          <ul>
+            <% @tiers.each do |tier| %>
+              <li><a href="/internal/tiers/<%= tier.name %>"><%= tier.name %></a></li>
+            <% end %>
+          </ul>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>

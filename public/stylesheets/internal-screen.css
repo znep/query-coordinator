@@ -1,0 +1,51 @@
+.content h2 { margin-top: 1em; }
+
+.content li { margin: 0.5em 0; }
+
+.content p,
+.content li a,
+.content li.infoLine,
+.content label,
+.content .line a
+{ font-size: 1.2em; }
+
+.content li.infoLine strong
+{
+    display: inline-block;
+    text-align: right;
+    width: 17em;
+}
+
+.content form .line { margin: 0.5em 0; }
+
+.content label
+{
+    display: inline-block;
+    text-align: right;
+    vertical-align: top;
+    width: 10em;
+}
+
+.content input[type='text']
+{
+    display: inline-block;
+    vertical-align: top;
+    width: 15em;
+}
+
+.content textarea
+{
+    display: inline-block;
+    height: 6em;
+    vertical-align: top;
+    width: 20em;
+}
+
+.content .wide label { width: 15em; }
+
+.content .line .cell
+{
+    display: inline-block;
+    text-align: center;
+    width: 5em;
+}

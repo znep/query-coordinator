@@ -1,8 +1,9 @@
 class Configuration < Model
-  def self.find_by_type(type, default_only = false)
+  def self.find_by_type(type, default_only = false, cname = nil)
     path = "/#{self.name.pluralize.downcase}.json?type=#{type}&" +
       "defaultOnly=#{default_only.to_s}"
-    parse(CoreServer::Base.connection.get_request(path))
+    headers = cname.nil? ? {} : { "X-Socrata-Host" => cname }
+    parse(CoreServer::Base.connection.get_request(path, headers))
   end
 
   def properties

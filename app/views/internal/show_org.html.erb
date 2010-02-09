@@ -1,0 +1,69 @@
+<% content_for :head do %>
+<%= stylesheet_link_merged 'internal-shared' %>
+<title>Organization <%= @org.nil? ? '' : @org.name %> | Admin Panel |
+  <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="twoColumnContainer tabContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent">
+    <ul class='tabList'>
+      <li class='even active'><div class='wrapper'>
+        <%= link_to 'Admin Home', '/internal' %>
+      </div></li>
+    </ul>
+
+    <div class='outerContent'>
+      <div class="contentTR"><div class="contentTL"></div></div>
+      <div class='content'>
+
+        <% if @org.nil? %>
+          <p>Organization could not be found</p>
+
+        <% else %>
+          <h1>Organization: <%= @org.name %></h1>
+
+          <h2>Domains:</h2>
+          <% if @org.domains.nil? || @org.domains.size <= 0 %>
+            <p>No domains for this org.</p>
+          <% else %>
+            <ul>
+              <% @org.domains.each do |domain| %>
+              <li><a href="/internal/orgs/<%= @org.uid + '/domains/' +
+                domain.cname %>">
+                <%= domain.name %> (<%= domain.cname %>)
+              </a></li>
+              <% end %>
+            </ul>
+          <% end %>
+
+          <h2>Create a domain:</h2>
+          <form action="/internal/orgs/<%= @org.uid %>/domains" method="post">
+            <div class='line'>
+              <label>Name:</label>
+              <input type="text" name="domain[name]"/>
+            </div>
+            <div class='line'>
+              <label>CName:</label>
+              <input type="text" name="domain[cname]"/>
+            </div>
+            <div class='line'>
+              <label>Short Name:</label>
+              <input type="text" name="domain[short_name]"/>
+            </div>
+            <div class='line'>
+              <label>Tier:</label>
+              <select name="domain[tier_id]">
+                <% @tiers.each do |tier| %>
+                <option value="<%= tier.id %>"><%= tier.name %></option>
+                <% end %>
+              </select>
+            </div>
+            </table>
+            <input type="submit" value="Create"/>
+          </form>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<% content_for :head do %>
+<%= stylesheet_link_merged 'internal-shared' %>
+<title>Config <%= @config.nil? ? '' : @config.name %> |
+  Domain <%= @domain.nil? ? '' : @domain.name %> | Admin Panel |
+  <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="twoColumnContainer tabContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent">
+    <ul class='tabList'>
+      <li class='even active'><div class='wrapper'>
+        <%= link_to 'Admin Home', '/internal' %>
+      </div></li>
+    </ul>
+
+    <div class='outerContent'>
+      <div class="contentTR"><div class="contentTL"></div></div>
+      <div class='content'>
+
+        <%- if @domain.nil? || @config.nil? -%>
+          <p>Domain or Configuration could not be found</p>
+
+        <%- else -%>
+        <h1><%= @config.name %> for <%= @domain.name %> (<%= @domain.cname %>)</h1>
+
+        <h2>Properties:</h2>
+        <form class='wide' method='post'>
+          <%- @config.data['properties'].each do |prop| -%>
+          <div class='line'>
+            <label><%= prop['name'] %></label>
+            <%= text_area_tag 'property-' + prop['name'], prop['value'].to_json %>
+          </div>
+          <%- end -%>
+          <input type="submit" value="Save"/>
+        </form>
+
+        <h2>Add Property</h2>
+        <form class='wide' action="/internal/orgs/<%= @domain.organizationId
+          %>/domains/<%= @domain.cname %>/site_config/<%= @config.id %>"
+          method="post">
+          <div class='line'>
+            <%= text_field_tag 'name' %>
+            <%= text_area_tag 'value' %>
+          </div>
+          <input type="submit" value="Add"/>
+        </form>
+        <%- end -%>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -67,35 +67,10 @@ class CurrentDomain
     @@current_domain[:widget_customization]
   end
 
-  def self.configurations(type)
-    if @@current_domain[:configs].nil?
-      @@current_domain[:configs] = Hash.new
-    end
-
-    if @@current_domain[:configs][type].nil?
-      @@current_domain[:configs][type] = Configuration.find_by_type(type)
-    end
-
-    return @@current_domain[:configs][type]
-  end
-
-  def self.default_configuration(type)
-    if @@current_domain[:default_configs].nil?
-      @@current_domain[:default_configs] = Hash.new
-    end
-
-    if @@current_domain[:default_configs][type].nil?
-      @@current_domain[:default_configs][type] =
-        Configuration.find_by_type(type, true)[0]
-    end
-
-    return @@current_domain[:default_configs][type]
-  end
-
   def self.properties
     if @@current_domain[:site_properties].nil?
       if @@current_domain[:site_config_id].nil?
-        conf = self.default_configuration('site_theme')
+        conf = @@current_domain[:data].default_configuration('site_theme')
       else
         conf = Configuration.find(@@current_domain[:site_config_id].to_s)
       end
@@ -115,11 +90,6 @@ class CurrentDomain
 
   def self.strings
     return self.properties.strings || Hashie::Mash.new
-  end
-
-  def self.features
-    conf = self.default_configuration('featureset')
-    return conf.nil? ? Hashie::Mash.new : conf.properties
   end
 
   def self.modules
@@ -145,11 +115,7 @@ class CurrentDomain
   end
 
   def self.feature?(name_or_set)
-    if name_or_set.is_a? Array
-      name_or_set.any?{|mod| self.features.include? mod.to_s }
-    else
-      self.features.include? name_or_set.to_s
-    end
+    @@current_domain[:data].feature?(name_or_set)
   end
 
   def self.module_enabled?(name_or_set)

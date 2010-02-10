@@ -28,7 +28,7 @@
           <% else %>
             <ul>
               <% @org.domains.each do |domain| %>
-              <li><a href="/internal/orgs/<%= @org.uid + '/domains/' +
+              <li><a href="/internal/orgs/<%= @org.id.to_s + '/domains/' +
                 domain.cname %>">
                 <%= domain.name %> (<%= domain.cname %>)
               </a></li>

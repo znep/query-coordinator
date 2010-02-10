@@ -22,7 +22,7 @@
         <% else %>
           <ul>
             <% @orgs.each do |org| %>
-              <li><a href="/internal/orgs/<%= org.uid %>"><%= org.name %></a></li>
+              <li><a href="/internal/orgs/<%= org.id %>"><%= org.name %></a></li>
             <% end %>
           </ul>
         <% end %>

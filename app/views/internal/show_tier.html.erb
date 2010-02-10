@@ -24,7 +24,7 @@
 
           <h2>Domains in this tier:</h2>
           <%- domains = Organization.find().collect {|o| o.domains}.flatten.
-            select {|d| d.accountTier.name == @tier.name} -%>
+            compact.select {|d| d.accountTier.name == @tier.name} -%>
           <% if domains.nil? || domains.size <= 0 %>
             <p>No domains for this tier.</p>
           <% else %>

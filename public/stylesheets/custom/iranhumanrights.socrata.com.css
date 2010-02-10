@@ -1,0 +1,19 @@
+body, #header, #footer, .footerContainer
+{
+    background: #fff;
+}
+
+#outerContainer #header
+{
+    height: 65px;
+}
+
+/*#lensContainer .tabList li.main .wrapper
+{
+    background: none;
+}
+
+.tabList li.even a, .tabList li.even .innerWrapper
+{
+    background: none;
+}*/

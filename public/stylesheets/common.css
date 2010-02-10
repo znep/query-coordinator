@@ -586,3 +586,8 @@ span.helpie
     width: 16px;
 }
 
+/* For footer links in co-branded sites */
+.powered-by {
+    background: url(/stylesheets/images/common/small_logo.png) center left no-repeat;
+    padding: 5px 0px 5px 20px;
+}

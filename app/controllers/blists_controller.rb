@@ -102,7 +102,7 @@ class BlistsController < ApplicationController
     end
 
     @show_columns = @view.columns.map{ |column| column.dataTypeName != 'meta_data' }
-    @data = @view.get_rows({:include_ids_after => 50})
+    @data = @view.paginate_rows(:per_page => 50, :page => params[:page])
 
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})

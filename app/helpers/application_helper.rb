@@ -697,13 +697,13 @@ HREF
               tools to engage and serve Chicago&rsquo;s richly diverse people,
               businesses, visitors, institutions and communities.</p>
             <p class="chicagoText">As part of the City&rsquo;s
-              <a href="http://chicago.illinois.gov/city/en/progs/transparency.html">Transparency Initiatives</a>, more data sets will be
+              <a href="http://www.cityofchicago.org/city/en/progs/transparency.html">Transparency Initiatives</a>, more data sets will be
               added to this portal on a continuing basis. We invite you to
               participate in the evolution of Chicago&rsquo;s data catalog by telling
               us what other types of data you would like to see here and about
               the creative ways you are using this data. Before accessing or
               sharing data, please read the
-              <a href="http://chicago.illinois.gov/city/en/narr/foia/data_disclaimer.html">Terms of Use</a>.</p>
+              <a href="http://www.cityofchicago.org/city/en/narr/foia/data_disclaimer.html">Terms of Use</a>.</p>
             <div class="pageBlockHeaderR"></div>
           </div>
         </div>

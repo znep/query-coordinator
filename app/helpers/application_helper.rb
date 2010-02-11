@@ -691,7 +691,9 @@ HREF
             <p class="chicagoTitle">Welcome to the City of Chicago&rsquo;s
               <strong>Data Portal,</strong></p>
             <p class="chicagoSubtitle">where you can browse, search and
-              download a variety of data collected and maintained by the City.</p>
+              download a variety of data (including 
+              <a href="http://www.cityofchicago.org/city/en/depts/doit/supp_info/gis_data.html">GIS Data</a>) 
+              collected and maintained by the City.</p>
             <p class="chicagoText">We are making this data available to promote
               transparency, and to encourage you to create new and innovative
               tools to engage and serve Chicago&rsquo;s richly diverse people,

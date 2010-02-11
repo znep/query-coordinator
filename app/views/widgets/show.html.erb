@@ -1,9 +1,7 @@
 <% content_for :head do %>
   <%= stylesheet_link_merged 'widgets-show' %>
   <%- if @display.can_publish? -%>
-  <% @display.required_stylesheets.each do |css| %>
-    <%= stylesheet_link_merged css %>
-  <% end %>
+  <%= raw @display.render_stylesheet_includes %>
   <%- end -%>
   
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
@@ -184,13 +182,14 @@
 <div id='header' class='headerBar'><div class='wrapperTR'>
     <div class='wrapperT clearfix'>
       <%- if !@view.is_invalid? -%>
+        <div class='headerBar <%= !@view.is_alt_view? ? 'hide' : '' %>'>
           <%- menu_options = dataset_menu_lookup(@view, true, @theme) -%>
           <a id='mainLink' class="menuLink" href="#main-menu"
             title="Click for more options">Menu</a>
           <%= render(:partial => "widget_menu",
             :locals => { :theme => @theme, :menu_options => menu_options }) %>
 
-          <a id='viewsLink' class='menuLink' href='#views-menu'>More Views</a>
+          <a id='viewsLink' class='menuLink' href='#views-menu'>Views</a>
           <%= render(:partial => "widget_view_menu",
             :locals => { :theme => @theme, :menu_options => menu_options }) %>
 
@@ -218,6 +217,7 @@
               </div>
             </div>
           </form>
+        </div>
       <%- end -%>
 
     </div>
@@ -329,10 +329,8 @@
     <div class="jqmWindow widgetModal" id="modal"></div>
 
 <% content_for :js_footer do %>
-  <%= render(:partial => "shared/visualization", :locals => { :view => @view }) %>
-
   <script type="text/javascript">
-    <%= raw @display.render_inline_setup_js self %>
+    <%= raw @display.render_inline_setup_js 'data-grid', self %>
     blist.namespace.fetch('blist.widget');
     <%- if !current_user.nil? -%>
       blist.currentUserId = "<%= current_user.id %>";
@@ -356,6 +354,7 @@
   <%= render(:partial => 'shared/table_editor_js') %>
   <%- end -%>
   <%= javascript_include_merged 'widgets-show' %>
+  <%= raw @display.render_javascript_includes self %>
 
   <%- if !@is_gov_widget && !APP_CONFIG['google_analytics_id'].blank? -%>
     <script type="text/javascript">
@@ -380,7 +379,4 @@
       <%= render(:partial => "shared/analytics") %>
     <%- end -%>
   <%- end -%>
-  <script type="text/javascript">
-    <%= raw @display.render_inline_runtime_js self %>
-  </script>
 <% end %>

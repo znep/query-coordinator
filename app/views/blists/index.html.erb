@@ -23,13 +23,14 @@
                 title='Search for my <%= t(:blists_name).capitalize %>' />
                 <div class='actionBox'>
                   <div class='clearBox'>
-                    <a class='clearSearch hide' title='Clear Search'
+                    <a class='clearSearch' title='Clear Search'
                       href='#clear_search'>
                       Clear Search
                     </a>
                   </div>
                   <input type="image" class="submit" name="findSubmit"
-                  src="<%= image_path("find_button.png") %>" />
+                  src="<%= image_path("find_button.png") %>"
+                  alt="search" />
                 </div>
               </div>
             </form>

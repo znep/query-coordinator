@@ -1475,7 +1475,7 @@ dl.versionInfo dd
 .modalDialog .dialogBox .header .groupingIcon
 {
     background-image: url(/stylesheets/images/content/dialog_header_icons.png?1);
-    background-position: 0 -216px;
+    background-position: 0 -215px;
     background-repeat: no-repeat;
     padding-left: 35px;
 }

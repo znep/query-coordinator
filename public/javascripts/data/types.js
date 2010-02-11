@@ -495,6 +495,11 @@ blist.namespace.fetch('blist.data.types');
         return htmlStrip(value || '');
     };
 
+    var renderFilterEscapedText = function(value)
+    {
+        return htmlEscape(htmlStrip(value || ''));
+    };
+
     var renderFilterNumber = function(value, column)
     {
         return renderNumber(value, column.decimalPlaces);
@@ -603,9 +608,9 @@ blist.namespace.fetch('blist.data.types');
         invalid: { renderGen: renderGenEscapedText },
 
         text: {
-            renderGen: renderGenText,
+            renderGen: renderGenEscapedText,
             sortGen: sortGenText,
-            filterRender: renderFilterText,
+            filterRender: renderFilterEscapedText,
             filterText: true,
             group: groupText,
             sortable: true,

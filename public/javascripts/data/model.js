@@ -2935,14 +2935,16 @@ blist.namespace.fetch('blist.data');
                 var rootColumns = meta.columns[0];
                 for (var i = 0; i < rootColumns.length; i++)
                 {
-                    if (columnType(i).filterText)
+                    var type = rootColumns[i].type;
+                    if (blist.data.types[type].filterText)
                     {
                         // Textual column -- apply the regular expression to
                         // each instance
-                        filterParts.push(' || (r', rootColumns[i].dataLookupExpr, ' + "").match(regexp)');
+                        filterParts.push(' || ',
+                            type == 'richtext' ? '$.htmlStrip' : '', '(r',
+                            rootColumns[i].dataLookupExpr, ' + "").match(regexp)');
                     }
-                    else if (rootColumns[i].type == "picklist" ||
-                        rootColumns[i].type == 'drop_down_list')
+                    else if (type == "picklist" || type == 'drop_down_list')
                     {
                         // Picklist column -- prefilter and then search by ID
                         var options = rootColumns[i].options;

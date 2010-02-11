@@ -1,0 +1,12 @@
+<% prerendered_cache "discover-carousel_#{CurrentDomain.cname}",
+  @carousel_views_rendered, :expires_in => 15.minutes do %>
+  <div class="pageBlockHeaderCarousel carouselWrapper">
+    <div class="carouselOuter"><div class="carouselInner">
+        <h2><%= t(:discover_carousel_header) %></h2>
+        <ul id="featuredCarousel" class="jcarousel-skin-discover carousel">
+          <%= render(:partial => "shared/template/data_carousel_item",
+            :collection => @carousel_views) %>
+        </ul>
+    </div></div>
+  </div>
+<% end %>

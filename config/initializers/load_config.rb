@@ -19,3 +19,7 @@ end
 
 DEFAULT_DOMAIN_PREFS = YAML.load_file("#{RAILS_ROOT}/config/domain_prefs.yml") || {}
 DEFAULT_DOMAIN_PREFS.deep_symbolize_keys!
+
+DOMAIN_TEMPLATES = Dir.glob('app/views/shared/template/_*.html.erb').map do |f|
+  f.match(/\/_(\w+)\.html\.erb$/)[1]
+end

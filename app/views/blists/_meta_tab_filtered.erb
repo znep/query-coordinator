@@ -34,7 +34,7 @@
       </tr>
     </thead>
     <tbody>
-      <%- view.filters.each do |filter| -%>
+      <%- view.filters.sort {|a,b| b.viewCount - a.viewCount}.each do |filter| -%>
         <tr class="item" id="filter-row_<%= filter.id %>">
           <%- if (!in_widget) -%>
           <td class="handle"><div class="cellInner">

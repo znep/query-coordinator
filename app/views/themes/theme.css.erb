@@ -3,6 +3,10 @@
 a {
     color: #<%= CurrentDomain.theme.colors.link %>;
 }
+a:focus
+{
+    text-decoration: underline;
+}
 
 <% 5.times do |level| %>
 h<%= level + 1 %>  {
@@ -12,6 +16,11 @@ h<%= level + 1 %>  {
 
 .bodyInterior {
     border-top-color: #<%= CurrentDomain.theme.colors.header.line %>;
+}
+
+#skipLinks a
+{
+    background-color: #<%= CurrentDomain.theme.colors.header.line %>;
 }
 
 /*** OUTER CHROME ***/
@@ -203,8 +212,8 @@ a.dropdownLink.clicked .outerWrapper
 }
 
 /*** PROFILE PAGE ***/
-#profile #welcome .welcomeTL
-#profile #welcome .welcomeTR
+#profile #welcome .welcomeTL,
+#profile #welcome .welcomeTR,
 #profile #welcome .welcome-titlebar
 {
     background: <%= box :rh =>34, :s => 'h', :h => 44, :r => 10, :fc => CurrentDomain.theme.colors.welcome.title, :ec => CurrentDomain.theme.colors.welcome.border, :ew => 1 %>  no-repeat;
@@ -224,6 +233,7 @@ a.dropdownLink.clicked .outerWrapper
 #profile #welcome .welcome-titlebar
 {
     background-position: right -34px;
+    background-repeat: repeat-x;
     position: relative;
 }
 #profile #welcome .welcome-titlebar h1
@@ -245,8 +255,8 @@ a.dropdownLink.clicked .outerWrapper
     width: 16px;
     height: 16px;
 }
-#profile #welcome .welcomeBL
-#profile #welcome .welcomeBR
+#profile #welcome .welcomeBL,
+#profile #welcome .welcomeBR,
 #profile #welcome .welcome-content
 {
     background: <%= box :ry => 10, :rh => 78, :s => 'h', :h => 88, :r => 10, :fc => CurrentDomain.theme.colors.welcome.body, :ec => CurrentDomain.theme.colors.welcome.border, :ew => 1 %>  no-repeat;    
@@ -265,5 +275,6 @@ a.dropdownLink.clicked .outerWrapper
 #profile #welcome .welcome-content
 {
     background-position: right -78px;
+    background-repeat: repeat-x;
 }
 

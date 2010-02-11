@@ -102,7 +102,7 @@
       
       var formData = {
         message: $("#invitation_message").val(),
-        "recipients[]": addedRecipients,
+        "recipients": addedRecipients,
         authenticity_token: $("input[name='authenticity_token']").val()
       };
       

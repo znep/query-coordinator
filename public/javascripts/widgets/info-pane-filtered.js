@@ -33,6 +33,21 @@
                 var $domObj = currentObj.$dom();
                 $domObj.data("infoPaneFiltered", currentObj);
 
+                $domObj.find('table.gridList').combinationList({
+                    headerContainerSelector:
+                        $domObj.selector + ' .gridListContainer',
+                    hoverOnly: true,
+                    initialSort: [[7, 1]],
+                    scrollableBody: false,
+                    selectable: false,
+                    sortGrouping: false,
+                    sortHeaders: {0: {sorter: false}, 1: {sorter: 'text'},
+                        2: {sorter: 'text'}, 3: {sorter: 'text'},
+                        4: {sorter: 'text'}, 5: {sorter: false},
+                        6: {sorter: 'text'}, 7: {sorter: 'digit'},
+                        8: {sorter: false}}
+                });
+
                 $domObj.find(currentObj.settings.deleteSelector).click(function(e)
                 { deleteView(currentObj, e); });
             },

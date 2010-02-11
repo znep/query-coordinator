@@ -42,8 +42,36 @@ body
 }
 #header form.search .searchContainer
 {
+    background-image: none;
     padding-left: 12px;
     padding-right: 49px;
+    width: auto;
+}
+#header form.search input.textPrompt
+{
+    font-size: 1.2em;
+    height: 18px;
+}
+#header form.search .actionsBox
+{
+    margin-right: -49px;
+    width: 49px;
+}
+#header form.search .actionsBox .clearBox
+{
+    background-color: #ffffff;
+    height: 21px;
+    width: 18px;
+}
+#header form.search .actionsBox .clearSearch
+{
+    margin-top: 2px;
+}
+#header form.search .actionsBox input
+{
+    background: transparent url(/stylesheets/images/domains/data.cityofchicago.org/chicago_search.png) no-repeat;
+    height: 23px;
+    width: 31px;
 }
 
 #discover .chicagoWelcomeHeader

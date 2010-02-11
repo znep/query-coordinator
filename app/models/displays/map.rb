@@ -1,8 +1,4 @@
 class Displays::Map < Displays::Base
-    def can_publish?
-        false
-    end
-
     def required_javascripts
         [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.5', 'shared-map' ]
     end
@@ -13,7 +9,7 @@ class Displays::Map < Displays::Base
 
     def render_inline_runtime_js(context)
         js = <<END
-$('#dataGrid').blistMap(blist.display.options);
+blist.$display.blistMap(blist.display.options);
 END
         super << js
     end

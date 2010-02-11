@@ -19,6 +19,7 @@ $.urlParam = function(url, name, value)
 
 $.htmlEscape = function(text)
 {
+    if (typeof text !== 'string') { return text; }
     return text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -86,6 +87,7 @@ $.capitalize = function(text)
 $.live = function(selector, type, fn)
 {
     var $obj = $([]);
+    $obj.context = document;
     $obj.selector = selector;
     $obj.live(type, fn);
     return $obj;

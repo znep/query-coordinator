@@ -301,8 +301,13 @@ blist.myBlists.closeRenameForms = function()
     var $this = $("#blist-list");
     var $allNameCells = $this.find("div.blist-td.blist-list-c3, div.blist-td-name");
     $allNameCells.closest(".blist-tr").removeClass("highlight");
-    $allNameCells.find("form").hide();
-    $allNameCells.find("div").show();
+    $allNameCells.each(function(i, cell)
+    {
+        var $cell = $(cell);
+        var oldName = $cell.find('div .dataset-name').text();
+        $cell.find("form").hide().find(':text').val(oldName);
+        $cell.find("div").show();
+    });
 };
 
 blist.myBlists.renameSubmit = function(event)
@@ -323,18 +328,23 @@ blist.myBlists.renameSubmit = function(event)
         dataType: "json",
         success: function(responseData)
         {
-            $form.hide();
-            var row = myBlistsNS.model.getByID(responseData.id);
-            row.name = responseData.name;
-            myBlistsNS.model.change([row]);
+            if (responseData.error !== undefined && responseData.error !== null)
+            { alert(responseData.error); }
+            else
+            {
+                $form.hide();
+                var row = myBlistsNS.model.getByID(responseData.id);
+                row.name = responseData.name;
+                myBlistsNS.model.change([row]);
 
-            // Update the info pane.
-            $.Tache.DeleteAll();
-            var newName = responseData.name;
-            $("#infoPane h2.panelHeader").attr("title", newName)
-                   .find(".itemContent a[href*='" + responseData.id + "']")
-                        .text(newName).end()
-                   .find("input#view_name").val(newName);
+                // Update the info pane.
+                $.Tache.DeleteAll();
+                var newName = responseData.name;
+                $("#infoPane h2.panelHeader").attr("title", newName)
+                       .find(".itemContent a[href*='" + responseData.id + "']")
+                            .text(newName).end()
+                       .find("input#view_name").val(newName);
+            }
         }
     });
 };
@@ -405,7 +415,9 @@ blist.myBlists.infoEditCallback = function(fieldType, fieldValue, itemId, respon
     // If anything in the info pane is changed, make sure it reloads
     $.Tache.DeleteAll();
 };
-blist.infoEditSubmitSuccess = myBlistsNS.infoEditCallback;
+
+blist.myBlists.infoEditErrorCallback = function(fieldType, message)
+{ alert(message); };
 
 blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 {
@@ -442,7 +454,8 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
     });
 
     $("#infoPane .editItem").infoPaneItemEdit({
-        submitSuccessCallback: myBlistsNS.infoEditCallback
+        submitSuccessCallback: myBlistsNS.infoEditCallback,
+        submitErrorCallback: myBlistsNS.infoEditErrorCallback
     });
 
     $('.copyCode textarea, .copyCode input').click(function() { $(this).select(); });
@@ -484,6 +497,8 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
         }
     });
 
+    $('#infoPane .singleInfoFiltered').infoPaneFiltered();
+
     $("#infoPane .singleInfoPublishing").infoPanePublish();
 
     $('#infoPane .singleInfoSharing').infoPaneSharing({
@@ -494,7 +509,8 @@ blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
             $(".infoContent dl.actionList, .infoContentHeader")
                 .infoPaneItemHighlight();
             $("#infoPane .editItem").infoPaneItemEdit(
-                { submitSuccessCallback: myBlistsNS.infoEditCallback });
+                { submitSuccessCallback: myBlistsNS.infoEditCallback,
+                    submitErrorCallback: myBlistsNS.infoEditErrorCallback });
         }
     });
 
@@ -681,7 +697,8 @@ blist.myBlists.customDatasetName = function(value)
       form_authenticity_token + '"/>' +
       '<input id="view_\'+ row.id + \'_name" name="view_\' + row.id + ' +
       '\'[name]" type="text" value="\' + $.htmlEscape(' + value + ') + \'"/>' +
-      '<input src="/images/submit_button_mini.png" title="Rename" type="image" />' +
+      '<input src="/images/submit_button_mini.png" title="Rename" type="image"' +
+      'alt="rename" />' +
     '</form>\'';
 
     var expansion =

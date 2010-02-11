@@ -20,7 +20,7 @@ class Displays::Base
 
     # This CSS class is applied to HTML anchors that reference views of this display type
     def link_css_class
-        @view.displayType
+        type
     end
 
     # Is this display type publishable as a widget?  Theoretically all display types should be publishable but
@@ -49,6 +49,66 @@ class Displays::Base
       true
     end
 
+    # Is the view properly configured to work with the underlying dataset?
+    def valid?
+        true
+    end
+
+    # Render inline javascript to be included in the body *before* the bulk of javascript initializes.  Called by view
+    # logic
+    def render_inline_setup_js(target_dom_id, context)
+        # Set common base variables communicating display configuration to JS
+        js = <<END
+blist.namespace.fetch('blist.display');
+blist.display.name = '#{name}';
+blist.display.type = '#{type}';
+blist.display.viewId = '#{@view.id}';
+blist.display.options = #{@options.to_json};
+blist.display.editable = #{@view.can_edit};
+blist.$display = $('##{target_dom_id}')
+END
+
+        # Disable scrolling if the display shouldn't scroll
+        js << "blist.$display.removeClass('scrollContent')" unless scrolls_inline?
+
+        js
+    end
+
+    # Retrieve rendered CSS links to include in the page.  Called by view logic
+    def render_stylesheet_includes
+        required_stylesheets.map { |css| @@asset_helper.stylesheet_link_merged css }.join
+    end
+
+    # Retrieve rendered JavaScript to include in the page.  Called by view logic
+    def render_javascript_includes(context)
+        includes = <<END
+#{render_javascript_links}
+<script type="text/javascript">
+$(function() {
+    #{render_inline_runtime_js context}
+});
+</script>
+END
+    end
+
+    # Name of partial to render if you don't want to write all your HTML in strings
+    def render_partial
+      return nil
+    end
+
+    # Render the body of the view as HTML.  Context is the "self" for the view in which the display is embedded.  You
+    # can use this to render partials if so desired.
+    def render_body(context)
+        return ''
+    end
+
+    # Partial for the publishing tab content
+    def render_publishing_partial
+      return 'displays/base_tab_publishing'
+    end
+
+    protected
+
     # Retrieve a list of stylesheet asset bundles that must be included for this display
     def required_stylesheets
         []
@@ -59,33 +119,9 @@ class Displays::Base
         []
     end
 
-    # Name of partial to render if you don't want to write all your HTML in strings
-    def render_partial
-      return nil
-    end
-
-    # Render the body of the view as HTML.  Context is the "self" for the view
-    # in which the display is embedded
-    def render_body(context)
-        return ''
-    end
-
-    # Render inline javascript to be included in the body *before* the bulk of javascript initializes.
-    def render_inline_setup_js(context)
-        # Set common base variables communicating display configuration to JS
-        js = <<END
-blist.namespace.fetch('blist.display');
-blist.display.name = '#{name}';
-blist.display.type = '#{type}';
-blist.display.viewId = '#{@view.id}';
-blist.display.options = #{@options.to_json};
-blist.display.editable = #{@view.can_edit};
-END
-
-        # Disable scrolling if the display shouldn't scroll
-        js << "$('#dataGrid').removeClass('scrollContent')" unless scrolls_inline?
-
-        js
+    # Render links to javascript files
+    def render_javascript_links
+        required_javascripts.map { |js| @@asset_helper.javascript_include_merged js }.join
     end
 
     # Render inline javascript to be included *after* the bulk of javascript initializes.
@@ -93,15 +129,15 @@ END
         ''
     end
 
-    # Partial for the publishing tab content
-    def render_publishing_partial
-      return 'displays/base_tab_publishing'
-    end
-
-    protected
-
     # Utility for escaping HTML
     def h(text)
         CGI.escapeHTML text
     end
+
+    private
+
+    @@asset_helper = Class.new do
+        include Synthesis::AssetPackageHelper
+        include ActionView::Helpers
+    end.new
 end

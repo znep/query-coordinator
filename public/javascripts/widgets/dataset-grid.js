@@ -1208,12 +1208,15 @@
                         f.isMatching = cf !== undefined && cf.value == f.value;
                         var curType = blist.data.types[col.type] ||
                             blist.data.types['text'];
-                        f.escapedValue = curType.filterValue !== undefined ?
-                            curType.filterValue(f.value, col) :
-                            $.htmlStrip(f.value + '');
-                        f.renderedValue = curType.filterRender !== undefined ?
-                            curType.filterRender(f.value, col, cs.subColumnType) :
-                            '';
+                        f.escapedValue = $.htmlEscape(
+                            curType.filterValue !== undefined ?
+                                curType.filterValue(f.value, col) :
+                                $.htmlStrip(f.value + ''));
+                        f.renderedValue =
+                            curType.filterRender !== undefined ?
+                                curType.filterRender(f.value, col,
+                                    cs.subColumnType) :
+                                '';
                         f.titleValue = $.htmlStrip(f.renderedValue + '');
                     });
 
@@ -1309,7 +1312,7 @@
                 // the ending | in case there are spaces at the end of the value
                 var p = s.slice(2).join('_').split(':');
                 model.filterColumn(colIdIndex,
-                    $.htmlUnescape(p.slice(1).join(':').slice(0, -1)), p[0]);
+                    p.slice(1).join(':').slice(0, -1), p[0]);
                 break;
             case 'clear-filter-column':
                 model.clearColumnFilter(colIdIndex);

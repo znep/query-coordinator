@@ -246,10 +246,6 @@ $(function ()
             window.location.hash = ''; // only webkit/ie understand this, but only they need to
             $.historyLoad('');
         });
-    if ($.urlParam(window.location.href, "search") !== 0)
-    {
-        $(".clearSearch").show();
-    }
     
     $("#splashModal").jqm({
         trigger: false,

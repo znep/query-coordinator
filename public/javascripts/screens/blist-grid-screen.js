@@ -2,12 +2,8 @@ var blistGridNS = blist.namespace.fetch('blist.blistGrid');
 
 blist.blistGrid.getCookieHash = function()
 {
-    var dispType = blist.display.type;
-    if (dispType != 'calendar' && dispType != 'visualization') {
-        dispType = 'filter';
-    }
     return {name: $.htmlUnescape(blistGridNS.viewName), id: blistGridNS.viewId,
-        path: window.location.pathname, displayType: dispType};
+        path: window.location.pathname, displayType: blist.display.type};
 };
 
 blist.blistGrid.setUpTabs = function ()
@@ -303,7 +299,8 @@ blist.blistGrid.infoEditCallback = function(fieldType, fieldValue, itemId, respo
     }
 };
 
-blist.infoEditSubmitSuccess = blistGridNS.infoEditCallback;
+blist.blistGrid.infoEditErrorCallback = function(fieldType, message)
+{ alert(message); };
 
 /* Initial start-up calls, and setting up bindings */
 
@@ -311,23 +308,26 @@ $(function ()
 {
     if (!blist.blistGrid.isAltView)
     {
-        $('#dataGrid').datasetGrid({viewId: blistGridNS.viewId,
-            columnDeleteEnabled: blistGridNS.isOwner,
-            columnPropertiesEnabled: blistGridNS.isOwner,
-            columnNameEdit: blistGridNS.isOwner,
-            showAddColumns: blistGridNS.canAddColumns,
-            currentUserId: blist.currentUserId,
-            accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
-            clearTempViewCallback: blistGridNS.clearTempViewTab,
-            setTempViewCallback: blistGridNS.setTempViewTab,
-            updateTempViewCallback: blistGridNS.updateTempViewTab,
-            filterForm: '#lensContainer .headerBar form',
-            clearFilterItem: '#lensContainer .headerBar form .clearSearch',
-            isInvalid: blist.blistGrid.isInvalidView,
-            validViewCallback: blistGridNS.updateValidView
-        });
+        $('#dataGrid')
+            .bind('full_load',
+                function(){ $('#lensContainer .headerBar').removeClass('hide'); })
+            .datasetGrid({viewId: blistGridNS.viewId,
+                columnDeleteEnabled: blistGridNS.isOwner,
+                columnPropertiesEnabled: blistGridNS.isOwner,
+                columnNameEdit: blistGridNS.isOwner,
+                showAddColumns: blistGridNS.canAddColumns,
+                currentUserId: blist.currentUserId,
+                accessType: 'WEBSITE', manualResize: true, showRowHandle: true,
+                clearTempViewCallback: blistGridNS.clearTempViewTab,
+                setTempViewCallback: blistGridNS.setTempViewTab,
+                updateTempViewCallback: blistGridNS.updateTempViewTab,
+                filterForm: '#lensContainer .headerBar form',
+                clearFilterItem: '#lensContainer .headerBar form .clearSearch',
+                isInvalid: blist.blistGrid.isInvalidView,
+                validViewCallback: blistGridNS.updateValidView
+            });
     }
-    else if (blist.display.type == 'visualization')
+    else if (blist.display.invokeVisualization)
     { $('#dataGrid').visualization(); }
 
     $('.viewErrorContainer .removeViewLink').click(function(event)
@@ -663,7 +663,8 @@ $(function ()
         {clickSelector: '#n/a'});
 
     $("#infoPane .editItem").infoPaneItemEdit({
-        submitSuccessCallback: blistGridNS.infoEditCallback});
+        submitSuccessCallback: blistGridNS.infoEditCallback,
+        submitErrorCallback: blistGridNS.infoEditErrorCallback});
     var inlineEditArgs = {
         requestUrl: '/views.json',
         requestDataCallback: function($form, name)
@@ -707,7 +708,8 @@ $(function ()
             $(".infoContent dl.actionList, .infoContentHeader")
                 .infoPaneItemHighlight();
             $("#infoPane .editItem").infoPaneItemEdit(
-                { submitSuccessCallback: blistGridNS.infoEditCallback });
+                { submitSuccessCallback: blistGridNS.infoEditCallback,
+                    submitErrorCallback: blistGridNS.infoEditErrorCallback});
         }
     });
 

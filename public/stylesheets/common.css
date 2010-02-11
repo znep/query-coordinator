@@ -209,9 +209,9 @@ form.search input.submit
 
 form.search.large input.submit
 {
+    background-image: url(/images/find_button_large.png);
     height: 37px;
     width: 40px;
-    background-image: none;
 }
 
 /********************
@@ -598,3 +598,8 @@ span.helpie
     width: 16px;
 }
 
+/* For footer links in co-branded sites */
+.powered-by {
+    background: url(/stylesheets/images/common/small_logo.png) center left no-repeat;
+    padding: 5px 0px 5px 20px;
+}

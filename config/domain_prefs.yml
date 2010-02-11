@@ -69,6 +69,10 @@ strings.company: Socrata
 strings.site_title: Socrata | Making Data Social
 strings.discover_header: Discover useful, unique, and unusual datasets created by the community.
 strings.copyright_string: '&copy; 2009 Socrata, Inc.'
+strings.sign_up: Sign Up
+strings.sign_in: Sign In
+strings.search_prompt: Search
+strings.discover_search_intro: Search for Public Datasets
 
 features.upsell: true
 features.revolutionize: true
@@ -80,3 +84,4 @@ features.remember_me: true
 features.persistent_analytics: true
 features.show_categories: true
 features.show_tags: true
+features.marketing_pages: true

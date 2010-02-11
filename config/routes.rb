@@ -32,9 +32,13 @@ ActionController::Routing::Routes.draw do |map|
   UID_REGEXP = /\w{4}-\w{4}/
 
   map.connect '/internal', :controller => 'internal', :action => 'index'
+  map.connect '/internal/orgs', :controller => 'internal', :action => 'create_org',
+    :conditions => { :method => :post }
   map.connect '/internal/orgs', :controller => 'internal', :action => 'index_orgs'
   map.connect '/internal/orgs/:id', :controller => 'internal',
     :action => 'show_org'
+  map.connect '/internal/orgs/:id/domains', :controller => 'internal',
+    :action => 'create_domain', :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
     :action => 'show_domain', :requirements => {:id => /(\w|\.)+/}
   map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id',

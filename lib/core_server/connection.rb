@@ -24,8 +24,8 @@ module CoreServer
       result_body
     end
 
-    def create_request(path, payload = "{}")
-      generic_request(Net::HTTP::Post.new(path), payload).body
+    def create_request(path, payload = "{}", custom_headers = {})
+      generic_request(Net::HTTP::Post.new(path), payload, custom_headers).body
     end
 
     def update_request(path, payload = "")

@@ -236,13 +236,14 @@ class Model
     update_attributes!(updates)
   end
 
-  def self.create(attributes)
+  def self.create(attributes, custom_headers = {})
     attributes.reject! {|key,v| non_serializable_attributes.include?(key)}
     if !attributes['tags'].nil?
       attributes['tags'] = parse_tags(attributes['tags'])
     end
     path = "/#{self.name.pluralize.downcase}.json"
-    return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
+    return parse(CoreServer::Base.connection.
+                 create_request(path, attributes.to_json, custom_headers))
   end
 
   def self.parse(data)

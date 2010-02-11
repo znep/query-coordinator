@@ -28,21 +28,21 @@
         <% end %>
 
         <h2>Create an organization:</h2>
-        <form action="/internal/orgs" method="post">
+        <% form_tag('/internal/orgs') do %>
           <div class='line'>
             <label>Name:</label>
             <input type="text" name="org[name]"/>
           </div>
           <div class='line'>
             <label>Short Name:</label>
-            <input type="text" name="org[short_name]"/>
+            <input type="text" name="org[shortName]"/>
           </div>
           <div class='line'>
             <label>URL:</label>
             <input type="text" name="org[url]"/>
           </div>
           <input type="submit" value="Create"/>
-        </form>
+        <% end %>
 
       </div>
     </div>

@@ -16,52 +16,62 @@
       <div class="contentTR"><div class="contentTL"></div></div>
       <div class='content'>
 
-        <% if @org.nil? %>
+        <%- if @org.nil? -%>
           <p>Organization could not be found</p>
 
-        <% else %>
+        <%- else -%>
           <h1>Organization: <%= @org.name %></h1>
 
           <h2>Domains:</h2>
-          <% if @org.domains.nil? || @org.domains.size <= 0 %>
+          <%- if @org.domains.nil? || @org.domains.size <= 0 -%>
             <p>No domains for this org.</p>
-          <% else %>
+          <%- else -%>
             <ul>
-              <% @org.domains.each do |domain| %>
+              <%- @org.domains.each do |domain| -%>
               <li><a href="/internal/orgs/<%= @org.id.to_s + '/domains/' +
                 domain.cname %>">
                 <%= domain.name %> (<%= domain.cname %>)
               </a></li>
-              <% end %>
+              <%- end -%>
             </ul>
-          <% end %>
+          <%- end -%>
 
           <h2>Create a domain:</h2>
-          <form action="/internal/orgs/<%= @org.uid %>/domains" method="post">
+          <% form_tag('/internal/orgs/' + @org.id.to_s + '/domains') do %>
+            <%= hidden_field_tag 'domain[organizationId]', @org.id.to_s %>
             <div class='line'>
               <label>Name:</label>
               <input type="text" name="domain[name]"/>
             </div>
             <div class='line'>
               <label>CName:</label>
-              <input type="text" name="domain[cname]"/>
+              <input type="text" name="domain[cName]"/>
             </div>
             <div class='line'>
               <label>Short Name:</label>
-              <input type="text" name="domain[short_name]"/>
+              <input type="text" name="domain[shortName]"/>
             </div>
             <div class='line'>
               <label>Tier:</label>
-              <select name="domain[tier_id]">
-                <% @tiers.each do |tier| %>
+              <select name="domain[accountTierId]">
+                <%- @tiers.each do |tier| -%>
                 <option value="<%= tier.id %>"><%= tier.name %></option>
-                <% end %>
+                <%- end -%>
               </select>
             </div>
-            </table>
+            <div class='line'>
+              <label>Parent theme:</label>
+              <select name="config[parentDomainCName]">
+                <%- Organization.find().collect {|o| o.domains}.flatten.
+                compact.unshift(Hashie::Mash.new({'shortName' => '(none)'})).
+                each do |domain| -%>
+                <option value="<%= domain.cname %>"><%= domain.shortName %></option>
+                <%- end -%>
+              </select>
+            </div>
             <input type="submit" value="Create"/>
-          </form>
-        <% end %>
+          <% end %>
+        <%- end -%>
 
       </div>
     </div>

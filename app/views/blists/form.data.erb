@@ -35,20 +35,20 @@
       </div>
     </div>
 
-    <%#
     <div class='section'>
       <h3>
         Permissions
       </h3>
       <p class='subtitle separator'>
-      (fill in)
+      Choose whether anyone can submit via your form.  If not, only those given
+      permission individually will be able to use it.
       </p>
       <div class='line'>
-        <label class='required' for='TODO'>(label)</label>
-        <input />
+        <label for='form_publicAdd'>Public?</label>
+        <%= check_box_tag 'publicAdd', true, (@is_edit ?
+          @view.is_public? : true), {:id => 'form_publicAdd'} %>
       </div>
     </div>
-    %>
 
   <%- end -%>
 
@@ -95,6 +95,8 @@
               $dataForm.attr('action',
                 $.urlParam($dataForm.attr('action'), 'successRedirect',
                   escape($form.find('#form_successRedirect').val())));
+              $('#infoPane .singleInfoSharing').infoPaneSharing()
+                  .refresh(blist.display.viewId);
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>

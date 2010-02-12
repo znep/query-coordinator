@@ -14,7 +14,7 @@ class Displays::Base
 
     # Initialize the display.  Stores the view and initializes model fields from the view's display format object
     def initialize(view)
-        @options = view.displayFormat || {}
+        @options = view.displayFormat || Hashie::Mash.new
         @view = view
     end
 
@@ -52,6 +52,16 @@ class Displays::Base
     # Is the view properly configured to work with the underlying dataset?
     def valid?
         true
+    end
+
+    # Is the view publicly accessible?
+    def is_public?
+      @view.grants && @view.grants.any? {|p| p.flag?('public')}
+    end
+
+    # What type of public to use for toggling permissions
+    def public_perm_type
+      'read'
     end
 
     # Render inline javascript to be included in the body *before* the bulk of javascript initializes.  Called by view

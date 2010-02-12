@@ -98,6 +98,11 @@ class View < Model
       "?method=opening"))
   end
 
+  def set_permissions(perm_value)
+    CoreServer::Base.connection.
+      update_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
+                     "?method=setPermission&value=#{perm_value}")
+  end
 
   def to_json
     dhash = data_hash
@@ -140,7 +145,7 @@ class View < Model
   end
 
   def is_public?
-    grants && grants.any? {|p| p.flag?('public')}
+    display.is_public?
   end
   memoize :is_public?
 

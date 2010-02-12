@@ -1549,6 +1549,7 @@ dl.versionInfo dd
     width: 17em;
 }
 .viewSetupWrapper .line input { width: 16.4333em; }
+.viewSetupWrapper .line input[type="checkbox"] { width: auto; }
 
 .viewSetupWrapper span.error
 {

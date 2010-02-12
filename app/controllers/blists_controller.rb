@@ -292,9 +292,7 @@ class BlistsController < ApplicationController
     flags = Array.new
     case (params[:privacy])
     when "public_view"
-      flags << "dataPublic"
-    #when "public_edit"
-    #  flags << "publicEdit"
+      flags << "dataPublicRead"
     when "private"
       # Don't need to set any flags for private
     when "adult_content"
@@ -567,10 +565,15 @@ class BlistsController < ApplicationController
       if params[:edit] == 'true'
         view = View.update_attributes!(params[:id], {'displayFormat' =>
                                   {'successRedirect' => params[:successRedirect]}})
+        perm_value = params[:publicAdd] == 'true' ? 'public.add' : 'private'
+        view.set_permissions(perm_value)
       else
+        flags = []
+        flags << 'dataPublicAdd' if params[:publicAdd] == 'true'
         view = View.create({'name' => params[:viewName],
                           'originalViewId' => params[:id],
                           'displayType' => 'form',
+                          'flags' => flags,
                           'displayFormat' =>
                             {'successRedirect' => params[:successRedirect]}})
       end

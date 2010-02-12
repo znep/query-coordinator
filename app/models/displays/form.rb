@@ -23,4 +23,12 @@ class Displays::Form < Displays::Base
     return 'displays/form_tab_publishing'
   end
 
+  def is_public?
+    @view.grants && @view.grants.any? {|p| p.flag?('public') &&
+      p.type.downcase == 'contributor'}
+  end
+
+  def public_perm_type
+    'add'
+  end
 end

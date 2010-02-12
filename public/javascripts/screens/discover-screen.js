@@ -24,7 +24,7 @@ blist.discover.historyChangeHandler = function (hash)
     // Special cases to handle default tab actions
     if (hash == "")
     {
-        var searchTerm = $.urlParam("search", window.location.href);
+        var searchTerm = $.urlParam(window.location.href, "search");
         if (searchTerm)
         {
             // we got here via search, so default tab is search
@@ -47,7 +47,7 @@ blist.discover.historyChangeHandler = function (hash)
     }
 
     // Find active tab
-    var activeTab = $.urlParam("type", "?" + hash);
+    var activeTab = $.urlParam("?" + hash, "type");
     var tabSelector = tabs[activeTab];
     var tabContainerSelector = tabContainers[activeTab];
 
@@ -74,7 +74,7 @@ blist.discover.historyChangeHandler = function (hash)
         {
             $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
             $("form.search #search")
-                .val($.urlParam("search", "?" + hash))
+                .val($.urlParam("?" + hash, "search"))
                 .removeClass("prompt");
         }
     }
@@ -120,7 +120,7 @@ blist.discover.sortSelectChangeHandler = function (event)
 
     if (hash == "")
     {
-        var searchTerm = $.urlParam("search", window.location.href);
+        var searchTerm = $.urlParam(window.location.href, "search");
         if (searchTerm)
         {
             // we got here via a search

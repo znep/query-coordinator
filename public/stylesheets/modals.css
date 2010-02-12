@@ -1549,6 +1549,7 @@ dl.versionInfo dd
     width: 17em;
 }
 .viewSetupWrapper .line input { width: 16.4333em; }
+.viewSetupWrapper .line input[type="checkbox"] { width: auto; }
 
 .viewSetupWrapper span.error
 {
@@ -1681,6 +1682,17 @@ dl.versionInfo dd
 .vizWrapper .closed .content { display: none; }
 
 /*** END: Create visualization dialog ***/
+
+
+/*** START: Create form dialog ***/
+.modalDialog .dialogBox .header .formIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png?1);
+    background-position: 0 -297px;
+    background-repeat: no-repeat;
+    padding-left: 35px;
+}
+/*** END: Create form dialog ***/
 
 
 /*** START: Message the owner of this dataset ***/

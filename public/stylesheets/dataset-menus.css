@@ -15,6 +15,7 @@
 .headerMenu .recent .calendar a { background-position: 5px -761px; }
 .headerMenu .recent .visualization a { background-position: 5px -784px; }
 .headerMenu .recent .grouped a { background-position: 5px -1267px; }
+.headerMenu .recent .form a { background-position: 5px -1313px; }
 .headerMenu .flag a { background-position: 5px -1129px; }
 
 /* Filter, Visualize, Views menu */
@@ -47,6 +48,7 @@
 { background-position: 5px -508px; }
 .headerMenu .calendar a { background-position: 5px -761px; }
 .headerMenu .visualization a { background-position: 5px -784px; }
+.headerMenu .form a { background-position: 5px -1313px; }
 .headerMenu .moreViews a { background-position: 5px -531px; }
 .headerMenu .moreViews .filter a { background-position: 5px -531px; }
 .headerMenu .moreViews .calendar a { background-position: 5px -761px; }

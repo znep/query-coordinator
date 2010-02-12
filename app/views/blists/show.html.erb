@@ -128,6 +128,15 @@
             </li>
             <%- end -%>
 
+            <%- if @view.is_form? && is_owner -%>
+            <li class='separator'>
+              <a rel='modal' href="<%= @view.href %>/form?edit=true"
+                id='editForm' class='staticLink'>
+                <span class='linkIcon'>Edit Form</span>
+              </a>
+            </li>
+            <%- end -%>
+
             <%- if @view.can_edit() && !@view.is_alt_view? -%>
             <li class='separator mainViewSeparator ungroupedOption'>
               <a id='formatLink' class='staticLink' href='#formatMenu'>
@@ -327,7 +336,10 @@
           <%- end -%>
         </div>
         <%- end -%>
-        <div id='dataGrid' class='scrollContent gridItem'><%= raw @display.render_body self %></div>
+        <div id='dataGrid' class='scrollContent gridItem'>
+          <%= raw @display.render_body self %>
+          <%= render(:partial => @display.render_partial) %>
+        </div>
 
       </div>
     </div>

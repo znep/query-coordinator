@@ -15,4 +15,8 @@ class Displays::Table < Displays::Base
           'filter'
         end
     end
+
+    def can_advanced_publish?
+        true
+    end
 end

@@ -130,6 +130,9 @@ blist.myBlists.filterFilter = function(view)
 blist.myBlists.calendarFilter = function(view)
 { return view.displayType == 'calendar'; };
 
+blist.myBlists.formFilter = function(view)
+{ return view.displayType == 'form'; };
+
 blist.myBlists.visualizationFilter = function(view)
 {
     if ($.inArray(view.displayType, ['barchart', 'annotatedtimeline',
@@ -223,6 +226,10 @@ blist.myBlists.filterGen = function(type, argument, callback)
             if (argument == 'calendar')
             {
                 return callback(myBlistsNS.calendarFilter);
+            }
+            if (argument == 'form')
+            {
+                return callback(myBlistsNS.formFilter);
             }
             if (argument == 'visualization')
             {
@@ -641,6 +648,10 @@ blist.myBlists.getTypeClassName = function(value)
     if (myBlistsNS.calendarFilter(value))
     {
         cls += "calendar";
+    }
+    else if (myBlistsNS.formFilter(value))
+    {
+        cls += "form";
     }
     else if (myBlistsNS.visualizationFilter(value))
     {

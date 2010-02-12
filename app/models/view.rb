@@ -41,7 +41,7 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
   end
   
-    def get_rows_by_ids(params={})
+  def get_rows_by_ids(params={})
     ids = params[:ids]
     ids = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
     params.delete(:ids)
@@ -55,12 +55,11 @@ class View < Model
   def paginate_rows(params = {})
     params[:page] = 1 if params[:page].nil?
     all_row_ids = self.get_rows(:row_ids_only => true)
-    all_row_ids = all_row_ids.collect{|id| id.to_i}
-    all_row_ids = all_row_ids.sort
-    row_ids_to_fetch = all_row_ids.paginate(:per_page => params[:per_page], :page => params[:page]) 
+    row_ids_to_fetch = all_row_ids.paginate(:per_page => params[:per_page], :page => params[:page])
+
     @paginated_data = WillPaginate::Collection.create(params[:page], params[:per_page], all_row_ids.size) do |pager|
          result = self.get_rows_by_ids(:ids => row_ids_to_fetch)
-         result = result.sort_by{|row| row[0]}
+         result.sort!{ |a, b| row_ids_to_fetch.index(a) <=> row_ids_to_fetch.index(b) }
          pager.replace(result)
          pager.total_entries = all_row_ids.size
     end

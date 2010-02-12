@@ -191,6 +191,9 @@
 {
     display: inline;
 }
+
+#data-grid.fc { overflow: auto; }
+
 .blist-table { height: 100%; }
 
 .blist-table-header-scrolls { background-color: #e8e8e2; }

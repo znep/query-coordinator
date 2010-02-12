@@ -286,6 +286,8 @@ stylesheets:
   - discover-screen
   - carousel/jquery.jcarousel
   - carousel/discover-carousel-skin
+- displays-form:
+  - displays-form
 - rpx-return-login:
   - signup-screen
   - form-common

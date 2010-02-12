@@ -97,11 +97,13 @@
 
             var $link = $(this);
             var curState = $link.text().toLowerCase();
-            var newState = curState == 'private' ?
-                'public' : 'private';
-            var viewId = $link.attr('href').split('_')[1];
+            var linkParts = $link.attr('href').split('_');
+            var viewId = linkParts[1];
+            var serverValue = curState == 'private' ?
+                ('public.' + linkParts[2]) : 'private';
+            var newState = serverValue.replace(/\.\w+$/, '');
             $.ajax({url: '/views/' + viewId,
-                data: {'method': 'setPermission', 'value': newState},
+                data: {'method': 'setPermission', 'value': serverValue},
                 complete: function()
                 { $throbber.addClass('hidden'); },
                 error: function()

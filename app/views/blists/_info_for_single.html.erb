@@ -113,8 +113,10 @@
     <h2 class="panelHeader">3212 total views</h2>
     %>
 
+    <%- if @view.display.can_advanced_publish? -%>
     <%# Only members of the same org can access the premium publisher %>
-    <%- if (CurrentDomain.member?(current_user) && module_available?(:sdp_customizer)) -%>
+    <%- if (CurrentDomain.member?(current_user) &&
+      module_available?(:sdp_customizer)) -%>
       <ul class="headerActions actionButtons">
         <li>
           <a href="<%= "#{view.href}/publish" %>" class="arrowButton">
@@ -130,6 +132,7 @@
           </a>
         </li>
       </ul>
+    <%- end -%>
     <%- end -%>
   </div>
 

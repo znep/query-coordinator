@@ -1,5 +1,7 @@
 # Base class for all displays
 class Displays::Base
+  attr_reader :options
+
     # Access the human readable name for this type of display
     def name
         self.class.name[10..-1]
@@ -12,7 +14,7 @@ class Displays::Base
 
     # Initialize the display.  Stores the view and initializes model fields from the view's display format object
     def initialize(view)
-        @options = view.displayFormat || {}
+        @options = view.displayFormat || Hashie::Mash.new
         @view = view
     end
 
@@ -27,14 +29,39 @@ class Displays::Base
         true
     end
 
+    # Whether or not the display type has an advanced option that loads a
+    # separate UI for configuration
+    def can_advanced_publish?
+        false
+    end
+
     # Does the display scroll inline?  Return false to disable default management of the display container's size
     def scrolls_inline?
         true
     end
 
+    # Controls for displaying the widget
+    def render_widget_chrome?
+      true
+    end
+
+    def render_widget_tabs?
+      true
+    end
+
     # Is the view properly configured to work with the underlying dataset?
     def valid?
         true
+    end
+
+    # Is the view publicly accessible?
+    def is_public?
+      @view.grants && @view.grants.any? {|p| p.flag?('public')}
+    end
+
+    # What type of public to use for toggling permissions
+    def public_perm_type
+      'read'
     end
 
     # Render inline javascript to be included in the body *before* the bulk of javascript initializes.  Called by view
@@ -74,10 +101,20 @@ $(function() {
 END
     end
 
+    # Name of partial to render if you don't want to write all your HTML in strings
+    def render_partial
+      return nil
+    end
+
     # Render the body of the view as HTML.  Context is the "self" for the view in which the display is embedded.  You
     # can use this to render partials if so desired.
     def render_body(context)
         return ''
+    end
+
+    # Partial for the publishing tab content
+    def render_publishing_partial
+      return 'displays/base_tab_publishing'
     end
 
     protected

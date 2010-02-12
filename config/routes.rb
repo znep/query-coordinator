@@ -154,6 +154,11 @@ ActionController::Routing::Routes.draw do |map|
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :type => /(\w|-)+/, :category => /(\w|-)+/}
 
+  map.connect ':category/:view_name/:id/create_form', :controller => 'blists',
+  :action => 'create_form', :conditions => { :method => :post },
+  :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :type => /(\w|-)+/,
+    :category => /(\w|-)+/}
+
   # Support /dataset and /d short URLs
   map.connect 'dataset/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },

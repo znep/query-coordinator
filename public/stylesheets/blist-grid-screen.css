@@ -179,6 +179,7 @@ body#lensBody
     text-align: left;
 }
 #lensContainer .tabList li.filter a.calendar { background-position: 0 -759px; }
+#lensContainer .tabList li.filter a.form { background-position: 0 -1310px; }
 #lensContainer .tabList li.filter a.grouped { background-position: 0 -1264px; }
 #lensContainer .tabList li.filter a.visualization { background-position: 0 -782px; }
 
@@ -380,10 +381,8 @@ body#lensBody
 
 #lensBody .headerBar #filterViewMenu { min-width: 22em; }
 
-#lensBody #editViz span.linkIcon
-{
-    background-position: 0 -340px;
-}
+#lensBody #editForm span.linkIcon { background-position: 0 -319px; }
+#lensBody #editViz span.linkIcon { background-position: 0 -340px; }
 
 #lensBody .headerBar #formatLink span.linkIcon
 {

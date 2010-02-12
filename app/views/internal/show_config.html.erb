@@ -21,29 +21,61 @@
           <p>Domain or Configuration could not be found</p>
 
         <%- else -%>
-        <h1><%= @config.name %> for <%= @domain.name %> (<%= @domain.cname %>)</h1>
+        <h1><%= @config.name %> for
+          <a href="/internal/orgs/<%= @domain.organizationId
+            %>/domains/<%= @domain.cname %>">
+            <%= @domain.name %> (<%= @domain.cname %>)
+        </a></h1>
 
+        <%- props = @config.data['properties'] -%>
+        <%- cur_props = Hash.new -%>
         <h2>Properties:</h2>
-        <form class='wide' method='post'>
+        <%- if props.nil? -%>
+        <p>No properties for this configuration</p>
+
+        <%- else -%>
+        <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+          '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
+          '/property', {:class => 'wide'}) do %>
           <%- @config.data['properties'].each do |prop| -%>
           <div class='line'>
+            <%- cur_props[prop['name']] = true -%>
             <label><%= prop['name'] %></label>
-            <%= text_area_tag 'property-' + prop['name'], prop['value'].to_json %>
+            <%= text_area_tag 'properties[' + prop['name'] + ']',
+              prop['value'].blank? ? '' : prop['value'].to_json %>
+            <%= check_box_tag 'delete_properties[' + prop['name'] + ']',
+              'delete' %>
+            <span>(Delete)</span>
           </div>
           <%- end -%>
           <input type="submit" value="Save"/>
+        <% end %>
+        <%- end -%>
+
+        <%- if !@parent_config.nil? && !@parent_config.data['properties'].nil? -%>
+        <h2>Inherited Properties:</h2>
+        <form class='wide'>
+          <%- @parent_config.data['properties'].each do |prop| -%>
+          <%- next if cur_props[prop['name']] -%>
+
+          <div class='line'>
+          <label><%= prop['name'] %></label>
+          <textarea disabled='true'><%= prop['value'].to_json %></textarea>
+          </div>
+          <%- end -%>
         </form>
+        <%- end -%>
 
         <h2>Add Property</h2>
-        <form class='wide' action="/internal/orgs/<%= @domain.organizationId
-          %>/domains/<%= @domain.cname %>/site_config/<%= @config.id %>"
-          method="post">
+        <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+          '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
+          '/property', {:class => 'wide'}) do %>
           <div class='line'>
-            <%= text_field_tag 'name' %>
-            <%= text_area_tag 'value' %>
+            <%= text_field_tag 'new-property_name' %>
+            <%= text_area_tag 'new-property_value' %>
           </div>
           <input type="submit" value="Add"/>
-        </form>
+        <% end %>
         <%- end -%>
 
       </div>

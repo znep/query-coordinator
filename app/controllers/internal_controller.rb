@@ -20,7 +20,10 @@ class InternalController < ApplicationController
 
   def show_config
     @domain = Domain.find(params[:domain_id])
-    @config = Configuration.find(params[:id])
+    @config = Configuration.find_unmerged(params[:id])
+    if !@config.parentId.nil?
+      @parent_config = Configuration.find(@config.parentId.to_s)
+    end
   end
 
   def index_modules
@@ -70,6 +73,48 @@ class InternalController < ApplicationController
       return (render 'shared/error', :status => :internal_server_error)
     end
     redirect_to '/internal/orgs/' + params[:id] + '/domains/' + domain.cname
+  end
+
+  def set_features
+    config = Configuration.find_by_type('feature_set', true, params[:domain_id])[0]
+    if !params['new-feature_name'].blank?
+      config.create_property(params['new-feature_name'],
+                             params['new-feature_enabled'] == 'enabled')
+
+    else
+      params[:features][:name].each do |key, name|
+        config.update_property(name,
+                            params[:features][:enabled][name] == 'enabled', true)
+      end
+    end
+
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id]
+  end
+
+  def set_property
+    config = Configuration.find(params[:id])
+    if !params['new-property_name'].blank?
+      # Wrap incoming value in [] to get around the fact the JSON parser
+      # doesn't handle plain string tokens
+      config.create_property(params['new-property_name'],
+                           JSON.parse("[" + params['new-property_value'] + "]")[0])
+
+    else
+      params[:delete_properties].each do |name, value|
+        if value == 'delete'
+          params[:properties].delete(name)
+          config.delete_property(name, true)
+        end
+      end
+
+      params[:properties].each do |name, value|
+        config.update_property(name, JSON.parse("[" + value + "]")[0], true)
+      end
+    end
+
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id] + '/site_config/' + params[:id]
   end
 
 private

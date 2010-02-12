@@ -22,7 +22,7 @@
         <% else %>
           <h1><%= @domain.name %> (<%= @domain.cname %>)</h1>
 
-          <p>This domain is a
+          <p>This is a
           <a href="/internal/tiers/<%= @domain.accountTier.name %>">
             <em><%= @domain.accountTier.name %></em>
           </a>
@@ -42,24 +42,29 @@
           </ul>
 
           <h2>Features:</h2>
-          <ul>
+          <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+            '/domains/' + @domain.cname + '/feature' do %>
             <%- @domain.features.each do |feature, enabled| -%>
-            <li>
-            <label><%= feature %></label>
-            <%= check_box_tag 'feature-' + feature, '', enabled %>
-            </li>
+            <div class='line'>
+              <label><%= feature %></label>
+              <%= hidden_field_tag 'features[name[' + feature + ']]',
+                feature %>
+              <%= check_box_tag 'features[enabled[' + feature + ']]',
+                'enabled', enabled %>
+            </div>
             <%- end -%>
-          </ul>
+            <input type="submit" value="Update"/>
+          <% end %>
 
           <h2>Add Feature</h2>
-          <form action="/internal/orgs/<%= @domain.organizationId
-            %>/domains/<%= @domain.cname %>/feature" method="post">
+          <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+            '/domains/' + @domain.cname + '/feature' do %>
             <div class='line'>
-              <input type="text" name="name" />
-              <%= check_box_tag 'enabled', '', true %>
+              <input type="text" name="new-feature_name" />
+              <%= check_box_tag 'new-feature_enabled', 'enabled', true %>
             </div>
             <input type="submit" value="Add"/>
-          </form>
+          <% end %>
 
           <h2>Account Modules:</h2>
           <% if @domain.accountmodules.nil? || @domain.accountModules.size <= 0 %>

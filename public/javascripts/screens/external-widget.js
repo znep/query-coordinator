@@ -145,6 +145,10 @@ blist.widget.widgetDataLoaded = function (data)
 
 blist.widget.sizeGrid = function ()
 {
+    var $metaContainer = $("#widgetMeta");
+    // If there is no widget meta, then don't bother sizing
+    if ($metaContainer.length < 1) { return; }
+
     // Delay-load tab content when switching to it.
     var $outerContent = $(this.allPanelsSelector + '.' + this.activationClass);
     var $infoContent = $outerContent.find(this.expandableSelector);
@@ -176,7 +180,6 @@ blist.widget.sizeGrid = function ()
     var $container = $(".gridOuter");
     var $innerContainer = $grid.closest(".gridInner");
     var $gridContainer = $(".gridContainer");
-    var $metaContainer = $("#widgetMeta");
     var $viewHeader = $("#viewHeader");
 
     var newContainerHeight = $container.next().offset().top - $container.offset().top;
@@ -366,11 +369,11 @@ $(function ()
 
     widgetNS.setUpMenu();
 
+    widgetNS.sizeGrid();
+    $(window).resize(function() { widgetNS.sizeGrid(); });
+
     if (!widgetNS.isAltView)
     {
-        widgetNS.sizeGrid();
-        $(window).resize(function() { widgetNS.sizeGrid(); });
-
         var $dataGrid = $('#data-grid');
         if ($dataGrid.length > 0)
         {

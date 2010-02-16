@@ -56,7 +56,9 @@
   <div class='error mainError'></div>
 
   <div class='submitLine clearfix'>
+    <%- if !@is_edit -%>
     <div class="required">Required Field</div>
+    <%- end -%>
     <ul class='actionButtons clearfix'>
       <li><a href='#create' class='create arrowButton'>
         <%= @is_edit ? 'Save' : 'Create' %> Form

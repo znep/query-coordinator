@@ -1,4 +1,5 @@
 class BlistsController < ApplicationController
+  include BlistsHelper
   helper_method :get_title
   skip_before_filter :require_user, :only => [:show, :alt, :about, :print, :email, :flag, :republish, :about_sdp]
 
@@ -73,8 +74,23 @@ class BlistsController < ApplicationController
     @display = @view.display
   end
 
-  def alt
+   def alt
     @body_id = 'lensBody'
+    find_view
+    @data = @view.find_data(:all, :page => params[:page])
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
+  end
+  
+  def alt_filter
+    find_view
+    @data = @view.find_data(:all, :page => params[:page], :conditions => params)
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
+    render :template => 'blists/alt'  
+  end
+
+  def find_view
     begin
       @parent_view = @view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound
@@ -100,12 +116,6 @@ class BlistsController < ApplicationController
     if !@view.is_blist?
       # SoL. Display a message and redir to parent?
     end
-
-    @show_columns = @view.columns.map{ |column| column.dataTypeName != 'meta_data' }
-    @data = @view.paginate_rows(:per_page => 50, :page => params[:page])
-
-    @view.register_opening
-    @view_activities = Activity.find({:viewId => @view.id})
   end
 
   # To build a url to this action, use View.about_href.

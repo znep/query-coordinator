@@ -1,6 +1,27 @@
 class View < Model
   cattr_accessor :categories, :licenses, :creative_commons
-
+  attr_reader :column_meta_data
+  FILTER_CONDITIONS =    {:text =>     [ { :operator => "EQUALS", :label => "equals" },
+               { :operator => "NOT_EQUALS", :label => "does not equal" },
+               { :operator => "STARTS_WITH", :label => "starts with" },
+               { :operator => "CONTAINS", :label => "contains" } ],
+   :date =>     [ { :operator => "EQUALS", :label => "on" },
+               { :operator => "NOT_EQUALS", :label => "not on" },
+               { :operator => "LESS_THAN", :label => "before" },
+               { :operator => "GREATER_THAN", :label => "after" },
+               { :operator => "BETWEEN", :label => "between" } ],
+   :checkbox =>  [ { :operator => "EQUALS", :label => "equals" } ],
+      :photo    =>[ { :operator => "IS_BLANK", :label => "is empty" },
+                  { :operator => "IS_NOT_BLANK", :label => "exists" } ],
+      :number   =>[ { :operator => "EQUALS", :label => "equals" }, 
+                  { :operator => "NOT_EQUALS", :label => "not equals" },
+                  { :operator => "LESS_THAN", :label => "less than" },
+                  { :operator => "LESS_THAN_OR_EQUALS", :label => "less than or equal to" },
+                  { :operator => "GREATER_THAN", :label => "greater than" },
+                  { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" },
+                  { :operator => "BETWEEN", :label => "between"}]}
+  PER_PAGE = 50
+  
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
       return super(options)
@@ -8,7 +29,29 @@ class View < Model
       return self.find_under_user(options)
     end
   end
-
+  
+  def viewable_columns
+    result = self.meta_data_columns.find_all{ |column| column.data_type_name != 'meta_data' }
+    result = result.sort_by{|column| column.id.to_i}
+    result
+  end
+  
+  def search_and_sort_viewable_columns(data_rows)
+    result = []
+    data_rows.each do |data_row|
+      sorted_and_viewable_data_column = []
+      self.viewable_columns.each do |viewable_column|
+        orig_column = self.meta_data_columns.find{|column| column.id == viewable_column.id}
+        orig_index = self.meta_data_columns.rindex(orig_column)
+        sorted_and_viewable_data_column << data_row[orig_index]
+      end
+      #add row number to the last column
+      sorted_and_viewable_data_column << data_row[0]
+      result << sorted_and_viewable_data_column
+    end
+    result
+  end
+  
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))
@@ -32,7 +75,20 @@ class View < Model
     CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
       "rows.html?template=bare_template.html", {})
   end
+  
+  def meta_data_columns
+    @meta_data_columns ||= get_meta_data_columns
+  end
+  
+  def get_meta_data_columns(params = {})
+    # default params
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
 
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+    parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
+    parsed_data['meta']['view']['columns'].inject([]){|array, column_hash| array << MetaDataColumn.new(column_hash)}
+  end
+  
   def get_rows(params = {})
     # default params
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
@@ -40,7 +96,7 @@ class View < Model
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
     JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
   end
-  
+    
   def get_rows_by_ids(params={})
     ids = params[:ids]
     ids = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
@@ -49,21 +105,70 @@ class View < Model
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
 
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}#{ids}"
-    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']    
+    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
   end
   
-  def paginate_rows(params = {})
-    params[:page] = 1 if params[:page].nil?
-    all_row_ids = self.get_rows(:row_ids_only => true)
-    row_ids_to_fetch = all_row_ids.paginate(:per_page => params[:per_page], :page => params[:page])
+  def find_data(*arguments)
+    scope = arguments.slice!(0)
+    options = arguments.slice!(0) || {}
+    # if options[:all] and not options[:conditions]
+      result = find_all_data(options)
+    # else
+      # result = find_data_with_conditions
+    # end
+    result
+  end
+  
+  def find_all_data(options)
+    page = options[:page] || 1
+    result, total_entries = find_row_data(page, options[:conditions])
+    result = search_and_sort_viewable_columns(result)
+    result = paginate_rows(result, page, total_entries)
+    result
+  end
+  
+  def get_rows_by_query(query, params = {})
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=index&#{params.to_param}"
+    JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))['data']
+  end
+  
+  def get_rows(params = {})
+    # default params
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
 
-    @paginated_data = WillPaginate::Collection.create(params[:page], params[:per_page], all_row_ids.size) do |pager|
-         result = self.get_rows_by_ids(:ids => row_ids_to_fetch)
-         result.sort!{ |a, b| row_ids_to_fetch.index(a) <=> row_ids_to_fetch.index(b) }
-         pager.replace(result)
-         pager.total_entries = all_row_ids.size
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
+  end
+
+  def find_row_data_with_conditions(params)
+    fq = FilterQuery.new(self.id, params)
+    query = fq.build
+    self.get_rows_by_query(query, :row_ids_only => true)    
+  end
+  
+  def find_all_row_data_ids
+    self.get_rows(:row_ids_only => true)
+  end
+  
+  def find_row_data(page, conditions = nil)
+    if conditions.nil?
+      all_row_ids = find_all_row_data_ids
+    else
+      all_row_ids = find_row_data_with_conditions(conditions)
     end
-    @paginated_data
+    row_ids_to_fetch = all_row_ids.paginate(:per_page => PER_PAGE, :page => page)
+    result = self.get_rows_by_ids(:ids => row_ids_to_fetch)
+    result = result.sort
+    return result, all_row_ids.size
+  end
+  
+  def paginate_rows(row_data, page, total_entries)
+    paginated_data = WillPaginate::Collection.create(page, PER_PAGE, total_entries) do |pager|
+      pager.replace(row_data)
+      pager.total_entries = total_entries
+    end
+    paginated_data
   end
   
   def json(params)

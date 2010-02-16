@@ -527,6 +527,12 @@ module BlistsHelper
     end
     embed_template += "</div>"
   end
+  
+  def options_for_limit_to(column_type)
+    options = [['no filter', 'no filter']]
+    options += View::FILTER_CONDITIONS[column_type.to_sym].collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
+    options_for_select(options)
+  end
 
   # Create a drop down menu of formatting fonts
   # Pass a font name to select it by default.

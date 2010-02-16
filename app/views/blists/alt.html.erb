@@ -42,11 +42,8 @@
                 <thead>
                   <tr>
                     <th id="header_sid">Row number</th>
-                    <%- @show_columns.each_index do |i| -%>
-                      <%- next unless @show_columns[i] -%>
-                      <%- column = @view.columns[i] -%>
-
-                      <th id="header_<%= column.id %>" class="<%= column.dataTypeName %>">
+					<% @view.viewable_columns.each do |column|%>
+                      <th id="header_<%= column.id %>" class="<%= column.data_type_name %>">
                         <%= column.name %>
                       </th>
                     <%- end -%>
@@ -56,16 +53,10 @@
                   <%# This is somewhat ugly but is inline for perf reasons %>
                   <%- @data.each do |row| -%>
                     <tr>
-                      <th header="header_sid"><%= row[0] %></th>
-                      <%- @show_columns.each_index do |i| -%>
-                        <%- next unless @show_columns[i] -%>
-                        <%- column = @view.columns[i] -%>
-
+                      <th header="header_sid"><%= row.last %></th>
+						<% @view.viewable_columns.each_with_index do |column, index|%>
                         <td header="header_<%= column.id %>">
-                          <%- case column.renderTypeName -%>
-                            <%- when 'text' -%>
-                              <%= row[i].to_s %>
-                          <%- end -%>
+                              <%= row[index].to_s %>
                         </td>
                       <%- end -%>
                     </tr>
@@ -77,6 +68,22 @@
 					<%= will_paginate @data %>
 				</div>
           </div>
+  		<%# This is somewhat ugly but is inline for perf reasons %>
+		<% form_tag alt_filter_blist_path(@view.id) do -%>
+			<% @view.viewable_columns.each do |alt_filter_field| %>
+				<% unless View::FILTER_CONDITIONS[alt_filter_field.render_type_name.to_sym].nil? %>
+				<p>
+				 <%= label_tag "Filter on #{alt_filter_field.name}" %>
+				 <%= select_tag "limit_#{alt_filter_field.id}", options_for_limit_to(alt_filter_field.render_type_name)%>
+				 <%= text_field_tag "cell_content_#{alt_filter_field.id}" %>
+				</p>
+				<% end %>
+			<% end %>
+
+
+			<%= submit_tag "submit" %>
+		<% end -%>
+
         </div>
       </div>
     </div>

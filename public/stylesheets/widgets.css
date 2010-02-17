@@ -881,6 +881,11 @@ table.gridList td div.cellInner a
     color: #333;
     text-decoration: none;
 }
+table.gridList td a.cellInner:focus,
+table.gridList td div.cellInner a:focus
+{
+    text-decoration: underline;
+}
 table.gridList td a.cellInner:hover, 
 table.gridList td div.cellInner a:hover { text-decoration: underline; }
 

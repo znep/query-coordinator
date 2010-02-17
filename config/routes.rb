@@ -87,8 +87,11 @@ ActionController::Routing::Routes.draw do |map|
      :action => 'show', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
-   :action => 'update', :conditions => { :method => :put },
-   :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+     :action => 'update', :conditions => { :method => :put },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
+  map.connect 'profile/:profile_name/:id/edit', :controller => 'profile',
+     :action => 'edit', :conditions => { :method => :get },
+     :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
 
   # This needs to be more specific than the dataset routes, which will all
   # accept anything/anything/4-4, which matches our widget customization

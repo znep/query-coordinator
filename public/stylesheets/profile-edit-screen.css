@@ -1,9 +1,9 @@
-.aboutEditContent
+.profileEditContent
 {
     margin: 0 0 1em;
 }
 
-.aboutEditContent h1
+.profileEditContent h1
 {
     background: url(/stylesheets/images/common/new_blist.png) no-repeat;
     color: #000;
@@ -11,21 +11,28 @@
     padding-left: 50px;
 }
 
-.aboutEditContent h3
+.profileEditContent h3
 {
     border-bottom: 1px dotted #666;
     margin-bottom: 15px;
     margin-top: 10px;
 }
 
-.aboutEditContent hr
+.profileEditContent h4
+{
+    font-weight: bold;
+    margin-left: 230px;
+    margin-top: 1em;
+}
+
+.profileEditContent hr
 {
     border: none;
     border-bottom: 1px dotted #666;
     height: 0;
 }
 
-.aboutEditContent label
+.profileEditContent label
 {
     display: block;
     font-size: 1.2em;
@@ -36,7 +43,7 @@
     width: 200px;
 }
 
-.aboutEditContent label.error, label.uploadErrorMessage
+.profileEditContent label.error
 {
     color: red;
     font-size: 1em;
@@ -46,32 +53,27 @@
     width: 350px;
 }
 
-.aboutEditContent label.uploadErrorMessage.hide
-{
-    display: none;
-}
-
-.aboutEditContent label.required
+.profileEditContent label.required
 {
     background: url(/stylesheets/images/common/required.png) no-repeat;
     background-position: right top;
     padding-right: 15px;
 }
 
-.aboutEditContent input[type=text], input[type=file], textarea, select, #privacyDisplayText
+.profileEditContent input[type=text], textarea, select
 {
     display: inline-block;
     margin-left: 230px;
     width: 330px;
 }
 
-.aboutEditContent .prompt
+.profileEditContent .prompt
 {
     color: #666;
     font-style: italic;
 }
 
-.aboutEditContent textarea
+.profileEditContent textarea
 {
     border: 1px solid #CACACA;
     color: #333;
@@ -80,7 +82,7 @@
     padding: 2px;
 }
 
-.aboutEditContent select
+.profileEditContent select
 {
     border: 1px solid #CACACA;
     color: #333;
@@ -88,43 +90,24 @@
     width: 336px;
 }
 
-.aboutEditContent .validationError
+.profileEditContent .validationError
 {
     font-size: 1.4em;
 }
 
-.aboutEditContent span.helpie
-{
-    background: url(/stylesheets/images/info_pane/icon_help_highlight.png) no-repeat;
-    display: block;
-    height: 16px;
-    left: 595px;
-    margin-top: -17px;
-    position: absolute;
-    text-indent: -9999px;
-    width: 16px;
-  vertical-align: middle;
-}
-
-.aboutEditContent span.additionalHelp
-{
-    display: block;
-    margin-left: 230px;
-}
-
-.aboutEditContent .actionButtons
+.profileEditContent .actionButtons
 {
     display: inline-block;
     margin-bottom: -0.65em;
 }
 
-.aboutEditContent .submitActions
+.profileEditContent .submitActions
 {
     margin: 15px;
     margin-left: 230px;
 }
 
-.aboutEditContent .submitActions .cancelButton
+.profileEditContent .submitActions .cancelButton
 {
     color: #333;
     font-weight: bold;
@@ -133,13 +116,7 @@
     text-transform: uppercase;
 }
 
-.aboutEditContent .licensing
-{
-    margin-top: -6px;
-    padding: 5px 0 10px;
-}
-
-.aboutEditContent .requiredEntryText
+.profileEditContent .requiredEntryText
 {
     background: url(/stylesheets/images/common/required.png) no-repeat;
     padding-left: 15px;

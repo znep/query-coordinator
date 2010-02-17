@@ -74,11 +74,11 @@ body
     text-decoration: none;
 }
 
-#header a:hover, #footer a:hover
+#header a:hover, #footer a:hover,
+#header a:focus, #footer a:focus
 {
     text-decoration: underline;
 }
-
 
 /***********************
  * Dark tabs in header *

@@ -1,6 +1,6 @@
 <% content_for :head do %>
   <%= stylesheet_link_merged 'blists-about-edit' %>
-  <title>New <%= t(:blist_name).capitalize %> | <%= CurrentDomain.strings.site_title %></title>
+  <title>Edit <%= t(:blist_name).capitalize %> Details | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
 <div class="twoColumnContainer clearfix">
@@ -11,7 +11,6 @@
         <% form_tag(@view.href, :id => "editDatasetForm", :method => :put) do %>
           <h1>Edit <%= t(:blist_name).capitalize %> Details</h1>
 
-          <%= hidden_field_tag("id", @view.id) %>
           <%= hidden_field_tag("redirect_to", @view.about_href) %>
 
           <div class="errorMessage validationError">

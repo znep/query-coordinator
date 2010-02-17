@@ -41,6 +41,17 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'create_domain', :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
     :action => 'show_domain', :requirements => {:id => /(\w|\.)+/}
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/preview_site_config',
+    :controller => 'internal', :action => 'preview_site_config',
+    :requirements => {:domain_id => /(\w|\.)+/}
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config',
+    :controller => 'internal', :action => 'create_site_config',
+    :requirements => {:domain_id => /(\w|\.)+/},
+    :conditions => { :method => :post }
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/default_site_config',
+    :controller => 'internal', :action => 'set_default_site_config',
+    :requirements => {:domain_id => /(\w|\.)+/},
+    :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:domain_id/feature',
     :controller => 'internal', :action => 'set_features',
     :requirements => {:domain_id => /(\w|\.)+/},

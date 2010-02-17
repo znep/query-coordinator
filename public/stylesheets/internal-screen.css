@@ -9,6 +9,8 @@
 .content .line a
 { font-size: 1.2em; }
 
+.content .minor { font-size: 1em; }
+
 .content li.infoLine strong
 {
     display: inline-block;

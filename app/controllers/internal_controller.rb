@@ -75,6 +75,44 @@ class InternalController < ApplicationController
     redirect_to '/internal/orgs/' + params[:id] + '/domains/' + domain.cname
   end
 
+  def preview_site_config
+    conf_id = params[:config_id]
+    conf_id = nil if conf_id == 'nil' || conf_id.blank?
+    session[:custom_site_config] = conf_id
+
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id]
+  end
+
+  def create_site_config
+    begin
+      conf_name = params[:config][:name]
+      if conf_name.blank?
+        flash.now[:error] = 'Name is required'
+        return (render 'shared/error', :status => :internal_server_error)
+      end
+
+      parent_id = params[:config][:parentId]
+      parent_id = nil if parent_id.blank?
+      config = Configuration.create({'name' => conf_name,
+        'default' => false, 'type' => 'site_theme', 'parentId' => parent_id,
+        'domainCName' => params[:domain_id]})
+    rescue CoreServer::CoreServerError => e
+      flash.now[:error] = e.error_message
+      return (render 'shared/error', :status => :internal_server_error)
+    end
+
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id] + '/site_config/' + config.id.to_s
+  end
+
+  def set_default_site_config
+    Configuration.update_attributes!(params['default-site-config'],
+                                     {'default' => true})
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id]
+  end
+
   def set_features
     config = Configuration.find_by_type('feature_set', true, params[:domain_id])[0]
     if !params['new-feature_name'].blank?

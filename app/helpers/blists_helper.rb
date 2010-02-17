@@ -258,7 +258,9 @@ module BlistsHelper
                module_available?(:form_publish) &&
                view.owned_by?(@current_user) &&
                view.parent_dataset.owned_by?(@current_user),
-      'class' => 'form'}
+      'class' => 'form' + (view.can_add_form? ? '' : ' disabled'),
+      'title' => (view.can_add_form? ? '' :
+        'This dataset does not have any visible columns')}
     ]
   end
 
@@ -319,7 +321,10 @@ module BlistsHelper
         (CurrentDomain.member?(current_user) && module_available?(:form_publish) &&
          view.owned_by?(@current_user) &&
          view.parent_dataset.owned_by?(@current_user)),
-      'user_required' => true, 'class' => 'form mainViewOption'}
+      'user_required' => true, 'class' => 'form mainViewOption' +
+        (view.can_add_form? ? '' : ' disabled'),
+      'title' => (view.can_add_form? ? '' :
+        'This dataset does not have any visible columns')}
       # Map item
       ]) + [menu_options['separator'],
       menu_options['more_views']]

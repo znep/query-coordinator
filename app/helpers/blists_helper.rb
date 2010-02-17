@@ -255,8 +255,12 @@ module BlistsHelper
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Form', 'href' => "#{view.href}/form",
       'if' => CurrentDomain.member?(current_user) &&
-               module_available?(:form_publish),
-      'class' => 'form'}
+               module_available?(:form_publish) &&
+               view.owned_by?(@current_user) &&
+               view.parent_dataset.owned_by?(@current_user),
+      'class' => 'form' + (view.can_add_form? ? '' : ' disabled'),
+      'title' => (view.can_add_form? ? '' :
+        'This dataset does not have any visible columns')}
     ]
   end
 
@@ -314,8 +318,13 @@ module BlistsHelper
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Create a Form View...', 'href' => "#{view.href}/form",
       'modal' => true, 'if' => !view.is_alt_view? &&
-        (CurrentDomain.member?(current_user) && module_available?(:form_publish)),
-      'user_required' => true, 'class' => 'form mainViewOption'}
+        (CurrentDomain.member?(current_user) && module_available?(:form_publish) &&
+         view.owned_by?(@current_user) &&
+         view.parent_dataset.owned_by?(@current_user)),
+      'user_required' => true, 'class' => 'form mainViewOption' +
+        (view.can_add_form? ? '' : ' disabled'),
+      'title' => (view.can_add_form? ? '' :
+        'This dataset does not have any visible columns')}
       # Map item
       ]) + [menu_options['separator'],
       menu_options['more_views']]

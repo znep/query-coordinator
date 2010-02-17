@@ -291,6 +291,10 @@ class View < Model
     display.is_a?(Displays::Form)
   end
 
+  def can_add_form?
+    columns.any? {|c| !c.flag?('hidden')}
+  end
+
   def can_add_calendar?
     columns.any? {|c| c.renderTypeName == 'date' && !c.flag?('hidden')} &&
       columns.any? {|c| c.renderTypeName == 'text' && !c.flag?('hidden')}

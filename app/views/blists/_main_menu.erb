@@ -100,12 +100,10 @@
           'href' => '#', 'submenu' => {'items' => [
             {'text' => 'Append From a File...', 'class' => 'append',
               'module_available' => :dataset_append,
-              'href' => "#{@view.href}/bulk/append", 'modal' => true,
-              'upsell' =>  { 'href' => '/popup/stats', 'modal' => true }},
+              'href' => "#{@view.href}/bulk/append", 'modal' => true},
             {'text' => 'Refresh From a File...', 'class' => 'replace',
               'module_available' => :dataset_refresh,
-              'href' => "#{@view.href}/bulk/replace", 'modal' => true,
-              'upsell' =>  { 'href' => '/popup/stats', 'modal' => true }},
+              'href' => "#{@view.href}/bulk/replace", 'modal' => true}
           ]}}
 #        menu_options['separator'],
 #        {'text' => 'Cut', 'class' => 'cut', 'href' => '#Cut'},

@@ -1,6 +1,6 @@
 class BlistsController < ApplicationController
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag, :republish, :about_sdp]
+  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
 
   def index
     @body_class = 'home'
@@ -21,7 +21,7 @@ class BlistsController < ApplicationController
             ' or view cannot be found, or has been deleted.'
             return (render 'shared/error', :status => :not_found)
     rescue CoreServer::CoreServerError => e
-      if e.error_code == 'authentication_required' 
+      if e.error_code == 'authentication_required'
         return require_user(true)
       elsif e.error_code == 'permission_denied'
         flash.now[:error] = e.error_message
@@ -32,7 +32,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_read() && (!@view.is_form? || !@view.can_add())
+    if (@view.is_form? ? !@view.can_add : !@view.can_read())
       return require_user(true)
     end
 
@@ -209,6 +209,14 @@ class BlistsController < ApplicationController
       # Do nothing; if there is no view, render a generic message
     end
 
+    respond_to do |format|
+      format.html { render(:layout => "plain") }
+    end
+  end
+
+  def form_error
+    @view = View.find(params[:id])
+    @error_message = params[:errorMessage]
     respond_to do |format|
       format.html { render(:layout => "plain") }
     end

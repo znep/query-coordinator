@@ -1513,7 +1513,11 @@ dl.versionInfo dd
 
 
 /*** START: View create/setup dialogs ***/
-.viewSetupWrapper .subtitle { padding-bottom: 0.5em; }
+.viewSetupWrapper .subtitle
+{
+    line-height: 1.3em;
+    padding-bottom: 0.5em;
+}
 
 .viewSetupWrapper form { margin-top: 1em; }
 

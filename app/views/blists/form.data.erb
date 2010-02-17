@@ -5,7 +5,8 @@
 
 <div class='modalContentWrapper formWrapper viewSetupWrapper'>
   <p class='subtitle'>
-  Forms allow you to gather data directly from your website into a datset
+  Forms allow you to gather data directly from your website into a
+  <%= t(:blist_name) %>
   </p>
 
   <% form_tag("#{@view.href}/create_form?edit=#{@is_edit}") do %>
@@ -55,7 +56,9 @@
   <div class='error mainError'></div>
 
   <div class='submitLine clearfix'>
+    <%- if !@is_edit -%>
     <div class="required">Required Field</div>
+    <%- end -%>
     <ul class='actionButtons clearfix'>
       <li><a href='#create' class='create arrowButton'>
         <%= @is_edit ? 'Save' : 'Create' %> Form

@@ -3,9 +3,8 @@
   <div class="publishWarning">
     <h2>Warning</h2>
     <p>
-    This form is currently private.  Private forms cannot be viewed in the
-    Social Data Player.  Please set the privacy to public or shared before
-    publishing.
+    This form is currently private.  Only those individuals given contributor
+    permissions will be able to use this form.
     </p>
   </div>
 </div>
@@ -25,9 +24,9 @@
     <div class="publishCode">
       <%- iframe_width = 500 -%>
       <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
-      <%- num_rt = form_columns.select {|c| c.client_type == 'richtext'}.count -%>
-      <%- num_url = form_columns.select {|c| c.client_type == 'url'}.count -%>
-      <%- iframe_height = [425, (form_columns.count - num_rt - num_url) * 31 +
+      <%- num_rt = form_columns.select {|c| c.client_type == 'richtext'}.length -%>
+      <%- num_url = form_columns.select {|c| c.client_type == 'url'}.length -%>
+      <%- iframe_height = [425, (form_columns.length - num_rt - num_url) * 31 +
         num_rt * 77 + num_url * 49 + 30].max -%>
       <h5>Embed this form as a Social Data Player:</h5>
       <div class="copyCode">

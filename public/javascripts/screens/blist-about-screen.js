@@ -13,6 +13,7 @@ $(function ()
         $('.dataName').hide();
         $('.editName').hide();
         $('.editNameForm').show();
+        $('#view_name').focus().select();
     });
     
     $('.editNameCancelButton').click(function(event)
@@ -55,6 +56,7 @@ $(function ()
         event.preventDefault();
         $('.dataGeneral').slideUp("normal");
         $('.editGeneralForm').slideDown("normal");
+        $('#view_category').focus();
     });
     
     $('.closeGeneral').click(function(event)
@@ -107,6 +109,10 @@ $(function ()
         triggerButton: $('.editAttribution'),
         attributionInfoSelector: '.attributionSource',
         licensingInfoSelector: '.licenseName',
+        openCallback: function()
+        {
+            $('#view_licenseId').focus();
+        },
         successCallback: function(responseData, opts)
         {
             if (responseData['error'] == 'Validation failed')

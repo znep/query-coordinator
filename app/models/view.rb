@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons
+  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -422,6 +422,19 @@ class View < Model
   }
 
   @@creative_commons = {
+    "CC0_10" => "1.0 Universal",
+    "CC_30_BY" => "Attribution 3.0 Unported",
+    "CC_30_BY_SA" => "Attribution | Share Alike 3.0 Unported",
+    "CC_30_BY_ND" => "Attribution | No Derivative Works 3.0 Unported",
+    "CC_30_BY_NC" => "Attribution | Noncommercial 3.0 Unported",
+    "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
+    "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
+  }
+
+  @@merged_licenses = {
+    "" => "-- No License --",
+    "PUBLIC_DOMAIN" => "Public Domain",
+    "CC" => "Creative Commons",
     "CC0_10" => "1.0 Universal",
     "CC_30_BY" => "Attribution 3.0 Unported",
     "CC_30_BY_SA" => "Attribution | Share Alike 3.0 Unported",

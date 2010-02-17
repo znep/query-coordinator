@@ -1,0 +1,78 @@
+<% content_for :head do %>
+  <%= stylesheet_link_merged 'blists-about-edit' %>
+  <title>New <%= t(:blist_name).capitalize %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="twoColumnContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent scrollContentColumn">
+    <div class="outerContent">
+      <div class="contentTR"><div class="contentTL"></div></div>
+      <div class="content aboutEditContent">
+        <% form_tag(@view.href, :id => "editDatasetForm", :method => :put) do %>
+          <h1>Edit <%= t(:blist_name).capitalize %> Details</h1>
+
+          <%= hidden_field_tag("id", @view.id) %>
+          <%= hidden_field_tag("redirect_to", @view.about_href) %>
+
+          <div class="errorMessage validationError">
+            <%= display_standard_flashes %>
+          </div>
+
+          <h3>General Information</h3>
+
+          <label for="view_name" class="required"><%= t(:blist_name).capitalize %> Title:</label>
+          <%= text_field_tag("view[name]", @view.name, :title => "Enter a title", :class => "textPrompt") %>
+
+          <label for="view_description">Short Description:</label>
+          <%= text_area_tag("view[description]", @view.description, :title => "Enter a description", :class => "textPrompt") %>
+
+          <label for="view_category">Type of <%= t(:blist_name).capitalize %>:</label>
+          <%= select_tag("view[category]", category_select_options(h(@view.category.nil? ? '' : @view.category.capitalize))) %>
+          <br /><span class="helpie" title="What kind of <%= t(:blist_name) %> is this?">?</span>
+
+          <label for="view_tags">Tags / Keywords:</label>
+          <%= text_field_tag("view[tags]", @view.tags.nil? ? '' : @view.tags.join(', '), :title => "Enter keywords", :class => "textPrompt") %>
+          <br /><span class="helpie" title="Keywords can help other people find this <%= t(:blist_name) %>.">?</span>
+          <span class="additionalHelp">(Enter one or more keywords separated by commas)</span>
+
+        <%- if false -%>
+          <label for="view_privacy">Privacy:</label>
+          <select id="view_privacy" name="view[privacy]">
+            <option value="public"<%= ' selected="selected"' if @view.is_public? %>>Public</option>
+            <option value="private"<%= ' selected="selected"' unless @view.is_public? %>>Private</option>
+          </select>
+        <%- end -%>
+
+          <h3>Licensing &amp; Attribution</h3>
+
+          <label for="view_licenseId">Licensing:</label>
+          <%= select_tag("view[licenseId]", merged_license_select_options(h(@view.license.nil? ? '' : @view.license.capitalize))) %>
+          <br /><span class="helpie" title="Choose licensing terms for people who wish to use this dataset.">?</span>
+
+          <label for="view_attribution">Data Provided By:</label>
+          <%= text_field_tag("view[attribution]", @view.attribution, :title => "Individual or Organization", :class => "textPrompt") %>
+        
+          <label for="view_attributionLink">Source Link:</label>
+          <%= text_field_tag("view[attributionLink]", @view.attributionLink, :title => "Enter Web Address", :class => "textPrompt") %>
+      
+          <hr />
+          <div class="requiredEntryText">Required Entry</div>
+          <div class="clearfix submitActions">
+            <input type="image" src="/images/button_finish.png" title="Submit"/>
+            <a class="cancelButton" href="<%= @view.href %>/about">Cancel</a>
+          </div>
+        <%- end -%>
+      </div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="column scrollContentColumn">
+  <% render(:layout => "shared/sidebar_box") do %>
+    <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+  <% end %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'shared-common-all' %>
+<% end %>

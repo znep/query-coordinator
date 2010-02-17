@@ -113,9 +113,10 @@ class BlistsController < ApplicationController
   def about
     @body_class = 'aboutDataset'
     @view = View.find(params[:id])
-    @view.columns.each do |column|
-      pp column.flags
-    end
+  end
+
+  def about_edit
+    @view = View.find(params[:id])
   end
 
   def publish
@@ -205,7 +206,7 @@ class BlistsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to(blist.href) }
+      format.html { redirect_to(params[:redirect_to] || blist.href) }
       format.data { render :json => blist.to_json() }
     end
   end

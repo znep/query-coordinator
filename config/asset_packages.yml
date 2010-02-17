@@ -260,6 +260,9 @@ stylesheets:
 - blists-new:
   - blist-new-screen
   - form-common
+- blists-about-edit:
+  - blist-about-edit-screen
+  - form-common
 - blists-publish:
   - blist-publish-screen
   - colorpicker

@@ -53,7 +53,10 @@
         <%- end -%>
 
         <%- if !@parent_config.nil? && !@parent_config.data['properties'].nil? -%>
-        <h2>Inherited Properties:</h2>
+        <h2>Inherited Properties (from <a href="/internal/orgs/<%=
+            @parent_domain.organizationId %>/domains/<%= @parent_domain.cname
+            %>/site_config/<%= @parent_config.id %>"><%= @parent_config.name
+            %></a>):</h2>
         <form class='wide'>
           <%- @parent_config.data['properties'].each do |prop| -%>
           <%- next if cur_props[prop['name']] -%>

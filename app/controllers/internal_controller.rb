@@ -23,6 +23,7 @@ class InternalController < ApplicationController
     @config = Configuration.find_unmerged(params[:id])
     if !@config.parentId.nil?
       @parent_config = Configuration.find(@config.parentId.to_s)
+      @parent_domain = Domain.find(@parent_config.domainCName)
     end
   end
 
@@ -139,10 +140,12 @@ class InternalController < ApplicationController
                            JSON.parse("[" + params['new-property_value'] + "]")[0])
 
     else
-      params[:delete_properties].each do |name, value|
-        if value == 'delete'
-          params[:properties].delete(name)
-          config.delete_property(name, true)
+      if !params[:delete_properties].nil?
+        params[:delete_properties].each do |name, value|
+          if value == 'delete'
+            params[:properties].delete(name)
+            config.delete_property(name, true)
+          end
         end
       end
 

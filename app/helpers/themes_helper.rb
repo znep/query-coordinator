@@ -31,7 +31,20 @@ module ThemesHelper
       end
     end
 
-    safe_helper :box
+    def theme_stylesheet_tag(ss_option)
+      if ss_option.nil?
+        return ''
+      elsif ss_option.is_a?(String)
+        return stylesheet_link_tag "custom/#{ss_option}"
+      elsif ss_option[:type].to_s == "static"
+        return stylesheet_link_tag "#{ss_option[:source]}"
+      elsif ss_option[:type].to_s == "hosted"
+        return "<link type='text/css' rel='stylesheet' media='screen' " +
+          "href='/assets/#{ss_option[:source]}' />"
+      end
+    end
+
+    safe_helper :box, :theme_stylesheet_tag
 
 private
 

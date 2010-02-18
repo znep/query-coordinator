@@ -7,8 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=8" />
   <%= stylesheet_link_merged 'base' %>
   <%= stylesheet_link_tag "theme/#{CurrentDomain.cname.gsub(/\./, '_')}.css" %>
-  <%# TODO: assets service here instead of pathed %>
-  <%= stylesheet_link_tag "custom/#{CurrentDomain.theme.stylesheet}" unless CurrentDomain.theme.stylesheet.nil? %>
+  <%= theme_stylesheet_tag(CurrentDomain.theme.stylesheet) %>
 
   <!--[if lt IE 7]>
     <link href="/stylesheets/core-ie6.css" rel="stylesheet" type="text/css">

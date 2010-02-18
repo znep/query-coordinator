@@ -12,6 +12,23 @@ class BlistsController < ApplicationController
     @title = get_title(@args)
   end
 
+  def alt_index
+    @body_class ='home'
+    @views = View.find
+
+    # TODO: The core server doesn't support sortby params here.
+    #       Refactor when they do.
+    @sort_by = params[:sort_by] || 'updated'
+    case @sort_by
+      when 'updated'
+        @views.sort!{ |a, b| b.viewLastModified.to_i <=> a.viewLastModified.to_i }
+        # {:sortBy => 'LAST_CHANGED', :isAsc => false}
+      when 'name'
+        @views.sort!{ |a, b| a.name <=> b.name }
+        # {:sortBy => 'ALPHA', :isAsc => true}
+    end
+  end
+
   def show
     @body_id = 'lensBody'
     begin
@@ -311,6 +328,10 @@ class BlistsController < ApplicationController
     end
   end
 
+  def upload_alt
+    
+  end
+
   def create
     new_view = params[:view].reject { |key,value| value.blank? }
 
@@ -362,9 +383,11 @@ class BlistsController < ApplicationController
       blist_id = params[:id]
       result = View.delete(blist_id)
 
+      redirect_path = params[:redirect_to] || blists_path
+      redirect_path = View.find(params[:redirect_id]).href unless params[:redirect_id].nil?
+
       respond_to do |format|
-        format.html { redirect_to(params[:redirect_id].nil? ?
-                          blists_path : View.find(params[:redirect_id]).href) }
+        format.html { redirect_to(redirect_path) }
         format.data { render :text => blist_id }
       end
   end

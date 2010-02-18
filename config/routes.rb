@@ -83,6 +83,8 @@ ActionController::Routing::Routes.draw do |map|
       blist.resources :filters
     end
 
+  map.connect 'datasets_alt', :controller => 'blists', :action => 'alt_index'
+
   map.connect 'profile/:profile_name/:id', :controller => 'profile',
      :action => 'show', :conditions => { :method => :get },
      :requirements => {:id => UID_REGEXP, :profile_name => /(\w|-)+/}
@@ -186,6 +188,7 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => "data", :action => "show"
 
   map.import '/upload', :controller => 'blists', :action => 'upload' 
+  map.import '/upload_alt', :controller => 'blists', :action => 'upload_alt'
   map.import_redirect '/upload/redirect', :controller => 'imports', :action => 'redirect'
   map.forgot_password '/forgot_password', :controller => 'accounts', :action => 'forgot_password'
   map.reset_password '/reset_password/:uid/:reset_code', :controller => 'accounts', :action => 'reset_password',

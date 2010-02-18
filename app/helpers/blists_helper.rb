@@ -480,6 +480,10 @@ module BlistsHelper
     options_for_select(View.creative_commons.invert.sort { |a, b| a.first <=> b.first }, selected_option)
   end
   
+  def merged_license_select_options(selected_license = nil)
+    options_for_select(View.merged_licenses.invert.sort { |a, b| a.first <=> b.first }, selected_license)
+  end
+  
   def font_unit_select_options(selected_unit = nil)
     options_for_select({'ems' => 'em', 'points' => 'pt', 'pixels' => 'px', 'inches' => 'in'}, selected_unit)
   end

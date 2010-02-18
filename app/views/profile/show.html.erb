@@ -3,7 +3,9 @@
   <title><%= @user.displayName %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-
+<% content_for :skip_links do %>
+  <%= link_to 'Edit this page accessibly', "#{@user.href}/edit", :accesskey => 'e' %>
+<% end %>
 
 <div class="twoColumnContainer <%= @is_user_current ? "tabContainer" : " " %> clearfix">
   <div id="mainColumnContent" class="column mainContent">
@@ -65,7 +67,7 @@
                 <%= profile_item 'userTags', h(@user.tag_display_string), 'Add some tags here so others in the community can find you', @is_user_current %>
                 <%- if (@is_user_current) -%>
                   <p class="editProfileContentActions">
-                    <a class='first action showListBoxLink' href='#edit'>Edit</a><a 
+                    <a class='first action showListBoxLink' href="<%= @user.href %>/edit">Edit</a><a 
                     id='switchUsernameLink' class='action'
                       href='#show_<%= @user.privacyControl == "login" ?
                         'fullName' : 'login' %>'>
@@ -184,10 +186,10 @@
               <p class="descriptionText"><%= @user.htmlDescription %></p>
               <%- if (@is_user_current) -%>
                 <p class="editContainer">
-                  <a class='action showListBoxLink' href='#edit'>Edit</a>
+                  <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
                 </p>
                 <p id="descriptionEmpty" class="<%= @user.htmlDescription.blank? ? '' : 'initialHide' %>">
-                  <a class="showListBoxLink" href="#edit">
+                  <a class="showListBoxLink" href="<%= @user.href %>/edit">
                     Tell us about yourself
                   </a>
                 </p>
@@ -223,10 +225,10 @@
               <p class="interestsText"><%= @user.interests %></p>
               <%- if (@is_user_current) -%>
                 <p class="editContainer">
-                  <a class='action showListBoxLink' href='#edit'>Edit</a>
+                  <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
                 </p>
                 <p id="interestsEmpty" class="<%= @user.interests.blank? ? '' : 'initialHide' %>">
-                  <a class="showListBoxLink" href="#edit">
+                  <a class="showListBoxLink" href="<%= @user.href %>/edit">
                     Add some interests here
                   </a>
                 </p>
@@ -264,10 +266,10 @@
               </ul>
               <%- if (@is_user_current) -%>
                 <p class="editContainer">
-                  <a class='action showListBoxLink' href='#edit'>Edit</a>
+                  <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
                 </p>
                 <p id="linksEmpty" class="<%= (@user_links.nil? || @user_links.length < 1) ? "" : "initialHide" %>">
-                  <a class="showListBoxLink" href="#edit">
+                  <a class="showListBoxLink" href="<%= @user.href %>/edit">
                     Add links to your other online profiles, interests, personal blog or website
                   </a>
                 </p>

@@ -3,7 +3,9 @@
   <title><%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
-
+<% content_for :skip_links do %>
+  <%= link_to 'Go to an accessible version of this page', "/datasets_alt" %>
+<% end %>
 
 <div class="twoColumnContainer tabContainer clearfix">
   <div id="mainColumnContent" class="column mainContent scrollContentColumn">

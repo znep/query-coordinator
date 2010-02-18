@@ -66,17 +66,51 @@ class ProfileController < ApplicationController
       params[:user][:tags] = current_user.tag_display_string
     end
 
+    # HACK/TODO: If we get some links back, send requests to update them.
+    # Rewrite this when we have batch requests! -cxlt
+    unless params[:links].nil?
+      user_links = UserLink.find(current_user.id)
+
+      user_links.each do |link|
+        updated_link = params[:links][link.id.to_s.to_sym]
+
+        if (updated_link[:linkType].empty? && updated_link[:url].empty?)
+          UserLink.delete(current_user.id, link.id)
+        else
+          UserLink.update(current_user.id, link.id, updated_link)
+        end
+
+        params[:links].delete(link.id.to_s.to_sym)
+      end
+
+      params[:links].each do |id, new_link|
+        UserLink.create(current_user.id, new_link) unless (new_link[:linkType].empty? || new_link[:url].empty?)
+      end
+    end
+
     begin
       current_user.update_attributes!(params[:user])
     rescue CoreServer::CoreServerError => e
+      is_error = true
       error_msg = e.error_message
     end
 
     respond_to do |format|
-      format.html { redirect_to(current_user.href) }
-      format.data   { render :json => {:error => error_msg,
+      format.html do
+        if is_error
+          flash.now[:error] = error_msg
+          return (render 'shared/error', :status => :forbidden)
+        else
+          redirect_to(current_user.href)
+        end
+      end
+      format.data { render :json => {:error => error_msg,
         :user => current_user} }
     end
+  end
+  
+  def edit
+    @user_links = UserLink.find(current_user.id)
   end
   
   def create_link

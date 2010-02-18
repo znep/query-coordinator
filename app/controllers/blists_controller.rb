@@ -215,6 +215,7 @@ class BlistsController < ApplicationController
   end
 
   def form_error
+    @view = View.find(params[:id])
     @error_message = params[:errorMessage]
     respond_to do |format|
       format.html { render(:layout => "plain") }

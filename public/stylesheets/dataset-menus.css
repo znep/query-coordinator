@@ -52,8 +52,10 @@
 .headerMenu .moreViews a { background-position: 5px -531px; }
 .headerMenu .moreViews .filter a { background-position: 5px -531px; }
 .headerMenu .moreViews .calendar a { background-position: 5px -761px; }
+.headerMenu .moreViews .grouping a { background-position: 5px -1267px; }
 .headerMenu .moreViews .visualization a
 { background-position: 5px -784px; }
+.headerMenu .moreViews .form a { background-position: 5px -1313px; }
 
 /* Publish, Share, Socialize menu */
 .headerMenu .publish a { background-position: 5px -577px; }

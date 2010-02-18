@@ -2,7 +2,7 @@
 
 .formView .line
 {
-    height: 2.3em;
+    min-height: 2.3em;
     margin: 0 0 0.75em;
 }
 

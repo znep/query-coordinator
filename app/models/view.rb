@@ -246,9 +246,11 @@ class View < Model
         user_ids[g.userId] = true
       end
     end
-    users_list = User.find({'ids' => user_ids.keys})
     users = Hash.new
-    users_list.each {|u| users[u.id] = u }
+    if user_ids.any?
+        users_list = User.find 'ids' => user_ids.keys
+        users_list.each {|u| users[u.id] = u }
+    end
     user_shares = Hash.new
     filtered_grants.each do |g|
       user_id = g.userId.nil? ? g.userEmail : g.userId

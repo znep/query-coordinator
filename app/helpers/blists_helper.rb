@@ -317,7 +317,7 @@ module BlistsHelper
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Create a Form View...', 'href' => "#{view.href}/form",
-      'modal' => true, 'if' => !view.is_alt_view? &&
+      'if' => !view.is_alt_view? &&
         (CurrentDomain.member?(current_user) && module_available?(:form_publish) &&
          view.owned_by?(@current_user) &&
          view.parent_dataset.owned_by?(@current_user)),

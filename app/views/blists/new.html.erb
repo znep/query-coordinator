@@ -3,6 +3,10 @@
   <title>New <%= t(:blist_name).capitalize %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
+<% content_for :skip_links do %>
+  <%= link_to 'Go to an accessible version of this page', "/upload_alt" %>
+<% end %>
+
 <div class="twoColumnContainer clearfix">
   <div id="mainColumnContent" class="column mainContent scrollContentColumn">
     <div class="outerContent">

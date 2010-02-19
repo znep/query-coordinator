@@ -44,6 +44,15 @@
     padding-right: 10px;
     text-decoration: none;
 }
+.actionButtons li.hasFocus
+{
+    background-color: #8e8e8e;
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites_active.png);
+}
+.actionButtons li.hasFocus a
+{
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites_active.png);
+}
 
 .actionButtons li.flushLeft 
 {

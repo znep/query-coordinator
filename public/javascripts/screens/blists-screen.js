@@ -130,6 +130,9 @@ blist.myBlists.filterFilter = function(view)
 blist.myBlists.calendarFilter = function(view)
 { return view.displayType == 'calendar'; };
 
+blist.myBlists.formFilter = function(view)
+{ return view.displayType == 'form'; };
+
 blist.myBlists.visualizationFilter = function(view)
 {
     if ($.inArray(view.displayType, ['barchart', 'annotatedtimeline',
@@ -223,6 +226,10 @@ blist.myBlists.filterGen = function(type, argument, callback)
             if (argument == 'calendar')
             {
                 return callback(myBlistsNS.calendarFilter);
+            }
+            if (argument == 'form')
+            {
+                return callback(myBlistsNS.formFilter);
             }
             if (argument == 'visualization')
             {
@@ -642,6 +649,10 @@ blist.myBlists.getTypeClassName = function(value)
     {
         cls += "calendar";
     }
+    else if (myBlistsNS.formFilter(value))
+    {
+        cls += "form";
+    }
     else if (myBlistsNS.visualizationFilter(value))
     {
         cls += "visualization";
@@ -811,6 +822,18 @@ blist.myBlists.openerClick = function(event)
         $(this).attr('href').split('_')[1]));
 };
 
+blist.myBlists.setUpTagsFilters = function()
+{
+    var tags = [];
+    _(myBlistsNS.model.rows()).each(function(view)
+        { tags = tags.concat(view.tags); });
+    var $tagsList = $('#sidebar .filterSection.tags ul.expandable');
+    var $template = $('#tagFilterTemplate');
+    _(tags.sort()).chain().compact().uniq(true).each(function(tag)
+        { $template.jqote({tag: tag}, '$')
+            .appendTo($tagsList); });
+};
+
 blist.myBlists.listCellClick = function(event, row, column, origEvent)
 {
     if ($(origEvent.target).is('a'))
@@ -950,9 +973,16 @@ blist.myBlists.initializeGrid = function()
     $('#blist-list').bind('load', blistsInfoNS.updateSummary)
         .bind('selection_change', blistsInfoNS.updateSummary)
         .bind('row_remove', blistsInfoNS.updateSummary);
-    
+
     $('#blist-list').one('load', function(event)
     {
+        // Show Get Started panel if early user
+        if (myBlistsNS.model.length() < 4)
+        { $('#blists .noticePanel').removeClass('hide'); }
+
+        myBlistsNS.setUpTagsFilters();
+        blistsBarNS.initializeHandlers();
+
         var filterMatches = window.location.search.match(/type=(\w+)/);
         if (filterMatches && filterMatches.length > 1)
         {
@@ -1020,7 +1050,6 @@ blist.myBlists.options = {
 };
 
 $(function() {
-    blistsBarNS.initializeHandlers();
 
     // Setup the grid.
     myBlistsNS.initializeGrid();

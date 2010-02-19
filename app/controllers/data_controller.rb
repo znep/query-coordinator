@@ -9,6 +9,14 @@ class DataController < ApplicationController
   end
 
   def show
+    # If they don't have the discover module or the community module, they can't
+    # access this page. Redirect them to a login form or the /home page
+    # TODO: We really should have some way of templatizing the home page to put
+    # _something_ there...
+    if !CurrentDomain.module_enabled? [:discovery_module, :community_module ]
+      redirect_to home_path
+    end
+
     @body_class = 'discover'
     @show_search_form = false
     @page_size = PAGE_SIZE

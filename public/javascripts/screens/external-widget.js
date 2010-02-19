@@ -145,6 +145,10 @@ blist.widget.widgetDataLoaded = function (data)
 
 blist.widget.sizeGrid = function ()
 {
+    var $metaContainer = $("#widgetMeta");
+    // If there is no widget meta, then don't bother sizing
+    if ($metaContainer.length < 1 && !blist.display.scrollsInline) { return; }
+
     // Delay-load tab content when switching to it.
     var $outerContent = $(this.allPanelsSelector + '.' + this.activationClass);
     var $infoContent = $outerContent.find(this.expandableSelector);
@@ -176,7 +180,6 @@ blist.widget.sizeGrid = function ()
     var $container = $(".gridOuter");
     var $innerContainer = $grid.closest(".gridInner");
     var $gridContainer = $(".gridContainer");
-    var $metaContainer = $("#widgetMeta");
     var $viewHeader = $("#viewHeader");
 
     var newContainerHeight = $container.next().offset().top - $container.offset().top;
@@ -318,7 +321,7 @@ blist.widget.updateMetaTab = function(tabKey)
 {
     $.Tache.Get({ url: '/widgets_meta/' + widgetNS.viewId + '/meta_tab?tab=' + tabKey +
                        '&customization_id=' + widgetNS.customizationId +
-                       '&cur_id=' + $.urlParam('cur', window.location.href),
+                       '&cur_id=' + $.urlParam(window.location.href, 'cur'),
         success: function(data)
         {
             $(widgetNS.metaTabMap[tabKey]).html(data);
@@ -360,14 +363,14 @@ blist.widget.commentExpanderClick = function($commentPane, e)
 
 $(function ()
 {
-    widgetNS.sizeGrid();
-    $(window).resize(function() { widgetNS.sizeGrid(); });
-
     // Make all links with rel="external" open in a new window.
     $.live("a[rel$='external']", "mouseover",
         function(){ this.target = "_blank"; });
 
     widgetNS.setUpMenu();
+
+    widgetNS.sizeGrid();
+    $(window).resize(function() { widgetNS.sizeGrid(); });
 
     if (!widgetNS.isAltView)
     {

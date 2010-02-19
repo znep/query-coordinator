@@ -39,14 +39,6 @@ module BlistsHelper
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
   end
 
-  def get_blist_tags
-    views = View.find()
-
-    tags = []
-    views.each { |v| v.tags.nil? ? true : tags << v.tags.collect { |t| t.data } }
-    tags.flatten.sort.uniq
-  end
-
   def get_rating_class(rating)
     ['zero', 'one', 'two', 'three', 'four', 'five'][
       ((rating * 2.0).round / 2.0).floor] +
@@ -252,7 +244,16 @@ module BlistsHelper
       {'text' => 'Visualization', 'href' => "#{view.href}/visualization",
       'class' => 'viz' + (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
-        'This dataset does not have the appropriate columns for visualizations')}]
+        'This dataset does not have the appropriate columns for visualizations')},
+      {'text' => 'Form', 'href' => "#{view.href}/form",
+      'if' => CurrentDomain.member?(current_user) &&
+               module_available?(:form_publish) &&
+               view.owned_by?(@current_user) &&
+               view.parent_dataset.owned_by?(@current_user),
+      'class' => 'form' + (view.can_add_form? ? '' : ' disabled'),
+      'title' => (view.can_add_form? ? '' :
+        'This dataset does not have any visible columns')}
+    ]
   end
 
   def filter_submenu(view, is_widget = false, menu_options = nil)
@@ -307,6 +308,15 @@ module BlistsHelper
         (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
+      {'text' => 'Create a Form View...', 'href' => "#{view.href}/form",
+      'if' => !view.is_alt_view? &&
+        (CurrentDomain.member?(current_user) && module_available?(:form_publish) &&
+         view.owned_by?(@current_user) &&
+         view.parent_dataset.owned_by?(@current_user)),
+      'user_required' => true, 'class' => 'form mainViewOption' +
+        (view.can_add_form? ? '' : ' disabled'),
+      'title' => (view.can_add_form? ? '' :
+        'This dataset does not have any visible columns')}
       # Map item
       ]) + [menu_options['separator'],
       menu_options['more_views']]
@@ -522,7 +532,7 @@ module BlistsHelper
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
                       "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
-                      "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"no\">" +
+                      "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"#{!view.display.can_publish? || view.display.scrolls_inline? ? 'no' : 'auto'}\">" +
                       "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
                       "target=\"_blank\">#{h(view.name)}</a></iframe>"
     if options[:show_powered_by]

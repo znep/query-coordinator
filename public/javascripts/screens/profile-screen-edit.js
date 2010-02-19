@@ -199,7 +199,7 @@ $(function ()
             {
                 var $form = $(form);
                 var requestData = $.param($form.find(":input"));
-                var link_id = $.urlParam("link_id", $form.attr("action"));
+                var link_id = $.urlParam($form.attr("action"), "link_id");
                 $.ajax({
                     url: $form.attr("action"),
                     type: "PUT",

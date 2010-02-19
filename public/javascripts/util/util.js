@@ -1,11 +1,15 @@
 (function($) {
 
-$.urlParam = function(name, url)
+$.urlParam = function(url, name, value)
 {
-    var results = new RegExp('[\\?#&]' + name + '=([^&#]*)').exec(url);
+    var regex = new RegExp('([\\?#&]' + name + '=)([^&#]*)');
+    if (value !== undefined && value !== null)
+    { return url.replace(regex, "$1" + value); }
+
+    var results = regex.exec(url);
     if (results)
     {
-        return results[1] || 0;
+        return results[2] || 0;
     }
     else
     {

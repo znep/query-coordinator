@@ -1,0 +1,95 @@
+<div class="publishWarningWrapper <%= (view.is_public? || view.is_shared?) ?
+  'hide' : '' %>">
+  <div class="publishWarning">
+    <h2>Warning</h2>
+    <p>
+    This form is currently private.  Only those individuals given contributor
+    permissions will be able to use this form.
+    </p>
+  </div>
+</div>
+
+<div class="publishContent publishForm clearfix
+  <%= view.is_private? ? 'hide' : '' %>">
+  <h4>Choose one of the options below to publish this form:</h4>
+
+  <div class='iframeOption publishOption'>
+    <p class='optionInfo'>
+    You can publish this form on your blog or website by embedding it in a Social
+    Data Player.  This option will automatically update your embedded version
+    whenever you change the form itself.  You can do so by simply copying and
+    pasting the below HTML into your site.
+    </p>
+
+    <div class="publishCode">
+      <%- iframe_width = 500 -%>
+      <%- form_columns = @view.columns.select {|c| c.form_enabled?} -%>
+      <%- num_rt = form_columns.select {|c| c.client_type == 'richtext'}.length -%>
+      <%- num_url = form_columns.select {|c| c.client_type == 'url'}.length -%>
+      <%- iframe_height = [425, (form_columns.length - num_rt - num_url) * 31 +
+        num_rt * 77 + num_url * 49 + 30].max -%>
+      <h5>Embed this form as a Social Data Player:</h5>
+      <div class="copyCode">
+        <%= text_area_tag("publishCode") %>
+        <%= hidden_field_tag("publishCodeTemplate",
+          get_publish_embed_code_for_view(view,
+            {:dimensions => { :width => "#width#",  :height => "#height#" }},
+            (customization_id.empty? ? "#variation#" : customization_id ),
+            cur_id)) %>
+      </div>
+      <div class="sizeOptions">
+        <div class="field">
+          <label for="publishWidth">Width</label>
+          <%= text_field_tag("publishWidth", iframe_width.to_s) %>
+          <span class='postfix'>px</span>
+        </div>
+        <div class="field">
+          <label for="publishHeight">Height</label>
+          <%= text_field_tag("publishHeight", iframe_height.to_s) %>
+          <span class='postfix'>px</span>
+        </div>
+        <div class="field">
+          <%- if customization_id.empty? -%>
+            <label for="publishVariation">Color</label>
+            <%= select_tag("publishVariation",
+              options_for_select({ 'Blue' => 'normal', 'Black' => 'black' })) %>
+          <%- else -%>
+            <%= hidden_field_tag("publishVariation", customization_id) %>
+          <%- end -%>
+        </div>
+        <ul class="actionButtons">
+          <li><a id="previewWidgetLink"
+            href="<%= "/widgets_preview/#{view.id}" %>"
+            class="noInterstitial arrowButton">See Preview</a></li>
+        </ul>
+        <div id="sizeError" class="hide">
+        The player must be at least 500 pixels wide by 425 pixels tall.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='divider'>Or</div>
+
+  <div class='htmlOption publishOption'>
+    <p class='optionInfo'>
+    You can publish this form by directly inserting the HTML for the form onto
+    your blog or web page.  This option will allow you to customize the style
+    of the form.  You can do so by simply copying and pasting the below HTML
+    into your site.
+    </p>
+
+    <div class="publishCode">
+      <h5>Embed this form with plain HTML:</h5>
+      <div class="copyCode">
+        <%- form_string = render({:partial => 'displays/form_view',
+        :locals => {:prefix => request.protocol + request.host_with_port,
+          :show_powered_tag => true}}) -%>
+        <%# By adding an empty string to the form text, we make it un-html_safe,
+        which allows us to escape it before rendering it inside a textarea %>
+        <%= text_area_tag("publishCode_html", h(form_string + '')
+          ) %>
+      </div>
+    </div>
+  </div>
+</div>

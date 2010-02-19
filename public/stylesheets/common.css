@@ -66,15 +66,22 @@ form input[type="text"],
 form input.textInput,
 form textarea,
 form input[type="password"],
-input[type="text"]
+input[type="text"],
+form input[type="file"]
 {
-    border: solid 1px #cacaca;
     color: #333;
     font-family: Arial, sans-serif;
     font-size: 1.2em;   /* 12px */
     line-height: 1.2em; /* 14.4px */
     padding: 0.2em;     /* 2.4px */
 }
+
+form input[type="text"],
+form input.textInput,
+form textarea,
+form input[type="password"],
+input[type="text"]
+{ border: solid 1px #cacaca; }
 
 .textPrompt.prompt
 {
@@ -468,6 +475,11 @@ private
 .itemType.typeGrouped.sharedIn { background-position: 0 -715px; }
 .itemType.typeGrouped.private { background-position: 0 -746px; }
 .itemType.typeGrouped.privateShared { background-position: 0 -777px; }
+.itemType.typeForm { background-position: 0 -1118px; }
+.itemType.typeForm.sharedOut { background-position: 0 -1149px; }
+.itemType.typeForm.sharedIn { background-position: 0 -1180px; }
+.itemType.typeForm.private { background-position: 0 -1211px; }
+.itemType.typeForm.privateShared { background-position: 0 -1242px; }
 
 /*** END: item type icons ***/
 
@@ -586,3 +598,8 @@ span.helpie
     width: 16px;
 }
 
+/* For footer links in co-branded sites */
+.powered-by {
+    background: url(/stylesheets/images/common/small_logo.png) center left no-repeat;
+    padding: 5px 0px 5px 20px;
+}

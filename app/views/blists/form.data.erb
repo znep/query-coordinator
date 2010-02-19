@@ -1,0 +1,114 @@
+<%- content_for(:wrapper_class, "narrowDialog") -%>
+<%- content_for :headline do -%>
+<h1 class='formIcon'><%= @is_edit ? 'Edit this' : 'Create a' %> Form View</h1>
+<%- end -%>
+
+<div class='modalContentWrapper formWrapper viewSetupWrapper'>
+  <p class='subtitle'>
+  Forms allow you to gather data directly from your website into a
+  <%= t(:blist_name) %>
+  </p>
+
+  <% form_tag("#{@view.href}/create_form?edit=#{@is_edit}") do %>
+    <%- if !@is_edit -%>
+    <div class='section'>
+      <h3>Name</h3>
+      <p class='subtitle separator'>
+      Give a name to your new form view
+      </p>
+      <div class='line'>
+        <label class='required' for='formName'>Name</label>
+        <input type='text' id='formName' name='viewName' class='required' />
+      </div>
+    </div>
+    <%- end -%>
+
+    <div class='section'>
+      <h3>Success Page</h3>
+      <p class='subtitle separator'>
+      After data is submitted, you can choose what page should be displayed
+      </p>
+      <div class='line'>
+        <label for='form_successRedirect'>URL</label>
+        <input type='text' id='form_successRedirect' name='successRedirect'
+          class='url'
+          value='<%= @is_edit ? @view.display.options.successRedirect : '' %>' />
+      </div>
+    </div>
+
+    <div class='section'>
+      <h3>
+        Permissions
+      </h3>
+      <p class='subtitle separator'>
+      Choose whether anyone can submit via your form.  If not, only those given
+      permission individually will be able to use it.
+      </p>
+      <div class='line'>
+        <label for='form_publicAdd'>Public?</label>
+        <%= check_box_tag 'publicAdd', true, (@is_edit ?
+          @view.is_public? : true), {:id => 'form_publicAdd'} %>
+      </div>
+    </div>
+
+  <%- end -%>
+
+  <div class='error mainError'></div>
+
+  <div class='submitLine clearfix'>
+    <%- if !@is_edit -%>
+    <div class="required">Required Field</div>
+    <%- end -%>
+    <ul class='actionButtons clearfix'>
+      <li><a href='#create' class='create arrowButton'>
+        <%= @is_edit ? 'Save' : 'Create' %> Form
+      </a></li>
+    </ul>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    $('.formWrapper form').validate({errorElement: 'span'});
+
+    var formSubmit = function(event)
+    {
+      event.preventDefault();
+      $('.formWrapper .mainError').text('');
+      var $form = $('.formWrapper form');
+      if (!$form.valid()) { return; }
+
+      $.ajax({
+          url: $form.attr("action"),
+          type: "POST",
+          data: $form.serialize(),
+          dataType: "json",
+          success: function(data)
+          {
+            if (data.status == 'failure')
+            {
+              $('.formWrapper .mainError').text(data.errors.join('; '));
+            }
+            else
+            {
+              $("#modal").jqmHide();
+              <%- if @is_edit -%>
+              var $dataForm = $('#dataGrid form');
+              $dataForm.attr('action',
+                $.urlParam($dataForm.attr('action'), 'successRedirect',
+                  escape($form.find('#form_successRedirect').val())));
+              $('#infoPane .singleInfoSharing').infoPaneSharing()
+                  .refresh(blist.display.viewId);
+              <%- else -%>
+              blist.util.navigation.redirectToView(data.newViewId);
+              <%- end -%>
+            }
+          }
+      });
+    };
+
+    $('.formWrapper form').submit(formSubmit);
+    $('.formWrapper a.create').click(formSubmit);
+  };
+</script>

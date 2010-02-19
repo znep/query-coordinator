@@ -181,6 +181,7 @@ div.blist-td-type div.blist-type
 div.blist-type-default { background-position: center -4px; }
 div.blist-type-filter { background-position: center -128px; }
 div.blist-type-calendar { background-position: center -345px; }
+div.blist-type-form { background-position: 0 -1120px; }
 div.blist-type-visualization { background-position: center -500px; }
 div.blist-type-grouped { background-position: 0 -654px; }
 div.blist-type-defaultSharedTo { background-position: center -66px; }
@@ -193,6 +194,8 @@ div.blist-type-visualizationSharedTo { background-position: center -562px; }
 div.blist-type-visualizationSharedBy { background-position: center -531px; }
 div.blist-type-groupedSharedTo { background-position: 0 -716px; }
 div.blist-type-groupedSharedBy { background-position: 0 -685px; }
+div.blist-type-formSharedTo { background-position: 0 -1182px; }
+div.blist-type-formSharedBy { background-position: 0 -1151px; }
 
 .blist-td .blist-opener
 {

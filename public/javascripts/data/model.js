@@ -2175,7 +2175,7 @@ blist.namespace.fetch('blist.data');
         /**
          * Retrieve the total number of rows.
          */
-        this.length = function(id)
+        this.length = function()
         {
             return active.length;
         };

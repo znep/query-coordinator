@@ -215,6 +215,11 @@ class View < Model
       "?method=opening"))
   end
 
+  def set_permissions(perm_value)
+    CoreServer::Base.connection.
+      update_request("/#{self.class.name.pluralize.downcase}/#{id}.json" +
+                     "?method=setPermission&value=#{perm_value}")
+  end
 
   def to_json
     dhash = data_hash
@@ -257,7 +262,7 @@ class View < Model
   end
 
   def is_public?
-    grants && grants.any? {|p| p.flag?('public')}
+    display.is_public?
   end
   memoize :is_public?
 
@@ -322,6 +327,10 @@ class View < Model
     data['rights'] && data['rights'].include?('read')
   end
 
+  def can_add()
+    data['rights'] && data['rights'].include?('add')
+  end
+
   def contributor_users
     (grants || []).select {|g| !g.flag?('public') && g.type.downcase == 'contributor'}.
       collect do |g|
@@ -354,9 +363,11 @@ class View < Model
         user_ids[g.userId] = true
       end
     end
-    users_list = User.find({'ids' => user_ids.keys})
     users = Hash.new
-    users_list.each {|u| users[u.id] = u }
+    if user_ids.any?
+        users_list = User.find 'ids' => user_ids.keys
+        users_list.each {|u| users[u.id] = u }
+    end
     user_shares = Hash.new
     filtered_grants.each do |g|
       user_id = g.userId.nil? ? g.userEmail : g.userId
@@ -393,6 +404,14 @@ class View < Model
 
   def is_alt_view?
     !display.is_a?(Displays::Table)
+  end
+
+  def is_form?
+    display.is_a?(Displays::Form)
+  end
+
+  def can_add_form?
+    columns.any? {|c| !c.flag?('hidden')}
   end
 
   def can_add_calendar?

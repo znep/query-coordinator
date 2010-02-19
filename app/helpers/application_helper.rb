@@ -564,6 +564,7 @@ HREF
               {{urls.header}}
               {{sign_in_link}}
               {{sign_up_link}}
+              {{basic_user_home_link}}
               {{account_link}}
               {{sign_out_link}}
             </ul>
@@ -649,11 +650,11 @@ HREF
             <p class="seattleText">This initial launch provides a limited set
               of datasets - those currently shown on
               <a href="http://web1.seattle.gov/mnm/">My Neighborhood Map</a> -
-              which is primarily City government data.  Beginning in
-              approximately late January, we will begin adding additional
-              datasets to the site.  At that time, we will invite you to
+              which is primarily City government data.
+              We will be continually adding additional
+              datasets to the site.  In the future, we will invite you to
               actively participate in shaping the future of
-              <a href="/">Data.Seattle.Gov</a> by suggesting additional
+              Data.Seattle.Gov by suggesting additional
               datasets and site enhancements to provide seamless access and use
               of City data.</p>
             <p class="seattleText">Please note that by accessing the data
@@ -690,19 +691,21 @@ HREF
             <p class="chicagoTitle">Welcome to the City of Chicago&rsquo;s
               <strong>Data Portal,</strong></p>
             <p class="chicagoSubtitle">where you can browse, search and
-              download a variety of data collected and maintained by the City.</p>
+              download a variety of data (including 
+              <a href="http://www.cityofchicago.org/city/en/depts/doit/supp_info/gis_data.html">GIS Data</a>) 
+              collected and maintained by the City.</p>
             <p class="chicagoText">We are making this data available to promote
               transparency, and to encourage you to create new and innovative
               tools to engage and serve Chicago&rsquo;s richly diverse people,
               businesses, visitors, institutions and communities.</p>
             <p class="chicagoText">As part of the City&rsquo;s
-              <a href="http://chicago.illinois.gov/city/en/progs/transparency.html">Transparency Initiatives</a>, more data sets will be
+              <a href="http://www.cityofchicago.org/city/en/progs/transparency.html">Transparency Initiatives</a>, more data sets will be
               added to this portal on a continuing basis. We invite you to
               participate in the evolution of Chicago&rsquo;s data catalog by telling
               us what other types of data you would like to see here and about
               the creative ways you are using this data. Before accessing or
               sharing data, please read the
-              <a href="http://chicago.illinois.gov/city/en/narr/foia/data_disclaimer.html">Terms of Use</a>.</p>
+              <a href="http://www.cityofchicago.org/city/en/narr/foia/data_disclaimer.html">Terms of Use</a>.</p>
             <div class="pageBlockHeaderR"></div>
           </div>
         </div>

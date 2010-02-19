@@ -58,24 +58,23 @@
             %>
             <div class="gridList scrollContent" id="blist-list"></div>
           </div>
-          
-          <%- if (!current_user.is_established?) -%>
-            <div class="noticePanel expandContainer">
-              <div class="noticeHeaderOuter"><div class="noticeHeaderInner">
+
+          <div class="noticePanel expandContainer hide">
+            <div class="noticeHeaderOuter"><div class="noticeHeaderInner">
                 <div class="noticeHeader clearfix">
                   <h2>Get Started!</h2>
-                  <p>Have a look at some of the great things you can do with <%= CurrentDomain.strings.company %>.</p>
+                  <p>Have a look at some of the great things you can do with
+                  <%= CurrentDomain.strings.company %>.</p>
                   <p class="noticePanelCloser">
-                    <a href="#hide" class="expander">Hide</a>
+                  <a href="#hide" class="expander">Hide</a>
                   </p>
                 </div>
-              </div></div>
-              <div class="noticeContent expandable">
-                <%= render(:partial => "shared/feature_boxes") %>
-              </div>
+            </div></div>
+            <div class="noticeContent expandable">
+              <%= render(:partial => "shared/feature_boxes") %>
             </div>
-          <%- end -%>
-          
+          </div>
+
         </div>
       </div>
 
@@ -134,6 +133,10 @@
                 'title' => get_title({'type' => 'calendar'}),
                 'q' => "{'type': 'calendar'}", 'class' => 'calendar'
             },
+            { 'text' => 'Forms', 'href' => '?type=form',
+                'title' => get_title({'type' => 'form'}),
+                'q' => "{'type': 'form'}", 'class' => 'form'
+            },
             { 'text' => 'Visualizations', 'href' => '?type=visualization',
                 'title' => get_title({'type' => 'visualization'}),
                 'q' => "{'type': 'visualization'}", 'class' => 'visualization'
@@ -183,12 +186,18 @@
             <%= sidebar_filter_link("<span>Not Tagged</span>",
               {'untagged' => 'true'}, @args) %>
           </li>
-          <% get_blist_tags().each do |tag| %>
-          <li>
-            <%= sidebar_filter_link("<span>#{h(tag)}</span>",
-              {'tag' => tag}, @args) %>
-          </li>
-          <% end %>
+          <script type="text/html" id="tagFilterTemplate">
+            <![CDATA[
+            <li>
+            <a href="?tag=<$= escape(this.tag) $>"
+              title='<%= raw get_title({'tag' =>
+                  '<$= $.htmlEscape(this.tag) $>'}) %>'
+              q="{'tag':'<$= $.htmlEscape(this.tag.replace(/"/g, "\\\"")) $>'}">
+                <span><$= $.htmlEscape(this.tag) $></span>
+              </a>
+            </li>
+            ]]>
+          </script>
         </ul>
       </div>
     <% end %>

@@ -1,7 +1,7 @@
 class BlistsController < ApplicationController
   include BlistsHelper
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :alt, :about, :print, :email, :flag, :republish, :about_sdp]
+  skip_before_filter :require_user, :only => [:show, :alt, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
 
   def index
     @body_class = 'home'
@@ -39,7 +39,7 @@ class BlistsController < ApplicationController
             ' or view cannot be found, or has been deleted.'
             return (render 'shared/error', :status => :not_found)
     rescue CoreServer::CoreServerError => e
-      if e.error_code == 'authentication_required' 
+      if e.error_code == 'authentication_required'
         return require_user(true)
       elsif e.error_code == 'permission_denied'
         flash.now[:error] = e.error_message
@@ -50,7 +50,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_read()
+    if (@view.is_form? ? !@view.can_add : !@view.can_read())
       return require_user(true)
     end
 
@@ -265,6 +265,25 @@ class BlistsController < ApplicationController
     end
   end
 
+  def form_success
+    begin
+      @view = View.find(params[:id])
+    rescue
+      # Do nothing; if there is no view, render a generic message
+    end
+
+    respond_to do |format|
+      format.html { render(:layout => "plain") }
+    end
+  end
+
+  def form_error
+    @view = View.find(params[:id])
+    @error_message = params[:errorMessage]
+    respond_to do |format|
+      format.html { render(:layout => "plain") }
+    end
+  end
 
   def detail
     if (params[:id])
@@ -348,9 +367,7 @@ class BlistsController < ApplicationController
     flags = Array.new
     case (params[:privacy])
     when "public_view"
-      flags << "dataPublic"
-    #when "public_edit"
-    #  flags << "publicEdit"
+      flags << "dataPublicRead"
     when "private"
       # Don't need to set any flags for private
     when "adult_content"
@@ -610,6 +627,44 @@ class BlistsController < ApplicationController
     }
   end
 
+  def form
+    @view = View.find(params[:id])
+    @is_edit = params[:edit] == 'true'
+
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
+  def create_form
+    errors = []
+    begin
+      if params[:edit] == 'true'
+        view = View.update_attributes!(params[:id], {'displayFormat' =>
+                                  {'successRedirect' => params[:successRedirect]}})
+        perm_value = params[:publicAdd] == 'true' ? 'public.add' : 'private'
+        view.set_permissions(perm_value)
+      else
+        flags = []
+        flags << 'dataPublicAdd' if params[:publicAdd] == 'true'
+        view = View.create({'name' => params[:viewName],
+                          'originalViewId' => params[:id],
+                          'displayType' => 'form',
+                          'flags' => flags,
+                          'displayFormat' =>
+                            {'successRedirect' => params[:successRedirect]}})
+      end
+    rescue CoreServer::CoreServerError => e
+      errors << e.error_message
+    end
+
+    render :json => {
+      :status => errors.length > 0 ? "failure" : "success",
+      :errors => errors,
+      :newViewId => view.nil? ? '' : view.id
+    }
+  end
+
   def meta_tab_header
      if (!params[:tab])
        return
@@ -708,16 +763,18 @@ private
     if !params['type'].nil?
       title_type =
         case params['type']
+        when 'calendar'
+          'calendar views'
         when 'favorite'
           'my favorite ' + t(:blists_name)
         when 'filter'
           'filters'
-        when 'calendar'
-          'calendar views'
-        when 'visualization'
-          'visualizations'
+        when 'form'
+          'forms'
         when 'grouped'
           'grouped views'
+        when 'visualization'
+          'visualizations'
         end
     end
 

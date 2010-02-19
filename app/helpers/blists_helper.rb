@@ -461,11 +461,10 @@ module BlistsHelper
 
   def recent_blists_menu(cur_view, num_recent)
     if current_user
-      {'items' => View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
-        b.last_viewed <=> a.last_viewed
-      end.slice(0, num_recent).map do |v|
-        {'text' => v.name, 'href' => v.href, 'class' => v.display.type}
-      end }
+      {'items' => View.find_recent(num_recent + 1).
+        reject {|v| v.id == cur_view.id}.slice(0, num_recent).map do |v|
+          {'text' => v.name, 'href' => v.href, 'class' => v.display.type}
+        end }
     else
       nil
     end

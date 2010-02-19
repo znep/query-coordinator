@@ -35,7 +35,7 @@
   <%- if allow_edit && !in_widget -%>
   <li><a href="#share" class="tabLink sharing">Share</a></li>
   <%- end -%>
-  <li><a href="<%= "#{view.href}/about" %>"<%= 'rel="external"' if (in_widget) %>>About</a></li>
+  <li><a href="<%= "#{view.href}/about" %>" <%= raw 'rel="external"' if (in_widget) %>>About</a></li>
 </ul>
 
 <%- if (!@current_user.nil? && !in_widget) -%>

@@ -1,4 +1,4 @@
-#blistsAlt .headerBar .headerActions li span
+#blistsAlt .headerBar .headerActions li label
 {
     padding-right: 1em;
     text-transform: uppercase;

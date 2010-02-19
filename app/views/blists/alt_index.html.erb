@@ -16,8 +16,8 @@
 
             <ul class="headerActions">
               <li>
-                <span>Sort List By</span>
                 <%- form_tag('/datasets_alt', :method => :get) do -%>
+                  <label for="sort_by">Sort List By</label>
                   <%= select_tag('sort_by', options_for_select({ 'Last Updated' => 'updated', 'Dataset Name' => 'name' }, @sort_by)) %>
                   <%= submit_tag 'Sort' %>
                 <%- end -%>
@@ -51,7 +51,11 @@
                   <td header="datasetListUpdated"><%= Time.at(view.viewLastModified.to_i).strftime('%A, %B %d, %Y') %></td>
                   <td header="datasetListInfo"><%= link_to 'More Info', view.about_href %></td>
                   <td header="datasetListGo"><%= link_to 'View Dataset', "#{view.href}/alt" %></td>
-                  <td header="datasetListActions"><%= link_to 'Delete Dataset', "/datasets/#{view.id}?redirect_to=/datasets_alt", :method => :delete %></td>
+                  <td header="datasetListActions">
+                    <%- form_tag("/datasets/#{view.id}?redirect_to=/datasets_alt", :method => :delete) do -%>
+                      <%= submit_tag 'Delete Dataset' %>
+                    <%- end -%>
+                  </td>
                 </tr>
               <%- end -%>
               </tbody>

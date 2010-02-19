@@ -24,6 +24,15 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def self.find_recent(count)
+    return self.find_under_user({'recentlyViewed' => count})
+  end
+
+  def self.find_favorites()
+    path = "/favorite_views.json"
+    parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def column_by_id(column_id)
     self.columns.reject {|c| c.id != column_id}[0]
   end

@@ -39,14 +39,6 @@ module BlistsHelper
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
   end
 
-  def get_blist_tags
-    views = View.find()
-
-    tags = []
-    views.each { |v| v.tags.nil? ? true : tags << v.tags.collect { |t| t.data } }
-    tags.flatten.sort.uniq
-  end
-
   def get_rating_class(rating)
     ['zero', 'one', 'two', 'three', 'four', 'five'][
       ((rating * 2.0).round / 2.0).floor] +
@@ -317,7 +309,7 @@ module BlistsHelper
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Create a Form View...', 'href' => "#{view.href}/form",
-      'modal' => true, 'if' => !view.is_alt_view? &&
+      'if' => !view.is_alt_view? &&
         (CurrentDomain.member?(current_user) && module_available?(:form_publish) &&
          view.owned_by?(@current_user) &&
          view.parent_dataset.owned_by?(@current_user)),

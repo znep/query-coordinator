@@ -147,7 +147,7 @@ blist.widget.sizeGrid = function ()
 {
     var $metaContainer = $("#widgetMeta");
     // If there is no widget meta, then don't bother sizing
-    if ($metaContainer.length < 1) { return; }
+    if ($metaContainer.length < 1 && !blist.display.scrollsInline) { return; }
 
     // Delay-load tab content when switching to it.
     var $outerContent = $(this.allPanelsSelector + '.' + this.activationClass);

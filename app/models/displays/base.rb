@@ -75,6 +75,7 @@ blist.display.type = '#{type}';
 blist.display.viewId = '#{@view.id}';
 blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit};
+blist.display.scrollsInline = #{scrolls_inline?};
 blist.$display = $('##{target_dom_id}')
 END
 

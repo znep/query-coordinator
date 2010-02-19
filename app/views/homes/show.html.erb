@@ -12,7 +12,7 @@
       <div class='outerContent'>
         <div class="contentTR"><div class="contentTL"></div></div>
         <div class='content'>
-          <h1>Welcome back <%= current_user.is_established? ? h(current_user.login) : h(current_user.firstName) %></h1>
+          <h1>Welcome back <%= current_user.firstName.blank? ? h(current_user.login) : h(current_user.firstName) %></h1>
 
           <ul class="actionButtons clearfix">
             <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
@@ -93,24 +93,6 @@
     <% render(:layout => "shared/sidebar_box") do %>
       <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
     <% end %>
-
-    <%- # only show updates if the user has > 3 total blists -%>
-    <%- if false -%>
-    <%- if (current_user.is_established?) -%>
-      <% render(:layout => "shared/sidebar_box",
-        :locals => { :content_class => 'userUpdates' } ) do %>
-        <%= render(:partial => "shared/user_updates", :locals => { :user => current_user }) %>
-      <% end %>
-    <%- end -%>
-    <%- end -%>
-
-    <%- # Storage space used is not yet applicable -%>
-    <%- if false -%>
-      <% render(:layout => "shared/sidebar_box") do %>
-        <h4>Storage</h4>
-        <p>You are using 50% of your available storage</p>
-      <% end %>
-    <%- end -%>
 
   </div>
 </div>

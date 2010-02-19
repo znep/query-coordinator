@@ -650,11 +650,11 @@ HREF
             <p class="seattleText">This initial launch provides a limited set
               of datasets - those currently shown on
               <a href="http://web1.seattle.gov/mnm/">My Neighborhood Map</a> -
-              which is primarily City government data.  Beginning in
-              approximately late January, we will begin adding additional
-              datasets to the site.  At that time, we will invite you to
+              which is primarily City government data.
+              We will be continually adding additional
+              datasets to the site.  In the future, we will invite you to
               actively participate in shaping the future of
-              <a href="/">Data.Seattle.Gov</a> by suggesting additional
+              Data.Seattle.Gov by suggesting additional
               datasets and site enhancements to provide seamless access and use
               of City data.</p>
             <p class="seattleText">Please note that by accessing the data

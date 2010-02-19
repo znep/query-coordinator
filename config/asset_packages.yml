@@ -9,6 +9,7 @@ javascripts:
   - plugins/jquery.sizes.min
   - util/namespace
   - plugins/jquery.cookies.2.1.0.min
+  - util/underscore-min
 - shared-common-all:
   - util/events
   - util/sizing
@@ -70,6 +71,7 @@ javascripts:
   - widgets/dropdown-menu
 - blists-index:
   - plugins/jquery.tablesorter
+  - plugins/jquery.jqote.min
   - plugins/ui.core
   - plugins/ui.draggable
   - util/humane-date

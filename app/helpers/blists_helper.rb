@@ -39,14 +39,6 @@ module BlistsHelper
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
   end
 
-  def get_blist_tags
-    views = View.find()
-
-    tags = []
-    views.each { |v| v.tags.nil? ? true : tags << v.tags.collect { |t| t.data } }
-    tags.flatten.sort.uniq
-  end
-
   def get_rating_class(rating)
     ['zero', 'one', 'two', 'three', 'four', 'five'][
       ((rating * 2.0).round / 2.0).floor] +

@@ -315,6 +315,7 @@ class BlistsController < ApplicationController
   def print
     @view = View.find(params[:id])
     respond_to do |format|
+      format.html { render }
       format.data { render(:layout => "modal_dialog") }
     end
   end

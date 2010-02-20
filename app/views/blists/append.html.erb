@@ -1,0 +1,35 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "upload-alt-screen" %>
+  <title>Append Rows to <%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% dialog_content do %>
+  <div class="header">
+    <h1>Append Rows</h1>
+  </div>
+
+  <div class="mainContent">
+    <% form_tag("/views/#{@view.id}/rows.txt?redirect=true&method=append", :id => "appendForm", :multipart => true) do %>
+      <div class="fieldContent clearfix">
+        <p class="errorMessage"></p>
+        <p class="instructions">
+          Please choose the file whose data you would like to append to that
+          already in <%= h(@view.name) %>. Supported formats are .csv, .tsv,
+          .xml, .xls, and .xlsx.
+        </p>
+        <fieldset class="last">
+          <div class="fileInputContainer clearfix">
+            <label for="import_file">File to append:</label>
+            <div class="fileInput">
+              <%= file_field_tag('import_file') %>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="footer clearfix">
+        <%= image_submit_tag('button_finish.png', :alt => 'Upload and Append') %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

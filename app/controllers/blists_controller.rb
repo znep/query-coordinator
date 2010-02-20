@@ -470,6 +470,14 @@ class BlistsController < ApplicationController
     end
   end
 
+  def append
+    @view = View.find(params[:id])
+  end
+
+  def replace
+    @view = View.find(params[:id])
+  end
+
   def share
     @view = View.find(params[:id])
 

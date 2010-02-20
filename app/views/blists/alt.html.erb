@@ -26,7 +26,8 @@
               <li><a href="<%= @view.href %>/about">About this Dataset...</a></li>
               <li><a href="<%= @view.href %>/print">Print...</a></li>
               <li><a href="<%= @view.href %>/email">Email...</a></li>
-              <li><a href="<%= @view.href %>/import">Append or Refresh data...</a></li>
+              <li><a href="<%= @view.href %>/append">Append Rows via Upload...</a></li>
+              <li><a href="<%= @view.href %>/replace">Replace Rows via Upload...</a></li>
               <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
             <%- socialize_menu_options(@view).each do |item| -%>
               <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>

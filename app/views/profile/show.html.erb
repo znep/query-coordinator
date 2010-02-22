@@ -75,24 +75,36 @@
                   </p>
                 <%- elsif module_enabled? :community_module -%>
                   <div class="publicProfileContentActions">
-                    <%- if (!@current_user.nil? && @current_user.privacyControl != 'anonymousPerson') -%>
+                    <%- if (!@current_user.nil? &&
+                      @current_user.privacyControl != 'anonymousPerson') -%>
                       <ul class="actionButtons clearfix">
                         <li>
                           <%- if (@user.my_friend?) -%>
-                            <%= link_to("Remove as Friend", 
-                                        delete_friend_profile_path, 
-                                          :class => "arrowButton", 
+                            <%= link_to("Remove as Friend",
+                                        delete_friend_profile_path,
+                                          :class => "arrowButton inline",
                                           :title => "Remove as Friend") %>
                           <%- else -%>
-                            <%= link_to("Add as Friend", 
-                                        create_friend_profile_path, 
-                                          :class => "arrowButton", 
+                            <%= link_to("Add as Friend",
+                                        create_friend_profile_path,
+                                          :class => "arrowButton inline",
                                           :title => "Add as Friend") %>
                           <%- end -%>
                         </li>
                       </ul>
+                    <%- elsif @current_user.nil? -%>
+                      <ul class="actionButtons clearfix">
+                        <li>
+                        <a href='<%= create_friend_profile_path %>'
+                          class='arrowButton'
+                          title='Sign In &amp; Add as Friend'>
+                          Sign In &amp; Add as Friend
+                        </a>
+                        </li>
+                      </ul>
                     <%- end -%>
-                    <p><%= link_to("Go to #{CurrentDomain.strings.company} community", community_path, :class => "action") %></p>
+                    <p><%= link_to("Go to #{CurrentDomain.strings.company} community",
+                      community_path, :class => "action") %></p>
                   </div>
                 <%- end -%>
 

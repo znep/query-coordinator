@@ -547,6 +547,12 @@ module BlistsHelper
     options += View::FILTER_CONDITIONS[column_type.to_sym].collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
     options_for_select(options)
   end
+  
+  def options_for_sort_by(columns)
+    options = [['no sort', 'no sort']]
+    options += columns.collect{|column| [column.name, column.id]}
+    options_for_select(options)
+  end
 
   # Create a drop down menu of formatting fonts
   # Pass a font name to select it by default.

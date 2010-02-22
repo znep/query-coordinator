@@ -71,20 +71,32 @@
           </div>
   		<%# This is somewhat ugly but is inline for perf reasons %>
 		<% form_tag alt_filter_blist_path(@view.id) do -%>
-			<% @view.viewable_columns.each do |alt_filter_field| %>
-				<% unless View::FILTER_CONDITIONS[alt_filter_field.render_type_name.to_sym].nil? %>
+		<h2>Filter</h2>
+			<% @view.viewable_columns.each do |filter_field| %>
+				<% unless View::FILTER_CONDITIONS[filter_field.render_type_name.to_sym].nil? %>
 				<p>
-				 <%= label_tag "Filter on #{alt_filter_field.name}" %>
-				 <%= select_tag "limit_#{alt_filter_field.id}", options_for_limit_to(alt_filter_field.render_type_name)%>
-				 <%= text_field_tag "cell_content_#{alt_filter_field.id}" %>
+				 <%= label_tag "Filter on #{filter_field.name}" %>
+				 <%= select_tag "limit_#{filter_field.id}", options_for_limit_to(filter_field.render_type_name)%>
+				 <%= text_field_tag "cell_content_#{filter_field.id}" %>
 				</p>
 				<% end %>
 			<% end %>
+		
+		<h2>Sort</h2>
+		<% 1.upto(5) do |n|%>
+				<%= label_tag "Sort field #{n.to_s}" %>
+				<%= select_tag "sort_field_#{n}", options_for_sort_by(@view.viewable_columns)%>
+				<%= select_tag "sort_direction_#{n}", options_for_select(["Ascending", "Descending"]), :value =>"Ascending" %>
 
-
-			<%= submit_tag "submit" %>
+		<% end %>
+				<%= submit_tag "submit" %>		
 		<% end -%>
-
+		<h2>Search</h2>
+			<% form_tag alt_filter_blist_path(@view.id) do -%>
+				<%= label_tag "Search" %>
+				<%= text_field_tag "search" %>
+			<%= submit_tag "submit" %>		
+			<% end %>
         </div>
       </div>
     </div>

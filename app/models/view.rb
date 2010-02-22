@@ -123,7 +123,7 @@ class View < Model
   def find_row_data_with_conditions(params)
     fq = FilterQuery.new(self.id, params)
     query = fq.build
-    self.get_rows_by_query(query, :row_ids_only => true)    
+    self.get_rows_by_query(query)    
   end
   
   def find_all_row_data_ids
@@ -133,13 +133,15 @@ class View < Model
   def find_row_data(page, conditions = nil)
     if conditions.nil?
       all_row_ids = find_all_row_data_ids
+      row_ids_to_fetch = all_row_ids.paginate(:per_page => PER_PAGE, :page => page)
+      result = self.get_rows_by_ids(:ids => row_ids_to_fetch)
+      result = result.sort
+      total_entries = all_row_ids.size
     else
-      all_row_ids = find_row_data_with_conditions(conditions)
+      result = find_row_data_with_conditions(conditions)
+      total_entries = result.size
     end
-    row_ids_to_fetch = all_row_ids.paginate(:per_page => PER_PAGE, :page => page)
-    result = self.get_rows_by_ids(:ids => row_ids_to_fetch)
-    result = result.sort
-    return result, all_row_ids.size
+    return result, total_entries
   end
   
   def paginate_rows(row_data, page, total_entries)

@@ -1,3 +1,5 @@
 public/javascripts/cache
 public/stylesheets/cache
-
+vendor/bundler_gems
+Gemfile.lock
+.bundle/environment.rb

@@ -81,30 +81,9 @@ Rails::Initializer.run do |config|
   # config.active_record.observers = :cacher, :garbage_collector, :forum_observer
 
 
-  # Specify gems that this application depends on. 
-  # Gems specified here are NOT installed in the vendor directory; you need a system-wide 
-  # installation, typically because they have C-compiled extensions that we can't reliably
-  # vendor across multiple platforms (MacOSX, Linux)
-  # They can then be installed with "rake gems:install" on new installations.
-  # You have to specify the :lib option for libraries, where the Gem name (sqlite3-ruby) differs from the file itself (sqlite3)
-  # config.gem "bj"
-  # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
-  # config.gem "sqlite3-ruby", :lib => "sqlite3"
-  # config.gem "aws-s3", :lib => "aws/s3"
-  config.gem "json"
-  require 'json'
-
-  # Use gems in the vendor directory: http://errtheblog.com/post/2120
-  config.load_paths += Dir["#{RAILS_ROOT}/vendor/gems/**"].map do |dir| 
-    File.directory?(lib = "#{dir}/lib") ? lib : dir
-  end
-
-  config.gem "erubis", :version => '>= 2.6.4'
-
-  # These gems are required, but should be available in the vendor/gems directory.
-  config.gem 'multipart-post', :lib => 'net/http/post/multipart'
-  config.gem 'googlecharts', :lib => 'gchart'
-  config.gem 'hashie', :lib => 'hashie'
+  # Gems should now be specified through Bundler
+  # Edit Gemfile instead of here!
+  # They can be installed with "bundle install" on new installations
 end
 
 ActionMailer::Base.smtp_settings = {

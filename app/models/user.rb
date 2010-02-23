@@ -111,8 +111,8 @@ class User < Model
   end
 
   def is_established?
-    # An established user has 4 or more total blists.
-    View.find(Hash.new).length > 3
+    # An established user is based on age
+    Time.at(self.createdAt) < Time.now - 2.week
   end
 
   # size can be "medium", or "small"

@@ -9,7 +9,7 @@
 #discover .seattleWelcomeHeader .seattleBlockHeaderBR
 {
     background: url(/stylesheets/images/content/background_corner_bottom_right.png) no-repeat bottom right;
-    min-height: 26em;
+    min-height: 15em;
     padding: 2em;
 }
 
@@ -31,10 +31,10 @@
 #discover .seattleWelcomeHeader .seattleLogo
 {
     background: transparent url(/stylesheets/images/domains/data.seattle.gov/logo_large.png) no-repeat;
-    height: 39px;
+    height: 62px;
     margin: 0.7em 1.3em;
     text-indent: -9999px;
-    width: 426px;
+    width: 392px;
 }
 
 #discover .seattleWelcomeHeader .seattleText
@@ -42,7 +42,7 @@
     color: #888;
     font-size: 1.3em;
     margin: 1.5em 1.8em;
-    width: 35em;
+    width: 60em;
 }
 
 #discover .seattleWelcomeHeader .seattleText a

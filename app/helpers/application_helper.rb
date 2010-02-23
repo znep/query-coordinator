@@ -643,7 +643,6 @@ HREF
               {{data_search_field}}
             </div>
 
-            <p class="seattleTitle">Welcome To</p>
             <div class="seattleLogo">Data.Seattle.Gov</div>
             <p class="seattleMain">The purpose of Data.Seattle.Gov is to
               increase public access to high value, machine readable datasets

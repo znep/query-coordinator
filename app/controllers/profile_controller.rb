@@ -142,11 +142,13 @@ class ProfileController < ApplicationController
   
   def create_friend
     user_id = params[:id]
-    user = { :id => user_id }
-    Contact.create(user)
-    
+    if user_id != current_user.id
+      user = { :id => user_id }
+      Contact.create(user)
+    end
+
     respond_to do |format|
-      format.html { redirect_to(current_user.href) }
+      format.html { redirect_to(profile_path(user_id)) }
       format.data { render :text => "created" }
     end
   end

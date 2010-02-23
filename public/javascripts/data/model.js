@@ -2940,7 +2940,7 @@ blist.namespace.fetch('blist.data');
                 var rootColumns = meta.columns[0];
                 for (var i = 0; i < rootColumns.length; i++)
                 {
-                    var type = rootColumns[i].type;
+                    var type = rootColumns[i].type || 'text';
                     if (blist.data.types[type].filterText)
                     {
                         // Textual column -- apply the regular expression to

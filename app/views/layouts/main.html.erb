@@ -85,14 +85,14 @@
   <%# This should be included on all pages, including the marketing site.
   It will update the header appropriately based on your logged-in state %>
   <script type="text/javascript">
-    jQuery((function ($)
+    (function ($)
     {
         var loggedInCookie = $.cookies.get('logged_in');
         if (loggedInCookie && loggedInCookie == "true")
         {
             $('#header .userNav').addClass('loggedInNav');
         }
-    })(jQuery));
+    })(jQuery);
   </script>
 
 

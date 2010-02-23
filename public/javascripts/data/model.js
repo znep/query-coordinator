@@ -559,10 +559,15 @@ blist.namespace.fetch('blist.data');
                 return;
             }
 
+            var tempView = this.getViewCopy(this.isGrouped());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
-                    { data: $.extend({}, supplementalAjaxOptions.data,
-                        { ids: rowsToLoad }) });
+                    { url: '/views/INLINE/rows.json?' + $.param(
+                        $.extend({}, supplementalAjaxOptions.data,
+                        { method: 'index', ids: rowsToLoad })),
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: $.json.serialize(tempView) });
             doLoad(this, onSupplementalLoad, ajaxOptions);
         };
 
@@ -2815,7 +2820,7 @@ blist.namespace.fetch('blist.data');
             for (var i = 0; i < active.length; i++)
             {
                 // If it is not an object, just an id, try to look it up from rows
-                if (typeof active[i] != 'object')
+                if (typeof active[i] != 'object' && !self.isGrouped())
                 {
                     var curRow = self.getByID(active[i]);
                     if (curRow == undefined)

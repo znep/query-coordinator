@@ -150,6 +150,7 @@ $(function ()
             3: {sorter: 'digit'}, 4: {sorter: false}}
     });
 
-    
-    $.live(".publicProfileContentActions .actionButtons a", "click", profileNS.addFriendClick);
+
+    $.live(".publicProfileContentActions .actionButtons a:.inline",
+        "click", profileNS.addFriendClick);
 });

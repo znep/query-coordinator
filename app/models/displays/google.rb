@@ -16,7 +16,7 @@ class Displays::Google < Displays::Base
     end
 
     def type
-        @type
+      @map ? 'map' : 'visualization'
     end
 
     def required_javascripts

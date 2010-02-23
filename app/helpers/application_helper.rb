@@ -197,8 +197,6 @@ HREF
   
   
   def create_pagination(total_count, page_count, current_page, base_href)
-    puts "######## create_pagination(#{total_count}, #{page_count}, #{current_page}, #{base_href})"
-
     num_pages = (total_count.to_f / page_count).ceil
     base_href.sub!(/([?&])page=[0-9]*/, '\1')
     base_href = (base_href.include?("?") || base_href.include?("#")) ? "#{base_href}&page=" : "#{base_href}?page="
@@ -369,7 +367,7 @@ HREF
   end
 
   # Generate a parameter hash given a current page state and additional flags
-  def generate_filter_url(current_state, type, additional_flags = {}, delimiter = '#')
+  def generate_filter_url(current_state, type, additional_flags = {}, delimiter = '?')
     if current_state.nil?
       state = Hash.new
     else
@@ -387,6 +385,9 @@ HREF
     # Merge all flags
     state[:type] = type
     state.merge!(additional_flags)
+
+    # If page is 1, just drop it
+    state.delete(:page) if state[:page] == 1
 
     # Deal with filter[key] special case if filter exists and is a hash
     if state.has_key?(:filter) && state[:filter].respond_to?("each")
@@ -642,7 +643,6 @@ HREF
               {{data_search_field}}
             </div>
 
-            <p class="seattleTitle">Welcome To</p>
             <div class="seattleLogo">Data.Seattle.Gov</div>
             <p class="seattleMain">The purpose of Data.Seattle.Gov is to
               increase public access to high value, machine readable datasets

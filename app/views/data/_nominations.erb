@@ -16,7 +16,7 @@
       <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
       %> 
         <% if nomnomnom.status == "pending" || nomnomnom.status == "rejected" %>
-          <%= link_to("Accept", "/nominations/#{nomnomnom.id}.json", :title => "Accept this nomination", :class => "acceptNomination") %>
+          <%= link_to("Approve", "/nominations/#{nomnomnom.id}.json", :title => "Accept this nomination", :class => "acceptNomination") %>
         <% end %>
 
         <% if nomnomnom.status == "pending" || nomnomnom.status == "approved" %>

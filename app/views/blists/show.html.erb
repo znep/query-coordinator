@@ -8,6 +8,10 @@
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 
+<% content_for :skip_links do %>
+  <%= link_to 'Go to an accessible version of this page', "#{@view.href}/alt" %>
+<% end %>
+
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
 <%- is_blist = @view.is_blist? %>
 <%- can_edit = current_user && @view.can_edit() -%>

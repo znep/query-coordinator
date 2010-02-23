@@ -1,0 +1,94 @@
+<% content_for :head do %>
+  <%= stylesheet_link_merged 'blists-index-alt' %>
+  <title><%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="twoColumnContainer tabContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent scrollContentColumn">
+    <div id='blistsAlt'>
+      <%= render(:partial => "shared/tabs") %>
+
+      <div class='outerContent'>
+        <div class="contentTR"><div class="contentTL"></div></div>
+        <div class='content'>
+          <div class='headerBar clearfix'>
+            <h3 id='listTitle' class='clipText' title='My Datasets'>My Datasets</h3>
+
+            <ul class="headerActions">
+              <li>
+                <%- form_tag('/datasets_alt', :method => :get) do -%>
+                  <label for="sort_by">Sort List By</label>
+                  <%= select_tag('sort_by', options_for_select({ 'Last Updated' => 'updated', 'Dataset Name' => 'name' }, @sort_by)) %>
+                  <%= submit_tag 'Sort' %>
+                <%- end -%>
+              </li>
+              <li>
+                <%= link_to("Upload New Data", {:controller => "blists", :action => "upload_alt"},
+                    :class => "import",
+                    :title => "Upload a CSV, TSV, XLS, XLSX, or XML file and we'll convert it into a #{t(:blist_name)}.") %>
+              </li>
+            </ul>
+
+        </div>
+
+          <div class="gridListContainer">
+            <table id="datasetList">
+              <thead>
+                <tr>
+                  <th id="datasetListName">Dataset Name</th>
+                  <th id="datasetListOwner">Owner</th>
+                  <th id="datasetListUpdated">Last Updated</th>
+                  <th id="datasetListInfo">More Info</th>
+                  <th id="datasetListGo">View Dataset</th>
+                  <th id="datasetListActions">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+              <%- @views.each do |view| -%>
+                <tr>
+                  <td header="datasetListName"><%= view.name %></td>
+                  <td header="datasetListOwner"><%= view.owner.displayName %></td>
+                  <td header="datasetListUpdated"><%= Time.at(view.viewLastModified.to_i).strftime('%A, %B %d, %Y') %></td>
+                  <td header="datasetListInfo"><%= link_to 'More Info', view.about_href %></td>
+                  <td header="datasetListGo"><%= link_to 'View Dataset', "#{view.href}/alt" %></td>
+                  <td header="datasetListActions">
+                    <%- form_tag("/datasets/#{view.id}?redirect_to=/datasets_alt", :method => :delete) do -%>
+                      <%= submit_tag 'Delete Dataset' %>
+                    <%- end -%>
+                  </td>
+                </tr>
+              <%- end -%>
+              </tbody>
+            </table>
+          </div>
+          
+          <%- if (!current_user.is_established?) -%>
+            <div class="noticePanel expandContainer">
+              <div class="noticeHeaderOuter"><div class="noticeHeaderInner">
+                <div class="noticeHeader clearfix">
+                  <h2>Get Started!</h2>
+                  <p>Have a look at some of the great things you can do with <%= CurrentDomain.strings.company %>.</p>
+                </div>
+              </div></div>
+              <div class="noticeContent expandable">
+                <%= render(:partial => "shared/feature_boxes") %>
+              </div>
+            </div>
+          <%- end -%>
+        </div>
+      </div>
+
+      <div id="infoPane" class='metadataPane'></div>
+    </div>
+  </div>
+
+  <div id="sidebar" class="column scrollContentColumn">
+    <% render(:layout => "shared/sidebar_box") do %>
+      <%= render(:partial => "shared/current_user_tile", :locals => { :user => current_user }) %>
+    <% end %>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'shared-common-all' %>
+<% end %>

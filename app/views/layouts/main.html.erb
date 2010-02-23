@@ -34,7 +34,11 @@
 
 <body id='<%= @body_id %>' class='<%= @body_class %>'>
 
-<div id="skipLinks"><a href="#content">Skip to main content</a><a href="#footerLinks">Skip to footer links</a></div>
+<div id="skipLinks">
+  <a href="#content" accesskey="c">Skip to main content</a>
+  <a href="#footerLinks" accesskey="f">Skip to footer links</a>
+  <%= yield :skip_links %>
+</div>
 
 <div class="bodyExterior">
 <div class="bodyInterior">
@@ -81,14 +85,14 @@
   <%# This should be included on all pages, including the marketing site.
   It will update the header appropriately based on your logged-in state %>
   <script type="text/javascript">
-    jQuery((function ($)
+    (function ($)
     {
         var loggedInCookie = $.cookies.get('logged_in');
         if (loggedInCookie && loggedInCookie == "true")
         {
             $('#header .userNav').addClass('loggedInNav');
         }
-    })(jQuery));
+    })(jQuery);
   </script>
 
 
@@ -104,8 +108,6 @@
 
   <div class="jqmWindow" id="modal"></div>
 
-  <%- if feature? "persistent_analytics" -%>
-    <%= render(:partial => "shared/analytics") %>
-  <%- end -%>
+  <%= render(:partial => "shared/analytics") %>
 </body>
 </html>

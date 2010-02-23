@@ -154,6 +154,11 @@ span.fieldValue
     text-transform: uppercase;
 }
 
+.editGeneralForm, .attributionEdit
+{
+    position: relative;
+}
+
 .closeButton
 {
     background: url(/stylesheets/images/content/section_close_button.png) no-repeat;
@@ -162,8 +167,13 @@ span.fieldValue
     position: absolute;
     right: 10px;
     text-indent: -9999px;
+    top: 10px;
     width: 16px;
     z-index: 1;
+}
+.closeButton:focus
+{
+    background-color: #ccc;
 }
 
 dl.summaryList

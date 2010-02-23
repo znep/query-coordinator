@@ -56,9 +56,10 @@ theme:
     - { text: Terms of Service, href: /terms-of-service }
     - { text: Privacy Policy, href: /privacy }
     header:
-    - { text: About Socrata, href: http://www.socrata.com/about }
+    - { text: What is Socrata?, href: http://www.socrata.com/about }
     - { text: Help, href: http://www.getsatisfaction.com/socrata }
     footer:
+    - { text: What is Socrata?, href: http://www.socrata.com/about }
     - { text: Blog, href: http://blog.socrata.com/, class: rss }
     - { text: Company Info, href: http://www.socrata.com/company-info, rel: nofollow }
     - { text: Terms of Service, href: http://www.socrata.com/terms-of-service, rel: nofollow }

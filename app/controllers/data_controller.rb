@@ -17,36 +17,42 @@ class DataController < ApplicationController
       redirect_to home_path
     end
 
+    # get filter options
+    opts, tag_opts = parse_opts(params)
+
+    # save us some work for no-JS versions
+    @need_to_render = [:popular, :all, :search, :nominations]
+    @active_tab = :popular
+    if params[:no_js]
+      @need_to_render = [(params[:type] || 'popular').downcase.to_sym]
+      @active_tab = @need_to_render.first
+    end
+
+    # set up page params
     @body_class = 'discover'
     @show_search_form = false
     @page_size = PAGE_SIZE
 
-    # TODO: We shouldn't bother retrieving nominations if it isn't enabled for
-    # this domain
-    @nominations = Nomination.find_page(1, PAGE_SIZE)
-    @nominations_count = Nomination.count()
-
     # TODO: Community activity needs to be filtered by domain
     @community_activity = Activity.find({:maxResults => 3}) unless CurrentDomain.revolutionize?
 
-    # "All Views" tab
-    unless @all_views_rendered = read_fragment("discover-tab-all_#{CurrentDomain.cname}")
-      opts = {:limit => PAGE_SIZE}
-
-      @all_views_total = View.find(opts.merge({:count => true }), true).count
-      @all_views = View.find(opts, true)
-
-      # TODO: Tags should also allow filtering by org
-      @all_views_tags = Tag.find({ :method => "viewsTags", :limit => 5 })
+  # TODO: Tags should also allow filtering by org
+    # "Top 100" tab
+    if @need_to_render.include?(:popular)
+      unless @popular_views_rendered = read_fragment("discover-tab-popular_#{CurrentDomain.cname}")
+        @popular_views = View.find_filtered(opts.merge({ :top100 => true }))
+        @popular_views_total = @popular_views.size
+        @popular_views_tags = Tag.find(tag_opts.merge({ :top100 => true }))
+      end
     end
 
-    # "Top 100" tab
-    unless @popular_views_rendered = read_fragment("discover-tab-popular_#{CurrentDomain.cname}")
-      opts = {:top100 => true, :limit => PAGE_SIZE, :page => 1}
-
-      @popular_views = View.find_filtered(opts)
-      @popular_views_total = @popular_views.size
-      @popular_views_tags = Tag.find({ :method => "viewsTags", :top100 => true, :limit => 5 })
+    # "All Views" tab
+    if @need_to_render.include?(:all)
+      unless @all_views_rendered = read_fragment("discover-tab-all_#{CurrentDomain.cname}")
+        @all_views = View.find(opts, true)
+        @all_views_total = View.find(opts.merge({ :count => true }), true).count
+        @all_views_tags = Tag.find({ :method => "viewsTags", :limit => 5 })
+      end
     end
 
     # "Featured Datasets" carousel
@@ -58,11 +64,11 @@ class DataController < ApplicationController
     @network_views = View.find_filtered({ :inNetwork => true, :limit => 5 })
 
     # If a search was specified
-    if (params[:search])
+    if params[:search] && @need_to_render.include?(:search)
       @search_term = params[:search]
       @search_debug = params[:search_debug]
       begin
-        search_results = SearchResult.search("views", { :q => @search_term, :limit => PAGE_SIZE, :page => 1 })
+        search_results = SearchResult.search("views", opts)
         @search_views = search_results[0].results
         @search_views_total = search_results[0].count
       rescue CoreServer::CoreServerError => e
@@ -72,119 +78,86 @@ class DataController < ApplicationController
       end
     end
 
+    # get nominations if we need them
+    if CurrentDomain.module_enabled? :dataset_nomination && @need_to_render.include?(:nominations)
+      @nominations = Nomination.find_page(1, PAGE_SIZE)
+      @nominations_count = Nomination.count
+    end
+
     # Hide logo if theme specifies so
     @hide_logo = " style='display:none'" if CurrentDomain.theme.no_logo_on_discover
 
     # build current state string
-    @current_state = { :search => @search_term , :search_debug => @search_debug}
+    @current_state = { :filter => params[:filter], :page => opts[:page].to_i,
+      :tag => opts[:tags], :sort_by => opts[:sortBy], :search => opts[:q],
+      :no_js => params[:no_js] }
   end
 
   def filter
-    type = params[:type]
-    filter = params[:filter]
-    page = params[:page] || 1
-    sort_by_selection = params[:sort_by] || (type == "POPULAR" ? "POPULAR" : "LAST_CHANGED")
-    tag = params[:tag]
-    search_term = params[:search]
-    search_debug = params[:search_debug]
+    # get filter options from params
+    opts, tag_opts = parse_opts(params)
 
-    sort_by = sort_by_selection
-    is_asc = true
-    case sort_by_selection
-    when "ALPHA_DESC"
-      sort_by = "ALPHA"
-      is_asc = false
-    when "NUM_OF_VIEWS", "AVERAGE_RATING", "COMMENTS", "LAST_CHANGED", "POPULAR"
-      is_asc = false
-    end
-
-    opts = Hash.new
-    opts.update({:page => page, :limit => PAGE_SIZE})
-    tag_opts = Hash.new
-    tag_opts.update({ :method => "viewsTags", :limit => 5 })
-
-    if (type == "POPULAR")
-      opts.update({:top100 => true})
-      tag_opts.update({:top100 => true})
-    elsif (type == "SEARCH")
-      opts.update({:q => search_term })
-    end
-
-    # the core server caches common queries. This causes the cache to
-    # be used
-    if type == "POPULAR" ? sort_by != "POPULAR" : sort_by != "LAST_CHANGED"
-      opts.update({:sortBy => sort_by, :isAsc => is_asc})
-    end
-
-    if (!tag.nil?)
-      opts.update({:tags => tag})
-    end
-
-    tab_title = type == "POPULAR" ? "Popular" : "All"
-    unless(filter.nil?)
-      opts.update(filter)
-
-      if (filter[:inNetwork])
+    # figure out the tab title text
+    tab_title = params[:type].titleize
+    unless params[:filter].nil?
+      if (params[:filter][:inNetwork])
         tab_title += " #{t(:blists_name)} in my network"
-      elsif (filter[:category])
+      elsif (params[:filter][:category])
         tab_title += " #{filter[:category]} #{t(:blists_name)}"
       end
     else
       tab_title += " #{t(:blists_name)}"
     end
+    tab_title += " tagged '#{opts[:tags]}'" unless(opts[:tags].nil?)
 
-    unless(tag.nil?)
-      tab_title += " tagged '#{tag}'"
-    end
-
+    # fetch the data for the page
     @page_size = PAGE_SIZE
-    if type == "SEARCH"
-      tab_title = "Search Results for \"#{search_term}\""
+    if params[:type] == 'search'
+      tab_title = "Search Results for \"#{opts[:q]}\""
       search_results = SearchResult.search("views", opts)
       @filtered_views = search_results[0].results
       @filtered_views_total = search_results[0].count
     else
       @filtered_views = View.find_filtered(opts)
-      @filtered_views_total = View.find_filtered(opts.update({:count => true})).count
+      @filtered_views_total = View.find_filtered(opts.merge({ :count => true })).count
 
+      # Account for case where user selects a tag not on top 5
       tag_list = Tag.find(tag_opts)
-      if (tag && !tag_list.nil? && !tag_list.any? {|itag| itag.name == tag })
+      if (opts[:tags] && !tag_list.nil? && !tag_list.any? {|tag| tag.name == opts[:tags] })
         new_tag = Tag.new
-        new_tag.data['name'] = tag
+        new_tag.data['name'] = opts[:tags]
         tag_list << new_tag
       end
     end
 
     # build current state string
-    @current_state = { :filter => filter, :page => page, :tag => tag,
-      :sort_by => sort_by_selection, :search => search_term, 
-      :search_debug => search_debug }
+    @current_state = { :filter => params[:filter], :page => opts[:page],
+      :tag => opts[:tags], :sort_by => opts[:sortBy], :search => opts[:q] }
 
+    # render the appropriate view
     respond_to do |format|
-      format.html { redirect_to(data_path(params)) }
-      format.data { 
+      format.html{ redirect_to(data_path(params)) }
+      format.data do
         if ((@filtered_views.length > 0) || (type != "SEARCH"))
           render(:partial => "data/view_list_tab", 
-            :locals => 
-            {
+            :locals => {
               :tab_title => tab_title, 
               :views => @filtered_views, 
               :views_total => @filtered_views_total,
-              :current_page => page.to_i,
-              :type => type,
-              :current_filter => filter,
-              :sort_by => sort_by_selection,
+              :current_page => opts[:page].to_i,
+              :type => params[:type],
+              :current_filter => params[:filter],
+              :sort_by => params[:sort_by],
               :tag_list => tag_list,
-              :current_tag => tag,
-              :search_term => search_term,
-              :search_debug => search_debug,
+              :current_tag => opts[:tags],
+              :search_term => opts[:q],
               :page_size => @page_size
             })
         else
           render(:partial => "data/view_list_tab_noresult",
-              :locals => { :term => search_term })
+              :locals => { :term => opts[:q] })
         end
-      }
+      end
     end
 
   end
@@ -247,7 +220,44 @@ class DataController < ApplicationController
     end
   end
 
-  protected
+private
+  def parse_opts(params)
+    page = params[:page] || 1
+    sort_by_selection = params[:sort_by] || (type == "popular" ? "POPULAR" : "LAST_CHANGED")
+    sort_by = sort_by_selection
+
+    is_asc = true
+    case sort_by_selection
+    when "ALPHA_DESC"
+      sort_by = "ALPHA"
+      is_asc = false
+    when "NUM_OF_VIEWS", "AVERAGE_RATING", "COMMENTS", "LAST_CHANGED", "POPULAR"
+      is_asc = false
+    end
+
+    opts = {:page => page, :limit => PAGE_SIZE}
+    tag_opts = { :method => "viewsTags", :limit => 5 }
+
+    if params[:type] == "popular"
+      opts[:top100] = true
+      tag_opts[:top100] = true
+    elsif params[:type] == "search"
+      opts[:q] = params[:search]
+    end
+
+    # the core server caches common queries. This causes the cache to be used
+    if params[:type] == "popular" ? sort_by != "POPULAR" : sort_by != "LAST_CHANGED"
+      opts[:sortBy] = sort_by
+      opts[:isAsc] = is_asc
+    end
+
+    opts[:tags] = params[:tag] unless params[:tag].nil?
+    opts.update(params[:filter]) unless params[:filter].blank?
+
+    return opts, tag_opts
+  end
+
+protected
   # Discover controller is heavily cached. Don't bother with putting an
   # authenticity_token  anywhere on this page, since we'd just end up caching it
   # and breaking stuff.

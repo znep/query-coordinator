@@ -489,6 +489,10 @@ module BlistsHelper
     options_for_select(View.creative_commons.invert.sort { |a, b| a.first <=> b.first }, selected_option)
   end
   
+  def merged_license_select_options(selected_license = nil)
+    options_for_select(View.merged_licenses.invert.sort { |a, b| a.first <=> b.first }, selected_license)
+  end
+  
   def font_unit_select_options(selected_unit = nil)
     options_for_select({'ems' => 'em', 'points' => 'pt', 'pixels' => 'px', 'inches' => 'in'}, selected_unit)
   end
@@ -535,6 +539,18 @@ module BlistsHelper
         "Powered by Socrata</a></p>"
     end
     embed_template += "</div>"
+  end
+  
+  def options_for_limit_to(column_type)
+    options = [['no filter', 'no filter']]
+    options += View::FILTER_CONDITIONS[column_type.to_sym].collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
+    options_for_select(options)
+  end
+  
+  def options_for_sort_by(columns)
+    options = [['no sort', 'no sort']]
+    options += columns.collect{|column| [column.name, column.id]}
+    options_for_select(options)
   end
 
   # Create a drop down menu of formatting fonts

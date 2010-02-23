@@ -3,9 +3,14 @@
   <title>New <%= t(:blist_name).capitalize %> | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
+<% content_for :skip_links do %>
+  <%= link_to 'Go to an accessible version of this page', "/upload_alt" %>
+<% end %>
+
 <div class="twoColumnContainer clearfix">
   <div id="mainColumnContent" class="column mainContent scrollContentColumn">
     <div class="outerContent">
+      <div class="contentTR"><div class="contentTL"></div></div>
       <div class="content newBlistContent">
         <% form_tag(blists_path, :id => "newDatasetForm") do %>
           <%- if @is_upload -%>

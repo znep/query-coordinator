@@ -1,6 +1,7 @@
 class BlistsController < ApplicationController
+  include BlistsHelper
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
+  skip_before_filter :require_user, :only => [:show, :alt, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
 
   def index
     @body_class = 'home'
@@ -10,6 +11,23 @@ class BlistsController < ApplicationController
       h[k] = CGI.unescape(v); h
     end
     @title = get_title(@args)
+  end
+
+  def alt_index
+    @body_class ='home'
+    @views = View.find
+
+    # TODO: The core server doesn't support sortby params here.
+    #       Refactor when they do.
+    @sort_by = params[:sort_by] || 'updated'
+    case @sort_by
+      when 'updated'
+        @views.sort!{ |a, b| b.viewLastModified.to_i <=> a.viewLastModified.to_i }
+        # {:sortBy => 'LAST_CHANGED', :isAsc => false}
+      when 'name'
+        @views.sort!{ |a, b| a.name <=> b.name }
+        # {:sortBy => 'ALPHA', :isAsc => true}
+    end
   end
 
   def show
@@ -73,14 +91,59 @@ class BlistsController < ApplicationController
     @display = @view.display
   end
 
+   def alt
+    @body_id = 'lensBody'
+    find_view
+    @data = @view.find_data(:all, :page => params[:page])
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
+  end
+  
+  def alt_filter
+    find_view
+    @data = @view.find_data(:all, :page => params[:page], :conditions => params)
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
+    render :template => 'blists/alt'  
+  end
+
+  def find_view
+    begin
+      @parent_view = @view = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
+            ' or view cannot be found, or has been deleted.'
+            return (render 'shared/error', :status => :not_found)
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'authentication_required' 
+        return require_user(true)
+      elsif e.error_code == 'permission_denied'
+        flash.now[:error] = e.error_message
+        return (render 'shared/error', :status => :forbidden)
+      else
+        flash.now[:error] = e.error_message
+        return (render 'shared/error', :status => :internal_server_error)
+      end
+    end
+
+    if !@view.can_read()
+      return require_user(true)
+    end
+
+    if !@view.is_blist?
+      # SoL. Display a message and redir to parent?
+    end
+  end
+
   # To build a url to this action, use View.about_href.
   # Do not use about_blist_path (it doesn't exist).
   def about
     @body_class = 'aboutDataset'
     @view = View.find(params[:id])
-    @view.columns.each do |column|
-      pp column.flags
-    end
+  end
+
+  def about_edit
+    @view = View.find(params[:id])
   end
 
   def publish
@@ -170,7 +233,7 @@ class BlistsController < ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to(blist.href) }
+      format.html { redirect_to(params[:redirect_to] || blist.href) }
       format.data { render :json => blist.to_json() }
     end
   end
@@ -252,6 +315,7 @@ class BlistsController < ApplicationController
   def print
     @view = View.find(params[:id])
     respond_to do |format|
+      format.html { render }
       format.data { render(:layout => "modal_dialog") }
     end
   end
@@ -292,6 +356,10 @@ class BlistsController < ApplicationController
       format.html { render(:action => "new") }
       format.data { render(:action => "new", :layout => "modal_dialog") }
     end
+  end
+
+  def upload_alt
+    
   end
 
   def create
@@ -343,9 +411,11 @@ class BlistsController < ApplicationController
       blist_id = params[:id]
       result = View.delete(blist_id)
 
+      redirect_path = params[:redirect_to] || blists_path
+      redirect_path = View.find(params[:redirect_id]).href unless params[:redirect_id].nil?
+
       respond_to do |format|
-        format.html { redirect_to(params[:redirect_id].nil? ?
-                          blists_path : View.find(params[:redirect_id]).href) }
+        format.html { redirect_to(redirect_path) }
         format.data { render :text => blist_id }
       end
   end
@@ -399,6 +469,14 @@ class BlistsController < ApplicationController
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
     end
+  end
+
+  def append
+    @view = View.find(params[:id])
+  end
+
+  def replace
+    @view = View.find(params[:id])
   end
 
   def share

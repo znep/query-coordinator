@@ -44,6 +44,15 @@
     padding-right: 10px;
     text-decoration: none;
 }
+.actionButtons li.hasFocus
+{
+    background-color: #8e8e8e;
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites_active.png);
+}
+.actionButtons li.hasFocus a
+{
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites_active.png);
+}
 
 .actionButtons li.flushLeft 
 {
@@ -880,6 +889,11 @@ table.gridList td div.cellInner a
 {
     color: #333;
     text-decoration: none;
+}
+table.gridList td a.cellInner:focus,
+table.gridList td div.cellInner a:focus
+{
+    text-decoration: underline;
 }
 table.gridList td a.cellInner:hover, 
 table.gridList td div.cellInner a:hover { text-decoration: underline; }

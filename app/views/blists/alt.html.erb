@@ -1,0 +1,104 @@
+<% content_for :head do %>
+  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%= stylesheet_link_merged 'blist-show-alt' %>
+  <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <link rel="canonical" href="<%= @view.href %>" />
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="#dataGrid" accesskey="d">Skip to data</a>
+  <a href="#metaTabs" accesskey="m">Skip to metadata information</a>
+<% end %>
+
+<%- is_owner = current_user && @view.owner.id == current_user.id -%>
+<%- is_blist = @view.is_blist? %>
+<%- can_edit = current_user && @view.can_edit() -%>
+
+<div class="altShowContainer oneColumnContainer <%= @view.is_invalid? ? 'invalidView' : '' %>">
+  <div class="fullPageContentContainer">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class="outerContent">
+          <div class="contentTR"><div class="contentTL"></div></div>
+          <div class="content">
+            <ul id="datasetMenu">
+              <li><a href="<%= @view.href %>/about">About this Dataset...</a></li>
+              <li><a href="<%= @view.href %>/print">Print...</a></li>
+              <li><a href="<%= @view.href %>/email">Email...</a></li>
+              <li><a href="<%= @view.href %>/append">Append Rows via Upload...</a></li>
+              <li><a href="<%= @view.href %>/replace">Replace Rows via Upload...</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
+            <%- socialize_menu_options(@view).each do |item| -%>
+              <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
+            <%- end -%>
+              <li><a href=""></a></li>
+              <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.xls?accessType=DOWNLOAD">Export To XLS</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
+            </ul>
+            <a name="dataGrid"></a>
+            <div class="dataGridWrapper">
+              <table id="dataGrid">
+                <thead>
+                  <tr>
+                    <th id="header_sid">Row number</th>
+					<% @view.viewable_columns.each do |column|%>
+                      <th id="header_<%= column.id %>" class="<%= column.data_type_name %>">
+                        <%= column.name %>
+                      </th>
+                    <%- end -%>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%# This is somewhat ugly but is inline for perf reasons %>
+                  <%- @data.each do |row| -%>
+                    <tr>
+                      <th header="header_sid"><%= row.last %></th>
+						<% @view.viewable_columns.each_with_index do |column, index|%>
+                        <td header="header_<%= column.id %>">
+                              <%= row[index].to_s %>
+                        </td>
+                      <%- end -%>
+                    </tr>
+                  <%- end -%>
+                </tbody>
+              </table>
+            </div>
+				<div id="pagination links">
+					<%= will_paginate @data %>
+				</div>
+          </div>
+  		<%# This is somewhat ugly but is inline for perf reasons %>
+		<% form_tag alt_filter_blist_path(@view.id) do -%>
+		<h2>Filter</h2>
+			<% @view.viewable_columns.each do |filter_field| %>
+				<% unless View::FILTER_CONDITIONS[filter_field.render_type_name.to_sym].nil? %>
+				<p>
+				 <%= label_tag "Filter on #{filter_field.name}" %>
+				 <%= select_tag "limit_#{filter_field.id}", options_for_limit_to(filter_field.render_type_name)%>
+				 <%= text_field_tag "cell_content_#{filter_field.id}" %>
+				</p>
+				<% end %>
+			<% end %>
+		
+		<h2>Sort</h2>
+		<% 1.upto(5) do |n|%>
+				<%= label_tag "Sort field #{n.to_s}" %>
+				<%= select_tag "sort_field_#{n}", options_for_sort_by(@view.viewable_columns)%>
+				<%= select_tag "sort_direction_#{n}", options_for_select(["Ascending", "Descending"]), :value =>"Ascending" %>
+
+		<% end %>
+				<%= submit_tag "submit" %>		
+		<% end -%>
+		<h2>Search</h2>
+			<% form_tag alt_filter_blist_path(@view.id) do -%>
+				<%= label_tag "Search" %>
+				<%= text_field_tag "search" %>
+			<%= submit_tag "submit" %>		
+			<% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

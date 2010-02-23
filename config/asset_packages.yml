@@ -259,8 +259,14 @@ stylesheets:
   - list-screen
   - blists-screen
   - combo
+- blists-index-alt:
+  - list-screen
+  - blists-alt-screen
 - blists-new:
   - blist-new-screen
+  - form-common
+- blists-about-edit:
+  - blist-about-edit-screen
   - form-common
 - blists-publish:
   - blist-publish-screen

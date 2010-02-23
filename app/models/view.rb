@@ -90,12 +90,16 @@ class View < Model
   def find_data(*arguments)
     scope = arguments.slice!(0)
     options = arguments.slice!(0) || {}
-    # if options[:all] and not options[:conditions]
-      result = find_all_data(options)
-    # else
-      # result = find_data_with_conditions
-    # end
+    result = find_all_data(options)
     result
+  end
+  
+  def save_query(params = {})
+    query = JSON.parse(params[:query_json])
+    query['name'] = params[:name]
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    url = "/views.json?#{params.to_param}"
+    JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
   end
   
   def find_all_data(options)

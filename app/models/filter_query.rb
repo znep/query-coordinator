@@ -49,7 +49,6 @@ class FilterQuery
     sort_query_hash(sort_children_array)
   end
   
-  
   def filter_query_conditions(params)
     filters = all_params_where_limit_to_was_not_no_filter(self.params)
     return if filters.none?
@@ -110,8 +109,6 @@ class FilterQuery
           ]
     }
   end
-  
-
 
   def array_of_filter_children_hashes(filter_children)
     filter_children.inject([]){|arr, filter_child| arr << filter_children_hash(filter_child[0], filter_child[2], filter_child[1])}

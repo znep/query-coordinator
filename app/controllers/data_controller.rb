@@ -41,7 +41,7 @@ class DataController < ApplicationController
     if @need_to_render.include?(:popular)
       unless @popular_views_rendered = read_fragment("discover-tab-popular_#{CurrentDomain.cname}")
         @popular_views = View.find_filtered(opts.merge({ :top100 => true }))
-        @popular_views_total = @popular_views.size
+        @popular_views_total = View.find(opts.merge({ :top100 => true, :count => true}), true).count
         @popular_views_tags = Tag.find(tag_opts.merge({ :top100 => true }))
       end
     end

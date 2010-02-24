@@ -1,3 +1,13 @@
+body
+{
+    background: #ecedec url(/stylesheets/images/domains/data.seattle.gov/mainlogo_background.png) 0 6px repeat-x;
+}
+
+#header
+{
+    background: url(/stylesheets/images/domains/data.seattle.gov/mainlogo_background.png) repeat-x;
+}
+
 #discover .seattleWelcomeHeader
 {
     background: #fff url(/stylesheets/images/domains/data.seattle.gov/header_bg.jpg) no-repeat right bottom;

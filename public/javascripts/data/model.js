@@ -2917,7 +2917,11 @@ blist.namespace.fetch('blist.data');
         var configureFilter = function(filter)
         {
             var toFilter;
-            if (typeof filter == "function") { filterFn = filter; }
+            if (typeof filter == "function")
+            {
+                filterFn = filter;
+                filterText = null;
+            }
             else
             {
                 if (filter === null) { filter = ""; }
@@ -2983,7 +2987,8 @@ blist.namespace.fetch('blist.data');
 
                 // Filter the current filter set if the filter is a subset of
                 // the current filter
-                if (filter.substring(0, filterText.length) == filterText)
+                if (filterText !== null &&
+                    filter.substring(0, filterText.length) == filterText)
                 { toFilter = active; }
                 filterText = filter;
                 meta.view.searchString = filterText;

@@ -48,7 +48,7 @@ blist.discover.historyChangeHandler = function (hash)
     var tabContainerSelector = tabContainers[activeTab];
 
     // Abort if we don't know what's going on
-    if (activeTab == 0)
+    if ((activeTab === 0) || (blist.discover.isTabDirty[activeTab] === undefined))
     {
         return;
     }

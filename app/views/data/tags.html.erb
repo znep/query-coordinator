@@ -3,26 +3,21 @@
 <% end %>
 
 <div class="oneColumnContainer">
-  <div class="pageBlockHeaderOuter">
-    <div class="pageBlockHeaderTL">
-      <div class="pageBlockHeaderTR">
-        <div class="pageBlockHeaderBL">
-          <div class="pageBlockHeaderBR">
-            <div class="pageBlockHeaderContainer">
-              <div class="pageBlockIntro">
-                <p>Popular Tags</p>
-              </div>
-              <div class="pageBlockHeaderContent clearfix">
-                <div class="tagCloudContainer">
-                  <p>
-                    <%- @tag_list.each do |tag| -%>
-                      <%= link_to(h(tag.name),
-                          data_path + generate_filter_url(@current_state, @type, {:tag => tag.name}),
-                            :class => "filterLink", :rel => tag.frequency ) %>
-                    <%- end -%>
-                  </p>
-                </div>
-              </div>
+  <div class="fullPageContentContainer">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class="outerContent">
+          <div class="contentTR"><div class="contentTL"></div></div>
+          <div class="content">
+            <h2>Popular Tags</h2>
+            <div class="tagCloudContainer">
+              <p>
+                <%- @tag_list.each do |tag| -%>
+                  <%= link_to(h(tag.name),
+                      data_path + generate_filter_url(@current_state, @type, {:tag => tag.name}),
+                        :class => "filterLink", :rel => tag.frequency ) %>
+                <%- end -%>
+              </p>
             </div>
           </div>
         </div>

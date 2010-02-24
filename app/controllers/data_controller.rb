@@ -5,7 +5,7 @@ class DataController < ApplicationController
   PAGE_SIZE = 10
 
   def redirect_to_root
-    redirect_to root_path(:search => params[:search]), :status => 301
+    redirect_to root_path(params), :status => 301
   end
 
   def show
@@ -24,8 +24,8 @@ class DataController < ApplicationController
     @need_to_render = [:popular, :all, :search, :nominations]
     @active_tab = :popular
     if params[:no_js]
-      @need_to_render = [(params[:type] || 'popular').downcase.to_sym]
-      @active_tab = @need_to_render.first
+      @active_tab = (params[:type] || 'popular').downcase.to_sym
+      @need_to_render = [@active_tab]
     end
 
     # set up page params
@@ -51,7 +51,7 @@ class DataController < ApplicationController
       unless @all_views_rendered = read_fragment("discover-tab-all_#{CurrentDomain.cname}")
         @all_views = View.find(opts, true)
         @all_views_total = View.find(opts.merge({ :count => true }), true).count
-        @all_views_tags = Tag.find({ :method => "viewsTags", :limit => 5 })
+        @all_views_tags = Tag.find(tag_opts)
       end
     end
 
@@ -79,8 +79,8 @@ class DataController < ApplicationController
     end
 
     # get nominations if we need them
-    if CurrentDomain.module_enabled? :dataset_nomination && @need_to_render.include?(:nominations)
-      @nominations = Nomination.find_page(1, PAGE_SIZE)
+    if CurrentDomain.module_enabled?(:dataset_nomination) && @need_to_render.include?(:nominations)
+      @nominations = Nomination.find_page(opts[:page], PAGE_SIZE)
       @nominations_count = Nomination.count
     end
 
@@ -103,7 +103,7 @@ class DataController < ApplicationController
       if (params[:filter][:inNetwork])
         tab_title += " #{t(:blists_name)} in my network"
       elsif (params[:filter][:category])
-        tab_title += " #{filter[:category]} #{t(:blists_name)}"
+        tab_title += " #{params[:filter][:category]} #{t(:blists_name)}"
       end
     else
       tab_title += " #{t(:blists_name)}"
@@ -168,7 +168,7 @@ class DataController < ApplicationController
     opts = Hash.new
     opts.update({ :method => "viewsTags" })
 
-    if (@type == "POPULAR")
+    if (@type == "popular")
       opts.update({:top100 => true})
     end
 
@@ -180,7 +180,7 @@ class DataController < ApplicationController
 
     # build current state string
     @current_state = { :filter => params[:filter], :page => params[:page],
-      :sort_by => params[:sort_by], :search => params[:search] }
+      :sort_by => params[:sort_by], :search => params[:search], :no_js => params[:no_js] }
 
     respond_to do |format|
       format.html { render }

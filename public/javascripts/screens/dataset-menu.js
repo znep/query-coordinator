@@ -112,19 +112,10 @@ blist.datasetMenu.menuHandler = function(event)
             var curText = $target.text();
             var oldText = hideTags ? 'Hide' : 'Show';
             var newText = hideTags ? 'Show' : 'Hide';
-            $.each($('.blist-table').blistModel().meta().view.columns,
-                function(i, col)
-                {
-                    if (col.dataTypeName == 'tag')
-                    {
-                        $('.blist-table').datasetGrid().showHideColumns(col.id,
-                            hideTags);
-                        $('.headerMenu .rowTags a').attr('href', hideTags ?
-                            '#show-rowTags' : '#hide-rowTags')
-                            .find('span').text(curText.replace(oldText, newText));
-                        return false;
-                    }
-                });
+            $('.blist-table').datasetGrid().showHideTags(hideTags);
+            $('.headerMenu .rowTags a').attr('href', hideTags ?
+                    '#show-rowTags' : '#hide-rowTags')
+                .find('span').text(curText.replace(oldText, newText));
             break;
         case 'makePermissionPublic':
           $.ajax({

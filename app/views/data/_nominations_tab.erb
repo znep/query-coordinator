@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="nominationList-body">
-        <%= render(:partial => "nominations", :locals => {:current_page => 1, :total => total, :page_size => page_size, :status => nil}) %>
+        <%= render(:partial => "nominations", :locals => {:nominations => nominations, :total => total, :current_page => 1, :total => total, :page_size => page_size, :status => nil}) %>
       </div>
     </div>
   </div>

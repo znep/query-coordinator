@@ -18,14 +18,17 @@ nominationsNS.configureEditing = function()
 {
     $(".nominationList-row a.deleteMe").click(function(event) {
         event.preventDefault();
-        var $a = $(this);
-        $a.closest(".nominationList-row").remove();
+        if (confirm("Are you sure you want to delete this nomination?"))
+        {
+            var $a = $(this);
+            $a.closest(".nominationList-row").remove();
 
-        $.ajax({
-            type: "DELETE",
-            url: $a.attr("href"),
-            contentType: "application/json"
-        });
+            $.ajax({
+                type: "DELETE",
+                url: $a.attr("href"),
+                contentType: "application/json"
+            });
+        } 
     });
     $(".nominationList-row .acceptNomination").click(function(event) {
         event.preventDefault();

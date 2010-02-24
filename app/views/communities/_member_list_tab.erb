@@ -24,7 +24,7 @@
       </ul>
     
       <div class="memberPager">
-        <%= create_pagination(members_total, @page_size, current_page, generate_filter_url(@current_state, type)) %>
+        <%= create_pagination(members_total, @page_size, current_page, generate_filter_url(@current_state, type, {}, '#')) %>
       </div>
     <%- else -%>
       <p class="clearBoth">
@@ -41,7 +41,7 @@
       <h2>Show People</h2>
       <ul class="filterList hilightList">
         <li><%= link_to("<span>With public #{t(:blists_name)}</span>", 
-                generate_filter_url(@current_state, type, {:filter => {"publicOnly" => "true"}}),
+                generate_filter_url(@current_state, type, {:filter => {"publicOnly" => "true"}}, '#'),
                 :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
       </ul>
   
@@ -50,7 +50,7 @@
         <%- tag_list.each do |tag| -%>
           <li>
             <%= link_to("<span>#{h(tag.name)}</span>", 
-                  generate_filter_url(@current_state, type, {:tag => tag.name}),
+                  generate_filter_url(@current_state, type, {:tag => tag.name}, '#'),
                   :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
           </li>
         <%- end -%>

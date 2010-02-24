@@ -306,12 +306,20 @@ blist.namespace.fetch('blist.data');
          */
         this.isProgressiveLoading = function()
         {
-            var isProg = curOptions.progressiveLoading && rowsLoaded < rows.length;
-            if (!isProg && meta.columnFilters != null)
+            if (!curOptions.progressiveLoading) { return false; }
+
+            if (rowsLoaded < rows.length || meta.view.searchString !== null)
+            { return true; }
+
+            var isProg = false;
+            // If there are any column filters, do progressive loading
+            if (meta.columnFilters != null)
             {
                 $.each(meta.columnFilters, function (i, v)
                     { if (v != null) { isProg = true; return false; } });
             }
+
+            // If there are multiple sort bys, then do prog loading
             if (meta.view !== undefined && meta.view.query !== undefined &&
                 meta.view.query.orderBys !== undefined &&
                 meta.view.query.orderBys.length > 1)
@@ -618,8 +626,8 @@ blist.namespace.fetch('blist.data');
             {
                 self.meta(config.meta);
                 if (config.rows || config.data)
-                { this.rows(config.rows || config.data); }
-                configureActive();
+                { this.rows(config.rows || config.data, true); }
+                else { configureActive(null, true); }
                 $(listeners).trigger('columns_updated', [self]);
                 $(listeners).trigger('full_load');
             }
@@ -987,7 +995,7 @@ blist.namespace.fetch('blist.data');
          * Get and/or set the rows for the model.  Returns only "active" rows,
          * that is, those that are visible.
          */
-        this.rows = function(newRows)
+        this.rows = function(newRows, loadedTempView)
         {
             if (newRows)
             {
@@ -1002,7 +1010,7 @@ blist.namespace.fetch('blist.data');
                 }
 
                 // Apply filtering and grouping
-                configureActive(active);
+                configureActive(active, loadedTempView);
             }
 
             return active;
@@ -2940,7 +2948,7 @@ blist.namespace.fetch('blist.data');
                 var rootColumns = meta.columns[0];
                 for (var i = 0; i < rootColumns.length; i++)
                 {
-                    var type = rootColumns[i].type;
+                    var type = rootColumns[i].type || 'text';
                     if (blist.data.types[type].filterText)
                     {
                         // Textual column -- apply the regular expression to

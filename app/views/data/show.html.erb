@@ -58,8 +58,8 @@
             :tab_title => t(:discover_popular_content_header),
             :views => @popular_views, :views_total => @popular_views_total,
             :current_page => @current_state[:page], :type => "popular", :current_filter => params[:filter],
-            :sort_by => @current_state[:sort_by], :tag_list => @popular_views_tags, :current_tag => @current_state[:tag],
-            :search_term => nil, :page_size => @page_size }) %>
+            :sort_by => params[:sort_by] || 'POPULARITY', :tag_list => @popular_views_tags,
+            :current_tag => @current_state[:tag], :search_term => nil, :page_size => @page_size }) %>
         <% end %>
       </div>
     <%- end -%>
@@ -70,7 +70,7 @@
             :tab_title => "All #{t(:blists_name)}",
             :views => @all_views, :views_total => @all_views_total,
             :current_page => @current_state[:page], :type => "all", :current_filter => params[:filter],
-            :sort_by => @current_state[:sort_by], :tag_list => @all_views_tags, :current_tag => @current_state[:tag],
+            :sort_by => params[:sort_by] || 'LAST_CHANGED', :tag_list => @all_views_tags, :current_tag => @current_state[:tag],
             :search_term => nil, :page_size => @page_size }) %>
         <% end %>
       </div>
@@ -78,7 +78,7 @@
     <%- if @need_to_render.include? :nominations -%>
       <% module_enabled :dataset_nomination do %>
         <div id="discoverNominations" class="tabContentContainer clearfix<%= ' active' if @active_tab == :nominations %>">
-          <%= render(:partial => "nominations_tab", :locals => {:nominations => @all_nominations, :total => @nominations_count, :page_size => @page_size}) %>
+          <%= render(:partial => "nominations_tab", :locals => {:nominations => @nominations, :total => @nominations_count, :page_size => @page_size}) %>
         </div>
       <% end %>
     <%- end -%>

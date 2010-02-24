@@ -508,9 +508,8 @@
                 {
                     datasetObj.settings._filterCount = 0;
                     datasetObj.settings._filterIds = {};
-                    datasetObj.settings._model.reloadView();
                 }
-                if (datasetObj.settings._filterCount > 0)
+                else if (datasetObj.settings._filterCount > 0)
                 {
                     return;
                 }
@@ -519,6 +518,11 @@
                 {
                     datasetObj.settings.clearTempViewCallback();
                 }
+
+                if (datasetObj.settings.filterForm)
+                { datasetObj.settings.filterForm.find(':input').val('').blur(); }
+                datasetObj.settings.clearFilterItem.hide();
+                datasetObj.summaryStale = true;
 
                 datasetObj.isTempView = false;
 

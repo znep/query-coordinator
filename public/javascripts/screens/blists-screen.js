@@ -947,7 +947,6 @@ blist.myBlists.initializeGrid = function()
     $.live('.blist-td .blist-opener', 'click', myBlistsNS.openerClick);
 
     $('form.blistsFind')
-        .keyup(applyFilter)
         .submit(function(event) { event.preventDefault(); applyFilter(); });
     $('form.blistsFind .clearSearch')
         .click(function (e)

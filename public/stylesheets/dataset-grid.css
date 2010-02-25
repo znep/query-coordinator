@@ -92,6 +92,15 @@ div.blist-th-first
 }
 .blist-th.narrow .blist-th-icon { display: none; }
 
+.blist-th.tag.narrow .info-container
+{
+    left: 50%;
+    margin-left: -10px;
+    width: 20px;
+}
+.blist-th.tag.narrow .blist-th-icon { display: block; }
+.blist-th.tag.narrow .name-wrapper { display: none; }
+
 .blist-th .dragHandle
 {
     cursor: move;
@@ -845,6 +854,7 @@ ul.menu.rowMenu li
 
 .rowMenu.tagsShown { width: 20em; }
 .rowMenu.tagsShown li.tags .editContainer { display: block; }
+.rowMenu.tagsShown li.delete { display: none; }
 
 
 .rowMenu li.delete a { background-position: 5px -57px; }

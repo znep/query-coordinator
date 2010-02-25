@@ -2016,7 +2016,7 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('columns_updated', [this]);
         };
 
-        this.moveColumn = function(oldPos, newPos)
+        this.moveColumn = function(oldPosOrCol, newPos)
         {
             // First update widths on view columns, since they may have been
             // updated on the model columns
@@ -2031,12 +2031,27 @@ blist.namespace.fetch('blist.data');
                 });
             });
 
+            var column = null;
+            var oldPos = -1;
+            if (typeof oldPosOrCol == 'object')
+            {
+                column = oldPosOrCol;
+                if (column.flags !== undefined &&
+                    _.include(column.flags, 'hidden'))
+                { column.flags = _.without(column.flags, 'hidden'); }
+            }
+            else
+            { oldPos = oldPosOrCol; }
+
             // Filter view columns down to just the visible, and sort them
             var viewCols = $.grep(meta.view.columns, function(c)
                 { return c.dataTypeName != 'meta_data' &&
                     (!c.flags || $.inArray('hidden', c.flags) < 0); });
             viewCols.sort(function(col1, col2)
                 { return col1.position - col2.position; });
+
+            if (column !== null)
+            { oldPos = _.indexOf(viewCols, column); }
 
             // Stick the column in the new spot, then remove it from the old
             viewCols.splice(newPos, 0, viewCols[oldPos]);
@@ -2917,7 +2932,11 @@ blist.namespace.fetch('blist.data');
         var configureFilter = function(filter)
         {
             var toFilter;
-            if (typeof filter == "function") { filterFn = filter; }
+            if (typeof filter == "function")
+            {
+                filterFn = filter;
+                filterText = null;
+            }
             else
             {
                 if (filter === null) { filter = ""; }
@@ -2983,7 +3002,8 @@ blist.namespace.fetch('blist.data');
 
                 // Filter the current filter set if the filter is a subset of
                 // the current filter
-                if (filter.substring(0, filterText.length) == filterText)
+                if (filterText !== null &&
+                    filter.substring(0, filterText.length) == filterText)
                 { toFilter = active; }
                 filterText = filter;
                 meta.view.searchString = filterText;

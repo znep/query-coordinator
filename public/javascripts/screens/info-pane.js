@@ -250,28 +250,39 @@
             init: function() {
                 var tabNavigator = this;
                 // Set the expanded state.
-                var isExpanded = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector)
-                                    .is("." + tabNavigator.settings.expandedClass);
+                var isExpanded = $(tabNavigator.currentList)
+                    .find(tabNavigator.settings.expanderSelector)
+                    .is("." + tabNavigator.settings.expandedClass);
                 $(tabNavigator.currentList).data("isExpanded", isExpanded);
                 // Enumerate the tabs..
-                $(tabNavigator.currentList).find(tabNavigator.settings.tabSelector).each(function() {
+                $(tabNavigator.currentList)
+                    .find(tabNavigator.settings.tabSelector).each(function()
+                {
                     $li = $(this);
-                    // Wire up the click event for the expander arrow.
-                    $li.find(tabNavigator.settings.expanderSelector).click(function(event) {
+                    // Wire up the click event for the tab & expander arrow.
+                    $li.find('a')
+                        .click(function(event)
+                    {
+                        var $link = $(this);
+                        var $tab = $link
+                            .closest(tabNavigator.settings.tabSelector);
                         event.preventDefault();
                         if (tabNavigator.settings.isWidget)
                         {
-                            tabNavigator.expandWidgetTabPanels();
+                            tabNavigator.toggleWidgetTabPanels(function()
+                                { tabNavigator.activateTab($tab); },
+                                $tab.is("." +
+                                    tabNavigator.settings.activationClass) ?
+                                        undefined : true);
                         }
                         else
                         {
-                            tabNavigator.expandTabPanels();
+                            tabNavigator.toggleTabPanels(function()
+                                { tabNavigator.activateTab($tab); },
+                                $tab.is("." +
+                                    tabNavigator.settings.activationClass) ?
+                                        undefined : true);
                         }
-                    });
-                    // Wire up the click event for the tab itself for activation
-                    $li.find("a:not(" + tabNavigator.settings.expanderSelector + ")").click(function(event) {
-                        event.preventDefault();
-                        tabNavigator.activateTab($(this).closest(tabNavigator.settings.tabSelector));
                     });
                 });
 
@@ -292,84 +303,75 @@
                         });
                     }
                 }
-                
-                var $metaContainer = $(tabNavigator.settings.widgetMetaContainerSelector);
+
+                var $metaContainer =
+                    $(tabNavigator.settings.widgetMetaContainerSelector);
                 if ($metaContainer)
                 {
-                    tabNavigator.settings.initialMetaHeight = $metaContainer.height();
+                    tabNavigator.settings.initialMetaHeight =
+                        $metaContainer.height();
                 }
-                
-                $(tabNavigator.settings.widgetMetaSuperHeaderSelector).find("a").click(function(event)
+
+                $(tabNavigator.settings.widgetMetaSuperHeaderSelector)
+                    .find("a").click(function(event)
                 {
                     event.preventDefault();
-                    tabNavigator.expandWidgetTabPanels();
+                    tabNavigator.toggleWidgetTabPanels();
                 });
             },
-            activateTab: function(tab, preventExpansion) {
+            activateTab: function(tab, preventExpansion)
+            {
                 var tabNavigator = this;
-                $tab = $(tab);
-                $tabLink = $tab.find("a:not(" + tabNavigator.settings.expanderSelector + ")");
-                $panel = $(tabNavigator.currentList)
+                var $tab = $(tab);
+                var $tabLink = $tab.find("a:not(" +
+                    tabNavigator.settings.expanderSelector + ")");
+                var $panel = $(tabNavigator.currentList)
                                 .closest(tabNavigator.settings.containerSelector)
                                 .find(tabNavigator.settings.tabMap[$tab.attr("id")]);
 
-                if ($tab.is("." + tabNavigator.settings.activationClass))
-                {
-                    if (tabNavigator.settings.isWidget)
-                    {
-                        tabNavigator.expandWidgetTabPanels();
-                    }
-                    else
-                    {
-                        tabNavigator.expandTabPanels();
-                    }
-                }
-                else
-                {
-                    $(tabNavigator.currentList).find(tabNavigator.settings.tabSelector).each(function() {
-                        $(this).removeClass(tabNavigator.settings.activationClass);
-                    });
-                    $tab.addClass(tabNavigator.settings.activationClass);
+                $(tabNavigator.currentList)
+                    .find(tabNavigator.settings.tabSelector)
+                    .removeClass(tabNavigator.settings.activationClass);
+                $tab.addClass(tabNavigator.settings.activationClass);
 
-                    $panel.closest(tabNavigator.settings.containerSelector)
-                          .find(tabNavigator.settings.allPanelsSelector).each(function() { 
-                        $(this).removeClass(tabNavigator.settings.activationClass); 
-                    });
+                $panel.closest(tabNavigator.settings.containerSelector)
+                    .find(tabNavigator.settings.allPanelsSelector)
+                    .removeClass(tabNavigator.settings.activationClass);
 
-                    $panel.addClass(tabNavigator.settings.activationClass);
-                
-                    if (!$(tabNavigator.currentList).data("isExpanded") && (preventExpansion !== true))
-                    {
-                        if (tabNavigator.settings.isWidget)
-                        {
-                            tabNavigator.expandWidgetTabPanels();
-                        }
-                        else
-                        {
-                            tabNavigator.expandTabPanels();
-                        }
-                    }
-                }
-                
+                $panel.addClass(tabNavigator.settings.activationClass);
+
                 tabNavigator.settings.switchCompleteCallback($tab);
                 if (tabNavigator.settings.scrollToTabOnActivate)
                 {
                     $tab[0].scrollIntoView();
                 }
             },
-            expandTabPanels: function(openCallback) {
-                
+
+            expandTabPanels: function(openCallback)
+            {
+                toggleTabPanels(openCallback, true);
+            },
+
+            toggleTabPanels: function(openCallback, open)
+            {
+
                 var tabNavigator = this;
 
                 // Toggle all arrows.
-                var $container = $(tabNavigator.currentList).closest(tabNavigator.settings.containerSelector);
-                var $allExpanders = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector);
-                $allExpanders.toggleClass(tabNavigator.settings.expandedClass);
+                var $container = $(tabNavigator.currentList)
+                    .closest(tabNavigator.settings.containerSelector);
+                var $allExpanders = $(tabNavigator.currentList)
+                    .find(tabNavigator.settings.expanderSelector);
 
-                if ($(tabNavigator.currentList).data("isExpanded"))
+                $allExpanders.toggleClass
+                    (tabNavigator.settings.expandedClass, open);
+
+                if ($(tabNavigator.currentList).data("isExpanded") &&
+                    open !== true || open === false)
                 {
                     $allExpanders.attr("title", "more info").text("more info");
-                    $container.find(tabNavigator.settings.expandableSelector).each(function()
+                    $container.find(tabNavigator.settings.expandableSelector)
+                        .each(function()
                     {
                         if ($(this).is(":visible"))
                         {
@@ -387,7 +389,9 @@
                 else
                 {
                     $allExpanders.attr("title", "less info").text("less info");
-                    $container.find(tabNavigator.settings.expandableSelector).slideDown("fast", function() {
+                    $container.find(tabNavigator.settings.expandableSelector)
+                        .slideDown("fast", function()
+                    {
                         tabNavigator.settings.switchCompleteCallback();
                         if (openCallback !== undefined)
                         {
@@ -397,71 +401,90 @@
                     $(tabNavigator.currentList).data("isExpanded", true);
                 }
 
-                // Toggle all panels.
+                // Set/Toggle all panels.
                 $container.find(tabNavigator.settings.allPanelsSelector)
-                            .toggleClass(tabNavigator.settings.expandedClass);
+                            .toggleClass(tabNavigator.settings.expandedClass, open);
             },
-            expandWidgetTabPanels: function(openCallback) {
+
+            toggleWidgetTabPanels: function(openCallback, open)
+            {
                 var tabNavigator = this;
 
                 // Toggle all arrows.
-                var $allExpanders = $(tabNavigator.currentList).find(tabNavigator.settings.expanderSelector);
-                $allExpanders.toggleClass(tabNavigator.settings.expandedClass);
+                var $allExpanders = $(tabNavigator.currentList)
+                    .find(tabNavigator.settings.expanderSelector);
+                $allExpanders.toggleClass
+                    (tabNavigator.settings.expandedClass, open);
 
-                var $container = $(tabNavigator.currentList).closest(tabNavigator.settings.containerSelector);
-                var $metaContainer = $(tabNavigator.settings.widgetMetaContainerSelector);
-                
-                if ($(tabNavigator.currentList).data("isExpanded"))
+                var $container = $(tabNavigator.currentList)
+                    .closest(tabNavigator.settings.containerSelector);
+                var $metaContainer =
+                    $(tabNavigator.settings.widgetMetaContainerSelector);
+
+                if ($(tabNavigator.currentList).data("isExpanded") &&
+                    open !== true || open === false)
                 {
                     $allExpanders.attr("title", "more info").text("more info");
-                    
-                    var metaPosition = $metaContainer.height() - tabNavigator.settings.initialMetaHeight;
+
+                    var metaPosition = $metaContainer.height() -
+                        tabNavigator.settings.initialMetaHeight;
                     $metaContainer.animate(
                         { top: metaPosition + "px" },
-                        function(){
+                        function()
+                        {
                             $metaContainer.removeClass("expanded").height("");
-                            $container.find(tabNavigator.settings.expandableContainerSelector).css("min-height", "");
-                            $container.find(tabNavigator.settings.expandableSelector).each(function()
+                            $container.find(tabNavigator.settings
+                                .expandableContainerSelector).css("min-height", "");
+                            $container.find(tabNavigator.settings
+                                .expandableSelector).each(function()
                             {
                                 $(this).hide();
                             });
                             tabNavigator.settings.switchCompleteCallback();
                         }
                     );
-                    
+
                     $(tabNavigator.currentList).data("isExpanded", false);
                 }
                 else
                 {
                     $allExpanders.attr("title", "less info").text("less info");
-                    
-                    var expandMinHeight = 
-                        $(tabNavigator.settings.widgetOuterContainerSelector).outerHeight() -
-                        $(tabNavigator.settings.widgetMetaHeaderSelector).outerHeight() -
-                        $container.find(tabNavigator.settings.allPanelsHeaderSelector + ":visible").outerHeight() - 1;
-                    $container.find(tabNavigator.settings.expandableSelector).show();
-                    $container.find(tabNavigator.settings.expandableContainerSelector).css("min-height", expandMinHeight + "px");
-                    tabNavigator.settings.switchCompleteCallback();
-                    if (openCallback !== undefined)
-                    {
-                        openCallback();
-                    }
+
+                    var expandMinHeight =
+                        $(tabNavigator.settings.widgetOuterContainerSelector)
+                            .outerHeight() -
+                        $(tabNavigator.settings.widgetMetaHeaderSelector)
+                            .outerHeight() -
+                        $container.find(tabNavigator.settings
+                            .allPanelsHeaderSelector + ":visible")
+                                .outerHeight() - 1;
+                    $container.find(tabNavigator.settings.expandableSelector)
+                        .show();
+                    $container.find(tabNavigator.settings
+                        .expandableContainerSelector).css("min-height",
+                            expandMinHeight + "px");
                     $(tabNavigator.currentList).data("isExpanded", true);
-                    
-                    // Set the height explicitly because IE6 cannot render height 100% properly.
+
+                    // Set the height explicitly because IE6 cannot render
+                    // height 100% properly.
                     $metaContainer.addClass("expanded")
-                                    .height($(tabNavigator.settings.widgetOuterContainerSelector).height());
-                    $metaContainer.animate({
-                        top: "0"
-                    });
-                    
+                        .height($(tabNavigator.settings
+                            .widgetOuterContainerSelector).height());
+                    $metaContainer.animate({ top: "0" },
+                        function()
+                        {
+                            tabNavigator.settings.switchCompleteCallback();
+                            if (openCallback !== undefined)
+                            { openCallback(); }
+                        });
+
                 }
-                
-                $(tabNavigator.settings.widgetMetaSuperHeaderSelector).toggle();
-                
+
+                $(tabNavigator.settings.widgetMetaSuperHeaderSelector).toggle(open);
+
                 // Toggle all panels.
                 $container.find(tabNavigator.settings.allPanelsSelector)
-                            .toggleClass(tabNavigator.settings.expandedClass);
+                            .toggleClass(tabNavigator.settings.expandedClass, open);
             }
         }
     });

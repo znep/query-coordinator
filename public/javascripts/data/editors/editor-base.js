@@ -201,10 +201,21 @@
                 var outerWidth = width + ($outer.width() - $sz.width());
                 var outerHeight = height + ($outer.height() - $sz.height());
 
-                $sz.css({ width: width + 'px', height: height + 'px' });
-                // When scrolled horizontally in IE7, it will cut editors short
-                // unless we force the size of the container
-                $outer.width(outerWidth).height(outerHeight);
+                // IE7 will fire resize when changing $outer's size, which can
+                // lead to an infite loop of resizing, with slightly different
+                // sizes each time.  The only way to avoid this seems to be to
+                // keep track of previous resize target, and don't set the
+                // same thing again (comparing against the current size
+                // doesn't work)
+                if (width != this._prevWidth || height != this._prevHeight)
+                {
+                    this._prevWidth = width;
+                    this._prevHeight = height;
+                    $sz.css({ width: width + 'px', height: height + 'px' });
+                    // When scrolled horizontally in IE7, it will cut editors short
+                    // unless we force the size of the container
+                    $outer.width(outerWidth).height(outerHeight);
+                }
             },
 
             /**

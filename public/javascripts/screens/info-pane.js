@@ -349,7 +349,7 @@
 
             expandTabPanels: function(openCallback)
             {
-                toggleTabPanels(openCallback, true);
+                this.toggleTabPanels(openCallback, true);
             },
 
             toggleTabPanels: function(openCallback, open)

@@ -1086,6 +1086,8 @@ infoContentOuter table.gridList td.picture .cellInner
     padding-top: 0;
 }
 
+.singleInfoComments .replyComment h4 { font-weight: bold; }
+
 .singleInfoComments .commentPagination
 {
     margin: 0 0 0.5em 15em;

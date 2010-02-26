@@ -12,7 +12,7 @@
     {
         var opts = $.extend({}, $.fn.infoPaneComments.defaults, options);
 
-       
+
 
         // Private methods
         function showFormClick($commentPane, e)
@@ -233,25 +233,14 @@
                     var $newComment = $resp.children(config.childCommentSelector);
                     if ($newComment.length > 0)
                     {
-                        var $parentComment = $form
-                            .closest(config.childCommentSelector);
-                        var $addedItem;
-                        if ($parentComment.length > 0)
-                        {
-                            $addedItem = $newComment.insertAfter($parentComment);
-                        }
-                        else
-                        {
-                            $parentComment = $form.closest(config.commentSelector);
-                            var $childContainer =
-                                $parentComment.find(config.childContainerSelector);
-                            $childContainer.removeClass(config.hiddenClass)
-                                .children().removeClass('first');
-                            $addedItem = $newComment.prependTo($childContainer)
-                                .addClass('first');
-                            $parentComment.find(config.expanderSelector)
-                                .removeClass(config.hiddenClass);
-                        }
+                        $parentComment = $form.closest(config.commentSelector);
+                        var $childContainer =
+                            $parentComment.find(config.childContainerSelector);
+                        $childContainer.removeClass(config.hiddenClass);
+                        $addedItem = $newComment.appendTo($childContainer);
+                        $childContainer.children().first().addClass('first');
+                        $parentComment.find(config.expanderSelector)
+                            .removeClass(config.hiddenClass);
 
                         $form.closest(config.commentSelector)
                             .find(config.expanderSelector)
@@ -317,10 +306,8 @@
                     isAjaxAction = false;
                     $link.closest(config.commentSelector)
                         .find(config.replySelector)
-                        .insertAfter($link.closest(config.replySiblingSelector))
                         .removeClass(config.hiddenClass)
-                        .find(config.replyFocusSelector).focus().end()
-                        .find(config.parentInputSelector).val(hrefPieces[1]);
+                        .find(config.replyFocusSelector).focus().end();
                     $(window).resize();
                     break;
             }
@@ -399,7 +386,7 @@
                 .toggleClass(config.collapsedClass);
             $(window).resize();
         };
-        
+
         return this.each(function()
         {
             var $commentPane = $(this);

@@ -133,6 +133,7 @@
 
 .infoContentOuter .infoContentInner
 {
+    background-color: #cacaca;
     background-image: url(/stylesheets/images/info_pane/background_expanded_list.png);
     background-position: -10px 0;
     background-repeat: repeat-y;
@@ -140,7 +141,7 @@
     padding: 0;
 }
 
-.infoContentOuter .infoContentWrapper 
+.infoContentOuter .infoContentWrapper
 {
     background-color: #cacaca;
     background-image: none;

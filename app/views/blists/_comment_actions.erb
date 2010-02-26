@@ -18,18 +18,18 @@ comment_external_href = view.href + "?metadata_pane=tabComments&comment=" + comm
     -%>
     <a class='flagComment <%= comment.flag?("flaggedByCurrentUser") ?
       'actionDone' : '' %>'
-      href='<%= flag_comment_href %>' <%= "rel=\"external\"" if !allow_commenting %>>
+      href='<%= flag_comment_href %>' <%= raw "rel=\"external\"" if !allow_commenting %>>
       <%= comment.flag?("flaggedByCurrentUser") ?
       'Flagged' : 'Flag as Inappropriate' %>
     </a>
     <a class='rateComment rateUp <%= comment.rated? ? 'actionDone' : '' %>
       <%= comment.rated_down? ? 'disabled' : '' %>'
       href='<%= rateup_comment_href %>'
-      title='Helpful' <%= "rel=\"external\"" if !allow_commenting %>>Helpful</a>
+      title='Helpful' <%= raw "rel=\"external\"" if !allow_commenting %>>Helpful</a>
     <a class='rateComment rateDown <%= comment.rated? ? 'actionDone' : '' %>
       <%= comment.rated_up? ? 'disabled' : '' %>'
       href='<%= ratedown_comment_href %>'
-      title='Not Helpful' <%= "rel=\"external\"" if !allow_commenting %>>Not Helpful</a>
+      title='Not Helpful' <%= raw "rel=\"external\"" if !allow_commenting %>>Not Helpful</a>
   <%- end -%>
   <span class='ratingUp <%= (comment.upRatings || 0) < 1 ? 'hidden' : '' %>'>
     +<%= comment.upRatings %>

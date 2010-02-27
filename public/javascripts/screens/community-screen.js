@@ -1,50 +1,46 @@
 var communityNS = blist.namespace.fetch('blist.community');
 
 blist.community.isTabDirty = {
-    "SEARCH": false,
-    "TOPMEMBERS": false,
-    "TOPUPLOADERS": false,
-    "ALLMEMBERS": false
+    "search": false,
+    "topMembers": false,
+    "topUploaders": false,
+    "allMembers": false
 };
 blist.community.historyChangeHandler = function (hash)
 {
     // Tab/container names
     var tabs = {
-        "SEARCH": "#tabSearch",
-        "TOPMEMBERS": "#tabTopMembers",
-        "TOPUPLOADERS": "#tabTopUploaders",
-        "ALLMEMBERS": "#tabAllMembers"
+        "search": "#tabSearch",
+        "topMembers": "#tabTopMembers",
+        "topUploaders": "#tabTopUploaders",
+        "allMembers": "#tabAllMembers"
     };
     var tabContainers = {
-        "SEARCH": "#communityTabSearchResults",
-        "TOPMEMBERS": "#communityTabTopMembers",
-        "TOPUPLOADERS": "#communityTabTopUploaders",
-        "ALLMEMBERS": "#communityTabAllMembers"
+        "search": "#communityTabSearchResults",
+        "topMembers": "#communityTabTopMembers",
+        "topUploaders": "#communityTabTopUploaders",
+        "allMembers": "#communityTabAllMembers"
     };
 
     // Special cases to handle default tab actions
     if (hash == "")
     {
         // default tab is top members
-        hash = "TOPMEMBERS";
+        hash = "type=topMembers";
     }
-    if (blist.community.isTabDirty[hash] === false)
+    var activeTab = $.urlParam("?" + hash, "type");
+    if ((blist.community.isTabDirty[activeTab] === false) && (hash == ('type=' + activeTab)))
     {
-        $(".simpleTabs").simpleTabNavigate().activateTab(tabs[hash]);
+        $(".simpleTabs").simpleTabNavigate().activateTab(tabs[activeTab]);
         return;
-    }
-    else if (blist.community.isTabDirty[hash] === true)
-    {
-        hash = "type=" + hash;
     }
 
     // Find active tab
-    var activeTab = $.urlParam("?" + hash, "type");
     var tabSelector = tabs[activeTab];
     var tabContainerSelector = tabContainers[activeTab];
 
     // Abort if we don't know what's going on
-    if (activeTab === 0)
+    if ((activeTab === 0) || (blist.community.isTabDirty[activeTab] === undefined))
     {
         return;
     }
@@ -55,7 +51,7 @@ blist.community.historyChangeHandler = function (hash)
     blist.community.isTabDirty[activeTab] = true;
 
     // Add search tab if necessary
-    if (activeTab == "SEARCH")
+    if (activeTab == "search")
     {
         $(".simpleTabs li").removeClass("active");
         if ($("#tabSearch").length > 0)
@@ -97,6 +93,9 @@ blist.community.historyChangeHandler = function (hash)
             $(".contentSort select").bind("change", communityNS.sortSelectChangeHandler);
             $("#tagCloud").jqmHide();
             $("#search").blur();
+
+            // reinforce new links to JS rather than postback
+            communityNS.ajaxifyLinks();
         }
     });
 };
@@ -113,7 +112,7 @@ blist.community.sortSelectChangeHandler = function (event)
     if (hash == "")
     {
         // default tab is top members
-        hash = "type=TOPMEMBERS";
+        hash = "type=topMembers";
     }
     if (blist.community.isTabDirty[hash] !== undefined)
     {
@@ -136,7 +135,12 @@ blist.community.tagModalShowHandler = function(hash)
         success: function(data)
         {
             $modal.html(data).show();
-            $(".tagCloudContainer a").tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } });
+            $(".tagCloudContainer a")
+                .tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } })
+                .each(function()
+                {
+                    $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
+                });
         }
     });
 };
@@ -151,7 +155,7 @@ blist.community.searchSubmitHandler = function(event)
         return;
     }
 
-    var hash = "type=SEARCH&search=" + query;
+    var hash = "type=search&search=" + query;
     window.location.href = '#' + hash;
     $.historyLoad(hash);
     return false;
@@ -183,9 +187,19 @@ blist.community.addFriendClick = function(event)
     });
 };
 
+blist.community.ajaxifyLinks = function()
+{
+    $('.filterList a, .tagList a.filterLink, .simpleTabs a, .viewPager a').each(function()
+    {
+        $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
+    });
+};
 
 $(function ()
 {
+    // reinforce new links to JS rather than postback
+    communityNS.ajaxifyLinks();
+
     $("#featuredCarousel").jcarousel({
         visible: 3,
         wrap: 'both',

@@ -1,20 +1,22 @@
 <div class="tabContentOuter"><div class="tabContentT"></div>
   <div class="tabContent">
     <h2><%= tab_title %></h2>
-    <%- if "true" == search_debug -%>
-      <%= link_to("<span>Explain results</span>", 
-                  "http://#{CORESERVICE_URI.host}:#{CORESERVICE_URI.port}/search.html?method=explain&search=users&q=#{search_term}") %>
-
-    <%- end -%>
 
     <%- if members_total > 0 -%>
       <div class="contentSort">
-        <% form_tag(filter_community_path(:type => type, :filter => current_filter, :tag => current_tag, :search => search_term), :class => "sortForm") do %>
+        <% form_tag(community_path, :class => "sortForm", :method => :get) do %>
           <p>
             <label for="sort_by_<%= type %>">Sort by</label>
-            <%= select_tag("sort_by", (type == "SEARCH") ? 
+            <%= select_tag("sort_by", (type == "search") ? 
                            community_sort_select_options_for_search(sort_by) : community_sort_select_options(sort_by), 
                            :id => "sort_by_" + type) %>
+            <%- if @current_state[:no_js] -%>
+              <%- @current_state.each_pair do |key, value| -%>
+                <%= hidden_field_tag(key, value) unless value.blank? || key == :sort_by %>
+              <%- end -%>
+              <%= hidden_field_tag('type', type) %>
+              <%= submit_tag('go') %>
+            <%- end -%>
           </p>
         <% end %>
       </div>
@@ -24,7 +26,7 @@
       </ul>
     
       <div class="memberPager">
-        <%= create_pagination(members_total, @page_size, current_page, generate_filter_url(@current_state, type, {}, '#')) %>
+        <%= create_pagination(members_total, @page_size, current_page, generate_filter_url(@current_state, type)) %>
       </div>
     <%- else -%>
       <p class="clearBoth">
@@ -37,11 +39,11 @@
 <div class="tabContentNavOuter">
   <div class="tabContentNavT"></div>
   <div class="tabContentNav">
-    <%- unless (type == "SEARCH") -%>
+    <%- unless (type == "search") -%>
       <h2>Show People</h2>
       <ul class="filterList hilightList">
         <li><%= link_to("<span>With public #{t(:blists_name)}</span>", 
-                generate_filter_url(@current_state, type, {:filter => {"publicOnly" => "true"}}, '#'),
+                generate_filter_url(@current_state, type, {:filter => {"publicOnly" => "true"}}),
                 :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
       </ul>
   
@@ -50,7 +52,7 @@
         <%- tag_list.each do |tag| -%>
           <li>
             <%= link_to("<span>#{h(tag.name)}</span>", 
-                  generate_filter_url(@current_state, type, {:tag => tag.name}, '#'),
+                  generate_filter_url(@current_state, type, {:tag => tag.name}),
                   :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
           </li>
         <%- end -%>

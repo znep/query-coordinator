@@ -103,11 +103,12 @@ class BlistsController < ApplicationController
     find_view
     @data = @view.find_data(:all, :page => params[:page], :conditions => params)
     @query_json = FilterQuery.new(@view.id, params).build.to_json 
+    @search_query = params['search']
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})
     render :template => 'blists/alt'  
   end
-
+  
   def save_filter
     find_view
     @result = @view.save_query(params)

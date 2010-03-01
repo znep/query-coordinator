@@ -10,10 +10,11 @@ class View < Model
   end
   
   def viewable_columns
-    result = self.meta_data_columns.find_all{ |column| column.data_type_name != 'meta_data' }
+    result = self.meta_data_columns.find_all{ |column| column.data_type_name != 'meta_data' and not column.flags{|flag| flag == "hidden"}}
     result = result.sort_by{|column| column.id.to_i}
     result
   end
+
   
   def search_and_sort_viewable_columns(data_rows)
     result = []

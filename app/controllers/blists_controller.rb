@@ -1,7 +1,7 @@
 class BlistsController < ApplicationController
   include BlistsHelper
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :alt, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
+  skip_before_filter :require_user, :only => [:show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
 
   def index
     @body_class = 'home'
@@ -103,11 +103,12 @@ class BlistsController < ApplicationController
     find_view
     @data = @view.find_data(:all, :page => params[:page], :conditions => params)
     @query_json = FilterQuery.new(@view.id, params).build.to_json 
+    @search_query = params['search']
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})
     render :template => 'blists/alt'  
   end
-
+  
   def save_filter
     find_view
     @result = @view.save_query(params)

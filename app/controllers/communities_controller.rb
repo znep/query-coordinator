@@ -71,7 +71,7 @@ class CommunitiesController < ApplicationController
 
     @page_size = PAGE_SIZE
     if params[:type] == "search"
-      tab_title = "Search Results for \"#{search_term}\""
+      tab_title = "Search Results for \"#{opts[:q]}\""
       search_results = SearchResult.search("users", opts)
       @filtered_members = search_results[0].results
       @filtered_members_total = search_results[0].count
@@ -89,7 +89,8 @@ class CommunitiesController < ApplicationController
 
     # build current state string
     @current_state = { :filter => params[:filter], :page => opts[:page],
-      :tag => opts[:tags], :sort_by => params[:sort_by], :search => opts[:q] }
+      :tag => opts[:tags], :sort_by => params[:sort_by], :search => opts[:q],
+      :no_js => params[:no_js] }
 
     respond_to do |format|
       format.html { redirect_to(community_path(params)) }
@@ -170,10 +171,10 @@ private
     tag_opts = { :method => "usersTags", :limit => 5 }
 
     case params[:type]
-      when "topmembers"
+      when "topMembers"
         opts[:topMembers] = true
         tag_opts[:topMembers] = true
-      when "topuploaders"
+      when "topUploaders"
         opts[:topUploaders] = true
         tag_opts[:topUploaders] = true
       when "search"

@@ -1,10 +1,10 @@
 class ProfileController < ApplicationController
-  skip_before_filter :require_user, :only => [:index, :show]
+  skip_before_filter :require_user, :only => [:show]
   
   helper :user
 
   def index
-    render(:action => "show")
+    redirect_to current_user.href
   end
   
   def show

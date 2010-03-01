@@ -224,7 +224,7 @@
                 }
             },
 
-            showHideColumns: function(columns, hide, skipRequest)
+            showHideColumns: function(columns, hide, skipRequest, successCallback)
             {
                 if (!(columns instanceof Array)) { columns = [columns]; }
                 var datasetObj = this;
@@ -274,6 +274,9 @@
                                         {
                                             $(document)
                                                 .trigger(blist.events.COLUMNS_CHANGED);
+                                            if (typeof successCallback ==
+                                                'function')
+                                            { successCallback(); }
                                         }
                                     }
                                     });
@@ -294,9 +297,13 @@
                 var column = $.grep(model.meta().view.columns, function(c, i)
                         { return c.dataTypeName == 'tag'; })[0];
 
-                if (!hide && column.position > 1)
-                { model.moveColumn(column, 0); }
-                datasetObj.showHideColumns(column.id, hide);
+                datasetObj.showHideColumns(column.id, hide, false,
+                    function ()
+                    {
+                        if (!hide && column.position > 1)
+                        { model.moveColumn(column, 0); }
+                    }
+                );
             },
 
             deleteColumns: function(columns)
@@ -1093,7 +1100,10 @@
 
         if (colSum[col.id] !== undefined)
         {
-            addFilterMenu(datasetObj, col, $menu);
+            // Use setTimeout to simulate the async response of the ajax call
+            // below; this is necessary so we don't recreate the menu in the
+            // middle of another call that is using it.
+            setTimeout(function() { addFilterMenu(datasetObj, col, $menu); }, 0);
             return;
         }
 

@@ -102,6 +102,16 @@ class BlistsController < ApplicationController
   def alt_filter
     find_view
     @data = @view.find_data(:all, :page => params[:page], :conditions => params)
+    @query_json = FilterQuery.new(@view.id, params).build.to_json 
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
+    render :template => 'blists/alt'  
+  end
+
+  def save_filter
+    find_view
+    @result = @view.save_query(params)
+    @data = @view.find_data(:all, :page => params[:page], :conditions => params)
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})
     render :template => 'blists/alt'  
@@ -110,6 +120,7 @@ class BlistsController < ApplicationController
   def find_view
     begin
       @parent_view = @view = View.find(params[:id])
+      @views = View.find_for_user(current_user.id)
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' or view cannot be found, or has been deleted.'
@@ -246,6 +257,18 @@ class BlistsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(@view.href +
         '?metadata_pane=tabComments&comment=' + @comment.id.to_s) }
+      format.data { render }
+    end
+  end
+
+  def alt_post_comment
+    @is_child = !params[:comment][:parent].nil?
+    @comment = Comment.create(params[:id], params[:comment])
+    @view = View.find(params[:id])
+
+    respond_to do |format|
+      format.html { redirect_to(@view.href +
+        '/alt') }
       format.data { render }
     end
   end

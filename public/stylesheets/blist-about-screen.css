@@ -378,7 +378,9 @@ span.helpie
 .columnList li.stars { background-position: 0 -140px; }
 .columnList li.flag { background-position: 0 -380px; }
 .columnList li.document { background-position: 0 -280px; }
+.columnList li.new_document { background-position: 0 -280px; }
 .columnList li.photo { background-position: 0 -100px; }
+.columnList li.new_photo { background-position: 0 -100px; }
 .columnList li.picklist, .columnList li.drop_down_list
 { background-position: 0 -400px; }
 .columnList li.nested_table { background-position: 0 -440px; }

@@ -70,7 +70,7 @@ class Column < Model
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", "new_photo", "photo", "phone", "checkbox", "flag", "url",
-      "email", "document", "tag", "picklist", "drop_down_list"
+      "email", "new_document", "document", "tag", "picklist", "drop_down_list"
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
     when "date"
@@ -125,7 +125,7 @@ class Column < Model
   def has_totals?
     types_with_totals = ["text", "richtext", "number", "money", "percent",
                          "date", "phone", "email", "url", "checkbox", "stars",
-                         "flag", "document", "new_photo", "photo", "picklist",
+                         "flag", "new_document", "document", "new_photo", "photo", "picklist",
                          "drop_down_list", "tag"]
 
     return types_with_totals.include?(client_type)

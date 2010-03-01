@@ -811,6 +811,19 @@ blist.myBlists.deleteClick = function (event)
         {
             var row  = myBlistsNS.model.getByID(responseText);
             myBlistsNS.model.remove([row]);
+            // If this is a child row, we need to clear it out from the
+            // parent's childRows
+            if (row.level > 0)
+            {
+                var parent = _.select(myBlistsNS.model.rows(),
+                    function(v)
+                    { return v.tableId == row.tableId && v.isDefault; })[0];
+                if (parent !== undefined)
+                {
+                    parent.childRows = _.reject(parent.childRows,
+                        function(c) { return c.id == row.id; });
+                }
+            }
         }
     });
 };

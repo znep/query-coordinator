@@ -10,10 +10,11 @@ class View < Model
   end
   
   def viewable_columns
-    result = self.meta_data_columns.find_all{ |column| column.data_type_name != 'meta_data' }
+    result = self.meta_data_columns.find_all{ |column| column.data_type_name != 'meta_data' and not column.flags{|flag| flag == "hidden"}}
     result = result.sort_by{|column| column.id.to_i}
     result
   end
+
   
   def search_and_sort_viewable_columns(data_rows)
     result = []
@@ -68,10 +69,23 @@ class View < Model
     @meta_data_columns ||= get_meta_data_columns
   end
   
+  def aggregates
+    @aggregates ||= get_aggregates
+  end
+
+  def get_aggregates(params = {})
+    # default params
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+  
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+    parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
+    parsed_data['meta']['aggregates']
+  end
+  
   def get_meta_data_columns(params = {})
     # default params
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
-
+  
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
     parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
     parsed_data['meta']['view']['columns'].inject([]){|array, column_hash| array << MetaDataColumn.new(column_hash)}
@@ -82,7 +96,8 @@ class View < Model
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
 
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
+    response = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
+    
   end
     
   def get_rows_by_ids(params={})

@@ -63,9 +63,21 @@
                     </tr>
                   <%- end -%>
                 </tbody>
+					<% unless @aggregates.nil? or @aggregates.none? %>
+				<tfoot>
+					<tr>
+					<th>Totals</th>
+					<% @view.viewable_columns.each_with_index do |column, index|%>
+					<th> <%= @aggregates.find{|aggregate| aggregate['columnId']==column.id}['value'] if @aggregates.find{|aggregate| aggregate['columnId']== @view.viewable_columns[index].id} %></th>
+
+					<% end %>
+					
+					</tr>
+				</tfoot>
+					<% end %>
               </table>
             </div>
-				<div id="pagination links">
+				<div id="pagination links" style="margin: 20px;">
 					<%= will_paginate @data %>
 				</div>
           </div>
@@ -94,7 +106,8 @@
 		<h2>Search</h2>
 			<% form_tag alt_filter_blist_path(@view.id) do -%>
 				<%= label_tag "Search" %>
-				<%= text_field_tag "search" %>
+				<%= text_field_tag "search", @search_query %>
+				<%= link_to "clear search", alt_blist_path(@view.id) %>
 			<%= submit_tag "submit" %>		
 			<% end %>
         </div>

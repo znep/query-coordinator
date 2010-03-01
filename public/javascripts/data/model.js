@@ -775,6 +775,10 @@ blist.namespace.fetch('blist.data');
                         col.options = translatePicklistFromView(vcol);
                         break;
 
+                    case 'new_photo':
+                    case 'new_document':
+                        col.base = baseURL + "/views/" + view.id + "/new_files/";
+                        break;
                     case 'photo':
                     case 'document':
                         col.base = baseURL + "/views/" + view.id + "/files/";

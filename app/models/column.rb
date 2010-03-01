@@ -14,8 +14,10 @@ class Column < Model
       "checkbox" => "Checkbox",
       "stars" => "Star",
       "flag" => "Flag",
-      "document" => "Document",
-      "photo" => "Photo (Image)",
+      "new_document" => "Document",
+      "new_photo" => "Photo (Image)",
+      "document" => "Document (old)",
+      "photo" => "Photo (Image, old)",
       "picklist" => "Multiple Choice",
       "drop_down_list" => "Multiple Choice",
       "nested_table" => "Nested Table",
@@ -43,6 +45,8 @@ class Column < Model
   def is_sortable?
     return client_type != "nested_table" && 
       client_type != "tag" &&
+      client_type != "new_photo" &&
+      client_type != "new_document" &&
       client_type != "photo" &&
       client_type != "document"
   end
@@ -65,7 +69,7 @@ class Column < Model
     case (dataTypeName || renderTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
-    when "text", "photo", "phone", "checkbox", "flag", "url",
+    when "text", "new_photo", "photo", "phone", "checkbox", "flag", "url",
       "email", "document", "tag", "picklist", "drop_down_list"
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
@@ -121,7 +125,7 @@ class Column < Model
   def has_totals?
     types_with_totals = ["text", "richtext", "number", "money", "percent",
                          "date", "phone", "email", "url", "checkbox", "stars",
-                         "flag", "document", "photo", "picklist",
+                         "flag", "document", "new_photo", "photo", "picklist",
                          "drop_down_list", "tag"]
 
     return types_with_totals.include?(client_type)

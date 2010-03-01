@@ -43,6 +43,7 @@ class GroupingsController < ApplicationController
     @ungrouped = []
     @view.columns.each do |c|
       next if c.is_nested_table || c.client_type == 'tag' ||
+        c.client_type == 'new_document' || c.client_type == 'new_photo' ||
         c.client_type == 'document' || c.client_type == 'photo' ||
         c.client_type == 'phone' || c.client_type == 'picklist'
 

@@ -27,8 +27,8 @@
   </select>
 </div>
 
-<%- when 'document', 'photo' -%>
-<input type='file' id='<%= id %>' name='<%= column.id %>' />
+<%- when 'new_document', 'new_photo', 'document', 'photo' -%>
+<input type='file' id='<%= blob %>' name='<%= column.blob %>' />
 
 <%- when 'flag' -%>
 <select class='fieldInput' id='<%= id %>' name='<%= column.id %>'>

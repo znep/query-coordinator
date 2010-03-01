@@ -465,9 +465,22 @@ blist.namespace.fetch('blist.data.types');
         }
         else if (value instanceof Object)
         {
-            url = value.id;
-            name = value.filename;
-            size = value.size;
+            if (value.id)
+            { // old-style document
+                url = value.id;
+                name = value.filename;
+                size = value.size;
+            }
+            else
+            { // new-style document
+                url = value.file_id + '?';
+                args=[];
+                if(value.filename) args.push('filename=' + escape(value.filename));
+                if(value.content_type) args.push('content_type=' + escape(value.content_type));
+                url += args.join('&');
+                name = value.filename;
+                size = value.size;
+            }
         }
         else { url = value + ''; }
 
@@ -487,7 +500,6 @@ blist.namespace.fetch('blist.data.types');
     var renderGenDocument = function(value, plain, column) {
         return "renderDocument(" + value + ", " + (column.base ? "'" + column.base + "'" : "null") + ", " + plain + ")";
     };
-
 
     /** FILTER RENDERERS ***/
     var renderFilterText = function(value)
@@ -662,6 +674,12 @@ blist.namespace.fetch('blist.data.types');
             }
         },
 
+        new_photo: {
+            renderGen: renderGenPhoto,
+            cls: 'photo',
+            deleteable: true
+        },
+
         photo: {
             renderGen: renderGenPhoto,
             cls: 'photo',
@@ -745,6 +763,12 @@ blist.namespace.fetch('blist.data.types');
             isObject: true
         },
 
+        new_document: {
+            renderGen: renderGenDocument,
+            deleteable: true,
+            isObject: true
+        },
+
         document: {
             renderGen: renderGenDocument,
             deleteable: true,
@@ -809,7 +833,9 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.stars.editor = $.blistEditor.stars;
         blist.data.types.richtext.editor = $.blistEditor.richtext;
         blist.data.types.document.editor = $.blistEditor.document;
+        blist.data.types.new_document.editor = $.blistEditor.new_document;
         blist.data.types.photo.editor = $.blistEditor.photo;
+        blist.data.types.new_photo.editor = $.blistEditor.new_photo;
         blist.data.types.tag.editor = $.blistEditor.tag;
     }
 

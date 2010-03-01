@@ -120,7 +120,7 @@ class BlistsController < ApplicationController
   def find_view
     begin
       @parent_view = @view = View.find(params[:id])
-      @views = View.find_for_user(current_user.id)
+      @aggregates = @view.aggregates
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' or view cannot be found, or has been deleted.'

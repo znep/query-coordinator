@@ -209,34 +209,45 @@ $(function()
   // Default the selected tab to "general"
   selectTab("general");
 
-  <% if @column.has_display_options? %>
-    $("#columnPropertiesDialog #formattingTab").columnFormat(columnsNS.column);
-  <% end %>
-  <% if @column.has_totals? %>
-    $("#columnPropertiesDialog #totalsTab").columnTotals(columnsNS.column);
-  <% end %>
+  <%- if @column.has_display_options? -%>
+  $("#columnPropertiesDialog #formattingTab").columnFormatRender(columnsNS.column);
+  <%- end -%>
+  <%- if @column.has_totals? -%>
+  $("#columnPropertiesDialog #totalsTab").columnTotalsRender(columnsNS.column);
+  <%- end -%>
 
 
-  // Keep the column model up to date so we don't have to read from the form to
-  // update the properties.
-  $("#columnPropertiesDialog #name")
-    .change(function() { columnsNS.column.name = $(this).val() });
-  $("#columnPropertiesDialog #description")
-    .change(function() { columnsNS.column.description = $(this).val() });
-  $('#columnPropertiesDialog #column_alignment_left,' +
-      '#columnPropertiesDialog #column_alignment_center,' +
-      '#columnPropertiesDialog #column_alignment_right')
-    .change(function() { columnsNS.column.alignment = $(this).val() });
-  $("#columnPropertiesDialog #precision")
-    .change(function() { columnsNS.column.decimalPlaces = $(this).val() });
-  $("#columnPropertiesDialog #ui-spinner-precision > .ui-spinner-button")
-    .click(function() { columnsNS.column.decimalPlaces =
-        $("#columnPropertiesDialog #precision").val() });
+  var updateColumn = function()
+  {
+      columnsNS.column.name = $("#columnPropertiesDialog #name").val();
+      columnsNS.column.description =
+        $("#columnPropertiesDialog #description").val();
+      columnsNS.column.decimalPlaces =
+        $("#columnPropertiesDialog #precision").val();
 
-  var save = function() {
+      var $alignment = $('#columnPropertiesDialog .alignment :radio:checked');
+      if ($alignment.length > 0)
+      { columnsNS.column.alignment = $alignment.val(); }
+
+      <%- if @column.has_display_options? -%>
+      columnsNS.column.format =
+          $("#columnPropertiesDialog #formattingTab").columnFormatValue();
+      <%- end -%>
+
+      <%- if @column.has_totals? -%>
+      columnsNS.column.aggregate =
+          $("#columnPropertiesDialog #totalsTab").columnTotalsValue();
+      <%- end -%>
+
       <%- if @column.renderTypeName == 'drop_down_list' -%>
       columnsNS.column.dropDownList = {values: picklistManagerCallback()};
       <%- end -%>
+  };
+
+  var save = function()
+  {
+      updateColumn();
+
       $.ajax({
         type: "PUT",
         url: '<%= @column.href(@view.id)%>',

@@ -109,7 +109,7 @@ class Column < Model
   end
 
   def has_display_options?
-    types_with_display_options = ["text", "date", "number", "money", "percent"]
+    types_with_display_options = ["date", "number", "money", "percent"]
 
     return types_with_display_options.include?(client_type)
   end

@@ -111,7 +111,7 @@ class AccountsController < ApplicationController
                          'password' => params[:password]})
 
       # pass/spoof in the current domain cname
-      request['X-Socrata-Host'] = CurrentDomain.cname
+      req['X-Socrata-Host'] = CurrentDomain.cname
 
       result = Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
         http.request(req)

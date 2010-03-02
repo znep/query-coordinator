@@ -195,6 +195,12 @@ class Column < Model
       update_data[:format]["precision"] = js["decimalPlaces"].to_i
     end
 
+    if js.key?("precisionStyle") && js["precisionStyle"].blank?
+      update_data[:format].delete "precisionStyle"
+    elsif js.key?("precisionStyle")
+      update_data[:format]["precisionStyle"] = js["precisionStyle"]
+    end
+
     if js.key?("type") && js["type"] == "richtext" && client_type == "text"
       update_data[:format]["formatting_option"] = "Rich"
     elsif js.key?("type") && js["type"] == "text" && client_type == "richtext"
@@ -245,6 +251,10 @@ class Column < Model
 
       if !self.format.precision.nil?
         col[:decimalPlaces] = self.format.precision
+      end
+
+      if !self.format.precisionStyle.nil?
+        col[:precisionStyle] = self.format.precisionStyle
       end
 
       col[:alignment] = alignment unless aligment.nil?

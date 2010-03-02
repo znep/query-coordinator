@@ -847,6 +847,11 @@ blist.namespace.fetch('blist.data');
                         // This isn't actual precision, it's decimal places
                         col.decimalPlaces = format.precision;
                     }
+                    if (format.precisionStyle)
+                    {
+                        // Standard or scientific notation
+                        col.precisionStyle = format.precisionStyle;
+                    }
                     if (format.align)
                     {
                         col.alignment = format.align;

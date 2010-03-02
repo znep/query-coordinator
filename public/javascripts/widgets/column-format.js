@@ -14,10 +14,24 @@ columnFormatNS.renderers = {};
 columnFormatNS.renderers['number'] =
 function($container)
 {
-    var render = '<h3 class="separator">Display Options</h3>';
-    render += '<div class="number displayOptions"><table colspacing="0"><tbody>';
-    render += columnFormatNS.precision(columnsNS.column.decimalPlaces);
-    render += '</tbody></table></div>';
+    var render = '<h3 class="separator">Display Options</h3>' +
+        '<div class="number displayOptions"><table colspacing="0"><tbody>' +
+        columnFormatNS.precision(columnsNS.column.decimalPlaces) +
+
+        '<tr><td class="labelColumn">' +
+        '<label for="columnProperties_precisionStyle">Number Style:</label>' +
+        '</td><td><select id="columnProperties_precisionStyle">' +
+        '<option value="standard" ' +
+            (columnsNS.column.precisionStyle == 'standard' ?
+                'selected="selected"' : '') + '>1,020.4 (Standard)</option>' +
+        '<option value="scientific" ' +
+            (columnsNS.column.precisionStyle == 'scientific' ?
+                'selected="selected"' : '') + '>1.0204E+03 (Scientific)</option>' +
+        '</select></td></tr>' +
+
+        '</tbody></table></div>';
+
+
     $container.append(render);
     $("#precision").spinner({min: 0});
 };
@@ -25,17 +39,11 @@ function($container)
 columnFormatNS.renderers['money'] =
 function($container)
 {
-    var render = '<h3 class="separator">Display Options</h3>';
-    render += '<div class="money displayOptions"><table colspacing="0"><tbody>';
-    render += columnFormatNS.precision(columnsNS.column.decimalPlaces);
-    /* TODO: Support different precision styles
-    render += '<tr><td class="labelColumn"><label for="precision">' +
-        'Number Style:</label></td><td><select id="number-style">' +
-        '<option value="standard">1,000.12 (Standard)</option>' +
-        '<option value="scientific">1.01E+03 (Scientific)</option>' +
-        '</select></td></tr>';
-    */
-    render += '</tbody></table></div>';
+    var render = '<h3 class="separator">Display Options</h3>' +
+        '<div class="money displayOptions"><table colspacing="0"><tbody>' +
+        columnFormatNS.precision(columnsNS.column.decimalPlaces) +
+        '</tbody></table></div>';
+
     /* TODO: Add me back in when we get rid of flash (god let that be soon...)
     var currencies = [
         ["$", "dollar"],
@@ -80,6 +88,7 @@ function($container)
        render += '</select>';
 
        render += '</div>';*/
+
     $container.append(render);
     $("#precision").spinner({min: 0});
 };
@@ -160,16 +169,19 @@ columnFormatNS.renderValueInfoFormatRow = function(value)
     $row.addClass(value.id).empty().append($span_value).append($span_info);
 };
 
-columnFormatNS.fetchValue = function($parent)
+columnFormatNS.updateColumn = function(column)
 {
-    var $view = $parent.find('#columnProperties_displayView');
-    return $view.length > 0 ? $view.value() : null;
+    column.decimalPlaces = $("#columnPropertiesDialog #precision").val();
+
+    var $view = $("#columnPropertiesDialog #columnProperties_displayView");
+    column.format = $view.length > 0 ? $view.value() : null;
+
+    column.precisionStyle =
+        $('#columnProperties #columnProperties_precisionStyle').val();
 };
 
-$(function() {
+$(function()
+{
     $.fn.columnFormatRender = function(column)
     { columnFormatNS.renderers[column.type]($(this)); };
-
-    $.fn.columnFormatValue = function()
-    { return columnFormatNS.fetchValue($(this)); }
 });

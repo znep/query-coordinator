@@ -282,7 +282,7 @@
         if ($menu.offset().left + $menu.outerWidth(true) > $(window).width())
         {
             // if the menu can be flipped left, do so; otherwise, crop it
-            if ($trigger.position().left + $trigger.outerWidth(true) -
+            if ($trigger.offset().left + $trigger.outerWidth(true) -
                     $menu.outerWidth(true) < 0)
             {
                 config._origWidth = $menu.css('width');
@@ -298,7 +298,7 @@
         if ($menu.offset().top + $menu.outerHeight(false) > documentHeight)
         {
             // if the menu can be flipped up, do so; otherwise, leave it alone
-            if ($trigger.position().top - $menu.outerHeight(true))
+            if ($trigger.offset().top - $menu.outerHeight(true))
             {
                 $menu.css('top', $menu.position().top -
                         ($menu.outerHeight(true) + $trigger.outerHeight(true)));

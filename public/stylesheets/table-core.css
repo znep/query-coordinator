@@ -352,7 +352,8 @@ div.blist-star-0
     background: transparent url(/stylesheets/images/content/table/percent_negative.png) center left repeat-x;
 }
 
-.blist-document-size {
+.blist-document-size
+{
     font-size: .8em;
     color: #666666;
 }
@@ -455,9 +456,12 @@ div.blist-table-editor .align-right .blist-phone-icon { text-align: left; }
 /* Quick & cheap way to thumbnail photos; won't work right for
  * really wide images */
 .blist-tr .blist-td-photo img { height: 100%; }
+.blist-tr .blist-td-new_photo img { height: 100%; }
 
 .blist-table div.blist-table-active-container .blist-td.blist-td-photo,
-.blist-table div.blist-table-expander .blist-td.blist-td-photo
+.blist-table div.blist-table-active-container .blist-td.blist-td-new_photo,
+.blist-table div.blist-table-expander .blist-td.blist-td-photo,
+.blist-table div.blist-table-expander .blist-td.blist-td-new_photo
 {
     padding: 0;
 }
@@ -498,7 +502,9 @@ div.blist-table-editor .align-right { text-align: right; }
 .stars .blist-th-icon { background-position: 0 -140px; }
 .flag .blist-th-icon { background-position: 0 -380px; }
 .document .blist-th-icon { background-position: 0 -280px; }
+.new_document .blist-th-icon { background-position: 0 -280px; }
 .photo .blist-th-icon { background-position: 0 -100px; }
+.new_photo .blist-th-icon { background-position: 0 -100px; }
 .picklist .blist-th-icon, .drop_down_list .blist-th-icon
 { background-position: 0 -400px; }
 .nested_table .blist-th-icon { background-position: 0 -440px; }

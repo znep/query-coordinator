@@ -97,6 +97,7 @@
     padding-left: 23px;
 }
 .type_combo_list .photo { background-position: 0 -100px; }
+.type_combo_list .new_photo { background-position: 0 -100px; }
 .type_combo_list .money { background-position: 0 -40px; }
 .type_combo_list .picklist, .type_combo_list .drop_down_list
 { background-position: 0 -400px; }
@@ -107,6 +108,7 @@
 .type_combo_list .tag { background-position: 0 -180px; }
 .type_combo_list .url { background-position: 0 -360px; }
 .type_combo_list .document { background-position: 0 -280px; }
+.type_combo_list .new_document { background-position: 0 -280px; }
 .type_combo_list .flag { background-position: 0 -380px; }
 .type_combo_list .stars { background-position: 0 -140px; }
 .type_combo_list .nested_table { background-position: 0 -440px; }

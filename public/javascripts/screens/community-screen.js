@@ -189,7 +189,7 @@ blist.community.addFriendClick = function(event)
 
 blist.community.ajaxifyLinks = function()
 {
-    $('.filterList a, .tagList a.filterLink, .simpleTabs a, .viewPager a').each(function()
+    $('.filterList a, .tagList a.filterLink, .simpleTabs a, .memberPager a').each(function()
     {
         $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
     });

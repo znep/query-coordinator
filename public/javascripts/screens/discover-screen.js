@@ -48,7 +48,7 @@ blist.discover.historyChangeHandler = function (hash)
     var tabContainerSelector = tabContainers[activeTab];
 
     // Abort if we don't know what's going on
-    if (activeTab == 0)
+    if ((activeTab === 0) || (blist.discover.isTabDirty[activeTab] === undefined))
     {
         return;
     }
@@ -103,10 +103,7 @@ blist.discover.historyChangeHandler = function (hash)
             $("#search").blur();
 
             // reinforce new links to JS rather than postback
-            $('.filterList a, .tagList a, .categoryList a, .simpleTabs a').each(function()
-            {
-                $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
-            });
+            discoverNS.ajaxifyLinks();
         }
     });
 };
@@ -149,13 +146,18 @@ blist.discover.tagModalShowHandler = function(hash)
 {
     var $modal = hash.w;
     var $trigger = $(hash.t);
-    
+
     $.Tache.Get({ 
         url: $trigger.attr("href"),
         success: function(data)
         {
             $modal.html(data).show();
-            $(".tagCloudContainer a").tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } });
+            $(".tagCloudContainer a")
+                .tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } })
+                .each(function()
+                {
+                    $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
+                });
         }
     });
 };
@@ -176,13 +178,17 @@ blist.discover.searchSubmitHandler = function(event)
     return false;
 };
 
-
-$(function ()
+blist.discover.ajaxifyLinks = function()
 {
-    $('.filterList a, .tagList a, .categoryList a, .simpleTabs a').each(function()
+    $('.filterList a, .tagList a.filterLink, .categoryList a, .simpleTabs a, .viewPager a').each(function()
     {
         $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
     });
+};
+
+$(function ()
+{
+    discoverNS.ajaxifyLinks();
 
     $("#featuredCarousel").jcarousel({
         visible: 2,

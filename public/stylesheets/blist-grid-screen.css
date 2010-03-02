@@ -678,11 +678,15 @@ body#lensBody
 { background-position: 5px -380px; }
 
 #addColumn_document,
-.menu.columnsMenu .document a
+#addColumn_new_document,
+.menu.columnsMenu .document a,
+.menu.columnsMenu .new_document a
 { background-position: 5px -280px; }
 
 #addColumn_photo,
-.menu.columnsMenu .photo a
+#addColumn_new_photo,
+.menu.columnsMenu .photo a,
+.menu.columnsMenu .new_photo a
 { background-position: 5px -100px; }
 
 #addColumn_picklist,

@@ -34,7 +34,9 @@
 
 
 <%# *** START: SUMMARY *** %>
-<div class="infoContentOuter singleInfoSummary listContainer <%= page_single ? ' expanded' : '' %> <%= module_enabled?(:allow_comments) ? "" : "active" %>">
+<div class="infoContentOuter singleInfoSummary listContainer
+  <%= page_single ? ' expanded' : '' %>
+  <%= module_enabled?(:allow_comments) ? "" : "active" %>">
   <div class="infoContentHeader clearfix">
     <%= render(:partial => "blists/info_summary_header",
                 :locals => {:view => view, :page_single => page_single, 
@@ -52,7 +54,8 @@
 <%# *** END: SUMMARY *** %>
 
 <%# *** START: FILTERED *** %>
-<div class="infoContentOuter singleInfoFiltered">
+<div class="infoContentOuter singleInfoFiltered
+  <%= page_single ? ' expanded' : '' %>">
   <div class="infoContentHeader clearfix">
     <%= render(:partial => "blists/info_filtered_header",
                 :locals => {:view => view, :in_widget => false,
@@ -91,7 +94,8 @@
 
 
 <%# *** START: SHARING *** %>
-<div class="infoContentOuter singleInfoSharing">
+<div class="infoContentOuter singleInfoSharing
+  <%= page_single ? ' expanded' : '' %>">
   <div class="infoContentHeader clearfix">
     <%= render(:partial => "blists/info_sharing_header", :locals => {:view => view}) %>
   </div>
@@ -106,7 +110,8 @@
 
 <%# *** START: PUBLISHING *** %>
 <%- if @view.display.can_publish? -%>
-<div class="infoContentOuter singleInfoPublishing">
+<div class="infoContentOuter singleInfoPublishing
+  <%= page_single ? ' expanded' : '' %>">
   <div class="infoContentHeader clearfix">
     <h2 class="panelHeader">Publishing</h2>
     <%# Not supported
@@ -149,7 +154,8 @@
 <%# *** END: PUBLISHING *** %>
 
 <%# *** START: ACTIVITY *** %>
-<div class="infoContentOuter singleInfoActivity">
+<div class="infoContentOuter singleInfoActivity
+  <%= page_single ? ' expanded' : '' %>">
   <div class="infoContentHeader clearfix">
     <%= render(:partial => "blists/info_activity_header", 
                 :locals => {:view => view, :in_widget => false }) %>

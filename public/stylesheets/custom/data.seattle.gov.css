@@ -1,3 +1,13 @@
+body
+{
+    background: #ecedec url(/stylesheets/images/domains/data.seattle.gov/mainlogo_background.png) 0 6px repeat-x;
+}
+
+#header
+{
+    background: url(/stylesheets/images/domains/data.seattle.gov/mainlogo_background.png) repeat-x;
+}
+
 #discover .seattleWelcomeHeader
 {
     background: #fff url(/stylesheets/images/domains/data.seattle.gov/header_bg.jpg) no-repeat right bottom;
@@ -9,7 +19,7 @@
 #discover .seattleWelcomeHeader .seattleBlockHeaderBR
 {
     background: url(/stylesheets/images/content/background_corner_bottom_right.png) no-repeat bottom right;
-    min-height: 15em;
+    min-height: 17em;
     padding: 2em;
 }
 
@@ -41,8 +51,10 @@
 {
     color: #888;
     font-size: 1.3em;
+    line-height: 1.4em;
     margin: 1.5em 1.8em;
-    width: 60em;
+    max-width: 60em;
+    padding-right: 25em;
 }
 
 #discover .seattleWelcomeHeader .seattleText a
@@ -56,5 +68,5 @@
     font-size: 1.4em;
     font-weight: bold;
     margin: 1em 1.5em 0.5em;
-    width: 50em;
+    max-width: 50em;
 }

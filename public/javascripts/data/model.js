@@ -306,12 +306,20 @@ blist.namespace.fetch('blist.data');
          */
         this.isProgressiveLoading = function()
         {
-            var isProg = curOptions.progressiveLoading && rowsLoaded < rows.length;
-            if (!isProg && meta.columnFilters != null)
+            if (!curOptions.progressiveLoading) { return false; }
+
+            if (rowsLoaded < rows.length || meta.view.searchString !== null)
+            { return true; }
+
+            var isProg = false;
+            // If there are any column filters, do progressive loading
+            if (meta.columnFilters != null)
             {
                 $.each(meta.columnFilters, function (i, v)
                     { if (v != null) { isProg = true; return false; } });
             }
+
+            // If there are multiple sort bys, then do prog loading
             if (meta.view !== undefined && meta.view.query !== undefined &&
                 meta.view.query.orderBys !== undefined &&
                 meta.view.query.orderBys.length > 1)
@@ -618,8 +626,8 @@ blist.namespace.fetch('blist.data');
             {
                 self.meta(config.meta);
                 if (config.rows || config.data)
-                { this.rows(config.rows || config.data); }
-                configureActive();
+                { this.rows(config.rows || config.data, true); }
+                else { configureActive(null, true); }
                 $(listeners).trigger('columns_updated', [self]);
                 $(listeners).trigger('full_load');
             }
@@ -767,6 +775,10 @@ blist.namespace.fetch('blist.data');
                         col.options = translatePicklistFromView(vcol);
                         break;
 
+                    case 'new_photo':
+                    case 'new_document':
+                        col.base = baseURL + "/views/" + view.id + "/new_files/";
+                        break;
                     case 'photo':
                     case 'document':
                         col.base = baseURL + "/views/" + view.id + "/files/";
@@ -834,6 +846,11 @@ blist.namespace.fetch('blist.data');
                     {
                         // This isn't actual precision, it's decimal places
                         col.decimalPlaces = format.precision;
+                    }
+                    if (format.precisionStyle)
+                    {
+                        // Standard or scientific notation
+                        col.precisionStyle = format.precisionStyle;
                     }
                     if (format.align)
                     {
@@ -987,7 +1004,7 @@ blist.namespace.fetch('blist.data');
          * Get and/or set the rows for the model.  Returns only "active" rows,
          * that is, those that are visible.
          */
-        this.rows = function(newRows)
+        this.rows = function(newRows, loadedTempView)
         {
             if (newRows)
             {
@@ -1002,7 +1019,7 @@ blist.namespace.fetch('blist.data');
                 }
 
                 // Apply filtering and grouping
-                configureActive(active);
+                configureActive(active, loadedTempView);
             }
 
             return active;
@@ -2008,7 +2025,7 @@ blist.namespace.fetch('blist.data');
             $(listeners).trigger('columns_updated', [this]);
         };
 
-        this.moveColumn = function(oldPos, newPos)
+        this.moveColumn = function(oldPosOrCol, newPos)
         {
             // First update widths on view columns, since they may have been
             // updated on the model columns
@@ -2023,12 +2040,27 @@ blist.namespace.fetch('blist.data');
                 });
             });
 
+            var column = null;
+            var oldPos = -1;
+            if (typeof oldPosOrCol == 'object')
+            {
+                column = oldPosOrCol;
+                if (column.flags !== undefined &&
+                    _.include(column.flags, 'hidden'))
+                { column.flags = _.without(column.flags, 'hidden'); }
+            }
+            else
+            { oldPos = oldPosOrCol; }
+
             // Filter view columns down to just the visible, and sort them
             var viewCols = $.grep(meta.view.columns, function(c)
                 { return c.dataTypeName != 'meta_data' &&
                     (!c.flags || $.inArray('hidden', c.flags) < 0); });
             viewCols.sort(function(col1, col2)
                 { return col1.position - col2.position; });
+
+            if (column !== null)
+            { oldPos = _.indexOf(viewCols, column); }
 
             // Stick the column in the new spot, then remove it from the old
             viewCols.splice(newPos, 0, viewCols[oldPos]);
@@ -2909,7 +2941,11 @@ blist.namespace.fetch('blist.data');
         var configureFilter = function(filter)
         {
             var toFilter;
-            if (typeof filter == "function") { filterFn = filter; }
+            if (typeof filter == "function")
+            {
+                filterFn = filter;
+                filterText = null;
+            }
             else
             {
                 if (filter === null) { filter = ""; }
@@ -2940,7 +2976,7 @@ blist.namespace.fetch('blist.data');
                 var rootColumns = meta.columns[0];
                 for (var i = 0; i < rootColumns.length; i++)
                 {
-                    var type = rootColumns[i].type;
+                    var type = rootColumns[i].type || 'text';
                     if (blist.data.types[type].filterText)
                     {
                         // Textual column -- apply the regular expression to
@@ -2975,7 +3011,8 @@ blist.namespace.fetch('blist.data');
 
                 // Filter the current filter set if the filter is a subset of
                 // the current filter
-                if (filter.substring(0, filterText.length) == filterText)
+                if (filterText !== null &&
+                    filter.substring(0, filterText.length) == filterText)
                 { toFilter = active; }
                 filterText = filter;
                 meta.view.searchString = filterText;

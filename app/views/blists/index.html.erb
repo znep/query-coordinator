@@ -59,6 +59,8 @@
             <div class="gridList scrollContent" id="blist-list"></div>
           </div>
 
+          <%# Disabled for now since content isn't up-to-date %>
+          <%- if false && upsell? -%>
           <div class="noticePanel expandContainer hide">
             <div class="noticeHeaderOuter"><div class="noticeHeaderInner">
                 <div class="noticeHeader clearfix">
@@ -74,6 +76,7 @@
               <%= render(:partial => "shared/feature_boxes") %>
             </div>
           </div>
+          <%- end -%>
 
         </div>
       </div>

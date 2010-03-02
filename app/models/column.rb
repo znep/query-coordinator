@@ -14,8 +14,10 @@ class Column < Model
       "checkbox" => "Checkbox",
       "stars" => "Star",
       "flag" => "Flag",
-      "document" => "Document",
-      "photo" => "Photo (Image)",
+      "new_document" => "Document",
+      "new_photo" => "Photo (Image)",
+      "document" => "Document (old)",
+      "photo" => "Photo (Image, old)",
       "picklist" => "Multiple Choice",
       "drop_down_list" => "Multiple Choice",
       "nested_table" => "Nested Table",
@@ -43,6 +45,8 @@ class Column < Model
   def is_sortable?
     return client_type != "nested_table" && 
       client_type != "tag" &&
+      client_type != "new_photo" &&
+      client_type != "new_document" &&
       client_type != "photo" &&
       client_type != "document"
   end
@@ -65,8 +69,8 @@ class Column < Model
     case (dataTypeName || renderTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
-    when "text", "photo", "phone", "checkbox", "flag", "url",
-      "email", "document", "tag", "picklist", "drop_down_list"
+    when "text", "new_photo", "photo", "phone", "checkbox", "flag", "url",
+      "email", "new_document", "document", "tag", "picklist", "drop_down_list"
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
     when "date"
@@ -105,7 +109,7 @@ class Column < Model
   end
 
   def has_display_options?
-    types_with_display_options = ["text", "date", "number", "money", "percent"]
+    types_with_display_options = ["date", "number", "money", "percent"]
 
     return types_with_display_options.include?(client_type)
   end
@@ -121,7 +125,7 @@ class Column < Model
   def has_totals?
     types_with_totals = ["text", "richtext", "number", "money", "percent",
                          "date", "phone", "email", "url", "checkbox", "stars",
-                         "flag", "document", "photo", "picklist",
+                         "flag", "new_document", "document", "new_photo", "photo", "picklist",
                          "drop_down_list", "tag"]
 
     return types_with_totals.include?(client_type)
@@ -191,6 +195,12 @@ class Column < Model
       update_data[:format]["precision"] = js["decimalPlaces"].to_i
     end
 
+    if js.key?("precisionStyle") && js["precisionStyle"].blank?
+      update_data[:format].delete "precisionStyle"
+    elsif js.key?("precisionStyle")
+      update_data[:format]["precisionStyle"] = js["precisionStyle"]
+    end
+
     if js.key?("type") && js["type"] == "richtext" && client_type == "text"
       update_data[:format]["formatting_option"] = "Rich"
     elsif js.key?("type") && js["type"] == "text" && client_type == "richtext"
@@ -241,6 +251,10 @@ class Column < Model
 
       if !self.format.precision.nil?
         col[:decimalPlaces] = self.format.precision
+      end
+
+      if !self.format.precisionStyle.nil?
+        col[:precisionStyle] = self.format.precisionStyle
       end
 
       col[:alignment] = alignment unless aligment.nil?

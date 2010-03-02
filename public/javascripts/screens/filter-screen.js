@@ -13,6 +13,8 @@ filterNS.conditions = {
     checkbox: [ { operator: "EQUALS", label: "equals" } ],
     photo:    [ { operator: "IS_BLANK", label: "is empty" },
                 { operator: "IS_NOT_BLANK", label: "exists" } ],
+    new_photo:[ { operator: "IS_BLANK", label: "is empty" },
+                { operator: "IS_NOT_BLANK", label: "exists" } ],
     number:   [ { operator: "EQUALS", label: "equals" },
                 { operator: "NOT_EQUALS", label: "not equals" },
                 { operator: "LESS_THAN", label: "less than" },
@@ -30,6 +32,10 @@ filterNS.filterableClass = function(type) {
     else if ($.inArray(type, ["number", "money", "percent", "stars", "picklist", "drop_down_list"]) > -1)
     {
         return "number";
+    }
+    else if ($.inArray(type, ["new_photo", "new_document"]) > -1)
+    {
+        return "new_photo";
     }
     else if ($.inArray(type, ["photo", "document"]) > -1)
     {
@@ -72,7 +78,7 @@ filterNS.createEditor = function($renderer, column, value) {
     {
         tempCol.format = "date";
     }
-    else if ((tempCol.type == "document") || (tempCol.type == "photo"))
+    else if ((tempCol.type == "new_document") || (tempCol.type == "new_photo") || (tempCol.type == "document") || (tempCol.type == "photo"))
     {
         return;
     }
@@ -188,7 +194,7 @@ filterNS.row = function($row) {
     var column = selectedColumn.column;
     var operator = $row.find(".filterTable-conditionDropDown").value().operator;
 
-    if ((column.type == "document") || (column.type == "photo"))
+    if ((column.type == "new_document") || (column.type == "new_photo") || (column.type == "document") || (column.type == "photo"))
     {
         return [
             {

@@ -5,132 +5,114 @@ class CommunitiesController < ApplicationController
   PAGE_SIZE = 10
 
   def show
+    # get filter options
+    opts, tag_opts = parse_opts(params)
+
+    # save us some work for no-JS versions
+    @need_to_render = [:topMembers, :topUploaders, :allMembers, :search]
+    @active_tab = :topMembers
+    if params[:no_js]
+      @active_tab = (params[:type] || 'topMembers').to_sym
+      @need_to_render = [@active_tab]
+    end
+
+    # set up page params
     @body_class = 'community'
     @show_search_form = false
-
     @page_size = PAGE_SIZE
 
-    @all_members_total = User.find({ :limit => PAGE_SIZE, :count => true }).count
-    @all_members = User.find({ :limit => PAGE_SIZE })
-    @all_members_tags = Tag.find({ :method => "usersTags", :limit => 5 })
+    if @need_to_render.include?(:allMembers)
+      @all_members_total = User.find(opts.merge({ :count => true })).count
+      @all_members = User.find(opts)
+      @all_members_tags = Tag.find(tag_opts)
+    end
 
-    @top_members_total = 100
-    @top_members = User.find({ :topMembers => true, :limit => PAGE_SIZE, :page => 1 });
-    @top_members_tags = Tag.find({ :method => "usersTags", :topMembers => true, :limit => 5 })
+    if @need_to_render.include?(:topMembers)
+      @top_members_total = 100
+      @top_members = User.find(opts.merge({ :topMembers => true }))
+      @top_members_tags = Tag.find(tag_opts.merge({ :topMembers => true }))
+    end
 
-    @top_uploaders_total = 100
-    @top_uploaders = User.find({ :topUploaders => true, :limit => PAGE_SIZE, :page => 1 });
-    @top_uploaders_tags = Tag.find({ :method => "usersTags", :topUploaders => true, :limit => 5 })
+    if @need_to_render.include?(:topUploaders)
+      @top_uploaders_total = 100
+      @top_uploaders = User.find(opts.merge({ :topUploaders => true }))
+      @top_uploaders_tags = Tag.find(tag_opts.merge({ :topUploaders => true }))
+    end
 
-    @carousel_members = User.find({ :featured => true, :limit => 10 });
+    unless @carousel_members_rendered = read_fragment("community-carousel_#{CurrentDomain.cname}")
+      @carousel_members = User.find({ :featured => true, :limit => 10 })
+    end
 
     @activities = Activity.find({ :maxResults => 5 })
 
-    if (params[:search])
-      @search_term = params[:search]
-      @search_members_total = User.find({ :full => @search_term, :count => true }).count
-      @search_members = User.find({ :full => @search_term, :limit => PAGE_SIZE, :page => 1 })
+    if @need_to_render.include?(:search) && opts[:q]
+      search_results = SearchResult.search("users", opts)
+      @search_members_total = search_results[0].results
+      @search_members = search_members[0].count
     end
+
+    # build current state string
+    @current_state = { :filter => params[:filter], :page => opts[:page].to_i,
+      :tag => opts[:tags], :sort_by => params[:sort_by], :search => opts[:q],
+      :no_js => params[:no_js] }
   end
 
   def filter
-    type = params[:type]
-    filter = params[:filter]
-    page = params[:page] || 1
-    sort_by_selection = params[:sort_by]
-    tag = params[:tag]
-    search_term = params[:search]
-    search_debug = params[:search_debug]
+    opts, tag_opts = parse_opts(params)
 
-    sort_by = sort_by_selection
-    is_asc = false
-    case sort_by_selection
-    when "ALPHA"
-      is_asc = true
-    when "ALPHA_DESC"
-      sort_by = "ALPHA"
-    when "LAST_LOGGED_IN"
-      is_asc = true
-    end 
-
-    opts = Hash.new
-    opts.update({:page => page, :limit => PAGE_SIZE})
-    tag_opts = Hash.new
-    tag_opts.update({ :method => "usersTags", :limit => 5 })
-
-    case type
-      when "TOPMEMBERS"
-        opts.update({:topMembers => true})
-        tag_opts.update({:topMembers => true})
-      when "TOPUPLOADERS"
-        opts.update({:topUploaders => true})
-        tag_opts.update({:topUploaders => true})
-      when "SEARCH"
-        opts.update({:q => search_term })
+    tab_title = case params[:type]
+      when "allmembers" then "All Members"
+      when "topmembers" then "Top Members"
+      else "Top Uploaders"
     end
-
-    if !sort_by.nil?
-      opts.update({:sortBy => sort_by, :isAsc => is_asc})
-    end
-
-    if (!tag.nil?)
-      opts.update({:tags => tag})
-    end
-
-    tab_title = type == "ALLMEMBERS" ? "All Members" : (type == "TOPMEMBERS" ? "Top Members" : "Top Uploaders")
-    unless(filter.nil?)
-      opts.update(filter)
-
-      if (filter[:publicOnly])
-        tab_title += " with public #{t(:blists_name)}"
-      end
+    if (!params[:filter].nil? && params[:filter][:publicOnly])
+      tab_title += " with public #{t(:blists_name)}"
     end
 
     @page_size = PAGE_SIZE
-    if type == "SEARCH"
-      tab_title = "Search Results for \"#{search_term}\""
+    if params[:type] == "search"
+      tab_title = "Search Results for \"#{opts[:q]}\""
       search_results = SearchResult.search("users", opts)
       @filtered_members = search_results[0].results
       @filtered_members_total = search_results[0].count
     else
       @filtered_members = User.find(opts)
-      @filtered_members_total = User.find(opts.update({:count => true})).count
+      @filtered_members_total = User.find(opts.merge({:count => true})).count
 
       tag_list = Tag.find(tag_opts)
-      if (tag && !tag_list.nil? && !tag_list.any? {|itag| itag.name == tag })
+      if (opts[:tags] && !tag_list.nil? && !tag_list.any? {|tag| tag.name == opts[:tags] })
         new_tag = Tag.new
-        new_tag.data['name'] = tag
+        new_tag.data['name'] = opts[:tags]
         tag_list << new_tag
       end
     end
 
     # build current state string
-    @current_state = { :filter => filter, :page => page, :tag => tag,
-      :sort_by => sort_by_selection, :search => search_term,
-      :search_debug => search_debug }
+    @current_state = { :filter => params[:filter], :page => opts[:page],
+      :tag => opts[:tags], :sort_by => params[:sort_by], :search => opts[:q],
+      :no_js => params[:no_js] }
 
     respond_to do |format|
       format.html { redirect_to(community_path(params)) }
       format.data { 
-        if ((@filtered_members.length > 0) || (type != "SEARCH"))
+        if ((@filtered_members.length > 0) || (params[:type] != "search"))
           render(:partial => "communities/member_list_tab", 
             :locals => 
             {
               :tab_title => tab_title, 
               :members => @filtered_members, 
               :members_total => @filtered_members_total,
-              :current_page => page.to_i,
-              :type => type,
-              :current_filter => filter,
-              :sort_by => sort_by_selection,
+              :current_page => params[:page].to_i,
+              :type => params[:type],
+              :current_filter => params[:filter],
+              :sort_by => params[:sort_by],
               :tag_list => tag_list,
-              :current_tag => tag,
-              :search_term => search_term,
-              :search_debug => search_debug,
+              :current_tag => opts[:tags],
+              :search_term => opts[:q]
             })
         else
           render(:partial => "communities/member_list_tab_noresult", 
-              :locals => { :term => search_term })
+              :locals => { :term => opts[:q] })
         end
       }
     end
@@ -162,10 +144,52 @@ class CommunitiesController < ApplicationController
 
     @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
 
+    # build current state string
+    @current_state = { :filter => params[:filter], :page => params[:page],
+      :sort_by => params[:sort_by], :search => params[:search], :no_js => params[:no_js] }
+
     respond_to do |format|
       format.html { render }
       format.data { render(:layout => "modal") }
     end
+  end
+
+private
+  def parse_opts(params)
+    sort_by = params[:sort_by]
+    is_asc = false
+    case params[:sort_by]
+    when "ALPHA"
+      is_asc = true
+    when "ALPHA_DESC"
+      sort_by = "ALPHA"
+    when "LAST_LOGGED_IN"
+      is_asc = true
+    end 
+
+    opts = {:page => params[:page] || 1, :limit => PAGE_SIZE}
+    tag_opts = { :method => "usersTags", :limit => 5 }
+
+    case params[:type]
+      when "topMembers"
+        opts[:topMembers] = true
+        tag_opts[:topMembers] = true
+      when "topUploaders"
+        opts[:topUploaders] = true
+        tag_opts[:topUploaders] = true
+      when "search"
+        opts[:q] = params[:search]
+    end
+
+    unless sort_by.nil?
+      opts[:sortBy] = sort_by
+      opts[:isAsc] = is_asc
+    end
+
+    opts[:tags] = params[:tag] unless params[:tag].nil?
+    opts.update(params[:filter]) unless params[:filter].nil?
+
+    return opts, tag_opts
   end
 
 end

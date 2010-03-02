@@ -61,8 +61,9 @@
               </tbody>
             </table>
           </div>
-          
-          <%- if (!current_user.is_established?) -%>
+
+          <%# Disabled for now since content isn't up-to-date %>
+          <%- if false && upsell? && !current_user.is_established? -%>
             <div class="noticePanel expandContainer">
               <div class="noticeHeaderOuter"><div class="noticeHeaderInner">
                 <div class="noticeHeader clearfix">

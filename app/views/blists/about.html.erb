@@ -63,7 +63,7 @@
               <%- if @view.description.nil? || @view.description.empty? -%>
                 No Description Provided
               <%- else -%>
-                <%= @view.description %>
+                <%= raw auto_link(h(@view.description), :html => { :rel => 'nofollow' }) %>
               <%- end -%>
               </p>
             </div>

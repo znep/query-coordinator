@@ -1,0 +1,91 @@
+/* HEADER */
+body {
+	background: #a2a9bd url(/stylesheets/images/domains/data.knoxnews.com/mountain_fade.png) repeat-x 0 24px;
+}
+.bodyExterior {
+	background:url(/stylesheets/images/domains/data.knoxnews.com/mountains.jpg) no-repeat center 24px;
+}
+.bodyInterior {
+	border:none;
+	background:url(/stylesheets/images/domains/data.knoxnews.com/blackbar.png) repeat-x;
+}
+#header {
+	background:none;
+	height:129px;
+}
+/* User Nav */
+#header .userNav {
+	width:auto;
+	position:absolute;
+	left:0;
+	padding:5px 0 0 10px;
+}
+
+#header .userNav a {
+	color:#fff;
+	font-size:1.2em;
+	text-decoration:none;
+}
+#header .userNav a:hover {
+	color:#aabbd0;
+}
+#header .userNav li {
+	border-right:#3e3e3e solid 1px;
+}
+/* Logo */
+#mainLogo {
+	top:58px;
+}
+#mainLogo a {
+	display:block;
+	width:364px;
+	height:47px;
+}
+#mainLogo a:hover {
+	background-position:0 -47px;
+}
+/* Main Nav */
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+	background-image:url(/stylesheets/images/domains/data.knoxnews.com/box_custom_current.png);
+	color:#fff;
+}
+#mainNav li, #mainNav li a span {
+	background-image:url(/stylesheets/images/domains/data.knoxnews.com/box_custom.png);
+}
+#mainNav li:hover, #mainNav li a span:hover {
+	background-image:url(/stylesheets/images/domains/data.knoxnews.com/box_custom_current.png)
+}
+#mainNav li a {
+	color:#b6dcf1;
+}
+#mainNav li a:hover {
+	text-decoration:none;
+	color:#fff;
+}
+#mainNav {
+	position:relative;
+	top:24px;
+	height:40px;
+	background:url(/stylesheets/images/domains/data.knoxnews.com/nav_shadow.png) no-repeat center top;
+	width:33em;
+	padding:0 20px;
+}
+#mainNav li {
+	margin:0;
+}
+#login .search {
+	display:none;
+}
+/* Login Box */
+.dialogBox .header {background:#2f739a;}
+.dialogBox .header h1 {background-position: 6px 5px;}
+/* FOOTER */
+.footerContainer {
+	background:none;
+}
+#footer .copyright {
+	font-size:1.2em;
+}
+#footer a {
+	font-size:1.2em;
+}

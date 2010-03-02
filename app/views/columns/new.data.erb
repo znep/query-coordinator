@@ -1,6 +1,7 @@
 <% content_for :headline do %>
 <script>
-var column = <%= @column.to_js %>;
+var columnsNS = blist.namespace.fetch('blist.columns.properties');
+blist.columns.properties.column = <%= @column.to_js %>;
 </script>
 
 <h1 id="title" class="columnPropertiesIcon">Create a New Column</h1>
@@ -90,25 +91,27 @@ blist.common.modalReady = function() {
       {id: "checkbox", label: "Checkbox"},
       {id: "stars", label: "Star"},
       {id: "flag", label: "Flag"},
-      {id: "document", label: "Document"},
-      {id: "photo", label: "Photo (Image)"},
+      {id: "new_document", label: "Document"},
+      {id: "new_photo", label: "Photo (Image)"},
+      // {id: "document", label: "Document (old)"},
+      // {id: "photo", label: "Photo (Image, old)"},
       {id: 'drop_down_list', label: 'Multiple Choice'}
   ];
   <%- if @parent.nil? -%>
   typeValues.push({id: "nested_table", label: "Nested Table"});
   <%- end -%>
 
-  column.type = "<%= @type.nil? ? "text" : @type %>";
+  columnsNS.column.type = "<%= @type.nil? ? "text" : @type %>";
 
   $("#columnCreateDialog #types").combo({
     name: "types",
     values: typeValues,
-    value: column.type,
+    value: columnsNS.column.type,
     renderFn: renderValueInfoFormatRow
   });
 
   $('#columnCreateDialog #picklistManager').toggleClass('hidden',
-      column.type != 'drop_down_list');
+      columnsNS.column.type != 'drop_down_list');
   var picklistManagerCallback = picklistManagerSetup();
 
   var formEnabled = true;
@@ -119,34 +122,29 @@ blist.common.modalReady = function() {
     formEnabled = !formEnabled;
   };
 
-  $("#columnCreateDialog #columnCreate_name")
-    .change(function() { column.name = $(this).val(); });
-  $("#columnCreateDialog #description")
-    .change(function() { column.description = $(this).val(); });
-  $("#columnCreateDialog #types")
-    .change(function()
+  $("#columnCreateDialog #types").change(function()
     {
-        column.type = $(this).value();
         $('#columnCreateDialog #picklistManager').toggleClass('hidden',
-            column.type != 'drop_down_list');
+          $("#columnCreateDialog #types").value() != 'drop_down_list');
     });
+
+  var updateColumn = function()
+  {
+      columnsNS.column.name = $("#columnCreateDialog #columnCreate_name").val();
+      var $desc = $("#columnCreateDialog #description:not(.prompt)");
+      columnsNS.column.description = $desc.length > 0 ? $desc.val() : null;
+      columnsNS.column.type = $("#columnCreateDialog #types").value();
+
+      if (columnsNS.column.type == 'drop_down_list')
+      { columnsNS.column.dropDownList = {values: picklistManagerCallback()}; }
+  };
 
   var saveForm = function()
   {
       if (!formEnabled) { return false; }
       toggleEnabled();
 
-      // Force change events to make sure the data is updated.  These don't always
-      // seem to be firing in IE with jQuery 1.4, which is probably a bug.
-      // In reality, we shouldn't be listening to change events at all -- we
-      // should just read/serialize the form when they click save and not
-      // worry about listening on a bunch of events
-      $('#columnCreateDialog #columnCreate_name').change();
-      $("#columnCreateDialog #description").change();
-      $("#columnCreateDialog #types").change();
-
-      if (column.type == 'drop_down_list')
-      { column.dropDownList = {values: picklistManagerCallback()}; }
+      updateColumn();
 
       $.ajax({
         type: "POST",
@@ -155,7 +153,7 @@ blist.common.modalReady = function() {
         cache: false,
         dataType: 'json',
         data: {
-          json: $.json.serialize(column),
+          json: $.json.serialize(columnsNS.column),
           authenticity_token: "<%= form_authenticity_token %>"
         },
         error: function(request) {

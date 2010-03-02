@@ -27,29 +27,13 @@
         <%- unless comment.body.blank? -%>
           <p class='commentBody'><%= comment.body %></p>
         <%- end -%>
-          
+
           <%= render(:partial => 'blists/comment_actions',
-          :locals => {:comment => comment, :view => view, :allow_commenting => allow_commenting}) %>
+            :locals => {:comment => comment, :view => view,
+              :allow_commenting => allow_commenting}) %>
 
-          <%- if allow_commenting -%>
-            <%- form_tag(post_comment_blist_path(view.id),
-              :class => 'replyComment postComment hidden') do -%>
-
-            <%= hidden_field_tag('comment[parent][id]', comment.id,
-            :class => 'parentInput') %>
-            <div class='commentBody'>
-              <%= text_area_tag("comment[body]", '',
-              {:class => 'textPrompt', :title => 'Enter a reply'}) %>
-            </div>
-
-            <div class='submitSection'>
-              <a href='#cancel_comment'>Cancel</a>
-              <%= image_submit_tag("button_submit_comment.png", :title => "Submit") %>
-            </div>
-            <%- end -%>
-          <%- end -%>
-
-          <%- comment_children = Array.new(comment.children || 0) -%>
+          <%- comment_children = Array.new(comment.children || 0).
+                sort {|a, b| a.createdAt <=> b.createdAt} -%>
           <a class='expander expanded
             <%= comment_children.length < 1 ? 'hidden' : '' %>'
             title='Toggle replies' href='#toggleReplies'>Toggle replies</a>
@@ -63,12 +47,36 @@
             <%- child = comment_children.shift -%>
             <%= render(:partial => 'blists/child_comment',
             :locals => {:comment => child, :view => view,
-            :wrapper_class => is_first ? 'first' : '', :allow_commenting => allow_commenting}) %>
+            :wrapper_class => is_first ? 'first' : '',
+            :allow_commenting => allow_commenting}) %>
             <%- is_first = false -%>
+            <%- children = Array.new(child.children || 0).
+                sort {|a, b| a.createdAt <=> b.createdAt} -%>
             <%- comment_children = comment_children.
-              unshift(child.children).flatten.compact -%>
+              unshift(children).flatten.compact -%>
             <%- end -%>
           </div>
+
+          <%- if allow_commenting -%>
+            <%- form_tag(post_comment_blist_path(view.id),
+              :class => 'replyComment postComment hidden') do -%>
+            <h4>Enter a Reply:</h4>
+
+            <%= hidden_field_tag('comment[parent][id]', comment.id,
+              :class => 'parentInput') %>
+            <div class='commentBody'>
+              <%= text_area_tag("comment[body]", '',
+              {:class => 'textPrompt', :title => 'Enter a reply'}) %>
+            </div>
+
+            <div class='submitSection'>
+              <a href='#cancel_comment'>Cancel</a>
+              <%= image_submit_tag("button_submit_comment.png",
+                :title => "Submit") %>
+            </div>
+            <%- end -%>
+          <%- end -%>
+
       </div></div>
   </div></div>
   </div>

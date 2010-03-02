@@ -150,17 +150,27 @@ blist.namespace.fetch('blist.data.types');
         "9": true
     };
 
-    var renderNumber = function(value, decimalPlaces, prefix, suffix) {
-        if (value == null) {
-            return '';
-        }
-        if (typeof value != "number") {
+    var renderNumber = function(value, decimalPlaces, precisionStyle,
+        prefix, suffix)
+    {
+        if (value == null) { return ''; }
+
+        if (typeof value != "number")
+        {
             // Skip this if we already have a number as it is slow
             value = parseFloat(value);
         }
-        if (decimalPlaces !== undefined) {
-            value = value.toFixed(decimalPlaces);
+
+        if (precisionStyle == 'scientific')
+        {
+            if (decimalPlaces !== undefined)
+            { value = value.toExponential(decimalPlaces); }
+            else
+            { value = value.toExponential(); }
         }
+        else if (decimalPlaces !== undefined)
+        { value = value.toFixed(decimalPlaces); }
+
         // HACK HACK HACK
         // Temporary HACK: Don't put commas if a number is less than 10,000.
         // This should help with the display of dates
@@ -178,17 +188,16 @@ blist.namespace.fetch('blist.data.types');
             }
         }
         // END HACK
-        if (prefix) {
-            value = prefix + value;
-        }
-        if (suffix) {
-            value += suffix;
-        }
+
+        if (prefix) { value = prefix + value; }
+        if (suffix) { value += suffix; }
+
         return value;
     };
 
     var renderGenNumber = function(value, plain, column) {
-        return "renderNumber(" + value + ", " + column.decimalPlaces + ")";
+        return "renderNumber(" + value + ", " + column.decimalPlaces + ", '" +
+            column.precisionStyle + "')";
     };
 
     var renderPercentBar = function(value) {
@@ -213,7 +222,8 @@ blist.namespace.fetch('blist.data.types');
     {
         if (plain)
         {
-            return "renderNumber(" + value + ", " + column.decimalPlaces + ", null, '%')";
+            return "renderNumber(" + value + ", " + column.decimalPlaces +
+                ", '" + column.precisionStyle + "', null, '%')";
         }
         var renderText;
         var renderBar;
@@ -237,14 +247,17 @@ blist.namespace.fetch('blist.data.types');
             rv += " + renderPercentBar(" + value + ")";
         }
         if (renderText) {
-            rv += " + '<div class=\"blist-cell blist-percent-num\">' + renderNumber(" + value + ", " + column.decimalPlaces + ", null, '%') + '</div>'";
+            rv += " + '<div class=\"blist-cell blist-percent-num\">' + " +
+                "renderNumber(" + value + ", " + column.decimalPlaces +
+                ", '" + column.precisionStyle + "', null, '%') + '</div>'";
         }
         rv += "+ '</div>'";
         return rv;
     };
 
     var renderGenMoney = function(value, plain, column) {
-        return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) + ", '$')";
+        return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) +
+            ", '" + column.precisionStyle + "', '$')";
     };
 
     var renderPhone = function(value, plain, skipURL, skipBlankType)
@@ -465,9 +478,22 @@ blist.namespace.fetch('blist.data.types');
         }
         else if (value instanceof Object)
         {
-            url = value.id;
-            name = value.filename;
-            size = value.size;
+            if (value.id)
+            { // old-style document
+                url = value.id;
+                name = value.filename;
+                size = value.size;
+            }
+            else
+            { // new-style document
+                url = value.file_id + '?';
+                args=[];
+                if(value.filename) args.push('filename=' + escape(value.filename));
+                if(value.content_type) args.push('content_type=' + escape(value.content_type));
+                url += args.join('&');
+                name = value.filename;
+                size = value.size;
+            }
         }
         else { url = value + ''; }
 
@@ -488,7 +514,6 @@ blist.namespace.fetch('blist.data.types');
         return "renderDocument(" + value + ", " + (column.base ? "'" + column.base + "'" : "null") + ", " + plain + ")";
     };
 
-
     /** FILTER RENDERERS ***/
     var renderFilterText = function(value)
     {
@@ -502,7 +527,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterNumber = function(value, column)
     {
-        return renderNumber(value, column.decimalPlaces);
+        return renderNumber(value, column.decimalPlaces, column.precisionStyle);
     };
 
     var renderFilterDate = function(value, column)
@@ -514,7 +539,8 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterMoney = function(value, column)
     {
-        return renderNumber(value, (column.decimalPlaces || 2), '$');
+        return renderNumber(value, (column.decimalPlaces || 2),
+            column.precisionStyle, '$');
     };
 
     var renderFilterCheckbox = function(value, column)
@@ -548,7 +574,8 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterPercent = function(value, column)
     {
-        return renderNumber(value, column.decimalPlaces, null, '%');
+        return renderNumber(value, column.decimalPlaces, column.precisionStyle,
+            null, '%');
     };
 
     var renderFilterURL = function(value)
@@ -662,6 +689,12 @@ blist.namespace.fetch('blist.data.types');
             }
         },
 
+        new_photo: {
+            renderGen: renderGenPhoto,
+            cls: 'photo',
+            deleteable: true
+        },
+
         photo: {
             renderGen: renderGenPhoto,
             cls: 'photo',
@@ -745,6 +778,12 @@ blist.namespace.fetch('blist.data.types');
             isObject: true
         },
 
+        new_document: {
+            renderGen: renderGenDocument,
+            deleteable: true,
+            isObject: true
+        },
+
         document: {
             renderGen: renderGenDocument,
             deleteable: true,
@@ -809,7 +848,9 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.stars.editor = $.blistEditor.stars;
         blist.data.types.richtext.editor = $.blistEditor.richtext;
         blist.data.types.document.editor = $.blistEditor.document;
+        blist.data.types.new_document.editor = $.blistEditor.new_document;
         blist.data.types.photo.editor = $.blistEditor.photo;
+        blist.data.types.new_photo.editor = $.blistEditor.new_photo;
         blist.data.types.tag.editor = $.blistEditor.tag;
     }
 

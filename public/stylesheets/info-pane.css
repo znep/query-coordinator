@@ -1020,6 +1020,15 @@ infoContentOuter table.gridList td.picture .cellInner
     display: none;
 }
 
+.singleInfoComments li.comment form.replyComment
+{
+    border-top: 1px solid #cccccc;
+    margin-top: 1em;
+    padding-top: 0.5em;
+}
+
+.singleInfoComments li.comment form.replyComment h4 { font-weight: bold; }
+
 .singleInfoComments li.comment form.replyComment .commentBody
 {
     border: none;

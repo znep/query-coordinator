@@ -131,7 +131,8 @@ blist.common.modalReady = function() {
   var updateColumn = function()
   {
       columnsNS.column.name = $("#columnCreateDialog #columnCreate_name").val();
-      columnsNS.column.description = $("#columnCreateDialog #description").val();
+      var $desc = $("#columnCreateDialog #description:not(.prompt)");
+      columnsNS.column.description = $desc.length > 0 ? $desc.val() : null;
       columnsNS.column.type = $("#columnCreateDialog #types").value();
 
       if (columnsNS.column.type == 'drop_down_list')

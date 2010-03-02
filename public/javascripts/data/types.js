@@ -162,7 +162,12 @@ blist.namespace.fetch('blist.data.types');
         }
 
         if (precisionStyle == 'scientific')
-        { value = value.toExponential(decimalPlaces); }
+        {
+            if (decimalPlaces !== undefined)
+            { value = value.toExponential(decimalPlaces); }
+            else
+            { value = value.toExponential(); }
+        }
         else if (decimalPlaces !== undefined)
         { value = value.toFixed(decimalPlaces); }
 

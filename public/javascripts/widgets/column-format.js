@@ -1,12 +1,28 @@
 var columnsNS = blist.namespace.fetch('blist.columns');
 var columnFormatNS = blist.namespace.fetch('blist.columns.properties.format');
 
-columnFormatNS.precision = function(value)
+columnFormatNS.renderPrecision = function(value)
 {
-    return '<tr><td class="labelColumn"><label for="precision">' +
+    return '<tr><td class="labelColumn">' +
+        '<label for="columnProperties_precisionEnabled">Fixed Precision:</label>' +
+        '</td><td><input type="checkbox" id="columnProperties_precisionEnabled" ' +
+        (value !== undefined ? 'checked="checked"' : '') + ' /></td></tr>' +
+        '<tr><td class="labelColumn"><label for="columnProperties_precision">' +
         'Number of Decimal Places:</label></td><td>' +
-        '<input class="incrementer" type="text" id="precision" value="' +
-        value + '" /></td></tr>';
+        '<input class="incrementer" type="text" id="columnProperties_precision" ' +
+        'value="' + value + '" /></td></tr>';
+};
+
+columnFormatNS.activatePrecision = function()
+{
+    $("#columnProperties_precision").spinner({min: 0});
+    $('#columnProperties_precisionEnabled').change(function()
+    {
+        if ($('#columnProperties_precisionEnabled:checked').length > 0)
+        { $('#columnProperties_precision').spinner('enable'); }
+        else
+        { $('#columnProperties_precision').spinner('disable'); }
+    }).change();
 };
 
 columnFormatNS.renderers = {};
@@ -16,7 +32,7 @@ function($container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="number displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.precision(columnsNS.column.decimalPlaces) +
+        columnFormatNS.renderPrecision(columnsNS.column.decimalPlaces) +
 
         '<tr><td class="labelColumn">' +
         '<label for="columnProperties_precisionStyle">Number Style:</label>' +
@@ -33,7 +49,7 @@ function($container)
 
 
     $container.append(render);
-    $("#precision").spinner({min: 0});
+    columnFormatNS.activatePrecision();
 };
 
 columnFormatNS.renderers['money'] =
@@ -41,7 +57,7 @@ function($container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="money displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.precision(columnsNS.column.decimalPlaces) +
+        columnFormatNS.renderPrecision(columnsNS.column.decimalPlaces) +
         '</tbody></table></div>';
 
     /* TODO: Add me back in when we get rid of flash (god let that be soon...)
@@ -90,7 +106,7 @@ function($container)
        render += '</div>';*/
 
     $container.append(render);
-    $("#precision").spinner({min: 0});
+    columnFormatNS.activatePrecision();
 };
 
 columnFormatNS.renderers['percent'] =
@@ -98,7 +114,7 @@ function($container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="percent displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.precision(columnsNS.column.decimalPlaces) +
+        columnFormatNS.renderPrecision(columnsNS.column.decimalPlaces) +
         '<tr><td class="labelColumn"><label for="columnProperties_displayView">' +
         'Percent View Style:</label></td><td>' +
         '<div class="blist-combo-wrapper lr_justified format_percent_view">' +
@@ -106,7 +122,7 @@ function($container)
         '</td></tr></tbody></table></div>';
 
     $container.append(render);
-    $("#precision").spinner({min: 0});
+    columnFormatNS.activatePrecision();
 
     var percentFormatValues = [
         { id: "percent_bar_and_text", label: "90%", info: "Bar &amp; Text" },
@@ -171,7 +187,9 @@ columnFormatNS.renderValueInfoFormatRow = function(value)
 
 columnFormatNS.updateColumn = function(column)
 {
-    column.decimalPlaces = $("#columnPropertiesDialog #precision").val();
+    column.decimalPlaces =
+        $("#columnProperties_precisionEnabled:checked").length > 0 ?
+        $("#columnProperties_precision").val() : null;
 
     var $view = $("#columnPropertiesDialog #columnProperties_displayView");
     column.format = $view.length > 0 ? $view.value() : null;

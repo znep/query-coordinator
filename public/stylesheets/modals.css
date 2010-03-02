@@ -646,6 +646,19 @@
 {
     width: 30em;
 }
+.columnPropertiesWrapper #columnProperties_precision
+{
+    float: left;
+    width: 4em;
+    margin-right: 1.5em;
+}
+
+.columnPropertiesWrapper .ui-state-disabled
+{
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+}
+
 #columnCreate input[type="text"],
 #columnCreate textarea
 {

@@ -220,8 +220,8 @@ $(function()
   var updateColumn = function()
   {
       columnsNS.column.name = $("#columnPropertiesDialog #name").val();
-      columnsNS.column.description =
-        $("#columnPropertiesDialog #description").val();
+      var $desc = $("#columnPropertiesDialog #description:not(.prompt)");
+      columnsNS.column.description = $desc.length > 0 ? $desc.val() : null;
 
       var $alignment = $('#columnPropertiesDialog .alignment :radio:checked');
       if ($alignment.length > 0)

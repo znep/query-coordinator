@@ -201,6 +201,12 @@ class Column < Model
       update_data[:format]["precisionStyle"] = js["precisionStyle"]
     end
 
+    if js.key?("currency") && js["currency"].blank?
+      update_data[:format].delete "currency"
+    elsif js.key?("currency")
+      update_data[:format]["currency"] = js["currency"]
+    end
+
     if js.key?("type") && js["type"] == "richtext" && client_type == "text"
       update_data[:format]["formatting_option"] = "Rich"
     elsif js.key?("type") && js["type"] == "text" && client_type == "richtext"
@@ -255,6 +261,10 @@ class Column < Model
 
       if !self.format.precisionStyle.nil?
         col[:precisionStyle] = self.format.precisionStyle
+      end
+
+      if !self.format.currency.nil?
+        col[:currency] = self.format.currency
       end
 
       col[:alignment] = alignment unless aligment.nil?

@@ -671,6 +671,7 @@
 }
 
 .columnPropertiesWrapper .blist-combo-wrapper.precisionStyle { width: 15em; }
+.columnPropertiesWrapper .blist-combo-wrapper.currency { width: 17em; }
 
 .columnPropertiesWrapper #picklistManager { margin: 0; }
 #columnProperties #picklistManager { margin-top: 1em; }

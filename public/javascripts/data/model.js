@@ -852,6 +852,8 @@ blist.namespace.fetch('blist.data');
                         // Standard or scientific notation
                         col.precisionStyle = format.precisionStyle;
                     }
+                    if (format.currency)
+                    { col.currency = format.currency; }
                     if (format.align)
                     {
                         col.alignment = format.align;

@@ -1238,7 +1238,7 @@
                         f.isMatching = cf !== undefined && cf.value == f.value;
                         var curType = blist.data.types[col.type] ||
                             blist.data.types['text'];
-                        f.escapedValue = $.htmlEscape(
+                        f.escapedValue = escape(
                             curType.filterValue !== undefined ?
                                 curType.filterValue(f.value, col) :
                                 $.htmlStrip(f.value + ''));
@@ -1342,7 +1342,7 @@
                 // the ending | in case there are spaces at the end of the value
                 var p = s.slice(2).join('_').split(':');
                 model.filterColumn(colIdIndex,
-                    p.slice(1).join(':').slice(0, -1), p[0]);
+                    unescape(p.slice(1).join(':').slice(0, -1)), p[0]);
                 break;
             case 'clear-filter-column':
                 model.clearColumnFilter(colIdIndex);

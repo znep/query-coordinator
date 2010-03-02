@@ -38,12 +38,13 @@
               <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
             </ul>
             <a name="dataGrid"></a>
+            <h1><%= @view.name %></h1>
             <div class="dataGridWrapper">
               <table id="dataGrid">
                 <thead>
                   <tr>
                     <th id="header_sid">Row number</th>
-					<% @view.viewable_columns.each do |column|%>
+                    <% @view.viewable_columns.each do |column|%>
                       <th id="header_<%= column.id %>" class="<%= column.data_type_name %>">
                         <%= column.name %>
                       </th>

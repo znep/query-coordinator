@@ -1,7 +1,7 @@
 class BlistsController < ApplicationController
   include BlistsHelper
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
+  skip_before_filter :require_user, :only => [:help_me, :login_to_alt, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
 
   def index
     @body_class = 'home'
@@ -99,10 +99,20 @@ class BlistsController < ApplicationController
     @view_activities = Activity.find({:viewId => @view.id})
   end
   
+  def login_to_alt
+
+    find_view
+    session[:return_to] = "#{alt_filter_blist_url(@view.id)}?query_json=#{CGI::escape(params[:query_json])}"
+    redirect_to login_url
+  end
+    
+  #can be accessed via POST when sending a new filter through a form OR
+  #from a GET when a non-logged in user elects to save a form and then is passed back
+  #to this filter after the login via BlistsController#login_to_alt
   def alt_filter
     find_view
     @data = @view.find_data(:all, :page => params[:page], :conditions => params)
-    @query_json = FilterQuery.new(@view.id, params).build.to_json 
+    @query_json = query_json
     @search_query = params['search']
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})
@@ -723,6 +733,10 @@ class BlistsController < ApplicationController
 
 
 private
+
+  def query_json
+    params[:query_json] || FilterQuery.new(@view.id, params).build.to_json 
+  end
 
   def get_views_with_ids(params = nil)
     cur_views = View.find_multiple(params)

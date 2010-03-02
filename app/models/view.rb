@@ -129,6 +129,7 @@ class View < Model
     query['name'] = params[:name]
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
     url = "/views.json?#{params.to_param}"
+ 
     JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
   end
   
@@ -143,7 +144,7 @@ class View < Model
   def get_rows_by_query(query, params = {})
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
     url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=index&#{params.to_param}"
-    JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))['data']
+    JSON.parse(CoreServer::Base.connection.create_request(url, query))['data']
   end
   
   def get_rows(params = {})
@@ -155,8 +156,15 @@ class View < Model
   end
 
   def find_row_data_with_conditions(params)
-    fq = FilterQuery.new(self.id, params)
-    query = fq.build
+    #build from posted form params
+    if params[:query_json].nil?
+      fq = FilterQuery.new(self.id, params)
+      query = fq.build
+      query = query.to_json
+    else
+      #build from passed in parameter
+      query = params[:query_json]
+    end
     self.get_rows_by_query(query)    
   end
   
@@ -166,11 +174,9 @@ class View < Model
   
   def find_row_data(page, conditions = nil)
     if conditions.nil?
-      all_row_ids = find_all_row_data_ids
-      row_ids_to_fetch = all_row_ids.paginate(:per_page => PER_PAGE, :page => page)
-      result = self.get_rows_by_ids(:ids => row_ids_to_fetch)
-      result = result.sort
-      total_entries = all_row_ids.size
+      result = self.get_rows
+      total_entries = result.size
+      result = result.paginate(:per_page => PER_PAGE, :page => page)
     else
       result = find_row_data_with_conditions(conditions)
       total_entries = result.size
@@ -181,7 +187,6 @@ class View < Model
   def paginate_rows(row_data, page, total_entries)
     paginated_data = WillPaginate::Collection.create(page, PER_PAGE, total_entries) do |pager|
       pager.replace(row_data)
-      pager.total_entries = total_entries
     end
     paginated_data
   end

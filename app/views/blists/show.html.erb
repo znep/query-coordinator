@@ -9,7 +9,7 @@
 <% end %>
 
 <% content_for :skip_links do %>
-  <%= link_to 'Go to an accessible version of this page', "#{@view.href}/alt" %>
+  <%= link_to 'Go to an accessible version of this page', @view.alt_href %>
 <% end %>
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>

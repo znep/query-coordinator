@@ -336,6 +336,10 @@ class View < Model
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
   end
 
+  def alt_href
+    "#{self.href}/alt"
+  end
+
   def short_href
     "/d/#{id}"
   end

@@ -150,17 +150,22 @@ blist.namespace.fetch('blist.data.types');
         "9": true
     };
 
-    var renderNumber = function(value, decimalPlaces, prefix, suffix) {
-        if (value == null) {
-            return '';
-        }
-        if (typeof value != "number") {
+    var renderNumber = function(value, decimalPlaces, precisionStyle,
+        prefix, suffix)
+    {
+        if (value == null) { return ''; }
+
+        if (typeof value != "number")
+        {
             // Skip this if we already have a number as it is slow
             value = parseFloat(value);
         }
-        if (decimalPlaces !== undefined) {
-            value = value.toFixed(decimalPlaces);
-        }
+
+        if (precisionStyle == 'scientific')
+        { value = value.toExponential(decimalPlaces); }
+        else if (decimalPlaces !== undefined)
+        { value = value.toFixed(decimalPlaces); }
+
         // HACK HACK HACK
         // Temporary HACK: Don't put commas if a number is less than 10,000.
         // This should help with the display of dates
@@ -178,17 +183,16 @@ blist.namespace.fetch('blist.data.types');
             }
         }
         // END HACK
-        if (prefix) {
-            value = prefix + value;
-        }
-        if (suffix) {
-            value += suffix;
-        }
+
+        if (prefix) { value = prefix + value; }
+        if (suffix) { value += suffix; }
+
         return value;
     };
 
     var renderGenNumber = function(value, plain, column) {
-        return "renderNumber(" + value + ", " + column.decimalPlaces + ")";
+        return "renderNumber(" + value + ", " + column.decimalPlaces + ", '" +
+            column.precisionStyle + "')";
     };
 
     var renderPercentBar = function(value) {
@@ -213,7 +217,8 @@ blist.namespace.fetch('blist.data.types');
     {
         if (plain)
         {
-            return "renderNumber(" + value + ", " + column.decimalPlaces + ", null, '%')";
+            return "renderNumber(" + value + ", " + column.decimalPlaces +
+                ", '" + column.precisionStyle + "', null, '%')";
         }
         var renderText;
         var renderBar;
@@ -237,14 +242,17 @@ blist.namespace.fetch('blist.data.types');
             rv += " + renderPercentBar(" + value + ")";
         }
         if (renderText) {
-            rv += " + '<div class=\"blist-cell blist-percent-num\">' + renderNumber(" + value + ", " + column.decimalPlaces + ", null, '%') + '</div>'";
+            rv += " + '<div class=\"blist-cell blist-percent-num\">' + " +
+                "renderNumber(" + value + ", " + column.decimalPlaces +
+                ", '" + column.precisionStyle + "', null, '%') + '</div>'";
         }
         rv += "+ '</div>'";
         return rv;
     };
 
     var renderGenMoney = function(value, plain, column) {
-        return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) + ", '$')";
+        return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) +
+            ", '" + column.precisionStyle + "', '$')";
     };
 
     var renderPhone = function(value, plain, skipURL, skipBlankType)
@@ -514,7 +522,7 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterNumber = function(value, column)
     {
-        return renderNumber(value, column.decimalPlaces);
+        return renderNumber(value, column.decimalPlaces, column.precisionStyle);
     };
 
     var renderFilterDate = function(value, column)
@@ -526,7 +534,8 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterMoney = function(value, column)
     {
-        return renderNumber(value, (column.decimalPlaces || 2), '$');
+        return renderNumber(value, (column.decimalPlaces || 2),
+            column.precisionStyle, '$');
     };
 
     var renderFilterCheckbox = function(value, column)
@@ -560,7 +569,8 @@ blist.namespace.fetch('blist.data.types');
 
     var renderFilterPercent = function(value, column)
     {
-        return renderNumber(value, column.decimalPlaces, null, '%');
+        return renderNumber(value, column.decimalPlaces, column.precisionStyle,
+            null, '%');
     };
 
     var renderFilterURL = function(value)

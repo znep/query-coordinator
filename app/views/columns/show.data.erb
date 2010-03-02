@@ -222,17 +222,12 @@ $(function()
       columnsNS.column.name = $("#columnPropertiesDialog #name").val();
       columnsNS.column.description =
         $("#columnPropertiesDialog #description").val();
-      columnsNS.column.decimalPlaces =
-        $("#columnPropertiesDialog #precision").val();
 
       var $alignment = $('#columnPropertiesDialog .alignment :radio:checked');
       if ($alignment.length > 0)
       { columnsNS.column.alignment = $alignment.val(); }
 
-      <%- if @column.has_display_options? -%>
-      columnsNS.column.format =
-          $("#columnPropertiesDialog #formattingTab").columnFormatValue();
-      <%- end -%>
+      blist.columns.properties.format.updateColumn(columnsNS.column);
 
       <%- if @column.has_totals? -%>
       columnsNS.column.aggregate =

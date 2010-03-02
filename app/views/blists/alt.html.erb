@@ -38,7 +38,12 @@
               <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
             </ul>
             <a name="dataGrid"></a>
+
             <h1><%= @view.name %></h1>
+            <% if @view.parent_dataset != @view %>
+              <p>This is a filtered view based on <%= link_to @view.parent_dataset.name, alt_blist_path(@view.parent_dataset.id) %>.</p>
+            <% end %>
+
             <div class="dataGridWrapper">
               <table id="dataGrid">
                 <thead>

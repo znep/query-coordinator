@@ -670,6 +670,8 @@
     vertical-align: middle;
 }
 
+.columnPropertiesWrapper .blist-combo-wrapper.precisionStyle { width: 15em; }
+
 .columnPropertiesWrapper #picklistManager { margin: 0; }
 #columnProperties #picklistManager { margin-top: 1em; }
 

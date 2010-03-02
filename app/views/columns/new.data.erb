@@ -1,8 +1,4 @@
 <% content_for :headline do %>
-<script>
-var columnsNS = blist.namespace.fetch('blist.columns.properties');
-blist.columns.properties.column = <%= @column.to_js %>;
-</script>
 
 <h1 id="title" class="columnPropertiesIcon">Create a New Column</h1>
 <% end %>
@@ -64,7 +60,9 @@ blist.columns.properties.column = <%= @column.to_js %>;
 </div>
 
 <script type="text/javascript" charset="utf-8">
-blist.common.modalReady = function() {
+blist.common.modalReady = function()
+{
+  var column = <%= @column.to_js %>;
   // Since these widgets are created live, we have to populate the default
   // text prompt values manually instead of relying on the plugin.
   $("#columnCreateDialog .textPrompt")
@@ -101,17 +99,17 @@ blist.common.modalReady = function() {
   typeValues.push({id: "nested_table", label: "Nested Table"});
   <%- end -%>
 
-  columnsNS.column.type = "<%= @type.nil? ? "text" : @type %>";
+  column.type = "<%= @type.nil? ? "text" : @type %>";
 
   $("#columnCreateDialog #types").combo({
     name: "types",
     values: typeValues,
-    value: columnsNS.column.type,
+    value: column.type,
     renderFn: renderValueInfoFormatRow
   });
 
   $('#columnCreateDialog #picklistManager').toggleClass('hidden',
-      columnsNS.column.type != 'drop_down_list');
+      column.type != 'drop_down_list');
   var picklistManagerCallback = picklistManagerSetup();
 
   var formEnabled = true;
@@ -130,13 +128,13 @@ blist.common.modalReady = function() {
 
   var updateColumn = function()
   {
-      columnsNS.column.name = $("#columnCreateDialog #columnCreate_name").val();
+      column.name = $("#columnCreateDialog #columnCreate_name").val();
       var $desc = $("#columnCreateDialog #description:not(.prompt)");
-      columnsNS.column.description = $desc.length > 0 ? $desc.val() : null;
-      columnsNS.column.type = $("#columnCreateDialog #types").value();
+      column.description = $desc.length > 0 ? $desc.val() : null;
+      column.type = $("#columnCreateDialog #types").value();
 
-      if (columnsNS.column.type == 'drop_down_list')
-      { columnsNS.column.dropDownList = {values: picklistManagerCallback()}; }
+      if (column.type == 'drop_down_list')
+      { column.dropDownList = {values: picklistManagerCallback()}; }
   };
 
   var saveForm = function()
@@ -153,7 +151,7 @@ blist.common.modalReady = function() {
         cache: false,
         dataType: 'json',
         data: {
-          json: $.json.serialize(columnsNS.column),
+          json: $.json.serialize(column),
           authenticity_token: "<%= form_authenticity_token %>"
         },
         error: function(request) {

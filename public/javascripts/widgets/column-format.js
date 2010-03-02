@@ -1,4 +1,3 @@
-var columnsNS = blist.namespace.fetch('blist.columns');
 var columnFormatNS = blist.namespace.fetch('blist.columns.properties.format');
 
 columnFormatNS.renderPrecision = function(value)
@@ -28,36 +27,45 @@ columnFormatNS.activatePrecision = function()
 columnFormatNS.renderers = {};
 
 columnFormatNS.renderers['number'] =
-function($container)
+function(column, $container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="number displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.renderPrecision(columnsNS.column.decimalPlaces) +
+        columnFormatNS.renderPrecision(column.decimalPlaces) +
 
         '<tr><td class="labelColumn">' +
         '<label for="columnProperties_precisionStyle">Number Style:</label>' +
-        '</td><td><select id="columnProperties_precisionStyle">' +
-        '<option value="standard" ' +
-            (columnsNS.column.precisionStyle == 'standard' ?
-                'selected="selected"' : '') + '>1,020.4 (Standard)</option>' +
-        '<option value="scientific" ' +
-            (columnsNS.column.precisionStyle == 'scientific' ?
-                'selected="selected"' : '') + '>1.0204E+03 (Scientific)</option>' +
-        '</select></td></tr>' +
+        '</td><td>' +
+        '<div class="blist-combo-wrapper precisionStyle lr_justified">' +
+        '<div id="columnProperties_precisionStyle"></div></div>' +
+        '</td></tr>' +
 
         '</tbody></table></div>';
 
 
     $container.append(render);
     columnFormatNS.activatePrecision();
+
+    var precisionStyleValues = [
+        { id: "standard", label: "1,020.4", info: "(Standard)" },
+        { id: "scientific", label: "1.0204e+3", info: "(Scientific)" }
+    ];
+
+    $("#columnProperties_precisionStyle").combo({
+        ddClass: 'lr_justified',
+        name: "precisionStyle",
+        values: precisionStyleValues,
+        value: column.precisionStyle || 'standard',
+        renderFn: columnFormatNS.renderValueInfoFormatRow
+    });
 };
 
 columnFormatNS.renderers['money'] =
-function($container)
+function(column, $container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="money displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.renderPrecision(columnsNS.column.decimalPlaces) +
+        columnFormatNS.renderPrecision(column.decimalPlaces) +
         '</tbody></table></div>';
 
     /* TODO: Add me back in when we get rid of flash (god let that be soon...)
@@ -110,11 +118,11 @@ function($container)
 };
 
 columnFormatNS.renderers['percent'] =
-function($container)
+function(column, $container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="percent displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.renderPrecision(columnsNS.column.decimalPlaces) +
+        columnFormatNS.renderPrecision(column.decimalPlaces) +
         '<tr><td class="labelColumn"><label for="columnProperties_displayView">' +
         'Percent View Style:</label></td><td>' +
         '<div class="blist-combo-wrapper lr_justified format_percent_view">' +
@@ -134,13 +142,13 @@ function($container)
         ddClass: 'lr_justified format_percent_view',
         name: "percent-view",
         values: percentFormatValues,
-        value: columnsNS.column.format || 'percent_bar',
+        value: column.format || 'percent_bar',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 };
 
 columnFormatNS.renderers['date'] =
-function($container)
+function(column, $container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="percent displayOptions"><table colspacing="0"><tbody>' +
@@ -172,7 +180,7 @@ function($container)
       ddClass: 'lr_justified format_date_view',
       name: "date-view",
       values: dateFormatValues,
-      value: columnsNS.column.format || 'date_time',
+      value: column.format || 'date_time',
       renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 };
@@ -195,11 +203,11 @@ columnFormatNS.updateColumn = function(column)
     column.format = $view.length > 0 ? $view.value() : null;
 
     column.precisionStyle =
-        $('#columnProperties #columnProperties_precisionStyle').val();
+        $('#columnProperties #columnProperties_precisionStyle').value();
 };
 
 $(function()
 {
     $.fn.columnFormatRender = function(column)
-    { columnFormatNS.renderers[column.type]($(this)); };
+    { columnFormatNS.renderers[column.type](column, $(this)); };
 });

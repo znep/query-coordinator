@@ -22,7 +22,8 @@
 {
     
 }
-.altShowContainer #dataGrid thead
+.altShowContainer #dataGrid thead,
+.altShowContainer #dataGrid tfoot
 {
     background-color: #ddd;
 }
@@ -40,4 +41,14 @@
 .altShowContainer #dataGrid th:first-child
 {
     border-left: none;
+}
+.altShowContainer #dataGrid tbody tr.odd
+{
+    background-color: #eee;
+}
+.altShowContainer #dataGrid td
+{
+    border-left: 1px solid #aaa;
+    font-size: 1.1em;
+    padding: 0.6em;
 }

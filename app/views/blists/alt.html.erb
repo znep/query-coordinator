@@ -49,7 +49,7 @@
                 <thead>
                   <tr>
                     <th id="header_sid">Row number</th>
-                    <% @view.viewable_columns.each do |column|%>
+					          <% @view.viewable_columns.each do |column|%>
                       <th id="header_<%= column.id %>" class="<%= column.data_type_name %>">
                         <%= column.name %>
                       </th>
@@ -59,28 +59,87 @@
                 <tbody>
                   <%# This is somewhat ugly but is inline for perf reasons %>
                   <%- @data.each do |row| -%>
-                    <tr>
+                    <tr class="<%= cycle('even', 'odd') %>">
                       <th header="header_sid"><%= row.last %></th>
-						<% @view.viewable_columns.each_with_index do |column, index|%>
-                        <td header="header_<%= column.id %>">
+						          <% @view.viewable_columns.each_with_index do |column, index|%>
+  						          <td header="header_<%= column.id %>">
+                          <%- unless row[index].nil? -%>
+                            <%- case column.render_type_name -%>
+                            <%- when 'text' -%>
+                              <%- if column.format['formatting_option'] == 'Plain' -%>
+                                <%= row[index].to_s %>
+                              <%- elsif column.format['formatting_option'] == 'Rich' -%>
+                                <%= raw(row[index].to_s) %>
+                              <%- end -%>
+
+                            <%- when 'url' -%>
+                              <a href="<%= row[index].first %>"><%= row[index].last %></a>
+
+                            <%- when 'phone' -%>
+                              <%= row[index].first %>
+                              <%- unless row[index].last == nil -%>
+                                (<%= row[index].last %>)
+                              <%- end -%>
+
+                            <%- when 'drop_down_list' -%>
+                              <%- column.drop_down['values'].each do |option| -%>
+                                <%- if option['id'] == row[index] -%>
+                                  <%= option['description'] %>
+                                <%- end -%>
+                              <%- end -%>
+
+                            <%- when 'number' -%>
+                              <%- precision = nil -%>
+                              <%- precision_style = 'd' -%>
+                              <%- unless column.format.nil? -%>
+                                <%- unless column.format['precision'].nil? -%>
+                                  <%- precision = '.' + column.format['precision'] -%>
+                                  <%- precision_style = 'f' -%>
+                                <%- end -%>
+                                <%- precision_style = 'E' if column.format['precisionStyle'] == 'scientific' -%>
+                              <%- end -%>
+                              <%= "%#{precision}#{precision_style}" % row[index] %>
+
+                            <%- when 'percent' -%>
+                              <%- precision = column.format['precision'] unless column.format.nil? -%>
+                              <%= "%.#{precision || 0}f" % row[index] %>%
+
+                            <%- when 'date' -%>
+                              <%- value = Time.at(row[index].to_i) -%>
+                              <%- output_value = case column.format['view'] -%>
+                                <%- when 'date'          then value.strftime('%m/%d/%Y') %>
+                                <%- when 'date_time'     then value.strftime('%m/%d/%Y %I:%M:%S %Z') %>
+                                <%- when 'date_dmy'      then value.strftime('%d/%m/%Y') %>
+                                <%- when 'date_dmy_time' then value.strftime('%d/%m/%Y %I:%M:%S %Z') %>
+                                <%- when 'date_ymd'      then value.strftime('%Y/%m/%d') %>
+                                <%- when 'date_ymd_time' then value.strftime('%Y/%m/%d %I:%M:%S %Z') %>
+                                <%- when 'date_monthdy'  then value.strftime('%B %d, %Y') %>
+                                <%- when 'date_dmonthy'  then value.strftime('%d %B %Y') %>
+                                <%- when 'date_ymonthd'  then value.strftime('%Y %B %d') %>
+                              <%- end -%>
+                              <%= output_value || value.strftime('%c') %>
+
+                            <%- else -%>
                               <%= row[index].to_s %>
+                            <%- end -%>
+                          <%- end -%>
                         </td>
                       <%- end -%>
                     </tr>
                   <%- end -%>
                 </tbody>
-					<% unless @aggregates.nil? or @aggregates.none? %>
-				<tfoot>
-					<tr>
-					<th>Totals</th>
-					<% @view.viewable_columns.each_with_index do |column, index|%>
-					<th> <%= @aggregates.find{|aggregate| aggregate['columnId']==column.id}['value'] if @aggregates.find{|aggregate| aggregate['columnId']== @view.viewable_columns[index].id} %></th>
+					      <% unless @aggregates.nil? or @aggregates.none? %>
+          				<tfoot>
+          					<tr>
+          					<th>Totals</th>
+          					<% @view.viewable_columns.each_with_index do |column, index|%>
+          					<th> <%= @aggregates.find{|aggregate| aggregate['columnId']==column.id}['value'] if @aggregates.find{|aggregate| aggregate['columnId']== @view.viewable_columns[index].id} %></th>
 
-					<% end %>
+          					<% end %>
 					
-					</tr>
-				</tfoot>
-					<% end %>
+          					</tr>
+          				</tfoot>
+					      <% end %>
               </table>
             </div>
 				<div id="pagination links" style="margin: 20px;">

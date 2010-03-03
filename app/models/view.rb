@@ -10,11 +10,11 @@ class View < Model
   end
   
   def viewable_columns
-    result = self.meta_data_columns.find_all do  |column| 
+    result = self.meta_data_columns.find_all do |column|
       if column.respond_to?(:flags)
         column.data_type_name != 'meta_data' and not column.flags{|flag| flag == "hidden"}
-      else 
-         column.data_type_name != 'meta_data' 
+      else
+        column.data_type_name != 'meta_data'
       end
     end
     result = result.sort_by{|column| column.id.to_i}

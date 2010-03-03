@@ -75,9 +75,11 @@ ActionController::Routing::Routes.draw do |map|
       :delete_favorite => :get,
       :notify_all_of_changes => :post,
       :alt => :get,
-      :alt_filter => :post, 
+      :alt_filter => [:post, :get], 
       :save_filter => :post,
-      :alt_post_comment => :post
+      :alt_post_comment => :post,
+      :help_me => :get,
+      :login_to_alt => :get
     } do |blist|
       blist.connect 'stats', :controller => 'stats', :action => 'index'
       blist.resources :columns

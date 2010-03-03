@@ -10,11 +10,11 @@ class View < Model
   end
   
   def viewable_columns
-    result = self.meta_data_columns.find_all do  |column| 
+    result = self.meta_data_columns.find_all do |column|
       if column.respond_to?(:flags)
         column.data_type_name != 'meta_data' and not column.flags{|flag| flag == "hidden"}
-      else 
-         column.data_type_name != 'meta_data' 
+      else
+        column.data_type_name != 'meta_data'
       end
     end
     result = result.sort_by{|column| column.id.to_i}
@@ -74,20 +74,7 @@ class View < Model
   def meta_data_columns
     @meta_data_columns ||= get_meta_data_columns
   end
-  
-  def aggregates
-    @aggregates ||= get_aggregates
-  end
-
-  def get_aggregates(params = {})
-    # default params
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
-  
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
-    parsed_data['meta']['aggregates']
-  end
-  
+    
   def get_meta_data_columns(params = {})
     # default params
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
@@ -97,15 +84,6 @@ class View < Model
     parsed_data['meta']['view']['columns'].inject([]){|array, column_hash| array << MetaDataColumn.new(column_hash)}
   end
   
-  def get_rows(params = {})
-    # default params
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
-
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    response = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
-    
-  end
-    
   def get_rows_by_ids(params={})
     ids = params[:ids]
     ids = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
@@ -117,33 +95,63 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
   end
   
-  def find_data(*arguments)
-    scope = arguments.slice!(0)
-    options = arguments.slice!(0) || {}
-    result = find_all_data(options)
-    result
-  end
   
   def save_query(params = {})
     query = JSON.parse(params[:query_json])
     query['name'] = params[:name]
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
     url = "/views.json?#{params.to_param}"
+ 
     JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
+  end
+
+  def find_data(*arguments)
+    scope = arguments.slice!(0)
+    options = arguments.slice!(0) || {}
+    data, aggregates = find_all_data(options);
+    return data, aggregates
   end
   
   def find_all_data(options)
     page = options[:page] || 1
-    result, total_entries = find_row_data(page, options[:conditions])
-    result = search_and_sort_viewable_columns(result)
-    result = paginate_rows(result, page, total_entries)
-    result
+    data, aggregates, total_entries = find_row_data(page, options[:conditions])
+    data = search_and_sort_viewable_columns(data)
+    data = paginate_rows(data, page, total_entries)
+    return data, aggregates
   end
   
+    def find_row_data_with_conditions(params)
+    #build from posted form params
+    if params[:query_json].nil?
+      fq = FilterQuery.new(self.id, params)
+      query = fq.build
+      query = query.to_json
+    else
+      #build from passed in parameter
+      query = params[:query_json]
+    end
+    result = self.get_rows_by_query(query)    
+    return result['data'], result['meta']['aggregates']
+  end
+
+  def find_row_data(page, conditions = nil)
+    if conditions.nil?
+      result = self.get_rows
+      data = result['data']
+      aggregates = result['meta']['aggregates']
+      total_entries = data.size
+      data = data.paginate(:per_page => PER_PAGE, :page => page)
+    else
+      data, aggregates = find_row_data_with_conditions(conditions)
+      total_entries = data.size
+    end
+    return data, aggregates, total_entries
+  end
+
   def get_rows_by_query(query, params = {})
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
     url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=index&#{params.to_param}"
-    JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))['data']
+    JSON.parse(CoreServer::Base.connection.create_request(url, query))
   end
   
   def get_rows(params = {})
@@ -151,37 +159,16 @@ class View < Model
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
 
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
-  end
-
-  def find_row_data_with_conditions(params)
-    fq = FilterQuery.new(self.id, params)
-    query = fq.build
-    self.get_rows_by_query(query)    
+    JSON.parse(CoreServer::Base.connection.get_request(url, {}))
   end
   
   def find_all_row_data_ids
     self.get_rows(:row_ids_only => true)
   end
-  
-  def find_row_data(page, conditions = nil)
-    if conditions.nil?
-      all_row_ids = find_all_row_data_ids
-      row_ids_to_fetch = all_row_ids.paginate(:per_page => PER_PAGE, :page => page)
-      result = self.get_rows_by_ids(:ids => row_ids_to_fetch)
-      result = result.sort
-      total_entries = all_row_ids.size
-    else
-      result = find_row_data_with_conditions(conditions)
-      total_entries = result.size
-    end
-    return result, total_entries
-  end
-  
+    
   def paginate_rows(row_data, page, total_entries)
     paginated_data = WillPaginate::Collection.create(page, PER_PAGE, total_entries) do |pager|
       pager.replace(row_data)
-      pager.total_entries = total_entries
     end
     paginated_data
   end
@@ -329,6 +316,10 @@ class View < Model
   def href
     prefix = self.category || 'dataset'
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
+  end
+
+  def alt_href
+    "#{self.href}/alt"
   end
 
   def short_href

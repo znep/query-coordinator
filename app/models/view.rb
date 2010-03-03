@@ -74,20 +74,7 @@ class View < Model
   def meta_data_columns
     @meta_data_columns ||= get_meta_data_columns
   end
-  
-  def aggregates
-    @aggregates ||= get_aggregates
-  end
-
-  def get_aggregates(params = {})
-    # default params
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
-  
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
-    parsed_data['meta']['aggregates']
-  end
-  
+    
   def get_meta_data_columns(params = {})
     # default params
     params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
@@ -97,15 +84,6 @@ class View < Model
     parsed_data['meta']['view']['columns'].inject([]){|array, column_hash| array << MetaDataColumn.new(column_hash)}
   end
   
-  def get_rows(params = {})
-    # default params
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
-
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    response = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
-    
-  end
-    
   def get_rows_by_ids(params={})
     ids = params[:ids]
     ids = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
@@ -117,12 +95,6 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
   end
   
-  def find_data(*arguments)
-    scope = arguments.slice!(0)
-    options = arguments.slice!(0) || {}
-    result = find_all_data(options)
-    result
-  end
   
   def save_query(params = {})
     query = JSON.parse(params[:query_json])
@@ -132,30 +104,23 @@ class View < Model
  
     JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
   end
+
+  def find_data(*arguments)
+    scope = arguments.slice!(0)
+    options = arguments.slice!(0) || {}
+    data, aggregates = find_all_data(options);
+    return data, aggregates
+  end
   
   def find_all_data(options)
     page = options[:page] || 1
-    result, total_entries = find_row_data(page, options[:conditions])
-    result = search_and_sort_viewable_columns(result)
-    result = paginate_rows(result, page, total_entries)
-    result
+    data, aggregates, total_entries = find_row_data(page, options[:conditions])
+    data = search_and_sort_viewable_columns(data)
+    data = paginate_rows(data, page, total_entries)
+    return data, aggregates
   end
   
-  def get_rows_by_query(query, params = {})
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
-    url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=index&#{params.to_param}"
-    JSON.parse(CoreServer::Base.connection.create_request(url, query))['data']
-  end
-  
-  def get_rows(params = {})
-    # default params
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
-
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
-  end
-
-  def find_row_data_with_conditions(params)
+    def find_row_data_with_conditions(params)
     #build from posted form params
     if params[:query_json].nil?
       fq = FilterQuery.new(self.id, params)
@@ -165,25 +130,42 @@ class View < Model
       #build from passed in parameter
       query = params[:query_json]
     end
-    self.get_rows_by_query(query)    
+    result = self.get_rows_by_query(query)    
+    return result['data'], result['meta']['aggregates']
+  end
+
+  def find_row_data(page, conditions = nil)
+    if conditions.nil?
+      result = self.get_rows
+      data = result['data']
+      aggregates = result['meta']['aggregates']
+      total_entries = data.size
+      data = data.paginate(:per_page => PER_PAGE, :page => page)
+    else
+      data, aggregates = find_row_data_with_conditions(conditions)
+      total_entries = data.size
+    end
+    return data, aggregates, total_entries
+  end
+
+  def get_rows_by_query(query, params = {})
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=index&#{params.to_param}"
+    JSON.parse(CoreServer::Base.connection.create_request(url, query))
+  end
+  
+  def get_rows(params = {})
+    # default params
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+    JSON.parse(CoreServer::Base.connection.get_request(url, {}))
   end
   
   def find_all_row_data_ids
     self.get_rows(:row_ids_only => true)
   end
-  
-  def find_row_data(page, conditions = nil)
-    if conditions.nil?
-      result = self.get_rows
-      total_entries = result.size
-      result = result.paginate(:per_page => PER_PAGE, :page => page)
-    else
-      result = find_row_data_with_conditions(conditions)
-      total_entries = result.size
-    end
-    return result, total_entries
-  end
-  
+    
   def paginate_rows(row_data, page, total_entries)
     paginated_data = WillPaginate::Collection.create(page, PER_PAGE, total_entries) do |pager|
       pager.replace(row_data)

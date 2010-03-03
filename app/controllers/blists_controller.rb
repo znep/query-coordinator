@@ -94,13 +94,12 @@ class BlistsController < ApplicationController
    def alt
     @body_id = 'lensBody'
     find_view
-    @data = @view.find_data(:all, :page => params[:page])
+    @data, @aggregates = @view.find_data(:all, :page => params[:page])
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})
   end
   
   def login_to_alt
-
     find_view
     session[:return_to] = "#{alt_filter_blist_url(@view.id)}?query_json=#{CGI::escape(params[:query_json])}"
     redirect_to login_url
@@ -111,7 +110,7 @@ class BlistsController < ApplicationController
   #to this filter after the login via BlistsController#login_to_alt
   def alt_filter
     find_view
-    @data = @view.find_data(:all, :page => params[:page], :conditions => params)
+    @data, @aggregates = @view.find_data(:all, :page => params[:page], :conditions => params)
     @query_json = query_json
     @search_query = params['search']
     @view.register_opening
@@ -122,7 +121,7 @@ class BlistsController < ApplicationController
   def save_filter
     find_view
     @result = @view.save_query(params)
-    @data = @view.find_data(:all, :page => params[:page], :conditions => params)
+    @data, @aggregates = @view.find_data(:all, :page => params[:page], :conditions => params)
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})
     render :template => 'blists/alt'  
@@ -131,7 +130,7 @@ class BlistsController < ApplicationController
   def find_view
     begin
       @parent_view = @view = View.find(params[:id])
-      @aggregates = @view.aggregates
+      # @aggregates = @view.aggregates
     rescue CoreServer::ResourceNotFound
       flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
             ' or view cannot be found, or has been deleted.'

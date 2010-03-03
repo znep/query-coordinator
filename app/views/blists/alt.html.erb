@@ -38,12 +38,18 @@
               <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
             </ul>
             <a name="dataGrid"></a>
+
+            <h1><%= @view.name %></h1>
+            <% if @view.parent_dataset != @view %>
+              <p>This is a filtered view based on <%= link_to @view.parent_dataset.name, @view.parent_dataset.alt_href %>.</p>
+            <% end %>
+
             <div class="dataGridWrapper">
               <table id="dataGrid">
                 <thead>
                   <tr>
                     <th id="header_sid">Row number</th>
-					<% @view.viewable_columns.each do |column|%>
+                    <% @view.viewable_columns.each do |column|%>
                       <th id="header_<%= column.id %>" class="<%= column.data_type_name %>">
                         <%= column.name %>
                       </th>
@@ -108,7 +114,7 @@
 			<% form_tag alt_filter_blist_path(@view.id) do -%>
 				<%= label_tag "Search" %>
 				<%= text_field_tag "search", @search_query %>
-				<%= link_to "clear search", alt_blist_path(@view.id) %>
+				<%= link_to "clear search", @view.alt_href %>
 			<%= submit_tag "submit" %>		
 			<% end %>
         </div>
@@ -127,7 +133,7 @@
 <% @view.filters.each do |filter| %>
 
 <ul>
-	<li><%= link_to filter.name, alt_blist_path(filter.id) %></li>
+	<li><%= link_to filter.name, filter.alt_href %></li>
 </ul>
 <% end %>
 <h2>Comments</h2>

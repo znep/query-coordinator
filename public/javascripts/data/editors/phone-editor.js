@@ -110,8 +110,17 @@
 
             setSize: function(width, height)
             {
-                $(this.getSizeElement())
-                    .css({ width: width + 'px', height: height + 'px' });
+                var $outer = this.$dom();
+                var $sz = $(this.getSizeElement());
+                var outerWidth = width + ($outer.width() - $sz.width());
+                var outerHeight = height + ($outer.height() - $sz.height());
+
+                $sz.css({ width: width + 'px', height: height + 'px' });
+                $outer.width(outerWidth).height(outerHeight);
+
+                var $input = this.$dom().find(':text.number');
+                var padding = $input.innerHeight() - $input.height();
+                $input.height(height - padding);
             },
 
             querySize: function() {

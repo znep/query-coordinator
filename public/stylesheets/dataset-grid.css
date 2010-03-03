@@ -623,7 +623,7 @@ div.blist-table-edit-container .blist-table-editor.type-url .description
 
 .blist-table-editor.type-phone
 {
-    overflow: visible;
+    overflow: hidden;
     padding-right: 0;
 }
 .blist-table .blist-table-edit-container input[type="text"].number

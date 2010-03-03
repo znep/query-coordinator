@@ -307,6 +307,20 @@ class Column < Model
     return nil
   end
 
+  def format_view
+    return (self.format.nil? || self.format.view.nil?) ? nil : self.format.view
+  end
+
+  def precision
+    return (self.format.nil? || self.format.precision.nil?) ?
+      nil : self.format.precision
+  end
+
+  def precision_style
+    return (self.format.nil? || self.format.precisionStyle.nil?) ?
+      'standard' : self.format.precisionStyle
+  end
+
   def is_nested_table
     dataTypeName.downcase == 'nested_table'
   end

@@ -250,7 +250,14 @@ class Model
       return nil
     end
 
-    json_data = JSON.parse(data)
+    return self.set_up_model(JSON.parse(data))
+  end
+
+  def parse(*args)
+    raise "You probably wanted the class method instead."
+  end
+
+  def self.set_up_model(json_data)
     if json_data.is_a?(Array)
       model = json_data.collect do | item |
         m = self.new
@@ -265,10 +272,6 @@ class Model
     end
 
     return model
-  end
-
-  def parse(*args)
-    raise "You probably wanted the class method instead."
   end
 
   def self.batch(reqs)

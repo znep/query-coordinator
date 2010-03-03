@@ -162,7 +162,12 @@ blist.namespace.fetch('blist.data.types');
         }
 
         if (precisionStyle == 'scientific')
-        { value = value.toExponential(decimalPlaces); }
+        {
+            if (decimalPlaces !== undefined)
+            { value = value.toExponential(decimalPlaces); }
+            else
+            { value = value.toExponential(); }
+        }
         else if (decimalPlaces !== undefined)
         { value = value.toFixed(decimalPlaces); }
 
@@ -252,7 +257,8 @@ blist.namespace.fetch('blist.data.types');
 
     var renderGenMoney = function(value, plain, column) {
         return "renderNumber(" + value + ", " + (column.decimalPlaces || 2) +
-            ", '" + column.precisionStyle + "', '$')";
+            ", '" + column.precisionStyle + "', '" +
+            blist.data.types.money.currencies[column.currency || 'dollar'] + "')";
     };
 
     var renderPhone = function(value, plain, skipURL, skipBlankType)
@@ -535,7 +541,8 @@ blist.namespace.fetch('blist.data.types');
     var renderFilterMoney = function(value, column)
     {
         return renderNumber(value, (column.decimalPlaces || 2),
-            column.precisionStyle, '$');
+            column.precisionStyle,
+            blist.data.types.money.currencies[column.currency || 'dollar']);
     };
 
     var renderFilterCheckbox = function(value, column)
@@ -704,7 +711,37 @@ blist.namespace.fetch('blist.data.types');
             filterText: true,
             sortable: true,
             filterable: true,
-            deleteable: true
+            deleteable: true,
+            currencies: {
+                'dollar': "$",
+                'pound': "£",
+                'euro': "€",
+                'yen': "¥",
+                'forint': "Ft",
+                'hk_dollar': "HK$",
+                'kuna': "Kn",
+                'koruna': "Kč",
+                'lats': "Ls",
+                'litas': "Lt",
+                'nt_dollar': "NT$",
+                'peso': "PhP",
+                'real': "R$",
+                'rupiah': "Rp",
+                'rupee': "Rs.",
+                'koruna': "Sk",
+                'lira': "TL",
+                'new_lira': "YTL",
+                'krone': "kr",
+                'lei_noi': "lei",
+                'zloty': "zł",
+                'baht': "฿",
+                'dong': "₫",
+                'won': "₩",
+                'ruble': "р.",
+                'lev': "лв.",
+                'dinar': "Дин.",
+                'hryvnia': "грн."
+            }
         },
 
         phone: {

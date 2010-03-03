@@ -1,4 +1,3 @@
-var columnsNS = blist.namespace.fetch('blist.columns');
 var columnTotalsNS = blist.namespace.fetch('blist.columns.properties.totals');
 
 columnTotalsNS.totals = {
@@ -21,11 +20,11 @@ columnTotalsNS.totals = {
         '<label for="none">None</label></div>'
 };
 
-columnTotalsNS.populate = function($container)
+columnTotalsNS.populate = function(column, $container)
 {
-    if (columnsNS.column.aggregate)
+    if (column.aggregate)
     {
-        $container.find("#" + columnsNS.column.aggregate.type).each(function()
+        $container.find("#" + column.aggregate.type).each(function()
                 { this.checked = true; });
     }
     else
@@ -43,7 +42,7 @@ columnTotalsNS.fetchValue = function($parent)
 columnTotalsNS.renderers = {};
 
 columnTotalsNS.renderers['stars'] =
-function($container)
+function(column, $container)
 {
     var render = '<div id="columnTotals" class="displayOptions">';
     render += '<p>Display the following:</p>';
@@ -60,13 +59,13 @@ function($container)
                 });
             this.checked = true;
             });
-    columnTotalsNS.populate($container);
+    columnTotalsNS.populate(column, $container);
 };
 
 columnTotalsNS.renderers['number'] =
 columnTotalsNS.renderers['money'] =
 columnTotalsNS.renderers['percent'] =
-function($container)
+function(column, $container)
 {
     var render = '<div id="columnTotals" class="displayOptions">';
     render += '<p>Display the following:</p>';
@@ -78,7 +77,7 @@ function($container)
     render += columnTotalsNS.totals.none;
     render += '</div>';
     $container.append(render);
-    columnTotalsNS.populate($container);
+    columnTotalsNS.populate(column, $container);
 };
 
 
@@ -97,7 +96,7 @@ columnTotalsNS.renderers['date'] =
 columnTotalsNS.renderers['tag'] =
 columnTotalsNS.renderers['picklist'] =
 columnTotalsNS.renderers['drop_down_list'] =
-function($container)
+function(column, $container)
 {
     var render = '<div id="columnTotals" class="displayOptions">';
     render += '<p>Display the following:</p>';
@@ -105,13 +104,13 @@ function($container)
     render += columnTotalsNS.totals.none;
     render += '</div>';
     $container.append(render);
-    columnTotalsNS.populate($container);
+    columnTotalsNS.populate(column, $container);
 };
 
 $(function()
 {
     $.fn.columnTotalsRender = function(column)
-    { return columnTotalsNS.renderers[column.type]($(this)); };
+    { return columnTotalsNS.renderers[column.type](column, $(this)); };
 
     $.fn.columnTotalsValue = function()
     { return columnTotalsNS.fetchValue($(this)); }

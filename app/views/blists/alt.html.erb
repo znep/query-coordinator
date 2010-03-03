@@ -48,8 +48,8 @@
               <table id="dataGrid">
                 <thead>
                   <tr>
-                    <th id="header_sid">Row number</th>
-					          <% @view.viewable_columns.each do |column|%>
+                    <th id="header_row_number">Row number</th>
+                    <% @view.viewable_columns.each do |column|%>
                       <th id="header_<%= column.id %>" class="<%= column.data_type_name %>">
                         <%= column.name %>
                       </th>
@@ -58,11 +58,13 @@
                 </thead>
                 <tbody>
                   <%# This is somewhat ugly but is inline for perf reasons %>
+                  <% row_number = ((@page - 1) * @view.per_page)  %>
                   <%- @data.each do |row| -%>
+                    <% row_number += 1 %>
                     <tr class="<%= cycle('even', 'odd') %>">
-                      <th header="header_sid"><%= row.last %></th>
-						          <% @view.viewable_columns.each_with_index do |column, index|%>
-  						          <td header="header_<%= column.id %>">
+                      <th header="header_row_number"><%= row_number %></th>
+                      <% @view.viewable_columns.each_with_index do |column, index|%>
+                        <td header="header_<%= column.id %>">
                           <%- unless row[index].nil? -%>
                             <%- case column.render_type_name -%>
                             <%- when 'text' -%>
@@ -128,24 +130,21 @@
                     </tr>
                   <%- end -%>
                 </tbody>
-					      <% unless @aggregates.nil? or @aggregates.none? %>
-          				<tfoot>
-          					<tr>
-          					<th>Totals</th>
-          					<% @view.viewable_columns.each_with_index do |column, index|%>
-          					<th> <%= @aggregates.find{|aggregate| aggregate['columnId']==column.id}['value'] if @aggregates.find{|aggregate| aggregate['columnId']== @view.viewable_columns[index].id} %></th>
-
-          					<% end %>
-					
-          					</tr>
-          				</tfoot>
-					      <% end %>
+                <% unless @aggregates.nil? or @aggregates.none? %>
+                  <tfoot>
+                    <tr>
+                      <th>Totals</th>
+                      <% @view.viewable_columns.each_with_index do |column, index|%>
+                        <th> <%= @aggregates.find{|aggregate| aggregate['columnId']==column.id}['value'] if @aggregates.find{|aggregate| aggregate['columnId']== @view.viewable_columns[index].id} %></th>
+                      <% end %>
+                    </tr>
+                  </tfoot>
+                <% end %>
               </table>
             </div>
-				<div id="pagination links" style="margin: 20px;">
-					<%= will_paginate @data %>
-			
-				</div>
+            <div id="pagination links" style="margin: 20px;">
+              <%= will_paginate @data %>
+            </div>
           </div>
   		<%# This is somewhat ugly but is inline for perf reasons %>
 		<% form_tag alt_filter_blist_path(@view.id) do -%>

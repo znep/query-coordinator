@@ -91,10 +91,11 @@ class BlistsController < ApplicationController
     @display = @view.display
   end
 
-   def alt
+  def alt
     @body_id = 'lensBody'
     find_view
     @data, @aggregates = @view.find_data(:all, :page => params[:page])
+    @page = params[:page].to_i
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})
   end

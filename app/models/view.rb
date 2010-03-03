@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses
+  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses, :per_page
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -140,7 +140,7 @@ class View < Model
       data = result['data']
       aggregates = result['meta']['aggregates']
       total_entries = data.size
-      data = data.paginate(:per_page => PER_PAGE, :page => page)
+      data = data.paginate(:per_page => @@per_page, :page => page)
     else
       data, aggregates = find_row_data_with_conditions(conditions)
       total_entries = data.size
@@ -167,7 +167,7 @@ class View < Model
   end
     
   def paginate_rows(row_data, page, total_entries)
-    paginated_data = WillPaginate::Collection.create(page, PER_PAGE, total_entries) do |pager|
+    paginated_data = WillPaginate::Collection.create(page, @@per_page, total_entries) do |pager|
       pager.replace(row_data)
     end
     paginated_data
@@ -595,8 +595,8 @@ class View < Model
                    { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" },
                    { :operator => "BETWEEN", :label => "between"} ]
   }
-  PER_PAGE = 50
 
+  @@per_page = 50
 
   # Sorts are enabled and disabled by feature modules
   @@sorts = [

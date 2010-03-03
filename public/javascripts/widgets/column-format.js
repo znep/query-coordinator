@@ -1,198 +1,168 @@
-var columnsNS = blist.namespace.fetch('blist.columns');
 var columnFormatNS = blist.namespace.fetch('blist.columns.properties.format');
 
-columnFormatNS.precision = function(value)
+columnFormatNS.renderPrecision = function(value)
 {
-  return '<tr><td class="labelColumn"><label for="precision">Number of Decimal Places:</label></td><td><input class="incrementer" type="text" id="precision" value="' + value + '" /></td></tr>';
+    return '<tr><td class="labelColumn">' +
+        '<label for="columnProperties_precisionEnabled">Fixed Precision:</label>' +
+        '</td><td><input type="checkbox" id="columnProperties_precisionEnabled" ' +
+        (value !== undefined ? 'checked="checked"' : '') + ' /></td></tr>' +
+        '<tr><td class="labelColumn"><label for="columnProperties_precision">' +
+        'Number of Decimal Places:</label></td><td>' +
+        '<input class="incrementer" type="text" id="columnProperties_precision" ' +
+        'value="' + value + '" /></td></tr>';
 };
 
-columnFormatNS.currencies = [
-    ["$", "dollar"],
-    ["£", "pound"],
-    ["€", "euro"],
-    ["¥", "yen, yuan"],
-    ["Ft", "forint"],
-    ["HK$", "Hong Kong dollar"],
-    ["Kn", "kuna"],
-    ["Kč", "koruna"],
-    ["Ls", "lats"],
-    ["Lt", "litas"],
-    ["NT$", "new Taiwan dollar"],
-    ["PhP", "peso"],
-    ["R$", "real"],
-    ["Rp", "rupiah"],
-    ["Rs.", "rupee"],
-    ["Sk", "koruna"],
-    ["TL", "lira"],
-    ["YTL", "new lira"],
-    ["kr", "krone"],
-    ["lei", "lei noi"],
-    ["zł", "zloty"],
-    ["฿", "baht"],
-    ["₫", "dong"],
-    ["₩", "won"],
-    ["р.", "ruble"],
-    ["лв.", "lev"],
-    ["Дин.", "dinar"],
-    ["грн.", "hryvnia"]
-];
-
-columnFormatNS.currencySelect = '<select id="currency">';
-$.each(columnFormatNS.currencies, function() { columnFormatNS.currencySelect += '<option value="' + this[0] + '">' + this[0] + ", " + this[1] + '</option>'; });
-columnFormatNS.currencySelect += '</select>';
-
-columnFormatNS.percentFormatValues = [
-    { id: "percent_bar_and_text", label: "90%", info: "Bar &amp; Text" },
-    { id: "percent_bar", label: "&nbsp;", info: "Bar Only" },
-    { id: "percent_text", label: "90%", info: "Text Only" }
-];
-
-columnFormatNS.checkFormats = [
-    ["boolean_checkbox", "Checkbox"],
-    ["boolean_icon_text", "Icon &amp; Text"],
-    ["boolean_icon", "Icon only"],
-    ["boolean_text", "Text only"]
-];
-
-columnFormatNS.checkView = '<select id="check-view">';
-$.each(columnFormatNS.checkFormats, function() { columnFormatNS.checkView += '<option value="' + this[0] + '">' + this[1] + '</option>'; });
-columnFormatNS.checkView += '</select>';
-
-columnFormatNS.picklistFormats = [
-    ["icon_text", "Icon &amp; Text"],
-    ["icon", "Icon only"],
-    ["text", "Text only"]
-];
-
-columnFormatNS.picklistView = '<select id="picklist-view">';
-$.each(columnFormatNS.picklistFormats, function() { columnFormatNS.picklistView += '<option value="' + this[0] + '">' + this[1] + '</option>'; });
-columnFormatNS.picklistView += '</select>';
-
-columnFormatNS.render_number = function($container)
+columnFormatNS.activatePrecision = function()
 {
-  var render = '<h3 class="separator">Display Options</h3>';
-  render += '<div class="number displayOptions"><table colspacing="0"><tbody>';
-  render += columnFormatNS.precision(columnsNS.column.decimalPlaces);
-  render += '</tbody></table></div>';
-  $container.append(render);
-  $("#precision").spinner({min: 0});
+    $("#columnProperties_precision").spinner({min: 0});
+    $('#columnProperties_precisionEnabled').change(function()
+    {
+        if ($('#columnProperties_precisionEnabled:checked').length > 0)
+        { $('#columnProperties_precision').spinner('enable'); }
+        else
+        { $('#columnProperties_precision').spinner('disable'); }
+    }).change();
 };
 
-columnFormatNS.render_money = function($container)
-{
-  var render = '<h3 class="separator">Display Options</h3>';
-  render += '<div class="money displayOptions"><table colspacing="0"><tbody>';
-  render += columnFormatNS.precision(columnsNS.column.decimalPlaces);
-  //render += '<tr><td class="labelColumn"><label for="precision">Number Style:</label></td><td><select id="number-style"><option value="standard">1,000.12 (Standard)</option><option value="scientific">1.01E+03 (Scientific)</option></select></td></tr>';
-  render += '</tbody></table></div>';
-  /* TODO: Add me back in when we get rid of flash (god let that be soon...)
-  render += '<h3 class="separator">Currencies</h3>';
-  render += '<div class="currencies">';
-  render += '<label for="currency">Currency:</label>';
-  render += columnFormatNS.currencySelect; 
-  render += '</div>';*/
-  $container.append(render);
-  $("#precision").spinner({min: 0});
-};
+columnFormatNS.renderers = {};
 
-columnFormatNS.render_percent = function($container)
+columnFormatNS.renderers['number'] =
+function(column, $container)
 {
-    var render = '<h3 class="separator">Display Options</h3>';
-    render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
-    render += columnFormatNS.precision(columnsNS.column.decimalPlaces);
-    render += '<tr><td class="labelColumn"><label for="view">Percent View Style:</label></td><td>';
-    render += '<div class="blist-combo-wrapper lr_justified format_percent_view">';
-    render += '<div id="percent-view"></div></div>';
-    render += '</td></tr></tbody></table></div>';
+    var render = '<h3 class="separator">Display Options</h3>' +
+        '<div class="number displayOptions"><table colspacing="0"><tbody>' +
+        columnFormatNS.renderPrecision(column.decimalPlaces) +
+
+        '<tr><td class="labelColumn">' +
+        '<label for="columnProperties_precisionStyle">Number Style:</label>' +
+        '</td><td>' +
+        '<div class="blist-combo-wrapper precisionStyle lr_justified">' +
+        '<div id="columnProperties_precisionStyle"></div></div>' +
+        '</td></tr>' +
+
+        '</tbody></table></div>';
+
 
     $container.append(render);
-    $("#precision").spinner({min: 0});
+    columnFormatNS.activatePrecision();
 
-    $("#percent-view").combo({
-        ddClass: 'lr_justified format_percent_view',
-        name: "percent-view",
-        values: columnFormatNS.percentFormatValues,
-        value: columnsNS.column.format || 'percent_bar',
+    var precisionStyleValues = [
+        { id: "standard", label: "1,020.4", info: "(Standard)" },
+        { id: "scientific", label: "1.0204e+3", info: "(Scientific)" }
+    ];
+
+    $("#columnProperties_precisionStyle").combo({
+        ddClass: 'lr_justified',
+        name: "precisionStyle",
+        values: precisionStyleValues,
+        value: column.precisionStyle || 'standard',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
-
-    $("#percent-view").change(function() { columnsNS.column.format = $("#percent-view").value(); });
 };
 
-columnFormatNS.render_date = function($container)
+columnFormatNS.renderers['money'] =
+function(column, $container)
 {
-    var render = '<h3 class="separator">Display Options</h3>';
-    render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
-    render += '<tr><td class="labelColumn"><label for="view">Date View Style:</label></td><td>';
-    render += '<div class="blist-combo-wrapper lr_justified format_date_view">';
-    render += '<div id="date-view"></div></div>';
-    render += '</td></tr>';
-    render += '</tbody></table></div>';
-    $container.append(render);
+    var render = '<h3 class="separator">Display Options</h3>' +
+        '<div class="money displayOptions"><table colspacing="0"><tbody>' +
+        columnFormatNS.renderPrecision(column.decimalPlaces) +
 
-    $("#date-view").combo({
-      ddClass: 'lr_justified format_date_view',
-      name: "date-view",
-      values: columnFormatNS.dateFormatValues,
-      value: columnsNS.column.format || 'date_time',
-      renderFn: columnFormatNS.renderValueInfoFormatRow
+        '<tr><td class="labelColumn">' +
+        '<label for="columnProperties_currency">Currency:</label>' +
+        '</td><td>' +
+        '<div class="blist-combo-wrapper currency lr_justified">' +
+        '<div id="columnProperties_currency"></div></div>' +
+        '</td></tr>' +
+
+        '</tbody></table></div>';
+
+    var curSymbols = blist.data.types.money.currencies;
+    var currencyValues = [
+        {id: 'dollar', label: curSymbols['dollar'], info: "US Dollar"},
+        {id: 'pound', label: curSymbols['pound'], info: "Pound"},
+        {id: 'euro', label: curSymbols['euro'], info: "Euro"},
+        {id: 'yen', label: curSymbols['yen'], info: "Yen/Yuan"},
+        {id: 'forint', label: curSymbols['forint'], info: "Forint"},
+        {id: 'hk_dollar', label: curSymbols['hk_dollar'], info: "Hong Kong Dollar"},
+        {id: 'kuna', label: curSymbols['kuna'], info: "Kuna"},
+        {id: 'koruna', label: curSymbols['koruna'], info: "Koruna"},
+        {id: 'lats', label: curSymbols['lats'], info: "Lats"},
+        {id: 'litas', label: curSymbols['litas'], info: "Litas"},
+        {id: 'nt_dollar', label: curSymbols['nt_dollar'],
+            info: "New Taiwan Dollar"},
+        {id: 'peso', label: curSymbols['peso'], info: "Peso"},
+        {id: 'real', label: curSymbols['real'], info: "Real"},
+        {id: 'rupiah', label: curSymbols['rupiah'], info: "Rupiah"},
+        {id: 'rupee', label: curSymbols['rupee'], info: "Rupee"},
+        {id: 'koruna', label: curSymbols['koruna'], info: "Koruna"},
+        {id: 'lira', label: curSymbols['lira'], info: "Lira"},
+        {id: 'new_lira', label: curSymbols['new_lira'], info: "New Lira"},
+        {id: 'krone', label: curSymbols['krone'], info: "Krone"},
+        {id: 'lei_noi', label: curSymbols['lei_noi'], info: "Lei Noi"},
+        {id: 'zloty', label: curSymbols['zloty'], info: "Zloty"},
+        {id: 'baht', label: curSymbols['baht'], info: "Baht"},
+        {id: 'dong', label: curSymbols['dong'], info: "Dong"},
+        {id: 'won', label: curSymbols['won'], info: "Won"},
+        {id: 'ruble', label: curSymbols['ruble'], info: "Ruble"},
+        {id: 'lev', label: curSymbols['lev'], info: "Lev"},
+        {id: 'dinar', label: curSymbols['dinar'], info: "Dinar"},
+        {id: 'hryvnia', label: curSymbols['hryvnia'], info: "Hryvnia"}
+    ];
+
+    $container.append(render);
+    columnFormatNS.activatePrecision();
+
+    $("#columnProperties_currency").combo({
+        ddClass: 'lr_justified',
+        name: "currency",
+        values: currencyValues,
+        value: column.currency || 'dollar',
+        renderFn: columnFormatNS.renderValueInfoFormatRow
     });
-
-    $("#date-view").change(function() { columnsNS.column.format = $("#date-view").value(); });
 };
 
-columnFormatNS.renderValueInfoFormatRow = function(value)
+columnFormatNS.renderers['percent'] =
+function(column, $container)
 {
-    var $row = $(this);
-    var $span_value = $('<span class="value"></span>').html(value.label);
-    var $span_info = $('<span class="value_info"></span>').html(value.info);
-    $row.addClass(value.id).empty().append($span_value).append($span_info);
-};
+    var render = '<h3 class="separator">Display Options</h3>' +
+        '<div class="percent displayOptions"><table colspacing="0"><tbody>' +
+        columnFormatNS.renderPrecision(column.decimalPlaces) +
+        '<tr><td class="labelColumn"><label for="columnProperties_displayView">' +
+        'Percent View Style:</label></td><td>' +
+        '<div class="blist-combo-wrapper lr_justified format_percent_view">' +
+        '<div id="columnProperties_displayView"></div></div>' +
+        '</td></tr></tbody></table></div>';
 
-columnFormatNS.render_checkbox = function($container)
-{
-    var render = '<h3 class="separator">Display Options</h3>';
-    render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
-    render += '<tr><td class="labelColumn"><label for="view">Check Style:</label></td><td>' + columnFormatNS.checkView + '</td></tr>';
-    render += '</tbody></table></div>';
     $container.append(render);
-    columnFormatNS.updateView($container, "#check-view");
-};
+    columnFormatNS.activatePrecision();
 
-columnFormatNS.render_picklist = function($container)
-{
-    var render = '<h3 class="separator">Display Options</h3>';
-    render += '<div class="percent displayOptions"><table colspacing="0"><tbody>';
-    render += '<tr><td class="labelColumn"><label for="view">Menu Style:</label></td><td>' + columnFormatNS.picklistView + '</td></tr>';
-    render += '</tbody></table></div>';
-    $container.append(render);
-    columnFormatNS.updateView($container, "#picklist-view");
-};
+    var percentFormatValues = [
+        { id: "percent_bar_and_text", label: "90%", info: "Bar &amp; Text" },
+        { id: "percent_bar", label: "&nbsp;", info: "Bar Only" },
+        { id: "percent_text", label: "90%", info: "Text Only" }
+    ];
 
-columnFormatNS.updateView = function(container, id)
-{
-    container.find(id).val(columnsNS.column.format);
-    container.find(id).change(function (event) {
-        columnsNS.column.format = $(this).val();
+    $("#columnProperties_displayView").combo({
+        ddClass: 'lr_justified format_percent_view',
+        name: "percent-view",
+        values: percentFormatValues,
+        value: column.format || 'percent_bar',
+        renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 };
 
-columnFormatNS.render_phone =
-columnFormatNS.render_email =
-columnFormatNS.render_url =
-columnFormatNS.render_document =
-columnFormatNS.render_photo =
-columnFormatNS.render_stars =
-columnFormatNS.render_flag =
-columnFormatNS.render_text =
-columnFormatNS.render_richtext =
-columnFormatNS.render_bnb = function($container) {};
-
-$(function() {
-    $.fn.columnFormat = function(column)
-    {
-        eval("columnFormatNS.render_" + column.type + "($(this));");
-    };
+columnFormatNS.renderers['date'] =
+function(column, $container)
+{
+    var render = '<h3 class="separator">Display Options</h3>' +
+        '<div class="percent displayOptions"><table colspacing="0"><tbody>' +
+        '<tr><td class="labelColumn"><label for="columnProperties_displayView">' +
+        'Date View Style:</label></td><td>' +
+        '<div class="blist-combo-wrapper lr_justified format_date_view">' +
+        '<div id="columnProperties_displayView"></div></div>' +
+        '</td></tr>' +
+        '</tbody></table></div>';
+    $container.append(render);
 
     var today = new Date();
     var dateViews = [
@@ -206,8 +176,46 @@ $(function() {
         {id: 'date_dmonthy', info: '(Date [day month year])'},
         {id: 'date_ymonthd', info: '(Date [year month day])'}
     ];
-    columnFormatNS.dateFormatValues = $.map(dateViews, function(v)
+    var dateFormatValues = $.map(dateViews, function(v)
         { return $.extend(v,
             {label: today.format(blist.data.types.date.formats[v.id])}); });
 
+    $("#columnProperties_displayView").combo({
+      ddClass: 'lr_justified format_date_view',
+      name: "date-view",
+      values: dateFormatValues,
+      value: column.format || 'date_time',
+      renderFn: columnFormatNS.renderValueInfoFormatRow
+    });
+};
+
+columnFormatNS.renderValueInfoFormatRow = function(value)
+{
+    var $row = $(this);
+    var $span_value = $('<span class="value"></span>').html(value.label);
+    var $span_info = $('<span class="value_info"></span>').html(value.info);
+    $row.addClass(value.id).empty().append($span_value).append($span_info);
+};
+
+columnFormatNS.updateColumn = function(column)
+{
+    column.decimalPlaces =
+        $("#columnProperties_precisionEnabled:checked").length > 0 ?
+        $("#columnProperties_precision").val() : null;
+
+    var $view = $("#columnProperties_displayView");
+    column.format = $view.length > 0 ? $view.value() : null;
+
+    var $precisionStyle = $("#columnProperties_precisionStyle");
+    column.precisionStyle = $precisionStyle.length > 0 ?
+        $precisionStyle.value() : null;
+
+    var $currency = $("#columnProperties_currency");
+    column.currency = $currency.length > 0 ? $currency.value() : null;
+};
+
+$(function()
+{
+    $.fn.columnFormatRender = function(column)
+    { columnFormatNS.renderers[column.type](column, $(this)); };
 });

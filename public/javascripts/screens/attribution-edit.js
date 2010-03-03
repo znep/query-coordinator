@@ -46,6 +46,7 @@
                 event.preventDefault();
                 $this.slideDown("normal");
                 $container.slideUp("normal");
+                opts.openCallback(event);
             });
 
             // Close edit form on pressing cancel
@@ -123,6 +124,7 @@
         licensingInfoSelector: '.attributionSummary .infoLicensing',
         attributionInfoSelector: '.attributionSummary .infoAttribution',
         closeButtonSelector: '.closeAttributionLink',
+        openCallback: function() {},
         successCallback: function(responseData, opts)
         {
             if (responseData['error'] == 'Validation failed')

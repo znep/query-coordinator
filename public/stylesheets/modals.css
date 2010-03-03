@@ -646,6 +646,19 @@
 {
     width: 30em;
 }
+.columnPropertiesWrapper #columnProperties_precision
+{
+    float: left;
+    width: 4em;
+    margin-right: 1.5em;
+}
+
+.columnPropertiesWrapper .ui-state-disabled
+{
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+}
+
 #columnCreate input[type="text"],
 #columnCreate textarea
 {
@@ -656,6 +669,9 @@
     margin: 0 0.5em 0 0;
     vertical-align: middle;
 }
+
+.columnPropertiesWrapper .blist-combo-wrapper.precisionStyle { width: 15em; }
+.columnPropertiesWrapper .blist-combo-wrapper.currency { width: 17em; }
 
 .columnPropertiesWrapper #picklistManager { margin: 0; }
 #columnProperties #picklistManager { margin-top: 1em; }
@@ -819,7 +835,9 @@ ul.convertables li a:hover
 .datatype-stars { background-position: 0 -140px; }
 .datatype-flag { background-position: 0 -380px; }
 .datatype-photo { background-position: 0 -100px; }
+.datatype-new_photo { background-position: 0 -100px; }
 .datatype-document { background-position: 0 -280px; }
+.datatype-new_document { background-position: 0 -280px; }
 .datatype-nested_table { background-position: 0 -440px; }
 .datatype-tag { background-position: 0 -180px; }
 .datatype-picklist, .datatype-drop_down_list { background-position: 0 -400px; }
@@ -1418,6 +1436,7 @@ dl.versionInfo dd
 .columnPickerModal .reorderList li .itemWrapper
 {
     height: 20px;
+    overflow: hidden;
     padding-top: 0;
     white-space: nowrap;
 }

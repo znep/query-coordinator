@@ -6,15 +6,10 @@ class HomesController < ApplicationController
   def show
     @body_class = 'home'
 
-    blists = View.find()
+    @recently_opened_blists = View.find_recent(5)
 
-    @recently_opened_blists = blists.sort { |a,b|
-      b.last_viewed <=> a.last_viewed
-    }.slice(0..4)
-
-    @favorite_blists = blists.find_all { |b|
-      b.flag?("favorite")
-    }.sort { |a,b|
+    @favorite_blists = View.find_favorites().
+    sort { |a,b|
       b.last_viewed <=> a.last_viewed
     }.slice(0..4)
 

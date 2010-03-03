@@ -1,0 +1,231 @@
+<% content_for :head do %>
+  <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%= stylesheet_link_merged 'blist-show-alt' %>
+  <title><%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <link rel="canonical" href="<%= @view.href %>" />
+<% end %>
+
+<% content_for :skip_links do %>
+  <a href="#dataGrid" accesskey="d">Skip to data</a>
+  <a href="#metaTabs" accesskey="m">Skip to metadata information</a>
+<% end %>
+
+<%- is_owner = current_user && @view.owner.id == current_user.id -%>
+<%- is_blist = @view.is_blist? %>
+<%- can_edit = current_user && @view.can_edit() -%>
+
+<div class="altShowContainer oneColumnContainer <%= @view.is_invalid? ? 'invalidView' : '' %>">
+  <div class="fullPageContentContainer">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class="outerContent">
+          <div class="contentTR"><div class="contentTL"></div></div>
+          <div class="content">
+            <ul id="datasetMenu">
+              <li><a href="<%= @view.href %>/about">About this Dataset...</a></li>
+              <li><a href="<%= @view.href %>/print">Print...</a></li>
+              <li><a href="<%= @view.href %>/email">Email...</a></li>
+              <li><a href="<%= @view.href %>/append">Append Rows via Upload...</a></li>
+              <li><a href="<%= @view.href %>/replace">Replace Rows via Upload...</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
+            <%- socialize_menu_options(@view).each do |item| -%>
+              <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
+            <%- end -%>
+              <li><a href=""></a></li>
+              <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.xls?accessType=DOWNLOAD">Export To XLS</a></li>
+              <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
+            </ul>
+            <a name="dataGrid"></a>
+
+            <h1><%= @view.name %></h1>
+            <% if @view.parent_dataset != @view %>
+              <p>This is a filtered view based on <%= link_to @view.parent_dataset.name, @view.parent_dataset.alt_href %>.</p>
+            <% end %>
+
+            <div class="dataGridWrapper">
+              <table id="dataGrid">
+                <thead>
+                  <tr>
+                    <th id="header_sid">Row number</th>
+					          <% @view.viewable_columns.each do |column|%>
+                      <th id="header_<%= column.id %>" class="<%= column.data_type_name %>">
+                        <%= column.name %>
+                      </th>
+                    <%- end -%>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%# This is somewhat ugly but is inline for perf reasons %>
+                  <%- @data.each do |row| -%>
+                    <tr class="<%= cycle('even', 'odd') %>">
+                      <th header="header_sid"><%= row.last %></th>
+						          <% @view.viewable_columns.each_with_index do |column, index|%>
+  						          <td header="header_<%= column.id %>">
+                          <%- unless row[index].nil? -%>
+                            <%- case column.render_type_name -%>
+                            <%- when 'text' -%>
+                              <%- if column.format['formatting_option'] == 'Plain' -%>
+                                <%= row[index].to_s %>
+                              <%- elsif column.format['formatting_option'] == 'Rich' -%>
+                                <%= raw(row[index].to_s) %>
+                              <%- end -%>
+
+                            <%- when 'url' -%>
+                              <a href="<%= row[index].first %>"><%= row[index].last %></a>
+
+                            <%- when 'phone' -%>
+                              <%= row[index].first %>
+                              <%- unless row[index].last == nil -%>
+                                (<%= row[index].last %>)
+                              <%- end -%>
+
+                            <%- when 'drop_down_list' -%>
+                              <%- column.drop_down['values'].each do |option| -%>
+                                <%- if option['id'] == row[index] -%>
+                                  <%= option['description'] %>
+                                <%- end -%>
+                              <%- end -%>
+
+                            <%- when 'number' -%>
+                              <%- precision = nil -%>
+                              <%- precision_style = 'd' -%>
+                              <%- unless column.format.nil? -%>
+                                <%- unless column.format['precision'].nil? -%>
+                                  <%- precision = '.' + column.format['precision'] -%>
+                                  <%- precision_style = 'f' -%>
+                                <%- end -%>
+                                <%- precision_style = 'E' if column.format['precisionStyle'] == 'scientific' -%>
+                              <%- end -%>
+                              <%= "%#{precision}#{precision_style}" % row[index] %>
+
+                            <%- when 'percent' -%>
+                              <%- precision = column.format['precision'] unless column.format.nil? -%>
+                              <%= "%.#{precision || 0}f" % row[index] %>%
+
+                            <%- when 'date' -%>
+                              <%- value = Time.at(row[index].to_i) -%>
+                              <%- output_value = case column.format['view'] -%>
+                                <%- when 'date'          then value.strftime('%m/%d/%Y') %>
+                                <%- when 'date_time'     then value.strftime('%m/%d/%Y %I:%M:%S %Z') %>
+                                <%- when 'date_dmy'      then value.strftime('%d/%m/%Y') %>
+                                <%- when 'date_dmy_time' then value.strftime('%d/%m/%Y %I:%M:%S %Z') %>
+                                <%- when 'date_ymd'      then value.strftime('%Y/%m/%d') %>
+                                <%- when 'date_ymd_time' then value.strftime('%Y/%m/%d %I:%M:%S %Z') %>
+                                <%- when 'date_monthdy'  then value.strftime('%B %d, %Y') %>
+                                <%- when 'date_dmonthy'  then value.strftime('%d %B %Y') %>
+                                <%- when 'date_ymonthd'  then value.strftime('%Y %B %d') %>
+                              <%- end -%>
+                              <%= output_value || value.strftime('%c') %>
+
+                            <%- else -%>
+                              <%= row[index].to_s %>
+                            <%- end -%>
+                          <%- end -%>
+                        </td>
+                      <%- end -%>
+                    </tr>
+                  <%- end -%>
+                </tbody>
+					      <% unless @aggregates.nil? or @aggregates.none? %>
+          				<tfoot>
+          					<tr>
+          					<th>Totals</th>
+          					<% @view.viewable_columns.each_with_index do |column, index|%>
+          					<th> <%= @aggregates.find{|aggregate| aggregate['columnId']==column.id}['value'] if @aggregates.find{|aggregate| aggregate['columnId']== @view.viewable_columns[index].id} %></th>
+
+          					<% end %>
+					
+          					</tr>
+          				</tfoot>
+					      <% end %>
+              </table>
+            </div>
+				<div id="pagination links" style="margin: 20px;">
+					<%= will_paginate @data %>
+			
+				</div>
+          </div>
+  		<%# This is somewhat ugly but is inline for perf reasons %>
+		<% form_tag alt_filter_blist_path(@view.id) do -%>
+		<h2>Filter</h2>
+			<% @view.viewable_columns.each do |filter_field| %>
+				<% unless View::FILTER_CONDITIONS[filter_field.render_type_name.to_sym].nil? %>
+				<p>
+				 <%= label_tag "Filter on #{filter_field.name}" %>
+				 <%= select_tag "limit_#{filter_field.id}", options_for_limit_to(filter_field.render_type_name)%>
+				 <%= text_field_tag "cell_content_#{filter_field.id}" %>
+				</p>
+				<% end %>
+			<% end %>
+		
+		<h2>Sort</h2>
+		<% 1.upto(5) do |n|%>
+				<%= label_tag "Sort field #{n.to_s}" %>
+				<%= select_tag "sort_field_#{n}", options_for_sort_by(@view.viewable_columns)%>
+				<%= select_tag "sort_direction_#{n}", options_for_select(["Ascending", "Descending"]), :value =>"Ascending" %>
+
+		<% end %>
+				<%= submit_tag "submit" %>		
+		<% end -%>
+		<h2>Search</h2>
+			<% form_tag alt_filter_blist_path(@view.id) do -%>
+				<%= label_tag "Search" %>
+				<%= text_field_tag "search", @search_query %>
+				<%= link_to "clear search", @view.alt_href %>
+			<%= submit_tag "submit" %>		
+			<% end %>
+        </div>
+<% if @query_json and current_user %>
+	<h2>Save this view</h2>
+	<% form_tag save_filter_blist_path(@view.id) do -%>
+					<%= hidden_field_tag 'query_json', @query_json %>
+					<%= label_tag "Name" %>
+					<%= text_field_tag "name" %>
+					<%= submit_tag "submit" %>		
+	<% end %>
+<% elsif @query_json and not current_user %>
+ 	<div><%= link_to "Sign in to save this view.", :controller => :blists, :action => :login_to_alt, :id => @view.id, :query_json => @query_json %></div>
+<% end %>
+<h2>Saved Views</h2>
+<% @view.filters.each do |filter| %>
+
+<ul>
+	<li><%= link_to filter.name, filter.alt_href %></li>
+</ul>
+<% end %>
+<h2>Comments</h2>
+<h2>
+  <%= pluralize(@view.numberOfComments, 'Comment') %>
+</h2>
+<h2><%= @view.averageRating %> Average Rating</h2>
+<h2><%= pluralize(@view.totalTimesRated, 'Rating') %></h2>
+
+            <%- form_tag(alt_post_comment_blist_path(@view.id)) do -%>
+
+				<%= label_tag "My Rating" %>
+              <%= select_tag("comment[viewRating]", options_for_select([1, 2, 3, 4, 5].reverse)) %>
+				<%= label_tag "Title" %>
+              <%= text_field_tag("comment[title]") %>
+				<%= label_tag "Body" %>
+              <%= text_area_tag("comment[body]") %>
+				<%= submit_tag "submit" %>		
+          <%- end -%>
+
+<% @view.comments.each do |comment| %>
+<div class="comment">
+<p>Rating:           <%= get_comment_rating_html(comment) %></p>
+<p><%= comment.title %></p>	
+<p><%= comment.user.displayName %></p>
+
+<p><%= humane_date(comment.createdAt) %></p>
+
+<p><%= comment.body %></p>
+
+</div>
+<% end %>
+      </div>
+    </div>
+  </div>
+</div>

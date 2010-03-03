@@ -1,0 +1,54 @@
+.altShowContainer #datasetMenu li
+{
+    display: inline-block;
+    padding: 0.3em 1em;
+    text-transform: uppercase;
+}
+
+.altShowContainer #datasetMenu li a
+{
+    color: #666;
+    font-size: 1.2em;
+}
+
+.altShowContainer .dataGridWrapper
+{
+    overflow-x: scroll;
+    margin-top: 1em;
+    padding: 1em;
+}
+
+.altShowContainer #dataGrid
+{
+    
+}
+.altShowContainer #dataGrid thead,
+.altShowContainer #dataGrid tfoot
+{
+    background-color: #ddd;
+}
+.altShowContainer #dataGrid th
+{
+    border-left: 1px solid #aaa;
+    font-size: 1.2em;
+    font-weight: normal;
+    max-width: 15em;
+    overflow: hidden;
+    padding: 1em 2em;
+    white-space: nowrap;
+    width: auto;
+}
+.altShowContainer #dataGrid th:first-child
+{
+    border-left: none;
+}
+.altShowContainer #dataGrid tbody tr.odd
+{
+    background-color: #eee;
+}
+.altShowContainer #dataGrid td
+{
+    border-left: 1px solid #aaa;
+    font-size: 1.1em;
+    padding: 0.6em;
+}

@@ -3,6 +3,12 @@
   <title><%= CurrentDomain.strings.site_title %></title>
 <% end %>
 
+<% content_for :skip_links do %>
+  <%- unless params[:no_js] -%>
+    <a href="?no_js=true">Reload this page without JavaScript</a>
+  <%- end -%>
+<% end %>
+
 <div id="discover" class="oneColumnContainer">
   <%= render_domain_template('data_splash') %>
 
@@ -10,17 +16,19 @@
     <div class="simpleTabNav">
       <ul class="simpleTabs tabList clearfix">
         <%- if (@search_views && @search_views.length > 0) -%>
-          <li id="tabSearch" class="active">
-            <div class="wrapper"><a href="#SEARCH">Search Results</a></div>
+          <li id="tabSearch" class="<%='active' if @active_tab == :search %>">
+            <div class="wrapper"><a href="<%= generate_filter_url(@current_state, 'search') %>">Search Results</a></div>
           </li>
         <%- end -%>
-        <li id="tabPopular" class="<%= @search_views.nil? ? 'even active' : 'even' %>">
-          <div class="wrapper"><a href="#POPULAR">Top 100</a></div>
+        <li id="tabPopular" class="even<%= ' active' if @active_tab == :popular %>">
+          <div class="wrapper"><a href="<%= generate_filter_url(@current_state, 'popular') %>">Top 100</a></div>
         </li>
-        <li id="tabAll"><div class="wrapper"><a href="#ALL">All <%= t(:blists_name) %></a></div></li>
+        <li id="tabAll" class="<%= 'active' if @active_tab == :all %>">
+          <div class="wrapper"><a href="<%= generate_filter_url(@current_state, 'all') %>">All <%= t(:blists_name) %></a></div>
+        </li>
         <% if module_enabled? :dataset_nomination %>
-          <li id="tabNominations" class="even">
-            <div class="wrapper"><a href="#NOMINATIONS">Suggested <%= t(:blists_name) %></a></div>
+          <li id="tabNominations" class="even<%= ' active' if @active_tab == :nominations %>">
+            <div class="wrapper"><a href="<%= generate_filter_url(@current_state, 'nominations') %>">Suggested <%= t(:blists_name) %></a></div>
           </li>
         <% elsif upsell? %>
           <li id="tabNominations" class="even disabled">
@@ -29,55 +37,63 @@
         <% end %>
       </ul>
     </div>
-    <div id="discoverTabSearchResults" class="tabContentContainer clearfix<%= @search_views.nil? ? '' : ' active' %>">
-      <%- if (@search_views && @search_views.length > 0) -%>
-        <%= render(:partial => "view_list_tab", :locals => {
-          :tab_title => "Search Results for \"#{@search_term}\"",
-          :views => @search_views, :views_total => @search_views_total,
-          :current_page => 1, :type => "SEARCH", :current_filter => nil,
-          :sort_by => nil, :tag_list => nil, :current_tag => nil,
-          :search_term => @search_term, :search_debug => @search_debug, 
-          :page_size => @page_size } ) %>
-      <%- else -%>
-        <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>
-      <%- end -%>
-    </div>
-    <div id="discoverTabPopular" class="tabContentContainer clearfix<%= @search_views.nil? ? ' active' : '' %>">
-      <% prerendered_cache "discover-tab-popular_#{CurrentDomain.cname}", @popular_views_rendered, :expires_in => 15.minutes do %>
-        <%= render(:partial => "view_list_tab", :locals => {
-          :tab_title => t(:discover_popular_content_header),
-          :views => @popular_views, :views_total => @popular_views_total,
-          :current_page => 1, :type => "POPULAR", :current_filter => nil,
-          :sort_by => "POPULAR", :tag_list => @popular_views_tags, :current_tag => nil,
-          :search_term => nil, :search_debug => nil, :page_size => @page_size }) %>
-      <% end %>
-    </div>
-    <div id="discoverTabAll" class="tabContentContainer clearfix">
-      <% prerendered_cache "discover-tab-all_#{CurrentDomain.cname}", @all_views_rendered, :expires_in => 15.minutes do %>
-        <%= render(:partial => "view_list_tab", :locals => {
-          :tab_title => "All #{t(:blists_name)}",
-          :views => @all_views, :views_total => @all_views_total,
-          :current_page => 1, :type => "ALL", :current_filter => nil,
-          :sort_by => "LAST_CHANGED", :tag_list => @all_views_tags, :current_tag => nil,
-          :search_term => nil, :search_debug => nil, :page_size => @page_size }) %>
-      <% end %>
-    </div>
-
-    <% module_enabled :dataset_nomination do %> 
-      <div id="discoverNominations" class="tabContentContainer clearfix">
-        <%= render(:partial => "nominations_tab", :locals => {:nominations => @all_nominations, :total => @nominations_count, :page_size => @page_size}) %>
+    <%- if @need_to_render.include? :search -%>
+      <div id="discoverTabSearchResults" class="tabContentContainer clearfix<%= ' active' if @active_tab == :search %>">
+        <%- if (@search_views && @search_views.length > 0) -%>
+          <%= render(:partial => "view_list_tab", :locals => {
+            :tab_title => "Search Results for \"#{@search_term}\"",
+            :views => @search_views, :views_total => @search_views_total,
+            :current_page => @current_state[:page], :type => "search", :current_filter => params[:filter],
+            :sort_by => nil, :tag_list => nil, :current_tag => nil,
+            :search_term => @search_term, :page_size => @page_size } ) %>
+        <%- else -%>
+          <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>
+        <%- end -%>
       </div>
-    <% end %>
+    <%- end -%>
+    <%- if @need_to_render.include? :popular -%>
+      <div id="discoverTabPopular" class="tabContentContainer clearfix<%= ' active' if @active_tab == :popular %>">
+        <% prerendered_cache "discover-tab-popular_#{CurrentDomain.cname}", @popular_views_rendered, :expires_in => 15.minutes do %>
+          <%= render(:partial => "view_list_tab", :locals => {
+            :tab_title => t(:discover_popular_content_header),
+            :views => @popular_views, :views_total => @popular_views_total,
+            :current_page => @current_state[:page], :type => "popular", :current_filter => params[:filter],
+            :sort_by => params[:sort_by] || 'POPULARITY', :tag_list => @popular_views_tags,
+            :current_tag => @current_state[:tag], :search_term => nil, :page_size => @page_size }) %>
+        <% end %>
+      </div>
+    <%- end -%>
+    <%- if @need_to_render.include? :all -%>
+      <div id="discoverTabAll" class="tabContentContainer clearfix<%= ' active' if @active_tab == :all %>">
+        <% prerendered_cache "discover-tab-all_#{CurrentDomain.cname}", @all_views_rendered, :expires_in => 15.minutes do %>
+          <%= render(:partial => "view_list_tab", :locals => {
+            :tab_title => "All #{t(:blists_name)}",
+            :views => @all_views, :views_total => @all_views_total,
+            :current_page => @current_state[:page], :type => "all", :current_filter => params[:filter],
+            :sort_by => params[:sort_by] || 'LAST_CHANGED', :tag_list => @all_views_tags, :current_tag => @current_state[:tag],
+            :search_term => nil, :page_size => @page_size }) %>
+        <% end %>
+      </div>
+    <%- end -%>
+    <%- if @need_to_render.include? :nominations -%>
+      <% module_enabled :dataset_nomination do %>
+        <div id="discoverNominations" class="tabContentContainer clearfix<%= ' active' if @active_tab == :nominations %>">
+          <%= render(:partial => "nominations_tab", :locals => {:nominations => @nominations, :total => @nominations_count, :page_size => @page_size}) %>
+        </div>
+      <% end %>
+    <%- end -%>
   </div>
 </div>
 
-<% content_for :js_footer do %>
-  <div class="jqmWindow" id="tagCloud"></div>
-  <div class="jqmWindow" id="redirectedModal"></div>
-  <div class="jqmWindow" id="splashModal"></div>
-  <%= javascript_include_merged 'shared-common-all' %>
-  <%= javascript_include_merged 'data-show' %>
-  <script type="text/javascript" charset="utf-8">
-    discoverNS.filterUrl = "<%= data_filter_path %>";
-  </script>
-<% end %>
+<%- unless params[:no_js] -%>
+  <% content_for :js_footer do %>
+    <div class="jqmWindow" id="tagCloud"></div>
+    <div class="jqmWindow" id="redirectedModal"></div>
+    <div class="jqmWindow" id="splashModal"></div>
+    <%= javascript_include_merged 'shared-common-all' %>
+    <%= javascript_include_merged 'data-show' %>
+    <script type="text/javascript" charset="utf-8">
+      discoverNS.filterUrl = "<%= data_filter_path %>";
+    </script>
+  <% end %>
+<%- end -%>

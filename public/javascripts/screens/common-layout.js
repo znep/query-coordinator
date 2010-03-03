@@ -100,6 +100,17 @@ $(function ()
         })
         .toggleClass('hide', $(".clearSearch").closest(".searchContainer").find("input[type='text']").hasClass('prompt'));
     
+    // HACK/TODO: temporary solution for arrow buttons until I can go rewrite
+    //            them properly. -cxlt
+    $.live('.actionButtons a', 'focusin', function()
+    {
+        $(this).closest('li').addClass('hasFocus');
+    });
+    $.live('.actionButtons a', 'focusout', function()
+    {
+        $(this).closest('li').removeClass('hasFocus');
+    });
+    
     $.validator.addMethod("customUrl", function(value, element)
     {
         if (this.optional(element))

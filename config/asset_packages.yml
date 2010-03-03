@@ -9,6 +9,7 @@ javascripts:
   - plugins/jquery.sizes.min
   - util/namespace
   - plugins/jquery.cookies.2.1.0.min
+  - util/underscore-min
 - shared-common-all:
   - util/events
   - util/sizing
@@ -53,6 +54,8 @@ javascripts:
   - widgets/upload-dialog
   - data/editors/document-editor
   - data/editors/photo-editor
+  - data/editors/new_photo-editor
+  - data/editors/new_document-editor
 - shared-map:
   - widgets/blist-map
 - accounts-show:
@@ -70,6 +73,7 @@ javascripts:
   - widgets/dropdown-menu
 - blists-index:
   - plugins/jquery.tablesorter
+  - plugins/jquery.jqote.min
   - plugins/ui.core
   - plugins/ui.draggable
   - util/humane-date
@@ -257,8 +261,14 @@ stylesheets:
   - list-screen
   - blists-screen
   - combo
+- blists-index-alt:
+  - list-screen
+  - blists-alt-screen
 - blists-new:
   - blist-new-screen
+  - form-common
+- blists-about-edit:
+  - blist-about-edit-screen
   - form-common
 - blists-publish:
   - blist-publish-screen

@@ -224,7 +224,7 @@
                 }
             },
 
-            showHideColumns: function(columns, hide, skipRequest)
+            showHideColumns: function(columns, hide, skipRequest, successCallback)
             {
                 if (!(columns instanceof Array)) { columns = [columns]; }
                 var datasetObj = this;
@@ -274,6 +274,9 @@
                                         {
                                             $(document)
                                                 .trigger(blist.events.COLUMNS_CHANGED);
+                                            if (typeof successCallback ==
+                                                'function')
+                                            { successCallback(); }
                                         }
                                     }
                                     });
@@ -285,6 +288,22 @@
                         }
                     }
                 });
+            },
+
+            showHideTags: function(hide)
+            {
+                var datasetObj = this;
+                var model = datasetObj.settings._model;
+                var column = $.grep(model.meta().view.columns, function(c, i)
+                        { return c.dataTypeName == 'tag'; })[0];
+
+                datasetObj.showHideColumns(column.id, hide, false,
+                    function ()
+                    {
+                        if (!hide && column.position > 1)
+                        { model.moveColumn(column, 0); }
+                    }
+                );
             },
 
             deleteColumns: function(columns)
@@ -508,9 +527,8 @@
                 {
                     datasetObj.settings._filterCount = 0;
                     datasetObj.settings._filterIds = {};
-                    datasetObj.settings._model.reloadView();
                 }
-                if (datasetObj.settings._filterCount > 0)
+                else if (datasetObj.settings._filterCount > 0)
                 {
                     return;
                 }
@@ -519,6 +537,11 @@
                 {
                     datasetObj.settings.clearTempViewCallback();
                 }
+
+                if (datasetObj.settings.filterForm)
+                { datasetObj.settings.filterForm.find(':input').val('').blur(); }
+                datasetObj.settings.clearFilterItem.hide();
+                datasetObj.summaryStale = true;
 
                 datasetObj.isTempView = false;
 
@@ -666,10 +689,13 @@
         if ($.compareValues(row.tags, newVal)) { return; }
 
         var column = $.grep(model.meta().view.columns, function(c, i)
-            { return c.dataTypeName == 'tag'; });
+            { return c.dataTypeName == 'tag'; })[0];
 
-        model.saveRowValue(newVal, row, model.meta().allColumns[column[0].id],
+        model.saveRowValue(newVal, row, model.meta().allColumns[column.id],
             true);
+
+        if (column.flags !== undefined && _.include(column.flags, 'hidden'))
+        { datasetObj.showHideTags(false); }
     };
 
     var hideRowTagsMenu = function($menu)
@@ -723,6 +749,7 @@
                     .val(row.tags.join(', '));
 
                 $link.closest('.rowMenu').toggleClass('tagsShown');
+                $menu.find('li.tags .editContainer input').focus().select();
                 break;
         }
     };
@@ -1073,7 +1100,10 @@
 
         if (colSum[col.id] !== undefined)
         {
-            addFilterMenu(datasetObj, col, $menu);
+            // Use setTimeout to simulate the async response of the ajax call
+            // below; this is necessary so we don't recreate the menu in the
+            // middle of another call that is using it.
+            setTimeout(function() { addFilterMenu(datasetObj, col, $menu); }, 0);
             return;
         }
 
@@ -1208,7 +1238,7 @@
                         f.isMatching = cf !== undefined && cf.value == f.value;
                         var curType = blist.data.types[col.type] ||
                             blist.data.types['text'];
-                        f.escapedValue = $.htmlEscape(
+                        f.escapedValue = escape(
                             curType.filterValue !== undefined ?
                                 curType.filterValue(f.value, col) :
                                 $.htmlStrip(f.value + ''));
@@ -1312,7 +1342,7 @@
                 // the ending | in case there are spaces at the end of the value
                 var p = s.slice(2).join('_').split(':');
                 model.filterColumn(colIdIndex,
-                    p.slice(1).join(':').slice(0, -1), p[0]);
+                    unescape(p.slice(1).join(':').slice(0, -1)), p[0]);
                 break;
             case 'clear-filter-column':
                 model.clearColumnFilter(colIdIndex);

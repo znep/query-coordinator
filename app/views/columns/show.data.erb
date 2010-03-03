@@ -1,10 +1,5 @@
 <%- content_for(:wrapper_class, "dialogGrayColumn") -%>
 <% content_for :headline do %>
-<script>
-
-var columnsNS = blist.namespace.fetch('blist.columns.properties');
-blist.columns.properties.column = <%= @column.to_js %>;
-</script>
 
 <h1 id="title" class="columnPropertiesIcon"><%= @column.name %></h1>
 <% end %>
@@ -152,13 +147,14 @@ blist.columns.properties.column = <%= @column.to_js %>;
 </div>
 
 <script type="text/javascript" charset="utf-8">
-$(function()
+blist.common.modalReady = function()
 {
+  var column = <%= @column.to_js %>;
   // Unescape these because they are escaped for rendering out above; but we need
   // to send the real value to the core server
-  columnsNS.column.name = $.htmlUnescape(columnsNS.column.name);
-  if (columnsNS.column.description !== null)
-  { columnsNS.column.description = $.htmlUnescape(columnsNS.column.description); }
+  column.name = $.htmlUnescape(column.name);
+  if (column.description !== null)
+  { column.description = $.htmlUnescape(column.description); }
 
   $("#columnPropertiesDialog #loadingSpinner").hide();
   $("#columnPropertiesDialog .error").hide();
@@ -209,40 +205,46 @@ $(function()
   // Default the selected tab to "general"
   selectTab("general");
 
-  <% if @column.has_display_options? %>
-    $("#columnPropertiesDialog #formattingTab").columnFormat(columnsNS.column);
-  <% end %>
-  <% if @column.has_totals? %>
-    $("#columnPropertiesDialog #totalsTab").columnTotals(columnsNS.column);
-  <% end %>
+  <%- if @column.has_display_options? -%>
+  $("#columnPropertiesDialog #formattingTab").columnFormatRender(column);
+  <%- end -%>
+  <%- if @column.has_totals? -%>
+  $("#columnPropertiesDialog #totalsTab").columnTotalsRender(column);
+  <%- end -%>
 
 
-  // Keep the column model up to date so we don't have to read from the form to
-  // update the properties.
-  $("#columnPropertiesDialog #name")
-    .change(function() { columnsNS.column.name = $(this).val() });
-  $("#columnPropertiesDialog #description")
-    .change(function() { columnsNS.column.description = $(this).val() });
-  $('#columnPropertiesDialog #column_alignment_left,' +
-      '#columnPropertiesDialog #column_alignment_center,' +
-      '#columnPropertiesDialog #column_alignment_right')
-    .change(function() { columnsNS.column.alignment = $(this).val() });
-  $("#columnPropertiesDialog #precision")
-    .change(function() { columnsNS.column.decimalPlaces = $(this).val() });
-  $("#columnPropertiesDialog #ui-spinner-precision > .ui-spinner-button")
-    .click(function() { columnsNS.column.decimalPlaces =
-        $("#columnPropertiesDialog #precision").val() });
+  var updateColumn = function()
+  {
+      column.name = $("#columnPropertiesDialog #name").val();
+      var $desc = $("#columnPropertiesDialog #description:not(.prompt)");
+      column.description = $desc.length > 0 ? $desc.val() : null;
 
-  var save = function() {
-      <%- if @column.renderTypeName == 'drop_down_list' -%>
-      columnsNS.column.dropDownList = {values: picklistManagerCallback()};
+      var $alignment = $('#columnPropertiesDialog .alignment :radio:checked');
+      if ($alignment.length > 0)
+      { column.alignment = $alignment.val(); }
+
+      blist.columns.properties.format.updateColumn(column);
+
+      <%- if @column.has_totals? -%>
+      column.aggregate =
+          $("#columnPropertiesDialog #totalsTab").columnTotalsValue();
       <%- end -%>
+
+      <%- if @column.renderTypeName == 'drop_down_list' -%>
+      column.dropDownList = {values: picklistManagerCallback()};
+      <%- end -%>
+  };
+
+  var save = function()
+  {
+      updateColumn();
+
       $.ajax({
         type: "PUT",
         url: '<%= @column.href(@view.id)%>',
         cache: false,
         data: {
-          json: $.json.serialize(columnsNS.column),
+          json: $.json.serialize(column),
           authenticity_token: "<%= form_authenticity_token %>"
           },
         dataType: 'json',
@@ -273,14 +275,14 @@ $(function()
 
     var type = $(this).attr("id");
 
-    if (type == "richtext" && columnsNS.column.type == "text")
+    if (type == "richtext" && column.type == "text")
     {
-      columnsNS.column.type = "richtext";
+      column.type = "richtext";
       save();
     }
-    else if (type == "text" && columnsNS.column.type == "richtext")
+    else if (type == "text" && column.type == "richtext")
     {
-      columnsNS.column.type = "text";
+      column.type = "text";
       save();
     }
     else
@@ -327,5 +329,5 @@ $(function()
 
       save();
   });
-});
+};
 </script>

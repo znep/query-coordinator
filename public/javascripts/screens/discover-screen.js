@@ -1,24 +1,24 @@
 var discoverNS = blist.namespace.fetch('blist.discover');
 
 blist.discover.isTabDirty = {
-    "SEARCH": false,
-    "POPULAR": false,
-    "ALL": false
+    "search": false,
+    "popular": false,
+    "all": false
 };
 blist.discover.historyChangeHandler = function (hash)
 {
     // Tab/container names
     var tabs = {
-        "SEARCH": "#tabSearch",
-        "POPULAR": "#tabPopular",
-        "ALL": "#tabAll",
-        "NOMINATIONS": "#tabNominations"
+        "search": "#tabSearch",
+        "popular": "#tabPopular",
+        "all": "#tabAll",
+        "nominations": "#tabNominations"
     };
     var tabContainers = {
-        "SEARCH": "#discoverTabSearchResults",
-        "POPULAR": "#discoverTabPopular",
-        "ALL": "#discoverTabAll", 
-        "NOMINATIONS": "#discoverNominations"
+        "search": "#discoverTabSearchResults",
+        "popular": "#discoverTabPopular",
+        "all": "#discoverTabAll", 
+        "nominations": "#discoverNominations"
     };
 
     // Special cases to handle default tab actions
@@ -28,31 +28,27 @@ blist.discover.historyChangeHandler = function (hash)
         if (searchTerm)
         {
             // we got here via search, so default tab is search
-            hash = "type=SEARCH&search=" + searchTerm;
+            hash = "type=search&search=" + searchTerm;
         }
         else
         {
             // default tab is popular
-            hash = "POPULAR";
+            hash = "type=popular";
         }
     }
-    if (blist.discover.isTabDirty[hash] === false)
+    var activeTab = $.urlParam("?" + hash, "type");
+    if ((blist.discover.isTabDirty[activeTab] === false) && (hash == ('type=' + activeTab)))
     {
-        $(".simpleTabs").simpleTabNavigate().activateTab(tabs[hash]);
+        $(".simpleTabs").simpleTabNavigate().activateTab(tabs[activeTab]);
         return;
-    }
-    else if (blist.discover.isTabDirty[hash] === true)
-    {
-        hash = "type=" + hash;
     }
 
     // Find active tab
-    var activeTab = $.urlParam("?" + hash, "type");
     var tabSelector = tabs[activeTab];
     var tabContainerSelector = tabContainers[activeTab];
 
     // Abort if we don't know what's going on
-    if (activeTab == 0)
+    if ((activeTab === 0) || (blist.discover.isTabDirty[activeTab] === undefined))
     {
         return;
     }
@@ -63,7 +59,7 @@ blist.discover.historyChangeHandler = function (hash)
     blist.discover.isTabDirty[activeTab] = true;
 
     // Add search tab if necessary
-    if (activeTab == "SEARCH")
+    if (activeTab == "search")
     {
         $(".simpleTabs li").removeClass("active");
         if ($("#tabSearch").length > 0)
@@ -105,6 +101,9 @@ blist.discover.historyChangeHandler = function (hash)
             $(".contentSort select").bind("change", discoverNS.sortSelectChangeHandler);
             $("#tagCloud").jqmHide();
             $("#search").blur();
+
+            // reinforce new links to JS rather than postback
+            discoverNS.ajaxifyLinks();
         }
     });
 };
@@ -124,12 +123,12 @@ blist.discover.sortSelectChangeHandler = function (event)
         if (searchTerm)
         {
             // we got here via a search
-            hash = "type=SEARCH&search=" + searchTerm;
+            hash = "type=search&search=" + searchTerm;
         }
         else
         {
             // default tab is popular
-            hash = "type=POPULAR";
+            hash = "type=popular";
         }
     }
     if (blist.discover.isTabDirty[hash] !== undefined)
@@ -147,13 +146,18 @@ blist.discover.tagModalShowHandler = function(hash)
 {
     var $modal = hash.w;
     var $trigger = $(hash.t);
-    
+
     $.Tache.Get({ 
         url: $trigger.attr("href"),
         success: function(data)
         {
             $modal.html(data).show();
-            $(".tagCloudContainer a").tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } });
+            $(".tagCloudContainer a")
+                .tagcloud({ size: { start: 1.2, end: 2.8, unit: "em" } })
+                .each(function()
+                {
+                    $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
+                });
         }
     });
 };
@@ -168,15 +172,24 @@ blist.discover.searchSubmitHandler = function(event)
         return;
     }
 
-    var hash = "type=SEARCH&search=" + query;
+    var hash = "type=search&search=" + query;
     window.location.href = '#' + hash;
     $.historyLoad(hash);
     return false;
 };
 
+blist.discover.ajaxifyLinks = function()
+{
+    $('.filterList a, .tagList a.filterLink, .categoryList a, .simpleTabs a, .viewPager a').each(function()
+    {
+        $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
+    });
+};
 
 $(function ()
 {
+    discoverNS.ajaxifyLinks();
+
     $("#featuredCarousel").jcarousel({
         visible: 2,
         wrap: 'both',

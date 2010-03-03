@@ -39,14 +39,6 @@ module BlistsHelper
     out = "#{privacy_type} #{blist_type} #{sharing_type}"
   end
 
-  def get_blist_tags
-    views = View.find()
-
-    tags = []
-    views.each { |v| v.tags.nil? ? true : tags << v.tags.collect { |t| t.data } }
-    tags.flatten.sort.uniq
-  end
-
   def get_rating_class(rating)
     ['zero', 'one', 'two', 'three', 'four', 'five'][
       ((rating * 2.0).round / 2.0).floor] +
@@ -254,7 +246,7 @@ module BlistsHelper
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Form', 'href' => "#{view.href}/form",
-      'if' => CurrentDomain.member?(current_user) &&
+      'if' => !view.is_grouped? && CurrentDomain.member?(current_user) &&
                module_available?(:form_publish) &&
                view.owned_by?(@current_user) &&
                view.parent_dataset.owned_by?(@current_user),
@@ -317,7 +309,7 @@ module BlistsHelper
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Create a Form View...', 'href' => "#{view.href}/form",
-      'modal' => true, 'if' => !view.is_alt_view? &&
+      'if' => !view.is_alt_view? && !view.is_grouped? &&
         (CurrentDomain.member?(current_user) && module_available?(:form_publish) &&
          view.owned_by?(@current_user) &&
          view.parent_dataset.owned_by?(@current_user)),
@@ -469,11 +461,10 @@ module BlistsHelper
 
   def recent_blists_menu(cur_view, num_recent)
     if current_user
-      {'items' => View.find().reject {|v| v.id == cur_view.id}.sort do |a,b|
-        b.last_viewed <=> a.last_viewed
-      end.slice(0, num_recent).map do |v|
-        {'text' => v.name, 'href' => v.href, 'class' => v.display.type}
-      end }
+      {'items' => View.find_recent(num_recent + 1).
+        reject {|v| v.id == cur_view.id}.slice(0, num_recent).map do |v|
+          {'text' => v.name, 'href' => v.href, 'class' => v.display.type}
+        end }
     else
       nil
     end
@@ -496,6 +487,10 @@ module BlistsHelper
   
   def creative_commons_select_options(selected_option = nil)
     options_for_select(View.creative_commons.invert.sort { |a, b| a.first <=> b.first }, selected_option)
+  end
+  
+  def merged_license_select_options(selected_license = nil)
+    options_for_select(View.merged_licenses.invert.sort { |a, b| a.first <=> b.first }, selected_license)
   end
   
   def font_unit_select_options(selected_unit = nil)
@@ -544,6 +539,18 @@ module BlistsHelper
         "Powered by Socrata</a></p>"
     end
     embed_template += "</div>"
+  end
+  
+  def options_for_limit_to(column_type)
+    options = [['no filter', 'no filter']]
+    options += View::FILTER_CONDITIONS[column_type.to_sym].collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
+    options_for_select(options)
+  end
+  
+  def options_for_sort_by(columns)
+    options = [['no sort', 'no sort']]
+    options += columns.collect{|column| [column.name, column.id]}
+    options_for_select(options)
   end
 
   # Create a drop down menu of formatting fonts

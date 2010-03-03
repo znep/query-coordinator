@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons
+  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -8,7 +8,36 @@ class View < Model
       return self.find_under_user(options)
     end
   end
+  
+  def viewable_columns
+    result = self.meta_data_columns.find_all do |column|
+      if column.respond_to?(:flags)
+        column.data_type_name != 'meta_data' and not column.flags{|flag| flag == "hidden"}
+      else
+        column.data_type_name != 'meta_data'
+      end
+    end
+    result = result.sort_by{|column| column.id.to_i}
+    result
+  end
 
+  
+  def search_and_sort_viewable_columns(data_rows)
+    result = []
+    data_rows.each do |data_row|
+      sorted_and_viewable_data_column = []
+      self.viewable_columns.each do |viewable_column|
+        orig_column = self.meta_data_columns.find{|column| column.id == viewable_column.id}
+        orig_index = self.meta_data_columns.rindex(orig_column)
+        sorted_and_viewable_data_column << data_row[orig_index]
+      end
+      #add row number to the last column
+      sorted_and_viewable_data_column << data_row[0]
+      result << sorted_and_viewable_data_column
+    end
+    result
+  end
+  
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))
@@ -24,6 +53,15 @@ class View < Model
     parse(CoreServer::Base.connection.get_request(path))
   end
 
+  def self.find_recent(count)
+    return self.find_under_user({'recentlyViewed' => count})
+  end
+
+  def self.find_favorites()
+    path = "/favorite_views.json"
+    parse(CoreServer::Base.connection.get_request(path))
+  end
+
   def column_by_id(column_id)
     self.columns.reject {|c| c.id != column_id}[0]
   end
@@ -32,7 +70,109 @@ class View < Model
     CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
       "rows.html?template=bare_template.html", {})
   end
+  
+  def meta_data_columns
+    @meta_data_columns ||= get_meta_data_columns
+  end
+    
+  def get_meta_data_columns(params = {})
+    # default params
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+  
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+    parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
+    parsed_data['meta']['view']['columns'].inject([]){|array, column_hash| array << MetaDataColumn.new(column_hash)}
+  end
+  
+  def get_rows_by_ids(params={})
+    ids = params[:ids]
+    ids = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
+    params.delete(:ids)
+    # default params
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
 
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}#{ids}"
+    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
+  end
+  
+  
+  def save_query(params = {})
+    query = JSON.parse(params[:query_json])
+    query['name'] = params[:name]
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    url = "/views.json?#{params.to_param}"
+ 
+    JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
+  end
+
+  def find_data(*arguments)
+    scope = arguments.slice!(0)
+    options = arguments.slice!(0) || {}
+    data, aggregates = find_all_data(options);
+    return data, aggregates
+  end
+  
+  def find_all_data(options)
+    page = options[:page] || 1
+    data, aggregates, total_entries = find_row_data(page, options[:conditions])
+    data = search_and_sort_viewable_columns(data)
+    data = paginate_rows(data, page, total_entries)
+    return data, aggregates
+  end
+  
+    def find_row_data_with_conditions(params)
+    #build from posted form params
+    if params[:query_json].nil?
+      fq = FilterQuery.new(self.id, params)
+      query = fq.build
+      query = query.to_json
+    else
+      #build from passed in parameter
+      query = params[:query_json]
+    end
+    result = self.get_rows_by_query(query)    
+    return result['data'], result['meta']['aggregates']
+  end
+
+  def find_row_data(page, conditions = nil)
+    if conditions.nil?
+      result = self.get_rows
+      data = result['data']
+      aggregates = result['meta']['aggregates']
+      total_entries = data.size
+      data = data.paginate(:per_page => PER_PAGE, :page => page)
+    else
+      data, aggregates = find_row_data_with_conditions(conditions)
+      total_entries = data.size
+    end
+    return data, aggregates, total_entries
+  end
+
+  def get_rows_by_query(query, params = {})
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=index&#{params.to_param}"
+    JSON.parse(CoreServer::Base.connection.create_request(url, query))
+  end
+  
+  def get_rows(params = {})
+    # default params
+    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+    JSON.parse(CoreServer::Base.connection.get_request(url, {}))
+  end
+  
+  def find_all_row_data_ids
+    self.get_rows(:row_ids_only => true)
+  end
+    
+  def paginate_rows(row_data, page, total_entries)
+    paginated_data = WillPaginate::Collection.create(page, PER_PAGE, total_entries) do |pager|
+      pager.replace(row_data)
+    end
+    paginated_data
+  end
+  
   def json(params)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"
     if !params.nil?
@@ -178,6 +318,10 @@ class View < Model
     "/#{prefix.convert_to_url}/#{name.convert_to_url}/#{id}"
   end
 
+  def alt_href
+    "#{self.href}/alt"
+  end
+
   def short_href
     "/d/#{id}"
   end
@@ -246,9 +390,11 @@ class View < Model
         user_ids[g.userId] = true
       end
     end
-    users_list = User.find({'ids' => user_ids.keys})
     users = Hash.new
-    users_list.each {|u| users[u.id] = u }
+    if user_ids.any?
+        users_list = User.find 'ids' => user_ids.keys
+        users_list.each {|u| users[u.id] = u }
+    end
     user_shares = Hash.new
     filtered_grants.each do |g|
       user_id = g.userId.nil? ? g.userEmail : g.userId
@@ -414,6 +560,43 @@ class View < Model
     "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
+
+  @@merged_licenses = {
+    "" => "-- No License --",
+    "PUBLIC_DOMAIN" => "Public Domain",
+    "CC" => "Creative Commons",
+    "CC0_10" => "1.0 Universal",
+    "CC_30_BY" => "Attribution 3.0 Unported",
+    "CC_30_BY_SA" => "Attribution | Share Alike 3.0 Unported",
+    "CC_30_BY_ND" => "Attribution | No Derivative Works 3.0 Unported",
+    "CC_30_BY_NC" => "Attribution | Noncommercial 3.0 Unported",
+    "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
+    "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
+  }
+
+  FILTER_CONDITIONS = {
+    :text =>     [ { :operator => "EQUALS", :label => "equals" },
+                   { :operator => "NOT_EQUALS", :label => "does not equal" },
+                   { :operator => "STARTS_WITH", :label => "starts with" },
+                   { :operator => "CONTAINS", :label => "contains" } ],
+    :date =>     [ { :operator => "EQUALS", :label => "on" },
+                   { :operator => "NOT_EQUALS", :label => "not on" },
+                   { :operator => "LESS_THAN", :label => "before" },
+                   { :operator => "GREATER_THAN", :label => "after" },
+                   { :operator => "BETWEEN", :label => "between" } ],
+    :checkbox => [ { :operator => "EQUALS", :label => "equals" } ],
+    :photo =>    [ { :operator => "IS_BLANK", :label => "is empty" },
+                   { :operator => "IS_NOT_BLANK", :label => "exists" } ],
+    :number =>   [ { :operator => "EQUALS", :label => "equals" }, 
+                   { :operator => "NOT_EQUALS", :label => "not equals" },
+                   { :operator => "LESS_THAN", :label => "less than" },
+                   { :operator => "LESS_THAN_OR_EQUALS", :label => "less than or equal to" },
+                   { :operator => "GREATER_THAN", :label => "greater than" },
+                   { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" },
+                   { :operator => "BETWEEN", :label => "between"} ]
+  }
+  PER_PAGE = 50
+
 
   # Sorts are enabled and disabled by feature modules
   @@sorts = [

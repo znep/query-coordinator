@@ -8,6 +8,10 @@
   <link rel="canonical" href="<%= @view.href %>" />
 <% end %>
 
+<% content_for :skip_links do %>
+  <%= link_to 'Go to an accessible version of this page', @view.alt_href %>
+<% end %>
+
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
 <%- is_blist = @view.is_blist? %>
 <%- can_edit = current_user && @view.can_edit() -%>
@@ -295,8 +299,8 @@
               <li class='column'>
               <%# Blob datatypes %>
                 <ul>
-                    <li><%= get_add_column("Document", @view.id, "document") %></li>
-                    <li><%= get_add_column("Photo (Image)", @view.id, "photo") %></li>
+                    <li><%= get_add_column("Document", @view.id, "new_document") %></li>
+                    <li><%= get_add_column("Photo (Image)", @view.id, "new_photo") %></li>
                 </ul>
               </li>
               <li class='column last'>

@@ -1,0 +1,14 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "blist-print-screen" %>
+  <title>Print <%= h(@view.name) %> | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<% dialog_content do %>
+  <div class="header">
+    <h1>Print <%= h(@view.name) %></h1>
+  </div>
+
+  <div class="mainContent printContent">
+    <%= render :partial => 'print_form', :locals => { :view => @view } %>
+  </div>
+<% end %>

@@ -144,7 +144,7 @@
                               <%- end -%>
                               <%= output_value || value.strftime('%c') %>
 
-                            <%- when 'document' -%>
+                            <%- when 'document', 'new_document' -%>
                               <%- name_i = column.sub_type_index('filename') -%>
                               <%- size_i = column.sub_type_index('size') -%>
                               <%- type_i = column.sub_type_index('content_type') -%>
@@ -171,12 +171,12 @@
                                 (<%= cell[type_i] %>)
                               <%- end -%>
 
-                            <%- when 'photo' -%>
+                            <%- when 'photo', 'new_photo' -%>
                               <%- url = '/views/' + @view.id + '/' +
                                 (column.dataTypeName == 'new_photo' ?
                                 'new_' : '') + 'files/' + cell -%>
                               <a href='<%= url %>'>
-                                <img src='<%= url %>' />
+                                <img width='20' height='20' src='<%= url %>' />
                               </a>
 
                             <%- else -%>

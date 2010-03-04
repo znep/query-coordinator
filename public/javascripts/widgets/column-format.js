@@ -65,7 +65,11 @@ function(column, $container)
 {
     var render = '<h3 class="separator">Display Options</h3>' +
         '<div class="money displayOptions"><table colspacing="0"><tbody>' +
-        columnFormatNS.renderPrecision(column.decimalPlaces) +
+
+        '<tr><td class="labelColumn"><label for="columnProperties_precision">' +
+        'Number of Decimal Places:</label></td><td>' +
+        '<input class="incrementer" type="text" id="columnProperties_precision" ' +
+        'value="' + column.decimalPlaces + '" /></td></tr>' +
 
         '<tr><td class="labelColumn">' +
         '<label for="columnProperties_currency">Currency:</label>' +
@@ -110,8 +114,8 @@ function(column, $container)
     ];
 
     $container.append(render);
-    columnFormatNS.activatePrecision();
 
+    $("#columnProperties_precision").spinner({min: 0, max: 2});
     $("#columnProperties_currency").combo({
         ddClass: 'lr_justified',
         name: "currency",

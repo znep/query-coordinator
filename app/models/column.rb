@@ -289,6 +289,10 @@ class Column < Model
     return type
   end
 
+  def sub_type_index(sub_type)
+    return self.subColumnTypes.nil? ? nil : self.subColumnTypes.index(sub_type)
+  end
+
   def text_format
     (self.format.nil? || self.format.formatting_option.nil?) ? 'Plain' :
       self.format.formatting_option
@@ -319,6 +323,41 @@ class Column < Model
   def precision_style
     return (self.format.nil? || self.format.precisionStyle.nil?) ?
       'standard' : self.format.precisionStyle
+  end
+
+  def currency_symbol
+    currency = (self.format.nil? || self.format.currency.nil?) ?
+      'dollar' : self.format.currency
+    return {
+      'dollar' => "$",
+      'pound' => "£",
+      'euro' => "€",
+      'yen' => "¥",
+      'forint' => "Ft",
+      'hk_dollar' => "HK$",
+      'kuna' => "Kn",
+      'koruna' => "Kč",
+      'lats' => "Ls",
+      'litas' => "Lt",
+      'nt_dollar' => "NT$",
+      'peso' => "PhP",
+      'real' => "R$",
+      'rupiah' => "Rp",
+      'rupee' => "Rs.",
+      'koruna' => "Sk",
+      'lira' => "TL",
+      'new_lira' => "YTL",
+      'krone' => "kr",
+      'lei_noi' => "lei",
+      'zloty' => "zł",
+      'baht' => "฿",
+      'dong' => "₫",
+      'won' => "₩",
+      'ruble' => "р.",
+      'lev' => "лв.",
+      'dinar' => "Дин.",
+      'hryvnia' => "грн."
+    }[currency]
   end
 
   def is_nested_table

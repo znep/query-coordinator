@@ -1436,6 +1436,7 @@ dl.versionInfo dd
 .columnPickerModal .reorderList li .itemWrapper
 {
     height: 20px;
+    overflow: hidden;
     padding-top: 0;
     white-space: nowrap;
 }

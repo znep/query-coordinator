@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses
+  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses, :per_page
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -8,26 +8,23 @@ class View < Model
       return self.find_under_user(options)
     end
   end
-  
+
   def viewable_columns
     result = self.meta_data_columns.find_all do |column|
-      if column.respond_to?(:flags)
-        column.data_type_name != 'meta_data' and not column.flags{|flag| flag == "hidden"}
-      else
-        column.data_type_name != 'meta_data'
-      end
+      column.dataTypeName != 'meta_data' && !column.flag?("hidden")
     end
     result = result.sort_by{|column| column.id.to_i}
     result
   end
 
-  
+
   def search_and_sort_viewable_columns(data_rows)
     result = []
     data_rows.each do |data_row|
       sorted_and_viewable_data_column = []
       self.viewable_columns.each do |viewable_column|
-        orig_column = self.meta_data_columns.find{|column| column.id == viewable_column.id}
+        orig_column = self.meta_data_columns.
+          find{|column| column.id == viewable_column.id}
         orig_index = self.meta_data_columns.rindex(orig_column)
         sorted_and_viewable_data_column << data_row[orig_index]
       end
@@ -70,38 +67,39 @@ class View < Model
     CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
       "rows.html?template=bare_template.html", {})
   end
-  
+
   def meta_data_columns
     @meta_data_columns ||= get_meta_data_columns
   end
-    
+
   def get_meta_data_columns(params = {})
     # default params
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
-  
+    params = {:accessType => 'WEBSITE', :include_aggregates => true}.merge params
+
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
-    parsed_data['meta']['view']['columns'].inject([]){|array, column_hash| array << MetaDataColumn.new(column_hash)}
+    parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url))
+    parsed_data['meta']['view']['columns'].inject([]) {|array, column_hash|
+      array << Column.set_up_model(column_hash)}
   end
-  
+
   def get_rows_by_ids(params={})
     ids = params[:ids]
     ids = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
     params.delete(:ids)
     # default params
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    params = {:accessType => 'WEBSITE', :include_aggregates => true}.merge params
 
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}#{ids}"
     JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
   end
-  
-  
+
+
   def save_query(params = {})
     query = JSON.parse(params[:query_json])
     query['name'] = params[:name]
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    params = {:include_aggregates => true}.merge params
     url = "/views.json?#{params.to_param}"
- 
+
     JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
   end
 
@@ -111,7 +109,7 @@ class View < Model
     data, aggregates = find_all_data(options);
     return data, aggregates
   end
-  
+
   def find_all_data(options)
     page = options[:page] || 1
     data, aggregates, total_entries = find_row_data(page, options[:conditions])
@@ -119,7 +117,7 @@ class View < Model
     data = paginate_rows(data, page, total_entries)
     return data, aggregates
   end
-  
+
     def find_row_data_with_conditions(params)
     #build from posted form params
     if params[:query_json].nil?
@@ -130,7 +128,7 @@ class View < Model
       #build from passed in parameter
       query = params[:query_json]
     end
-    result = self.get_rows_by_query(query)    
+    result = self.get_rows_by_query(query)
     return result['data'], result['meta']['aggregates']
   end
 
@@ -140,7 +138,7 @@ class View < Model
       data = result['data']
       aggregates = result['meta']['aggregates']
       total_entries = data.size
-      data = data.paginate(:per_page => PER_PAGE, :page => page)
+      data = data.paginate(:per_page => @@per_page, :page => page)
     else
       data, aggregates = find_row_data_with_conditions(conditions)
       total_entries = data.size
@@ -149,30 +147,30 @@ class View < Model
   end
 
   def get_rows_by_query(query, params = {})
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    params = {:accessType => 'WEBSITE', :include_aggregates => true}.merge params
     url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=index&#{params.to_param}"
     JSON.parse(CoreServer::Base.connection.create_request(url, query))
   end
-  
+
   def get_rows(params = {})
     # default params
-    params = {:_ => Time.now.to_f, :accessType => 'WEBSITE', :include_aggregates => true}.merge params
+    params = {:accessType => 'WEBSITE', :include_aggregates => true}.merge params
 
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
     JSON.parse(CoreServer::Base.connection.get_request(url, {}))
   end
-  
+
   def find_all_row_data_ids
     self.get_rows(:row_ids_only => true)
   end
-    
+
   def paginate_rows(row_data, page, total_entries)
-    paginated_data = WillPaginate::Collection.create(page, PER_PAGE, total_entries) do |pager|
+    paginated_data = WillPaginate::Collection.create(page, @@per_page, total_entries) do |pager|
       pager.replace(row_data)
     end
     paginated_data
   end
-  
+
   def json(params)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json"
     if !params.nil?
@@ -595,8 +593,8 @@ class View < Model
                    { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" },
                    { :operator => "BETWEEN", :label => "between"} ]
   }
-  PER_PAGE = 50
 
+  @@per_page = 50
 
   # Sorts are enabled and disabled by feature modules
   @@sorts = [

@@ -155,9 +155,12 @@
                     .each(function(i, a)
                             { w += $(a).outerWidth(true); })
                     .outerHeight(true);
-                var $photo = this.$editor().find('img');
-                w = Math.max(w, $photo.outerWidth(true));
-                h = Math.max(h, $photo.outerHeight(true));
+                if (this._curVal !== null)
+                {
+                    var $photo = this.$editor().find('img');
+                    w = Math.max(w, $photo.outerWidth(true));
+                    h = Math.max(h, $photo.outerHeight(true));
+                }
                 return { width: w, height: h };
             },
 

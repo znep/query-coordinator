@@ -1,5 +1,6 @@
 class Column < Model
   cattr_reader :types
+  attr_accessor :data_position
 
   @@types = { 
       "text" => "Plain Text", 
@@ -271,6 +272,15 @@ class Column < Model
     end
 
     return col.to_json.html_safe!
+  end
+
+  def viewable_children
+    if @view_children.nil?
+      @view_children = childColumns.each_with_index {|c, i| c.data_position = i}.
+        select {|c| !c.flag?('hidden') && c.dataTypeName != 'meta_data'}.
+        sort_by {|c| c.position}
+    end
+    return @view_children
   end
 
   def client_type(type = nil)

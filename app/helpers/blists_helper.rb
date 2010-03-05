@@ -549,7 +549,8 @@ module BlistsHelper
   
   def options_for_sort_by(columns)
     options = [['no sort', 'no sort']]
-    options += columns.collect{|column| [column.name, column.id]}
+    options += columns.select{|c| c.is_sortable?}.
+      collect{|column| [column.name, column.id]}
     options_for_select(options)
   end
 

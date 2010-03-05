@@ -18,10 +18,6 @@
     padding: 1em;
 }
 
-.altShowContainer #dataGrid
-{
-    
-}
 .altShowContainer #dataGrid thead,
 .altShowContainer #dataGrid tfoot
 {
@@ -38,17 +34,23 @@
     white-space: nowrap;
     width: auto;
 }
-.altShowContainer #dataGrid th:first-child
+.altShowContainer #dataGrid td table th
 {
-    border-left: none;
+    font-size: 1.0909em;
 }
-.altShowContainer #dataGrid tbody tr.odd
-{
-    background-color: #eee;
-}
+.altShowContainer #dataGrid th:first-child { border-left: none; }
+.altShowContainer #dataGrid tbody tr.odd { background-color: #eee; }
+.altShowContainer #dataGrid tbody tr.even { background-color: #fff; }
 .altShowContainer #dataGrid td
 {
     border-left: 1px solid #aaa;
     font-size: 1.1em;
     padding: 0.6em;
 }
+.altShowContainer #dataGrid td.type_nested_table
+{
+    padding: 0;
+    vertical-align: top;
+}
+.altShowContainer #dataGrid td table { width: 100%; }
+.altShowContainer #dataGrid td table td { font-size: 1em; }

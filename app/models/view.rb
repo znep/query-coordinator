@@ -10,31 +10,14 @@ class View < Model
   end
 
   def viewable_columns
-    result = self.meta_data_columns.find_all do |column|
+    result = self.meta_data_columns.each_with_index {|c, i| c.data_position = i}.
+      find_all do |column|
       column.dataTypeName != 'meta_data' && !column.flag?("hidden")
     end
-    result = result.sort_by{|column| column.id.to_i}
+    result = result.sort_by{|column| column.position}
     result
   end
 
-
-  def search_and_sort_viewable_columns(data_rows)
-    result = []
-    data_rows.each do |data_row|
-      sorted_and_viewable_data_column = []
-      self.viewable_columns.each do |viewable_column|
-        orig_column = self.meta_data_columns.
-          find{|column| column.id == viewable_column.id}
-        orig_index = self.meta_data_columns.rindex(orig_column)
-        sorted_and_viewable_data_column << data_row[orig_index]
-      end
-      #add row number to the last column
-      sorted_and_viewable_data_column << data_row[0]
-      result << sorted_and_viewable_data_column
-    end
-    result
-  end
-  
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))
@@ -113,7 +96,6 @@ class View < Model
   def find_all_data(options)
     page = options[:page] || 1
     data, aggregates, total_entries = find_row_data(page, options[:conditions])
-    data = search_and_sort_viewable_columns(data)
     data = paginate_rows(data, page, total_entries)
     return data, aggregates
   end

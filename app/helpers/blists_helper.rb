@@ -63,8 +63,8 @@ module BlistsHelper
   end
 
   def dataset_menu_lookup(view, is_widget = false, theme = nil)
-    tag_show_hide = view.columns.find {|c| c.client_type == 'tag'}.
-      flag?('hidden') ? 'show' : 'hide'
+    tag_show_hide = view.columns && (view.columns.find {|c| c.client_type == 'tag'}.
+      flag?('hidden')) ? 'show' : 'hide'
 
     filters = (theme.nil? || theme[:menu][:more_views]) ? view.filters : []
 
@@ -83,37 +83,6 @@ module BlistsHelper
     'full_screen' => {'text' => 'View Full Screen', 'class' => 'fullscreen',
       'href' => @view.href, 'external' => true,
       'if' => (theme.nil? || theme[:menu][:fullscreen])},
-
-    'download' => {'text' => 'Download this ' + t(:blist_name).titleize,
-      'if' => (theme.nil? ||
-        theme[:menu][:download_menu].any?{ |key, value| value }),
-      'class' => 'export', 'href' => '#', 'submenu' =>
-        {'class' => 'noicon', 'items' => [
-          {'text' => 'as CSV', 'external' => true, 'class' => 'csv',
-          'link_class' => is_widget ? 'noInterstitial' : '',
-          'if' => (theme.nil? || theme[:menu][:download_menu][:csv]),
-          'href' => "/views/#{view.id}/rows.csv?accessType=DOWNLOAD"},
-          {'text' => 'as JSON', 'external' => true, 'class' => 'json',
-          'link_class' => is_widget ? 'noInterstitial' : '',
-          'if' => (theme.nil? || theme[:menu][:download_menu][:json]),
-          'href' => "/views/#{view.id}/rows.json?accessType=DOWNLOAD"},
-          {'text' => 'as PDF', 'external' => true, 'class' => 'pdf',
-          'link_class' => is_widget ? 'noInterstitial' : '',
-          'if' => (theme.nil? || theme[:menu][:download_menu][:pdf]),
-          'href' => "/views/#{view.id}/rows.pdf?accessType=DOWNLOAD"},
-          {'text' => 'as XLS', 'external' => true, 'class' => 'xls',
-          'link_class' => is_widget ? 'noInterstitial' : '',
-          'if' => (theme.nil? || theme[:menu][:download_menu][:xls]),
-          'href' => "/views/#{view.id}/rows.xls?accessType=DOWNLOAD"},
-          {'text' => 'as XLSX (beta)', 'external' => true, 'class' => 'xlsx',
-          'link_class' => is_widget ? 'noInterstitial' : '',
-          'if' => (theme.nil? || theme[:menu][:download_menu][:xlsx]),
-          'href' => "/views/#{view.id}/rows.xlsx?accessType=DOWNLOAD"},
-          {'text' => 'as XML', 'external' => true, 'class' => 'xml',
-          'link_class' => is_widget ? 'noInterstitial' : '',
-          'if' => (theme.nil? || theme[:menu][:download_menu][:xml]),
-          'href' => "/views/#{view.id}/rows.xml?accessType=DOWNLOAD"}
-        ]}},
 
     'api' => {'text' => "Access this #{t(:blist_name).titleize} via the API...",
       'class' => 'api', 'href' => "/popup/api", 'modal' => !is_widget,
@@ -205,6 +174,43 @@ module BlistsHelper
       'if' => (theme.nil? || theme[:menu][:socialize][:twitter]),
       'href' => "http://www.twitter.com/home?status=#{tweet + short_path}"}
     }
+
+    # TODO: Content disposition and suggested filename
+    if @view.is_blobby?
+      options['download'] =  {'text' => 'Download', 'class' => 'export',
+        'href' => @view.blob_href, 'fullscreen' => true}
+    else
+      options['download'] = {'text' => 'Download this ' + t(:blist_name).titleize,
+        'if' => (theme.nil? ||
+          theme[:menu][:download_menu].any?{ |key, value| value }),
+        'class' => 'export', 'href' => '#', 'submenu' =>
+          {'class' => 'noicon', 'items' => [
+            {'text' => 'as CSV', 'external' => true, 'class' => 'csv',
+            'link_class' => is_widget ? 'noInterstitial' : '',
+            'if' => (theme.nil? || theme[:menu][:download_menu][:csv]),
+            'href' => "/views/#{view.id}/rows.csv?accessType=DOWNLOAD"},
+            {'text' => 'as JSON', 'external' => true, 'class' => 'json',
+            'link_class' => is_widget ? 'noInterstitial' : '',
+            'if' => (theme.nil? || theme[:menu][:download_menu][:json]),
+            'href' => "/views/#{view.id}/rows.json?accessType=DOWNLOAD"},
+            {'text' => 'as PDF', 'external' => true, 'class' => 'pdf',
+            'link_class' => is_widget ? 'noInterstitial' : '',
+            'if' => (theme.nil? || theme[:menu][:download_menu][:pdf]),
+            'href' => "/views/#{view.id}/rows.pdf?accessType=DOWNLOAD"},
+            {'text' => 'as XLS', 'external' => true, 'class' => 'xls',
+            'link_class' => is_widget ? 'noInterstitial' : '',
+            'if' => (theme.nil? || theme[:menu][:download_menu][:xls]),
+            'href' => "/views/#{view.id}/rows.xls?accessType=DOWNLOAD"},
+            {'text' => 'as XLSX (beta)', 'external' => true, 'class' => 'xlsx',
+            'link_class' => is_widget ? 'noInterstitial' : '',
+            'if' => (theme.nil? || theme[:menu][:download_menu][:xlsx]),
+            'href' => "/views/#{view.id}/rows.xlsx?accessType=DOWNLOAD"},
+            {'text' => 'as XML', 'external' => true, 'class' => 'xml',
+            'link_class' => is_widget ? 'noInterstitial' : '',
+            'if' => (theme.nil? || theme[:menu][:download_menu][:xml]),
+            'href' => "/views/#{view.id}/rows.xml?accessType=DOWNLOAD"}
+          ]}}
+    end
 
     options.merge({
     'socialize' => {'text' => "Socialize this #{t(:blist_name).titleize}",
@@ -541,15 +547,17 @@ module BlistsHelper
     embed_template += "</div>"
   end
   
-  def options_for_limit_to(column_type)
+  def options_for_limit_to(column)
     options = [['no filter', 'no filter']]
-    options += View::FILTER_CONDITIONS[column_type.to_sym].collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
+    options += column.possible_filter_conditions.
+      collect{|c_hash| [c_hash[:label], c_hash[:operator]]}
     options_for_select(options)
   end
   
   def options_for_sort_by(columns)
     options = [['no sort', 'no sort']]
-    options += columns.collect{|column| [column.name, column.id]}
+    options += columns.select{|c| c.is_sortable?}.
+      collect{|column| [column.name, column.id]}
     options_for_select(options)
   end
 

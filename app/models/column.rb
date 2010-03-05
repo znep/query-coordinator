@@ -1,5 +1,6 @@
 class Column < Model
   cattr_reader :types
+  attr_accessor :data_position
 
   @@types = { 
       "text" => "Plain Text", 
@@ -54,6 +55,24 @@ class Column < Model
   def form_enabled?
     return client_type != 'meta_data' &&
       client_type != 'nested_table' && !flag?('hidden')
+  end
+
+  def possible_filter_conditions
+    filter_type =
+      case dataTypeName
+      when 'text', 'url', 'email', 'phone', 'tag'
+        'textual'
+      when 'number', 'money', 'percent', 'stars', 'picklist', 'drop_down_list'
+        'numeric'
+      when 'new_photo', 'photo', 'new_document', 'document'
+        'blob'
+      when 'checkbox', 'flag'
+        'comparable'
+      else
+        dataTypeName
+      end
+
+    return @@filter_conditions[filter_type]
   end
 
   def possible_aggregates
@@ -273,6 +292,15 @@ class Column < Model
     return col.to_json.html_safe!
   end
 
+  def viewable_children
+    if @view_children.nil?
+      @view_children = childColumns.each_with_index {|c, i| c.data_position = i}.
+        select {|c| !c.flag?('hidden') && c.dataTypeName != 'meta_data'}.
+        sort_by {|c| c.position}
+    end
+    return @view_children
+  end
+
   def client_type(type = nil)
     if type.nil?
       type = renderTypeName
@@ -379,4 +407,29 @@ class Column < Model
   def is_group_aggregate?
     !self.format.nil? && !self.format.grouping_aggregate.nil?
   end
+
+  private
+
+  @@filter_conditions = {
+      'textual' => [ { :operator => "EQUALS", :label => "equals" },
+        { :operator => "NOT_EQUALS", :label => "does not equal" },
+        { :operator => "STARTS_WITH", :label => "starts with" },
+        { :operator => "CONTAINS", :label => "contains" } ],
+      'date' => [ { :operator => "EQUALS", :label => "on" },
+        { :operator => "NOT_EQUALS", :label => "not on" },
+        { :operator => "LESS_THAN", :label => "before" },
+        { :operator => "GREATER_THAN", :label => "after" },
+        { :operator => "BETWEEN", :label => "between" } ],
+      'comparable' => [ { :operator => "EQUALS", :label => "equals" } ],
+      'blob' => [ { :operator => "IS_BLANK", :label => "is empty" },
+        { :operator => "IS_NOT_BLANK", :label => "exists" } ],
+      'numeric' => [ { :operator => "EQUALS", :label => "equals" },
+        { :operator => "NOT_EQUALS", :label => "not equals" },
+        { :operator => "LESS_THAN", :label => "less than" },
+        { :operator => "LESS_THAN_OR_EQUALS", :label => "less than or equal to" },
+        { :operator => "GREATER_THAN", :label => "greater than" },
+        { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" },
+        { :operator => "BETWEEN", :label => "between"} ]
+  }
+
 end

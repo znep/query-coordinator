@@ -10,31 +10,14 @@ class View < Model
   end
 
   def viewable_columns
-    result = self.meta_data_columns.find_all do |column|
+    result = self.meta_data_columns.each_with_index {|c, i| c.data_position = i}.
+      find_all do |column|
       column.dataTypeName != 'meta_data' && !column.flag?("hidden")
     end
-    result = result.sort_by{|column| column.id.to_i}
+    result = result.sort_by{|column| column.position}
     result
   end
 
-
-  def search_and_sort_viewable_columns(data_rows)
-    result = []
-    data_rows.each do |data_row|
-      sorted_and_viewable_data_column = []
-      self.viewable_columns.each do |viewable_column|
-        orig_column = self.meta_data_columns.
-          find{|column| column.id == viewable_column.id}
-        orig_index = self.meta_data_columns.rindex(orig_column)
-        sorted_and_viewable_data_column << data_row[orig_index]
-      end
-      #add row number to the last column
-      sorted_and_viewable_data_column << data_row[0]
-      result << sorted_and_viewable_data_column
-    end
-    result
-  end
-  
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))
@@ -64,8 +47,10 @@ class View < Model
   end
 
   def html
-    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.html?template=bare_template.html", {})
+    if !is_blobby?
+      CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
+        "rows.html?template=bare_template.html", {})
+    end
   end
 
   def meta_data_columns
@@ -113,7 +98,6 @@ class View < Model
   def find_all_data(options)
     page = options[:page] || 1
     data, aggregates, total_entries = find_row_data(page, options[:conditions])
-    data = search_and_sort_viewable_columns(data)
     data = paginate_rows(data, page, total_entries)
     return data, aggregates
   end
@@ -279,7 +263,7 @@ class View < Model
   end
 
   def is_blist?
-    flag?("default")
+    flag?("default") && is_tabular?
   end
 
   def is_public?
@@ -326,6 +310,12 @@ class View < Model
 
   def about_href
     self.href + "/about"
+  end
+  
+  def blob_href
+    if is_blobby?
+      return "/api/file_data/#{blobId}?filename=" + URI.escape(blobFilename) 
+    end
   end
 
   def user_role(user_id)
@@ -410,9 +400,9 @@ class View < Model
   end
 
   def parent_dataset
-    return self if is_blist?
+    return self if is_blist? || (is_blobby? && flag?("default"))
     View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
-      find {|l| l.is_blist?}
+      find {|l| l.is_blist? || (l.is_blobby? && l.flag?("default"))}
   end
 
   def comments
@@ -443,7 +433,15 @@ class View < Model
     columns.any? {|c| c.renderTypeName == 'date' && !c.flag?('hidden')} &&
       columns.any? {|c| c.renderTypeName == 'text' && !c.flag?('hidden')}
   end
-
+  
+  def is_tabular?
+    viewType == 'tabular'
+  end
+  
+  def is_blobby?
+    viewType == 'blobby'
+  end
+  
   # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.
   def display
     return @display if @display
@@ -470,8 +468,14 @@ class View < Model
       end
     end
 
-    # Table display is the default if the display type is absent or invalid
-    display_class = Displays::Table unless display_class
+    if !display_class
+      if is_blobby?
+        display_class = Displays::Blob
+      else
+        # Table display is the default if the display type is absent or invalid
+        display_class = Displays::Table
+      end
+    end
 
     # Create the display
     @display = display_class.new(self)
@@ -534,6 +538,11 @@ class View < Model
     datatypes.is_a?(Array) && datatypes.include?(dt) || dt == datatypes
   end
 
+  def email(email = nil)
+    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.json?method=email" + (email.nil? ? "" : "&email=#{email}"))
+  end
+
   @@categories = {
     "" => "-- No category --",
     "Fun" => "Fun",
@@ -570,28 +579,6 @@ class View < Model
     "CC_30_BY_NC" => "Attribution | Noncommercial 3.0 Unported",
     "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
-  }
-
-  FILTER_CONDITIONS = {
-    :text =>     [ { :operator => "EQUALS", :label => "equals" },
-                   { :operator => "NOT_EQUALS", :label => "does not equal" },
-                   { :operator => "STARTS_WITH", :label => "starts with" },
-                   { :operator => "CONTAINS", :label => "contains" } ],
-    :date =>     [ { :operator => "EQUALS", :label => "on" },
-                   { :operator => "NOT_EQUALS", :label => "not on" },
-                   { :operator => "LESS_THAN", :label => "before" },
-                   { :operator => "GREATER_THAN", :label => "after" },
-                   { :operator => "BETWEEN", :label => "between" } ],
-    :checkbox => [ { :operator => "EQUALS", :label => "equals" } ],
-    :photo =>    [ { :operator => "IS_BLANK", :label => "is empty" },
-                   { :operator => "IS_NOT_BLANK", :label => "exists" } ],
-    :number =>   [ { :operator => "EQUALS", :label => "equals" }, 
-                   { :operator => "NOT_EQUALS", :label => "not equals" },
-                   { :operator => "LESS_THAN", :label => "less than" },
-                   { :operator => "LESS_THAN_OR_EQUALS", :label => "less than or equal to" },
-                   { :operator => "GREATER_THAN", :label => "greater than" },
-                   { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" },
-                   { :operator => "BETWEEN", :label => "between"} ]
   }
 
   @@per_page = 50

@@ -30,12 +30,14 @@
     </dd></dl>
   </li>
 
+  <%- if !@view.is_blobby? -%>
   <li>
     <dl><dt><a href='#menuFilterView'>Filter, Visualize &amp; More</a></dt>
       <dd><%= menu_tag({'bare_menu' => true, 'class' => 'filterView',
       'items' => filter_submenu(@view, false, menu_options)}, is_owner, can_edit) %>
     </dd></dl>
   </li>
+  <%- end -%>
 
   <li>
     <dl><dt><a href='#menuShareSocialize'>Publish, Share &amp; Socialize</a></dt>

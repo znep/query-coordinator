@@ -120,10 +120,14 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'index', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
       :category => /(\w|-)+/}
-      
+
   map.connect ':category/:view_name/:id/:action', :controller => 'blists',
     :conditions => { :method => :get }, :requirements => {:id => UID_REGEXP,
       :view_name => /(\w|-)+/, :category => /(\w|-)+/}
+
+  map.connect ':category/:view_name/:id/email', :controller => 'blists',
+    :action => 'email', :conditions => { :method => :post }, 
+    :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/, :category => /(\w|-)+/}
 
   map.connect ':category/:view_name/:id/:action/:type', :controller => 'blists',
     :conditions => { :method => :get }, :requirements => {:id => UID_REGEXP,

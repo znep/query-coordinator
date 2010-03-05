@@ -538,6 +538,11 @@ class View < Model
     datatypes.is_a?(Array) && datatypes.include?(dt) || dt == datatypes
   end
 
+  def email(email = nil)
+    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
+      "rows.json?method=email" + (email.nil? ? "" : "&email=#{email}"))
+  end
+
   @@categories = {
     "" => "-- No category --",
     "Fun" => "Fun",

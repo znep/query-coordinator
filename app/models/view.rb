@@ -576,28 +576,6 @@ class View < Model
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
 
-  FILTER_CONDITIONS = {
-    :text =>     [ { :operator => "EQUALS", :label => "equals" },
-                   { :operator => "NOT_EQUALS", :label => "does not equal" },
-                   { :operator => "STARTS_WITH", :label => "starts with" },
-                   { :operator => "CONTAINS", :label => "contains" } ],
-    :date =>     [ { :operator => "EQUALS", :label => "on" },
-                   { :operator => "NOT_EQUALS", :label => "not on" },
-                   { :operator => "LESS_THAN", :label => "before" },
-                   { :operator => "GREATER_THAN", :label => "after" },
-                   { :operator => "BETWEEN", :label => "between" } ],
-    :checkbox => [ { :operator => "EQUALS", :label => "equals" } ],
-    :photo =>    [ { :operator => "IS_BLANK", :label => "is empty" },
-                   { :operator => "IS_NOT_BLANK", :label => "exists" } ],
-    :number =>   [ { :operator => "EQUALS", :label => "equals" }, 
-                   { :operator => "NOT_EQUALS", :label => "not equals" },
-                   { :operator => "LESS_THAN", :label => "less than" },
-                   { :operator => "LESS_THAN_OR_EQUALS", :label => "less than or equal to" },
-                   { :operator => "GREATER_THAN", :label => "greater than" },
-                   { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" },
-                   { :operator => "BETWEEN", :label => "between"} ]
-  }
-
   @@per_page = 50
 
   # Sorts are enabled and disabled by feature modules

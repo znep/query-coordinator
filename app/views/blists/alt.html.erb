@@ -74,10 +74,11 @@
           <% form_tag alt_filter_blist_path(@view.id) do -%>
           <h2>Filter</h2>
           <% @view.viewable_columns.each do |filter_field| %>
-          <% unless View::FILTER_CONDITIONS[filter_field.renderTypeName.to_sym].nil? %>
+          <%- unless filter_field.possible_filter_conditions.nil? -%>
           <p>
           <%= label_tag "Filter on #{filter_field.name}" %>
-          <%= select_tag "limit_#{filter_field.id}", options_for_limit_to(filter_field.renderTypeName)%>
+          <%= select_tag "limit_#{filter_field.id}",
+            options_for_limit_to(filter_field)%>
           <%= text_field_tag "cell_content_#{filter_field.id}" %>
           </p>
           <% end %>

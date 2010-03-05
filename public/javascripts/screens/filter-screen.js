@@ -13,8 +13,6 @@ filterNS.conditions = {
     checkbox: [ { operator: "EQUALS", label: "equals" } ],
     photo:    [ { operator: "IS_BLANK", label: "is empty" },
                 { operator: "IS_NOT_BLANK", label: "exists" } ],
-    new_photo:[ { operator: "IS_BLANK", label: "is empty" },
-                { operator: "IS_NOT_BLANK", label: "exists" } ],
     number:   [ { operator: "EQUALS", label: "equals" },
                 { operator: "NOT_EQUALS", label: "not equals" },
                 { operator: "LESS_THAN", label: "less than" },
@@ -33,11 +31,7 @@ filterNS.filterableClass = function(type) {
     {
         return "number";
     }
-    else if ($.inArray(type, ["new_photo", "new_document"]) > -1)
-    {
-        return "new_photo";
-    }
-    else if ($.inArray(type, ["photo", "document"]) > -1)
+    else if ($.inArray(type, ["new_photo", "photo", "new_document", "document"]) > -1)
     {
         return "photo";
     }

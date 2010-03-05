@@ -101,9 +101,14 @@
             <tr>
               <td class="labelColumn"><label for="type">Type:</label></td>
               <td class="fieldColumn middle">
+                <%- type = @column.client_type -%>
                 <strong id="typeReadOnly"
-                  class="datatype-<%= @column.client_type %>">
-                  <%= Column.types[@column.client_type] %>
+                  class="datatype-<%= type %>">
+                  <%= Column.types[type] %>
+                  <%- if @column.is_group_aggregate? -%>
+                  (<%= @column.format.grouping_aggregate.capitalize %> on
+                  <%= Column.types[@column.client_type(@column.dataTypeName)] %>)
+                  <%- end -%>
                 </strong>
                 <% if @view.is_blist? && @column.convertable_types.size > 0 %>
                   <a id="converter" class="convertDropdown" href="#">Change</a>

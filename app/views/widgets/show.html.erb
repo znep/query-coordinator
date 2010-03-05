@@ -246,6 +246,7 @@
       <div class="gridContainer">
         <%- if !@view.is_invalid? -%>
         <div id="data-grid">
+          <%- if !@view.is_blobby? -%>
           <noscript>
             <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
 
@@ -255,6 +256,7 @@
               <%= @view.html %>
             <% end %>
           </noscript>
+          <%- end -%>
 
           <%- if @display.can_publish? -%>
           <%= raw @display.render_body self %>
@@ -342,7 +344,7 @@
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
     blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
 
-    <%- if !@view.is_invalid? -%>
+    <%- if !@view.is_invalid? && !@view.is_blobby? -%>
     <%# Hard-code parameters for initial call here; if the Javascript ever
     changes, these will need to be updated %>
     blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
@@ -350,7 +352,7 @@
     <%- end -%>
   </script>
 
-  <%- if @view.can_edit() -%>
+  <%- if @view.can_edit() && !@view.is_blobby? -%>
   <%= render(:partial => 'shared/table_editor_js') %>
   <%- end -%>
   <%= javascript_include_merged 'widgets-show' %>

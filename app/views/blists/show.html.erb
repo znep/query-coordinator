@@ -110,7 +110,8 @@
             </a>
             </li>
             <%- end -%>
-
+            
+            <%- if !@view.is_blobby? -%>
             <li class='separator'>
               <a href='#' id='filterLink' class='dropdownLink'>
                 <div class='outerWrapper'><div class='midWrapper'>
@@ -122,6 +123,7 @@
                 :locals => {:is_owner => is_owner, :can_edit => can_edit,
                 :menu_options => menu_options}) %>
             </li>
+            <%- end -%>
 
             <%- if Displays::Config[@view.displayType] && is_owner -%>
             <li class='separator'>
@@ -423,8 +425,9 @@
     blist.blistGrid.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
     blist.blistGrid.isInvalidView = <%= @view.is_invalid? ? 'true' : 'false' %>;
   </script>
-
+  <%- if !@view.is_blobby? -%>
   <%= render(:partial => 'shared/table_editor_js') %>
+  <%- end -%>
   <%= javascript_include_merged 'blists-show' %>
   <%= raw @display.render_javascript_includes self %>
 <% end %>

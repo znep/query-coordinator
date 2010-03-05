@@ -47,8 +47,10 @@ class View < Model
   end
 
   def html
-    CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
-      "rows.html?template=bare_template.html", {})
+    if !is_blobby?
+      CoreServer::Base.connection.get_request("/#{self.class.name.pluralize.downcase}/#{id}/" +
+        "rows.html?template=bare_template.html", {})
+    end
   end
 
   def meta_data_columns
@@ -261,7 +263,7 @@ class View < Model
   end
 
   def is_blist?
-    flag?("default")
+    flag?("default") && is_tabular?
   end
 
   def is_public?
@@ -308,6 +310,12 @@ class View < Model
 
   def about_href
     self.href + "/about"
+  end
+  
+  def blob_href
+    if is_blobby?
+      return "/api/file_data/#{blobId}?filename=" + URI.escape(blobFilename) 
+    end
   end
 
   def user_role(user_id)
@@ -392,9 +400,9 @@ class View < Model
   end
 
   def parent_dataset
-    return self if is_blist?
+    return self if is_blist? || (is_blobby? && flag?("default"))
     View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
-      find {|l| l.is_blist?}
+      find {|l| l.is_blist? || (l.is_blobby? && l.flag?("default"))}
   end
 
   def comments
@@ -425,7 +433,15 @@ class View < Model
     columns.any? {|c| c.renderTypeName == 'date' && !c.flag?('hidden')} &&
       columns.any? {|c| c.renderTypeName == 'text' && !c.flag?('hidden')}
   end
-
+  
+  def is_tabular?
+    viewType == 'tabular'
+  end
+  
+  def is_blobby?
+    viewType == 'blobby'
+  end
+  
   # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.
   def display
     return @display if @display
@@ -452,8 +468,14 @@ class View < Model
       end
     end
 
-    # Table display is the default if the display type is absent or invalid
-    display_class = Displays::Table unless display_class
+    if !display_class
+      if is_blobby?
+        display_class = Displays::Blob
+      else
+        # Table display is the default if the display type is absent or invalid
+        display_class = Displays::Table
+      end
+    end
 
     # Create the display
     @display = display_class.new(self)

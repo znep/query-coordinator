@@ -23,8 +23,11 @@
 </head>
 
 <body>
+  <div id="skipLinks">
+    <%= yield :skip_links %>
+  </div>
 
-    <%= yield :layout %>
+  <%= yield :layout %>
 
   <%#
   Better to load JS at the bottom:

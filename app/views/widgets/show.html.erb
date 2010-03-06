@@ -178,6 +178,11 @@
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
 
 <% end %>
+
+<% content_for :skip_links do %>
+  <%= link_to 'Go to an accessible version of this page', @view.alt_href %>
+<% end %>
+
 <%- if @display.render_widget_chrome? -%>
 <div id='header' class='headerBar'><div class='wrapperTR'>
     <div class='wrapperT clearfix'>

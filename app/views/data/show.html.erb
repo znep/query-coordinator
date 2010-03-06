@@ -5,7 +5,7 @@
 
 <% content_for :skip_links do %>
   <%- unless params[:no_js] -%>
-    <a href="?no_js=true">Reload this page without JavaScript</a>
+    <%= link_to 'Go to an accessible version of this page', "?no_js=true" %>
   <%- end -%>
 <% end %>
 

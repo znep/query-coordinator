@@ -113,6 +113,7 @@ class BlistsController < ApplicationController
     find_view
     @data, @aggregates = @view.find_data(:all, :page => params[:page], :conditions => params)
     @query_json = query_json
+    @page = (params[:page] || 1).to_i
     @search_query = params['search']
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})

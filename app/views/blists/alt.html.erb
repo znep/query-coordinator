@@ -7,8 +7,10 @@
 <% end %>
 
 <% content_for :skip_links do %>
-  <a href="#dataGrid" accesskey="d">Skip to data</a>
-  <a href="#metaTabs" accesskey="m">Skip to metadata information</a>
+  <a href="#dataGrid" accesskey="d">Skip to data grid</a>
+  <a href="#search" accesskey="s">Skip to search within this dataset</a>
+  <a href="#views" accesskey="v">Skip to other views of this data</a>
+  <a href="#comments" accesskey="o">Skip to comments</a>
 <% end %>
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
@@ -67,9 +69,11 @@
             </div>
             <div id="pagination links" style="margin: 20px;">
               <%= will_paginate @data %>
-
             </div>
           </div>
+
+          <%# HACK: Temporarily hide sort & filter until it doesn't suck %>
+          <% if false %>
           <%# This is somewhat ugly but is inline for perf reasons %>
           <% form_tag alt_filter_blist_path(@view.id) do -%>
           <h2>Filter</h2>
@@ -112,43 +116,70 @@
         <% elsif @query_json and not current_user %>
         <div><%= link_to "Sign in to save this view.", :controller => :blists, :action => :login_to_alt, :id => @view.id, :query_json => @query_json %></div>
         <% end %>
-        <h2>Saved Views</h2>
-        <% @view.filters.each do |filter| %>
-
-        <ul>
-          <li><%= link_to filter.name, filter.alt_href %></li>
-        </ul>
         <% end %>
-        <h2>Comments</h2>
-        <h2>
-          <%= pluralize(@view.numberOfComments, 'Comment') %>
-        </h2>
-        <h2><%= @view.averageRating %> Average Rating</h2>
-        <h2><%= pluralize(@view.totalTimesRated, 'Rating') %></h2>
+        <%# END HACK %>
 
-        <%- form_tag(alt_post_comment_blist_path(@view.id)) do -%>
+        <%# HACK to at least show search %>
+        <div class="altMeta">
+          <a name="search"></a>
+          <h2>Search within this dataset</h2>
+          <% form_tag alt_filter_blist_path(@view.id) do -%>
+            <%= label_tag "search", "Search" %>
+            <%= text_field_tag "search", @search_query %>
+            <%= submit_tag "Search" %>
+          <% end %>
 
-        <%= label_tag "My Rating" %>
-        <%= select_tag("comment[viewRating]", options_for_select([1, 2, 3, 4, 5].reverse)) %>
-        <%= label_tag "Title" %>
-        <%= text_field_tag("comment[title]") %>
-        <%= label_tag "Body" %>
-        <%= text_area_tag("comment[body]") %>
-        <%= submit_tag "submit" %>
-        <%- end -%>
+          <a name="views"></a>
+          <h2>Saved Views</h2>
+          <% if @view.filters.size > 0 %>
+            <% @view.filters.each do |filter| %>
+              <ul class="metaDataList">
+                <li><%= link_to filter.name, filter.alt_href %></li>
+              </ul>
+            <% end %>
+          <% else %>
+            <p>No other views on this dataset</p>
+          <% end %>
 
-        <% @view.comments.each do |comment| %>
-        <div class="comment">
-          <p>Rating:           <%= get_comment_rating_html(comment) %></p>
-          <p><%= comment.title %></p>
-          <p><%= comment.user.displayName %></p>
+          <a name="comments"></a>
+          <h2>Post a Comment</h2>
+          <%- form_tag(alt_post_comment_blist_path(@view.id)) do -%>
+            <% field_set_tag do %>
+              <%= label_tag "comment[viewRating]", "My Rating" %>
+              <%= select_tag("comment[viewRating]", options_for_select([1, 2, 3, 4, 5].reverse)) %>
+            <% end %>
 
-          <p><%= humane_date(comment.createdAt) %></p>
+            <% field_set_tag do %>
+              <%= label_tag "comment[title]", "Title" %>
+              <%= text_field_tag("comment[title]") %>
+            <% end %>
 
-          <p><%= comment.body %></p>
+            <% field_set_tag do %>
+              <%= label_tag "comment[body]", "Body" %>
+              <%= text_area_tag("comment[body]") %>
+            <% end %>
 
+            <%= submit_tag "Submit this comment" %>
+          <%- end -%>
+
+          <h2>Comments</h2>
+          <ul class="metaDataList">
+            <li><em>Total Comments:</em> <%= @view.numberOfComments %></li>
+            <li><em>Average Rating:</em> <%= @view.averageRating %></li>
+          </ul>
+
+          <% @view.comments.each do |comment| %>
+            <div class="comment">
+              <h3><%= comment.title %></h3>
+              <ul class="metaDataList">
+                <li><em>Rating:</em> <%= comment.viewRating.nil? ? "No rating" : "#{comment.viewRating.to_i} out of 5" %></li>
+                <li><em>Author:</em> <%= comment.user.displayName %></li>
+                <li><em>Posted:</em> <%= humane_date(comment.createdAt) %></li>
+              </ul>
+              <p><%= comment.body %></p>
+            </div>
+          <% end %>
         </div>
-        <% end %>
       </div>
     </div>
   </div>

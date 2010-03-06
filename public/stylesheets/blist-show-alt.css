@@ -1,3 +1,8 @@
+h2, h3
+{
+    padding-top: 1em;
+}
+
 .altShowContainer #datasetMenu li
 {
     display: inline-block;
@@ -54,3 +59,13 @@
 }
 .altShowContainer #dataGrid td table { width: 100%; }
 .altShowContainer #dataGrid td table td { font-size: 1em; }
+
+.altMeta p, .altMeta li, .altMeta label
+{
+    font-size: 1.2em;
+}
+
+ul.metaDataList
+{
+    list-style: circle inside;
+}

@@ -22,20 +22,24 @@ class FilterQuery
     result
   end
   
-    def filter_query_hash(filter_children_array)
-      {"type" => "operator",
+  def filter_query_hash(filter_children_array)
+    {
+      "type" => "operator",
       "value" => "AND",
-       "children"=> filter_children_array}
+      "children"=> filter_children_array
+    }
   end
 
   def sort_query_hash(filter_children_array)
-      filter_children_array
+    filter_children_array
   end
 
   def filter_header(params)
-    result = {"name" => "Temporary View",
-     "id" => self.view_id,
-     "originalViewId" => self.view_id}
+    result = {
+      "name" => "Temporary View",
+      "id" => self.view_id,
+      "originalViewId" => self.view_id
+    }
     result = result.merge({"searchString" => "#{params['search']}"}) if params['search']
     result
   end

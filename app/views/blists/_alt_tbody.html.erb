@@ -12,7 +12,7 @@
 </thead>
 <tbody>
   <%# This is somewhat ugly but is inline for perf reasons %>
-  <% row_number = ((start_page - 1) * @view.per_page)  %>
+  <% row_number = ((start_page - 1) * @per_page)  %>
   <%- rows.each do |row| -%>
     <% row_number += 1 %>
     <tr class="<%= cycle('even', 'odd', :name => 'row_' + parent_id) %>">

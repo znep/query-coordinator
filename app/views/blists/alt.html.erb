@@ -65,21 +65,20 @@
               </table>
             </div>
             <div id="pagination links" style="margin: 20px;">
-              <%= will_paginate @data %>
+              <%= create_pagination(@row_count, @per_page, @page, @view.href + '/alt') %>
             </div>
           </div>
 
           <%# HACK: Temporarily hide sort & filter until it doesn't suck %>
           <% if false %>
           <%# This is somewhat ugly but is inline for perf reasons %>
-          <% form_tag alt_filter_blist_path(@view.id) do -%>
+          <% form_tag @view.alt_href, :method => :get do -%>
           <h2>Filter</h2>
           <% @view.viewable_columns.each do |filter_field| %>
           <%- unless filter_field.possible_filter_conditions.nil? -%>
           <p>
           <%= label_tag "Filter on #{filter_field.name}" %>
-          <%= select_tag "limit_#{filter_field.id}",
-            options_for_limit_to(filter_field)%>
+          <%= select_tag "limit_#{filter_field.id}", options_for_limit_to(filter_field)%>
           <%= text_field_tag "cell_content_#{filter_field.id}" %>
           </p>
           <% end %>
@@ -95,7 +94,7 @@
           <%= submit_tag "submit" %>
           <% end -%>
           <h2>Search</h2>
-          <% form_tag alt_filter_blist_path(@view.id) do -%>
+          <% form_tag @view.alt_href do -%>
           <%= label_tag "Search" %>
           <%= text_field_tag "search", @search_query %>
           <%= link_to "clear search", @view.alt_href %>
@@ -111,7 +110,7 @@
         <%= submit_tag "submit" %>
         <% end %>
         <% elsif @query_json and not current_user %>
-        <div><%= link_to "Sign in to save this view.", :controller => :blists, :action => :login_to_alt, :id => @view.id, :query_json => @query_json %></div>
+        <div><%= link_to "Sign in to save this view.", @view.href + '/save_filter', :id => @view.id, :query_json => @query_json %></div>
         <% end %>
         <% end %>
         <%# END HACK %>
@@ -120,7 +119,7 @@
         <div class="altMeta">
           <a name="search"></a>
           <h2>Search within this dataset</h2>
-          <% form_tag alt_filter_blist_path(@view.id) do -%>
+          <% form_tag @view.alt_href, :method => :get do -%>
             <%= label_tag "search", "Search" %>
             <%= text_field_tag "search", @search_query %>
             <%= submit_tag "Search" %>
@@ -141,7 +140,7 @@
           <% if module_enabled? :allow_comments %>
             <a name="comments"></a>
             <h2>Post a Comment</h2>
-            <%- form_tag(alt_post_comment_blist_path(@view.id)) do -%>
+            <%- form_tag(post_comment_blist_path(@view.id)) do -%>
               <% field_set_tag do %>
                 <%= label_tag "comment[viewRating]", "My Rating" %>
                 <%= select_tag("comment[viewRating]", options_for_select([1, 2, 3, 4, 5].reverse)) %>

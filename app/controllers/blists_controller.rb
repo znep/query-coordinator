@@ -1,7 +1,7 @@
 class BlistsController < ApplicationController
   include BlistsHelper
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:help_me, :login_to_alt, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
+  skip_before_filter :require_user, :only => [:help_me, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
 
   def index
     @body_class = 'home'
@@ -93,43 +93,7 @@ class BlistsController < ApplicationController
 
   def alt
     @body_id = 'lensBody'
-    find_view
-    @data, @aggregates = @view.find_data(:all, :page => params[:page])
-    @page = (params[:page] || '1').to_i
-    @view.register_opening
-    @view_activities = Activity.find({:viewId => @view.id})
-  end
-  
-  def login_to_alt
-    find_view
-    session[:return_to] = "#{alt_filter_blist_url(@view.id)}?query_json=#{CGI::escape(params[:query_json])}"
-    redirect_to login_url
-  end
-    
-  #can be accessed via POST when sending a new filter through a form OR
-  #from a GET when a non-logged in user elects to save a form and then is passed back
-  #to this filter after the login via BlistsController#login_to_alt
-  def alt_filter
-    find_view
-    @data, @aggregates = @view.find_data(:all, :page => params[:page], :conditions => params)
-    @query_json = query_json
-    @page = (params[:page] || 1).to_i
-    @search_query = params['search']
-    @view.register_opening
-    @view_activities = Activity.find({:viewId => @view.id})
-    render :template => 'blists/alt'  
-  end
-  
-  def save_filter
-    find_view
-    @result = @view.save_query(params)
-    @data, @aggregates = @view.find_data(:all, :page => params[:page], :conditions => params)
-    @view.register_opening
-    @view_activities = Activity.find({:viewId => @view.id})
-    render :template => 'blists/alt'  
-  end
 
-  def find_view
     begin
       @parent_view = @view = View.find(params[:id])
       # @aggregates = @view.aggregates
@@ -153,9 +117,31 @@ class BlistsController < ApplicationController
       return require_user(true)
     end
 
-    if !@view.is_blist?
+    if !@view.is_tabular?
       # SoL. Display a message and redir to parent?
     end
+
+    @per_page = 50
+    @data, @aggregates, @row_count = @view.find_data(@per_page, :conditions => params)
+
+    # build current state
+    @page = (params[:page] || 1).to_i # TODO: what?
+
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
+  end
+  
+  def save_filter
+    begin
+      @view = View.find(params[:id])
+      # @aggregates = @view.aggregates
+    rescue
+      flash.now[:error] = 'An error occurred processing your request.'
+      return (render 'shared/error', :status => :not_found)
+    end
+
+    @result = @view.save_query(params)
+    redirect_to @result.alt_href
   end
 
   # To build a url to this action, use View.about_href.
@@ -266,21 +252,11 @@ class BlistsController < ApplicationController
     @comment = Comment.create(params[:id], params[:comment])
     @view = View.find(params[:id])
 
-    respond_to do |format|
-      format.html { redirect_to(@view.href +
-        '?metadata_pane=tabComments&comment=' + @comment.id.to_s) }
-      format.data { render }
-    end
-  end
-
-  def alt_post_comment
-    @is_child = !params[:comment][:parent].nil?
-    @comment = Comment.create(params[:id], params[:comment])
-    @view = View.find(params[:id])
+    redirect_path = params[:redirect_to] ||
+                    ('?metadata_pane=tabComments&comment=' + @comment.id.to_s)
 
     respond_to do |format|
-      format.html { redirect_to(@view.href +
-        '/alt') }
+      format.html { redirect_to(@view.href + redirect_path) }
       format.data { render }
     end
   end
@@ -756,10 +732,6 @@ class BlistsController < ApplicationController
 
 
 private
-
-  def query_json
-    params[:query_json] || FilterQuery.new(@view.id, params).build.to_json 
-  end
 
   def get_views_with_ids(params = nil)
     cur_views = View.find_multiple(params)

@@ -51,20 +51,15 @@
                 <%= render(:partial => 'alt_tbody',
                   :locals => {:columns => @view.viewable_columns,
                   :rows => @data, :start_page => @page, :parent_id => '0'}) %>
-                <% unless @aggregates.nil? or @aggregates.none? %>
-                  <tfoot>
-                    <tr>
-                      <th>Totals</th>
-                      <% @view.viewable_columns.each do |column|%>
-                      <th>
-                        <%- agg = @aggregates.find{|aggregate|
-                            aggregate['columnId'] == column.id} -%>
-                        <%= agg['value'] if !agg.nil? %>
-                      </th>
-                      <% end %>
-                    </tr>
-                  </tfoot>
-                <% end %>
+                <%- unless @aggregates.nil? or @aggregates.none? -%>
+                <tfoot>
+                  <tr>
+                  <%= render(:partial => 'alt_tfooter',
+                    :locals => {:columns => @view.viewable_columns,
+                    :aggregates => @aggregates}) %>
+                  </tr>
+                </tfoot>
+                <%- end -%>
               </table>
             </div>
             <div id="pagination links" style="margin: 20px;">

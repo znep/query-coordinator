@@ -572,7 +572,7 @@ blist.namespace.fetch('blist.data');
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
                         $.extend({}, supplementalAjaxOptions.data,
-                        { method: 'index', ids: rowsToLoad })),
+                        { ids: rowsToLoad })),
                     type: 'POST',
                     contentType: 'application/json',
                     data: $.json.serialize(tempView) });

@@ -872,11 +872,14 @@
             qtipsRef[col.id] = $col;
 
             var tooltipContent = '<div class="blist-th-tooltip ' +
-                (col.originalType || col.type) + '">'
+                col.type + '">'
                 + '<p class="name">' +
                 $.htmlEscape(col.name).replace(/ /, '&nbsp;') + '</p>' +
                 '<div class="blist-th-icon">' +
-                (col.originalType || col.type).displayable() +
+                col.type.displayable() +
+                (col.grouping_aggregate !== undefined ?
+                    ' (' + $.capitalize(col.grouping_aggregate) + ' on ' +
+                    col.originalType.displayable() + ')' : '') +
                 '</div>' +
                 (col.description !== undefined ?
                     '<p class="description">' + $.htmlEscape(col.description) +

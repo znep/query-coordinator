@@ -15,13 +15,15 @@ columnFormatNS.renderPrecision = function(value)
 columnFormatNS.activatePrecision = function()
 {
     $("#columnProperties_precision").spinner({min: 0});
-    $('#columnProperties_precisionEnabled').change(function()
+    var precisionEnabledClick = function()
     {
         if ($('#columnProperties_precisionEnabled:checked').length > 0)
         { $('#columnProperties_precision').spinner('enable'); }
         else
         { $('#columnProperties_precision').spinner('disable'); }
-    }).change();
+    };
+    $('#columnProperties_precisionEnabled').click(precisionEnabledClick);
+    precisionEnabledClick();
 };
 
 columnFormatNS.renderers = {};

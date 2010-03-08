@@ -39,6 +39,7 @@ h2, h3
     white-space: nowrap;
     width: auto;
 }
+.altShowContainer #dataGrid th.nested_table { border-bottom: 1px solid #aaa; }
 .altShowContainer #dataGrid td table th
 {
     font-size: 1.0909em;

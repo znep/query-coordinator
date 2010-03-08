@@ -102,6 +102,8 @@ class Column < Model
   end
 
   def convertable_types
+    return [] if is_group_aggregate?
+
     if client_type(dataTypeName) == "text"
       return [
         "richtext", "number", "money", "percent", "date", "phone",
@@ -128,6 +130,8 @@ class Column < Model
   end
 
   def has_display_options?
+    return false if is_group_aggregate? && dataTypeName != 'number'
+
     types_with_display_options = ["date", "number", "money", "percent"]
 
     return types_with_display_options.include?(client_type)
@@ -144,8 +148,8 @@ class Column < Model
   def has_totals?
     types_with_totals = ["text", "richtext", "number", "money", "percent",
                          "date", "phone", "email", "url", "checkbox", "stars",
-                         "flag", "new_document", "document", "new_photo", "photo", "picklist",
-                         "drop_down_list", "tag"]
+                         "flag", "new_document", "document", "new_photo", "photo",
+                         "picklist", "drop_down_list", "tag"]
 
     return types_with_totals.include?(client_type)
   end
@@ -259,6 +263,7 @@ class Column < Model
       :description => CGI.escapeHTML(description),
       :width => width || 100,
       :type => renderTypeName || "text",
+      :originalType => dataTypeName,
       :id => id
     }
 

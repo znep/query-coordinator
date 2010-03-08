@@ -2,7 +2,9 @@
   <tr>
     <th scope='col' id="header_row_number_<%= parent_id %>">Row number</th>
     <% columns.each do |column|%>
-      <th scope='col' id="header_<%= column.id %>" class="<%= column.dataTypeName %>">
+      <th scope='col' id="header_<%= column.id %>" class="<%= column.dataTypeName %>"
+        <%= "colspan='" + (column.viewable_children.length + 1).to_s + "'" if
+          column.is_nested_table %>>
         <%= column.name %>
       </th>
     <%- end -%>
@@ -18,7 +20,9 @@
         <%= row_number %>
       </th>
       <% columns.each do |column|%>
-      <td header="header_<%= column.id %>" class='type_<%= column.client_type %>'>
+      <td header="header_<%= column.id %>" class='type_<%= column.client_type %>'
+        <%= "colspan='" + (column.viewable_children.length + 1).to_s + "'" if
+          column.is_nested_table %>>
           <%- cell = row[column.data_position] -%>
           <%- unless cell.nil? -%>
             <%- case column.renderTypeName -%>

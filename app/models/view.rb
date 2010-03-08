@@ -133,8 +133,10 @@ class View < Model
     parse(CoreServer::Base.connection.create_request(path))
   end
 
-  def notify_all_of_changes
-    self.class.create_favorite(self.id)
+  def set_permission(permission_type)
+    path = "/#{self.class.name.pluralize.downcase}/#{self.id}.json?" +
+        {"method" => "setPermission", 'value' => permission_type}.to_param
+    self.class.parse(CoreServer::Base.connection.get_request(path))
   end
 
   def self.create_favorite(id)

@@ -74,6 +74,7 @@ ActionController::Routing::Routes.draw do |map|
       :create_favorite => :get,
       :delete_favorite => :get,
       :notify_all_of_changes => :post,
+      :modify_permission => :post,
       :alt => :get,
       :save_filter => :post,
       :help_me => :get

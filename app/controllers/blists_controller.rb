@@ -313,7 +313,17 @@ class BlistsController < ApplicationController
   def notify_all_of_changes
     blist_id = params[:id]
     result = View.notify_all_of_changes(blist_id)
-    render :text => {"result" => "success"}.to_json
+    respond_to do |format|
+      format.data { render :text => {"result" => "success"}.to_json }
+    end
+  end
+
+  def modify_permission
+    view = View.find(params[:id])
+    view.set_permission(params[:permission_type])
+    respond_to do |format|
+      format.html { redirect_to view.alt_href + '#sharing' }
+    end
   end
 
   def email

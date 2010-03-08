@@ -214,7 +214,11 @@
     display: inline;
 }
 
-#data-grid.fc { overflow: auto; }
+#data-grid.fc
+{
+    overflow: auto;
+    position: relative;
+}
 
 .blist-table { height: 100%; }
 

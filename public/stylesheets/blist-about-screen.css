@@ -21,6 +21,8 @@
     padding-top: 0;
 }
 
+.aboutHeader label { font-size: 2.3em; }
+
 .aboutCategoryList, .attributionList { margin: 1em 0 2em; }
 .aboutCategoryList li, .attributionList li
 {

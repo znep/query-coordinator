@@ -785,6 +785,8 @@ body#lensBody
     padding-top: 1px;
 }
 
+#lensContainer .tabList .filter.tempViewTab label { display: none; }
+
 #lensContainer .tabList .filter.tempViewTab form input[type="text"]
 {
     font-size: 1em;

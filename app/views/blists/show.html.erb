@@ -49,6 +49,7 @@
         <div class='innerWrapper'>
           <span title='Click to name and save your filtered view'>[Unsaved Filter]</span>
           <%- form_tag(blists_path, :class => 'tempView') do -%>
+          <label for='view_name'>View Name:</label>
           <%= text_field_tag("view[name]", '') %>
           <%- end -%>
           <a href='#cancelFilter' class='close' title='Cancel'>Cancel</a>
@@ -169,8 +170,12 @@
           <%- if !@view.is_alt_view? -%>
           <form class='search' action='#'>
             <div class='searchContainer'>
+              <label for='view_search'>
+                Search in this <%= is_blist ? t(:blist_name) : 'view' %>
+              </label>
               <input type='text' class='textPrompt'
-              title='Find in this <%= t(:blist_name) %>'
+              title='Find in this <%= is_blist ? t(:blist_name) : 'view' %>'
+              name='view_search'
               value='<%= @view.searchString %>' />
               <div class='actionBox'>
               <div class='clearBox'>
@@ -375,6 +380,7 @@
                   Unsaved Filter
                 </span>
                 <%- form_tag(blists_path, :class => 'tempView') do -%>
+                <label for='view_name'>View Name:</label>
                 <%= text_field_tag("view[name]", '') %>
                 <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
                 <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),

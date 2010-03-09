@@ -24,6 +24,7 @@
             <a class="editLink editName<%= is_owner ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Dataset Name">Edit</a>
             <div class="editNameForm hide">
               <%= form_tag(@view.href) %>
+                <label for='view_name'>New Name:</label>
                 <%= text_field_tag("view[name]", h(@view.name)) %>
                 <a href="#" class="editNameSubmitButton">Submit</a>
                 <a href="#" class="editNameCancelButton">Cancel</a>

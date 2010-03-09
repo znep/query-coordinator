@@ -129,7 +129,7 @@
                 (<%= cell[type_i] %>)
               <%- end -%>
 
-            <%- when 'photo', 'photo' -%>
+            <%- when 'photo', 'photo_obsolete' -%>
               <%- url = '/views/' + @view.id + '/' +
                 (column.dataTypeName == 'photo_obsolete' ?
                 'obsolete_' : '') + 'files/' + cell -%>

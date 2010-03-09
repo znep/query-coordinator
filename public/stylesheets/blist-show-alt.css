@@ -70,3 +70,11 @@ ul.metaDataList
 {
     list-style: circle inside;
 }
+
+.altMeta #publishCodeTemplate
+{
+    font-size: 1.2em;
+    height: 10em;
+    margin-top: 1em;
+    width: 35em;
+}

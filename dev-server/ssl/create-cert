@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Simple helper script documenting how I made this SSL certificate, since
+# OpenSSL is about the most obtuse tool on the planet.
+
+openssl genrsa -out host.key 1024
+openssl req -config $PWD/openssl.cnf -new -key host.key -out host.csr
+openssl x509 -req -days 365 -in host.csr -CA ca.crt -CAkey ca.key -CAserial ca.serial -CAcreateserial -out host.crt -extfile $PWD/openssl.cnf -extensions v3_req -passin pass:socrata 

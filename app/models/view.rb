@@ -1,5 +1,5 @@
 class View < Model
-  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses, :per_page
+  cattr_accessor :categories, :licenses, :creative_commons, :merged_licenses
 
   def self.find(options = nil, get_all=false)
     if get_all || options.is_a?(String)
@@ -67,92 +67,61 @@ class View < Model
       array << Column.set_up_model(column_hash)}
   end
 
-  def get_rows_by_ids(params={})
-    ids = params[:ids]
-    ids = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
-    params.delete(:ids)
-    # default params
-    params = {:accessType => 'WEBSITE', :include_aggregates => true}.merge params
+  def save_filter(name, conditions)
+    request_body = {
+      :name => name,
+      :searchString => conditions.delete(:searchString),
+      :query => conditions,
+      :originalViewId => self.id
+    }.to_json
 
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}#{ids}"
-    JSON.parse(CoreServer::Base.connection.get_request(url, {}))['data']
+    View.parse(CoreServer::Base.connection.create_request("/views.json", request_body))
   end
 
-
-  def save_query(params = {})
-    query = JSON.parse(params[:query_json])
-    query['name'] = params[:name]
-    params = {:include_aggregates => true}.merge params
-    url = "/views.json?#{params.to_param}"
-
-    JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
-  end
-
-  def find_data(*arguments)
-    scope = arguments.slice!(0)
-    options = arguments.slice!(0) || {}
-    data, aggregates = find_all_data(options);
-    return data, aggregates
-  end
-
-  def find_all_data(options)
-    page = options[:page] || 1
-    data, aggregates, total_entries = find_row_data(page, options[:conditions])
-    data = paginate_rows(data, page, total_entries)
-    return data, aggregates
-  end
-
-    def find_row_data_with_conditions(params)
-    #build from posted form params
-    if params[:query_json].nil?
-      fq = FilterQuery.new(self.id, params)
-      query = fq.build
-      query = query.to_json
+  def find_data(per_page, page = 1, conditions = {})
+    # get data
+    params = { :accessType => 'WEBSITE', :include_aggregates => true, :include_ids_after => 1 }
+    if conditions.empty?
+      url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
+      result = JSON.parse(CoreServer::Base.connection.get_request(url))
     else
-      #build from passed in parameter
-      query = params[:query_json]
+      request_body = {
+        :name => self.name,
+        :searchString => conditions.delete(:searchString),
+        :query => conditions,
+        :originalViewId => self.id
+      }.to_json
+
+      params[:method] = 'index'
+      url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?#{params.to_param}"
+      result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body))
     end
-    result = self.get_rows_by_query(query)
-    return result['data'], result['meta']['aggregates']
-  end
 
-  def find_row_data(page, conditions = nil)
-    if conditions.nil?
-      result = self.get_rows
-      data = result['data']
-      aggregates = result['meta']['aggregates']
-      total_entries = data.size
-      data = data.paginate(:per_page => @@per_page, :page => page)
-    else
-      data, aggregates = find_row_data_with_conditions(conditions)
-      total_entries = data.size
+    data = result['data']
+    aggregates = result['meta']['aggregates']
+    row_count = data.size
+
+    unless data.empty?
+      # we had to get one row of data because the core server sucks.
+      # now we want no rows of data. caar for the sid.
+      data[0] = data[0][0]
+
+      # paginate data
+      data = data.slice((page - 1) * per_page, per_page)
+      # someday, we'll have ordered hashes and life will be good. for now, map it.
+      row_mapping = Hash.new
+      data.each_with_index{|sid, idx| row_mapping[sid] = idx}
+      self.get_rows_by_ids(data).each{ |row| data[row_mapping[row.first]] = row }
     end
-    return data, aggregates, total_entries
+
+    return data, aggregates, row_count
   end
 
-  def get_rows_by_query(query, params = {})
-    params = {:accessType => 'WEBSITE', :include_aggregates => true}.merge params
-    url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=index&#{params.to_param}"
-    JSON.parse(CoreServer::Base.connection.create_request(url, query))
-  end
+  def get_rows_by_ids(ids)
+    id_params = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
 
-  def get_rows(params = {})
-    # default params
-    params = {:accessType => 'WEBSITE', :include_aggregates => true}.merge params
-
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    JSON.parse(CoreServer::Base.connection.get_request(url, {}))
-  end
-
-  def find_all_row_data_ids
-    self.get_rows(:row_ids_only => true)
-  end
-
-  def paginate_rows(row_data, page, total_entries)
-    paginated_data = WillPaginate::Collection.create(page, @@per_page, total_entries) do |pager|
-      pager.replace(row_data)
-    end
-    paginated_data
+    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?accessType=WEBSITE#{id_params}"
+    JSON.parse(CoreServer::Base.connection.get_request(url))['data']
   end
 
   def json(params)
@@ -160,7 +129,7 @@ class View < Model
     if !params.nil?
       url += '?' + params.to_param
     end
-    escape_object(JSON.parse(CoreServer::Base.connection.get_request(url, {}))).
+    escape_object(JSON.parse(CoreServer::Base.connection.get_request(url))).
       to_json.html_safe!
   end
 
@@ -170,8 +139,10 @@ class View < Model
     parse(CoreServer::Base.connection.create_request(path))
   end
 
-  def notify_all_of_changes
-    self.class.create_favorite(self.id)
+  def set_permission(permission_type)
+    path = "/#{self.class.name.pluralize.downcase}/#{self.id}.json?" +
+        {"method" => "setPermission", 'value' => permission_type}.to_param
+    self.class.parse(CoreServer::Base.connection.get_request(path))
   end
 
   def self.create_favorite(id)
@@ -400,9 +371,14 @@ class View < Model
   end
 
   def parent_dataset
-    return self if is_blist? || (is_blobby? && flag?("default"))
-    View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
-      find {|l| l.is_blist? || (l.is_blobby? && l.flag?("default"))}
+    return @parent_dataset unless @parent_dataset.nil?
+    if is_blist? || (is_blobby? && flag?("default"))
+      @parent_dataset = self
+    else
+      @parent_dataset = View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
+                             find{ |l| l.is_blist? || (l.is_blobby? && l.flag?("default")) }
+    end
+    return @parent_dataset
   end
 
   def comments
@@ -580,8 +556,6 @@ class View < Model
     "CC_30_BY_NC_SA" => "Attribution | Noncommercial | Share Alike 3.0 Unported",
     "CC_30_BY_NC_ND" => "Attribution | Noncommercial | No Derivative Works 3.0 Unported"
   }
-
-  @@per_page = 50
 
   # Sorts are enabled and disabled by feature modules
   @@sorts = [

@@ -1,7 +1,7 @@
 class BlistsController < ApplicationController
   include BlistsHelper
   helper_method :get_title
-  skip_before_filter :require_user, :only => [:help_me, :login_to_alt, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
+  skip_before_filter :require_user, :only => [:help_me, :show, :alt, :alt_filter, :about, :print, :email, :flag, :republish, :about_sdp, :form_success, :form_error]
 
   def index
     @body_class = 'home'
@@ -93,43 +93,7 @@ class BlistsController < ApplicationController
 
   def alt
     @body_id = 'lensBody'
-    find_view
-    @data, @aggregates = @view.find_data(:all, :page => params[:page])
-    @page = (params[:page] || '1').to_i
-    @view.register_opening
-    @view_activities = Activity.find({:viewId => @view.id})
-  end
-  
-  def login_to_alt
-    find_view
-    session[:return_to] = "#{alt_filter_blist_url(@view.id)}?query_json=#{CGI::escape(params[:query_json])}"
-    redirect_to login_url
-  end
-    
-  #can be accessed via POST when sending a new filter through a form OR
-  #from a GET when a non-logged in user elects to save a form and then is passed back
-  #to this filter after the login via BlistsController#login_to_alt
-  def alt_filter
-    find_view
-    @data, @aggregates = @view.find_data(:all, :page => params[:page], :conditions => params)
-    @query_json = query_json
-    @page = (params[:page] || 1).to_i
-    @search_query = params['search']
-    @view.register_opening
-    @view_activities = Activity.find({:viewId => @view.id})
-    render :template => 'blists/alt'  
-  end
-  
-  def save_filter
-    find_view
-    @result = @view.save_query(params)
-    @data, @aggregates = @view.find_data(:all, :page => params[:page], :conditions => params)
-    @view.register_opening
-    @view_activities = Activity.find({:viewId => @view.id})
-    render :template => 'blists/alt'  
-  end
 
-  def find_view
     begin
       @parent_view = @view = View.find(params[:id])
       # @aggregates = @view.aggregates
@@ -149,13 +113,42 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_read()
+    if !@view.can_read() || (!current_user && params[:force_login])
       return require_user(true)
     end
 
-    if !@view.is_blist?
+    if !@view.is_tabular?
       # SoL. Display a message and redir to parent?
     end
+
+    @conditions = parse_conditions(params)
+
+    # build state for the sake of the pager
+    @state_param = {}
+    [:filter, :sort, :search_string].each{ |key| @state_param[key] = params[key] unless params[key].nil? }
+    @state_param = @state_param.to_param
+
+    # get rows
+    @per_page = 50
+    @data, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+
+    @view.register_opening
+    @view_activities = Activity.find({:viewId => @view.id})
+  end
+  
+  def save_filter
+    begin
+      @view = View.find(params[:id])
+      # @aggregates = @view.aggregates
+    rescue
+      flash.now[:error] = 'An error occurred processing your request.'
+      return (render 'shared/error', :status => :not_found)
+    end
+
+    conditions = parse_conditions(params)
+
+    @result = @view.save_filter(params[:name], conditions)
+    redirect_to @result.alt_href
   end
 
   # To build a url to this action, use View.about_href.
@@ -266,21 +259,11 @@ class BlistsController < ApplicationController
     @comment = Comment.create(params[:id], params[:comment])
     @view = View.find(params[:id])
 
-    respond_to do |format|
-      format.html { redirect_to(@view.href +
-        '?metadata_pane=tabComments&comment=' + @comment.id.to_s) }
-      format.data { render }
-    end
-  end
-
-  def alt_post_comment
-    @is_child = !params[:comment][:parent].nil?
-    @comment = Comment.create(params[:id], params[:comment])
-    @view = View.find(params[:id])
+    redirect_path = params[:redirect_to] ||
+                    ('?metadata_pane=tabComments&comment=' + @comment.id.to_s)
 
     respond_to do |format|
-      format.html { redirect_to(@view.href +
-        '/alt') }
+      format.html { redirect_to(@view.href + redirect_path) }
       format.data { render }
     end
   end
@@ -337,7 +320,17 @@ class BlistsController < ApplicationController
   def notify_all_of_changes
     blist_id = params[:id]
     result = View.notify_all_of_changes(blist_id)
-    render :text => {"result" => "success"}.to_json
+    respond_to do |format|
+      format.data { render :text => {"result" => "success"}.to_json }
+    end
+  end
+
+  def modify_permission
+    view = View.find(params[:id])
+    view.set_permission(params[:permission_type])
+    respond_to do |format|
+      format.html { redirect_to view.alt_href + '#sharing' }
+    end
   end
 
   def email
@@ -757,8 +750,55 @@ class BlistsController < ApplicationController
 
 private
 
-  def query_json
-    params[:query_json] || FilterQuery.new(@view.id, params).build.to_json 
+  def parse_conditions(params)
+    # parse params
+    @conditions = {}
+    #   page params
+    @page = (params[:page] || 1).to_i
+    #   filter params
+    unless params[:filter].nil?
+      filters = []
+      params[:filter].each do |column_id, filter|
+        next if filter[:operator].blank?
+        filters.push({
+          :type => 'operator',
+          :value => filter[:operator],
+          :children => [ {
+            :type => 'column',
+            :columnId => column_id
+          }, {
+            :type => 'literal',
+            :value => filter[:value]
+          } ]
+        })
+      end
+      unless filters.empty?
+        @conditions[:filterCondition] = {
+          :type => 'operator',
+          :value => 'AND',
+          :children => filters
+        }
+      end
+    end
+    #   sort params
+    unless params[:sort].nil?
+      sorts = []
+      params[:sort].each do |idx, sort|
+        next if sort[:field].blank?
+        sorts.push({
+          :ascending => (sort[:direction].downcase == 'ascending'),
+          :expression => {
+            :type => 'column',
+            :columnId => sort[:field]
+          }
+        })
+      end
+      @conditions[:orderBys] = sorts unless sorts.empty?
+    end
+    # search params
+    @conditions[:searchString] = params[:search_string] unless params[:search_string].blank?
+
+    return @conditions
   end
 
   def get_views_with_ids(params = nil)

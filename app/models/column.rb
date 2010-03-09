@@ -423,8 +423,8 @@ class Column < Model
       'date' => [ { :operator => "EQUALS", :label => "on" },
         { :operator => "NOT_EQUALS", :label => "not on" },
         { :operator => "LESS_THAN", :label => "before" },
-        { :operator => "GREATER_THAN", :label => "after" },
-        { :operator => "BETWEEN", :label => "between" } ],
+        { :operator => "GREATER_THAN", :label => "after" } ],
+#TODO: ruh roh: { :operator => "BETWEEN", :label => "between" } ],
       'comparable' => [ { :operator => "EQUALS", :label => "equals" } ],
       'blob' => [ { :operator => "IS_BLANK", :label => "is empty" },
         { :operator => "IS_NOT_BLANK", :label => "exists" } ],
@@ -433,8 +433,8 @@ class Column < Model
         { :operator => "LESS_THAN", :label => "less than" },
         { :operator => "LESS_THAN_OR_EQUALS", :label => "less than or equal to" },
         { :operator => "GREATER_THAN", :label => "greater than" },
-        { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" },
-        { :operator => "BETWEEN", :label => "between"} ]
+        { :operator => "GREATER_THAN_OR_EQUALS", :label => "greater than or equal to" } ]
+#TODO: ruh roh: { :operator => "BETWEEN", :label => "between"} ]
   }
 
 end

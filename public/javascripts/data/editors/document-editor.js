@@ -36,9 +36,15 @@
         editObj.focus();
     };
 
+    var idField = function(editObj)
+    {
+        return (editObj.column.type == 'document') ? "file_id" : "id";
+    };
+
     var fileUploaded = function(editObj, fileId, fileName)
     {
-        editObj._curVal = {id: fileId, filename: fileName};
+        editObj._curVal = {filename: fileName};
+        editObj._curVal[idField(editObj)] = fileId;
         updateButtons(editObj);
     };
 
@@ -60,7 +66,7 @@
 
         var v = editObj._curVal;
         $d.find('.docLink')
-            .attr('href', v ? editObj.column.base + v.id : '')
+            .attr('href', v ? editObj.column.base + v[idField(editObj)] : '')
             .text(v ? v.filename : '');
         $d.trigger('resize');
     };

@@ -54,8 +54,6 @@ javascripts:
   - widgets/upload-dialog
   - data/editors/document-editor
   - data/editors/photo-editor
-  - data/editors/new_photo-editor
-  - data/editors/new_document-editor
 - shared-map:
   - widgets/blist-map
 - accounts-show:

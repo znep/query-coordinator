@@ -119,7 +119,7 @@ blist.namespace.fetch('blist.data.types');
         return blist.util.humaneDate.getFromDate
                     (new Date(value * 1000), blist.util.humaneDate.DAY);
     };
-    
+
 
     /*** HTML RENDERERS ***/
 
@@ -691,7 +691,7 @@ blist.namespace.fetch('blist.data.types');
             }
         },
 
-        new_photo: {
+        photo_obsolete: {
             renderGen: renderGenPhoto,
             cls: 'photo',
             deleteable: true
@@ -810,13 +810,13 @@ blist.namespace.fetch('blist.data.types');
             isObject: true
         },
 
-        new_document: {
+        document: {
             renderGen: renderGenDocument,
             deleteable: true,
             isObject: true
         },
 
-        document: {
+        document_obsolete: {
             renderGen: renderGenDocument,
             deleteable: true,
             isObject: true
@@ -880,9 +880,9 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.stars.editor = $.blistEditor.stars;
         blist.data.types.richtext.editor = $.blistEditor.richtext;
         blist.data.types.document.editor = $.blistEditor.document;
-        blist.data.types.new_document.editor = $.blistEditor.new_document;
+        blist.data.types.document_obsolete.editor = $.blistEditor.document;
         blist.data.types.photo.editor = $.blistEditor.photo;
-        blist.data.types.new_photo.editor = $.blistEditor.new_photo;
+        blist.data.types.photo_obsolete.editor = $.blistEditor.photo;
         blist.data.types.tag.editor = $.blistEditor.tag;
     }
 

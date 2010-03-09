@@ -31,7 +31,7 @@ filterNS.filterableClass = function(type) {
     {
         return "number";
     }
-    else if ($.inArray(type, ["new_photo", "photo", "new_document", "document"]) > -1)
+    else if ($.inArray(type, ["photo_obsolete", "photo", "document_obsolete", "document"]) > -1)
     {
         return "photo";
     }
@@ -72,7 +72,7 @@ filterNS.createEditor = function($renderer, column, value) {
     {
         tempCol.format = "date";
     }
-    else if ((tempCol.type == "new_document") || (tempCol.type == "new_photo") || (tempCol.type == "document") || (tempCol.type == "photo"))
+    else if ((tempCol.type == "document_obsolete") || (tempCol.type == "photo_obsolete") || (tempCol.type == "document") || (tempCol.type == "photo"))
     {
         return;
     }
@@ -188,7 +188,7 @@ filterNS.row = function($row) {
     var column = selectedColumn.column;
     var operator = $row.find(".filterTable-conditionDropDown").value().operator;
 
-    if ((column.type == "new_document") || (column.type == "new_photo") || (column.type == "document") || (column.type == "photo"))
+    if ((column.type == "document_obsolete") || (column.type == "photo_obsolete") || (column.type == "document") || (column.type == "photo"))
     {
         return [
             {
@@ -223,7 +223,7 @@ filterNS.row = function($row) {
             children = [{columnId: column.id, type: "column",
                     value: "phone_number"},
                 {type: "literal", value: value[0].phone_number}];
-            phoneNumber.value = operator; 
+            phoneNumber.value = operator;
             phoneNumber.children = children;
             filter.push(phoneNumber);
         }

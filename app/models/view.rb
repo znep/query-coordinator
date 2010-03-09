@@ -503,6 +503,13 @@ class View < Model
     end
   end
 
+  def can_modify_data?
+    # The user can modify the data if:
+    # - This is a blist
+    # - They can edit it
+    return (self.can_edit && self.is_blist?)
+  end
+
   def columns_for_datatypes(datatypes, include_hidden = false)
     columns.select do |c|
       (include_hidden || !c.flag?('hidden')) && datatypes_match(c, datatypes)

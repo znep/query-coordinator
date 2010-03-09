@@ -233,7 +233,7 @@
             <%- if @view.is_private? -%>
             <p>
             This <%= @view.is_blist? ? t(:blist_name).downcase : 'view' %> is
-            currently private.  Private <%= view.is_blist? ?
+            currently private.  Private <%= @view.is_blist? ?
               t(:blist_name).downcase.pluralize : 'views' %>
             cannot be viewed in the Social Data Player.  Please
             set the privacy to public or shared before publishing.

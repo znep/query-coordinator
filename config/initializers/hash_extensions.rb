@@ -29,4 +29,10 @@ class Hash
       end
     end
   end
+
+  def deep_value_at(keys)
+    current = self
+    keys.each{ |key| current = current[key] unless current.nil? }
+    return current
+  end
 end

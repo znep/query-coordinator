@@ -75,38 +75,41 @@ class View < Model
     JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
   end
 
-  def find_data(per_page, options)
-    # default options
-    page = options[:page] || 1
-
+  def find_data(per_page, page = 1, conditions = {})
     # get data
     params = { :accessType => 'WEBSITE', :include_aggregates => true, :include_ids_after => 1 }
-    if conditions.nil?
+    if conditions.empty?
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-      result = JSON.parse(CoreServer::Base.connection.get_request(url, {}))
+      result = JSON.parse(CoreServer::Base.connection.get_request(url))
     else
-      fq = FilterQuery.new(self.id, params) #TODO: no. nononono.
-      query = fq.build.to_json
+      request_body = {
+        :name => self.name,
+        :searchString => conditions.delete(:searchString),
+        :query => conditions,
+        :originalViewId => self.id
+      }.to_json
 
-      params[:method] = 'index' #CR: need?
+      params[:method] = 'index'
       url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?#{params.to_param}"
-      result = JSON.parse(CoreServer::Base.connection.create_request(url, query))
+      result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body))
     end
 
     data = result['data']
     aggregates = result['meta']['aggregates']
     row_count = data.size
 
-    # we had to get one row of data because the core server sucks.
-    # now we want no rows of data. caar for the sid.
-    data[0] = data[0][0]
+    unless data.empty?
+      # we had to get one row of data because the core server sucks.
+      # now we want no rows of data. caar for the sid.
+      data[0] = data[0][0]
 
-    # paginate data
-    data = data.slice((page - 1) * per_page, per_page)
-    # someday, we'll have ordered hashes and life will be good. for now, map it.
-    row_mapping = Hash.new
-    data.each_with_index{|sid, idx| row_mapping[sid] = idx}
-    self.get_rows_by_ids(data).each{ |row| data[row_mapping[row.first]] = row }
+      # paginate data
+      data = data.slice((page - 1) * per_page, per_page)
+      # someday, we'll have ordered hashes and life will be good. for now, map it.
+      row_mapping = Hash.new
+      data.each_with_index{|sid, idx| row_mapping[sid] = idx}
+      self.get_rows_by_ids(data).each{ |row| data[row_mapping[row.first]] = row }
+    end
 
     return data, aggregates, row_count
   end

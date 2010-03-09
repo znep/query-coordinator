@@ -32,7 +32,7 @@
               <%= get_verb_for_activity_action(activity.action) %>
               <%= get_html_for_action_object(activity, in_widget) %>
             </div></td>
-            
+
             <%- if (!in_widget) -%>
               <td class="actionContainer"><div class="cellInner">
                 <a href="<%= get_url_for_activity_action(activity) %>" class="action"><span>View</span></a>
@@ -43,7 +43,8 @@
       <%- else -%>
         <tr class="item">
           <td colspan="4"><div class="cellInner">
-            <p>There is no activity for this <%= t(:blist_name).downcase %>.</p>
+            <p>There is no activity for this <%= view.is_blist? ?
+              t(:blist_name).downcase : 'view' %>.</p>
           </div></td>
         </tr>
       <%- end -%>

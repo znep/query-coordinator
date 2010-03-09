@@ -17,6 +17,7 @@
   <%- if @view.display.can_publish? -%>
   <a href="#publishing" accesskey="p">Skip to publishing</a>
   <%- end -%>
+  <a href="#activities" accesskey="a">Skip to activities</a>
 <% end %>
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
@@ -211,7 +212,7 @@
             <%- end -%>
 
             <%- if shares.length > 0 -%>
-            <ul class='shareList'>
+            <ul class='metaDataList'>
               <%- shares.sort {|a,b|
                 a.type <=> b.type ||
                 a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
@@ -263,6 +264,31 @@
             <%- end -%>
           </div>
           <%- end -%>
+
+          <a name='activities'></a>
+          <div id='activitiesBlock'>
+            <h2>Activities</h2>
+
+            <%- if @view_activities && @view_activities.length > 0 -%>
+              <ul class='metaDataList'>
+                <%- @view_activities.each do |activity| -%>
+                <li>
+                  <a href="<%= activity.actor.href %>"
+                    title='<%= activity.actor.displayName %>'>
+                    <%= activity.actor.displayName %>
+                  </a>
+                  <%= get_verb_for_activity_action(activity.action) %>
+                  <%= get_html_for_action_object(activity) %>
+
+                  <%= humane_date(activity.createdAt) %>
+                </li>
+                <%- end -%>
+              </ul>
+              <%- else -%>
+              <p>There is no activity for this <%= @view.is_blist? ?
+                t(:blist_name).downcase : 'view' %>.</p>
+              <%- end -%>
+          </div>
 
         </div>
       </div>

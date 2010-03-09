@@ -210,7 +210,9 @@
 
           <form class='search' action='#'>
             <div class='searchContainer clearfix'>
-              <input type='text' class='textInput textPrompt' title='Find Inside' />
+              <label for='view_search'>Find in view</label>
+              <input type='text' class='textInput textPrompt'
+                name='view_search' title='Find Inside' />
               <div class='actionBox'>
                 <div class='clearBox'>
                   <a class='clearSearch' title='Clear Search' href='#clear_search'>
@@ -242,6 +244,7 @@
               [Unsaved Filter]
             </span>
             <%- form_tag(blists_path) do -%>
+            <label for='view_name'>View Name:</label>
             <%= text_field_tag("view[name]", '') %>
             <%- end -%>
           </div>

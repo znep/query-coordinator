@@ -15,10 +15,10 @@ class Column < Model
       "checkbox" => "Checkbox",
       "stars" => "Star",
       "flag" => "Flag",
-      "new_document" => "Document",
-      "new_photo" => "Photo (Image)",
-      "document" => "Document (old)",
-      "photo" => "Photo (Image, old)",
+      "document" => "Document",
+      "photo" => "Photo (Image)",
+      "document_obsolete" => "Document (old)",
+      "photo_obsolete" => "Photo (Image, old)",
       "picklist" => "Multiple Choice",
       "drop_down_list" => "Multiple Choice",
       "nested_table" => "Nested Table",
@@ -46,8 +46,8 @@ class Column < Model
   def is_sortable?
     return client_type != "nested_table" && 
       client_type != "tag" &&
-      client_type != "new_photo" &&
-      client_type != "new_document" &&
+      client_type != "photo_obsolete" &&
+      client_type != "document_obsolete" &&
       client_type != "photo" &&
       client_type != "document"
   end
@@ -64,7 +64,7 @@ class Column < Model
         'textual'
       when 'number', 'money', 'percent', 'stars', 'picklist', 'drop_down_list'
         'numeric'
-      when 'new_photo', 'photo', 'new_document', 'document'
+      when 'photo_obsolete', 'photo', 'document_obsolete', 'document'
         'blob'
       when 'checkbox', 'flag'
         'comparable'
@@ -88,8 +88,8 @@ class Column < Model
     case (dataTypeName || renderTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
-    when "text", "new_photo", "photo", "phone", "checkbox", "flag", "url",
-      "email", "new_document", "document", "tag", "picklist", "drop_down_list"
+    when "text", "photo_obsolete", "photo", "phone", "checkbox", "flag", "url",
+      "email", "document_obsolete", "document", "tag", "picklist", "drop_down_list"
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
     when "date"
@@ -148,7 +148,7 @@ class Column < Model
   def has_totals?
     types_with_totals = ["text", "richtext", "number", "money", "percent",
                          "date", "phone", "email", "url", "checkbox", "stars",
-                         "flag", "new_document", "document", "new_photo", "photo",
+                         "flag", "document_obsolete", "document", "photo_obsolete", "photo",
                          "picklist", "drop_down_list", "tag"]
 
     return types_with_totals.include?(client_type)

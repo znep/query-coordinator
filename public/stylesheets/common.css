@@ -150,6 +150,8 @@ form.search input
     float: left;
 }
 
+form.search label { display: none; }
+
 form.search input.textPrompt
 {
     border-color: #cacaca;

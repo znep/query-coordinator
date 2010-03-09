@@ -17,6 +17,7 @@
   <%- if @view.display.can_publish? -%>
   <a href="#publishing" accesskey="p">Skip to publishing</a>
   <%- end -%>
+  <a href="#activities" accesskey="a">Skip to activities</a>
 <% end %>
 
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
@@ -34,8 +35,14 @@
               <li><a href="<%= @view.href %>/about">About this Dataset...</a></li>
               <li><a href="<%= @view.href %>/print">Print...</a></li>
               <li><a href="<%= @view.href %>/email">Email...</a></li>
-              <li><a href="<%= @view.href %>/append">Append Rows via Upload...</a></li>
-              <li><a href="<%= @view.href %>/replace">Replace Rows via Upload...</a></li>
+              <%- if @view.can_modify_data? -%>
+                <%- if module_available? :dataset_append -%>
+                  <li><a href="<%= @view.href %>/append">Append Rows via Upload...</a></li>
+                <%- end -%>
+                <%- if module_available? :dataset_replace -%>
+                  <li><a href="<%= @view.href %>/replace">Replace Rows via Upload...</a></li>
+                <%- end -%>
+              <%- end -%>
               <li><a href="/views/<%= @view.id %>/rows.rss">Subscribe via RSS</a></li>
             <%- socialize_menu_options(@view).each do |item| -%>
               <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
@@ -109,23 +116,25 @@
 
             <a name="search"></a>
             <h2>Search</h2>
-            <%= label_tag 'search_term', 'Search' %>
+            <%= label_tag 'search_string', 'Search' %>
             <%= text_field_tag 'search_string', params[:search_string] %>
             <%= submit_tag 'Apply Search' %>
           <%- end -%>
         </div>
 
-        <h2>Save this view</h2>
-        <%- if !@conditions.empty? && current_user -%>
-          <%- form_tag (save_filter_blist_path(@view.id) + '?' + @state_param) do -%>
-            <%= hidden_field_tag 'query_json', @query_json %>
-            <%= label_tag "Name" %>
-            <%= text_field_tag "name" %>
-            <%= submit_tag "submit" %>
-          <% end %>
-        <% elsif !@conditions.empty? && !current_user %>
-          <p><%= link_to "Sign in to save this view.", "#{@view.alt_href}?force_login=true&#{@state_param}" %></p>
-        <% end %>
+        <%- if !@conditions.empty? || !params[:search_string].blank? -%>
+          <h2>Save this view</h2>
+          <%- if current_user -%>
+            <%- form_tag (save_filter_blist_path(@view.id) + '?' + @state_param) do -%>
+              <%= hidden_field_tag 'query_json', @query_json %>
+              <%= label_tag "Name" %>
+              <%= text_field_tag "name" %>
+              <%= submit_tag "submit" %>
+            <% end %>
+          <%- else -%>
+            <p><%= link_to "Sign in to save this view.", "#{@view.alt_href}?force_login=true&#{@state_param}" %></p>
+          <%- end -%>
+        <%- end -%>
 
         <div class="altMeta">
           <a name="views"></a>
@@ -144,9 +153,12 @@
             <a name="comments"></a>
             <h2>Post a Comment</h2>
             <%- form_tag(post_comment_blist_path(@view.id)) do -%>
+            <%= hidden_field_tag 'redirect_to', '/alt#comments' %>
               <% field_set_tag do %>
                 <%= label_tag "comment[viewRating]", "My Rating" %>
-                <%= select_tag("comment[viewRating]", options_for_select([1, 2, 3, 4, 5].reverse)) %>
+                <%= select_tag("comment[viewRating]",
+                options_for_select([['No Rating', 0], ['5', 5], ['4', 4], ['3', 3],
+                  ['2', 2], ['1', 1]])) %>
               <% end %>
 
               <% field_set_tag do %>
@@ -206,7 +218,7 @@
             <%- end -%>
 
             <%- if shares.length > 0 -%>
-            <ul class='shareList'>
+            <ul class='metaDataList'>
               <%- shares.sort {|a,b|
                 a.type <=> b.type ||
                 a.member_name.downcase <=> b.member_name.downcase}.each do |s| -%>
@@ -233,7 +245,7 @@
             <%- if @view.is_private? -%>
             <p>
             This <%= @view.is_blist? ? t(:blist_name).downcase : 'view' %> is
-            currently private.  Private <%= view.is_blist? ?
+            currently private.  Private <%= @view.is_blist? ?
               t(:blist_name).downcase.pluralize : 'views' %>
             cannot be viewed in the Social Data Player.  Please
             set the privacy to public or shared before publishing.
@@ -258,6 +270,31 @@
             <%- end -%>
           </div>
           <%- end -%>
+
+          <a name='activities'></a>
+          <div id='activitiesBlock'>
+            <h2>Activities</h2>
+
+            <%- if @view_activities && @view_activities.length > 0 -%>
+              <ul class='metaDataList'>
+                <%- @view_activities.each do |activity| -%>
+                <li>
+                  <a href="<%= activity.actor.href %>"
+                    title='<%= activity.actor.displayName %>'>
+                    <%= activity.actor.displayName %>
+                  </a>
+                  <%= get_verb_for_activity_action(activity.action) %>
+                  <%= get_html_for_action_object(activity) %>
+
+                  <%= humane_date(activity.createdAt) %>
+                </li>
+                <%- end -%>
+              </ul>
+              <%- else -%>
+              <p>There is no activity for this <%= @view.is_blist? ?
+                t(:blist_name).downcase : 'view' %>.</p>
+              <%- end -%>
+          </div>
 
         </div>
       </div>

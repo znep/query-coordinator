@@ -11,6 +11,7 @@
     <%- if allow_edit -%>
     <%- form_tag(view.href) do -%>
     <%= hidden_field_tag("fieldType", "name") %>
+    <label for='view_name'>New Name:</label>
     <%= text_field_tag("view[name]", h(view.name)) %>
     <%= image_submit_tag("submit_button_mini.png", :title => "Edit") %>
     <%= link_to(image_tag("cancel_button_mini.png", :alt => "Cancel"),

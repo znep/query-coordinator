@@ -62,7 +62,7 @@
  *
  *
  * <h2>Events</h2>
- * 
+ *
  * The model fires the following events:
  *
  * <ul>
@@ -775,9 +775,9 @@ blist.namespace.fetch('blist.data');
                         col.options = translatePicklistFromView(vcol);
                         break;
 
-                    case 'new_photo':
-                    case 'new_document':
-                        col.base = baseURL + "/views/" + view.id + "/new_files/";
+                    case 'photo_obsolete':
+                    case 'document_obsolete':
+                        col.base = baseURL + "/views/" + view.id + "/obsolete_files/";
                         break;
                     case 'photo':
                     case 'document':

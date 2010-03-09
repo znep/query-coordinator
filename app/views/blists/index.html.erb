@@ -21,8 +21,9 @@
 
             <form class='search blistsFind' action='#'>
               <div class='searchContainer'>
-                <input type='text' class='textPrompt'
-                title='Search for my <%= t(:blists_name).capitalize %>' />
+                <label for='views_search'>Search for views</label>
+                <input type='text' class='textPrompt' name='views_search'
+                title='Search for my <%= t(:blists_name) %>' />
                 <div class='actionBox'>
                   <div class='clearBox'>
                     <a class='clearSearch' title='Clear Search'

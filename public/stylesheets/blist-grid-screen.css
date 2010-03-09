@@ -678,15 +678,15 @@ body#lensBody
 { background-position: 5px -380px; }
 
 #addColumn_document,
-#addColumn_new_document,
+#addColumn_document_obsolete,
 .menu.columnsMenu .document a,
-.menu.columnsMenu .new_document a
+.menu.columnsMenu .document_obsolete a
 { background-position: 5px -280px; }
 
 #addColumn_photo,
-#addColumn_new_photo,
+#addColumn_photo_obsolete,
 .menu.columnsMenu .photo a,
-.menu.columnsMenu .new_photo a
+.menu.columnsMenu .photo_obsolete a
 { background-position: 5px -100px; }
 
 #addColumn_picklist,
@@ -784,6 +784,8 @@ body#lensBody
 {
     padding-top: 1px;
 }
+
+#lensContainer .tabList .filter.tempViewTab label { display: none; }
 
 #lensContainer .tabList .filter.tempViewTab form input[type="text"]
 {

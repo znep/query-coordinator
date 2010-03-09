@@ -102,13 +102,13 @@
               <%- end -%>
               <%= output_value || value.strftime('%c') %>
 
-            <%- when 'document', 'new_document' -%>
+            <%- when 'document', 'document_obsolete' -%>
               <%- name_i = column.sub_type_index('filename') -%>
               <%- size_i = column.sub_type_index('size') -%>
               <%- type_i = column.sub_type_index('content_type') -%>
-              <%- is_old = column.sub_type_index('file_id').nil? -%>
-              <%- id_i = column.sub_type_index(is_old ?
-                'id' : 'file_id') -%>
+              <%- is_new = column.sub_type_index('id').nil? -%>
+              <%- id_i = column.sub_type_index(is_new ?
+                'file_id' : 'id') -%>
 
               <%- if !cell[id_i].nil? -%>
               <%- params = [] -%>
@@ -118,9 +118,9 @@
               <%- params << 'content_type=' +
                 URI::escape(cell[type_i]) if
                 !cell[type_i].blank? -%>
-              <a href='/views/<%= @view.id %>/<%= is_old ?
-                '' : 'new_' %>files/<%= cell[id_i] %><%=
-                  !is_old && params.length > 0 ?
+              <a href='/views/<%= @view.id %>/<%= is_new ?
+                '' : 'obsolete_' %>files/<%= cell[id_i] %><%=
+                  is_new && params.length > 0 ?
                   '?' + params.join('&') : '' %>'>
                   <%= cell[name_i] %>
                 </a>
@@ -129,10 +129,10 @@
                 (<%= cell[type_i] %>)
               <%- end -%>
 
-            <%- when 'photo', 'new_photo' -%>
+            <%- when 'photo', 'photo_obsolete' -%>
               <%- url = '/views/' + @view.id + '/' +
-                (column.dataTypeName == 'new_photo' ?
-                'new_' : '') + 'files/' + cell -%>
+                (column.dataTypeName == 'photo_obsolete' ?
+                'obsolete_' : '') + 'files/' + cell -%>
               <a href='<%= url %>'>
                 <img width='20' height='20' src='<%= url %>' />
               </a>

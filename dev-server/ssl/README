@@ -1,0 +1,24 @@
+HOW TO TRUST THE SOCRATA ROOT CA
+--------------------------------
+
+Firefox:
+1. Launch Firefox
+2. Firefox --> Preferences
+3. Click the Advanced Button, then go to the Encryption tab
+4. Click the View Certificates button
+5. Click on the Authorities tab
+6. Click Import
+7. Open the dev-server/ssl/ca.crt file from your repository
+8. You should be asked to trust the "Socrata Engineering Test Root CA".
+9. When prompted, check "Trust this CA to identify web sites."
+
+Safari (Mac):
+1. Launch Keychain Access
+2. File --> Import Items...
+3. Select "System" as the destination keychain, and open the dev-server/ssl/ca.crt file from your repository
+4. Click Always Trust
+5. Select "System" from the Keychains panel, and "Certificates" form the Category panel.
+6. Double-click on the "Socrata Engineering Test Root CA" item.
+7. Expand the Trust section, and choose "Always Trust" for the Secure Sockets Layer (SSL) option.
+
+After this, you should be able to launch the dev-server and browse to https://localhost:9443

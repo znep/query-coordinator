@@ -113,7 +113,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_read()
+    if !@view.can_read() || (!current_user && params[:force_login])
       return require_user(true)
     end
 
@@ -121,52 +121,7 @@ class BlistsController < ApplicationController
       # SoL. Display a message and redir to parent?
     end
 
-    # parse params
-    @conditions = {}
-    #   page params
-    @page = (params[:page] || 1).to_i
-    #   filter params
-    unless params[:filter].nil?
-      filters = []
-      params[:filter].each do |column_id, filter|
-        next if filter[:operator].blank?
-        filters.push({
-          :type => 'operator',
-          :value => filter[:operator],
-          :children => [ {
-            :type => 'column',
-            :columnId => column_id
-          }, {
-            :type => 'literal',
-            :value => filter[:value]
-          } ]
-        })
-      end
-      unless filters.empty?
-        @conditions[:filterCondition] = {
-          :type => 'operator',
-          :value => 'AND',
-          :children => filters
-        }
-      end
-    end
-    #   sort params
-    unless params[:sort].nil?
-      sorts = []
-      params[:sort].each do |idx, sort|
-        next if sort[:field].blank?
-        sorts.push({
-          :ascending => (sort[:direction].downcase == 'ascending'),
-          :expression => {
-            :type => 'column',
-            :columnId => sort[:field]
-          }
-        })
-      end
-      @conditions[:orderBys] = sorts unless sorts.empty?
-    end
-    # search params
-    @conditions[:searchString] = params[:search_string] unless params[:search_string].blank?
+    @conditions = parse_conditions(params)
 
     # build state for the sake of the pager
     @state_param = {}
@@ -190,7 +145,9 @@ class BlistsController < ApplicationController
       return (render 'shared/error', :status => :not_found)
     end
 
-    @result = @view.save_query(params)
+    conditions = parse_conditions(params)
+
+    @result = @view.save_filter(params[:name], conditions)
     redirect_to @result.alt_href
   end
 
@@ -792,6 +749,57 @@ class BlistsController < ApplicationController
 
 
 private
+
+  def parse_conditions(params)
+    # parse params
+    @conditions = {}
+    #   page params
+    @page = (params[:page] || 1).to_i
+    #   filter params
+    unless params[:filter].nil?
+      filters = []
+      params[:filter].each do |column_id, filter|
+        next if filter[:operator].blank?
+        filters.push({
+          :type => 'operator',
+          :value => filter[:operator],
+          :children => [ {
+            :type => 'column',
+            :columnId => column_id
+          }, {
+            :type => 'literal',
+            :value => filter[:value]
+          } ]
+        })
+      end
+      unless filters.empty?
+        @conditions[:filterCondition] = {
+          :type => 'operator',
+          :value => 'AND',
+          :children => filters
+        }
+      end
+    end
+    #   sort params
+    unless params[:sort].nil?
+      sorts = []
+      params[:sort].each do |idx, sort|
+        next if sort[:field].blank?
+        sorts.push({
+          :ascending => (sort[:direction].downcase == 'ascending'),
+          :expression => {
+            :type => 'column',
+            :columnId => sort[:field]
+          }
+        })
+      end
+      @conditions[:orderBys] = sorts unless sorts.empty?
+    end
+    # search params
+    @conditions[:searchString] = params[:search_string] unless params[:search_string].blank?
+
+    return @conditions
+  end
 
   def get_views_with_ids(params = nil)
     cur_views = View.find_multiple(params)

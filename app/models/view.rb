@@ -67,12 +67,15 @@ class View < Model
       array << Column.set_up_model(column_hash)}
   end
 
-  def save_query(params = {})
-    query = JSON.parse(params[:query_json])
-    query['name'] = params[:name]
-    url = "/views.json?#{params.to_param}"
+  def save_filter(name, conditions)
+    request_body = {
+      :name => name,
+      :searchString => conditions.delete(:searchString),
+      :query => conditions,
+      :originalViewId => self.id
+    }.to_json
 
-    JSON.parse(CoreServer::Base.connection.create_request(url, query.to_json))
+    View.parse(CoreServer::Base.connection.create_request("/views.json", request_body))
   end
 
   def find_data(per_page, page = 1, conditions = {})

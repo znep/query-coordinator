@@ -115,16 +115,16 @@
           <%- end -%>
         </div>
 
+        <h2>Save this view</h2>
         <%- if !@conditions.empty? && current_user -%>
-          <h2>Save this view</h2>
-          <%- form_tag save_filter_blist_path(@view.id) do -%>
+          <%- form_tag (save_filter_blist_path(@view.id) + '?' + @state_param) do -%>
             <%= hidden_field_tag 'query_json', @query_json %>
             <%= label_tag "Name" %>
             <%= text_field_tag "name" %>
             <%= submit_tag "submit" %>
           <% end %>
         <% elsif !@conditions.empty? && !current_user %>
-          <div><%= link_to "Sign in to save this view.", @view.href + '/save_filter', :id => @view.id, :query_json => @query_json %></div>
+          <p><%= link_to "Sign in to save this view.", "#{@view.alt_href}?force_login=true&#{@state_param}" %></p>
         <% end %>
 
         <div class="altMeta">

@@ -348,7 +348,7 @@
         </div>
         <%- end -%>
         <div id='dataGrid' class='scrollContent gridItem'>
-          <%= raw @display.render_body self %>
+          <%= raw @display.render_body(self) %>
           <%= render(:partial => @display.render_partial) %>
         </div>
 
@@ -414,7 +414,7 @@
 
   <%= javascript_include_merged 'shared-common-all' %>
   <script type="text/javascript">
-    <%= raw @display.render_inline_setup_js 'dataGrid', self %>
+    <%= raw @display.render_inline_setup_js('dataGrid', self) %>
     blist.namespace.fetch('blist.blistGrid');
     <%- if !current_user.nil? -%>
     blist.currentUserId = "<%= current_user.id %>";
@@ -435,5 +435,5 @@
   <%= render(:partial => 'shared/table_editor_js') %>
   <%- end -%>
   <%= javascript_include_merged 'blists-show' %>
-  <%= raw @display.render_javascript_includes self %>
+  <%= raw @display.render_javascript_includes(self) %>
 <% end %>

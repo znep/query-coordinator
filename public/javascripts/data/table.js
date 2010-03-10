@@ -2675,7 +2675,21 @@
                         columns.push(col);
                     }
                     if (!colStyles[col.uid])
-                        cssColumnConfig.push([ "." + getColumnClass(col), "colStyles[" + col.uid + "]" ]);
+                    {
+                        cssColumnConfig.push([ "." + getColumnClass(col),
+                            "colStyles[" + col.uid + "]" ]);
+                    }
+                    if (col.body !== undefined && col.body.children !== undefined)
+                    {
+                        _.each(col.body.children, function(c)
+                        {
+                            if (!colStyles[c.uid])
+                            {
+                                cssColumnConfig.push([ "." + getColumnClass(c),
+                                    "colStyles[" + c.uid + "]" ]);
+                            }
+                        });
+                    }
                 }
             }
             if (cssColumnConfig.length)

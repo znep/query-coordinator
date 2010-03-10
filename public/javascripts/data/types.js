@@ -349,10 +349,46 @@ blist.namespace.fetch('blist.data.types');
         return d ? d.format(format) : '';
     };
 
+    // Optimized format for date/time rendering (datejs is a very inefficient way to go)
+    var OPTIMIZE_FORMAT_DATETIME1 = 'm/d/Y h:i:s A O';
+    var renderDate_dateTime1 = function(value) {
+        if (value == null) { return ''; }
+        var d;
+        if (typeof value == 'number') { d = new Date(value * 1000); }
+        else { d = Date.parse(value); }
+        if (!d)
+            return '';
+        var hour = d.getHours();
+        if (hour > 11) {
+            hour -= 12;
+            var meridian = ' PM';
+        } else
+            meridian = ' AM';
+        if (!hour)
+            hour = 12;
+        if (hour < 10)
+            hour = "0" + hour;
+        var minute = d.getMinutes();
+        if (minute < 10)
+            minute = "0" + minute;
+        var second = d.getSeconds();
+        if (second < 10)
+            second = "0" + second;
+        var day = d.getDate();
+        if (day < 10)
+            day = "0" + day;
+        var month = d.getMonth() + 1;
+        if (month < 10)
+            month = "0" + month;
+        return month + "/" + day + "/" + d.getFullYear() + " " + hour + ":" + minute + ":" + second + meridian + " " + d.getUTCOffset();
+    }
+
     var renderGenDate = function(value, plain, column)
     {
         var format = blist.data.types.date.formats[column.format] ||
             blist.data.types.date.formats['date_time'];
+        if (format == OPTIMIZE_FORMAT_DATETIME1)
+            return "renderDate_dateTime1(" + value + ")";
         return "renderDate(" + value + ", '" + format + "')";
     };
 

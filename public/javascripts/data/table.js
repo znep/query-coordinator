@@ -2226,35 +2226,46 @@
         var ghostClass;
         var openerClass;
 
-        // Add a CSS rule.  This creates an empty rule and returns it.  We then
-        // dynamically update the rule values as needed.
-        var addRule = function(selector)
-        {
-            // Add the rule
+        // Create CSS rules.  Expects an array of rules.  One rule is created for each entry in the array.  The entry
+        // can either be selector text or an array containing (selector text, variable) to assign a scoped variable.
+        var cssSheetID = 0;
+        var createCssRules = function(config) {
+            // Create the stylesheet source
+            var cssID = id + '-styles-' + (++cssSheetID);
+            var cssText = [ '<style type="text/css" id="', cssID, '">\n' ];
+            for (var i = 0; i < config.length; i++) {
+                var rule = config[i];
+                if (!$.isArray(rule))
+                    rule = [ rule ];
+                cssText.push(rule[0]);
+                cssText.push(" {}\n")
+            }
+            cssText.push('</style>');
+
+            // Render the rules and retrieve the new Stylesheet object
+            $('head').append(cssText.join(''));
+            var cssElement = $("#" + cssID)[0];
+            for (var i = 0; i < document.styleSheets.length; i++) {
+                var css = document.styleSheets[i];
+                if ((css.ownerNode || css.owningElement) == cssElement)
+                    break;
+                css = null;
+            }
+            if (!css)
+                throw "Unable to locate stylesheet";
+
+            // Collect the rules and/or execute callback
+            var result = [];
             var rules = css.cssRules || css.rules;
-            if (css.insertRule)
-            {
-                css.insertRule(selector + " {}", rules.length);
-            }
-            else
-            {
-                css.addRule(selector, null, rules.length);
-            }
-            rules = css.cssRules || css.rules;
-
-            // Find the new rule
-            selector = selector.toLowerCase();
-            for (var i = 0; i < rules.length; i++)
-            {
-                if (rules[i].selectorText.toLowerCase() == selector)
-                {
-                    return rules[i];
-                }
+            for (var i = 0; i < rules.length; i++) {
+                rule = rules[i].style;
+                result.push(rule);
+                if (config[i][1])
+                    eval(config[i][1] + " = rule");
             }
 
-            // Shouldn't get here
-            return null;
-        };
+            return result;
+        }
 
         // Obtain a CSS class for a column
         var getColumnClass = function(column) {
@@ -2264,39 +2275,39 @@
         // Obtain a CSS style for a column
         var colStyles = [];
         var getColumnStyle = function(column) {
-            return colStyles[column.uid] || (colStyles[column.uid] = addRule('.' + getColumnClass(column)).style);
+            var result = colStyles[column.uid];
+            if (!result)
+                throw "Uninitialized column style access"
+            return result;
         };
 
         // Initialize my stylesheet
         (function() {
-            var rulesNode = $('head')
-                .append('<style type="text/css" id="' + id + '-styles"></style>')
-                .children('#' + id + '-styles')[0];
-            for (var i = 0; i < document.styleSheets.length; i++) {
-                css = document.styleSheets[i];
-                if ((css.ownerNode || css.owningElement) == rulesNode) {
-                    break;
-                }
-            }
+            var ruleConfig = [];
             ghostClass = id + "-ghost";
             openerClass = id + "-opener";
 
             // Dynamic style applied to the ghost column
-            ghostStyle = addRule("." + ghostClass).style;
+            ruleConfig.push(["." + ghostClass, "ghostStyle" ]);
 
             // Dynamic style applied to nested table openers
-            openerStyle = addRule("div." + openerClass).style;
+            ruleConfig.push(["div." + openerClass, "openerStyle" ]);
 
             // Dynamic style applied to rows
-            rowStyle = addRule("#" + id + " .blist-tr").style;
-            unlockedRowStyle =
-                addRule("#" + id + " .blist-table-inside .blist-tr").style;
+            ruleConfig.push([ "#" + id + " .blist-tr", "rowStyle" ]);
+            ruleConfig.push([ "#" + id + " .blist-table-inside .blist-tr", "unlockedRowStyle" ]);
 
             // Dynamic style available to cell renderers to fill height properly
-            cellStyle = addRule("#" + id + " .blist-cell").style;
+            ruleConfig.push([ "#" + id + " .blist-cell", "cellStyle" ]);
 
             // Dynamic style applied to "special" row cells
-            groupHeaderStyle = addRule("#" + id + " .blist-td-header").style;
+            ruleConfig.push([ "#" + id + " .blist-td-header", "groupHeaderStyle" ]);
+
+            // Special column styles
+            ruleConfig.push([ "." + id + "-crowNumberCol", "colStyles.rowNumberCol" ]);
+            ruleConfig.push([ "." + id + "-crowHandleCol", "colStyles.rowHandleCol" ]);
+
+            createCssRules(ruleConfig);
         })();
 
 
@@ -2632,6 +2643,7 @@
             variableColumns = [];
             varMinWidth = [];
             varDenom = [];
+            var cssColumnConfig = [];
 
             // Set up variable columns at each level
             for (var j = 0; j < model.meta().columns.length; j++)
@@ -2662,8 +2674,12 @@
                     {
                         columns.push(col);
                     }
+                    if (!colStyles[col.uid])
+                        cssColumnConfig.push([ "." + getColumnClass(col), "colStyles[" + col.uid + "]" ]);
                 }
             }
+            if (cssColumnConfig.length)
+                createCssRules(cssColumnConfig);
             if (variableColumns[0].length < 1 && options.showGhostColumn)
             {
                 variableColumns[0].push({percentWidth: 100,
@@ -3098,8 +3114,8 @@
                     ' ',
                     getColumnClass(col),
                     cls,
-                    '" title="',
-                    colName,
+                    //'" title="',
+                    //colName,
                     '" uid="',
                     col.uid,
                     '">');
@@ -3161,6 +3177,7 @@
             end("renderHeader-render");
 
             begin("renderHeader-augment");
+            //console.profile();
             $(".blist-th", $header).each(function(index)
             {
                 if (index >= columns.length)
@@ -3171,47 +3188,52 @@
                 columns[index].dom = this;
 
                 var $col = $(this);
-                $col
-                    .data('column', columns[index])
-                    .bind('click', function(event)
-                    {
-                        if (skipHeaderClick)
-                        {
-                            skipHeaderClick = false;
-                            return;
-                        }
 
-                        var $target = $(event.target);
-                        if ($target.closest('.action-item').length > 0) { return; }
+                var interactionsInitialized = false;
+                var initializeInteractions = function()
+                {
+                    interactionsInitialized = true;
 
-                        if ($target.closest('.blist-th .indicator-container, ' +
-                            '.blist-th .dragHandle, ' +
-                            '.blist-th .action-item').length < 1)
+                    $col
+                        .mouseleave(function ()
                         {
-                            if ($col.data('column-clicked'))
+                            $(this).removeClass('hover');
+                        })
+                        .bind('click', function(event)
+                        {
+                            if (skipHeaderClick)
                             {
-                                // We don't really do anything here, since we
-                                // have to listen to the real double-click event.
-                                // That is fired in all browsers, but IE only
-                                // fires that -- it never gets here
+                                skipHeaderClick = false;
+                                return;
                             }
-                            else
+
+                            var $target = $(event.target);
+                            if ($target.closest('.action-item').length > 0) { return; }
+
+                            if ($target.closest('.blist-th .indicator-container, ' +
+                                '.blist-th .dragHandle, ' +
+                                '.blist-th .action-item').length < 1)
                             {
-                                $col.data('column-clicked', true);
-                                setTimeout(function()
-                                    {
-                                        if ($col.data('column-clicked'))
-                                        { columnHeaderClick(event, $target); }
-                                    }, 500);
+                                if ($col.data('column-clicked'))
+                                {
+                                    // We don't really do anything here, since we
+                                    // have to listen to the real double-click event.
+                                    // That is fired in all browsers, but IE only
+                                    // fires that -- it never gets here
+                                }
+                                else
+                                {
+                                    $col.data('column-clicked', true);
+                                    setTimeout(function()
+                                        {
+                                            if ($col.data('column-clicked'))
+                                            { columnHeaderClick(event, $target); }
+                                        }, 500);
+                                }
                             }
-                        }
-                        else { columnHeaderClick(event, $target); }
-                    })
-                    .hover(function ()
-                        { if (!hotHeaderDrag || hotHeaderMode != 4)
-                            { $(this).addClass('hover'); } },
-                        function () { $(this).removeClass('hover'); })
-                    .bind('dblclick', function(event)
+                            else { columnHeaderClick(event, $target); }
+                        })
+                        .bind('dblclick', function(event)
                         {
                             if ($(event.target).closest(
                                 '.blist-th .indicator-container, ' +
@@ -3223,51 +3245,69 @@
                             }
                         });
 
-                if (options.columnDrag)
-                {
-                    $col
-                        .draggable({
-                            appendTo: '.blist-table', axis: 'x',
-                            drag: function(event, ui)
-                            {
-                                var dragPos = findHeaderDragPosition(event);
-                                if (curDropPos != dragPos)
+                    if (options.columnDrag)
+                    {
+                        $col
+                            .draggable({
+                                appendTo: '.blist-table',
+                                axis: 'x',
+                                drag: function(event, ui)
                                 {
-                                    curDropPos = dragPos;
-                                    drawHeaderDragPosition(curDropPos);
-                                }
-                            },
-                            handle: '.dragHandle',
-                            helper: function(event)
-                            {
-                                var $drag = $('<div class="blist-th-drag"/>');
-                                $drag.append($(this).clone());
-                                return $drag;
-                            },
-                            opacity: 0.85,
-                            start: function(event, ui)
-                            {
-                                hotHeaderDrag = true;
-                                hotHeaderMode = 4;
-                            },
-                            stop: function(event, ui)
-                            {
-                                hotHeaderMode = null;
-                                $dropIndicator.css('left', -10000).hide();
-                                if (curDropPos == null) { return; }
+                                    var dragPos = findHeaderDragPosition(event);
+                                    if (curDropPos != dragPos)
+                                    {
+                                        curDropPos = dragPos;
+                                        drawHeaderDragPosition(curDropPos);
+                                    }
+                                },
+                                handle: '.dragHandle',
+                                helper: function(event)
+                                {
+                                    var $drag = $('<div class="blist-th-drag"/>');
+                                    $drag.append($(this).clone());
+                                    return $drag;
+                                },
+                                opacity: 0.85,
+                                start: function(event, ui)
+                                {
+                                    hotHeaderDrag = true;
+                                    hotHeaderMode = 4;
+                                },
+                                stop: function(event, ui)
+                                {
+                                    hotHeaderMode = null;
+                                    $dropIndicator.css('left', -10000).hide();
+                                    if (curDropPos == null) { return; }
 
-                                var col = $(this).data('column');
-                                model.moveColumn(col.index, curDropPos);
-                                curDropPos = null;
+                                    var col = $(this).data('column');
+                                    model.moveColumn(col.index, curDropPos);
+                                    curDropPos = null;
                             }});
+                    }
+                    
+                    if (options.headerMods != null)
+                    {
+                        options.headerMods(columns[index]);
+                    }
                 }
+
+                $col
+                    .data('column', columns[index])
+                    .mouseenter(function ()
+                        {
+                            if (!interactionsInitialized)
+                            {
+                                // Lazy initialize bulk of header interactivity on first hover.  This initialization
+                                // is very expensive (~1s. w/ 28 headers on IE8)
+                                initializeInteractions();
+                            }
+                            if (!hotHeaderDrag || hotHeaderMode != 4)
+                            {
+                                $(this).addClass('hover');
+                            }
+                        });
 
                 adjustHeaderStyling($col);
-                if (options.headerMods != null)
-                {
-                    options.headerMods(columns[index]);
-                }
-
             });
 
             var lockedHtml = '';
@@ -3284,6 +3324,7 @@
             // Render sort & filter headers
             adjustHeaderIndicators();
 
+            //console.profileEnd();
             end("renderHeader-augment");
         };
 
@@ -3299,15 +3340,20 @@
             $locked.css('top', $header.outerHeight() - $scrolls[0].scrollTop);
         };
 
-        var adjustHeaderStyling = function($colHeader, useClone)
+        // Adjust styling for the header.  If tertiary is a boolean indicating whether this is the first time a
+        // header has been adjusted (false) or a tertiary time (true)
+        var adjustHeaderStyling = function($colHeader, tertiary)
         {
             var $orig = $colHeader;
-            if (useClone)
+            if (tertiary)
             {
+                // Adjust a clone in tertiary mode
                 $colHeader = $orig.clone();
                 measureUtil.append($colHeader);
+
+                // Also clear narrow indicators if present
+                $colHeader.removeClass('narrow narrower');
             }
-            $colHeader.removeClass('narrow narrower');
             var $infoC = $colHeader.find('.info-container');
             var infoW = $infoC.outerWidth(true);
             var innerW = $colHeader.width();
@@ -3322,10 +3368,10 @@
                     $orig.toggleClass('narrower', infoW - iconW > innerW);
                     $orig.addClass('narrow');
                 }
-                else if (useClone) { $orig.removeClass('narrow narrower'); }
+                else if (tertiary) { $orig.removeClass('narrow narrower'); }
             }
-            else if (useClone) { $orig.removeClass('narrow narrower'); }
-            if (useClone) { $colHeader.remove(); }
+            else if (tertiary) { $orig.removeClass('narrow narrower'); }
+            if (tertiary) { $colHeader.remove(); }
         };
 
         var curDropPos = null;

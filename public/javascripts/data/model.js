@@ -413,10 +413,11 @@ blist.namespace.fetch('blist.data');
 
                 //console.profileEnd();
             }
-            if (config.rows || config.data)
+            var data = config.rows || config.data;
+            if (data)
             {
                 //console.profile();
-                this.rows(config.rows || config.data);
+                this.rows(data);
                 //console.profileEnd();
             }
             $(listeners).trigger('full_load');
@@ -603,7 +604,10 @@ blist.namespace.fetch('blist.data');
                     }
                 }
             }
-            installIDs();
+
+            // Do not call installIDs here as it is expensive on tall datasets!  Above installation must take care of
+            // everything that installIDs does.
+            //installIDs();
 
             // Notify listeners of row load via the "change" event
             this.change(supplement);
@@ -925,8 +929,11 @@ blist.namespace.fetch('blist.data');
                     // be new nested columns
                     if (rows && rows.length > 0)
                     {
-                        $.each(rows, function(i, r)
-                            { if (r instanceof Object) { resetChildRows(r); } });
+                        for (var i = 0; i < rows.length; i++) {
+                            var r = rows[i];
+                            if (r instanceof Object)
+                                resetChildRows(r);
+                        }
                     }
                 }
 
@@ -1047,8 +1054,11 @@ blist.namespace.fetch('blist.data');
             {
                 active = active.concat(addedRows);
             }
-            $.each(addedRows, function(i, r)
-                { if (r instanceof Object) { rowsLoaded++; } });
+            for (var i = 0; i < addedRows.length; i++) {
+                var r = addedRows[i];
+                if (r instanceof Object)
+                    rowsLoaded++;
+            }
             setRowMetadata(addedRows, meta.metaColumns, meta.dataMungeColumns);
             installIDs();
             configureActive();
@@ -2233,15 +2243,16 @@ blist.namespace.fetch('blist.data');
         this.dataLength = function()
         {
             var total = 0;
-            $.each(active, function(i, row)
+            for (var i = 0; i < active.length; i++) {
+                var row = active[i];
+
+                // Count rows with level 0 and no level
+                if ((row.level === 0 || row.level === undefined) &&
+                    row.type != 'blank')
                 {
-                    // Count rows with level 0 and no level
-                    if ((row.level === 0 || row.level === undefined) &&
-                        row.type != 'blank')
-                    {
-                        total += 1 + (row.childRows ? row.childRows.length : 0);
-                    }
-                });
+                    total += 1 + (row.childRows ? row.childRows.length : 0);
+                }
+            }
             return total;
         };
 

@@ -1718,6 +1718,18 @@ dl.versionInfo dd
 /*** END: Create form dialog ***/
 
 
+/*** START: Create map dialog ***/
+.modalDialog .dialogBox .header .mapIcon
+{
+    background-image: url(/stylesheets/images/content/dialog_header_icons.png?1);
+    background-position: 0 -241px;
+    background-repeat: no-repeat;
+    height: 31px;
+    padding-left: 35px;
+}
+/*** END: Create map dialog ***/
+
+
 /*** START: Message the owner of this dataset ***/
 .modalDialog .dialogBox .header .bulkIcon
 {

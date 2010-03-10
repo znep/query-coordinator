@@ -111,7 +111,7 @@
             </a>
             </li>
             <%- end -%>
-            
+
             <%- if !@view.is_blobby? -%>
             <li class='separator'>
               <a href='#' id='filterLink' class='dropdownLink'>
@@ -126,11 +126,20 @@
             </li>
             <%- end -%>
 
-            <%- if Displays::Config[@view.displayType] && is_owner -%>
+            <%- if @view.display.type == 'visualization' && is_owner -%>
             <li class='separator'>
               <a rel='modal' href="<%= @view.href %>/visualization?edit=true"
                 id='editViz' class='staticLink'>
                 <span class='linkIcon'>Edit Visualization</span>
+              </a>
+            </li>
+            <%- end -%>
+
+            <%- if @view.display.type == 'map' && is_owner -%>
+            <li class='separator'>
+              <a rel='modal' href="<%= @view.href %>/map?edit=true"
+                id='editMap' class='staticLink'>
+                <span class='linkIcon'>Edit Map</span>
               </a>
             </li>
             <%- end -%>

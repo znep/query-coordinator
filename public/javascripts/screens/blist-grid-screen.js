@@ -384,7 +384,8 @@ $(function ()
 
     $.live('#createViewMenu li.calendar a, .filterView > .calendar > a, ' +
         '#createViewMenu li.viz a, .filterView > .visualization > a, ' +
-        '#createViewMenu li.form a, .filterView > .form > a',
+        '#createViewMenu li.form a, .filterView > .form > a, ' +
+        '#createViewMenu li.map a, .filterView > .map > a',
         'click', function (event)
         {
             event.preventDefault();

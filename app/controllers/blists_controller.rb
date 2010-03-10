@@ -651,6 +651,8 @@ class BlistsController < ApplicationController
 
   def create_visualization
     errors = []
+    options = params[:options]
+    options = JSON.parse(options) if !options.blank?
     begin
       if params[:edit] == 'true'
         batch_reqs = []
@@ -665,13 +667,13 @@ class BlistsController < ApplicationController
         batch_reqs << {'url' => '/views/' + params[:id], 'requestType' => 'PUT',
           'body' => {'columns' => cols, 'displayType' => params[:vizType],
             'query' => JSON.parse(CGI.unescapeHTML(params[:view_query])),
-            'displayFormat' => JSON.parse(params[:options])}, 'class' => View}
+            'displayFormat' => options}, 'class' => View}
         Model.batch(batch_reqs)
       else
         view = View.create({'name' => params[:viewName],
                            'columns' => JSON.parse(params[:columns]),
                            'displayType' => params[:vizType],
-                           'displayFormat' => JSON.parse(params[:options]),
+                           'displayFormat' => options,
                            'query' => CGI.unescapeHTML(params[:view_query]),
                            'originalViewId' => params[:id]})
       end
@@ -722,6 +724,15 @@ class BlistsController < ApplicationController
       :errors => errors,
       :newViewId => view.nil? ? '' : view.id
     }
+  end
+
+  def map
+    @view = View.find(params[:id])
+    @is_edit = params[:edit] == 'true'
+
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
   end
 
   def meta_tab_header

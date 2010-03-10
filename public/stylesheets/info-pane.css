@@ -697,6 +697,7 @@ infoContentOuter table.gridList td.picture .cellInner
 #createViewMenu li.calendar a { background-position: 5px -761px; }
 #createViewMenu li.viz a { background-position: 5px -784px; }
 #createViewMenu li.form a { background-position: 5px -1313px; }
+#createViewMenu li.map a { background-position: 5px -577px; }
 
 /*** END: single info filtered tab ***/
 

@@ -85,11 +85,12 @@ class View < Model
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
       result = JSON.parse(CoreServer::Base.connection.get_request(url))
     else
+      merged_conditions = self.query.data.deep_merge(conditions)
       request_body = {
-        :name => self.name,
-        :searchString => conditions.delete(:searchString),
-        :query => conditions,
-        :originalViewId => self.id
+        'name' => self.name,
+        'searchString' => conditions.delete('searchString'),
+        'query' => merged_conditions,
+        'originalViewId' => self.id
       }.to_json
 
       params[:method] = 'index'
@@ -111,17 +112,22 @@ class View < Model
       # someday, we'll have ordered hashes and life will be good. for now, map it.
       row_mapping = Hash.new
       data.each_with_index{|sid, idx| row_mapping[sid] = idx}
-      self.get_rows_by_ids(data).each{ |row| data[row_mapping[row.first]] = row }
+      self.get_rows_by_ids(data, request_body).each{ |row| data[row_mapping[row.first]] = row }
     end
 
     return data, aggregates, row_count
   end
 
-  def get_rows_by_ids(ids)
+  def get_rows_by_ids(ids, req_body = nil)
     id_params = ids.inject(""){|mem, id| mem << "&ids[]=#{id}"}
 
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?accessType=WEBSITE#{id_params}"
-    JSON.parse(CoreServer::Base.connection.get_request(url))['data']
+    if req_body.nil?
+      url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?accessType=WEBSITE#{id_params}"
+      return JSON.parse(CoreServer::Base.connection.get_request(url))['data']
+    else
+      url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?accessType=WEBSITE#{id_params}"
+      return JSON.parse(CoreServer::Base.connection.create_request(url, req_body))['data']
+    end
   end
 
   def json(params)

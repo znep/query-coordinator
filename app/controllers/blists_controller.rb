@@ -771,23 +771,25 @@ private
       filters = []
       params[:filter].each do |column_id, filter|
         next if filter[:operator].blank?
-        filters.push({
-          :type => 'operator',
-          :value => filter[:operator],
-          :children => [ {
-            :type => 'column',
-            :columnId => column_id
-          }, {
-            :type => 'literal',
-            :value => filter[:value]
+        f = {
+          'type' => 'operator',
+          'value' => filter[:operator],
+          'children' => [ {
+            'type' => 'column',
+            'columnId' => column_id
           } ]
-        })
+        }
+        f['children'].push({
+            'type' => 'literal',
+            'value' => filter[:value]
+        }) if !filter[:value].nil?
+        filters.push(f)
       end
       unless filters.empty?
-        @conditions[:filterCondition] = {
-          :type => 'operator',
-          :value => 'AND',
-          :children => filters
+        @conditions['filterCondition'] = {
+          'type' => 'operator',
+          'value' => 'AND',
+          'children' => filters
         }
       end
     end
@@ -797,17 +799,17 @@ private
       params[:sort].each do |idx, sort|
         next if sort[:field].blank?
         sorts.push({
-          :ascending => (sort[:direction].downcase == 'ascending'),
-          :expression => {
-            :type => 'column',
-            :columnId => sort[:field]
+          'ascending' => (sort[:direction].downcase == 'ascending'),
+          'expression' => {
+            'type' => 'column',
+            'columnId' => sort[:field]
           }
         })
       end
-      @conditions[:orderBys] = sorts unless sorts.empty?
+      @conditions['orderBys'] = sorts unless sorts.empty?
     end
     # search params
-    @conditions[:searchString] = params[:search_string] unless params[:search_string].blank?
+    @conditions['searchString'] = params[:search_string] unless params[:search_string].blank?
 
     return @conditions
   end

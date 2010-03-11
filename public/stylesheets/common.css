@@ -482,6 +482,11 @@ private
 .itemType.typeForm.sharedIn { background-position: 0 -1180px; }
 .itemType.typeForm.private { background-position: 0 -1211px; }
 .itemType.typeForm.privateShared { background-position: 0 -1242px; }
+.itemType.typeMap { background-position: 0 -806px; }
+.itemType.typeMap.sharedOut { background-position: 0 -838px; }
+.itemType.typeMap.sharedIn { background-position: 0 -869px; }
+.itemType.typeMap.private { background-position: 0 -900px; }
+.itemType.typeMap.privateShared { background-position: 0 -931px; }
 
 /*** END: item type icons ***/
 

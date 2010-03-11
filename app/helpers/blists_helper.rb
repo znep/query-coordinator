@@ -258,7 +258,13 @@ module BlistsHelper
                view.parent_dataset.owned_by?(@current_user),
       'class' => 'form' + (view.can_add_form? ? '' : ' disabled'),
       'title' => (view.can_add_form? ? '' :
-        'This dataset does not have any visible columns')}
+        'This dataset does not have any visible columns')},
+      {'text' => 'Map', 'href' => "#{view.href}/map",
+      'if' => !view.is_grouped? && CurrentDomain.member?(current_user) &&
+               module_available?(:map_publish),
+      'class' => 'map' + (view.can_add_map? ? '' : ' disabled'),
+      'title' => (view.can_add_map? ? '' :
+        'This dataset does not have the appropriate columns')}
     ]
   end
 
@@ -322,8 +328,14 @@ module BlistsHelper
       'user_required' => true, 'class' => 'form mainViewOption' +
         (view.can_add_form? ? '' : ' disabled'),
       'title' => (view.can_add_form? ? '' :
-        'This dataset does not have any visible columns')}
-      # Map item
+        'This dataset does not have any visible columns')},
+      {'text' => 'Create a Map...', 'href' => "#{view.href}/map",
+      'if' => !view.is_alt_view? && !view.is_grouped? &&
+        CurrentDomain.member?(current_user) && module_available?(:map_publish),
+      'user_required' => true, 'class' => 'map mainViewOption' +
+        (view.can_add_map? ? '' : ' disabled'),
+      'title' => (view.can_add_map? ? '' :
+        'This dataset does not have the appropriate columns')}
       ]) + [menu_options['separator'],
       menu_options['more_views']]
   end

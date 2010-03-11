@@ -316,6 +316,7 @@ ul.menu.contactsMenu li.sectionTitle.sortHeader
 #typeMenu li.filter a { background-position: 5px -531px; }
 #typeMenu li.form a { background-position: 5px -1313px; }
 #typeMenu li.grouped a { background-position: 5px -1267px; }
+#typeMenu li.map a { background-position: 5px -576px; }
 #typeMenu li.visualization a { background-position: 5px -784px; }
 
 /*** START: User tile ***/

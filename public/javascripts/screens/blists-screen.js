@@ -135,11 +135,15 @@ blist.myBlists.formFilter = function(view)
 
 blist.myBlists.visualizationFilter = function(view)
 {
-    if ($.inArray(view.displayType, ['barchart', 'annotatedtimeline',
+    return _.include(['barchart', 'annotatedtimeline',
             'imagesparkline', 'areachart', 'columnchart', 'linechart',
-            'piechart', 'intensitymap', 'map', 'geomap', 'motionchart']) > -1)
-    { return true; }
-    return view.displayType && view.displayType.startsWith('FCMap_');
+            'piechart', 'motionchart'], view.displayType);
+};
+
+blist.myBlists.mapFilter = function(view)
+{
+    return _.include(['map', 'geomap', 'intensitymap'], view.displayType) ||
+        view.displayType && view.displayType.startsWith('FCMap_');
 };
 
 blist.myBlists.groupedFilter = function(view)
@@ -234,6 +238,10 @@ blist.myBlists.filterGen = function(type, argument, callback)
             if (argument == 'visualization')
             {
                 return callback(myBlistsNS.visualizationFilter);
+            }
+            if (argument == 'map')
+            {
+                return callback(myBlistsNS.mapFilter);
             }
             if (argument == 'grouped')
             {
@@ -656,6 +664,10 @@ blist.myBlists.getTypeClassName = function(value)
     else if (myBlistsNS.visualizationFilter(value))
     {
         cls += "visualization";
+    }
+    else if (myBlistsNS.mapFilter(value))
+    {
+        cls += "map";
     }
     else if (myBlistsNS.groupedFilter(value))
     {

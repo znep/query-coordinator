@@ -49,6 +49,7 @@
 .headerMenu .calendar a { background-position: 5px -761px; }
 .headerMenu .visualization a { background-position: 5px -784px; }
 .headerMenu .form a { background-position: 5px -1313px; }
+.headerMenu .map a { background-position: 5px -577px; }
 .headerMenu .moreViews a { background-position: 5px -531px; }
 .headerMenu .moreViews .filter a { background-position: 5px -531px; }
 .headerMenu .moreViews .calendar a { background-position: 5px -761px; }
@@ -56,6 +57,7 @@
 .headerMenu .moreViews .visualization a
 { background-position: 5px -784px; }
 .headerMenu .moreViews .form a { background-position: 5px -1313px; }
+.headerMenu .moreViews .map a { background-position: 5px -577px; }
 
 /* Publish, Share, Socialize menu */
 .headerMenu .publish a { background-position: 5px -577px; }

@@ -138,7 +138,7 @@ class DataController < ApplicationController
     respond_to do |format|
       format.html{ redirect_to(data_path(params)) }
       format.data do
-        if ((@filtered_views.length > 0) || (type != "SEARCH"))
+        if ((@filtered_views.length > 0) || (params[:type] != "SEARCH"))
           render(:partial => "data/view_list_tab", 
             :locals => {
               :tab_title => tab_title, 
@@ -223,7 +223,7 @@ class DataController < ApplicationController
 private
   def parse_opts(params)
     page = params[:page] || 1
-    sort_by_selection = params[:sort_by] || (type == "popular" ? "POPULAR" : "LAST_CHANGED")
+    sort_by_selection = params[:sort_by] || (params[:type] == "popular" ? "POPULAR" : "LAST_CHANGED")
     sort_by = sort_by_selection
 
     is_asc = true

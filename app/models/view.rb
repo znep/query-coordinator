@@ -409,15 +409,20 @@ class View < Model
     columns.any? {|c| c.renderTypeName == 'date' && !c.flag?('hidden')} &&
       columns.any? {|c| c.renderTypeName == 'text' && !c.flag?('hidden')}
   end
-  
+
+  def can_add_map?
+    columns.select {|c| c.renderTypeName == 'number' &&
+        !c.flag?('hidden')}.length > 1
+  end
+
   def is_tabular?
     viewType == 'tabular'
   end
-  
+
   def is_blobby?
     viewType == 'blobby'
   end
-  
+
   # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.
   def display
     return @display if @display

@@ -1,0 +1,221 @@
+<%- content_for(:wrapper_class, "narrowDialog") -%>
+<%- content_for :headline do -%>
+<h1 class='mapIcon'><%= @is_edit ? 'Edit this' : 'Create a' %> Map</h1>
+<%- end -%>
+
+<div class='modalContentWrapper mapWrapper viewSetupWrapper'>
+  <p class='subtitle'>
+  Datasets can be displayed as points on a map
+  </p>
+
+  <% form_tag("#{@view.href}/create_visualization?edit=#{@is_edit}",
+    :class => 'clearfix') do %>
+
+    <input type='hidden' id='view_query' name='view_query'
+      value='<%= @view.query.to_json %>' />
+    <%- if !@is_edit -%>
+    <div class='section common'>
+      <h3>Setup</h3>
+      <p class='subtitle separator'>
+      Enter a name for the map
+      </p>
+      <div class='line'>
+        <label class='required' for='mapName'>Name</label>
+        <input type='text' id='mapName' name='viewName' class='required' />
+      </div>
+    </div>
+    <%- end -%>
+
+    <%- cur_cols = @is_edit ? @view.columns.select {|c| !c.flag?('hidden')} : [] -%>
+    <%- cols = {} -%>
+    <div class='typeBlock'>
+
+      <div class='section'>
+        <h3>Coordinates</h3>
+        <p class='subtitle separator'>
+        Choose the data to map.  You must choose two
+        columns that correspond to global latitude and longitude.
+        </p>
+
+        <%- cols['number'] =
+                @view.columns_for_datatypes('number',
+                  @is_edit && !@view.is_grouped?) -%>
+
+        <%- cur_id = @is_edit && cur_cols.length > 0 &&
+          @view.datatypes_match(cur_cols[0], 'number') ?
+            cur_cols.shift.id : nil -%>
+
+        <div class='line'>
+          <label class='required' for='mapColumn_latitude'>
+            Latitude
+          </label>
+          <select id='mapColumn_latitude' name='mapColumn_latitude'
+            class='<%= cur_id.nil? ? 'prompt' : '' %> required
+            coordinate-column' notequalto='.coordinate-column'>
+            <option class='prompt' value=''>Select a Column</option>
+            <%- cols['number'].each do |c| -%>
+            <option format='<%= c.format.to_json %>'
+              value='<%= c.id %>' <%= c.id == cur_id ?
+                "selected='selected'" : '' %>><%= c.name %></option>
+            <%- end -%>
+          </select>
+        </div>
+
+
+        <%- cur_id = @is_edit && cur_cols.length > 0 &&
+          @view.datatypes_match(cur_cols[0], 'number') ?
+            cur_cols.shift.id : nil -%>
+
+        <div class='line'>
+          <label class='required' for='mapColumn_longitude'>
+            Longitude
+          </label>
+          <select id='mapColumn_longitude' name='mapColumn_longitude'
+            class='<%= cur_id.nil? ? 'prompt' : '' %> required
+            coordinate-column' notequalto='.coordinate-column'>
+            <option class='prompt' value=''>Select a Column</option>
+            <%- cols['number'].each do |c| -%>
+            <option format='<%= c.format.to_json %>'
+              value='<%= c.id %>' <%= c.id == cur_id ?
+                "selected='selected'" : '' %>><%= c.name %></option>
+            <%- end -%>
+          </select>
+        </div>
+      </div>
+
+
+      <div class='section'>
+        <h3>Configuration</h3>
+        <p class='subtitle separator'>
+        Set other options for the map.
+        </p>
+
+
+        <%- data_types = ['text', 'richtext'] -%>
+        <%- cur_id = @is_edit && cur_cols.length > 0 &&
+          @view.datatypes_match(cur_cols[0], data_types) ?
+            cur_cols.shift.id : nil -%>
+
+        <div class='line'>
+          <label for='mapColumn_data'>
+            Data
+          </label>
+          <select id='mapColumn_data' name='mapColumn_data'
+            class='<%= cur_id.nil? ? 'prompt' : '' %>'>
+            <option class='prompt' value=''>Select a Column</option>
+            <%- @view.columns_for_datatypes(data_types,
+                  @is_edit && !@view.is_grouped?).each do |c| -%>
+            <option format='<%= c.format.to_json %>'
+              value='<%= c.id %>' <%= c.id == cur_id ?
+                "selected='selected'" : '' %>><%= c.name %></option>
+            <%- end -%>
+          </select>
+        </div>
+
+      </div>
+
+    </div>
+
+  <% end %>
+
+  <div class='error mainError'></div>
+
+  <div class='submitLine clearfix'>
+    <div class="required">Required Field</div>
+    <ul class='actionButtons clearfix'>
+      <li><a href='#create' class='create arrowButton'>
+        <%= @is_edit ? 'Save' : 'Create' %> Map
+      </a></li>
+    </ul>
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    $.validator.addMethod('notEqualTo', function(value, element, param)
+        {
+            if (this.optional(element)) { return true; }
+            var isEqual = false;
+            var $e = $(element);
+            $(param).each(function(i, p)
+            {
+                var $p = $(p);
+                if ($e.index($p) < 0 && $p.val() == value)
+                {
+                    isEqual = true;
+                    return false;
+                }
+            });
+            return !isEqual;
+        },
+        'A different value is required.');
+    $('.mapWrapper form').validate({errorElement: 'span'});
+
+    var adjustSelectPrompt = function(event)
+    {
+      var $sel = $(this);
+      setTimeout(function()
+          {
+            $sel.toggleClass('prompt', $sel.val() === '');
+          }, 0);
+    };
+
+    $('.mapWrapper select').change(adjustSelectPrompt)
+      .keypress(adjustSelectPrompt).click(adjustSelectPrompt);
+
+
+    var formSubmit = function(event)
+    {
+      event.preventDefault();
+      $('.mapWrapper .mainError').text('');
+      var $form = $('.mapWrapper form');
+      if (!$form.valid()) { return; }
+
+      var cols = [];
+      $('.mapWrapper .typeBlock select').each(function()
+      {
+          var $t = $(this);
+          var id = $t.val();
+          if (id !== '')
+          {
+              var $c = $t.find(':selected');
+              cols.push({id: id,
+                format: $.json.deserialize($.htmlUnescape($c.attr('format'))),
+                name: $c.text(), hidden: false});
+          }
+      });
+
+      var data = {viewName: $('.mapWrapper #mapName').val(),
+        vizType: 'map', columns: $.json.serialize(_.compact(cols)),
+        view_query: $('.mapWrapper #view_query').val()};
+
+      $.ajax({
+          url: $form.attr("action"),
+          type: "POST",
+          data: data,
+          dataType: "json",
+          success: function(data)
+          {
+            if (data.status == 'failure')
+            {
+              $('.mapWrapper .mainError').text(data.errors.join('; '));
+            }
+            else
+            {
+              $("#modal").jqmHide();
+              <%- if @is_edit -%>
+              blist.display.invalid = false;
+              $('.chartContainer').visualization();
+              <%- else -%>
+              blist.util.navigation.redirectToView(data.newViewId);
+              <%- end -%>
+            }
+          }
+      });
+    };
+
+    $('.mapWrapper form').submit(formSubmit);
+    $('.mapWrapper a.create').click(formSubmit);
+  };
+</script>

@@ -190,6 +190,9 @@
 .infoContentHeader h2.panelHeader.typeForm { background-position: left -1476px; }
 .infoContentHeader h2.panelHeader.typeForm.private { background-position: left -1517px; }
 .infoContentHeader h2.panelHeader.typeForm.privateShared { background-position: left -1558px; }
+.infoContentHeader h2.panelHeader.typeMap { background-position: left -1230px; }
+.infoContentHeader h2.panelHeader.typeMap.private { background-position: left -1270px; }
+.infoContentHeader h2.panelHeader.typeMap.privateShared { background-position: left -1310px; }
 .infoContentHeader h2.panelHeader.typeSharedIn { background-position: left -738px; }
 .infoContentHeader h2.panelHeader.typeSharedOut { background-position: left -779px; }
 .infoContentHeader h2.panelHeader.typeNotify { background-position: left -410px; }

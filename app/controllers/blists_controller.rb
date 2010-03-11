@@ -894,6 +894,8 @@ private
           'forms'
         when 'grouped'
           'grouped views'
+        when 'map'
+          'maps'
         when 'visualization'
           'visualizations'
         end

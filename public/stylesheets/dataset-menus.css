@@ -57,6 +57,7 @@
 .headerMenu .moreViews .visualization a
 { background-position: 5px -784px; }
 .headerMenu .moreViews .form a { background-position: 5px -1313px; }
+.headerMenu .moreViews .map a { background-position: 5px -577px; }
 
 /* Publish, Share, Socialize menu */
 .headerMenu .publish a { background-position: 5px -577px; }

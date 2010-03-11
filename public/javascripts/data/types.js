@@ -227,7 +227,7 @@ blist.namespace.fetch('blist.data.types');
         }
         var renderText;
         var renderBar;
-        switch (column.format || 'percent_bar') {
+        switch (column.format) {
             case 'percent_bar':
                 renderText = false;
                 renderBar = true;

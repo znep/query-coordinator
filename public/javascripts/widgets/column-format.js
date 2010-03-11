@@ -152,7 +152,7 @@ function(column, $container)
         ddClass: 'lr_justified format_percent_view',
         name: "percent-view",
         values: percentFormatValues,
-        value: column.format || 'percent_bar',
+        value: column.format || 'percent_bar_and_text',
         renderFn: columnFormatNS.renderValueInfoFormatRow
     });
 };

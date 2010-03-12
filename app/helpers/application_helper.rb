@@ -614,6 +614,18 @@ HREF
           </div>
         </div>
         EOS
+      when CurrentDomain.cname.match(/medicare/) 
+        <<-EOS
+        <div class="footerContainer">
+          <div id='footer' class="clearfix">
+            <span class='copyright'>{{string.copyright_string}}</span>
+            <div class="footerDisclaimer">{{string.disclaimer}}</div>
+            <ul class='clearfix'>
+              {{urls.footer}}
+            </ul>
+          </div>
+        </div>
+        EOS
       else
         <<-EOS
         <div class="footerContainer">
@@ -670,16 +682,21 @@ HREF
         <<-EOS
         <div class="pageBlockHeaderOuter medicareWelcomeHeader">
           <div class="medicareBlockHeaderTL"><div class="medicareBlockHeaderBL">
-            <p class="medicareTitle">Welcome To Data.Medicare.Gov</p>
-            <p class="medicareText">Data.Medicare.Gov has been created to work
-              in parallel with <a href="http://www.medicare.gov">Medicare.gov</a>,
-              allowing users to access data in an interactive format. Within
-              each dataset, a user can sort and filter with multiple criteria
-              and share the information using various web sources.</p>
-            <p class="medicareText">Primarily used by health policy researchers
-              and the media, this site is not intended to be used as a search
-              tool.  You can access all search tools by visiting the
-              <a href="http://www.medicare.gov">Medicare.gov</a> website.</p>
+            <p class="medicareTitle">Welcome to Data.Medicare.Gov!</p>
+            <p class="medicareText">Data.Medicare.Gov has been created to allow
+              users to access data in an interactive format. Within each dataset,
+              a user can sort and filter with multiple criteria and share the
+              information using various web sources. Primarily used by health
+              policy researchers and the media, this site is not intended to
+              be used as a search tool.</p>
+            <p class="medicareText">Although this site has been created to
+              work in parallel with Medicare.gov, it is operated by a commercial
+              service provider, <a href="http://www.socrata.com">Socrata</a>, and
+              is not an official website of the federal government. Therefore,
+              it should not be used as a means of obtaining an official Medicare
+              Number. Most importantly, the site is not intended for the exchange
+              of Personal Health Information (PHI) such as your Medicare Number.</p>
+            <p class="medicareText">Please <a href="/login">click here</a> to sign in.</p>
           </div></div>
         </div>
         EOS

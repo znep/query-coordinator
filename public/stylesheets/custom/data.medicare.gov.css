@@ -112,16 +112,22 @@ body
 
 .footerContainer #footer .copyright
 {
-    background: transparent url(/stylesheets/images/domains/data.medicare.gov/footer_logo.png) no-repeat;
-    bottom: -50px;
-    display: block;
-    height: 104px;
-    left: 5em;
-    padding: 0;
-    position: absolute;
+    display: none;
+}
+
+.footerContainer #footer .footerDisclaimer
+{
+    color: #fff;
+    font-size: 1.2em;
+    margin-left: 14em;
+    position: relative;
     text-align: left;
-    text-indent: -9999px;
-    width: 91px;
+    top: 1.5em;
+}
+
+.footerContainer #footer .footerDisclaimer a
+{
+    color: #fff;
 }
 
 .footerContainer #footer ul
@@ -222,5 +228,5 @@ form.search.large .actionsBox input
     font-size: 1.4em;
     margin-left: 1em;
     margin-top: 1.5em;
-    width: 40em;
+    width: 50em;
 }

@@ -14,6 +14,11 @@
     </div>
 
     <h3>Create a new <%= CurrentDomain.strings.company %> ID</h3>
+
+    <% if !CurrentDomain.strings.disclaimer.nil? %>
+      <p class="signupDisclaimer"><%= raw CurrentDomain.strings.disclaimer %></p>
+    <% end %>
+
     <%= render :partial => "signup_form", :locals => {:is_modal => false} %>
 
     <%- if module_enabled? :openid_login -%>

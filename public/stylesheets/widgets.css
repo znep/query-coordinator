@@ -1621,6 +1621,14 @@ body#login .loginBox li#close_login
 {
     display: none;
 }
+
+.loginBox p.loginDisclaimer
+{
+    font-size: 1.2em;
+    line-height: 1.2em;
+    padding-bottom: 1em;
+}
+
 /*** END: Login box ***/
 
 
@@ -1757,6 +1765,12 @@ body#login .loginBox li#close_login
 {
     color: #333;
     text-decoration: underline;
+}
+
+.signupBox p.signupDisclaimer
+{
+    font-size: 1.2em;
+    line-height: 1.2em;
 }
 
 /*** END: Signup box ***/

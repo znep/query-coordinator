@@ -39,7 +39,7 @@
                 <%- if module_available? :dataset_append -%>
                   <li><a href="<%= @view.href %>/append">Append Rows via Upload...</a></li>
                 <%- end -%>
-                <%- if module_available? :dataset_replace -%>
+                <%- if module_available? :dataset_refresh -%>
                   <li><a href="<%= @view.href %>/replace">Replace Rows via Upload...</a></li>
                 <%- end -%>
               <%- end -%>
@@ -89,8 +89,10 @@
                     <%= label_tag "filter_#{column.id}_operator", "Filter by #{column.name}" %>
                     <%= select_tag "filter[#{column.id}][operator]",
                                    options_for_limit_to(column, params.deep_value_at([:filter, column.id.to_s.to_sym, :operator])) %>
+                     <%- unless ['photo', 'document', 'photo_obsolete', 'document_obsolete'].include?(column.dataTypeName) -%>
                     <%= label_tag "filter_#{column.id}_value", "the value" %>
                     <%= text_field_tag "filter[#{column.id}][value]", params.deep_value_at([:filter, column.id.to_s.to_sym, :value]) %>
+                    <%- end -%>
                   </li>
                 <%- end -%>
               <%- end -%>
@@ -129,7 +131,7 @@
               <%= hidden_field_tag 'query_json', @query_json %>
               <%= label_tag "Name" %>
               <%= text_field_tag "name" %>
-              <%= submit_tag "submit" %>
+              <%= submit_tag "Submit" %>
             <% end %>
           <%- else -%>
             <p><%= link_to "Sign in to save this view.", "#{@view.alt_href}?force_login=true&#{@state_param}" %></p>

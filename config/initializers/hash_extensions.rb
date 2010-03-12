@@ -10,7 +10,7 @@ class Hash
     result = self.dup
 
     other.each_key do |key|
-      if other[key].is_a?(Hash) && self[key].is_a?(Hash)
+      if other[key].is_a?(Hash) && result[key].is_a?(Hash)
         result[key] = result[key].deep_merge(other[key])
       else
         result[key] = other[key]

@@ -12,6 +12,10 @@
       <h2>Sign in using your <%= CurrentDomain.strings.company %> ID</h2> 
     </div>
 
+    <% if !CurrentDomain.strings.disclaimer.nil? %>
+      <p class="loginDisclaimer"><%= raw CurrentDomain.strings.disclaimer %></p>
+    <% end %>
+
     <%= render(:partial => 'login') %>
 
     <%- if module_enabled? :openid_login -%>

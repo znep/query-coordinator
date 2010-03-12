@@ -151,6 +151,12 @@
 
               $("#modal").jqmHide();
             }
+          },
+          error: function()
+          {
+            $(".shareWrapper .errorMessage").append(
+              $("<p class=\"error\">Your request could not be processed. Please wait a few minutes and try again.</p>")
+            );
           }
         });
       }

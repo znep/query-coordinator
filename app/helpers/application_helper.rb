@@ -281,6 +281,11 @@ HREF
         "</div></div>"
   end
 
+  def cache_key(prefix, state)
+    prefix + '_' + state.sort.map {|v| CGI.escape(v[0]) + '=' +
+      CGI.escape(v[1].to_s)}.join('&')
+  end
+
   def prerendered_cache(name = {}, prerendered_content = nil, options = nil, &block)
     @controller.prerendered_fragment_for(output_buffer, name, prerendered_content, options, &block)
   end
@@ -383,16 +388,16 @@ HREF
     end
 
     # Merge all flags
-    state[:type] = type
+    state['type'] = type
     state.merge!(additional_flags)
 
     # If page is 1, just drop it
-    state.delete(:page) if state[:page] == 1
+    state.delete('page') if state['page'] == 1
 
     # Deal with filter[key] special case if filter exists and is a hash
-    if state.has_key?(:filter) && state[:filter].respond_to?("each")
-      state[:filter].each { |key, value| state["filter[#{key}]"] = value }
-      state.delete(:filter)
+    if state.has_key?('filter') && state['filter'].respond_to?("each")
+      state['filter'].each { |key, value| state["filter[#{key}]"] = value }
+      state.delete('filter')
     end
 
     # Final cleanup and output

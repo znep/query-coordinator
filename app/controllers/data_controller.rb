@@ -22,9 +22,8 @@ class DataController < ApplicationController
 
     # save us some work for no-JS versions
     @need_to_render = [:popular, :all, :search, :nominations]
-    @active_tab = :popular
+    @active_tab = (params[:type] || 'popular').downcase.to_sym
     if params[:no_js]
-      @active_tab = (params[:type] || 'popular').downcase.to_sym
       @need_to_render = [@active_tab]
     end
 
@@ -36,10 +35,19 @@ class DataController < ApplicationController
     # TODO: Community activity needs to be filtered by domain
     @community_activity = Activity.find({:maxResults => 3}) unless CurrentDomain.revolutionize?
 
+
+    # build current state string
+    @current_state = { 'filter' => params[:filter], 'page' => opts[:page].to_i,
+      'tag' => opts[:tags], 'sort_by' => opts[:sortBy], 'search' => opts[:q],
+      'no_js' => params[:no_js] }
+
   # TODO: Tags should also allow filtering by org
     # "Top 100" tab
     if @need_to_render.include?(:popular)
-      unless @popular_views_rendered = read_fragment("discover-tab-popular_#{CurrentDomain.cname}")
+      mod_state = @current_state.merge(
+        {'type' => 'popular', 'domain' => CurrentDomain.cname,
+        'sort_by' => @current_state['sort_by'] || 'POPULARITY'})
+      unless @popular_views_rendered = read_fragment(app_helper.cache_key("discover-tab", mod_state))
         @popular_views = View.find_filtered(opts.merge({ :top100 => true }))
         @popular_views_total = View.find(opts.merge({ :top100 => true, :count => true}), true).count
         @popular_views_tags = Tag.find(tag_opts.merge({ :top100 => true }))
@@ -48,7 +56,10 @@ class DataController < ApplicationController
 
     # "All Views" tab
     if @need_to_render.include?(:all)
-      unless @all_views_rendered = read_fragment("discover-tab-all_#{CurrentDomain.cname}")
+      mod_state = @current_state.merge(
+        {'type' => 'all', 'domain' => CurrentDomain.cname,
+        'sort_by' => @current_state['sort_by'] || 'LAST_CHANGED'})
+      unless @all_views_rendered = read_fragment(app_helper.cache_key("discover-tab", mod_state))
         @all_views = View.find(opts, true)
         @all_views_total = View.find(opts.merge({ :count => true }), true).count
         @all_views_tags = Tag.find(tag_opts)
@@ -86,11 +97,6 @@ class DataController < ApplicationController
 
     # Hide logo if theme specifies so
     @hide_logo = " style='display:none'" if CurrentDomain.theme.no_logo_on_discover
-
-    # build current state string
-    @current_state = { :filter => params[:filter], :page => opts[:page].to_i,
-      :tag => opts[:tags], :sort_by => opts[:sortBy], :search => opts[:q],
-      :no_js => params[:no_js] }
   end
 
   def filter
@@ -131,28 +137,28 @@ class DataController < ApplicationController
     end
 
     # build current state string
-    @current_state = { :filter => params[:filter], :page => opts[:page],
-      :tag => opts[:tags], :sort_by => opts[:sortBy], :search => opts[:q] }
+    @current_state = { 'filter' => params[:filter], 'page' => opts[:page],
+      'tag' => opts[:tags], 'sort_by' => opts[:sortBy], 'search' => opts[:q] }
 
     # render the appropriate view
     respond_to do |format|
       format.html{ redirect_to(data_path(params)) }
       format.data do
         if ((@filtered_views.length > 0) || (params[:type] != "SEARCH"))
-          render(:partial => "data/view_list_tab", 
-            :locals => {
-              :tab_title => tab_title, 
-              :views => @filtered_views, 
-              :views_total => @filtered_views_total,
-              :current_page => opts[:page].to_i,
-              :type => params[:type],
-              :current_filter => params[:filter],
-              :sort_by => params[:sort_by],
-              :tag_list => tag_list,
-              :current_tag => opts[:tags],
-              :search_term => opts[:q],
-              :page_size => @page_size
-            })
+          render(:partial => "data/view_list_tab",
+                 :locals => {
+                    :tab_title => tab_title,
+                    :views => @filtered_views,
+                    :views_total => @filtered_views_total,
+                    :current_page => @current_state['page'].to_i,
+                    :type => params[:type],
+                    :current_filter => @current_state['filter'],
+                    :sort_by => @current_state['sort_by'],
+                    :tag_list => tag_list,
+                    :current_tag => @current_state['tags'],
+                    :search_term => @current_state['search'],
+                    :page_size => @page_size
+          })
         else
           render(:partial => "data/view_list_tab_noresult",
               :locals => { :term => opts[:q] })
@@ -179,8 +185,8 @@ class DataController < ApplicationController
     @tag_list = Tag.find(opts).sort_by{ |tag| tag.name }
 
     # build current state string
-    @current_state = { :filter => params[:filter], :page => params[:page],
-      :sort_by => params[:sort_by], :search => params[:search], :no_js => params[:no_js] }
+    @current_state = { 'filter' => params[:filter], 'page' => params[:page],
+      'sort_by' => params[:sort_by], 'search' => params[:search], 'no_js' => params[:no_js] }
 
     respond_to do |format|
       format.html { render }
@@ -221,6 +227,10 @@ class DataController < ApplicationController
   end
 
 private
+  def app_helper
+    AppHelper.instance
+  end
+
   def parse_opts(params)
     page = params[:page] || 1
     sort_by_selection = params[:sort_by] || (params[:type] == "popular" ? "POPULAR" : "LAST_CHANGED")
@@ -265,4 +275,9 @@ protected
     false
   end
 
+end
+
+class AppHelper
+  include Singleton
+  include ApplicationHelper
 end

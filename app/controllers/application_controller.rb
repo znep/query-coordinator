@@ -159,7 +159,7 @@ private
   end
 
   def set_web_property
-    unless CurrentDomain.set(request.host)
+    unless CurrentDomain.set(request.host, session[:custom_site_config])
       redirect_to 'http://www.socrata.com/'
     end
   end

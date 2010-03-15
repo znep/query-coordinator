@@ -31,6 +31,45 @@ ActionController::Routing::Routes.draw do |map|
   #   end
   UID_REGEXP = /\w{4}-\w{4}/
 
+  map.connect '/internal', :controller => 'internal', :action => 'index'
+  map.connect '/internal/orgs', :controller => 'internal', :action => 'create_org',
+    :conditions => { :method => :post }
+  map.connect '/internal/orgs', :controller => 'internal', :action => 'index_orgs'
+  map.connect '/internal/orgs/:id', :controller => 'internal',
+    :action => 'show_org'
+  map.connect '/internal/orgs/:id/domains', :controller => 'internal',
+    :action => 'create_domain', :conditions => { :method => :post }
+  map.connect '/internal/orgs/:org_id/domains/:id', :controller => 'internal',
+    :action => 'show_domain', :requirements => {:id => /(\w|\.)+/}
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/preview_site_config',
+    :controller => 'internal', :action => 'preview_site_config',
+    :requirements => {:domain_id => /(\w|\.)+/}
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config',
+    :controller => 'internal', :action => 'create_site_config',
+    :requirements => {:domain_id => /(\w|\.)+/},
+    :conditions => { :method => :post }
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/default_site_config',
+    :controller => 'internal', :action => 'set_default_site_config',
+    :requirements => {:domain_id => /(\w|\.)+/},
+    :conditions => { :method => :post }
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/feature',
+    :controller => 'internal', :action => 'set_features',
+    :requirements => {:domain_id => /(\w|\.)+/},
+    :conditions => { :method => :post }
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id',
+    :controller => 'internal', :action => 'show_config',
+    :requirements => {:domain_id => /(\w|\.)+/}
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id/property',
+    :controller => 'internal', :action => 'set_property',
+    :requirements => {:domain_id => /(\w|\.)+/},
+    :conditions => { :method => :post }
+  map.connect '/internal/tiers', :controller => 'internal',
+    :action => 'index_tiers'
+  map.connect '/internal/tiers/:name', :controller => 'internal',
+    :action => 'show_tier'
+  map.connect '/internal/modules', :controller => 'internal',
+    :action => 'index_modules'
+
   map.resources :contacts,
     :collection => {
       :detail => :get,
@@ -222,6 +261,10 @@ ActionController::Routing::Routes.draw do |map|
   end
 
   map.resources :user_sessions
+  map.connect '/site_config/:config_id',
+    :controller => 'user_sessions', :action => 'site_config'
+  map.connect '/clear_site_config',
+    :controller => 'user_sessions', :action => 'clear_site_config'
 
   # Static content
   ['about', 'solution', 'company-info', 'press'].each do |static_section|

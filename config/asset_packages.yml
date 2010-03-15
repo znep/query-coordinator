@@ -317,3 +317,6 @@ stylesheets:
   - form-common
   - combo
   - modals-widget
+- internal-shared:
+  - internal-screen
+  - form-common

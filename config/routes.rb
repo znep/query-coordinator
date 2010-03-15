@@ -56,6 +56,10 @@ ActionController::Routing::Routes.draw do |map|
     :controller => 'internal', :action => 'set_features',
     :requirements => {:domain_id => /(\w|\.)+/},
     :conditions => { :method => :post }
+  map.connect '/internal/orgs/:org_id/domains/:domain_id/account_modules',
+    :controller => 'internal', :action => 'add_module_to_domain',
+    :requirements => {:domain_id => /(\w|\.)+/},
+    :conditions => { :method => :post }
   map.connect '/internal/orgs/:org_id/domains/:domain_id/site_config/:id',
     :controller => 'internal', :action => 'show_config',
     :requirements => {:domain_id => /(\w|\.)+/}

@@ -7,6 +7,12 @@ class Domain < Model
     parse(CoreServer::Base.connection.get_request(path, headers))
   end
 
+  def self.add_account_module(cname, module_name)
+    headers = { "X-Socrata-Host" => cname }
+    path = "/domains/#{cname}.json?method=addAccountModule&moduleName=#{module_name}"
+    CoreServer::Base.connection.update_request(path, headers)
+  end
+
   def configurations(type)
     if @configs.nil?
       @configs = Hash.new

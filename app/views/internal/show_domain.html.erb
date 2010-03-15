@@ -108,7 +108,7 @@
           <% end %>
 
           <h2>Account Modules:</h2>
-          <% if @domain.accountmodules.nil? || @domain.accountModules.size <= 0 %>
+          <% if @domain.accountModules.nil? || @domain.accountModules.size <= 0 %>
             <p>No account modules configured.</p>
           <% else %>
             <ul>
@@ -119,18 +119,18 @@
           <% end %>
 
           <h2>Add an account module</h2>
-          <form action="/internal/orgs/<%= @domain.organizationId
-            %>/domains/<%= @domain.cname %>/account_modules" method="post">
+          <% form_tag '/internal/orgs/' + @domain.organizationId.to_s +
+            '/domains/' + @domain.cname + '/account_modules' do %>
             <div class='line'>
               <label>Module:</label>
-              <select name="module[mod_id]">
+              <select name="module[name]">
                 <% @modules.each do |mod| %>
-                <option value="<%= mod.id %>"><%= mod.name %></option>
+                <option value="<%= mod.name %>"><%= mod.name %></option>
                 <% end %>
               </select>
             </div>
             <input type="submit" value="Add"/>
-          </form>
+          <% end %>
         <% end %>
 
       </div>

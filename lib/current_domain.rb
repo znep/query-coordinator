@@ -10,12 +10,13 @@ class CurrentDomain
     end
   end
 
-  def self.set(cname)
+  def self.set(cname, site_config_id = nil)
     @@property_store = {} unless defined? @@property_store
 
     if !@@property_store.has_key?(cname)
       begin
-        @@property_store[cname] = { :data => Domain.find(cname) }
+        @@property_store[cname] = { :data => Domain.find(cname),
+          :site_config_id => site_config_id }
       rescue CoreServer::ResourceNotFound
         return false
       end
@@ -66,23 +67,29 @@ class CurrentDomain
     @@current_domain[:widget_customization]
   end
 
-  def self.preferences
-    if @@current_domain[:preferences].nil?
-      if @@current_domain[:data].preferences.nil?
-        # No configured preferences, use only defaults
-        @@current_domain[:preferences] = Hashie::Mash.new(DEFAULT_DOMAIN_PREFS)
+  def self.properties
+    if @@current_domain[:site_properties].nil?
+      if @@current_domain[:site_config_id].nil?
+        conf = @@current_domain[:data].default_configuration('site_theme')
       else
-        # Merge our prefs with default prefs
-        @@current_domain[:data].preferences.data.deep_symbolize_keys!
-        @@current_domain[:preferences] =
-          Hashie::Mash.new(DEFAULT_DOMAIN_PREFS.deep_merge(@@current_domain[:data].preferences.data))
+        conf = Configuration.find(@@current_domain[:site_config_id].to_s)
       end
+      @@current_domain[:site_properties] = conf.nil? ?
+        Hashie::Mash.new : conf.properties
     end
-    @@current_domain[:preferences]
+    return @@current_domain[:site_properties]
+  end
+
+  def self.templates
+    return self.properties.templates || Hashie::Mash.new
   end
 
   def self.theme
-    self.preferences.theme
+    return self.properties.theme || Hashie::Mash.new
+  end
+
+  def self.strings
+    return self.properties.strings || Hashie::Mash.new
   end
 
   def self.modules
@@ -91,19 +98,6 @@ class CurrentDomain
         (@@current_domain[:data].accountTier.data['accountModules'] || [])).uniq
     end
     @@current_domain[:modules]
-  end
-
-  def self.strings
-    if @@current_domain[:strings].nil?
-      strings = Hash.new
-      self.preferences.keys.each do |key|
-        if key =~ /^strings\.(\w+)$/
-          strings[$1] = self.preferences[key]
-        end
-      end
-      @@current_domain[:strings] = Hashie::Mash.new(strings)
-    end
-    @@current_domain[:strings]
   end
 
   def self.module_names
@@ -120,32 +114,17 @@ class CurrentDomain
     end
   end
 
-  def self.features
-    if @@current_domain[:features].nil?
-      @@current_domain[:features] = self.preferences.collect { |pref|
-        if pref[0] =~ /^features\./ && pref[1] == true
-          pref[0].gsub(/^features\./, '')
-        end
-      }.compact
-    end
-    @@current_domain[:features]
-  end
-
   def self.feature?(name_or_set)
-    if name_or_set.is_a? Array
-      name_or_set.any?{|mod| self.features.include? mod.to_s }
-    else
-      self.features.include? name_or_set.to_s
-    end
+    @@current_domain[:data].feature?(name_or_set)
   end
 
   def self.module_enabled?(name_or_set)
     self.module_available?(name_or_set) && self.feature?(name_or_set)
   end
 
-  # CurrentDomain['preference name'] returns preferences
+  # CurrentDomain['preference name'] returns properties
   def self.[](key)
-    self.preferences.send key
+    self.properties.send key
   end
 
   def self.method_missing(key, *args)
@@ -153,11 +132,11 @@ class CurrentDomain
 
     # If they ask for .something?, assume they're asking about the something feature
     if key =~ /\?$/
-      return (self.preferences['features.' + key.gsub(/\?$/, '')] == true)
+      return (self.properties['features.' + key.gsub(/\?$/, '')] == true)
     end
 
-    ## Otherwise, assume we're looking for a preference
-    self.preferences.send key
+    ## Otherwise, assume we're looking for a property
+    self.properties.send key
   end
 
   def self.member?(user)

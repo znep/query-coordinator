@@ -47,19 +47,25 @@
       },
       submitHandler: function(form) {
         var $form = $(form);
+        var displayValue;
 
         var newRecipient = {
           id: "remove_" + addedRecipientUID,
-          email: $("#add_recipient_email").val(),
-          userId: $("#add_friends").value(),
           type: $("#add_type").value()
         };
+        if ($("#add_recipient_email").val() != "")
+        {
+          newRecipient['email'] = $("#add_recipient_email").val();
+          displayValue = newRecipient['email'];
+        }
+        else
+        {
+          newRecipient['userId'] = $("#add_friends").value();
+          displayValue = $("#add_friends").valueObjectAccessor().selectedValueObject().label;
+        }
+
         addedRecipients.push($.json.serialize(newRecipient));
 
-        var displayValue = $("#add_recipient_email").val() != "" ? 
-                                newRecipient.email : 
-                                $("#add_friends").valueObjectAccessor().selectedValueObject().label;
-        
         var addRow = "<tr>";
         addRow += "<td class=\"add_handle\">";
         addRow += "<a href=\"#remove\" id=\"remove_" + addedRecipientUID + "\">remove</a></td>";
@@ -151,6 +157,12 @@
 
               $("#modal").jqmHide();
             }
+          },
+          error: function()
+          {
+            $(".shareWrapper .errorMessage").append(
+              $("<p class=\"error\">Your request could not be processed. Please wait a few minutes and try again.</p>")
+            );
           }
         });
       }

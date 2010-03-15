@@ -24,16 +24,16 @@ module CoreServer
       result_body
     end
 
-    def create_request(path, payload = "{}")
-      generic_request(Net::HTTP::Post.new(path), payload).body
+    def create_request(path, payload = "{}", custom_headers = {})
+      generic_request(Net::HTTP::Post.new(path), payload, custom_headers).body
     end
 
-    def update_request(path, payload = "")
-      generic_request(Net::HTTP::Put.new(path), payload).body
+    def update_request(path, payload = "", custom_headers = {})
+      generic_request(Net::HTTP::Put.new(path), payload, custom_headers).body
     end
 
-    def delete_request(path, payload = "")
-      generic_request(Net::HTTP::Delete.new(path), payload).body
+    def delete_request(path, payload = "", custom_headers = {})
+      generic_request(Net::HTTP::Delete.new(path), payload, custom_headers).body
     end
 
     def multipart_post_file(path, file)
@@ -109,6 +109,14 @@ module CoreServer
         end
       end
 
+      # HACK: Only use this if you really don't care about a page being slow
+      # Ex., for the internal console that only employees will be using
+      if custom_headers['Internal-Skip-Request-Count']
+        custom_headers.delete('Internal-Skip-Request-Count')
+      else
+        @request_count += 1
+      end
+
       # pass/spoof in the current domain cname
       request['X-Socrata-Host'] = CurrentDomain.cname
 
@@ -119,7 +127,6 @@ module CoreServer
         request.content_type = "application/json"
       end
 
-      @request_count += 1
       result = log(request) do
         Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
           http.request(request)

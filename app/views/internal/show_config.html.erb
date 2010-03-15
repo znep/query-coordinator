@@ -1,0 +1,87 @@
+<% content_for :head do %>
+<%= stylesheet_link_merged 'internal-shared' %>
+<title>Config <%= @config.nil? ? '' : @config.name %> |
+  Domain <%= @domain.nil? ? '' : @domain.name %> | Admin Panel |
+  <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div class="twoColumnContainer tabContainer clearfix">
+  <div id="mainColumnContent" class="column mainContent">
+    <ul class='tabList'>
+      <li class='even active'><div class='wrapper'>
+        <%= link_to 'Admin Home', '/internal' %>
+      </div></li>
+    </ul>
+
+    <div class='outerContent'>
+      <div class="contentTR"><div class="contentTL"></div></div>
+      <div class='content'>
+
+        <%- if @domain.nil? || @config.nil? -%>
+          <p>Domain or Configuration could not be found</p>
+
+        <%- else -%>
+        <h1><%= @config.name %> for
+          <a href="/internal/orgs/<%= @domain.organizationId
+            %>/domains/<%= @domain.cname %>">
+            <%= @domain.name %> (<%= @domain.cname %>)
+        </a></h1>
+
+        <%- props = @config.data['properties'] -%>
+        <%- cur_props = Hash.new -%>
+        <h2>Properties:</h2>
+        <%- if props.nil? -%>
+        <p>No properties for this configuration</p>
+
+        <%- else -%>
+        <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+          '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
+          '/property', {:class => 'wide'}) do %>
+          <%- @config.data['properties'].each do |prop| -%>
+          <div class='line'>
+            <%- cur_props[prop['name']] = true -%>
+            <label><%= prop['name'] %></label>
+            <%= text_area_tag 'properties[' + prop['name'] + ']',
+              prop['value'].blank? ? '' : prop['value'].to_json %>
+            <%= check_box_tag 'delete_properties[' + prop['name'] + ']',
+              'delete' %>
+            <span>(Delete)</span>
+          </div>
+          <%- end -%>
+          <input type="submit" value="Save"/>
+        <% end %>
+        <%- end -%>
+
+        <%- if !@parent_config.nil? && !@parent_config.data['properties'].nil? -%>
+        <h2>Inherited Properties (from <a href="/internal/orgs/<%=
+            @parent_domain.organizationId %>/domains/<%= @parent_domain.cname
+            %>/site_config/<%= @parent_config.id %>"><%= @parent_config.name
+            %></a>):</h2>
+        <form class='wide'>
+          <%- @parent_config.data['properties'].each do |prop| -%>
+          <%- next if cur_props[prop['name']] -%>
+
+          <div class='line'>
+          <label><%= prop['name'] %></label>
+          <textarea disabled='true'><%= prop['value'].to_json %></textarea>
+          </div>
+          <%- end -%>
+        </form>
+        <%- end -%>
+
+        <h2>Add Property</h2>
+        <% form_tag('/internal/orgs/' + @domain.organizationId.to_s +
+          '/domains/' + @domain.cname + '/site_config/' + @config.id.to_s +
+          '/property', {:class => 'wide'}) do %>
+          <div class='line'>
+            <%= text_field_tag 'new-property_name' %>
+            <%= text_area_tag 'new-property_value' %>
+          </div>
+          <input type="submit" value="Add"/>
+        <% end %>
+        <%- end -%>
+
+      </div>
+    </div>
+  </div>
+</div>

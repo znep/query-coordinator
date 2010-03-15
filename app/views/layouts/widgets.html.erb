@@ -33,7 +33,7 @@
   Better to load JS at the bottom:
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
-  <%= javascript_include_tag "util/namespace" %>
+  <%= javascript_include_merged 'base' %>
 
   <% if ENV["RAILS_ENV"] != 'production' %>
       <%= javascript_include_tag "util/debug" %>

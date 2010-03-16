@@ -547,6 +547,7 @@ module BlistsHelper
                         "#{h(view.name)}</a></p>"
     end
     embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
+                      "title=\"#{view.name}\" " +
                       "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
                       "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
                       "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"#{!view.display.can_publish? || view.display.scrolls_inline? ? 'no' : 'auto'}\">" +

@@ -50,7 +50,7 @@
             Latitude
           </label>
           <select id='mapColumn_latitude' name='mapColumn_latitude'
-            class='<%= cur_id.nil? ? 'prompt' : '' %> required
+            class='required <%= cur_id.nil? ? 'prompt' : '' %>
             coordinate-column' notequalto='.coordinate-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols['number'].each do |c| -%>
@@ -71,7 +71,7 @@
             Longitude
           </label>
           <select id='mapColumn_longitude' name='mapColumn_longitude'
-            class='<%= cur_id.nil? ? 'prompt' : '' %> required
+            class='required <%= cur_id.nil? ? 'prompt' : '' %>
             coordinate-column' notequalto='.coordinate-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols['number'].each do |c| -%>

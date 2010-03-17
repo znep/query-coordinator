@@ -131,14 +131,14 @@
             if (typeof r == 'object')
             {
                 var lat = r[mapObj._latIndex];
-                var long = r[mapObj._longIndex];
-                if (lat === null || long === null) { return; }
-                if (lat < -90 || lat > 90 || long < -180 || long > 180)
+                var longVal = r[mapObj._longIndex];
+                if (lat === null || longVal === null) { return; }
+                if (lat < -90 || lat > 90 || longVal < -180 || longVal > 180)
                 {
                     badPoints = true;
                     return;
                 }
-                var ll = new google.maps.LatLng(lat, long);
+                var ll = new google.maps.LatLng(lat, longVal);
 
                 var hasInfo = mapObj._infoIndex !== undefined &&
                     r[mapObj._infoIndex] !== null;

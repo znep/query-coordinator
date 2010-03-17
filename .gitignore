@@ -3,3 +3,4 @@ public/stylesheets/cache
 vendor/bundler_gems
 Gemfile.lock
 .bundle/environment.rb
+.*.swp

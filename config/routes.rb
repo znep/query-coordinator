@@ -276,7 +276,7 @@ ActionController::Routing::Routes.draw do |map|
     map.connect "/#{static_section}", :controller => controller_name
     map.connect "/#{static_section}/:page", :controller => controller_name, :action => 'show'
   end
-  ['terms-of-service', 'privacy', 'contact-us', 'try-it-free', 'sales'].each do |static_toplevel|
+  ['terms-of-service', 'privacy', 'contact-us', 'try-it-free', 'sales', 'accessibility'].each do |static_toplevel|
     map.connect "/#{static_toplevel}", :controller => 'static', :action => 'show', :page => static_toplevel
   end
   map.about '/about', :controller => 'about'

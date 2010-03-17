@@ -131,6 +131,12 @@ class InternalController < ApplicationController
       params[:domain_id]
   end
 
+  def add_module_to_domain
+    Domain.add_account_module(params[:domain_id], params[:module][:name])
+    redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
+      params[:domain_id]
+  end
+
   def set_property
     config = Configuration.find(params[:id])
     if !params['new-property_name'].blank?

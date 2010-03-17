@@ -18,7 +18,7 @@ javascripts:
   - plugins/jquery.json
   - plugins/jquery.example.min
   - plugins/jqModal
-  - plugins/jquery.validate
+  - plugins/jquery.validate.min
   - widgets/text-prompt
   - util/alert-override
   - widgets/clipped-text
@@ -204,7 +204,7 @@ javascripts:
   - plugins/ui.core
   - plugins/ui.draggable
   - plugins/jquery.tache
-  - plugins/jquery.validate
+  - plugins/jquery.validate.min
   - util/styling
   - plugins/jquery.qtip
   - util/navigation

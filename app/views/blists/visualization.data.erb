@@ -29,7 +29,7 @@
         <label class='required' for='vizType'>Type</label>
         <select id='vizType' name='vizType'
           <%= @is_edit ? "disabled='disabled'" : '' %>
-          class='<%= @is_edit ? '' : 'prompt' %> required'>
+          class='required <%= @is_edit ? '' : 'prompt' %>'>
           <option class='prompt' value=''>Select a Chart</option>
           <%- viz_types.each do |t| -%>
           <option value='<%= t[0] %>'
@@ -75,7 +75,7 @@
             <%= fcol['label'] %>
           </label>
           <select id='<%= fc_name %>' name='<%= fc_name %>'
-            class='<%= cur_id.nil? ? 'prompt' : '' %> required
+            class='required <%= cur_id.nil? ? 'prompt' : '' %>
             <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
@@ -161,8 +161,8 @@
               <label <%= dcol['optional'] ? '' : "class='required'" %>
                 for='<%= dc_name %>'><%= dcol['label'] %></label>
               <select id='<%= dc_name %>' name='<%= dc_name %>'
-                class='<%= cur_id.nil? ? 'prompt' : '' %>
-                  <%= dcol['optional'] ? '' : 'required' %>
+                class='<%= dcol['optional'] ? '' : 'required' %>
+                  <%= cur_id.nil? ? 'prompt' : '' %>
                   <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>

@@ -88,7 +88,7 @@ class View < Model
       merged_conditions = self.query.data.deep_merge(conditions)
       request_body = {
         'name' => self.name,
-        'searchString' => conditions.delete('searchString'),
+        'searchString' => merged_conditions.delete('searchString'),
         'query' => merged_conditions,
         'originalViewId' => self.id
       }.to_json

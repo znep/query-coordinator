@@ -1,6 +1,6 @@
 class Nomination < Model
   def self.find_page(page_no=1, limit=nil, status=nil)
-    opts = {"page" => (page_no-1).to_s, "limit" => limit}
+    opts = {"page" => (page_no.to_i - 1).to_s, "limit" => limit}
     opts["status"] = status unless status.nil?
     path = "/nominations.json?#{opts.to_param}"
     parse(CoreServer::Base.connection.get_request(path))

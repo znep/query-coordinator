@@ -43,7 +43,7 @@
       <h2>Show People</h2>
       <ul class="filterList hilightList">
         <li><%= link_to("<span>With public #{t(:blists_name)}</span>", 
-                generate_filter_url(@current_state, type, {:filter => {"publicOnly" => "true"}}),
+                generate_filter_url(@current_state, type, {:filter => {:publicOnly => 'true'}}),
                 :class => "filterLink#{get_filter_hilight_class({'publicOnly' => 'true'}, current_filter, ' hilight')}") %></li>
       </ul>
   

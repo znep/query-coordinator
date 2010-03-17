@@ -104,7 +104,7 @@ class DataController < ApplicationController
     opts, tag_opts = parse_opts(params)
 
     # figure out the tab title text
-    tab_title = params[:type].titleize
+    tab_title = (params[:type] || 'popular').titleize
     unless params[:filter].nil?
       if (params[:filter][:inNetwork])
         tab_title += " #{t(:blists_name)} in my network"

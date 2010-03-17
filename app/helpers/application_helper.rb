@@ -381,7 +381,7 @@ HREF
     
     # If current state already contains an additional flag, toggle instead
     additional_flags.each do |key, value|
-      if state[key] == value
+      if (value.is_a? Hash) ? (state[key].to_s == value.to_s) : (state[key] == value)
         state.delete(key)
         additional_flags.delete(key)
       end
@@ -394,10 +394,12 @@ HREF
     # If page is 1, just drop it
     state.delete('page') if state['page'] == 1
 
-    # Deal with filter[key] special case if filter exists and is a hash
-    if state.has_key?('filter') && state['filter'].respond_to?("each")
-      state['filter'].each { |key, value| state["filter[#{key}]"] = value }
-      state.delete('filter')
+    # Deal with subhash case
+    state.each do |key, value|
+      if value.is_a? Hash
+        value.each{ |subkey, subvalue| state["#{key}[#{subkey}]"] = subvalue }
+        state.delete(key)
+      end
     end
 
     # Final cleanup and output

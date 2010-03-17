@@ -205,8 +205,7 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
-              blist.display.invalid = false;
-              $('.chartContainer').visualization();
+              blist.$display.GoogleMap().reload();
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>

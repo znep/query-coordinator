@@ -139,6 +139,7 @@ javascripts:
   - widgets/dataset-grid
   - screens/filter-screen
   - widgets/visualization
+  - widgets/google-map
   - screens/info-pane
   - screens/meta-tabs
   - screens/attribution-edit
@@ -222,6 +223,7 @@ javascripts:
   - widgets/dataset-grid
   - widgets/info-pane-publish
   - widgets/visualization
+  - widgets/google-map
   - screens/external-widget
   - screens/info-pane
   - screens/dataset-menu

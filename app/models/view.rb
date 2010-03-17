@@ -439,7 +439,7 @@ class View < Model
     # TODO - migrate legacy views and remove this code
     if dt
         if dt == 'map'
-            dt = 'google' if !displayFormat || !displayFormat.layers
+            dt = 'google_map' if !displayFormat || !displayFormat.layers
         else
             config = Displays::Config[dt]
             dt = config['display'] if config && config['display']

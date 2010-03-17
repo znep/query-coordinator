@@ -41,7 +41,9 @@
                 @view.columns_for_datatypes('number',
                   @is_edit && !@view.is_grouped?) -%>
 
-        <%- cur_id = @is_edit && cur_cols.length > 0 &&
+        <%- lat_id = @is_edit && !@view.displayFormat.nil? ?
+          @view.displayFormat.latitudeId : nil -%>
+        <%- cur_id = @is_edit && lat_id.nil? && cur_cols.length > 0 &&
           @view.datatypes_match(cur_cols[0], 'number') ?
             cur_cols.shift.id : nil -%>
 
@@ -50,19 +52,21 @@
             Latitude
           </label>
           <select id='mapColumn_latitude' name='mapColumn_latitude'
-            class='required <%= cur_id.nil? ? 'prompt' : '' %>
+            class='required <%= lat_id.nil? && cur_id.nil? ? 'prompt' : '' %>
             coordinate-column' notequalto='.coordinate-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols['number'].each do |c| -%>
-            <option format='<%= c.format.to_json %>'
-              value='<%= c.id %>' <%= c.id == cur_id ?
+            <option value='<%= c.tableColumnId %>'
+              <%= c.tableColumnId.to_s == lat_id || c.id == cur_id ?
                 "selected='selected'" : '' %>><%= c.name %></option>
             <%- end -%>
           </select>
         </div>
 
 
-        <%- cur_id = @is_edit && cur_cols.length > 0 &&
+        <%- long_id = @is_edit && !@view.displayFormat.nil? ?
+          @view.displayFormat.longitudeId : nil -%>
+        <%- cur_id = @is_edit && long_id.nil? && cur_cols.length > 0 &&
           @view.datatypes_match(cur_cols[0], 'number') ?
             cur_cols.shift.id : nil -%>
 
@@ -71,12 +75,12 @@
             Longitude
           </label>
           <select id='mapColumn_longitude' name='mapColumn_longitude'
-            class='required <%= cur_id.nil? ? 'prompt' : '' %>
+            class='required <%= long_id.nil? && cur_id.nil? ? 'prompt' : '' %>
             coordinate-column' notequalto='.coordinate-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols['number'].each do |c| -%>
-            <option format='<%= c.format.to_json %>'
-              value='<%= c.id %>' <%= c.id == cur_id ?
+            <option value='<%= c.tableColumnId %>'
+              <%= c.tableColumnId.to_s == long_id || c.id == cur_id ?
                 "selected='selected'" : '' %>><%= c.name %></option>
             <%- end -%>
           </select>
@@ -92,21 +96,23 @@
 
 
         <%- data_types = ['text', 'richtext'] -%>
-        <%- cur_id = @is_edit && cur_cols.length > 0 &&
+        <%- desc_id = @is_edit && !@view.displayFormat.nil? ?
+          @view.displayFormat.descriptionId : nil -%>
+        <%- cur_id = @is_edit && desc_id.nil? && cur_cols.length > 0 &&
           @view.datatypes_match(cur_cols[0], data_types) ?
             cur_cols.shift.id : nil -%>
 
         <div class='line'>
-          <label for='mapColumn_data'>
-            Data
+          <label for='mapColumn_description'>
+            Description
           </label>
-          <select id='mapColumn_data' name='mapColumn_data'
-            class='<%= cur_id.nil? ? 'prompt' : '' %>'>
+          <select id='mapColumn_description' name='mapColumn_description'
+            class='<%= desc_id.nil? && cur_id.nil? ? 'prompt' : '' %>'>
             <option class='prompt' value=''>Select a Column</option>
             <%- @view.columns_for_datatypes(data_types,
                   @is_edit && !@view.is_grouped?).each do |c| -%>
-            <option format='<%= c.format.to_json %>'
-              value='<%= c.id %>' <%= c.id == cur_id ?
+              <option value='<%= c.tableColumnId %>'
+                <%= c.tableColumnId.to_s == desc_id || c.id == cur_id ?
                 "selected='selected'" : '' %>><%= c.name %></option>
             <%- end -%>
           </select>
@@ -172,22 +178,14 @@
       var $form = $('.mapWrapper form');
       if (!$form.valid()) { return; }
 
-      var cols = [];
-      $('.mapWrapper .typeBlock select').each(function()
-      {
-          var $t = $(this);
-          var id = $t.val();
-          if (id !== '')
-          {
-              var $c = $t.find(':selected');
-              cols.push({id: id,
-                format: $.json.deserialize($.htmlUnescape($c.attr('format'))),
-                name: $c.text(), hidden: false});
-          }
-      });
+      var options = {};
+      options['latitudeId'] = $('.mapWrapper #mapColumn_latitude').val();
+      options['longitudeId'] = $('.mapWrapper #mapColumn_longitude').val();
+      var descId = $('.mapWrapper #mapColumn_description').val();
+      if (descId !== '') { options['descriptionId'] = descId; }
 
       var data = {viewName: $('.mapWrapper #mapName').val(),
-        vizType: 'map', columns: $.json.serialize(_.compact(cols)),
+        vizType: 'map', options: $.json.serialize(options),
         view_query: $('.mapWrapper #view_query').val()};
 
       $.ajax({

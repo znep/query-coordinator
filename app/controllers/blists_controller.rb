@@ -653,25 +653,28 @@ class BlistsController < ApplicationController
     errors = []
     options = params[:options]
     options = JSON.parse(options) if !options.blank?
+    columns = params[:columns]
+    columns = JSON.parse(columns) if !columns.blank?
     begin
       if params[:edit] == 'true'
         batch_reqs = []
-        cols = JSON.parse(params[:columns])
         # TODO: It would be nice to make some convenience methods for generating
         # these requests
-        cols.each do |c|
-          batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + c['id'],
-            'requestType' => 'PUT', 'body' => {'hidden' => false},
-            'class' => Column}
+        if !columns.blank?
+          cols.each do |c|
+            batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + c['id'],
+              'requestType' => 'PUT', 'body' => {'hidden' => false},
+              'class' => Column}
+          end
         end
         batch_reqs << {'url' => '/views/' + params[:id], 'requestType' => 'PUT',
-          'body' => {'columns' => cols, 'displayType' => params[:vizType],
+          'body' => {'columns' => columns, 'displayType' => params[:vizType],
             'query' => JSON.parse(CGI.unescapeHTML(params[:view_query])),
             'displayFormat' => options}, 'class' => View}
         Model.batch(batch_reqs)
       else
         view = View.create({'name' => params[:viewName],
-                           'columns' => JSON.parse(params[:columns]),
+                           'columns' => columns,
                            'displayType' => params[:vizType],
                            'displayFormat' => options,
                            'query' => CGI.unescapeHTML(params[:view_query]),

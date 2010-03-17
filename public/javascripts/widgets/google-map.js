@@ -92,30 +92,8 @@
     {
         if (data.meta !== undefined)
         {
-            var view = data.meta.view;
-            _.each(view.columns, function(c, i) { c.dataIndex = i; });
-            var cols = _.select(view.columns, function(c)
-                    { return c.dataTypeName != 'meta_data' &&
-                        (c.flags === undefined ||
-                        !_.include(c.flags, 'hidden')); });
-            cols = _.sortBy(cols, function(c) { return c.position; });
-
-            if (cols.length < 2) { return; }
-
-            mapObj._idIndex = _.detect(view.columns, function(c)
-                { return c.dataTypeName == 'meta_data' &&
-                    c.name == 'sid'; }).dataIndex;
-            mapObj._latIndex = cols[0].dataIndex;
-            mapObj._longIndex = cols[1].dataIndex;
-            mapObj._infoIsRich = false;
-            if (cols.length > 2)
-            {
-                var infoCol = cols[2];
-                mapObj._infoIndex = infoCol.dataIndex;
-                mapObj._infoIsRich = infoCol.renderTypeName == "text" &&
-                    infoCol.format !== undefined &&
-                    infoCol.format.formatting_option == "Rich";
-            }
+            if (!getColumns(mapObj, data.meta.view))
+            { getLegacyColumns(mapObj, data.meta.view); }
         }
 
         if (mapObj._latIndex === undefined ||
@@ -190,6 +168,60 @@
 
         mapObj.infoWindow.setContent(marker.infoContent);
         mapObj.infoWindow.open(mapObj.map, marker);
+    };
+
+
+    var getColumns = function(mapObj, view)
+    {
+        if (view.displayFormat === undefined ||
+            view.displayFormat.latitudeId === undefined)
+        { return false; }
+
+        mapObj._infoIsRich = false;
+        _.each(view.columns, function(c, i)
+        {
+            if (c.dataTypeName == 'meta_data' && c.name == 'sid')
+            { mapObj._idIndex = i; }
+            if (c.tableColumnId == view.displayFormat.latitudeId)
+            { mapObj._latIndex = i; }
+            if (c.tableColumnId == view.displayFormat.longitudeId)
+            { mapObj._longIndex = i; }
+            if (c.tableColumnId == view.displayFormat.descriptionId)
+            {
+                mapObj._infoIndex = i;
+                mapObj._infoIsRich = c.renderTypeName == "text" &&
+                    c.format !== undefined &&
+                    c.format.formatting_option == "Rich";
+            }
+        });
+
+        return true;
+    };
+
+    var getLegacyColumns = function(mapObj, view)
+    {
+        _.each(view.columns, function(c, i) { c.dataIndex = i; });
+        var cols = _.select(view.columns, function(c)
+            { return c.dataTypeName != 'meta_data' &&
+                (c.flags === undefined || !_.include(c.flags, 'hidden')); });
+        cols = _.sortBy(cols, function(c) { return c.position; });
+
+        if (cols.length < 2) { return false; }
+
+        mapObj._idIndex = _.detect(view.columns, function(c)
+            { return c.dataTypeName == 'meta_data' && c.name == 'sid'; }).dataIndex;
+        mapObj._latIndex = cols[0].dataIndex;
+        mapObj._longIndex = cols[1].dataIndex;
+        mapObj._infoIsRich = false;
+        if (cols.length > 2)
+        {
+            var infoCol = cols[2];
+            mapObj._infoIndex = infoCol.dataIndex;
+            mapObj._infoIsRich = infoCol.renderTypeName == "text" &&
+                infoCol.format !== undefined &&
+                infoCol.format.formatting_option == "Rich";
+        }
+        return true;
     };
 
 })(jQuery);

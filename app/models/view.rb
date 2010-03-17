@@ -69,10 +69,10 @@ class View < Model
 
   def save_filter(name, conditions)
     request_body = {
-      :name => name,
-      :searchString => conditions.delete(:searchString),
-      :query => conditions,
-      :originalViewId => self.id
+      'name' => name,
+      'searchString' => conditions.delete('searchString'),
+      'query' => conditions,
+      'originalViewId' => self.id
     }.to_json
 
     View.parse(CoreServer::Base.connection.create_request("/views.json", request_body))

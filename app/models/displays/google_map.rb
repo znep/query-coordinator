@@ -3,9 +3,9 @@ class Displays::GoogleMap < Displays::Base
     'map'
   end
 
-    def required_stylesheets
-        [ 'google-map' ]
-    end
+  def required_stylesheets
+    [ 'google-map' ]
+  end
 
   def render_javascript_links
     result = super

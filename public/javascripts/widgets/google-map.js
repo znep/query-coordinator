@@ -34,6 +34,7 @@
                 $domObj.data("GoogleMap", currentObj);
 
                 currentObj._rowsToLoad = [];
+                currentObj._markers = {};
 
                 currentObj.map = new google.maps.Map($domObj[0],
                     {
@@ -42,7 +43,11 @@
                         mapTypeId: google.maps.MapTypeId.ROADMAP
                     });
 
+                currentObj._bounds = new google.maps.LatLngBounds();
+
                 $domObj.parent().append('<div class="loadingSpinner"></div>');
+                $domObj.before('<div id="mapError" class="mainError"></div>');
+                $domObj.prev('#mapError').hide();
 
                 loadRows(currentObj,
                     {include_ids_after: currentObj.settings.pageSize});
@@ -58,10 +63,15 @@
             reload: function()
             {
                 var mapObj = this;
-                mapObj.infoWindow.close();
+                mapObj.$dom().prev('#mapError').hide().text('');
+
+                if (mapObj.infoWindow !== undefined) { mapObj.infoWindow.close(); }
                 _.each(mapObj._markers, function(m) { m.setMap(null); });
+                mapObj._bounds = new google.maps.LatLngBounds();
+
                 mapObj._markers = {};
                 mapObj._rowsToLoad = [];
+
                 loadRows(mapObj, {include_ids_after: mapObj.settings.pageSize});
             }
         }
@@ -97,7 +107,6 @@
                     c.name == 'sid'; }).dataIndex;
             mapObj._latIndex = cols[0].dataIndex;
             mapObj._longIndex = cols[1].dataIndex;
-            mapObj._infoIndex;
             mapObj._infoIsRich = false;
             if (cols.length > 2)
             {
@@ -114,18 +123,25 @@
         { return; }
 
         var rows = data.data;
-        if (mapObj._bounds === undefined)
-        { mapObj._bounds = new google.maps.LatLngBounds(); }
-        if (mapObj._markers === undefined) { mapObj._markers = {}; }
 
+        var addedMarkers = false;
+        var badPoints = false;
         _.each(rows, function(r)
         {
             if (typeof r == 'object')
             {
+                var lat = r[mapObj._latIndex];
+                var long = r[mapObj._longIndex];
+                if (lat === null || long === null) { return; }
+                if (lat < -90 || lat > 90 || long < -180 || long > 180)
+                {
+                    badPoints = true;
+                    return;
+                }
+                var ll = new google.maps.LatLng(lat, long);
+
                 var hasInfo = mapObj._infoIndex !== undefined &&
                     r[mapObj._infoIndex] !== null;
-                var ll = new google.maps.LatLng(r[mapObj._latIndex],
-                    r[mapObj._longIndex]);
                 var marker = new google.maps.Marker({position: ll,
                     clickable: hasInfo, map: mapObj.map});
                 mapObj._markers[r[mapObj._idIndex]] = marker;
@@ -140,10 +156,19 @@
                 }
 
                 mapObj._bounds.extend(ll);
+                addedMarkers = true;
             }
             else { mapObj._rowsToLoad.push(r); }
         });
-        mapObj.map.fitBounds(mapObj._bounds);
+
+        if (badPoints)
+        {
+            mapObj.$dom().prev('#mapError').show()
+                .text('Some points were invalid. ' +
+                    'Latitude must be between -90 and 90, and longitude ' +
+                    'must be between -180 and 180');
+        }
+        if (addedMarkers) { mapObj.map.fitBounds(mapObj._bounds); }
 
         loadMoreRows(mapObj);
     };

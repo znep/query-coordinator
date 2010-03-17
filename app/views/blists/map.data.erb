@@ -95,6 +95,28 @@
         </p>
 
 
+        <%- title_id = @is_edit && !@view.displayFormat.nil? ?
+          @view.displayFormat.titleId : nil -%>
+
+        <div class='line'>
+          <label for='mapColumn_title'>
+            Title
+          </label>
+          <select id='mapColumn_title' name='mapColumn_title'
+            class='<%= title_id.nil? ? 'prompt' : '' %>'>
+            <option class='prompt' value=''>Select a Column</option>
+            <%- @view.columns_for_datatypes('text',
+                  @is_edit && !@view.is_grouped?).each do |c| -%>
+              <option value='<%= c.tableColumnId %>'
+                <%= c.tableColumnId.to_s == title_id ?
+                "selected='selected'" : '' %>><%= c.name %></option>
+            <%- end -%>
+          </select>
+          <span class="helpie"
+            title="Tooltip to display on mouseover of a marker">?</span>
+        </div>
+
+
         <%- data_types = ['text', 'richtext'] -%>
         <%- desc_id = @is_edit && !@view.displayFormat.nil? ?
           @view.displayFormat.descriptionId : nil -%>
@@ -116,6 +138,8 @@
                 "selected='selected'" : '' %>><%= c.name %></option>
             <%- end -%>
           </select>
+          <span class="helpie"
+            title="Content to display on clicking a marker">?</span>
         </div>
 
       </div>
@@ -181,6 +205,8 @@
       var options = {};
       options['latitudeId'] = $('.mapWrapper #mapColumn_latitude').val();
       options['longitudeId'] = $('.mapWrapper #mapColumn_longitude').val();
+      var titleId = $('.mapWrapper #mapColumn_title').val();
+      if (titleId !== '') { options['titleId'] = titleId; }
       var descId = $('.mapWrapper #mapColumn_description').val();
       if (descId !== '') { options['descriptionId'] = descId; }
 

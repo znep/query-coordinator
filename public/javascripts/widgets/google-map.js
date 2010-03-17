@@ -121,6 +121,8 @@
                 var hasInfo = mapObj._infoIndex !== undefined &&
                     r[mapObj._infoIndex] !== null;
                 var marker = new google.maps.Marker({position: ll,
+                    title: mapObj._titleIndex !== undefined ?
+                        r[mapObj._titleIndex] : null,
                     clickable: hasInfo, map: mapObj.map});
                 mapObj._markers[r[mapObj._idIndex]] = marker;
 
@@ -182,10 +184,14 @@
         {
             if (c.dataTypeName == 'meta_data' && c.name == 'sid')
             { mapObj._idIndex = i; }
+
             if (c.tableColumnId == view.displayFormat.latitudeId)
             { mapObj._latIndex = i; }
             if (c.tableColumnId == view.displayFormat.longitudeId)
             { mapObj._longIndex = i; }
+
+            if (c.tableColumnId == view.displayFormat.titleId)
+            { mapObj._titleIndex = i; }
             if (c.tableColumnId == view.displayFormat.descriptionId)
             {
                 mapObj._infoIndex = i;

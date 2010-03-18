@@ -25,18 +25,21 @@ class CommunitiesController < ApplicationController
       @all_members_total = User.find(opts.merge({ :count => true })).count
       @all_members = User.find(opts)
       @all_members_tags = Tag.find(tag_opts)
+      ensure_tag_in_list(@all_members_tags, opts[:tags])
     end
 
     if @need_to_render.include?(:topMembers)
       @top_members_total = 100
       @top_members = User.find(opts.merge({ :topMembers => true }))
       @top_members_tags = Tag.find(tag_opts.merge({ :topMembers => true }))
+      ensure_tag_in_list(@top_members_tags, opts[:tags])
     end
 
     if @need_to_render.include?(:topUploaders)
       @top_uploaders_total = 100
       @top_uploaders = User.find(opts.merge({ :topUploaders => true }))
       @top_uploaders_tags = Tag.find(tag_opts.merge({ :topUploaders => true }))
+      ensure_tag_in_list(@top_uploaders_tags, opts[:tags])
     end
 
     unless @carousel_members_rendered = read_fragment("community-carousel_#{CurrentDomain.cname}")
@@ -80,11 +83,7 @@ class CommunitiesController < ApplicationController
       @filtered_members_total = User.find(opts.merge({:count => true})).count
 
       tag_list = Tag.find(tag_opts)
-      if (opts[:tags] && !tag_list.nil? && !tag_list.any? {|tag| tag.name == opts[:tags] })
-        new_tag = Tag.new
-        new_tag.data['name'] = opts[:tags]
-        tag_list << new_tag
-      end
+      ensure_tag_in_list(tag_list, opts[:tags])
     end
 
     # build current state string
@@ -192,4 +191,11 @@ private
     return opts, tag_opts
   end
 
+  def ensure_tag_in_list(list, required_tag)
+    if (!required_tag.nil? && !list.nil? && !list.any?{ |tag| tag.name == required_tag })
+      new_tag = Tag.new
+      new_tag.data['name'] = required_tag
+      list << new_tag
+    end
+  end
 end

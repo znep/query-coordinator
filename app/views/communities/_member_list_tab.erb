@@ -53,7 +53,7 @@
           <li>
             <%= link_to("<span>#{h(tag.name)}</span>", 
                   generate_filter_url(@current_state, type, {:tag => tag.name}),
-                  :class => "filterLink#{get_tag_hilight_class(tag.name, current_tag, ' hilight')}" ) %>
+                  :class => "filterLink#{' hilight' if tag.name == @current_state[:tag]}" ) %>
           </li>
         <%- end -%>
         <li class="moreLink">

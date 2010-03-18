@@ -69,10 +69,10 @@ class View < Model
 
   def save_filter(name, conditions)
     request_body = {
-      :name => name,
-      :searchString => conditions.delete(:searchString),
-      :query => conditions,
-      :originalViewId => self.id
+      'name' => name,
+      'searchString' => conditions.delete('searchString'),
+      'query' => conditions,
+      'originalViewId' => self.id
     }.to_json
 
     View.parse(CoreServer::Base.connection.create_request("/views.json", request_body))
@@ -439,7 +439,7 @@ class View < Model
     # TODO - migrate legacy views and remove this code
     if dt
         if dt == 'map'
-            dt = 'google' if !displayFormat || !displayFormat.layers
+            dt = 'google_map' if !displayFormat || !displayFormat.layers
         else
             config = Displays::Config[dt]
             dt = config['display'] if config && config['display']

@@ -99,6 +99,13 @@ form textarea.text_wide { width: 30em; }
 
 .errorMessage { color: red; }
 
+.mainError
+{
+    color: #ff0000;
+    font-size: 1.2em;
+    padding: 0.25em 0 1em;
+}
+
 .hide { display: none; }
 
 .hiddenTextField

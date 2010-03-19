@@ -229,7 +229,7 @@ private
   end
 
   def parse_opts(params)
-    page = params[:page] || 1
+    page = params[:page].present? ? params[:page].to_i : 1
     sort_by_selection = params[:sort_by] || (params[:type] == "popular" ? "POPULAR" : "LAST_CHANGED")
     sort_by = sort_by_selection
 

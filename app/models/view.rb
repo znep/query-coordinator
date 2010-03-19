@@ -43,7 +43,7 @@ class View < Model
   end
 
   def column_by_id(column_id)
-    self.columns.reject {|c| c.id != column_id}[0]
+    self.columns.find{ |c| c.id == column_id }
   end
 
   def html

@@ -1,11 +1,22 @@
-.loadingSpinner
+.loadingSpinnerContainer
 {
-    border: 1px solid #000000;
-    background-color: #ffffff;
+    background: transparent url(/stylesheets/images/common/spinner_background.png) no-repeat;
+    height: 48px;
     left: 50%;
-    filter: alpha(opacity=70);
-    opacity: 0.7;
+    margin-left: -50px;
+    margin-top: -50px;
+    padding: 26px;
+    position: absolute;
     top: 50%;
+    width: 48px;
+}
+.loadingSpinnerContainer .loadingSpinner
+{
+    position: static;
+}
+.loadingSpinnerContainer.hidden
+{
+    display: none;
 }
 
 .mapInfoContainer

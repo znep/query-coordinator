@@ -161,14 +161,6 @@ HREF
     end
     out
   end
-  
-  def get_tag_hilight_class(this_tag, current_tag, hilight_class)
-    out = ""
-    if (!current_tag.nil? && current_tag == this_tag)
-      out = hilight_class
-    end
-    out
-  end
 
 
   # Display a standardized flash error message.

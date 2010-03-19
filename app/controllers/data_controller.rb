@@ -51,6 +51,7 @@ class DataController < ApplicationController
         @popular_views = View.find_filtered(opts.merge({ :top100 => true }))
         @popular_views_total = View.find(opts.merge({ :top100 => true, :count => true}), true).count
         @popular_views_tags = Tag.find(tag_opts.merge({ :top100 => true }))
+        ensure_tag_in_list(@popular_views_tags, opts[:tags])
       end
     end
 
@@ -63,6 +64,7 @@ class DataController < ApplicationController
         @all_views = View.find(opts, true)
         @all_views_total = View.find(opts.merge({ :count => true }), true).count
         @all_views_tags = Tag.find(tag_opts)
+        ensure_tag_in_list(@all_views_tags, opts[:tags])
       end
     end
 
@@ -127,13 +129,8 @@ class DataController < ApplicationController
       @filtered_views = View.find_filtered(opts)
       @filtered_views_total = View.find_filtered(opts.merge({ :count => true })).count
 
-      # Account for case where user selects a tag not on top 5
       tag_list = Tag.find(tag_opts)
-      if (opts[:tags] && !tag_list.nil? && !tag_list.any? {|tag| tag.name == opts[:tags] })
-        new_tag = Tag.new
-        new_tag.data['name'] = opts[:tags]
-        tag_list << new_tag
-      end
+      ensure_tag_in_list(tag_list, opts[:tags])
     end
 
     # build current state string
@@ -265,6 +262,14 @@ private
     opts.update(params[:filter]) unless params[:filter].blank?
 
     return opts, tag_opts
+  end
+
+  def ensure_tag_in_list(list, required_tag)
+    if (!required_tag.nil? && !list.nil? && !list.any?{ |tag| tag.name == required_tag })
+      new_tag = Tag.new
+      new_tag.data['name'] = required_tag
+      list << new_tag
+    end
   end
 
 protected

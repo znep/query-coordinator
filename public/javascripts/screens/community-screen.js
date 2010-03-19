@@ -141,6 +141,12 @@ blist.community.tagModalShowHandler = function(hash)
                 {
                     $(this).attr('href', $(this).attr('href').replace(/\?/, '#'));
                 });
+            $('#tagCloud .closeContainer a').click(function(event)
+            {
+                event.preventDefault();
+                $modal.jqmHide();
+                event.stopPropagation();
+            });
         }
     });
 };

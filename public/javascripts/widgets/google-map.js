@@ -45,7 +45,7 @@
 
                 currentObj._bounds = new google.maps.LatLngBounds();
 
-                $domObj.parent().append('<div class="loadingSpinner"></div>');
+                $domObj.parent().append('<div class="loadingSpinnerContainer"><div class="loadingSpinner"></div></div>');
                 $domObj.before('<div id="mapError" class="mainError"></div>');
                 $domObj.prev('#mapError').hide();
 
@@ -79,11 +79,11 @@
 
     var loadRows = function(mapObj, args)
     {
-        mapObj.$dom().parent().find('.loadingSpinner').removeClass('hidden');
+        mapObj.$dom().parent().find('.loadingSpinnerContainer').removeClass('hidden');
         $.ajax({url: '/views/' + blist.display.viewId + '/rows.json',
                 data: args, type: 'GET', dataType: 'json',
                 complete: function()
-                    { mapObj.$dom().parent().find('.loadingSpinner')
+                    { mapObj.$dom().parent().find('.loadingSpinnerContainer')
                         .addClass('hidden'); },
                 success: function(data) { rowsLoaded(mapObj, data); }});
     };

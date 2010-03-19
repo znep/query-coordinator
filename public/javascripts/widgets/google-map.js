@@ -33,7 +33,8 @@
                 var $domObj = currentObj.$dom();
                 $domObj.data("GoogleMap", currentObj);
 
-                currentObj._rowsToLoad = [];
+                currentObj._rowsLeft = 0;
+                currentObj._rowsLoaded = 0;
                 currentObj._markers = {};
 
                 currentObj.map = new google.maps.Map($domObj[0],
@@ -50,7 +51,8 @@
                 $domObj.prev('#mapError').hide();
 
                 loadRows(currentObj,
-                    {include_ids_after: currentObj.settings.pageSize});
+                    {method: 'getByIds', meta: true, start: 0,
+                        length: currentObj.settings.pageSize});
             },
 
             $dom: function()
@@ -70,9 +72,12 @@
                 mapObj._bounds = new google.maps.LatLngBounds();
 
                 mapObj._markers = {};
-                mapObj._rowsToLoad = [];
+                mapObj._rowsLeft = 0;
+                mapObj._rowsLoaded = 0;
 
-                loadRows(mapObj, {include_ids_after: mapObj.settings.pageSize});
+                loadRows(mapObj,
+                    {method: 'getByIds', meta: true, start: 0,
+                        length: currentObj.settings.pageSize});
             }
         }
     });
@@ -94,13 +99,14 @@
         {
             if (!getColumns(mapObj, data.meta.view))
             { getLegacyColumns(mapObj, data.meta.view); }
+            mapObj._rowsLeft = data.meta.totalRows - mapObj._rowsLoaded;
         }
 
         if (mapObj._latIndex === undefined ||
             mapObj._longIndex === undefined)
         { return; }
 
-        var rows = data.data;
+        var rows = data.data.data || data.data;
 
         var addedMarkers = false;
         var badPoints = false;
@@ -137,8 +143,9 @@
 
                 mapObj._bounds.extend(ll);
                 addedMarkers = true;
+                mapObj._rowsLoaded++;
+                mapObj._rowsLeft--;
             }
-            else { mapObj._rowsToLoad.push(r); }
         });
 
         if (badPoints)
@@ -155,12 +162,12 @@
 
     var loadMoreRows = function(mapObj)
     {
-        if (mapObj._rowsToLoad === undefined || mapObj._rowsToLoad.length < 1)
-        { return; }
+        if (mapObj._rowsLeft < 1) { return; }
 
-        var toLoad = mapObj._rowsToLoad.splice(0, mapObj.settings.pageSize);
+        var toLoad = Math.min(mapObj._rowsLeft, mapObj.settings.pageSize);
 
-        if (toLoad.length > 0) { loadRows(mapObj, { ids: toLoad }); }
+        loadRows(mapObj, { method: 'getByIds', start: mapObj._rowsLoaded,
+            length: toLoad });
     };
 
     var markerClick = function(mapObj, marker)

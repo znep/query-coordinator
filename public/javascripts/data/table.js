@@ -327,11 +327,17 @@
             return rows.sort(function(a, b) { return a.index - b.index; });
         };
 
-        var clearRowSelection = function(row) {
-            for (var cell = row.row.firstChild; cell; cell = cell.nextSibling) {
-                if (cell._sel) {
-                    $(cell).removeClass('blist-cell-selected');
-                    cell._sel = false;
+        var clearRowSelection = function(row)
+        {
+            if (row.row !== undefined)
+            {
+                for (var cell = row.row.firstChild; cell; cell = cell.nextSibling)
+                {
+                    if (cell._sel)
+                    {
+                        $(cell).removeClass('blist-cell-selected');
+                        cell._sel = false;
+                    }
                 }
             }
             delete row.selected;
@@ -365,7 +371,7 @@
             if (cellNav.isActive())
             {
                 var row = model.get(cellNav.getActiveY());
-                if (row)
+                if (row !== undefined)
                 {
                     var physActive = renderedRows[row.id];
                     if (physActive)
@@ -459,7 +465,8 @@
             }
 
             var row = model.get(cellNav.getActiveY());
-            if (row.expanded) { $activeContainer.addClass('blist-tr-open'); }
+            if (row !== undefined && row.expanded)
+            { $activeContainer.addClass('blist-tr-open'); }
             else { $activeContainer.removeClass('blist-tr-open'); }
             if (!$activeCells)
             {
@@ -549,7 +556,7 @@
         var cellFromXY = function(x, y)
         {
             var row = model.get(y);
-            if (row)
+            if (row !== undefined)
             {
                 var physActive = renderedRows[row.id];
                 if (physActive)
@@ -651,7 +658,8 @@
                 }
                 var scrollRight = scrollLeft + scrollWidth;
 
-                var layoutLevel = layout[model.get(xy.y).level || 0];
+                var row = model.get(xy.y);
+                var layoutLevel = layout[row !== undefined ? (row.level || 0) : 0];
                 // Calculate left & right positions
                 var cellLeft = lockedWidth;
                 for (var i = 0; i < xy.x; i++)
@@ -2277,7 +2285,10 @@
         var getColumnStyle = function(column) {
             var result = colStyles[column.uid];
             if (!result)
-                throw "Uninitialized column style access"
+            {
+                $.debug('invalid col', column);
+                throw "Uninitialized column style access for " + column.uid;
+            }
             return result;
         };
 
@@ -2561,7 +2572,8 @@
                       "'>&nbsp;</div>\"");
                     lcols.push({
                         type: 'fill',
-                        canFocus: false
+                        canFocus: false,
+                        mcol: mcol
                     });
                 }
                 else
@@ -3446,6 +3458,22 @@
             end("updateHeader");
         };
 
+        var updateFooter = function()
+        {
+            var updateColAgg = function(col)
+            {
+                var modelCol = _.detect(model.meta().allColumns,
+                    function(c) { return c.id == col.id; });
+                col.aggregate = modelCol.aggregate;
+                if (col.body !== undefined)
+                { _.each(col.body.children, function(c) { updateColAgg(c); }); }
+            };
+            _.each(columns, function(c) { updateColAgg(c); });
+
+            renderFooter();
+            updateLayout();
+        };
+
         /**
          * Create column footer elements for the current row configuration
          */
@@ -3456,7 +3484,7 @@
             var renderColFooter = function (col)
             {
                 var cls = col.cls ? ' blist-tf-' + col.cls : '';
-                showAgg = showAgg || col.aggregate != undefined;
+                showAgg = showAgg || col.aggregate !== undefined;
                 // Convert string to float, then clip to desired number of digits;
                 //  then convert back to float to strip extra zeros
                 var val = col.aggregate ?
@@ -3595,12 +3623,12 @@
                     var row = appendUtilDOM.firstChild;
                     // + 2 for "-l" suffix prior to row ID
                     var rowID = row.id.substring(id.length + 2);
-                    if (!renderedRows[rowID])
+                    if (renderedRows[rowID] === undefined)
                     {
                         renderedRows[rowID] = {};
                     }
                     renderedRows[rowID].locked = row;
-                    if (dirtyRows[rowID])
+                    if (dirtyRows[rowID] !== undefined)
                     {
                         $locked[0].replaceChild(row, dirtyRows[rowID].locked);
                     } else {
@@ -3678,7 +3706,7 @@
                 else
                 {
                     // Unloaded row -- record for load request
-                    rowsToLoad.push(row);
+                    rowsToLoad.push(i);
                 }
             }
             end("renderRows.render");
@@ -3688,9 +3716,9 @@
             for (var unusedID in unusedRows)
             {
                 row = unusedRows[unusedID].row;
-                row.parentNode.removeChild(row);
+                if (row !== undefined) { row.parentNode.removeChild(row); }
                 row = unusedRows[unusedID].locked;
-                if (row) { row.parentNode.removeChild(row); }
+                if (row !== undefined) { row.parentNode.removeChild(row); }
                 delete renderedRows[unusedID];
             }
             end("renderRows.destroy");
@@ -3810,7 +3838,7 @@
             initRows(model);
         });
         $this.bind('footer_change', function(event)
-        { renderFooter(); });
+        { updateFooter(); });
         $this.bind('header_change', function(event, model)
         {
             updateHeader(model);

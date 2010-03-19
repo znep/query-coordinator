@@ -762,21 +762,7 @@
     var serverRowChange = function(datasetObj)
     {
         datasetObj.summaryStale = true;
-        updateAggregates(datasetObj);
-    };
-
-    var updateAggregates = function(datasetObj)
-    {
-        var model = datasetObj.settings._model;
-        var view = model.meta().view;
-        $.ajax({url: '/views/' + view.id + '/rows.json',
-            data: {method: 'getAggregates'}, cache: false,
-            contentType: 'application/json', dataType: 'json', type: 'GET',
-            success: function(resp)
-            {
-                model.updateAggregateHash(resp);
-                model.footerChange();
-            }});
+        datasetObj.settings._model.reloadAggregates();
     };
 
     var cellClick = function(datasetObj, event, row, column, origEvent)

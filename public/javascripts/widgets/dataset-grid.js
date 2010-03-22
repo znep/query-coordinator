@@ -1440,6 +1440,7 @@
 
     var columnFilterChanged = function(datasetObj, col, setFilter)
     {
+        if ($(col.dom).data('qtip')) { $(col.dom).qtip('hide'); }
         datasetObj.summaryStale = true;
         if (!setFilter) { datasetObj.clearTempView('filter_' + col.id); }
         else { datasetObj.setTempView('filter_' + col.id); }

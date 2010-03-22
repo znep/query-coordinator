@@ -2286,7 +2286,6 @@
             var result = colStyles[column.uid];
             if (!result)
             {
-                $.debug('invalid col', column);
                 throw "Uninitialized column style access for " + column.uid;
             }
             return result;

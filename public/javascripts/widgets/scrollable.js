@@ -120,9 +120,9 @@
                 event.preventDefault();
             });
 
-            var $activeItem = $this.find(config.activeSelector);
+            var $activeItem = $this.find(config.activeSelector + ':first');
             while ($activeItem.length > 0 &&
-                $activeItem.hasClass(config.hiddenClass))
+                    $activeItem.hasClass(config.hiddenClass))
             {
                 stepNext($this);
             }

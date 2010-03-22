@@ -9,15 +9,6 @@ class View < Model
     end
   end
 
-  def viewable_columns
-    result = self.meta_data_columns.each_with_index {|c, i| c.data_position = i}.
-      find_all do |column|
-      column.dataTypeName != 'meta_data' && !column.flag?("hidden")
-    end
-    result = result.sort_by{|column| column.position}
-    result
-  end
-
   def self.find_filtered(options)
     path = "/views.json?#{options.to_param}"
     parse(CoreServer::Base.connection.get_request(path))
@@ -53,20 +44,6 @@ class View < Model
     end
   end
 
-  def meta_data_columns
-    @meta_data_columns ||= get_meta_data_columns
-  end
-
-  def get_meta_data_columns(params = {})
-    # default params
-    params = {:accessType => 'WEBSITE', :include_aggregates => true}.merge params
-
-    url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-    parsed_data = JSON.parse(CoreServer::Base.connection.get_request(url))
-    parsed_data['meta']['view']['columns'].inject([]) {|array, column_hash|
-      array << Column.set_up_model(column_hash)}
-  end
-
   def save_filter(name, conditions)
     request_body = {
       'name' => name,
@@ -79,11 +56,18 @@ class View < Model
   end
 
   def find_data(per_page, page = 1, conditions = {})
-    # get data
-    params = { :accessType => 'WEBSITE', :include_aggregates => true, :include_ids_after => 1 }
+    params = { :method => 'getByIds',
+               :accessType => 'WEBSITE',
+               :meta => true,
+               :start => (page - 1) * per_page,
+               :length => per_page }
+
     if conditions.empty?
       url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?#{params.to_param}"
-      result = JSON.parse(CoreServer::Base.connection.get_request(url))
+      meta_and_data = JSON.parse(CoreServer::Base.connection.get_request(url))
+
+      url = "/#{self.class.name.pluralize.downcase}/#{id}/rows.json?method=getAggregates"
+      aggregates = JSON.parse(CoreServer::Base.connection.get_request(url))
     else
       merged_conditions = self.query.data.deep_merge(conditions)
       request_body = {
@@ -93,29 +77,28 @@ class View < Model
         'originalViewId' => self.id
       }.to_json
 
-      params[:method] = 'index'
       url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?#{params.to_param}"
-      result = JSON.parse(CoreServer::Base.connection.create_request(url, request_body))
+      meta_and_data = JSON.parse(CoreServer::Base.connection.create_request(url, request_body))
+
+      url = "/#{self.class.name.pluralize.downcase}/INLINE/rows.json?method=getAggregates"
+      aggregates = JSON.parse(CoreServer::Base.connection.create_request(url, request_body))
     end
 
-    data = result['data']
-    aggregates = result['meta']['aggregates']
-    row_count = data.size
+    # grab viewable columns; this is inline rather than a separate method to
+    # mitigate the need for another core server request
+    viewable_columns =
+      meta_and_data['meta']['view']['columns'].
+        map{ |column_hash| Column.set_up_model(column_hash) }.
+        each_with_index{ |column, i| column.data_position = i }.
+        find_all{ |column| column.dataTypeName != 'meta_data' &&
+                          !column.flag?("hidden") }.
+        sort_by { |column| column.position }
 
-    unless data.empty?
-      # we had to get one row of data because the core server sucks.
-      # now we want no rows of data. caar for the sid.
-      data[0] = data[0][0]
+    # grab other return values
+    data = meta_and_data['data']['data'] # ask the core server gods.
+    row_count = meta_and_data['meta']['totalRows']
 
-      # paginate data
-      data = data.slice((page - 1) * per_page, per_page)
-      # someday, we'll have ordered hashes and life will be good. for now, map it.
-      row_mapping = Hash.new
-      data.each_with_index{|sid, idx| row_mapping[sid] = idx}
-      self.get_rows_by_ids(data, request_body).each{ |row| data[row_mapping[row.first]] = row }
-    end
-
-    return data, aggregates, row_count
+    return data, viewable_columns, aggregates, row_count
   end
 
   def get_rows_by_ids(ids, req_body = nil)

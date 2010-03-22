@@ -130,7 +130,7 @@ class BlistsController < ApplicationController
 
     # get rows
     @per_page = 50
-    @data, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+    @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
 
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})

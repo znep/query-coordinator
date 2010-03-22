@@ -183,23 +183,25 @@
     var getColumns = function(mapObj, view)
     {
         if (view.displayFormat === undefined ||
-            view.displayFormat.latitudeId === undefined)
+            (view.displayFormat.plot === undefined &&
+             view.displayFormat.latitudeId === undefined))
         { return false; }
 
         mapObj._infoIsRich = false;
+        var colFormat = view.displayFormat.plot || view.displayFormat;
         _.each(view.columns, function(c, i)
         {
             if (c.dataTypeName == 'meta_data' && c.name == 'sid')
             { mapObj._idIndex = i; }
 
-            if (c.tableColumnId == view.displayFormat.latitudeId)
+            if (c.tableColumnId == colFormat.latitudeId)
             { mapObj._latIndex = i; }
-            if (c.tableColumnId == view.displayFormat.longitudeId)
+            if (c.tableColumnId == colFormat.longitudeId)
             { mapObj._longIndex = i; }
 
-            if (c.tableColumnId == view.displayFormat.titleId)
+            if (c.tableColumnId == colFormat.titleId)
             { mapObj._titleIndex = i; }
-            if (c.tableColumnId == view.displayFormat.descriptionId)
+            if (c.tableColumnId == colFormat.descriptionId)
             {
                 mapObj._infoIndex = i;
                 mapObj._infoIsRich = c.renderTypeName == "text" &&

@@ -202,13 +202,13 @@
       var $form = $('.mapWrapper form');
       if (!$form.valid()) { return; }
 
-      var options = {};
-      options['latitudeId'] = $('.mapWrapper #mapColumn_latitude').val();
-      options['longitudeId'] = $('.mapWrapper #mapColumn_longitude').val();
+      var options = {plot: {}, type: 'google'};
+      options.plot.latitudeId = $('.mapWrapper #mapColumn_latitude').val();
+      options.plot.longitudeId = $('.mapWrapper #mapColumn_longitude').val();
       var titleId = $('.mapWrapper #mapColumn_title').val();
-      if (titleId !== '') { options['titleId'] = titleId; }
+      if (titleId !== '') { options.plot.titleId = titleId; }
       var descId = $('.mapWrapper #mapColumn_description').val();
-      if (descId !== '') { options['descriptionId'] = descId; }
+      if (descId !== '') { options.plot.descriptionId = descId; }
 
       var data = {viewName: $('.mapWrapper #mapName').val(),
         vizType: 'map', options: $.json.serialize(options),

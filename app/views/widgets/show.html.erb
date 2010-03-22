@@ -358,7 +358,7 @@
     <%# Hard-code parameters for initial call here; if the Javascript ever
     changes, these will need to be updated %>
     blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
-        'include_ids_after' => 50, 'include_aggregates' => true}) %>;
+        'method' => 'getByIds', 'meta' => true, 'start' => 0, 'length' => 50}) %>;
     <%- end -%>
   </script>
 

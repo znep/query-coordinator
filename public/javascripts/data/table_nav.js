@@ -139,7 +139,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         }
 
         var row = model.get(y);
-        var rowLevel = row.level || 0;
+        var rowLevel = row !== undefined ? (row.level || 0) : 0;
 
         // Selection must occur in the same level -- otherwise, ignore
         if (hasSelection() && selectionLevel != rowLevel)
@@ -152,7 +152,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
 
         // If we are wrapping into a non-expanded header, expand it
         // if it has children
-        if (wrap && !row.expanded &&
+        if (wrap && row !== undefined && !row.expanded &&
                 (col.type == 'opener' || col.type == 'header'))
         {
             var subT = model.getRowValue(row, col.mcol);
@@ -162,7 +162,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
 
         // See if we selected into a closed nested table; if so, select
         // all headers
-        if ((!row.expanded || !wrap) &&
+        if ((row === undefined || !row.expanded || !wrap) &&
                 (col.type == 'opener' || col.type == 'header'))
         {
             for (var i = x + 1; i < layoutLevel.length &&
@@ -174,7 +174,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
 
         // If we are naving into an expanded header, then go into the
         //  first navigable child cell
-        if (row.expanded && wrap &&
+        if (row !== undefined && row.expanded && wrap &&
                 (col.type == 'opener' || col.type == 'header'))
         {
             var newXY = getAdjustedY(1, event, x, y, wrap);
@@ -196,7 +196,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         {
             // Begin a new selection box
             if (!selectionBoxes.length) {
-                selectionLevel = model.get(y).level || 0;
+                var curRow = model.get(y);
+                selectionLevel = curRow !== undefined ? (curRow.level || 0) : 0;
             }
             var startX = selectionMode == 'start' && activeCellOn ?
                 activeCellXStart : x;
@@ -322,7 +323,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             }
 
             // Skip the blank row
-            if (!modelRow || modelRow.id == "blank")
+            if (modelRow === undefined || modelRow.id == "blank")
             {
                 continue;
             }
@@ -451,7 +452,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
 
     var getColumnInLevel = function(newMCol, row)
     {
-        var newL = row.level || 0;
+        var newL = row !== undefined ? (row.level || 0) : 0;
         var newLevelLayout = layout[newL];
         var x = null;
         for (var i = 0; i < newLevelLayout.length; i++)
@@ -486,7 +487,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
     {
         // Locate our current position
         var y = baseY;
-        if (y == undefined) { return null; }
+        if (y === undefined) { return null; }
 
         // Update the y position
         y += deltaY;
@@ -494,7 +495,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         var x = baseX;
 
         var oldRow = model.get(baseY);
-        var oldLevel = oldRow.level || 0;
+        var oldLevel = oldRow !== undefined ? (oldRow.level || 0) : 0;
         var oldCol = layout[oldLevel][baseX];
 
         // If we're wrapping and we go off the top or bottom, wrap to
@@ -541,28 +542,35 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 }
                 // Otherwise, if we're changing levels on the bottom, get the
                 // appropriate child column
-                else if ((model.get(newY).level || 0) > oldLevel)
+                else
                 {
-                    var adjHeader = layout[oldLevel][x + (deltaY < 0 ? -1 : 1)];
-                    if (adjHeader && adjHeader.type == 'header' &&
-                        adjHeader.mcol && adjHeader.mcol.nestedIn)
+                    var curRow = model.get(newY);
+                    if ((curRow !== undefined ? (curRow.level || 0) : 0) >
+                        oldLevel)
                     {
-                        x = getColumnInLevel(adjHeader.mcol, model.get(newY));
-                        if (x === null) { return null; }
-                        // Re-adjust new X in preparation for getAdjustedX below
-                        x = x + (deltaY < 0 ? 1 : -1);
-                    }
-                    // Otherwise it's not a level change, so we need to find the
-                    // last parent row
-                    else
-                    {
-                        newY = model.nextInLevel(newY + (deltaY < 0 ? 1 : -1),
-                            deltaY < 0);
+                        var adjHeader =
+                            layout[oldLevel][x + (deltaY < 0 ? -1 : 1)];
+                        if (adjHeader && adjHeader.type == 'header' &&
+                            adjHeader.mcol && adjHeader.mcol.nestedIn)
+                        {
+                            x = getColumnInLevel(adjHeader.mcol, model.get(newY));
+                            if (x === null) { return null; }
+                            // Re-adjust new X in preparation for getAdjustedX
+                            // below
+                            x = x + (deltaY < 0 ? 1 : -1);
+                        }
+                        // Otherwise it's not a level change, so we need to
+                        // find the last parent row
+                        else
+                        {
+                            newY = model.nextInLevel(newY + (deltaY < 0 ? 1 : -1),
+                                deltaY < 0);
+                        }
                     }
                 }
 
                 var adjX = getAdjustedX(y < 0 ? -1 : 1, event, x, newY);
-                if (adjX && adjX.x != x)
+                if (adjX && (adjX.x != x || adjX.y != y))
                 {
                     x = adjX.x;
                     y = adjX.y;
@@ -578,14 +586,15 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         if (y == baseY && x == baseX) { return null; }
 
         var newRow = model.get(y);
-        var newLevel = newRow.level || 0;
+        var newLevel = newRow !== undefined ? (newRow.level || 0) : 0;
         var newCol = layout[newLevel][x];
 
         // If we're leaving a child row, then we will either wrap back to
         // the top of the nested table, or go back to the first column in
         // the nested table in the next parent row
         if (wrap && baseX == x && oldCol.mcol && oldCol.mcol.nestedIn &&
-            oldRow.parent && (!newRow.parent ||
+            oldRow !== undefined && oldRow.parent &&
+            (newRow === undefined || !newRow.parent ||
                 newRow.parent != oldRow.parent))
         {
             // If we're going out of the nested table completely, then
@@ -613,7 +622,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                     x = adjXNT.x;
                     y = adjXNT.y;
                     newRow = model.get(y);
-                    newLevel = newRow.level || 0;
+                    newLevel = newRow !== undefined ? (newRow.level || 0) : 0;
                     newCol = layout[newLevel][x];
                 }
             }
@@ -626,7 +635,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
         if (newCol && (newCol.type == 'opener' || newCol.type == 'header'))
         {
             // If hit an opener or header in an expanded row, skip it
-            if (newRow.expanded && wrap)
+            if (newRow !== undefined && newRow.expanded && wrap)
             {
                 return getAdjustedY(deltaY < 0 ? -1 : 1, event, x, y, wrap);
             }
@@ -760,7 +769,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
     {
         // Scan for the next focusable cell
         var y = baseY;
-        var origLevel = model.get(y).level || 0;
+        var origRow = model.get(y);
+        var origLevel = origRow !== undefined ? (origRow.level || 0) : 0;
         var layoutLevel = layout[origLevel];
         var x = baseX;
         var origCol = layoutLevel[x];
@@ -789,14 +799,23 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                     // Make sure this wouldn't make us change levels or
                     // parent rows; if it does, then skip setting this data
                     // and let the normal flow happen
-                    if (adjP &&
-                        origLevel == (model.get(adjP.y).level || 0) &&
-                        model.get(y).parent == model.get(adjP.y).parent)
+                    if (adjP)
                     {
-                        y = adjP.y;
-                        newX = adjP.x;
-                        layoutLevel = layout[model.get(y).level || 0];
-                        break;
+                        var adjRow = model.get(adjP.y);
+                        var curRow = model.get(y);
+                        if (origLevel == (adjRow !== undefined ?
+                                    (adjRow.level || 0) : 0) &&
+                                (curRow !== undefined ?
+                                 curRow.parent : undefined) ==
+                                (adjRow !== undefined ? adjRow.parent : undefined))
+                        {
+                            y = adjP.y;
+                            newX = adjP.x;
+                            curRow = model.get(y);
+                            layoutLevel = layout[curRow !== undefined ?
+                                (curRow.level || 0) : 0];
+                            break;
+                        }
                     }
                 }
 
@@ -808,7 +827,7 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                 if (curCol.mcol && curCol.mcol.type == 'nested_table')
                 {
                     var curRow = model.get(y);
-                    if (curRow.expanded)
+                    if (curRow !== undefined && curRow.expanded)
                     {
                         var subTable = model.getRowValue(curRow, curCol.mcol);
                         if (!model.useBlankRows() &&
@@ -823,10 +842,13 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                      curCol.mcol && curCol.mcol.nestedIn &&
                      curCol.mcol.nestedIn != prevCol.mcol.nestedIn))
                 {
-                    var newRow = model.get(y).parent;
+                    var curRow = model.get(y);
+                    if (curRow === undefined) { return null; }
+
+                    var newRow = curRow.parent;
                     // If we switched to an expanded & empty nt, skip it
                     if (curCol.mcol && curCol.mcol.nestedIn &&
-                        newRow.expanded)
+                        newRow !== undefined && newRow.expanded)
                     {
                         var subT = model.getRowValue(newRow,
                             curCol.mcol.nestedIn.header);
@@ -837,7 +859,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                     y = model.index(newRow);
                     x = getColumnInLevel(prevCol.mcol.nestedIn.header, newRow);
                     if (x === null) { return null; }
-                    layoutLevel = layout[newRow.level || 0];
+                    layoutLevel = layout[newRow !== undefined ?
+                        (newRow.level || 0) : 0];
                     curCol = layoutLevel[x];
                     return getAdjustedX(deltaX, event, x, y, wrap);
                 }
@@ -862,27 +885,39 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
                     // Make sure this wouldn't make us change levels or
                     // parent rows; if it does, then skip setting this data
                     // and let the normal flow happen
-                    if (adjP &&
-                        origLevel == (model.get(adjP.y).level || 0) &&
-                        model.get(y).parent == model.get(adjP.y).parent)
+                    if (adjP !== null)
                     {
-                        y = adjP.y;
-                        x = adjP.x;
-                        layoutLevel = layout[model.get(y).level || 0];
-                        prevCol = layoutLevel[newX];
-                        continue;
+                        var adjRow = model.get(adjP.y);
+                        var curRow = model.get(y);
+                        if (origLevel == (adjRow !== undefined ?
+                                    (adjRow.level || 0) : 0) &&
+                                (curRow !== undefined ?
+                                 curRow.parent : undefined) ==
+                                (adjRow !== undefined ? adjRow.parent : undefined))
+                        {
+                            y = adjP.y;
+                            x = adjP.x;
+                            curRow = model.get(y);
+                            layoutLevel = layout[curRow !== undefined ?
+                                (curRow.level || 0) : 0];
+                            prevCol = layoutLevel[newX];
+                            continue;
+                        }
                     }
                 }
 
                 // We're wrapping a whole row, so find the next/prev
                 // parent row
                 curRow = model.get(y);
-                if (curRow.parent) { curRow = curRow.parent; }
+                if (curRow !== undefined && curRow.parent)
+                { curRow = curRow.parent; }
                 y = model.nextInLevel(model.index(curRow), delta < 0);
                 if (y == null) { return null; }
 
                 newX = newX < 0 ? layoutLevel.length : -1;
-                layoutLevel = layout[model.get(y).level || 0];
+                curRow = model.get(y);
+                layoutLevel = layout[curRow !== undefined ?
+                    (curRow.level || 0) : 0];
                 i--;
             }
             x = newX;
@@ -996,7 +1031,8 @@ blist.data.TableNavigation = function(_model, _layout, _$textarea) {
             if (activeCellOn) {
                 var row = model.get(activeCellY);
                 var col = model.column(activeCellXStart);
-                if (row && col && col.dataLookupExpr) {
+                if (row !== undefined && col !== undefined && col.dataLookupExpr)
+                {
                     var type = blist.data.types[col.type] || blist.data.types.text;
                     renderContextVars.row = row;
                     var fn = type.renderGen("row" + model.column(activeCellXStart).dataLookupExpr, true, col);

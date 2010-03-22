@@ -36,7 +36,8 @@
                 var $domObj = currentObj.$dom();
                 $domObj.data("blistCalendar", currentObj);
 
-                currentObj._rowsToLoad = [];
+                currentObj._rowsLeft = 0;
+                currentObj._rowsLoaded = 0;
 
                 var fmt = currentObj.settings.displayFormat;
                 $domObj.fullCalendar({aspectRatio: 2,
@@ -63,7 +64,8 @@
                         })
                     .append('<div class="loadingSpinner"></div>');
                 ajaxLoad(currentObj,
-                    { include_ids_after: currentObj.settings.pageSize });
+                    { method: 'getByIds', meta: true, start: 0,
+                        length: currentObj.settings.pageSize });
             },
 
             $dom: function()
@@ -106,6 +108,7 @@
                 if (c.id == fmt.descriptionId)
                 { currentObj._descriptionIndex = i; }
             });
+            currentObj._rowsLeft = resp.meta.totalRows - currentObj._rowsLoaded;
         }
 
         if (currentObj._idIndex === undefined ||
@@ -113,7 +116,7 @@
             currentObj._titleIndex === undefined) { return; }
 
         var events = [];
-        $.each(resp.data, function(i, r)
+        $.each((resp.data.data || resp.data), function(i, r)
         {
             if (typeof r == 'object')
             {
@@ -129,8 +132,9 @@
                 if (currentObj._descriptionIndex !== undefined)
                 { ce.description = r[currentObj._descriptionIndex]; }
                 events.push(ce);
+                currentObj._rowsLoaded++;
+                currentObj._rowsLeft--;
             }
-            else { currentObj._rowsToLoad.push(r); }
         });
         currentObj.$dom().fullCalendar('addEventSource', events);
 
@@ -139,12 +143,12 @@
 
     var loadData = function(currentObj)
     {
-        if (!currentObj._rowsToLoad || currentObj._rowsToLoad.length < 1)
-        { return; }
+        if (currentObj._rowsLeft < 1) { return; }
 
-        var toLoad = currentObj._rowsToLoad.splice(0, currentObj.settings.pageSize);
+        var toLoad = Math.min(currentObj._rowsLeft, currentObj.settings.pageSize);
 
-        if (toLoad.length > 0) { ajaxLoad(currentObj, { ids: toLoad }); }
+        ajaxLoad(currentObj, { method: 'getByIds', start: currentObj._rowsLoaded,
+            length: toLoad });
     };
 
     var eventRender = function(currentObj, calEvent, element, view)

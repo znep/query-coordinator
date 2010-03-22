@@ -9,6 +9,10 @@
     <p class="clearfix">
       <%= f.label :login, 'Username', :class => 'required' %>
       <%= f.text_field :login, :maxlength => 40 %>
+      <% if !CurrentDomain.strings.login_disclaimer.nil? %>
+        <span class="helpie"
+          title="<%= CurrentDomain.strings.login_disclaimer %>">?</span>
+      <% end %>
     </p>
     <% unless local_assigns[:hide_password] %>
       <p class="clearfix">

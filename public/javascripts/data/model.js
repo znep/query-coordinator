@@ -930,6 +930,22 @@ blist.namespace.fetch('blist.data');
 
                 meta.sort = {};
 
+                // Assign a unique numeric ID (UID) and level ID to each column
+                columnLookup = [];
+                var nextID = 0;
+                var assignIDs = function(cols, level)
+                {
+                    for (var i = 0; i < cols.length; i++)
+                    {
+                        var col = cols[i];
+                        col.uid = nextID++;
+                        col.level = level;
+                        col.indexInLevel = i;
+                        columnLookup[col.uid] = col;
+                        if (col.children) { assignIDs(col.children, level); }
+                    }
+                };
+
                 if (!meta.columns)
                 {
                     meta.columns = [[]];
@@ -961,19 +977,6 @@ blist.namespace.fetch('blist.data');
                         }
                     }
 
-                    // Assign a unique numeric ID (UID) and level ID to each column
-                    columnLookup = [];
-                    var nextID = 0;
-                    var assignIDs = function(cols, level) {
-                        for (var i = 0; i < cols.length; i++) {
-                            var col = cols[i];
-                            col.uid = nextID++;
-                            col.level = level;
-                            col.indexInLevel = i;
-                            columnLookup[col.uid] = col;
-                            if (col.children) { assignIDs(col.children, level); }
-                        }
-                    };
                     for (var i = 0; i < meta.columns.length; i++)
                     { assignIDs(meta.columns[i], meta.columns[i]); }
 
@@ -987,6 +990,11 @@ blist.namespace.fetch('blist.data');
                                 resetChildRows(r);
                         }
                     }
+                }
+                else
+                {
+                    for (var i = 0; i < meta.columns.length; i++)
+                    { assignIDs(meta.columns[i], meta.columns[i]); }
                 }
 
                 var rootColumns = meta.columns[0];

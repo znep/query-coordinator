@@ -55,7 +55,9 @@ javascripts:
   - data/editors/document-editor
   - data/editors/photo-editor
 - shared-map:
-  - widgets/google-map
+  - widgets/maps/base-map
+  - widgets/maps/esri-map
+  - widgets/maps/google-map
 - accounts-show:
   - plugins/ui.core
   - plugins/ui.showedit

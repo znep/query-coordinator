@@ -21,7 +21,7 @@ class Displays::Map < Displays::Base
 
   def render_inline_runtime_js(context)
     js = <<-END
-      blist.$display.GoogleMap({displayFormat: blist.display.options});
+      blist.$display.socrataMap({displayFormat: blist.display.options});
     END
     super << js
   end

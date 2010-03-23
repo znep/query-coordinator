@@ -1,4 +1,4 @@
-#!/usr/bin/python -u
+#!/usr/bin/env python -u
 #
 # Rewrite rules for Socrata, with specific emphasis on multiple domain names
 # Our logic for handling static page caching was getting out of hand; we had

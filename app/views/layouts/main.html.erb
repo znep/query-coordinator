@@ -89,7 +89,7 @@
         var loggedInCookie = $.cookies.get('logged_in');
         if (loggedInCookie && loggedInCookie == "true")
         {
-            $('#header .userNav').addClass('loggedInNav');
+            $('#header .userNav, #mainNav .home').addClass('loggedInNav');
         }
     })(jQuery);
   </script>

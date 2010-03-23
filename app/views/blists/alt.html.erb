@@ -62,13 +62,13 @@
             <div class="dataGridWrapper">
               <table id="dataGrid">
                 <%= render(:partial => 'alt_tbody',
-                  :locals => {:columns => @view.viewable_columns,
+                  :locals => {:columns => @viewable_columns,
                   :rows => @data, :start_page => @page, :parent_id => '0'}) %>
                 <%- unless @aggregates.nil? or @aggregates.none? -%>
                 <tfoot>
                   <tr>
                   <%= render(:partial => 'alt_tfooter',
-                    :locals => {:columns => @view.viewable_columns,
+                    :locals => {:columns => @viewable_columns,
                     :aggregates => @aggregates}) %>
                   </tr>
                 </tfoot>
@@ -83,7 +83,7 @@
           <%- form_tag @view.alt_href, :method => :get do -%>
             <h2>Filter</h2>
             <ul>
-              <%- @view.viewable_columns.each do |column| -%>
+              <%- @viewable_columns.each do |column| -%>
                 <%- unless column.possible_filter_conditions.nil? -%>
                   <li>
                     <%= label_tag "filter_#{column.id}_operator", "Filter by #{column.name}" %>
@@ -105,7 +105,7 @@
                 <li>
                   <%= label_tag "sort_#{n}_field", "Sort field #{n.to_s}" %>
                   <%= select_tag "sort[#{n}][field]",
-                                 options_for_sort_by(@view.viewable_columns, params.deep_value_at([:sort, n.to_s.to_sym, :field]).to_i) %>
+                                 options_for_sort_by(@viewable_columns, params.deep_value_at([:sort, n.to_s.to_sym, :field]).to_i) %>
                   <%= label_tag "sort_#{n}_direction", 'in' %>
                   <%= select_tag "sort[#{n}][direction]",
                                  options_for_select(["Ascending", "Descending"],

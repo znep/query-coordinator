@@ -75,7 +75,7 @@
         <ul class="categoryList hilightList">
           <%- View.categories.keys.sort.each do |category| -%>
             <%- next if category.nil? || category.length == 0 -%>
-            <li><%= link_to("<span>#{category}</span>", generate_filter_url(@current_state, type, {:filter => {:category => category}}),
+            <li><%= link_to("<span>#{category}</span>", generate_filter_url(@current_state, type, {'filter' => {:category => category}}),
                     :class => "filterLink#{get_filter_hilight_class({'category' => category}, current_filter, ' hilight')}") %></li>
           <%- end -%>
         </ul>

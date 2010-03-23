@@ -930,6 +930,22 @@ blist.namespace.fetch('blist.data');
 
                 meta.sort = {};
 
+                // Assign a unique numeric ID (UID) and level ID to each column
+                columnLookup = [];
+                var nextID = 0;
+                var assignIDs = function(cols, level)
+                {
+                    for (var i = 0; i < cols.length; i++)
+                    {
+                        var col = cols[i];
+                        col.uid = nextID++;
+                        col.level = level;
+                        col.indexInLevel = i;
+                        columnLookup[col.uid] = col;
+                        if (col.children) { assignIDs(col.children, level); }
+                    }
+                };
+
                 if (!meta.columns)
                 {
                     meta.columns = [[]];
@@ -960,6 +976,10 @@ blist.namespace.fetch('blist.data');
                             });
                         }
                     }
+
+                    for (var i = 0; i < meta.columns.length; i++)
+                    { assignIDs(meta.columns[i], meta.columns[i]); }
+
                     // If there are rows, reset all child rows since there may
                     // be new nested columns
                     if (rows && rows.length > 0)
@@ -971,22 +991,11 @@ blist.namespace.fetch('blist.data');
                         }
                     }
                 }
-
-                // Assign a unique numeric ID (UID) and level ID to each column
-                columnLookup = [];
-                var nextID = 0;
-                var assignIDs = function(cols, level) {
-                    for (var i = 0; i < cols.length; i++) {
-                        var col = cols[i];
-                        col.uid = nextID++;
-                        col.level = level;
-                        col.indexInLevel = i;
-                        columnLookup[col.uid] = col;
-                        if (col.children) { assignIDs(col.children, level); }
-                    }
-                };
-                for (var i = 0; i < meta.columns.length; i++)
-                { assignIDs(meta.columns[i], meta.columns[i]); }
+                else
+                {
+                    for (var i = 0; i < meta.columns.length; i++)
+                    { assignIDs(meta.columns[i], meta.columns[i]); }
+                }
 
                 var rootColumns = meta.columns[0];
 
@@ -1925,6 +1934,8 @@ blist.namespace.fetch('blist.data');
                 // Refresh the meta data and redraw the grid.
                 meta.columns = null;
                 this.meta(meta);
+                updateAggregateHash(meta.aggregates);
+                self.footerChange();
                 $(listeners).trigger('columns_updated', [this]);
             }
         };
@@ -2881,7 +2892,6 @@ blist.namespace.fetch('blist.data');
                     data: $.json.serialize(tempView)
             });
             doLoad(self, loadTempView, ajaxOptions);
-            self.reloadAggregates(tempView);
         };
 
         /**
@@ -2904,6 +2914,8 @@ blist.namespace.fetch('blist.data');
                 this.meta(config.meta);
                 if (config.meta.totalRows !== undefined)
                 { newRows.length = config.meta.totalRows; }
+
+                self.reloadAggregates();
             }
 
             var installActiveOnly = true;

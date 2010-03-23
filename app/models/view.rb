@@ -421,13 +421,8 @@ class View < Model
     # Map legacy types to the proper implementing class
     # TODO - migrate legacy views and remove this code
     if dt
-        if dt == 'map'
-            dt = 'google_map' if !displayFormat || !displayFormat.layers ||
-              displayFormat.type == 'google'
-        else
-            config = Displays::Config[dt]
-            dt = config['display'] if config && config['display']
-        end
+      config = Displays::Config[dt]
+      dt = config['display'] if config && config['display']
     end
 
     # If we have a display attempt to load the implementing class

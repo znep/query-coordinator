@@ -185,9 +185,6 @@ module Displays::Config
         'intensitymap' => {'display' => 'google', 'library' => 'google.visualization.IntensityMap',
                            'hidden' => true},
 
-        'map' => {'display' => 'google', 'library' => 'google.visualization.Map',
-                  'hidden' => true},
-
         'geomap' => {'display' => 'google', 'library' => 'google.visualization.GeoMap',
                      'hidden' => true},
 

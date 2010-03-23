@@ -33,20 +33,101 @@
                 var $domObj = currentObj.$dom();
                 $domObj.data("GoogleMap", currentObj);
 
+                currentObj._displayConfig = currentObj.settings.displayFormat || {};
+                currentObj._type = currentObj._displayConfig.type || 'google';
+
                 currentObj._rowsLeft = 0;
                 currentObj._rowsLoaded = 0;
                 currentObj._markers = {};
 
-                currentObj.map = new google.maps.Map($domObj[0],
+                if (currentObj._type == 'esri')
+                {
+                    $domObj.addClass('tundra');
+                    if (currentObj._displayConfig.plot === undefined)
                     {
-                        zoom: 3,
-                        center: new google.maps.LatLng(40.000, -100.000),
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    });
+                        showError(currentObj, "No columns defined");
+                        return;
+                    }
 
-                currentObj._bounds = new google.maps.LatLngBounds();
+                    dojo.require("esri.map");
+                    var options = {};
+                    if (currentObj._displayConfig.zoom !== undefined)
+                    { options.zoom = currentObj._displayConfig.zoom; }
+                    if (currentObj._displayConfig.extent !== undefined)
+                    { options.extent = new esri.geometry
+                        .Extent(currentObj._displayConfig.extent); }
+                    currentObj.map = new esri.Map($domObj[0].id, options);
 
-                $domObj.parent().append('<div class="loadingSpinnerContainer"><div class="loadingSpinner"></div></div>');
+                    var layers = currentObj._displayConfig.layers;
+                    if (!$.isArray(layers) || !layers.length)
+                    {
+                        showError(currentObj, "No layers defined");
+                        return;
+                    }
+
+                    for (var i = 0; i < layers.length; i++)
+                    {
+                        var layer = layers[i];
+                        if (layer === undefined || layer === null ||
+                            layer.url === undefined)
+                        { continue; }
+
+                        switch (layer.type)
+                        {
+                            case "tile":
+                                var constructor =
+                                    esri.layers.ArcGISTiledMapServiceLayer;
+                                break;
+
+                            case "dynamic":
+                                constructor =
+                                    esri.layers.ArcGISDynamicMapServiceLayer;
+                                break;
+
+                            case "image":
+                                constructor = esri.layers.ArcGISImageServiceLayer;
+                                break;
+
+                            default:
+                                // Invalid layer type
+                                continue;
+                        }
+
+                        layer = new constructor(layer.url, layer.options);
+
+                        currentObj.map.addLayer(layer);
+
+                        dojo.connect(currentObj.map, 'onLoad', function()
+                        {
+                            currentObj._mapLoaded = true;
+                            if (currentObj._dataLoaded)
+                            { renderData(currentObj, currentObj._rows); }
+                        });
+
+                        currentObj.map.onPanEnd = function(extent)
+                        { updateMap(currentObj, { extent: extent }); }
+
+                        currentObj.map.onZoomEnd = function(extent, factor)
+                        { updateMap(currentObj, { extent: extent, zoom: factor }); }
+
+                    }
+                }
+                else if (currentObj._type == 'google')
+                {
+                    currentObj.map = new google.maps.Map($domObj[0],
+                        {
+                            zoom: 3,
+                            center: new google.maps.LatLng(40.000, -100.000),
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        });
+
+                    currentObj._bounds = new google.maps.LatLngBounds();
+                }
+
+                $domObj.resize(function(e) { resizeHandle(currentObj, e); });
+
+                $domObj.parent().append('<div class="loadingSpinnerContainer">' +
+                    '<div class="loadingSpinner"></div></div>');
                 $domObj.before('<div id="mapError" class="mainError"></div>');
                 $domObj.prev('#mapError').hide();
 
@@ -77,14 +158,20 @@
 
                 loadRows(mapObj,
                     {method: 'getByIds', meta: true, start: 0,
-                        length: currentObj.settings.pageSize});
+                        length: mapObj.settings.pageSize});
             }
         }
     });
 
+    var showError = function(mapObj, errorMessage)
+    {
+        mapObj.$dom().prev('#mapError').show().text(errorMessage);
+    };
+
     var loadRows = function(mapObj, args)
     {
-        mapObj.$dom().parent().find('.loadingSpinnerContainer').removeClass('hidden');
+        mapObj.$dom().parent().find('.loadingSpinnerContainer')
+            .removeClass('hidden');
         $.ajax({url: '/views/' + blist.display.viewId + '/rows.json',
                 data: args, type: 'GET', dataType: 'json',
                 complete: function()
@@ -102,62 +189,96 @@
             mapObj._rowsLeft = data.meta.totalRows - mapObj._rowsLoaded;
         }
 
+        var rows = data.data.data || data.data;
+        mapObj._rowsLoaded += rows.length;
+        mapObj._rowsLeft -= rows.length;
+        loadMoreRows(mapObj);
+
+        if (mapObj._type == 'google')
+        { renderData(mapObj, rows); }
+        else if (mapObj._type == 'esri')
+        {
+            mapObj._dataLoaded = true;
+            if (mapObj._mapLoaded)
+            { renderData(mapObj, rows); }
+            else
+            {
+                if (mapObj._rows === undefined) { mapObj._rows = []; }
+                mapObj._rows = mapObj._rows.concat(rows);
+            }
+        }
+    };
+
+    var renderData = function(mapObj, rows)
+    {
         if (mapObj._latIndex === undefined ||
             mapObj._longIndex === undefined)
         { return; }
-
-        var rows = data.data.data || data.data;
 
         var addedMarkers = false;
         var badPoints = false;
         _.each(rows, function(r)
         {
-            if (typeof r == 'object')
+            var lat = r[mapObj._latIndex];
+            var longVal = r[mapObj._longIndex];
+            if (lat === null || longVal === null) { return; }
+            if (lat < -90 || lat > 90 || longVal < -180 || longVal > 180)
             {
-                var lat = r[mapObj._latIndex];
-                var longVal = r[mapObj._longIndex];
-                if (lat === null || longVal === null) { return; }
-                if (lat < -90 || lat > 90 || longVal < -180 || longVal > 180)
-                {
-                    badPoints = true;
-                    return;
-                }
-                var ll = new google.maps.LatLng(lat, longVal);
+                badPoints = true;
+                return;
+            }
+            var info = mapObj._infoIndex !== undefined ?
+                r[mapObj._infoIndex] : null;
+            var title = mapObj._titleIndex !== undefined ?
+                    r[mapObj._titleIndex] : null;
+            var hasInfo = info !== null;
 
-                var hasInfo = mapObj._infoIndex !== undefined &&
-                    r[mapObj._infoIndex] !== null;
+            if (mapObj._type == 'google')
+            {
+                var ll = new google.maps.LatLng(lat, longVal);
                 var marker = new google.maps.Marker({position: ll,
-                    title: mapObj._titleIndex !== undefined ?
-                        r[mapObj._titleIndex] : null,
-                    clickable: hasInfo, map: mapObj.map});
+                    title: title, clickable: hasInfo, map: mapObj.map});
                 mapObj._markers[r[mapObj._idIndex]] = marker;
 
                 if (hasInfo)
                 {
                     marker.infoContent = "<div class='mapInfoContainer" +
                         (mapObj._infoIsRich ? ' richText' : '') + "'>" +
-                        r[mapObj._infoIndex] + "</div>";
+                        info + "</div>";
                     google.maps.event.addListener(marker, 'click',
                         function() { markerClick(mapObj, marker); });
                 }
-
                 mapObj._bounds.extend(ll);
-                addedMarkers = true;
-                mapObj._rowsLoaded++;
-                mapObj._rowsLeft--;
             }
+            else if (mapObj._type == 'esri')
+            {
+                // Create the map symbol
+                var symbol = getESRIMapSymbol(mapObj);
+
+                mapObj.map.graphics.add(new esri.Graphic(
+                    new esri.geometry.Point(longVal, lat,
+                        mapObj.map.spatialReference),
+                    symbol,
+                    { title: title, body : info },
+                    new esri.InfoTemplate("${title}", "${body}")
+                ));
+            }
+
+            addedMarkers = true;
         });
 
         if (badPoints)
         {
-            mapObj.$dom().prev('#mapError').show()
-                .text('Some points were invalid. ' +
+            showError(mapObj, 'Some points were invalid. ' +
                     'Latitude must be between -90 and 90, and longitude ' +
                     'must be between -180 and 180');
         }
-        if (addedMarkers) { mapObj.map.fitBounds(mapObj._bounds); }
 
-        loadMoreRows(mapObj);
+        if (addedMarkers)
+        {
+            if (mapObj._type == 'google')
+            { mapObj.map.fitBounds(mapObj._bounds); }
+        }
     };
 
     var loadMoreRows = function(mapObj)
@@ -179,6 +300,70 @@
         mapObj.infoWindow.open(mapObj.map, marker);
     };
 
+    var getESRIMapSymbol = function(mapObj)
+    {
+        if (mapObj._esriSymbol === undefined)
+        {
+            var symbolConfig = {
+                backgroundColor: [ 255, 0, 255, .5 ],
+                size: 10,
+                symbol: 'circle',
+                borderColor: [ 0, 0, 0, .5 ],
+                borderStyle: 'solid',
+                borderWidth: 1
+            };
+
+            $.extend(symbolConfig, mapObj._displayConfig.plot);
+            var symbolBackgroundColor =
+                new dojo.Color(symbolConfig.backgroundColor);
+            var symbolBorderColor = new dojo.Color(symbolConfig.borderColor);
+            var symbolBorder = new esri.symbol.SimpleLineSymbol(
+                    symbolConfig.borderStyle,
+                    symbolBorderColor,
+                    symbolConfig.borderWidth
+            );
+            mapObj._esriSymbol = new esri.symbol.SimpleMarkerSymbol(
+                    symbolConfig.symbol,
+                    symbolConfig.size,
+                    symbolBorder,
+                    symbolBackgroundColor
+            );
+        }
+        return mapObj._esriSymbol;
+    };
+
+    var resizeHandle = function(mapObj, event)
+    {
+        if (mapObj._type == 'esri') { mapObj.map.resize(); }
+    };
+
+    var updateMap = function(mapObj, settings)
+    {
+        // Can't save settings w/ out editable view
+        if (!blist.display.editable) { return; }
+
+        // Gather state information
+        var zoom = settings.zoom;
+        if (zoom !== undefined) { mapObj._displayConfig.zoom = zoom; }
+        var extent = settings.extent;
+        if (extent !== undefined)
+        {
+            mapObj._displayConfig.extent = {
+                xmin: extent.xmin,
+                ymin: extent.ymin,
+                xmax: extent.xmax,
+                ymax: extent.ymax,
+                spatialReference: { wkid: extent.spatialReference.wkid }
+            };
+        }
+
+        // Write to server
+        $.ajax({ url: '/views/' + blist.display.viewId + '.json',
+                type: 'PUT',
+                contentType: 'application/json',
+                data: $.json.serialize( { displayFormat: mapObj._displayConfig })
+            });
+    };
 
     var getColumns = function(mapObj, view)
     {
@@ -194,14 +379,15 @@
             if (c.dataTypeName == 'meta_data' && c.name == 'sid')
             { mapObj._idIndex = i; }
 
-            if (c.tableColumnId == colFormat.latitudeId)
+            if (c.tableColumnId == colFormat.latitudeId || c.id == colFormat.ycol)
             { mapObj._latIndex = i; }
-            if (c.tableColumnId == colFormat.longitudeId)
+            if (c.tableColumnId == colFormat.longitudeId || c.id == colFormat.xcol)
             { mapObj._longIndex = i; }
 
-            if (c.tableColumnId == colFormat.titleId)
+            if (c.tableColumnId == colFormat.titleId || c.id == colFormat.titleCol)
             { mapObj._titleIndex = i; }
-            if (c.tableColumnId == colFormat.descriptionId)
+            if (c.tableColumnId == colFormat.descriptionId ||
+                c.id == colFormat.bodyCol)
             {
                 mapObj._infoIndex = i;
                 mapObj._infoIsRich = c.renderTypeName == "text" &&

@@ -669,7 +669,7 @@ class BlistsController < ApplicationController
         # TODO: It would be nice to make some convenience methods for generating
         # these requests
         if !columns.blank?
-          cols.each do |c|
+          columns.each do |c|
             batch_reqs << {'url' => '/views/' + params[:id] + '/columns/' + c['id'],
               'requestType' => 'PUT', 'body' => {'hidden' => false},
               'class' => Column}

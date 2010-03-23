@@ -987,7 +987,12 @@ blist.namespace.fetch('blist.data');
                         for (var i = 0; i < rows.length; i++) {
                             var r = rows[i];
                             if (typeof r == 'object')
-                                resetChildRows(r);
+                            {
+                                // We're in the process of resetting things,
+                                // so catch an un-init style error and ignore it
+                                try { resetChildRows(r); }
+                                catch (e) { /*ignore*/ }
+                            }
                         }
                     }
                 }

@@ -210,7 +210,7 @@ class View < Model
 
   def last_activity
     if @last_activity.nil?
-      @last_activity = [rowsUpdatedAt || 0, createdAt || 0].max
+      @last_activity = [rowsUpdatedAt || 0, createdAt || 0, viewLastModified || 0].max
     end
     @last_activity
   end

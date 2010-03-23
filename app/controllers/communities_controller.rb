@@ -162,8 +162,6 @@ private
       is_asc = true
     when "ALPHA_DESC"
       sort_by = "ALPHA"
-    when "LAST_LOGGED_IN"
-      is_asc = true
     end 
 
     opts = {:page => params[:page] || 1, :limit => PAGE_SIZE}

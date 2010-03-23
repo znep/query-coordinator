@@ -194,6 +194,9 @@ HREF
     base_href = (base_href.include?("?") || base_href.include?("#")) ? "#{base_href}&page=" : "#{base_href}?page="
     base_href.sub!(/&&+/, '&')
     
+    # bail if we only have 1 page
+    return '' if num_pages == 1
+    
     # Only display 9 pages at a time.
     start_page = 1
     if (current_page - 4 > 0)

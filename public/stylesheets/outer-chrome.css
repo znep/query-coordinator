@@ -275,8 +275,8 @@ body.home #mainNav li.home a span {
     text-align: left;
 }
 
-#mainNav.currentUserNav li.home.loggedInNav:hover { background-position: right -25px; }
-#mainNav.currentUserNav li.home.loggedInNav:hover ul.subNav { display: block; }
+#mainNav li.home.loggedInNav:hover { background-position: right -25px; }
+#mainNav li.home.loggedInNav:hover ul.subNav { display: block; }
 
 #mainNav ul.subNav li a span { font-weight: normal; }
 

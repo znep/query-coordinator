@@ -139,15 +139,23 @@ class BlistsController < ApplicationController
   def save_filter
     begin
       @view = View.find(params[:id])
-      # @aggregates = @view.aggregates
     rescue
-      flash.now[:error] = 'An error occurred processing your request.'
-      return (render 'shared/error', :status => :not_found)
+      flash.now[:error] = 'An error occurred processing your request. Please try again in a few minutes.'
+      return (render 'shared/error')
     end
 
     conditions = parse_conditions(params)
 
-    @result = @view.save_filter(params[:name], conditions)
+    begin
+      @result = @view.save_filter(params[:name], conditions)
+    rescue CoreServer::CoreServerError => e
+      if e.error_code == 'invalid_request'
+        flash.now[:error] = 'A view with that name already exists. Please use the back button on your browser and pick a different name.'
+      else
+        flash.now[:error] = 'An error occurred processing your request. Please try again in a few minutes.'
+      end
+      return (render 'shared/error')
+    end
     redirect_to @result.alt_href
   end
 

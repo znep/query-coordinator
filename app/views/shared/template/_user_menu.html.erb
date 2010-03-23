@@ -1,31 +1,29 @@
-<%- if (current_user) -%>
-  <ul class="<%= menu_class %>">
-    <%# Only show the datasets subtab if they're a member of the org or if the
-        org has :community_creation %>
-    <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
-      <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
-    <% end %>
+<ul class="<%= menu_class %>">
+  <%# Only show the datasets subtab if they're a member of the org or if the
+      org has :community_creation %>
+  <% if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) %>
+    <li><%= link_to "<span>#{t(:blists_name).titleize}</span>", blists_path %></li>
+  <% end %>
 
-    <%# Only show "Friends" if they have community or are a member of the org %>
-    <% if (module_enabled?(:community_module) || CurrentDomain.member?(current_user)) %>
-      <li><%= link_to "<span>Friends</span>", contacts_path %></li>
-    <% end %>
+  <%# Only show "Friends" if they have community or are a member of the org %>
+  <% if (module_enabled?(:community_module) || CurrentDomain.member?(current_user)) %>
+    <li><%= link_to "<span>Friends</span>", contacts_path %></li>
+  <% end %>
 
-    <%# "Profile" is always displayed %>
-    <li class="<%= 'last' unless (upsell? || 
-          (module_enabled?(:publisher_comment_moderation) && CurrentDomain.member?(current_user))) %>">
-      <%= link_to "<span>Profile</span>", current_user.href %>
+  <%# "Profile" is always displayed %>
+  <li class="<%= 'last' unless (upsell? || 
+        (module_enabled?(:publisher_comment_moderation) && CurrentDomain.member?(current_user))) %>">
+    <%= link_to "<span>Profile</span>", '/profile' %>
+  </li>
+
+  <%# Only showed to org members when the module is enabled %>
+  <%- if (CurrentDomain.member?(current_user) && module_enabled?(:publisher_comment_moderation)) -%>
+    <li class="last">
+    <%= link_to '<span>Approvals</span>', approval_path %>
     </li>
-
-    <%# Only showed to org members when the module is enabled %>
-    <%- if (CurrentDomain.member?(current_user) && module_enabled?(:publisher_comment_moderation)) -%>
-      <li class="last">
-      <%= link_to '<span>Approvals</span>', approval_path %>
-      </li>
-    <%- elsif upsell?-%>
-      <li class="last">
-      <%= link_to '<span>Approvals</span>', '/popup/premium', :rel => "modal" %>
-      </li>
-    <%- end -%>
-  </ul>
-<%- end -%>
+  <%- elsif upsell?-%>
+    <li class="last">
+    <%= link_to '<span>Approvals</span>', '/popup/premium', :rel => "modal" %>
+    </li>
+  <%- end -%>
+</ul>

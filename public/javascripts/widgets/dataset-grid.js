@@ -892,7 +892,7 @@
             };
             $col.removeAttr('title').qtip({content: tooltipContent,
                     style: { name: 'blist' },
-                    position: { target: 'mouse' },
+                    position: { target: 'mouse', adjust: {screen: true} },
                     api: {
                         onPositionUpdate: adjustContent,
                         beforeShow: adjustContent

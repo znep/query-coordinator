@@ -12,6 +12,7 @@
     {
         defaults:
         {
+            defaultLayers: [{type:'tile', url:'http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer'}],
             defaultZoom: 11
         },
 
@@ -32,14 +33,14 @@
                 if (mapObj._displayConfig.zoom !== undefined)
                 { options.zoom = mapObj._displayConfig.zoom; }
 
-                mapObj._extentSet = mapObj._displayConfig.extent !== undefined &&
-                    mapObj._displayConfig.extent.xmax !== undefined;
+                mapObj._extentSet = mapObj._displayConfig.extent !== undefined;
                 if (mapObj._extentSet)
                 { options.extent = new esri.geometry
                     .Extent(mapObj._displayConfig.extent); }
                 mapObj.map = new esri.Map(mapObj.$dom()[0].id, options);
 
-                var layers = mapObj._displayConfig.layers;
+                var layers = mapObj._displayConfig.layers ||
+                    mapObj.settings.defaultLayers;
                 if (!$.isArray(layers) || !layers.length)
                 {
                     mapObj.showError("No layers defined");

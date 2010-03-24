@@ -137,6 +137,7 @@ $(function ()
         $uploader = $uploaderClone;
         $uploadButton.show();
         $clearButton.closest("li").addClass('hide');
+        isImport = false;
     });
     
     // Form Submit

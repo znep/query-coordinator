@@ -208,7 +208,7 @@ form.search.large .actionsBox input
 #discover .medicareWelcomeHeader .medicareBlockHeaderBL
 {
     background: transparent url(/stylesheets/images/domains/data.medicare.gov/background_corner_bottom_left.png) no-repeat bottom left;
-    height: 204px;
+    height: 224px;
     padding: 20px;
 }
 
@@ -229,4 +229,25 @@ form.search.large .actionsBox input
     margin-left: 1em;
     margin-top: 1.5em;
     width: 50em;
+}
+
+#discover .medicareWelcomeHeader ul.medicareTags
+{
+    padding-top: 1em;
+    padding-left: 1em;
+}
+
+#discover .medicareWelcomeHeader ul.medicareTags li
+{
+    display: inline;
+    font-size: 1.4em;
+    line-height: 1.4em;
+    border-left: 1px solid #0071BC;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
+
+#discover .medicareWelcomeHeader ul.medicareTags li:first-child
+{
+    border: none;
 }

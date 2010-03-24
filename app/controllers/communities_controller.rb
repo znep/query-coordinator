@@ -64,8 +64,8 @@ class CommunitiesController < ApplicationController
     opts, tag_opts = parse_opts(params)
 
     tab_title = case params[:type]
-      when "allmembers" then "All Members"
-      when "topmembers" then "Top Members"
+      when "allMembers" then "All Members"
+      when "topMembers" then "Top Members"
       else "Top Uploaders"
     end
     if (!params[:filter].nil? && params[:filter][:publicOnly])

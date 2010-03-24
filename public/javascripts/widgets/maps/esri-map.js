@@ -120,9 +120,10 @@
 
                 var point = new esri.geometry.Point(longVal, latVal,
                         mapObj.map.spatialReference);
+                var hasContent = title !== null || info !== null;
                 mapObj.map.graphics.add(new esri.Graphic(point, symbol,
                     { title: title, body : info },
-                    new esri.InfoTemplate("${title}", "${body}")
+                    hasContent ? new esri.InfoTemplate("${title}", "${body}") : null
                 ));
 
                 if (!mapObj._extentSet) { this._multipoint.addPoint(point); }

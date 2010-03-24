@@ -40,9 +40,11 @@
         <%- cols['number'] =
                 @view.columns_for_datatypes('number',
                   @is_edit && !@view.is_grouped?) -%>
+        <%- col_format = !@view.displayFormat.nil? ?
+          @view.displayFormat.data['plot'] || @view.displayFormat.data : nil -%>
 
-        <%- lat_id = @is_edit && !@view.displayFormat.nil? ?
-          @view.displayFormat.latitudeId : nil -%>
+        <%- lat_id = @is_edit && !col_format.nil? ?
+          col_format['latitudeId'] : nil -%>
         <%- cur_id = @is_edit && lat_id.nil? && cur_cols.length > 0 &&
           @view.datatypes_match(cur_cols[0], 'number') ?
             cur_cols.shift.id : nil -%>
@@ -64,8 +66,8 @@
         </div>
 
 
-        <%- long_id = @is_edit && !@view.displayFormat.nil? ?
-          @view.displayFormat.longitudeId : nil -%>
+        <%- long_id = @is_edit && !col_format.nil? ?
+          col_format['longitudeId'] : nil -%>
         <%- cur_id = @is_edit && long_id.nil? && cur_cols.length > 0 &&
           @view.datatypes_match(cur_cols[0], 'number') ?
             cur_cols.shift.id : nil -%>
@@ -95,8 +97,8 @@
         </p>
 
 
-        <%- title_id = @is_edit && !@view.displayFormat.nil? ?
-          @view.displayFormat.titleId : nil -%>
+        <%- title_id = @is_edit && !col_format.nil? ?
+          col_format['titleId'] : nil -%>
 
         <div class='line'>
           <label for='mapColumn_title'>
@@ -118,8 +120,8 @@
 
 
         <%- data_types = ['text', 'richtext'] -%>
-        <%- desc_id = @is_edit && !@view.displayFormat.nil? ?
-          @view.displayFormat.descriptionId : nil -%>
+        <%- desc_id = @is_edit && !col_format.nil? ?
+          col_format['descriptionId'] : nil -%>
         <%- cur_id = @is_edit && desc_id.nil? && cur_cols.length > 0 &&
           @view.datatypes_match(cur_cols[0], data_types) ?
             cur_cols.shift.id : nil -%>

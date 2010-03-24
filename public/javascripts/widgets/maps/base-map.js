@@ -20,7 +20,7 @@
         var socrataMap = $(this[0]).data("socrataMap");
         if (!socrataMap)
         {
-            var mapClass = $.socrataMap[options.displayFormat.type];
+            var mapClass = $.socrataMap[options.displayFormat.type || 'google'];
             if (mapClass !== null && mapClass !== undefined)
             {
                 socrataMap = new mapClass(options, this[0]);

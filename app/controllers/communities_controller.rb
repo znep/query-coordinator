@@ -9,33 +9,28 @@ class CommunitiesController < ApplicationController
     opts, tag_opts = parse_opts(params)
 
     # save us some work for no-JS versions
-    @need_to_render = [:topMembers, :topUploaders, :allMembers, :search]
-    @active_tab = :topMembers
-    if params[:no_js]
-      @active_tab = (params[:type] || 'topMembers').to_sym
-      @need_to_render = [@active_tab]
-    end
+    @active_tab = (params[:type] || :topMembers).to_sym
 
     # set up page params
     @body_class = 'community'
     @show_search_form = false
     @page_size = PAGE_SIZE
 
-    if @need_to_render.include?(:allMembers)
+    if @active_tab == :allMembers
       @all_members_total = User.find(opts.merge({ :count => true })).count
       @all_members = User.find(opts)
       @all_members_tags = Tag.find(tag_opts)
       ensure_tag_in_list(@all_members_tags, opts[:tags])
     end
 
-    if @need_to_render.include?(:topMembers)
+    if @active_tab == :topMembers
       @top_members_total = 100
       @top_members = User.find(opts.merge({ :topMembers => true }))
       @top_members_tags = Tag.find(tag_opts.merge({ :topMembers => true }))
       ensure_tag_in_list(@top_members_tags, opts[:tags])
     end
 
-    if @need_to_render.include?(:topUploaders)
+    if @active_tab == :topUploaders
       @top_uploaders_total = 100
       @top_uploaders = User.find(opts.merge({ :topUploaders => true }))
       @top_uploaders_tags = Tag.find(tag_opts.merge({ :topUploaders => true }))
@@ -48,7 +43,7 @@ class CommunitiesController < ApplicationController
 
     @activities = Activity.find({ :maxResults => 5 })
 
-    if @need_to_render.include?(:search) && opts[:q]
+    if opts[:q]
       search_results = SearchResult.search("users", opts)
       @search_members_total = search_results[0].results
       @search_members = search_members[0].count
@@ -93,13 +88,13 @@ class CommunitiesController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to(community_path(params)) }
-      format.data { 
+      format.data {
         if ((@filtered_members.length > 0) || (params[:type] != "search"))
-          render(:partial => "communities/member_list_tab", 
-            :locals => 
+          render(:partial => "communities/member_list_tab",
+            :locals =>
             {
-              :tab_title => tab_title, 
-              :members => @filtered_members, 
+              :tab_title => tab_title,
+              :members => @filtered_members,
               :members_total => @filtered_members_total,
               :current_page => @current_state[:page],
               :type => params[:type],
@@ -110,7 +105,7 @@ class CommunitiesController < ApplicationController
               :search_term => opts[:q]
             })
         else
-          render(:partial => "communities/member_list_tab_noresult", 
+          render(:partial => "communities/member_list_tab_noresult",
               :locals => { :term => opts[:q] })
         end
       }

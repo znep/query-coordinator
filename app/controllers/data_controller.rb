@@ -21,11 +21,7 @@ class DataController < ApplicationController
     opts, tag_opts = parse_opts(params)
 
     # save us some work for no-JS versions
-    @need_to_render = [:popular, :all, :search, :nominations]
-    @active_tab = (params[:type] || 'popular').downcase.to_sym
-    if params[:no_js]
-      @need_to_render = [@active_tab]
-    end
+    @active_tab = (params[:type] || :popular).to_sym
 
     # set up page params
     @body_class = 'discover'
@@ -43,7 +39,7 @@ class DataController < ApplicationController
 
   # TODO: Tags should also allow filtering by org
     # "Top 100" tab
-    if @need_to_render.include?(:popular)
+    if @active_tab = :popular
       mod_state = @current_state.merge(
         {'type' => 'popular', 'domain' => CurrentDomain.cname,
         'sort_by' => @current_state['sort_by'] || 'POPULARITY'})
@@ -56,7 +52,7 @@ class DataController < ApplicationController
     end
 
     # "All Views" tab
-    if @need_to_render.include?(:all)
+    if @active_tab == :all
       mod_state = @current_state.merge(
         {'type' => 'all', 'domain' => CurrentDomain.cname,
         'sort_by' => @current_state['sort_by'] || 'LAST_CHANGED'})
@@ -77,7 +73,7 @@ class DataController < ApplicationController
     @network_views = View.find_filtered({ :inNetwork => true, :limit => 5 })
 
     # If a search was specified
-    if params[:search] && @need_to_render.include?(:search)
+    if params[:search]
       @search_term = params[:search]
       @search_debug = params[:search_debug]
       begin
@@ -92,7 +88,8 @@ class DataController < ApplicationController
     end
 
     # get nominations if we need them
-    if CurrentDomain.module_enabled?(:dataset_nomination) && @need_to_render.include?(:nominations)
+    if CurrentDomain.module_enabled?(:dataset_nomination) &&
+        (@active_tab == :nominations || !params[:no_js])
       @nominations = Nomination.find_page(opts[:page], PAGE_SIZE)
       @nominations_count = Nomination.count
     end

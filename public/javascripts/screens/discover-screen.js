@@ -1,10 +1,7 @@
 var discoverNS = blist.namespace.fetch('blist.discover');
 
-blist.discover.isTabDirty = {
-    "search": false,
-    "popular": false,
-    "all": false
-};
+blist.discover.tabs = ["search", "popular", "all" ];
+
 blist.discover.historyChangeHandler = function (hash)
 {
     // Tab/container names
@@ -37,18 +34,15 @@ blist.discover.historyChangeHandler = function (hash)
         }
     }
     var activeTab = $.urlParam("?" + hash, "type");
-    if ((blist.discover.isTabDirty[activeTab] === false) && (hash == ('type=' + activeTab)))
-    {
-        $(".simpleTabs").simpleTabNavigate().activateTab(tabs[activeTab]);
-        return;
-    }
+    // Track what tabs have been opened
+    $.analytics.trackEvent('Discover Screen', activeTab + ' tab opened');
 
     // Find active tab
     var tabSelector = tabs[activeTab];
     var tabContainerSelector = tabContainers[activeTab];
 
     // Abort if we don't know what's going on
-    if ((activeTab === 0) || (blist.discover.isTabDirty[activeTab] === undefined))
+    if (!_.include(blist.discover.tabs, activeTab))
     {
         return;
     }
@@ -56,7 +50,6 @@ blist.discover.historyChangeHandler = function (hash)
     // Select active tab
     $(".simpleTabs").simpleTabNavigate().activateTab(tabSelector);
     $(tabSelector).find('a').attr("href", "#" + hash);
-    blist.discover.isTabDirty[activeTab] = true;
 
     // Add search tab if necessary
     if (activeTab == "search")
@@ -92,7 +85,7 @@ blist.discover.historyChangeHandler = function (hash)
     );
 
     // Fetch data
-    $.Tache.Get({ 
+    $.Tache.Get({
         url: discoverNS.filterUrl + "?" + hash,
         success: function(data)
         {
@@ -131,7 +124,7 @@ blist.discover.sortSelectChangeHandler = function (event)
             hash = "type=popular";
         }
     }
-    if (blist.discover.isTabDirty[hash] !== undefined)
+    if (_.include(blist.discover.tabs, hash))
     {
         hash = "type=" + hash;
     }
@@ -147,7 +140,7 @@ blist.discover.tagModalShowHandler = function(hash)
     var $modal = hash.w;
     var $trigger = $(hash.t);
 
-    $.Tache.Get({ 
+    $.Tache.Get({
         url: $trigger.attr("href"),
         success: function(data)
         {
@@ -373,4 +366,7 @@ $(function ()
             $("#splashModal").jqmShow();
         }
     }
+
+    // Track what tabs have been opened
+    $.analytics.trackEvent('Discover Screen', 'popular tab opened (default)');
 });

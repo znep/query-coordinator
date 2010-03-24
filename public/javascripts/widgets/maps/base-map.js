@@ -40,6 +40,7 @@
     {
         defaults:
         {
+            defaultZoom: 1,
             pageSize: 100
         },
 
@@ -83,11 +84,8 @@
                 var mapObj = this;
                 mapObj.$dom().prev('#mapError').hide().text('');
 
-                if (mapObj.infoWindow !== undefined) { mapObj.infoWindow.close(); }
-                _.each(mapObj._markers, function(m) { m.setMap(null); });
-                mapObj._bounds = new google.maps.LatLngBounds();
+                mapObj.resetData();
 
-                mapObj._markers = {};
                 mapObj._rowsLeft = 0;
                 mapObj._rowsLoaded = 0;
 
@@ -134,6 +132,11 @@
             initializeMap: function()
             {
                 // Implement me
+            },
+
+            resetData: function()
+            {
+                // Implement if you need to reset any data when the map is reset
             },
 
             handleRowsLoaded: function(rows)
@@ -206,10 +209,15 @@
             .removeClass('hidden');
         $.ajax({url: '/views/' + blist.display.viewId + '/rows.json',
                 data: args, type: 'GET', dataType: 'json',
-                complete: function()
+                error: function()
                     { mapObj.$dom().parent().find('.loadingSpinnerContainer')
                         .addClass('hidden'); },
-                success: function(data) { rowsLoaded(mapObj, data); }});
+                success: function(data)
+                {
+                    mapObj.$dom().parent().find('.loadingSpinnerContainer')
+                        .addClass('hidden');
+                    rowsLoaded(mapObj, data);
+                }});
     };
 
     var rowsLoaded = function(mapObj, data)

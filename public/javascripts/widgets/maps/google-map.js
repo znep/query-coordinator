@@ -10,6 +10,11 @@
 
     $.extend($.socrataMap.google, $.socrataMap.extend(
     {
+        defaults:
+        {
+            defaultZoom: 13
+        },
+
         prototype:
         {
             initializeMap: function()
@@ -23,6 +28,7 @@
                     });
 
                 mapObj._bounds = new google.maps.LatLngBounds();
+                mapObj._boundsCounts = 0;
             },
 
             renderPoint: function(latVal, longVal, title, info, rowId)
@@ -44,13 +50,31 @@
                         function() { markerClick(mapObj, marker); });
                 }
                 mapObj._bounds.extend(ll);
+                mapObj._boundsCounts++;
             },
 
             adjustBounds: function()
             {
-                this.map.fitBounds(this._bounds);
-            }
+                var mapObj = this;
+                if (mapObj._boundsCounts > 1)
+                { mapObj.map.fitBounds(mapObj._bounds); }
+                else
+                {
+                    mapObj.map.setCenter(mapObj._bounds.getCenter());
+                    mapObj.map.setZoom(mapObj.settings.defaultZoom);
+                }
+            },
 
+            resetData: function()
+            {
+                var mapObj = this;
+                if (mapObj.infoWindow !== undefined) { mapObj.infoWindow.close(); }
+                _.each(mapObj._markers, function(m) { m.setMap(null); });
+                mapObj._markers = {};
+
+                mapObj._bounds = new google.maps.LatLngBounds();
+                mapObj._boundsCounts = 0;
+            }
         }
     }));
 

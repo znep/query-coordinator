@@ -10,6 +10,11 @@
 
     $.extend($.socrataMap.esri, $.socrataMap.extend(
     {
+        defaults:
+        {
+            defaultZoom: 11
+        },
+
         prototype:
         {
             initializeMap: function()
@@ -26,7 +31,10 @@
                 var options = {};
                 if (mapObj._displayConfig.zoom !== undefined)
                 { options.zoom = mapObj._displayConfig.zoom; }
-                if (mapObj._displayConfig.extent !== undefined)
+
+                mapObj._extentSet = mapObj._displayConfig.extent !== undefined &&
+                    mapObj._displayConfig.extent.xmax !== undefined;
+                if (mapObj._extentSet)
                 { options.extent = new esri.geometry
                     .Extent(mapObj._displayConfig.extent); }
                 mapObj.map = new esri.Map(mapObj.$dom()[0].id, options);
@@ -69,21 +77,25 @@
                     layer = new constructor(layer.url, layer.options);
 
                     mapObj.map.addLayer(layer);
-
-                    dojo.connect(mapObj.map, 'onLoad', function()
-                    {
-                        mapObj._mapLoaded = true;
-                        if (mapObj._dataLoaded)
-                        { mapObj.renderData(mapObj._rows); }
-                    });
-
-                    mapObj.map.onPanEnd = function(extent)
-                    { mapObj.updateMap({ extent: extent }); }
-
-                    mapObj.map.onZoomEnd = function(extent, factor)
-                    { mapObj.updateMap({ extent: extent, zoom: factor }); }
-
                 }
+
+                dojo.connect(mapObj.map, 'onLoad', function()
+                {
+                    mapObj._mapLoaded = true;
+                    if (mapObj._dataLoaded)
+                    { mapObj.renderData(mapObj._rows); }
+                });
+
+                // Not sure we want to be saving every single update a user
+                // makes to a map
+                //mapObj.map.onPanEnd = function(extent)
+                //{ mapObj.updateMap({ extent: extent }); }
+
+                //mapObj.map.onZoomEnd = function(extent, factor)
+                //{ mapObj.updateMap({ extent: extent, zoom: factor }); }
+
+                mapObj._multipoint = new esri.geometry.Multipoint
+                    (mapObj.map.spatialReference);
             },
 
             handleRowsLoaded: function(rows)
@@ -105,18 +117,54 @@
                 // Create the map symbol
                 var symbol = getESRIMapSymbol(mapObj);
 
-                mapObj.map.graphics.add(new esri.Graphic(
-                    new esri.geometry.Point(longVal, latVal,
-                        mapObj.map.spatialReference),
-                    symbol,
+                var point = new esri.geometry.Point(longVal, latVal,
+                        mapObj.map.spatialReference);
+                mapObj.map.graphics.add(new esri.Graphic(point, symbol,
                     { title: title, body : info },
                     new esri.InfoTemplate("${title}", "${body}")
                 ));
+
+                if (!mapObj._extentSet) { this._multipoint.addPoint(point); }
+            },
+
+            adjustBounds: function()
+            {
+                var mapObj = this;
+                if (mapObj._extentSet) { return; }
+
+                var extent = mapObj._multipoint.getExtent();
+                // Adjust x & y by about 10% so points aren't on the very edge
+                // Use max & min diff since lat/long may be negative, and we
+                // want to expand the viewport.  Using height/width may cause it
+                // to shrink
+                var xadj = (extent.xmax - extent.xmin) * 0.05;
+                var yadj = (extent.ymax - extent.ymin) * 0.05;
+
+                if (xadj == 0 || yadj == 0)
+                {
+                    mapObj.map.centerAndZoom(extent.getCenter(),
+                        mapObj.settings.defaultZoom);
+                }
+                else
+                {
+                    extent.xmax += xadj;
+                    extent.xmin -= xadj;
+                    extent.ymax += yadj;
+                    extent.ymin -= yadj;
+                    mapObj.map.setExtent(extent);
+                }
             },
 
             resizeHandle: function(event)
             {
                 this.map.resize();
+            },
+
+            resetData: function()
+            {
+                var mapObj = this;
+                mapObj._multipoint = new esri.geometry.Multipoint
+                    (mapObj.map.spatialReference);
             }
         }
     }));

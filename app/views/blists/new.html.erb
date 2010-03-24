@@ -23,6 +23,8 @@
             <%= display_standard_flashes %>
           </div>
 
+          <%= hidden_field_tag('original_action', @is_upload ? 'upload' : 'new') %>
+
           <h3>General Information</h3>
         
           <label for="view_name" class="required"><%= t(:blist_name).capitalize %> Title:</label>

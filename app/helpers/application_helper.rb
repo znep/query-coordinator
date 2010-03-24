@@ -186,31 +186,33 @@ HREF
   def is_gov_site?
     I18n.locale == 'gov'
   end
-  
-  
+
   def create_pagination(total_count, page_count, current_page, base_href)
     num_pages = (total_count.to_f / page_count).ceil
     base_href.sub!(/([?&])page=[0-9]*/, '\1')
     base_href = (base_href.include?("?") || base_href.include?("#")) ? "#{base_href}&page=" : "#{base_href}?page="
     base_href.sub!(/&&+/, '&')
-    
+
+    # bail if we only have 1 page
+    return '' if num_pages == 1
+
     # Only display 9 pages at a time.
     start_page = 1
     if (current_page - 4 > 0)
       start_page = current_page - 4
     end
-    
+
     end_page = num_pages
     if (num_pages > 9 && current_page + 4 < num_pages)
       end_page = start_page > 1 ? current_page + 4 : 9
     end
-    
+
     out = "<div class='pagination'>"
     if (current_page > 1)
       out += link_to("Prev", base_href + (current_page - 1).to_s, :class => "prevLink", :title => "Previous")
     end
     if (start_page > 1)
-      out += "<span class='ellipses'>...</span>" 
+      out += "<span class='ellipses'>...</span>"
     end
     (start_page..end_page).each do |i|
       page_link_class = i == current_page ? "pageLink active" : "pageLink"
@@ -222,7 +224,7 @@ HREF
     if (current_page < num_pages)
       out += link_to("Next", base_href + (current_page + 1).to_s, :class => "nextLink", :title => "Next")
     end
-    
+
     out += "</div>"
   end
 

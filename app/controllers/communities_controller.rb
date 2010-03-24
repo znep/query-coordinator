@@ -101,10 +101,10 @@ class CommunitiesController < ApplicationController
               :tab_title => tab_title, 
               :members => @filtered_members, 
               :members_total => @filtered_members_total,
-              :current_page => params[:page].to_i,
+              :current_page => @current_state[:page],
               :type => params[:type],
-              :current_filter => params[:filter],
-              :sort_by => params[:sort_by],
+              :current_filter => @current_state[:filter],
+              :sort_by => @current_state[:sort_by],
               :tag_list => tag_list,
               :current_tag => opts[:tags],
               :search_term => opts[:q]
@@ -162,11 +162,9 @@ private
       is_asc = true
     when "ALPHA_DESC"
       sort_by = "ALPHA"
-    when "LAST_LOGGED_IN"
-      is_asc = true
     end 
 
-    opts = {:page => params[:page] || 1, :limit => PAGE_SIZE}
+    opts = {:page => (params[:page].present? ? params[:page].to_i : 1), :limit => PAGE_SIZE}
     tag_opts = { :method => "usersTags", :limit => 5 }
 
     case params[:type]

@@ -210,7 +210,7 @@ class View < Model
 
   def last_activity
     if @last_activity.nil?
-      @last_activity = [rowsUpdatedAt || 0, createdAt || 0].max
+      @last_activity = [rowsUpdatedAt || 0, createdAt || 0, viewLastModified || 0].max
     end
     @last_activity
   end
@@ -421,12 +421,8 @@ class View < Model
     # Map legacy types to the proper implementing class
     # TODO - migrate legacy views and remove this code
     if dt
-        if dt == 'map'
-            dt = 'google_map' if !displayFormat || !displayFormat.layers
-        else
-            config = Displays::Config[dt]
-            dt = config['display'] if config && config['display']
-        end
+      config = Displays::Config[dt]
+      dt = config['display'] if config && config['display']
     end
 
     # If we have a display attempt to load the implementing class

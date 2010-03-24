@@ -20,11 +20,11 @@
           </p>
         <% end %>
       </div>
-  
+
       <ul class="communityContentList">
         <%= render(:partial => "member_list_item", :collection => members) %>
       </ul>
-    
+
       <div class="memberPager">
         <%= create_pagination(members_total, @page_size, current_page, generate_filter_url(@current_state, type)) %>
       </div>

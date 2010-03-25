@@ -664,7 +664,7 @@ class BlistsController < ApplicationController
     errors = []
     options = params[:options]
     options = JSON.parse(options) if !options.blank?
-    columns = params[:columns]
+    columns = params[:columns] || nil
     columns = JSON.parse(columns) if !columns.blank?
     begin
       if params[:edit] == 'true'

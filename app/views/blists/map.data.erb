@@ -33,7 +33,7 @@
         <select id='mapType' name='mapType'
           class='required <%= @is_edit ? '' : 'prompt' %>'>
           <option class='prompt' value=''>Select a Map Type</option>
-          <%- @view.display.types.each do |t| -%>
+          <%- Displays::Map::MAP_TYPES.each do |t| -%>
           <option value='<%= t['value'] %>'
             <%= @is_edit && cur_type == t['value'] ?
               "selected='selected'" : '' %>><%= t['label'] %></option>

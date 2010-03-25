@@ -1,8 +1,4 @@
 class Displays::Map < Displays::Base
-  def types
-    MAP_TYPES
-  end
-
   def required_javascripts
     [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.5', 'shared-map' ]
   end

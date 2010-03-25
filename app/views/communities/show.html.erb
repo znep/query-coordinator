@@ -97,36 +97,36 @@
         <%= render(:partial => "member_list_tab_noresult", :locals => { :term => @search_term }) %>
       <%- end -%>
     </div>
-    <%- if @need_to_render.include? :topMembers -%>
-      <div id="communityTabTopMembers" class="tabContentContainer clearfix<%= ' active' if @active_tab == :topMembers %>">
-        <%= render(:partial => "member_list_tab", :locals => { 
-          :tab_title => "Top Members", 
-          :members => @top_members, :members_total => @top_members_total,
-          :current_page => @current_state[:page], :type => "topMembers", :current_filter => params[:filter],
-          :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @top_members_tags, :current_tag => @current_state[:tag],
-          :search_term => nil }) %>
-      </div>
+    <div id="communityTabTopMembers" class="tabContentContainer clearfix<%= ' active' if @active_tab == :topMembers %>">
+    <%- if @active_tab == :topMembers -%>
+      <%= render(:partial => "member_list_tab", :locals => { 
+        :tab_title => "Top Members", 
+        :members => @top_members, :members_total => @top_members_total,
+        :current_page => @current_state[:page], :type => "topMembers", :current_filter => params[:filter],
+        :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @top_members_tags, :current_tag => @current_state[:tag],
+        :search_term => nil }) %>
     <%- end -%>
-    <%- if @need_to_render.include? :topUploaders -%>
-      <div id="communityTabTopUploaders" class="tabContentContainer clearfix<%= ' active' if @active_tab == :topUploaders %>">
-        <%= render(:partial => "member_list_tab", :locals => { 
-          :tab_title => "Top Uploaders", 
-          :members => @top_uploaders, :members_total => @top_uploaders_total,
-          :current_page => @current_state[:page], :type => "topUploaders", :current_filter => params[:filter],
-          :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @top_uploaders_tags, :current_tag => @current_state[:tag],
-          :search_term => nil }) %>
-      </div>
+    </div>
+    <div id="communityTabTopUploaders" class="tabContentContainer clearfix<%= ' active' if @active_tab == :topUploaders %>">
+    <%- if @active_tab ==  :topUploaders -%>
+      <%= render(:partial => "member_list_tab", :locals => { 
+        :tab_title => "Top Uploaders", 
+        :members => @top_uploaders, :members_total => @top_uploaders_total,
+        :current_page => @current_state[:page], :type => "topUploaders", :current_filter => params[:filter],
+        :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @top_uploaders_tags, :current_tag => @current_state[:tag],
+        :search_term => nil }) %>
     <%- end -%>
-    <%- if @need_to_render.include? :allMembers -%>
-      <div id="communityTabAllMembers" class="tabContentContainer clearfix<%= ' active' if @active_tab == :allMembers %>">
-        <%= render(:partial => "member_list_tab", :locals => { 
-          :tab_title => "All Members", 
-          :members => @all_members, :members_total => @all_members_total,
-          :current_page => @current_state[:page], :type => "allMembers", :current_filter => params[:filter],
-          :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @all_members_tags, :current_tag => @current_state[:tag],
-          :search_term => nil }) %>
-      </div>
+    </div>
+    <div id="communityTabAllMembers" class="tabContentContainer clearfix<%= ' active' if @active_tab == :allMembers %>">
+    <%- if @active_tab == :allMembers -%>
+      <%= render(:partial => "member_list_tab", :locals => { 
+        :tab_title => "All Members", 
+        :members => @all_members, :members_total => @all_members_total,
+        :current_page => @current_state[:page], :type => "allMembers", :current_filter => params[:filter],
+        :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @all_members_tags, :current_tag => @current_state[:tag],
+        :search_term => nil }) %>
     <%- end -%>
+    </div>
   </div>
 </div>
 

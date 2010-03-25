@@ -1,11 +1,7 @@
 var communityNS = blist.namespace.fetch('blist.community');
 
-blist.community.isTabDirty = {
-    "search": false,
-    "topMembers": false,
-    "topUploaders": false,
-    "allMembers": false
-};
+blist.community.tabs = ["search", "topMembers", "topUploaders", "allMembers"];
+
 blist.community.historyChangeHandler = function (hash)
 {
     // Tab/container names
@@ -29,18 +25,15 @@ blist.community.historyChangeHandler = function (hash)
         hash = "type=topMembers";
     }
     var activeTab = $.urlParam("?" + hash, "type");
-    if ((blist.community.isTabDirty[activeTab] === false) && (hash == ('type=' + activeTab)))
-    {
-        $(".simpleTabs").simpleTabNavigate().activateTab(tabs[activeTab]);
-        return;
-    }
+    // Track what tabs have been opened
+    $.analytics.trackEvent('Community Screen', activeTab + ' tab opened');
 
     // Find active tab
     var tabSelector = tabs[activeTab];
     var tabContainerSelector = tabContainers[activeTab];
 
     // Abort if we don't know what's going on
-    if ((activeTab === 0) || (blist.community.isTabDirty[activeTab] === undefined))
+    if (!_.include(blist.community.tabs, activeTab))
     {
         return;
     }
@@ -48,7 +41,6 @@ blist.community.historyChangeHandler = function (hash)
     // Select active tab
     $(".simpleTabs").simpleTabNavigate().activateTab(tabSelector);
     $(tabSelector).find('a').attr("href", "#" + hash);
-    blist.community.isTabDirty[activeTab] = true;
 
     // Add search tab if necessary
     if (activeTab == "search")
@@ -114,7 +106,7 @@ blist.community.sortSelectChangeHandler = function (event)
         // default tab is top members
         hash = "type=topMembers";
     }
-    if (blist.community.isTabDirty[hash] !== undefined)
+    if (_.include(blist.community.tabs, hash))
     {
         hash = "type=" + hash;
     }
@@ -129,8 +121,8 @@ blist.community.tagModalShowHandler = function(hash)
 {
     var $modal = hash.w;
     var $trigger = $(hash.t);
-    
-    $.Tache.Get({ 
+
+    $.Tache.Get({
         url: $trigger.attr("href"),
         success: function(data)
         {
@@ -178,11 +170,11 @@ blist.community.addFriendClick = function(event)
         success: function(responseText)
         {
             var isCreate = responseText == "created";
-            
+
             // Update the text of the link.
             $link.text(isCreate ? "Remove" : "Add Friend");
             $link.attr("title", isCreate ? "Remove as Friend" : "Add Friend");
-            
+
             // Update the link.
             var newHref = isCreate ?
                 origHref.replace("create", "delete") :
@@ -272,4 +264,7 @@ $(function ()
         });
 
     $.live(".memberActions .followAction", "click", communityNS.addFriendClick);
+
+    // Top members tab open by default
+    $.analytics.trackEvent('Community Screen', 'topMembers tab opened (default)');
 });

@@ -49,7 +49,7 @@
   <div class="submitLine clearfix">
     <ul class="submitActions">
       <li><input type="image" name="submit" src="<%= image_path("button_finish.png") %>" alt="print" /></li>
-      <li class="cancelButton"><a href="#close_print" class="jqmClose"><span>Cancel</span></a></li>
+      <li class="cancelButton"><%= link_to 'Cancel', @accessible ? @view.alt_href : '#close_print', :class => 'jqmClose' %></li>
     </ul>
   </div>
 <% end %>

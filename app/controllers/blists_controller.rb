@@ -373,7 +373,10 @@ class BlistsController < ApplicationController
   def print
     @view = View.find(params[:id])
     respond_to do |format|
-      format.html { render }
+      format.html do
+        @accessible = true
+        render
+      end
       format.data { render(:layout => "modal_dialog") }
     end
   end

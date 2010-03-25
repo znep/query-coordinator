@@ -6,7 +6,7 @@ jQuery.analytics = {
             return false;
 
         // bail if we didn't load GA
-        if (_gaq === undefined)
+        if (window._gaq === undefined)
             return false;
 
         _gaq.push(['_trackEvent', category, action, label, value]);

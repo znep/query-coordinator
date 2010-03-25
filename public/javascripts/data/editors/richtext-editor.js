@@ -160,7 +160,7 @@
         // and marked more tags as "remove-if-empty".
         // See http://wiki.moxiecode.com/index.php/TinyMCE:Configuration/valid_elements
         VALID_ELEMENTS = "@[id|class|style|title|dir<ltr?rtl|lang|xml::lang],a[rel|rev|charset|hreflang|tabindex|accesskey|type|"
-            + "name|href|target|title|class],-strong/b,-em/i,-strike,-u,"
+            + "name|href|target|title|class],-strong/b,-em/i,-strike,-u,-s,"
             + "#p[align],-ol[type|compact],-ul[type|compact],-li,br,img[longdesc|usemap|"
             + "src|border|alt=|title|hspace|vspace|width|height|align],-sub,-sup,"
             + "-blockquote,-table[border=0|cellspacing|cellpadding|width|frame|rules|"

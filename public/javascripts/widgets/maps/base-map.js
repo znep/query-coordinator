@@ -62,9 +62,14 @@
 
                 $domObj.resize(function(e) { currentObj.resizeHandle(e); });
 
-                $domObj.parent().append('<div class="loadingSpinnerContainer">' +
-                    '<div class="loadingSpinner"></div></div>');
-                $domObj.before('<div id="mapError" class="mainError"></div>');
+                if ($domObj.parent().find('.loadingSpinnerContainer').length < 1)
+                {
+                    $domObj.parent().append(
+                        '<div class="loadingSpinnerContainer">' +
+                        '<div class="loadingSpinner"></div></div>');
+                }
+                if ($domObj.prev('#mapError').length < 1)
+                { $domObj.before('<div id="mapError" class="mainError"></div>'); }
                 $domObj.prev('#mapError').hide();
 
                 loadRows(currentObj,
@@ -77,6 +82,17 @@
                 if (!this._$dom)
                 { this._$dom = $(this.currentDom); }
                 return this._$dom;
+            },
+
+            reset: function(newOptions)
+            {
+                var mapObj = this;
+                mapObj.$dom().removeData('socrataMap');
+                mapObj.$dom().empty();
+                // We need to change the ID so that maps (such as ESRI) recognize
+                // something has changed, and reload properly
+                mapObj.$dom().attr('id', mapObj.$dom().attr('id') + 'n');
+                mapObj.$dom().socrataMap(newOptions);
             },
 
             reload: function()

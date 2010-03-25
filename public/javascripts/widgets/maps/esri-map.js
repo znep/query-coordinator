@@ -167,6 +167,7 @@
                 var mapObj = this;
                 mapObj._multipoint = new esri.geometry.Multipoint
                     (mapObj.map.spatialReference);
+                mapObj.map.graphics.clear();
             }
         }
     }));

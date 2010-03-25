@@ -55,10 +55,17 @@ class CurrentDomain
     end
 
     if @@current_domain[:widget_customization].nil?
-      # Pull the default customization. Assume it is the first
+      # Pull the default customization. Look for ones with isDefault,
+      # or default to first one returned.
       customizations = WidgetCustomization.find
+
       if !customizations.nil? && customizations.size > 0
-        @@current_domain[:widget_customization] = customizations.first.uid
+        # Look for sdp_template key in Current Theme configuration
+        defaults = self.properties.sdp_template ?
+          customizations.select { |c| c.uid = self.properties.sdp_template } : []
+
+        @@current_domain[:widget_customization] = defaults.blank? ?
+          customizations.first.uid : defaults.first.uid
       else
         # If they don't have any customizations, default to empty
         @@current_domain[:widget_customization] = ""

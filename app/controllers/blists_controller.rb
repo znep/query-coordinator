@@ -506,16 +506,16 @@ class BlistsController < ApplicationController
     @type = params[:type]
 
     # Pick our subject line
-    @subject = "A visitor has sent you a message about your \"#{@view.name}\" #{CurrentDomain.strings.company} #{t(:blist_name)}"
+    @subject = "A visitor has sent you a message about your \"#{CGI::escapeHTML(@view.name)}\" #{CurrentDomain.strings.company} #{t(:blist_name)}"
     case @type
     when 'copyright_violation'
-      @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for copyright violation"
+      @subject = "Your \"#{CGI::escapeHTML(@view.name)}\" #{t(:blist_name)} has been flagged for copyright violation"
     when 'offensive_content'
-      @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for offensive content"
+      @subject = "Your \"#{CGI::escapeHTML(@view.name)}\" #{t(:blist_name)} has been flagged for offensive content"
     when 'spam'
-      @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged as potential SPAM"
+      @subject = "Your \"#{CGI::escapeHTML(@view.name)}\" #{t(:blist_name)} has been flagged as potential SPAM"
     when 'personal_information'
-      @subject = "Your \"#{@view.name}\" #{t(:blist_name)} has been flagged for containing personal information"
+      @subject = "Your \"#{CGI::escapeHTML(@view.name)}\" #{t(:blist_name)} has been flagged for containing personal information"
     end
 
     respond_to do |format|

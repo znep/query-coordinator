@@ -84,7 +84,7 @@
           cache: false,
           data: {
             'method': 'flag',
-            'subject': '<%= @subject %>',
+            'subject': '<%= raw(@subject) %>',
             'message': $('.flagDatasetWrapper textarea#message').val(),
             'type': '<%= @type %>',
             'from_address': $('.flagDatasetWrapper input#fromAddress').val()

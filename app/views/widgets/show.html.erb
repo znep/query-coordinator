@@ -3,12 +3,12 @@
   <%- if @display.can_publish? -%>
   <%= raw @display.render_stylesheet_includes %>
   <%- end -%>
-  
+
   <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
   <%- if @view -%>
     <link rel="canonical" href="<%= @view.href %>" />
   <%- end -%>
-  
+
   <%- unless @is_gov_widget -%>
   <style id="customizationStyles" type="text/css">
   /* font */
@@ -16,7 +16,7 @@
 
     div.blist-th .info-container { font-size: <%= @theme[:style][:font][:grid_header_size][:value] %><%= @theme[:style][:font][:grid_header_size][:unit] %>; }
     .blist-td, .blist-table-editor, .blist-table .blist-combo-dd li { font-size: <%= @theme[:style][:font][:grid_data_size][:value] %><%= @theme[:style][:font][:grid_data_size][:unit] %>; }
-  
+
   /* frame */
     <%- if @theme[:frame][:gradient] -%>
       <%-
@@ -56,7 +56,7 @@
           background-color: <%= @theme[:frame][:color] %>;
           background-image: none;
       }
-      
+
       <%- if @theme[:frame][:border] -%>
         #header
         {
@@ -376,7 +376,5 @@
       pageTracker2._trackPageview();
       } catch(err) {}</script>
     <%- end -%>
-
-    <%= render(:partial => "shared/analytics") %>
   <%- end -%>
 <% end %>

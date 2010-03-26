@@ -8,23 +8,39 @@
   Datasets can be displayed as points on a map
   </p>
 
+  <%- cur_type = @view.displayFormat.nil? ||
+    @view.displayFormat.data['type'].nil? ?
+    'google' : @view.displayFormat.data['type'] -%>
+
   <% form_tag("#{@view.href}/create_visualization?edit=#{@is_edit}",
     :class => 'clearfix') do %>
 
     <input type='hidden' id='view_query' name='view_query'
       value='<%= @view.query.to_json %>' />
-    <%- if !@is_edit -%>
     <div class='section common'>
       <h3>Setup</h3>
       <p class='subtitle separator'>
-      Enter a name for the map
+      Enter a name for the map and choose a map type
       </p>
+      <%- if !@is_edit -%>
       <div class='line'>
         <label class='required' for='mapName'>Name</label>
         <input type='text' id='mapName' name='viewName' class='required' />
       </div>
+      <%- end -%>
+      <div class='line'>
+        <label class='required' for='mapType'>Type</label>
+        <select id='mapType' name='mapType'
+          class='required <%= @is_edit ? '' : 'prompt' %>'>
+          <option class='prompt' value=''>Select a Map Type</option>
+          <%- Displays::Map::MAP_TYPES.each do |t| -%>
+          <option value='<%= t['value'] %>'
+            <%= @is_edit && cur_type == t['value'] ?
+              "selected='selected'" : '' %>><%= t['label'] %></option>
+          <%- end -%>
+        </select>
+      </div>
     </div>
-    <%- end -%>
 
     <%- cur_cols = @is_edit ? @view.columns.select {|c| !c.flag?('hidden')} : [] -%>
     <%- cols = {} -%>
@@ -215,7 +231,8 @@
       var $form = $('.mapWrapper form');
       if (!$form.valid()) { return; }
 
-      var options = {plot: {}, type: 'google'};
+      var newType = $('.mapWrapper #mapType').val();
+      var options = {plot: {}, type: newType};
       options.plot.latitudeId = $('.mapWrapper #mapColumn_latitude').val();
       options.plot.longitudeId = $('.mapWrapper #mapColumn_longitude').val();
       var titleId = $('.mapWrapper #mapColumn_title').val();
@@ -242,7 +259,14 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
-              blist.$display.GoogleMap().reload();
+              if ('<%= cur_type %>' != newType)
+              {
+                  blist.$display.socrataMap().reset({displayFormat: options});
+              }
+              else
+              {
+                  blist.$display.socrataMap().reload();
+              }
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>

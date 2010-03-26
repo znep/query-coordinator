@@ -25,4 +25,9 @@ class Displays::Map < Displays::Base
     END
     super << js
   end
+
+  MAP_TYPES = [
+    {'value' => 'google', 'label' => 'Google Maps'},
+    {'value' => 'esri', 'label' => 'ESRI ArcGIS'}
+  ]
 end

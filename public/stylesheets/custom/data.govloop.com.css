@@ -1,0 +1,94 @@
+/* LAYOUT */
+body {
+	background: #eee url(/stylesheets/images/domains/data.govloop.com/background.png) repeat-x;
+}
+.bodyInterior {
+	border:none;
+}
+#outerContainer {
+	background:url(/stylesheets/images/domains/data.govloop.com/mh2.jpg) no-repeat top right;
+}
+/* HEADER */
+#header {
+	height:201px;
+	padding:0;
+	background:none;
+}
+#mainLogo {
+	top:50px;
+}
+#mainNav {
+	min-width: 98.9em;
+	width:auto;
+	margin:0 1em;
+	background:#000;
+	position:relative;
+	top:158px;
+	z-index:1000;
+}
+#mainNav a {
+	cursor:pointer;
+	font-weight:bold;
+	line-height:33px;
+}
+#mainNav a:hover {
+	text-decoration:none;
+}
+#mainNav li {
+	height:33px;
+}
+#mainNav ul.subNav {
+	background:#000;
+}
+#mainNav .subNav li {
+	width:200px;
+}
+#mainNav ul.subNav li a span {
+	font-weight:bold;
+}
+body.home #mainNav li.home a span {
+	text-indent:20px;
+}
+#header .userNav {
+	right:auto;
+	margin-left:1em;
+}
+#header .userNav a {
+	color:#fff;
+	font-size:1.2em;
+}
+#header .userNav li {
+	border:none;
+}
+#mainNav li, #mainNav li a span, body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+	background-image:none;
+}
+body.home #mainNav li.home .subNav li.last {
+	background:none;
+}
+#mainNav li.home .subNav li, #mainNav li.home .subNav li a span, body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
+	background-color:#000;
+}
+#mainNav li.home .subNav li:hover, #mainNav li.home .subNav li a span:hover, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li a span:hover {
+	background-color:#254520;
+}
+#header form.search {
+	top:5px;
+}
+/* DISCOVERY */
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner {
+	background-image:url(/stylesheets/images/domains/data.govloop.com/box.png);
+}
+/* FOOTER */
+.footerContainer {
+	background:#474747;
+	color:#959595;
+}
+#footer .copyright {
+	font-weight:normal;
+}
+#footer a {
+	color:#959595;
+}
+/* LOGIN DIALOG */
+.dialogBox .header {background:#3a7130;}

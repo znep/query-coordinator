@@ -19,6 +19,29 @@
     display: none;
 }
 
+#mapLayers
+{
+    background-color: #ffffff;
+    border: 1px solid #333333;
+    padding: 0.5em;
+    position: absolute;
+    right: 1.5em;
+    top: 4em;
+    z-index: 100;
+}
+
+#mapLayers a
+{
+    color: #333333;
+    display: inline-block;
+    font-size: 1.1em;
+    text-align: right;
+    width: 100%;
+}
+
+#mapLayers li { margin: 0.5em 0; }
+#mapLayers li label { font-size: 1.1em; }
+
 .mapInfoContainer
 {
     font-size: 1.2em;

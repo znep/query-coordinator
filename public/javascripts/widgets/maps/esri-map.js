@@ -54,6 +54,7 @@
                         return;
                     }
 
+                    var layersLoaded = 0;
                     for (var i = 0; i < layers.length; i++)
                     {
                         var layer = layers[i];
@@ -84,6 +85,13 @@
 
                         layer = new constructor(layer.url, layer.options);
 
+                        dojo.connect(layer, 'onLoad', function()
+                        {
+                            if (this.loaded) { layersLoaded++; }
+                            if (layersLoaded >= layers.length)
+                            { mapObj.populateLayers(); }
+                        });
+
                         mapObj.map.addLayer(layer);
                     }
 
@@ -98,6 +106,35 @@
                     mapObj._multipoint = new esri.geometry.Multipoint
                         (mapObj.map.spatialReference);
                 });
+            },
+
+            getLayers: function()
+            {
+                var mapObj = this;
+                var layers = [];
+                if (mapObj.map === undefined) { return layers; }
+
+                _.each(mapObj.map.layerIds, function(lId, i)
+                {
+                    var l = mapObj.map.getLayer(lId);
+                    if (!l.loaded) { return; }
+
+                    if (l.layerInfos !== undefined)
+                    {
+                        _.each(l.layerInfos, function(li, j)
+                        {
+                            layers.push({id: lId + '|' + j, name: li.name,
+                                visible: l.visible &&
+                                    _.include(l.visibleLayers, j)});
+                        });
+                    }
+                    else
+                    {
+                        layers.push({id: lId, name: 'Layer ' + i,
+                            visible: l.visible});
+                    }
+                });
+                return layers;
             },
 
             handleRowsLoaded: function(rows)

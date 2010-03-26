@@ -58,19 +58,41 @@
                 currentObj._rowsLoaded = 0;
                 currentObj._markers = {};
 
-                currentObj.initializeMap();
-
-                $domObj.resize(function(e) { currentObj.resizeHandle(e); });
-
                 if ($domObj.parent().find('.loadingSpinnerContainer').length < 1)
                 {
                     $domObj.parent().append(
                         '<div class="loadingSpinnerContainer">' +
                         '<div class="loadingSpinner"></div></div>');
                 }
-                if ($domObj.prev('#mapError').length < 1)
+
+                if ($domObj.siblings('#mapError').length < 1)
                 { $domObj.before('<div id="mapError" class="mainError"></div>'); }
-                $domObj.prev('#mapError').hide();
+                $domObj.siblings('#mapError').hide();
+
+                if ($domObj.siblings('#mapLayers').length < 1)
+                {
+                    $domObj.before('<div id="mapLayers" class="hidden">' +
+                        '<a href="#toggleLayers" class="toggleLayers">' +
+                        'Layer Options' +
+                        '</a>' +
+                        '<div class="contentBlock hidden">' +
+                        '<h3>Layers</h3><ul></ul>' +
+                        '</div>' +
+                        '</div>');
+                    $domObj.siblings('#mapLayers').find('a.toggleLayers')
+                        .click(function(e)
+                        {
+                            e.preventDefault();
+                            $domObj.siblings('#mapLayers')
+                                .find('.contentBlock').toggleClass('hidden');
+                        });
+                }
+
+                currentObj.initializeMap();
+
+                currentObj.populateLayers();
+
+                $domObj.resize(function(e) { currentObj.resizeHandle(e); });
 
                 loadRows(currentObj,
                     {method: 'getByIds', meta: true, start: 0,
@@ -98,7 +120,7 @@
             reload: function()
             {
                 var mapObj = this;
-                mapObj.$dom().prev('#mapError').hide().text('');
+                mapObj.$dom().siblings('#mapError').hide().text('');
 
                 mapObj.resetData();
 
@@ -119,7 +141,26 @@
 
             showError: function(errorMessage)
             {
-                this.$dom().prev('#mapError').show().text(errorMessage);
+                this.$dom().siblings('#mapError').show().text(errorMessage);
+            },
+
+            populateLayers: function()
+            {
+                var mapObj = this;
+                var layers = mapObj.getLayers();
+                if (layers.length < 1) { return; }
+
+                var $layers = mapObj.$dom().siblings('#mapLayers');
+                var $layersList = $layers.find('ul');
+                _.each(layers, function(l)
+                {
+                    var lId = 'mapLayer_' + l.id;
+                    $layersList.append('<li><input type="checkbox" id="' + lId +
+                        '"' + (l.visible ? ' checked="checked"' : '') +
+                        ' /><label for="' + lId + '">' + l.name + '</label></li>');
+                });
+
+                $layers.removeClass('hidden');
             },
 
             updateMap: function(settings)
@@ -155,6 +196,11 @@
             initializeMap: function()
             {
                 // Implement me
+            },
+
+            getLayers: function()
+            {
+                return [];
             },
 
             resetData: function()

@@ -128,7 +128,7 @@ blist.common.modalReady = function()
 
   var updateColumn = function()
   {
-      column.name = $("#columnCreateDialog #columnCreate_name").val();
+      column.name = $("#columnCreateDialog #columnCreate_name:not(.prompt)").val();
       var $desc = $("#columnCreateDialog #description:not(.prompt)");
       column.description = $desc.length > 0 ? $desc.val() : null;
       column.type = $("#columnCreateDialog #types").value();

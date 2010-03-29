@@ -38,7 +38,8 @@
                 var hasInfo = info !== null;
                 var ll = new google.maps.LatLng(latVal, longVal);
                 var marker = new google.maps.Marker({position: ll,
-                    title: title, clickable: hasInfo, map: mapObj.map});
+                    title: title, clickable: hasInfo || title !== null,
+                    map: mapObj.map});
                 mapObj._markers[rowId] = marker;
 
                 if (hasInfo)

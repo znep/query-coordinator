@@ -19,10 +19,10 @@ blist.community.historyChangeHandler = function (hash)
     };
 
     // Special cases to handle default tab actions
-    if (hash == "")
+    if (hash === "")
     {
-        // default tab is top members
-        hash = "type=topMembers";
+        // only case we have no hash at all is default, nothing to do.
+        return false;
     }
     var activeTab = $.urlParam("?" + hash, "type");
     // Track what tabs have been opened

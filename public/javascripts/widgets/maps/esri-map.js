@@ -22,11 +22,6 @@
             {
                 var mapObj = this;
                 mapObj.$dom().addClass('tundra');
-                if (mapObj._displayConfig.plot === undefined)
-                {
-                    mapObj.showError("No columns defined");
-                    return;
-                }
 
                 dojo.require("esri.map");
                 var options = {};
@@ -159,7 +154,8 @@
 
             resizeHandle: function(event)
             {
-                this.map.resize();
+                if (this.map !== undefined)
+                { this.map.resize(); }
             },
 
             resetData: function()

@@ -105,6 +105,13 @@
                 mapObj._rowsLeft = 0;
                 mapObj._rowsLoaded = 0;
 
+                mapObj._idIndex = undefined;
+                mapObj._latIndex = undefined;
+                mapObj._longIndex = undefined;
+                mapObj._titleIndex = undefined;
+                mapObj._infoIndex = undefined;
+                mapObj._infoIsRich = false;
+
                 loadRows(mapObj,
                     {method: 'getByIds', meta: true, start: 0,
                         length: mapObj.settings.pageSize});

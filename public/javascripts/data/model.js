@@ -1330,7 +1330,9 @@ blist.namespace.fetch('blist.data');
                 if (rows.length < 1 || lastRow === undefined || !lastRow.isNew)
                 { rows.push(row); }
                 installIDs();
-                configureActive();
+                // Our view should be in the correct configuration, so we don't
+                // need to reload a temp view on this call
+                configureActive(null, true);
                 isCreate = true;
                 if (!skipUndo) { this.addUndoItem({type: 'create', rows: [row]}); }
             }
@@ -1874,6 +1876,11 @@ blist.namespace.fetch('blist.data');
             {
                 if (c.id == column.id)
                 {
+                    // If the column has children, they must be copied over:
+                    // children can't be updated via a parent, and if a column
+                    // is updated, it may not come back with all the original
+                    // meta children.
+                    column.childColumns = meta.view.columns[i].childColumns;
                     meta.view.columns[i] = column;
                     isColumnPresent = true;
                     return false;

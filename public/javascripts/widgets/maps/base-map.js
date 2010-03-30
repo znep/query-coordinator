@@ -148,10 +148,11 @@
             {
                 var mapObj = this;
                 var layers = mapObj.getLayers();
-                if (layers.length < 1) { return; }
+                if (layers.length < 2) { return; }
 
                 var $layers = mapObj.$dom().siblings('#mapLayers');
                 var $layersList = $layers.find('ul');
+                $layersList.empty();
                 _.each(layers, function(l)
                 {
                     var lId = 'mapLayer_' + l.id;
@@ -160,7 +161,19 @@
                         ' /><label for="' + lId + '">' + l.name + '</label></li>');
                 });
 
+                $layers.find(':checkbox').click(function(e)
+                {
+                    var $check = $(e.currentTarget);
+                    mapObj.setLayer($check.attr('id').replace(/^mapLayer_/, ''),
+                        $check.value());
+                });
+
                 $layers.removeClass('hidden');
+            },
+
+            setLayer: function(layerId, isDisplayed)
+            {
+                // Implement me
             },
 
             updateMap: function(settings)

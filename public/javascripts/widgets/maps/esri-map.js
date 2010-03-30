@@ -119,22 +119,25 @@
                     var l = mapObj.map.getLayer(lId);
                     if (!l.loaded) { return; }
 
-                    if (l.layerInfos !== undefined)
+                    var lName = 'Layer ' + i;
+                    if (l.layerInfos !== undefined && l.layerInfos.length > 0)
                     {
-                        _.each(l.layerInfos, function(li, j)
-                        {
-                            layers.push({id: lId + '|' + j, name: li.name,
-                                visible: l.visible &&
-                                    _.include(l.visibleLayers, j)});
-                        });
+                        lName = l.layerInfos[0].name;
                     }
-                    else
-                    {
-                        layers.push({id: lId, name: 'Layer ' + i,
-                            visible: l.visible});
-                    }
+                    layers.push({id: lId, name: lName, visible: l.visible});
                 });
                 return layers;
+            },
+
+            setLayer: function(layerId, isDisplayed)
+            {
+                var mapObj = this;
+                var layer = mapObj.map.getLayer(layerId);
+                if (layer !== undefined && layer !== null)
+                {
+                    if (isDisplayed) { layer.show(); }
+                    else { layer.hide(); }
+                }
             },
 
             handleRowsLoaded: function(rows)

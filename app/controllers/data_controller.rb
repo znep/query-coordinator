@@ -117,6 +117,7 @@ class DataController < ApplicationController
     # fetch the data for the page
     @page_size = PAGE_SIZE
     if params[:type] == 'search'
+      @search_term = opts[:q]
       tab_title = "Search Results for \"#{opts[:q]}\""
       search_results = SearchResult.search("views", opts)
       @filtered_views = search_results[0].results
@@ -125,8 +126,8 @@ class DataController < ApplicationController
       @filtered_views = View.find_filtered(opts)
       @filtered_views_total = View.find_filtered(opts.merge({ :count => true })).count
 
-      tag_list = Tag.find(tag_opts)
-      ensure_tag_in_list(tag_list, opts[:tags])
+      @filtered_views_tags = Tag.find(tag_opts)
+      ensure_tag_in_list(@filtered_views_tags, opts[:tags])
     end
 
     # build current state string
@@ -137,25 +138,9 @@ class DataController < ApplicationController
     respond_to do |format|
       format.html{ redirect_to(data_path(params)) }
       format.data do
-        if ((@filtered_views.length > 0) || (params[:type] != "SEARCH"))
-          render(:partial => "data/view_list_tab",
-                 :locals => {
-                    :tab_title => tab_title,
-                    :views => @filtered_views,
-                    :views_total => @filtered_views_total,
-                    :current_page => @current_state['page'].to_i,
-                    :type => params[:type],
-                    :current_filter => @current_state['filter'],
-                    :sort_by => @current_state['sort_by'],
-                    :tag_list => tag_list,
-                    :current_tag => @current_state['tags'],
-                    :search_term => @current_state['search'],
-                    :page_size => @page_size
-          })
-        else
-          render(:partial => "data/view_list_tab_noresult",
-              :locals => { :term => opts[:q] })
-        end
+        render(:partial => "data/cached_view_list_merged",
+               :locals => { :tab_title => tab_title,
+                            :tab_to_render => params[:type].to_sym })
       end
     end
 

@@ -15,8 +15,8 @@
   <div class="simpleTabsContainer">
     <div class="simpleTabNav">
       <ul class="simpleTabs tabList clearfix">
-        <%- if (@search_views && @search_views.length > 0) -%>
-          <li id="tabSearch" class="<%='active' if @active_tab == :search %>">
+        <%- if @active_tab == :search -%>
+          <li id="tabSearch" class="active">
             <div class="wrapper"><a href="<%= generate_filter_url(@current_state, 'search') %>">Search Results</a></div>
           </li>
         <%- end -%>

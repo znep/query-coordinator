@@ -21,7 +21,8 @@ class DataController < ApplicationController
     opts, tag_opts = parse_opts(params)
 
     # save us some work for no-JS versions
-    @active_tab = (params[:type] || :popular).to_sym
+    @active_tab = :search if opts[:q]
+    @active_tab ||= (params[:type] || :popular).to_sym
 
     # set up page params
     @body_class = 'discover'
@@ -31,7 +32,6 @@ class DataController < ApplicationController
     # TODO: Community activity needs to be filtered by domain
     @community_activity = Activity.find({:maxResults => 3}) unless CurrentDomain.revolutionize?
 
-
     # build current state string
     @current_state = { 'filter' => params[:filter], 'page' => opts[:page].to_i,
       'tag' => opts[:tags], 'sort_by' => opts[:sortBy], 'search' => opts[:q],
@@ -39,7 +39,7 @@ class DataController < ApplicationController
 
   # TODO: Tags should also allow filtering by org
     # "Top 100" tab
-    if @active_tab = :popular
+    if @active_tab == :popular
       mod_state = @current_state.merge(
         {'type' => 'popular', 'domain' => CurrentDomain.cname,
         'sort_by' => @current_state['sort_by'] || 'POPULARITY'})
@@ -73,9 +73,8 @@ class DataController < ApplicationController
     @network_views = View.find_filtered({ :inNetwork => true, :limit => 5 })
 
     # If a search was specified
-    if params[:search]
-      @search_term = params[:search]
-      @search_debug = params[:search_debug]
+    if opts[:q]
+      @search_term = opts[:q]
       begin
         search_results = SearchResult.search("views", opts)
         @search_views = search_results[0].results
@@ -245,7 +244,8 @@ private
     if params[:type] == "popular"
       opts[:top100] = true
       tag_opts[:top100] = true
-    elsif params[:type] == "search"
+    end
+    if (!params[:type].present? || (params[:type] == 'search')) && params[:search]
       opts[:q] = params[:search]
     end
 

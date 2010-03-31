@@ -165,6 +165,9 @@ blist.blistGrid.hookUpFilterViewMenu = function()
         menuBar: $('#lensContainer .headerBar')});
 
     $("#filterViewMenu .columnsMenu, #filterViewMenu .scrollableMenu").scrollable();
+
+    var timesClicked = 0;
+    $('#filterLink').click(function() { $.analytics.trackEvent('Dataset Page Menu', 'Filter, Visualize, & More clicked', blistGridNS.viewId, ++timesClicked); });
 };
 
 blist.blistGrid.hookUpMainMenu = function()
@@ -174,6 +177,9 @@ blist.blistGrid.hookUpMainMenu = function()
             linkCallback: blist.datasetMenu.menuHandler});
     $('#mainMenu .columnsMenu, #mainMenu .scrollableMenu').scrollable();
     blistGridNS.setInfoMenuItem($('#infoPane .summaryTabs li.active'));
+
+    var timesClicked = 0;
+    $('#mainMenuLink').click(function() { $.analytics.trackEvent('Dataset Page Menu', 'Main Menu clicked', blistGridNS.viewId, ++timesClicked); });
 };
 
 blist.blistGrid.setInfoMenuItem = function ($tab)
@@ -620,6 +626,9 @@ $(function ()
     $('#shareTopMenu').dropdownMenu({triggerButton: $('#shareTopLink'),
         linkCallback: blist.datasetMenu.menuHandler,
         menuBar: $('#lensContainer .headerBar')});
+
+    var timesClicked = 0;
+    $('#shareTopLink').click(function() { $.analytics.trackEvent('Dataset Page Menu', 'Share & Socialize clicked', blistGridNS.viewId, ++timesClicked); });
 
     // Set up the info pane tab switching.
     var paneMatches = window.location.search.match(/metadata_pane=(\w+)/);

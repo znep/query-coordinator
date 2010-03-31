@@ -184,6 +184,8 @@
         $("#dataGrid").blistModel().multiSort(orderBys);
         $("#modal .jqmClose").click();
     });
+
+    $.analytics.trackEvent('Dataset Page Menu', 'Sort dialog opened', blistGridNS.viewId);
   };
 </script>
 <%- end -%>

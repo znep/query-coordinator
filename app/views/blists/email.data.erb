@@ -202,5 +202,7 @@
     // Validate, then fire off a request for each email
     $form.submit(submitForm);
     $('#emailFormSubmitButton').click(submitForm);
+
+    $.analytics.trackEvent('Dataset Page Menu', 'Email dialog opened', blistGridNS.viewId);
   };
 </script>

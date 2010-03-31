@@ -1,7 +1,7 @@
 <%- if tab_to_render == :search -%>
   <%- if (@search_views && @search_views.length > 0) -%>
     <%= render(:partial => "view_list_tab", :locals => {
-      :tab_title => (tab_title || "Search Results for \"#{@search_term}\""),
+      :tab_title => "Search Results for \"#{@search_term}\"",
       :views => @search_views, :views_total => @search_views_total,
       :current_page => @current_state['page'], :type => "search", :current_filter => params[:filter],
       :sort_by => nil, :tag_list => nil, :current_tag => nil,
@@ -17,7 +17,7 @@
   <% prerendered_cache cache_key('discover-tab', mod_state),
     @popular_views_rendered, :expires_in => 15.minutes do %>
     <%= render(:partial => "view_list_tab", :locals => {
-      :tab_title => (tab_title || t(:discover_popular_content_header)),
+      :tab_title => 'Popular',
       :views => @popular_views || @filtered_views,
       :views_total => @popular_views_total || @filtered_views_total,
       :current_page => @current_state['page'], :type => "popular",
@@ -35,7 +35,7 @@
   <% prerendered_cache cache_key('discover-tab', mod_state),
     @all_views_rendered, :expires_in => 15.minutes do %>
       <%= render(:partial => "view_list_tab", :locals => {
-        :tab_title => (tab_title || "All #{t(:blists_name)}"),
+        :tab_title => 'All',
         :views => @all_views || @filtered_views,
         :views_total => @all_views_total || @filtered_views_total,
         :current_page => @current_state['page'], :type => "all",

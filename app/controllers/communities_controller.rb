@@ -58,19 +58,9 @@ class CommunitiesController < ApplicationController
   def filter
     opts, tag_opts = parse_opts(params)
 
-    tab_title = case params[:type]
-      when "allMembers" then "All Members"
-      when "topMembers" then "Top Members"
-      else "Top Uploaders"
-    end
-    if (!params[:filter].nil? && params[:filter][:publicOnly])
-      tab_title += " with public #{t(:blists_name)}"
-    end
-
     @page_size = PAGE_SIZE
     if params[:type] == "search"
       @search_term = opts[:q]
-      tab_title = "Search Results for \"#{opts[:q]}\""
       search_results = SearchResult.search("users", opts)
       @filtered_members = search_results[0].results
       @filtered_members_total = search_results[0].count
@@ -91,8 +81,7 @@ class CommunitiesController < ApplicationController
       format.html { redirect_to(community_path(params)) }
       format.data {
         render(:partial => "communities/cached_member_list_merged",
-               :locals => { :tab_title => tab_title,
-                            :tab_to_render => params[:type].to_sym })
+               :locals => { :tab_to_render => params[:type].to_sym })
       }
     end
   end

@@ -101,24 +101,10 @@ class DataController < ApplicationController
     # get filter options from params
     opts, tag_opts = parse_opts(params)
 
-    # figure out the tab title text
-    tab_title = (params[:type] || 'popular').titleize
-    unless params[:filter].nil?
-      if (params[:filter][:inNetwork])
-        tab_title += " #{t(:blists_name)} in my network"
-      elsif (params[:filter][:category])
-        tab_title += " #{params[:filter][:category]} #{t(:blists_name)}"
-      end
-    else
-      tab_title += " #{t(:blists_name)}"
-    end
-    tab_title += " tagged '#{opts[:tags]}'" unless(opts[:tags].nil?)
-
     # fetch the data for the page
     @page_size = PAGE_SIZE
     if params[:type] == 'search'
       @search_term = opts[:q]
-      tab_title = "Search Results for \"#{opts[:q]}\""
       search_results = SearchResult.search("views", opts)
       @filtered_views = search_results[0].results
       @filtered_views_total = search_results[0].count
@@ -139,8 +125,7 @@ class DataController < ApplicationController
       format.html{ redirect_to(data_path(params)) }
       format.data do
         render(:partial => "data/cached_view_list_merged",
-               :locals => { :tab_title => tab_title,
-                            :tab_to_render => params[:type].to_sym })
+               :locals => { :tab_to_render => params[:type].to_sym })
       end
     end
 

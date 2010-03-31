@@ -24,3 +24,8 @@
     color: #333333;
     padding-right: 0.25em;
 }
+
+.signupBox .required
+{
+    float: left;
+}

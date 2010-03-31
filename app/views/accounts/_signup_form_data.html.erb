@@ -5,7 +5,7 @@
     <%= f.hidden_field :openIdIdentifierId %>
     <%= f.hidden_field :firstName %>
     <%= f.hidden_field :lastName %>
-    
+
     <p class="clearfix">
       <%= f.label :login, 'Username', :class => 'required' %>
       <%= f.text_field :login, :maxlength => 40 %>
@@ -42,6 +42,7 @@
 </div>
 
 <div class="submitLine clearfix">
+  <div class="required">Required Field</div>
   <ul class="actionButtons clearfix">
     <li class="signup_loadingIndicatorContainer" style="display:none">
       <span class="signup_loadingIndicator"></span>

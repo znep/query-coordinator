@@ -1,6 +1,10 @@
 <div class="tabContentOuter"><div class="tabContentT"></div>
   <div class="tabContent">
-    <h2><%= tab_title %></h2>
+    <h2>
+      <%= tab_title %>
+      <%= 'with public datasets' if !@current_state[:filter].nil? && @current_state[:filter][:publicOnly] %>
+      <%= "tagged '#{@current_state[:tag]}'" if @current_state[:tag] %>
+    </h2>
 
     <%- if members_total > 0 -%>
       <div class="contentSort">

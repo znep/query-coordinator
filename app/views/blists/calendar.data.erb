@@ -158,5 +158,7 @@
 
     $('.calendarWrapper form').submit(formSubmit);
     $('.calendarWrapper a.create').click(formSubmit);
+
+    $.analytics.trackEvent('Dataset Page Menu', 'Create a Calendar dialog opened', blistGridNS.viewId);
   };
 </script>

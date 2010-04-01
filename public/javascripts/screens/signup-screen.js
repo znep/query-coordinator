@@ -62,7 +62,7 @@ $(function ()
         },
         messages: {
             "signup[login]": {
-                remote: $.format("'{0}' is already taken.")
+                remote: "That username is unavailable."
             }
         }
     });

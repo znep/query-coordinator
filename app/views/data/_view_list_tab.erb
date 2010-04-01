@@ -1,6 +1,15 @@
 <div class="tabContentOuter"><div class="tabContentT"></div>
   <div class="tabContent<%= views_total == 0 ? ' noresult' : '' %>">
-    <h2><%= tab_title %></h2>
+    <h2>
+      <%= tab_title %>
+      <%- if @current_state['filter'].present? -%>
+        <%= "datasets in my Network" if @current_state['filter'][:inNetwork] %>
+        <%= "#{@current_state['filter'][:category]} datasets" if @current_state['filter'][:category] %>
+      <%- else -%>
+        datasets
+      <%- end -%>
+      <%= "tagged '#{@current_state['tag']}'" if @current_state['tag'] %>
+    </h2>
 
     <%- if views_total > 0 -%>
       <div class="contentSort">

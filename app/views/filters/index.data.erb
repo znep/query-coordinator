@@ -123,5 +123,7 @@
 
     $.live('#filterTable .filterTableFooter .filterTable-add a', 'click', blist.filter.filterAdd);
     $.live('#filterTable .filterTableBody .filterTable-delete a', 'click', blist.filter.filterRemove);
+    
+    $.analytics.trackEvent('Dataset Page Menu', 'Filter dialog opened', blistGridNS.viewId);
   };
 </script>

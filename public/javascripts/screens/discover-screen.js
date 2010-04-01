@@ -19,19 +19,10 @@ blist.discover.historyChangeHandler = function (hash)
     };
 
     // Special cases to handle default tab actions
-    if (hash == "")
+    if (hash === "")
     {
-        var searchTerm = $.urlParam(window.location.href, "search");
-        if (searchTerm)
-        {
-            // we got here via search, so default tab is search
-            hash = "type=search&search=" + searchTerm;
-        }
-        else
-        {
-            // default tab is popular
-            hash = "type=popular";
-        }
+        // only case we have no hash at all is default, nothing to do.
+        return false;
     }
     var activeTab = $.urlParam("?" + hash, "type");
     // Track what tabs have been opened

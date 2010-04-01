@@ -21,7 +21,8 @@ class DataController < ApplicationController
     opts, tag_opts = parse_opts(params)
 
     # save us some work for no-JS versions
-    @active_tab = (params[:type] || :popular).to_sym
+    @active_tab = :search if opts[:q]
+    @active_tab ||= (params[:type] || :popular).to_sym
 
     # set up page params
     @body_class = 'discover'
@@ -31,7 +32,6 @@ class DataController < ApplicationController
     # TODO: Community activity needs to be filtered by domain
     @community_activity = Activity.find({:maxResults => 3}) unless CurrentDomain.revolutionize?
 
-
     # build current state string
     @current_state = { 'filter' => params[:filter], 'page' => opts[:page].to_i,
       'tag' => opts[:tags], 'sort_by' => opts[:sortBy], 'search' => opts[:q],
@@ -39,7 +39,7 @@ class DataController < ApplicationController
 
   # TODO: Tags should also allow filtering by org
     # "Top 100" tab
-    if @active_tab = :popular
+    if @active_tab == :popular
       mod_state = @current_state.merge(
         {'type' => 'popular', 'domain' => CurrentDomain.cname,
         'sort_by' => @current_state['sort_by'] || 'POPULARITY'})
@@ -73,9 +73,8 @@ class DataController < ApplicationController
     @network_views = View.find_filtered({ :inNetwork => true, :limit => 5 })
 
     # If a search was specified
-    if params[:search]
-      @search_term = params[:search]
-      @search_debug = params[:search_debug]
+    if opts[:q]
+      @search_term = opts[:q]
       begin
         search_results = SearchResult.search("views", opts)
         @search_views = search_results[0].results
@@ -102,23 +101,10 @@ class DataController < ApplicationController
     # get filter options from params
     opts, tag_opts = parse_opts(params)
 
-    # figure out the tab title text
-    tab_title = (params[:type] || 'popular').titleize
-    unless params[:filter].nil?
-      if (params[:filter][:inNetwork])
-        tab_title += " #{t(:blists_name)} in my network"
-      elsif (params[:filter][:category])
-        tab_title += " #{params[:filter][:category]} #{t(:blists_name)}"
-      end
-    else
-      tab_title += " #{t(:blists_name)}"
-    end
-    tab_title += " tagged '#{opts[:tags]}'" unless(opts[:tags].nil?)
-
     # fetch the data for the page
     @page_size = PAGE_SIZE
     if params[:type] == 'search'
-      tab_title = "Search Results for \"#{opts[:q]}\""
+      @search_term = opts[:q]
       search_results = SearchResult.search("views", opts)
       @filtered_views = search_results[0].results
       @filtered_views_total = search_results[0].count
@@ -126,8 +112,8 @@ class DataController < ApplicationController
       @filtered_views = View.find_filtered(opts)
       @filtered_views_total = View.find_filtered(opts.merge({ :count => true })).count
 
-      tag_list = Tag.find(tag_opts)
-      ensure_tag_in_list(tag_list, opts[:tags])
+      @filtered_views_tags = Tag.find(tag_opts)
+      ensure_tag_in_list(@filtered_views_tags, opts[:tags])
     end
 
     # build current state string
@@ -138,25 +124,8 @@ class DataController < ApplicationController
     respond_to do |format|
       format.html{ redirect_to(data_path(params)) }
       format.data do
-        if ((@filtered_views.length > 0) || (params[:type] != "SEARCH"))
-          render(:partial => "data/view_list_tab",
-                 :locals => {
-                    :tab_title => tab_title,
-                    :views => @filtered_views,
-                    :views_total => @filtered_views_total,
-                    :current_page => @current_state['page'].to_i,
-                    :type => params[:type],
-                    :current_filter => @current_state['filter'],
-                    :sort_by => @current_state['sort_by'],
-                    :tag_list => tag_list,
-                    :current_tag => @current_state['tags'],
-                    :search_term => @current_state['search'],
-                    :page_size => @page_size
-          })
-        else
-          render(:partial => "data/view_list_tab_noresult",
-              :locals => { :term => opts[:q] })
-        end
+        render(:partial => "data/cached_view_list_merged",
+               :locals => { :tab_to_render => params[:type].to_sym })
       end
     end
 
@@ -245,7 +214,8 @@ private
     if params[:type] == "popular"
       opts[:top100] = true
       tag_opts[:top100] = true
-    elsif params[:type] == "search"
+    end
+    if (!params[:type].present? || (params[:type] == 'search')) && params[:search]
       opts[:q] = params[:search]
     end
 

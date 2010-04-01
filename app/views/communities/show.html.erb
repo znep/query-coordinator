@@ -64,13 +64,12 @@
     </div>
     <div class="pageBlockHeaderBR"><div class="pageBlockHeaderBL"></div></div>
   </div>
-  
+
   <div class="simpleTabsContainer">
-    
     <div class="simpleTabNav">
       <ul class="simpleTabs tabList clearfix">
-        <%- if (@search_members && @search_members.length > 0) -%>
-          <li id="tabSearch" class="<%= 'active' if @active_tab == :search %>">
+        <%- if @active_tab == :search -%>
+          <li id="tabSearch" class="active">
             <div class="wrapper"><a href="<%= generate_filter_url(@current_state, 'search') %>">Search Results</a></div>
           </li>
         <%- end -%>
@@ -86,46 +85,20 @@
       </ul>
     </div>
     <div id="communityTabSearchResults" class="tabContentContainer clearfix<%= ' active' if @active_tab == :search %>">
-      <%- if (@search_members && @search_members.length > 0) -%>
-        <%= render(:partial => "member_list_tab", :locals => { 
-          :tab_title => "Search Results for \"#{@search_term}\"", 
-          :members => @search_members, :members_total => @search_members_total,
-          :current_page => @current_state[:page], :type => "search", :current_filter => params[:filter], 
-          :sort_by => nil, :tag_list => nil, :current_tag => @current_state[:tag],
-          :search_term => @search_term }) %>
-      <%- else -%>
-        <%= render(:partial => "member_list_tab_noresult", :locals => { :term => @search_term }) %>
-      <%- end -%>
+      <%= render(:partial => 'cached_member_list_merged',
+                 :locals => { :tab_to_render => :search }) if @active_tab == :search %>
     </div>
     <div id="communityTabTopMembers" class="tabContentContainer clearfix<%= ' active' if @active_tab == :topMembers %>">
-    <%- if @active_tab == :topMembers -%>
-      <%= render(:partial => "member_list_tab", :locals => { 
-        :tab_title => "Top Members", 
-        :members => @top_members, :members_total => @top_members_total,
-        :current_page => @current_state[:page], :type => "topMembers", :current_filter => params[:filter],
-        :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @top_members_tags, :current_tag => @current_state[:tag],
-        :search_term => nil }) %>
-    <%- end -%>
+      <%= render(:partial => 'cached_member_list_merged',
+                 :locals => { :tab_to_render => :topMembers }) if @active_tab == :topMembers %>
     </div>
     <div id="communityTabTopUploaders" class="tabContentContainer clearfix<%= ' active' if @active_tab == :topUploaders %>">
-    <%- if @active_tab ==  :topUploaders -%>
-      <%= render(:partial => "member_list_tab", :locals => { 
-        :tab_title => "Top Uploaders", 
-        :members => @top_uploaders, :members_total => @top_uploaders_total,
-        :current_page => @current_state[:page], :type => "topUploaders", :current_filter => params[:filter],
-        :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @top_uploaders_tags, :current_tag => @current_state[:tag],
-        :search_term => nil }) %>
-    <%- end -%>
+      <%= render(:partial => 'cached_member_list_merged',
+                 :locals => { :tab_to_render => :topUploaders }) if @active_tab == :topUploaders %>
     </div>
     <div id="communityTabAllMembers" class="tabContentContainer clearfix<%= ' active' if @active_tab == :allMembers %>">
-    <%- if @active_tab == :allMembers -%>
-      <%= render(:partial => "member_list_tab", :locals => { 
-        :tab_title => "All Members", 
-        :members => @all_members, :members_total => @all_members_total,
-        :current_page => @current_state[:page], :type => "allMembers", :current_filter => params[:filter],
-        :sort_by => params[:sort_by] || "ACTIVITY", :tag_list => @all_members_tags, :current_tag => @current_state[:tag],
-        :search_term => nil }) %>
-    <%- end -%>
+      <%= render(:partial => 'cached_member_list_merged',
+                 :locals => { :tab_to_render => :allMembers }) if @active_tab == :allMembers %>
     </div>
   </div>
 </div>
@@ -135,7 +108,7 @@
     <div class="jqmWindow" id="tagCloud"></div>
     <%= javascript_include_merged 'shared-common-all' %>
     <%= javascript_include_merged 'communities-show' %>
-  
+
     <script type="text/javascript" charset="utf-8">
       communityNS.filterUrl = "<%= filter_community_path %>";
     </script>

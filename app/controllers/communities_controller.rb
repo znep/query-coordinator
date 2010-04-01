@@ -58,18 +58,9 @@ class CommunitiesController < ApplicationController
   def filter
     opts, tag_opts = parse_opts(params)
 
-    tab_title = case params[:type]
-      when "allMembers" then "All Members"
-      when "topMembers" then "Top Members"
-      else "Top Uploaders"
-    end
-    if (!params[:filter].nil? && params[:filter][:publicOnly])
-      tab_title += " with public #{t(:blists_name)}"
-    end
-
     @page_size = PAGE_SIZE
     if params[:type] == "search"
-      tab_title = "Search Results for \"#{opts[:q]}\""
+      @search_term = opts[:q]
       search_results = SearchResult.search("users", opts)
       @filtered_members = search_results[0].results
       @filtered_members_total = search_results[0].count
@@ -77,8 +68,8 @@ class CommunitiesController < ApplicationController
       @filtered_members = User.find(opts)
       @filtered_members_total = User.find(opts.merge({:count => true})).count
 
-      tag_list = Tag.find(tag_opts)
-      ensure_tag_in_list(tag_list, opts[:tags])
+      @filtered_members_tags = Tag.find(tag_opts)
+      ensure_tag_in_list(@filtered_members_tags, opts[:tags])
     end
 
     # build current state string
@@ -89,25 +80,8 @@ class CommunitiesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(community_path(params)) }
       format.data {
-        if ((@filtered_members.length > 0) || (params[:type] != "search"))
-          render(:partial => "communities/member_list_tab",
-            :locals =>
-            {
-              :tab_title => tab_title,
-              :members => @filtered_members,
-              :members_total => @filtered_members_total,
-              :current_page => @current_state[:page],
-              :type => params[:type],
-              :current_filter => @current_state[:filter],
-              :sort_by => @current_state[:sort_by],
-              :tag_list => tag_list,
-              :current_tag => opts[:tags],
-              :search_term => opts[:q]
-            })
-        else
-          render(:partial => "communities/member_list_tab_noresult",
-              :locals => { :term => opts[:q] })
-        end
+        render(:partial => "communities/cached_member_list_merged",
+               :locals => { :tab_to_render => params[:type].to_sym })
       }
     end
   end

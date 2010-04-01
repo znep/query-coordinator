@@ -15,8 +15,8 @@
   <div class="simpleTabsContainer">
     <div class="simpleTabNav">
       <ul class="simpleTabs tabList clearfix">
-        <%- if (@search_views && @search_views.length > 0) -%>
-          <li id="tabSearch" class="<%='active' if @active_tab == :search %>">
+        <%- if @active_tab == :search -%>
+          <li id="tabSearch" class="active">
             <div class="wrapper"><a href="<%= generate_filter_url(@current_state, 'search') %>">Search Results</a></div>
           </li>
         <%- end -%>
@@ -37,58 +37,20 @@
         <% end %>
       </ul>
     </div>
-    <div id="discoverTabSearchResults" class="tabContentContainer clearfix<%= ' active' if @active_tab == :search %>">
-    <%- if @active_tab == :search -%>
-      <%- if (@search_views && @search_views.length > 0) -%>
-        <%= render(:partial => "view_list_tab", :locals => {
-          :tab_title => "Search Results for \"#{@search_term}\"",
-          :views => @search_views, :views_total => @search_views_total,
-          :current_page => @current_state['page'], :type => "search", :current_filter => params[:filter],
-          :sort_by => nil, :tag_list => nil, :current_tag => nil,
-          :search_term => @search_term, :page_size => @page_size } ) %>
-      <%- else -%>
-        <%= render(:partial => "view_list_tab_noresult", :locals => { :term => @search_term }) %>
-      <%- end -%>
-    <%- end -%>
+    <div id="discoverTabSearchResults" class="tabContentContainer clearfix<%=
+      ' active' if @active_tab == :search %>">
+      <%= render(:partial => 'cached_view_list_merged',
+                 :locals => { :tab_to_render => :search }) if @active_tab == :search %>
     </div>
     <div id="discoverTabPopular" class="tabContentContainer clearfix<%=
       ' active' if @active_tab == :popular %>">
-    <%- if @active_tab == :popular -%>
-      <%- mod_state = @current_state.merge(
-        {'type' => 'popular', 'domain' => CurrentDomain.cname,
-          'sort_by' => @current_state['sort_by'] || 'POPULARITY'}) -%>
-      <% prerendered_cache cache_key('discover-tab', mod_state),
-        @popular_views_rendered, :expires_in => 15.minutes do %>
-        <%= render(:partial => "view_list_tab", :locals => {
-          :tab_title => t(:discover_popular_content_header),
-          :views => @popular_views, :views_total => @popular_views_total,
-          :current_page => @current_state['page'], :type => "popular",
-          :current_filter => @current_state['filter'],
-          :sort_by => @current_state['sort_by'] || 'POPULARITY',
-          :tag_list => @popular_views_tags,
-          :current_tag => @current_state['tag'], :search_term => nil,
-          :page_size => @page_size }) %>
-      <% end %>
-    <%- end -%>
+      <%= render(:partial => 'cached_view_list_merged',
+                 :locals => { :tab_to_render => :popular }) if @active_tab == :popular %>
     </div>
     <div id="discoverTabAll" class="tabContentContainer clearfix<%=
       ' active' if @active_tab == :all %>">
-    <%- if @active_tab == :all -%>
-      <%- mod_state = @current_state.merge(
-        {'type' => 'all', 'domain' => CurrentDomain.cname,
-        'sort_by' => @current_state['sort_by'] || 'LAST_CHANGED'}) -%>
-      <% prerendered_cache cache_key('discover-tab', mod_state),
-        @all_views_rendered, :expires_in => 15.minutes do %>
-          <%= render(:partial => "view_list_tab", :locals => {
-            :tab_title => "All #{t(:blists_name)}",
-            :views => @all_views, :views_total => @all_views_total,
-            :current_page => @current_state['page'], :type => "all",
-            :current_filter => @current_state['filter'],
-            :sort_by => @current_state['sort_by'] || 'LAST_CHANGED',
-            :tag_list => @all_views_tags, :current_tag => @current_state['tag'],
-            :search_term => nil, :page_size => @page_size }) %>
-        <% end %>
-    <%- end -%>
+      <%= render(:partial => 'cached_view_list_merged',
+                 :locals => { :tab_to_render => :all }) if @active_tab == :all %>
     </div>
     <%- if @active_tab == :nominations || !params[:no_js] -%>
       <% module_enabled :dataset_nomination do %>

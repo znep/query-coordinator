@@ -246,8 +246,8 @@ $(function ()
         {
             event.preventDefault();
             $("#tabSearch").remove();
-            window.location.hash = ''; // only webkit/ie understand this, but only they need to
-            $.historyLoad('');
+            window.location.hash = 'type=popular'; // only webkit/ie understand this, but only they need to
+            $.historyLoad('type=popular');
         });
     
     $("#splashModal").jqm({

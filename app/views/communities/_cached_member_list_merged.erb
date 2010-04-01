@@ -2,8 +2,7 @@
   <%- if (@search_members && @search_members.length > 0) -%>
     <%= render(:partial => "member_list_tab", :locals => {
       :tab_title => "Search Results for \"#{@search_term}\"",
-      :members => @search_members || @filtered_members,
-      :members_total => @search_members_total || @filtered_members_total,
+      :members => @search_members, :members_total => @search_members_total,
       :current_page => @current_state[:page], :type => "search", :current_filter => params[:filter],
       :sort_by => nil, :tag_list => nil, :current_tag => @current_state[:tag],
       :search_term => @search_term }) %>

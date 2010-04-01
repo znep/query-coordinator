@@ -62,8 +62,8 @@ class CommunitiesController < ApplicationController
     if params[:type] == "search"
       @search_term = opts[:q]
       search_results = SearchResult.search("users", opts)
-      @filtered_members = search_results[0].results
-      @filtered_members_total = search_results[0].count
+      @search_members = search_results[0].results
+      @search_members_total = search_results[0].count
     else
       @filtered_members = User.find(opts)
       @filtered_members_total = User.find(opts.merge({:count => true})).count

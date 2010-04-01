@@ -106,8 +106,8 @@ class DataController < ApplicationController
     if params[:type] == 'search'
       @search_term = opts[:q]
       search_results = SearchResult.search("views", opts)
-      @filtered_views = search_results[0].results
-      @filtered_views_total = search_results[0].count
+      @search_views = search_results[0].results
+      @search_views_total = search_results[0].count
     else
       @filtered_views = View.find_filtered(opts)
       @filtered_views_total = View.find_filtered(opts.merge({ :count => true })).count

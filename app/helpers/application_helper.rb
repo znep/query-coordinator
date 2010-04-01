@@ -473,6 +473,8 @@ HREF
 
   def render_domain_template(template_name)
     tmpl = CurrentDomain.templates[template_name] || ''
+    tmpl = tmpl.clone # make a copy so we don't override and we don't leave a mess for the GC
+
     DOMAIN_TEMPLATES.each do |subst|
       pattern = '{{' + subst + '}}'
       tmpl.gsub!(pattern, render(:partial => 'shared/template/' + subst)) if

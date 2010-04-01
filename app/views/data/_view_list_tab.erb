@@ -5,7 +5,7 @@
       <%- if @current_state['filter'].present? -%>
         <%= "datasets in my Network" if @current_state['filter'][:inNetwork] %>
         <%= "#{@current_state['filter'][:category]} datasets" if @current_state['filter'][:category] %>
-      <%- else -%>
+      <%- elsif @active_tab != :search -%>
         datasets
       <%- end -%>
       <%= "tagged '#{@current_state['tag']}'" if @current_state['tag'] %>

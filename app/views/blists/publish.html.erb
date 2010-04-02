@@ -45,6 +45,7 @@
           </ul>
           <p>You have unsaved changes to this template.</p>
         </div>
+      <%- if @view.is_public? -%>
         <p class="livePreviewText">Live Preview</p>
         <div class="previewPane" style="width:<%= @customization[:publish][:dimensions][:width] %>px">
           <%= get_publish_embed_code_for_view(@view, {}, 'normal') %>
@@ -52,6 +53,17 @@
             Loading your Data Player Customization...
           </div>
         </div>
+      <%- else -%>
+        <div class="privateDatasetMessage">
+          <h2>Warning</h2>
+          <p>The dataset you are trying to publish is currently marked as private.
+             You will need to make it public before you can publish it. This will
+             mean that anyone can view the data.</p>
+          <ul class="actionButtons">
+            <li><a href="#public" class="makePublicButton arrowButton">Make it public</a></li>
+          </ul>
+        </div>
+      <%- end -%>
       </div>
     </div>
   </div>
@@ -927,6 +939,7 @@
   <script type="text/javascript">
     blist.namespace.fetch('blist.publish');
     blist.publish.currentTheme = <%= raw @customization.to_json %>;
+    blist.publish.viewId = '<%= @view.id %>';
   </script>
   <%= javascript_include_merged 'blists-publish' %>
 <% end %>

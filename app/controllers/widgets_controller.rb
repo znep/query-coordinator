@@ -35,17 +35,15 @@ class WidgetsController < ApplicationController
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required' ||
         e.error_code == 'permission_denied'
-        flash.now[:error] = 'You do not have permissions to view this ' +
-          I18n.t(:blist_name).downcase
+        flash.now[:error] = 'This dataset is currently private.'
         return (render 'shared/error', :status => :unauthorized )
       else
         flash.now[:error] = e.error_message
         return (render 'shared/error', :status => :internal_server_error)
       end
     end
-    if !@view.can_read()
-      flash.now[:error] = 'You do not have permissions to view this ' +
-        I18n.t(:blist_name).downcase
+    if !@view.is_public?
+      flash.now[:error] = 'This dataset is currently private.'
       return (render 'shared/error', :status => :unauthorized)
     end
 

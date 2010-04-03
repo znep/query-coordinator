@@ -8,7 +8,7 @@ class WidgetsController < ApplicationController
 
     @options = params[:options]
     if @variation.blank? && params[:customization_id].blank?
-      @variation = 'normal'
+      return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => 'normal'))
     end
 
     # HACK: Support old template options

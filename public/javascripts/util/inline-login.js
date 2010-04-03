@@ -17,8 +17,12 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 {
                     event.preventDefault();
                     $('#login').jqmHide();
-                    $('#signup').jqmShow()
+                    // Defer this until after the current event loop.
+                    setTimeout(function()
+                    {
+                        $('#signup').jqmShow()
                                 .find(':text:first').focus();
+                    }, 0);
                 }).end()
             .find('form').unbind('keyup.inlineLogin')
                 .bind('keyup.inlineLogin', function (event)

@@ -16,8 +16,9 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 .bind('click.inlineLogin', function (event)
                 {
                     event.preventDefault();
-                    $('#login').hide();
-                    $('#signup').show().find(':text:first').focus();
+                    $('#login').jqmHide();
+                    $('#signup').jqmShow()
+                                .find(':text:first').focus();
                 }).end()
             .find('form').unbind('keyup.inlineLogin')
                 .bind('keyup.inlineLogin', function (event)
@@ -140,4 +141,5 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
 $(function ()
 {
     $('#login').jqm({trigger: false});
+    $('#signup').jqm({trigger: false});
 });

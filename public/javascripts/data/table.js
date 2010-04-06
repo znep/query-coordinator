@@ -78,7 +78,7 @@
         // changes.
         var calculateHandleDigits = function(model)
         {
-            return Math.ceil(Math.log(model.rows().length || 1) * Math.LOG10E);
+            return Math.ceil(Math.log(model.length() || 1) * Math.LOG10E);
         };
 
         // Sort data
@@ -2166,7 +2166,7 @@
             pageSize = (scrollHeight / rowOffset) || 1;
 
             // Size the inside row container
-            var rowCount = model !== undefined ? model.rows().length : 0;
+            var rowCount = model !== undefined ? model.length() : 0;
             var insideHeight = rowOffset * rowCount;
 
             // Calculate the height of the footer, to use for display
@@ -2812,7 +2812,7 @@
                 lockedColumns.push(rowNumberColumn = {uid: 'rowNumberCol',
                     dataIndex: 'rowNumber',
                     cls: 'blist-table-row-numbers',
-                    measureText: Math.max(model.rows().length, 100),
+                    measureText: Math.max(model.length(), 100),
                     renderer: '(row.type == "blank" ? "new" : renderIndex + 1)',
                     footerText: 'Totals'});
             }
@@ -3751,11 +3751,7 @@
             var stop = Math.ceil(start + pageSize * 1.5);
             var rows = model.rows();
             if (start < 0) { start = 0; }
-            if (rows)
-            {
-                if (stop > rows.length) { stop = rows.length; }
-            }
-            else if (stop > 0) { stop = 0; }
+            if (stop > model.length()) { stop = model.length(); }
 
             // Calculate how big the render sections need to be, and where they
             // start based on the first row

@@ -199,29 +199,37 @@ ul.myNetworkList li span
 
 .discoverContentList li.viewListItem .itemHeader h3
 {
+    background: url(/stylesheets/images/info_pane/icon_summary_blists_header_sprites_white.png) left top no-repeat;
     color: #0071bc;
     font-size: 1.8em;
     font-weight: normal;
     height: 41px;
     line-height: 41px;
     overflow: hidden;
+    padding-left: 46px;
     text-transform: none;
 }
-.discoverContentList li.viewListItem .itemHeader h3.typeBlists { background-position: left top; }
-.discoverContentList li.viewListItem .itemHeader h3.typeFilters { background-position: left -41px; }
 .discoverContentList li.viewListItem .itemHeader h3.typeBlist { background-position: left -82px; }
 .discoverContentList li.viewListItem .itemHeader h3.typeBlist.private { background-position: left -123px; }
 .discoverContentList li.viewListItem .itemHeader h3.typeBlist.privateShared { background-position: left -164px; }
-.discoverContentList li.viewListItem .itemHeader h3.typeComments { background-position: left -205px; }
-.discoverContentList li.viewListItem .itemHeader h3.typeSharing { background-position: left -246px; }
-.discoverContentList li.viewListItem .itemHeader h3.typePublish { background-position: left -328px; }
-.discoverContentList li.viewListItem .itemHeader h3.typeViews { background-position: left -369px; }
-.discoverContentList li.viewListItem .itemHeader h3.typeActivity { background-position: left -410px; }
 .discoverContentList li.viewListItem .itemHeader h3.typeFilter { background-position: left -451px; }
 .discoverContentList li.viewListItem .itemHeader h3.typeFilter.private { background-position: left -492px; }
 .discoverContentList li.viewListItem .itemHeader h3.typeFilter.privateShared { background-position: left -533px; }
-.discoverContentList li.viewListItem .itemHeader h3.typeSharedIn { background-position: left -738px; }
-.discoverContentList li.viewListItem .itemHeader h3.typeSharedOut { background-position: left -779px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeCalendar { background-position: left -861px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeCalendar.private { background-position: left -902px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeCalendar.privateShared { background-position: left -943px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeVisualization { background-position: left -984px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeVisualization.private { background-position: left -1025px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeVisualization.privateShared { background-position: left -1066px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeGrouped { background-position: left -1107px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeGrouped.private { background-position: left -1148px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeGrouped.privateShared { background-position: left -1189px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeForm { background-position: left -1476px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeForm.private { background-position: left -1517px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeForm.privateShared { background-position: left -1558px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeMap { background-position: left -1230px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeMap.private { background-position: left -1270px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeMap.privateShared { background-position: left -1310px; }
 
 
 .viewListItem .itemMeta

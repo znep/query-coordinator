@@ -24,74 +24,80 @@
                 mapObj.$dom().addClass('tundra');
 
                 dojo.require("esri.map");
-                var options = {};
-                if (mapObj._displayConfig.zoom !== undefined)
-                { options.zoom = mapObj._displayConfig.zoom; }
-
-                mapObj._extentSet = mapObj._displayConfig.extent !== undefined;
-                if (mapObj._extentSet)
-                { options.extent = new esri.geometry
-                    .Extent(mapObj._displayConfig.extent); }
-                mapObj.map = new esri.Map(mapObj.$dom()[0].id, options);
-
-                var layers = mapObj._displayConfig.layers ||
-                    mapObj.settings.defaultLayers;
-                if (!$.isArray(layers) || !layers.length)
+                // Apparently dojo is not loaded at the same time jQuery is; so
+                // while this plugin isn't called until jQuery onLoad, we still need
+                // to attach to dojo's onLoad or we get failures in WebKit
+                dojo.addOnLoad(function()
                 {
-                    mapObj.showError("No layers defined");
-                    return;
-                }
+                    var options = {};
+                    if (mapObj._displayConfig.zoom !== undefined)
+                    { options.zoom = mapObj._displayConfig.zoom; }
 
-                for (var i = 0; i < layers.length; i++)
-                {
-                    var layer = layers[i];
-                    if (layer === undefined || layer === null ||
-                        layer.url === undefined)
-                    { continue; }
+                    mapObj._extentSet = mapObj._displayConfig.extent !== undefined;
+                    if (mapObj._extentSet)
+                    { options.extent = new esri.geometry
+                        .Extent(mapObj._displayConfig.extent); }
+                    mapObj.map = new esri.Map(mapObj.$dom().attr('id'), options);
 
-                    switch (layer.type)
+                    dojo.connect(mapObj.map, 'onLoad', function()
                     {
-                        case "tile":
-                            var constructor =
-                                esri.layers.ArcGISTiledMapServiceLayer;
-                            break;
+                        mapObj._mapLoaded = true;
+                        if (mapObj._dataLoaded)
+                        { mapObj.renderData(mapObj._rows); }
+                    });
 
-                        case "dynamic":
-                            constructor =
-                                esri.layers.ArcGISDynamicMapServiceLayer;
-                            break;
-
-                        case "image":
-                            constructor = esri.layers.ArcGISImageServiceLayer;
-                            break;
-
-                        default:
-                            // Invalid layer type
-                            continue;
+                    var layers = mapObj._displayConfig.layers ||
+                        mapObj.settings.defaultLayers;
+                    if (!$.isArray(layers) || !layers.length)
+                    {
+                        mapObj.showError("No layers defined");
+                        return;
                     }
 
-                    layer = new constructor(layer.url, layer.options);
+                    for (var i = 0; i < layers.length; i++)
+                    {
+                        var layer = layers[i];
+                        if (layer === undefined || layer === null ||
+                            layer.url === undefined)
+                        { continue; }
 
-                    mapObj.map.addLayer(layer);
-                }
+                        switch (layer.type)
+                        {
+                            case "tile":
+                                var constructor =
+                                    esri.layers.ArcGISTiledMapServiceLayer;
+                                break;
 
-                dojo.connect(mapObj.map, 'onLoad', function()
-                {
-                    mapObj._mapLoaded = true;
-                    if (mapObj._dataLoaded)
-                    { mapObj.renderData(mapObj._rows); }
+                            case "dynamic":
+                                constructor =
+                                    esri.layers.ArcGISDynamicMapServiceLayer;
+                                break;
+
+                            case "image":
+                                constructor = esri.layers.ArcGISImageServiceLayer;
+                                break;
+
+                            default:
+                                // Invalid layer type
+                                continue;
+                        }
+
+                        layer = new constructor(layer.url, layer.options);
+
+                        mapObj.map.addLayer(layer);
+                    }
+
+                    // Not sure we want to be saving every single update a user
+                    // makes to a map
+                    //mapObj.map.onPanEnd = function(extent)
+                    //{ mapObj.updateMap({ extent: extent }); }
+
+                    //mapObj.map.onZoomEnd = function(extent, factor)
+                    //{ mapObj.updateMap({ extent: extent, zoom: factor }); }
+
+                    mapObj._multipoint = new esri.geometry.Multipoint
+                        (mapObj.map.spatialReference);
                 });
-
-                // Not sure we want to be saving every single update a user
-                // makes to a map
-                //mapObj.map.onPanEnd = function(extent)
-                //{ mapObj.updateMap({ extent: extent }); }
-
-                //mapObj.map.onZoomEnd = function(extent, factor)
-                //{ mapObj.updateMap({ extent: extent, zoom: factor }); }
-
-                mapObj._multipoint = new esri.geometry.Multipoint
-                    (mapObj.map.spatialReference);
             },
 
             handleRowsLoaded: function(rows)

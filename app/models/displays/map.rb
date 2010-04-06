@@ -1,6 +1,6 @@
 class Displays::Map < Displays::Base
   def required_javascripts
-    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.5', 'shared-map' ]
+    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/?v=1.6', 'shared-map' ]
   end
 
   def render_javascript_links

@@ -1,6 +1,6 @@
 .headerMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?6);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?7);
     background-position: 5px 23px; /* default to show no icon */
     background-repeat: no-repeat;
 }
@@ -27,7 +27,7 @@
 { background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png); }
 .headerMenu .columnTotals .columnsMenu .optionMenu li a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?7);
     background-position: 5px -922px;
 }
 .headerMenu .columnTotals .columnsMenu .optionMenu li.checked a
@@ -40,7 +40,7 @@
 .headerMenu .showHide .columnsMenu { width: 20em; }
 .headerMenu .showHide .columnsMenu li.scrollable a
 {
-    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?4);
+    background-image: url(/stylesheets/images/content/table_menu/menu_icon_sprites.png?7);
     background-position: 5px -899px;
 }
 .headerMenu .grouping a { background-position: 5px -1267px; }

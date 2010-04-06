@@ -2,44 +2,13 @@ class WidgetsController < ApplicationController
   skip_before_filter :require_user
   layout 'widgets'
 
-  GOV_OVERRIDES = %w{
-    hhs.gov
-    acf.hhs.gov
-    aoa.gov
-    ahrq.gov
-    atsdr.cdc.gov
-    cdc.gov
-    cms.hhs.gov
-    fda.gov
-    hrsa.gov
-    ihs.gov
-    nih.gov
-    oig.hhs.gov
-    samhsa.gov
-    gsa.gov
-  }
-
   def show
     @variation = params[:variation]
     @theme = WidgetCustomization.default_theme
 
     @options = params[:options]
     if @variation.blank? && params[:customization_id].blank?
-      @variation = 'normal'
-
-      if !request.referrer.nil? 
-        # Check the referrer
-        m = request.referrer.match(/^\w+:\/\/([a-zA-Z0-9_\-.]+\.(\w{3}))(:|\/)/)
-
-        # TLD Check, until we have GSA approval marking
-        if m && m[1].include?("whitehouse.gov")
-          @variation = 'whitehouse'
-        elsif m && GOV_OVERRIDES.any? { |domain| m[1].include? domain }
-          @variation = 'gov'
-        end
-      end
-
-      return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => @variation))
+      return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => 'normal'))
     end
 
     # HACK: Support old template options
@@ -66,31 +35,25 @@ class WidgetsController < ApplicationController
     rescue CoreServer::CoreServerError => e
       if e.error_code == 'authentication_required' ||
         e.error_code == 'permission_denied'
-        flash.now[:error] = 'You do not have permissions to view this ' +
-          I18n.t(:blist_name).downcase
+        flash.now[:error] = 'This dataset is currently private.'
         return (render 'shared/error', :status => :unauthorized )
       else
         flash.now[:error] = e.error_message
         return (render 'shared/error', :status => :internal_server_error)
       end
     end
-    if !@view.can_read()
-      flash.now[:error] = 'You do not have permissions to view this ' +
-        I18n.t(:blist_name).downcase
+    if !@view.is_public?
+      flash.now[:error] = 'This dataset is currently private.'
       return (render 'shared/error', :status => :unauthorized)
     end
 
     @meta_description = Helper.instance.meta_description(@view)
     @meta_keywords = Helper.instance.meta_keywords(@view)
 
-    @is_gov_widget = @variation == 'gov' || @variation == 'whitehouse'
-
-    # Wire in custom behaviors for whitehouse/gov
+    # Wire in custom behaviors for whitehouse
     @theme[:style][:custom_stylesheet] = @variation
     if @variation == 'whitehouse'
       @theme[:meta].each_value{ |meta_tab| meta_tab[:show] = false }
-    end
-    if @is_gov_widget
       @theme[:behavior][:interstitial] = true
       @theme[:frame][:logo] = 'none'
     end
@@ -99,7 +62,7 @@ class WidgetsController < ApplicationController
     if @variation == 'black'
       @theme[:frame][:color] = '#666666'
     end
-    
+
     @display = @view.display
   end
 

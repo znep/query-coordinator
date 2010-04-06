@@ -381,10 +381,6 @@
                                     cellNav.getActiveXEnd());
                     }
                 }
-                else
-                {
-                    clearCellNav();
-                }
                 if ($newActive)
                 {
                     // Mark the new cells as active
@@ -455,13 +451,13 @@
                 // Create the expanding element
                 $activeContainer = $('<div class="blist-table-active-container ' +
                     'blist-table-util"></div>');
-                inside.append($activeContainer);
+                $render.append($activeContainer);
             }
             // If activeContainer is not in the tree anywhere, stick it inside
             else if ($activeContainer[0].parentNode == null ||
                 $activeContainer[0].parentNode.nodeType == 11) // doc fragment
             {
-                inside.append($activeContainer);
+                $render.append($activeContainer);
             }
 
             var row = model.get(cellNav.getActiveY());
@@ -476,7 +472,8 @@
                 $activeContainer.height(rowOffset -
                     ($activeContainer.outerHeight() - $activeContainer.height()));
                 var width = 0;
-                for (var j = cellNav.getActiveX(), stop = cellNav.getActiveXEnd(); j < stop; j++)
+                for (var j = cellNav.getActiveX(),
+                    stop = cellNav.getActiveXEnd(); j < stop; j++)
                 {
                     width += getColumnWidthPx(layout[0][j]);
                 }
@@ -484,7 +481,8 @@
                     ($activeContainer.outerWidth() - $activeContainer.width()));
 
                 var rowIndex = cellNav.getActiveY();
-                $activeContainer.css('top', rowIndex * rowOffset);
+                $activeContainer.css('top', rowIndex * renderScaling -
+                    $render.position().top);
                 var left = lockedWidth;
                 for (var i = 0; i < cellNav.getActiveX(); i++)
                 {
@@ -626,7 +624,10 @@
             if (event)
             {
                 // Scroll the active cell into view if it isn't visible vertically
-                var scrollTop = $scrolls[0].scrollTop;
+                // When calculating this with scaling, we deal with everything in
+                // the expanded (1:1 pixel) case, then scale back down when
+                // actually setting the scroll position
+                var scrollTop = $scrolls[0].scrollTop * scalingFactor;
                 var scrollHeight = $scrolls.height();
                 if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth) {
                     scrollHeight -= scrollbarWidth;
@@ -636,7 +637,9 @@
                 }
                 var scrollBottom = scrollTop + scrollHeight;
                 var top = xy.y * rowOffset;
-                var bottom = top + rowOffset;
+                // Pretend the row is extra tall in the expanded case to
+                // correctly calculate the bottom
+                var bottom = top + rowOffset * scalingFactor;
                 var origScrollTop = scrollTop;
 
                 if (scrollBottom < bottom) {
@@ -646,7 +649,7 @@
                     scrollTop = top;
                 }
                 if (scrollTop != origScrollTop) {
-                    $scrolls.scrollTop(scrollTop);
+                    $scrolls.scrollTop(scrollTop / scalingFactor);
                 }
 
                 // Scroll the active cell into view if it isn't visible horizontally
@@ -938,7 +941,7 @@
             if (hotExpander.parentNode == null ||
                 hotExpander.parentNode.nodeType == 11) // doc fragment
             {
-                inside.append($hotExpander);
+                $render.append($hotExpander);
             }
 
             // Clone the node
@@ -982,7 +985,7 @@
 
 
         /***  CELL EXPANSION & POSITIONING  ***/
-        
+
         var positionCellOverlay = function($container, $refCell, animate, curSize)
         {
             // Locate a position for the expansion.  We prefer the expansion to
@@ -995,8 +998,14 @@
             // left and bottom border width on cell above.  Doesn't seem worth
             // the pain, though -- our CSS is unlikely to change short of a major
             // rewrite that would require this code to be revisited anyway.
-            var left = $refCell.offset().left - inside.offset().left;
-            var top = $refCell.offset().top - inside.offset().top - 1;
+            //
+            // Calculate these relative to the parent offset & scrolling to
+            // correctly deal with different reference frames
+            var $parent = $container.parent();
+            var left = $refCell.offset().left - $parent.offset().left +
+                $parent.scrollLeft();
+            var top = $refCell.offset().top - $parent.offset().top -
+                1 + $parent.scrollTop();
             var origOffset = { top: top, left: left };
 
             // Ensure viewport is in the window horizontally
@@ -1019,7 +1028,10 @@
             if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth) {
                 viewportHeight -= scrollbarWidth;
             }
-            var scrollTop = $scrolls.scrollTop();
+            // Figure out how much the parent is scrolled by, plus the offset
+            // of the parent from the viewport
+            var scrollTop = $parent.scrollTop() +
+                ($scrolls.offset().top - $parent.offset().top);
             if (top + contHeight > scrollTop + viewportHeight) {
                 top = scrollTop + viewportHeight - contHeight;
             }
@@ -1650,7 +1662,7 @@
 
             var cell = findCell(event);
             var editMode = false;
-            if (cellNav && cell == clickCell)
+            if (cellNav && cell !== null && cell == clickCell)
             {
                 var curActiveCell = (cellNav.isActive() && $activeCells) ?
                     $activeCells[0] : null;
@@ -1716,7 +1728,7 @@
         // for deltaY, including negative offsets
         var navigateY = function(deltaY, event, wrap)
         {
-            var to = cellNav.navigateY(deltaY, event, wrap);
+            var to = cellNav.navigateY(Math.floor(deltaY), event, wrap);
             if (to) {
                 cellNavToXY(to, event, false, wrap);
             }
@@ -1968,7 +1980,9 @@
             '<textarea class="blist-table-navigator hiddenTextField"></textarea>' +
             '<div class="blist-table-locked-scrolls">' +
             '   <div class="blist-table-locked-header">&nbsp;</div>' +
-            '   <div class="blist-table-locked">&nbsp;</div>' +
+            '   <div class="blist-table-locked">' +
+            '     <div class="blist-table-render">&nbsp;</div>' +
+            '   </div>' +
             '   <div class="blist-table-locked-footer">&nbsp;</div>' +
             '</div>' +
             '<div class="blist-table-top">';
@@ -1995,7 +2009,10 @@
             '    <div class="indicator-container"></div>' +
             '</div></div>' +
             '<div class="blist-table-scrolls">' +
-            '  <div class="blist-table-inside">&nbsp;</div></div>' +
+            '  <div class="blist-table-inside">' +
+            '    <div class="blist-table-render">&nbsp;</div>' +
+            '  </div>' +
+            '</div>' +
             '<div class="blist-table-footer-scrolls">' +
             '    <div class="blist-table-footer">&nbsp;</div>' +
             '</div>' +
@@ -2023,6 +2040,7 @@
         var $lockedHeader = $lockedScrolls.find('.blist-table-locked-header');
         var $locked = $lockedScrolls.find('.blist-table-locked')
             .bind('table_click', onCellClick);
+        var $lockedRender = $locked.find('.blist-table-render');
         var $lockedFooter = $lockedScrolls.find('.blist-table-locked-footer');
 
         // The top area
@@ -2062,7 +2080,16 @@
             .find('.blist-table-inside')
             .mouseout(onCellOut)
             .bind('table_click', onCellClick);
-        var insideDOM = inside[0];
+
+        // Container that rows render in that is moved around
+        var $render = inside.find('.blist-table-render');
+        var renderDOM = $render[0];
+
+        // Keep track of factor to scale by when scrolling
+        var scalingFactor = 1;
+        // This is roughly rowOffset / scalingFactor, adjusted to the exact
+        // ratio to allow us to turn a scroll position into the exact top row
+        var renderScaling = 1;
 
         // Footer pieces
         var $footerScrolls = $outside.find('.blist-table-footer-scrolls');
@@ -2133,17 +2160,57 @@
             $scrolls.width($outside.width() -
                 ($scrolls.outerWidth() - $scrolls.width()));
 
+            // Figure out how much space we have to display rows
+            var scrollHeight = $scrolls[0].clientHeight;
+            // Count the scrolling page size
+            pageSize = (scrollHeight / rowOffset) || 1;
+
             // Size the inside row container
-            var insideHeight = model ? rowOffset * model.rows().length : 0;
-            var scrollsHeight = $scrolls[0].clientHeight;
-            if ($footerScrolls.is(':visible')) {
-                insideHeight += $footerScrolls.outerHeight() - 1;
+            var rowCount = model !== undefined ? model.rows().length : 0;
+            var insideHeight = rowOffset * rowCount;
+
+            // Calculate the height of the footer, to use for display
+            var footerHeight = 0;
+            if ($footerScrolls.is(':visible'))
+            { footerHeight += $footerScrolls.outerHeight() - 1; }
+            if (insideHeight + footerHeight < scrollHeight)
+            { footerHeight += scrollHeight - footerHeight - insideHeight; }
+
+            var origHeight = insideHeight;
+            // Adjust by existing scaling factor so we don't have to keep
+            // refiguring the size after it has been done once
+            insideHeight /= scalingFactor;
+            inside.height(insideHeight + footerHeight);
+            // Account for slight rounding errors/adjustments in height
+            while (inside.height() < insideHeight + footerHeight - 2)
+            {
+                // Div didn't make it to the full height; we need to adjust
+                // our scaling factor
+                scalingFactor++;
+                insideHeight = origHeight / scalingFactor;
+                inside.height(insideHeight + footerHeight);
             }
-            if (insideHeight < scrollsHeight) {
-                insideHeight = scrollsHeight;
+
+            // Calculate how much size & how many rows are in the last page;
+            // by subtracting those out, we end up with ranges from 0 to max
+            // scrollTop and 0 to max first displayed row on a page; this
+            // can give us a ratio to map any scroll position to the first row
+            // that should be displayed on that page
+            var lastPageHeight = scrollHeight - footerHeight;
+            var lastPageSize = (lastPageHeight / rowOffset) || 1;
+            renderScaling = ((insideHeight - lastPageHeight) /
+                (rowCount - lastPageSize)) || 1;
+            $locked.height(insideHeight + footerHeight);
+
+            // If the div was resized smaller than the current position,
+            // pull it to the new bottom
+            if ($render.position().top + $render.height() >
+                insideHeight + footerHeight)
+            {
+                var adjTop = insideHeight + footerHeight - $render.height();
+                $render.css('top', adjTop);
+                $lockedRender.css('top', adjTop);
             }
-            inside.height(insideHeight);
-            $locked.height(insideHeight);
             end("updateLayout.size");
 
             begin("updateLayout.render");
@@ -2192,25 +2259,46 @@
         var onScroll = function()
         {
             var scrollHoriz = $scrolls[0].scrollLeft;
+            var horizontalChange = false;
             if (scrollHoriz != headerScrolledTo)
             {
                 $header[0].style.left = -scrollHoriz + 'px';
                 $footer[0].style.left = -scrollHoriz + 'px';
                 headerScrolledTo = scrollHoriz;
-                var horizontalChange;
+                horizontalChange = true;
             }
 
-            var doVertScroll = function() {
+            var doVertScroll = function()
+            {
                 var scrollVert = $scrolls[0].scrollTop;
                 if (scrollVert != rowsScrolledTo)
                 {
+                    // If we have a large scaling factor, we risk scrolling far
+                    // too much with a single arrow click.  Unfortunately, we
+                    // can't directly detect an arrow click versus dragging
+                    // the scrollbar (or any other type of scrolling).  So we
+                    // arbitrarily pick a cutoff to determine 'small scrolling',
+                    // and then check if that makes us go more than about a page
+                    // of rows.  If so, we cut back on the scrolling to (hopefully)
+                    // a fraction of a page
+                    var scrollDiff = scrollVert - rowsScrolledTo;
+                    var absDiff = Math.abs(scrollDiff);
+                    if (absDiff < 75 &&
+                        absDiff / renderScaling > pageSize * 0.8)
+                    {
+                        var adjDiff = Math.ceil(pageSize * 0.5 * renderScaling) *
+                            (scrollDiff < 0 ? -1 : 1);
+                        scrollVert = rowsScrolledTo + adjDiff;
+                        $scrolls[0].scrollTop = scrollVert;
+                    }
                     $locked.css('top', $header.outerHeight() - scrollVert);
                     rowsScrolledTo = scrollVert;
                 }
             };
 
-            // If we scrolled horizontally, delay the check for vertical scrolling.  Why?  Because if it hasn't changed
-            // then $scrolls[0].scrollTop is very expensive
+            // If we scrolled horizontally, delay the check for vertical
+            // scrolling.  Why?  Because if it hasn't changed then
+            // $scrolls[0].scrollTop is very expensive
             if (horizontalChange)
             {
                 setTimeout(doVertScroll, 50);
@@ -2725,7 +2813,7 @@
                     dataIndex: 'rowNumber',
                     cls: 'blist-table-row-numbers',
                     measureText: Math.max(model.rows().length, 100),
-                    renderer: '(row.type == "blank" ? "new" : index + 1)',
+                    renderer: '(row.type == "blank" ? "new" : renderIndex + 1)',
                     footerText: 'Totals'});
             }
             if (options.showRowHandle)
@@ -2754,6 +2842,9 @@
             rowHeight = measuredInnerDims.height;
             rowOffset = measuredOuterDims.height;
             rowStyle.height = rowOffset + 'px';
+
+            // Reset scaling factor, since many things may have changed
+            scalingFactor = 1;
 
             // Set row heights
             if (options.generateHeights && options.showGhostColumn)
@@ -2884,7 +2975,7 @@
                 renderFnSource, contextVariables);
 
             var renderLockedFnSource =
-                    '(function(html, index, row) {';
+                    '(function(html, index, renderIndex, row) {';
             renderLockedFnSource += 'html.push(' +
                 '"<div id=\'' + id + '-l", '+
                 '(row.id || row[0]), ' +
@@ -3588,10 +3679,10 @@
                     }
                     renderedRows[rowID].row = row;
                     if (dirtyRows[rowID]) {
-                        insideDOM.replaceChild(row, dirtyRows[rowID].row);
+                        renderDOM.replaceChild(row, dirtyRows[rowID].row);
                         delete dirtyRows[rowID];
                     } else {
-                        insideDOM.appendChild(row);
+                        renderDOM.appendChild(row);
                     }
                 }
             };
@@ -3629,9 +3720,10 @@
                     renderedRows[rowID].locked = row;
                     if (dirtyRows[rowID] !== undefined)
                     {
-                        $locked[0].replaceChild(row, dirtyRows[rowID].locked);
+                        $lockedRender[0].replaceChild(row,
+                            dirtyRows[rowID].locked);
                     } else {
-                        $locked[0].appendChild(row);
+                        $lockedRender[0].appendChild(row);
                     }
                 }
             };
@@ -3651,21 +3743,12 @@
             if (!model) { return; }
 
             begin("renderRows.setup");
-            var top = $scrolls.scrollTop();
-
             // Compute the first row to render
-            var first = Math.floor(top / rowOffset);
-
-            // Compute the number of (possibly partially) visible rows
-            var count = Math.ceil((top - first * rowOffset + $scrolls.height()) / rowOffset) + 1;
-
-            // Count the scrolling page size
-            pageSize = Math.floor((top - first * rowOffset + $scrolls.height()) / rowOffset) || 1;
+            var start = Math.floor($scrolls.scrollTop() / renderScaling);
 
             // Determine the range of rows we need to render, with safety
             // checks to be sure we don't attempt the impossible
-            var start = first;
-            var stop = start + count * 1.5;
+            var stop = Math.ceil(start + pageSize * 1.5);
             var rows = model.rows();
             if (start < 0) { start = 0; }
             if (rows)
@@ -3673,7 +3756,25 @@
                 if (stop > rows.length) { stop = rows.length; }
             }
             else if (stop > 0) { stop = 0; }
+
+            // Calculate how big the render sections need to be, and where they
+            // start based on the first row
+            var renderHeight = (stop - start) * rowOffset;
+            var renderTop = start * renderScaling;
+            // Make sure we don't extend beyond the bottom
+            var insideHeight = inside.height();
+            if ($footerScrolls.is(':visible'))
+            { insideHeight -= $footerScrolls.outerHeight() - 1; }
+            if (renderTop + renderHeight > insideHeight)
+            { renderTop = insideHeight - renderHeight; }
+
+            // Adjust render divs to the new positions/sizes
+            $render.css('top', renderTop);
+            $render.height(renderHeight);
+            $lockedRender.css('top', renderTop);
+            $lockedRender.height(renderHeight);
             end("renderRows.setup");
+
 
             // Render the rows that are newly visible
             begin("renderRows.render");
@@ -3692,13 +3793,24 @@
                     {
                         // Keep the existing row
                         delete unusedRows[rowID];
+                        // We need to adjust top positions, since the render
+                        // divs (may) have moved, and rows are rendered relative
+                        // to those
+                        // Cache the jQuery wrapping?
+                        $(renderedRows[rowID].row).css('top',
+                            (i - start) * rowOffset);
+                        var locked = renderedRows[rowID].locked;
+                        if (locked !== undefined)
+                        { $(locked).css('top', (i - start) * rowOffset); }
                     }
                     else
                     {
                         // Add a new row
-                        rowRenderFn(html, i, row);
+                        // Rows are rendered in position relative to the top
+                        // of the render div, which is why we subtract start from i
+                        rowRenderFn(html, i - start, row);
                         if (rowLockedRenderFn != null)
-                        { rowLockedRenderFn(lockedHtml, i, row); }
+                        { rowLockedRenderFn(lockedHtml, i - start, i, row); }
                         rowIndices[rowID] = i;
                     }
                 }
@@ -3798,8 +3910,8 @@
             end("initRows.handle");
 
             begin("initRows.layout");
-            $locked.empty();
-            inside.empty();
+            $lockedRender.empty();
+            $render.empty();
             renderedRows = {};
 
             updateLayout();

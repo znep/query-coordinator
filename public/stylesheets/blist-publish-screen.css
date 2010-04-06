@@ -116,6 +116,33 @@
     top: 0;
 }
 
+#publishContent .privateDatasetMessage
+{
+    background: transparent url(/stylesheets/images/content/flag_modal_icon.png) no-repeat 0 1em;
+    margin: 5em auto;
+    padding-left: 5em;
+    width: 30em;
+}
+
+#publishContent .privateDatasetMessage p
+{
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+
+#publishContent .actionButtons li
+{
+    background-position: left -63px;
+}
+#publishContent .actionButtons li a
+{
+    background-position: right -84px;
+}
+#publishContent .actionButtons li a.arrowButton
+{
+    background-position: right -105px;
+}
+
 h3 .infoText
 {
     color: #444;

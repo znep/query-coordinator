@@ -13,21 +13,23 @@
 
     <%- if views_total > 0 -%>
       <div class="contentSort">
-        <% form_tag(root_path, :class => "sortForm", :method => :get) do %>
-          <p>
-            <label for="sort_by_<%= type %>">Sort by</label>
-            <%= select_tag("sort_by", (type == "search") ? 
-                           sort_select_options_for_search(sort_by) : sort_select_options(sort_by), 
-                           :id => "sort_by_" + type) %>
-            <%- if @current_state['no_js'] -%>
-              <%- @current_state.each_pair do |key, value| -%>
-                <%= hidden_field_tag(key, value) unless value.blank? || key == 'sort_by' %>
+        <%- unless type == 'search' -%>
+          <% form_tag(root_path, :class => "sortForm", :method => :get) do %>
+            <p>
+              <label for="sort_by_<%= type %>">Sort by</label>
+              <%= select_tag("sort_by", (type == "search") ? 
+                             sort_select_options_for_search(sort_by) : sort_select_options(sort_by), 
+                             :id => "sort_by_" + type) %>
+              <%- if @current_state['no_js'] -%>
+                <%- @current_state.each_pair do |key, value| -%>
+                  <%= hidden_field_tag(key, value) unless value.blank? || key == 'sort_by' %>
+                <%- end -%>
+                <%= hidden_field_tag('type', type) %>
+                <%= submit_tag('go') %>
               <%- end -%>
-              <%= hidden_field_tag('type', type) %>
-              <%= submit_tag('go') %>
-            <%- end -%>
-          </p>
-        <% end %>
+            </p>
+          <% end %>
+        <%- end -%>
       </div>
       <ul class="discoverContentList">
         <%= render(:partial => "view_list_item", :collection => views) %>

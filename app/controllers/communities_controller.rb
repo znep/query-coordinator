@@ -24,14 +24,14 @@ class CommunitiesController < ApplicationController
     end
 
     if @active_tab == :topMembers
-      @top_members_total = 100
+      @top_members_total = User.find(opts.merge({ :topMembers => true, :count => true })).count
       @top_members = User.find(opts.merge({ :topMembers => true }))
       @top_members_tags = Tag.find(tag_opts.merge({ :topMembers => true }))
       ensure_tag_in_list(@top_members_tags, opts[:tags])
     end
 
     if @active_tab == :topUploaders
-      @top_uploaders_total = 100
+      @top_uploaders_total = User.find(opts.merge({ :topUploaders => true, :count => true })).count
       @top_uploaders = User.find(opts.merge({ :topUploaders => true }))
       @top_uploaders_tags = Tag.find(tag_opts.merge({ :topUploaders => true }))
       ensure_tag_in_list(@top_uploaders_tags, opts[:tags])

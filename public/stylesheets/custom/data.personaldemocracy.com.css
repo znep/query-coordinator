@@ -1,0 +1,111 @@
+/* LAYOUT */
+body {
+	background:#bfbaa7;
+}
+.bodyInterior {
+	border:none;
+}
+#outerContainer {
+ background:;
+}
+/* HEADER */
+#header {
+	height:193px;
+	padding:0;
+	background:none;
+}
+/* search */
+#header form.search {
+	top:130px;
+	right:30px;
+}
+/* lofo */
+#header h1 {
+	background:url(/stylesheets/images/domains/data.personaldemocracy.com/logo-bg.png) repeat-x #6caee0;
+	padding:0px;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+	-webkit-border-bottom-left-radius: 0px;
+	-webkit-border-bottom-right-radius: 0px;
+}
+#mainLogo {
+	top:53px;
+	right:10px;
+}
+/* user nav */
+#header .userNav {
+	right:auto;
+	left:20px;
+	top:20px;
+}
+#header .userNav a {
+	color:#036;
+	font-size:1.2em;
+}
+#header .userNav li {
+	border:none;
+}
+/* main nav */
+
+#mainNav {
+	float:right;
+	background:#6caee0;
+	position:relative;
+	top:28px;
+	z-index:1000;
+	left:auto;
+	right:30px;
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-webkit-border-bottom-left-radius: 0px;
+	-webkit-border-bottom-right-radius: 0px;
+}
+#mainNav a {
+	cursor:pointer;
+}
+#mainNav ul.subNav {
+	background:#6caee0;
+}
+#mainNav li, #mainNav li a span, body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+	background-image:none;
+}
+body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
+	text-indent:20px;
+}
+body.home #mainNav li.home .subNav li.last {
+	background:none;
+}
+#mainNav li.home .subNav li, #mainNav li.home .subNav li a span, body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span {
+	background:none;
+}
+#mainNav li.home .subNav li:hover, #mainNav li.home .subNav li a span:hover, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li a span:hover {
+	background:none;
+	text-decoration:underline;
+}
+/* DISCOVERY */
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner {
+	background-image:url(/stylesheets/images/domains/data.personaldemocracy.com/box.png);
+}
+/* FOOTER */
+.footerContainer {
+	background:none;
+	color:#036;
+}
+#footer .copyright {
+	font-weight:normal;
+}
+#footer a {
+	color:#036;
+}
+/* LOGIN DIALOG */
+.dialogBox .header {
+	background:#6caee0;
+}

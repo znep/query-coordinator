@@ -444,6 +444,11 @@ blist.publish.applyCustomizationToPreview = function(hash)
     };
 
     clearTimeout(publishNS.loadFrameTimeout);
+    if ($('.previewPane iframe').length === 0)
+    {
+        return;
+    }
+
     if ((typeof $('.previewPane iframe').get()[0].contentWindow.blist === 'undefined') ||
         (typeof $('.previewPane iframe').get()[0].contentWindow.blist.widget === 'undefined') ||
         ($('.previewPane iframe').get()[0].contentWindow.blist.widget.ready !== true))
@@ -877,7 +882,7 @@ blist.publish.hideUnsavedChangesBar = function()
             publishNS.valueChanged();
         }
     });
-    
+
     // Upload custom UI
     $('#customization_frame_logo').change(function () {
         var $this = $(this);
@@ -898,9 +903,11 @@ blist.publish.hideUnsavedChangesBar = function()
             };
         }
     });
-    
+
     // Clear GA Code button
-    $('#publishOptionsPane .singleInfoAdvanced .clearGACodeLink').click(function() {
+    $('#publishOptionsPane .singleInfoAdvanced .clearGACodeLink').click(function(event) {
+        event.preventDefault();
+
         var $textbox = $(this).siblings('input[type="text"]');
         if (!$textbox.is('.prompt'))
         {
@@ -908,7 +915,7 @@ blist.publish.hideUnsavedChangesBar = function()
             $textbox.addClass('prompt');
         }
     });
-    
+
     window.onbeforeunload = function()
     {
         if ($('.unsavedChangesBar').is(':visible'))
@@ -916,4 +923,20 @@ blist.publish.hideUnsavedChangesBar = function()
             return 'You will lose your changes to the current theme.';
         }
     };
+
+    // Make public button
+    $('.privateDatasetMessage .makePublicButton').click(function(event)
+    {
+        event.preventDefault();
+
+        $.ajax({url: '/views/' + publishNS.viewId,
+            data: {'method': 'setPermission', 'value': 'public.read'},
+            error: function()
+            { alert('There was a problem changing the permissions'); },
+            success: function()
+            {
+                window.location.reload();
+            }
+        });
+    });
 })(jQuery);

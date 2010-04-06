@@ -88,6 +88,14 @@
     z-index: 0;
 }
 
+.blist-table-render
+{
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
 .blist-tr
 {
     position: absolute;

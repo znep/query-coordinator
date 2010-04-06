@@ -466,7 +466,7 @@ class User < Model
     ["NUM_OF_FOLLOWERS", "# of Followers"],
     ["NUM_OF_FRIENDS", "# of Friends"],
     ["LAST_LOGGED_IN", "Last Login Date"],
-    ["NUM_OF_PUBLIC_TABLES", "# of Public Data Sets"]
+    ["NUM_OF_PUBLIC_TABLES", "# of Public Datasets"]
   ]
 
   @@search_sorts = [

@@ -85,7 +85,8 @@ blist.namespace.fetch('blist.data');
     /**
      * This class provides functionality for managing a table of data.
      */
-    blist.data.Model = function(meta, rows) {
+    blist.data.Model = function(meta)
+    {
         var self = this;
 
         var curOptions = {
@@ -96,12 +97,18 @@ blist.namespace.fetch('blist.data');
             progressiveLoading: false
         };
 
+        // Total number of rows, loaded and unloaded
+        var totalRows = 0;
+        // Count of rows in active set
+        var activeCount = 0;
         // Count number of loaded rows, so we know when to disable progressive
         // loading
         var rowsLoaded = 0;
 
+        // All the rows
+        var rows = {};
         // The active dataset (rows or a filtered version of rows)
-        var active = [];
+        var active = rows;
 
         // Row lookup-by-ID
         var lookup = {};
@@ -180,52 +187,31 @@ blist.namespace.fetch('blist.data');
                 lookup = {};
                 // Count the total number of rows we have actual data for
                 rowsLoaded = 0;
-                for (var i = 0; i < rows.length; i++)
+                _.each(rows, function(row, i)
                 {
-                    var row = rows[i];
-                    if (typeof row == 'object')
-                    {
-                        var id = row.id || (row.id = row[0]);
-                        rowsLoaded++;
+                    var id = row.id || (row.id = row[0]);
+                    rowsLoaded++;
 
-                        lookup[id] = i;
-                        if (rows == active)
-                        {
-                            activeLookup[id] = i;
-                        }
-                    }
-                    else
-                    {
-                        // Row is undefined
-                    }
-                }
+                    lookup[id] = i;
+                    if (rows == active)
+                    { activeLookup[id] = i; }
+                });
             }
             if (rows != active)
             {
                 activeLookup = {};
-                for (i = 0; i < active.length; i++)
+                _.each(active, function(row, i)
                 {
-                    row = active[i];
-                    if (typeof row == 'object')
-                    {
-                        id = row.id || (row.id = row[0]);
-                        activeLookup[id] = i;
-                    }
-                    else
-                    {
-                        // Row is undefined
-                    }
-                }
+                    id = row.id || (row.id = row[0]);
+                    activeLookup[id] = i;
+                });
             }
         };
 
         var setRowMetadata = function(newRows, metaCols, dataMungeCols)
         {
-            for (var i = 0; i < newRows.length; i++)
+            _.each(newRows, function(r, i)
             {
-                var r = newRows[i];
-                if (typeof r != 'object') { continue; }
-
                 if (metaCols)
                 {
                     for (var j = 0; j < metaCols.length; j++)
@@ -279,7 +265,7 @@ blist.namespace.fetch('blist.data');
                         { r[c.index] = null; }
                     }
                 }
-            }
+            });
         };
 
         var dataChange = function()
@@ -309,7 +295,7 @@ blist.namespace.fetch('blist.data');
         {
             if (!curOptions.progressiveLoading) { return false; }
 
-            if (rowsLoaded < rows.length || meta.view.searchString !== null)
+            if (rowsLoaded < totalRows || meta.view.searchString !== null)
             { return true; }
 
             var isProg = false;
@@ -410,7 +396,7 @@ blist.namespace.fetch('blist.data');
                 self.reloadAggregates();
 
                 if (config.meta.totalRows !== undefined)
-                { newRows.length = config.meta.totalRows; }
+                { totalRows = config.meta.totalRows; }
 
                 // Reset all config to defaults
                 filterFn = null;
@@ -646,7 +632,7 @@ blist.namespace.fetch('blist.data');
                 if (newRows)
                 {
                     if (config.meta.totalRows !== undefined)
-                    { newRows.length = config.meta.totalRows; }
+                    { totalRows = config.meta.totalRows; }
                     this.rows(newRows, true);
                 }
                 else { configureActive(null, true); }
@@ -982,19 +968,13 @@ blist.namespace.fetch('blist.data');
 
                     // If there are rows, reset all child rows since there may
                     // be new nested columns
-                    if (rows && rows.length > 0)
+                    _.each(rows, function(r, i)
                     {
-                        for (var i = 0; i < rows.length; i++) {
-                            var r = rows[i];
-                            if (typeof r == 'object')
-                            {
-                                // We're in the process of resetting things,
-                                // so catch an un-init style error and ignore it
-                                try { resetChildRows(r); }
-                                catch (e) { /*ignore*/ }
-                            }
-                        }
-                    }
+                        // We're in the process of resetting things,
+                        // so catch an un-init style error and ignore it
+                        try { resetChildRows(r); }
+                        catch (e) { /*ignore*/ }
+                    });
                 }
                 else
                 {
@@ -1064,10 +1044,15 @@ blist.namespace.fetch('blist.data');
          */
         this.rows = function(newRows, loadedTempView)
         {
-            if (newRows)
+            if (newRows !== null && newRows !== undefined)
             {
-                active = rows = newRows;
-                setRowMetadata(newRows, meta.metaColumns, meta.dataMungeColumns);
+                if (totalRows === 0) { totalRows = _.size(newRows); }
+                rows = {};
+                // Convert array of rows into object
+                _.each(newRows, function(r, i) { rows[i] = r; });
+                active = rows;
+                activeCount = totalRows;
+                setRowMetadata(rows, meta.metaColumns, meta.dataMungeColumns);
                 installIDs();
 
                 // Apply sorting if so configured
@@ -1093,25 +1078,43 @@ blist.namespace.fetch('blist.data');
             return activeLookup[rowOrRowID];
         };
 
-        /**
-         * Add rows to the model.
-         */
-        this.add = function(addedRows)
+        var addItemsToObject = function(obj, values, index)
         {
-            rows = rows.concat(addedRows);
-            if (active != rows)
+            var numInserts = values.length;
+            // Get all larger indexes
+            var adjustIndexes = [];
+            _.each(obj, function(r, i)
+                { if (i >= index) { adjustIndexes.push(i); } });
+            // Sort descending so we don't collide while moving
+            adjustIndexes.sort(function(a, b) { return b - a; });
+            // Move each index up one
+            _.each(adjustIndexes, function(i)
             {
-                active = active.concat(addedRows);
-            }
-            for (var i = 0; i < addedRows.length; i++) {
-                var r = addedRows[i];
-                if (r instanceof Object)
-                    rowsLoaded++;
-            }
-            setRowMetadata(addedRows, meta.metaColumns, meta.dataMungeColumns);
-            installIDs();
-            configureActive();
-            $(listeners).trigger('row_add', [ addedRows ]);
+                obj[parseInt(i) + numInserts] = obj[i];
+                delete obj[i];
+            });
+            // Add all the new values
+            _.each(values, function(v, i) { obj[index + parseInt(i)] = v; });
+        };
+
+        var removeItemsFromObject = function(obj, index, numItems)
+        {
+            // Remove specified number of items
+            for (var i = 0; i < numItems; i++)
+            { delete obj[index + i]; }
+
+            // Get all larger indexes
+            var adjustIndexes = [];
+            _.each(obj, function(r, i)
+                { if (i > index) { adjustIndexes.push(i); } });
+            // Sort ascending so we don't collide while moving
+            adjustIndexes.sort(function(a, b) { return a - b; });
+            // Move each item down one
+            _.each(adjustIndexes, function(i)
+            {
+                obj[parseInt(i) - numItems] = obj[i];
+                delete obj[i];
+            });
         };
 
         /**
@@ -1135,8 +1138,9 @@ blist.namespace.fetch('blist.data');
                 if (index !== undefined)
                 {
                     delete lookup[id];
-                    rows.splice(index, 1);
+                    removeItemsFromObject(rows, index, 1);
                     rowsLoaded--;
+                    totalRows--;
                 }
                 if (rows != active)
                 {
@@ -1145,9 +1149,11 @@ blist.namespace.fetch('blist.data');
                     if (index !== undefined)
                     {
                         delete activeLookup[id];
-                        active.splice(index, 1);
+                        removeItemsFromObject(active, index, 1);
+                        activeCount--;
                     }
                 }
+                else { activeCount = totalRows; }
                 this.unselectRow(row);
 
                 if (serverDelete)
@@ -1326,9 +1332,13 @@ blist.namespace.fetch('blist.data');
             {
                 row = $.extend(row, {id: 'saving' + saveUID++, isNew: true,
                     type: null});
-                var lastRow = rows[rows.length - 1];
-                if (rows.length < 1 || lastRow === undefined || !lastRow.isNew)
-                { rows.push(row); }
+                var lastRow = rows[totalRows - 1];
+                if (totalRows < 1 || lastRow === undefined || !lastRow.isNew)
+                {
+                    rows[totalRows] = row;
+                    totalRows++;
+                    if (active == rows) { activeCount = totalRows; }
+                }
                 installIDs();
                 // Our view should be in the correct configuration, so we don't
                 // need to reload a temp view on this call
@@ -1728,9 +1738,11 @@ blist.namespace.fetch('blist.data');
             else
             {
                 // Stick the row back in and update things
-                rows.splice(row.origPosition, 0, row);
+                addItemsToObject(rows, [row], row.origPosition);
+                totalRows++;
+                activeCount++;
                 if (active != rows)
-                { active.splice(row.origActivePosition, 0, row); }
+                { addItemsToObject(active, [row], row.origActivePosition); }
                 installIDs();
                 configureActive();
                 $(listeners).trigger('row_add', [ [row] ]);
@@ -1855,17 +1867,11 @@ blist.namespace.fetch('blist.data');
 
         this.invalidateRows = function()
         {
-            active = rows;
-            var idChange = removeSpecialRows();
-            for (var i=0; i < rows.length; i++)
-            {
-                if (typeof rows[i] == 'object')
-                {
-                    rows[i] = rows[i].id;
-                }
-            }
+            active = rows = {};
+            activeCount = totalRows;
             rowsLoaded = 0;
-            if (idChange) { installIDs(); }
+            lookup = {};
+            activeLookup = {};
         };
 
         this.updateColumn = function(column)
@@ -2062,27 +2068,21 @@ blist.namespace.fetch('blist.data');
 
                 // Sort reverse numerical so we can properly splice out data
                 removedData.sort(function(a, b) { return b - a; });
-                $.each(rows, function(i, r)
+                _.each(rows, function(r)
                 {
-                    if (typeof r == 'object')
-                    {
-                        $.each(removedData, function(j, dataI)
-                        {
-                            r.splice(dataI, 1);
-                        });
-                    }
+                    _.each(removedData, function(dataI)
+                        { r.splice(dataI, 1); });
                 });
-                $.each(subRemovedData, function(index, subIndexes)
+                _.each(subRemovedData, function(subIndexes, index)
                 {
                     subIndexes.sort(function(a, b) { return b - a; });
-                    $.each(rows, function(i, r)
+                    _.each(rows, function(r)
                     {
-                        if (r instanceof Object &&
-                            r[index] instanceof Object)
+                        if (r[index] instanceof Object)
                         {
-                            $.each(r[index], function(k, subRow)
+                            _.each(r[index], function(subRow)
                             {
-                                $.each(subIndexes, function(j, dataI)
+                                _.each(subIndexes, function(dataI)
                                 {
                                     subRow.splice(dataI, 1);
                                 });
@@ -2287,7 +2287,7 @@ blist.namespace.fetch('blist.data');
          */
         this.length = function()
         {
-            return active.length;
+            return activeCount;
         };
 
         /**
@@ -2303,18 +2303,15 @@ blist.namespace.fetch('blist.data');
          */
         this.dataLength = function()
         {
-            var total = 0;
-            for (var i = 0; i < active.length; i++) {
-                var row = active[i];
-
-                // Count rows with level 0 and no level
-                if (row === undefined ||
-                    ((row.level === 0 || row.level === undefined) &&
-                        row.type != 'blank'))
-                {
-                    total += 1 + (row && row.childRows ? row.childRows.length : 0);
-                }
-            }
+            var total = activeCount;
+            _.each(active, function(row, i)
+            {
+                // Don't count rows with level not equal to 0 or blank rows
+                if (row.level !== 0 && row.level !== undefined ||
+                    row.type == 'blank') { total--; }
+                // Count child rows, expanded or not
+                if (row.childRows !== undefined) { total += row.childRows.length; }
+            });
             return total;
         };
 
@@ -2336,7 +2333,7 @@ blist.namespace.fetch('blist.data');
             }
             else
             {
-                var end = active.length;
+                var end = activeCount;
                 while (++pos < end)
                 {
                     if (active[pos] === undefined ||
@@ -2728,30 +2725,21 @@ blist.namespace.fetch('blist.data');
 
                 // Install child rows into the active set if the row is open
                 if (active == rows)
-                { active = active.slice(); }
-                for (var i = 0; i < active.length; i++)
-                {
-                    if (active[i] == row)
-                    {
-                        var after = active.splice(i + 1, active.length - i + 1);
-                        active = active.concat(childRows).concat(after);
-                        break;
-                    }
-                }
+                { active = _.clone(rows); }
+                var i = parseInt(activeLookup[row.id]);
+                addItemsToObject(active, childRows, i + 1);
+                activeCount += childRows.length;
             }
             else
             {
                 // Remove the child rows
                 if (row.childRows && row.childRows.length)
                 {
-                    for (i = 0; i < active.length; i++)
-                    {
-                        if (active[i] == row)
-                        {
-                            active.splice(i + 1, row.childRows.length);
-                            break;
-                        }
-                    }
+                    var i = parseInt(activeLookup[row.id]);
+                    removeItemsFromObject(active, i + 1,
+                        row.childRows.length);
+                    activeCount -= row.childRows.length;
+                    if (active == rows) { totalRows = activeCount; }
                 }
             }
 
@@ -2795,29 +2783,21 @@ blist.namespace.fetch('blist.data');
             // Apply preprocessing function if necessary.  We then sort a new
             // array that contains a [ 'value', originalRecord ] pair for each
             // item.  This allows us to avoid complex ordering functions.
-            if (orderPrepro) {
-                var toSort = new Array(active.length);
-                for (var i = 0; i < active.length; i++) {
-                    var rec = active[i];
-                    toSort[i] = [ orderPrepro(rec[orderCol.dataIndex], orderCol),
-                        rec ];
-                }
-            }
-            else
+            var toSort = new Array(activeCount);
+            _.each(active, function(rec, i)
             {
-                toSort = active;
-            }
+                toSort[i] = orderPrepro !== undefined ?
+                    [orderPrepro(rec[orderCol.dataIndex], orderCol), rec] : rec;
+            });
 
             // Perform the actual sort
             if (orderFn) { toSort.sort(orderFn); }
             else { toSort.sort(); }
 
-            // If we sorted a preprocessed set, update the original set
-            if (orderPrepro)
-            {
-                for (i = 0; i < toSort.length; i++)
-                { active[i] = toSort[i][1]; }
-            }
+            // Update the original object
+            active = {};
+            for (i = 0; i < toSort.length; i++)
+            { active[i] = orderPrepro !== undefined ? toSort[i][1] : toSort[i]; }
 
             // Update ID lookup
             installIDs(true);
@@ -2925,42 +2905,24 @@ blist.namespace.fetch('blist.data');
                 config.meta.view.owner = meta.view.owner;
                 this.meta(config.meta);
                 if (config.meta.totalRows !== undefined)
-                { newRows.length = config.meta.totalRows; }
+                { activeCount = config.meta.totalRows; }
 
                 self.reloadAggregates();
             }
 
-            var installActiveOnly = true;
             // active is now the new set of rows from the server, and not
             //  linked-to or based-on rows
-            active = newRows;
+            active = {};
+            // Convert array of rows into object
+            _.each(newRows, function(r, i) { active[i] = r; });
             setRowMetadata(active, meta.metaColumns, meta.dataMungeColumns);
-            for (var i = 0; i < active.length; i++)
+            _.each(active, function(curRow, i)
             {
-                // If it is a full row, then update rows with it (even if
-                // this row was already loaded, since it may have updated
-                // data)
-                if (typeof active[i] == 'object')
-                {
-                    curRow = active[i];
-                    var rowPos = lookup[curRow.id];
-                    if (rowPos == undefined)
-                    {
-                        rows.push(curRow);
-                        installActiveOnly = false;
-                        rowsLoaded++;
-                    }
-                    else
-                    {
-                        if (typeof rows[rowPos] != 'object')
-                        {
-                            rowsLoaded++;
-                        }
-                        rows[rowPos] = curRow;
-                    }
-                }
-            }
-            installIDs(installActiveOnly);
+                // Copy over loaded rows in case they are updated
+                var rowPos = lookup[curRow.id];
+                if (rowPos !== undefined) { rows[rowPos] = curRow; }
+            });
+            installIDs(true);
             configureActive(null, true);
         };
 
@@ -3037,6 +2999,7 @@ blist.namespace.fetch('blist.data');
                     else if (active != rows)
                     {
                         active = rows;
+                        activeCount = totalRows;
                         $(listeners).trigger('client_filter');
                         configureActive();
                     }
@@ -3302,7 +3265,9 @@ blist.namespace.fetch('blist.data');
                 blankRow.level = 0;
                 blankRow.type = 'blank';
                 blankRow.id = 'blank';
-                active.push(blankRow);
+                active[activeCount] = blankRow;
+                activeCount++;
+                if (active == rows) { totalRows = activeCount; }
                 idChange = true;
             }
 
@@ -3314,31 +3279,41 @@ blist.namespace.fetch('blist.data');
         var removeSpecialRows = function()
         {
             var removed = false;
-            var i = 0;
-            while (i < active.length)
+            var toRemove = [];
+            _.each(active, function(r, i)
             {
-                if (active[i] !== undefined &&
-                    (active[i].level || active[i].type == 'blank'))
+                if (r.level !== 0 && r.level !== undefined || r.type == 'blank')
                 {
-                    active.splice(i, 1);
+                    toRemove.push(i);
                     removed = true;
                 }
-                else { i++; }
-            }
+            });
+            toRemove.sort(function(a,b) { return b - a; });
+            _.each(toRemove, function(i)
+            {
+                removeItemsFromObject(active, i, 1);
+                activeCount--;
+            });
             if (rows != active)
             {
-                i = 0;
-                while (i < rows.length)
+                toRemove = [];
+                _.each(rows, function(r, i)
                 {
-                    if (rows[i] !== undefined &&
-                        (rows[i].level || rows[i].type == 'blank'))
+                    if (r.level !== 0 && r.level !== undefined ||
+                        r.type == 'blank')
                     {
-                        rows.splice(i, 1);
+                        toRemove.push(i);
                         removed = true;
                     }
-                    else { i++; }
-                }
+                });
+                toRemove.sort(function(a,b) { return b - a; });
+                _.each(toRemove, function(i)
+                {
+                    removeItemsFromObject(rows, i, 1);
+                    totalRows--;
+                });
             }
+            else { totalRows = activeCount; }
             return removed;
         };
 
@@ -3360,7 +3335,8 @@ blist.namespace.fetch('blist.data');
             }
 
             // Perform the actual filter
-            active = $.grep(toFilter || rows, filterFn);
+            active = _.select(toFilter || rows, filterFn);
+            activeCount = _.size(active);
             $(listeners).trigger('client_filter');
         };
 
@@ -3373,23 +3349,29 @@ blist.namespace.fetch('blist.data');
             var i = 0;
             var currentGroup;
             var groupOn = orderCol.dataIndex;
-            while (i < active.length)
+            // We need to traverse this in order, even though things are stored in
+            // an object
+            while (i < activeCount)
             {
                 // This isn't supported in progressive loading mode, so active[i]
                 // shouldn't ever be undefined here
                 var group = groupFn(active[i][groupOn]);
-                if (group != currentGroup) {
-                    active.splice(i, 0, {
-                        level: -1,
-                        type: 'group',
-                        title: group,
-                        id: 'special-' + i
-                    });
+                if (group != currentGroup)
+                {
+                    addItemsToObject(active,
+                            [{
+                                level: -1,
+                                type: 'group',
+                                title: group,
+                                id: 'special-' + i
+                            }], i);
+                    activeCount++;
                     i++;
                     currentGroup = group;
                 }
                 i++;
             }
+            if (rows == active) { totalRows = activeCount; }
             // Update ID lookup
             installIDs(true);
         };
@@ -3397,38 +3379,27 @@ blist.namespace.fetch('blist.data');
         // Expand rows that the user has opened
         var doExpansion = function()
         {
-            var newActive;
-            var lastCopied = 0;
-            var didExpansion = false;
+            var toExpand = [];
+            _.each(active, function(r, i)
+            {
+                if (r.expanded) { toExpand.push(i); }
+            });
 
-            for (var i = 0; i < active.length; i++)
+            toExpand.sort(function(a,b) { return b - a; });
+            _.each(toExpand, function(i)
             {
-                if (active[i] !== undefined && active[i].expanded)
-                {
-                    didExpansion = true;
-                    if (!newActive) { newActive = []; }
-                    newActive.push.apply(newActive,
-                        active.slice(lastCopied, lastCopied = i + 1));
-                    var childRows = getChildRows(active[i]);
-                    newActive.push.apply(newActive, childRows);
-                }
-            }
-            if (newActive)
-            {
-                newActive.push.apply(newActive,
-                    active.slice(lastCopied, active.length));
-                active = newActive;
-            }
-            return didExpansion;
+                var childRows = getChildRows(active[i]);
+                addItemsToObject(active, childRows, i + 1);
+                activeCount += childRows.length;
+            });
+            if (active == rows) { totalRows = activeCount; }
+
+            return toExpand.length > 0;
         };
 
         // Install initial metadata
         if (meta) { this.meta(meta); }
         else { this.meta({}); }
-
-        // Install initial rows
-        if (rows) { this.rows(rows); }
-        else { rows = []; }
     };
 
     $.fn.extend({

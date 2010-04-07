@@ -666,9 +666,16 @@ class BlistsController < ApplicationController
     options = JSON.parse(options) if !options.blank?
     columns = params[:columns] || nil
     columns = JSON.parse(columns) if !columns.blank?
+
     begin
       if params[:edit] == 'true'
         batch_reqs = []
+
+        view_req = {'url' => '/views/' + params[:id], 'requestType' => 'PUT',
+          'body' => {'displayType' => params[:vizType],
+            'query' => JSON.parse(CGI.unescapeHTML(params[:view_query])),
+            'displayFormat' => options}, 'class' => View}
+
         # TODO: It would be nice to make some convenience methods for generating
         # these requests
         if !columns.blank?
@@ -677,11 +684,11 @@ class BlistsController < ApplicationController
               'requestType' => 'PUT', 'body' => {'hidden' => false},
               'class' => Column}
           end
+
+          view_req['columns'] = columns
         end
-        batch_reqs << {'url' => '/views/' + params[:id], 'requestType' => 'PUT',
-          'body' => {'columns' => columns, 'displayType' => params[:vizType],
-            'query' => JSON.parse(CGI.unescapeHTML(params[:view_query])),
-            'displayFormat' => options}, 'class' => View}
+
+        batch_reqs << view_req 
         Model.batch(batch_reqs)
       else
         view = View.create({'name' => params[:viewName],

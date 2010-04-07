@@ -22,7 +22,7 @@ blist.stats.initializeGrid = function ()
         .blistModel();
 
     statsNS.model.meta({view: {}, columns: statsNS.columns});
-    statsNS.model.add(statsNS.urlData);
+    statsNS.model.rows(statsNS.urlData);
 };
 
 $(function() {

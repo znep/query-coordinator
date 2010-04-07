@@ -827,9 +827,9 @@ blist.myBlists.deleteClick = function (event)
             // parent's childRows
             if (row.level > 0)
             {
-                var parent = _.select(myBlistsNS.model.rows(),
+                var parent = _.detect(myBlistsNS.model.rows(),
                     function(v)
-                    { return v.tableId == row.tableId && v.isDefault; })[0];
+                    { return v.tableId == row.tableId && v.isDefault; });
                 if (parent !== undefined)
                 {
                     parent.childRows = _.reject(parent.childRows,

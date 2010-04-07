@@ -25,6 +25,11 @@ class CurrentDomain
     return @@current_domain = @@property_store[cname]
   end
 
+  def self.reload(cname, site_config_id = nil)
+    @@property_store.delete(cname)
+    self.set(cname, site_config_id)
+  end
+
   # Main properties
   def self.domain_name
     @@current_domain[:data].name

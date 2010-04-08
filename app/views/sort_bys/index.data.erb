@@ -35,8 +35,8 @@
             <li>
             <div class="itemWrapper">
               <span class="orderIndex"><%= i + 1 %></span>
-              <div class="type datatype-<%= col.client_type(col.dataTypeName) ||
-                col.client_type %>"></div>
+              <span class="type datatype-<%= col.client_type(col.dataTypeName) ||
+                col.client_type %>"></span>
               <span class='name'><%= col.name %></span>
               <div class="controls">
                 <div class="sort sort-<%= sort['asc'] ? 'asc' : 'desc' %>"
@@ -76,8 +76,8 @@
             <li>
             <div class="itemWrapper">
               <span class="orderIndex hide"></span>
-              <div class="type datatype-<%= col.client_type(col.dataTypeName) ||
-                col.client_type %>"></div>
+              <span class="type datatype-<%= col.client_type(col.dataTypeName) ||
+                col.client_type %>"></span>
               <span class='name'><%= col.name %></span>
               <div class="controls hide">
                 <div class="sort sort-asc" title="Click to sort descending"></div>

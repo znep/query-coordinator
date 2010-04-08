@@ -231,7 +231,7 @@
         mapObj.$dom().parent().find('.loadingSpinnerContainer')
             .removeClass('hidden');
         $.ajax({url: '/views/' + blist.display.viewId + '/rows.json',
-                data: args, type: 'GET', dataType: 'json',
+                cache: false, data: args, type: 'GET', dataType: 'json',
                 error: function()
                     { mapObj.$dom().parent().find('.loadingSpinnerContainer')
                         .addClass('hidden'); },

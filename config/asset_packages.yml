@@ -67,6 +67,8 @@ javascripts:
   - util/urls
   - widgets/dropdown-menu
   - screens/approval-screen
+- admin-users:
+  - screens/admin-users-screen
 - blists-about:
   - util/urls
   - screens/blist-about-screen
@@ -322,4 +324,7 @@ stylesheets:
   - modals-widget
 - internal-shared:
   - internal-screen
+  - form-common
+- admin-shared:
+  - admin-screen
   - form-common

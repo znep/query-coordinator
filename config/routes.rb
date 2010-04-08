@@ -73,6 +73,14 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show_tier'
   map.connect '/internal/modules', :controller => 'internal',
     :action => 'index_modules'
+    
+  map.connect '/admin', :controller => 'admin', :action => 'index'
+  map.connect '/admin/users', :controller => 'admin', :action => 'users'
+  map.connect '/admin/users/:id', :controller => 'admin', :action => 'users'
+  map.connect '/admin/save_user/:id', :controller => 'admin', :action => 'save_user_role'
+  map.connect '/admin/reload', :controller => 'admin', :action => 'reload'
+  map.connect '/admin/features', :controller => 'admin', :action => 'features'
+  
 
   map.resources :contacts,
     :collection => {

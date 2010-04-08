@@ -1,5 +1,5 @@
 class User < Model
-  cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts
+  cattr_accessor :current_user, :states, :countries, :sorts, :search_sorts, :roles_list
   attr_accessor :session_token
 
   non_serializable :displayName
@@ -15,6 +15,10 @@ class User < Model
       path += "?inviteToken=#{inviteToken}"
     end
     return parse(CoreServer::Base.connection.create_request(path, attributes.to_json))
+  end
+
+  def self.set_role(username, role)
+    return parse(CoreServer::Base.connection.update_request("/users.json?method=promote&name=#{username}&role=#{role}"))
   end
 
   def create(inviteToken = nil)
@@ -154,6 +158,31 @@ class User < Model
   def are_comments_moderated?
     self.accountCategory == "premium_sdn"
   end
+
+  def has_role?(role)
+    self.roles && self.roles.include?(role)
+  end
+
+  def is_domain_editor?
+    self.has_role? 'editor'
+  end
+
+  def is_domain_publisher?
+    self.has_role? 'publisher'
+  end
+
+  def is_domain_designer?
+    self.has_role? 'designer'
+  end
+
+  def is_domain_admin?
+    self.has_role? 'administrator'
+  end
+
+  def is_domain_member?
+    self.roles && self.roles.size > 0
+  end
+
 
   @@states = {
                 '--' => '------',
@@ -477,5 +506,11 @@ class User < Model
     ["LAST_LOGIN", "Last Login Date"]
   ]
 
+  @@roles_list = [
+    ['editor', 'Edit and upload data'],
+    ['publisher', 'Choose which datasets are publicly viewable'],
+    ['designer', "Modify the site's appearance"],
+    ['administrator', 'Controls configuration and users']
+  ]
 
 end

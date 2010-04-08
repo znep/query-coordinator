@@ -1,0 +1,18 @@
+<form class='search usersFind' action='/admin/users'>
+   <div class='searchContainer'>
+     <label for='username'>Search for users</label>
+     <input type='text' class='textPrompt' name='username'
+     title='Search for users' <%= " value='#{search_param}'" unless search_param.nil? %> />
+     <div class='actionBox'>
+       <div class='clearBox'>
+         <a class='clearSearch' title='Clear Search'
+           href='#clear_search'>
+           Clear Search
+         </a>
+       </div>
+       <input type="image" class="submit" name="findSubmit"
+       src="<%= image_path("find_button.png") %>"
+       alt="search" />
+     </div>
+   </div>
+ </form>

@@ -34,7 +34,7 @@ class DataController < ApplicationController
 
     # build current state string
     @current_state = { 'filter' => params[:filter], 'page' => opts[:page].to_i,
-      'tag' => opts[:tags], 'sort_by' => opts[:sortBy], 'search' => opts[:q],
+      'tag' => opts[:tags], 'sort_by' => params[:sort_by], 'search' => opts[:q],
       'no_js' => params[:no_js] }
 
   # TODO: Tags should also allow filtering by org
@@ -118,7 +118,7 @@ class DataController < ApplicationController
 
     # build current state string
     @current_state = { 'filter' => params[:filter], 'page' => opts[:page],
-      'tag' => opts[:tags], 'sort_by' => opts[:sortBy], 'search' => opts[:q] }
+      'tag' => opts[:tags], 'sort_by' => params[:sort_by], 'search' => opts[:q] }
 
     # render the appropriate view
     respond_to do |format|

@@ -170,6 +170,7 @@
                 mapObj._multipoint = new esri.geometry.Multipoint
                     (mapObj.map.spatialReference);
                 mapObj.map.graphics.clear();
+                mapObj.map.infoWindow.hide();
             }
         }
     }));

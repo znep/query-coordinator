@@ -567,6 +567,10 @@ blist.namespace.fetch('blist.data');
                 min = Math.min(n, min);
                 max = Math.max(n, max);
             });
+            // Adjust max & min account for special rows, so we get real
+            // offsets to the server
+            max -= countSpecialTo(max);
+            min -= countSpecialTo(min);
             var len = Math.min(max - min + 1, curOptions.pageSize);
 
             var tempView = this.getViewCopy(this.isGrouped());
@@ -589,14 +593,16 @@ blist.namespace.fetch('blist.data');
             setRowMetadata(supplement, meta.metaColumns, meta.dataMungeColumns);
             for (var i = 0; i < supplement.length; i++, start++)
             {
+                // Figure out the real position in active
+                var adjStart = start + countSpecialTo(start);
                 var row = supplement[i];
-                if (active == rows && active[start] === undefined)
+                if (active == rows && active[adjStart] === undefined)
                 { rowsLoaded++; }
-                active[start] = row;
+                active[adjStart] = row;
 
                 var id = row.id || (row.id = row[0]);
-                activeLookup[id] = start;
-                if (rows == active) { lookup[id] = start; }
+                activeLookup[id] = adjStart;
+                if (rows == active) { lookup[id] = adjStart; }
             }
 
             // Do not call installIDs here as it is expensive on tall datasets!
@@ -1074,8 +1080,8 @@ blist.namespace.fetch('blist.data');
         this.index = function(rowOrRowID)
         {
             if (typeof rowOrRowID == 'object')
-            { return activeLookup[rowOrRowID.id]; }
-            return activeLookup[rowOrRowID];
+            { return parseInt(activeLookup[rowOrRowID.id]); }
+            return parseInt(activeLookup[rowOrRowID]);
         };
 
         var addItemsToObject = function(obj, values, index)
@@ -1084,13 +1090,13 @@ blist.namespace.fetch('blist.data');
             // Get all larger indexes
             var adjustIndexes = [];
             _.each(obj, function(r, i)
-                { if (i >= index) { adjustIndexes.push(i); } });
+                { if (i >= index) { adjustIndexes.push(parseInt(i)); } });
             // Sort descending so we don't collide while moving
             adjustIndexes.sort(function(a, b) { return b - a; });
             // Move each index up one
             _.each(adjustIndexes, function(i)
             {
-                obj[parseInt(i) + numInserts] = obj[i];
+                obj[i + numInserts] = obj[i];
                 delete obj[i];
             });
             // Add all the new values
@@ -1106,13 +1112,13 @@ blist.namespace.fetch('blist.data');
             // Get all larger indexes
             var adjustIndexes = [];
             _.each(obj, function(r, i)
-                { if (i > index) { adjustIndexes.push(i); } });
+                { if (i > index) { adjustIndexes.push(parseInt(i)); } });
             // Sort ascending so we don't collide while moving
             adjustIndexes.sort(function(a, b) { return a - b; });
             // Move each item down one
             _.each(adjustIndexes, function(i)
             {
-                obj[parseInt(i) - numItems] = obj[i];
+                obj[i - numItems] = obj[i];
                 delete obj[i];
             });
         };
@@ -1133,7 +1139,7 @@ blist.namespace.fetch('blist.data');
                 var row = delRows[i];
                 if (row.expanded) { this.expand(row, false); }
                 var id = row.id;
-                var index = lookup[id];
+                var index = parseInt(lookup[id]);
                 row.origPosition = index;
                 if (index !== undefined)
                 {
@@ -1144,7 +1150,7 @@ blist.namespace.fetch('blist.data');
                 }
                 if (rows != active)
                 {
-                    index = activeLookup[id];
+                    index = parseInt(activeLookup[id]);
                     row.origActivePosition = index;
                     if (index !== undefined)
                     {
@@ -3275,6 +3281,19 @@ blist.namespace.fetch('blist.data');
             dataChange();
         };
 
+        var countSpecialTo = function(max)
+        {
+            var count = 0;
+            if (max === undefined) { max = activeCount; }
+            _.each(active, function(r, i)
+            {
+                if (parseInt(i) < max &&
+                    (r.level !== 0 && r.level !== undefined || r.type == 'blank'))
+                { count++; }
+            });
+            return count;
+        };
+
         // Remove "special" (non-top-level) rows
         var removeSpecialRows = function()
         {
@@ -3284,7 +3303,7 @@ blist.namespace.fetch('blist.data');
             {
                 if (r.level !== 0 && r.level !== undefined || r.type == 'blank')
                 {
-                    toRemove.push(i);
+                    toRemove.push(parseInt(i));
                     removed = true;
                 }
             });
@@ -3302,7 +3321,7 @@ blist.namespace.fetch('blist.data');
                     if (r.level !== 0 && r.level !== undefined ||
                         r.type == 'blank')
                     {
-                        toRemove.push(i);
+                        toRemove.push(parseInt(i));
                         removed = true;
                     }
                 });
@@ -3382,7 +3401,7 @@ blist.namespace.fetch('blist.data');
             var toExpand = [];
             _.each(active, function(r, i)
             {
-                if (r.expanded) { toExpand.push(i); }
+                if (r.expanded) { toExpand.push(parseInt(i)); }
             });
 
             toExpand.sort(function(a,b) { return b - a; });

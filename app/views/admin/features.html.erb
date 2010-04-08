@@ -1,0 +1,27 @@
+<% content_for :head do %>
+<%= stylesheet_link_merged 'admin-shared' %>
+<title>Administration Panel | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="publishContent" class="oneColumnContainer tabContainer">
+  <%= render :partial => 'tabs', :locals => {:active => 'features'} %>
+  <div class="fullPageContentContainer fullPageWithTabs">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class='outerContent'>
+          <div class='contentTR'><div class='contentTL'></div></div>
+          <div class='content' id='adminContent'>
+
+            <h1>Site Features</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'base' %>
+  <%= javascript_include_merged 'shared-common-all' %>
+<% end %>

@@ -1,0 +1,11 @@
+<ul class='tabList'>
+  <li class='even<%= active == 'index' ? ' active' : '' %>'><div class='wrapper'>
+    <%= link_to 'Administration', :action => :index %>
+  </div></li>
+  <li class='even<%= active == 'users' ? ' active' : '' %>'><div class='wrapper'>
+    <%= link_to 'Users', :action => :users %>
+  </div></li>
+  <!--<li class='even<%= active == 'features' ? ' active' : '' %>'><div class='wrapper'>
+    <%= link_to 'Features', :action => :features %>
+  </div></li> -->
+</ul>

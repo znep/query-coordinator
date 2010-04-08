@@ -124,14 +124,14 @@ class CommunitiesController < ApplicationController
 
 private
   def parse_opts(params)
-    sort_by = params[:sort_by]
+    sort_by = params[:sort_by] || 'ACTIVITY'
     is_asc = false
     case params[:sort_by]
     when "ALPHA"
       is_asc = true
     when "ALPHA_DESC"
       sort_by = "ALPHA"
-    end 
+    end
 
     opts = {:page => (params[:page].present? ? params[:page].to_i : 1), :limit => PAGE_SIZE}
     tag_opts = { :method => "usersTags", :limit => 5 }

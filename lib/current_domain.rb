@@ -104,6 +104,10 @@ class CurrentDomain
     return self.properties.strings || Hashie::Mash.new
   end
 
+  def self.features
+    return @@current_domain[:data].features || Hashie::Mash.new
+  end
+
   def self.modules
     if @@current_domain[:modules].nil?
       @@current_domain[:modules] = ((@@current_domain[:data].data['accountModules'] || []) +
@@ -187,7 +191,7 @@ class CurrentDomain
     if user.nil?
       false
     else
-      user.has_role? 'admin'
+      user.has_role? 'administrator'
     end
   end
 end

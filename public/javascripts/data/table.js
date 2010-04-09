@@ -2211,6 +2211,9 @@
                 $render.css('top', adjTop);
                 $lockedRender.css('top', adjTop);
             }
+            // Force a scroll update since IE won't fire it if the div changed
+            // size (shortened), which would cause locked to misalign
+            $scrolls.scroll();
             end("updateLayout.size");
 
             begin("updateLayout.render");

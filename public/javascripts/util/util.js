@@ -176,3 +176,10 @@ $.keys = function(obj)
     $.each(obj, function(k, v) { keys.push(k); });
     return keys;
 };
+
+$.objSelect = function(obj, filterFn)
+{
+    var acc = {};
+    _.each(obj, function(v, k) { if (filterFn(v, k)) { acc[k] = v; } });
+    return acc;
+};

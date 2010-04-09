@@ -202,7 +202,7 @@ blist.namespace.fetch('blist.data');
                 activeLookup = {};
                 _.each(active, function(row, i)
                 {
-                    id = row.id || (row.id = row[0]);
+                    var id = row.id || (row.id = row[0]);
                     activeLookup[id] = i;
                 });
             }
@@ -2800,8 +2800,10 @@ blist.namespace.fetch('blist.data');
             if (orderFn) { toSort.sort(orderFn); }
             else { toSort.sort(); }
 
+            var activeIsRows = active == rows;
             // Update the original object
             active = {};
+            if (activeIsRows) { rows = active; }
             for (i = 0; i < toSort.length; i++)
             { active[i] = orderPrepro !== undefined ? toSort[i][1] : toSort[i]; }
 
@@ -3354,8 +3356,11 @@ blist.namespace.fetch('blist.data');
             }
 
             // Perform the actual filter
-            active = _.select(toFilter || rows, filterFn);
-            activeCount = _.size(active);
+            var filteredArray = _.sortBy($.objSelect(toFilter || rows, filterFn),
+                function(v, k) { return k; });
+            activeCount = filteredArray.length;
+            active = {};
+            _.each(filteredArray, function(r, i) { active[i] = r; });
             $(listeners).trigger('client_filter');
         };
 

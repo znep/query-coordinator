@@ -9,7 +9,7 @@ class StatsController < ApplicationController
     @dataset = View.find(params[:id])
     @show_search_form = false
 
-    if (!current_user.is_domain_publisher? || !CurrentDomain.module_available?(:advanced_metrics))
+    if (!current_user || !current_user.is_domain_publisher? || !CurrentDomain.module_available?(:advanced_metrics))
       # Current user is not a member of the org or the org doesn't have metrics
       return upsell_or_404
     end

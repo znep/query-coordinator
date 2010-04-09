@@ -68,7 +68,7 @@ module ApplicationHelper
         (i.has_key?('submenu') && (i['submenu'].nil? ||
                                    i['submenu']['items'].nil? ||
                                    i['submenu']['items'].length < 1)) ||
-        (i['user_in_domain'] && !(current_user.is_domain_member?))
+        (i['user_in_domain'] && !(current_user && current_user.is_domain_member?))
         next
       end
 

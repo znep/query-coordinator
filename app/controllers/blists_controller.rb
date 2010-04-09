@@ -191,7 +191,7 @@ class BlistsController < ApplicationController
       return require_user(true)
     end
 
-    unless current_user.is_domain_publisher? && CurrentDomain.module_available?(:sdp_customizer)
+    unless current_user && current_user.is_domain_publisher? && CurrentDomain.module_available?(:sdp_customizer)
       # Not a member of the org or the org doesn't have SDP customization
       return upsell_or_404
     end
@@ -395,7 +395,7 @@ class BlistsController < ApplicationController
   end
 
   def new
-    if (!current_user.is_domain_editor? && !CurrentDomain.module_enabled?(:community_creation))
+    if !current_user || (!current_user.is_domain_editor? && !CurrentDomain.module_enabled?(:community_creation))
       # User doesn't have access to create new datasets
       return upsell_or_404
     end
@@ -407,7 +407,7 @@ class BlistsController < ApplicationController
   end
 
   def upload
-    if (!current_user.is_domain_editor? && !CurrentDomain.module_enabled?(:community_creation))
+    if !current_user || (!current_user.is_domain_editor? && !CurrentDomain.module_enabled?(:community_creation))
       # User doesn't have access to create new datasets
       return upsell_or_404
     end

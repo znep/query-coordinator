@@ -163,27 +163,6 @@ class User < Model
     self.roles && self.roles.include?(role)
   end
 
-  def is_domain_editor?
-    self.has_role? 'editor'
-  end
-
-  def is_domain_publisher?
-    self.has_role? 'publisher'
-  end
-
-  def is_domain_designer?
-    self.has_role? 'designer'
-  end
-
-  def is_domain_admin?
-    self.has_role? 'administrator'
-  end
-
-  def is_domain_member?
-    self.roles && self.roles.size > 0
-  end
-
-
   @@states = {
                 '--' => '------',
                 'AK' => 'Alaska',

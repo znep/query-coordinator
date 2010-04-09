@@ -252,8 +252,7 @@ module BlistsHelper
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Form', 'href' => "#{view.href}/form",
-      'if' => !view.is_grouped? && current_user &&
-               current_user.is_domain_publisher? &&
+      'if' => !view.is_grouped? && CurrentDomain.publisher?(current_user) &&
                module_available?(:form_publish) &&
                view.owned_by?(@current_user) &&
                view.parent_dataset.owned_by?(@current_user),
@@ -261,8 +260,7 @@ module BlistsHelper
       'title' => (view.can_add_form? ? '' :
         'This dataset does not have any visible columns')},
       {'text' => 'Map', 'href' => "#{view.href}/map",
-      'if' => !view.is_grouped? && current_user &&
-               current_user.is_domain_editor? &&
+      'if' => !view.is_grouped? && CurrentDomain.editor?(current_user) &&
                module_available?(:map_publish),
       'class' => 'map' + (view.can_add_map? ? '' : ' disabled'),
       'title' => (view.can_add_map? ? '' :
@@ -324,7 +322,7 @@ module BlistsHelper
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Create a Form View...', 'href' => "#{view.href}/form",
       'if' => !view.is_alt_view? && !view.is_grouped? &&
-        (current_user && current_user.is_domain_publisher? && module_available?(:form_publish) &&
+        (CurrentDomain.publisher?(current_user) && module_available?(:form_publish) &&
          view.owned_by?(@current_user) &&
          view.parent_dataset.owned_by?(@current_user)),
       'user_required' => true, 'class' => 'form mainViewOption' +
@@ -333,7 +331,7 @@ module BlistsHelper
         'This dataset does not have any visible columns')},
       {'text' => 'Create a Map...', 'href' => "#{view.href}/map",
       'if' => !view.is_alt_view? && !view.is_grouped? &&
-        current_user && current_user.is_domain_editor? && module_available?(:map_publish),
+        CurrentDomain.editor?(current_user) && module_available?(:map_publish),
       'user_required' => true, 'class' => 'map mainViewOption' +
         (view.can_add_map? ? '' : ' disabled'),
       'title' => (view.can_add_map? ? '' :

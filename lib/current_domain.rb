@@ -155,7 +155,39 @@ class CurrentDomain
     if user.nil?
       false
     else
-      self.organizationId == user.organizationId
+      user.roles && user.roles.size > 0
+    end
+  end
+
+  def self.editor?(user)
+    if user.nil?
+      false
+    else
+      user.has_role? 'editor'
+    end
+  end
+
+  def self.publisher?(user)
+    if user.nil?
+      false
+    else
+      user.has_role? 'publisher'
+    end
+  end
+
+  def self.designer?(user)
+    if user.nil?
+      false
+    else
+      user.has_role? 'designer'
+    end
+  end
+
+  def self.admin?(user)
+    if user.nil?
+      false
+    else
+      user.has_role? 'admin'
     end
   end
 end

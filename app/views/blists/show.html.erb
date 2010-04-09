@@ -21,8 +21,7 @@
 <div class="scrollContentColumn <%= @view.is_invalid? ? 'invalidView' : '' %>">
   <div id='lensContainer' class='mainContent'>
     <ul class='tabList'>
-      <%- if (current_user && current_user.is_domain_member? ||
-          (current_user && module_enabled?(:community_creation))) -%>
+      <%- if (module_enabled?(:community_creation) || CurrentDomain.member?(current_user)) -%>
         <li class='backLink'><a title='Back to <%= t :blists_name %>'
           href='<%= blists_path() %>'>Back to <%= t :blists_name %></a></li>
       <%- end -%>

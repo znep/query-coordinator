@@ -120,7 +120,7 @@
 
     <%- if @view.display.can_advanced_publish? -%>
     <%# Only members of the same org can access the premium publisher %>
-    <%- if (current_user && current_user.is_domain_publisher? &&
+    <%- if (CurrentDomain.publisher?(current_user) &&
       module_available?(:sdp_customizer)) -%>
       <ul class="headerActions actionButtons">
         <li>

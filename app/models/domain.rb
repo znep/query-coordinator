@@ -1,4 +1,7 @@
 class Domain < Model
+  cattr_accessor :themeable_items, :configurable_strings, 
+    :configurable_features, :flippable_modules, :comment_modules
+
   def self.find(cname)
     # We don't know our cname yet, so we need to pass it in to connection.rb
     # manually
@@ -51,4 +54,19 @@ class Domain < Model
     end
   end
 
+  # Customer-available per-domain configuration options
+  @@themeable_items =
+    ['urls.footer', 'urls.header']
+
+  @@configurable_features = 
+    ['show_tags', 'show_categories', 'emails.from_address']
+
+  @@flippable_modules =
+    ['discovery_module', 'community_module', 'community_creation']
+  
+  @@comment_modules = 
+    ['community_comment_moderation', 'publisher_comment_moderation']
+
+  @@configurable_strings =
+    ['company', 'copyright_string', 'site_title']
 end

@@ -52,6 +52,14 @@ class CurrentDomain
   def self.organizationId
     @@current_domain[:data].organizationId
   end
+  
+  def self.preferences_out_of_date?
+    @@current_domain[:out_of_date] || false
+  end
+  
+  def self.flag_preferences_out_of_date!
+    @@current_domain[:out_of_date] = true
+  end
 
   def self.default_widget_customization
     # Return empty if the current domain doesn't have the customizer

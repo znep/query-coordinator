@@ -1,0 +1,4 @@
+<%- if session[:domain_configuration_updated] -%>
+  <div class='refreshThemeLink'>The site's configuration has been updated.
+    To publish these changes, click <%= link_to 'refresh', :action => :reload %>.</div>
+<%- end -%>

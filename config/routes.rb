@@ -79,7 +79,9 @@ ActionController::Routing::Routes.draw do |map|
   map.connect '/admin/users/:id', :controller => 'admin', :action => 'users'
   map.connect '/admin/save_user/:id', :controller => 'admin', :action => 'save_user_role'
   map.connect '/admin/reload', :controller => 'admin', :action => 'reload'
-  map.connect '/admin/features', :controller => 'admin', :action => 'features'
+  map.connect '/admin/configuration', :controller => 'admin', :action => 'config'
+  map.connect '/admin/configuration/update', :controller => 'admin', :action => 'update_config'
+  map.connect '/admin/theme', :controller => 'admin', :action => 'theme'
   
 
   map.resources :contacts,

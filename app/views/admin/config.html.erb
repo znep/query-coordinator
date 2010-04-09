@@ -23,51 +23,47 @@
                 <%- @features.each do |feature| -%>
                   <%= hidden_field_tag 'features[name[' + feature[0] + ']]',
                     feature[0] %>
-                  <span class='configureRow <%= cycle('even', 'odd') %>'>
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
                     <span class='titleCell'><%= feature[0].humanize %></span>
-                    <span class='secondCell'>
+                    <span class='settingsCell'>
                     <%= check_box_tag 'features[enabled[' + feature[0] + ']]',
                       'enabled', feature[1] %></span>
-                  </span>
+                  </div>
                 <%- end -%>
             
                 <h2>Modules</h2>
                 <%- @modules.each do |mod| -%>
-                  <%= hidden_field_tag 'modules[name[' + mod[0] + ']]',
-                    mod[0] %>
-                  <span class='configureRow <%= cycle('even', 'odd') %>'>
-                    <span class='titleCell'><%= mod[0].humanize %></span>
-                    <span class='secondCell'><%= check_box_tag 'modules[enabled[' + mod[0] +']]',
-                      'enabled', mod[2] %></span>
-                    <span class='descriptionCell'><%= mod[1] %></span>
-                  </span>
+                  <%= hidden_field_tag 'modules[name[' + mod[:name] + ']]',
+                    mod[:name] %>
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
+                    <span class='titleCell'><%= mod[:name].humanize %></span>
+                    <span class='settingsCell'><%= check_box_tag 'modules[enabled[' + mod[:name] +']]',
+                      'enabled', mod[:enabled] %></span>
+                    <span class='descriptionCell'><%= mod[:description] %></span>
+                  </div>
                 <%- end -%>
-                  <span class='configureRow <%= cycle('even', 'odd') %>'>
+
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
                     <span class='titleCell'>Comments</span>
-                    <span class='secondCell'>
+                    <span class='settingsCell'>
                       <select name='comments'>
                         <%- @comment_modules.each do |comment| -%>
-                          <option value='<%= comment[0] %>'<%= "selected='selected'" if comment[2] %>>
-                          <%= comment[1] %></option>
+                          <option value='<%= comment[:name] %>'<%= "selected='selected'" if comment[:enabled] %>>
+                          <%= comment[:description] %></option>
                         <%- end -%>
-                        <!--
-                        <option value='0'>Disable comments</option>
-                        <option value='community_comment_moderation'>Community moderated</option>
-                        
-                        <option value='publisher_comment_moderation'>Publisher moderated comments only</option>-->
                       </select>
                     </span>
                     <span class='descriptionCell'>Level of moderation for comments</span>
-                  </span>
+                  </div>
             
             
                 <h2>Strings</h2>
                 <%- @strings.each do |string| -%>
-                  <span class='configureRow <%= cycle('even', 'odd') %>'>
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
                     <span class='titleCell'><%= string[0].humanize %></span>
-                    <span class='secondCell'>
+                    <span class='settingsCell'>
                       <%= text_field_tag "strings[#{string[0]}]", h(string[1]) %></span>
-                  </span>
+                  </div>
                 <%- end -%>
                 <input class='saveButton' type='submit' value='Update' />
               <% end %>

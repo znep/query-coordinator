@@ -29,18 +29,19 @@ class AdminController < ApplicationController
         :enabled => CurrentDomain.features['allow_comments'] == false)
 
     @strings = CurrentDomain.strings.select { |k,v| Domain.configurable_strings.include?(k) }
-
   end
 
   def update_config
-    feature_set = Configuration.find_by_type('feature_set', true, request.host)[0]
-    configuration = Configuration.find_by_type('site_theme', true, request.host)[0]
+    feature_set   = Configuration.find_by_type('feature_set', true, request.host, false)[0]
+    configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
 
     # Wrap it in one big, cuddly batch request
     CoreServer::Base.connection.batch_request do
       params[:strings].each do |name, value|
         if(Domain.configurable_strings.include?(name))
-          configuration.update_property("strings.#{name}", value)
+          update_or_create_property(configuration, "strings.#{name}", value) do
+            configuration.properties.strings[name].nil?
+          end
         end
       end
 
@@ -63,10 +64,8 @@ class AdminController < ApplicationController
 
       comment_config.each do |name, value|
         if CurrentDomain.modules.any? { |m| m['name'] == name }
-          if feature_set.properties[name].nil?
-            feature_set.create_property(name,value)
-          else
-            feature_set.update_property(name,value)
+          update_or_create_property(feature_set, name, value) do
+            feature_set.properties[name].nil?
           end
         end
       end
@@ -78,6 +77,9 @@ class AdminController < ApplicationController
 
   def theme
     session[:return_to] = url_for(:action => :theme)
+    configuration = Configuration.find_by_type('site_theme', true, request.host)[0]
+    theme = configuration.properties['theme']
+
   end
 
   def users
@@ -137,12 +139,22 @@ private
   def find_privileged_users(level=1)
     User.find :method => 'usersWithRole', :role => level
   end
+
+  def update_or_create_property(configuration, name, value)
+    if (yield)
+      configuration.create_property(name,value)
+    else
+      configuration.update_property(name,value)
+    end
+  end
   
   def update_config_from_form(config, whitelist, form_values, enabled='enabled')
-    form_values[:name].each do |name, value|
-      if(whitelist.include?(name))
-        config.update_property(name, form_values[:enabled] && 
-          form_values[:enabled][name] == enabled)
+    if form_values
+      form_values[:name].each do |name, value|
+        if(whitelist.include?(name))
+          config.update_property(name, form_values[:enabled] &&
+            form_values[:enabled][name] == enabled)
+        end
       end
     end
   end

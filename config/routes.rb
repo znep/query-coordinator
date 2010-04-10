@@ -31,6 +31,9 @@ ActionController::Routing::Routes.draw do |map|
   #   end
   UID_REGEXP = /\w{4}-\w{4}/
 
+  map.connect '/styles/individual/:stylesheet', :controller => 'styles', :action => 'individual'
+  map.connect '/styles/merged/:stylesheet', :controller => 'styles', :action => 'merged'
+
   map.connect '/internal', :controller => 'internal', :action => 'index'
   map.connect '/internal/orgs', :controller => 'internal', :action => 'create_org',
     :conditions => { :method => :post }

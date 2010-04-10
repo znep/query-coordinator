@@ -116,6 +116,10 @@ class CurrentDomain
     @@current_domain[:module_names] ||= self.modules.collect{|m| m['name']}
   end
 
+  def self.default_config_id
+    return @@current_domain[:data].default_configuration('site_theme').id
+  end
+
   def self.module_available?(name_or_set)
     return false if self.modules.nil?
 

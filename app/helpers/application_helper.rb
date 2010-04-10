@@ -492,7 +492,20 @@ HREF
     return tmpl
   end
 
+  def rendered_stylesheet_tag(stylesheet)
+    if RAILS_ENV == 'development'
+      return STYLE_PACKAGES[stylesheet.to_s].
+        map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"screen\"" +
+                   " href=\"/styles/individual/#{req}\"/>" }.
+        join("\n")
+    else
+      return "<link type=\"text/css\" rel=\"stylesheet\" media=\"screen\"" +
+             " href=\"/styles/merged/#{stylesheet.to_s}?" +
+             "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>"
+    end
+  end
+
   safe_helper :menu_tag, :meta_tags, :jquery_include, :javascript_error_helper_tag,
     :create_pagination, :sidebar_filter_link, :flash_clipboard_button, :summary_tab,
-    :render_domain_template
+    :render_domain_template, :rendered_stylesheet_tag
 end

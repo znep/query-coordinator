@@ -124,7 +124,8 @@ class CommunitiesController < ApplicationController
 
 private
   def parse_opts(params)
-    sort_by = params[:sort_by] || 'ACTIVITY'
+    sort_by = params[:sort_by]
+    sort_by ||= 'ACTIVITY' unless params[:type] == 'search'
     is_asc = false
     case params[:sort_by]
     when "ALPHA"

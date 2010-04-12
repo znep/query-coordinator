@@ -1,7 +1,7 @@
 class Configuration < Model
-  def self.find_by_type(type, default_only = false, cname = nil)
+  def self.find_by_type(type, default_only = false, cname = nil, merge = true)
     path = "/#{self.name.pluralize.downcase}.json?type=#{type}&" +
-      "defaultOnly=#{default_only.to_s}"
+      "defaultOnly=#{default_only.to_s}&merge=#{merge}"
     headers = cname.nil? ? {} : { "X-Socrata-Host" => cname }
     parse(CoreServer::Base.connection.get_request(path, headers))
   end
@@ -34,27 +34,15 @@ class Configuration < Model
       create_request(url, {'name' => name, 'value' => value}.to_json)
   end
 
-  def update_property(name, value, is_internal = false)
-    # HACK: The is_internal flag is used to allow as many requests in one
-    # page load as we want.  Only use this if it really is used on an internal
-    # page that only employees will use
-    headers = {}
-    headers['Internal-Skip-Request-Count'] = true if is_internal
-
+  def update_property(name, value)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{name}.json"
     CoreServer::Base.connection.
-      update_request(url, {'name' => name, 'value' => value}.to_json, headers)
+      update_request(url, {'name' => name, 'value' => value}.to_json)
   end
 
   def delete_property(name, is_internal = false)
-    # HACK: The is_internal flag is used to allow as many requests in one
-    # page load as we want.  Only use this if it really is used on an internal
-    # page that only employees will use
-    headers = {}
-    headers['Internal-Skip-Request-Count'] = true if is_internal
-
     url = "/#{self.class.name.pluralize.downcase}/#{id}/properties/#{name}.json"
     CoreServer::Base.connection.
-      delete_request(url, '', headers)
+      delete_request(url, '')
   end
 end

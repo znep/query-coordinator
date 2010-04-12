@@ -1,0 +1,82 @@
+<% content_for :head do %>
+<%= stylesheet_link_merged 'admin-shared' %>
+<title>Administration Panel | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="publishContent" class="oneColumnContainer tabContainer">
+  <%= render :partial => 'tabs', :locals => {:active => 'config'} %>
+  <div class="fullPageContentContainer fullPageWithTabs">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class='outerContent'>
+          <div class='contentTR'><div class='contentTL'></div></div>
+          <div class='content' id='adminContent'>
+            <%= render :partial => 'refresh_theme_link' =%>
+            <h1>Site Configuration</h1>
+
+            <%- if flash[:notice] -%>
+              <p class='userSaved'><%= flash[:notice].inspect %></p>
+            <%- end -%>
+            <div class='configurationContent'>
+              <h2>Features</h2>
+              <% form_tag :action => 'update_config' do %>
+                <%- @features.each do |feature| -%>
+                  <%= hidden_field_tag 'features[name[' + feature[0] + ']]',
+                    feature[0] %>
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
+                    <span class='titleCell'><%= feature[0].humanize %></span>
+                    <span class='settingsCell'>
+                    <%= check_box_tag 'features[enabled[' + feature[0] + ']]',
+                      'enabled', feature[1] %></span>
+                  </div>
+                <%- end -%>
+            
+                <h2>Modules</h2>
+                <%- @modules.each do |mod| -%>
+                  <%= hidden_field_tag 'modules[name[' + mod[:name] + ']]',
+                    mod[:name] %>
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
+                    <span class='titleCell'><%= mod[:name].humanize %></span>
+                    <span class='settingsCell'><%= check_box_tag 'modules[enabled[' + mod[:name] +']]',
+                      'enabled', mod[:enabled] %></span>
+                    <span class='descriptionCell'><%= mod[:description] %></span>
+                  </div>
+                <%- end -%>
+
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
+                    <span class='titleCell'>Comments</span>
+                    <span class='settingsCell'>
+                      <select name='comments'>
+                        <%- @comment_modules.each do |comment| -%>
+                          <option value='<%= comment[:name] %>'<%= "selected='selected'" if comment[:enabled] %>>
+                          <%= comment[:description] %></option>
+                        <%- end -%>
+                      </select>
+                    </span>
+                    <span class='descriptionCell'>Level of moderation for comments</span>
+                  </div>
+            
+            
+                <h2>Strings</h2>
+                <%- @strings.each do |string| -%>
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
+                    <span class='titleCell'><%= string[0].humanize %></span>
+                    <span class='settingsCell'>
+                      <%= text_field_tag "strings[#{string[0]}]", h(string[1]) %></span>
+                  </div>
+                <%- end -%>
+                <input class='saveButton' type='submit' value='Update' />
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'base' %>
+  <%= javascript_include_merged 'shared-common-all' %>
+<% end %>

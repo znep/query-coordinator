@@ -35,8 +35,7 @@
 
             <%- when 'url' -%>
             <%- url = cell[column.sub_type_index('url')] -%>
-            <%- if (!url.blank? && url.index('/') != 0 &&
-              URI.parse(url).scheme.nil?) -%>
+            <%- if (!url.blank? && url.index('/') != 0 && !url.match(/^([a-z]+):/i)) -%>
               <%- url = 'http://' + url -%>
             <%- end -%>
             <%- desc = cell[column.sub_type_index('description')] || url -%>

@@ -52,6 +52,14 @@ class CurrentDomain
   def self.organizationId
     @@current_domain[:data].organizationId
   end
+  
+  def self.preferences_out_of_date?
+    @@current_domain[:out_of_date] || false
+  end
+  
+  def self.flag_preferences_out_of_date!
+    @@current_domain[:out_of_date] = true
+  end
 
   def self.default_widget_customization
     # Return empty if the current domain doesn't have the customizer
@@ -102,6 +110,10 @@ class CurrentDomain
 
   def self.strings
     return self.properties.strings || Hashie::Mash.new
+  end
+
+  def self.features
+    return @@current_domain[:data].features || Hashie::Mash.new
   end
 
   def self.modules
@@ -187,7 +199,7 @@ class CurrentDomain
     if user.nil?
       false
     else
-      user.has_role? 'admin'
+      user.has_role? 'administrator'
     end
   end
 end

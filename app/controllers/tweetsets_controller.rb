@@ -10,6 +10,7 @@ class TweetsetsController < ApplicationController
         v.tags.any? {|t| t.data == 'tweetset'} && v.is_public? }.sort{|a, b| b.createdAt <=> a.createdAt}
     rescue => ex
       notify_hoptoad :error_message => "Error searching for tweetets: No user with id #{tweetset_user} exists."
+      return
     end
     # Look for sets tagged 'example' to show up on the front page
     example_sets = @recent_sets.select{|v| v.tags.any? {|t| t.data == 'example'}}

@@ -106,8 +106,8 @@
             <%# Table view options %>
             <%- if is_owner && is_blist -%>
             <li class='separator mainViewOption'>
-            <a href='#' class='addColumnsLink staticLink'>
-                <span class='linkIcon'>Add Column</span>
+            <a href="/datasets/<%= @view.id %>/columns/new" rel="modal" class='addColumnsLink staticLink'>
+              <span class='linkIcon'>Add Column</span>
             </a>
             </li>
             <%- end -%>
@@ -272,62 +272,6 @@
           <div class='disabledOverlay'></div>
           <div class='disabledText'>
             Formatting is not yet available for this type of column
-          </div>
-        </div>
-        <%- end -%>
-
-        <%- if is_owner && @view.is_blist? -%>
-        <div id='addColumnsMenu' class='fixedMenu'>
-          <div class='outerWrapper'>
-            <ul class='innerWrapper clearfix'>
-              <li class='column'>
-              <%# Text datatypes %>
-                <ul>
-                    <li><%= get_add_column("Plain Text", @view.id, "text") %></li>
-                    <li><%= get_add_column("Formatted Text", @view.id, "richtext") %></li>
-                </ul>
-              </li>
-              <li class='column'>
-              <%# Numeric datatypes %>
-                <ul>
-                    <li><%= get_add_column("Number", @view.id, "number") %></li>
-                    <li><%= get_add_column("Money", @view.id, "money") %></li>
-                    <li><%= get_add_column("Percent", @view.id, "percent") %></li>
-                    <li><%= get_add_column("Date &amp; Time", @view.id, "date") %></li>
-                </ul>
-              </li>
-              <li class='column'>
-              <%# Address datatypes %>
-                <ul>
-                    <li><%= get_add_column("Phone", @view.id, "phone") %></li>
-                    <li><%= get_add_column("Email", @view.id, "email") %></li>
-                    <li><%= get_add_column("Website URL", @view.id, "url") %></li>
-                </ul>
-              </li>
-              <li class='column'>
-              <%# Chooser/explicit pick options datatypes %>
-                <ul>
-                    <li><%= get_add_column("Checkbox", @view.id, "checkbox") %></li>
-                    <li><%= get_add_column("Star", @view.id, "stars") %></li>
-                    <li><%= get_add_column("Flag", @view.id, "flag") %></li>
-                </ul>
-              </li>
-              <li class='column'>
-              <%# Blob datatypes %>
-                <ul>
-                    <li><%= get_add_column("Document", @view.id, "document") %></li>
-                    <li><%= get_add_column("Photo (Image)", @view.id, "photo") %></li>
-                </ul>
-              </li>
-              <li class='column last'>
-              <%# Complex/join datatypes %>
-                <ul>
-                  <li><%= get_add_column("Multiple Choice", @view.id, "drop_down_list") %></li>
-                  <li><%= get_add_column("Nested Table", @view.id, "nested_table") %></li>
-                </ul>
-              </li>
-            </ul>
-            <a href='#Close_Add_Columns' title='Close' class='close'>Close</a>
           </div>
         </div>
         <%- end -%>

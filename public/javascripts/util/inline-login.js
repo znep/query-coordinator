@@ -27,7 +27,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                                 .val('')
                                 .removeClass('error').end()
                             .find(':checked').attr('checked', false).end()
-                            .find('label.error').remove();
+                            .find('form').validate().resetForm();
                     }, 0);
                 }).end()
             .find('form').unbind('keyup.inlineLogin')

@@ -417,12 +417,6 @@ $(function ()
         { window.location = $('.tabList .main a:first').attr('href'); }
     });
 
-    $('.addColumnsLink, #addColumnsMenu .close').click(function (event)
-    {
-        event.preventDefault();
-        blistGridNS.toggleAddColumns();
-    });
-
     $('#formatLink, #formatMenu .close').click(function (event)
     {
         event.preventDefault();

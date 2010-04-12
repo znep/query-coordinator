@@ -24,8 +24,7 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                         $('#signup').jqmShow()
                             .find(':text:first').focus().end()
                             .find(':input')
-                                .val('')
-                                .removeClass('error').end()
+                                .val('').end()
                             .find(':checked').attr('checked', false).end()
                             .find('form').validate().resetForm();
                     }, 0);

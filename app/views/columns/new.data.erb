@@ -9,6 +9,17 @@
         <table cellspacing="0">
           <tbody>
             <tr>
+              <td colspan="2"><h3 class="separator">Type of Column</h3></td>
+            </tr>
+            <tr>
+              <td class="labelColumn"><label for="type">Type:</label></td>
+              <td class="fieldColumn">
+                <div class="blist-combo-wrapper lr_justified format_date_view">
+                  <div id="types" class="types"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
               <td colspan="2"><h3 class="separator">Column Details</h3></td>
             </tr>
             <tr>
@@ -29,17 +40,6 @@
                 <%= text_area_tag("description", @column.description,
                 :class => "textPrompt prompt", :title => "Enter a description",
                 :id => "description") %>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2"><h3 class="separator">Type of Column</h3></td>
-            </tr>
-            <tr>
-              <td class="labelColumn"><label for="type">Type:</label></td>
-              <td class="fieldColumn">
-                <div class="blist-combo-wrapper lr_justified format_date_view">
-                  <div id="types" class="types"></div>
-                </div>
               </td>
             </tr>
           </tbody>

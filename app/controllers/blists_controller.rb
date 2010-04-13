@@ -420,7 +420,6 @@ class BlistsController < ApplicationController
   end
 
   def upload_alt
-    
   end
 
   def create
@@ -534,10 +533,12 @@ class BlistsController < ApplicationController
 
   def append
     @view = View.find(params[:id])
+    @error_type = @view.columns.any?{ |column| column.client_type.match(/(document|photo|nested_table)/) }
   end
 
   def replace
     @view = View.find(params[:id])
+    @error_type = @view.columns.any?{ |column| column.client_type.match(/(document|photo|nested_table)/) }
   end
 
   def share

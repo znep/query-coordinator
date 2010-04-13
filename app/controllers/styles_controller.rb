@@ -16,16 +16,24 @@ class StylesController < ApplicationController
   end
 
   def merged
-    includes = get_includes
-
     if STYLE_PACKAGES[params[:stylesheet]].present?
-      sheets = STYLE_PACKAGES[params[:stylesheet]].map{ |sheet|
-                 File.read("#{Rails.root}/app/styles/#{sheet}.sass") }.join("\n")
+      cache_key = "#{CurrentDomain.cname}.#{params[:stylesheet]}.#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}"
+      cached = Rails.cache.read(cache_key)
 
-      render :text => Sass::Engine.new(includes + sheets,
-                                       :style => :compressed,
-                                       :cache => false,
-                                       :load_paths => "#{Rails.root}/app/styles").render
+      if cached.nil?
+        includes = get_includes
+        sheets = STYLE_PACKAGES[params[:stylesheet]].map{ |sheet|
+                   File.read("#{Rails.root}/app/styles/#{sheet}.sass") }.join("\n")
+
+        rendered_styles = Sass::Engine.new(includes + sheets,
+                                           :style => :compressed,
+                                           :cache => false,
+                                           :load_paths => "#{Rails.root}/app/styles").render
+        Rails.cache.write(cache_key, rendered_styles)
+        render :text => rendered_styles
+      else
+        render :text => cached
+      end
     else
       render_404
     end

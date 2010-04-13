@@ -264,13 +264,21 @@
                             'must be between -180 and 180');
                 }
 
+
                 if (addedMarkers)
-                { mapObj.adjustBounds(); }
+                { mapObj.pointsRendered(); }
             },
 
             renderPoint: function(latVal, longVal, title, info, rowId)
             {
                 // Implement me
+            },
+
+            pointsRendered: function()
+            {
+                // Override if you wish to do something other than adjusting the
+                // map to fit the points
+                mapObj.adjustBounds();
             },
 
             adjustBounds: function()

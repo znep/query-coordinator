@@ -12,8 +12,9 @@
     {
         defaults:
         {
-            defaultLayers: [{type:'tile', url:'http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer'}],
-            defaultZoom: 11
+            defaultLayers: [{type:'tile', url:'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer'}],
+            defaultZoom: 11,
+            taskMax: 10
         },
 
         prototype:
@@ -24,6 +25,7 @@
                 mapObj.$dom().addClass('tundra');
 
                 dojo.require("esri.map");
+                dojo.require('esri.tasks.geometry');
                 // Apparently dojo is not loaded at the same time jQuery is; so
                 // while this plugin isn't called until jQuery onLoad, we still need
                 // to attach to dojo's onLoad or we get failures in WebKit
@@ -45,6 +47,8 @@
                         if (mapObj._dataLoaded)
                         { mapObj.renderData(mapObj._rows); }
                     });
+
+                    mapObj._geoService = new esri.tasks.GeometryService('http://tasks.arcgisonline.com/ArcGIS/rest/services/Geometry/GeometryServer');
 
                     var layers = mapObj._displayConfig.layers ||
                         mapObj.settings.defaultLayers;
@@ -159,15 +163,53 @@
                 // Create the map symbol
                 var symbol = getESRIMapSymbol(mapObj);
 
+                mapObj._toProject = mapObj._toProject || [];
                 var point = new esri.geometry.Point(longVal, latVal,
-                        mapObj.map.spatialReference);
+                        new esri.SpatialReference({wkid: 4326}));
                 var hasContent = title !== null || info !== null;
-                mapObj.map.graphics.add(new esri.Graphic(point, symbol,
-                    { title: title, body : info },
-                    hasContent ? new esri.InfoTemplate("${title}", "${body}") : null
-                ));
+                mapObj._toProject.push(new esri.Graphic(point, symbol,
+                    { title: title, body : info }));
+            },
 
-                if (!mapObj._extentSet) { this._multipoint.addPoint(point); }
+            pointsRendered: function()
+            {
+                var mapObj = this;
+                if (_.isUndefined(mapObj._toProject)) { return; }
+
+                var curToProject = mapObj._toProject;
+                delete mapObj._toProject;
+                var totalLength = curToProject.length;
+                var projectedCount = 0;
+
+                var projectFunc = function(graphics)
+                {
+                    projectedCount += graphics.length;
+                    _.each(graphics, function(g)
+                    {
+                        if (g.attributes.title !== null ||
+                            g.attributes.body !== null)
+                        { g.setInfoTemplate(
+                            new esri.InfoTemplate("${title}", "${body}")); }
+                        mapObj.map.graphics.add(g);
+                        if (!mapObj._extentSet)
+                        { mapObj._multipoint.addPoint(g.geometry); }
+                    });
+                    if (projectedCount >= totalLength)
+                    { mapObj.adjustBounds(); }
+                };
+
+                while (curToProject.length > 0)
+                {
+                    var reqProject =
+                        curToProject.splice(0, mapObj.settings.taskMax);
+                    if (mapObj.map.spatialReference.wkid !=
+                        reqProject[0].geometry.spatialReference.wkid)
+                    {
+                        mapObj._geoService.project(reqProject,
+                            mapObj.map.spatialReference, projectFunc);
+                    }
+                    else { projectFunc(reqProject); }
+                }
             },
 
             adjustBounds: function()

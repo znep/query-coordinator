@@ -9,6 +9,17 @@
         <table cellspacing="0">
           <tbody>
             <tr>
+              <td colspan="2"><h3 class="separator">Type of Column</h3></td>
+            </tr>
+            <tr>
+              <td class="labelColumn"><label for="type">Type:</label></td>
+              <td class="fieldColumn">
+                <div class="blist-combo-wrapper lr_justified format_date_view">
+                  <div id="types" class="types"></div>
+                </div>
+              </td>
+            </tr>
+            <tr>
               <td colspan="2"><h3 class="separator">Column Details</h3></td>
             </tr>
             <tr>
@@ -31,17 +42,6 @@
                 :id => "description") %>
               </td>
             </tr>
-            <tr>
-              <td colspan="2"><h3 class="separator">Type of Column</h3></td>
-            </tr>
-            <tr>
-              <td class="labelColumn"><label for="type">Type:</label></td>
-              <td class="fieldColumn">
-                <div class="blist-combo-wrapper lr_justified format_date_view">
-                  <div id="types" class="types"></div>
-                </div>
-              </td>
-            </tr>
           </tbody>
         </table>
         <%= render(:partial => 'picklist_manager')%>
@@ -55,6 +55,7 @@
     <div class="required">Required Field</div>
     <ul class='actionButtons clearfix'>
       <li><a href='#' class='save arrowButton'>Save</a></li>
+      <li><a class="jqmClose" href="#cancel">Cancel</a></li>
     </ul>
   </div>
 </div>

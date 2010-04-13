@@ -195,7 +195,7 @@
           <h3>About Me</h3>
           <div class="descriptionContent sectionContainer">
             <div class="sectionShow">
-              <p class="descriptionText"><%= @user.htmlDescription %></p>
+              <p class="descriptionText"><%= raw auto_link(@user.htmlDescription, :html => { :rel => 'nofollow' }) %></p>
               <%- if (@is_user_current) -%>
                 <p class="editContainer">
                   <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>
@@ -230,11 +230,11 @@
               </div>
             <%- end -%>
           </div>
-          
+
           <h3>Interests</h3>
           <div class="interestsContent sectionContainer">
             <div class="sectionShow">
-              <p class="interestsText"><%= @user.interests %></p>
+              <p class="interestsText"><%= raw auto_link(h(@user.interests), :html => { :rel => 'nofollow' }) %></p>
               <%- if (@is_user_current) -%>
                 <p class="editContainer">
                   <a class='action showListBoxLink' href="<%= @user.href %>/edit">Edit</a>

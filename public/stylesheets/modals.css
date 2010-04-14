@@ -1538,6 +1538,27 @@ dl.versionInfo dd
     padding-bottom: 0.5em;
 }
 
+.viewSetupWrapper .column
+{
+    float: left;
+    width: 32em;
+}
+.viewSetupWrapper .column.right
+{
+    float: right;
+    width: 34em;
+}
+
+.viewSetupWrapper .typeBlock { display: none; }
+.viewSetupWrapper .typeBlock.default { display: block; }
+.viewSetupWrapper .typeBlock.empty
+{
+    color: #999999;
+    font-size: 1.2em;
+    font-style: italic;
+    text-align: center;
+}
+
 .viewSetupWrapper form { margin-top: 1em; }
 
 .viewSetupWrapper .section { margin-bottom: 3em; }
@@ -1584,6 +1605,37 @@ dl.versionInfo dd
 
 .viewSetupWrapper div.required { float: left; }
 .viewSetupWrapper ul.actionButtons { margin-top: 0; }
+
+.viewSetupWrapper .scrollBlock
+{
+    margin-bottom: 0.5em;
+    max-height: 30em;
+    overflow: auto;
+}
+
+.viewSetupWrapper .configLineBlock
+{
+    background-color: #ececec;
+    margin: 0.2em 0;
+    overflow: hidden;
+    position: relative;
+}
+
+.viewSetupWrapper .removeButton
+{
+    background: transparent url(/stylesheets/images/common/delete.png) no-repeat scroll center center;
+    display: block;
+    height: 16px;
+    left: 2px;
+    position: absolute;
+    text-indent: -9999px;
+    top: 0.75em;
+    width: 16px;
+}
+.viewSetupWrapper .configLineBlock.firstBlock .removeButton,
+.viewSetupWrapper .configLineBlock.soloBlock .removeButton { display: none; }
+
+.viewSetupWrapper .configLineBlock select { margin-right: 0.75em; }
 /*** END: View create/setup dialog ***/
 
 
@@ -1607,56 +1659,6 @@ dl.versionInfo dd
     padding-left: 35px;
 }
 
-.vizWrapper .column
-{
-    float: left;
-    width: 32em;
-}
-.vizWrapper .column.right
-{
-    float: right;
-    width: 34em;
-}
-
-.vizWrapper .typeBlock { display: none; }
-.vizWrapper .typeBlock.default { display: block; }
-.vizWrapper .typeBlock.empty
-{
-    color: #999999;
-    font-size: 1.2em;
-    font-style: italic;
-    text-align: center;
-}
-
-.vizWrapper .scrollBlock
-{
-    margin-bottom: 0.5em;
-    max-height: 30em;
-    overflow: auto;
-}
-
-.vizWrapper .dataColumnBlock
-{
-    background-color: #ececec;
-    margin: 0.2em 0;
-    overflow: hidden;
-    position: relative;
-}
-
-.vizWrapper .removeButton
-{
-    background: transparent url(/stylesheets/images/common/delete.png) no-repeat scroll center center;
-    display: block;
-    height: 16px;
-    left: 2px;
-    position: absolute;
-    text-indent: -9999px;
-    top: 0.75em;
-    width: 16px;
-}
-.vizWrapper .dataColumnBlock.soloBlock .removeButton { display: none; }
-
-.vizWrapper .dataColumnBlock select { margin-right: 0.75em; }
 .vizWrapper .dataColumnBlock .color
 {
     position: absolute;

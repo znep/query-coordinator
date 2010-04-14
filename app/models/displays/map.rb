@@ -30,4 +30,12 @@ class Displays::Map < Displays::Base
     {'value' => 'google', 'label' => 'Google Maps'},
     {'value' => 'esri', 'label' => 'ESRI ArcGIS'}
   ]
+
+  ESRI_LAYERS = [
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer', 'type' => 'tile', 'name' => 'Street Map'},
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer', 'type' => 'tile', 'name' => 'Satellite Imagery'},
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer', 'type' => 'tile', 'name' => 'Detailed USA Topographic Map'},
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer', 'type' => 'tile', 'name' => 'Annotated World Topographic Map'},
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer', 'type' => 'tile', 'name' => 'Natural Earth Map'}
+  ]
 end

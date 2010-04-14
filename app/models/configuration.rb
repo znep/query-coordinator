@@ -28,6 +28,17 @@ class Configuration < Model
     return props
   end
 
+  def raw_properties
+    props = Hashie::Mash.new
+    
+    return props if data['properties'].nil?
+    
+    data['properties'].each do |p|
+      props[p['name']] = p['value']
+    end
+    return props
+  end
+
   def create_property(name, value)
     url = "/#{self.class.name.pluralize.downcase}/#{id}/properties.json"
     CoreServer::Base.connection.

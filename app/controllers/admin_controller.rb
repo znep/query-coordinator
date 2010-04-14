@@ -1,22 +1,26 @@
 class AdminController < ApplicationController
   include AdminHelper
 
-  before_filter :check_auth, :except => [:index, :theme]
-  before_filter :check_publisher, :only => [:index, :theme]
+  before_filter :check_auth, :except => [:index, :theme, :update_theme]
+  before_filter :check_designer, :only => [:index, :theme, :update_theme]
 
   def index
   end
   
   def config
     session[:return_to] = url_for(:action => :config)
-  
-    @features = CurrentDomain.features.select { |k,v| Domain.configurable_features.include?(k) }
 
-    @modules  = CurrentDomain.modules.select { |mod|
-      Domain.flippable_modules.include?(mod['name']) && 
-        !(mod['name'] =~ /_comment/) }.map do |m|
-        { :name => m['name'], :description => m['description'], :enabled => CurrentDomain.features[m['name']]}
+    @features = Domain.configurable_features.map do |feature|
+      {:name => feature, :enabled => CurrentDomain.features[feature] || false}
     end
+    @features.sort! { |a, b| a[:name] <=> b[:name] } unless @features.nil?
+
+    @modules = CurrentDomain.modules.select { |mod|
+      Domain.flippable_modules.include?(mod['name']) }.map do |m|
+        { :name => m['name'], :description => m['description'],
+          :enabled => CurrentDomain.features[m['name']] }
+    end
+    @modules.sort! { |a, b| a[:name] <=> b[:name] } unless @modules.nil?
 
     @comment_modules = CurrentDomain.modules.select { |mod|
       Domain.comment_modules.include?(mod['name']) }.map do |c|
@@ -29,25 +33,50 @@ class AdminController < ApplicationController
         :enabled => CurrentDomain.features['allow_comments'] == false)
 
     @strings = CurrentDomain.strings.select { |k,v| Domain.configurable_strings.include?(k) }
+    @strings.sort! { |a, b| a[0] <=> b[0] } unless @strings.nil?
+
+    # Finally load any custom strings, e.g. email.from_address
+    @site_theme_options = Domain.site_theme_options.map do |option|
+      {:name => option[:name], :value => CurrentDomain.raw_properties[option[:name]],
+         :description => option[:description] }
+    end
+    @site_theme_options.sort! { |a, b| a[:name] <=> b[:name] } unless @site_theme_options.nil?
   end
 
   def update_config
-    feature_set   = Configuration.find_by_type('feature_set', true, request.host, false)[0]
-    configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
+    # Grab the unmerged versions so we can tell what keys to *create* rather than update
+    feature_set = configuration = nil
+    CoreServer::Base.connection.batch_request do
+      feature_set   = Configuration.find_by_type('feature_set', true, request.host, false)[0]
+      configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
+    end
 
     # Wrap it in one big, cuddly batch request
     CoreServer::Base.connection.batch_request do
-      params[:strings].each do |name, value|
-        if(Domain.configurable_strings.include?(name))
-          update_or_create_property(configuration, "strings.#{name}", value) do
-            configuration.properties.strings[name].nil?
+      unless params[:strings].blank?
+        params[:strings].each do |name, value|
+          if(Domain.configurable_strings.include?(name))
+            update_or_create_property(configuration, "strings.#{name}", value) do
+              configuration.properties.strings[name].nil?
+            end
           end
         end
       end
 
-      update_config_from_form(feature_set,
+      unless params[:options].blank?
+        params[:options].each do |name, value|
+          if Domain.site_theme_options.any? {|opt| opt[:name] == (name)}
+            update_or_create_property(configuration, name, value) do
+              configuration.raw_properties[name].nil?
+            end
+          end
+        end
+      end
+
+      create_or_update_from_form(feature_set,
         Domain.flippable_modules, params[:modules])
-      update_config_from_form(feature_set,
+
+      create_or_update_from_form(feature_set,
         Domain.configurable_features, params[:features])
 
       comment_config = {
@@ -78,8 +107,20 @@ class AdminController < ApplicationController
   def theme
     session[:return_to] = url_for(:action => :theme)
     configuration = Configuration.find_by_type('site_theme', true, request.host)[0]
-    theme = configuration.properties['theme']
+    @theme = configuration.properties.theme
+    @configID = configuration.data['id']
+  end
+  
+  def update_theme
+    if params[:configID].present?
+      configuration = Configuration.find_unmerged(params[:configID])
 
+      # Logic goes here ...
+
+      # !! Note: We might not be working on the active theme, need more LOGIC
+      CurrentDomain.flag_preferences_out_of_date!
+    end
+    redirect_to :action => :theme
   end
 
   def users
@@ -115,7 +156,7 @@ class AdminController < ApplicationController
     redirect_to :action => :users
   end
   
-  
+
   def reload
     CurrentDomain.reload(request.host)
     redirect_back_or_default(url_for :action => :index)
@@ -132,8 +173,8 @@ private
     end
   end
   
-  def check_publisher
-    check_auth('publisher')
+  def check_designer
+    check_auth('designer')
   end
   
   def find_privileged_users(level=1)
@@ -141,19 +182,26 @@ private
   end
 
   def update_or_create_property(configuration, name, value)
-    if (yield)
-      configuration.create_property(name,value)
-    else
-      configuration.update_property(name,value)
+    if value.present?
+      if (yield)
+        configuration.create_property(name,value)
+      else
+        configuration.update_property(name,value)
+      end
     end
   end
   
-  def update_config_from_form(config, whitelist, form_values, enabled='enabled')
+  def create_or_update_from_form(config, whitelist, form_values, enabled='enabled')
     if form_values
       form_values[:name].each do |name, value|
         if(whitelist.include?(name))
-          config.update_property(name, form_values[:enabled] &&
-            form_values[:enabled][name] == enabled)
+          if config.raw_properties[name].nil?
+            config.create_property(name, form_values[:enabled].present? &&
+              form_values[:enabled][name] == enabled)
+          else
+            config.update_property(name, form_values[:enabled].present? &&
+              form_values[:enabled][name] == enabled)
+          end
         end
       end
     end

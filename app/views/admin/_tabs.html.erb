@@ -10,10 +10,9 @@
     <%= link_to 'Configuration', :action => :config %>
   </div></li>
   <%- end -%>
-  <%- if CurrentDomain.publisher?(current_user) -%>
-  <% if false %>
+  <%- if false && CurrentDomain.designer?(current_user) -%>
   <li class='<%= active == 'theme' ? ' active' : '' %>'><div class='wrapper'>
     <%= link_to 'Theme', :action => :theme %>
-  </div></li><% end %>
+  </div></li>
   <%- end -%>
 </ul>

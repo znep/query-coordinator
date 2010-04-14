@@ -89,15 +89,20 @@ class CurrentDomain
 
   def self.properties
     if @@current_domain[:site_properties].nil?
-      if @@current_domain[:site_config_id].nil?
-        conf = @@current_domain[:data].default_configuration('site_theme')
-      else
-        conf = Configuration.find(@@current_domain[:site_config_id].to_s)
-      end
+      conf = self.current_theme
       @@current_domain[:site_properties] = conf.nil? ?
         Hashie::Mash.new : conf.properties
     end
     return @@current_domain[:site_properties]
+  end
+  
+  def self.raw_properties
+    if @@current_domain[:site_properties_raw].nil?
+      conf = self.current_theme
+      @@current_domain[:site_properties_raw] = conf.nil? ?
+        Hash.new : conf.raw_properties
+    end
+    return @@current_domain[:site_properties_raw]
   end
 
   def self.templates
@@ -201,5 +206,12 @@ class CurrentDomain
     else
       user.has_role? 'administrator'
     end
+  end
+  
+private
+  def self.current_theme
+    @@current_domain[:site_config_id].nil? ?
+      @@current_domain[:data].default_configuration('site_theme') : 
+      Configuration.find(@@current_domain[:site_config_id].to_s)
   end
 end

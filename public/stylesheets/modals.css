@@ -1595,6 +1595,12 @@ dl.versionInfo dd
 .viewSetupWrapper .line input { width: 16.4333em; }
 .viewSetupWrapper .line input[type="checkbox"] { width: auto; }
 
+.viewSetupWrapper .line .ui-slider-horizontal
+{
+    display: inline-block;
+    width: 20em;
+}
+
 .viewSetupWrapper span.error
 {
     float: right;

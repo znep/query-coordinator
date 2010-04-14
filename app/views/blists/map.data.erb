@@ -219,6 +219,17 @@
                 </select>
               </div>
 
+              <div class='line'>
+                <label>Opacity</label>
+                <%- opacity = l['options'].nil? ? '' : l['options']['opacity'] -%>
+                <%- if !opacity.blank?
+                    opacity = opacity * 100
+                  else
+                    opacity = 100
+                  end -%>
+                <div class='opacitySlider' value='<%= opacity %>'></div>
+              </div>
+
             </div>
             <%- count += 1 -%>
             <%- end -%>
@@ -301,20 +312,37 @@
       .keypress(adjustMapType).click(adjustMapType);
 
     var layersChanged = false;
-    $('.mapWrapper a.removeButton').click(function(event)
+    var hookUpLayer = function(block)
     {
-        event.preventDefault();
-        var $section = $(event.target).closest('.section');
-        $(event.target).closest('.configLineBlock').remove();
-        layersChanged = true;
-    });
+        var $block = $(block);
+
+        $block.find('a.removeButton').click(function(event)
+        {
+            event.preventDefault();
+            var $section = $(event.target).closest('.section');
+            $(event.target).closest('.configLineBlock').remove();
+            layersChanged = true;
+        });
+
+        $block.find('select').change(function() { layersChanged = true; });
+
+        $block.find('.opacitySlider').each(function()
+        {
+            var $slider = $(this);
+            var sliderVal = $slider.attr('value');
+            if (sliderVal === '' || sliderVal === undefined) { sliderVal = 60; }
+            $slider.slider({min: 0, max: 100, value: sliderVal,
+              change: function() { layersChanged = true; }});
+        });
+    };
+
 
     $('.mapWrapper a.addLayer').click(function(event)
     {
         event.preventDefault();
         var $scrollBlock = $(event.target).closest('ul').prev('.scrollBlock');
 
-        var $block = $scrollBlock.find('.configLineBlock:last').clone(true)
+        var $block = $scrollBlock.find('.configLineBlock:last').clone()
           .removeClass('firstBlock');
         $block.find('.line').each(function(i, l)
         {
@@ -323,23 +351,25 @@
 
             var oldName = $label.attr('for');
             var splitName = oldName.split('-');
-            var newIndex = parseInt(splitName[2]) + 1;
-            splitName[2] = newIndex;
+            var newIndex = parseInt(splitName[splitName.length - 1]) + 1;
+            splitName[splitName.length - 1] = newIndex;
             var newName = splitName.join('-');
 
             $label.removeClass('required').attr('for', newName);
             $this.find(':input').removeClass('required').attr('id', newName)
               .attr('name', newName);
+
+            $this.find('.opacitySlider')
+              .replaceWith("<div class='opacitySlider'></div>");
         });
+        hookUpLayer($block);
 
         $scrollBlock.append($block);
 
         layersChanged = true;
     });
 
-    $('.mapWrapper .layerBlock select').change(function()
-        { layersChanged = true; });
-
+    $('.mapWrapper .layerBlock').each(function(i, b) { hookUpLayer(b); });
 
     var formSubmit = function(event)
     {
@@ -362,7 +392,9 @@
           var $block = $(this);
           var $layer = $block.find('select');
           options.layers = options.layers || [];
+          var $opacity = $block.find('.opacitySlider');
           var layer = {url: $layer.val(),
+            options: {opacity: $opacity.slider('value') / 100.0},
             type: $layer.find(':selected').attr('layer_type')};
           options.layers.push(layer);
       });

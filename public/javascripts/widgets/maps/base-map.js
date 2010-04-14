@@ -278,7 +278,7 @@
             {
                 // Override if you wish to do something other than adjusting the
                 // map to fit the points
-                mapObj.adjustBounds();
+                this.adjustBounds();
             },
 
             adjustBounds: function()

@@ -1,0 +1,135 @@
+/* LAYOUT */
+body {
+	background:#f4f6f7 url(/stylesheets/images/domains/data.faa.gov/bodyBg_tile.png) repeat-x;
+}
+.bodyInterior {
+	border:none;
+}
+#outerContainer {
+ background:;
+}
+/* HEADER */
+#header {
+	height:140px;
+	padding:0;
+	background:none;
+}
+/* search */
+#header form.search {
+	top:80px;
+	right:40px;
+}
+/* lofo */
+#header h1 {
+	background:#fcfdfe url(/stylesheets/images/domains/data.faa.gov/logo-bg.png) repeat-x;
+	border:#fff solid 10px;
+	height:100px;
+}
+#mainLogo {
+	right:10px;
+	background:#000;
+	top:10px;
+}
+#mainLogo a {
+	margin:11px 0 0 14px;
+}
+/* user nav */
+#header .userNav {
+	right:20px;
+	top:20px;
+}
+#header .userNav a {
+	color:#44516F;
+	font-size:1.2em;
+}
+#header .userNav li {
+	border:none;
+}
+/* main nav */
+#mainNav {
+	position:relative;
+	top:20px;
+}
+#mainNav a {
+	color:#000;
+	line-height:30px;
+}
+#mainNav li {
+	height:30px;
+}
+#mainNav li.discover a span {
+	margin-left:14px;
+	text-indent:-14px;
+}
+#mainNav li a span {
+	background-position:0px -30px;
+}
+body.home #mainNav li.home a span {
+	margin-right:14px;
+	text-indent:14px;
+}
+#mainNav li.home {
+	background-position:100% -60px;
+}
+#mainNav ul.subNav li {
+	background-position: 100% -30px;
+}
+#mainNav li.home a span {
+	margin-right:14px;
+	text-indent:14px;
+}
+body.discover #mainNav li.discover a span {
+	margin-left:14px;
+	text-indent:-14px;
+}
+body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span {
+	background-position:0px -30px;
+}
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+	background-image:url(/stylesheets/images/domains/data.faa.gov/tab.png);
+}
+#mainNav li, #mainNav li a span {
+	background-image:url(/stylesheets/images/domains/data.faa.gov/tab.png);
+}
+body.home #mainNav li.home .subNav li, body.home #mainNav li.home .subNav li a span, body #mainNav li.home .subNav li, body #mainNav li.home .subNav li a span {
+	background-color:#fff;
+}
+body.home #mainNav li.home .subNav li.last, body #mainNav li.home .subNav li.last {
+	background:#fff;
+}
+body.home #mainNav li.loggedInNav:hover, body #mainNav li.loggedInNav:hover {
+	background:#fff;
+}
+#mainNav .subNav a span {
+	padding-left:4px;
+}
+/* DISCOVERY */
+.pageBlockHeaderCarousel.carouselWrapper, .pageBlockHeaderCarousel .carouselOuter, .pageBlockHeaderCarousel .carouselInner {
+	background-image:url(/stylesheets/images/domains/data.faa.gov/box.png);
+}
+.pageBlockIntro p {
+	color:#000;
+}
+.pageBlockHeaderCarousel h2 {
+	color:#036;
+}
+/* FOOTER */
+.footerContainer {
+	background:none;
+	color:#036;
+}
+#footer .copyright {
+	font-weight:normal;
+}
+#footer a {
+	color:#036;
+}
+/* LOGIN DIALOG */
+.dialogBox .header {
+	background:#fff;
+}
+.dialogBox .header h1 {
+	height:auto;
+	padding:10px;
+	background-position:8px 10px;
+}

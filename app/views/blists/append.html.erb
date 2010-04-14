@@ -13,25 +13,34 @@
     <% form_tag("/views/#{@view.id}/rows.txt?redirect=" + CGI.escape(redirect) +
       "&method=append", :id => "appendForm", :multipart => true) do %>
       <div class="fieldContent clearfix">
-        <p class="errorMessage"></p>
-        <p class="instructions">
-          Please choose the file whose data you would like to append to
-          <%= h(@view.name) %>. The file should have the same columns and data types
-          (text, number, date, etc.) as in <%= h(@view.name) %>. Supported formats 
-          are .csv, .tsv, .xml, .xls, and .xlsx.
-        </p>
-        <fieldset class="last">
-          <div class="fileInputContainer clearfix">
-            <label for="import_file">File to append:</label>
-            <div class="fileInput">
-              <%= file_field_tag('import_file') %>
+        <%- if @error_type -%>
+          <p class="errorMessage">
+            You cannot append data into a dataset that contains a photo, document,
+            nested table, or tags column. Please remove such columns and try again,
+            or import this data as a new file.
+          </p>
+        <%- else -%>
+          <p class="errorMessage"></p>
+          <p class="instructions">
+            Please choose the file whose data you would like to append to
+            <%= h(@view.name) %>. The file should have the same columns and data types
+            (text, number, date, etc.) as in <%= h(@view.name) %>. Supported formats 
+            are .csv, .tsv, .xml, .xls, and .xlsx.
+          </p>
+          <fieldset class="last">
+            <div class="fileInputContainer clearfix">
+              <label for="import_file">File to append:</label>
+              <div class="fileInput">
+                <%= file_field_tag('import_file') %>
+              </div>
             </div>
-          </div>
-        </fieldset>
+          </fieldset>
+        <%- end -%>
       </div>
 
       <div class="footer clearfix">
-        <%= image_submit_tag('button_finish.png', :alt => 'Upload and Append') %>
+        <%= image_submit_tag('button_finish.png', :alt => 'Upload and Append') unless @error_type %>
+        <a class="cancelLink" href="<%= @view.href %>/alt">Cancel</a>
       </div>
     <% end %>
   </div>

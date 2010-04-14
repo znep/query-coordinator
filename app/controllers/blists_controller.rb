@@ -686,7 +686,7 @@ class BlistsController < ApplicationController
               'class' => Column}
           end
 
-          view_req['columns'] = columns
+          view_req['body']['columns'] = columns
         end
 
         batch_reqs << view_req 

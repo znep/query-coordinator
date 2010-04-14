@@ -17,7 +17,7 @@ class StylesController < ApplicationController
 
   def merged
     if STYLE_PACKAGES[params[:stylesheet]].present?
-      cache_key = "#{CurrentDomain.cname}.#{params[:stylesheet]}.#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}"
+      cache_key = generate_cache_key(params[:stylesheet])
       cached = Rails.cache.read(cache_key)
 
       if cached.nil?
@@ -41,9 +41,34 @@ class StylesController < ApplicationController
 
 private
   def get_includes
-    includes = STYLE_PACKAGES['includes'].map{ |incl| "@import #{incl}.sass\n" }.join
-    # TODO: theme color deserialization here
+    cache_key = generate_cache_key('_includes')
+    result = Rails.cache.read(cache_key)
+    if result.nil?
+      result = STYLE_PACKAGES['includes'].map{ |incl| "@import #{incl}.sass\n" }.join +
+               get_includes_recurse(CurrentDomain.theme.colors, 'color_', '#') +
+               get_includes_recurse(CurrentDomain.theme.dimensions, 'dimensions_')
 
-    return includes
+      Rails.cache.write(cache_key, result)
+    end
+
+    return result
+  end
+
+  def get_includes_recurse(hash, prepend, value_prepend = '')
+    result = ''
+    unless hash.nil?
+      hash.each do |key, value|
+        if value.is_a? String
+          result += "!#{prepend}#{key} = #{value_prepend}#{value.gsub(/\W/, '')}\n"
+        elsif value.is_a? Hash
+          result += get_includes_recurse(value, prepend + "#{key}_")
+        end
+      end
+    end
+    return result
+  end
+
+  def generate_cache_key(item)
+    return "#{CurrentDomain.cname}.#{item}.#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}"
   end
 end

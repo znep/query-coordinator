@@ -22,7 +22,7 @@
 			inAction,
 			charMin = 65,
 			visible,
-			tpl = '<div class="colorpicker"><div class="colorpicker_color"><div><div></div></div></div><div class="colorpicker_hue"><div></div></div><div class="colorpicker_new_color"></div><div class="colorpicker_current_color"></div><div class="colorpicker_hex"><input type="text" maxlength="6" size="6" /></div><div class="colorpicker_rgb_r colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_g colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_h colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_s colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_submit"></div></div>',
+			tpl = '<div class="colorpicker"><a href="#close" class="colorpicker_close_link"></a><div class="colorpicker_color"><div><div></div></div></div><div class="colorpicker_hue"><div></div></div><div class="colorpicker_new_color"></div><div class="colorpicker_hex"><input type="text" maxlength="6" size="6" /></div><div class="colorpicker_rgb_r colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_g colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_rgb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_h colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_s colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_hsb_b colorpicker_field"><input type="text" maxlength="3" size="3" /><span></span></div><div class="colorpicker_submit"></div></div>',
 			defaults = {
 				eventName: 'click',
 				onShow: function () {},
@@ -60,9 +60,6 @@
 			},
 			setHue = function (hsb, cal) {
 				$(cal).data('colorpicker').hue.css('top', parseInt(150 - 150 * hsb.h/360, 10));
-			},
-			setCurrentColor = function (hsb, cal) {
-				$(cal).data('colorpicker').currentColor.css('backgroundColor', '#' + HSBToHex(hsb));
 			},
 			setNewColor = function (hsb, cal) {
 				$(cal).data('colorpicker').newColor.css('backgroundColor', '#' + HSBToHex(hsb));
@@ -211,7 +208,6 @@
 				var cal = $(this).parent();
 				var col = cal.data('colorpicker').color;
 				cal.data('colorpicker').origColor = col;
-				setCurrentColor(col, cal.get(0));
 				cal.data('colorpicker').onSubmit(col, HSBToHex(col), HSBToRGB(col), cal.data('colorpicker').el);
 			},
 			show = function (ev) {
@@ -426,15 +422,17 @@
 												.bind('blur', blur)
 												.bind('focus', focus);
 						cal
-							.find('span').bind('mousedown', downIncrement).end()
-							.find('>div.colorpicker_current_color').bind('click', restoreOriginal);
+							.find('span').bind('mousedown', downIncrement);
+						cal.find('.colorpicker_close_link').click(function(e) {
+						    e.preventDefault();
+						   $(this).parent().parent().hide();
+						});
 						options.selector = cal.find('div.colorpicker_color').bind('mousedown', downSelector);
 						options.selectorIndic = options.selector.find('div div');
 						options.el = this;
 						options.hue = cal.find('div.colorpicker_hue div');
 						cal.find('div.colorpicker_hue').bind('mousedown', downHue);
 						options.newColor = cal.find('div.colorpicker_new_color');
-						options.currentColor = cal.find('div.colorpicker_current_color');
 						cal.data('colorpicker', options);
 						cal.find('div.colorpicker_submit')
 							.bind('mouseenter', enterSubmit)
@@ -445,7 +443,6 @@
 						fillHexFields(options.color, cal.get(0));
 						setHue(options.color, cal.get(0));
 						setSelector(options.color, cal.get(0));
-						setCurrentColor(options.color, cal.get(0));
 						setNewColor(options.color, cal.get(0));
 						if (options.flat) {
 							cal.css({
@@ -498,7 +495,6 @@
 						fillHexFields(col, cal.get(0));
 						setHue(col, cal.get(0));
 						setSelector(col, cal.get(0));
-						setCurrentColor(col, cal.get(0));
 						setNewColor(col, cal.get(0));
 						// clint.tseng@socrata.com 2009/08/13: call the changed callback on change
 						cal.data('colorpicker').onChange.apply(cal, [col, HSBToHex(col), HSBToRGB(col)]);

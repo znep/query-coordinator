@@ -1,8 +1,8 @@
 <% form_tag("/views/#{view.id}/rows.pdf", :method => :get, :target => "_blank") do %>
   <input type="hidden" id="print" name="print" value="true" />
   <div class="columnLeft">
-    <label for="size" class="formHeader">Paper Size:</label>
-    <select id="size" name="size">
+    <label for="page_size" class="formHeader">Paper Size:</label>
+    <select id="page_size" name="page_size">
       <option value="letter">Letter (8.5 x 11 inches)</option>
       <option value="legal">Legal (8.5 x 14 inches)</option>
       <option value="tabloid">Tabloid (11 x 17 inches)</option>

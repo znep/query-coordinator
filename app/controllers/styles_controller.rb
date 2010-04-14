@@ -1,4 +1,6 @@
 class StylesController < ApplicationController
+  skip_before_filter :require_user, :set_user, :hook_auth_controller
+
   def individual
     includes = get_includes
 
@@ -61,7 +63,7 @@ private
         if value.is_a? String
           result += "!#{prepend}#{key} = #{value_prepend}#{value.gsub(/\W/, '')}\n"
         elsif value.is_a? Hash
-          result += get_includes_recurse(value, prepend + "#{key}_")
+          result += get_includes_recurse(value, prepend + "#{key}_", value_prepend)
         end
       end
     end

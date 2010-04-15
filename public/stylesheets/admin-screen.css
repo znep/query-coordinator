@@ -59,7 +59,7 @@
 {
     font-size: 1.5em;
 }
-#adminContent .userSaved
+#adminContent .flashNotice
 {
     font-size: 2em;
     padding: 0 0 0.7em 0;
@@ -74,7 +74,8 @@
     width: 50%;
 }   
 #adminContent .adminUsersTable .userRow,
-#adminContent .configureRow
+#adminContent .configureRow,
+#adminContent .colorRow
 {
     font-size: 1.4em;
     display: block;
@@ -124,13 +125,14 @@
     font-weight: bold;
 }
 /*
- Configuration tab
+ Configuration/theme shared
 */ 
-#adminContent .configurationContent h2
+#adminContent .configurationContent h2,
+#adminContent .themeContent h2
 {
     margin-top: 1em;
 }
-#adminContent .configurationContent .configureRow
+#adminContent .configureRow
 {
     padding: 0.5em 0 0.5em 3em;
 }
@@ -139,23 +141,23 @@
 {
     font-size: 1em;
     position: relative;
-    top: -0.45em;
+    top: -0.4em;
 }
 #adminContent .configurationContent input[type='text']
 {
     width: 15em;
 }    
-#adminContent .configurationContent .settingsCell
+#adminContent .settingsCell
 {
     position: absolute;
     left: 18em;
 }
-#adminContent .configurationContent .descriptionCell
+#adminContent .descriptionCell
 {
     position: absolute;
     right: 3em;
 }
-#adminContent .configurationContent .saveButton
+#adminContent .saveButton
 {
     margin-top: 2em;
 }

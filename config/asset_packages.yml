@@ -118,6 +118,7 @@ javascripts:
   - plugins/ui.core
   - plugins/ui.draggable
   - plugins/ui.resizable
+  - plugins/ui.slider
   - plugins/ui.spinner
   - util/extMouseWheel
   - util/navigation
@@ -282,6 +283,7 @@ stylesheets:
   - table-blist-grid
   - dataset-grid
   - dataset-menus
+  - ui.slider
   - ui.spinner
   - blist-grid-screen
   - form-common

@@ -1,6 +1,7 @@
 class Domain < Model
   cattr_accessor :themeable_items, :configurable_strings, 
-    :configurable_features, :flippable_modules, :comment_modules
+    :configurable_features, :flippable_modules, :comment_modules,
+    :site_theme_options
 
   def self.find(cname)
     # We don't know our cname yet, so we need to pass it in to connection.rb
@@ -59,14 +60,18 @@ class Domain < Model
     ['urls.footer', 'urls.header']
 
   @@configurable_features = 
-    ['show_tags', 'show_categories', 'emails.from_address']
+    ['show_tags', 'show_categories']
 
   @@flippable_modules =
     ['discovery_module', 'community_module', 'community_creation']
-  
+
   @@comment_modules = 
     ['community_comment_moderation', 'publisher_comment_moderation']
 
   @@configurable_strings =
     ['company', 'copyright_string', 'site_title']
+
+  @@site_theme_options = 
+    [ { :name => 'emails.from_address',
+        :description => 'The address from which automatic emails are sent'} ]
 end

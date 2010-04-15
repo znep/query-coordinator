@@ -15,19 +15,19 @@
             <h1>Site Configuration</h1>
 
             <%- if flash[:notice] -%>
-              <p class='userSaved'><%= flash[:notice].inspect %></p>
+              <p class='flashNotice'><%= flash[:notice] %></p>
             <%- end -%>
             <div class='configurationContent'>
               <h2>Features</h2>
               <% form_tag :action => 'update_config' do %>
                 <%- @features.each do |feature| -%>
-                  <%= hidden_field_tag 'features[name[' + feature[0] + ']]',
-                    feature[0] %>
+                  <%= hidden_field_tag 'features[name[' + feature[:name] + ']]',
+                    feature[:name] %>
                   <div class='configureRow <%= cycle('even', 'odd') %>'>
-                    <span class='titleCell'><%= feature[0].humanize %></span>
+                    <span class='titleCell'><%= feature[:name].humanize %></span>
                     <span class='settingsCell'>
-                    <%= check_box_tag 'features[enabled[' + feature[0] + ']]',
-                      'enabled', feature[1] %></span>
+                    <%= check_box_tag 'features[enabled[' + feature[:name] + ']]',
+                      'enabled', feature[:enabled] %></span>
                   </div>
                 <%- end -%>
             
@@ -63,6 +63,16 @@
                     <span class='titleCell'><%= string[0].humanize %></span>
                     <span class='settingsCell'>
                       <%= text_field_tag "strings[#{string[0]}]", h(string[1]) %></span>
+                  </div>
+                <%- end -%>
+
+                <h2>Site options</h2>
+                <%- @site_theme_options.each do |option| %>
+                  <div class='configureRow <%= cycle('even', 'odd') %>'>
+                    <span class='titleCell'><%= option[:name].humanize.sub('.', ': ') %></span>
+                    <span class='settingsCell'>
+                      <%= text_field_tag "options[#{option[:name]}]", h(option[:value]) %></span>
+                    <span class='descriptionCell'><%= option[:description] %></span>
                   </div>
                 <%- end -%>
                 <input class='saveButton' type='submit' value='Update' />

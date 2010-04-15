@@ -58,19 +58,41 @@
                 currentObj._rowsLoaded = 0;
                 currentObj._markers = {};
 
-                currentObj.initializeMap();
-
-                $domObj.resize(function(e) { currentObj.resizeHandle(e); });
-
                 if ($domObj.parent().find('.loadingSpinnerContainer').length < 1)
                 {
                     $domObj.parent().append(
                         '<div class="loadingSpinnerContainer">' +
                         '<div class="loadingSpinner"></div></div>');
                 }
-                if ($domObj.prev('#mapError').length < 1)
+
+                if ($domObj.siblings('#mapError').length < 1)
                 { $domObj.before('<div id="mapError" class="mainError"></div>'); }
-                $domObj.prev('#mapError').hide();
+                $domObj.siblings('#mapError').hide();
+
+                if ($domObj.siblings('#mapLayers').length < 1)
+                {
+                    $domObj.before('<div id="mapLayers" class="hidden">' +
+                        '<a href="#toggleLayers" class="toggleLayers">' +
+                        'Layer Options' +
+                        '</a>' +
+                        '<div class="contentBlock hidden">' +
+                        '<h3>Layers</h3><ul></ul>' +
+                        '</div>' +
+                        '</div>');
+                    $domObj.siblings('#mapLayers').find('a.toggleLayers')
+                        .click(function(e)
+                        {
+                            e.preventDefault();
+                            $domObj.siblings('#mapLayers')
+                                .find('.contentBlock').toggleClass('hidden');
+                        });
+                }
+
+                currentObj.initializeMap();
+
+                currentObj.populateLayers();
+
+                $domObj.resize(function(e) { currentObj.resizeHandle(e); });
 
                 loadRows(currentObj,
                     {method: 'getByIds', meta: true, start: 0,
@@ -98,7 +120,7 @@
             reload: function()
             {
                 var mapObj = this;
-                mapObj.$dom().prev('#mapError').hide().text('');
+                mapObj.$dom().siblings('#mapError').hide().text('');
 
                 mapObj.resetData();
 
@@ -119,7 +141,39 @@
 
             showError: function(errorMessage)
             {
-                this.$dom().prev('#mapError').show().text(errorMessage);
+                this.$dom().siblings('#mapError').show().text(errorMessage);
+            },
+
+            populateLayers: function()
+            {
+                var mapObj = this;
+                var layers = mapObj.getLayers();
+                if (layers.length < 2) { return; }
+
+                var $layers = mapObj.$dom().siblings('#mapLayers');
+                var $layersList = $layers.find('ul');
+                $layersList.empty();
+                _.each(layers, function(l)
+                {
+                    var lId = 'mapLayer_' + l.id;
+                    $layersList.append('<li><input type="checkbox" id="' + lId +
+                        '"' + (l.visible ? ' checked="checked"' : '') +
+                        ' /><label for="' + lId + '">' + l.name + '</label></li>');
+                });
+
+                $layers.find(':checkbox').click(function(e)
+                {
+                    var $check = $(e.currentTarget);
+                    mapObj.setLayer($check.attr('id').replace(/^mapLayer_/, ''),
+                        $check.value());
+                });
+
+                $layers.removeClass('hidden');
+            },
+
+            setLayer: function(layerId, isDisplayed)
+            {
+                // Implement me
             },
 
             updateMap: function(settings)
@@ -155,6 +209,11 @@
             initializeMap: function()
             {
                 // Implement me
+            },
+
+            getLayers: function()
+            {
+                return [];
             },
 
             resetData: function()
@@ -205,13 +264,21 @@
                             'must be between -180 and 180');
                 }
 
+
                 if (addedMarkers)
-                { mapObj.adjustBounds(); }
+                { mapObj.pointsRendered(); }
             },
 
             renderPoint: function(latVal, longVal, title, info, rowId)
             {
                 // Implement me
+            },
+
+            pointsRendered: function()
+            {
+                // Override if you wish to do something other than adjusting the
+                // map to fit the points
+                this.adjustBounds();
             },
 
             adjustBounds: function()

@@ -19,8 +19,8 @@
                 <p> To view and modify who has access to these features, click the <%= link_to 'users', :action => :users %> tab above.</p>
                 <p>To configure the functionality of your site, click the <%= link_to 'configuration', :action => :config %> tab.</p>
               <%- end -%>
-              <%- if CurrentDomain.publisher?(current_user) -%>
-              <!-- <p>To control the site's appearance, click the <%= link_to 'theme', :action => :theme %> tab.</p> -->
+              <%- if false && CurrentDomain.designer?(current_user) -%>
+                <p>To control the site's appearance, click the <%= link_to 'theme', :action => :theme %> tab.</p>
               <%- end -%>
             </div>
           </div>

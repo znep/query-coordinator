@@ -14,6 +14,14 @@
     </li>
     <% end %>
 
+    <% if !CurrentDomain.theme.urls.tabs.nil? %>
+      <% CurrentDomain.theme.urls.tabs.each do |url| %>
+        <li class="custom">
+          <%= link_to("<span>#{url.text}</span>", url.href ) %>
+        </li>
+      <% end %>
+    <% end %>
+
     <%# Home (Features enabled/disabled within this tab) %>
     <% module_enabled [:discovery_module, :community_module] do %>
       <li class='home last'>
@@ -24,5 +32,6 @@
           :locals => { :menu_class => 'subNav' } %>
         </li>
     <% end %>
+
   </ul>
 </div>

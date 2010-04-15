@@ -71,11 +71,11 @@
 
                 if ($domObj.siblings('#mapLayers').length < 1)
                 {
-                    $domObj.before('<div id="mapLayers" class="hidden">' +
+                    $domObj.before('<div id="mapLayers" class="hide">' +
                         '<a href="#toggleLayers" class="toggleLayers">' +
                         'Layer Options' +
                         '</a>' +
-                        '<div class="contentBlock hidden">' +
+                        '<div class="contentBlock hide">' +
                         '<h3>Layers</h3><ul></ul>' +
                         '</div>' +
                         '</div>');
@@ -84,9 +84,10 @@
                         {
                             e.preventDefault();
                             $domObj.siblings('#mapLayers')
-                                .find('.contentBlock').toggleClass('hidden');
+                                .find('.contentBlock').toggleClass('hide');
                         });
                 }
+                else { $domObj.siblings('#mapLayers').addClass('hide'); }
 
                 currentObj.initializeMap();
 
@@ -121,6 +122,7 @@
             {
                 var mapObj = this;
                 mapObj.$dom().siblings('#mapError').hide().text('');
+                mapObj.$dom().siblings('#mapLayers').addClass('hide');
 
                 mapObj.resetData();
 
@@ -168,7 +170,7 @@
                         $check.value());
                 });
 
-                $layers.removeClass('hidden');
+                $layers.removeClass('hide');
             },
 
             setLayer: function(layerId, isDisplayed)

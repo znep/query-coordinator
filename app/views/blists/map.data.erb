@@ -283,7 +283,7 @@
             return !isEqual;
         },
         'A different value is required.');
-    $('.mapWrapper form').validate({errorElement: 'span'});
+    $('.mapWrapper form').validate({ignore: ':hidden', errorElement: 'span'});
 
     var adjustSelectPrompt = function(event)
     {
@@ -294,8 +294,8 @@
           }, 0);
     };
 
-    $('.mapWrapper select').change(adjustSelectPrompt)
-      .keypress(adjustSelectPrompt).click(adjustSelectPrompt);
+    $('.mapWrapper select').change(adjustSelectPrompt).keypress(adjustSelectPrompt)
+      .click(adjustSelectPrompt).blur(adjustSelectPrompt);
 
     var adjustMapType = function(event)
     {
@@ -324,7 +324,9 @@
             layersChanged = true;
         });
 
-        $block.find('select').change(function() { layersChanged = true; });
+        $block.find('select').change(function() { layersChanged = true; })
+          .change(adjustSelectPrompt).keypress(adjustSelectPrompt)
+          .click(adjustSelectPrompt).blur(adjustSelectPrompt).blur();
 
         $block.find('.opacitySlider').each(function()
         {
@@ -357,7 +359,7 @@
 
             $label.removeClass('required').attr('for', newName);
             $this.find(':input').removeClass('required').attr('id', newName)
-              .attr('name', newName);
+              .attr('name', newName).val('');
 
             $this.find('.opacitySlider')
               .replaceWith("<div class='opacitySlider'></div>");

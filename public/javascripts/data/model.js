@@ -1873,6 +1873,7 @@ blist.namespace.fetch('blist.data');
 
         this.invalidateRows = function()
         {
+            removeSpecialRows();
             active = rows = {};
             activeCount = totalRows;
             rowsLoaded = 0;

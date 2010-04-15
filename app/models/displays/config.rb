@@ -29,7 +29,7 @@ module Displays::Config
 
     VISUALIZATION_CONFIG = {
         'barchart' => {
-            'display' => 'google',
+            'display' => 'chart',
             'library' => 'google.visualization.BarChart',
             'label' => 'Bar Chart',
             'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
@@ -54,7 +54,7 @@ module Displays::Config
             ]
         },
 
-        'annotatedtimeline' => {'display' => 'google', 'library' => 'google.visualization.AnnotatedTimeLine',
+        'annotatedtimeline' => {'display' => 'google', 'library' => 'google.visualization.AnnotatedTimeLine', 'hidden' => true,
                                 'label' => 'Time Line',
                                 'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
                                 'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'},
@@ -65,7 +65,7 @@ module Displays::Config
                                                    'default' => true}]
         },
 
-        'imagesparkline' => {'display' => 'google', 'library' => 'google.visualization.ImageSparkLine',
+        'imagesparkline' => {'display' => 'google', 'library' => 'google.visualization.ImageSparkLine', 'hidden' => true,
                              'label' => 'Sparkline',
                              'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
                              'dataColumnOptions' => [DEF_COLOR_OPTION],
@@ -80,7 +80,7 @@ module Displays::Config
                              ]
         },
 
-        'areachart' => {'display' => 'google', 'library' => 'google.visualization.AreaChart',
+        'areachart' => {'display' => 'chart', 'library' => 'google.visualization.AreaChart',
                         'label' => 'Area Chart',
                         'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
                         'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
@@ -107,7 +107,7 @@ module Displays::Config
                         ]
         },
 
-        'columnchart' => {'display' => 'google', 'library' => 'google.visualization.ColumnChart',
+        'columnchart' => {'display' => 'chart', 'library' => 'google.visualization.ColumnChart',
                           'label' => 'Column Chart',
                           'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
                           'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
@@ -131,7 +131,7 @@ module Displays::Config
                           ]
         },
 
-        'linechart' => {'display' => 'google', 'library' => 'google.visualization.LineChart',
+        'linechart' => {'display' => 'chart', 'library' => 'google.visualization.LineChart',
                         'label' => 'Line Chart',
                         'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
                         'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
@@ -160,7 +160,7 @@ module Displays::Config
                         ]
         },
 
-        'piechart' => {'display' => 'google', 'library' => 'google.visualization.PieChart',
+        'piechart' => {'display' => 'chart', 'library' => 'google.visualization.PieChart',
                        'label' => 'Pie Chart',
                        'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
                                           {'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],

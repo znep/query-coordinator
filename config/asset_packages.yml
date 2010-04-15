@@ -10,6 +10,7 @@ javascripts:
   - util/namespace
   - plugins/jquery.cookies.2.1.0.min
   - util/underscore-min
+  - util/google-analytics
 - shared-common-all:
   - util/events
   - util/sizing
@@ -27,7 +28,6 @@ javascripts:
   - plugins/jquery.qtip
   - widgets/blist-alert
   - util/socrata-server
-  - util/google-analytics
 - shared-calendar:
   - plugins/fullcalendar
   - widgets/blist-calendar

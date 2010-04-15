@@ -171,7 +171,7 @@
                     { title: title, body : info }));
             },
 
-            pointsRendered: function()
+            rowsRendered: function()
             {
                 var mapObj = this;
                 if (_.isUndefined(mapObj._toProject)) { return; }

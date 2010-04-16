@@ -1,5 +1,5 @@
 module AdminHelper
-  def select_for_role(id, name='role', currentRoles = nil, cssClass='')
+  def select_for_role(id, name='role', currentRole = nil, cssClass='')
     roles = User.roles_list.map {|r| r[0]}
     
     out = "<select class='#{cssClass}' name='#{name}' id='#{id}'>"
@@ -7,7 +7,7 @@ module AdminHelper
     
     roles.each do |role|
       out += "<option"
-      out += ' selected="selected"' if currentRoles && role == currentRoles[-1]
+      out += ' selected="selected"' if currentRole && role == currentRole
       out += ">" + role + "</option>"
     end
     out += "</select>"

@@ -175,38 +175,15 @@ class CurrentDomain
       user.roles && user.roles.size > 0
     end
   end
-
-  def self.editor?(user)
+  
+  def self.user_can?(user, action)
     if user.nil?
       false
     else
-      user.has_role? 'editor'
+      user.has_right?(action.to_s)
     end
   end
-
-  def self.publisher?(user)
-    if user.nil?
-      false
-    else
-      user.has_role? 'publisher'
-    end
-  end
-
-  def self.designer?(user)
-    if user.nil?
-      false
-    else
-      user.has_role? 'designer'
-    end
-  end
-
-  def self.admin?(user)
-    if user.nil?
-      false
-    else
-      user.has_role? 'administrator'
-    end
-  end
+  
   
 private
   def self.current_theme

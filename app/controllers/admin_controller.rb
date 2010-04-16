@@ -1,8 +1,9 @@
 class AdminController < ApplicationController
   include AdminHelper
 
-  before_filter :check_auth, :except => [:index, :theme, :update_theme]
+  before_filter :check_auth, :except => [:index, :theme, :update_theme, :sdp, :update_sdp]
   before_filter :check_designer, :only => [:index, :theme, :update_theme]
+  before_filter :check_edit_sdp, :only => [:sdp, :update_sdp]
 
   def index
   end
@@ -164,17 +165,19 @@ class AdminController < ApplicationController
 
 
 private
-  def check_auth(role='administrator')
-    if current_user.nil?
-      return require_user(true)
-    elsif !current_user.has_role?(role)
+  def check_auth(level = 'manage_users')
+    unless CurrentDomain.user_can?(current_user, level)
       flash.now[:error] = "You do not have permission to view this page"
       return (render 'shared/error', :status => :forbidden)
     end
   end
   
   def check_designer
-    check_auth('designer')
+    check_auth(:edit_site_theme)
+  end
+  
+  def check_edit_sdp
+    check_auth(:edit_sdp)
   end
   
   def find_privileged_users(level=1)

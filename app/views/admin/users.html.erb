@@ -39,7 +39,7 @@
                 <span class='userIdCell'><%= user.displayName %></span>
                 <span class='userRolesCell'>
                 <form class='userSelectForm' method='post' action='/admin/save_user/<%= user.id %>'>
-                <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roles, 'roleSelect')) %>
+                <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roleName, 'roleSelect')) %>
                 <input type='hidden' name='userid' class='hiddenID' value='<%= user.id %>' />
                 <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>' />
                 <input type='submit' class='userSaveButton' value='Save' />

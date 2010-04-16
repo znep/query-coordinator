@@ -5,6 +5,7 @@ class StylesController < ApplicationController
     includes = get_includes
 
     if params[:stylesheet].present? && params[:stylesheet].match(/^(\w|-)+$/)
+      headers['Content-Type'] = 'text/css'
       stylesheet = File.read("#{Rails.root}/app/styles/#{params[:stylesheet]}.sass")
 
       render :text => Sass::Engine.new(includes + stylesheet,
@@ -19,6 +20,8 @@ class StylesController < ApplicationController
 
   def merged
     if STYLE_PACKAGES[params[:stylesheet]].present?
+      headers['Content-Type'] = 'text/css'
+
       cache_key = generate_cache_key(params[:stylesheet])
       cached = Rails.cache.read(cache_key)
 

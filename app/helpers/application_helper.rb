@@ -496,11 +496,11 @@ HREF
     if RAILS_ENV == 'development'
       return STYLE_PACKAGES[stylesheet.to_s].
         map{ |req| "<link type=\"text/css\" rel=\"stylesheet\" media=\"screen\"" +
-                   " href=\"/styles/individual/#{req}\"/>" }.
+                   " href=\"/styles/individual/#{req}.css\"/>" }.
         join("\n")
     else
       return "<link type=\"text/css\" rel=\"stylesheet\" media=\"screen\"" +
-             " href=\"/styles/merged/#{stylesheet.to_s}?" +
+             " href=\"/styles/merged/#{stylesheet.to_s}.css?" +
              "#{REVISION_NUMBER}.#{CurrentDomain.default_config_id}\"/>"
     end
   end

@@ -15,11 +15,13 @@
 
             <div class='explanation'>
               <p>From these pages, you can configure and customize your <%= CurrentDomain.strings.company %> data site.<p>
-              <%- if CurrentDomain.admin?(current_user) -%>
+              <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
                 <p> To view and modify who has access to these features, click the <%= link_to 'users', :action => :users %> tab above.</p>
+              <%- end -%>
+              <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
                 <p>To configure the functionality of your site, click the <%= link_to 'configuration', :action => :config %> tab.</p>
               <%- end -%>
-              <%- if false && CurrentDomain.designer?(current_user) -%>
+              <%- if false && CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
                 <p>To control the site's appearance, click the <%= link_to 'theme', :action => :theme %> tab.</p>
               <%- end -%>
             </div>

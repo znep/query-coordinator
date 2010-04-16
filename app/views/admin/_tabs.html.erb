@@ -2,15 +2,22 @@
   <li class='even<%= active == 'index' ? ' active' : '' %>'><div class='wrapper'>
     <%= link_to 'Administration', :action => :index %>
   </div></li>
-  <%- if CurrentDomain.admin?(current_user) -%>
+  <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
   <li class='<%= active == 'users' ? ' active' : '' %>'><div class='wrapper'>
     <%= link_to 'Users', :action => :users %>
   </div></li>
+  <%- end -%>
+  <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
   <li class='even<%= active == 'config' ? ' active' : '' %>'><div class='wrapper'>
     <%= link_to 'Configuration', :action => :config %>
   </div></li>
   <%- end -%>
-  <%- if false && CurrentDomain.designer?(current_user) -%>
+  <%- if false && CurrentDomain.user_can?(current_user, :edit_sdp) -%>
+  <li class='<%= active == 'sdp' ? ' active' : '' %>'><div class='wrapper'>
+    <%= link_to 'SDP', :action => :sdp %>
+  </div></li>
+  <%- end -%>
+  <% if false && CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
   <li class='<%= active == 'theme' ? ' active' : '' %>'><div class='wrapper'>
     <%= link_to 'Theme', :action => :theme %>
   </div></li>

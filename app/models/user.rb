@@ -159,8 +159,8 @@ class User < Model
     self.accountCategory == "premium_sdn"
   end
 
-  def has_role?(role)
-    self.roles && self.roles.include?(role)
+  def has_right?(right)
+    self.rights && self.rights.include?(right)
   end
 
   @@states = {

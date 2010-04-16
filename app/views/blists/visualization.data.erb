@@ -254,8 +254,8 @@
           }, 0);
     };
 
-    $('.vizWrapper select').change(adjustSelectPrompt)
-      .keypress(adjustSelectPrompt).click(adjustSelectPrompt);
+    $('.vizWrapper select').change(adjustSelectPrompt).keypress(adjustSelectPrompt)
+      .click(adjustSelectPrompt).blur(adjustSelectPrompt);
 
     var adjustVizType = function(event)
     {
@@ -317,7 +317,8 @@
         var newName = splitName.join('-');
 
         $label.attr('for', newName);
-        $this.find(':input').attr('id', newName).attr('name', newName);
+        $this.find(':input').attr('id', newName).attr('name', newName)
+          .val('').blur();
         $this.find('a[href=#' + oldName + ']').attr('href', '#' + newName);
         var $color = $this.find('a.colorOption');
         if ($color.length > 0 && $color.attr('colorDefaults') !== undefined)

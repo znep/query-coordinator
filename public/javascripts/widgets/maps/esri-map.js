@@ -242,7 +242,8 @@
 
             resizeHandle: function(event)
             {
-                if (this.map !== undefined)
+                // ESRI can't handle being resized to 0
+                if (this.map !== undefined && this.$dom().height() > 0)
                 { this.map.resize(); }
             },
 

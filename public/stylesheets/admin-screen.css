@@ -10,9 +10,8 @@
 }
 #adminContent form.search
 {
-    margin-top: 5px;
-    float: right;
     width: 25em;
+    margin-bottom: 1em;
 }
 #adminContent form.search .searchContainer
 {

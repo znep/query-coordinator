@@ -17,7 +17,7 @@
     $.fn.socrataMap = function(options)
     {
         // Check if object was already created
-        var socrataMap = $(this[0]).data("socrataMap");
+        var socrataMap = $(this[0]).data("socrataVisualization");
         if (!socrataMap)
         {
             var mapClass = $.socrataMap[options.displayFormat.type || 'google'];
@@ -88,16 +88,12 @@
                 mapObj.$dom().socrataMap(newOptions);
             },
 
-            reload: function()
+            reloadVisualization: function()
             {
                 var mapObj = this;
-                mapObj.$dom().siblings('#mapError').hide().text('');
                 mapObj.$dom().siblings('#mapLayers').addClass('hide');
 
                 mapObj.resetData();
-
-                mapObj._rowsLeft = 0;
-                mapObj._rowsLoaded = 0;
 
                 mapObj._idIndex = undefined;
                 mapObj._latIndex = undefined;
@@ -105,10 +101,6 @@
                 mapObj._titleIndex = undefined;
                 mapObj._infoIndex = undefined;
                 mapObj._infoIsRich = false;
-
-                loadRows(mapObj,
-                    {method: 'getByIds', meta: true, start: 0,
-                        length: mapObj.settings.pageSize});
             },
 
             populateLayers: function()

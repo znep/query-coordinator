@@ -1,0 +1,10 @@
+
+.highcharts-legend li
+{
+    max-width: 80px;
+    overflow: hidden;
+    /* This is .clipText; but can't figure out how to add a class to these
+     * elements */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

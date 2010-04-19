@@ -25,6 +25,16 @@ module Displays::Config
                         'type' => 'color', 'default' => COLOR_DEFAULTS[0],
                         'colorArray' => COLOR_DEFAULTS}
 
+    LEGEND_OPTIONS = {'label' => 'Legend', 'name' => 'legend',
+                        'type' => 'dropdown', 'dropdownOptions' => [
+                          {'value' => 'bottom', 'label' => 'Bottom'},
+                          {'value' => 'top', 'label' => 'Top'},
+                          {'value' => 'right', 'label' => 'Right'},
+                          {'value' => 'left', 'label' => 'Left'},
+                          {'value' => 'none', 'label' => 'Hidden'}
+                        ],
+                        'default' => 'bottom'}
+
     NUMERIC_TYPES = ['number', 'percent', 'money']
 
     VISUALIZATION_CONFIG = {
@@ -39,19 +49,7 @@ module Displays::Config
                 {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
                 {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
             ],
-            'advancedOptions' => [
-                {'label' => 'Legend', 'name' => 'legend',
-                 'type' => 'dropdown', 'dropdownOptions' => [
-                    {'value' => 'right', 'label' => 'Right'},
-                    {'value' => 'left', 'label' => 'Left'},
-                    {'value' => 'top', 'label' => 'Top'},
-                    {'value' => 'bottom', 'label' => 'Bottom'},
-                    {'value' => 'none', 'label' => 'Hidden'}
-                ],
-                 'default' => 'right'},
-                {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-                 'default' => false}
-            ]
+            'advancedOptions' => [LEGEND_OPTIONS]
         },
 
         'annotatedtimeline' => {'display' => 'google', 'library' => 'google.visualization.AnnotatedTimeLine', 'hidden' => true,
@@ -89,17 +87,7 @@ module Displays::Config
                             {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
                             {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
                         ],
-                        'advancedOptions' => [
-                            {'label' => 'Legend', 'name' => 'legend',
-                             'type' => 'dropdown', 'dropdownOptions' => [
-                                {'value' => 'right', 'label' => 'Right'},
-                                {'value' => 'left', 'label' => 'Left'},
-                                {'value' => 'top', 'label' => 'Top'},
-                                {'value' => 'bottom', 'label' => 'Bottom'},
-                                {'value' => 'none', 'label' => 'Hidden'}
-                            ], 'default' => 'right'},
-                            {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-                             'default' => false},
+                        'advancedOptions' => [LEGEND_OPTIONS,
                             {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
                              'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
                             {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
@@ -116,19 +104,7 @@ module Displays::Config
                               {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
                               {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
                           ],
-                          'advancedOptions' => [
-                              {'label' => 'Legend', 'name' => 'legend',
-                               'type' => 'dropdown', 'dropdownOptions' => [
-                                  {'value' => 'right', 'label' => 'Right'},
-                                  {'value' => 'left', 'label' => 'Left'},
-                                  {'value' => 'top', 'label' => 'Top'},
-                                  {'value' => 'bottom', 'label' => 'Bottom'},
-                                  {'value' => 'none', 'label' => 'Hidden'}
-                              ],
-                               'default' => 'right'},
-                              {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-                               'default' => false}
-                          ]
+                          'advancedOptions' => [LEGEND_OPTIONS]
         },
 
         'linechart' => {'display' => 'chart', 'library' => 'google.visualization.LineChart',
@@ -140,17 +116,7 @@ module Displays::Config
                             {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
                             {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
                         ],
-                        'advancedOptions' => [
-                            {'label' => 'Legend', 'name' => 'legend',
-                             'type' => 'dropdown', 'dropdownOptions' => [
-                                {'value' => 'right', 'label' => 'Right'},
-                                {'value' => 'left', 'label' => 'Left'},
-                                {'value' => 'top', 'label' => 'Top'},
-                                {'value' => 'bottom', 'label' => 'Bottom'},
-                                {'value' => 'none', 'label' => 'Hidden'}
-                            ], 'default' => 'right'},
-                            {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-                             'default' => false},
+                        'advancedOptions' => [LEGEND_OPTIONS,
                             {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
                              'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
                             {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
@@ -166,16 +132,7 @@ module Displays::Config
                                           {'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
                        'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
                                           'type' => 'colorArray', 'default' => COLOR_DEFAULTS}],
-                       'advancedOptions' => [
-                           {'label' => 'Legend', 'name' => 'legend',
-                            'type' => 'dropdown', 'dropdownOptions' => [
-                               {'value' => 'right', 'label' => 'Right'},
-                               {'value' => 'left', 'label' => 'Left'},
-                               {'value' => 'top', 'label' => 'Top'},
-                               {'value' => 'bottom', 'label' => 'Bottom'},
-                               {'value' => 'none', 'label' => 'Hidden'}
-                           ],
-                            'default' => 'right'},
+                       'advancedOptions' => [LEGEND_OPTIONS,
                            {'label' => 'Min. Angle', 'name' => 'pieJoinAngle', 'type' => 'number',
                             'default' => 1,
                             'help' => 'Slices below this angle will be combined into an "Other" slice'}

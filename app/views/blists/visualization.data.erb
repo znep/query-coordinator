@@ -79,7 +79,7 @@
             <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
-            <option format='<%= c.format.to_json %>'
+            <option format='<%= c.format.to_json %>' dataType='<%= c.client_type %>'
               value='<%= c.id %>' <%= c.id == cur_id ?
                 "selected='selected'" : '' %>><%= c.name %></option>
             <%- end -%>
@@ -167,6 +167,7 @@
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
                 <option format='<%= c.format.to_json %>'
+                  dataType='<%= c.client_type %>'
                   value='<%= c.id %>' <%= c.id == cur_id ?
                     "selected='selected'" : '' %>><%= c.name %></option>
                 <%- end -%>
@@ -395,9 +396,13 @@
               if (id !== '')
               {
                   var $c = $t.find(':selected');
+                  var format = $.json.deserialize(
+                    $.htmlUnescape($c.attr('format')));
+                  if (_.include(<%= raw Displays::Config::NUMERIC_TYPES.to_json %>,
+                      $c.attr('dataType')))
+                  { $.extend(format, {aggregate: 'sum'}); }
                   fixedCols[parseInt(splitN[2])] = {id: id,
-                    format: $.json.deserialize($.htmlUnescape($c.attr('format'))),
-                    name: $c.text(), hidden: false};
+                    format: format, name: $c.text(), hidden: false};
               }
           }
 
@@ -412,10 +417,14 @@
                   if (id !== '')
                   {
                       var $c = $t.find(':selected');
+                      var format = $.json.deserialize(
+                          $.htmlUnescape($c.attr('format')));
+                      if (_.include(
+                            <%= raw Displays::Config::NUMERIC_TYPES.to_json %>,
+                            $c.attr('dataType')))
+                      { $.extend(format, {aggregate: 'sum'}); }
                       dataCols[groupNum][num] = {id: id,
-                        format: $.json.deserialize($.htmlUnescape
-                            ($c.attr('format'))),
-                        name: $c.text(), hidden: false};
+                        format: format, name: $c.text(), hidden: false};
                   }
               }
               else
@@ -476,10 +485,14 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
-              blist.display.invalid = false;
-              blist.display.displayFormat = $.extend(origOptions,
-                  {wmode: 'opaque'});
-              $('.chartContainer').visualization();
+                <%- if @view.display.is_a?(Displays::Google) -%>
+                blist.display.invalid = false;
+                blist.display.displayFormat = $.extend(origOptions,
+                    {wmode: 'opaque'});
+                $('.chartContainer').visualization();
+                <%- else -%>
+                blist.$display.socrataChart().reload(origOptions);
+                <%- end -%>
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>

@@ -18,20 +18,14 @@
             'barchart': 'highcharts',
             'columnchart': 'highcharts',
             'linechart': 'highcharts',
-            'piechart': 'highcharts',
-
-            'annotatedtimeline': 'google',
-            'geomap': 'google',
-            'imagesparkline': 'google',
-            'intensitymap': 'google',
-            'motionchart': 'google'
+            'piechart': 'highcharts'
         }
     };
 
     $.fn.socrataChart = function(options)
     {
         // Check if object was already created
-        var socrataChart = $(this[0]).data("socrataChart");
+        var socrataChart = $(this[0]).data("socrataVisualization");
         if (!socrataChart)
         {
             var className = $.socrataChart.chartMapping[options.chartType];
@@ -55,6 +49,7 @@
     {
         defaults:
         {
+            chartType: 'linechart'
         },
 
         prototype:
@@ -70,7 +65,22 @@
                 var chartObj = this;
                 if (!getColumns(chartObj, view))
                 { getLegacyColumns(chartObj, view); }
-                chartObj.columnsLoaded();
+                $.ajax({url: '/views/' + view.id + '/rows.json',
+                    data: {method: 'getAggregates'},
+                    dataType: 'json',
+                    success: function(aggData)
+                    {
+                        var aggMap = {};
+                        _.each(aggData, function(a)
+                            { aggMap[a.columnId] = {type: a.name, value: a.value}; }
+                        );
+                        _.each(chartObj._dataColumns, function(c)
+                        {
+                            if (aggMap[c.id] !== undefined)
+                            { c.aggregate = aggMap[c.id]; }
+                        });
+                        chartObj.columnsLoaded();
+                    }});
             },
 
             columnsLoaded: function()
@@ -78,6 +88,21 @@
                 // Implement me if you want to deal with the columns in more
                 // detail -- either munge them into a more useable format, or
                 // initialize parts of the chart
+            },
+
+            reloadVisualization: function()
+            {
+                var chartObj = this;
+
+                chartObj.resetData();
+
+                delete chartObj._idIndex;
+                delete chartObj._dataColumns;
+            },
+
+            resetData: function()
+            {
+                // Implement me to reset data on a reload
             }
         }
     }));

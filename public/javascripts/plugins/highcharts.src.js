@@ -2803,7 +2803,7 @@ function Chart (options) {
 		 * @param {Boolean} doRedraw
 		 */
 		function setCategories(newCategories, doRedraw) {
-				categories = newCategories;
+				axis.categories = categories = newCategories;
 				if (pick(doRedraw, true)) redraw();
 		};
 		

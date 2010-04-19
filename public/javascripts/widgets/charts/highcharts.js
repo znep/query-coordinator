@@ -19,14 +19,7 @@
             initializeChart: function()
             {
                 var chartObj = this;
-                chartObj.chart = new Highcharts.Chart({
-                    chart: {
-                        renderTo: chartObj.$dom().attr('id'),
-                        // TODO: real type
-                        defaultSeriesType: 'line'
-                    }
-                    // TODO: real config
-                });
+                createChart(chartObj);
             },
 
             columnsLoaded: function()
@@ -35,22 +28,56 @@
                 chartObj._xCategories = [];
                 chartObj._xColumn = chartObj._dataColumns[0];
                 chartObj._yColumns = [];
-                for (var i = 1; i < chartObj._dataColumns.length; i++)
+                var yCols = chartObj._dataColumns.slice(1);
+                if (chartObj._reverseOrder) { yCols.reverse(); }
+                for (var i = 0; i < yCols.length; i++)
                 {
-                    var c = chartObj._dataColumns[i];
+                    var c = yCols[i];
                     chartObj._yColumns.push(c);
-                    chartObj.chart.addSeries({name: c.name, data: []});
+                    chartObj.chart.addSeries({name: c.name, data: []}, false);
+                }
+                // Adjust scale to make sure series are synched with axis
+                chartObj.chart.xAxis[0].setScale();
+                chartObj._columnsLoaded = true;
+                if (!_.isUndefined(chartObj._pendingRows))
+                {
+                    _.each(chartObj._pendingRows,
+                        function(r) { chartObj.renderRow(r); });
+                    delete chartObj._pendingRows;
+                    chartObj.rowsRendered();
                 }
             },
 
             renderRow: function(row)
             {
                 var chartObj = this;
+                if (!chartObj._columnsLoaded)
+                {
+                    chartObj._pendingRows = chartObj._pendingRows || [];
+                    chartObj._pendingRows.push(row);
+                    return true;
+                }
+
                 chartObj._xCategories.push(row[chartObj._xColumn.dataIndex]);
                 _.each(chartObj._yColumns, function(c, i)
                 {
-                    chartObj.chart.series[i].addPoint(
-                        parseInt(row[c.dataIndex]), false);
+                    var value = parseInt(row[c.dataIndex]);
+                    if (!_.isUndefined(chartObj._displayConfig.pieJoinAngle) &&
+                        !_.isUndefined(c.aggregate) && c.aggregate.type == 'sum' &&
+                        value / c.aggregate.value * 100 <
+                            chartObj._displayConfig.pieJoinAngle)
+                    {
+                        chartObj._seriesRemainders =
+                            chartObj._seriesRemainders || [];
+                        chartObj._seriesRemainders[i] =
+                            chartObj._seriesRemainders[i] || 0;
+                        chartObj._seriesRemainders[i] += value;
+                    }
+                    else
+                    {
+                        chartObj.chart.series[i].addPoint(
+                            [row[chartObj._xColumn.dataIndex], value], false);
+                    }
                 });
                 return true;
             },
@@ -58,10 +85,108 @@
             rowsRendered: function()
             {
                 var chartObj = this;
+                if (!chartObj._columnsLoaded) { return; }
+
+                if (!_.isUndefined(chartObj._seriesRemainders))
+                {
+                    _.each(chartObj._seriesRemainders, function(sr, i)
+                    {
+                        if (sr > 0)
+                        { chartObj.chart.series[i].addPoint(['Other', sr], false); }
+                    });
+                }
                 chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, false);
                 chartObj.chart.redraw();
+            },
+
+            resetData: function()
+            {
+                var chartObj = this;
+                delete chartObj._columnsLoaded;
+                delete chartObj._pendingRows;
+                delete chartObj._seriesRemainders;
+
+                chartObj.chart.destroy();
+                createChart(chartObj);
             }
         }
     }));
+
+    var createChart = function(chartObj)
+    {
+        var typeMapping = {
+            'areachart': 'area',
+            'barchart': 'bar',
+            'columnchart': 'column',
+            'linechart': 'line',
+            'piechart': 'pie'
+        };
+        var type = typeMapping[chartObj.settings.chartType];
+        if (type == 'line' && chartObj._displayConfig.smoothLine)
+        { type = 'spline'; }
+
+        var xTitle = chartObj._displayConfig.titleX;
+        var yTitle = chartObj._displayConfig.titleY;
+        var legendPos = chartObj._displayConfig.legend;
+        var legendStyle = {};
+        var chartMargin = [10, 50, 60, 80];
+        switch (legendPos)
+        {
+            case 'top':
+                chartMargin[0] = 40;
+                legendStyle.top = '5px';
+                break;
+            case 'left':
+                legendStyle.left = '10px';
+                legendStyle.top = '30%';
+                chartMargin[3] = 200;
+                break;
+            case 'right':
+                legendStyle.left = '';
+                legendStyle.right = '10px';
+                legendStyle.top = '30%';
+                chartMargin[1] = 180;
+                break;
+        }
+
+        // For some reason, bar charts are rendered with the data in the reverse
+        // order; while the legend is correct (perhaps due to the inverted axis?).
+        // By manually flipping the order of data, colors, and legend, we can
+        // make it look correct
+        chartObj._reverseOrder = type == 'bar';
+
+        var chartConfig =
+        {
+            chart: {
+                renderTo: chartObj.$dom()[0],
+                defaultSeriesType: type,
+                inverted: type == 'bar',
+                margin: chartMargin
+            },
+            credits: { enabled: false },
+            legend: { enabled: legendPos != 'none',
+                layout: _.include(['left', 'right'], legendPos) ?
+                    'vertical' : 'horizontal',
+                reversed: chartObj._reverseOrder,
+                style: legendStyle },
+            plotOptions: {},
+            title: { style: { display: 'none' } },
+            xAxis: { title:
+                { enabled: xTitle !== '', text: xTitle } },
+            yAxis: { title:
+                { enabled: yTitle !== '', text: yTitle } }
+        };
+
+        var typeConfig = {allowPointSelect: true,
+            lineWidth: parseInt(chartObj._displayConfig.lineSize),
+            marker: {enabled: chartObj._displayConfig.pointSize != '0'} };
+        chartConfig.plotOptions[type] = typeConfig;
+
+        chartObj.chart = new Highcharts.Chart(chartConfig);
+        // Set colors after chart is created so they don't get merged with the
+        // default colors; we want to override them, instead
+        chartObj.chart.options.colors = chartObj._displayConfig.colors;
+        if (chartObj._reverseOrder) { chartObj.chart.options.colors.reverse(); }
+    };
 
 })(jQuery);

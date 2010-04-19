@@ -27,6 +27,13 @@ class InternalController < ApplicationController
     end
   end
 
+  def show_property
+    @domain = Domain.find(params[:domain_id])
+    @config = Configuration.find_unmerged(params[:config_id])
+    @property_key = params[:property_id]
+    @property = CurrentDomain.raw_properties[@property_key]
+  end
+
   def index_modules
     @modules = Accountmodule.find().sort {|a,b| a.name <=> b.name}
     @tiers = Accounttier.find()

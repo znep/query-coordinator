@@ -46,9 +46,9 @@
                         '<div class="loadingSpinner"></div></div>');
                 }
 
-                if ($domObj.siblings('#mapError').length < 1)
-                { $domObj.before('<div id="mapError" class="mainError"></div>'); }
-                $domObj.siblings('#mapError').hide();
+                if ($domObj.siblings('#vizError').length < 1)
+                { $domObj.before('<div id="vizError" class="mainError"></div>'); }
+                $domObj.siblings('#vizError').hide();
 
                 currentObj.initializeVisualization();
 
@@ -68,12 +68,30 @@
 
             showError: function(errorMessage)
             {
-                this.$dom().siblings('#mapError').show().text(errorMessage);
+                this.$dom().siblings('#vizError').show().text(errorMessage);
             },
 
             initializeVisualization: function()
             {
                 // Implement me
+            },
+
+            reload: function(newOptions)
+            {
+                var vizObj = this;
+                vizObj.$dom().siblings('#vizError').hide().text('');
+
+                if (newOptions !== undefined)
+                { vizObj._displayConfig = newOptions; }
+
+                vizObj.reloadVisualization();
+
+                vizObj._rowsLeft = 0;
+                vizObj._rowsLoaded = 0;
+
+                loadRows(vizObj,
+                    {method: 'getByIds', meta: true, start: 0,
+                        length: vizObj.settings.pageSize});
             },
 
             handleRowsLoaded: function(rows)
@@ -104,6 +122,11 @@
 
                 if (addedRows)
                 { vizObj.rowsRendered(); }
+            },
+
+            reloadVisualization: function()
+            {
+                // Implement me when the view is being reset
             },
 
             renderRow: function(row)
@@ -153,6 +176,7 @@
     {
         if (data.meta !== undefined)
         {
+            vizObj._displayConfig = data.meta.view.displayFormat;
             vizObj.getColumns(data.meta.view);
             vizObj._rowsLeft = data.meta.totalRows - vizObj._rowsLoaded;
         }

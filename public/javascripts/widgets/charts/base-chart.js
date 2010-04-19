@@ -65,9 +65,11 @@
                 var chartObj = this;
                 if (!getColumns(chartObj, view))
                 { getLegacyColumns(chartObj, view); }
+                chartObj.startLoading();
                 $.ajax({url: '/views/' + view.id + '/rows.json',
                     data: {method: 'getAggregates'},
                     dataType: 'json',
+                    error: function() { chartObj.finishLoading(); },
                     success: function(aggData)
                     {
                         var aggMap = {};
@@ -80,6 +82,7 @@
                             { c.aggregate = aggMap[c.id]; }
                         });
                         chartObj.columnsLoaded();
+                        chartObj.finishLoading();
                     }});
             },
 

@@ -71,6 +71,18 @@
                 this.$dom().siblings('#vizError').show().text(errorMessage);
             },
 
+            startLoading: function()
+            {
+                this.$dom().parent().find('.loadingSpinnerContainer')
+                    .removeClass('hidden');
+            },
+
+            finishLoading: function()
+            {
+                this.$dom().parent().find('.loadingSpinnerContainer')
+                    .addClass('hidden');
+            },
+
             initializeVisualization: function()
             {
                 // Implement me
@@ -157,17 +169,13 @@
 
     var loadRows = function(vizObj, args)
     {
-        vizObj.$dom().parent().find('.loadingSpinnerContainer')
-            .removeClass('hidden');
+        vizObj.startLoading();
         $.ajax({url: '/views/' + blist.display.viewId + '/rows.json',
                 cache: false, data: args, type: 'GET', dataType: 'json',
-                error: function()
-                    { vizObj.$dom().parent().find('.loadingSpinnerContainer')
-                        .addClass('hidden'); },
+                error: function() { vizObj.finishLoading(); },
                 success: function(data)
                 {
-                    vizObj.$dom().parent().find('.loadingSpinnerContainer')
-                        .addClass('hidden');
+                    vizObj.finishLoading();
                     rowsLoaded(vizObj, data);
                 }});
     };

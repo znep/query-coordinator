@@ -16,7 +16,7 @@ class Displays::Map < Displays::Base
   end
 
   def required_stylesheets
-    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/1.5/js/dojo/dijit/themes/tundra/tundra.css', 'google-map' ]
+    [ 'http://serverapi.arcgisonline.com/jsapi/arcgis/1.5/js/dojo/dijit/themes/tundra/tundra.css', 'map-screen' ]
   end
 
   def render_inline_runtime_js(context)
@@ -29,5 +29,13 @@ class Displays::Map < Displays::Base
   MAP_TYPES = [
     {'value' => 'google', 'label' => 'Google Maps'},
     {'value' => 'esri', 'label' => 'ESRI ArcGIS'}
+  ]
+
+  ESRI_LAYERS = [
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer', 'type' => 'tile', 'name' => 'Street Map'},
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer', 'type' => 'tile', 'name' => 'Satellite Imagery'},
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/USA_Topo_Maps/MapServer', 'type' => 'tile', 'name' => 'Detailed USA Topographic Map'},
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer', 'type' => 'tile', 'name' => 'Annotated World Topographic Map'},
+    {'url' => 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer', 'type' => 'tile', 'name' => 'Natural Earth Map'}
   ]
 end

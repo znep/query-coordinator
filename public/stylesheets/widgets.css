@@ -2436,6 +2436,19 @@ div.color_swatch.hover .inner { border: 1px solid #ffffff; }
 /*** END: loading spinner styles ***/
 
 
+/*** START: slider styles ***/
+.ui-slider
+{
+    background-color: #cccccc;
+    border: 1px solid #999999;
+}
+.ui-slider-handle
+{
+    background-color: #aaaaaa;
+    border: 1px solid #666666;
+}
+/*** END: slider styles ***/
+
 /*** START: Visualization styles ***/
 .chartContainer .annotationsdiv { float: left; }
 /*** END: Visualization styles ***/

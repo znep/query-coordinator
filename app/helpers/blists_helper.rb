@@ -252,7 +252,7 @@ module BlistsHelper
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Form', 'href' => "#{view.href}/form",
-      'if' => !view.is_grouped? && CurrentDomain.member?(current_user) &&
+      'if' => !view.is_grouped? && CurrentDomain.user_can?(current_user, :create_datasets) &&
                module_available?(:form_publish) &&
                view.owned_by?(@current_user) &&
                view.parent_dataset.owned_by?(@current_user),
@@ -322,7 +322,7 @@ module BlistsHelper
         'This dataset does not have the appropriate columns for visualizations')},
       {'text' => 'Create a Form View...', 'href' => "#{view.href}/form",
       'if' => !view.is_alt_view? && !view.is_grouped? &&
-        (CurrentDomain.member?(current_user) && module_available?(:form_publish) &&
+        (CurrentDomain.user_can?(current_user, :create_datasets) && module_available?(:form_publish) &&
          view.owned_by?(@current_user) &&
          view.parent_dataset.owned_by?(@current_user)),
       'user_required' => true, 'class' => 'form mainViewOption' +

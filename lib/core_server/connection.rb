@@ -7,6 +7,15 @@ module CoreServer
       @cookies = cookies
       @runtime = 0
       @request_count = 0
+      @batching = false
+    end
+
+    def batch_request()
+      @batching = true
+      @batch_queue = []
+      yield
+      @batching = false
+      flush_batch_queue()
     end
 
     def reset_counters
@@ -25,15 +34,27 @@ module CoreServer
     end
 
     def create_request(path, payload = "{}", custom_headers = {})
-      generic_request(Net::HTTP::Post.new(path), payload, custom_headers).body
+      if @batching
+       @batch_queue << {:url => path, :body => payload, :requestType => 'POST'}
+      else
+        generic_request(Net::HTTP::Post.new(path), payload, custom_headers).body
+      end
     end
 
     def update_request(path, payload = "", custom_headers = {})
-      generic_request(Net::HTTP::Put.new(path), payload, custom_headers).body
+      if @batching
+       @batch_queue << {:url => path, :body => payload, :requestType => 'PUT'}
+      else
+        generic_request(Net::HTTP::Put.new(path), payload, custom_headers).body
+      end
     end
 
     def delete_request(path, payload = "", custom_headers = {})
-      generic_request(Net::HTTP::Delete.new(path), payload, custom_headers).body
+      if @batching
+         @batch_queue << {:url => path, :body => payload, :requestType => 'DELETE'}
+      else
+        generic_request(Net::HTTP::Delete.new(path), payload, custom_headers).body
+      end
     end
 
     def multipart_post_file(path, file)
@@ -95,6 +116,28 @@ module CoreServer
     end
 
   private
+    def flush_batch_queue
+      if !@batch_queue.empty?
+        result = generic_request(Net::HTTP::Post.new('/batches'), {:requests => @batch_queue}.to_json)
+        Rails.logger.info("Batch request sent: " + @batch_queue.map{|b| b[:url]}.join(", "))
+        results_parsed = JSON.parse(result.body)
+        if results_parsed.is_a? Array
+          results_parsed.each_with_index do |result, i|
+            if result['error']
+              raise CoreServer::CoreServerError.new(@batch_queue[i][:requestType] +
+                " " + @batch_queue[i][:url],
+                result['errorCode'], result['errorMessage'])
+            end
+          end
+        else
+          raise CoreServer::CoreServerError.new("POST /batches",
+            'expected_array_return_value', parsed_body)
+        end
+        @batch_queue.clear
+      end
+      results_parsed
+    end
+
     def generic_request(request, json = nil, custom_headers = {})
       requestor = User.current_user
       if requestor && requestor.session_token

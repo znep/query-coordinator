@@ -6,9 +6,11 @@
         menu_options['separator'],
 
         {'text' => "Design a New #{t(:blist_name).titleize}...",
-        'class' => 'create', 'href' => "#{new_blist_path}"},
+         'class' => 'create', 'href' => "#{new_blist_path}",
+         'module_enabled' => 'community_creation'},
         {'text' => "Upload a New #{t(:blist_name).titleize}...",
-        'class' => 'import', 'href' => '/upload'},
+         'class' => 'import', 'href' => '/upload',
+         'module_enabled' => 'community_creation'},
         menu_options['separator'],
         {'text' => 'Open Recent', 'class' => 'recent', 'href' => '#',
         'user_required' => true, 'submenu' => recent_blists_menu(@view, 5)},

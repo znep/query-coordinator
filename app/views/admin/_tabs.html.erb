@@ -2,10 +2,24 @@
   <li class='even<%= active == 'index' ? ' active' : '' %>'><div class='wrapper'>
     <%= link_to 'Administration', :action => :index %>
   </div></li>
-  <li class='even<%= active == 'users' ? ' active' : '' %>'><div class='wrapper'>
+  <%- if CurrentDomain.user_can?(current_user, :manage_users) -%>
+  <li class='<%= active == 'users' ? ' active' : '' %>'><div class='wrapper'>
     <%= link_to 'Users', :action => :users %>
   </div></li>
-  <!--<li class='even<%= active == 'features' ? ' active' : '' %>'><div class='wrapper'>
-    <%= link_to 'Features', :action => :features %>
-  </div></li> -->
+  <%- end -%>
+  <%- if CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
+  <li class='even<%= active == 'config' ? ' active' : '' %>'><div class='wrapper'>
+    <%= link_to 'Configuration', :action => :config %>
+  </div></li>
+  <%- end -%>
+  <%- if false && CurrentDomain.user_can?(current_user, :edit_sdp) -%>
+  <li class='<%= active == 'sdp' ? ' active' : '' %>'><div class='wrapper'>
+    <%= link_to 'SDP', :action => :sdp %>
+  </div></li>
+  <%- end -%>
+  <% if false && CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
+  <li class='<%= active == 'theme' ? ' active' : '' %>'><div class='wrapper'>
+    <%= link_to 'Theme', :action => :theme %>
+  </div></li>
+  <%- end -%>
 </ul>

@@ -191,7 +191,7 @@ class BlistsController < ApplicationController
       return require_user(true)
     end
 
-    unless CurrentDomain.member?(current_user) && CurrentDomain.module_available?(:sdp_customizer)
+    unless CurrentDomain.user_can?(current_user, :edit_sdp) && CurrentDomain.module_available?(:sdp_customizer)
       # Not a member of the org or the org doesn't have SDP customization
       return upsell_or_404
     end
@@ -395,7 +395,7 @@ class BlistsController < ApplicationController
   end
 
   def new
-    if (!CurrentDomain.member?(current_user) && !CurrentDomain.module_enabled?(:community_creation))
+    if (!CurrentDomain.user_can?(current_user, :create_datasets) && !CurrentDomain.module_enabled?(:community_creation))
       # User doesn't have access to create new datasets
       return upsell_or_404
     end
@@ -407,7 +407,7 @@ class BlistsController < ApplicationController
   end
 
   def upload
-    if (!CurrentDomain.member?(current_user) && !CurrentDomain.module_enabled?(:community_creation))
+    if (!CurrentDomain.user_can?(current_user, :create_datasets) && !CurrentDomain.module_enabled?(:community_creation))
       # User doesn't have access to create new datasets
       return upsell_or_404
     end
@@ -420,7 +420,6 @@ class BlistsController < ApplicationController
   end
 
   def upload_alt
-    
   end
 
   def create
@@ -534,10 +533,12 @@ class BlistsController < ApplicationController
 
   def append
     @view = View.find(params[:id])
+    @error_type = @view.columns.any?{ |column| column.client_type.match(/(document|photo|nested_table)/) }
   end
 
   def replace
     @view = View.find(params[:id])
+    @error_type = @view.columns.any?{ |column| column.client_type.match(/(document|photo|nested_table)/) }
   end
 
   def share
@@ -685,7 +686,7 @@ class BlistsController < ApplicationController
               'class' => Column}
           end
 
-          view_req['columns'] = columns
+          view_req['body']['columns'] = columns
         end
 
         batch_reqs << view_req 

@@ -1,13 +1,129 @@
 class AdminController < ApplicationController
   include AdminHelper
-  before_filter :check_auth
+
+  before_filter :check_auth, :except => [:index, :theme, :update_theme, :sdp, :update_sdp]
+  before_filter :check_designer, :only => [:index, :theme, :update_theme]
+  before_filter :check_edit_sdp, :only => [:sdp, :update_sdp]
 
   def index
   end
   
-  def features
+  def config
+    session[:return_to] = url_for(:action => :config)
+
+    @features = Domain.configurable_features.map do |feature|
+      {:name => feature, :enabled => CurrentDomain.features[feature] || false}
+    end
+    @features.sort! { |a, b| a[:name] <=> b[:name] } unless @features.nil?
+
+    @modules = CurrentDomain.modules.select { |mod|
+      Domain.flippable_modules.include?(mod['name']) }.map do |m|
+        { :name => m['name'], :description => m['description'],
+          :enabled => CurrentDomain.features[m['name']] }
+    end
+    @modules.sort! { |a, b| a[:name] <=> b[:name] } unless @modules.nil?
+
+    @comment_modules = CurrentDomain.modules.select { |mod|
+      Domain.comment_modules.include?(mod['name']) }.map do |c|
+        {:name => c['name'], :description => c['description'],
+          :enabled => CurrentDomain.features[c['name']] }
+    end
+
+    # HACK: Our comment system isn't one-hot, so we have to make a disable option
+    @comment_modules.insert(0, :name => '0', :description => 'Disable Comments', 
+        :enabled => CurrentDomain.features['allow_comments'] == false)
+
+    @strings = CurrentDomain.strings.select { |k,v| Domain.configurable_strings.include?(k) }
+    @strings.sort! { |a, b| a[0] <=> b[0] } unless @strings.nil?
+
+    # Finally load any custom strings, e.g. email.from_address
+    @site_theme_options = Domain.site_theme_options.map do |option|
+      {:name => option[:name], :value => CurrentDomain.raw_properties[option[:name]],
+         :description => option[:description] }
+    end
+    @site_theme_options.sort! { |a, b| a[:name] <=> b[:name] } unless @site_theme_options.nil?
+  end
+
+  def update_config
+    # Grab the unmerged versions so we can tell what keys to *create* rather than update
+    feature_set = configuration = nil
+    CoreServer::Base.connection.batch_request do
+      feature_set   = Configuration.find_by_type('feature_set', true, request.host, false)[0]
+      configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
+    end
+
+    # Wrap it in one big, cuddly batch request
+    CoreServer::Base.connection.batch_request do
+      unless params[:strings].blank?
+        params[:strings].each do |name, value|
+          if(Domain.configurable_strings.include?(name))
+            update_or_create_property(configuration, "strings.#{name}", value) do
+              configuration.properties.strings[name].nil?
+            end
+          end
+        end
+      end
+
+      unless params[:options].blank?
+        params[:options].each do |name, value|
+          if Domain.site_theme_options.any? {|opt| opt[:name] == (name)}
+            update_or_create_property(configuration, name, value) do
+              configuration.raw_properties[name].nil?
+            end
+          end
+        end
+      end
+
+      create_or_update_from_form(feature_set,
+        Domain.flippable_modules, params[:modules])
+
+      create_or_update_from_form(feature_set,
+        Domain.configurable_features, params[:features])
+
+      comment_config = {
+        'allow_comments' => true,
+        'community_comment_moderation' => false,
+        'publisher_comment_moderation' => false
+      }
+      # HACK: There is no 'disable_comments' flag, so we have this
+      if params[:comments] == '0'
+        comment_config['allow_comments'] = false
+      else
+        comment_config[params[:comments]] = true
+      end
+
+      comment_config.each do |name, value|
+        if CurrentDomain.modules.any? { |m| m['name'] == name }
+          update_or_create_property(feature_set, name, value) do
+            feature_set.properties[name].nil?
+          end
+        end
+      end
+    end
+
+    CurrentDomain.flag_preferences_out_of_date!
+    redirect_to :action => :config
+  end
+
+  def theme
+    session[:return_to] = url_for(:action => :theme)
+    configuration = Configuration.find_by_type('site_theme', true, request.host)[0]
+    @theme = configuration.properties.theme
+    @configID = configuration.data['id']
   end
   
+  def update_theme
+    if params[:configID].present?
+      configuration = Configuration.find_unmerged(params[:configID])
+
+      # Logic goes here ...
+
+      # !! Note: We might not be working on the active theme, need more LOGIC
+      CurrentDomain.flag_preferences_out_of_date!
+    end
+    redirect_to :action => :theme
+  end
+
   def users
     @roles_list = User.roles_list
     if !params[:username].blank?
@@ -31,32 +147,66 @@ class AdminController < ApplicationController
       if params[:role] == '0'
         success = updated_user && updated_user.roles.nil?
       else
-        success = updated_user && updated_user.roles && updated_user.roles.include?(params[:role])
+        success = updated_user && updated_user.roles &&
+          updated_user.roles.include?(params[:role])
       end
       flash[:notice] = success ?
-        "User '#{updated_user.displayName}' successfully saved" : "Error saving user. #{error_message}"
+        "User '#{updated_user.displayName}' successfully saved" :
+        "Error saving user. #{error_message}"
     end
     redirect_to :action => :users
   end
   
-  
+
   def reload
     CurrentDomain.reload(request.host)
-    redirect_to :action => :index
+    redirect_back_or_default(url_for :action => :index)
   end
 
+
 private
-  def check_auth(role='administrator')
-    if current_user.nil?
-      return require_user(true)
-    elsif !current_user.has_role?(role)
+  def check_auth(level = 'manage_users')
+    unless CurrentDomain.user_can?(current_user, level)
       flash.now[:error] = "You do not have permission to view this page"
       return (render 'shared/error', :status => :forbidden)
     end
   end
   
+  def check_designer
+    check_auth(:edit_site_theme)
+  end
+  
+  def check_edit_sdp
+    check_auth(:edit_sdp)
+  end
+  
   def find_privileged_users(level=1)
     User.find :method => 'usersWithRole', :role => level
   end
+
+  def update_or_create_property(configuration, name, value)
+    if value.present?
+      if (yield)
+        configuration.create_property(name,value)
+      else
+        configuration.update_property(name,value)
+      end
+    end
+  end
   
+  def create_or_update_from_form(config, whitelist, form_values, enabled='enabled')
+    if form_values
+      form_values[:name].each do |name, value|
+        if(whitelist.include?(name))
+          if config.raw_properties[name].nil?
+            config.create_property(name, form_values[:enabled].present? &&
+              form_values[:enabled][name] == enabled)
+          else
+            config.update_property(name, form_values[:enabled].present? &&
+              form_values[:enabled][name] == enabled)
+          end
+        end
+      end
+    end
+  end
 end

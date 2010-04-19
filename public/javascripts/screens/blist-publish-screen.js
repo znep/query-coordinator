@@ -778,8 +778,8 @@ blist.publish.hideUnsavedChangesBar = function()
             $(document).bind('click.colorPicker', function(event)
             {
                 var $target = $(event.target);
-                if (($target.parents('.colorPickerContainer').length == 0) &&
-                    !$target.is('.colorPickerTrigger'))
+                if ((($target.parents('.colorPickerContainer').length == 0) &&
+                    !$target.is('.colorPickerTrigger')) || $target.is('.colorpicker_close_link'))
                 {
                     $(document).unbind('click.colorPicker');
                     $this.hide();

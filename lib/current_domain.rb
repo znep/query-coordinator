@@ -52,6 +52,14 @@ class CurrentDomain
   def self.organizationId
     @@current_domain[:data].organizationId
   end
+  
+  def self.preferences_out_of_date?
+    @@current_domain[:out_of_date] || false
+  end
+  
+  def self.flag_preferences_out_of_date!
+    @@current_domain[:out_of_date] = true
+  end
 
   def self.default_widget_customization
     # Return empty if the current domain doesn't have the customizer
@@ -81,15 +89,20 @@ class CurrentDomain
 
   def self.properties
     if @@current_domain[:site_properties].nil?
-      if @@current_domain[:site_config_id].nil?
-        conf = @@current_domain[:data].default_configuration('site_theme')
-      else
-        conf = Configuration.find(@@current_domain[:site_config_id].to_s)
-      end
+      conf = self.current_theme
       @@current_domain[:site_properties] = conf.nil? ?
         Hashie::Mash.new : conf.properties
     end
     return @@current_domain[:site_properties]
+  end
+  
+  def self.raw_properties
+    if @@current_domain[:site_properties_raw].nil?
+      conf = self.current_theme
+      @@current_domain[:site_properties_raw] = conf.nil? ?
+        Hash.new : conf.raw_properties
+    end
+    return @@current_domain[:site_properties_raw]
   end
 
   def self.templates
@@ -102,6 +115,10 @@ class CurrentDomain
 
   def self.strings
     return self.properties.strings || Hashie::Mash.new
+  end
+
+  def self.features
+    return @@current_domain[:data].features || Hashie::Mash.new
   end
 
   def self.modules
@@ -159,7 +176,23 @@ class CurrentDomain
     if user.nil?
       false
     else
-      self.organizationId == user.organizationId
+      user.roles && user.roles.size > 0
     end
+  end
+  
+  def self.user_can?(user, action)
+    if user.nil?
+      false
+    else
+      user.has_right?(action.to_s)
+    end
+  end
+  
+  
+private
+  def self.current_theme
+    @@current_domain[:site_config_id].nil? ?
+      @@current_domain[:data].default_configuration('site_theme') : 
+      Configuration.find(@@current_domain[:site_config_id].to_s)
   end
 end

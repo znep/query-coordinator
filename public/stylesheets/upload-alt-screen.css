@@ -12,3 +12,11 @@ label
     margin-bottom: 0.5em;
     padding: 1em;
 }
+
+.cancelLink
+{
+    color: #555;
+    display: inline-block;
+    margin-left: 1em;
+    text-transform: uppercase;
+}

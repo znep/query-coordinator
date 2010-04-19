@@ -1,5 +1,5 @@
 .colorpicker {
-	width: 356px;
+	width: 305px;
 	height: 176px;
 	overflow: hidden;
 	position: absolute;
@@ -63,14 +63,6 @@
 	top: 13px;
 	background: #f00;
 }
-.colorpicker_current_color {
-	position: absolute;
-	width: 60px;
-	height: 30px;
-	left: 283px;
-	top: 13px;
-	background: #f00;
-}
 .colorpicker input {
 	background-color: transparent;
 	border: 1px solid transparent;
@@ -126,20 +118,11 @@
 	top: 112px;
 	left: 212px;
 }
-.colorpicker_hsb_h {
-	background-image: url(/images/colorpicker/custom_hsb_h.png);
-	top: 52px;
-	left: 282px;
-}
-.colorpicker_hsb_s {
-	background-image: url(/images/colorpicker/custom_hsb_s.png);
-	top: 82px;
-	left: 282px;
-}
-.colorpicker_hsb_b {
-	background-image: url(/images/colorpicker/custom_hsb_b.png);
-	top: 112px;
-	left: 282px;
+.colorpicker_hsb_h,
+.colorpicker_hsb_s,
+.colorpicker_hsb_b
+{
+    display: none;
 }
 .colorpicker_submit {
 	position: absolute;
@@ -161,4 +144,11 @@
 }
 .colorpicker_slider {
 	background-position: bottom;
+}
+.colorpicker_close_link {
+    background: url(/stylesheets/images/content/section_close_button.png);
+    float: right;
+    height: 16px;
+    margin: 10px 10px 0 0;
+    width: 16px;
 }

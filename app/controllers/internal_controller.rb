@@ -119,14 +119,14 @@ class InternalController < ApplicationController
     if !params['new-feature_name'].blank?
       config.create_property(params['new-feature_name'],
                              params['new-feature_enabled'] == 'enabled')
-
     else
-      params[:features][:name].each do |key, name|
-        config.update_property(name,
-                            params[:features][:enabled][name] == 'enabled', true)
+      CoreServer::Base.connection.batch_request do
+        params[:features][:name].each do |key, name|
+          config.update_property(name,
+                              params[:features][:enabled][name] == 'enabled')
+        end
       end
     end
-
     redirect_to '/internal/orgs/' + params[:org_id] + '/domains/' +
       params[:domain_id]
   end
@@ -139,24 +139,27 @@ class InternalController < ApplicationController
 
   def set_property
     config = Configuration.find(params[:id])
-    if !params['new-property_name'].blank?
-      # Wrap incoming value in [] to get around the fact the JSON parser
-      # doesn't handle plain string tokens
-      config.create_property(params['new-property_name'],
-                           JSON.parse("[" + params['new-property_value'] + "]")[0])
 
-    else
-      if !params[:delete_properties].nil?
-        params[:delete_properties].each do |name, value|
-          if value == 'delete'
-            params[:properties].delete(name)
-            config.delete_property(name, true)
+    CoreServer::Base.connection.batch_request do
+      if !params['new-property_name'].blank?
+        # Wrap incoming value in [] to get around the fact the JSON parser
+        # doesn't handle plain string tokens
+        config.create_property(params['new-property_name'],
+                             JSON.parse("[" + params['new-property_value'] + "]")[0])
+
+      else
+        if !params[:delete_properties].nil?
+          params[:delete_properties].each do |name, value|
+            if value == 'delete'
+              params[:properties].delete(name)
+              config.delete_property(name)
+            end
           end
         end
-      end
 
-      params[:properties].each do |name, value|
-        config.update_property(name, JSON.parse("[" + value + "]")[0], true)
+        params[:properties].each do |name, value|
+          config.update_property(name, JSON.parse("[" + value + "]")[0])
+        end
       end
     end
 

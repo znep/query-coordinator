@@ -12,16 +12,36 @@
         <div class='outerContent'>
           <div class='contentTR'><div class='contentTL'></div></div>
           <div class='content' id='adminContent'>
-            <%= render :partial => 'user_search', :locals => {:search_param => @search} %>
 
             <h1>Manage Users</h1>
-
+            
+            <%- if @user_search_results.nil? -%>
+              <p class='information'>To modify user privileges on this domain, search for them below or choose from the list of existing users below.</p>
+            <%- end -%>
+            <form class='search usersFind' action='/admin/users'>
+               <div class='searchContainer'>
+                 <label for='username'>Search for users to add</label>
+                 <input type='text' class='textPrompt' name='username'
+                 title='Search for users to add' <%= " value='#{@search}'" unless @search.nil? %> />
+                 <div class='actionBox'>
+                   <div class='clearBox'>
+                     <a class='clearSearch' title='Clear Search'
+                       href='#clear_search'>
+                       Clear Search
+                     </a>
+                   </div>
+                   <input type="image" class="submit" name="findSubmit"
+                   src="<%= image_path("find_button.png") %>"
+                   alt="search" />
+                 </div>
+               </div>
+             </form>
+            
             <%- if flash[:notice] -%>
               <p class='userSaved'><%= flash[:notice] %></p>
             <%- end -%>
             <div class='adminUsersTable'>
             <%- if @user_search_results.nil? -%>
-              <p class='information'>To modify user privileges on this domain, search for them above or choose from the list of existing users below.</p>
               <div class='administrators'>
                 <h2>Current Privileged Users</h2>
                 <%- users_list = @admins -%>
@@ -37,10 +57,9 @@
               <%- users_list.each do |user| -%>
               <span class='userRow <%= cycle('even', 'odd') %>'>
                 <span class='userIdCell'><%= user.displayName %></span>
-                
                 <span class='userRolesCell'>
-                <form class='userSelectForm' method='POST' action='/admin/save_user/<%= user.id %>'>
-                <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roles, 'roleSelect')) %>
+                <form class='userSelectForm' method='post' action='/admin/save_user/<%= user.id %>'>
+                <%= raw(select_for_role("userSelect-#{user.id}", 'role', user.roleName, 'roleSelect')) %>
                 <input type='hidden' name='userid' class='hiddenID' value='<%= user.id %>' />
                 <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>' />
                 <input type='submit' class='userSaveButton' value='Save' />

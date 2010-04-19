@@ -624,35 +624,24 @@
             if (event)
             {
                 // Scroll the active cell into view if it isn't visible vertically
-                // When calculating this with scaling, we deal with everything in
-                // the expanded (1:1 pixel) case, then scale back down when
-                // actually setting the scroll position
-                var scrollTop = $scrolls[0].scrollTop * scalingFactor;
-                var scrollHeight = $scrolls.height();
-                if ($scrolls[0].scrollWidth > $scrolls[0].clientWidth) {
-                    scrollHeight -= scrollbarWidth;
-                }
-                if ($footerScrolls.is(':visible')) {
-                    scrollHeight -= $footerScrolls.outerHeight() - 1;
-                }
-                var scrollBottom = scrollTop + scrollHeight;
-                var top = xy.y * rowOffset;
-                // Pretend the row is extra tall in the expanded case to
-                // correctly calculate the bottom
-                var bottom = top + rowOffset * scalingFactor;
+                // Calculate the actual rows visible, with conservative boundaries
+                // to make sure the row is visible
+                var scrollTop = $scrolls[0].scrollTop;
+                var firstRow = scrollTop / renderScaling;
+                // Subtract one because we are dealing with row indexes;
+                // subtract another to make sure the whole row is visible
+                var lastRow = firstRow + pageSize - 2;
                 var origScrollTop = scrollTop;
 
-                if (scrollBottom < bottom) {
-                    scrollTop = bottom - scrollHeight;
-                }
-                if (scrollTop > top) {
-                    scrollTop = top;
-                }
-                if (scrollTop != origScrollTop) {
-                    $scrolls.scrollTop(scrollTop / scalingFactor);
-                }
+                if (xy.y > lastRow)
+                { scrollTop = Math.ceil((xy.y - (pageSize - 2)) * renderScaling); }
+                if (xy.y < firstRow)
+                { scrollTop = Math.floor(xy.y * renderScaling); }
+                if (scrollTop != origScrollTop)
+                { $scrolls.scrollTop(scrollTop); }
 
-                // Scroll the active cell into view if it isn't visible horizontally
+                // Scroll the active cell into view if it isn't visible
+                // horizontally
                 // Set up scroll variables to use
                 var scrollLeft = $scrolls.scrollLeft();
                 var scrollWidth = $scrolls.width();
@@ -2211,6 +2200,9 @@
                 $render.css('top', adjTop);
                 $lockedRender.css('top', adjTop);
             }
+            // Force a scroll update since IE won't fire it if the div changed
+            // size (shortened), which would cause locked to misalign
+            $scrolls.scroll();
             end("updateLayout.size");
 
             begin("updateLayout.render");

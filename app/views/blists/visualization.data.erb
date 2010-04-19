@@ -139,7 +139,7 @@
         <div class='scrollBlock'>
           <%- dcb_count = 0 -%>
           <%- while true -%>
-          <div class='dataColumnBlock soloBlock clearfix'>
+          <div class='dataColumnBlock configLineBlock soloBlock clearfix'>
             <a class='removeButton' href='#removeDataBlock'
               title='Remove'>Remove</a>
 
@@ -218,6 +218,7 @@
       <li><a href='#create' class='create arrowButton'>
         <%= @is_edit ? 'Save' : 'Create' %> Visualization
       </a></li>
+      <li><a class="jqmClose" href="#cancel">Cancel</a></li>
     </ul>
   </div>
 </div>
@@ -253,8 +254,8 @@
           }, 0);
     };
 
-    $('.vizWrapper select').change(adjustSelectPrompt)
-      .keypress(adjustSelectPrompt).click(adjustSelectPrompt);
+    $('.vizWrapper select').change(adjustSelectPrompt).keypress(adjustSelectPrompt)
+      .click(adjustSelectPrompt).blur(adjustSelectPrompt);
 
     var adjustVizType = function(event)
     {
@@ -316,7 +317,8 @@
         var newName = splitName.join('-');
 
         $label.attr('for', newName);
-        $this.find(':input').attr('id', newName).attr('name', newName);
+        $this.find(':input').attr('id', newName).attr('name', newName)
+          .val('').blur();
         $this.find('a[href=#' + oldName + ']').attr('href', '#' + newName);
         var $color = $this.find('a.colorOption');
         if ($color.length > 0 && $color.attr('colorDefaults') !== undefined)
@@ -488,5 +490,7 @@
 
     $('.vizWrapper form').submit(formSubmit);
     $('.vizWrapper a.create').click(formSubmit);
+
+    $.analytics.trackEvent('Dataset Page Menu', 'Create a Viz dialog opened', blistGridNS.viewId);
   };
 </script>

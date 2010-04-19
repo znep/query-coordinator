@@ -1,6 +1,6 @@
 <h2 class="panelHeader">Activity</h2>
 <%- if (!in_widget) -%>
-  <%- if (CurrentDomain.member?(current_user) && module_available?(:advanced_metrics)) -%>
+  <%- if ((@view.owned_by?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets)) && module_available?(:advanced_metrics)) -%>
     <ul class="headerActions actionButtons">
       <li>
         <a href="<%= "#{view.href}/stats" %>" class="arrowButton">View Statistics</a>

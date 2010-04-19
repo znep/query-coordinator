@@ -1,4 +1,3 @@
-<%- content_for(:wrapper_class, "narrowDialog") -%>
 <%- content_for :headline do -%>
 <h1 class='mapIcon'><%= @is_edit ? 'Edit this' : 'Create a' %> Map</h1>
 <%- end -%>
@@ -14,165 +13,239 @@
 
   <% form_tag("#{@view.href}/create_visualization?edit=#{@is_edit}",
     :class => 'clearfix') do %>
-
     <input type='hidden' id='view_query' name='view_query'
       value='<%= @view.query.to_json %>' />
-    <div class='section common'>
-      <h3>Setup</h3>
-      <p class='subtitle separator'>
-      Enter a name for the map and choose a map type
-      </p>
-      <%- if !@is_edit -%>
-      <div class='line'>
-        <label class='required' for='mapName'>Name</label>
-        <input type='text' id='mapName' name='viewName' class='required' />
+
+    <div class='column'>
+
+      <div class='section common'>
+        <h3>Setup</h3>
+        <p class='subtitle separator'>
+        Enter a name for the map and choose a map type
+        </p>
+        <%- if !@is_edit -%>
+        <div class='line'>
+          <label class='required' for='mapName'>Name</label>
+          <input type='text' id='mapName' name='viewName' class='required' />
+        </div>
+        <%- end -%>
+        <div class='line'>
+          <label class='required' for='mapType'>Type</label>
+          <select id='mapType' name='mapType'
+            class='required <%= @is_edit ? '' : 'prompt' %>'>
+            <option class='prompt' value=''>Select a Map Type</option>
+            <%- Displays::Map::MAP_TYPES.each do |t| -%>
+            <option value='<%= t['value'] %>'
+              <%= @is_edit && cur_type == t['value'] ?
+                "selected='selected'" : '' %>><%= t['label'] %></option>
+            <%- end -%>
+          </select>
+        </div>
       </div>
-      <%- end -%>
-      <div class='line'>
-        <label class='required' for='mapType'>Type</label>
-        <select id='mapType' name='mapType'
-          class='required <%= @is_edit ? '' : 'prompt' %>'>
-          <option class='prompt' value=''>Select a Map Type</option>
-          <%- Displays::Map::MAP_TYPES.each do |t| -%>
-          <option value='<%= t['value'] %>'
-            <%= @is_edit && cur_type == t['value'] ?
-              "selected='selected'" : '' %>><%= t['label'] %></option>
-          <%- end -%>
-        </select>
+
+      <%- cur_cols = @is_edit ? @view.columns.select {|c| !c.flag?('hidden')} :
+        [] -%>
+      <%- cols = {} -%>
+      <div class='typeBlock default'>
+
+        <div class='section'>
+          <h3>Coordinates</h3>
+          <p class='subtitle separator'>
+          Choose the data to map.  You must choose two
+          columns that correspond to global latitude and longitude.
+          </p>
+
+          <%- cols['number'] =
+                  @view.columns_for_datatypes('number',
+                    @is_edit && !@view.is_grouped?) -%>
+          <%- uses_col_format = !@view.displayFormat.nil? &&
+            (!@view.displayFormat.data['plot'].nil? ||
+              !@view.displayFormat.latitudeId.nil?) -%>
+          <%- col_format = uses_col_format ?
+            @view.displayFormat.data['plot'] || @view.displayFormat.data : nil -%>
+
+          <%- lat_id = @is_edit && uses_col_format ?
+            col_format['latitudeId'] : nil -%>
+          <%- cur_id = @is_edit && uses_col_format ?
+            col_format['ycol'] : nil -%>
+          <%- cur_id = @is_edit && !uses_col_format && cur_cols.length > 0 &&
+            @view.datatypes_match(cur_cols[0], 'number') ?
+              cur_cols.shift.id : cur_id -%>
+
+          <div class='line'>
+            <label class='required' for='mapColumn_latitude'>
+              Latitude
+            </label>
+            <select id='mapColumn_latitude' name='mapColumn_latitude'
+              class='required <%= lat_id.nil? && cur_id.nil? ? 'prompt' : '' %>
+              coordinate-column' notequalto='.coordinate-column'>
+              <option class='prompt' value=''>Select a Column</option>
+              <%- cols['number'].each do |c| -%>
+              <option value='<%= c.tableColumnId %>'
+                <%= c.tableColumnId.to_s == lat_id || c.id == cur_id ?
+                  "selected='selected'" : '' %>><%= c.name %></option>
+              <%- end -%>
+            </select>
+          </div>
+
+
+          <%- long_id = @is_edit && uses_col_format ?
+            col_format['longitudeId'] : nil -%>
+          <%- cur_id = @is_edit && uses_col_format ?
+            col_format['xcol'] : nil -%>
+          <%- cur_id = @is_edit && !uses_col_format && cur_cols.length > 0 &&
+            @view.datatypes_match(cur_cols[0], 'number') ?
+              cur_cols.shift.id : cur_id -%>
+
+          <div class='line'>
+            <label class='required' for='mapColumn_longitude'>
+              Longitude
+            </label>
+            <select id='mapColumn_longitude' name='mapColumn_longitude'
+              class='required <%= long_id.nil? && cur_id.nil? ? 'prompt' : '' %>
+              coordinate-column' notequalto='.coordinate-column'>
+              <option class='prompt' value=''>Select a Column</option>
+              <%- cols['number'].each do |c| -%>
+              <option value='<%= c.tableColumnId %>'
+                <%= c.tableColumnId.to_s == long_id || c.id == cur_id ?
+                  "selected='selected'" : '' %>><%= c.name %></option>
+              <%- end -%>
+            </select>
+          </div>
+        </div>
+
+
+        <div class='section'>
+          <h3>Configuration</h3>
+          <p class='subtitle separator'>
+          Set other options for the map.
+          </p>
+
+
+          <%- title_id = @is_edit && uses_col_format ?
+            col_format['titleId'] : nil -%>
+          <%- cur_id = @is_edit && uses_col_format ?
+            col_format['titleCol'] : nil -%>
+
+          <div class='line'>
+            <label for='mapColumn_title'>
+              Title
+            </label>
+            <select id='mapColumn_title' name='mapColumn_title'
+              class='<%= title_id.nil? && cur_id.nil? ? 'prompt' : '' %>'>
+              <option class='prompt' value=''>Select a Column</option>
+              <%- @view.columns_for_datatypes('text',
+                    @is_edit && !@view.is_grouped?).each do |c| -%>
+                <option value='<%= c.tableColumnId %>'
+                  <%= c.tableColumnId.to_s == title_id || c.id == cur_id ?
+                  "selected='selected'" : '' %>><%= c.name %></option>
+              <%- end -%>
+            </select>
+            <span class="helpie"
+              title="Tooltip to display on mouseover of a marker">?</span>
+          </div>
+
+
+          <%- data_types = ['text', 'richtext'] -%>
+          <%- desc_id = @is_edit && uses_col_format ?
+            col_format['descriptionId'] : nil -%>
+          <%- cur_id = @is_edit && uses_col_format ?
+            col_format['bodyCol'] : nil -%>
+          <%- cur_id = @is_edit && !uses_col_format && cur_cols.length > 0 &&
+            @view.datatypes_match(cur_cols[0], data_types) ?
+              cur_cols.shift.id : cur_id -%>
+
+          <div class='line'>
+            <label for='mapColumn_description'>
+              Description
+            </label>
+            <select id='mapColumn_description' name='mapColumn_description'
+              class='<%= desc_id.nil? && cur_id.nil? ? 'prompt' : '' %>'>
+              <option class='prompt' value=''>Select a Column</option>
+              <%- @view.columns_for_datatypes(data_types,
+                    @is_edit && !@view.is_grouped?).each do |c| -%>
+                <option value='<%= c.tableColumnId %>'
+                  <%= c.tableColumnId.to_s == desc_id || c.id == cur_id ?
+                  "selected='selected'" : '' %>><%= c.name %></option>
+              <%- end -%>
+            </select>
+            <span class="helpie"
+              title="Content to display on clicking a marker">?</span>
+          </div>
+
+        </div>
+
       </div>
     </div>
 
-    <%- cur_cols = @is_edit ? @view.columns.select {|c| !c.flag?('hidden')} : [] -%>
-    <%- cols = {} -%>
-    <div class='typeBlock'>
+    <div class='column right'>
+      <div class='typeBlock type- <%= @is_edit ? '' : 'default' %> empty'>
+        (Choose a chart type to see more details)
+      </div>
 
-      <div class='section'>
-        <h3>Coordinates</h3>
-        <p class='subtitle separator'>
-        Choose the data to map.  You must choose two
-        columns that correspond to global latitude and longitude.
-        </p>
+      <div class='typeBlock type-esri <%= @is_edit && cur_type == 'esri' ?
+        'default' : '' %>'>
+        <div class='section'>
+          <h3>Layers</h3>
+          <p class='subtitle separator'>
+          Choose the layers to display for this map
+          </p>
 
-        <%- cols['number'] =
-                @view.columns_for_datatypes('number',
-                  @is_edit && !@view.is_grouped?) -%>
-        <%- uses_col_format = !@view.displayFormat.nil? &&
-          (!@view.displayFormat.data['plot'].nil? ||
-            !@view.displayFormat.latitudeId.nil?) -%>
-        <%- col_format = uses_col_format ?
-          @view.displayFormat.data['plot'] || @view.displayFormat.data : nil -%>
+          <div class='scrollBlock'>
+            <%- count = 0 -%>
+            <%- layer_options = Displays::Map::ESRI_LAYERS -%>
+            <%- layers = @is_edit && cur_type == 'esri' ?
+              @view.displayFormat.layers : nil -%>
+            <%- layers = [layer_options[0]] if layers.nil? -%>
+            <%- layers.each do |l| -%>
+            <%- layer_name = 'esri-layer-' + count.to_s -%>
 
-        <%- lat_id = @is_edit && uses_col_format ?
-          col_format['latitudeId'] : nil -%>
-        <%- cur_id = @is_edit && uses_col_format ?
-          col_format['ycol'] : nil -%>
-        <%- cur_id = @is_edit && !uses_col_format && cur_cols.length > 0 &&
-          @view.datatypes_match(cur_cols[0], 'number') ?
-            cur_cols.shift.id : cur_id -%>
+            <div class='layerBlock configLineBlock <%= count == 0 ?
+              'firstBlock' : '' %> clearfix'>
+            <a class='removeButton' href='#removeDataBlock'
+              title='Remove'>Remove</a>
 
-        <div class='line'>
-          <label class='required' for='mapColumn_latitude'>
-            Latitude
-          </label>
-          <select id='mapColumn_latitude' name='mapColumn_latitude'
-            class='required <%= lat_id.nil? && cur_id.nil? ? 'prompt' : '' %>
-            coordinate-column' notequalto='.coordinate-column'>
-            <option class='prompt' value=''>Select a Column</option>
-            <%- cols['number'].each do |c| -%>
-            <option value='<%= c.tableColumnId %>'
-              <%= c.tableColumnId.to_s == lat_id || c.id == cur_id ?
-                "selected='selected'" : '' %>><%= c.name %></option>
+              <div class='line'>
+                <label <%= count == 0 ? "class='required'" : '' %>
+                  for='<%= layer_name %>'>Layer</label>
+                <select id='<%= layer_name %>' name='<%= layer_name %>'
+                  <%= count == 0 ? "class='required'" : '' %>>
+                  <option class='prompt' value=''>Select a Layer</option>
+                  <%- layer_options.each do |lo| -%>
+                  <option layer_type='<%= lo['type'] %>'
+                    value='<%= lo['url'] %>' <%= l['url'] == lo['url'] ?
+                      "selected='selected'" : '' %>><%= lo['name'] %></option>
+                  <%- end -%>
+                </select>
+              </div>
+
+              <div class='line'>
+                <label>Opacity</label>
+                <%- opacity = l['options'].nil? ? '' : l['options']['opacity'] -%>
+                <%- if !opacity.blank?
+                    opacity = opacity * 100
+                  else
+                    opacity = 100
+                  end -%>
+                <div class='opacitySlider' value='<%= opacity %>'></div>
+              </div>
+
+            </div>
+            <%- count += 1 -%>
             <%- end -%>
-          </select>
-        </div>
+          </div>
 
-
-        <%- long_id = @is_edit && uses_col_format ?
-          col_format['longitudeId'] : nil -%>
-        <%- cur_id = @is_edit && uses_col_format ?
-          col_format['xcol'] : nil -%>
-        <%- cur_id = @is_edit && !uses_col_format && cur_cols.length > 0 &&
-          @view.datatypes_match(cur_cols[0], 'number') ?
-            cur_cols.shift.id : cur_id -%>
-
-        <div class='line'>
-          <label class='required' for='mapColumn_longitude'>
-            Longitude
-          </label>
-          <select id='mapColumn_longitude' name='mapColumn_longitude'
-            class='required <%= long_id.nil? && cur_id.nil? ? 'prompt' : '' %>
-            coordinate-column' notequalto='.coordinate-column'>
-            <option class='prompt' value=''>Select a Column</option>
-            <%- cols['number'].each do |c| -%>
-            <option value='<%= c.tableColumnId %>'
-              <%= c.tableColumnId.to_s == long_id || c.id == cur_id ?
-                "selected='selected'" : '' %>><%= c.name %></option>
-            <%- end -%>
-          </select>
+          <ul class='actionButtons'>
+            <li><a class='button addLayer'
+              href='#addLayer-esri'>Add Layer</a></li>
+          </ul>
         </div>
       </div>
 
-
-      <div class='section'>
-        <h3>Configuration</h3>
-        <p class='subtitle separator'>
-        Set other options for the map.
-        </p>
-
-
-        <%- title_id = @is_edit && uses_col_format ?
-          col_format['titleId'] : nil -%>
-        <%- cur_id = @is_edit && uses_col_format ?
-          col_format['titleCol'] : nil -%>
-
-        <div class='line'>
-          <label for='mapColumn_title'>
-            Title
-          </label>
-          <select id='mapColumn_title' name='mapColumn_title'
-            class='<%= title_id.nil? && cur_id.nil? ? 'prompt' : '' %>'>
-            <option class='prompt' value=''>Select a Column</option>
-            <%- @view.columns_for_datatypes('text',
-                  @is_edit && !@view.is_grouped?).each do |c| -%>
-              <option value='<%= c.tableColumnId %>'
-                <%= c.tableColumnId.to_s == title_id || c.id == cur_id ?
-                "selected='selected'" : '' %>><%= c.name %></option>
-            <%- end -%>
-          </select>
-          <span class="helpie"
-            title="Tooltip to display on mouseover of a marker">?</span>
-        </div>
-
-
-        <%- data_types = ['text', 'richtext'] -%>
-        <%- desc_id = @is_edit && uses_col_format ?
-          col_format['descriptionId'] : nil -%>
-        <%- cur_id = @is_edit && uses_col_format ?
-          col_format['bodyCol'] : nil -%>
-        <%- cur_id = @is_edit && !uses_col_format && cur_cols.length > 0 &&
-          @view.datatypes_match(cur_cols[0], data_types) ?
-            cur_cols.shift.id : cur_id -%>
-
-        <div class='line'>
-          <label for='mapColumn_description'>
-            Description
-          </label>
-          <select id='mapColumn_description' name='mapColumn_description'
-            class='<%= desc_id.nil? && cur_id.nil? ? 'prompt' : '' %>'>
-            <option class='prompt' value=''>Select a Column</option>
-            <%- @view.columns_for_datatypes(data_types,
-                  @is_edit && !@view.is_grouped?).each do |c| -%>
-              <option value='<%= c.tableColumnId %>'
-                <%= c.tableColumnId.to_s == desc_id || c.id == cur_id ?
-                "selected='selected'" : '' %>><%= c.name %></option>
-            <%- end -%>
-          </select>
-          <span class="helpie"
-            title="Content to display on clicking a marker">?</span>
-        </div>
-
+      <div class='typeBlock type-google empty <%= @is_edit && cur_type == 'google' ?
+        'default' : '' %>'>
+        (There is no additional configuration available)
       </div>
-
     </div>
 
   <% end %>
@@ -185,6 +258,7 @@
       <li><a href='#create' class='create arrowButton'>
         <%= @is_edit ? 'Save' : 'Create' %> Map
       </a></li>
+      <li><a class="jqmClose" href="#cancel">Cancel</a></li>
     </ul>
   </div>
 </div>
@@ -209,7 +283,7 @@
             return !isEqual;
         },
         'A different value is required.');
-    $('.mapWrapper form').validate({errorElement: 'span'});
+    $('.mapWrapper form').validate({ignore: ':hidden', errorElement: 'span'});
 
     var adjustSelectPrompt = function(event)
     {
@@ -220,9 +294,84 @@
           }, 0);
     };
 
-    $('.mapWrapper select').change(adjustSelectPrompt)
-      .keypress(adjustSelectPrompt).click(adjustSelectPrompt);
+    $('.mapWrapper select').change(adjustSelectPrompt).keypress(adjustSelectPrompt)
+      .click(adjustSelectPrompt).blur(adjustSelectPrompt);
 
+    var adjustMapType = function(event)
+    {
+      var $sel = $(this);
+      setTimeout(function()
+          {
+            var v = $sel.val();
+            $('.mapWrapper .column.right .typeBlock').hide();
+            $('.mapWrapper .column.right .typeBlock.type-' + v).show();
+          }, 0);
+    };
+
+    $('.mapWrapper #mapType').change(adjustMapType)
+      .keypress(adjustMapType).click(adjustMapType);
+
+    var layersChanged = false;
+    var hookUpLayer = function(block)
+    {
+        var $block = $(block);
+
+        $block.find('a.removeButton').click(function(event)
+        {
+            event.preventDefault();
+            var $section = $(event.target).closest('.section');
+            $(event.target).closest('.configLineBlock').remove();
+            layersChanged = true;
+        });
+
+        $block.find('select').change(function() { layersChanged = true; })
+          .change(adjustSelectPrompt).keypress(adjustSelectPrompt)
+          .click(adjustSelectPrompt).blur(adjustSelectPrompt).blur();
+
+        $block.find('.opacitySlider').each(function()
+        {
+            var $slider = $(this);
+            var sliderVal = $slider.attr('value');
+            if (sliderVal === '' || sliderVal === undefined) { sliderVal = 60; }
+            $slider.slider({min: 0, max: 100, value: sliderVal,
+              change: function() { layersChanged = true; }});
+        });
+    };
+
+
+    $('.mapWrapper a.addLayer').click(function(event)
+    {
+        event.preventDefault();
+        var $scrollBlock = $(event.target).closest('ul').prev('.scrollBlock');
+
+        var $block = $scrollBlock.find('.configLineBlock:last').clone()
+          .removeClass('firstBlock');
+        $block.find('.line').each(function(i, l)
+        {
+            var $this = $(this);
+            var $label = $this.find('label');
+
+            var oldName = $label.attr('for');
+            var splitName = oldName.split('-');
+            var newIndex = parseInt(splitName[splitName.length - 1]) + 1;
+            splitName[splitName.length - 1] = newIndex;
+            var newName = splitName.join('-');
+
+            $label.removeClass('required').attr('for', newName);
+            $this.find(':input').removeClass('required').attr('id', newName)
+              .attr('name', newName).val('');
+
+            $this.find('.opacitySlider')
+              .replaceWith("<div class='opacitySlider'></div>");
+        });
+        hookUpLayer($block);
+
+        $scrollBlock.append($block);
+
+        layersChanged = true;
+    });
+
+    $('.mapWrapper .layerBlock').each(function(i, b) { hookUpLayer(b); });
 
     var formSubmit = function(event)
     {
@@ -239,6 +388,18 @@
       if (titleId !== '') { options.plot.titleId = titleId; }
       var descId = $('.mapWrapper #mapColumn_description').val();
       if (descId !== '') { options.plot.descriptionId = descId; }
+
+      $('.mapWrapper .type-' + newType + ' .layerBlock').each(function()
+      {
+          var $block = $(this);
+          var $layer = $block.find('select');
+          options.layers = options.layers || [];
+          var $opacity = $block.find('.opacitySlider');
+          var layer = {url: $layer.val(),
+            options: {opacity: $opacity.slider('value') / 100.0},
+            type: $layer.find(':selected').attr('layer_type')};
+          options.layers.push(layer);
+      });
 
       var data = {viewName: $('.mapWrapper #mapName').val(),
         vizType: 'map', options: $.json.serialize(options),
@@ -259,7 +420,7 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
-              if ('<%= cur_type %>' != newType)
+              if ('<%= cur_type %>' != newType || layersChanged)
               {
                   blist.$display.socrataMap().reset({displayFormat: options});
               }

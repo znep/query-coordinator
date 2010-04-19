@@ -8,15 +8,10 @@
 {
     margin-top: 0;
 }
-#adminContent h2
-{
-    padding-top: em;
-}
 #adminContent form.search
 {
-    margin-top: 5px;
-    float: right;
     width: 25em;
+    margin-bottom: 1em;
 }
 #adminContent form.search .searchContainer
 {
@@ -63,8 +58,7 @@
 {
     font-size: 1.5em;
 }
-
-#adminContent .userSaved
+#adminContent .flashNotice
 {
     font-size: 2em;
     padding: 0 0 0.7em 0;
@@ -73,19 +67,19 @@
 {
     margin-top: 2em;
 }
-#adminContent .modifyUserForm label
-{
-    position: relative;
-    top: 5px;
-}
 #adminContent .adminUsersTable .userRow
 {
-    display: block;
-    font-size: 1.4em;
     padding: 0.25em 0 0.25em 3em;
     width: 50%;
+}   
+#adminContent .adminUsersTable .userRow,
+#adminContent .configureRow,
+#adminContent .colorRow
+{
+    font-size: 1.4em;
+    display: block;
 }
-#adminContent .adminUsersTable .odd
+#adminContent .odd
 {
     background-color: #eee;
 }
@@ -112,15 +106,6 @@
     position: relative;
     top: -0.3em;
 }
-#adminContent .accessibleUserForm select
-{
-    position: relative;
-    top: 0.4em;
-}
-#adminContent .accessibleUserForm input[type='submit']
-{
-    margin-top: 0.7em;
-}
 #adminContent .adminUsersTable .userRolesCell .statusMessage
 {
     padding-left: 1em;
@@ -137,4 +122,47 @@
 #adminContent .rolesExplanation .roleTitle 
 {
     font-weight: bold;
+}
+/*
+ Configuration/theme shared
+*/ 
+#adminContent .configurationContent h2,
+#adminContent .themeContent h2
+{
+    margin-top: 1em;
+}
+#adminContent .configureRow
+{
+    padding: 0.5em 0 0.5em 3em;
+}
+#adminContent .configurationContent input[type='text'],
+#adminContent .configurationContent select
+{
+    font-size: 1em;
+    position: relative;
+    top: -0.4em;
+}
+#adminContent .configurationContent input[type='text']
+{
+    width: 15em;
+}    
+#adminContent .settingsCell
+{
+    position: absolute;
+    left: 18em;
+}
+#adminContent .descriptionCell
+{
+    position: absolute;
+    right: 3em;
+}
+#adminContent .saveButton
+{
+    margin-top: 2em;
+}
+#adminContent .refreshThemeLink
+{
+    float: right;
+    font-size: 1.5em;
+    margin: 0.4em 0.4em 0 0;
 }

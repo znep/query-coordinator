@@ -20,8 +20,13 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                     // Defer this until after the current event loop.
                     setTimeout(function()
                     {
+                        // Show and reset form
                         $('#signup').jqmShow()
-                                .find(':text:first').focus();
+                            .find(':text:first').focus().end()
+                            .find(':input')
+                                .val('').end()
+                            .find(':checked').attr('checked', false).end()
+                            .find('form').validate().resetForm();
                     }, 0);
                 }).end()
             .find('form').unbind('keyup.inlineLogin')
@@ -66,24 +71,15 @@ blist.util.inlineLogin.verifyUser = function(callback, msg)
                 .bind('click.inlineLogin', function (event)
                 {
                     event.preventDefault();
-                    $('#login').jqmHide();
-                    $('#signup').hide();
+                    $('#signup').jqmHide();
                     callback(false, true);
-                }).end()
-            .find('a.loginLink').unbind('click.inlineLogin')
-                .bind('click.inlineLogin', function (event)
-                {
-                    event.preventDefault();
-                    $('#signup').hide();
-                    $('#login').show().find(':text:first').focus();
                 }).end()
             .find('form').unbind('keyup.inlineLogin')
                 .bind('keyup.inlineLogin', function (event)
                 {
                     if (event.keyCode == 27)
                     {
-                        $('#login').jqmHide();
-                        $('#signup').hide();
+                        $('#signup').jqmHide();
                         callback(false, true);
                     }
                 })

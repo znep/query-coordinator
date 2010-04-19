@@ -711,6 +711,7 @@ body#lensBody
 #lensContainer .content
 {
     padding-bottom: 1em;
+    position: relative;
 }
 
 /* Modify sidebar to lie below grid */

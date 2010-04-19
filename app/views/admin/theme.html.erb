@@ -4,24 +4,21 @@
 <% end %>
 
 <div id="publishContent" class="oneColumnContainer tabContainer">
-  <%= render :partial => 'tabs', :locals => {:active => 'features'} %>
+  <%= render :partial => 'tabs', :locals => {:active => 'theme'} %>
   <div class="fullPageContentContainer fullPageWithTabs">
     <div class="fullPageOuterContent">
       <div class="fullPageContent">
         <div class='outerContent'>
           <div class='contentTR'><div class='contentTL'></div></div>
           <div class='content' id='adminContent'>
+            <h1>Site Theme</h1>
 
-            <h1>Site Features</h1>
+            <div class='explanation'>
+              
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
-<% content_for :js_footer do %>
-  <%= javascript_include_merged 'base' %>
-  <%= javascript_include_merged 'shared-common-all' %>
-<% end %>

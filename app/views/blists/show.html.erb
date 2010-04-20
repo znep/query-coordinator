@@ -126,7 +126,7 @@
             </li>
             <%- end -%>
 
-            <%- if @view.display.type == 'visualization' && is_owner -%>
+            <%- if @view.display.is_a?(Displays::Chart) && is_owner -%>
             <li class='separator'>
               <a rel='modal' href="<%= @view.href %>/visualization?edit=true"
                 id='editViz' class='staticLink'>

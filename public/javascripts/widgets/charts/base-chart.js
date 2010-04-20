@@ -65,6 +65,7 @@
                 var chartObj = this;
                 if (!getColumns(chartObj, view))
                 { getLegacyColumns(chartObj, view); }
+
                 chartObj.startLoading();
                 $.ajax({url: '/views/' + view.id + '/rows.json',
                     data: {method: 'getAggregates'},
@@ -112,8 +113,22 @@
 
     var getColumns = function(chartObj, view)
     {
-        // No new format yet...
-        return false;
+        if (_.isUndefined(view.displayFormat) ||
+            _.isUndefined(view.displayFormat.dataColumns))
+        { return false; }
+
+        _.each(view.columns, function(c, i) { c.dataIndex = i; });
+
+        chartObj._idIndex = _.detect(view.columns, function(c)
+            { return c.dataTypeName == 'meta_data' && c.name == 'sid'; }).dataIndex;
+
+        chartObj._dataColumns = _.map(view.displayFormat.dataColumns, function(tcId)
+        {
+            return _.detect(view.columns, function(c)
+                { return c.tableColumnId == tcId; });
+        });
+
+        return true;
     };
 
     var getLegacyColumns = function(chartObj, view)

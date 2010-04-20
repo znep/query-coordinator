@@ -40,7 +40,16 @@
       </div>
     </div>
 
-    <%- cur_cols = @is_edit ? @view.columns.select {|c| !c.flag?('hidden')} : [] -%>
+    <%- cur_cols = [] -%>
+    <%- if @is_edit -%>
+    <%-   if @view.displayFormat.nil? || @view.displayFormat.dataColumns.nil? -%>
+    <%-     cur_cols = @view.columns.select {|c| !c.flag?('hidden')} -%>
+    <%-   else -%>
+    <%-     cur_cols = @view.displayFormat.dataColumns.map do |tcId| -%>
+    <%-       @view.columns.detect {|c| c.tableColumnId == tcId.to_i} -%>
+    <%-     end -%>
+    <%-   end -%>
+    <%- end -%>
     <%- cols = {} -%>
     <%- viz_types.each do |t| -%>
     <%- type_config = t[1] -%>
@@ -80,6 +89,7 @@
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
             <option format='<%= c.format.to_json %>' dataType='<%= c.client_type %>'
+              tableColumnId='<%= c.tableColumnId %>'
               value='<%= c.id %>' <%= c.id == cur_id ?
                 "selected='selected'" : '' %>><%= c.name %></option>
             <%- end -%>
@@ -168,6 +178,7 @@
                 <%- cols[dcol['dataType']].each do |c| -%>
                 <option format='<%= c.format.to_json %>'
                   dataType='<%= c.client_type %>'
+                  tableColumnId='<%= c.tableColumnId %>'
                   value='<%= c.id %>' <%= c.id == cur_id ?
                     "selected='selected'" : '' %>><%= c.name %></option>
                 <%- end -%>
@@ -382,6 +393,7 @@
           data[$t.attr('name')] = getValue($t);
       });
 
+      data.columns = [];
       var fixedCols = [];
       var dataCols = [];
       $('.vizWrapper .typeBlock:visible :input').each(function()
@@ -400,9 +412,9 @@
                     $.htmlUnescape($c.attr('format')));
                   if (_.include(<%= raw Displays::Config::NUMERIC_TYPES.to_json %>,
                       $c.attr('dataType')))
-                  { $.extend(format, {aggregate: 'sum'}); }
-                  fixedCols[parseInt(splitN[2])] = {id: id,
-                    format: format, name: $c.text(), hidden: false};
+                  { format = $.extend({}, format, {aggregate: 'sum'}); }
+                  data.columns.push({id: id, format: format, name: $c.text()});
+                  fixedCols[parseInt(splitN[2])] = $c.attr('tableColumnId');
               }
           }
 
@@ -422,9 +434,9 @@
                       if (_.include(
                             <%= raw Displays::Config::NUMERIC_TYPES.to_json %>,
                             $c.attr('dataType')))
-                      { $.extend(format, {aggregate: 'sum'}); }
-                      dataCols[groupNum][num] = {id: id,
-                        format: format, name: $c.text(), hidden: false};
+                      { format = $.extend({}, format, {aggregate: 'sum'}); }
+                      data.columns.push({id: id, format: format, name: $c.text()});
+                      dataCols[groupNum][num] = $c.attr('tableColumnId');
                   }
               }
               else
@@ -450,16 +462,19 @@
           }
       });
 
-      $.each(fixedCols, function(i, c)
-      { if (c !== undefined) { data.columns.push(c); } });
-      $.each(dataCols, function(j, g)
+      var tableColIds = [];
+      _.each(fixedCols, function(tcId)
+      { if (tcId !== undefined) { tableColIds.push(tcId); } });
+      _.each(dataCols, function(g)
       {
           if (g !== undefined)
           {
-              $.each(g, function(i, c)
-                { if (c !== undefined) { data.columns.push(c); } });
+              _.each(g, function(tcId)
+              { if (tcId !== undefined) { tableColIds.push(tcId); } });
           }
       });
+
+      data.options.dataColumns = tableColIds;
 
       $.each(data.options, function(i, o)
       {

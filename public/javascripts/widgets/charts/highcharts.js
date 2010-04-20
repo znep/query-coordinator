@@ -25,11 +25,14 @@
             columnsLoaded: function()
             {
                 var chartObj = this;
+
                 chartObj._xCategories = [];
-                chartObj._xColumn = chartObj._dataColumns[0];
+                var usesXCol = chartObj.settings.chartType != 'imagesparkline';
+                if (usesXCol) { chartObj._xColumn = chartObj._dataColumns[0]; }
                 chartObj._yColumns = [];
-                var yCols = chartObj._dataColumns.slice(1);
+                var yCols = chartObj._dataColumns.slice(usesXCol ? 1 : 0);
                 if (chartObj._reverseOrder) { yCols.reverse(); }
+
                 for (var i = 0; i < yCols.length; i++)
                 {
                     var c = yCols[i];
@@ -58,7 +61,9 @@
                     return true;
                 }
 
-                var xVal = row[chartObj._xColumn.dataIndex];
+                var xVal = null;
+                if (!_.isUndefined(chartObj._xColumn))
+                { xVal = row[chartObj._xColumn.dataIndex]; }
                 if (_.isNull(xVal)) { xVal = ''; }
                 xVal = $.htmlEscape(xVal);
                 chartObj._xCategories.push(xVal);
@@ -124,6 +129,7 @@
             'areachart': 'area',
             'barchart': 'bar',
             'columnchart': 'column',
+            'imagesparkline': 'line',
             'linechart': 'line',
             'piechart': 'pie'
         };
@@ -184,8 +190,9 @@
         };
 
         var typeConfig = {allowPointSelect: true,
-            lineWidth: parseInt(chartObj._displayConfig.lineSize),
             marker: {enabled: chartObj._displayConfig.pointSize != '0'} };
+        if (!_.isUndefined(chartObj._displayConfig.lineSize))
+        { typeConfig['lineWidth'] = parseInt(chartObj._displayConfig.lineSize); }
         chartConfig.plotOptions[type] = typeConfig;
 
         chartObj.chart = new Highcharts.Chart(chartConfig);

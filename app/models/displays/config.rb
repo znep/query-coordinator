@@ -63,7 +63,7 @@ module Displays::Config
                                                    'default' => true}]
         },
 
-        'imagesparkline' => {'display' => 'google', 'library' => 'google.visualization.ImageSparkLine', 'hidden' => true,
+        'imagesparkline' => {'display' => 'chart', 'library' => 'google.visualization.ImageSparkLine', 'hidden' => true,
                              'label' => 'Sparkline',
                              'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
                              'dataColumnOptions' => [DEF_COLOR_OPTION],

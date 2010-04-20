@@ -69,7 +69,7 @@
                 chartObj._xCategories.push(xVal);
                 _.each(chartObj._yColumns, function(c, i)
                 {
-                    var value = parseInt(row[c.dataIndex]);
+                    var value = parseFloat(row[c.dataIndex]);
                     if (_.isNaN(value)) { value = null; }
 
                     if (!_.isNull(value) &&

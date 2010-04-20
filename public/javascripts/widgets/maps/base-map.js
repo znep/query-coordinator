@@ -40,8 +40,7 @@
     {
         defaults:
         {
-            defaultZoom: 1,
-            pageSize: 100
+            defaultZoom: 1
         },
 
         prototype:

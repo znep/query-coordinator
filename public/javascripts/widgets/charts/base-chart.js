@@ -101,7 +101,6 @@
 
                 chartObj.resetData();
 
-                delete chartObj._idIndex;
                 delete chartObj._dataColumns;
             },
 
@@ -120,16 +119,13 @@
 
         _.each(view.columns, function(c, i) { c.dataIndex = i; });
 
-        chartObj._idIndex = _.detect(view.columns, function(c)
-            { return c.dataTypeName == 'meta_data' && c.name == 'sid'; }).dataIndex;
-
         chartObj._dataColumns = _.map(view.displayFormat.dataColumns, function(tcId)
         {
             return _.detect(view.columns, function(c)
                 { return c.tableColumnId == tcId; });
         });
 
-        return true;
+        return chartObj._dataColumns.length > 0;
     };
 
     var getLegacyColumns = function(chartObj, view)
@@ -140,10 +136,8 @@
                 (c.flags === undefined || !_.include(c.flags, 'hidden')); });
         cols = _.sortBy(cols, function(c) { return c.position; });
 
-        if (cols.length < 2) { return false; }
+        if (cols.length < 1) { return false; }
 
-        chartObj._idIndex = _.detect(view.columns, function(c)
-            { return c.dataTypeName == 'meta_data' && c.name == 'sid'; }).dataIndex;
         chartObj._dataColumns = cols;
         return true;
     };

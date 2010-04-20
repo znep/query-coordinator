@@ -11,6 +11,11 @@ class InternalController < ApplicationController
   def show_org
     @org = Organization.find(params[:id])
     @tiers = Accounttier.find()
+    @domains = Organization.find().collect {|o| o.domains}.flatten.compact
+    default_domain_id = @domains.select {|d| d.shortName == 'socrata'}.first
+    @default_parent = Hashie::Mash.new(
+      {'shortName' => 'Default (socrata)',
+       'id' => default_domain_id.id}) unless default_domain_id.nil?
   end
 
   def show_domain

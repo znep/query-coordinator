@@ -22,7 +22,6 @@
     {
         defaults:
         {
-            defaultZoom: 1,
             pageSize: 100
         },
 

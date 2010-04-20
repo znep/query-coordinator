@@ -17,6 +17,7 @@
             'areachart': 'highcharts',
             'barchart': 'highcharts',
             'columnchart': 'highcharts',
+            'imagesparkline': 'highcharts',
             'linechart': 'highcharts',
             'piechart': 'highcharts'
         }

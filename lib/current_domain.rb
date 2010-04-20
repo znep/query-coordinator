@@ -172,7 +172,7 @@ class CurrentDomain
     if user.nil?
       false
     else
-      user.roles && user.roles.size > 0
+      user.rights && user.rights.size > 0
     end
   end
   

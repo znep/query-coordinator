@@ -58,11 +58,17 @@
                     return true;
                 }
 
-                chartObj._xCategories.push(row[chartObj._xColumn.dataIndex]);
+                var xVal = row[chartObj._xColumn.dataIndex];
+                if (_.isNull(xVal)) { xVal = ''; }
+                xVal = $.htmlEscape(xVal);
+                chartObj._xCategories.push(xVal);
                 _.each(chartObj._yColumns, function(c, i)
                 {
                     var value = parseInt(row[c.dataIndex]);
-                    if (!_.isUndefined(chartObj._displayConfig.pieJoinAngle) &&
+                    if (_.isNaN(value)) { value = null; }
+
+                    if (!_.isNull(value) &&
+                        !_.isUndefined(chartObj._displayConfig.pieJoinAngle) &&
                         !_.isUndefined(c.aggregate) && c.aggregate.type == 'sum' &&
                         value / c.aggregate.value * 100 <
                             chartObj._displayConfig.pieJoinAngle)
@@ -76,7 +82,7 @@
                     else
                     {
                         chartObj.chart.series[i].addPoint(
-                            [row[chartObj._xColumn.dataIndex], value], false);
+                            [xVal, value], false);
                     }
                 });
                 return true;

@@ -145,10 +145,6 @@ module Displays::Config
         'geomap' => {'display' => 'google', 'library' => 'google.visualization.GeoMap',
                      'hidden' => true},
 
-        # This chart is really confusing, so I don't think it is worth exposing
-        # unless we have specific requests/use cases for it
-        'motionchart' => {'display' => 'google', 'library' => 'google.visualization.MotionChart',
-                          'hidden' => true},
 
         # Fusion maps types
         'FCMap_Afghanistan' => { 'display' => 'fusion', 'hidden' => true },

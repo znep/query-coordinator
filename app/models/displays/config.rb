@@ -40,7 +40,6 @@ module Displays::Config
     VISUALIZATION_CONFIG = {
         'barchart' => {
             'display' => 'chart',
-            'library' => 'google.visualization.BarChart',
             'label' => 'Bar Chart',
             'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
@@ -63,22 +62,9 @@ module Displays::Config
                                                    'default' => true}]
         },
 
-        'imagesparkline' => {'display' => 'chart', 'library' => 'google.visualization.ImageSparkLine', 'hidden' => true,
-                             'label' => 'Sparkline',
-                             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
-                             'dataColumnOptions' => [DEF_COLOR_OPTION],
-                             'advancedOptions' => [{'name' => 'labelPosition', 'label' => 'Label',
-                                                    'type' => 'dropdown', 'dropdownOptions' => [
-                                     {'value' => 'none', 'label' => 'Hidden'},
-                                     {'value' => 'left', 'label' => 'Left'},
-                                     {'value' => 'right', 'label' => 'Right'}
-                                 ], 'default' => 'none'},
-                                                   {'name' => 'layout', 'label' => 'Vertical', 'type' => 'boolean',
-                                                    'booleanTrueValue' => 'v', 'booleanFalseValue' => 'h', 'default' => 'v'}
-                             ]
-        },
+        'imagesparkline' => {'display' => 'chart', 'hidden' => true},
 
-        'areachart' => {'display' => 'chart', 'library' => 'google.visualization.AreaChart',
+        'areachart' => {'display' => 'chart',
                         'label' => 'Area Chart',
                         'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
                         'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
@@ -107,7 +93,7 @@ module Displays::Config
                           'advancedOptions' => [LEGEND_OPTIONS]
         },
 
-        'linechart' => {'display' => 'chart', 'library' => 'google.visualization.LineChart',
+        'linechart' => {'display' => 'chart',
                         'label' => 'Line Chart',
                         'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
                         'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
@@ -126,7 +112,7 @@ module Displays::Config
                         ]
         },
 
-        'piechart' => {'display' => 'chart', 'library' => 'google.visualization.PieChart',
+        'piechart' => {'display' => 'chart',
                        'label' => 'Pie Chart',
                        'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
                                           {'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],

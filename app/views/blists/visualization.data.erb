@@ -13,6 +13,7 @@
 
     <div class='section common'>
       <input type='hidden' name='view_query' value='<%= @view.query.to_json %>' />
+      <%- cur_type = @is_edit ? @view.display.chart_type : nil -%>
       <%- viz_types = Displays::Config.for_view(@view, @is_edit).
           sort {|a,b| a[1]['label'] <=> b[1]['label']} -%>
       <h3>Setup</h3>
@@ -33,7 +34,7 @@
           <option class='prompt' value=''>Select a Chart</option>
           <%- viz_types.each do |t| -%>
           <option value='<%= t[0] %>'
-            <%= @is_edit && @view.displayType == t[0] ?
+            <%= @is_edit && cur_type == t[0] ?
               "selected='selected'" : '' %>><%= t[1]['label'] %></option>
           <%- end -%>
         </select>
@@ -53,7 +54,7 @@
     <%- cols = {} -%>
     <%- viz_types.each do |t| -%>
     <%- type_config = t[1] -%>
-    <%- is_edit_block = @is_edit && @view.displayType == t[0] -%>
+    <%- is_edit_block = @is_edit && cur_type == t[0] -%>
     <div class='typeBlock type-<%= t[0] %> <%= is_edit_block ? 'default' : '' %>'>
 
       <%- if !type_config['fixedColumns'].nil? ||
@@ -134,7 +135,7 @@
 
     <%- viz_types.each do |t| -%>
     <%- type_config = t[1] -%>
-    <%- is_edit_block = @is_edit && @view.displayType == t[0] -%>
+    <%- is_edit_block = @is_edit && cur_type == t[0] -%>
 
     <div class='typeBlock type-<%= t[0] %> <%= is_edit_block ? 'default' : '' %>
       <%= type_config['dataColumns'].nil? ? 'empty' : '' %>'>

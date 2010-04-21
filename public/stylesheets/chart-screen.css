@@ -20,6 +20,7 @@
     display: none;
 }
 
+.highcharts-legend-vertical { width: 125px; }
 .highcharts-legend li
 {
     max-width: 80px;

@@ -26,7 +26,13 @@ class StylesController < ApplicationController
       cached = Rails.cache.read(cache_key)
 
       if cached.nil?
-        includes = get_includes
+        includes_cache_key = generate_cache_key('_includes')
+        includes = Rails.cache.read(includes_cache_key)
+        if includes.nil?
+          includes = get_includes
+          Rails.cache.write(includes_cache_key, includes)
+        end
+
         sheets = STYLE_PACKAGES[params[:stylesheet]].map{ |sheet|
                    File.read("#{Rails.root}/app/styles/#{sheet}.sass") }.join("\n")
 
@@ -46,41 +52,37 @@ class StylesController < ApplicationController
 
 private
   def get_includes
-    cache_key = generate_cache_key('_includes')
-    result = Rails.cache.read(cache_key)
-    if result.nil?
-      result = STYLE_PACKAGES['includes'].map{ |incl| "@import #{incl}.sass\n" }.join +
-               get_includes_recurse(CurrentDomain.theme.colors, 'color_', '#') +
-               get_includes_recurse(CurrentDomain.theme.dimensions, 'dimensions_')
-
-      Rails.cache.write(cache_key, result)
-    end
+    result = STYLE_PACKAGES['includes'].map{ |incl| "@import #{incl}.sass\n" }.join +
+             get_includes_recurse(CurrentDomain.theme_new.colors, 'color') +
+             get_includes_recurse(CurrentDomain.theme_new.dimensions, 'dimensions')
 
     return result
   end
 
-  def get_includes_recurse(hash, prepend, value_prepend = '')
+  def get_includes_recurse(hash, type, path = '')
     result = ''
     unless hash.nil?
       hash.each do |key, value|
         if value.is_a? String
           # color or other static value
-          result += "!#{prepend}#{key} = #{value_prepend}#{value.gsub(/\W/, '')}\n"
+          result += "!color_#{path}#{key} = \"##{value.gsub(/\W/, '')}\"\n" if type == 'color'
+          result += "!#{path}#{key} = \"#{value.gsub(/\W/, '')}\"\n"
         elsif value.is_a? Array
           # gradient
           next unless value.first.is_a? Hash # hack to accomodate current header color format
 
           stops = value.each{ |stop| stop['position'] = stop['position'].to_f unless stop['position'].nil? }
 
-          ie_string = stops.map{ |stop| stop.has_key?('position') ? "#{stop['color']}:#{stop['position']}" :
+          gradient_string = stops.map{ |stop| stop.has_key?('position') ? "#{stop['color']}:#{stop['position']}" :
                                         stop['color'] }.join(',')
+          result += "!gradient_#{path}#{key} = \"#{gradient_string}\"\n"
 
           first_stop = stops.first
           last_stop = stops.last
           stops.delete(stops.first) if stops.first['position'].nil?
           stops.delete(stops.last) if stops.last['position'].nil?
 
-          result += "=gradient_#{prepend}#{key}\n"
+          result += "=gradient_#{path}#{key}\n"
 
           # firefox
           result += "  background: -moz-linear-gradient(0 0 270deg, ##{first_stop['color']}, ##{last_stop['color']}"
@@ -102,12 +104,9 @@ private
                     " from(##{first_stop['color']}), to(##{last_stop['color']})" +
                     stops.map{ |stop| ", color-stop(#{stop['position']},##{stop['color']})" }.join +
                     ")\n"
-          # ie
-          result += "  .ie &\n" +
-                    "    background: ##{last_stop['color']} url(/ui/box.png?#{ie_string}) repeat-x\n"
         elsif value.is_a? Hash
           # subhash
-          result += get_includes_recurse(value, prepend + "#{key}_", value_prepend)
+          result += get_includes_recurse(value, type, path + "#{key}_")
         end
       end
     end

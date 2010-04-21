@@ -95,7 +95,7 @@ class CurrentDomain
     end
     return @@current_domain[:site_properties]
   end
-  
+
   def self.raw_properties
     if @@current_domain[:site_properties_raw].nil?
       conf = self.current_theme
@@ -111,6 +111,10 @@ class CurrentDomain
 
   def self.theme
     return self.properties.theme || Hashie::Mash.new
+  end
+
+  def self.theme_new
+    return self.properties.theme_new || Hashie::Mash.new
   end
 
   def self.strings

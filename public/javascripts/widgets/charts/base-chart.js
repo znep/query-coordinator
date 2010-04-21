@@ -14,12 +14,11 @@
         },
 
         chartMapping: {
-            'areachart': 'highcharts',
-            'barchart': 'highcharts',
-            'columnchart': 'highcharts',
-            'imagesparkline': 'highcharts',
-            'linechart': 'highcharts',
-            'piechart': 'highcharts'
+            'area': 'highcharts',
+            'bar': 'highcharts',
+            'column': 'highcharts',
+            'line': 'highcharts',
+            'pie': 'highcharts'
         }
     };
 
@@ -67,6 +66,7 @@
                 if (!getColumns(chartObj, view))
                 { getLegacyColumns(chartObj, view); }
 
+                chartObj._view = view;
                 chartObj.startLoading();
                 $.ajax({url: '/views/' + view.id + '/rows.json',
                     data: {method: 'getAggregates'},

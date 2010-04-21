@@ -27,8 +27,8 @@
       </div>
       <%- end -%>
       <div class='line'>
-        <label class='required' for='vizType'>Type</label>
-        <select id='vizType' name='vizType'
+        <label class='required' for='chartType'>Type</label>
+        <select id='chartType' name='chartType'
           <%= @is_edit ? "disabled='disabled'" : '' %>
           class='required <%= @is_edit ? '' : 'prompt' %>'>
           <option class='prompt' value=''>Select a Chart</option>
@@ -81,11 +81,13 @@
         <%- fc_name = t[0] + '-fixedColumn-' + count.to_s -%>
 
         <div class='line'>
-          <label class='required' for='<%= fc_name %>'>
+          <label <%= fcol['optional'] ? '' : "class='required'" %>
+            for='<%= fc_name %>'>
             <%= fcol['label'] %>
           </label>
           <select id='<%= fc_name %>' name='<%= fc_name %>'
-            class='required <%= cur_id.nil? ? 'prompt' : '' %>
+            class='<%= fcol['optional'] ? '' : 'required' %>
+            <%= cur_id.nil? ? 'prompt' : '' %>
             <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
@@ -281,7 +283,7 @@
           }, 0);
     };
 
-    $('.vizWrapper #vizType').change(adjustVizType)
+    $('.vizWrapper #chartType').change(adjustVizType)
       .keypress(adjustVizType).click(adjustVizType);
 
     $('.vizWrapper a.sectionToggle').click(function(event)
@@ -387,16 +389,19 @@
       var $form = $('.vizWrapper form');
       if (!$form.valid()) { return; }
 
-      var data = {options:{}, columns:[]};
+      var data = {options:{}, columns:[], vizType: 'chart'};
       $('.vizWrapper .section.common :input').each(function()
       {
           var $t = $(this);
-          data[$t.attr('name')] = getValue($t);
+          if ($t.attr('name') == 'chartType')
+          { data.options.chartType = getValue($t); }
+          else { data[$t.attr('name')] = getValue($t); }
       });
 
       data.columns = [];
       var fixedCols = [];
       var dataCols = [];
+      data.options.fixedCount = 0;
       $('.vizWrapper .typeBlock:visible :input').each(function()
       {
           var $t = $(this);
@@ -416,6 +421,7 @@
                   { format = $.extend({}, format, {aggregate: 'sum'}); }
                   data.columns.push({id: id, format: format, name: $c.text()});
                   fixedCols[parseInt(splitN[2])] = $c.attr('tableColumnId');
+                  data.options.fixedCount++;
               }
           }
 
@@ -463,19 +469,17 @@
           }
       });
 
-      var tableColIds = [];
+      data.options.dataColumns = [];
       _.each(fixedCols, function(tcId)
-      { if (tcId !== undefined) { tableColIds.push(tcId); } });
+      { if (tcId !== undefined) { data.options.dataColumns.push(tcId); } });
       _.each(dataCols, function(g)
       {
           if (g !== undefined)
           {
               _.each(g, function(tcId)
-              { if (tcId !== undefined) { tableColIds.push(tcId); } });
+              { if (tcId !== undefined) { data.options.dataColumns.push(tcId); } });
           }
       });
-
-      data.options.dataColumns = tableColIds;
 
       $.each(data.options, function(i, o)
       {

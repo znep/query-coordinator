@@ -1,6 +1,6 @@
 class Displays::Chart < Displays::Base
   def valid?
-    @view.has_columns_for_visualization_type? @view.displayType
+    @view.has_columns_for_visualization_type? chart_type
   end
 
   def invalid_message
@@ -12,7 +12,7 @@ class Displays::Chart < Displays::Base
   end
 
   def chart_type
-    t = @view.displayType
+    t = @options.chartType || @view.displayType
     CHART_TYPES[t] || t
   end
 
@@ -39,10 +39,16 @@ class Displays::Chart < Displays::Base
   def render_inline_runtime_js(context)
     js = <<-END
       blist.$display.socrataChart({displayFormat: blist.display.options,
-        chartType: '#{@view.displayType}', invalid: blist.display.isInvalid});
+        chartType: '#{chart_type}', invalid: blist.display.isInvalid});
     END
     super << js
   end
 
-  CHART_TYPES = { 'imagesparkline' => 'linechart' }
+  CHART_TYPES = { 'imagesparkline' => 'line',
+                  'areachart' => 'area',
+                  'barchart' => 'bar',
+                  'columnchart' => 'column',
+                  'linechart' => 'line',
+                  'piechart' => 'pie'
+  }
 end

@@ -26,21 +26,28 @@
             {
                 var chartObj = this;
 
+                // Set up x-axis
                 chartObj._xCategories = [];
                 var usesXCol = chartObj.settings.chartType != 'imagesparkline';
                 if (usesXCol) { chartObj._xColumn = chartObj._dataColumns[0]; }
-                chartObj._yColumns = [];
-                var yCols = chartObj._dataColumns.slice(usesXCol ? 1 : 0);
-                if (chartObj._reverseOrder) { yCols.reverse(); }
 
-                for (var i = 0; i < yCols.length; i++)
+                // Cache data
+                chartObj._seriesCache = [];
+
+                // Set up y-axis
+                chartObj._yColumns = chartObj._dataColumns.slice(usesXCol ? 1 : 0);
+                if (chartObj._reverseOrder) { chartObj._yColumns.reverse(); }
+                _.each(chartObj._yColumns, function(c)
                 {
-                    var c = yCols[i];
-                    chartObj._yColumns.push(c);
-                    chartObj.chart.addSeries({name: c.name, data: []}, false);
-                }
+                    var series = {name: c.name, data: []};
+                    chartObj.chart.addSeries(series, false);
+                    chartObj._seriesCache.push(series);
+                });
+
                 // Adjust scale to make sure series are synched with axis
                 chartObj.chart.xAxis[0].setScale();
+
+                // Register columns as loaded, render data if needed
                 chartObj._columnsLoaded = true;
                 if (!_.isUndefined(chartObj._pendingRows))
                 {
@@ -61,17 +68,21 @@
                     return true;
                 }
 
+                // Get useable value for x-axis
                 var xVal = null;
                 if (!_.isUndefined(chartObj._xColumn))
                 { xVal = row[chartObj._xColumn.dataIndex]; }
                 if (_.isNull(xVal)) { xVal = ''; }
                 xVal = $.htmlEscape(xVal);
                 chartObj._xCategories.push(xVal);
+
+                // Render data for each series
                 _.each(chartObj._yColumns, function(c, i)
                 {
                     var value = parseFloat(row[c.dataIndex]);
                     if (_.isNaN(value)) { value = null; }
 
+                    // First check if this should be subsumed into a remainder
                     if (!_.isNull(value) &&
                         !_.isUndefined(chartObj._displayConfig.pieJoinAngle) &&
                         !_.isUndefined(c.aggregate) && c.aggregate.type == 'sum' &&
@@ -86,8 +97,17 @@
                     }
                     else
                     {
-                        chartObj.chart.series[i].addPoint(
-                            [xVal, value], false);
+                        // Render point and cache it
+                        var point = {x: chartObj._xCategories.length - 1,
+                            y: value, name: xVal};
+                        if (chartObj._chartType == 'pie')
+                        {
+                            point.color = chartObj._displayConfig
+                                .colors[chartObj._seriesCache[i].data.length %
+                                    chartObj._displayConfig.colors.length];
+                        }
+                        chartObj.chart.series[i].addPoint(point, false);
+                        chartObj._seriesCache[i].data.push(point);
                     }
                 });
                 return true;
@@ -98,16 +118,48 @@
                 var chartObj = this;
                 if (!chartObj._columnsLoaded) { return; }
 
+                // Check if there are remainders to stick on the end
                 if (!_.isUndefined(chartObj._seriesRemainders))
                 {
+                    var otherName = 'Other';
+                    chartObj._xCategories.push(otherName);
                     _.each(chartObj._seriesRemainders, function(sr, i)
                     {
                         if (sr > 0)
-                        { chartObj.chart.series[i].addPoint(['Other', sr], false); }
+                        {
+                            var point = {x: chartObj._xCategories.length - 1,
+                                y: sr, name: otherName};
+                            if (chartObj._chartType == 'pie')
+                            {
+                                point.color = chartObj._displayConfig
+                                    .colors[chartObj._seriesCache[i].data.length %
+                                        chartObj._displayConfig.colors.length];
+                            }
+                            chartObj.chart.series[i].addPoint(point, false);
+                            chartObj._seriesCache[i].data.push(point);
+                        }
                     });
                 }
+
                 chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, false);
                 chartObj.chart.redraw();
+            },
+
+            resizeHandle: function(event)
+            {
+                var chartObj = this;
+
+                // Since we have to re-create the whole chart, set up a timer to
+                // wait until they've paused/finished dragging
+                if (!_.isUndefined(chartObj._resizeTimer))
+                { clearTimeout(chartObj._resizeTimer); }
+
+                chartObj._resizeTimer = setTimeout(function()
+                {
+                    delete chartObj._resizeTimer;
+                    chartObj.chart.destroy();
+                    createChart(chartObj);
+                }, 500);
             },
 
             resetData: function()
@@ -116,6 +168,7 @@
                 delete chartObj._columnsLoaded;
                 delete chartObj._pendingRows;
                 delete chartObj._seriesRemainders;
+                delete chartObj._seriesCache;
 
                 chartObj.chart.destroy();
                 createChart(chartObj);
@@ -125,6 +178,7 @@
 
     var createChart = function(chartObj)
     {
+        // Map recorded type to what Highcharts wants
         var typeMapping = {
             'areachart': 'area',
             'barchart': 'bar',
@@ -133,12 +187,15 @@
             'linechart': 'line',
             'piechart': 'pie'
         };
-        var type = typeMapping[chartObj.settings.chartType];
-        if (type == 'line' && chartObj._displayConfig.smoothLine)
-        { type = 'spline'; }
+        chartObj._chartType = typeMapping[chartObj.settings.chartType];
+        if (chartObj._chartType == 'line' && chartObj._displayConfig.smoothLine)
+        { chartObj._chartType = 'spline'; }
 
         var xTitle = chartObj._displayConfig.titleX;
         var yTitle = chartObj._displayConfig.titleY;
+
+        // Configure legend position -- it is absolutely positioned, and
+        // chart margins need to be adjusted to accommodate it
         var legendPos = chartObj._displayConfig.legend;
         var legendStyle = {};
         var chartMargin = [10, 50, 60, 80];
@@ -165,16 +222,22 @@
         // order; while the legend is correct (perhaps due to the inverted axis?).
         // By manually flipping the order of data, colors, and legend, we can
         // make it look correct
-        chartObj._reverseOrder = type == 'bar';
+        chartObj._reverseOrder = chartObj._chartType == 'bar';
 
+        // Make a copy of colors so we don't reverse the original
+        var colors = chartObj._displayConfig.colors.slice();
+        if (chartObj._reverseOrder) { colors.reverse(); }
+
+        // Main config
         var chartConfig =
         {
             chart: {
                 renderTo: chartObj.$dom()[0],
-                defaultSeriesType: type,
-                inverted: type == 'bar',
+                defaultSeriesType: chartObj._chartType,
+                inverted: chartObj._chartType == 'bar',
                 margin: chartMargin
             },
+            colors: colors,
             credits: { enabled: false },
             legend: { enabled: legendPos != 'none',
                 layout: _.include(['left', 'right'], legendPos) ?
@@ -189,17 +252,36 @@
                 { enabled: yTitle !== '', text: yTitle } }
         };
 
+        // If we already have data loaded, use it
+        if (!_.isUndefined(chartObj._seriesCache))
+        { chartConfig.series = chartObj._seriesCache; }
+
+        // If we already have categories loaded, use it
+        if (!_.isUndefined(chartObj._xCategories))
+        { chartConfig.xAxis.categories = chartObj._xCategories; }
+
+
+        // Set up config for this particular chart type
         var typeConfig = {allowPointSelect: true,
             marker: {enabled: chartObj._displayConfig.pointSize != '0'} };
-        if (!_.isUndefined(chartObj._displayConfig.lineSize))
-        { typeConfig['lineWidth'] = parseInt(chartObj._displayConfig.lineSize); }
-        chartConfig.plotOptions[type] = typeConfig;
 
+        // If we have data that is being re-rendered, don't animate it
+        if (!_.isUndefined(chartObj._seriesCache))
+        { typeConfig.animation = false; }
+
+        // Make sure lineSize is defined, so we don't hide the line by default
+        if (!_.isUndefined(chartObj._displayConfig.lineSize))
+        { typeConfig.lineWidth = parseInt(chartObj._displayConfig.lineSize); }
+
+        // Type config goes under the type name
+        chartConfig.plotOptions[chartObj._chartType] = typeConfig;
+
+        // Create the chart
         chartObj.chart = new Highcharts.Chart(chartConfig);
+
         // Set colors after chart is created so they don't get merged with the
         // default colors; we want to override them, instead
-        chartObj.chart.options.colors = chartObj._displayConfig.colors;
-        if (chartObj._reverseOrder) { chartObj.chart.options.colors.reverse(); }
+        chartObj.chart.options.colors = colors;
     };
 
 })(jQuery);

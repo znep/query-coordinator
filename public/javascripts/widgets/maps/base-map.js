@@ -191,7 +191,8 @@
 
                 var lat = row[mapObj._latIndex];
                 var longVal = row[mapObj._longIndex];
-                if (lat === null || longVal === null) { return; }
+                // Incomplete points will be safely ignored
+                if (lat === null || longVal === null) { return true; }
                 if (lat < -90 || lat > 90 || longVal < -180 || longVal > 180)
                 {
                     mapObj.errorMessage = 'Latitude must be between -90 and 90, ' +

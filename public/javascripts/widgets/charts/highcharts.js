@@ -29,7 +29,9 @@
 
                 // Set up x-axis
                 chartObj._xCategories = [];
-                var usesXCol = chartObj.settings.chartType != 'imagesparkline';
+                var usesXCol = chartObj._view.displayType != 'imagesparkline' &&
+                    (_.isUndefined(chartObj._displayConfig.fixedCount) ||
+                    chartObj._displayConfig.fixedCount > 0);
                 if (usesXCol) { chartObj._xColumn = chartObj._dataColumns[0]; }
 
                 // Cache data
@@ -180,15 +182,7 @@
     var createChart = function(chartObj)
     {
         // Map recorded type to what Highcharts wants
-        var typeMapping = {
-            'areachart': 'area',
-            'barchart': 'bar',
-            'columnchart': 'column',
-            'imagesparkline': 'line',
-            'linechart': 'line',
-            'piechart': 'pie'
-        };
-        chartObj._chartType = typeMapping[chartObj.settings.chartType];
+        chartObj._chartType = chartObj.settings.chartType;
         if (chartObj._chartType == 'line' && chartObj._displayConfig.smoothLine)
         { chartObj._chartType = 'spline'; }
 

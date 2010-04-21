@@ -38,9 +38,14 @@ module Displays::Config
     NUMERIC_TYPES = ['number', 'percent', 'money']
 
     VISUALIZATION_CONFIG = {
-        'barchart' => {
-            'display' => 'chart',
-            'label' => 'Bar Chart',
+        'imagesparkline' => {'display' => 'chart', 'hidden' => true},
+        'areachart' => {'display' => 'chart', 'hidden' => true},
+        'barchart' => {'display' => 'chart', 'hidden' => true},
+        'columnchart' => {'display' => 'chart', 'hidden' => true},
+        'linechart' => {'display' => 'chart', 'hidden' => true},
+        'piechart' => {'display' => 'chart', 'hidden' => true},
+
+        'bar' => {'label' => 'Bar Chart',
             'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
             'dataColumnOptions' => [DEF_COLOR_OPTION],
@@ -62,67 +67,67 @@ module Displays::Config
                                                    'default' => true}]
         },
 
-        'imagesparkline' => {'display' => 'chart', 'hidden' => true},
 
-        'areachart' => {'display' => 'chart',
-                        'label' => 'Area Chart',
-                        'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
-                        'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
-                        'dataColumnOptions' => [DEF_COLOR_OPTION],
-                        'mainOptions' => [
-                            {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
-                            {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
-                        ],
-                        'advancedOptions' => [LEGEND_OPTIONS,
-                            {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
-                             'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
-                            {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
-                             'booleanTrueValue' => '3', 'booleanFalseValue' => '0', 'default' => '3'}
-                        ]
+        'area' => {'label' => 'Area Chart',
+            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
+            'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
+            'dataColumnOptions' => [DEF_COLOR_OPTION],
+            'mainOptions' => [
+                {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+                {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+            ],
+            'advancedOptions' => [LEGEND_OPTIONS,
+                {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
+                  'booleanTrueValue' => '2', 'booleanFalseValue' => '0',
+                  'default' => '2'},
+                {'name' => 'pointSize', 'label' => 'Show Points',
+                  'type' => 'boolean', 'booleanTrueValue' => '3',
+                  'booleanFalseValue' => '0', 'default' => '3'}
+            ]
         },
 
-        'columnchart' => {'display' => 'chart', 'library' => 'google.visualization.ColumnChart',
-                          'label' => 'Column Chart',
-                          'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
-                          'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
-                          'dataColumnOptions' => [DEF_COLOR_OPTION],
-                          'mainOptions' => [
-                              {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
-                              {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
-                          ],
-                          'advancedOptions' => [LEGEND_OPTIONS]
+        'column' => {'label' => 'Column Chart',
+            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
+            'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
+            'dataColumnOptions' => [DEF_COLOR_OPTION],
+            'mainOptions' => [
+                {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+                {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+            ],
+            'advancedOptions' => [LEGEND_OPTIONS]
         },
 
-        'linechart' => {'display' => 'chart',
-                        'label' => 'Line Chart',
-                        'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
-                        'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
-                        'dataColumnOptions' => [DEF_COLOR_OPTION],
-                        'mainOptions' => [
-                            {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
-                            {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
-                        ],
-                        'advancedOptions' => [LEGEND_OPTIONS,
-                            {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
-                             'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
-                            {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
-                             'booleanTrueValue' => '3', 'booleanFalseValue' => '0', 'default' => '3'},
-                            {'label' => 'Smooth Line', 'name' => 'smoothLine', 'type' => 'boolean',
-                             'default' => false},
-                        ]
+        'line' => {'label' => 'Line Chart',
+            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories',
+                  'optional' => true}],
+            'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
+            'dataColumnOptions' => [DEF_COLOR_OPTION],
+            'mainOptions' => [
+                {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+                {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+            ],
+            'advancedOptions' => [LEGEND_OPTIONS,
+                {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
+                  'booleanTrueValue' => '2', 'booleanFalseValue' => '0',
+                  'default' => '2'},
+                {'name' => 'pointSize', 'label' => 'Show Points',
+                  'type' => 'boolean', 'booleanTrueValue' => '3',
+                  'booleanFalseValue' => '0', 'default' => '3'},
+                {'label' => 'Smooth Line', 'name' => 'smoothLine',
+                  'type' => 'boolean', 'default' => false},
+            ]
         },
 
-        'piechart' => {'display' => 'chart',
-                       'label' => 'Pie Chart',
-                       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
-                                          {'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
-                       'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
-                                          'type' => 'colorArray', 'default' => COLOR_DEFAULTS}],
-                       'advancedOptions' => [LEGEND_OPTIONS,
-                           {'label' => 'Min. Angle', 'name' => 'pieJoinAngle', 'type' => 'number',
-                            'default' => 1,
-                            'help' => 'Slices below this angle will be combined into an "Other" slice'}
-                       ]
+        'pie' => {'label' => 'Pie Chart',
+            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
+                {'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
+            'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
+                  'type' => 'colorArray', 'default' => COLOR_DEFAULTS}],
+            'advancedOptions' => [LEGEND_OPTIONS,
+                {'label' => 'Min. Angle', 'name' => 'pieJoinAngle',
+                  'type' => 'number', 'default' => 1,
+                  'help' => 'Slices below this angle will be combined into an "Other" slice'}
+            ]
         },
 
         'intensitymap' => {'display' => 'google', 'library' => 'google.visualization.IntensityMap',

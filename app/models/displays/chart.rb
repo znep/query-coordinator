@@ -11,6 +11,11 @@ class Displays::Chart < Displays::Base
     'visualization'
   end
 
+  def chart_type
+    t = @view.displayType
+    CHART_TYPES[t] || t
+  end
+
   def required_javascripts
     [ 'shared-chart' ]
   end
@@ -39,4 +44,5 @@ class Displays::Chart < Displays::Base
     super << js
   end
 
+  CHART_TYPES = { 'imagesparkline' => 'linechart' }
 end

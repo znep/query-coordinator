@@ -183,7 +183,7 @@ class CurrentDomain
       user.rights && user.rights.size > 0
     end
   end
-  
+
   def self.user_can?(user, action)
     if user.nil?
       false
@@ -191,8 +191,8 @@ class CurrentDomain
       user.has_right?(action.to_s)
     end
   end
-  
-  
+
+
 private
   def self.current_theme
     @@current_domain[:site_config_id].nil? ?

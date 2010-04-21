@@ -322,7 +322,7 @@ $(function ()
                 updateTempViewCallback: blistGridNS.updateTempViewTab,
                 filterForm: '#lensContainer .headerBar form',
                 clearFilterItem: '#lensContainer .headerBar form .clearSearch',
-                isInvalid: blist.blistGrid.isInvalidView,
+                isInvalid: blist.display.isInvalid,
                 validViewCallback: blistGridNS.updateValidView
             });
     }

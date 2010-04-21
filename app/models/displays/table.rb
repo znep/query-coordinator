@@ -19,4 +19,12 @@ class Displays::Table < Displays::Base
     def can_advanced_publish?
         true
     end
+
+    def invalid_message
+      @view.message
+    end
+
+    def valid?
+      @view.message.blank?
+    end
 end

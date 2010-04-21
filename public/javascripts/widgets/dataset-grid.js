@@ -96,7 +96,8 @@
                         { cellClick(datasetObj, e, r, c, o); })
                     .blistModel()
                     .options({blankRow: datasetObj.settings.editEnabled,
-                        filterMinChars: 0, progressiveLoading: true,
+                        filterMinChars: 0,
+                        progressiveLoading: !datasetObj.settings.isInvalid,
                         initialResponse: datasetObj.settings.initialResponse})
                     .ajax({url: '/views/' + datasetObj.settings.viewId +
                                 (datasetObj.settings.isInvalid ? '.json' :
@@ -1569,7 +1570,7 @@
         {
             datasetObj.settings.isInvalid = false;
             datasetObj.settings.validViewCallback(view);
-            datasetObj.settings._model
+            datasetObj.settings._model.options({progressiveLoading: true})
                 .ajax({url: '/views/' + datasetObj.settings.viewId +
                     '/rows.json', cache: false,
                     data: {accessType: datasetObj.settings.accessType},
@@ -1579,6 +1580,7 @@
         }
         else
         {
+            datasetObj.settings._model.options({progressiveLoading: false});
             datasetObj.settings.isInvalid = true;
             return false;
         }

@@ -22,6 +22,7 @@
     {
         defaults:
         {
+            invalid: false,
             pageSize: 100
         },
 
@@ -41,7 +42,7 @@
                 if ($domObj.parent().find('.loadingSpinnerContainer').length < 1)
                 {
                     $domObj.parent().append(
-                        '<div class="loadingSpinnerContainer">' +
+                        '<div class="loadingSpinnerContainer hidden">' +
                         '<div class="loadingSpinner"></div></div>');
                 }
 
@@ -52,6 +53,9 @@
                 currentObj.initializeVisualization();
 
                 $domObj.resize(function(e) { currentObj.resizeHandle(e); });
+
+                currentObj._invalid = currentObj.settings.invalid;
+                if (currentObj._invalid) { return; }
 
                 loadRows(currentObj,
                     {method: 'getByIds', meta: true, start: 0,
@@ -94,6 +98,9 @@
 
                 if (newOptions !== undefined)
                 { vizObj._displayConfig = newOptions; }
+
+                // If reloading, assume it is valid now
+                vizObj._invalid = false;
 
                 vizObj.reloadVisualization();
 

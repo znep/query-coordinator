@@ -124,6 +124,7 @@
             return _.detect(view.columns, function(c)
                 { return c.tableColumnId == tcId; });
         });
+        chartObj._dataColumns = _.compact(chartObj._dataColumns);
 
         return chartObj._dataColumns.length > 0;
     };

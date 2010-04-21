@@ -3,6 +3,10 @@ class Displays::Chart < Displays::Base
     @view.has_columns_for_visualization_type? @view.displayType
   end
 
+  def invalid_message
+    'There are not enough columns to display this chart'
+  end
+
   def type
     'visualization'
   end
@@ -27,18 +31,10 @@ class Displays::Chart < Displays::Base
     super << js
   end
 
-  def render_inline_setup_js(target_dom_id, context)
-    js = <<-END
-      blist.display.invalid = #{!valid?};
-    END
-
-    super << js
-  end
-
   def render_inline_runtime_js(context)
     js = <<-END
       blist.$display.socrataChart({displayFormat: blist.display.options,
-        chartType: '#{@view.displayType}'});
+        chartType: '#{@view.displayType}', invalid: blist.display.isInvalid});
     END
     super << js
   end

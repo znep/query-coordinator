@@ -13,6 +13,10 @@ class Displays::Google < Displays::Base
         @view.has_columns_for_visualization_type? @view.displayType
     end
 
+    def invalid_message
+      'There are not enough columns to display this chart'
+    end
+
     def type
       'visualization'
     end
@@ -36,7 +40,6 @@ class Displays::Google < Displays::Base
         result = super
 
         result << <<-END
-            blist.display.invalid = #{!valid?};
             blist.display.options.wmode = 'opaque';
         END
 

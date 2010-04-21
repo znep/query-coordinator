@@ -671,6 +671,8 @@ blist.namespace.fetch('blist.data');
 
         this.reloadAggregates = function(tempView)
         {
+            if (!_.isUndefined(meta.view.message)) { return; }
+
             tempView = tempView || this.getViewCopy(this.isGrouped());
             $.ajax({url: '/views/INLINE/rows.json?' +
                     $.param({method: 'getAggregates'}),

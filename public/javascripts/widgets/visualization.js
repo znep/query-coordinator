@@ -17,14 +17,6 @@
             $visualization.bind('resize',
                 function(e) { handleResize($visualization, e); });
 
-            if (blist.display.invalid)
-            {
-                $visualization.html("<div class='error'>There are not enough " +
-                    "columns to display this visualization.  " +
-                    "If you are the owner, please choose new columns.</div>");
-                return;
-            }
-
             if (!blist.display.isFusionMap)
             {
                 var query = new google.visualization.Query('/views/' +

@@ -47,7 +47,7 @@
     <%-   else -%>
     <%-     cur_cols = @view.displayFormat.dataColumns.map do |tcId| -%>
     <%-       @view.columns.detect {|c| c.tableColumnId == tcId.to_i} -%>
-    <%-     end -%>
+    <%-     end.compact -%>
     <%-   end -%>
     <%- end -%>
     <%- cols = {} -%>
@@ -500,14 +500,9 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
-                <%- if @view.display.is_a?(Displays::Google) -%>
-                blist.display.invalid = false;
-                blist.display.displayFormat = $.extend(origOptions,
-                    {wmode: 'opaque'});
-                $('.chartContainer').visualization();
-                <%- else -%>
-                blist.$display.socrataChart().reload(origOptions);
-                <%- end -%>
+              $('.viewErrorContainer').hide();
+              $('.invalidView').removeClass('invalidView');
+              blist.$display.socrataChart().reload(origOptions);
               <%- else -%>
               blist.util.navigation.redirectToView(data.newViewId);
               <%- end -%>

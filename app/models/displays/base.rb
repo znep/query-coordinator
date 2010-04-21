@@ -54,6 +54,11 @@ class Displays::Base
         true
     end
 
+    # Message to display if the view is invalid
+    def invalid_message
+      'There is a problem with displaying this view'
+    end
+
     # Is the view publicly accessible?
     def is_public?
       @view.grants && @view.grants.any? {|p| p.flag?('public')}
@@ -76,6 +81,7 @@ blist.display.viewId = '#{@view.id}';
 blist.display.options = #{@options.to_json};
 blist.display.editable = #{@view.can_edit};
 blist.display.scrollsInline = #{scrolls_inline?};
+blist.display.isInvalid = #{!valid?};
 blist.$display = $('##{target_dom_id}')
 END
 

@@ -19,6 +19,7 @@
             initializeChart: function()
             {
                 var chartObj = this;
+                if (chartObj._invalid) { return; }
                 createChart(chartObj);
             },
 

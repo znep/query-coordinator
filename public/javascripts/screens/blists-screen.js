@@ -137,7 +137,7 @@ blist.myBlists.visualizationFilter = function(view)
 {
     return _.include(['barchart', 'annotatedtimeline',
             'imagesparkline', 'areachart', 'columnchart', 'linechart',
-            'piechart', 'motionchart'], view.displayType);
+            'piechart'], view.displayType);
 };
 
 blist.myBlists.mapFilter = function(view)

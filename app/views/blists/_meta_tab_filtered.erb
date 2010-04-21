@@ -38,7 +38,7 @@
         <tr class="item" id="filter-row_<%= filter.id %>">
           <%- if (!in_widget) -%>
           <td class="handle"><div class="cellInner">
-              <%- if page_single && filter.owned_by?(current_user) -%>
+              <%- if page_single && (filter.owned_by?(current_user) || CurrentDomain.user_can?(current_user, :edit_others_datasets)) -%>
               <a href='#delete_<%= filter.id %><%= filter.id == @view.id ?
                 '_' + @view.parent_dataset.id : '' %>' class='deleteLink'
                 title='Delete <%= filter.name %>'>Delete</a>

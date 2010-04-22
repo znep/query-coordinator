@@ -38,6 +38,7 @@ module Displays::Config
     NUMERIC_TYPES = ['number', 'percent', 'money']
 
     VISUALIZATION_CONFIG = {
+        'annotatedtimeline' => {'display' => 'chart', 'hidden' => true},
         'imagesparkline' => {'display' => 'chart', 'hidden' => true},
         'areachart' => {'display' => 'chart', 'hidden' => true},
         'barchart' => {'display' => 'chart', 'hidden' => true},
@@ -56,15 +57,13 @@ module Displays::Config
             'advancedOptions' => [LEGEND_OPTIONS]
         },
 
-        'annotatedtimeline' => {'display' => 'google', 'library' => 'google.visualization.AnnotatedTimeLine', 'hidden' => true,
-                                'label' => 'Time Line',
-                                'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
-                                'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'},
-                                                  {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
-                                                  {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}],
-                                'dataColumnOptions' => [DEF_COLOR_OPTION],
-                                'mainOptions' => [{'name' => 'displayAnnotations', 'type' => 'hidden',
-                                                   'default' => true}]
+        'timeline' => {'label' => 'Time Line',
+            'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
+            'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'},
+                {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
+                {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}
+            ],
+            'dataColumnOptions' => [DEF_COLOR_OPTION]
         },
 
 

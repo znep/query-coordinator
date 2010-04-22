@@ -45,6 +45,7 @@ class Displays::Chart < Displays::Base
   end
 
   CHART_TYPES = { 'imagesparkline' => 'line',
+                  'annotatedtimeline' => 'timeline',
                   'areachart' => 'area',
                   'barchart' => 'bar',
                   'columnchart' => 'column',

@@ -64,6 +64,7 @@ javascripts:
   - plugins/highcharts.src
   - widgets/base-visualization
   - widgets/charts/base-chart
+  - data/types
   - widgets/charts/highcharts
 - accounts-show:
   - plugins/ui.core

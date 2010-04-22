@@ -19,8 +19,7 @@
             initializeChart: function()
             {
                 var chartObj = this;
-                if (chartObj._invalid) { return; }
-                createChart(chartObj);
+                chartObj._chartType = chartObj.settings.chartType;
             },
 
             columnsLoaded: function()
@@ -28,27 +27,51 @@
                 var chartObj = this;
 
                 // Set up x-axis
-                chartObj._xCategories = [];
                 var usesXCol = chartObj._view.displayType != 'imagesparkline' &&
                     (_.isUndefined(chartObj._displayConfig.fixedCount) ||
                     chartObj._displayConfig.fixedCount > 0);
                 if (usesXCol) { chartObj._xColumn = chartObj._dataColumns[0]; }
+                if (!isDateTime(chartObj) && usesXCol)
+                { chartObj._xCategories = []; }
 
                 // Cache data
                 chartObj._seriesCache = [];
 
-                // Set up y-axis
-                chartObj._yColumns = chartObj._dataColumns.slice(usesXCol ? 1 : 0);
-                if (chartObj._reverseOrder) { chartObj._yColumns.reverse(); }
-                _.each(chartObj._yColumns, function(c)
+                // Grab all remaining cols; pick out numeric columns for data,
+                // and associate all following non-nuneric columns with that line
+                var cols = chartObj._dataColumns.slice(usesXCol ? 1 : 0);
+                chartObj._yColumns = [];
+                _.each(cols, function(c)
                 {
-                    var series = {name: c.name, data: []};
-                    chartObj.chart.addSeries(series, false);
+                    if (_.include(['number', 'money', 'percent'], c.renderTypeName))
+                    { chartObj._yColumns.push({data: c}); }
+                    else
+                    {
+                        var obj = chartObj._yColumns[chartObj._yColumns.length - 1];
+                        if (c.renderTypeName == 'text' && _.isUndefined(obj.title))
+                        { obj.title = c; }
+                        else
+                        {
+                            obj.metadata = obj.metadata || [];
+                            obj.metadata.push(c);
+                        }
+                    }
+                });
+
+                // Set up y-axes
+                if (chartObj._reverseOrder) { chartObj._yColumns.reverse(); }
+                _.each(chartObj._yColumns, function(cs)
+                {
+                    var series = {name: $.htmlEscape(cs.data.name),
+                        data: [], column: cs.data};
+                    if (!_.isUndefined(chartObj.chart))
+                    { chartObj.chart.addSeries(series, false); }
                     chartObj._seriesCache.push(series);
                 });
 
                 // Adjust scale to make sure series are synched with axis
-                chartObj.chart.xAxis[0].setScale();
+                if (!_.isUndefined(chartObj.chart))
+                { chartObj.chart.xAxis[0].setScale(); }
 
                 // Register columns as loaded, render data if needed
                 chartObj._columnsLoaded = true;
@@ -59,6 +82,9 @@
                     delete chartObj._pendingRows;
                     chartObj.rowsRendered();
                 }
+
+                // Once we've gotten the columns, create the chart
+                createChart(chartObj);
             },
 
             renderRow: function(row)
@@ -72,24 +98,28 @@
                 }
 
                 // Get useable value for x-axis
-                var xVal = null;
-                if (!_.isUndefined(chartObj._xColumn))
-                { xVal = row[chartObj._xColumn.dataIndex]; }
-                if (_.isNull(xVal)) { xVal = ''; }
-                xVal = $.htmlEscape(xVal);
-                chartObj._xCategories.push(xVal);
+                var basePt = xPoint(chartObj, row);
+
+                if (!_.isUndefined(chartObj._xCategories))
+                {
+                    var xCat = row[chartObj._xColumn.dataIndex];
+                    if (_.isNull(xCat) || _.isUndefined(xCat)) { xCat = ''; }
+                    xCat = $.htmlEscape(xCat);
+                    chartObj._xCategories.push(xCat);
+                }
 
                 // Render data for each series
-                _.each(chartObj._yColumns, function(c, i)
+                _.each(chartObj._yColumns, function(cs, i)
                 {
-                    var value = parseFloat(row[c.dataIndex]);
+                    var value = parseFloat(row[cs.data.dataIndex]);
                     if (_.isNaN(value)) { value = null; }
 
                     // First check if this should be subsumed into a remainder
                     if (!_.isNull(value) &&
                         !_.isUndefined(chartObj._displayConfig.pieJoinAngle) &&
-                        !_.isUndefined(c.aggregate) && c.aggregate.type == 'sum' &&
-                        value / c.aggregate.value * 100 <
+                        !_.isUndefined(cs.data.aggregate) &&
+                        cs.data.aggregate.type == 'sum' &&
+                        value / cs.data.aggregate.value * 100 <
                             chartObj._displayConfig.pieJoinAngle)
                     {
                         chartObj._seriesRemainders =
@@ -101,15 +131,9 @@
                     else
                     {
                         // Render point and cache it
-                        var point = {x: chartObj._xCategories.length - 1,
-                            y: value, name: xVal};
-                        if (chartObj._chartType == 'pie')
-                        {
-                            point.color = chartObj._displayConfig
-                                .colors[chartObj._seriesCache[i].data.length %
-                                    chartObj._displayConfig.colors.length];
-                        }
-                        chartObj.chart.series[i].addPoint(point, false);
+                        var point = yPoint(chartObj, row, value, i, basePt);
+                        if (!_.isUndefined(chartObj.chart))
+                        { chartObj.chart.series[i].addPoint(point, false); }
                         chartObj._seriesCache[i].data.push(point);
                     }
                 });
@@ -124,28 +148,27 @@
                 // Check if there are remainders to stick on the end
                 if (!_.isUndefined(chartObj._seriesRemainders))
                 {
-                    var otherName = 'Other';
-                    chartObj._xCategories.push(otherName);
+                    var otherPt = xPoint(chartObj, null, 'Other');
+                    if (!_.isUndefined(chartObj._xCategories))
+                    { chartObj._xCategories.push('Other'); }
                     _.each(chartObj._seriesRemainders, function(sr, i)
                     {
                         if (sr > 0)
                         {
-                            var point = {x: chartObj._xCategories.length - 1,
-                                y: sr, name: otherName};
-                            if (chartObj._chartType == 'pie')
-                            {
-                                point.color = chartObj._displayConfig
-                                    .colors[chartObj._seriesCache[i].data.length %
-                                        chartObj._displayConfig.colors.length];
-                            }
-                            chartObj.chart.series[i].addPoint(point, false);
+                            var point = yPoint(chartObj, null, sr, i, otherPt);
+                            if (!_.isUndefined(chartObj.chart))
+                            { chartObj.chart.series[i].addPoint(point, false); }
                             chartObj._seriesCache[i].data.push(point);
                         }
                     });
                 }
 
-                chartObj.chart.xAxis[0].setCategories(chartObj._xCategories, false);
-                chartObj.chart.redraw();
+                if (!_.isUndefined(chartObj.chart))
+                {
+                    chartObj.chart.xAxis[0].setCategories(
+                        chartObj._xCategories, false);
+                    chartObj.chart.redraw();
+                }
             },
 
             resizeHandle: function(event)
@@ -160,20 +183,28 @@
                 chartObj._resizeTimer = setTimeout(function()
                 {
                     delete chartObj._resizeTimer;
-                    chartObj.chart.destroy();
-                    createChart(chartObj);
+                    if (!_.isUndefined(chartObj.chart))
+                    {
+                        chartObj.chart.destroy();
+                        delete chartObj.chart;
+                        createChart(chartObj);
+                    }
                 }, 500);
             },
 
             resetData: function()
             {
                 var chartObj = this;
+                delete chartObj._xCategories;
+                delete chartObj._xColumn;
+                delete chartObj._yColumns;
                 delete chartObj._columnsLoaded;
                 delete chartObj._pendingRows;
                 delete chartObj._seriesRemainders;
                 delete chartObj._seriesCache;
 
                 chartObj.chart.destroy();
+                delete chartObj.chart;
                 createChart(chartObj);
             }
         }
@@ -181,11 +212,6 @@
 
     var createChart = function(chartObj)
     {
-        // Map recorded type to what Highcharts wants
-        chartObj._chartType = chartObj.settings.chartType;
-        if (chartObj._chartType == 'line' && chartObj._displayConfig.smoothLine)
-        { chartObj._chartType = 'spline'; }
-
         var xTitle = chartObj._displayConfig.titleX;
         var yTitle = chartObj._displayConfig.titleY;
 
@@ -223,12 +249,19 @@
         var colors = chartObj._displayConfig.colors.slice();
         if (chartObj._reverseOrder) { colors.reverse(); }
 
+        // Map recorded type to what Highcharts wants
+        var seriesType = chartObj._chartType;
+        if (seriesType == 'line' && chartObj._displayConfig.smoothLine)
+        { seriesType = 'spline'; }
+        if (seriesType == 'timeline') { seriesType = 'line'; }
+
         // Main config
         var chartConfig =
         {
             chart: {
                 renderTo: chartObj.$dom()[0],
-                defaultSeriesType: chartObj._chartType,
+                defaultSeriesType: seriesType,
+                events: { load: function() { chartObj.finishLoading(); } },
                 inverted: chartObj._chartType == 'bar',
                 margin: chartMargin
             },
@@ -255,6 +288,22 @@
         if (!_.isUndefined(chartObj._xCategories))
         { chartConfig.xAxis.categories = chartObj._xCategories; }
 
+        if (isDateTime(chartObj))
+        {
+            chartConfig.xAxis.type = 'datetime';
+            chartConfig.tooltip = { formatter: function()
+            {
+                return '<p><strong>' + this.series.name +
+                    (this.point.name && this.series.name != this.point.name ?
+                        ': ' + this.point.name : '') + '</strong></p>' +
+                    (this.point.subtitle ?
+                        '<p>' + this.point.subtitle + '</p>' : '') +
+                    '<p>' + this.y + ' at ' +
+                    blist.data.types.date.filterRender(this.x,
+                        this.series.options.column) + '</p>';
+            } };
+        }
+
 
         // Set up config for this particular chart type
         var typeConfig = {allowPointSelect: true,
@@ -272,6 +321,7 @@
         chartConfig.plotOptions[chartObj._chartType] = typeConfig;
 
         // Create the chart
+        chartObj.startLoading();
         chartObj.chart = new Highcharts.Chart(chartConfig);
 
         // Set colors after chart is created so they don't get merged with the
@@ -279,4 +329,56 @@
         chartObj.chart.options.colors = colors;
     };
 
+    var xPoint = function(chartObj, row, value)
+    {
+        var pt = {x: value};
+
+        if (isDateTime(chartObj))
+        {
+            if (!_.isNull(row) && !_.isUndefined(row))
+            { pt.x = row[chartObj._xColumn.dataIndex] * 1000; }
+            else { pt.x = ''; }
+        }
+        else if (!_.isUndefined(chartObj._xCategories))
+        { pt.x = chartObj._xCategories.length; }
+
+        return pt;
+    };
+
+    var yPoint = function(chartObj, row, value, seriesIndex, basePt)
+    {
+        var point = {y: value};
+        if (!_.isNull(basePt) && !_.isUndefined(basePt))
+        { _.extend(point, basePt); }
+
+        var colSet = chartObj._yColumns[seriesIndex];
+        if (!_.isUndefined(colSet.title) && !_.isNull(row))
+        { point.name = $.htmlEscape(row[colSet.title.dataIndex]); }
+
+        else if (chartObj._chartType == 'pie')
+        { point.name = chartObj._xCategories[point.x]; }
+
+        else { point.name = chartObj._seriesCache[seriesIndex].name; }
+
+        if (!_.isUndefined(colSet.metadata) && !_.isNull(row))
+        {
+            point.subtitle = '';
+            _.each(colSet.metadata, function(c)
+            { point.subtitle += $.htmlEscape(row[c.dataIndex]); });
+        }
+
+        if (chartObj._chartType == 'pie')
+        {
+            point.color = chartObj._displayConfig
+                .colors[chartObj._seriesCache[seriesIndex].data.length %
+                chartObj._displayConfig.colors.length];
+        }
+        return point;
+    };
+
+    var isDateTime = function(chartObj)
+    {
+        return !_.isUndefined(chartObj._xColumn) &&
+            chartObj._xColumn.renderTypeName == 'date';
+    };
 })(jQuery);

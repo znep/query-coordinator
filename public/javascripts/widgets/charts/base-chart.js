@@ -18,7 +18,8 @@
             'bar': 'highcharts',
             'column': 'highcharts',
             'line': 'highcharts',
-            'pie': 'highcharts'
+            'pie': 'highcharts',
+            'timeline': 'highcharts'
         }
     };
 
@@ -74,6 +75,7 @@
                     error: function() { chartObj.finishLoading(); },
                     success: function(aggData)
                     {
+                        chartObj.finishLoading();
                         var aggMap = {};
                         _.each(aggData, function(a)
                             { aggMap[a.columnId] = {type: a.name, value: a.value}; }
@@ -84,7 +86,6 @@
                             { c.aggregate = aggMap[c.id]; }
                         });
                         chartObj.columnsLoaded();
-                        chartObj.finishLoading();
                     }});
             },
 

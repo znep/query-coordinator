@@ -224,6 +224,7 @@
                 delete chartObj._seriesCache;
                 delete chartObj._curMin;
                 delete chartObj._curMax;
+                delete chartObj._loadedOnce;
 
                 if (!_.isUndefined(chartObj.chart))
                 {
@@ -345,9 +346,8 @@
         var typeConfig = {allowPointSelect: true,
             marker: {enabled: chartObj._displayConfig.pointSize != '0'} };
 
-        // If we have data that is being re-rendered, don't animate it
-        if (!_.isUndefined(chartObj._seriesCache))
-        { typeConfig.animation = false; }
+        // If we already loaded and are just re-rendering, don't animate
+        if (chartObj._loadedOnce) { typeConfig.animation = false; }
 
         // Make sure lineSize is defined, so we don't hide the line by default
         if (!_.isUndefined(chartObj._displayConfig.lineSize))
@@ -365,6 +365,8 @@
         chartObj.chart.options.colors = colors;
 
         if (isDateTime(chartObj)) { createDateTimeOverview(chartObj); }
+
+        chartObj._loadedOnce = true;
     };
 
     var xPoint = function(chartObj, row, value)
@@ -449,7 +451,7 @@
             credits: { enabled: false },
             legend: { enabled: false },
             plotOptions: { line: {
-                animation: false,
+                animation: !chartObj._loadedOnce,
                 lineWidth: 1,
                 marker: { enabled: false },
                 shadow: false

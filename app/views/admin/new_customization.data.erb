@@ -1,0 +1,57 @@
+<%- content_for(:wrapper_class, "newCustomization") -%>
+
+<%- content_for :headline do -%>
+  <h1>Create a New Template</h1>
+<%- end -%>
+
+<div class="modalContentWrapper newCustomizationWrapper">
+  <div class="errorMessage"></div>
+  <% form_tag('/admin/sdp/create', :id => "newCustomizationForm", :method => "put") do %>
+    <label for="new_customization_name" class="required">Name the Template</label>
+    <%= text_field_tag('new_customization[name]') %>
+
+    <label for="new_customization_description">Add a Short Description</label>
+    <%= text_area_tag('new_customization[description]') %>
+
+    <label for="new_customization_from">Start Template From</label>
+    <%= select_tag('new_customization[from]', options_from_collection_for_select(
+        @widget_customizations, 'uid', 'name', @widget_customization)) %>
+    <div class="submitLine clearfix">
+      <span class="requiredText">Required Entry</span>
+      <ul class="submitActions">
+        <li>
+          <ul class="actionButtons">
+            <li><a class="arrowButton" href="#submit" id="submitNewCustomization">Create</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+  blist.common.modalReady = function()
+  {
+    var $form = $('#newCustomizationForm');
+
+    $form.validate({
+      rules: { "new_customization[name]": "required" },
+      messages: {  "new_customization[name]": "You must name the template." }
+    });
+
+    var submitForm = function(event)
+    {
+      if (!$form.valid())
+      {
+        event.preventDefault();
+      }
+      else
+      {
+        $form.submit();
+      }
+    };
+
+    $('#submitNewCustomization').click(submitForm);
+  };
+</script>

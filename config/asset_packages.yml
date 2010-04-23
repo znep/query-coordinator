@@ -67,6 +67,8 @@ javascripts:
   - util/urls
   - widgets/dropdown-menu
   - screens/approval-screen
+- admin-sdp-index:
+  - screens/admin-sdp-index-screen
 - admin-users:
   - screens/admin-users-screen
 - blists-about:
@@ -331,3 +333,9 @@ stylesheets:
 - admin-shared:
   - admin-screen
   - form-common
+- admin-sdp-index:
+  - list-screen
+  - admin-sdp-index-screen
+- admin-sdp:
+  - colorpicker
+  - admin-sdp-screen

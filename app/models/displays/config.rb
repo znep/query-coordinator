@@ -63,7 +63,11 @@ module Displays::Config
                 {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
                 {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}
             ],
-            'dataColumnOptions' => [DEF_COLOR_OPTION]
+            'dataColumnOptions' => [DEF_COLOR_OPTION],
+            'mainOptions' => [
+                {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+            ],
+            'advancedOptions' => [LEGEND_OPTIONS]
         },
 
 

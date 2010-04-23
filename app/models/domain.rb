@@ -69,7 +69,7 @@ class Domain < Model
     ['community_comment_moderation', 'publisher_comment_moderation']
 
   @@configurable_strings =
-    ['company', 'copyright_string', 'site_title']
+    ['company', 'copyright_string', 'site_title', 'discover_header']
 
   @@site_theme_options = 
     [ { :name => 'emails.from_address',

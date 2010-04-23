@@ -288,7 +288,7 @@ module BlistsHelper
       'href' => blist_filters_path(view.id), 'modal' => true},
       {'text' => 'Sort Columns...', 'class' => 'sort', 'if' => !view.is_alt_view?,
       'href' => '#sort_' + blist_sort_bys_path(view.id)},
-      {'text' => 'Grouping & Aggregates...', 'class' => 'grouping',
+      {'text' => 'Roll Ups...', 'class' => 'grouping',
       'if' => !view.is_alt_view?,
       'href' => '#group_' + blist_groupings_path(view.id)},
       {'text' => 'Show or Hide Columns', 'class' => 'showHide ungroupedOption',

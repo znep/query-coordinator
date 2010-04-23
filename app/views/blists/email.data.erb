@@ -203,6 +203,7 @@
     $form.submit(submitForm);
     $('#emailFormSubmitButton').click(submitForm);
 
-    $.analytics.trackEvent('Dataset Page Menu', 'Email dialog opened', blistGridNS.viewId);
+    var viewId = (blist.grid === undefined) ? blist.widget.viewId : blist.grid.viewid;
+    $.analytics.trackEvent('Dataset Page Menu', 'Email dialog opened', viewId);
   };
 </script>

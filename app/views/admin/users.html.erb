@@ -13,10 +13,11 @@
           <div class='contentTR'><div class='contentTL'></div></div>
           <div class='content' id='adminContent'>
 
-            <h1>Manage Users</h1>
+            <h3>Manage Users</h3>
             
             <%- if @user_search_results.nil? -%>
-              <p class='information'>To modify user privileges on this domain, search for them below or choose from the list of existing users below.</p>
+              <p class='information'>To modify user privileges on this domain,
+                search for them below or choose from the list of existing users below.</p>
             <%- end -%>
             <form class='search usersFind' action='/admin/users'>
                <div class='searchContainer'>

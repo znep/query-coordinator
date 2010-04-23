@@ -73,16 +73,32 @@ ActionController::Routing::Routes.draw do |map|
     :action => 'show_tier'
   map.connect '/internal/modules', :controller => 'internal',
     :action => 'index_modules'
-    
-  map.connect '/admin', :controller => 'admin', :action => 'index'
-  map.connect '/admin/users', :controller => 'admin', :action => 'users'
-  map.connect '/admin/users/:id', :controller => 'admin', :action => 'users'
-  map.connect '/admin/save_user/:id', :controller => 'admin', :action => 'save_user_role'
-  map.connect '/admin/reload', :controller => 'admin', :action => 'reload'
-  map.connect '/admin/configuration', :controller => 'admin', :action => 'config'
-  map.connect '/admin/configuration/update', :controller => 'admin', :action => 'update_config'
-  map.connect '/admin/theme', :controller => 'admin', :action => 'theme'
-  
+
+  map.with_options :controller => 'admin' do |admin|
+    admin.connect '/admin',                       :action => 'index'
+    admin.connect '/admin/users',                 :action => 'users'
+    admin.connect '/admin/users/:id',             :action => 'users'
+    admin.connect '/admin/save_user/:id',         :action => 'save_user_role'
+    admin.connect '/admin/reload',                :action => 'reload'
+    admin.connect '/admin/configuration',         :action => 'config'
+    admin.connect '/admin/configuration/update',  :action => 'update_config'
+    admin.connect '/admin/sdp',                   :action => 'sdp_index'
+    admin.connect '/admin/sdp/:id/:customization_id', :action => 'sdp',
+      :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
+    admin.connect '/admin/sdp/:id/:customization_id/choose', :action => 'sdp',
+      :choose => true, :requirements =>
+        {:id => UID_REGEXP, :customization_id => UID_REGEXP}
+    admin.connect '/admin/sdp/new',               :action => 'new_customization',
+      :conditions => { :method => :get }, :format => 'data'
+    admin.connect '/admin/sdp/create',            :action => 'create_customization',
+      :conditions => { :method => :put }, :format => 'data'
+    admin.connect '/admin/sdp/:id/delete',        :action => 'hide_template',
+      :requirements => {:id => UID_REGEXP}
+    admin.connect '/admin/sdp/:id/default',       :action => 'set_default_template',
+      :requirements => {:id => UID_REGEXP}
+    admin.connect '/admin/sdp/create_blank_view', :action => 'create_blank_dataset'
+    admin.connect '/admin/theme',                 :action => 'theme'
+  end
 
   map.resources :contacts,
     :collection => {

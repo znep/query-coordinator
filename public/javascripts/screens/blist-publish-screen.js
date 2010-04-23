@@ -465,15 +465,17 @@ blist.publish.applyCustomizationToPreview = function(hash)
         recurse(publishNS.customizationApplication, hash);
         widgetNS.sizeGrid();
 
-        // Update copy code
-        $('.publishCode textarea').text(
-            $('.publishCode #codeTemplate').val()
-                .replace('%variation%', $('#template_name').val())
-                .replace('%width%', hash['publish']['dimensions']['width'])
-                .replace('%height%', hash['publish']['dimensions']['height'])
-                .replace((hash['publish']['show_title'] ? /^<div>/ : /^<div><p.*?<\/p>/), '<div>')
-                .replace((hash['publish']['show_powered_by'] ? /<\/div>$/ : /<p>.*<\/p><\/div>$/), '</div>'));
-
+        if(publishNS.showEmbed !== false)
+        {
+            // Update copy code
+            $('.publishCode textarea').text(
+                $('.publishCode #codeTemplate').val()
+                    .replace('%variation%', $('#template_name').val())
+                    .replace('%width%', hash['publish']['dimensions']['width'])
+                    .replace('%height%', hash['publish']['dimensions']['height'])
+                    .replace((hash['publish']['show_title'] ? /^<div>/ : /^<div><p.*?<\/p>/), '<div>')
+                    .replace((hash['publish']['show_powered_by'] ? /<\/div>$/ : /<p>.*<\/p><\/div>$/), '</div>'));
+        }
         // Hide initial loading splash
         $('.previewPane .loadingIndicator').hide();
     }
@@ -745,19 +747,28 @@ blist.publish.hideUnsavedChangesBar = function()
     // Highlight copy code on click
     $.live('.publishCode textarea', 'click', function() { $(this).select(); });
 
+    var initialTabSelect = "tabTemplates";
+    var tabs = {
+        "tabTemplates" :   ".singleInfoTemplates",
+        "tabVisual" :      ".singleInfoVisual",
+        "tabMenuControl" : ".singleInfoMenuControl",
+        "tabTab" :         ".singleInfoTab",
+        "tabAdvanced" :    ".singleInfoAdvanced"
+    };
+    if (publishNS.showTemplateChooser === false)
+    {
+        delete tabs["tabTemplates"];
+        initialTabSelect = "tabVisual";
+    }
+
     // Tab behavior
     $("#publishOptionsPane .summaryTabs").infoPaneNavigate({
-        tabMap: {
-            "tabTemplates" :   ".singleInfoTemplates",
-            "tabVisual" :      ".singleInfoVisual",
-            "tabMenuControl" : ".singleInfoMenuControl",
-            "tabTab" :         ".singleInfoTab",
-            "tabAdvanced" :    ".singleInfoAdvanced"
-        },
+        tabMap: tabs,
         allPanelsSelector : ".infoContentOuter",
         expandableSelector: ".infoContent",
-        initialTab: "tabTemplates"
+        initialTab: initialTabSelect
     });
+
 
     // Color pickers
     $('.colorPickerContainer').each(function() {

@@ -15,6 +15,11 @@
     padding-bottom: 0;
 }
 
+#publishContent .publishHeader h3
+{
+    padding: 1em;
+}
+
 #publishContent .publishHeader p
 {
     font-size: 1.3em;
@@ -128,19 +133,6 @@
 {
     font-size: 1.2em;
     margin-bottom: 1em;
-}
-
-#publishContent .actionButtons li
-{
-    background-position: left -63px;
-}
-#publishContent .actionButtons li a
-{
-    background-position: right -84px;
-}
-#publishContent .actionButtons li a.arrowButton
-{
-    background-position: right -105px;
 }
 
 h3 .infoText

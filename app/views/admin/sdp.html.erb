@@ -1,6 +1,6 @@
 <% content_for :head do %>
 <%= stylesheet_link_merged 'admin-shared' %>
-<%= stylesheet_link_merged 'admin-sdp' %>
+<%= stylesheet_link_merged 'blists-publish' %>
 <title>Administration Panel | <%= CurrentDomain.strings.site_title %></title>
 <% end %>
 <div id="publishContent" class="oneColumnContainer tabContainer">
@@ -11,35 +11,40 @@
         <div class='outerContent'>
           <div class='contentTR'><div class='contentTL'></div></div>
           <div class='content' id='adminContent'>
-            <%= render :partial => 'refresh_theme_link' =%>
-            <h3>Social Data Player Customizations</h3>
+            <div class="publishHeader clearfix">
+              <%= render :partial => 'refresh_theme_link' =%>
 
-            <%- if flash[:notice] -%>
-              <p class='flashNotice'><%= flash[:notice] %></p>
-            <%- end -%>
-              <%- if @show_embed_code -%>  
-              <div class="publishCodeWrapper">
-                <div class="publishCode">
-                  <p>
-                    Embed Code:
-                    <span class="helpie" title="Paste this HTML code on your blog or website to publish your Social Data Player">?</span>
-                  </p>
-                  <textarea><%= get_publish_embed_code_for_view(@view, @customization[:publish], @widget_customization.uid) %></textarea>
-                  <%= hidden_field_tag('codeTemplate', get_publish_embed_code_for_view(@view, 
-                        { :dimensions => { :width => '%width%', :height => '%height%' } }, '%variation%')) %>
+                <%- if @show_embed_code -%>  
+                <div class="publishCodeWrapper">
+                  <div class="publishCode">
+                    <p>
+                      Embed Code:
+                      <span class="helpie" title="Paste this HTML code on your blog or website to publish your Social Data Player">?</span>
+                    </p>
+                    <textarea><%= get_publish_embed_code_for_view(@view, @customization[:publish], @widget_customization.uid) %></textarea>
+                    <%= hidden_field_tag('codeTemplate', get_publish_embed_code_for_view(@view, 
+                          { :dimensions => { :width => '%width%', :height => '%height%' } }, '%variation%')) %>
+                  </div>
                 </div>
-              </div>  
-              <%- end -%>  
-              <p class="explanation">
-                Use the controls at the bottom of this page to edit the look and 
-                function of this Social Data Player. You can edit an existing 
-                template or create a new one.
-              </p>
-              <p class="explanation">
-                You can also <%= link_to 'return to the template list', :action => 'sdp_index' %>
-                to view all of your templates.
-              </p>
-              
+                <a href="<%= @view.href %>" class="backToDatasetLink">Back to the Dataset</a>
+                <%- end -%>  
+                
+                <h3>Social Data Player Customizations</h3>
+                
+                <%- if flash[:notice] -%>
+                  <p class='flashNotice'><%= flash[:notice] %></p>
+                <%- end -%>
+                
+                <p class="explanation">
+                  Use the controls at the bottom of this page to edit the look and 
+                  function of this Social Data Player. You can edit an existing 
+                  template or create a new one.
+                </p>
+                <p class="explanation">
+                  You can also <%= link_to 'return to the template list', :action => 'sdp_index' %>
+                  to view all of your templates.
+                </p>
+              </div>
               <div class="unsavedChangesBar">
                 <ul class="actionButtons clearfix">
                   <li>
@@ -950,11 +955,12 @@
 <% content_for :js_footer do %>
   <%= javascript_include_merged 'shared-common-all' %>
   <script type="text/javascript">
-    blist.namespace.fetch('admin.sdp');
-    admin.sdp.currentTheme = <%= raw @customization.to_json %>;
-    admin.sdp.viewId = '<%= @view.id %>';
-    admin.sdp.showTemplateChooser = <%= @allow_template_change == true %>;
+    blist.namespace.fetch('blist.publish');
+    blist.publish.currentTheme = <%= raw @customization.to_json %>;
+    blist.publish.viewId = '<%= @view.id %>';
+    blist.publish.showTemplateChooser = <%= @allow_template_change == true %>;
+    blist.publish.showEmbed = <%= @show_embed == true %>;
   </script>
-  <%= javascript_include_merged 'admin-sdp' %>
+  <%= javascript_include_merged 'blists-publish' %>
 <% end %>
 

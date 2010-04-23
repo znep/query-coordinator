@@ -13,6 +13,11 @@
           <div class='contentTR'><div class='contentTL'></div></div>
           <div class='content' id='adminContent'>
             <%= render :partial => 'refresh_theme_link' =%>
+            <ul class="actionButtons newTemplateHeader">
+              <li>
+                <%= link_to 'Create New Template', '/admin/sdp/new', {:rel => 'modal', :class => 'newTemplateLink arrowButton clearfix'} %>
+              </li>
+            </ul>
             <h3>Choose a Social Data Player Template</h3>
 
             <%- if flash[:notice] -%>
@@ -27,9 +32,9 @@
                 Alternatively, you may manually create a <%= t(:blist_name) %> by 
                 <%= link_to 'following this link', :controller => 'blists', :action => 'new' %>.</p>
             <%- else -%>
-              <p class='information'>Click on a template's name to customize it, or 
-                <%= link_to 'create a new template', '/admin/sdp/new', {:rel => 'modal', :class => 'newTemplateLink'} %>.
-                To view a preview of a template, click the expand arrow to the left of its name.</p>
+              <p class='information'>Click on a template's name to customize it, 
+                or click the Create New Template button above.</p>
+                <p class='information'>To view a preview of a template, click the expand arrow to the left of its name.</p>
 
               <%- if @default_template.nil? || !@widget_customizations.any? { |w| w.uid == @default_template } -%>
                 <p class='information warning'>You do not have a default template specified for your domain.

@@ -204,9 +204,8 @@
                 var title = mapObj._titleIndex !== undefined ?
                     row[mapObj._titleIndex] : null;
 
-                mapObj.renderPoint(lat, longVal, title, info, row[mapObj._idIndex]);
-
-                return true;
+                return mapObj.renderPoint(lat, longVal, title,
+                    info, row[mapObj._idIndex]);
             },
 
             renderPoint: function(latVal, longVal, title, info, rowId)

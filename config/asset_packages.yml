@@ -336,6 +336,3 @@ stylesheets:
 - admin-sdp-index:
   - list-screen
   - admin-sdp-index-screen
-- admin-sdp:
-  - colorpicker
-  - admin-sdp-screen

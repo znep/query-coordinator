@@ -66,12 +66,16 @@
                         data: [], column: cs.data};
                     if (!_.isUndefined(chartObj.chart))
                     { chartObj.chart.addSeries(series, false); }
+                    if (!_.isUndefined(chartObj.secondChart))
+                    { chartObj.secondChart.addSeries(series, false); }
                     chartObj._seriesCache.push(series);
                 });
 
                 // Adjust scale to make sure series are synched with axis
                 if (!_.isUndefined(chartObj.chart))
                 { chartObj.chart.xAxis[0].setScale(); }
+                if (!_.isUndefined(chartObj.secondChart))
+                { chartObj.secondChart.xAxis[0].setScale(); }
 
                 // Register columns as loaded, render data if needed
                 chartObj._columnsLoaded = true;
@@ -134,6 +138,8 @@
                         var point = yPoint(chartObj, row, value, i, basePt);
                         if (!_.isUndefined(chartObj.chart))
                         { chartObj.chart.series[i].addPoint(point, false); }
+                        if (!_.isUndefined(chartObj.secondChart))
+                        { chartObj.secondChart.series[i].addPoint(point, false); }
                         chartObj._seriesCache[i].data.push(point);
                     }
                 });
@@ -158,6 +164,9 @@
                             var point = yPoint(chartObj, null, sr, i, otherPt);
                             if (!_.isUndefined(chartObj.chart))
                             { chartObj.chart.series[i].addPoint(point, false); }
+                            if (!_.isUndefined(chartObj.secondChart))
+                            { chartObj.secondChart.series[i].addPoint(
+                                point, false); }
                             chartObj._seriesCache[i].data.push(point);
                         }
                     });
@@ -168,6 +177,12 @@
                     chartObj.chart.xAxis[0].setCategories(
                         chartObj._xCategories, false);
                     chartObj.chart.redraw();
+                }
+                if (!_.isUndefined(chartObj.secondChart))
+                {
+                    chartObj.secondChart.xAxis[0].setCategories(
+                        chartObj._xCategories, false);
+                    chartObj.secondChart.redraw();
                 }
             },
 
@@ -187,6 +202,11 @@
                     {
                         chartObj.chart.destroy();
                         delete chartObj.chart;
+                        if (!_.isUndefined(chartObj.secondChart))
+                        {
+                            chartObj.secondChart.destroy();
+                            delete chartObj.secondChart;
+                        }
                         createChart(chartObj);
                     }
                 }, 500);
@@ -202,10 +222,19 @@
                 delete chartObj._pendingRows;
                 delete chartObj._seriesRemainders;
                 delete chartObj._seriesCache;
+                delete chartObj._curMin;
+                delete chartObj._curMax;
 
-                chartObj.chart.destroy();
-                delete chartObj.chart;
-                createChart(chartObj);
+                if (!_.isUndefined(chartObj.chart))
+                {
+                    chartObj.chart.destroy();
+                    delete chartObj.chart;
+                }
+                if (!_.isUndefined(chartObj.secondChart))
+                {
+                    chartObj.secondChart.destroy();
+                    delete chartObj.secondChart;
+                }
             }
         }
     }));
@@ -238,6 +267,8 @@
                 chartMargin[1] = 180;
                 break;
         }
+
+        if (isDateTime(chartObj)) { chartMargin[2] = 120; }
 
         // For some reason, bar charts are rendered with the data in the reverse
         // order; while the legend is correct (perhaps due to the inverted axis?).
@@ -273,11 +304,16 @@
                 reversed: chartObj._reverseOrder,
                 style: legendStyle },
             plotOptions: {},
-            title: { style: { display: 'none' } },
+            title: { text: null },
             xAxis: { title:
-                { enabled: xTitle !== '', text: xTitle } },
+                { enabled: xTitle !== '' && !_.isUndefined(xTitle), text: xTitle },
+                dateTimeLabelFormats: {
+                    day: '%e %b',
+                    week: '%e %b',
+                    month: '%b %Y'
+                } },
             yAxis: { title:
-                { enabled: yTitle !== '', text: yTitle } }
+                { enabled: yTitle !== '' && !_.isUndefined(yTitle), text: yTitle } }
         };
 
         // If we already have data loaded, use it
@@ -318,7 +354,7 @@
         { typeConfig.lineWidth = parseInt(chartObj._displayConfig.lineSize); }
 
         // Type config goes under the type name
-        chartConfig.plotOptions[chartObj._chartType] = typeConfig;
+        chartConfig.plotOptions[seriesType] = typeConfig;
 
         // Create the chart
         chartObj.startLoading();
@@ -327,6 +363,8 @@
         // Set colors after chart is created so they don't get merged with the
         // default colors; we want to override them, instead
         chartObj.chart.options.colors = colors;
+
+        if (isDateTime(chartObj)) { createDateTimeOverview(chartObj); }
     };
 
     var xPoint = function(chartObj, row, value)
@@ -381,4 +419,118 @@
         return !_.isUndefined(chartObj._xColumn) &&
             chartObj._xColumn.renderTypeName == 'date';
     };
+
+
+    var createDateTimeOverview = function(chartObj)
+    {
+        var $secondChart = chartObj.$dom().find('.secondaryChart');
+        if ($secondChart.length < 1)
+        {
+            chartObj.$dom().append('<div class="secondaryChart"></div>');
+            $secondChart = chartObj.$dom().find('.secondaryChart');
+        }
+
+        var margins = chartObj.chart.options.chart.margin;
+        margins[0] = 10;
+        margins[2] = 60;
+
+        var config = {
+            chart: {
+                renderTo: $secondChart[0],
+                defaultSeriesType: 'line',
+                margin: margins,
+                zoomType: 'x',
+                events: {
+                    selection: function(event)
+                    { return secondChartSelect(chartObj, event); }
+                }
+            },
+            colors: chartObj.chart.options.colors,
+            credits: { enabled: false },
+            legend: { enabled: false },
+            plotOptions: { line: {
+                animation: false,
+                lineWidth: 1,
+                marker: { enabled: false },
+                shadow: false
+            } },
+            title: { text: null },
+            tooltip: { formatter: function() { return false; } },
+            xAxis: { type: 'datetime', title: { enabled: false },
+                minPadding: 0.03, maxPadding: 0.03,
+                dateTimeLabelFormats:
+                    chartObj.chart.options.xAxis.dateTimeLabelFormats },
+            yAxis: { labels: { enabled: false }, title: { enabled: false } }
+        };
+
+        // If we already have data loaded, use it
+        if (!_.isUndefined(chartObj._seriesCache))
+        { config.series = chartObj._seriesCache; }
+
+        // If we already have categories loaded, use it
+        if (!_.isUndefined(chartObj._xCategories))
+        { config.xAxis.categories = chartObj._xCategories; }
+
+        chartObj.secondChart = new Highcharts.Chart(config);
+
+        if (_.isUndefined(chartObj._curMin))
+        {
+            var extremes = chartObj.secondChart.xAxis[0].getExtremes();
+            chartObj._curMax = extremes.max;
+            chartObj._curMin = (extremes.max - extremes.min) * 0.7 + extremes.min;
+        }
+        adjustDetailBounds(chartObj, chartObj._curMin, chartObj._curMax);
+    };
+
+    var secondChartSelect = function(chartObj, event)
+    {
+        var eAxis = event.xAxis[0];
+        adjustDetailBounds(chartObj, eAxis.min, eAxis.max);
+        return false;
+    };
+
+    var adjustDetailBounds = function(chartObj, min, max)
+    {
+        chartObj._curMin = min;
+        chartObj._curMax = max;
+
+        var detailAxis = chartObj.chart.xAxis[0];
+        detailAxis.setExtremes(min, max);
+
+        var overviewAxis = chartObj.secondChart.xAxis[0];
+        var overviewExtremes = overviewAxis.getExtremes();
+
+        overviewAxis.removePlotLine('min-value');
+        overviewAxis.addPlotLine({
+            id: 'min-value',
+            value: min,
+            width: 1,
+            color: 'rgba(0, 0, 0, 0.5)'
+        });
+
+        overviewAxis.removePlotBand('mask-before');
+        overviewAxis.addPlotBand({
+            id: 'mask-before',
+            from: overviewExtremes.min,
+            to: min,
+            color: 'rgba(0, 0, 0, 0.2)'
+        });
+
+        overviewAxis.removePlotLine('max-value');
+        overviewAxis.addPlotLine({
+            id: 'max-value',
+            value: max,
+            width: 1,
+            color: 'rgba(0, 0, 0, 0.5)'
+        });
+
+        overviewAxis.removePlotBand('mask-after');
+        overviewAxis.addPlotBand({
+            id: 'mask-after',
+            from: max,
+            to: overviewExtremes.max,
+            color: 'rgba(0, 0, 0, 0.2)'
+        });
+    };
+
 })(jQuery);

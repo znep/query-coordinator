@@ -34,6 +34,8 @@
     position: relative;
 }
 
+#data-grid { position: relative; }
+
 .chartContainer .error,
 .viewError
 {

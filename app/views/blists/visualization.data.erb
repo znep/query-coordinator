@@ -387,7 +387,10 @@
       event.preventDefault();
       $('.vizWrapper .mainError').text('');
       var $form = $('.vizWrapper form');
-      if (!$form.valid()) { return; }
+      // For some reason, some fields aren't correctly validated on the first
+      // try -- possibly has to do with dynamic form stuff.  Whatever the issue,
+      // we're checkin' it twice
+      if (!$form.valid() || !$form.valid()) { return; }
 
       var data = {options:{}, columns:[], vizType: 'chart'};
       $('.vizWrapper .section.common :input').each(function()

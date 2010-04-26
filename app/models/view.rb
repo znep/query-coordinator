@@ -244,7 +244,7 @@ class View < Model
   end
 
   def is_invalid?
-    !message.blank?
+    !display.valid?
   end
 
   def last_updated_user

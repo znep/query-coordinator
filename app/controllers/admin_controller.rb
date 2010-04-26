@@ -1,13 +1,17 @@
 class AdminController < ApplicationController
   include AdminHelper
 
-  before_filter :check_auth, :except => [:index, :theme, :update_theme, :sdp, :update_sdp]
-  before_filter :check_designer, :only => [:index, :theme, :update_theme]
-  before_filter :check_edit_sdp, :only => [:sdp, :update_sdp]
+  before_filter :check_auth,        :except => [:index, :theme, :update_theme, 
+    :sdp_index, :sdp, :update_sdp, :hide_template, :create_customization, 
+    :new_customization, :create_blank_dataset]
+  before_filter :check_designer,    :only => [:index, :theme, :update_theme]
+  before_filter :check_edit_sdp,    :only => [:sdp_index, :sdp, :hide_template,
+    :create_customization, :new_customization]
+  before_filter :check_create_data, :only => :create_blank_dataset
 
   def index
   end
-  
+
   def config
     session[:return_to] = url_for(:action => :config)
 
@@ -52,53 +56,65 @@ class AdminController < ApplicationController
       configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
     end
 
-    # Wrap it in one big, cuddly batch request
-    CoreServer::Base.connection.batch_request do
-      unless params[:strings].blank?
-        params[:strings].each do |name, value|
-          if(Domain.configurable_strings.include?(name))
-            update_or_create_property(configuration, "strings.#{name}", value) do
-              configuration.properties.strings[name].nil?
+    error_message = nil
+    begin
+      # Wrap it in one big, cuddly batch request
+      CoreServer::Base.connection.batch_request do
+        unless params[:strings].blank?
+          params[:strings].each do |name, value|
+            if(Domain.configurable_strings.include?(name))
+              update_or_create_property(configuration, "strings.#{name}", value) do
+                configuration.properties.strings[name].nil?
+              end
+            end
+          end
+        end
+
+        unless params[:options].blank?
+          params[:options].each do |name, value|
+            if Domain.site_theme_options.any? {|opt| opt[:name] == (name)}
+              update_or_create_property(configuration, name, value) do
+                configuration.raw_properties[name].nil?
+              end
+            end
+          end
+        end
+
+        create_or_update_from_form(feature_set,
+          Domain.flippable_modules, params[:modules])
+
+        create_or_update_from_form(feature_set,
+          Domain.configurable_features, params[:features])
+
+        comment_config = {
+          'allow_comments' => true,
+          'community_comment_moderation' => false,
+          'publisher_comment_moderation' => false
+        }
+        # HACK: There is no 'disable_comments' flag, so we have this
+        if params[:comments] == '0'
+          comment_config['allow_comments'] = false
+        else
+          comment_config[params[:comments]] = true
+        end
+
+        comment_config.each do |name, value|
+          if CurrentDomain.modules.any? { |m| m['name'] == name }
+            update_or_create_property(feature_set, name, value) do
+              feature_set.properties[name].nil?
             end
           end
         end
       end
+    rescue CoreServer::CoreServerError => ex
+      error_message = ex.error_message
+    end
 
-      unless params[:options].blank?
-        params[:options].each do |name, value|
-          if Domain.site_theme_options.any? {|opt| opt[:name] == (name)}
-            update_or_create_property(configuration, name, value) do
-              configuration.raw_properties[name].nil?
-            end
-          end
-        end
-      end
-
-      create_or_update_from_form(feature_set,
-        Domain.flippable_modules, params[:modules])
-
-      create_or_update_from_form(feature_set,
-        Domain.configurable_features, params[:features])
-
-      comment_config = {
-        'allow_comments' => true,
-        'community_comment_moderation' => false,
-        'publisher_comment_moderation' => false
-      }
-      # HACK: There is no 'disable_comments' flag, so we have this
-      if params[:comments] == '0'
-        comment_config['allow_comments'] = false
-      else
-        comment_config[params[:comments]] = true
-      end
-
-      comment_config.each do |name, value|
-        if CurrentDomain.modules.any? { |m| m['name'] == name }
-          update_or_create_property(feature_set, name, value) do
-            feature_set.properties[name].nil?
-          end
-        end
-      end
+    if error_message.nil?
+      flash[:notice] = 'Configuration saved'
+    else
+      flash.now[:error] = "Error saving configuration: #{error_message}"
+      return (render 'shared/error', :status => :not_found)
     end
 
     CurrentDomain.flag_preferences_out_of_date!
@@ -111,7 +127,7 @@ class AdminController < ApplicationController
     @theme = configuration.properties.theme
     @configID = configuration.data['id']
   end
-  
+
   def update_theme
     if params[:configID].present?
       configuration = Configuration.find_unmerged(params[:configID])
@@ -133,7 +149,7 @@ class AdminController < ApplicationController
       @admins = find_privileged_users.sort{|x,y| x.displayName <=> y.displayName}
     end
   end
-  
+
   def save_user_role
     # Updating a user's permissions via POST
     if params[:id] && params[:role].present?
@@ -157,12 +173,143 @@ class AdminController < ApplicationController
     redirect_to :action => :users
   end
   
-
   def reload
+    # Note!! This only reloads for the current server. We need to
+    # re-think our CurrentDomain caching scheme if we want real-time refresh
     CurrentDomain.reload(request.host)
     redirect_back_or_default(url_for :action => :index)
   end
 
+  def sdp_index
+    session[:return_to] = url_for(:action => :sdp_index)
+
+
+    @view = find_example_view
+    
+    @preview_options = @@preview_options
+
+    # TODO[ORGS]:
+    # We don't yet have an orgs service and we're not sure how we want to do it
+    # just yet, so for now by default we are going to just go and create a new
+    # template on behalf of the user the first time we load this page and then
+    # automatically load the first template for them after that.
+    # Eventually, we should be by default fetching the org's default template.
+
+    @widget_customizations = WidgetCustomization.find.select {|w| !w.hidden}
+
+    if @widget_customizations.empty?
+        @widget_customizations << WidgetCustomization.create({
+          'customization' => WidgetCustomization.default_theme,
+          'name' => "Default Blue #{CurrentDomain.strings.company}" })
+        @widget_customizations << WidgetCustomization.create({
+          'customization' => WidgetCustomization.default_theme.deep_merge({:frame => {:color => '#000000'}}),
+          'name' => "Default Black #{CurrentDomain.strings.company}" })
+    else
+      @widget_customizations.sort!{|a,b| a.name <=> b.name}
+    end
+
+    @default_template = CurrentDomain.properties.sdp_template
+  end
+
+  def sdp
+    unless params[:id].present? && params[:customization_id].present?
+      flash.now[:error] = 'Please choose a template to edit'
+      return (render 'shared/error', :status => :not_found)
+    end
+
+    if params[:choose]
+      @allow_template_change = true
+      all_customizations = WidgetCustomization.find
+      unless all_customizations.blank?
+        @widget_customizations = all_customizations.select{ |w| !w.hidden } 
+      end
+    end
+
+    @show_embed_code = true if params[:show_embed]
+    begin
+      @view = View.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+        flash.now[:error] = 'This ' + I18n.t(:blist_name).downcase +
+          ' cannot be found, or has been deleted.'
+        return (render 'shared/error', :status => :not_found)
+      return
+    end
+    begin
+      @widget_customization = WidgetCustomization.find(params[:customization_id])
+      @customization = WidgetCustomization.merge_theme_with_default(@widget_customization.customization)
+    rescue CoreServer::ResourceNotFound
+        flash.now[:error] = 'This template customization cannot be found'
+        return (render 'shared/error', :status => :not_found)
+      return
+    end
+
+    @done_link = @allow_template_change ? @view.href : url_for(:action => :sdp_index)
+  end
+  
+  def set_default_template
+    configuration = Configuration.find_by_type('site_theme',  true, request.host, false)[0]
+    begin
+      customization = WidgetCustomization.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+      flash.now[:error] = 'Can not set template as default: template not found'
+      return (render 'shared/error', :status => :not_found)
+    end
+
+    update_or_create_property(configuration, "sdp_template", params[:id]) do 
+      configuration.raw_properties["sdp_template"].nil?
+    end
+
+    CurrentDomain.flag_preferences_out_of_date!
+    redirect_to :action => :sdp_index
+  end
+
+  def hide_template
+    begin
+      @customization = WidgetCustomization.find(params[:id])
+    rescue CoreServer::ResourceNotFound
+        flash.now[:error] = 'This template customization cannot be found.'
+        return (render 'shared/error', :status => :not_found)
+      return
+    end
+
+    # Don't actually delete it, just don't show it in the UI
+    @customization.hidden = true
+    @customization.save!
+    redirect_to :action => :sdp_index
+  end
+
+  def create_blank_dataset
+    dataset = View.create(:name => "Blank #{CurrentDomain.strings.company} dataset")
+    flash[:notice] = "Blank dataset created"
+    redirect_to :action => :sdp_index
+  end
+
+  def new_customization
+    customizations = WidgetCustomization.find
+    @widget_customizations = customizations.select { |w| !w.hidden } unless customizations.nil?
+    respond_to do |format|
+      format.data { render(:layout => "modal_dialog") }
+    end
+  end
+
+  def create_customization
+    from = WidgetCustomization.find(params[:new_customization][:from])
+    from.customization[:description] = params[:new_customization][:description]
+
+    begin
+      new_customization = WidgetCustomization.create({
+        'customization' => from.customization, 'name' => params[:new_customization][:name] })
+    rescue CoreServer::CoreServerError => e
+      return (render :json => {'error' => e.error_message}.to_json)
+    end
+
+    view = find_example_view
+    if view.nil?
+      return (redirect_to :action => :sdp_index)
+    end
+    redirect_to :action => :sdp, :id => view.id,
+      :customization_id => new_customization.uid
+  end
 
 private
   def check_auth(level = 'manage_users')
@@ -175,17 +322,21 @@ private
   def check_designer
     check_auth(:edit_site_theme)
   end
-  
+
   def check_edit_sdp
     check_auth(:edit_sdp)
   end
-  
+
+  def check_create_data
+    check_auth(:create_datasets)
+  end
+
   def find_privileged_users(level=1)
     User.find :method => 'usersWithRole', :role => level
   end
 
   def update_or_create_property(configuration, name, value)
-    if value.present?
+    unless value.nil?
       if (yield)
         configuration.create_property(name,value)
       else
@@ -193,7 +344,7 @@ private
       end
     end
   end
-  
+
   def create_or_update_from_form(config, whitelist, form_values, enabled='enabled')
     if form_values
       form_values[:name].each do |name, value|
@@ -209,4 +360,15 @@ private
       end
     end
   end
+
+  def find_example_view
+    # Get a sample dataset to use
+    views = View.find_recent(1)
+    if views.blank?
+      views = View.find(:public_only => true, :limit => 1)
+    end
+    return views.first unless views.nil?
+  end
+
+  @@preview_options = {:height => '280', :width => '400'}
 end

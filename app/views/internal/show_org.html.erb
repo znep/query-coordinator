@@ -71,7 +71,7 @@
             <div class='line'>
               <label>Parent domain:</label>
               <select name="domain[parentDomainId]">
-                <%- @domains.unshift(@default_parent).flatten.each do |domain| -%>
+                <%- @domains.unshift(@default_parent).compact.each do |domain| -%>
                 <option value="<%= domain.id %>"><%= domain.shortName %></option>
                 <%- end -%>
               </select>

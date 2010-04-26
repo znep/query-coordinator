@@ -12,13 +12,13 @@
     <%= link_to 'Configuration', :action => :config %>
   </div></li>
   <%- end -%>
-  <%- if false && CurrentDomain.user_can?(current_user, :edit_sdp) -%>
+  <%- if CurrentDomain.user_can?(current_user, :edit_sdp) -%>
   <li class='<%= active == 'sdp' ? ' active' : '' %>'><div class='wrapper'>
-    <%= link_to 'SDP', :action => :sdp %>
+    <%= link_to 'Data Player', :action => :sdp_index %>
   </div></li>
   <%- end -%>
   <% if false && CurrentDomain.user_can?(current_user, :edit_site_theme) -%>
-  <li class='<%= active == 'theme' ? ' active' : '' %>'><div class='wrapper'>
+  <li class='even<%= active == 'theme' ? ' active' : '' %>'><div class='wrapper'>
     <%= link_to 'Theme', :action => :theme %>
   </div></li>
   <%- end -%>

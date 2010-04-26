@@ -1,0 +1,42 @@
+.loadingSpinnerContainer
+{
+    background: transparent url(/stylesheets/images/common/spinner_background.png) no-repeat;
+    height: 48px;
+    left: 50%;
+    margin-left: -50px;
+    margin-top: -50px;
+    padding: 26px;
+    position: absolute;
+    top: 50%;
+    width: 48px;
+    z-index: 25;
+}
+.loadingSpinnerContainer .loadingSpinner
+{
+    position: static;
+}
+.loadingSpinnerContainer.hidden
+{
+    display: none;
+}
+
+.highcharts-legend-vertical { width: 125px; }
+.highcharts-legend li
+{
+    max-width: 80px;
+    overflow: hidden;
+    /* This is .clipText; but can't figure out how to add a class to these
+     * elements */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.secondaryChart
+{
+    bottom: 0;
+    height: 100px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 20;
+}

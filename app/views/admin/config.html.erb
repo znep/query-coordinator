@@ -12,10 +12,13 @@
           <div class='contentTR'><div class='contentTL'></div></div>
           <div class='content' id='adminContent'>
             <%= render :partial => 'refresh_theme_link' =%>
-            <h1>Site Configuration</h1>
+            <h3>Site Configuration</h3>
 
             <%- if flash[:notice] -%>
               <p class='flashNotice'><%= flash[:notice] %></p>
+            <%- end -%>
+            <%- if flash[:error] -%>
+              <p class='flashError'><%= flash[:error] %></p>
             <%- end -%>
             <div class='configurationContent'>
               <h2>Features</h2>

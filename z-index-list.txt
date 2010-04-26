@@ -12,8 +12,10 @@ Please list z-indexes of elements in the site so we can keep track of how elemen
 10 active tab in .tabList
 20 #header
 20 points in ESRI map (auto-set)
+20 overview chart (secondary chart)
 25 Unsaved changes notification bar on /publish page
 25 map layers options
+25 loading spinner
 30 Meta tabs in SDP
 2999 #modal overlay
 5000 Modal login dialog

@@ -1,6 +1,6 @@
 (function($)
 {
-    // Set up namespace for editors to class themselves under
+    // Set up namespace for particular plugins to class themselves under
     $.socrataMap =
     {
         extend: function(extHash, extObj)
@@ -17,7 +17,7 @@
     $.fn.socrataMap = function(options)
     {
         // Check if object was already created
-        var socrataMap = $(this[0]).data("socrataMap");
+        var socrataMap = $(this[0]).data("socrataVisualization");
         if (!socrataMap)
         {
             var mapClass = $.socrataMap[options.displayFormat.type || 'google'];
@@ -36,42 +36,24 @@
         this.init();
     };
 
-    $.extend(socrataMapObj,
+    $.extend(socrataMapObj, $.socrataVisualization.extend(
     {
         defaults:
         {
-            defaultZoom: 1,
-            pageSize: 100
+            defaultZoom: 1
         },
 
         prototype:
         {
-            init: function ()
+            initializeVisualization: function ()
             {
-                var currentObj = this;
-                var $domObj = currentObj.$dom();
-                $domObj.data("socrataMap", currentObj);
+                var mapObj = this;
 
-                currentObj._displayConfig = currentObj.settings.displayFormat || {};
+                mapObj._markers = {};
 
-                currentObj._rowsLeft = 0;
-                currentObj._rowsLoaded = 0;
-                currentObj._markers = {};
-
-                if ($domObj.parent().find('.loadingSpinnerContainer').length < 1)
+                if (mapObj.$dom().siblings('#mapLayers').length < 1)
                 {
-                    $domObj.parent().append(
-                        '<div class="loadingSpinnerContainer">' +
-                        '<div class="loadingSpinner"></div></div>');
-                }
-
-                if ($domObj.siblings('#mapError').length < 1)
-                { $domObj.before('<div id="mapError" class="mainError"></div>'); }
-                $domObj.siblings('#mapError').hide();
-
-                if ($domObj.siblings('#mapLayers').length < 1)
-                {
-                    $domObj.before('<div id="mapLayers" class="hide">' +
+                    mapObj.$dom().before('<div id="mapLayers" class="hide">' +
                         '<a href="#toggleLayers" class="toggleLayers">' +
                         'Layer Options' +
                         '</a>' +
@@ -79,32 +61,19 @@
                         '<h3>Layers</h3><ul></ul>' +
                         '</div>' +
                         '</div>');
-                    $domObj.siblings('#mapLayers').find('a.toggleLayers')
+                    mapObj.$dom().siblings('#mapLayers').find('a.toggleLayers')
                         .click(function(e)
                         {
                             e.preventDefault();
-                            $domObj.siblings('#mapLayers')
+                            mapObj.$dom().siblings('#mapLayers')
                                 .find('.contentBlock').toggleClass('hide');
                         });
                 }
                 else { $domObj.siblings('#mapLayers').addClass('hide'); }
 
-                currentObj.initializeMap();
+                mapObj.initializeMap();
 
-                currentObj.populateLayers();
-
-                $domObj.resize(function(e) { currentObj.resizeHandle(e); });
-
-                loadRows(currentObj,
-                    {method: 'getByIds', meta: true, start: 0,
-                        length: currentObj.settings.pageSize});
-            },
-
-            $dom: function()
-            {
-                if (!this._$dom)
-                { this._$dom = $(this.currentDom); }
-                return this._$dom;
+                mapObj.populateLayers();
             },
 
             reset: function(newOptions)
@@ -118,16 +87,12 @@
                 mapObj.$dom().socrataMap(newOptions);
             },
 
-            reload: function()
+            reloadVisualization: function()
             {
                 var mapObj = this;
-                mapObj.$dom().siblings('#mapError').hide().text('');
                 mapObj.$dom().siblings('#mapLayers').addClass('hide');
 
                 mapObj.resetData();
-
-                mapObj._rowsLeft = 0;
-                mapObj._rowsLoaded = 0;
 
                 mapObj._idIndex = undefined;
                 mapObj._latIndex = undefined;
@@ -135,15 +100,6 @@
                 mapObj._titleIndex = undefined;
                 mapObj._infoIndex = undefined;
                 mapObj._infoIsRich = false;
-
-                loadRows(mapObj,
-                    {method: 'getByIds', meta: true, start: 0,
-                        length: mapObj.settings.pageSize});
-            },
-
-            showError: function(errorMessage)
-            {
-                this.$dom().siblings('#mapError').show().text(errorMessage);
             },
 
             populateLayers: function()
@@ -223,52 +179,33 @@
                 // Implement if you need to reset any data when the map is reset
             },
 
-            handleRowsLoaded: function(rows)
-            {
-                // Override if you need extra handling before rendering
-                this.renderData(rows);
-            },
-
-            renderData: function(rows)
+            renderRow: function(row)
             {
                 var mapObj = this;
                 if (mapObj._latIndex === undefined ||
                     mapObj._longIndex === undefined)
-                { return; }
-
-                var addedMarkers = false;
-                var badPoints = false;
-                _.each(rows, function(r)
                 {
-                    var lat = r[mapObj._latIndex];
-                    var longVal = r[mapObj._longIndex];
-                    if (lat === null || longVal === null) { return; }
-                    if (lat < -90 || lat > 90 || longVal < -180 || longVal > 180)
-                    {
-                        badPoints = true;
-                        return;
-                    }
-                    var info = mapObj._infoIndex !== undefined ?
-                        r[mapObj._infoIndex] : null;
-                    var title = mapObj._titleIndex !== undefined ?
-                            r[mapObj._titleIndex] : null;
-
-                    mapObj.renderPoint(lat, longVal, title, info,
-                        r[mapObj._idIndex]);
-
-                    addedMarkers = true;
-                });
-
-                if (badPoints)
-                {
-                    mapObj.showError('Some points were invalid. ' +
-                            'Latitude must be between -90 and 90, and longitude ' +
-                            'must be between -180 and 180');
+                    mapObj.errorMessage = 'No columns defined';
+                    return false;
                 }
 
+                var lat = row[mapObj._latIndex];
+                var longVal = row[mapObj._longIndex];
+                // Incomplete points will be safely ignored
+                if (lat === null || longVal === null) { return true; }
+                if (lat < -90 || lat > 90 || longVal < -180 || longVal > 180)
+                {
+                    mapObj.errorMessage = 'Latitude must be between -90 and 90, ' +
+                        'and longitude must be between -180 and 180';
+                    return false;
+                }
+                var info = mapObj._infoIndex !== undefined ?
+                    row[mapObj._infoIndex] : null;
+                var title = mapObj._titleIndex !== undefined ?
+                    row[mapObj._titleIndex] : null;
 
-                if (addedMarkers)
-                { mapObj.pointsRendered(); }
+                return mapObj.renderPoint(lat, longVal, title,
+                    info, row[mapObj._idIndex]);
             },
 
             renderPoint: function(latVal, longVal, title, info, rowId)
@@ -276,7 +213,7 @@
                 // Implement me
             },
 
-            pointsRendered: function()
+            rowsRendered: function()
             {
                 // Override if you wish to do something other than adjusting the
                 // map to fit the points
@@ -291,53 +228,16 @@
             resizeHandle: function(event)
             {
                 // Implement if you need to do anything on resize
+            },
+
+            getColumns: function(view)
+            {
+                var mapObj = this;
+                if (!getColumns(mapObj, view))
+                { getLegacyColumns(mapObj, view); }
             }
         }
-    });
-
-    var loadRows = function(mapObj, args)
-    {
-        mapObj.$dom().parent().find('.loadingSpinnerContainer')
-            .removeClass('hidden');
-        $.ajax({url: '/views/' + blist.display.viewId + '/rows.json',
-                cache: false, data: args, type: 'GET', dataType: 'json',
-                error: function()
-                    { mapObj.$dom().parent().find('.loadingSpinnerContainer')
-                        .addClass('hidden'); },
-                success: function(data)
-                {
-                    mapObj.$dom().parent().find('.loadingSpinnerContainer')
-                        .addClass('hidden');
-                    rowsLoaded(mapObj, data);
-                }});
-    };
-
-    var rowsLoaded = function(mapObj, data)
-    {
-        if (data.meta !== undefined)
-        {
-            if (!getColumns(mapObj, data.meta.view))
-            { getLegacyColumns(mapObj, data.meta.view); }
-            mapObj._rowsLeft = data.meta.totalRows - mapObj._rowsLoaded;
-        }
-
-        var rows = data.data.data || data.data;
-        mapObj._rowsLoaded += rows.length;
-        mapObj._rowsLeft -= rows.length;
-        loadMoreRows(mapObj);
-
-        mapObj.handleRowsLoaded(rows);
-    };
-
-    var loadMoreRows = function(mapObj)
-    {
-        if (mapObj._rowsLeft < 1) { return; }
-
-        var toLoad = Math.min(mapObj._rowsLeft, mapObj.settings.pageSize);
-
-        loadRows(mapObj, { method: 'getByIds', start: mapObj._rowsLoaded,
-            length: toLoad });
-    };
+    }));
 
     var getColumns = function(mapObj, view)
     {

@@ -1,0 +1,109 @@
+<% content_for :head do %>
+<%= stylesheet_link_merged 'admin-shared' %>
+<%= stylesheet_link_merged 'admin-sdp-index' %>
+<title>Administration Panel | <%= CurrentDomain.strings.site_title %></title>
+<% end %>
+
+<div id="publishContent" class="oneColumnContainer tabContainer">
+  <%= render :partial => 'tabs', :locals => {:active => 'sdp'} %>
+  <div class="fullPageContentContainer fullPageWithTabs">
+    <div class="fullPageOuterContent">
+      <div class="fullPageContent">
+        <div class='outerContent'>
+          <div class='contentTR'><div class='contentTL'></div></div>
+          <div class='content' id='adminContent'>
+            <%= render :partial => 'refresh_theme_link' =%>
+            <ul class="actionButtons newTemplateHeader">
+              <li>
+                <%= link_to 'Create New Template', '/admin/sdp/new', {:rel => 'modal', :class => 'newTemplateLink arrowButton clearfix'} %>
+              </li>
+            </ul>
+            <h3>Choose a Social Data Player Template</h3>
+
+            <%- if flash[:notice] -%>
+              <p class='flashNotice'><%= flash[:notice] %></p>
+            <%- end -%>
+
+            <%- if @view.nil? -%>
+              <p class='information'>There are no public <%= t(:blist_name).pluralize %> on this domain yet.
+                To customize your Social Data Player, you need to have at least one <%= t(:blist_name) %>.</p>
+              <p class='information'>To automatically create a blank <%= t(:blist_name) %>,
+                <%= link_to 'click here', :action => 'create_blank_dataset'%>.
+                Alternatively, you may manually create a <%= t(:blist_name) %> by 
+                <%= link_to 'following this link', :controller => 'blists', :action => 'new' %>.</p>
+            <%- else -%>
+              <p class='information'>Click on a template's name to customize it, 
+                or click the Create New Template button above.</p>
+                <p class='information'>To view a preview of a template, click the expand arrow to the left of its name.</p>
+
+              <%- if @default_template.nil? || !@widget_customizations.any? { |w| w.uid == @default_template } -%>
+                <p class='information warning'>You do not have a default template specified for your domain.
+                  You can mark a template as the default one by clicking the link in the 'Default' column.</p>
+              <%- end -%>
+
+              <div class="widgetTable" id="widgetTableList">
+                  <div class="widgetTable-headerRow">
+                  <div class="widgetTable-cell widgetTable-titleColumn">
+                    Name
+                  </div>
+                  <div class="widgetTable-cell widgetTable-previewColumn">
+                    Description
+                  </div>
+                    <div class="widgetTable-cell widgetTable-deleteColumn">
+                    Delete
+                    </div>
+                  <div class="widgetTable-cell widgetTable-defaultColumn">
+                    Default
+                  </div>
+                </div>
+                <div class="widgetTable-body">
+                  <%- @widget_customizations.each do |customization| -%>
+                  <div class="widgetTable-row<%= ' defaultRow' if customization.uid == @default_template %>">
+                    <div class="widgetTable-cell widgetTable-titleColumn">
+                      <p><a href="#preview_<%= customization.uid %>" class="widgetOpener"></a>
+                      <%= link_to customization.name,
+                      {:action => 'sdp', :customization_id => customization.uid, :id => @view.id},
+                      {:class => 'templateNameLink'} %></p>
+                    </div>
+                    <div class="widgetTable-cell widgetTable-previewColumn previewCell">
+                      <input type="hidden" name="customizationId" class="customizationId" value="<%= customization.uid %>" />
+                      <p class="widgetDescription"><%= customization.customization[:description] %></p>
+                      <div class="loadingIndicator"></div>
+                    </div>
+                    <div class="widgetTable-cell widgetTable-defaultColumn">
+                      <%- if customization.uid != @default_template -%>
+                        <p class="defaultLink"><%= link_to '&rsaquo; Set Default', :action => 'set_default_template',
+                            :id => customization.uid %></p>
+                      <%- else -%>
+                        <p class="templateAlreadyDefault">Yes</p>
+                      <%- end -%>
+                    </div>
+                    <div class="widgetTable-cell widgetTable-deleteColumn">
+                      <p class="deleteLinkP">
+                        <%= link_to '', {:action => 'hide_template', :id => customization.uid},
+                            {:class => 'deleteLink'} %>
+                      </p>
+                    </div>
+                  </div>
+                  <%- end -%>
+                </div>
+              </div>
+            <%- end -%>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% content_for :js_footer do %>
+  <%= javascript_include_merged 'shared-common-all' %>
+  <script type="text/javascript">
+    blist.namespace.fetch('admin.sdp.index');
+    admin.sdp.index.previewWidth = '<%= @preview_options[:width] %>px';
+    admin.sdp.index.previewHeight = '<%= @preview_options[:height] %>px';
+    admin.sdp.index.viewId = '<%= @view.id %>';
+  </script>
+  <%= javascript_include_merged 'admin-sdp-index' %>
+<% end %>

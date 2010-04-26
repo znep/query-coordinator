@@ -56,9 +56,16 @@ javascripts:
   - data/editors/document-editor
   - data/editors/photo-editor
 - shared-map:
+  - widgets/base-visualization
   - widgets/maps/base-map
   - widgets/maps/esri-map
   - widgets/maps/google-map
+- shared-chart:
+  - plugins/highcharts.src
+  - widgets/base-visualization
+  - widgets/charts/base-chart
+  - data/types
+  - widgets/charts/highcharts
 - accounts-show:
   - plugins/ui.core
   - plugins/ui.showedit
@@ -67,6 +74,8 @@ javascripts:
   - util/urls
   - widgets/dropdown-menu
   - screens/approval-screen
+- admin-sdp-index:
+  - screens/admin-sdp-index-screen
 - admin-users:
   - screens/admin-users-screen
 - blists-about:
@@ -330,3 +339,6 @@ stylesheets:
 - admin-shared:
   - admin-screen
   - form-common
+- admin-sdp-index:
+  - list-screen
+  - admin-sdp-index-screen

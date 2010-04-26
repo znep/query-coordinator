@@ -25,13 +25,28 @@ module Displays::Config
                         'type' => 'color', 'default' => COLOR_DEFAULTS[0],
                         'colorArray' => COLOR_DEFAULTS}
 
+    LEGEND_OPTIONS = {'label' => 'Legend', 'name' => 'legend',
+                        'type' => 'dropdown', 'dropdownOptions' => [
+                          {'value' => 'bottom', 'label' => 'Bottom'},
+                          {'value' => 'top', 'label' => 'Top'},
+                          {'value' => 'right', 'label' => 'Right'},
+                          {'value' => 'left', 'label' => 'Left'},
+                          {'value' => 'none', 'label' => 'Hidden'}
+                        ],
+                        'default' => 'bottom'}
+
     NUMERIC_TYPES = ['number', 'percent', 'money']
 
     VISUALIZATION_CONFIG = {
-        'barchart' => {
-            'display' => 'google',
-            'library' => 'google.visualization.BarChart',
-            'label' => 'Bar Chart',
+        'annotatedtimeline' => {'display' => 'chart', 'hidden' => true},
+        'imagesparkline' => {'display' => 'chart', 'hidden' => true},
+        'areachart' => {'display' => 'chart', 'hidden' => true},
+        'barchart' => {'display' => 'chart', 'hidden' => true},
+        'columnchart' => {'display' => 'chart', 'hidden' => true},
+        'linechart' => {'display' => 'chart', 'hidden' => true},
+        'piechart' => {'display' => 'chart', 'hidden' => true},
+
+        'bar' => {'label' => 'Bar Chart',
             'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
             'dataColumnOptions' => [DEF_COLOR_OPTION],
@@ -39,147 +54,83 @@ module Displays::Config
                 {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
                 {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
             ],
-            'advancedOptions' => [
-                {'label' => 'Legend', 'name' => 'legend',
-                 'type' => 'dropdown', 'dropdownOptions' => [
-                    {'value' => 'right', 'label' => 'Right'},
-                    {'value' => 'left', 'label' => 'Left'},
-                    {'value' => 'top', 'label' => 'Top'},
-                    {'value' => 'bottom', 'label' => 'Bottom'},
-                    {'value' => 'none', 'label' => 'Hidden'}
-                ],
-                 'default' => 'right'},
-                {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-                 'default' => false}
+            'advancedOptions' => [LEGEND_OPTIONS]
+        },
+
+        'timeline' => {'label' => 'Time Line',
+            'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
+            'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'},
+                {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
+                {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}
+            ],
+            'dataColumnOptions' => [DEF_COLOR_OPTION],
+            'mainOptions' => [
+                {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+            ],
+            'advancedOptions' => [LEGEND_OPTIONS]
+        },
+
+
+        'area' => {'label' => 'Area Chart',
+            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
+            'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
+            'dataColumnOptions' => [DEF_COLOR_OPTION],
+            'mainOptions' => [
+                {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+                {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+            ],
+            'advancedOptions' => [LEGEND_OPTIONS,
+                {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
+                  'booleanTrueValue' => '2', 'booleanFalseValue' => '0',
+                  'default' => '2'},
+                {'name' => 'pointSize', 'label' => 'Show Points',
+                  'type' => 'boolean', 'booleanTrueValue' => '3',
+                  'booleanFalseValue' => '0', 'default' => '3'}
             ]
         },
 
-        'annotatedtimeline' => {'display' => 'google', 'library' => 'google.visualization.AnnotatedTimeLine',
-                                'label' => 'Time Line',
-                                'fixedColumns' => [{'dataType' => 'date', 'label' => 'Date'}],
-                                'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'},
-                                                  {'dataType' => 'text', 'label' => 'Title', 'optional' => true},
-                                                  {'dataType' => 'text', 'label' => 'Annotation', 'optional' => true}],
-                                'dataColumnOptions' => [DEF_COLOR_OPTION],
-                                'mainOptions' => [{'name' => 'displayAnnotations', 'type' => 'hidden',
-                                                   'default' => true}]
+        'column' => {'label' => 'Column Chart',
+            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
+            'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
+            'dataColumnOptions' => [DEF_COLOR_OPTION],
+            'mainOptions' => [
+                {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+                {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+            ],
+            'advancedOptions' => [LEGEND_OPTIONS]
         },
 
-        'imagesparkline' => {'display' => 'google', 'library' => 'google.visualization.ImageSparkLine',
-                             'label' => 'Sparkline',
-                             'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
-                             'dataColumnOptions' => [DEF_COLOR_OPTION],
-                             'advancedOptions' => [{'name' => 'labelPosition', 'label' => 'Label',
-                                                    'type' => 'dropdown', 'dropdownOptions' => [
-                                     {'value' => 'none', 'label' => 'Hidden'},
-                                     {'value' => 'left', 'label' => 'Left'},
-                                     {'value' => 'right', 'label' => 'Right'}
-                                 ], 'default' => 'none'},
-                                                   {'name' => 'layout', 'label' => 'Vertical', 'type' => 'boolean',
-                                                    'booleanTrueValue' => 'v', 'booleanFalseValue' => 'h', 'default' => 'v'}
-                             ]
+        'line' => {'label' => 'Line Chart',
+            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories',
+                  'optional' => true}],
+            'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
+            'dataColumnOptions' => [DEF_COLOR_OPTION],
+            'mainOptions' => [
+                {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
+                {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
+            ],
+            'advancedOptions' => [LEGEND_OPTIONS,
+                {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
+                  'booleanTrueValue' => '2', 'booleanFalseValue' => '0',
+                  'default' => '2'},
+                {'name' => 'pointSize', 'label' => 'Show Points',
+                  'type' => 'boolean', 'booleanTrueValue' => '3',
+                  'booleanFalseValue' => '0', 'default' => '3'},
+                {'label' => 'Smooth Line', 'name' => 'smoothLine',
+                  'type' => 'boolean', 'default' => false},
+            ]
         },
 
-        'areachart' => {'display' => 'google', 'library' => 'google.visualization.AreaChart',
-                        'label' => 'Area Chart',
-                        'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
-                        'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
-                        'dataColumnOptions' => [DEF_COLOR_OPTION],
-                        'mainOptions' => [
-                            {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
-                            {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
-                        ],
-                        'advancedOptions' => [
-                            {'label' => 'Legend', 'name' => 'legend',
-                             'type' => 'dropdown', 'dropdownOptions' => [
-                                {'value' => 'right', 'label' => 'Right'},
-                                {'value' => 'left', 'label' => 'Left'},
-                                {'value' => 'top', 'label' => 'Top'},
-                                {'value' => 'bottom', 'label' => 'Bottom'},
-                                {'value' => 'none', 'label' => 'Hidden'}
-                            ], 'default' => 'right'},
-                            {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-                             'default' => false},
-                            {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
-                             'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
-                            {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
-                             'booleanTrueValue' => '3', 'booleanFalseValue' => '0', 'default' => '3'}
-                        ]
-        },
-
-        'columnchart' => {'display' => 'google', 'library' => 'google.visualization.ColumnChart',
-                          'label' => 'Column Chart',
-                          'fixedColumns' => [{'dataType' => 'text', 'label' => 'Groups'}],
-                          'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
-                          'dataColumnOptions' => [DEF_COLOR_OPTION],
-                          'mainOptions' => [
-                              {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
-                              {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
-                          ],
-                          'advancedOptions' => [
-                              {'label' => 'Legend', 'name' => 'legend',
-                               'type' => 'dropdown', 'dropdownOptions' => [
-                                  {'value' => 'right', 'label' => 'Right'},
-                                  {'value' => 'left', 'label' => 'Left'},
-                                  {'value' => 'top', 'label' => 'Top'},
-                                  {'value' => 'bottom', 'label' => 'Bottom'},
-                                  {'value' => 'none', 'label' => 'Hidden'}
-                              ],
-                               'default' => 'right'},
-                              {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-                               'default' => false}
-                          ]
-        },
-
-        'linechart' => {'display' => 'google', 'library' => 'google.visualization.LineChart',
-                        'label' => 'Line Chart',
-                        'fixedColumns' => [{'dataType' => 'text', 'label' => 'Categories'}],
-                        'dataColumns' => [{'dataType' => NUMERIC_TYPES, 'label' => 'Value'}],
-                        'dataColumnOptions' => [DEF_COLOR_OPTION],
-                        'mainOptions' => [
-                            {'label' => 'X-Axis Title', 'name' => 'titleX', 'type' => 'string'},
-                            {'label' => 'Y-Axis Title', 'name' => 'titleY', 'type' => 'string'}
-                        ],
-                        'advancedOptions' => [
-                            {'label' => 'Legend', 'name' => 'legend',
-                             'type' => 'dropdown', 'dropdownOptions' => [
-                                {'value' => 'right', 'label' => 'Right'},
-                                {'value' => 'left', 'label' => 'Left'},
-                                {'value' => 'top', 'label' => 'Top'},
-                                {'value' => 'bottom', 'label' => 'Bottom'},
-                                {'value' => 'none', 'label' => 'Hidden'}
-                            ], 'default' => 'right'},
-                            {'label' => 'Log Scale', 'name' => 'logScale', 'type' => 'boolean',
-                             'default' => false},
-                            {'name' => 'lineSize', 'label' => 'Show Lines', 'type' => 'boolean',
-                             'booleanTrueValue' => '2', 'booleanFalseValue' => '0', 'default' => '2'},
-                            {'name' => 'pointSize', 'label' => 'Show Points', 'type' => 'boolean',
-                             'booleanTrueValue' => '3', 'booleanFalseValue' => '0', 'default' => '3'},
-                            {'label' => 'Smooth Line', 'name' => 'smoothLine', 'type' => 'boolean',
-                             'default' => false},
-                        ]
-        },
-
-        'piechart' => {'display' => 'google', 'library' => 'google.visualization.PieChart',
-                       'label' => 'Pie Chart',
-                       'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
-                                          {'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
-                       'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
-                                          'type' => 'colorArray', 'default' => COLOR_DEFAULTS}],
-                       'advancedOptions' => [
-                           {'label' => 'Legend', 'name' => 'legend',
-                            'type' => 'dropdown', 'dropdownOptions' => [
-                               {'value' => 'right', 'label' => 'Right'},
-                               {'value' => 'left', 'label' => 'Left'},
-                               {'value' => 'top', 'label' => 'Top'},
-                               {'value' => 'bottom', 'label' => 'Bottom'},
-                               {'value' => 'none', 'label' => 'Hidden'}
-                           ],
-                            'default' => 'right'},
-                           {'label' => 'Min. Angle', 'name' => 'pieJoinAngle', 'type' => 'number',
-                            'default' => 1,
-                            'help' => 'Slices below this angle will be combined into an "Other" slice'}
-                       ]
+        'pie' => {'label' => 'Pie Chart',
+            'fixedColumns' => [{'dataType' => 'text', 'label' => 'Label'},
+                {'dataType' => NUMERIC_TYPES, 'label' => 'Values'}],
+            'mainOptions' => [{'label' => 'Colors', 'name' => 'colors',
+                  'type' => 'colorArray', 'default' => COLOR_DEFAULTS}],
+            'advancedOptions' => [LEGEND_OPTIONS,
+                {'label' => 'Min. Angle', 'name' => 'pieJoinAngle',
+                  'type' => 'number', 'default' => 1,
+                  'help' => 'Slices below this angle will be combined into an "Other" slice'}
+            ]
         },
 
         'intensitymap' => {'display' => 'google', 'library' => 'google.visualization.IntensityMap',
@@ -188,10 +139,6 @@ module Displays::Config
         'geomap' => {'display' => 'google', 'library' => 'google.visualization.GeoMap',
                      'hidden' => true},
 
-        # This chart is really confusing, so I don't think it is worth exposing
-        # unless we have specific requests/use cases for it
-        'motionchart' => {'display' => 'google', 'library' => 'google.visualization.MotionChart',
-                          'hidden' => true},
 
         # Fusion maps types
         'FCMap_Afghanistan' => { 'display' => 'fusion', 'hidden' => true },

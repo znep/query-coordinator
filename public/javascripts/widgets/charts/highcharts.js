@@ -112,6 +112,7 @@
                     chartObj._xCategories.push(xCat);
                 }
 
+                var hasPoints = false;
                 // Render data for each series
                 _.each(chartObj._yColumns, function(cs, i)
                 {
@@ -123,7 +124,7 @@
                         !_.isUndefined(chartObj._displayConfig.pieJoinAngle) &&
                         !_.isUndefined(cs.data.aggregate) &&
                         cs.data.aggregate.type == 'sum' &&
-                        value / cs.data.aggregate.value * 100 <
+                        (value / cs.data.aggregate.value) * 100 <
                             chartObj._displayConfig.pieJoinAngle)
                     {
                         chartObj._seriesRemainders =
@@ -136,13 +137,22 @@
                     {
                         // Render point and cache it
                         var point = yPoint(chartObj, row, value, i, basePt);
+                        if (_.isNull(point)) { return; }
+
                         if (!_.isUndefined(chartObj.chart))
                         { chartObj.chart.series[i].addPoint(point, false); }
                         if (!_.isUndefined(chartObj.secondChart))
                         { chartObj.secondChart.series[i].addPoint(point, false); }
                         chartObj._seriesCache[i].data.push(point);
                     }
+
+                    hasPoints = true;
                 });
+
+                // We failed to have any points; remove the x-category
+                if (!hasPoints && !_.isUndefined(chartObj._xCategories))
+                { chartObj._xCategories.pop(); }
+
                 return true;
             },
 
@@ -331,6 +341,11 @@
 
         if (!_.isUndefined(colors)) { chartConfig.colors = colors; }
 
+        if (!chartConfig.chart.inverted)
+        { chartConfig.xAxis.labels = { rotation: 320, align: 'right' }; }
+        else
+        { chartConfig.xAxis.labels = { rotation: 340 }; }
+
         // If we already have data loaded, use it
         if (!_.isUndefined(chartObj._seriesCache))
         { chartConfig.series = chartObj._seriesCache; }
@@ -404,6 +419,9 @@
 
     var yPoint = function(chartObj, row, value, seriesIndex, basePt)
     {
+        if (_.isNull(value) && chartObj._chartType == 'pie')
+        { return null; }
+
         var point = {y: value};
         if (!_.isNull(basePt) && !_.isUndefined(basePt))
         { _.extend(point, basePt); }
@@ -413,7 +431,7 @@
         { point.name = $.htmlEscape(row[colSet.title.dataIndex]); }
 
         else if (chartObj._chartType == 'pie')
-        { point.name = chartObj._xCategories[point.x]; }
+        { point.name = chartObj._xCategories[point.x] || point.x; }
 
         else { point.name = chartObj._seriesCache[seriesIndex].name; }
 

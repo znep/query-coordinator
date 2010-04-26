@@ -152,7 +152,8 @@
         <div class='scrollBlock'>
           <%- dcb_count = 0 -%>
           <%- while true -%>
-          <div class='dataColumnBlock configLineBlock soloBlock clearfix'>
+          <div class='dataColumnBlock configLineBlock soloBlock <%= dcb_count == 0 ?
+            'firstBlock' : '' %> clearfix'>
             <a class='removeButton' href='#removeDataBlock'
               title='Remove'>Remove</a>
 
@@ -319,7 +320,8 @@
       var $scrollBlock = $(event.target).closest('ul').prev('.scrollBlock');
 
       $('.vizWrapper .dataColumnBlock.soloBlock').removeClass('soloBlock');
-      var $block = $scrollBlock.find('.dataColumnBlock:last').clone(true);
+      var $block = $scrollBlock.find('.dataColumnBlock:last').clone(true)
+          .removeClass('firstBlock');
       $block.find('.line').each(function(i, l)
       {
         var $this = $(this);

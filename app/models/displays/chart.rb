@@ -3,6 +3,10 @@ class Displays::Chart < Displays::Base
     @view.has_columns_for_visualization_type? chart_type
   end
 
+  def can_be_edited?
+    @view.has_columns_for_visualization_type?(chart_type, true)
+  end
+
   def invalid_message
     'There are not enough columns to display this chart'
   end

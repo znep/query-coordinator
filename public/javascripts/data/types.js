@@ -882,6 +882,12 @@ blist.namespace.fetch('blist.data.types');
             isObject: true
         },
 
+        location: {
+            renderGen: renderGenText,
+            deleteable: true,
+            isObject: true
+        },
+
         tag: {
             renderGen: renderGenTags,
             filterRender: renderFilterText,

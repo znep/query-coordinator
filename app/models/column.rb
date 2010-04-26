@@ -23,7 +23,8 @@ class Column < Model
       "picklist" => "Multiple Choice",
       "drop_down_list" => "Multiple Choice",
       "nested_table" => "Nested Table",
-      "tag" => "Row Tag"
+      "tag" => "Row Tag",
+      'location' => 'Location'
   };
 
   def self.create(view_id, attributes, parent_id=nil)
@@ -50,7 +51,8 @@ class Column < Model
       client_type != "photo_obsolete" &&
       client_type != "document_obsolete" &&
       client_type != "photo" &&
-      client_type != "document"
+      client_type != "document" &&
+      client_type != 'location'
   end
 
   def form_enabled?
@@ -67,7 +69,7 @@ class Column < Model
         'numeric'
       when 'photo_obsolete', 'photo', 'document_obsolete', 'document'
         'blob'
-      when 'checkbox', 'flag'
+      when 'checkbox', 'flag', 'location'
         'comparable'
       else
         dataTypeName
@@ -91,7 +93,7 @@ class Column < Model
       aggs.reject! {|a| a['name'] != 'none'}
     when "text", 'html', "photo_obsolete", "photo", "phone", "checkbox",
       "flag", "url", "email", "document_obsolete", "document", "tag", "picklist",
-      "drop_down_list"
+      "drop_down_list", 'location'
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
     when "date"
@@ -152,8 +154,8 @@ class Column < Model
   def has_totals?
     types_with_totals = ["text", "richtext", 'html', "number", "money", "percent",
                          "date", "phone", "email", "url", "checkbox", "stars",
-                         "flag", "document_obsolete", "document", "photo_obsolete", "photo",
-                         "picklist", "drop_down_list", "tag"]
+                         "flag", "document_obsolete", "document", "photo_obsolete",
+                         "photo", "picklist", "drop_down_list", "tag", 'location']
 
     return types_with_totals.include?(client_type)
   end

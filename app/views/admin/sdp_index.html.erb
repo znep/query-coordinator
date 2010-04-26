@@ -12,12 +12,12 @@
         <div class='outerContent'>
           <div class='contentTR'><div class='contentTL'></div></div>
           <div class='content' id='adminContent'>
-            <%= render :partial => 'refresh_theme_link' =%>
             <ul class="actionButtons newTemplateHeader">
               <li>
                 <%= link_to 'Create New Template', '/admin/sdp/new', {:rel => 'modal', :class => 'newTemplateLink arrowButton clearfix'} %>
               </li>
             </ul>
+            <%= render :partial => 'refresh_theme_link' =%>
             <h3>Choose a Social Data Player Template</h3>
 
             <%- if flash[:notice] -%>

@@ -206,7 +206,7 @@ class BlistsController < ApplicationController
     # TODO[ORG SETUP]:
     # When we have an orgs setup process, move this into there instead of here
     # so that orgs don't default to the basic level theme.
-    @widget_customizations = WidgetCustomization.find
+    @widget_customizations = WidgetCustomization.find.select {|w| !w.hidden}
     if @widget_customizations.empty?
       @widget_customization = WidgetCustomization.create({
         'customization' => WidgetCustomization.default_theme, 'name' => "Default Blue Socrata" })
@@ -917,7 +917,7 @@ private
         when 'form'
           'forms'
         when 'grouped'
-          'grouped views'
+          'roll ups'
         when 'map'
           'maps'
         when 'visualization'

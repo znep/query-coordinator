@@ -33,6 +33,11 @@ blist.discover.historyChangeHandler = function (hash)
     var tabContainerSelector = tabContainers[activeTab];
 
     // Abort if we don't know what's going on
+    if (hash == 'type=nominations')
+    {
+        $(".simpleTabs").simpleTabNavigate().activateTab('#tabNominations');
+        return;
+    }
     if (!_.include(blist.discover.tabs, activeTab))
     {
         return;

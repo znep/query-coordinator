@@ -26,9 +26,15 @@ body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #ma
 #mainNav li, #mainNav li a span {
     background-image:none;
 }
+#mainNav li .subNav
+{
+    position: relative;
+    top: 0px;
+} 
 #mainNav li.home .subNav li,
+#mainNav li .subNav li.last,
 #mainNav li.home .subNav li a span {
-    background-color: none;
+    background-color:#fff;
 	background-image:none;
 }
 #mainNav li a span {

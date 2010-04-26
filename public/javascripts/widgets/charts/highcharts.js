@@ -190,6 +190,15 @@
             {
                 var chartObj = this;
 
+                // Hide the chart if trying to resize to 0
+                if (chartObj.$dom().height() < 1)
+                {
+                    chartObj.$dom().hide();
+                    return;
+                }
+
+                chartObj.$dom().show();
+
                 // Since we have to re-create the whole chart, set up a timer to
                 // wait until they've paused/finished dragging
                 if (!_.isUndefined(chartObj._resizeTimer))
@@ -278,8 +287,12 @@
         chartObj._reverseOrder = chartObj._chartType == 'bar';
 
         // Make a copy of colors so we don't reverse the original
-        var colors = chartObj._displayConfig.colors.slice();
-        if (chartObj._reverseOrder) { colors.reverse(); }
+        var colors;
+        if (!_.isUndefined(chartObj._displayConfig.colors))
+        {
+            colors = chartObj._displayConfig.colors.slice();
+            if (chartObj._reverseOrder) { colors.reverse(); }
+        }
 
         // Map recorded type to what Highcharts wants
         var seriesType = chartObj._chartType;
@@ -297,7 +310,6 @@
                 inverted: chartObj._chartType == 'bar',
                 margin: chartMargin
             },
-            colors: colors,
             credits: { enabled: false },
             legend: { enabled: legendPos != 'none',
                 layout: _.include(['left', 'right'], legendPos) ?
@@ -316,6 +328,8 @@
             yAxis: { title:
                 { enabled: yTitle !== '' && !_.isUndefined(yTitle), text: yTitle } }
         };
+
+        if (!_.isUndefined(colors)) { chartConfig.colors = colors; }
 
         // If we already have data loaded, use it
         if (!_.isUndefined(chartObj._seriesCache))
@@ -336,7 +350,7 @@
                     (this.point.subtitle ?
                         '<p>' + this.point.subtitle + '</p>' : '') +
                     '<p>' + this.y + ' at ' +
-                    blist.data.types.date.filterRender(this.x,
+                    blist.data.types.date.filterRender(this.x / 1000,
                         this.series.options.column) + '</p>';
             } };
         }
@@ -360,9 +374,12 @@
         chartObj.startLoading();
         chartObj.chart = new Highcharts.Chart(chartConfig);
 
-        // Set colors after chart is created so they don't get merged with the
-        // default colors; we want to override them, instead
-        chartObj.chart.options.colors = colors;
+        if (!_.isUndefined(colors))
+        {
+            // Set colors after chart is created so they don't get merged with the
+            // default colors; we want to override them, instead
+            chartObj.chart.options.colors = colors;
+        }
 
         if (isDateTime(chartObj)) { createDateTimeOverview(chartObj); }
 
@@ -407,7 +424,8 @@
             { point.subtitle += $.htmlEscape(row[c.dataIndex]); });
         }
 
-        if (chartObj._chartType == 'pie')
+        if (chartObj._chartType == 'pie' &&
+            !_.isUndefined(chartObj._displayConfig.colors))
         {
             point.color = chartObj._displayConfig
                 .colors[chartObj._seriesCache[seriesIndex].data.length %

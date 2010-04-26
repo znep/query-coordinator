@@ -292,8 +292,10 @@
             <%- end -%>
             <%- else -%>
             <%- if @view.display.is_a?(Displays::Chart) -%>
+            <%- if @view.display.can_be_edited? -%>
             <li><a rel='modal' href="<%= @view.href %>/visualization?edit=true"
                 class='arrowButton'>Edit Visualization</a></li>
+            <%- end -%>
             <%- end -%>
             <%- end -%>
             <li><a class='removeViewLink'

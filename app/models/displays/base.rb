@@ -54,6 +54,12 @@ class Displays::Base
         true
     end
 
+    # If the invalid view can be edited; not permissions-related, but if it
+    # is valid to show an edit button to fix a view
+    def can_be_edited?
+      true
+    end
+
     # Message to display if the view is invalid
     def invalid_message
       'There is a problem with displaying this view'

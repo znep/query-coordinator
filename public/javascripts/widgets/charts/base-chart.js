@@ -70,7 +70,7 @@
                 chartObj._view = view;
                 chartObj.startLoading();
                 $.ajax({url: '/views/' + view.id + '/rows.json',
-                    data: {method: 'getAggregates'},
+                    data: {method: 'getAggregates'}, cache: false,
                     dataType: 'json',
                     error: function() { chartObj.finishLoading(); },
                     success: function(aggData)

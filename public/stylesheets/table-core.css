@@ -523,6 +523,7 @@ div.blist-table-editor .align-right { text-align: right; }
 { background-position: 0 -400px; }
 .nested_table .blist-th-icon { background-position: 0 -440px; }
 .tag .blist-th-icon { background-position: 0 -180px; }
+.location .blist-th-icon { background-position: 0 -460px; }
 
 /* Editor styles */
 .blist-table .blist-combo-wrapper

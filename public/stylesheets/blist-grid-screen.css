@@ -610,7 +610,7 @@ body#lensBody
 
 #addColumnsMenu .column a
 {
-    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
     background-repeat: no-repeat;
     color: #333333;
     display: block;
@@ -626,7 +626,7 @@ body#lensBody
 
 .menu.columnsMenu > li > a
 {
-    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png);
+    background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1);
     background-position: 5px 20px;
     background-repeat: no-repeat;
 }
@@ -709,6 +709,9 @@ body#lensBody
 .menu.columnsMenu .tag a
 { background-position: 5px -180px; }
 
+#addColumn_location,
+.menu.columnsMenu .location a
+{ background-position: 5px -460px; }
 
 /* Main content */
 

@@ -93,7 +93,7 @@
 /*** Icon Combo List ***/
 .type_combo_list li, .type_combo_list .blist-combo-value
 {
-    background: url(/stylesheets/images/common/datatypes/data_type_sprites.png) no-repeat;
+    background: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1) no-repeat;
     padding-left: 23px;
 }
 .type_combo_list .photo { background-position: 0 -100px; }
@@ -117,4 +117,5 @@
 .type_combo_list .phone { background-position: 0 -240px; }
 .type_combo_list .percent { background-position: 0 0; }
 .type_combo_list .email { background-position: 0 -260px; }
+.type_combo_list .location { background-position: 0 -460px; }
 

@@ -95,6 +95,13 @@ blist.blistGrid.removeTabCookie = function(viewId)
     $.cookies.set('viewTabs', $.json.serialize(cookieObj));
 };
 
+blist.blistGrid.toggleAddColumns = function ()
+{
+    $('#addColumnsMenu').toggleClass('shown');
+    $('#formatMenu').removeClass('shown');
+    blist.common.forceWindowResize();
+};
+
 blist.blistGrid.toggleFormatMenu = function ()
 {
     $('#formatMenu').toggleClass('shown');
@@ -408,6 +415,12 @@ $(function ()
         $tab.remove();
         if ($tab.is('.active'))
         { window.location = $('.tabList .main a:first').attr('href'); }
+    });
+
+    $('.addColumnsLink, #addColumnsMenu .close').click(function (event)
+    {
+        event.preventDefault();
+        blistGridNS.toggleAddColumns();
     });
 
     $('#formatLink, #formatMenu .close').click(function (event)

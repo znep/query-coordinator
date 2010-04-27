@@ -32,7 +32,7 @@
   border-color: transparent !important
   //Shrink the height, and hide it just off the edge.  We need more than
     -1px to the left or the blinking cursor shows in IE.  And top needs
-    to be just -1px or Safari will scroll on focus. */
+    to be just -1px or Safari will scroll on focus.
   height: 0
   left: -10px
   top: -1px
@@ -61,3 +61,11 @@
 
 .jqmOverlay
   background-color: #000
+
+a
+  color= !color_links_normal
+  text-decoration: none
+  &:hover, &:focus, &:active
+    text-decoration: underline
+  &:visited
+    color= !color_links_visited

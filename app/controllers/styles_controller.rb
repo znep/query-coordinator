@@ -65,8 +65,8 @@ private
       hash.each do |key, value|
         if value.is_a? String
           # color or other static value
-          result += "!color_#{path}#{key} = \"##{value.gsub(/\W/, '')}\"\n" if type == 'color'
-          result += "!#{path}#{key} = \"#{value.gsub(/\W/, '')}\"\n"
+          result += "!color_#{path}#{key} = \"##{value}\"\n" if type == 'color'
+          result += "!#{path}#{key} = \"#{value}\"\n"
         elsif value.is_a? Array
           # gradient
           next unless value.first.is_a? Hash # hack to accomodate current header color format

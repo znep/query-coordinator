@@ -2,8 +2,8 @@
   +rounded-corners
   +gradient_buttons_active_background
   border= "1px solid" !color_buttons_active_border
-  -moz-box-shadow= "0 0 2px" !color_buttons_shadow
-  -webkit-box-shadow= "0 0 2px" !color_buttons_shadow
+  -moz-box-shadow= "0 0 2px" !buttons_shadow
+  -webkit-box-shadow= "0 0 2px" !buttons_shadow
   color= !color_buttons_active_text
   display: inline-block
   font-size: 11px
@@ -15,9 +15,13 @@
   &:hover
     +gradient_buttons_hover_background
     border= "1px solid" !color_buttons_hover_border
+    text-decoration: none
   &:active, &:focus
     +gradient_buttons_focus_background
     border= "1px solid" !color_buttons_focus_border
+    text-decoration: none
+  &:visited
+    color= !color_buttons_active_text
   &.disabled
     +gradient_buttons_disabled_background
     border= "1px solid" !color_buttons_disabled_border
@@ -49,8 +53,8 @@
   border= "2px solid" !color_tooltips_border
   -moz-border-radius: 0.4em
   -webkit-border-radius: 0.4em
-  -moz-box-shadow= "0 0 4px" !color_tooltips_shadow
-  -webkit-box-shadow= "0 0 4px" !color_tooltips_shadow
+  -moz-box-shadow= "0 0 4px" !tooltips_shadow
+  -webkit-box-shadow= "0 0 4px" !tooltips_shadow
   font-size: 1.1em
   max-width: 40em
   padding: 1em
@@ -63,3 +67,81 @@
     position: absolute
     top: -23px
     width: 26px
+
+.menu
+  -moz-border-radius: 0.4em 0.4em 0 0
+  -webkit-border-radius: 0.4em 0.4em 0 0
+  display: inline-block
+  .menuButton
+    background-color: #fff
+    -moz-border-radius: 0.4em 0.4em 0 0
+    -webkit-border-radius: 0.4em
+    -webkit-border-bottom-left-radius: 0
+    -webkit-border-bottom-right-radius: 0
+    color: #000
+    display: inline-block
+    font-size: 1.2em
+    margin-top: -4px
+    padding: 0.6em 1em
+    position: relative
+    z-index: 50
+    &:hover
+      text-decoration: none
+      .icon
+        background-position: 0 -13px
+    .icon
+      +text-hiding
+      background: transparent url(/stylesheets/images/icons/menu_icons.png) no-repeat
+      height: 13px
+      margin-left: 0.2em
+      width: 13px
+  .menuDropdown
+    background-color: #fff
+    border: 1px solid #999999
+    -moz-border-radius: 0 0.4em 0.4em 0.4em
+    -webkit-border-radius: 0.4em
+    -webkit-border-top-left-radius: 0
+    -moz-box-shadow: 0 0 4px rgba(0,0,0,0.5)
+    -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.5)
+    display: none
+    margin-top: -1px
+    position: absolute
+    z-index: 49
+    > ul
+      margin: 1.2em 0
+      overflow: hidden
+      > li
+        border-left: 1px solid #dedede
+        display: block
+        float: left
+        height: 100%
+        margin-bottom: -9999px
+        padding-bottom: 9999px
+        &:first-child
+          border-left: none
+        ul
+          min-width: 10em
+          padding: 0.2em 0
+          li
+            display: block
+            a
+              border:
+                bottom: 1px solid #ffffff
+                top: 1px solid #ffffff
+              display: block
+              font-size: 1.2em
+              padding: 0.3em 1em
+              &:hover
+                background-color: #f7f7f7
+                border-color: #dedede
+                text-decoration: none
+  &.open
+    -moz-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
+    -webkit-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
+    .menuButton
+      border: 1px solid #999999
+        bottom: none
+      .icon
+        background-position: 0 -13px
+    .menuDropdown
+      display: block

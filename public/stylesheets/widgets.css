@@ -666,6 +666,13 @@ ul.menu.checkboxMenu li.button a
     margin: 0 -1px -1px;
 }
 
+.fixedMenu h4
+{
+    font-size: 1.3em;
+    font-weight: bold;
+    padding: 1em 1.5em 0;
+}
+
 .fixedMenu ul.innerWrapper
 {
     background-image: url(/stylesheets/images/widgets/menu/corner_light_right_bottom_whitebg.png);

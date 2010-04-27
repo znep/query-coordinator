@@ -145,7 +145,7 @@ class Column < Model
 
   def has_formatting?
     types_with_formatting = ["text", "date", "number",
-        "money", "percent", "phone", "email",
+        "money", "percent", "phone", "email", 'location',
         "url", "checkbox", "stars", "flag", "picklist", "drop_down_list"]
 
     return types_with_formatting.include?(client_type)

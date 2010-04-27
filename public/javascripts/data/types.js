@@ -565,6 +565,32 @@ blist.namespace.fetch('blist.data.types');
         return "renderDocument(" + value + ", " + (column.base ? "'" + column.base + "'" : "null") + ", " + plain + ")";
     };
 
+
+    var renderLocation = function(value)
+    {
+        var pieces = [];
+        if (!$.isBlank(value.human_address))
+        {
+            var a = $.json.deserialize(value.human_address);
+            if (!$.isBlank(a.address)) { pieces.push(a.address); }
+            pieces.push(_.compact([_.compact([a.city, a.state]).join(', '),
+                a.zip]).join(' '));
+        }
+
+        if (!$.isBlank(value.latitude))
+        {
+            pieces.push('(' + value.latitude + '&deg;, ' +
+                value.longitude + '&deg;)');
+        }
+
+        return pieces.join('<br />');
+    };
+
+    var renderGenLocation = function(value)
+    {
+        return 'renderLocation(' + value + ')';
+    };
+
     /** FILTER RENDERERS ***/
     var renderFilterText = function(value)
     {
@@ -883,7 +909,7 @@ blist.namespace.fetch('blist.data.types');
         },
 
         location: {
-            renderGen: renderGenText,
+            renderGen: renderGenLocation,
             deleteable: true,
             isObject: true
         },

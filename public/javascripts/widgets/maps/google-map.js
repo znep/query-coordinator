@@ -52,6 +52,8 @@
                 }
                 mapObj._bounds.extend(ll);
                 mapObj._boundsCounts++;
+
+                return true;
             },
 
             adjustBounds: function()

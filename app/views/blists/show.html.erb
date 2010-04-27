@@ -285,15 +285,17 @@
             <%- if !@view.message.blank? -%>
             <%- if @view.message.include? 'group' -%>
             <li><a href='<%= blist_groupings_path(@view.id) %>'
-              rel='modal' class='arrowButton'>Edit Grouping</a></li>
+              rel='modal' class='arrowButton'>Edit Roll Ups</a></li>
             <%- elsif @view.message.include? 'filter' -%>
             <li><a href='<%= blist_filters_path(@view.id) %>'
               rel='modal' class='arrowButton'>Edit Filters</a></li>
             <%- end -%>
             <%- else -%>
             <%- if @view.display.is_a?(Displays::Chart) -%>
+            <%- if @view.display.can_be_edited? -%>
             <li><a rel='modal' href="<%= @view.href %>/visualization?edit=true"
                 class='arrowButton'>Edit Visualization</a></li>
+            <%- end -%>
             <%- end -%>
             <%- end -%>
             <li><a class='removeViewLink'

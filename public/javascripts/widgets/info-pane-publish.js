@@ -51,28 +51,29 @@
             var config = $publishPane.data('config-infoPanePublish');
 
             // detemplatize publish code template if it exists
-            if ($(config.textareaSelector).length > 0)
+            if ($publishPane.find(config.textareaSelector).length > 0)
             {
-                var width = $(config.widthSelector).val();
-                var height = $(config.heightSelector).val();
-                $(config.textareaSelector).text($(config.templateSelector).val()
+                var width = $publishPane.find(config.widthSelector).val();
+                var height = $publishPane.find(config.heightSelector).val();
+                $publishPane.find(config.textareaSelector)
+                    .text($publishPane.find(config.templateSelector).val()
                         .replace('#width#', width)
                         .replace('#height#', height)
-                        .replace('#variation#', $(config.variationSelector).val()));
+                        .replace('#variation#', $publishPane.find(config.variationSelector).val()));
 
                 // Restrict size to >= 500x425 px
                 if (parseInt(width,10) < 500 || parseInt(height,10) < 425 ||
                     width == '' || height == '')
                 {
-                    $(config.sizeErrorSelector).removeClass('hide');
-                    $(config.textareaSelector).attr('disabled', true);
-                    $(config.previewLinkSelector).addClass('disabled');
+                    $publishPane.find(config.sizeErrorSelector).removeClass('hide');
+                    $publishPane.find(config.textareaSelector).attr('disabled', true);
+                    $publishPane.find(config.previewLinkSelector).addClass('disabled');
                 }
                 else
                 {
-                    $(config.sizeErrorSelector).addClass('hide');
-                    $(config.textareaSelector).removeAttr('disabled');
-                    $(config.previewLinkSelector).removeClass('disabled');
+                    $publishPane.find(config.sizeErrorSelector).addClass('hide');
+                    $publishPane.find(config.textareaSelector).removeAttr('disabled');
+                    $publishPane.find(config.previewLinkSelector).removeClass('disabled');
                 }
             }
         };

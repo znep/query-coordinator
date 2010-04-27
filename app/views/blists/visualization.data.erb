@@ -152,7 +152,8 @@
         <div class='scrollBlock'>
           <%- dcb_count = 0 -%>
           <%- while true -%>
-          <div class='dataColumnBlock configLineBlock soloBlock clearfix'>
+          <div class='dataColumnBlock configLineBlock soloBlock <%= dcb_count == 0 ?
+            'firstBlock' : '' %> clearfix'>
             <a class='removeButton' href='#removeDataBlock'
               title='Remove'>Remove</a>
 
@@ -319,7 +320,8 @@
       var $scrollBlock = $(event.target).closest('ul').prev('.scrollBlock');
 
       $('.vizWrapper .dataColumnBlock.soloBlock').removeClass('soloBlock');
-      var $block = $scrollBlock.find('.dataColumnBlock:last').clone(true);
+      var $block = $scrollBlock.find('.dataColumnBlock:last').clone(true)
+          .removeClass('firstBlock');
       $block.find('.line').each(function(i, l)
       {
         var $this = $(this);
@@ -387,7 +389,10 @@
       event.preventDefault();
       $('.vizWrapper .mainError').text('');
       var $form = $('.vizWrapper form');
-      if (!$form.valid()) { return; }
+      // For some reason, some fields aren't correctly validated on the first
+      // try -- possibly has to do with dynamic form stuff.  Whatever the issue,
+      // we're checkin' it twice
+      if (!$form.valid() || !$form.valid()) { return; }
 
       var data = {options:{}, columns:[], vizType: 'chart'};
       $('.vizWrapper .section.common :input').each(function()

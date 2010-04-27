@@ -6397,7 +6397,7 @@ var PieSeries = extendClass(Series, {
 			borderWidth = options.borderWidth,
 			/* IE7 and IE6 fail to render a full circle unless start and
 			end points are equal: */
-			end = isIE && point.percentage == 100 ? point.start : point.end;
+			end = isIE && point.percentage > 99.999 ? point.start : point.end;
 			
 		// Todo: make Layer.prototype.drawArc method
 		if (point.y > 0) { // drawing 0 will draw a full disc in IE

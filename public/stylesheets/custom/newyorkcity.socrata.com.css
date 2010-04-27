@@ -1,0 +1,57 @@
+body {
+    background: url(/stylesheets/images/domains/newyorkcity.socrata.com/bg.jpg) repeat-x;
+    margin: 0;
+}
+#mainLogo {
+    top: 0;
+}
+#header {
+    height: 120px;
+    border-bottom: 2px solid black;
+    background: #fff url(/stylesheets/images/domains/newyorkcity.socrata.com/watermark.png) no-repeat right top;
+    margin-bottom: 20px;
+}
+.bodyInterior {
+  border:none;
+}
+.footerContainer {
+	background: #F0F1F3 url(/stylesheets/images/domains/newyorkcity.socrata.com/skyline.gif) no-repeat center top;
+	border-top:#666 solid 1px;
+	height: 102px;
+}
+
+body.home #mainNav li.home, body.home #mainNav li.home a span, body.discover #mainNav li.discover a span, body.community #mainNav li.community a span, body.discover #mainNav li.discover, #mainNav ul.subNav li:hover, #mainNav ul.subNav li:hover a span, body.home #mainNav li.home .subNav li:hover, body.home #mainNav li.home .subNav li:hover a span {
+	background:none;
+}
+#mainNav li, #mainNav li a span {
+    background-image:none;
+}
+#mainNav li .subNav
+{
+    position: relative;
+    top: 0px;
+} 
+#mainNav li.home .subNav li,
+#mainNav li .subNav li.last,
+#mainNav li.home .subNav li a span {
+    background-color:#fff;
+	background-image:none;
+}
+#mainNav li a span {
+	color: #000;
+}
+#mainNav {
+    position: absolute;
+	width:auto;
+	left: 30%;
+	margin:0;
+}
+#mainNav ul,
+.userNav ul
+{
+	position:relative;
+	top:100px;
+	z-index:1000;
+	padding-left:3px;
+}
+#head

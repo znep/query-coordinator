@@ -69,7 +69,7 @@
                                 .find('.contentBlock').toggleClass('hide');
                         });
                 }
-                else { $domObj.siblings('#mapLayers').addClass('hide'); }
+                else { mapObj.$dom().siblings('#mapLayers').addClass('hide'); }
 
                 mapObj.initializeMap();
 
@@ -79,7 +79,7 @@
             reset: function(newOptions)
             {
                 var mapObj = this;
-                mapObj.$dom().removeData('socrataMap');
+                mapObj.$dom().removeData('socrataVisualization');
                 mapObj.$dom().empty();
                 // We need to change the ID so that maps (such as ESRI) recognize
                 // something has changed, and reload properly

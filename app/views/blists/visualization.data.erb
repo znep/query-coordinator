@@ -91,7 +91,8 @@
             <%= t[0] %>-column' notequalto='.<%= t[0] %>-column'>
             <option class='prompt' value=''>Select a Column</option>
             <%- cols[fcol['dataType']].each do |c| -%>
-            <option format='<%= c.format.to_json %>' dataType='<%= c.client_type %>'
+            <option format='<%= c.format.to_json %>'
+              dataType='<%= c.dataTypeName %>'
               tableColumnId='<%= c.tableColumnId %>'
               value='<%= c.id %>' <%= c.id == cur_id ?
                 "selected='selected'" : '' %>><%= c.name %></option>
@@ -181,7 +182,7 @@
                 <option class='prompt' value=''>Select a Column</option>
                 <%- cols[dcol['dataType']].each do |c| -%>
                 <option format='<%= c.format.to_json %>'
-                  dataType='<%= c.client_type %>'
+                  dataType='<%= c.dataTypeName %>'
                   tableColumnId='<%= c.tableColumnId %>'
                   value='<%= c.id %>' <%= c.id == cur_id ?
                     "selected='selected'" : '' %>><%= c.name %></option>

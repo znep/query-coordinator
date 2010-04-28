@@ -274,16 +274,19 @@
             case 'top':
                 chartMargin[0] = 40;
                 legendStyle.top = '5px';
+                legendStyle.bottom = '';
                 break;
             case 'left':
                 legendStyle.left = '10px';
                 legendStyle.top = '30%';
+                legendStyle.bottom = '';
                 chartMargin[3] = 200;
                 break;
             case 'right':
                 legendStyle.left = '';
                 legendStyle.right = '10px';
                 legendStyle.top = '30%';
+                legendStyle.bottom = '';
                 chartMargin[1] = 180;
                 break;
         }
@@ -325,26 +328,30 @@
                 layout: _.include(['left', 'right'], legendPos) ?
                     'vertical' : 'horizontal',
                 reversed: chartObj._reverseOrder,
+                backgroundColor: '#ffffff',
+                borderWidth: 1,
                 style: legendStyle },
             plotOptions: {},
             title: { text: null },
             xAxis: { title:
-                { enabled: xTitle !== '' && !_.isUndefined(xTitle), text: xTitle },
+                { enabled: xTitle !== '' && !_.isUndefined(xTitle), text: xTitle,
+                    // Add rotation to title so it is rendered using vector
+                    // graphics in IE; if not, X-axis labels will disappear
+                    // Unfortunately, this loses the styling in IE.
+                    rotation: 1, style: { backgroundColor: '#ffffff',
+                        border: '1px solid #909090', padding: '3px' } },
                 dateTimeLabelFormats: {
                     day: '%e %b',
                     week: '%e %b',
                     month: '%b %Y'
                 } },
             yAxis: { title:
-                { enabled: yTitle !== '' && !_.isUndefined(yTitle), text: yTitle } }
+                { enabled: yTitle !== '' && !_.isUndefined(yTitle), text: yTitle,
+                    style: { backgroundColor: '#ffffff',
+                        border: '1px solid #909090', padding: '3px' } } }
         };
 
         if (!_.isUndefined(colors)) { chartConfig.colors = colors; }
-
-        if (!chartConfig.chart.inverted)
-        { chartConfig.xAxis.labels = { rotation: 320, align: 'right' }; }
-        else
-        { chartConfig.xAxis.labels = { rotation: 340 }; }
 
         // If we already have data loaded, use it
         if (!_.isUndefined(chartObj._seriesCache))
@@ -369,6 +376,14 @@
                         this.series.options.column) + '</p>';
             } };
         }
+        else
+        {
+            if (!chartConfig.chart.inverted)
+            { chartConfig.xAxis.labels = { rotation: 320, align: 'right' }; }
+            else
+            { chartConfig.xAxis.labels = { rotation: 340 }; }
+        }
+
 
 
         // Set up config for this particular chart type

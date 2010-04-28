@@ -45,6 +45,7 @@ javascripts:
   - data/editors/tag-editor
   - data/editors/url-editor
   - data/editors/phone-editor
+  - data/editors/location-editor
   - widgets/combo
   - widgets/values
   - data/editors/flag-editor

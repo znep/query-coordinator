@@ -238,7 +238,13 @@ blist.namespace.fetch('blist.data');
                             var isEmpty = true;
                             $.each(r[c.index], function(k, v)
                                 {
-                                    if (v !== null && v !== undefined)
+                                    // Booleans don't count because location
+                                    // type has a flag that may be set even if
+                                    // there is no data.  If some type actually
+                                    // cares about only having a boolean,
+                                    // this will need to be made more specific
+                                    if (v !== null && v !== undefined &&
+                                        typeof v != 'boolean')
                                     { isEmpty = false; return false; }
                                 });
                             if (isEmpty) { r[c.index] = null; }

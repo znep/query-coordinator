@@ -767,6 +767,40 @@ img.blist-table-option-icon
     vertical-align: middle;
 }
 
+/* Location editor */
+div.blist-table-edit-container .blist-table-editor.type-location .labels
+{
+    border-bottom-color: #d0d0d0;
+    border-top: 1px solid #06386a;
+}
+div.blist-table-edit-container .blist-table-editor.type-location .labels.street
+{ border-top: none; }
+div.blist-table-edit-container .blist-table-editor.type-location .labels span
+{ position: static; }
+div.blist-table-edit-container .blist-table-editor.type-location input[type="text"]
+{
+    height: auto;
+    padding: 3px;
+    width: 95%;
+}
+div.blist-table-edit-container .blist-table-editor.type-location input.nonInvalid
+{
+    color: #333333;
+    font-style: normal;
+}
+div.blist-table-edit-container .blist-table-editor.type-location .labels span.longitude,
+div.blist-table-edit-container .blist-table-editor.type-location input.longitude
+{
+    border-left: 1px solid #d0d0d0;
+    left: 50%;
+    position: absolute;
+}
+div.blist-table-edit-container .blist-table-editor.type-location input.lat_long
+{
+    width: 47%;
+}
+
+
 .columnHeaderMenu { width: 17em; }
 
 ul.menu.columnHeaderMenu li,

@@ -568,19 +568,22 @@ blist.namespace.fetch('blist.data.types');
 
     var renderLocation = function(value)
     {
+        if ($.isBlank(value)) { return ''; }
+
         var pieces = [];
         if (!$.isBlank(value.human_address))
         {
             var a = $.json.deserialize(value.human_address);
-            if (!$.isBlank(a.address)) { pieces.push(a.address); }
+            if (!$.isBlank(a.address) && a.address !== '')
+            { pieces.push(a.address); }
             pieces.push(_.compact([_.compact([a.city, a.state]).join(', '),
                 a.zip]).join(' '));
         }
 
-        if (!$.isBlank(value.latitude))
+        if (!$.isBlank(value.latitude) || !$.isBlank(value.longitude))
         {
-            pieces.push('(' + value.latitude + '&deg;, ' +
-                value.longitude + '&deg;)');
+            pieces.push('(' + (value.latitude || '') + '&deg;, ' +
+                (value.longitude || '') + '&deg;)');
         }
 
         return pieces.join('<br />');
@@ -977,6 +980,7 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.photo.editor = $.blistEditor.photo;
         blist.data.types.photo_obsolete.editor = $.blistEditor.photo;
         blist.data.types.tag.editor = $.blistEditor.tag;
+        blist.data.types.location.editor = $.blistEditor.location;
     }
 
     for (var name in blist.data.types) {

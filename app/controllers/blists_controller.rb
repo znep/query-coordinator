@@ -222,7 +222,7 @@ class BlistsController < ApplicationController
   end
 
   def new_customization
-    @widget_customizations = WidgetCustomization.find
+    @widget_customizations = WidgetCustomization.find.select {|w| !w.hidden}
     respond_to do |format|
       format.data { render(:layout => "modal_dialog") }
     end

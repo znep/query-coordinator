@@ -1953,7 +1953,7 @@
                     .css('top', offsetPos.top)
                     .mouseleave(function (event)
                     {
-                        $(this).fadeOut('fast', function() {
+                        $(this).stop().fadeOut('fast', function() {
                             $(this).remove();
                         });
                     })

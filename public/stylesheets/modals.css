@@ -1528,6 +1528,21 @@ dl.versionInfo dd
 .groupingWrapper .itemWrapper .controls select { width: 100%; }
 
 .groupingWrapper .inactiveList .itemWrapper .controls { display: none; }
+
+.groupingWrapper .line
+{
+    margin: 0.5em 0 0.5em 5.5em;
+}
+.groupingWrapper label 
+{
+    font-size: 1.2em;
+}
+.groupingWrapper #drillDownCheckBox
+{
+    font-size: 1.2em;
+    position: relative;
+    top: 0.15em;
+}
 /*** END: Grouping & Aggregates dialog ***/
 
 

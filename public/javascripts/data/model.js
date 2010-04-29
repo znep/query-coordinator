@@ -331,6 +331,16 @@ blist.namespace.fetch('blist.data');
                 meta.view.query.groupBys.length > 0;
         };
 
+        this.shouldSendColumns = function()
+        {
+            return this.forceSendColumns;
+        }
+
+        this.forceSendColumns = function(value)
+        {
+            this.forceSendColumns = value;
+        }
+
         /**
          * Get rights for this view
          */
@@ -573,7 +583,8 @@ blist.namespace.fetch('blist.data');
             min -= countSpecialTo(min);
             var len = Math.min(max - min + 1, curOptions.pageSize);
 
-            var tempView = this.getViewCopy(this.isGrouped());
+            var tempView = this.getViewCopy(this.isGrouped() || 
+                this.shouldSendColumns());
             var ajaxOptions = $.extend({},
                     supplementalAjaxOptions,
                     { url: '/views/INLINE/rows.json?' + $.param(
@@ -673,7 +684,8 @@ blist.namespace.fetch('blist.data');
         {
             if (!_.isUndefined(meta.view.message)) { return; }
 
-            tempView = tempView || this.getViewCopy(this.isGrouped());
+            tempView = tempView || this.getViewCopy(this.isGrouped() || 
+                this.shouldSendColumns());
             $.ajax({url: '/views/INLINE/rows.json?' +
                     $.param({method: 'getAggregates'}),
                     type: 'POST',
@@ -894,6 +906,11 @@ blist.namespace.fetch('blist.data');
                     }
                     if (format.grouping_aggregate)
                     { col.grouping_aggregate = format.grouping_aggregate; }
+                    if (format.drill_down)
+                    {
+                        col.drillDown = (format.drill_down === 'true' ||
+                            format.drill_down === true);
+                    }
                 }
 
                 if (!vcol.flags || $.inArray("hidden", vcol.flags) < 0)

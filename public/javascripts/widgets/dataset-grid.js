@@ -111,6 +111,11 @@
                         function (e) { 
                           $('<a href="/datasets/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
                         });
+                        
+                $.live('#' + $datasetGrid.attr('id') + ' .drillDown', 'click',
+                    function(){
+                            datasetObj.drillDown(this);
+                    });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
 
@@ -377,7 +382,7 @@
             },
 
             groupAggregate: function(grouped, aggregates, doSave, newName,
-                successCallback, errorCallback)
+                drillDown, successCallback, errorCallback)
             {
                 var datasetObj = this;
                 var model = datasetObj.settings._model;
@@ -395,9 +400,11 @@
                     model.group(grouped);
                     $.each(grouped, function(i, c)
                     {
+                        var newFormat = $.extend({}, c.format, {drill_down: drillDown});
+                        
                         newCols.push({id: c.id, name: c.name, hidden: false,
-                            position: newCols.length + 1, format: c.format});
-                        usedCols[c.id] = true;
+                            position: newCols.length + 1, format: newFormat});
+                        usedCols[c.id] = newFormat;
                     });
                 }
                 else { delete view.query.groupBys; }
@@ -407,7 +414,8 @@
                 {
                     $.each(aggregates, function(i, a)
                     {
-                        var format = $.extend({}, a.format,
+                        var existingFormat = usedCols[a.id] || a.format;
+                        var format = $.extend({}, existingFormat,
                             {grouping_aggregate: a.func});
                         // Column Totals don't work properly on grouped views,
                         // so clear them out instead of inheriting them
@@ -509,6 +517,60 @@
                     }
                     });
                 }
+            },
+            
+            drillDown: function(drillLink)
+            {
+                var datasetObj = this;
+                var model = datasetObj.settings._model;
+                
+                var filterValue = $(drillLink).attr('cellvalue');
+                var filterColumn = $(drillLink).attr('column');
+                
+                if (filterValue == '' || filterColumn == '')
+                {
+                    return false;
+                }
+                
+                // Note: do we always want this to be true
+                var view = model.getViewCopy(true);
+                
+                _.each(view.columns, function(c)
+                {
+                   delete c.format.grouping_aggregate;
+                   delete c.format.drill_down; 
+                });
+
+                // Don't group on _any_ columns anymore
+                view.query.groupBys = [];
+                
+                // Now construct our beautiful filter
+                var filter = {
+                    type: 'operator', value: 'EQUALS', children: [ {
+                        columnId: filterColumn,
+                        type: 'column'
+                    }, {
+                        type: 'literal',
+                        value: filterValue
+                    } ]
+                };
+
+                if (view.query.filterCondition != null &&
+                        view.query.filterCondition.type == 'operator')
+                {
+                    var existingQuery = view.query.filterCondition;
+                    view.query.filterCondition = { type: 'operator', value: 'AND',
+                        children: [ existingQuery, filter ]
+                    };
+                }
+                else
+                {
+                    view.query.filterCondition = filter;
+                }
+                
+                model.getTempView(view);
+                datasetObj.setTempView('drilldown');
+                model.forceSendColumns(true);
             },
 
             clearTempView: function(countId, forceAll)
@@ -835,6 +897,7 @@
         $.each(renderedRows, function(i, r)
         {
             var $row = $(r.row);
+
             if (!$row.is('.blist-tr-open')) { return true; }
             $row.find('.blist-tdh[uid]')
                 .each(function(i, tdh)

@@ -2675,6 +2675,10 @@
                         ".meta.invalidCells[" + mcol.tableColumnId +
                         "] ? ' invalid' : '')";
 
+                    var drillDown = mcol.drillDown ? ("<a class='drillDown'" +
+                        " cellvalue='\" + $.htmlStrip(row" + mcol.dataLookupExpr +
+                        ") + \"' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
+
                     renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
                                 contextVariables) +
@@ -2690,7 +2694,7 @@
                             mcol.dataLookupExpr + " ? \" saving\" : \"\") + " +
                             "(row.error && row.error" +
                             mcol.dataLookupExpr + " ? \" error\" : \"\") + " +
-                            "\"'>\", " +
+                            "\"'>"+ drillDown + "\", " +
                             renderer + ", \"</div>\""
                     );
 

@@ -95,10 +95,11 @@
                 mapObj.resetData();
 
                 mapObj._idIndex = undefined;
+                mapObj._locCol = undefined;
                 mapObj._latIndex = undefined;
                 mapObj._longIndex = undefined;
-                mapObj._titleIndex = undefined;
-                mapObj._infoIndex = undefined;
+                mapObj._titleCol = undefined;
+                mapObj._infoCol = undefined;
                 mapObj._infoIsRich = false;
             },
 
@@ -182,27 +183,40 @@
             renderRow: function(row)
             {
                 var mapObj = this;
-                if (mapObj._latIndex === undefined ||
-                    mapObj._longIndex === undefined)
+                if (_.isUndefined(mapObj._locCol) &&
+                    (_.isUndefined(mapObj._latIndex) ||
+                     _.isUndefined(mapObj._longIndex)))
                 {
                     mapObj.errorMessage = 'No columns defined';
                     return false;
                 }
 
-                var lat = row[mapObj._latIndex];
-                var longVal = row[mapObj._longIndex];
+                var lat;
+                var longVal;
+                if (!_.isUndefined(mapObj._locCol))
+                {
+                    var loc = row[mapObj._locCol.dataIndex];
+                    if (_.isNull(loc)) { return true; }
+                    lat = parseFloat(loc[mapObj._locCol.latSubIndex]);
+                    longVal = parseFloat(loc[mapObj._locCol.longSubIndex]);
+                }
+                else
+                {
+                    lat = row[mapObj._latIndex];
+                    longVal = row[mapObj._longIndex];
+                }
+
                 // Incomplete points will be safely ignored
-                if (lat === null || longVal === null) { return true; }
-                if (lat < -90 || lat > 90 || longVal < -180 || longVal > 180)
+                if (_.isNull(lat) || _.isNaN(lat) ||
+                    _.isNull(longVal) || _.isNaN(longVal)) { return true; }
+                if (lat <= -90 || lat >= 90 || longVal <= -180 || longVal >= 180)
                 {
                     mapObj.errorMessage = 'Latitude must be between -90 and 90, ' +
                         'and longitude must be between -180 and 180';
                     return false;
                 }
-                var info = mapObj._infoIndex !== undefined ?
-                    row[mapObj._infoIndex] : null;
-                var title = mapObj._titleIndex !== undefined ?
-                    row[mapObj._titleIndex] : null;
+                var title = getText(row, mapObj._titleCol, true);
+                var info = getText(row, mapObj._infoCol, false);
 
                 return mapObj.renderPoint(lat, longVal, title,
                     info, row[mapObj._idIndex]);
@@ -239,6 +253,24 @@
         }
     }));
 
+    var getText = function(row, col, plain)
+    {
+        var t = !_.isUndefined(col) ?
+            row[col.dataIndex] : null;
+        if (!_.isNull(t) && col.renderTypeName == 'location')
+        {
+            var a = t[col.addressSubIndex];
+            if (_.isNull(a) || _.isUndefined(a))
+            { t = null; }
+            else
+            {
+                t = blist.data.types.location
+                    .renderAddress({human_address: a}, plain);
+            }
+        }
+        return t;
+    };
+
     var getColumns = function(mapObj, view)
     {
         if (view.displayFormat === undefined ||
@@ -253,17 +285,41 @@
             if (c.dataTypeName == 'meta_data' && c.name == 'sid')
             { mapObj._idIndex = i; }
 
+            // Preferred location column
+            if (c.tableColumnId == colFormat.locationId)
+            {
+                c.dataIndex = i;
+                c.latSubIndex = _.indexOf(c.subColumnTypes, 'latitude');
+                c.longSubIndex = _.indexOf(c.subColumnTypes, 'longitude');
+                mapObj._locCol = c;
+            }
+
+            // Older separate lat/long
             if (c.tableColumnId == colFormat.latitudeId || c.id == colFormat.ycol)
             { mapObj._latIndex = i; }
             if (c.tableColumnId == colFormat.longitudeId || c.id == colFormat.xcol)
             { mapObj._longIndex = i; }
 
             if (c.tableColumnId == colFormat.titleId || c.id == colFormat.titleCol)
-            { mapObj._titleIndex = i; }
+            {
+                c.dataIndex = i;
+                if (c.renderTypeName == 'location')
+                {
+                    c.addressSubIndex =
+                        _.indexOf(c.subColumnTypes, 'human_address');
+                }
+                mapObj._titleCol = c;
+            }
             if (c.tableColumnId == colFormat.descriptionId ||
                 c.id == colFormat.bodyCol)
             {
-                mapObj._infoIndex = i;
+                c.dataIndex = i;
+                if (c.renderTypeName == 'location')
+                {
+                    c.addressSubIndex =
+                        _.indexOf(c.subColumnTypes, 'human_address');
+                }
+                mapObj._infoCol = c;
                 mapObj._infoIsRich = c.renderTypeName == "text" &&
                     c.format !== undefined &&
                     c.format.formatting_option == "Rich";
@@ -291,7 +347,7 @@
         if (cols.length > 2)
         {
             var infoCol = cols[2];
-            mapObj._infoIndex = infoCol.dataIndex;
+            mapObj._infoCol = infoCol;
             mapObj._infoIsRich = infoCol.renderTypeName == "text" &&
                 infoCol.format !== undefined &&
                 infoCol.format.formatting_option == "Rich";

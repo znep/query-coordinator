@@ -260,11 +260,10 @@ module BlistsHelper
       'title' => (view.can_add_form? ? '' :
         'This dataset does not have any visible columns')},
       {'text' => 'Map', 'href' => "#{view.href}/map",
-      'if' => !view.is_grouped? && CurrentDomain.member?(current_user) &&
-               module_available?(:map_publish),
+      'if' => !view.is_grouped? && module_available?(:map_publish),
       'class' => 'map' + (view.can_add_map? ? '' : ' disabled'),
       'title' => (view.can_add_map? ? '' :
-        'This dataset does not have the appropriate columns')}
+        'This dataset does not have a location column')}
     ]
   end
 
@@ -331,11 +330,11 @@ module BlistsHelper
         'This dataset does not have any visible columns')},
       {'text' => 'Create a Map...', 'href' => "#{view.href}/map",
       'if' => !view.is_alt_view? && !view.is_grouped? &&
-        CurrentDomain.member?(current_user) && module_available?(:map_publish),
+        module_available?(:map_publish),
       'user_required' => true, 'class' => 'map mainViewOption' +
         (view.can_add_map? ? '' : ' disabled'),
       'title' => (view.can_add_map? ? '' :
-        'This dataset does not have the appropriate columns')}
+        'This dataset does not have a location column')}
       ]) + [menu_options['separator'],
       menu_options['more_views']]
   end

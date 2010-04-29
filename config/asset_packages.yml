@@ -60,6 +60,7 @@ javascripts:
   - data/editors/photo-editor
 - shared-map:
   - widgets/base-visualization
+  - data/types
   - widgets/maps/base-map
   - widgets/maps/esri-map
   - widgets/maps/google-map

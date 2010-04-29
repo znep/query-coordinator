@@ -566,7 +566,7 @@ blist.namespace.fetch('blist.data.types');
     };
 
 
-    var renderLocation = function(value)
+    var renderLocation = function(value, plain, addressOnly)
     {
         if ($.isBlank(value)) { return ''; }
 
@@ -580,18 +580,24 @@ blist.namespace.fetch('blist.data.types');
                 a.zip]).join(' '));
         }
 
-        if (!$.isBlank(value.latitude) || !$.isBlank(value.longitude))
+        if (!addressOnly &&
+            (!$.isBlank(value.latitude) || !$.isBlank(value.longitude)))
         {
-            pieces.push('(' + (value.latitude || '') + '&deg;, ' +
-                (value.longitude || '') + '&deg;)');
+            pieces.push('(' + (value.latitude || '') + (plain ? '' : '&deg;') +
+                ', ' + (value.longitude || '') + (plain ? '' : '&deg;') + ')');
         }
 
-        return pieces.join('<br />');
+        return pieces.join(plain ? ' \n' : '<br />');
     };
 
-    var renderGenLocation = function(value)
+    var renderLocationAddress = function(value, plain)
     {
-        return 'renderLocation(' + value + ')';
+        return renderLocation(value, plain, true);
+    };
+
+    var renderGenLocation = function(value, plain)
+    {
+        return 'renderLocation(' + value + ', ' + plain + ')';
     };
 
     /** FILTER RENDERERS ***/
@@ -914,7 +920,8 @@ blist.namespace.fetch('blist.data.types');
         location: {
             renderGen: renderGenLocation,
             deleteable: true,
-            isObject: true
+            isObject: true,
+            renderAddress: renderLocationAddress
         },
 
         tag: {

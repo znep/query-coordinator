@@ -52,7 +52,6 @@
                 var editObj = this;
                 if (!editObj._$editor)
                 {
-                    //var hrefVal = this.newValue || hrefValue(this);
                     editObj._$editor = $('<div class="blist-table-editor' +
                         ' type-' + editObj.column.type +
                         '">' +
@@ -165,23 +164,24 @@
 
                 latVal = parseFloat(latVal);
                 longVal = parseFloat(longVal);
-                return latVal >= -90 && latVal <= 90 &&
-                    longVal >= -180 && longVal <= 180;
+                return latVal > -90 && latVal < 90 &&
+                    longVal > -180 && longVal < 180;
             },
 
             currentValue: function()
             {
                 var editObj = this;
 
-                var newLat = editObj.$dom().find(':input.latitude').val();
-                var newLong = editObj.$dom().find(':input.longitude').val();
+                var newLat = editObj.$dom().find(':input.latitude').val().trim();
+                var newLong = editObj.$dom().find(':input.longitude').val().trim();
                 var latLongChanged = newLat !== latitudeValue(editObj) ||
                     newLong !== longitudeValue(editObj);
 
                 if (!editObj.isValid()) { return newLat + ', ' + newLong; }
 
-                var newStreet = editObj.$dom().find(':input.street').val();
-                var newCSZ = editObj.$dom().find(':input.city_state_zip').val();
+                var newStreet = editObj.$dom().find(':input.street').val().trim();
+                var newCSZ = editObj.$dom().find(':input.city_state_zip')
+                    .val().trim();
                 var addressChanged = newStreet !== streetValue(editObj) ||
                     newCSZ !== cityStateZipValue(editObj);
 
@@ -190,7 +190,7 @@
 
                 if (newStreet === '' && newCSZ === '' && newLat === '' &&
                     newLong === '')
-                { return null; }
+                { return {}; }
 
                 var obj = {};
                 if (newLat !== '')
@@ -230,7 +230,7 @@
                     address.state = stateResult[1].trim();
                     newCSZ = newCSZ.slice(0, newCSZ.length - stateResult[0].length);
                 }
-                // Otherwise, break it on spaces; pull of the last one,
+                // Otherwise, break it on spaces; pull off the last one,
                 // and handle a few special cases for second-to-last
                 else
                 {

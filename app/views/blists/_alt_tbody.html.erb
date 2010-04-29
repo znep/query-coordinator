@@ -136,6 +136,27 @@
                 <img width='20' height='20' src='<%= url %>' />
               </a>
 
+            <%- when 'location' -%>
+              <%- human_address =
+                cell[column.sub_type_index('human_address')] -%>
+              <%- if !human_address.nil? -%>
+              <%- address = JSON.parse(human_address) -%>
+              <%- pieces = [] -%>
+              <%- if !address['address'].blank? -%>
+              <%- pieces << h(address['address']) -%>
+              <%- end -%>
+              <%- csz = h([[address['city'],
+                  address['state']].compact.join(', '),
+                  address['zip']].compact.join(' ')) -%>
+              <%- pieces << csz if !csz.blank? -%>
+              <%- lat = cell[column.sub_type_index('latitude')] -%>
+              <%- long = cell[column.sub_type_index('longitude')] -%>
+              <%- if !lat.blank? || !long.blank? -%>
+              <%- pieces << '(' + lat + '&deg;, ' + long + '&deg;)' -%>
+              <%- end -%>
+              <%= raw pieces.compact.join('<br />') %>
+              <%- end -%>
+
             <%- when 'nested_table' -%>
             <%- if cell.length > 0 -%>
             <table>

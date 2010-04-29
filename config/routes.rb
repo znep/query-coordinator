@@ -33,6 +33,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect '/styles/individual/:stylesheet.css', :controller => 'styles', :action => 'individual'
   map.connect '/styles/merged/:stylesheet.css', :controller => 'styles', :action => 'merged'
+  map.connect '/styles/widget/:customization_id.css', :controller => 'styles', :action => 'widget'
 
   map.connect '/internal', :controller => 'internal', :action => 'index'
   map.connect '/internal/orgs', :controller => 'internal', :action => 'create_org',
@@ -177,6 +178,11 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'widgets/:id/:customization_id', :controller => 'widgets',
    :action => 'show', :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
 
+  map.connect 'w/:id/:customization_id', :controller => 'widgets_new',
+    :action => 'show', :requirements => {:id => UID_REGEXP, :customization_id => UID_REGEXP}
+  map.connect 'w/:id', :controller => 'widgets_new',
+    :action => 'show', :requirements => {:id => UID_REGEXP}
+
   map.connect ':category/:view_name/:id', :controller => 'blists',
     :action => 'show', :conditions => { :method => :get },
     :requirements => {:id => UID_REGEXP, :view_name => /(\w|-)+/,
@@ -236,8 +242,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'dataset/:id/meta_tab_header', :controller => 'blists', :action => 'meta_tab_header'
   map.connect 'dataset/:id/meta_tab', :controller => 'blists', :action => 'meta_tab'
 
-  map.connect 'widgets/:id/:variation/:options', :controller => 'widgets', :action => 'show'
-  map.connect 'widgets/:id/:variation/:options.data', :controller => 'widgets', :action => 'show', :format => 'data'
   map.connect 'widgets/:id/:variation', :controller => 'widgets', :action => 'show'
   map.connect 'widgets/:id/:variation.data', :controller => 'widgets', :action => 'show', :format => 'data'
   map.connect 'widgets/:id', :controller => 'widgets', :action => 'show'

@@ -201,7 +201,8 @@
                 // Address didn't change, so get original
                 if (!addressChanged)
                 {
-                    obj.human_address = editObj.originalValue.human_address;
+                    obj.human_address = (editObj.originalValue || {})
+                        .human_address || null;
                     return obj;
                 }
 

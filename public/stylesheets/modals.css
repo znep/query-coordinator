@@ -1343,6 +1343,15 @@ dl.versionInfo dd
     width: 10.5em;
 }
 
+.filterDatasetWrapper #filterTable .type-location input.lat_long
+{ width: 50%; }
+
+.filterDatasetWrapper #filterTable .type-location .longitude
+{
+    left: 50%;
+    position: absolute;
+}
+
 .filterDatasetWrapper #filterTable .ampersand
 {
     float: left;

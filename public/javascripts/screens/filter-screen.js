@@ -209,70 +209,28 @@ filterNS.row = function($row) {
         value.push($(r).blistEditor().currentValue());
     });
 
-    // Translate values. Filters have a different format which is awesome.
-    if (column.type == "phone")
-    {
-        var filter = []
-        var children = [];
-        var phoneNumber = {type: "operator"};
-        var phoneType = {type: "operator"};
-
-        // Number
-        if (value[0] !== null && value[0].phone_number !== null)
-        {
-            children = [{columnId: column.id, type: "column",
-                    value: "phone_number"},
-                {type: "literal", value: value[0].phone_number}];
-            phoneNumber.value = operator;
-            phoneNumber.children = children;
-            filter.push(phoneNumber);
-        }
-
-        // Type
-        if (value[0] !== null && value[0].phone_type !== null)
-        {
-            children = [{columnId: column.id, type: "column", value: "phone_type"},
-                {type: "literal", value: value[0].phone_type}];
-            phoneType.value = operator;
-            phoneType.children = children;
-            filter.push(phoneType);
-        }
-
-        return filter;
-    }
-    else if (column.type == "url")
+    // Translate values. Complex types have a different format which is awesome.
+    if (column.type == "phone" || column.type == 'url' || column.type == 'location')
     {
         var filter = [];
 
-        if (value[0] !== null && value[0].url !== null)
+        if (value[0] !== null)
+        _.each(value[0], function(v, k)
         {
-            filter.push({
-                type: "operator",
-                value: operator,
-                children: [
-                    {   columnId: column.id,
-                        type: "column",
-                        value: "url" },
-                    {   type: "literal",
-                        value: value[0].url }
-                ]
-            });
-        }
+            if (_.isNull(v)) { return; }
 
-        if (value[0] !== null && value[0].description !== null)
-        {
             filter.push({
                 type: "operator",
                 value: operator,
                 children: [
                     {   columnId: column.id,
                         type: "column",
-                        value: "description" },
+                        value: k },
                     {   type: "literal",
-                        value: value[0].description }
+                        value: v }
                 ]
             });
-        }
+        });
 
         return filter;
     }

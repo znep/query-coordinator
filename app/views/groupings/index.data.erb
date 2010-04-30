@@ -1,12 +1,12 @@
 <% content_for :headline do %>
-<h1><span class="groupingIcon">Roll Ups</span></h1>
+<h1><span class="groupingIcon">Roll Ups &amp; Drill Downs</span></h1>
 <% end %>
 
 <div class='modalContentWrapper groupingWrapper columnPickerModal'>
   <div class='loading'></div>
 
   <p class='subtitle'>
-  Roll Ups is an advanced feature that allows you to
+  Roll Ups &amp; Drill Downs allows you to
   create a new view by grouping columns containing repeated values so that you
   can sum, count or average other columns.  For example, you might group census
   data by state, summing the population column.
@@ -90,6 +90,12 @@
     </div>
 
   </div>
+
+  <div class="line clearfix">
+    <input type="checkbox" id="drillDownCheckBox"<%= (@drill_down ? ' checked="checked"' : '') %>/>
+    <label for="drillDownCheckBox">Add Drill Down capabilities to this view</label>
+  </div>
+
   <div class='error mainError'></div>
   <%- end -%>
 
@@ -203,6 +209,8 @@
             });
         });
 
+        var drillDown = $('.groupingWrapper #drillDownCheckBox').is(':checked');
+
         switch (action)
         {
             case 'saveAs':
@@ -220,7 +228,7 @@
                         // create view
                         $('#dataGrid').datasetGrid()
                             .groupAggregate(groupCols, aggCols, true, newName,
-                                successCallback, errorCallback);
+                                drillDown, successCallback, errorCallback);
                     }
                 }
                 break;
@@ -228,13 +236,13 @@
                 // save to view
                 $('.groupingWrapper .loading').show();
                 $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols,
-                    true, null, successCallback, errorCallback);
+                    true, null, drillDown, successCallback, errorCallback);
                 break;
             case 'update':
                 // do temp view
                 $('.groupingWrapper .loading').show();
                 $('#dataGrid').datasetGrid().groupAggregate(groupCols, aggCols,
-                    false, null, successCallback, errorCallback);
+                    false, null, drillDown, successCallback, errorCallback);
                 break;
         }
     });

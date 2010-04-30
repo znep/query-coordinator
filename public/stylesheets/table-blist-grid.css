@@ -54,12 +54,3 @@
 {
     text-decoration: underline;
 }
-
-.blist-td .drillDown
-{
-    background-image: url(/stylesheets/images/content/table/drilldown.png);
-    float: left;
-    height: 16px;
-    margin-right: 0.4em;
-    width: 24px;
-}

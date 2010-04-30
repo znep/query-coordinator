@@ -334,12 +334,12 @@ blist.namespace.fetch('blist.data');
         this.shouldSendColumns = function()
         {
             return this.forceSendColumns;
-        }
+        };
 
         this.forceSendColumns = function(value)
         {
             this.forceSendColumns = value;
-        }
+        };
 
         /**
          * Get rights for this view

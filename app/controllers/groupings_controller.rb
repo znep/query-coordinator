@@ -41,6 +41,7 @@ class GroupingsController < ApplicationController
 
     @unagged = []
     @ungrouped = []
+    any_drill_downs = false
     @view.columns.each do |c|
       next if c.is_nested_table || c.client_type == 'tag' ||
         c.client_type == 'document_obsolete' || c.client_type == 'photo_obsolete' ||
@@ -53,7 +54,11 @@ class GroupingsController < ApplicationController
       if groupIds[c.id.to_s].nil?
         @ungrouped << c
       end
+
+      any_drill_downs = true if c.format && c.format.drill_down == 'true'
     end
+
+    @drill_down = any_drill_downs || @grouped.empty?
 
     respond_to do |format|
       format.html { redirect_to @view.href }

@@ -331,6 +331,16 @@ blist.namespace.fetch('blist.data');
                 meta.view.query.groupBys.length > 0;
         };
 
+        this.shouldSendColumns = function()
+        {
+            return this.forceSendColumns;
+        };
+
+        this.forceSendColumns = function(value)
+        {
+            this.forceSendColumns = value;
+        };
+
         /**
          * Get rights for this view
          */

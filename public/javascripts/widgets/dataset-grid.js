@@ -401,8 +401,7 @@
                     $.each(grouped, function(i, c)
                     {
                         var newFormat = $.extend({}, c.format, {drill_down: drillDown});
-                        
-                        newCols.push({id: c.id, name: c.name, hidden: false,
+                        newCols.push({id: c.id, name: c.name, hidden: c.hidden == 'true',
                             position: newCols.length + 1, format: newFormat});
                         usedCols[c.id] = newFormat;
                     });
@@ -526,13 +525,18 @@
                 
                 var filterValue = $(drillLink).attr('cellvalue');
                 var filterColumn = $(drillLink).attr('column');
-                
-                if (filterValue == '' || filterColumn == '')
+                var isBlank = false;
+
+                if (filterColumn == '' || filterValue == '')
                 {
                     return false;
                 }
+
+                if (filterValue == 'null')
+                {
+                    isBlank = true;
+                }
                 
-                // Note: do we always want this to be true
                 var view = model.getViewCopy(true);
                 
                 _.each(view.columns, function(c)
@@ -545,15 +549,24 @@
                 view.query.groupBys = [];
                 
                 // Now construct our beautiful filter
-                var filter = {
-                    type: 'operator', value: 'EQUALS', children: [ {
-                        columnId: filterColumn,
-                        type: 'column'
-                    }, {
-                        type: 'literal',
-                        value: filterValue
-                    } ]
-                };
+                var filter;
+                var columnJson = { columnId: filterColumn,
+                    type: 'column' };
+
+                if (isBlank)
+                {
+                    filter = { type: 'operator', value: 'IS_BLANK',
+                        children: [ columnJson ] };
+                }
+                else
+                {
+                    filter = { type: 'operator', value: 'EQUALS',
+                        children: [
+                            columnJson,
+                            { type: 'literal', value: filterValue }
+                        ]
+                    };
+                }
 
                 if (view.query.filterCondition != null &&
                         view.query.filterCondition.type == 'operator')

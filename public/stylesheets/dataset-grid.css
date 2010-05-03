@@ -512,68 +512,104 @@ div.blist-table-edit-container.combo-container .blist-combo
     min-height: 1.667em;
 }
 
-body.blist-richtext-document
+body.blist-richtext-document,
+body.blist-html-document
 {
     font-size: 12px;
     padding: 2px 3px 3px 3px;
 }
 div.blist-richtext p,
+div.blist-html p,
 body.blist-richtext-document p,
+body.blist-html-document p,
 div.blist-richtext ul,
+div.blist-html ul,
 body.blist-richtext-document ul,
+body.blist-html-document ul,
 div.blist-richtext ol,
-body.blist-richtext-document ol
+div.blist-html ol,
+body.blist-richtext-document ol,
+body.blist-html-document ol
 {
     line-height: 1.4em;
     margin: 0.3em 0;
 }
 div.blist-richtext p,
-body.blist-richtext-document p
+div.blist-html p,
+body.blist-richtext-document p,
+body.blist-html-document p
 { font-size: 1em; }
 
 div.blist-richtext ul,
-body.blist-richtext-document ul
+div.blist-html ul,
+body.blist-richtext-document ul,
+body.blist-html-document ul
 {
     list-style-position: inside;
     list-style-type: disc;
 }
 
 div.blist-richtext ol,
-body.blist-richtext-document ol
+div.blist-html ol,
+body.blist-richtext-document ol,
+body.blist-html-document ol
 {
     list-style-position: inside;
     list-style-type: decimal;
 }
 
 div.blist-richtext a,
-body.blist-richtext-document a
+div.blist-html a,
+body.blist-richtext-document a,
+body.blist-html-document a
 { color: inherit; }
 
 div.blist-richtext span,
+div.blist-html span,
 body.blist-richtext-document span,
+body.blist-html-document span,
 div.blist-richtext p,
+div.blist-html p,
 body.blist-richtext-document p,
+body.blist-html-document p,
 div.blist-richtext li,
+div.blist-html li,
 body.blist-richtext-document li,
+body.blist-html-document li,
 div.blist-richtext a,
+div.blist-html a,
 body.blist-richtext-document a,
+body.blist-html-document a,
 div.blist-richtext strong,
+div.blist-html strong,
 body.blist-richtext-document strong,
+body.blist-html-document strong,
 div.blist-richtext b,
+div.blist-html b,
 body.blist-richtext-document b,
+body.blist-html-document b,
 div.blist-richtext em,
+div.blist-html em,
 body.blist-richtext-document em,
+body.blist-html-document em,
 div.blist-richtext i,
+div.blist-html i,
 body.blist-richtext-document i,
+body.blist-html-document i,
 div.blist-richtext u,
+div.blist-html u,
 body.blist-richtext-document u,
+body.blist-html-document u,
 div.blist-richtext strike,
-body.blist-richtext-document strike
+div.blist-html strike,
+body.blist-richtext-document strike,
+body.blist-html-document strike
 { font-family: inherit; }
 
-div.blist-table-editor.type-richtext
+div.blist-table-editor.type-richtext,
+div.blist-table-editor.type-html
 {
-    /* Eliminate 4px on the right for richtext controls so the iframe expands fully */
+    /* Eliminate 4px on the right for html controls so the iframe expands fully */
     padding: 0;
 }
 

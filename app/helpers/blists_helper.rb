@@ -580,24 +580,10 @@ module BlistsHelper
   # code this?
   def font_select_options(selected_font = nil)
     out = ""
-    {'Andale Mono' => 'andale mono,times',
-      'Arial' => 'arial,helvetica,sans-serif',
-      'Arial Black' => 'arial black,avant garde',
-      'Book Antiqua' => 'book antiqua,palatino',
-      'Comic Sans MS' => 'comic sans ms,sans-serif',
-      'Courier New' => 'courier new,courier',
-      'Georgia' => 'georgia,palatino',
-      'Helvetica' => 'helvetica',
-      'Impact' => 'impact,chicago',
-      'Symbol' => 'symbol',
-      'Tahoma' => 'tahoma,arial,helvetica,sans-serif',
-      'Terminal' => 'terminal,monaco',
-      'Times New Roman' => 'times new roman,times',
-      'Trebuchet MS' => 'trebuchet ms,geneva',
-      'Verdana' => 'verdana,geneva',
-      'Webdings' => 'webdings',
-      'Wingdings' => 'wingdings,zapf dingbats'}.sort { |a,b| a[0] <=> b[0] }.
-        each do |font|
+    {'Helvetica' => 'helvetica,arial,sans serif',
+      'Courier' => 'courier,monospace',
+      'Times' => 'times,serif'
+    }.sort { |a,b| a[0] <=> b[0] }.each do |font|
       selected = selected_font == font[0] ?
         " selected=\"selected\" class=\"default\"" : ""
       out += "<option value=\"#{font[1]}\"#{selected}>#{font[0]}</option>"

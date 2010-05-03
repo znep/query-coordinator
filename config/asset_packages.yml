@@ -50,7 +50,7 @@ javascripts:
   - data/editors/checkbox-editor
   - data/editors/stars-editor
   - tiny_mce/tiny_mce_jquery_src
-  - data/editors/richtext-editor
+  - data/editors/html-editor
   - plugins/ajaxupload.3.0
   - widgets/upload-dialog
   - data/editors/document-editor

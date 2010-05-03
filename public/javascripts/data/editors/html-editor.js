@@ -132,7 +132,7 @@
         if (typeof value == 'string')
         {
             var $mDiv = $('<div>' +
-                    '<div class="blist-richtext">' + value + '</div></div>');
+                    '<div class="blist-html">' + value + '</div></div>');
             // Don't allow them to execute script!
             $mDiv.find('script').remove();
             $mDiv.css('position', 'absolute');
@@ -150,9 +150,9 @@
     var createRTE = function()
     {
         var $root = $('<div class="blist-table-editor' +
-            ' type-richtext"><textarea class="tinymce"></textarea><div class="blist-rte-container"></div></div>');
+            ' type-html"><textarea class="tinymce"></textarea><div class="blist-rte-container"></div></div>');
         var textarea = $root.find('textarea')[0];
-        textarea.id = "richtext_" + nextEditorID++;
+        textarea.id = "html_" + nextEditorID++;
         var container = $root.find('.blist-rte-container')[0];
         container.id = textarea.id + "_container";
 
@@ -180,7 +180,7 @@
         var rte = new tinymce.Editor(textarea.id, {
             content_element: textarea,
             theme: 'blist_dummy',
-            body_class: 'blist-richtext-document',
+            body_class: 'blist-html-document',
             valid_elements: VALID_ELEMENTS,
 
             // Prevent insertion of random crap at the end of the content
@@ -210,9 +210,9 @@
         return rte;
     };
 
-    $.blistEditor.richtext = function(options, dom)
+    $.blistEditor.html = function(options, dom)
     {
-        this.settings = $.extend({}, $.blistEditor.richtext.defaults, options);
+        this.settings = $.extend({}, $.blistEditor.html.defaults, options);
         this.currentDom = dom;
         this.init();
     };
@@ -316,7 +316,7 @@
         orderedList: { id: 'InsertOrderedList', type: booleanCommand }
     };
 
-    $.extend($.blistEditor.richtext, $.blistEditor.extend(
+    $.extend($.blistEditor.html, $.blistEditor.extend(
     {
         prototype:
         {

@@ -1947,17 +1947,21 @@
                 offsetPos.top += $this.offsetParent().scrollTop();
 
                 var $copy = $this.clone();
+                var outTimer;
+                var clearCopy = function()
+                {
+                    $copy.stop().fadeOut('fast', function() { $copy.remove(); });
+                };
                 $copy
                     .addClass('blist-td-popout')
                     .css('left', offsetPos.left)
                     .css('top', offsetPos.top)
-                    .mouseleave(function (event)
-                    {
-                        $(this).stop().fadeOut('fast', function() {
-                            $(this).remove();
-                        });
-                    })
+                    .mouseover(function()
+                    { clearTimeout(outTimer); })
+                    .mouseleave(clearCopy)
                     .fadeIn();
+                $this.mouseleave(function()
+                { outTimer = setTimeout(clearCopy, 0); });
                 $(document.body).append($copy);
             });
         }

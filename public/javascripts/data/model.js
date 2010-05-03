@@ -333,12 +333,12 @@ blist.namespace.fetch('blist.data');
 
         this.shouldSendColumns = function()
         {
-            return this.forceSendColumns;
+            return this.willSendColumns;
         };
 
         this.forceSendColumns = function(value)
         {
-            this.forceSendColumns = value;
+            this.willSendColumns = value;
         };
 
         /**
@@ -906,7 +906,9 @@ blist.namespace.fetch('blist.data');
                     }
                     if (format.grouping_aggregate)
                     { col.grouping_aggregate = format.grouping_aggregate; }
-                    if (format.drill_down)
+                    if (format.drill_down &&
+                        !format.grouping_aggregate && 
+                        vcol.renderTypeName != 'url')
                     {
                         col.drillDown = (format.drill_down === 'true' ||
                             format.drill_down === true);

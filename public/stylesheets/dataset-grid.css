@@ -660,6 +660,12 @@ div.blist-percent .blist-percent-bar-pos
     height: 100%;
 }
 
+div.drill-td div.blist-percent,
+div.drill-td div.blist-flag
+{
+    margin-left: 28px;
+}
+
 img.blist-table-option-icon
 {
     margin-bottom: -4px;

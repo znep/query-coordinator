@@ -750,6 +750,10 @@ body#lensBody
     top: 0;
 }
 
+/* This section of the grid needs a background color so when we add the sidebar
+ * modal overlay underneath it, the overlay doesn't show through */
+#dataGrid .blist-table-scrolls { background-color: #ffffff; }
+
 #lensBody .chartContainer .error
 {
     font-size: 1.6em;

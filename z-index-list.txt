@@ -17,6 +17,7 @@ Please list z-indexes of elements in the site so we can keep track of how elemen
 25 map layers options
 25 loading spinner
 30 Meta tabs in SDP
+50 sidebar modal overlay
 2999 #modal overlay
 5000 Modal login dialog
 10000 navigation skiplinks

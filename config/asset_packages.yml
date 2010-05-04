@@ -167,6 +167,7 @@ javascripts:
   - widgets/combo
   - widgets/values
   - screens/dataset-menu
+  - widgets/grid-sidebar
 - communities-show:
   - plugins/jquery.jcarousel
   - plugins/jquery.tagcloud
@@ -336,6 +337,7 @@ stylesheets:
   - ui.slider
   - ui.spinner
   - blist-grid-screen
+  - grid-sidebar
   - form-common
   - combo
 - communities-show:

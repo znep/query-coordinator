@@ -1,0 +1,23 @@
+
+#gridSidebar
+{
+    background-color: #9999ff;
+    display: none;
+    float: right;
+    overflow: auto;
+    position: relative;
+    width: 300px;
+}
+
+#gridSidebarOverlay
+{
+    background-color: #000000;
+    filter: alpha(opacity=50);
+    opacity: 0.5;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+}

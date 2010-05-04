@@ -332,6 +332,8 @@ $(function ()
                 isInvalid: blist.display.isInvalid,
                 validViewCallback: blistGridNS.updateValidView
             });
+        $('#gridSidebar').gridSidebar({dataGrid: $('#dataGrid')[0],
+            modalHiddenSelector: '#lensContainer .headerBar, #infoPane'});
     }
     else if (blist.display.invokeVisualization)
     { $('#dataGrid').visualization(); }

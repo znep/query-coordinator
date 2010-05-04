@@ -16,7 +16,8 @@
             {
                 if (!this._$editor)
                 {
-                    var value = this.newValue || this.originalTextValue();
+                    var value = $.htmlEscape(this.newValue ||
+                        this.originalTextValue());
                     var align = this.column.alignment ?
                         ' align-' + this.column.alignment : '';
                     this._$editor = $('<div class="blist-table-editor' +

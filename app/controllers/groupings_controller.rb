@@ -11,10 +11,12 @@ class GroupingsController < ApplicationController
       groups = @view.query.groupBys.map {|g| g['columnId'].to_s}
     end
     @grouped = []
+    @used_cols = []
     groupIds = {}
     groups.each do |g|
       col = @view.columns.find {|c| c.id.to_s == g}
       @grouped << col if !col.nil?
+      @used_cols << g
       groupIds[g] = true
     end
 
@@ -36,6 +38,7 @@ class GroupingsController < ApplicationController
       col.data['format'] ||= {}
       col.data['format']['grouping_aggregate'] = a['func']
       @agged << col
+      @used_cols << col.id.to_s
       aggedIds[a['id']] = true
     end
 

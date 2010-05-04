@@ -1947,17 +1947,21 @@
                 offsetPos.top += $this.offsetParent().scrollTop();
 
                 var $copy = $this.clone();
+                var outTimer;
+                var clearCopy = function()
+                {
+                    $copy.stop().fadeOut('fast', function() { $copy.remove(); });
+                };
                 $copy
                     .addClass('blist-td-popout')
                     .css('left', offsetPos.left)
                     .css('top', offsetPos.top)
-                    .mouseleave(function (event)
-                    {
-                        $(this).stop().fadeOut('fast', function() {
-                            $(this).remove();
-                        });
-                    })
+                    .mouseover(function()
+                    { clearTimeout(outTimer); })
+                    .mouseleave(clearCopy)
                     .fadeIn();
+                $this.mouseleave(function()
+                { outTimer = setTimeout(clearCopy, 0); });
                 $(document.body).append($copy);
             });
         }
@@ -2676,8 +2680,9 @@
                         "] ? ' invalid' : '')";
 
                     var drillDown = mcol.drillDown ? ("<a class='drillDown'" +
-                        " cellvalue='\" + $.htmlStrip(row" + mcol.dataLookupExpr +
+                        " cellvalue='\" + $.htmlStrip('' + row" + mcol.dataLookupExpr +
                         ") + \"' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
+                    var cellDrillStyle = mcol.drillDown ?  ' drill-td' : '';
 
                     renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
@@ -2689,7 +2694,7 @@
 
                     colParts.push(
                         "\"<div class='blist-td " + getColumnClass(mcol) + cls +
-                            align + "\" + " + invalid +
+                            cellDrillStyle + align + "\" + " + invalid +
                             " + (row.saving && row.saving" +
                             mcol.dataLookupExpr + " ? \" saving\" : \"\") + " +
                             "(row.error && row.error" +

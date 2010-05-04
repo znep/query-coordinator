@@ -27,5 +27,8 @@
     :class => "format", :value => list_item.format.to_json) %>
   <%= hidden_field_tag("#{type}-sort-#{list_item.id}-order", list_item_counter,
     :class => 'orderField') %>
+  <%= hidden_field_tag("#{type}-hidden-#{list_item.id}", true,
+    :class => 'isHidden', :value =>  (list_item.flag?('hidden') &&
+    @used_cols.include?(list_item.id.to_s))) %>
 </div>
 </li>

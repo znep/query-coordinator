@@ -103,7 +103,6 @@ div.blist-th-first
 
 .blist-th .dragHandle
 {
-    cursor: move;
     left: 0;
     position: absolute;
     width: 10px;
@@ -114,7 +113,10 @@ div.blist-th-first
     background-image: url(/stylesheets/images/content/table/column_drag_handle.png);
     background-position: top left;
     background-repeat: repeat-y;
+    cursor: move;
 }
+.blist-table.disabled .blist-th .dragHandle { z-index: -10; }
+
 .blist-th-drag
 {
     background-color: #ddeaf0;
@@ -221,6 +223,7 @@ div.blist-table-ghost div.blist-column-adder:hover
 {
     background-position: center -15px;
 }
+.blist-table.disabled .blist-column-adder { display: none; }
 
 div.blist-tr-open div.blist-column-adder,
 div.blist-tr.blist-hot-row div.blist-column-adder

@@ -74,6 +74,8 @@
                     sidebarObj.$dom().css('z-index', zIndex);
                     sidebarObj.$grid().css('z-index', zIndex);
                     $overlay.show();
+
+                    sidebarObj.$grid().datasetGrid().disable();
                 }
                 else { sidebarObj._isModal = false; }
 
@@ -95,6 +97,8 @@
                     modalOverlay(sidebarObj).hide();
                     sidebarObj.$dom().css('z-index', sidebarObj._origZIndex);
                     sidebarObj.$grid().css('z-index', sidebarObj._origGridZIndex);
+
+                    sidebarObj.$grid().datasetGrid().enable();
                 }
 
                 $(window).resize();

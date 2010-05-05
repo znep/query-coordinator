@@ -48,7 +48,7 @@
             {
                 if (!this._$editor)
                 {
-                    var value = this.newValue || numberValue(this);
+                    var value = $.htmlEscape(this.newValue || numberValue(this));
                     this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.type +
                         '">' +

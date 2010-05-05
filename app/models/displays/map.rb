@@ -10,6 +10,7 @@ class Displays::Map < Displays::Base
     # asset packager will add ".js" extension
     result << <<-END
       <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+      <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.2"></script>
     END
 
     result
@@ -28,6 +29,7 @@ class Displays::Map < Displays::Base
 
   MAP_TYPES = [
     {'value' => 'google', 'label' => 'Google Maps'},
+    {'value' => 'bing', 'label' => 'Bing Maps'},
     {'value' => 'esri', 'label' => 'ESRI ArcGIS'}
   ]
 

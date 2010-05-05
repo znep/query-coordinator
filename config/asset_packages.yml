@@ -60,6 +60,7 @@ javascripts:
   - widgets/maps/base-map
   - widgets/maps/esri-map
   - widgets/maps/google-map
+  - widgets/maps/bing-map
 - shared-chart:
   - plugins/highcharts.src
   - widgets/base-visualization

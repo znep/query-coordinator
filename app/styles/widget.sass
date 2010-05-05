@@ -1,2 +1,163 @@
+html, body
+  height: 100%
+
 .widgetWrapper
-  border= "1px solid" !color_frame_border_color
+  background-color= !color_frame_color
+  border= !frame_border_width solid !color_frame_border_color
+
+.headerBar
+  height: 4em
+
+  h1.logo
+    +text-hiding
+    background= transparent !logo_image no-repeat
+    float: left
+    height= !logo_image_height
+    margin: 2px
+      left: 10px
+    width= !logo_image_width
+
+  .mainMenu
+    float: right
+    margin: 10px
+      bottom: 0
+
+    .menuButton
+      +gradient_menu_button_background
+      border= 1px solid !color_menu_button_border
+      -moz-border-radius: 0.3em
+      -webkit-border-radius: 0.3em
+      -moz-box-shadow: 1px 1px 0 #fff
+      -webkit-box-shadow: 1px 1px 0 #fff
+      color= !color_menu_button_text
+      cursor: pointer
+      text-transform: uppercase
+
+      .icon
+        background-image: url(/stylesheets/images/icons/button_icons.png)
+        float: left
+        height: 10px
+        margin: 0
+          right: 0.6em
+          top: 0.1em
+        width: 10px
+
+      &:hover
+        +gradient_menu_button_background_hover
+        .icon
+          background-position: 0 0
+
+    .menuDropdown
+      margin-top: 0.3em
+
+.subHeaderBar
+  background: transparent url(/stylesheets/images/common/75pct-black.png)
+  clear: both
+  margin: 0 3px
+  padding: 0.2em
+
+  li
+    color: #eee
+    display: inline-block
+    padding: 0.2em
+    &.right
+      float: right
+
+    a
+      +text-hiding
+      background-image: url(/stylesheets/images/icons/menu_icons.png)
+      height: 13px
+      width: 13px
+      &.searchLink
+        background-position: 0 -117px
+      &.aboutLink
+        background-position: 0 -130px
+      &.fullscreenLink
+        background-position: 0 -143px
+      &.socializeLink
+        background-position: 0 -156px
+
+.widgetContent
+  margin: 3px
+    top: 0
+
+  .widgetContentGrid
+    #viewHeader
+      display: none
+
+    #data-grid
+
+      .blist-table
+        height: 100%
+
+        a
+          +underline-on-hover
+
+      .blist-table-scrolls
+        background-color: #fff
+
+      .blist-table-header-scrolls
+        background-color: #e8e8e2
+
+      div.blist-th
+        .info-container
+          font-size= !grid_font_header_size
+
+        @if !grid_header_icons == false
+          .blist-th-icon
+            display: none
+
+          .icon-display .name-wrapper
+            padding-left: 0
+
+        .blist-th-name
+          @if !grid_title_bold == true
+            font-weight: bold
+
+      .blist-tr-even .blist-td
+        background-color= !color_grid_zebra
+
+      .blist-td-header
+        font-weight: bold
+
+      .blist-td
+        background-color: #fff
+        height: 16px
+        padding: 4px /* .3636em */
+
+        p
+          margin: 0 0 6px 0
+          padding: 0
+          &:last-child
+            margin-bottom: 0
+
+      .blist-td,
+      .blist-table-editor,
+      .blist-table .blist-combo-dd li
+        font-size= !grid_font_data_size
+        line-height: 16px
+
+      img.blist-table-option-icon
+        padding-right: 4px
+        padding-bottom: -1px
+
+      .blist-tstars
+        margin: -4px 0
+
+      @if !grid_wrap_header_text == true
+        .blist-th .info-container
+          height: 2.45em /* 30px or so */
+          white-space: normal
+
+        .blist-th .name-wrapper
+          height: 2.45em
+
+        .blist-table-header,
+        .blist-th,
+        .blist-th .dragHandle
+          height: 4.5em
+
+        .indicators-inactive .blist-table-header,
+        .indicators-inactive .blist-th,
+        .indicators-inactive .blist-th .dragHandle
+          height: 3.3em

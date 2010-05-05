@@ -81,6 +81,8 @@
     color: #000
     display: inline-block
     font-size: 1.2em
+    height: 1em
+    line-height: 1em
     margin-top: -4px
     padding: 0.6em 1em
     position: relative
@@ -98,15 +100,26 @@
   .menuDropdown
     background-color: #fff
     border: 1px solid #999999
-    -moz-border-radius: 0 0.4em 0.4em 0.4em
+    -moz-border-radius: 0.4em
     -webkit-border-radius: 0.4em
-    -webkit-border-top-left-radius: 0
     -moz-box-shadow: 0 0 4px rgba(0,0,0,0.5)
     -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.5)
     display: none
     margin-top: -1px
     position: absolute
     z-index: 49
+    &.menuPosition-top.menuPosition-left
+      -moz-border-radius-topleft: 0
+      -webkit-border-top-left-radius: 0
+    &.menuPosition-top.menuPosition-right
+      -moz-border-radius-topright: 0
+      -webkit-border-top-right-radius: 0
+    &.menuPosition-bottom.menuPosition-left
+      -moz-border-radius-bottomleft: 0
+      -webkit-border-bottom-left-radius: 0
+    &.menuPosition-bottom.menuPosition-right
+      -moz-border-radius-bottomright: 0
+      -webkit-border-bottom-right-radius: 0
     > ul
       margin: 1.2em 0
       overflow: hidden

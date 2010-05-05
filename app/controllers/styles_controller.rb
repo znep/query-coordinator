@@ -100,8 +100,19 @@ protected
       hash.each do |key, value|
         if definition[key.to_sym] == 'string'
           result += "!#{path}#{key} = \"#{value}\"\n"
+        elsif definition[key.to_sym] == 'boolean'
+          result += "!#{path}#{key} = \"#{value.to_s}\"\n"
         elsif definition[key.to_sym] == 'dimensions'
-          result += "!#{path}#{key} = \"#{value['value']}#{value['unit']}\""
+          result += "!#{path}#{key} = \"#{value[:value]}#{value[:unit]}\"\n"
+        elsif definition[key.to_sym] == 'image'
+          if value[:type].to_s == "static"
+            href = "#{value[:href]}"
+          elsif value[:type].to_s == "hosted"
+            href = "/assets/#{value[:href]}"
+          end
+          result += "!#{path}#{key} = \"url(#{href})\"\n"
+          result += "!#{path}#{key}_width = \"#{value[:width]}px\"\n"
+          result += "!#{path}#{key}_height = \"#{value[:height]}px\"\n"
         elsif definition[key.to_sym] == 'color'
           if value.is_a? String
             # flat color
@@ -179,8 +190,22 @@ protected
 
   @@widget_theme_parse = {
     :frame     => { :border     => { :color => 'color',
-                                     :width => 'dimension' },
+                                     :width => 'dimensions' },
                     :color => 'color' },
-    :toolbar   => { :orientation => 'string' }
+    :toolbar   => { :orientation => 'string' },
+    :logo      => { :image => 'image' },
+    :menu      => { :button     => { :background => 'color',
+                                     :background_hover => 'color',
+                                     :border => 'color',
+                                     :text => 'color' } },
+    :grid      => { :font       => { :face => 'string',
+                                     :header_size => 'dimensions',
+                                     :data_size => 'dimensions' },
+                    :header_icons => 'boolean',
+                    :row_numbers => 'boolean',
+                    :wrap_header_text => 'boolean',
+                    :title_bold => 'boolean',
+                    :row_height => 'dimensions',
+                    :zebra => 'color' }
   }
 end

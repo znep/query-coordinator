@@ -10,5 +10,7 @@ base-sdp:
 - base
 - sdp-layout
 - common
+- table-core
+- dataset-grid
 - forms
 - controls

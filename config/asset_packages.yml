@@ -242,7 +242,31 @@ javascripts:
   - screens/external-widget
   - screens/info-pane
   - screens/dataset-menu
-
+- widgets-show-new:
+  - pure
+  - plugins/jquery.example.min
+  - plugins/jquery.json
+  - plugins/ui.core
+  - plugins/ui.draggable
+  - plugins/jquery.tache
+  - plugins/jquery.validate.min
+  - util/styling
+  - plugins/jquery.qtip
+  - util/navigation
+  - util/util
+  - plugins/date
+  - data/types
+  - data/model
+  - data/table
+  - data/table_nav
+  - widgets/text-prompt
+  - widgets/menu
+  - widgets/scrollable
+  - widgets/scrollTabs
+  - widgets/inline-edit
+  - widgets/dataset-grid
+  - widgets/visualization
+  - screens/external-widget-new
 
 
 

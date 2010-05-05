@@ -5,7 +5,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=8" />
-  <%= rendered_stylesheet_tag 'base' %>
+  <%= rendered_stylesheet_tag 'base-sdp' %>
 
   <%= jquery_include %>
 
@@ -42,6 +42,11 @@
   <% if ENV["RAILS_ENV"] != 'production' %>
       <%= javascript_include_tag "util/debug" %>
   <% end %>
+
+  <div id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+  </div>
 
   <%= yield :js_footer %>
 

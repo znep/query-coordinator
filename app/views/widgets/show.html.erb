@@ -350,6 +350,7 @@
       blist.currentUserId = "<%= current_user.id %>";
       blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
     <%- end -%>
+    blist.parentViewId = '<%= @view.parent_dataset.id %>';
     blist.widget.viewId = '<%= @view.id %>';
 
     blist.widget.theme = <%= raw @theme.to_json %>;

@@ -21,3 +21,17 @@
     width: 100%;
     z-index: 50;
 }
+
+#gridSidebar .close
+{
+    background-image: url(/stylesheets/images/content/section_close_button.png);
+    background-repeat: no-repeat;
+    display: block;
+    height: 16px;
+    position: absolute;
+    line-height: 100px;
+    overflow: hidden;
+    right: 2px;
+    top: 2px;
+    width: 16px;
+}

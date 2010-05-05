@@ -34,6 +34,12 @@
                 var $domObj = sidebarObj.$dom();
                 $domObj.data("gridSidebar", sidebarObj);
 
+                $domObj.find('a.close').click(function(e)
+                {
+                    e.preventDefault();
+                    sidebarObj.hide();
+                });
+
                 $(window).resize(function() { handleResize(sidebarObj); });
             },
 

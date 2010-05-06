@@ -171,7 +171,7 @@
             var func = $item.find('select.aggregateFunction').val();
             if (func === '')
             {
-                errorCallback("A function is required for each aggregate column");
+                errorCallback("A function is required for each rolled up column");
                 failed = true;
                 return false;
             }

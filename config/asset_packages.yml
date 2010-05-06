@@ -260,6 +260,7 @@ javascripts:
   - data/table
   - data/table_nav
   - widgets/text-prompt
+  - widgets/dropdown-menu
   - widgets/menu
   - widgets/scrollable
   - widgets/scrollTabs

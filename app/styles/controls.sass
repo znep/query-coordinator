@@ -48,26 +48,6 @@
       position: absolute
       width: 10px
 
-.tooltip
-  background-color= !color_tooltips_background
-  border= "2px solid" !color_tooltips_border
-  -moz-border-radius: 0.4em
-  -webkit-border-radius: 0.4em
-  -moz-box-shadow= "0 0 4px" !tooltips_shadow
-  -webkit-box-shadow= "0 0 4px" !tooltips_shadow
-  font-size: 1.1em
-  max-width: 40em
-  padding: 1em
-  position: absolute
-
-  .arrow
-    background: transparent url(/stylesheets/images/controls/tooltip_arrow.png) no-repeat
-    height: 23px
-    left: 20px
-    position: absolute
-    top: -23px
-    width: 26px
-
 .menu
   -moz-border-radius: 0.4em 0.4em 0 0
   -webkit-border-radius: 0.4em 0.4em 0 0
@@ -136,6 +116,7 @@
           min-width: 10em
           padding: 0.2em 0
           li
+            clear: both
             display: block
             a
               border:
@@ -148,6 +129,11 @@
                 background-color: #f7f7f7
                 border-color: #dedede
                 text-decoration: none
+
+              .subtext
+                color: #777
+                font-size: 0.85em
+                margin: 0.2em 0.1em
   &.open
     -moz-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
     -webkit-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)

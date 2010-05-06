@@ -64,7 +64,7 @@ class StylesController < ApplicationController
     if cached.nil?
       # get sitewide includes
       includes_cache_key = generate_cache_key('_includes')
-      includes = Rails.cache.read(includes_cache_key)
+      includes = Rails.cache.read(includes_cache_key) unless RAILS_ENV == 'development'
       if includes.nil?
         includes = get_includes
         Rails.cache.write(includes_cache_key, includes)
@@ -193,7 +193,8 @@ protected
                                      :width => 'dimensions' },
                     :color => 'color' },
     :toolbar   => { :orientation => 'string' },
-    :logo      => { :image => 'image' },
+    :logo      => { :image => 'image',
+                    :href => 'string'},
     :menu      => { :button     => { :background => 'color',
                                      :background_hover => 'color',
                                      :border => 'color',

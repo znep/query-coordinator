@@ -18,6 +18,12 @@ blist.widget.resizeViewport = function()
 
 $(function()
 {
+    // ie?
+    if ($.browser.msie)
+    {
+        $('body').addClass('ie ie' + $.browser.version[0]); // I guess this will break when we hit IE10.
+    }
+
     widgetNS.resizeViewport();
     $(window).resize(function() { widgetNS.resizeViewport(); });
 
@@ -25,10 +31,11 @@ $(function()
     $('.mainMenu').menu({
         menuButtonClass: 'mainMenuButton',
         contents: [
-            { text: 'Views', class: 'view', subtext: 'Filters, Charts, and Maps' },
-            { text: 'Downloads', class: 'downloads', subtext: 'Download various file formats' },
-            { text: 'Comments', class: 'comments', subtext: 'Read comments on this dataset' },
-            { text: 'Embed', class: 'embed', subtext: 'Embed this player on your site' }
+            { text: 'Views', 'class': 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
+            { text: 'Downloads', 'class': 'downloads', subtext: 'Download various file formats', href: '#downloads' },
+            { text: 'Comments', 'class': 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
+            { text: 'Embed', 'class': 'embed', subtext: 'Embed this player on your site', href: '#embed' },
+            { text: 'About the Socrata Social Data Player', 'class': 'about', href: '#about' }
         ]
     });
 
@@ -43,8 +50,8 @@ $(function()
                     function(){ $('#header .headerBar').removeClass('hide'); })
                 .datasetGrid({viewId: widgetNS.viewId,
                     accessType: 'WIDGET',
-                    // showRowNumbers: widgetNS.theme['grid']['row_numbers'],
-                    // showRowHandle: widgetNS.theme['grid']['row_numbers'],
+                    showRowNumbers: widgetNS.theme['grid']['row_numbers'],
+                    showRowHandle: widgetNS.theme['grid']['row_numbers'],
                     editEnabled: typeof(isOldIE) === 'undefined',
                     manualResize: true,
                     columnNameEdit: typeof(isOldIE) === 'undefined' &&

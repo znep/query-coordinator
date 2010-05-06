@@ -32,6 +32,8 @@ html, body
       color= !color_menu_button_text
       cursor: pointer
       text-transform: uppercase
+      .ie &
+        background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
 
       .icon
         background-image: url(/stylesheets/images/icons/button_icons.png)
@@ -44,11 +46,69 @@ html, body
 
       &:hover
         +gradient_menu_button_background_hover
+        .ie &
+          background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background_hover}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
+
         .icon
           background-position: 0 0
 
+    &.open .menuButton
+      -moz-box-shadow: none
+      -webkit-box-shadow: none
+      .icon
+        background-position: 0 0
+
     .menuDropdown
       margin-top: 0.3em
+
+      > ul
+        margin-bottom: 0        
+
+        ul > li
+          a
+            color: #222
+            font-size: 1.3em
+            font-weight: bold
+            min-width: 15em
+            padding: 0.5em 1em
+
+            .icon
+              +text-hiding
+              background-image: url(/stylesheets/images/icons/type_icons_30.png)
+              float: left
+              height: 30px
+              margin:
+                bottom: 0.3em
+                right: 0.7em
+              width: 30px
+
+            .subtext
+              font-weight: normal
+
+          &.views .icon
+            background-position: 0 0
+          &.downloads .icon
+            background-position: 0 -210px
+          &.comments .icon
+            background-position: 0 -120px
+          &.embed .icon
+            background-position: 0 -150px
+
+          &.about
+            background-color: #f7f7f7
+            border-top: 1px solid #dedede
+            margin-top: 1em
+            padding: 0.3em
+            text-align: center
+
+            a
+              border: none
+              color= !color_links_normal
+              font-size: 1.1em
+              font-weight: normal
+
+              .icon
+                display: none
 
 .subHeaderBar
   background: transparent url(/stylesheets/images/common/75pct-black.png)

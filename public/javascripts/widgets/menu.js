@@ -28,13 +28,22 @@
             {
                 event.preventDefault();
 
-                openMenu($menuContainer, $menuButton, $menuDropdown);
+                if ($menuDropdown.is(':visible'))
+                {
+                    closeMenu($menuContainer, $menuButton, $menuDropdown);
+                }
+                else
+                {
+                    openMenu($menuContainer, $menuButton, $menuDropdown);
+                }
             });
         });
     };
 
     var openMenu = function($menuContainer, $menuButton, $menuDropdown)
     {
+        $menuContainer.addClass('open');
+
         // reset then realign the menu if necessary; set styles as appropriate
         $menuDropdown.removeClass('menuPosition-bottom menuPosition-right');
         $menuDropdown.addClass('menuPosition-top menuPosition-left');
@@ -69,9 +78,22 @@
                 $menuDropdown.css('bottom', $menuContainer.innerHeight() * -1);
             }
         }
-        $menuDropdown.hide();
 
-        $menuDropdown.slideDown('fast');
+        // Hook to hide menu
+        $(document).bind('click.menu', function(event)
+        {
+            if ($menuContainer.has(event.target).length === 0)
+            {
+                closeMenu($menuContainer, $menuButton, $menuDropdown);
+            }
+        });
+    };
+
+    var closeMenu = function($menuContainer, $menuButton, $menuDropdown)
+    {
+        $(document).unbind('click.menu');
+        $menuContainer.removeClass('open');
+        $menuDropdown.hide();
     };
 
     $.fn.menu.defaults = {

@@ -279,6 +279,11 @@ img.blist-table-option-icon
     padding-left: 11px;
 }
 
+div.drill-td .blist-tstars-render-wrapper
+{
+    padding-left: 0;
+}
+
 .blist-tstars-wrapper
 {
     overflow: hidden;

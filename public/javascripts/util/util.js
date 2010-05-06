@@ -17,6 +17,20 @@ $.urlParam = function(url, name, value)
     }
 };
 
+$.escapeQuotes = function(text)
+{
+    if (typeof text !== 'string') { return text; }
+    return $.htmlEscape(text)
+        .replace(/'/, '&apos;');
+}
+
+$.unescapeQuotes = function(text)
+{
+    if (typeof text !== 'string') { return text; }
+    return $.htmlUnescape(text)
+        .replace(/&apos;/, "'");
+}
+
 $.htmlEscape = function(text)
 {
     if (typeof text !== 'string') { return text; }

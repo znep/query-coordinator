@@ -548,7 +548,7 @@
                     filter = { type: 'operator', value: 'EQUALS',
                         children: [
                             columnJson,
-                            { type: 'literal', value: filterValue }
+                            { type: 'literal', value: $.unescapeQuotes(filterValue) }
                         ]
                     };
                 }
@@ -625,7 +625,7 @@
                         drillDownCallBack(view);
                     }
                     view.query.groupBys = [];
-                    
+
                     // First fetch all the currently available columns,
                     // because hidden, grouped columns aren't ret'd by Core Server
                     $.get('/views/' + view.id + '/columns.json',

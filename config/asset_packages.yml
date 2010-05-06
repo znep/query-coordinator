@@ -27,7 +27,8 @@ javascripts:
   - screens/common-layout
   - util/styling
   - plugins/jquery.qtip
-  - widgets/blist-alert
+  - plugins/jquery.bt
+  - widgets/socrata-messaging
   - util/socrata-server
 - shared-calendar:
   - plugins/fullcalendar

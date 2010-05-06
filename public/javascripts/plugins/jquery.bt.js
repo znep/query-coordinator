@@ -102,80 +102,6 @@ jQuery.bt = {version: '0.9.5-rc1'};
       
       var ajaxTimeout = false;
       
-      /**
-       * This is sort of the "starting spot" for the this.each()
-       * These are the init functions to handle the .bt() call
-       */
-  
-      if (opts.killTitle) {
-        $(this).find('[title]').andSelf().each(function() {
-          if (!$(this).attr('bt-xTitle')) {
-            $(this).attr('bt-xTitle', $(this).attr('title')).attr('title', '');
-          }
-        });
-      }    
-      
-      if (typeof opts.trigger == 'string') {
-        opts.trigger = [opts.trigger];
-      }
-      if (opts.trigger[0] == 'hoverIntent') {
-        var hoverOpts = jQuery.extend(opts.hoverIntentOpts, {
-          over: function() {
-            this.btOn();
-          },
-          out: function() {
-            this.btOff();
-          }});
-        $(this).hoverIntent(hoverOpts);
-      
-      }
-      else if (opts.trigger[0] == 'hover') {
-        $(this).hover(
-          function() {
-            this.btOn();
-          },
-          function() {
-            this.btOff();
-          }
-        );
-      }
-      else if (opts.trigger[0] == 'now') {
-        // toggle the on/off right now
-        // note that 'none' gives more control (see below)
-        if ($(this).hasClass('bt-active')) {
-          this.btOff();
-        }
-        else {
-          this.btOn();
-        }
-      }
-      else if (opts.trigger[0] == 'none') {
-        // initialize the tip with no event trigger
-        // use javascript to turn on/off tip as follows:
-        // $('#selector').btOn();
-        // $('#selector').btOff();
-      }
-      else if (opts.trigger.length > 1 && opts.trigger[0] != opts.trigger[1]) {
-        $(this)
-          .bind(opts.trigger[0], function() {
-            this.btOn();
-          })
-          .bind(opts.trigger[1], function() {
-            this.btOff();
-          });
-      }
-      else {
-        // toggle using the same event
-        $(this).bind(opts.trigger[0], function() {
-          if ($(this).hasClass('bt-active')) {
-            this.btOff();
-          }
-          else {
-            this.btOn();
-          }
-        });
-      }
-      
       
       /**
        *  The BIG TURN ON
@@ -766,6 +692,80 @@ jQuery.bt = {version: '0.9.5-rc1'};
         this.btOn();
       };
   
+      /**
+       * This is sort of the "starting spot" for the this.each()
+       * These are the init functions to handle the .bt() call
+       */
+  
+      if (opts.killTitle) {
+        $(this).find('[title]').andSelf().each(function() {
+          if (!$(this).attr('bt-xTitle')) {
+            $(this).attr('bt-xTitle', $(this).attr('title')).attr('title', '');
+          }
+        });
+      }    
+      
+      if (typeof opts.trigger == 'string') {
+        opts.trigger = [opts.trigger];
+      }
+      if (opts.trigger[0] == 'hoverIntent') {
+        var hoverOpts = jQuery.extend(opts.hoverIntentOpts, {
+          over: function() {
+            this.btOn();
+          },
+          out: function() {
+            this.btOff();
+          }});
+        $(this).hoverIntent(hoverOpts);
+      
+      }
+      else if (opts.trigger[0] == 'hover') {
+        $(this).hover(
+          function() {
+            this.btOn();
+          },
+          function() {
+            this.btOff();
+          }
+        );
+      }
+      else if (opts.trigger[0] == 'now') {
+        // toggle the on/off right now
+        // note that 'none' gives more control (see below)
+        if ($(this).hasClass('bt-active')) {
+          this.btOff();
+        }
+        else {
+          this.btOn();
+        }
+      }
+      else if (opts.trigger[0] == 'none') {
+        // initialize the tip with no event trigger
+        // use javascript to turn on/off tip as follows:
+        // $('#selector').btOn();
+        // $('#selector').btOff();
+      }
+      else if (opts.trigger.length > 1 && opts.trigger[0] != opts.trigger[1]) {
+        $(this)
+          .bind(opts.trigger[0], function() {
+            this.btOn();
+          })
+          .bind(opts.trigger[1], function() {
+            this.btOff();
+          });
+      }
+      else {
+        // toggle using the same event
+        $(this).bind(opts.trigger[0], function() {
+          if ($(this).hasClass('bt-active')) {
+            this.btOff();
+          }
+          else {
+            this.btOn();
+          }
+        });
+      }
+      
     }); // </ this.each() >
   
   

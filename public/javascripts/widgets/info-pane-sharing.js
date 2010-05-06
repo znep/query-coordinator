@@ -77,8 +77,7 @@
                 function(data, textStatus)
                 {
                     $domObj.find(s.notifyThrobberSelector).addClass('hidden');
-                    $notifyLink.blistAlert(
-                        {message: 'Notification emails have been sent'});
+                    $notifyLink.socrataAlert('Notification emails have been sent');
                 });
         });
 

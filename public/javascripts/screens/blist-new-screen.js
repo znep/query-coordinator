@@ -84,19 +84,36 @@ $(function ()
             $(".newBlistContent #view_file")
                 .val(file)
                 .removeClass('prompt');
+        
             if (!(ext && /^(tsv|csv|xml|xls|xlsx)$/.test(ext)))
-            {
-                $('.uploadErrorMessage')
-                    .text('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
-                    .removeClass('hide');
-                importErrors = true;
-                return false;
-            }
+            {    
+                // replace commented if line if we want to support only certain extensions.
+                // if (ext && /(pdf|ext2|ext3)$/.test(ext))
+                if (true)
+                {
+                    $('#uploadMessage')
+                        .text('Non-tabular data will not be converted to tabular form.' +
+                        '  It will be treated as embedded file.' +
+                        ' If you do not wish for this to happen, please choose another file.')
+                        .removeClass('uploadErrorMessage hide').addClass('uploadInfoMessage');
+                    $uploader._settings.action = $('#fileBrowseButton').attr('href') + '&type=blobby';
+                    importErrors = false;
+                }
+                else
+                {
+                    $('#uploadMessage')
+                        .text('Please choose a CSV, TSV, XML, XLS, or XLSX file.')
+                        .removeClass('uploadInfoMessage hide').addClass('uploadErrorMessage');
+                    importErrors = true;
+                    return false;
+                }
+            }        
             else
             {
-                $('.uploadErrorMessage').addClass('hide');
+                $uploader._settings.action = $('#fileBrowseButton').attr('href');
+                $('#uploadMessage').addClass('hide');
                 importErrors = false;
-            }
+            }             
         },
         onSubmit: function (file, ext)
         {

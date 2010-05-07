@@ -168,6 +168,7 @@ javascripts:
   - widgets/values
   - screens/dataset-menu
   - widgets/grid-sidebar
+  - widgets/wizard-prompt
 - communities-show:
   - plugins/jquery.jcarousel
   - plugins/jquery.tagcloud

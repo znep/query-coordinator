@@ -29,6 +29,7 @@
     {
         defaults:
         {
+            closeOnClick: true,
             isSolo: false,
             message: null,
             parent: null,
@@ -51,8 +52,9 @@
                 if (_.isNull(pos)) { pos = ['bottom', 'top']; }
                 else if (pos == 'auto') { pos = ['most']; }
 
-                $domObj.bt(sTipObj.settings.message,
-                    {
+                $domObj.bt({
+                        content: sTipObj.settings.message,
+
                         fill: '#fefbef',
                         strokeStyle: '#999999',
                         cornerRadius: 3,
@@ -65,6 +67,7 @@
                         shadowColor: 'rgba(0, 0, 0, 0.3)',
                         noShadowOpts: {strokeWidth: 2},
 
+                        clickAnywhereToClose: sTipObj.settings.closeOnClick,
                         closeWhenOthersOpen: sTipObj.settings.isSolo,
                         shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
@@ -114,6 +117,13 @@
             enable: function()
             {
                 this._disabled = false;
+            },
+
+            destroy: function()
+            {
+                this.hide();
+                this.disable();
+                this.$dom().removeData('socrataTip');
             }
         }
     });

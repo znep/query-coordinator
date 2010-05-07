@@ -2466,4 +2466,17 @@ div.color_swatch.hover .inner { border: 1px solid #ffffff; }
 
 /*** START: Tooltip styles ***/
 .bt-wrapper .bt-content { font-size: 1.1em; }
+.bt-wrapper .bt-content .actionButtons li { background-position: 0 -441px; }
+.bt-wrapper .bt-content .actionButtons li a
+{ background-position: right -462px; }
+.bt-wrapper .bt-content .actionButtons li a.arrowButton
+{ background-position: right -483px; }
+
+.bt-wrapper .wizardPrompt { text-align: left; }
+.bt-wrapper .wizardPrompt .prompt { font-size: 1.2em; }
+.bt-wrapper .wizardPrompt .actionButtons
+{
+    margin-left: -1em;
+    margin-top: 0.75em;
+}
 /*** END: Tooltip styles ***/

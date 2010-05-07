@@ -363,10 +363,7 @@ private
 
   def find_example_view
     # Get a sample dataset to use
-    views = View.find_recent(1)
-    if views.blank?
-      views = View.find(:public_only => true, :limit => 1)
-    end
+    views = View.find(:public_only => true, :limit => 1)
     return views.first unless views.nil?
   end
 

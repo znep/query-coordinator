@@ -1,10 +1,12 @@
 includes:
 - sass-common
+- icons
 base:
 - base
 - layout
 - common
 - forms
+- old-controls
 - controls
 base-sdp:
 - base
@@ -13,4 +15,5 @@ base-sdp:
 - table-core
 - dataset-grid
 - forms
+- old-controls
 - controls

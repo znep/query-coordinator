@@ -4,7 +4,9 @@ var commonNS = blist.namespace.fetch('blist.common');
 blist.widget.resizeViewport = function()
 {
     var $contentContainer = $('.widgetContent');
-    var targetHeight = $(window).height() - 5; // -2 for border, -3 for margin
+    var targetHeight = $(window).height() -
+        widgetNS.theme.frame.border.width.value * 2 -
+        widgetNS.theme.frame.padding.value;
     $contentContainer.siblings().each(function()
     {
         targetHeight -= $(this).outerHeight(true);
@@ -21,7 +23,7 @@ $(function()
     // ie?
     if ($.browser.msie)
     {
-        $('body').addClass('ie ie' + $.browser.version[0]); // I guess this will break when we hit IE10.
+        $('body').addClass('ie ie' + $.browser.version.slice(0, 1)); // I guess this will break when we hit IE10.
     }
 
     widgetNS.resizeViewport();
@@ -31,11 +33,11 @@ $(function()
     $('.mainMenu').menu({
         menuButtonClass: 'mainMenuButton',
         contents: [
-            { text: 'Views', 'class': 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
-            { text: 'Downloads', 'class': 'downloads', subtext: 'Download various file formats', href: '#downloads' },
-            { text: 'Comments', 'class': 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
-            { text: 'Embed', 'class': 'embed', subtext: 'Embed this player on your site', href: '#embed' },
-            { text: 'About the Socrata Social Data Player', 'class': 'about', href: '#about' }
+            { text: 'Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
+            { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads' },
+            { text: 'Comments', className: 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
+            { text: 'Embed', className: 'embed', subtext: 'Embed this player on your site', href: '#embed' },
+            { text: 'About the Socrata Social Data Player', className: 'about', href: '#about' }
         ]
     });
 

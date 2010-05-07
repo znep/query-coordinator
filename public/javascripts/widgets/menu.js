@@ -79,6 +79,11 @@
             }
         }
 
+        // Rehide and animate
+        $menuDropdown
+            .hide()
+            .fadeIn(200);
+
         // Hook to hide menu
         $(document).bind('click.menu', function(event)
         {
@@ -93,11 +98,10 @@
     {
         $(document).unbind('click.menu');
         $menuContainer.removeClass('open');
-        $menuDropdown.hide();
+        $menuDropdown.fadeOut(200);
     };
 
     $.fn.menu.defaults = {
-        attached: true,
         contents: [],
         menuButtonContents: 'Menu',
         renderDirective: {
@@ -106,7 +110,7 @@
                 'column<-columns': { // outer array for columns
                     'ul>li': {
                         'row<-column': {  // inner array for rows
-                            '.@class+': 'row.class',
+                            '.@class+': 'row.className',
                             '+a': 'row.text',
                             'a@href': 'row.href',
                             'a@rel': 'row.rel',

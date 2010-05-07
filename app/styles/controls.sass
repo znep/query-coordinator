@@ -1,30 +1,30 @@
-.button
-  +rounded-corners
+a.button
+  +rounded-ends
   +gradient_buttons_active_background
-  border= "1px solid" !color_buttons_active_border
-  -moz-box-shadow= "0 0 2px" !buttons_shadow
-  -webkit-box-shadow= "0 0 2px" !buttons_shadow
+  border= 1px solid !color_buttons_active_border
+  -moz-box-shadow= 0 0 2px !buttons_shadow
+  -webkit-box-shadow= 0 0 2px !buttons_shadow
   color= !color_buttons_active_text
   display: inline-block
-  font-size: 11px
-  height: 20px
-  line-height: 20px
-  margin: 5px
-  padding: 0 15px
+  font-size: 1.1em
+  height: 1.9em
+  line-height: 2em
+  margin: 0.5em
+  padding: 0 1.35em
   text-transform: uppercase
   &:hover
     +gradient_buttons_hover_background
-    border= "1px solid" !color_buttons_hover_border
+    border= 1px solid !color_buttons_hover_border
     text-decoration: none
   &:active, &:focus
     +gradient_buttons_focus_background
-    border= "1px solid" !color_buttons_focus_border
+    border= 1px solid !color_buttons_focus_border
     text-decoration: none
   &:visited
     color= !color_buttons_active_text
   &.disabled
     +gradient_buttons_disabled_background
-    border= "1px solid" !color_buttons_disabled_border
+    border= 1px solid !color_buttons_disabled_border
     cursor: default
 
   .ie &, .ie & .left
@@ -38,8 +38,12 @@
     background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&ec=#{!buttons_disabled_border}&ew=1&h=20&w=500&r=10)"
   .ie &
     background-position: top right
-    margin-left: 10px
-    padding-left: 5px
+    height: 20px
+    line-height: 20px
+    margin: 5px
+      left: 10px
+    padding: 0 15px
+      left: 5px
     position: relative
     .left
       background-position: top left
@@ -48,11 +52,16 @@
       position: absolute
       width: 10px
 
-.menu
+div.menu
   -moz-border-radius: 0.4em 0.4em 0 0
   -webkit-border-radius: 0.4em 0.4em 0 0
+  -moz-transition-duration: 0.2s
+  -webkit-transition-duration: 0.2s
+  -moz-transition-property: -moz-box-shadow
+  -webkit-transition-property: -webkit-box-shadow
   display: inline-block
   .menuButton
+    +sprite-menu-icons
     background-color: #fff
     -moz-border-radius: 0.4em 0.4em 0 0
     -webkit-border-radius: 0.4em
@@ -66,17 +75,13 @@
     margin-top: -4px
     padding: 0.6em 1em
     position: relative
+    -moz-transition-property: border
+    -webkit-transition-property: border
     z-index: 50
     &:hover
       text-decoration: none
-      .icon
-        background-position: 0 -13px
     .icon
-      +text-hiding
-      background: transparent url(/stylesheets/images/icons/menu_icons.png) no-repeat
-      height: 13px
       margin-left: 0.2em
-      width: 13px
   .menuDropdown
     background-color: #fff
     border: 1px solid #999999
@@ -107,7 +112,6 @@
         border-left: 1px solid #dedede
         display: block
         float: left
-        height: 100%
         margin-bottom: -9999px
         padding-bottom: 9999px
         &:first-child
@@ -129,6 +133,9 @@
                 background-color: #f7f7f7
                 border-color: #dedede
                 text-decoration: none
+
+              .icon
+                float: left
 
               .subtext
                 color: #777

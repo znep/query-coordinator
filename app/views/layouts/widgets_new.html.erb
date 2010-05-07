@@ -11,7 +11,7 @@
 
   <%= yield :head %>
 
-  <% unless CurrentDomain.google_analytics_id.blank? || (@variation == 'whitehouse') %>
+  <% unless CurrentDomain.google_analytics_id.blank? %>
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '<%= CurrentDomain.google_analytics_id %>'],

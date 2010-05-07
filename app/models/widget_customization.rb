@@ -124,7 +124,9 @@ class WidgetCustomization < Model
       :frame    => { :border     => { :color => 'dedede',
                                       :width => { :value => '1',
                                                   :unit => 'px' } },
-                     :color      => 'f2f2f2' },
+                     :color      => 'f2f2f2',
+                     :padding    => { :value => '3',
+                                      :unit => 'px' } },
       :toolbar  => { :orientation => 'downwards' },
       :logo     => { :image      => { :type => 'static',
                                       :href => '/stylesheets/images/logos/socrata_sdp_logo_black.png',
@@ -145,8 +147,6 @@ class WidgetCustomization < Model
                      :wrap_header_text => false,
                      :header_icons => false,
                      :title_bold => false,
-                     :row_height => { :value => '16',
-                                      :unit => 'px' },
                      :zebra => 'e7ebf2' },
       :behavior => { :rating => true,             #TODO
                      :save_public_views => true,
@@ -154,7 +154,7 @@ class WidgetCustomization < Model
                      :ga_code => '' },
       :publish  => { :dimensions => { :width => 500,
                                       :height => 425 },
-                     :show_title => true,
+                     :show_title => false,
                      :show_powered_by => true }
     }
   }

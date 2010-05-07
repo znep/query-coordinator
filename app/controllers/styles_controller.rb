@@ -191,7 +191,8 @@ protected
   @@widget_theme_parse = {
     :frame     => { :border     => { :color => 'color',
                                      :width => 'dimensions' },
-                    :color => 'color' },
+                    :color => 'color',
+                    :padding => 'dimensions' },
     :toolbar   => { :orientation => 'string' },
     :logo      => { :image => 'image',
                     :href => 'string'},
@@ -206,7 +207,6 @@ protected
                     :row_numbers => 'boolean',
                     :wrap_header_text => 'boolean',
                     :title_bold => 'boolean',
-                    :row_height => 'dimensions',
                     :zebra => 'color' }
   }
 end

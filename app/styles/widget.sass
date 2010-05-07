@@ -10,7 +10,7 @@ html, body
 
   h1.logo
     +text-hiding
-    background= transparent !logo_image no-repeat
+    background-image= !logo_image
     float: left
     height= !logo_image_height
     margin: 2px
@@ -23,6 +23,7 @@ html, body
       bottom: 0
 
     .menuButton
+      +sprite-button-icons
       +gradient_menu_button_background
       border= 1px solid !color_menu_button_border
       -moz-border-radius: 0.3em
@@ -36,13 +37,10 @@ html, body
         background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
 
       .icon
-        background-image: url(/stylesheets/images/icons/button_icons.png)
         float: left
-        height: 10px
         margin: 0
           right: 0.6em
           top: 0.1em
-        width: 10px
 
       &:hover
         +gradient_menu_button_background_hover
@@ -62,83 +60,64 @@ html, body
       margin-top: 0.3em
 
       > ul
-        margin-bottom: 0        
+        margin-bottom: 0
 
-        ul > li
-          a
-            color: #222
-            font-size: 1.3em
-            font-weight: bold
-            min-width: 15em
-            padding: 0.5em 1em
+        ul
+          padding-bottom: 0
 
-            .icon
-              +text-hiding
-              background-image: url(/stylesheets/images/icons/type_icons_30.png)
-              float: left
-              height: 30px
-              margin:
-                bottom: 0.3em
-                right: 0.7em
-              width: 30px
-
-            .subtext
-              font-weight: normal
-
-          &.views .icon
-            background-position: 0 0
-          &.downloads .icon
-            background-position: 0 -210px
-          &.comments .icon
-            background-position: 0 -120px
-          &.embed .icon
-            background-position: 0 -150px
-
-          &.about
-            background-color: #f7f7f7
-            border-top: 1px solid #dedede
-            margin-top: 1em
-            padding: 0.3em
-            text-align: center
+          > li
+            +sprite-type-icons-30
 
             a
-              border: none
-              color= !color_links_normal
-              font-size: 1.1em
-              font-weight: normal
+              color: #222
+              font-size: 1.3em
+              font-weight: bold
+              min-width: 15em
+              padding: 0.5em 1em
 
               .icon
-                display: none
+                margin:
+                  bottom: 0.3em
+                  right: 0.7em
+
+              .subtext
+                font-weight: normal
+
+            &.about
+              background-color: #f7f7f7
+              border-top: 1px solid #dedede
+              -moz-border-radius: 0 0 0.4em 0.4em
+              -webkit-border-bottom-left-radius: 0.4em
+              -webkit-border-bottom-right-radius: 0.4em
+              margin-top: 1em
+              padding: 0.3em
+              text-align: center
+
+              a
+                border: none
+                color= !color_links_normal
+                font-size: 1.1em
+                font-weight: normal
+
+                .icon
+                  display: none
 
 .subHeaderBar
   background: transparent url(/stylesheets/images/common/75pct-black.png)
   clear: both
-  margin: 0 3px
+  margin= 0 !frame_padding
   padding: 0.2em
 
   li
+    +sprite-menu-icons
     color: #eee
     display: inline-block
     padding: 0.2em
     &.right
       float: right
 
-    a
-      +text-hiding
-      background-image: url(/stylesheets/images/icons/menu_icons.png)
-      height: 13px
-      width: 13px
-      &.searchLink
-        background-position: 0 -117px
-      &.aboutLink
-        background-position: 0 -130px
-      &.fullscreenLink
-        background-position: 0 -143px
-      &.socializeLink
-        background-position: 0 -156px
-
 .widgetContent
-  margin: 3px
+  margin= !frame_padding
     top: 0
 
   .widgetContentGrid

@@ -12,7 +12,7 @@ class WidgetsNewController < ApplicationController
       @theme = WidgetCustomization.find(params[:customization_id]).customization
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
-      return (render 'shared/error', :status => :internal_server_error)
+      return (render 'shared/error', :status => :not_found)
     end
 
     if !@theme[:version].present?
@@ -41,8 +41,5 @@ class WidgetsNewController < ApplicationController
     end
 
     @display = @view.display
-  end
-
-  def test
   end
 end

@@ -189,7 +189,15 @@ $.objSelect = function(obj, filterFn)
 
 $.renderTemplate = function(template, data, directive)
 {
-    return $('#templates > .' + template).render(data, directive).children();
+    var $templateCopy = $('#templates > .' + template)
+        .clone();
+
+    // pure needs a wrapping element
+    $templateCopy.appendTo($('<div/>'));
+
+    return $templateCopy
+        .render(data, directive)
+        .children();
 };
 
 })(jQuery);

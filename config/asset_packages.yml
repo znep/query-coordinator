@@ -25,9 +25,8 @@ javascripts:
   - util/alert-override
   - widgets/clipped-text
   - screens/common-layout
-  - util/styling
-  - plugins/jquery.qtip
-  - widgets/blist-alert
+  - plugins/jquery.bt
+  - widgets/socrata-messaging
   - util/socrata-server
 - shared-calendar:
   - plugins/fullcalendar
@@ -51,7 +50,7 @@ javascripts:
   - data/editors/checkbox-editor
   - data/editors/stars-editor
   - tiny_mce/tiny_mce_jquery_src
-  - data/editors/richtext-editor
+  - data/editors/html-editor
   - plugins/ajaxupload.3.0
   - widgets/upload-dialog
   - data/editors/document-editor
@@ -222,8 +221,8 @@ javascripts:
   - plugins/ui.draggable
   - plugins/jquery.tache
   - plugins/jquery.validate.min
-  - util/styling
-  - plugins/jquery.qtip
+  - plugins/jquery.bt
+  - widgets/socrata-messaging
   - util/navigation
   - util/util
   - plugins/date

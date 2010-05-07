@@ -6,8 +6,8 @@
   <link rel="canonical" href="<%= @view.about_href %>" />
 <% end %>
 
-<%- is_owner = current_user && @view.owner.id == current_user.id -%>
-<%- can_edit = current_user && @view.can_edit() -%>
+<%- can_edit = current_user && (@view.owner.id == current_user.id ||
+  CurrentDomain.user_can?(current_user, :edit_others_datasets)) -%>
 
 <div id='overlay'></div>
 
@@ -21,7 +21,7 @@
           <div class="aboutHeader">
 
             <h1 class="dataName"><%= link_to(h(@view.name), @view.href, :class => 'linkToDataset') %></h1>
-            <a class="editLink editName<%= is_owner ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Dataset Name">Edit</a>
+            <a class="editLink editName<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Dataset Name">Edit</a>
             <div class="editNameForm hide">
               <%= form_tag(@view.href) %>
                 <label for='view_name'>New Name:</label>
@@ -41,17 +41,17 @@
           <div class="aboutBody">
             <div class="dataGeneral">
               <%# Category %>
-              <%- if (is_owner || ((@view.category && @view.category != "") || (@view.tags && @view.tags.length > 0))) && (feature?(:show_categories) || feature?(:show_tags)) -%>
+              <%- if (can_edit || ((@view.category && @view.category != "") || (@view.tags && @view.tags.length > 0))) && (feature?(:show_categories) || feature?(:show_tags)) -%>
               <ul class="aboutCategoryList">
-                <%- if (is_owner || (@view.category && @view.category != "")) && feature?(:show_categories) -%>
+                <%- if (can_edit || (@view.category && @view.category != "")) && feature?(:show_categories) -%>
                   <li>Category
                     <span class="categoryField fieldValue"><%= @view.category.nil? ? "None" : @view.category.capitalize %></span>
                   </li>
                 <%- end -%>
-                <a class="editLink editGeneral<%= is_owner ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Category and Tags">Edit</a>
+                <a class="editLink editGeneral<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Category and Tags">Edit</a>
 
                 <%# Tags %>
-                <%- if (is_owner || (@view.tags && @view.tags.length > 0)) && feature?(:show_tags) -%>
+                <%- if (can_edit || (@view.tags && @view.tags.length > 0)) && feature?(:show_tags) -%>
                   <li>Tags
                     <span class="tagsField fieldValue"><%= @view.tag_display_string.empty? ? "None" : @view.tag_display_string %></span>
                   </li>
@@ -133,7 +133,7 @@
 
             <div class="attributionSummary">
               <h2>Licensing, Attribution &amp; Terms of Use</h2>
-              <a class="editLink editAttribution<%= is_owner ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Licensing and Attribution">Edit</a>
+              <a class="editLink editAttribution<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Licensing and Attribution">Edit</a>
               <ul class="attributionList">
                 <li>Data Provided by
                   <span class="attributionSource fieldValue">
@@ -155,7 +155,7 @@
                 </li>
               </ul>
 
-              <%- if is_owner || @view.license -%>
+              <%- if can_edit || @view.license -%>
               <h3>Usage License</h3>
                 <p><span class="licenseName fieldValue">
                 <%- if @view.license.nil? -%>

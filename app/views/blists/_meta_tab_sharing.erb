@@ -7,7 +7,8 @@
   <p class="<%= view.is_public? ? "public" : (view.is_shared? ?
     "privateShared" : "private") %><%= view.is_shared? ? ' shared' : '' %>">
   This <%= view.is_blist? ? t(:blist_name) : "view" %> is
-  <%- if is_owner && view.tableAuthor.id == view.owner.id -%>
+  <%- if (is_owner && view.tableAuthor.id == view.owner.id) || 
+        CurrentDomain.user_can?(current_user, :edit_others_datasets) -%>
   <a href='#toggle-permissions_<%= view.id %>_<%= view.display.public_perm_type %>'
     class='switchPermsLink'><%= view.is_public? ?
       "Public" : "Private" %></a>

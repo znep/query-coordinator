@@ -187,7 +187,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_edit() && !current_user.is_admin?
+    if !@view.can_edit() && !CurrentDomain.user_can?(current_user, :edit_sdp)
       return require_user(true)
     end
 

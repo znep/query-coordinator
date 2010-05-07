@@ -279,6 +279,11 @@ img.blist-table-option-icon
     padding-left: 11px;
 }
 
+div.drill-td .blist-tstars-render-wrapper
+{
+    padding-left: 0;
+}
+
 .blist-tstars-wrapper
 {
     overflow: hidden;
@@ -499,6 +504,7 @@ div.blist-table-editor .align-right { text-align: right; }
 /* Datatype icons */
 .text .blist-th-icon { background-position: 0 -80px; }
 .richtext .blist-th-icon { background-position: 0 -60px; }
+.html .blist-th-icon { background-position: 0 -60px; }
 .number .blist-th-icon { background-position: 0 -20px; }
 .money .blist-th-icon { background-position: 0 -40px; }
 .percent .blist-th-icon { background-position: 0 0; }
@@ -596,7 +602,7 @@ div.blist-table-editor .align-right { text-align: right; }
 .blist-table-editor.type-stars.hover .star.star-on
 { background-position: 0 -32px; }
 
-.blist-table-editor.type-richtext textarea
+.blist-table-editor.type-html textarea
 {
     visibility: hidden;
 }

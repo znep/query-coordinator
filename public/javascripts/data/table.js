@@ -2680,8 +2680,8 @@
                         "] ? ' invalid' : '')";
 
                     var drillDown = mcol.drillDown ? ("<a class='drillDown'" +
-                        " cellvalue='\" + $.htmlStrip('' + row" + mcol.dataLookupExpr +
-                        ") + \"' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
+                        " cellvalue='\" + $.escapeQuotes($.htmlStrip('' + row" + mcol.dataLookupExpr +
+                        ")) + \"' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
                     var cellDrillStyle = mcol.drillDown ?  ' drill-td' : '';
 
                     renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +

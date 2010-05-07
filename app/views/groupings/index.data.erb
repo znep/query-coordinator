@@ -144,6 +144,7 @@
                 id: $item.find("input.columnId").val(),
                 name: $item.find('.name').text(),
                 format: $.json.deserialize($item.find('.format').val()),
+                hidden: $item.find('.isHidden').val(),
                 position: parseInt($item.find(".orderIndex").text())
             });
         });
@@ -170,7 +171,7 @@
             var func = $item.find('select.aggregateFunction').val();
             if (func === '')
             {
-                errorCallback("A function is required for each aggregate column");
+                errorCallback("A function is required for each rolled up column");
                 failed = true;
                 return false;
             }
@@ -179,7 +180,7 @@
                 id: $item.find("input.columnId").val(),
                 name: $item.find('.name').text(),
                 format: $.json.deserialize($item.find('.format').val()),
-                hidden: false,
+                hidden: $item.find('.isHidden').val(),
                 position: parseInt($item.find(".orderIndex").text()),
                 func: func
             });

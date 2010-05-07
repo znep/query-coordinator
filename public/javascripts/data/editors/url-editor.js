@@ -31,7 +31,7 @@
             {
                 if (!this._$editor)
                 {
-                    var hrefVal = this.newValue || hrefValue(this);
+                    var hrefVal = $.htmlEscape(this.newValue || hrefValue(this));
                     this._$editor = $('<div class="blist-table-editor' +
                         ' type-' + this.column.type +
                         '"><div class="labels"><span class="href">URL</span>' +
@@ -40,7 +40,7 @@
                         hrefVal + '" />' +
                         '<input type="text" ' +
                         'class="description" value="' +
-                        descValue(this) + '" /></div>');
+                        $.htmlEscape(descValue(this)) + '" /></div>');
                 }
                 return this._$editor;
             },

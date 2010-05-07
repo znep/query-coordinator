@@ -113,8 +113,9 @@
                         });
                         
                 $.live('#' + $datasetGrid.attr('id') + ' .drillDown', 'click',
-                    function(){
-                            datasetObj.drillDown(this);
+                    function(e){
+                        e.preventDefault();
+                        datasetObj.drillDown(this);
                     });
 
                 datasetObj.settings._model = $datasetGrid.blistModel();
@@ -401,8 +402,7 @@
                     $.each(grouped, function(i, c)
                     {
                         var newFormat = $.extend({}, c.format, {drill_down: drillDown});
-                        
-                        newCols.push({id: c.id, name: c.name, hidden: false,
+                        newCols.push({id: c.id, name: c.name, hidden: c.hidden == 'true',
                             position: newCols.length + 1, format: newFormat});
                         usedCols[c.id] = newFormat;
                     });
@@ -523,54 +523,128 @@
             {
                 var datasetObj = this;
                 var model = datasetObj.settings._model;
-                
+
                 var filterValue = $(drillLink).attr('cellvalue');
                 var filterColumn = $(drillLink).attr('column');
-                
-                if (filterValue == '' || filterColumn == '')
-                {
-                    return false;
-                }
-                
-                // Note: do we always want this to be true
-                var view = model.getViewCopy(true);
-                
-                _.each(view.columns, function(c)
-                {
-                   delete c.format.grouping_aggregate;
-                   delete c.format.drill_down; 
-                });
+                var filterColumnId = parseInt(filterColumn, 10);
+                var isBlank = false;
 
-                // Don't group on _any_ columns anymore
-                view.query.groupBys = [];
-                
+                if (filterColumn == '' || filterValue == '') { return false; }
+
+                var view = model.getViewCopy(true);
+
                 // Now construct our beautiful filter
-                var filter = {
-                    type: 'operator', value: 'EQUALS', children: [ {
-                        columnId: filterColumn,
-                        type: 'column'
-                    }, {
-                        type: 'literal',
-                        value: filterValue
-                    } ]
-                };
+                var filter;
+                var columnJson = { columnId: filterColumn,
+                    type: 'column' };
+
+                if (filterValue == 'null')
+                {
+                    filter = { type: 'operator', value: 'IS_BLANK',
+                        children: [ columnJson ] };
+                }
+                else
+                {
+                    filter = { type: 'operator', value: 'EQUALS',
+                        children: [
+                            columnJson,
+                            { type: 'literal', value: filterValue }
+                        ]
+                    };
+                }
 
                 if (view.query.filterCondition != null &&
                         view.query.filterCondition.type == 'operator')
                 {
-                    var existingQuery = view.query.filterCondition;
-                    view.query.filterCondition = { type: 'operator', value: 'AND',
-                        children: [ existingQuery, filter ]
-                    };
+                    if (view.query.filterCondition.value == 'AND')
+                    {
+                        view.query.filterCondition.children.push(filter);
+                    }
+                    else
+                    {
+                        var existingQuery = view.query.filterCondition;
+                        view.query.filterCondition = { type: 'operator', value: 'AND',
+                            children: [ existingQuery, filter ]
+                        };
+                    }
                 }
                 else
                 {
                     view.query.filterCondition = filter;
                 }
                 
-                model.getTempView(view);
-                datasetObj.setTempView('drilldown');
-                model.forceSendColumns(true);
+                var drillDownCallBack = function(newView)
+                {
+                    model.getTempView(newView);
+                    datasetObj.setTempView('drilldown');
+                    model.forceSendColumns(true);
+                };
+
+                var otherGroupBys = _.select(view.query.groupBys, function(g)
+                    { return g.columnId != filterColumnId; });
+                // We need to hide the drilled col, persist other groupings
+                if (otherGroupBys.length > 0)
+                {
+                    _.each(view.columns, function(c)
+                    {
+                        if (c.id == filterColumnId)
+                        {
+                            if (!c.flags) { c.flags = []; }
+                            c.flags.push('hidden');
+                            delete c.format.grouping_aggregate;
+                            delete c.format.drill_down;
+                        }
+                    });
+
+                    // Use all group bys except the current drill column
+                    view.query.groupBys = otherGroupBys;
+                    drillDownCallBack(view);
+                }
+                // Otherwise, grab parent's columns and replace
+                else
+                {
+                    var currentColumns, parentColumns;
+                    var revealDrillDownCallBack = function()
+                    {
+                        var translatedColumns = [];
+                        _.each(parentColumns, function(oCol)
+                        {
+                            var matchingTableCols = _.select(currentColumns,
+                                function(col)
+                                {
+                                    return col.tableColumnId == oCol.tableColumnId
+                                });
+                            if(matchingTableCols.length > 0)
+                            {
+                                translatedColumns.push($.extend(oCol,
+                                    { id: matchingTableCols[0].id }));
+                            }
+                        });
+
+                        view.columns = translatedColumns;
+                        drillDownCallBack(view);
+                    }
+                    view.query.groupBys = [];
+                    
+                    // First fetch all the currently available columns,
+                    // because hidden, grouped columns aren't ret'd by Core Server
+                    $.get('/views/' + view.id + '/columns.json',
+                    function(cols)
+                    {
+                        currentColumns = cols;
+                        if(!_.isUndefined(parentColumns))
+                        { revealDrillDownCallBack(); }
+                    }, 'json');
+                    
+                    $.get('/views/' + blist.parentViewId +
+                            '/columns.json',
+                    function(pcols)
+                    {
+                        parentColumns = pcols;
+                        if(!_.isUndefined(currentColumns))
+                        { revealDrillDownCallBack(); }
+                    },'json');
+                }
             },
 
             clearTempView: function(countId, forceAll)

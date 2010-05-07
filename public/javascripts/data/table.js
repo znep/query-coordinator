@@ -2680,8 +2680,9 @@
                         "] ? ' invalid' : '')";
 
                     var drillDown = mcol.drillDown ? ("<a class='drillDown'" +
-                        " cellvalue='\" + $.htmlStrip(row" + mcol.dataLookupExpr +
+                        " cellvalue='\" + $.htmlStrip('' + row" + mcol.dataLookupExpr +
                         ") + \"' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
+                    var cellDrillStyle = mcol.drillDown ?  ' drill-td' : '';
 
                     renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +
                         renderer("row" + mcol.dataLookupExpr, false, mcol,
@@ -2693,7 +2694,7 @@
 
                     colParts.push(
                         "\"<div class='blist-td " + getColumnClass(mcol) + cls +
-                            align + "\" + " + invalid +
+                            cellDrillStyle + align + "\" + " + invalid +
                             " + (row.saving && row.saving" +
                             mcol.dataLookupExpr + " ? \" saving\" : \"\") + " +
                             "(row.error && row.error" +

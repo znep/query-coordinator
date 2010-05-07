@@ -36,6 +36,15 @@
     width: 200px;
 }
 
+.newBlistContent label.uploadInfoMessage
+{
+    font-size: 1em;
+    padding: 0;
+    margin: 2px 0 2px 230px;
+    text-align: left;
+    width: 350px;
+}
+
 .newBlistContent label.error, label.uploadErrorMessage
 {
     color: red;
@@ -46,7 +55,7 @@
     width: 350px;
 }
 
-.newBlistContent label.uploadErrorMessage.hide
+.newBlistContent label.hide
 {
     display: none;
 }

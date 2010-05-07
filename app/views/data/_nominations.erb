@@ -69,7 +69,7 @@
     </p>
     <div class="<%= current_user && current_user.is_premium? ? 'inlineEdit' : '' %>">
       <p class="nominationBody">
-        <%= auto_link(h(nomnomnom.description)) %>
+        <%= raw(auto_link(h(nomnomnom.description))) %>
       </p>
       <% if current_user && current_user.is_premium? # REMOVE THIS WHEN WE HAVE A SETTING FOR NOMINATIONS ON A PER-ORG BASIS 
       %> 

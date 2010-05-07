@@ -11,6 +11,7 @@ javascripts:
   - plugins/jquery.cookies.2.1.0.min
   - util/underscore-min
   - util/google-analytics
+  - plugins/jquery.socrata
 - shared-common-all:
   - util/events
   - util/sizing
@@ -60,6 +61,7 @@ javascripts:
   - widgets/maps/base-map
   - widgets/maps/esri-map
   - widgets/maps/google-map
+  - widgets/maps/bing-map
 - shared-chart:
   - plugins/highcharts.src
   - widgets/base-visualization

@@ -249,8 +249,8 @@ javascripts:
   - plugins/ui.draggable
   - plugins/jquery.tache
   - plugins/jquery.validate.min
-  - util/styling
-  - plugins/jquery.qtip
+  - plugins/jquery.bt
+  - widgets/socrata-messaging
   - util/navigation
   - util/util
   - plugins/date

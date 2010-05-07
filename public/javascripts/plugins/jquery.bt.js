@@ -257,7 +257,9 @@ jQuery.bt = {version: '0.9.5-rc1'};
         }
         else {
           // if the target element is absolutely positioned, use its parent's offsetParent instead of its own
-          var offsetParent = ($(this).css('position') == 'absolute') ? $(this).parents().eq(0).offsetParent() : $(this).offsetParent();
+          // JS: I don't think we actually want to do this...?
+          var offsetParent = //($(this).css('position') == 'absolute') ? $(this).parents().eq(0).offsetParent() :
+                $(this).offsetParent();
           var pos = $(this).btPosition();
           var top = numb(pos.top) + numb($(this).css('margin-top')) - shadowShiftY; // IE can return 'auto' for margins
           var left = numb(pos.left) + numb($(this).css('margin-left')) - shadowShiftX;
@@ -311,7 +313,7 @@ jQuery.bt = {version: '0.9.5-rc1'};
         var space = new Object();
         var thisOffset = $(this).offset();
         space.top = thisOffset.top - scrollTop;
-        space.bottom = docHeight - ((thisOffset + height) - scrollTop);
+        space.bottom = docHeight - ((thisOffset.top + height) - scrollTop);
         space.left = thisOffset.left - scrollLeft;
         space.right = docWidth - ((thisOffset.left + width) - scrollLeft);
         var textOutHeight = numb($text.outerHeight());

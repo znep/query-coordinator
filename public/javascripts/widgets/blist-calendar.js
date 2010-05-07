@@ -155,9 +155,8 @@
     {
         if (calEvent.description)
         {
-            $(element).qtip({content: calEvent.description,
-                    style: { name: 'blist' },
-                    position: { target: 'mouse' } });
+            $(element).socrataTip({message: calEvent.description,
+                    trigger: 'hover'});
         }
     };
 
@@ -165,14 +164,14 @@
     {
         if (calEvent.description)
         {
-            $(this).qtip('hide');
-            $(this).qtip('disable');
+            $(this).socrataTip().hide();
+            $(this).socrataTip().disable();
         }
     };
 
     var eventActionStop = function(currentObj, calEvent, event, ui, view)
     {
-        if (calEvent.description) { $(this).qtip('enable'); }
+        if (calEvent.description) { $(this).socrataTip().enable(); }
     };
 
     var eventChange = function(currentObj, calEvent, dayDelta, minuteDelta,

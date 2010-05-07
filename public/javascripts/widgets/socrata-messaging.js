@@ -1,5 +1,10 @@
 (function($)
 {
+    $.fn.isSocrataTip = function()
+    {
+        return !_.isUndefined($(this[0]).data("socrataTip"));
+    };
+
     $.fn.socrataTip = function(options)
     {
         // Check if object was already created
@@ -24,7 +29,11 @@
     {
         defaults:
         {
-            message: null
+            isSolo: false,
+            message: null,
+            parent: null,
+            positions: null,
+            trigger: 'now'
         },
 
         prototype:
@@ -36,6 +45,10 @@
                 $domObj.data("socrataTip", sTipObj);
 
                 if (_.isNull(sTipObj.settings.message)) { return; }
+
+                var pos = sTipObj.settings.positions;
+                if (_.isNull(pos)) { pos = ['bottom', 'top']; }
+                else if (pos == 'auto') { pos = ['most']; }
 
                 $domObj.bt(sTipObj.settings.message,
                     {
@@ -50,12 +63,26 @@
                         shadowBlur: 3,
                         shadowColor: 'rgba(0, 0, 0, 0.3)',
                         noShadowOpts: {strokeWidth: 2},
+
+                        closeWhenOthersOpen: sTipObj.settings.isSolo,
                         shrinkToFit: true,
+                        trigger: sTipObj.settings.trigger,
+                        positions: pos,
+                        offsetParent: sTipObj.settings.parent,
+
                         showTip: function(box)
-                            { $(box).fadeIn(300); },
+                            {
+                                if (!sTipObj._disabled)
+                                {
+                                    sTipObj._visible = true;
+                                    $(box).fadeIn(300);
+                                }
+                            },
                         hideTip: function(box, callback)
-                            { $(box).animate({opacity: 0}, 300, callback); },
-                        trigger: 'now'
+                            {
+                                sTipObj._visible = false;
+                                $(box).fadeOut(300, callback);
+                            }
                 });
             },
 
@@ -66,9 +93,26 @@
                 return this._$dom;
             },
 
+            show: function()
+            {
+                if (!this._visible)
+                { this.$dom().btOn(); }
+            },
+
             hide: function()
             {
-                this.$dom().btOff();
+                if (this._visible)
+                { this.$dom().btOff(); }
+            },
+
+            disable: function()
+            {
+                this._disabled = true;
+            },
+
+            enable: function()
+            {
+                this._disabled = false;
             }
         }
     });

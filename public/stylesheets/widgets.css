@@ -2459,3 +2459,7 @@ div.color_swatch.hover .inner { border: 1px solid #ffffff; }
 /*** START: Visualization styles ***/
 .chartContainer .annotationsdiv { float: left; }
 /*** END: Visualization styles ***/
+
+/*** START: Tooltip styles ***/
+.bt-wrapper .bt-content { font-size: 1.1em; }
+/*** END: Tooltip styles ***/

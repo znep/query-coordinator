@@ -4,3 +4,4 @@ vendor/bundler_gems
 Gemfile.lock
 .bundle/environment.rb
 .*.swp
+.DS_Store

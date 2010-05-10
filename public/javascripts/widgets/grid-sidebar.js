@@ -22,6 +22,7 @@
     {
         defaults:
         {
+            data: null,
             dataGrid: null,
             modalHiddenSelector: null
         },

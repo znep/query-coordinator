@@ -146,6 +146,14 @@ blist.common.modalReady = function()
 
       updateColumn();
 
+      if (column.type == 'location')
+      {
+          $('#gridSidebar').gridSidebar({dataGrid: '#dataGrid',
+              data: {column: column}}).show(true);
+          $("#modal").jqmHide();
+          return;
+      }
+
       $.ajax({
         type: "POST",
         url: '<%= blist_columns_url(@view_id) %><%= @parent.nil? ?
@@ -170,7 +178,7 @@ blist.common.modalReady = function()
             }
             $(document).trigger(blist.events.COLUMNS_CHANGED, [responseData.id]);
             $.Tache.DeleteAll();
-            $("#modal .jqmClose").click();
+            $("#modal").jqmHide();
         }
       });
   };

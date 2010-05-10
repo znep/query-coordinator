@@ -23,6 +23,7 @@
 <%- is_owner = current_user && @view.owner.id == current_user.id -%>
 <%- is_blist = @view.is_blist? %>
 <%- can_edit = current_user && @view.can_edit() -%>
+<%- is_tabular = @view.is_tabular? -%>
 
 <div class="altShowContainer oneColumnContainer <%= @view.is_invalid? ? 'invalidView' : '' %>">
   <div class="fullPageContentContainer">
@@ -48,9 +49,11 @@
               <li><a href="<%= item['href'] %>">Share via <%= item['text'] %></a></li>
             <%- end -%>
               <li><a href=""></a></li>
-              <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>
-              <li><a href="/views/<%= @view.id %>/rows.xls?accessType=DOWNLOAD">Export To XLS</a></li>
-              <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
+              <%- if is_tabular -%>
+                <li><a href="/views/<%= @view.id %>/rows.csv?accessType=DOWNLOAD">Export To CSV</a></li>
+                <li><a href="/views/<%= @view.id %>/rows.xls?accessType=DOWNLOAD">Export To XLS</a></li>
+                <li><a href="/views/<%= @view.id %>/rows.xlsx?accessType=DOWNLOAD">Export To XLSX</a></li>
+              <%- end -%>
             </ul>
             <a name="dataGrid"></a>
 
@@ -61,66 +64,74 @@
 
             <div class="dataGridWrapper">
               <table id="dataGrid">
-                <%= render(:partial => 'alt_tbody',
-                  :locals => {:columns => @viewable_columns,
-                  :rows => @data, :start_page => @page, :parent_id => '0'}) %>
-                <%- unless @aggregates.nil? or @aggregates.none? -%>
-                <tfoot>
-                  <tr>
-                  <%= render(:partial => 'alt_tfooter',
+                <%- if is_tabular -%>
+                  <%= render(:partial => 'alt_tbody',
                     :locals => {:columns => @viewable_columns,
-                    :aggregates => @aggregates}) %>
-                  </tr>
-                </tfoot>
+                    :rows => @data, :start_page => @page, :parent_id => '0'}) %>
+                  <%- unless @aggregates.nil? or @aggregates.none? -%>
+                  <tfoot>
+                    <tr>
+                    <%= render(:partial => 'alt_tfooter',
+                      :locals => {:columns => @viewable_columns,
+                      :aggregates => @aggregates}) %>
+                    </tr>
+                  </tfoot>
+                  <%- end -%>
+                <%- else -%>
+                  <%= render(:partial => 'displays/download_file')%>
                 <%- end -%>
               </table>
             </div>
+            <%- if is_tabular -%>
             <div id="pagination links" style="margin: 20px;">
               <%= create_pagination(@row_count, @per_page, @page, @view.href + '/alt?' + @state_param) %>
             </div>
+            <%- end -%>
           </div>
 
-          <%- form_tag @view.alt_href, :method => :get do -%>
-            <h2>Filter</h2>
-            <ul>
-              <%- @viewable_columns.each do |column| -%>
-                <%- unless column.possible_filter_conditions.nil? -%>
-                  <li>
-                    <%= label_tag "filter_#{column.id}_operator", "Filter by #{column.name}" %>
-                    <%= select_tag "filter[#{column.id}][operator]",
-                                   options_for_limit_to(column, params.deep_value_at([:filter, column.id.to_s.to_sym, :operator])) %>
-                     <%- unless ['photo', 'document', 'photo_obsolete', 'document_obsolete'].include?(column.dataTypeName) -%>
-                    <%= label_tag "filter_#{column.id}_value", "the value" %>
-                    <%= text_field_tag "filter[#{column.id}][value]", params.deep_value_at([:filter, column.id.to_s.to_sym, :value]) %>
-                    <%- end -%>
-                  </li>
+          <%- if is_tabular -%>
+            <%- form_tag @view.alt_href, :method => :get do -%>
+              <h2>Filter</h2>
+              <ul>
+                <%- @viewable_columns.each do |column| -%>
+                  <%- unless column.possible_filter_conditions.nil? -%>
+                    <li>
+                      <%= label_tag "filter_#{column.id}_operator", "Filter by #{column.name}" %>
+                      <%= select_tag "filter[#{column.id}][operator]",
+                                     options_for_limit_to(column, params.deep_value_at([:filter, column.id.to_s.to_sym, :operator])) %>
+                       <%- unless ['photo', 'document', 'photo_obsolete', 'document_obsolete'].include?(column.dataTypeName) -%>
+                      <%= label_tag "filter_#{column.id}_value", "the value" %>
+                      <%= text_field_tag "filter[#{column.id}][value]", params.deep_value_at([:filter, column.id.to_s.to_sym, :value]) %>
+                      <%- end -%>
+                    </li>
+                  <%- end -%>
                 <%- end -%>
-              <%- end -%>
-            </ul>
-            <%= submit_tag "Apply Filter" %>
+              </ul>
+              <%= submit_tag "Apply Filter" %>
 
-            <h2>Sort</h2>
-            <ul>
-              <%- 1.upto(5) do |n| -%>
-                <li>
-                  <%= label_tag "sort_#{n}_field", "Sort field #{n.to_s}" %>
-                  <%= select_tag "sort[#{n}][field]",
-                                 options_for_sort_by(@viewable_columns, params.deep_value_at([:sort, n.to_s.to_sym, :field]).to_i) %>
-                  <%= label_tag "sort_#{n}_direction", 'in' %>
-                  <%= select_tag "sort[#{n}][direction]",
-                                 options_for_select(["Ascending", "Descending"],
-                                                    params.deep_value_at([:sort, n.to_s.to_sym, :direction]) || "Ascending") %>
-                  order
-                </li>
-              <% end %>
-            </ul>
-            <%= submit_tag "Apply Sort" %>
+              <h2>Sort</h2>
+              <ul>
+                <%- 1.upto(5) do |n| -%>
+                  <li>
+                    <%= label_tag "sort_#{n}_field", "Sort field #{n.to_s}" %>
+                    <%= select_tag "sort[#{n}][field]",
+                                   options_for_sort_by(@viewable_columns, params.deep_value_at([:sort, n.to_s.to_sym, :field]).to_i) %>
+                    <%= label_tag "sort_#{n}_direction", 'in' %>
+                    <%= select_tag "sort[#{n}][direction]",
+                                   options_for_select(["Ascending", "Descending"],
+                                                      params.deep_value_at([:sort, n.to_s.to_sym, :direction]) || "Ascending") %>
+                    order
+                  </li>
+                <% end %>
+              </ul>
+              <%= submit_tag "Apply Sort" %>
 
-            <a name="search"></a>
-            <h2>Search</h2>
-            <%= label_tag 'search_string', 'Search' %>
-            <%= text_field_tag 'search_string', params[:search_string] %>
-            <%= submit_tag 'Apply Search' %>
+              <a name="search"></a>
+              <h2>Search</h2>
+              <%= label_tag 'search_string', 'Search' %>
+              <%= text_field_tag 'search_string', params[:search_string] %>
+              <%= submit_tag 'Apply Search' %>
+            <%- end -%>
           <%- end -%>
         </div>
 

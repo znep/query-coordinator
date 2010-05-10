@@ -85,13 +85,21 @@
     vertical-align: top;
     width: 5em;
 }
-#gridSidebar .section .line select,
 #gridSidebar .section .line textarea,
 #gridSidebar .section .line input
 {
     font-size: 1.2em;
     margin-bottom: 0;
     width: 15em;
+}
+
+#gridSidebar .section .line span.error
+{
+    color: #ff0000;
+    display: block;
+    line-height: 1.7em;
+    margin-left: 6.3em;
+    padding-left: 15px;
 }
 
 #gridSidebar .finishButtons

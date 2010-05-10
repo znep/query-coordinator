@@ -181,11 +181,14 @@
                         ' value="' +
                             $.htmlEscape(args.context.data[args.item.name]) +
                             '"' : '') +
+                    ' class="' + (args.item.required ? 'required' : '') + '"' +
                     ' />';
                 break;
             case 'textarea':
                 result = '<textarea id="' + args.item.name +
-                    '" name="' + args.item.name + '">' +
+                    '" name="' + args.item.name +
+                    ' class="' + (args.item.required ? 'required' : '') + '"' +
+                    '">' +
                     (!$.isBlank(args.context.data[args.item.name]) ?
                         $.htmlEscape(args.context.data[args.item.name]) : '') +
                     '</textarea>';
@@ -213,6 +216,8 @@
                         'field<-section.fields': {
                             'label': 'field.text',
                             'label@for': 'field.name',
+                            'label@class+': function(arg)
+                            { return arg.item.required ? ' required' : ''; },
                             '.+': renderInputType
                         }
                     }
@@ -232,6 +237,8 @@
 
         $pane.append($.renderTemplate('sidebarPane', rData, directive));
 
+        $pane.find('form').validate({ignore: ':hidden', errorElement: 'span'});
+
         $pane.find('.actionButtons a').click(function(e)
         {
             e.preventDefault();
@@ -250,6 +257,8 @@
             sidebarObj.hide();
             return;
         }
+
+        if (!$pane.find('form').valid()) { return; }
 
         $pane.find('.mainError').text('');
 
@@ -287,7 +296,8 @@
                 {
                     title: 'Column Information',
                     fields: [
-                        {text: 'Name', type: 'text', name: 'columnName'},
+                        {text: 'Name', type: 'text', name: 'columnName',
+                            required: true},
                         {text: 'Description', type: 'textarea',
                             name: 'columnDescription'}
                     ]

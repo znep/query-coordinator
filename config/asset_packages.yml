@@ -128,6 +128,7 @@ javascripts:
   - widgets/reorderable-list
   - screens/blist-publish-screen
 - blists-show:
+  - plugins/pure
   - plugins/jquery.tablesorter
   - plugins/ui.core
   - plugins/ui.draggable
@@ -248,7 +249,7 @@ javascripts:
   - screens/info-pane
   - screens/dataset-menu
 - widgets-show-new:
-  - pure
+  - plugins/pure
   - plugins/jqModal
   - plugins/jquery.example.min
   - plugins/jquery.json

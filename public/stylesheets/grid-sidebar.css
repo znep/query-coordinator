@@ -5,8 +5,7 @@
     border-left: 2px solid #999999;
     display: none;
     float: right;
-    overflow: auto;
-    padding: 0.75em;
+    overflow: hidden;
     position: relative;
     width: 300px;
 }
@@ -30,12 +29,19 @@
     background-repeat: no-repeat;
     display: block;
     height: 16px;
-    position: fixed;
+    position: absolute;
     line-height: 100px;
     overflow: hidden;
-    right: 2px;
+    right: 20px;
     top: 2px;
     width: 16px;
+}
+
+#gridSidebar .sidebarPane
+{
+    height: 100%;
+    overflow: auto;
+    padding: 0.75em;
 }
 
 #gridSidebar h3.title
@@ -65,6 +71,27 @@
 {
     font-size: 1.2em;
     font-weight: bold;
+    margin-bottom: 0.3em;
+}
+
+#gridSidebar .section .line { margin: 0.5em 0; }
+#gridSidebar .section .line label
+{
+    display: inline-block;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 1.75em;
+    text-align: right;
+    vertical-align: top;
+    width: 5em;
+}
+#gridSidebar .section .line select,
+#gridSidebar .section .line textarea,
+#gridSidebar .section .line input
+{
+    font-size: 1.2em;
+    margin-bottom: 0;
+    width: 15em;
 }
 
 #gridSidebar .finishButtons

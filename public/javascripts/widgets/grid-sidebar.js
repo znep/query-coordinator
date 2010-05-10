@@ -122,6 +122,7 @@
             {
                 var sidebarObj = this;
                 sidebarObj.$dom().hide();
+                sidebarObj.$dom().find('.sidebarPane').hide();
                 sidebarObj.$grid().css('margin-right', 0);
 
                 if (sidebarObj._isModal)
@@ -166,19 +167,55 @@
         _.defer(function() { setPosition(sidebarObj); });
     };
 
+
+    var renderInputType = function(args)
+    {
+        var result = '';
+
+        switch (args.item.type)
+        {
+            case 'text':
+                result = '<input type="text" id="' + args.item.name +
+                    '" name="' + args.item.name + '"' +
+                    (!$.isBlank(args.context.data[args.item.name]) ?
+                        ' value="' +
+                            $.htmlEscape(args.context.data[args.item.name]) +
+                            '"' : '') +
+                    ' />';
+                break;
+            case 'textarea':
+                result = '<textarea id="' + args.item.name +
+                    '" name="' + args.item.name + '">' +
+                    (!$.isBlank(args.context.data[args.item.name]) ?
+                        $.htmlEscape(args.context.data[args.item.name]) : '') +
+                    '</textarea>';
+                break;
+        }
+
+        return result;
+    };
+
     var renderPane = function(sidebarObj, config, data)
     {
         var $pane = $('<div id="' +
             sidebarObj.$dom().attr('id') + '_' + config.name +
             '" class="sidebarPane"></div>');
         var rData = {title: config.title, subtitle: config.subtitle,
-            sections: config.sections, finishButtons: config.finishButtons};
+            sections: config.sections, finishButtons: config.finishButtons,
+            data: data};
         var directive = {
             '.title': 'title',
             '.subtitle': 'subtitle',
             '.section': {
                 'section<-sections': {
-                    '.title': 'section.title'
+                    '.title': 'section.title',
+                    '.line': {
+                        'field<-section.fields': {
+                            'label': 'field.text',
+                            'label@for': 'field.name',
+                            '.+': renderInputType
+                        }
+                    }
                 }
             },
             '.finishButtons > li': {
@@ -195,9 +232,51 @@
 
         $pane.append($.renderTemplate('sidebarPane', rData, directive));
 
+        $pane.find('.actionButtons a').click(function(e)
+        {
+            e.preventDefault();
+            config.finishCallback(sidebarObj, data,
+                $pane, $(this).attr('value'));
+        });
+
         return $pane;
     };
 
+
+    var locationCreateCallback = function(sidebarObj, data, $pane, value)
+    {
+        if (!value)
+        {
+            sidebarObj.hide();
+            return;
+        }
+
+        $pane.find('.mainError').text('');
+
+        var column = {name: $pane.find('#columnName').val() || null,
+            description: $pane.find('#columnDescription').val() || null,
+            dataTypeName: data.columnType};
+
+        $.ajax({url: '/views/' + blist.display.viewId + '/columns' +
+            (_.isNull(data.columnParent) ? '' :
+                '/' + data.columnParent + '/sub_columns') + '.json',
+            type: 'POST', contentType: 'application/json', dataType: 'json',
+            data: $.json.serialize(column),
+            error: function(xhr)
+            {
+                $pane.find('.mainError')
+                    .text($.json.deserialize(xhr.responseText).message);
+            },
+            success: function(resp)
+            {
+                sidebarObj.$grid().blistModel()
+                    .updateColumn(resp, data.columnParent || null);
+                $(document).trigger(blist.events.COLUMNS_CHANGED, [resp.id]);
+                $.Tache.DeleteAll();
+                sidebarObj.hide();
+            }
+        });
+    };
 
     $.gridSidebarConfig = {
         locationCreate: {
@@ -205,6 +284,14 @@
             title: 'Create a Location Column',
             subtitle: 'Create a blank column to fill in location data, or fill it with values from existing columns',
             sections: [
+                {
+                    title: 'Column Information',
+                    fields: [
+                        {text: 'Name', type: 'text', name: 'columnName'},
+                        {text: 'Description', type: 'textarea',
+                            name: 'columnDescription'}
+                    ]
+                },
                 {
                     title: 'Import Latitude/Longitude'
                 },
@@ -215,7 +302,8 @@
             finishButtons: [
                 {text: 'Create', value: true, isDefault: true},
                 {text: 'Cancel', value: false}
-            ]
+            ],
+            finishCallback: locationCreateCallback
         }
     };
 

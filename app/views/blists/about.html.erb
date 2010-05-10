@@ -281,20 +281,26 @@
               <span class="linkIcon">Download As</span>
             </span>
           </a>
-    	    <%= menu_tag({'id' => 'downloadMenu', 'class' => 'noicon', 'items' => [
-          {'text' => 'Comma Separated Values (.csv)', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
-          {'text' => 'Adobe PDF (.pdf)', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
-          {'text' => 'Excel 97 - 2003 Workbook (.xls)', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
-          {'text' => 'As XLSX (beta)', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
-          {'text' => 'XML Data (.xml)', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
-          {'text' => 'JavaScript Object Notation (.json)', 'external' => true,
-          'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}
-          ]}) %>
+          <%- if @view.is_tabular?
+                menu_items = [
+                  {'text' => 'Comma Separated Values (.csv)', 'external' => true,
+                  'href' => "/views/#{@view.id}/rows.csv?accessType=DOWNLOAD"},
+                  {'text' => 'Adobe PDF (.pdf)', 'external' => true,
+                  'href' => "/views/#{@view.id}/rows.pdf?accessType=DOWNLOAD"},
+                  {'text' => 'Excel 97 - 2003 Workbook (.xls)', 'external' => true,
+                  'href' => "/views/#{@view.id}/rows.xls?accessType=DOWNLOAD"},
+                  {'text' => 'As XLSX (beta)', 'external' => true,
+                  'href' => "/views/#{@view.id}/rows.xlsx?accessType=DOWNLOAD"},
+                  {'text' => 'XML Data (.xml)', 'external' => true,
+                  'href' => "/views/#{@view.id}/rows.xml?accessType=DOWNLOAD"},
+                  {'text' => 'JavaScript Object Notation (.json)', 'external' => true,
+                  'href' => "/views/#{@view.id}/rows.json?accessType=DOWNLOAD"}]
+              else
+                menu_items = [
+                  {'text' => 'Download File', 'external' => true,
+                  'href' => @view.blob_href} ]
+              end -%>
+    	    <%= menu_tag({'id' => 'downloadMenu', 'class' => 'noicon', 'items' => menu_items}) %>
         </li>
     	  <li>
     	    <a href="<%= "/views/#{@view.id}/rows.rss" %>" class="socialActionLink" title="Stay up to date with this dataset with RSS" id="rssLink">

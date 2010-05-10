@@ -148,8 +148,9 @@ blist.common.modalReady = function()
 
       if (column.type == 'location')
       {
-          $('#gridSidebar').gridSidebar({dataGrid: '#dataGrid',
-              data: {column: column}}).show(true);
+          $('#gridSidebar').gridSidebar()
+            .addPane($.gridSidebarConfig.locationCreate, {column: column});
+          $('#gridSidebar').gridSidebar().show('locationCreate', true);
           $("#modal").jqmHide();
           return;
       }

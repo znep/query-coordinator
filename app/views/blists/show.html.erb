@@ -427,6 +427,10 @@
   </div>
 </div>
 
+<% content_for :templates do %>
+<%= render(:partial => 'grid_sidebar_templates') %>
+<% end %>
+
 <% content_for :js_footer do %>
   <div class="jqmWindow" id="columnPropertiesModal"></div>
 

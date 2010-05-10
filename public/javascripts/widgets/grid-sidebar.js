@@ -22,7 +22,6 @@
     {
         defaults:
         {
-            data: null,
             dataGrid: null,
             modalHiddenSelector: null
         },
@@ -58,13 +57,43 @@
                 return this._$grid;
             },
 
-            show: function(isModal)
+            addPane: function(config, data)
             {
                 var sidebarObj = this;
+                if ($.isBlank(config))
+                { throw "Configuration required for gridSidebar"; }
+
+                sidebarObj._$panes = sidebarObj._$panes || {};
+                if (!$.isBlank(sidebarObj._$panes[config.name]))
+                {
+                    sidebarObj._$panes[config.name].remove();
+                    delete sidebarObj._$panes[config.name];
+                }
+
+                var $pane = renderPane(sidebarObj, config, data);
+                sidebarObj._$panes[config.name] = $pane;
+                sidebarObj.$dom().append($pane);
+                $pane.hide();
+            },
+
+            show: function(paneName, isModal)
+            {
+                var sidebarObj = this;
+
+                // Set up the chosen pane
+                sidebarObj.$dom().find('.sidebarPane').hide();
+                // Make sure our pane exists
+                if ($.isBlank(sidebarObj._$panes[paneName]))
+                { throw paneName + ' does not exist'; }
+                sidebarObj._$panes[paneName].show();
+
+                // Adjust positions for the sidebar
                 setPosition(sidebarObj);
+
+                // The big reveal
                 sidebarObj.$dom().show();
                 sidebarObj.$grid().css('margin-right',
-                    sidebarObj.$dom().width() + 'px');
+                    sidebarObj.$dom().outerWidth(true) + 'px');
 
                 if (isModal)
                 {
@@ -126,7 +155,8 @@
     var setPosition = function(sidebarObj)
     {
         var gridHeight = sidebarObj.$grid().height();
-        sidebarObj.$dom().css('top', -gridHeight + 'px').height(gridHeight);
+        var adjH = sidebarObj.$dom().outerHeight() - sidebarObj.$dom().height();
+        sidebarObj.$dom().css('top', -gridHeight + 'px').height(gridHeight - adjH);
     };
 
     var handleResize = function(sidebarObj)
@@ -134,6 +164,59 @@
         if (sidebarObj.$dom().is(':hidden')) { return; }
 
         _.defer(function() { setPosition(sidebarObj); });
+    };
+
+    var renderPane = function(sidebarObj, config, data)
+    {
+        var $pane = $('<div id="' +
+            sidebarObj.$dom().attr('id') + '_' + config.name +
+            '" class="sidebarPane"></div>');
+        var rData = {title: config.title, subtitle: config.subtitle,
+            sections: config.sections, finishButtons: config.finishButtons};
+        var directive = {
+            '.title': 'title',
+            '.subtitle': 'subtitle',
+            '.section': {
+                'section<-sections': {
+                    '.title': 'section.title'
+                }
+            },
+            '.finishButtons > li': {
+                'button<-finishButtons': {
+                    'a': 'button.text',
+                    'a@value': 'button.value',
+                    'a@class+': function(arg)
+                    { return arg.item.isDefault ? ' arrowButton' : ''; },
+                    'a@href+': function(arg)
+                    { return $.urlSafe(arg.item.text || ''); }
+                }
+            }
+        };
+
+        $pane.append($.renderTemplate('sidebarPane', rData, directive));
+
+        return $pane;
+    };
+
+
+    $.gridSidebarConfig = {
+        locationCreate: {
+            name: 'locationCreate',
+            title: 'Create a Location Column',
+            subtitle: 'Create a blank column to fill in location data, or fill it with values from existing columns',
+            sections: [
+                {
+                    title: 'Import Latitude/Longitude'
+                },
+                {
+                    title: 'Import US Addresses'
+                }
+            ],
+            finishButtons: [
+                {text: 'Create', value: true, isDefault: true},
+                {text: 'Cancel', value: false}
+            ]
+        }
     };
 
 })(jQuery);

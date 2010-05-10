@@ -1,10 +1,12 @@
 
 #gridSidebar
 {
-    background-color: #9999ff;
+    background-color: #ffffff;
+    border-left: 2px solid #999999;
     display: none;
     float: right;
     overflow: auto;
+    padding: 0.75em;
     position: relative;
     width: 300px;
 }
@@ -28,10 +30,45 @@
     background-repeat: no-repeat;
     display: block;
     height: 16px;
-    position: absolute;
+    position: fixed;
     line-height: 100px;
     overflow: hidden;
     right: 2px;
     top: 2px;
     width: 16px;
+}
+
+#gridSidebar h3.title
+{
+    font-size: 1.3em;
+    font-weight: normal;
+    margin-bottom: 0.3em;
+}
+
+#gridSidebar .subtitle
+{
+    border-bottom: 1px solid #cccccc;
+    color: #999999;
+    font-size: 1.1em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+}
+
+#gridSidebar .section
+{
+    border-bottom: 1px solid #cccccc;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+}
+
+#gridSidebar .section .title
+{
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#gridSidebar .finishButtons
+{
+    margin-left: -1em;
+    margin-top: 0.75em;
 }

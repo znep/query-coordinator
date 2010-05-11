@@ -282,7 +282,8 @@
             '.section': {
                 'section<-sections': {
                     '@class+': function(arg)
-                    { return ' ' + arg.item.type +
+                    { return ' ' + (arg.item.type || '') +
+                        ' ' + (arg.item.name || '') +
                         (arg.item.type == 'selectable' ? ' collapsed' : ''); },
                     '.title': 'section.title',
                     '.title@for': 'section.name',
@@ -334,6 +335,11 @@
         return $pane;
     };
 
+    var genericErrorHandler = function($pane, xhr)
+    {
+        $pane.find('.mainError')
+            .text($.json.deserialize(xhr.responseText).message);
+    };
 
     /*** Pane-specific callbacks ***/
 
@@ -349,28 +355,67 @@
 
         $pane.find('.mainError').text('');
 
+        if ($pane.find('.section.latLongSection .sectionSelect').value() ||
+                $pane.find('.section.addressSection .sectionSelect').value())
+        { convertLocation(sidebarObj, data, $pane); }
+        else
+        { createLocation(sidebarObj, data, $pane); }
+    };
+
+    var columnCreated = function(sidebarObj, newCol)
+    {
+        sidebarObj.$grid().blistModel().updateColumn(newCol);
+        $(document).trigger(blist.events.COLUMNS_CHANGED, [newCol.id]);
+        $.Tache.DeleteAll();
+        sidebarObj.hide();
+    };
+
+    var convertLocation = function(sidebarObj, data, $pane)
+    {
+        var useLatLong =
+            $pane.find('.section.latLongSection .sectionSelect').value();
+        var useAddress =
+            $pane.find('.section.addressSection .sectionSelect').value();
+
+        var latVal = useLatLong ? $pane.find('#convertLat').val() : null;
+        var longVal = useLatLong ? $pane.find('#convertLong').val() : null;
+        $.ajax({url: '/views/' + blist.display.viewId + '/columns.json?' +
+            'method=' + (useLatLong ? 'locify' : 'addressify') +
+            '&deleteOriginalColumns=false' +
+            '&location=' + $pane.find('#columnName').val() +
+            (latVal ? '&latitude=' + latVal : '') +
+            (longVal ? '&longitude=' + longVal : ''),
+            type: 'POST', contentType: 'application/json', dataType: 'json',
+            error: function(xhr) { genericErrorHandler($pane, xhr); },
+            success: function(resp)
+            {
+                var desc = $pane.find('#columnDescription').val();
+                if (desc)
+                {
+                    $.ajax({url: '/views/' + blist.display.viewId +
+                        '/columns/' + resp.id + '.json', type: 'PUT',
+                        contentType: 'application/json', dataType: 'json',
+                        data: $.json.serialize({description: desc}),
+                        error: function(xhr) { genericErrorHandler($pane, xhr); },
+                        success: function(r) { columnCreated(sidebarObj, r); }
+                    });
+                }
+                else { columnCreated(sidebarObj, resp); }
+            }
+        });
+    };
+
+    var createLocation = function(sidebarObj, data, $pane)
+    {
         var column = {name: $pane.find('#columnName').val() || null,
             description: $pane.find('#columnDescription').val() || null,
             dataTypeName: data.columnType};
 
-        $.ajax({url: '/views/' + blist.display.viewId + '/columns' +
-            (_.isNull(data.columnParent) ? '' :
-                '/' + data.columnParent + '/sub_columns') + '.json',
+        $.ajax({url: '/views/' + blist.display.viewId + '/columns.json',
             type: 'POST', contentType: 'application/json', dataType: 'json',
             data: $.json.serialize(column),
-            error: function(xhr)
-            {
-                $pane.find('.mainError')
-                    .text($.json.deserialize(xhr.responseText).message);
-            },
-            success: function(resp)
-            {
-                sidebarObj.$grid().blistModel()
-                    .updateColumn(resp, data.columnParent || null);
-                $(document).trigger(blist.events.COLUMNS_CHANGED, [resp.id]);
-                $.Tache.DeleteAll();
-                sidebarObj.hide();
-            }
+            error: function(xhr) { genericErrorHandler($pane, xhr); },
+            success: function(resp) { columnCreated(sidebarObj, resp); }
         });
     };
 

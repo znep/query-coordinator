@@ -7,7 +7,7 @@
     float: right;
     overflow: hidden;
     position: relative;
-    width: 300px;
+    width: 30em;
 }
 
 #gridSidebarOverlay
@@ -39,7 +39,6 @@
 
 #gridSidebar .sidebarPane
 {
-    height: 100%;
     overflow: auto;
     padding: 0.75em;
 }
@@ -83,14 +82,16 @@
     line-height: 1.75em;
     text-align: right;
     vertical-align: top;
-    width: 5em;
+    width: 5.5em;
 }
+
 #gridSidebar .section .line textarea,
+#gridSidebar .section .line select,
 #gridSidebar .section .line input
 {
     font-size: 1.2em;
     margin-bottom: 0;
-    width: 15em;
+    width: 13em;
 }
 
 #gridSidebar .section .line span.error
@@ -101,6 +102,9 @@
     margin-left: 6.3em;
     padding-left: 15px;
 }
+
+#gridSidebar .section.collapsed .title { color: #999999; }
+#gridSidebar .section.collapsed .content { display: none; }
 
 #gridSidebar .finishButtons
 {

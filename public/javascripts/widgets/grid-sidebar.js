@@ -1,5 +1,23 @@
 (function($)
 {
+    $.validator.addMethod('notEqualTo', function(value, element, param)
+    {
+        if (this.optional(element)) { return true; }
+        var isEqual = false;
+        var $e = $(element);
+        $(param).each(function(i, p)
+        {
+            var $p = $(p);
+            if ($e.index($p) < 0 && $p.val() == value)
+            {
+                isEqual = true;
+                return false;
+            }
+        });
+        return !isEqual;
+    },
+    'A different value is required.');
+
     $.fn.gridSidebar = function(options)
     {
         // Check if object was already created
@@ -57,6 +75,7 @@
                 return this._$grid;
             },
 
+            /* Create a new pane in the sidebar */
             addPane: function(config, data)
             {
                 var sidebarObj = this;
@@ -76,6 +95,8 @@
                 $pane.hide();
             },
 
+            /* Show the sidebar and a specific pane in it.  If it is modal,
+             * then hide/disable other parts of the UI */
             show: function(paneName, isModal)
             {
                 var sidebarObj = this;
@@ -118,6 +139,8 @@
                 $(window).resize();
             },
 
+            /* Hide the sidebar and all panes.  If it was modal, then undo the
+             * modal changes */
             hide: function()
             {
                 var sidebarObj = this;
@@ -143,6 +166,7 @@
         }
     });
 
+    /* Helper to get/create the modal overlay */
     var modalOverlay = function(sidebarObj)
     {
         if (!sidebarObj._$overlay)
@@ -153,13 +177,20 @@
         return sidebarObj._$overlay;
     };
 
+    /* Adjust the position/size of the sidebar to fit next to the grid */
     var setPosition = function(sidebarObj)
     {
         var gridHeight = sidebarObj.$grid().height();
         var adjH = sidebarObj.$dom().outerHeight() - sidebarObj.$dom().height();
         sidebarObj.$dom().css('top', -gridHeight + 'px').height(gridHeight - adjH);
+
+        // Adjust current pane to correct height, since it is what scrolls
+        var $pane = sidebarObj.$dom().find('.sidebarPane:visible');
+        adjH += $pane.outerHeight() - $pane.height();
+        $pane.height(gridHeight - adjH);
     };
 
+    /* Handle window resizing */
     var handleResize = function(sidebarObj)
     {
         if (sidebarObj.$dom().is(':hidden')) { return; }
@@ -168,36 +199,75 @@
     };
 
 
-    var renderInputType = function(args)
+    /*** Functions related to rendering a pane ***/
+
+    /* Render a single input field */
+    var renderInputType = function(sidebarObj, args)
     {
         var result = '';
+
+        var commonAttr = 'id="' + args.item.name + '"' +
+            ' name="' + args.item.name + '"' +
+            ' class="' + (args.item.required ? 'required' : '') +
+                (' ' + args.item.notequalto || '') + '"' +
+            (!$.isBlank(args.item.notequalto) ? ' notequalto=".' +
+                args.item.notequalto + '"' : '');
+
+        var cols;
+        if (!$.isBlank(args.item.columns))
+        {
+            cols = _.select(sidebarObj.$grid().blistModel().meta().view.columns,
+                function(c) { return c.dataTypeName != 'meta_data'; });
+            if (!args.item.columns.hidden)
+            {
+                cols = _.select(cols, function(c)
+                    { return !c.flags || !_.include(c.flags, 'hidden'); });
+            }
+            if (!$.isBlank(args.item.columns.type))
+            {
+                var types = args.item.columns.type;
+                if (!_.isArray(args.item.columns.type))
+                { types = [types]; }
+                cols = _.select(cols, function(c)
+                    { return _.include(types, c.dataTypeName); });
+            }
+        }
 
         switch (args.item.type)
         {
             case 'text':
-                result = '<input type="text" id="' + args.item.name +
-                    '" name="' + args.item.name + '"' +
+                result = '<input type="text" ' + commonAttr +
                     (!$.isBlank(args.context.data[args.item.name]) ?
                         ' value="' +
                             $.htmlEscape(args.context.data[args.item.name]) +
                             '"' : '') +
-                    ' class="' + (args.item.required ? 'required' : '') + '"' +
                     ' />';
                 break;
             case 'textarea':
-                result = '<textarea id="' + args.item.name +
-                    '" name="' + args.item.name +
-                    ' class="' + (args.item.required ? 'required' : '') + '"' +
-                    '">' +
+                result = '<textarea ' + commonAttr + '>' +
                     (!$.isBlank(args.context.data[args.item.name]) ?
                         $.htmlEscape(args.context.data[args.item.name]) : '') +
                     '</textarea>';
+                break;
+            case 'select':
+                result = '<select ' + commonAttr + '>';
+                if (!$.isBlank(cols))
+                {
+                    result += '<option value="">Select a Column</option>';
+                    _.each(cols, function(c)
+                    {
+                        result += '<option value="' + c.id + '">' +
+                            $.htmlEscape(c.name) + '</option>';
+                    });
+                }
+                result += '</select>';
                 break;
         }
 
         return result;
     };
 
+    /* Render the full pane from config */
     var renderPane = function(sidebarObj, config, data)
     {
         var $pane = $('<div id="' +
@@ -211,14 +281,23 @@
             '.subtitle': 'subtitle',
             '.section': {
                 'section<-sections': {
+                    '@class+': function(arg)
+                    { return ' ' + arg.item.type +
+                        (arg.item.type == 'selectable' ? ' collapsed' : ''); },
                     '.title': 'section.title',
+                    '.title@for': 'section.name',
+                    '.sectionSelect@id': 'section.name',
+                    '.sectionSelect@name': 'section.name',
+                    '.sectionSelect@class+': function(arg)
+                    { return arg.item.type == 'selectable' ? '' : ' hidden'; },
                     '.line': {
                         'field<-section.fields': {
                             'label': 'field.text',
                             'label@for': 'field.name',
                             'label@class+': function(arg)
                             { return arg.item.required ? ' required' : ''; },
-                            '.+': renderInputType
+                            '.+': function(a)
+                            { return renderInputType(sidebarObj, a); }
                         }
                     }
                 }
@@ -239,6 +318,12 @@
 
         $pane.find('form').validate({ignore: ':hidden', errorElement: 'span'});
 
+        $pane.find('.section.selectable .sectionSelect').click(function(e)
+        {
+            var $c = $(this);
+            $c.parent().toggleClass('collapsed', !$c.value());
+        });
+
         $pane.find('.actionButtons a').click(function(e)
         {
             e.preventDefault();
@@ -249,6 +334,8 @@
         return $pane;
     };
 
+
+    /*** Pane-specific callbacks ***/
 
     var locationCreateCallback = function(sidebarObj, data, $pane, value)
     {
@@ -287,6 +374,9 @@
         });
     };
 
+
+    /*** Public configurations for panes ***/
+
     $.gridSidebarConfig = {
         locationCreate: {
             name: 'locationCreate',
@@ -303,10 +393,22 @@
                     ]
                 },
                 {
-                    title: 'Import Latitude/Longitude'
+                    title: 'Import Latitude/Longitude',
+                    type: 'selectable',
+                    name: 'latLongSection',
+                    fields: [
+                        {text: 'Latitude', type: 'select', name: 'convertLat',
+                            required: true, notequalto: 'latLongCol',
+                            columns: {type: 'number', hidden: false} },
+                        {text: 'Longitude', type: 'select', name: 'convertLong',
+                            required: true, notequalto: 'latLongCol',
+                            columns: {type: 'number', hidden: false} }
+                    ]
                 },
                 {
-                    title: 'Import US Addresses'
+                    title: 'Import US Addresses',
+                    type: 'selectable',
+                    name: 'addressSection'
                 }
             ],
             finishButtons: [

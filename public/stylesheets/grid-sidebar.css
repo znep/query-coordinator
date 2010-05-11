@@ -35,6 +35,7 @@
     right: 20px;
     top: 2px;
     width: 16px;
+    z-index: 10;
 }
 
 #gridSidebar .sidebarPane
@@ -87,11 +88,22 @@
 
 #gridSidebar .section .line textarea,
 #gridSidebar .section .line select,
-#gridSidebar .section .line input
+#gridSidebar .section .line input,
+#gridSidebar .section .line .radioBlock
 {
+    display: inline-block;
     font-size: 1.2em;
     margin-bottom: 0;
     width: 13em;
+}
+#gridSidebar .section .line.radioGroup { background-color: #ececec; }
+#gridSidebar .section .line .radioBlock { width: 13.5833em; }
+#gridSidebar .section .line input[type="radio"]
+{
+    display: inline-block;
+    margin-left: 0;
+    margin-right: 0.5em;
+    width: auto;
 }
 
 #gridSidebar .section .line span.error
@@ -101,6 +113,30 @@
     line-height: 1.7em;
     margin-left: 6.3em;
     padding-left: 15px;
+}
+
+#gridSidebar .section .line .radioBlock label
+{
+    display: inline-block;
+    font-size: 1em;
+    font-weight: normal;
+    padding-right: 0;
+    text-align: left;
+    width: auto;
+}
+
+#gridSidebar .section .line .radioBlock label select,
+#gridSidebar .section .line .radioBlock label input
+{
+    font-size: 1em;
+    width: 11.3em;
+}
+
+#gridSidebar .section .line .radioBlock label span.error
+{
+    font-size: 0.8333em;
+    margin-left: 0;
+    padding-left: 0;
 }
 
 #gridSidebar .section.collapsed .title { color: #999999; }

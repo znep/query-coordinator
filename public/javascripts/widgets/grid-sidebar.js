@@ -206,12 +206,18 @@
     {
         var result = '';
 
-        var commonAttr = 'id="' + args.item.name + '"' +
-            ' name="' + args.item.name + '"' +
-            ' class="' + (args.item.required ? 'required' : '') +
-                (' ' + args.item.notequalto || '') + '"' +
-            (!$.isBlank(args.item.notequalto) ? ' notequalto=".' +
-                args.item.notequalto + '"' : '');
+        var commonAttrs = function(item)
+        {
+            return 'id="' + (item.id || item.name || '') + '"' +
+                ' name="' + (item.name || '') + '"' +
+                ' title="' + (item.prompt || '') + '"' +
+                ' class="' + (item.extraClass || '') +
+                    (item.required ? ' required' : '') +
+                    (' ' + (item.notequalto || '')) +
+                    (!$.isBlank(item.prompt) ? ' textPrompt' : '') + '"' +
+                (!$.isBlank(item.notequalto) ? ' notequalto=".' +
+                    item.notequalto.split(' ').join(', .') + '"' : '');
+        };
 
         var cols;
         if (!$.isBlank(args.item.columns))
@@ -235,22 +241,29 @@
 
         switch (args.item.type)
         {
+            case 'static':
+                result = '<span ' + commonAttrs(args.item) + '>' +
+                    (args.item.text || '') + '</span>';
+                break;
+
             case 'text':
-                result = '<input type="text" ' + commonAttr +
+                result = '<input type="text" ' + commonAttrs(args.item) +
                     (!$.isBlank(args.context.data[args.item.name]) ?
                         ' value="' +
                             $.htmlEscape(args.context.data[args.item.name]) +
                             '"' : '') +
                     ' />';
                 break;
+
             case 'textarea':
-                result = '<textarea ' + commonAttr + '>' +
+                result = '<textarea ' + commonAttrs(args.item) + '>' +
                     (!$.isBlank(args.context.data[args.item.name]) ?
                         $.htmlEscape(args.context.data[args.item.name]) : '') +
                     '</textarea>';
                 break;
+
             case 'select':
-                result = '<select ' + commonAttr + '>';
+                result = '<select ' + commonAttrs(args.item) + '>';
                 if (!$.isBlank(cols))
                 {
                     result += '<option value="">Select a Column</option>';
@@ -261,6 +274,25 @@
                     });
                 }
                 result += '</select>';
+                break;
+
+            case 'radioGroup':
+                result = '<div class="radioBlock">'
+                _.each(args.item.options, function(opt, i)
+                {
+                    result += '<div class="radioLine' +
+                        (i == 0 ? ' first' : '') + '">' +
+                        '<input type="radio" ' +
+                        (opt.checked ? 'checked="checked" ' : '') +
+                        commonAttrs($.extend({}, args.item,
+                            {id: args.item.name + '_' + i})) + ' />' +
+                        '<label for="' + args.item.name + '_' + i + '">' +
+                        renderInputType(sidebarObj, {context: args.context,
+                            item: opt, items: args.item.options, pos: i}) +
+                        '</label>' +
+                        '</div>';
+                });
+                result += '</div>';
                 break;
         }
 
@@ -275,7 +307,7 @@
             '" class="sidebarPane"></div>');
         var rData = {title: config.title, subtitle: config.subtitle,
             sections: config.sections, finishButtons: config.finishButtons,
-            data: data};
+            data: data || {}};
         var directive = {
             '.title': 'title',
             '.subtitle': 'subtitle',
@@ -293,6 +325,7 @@
                     { return arg.item.type == 'selectable' ? '' : ' hidden'; },
                     '.line': {
                         'field<-section.fields': {
+                            '@class+': ' #{field.type}',
                             'label': 'field.text',
                             'label@for': 'field.name',
                             'label@class+': function(arg)
@@ -317,12 +350,30 @@
 
         $pane.append($.renderTemplate('sidebarPane', rData, directive));
 
+        $pane.find('.textPrompt')
+            .example(function () { return $(this).attr('title'); });
+
         $pane.find('form').validate({ignore: ':hidden', errorElement: 'span'});
 
         $pane.find('.section.selectable .sectionSelect').click(function(e)
         {
             var $c = $(this);
             $c.parent().toggleClass('collapsed', !$c.value());
+        });
+
+        // Inputs inside labels are likely attached to radio buttons.
+        // We need to preventDefault on the click so focus stays in the input,
+        // and isn't stolen by the radio button; then we need to manually trigger
+        // the selection of the radio button.  We use mouseup because textPrompt
+        // interferes with click events
+        $pane.find('.section label :input').click(function(e)
+        {
+            e.preventDefault();
+        }).mouseup(function(e)
+        {
+            var forAttr = $(this).parents('label').attr('for');
+            if (!$.isBlank(forAttr))
+            { $pane.find('#' + forAttr).click(); }
         });
 
         $pane.find('.actionButtons a').click(function(e)
@@ -379,17 +430,57 @@
 
         var latVal = useLatLong ? $pane.find('#convertLat').val() : null;
         var longVal = useLatLong ? $pane.find('#convertLong').val() : null;
+
+        var streetIsCol = false;
+        var streetVal;
+        var cityIsCol = false;
+        var cityVal;
+        var stateIsCol = false;
+        var stateVal;
+        var zipIsCol = false;
+        var zipVal;
+        if (useAddress)
+        {
+            var $street = $pane.find(':input[name="convertStreetGroup"]:checked')
+                .siblings('label').find(':input:not(.prompt)');
+            streetIsCol = $street.is('select');
+            streetVal = $street.val() || null;
+
+            var $city = $pane.find(':input[name="convertCityGroup"]:checked')
+                .siblings('label').find(':input:not(.prompt)');
+            cityIsCol = $city.is('select');
+            cityVal = $city.val() || null;
+
+            var $state = $pane.find(':input[name="convertStateGroup"]:checked')
+                .siblings('label').find(':input:not(.prompt)');
+            stateIsCol = $state.is('select');
+            stateVal = $state.val() || null;
+
+            var $zip = $pane.find(':input[name="convertZipGroup"]:checked')
+                .siblings('label').find(':input:not(.prompt)');
+            zipIsCol = $zip.is('select');
+            zipVal = $zip.val() || null;
+        }
+
         $.ajax({url: '/views/' + blist.display.viewId + '/columns.json?' +
             'method=' + (useLatLong ? 'locify' : 'addressify') +
             '&deleteOriginalColumns=false' +
             '&location=' + $pane.find('#columnName').val() +
             (latVal ? '&latitude=' + latVal : '') +
-            (longVal ? '&longitude=' + longVal : ''),
+            (longVal ? '&longitude=' + longVal : '') +
+            (streetVal ? '&address' + (streetIsCol ? 'Column' : 'Value') +
+                '=' + streetVal : '') +
+            (cityVal ? '&city' + (cityIsCol ? 'Column' : 'Value') +
+                '=' + cityVal : '') +
+            (stateVal ? '&state' + (stateIsCol ? 'Column' : 'Value') +
+                '=' + stateVal : '') +
+            (zipVal ? '&zip' + (zipIsCol ? 'Column' : 'Value') +
+                '=' + zipVal : ''),
             type: 'POST', contentType: 'application/json', dataType: 'json',
             error: function(xhr) { genericErrorHandler($pane, xhr); },
             success: function(resp)
             {
-                var desc = $pane.find('#columnDescription').val();
+                var desc = $pane.find('#columnDescription:not(.prompt)').val();
                 if (desc)
                 {
                     $.ajax({url: '/views/' + blist.display.viewId +
@@ -407,8 +498,9 @@
 
     var createLocation = function(sidebarObj, data, $pane)
     {
-        var column = {name: $pane.find('#columnName').val() || null,
-            description: $pane.find('#columnDescription').val() || null,
+        var column = {name: $pane.find('#columnName:not(.prompt)').val() || null,
+            description:
+                $pane.find('#columnDescription:not(.prompt)').val() || null,
             dataTypeName: data.columnType};
 
         $.ajax({url: '/views/' + blist.display.viewId + '/columns.json',
@@ -432,9 +524,10 @@
                     title: 'Column Information',
                     fields: [
                         {text: 'Name', type: 'text', name: 'columnName',
-                            required: true},
+                            prompt: 'Enter a name', required: true},
                         {text: 'Description', type: 'textarea',
-                            name: 'columnDescription'}
+                            name: 'columnDescription',
+                            prompt: 'Enter a description'}
                     ]
                 },
                 {
@@ -443,17 +536,57 @@
                     name: 'latLongSection',
                     fields: [
                         {text: 'Latitude', type: 'select', name: 'convertLat',
-                            required: true, notequalto: 'latLongCol',
+                            required: true, notequalto: 'convertNumber',
                             columns: {type: 'number', hidden: false} },
                         {text: 'Longitude', type: 'select', name: 'convertLong',
-                            required: true, notequalto: 'latLongCol',
+                            required: true, notequalto: 'convertNumber',
                             columns: {type: 'number', hidden: false} }
                     ]
                 },
                 {
                     title: 'Import US Addresses',
                     type: 'selectable',
-                    name: 'addressSection'
+                    name: 'addressSection',
+                    fields: [
+                        {text: 'Street', type: 'radioGroup',
+                            name: 'convertStreetGroup',
+                            options: [
+                                {text: 'None', type: 'static', checked: true},
+                                {type: 'select', name: 'convertStreetCol',
+                                    notequalto: 'convertText',
+                                    columns: {type: 'text', hidden: false} }
+                            ] },
+                        {text: 'City', type: 'radioGroup', name: 'convertCityGroup',
+                            options: [
+                                {text: 'None', type: 'static', checked: true},
+                                {type: 'select', name: 'convertCityCol',
+                                    notequalto: 'convertText',
+                                    columns: {type: 'text', hidden: false} },
+                                {type: 'text', name: 'convertCityStatic',
+                                    prompt: 'Enter a city'}
+                            ] },
+                        {text: 'State', type: 'radioGroup',
+                            name: 'convertStateGroup',
+                            options: [
+                                {text: 'None', type: 'static', checked: true},
+                                {type: 'select', name: 'convertStateCol',
+                                    notequalto: 'convertText',
+                                    columns: {type: 'text', hidden: false} },
+                                {type: 'text', name: 'convertStateStatic',
+                                    prompt: 'Enter a state'}
+                            ] },
+                        {text: 'Zip Code', type: 'radioGroup',
+                            name: 'convertZipGroup',
+                            options: [
+                                {text: 'None', type: 'static', checked: true},
+                                {type: 'select', name: 'convertZipCol',
+                                    notequalto: 'convertText convertNumber',
+                                    columns: {type: ['text', 'number'],
+                                        hidden: false} },
+                                {type: 'text', name: 'convertZipStatic',
+                                    prompt: 'Enter a zip code'}
+                            ] }
+                    ]
                 }
             ],
             finishButtons: [

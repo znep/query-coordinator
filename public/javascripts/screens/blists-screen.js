@@ -292,6 +292,9 @@ blist.myBlists.renameClick = function (event)
 
     $currentCell.find("div").hide();
 
+    var $cancel = $currentCell.find('[title=Cancel]');
+    $cancel.click(myBlistsNS.closeRenameForms);
+
     // Close the form on pressing escape
     var $form = $currentCell.find("form").keyup(function(event)
     {
@@ -301,7 +304,8 @@ blist.myBlists.renameClick = function (event)
         }
     });
     $form.submit(myBlistsNS.renameSubmit)
-         .show().find(":text").width(nameCellWidth - 20).focus();
+     .show().find(":text").width(nameCellWidth - 20 * 2).focus(); /* width - 2 buttons */
+
 };
 
 blist.myBlists.closeRenameForms = function()
@@ -715,11 +719,13 @@ blist.myBlists.customDatasetName = function(value)
       form_authenticity_token + '"/>' +
       '<input id="view_\'+ row.id + \'_name" name="view_\' + row.id + ' +
       '\'[name]" type="text" value="\' + $.htmlEscape(' + value + ') + \'"/>' +
-      '<input src="/images/submit_button_mini.png" title="Rename" type="image"' +
-      'alt="rename" />' +
-    '</form>\'';
+    
+      '<input src="/images/submit_button_mini.png" title="Rename" type="image" alt="rename" />' +
+      '<input src="/images/cancel_button_mini.png" title="Cancel" type="image" alt="cancel" />' +
+      '</form>\'';
 
     var expansion =
+        
         '\'<a href="#expand_\' + row.id + \'" title="\' + ' +
         '    (row.expanded ? \'Hide\' : \'Show\') + \' filters" ' +
         '    class="blist-opener"></a>\'';

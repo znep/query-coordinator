@@ -130,7 +130,7 @@
                     var zIndex = parseInt($overlay.css('z-index')) + 1;
                     sidebarObj.$dom().css('z-index', zIndex);
                     sidebarObj.$grid().css('z-index', zIndex);
-                    $overlay.show();
+                    $overlay.fadeIn(500);
 
                     sidebarObj.$grid().datasetGrid().disable();
                 }
@@ -154,7 +154,7 @@
                     if (!_.isNull(sidebarObj.settings.modalHiddenSelector))
                     { $(sidebarObj.settings.modalHiddenSelector).show(); }
                     $('body').css('overflow', sidebarObj._bodyOverflow);
-                    modalOverlay(sidebarObj).hide();
+                    modalOverlay(sidebarObj).fadeOut(500);
                     sidebarObj.$dom().css('z-index', sidebarObj._origZIndex);
                     sidebarObj.$grid().css('z-index', sidebarObj._origGridZIndex);
 

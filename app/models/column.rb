@@ -2,9 +2,10 @@ class Column < Model
   cattr_reader :types
   attr_accessor :data_position
 
-  @@types = { 
-      "text" => "Plain Text", 
+  @@types = {
+      "text" => "Plain Text",
       "richtext" => "Formatted Text",
+      "html" => "Formatted Text",
       "number" => "Number",
       "money" => "Money",
       "percent" => "Percent",
@@ -60,7 +61,7 @@ class Column < Model
   def possible_filter_conditions
     filter_type =
       case dataTypeName
-      when 'text', 'url', 'email', 'phone', 'tag'
+      when 'text', 'html', 'url', 'email', 'phone', 'tag'
         'textual'
       when 'number', 'money', 'percent', 'stars', 'picklist', 'drop_down_list'
         'numeric'
@@ -88,8 +89,9 @@ class Column < Model
     case (dataTypeName || renderTypeName).downcase
     when "nested_table"
       aggs.reject! {|a| a['name'] != 'none'}
-    when "text", "photo_obsolete", "photo", "phone", "checkbox", "flag", "url",
-      "email", "document_obsolete", "document", "tag", "picklist", "drop_down_list"
+    when "text", 'html', "photo_obsolete", "photo", "phone", "checkbox",
+      "flag", "url", "email", "document_obsolete", "document", "tag", "picklist",
+      "drop_down_list"
       aggs.reject! {|a|
         ['average', 'sum', 'maximum', 'minimum'].any? {|n| n == a['name']}}
     when "date"
@@ -106,14 +108,16 @@ class Column < Model
 
     if client_type(dataTypeName) == "text"
       return [
-        "richtext", "number", "money", "percent", "date", "phone",
+        'html', "number", "money", "percent", "date", "phone",
+        "email", "url", "checkbox", "stars", "flag"
+      ]
+    elsif client_type(dataTypeName) == "html"
+      return [
+        'text', "number", "money", "percent", "date", "phone",
         "email", "url", "checkbox", "stars", "flag"
       ]
     elsif client_type(dataTypeName) == "richtext"
-      return [
-        "text", "number", "money", "percent", "date", "phone",
-        "email", "url", "checkbox", "stars", "flag"
-      ]
+      return []
     end
 
     if ["percent", "money", "number", "stars"].include?(dataTypeName)
@@ -146,7 +150,7 @@ class Column < Model
   end
 
   def has_totals?
-    types_with_totals = ["text", "richtext", "number", "money", "percent",
+    types_with_totals = ["text", "richtext", 'html', "number", "money", "percent",
                          "date", "phone", "email", "url", "checkbox", "stars",
                          "flag", "document_obsolete", "document", "photo_obsolete", "photo",
                          "picklist", "drop_down_list", "tag"]

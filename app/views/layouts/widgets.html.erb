@@ -47,6 +47,15 @@
   Better to load JS at the bottom:
   http://developer.yahoo.com/performance/rules.html#js_bottom
   %>
+
+  <%# Libraries for use with BeautyTip %>
+  <!--[if IE]>
+  <script type="text/javascript" src="/javascripts/plugins/excanvas.compiled.js"></script>
+  <![endif]-->
+  <!--[if lt IE 7]>
+  <script type="text/javascript" src="/javascripts/plugins/jquery.bgiframe.min.js"></script>
+  <![endif]-->
+
   <%= javascript_include_merged 'base' %>
 
   <% if ENV["RAILS_ENV"] != 'production' %>

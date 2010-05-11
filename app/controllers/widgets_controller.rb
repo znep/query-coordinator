@@ -6,7 +6,6 @@ class WidgetsController < ApplicationController
     @variation = params[:variation]
     @theme = WidgetCustomization.default_theme
 
-    @options = params[:options]
     if @variation.blank? && params[:customization_id].blank?
       return redirect_to(params.merge!(:controller => "widgets", :action => "show", :variation => 'normal'))
     end
@@ -19,7 +18,7 @@ class WidgetsController < ApplicationController
 
     if params[:customization_id]
       begin
-        @theme.merge!(WidgetCustomization.find(params[:customization_id]).customization)
+        @theme = WidgetCustomization.find(params[:customization_id]).customization
       rescue CoreServer::CoreServerError => e
         flash.now[:error] = e.error_message
         return (render 'shared/error', :status => :internal_server_error)

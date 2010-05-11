@@ -298,7 +298,7 @@
         if ($menu.offset().top + $menu.outerHeight(false) > documentHeight)
         {
             // if the menu can be flipped up, do so; otherwise, leave it alone
-            if ($trigger.offset().top - $menu.outerHeight(true))
+            if ($trigger.offset().top - $menu.outerHeight(true) > 0)
             {
                 $menu.css('top', $menu.position().top -
                         ($menu.outerHeight(true) + $trigger.outerHeight(true)));

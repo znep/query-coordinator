@@ -824,6 +824,7 @@ ul.convertables li a:hover
 .datatype-none { background-position: 0 20px; }
 .datatype-text { background-position: 0 -80px; }
 .datatype-richtext { background-position: 0 -60px; }
+.datatype-html { background-position: 0 -60px; }
 .datatype-number { background-position: 0 -20px; }
 .datatype-money { background-position: 0 -40px; }
 .datatype-percent { background-position: 0 0; }

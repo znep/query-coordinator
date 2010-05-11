@@ -30,12 +30,12 @@ class WidgetCustomization < Model
     WidgetCustomization.parse(CoreServer::Base.connection.update_request(path, @update_data.to_json))
   end
 
-  def self.default_theme
-    Marshal::load(Marshal.dump(@@default_theme))
+  def self.default_theme(version = 0)
+    Marshal::load(Marshal.dump(@@default_themes[version.to_s]))
   end
 
-  def self.merge_theme_with_default(theme)
-    @@default_theme.deep_merge(theme)
+  def self.merge_theme_with_default(theme, version = 0)
+    @@default_themes[version.to_s].deep_merge(theme)
   end
 
   def customization
@@ -43,79 +43,119 @@ class WidgetCustomization < Model
     if @customization_hash.nil?
       hash = JSON.parse(@data['customization'])
       hash.deep_symbolize_keys!
-      @customization_hash = WidgetCustomization.merge_theme_with_default(hash)
+      @customization_hash = WidgetCustomization.merge_theme_with_default(hash, hash[:version] || 0)
     end
 
     @customization_hash
   end
 
-  @@default_theme = {
-    :style    => { :custom_stylesheet => 'normal',
-                   :font => { :face => 'arial',
-                              :grid_header_size => { :value => '1.2',
-                                                     :unit => 'em' },
-                              :grid_data_size =>   { :value => '1.1',
-                                                     :unit => 'em' } } },
-    :frame    => { :color => '#06386A',
-                   :gradient => true,
-                   :border => '#c9c9c9',
-                   :icon_color => 'blue',      #TODO+
-                   :logo => 'default',
-                   :logo_url => 'http://www.socrata.com/',
-                   :footer_link => { :show => true,
-                                     :url => 'http://www.socrata.com/try-it-free',
-                                     :text => 'Get a Data Player of Your Own' } },
-    :grid     => { :row_numbers => true,
-                   :wrap_header_text => false,
-                   :header_icons => false,
-                   :title_bold => false,
-                   :row_height => { :value => '16',
-                                    :unit => 'px' },
-                   :zebra => '#e7ebf2' },
-    :menu     => {
-                   :top_fullscreen => true,
+  @@default_themes = {
+    '0' => {
+      :style    => { :custom_stylesheet => 'normal',
+                     :font => { :face => 'arial',
+                                :grid_header_size => { :value => '1.2',
+                                                       :unit => 'em' },
+                                :grid_data_size =>   { :value => '1.1',
+                                                       :unit => 'em' } } },
+      :frame    => { :color => '#06386A',
+                     :gradient => true,
+                     :border => '#c9c9c9',
+                     :icon_color => 'blue',      #TODO+
+                     :logo => 'default',
+                     :logo_url => 'http://www.socrata.com/',
+                     :footer_link => { :show => true,
+                                       :url => 'http://www.socrata.com/try-it-free',
+                                       :text => 'Get a Data Player of Your Own' } },
+      :grid     => { :row_numbers => true,
+                     :wrap_header_text => false,
+                     :header_icons => false,
+                     :title_bold => false,
+                     :row_height => { :value => '16',
+                                      :unit => 'px' },
+                     :zebra => '#e7ebf2' },
+      :menu     => {
+                     :top_fullscreen => true,
 
-                   # Main menu
-                   :print => true,
-                   :fullscreen => true,
-                   :download_menu => { :csv => true,
-                                       :json => true,
-                                       :pdf => true,
-                                       :xls => true,
-                                       :xlsx => true,
-                                       :xml => true },
-                   :api => true,
-                   :subscribe  => { :atom => true,
-                                    :rss => true },
-                   :basic_analytics => true,
-                   :about => true,
-                   :about_sdp => true,
+                     # Main menu
+                     :print => true,
+                     :fullscreen => true,
+                     :download_menu => { :csv => true,
+                                         :json => true,
+                                         :pdf => true,
+                                         :xls => true,
+                                         :xlsx => true,
+                                         :xml => true },
+                     :api => true,
+                     :subscribe  => { :atom => true,
+                                      :rss => true },
+                     :basic_analytics => true,
+                     :about => true,
+                     :about_sdp => true,
 
-                   # More Views menu
-                   :show_tags => true,
-                   :more_views => true,
-                   :views_fullscreen => true,
+                     # More Views menu
+                     :show_tags => true,
+                     :more_views => true,
+                     :views_fullscreen => true,
 
-                   # Share menu
-                   :republish => true,
-                   :email => true,
-                   :socialize => { :delicious => true,
-                                   :digg => true,
-                                   :facebook => true,
-                                   :twitter => true }
-                 },
-    :meta     => { :comments   => { :show => true, :order => 0, :display_name => 'Comments' },
-                   :filtered   => { :show => true, :order => 1, :display_name => 'More Views' },
-                   :publishing => { :show => true, :order => 2, :display_name => 'Publishing' },
-                   :activity   => { :show => true, :order => 3, :display_name => 'Activity' },
-                   :summary    => { :show => true, :order => 4, :display_name => 'Summary' } },
-    :behavior => { :rating => true,             #TODO
-                   :save_public_views => true,
-                   :interstitial => false,
-                   :ga_code => '' },
-    :publish  => { :dimensions => { :width => 500,
-                                    :height => 425 },
-                   :show_title => true,
-                   :show_powered_by => true }
+                     # Share menu
+                     :republish => true,
+                     :email => true,
+                     :socialize => { :delicious => true,
+                                     :digg => true,
+                                     :facebook => true,
+                                     :twitter => true }
+                   },
+      :meta     => { :comments   => { :show => true, :order => 0, :display_name => 'Comments' },
+                     :filtered   => { :show => true, :order => 1, :display_name => 'More Views' },
+                     :publishing => { :show => true, :order => 2, :display_name => 'Publishing' },
+                     :activity   => { :show => true, :order => 3, :display_name => 'Activity' },
+                     :summary    => { :show => true, :order => 4, :display_name => 'Summary' } },
+      :behavior => { :rating => true,             #TODO
+                     :save_public_views => true,
+                     :interstitial => false,
+                     :ga_code => '' },
+      :publish  => { :dimensions => { :width => 500,
+                                      :height => 425 },
+                     :show_title => true,
+                     :show_powered_by => true }
+    },
+  '1' => {
+      :version => 1,
+      :frame    => { :border     => { :color => 'dedede',
+                                      :width => { :value => '1',
+                                                  :unit => 'px' } },
+                     :color      => 'f2f2f2',
+                     :padding    => { :value => '3',
+                                      :unit => 'px' } },
+      :toolbar  => { :orientation => 'downwards' },
+      :logo     => { :image      => { :type => 'static',
+                                      :href => '/stylesheets/images/logos/socrata_sdp_logo_black.png',
+                                      :width => '121',
+                                      :height => '34' },
+                     :href => 'http://socrata.com' },
+      :menu     => { :button     => { :content => 'Menu',
+                                      :background => [ { 'color' => 'ee3c39' }, { 'color' => 'b01e2d' } ],
+                                      :background_hover => [ { 'color' => 'fe5855' }, { 'color' => 'c22f3e' } ],
+                                      :border => 'b01e2d',
+                                      :text => 'ffffff' } },
+      :grid     => { :font       => { :face => 'arial',
+                                      :header_size => { :value => '1.2',
+                                                        :unit => 'em' },
+                                      :data_size   => { :value => '1.1',
+                                                        :unit => 'em' } },
+                     :row_numbers => true,
+                     :wrap_header_text => false,
+                     :header_icons => false,
+                     :title_bold => false,
+                     :zebra => 'e7ebf2' },
+      :behavior => { :rating => true,             #TODO
+                     :save_public_views => true,
+                     :interstitial => false,
+                     :ga_code => '' },
+      :publish  => { :dimensions => { :width => 500,
+                                      :height => 425 },
+                     :show_title => false,
+                     :show_powered_by => true }
+    }
   }
 end

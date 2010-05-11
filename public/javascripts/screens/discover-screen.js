@@ -59,7 +59,7 @@ blist.discover.historyChangeHandler = function (hash)
         {
             $("#tabPopular").before("<li id='tabSearch' class='active'><div class='wrapper'><a href='#results'>Search Results</a></div></li>");
             $("form.search #search")
-                .val($.urlParam("?" + hash, "search"))
+                .val(unescape($.urlParam("?" + hash, "search")))
                 .removeClass("prompt");
         }
     }
@@ -167,7 +167,7 @@ blist.discover.searchSubmitHandler = function(event)
         return;
     }
 
-    var hash = "type=search&search=" + query;
+    var hash = "type=search&search=" + escape(query);
     window.location.href = '#' + hash;
     $.historyLoad(hash);
     return false;

@@ -95,7 +95,7 @@ class CurrentDomain
     end
     return @@current_domain[:site_properties]
   end
-  
+
   def self.raw_properties
     if @@current_domain[:site_properties_raw].nil?
       conf = self.current_theme
@@ -111,6 +111,10 @@ class CurrentDomain
 
   def self.theme
     return self.properties.theme || Hashie::Mash.new
+  end
+
+  def self.theme_new
+    return self.properties.theme_new || Hashie::Mash.new
   end
 
   def self.strings
@@ -131,6 +135,10 @@ class CurrentDomain
 
   def self.module_names
     @@current_domain[:module_names] ||= self.modules.collect{|m| m['name']}
+  end
+
+  def self.default_config_id
+    return @@current_domain[:data].default_configuration('site_theme').id
   end
 
   def self.module_available?(name_or_set)

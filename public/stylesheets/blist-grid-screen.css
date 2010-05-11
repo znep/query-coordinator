@@ -639,6 +639,10 @@ body#lensBody
 .menu.columnsMenu .formattedText a
 { background-position: 5px -60px; }
 
+#addColumn_html,
+.menu.columnsMenu .html a
+{ background-position: 5px -60px; }
+
 #addColumn_number,
 .menu.columnsMenu .number a
 { background-position: 5px -20px; }

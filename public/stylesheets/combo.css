@@ -103,6 +103,7 @@
 { background-position: 0 -400px; }
 .type_combo_list .number { background-position: 0 -20px; }
 .type_combo_list .richtext { background-position: 0 -60px; }
+.type_combo_list .html { background-position: 0 -60px; }
 .type_combo_list .text { background-position: 0 -80px; }
 .type_combo_list .date { background-position: 0 -340px; }
 .type_combo_list .tag { background-position: 0 -180px; }

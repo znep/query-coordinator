@@ -2680,8 +2680,8 @@
                         "] ? ' invalid' : '')";
 
                     var drillDown = mcol.drillDown ? ("<a class='drillDown'" +
-                        " cellvalue='\" + $.htmlStrip('' + row" + mcol.dataLookupExpr +
-                        ") + \"' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
+                        " cellvalue='\" + $.escapeQuotes($.htmlStrip('' + row" + mcol.dataLookupExpr +
+                        ")) + \"' column='\" + " + mcol.id + " + \"' href='#drillDown'></a>") : '';
                     var cellDrillStyle = mcol.drillDown ?  ' drill-td' : '';
 
                     renderer = "(row" + mcol.dataLookupExpr + " !== null ? " +
@@ -3551,6 +3551,7 @@
 
         var updateFooter = function()
         {
+
             var updateColAgg = function(col)
             {
                 var modelCol = _.detect(model.meta().allColumns,
@@ -3582,6 +3583,29 @@
                     parseFloat(parseFloat(col.aggregate.value || 0)
                         .toFixed(col.decimalPlaces || 3)) :
                     '';
+
+                // some aggregate will be displayed in a format specific to the datatype
+                // money will show $99.99
+                if (col.aggregate)
+                {
+                    switch (col.type)
+                    {
+                        case 'money':
+                        case 'percent':
+                            switch (col.aggregate.type)
+                            {
+                                case 'sum':
+                                case 'average':
+                                case 'maximum':
+                                case 'minimum':
+                                    val = blist.data.types[col.type].filterRender(val, col);
+                                    break;
+                            }
+                            
+                            break;
+                    }
+                }
+
                 html.push(
                     '<div class="blist-tf ',
                     !i ? 'blist-tf-first ' : '',

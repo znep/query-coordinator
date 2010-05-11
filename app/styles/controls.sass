@@ -1,0 +1,154 @@
+a.button
+  +rounded-ends
+  +gradient_buttons_active_background
+  border= 1px solid !color_buttons_active_border
+  -moz-box-shadow= 0 0 2px !buttons_shadow
+  -webkit-box-shadow= 0 0 2px !buttons_shadow
+  color= !color_buttons_active_text
+  display: inline-block
+  font-size: 1.1em
+  height: 1.9em
+  line-height: 2em
+  margin: 0.5em
+  padding: 0 1.35em
+  text-transform: uppercase
+  &:hover
+    +gradient_buttons_hover_background
+    border= 1px solid !color_buttons_hover_border
+    text-decoration: none
+  &:active, &:focus
+    +gradient_buttons_focus_background
+    border= 1px solid !color_buttons_focus_border
+    text-decoration: none
+  &:visited
+    color= !color_buttons_active_text
+  &.disabled
+    +gradient_buttons_disabled_background
+    border= 1px solid !color_buttons_disabled_border
+    cursor: default
+
+  .ie &, .ie & .left
+    background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&ec=#{!buttons_active_border}&ew=1&h=20&w=500&r=10)" "no-repeat"
+    border: none
+  .ie &:hover, .ie &:hover .left
+    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_hover_background}&ec=#{!buttons_hover_border}&ew=1&h=20&w=500&r=10)"
+  .ie &:active, .ie &:active .left, .ie &:focus, .ie &:focus .left
+    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_focus_background}&ec=#{!buttons_focus_border}&ew=1&h=20&w=500&r=10)"
+  .ie &.disabled
+    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&ec=#{!buttons_disabled_border}&ew=1&h=20&w=500&r=10)"
+  .ie &
+    background-position: top right
+    height: 20px
+    line-height: 20px
+    margin: 5px
+      left: 10px
+    padding: 0 15px
+      left: 5px
+    position: relative
+    .left
+      background-position: top left
+      height: 20px
+      left: -10px
+      position: absolute
+      width: 10px
+
+div.menu
+  -moz-border-radius: 0.4em 0.4em 0 0
+  -webkit-border-radius: 0.4em 0.4em 0 0
+  -moz-transition-duration: 0.2s
+  -webkit-transition-duration: 0.2s
+  -moz-transition-property: -moz-box-shadow
+  -webkit-transition-property: -webkit-box-shadow
+  display: inline-block
+  .menuButton
+    +sprite-menu-icons
+    background-color: #fff
+    -moz-border-radius: 0.4em 0.4em 0 0
+    -webkit-border-radius: 0.4em
+    -webkit-border-bottom-left-radius: 0
+    -webkit-border-bottom-right-radius: 0
+    color: #000
+    display: inline-block
+    font-size: 1.2em
+    height: 1em
+    line-height: 1em
+    margin-top: -4px
+    padding: 0.6em 1em
+    position: relative
+    -moz-transition-property: border
+    -webkit-transition-property: border
+    z-index: 50
+    &:hover
+      text-decoration: none
+    .icon
+      margin-left: 0.2em
+  .menuDropdown
+    background-color: #fff
+    border: 1px solid #999999
+    -moz-border-radius: 0.4em
+    -webkit-border-radius: 0.4em
+    -moz-box-shadow: 0 0 4px rgba(0,0,0,0.5)
+    -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.5)
+    display: none
+    margin-top: -1px
+    position: absolute
+    z-index: 49
+    &.menuPosition-top.menuPosition-left
+      -moz-border-radius-topleft: 0
+      -webkit-border-top-left-radius: 0
+    &.menuPosition-top.menuPosition-right
+      -moz-border-radius-topright: 0
+      -webkit-border-top-right-radius: 0
+    &.menuPosition-bottom.menuPosition-left
+      -moz-border-radius-bottomleft: 0
+      -webkit-border-bottom-left-radius: 0
+    &.menuPosition-bottom.menuPosition-right
+      -moz-border-radius-bottomright: 0
+      -webkit-border-bottom-right-radius: 0
+    > ul
+      margin: 1.2em 0
+      overflow: hidden
+      > li
+        border-left: 1px solid #dedede
+        display: block
+        float: left
+        margin-bottom: -9999px
+        padding-bottom: 9999px
+        &:first-child
+          border-left: none
+        ul
+          min-width: 10em
+          padding: 0.2em 0
+          li
+            clear: both
+            display: block
+            a
+              border:
+                bottom: 1px solid #ffffff
+                top: 1px solid #ffffff
+              display: block
+              font-size: 1.2em
+              padding: 0.3em 1em
+              &:hover
+                background-color: #f7f7f7
+                border-color: #dedede
+                text-decoration: none
+
+              .icon
+                float: left
+
+              .subtext
+                color: #777
+                font-size: 0.85em
+                margin: 0.2em 0.1em
+  &.open
+    -moz-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
+    -webkit-box-shadow: 0 -3px 4px rgba(0,0,0,0.5)
+    .menuButton
+      border: 1px solid #999999
+        bottom: none
+      .icon
+        background-position: 0 -13px
+    .menuDropdown
+      clear: both
+      display: block

@@ -108,10 +108,10 @@
                 $.live('#' + $datasetGrid.attr('id') + ' .blist-table-row-handle', 'mouseover',
                         function (e) { hookUpRowMenu(datasetObj, this, e); });
                 $.live('#' + $datasetGrid.attr('id') + ' .add-column', "click",
-                        function (e) { 
+                        function (e) {
                           $('<a href="/datasets/' + datasetObj.settings.viewId + '/columns/new" rel="modal" />').click();
                         });
-                        
+
                 $.live('#' + $datasetGrid.attr('id') + ' .drillDown', 'click',
                     function(e){
                         e.preventDefault();
@@ -548,7 +548,7 @@
                     filter = { type: 'operator', value: 'EQUALS',
                         children: [
                             columnJson,
-                            { type: 'literal', value: filterValue }
+                            { type: 'literal', value: $.unescapeQuotes(filterValue) }
                         ]
                     };
                 }
@@ -625,7 +625,7 @@
                         drillDownCallBack(view);
                     }
                     view.query.groupBys = [];
-                    
+
                     // First fetch all the currently available columns,
                     // because hidden, grouped columns aren't ret'd by Core Server
                     $.get('/views/' + view.id + '/columns.json',
@@ -985,15 +985,18 @@
         });
     };
 
-    var setupHeader = function(datasetObj, col, $col, qtipsRef)
+    var setupHeader = function(datasetObj, col, $col, tipsRef)
     {
         createHeaderMenu(datasetObj, col, $col);
 
-        if (qtipsRef)
+        if (tipsRef)
         {
-            if (qtipsRef[col.id] && qtipsRef[col.id].data('qtip'))
-            { qtipsRef[col.id].qtip('destroy'); }
-            qtipsRef[col.id] = $col;
+            if (tipsRef[col.id] && tipsRef[col.id].isSocrataTip())
+            {
+                tipsRef[col.id].socrataTip().hide();
+                tipsRef[col.id].socrataTip().disable();
+            }
+            tipsRef[col.id] = $col;
 
             var tooltipContent = '<div class="blist-th-tooltip ' +
                 col.type + '">'
@@ -1010,39 +1013,59 @@
                     '</p>' : '') +
                 '</div>';
             var contentIsMain = true;
-            var adjustContent = function(e)
+
+            var showTimer = null;
+            var clearShowTimer = function()
             {
-                if (e && $(e.target).is('.menuLink'))
-                {
-                    if (contentIsMain)
-                    {
-                        var api = $col.qtip('api');
-                        api.updateContent('Click for Menu', false);
-                        contentIsMain = false;
-                    }
-                }
-                else if (!contentIsMain)
-                {
-                    var api = $col.qtip('api');
-                    api.updateContent(tooltipContent, false);
-                    contentIsMain = true;
-                }
+                clearTimeout(showTimer);
+                showTimer = null;
             };
-            $col.removeAttr('title').qtip({content: tooltipContent,
-                    style: { name: 'blist' },
-                    position: { target: 'mouse', adjust: {screen: true} },
-                    api: {
-                        onPositionUpdate: adjustContent,
-                        beforeShow: adjustContent
-                    } });
+            var showTip = function()
+            {
+                showTimer = setTimeout(function()
+                {
+                    showTimer = null;
+                    $col.socrataTip().show();
+                }, 300);
+            };
+            // Use mouseover for showing tip to catch when it moves onto
+            // the menuLink.
+            // Use mouseleave for hiding to catch when it leaves the entire header
+            $col
+                .mouseover(function(e)
+                {
+                    if (!$(e.target).is('.menuLink'))
+                    {
+                        clearShowTimer();
+                        showTip();
+                    }
+                    else
+                    {
+                        clearShowTimer();
+                        $col.socrataTip().hide();
+                    }
+                })
+                .mouseleave(function(e)
+                {
+                    clearShowTimer();
+                    $col.socrataTip().hide();
+                });
+
+
+            $col.socrataTip({message: tooltipContent, trigger: 'none',
+                    parent: 'body'});
+            showTip();
+
+            $col.find('.menuLink').socrataTip({message: 'Click for Menu',
+                trigger: 'hover', parent: 'body'});
         }
     };
 
     /* Callback when rendering the grid headers.  Set up column on-object menus */
     var headerMods = function(datasetObj, col)
     {
-        if (!datasetObj.settings._colQtips) { datasetObj.settings._colQtips = {}; }
-        setupHeader(datasetObj, col, $(col.dom), datasetObj.settings._colQtips);
+        if (!datasetObj.settings._colTips) { datasetObj.settings._colTips = {}; }
+        setupHeader(datasetObj, col, $(col.dom), datasetObj.settings._colTips);
     };
 
     var createHeaderMenu = function(datasetObj, col, $colDom)
@@ -1181,7 +1204,7 @@
 
     var columnMenuOpenCallback = function(datasetObj, $colHeader, $menu)
     {
-        if ($colHeader.data('qtip')) { $colHeader.qtip('hide'); }
+        if ($colHeader.isSocrataTip()) { $colHeader.socrataTip().hide(); }
 
         var selCols = $(datasetObj.currentGrid).blistTableAccessor()
             .getSelectedColumns();
@@ -1578,7 +1601,7 @@
 
     var columnFilterChanged = function(datasetObj, col, setFilter)
     {
-        if ($(col.dom).data('qtip')) { $(col.dom).qtip('hide'); }
+        if ($(col.dom).isSocrataTip()) { $(col.dom).socrataTip().hide(); }
         datasetObj.summaryStale = true;
         if (!setFilter) { datasetObj.clearTempView('filter_' + col.id); }
         else { datasetObj.setTempView('filter_' + col.id); }

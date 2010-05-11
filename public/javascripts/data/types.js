@@ -340,6 +340,20 @@ blist.namespace.fetch('blist.data.types');
         return "renderRichtext(" + value + " || '')";
     };
 
+    var renderHtml = function(value)
+    {
+        if (value == null) { return ''; }
+        // Add an extra wrapper so we can tweak the display to something
+        // reasoanble
+        return '<div class="blist-html">' + value + '</div>';
+    };
+
+    var renderGenHtml = function(value, plain)
+    {
+        return plain ? "htmlStrip(" + value + " || '')"
+            : "renderHtml(" + value + " || '')";
+    };
+
     var renderDate = function(value, format)
     {
         if (value == null) { return ''; }
@@ -693,6 +707,16 @@ blist.namespace.fetch('blist.data.types');
             deleteable: true
         },
 
+        html: {
+            renderGen: renderGenHtml,
+            filterRender: renderFilterText,
+            sortGen: sortGenText,
+            filterText: true,
+            sortable: true,
+            filterable: true,
+            deleteable: true
+        },
+
         number: {
             renderGen: renderGenNumber,
             sortGen: sortGenNumeric,
@@ -914,7 +938,8 @@ blist.namespace.fetch('blist.data.types');
         blist.data.types.drop_down_list.editor = $.blistEditor.picklist;
         blist.data.types.checkbox.editor = $.blistEditor.checkbox;
         blist.data.types.stars.editor = $.blistEditor.stars;
-        blist.data.types.richtext.editor = $.blistEditor.richtext;
+        blist.data.types.richtext.editor = $.blistEditor.html;
+        blist.data.types.html.editor = $.blistEditor.html;
         blist.data.types.document.editor = $.blistEditor.document;
         blist.data.types.document_obsolete.editor = $.blistEditor.document;
         blist.data.types.photo.editor = $.blistEditor.photo;

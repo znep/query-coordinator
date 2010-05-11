@@ -1,0 +1,104 @@
+<% content_for :head do %>
+  <%= meta_tags :description => @meta_description, :keywords => @meta_keywords %>
+  <%- if @view -%>
+    <link rel="canonical" href="<%= @view.href %>" />
+  <%- end -%>
+
+  <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
+  <link type="text/css" rel="stylesheet" href="/styles/widget/<%= params[:customization_id] %>.css" />
+<% end %>
+
+<div class="widgetWrapper">
+  <%- if @theme[:toolbar][:orientation] == 'downwards' -%>
+    <%= render :partial => 'widget_header' %>
+    <%= render :partial => 'widget_subheader' %>
+  <%- end -%>
+
+  <div class="widgetContent">
+    <div class="widgetContentGrid">
+      <%- if @theme[:behavior][:save_public_views] -%>
+        <div id='viewHeader' class='clearfix'>
+          <a class='datasetLink breadcrumbItem' href='#view_<%= @view.id %>'><%= @view.name %></a>
+          <div class='viewName inlineEdit' href='#new_view'>
+            <span title='Click to name and save your filtered view'>
+              [Unsaved Filter]
+            </span>
+            <%- form_tag(blists_path) do -%>
+            <label for='view_name'>View Name:</label>
+            <%= text_field_tag("view[name]", '') %>
+            <%- end -%>
+          </div>
+        </div>
+      <%- end -%>
+      <div class="gridContainer">
+        <%- if !@view.is_invalid? -%>
+          <div id="data-grid">
+            <noscript>
+              <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
+
+              <p><%= @view.description %></p>
+
+              <%- if @view.can_read -%>
+              <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
+                <%= @view.html %>
+              <% end %>
+              <%- end -%>
+            </noscript>
+          </div>
+        <%- else -%>
+          <div class='viewErrorContainer content'>
+            <%- if current_user.id == @view.owner.id -%>
+            <div class='viewError'><%= @view.message %></div>
+            <ul class='actionButtons clearfix'>
+              <li><a href="<%= @view.href %>" rel="external"
+                class='arrowButton'>Edit View</a></li>
+            </ul>
+            <%- else -%>
+            <div class='viewError'>Unable to display this view.</div>
+            <%- end -%>
+          </div>
+        <%- end -%>
+      </div>
+    </div>
+  </div>
+
+  <%- if @theme[:toolbar][:orientation] == 'upwards' -%>
+    <%= render :partial => 'widget_subheader' %>
+    <%= render :partial => 'widget_header' %>
+  <%- end -%>
+</div>
+
+<% content_for :js_footer do %>
+  <script type="text/javascript">
+    <%= raw @display.render_inline_setup_js('data-grid', self) %>
+    blist.namespace.fetch('blist.widget');
+    <%- if !current_user.nil? -%>
+      blist.currentUserId = "<%= current_user.id %>";
+      blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
+    <%- end -%>
+    blist.widget.viewId = '<%= @view.id %>';
+
+    blist.widget.theme = <%= raw @theme.to_json %>;
+    blist.widget.customizationId = '<%= params[:customization_id] || '' %>';
+    blist.widget.isAltView = <%= @view.is_alt_view? ? 'true' : 'false' %>;
+
+    <%- if !@view.is_invalid? && !@view.is_blobby? && @view.can_read -%>
+    <%# Hard-code parameters for initial call here; if the Javascript ever
+    changes, these will need to be updated %>
+    blist.widget.viewJson = <%= @view.json({'accessType' => 'WIDGET',
+        'method' => 'getByIds', 'meta' => true, 'start' => 0, 'length' => 50}) %>;
+    <%- end -%>
+  </script>
+
+  <%= render(:partial => 'shared/table_editor_js') %>
+  <%= javascript_include_merged 'widgets-show-new' %>
+  <%= raw @display.render_javascript_includes(self) %>
+
+  <%- unless @theme[:behavior][:ga_code].empty? -%>
+    <script type="text/javascript">
+    try {
+    var pageTracker2 = _gat._getTracker("<%= @theme[:behavior][:ga_code] %>");
+    pageTracker2._trackPageview();
+    } catch(err) {}</script>
+  <%- end -%>
+<% end %>

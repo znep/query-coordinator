@@ -117,10 +117,6 @@ class BlistsController < ApplicationController
       return require_user(true)
     end
 
-    if !@view.is_tabular?
-      # SoL. Display a message and redir to parent?
-    end
-
     @conditions = parse_conditions(params)
 
     # build state for the sake of the pager
@@ -128,9 +124,11 @@ class BlistsController < ApplicationController
     [:filter, :sort, :search_string].each{ |key| @state_param[key] = params[key] unless params[key].nil? }
     @state_param = @state_param.to_param
 
-    # get rows
-    @per_page = 50
-    @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+    if @view.is_tabular?
+      # get rows
+      @per_page = 50
+      @data, @viewable_columns, @aggregates, @row_count = @view.find_data(@per_page, @page, @conditions)
+    end
 
     @view.register_opening
     @view_activities = Activity.find({:viewId => @view.id})
@@ -187,7 +185,7 @@ class BlistsController < ApplicationController
       end
     end
 
-    if !@view.can_edit() && !current_user.is_admin?
+    if !@view.can_edit() && !CurrentDomain.user_can?(current_user, :edit_sdp)
       return require_user(true)
     end
 

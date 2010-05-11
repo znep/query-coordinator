@@ -58,7 +58,8 @@
     background: transparent url(/stylesheets/images/content/table/icon_sorting_type.png) no-repeat center center;
 }
 
-.blist-th-favorite .blist-th-name, div.gridList .blist-th-type .blist-th-name 
+.blist-th-favorite .blist-th-name, div.gridList .blist-th-type .blist-th-name,
+.blist-th-public .blist-th-name
 {
     visibility: hidden;
 }
@@ -111,7 +112,8 @@
 }
 
 .blist-td.blist-td-favorite,
-.blist-td.blist-td-type
+.blist-td.blist-td-type,
+.blist-td.blist-td-public
 {
     height: 27px;
     padding: 0 7px;
@@ -177,7 +179,6 @@ div.blist-td-type div.blist-type
     height: 27px;
     overflow: visible;
 }
-
 div.blist-type-default { background-position: center -4px; }
 div.blist-type-filter { background-position: center -128px; }
 div.blist-type-calendar { background-position: center -345px; }
@@ -199,6 +200,16 @@ div.blist-type-groupedSharedTo { background-position: 0 -716px; }
 div.blist-type-groupedSharedBy { background-position: 0 -685px; }
 div.blist-type-formSharedTo { background-position: 0 -1182px; }
 div.blist-type-formSharedBy { background-position: 0 -1151px; }
+
+
+div.blist-td-public div.blist-public-off
+{
+    background-image:url(/stylesheets/images/content/table/dataset_private.png);
+    background-repeat: no-repeat;
+    height: 22px;
+    position: relative;
+    top: 0.2em;
+}
 
 .blist-td .blist-opener
 {

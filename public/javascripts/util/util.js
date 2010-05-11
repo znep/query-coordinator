@@ -1,3 +1,38 @@
+// Prototype defs
+
+String.prototype.startsWith = function(str)
+{ return this.indexOf(str) == 0; };
+
+String.prototype.endsWith = function(str)
+{ return this.lastIndexOf(str) == (this.length - str.length); };
+
+/* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
+String.prototype.visualLength = function(fontSize)
+{
+    var $ruler = $('#ruler');
+    if ($ruler.length < 1)
+    {
+        $('body').append('<span id="ruler"></span>');
+        $ruler = $('#ruler');
+    }
+    if (!fontSize) { fontSize = ''; }
+    $ruler.css('font-size', fontSize);
+    $ruler.text(this + '');
+    return $ruler.width();
+};
+
+String.prototype.capitalize = function()
+{
+    return this.charAt(0).toUpperCase() + this.substring(1);
+};
+
+String.prototype.displayable = function()
+{
+    return $.map(this.replace(/_/g, ' ').split(' '), $.capitalize).join(' ');
+};
+
+// jQuery defs
+
 (function($) {
 
 $.urlParam = function(url, name, value)
@@ -16,6 +51,20 @@ $.urlParam = function(url, name, value)
         return 0;
     }
 };
+
+$.escapeQuotes = function(text)
+{
+    if (typeof text !== 'string') { return text; }
+    return $.htmlEscape(text)
+        .replace(/'/, '&apos;');
+}
+
+$.unescapeQuotes = function(text)
+{
+    if (typeof text !== 'string') { return text; }
+    return $.htmlUnescape(text)
+        .replace(/&apos;/, "'");
+}
 
 $.htmlEscape = function(text)
 {
@@ -101,38 +150,6 @@ $.compact = function(a)
     }
 };
 
-})(jQuery);
-
-String.prototype.startsWith = function(str)
-{ return this.indexOf(str) == 0; };
-
-String.prototype.endsWith = function(str)
-{ return this.lastIndexOf(str) == (this.length - str.length); };
-
-/* Adapted from http://blog.mastykarz.nl/measuring-the-length-of-a-string-in-pixels-using-javascript/ */
-String.prototype.visualLength = function(fontSize)
-{
-    var $ruler = $('#ruler');
-    if ($ruler.length < 1)
-    {
-        $('body').append('<span id="ruler"></span>');
-        $ruler = $('#ruler');
-    }
-    if (!fontSize) { fontSize = ''; }
-    $ruler.css('font-size', fontSize);
-    $ruler.text(this + '');
-    return $ruler.width();
-};
-
-String.prototype.capitalize = function()
-{
-    return this.charAt(0).toUpperCase() + this.substring(1);
-};
-
-String.prototype.displayable = function()
-{
-    return $.map(this.replace(/_/g, ' ').split(' '), $.capitalize).join(' ');
-};
 
 /* Do a deep compare on two objects (if they are objects), or just compare
    directly if they are normal values.  For this case, null == undefined, but
@@ -183,3 +200,18 @@ $.objSelect = function(obj, filterFn)
     _.each(obj, function(v, k) { if (filterFn(v, k)) { acc[k] = v; } });
     return acc;
 };
+
+$.renderTemplate = function(template, data, directive)
+{
+    var $templateCopy = $('#templates > .' + template)
+        .clone();
+
+    // pure needs a wrapping element
+    $templateCopy.appendTo($('<div/>'));
+
+    return $templateCopy
+        .render(data, directive)
+        .children();
+};
+
+})(jQuery);

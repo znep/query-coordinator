@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=8" />
+  <%= rendered_stylesheet_tag 'base-sdp' %>
+
+  <%= jquery_include %>
+
+  <%= yield :head %>
+
+  <% unless CurrentDomain.google_analytics_id.blank? %>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '<%= CurrentDomain.google_analytics_id %>'],
+                ['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  <% end %>
+</head>
+
+<body>
+  <div id="skipLinks">
+    <%= yield :skip_links %>
+  </div>
+
+  <%= yield :layout %>
+
+  <%#
+  Better to load JS at the bottom:
+  http://developer.yahoo.com/performance/rules.html#js_bottom
+  %>
+  <%= javascript_include_merged 'base' %>
+
+  <% if ENV["RAILS_ENV"] != 'production' %>
+      <%= javascript_include_tag "util/debug" %>
+  <% end %>
+
+  <div id="templates">
+    <%= render :partial => 'shared/control_templates' %>
+    <%= yield :templates %>
+  </div>
+
+  <%= yield :js_footer %>
+
+  <%# we don't trust custom tracking code to be nonblocking like the async
+      GA, so put it down here. %>
+  <% unless CurrentDomain.custom_tracking_code.blank? %>
+    <!-- Custom Tracking Code -->
+    <%= raw CurrentDomain.custom_tracking_code %>
+  <% end %>
+</body>
+</html>

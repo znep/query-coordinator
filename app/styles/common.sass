@@ -1,0 +1,74 @@
+.clearBoth
+  clear: both
+  :after
+    clear: both
+    content: "."
+    display: block
+    height: 0
+    visibility: hidden
+
+//START: IE hack.
+  For IE to do the right thing with clearfix, you must first set the display
+  to inline-block, then back to block.
+  The * html hack is to trigger the hasLayout property in IE6.
+.clearfix
+  display: inline-block
+  &
+    display: block
+
+* html .clearfix
+  height: 1%
+// END: IE hack.
+
+.textPrompt.prompt
+  color: #666666
+  font-style: italic
+
+.hiddenTextField
+  //Colors need to be transparent, otherwise Firefox & IE show the field
+    while trying to get rid of the border stops events from registering in
+    WebKit
+  background-color: transparent !important
+  border-color: transparent !important
+  //Shrink the height, and hide it just off the edge.  We need more than
+    -1px to the left or the blinking cursor shows in IE.  And top needs
+    to be just -1px or Safari will scroll on focus.
+  height: 0
+  left: -10px
+  top: -1px
+  //Absolute positioning so Safari doesn't scroll
+  position: absolute
+  width: 1px !important
+  //Big negative z-index to hide it in IE8
+  z-index: -100
+
+#jqmAlert
+  display: none
+  left: 50%
+  margin-left: -15em
+  min-height: 0
+  position: fixed
+  top: 7em
+  width: 30em
+
+// For now turn off corners until we get nice drop-shadows for the dialog
+#jqmAlert,
+#jqmAlert .mainContent
+  background-image: none
+
+#jqmAlert .alertMessage
+  font-size: 1.3em
+
+.jqmOverlay
+  background-color: #000
+
+a
+  color= !color_links_normal
+  text-decoration: none
+  &:hover, &:focus, &:active
+    text-decoration: underline
+  &:visited
+    color= !color_links_visited
+
+#templates
+  display: none

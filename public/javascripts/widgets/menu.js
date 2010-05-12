@@ -50,6 +50,7 @@
         $menuDropdown
             .css('right', null)
             .css('bottom', null)
+            .css('top', null)
             .show();
 
         if ($menuDropdown.offset().left + $menuDropdown.outerWidth(true) > $(window).width())
@@ -77,6 +78,12 @@
                 $menuDropdown.addClass('menuPosition-bottom');
                 $menuDropdown.css('bottom', $menuContainer.innerHeight() * -1);
             }
+        }
+        else
+        {
+            // if the menu should be on the bottom, make it so for the sake of IE7
+            // +4 for the shadow
+            $menuDropdown.css('top', $menuButton.outerHeight());
         }
 
         // Rehide and animate

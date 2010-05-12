@@ -1,6 +1,10 @@
 html, body
   height: 100%
 
+.textPrompt.prompt
+  color: #999999
+  font-style: normal
+
 .widgetWrapper
   background-color= !color_frame_color
   border= !frame_border_width solid !color_frame_border_color
@@ -32,15 +36,15 @@ html, body
       -webkit-box-shadow: 1px 1px 0 #fff
       color= !color_menu_button_text
       cursor: pointer
+      padding-left: 2.3em
       text-transform: uppercase
       .ie &
         background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
 
       .icon
-        float: left
-        margin: 0
-          right: 0.6em
-          top: 0.1em
+        left: 0.6em
+        position: absolute
+        top: 0.7em
 
       &:hover
         +gradient_menu_button_background_hover
@@ -57,7 +61,7 @@ html, body
         background-position: 0 0
 
     .menuDropdown
-      margin-top: 0.3em
+      margin-top: 1em
 
       > ul
         margin-bottom: 0
@@ -72,13 +76,19 @@ html, body
               color: #222
               font-size: 1.3em
               font-weight: bold
-              min-width: 15em
-              padding: 0.5em 1em
+              min-width: 13em
+              padding: 0.5em
+                left: 4em
+                right: 1em
+              position: relative
 
               .icon
+                left: 1em
                 margin:
                   bottom: 0.3em
                   right: 0.7em
+                position: absolute
+                top: 0.5em
 
               .subtext
                 font-weight: normal
@@ -98,25 +108,71 @@ html, body
                 color= !color_links_normal
                 font-size: 1.1em
                 font-weight: normal
+                padding: 1em
 
                 .icon
                   display: none
 
 .subHeaderBar
-  background: transparent url(/stylesheets/images/common/75pct-black.png)
-  clear: both
+  background-color= !color_toolbar_color
   margin= 0 !frame_padding
   padding: 0.2em
+
+  // Let's not do this, actually.
+    .ie &
+      // Freaky IE bug where it decides to make a gradient
+      background: none
+      filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/stylesheets/images/common/75pct-black.png, sizingMethod='scale');}
 
   li
     +sprite-menu-icons
     color: #eee
-    display: inline-block
+    display: block
+    float: left
     padding: 0.2em
     &.right
       float: right
 
+    .ie &.datasetName
+      margin: 0.2em
+    .ie7 & .icon
+      display: block
+
+.toolbar
+  background-color= !color_toolbar_color
+  display: none
+  margin= 0 !frame_padding
+  padding: 0.3em
+  @if !frame_orientation == "downwards"
+    top: 0
+  @else if !frame_orientation == "upwards"
+    bottom: 0
+
+  form
+    display: none
+  &.search .toolbarSearchForm
+    display: block
+  &.email .toolbarEmailForm
+    display: block
+
+  .toolbarTextboxWrapper
+    margin-right: 3em
+
+    .toolbarTextbox
+      -moz-border-radius: 0.4em
+      -webkit-border-radius: 0.4em
+      background-color= !color_toolbar_input_color
+      border: none
+      padding: 0.1em 0.4em
+      width: 100%
+
+  .close
+    +sprite-button-icons
+    display: inline-block
+    float: right
+
 .widgetContent
+  clear: both
   margin= !frame_padding
     top: 0
 
@@ -182,6 +238,15 @@ html, body
 
       .blist-tstars
         margin: -4px 0
+
+      .blist-table-row-numbers.blist-tf
+        background-color: #fcedc1
+        .blist-tf-value:after
+          content: ':'
+      .blist-table-row-handle.blist-tf
+        background-color: #fcedc1
+      .blist-table-footer .blist-tf
+        background-color: #fef8dc
 
       @if !grid_wrap_header_text == true
         .blist-th .info-container

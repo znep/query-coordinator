@@ -25,6 +25,7 @@
         defaults:
         {
             accessType: 'DEFAULT',
+            autoHideClearFilterItem: true,
             clearFilterItem: null,
             clearTempViewCallback: function () {},
             columnDeleteEnabled: false,
@@ -132,8 +133,9 @@
                     datasetObj.settings.clearFilterItem =
                         $(datasetObj.settings.clearFilterItem);
                     datasetObj.settings.clearFilterItem
-                        .click(function (e) { clearFilterInput(datasetObj, e); })
-                        .hide();
+                        .click(function (e) { clearFilterInput(datasetObj, e); });
+                    if (datasetObj.settings.autoHideClearFilterItem)
+                    { datasetObj.settings.clearFilterItem.hide(); }
                 }
             },
 
@@ -184,7 +186,8 @@
 
                 if (datasetObj.settings.filterForm)
                 { datasetObj.settings.filterForm.find(':input').val('').blur(); }
-                datasetObj.settings.clearFilterItem.hide();
+                if (datasetObj.settings.autoHideClearFilterItem)
+                { datasetObj.settings.clearFilterItem.hide(); }
                 datasetObj.summaryStale = true;
 
                 if (typeof newView == 'string')
@@ -680,7 +683,8 @@
 
                 if (datasetObj.settings.filterForm)
                 { datasetObj.settings.filterForm.find(':input').val('').blur(); }
-                datasetObj.settings.clearFilterItem.hide();
+                if (datasetObj.settings.autoHideClearFilterItem)
+                { datasetObj.settings.clearFilterItem.hide(); }
                 datasetObj.summaryStale = true;
 
                 datasetObj.isTempView = false;
@@ -944,12 +948,14 @@
         if (!searchText || searchText === '')
         {
             datasetObj.clearTempView('searchString');
-            datasetObj.settings.clearFilterItem.hide();
+            if (datasetObj.settings.autoHideClearFilterItem)
+            { datasetObj.settings.clearFilterItem.hide(); }
         }
         else
         {
             datasetObj.setTempView('searchString');
-            datasetObj.settings.clearFilterItem.show();
+            if (datasetObj.settings.autoHideClearFilterItem)
+            { datasetObj.settings.clearFilterItem.show(); }
         }
     };
 
@@ -966,7 +972,8 @@
         datasetObj.summaryStale = true;
         datasetObj.settings._model.filter('');
         datasetObj.clearTempView('searchString');
-        $(e.currentTarget).hide();
+        if (datasetObj.settings.autoHideClearFilterItem)
+        { $(e.currentTarget).hide(); }
     };
 
     var rowMods = function(datasetObj, renderedRows)

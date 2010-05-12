@@ -9,9 +9,10 @@
 <% end %>
 
 <div class="widgetWrapper">
-  <%- if @theme[:toolbar][:orientation] == 'downwards' -%>
+  <%- if @theme[:frame][:orientation] == 'downwards' -%>
     <%= render :partial => 'widget_header' %>
     <%= render :partial => 'widget_subheader' %>
+    <%= render :partial => 'widget_toolbar' %>
   <%- end -%>
 
   <div class="widgetContent">
@@ -62,7 +63,8 @@
     </div>
   </div>
 
-  <%- if @theme[:toolbar][:orientation] == 'upwards' -%>
+  <%- if @theme[:frame][:orientation] == 'upwards' -%>
+    <%= render :partial => 'widget_toolbar' %>
     <%= render :partial => 'widget_subheader' %>
     <%= render :partial => 'widget_header' %>
   <%- end -%>

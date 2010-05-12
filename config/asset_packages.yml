@@ -247,6 +247,7 @@ javascripts:
   - plugins/jquery.json
   - plugins/ui.core
   - plugins/ui.draggable
+  - plugins/ui.effects.custom.min
   - plugins/jquery.tache
   - plugins/jquery.validate.min
   - plugins/jquery.bt

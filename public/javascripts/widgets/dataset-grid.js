@@ -401,9 +401,11 @@
                     model.group(grouped);
                     $.each(grouped, function(i, c)
                     {
-                        var newFormat = $.extend({}, c.format, {drill_down: drillDown});
-                        newCols.push({id: c.id, name: c.name, hidden: c.hidden == 'true',
-                            position: newCols.length + 1, format: newFormat});
+                        var newWidth = drillDown ? c.data.width + 30 : c.data.width;
+                        var newFormat = $.extend({}, c.data.format, {drill_down: drillDown});
+                        newCols.push($.extend({},c.data,
+                            {id: c.id, name: c.name, hidden: c.hidden == 'true',
+                                position: newCols.length + 1, format: newFormat, width: newWidth}));
                         usedCols[c.id] = newFormat;
                     });
                 }
@@ -414,7 +416,7 @@
                 {
                     $.each(aggregates, function(i, a)
                     {
-                        var existingFormat = usedCols[a.id] || a.format;
+                        var existingFormat = usedCols[a.id] || a.data.format;
                         var format = $.extend({}, existingFormat,
                             {grouping_aggregate: a.func});
                         // Column Totals don't work properly on grouped views,
@@ -424,9 +426,10 @@
                         { delete format.grouping_aggregate; }
                         if (usedCols[a.id] === undefined)
                         {
-                            newCols.push({id: a.id, name: a.name,
-                                hidden: a.hidden !== undefined ? a.hidden : false,
-                                position: newCols.length + 1, format: format});
+                            newCols.push($.extend({}, a.data,
+                                {id: a.id, name: a.name,
+                                    hidden: a.hidden !== undefined ? a.hidden : false,
+                                    position: newCols.length + 1, format: format}));
                         }
                         else
                         {

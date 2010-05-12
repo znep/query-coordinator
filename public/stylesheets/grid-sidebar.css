@@ -44,20 +44,24 @@
     padding: 0.75em;
 }
 
-#gridSidebar h3.title
+#gridSidebar .titleBlock
+{
+    border-bottom: 1px solid #cccccc;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+}
+
+#gridSidebar .titleBlock .title
 {
     font-size: 1.3em;
     font-weight: normal;
     margin-bottom: 0.3em;
 }
 
-#gridSidebar .subtitle
+#gridSidebar .titleBlock .subtitle
 {
-    border-bottom: 1px solid #cccccc;
     color: #999999;
     font-size: 1.1em;
-    margin-bottom: 1em;
-    padding-bottom: 0.5em;
 }
 
 #gridSidebar .section

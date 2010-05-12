@@ -26,6 +26,7 @@
             buttonCallback: null,
             closeEvents: 'click, change',
             closeSelector: 'a, :input',
+            positions: null,
             prompt: null
         },
 
@@ -61,7 +62,8 @@
                     { wizObj.settings.buttonCallback($(this).data('wizardValue')); }
                 });
 
-                $domObj.socrataTip({message: $msg, closeOnClick: false});
+                $domObj.socrataTip({message: $msg, closeOnClick: false,
+                    positions: wizObj.settings.positions});
 
                 var events = wizObj.settings.closeEvents;
                 var $closeItems = $domObj.find(wizObj.settings.closeSelector);

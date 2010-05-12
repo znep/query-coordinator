@@ -2466,7 +2466,18 @@ div.color_swatch.hover .inner { border: 1px solid #ffffff; }
 
 /*** START: Tooltip styles ***/
 .bt-wrapper .bt-content { font-size: 1.1em; }
-.bt-wrapper .bt-content .actionButtons li { background-position: 0 -441px; }
+.bt-wrapper .bt-content .actionButtons
+{
+    margin-left: -1em;
+    margin-top: 0.75em;
+    text-align: center;
+}
+.bt-wrapper .bt-content .actionButtons li
+{
+    background-position: 0 -441px;
+    display: inline-block;
+    float: none;
+}
 .bt-wrapper .bt-content .actionButtons li a
 { background-position: right -462px; }
 .bt-wrapper .bt-content .actionButtons li a.arrowButton
@@ -2474,9 +2485,4 @@ div.color_swatch.hover .inner { border: 1px solid #ffffff; }
 
 .bt-wrapper .wizardPrompt { text-align: left; }
 .bt-wrapper .wizardPrompt .prompt { font-size: 1.2em; }
-.bt-wrapper .wizardPrompt .actionButtons
-{
-    margin-left: -1em;
-    margin-top: 0.75em;
-}
 /*** END: Tooltip styles ***/

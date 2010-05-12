@@ -137,6 +137,9 @@
                 else { sidebarObj._isModal = false; }
 
                 $(window).resize();
+
+                showWizard(sidebarObj,
+                    sidebarObj._$panes[paneName].find('.hasWizard:visible:first'));
             },
 
             /* Hide the sidebar and all panes.  If it was modal, then undo the
@@ -147,6 +150,9 @@
                 sidebarObj.$dom().hide();
                 sidebarObj.$dom().find('.sidebarPane').hide();
                 sidebarObj.$grid().css('margin-right', 0);
+
+                if (!$.isBlank(sidebarObj._$currentWizard))
+                { sidebarObj._$currentWizard.wizardPrompt().close(); }
 
                 if (sidebarObj._isModal)
                 {
@@ -306,7 +312,7 @@
             sidebarObj.$dom().attr('id') + '_' + config.name +
             '" class="sidebarPane"></div>');
         var rData = {title: config.title, subtitle: config.subtitle,
-            sections: config.sections, finishButtons: config.finishButtons,
+            sections: config.sections, finishButtons: config.finishBlock.buttons,
             data: data || {}};
         var directive = {
             '.title': 'title',
@@ -358,7 +364,8 @@
         $pane.find('.section.selectable .sectionSelect').click(function(e)
         {
             var $c = $(this);
-            $c.parent().toggleClass('collapsed', !$c.value());
+            _.defer(function()
+            { $c.parent().toggleClass('collapsed', !$c.value()); });
         });
 
         // Inputs inside labels are likely attached to radio buttons.
@@ -383,6 +390,8 @@
                 $pane, $(this).attr('value'));
         });
 
+        addWizards(sidebarObj, $pane, config);
+
         return $pane;
     };
 
@@ -391,6 +400,95 @@
         $pane.find('.mainError')
             .text($.json.deserialize(xhr.responseText).message);
     };
+
+
+    /*** Functions for handling wizard step-through ***/
+
+    var addWizards = function(sidebarObj, $pane, config)
+    {
+        if (!$.isBlank(config.wizard))
+        {
+            $pane.find('.titleBlock').addClass('hasWizard')
+                .data('sidebarWizard', config.wizard);
+        }
+
+        $pane.find('.section').each(function(i)
+        {
+            var $s = $(this);
+            var s = config.sections[i];
+            if (!$.isBlank(s.wizard))
+            { $s.addClass('hasWizard').data('sidebarWizard', s.wizard); }
+
+            // add fields...
+        });
+
+        if (!$.isBlank(config.finishBlock.wizard))
+        {
+            $pane.find('.finishButtons').addClass('hasWizard')
+                .data('sidebarWizard', $.extend({}, config.finishBlock.wizard,
+                    {positions: ['top']}));
+        }
+    };
+
+    var showWizard = function(sidebarObj, $item)
+    {
+        if ($item.length < 1) { return false; }
+
+        var wiz = $item.data('sidebarWizard');
+        if ($.isBlank(wiz)) { return false; }
+
+        var wizConfig = {prompt: wiz.prompt || null,
+            positions: wiz.positions || null};
+        if (!$.isBlank(wiz.actions))
+        {
+            wizConfig.buttons = [];
+            _.each(wiz.actions, function(a)
+            { wizConfig.buttons.push({text: a.text, value: a.action}); });
+
+            wizConfig.buttonCallback = function(action)
+            { wizardAction(sidebarObj, $item, action); };
+        }
+
+        if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
+        sidebarObj._$currentWizard = $item;
+        $item.wizardPrompt(wizConfig);
+
+        return true;
+    };
+
+    var wizardAction = function(sidebarObj, $item, action)
+    {
+        sidebarObj._$currentWizard = null;
+        switch(action)
+        {
+            case 'nextSection':
+                if ($item.closest('.section').length > 0)
+                { $item = $item.closest('.section'); }
+                showWizard(sidebarObj, $item.nextAll('.section, .finishButtons')
+                    .filter('.hasWizard:visible:first'));
+                break;
+
+            case 'expand':
+                if ($item.is('.selectable.collapsed'))
+                { $item.find('.sectionSelect').click(); }
+
+                _.defer(function()
+                { wizardAction(sidebarObj, $item,
+                    $item.find('.hasWizard').length > 0 ?
+                        'nextField' : 'nextSection'); });
+                break;
+
+            case 'finish':
+                showWizard(sidebarObj, $item.closest('.sidebarPane')
+                    .find('.finishButtons'));
+                break;
+
+            default:
+                $.debug('no handler for "' + action + '"', $item);
+                break;
+        }
+    };
+
 
     /*** Pane-specific callbacks ***/
 
@@ -541,7 +639,13 @@
                         {text: 'Longitude', type: 'select', name: 'convertLong',
                             required: true, notequalto: 'convertNumber',
                             columns: {type: 'number', hidden: false} }
-                    ]
+                    ],
+                    wizard: {prompt: 'Do you have latitude and longitude data to import?',
+                        actions: [
+                            {text: 'Yes', action: 'expand'},
+                            {text: 'No', action: 'nextSection'}
+                        ]
+                    }
                 },
                 {
                     title: 'Import US Addresses',
@@ -586,14 +690,30 @@
                                 {type: 'text', name: 'convertZipStatic',
                                     prompt: 'Enter a zip code'}
                             ] }
-                    ]
+                    ],
+                    wizard: {prompt: 'Do you have address data to import?',
+                        actions: [
+                            {text: 'Yes', action: 'expand'},
+                            {text: 'No', action: 'nextSection'}
+                        ]
+                    }
                 }
             ],
-            finishButtons: [
-                {text: 'Create', value: true, isDefault: true},
-                {text: 'Cancel', value: false}
-            ],
-            finishCallback: locationCreateCallback
+            finishBlock: {
+                buttons: [
+                    {text: 'Create', value: true, isDefault: true},
+                    {text: 'Cancel', value: false},
+                ],
+                wizard: {prompt: "Now you're ready to create a new column",
+                    selector: '.arrowButton'}
+            },
+            finishCallback: locationCreateCallback,
+            wizard: {prompt: 'Do you have existing location data?',
+                actions: [
+                    {text: 'Yes', action: 'nextSection'},
+                    {text: 'No', action: 'finish'}
+                ]
+            }
         }
     };
 

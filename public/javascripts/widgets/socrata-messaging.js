@@ -32,7 +32,7 @@
             closeOnClick: true,
             isSolo: false,
             message: null,
-            parent: null,
+            parent: 'body',
             positions: null,
             shrinkToFit: true,
             trigger: 'now'

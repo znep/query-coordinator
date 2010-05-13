@@ -167,6 +167,7 @@
                 {
                     sidebarObj._$currentWizard.wizardPrompt().close();
                     sidebarObj._$currentWizard = null;
+                    sidebarObj._$mainWizardItem = null;
                 }
 
                 if (sidebarObj._isModal)
@@ -440,13 +441,32 @@
                 $sect.toggleClass('collapsed', !$c.value());
                 var newH = $sect.outerHeight(true);
 
-                if (!$.isBlank(sidebarObj._$currentWizard) &&
-                    ($sect.nextAll().has(sidebarObj._$currentWizard).length > 0 ||
-                    $sect.nextAll().index(sidebarObj._$currentWizard) > -1))
+                if (!$.isBlank(sidebarObj._$mainWizardItem) &&
+                    ($sect.nextAll().has(sidebarObj._$mainWizardItem).length > 0 ||
+                    $sect.nextAll().index(sidebarObj._$mainWizardItem) > -1))
                 {
                     sidebarObj._$currentWizard.socrataTip()
                         .adjustPosition({top: newH - oldH});
                     updateWizardVisibility(sidebarObj);
+                }
+
+                if (!$.isBlank(sidebarObj._$mainWizardItem) && $c.value() &&
+                    $sect.has(sidebarObj._$mainWizardItem).length < 1)
+                {
+                    sidebarObj._$mainFlowWizard = sidebarObj._$mainWizardItem;
+                    sidebarObj._$currentWizard.wizardPrompt().close();
+                    sidebarObj._$currentWizard = null;
+                    sidebarObj._$mainWizardItem = null;
+                    wizardAction(sidebarObj, $sect, 'nextField');
+                }
+
+                if (!$.isBlank(sidebarObj._$mainWizardItem) && !$c.value() &&
+                    $sect.has(sidebarObj._$mainWizardItem).length > 0)
+                {
+                    sidebarObj._$currentWizard.wizardPrompt().close();
+                    sidebarObj._$currentWizard = null;
+                    sidebarObj._$mainWizardItem = null;
+                    wizardAction(sidebarObj, $sect, 'nextSection');
                 }
             });
         });
@@ -534,6 +554,7 @@
             positions: wiz.positions || null,
             closeEvents: wiz.closeEvents || null};
 
+        var alreadyCalled = false;
         if (!$.isBlank(wiz.actions))
         {
             wizConfig.buttons = [];
@@ -541,13 +562,31 @@
             { wizConfig.buttons.push({text: a.text, value: a.action}); });
 
             wizConfig.buttonCallback = function(action)
-            { wizardAction(sidebarObj, $item, action); };
+            {
+                _.defer(function()
+                {
+                    if (!alreadyCalled)
+                    {
+                        alreadyCalled = true;
+                        wizardAction(sidebarObj, $item, action);
+                    }
+                });
+            };
         }
 
         if (!$.isBlank(wiz.defaultAction))
         {
             wizConfig.closeCallback = function()
-            { wizardAction(sidebarObj, $item, wiz.defaultAction); };
+            {
+                _.defer(function()
+                {
+                    if (!alreadyCalled)
+                    {
+                        alreadyCalled = true;
+                        wizardAction(sidebarObj, $item, wiz.defaultAction);
+                    }
+                });
+            };
         }
 
         /* Adjust scroll position to make sure wizard component is in view */
@@ -561,6 +600,7 @@
         if (top < paneTop)
         { $pane.scrollTop($pane.scrollTop() - (paneTop - top)); }
 
+        var $mainItem = $item;
         /* Adjust actual item wizard is attached to */
         if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
 
@@ -570,13 +610,19 @@
         sidebarObj._curScroll = $pane.scrollTop();
         $item.wizardPrompt(wizConfig);
         sidebarObj._$currentWizard = $item;
+        sidebarObj._$mainWizardItem = $mainItem;
 
         return true;
     };
 
     var wizardAction = function(sidebarObj, $item, action)
     {
+        if (!$.isBlank(sidebarObj._$mainFlowWizard) &&
+            sidebarObj._$mainFlowWizard.index($item) > -1)
+        { return; }
+
         sidebarObj._$currentWizard = null;
+        sidebarObj._$mainWizardItem = null;
         switch(action)
         {
             case 'nextSection':
@@ -596,8 +642,21 @@
                     .nextAll('.line.hasWizard:visible:first'); }
 
                 if ($triggerItem.length < 1)
-                { wizardAction(sidebarObj, $item.closest('.section'),
-                    'nextSection'); }
+                {
+                    // Leaving this section; see if we need to return to a previous
+                    // interrupted flow
+                    if (!$.isBlank(sidebarObj._$mainFlowWizard))
+                    {
+                        var $resumeItem = sidebarObj._$mainFlowWizard;
+                        sidebarObj._$mainFlowWizard = null;
+                        showWizard(sidebarObj, $resumeItem);
+                    }
+                    else
+                    {
+                        wizardAction(sidebarObj, $item.closest('.section'),
+                            'nextSection');
+                    }
+                }
                 else
                 { showWizard(sidebarObj, $triggerItem); }
                 break;
@@ -781,6 +840,7 @@
                         }
                     ],
                     wizard: {prompt: 'Do you have latitude and longitude data to import?',
+                        defaultAction: 'nextField',
                         actions: [
                             {text: 'Yes', action: 'expand'},
                             {text: 'No', action: 'nextSection'}
@@ -864,6 +924,7 @@
                         }
                     ],
                     wizard: {prompt: 'Do you have address data to import?',
+                        defaultAction: 'nextField',
                         actions: [
                             {text: 'Yes', action: 'expand'},
                             {text: 'No', action: 'nextSection'}

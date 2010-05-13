@@ -61,9 +61,11 @@
                 $msg.find('.actionButtons a').click(function(e)
                 {
                     e.preventDefault();
-                    wizObj.close();
                     if (!_.isNull(wizObj.settings.buttonCallback))
                     { wizObj.settings.buttonCallback($(this).data('wizardValue')); }
+
+                    // Make sure button callback happens first
+                    _.defer(function() { wizObj.close(); });
                 });
 
                 $domObj.socrataTip({message: $msg, closeOnClick: false,

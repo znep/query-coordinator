@@ -356,7 +356,7 @@ class View < Model
 
   def filters
     View.find({"method" => 'getByTableId', "tableId" => self.tableId}, true).
-      reject {|l| l.is_blist?}
+      reject {|l| l.is_blist? || l.is_blobby?}
   end
 
   def parent_dataset

@@ -1,8 +1,0 @@
-production:
-  blist_blog_rss: http://blog.socrata.com/feed/
-
-development:
-  blist_blog_rss: http://blog.socrata.com/feed/
-
-test:
-  blist_blog_rss: http://blog.socrata.com/feed/

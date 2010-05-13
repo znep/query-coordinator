@@ -311,7 +311,7 @@ blist.myBlists.renameClick = function (event)
 blist.myBlists.closeRenameForms = function()
 {
     var $this = $("#blist-list");
-    var $allNameCells = $this.find("div.blist-td.blist-list-c3, div.blist-td-name");
+    var $allNameCells = $this.find("div.blist-td.blist-list-c4, div.blist-td-name");
     $allNameCells.closest(".blist-tr").removeClass("highlight");
     $allNameCells.each(function(i, cell)
     {
@@ -433,6 +433,7 @@ blist.myBlists.infoEditErrorCallback = function(fieldType, message)
 
 blist.myBlists.infoPane.updateSummarySuccessHandler = function (data)
 {
+
     // Load the info pane.
     $('#infoPane').html(data);
 
@@ -1006,7 +1007,7 @@ blist.myBlists.initializeGrid = function()
     // Configure columns for the view list
     myBlistsNS.model.meta({view: {}, columns: myBlistsNS.columns});
     // Set up initial sort
-    myBlistsNS.model.sort(6, true);
+    myBlistsNS.model.sort(7, true);
 
     $('#blist-list').bind('load', blistsInfoNS.updateSummary)
         .bind('selection_change', blistsInfoNS.updateSummary)

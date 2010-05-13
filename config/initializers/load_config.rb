@@ -5,8 +5,6 @@ end
 
 CORESERVICE_URI = URI.parse(APP_CONFIG['coreservice_uri'])
 
-BLIST_RSS = APP_CONFIG["blist_blog_rss"]
-
 revision_file = File.join(Rails.root, "REVISION")
 
 begin

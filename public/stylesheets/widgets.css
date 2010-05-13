@@ -323,6 +323,10 @@ ul.menu a.externalLink .highlight
 }
 ul.menu a.externalLink:hover .highlight { background-position: right -15px; }
 
+ul.menu li.noExportIcon .highlight
+{
+    background-image: none;
+}
 /* Support for submenus */
 
 ul.menu li.submenu

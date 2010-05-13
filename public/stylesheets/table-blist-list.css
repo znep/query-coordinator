@@ -124,19 +124,19 @@
     background:transparent url(/stylesheets/images/content/table/icon_favorite_sprite.png) no-repeat scroll left 27px;
 }
 
-div.blist-hot-row > div + div + div + div,
-div.highlight > div + div + div + div,
-div.blist-select-row > div + div + div + div
+div.blist-hot-row > div + div + div + div + div,
+div.highlight > div + div + div + div + div,
+div.blist-select-row > div + div + div + div + div
 {
     background-color:#e3ecf7;
     border-right: 1px solid #e3ecf7;
 }
 
-div.blist-hot-row > div + div + div + div + div + div + div,
-div.blist-hot-row.blist-tr-level1 > div + div + div + div + div,
-div.highlight > div + div + div + div + div + div + div,
-div.blist-select-row > div + div + div + div + div + div + div,
-div.blist-select-row.blist-tr-level1 > div + div + div + div + div
+div.blist-hot-row > div + div + div + div + div + div + div + div,
+div.blist-hot-row.blist-tr-level1 > div + div + div + div + div + div,
+div.highlight > div + div + div + div + div + div + div + div,
+div.blist-select-row > div + div + div + div + div + div + div + div,
+div.blist-select-row.blist-tr-level1 > div + div + div + div + div + div
 {
     background-image:url(/stylesheets/images/content/table/highlight_end.png);
     background-position:right top;
@@ -144,8 +144,8 @@ div.blist-select-row.blist-tr-level1 > div + div + div + div + div
     border-right: none;
 }
 
-div.blist-hot-row.blist-tr-level1 > div + div + div + div + div,
-div.blist-select-row.blist-tr-level1 > div + div + div + div + div
+div.blist-hot-row.blist-tr-level1 > div + div + div + div + div + div,
+div.blist-select-row.blist-tr-level1 > div + div + div + div + div + div
 {
     border-right: solid 1px #ffffff;
 }

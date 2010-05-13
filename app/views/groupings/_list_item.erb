@@ -23,8 +23,8 @@
   <%- end -%>
   <%= hidden_field_tag("#{type}-sort-#{list_item.id}", true,
     :class => "columnId", :value => "#{list_item.id}") %>
-  <%= hidden_field_tag("#{type}-format-#{list_item.id}", true,
-    :class => "format", :value => list_item.format.to_json) %>
+  <%= hidden_field_tag("#{type}-json-#{list_item.id}", true,
+    :class => "columnJson", :value => list_item.to_json) %>
   <%= hidden_field_tag("#{type}-sort-#{list_item.id}-order", list_item_counter,
     :class => 'orderField') %>
   <%= hidden_field_tag("#{type}-hidden-#{list_item.id}", true,

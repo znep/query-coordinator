@@ -18,13 +18,16 @@
         this.init();
     };
 
+    var wizUID = 0;
+
     $.extend(wizardPromptObj,
     {
         defaults:
         {
             buttons: null,
             buttonCallback: null,
-            closeEvents: 'click, change',
+            closeCallback: null,
+            closeEvents: null,
             closeSelector: 'a, :input',
             positions: null,
             prompt: null
@@ -37,6 +40,7 @@
                 var wizObj = this;
                 var $domObj = wizObj.$dom();
                 $domObj.data("wizardPrompt", wizObj);
+                wizObj._uid = wizUID++;
 
                 var $msg = $('<div class="wizardPrompt">' +
                     '<span class="prompt">' + wizObj.settings.prompt + '</span>' +
@@ -66,12 +70,15 @@
                     positions: wizObj.settings.positions});
 
                 var events = wizObj.settings.closeEvents;
+                if (_.isNull(events))
+                { events = 'click, change'; }
                 var $closeItems = $domObj.find(wizObj.settings.closeSelector);
                 if (typeof events == 'string')
                 { events = events.replace(/\s+/g, '').split(','); }
                 _.each(events, function(ev)
                 {
-                    $closeItems.bind(ev, function(e) { wizObj.close(); });
+                    $closeItems.bind(ev + '.wizardPrompt' + wizObj._uid,
+                        function(e) { wizObj.close(); });
                 });
             },
 
@@ -84,8 +91,15 @@
 
             close: function()
             {
-                this.$dom().socrataTip().destroy();
-                this.$dom().removeData('wizardPrompt');
+                var wizObj = this;
+                wizObj.$dom().socrataTip().destroy();
+                wizObj.$dom().removeData('wizardPrompt');
+
+                var $closeItems = wizObj.$dom().find(wizObj.settings.closeSelector);
+                $closeItems.unbind('.wizardPrompt' + wizObj._uid);
+
+                if (!_.isNull(wizObj.settings.closeCallback))
+                { wizObj.settings.closeCallback(); }
             }
         }
     });

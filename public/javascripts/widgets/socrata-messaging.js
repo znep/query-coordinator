@@ -109,6 +109,19 @@
                 { this.$dom().btOff(); }
             },
 
+            /* These are used to temporarily hide/show the tooltip without fully
+             * destroying it.  Visibility is used so we can continue tracking
+             * the position */
+            quickHide: function()
+            {
+                $getTipBox(this).css('visibility', 'hidden');
+            },
+
+            quickShow: function()
+            {
+                $getTipBox(this).css('visibility', 'visible');
+            },
+
             disable: function()
             {
                 this._disabled = true;
@@ -124,10 +137,57 @@
                 this.hide();
                 this.disable();
                 this.$dom().removeData('socrataTip');
+            },
+
+            /* This is used to manually move a tooltip (for example, when
+             * attached to something that scrolls) */
+            adjustPosition: function(adjAmt)
+            {
+                var sTipObj = this;
+                if (sTipObj._disabled || !sTipObj._visible) { return; }
+
+                var $tip = $getTipBox(sTipObj);
+
+                if (!$.isBlank(adjAmt.top))
+                { $tip.css('top', $tip.offset().top + adjAmt.top); }
+                if (!$.isBlank(adjAmt.left))
+                { $tip.css('left', $tip.offset().left + adjAmt.left); }
+            },
+
+            /* This is used to figure out which side of the item the tip is
+             * attached to */
+            getTipPosition: function()
+            {
+                var sTipObj = this;
+                if (!$.isBlank(sTipObj._tipPosition))
+                { return sTipObj._tipPosition; }
+
+                if (!sTipObj._visible) { return null; }
+
+                var $tip = $getTipBox(sTipObj).find('.bt-content');
+
+                // HACK: This is a terrible hack; but the direction of the tip
+                // isn't really stored anywhere...
+                var pos = null;
+                if (parseInt($tip.css('margin-bottom')) > 0) { pos = 'top'; }
+                else if (parseInt($tip.css('margin-top')) > 0) { pos = 'bottom'; }
+                else if (parseInt($tip.css('margin-right')) > 0) { pos = 'left'; }
+                else if (parseInt($tip.css('margin-left')) > 0) { pos = 'right'; }
+
+                if (!$.isBlank(pos))
+                { sTipObj._tipPosition = pos; }
+                return pos;
             }
         }
     });
 
+    var $getTipBox = function(sTipObj)
+    {
+        // This is kind of a hack, since it relies on the internals
+        //  of BT.  However, this is the most robust way to get the
+        //  tip associated with this item
+        return $(sTipObj.$dom().data('bt-box'));
+    };
 
     $.fn.socrataAlert = function(options)
     {

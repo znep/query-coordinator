@@ -75,6 +75,13 @@
                 return this._$grid;
             },
 
+            $currentPane: function()
+            {
+                if ($.isBlank(this._currentPane)) { return null; }
+
+                return this._$panes[this._currentPane];
+            },
+
             /* Create a new pane in the sidebar */
             addPane: function(config, data)
             {
@@ -106,7 +113,11 @@
                 // Make sure our pane exists
                 if ($.isBlank(sidebarObj._$panes[paneName]))
                 { throw paneName + ' does not exist'; }
-                sidebarObj._$panes[paneName].show();
+                sidebarObj._currentPane = paneName;
+                sidebarObj.$currentPane().show();
+                sidebarObj.$currentPane()
+                    .scroll(function(e) { handleScroll(sidebarObj, e); });
+
 
                 // Adjust positions for the sidebar
                 setPosition(sidebarObj);
@@ -139,7 +150,7 @@
                 $(window).resize();
 
                 showWizard(sidebarObj,
-                    sidebarObj._$panes[paneName].find('.hasWizard:visible:first'));
+                    sidebarObj.$currentPane().find('.hasWizard:visible:first'));
             },
 
             /* Hide the sidebar and all panes.  If it was modal, then undo the
@@ -148,11 +159,15 @@
             {
                 var sidebarObj = this;
                 sidebarObj.$dom().hide();
-                sidebarObj.$dom().find('.sidebarPane').hide();
+                sidebarObj.$dom().find('.sidebarPane').unbind('scroll').hide();
                 sidebarObj.$grid().css('margin-right', 0);
 
+                sidebarObj._currentPane = null;
                 if (!$.isBlank(sidebarObj._$currentWizard))
-                { sidebarObj._$currentWizard.wizardPrompt().close(); }
+                {
+                    sidebarObj._$currentWizard.wizardPrompt().close();
+                    sidebarObj._$currentWizard = null;
+                }
 
                 if (sidebarObj._isModal)
                 {
@@ -202,6 +217,53 @@
         if (sidebarObj.$dom().is(':hidden')) { return; }
 
         _.defer(function() { setPosition(sidebarObj); });
+    };
+
+    /* Handle pane scrolling */
+    var handleScroll = function(sidebarObj, e)
+    {
+        if (!$.isBlank(sidebarObj._$currentWizard))
+        {
+            var $item = sidebarObj._$currentWizard;
+            var newScroll = sidebarObj.$currentPane().scrollTop();
+            var scrollDiff = newScroll - sidebarObj._curScroll;
+            sidebarObj._curScroll = newScroll;
+            $item.socrataTip().adjustPosition({top: -scrollDiff});
+
+            var $pane = sidebarObj.$currentPane();
+            var paneTop = $pane.offset().top;
+            var itemTop = $item.offset().top;
+            var paneBottom = paneTop + $pane.height();
+            var itemBottom = itemTop + $item.outerHeight();
+
+            var shouldHide = false;
+            var pos = $item.socrataTip().getTipPosition();
+            var fudge = 5;
+            paneTop -= fudge;
+            paneBottom += fudge;
+            switch (pos)
+            {
+                case 'left':
+                case 'right':
+                     shouldHide = (itemTop + itemBottom) / 2 > paneBottom ||
+                        (itemTop + itemBottom) / 2 < paneTop;
+                    break;
+
+                case 'top':
+                    shouldHide = itemTop < paneTop || itemTop > paneBottom;
+                    break;
+
+                case 'bottom':
+                    shouldHide = itemBottom > paneBottom || itemBottom < paneTop;
+                    break;
+
+                default:
+                    shouldHide = true;
+                    break;
+            }
+            if (shouldHide) { $item.socrataTip().quickHide(); }
+            else { $item.socrataTip().quickShow(); }
+        }
     };
 
 
@@ -419,7 +481,17 @@
             if (!$.isBlank(s.wizard))
             { $s.addClass('hasWizard').data('sidebarWizard', s.wizard); }
 
-            // add fields...
+            $s.find('.content > .line').each(function(j)
+            {
+                var $l = $(this);
+                var l = s.fields[j];
+                if (!$.isBlank(l.wizard))
+                {
+                    $l.addClass('hasWizard').data('sidebarWizard',
+                        $.extend({}, l.wizard, {positions: ['left'],
+                            closeEvents: 'change'}));
+                }
+            });
         });
 
         if (!$.isBlank(config.finishBlock.wizard))
@@ -438,7 +510,9 @@
         if ($.isBlank(wiz)) { return false; }
 
         var wizConfig = {prompt: wiz.prompt || null,
-            positions: wiz.positions || null};
+            positions: wiz.positions || null,
+            closeEvents: wiz.closeEvents || null};
+
         if (!$.isBlank(wiz.actions))
         {
             wizConfig.buttons = [];
@@ -449,8 +523,28 @@
             { wizardAction(sidebarObj, $item, action); };
         }
 
+        if (!$.isBlank(wiz.defaultAction))
+        {
+            wizConfig.closeCallback = function()
+            { wizardAction(sidebarObj, $item, wiz.defaultAction); };
+        }
+
+        /* Adjust scroll position to make sure wizard component is in view */
+        var $pane = sidebarObj.$currentPane();
+        var paneTop = $pane.offset().top;
+        var top = $item.offset().top;
+        var paneBottom = paneTop + $pane.height();
+        var bottom = top + $item.outerHeight();
+        if (bottom > paneBottom)
+        { $pane.scrollTop($pane.scrollTop() + bottom - paneBottom); }
+        if (top < paneTop)
+        { $pane.scrollTop($pane.scrollTop() - (paneTop - top)); }
+
+        /* Adjust actual item wizard is attached to */
         if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
         sidebarObj._$currentWizard = $item;
+        sidebarObj._curScroll = $pane.scrollTop();
+
         $item.wizardPrompt(wizConfig);
 
         return true;
@@ -466,6 +560,22 @@
                 { $item = $item.closest('.section'); }
                 showWizard(sidebarObj, $item.nextAll('.section, .finishButtons')
                     .filter('.hasWizard:visible:first'));
+                break;
+
+            case 'nextField':
+                var $triggerItem = $item;
+                if ($triggerItem.is('.section'))
+                { $triggerItem = $triggerItem
+                    .find('.content > .line.hasWizard:visible:first'); }
+                else
+                { $triggerItem = $triggerItem.closest('.line')
+                    .nextAll('.line.hasWizard:visible:first'); }
+
+                if ($triggerItem.length < 1)
+                { wizardAction(sidebarObj, $item.closest('.section'),
+                    'nextSection'); }
+                else
+                { showWizard(sidebarObj, $triggerItem); }
                 break;
 
             case 'expand':
@@ -635,10 +745,16 @@
                     fields: [
                         {text: 'Latitude', type: 'select', name: 'convertLat',
                             required: true, notequalto: 'convertNumber',
-                            columns: {type: 'number', hidden: false} },
+                            columns: {type: 'number', hidden: false},
+                            wizard: {prompt: 'Choose the column that contains latitude data',
+                                defaultAction: 'nextField'}
+                        },
                         {text: 'Longitude', type: 'select', name: 'convertLong',
                             required: true, notequalto: 'convertNumber',
-                            columns: {type: 'number', hidden: false} }
+                            columns: {type: 'number', hidden: false},
+                            wizard: {prompt: 'Choose the column that contains longitude data',
+                                defaultAction: 'nextField'}
+                        }
                     ],
                     wizard: {prompt: 'Do you have latitude and longitude data to import?',
                         actions: [
@@ -659,7 +775,15 @@
                                 {type: 'select', name: 'convertStreetCol',
                                     notequalto: 'convertText',
                                     columns: {type: 'text', hidden: false} }
-                            ] },
+                            ],
+                            wizard: {prompt: 'Choose the column that contains street address data',
+                                defaultAction: 'nextField',
+                                actions: [
+                                    {text: 'Skip', action: 'nextField'},
+                                    {text: 'Done', action: 'nextField'}
+                                ]
+                            }
+                        },
                         {text: 'City', type: 'radioGroup', name: 'convertCityGroup',
                             options: [
                                 {text: 'None', type: 'static', checked: true},
@@ -668,7 +792,15 @@
                                     columns: {type: 'text', hidden: false} },
                                 {type: 'text', name: 'convertCityStatic',
                                     prompt: 'Enter a city'}
-                            ] },
+                            ],
+                            wizard: {prompt: 'Choose the column that contains city data, or fill in a value to be used for all rows',
+                                defaultAction: 'nextField',
+                                actions: [
+                                    {text: 'Skip', action: 'nextField'},
+                                    {text: 'Done', action: 'nextField'}
+                                ]
+                            }
+                        },
                         {text: 'State', type: 'radioGroup',
                             name: 'convertStateGroup',
                             options: [
@@ -678,7 +810,15 @@
                                     columns: {type: 'text', hidden: false} },
                                 {type: 'text', name: 'convertStateStatic',
                                     prompt: 'Enter a state'}
-                            ] },
+                            ],
+                            wizard: {prompt: 'Choose the column that contains state data, or fill in a value to be used for all rows',
+                                defaultAction: 'nextField',
+                                actions: [
+                                    {text: 'Skip', action: 'nextField'},
+                                    {text: 'Done', action: 'nextField'}
+                                ]
+                            }
+                        },
                         {text: 'Zip Code', type: 'radioGroup',
                             name: 'convertZipGroup',
                             options: [
@@ -689,7 +829,15 @@
                                         hidden: false} },
                                 {type: 'text', name: 'convertZipStatic',
                                     prompt: 'Enter a zip code'}
-                            ] }
+                            ],
+                            wizard: {prompt: 'Choose the column that contains zip code data, or fill in a value to be used for all rows',
+                                defaultAction: 'nextField',
+                                actions: [
+                                    {text: 'Skip', action: 'nextField'},
+                                    {text: 'Done', action: 'nextField'}
+                                ]
+                            }
+                        }
                     ],
                     wizard: {prompt: 'Do you have address data to import?',
                         actions: [

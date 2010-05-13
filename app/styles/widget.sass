@@ -191,7 +191,13 @@ html, body
   margin= !frame_padding
     top: 0
 
+  > *
+    background-color: #fff
+    display: none
+
   .widgetContentGrid
+    display: block
+
     #viewHeader
       display: none
 
@@ -280,3 +286,18 @@ html, body
         .indicators-inactive .blist-th,
         .indicators-inactive .blist-th .dragHandle
           height: 3.3em
+
+  .widgetContent_print form
+    padding: 1em
+
+    .margin
+      margin-left: 1em
+
+    .pageSizeHeader
+      margin-bottom: -2em
+
+    .submitLine
+      padding-top: 1em
+
+      .submitActions li
+        display: inline

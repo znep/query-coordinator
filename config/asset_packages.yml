@@ -251,6 +251,7 @@ javascripts:
   - plugins/jquery.tache
   - plugins/jquery.validate.min
   - plugins/jquery.bt
+  - plugins/jquery.uniform
   - widgets/socrata-messaging
   - util/navigation
   - util/urls

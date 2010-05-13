@@ -78,7 +78,7 @@ $(function()
     // orientation
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
 
-    // ie?
+    // Infinite Exasperation?
     if ($.browser.msie)
     {
         $('body').addClass('ie ie' + $.browser.version.slice(0, 1)); // I guess this will break when we hit IE10.
@@ -91,7 +91,7 @@ $(function()
     // generic events
     $.live('a[rel$=external]', 'focus', function(event)
     {
-        this.target = "_blank";        
+        this.target = '_blank';
     });
     $.live('a[rel$=external]', 'click', function(event)
     {
@@ -104,6 +104,9 @@ $(function()
         }
     });
 
+    // controls
+    $('select, input:checkbox, input:radio, input:file').uniform();
+
     // menus
     $('.mainMenu').menu({
         attached: false,
@@ -113,8 +116,24 @@ $(function()
             { text: 'Comments', className: 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
             { text: 'Embed', className: 'embed', subtext: 'Embed this player on your site', href: '#embed' },
             { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print' },
-            { text: 'About the Socrata Social Data Player', className: 'about', href: '#about' }
+            { text: 'About the Socrata Social Data Player', className: 'about', href: 'http://www.socrata.com/try-it-free' }
         ]
+    });
+    $('.mainMenu .menuDropdown a').click(function(event)
+    {
+        var target = $(this).closest('li').attr('class');
+        if (target == 'about')
+        {
+            // bail; this is a real link
+            return;
+        }
+
+        event.preventDefault();
+        $('.widgetContent > :visible:first').fadeOut(200,
+            function()
+            {
+                $('.widgetContent_' + target).fadeIn(200);
+            });
     });
 
     var tweet = escape('Check out the ' + widgetNS.view.name + ' dataset on ' + configNS.strings.company_name + ': ');
@@ -215,7 +234,7 @@ $(function()
         var $form = $(this);
         var $emailTextbox = $('.toolbarEmailForm .toolbarTextbox');
 
-        var emails = $emailTextbox.val();
+        var emails = $.trim($emailTextbox.val());
         emails = emails.split(/[, ]+/);
 
         var completed = 0;
@@ -281,4 +300,25 @@ $(function()
     }
     else if (blist.display.invokeVisualization)
     { $('#data-grid').visualization(); }
+
+    // not-grid
+    $('.widgetContent .close').click(function(event)
+    {
+        event.preventDefault();
+        $('.widgetContent > :visible:first').fadeOut(200,
+            function()
+            {
+                $('.widgetContentGrid').fadeIn(200);
+            });
+    });
+
+    // print
+    // TODO: maybe make this generic?
+    $('.widgetContent_print form input[type=image]')
+        .replaceWith(
+            $('<a href="#submit" class="button submit"><span class="icon"></span>Print</a>')
+                .click(function(event)
+                {
+                    $(this).closest('form').submit();
+                }));
 });

@@ -27,3 +27,366 @@ form textarea.text_wide
 
 .errorMessage
   color: #f00
+
+// common layout for forms
+form.commonForm
+  label
+    display: block
+    font-size: 1.2em
+    height: 2em
+    line-height: 2em
+    margin-bottom: -2em
+
+  .formSection
+    padding-left: 1em
+
+    .formHeader
+      margin-left: -1em
+
+  .formHeader
+    font-weight: bold
+    height: auto
+    margin-bottom: 0.5em
+
+  div.uniform,
+  input[type=text],
+  textarea
+    margin:
+      bottom: 0.5em
+      left: 10em
+
+  div.uniform.radio,
+  div.uniform.checker
+    display: block
+    margin: 0.5em
+      bottom: -2.1em
+
+    + label
+      display: block
+      margin:
+        bottom: 0.5em
+        left: 2.5em
+
+  input[type=text],
+  textarea
+    -moz-border-radius: 0.3em
+    -webkit-border-radius: 0.3em
+    -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05)
+    -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.05)
+    &:hover
+      -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.15)
+      -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.15)
+    &:focus, &:active
+      -moz-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
+      -webkit-box-shadow: 0 0 2px rgba(0, 0, 0, 0.4)
+
+// uniform jQuery plugin styling
+  clint.tseng@socrata.com 13/05/10:
+    modified to nest under uniform, not float
+
+div.uniform.selector,
+div.uniform.selector span,
+div.uniform.checker span,
+div.uniform.radio span,
+div.uniform.uploader,
+div.uniform.uploader span.action
+  background-image: url(/stylesheets/images/common/uniform_sprite.png)
+  background-repeat: no-repeat
+
+div.uniform.selector,
+div.uniform.radio,
+div.uniform.checker,
+div.uniform.uploader,
+div.uniform.selector *,
+div.uniform.radio *,
+div.uniform.checker *,
+div.uniform.uploader *
+  margin: 0
+  padding: 0
+
+div.uniform.selector
+  background-position: -483px -130px
+  line-height: 26px
+  height: 26px
+  position: relative
+  padding-left: 10px
+
+  span
+    background-position: right 0px
+    display: block
+    float: left
+    height: 26px
+    line-height: 26px
+
+  select
+    border: solid 1px #fff
+    top: 3px
+    left: 3px
+    right: 0px
+    bottom: 3px
+    opacity: 0
+    position: absolute
+
+  &:active, &.active
+    background-position: -483px -156px
+
+    span
+      background-position: right -26px
+
+  &.focus, &.hover, &:hover
+    background-position: -483px -182px
+
+    span
+      background-position: right -52px
+
+  &.focus:active, &.focus.active
+    background-position: -483px -208px
+
+    span
+      background-position: right -78px
+
+  &:hover:active, &.active:hover
+    background-position: -483px -208px
+
+    span
+      background-position: right -78px
+
+  &.disabled
+    background-position: -483px -234px
+
+    span
+      background-position: right -104px
+
+div.uniform.checker
+  width: 19px
+  height: 19px
+
+  input
+    width: 19px
+    height: 19px
+
+  span
+    background-position: 0px -260px
+    height: 19px
+    width: 19px
+
+  &:active span, &.active span
+    background-position: -19px -260px
+
+  &.focus span, &:hover span
+    background-position: -38px -260px
+
+  &.focus:active span, &:active:hover span, &.active:hover span, &.focus.active span
+    background-position: -57px -260px
+
+  span.checked
+    background-position: -76px -260px
+
+  &:active span.checked, &.active span.checked
+    background-position: -95px -260px
+
+  &.focus span.checked, &:hover span.checked
+    background-position: -114px -260px
+
+  &.focus:active span.checked, &:hover:active span.checked
+    background-position: -133px -260px
+
+  &.active
+    &:hover span.checked, &.focus span.checked
+      background-position: -133px -260px
+
+  &.disabled
+    span, &:active span, &.active span
+      background-position: -152px -260px
+
+    span.checked, &:active span.checked, &.active span.checked
+      background-position: -171px -260px
+
+div.uniform.radio
+  width: 18px
+  height: 18px
+
+  input
+    width: 18px
+    height: 18px
+
+  span
+    height: 18px
+    width: 18px
+    background-position: 0px -279px
+
+  &:active span, &.active span
+    background-position: -18px -279px
+
+  &.focus span, &:hover span
+    background-position: -36px -279px
+
+  &.focus:active span, &:active:hover span
+    background-position: -54px -279px
+
+  &.active:hover span, &.active.focus span
+    background-position: -54px -279px
+
+  span.checked
+    background-position: -72px -279px
+
+  &:active span.checked, &.active span.checked
+    background-position: -90px -279px
+
+  &.focus span.checked, &:hover span.checked
+    background-position: -108px -279px
+
+  &.focus:active span.checked, &:hover:active span.checked, &.focus.active span.checked, &.active:hover span.checked
+    background-position: -126px -279px
+
+  &.disabled
+    span, &:active span, &.active span
+      background-position: -144px -279px
+
+    span.checked, &:active span.checked, &.active span.checked
+      background-position: -162px -279px
+
+div.uniform.uploader
+  background-position: 0px -297px
+  height: 28px
+
+  span.action
+    background-position: right -409px
+    height: 24px
+    line-height: 24px
+
+  span.filename
+    height: 24px
+    margin: 2px 0px 2px 2px
+    line-height: 24px
+
+  &.focus, &.hover, &:hover
+    background-position: 0px -353px
+
+  &.focus span.action, &.hover span.action, &:hover span.action
+    background-position: right -437px
+
+  &.active span.action, &:active span.action
+    background-position: right -465px
+
+  &.focus.active span.action, &:focus.active span.action, &.focus:active span.action, &:focus:active span.action
+    background-position: right -493px
+
+  &.disabled
+    background-position: 0px -325px
+
+    span.action
+      background-position: right -381px
+
+div.uniform.selector
+  margin-bottom: 20px
+  width: 190px
+  font-size: 12px
+
+  select
+    width: 190px
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif
+    font-size: 12px
+
+  span
+    padding: 0px 25px 0px 2px
+    cursor: pointer
+    color: #666
+    width: 158px
+    text-shadow: 0 1px 0 #fff
+
+  &.disabled span
+    color: #bbb
+
+div.uniform.checker,
+div.uniform.radio
+  margin-right: 10px
+
+div.uniform.uploader
+  width: 190px
+  margin-bottom: 20px
+  cursor: pointer
+
+  span.action
+    width: 85px
+    text-align: center
+    text-shadow: #fff 0px 1px 0px
+    background-color: #fff
+    font-size: 11px
+    font-weight: bold
+
+  span.filename
+    color: #777
+    width: 82px
+    border-right: solid 1px #bbb
+    font-size: 11px
+
+  input
+    width: 190px
+
+  &.disabled
+    span.action
+      color: #aaa
+
+    span.filename
+      border-color: #ddd
+      color: #aaa
+
+
+div.uniform.selector select:focus,
+div.uniform.radio input:focus,
+div.uniform.checker input:focus,
+div.uniform.uploader input:focus
+  outline: 0
+
+div.uniform.checker
+  position: relative
+
+  span
+    display: block
+    float: left
+    text-align: center
+
+  input
+    opacity: 0
+    display: inline-block
+
+div.uniform.radio
+  position: relative
+
+  span
+    display: block
+    float: left
+    text-align: center
+
+  input
+    opacity: 0
+    text-align: center
+    display: inline-block
+
+div.uniform.uploader
+  position: relative
+  overflow: hidden
+
+  span.action
+    float: left
+    display: inline
+    padding: 2px 0px
+    overflow: hidden
+    cursor: pointer
+
+  span.filename
+    padding: 0px 10px
+    float: left
+    display: block
+    overflow: hidden
+    text-overflow: ellipsis
+    white-space: nowrap
+
+  input
+    opacity: 0
+    position: absolute
+    top: 0
+    right: 0
+    bottom: 0
+    float: right

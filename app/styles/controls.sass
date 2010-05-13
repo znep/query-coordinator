@@ -1,6 +1,7 @@
 a.button
   +rounded-ends
   +gradient_buttons_active_background
+  +sprite-button-icons
   border= 1px solid !color_buttons_active_border
   -moz-box-shadow= 0 0 2px !color_buttons_shadow
   -webkit-box-shadow= 0 0 2px !color_buttons_shadow
@@ -26,6 +27,13 @@ a.button
     +gradient_buttons_disabled_background
     border= 1px solid !color_buttons_disabled_border
     cursor: default
+
+  .icon
+    float: left
+    margin:
+      left: 0
+      right: 0.4em
+      top: 0.5em
 
   .ie &, .ie & .left
     background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&ec=#{!buttons_active_border}&ew=1&h=20&w=500&r=10)" "no-repeat"

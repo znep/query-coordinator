@@ -61,6 +61,18 @@
         <%- end -%>
       </div>
     </div>
+
+    <div class="widgetContent_views">
+    </div>
+    <div class="widgetContent_downloads">
+    </div>
+    <div class="widgetContent_comments">
+    </div>
+    <div class="widgetContent_embed">
+    </div>
+    <div class="widgetContent_print">
+      <%= render :partial => 'blists/print_form', :locals => { :view => @view } %>
+    </div>
   </div>
 
   <%- if @theme[:frame][:orientation] == 'upwards' -%>

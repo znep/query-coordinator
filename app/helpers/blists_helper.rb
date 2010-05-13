@@ -78,7 +78,7 @@ module BlistsHelper
 
     'print' => {'text' => "Print this #{t(:blist_name).titleize}...",
       'class' => 'print', 'href' => "#{view.href}/print", 'modal' => true,
-      'if' => ((theme.nil? || theme[:menu][:print]) && !@view.is_alt_view?)},
+      'if' => ((theme.nil? || theme[:menu][:print]) && @view.can_print?)},
 
     'full_screen' => {'text' => 'View Full Screen', 'class' => 'fullscreen',
       'href' => @view.href, 'external' => true,
@@ -127,7 +127,7 @@ module BlistsHelper
 
     'email' => {'text' => "Email this #{t(:blist_name).titleize}...",
       'class' => 'email', 'href' => "#{@view.href}/email", 'modal' => true,
-      'if' => (theme.nil? || theme[:menu][:email])},
+      'if' => (theme.nil? || theme[:menu][:email]) && @view.can_email?},
 
     'publish' => {'text' => "Publish this #{t(:blist_name).titleize}...",
       'class' => 'publish', 'modal' => is_widget,

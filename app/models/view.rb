@@ -412,6 +412,14 @@ class View < Model
     viewType == 'blobby'
   end
 
+  def can_email?
+    !is_blobby?
+  end
+
+  def can_print?
+    !is_alt_view?
+  end
+
   # Retrieve the display.  The display model represents the view's display and controls how the view is rendered.
   def display
     return @display if @display

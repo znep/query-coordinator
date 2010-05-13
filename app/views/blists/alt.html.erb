@@ -34,8 +34,12 @@
           <div class="content">
             <ul id="datasetMenu">
               <li><a href="<%= @view.href %>/about">About this Dataset...</a></li>
-              <li><a href="<%= @view.href %>/print">Print...</a></li>
-              <li><a href="<%= @view.href %>/email">Email...</a></li>
+              <%- if @view.can_print? -%>
+                <li><a href="<%= @view.href %>/print">Print...</a></li>
+              <%- end -%>
+              <%- if @view.can_email? -%>
+                <li><a href="<%= @view.href %>/email">Email...</a></li>  
+              <%- end -%>
               <%- if @view.can_modify_data? -%>
                 <%- if module_available? :dataset_append -%>
                   <li><a href="<%= @view.href %>/append">Append Rows via Upload...</a></li>

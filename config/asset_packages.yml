@@ -253,6 +253,7 @@ javascripts:
   - plugins/jquery.bt
   - widgets/socrata-messaging
   - util/navigation
+  - util/urls
   - util/util
   - plugins/date
   - data/types

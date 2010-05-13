@@ -79,6 +79,7 @@
       blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
     <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
+    blist.widget.view = <%= raw @view.to_json %>
 
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';

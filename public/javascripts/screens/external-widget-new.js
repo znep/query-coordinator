@@ -1,5 +1,6 @@
 var widgetNS = blist.namespace.fetch('blist.widget');
 var commonNS = blist.namespace.fetch('blist.common');
+var configNS = blist.namespace.fetch('blist.configuration');
 
 blist.widget.resizeViewport = function()
 {
@@ -31,10 +32,45 @@ blist.widget.hideToolbar = function()
             });
 };
 
-blist.widget.showToolbar = function()
+blist.widget.showToolbar = function(sectionName, sectionClass)
 {
-    $('.toolbar').show('slide', { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') });
-    widgetNS.resizeViewport();
+    var $toolbar = $('.toolbar');
+
+    $toolbar.removeClass().addClass('toolbar ' + sectionName);
+
+    if (!$toolbar.is(':visible'))
+    {
+        $toolbar.show('slide', { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') });
+        $toolbar
+            .children(':not(.close)').hide()
+            .filter('.' + sectionClass).show();
+        widgetNS.resizeViewport();
+    }
+    else
+    {
+        $toolbar
+            .children(':not(.close):visible').fadeOut('fast', function()
+            {
+                $toolbar.find('.' + sectionClass).fadeIn('fast');
+            });
+    }
+};
+
+blist.widget.flashToolbarMessage = function($messageElem, message, onDisplay)
+{
+    $messageElem
+        .text(message)
+        .slideDown(function()
+        {
+            if (typeof onDisplay == 'function')
+            {
+                onDisplay();
+            }
+            setTimeout(function()
+            {
+                $messageElem.slideUp();
+            }, 5000);
+        });
 };
 
 $(function()
@@ -60,7 +96,7 @@ $(function()
     $.live('a[rel$=external]', 'click', function(event)
     {
         // interstitial
-        if (theme['behavior']['interstitial'] === true)
+        if (widgetNS.theme['behavior']['interstitial'] === true)
         {
             event.preventDefault();
             // todo: pop interstitial
@@ -70,7 +106,7 @@ $(function()
 
     // menus
     $('.mainMenu').menu({
-        menuButtonClass: 'mainMenuButton',
+        attached: false,
         contents: [
             { text: 'Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
             { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads' },
@@ -81,35 +117,147 @@ $(function()
         ]
     });
 
+    var tweet = escape('Check out the ' + widgetNS.view.name + ' dataset on ' + configNS.strings.company_name + ': ');
+    var seoPath = window.location.hostname + $.generateViewUrl(widgetNS.view);
+    var shortPath = window.location.hostname.replace(/www/, '') + '/d/' + widgetNS.viewId;
+    $('.subHeaderBar .share .shareMenu').menu({
+        attached: false,
+        menuButtonClass: 'icon',
+        menuButtonContents: 'Socialize',
+        contents: [
+            { text: 'Delicious', className: 'delicious', rel: 'external',
+              href: 'http://del.icio.us/post?url=' + seoPath + '&title=' + widgetNS.view.name },
+            { text: 'Digg', className: 'digg', rel: 'external',
+              href: 'http://digg.com/submit?phase=2&url=' + seoPath + '&title=' + widgetNS.view.name },
+            { text: 'Facebook', className: 'facebook', rel: 'external',
+              href: 'http://www.facebook.com/share.php?u=' + seoPath },
+            { text: 'Twitter', className: 'twitter', rel: 'external',
+              href: 'http://www.twitter.com/home?status=' + tweet + shortPath },
+            { text: 'Email', className: 'email', href: '#email' }
+        ]
+    });
+
     // toolbar
+    var $toolbar = $('.toolbar');
+    $('.toolbar .close').click(function(event)
+    {
+        if ($('.toolbar').hasClass('search'))
+        {
+            $dataGrid.datasetGrid().clearFilterInput(event);
+        }
+        else
+        {
+            // default has already been prevented for search
+            event.preventDefault();
+        }
+        widgetNS.hideToolbar();
+    });
     $('.subHeaderBar .search a').click(function(event)
     {
         event.preventDefault();
 
-        var $toolbar = $('.toolbar');
         if ($toolbar.hasClass('search') && $toolbar.is(':visible'))
         {
             widgetNS.hideToolbar();
         }
         else
         {
-            $toolbar.removeClass().addClass('toolbar search');
-
-            if (!$toolbar.is(':visible'))
-            {
-                widgetNS.showToolbar();
-            }
+            widgetNS.showToolbar('search', 'toolbarSearchForm');
         }
     });
-    $('.toolbar .close').click(function(event)
+    $('.shareMenu .email a').click(function(event)
     {
-        widgetNS.hideToolbar();
+        if ($toolbar.hasClass('email') && $toolbar.is(':visible'))
+        {
+            $('.toolbarEmailForm .toolbarTextbox').effect('pulsate', { times: 2 });
+        }
+        else
+        {
+            widgetNS.showToolbar('email', 'toolbarEmailForm');
+        }
+    });
+    var emailRequestComplete = function(emails)
+    {
+        if (emails.length > 0)
+        {
+            widgetNS.flashToolbarMessage(
+                $('.toolbarEmailForm .toolbarMessage'),
+                'Some of your emails could not be sent. Please verify the addresses and try again.',
+                function()
+                {
+                    $('.toolbarEmailForm .toolbarTextbox')
+                        .val(emails.join(', '))
+                        .attr('disabled', false)
+                        .css('background-color', null);
+                }
+            );
+        }
+        else
+        {
+            widgetNS.flashToolbarMessage(
+                $('.toolbarEmailForm .toolbarMessage'),
+                'Your emails were sent successfully.',
+                function()
+                {
+                    $('.toolbarEmailForm .toolbarTextbox')
+                        .val('')
+                        .blur()
+                        .attr('disabled', false)
+                        .css('background-color', null);
+                }
+            );
+        }
+    };
+    $('.toolbar .toolbarEmailForm').submit(function(event)
+    {
+        event.preventDefault();
+
+        var $form = $(this);
+        var $emailTextbox = $('.toolbarEmailForm .toolbarTextbox');
+
+        var emails = $emailTextbox.val();
+        emails = emails.split(/[, ]+/);
+
+        var completed = 0;
+        var totalRequests = emails.length;
+        _.each(emails, function(email)
+        {
+            $.ajax({
+                url: $form.attr('action'),
+                cache: false,
+                data: {
+                    'method': 'email',
+                    'email': email
+                },
+                success: function (responseData)
+                {
+                    if (responseData['error'] === undefined)
+                    {
+                        emails = _.without(emails, email);
+                    }
+                    if (++completed == totalRequests)
+                    {
+                        emailRequestComplete(emails);
+                    }
+                },
+                error: function (request, status, error)
+                {
+                    if (++completed == totalRequests)
+                    {
+                        emailRequestComplete(emails);
+                    }
+                }
+              });
+          });
+          $emailTextbox
+            .attr('disabled', true)
+            .animate({ 'background-color': '#cdc9b7' });
     });
 
     // grid
+    var $dataGrid = $('#data-grid');
     if (!widgetNS.isAltView)
     {
-        var $dataGrid = $('#data-grid');
         if ($dataGrid.length > 0)
         {
             $dataGrid
@@ -124,7 +272,6 @@ $(function()
                     columnNameEdit: typeof(isOldIE) === 'undefined' &&
                         blist.isOwner,
                     filterForm: '.toolbar .toolbarSearchForm',
-                    clearFilterItem: '.toolbar .close',
                     autoHideClearFilterItem: false,
                     clearTempViewCallback: widgetNS.clearTempViewTab,
                     setTempViewCallback: widgetNS.setTempViewTab,

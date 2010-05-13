@@ -61,7 +61,7 @@ html, body
         background-position: 0 0
 
     .menuDropdown
-      margin-top: 1em
+      margin-top: 0.1em
 
       > ul
         margin-bottom: 0
@@ -124,7 +124,7 @@ html, body
       background: none
       filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/stylesheets/images/common/75pct-black.png, sizingMethod='scale');}
 
-  li
+  > li
     +sprite-menu-icons
     color: #eee
     display: block
@@ -138,10 +138,21 @@ html, body
     .ie7 & .icon
       display: block
 
+    &.share .menu
+      height: 13px
+
+      .icon .icon
+        display: none
+
+      .menuDropdown ul li ul li
+        +sprite-menu-icons
+
 .toolbar
   background-color= !color_toolbar_color
   display: none
+  height: 1.6em
   margin= 0 !frame_padding
+  overflow: hidden
   padding: 0.3em
   @if !frame_orientation == "downwards"
     top: 0
@@ -150,10 +161,14 @@ html, body
 
   form
     display: none
-  &.search .toolbarSearchForm
-    display: block
-  &.email .toolbarEmailForm
-    display: block
+
+  .toolbarMessage
+    color: #eee
+    display: none
+    font-size: 1.2em
+    font-weight: bold
+    height: 1.4em
+    padding: 0.2em
 
   .toolbarTextboxWrapper
     margin-right: 3em

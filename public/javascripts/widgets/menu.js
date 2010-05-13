@@ -30,23 +30,24 @@
 
                 if ($menuDropdown.is(':visible'))
                 {
-                    closeMenu($menuContainer, $menuButton, $menuDropdown);
+                    closeMenu(opts, $menuContainer, $menuButton, $menuDropdown);
                 }
                 else
                 {
-                    openMenu($menuContainer, $menuButton, $menuDropdown);
+                    openMenu(opts, $menuContainer, $menuButton, $menuDropdown);
                 }
             });
         });
     };
 
-    var openMenu = function($menuContainer, $menuButton, $menuDropdown)
+    var openMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
         $menuContainer.addClass('open');
 
         // reset then realign the menu if necessary; set styles as appropriate
         $menuDropdown.removeClass('menuPosition-bottom menuPosition-right');
-        $menuDropdown.addClass('menuPosition-top menuPosition-left');
+        if (opts.attached)
+        { $menuDropdown.addClass('menuPosition-top menuPosition-left'); }
         $menuDropdown
             .css('right', null)
             .css('bottom', null)
@@ -63,9 +64,12 @@
             }
             else
             {
-                $menuDropdown.removeClass('menuPosition-left');
-                $menuDropdown.addClass('menuPosition-right');
-                $menuDropdown.css('right', 10);
+                if (opts.attached)
+                {
+                    $menuDropdown.removeClass('menuPosition-left');
+                    $menuDropdown.addClass('menuPosition-right');
+                }
+                $menuDropdown.css('right', 0);
             }
         }
 
@@ -74,8 +78,11 @@
             // if the menu can be flipped up, do so; otherwise, leave it alone
             if ($menuContainer.offset().top - $menuDropdown.outerHeight(true) > 0)
             {
-                $menuDropdown.removeClass('menuPosition-top');
-                $menuDropdown.addClass('menuPosition-bottom');
+                if (opts.attached)
+                {
+                    $menuDropdown.removeClass('menuPosition-top');
+                    $menuDropdown.addClass('menuPosition-bottom');
+                }
                 $menuDropdown.css('bottom', $menuContainer.innerHeight() * -1);
             }
         }
@@ -94,14 +101,20 @@
         // Hook to hide menu
         $(document).bind('click.menu', function(event)
         {
-            if ($menuContainer.has(event.target).length === 0)
+            // close if user clicked out || if user selected item
+            if (($menuContainer.has(event.target).length === 0) || $(event.target).is('.menuDropdown a'))
             {
-                closeMenu($menuContainer, $menuButton, $menuDropdown);
+                // jQuery animation can trample all over itself if anything else is
+                // attached to the menu button
+                _.defer(function()
+                {
+                    closeMenu(opts, $menuContainer, $menuButton, $menuDropdown);
+                });
             }
         });
     };
 
-    var closeMenu = function($menuContainer, $menuButton, $menuDropdown)
+    var closeMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
         $(document).unbind('click.menu');
         $menuContainer.removeClass('open');
@@ -109,10 +122,13 @@
     };
 
     $.fn.menu.defaults = {
+        attached: true,
         contents: [],
+        menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',
         renderDirective: {
             '+a.menuButton': 'menuButtonContents',
+            'a.menuButton@class': 'menuButtonClass',
             '.menuDropdown>ul>li': {
                 'column<-columns': { // outer array for columns
                     'ul>li': {

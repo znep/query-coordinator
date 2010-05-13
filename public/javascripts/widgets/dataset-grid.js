@@ -133,7 +133,7 @@
                     datasetObj.settings.clearFilterItem =
                         $(datasetObj.settings.clearFilterItem);
                     datasetObj.settings.clearFilterItem
-                        .click(function (e) { clearFilterInput(datasetObj, e); });
+                        .click(function (e) { datasetObj.clearFilterInput(e); });
                     if (datasetObj.settings.autoHideClearFilterItem)
                     { datasetObj.settings.clearFilterItem.hide(); }
                 }
@@ -720,6 +720,24 @@
                 datasetObj.isTempView = true;
             },
 
+            clearFilterInput: function(e)
+            {
+                var datasetObj = this;
+                if ($(datasetObj.currentGrid).closest('body').length < 1)
+                {
+                    return;
+                }
+
+                e.preventDefault();
+                if (datasetObj.settings.filterForm)
+                { datasetObj.settings.filterForm.find(':input').val('').blur(); }
+                datasetObj.summaryStale = true;
+                datasetObj.settings._model.filter('');
+                datasetObj.clearTempView('searchString');
+                if (datasetObj.settings.autoHideClearFilterItem)
+                { $(e.currentTarget).hide(); }
+            },
+
             // This keeps track of when the column summary data is stale and
             // needs to be refreshed
             summaryStale: true,
@@ -957,23 +975,6 @@
             if (datasetObj.settings.autoHideClearFilterItem)
             { datasetObj.settings.clearFilterItem.show(); }
         }
-    };
-
-    var clearFilterInput = function(datasetObj, e)
-    {
-        if ($(datasetObj.currentGrid).closest('body').length < 1)
-        {
-            return;
-        }
-
-        e.preventDefault();
-        if (datasetObj.settings.filterForm)
-        { datasetObj.settings.filterForm.find(':input').val('').blur(); }
-        datasetObj.summaryStale = true;
-        datasetObj.settings._model.filter('');
-        datasetObj.clearTempView('searchString');
-        if (datasetObj.settings.autoHideClearFilterItem)
-        { $(e.currentTarget).hide(); }
     };
 
     var rowMods = function(datasetObj, renderedRows)

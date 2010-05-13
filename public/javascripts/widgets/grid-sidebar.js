@@ -754,11 +754,11 @@
         }
 
         $.ajax({url: '/views/' + blist.display.viewId + '/columns.json?' +
-            'method=' + (useLatLong ? 'locify' : 'addressify') +
+            'method=addressify' +
             '&deleteOriginalColumns=false' +
             '&location=' + $pane.find('#columnName').val() +
-            (latVal ? '&latitude=' + latVal : '') +
-            (longVal ? '&longitude=' + longVal : '') +
+            (latVal ? '&latitudeColumn=' + latVal : '') +
+            (longVal ? '&longitudeColumn=' + longVal : '') +
             (streetVal ? '&address' + (streetIsCol ? 'Column' : 'Value') +
                 '=' + streetVal : '') +
             (cityVal ? '&city' + (cityIsCol ? 'Column' : 'Value') +

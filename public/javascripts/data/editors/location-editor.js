@@ -190,7 +190,7 @@
 
                 if (newStreet === '' && newCSZ === '' && newLat === '' &&
                     newLong === '')
-                { return {}; }
+                { return null; }
 
                 var obj = {};
                 if (newLat !== '')

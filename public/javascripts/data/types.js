@@ -711,6 +711,16 @@ blist.namespace.fetch('blist.data.types');
         return renderPhone(args, false, true, true);
     };
 
+    var renderFilterLocation = function(value, column, subType)
+    {
+        if (subType == 'machine_address' || subType == 'needs_recoding')
+        { return ''; }
+
+        if (subType == 'human_address')
+        { return renderLocationAddress({human_address: value}, true); }
+
+        return renderFilterText(value);
+    };
 
     /*** DATA TYPE DEFINITIONS ***/
 
@@ -921,7 +931,9 @@ blist.namespace.fetch('blist.data.types');
             renderGen: renderGenLocation,
             deleteable: true,
             isObject: true,
-            renderAddress: renderLocationAddress
+            renderAddress: renderLocationAddress,
+            filterable: true,
+            filterRender: renderFilterLocation
         },
 
         tag: {

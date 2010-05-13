@@ -719,6 +719,7 @@ body#lensBody
 {
     padding-bottom: 1em;
     position: relative;
+    z-index: 20;
 }
 
 /* Modify sidebar to lie below grid */

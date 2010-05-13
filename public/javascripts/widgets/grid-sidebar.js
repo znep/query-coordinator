@@ -192,7 +192,8 @@
     {
         if (!sidebarObj._$overlay)
         {
-            $('body').append('<div id="gridSidebarOverlay"></div>');
+            sidebarObj.$dom().parent()
+                .append('<div id="gridSidebarOverlay"></div>');
             sidebarObj._$overlay = $('#gridSidebarOverlay');
         }
         return sidebarObj._$overlay;
@@ -481,7 +482,7 @@
             if (!$.isBlank(s.wizard))
             { $s.addClass('hasWizard').data('sidebarWizard', s.wizard); }
 
-            $s.find('.content > .line').each(function(j)
+            $s.find('.sectionContent > .line').each(function(j)
             {
                 var $l = $(this);
                 var l = s.fields[j];
@@ -542,10 +543,13 @@
 
         /* Adjust actual item wizard is attached to */
         if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
-        sidebarObj._$currentWizard = $item;
-        sidebarObj._curScroll = $pane.scrollTop();
 
+        /* Set scroll first, because fetching the scrollTop can trigger a scroll
+         * event in IE, which screws things up if _$currentWizard is set without
+         * the tooltip being created */
+        sidebarObj._curScroll = $pane.scrollTop();
         $item.wizardPrompt(wizConfig);
+        sidebarObj._$currentWizard = $item;
 
         return true;
     };
@@ -566,7 +570,7 @@
                 var $triggerItem = $item;
                 if ($triggerItem.is('.section'))
                 { $triggerItem = $triggerItem
-                    .find('.content > .line.hasWizard:visible:first'); }
+                    .find('.sectionContent > .line.hasWizard:visible:first'); }
                 else
                 { $triggerItem = $triggerItem.closest('.line')
                     .nextAll('.line.hasWizard:visible:first'); }
@@ -850,7 +854,7 @@
             finishBlock: {
                 buttons: [
                     {text: 'Create', value: true, isDefault: true},
-                    {text: 'Cancel', value: false},
+                    {text: 'Cancel', value: false}
                 ],
                 wizard: {prompt: "Now you're ready to create a new column",
                     selector: '.arrowButton'}

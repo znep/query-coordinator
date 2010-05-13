@@ -2479,7 +2479,10 @@ div.color_swatch.hover .inner { border: 1px solid #ffffff; }
     float: none;
 }
 .bt-wrapper .bt-content .actionButtons li a
-{ background-position: right -462px; }
+{
+    background-position: right -462px;
+    display: inline-block;
+}
 .bt-wrapper .bt-content .actionButtons li a.arrowButton
 { background-position: right -483px; }
 

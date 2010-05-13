@@ -13,6 +13,7 @@ Please list z-indexes of elements in the site so we can keep track of how elemen
 20 #header
 20 points in ESRI map (auto-set)
 20 overview chart (secondary chart)
+20 #lensContainer .content (needed because sidebar overlay is inside this, and needs to be above header)
 25 Unsaved changes notification bar on /publish page
 25 map layers options
 25 loading spinner

@@ -231,40 +231,46 @@
             sidebarObj._curScroll = newScroll;
             $item.socrataTip().adjustPosition({top: -scrollDiff});
 
-            var $pane = sidebarObj.$currentPane();
-            var paneTop = $pane.offset().top;
-            var itemTop = $item.offset().top;
-            var paneBottom = paneTop + $pane.height();
-            var itemBottom = itemTop + $item.outerHeight();
-
-            var shouldHide = false;
-            var pos = $item.socrataTip().getTipPosition();
-            var fudge = 5;
-            paneTop -= fudge;
-            paneBottom += fudge;
-            switch (pos)
-            {
-                case 'left':
-                case 'right':
-                     shouldHide = (itemTop + itemBottom) / 2 > paneBottom ||
-                        (itemTop + itemBottom) / 2 < paneTop;
-                    break;
-
-                case 'top':
-                    shouldHide = itemTop < paneTop || itemTop > paneBottom;
-                    break;
-
-                case 'bottom':
-                    shouldHide = itemBottom > paneBottom || itemBottom < paneTop;
-                    break;
-
-                default:
-                    shouldHide = true;
-                    break;
-            }
-            if (shouldHide) { $item.socrataTip().quickHide(); }
-            else { $item.socrataTip().quickShow(); }
+            updateWizardVisibility(sidebarObj);
         }
+    };
+
+    var updateWizardVisibility = function(sidebarObj)
+    {
+        var $item = sidebarObj._$currentWizard;
+        var $pane = sidebarObj.$currentPane();
+        var paneTop = $pane.offset().top;
+        var itemTop = $item.offset().top;
+        var paneBottom = paneTop + $pane.height();
+        var itemBottom = itemTop + $item.outerHeight();
+
+        var shouldHide = false;
+        var pos = $item.socrataTip().getTipPosition();
+        var fudge = 5;
+        paneTop -= fudge;
+        paneBottom += fudge;
+        switch (pos)
+        {
+            case 'left':
+            case 'right':
+                 shouldHide = (itemTop + itemBottom) / 2 > paneBottom ||
+                    (itemTop + itemBottom) / 2 < paneTop;
+                break;
+
+            case 'top':
+                shouldHide = itemTop < paneTop || itemTop > paneBottom;
+                break;
+
+            case 'bottom':
+                shouldHide = itemBottom > paneBottom || itemBottom < paneTop;
+                break;
+
+            default:
+                shouldHide = true;
+                break;
+        }
+        if (shouldHide) { $item.socrataTip().quickHide(); }
+        else { $item.socrataTip().quickShow(); }
     };
 
 
@@ -428,7 +434,21 @@
         {
             var $c = $(this);
             _.defer(function()
-            { $c.parent().toggleClass('collapsed', !$c.value()); });
+            {
+                var $sect = $c.parent();
+                var oldH = $sect.outerHeight(true);
+                $sect.toggleClass('collapsed', !$c.value());
+                var newH = $sect.outerHeight(true);
+
+                if (!$.isBlank(sidebarObj._$currentWizard) &&
+                    ($sect.nextAll().has(sidebarObj._$currentWizard).length > 0 ||
+                    $sect.nextAll().index(sidebarObj._$currentWizard) > -1))
+                {
+                    sidebarObj._$currentWizard.socrataTip()
+                        .adjustPosition({top: newH - oldH});
+                    updateWizardVisibility(sidebarObj);
+                }
+            });
         });
 
         // Inputs inside labels are likely attached to radio buttons.

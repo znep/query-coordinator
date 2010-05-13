@@ -101,8 +101,10 @@
         // Hook to hide menu
         $(document).bind('click.menu', function(event)
         {
-            // close if user clicked out || if user selected item
-            if (($menuContainer.has(event.target).length === 0) || $(event.target).is('.menuDropdown a'))
+            // close if user clicked out || if user clicked in link || if user clicked on linke
+            if (($menuContainer.has(event.target).length === 0) ||
+                ($menuDropdown.find('a').has(event.target).length > 0) ||
+                $(event.target).is('.menuDropdown a'))
             {
                 // jQuery animation can trample all over itself if anything else is
                 // attached to the menu button

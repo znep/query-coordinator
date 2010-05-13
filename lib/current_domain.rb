@@ -61,7 +61,7 @@ class CurrentDomain
     @@current_domain[:out_of_date] = true
   end
 
-  def self.default_widget_customization
+  def self.default_widget_customization_id
     # Return empty if the current domain doesn't have the customizer
     if !self.module_available?(:sdp_customizer)
       return ""

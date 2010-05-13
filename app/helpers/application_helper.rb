@@ -505,7 +505,48 @@ HREF
     end
   end
 
+  def get_publish_embed_code_for_view(view, options = {}, variation = "", from_tracking_id = nil)
+    # merge publish options with theme options if extant
+    theme = WidgetCustomization.find(variation) if variation =~ /\w{4}-\w{4}/
+    if theme.nil?
+      options = WidgetCustomization.merge_theme_with_default({:publish => options})[:publish]
+    else
+      options = theme.customization[:publish].deep_merge(options)
+    end
+
+    # new widgets have powered by inside the frame
+    if theme.customization[:version] == 1
+      options[:show_powered_by] = false
+    end
+
+    # generate a new tracking ID param set
+    tracking_params = { :cur => ActiveSupport::SecureRandom.base64(9).slice(0..10).gsub(/\//, '-').gsub(/\+/, '_') }
+    tracking_params[:from] = from_tracking_id unless from_tracking_id.blank?
+
+    root_path = request.protocol + request.host_with_port
+    embed_template =  "<div>"
+    if options[:show_title]
+      embed_template += "<p style=\"margin-bottom:3px\"><a href=\"#{root_path + view.href}\" " +
+                        "target=\"_blank\" style=\"font-size:12px;font-weight:bold;" +
+                        "text-decoration:none;color:#333333;font-family:arial;\">" +
+                        "#{h(view.name)}</a></p>"
+    end
+    embed_template += "<iframe width=\"#{options[:dimensions][:width]}px\" " +
+                      "title=\"#{view.name}\" " +
+                      "height=\"#{options[:dimensions][:height]}px\" src=\"#{root_path}" +
+                      "/widgets/#{view.id}/#{variation.blank? ? 'normal' : variation}?" +
+                      "#{tracking_params.to_param}\" frameborder=\"0\" scrolling=\"" +
+                      "#{!view.display.can_publish? || view.display.scrolls_inline? ? 'no' : 'auto'}\">" +
+                      "<a href=\"#{root_path + view.href}\" title=\"#{h(view.name)}\" " +
+                      "target=\"_blank\">#{h(view.name)}</a></iframe>"
+    if options[:show_powered_by]
+      embed_template += "<p><a href=\"http://www.socrata.com/\" target=\"_blank\">" +
+        "Powered by Socrata</a></p>"
+    end
+    embed_template += "</div>"
+  end
+
   safe_helper :menu_tag, :meta_tags, :jquery_include, :javascript_error_helper_tag,
     :create_pagination, :sidebar_filter_link, :flash_clipboard_button, :summary_tab,
-    :render_domain_template, :rendered_stylesheet_tag
+    :render_domain_template, :rendered_stylesheet_tag, :get_publish_embed_code_for_view
 end

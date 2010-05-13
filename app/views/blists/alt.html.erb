@@ -274,7 +274,7 @@
             You can do so by simply copying and pasting the below HTML into
             your site.
             </p>
-            <%- customization_id = CurrentDomain.default_widget_customization -%>
+            <%- customization_id = CurrentDomain.default_widget_customization_id -%>
             <%- variation = customization_id.empty? ? 'normal' : customization_id %>
             <%= text_area_tag("publishCodeTemplate",
               get_publish_embed_code_for_view(@view,

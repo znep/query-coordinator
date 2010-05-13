@@ -118,12 +118,6 @@ html, body
   margin= 0 !frame_padding
   padding: 0.2em
 
-  // Let's not do this, actually.
-    .ie &
-      // Freaky IE bug where it decides to make a gradient
-      background: none
-      filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src=/stylesheets/images/common/75pct-black.png, sizingMethod='scale');}
-
   > li
     +sprite-menu-icons
     color: #eee
@@ -194,6 +188,11 @@ html, body
   > *
     background-color: #fff
     display: none
+
+  .widgetContentClose
+    +close-button
+    float: right
+    margin: 1em
 
   .widgetContentGrid
     display: block
@@ -286,6 +285,55 @@ html, body
         .indicators-inactive .blist-th,
         .indicators-inactive .blist-th .dragHandle
           height: 3.3em
+
+  .widgetContent_embed
+    .embedForm
+      padding: 1em
+
+      #embed_code
+        overflow: hidden
+        height: 5em
+        margin: 1em
+          top: 0
+        padding: 0.5em
+        width: 45em
+
+      .left, .right
+        float: left
+        padding: 1em
+        width: 20em
+
+      .sizes li
+        cursor: pointer
+        display: inline-block
+        text-align: center
+        width: 6em
+
+        .sizePreview
+          background-color: #f7f7f7
+          border: 1px solid #777
+          &.small
+            height: 2.55em
+            margin-left: 1.5em
+            width: 3em
+          &.medium
+            height: 3.8em
+            margin-left: 0.6em
+            width: 4.5em
+          &.large
+            height: 5.1em
+            width: 6em
+
+        &:hover .sizePreview
+          background-color: #f4f4f4
+          border-color: #000
+        &.selected .sizePreview
+          background-color: #eef
+          border-color: #334
+
+      p.information
+        font-style: italic
+        padding-bottom: 0.4em
 
   .widgetContent_print form
     padding: 1em

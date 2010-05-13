@@ -14,7 +14,12 @@ blist.widget.resizeViewport = function()
     });
     $contentContainer.children().height(targetHeight);
 
-    $('#data-grid')
+    widgetNS.resizeGrid();
+};
+
+blist.widget.resizeGrid = function()
+{
+    $('#data-grid:visible')
         .height($('.widgetContentGrid').innerHeight())
         .trigger('resize');
 };
@@ -26,10 +31,7 @@ blist.widget.hideToolbar = function()
         .hide(
             'slide',
             { direction: ((widgetNS.orientation == 'downwards') ? 'up' : 'down') },
-            function()
-            {
-                widgetNS.resizeViewport();
-            });
+            widgetNS.resizeViewport);
 };
 
 blist.widget.showToolbar = function(sectionName, sectionClass)
@@ -129,16 +131,19 @@ $(function()
         }
 
         event.preventDefault();
-        $('.widgetContent > :visible:first').fadeOut(200,
-            function()
-            {
-                $('.widgetContent_' + target).fadeIn(200);
-            });
+        if (!$('.widgetContent_' + target).is(':visible'))
+        {
+            $('.widgetContent > :visible:first').fadeOut(200,
+                function()
+                {
+                    $('.widgetContent_' + target).fadeIn(200);
+                });
+        }
     });
 
     var tweet = escape('Check out the ' + widgetNS.view.name + ' dataset on ' + configNS.strings.company_name + ': ');
     var seoPath = window.location.hostname + $.generateViewUrl(widgetNS.view);
-    var shortPath = window.location.hostname.replace(/www/, '') + '/d/' + widgetNS.viewId;
+    var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + widgetNS.viewId;
     $('.subHeaderBar .share .shareMenu').menu({
         attached: false,
         menuButtonClass: 'icon',
@@ -160,7 +165,7 @@ $(function()
     var $toolbar = $('.toolbar');
     $('.toolbar .close').click(function(event)
     {
-        if ($('.toolbar').hasClass('search'))
+        if ($toolbar.hasClass('search'))
         {
             $dataGrid.datasetGrid().clearFilterInput(event);
         }
@@ -248,6 +253,7 @@ $(function()
                     'method': 'email',
                     'email': email
                 },
+                dataType: 'json',
                 success: function (responseData)
                 {
                     if (responseData['error'] === undefined)
@@ -311,6 +317,9 @@ $(function()
                 $('.widgetContentGrid').fadeIn(200);
             });
     });
+
+    // embed
+    $('.widgetContent_embed .embedForm').embedForm();
 
     // print
     // TODO: maybe make this generic?

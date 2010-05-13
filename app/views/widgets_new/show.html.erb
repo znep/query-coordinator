@@ -69,8 +69,12 @@
     <div class="widgetContent_comments">
     </div>
     <div class="widgetContent_embed">
+      <a href="#close" class="close widgetContentClose">Close</a>
+      <%= render :partial => 'blists/embed_form',
+                 :locals => { :view => @view, :cur => params[:cur] } %>
     </div>
     <div class="widgetContent_print">
+      <a href="#close" class="close widgetContentClose">Close</a>
       <%= render :partial => 'blists/print_form', :locals => { :view => @view } %>
     </div>
   </div>
@@ -91,7 +95,7 @@
       blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
     <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
-    blist.widget.view = <%= raw @view.to_json %>
+    blist.widget.view = <%= raw @view.to_json %>;
 
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';

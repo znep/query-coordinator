@@ -67,7 +67,7 @@
                 });
 
                 $domObj.socrataTip({message: $msg, closeOnClick: false,
-                    positions: wizObj.settings.positions});
+                    killTitle: false, positions: wizObj.settings.positions});
 
                 var events = wizObj.settings.closeEvents;
                 if (_.isNull(events))

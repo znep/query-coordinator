@@ -3973,6 +3973,58 @@
             updateLayout();
         };
 
+        var setUpColumnChoose = function(types, callback)
+        {
+            $outside.css('cursor', 'crosshair');
+
+            $lockedScrolls.append('<div class="disabled-overlay"></div>');
+            var rightPos = 0;
+            _.each(columns, function(c)
+            {
+                var $c = $(c.dom);
+                var left = $c.position().left;
+                var divClass = 'disabled-overlay';
+                if (_.include(types, c.type))
+                { divClass = 'select-overlay'; }
+
+                var $h = $('<div class="' + divClass + ' col-' + c.id + '"></div>')
+                    .width($c.outerWidth())
+                    .css('left', left)
+                    .hover(
+                        function()
+                        { $h.add($f).add($m).addClass('overlay-hover'); },
+                        function()
+                        { $h.add($f).add($m).removeClass('overlay-hover'); }
+                    );
+
+                if (_.include(types, c.type))
+                {
+                    $h.click(function()
+                    { if (_.isFunction(callback)) { callback(c); } });
+                }
+
+                var $f = $h.clone(true);
+                var $m = $h.clone(true).css('left', left + lockedWidth);
+                $header.append($h);
+                $footer.append($f);
+                inside.append($m);
+
+                rightPos = $c.outerWidth() + $c.position().left;
+            });
+            var $or = $('<div class="disabled-overlay"></div>')
+                .width($header.width() - rightPos).css('left', rightPos);
+            $header.append($or);
+            $footer.append($or.clone());
+            inside.append($or.clone().css('left', rightPos + lockedWidth)
+                .width($or.width() - lockedWidth));
+        };
+
+        var finishColumnChoose = function()
+        {
+            $outside.css('cursor', 'auto');
+            $outside.find('.disabled-overlay, .select-overlay').remove();
+        };
+
 
         /*** MODEL ***/
 
@@ -4042,6 +4094,18 @@
             {
                 isDisabled = false;
                 $this.removeClass('disabled');
+                finishColumnChoose();
+            };
+
+            this.enterColumnChoose = function(types, callback)
+            {
+                if (!_.isArray(types)) { types = [types]; }
+                setUpColumnChoose(types, callback);
+            };
+
+            this.exitColumnChoose = function()
+            {
+                finishColumnChoose();
             };
         };
 

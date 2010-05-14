@@ -296,6 +296,7 @@
         };
 
         var cols;
+        var colTypes = [];
         if (!$.isBlank(args.item.columns))
         {
             cols = _.select(sidebarObj.$grid().blistModel().meta().view.columns,
@@ -307,11 +308,11 @@
             }
             if (!$.isBlank(args.item.columns.type))
             {
-                var types = args.item.columns.type;
+                colTypes = args.item.columns.type;
                 if (!_.isArray(args.item.columns.type))
-                { types = [types]; }
+                { colTypes = [colTypes]; }
                 cols = _.select(cols, function(c)
-                    { return _.include(types, c.dataTypeName); });
+                    { return _.include(colTypes, c.dataTypeName); });
             }
         }
 
@@ -338,17 +339,17 @@
                     '</textarea>';
                 break;
 
-            case 'select':
-                result = '<select ' + commonAttrs(args.item) + '>';
-                if (!$.isBlank(cols))
+            case 'columnSelect':
+                result = '<a href="#Select:' + colTypes.join('-') + '" ' +
+                    'title="Select a column from the grid" ' +
+                    'class="columnSelector">Select a column from the grid</a>';
+                result += '<select ' + commonAttrs(args.item) + '>';
+                result += '<option value="">Select a Column</option>';
+                _.each(cols, function(c)
                 {
-                    result += '<option value="">Select a Column</option>';
-                    _.each(cols, function(c)
-                    {
-                        result += '<option value="' + c.id + '">' +
-                            $.htmlEscape(c.name) + '</option>';
-                    });
-                }
+                    result += '<option value="' + c.id + '">' +
+                        $.htmlEscape(c.name) + '</option>';
+                });
                 result += '</select>';
                 break;
 
@@ -486,6 +487,45 @@
             { $pane.find('#' + forAttr).click(); }
         });
 
+        $pane.find('.section .columnSelector').click(function(e)
+        {
+            e.preventDefault();
+
+            var $link = $(this);
+            var $overlay = $pane.find('.paneOverlay');
+
+            var cancelSelect = function()
+            {
+                $overlay.css('cursor', 'auto').addClass('hidden');
+                sidebarObj._$currentWizard.socrataTip().quickShow();
+                $(document).unbind('.pane_' + sidebarObj._currentPane);
+                $link.removeClass('inProcess');
+                sidebarObj.$grid().blistTableAccessor().exitColumnChoose();
+            };
+
+            if ($link.is('.inProcess'))
+            { cancelSelect(); }
+            else
+            {
+                $overlay.css('cursor', 'crosshair').removeClass('hidden');
+                sidebarObj._$currentWizard.socrataTip().quickHide();
+                // Cancel on ESC
+                $(document).bind('keypress.pane_' + sidebarObj._currentPane,
+                    function(e) { if (e.keyCode == 27) { cancelSelect(); } });
+                $link.addClass('inProcess');
+
+                var href = $link.attr('href');
+                href = href.slice(href.indexOf('#') + 1);
+                sidebarObj.$grid().blistTableAccessor().enterColumnChoose
+                    (href.split(':')[1].split('-'),
+                    function(c)
+                    {
+                        cancelSelect();
+                        $link.siblings('select').val(c.id).change();
+                    });
+            }
+        });
+
         $pane.find('.actionButtons a').click(function(e)
         {
             e.preventDefault();
@@ -596,24 +636,29 @@
         var paneBottom = paneTop + $pane.height();
         var bottom = top + $item.outerHeight();
 
-        var newScroll = $pane.scrollTop();
+        var origScroll = $pane.scrollTop();
+        var newScroll = origScroll;
         if (bottom > paneBottom) { newScroll += bottom - paneBottom; }
         if (top < paneTop) { newScroll -= (paneTop - top); }
 
-        $pane.animate({scrollTop: newScroll}, null, null, function ()
+        var doShow = function ()
         {
             var $mainItem = $item;
             /* Adjust actual item wizard is attached to */
             if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
 
-            /* Set scroll first, because fetching the scrollTop can trigger a scroll
-             * event in IE, which screws things up if _$currentWizard is set without
-             * the tooltip being created */
+            /* Set scroll first, because fetching the scrollTop can trigger a
+             * scroll event in IE, which screws things up if _$currentWizard is
+             * set without the tooltip being created */
             sidebarObj._curScroll = $pane.scrollTop();
             $item.wizardPrompt(wizConfig);
             sidebarObj._$currentWizard = $item;
             sidebarObj._$mainWizardItem = $mainItem;
-        });
+        };
+
+        if (newScroll != origScroll)
+        { $pane.animate({scrollTop: newScroll}, doShow); }
+        else { doShow(); }
 
         return true;
     };
@@ -832,13 +877,14 @@
                     type: 'selectable',
                     name: 'latLongSection',
                     fields: [
-                        {text: 'Latitude', type: 'select', name: 'convertLat',
+                        {text: 'Latitude', type: 'columnSelect', name: 'convertLat',
                             required: true, notequalto: 'convertNumber',
                             columns: {type: 'number', hidden: false},
                             wizard: {prompt: 'Choose the column that contains latitude data',
                                 defaultAction: 'nextField'}
                         },
-                        {text: 'Longitude', type: 'select', name: 'convertLong',
+                        {text: 'Longitude', type: 'columnSelect',
+                            name: 'convertLong',
                             required: true, notequalto: 'convertNumber',
                             columns: {type: 'number', hidden: false},
                             wizard: {prompt: 'Choose the column that contains longitude data',
@@ -862,7 +908,7 @@
                             name: 'convertStreetGroup',
                             options: [
                                 {text: 'None', type: 'static', checked: true},
-                                {type: 'select', name: 'convertStreetCol',
+                                {type: 'columnSelect', name: 'convertStreetCol',
                                     notequalto: 'convertText',
                                     columns: {type: 'text', hidden: false} }
                             ],
@@ -877,7 +923,7 @@
                         {text: 'City', type: 'radioGroup', name: 'convertCityGroup',
                             options: [
                                 {text: 'None', type: 'static', checked: true},
-                                {type: 'select', name: 'convertCityCol',
+                                {type: 'columnSelect', name: 'convertCityCol',
                                     notequalto: 'convertText',
                                     columns: {type: 'text', hidden: false} },
                                 {type: 'text', name: 'convertCityStatic',
@@ -895,7 +941,7 @@
                             name: 'convertStateGroup',
                             options: [
                                 {text: 'None', type: 'static', checked: true},
-                                {type: 'select', name: 'convertStateCol',
+                                {type: 'columnSelect', name: 'convertStateCol',
                                     notequalto: 'convertText',
                                     columns: {type: 'text', hidden: false} },
                                 {type: 'text', name: 'convertStateStatic',
@@ -913,7 +959,7 @@
                             name: 'convertZipGroup',
                             options: [
                                 {text: 'None', type: 'static', checked: true},
-                                {type: 'select', name: 'convertZipCol',
+                                {type: 'columnSelect', name: 'convertZipCol',
                                     notequalto: 'convertText convertNumber',
                                     columns: {type: ['text', 'number'],
                                         hidden: false} },

@@ -37,13 +37,26 @@
     right: 20px;
     top: 2px;
     width: 16px;
-    z-index: 10;
+    z-index: 70;
 }
 
 #gridSidebar .sidebarPane
 {
     overflow: auto;
     padding: 0.75em;
+}
+
+#gridSidebar .paneOverlay
+{
+    background-color: #cccccc;
+    height: 100%;
+    left: 0;
+    filter: alpha(opacity=30);
+    opacity: 0.3;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 60;
 }
 
 #gridSidebar .sidebarPane.initialLoad .section
@@ -106,6 +119,7 @@
     display: inline-block;
     font-size: 1.2em;
     margin-bottom: 0;
+    vertical-align: top;
     width: 13em;
 }
 #gridSidebar .section .line.radioGroup { background-color: #ececec; }
@@ -126,6 +140,25 @@
     margin-left: 6.3em;
     padding-left: 15px;
 }
+
+#gridSidebar .section .line .columnSelector
+{
+    background: transparent url(/stylesheets/images/controls/column_select_sprite.png) no-repeat 0 0;
+    display: inline-block;
+    height: 20px;
+    margin-right: 0.5em;
+    overflow: hidden;
+    position: relative;
+    text-indent: -9999px;
+    width: 20px;
+}
+#gridSidebar .section .line .columnSelector.inProcess
+{
+    background-position: 0 -20px;
+    z-index: 70;
+}
+
+#gridSidebar .section .line.columnSelect select { width: 11.3em; }
 
 #gridSidebar .section .line .radioBlock label
 {

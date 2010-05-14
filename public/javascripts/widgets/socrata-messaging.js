@@ -30,6 +30,7 @@
         defaults:
         {
             closeOnClick: true,
+            killTitle: false,
             isSolo: false,
             message: null,
             parent: 'body',
@@ -73,6 +74,7 @@
                         trigger: sTipObj.settings.trigger,
                         positions: pos,
                         offsetParent: sTipObj.settings.parent,
+                        killTitle: sTipObj.settings.killTitle,
 
                         showTip: function(box)
                             {

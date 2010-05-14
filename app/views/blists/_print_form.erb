@@ -1,7 +1,7 @@
-<% form_tag("/views/#{view.id}/rows.pdf", :method => :get, :target => "_blank") do %>
+<% form_tag("/views/#{view.id}/rows.pdf", :method => :get, :target => "_blank", :class => 'commonForm') do %>
   <input type="hidden" id="print" name="print" value="true" />
   <div class="columnLeft">
-    <label for="page_size" class="formHeader">Paper Size:</label>
+    <label for="page_size" class="formHeader pageSizeHeader">Paper Size:</label>
     <select id="page_size" name="page_size">
       <option value="letter">Letter (8.5 x 11 inches)</option>
       <option value="legal">Legal (8.5 x 14 inches)</option>
@@ -39,7 +39,7 @@
     <div class="formSection">
       <label class="formHeader">Options:</label>
       <input type="checkbox" id="fit" name="fit" value="true" checked="checked" />
-      <label for="fit">Shrink to fit <%= t(:blist_name).downcase %> on one page</label>
+      <label for="fit">Shrink to fit dataset on one page</label>
       <input type="checkbox" id="headers_on_every_page" name="headers_on_every_page" value="true" checked="checked" />
       <label for="headers_on_every_page">Print column titles on each page</label>
       <input type="checkbox" id="header_icons" name="header_icons" value="true" />
@@ -49,7 +49,11 @@
   <div class="submitLine clearfix">
     <ul class="submitActions">
       <li><input type="image" name="submit" src="<%= image_path("button_finish.png") %>" alt="print" /></li>
-      <li class="cancelButton"><%= link_to 'Cancel', @accessible ? @view.alt_href : '#close_print', :class => 'jqmClose' %></li>
+      <li class="cancelButton">
+        <a href="<%= @accessible ? @view.alt_href : '#close_print' %>" class="jqmClose button close">
+          <span class="icon"></span>Cancel
+        </a>
+      </li>
     </ul>
   </div>
 <% end %>

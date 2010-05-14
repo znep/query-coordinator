@@ -1,9 +1,10 @@
 a.button
   +rounded-ends
   +gradient_buttons_active_background
+  +sprite-button-icons
   border= 1px solid !color_buttons_active_border
-  -moz-box-shadow= 0 0 2px !buttons_shadow
-  -webkit-box-shadow= 0 0 2px !buttons_shadow
+  -moz-box-shadow= 0 0 2px !color_buttons_shadow
+  -webkit-box-shadow= 0 0 2px !color_buttons_shadow
   color= !color_buttons_active_text
   display: inline-block
   font-size: 1.1em
@@ -26,6 +27,13 @@ a.button
     +gradient_buttons_disabled_background
     border= 1px solid !color_buttons_disabled_border
     cursor: default
+
+  .icon
+    float: left
+    margin:
+      left: 0
+      right: 0.4em
+      top: 0.5em
 
   .ie &, .ie & .left
     background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&ec=#{!buttons_active_border}&ew=1&h=20&w=500&r=10)" "no-repeat"
@@ -60,6 +68,7 @@ div.menu
   -moz-transition-property: -moz-box-shadow
   -webkit-transition-property: -webkit-box-shadow
   display: inline-block
+  position: relative
   .menuButton
     +sprite-menu-icons
     background-color: #fff
@@ -136,6 +145,7 @@ div.menu
 
               .icon
                 float: left
+                margin-right: 0.5em
 
               .subtext
                 color: #777

@@ -247,11 +247,15 @@ javascripts:
   - plugins/jquery.json
   - plugins/ui.core
   - plugins/ui.draggable
+  - plugins/ui.effects.custom.min
   - plugins/jquery.tache
   - plugins/jquery.validate.min
   - plugins/jquery.bt
+  - plugins/jquery.uniform
   - widgets/socrata-messaging
+  - widgets/embed-form
   - util/navigation
+  - util/urls
   - util/util
   - plugins/date
   - data/types

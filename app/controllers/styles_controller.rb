@@ -116,7 +116,13 @@ protected
         elsif definition[key.to_sym] == 'color'
           if value.is_a? String
             # flat color
-            result += "!color_#{path}#{key} = \"##{value}\"\n"
+            if value.match(/([0-9a-f]{3}){1,2}/i)
+              # hex color (prepend #)
+              result += "!color_#{path}#{key} = \"##{value}\"\n"
+            else
+              # rgba color (pass through)
+              result += "!color_#{path}#{key} = \"#{value}\"\n"
+            end
             result += "!#{path}#{key} = \"#{value}\"\n"
           elsif value.is_a? Array
             # gradient
@@ -192,8 +198,10 @@ protected
     :frame     => { :border     => { :color => 'color',
                                      :width => 'dimensions' },
                     :color => 'color',
+                    :orientation => 'string',
                     :padding => 'dimensions' },
-    :toolbar   => { :orientation => 'string' },
+    :toolbar   => { :color => 'color',
+                    :input_color => 'color' },
     :logo      => { :image => 'image',
                     :href => 'string'},
     :menu      => { :button     => { :background => 'color',

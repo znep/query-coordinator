@@ -48,6 +48,11 @@
     <%= yield :templates %>
   </div>
 
+  <script type="text/javascript">
+    blist.namespace.fetch('blist.configuration');
+    blist.configuration.strings = <%= raw CurrentDomain.strings.to_json %>;
+  </script>
+
   <%= yield :js_footer %>
 
   <%# we don't trust custom tracking code to be nonblocking like the async

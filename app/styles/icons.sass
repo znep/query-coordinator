@@ -1,4 +1,4 @@
-// button_icons.png
+// icons/button_icons.png
 =sprite-button-icons
   .icon
     +text-hiding
@@ -9,7 +9,8 @@
   .icon,
   &.upArrow .icon
     background-position: 0 0
-  &.go .icon
+  &.go .icon,
+  &.submit .icon
     background-position: 0 -10px
   &.accept .icon
     background-position: 0 -20px
@@ -17,8 +18,13 @@
     background-position: 0 -30px
   &.downArrow .icon
     background-position: 0 -40px
+  &.close .icon,
+  &.jqmClose .icon,
+  &.cancel .icon,
+  &.delete .icon
+    background-position: 0 -50px
 
-// menu_icons.png
+// icons/menu_icons.png
 =sprite-menu-icons
   .icon
     +text-hiding
@@ -83,8 +89,18 @@
     background-position: 0 -312px
   &.downloads .icon
     background-position: 0 -325px
+  &.delicious .icon
+    background-position: 0 -338px
+  &.digg .icon
+    background-position: 0 -351px
+  &.facebook .icon
+    background-position: 0 -364px
+  &.twitter .icon
+    background-position: 0 -377px
+  &.email .icon
+    background-position: 0 -390px
 
-// type_icons_30.png
+// icons/type_icons_30.png
 =sprite-type-icons-30
   .icon
     +text-hiding
@@ -108,3 +124,13 @@
     background-position: 0 -180px
   &.downloads .icon
     background-position: 0 -210px
+  &.print .icon
+    background-position: 0 -240px
+
+
+// common/close.png
+=close-button
+  +text-hiding
+  background-image: url(/stylesheets/images/common/close.png)
+  height: 13px
+  width: 13px

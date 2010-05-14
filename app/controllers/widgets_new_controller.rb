@@ -5,15 +5,17 @@ class WidgetsNewController < ApplicationController
   def show
     if params[:customization_id].blank?
       return redirect_to(params.merge!(
-        :customization_id => CurrentDomain.default_widget_customization))
+        :customization_id => CurrentDomain.default_widget_customization_id))
     end
 
     begin
-      @theme = WidgetCustomization.find(params[:customization_id]).customization
+      @widget_customization = WidgetCustomization.find(params[:customization_id])
     rescue CoreServer::CoreServerError => e
       flash.now[:error] = e.error_message
       return (render 'shared/error', :status => :not_found)
     end
+
+    @theme = @widget_customization.customization
 
     if !@theme[:version].present?
       return redirect_to(params.merge!(:controller => 'widgets', :action => 'show'))

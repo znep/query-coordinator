@@ -25,6 +25,11 @@ class WidgetsController < ApplicationController
       end
     end
 
+    # redir to new widget if we come up with a new template
+    if @theme[:version] == 1
+      return redirect_to(params.merge!(:controller => 'widgets_new', :action => 'show'))
+    end
+
     begin
       @view = View.find(params[:id])
     rescue CoreServer::ResourceNotFound

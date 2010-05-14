@@ -9,9 +9,10 @@
 <% end %>
 
 <div class="widgetWrapper">
-  <%- if @theme[:toolbar][:orientation] == 'downwards' -%>
+  <%- if @theme[:frame][:orientation] == 'downwards' -%>
     <%= render :partial => 'widget_header' %>
     <%= render :partial => 'widget_subheader' %>
+    <%= render :partial => 'widget_toolbar' %>
   <%- end -%>
 
   <div class="widgetContent">
@@ -60,9 +61,26 @@
         <%- end -%>
       </div>
     </div>
+
+    <div class="widgetContent_views">
+    </div>
+    <div class="widgetContent_downloads">
+    </div>
+    <div class="widgetContent_comments">
+    </div>
+    <div class="widgetContent_embed">
+      <a href="#close" class="close widgetContentClose">Close</a>
+      <%= render :partial => 'blists/embed_form',
+                 :locals => { :view => @view, :cur => params[:cur] } %>
+    </div>
+    <div class="widgetContent_print">
+      <a href="#close" class="close widgetContentClose">Close</a>
+      <%= render :partial => 'blists/print_form', :locals => { :view => @view } %>
+    </div>
   </div>
 
-  <%- if @theme[:toolbar][:orientation] == 'upwards' -%>
+  <%- if @theme[:frame][:orientation] == 'upwards' -%>
+    <%= render :partial => 'widget_toolbar' %>
     <%= render :partial => 'widget_subheader' %>
     <%= render :partial => 'widget_header' %>
   <%- end -%>
@@ -77,6 +95,7 @@
       blist.isOwner = <%= current_user.id == @view.owner.id ? 'true' : 'false' %>;
     <%- end -%>
     blist.widget.viewId = '<%= @view.id %>';
+    blist.widget.view = <%= raw @view.to_json %>;
 
     blist.widget.theme = <%= raw @theme.to_json %>;
     blist.widget.customizationId = '<%= params[:customization_id] || '' %>';

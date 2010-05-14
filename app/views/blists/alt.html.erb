@@ -34,8 +34,12 @@
           <div class="content">
             <ul id="datasetMenu">
               <li><a href="<%= @view.href %>/about">About this Dataset...</a></li>
-              <li><a href="<%= @view.href %>/print">Print...</a></li>
-              <li><a href="<%= @view.href %>/email">Email...</a></li>
+              <%- if @view.can_print? -%>
+                <li><a href="<%= @view.href %>/print">Print...</a></li>
+              <%- end -%>
+              <%- if @view.can_email? -%>
+                <li><a href="<%= @view.href %>/email">Email...</a></li>  
+              <%- end -%>
               <%- if @view.can_modify_data? -%>
                 <%- if module_available? :dataset_append -%>
                   <li><a href="<%= @view.href %>/append">Append Rows via Upload...</a></li>
@@ -270,7 +274,7 @@
             You can do so by simply copying and pasting the below HTML into
             your site.
             </p>
-            <%- customization_id = CurrentDomain.default_widget_customization -%>
+            <%- customization_id = CurrentDomain.default_widget_customization_id -%>
             <%- variation = customization_id.empty? ? 'normal' : customization_id %>
             <%= text_area_tag("publishCodeTemplate",
               get_publish_embed_code_for_view(@view,

@@ -129,9 +129,9 @@ $(function ()
             {
                 $(".submitActions").show();
                 $clearButton.removeClass("hide");
-                $('.uploadErrorMessage')
+                $('#uploadMessage')
                     .text("Failed to import that file.  " + response.message)
-                    .removeClass('hide');
+                    .removeClass('uploadInfoMessage hide').addClass('uploadErrorMessage');
                 $(".submitPending").hide();
                 return false;
             }
@@ -148,7 +148,7 @@ $(function ()
             .val('Supported Formats: .csv .tsv .xml .xls .xlsx')
             .addClass('prompt');
         $('.newBlistContent #datasetID').val('');
-        $('.uploadErrorMessage').addClass('hide');
+        $('#uploadMessage').addClass('hide');
         var $uploaderClone = new AjaxUpload($uploadButton, jQuery.extend(true, {}, $uploader._settings));
         $uploader.destroy();
         $uploader = $uploaderClone;
@@ -191,9 +191,9 @@ $(function ()
     {
         if (!isImport)
         {
-            $('.uploadErrorMessage')
+            $('#uploadMessage')
                 .text("You must choose a file to import.")
-                .removeClass('hide');
+                .removeClass('uploadInfoMessage hide').addClass('uploadErrorMessage');
             return false;
         }
         return true;

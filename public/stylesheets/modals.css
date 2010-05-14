@@ -1830,6 +1830,11 @@ dl.versionInfo dd
     position: absolute;
 }
 
+.bulkOperationWrapper input#skip_headers
+{
+    margin-left: 13.5em;
+}
+
 .bulkOperationWrapper #error,
 .bulkOperationWrapper .errorMessage
 {

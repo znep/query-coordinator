@@ -515,7 +515,7 @@ HREF
     end
 
     # new widgets have powered by inside the frame
-    if theme.customization[:version] == 1
+    if !theme.nil? && theme.customization[:version] == 1
       options[:show_powered_by] = false
     end
 

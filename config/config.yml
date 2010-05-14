@@ -29,7 +29,7 @@ staging:
 
 # www.socrata.com
 production:
-  coreservice_uri: http://core-lb.tuk.socrata.com
+  coreservice_uri: http://lb-vip.sea1.socrata.com
   google_analytics_id: UA-9046230-1
   rpx_signin_url: https://socrata.rpxnow.com/openid/v2/signin
   rpx_facebook_url: https://socrata.rpxnow.com/facebook/start

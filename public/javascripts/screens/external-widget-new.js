@@ -84,6 +84,10 @@ $(function()
     if ($.browser.msie)
     {
         $('body').addClass('ie ie' + $.browser.version.slice(0, 1)); // I guess this will break when we hit IE10.
+        $('a.button').each(function()
+        {
+            $.tag({tagName: 'span', 'class': 'left' }).prependTo($(this));
+        });
     }
 
     // sizing
@@ -331,7 +335,12 @@ $(function()
     // TODO: maybe make this generic?
     $('.widgetContent_print form input[type=image]')
         .replaceWith(
-            $('<a href="#submit" class="button submit"><span class="icon"></span>Print</a>')
+            $.tag({ tagName: 'a', href: '#submit', 'class': ['button', 'submit'],
+                    contents: [
+                        { tagName: 'span', 'class': 'left' },
+                        { tagName: 'span', 'class': 'icon' },
+                        'Print'
+                    ]})
                 .click(function(event)
                 {
                     $(this).closest('form').submit();

@@ -18,6 +18,7 @@
                         'menu',
                         { menuButtonClass: opts.menuButtonClass,
                           menuButtonContents: opts.menuButtonContents,
+                          menuButtonTitle: opts.menuButtonTitle,
                           columns: opts.contents },
                         opts.renderDirective));
 
@@ -128,8 +129,10 @@
         contents: [],
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',
+        menuButtonTitle: 'Menu',
         renderDirective: {
             '+a.menuButton': 'menuButtonContents',
+            'a.menuButton@title': 'menuButtonTitle',
             'a.menuButton@class': 'menuButtonClass',
             '.menuDropdown>ul>li': {
                 'column<-columns': { // outer array for columns

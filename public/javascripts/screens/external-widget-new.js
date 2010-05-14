@@ -95,6 +95,10 @@ $(function()
     {
         this.target = '_blank';
     });
+    $.live('a[rel$=external]', 'mouseover', function(event)
+    {
+        this.target = '_blank';
+    });
     $.live('a[rel$=external]', 'click', function(event)
     {
         // interstitial
@@ -112,6 +116,7 @@ $(function()
     // menus
     $('.mainMenu').menu({
         attached: false,
+        menuButtonTitle: 'Access additional information about this dataset.',
         contents: [
             { text: 'Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
             { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads' },
@@ -148,6 +153,7 @@ $(function()
         attached: false,
         menuButtonClass: 'icon',
         menuButtonContents: 'Socialize',
+        menuButtonTitle: 'Share this dataset',
         contents: [
             { text: 'Delicious', className: 'delicious', rel: 'external',
               href: 'http://del.icio.us/post?url=' + seoPath + '&title=' + widgetNS.view.name },
@@ -253,7 +259,6 @@ $(function()
                     'method': 'email',
                     'email': email
                 },
-                dataType: 'json',
                 success: function (responseData)
                 {
                     if (responseData['error'] === undefined)
@@ -315,6 +320,7 @@ $(function()
             function()
             {
                 $('.widgetContentGrid').fadeIn(200);
+                widgetNS.resizeGrid();
             });
     });
 

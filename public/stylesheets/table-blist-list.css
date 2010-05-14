@@ -200,6 +200,9 @@ div.blist-type-groupedSharedTo { background-position: 0 -716px; }
 div.blist-type-groupedSharedBy { background-position: 0 -685px; }
 div.blist-type-formSharedTo { background-position: 0 -1182px; }
 div.blist-type-formSharedBy { background-position: 0 -1151px; }
+div.blist-type-blob { background-position: center -962px; }
+div.blist-type-blobSharedTo { background-position: center -994px; }
+div.blist-type-blobSharedBy { background-position: center -1026px; }
 
 
 div.blist-td-public div.blist-public-off

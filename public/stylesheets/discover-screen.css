@@ -230,6 +230,9 @@ ul.myNetworkList li span
 .discoverContentList li.viewListItem .itemHeader h3.typeMap { background-position: left -1230px; }
 .discoverContentList li.viewListItem .itemHeader h3.typeMap.private { background-position: left -1270px; }
 .discoverContentList li.viewListItem .itemHeader h3.typeMap.privateShared { background-position: left -1310px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeBlob { background-position: left -1353px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeBlob.private { background-position: left -1394px; }
+.discoverContentList li.viewListItem .itemHeader h3.typeBlob.privateShared { background-position: left -1435px; }
 
 
 .viewListItem .itemMeta

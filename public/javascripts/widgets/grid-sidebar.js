@@ -1,6 +1,6 @@
 (function($)
 {
-    $.validator.addMethod('notEqualTo', function(value, element, param)
+    $.validator.addMethod('data-notEqualTo', function(value, element, param)
     {
         if (this.optional(element)) { return true; }
         var isEqual = false;
@@ -114,7 +114,7 @@
                 if ($.isBlank(sidebarObj._$panes[paneName]))
                 { throw paneName + ' does not exist'; }
                 sidebarObj._currentPane = paneName;
-                sidebarObj.$currentPane().show();
+                sidebarObj.$currentPane().addClass('initialLoad').show();
                 sidebarObj.$currentPane()
                     .scroll(function(e) { handleScroll(sidebarObj, e); });
 
@@ -291,7 +291,7 @@
                     (item.required ? ' required' : '') +
                     (' ' + (item.notequalto || '')) +
                     (!$.isBlank(item.prompt) ? ' textPrompt' : '') + '"' +
-                (!$.isBlank(item.notequalto) ? ' notequalto=".' +
+                (!$.isBlank(item.notequalto) ? ' data-notequalto=".' +
                     item.notequalto.split(' ').join(', .') + '"' : '');
         };
 
@@ -415,7 +415,7 @@
             '.finishButtons > li': {
                 'button<-finishButtons': {
                     'a': 'button.text',
-                    'a@value': 'button.value',
+                    'a@data-value': 'button.value',
                     'a@class+': function(arg)
                     { return arg.item.isDefault ? ' arrowButton' : ''; },
                     'a@href+': function(arg)
@@ -490,7 +490,7 @@
         {
             e.preventDefault();
             config.finishCallback(sidebarObj, data,
-                $pane, $(this).attr('value'));
+                $pane, $(this).attr('data-value'));
         });
 
         addWizards(sidebarObj, $pane, config);
@@ -595,22 +595,25 @@
         var top = $item.offset().top;
         var paneBottom = paneTop + $pane.height();
         var bottom = top + $item.outerHeight();
-        if (bottom > paneBottom)
-        { $pane.scrollTop($pane.scrollTop() + bottom - paneBottom); }
-        if (top < paneTop)
-        { $pane.scrollTop($pane.scrollTop() - (paneTop - top)); }
 
-        var $mainItem = $item;
-        /* Adjust actual item wizard is attached to */
-        if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
+        var newScroll = $pane.scrollTop();
+        if (bottom > paneBottom) { newScroll += bottom - paneBottom; }
+        if (top < paneTop) { newScroll -= (paneTop - top); }
 
-        /* Set scroll first, because fetching the scrollTop can trigger a scroll
-         * event in IE, which screws things up if _$currentWizard is set without
-         * the tooltip being created */
-        sidebarObj._curScroll = $pane.scrollTop();
-        $item.wizardPrompt(wizConfig);
-        sidebarObj._$currentWizard = $item;
-        sidebarObj._$mainWizardItem = $mainItem;
+        $pane.animate({scrollTop: newScroll}, null, null, function ()
+        {
+            var $mainItem = $item;
+            /* Adjust actual item wizard is attached to */
+            if (!$.isBlank(wiz.selector)) { $item = $item.find(wiz.selector); }
+
+            /* Set scroll first, because fetching the scrollTop can trigger a scroll
+             * event in IE, which screws things up if _$currentWizard is set without
+             * the tooltip being created */
+            sidebarObj._curScroll = $pane.scrollTop();
+            $item.wizardPrompt(wizConfig);
+            sidebarObj._$currentWizard = $item;
+            sidebarObj._$mainWizardItem = $mainItem;
+        });
 
         return true;
     };
@@ -620,6 +623,9 @@
         if (!$.isBlank(sidebarObj._$mainFlowWizard) &&
             sidebarObj._$mainFlowWizard.index($item) > -1)
         { return; }
+
+        // After the first wizard action, clear initialLoad
+        sidebarObj.$currentPane().removeClass('initialLoad');
 
         sidebarObj._$currentWizard = null;
         sidebarObj._$mainWizardItem = null;

@@ -18,8 +18,6 @@
         this.init();
     };
 
-    var wizUID = 0;
-
     $.extend(wizardPromptObj,
     {
         defaults:
@@ -40,7 +38,7 @@
                 var wizObj = this;
                 var $domObj = wizObj.$dom();
                 $domObj.data("wizardPrompt", wizObj);
-                wizObj._uid = wizUID++;
+                wizObj._uid = _.uniqueId();
 
                 var $msg = $('<div class="wizardPrompt">' +
                     '<span class="prompt">' + wizObj.settings.prompt + '</span>' +

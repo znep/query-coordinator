@@ -149,9 +149,9 @@
                 var $tip = $getTipBox(sTipObj);
 
                 if (!$.isBlank(adjAmt.top))
-                { $tip.css('top', $tip.offset().top + adjAmt.top); }
+                { $tip.css('top', $tip.position().top + adjAmt.top); }
                 if (!$.isBlank(adjAmt.left))
-                { $tip.css('left', $tip.offset().left + adjAmt.left); }
+                { $tip.css('left', $tip.position().left + adjAmt.left); }
             },
 
             /* This is used to figure out which side of the item the tip is
@@ -159,9 +159,6 @@
             getTipPosition: function()
             {
                 var sTipObj = this;
-                if (!$.isBlank(sTipObj._tipPosition))
-                { return sTipObj._tipPosition; }
-
                 if (!sTipObj._visible) { return null; }
 
                 var $tip = $getTipBox(sTipObj).find('.bt-content');
@@ -174,8 +171,6 @@
                 else if (parseInt($tip.css('margin-right')) > 0) { pos = 'left'; }
                 else if (parseInt($tip.css('margin-left')) > 0) { pos = 'right'; }
 
-                if (!$.isBlank(pos))
-                { sTipObj._tipPosition = pos; }
                 return pos;
             }
         }

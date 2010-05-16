@@ -1,5 +1,6 @@
 html, body
   height: 100%
+  overflow: hidden
 
 .textPrompt.prompt
   color: #999999
@@ -11,6 +12,12 @@ html, body
 
 .headerBar
   height: 4em
+
+  .ie7 &
+    // ie7 keeps nested relatives in independent z-indexes;
+       this was making the menu appear below the grid.
+    position: relative
+    z-index: 50
 
   h1.logo
     +text-hiding
@@ -26,7 +33,7 @@ html, body
     margin: 10px
       bottom: 0
 
-    .menuButton
+    .mainMenuButton
       +sprite-button-icons
       +gradient_menu_button_background
       border= 1px solid !color_menu_button_border
@@ -36,23 +43,30 @@ html, body
       -webkit-box-shadow: 1px 1px 0 #fff
       color= !color_menu_button_text
       cursor: pointer
-      padding-left: 2.3em
+      display: inline-block
+      font-size: 1.2em
+      height: 1em
+      line-height: 1em
+      margin-top: -4px
+      padding: 0.6em
+        right: 1em
+        left: 2.3em
+      position: relative
       text-transform: uppercase
       .noLinearGradient &
         background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
 
       .icon
         left: 0.6em
+        margin-left: 0.2em
         position: absolute
         top: 0.7em
 
       &:hover
         +gradient_menu_button_background_hover
+        text-decoration: none
         .noLinearGradient &
           background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background_hover}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
-
-        .icon
-          background-position: 0 0
 
     &.open .menuButton
       -moz-box-shadow: none
@@ -61,7 +75,8 @@ html, body
         background-position: 0 0
 
     .menuDropdown
-      margin-top: 0.1em
+      margin: 0.4em 0
+      min-width: 23em
 
       > ul
         margin-bottom: 0
@@ -156,10 +171,6 @@ html, body
   margin= 0 !frame_padding
   overflow: hidden
   padding: 0.3em
-  @if !frame_orientation == "downwards"
-    top: 0
-  @else if !frame_orientation == "upwards"
-    bottom: 0
 
   form
     display: none
@@ -191,7 +202,10 @@ html, body
 .widgetContent
   clear: both
   margin= !frame_padding
-    top: 0
+  @if !frame_orientation == "downwards"
+    margin-top: 0
+  @else if !frame_orientation == "upwards"
+    margin-bottom: 0
 
   > *
     background-color: #fff

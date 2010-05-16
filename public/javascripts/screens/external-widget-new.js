@@ -111,6 +111,7 @@ $(function()
     $('.mainMenu').menu({
         attached: false,
         menuButtonTitle: 'Access additional information about this dataset.',
+        menuButtonClass: 'mainMenuButton ' + ((widgetNS.theme['frame']['orientation'] == 'downwards') ? 'upArrow' : 'downArrow'),
         contents: [
             { text: 'Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
             { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads' },

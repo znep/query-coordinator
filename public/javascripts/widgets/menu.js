@@ -43,13 +43,18 @@
 
     var openMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
+        // cache the original height before we bump things out to measure
+        var origDocumentHeight = $(document).height();
+
         $menuContainer.addClass('open');
 
         // reset then realign the menu if necessary; set styles as appropriate
+        // show it so we can measure it
         $menuDropdown.removeClass('menuPosition-bottom menuPosition-right');
         if (opts.attached)
         { $menuDropdown.addClass('menuPosition-top menuPosition-left'); }
         $menuDropdown
+            .css('width', null)
             .css('right', null)
             .css('bottom', null)
             .css('top', null)
@@ -58,7 +63,7 @@
         if ($menuDropdown.offset().left + $menuDropdown.outerWidth(true) > $(window).width())
         {
             // if the menu can be flipped left, do so; otherwise, crop it
-            if ($menuContainer.offset().left + $menuContainer.outerWidth(true) -
+            if ($menuContainer.offset().left + $menuButton.outerWidth(true) -
                     $menuDropdown.outerWidth(true) < 0)
             {
                 $menuDropdown.css('width', $(window).width() - $menuDropdown.offset().left - 10);
@@ -74,7 +79,7 @@
             }
         }
 
-        if ($menuDropdown.offset().top + $menuDropdown.outerHeight(true) > $(document).height())
+        if ($menuDropdown.offset().top + $menuDropdown.outerHeight(true) > origDocumentHeight)
         {
             // if the menu can be flipped up, do so; otherwise, leave it alone
             if ($menuContainer.offset().top - $menuDropdown.outerHeight(true) > 0)
@@ -84,14 +89,14 @@
                     $menuDropdown.removeClass('menuPosition-top');
                     $menuDropdown.addClass('menuPosition-bottom');
                 }
-                $menuDropdown.css('bottom', $menuContainer.innerHeight() * -1);
+                $menuDropdown.css('bottom', $menuContainer.innerHeight());
             }
         }
         else
         {
             // if the menu should be on the bottom, make it so for the sake of IE7
-            // +4 for the shadow
-            $menuDropdown.css('top', $menuButton.outerHeight());
+            // subtract 4 to account for the negative margin-top on the menu button
+            $menuDropdown.css('top', $menuButton.outerHeight() - 4);
         }
 
         // Rehide and animate

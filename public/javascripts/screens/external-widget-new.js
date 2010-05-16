@@ -75,6 +75,19 @@ blist.widget.flashToolbarMessage = function($messageElem, message, onDisplay)
         });
 };
 
+blist.widget.showDataView = function()
+{
+    if ($('.widgetContentGrid').is(':visible'))
+    { return; }
+
+    $('.widgetContent > :visible:first').fadeOut(200,
+        function()
+        {
+            $('.widgetContentGrid').fadeIn(200);
+            widgetNS.resizeGrid();
+        });
+};
+
 $(function()
 {
     // orientation
@@ -187,6 +200,7 @@ $(function()
         }
         else
         {
+            widgetNS.showDataView();
             widgetNS.showToolbar('search', 'toolbarSearchForm');
         }
     });
@@ -213,7 +227,7 @@ $(function()
                     $('.toolbarEmailForm .toolbarTextbox')
                         .val(emails.join(', '))
                         .attr('disabled', false)
-                        .css('background-color', null);
+                        .css('background-color', widgetNS.theme.toolbar.input_color);
                 }
             );
         }
@@ -228,7 +242,7 @@ $(function()
                         .val('')
                         .blur()
                         .attr('disabled', false)
-                        .css('background-color', null);
+                        .css('background-color', widgetNS.theme.toolbar.input_color);
                 }
             );
         }
@@ -311,12 +325,26 @@ $(function()
     $('.widgetContent .close').click(function(event)
     {
         event.preventDefault();
-        $('.widgetContent > :visible:first').fadeOut(200,
-            function()
+        widgetNS.showDataView();
+    });
+
+    // more views
+    var moreViews = [];
+    $.ajax({
+        url: '/views.json?method=getByTableId&tableId=' + widgetNS.view.tableId,
+        dataType: 'json',
+        success: function (responseData)
+        {
+            moreViews = _.reject(responseData, function(view)
             {
-                $('.widgetContentGrid').fadeIn(200);
-                widgetNS.resizeGrid();
+                return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
+                       (view.viewType == 'blobby');
             });
+        },
+        error: function(xhr)
+        {
+            
+        }
     });
 
     // embed

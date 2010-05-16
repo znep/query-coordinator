@@ -17,7 +17,7 @@ html, body
     // ie7 keeps nested relatives in independent z-indexes;
        this was making the menu appear below the grid.
     position: relative
-    z-index: 50
+    z-index: 51
 
   h1.logo
     +text-hiding
@@ -133,6 +133,12 @@ html, body
   margin= 0 !frame_padding
   padding: 0.2em
 
+  .ie7 &
+    // ie7 keeps nested relatives in independent z-indexes;
+       this was making the menu appear below the grid.
+    position: relative
+    z-index: 50
+
   > li
     +sprite-menu-icons
     display: block
@@ -163,6 +169,8 @@ html, body
 
       .menuDropdown ul li ul li
         +sprite-menu-icons
+        a
+          min-width: 6em
 
 .toolbar
   background-color= !color_toolbar_color
@@ -171,6 +179,7 @@ html, body
   margin= 0 !frame_padding
   overflow: hidden
   padding: 0.3em
+  position: relative
 
   form
     display: none
@@ -197,7 +206,13 @@ html, body
   .close
     +sprite-button-icons
     display: inline-block
-    float: right
+    position: absolute
+    right: 0.3em
+    top: 0.3em
+
+    // I don't even know anymore.
+    .ie7 & .icon
+      display: block
 
 .widgetContent
   clear: both

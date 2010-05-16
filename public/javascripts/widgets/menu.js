@@ -60,6 +60,20 @@
             .css('top', null)
             .show();
 
+        // HACK/TODO: IE7 breaks because it can't see the width of the floated children.
+        // So, forcibly set the width manually on the first ul, then the container.
+        if ($('body').hasClass('ie7'))
+        {
+            var $topLevelList = $menuDropdown.children('ul');
+            var topLevelWidth = 0;
+            $topLevelList.children().each(function()
+            {
+                topLevelWidth += $(this).outerWidth(true);
+            });
+            $topLevelList.width(topLevelWidth);
+            $menuDropdown.width($topLevelList.outerWidth(true));
+        }
+
         if ($menuDropdown.offset().left + $menuDropdown.outerWidth(true) > $(window).width())
         {
             // if the menu can be flipped left, do so; otherwise, crop it

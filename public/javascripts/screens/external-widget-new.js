@@ -80,16 +80,6 @@ $(function()
     // orientation
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
 
-    // Infinite Exasperation?
-    if ($.browser.msie)
-    {
-        $('body').addClass('ie ie' + $.browser.version.slice(0, 1)); // I guess this will break when we hit IE10.
-        $('a.button').each(function()
-        {
-            $.tag({tagName: 'span', 'class': 'left' }).prependTo($(this));
-        });
-    }
-
     // sizing
     widgetNS.resizeViewport();
     $(window).resize(function() { widgetNS.resizeViewport(); });

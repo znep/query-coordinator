@@ -13,6 +13,7 @@ javascripts:
   - util/google-analytics
   - plugins/jquery.socrata
 - shared-common-all:
+  - util/compat
   - util/events
   - util/sizing
   - util/util
@@ -255,6 +256,7 @@ javascripts:
   - plugins/jquery.uniform
   - widgets/socrata-messaging
   - widgets/embed-form
+  - util/compat
   - util/navigation
   - util/urls
   - util/util

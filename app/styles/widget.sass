@@ -38,7 +38,7 @@ html, body
       cursor: pointer
       padding-left: 2.3em
       text-transform: uppercase
-      .ie &
+      .noLinearGradient &
         background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
 
       .icon
@@ -48,7 +48,7 @@ html, body
 
       &:hover
         +gradient_menu_button_background_hover
-        .ie &
+        .noLinearGradient &
           background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background_hover}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
 
         .icon
@@ -270,7 +270,8 @@ html, body
       padding-top: 1em
 
       .submitActions li
-        display: inline
+        display: block
+        float: left
 
 
 // START: GRID

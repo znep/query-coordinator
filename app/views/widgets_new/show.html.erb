@@ -70,6 +70,7 @@
     </div>
 
     <div class="widgetContent_views">
+      <a href="#close" class="close widgetContentClose">Close</a>
     </div>
     <div class="widgetContent_downloads">
     </div>
@@ -92,6 +93,10 @@
     <%= render :partial => 'widget_header' %>
   <%- end -%>
 </div>
+
+<% content_for :templates do %>
+  <%= render :partial => 'blists/filters_table_template' %>
+<% end %>
 
 <% content_for :js_footer do %>
   <script type="text/javascript">

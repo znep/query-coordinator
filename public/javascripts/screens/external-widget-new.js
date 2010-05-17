@@ -154,7 +154,7 @@ $(function()
         }
     });
 
-    var tweet = escape('Check out the ' + widgetNS.view.name + ' dataset on ' + configNS.strings.company_name + ': ');
+    var tweet = escape('Check out the ' + $.htmlEscape(widgetNS.view.name) + ' dataset on ' + configNS.strings.company_name + ': ');
     var seoPath = window.location.hostname + $.generateViewUrl(widgetNS.view);
     var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + widgetNS.viewId;
     $('.subHeaderBar .share .shareMenu').menu({
@@ -164,9 +164,9 @@ $(function()
         menuButtonTitle: 'Share this dataset',
         contents: [
             { text: 'Delicious', className: 'delicious', rel: 'external',
-              href: 'http://del.icio.us/post?url=' + seoPath + '&title=' + widgetNS.view.name },
+              href: 'http://del.icio.us/post?url=' + seoPath + '&title=' + $.htmlEscape(widgetNS.view.name) },
             { text: 'Digg', className: 'digg', rel: 'external',
-              href: 'http://digg.com/submit?phase=2&url=' + seoPath + '&title=' + widgetNS.view.name },
+              href: 'http://digg.com/submit?phase=2&url=' + seoPath + '&title=' + $.htmlEscape(widgetNS.view.name) },
             { text: 'Facebook', className: 'facebook', rel: 'external',
               href: 'http://www.facebook.com/share.php?u=' + seoPath },
             { text: 'Twitter', className: 'twitter', rel: 'external',
@@ -339,6 +339,54 @@ $(function()
             {
                 return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
                        (view.viewType == 'blobby');
+            });
+
+            var getDisplayType = function(view)
+            {
+                return (view.displayType || 'blist').capitalize();
+            };
+
+            $('.widgetContent_views').append(
+                $.renderTemplate(
+                    'filtersTable',
+                    moreViews,
+                    {
+                        'tbody .item': {
+                            'filter<-': {
+                                '.type .cellInner.icon': function(filter) { return getDisplayType(filter.item); },
+                                '.type@class+': function(filter) { return ' type' + getDisplayType(filter.item); },
+
+                                '.name a': function(filter) { return $.htmlEscape(filter.item.name); },
+                                '.name a@title': function(filter) { return $.htmlEscape(filter.item.description || ''); },
+                                '.name a@href': function(filter) { return $.generateViewUrl(filter.item); },
+
+                                '.viewed .cellInner': 'filter.viewCount',
+
+                                '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
+                                                                              '/images/small-profile.png'; },
+                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
+                            }
+                        }
+                    }));
+
+            $('.widgetContent_views .name a').each(function()
+            {
+                var $this = $(this);
+                if ($this.attr('title') === '')
+                { return; }
+
+                $this.socrataTip({ message: $this.attr('title'), trigger: 'hover' });
+            });
+
+            $('.widgetContent_views table.gridList').combinationList({
+                headerContainerSelector: '.widgetContent_views .gridListWrapper',
+                hoverOnly: true,
+                initialSort: [[7, 1]],
+                scrollableBody: false,
+                selectable: false,
+                sortGrouping: false,
+                sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'text'},
+                    2: {sorter: 'digit'}, 3: {sorter: false}}
             });
         },
         error: function(xhr)

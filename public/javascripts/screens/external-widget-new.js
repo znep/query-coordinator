@@ -406,8 +406,8 @@ $(function()
                     'downloadType<-': {
                         '.type a': 'Download #{downloadType}',
                         '.type a@href': function(downloadType) { 
-                            '/views/' + widgetNS.view.id + '/rows.' + downloadType.item.toLowerCase() +
-                            '?accessType=DOWNLOAD'; }
+                            return '/views/' + widgetNS.view.id + '/rows.' +
+                            downloadType.item.toLowerCase() + '?accessType=DOWNLOAD'; }
                         // TODO: add download count when supported
                     }
                 }

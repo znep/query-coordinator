@@ -18,6 +18,7 @@
                         'menu',
                         { menuButtonClass: opts.menuButtonClass,
                           menuButtonContents: opts.menuButtonContents,
+                          menuButtonTitle: opts.menuButtonTitle,
                           columns: opts.contents },
                         opts.renderDirective));
 
@@ -42,22 +43,41 @@
 
     var openMenu = function(opts, $menuContainer, $menuButton, $menuDropdown)
     {
+        // cache the original height before we bump things out to measure
+        var origDocumentHeight = $(document).height();
+
         $menuContainer.addClass('open');
 
         // reset then realign the menu if necessary; set styles as appropriate
+        // show it so we can measure it
         $menuDropdown.removeClass('menuPosition-bottom menuPosition-right');
         if (opts.attached)
         { $menuDropdown.addClass('menuPosition-top menuPosition-left'); }
         $menuDropdown
+            .css('width', null)
             .css('right', null)
             .css('bottom', null)
             .css('top', null)
             .show();
 
+        // HACK/TODO: IE7 breaks because it can't see the width of the floated children.
+        // So, forcibly set the width manually on the first ul, then the container.
+        if ($('body').hasClass('ie7'))
+        {
+            var $topLevelList = $menuDropdown.children('ul');
+            var topLevelWidth = 0;
+            $topLevelList.children().each(function()
+            {
+                topLevelWidth += $(this).outerWidth(true);
+            });
+            $topLevelList.width(topLevelWidth);
+            $menuDropdown.width($topLevelList.outerWidth(true));
+        }
+
         if ($menuDropdown.offset().left + $menuDropdown.outerWidth(true) > $(window).width())
         {
             // if the menu can be flipped left, do so; otherwise, crop it
-            if ($menuContainer.offset().left + $menuContainer.outerWidth(true) -
+            if ($menuContainer.offset().left + $menuButton.outerWidth(true) -
                     $menuDropdown.outerWidth(true) < 0)
             {
                 $menuDropdown.css('width', $(window).width() - $menuDropdown.offset().left - 10);
@@ -73,7 +93,7 @@
             }
         }
 
-        if ($menuDropdown.offset().top + $menuDropdown.outerHeight(true) > $(document).height())
+        if ($menuDropdown.offset().top + $menuDropdown.outerHeight(true) > origDocumentHeight)
         {
             // if the menu can be flipped up, do so; otherwise, leave it alone
             if ($menuContainer.offset().top - $menuDropdown.outerHeight(true) > 0)
@@ -83,14 +103,14 @@
                     $menuDropdown.removeClass('menuPosition-top');
                     $menuDropdown.addClass('menuPosition-bottom');
                 }
-                $menuDropdown.css('bottom', $menuContainer.innerHeight() * -1);
+                $menuDropdown.css('bottom', $menuContainer.innerHeight());
             }
         }
         else
         {
             // if the menu should be on the bottom, make it so for the sake of IE7
-            // +4 for the shadow
-            $menuDropdown.css('top', $menuButton.outerHeight());
+            // subtract 4 to account for the negative margin-top on the menu button
+            $menuDropdown.css('top', $menuButton.outerHeight() - 4);
         }
 
         // Rehide and animate
@@ -128,8 +148,10 @@
         contents: [],
         menuButtonClass: 'menuButton',
         menuButtonContents: 'Menu',
+        menuButtonTitle: 'Menu',
         renderDirective: {
             '+a.menuButton': 'menuButtonContents',
+            'a.menuButton@title': 'menuButtonTitle',
             'a.menuButton@class': 'menuButtonClass',
             '.menuDropdown>ul>li': {
                 'column<-columns': { // outer array for columns

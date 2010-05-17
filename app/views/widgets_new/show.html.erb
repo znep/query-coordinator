@@ -34,17 +34,24 @@
       <div class="gridContainer">
         <%- if !@view.is_invalid? -%>
           <div id="data-grid">
-            <noscript>
-              <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
+            <%- if !@view.is_blobby? -%>
+              <noscript>
+                <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>
 
-              <p><%= @view.description %></p>
+                <p><%= @view.description %></p>
 
-              <%- if @view.can_read -%>
-              <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
-                <%= @view.html %>
-              <% end %>
-              <%- end -%>
-            </noscript>
+                <%- if @view.can_read -%>
+                  <% cache ['widget-bare-html', @view.id], :expires_in => 1.hour do %>
+                    <%= @view.html %>
+                  <% end %>
+                <%- end -%>
+              </noscript>
+            <%- end -%>
+
+            <%- if @display.can_publish? -%>
+              <%= raw @display.render_body(self) %>
+              <%= render(:partial => @display.render_partial) %>
+            <%- end -%>
           </div>
         <%- else -%>
           <div class='viewErrorContainer content'>
@@ -63,8 +70,10 @@
     </div>
 
     <div class="widgetContent_views">
+      <a href="#close" class="close widgetContentClose">Close</a>
     </div>
     <div class="widgetContent_downloads">
+      <a href="#close" class="close widgetContentClose">Close</a>
     </div>
     <div class="widgetContent_comments">
     </div>
@@ -85,6 +94,11 @@
     <%= render :partial => 'widget_header' %>
   <%- end -%>
 </div>
+
+<% content_for :templates do %>
+  <%= render :partial => 'blists/filters_table_template' %>
+  <%= render :partial => 'blists/downloads_table_template' %>
+<% end %>
 
 <% content_for :js_footer do %>
   <script type="text/javascript">

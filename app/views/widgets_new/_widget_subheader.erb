@@ -1,7 +1,17 @@
 <ul class="subHeaderBar clearfix">
-  <li class="search"><a href="#search" class="icon" title="Search within this Dataset">Search</a></li>
-  <li class="about"><a href="<%= @view.href + '/about' %>" class="icon" title="About this Dataset" rel="external">About this Dataset</a></li>
-  <li class="datasetName"><%= @view.name %></li>
-  <li class="fullscreen right"><a href="<%= @view.href %>" class="icon" title="View this Dataset fullscreen" rel="external">Fullscreen</a></li>
+  <%- unless @view.is_alt_view? -%>
+    <li class="search">
+      <a href="#search" class="icon" title="Search within this Dataset">Search</a>
+    </li>
+  <%- end -%>
+  <li class="about">
+    <a href="<%= @view.href + '/about' %>" class="icon" title="About this Dataset" rel="external">About this Dataset</a>
+  </li>
+  <li class="datasetName">
+    <a href="<%= @view.href %>" title="Go to this Dataset" rel="external"><%= @view.name %></a>
+  </li>
+  <li class="fullscreen right">
+    <a href="<%= @view.href %>" class="icon" title="View this Dataset fullscreen" rel="external">Fullscreen</a>
+  </li>
   <li class="share right"><div class="menu shareMenu"></div></li>
 </ul>

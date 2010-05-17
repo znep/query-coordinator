@@ -190,9 +190,8 @@ protected
                                                      :border => 'color',
                                                      :text => 'color' },
                                      :shadow    => 'color' },
-                     :tooltips  => { :background => 'color',
-                                     :border => 'color',
-                                     :shadow => 'color' } } }
+                     :table     => { :header    => { :inactive => 'color',
+                                                     :active => 'color' } } } }
 
   @@widget_theme_parse = {
     :frame     => { :border     => { :color => 'color',

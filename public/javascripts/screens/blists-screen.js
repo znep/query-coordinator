@@ -195,6 +195,9 @@ blist.myBlists.favoriteFilter = function(view)
     return false;
 };
 
+blist.myBlists.blobbyDataset = function(view)
+{ return view.viewType == 'blobby'; };
+
 blist.myBlists.filterGen = function(type, argument, callback)
 {
     switch(type)
@@ -687,6 +690,10 @@ blist.myBlists.getTypeClassName = function(value)
     else if (myBlistsNS.filterFilter(value))
     {
         cls += "filter";
+    }
+    else if (myBlistsNS.blobbyDataset(value))
+    {
+        cls += "blob";
     }
     else
     {

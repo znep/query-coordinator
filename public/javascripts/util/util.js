@@ -214,4 +214,7 @@ $.renderTemplate = function(template, data, directive)
         .children();
 };
 
+$.isBlank = function(obj)
+{ return _.isUndefined(obj) || _.isNull(obj) || obj === ''; };
+
 })(jQuery);

@@ -656,6 +656,8 @@
             clearTempView: function(countId, forceAll)
             {
                 var datasetObj = this;
+                if (datasetObj.settings._filterCount < 1) { return; }
+
                 if (!datasetObj.settings._filterIds)
                 {datasetObj.settings._filterIds = {};}
                 if (countId != null)

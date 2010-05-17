@@ -35,16 +35,26 @@ a.button
       right: 0.4em
       top: 0.5em
 
-  .ie &, .ie & .left
+  // They have rounded corners but no linear gradient
+  .noLinearGradient &
+    background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&h=23&w=3&rx=1&ry=1&rw=1)" "repeat-x"
+  .noLinearGradient &:hover, .noLinearGradient &:active, .noLinearGradient &:focus
+    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_hover_background}&h=23&w=3&rx=1&ry=1&rw=1)"
+  .noLinearGradient &.disabled
+    background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&h=23&w=3&rx=1&ry=1&rw=1)"
+
+  // IE, or really old browsers
+  .noCss3 &, .noCss3 & .left
     background= "transparent" "url(/ui/box.png?fc=#{!gradient_buttons_active_background}&ec=#{!buttons_active_border}&ew=1&h=20&w=500&r=10)" "no-repeat"
     border: none
-  .ie &:hover, .ie &:hover .left
+  .noCss3 &:hover, .noCss3 &:hover .left
     background-image= "url(/ui/box.png?fc=#{!gradient_buttons_hover_background}&ec=#{!buttons_hover_border}&ew=1&h=20&w=500&r=10)"
-  .ie &:active, .ie &:active .left, .ie &:focus, .ie &:focus .left
+  .noCss3 &:active, .noCss3 &:active .left,
+  .noCss3 &:focus, .noCss3 &:focus .left
     background-image= "url(/ui/box.png?fc=#{!gradient_buttons_focus_background}&ec=#{!buttons_focus_border}&ew=1&h=20&w=500&r=10)"
-  .ie &.disabled
+  .noCss3 &.disabled
     background-image= "url(/ui/box.png?fc=#{!gradient_buttons_disabled_background}&ec=#{!buttons_disabled_border}&ew=1&h=20&w=500&r=10)"
-  .ie &
+  .noCss3 &
     background-position: top right
     height: 20px
     line-height: 20px
@@ -58,6 +68,7 @@ a.button
       height: 20px
       left: -10px
       position: absolute
+      top: 0
       width: 10px
 
 div.menu
@@ -99,7 +110,7 @@ div.menu
     -moz-box-shadow: 0 0 4px rgba(0,0,0,0.5)
     -webkit-box-shadow: 0 0 4px rgba(0,0,0,0.5)
     display: none
-    margin-top: -1px
+    overflow: hidden
     position: absolute
     z-index: 49
     &.menuPosition-top.menuPosition-left
@@ -116,7 +127,7 @@ div.menu
       -webkit-border-bottom-right-radius: 0
     > ul
       margin: 1.2em 0
-      overflow: hidden
+      overflow-y: hidden
       > li
         border-left: 1px solid #dedede
         display: block
@@ -137,15 +148,19 @@ div.menu
                 top: 1px solid #ffffff
               display: block
               font-size: 1.2em
-              padding: 0.3em 1em
+              padding: 0.3em
+                right: 1em
+                left: 2.8em
+              position: relative
               &:hover
                 background-color: #f7f7f7
                 border-color: #dedede
                 text-decoration: none
 
               .icon
-                float: left
-                margin-right: 0.5em
+                left: 1em
+                position: absolute
+                top: 0.3em
 
               .subtext
                 color: #777

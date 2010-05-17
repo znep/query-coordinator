@@ -13,9 +13,11 @@ javascripts:
   - util/google-analytics
   - plugins/jquery.socrata
 - shared-common-all:
+  - util/compat
   - util/events
   - util/sizing
   - util/util
+  - util/markup
   - plugins/jquery.tache
   - plugins/jquery.json
   - plugins/jquery.example.min
@@ -252,11 +254,16 @@ javascripts:
   - plugins/jquery.validate.min
   - plugins/jquery.bt
   - plugins/jquery.uniform
+  - plugins/jquery.tablesorter
+  - widgets/selectable-list
+  - widgets/combination-list
   - widgets/socrata-messaging
   - widgets/embed-form
+  - util/compat
   - util/navigation
   - util/urls
   - util/util
+  - util/markup
   - plugins/date
   - data/types
   - data/model

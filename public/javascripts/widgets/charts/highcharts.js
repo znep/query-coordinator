@@ -28,7 +28,7 @@
 
                 // Set up x-axis
                 var usesXCol = chartObj._view.displayType != 'imagesparkline' &&
-                    (_.isUndefined(chartObj._displayConfig.fixedCount) ||
+                    ($.isBlank(chartObj._displayConfig.fixedCount) ||
                     chartObj._displayConfig.fixedCount > 0);
                 if (usesXCol) { chartObj._xColumn = chartObj._dataColumns[0]; }
                 if (!isDateTime(chartObj) && usesXCol)

@@ -170,7 +170,6 @@ module CoreServer
         request.content_type = "application/json"
       end
       result = log(request) do
-Rails.logger.info CORESERVICE_URI
         Net::HTTP.start(CORESERVICE_URI.host, CORESERVICE_URI.port) do |http|
           http.request(request)
         end

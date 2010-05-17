@@ -1,0 +1,60 @@
+.gridList
+  border-collapse: collapse
+  width: 100%
+
+  thead tr
+    th
+      +sprite-menu-icons
+      background-color= !color_table_header_inactive
+      font-size: 1.2em
+      font-weight: normal
+      padding: 0.5em 1em
+      text-align: left
+      &:first-child
+        -moz-border-radius-topleft: 0.4em
+        -moz-border-radius-bottomleft: 0.4em
+        -webkit-border-top-left-radius: 0.4em
+        -webkit-border-bottom-left-radius: 0.4em
+      &:last-child
+        -moz-border-radius-topright: 0.4em
+        -moz-border-radius-bottomright: 0.4em
+        -webkit-border-top-right-radius: 0.4em
+        -webkit-border-bottom-right-radius: 0.4em
+
+      &.header:hover
+        background-color= !color_table_header_active
+        cursor: pointer
+
+      &.headerSortUp, &.headerSortDown
+        background-color= !color_table_header_active
+        .icon
+          visibility: visible
+
+      div
+        float: left
+      .icon
+        visibility: hidden
+        float: right
+
+  tbody tr
+    border-top= 1px solid !color_table_header_inactive
+    &:first-child
+      border-top: none
+
+    td
+      font-size: 1.2em
+      padding: 0.6em 1em
+      vertical-align: middle
+
+// specific tables
+.gridList.filterList
+  thead
+    th.type
+      width: 5em
+    th.viewed
+      width: 6em
+    th.picture
+      width: 3em
+  tbody
+    td.viewed
+      text-align: right

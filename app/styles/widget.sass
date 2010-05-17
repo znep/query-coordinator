@@ -1,5 +1,6 @@
 html, body
   height: 100%
+  overflow: hidden
 
 .textPrompt.prompt
   color: #999999
@@ -11,6 +12,12 @@ html, body
 
 .headerBar
   height: 4em
+
+  .ie7 &
+    // ie7 keeps nested relatives in independent z-indexes;
+       this was making the menu appear below the grid.
+    position: relative
+    z-index: 51
 
   h1.logo
     +text-hiding
@@ -26,7 +33,7 @@ html, body
     margin: 10px
       bottom: 0
 
-    .menuButton
+    .mainMenuButton
       +sprite-button-icons
       +gradient_menu_button_background
       border= 1px solid !color_menu_button_border
@@ -36,23 +43,30 @@ html, body
       -webkit-box-shadow: 1px 1px 0 #fff
       color= !color_menu_button_text
       cursor: pointer
-      padding-left: 2.3em
+      display: inline-block
+      font-size: 1.2em
+      height: 1em
+      line-height: 1em
+      margin-top: -4px
+      padding: 0.6em
+        right: 1em
+        left: 2.3em
+      position: relative
       text-transform: uppercase
-      .ie &
+      .noLinearGradient &
         background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
 
       .icon
         left: 0.6em
+        margin-left: 0.2em
         position: absolute
         top: 0.7em
 
       &:hover
         +gradient_menu_button_background_hover
-        .ie &
+        text-decoration: none
+        .noLinearGradient &
           background= "transparent" "url(/ui/box.png?fc=#{!gradient_menu_button_background_hover}&h=30&w=3&rx=1&rw=1&ry=1)" "repeat-x"
-
-        .icon
-          background-position: 0 0
 
     &.open .menuButton
       -moz-box-shadow: none
@@ -61,7 +75,8 @@ html, body
         background-position: 0 0
 
     .menuDropdown
-      margin-top: 0.1em
+      margin: 0.4em 0
+      min-width: 23em
 
       > ul
         margin-bottom: 0
@@ -118,14 +133,24 @@ html, body
   margin= 0 !frame_padding
   padding: 0.2em
 
+  .ie7 &
+    // ie7 keeps nested relatives in independent z-indexes;
+       this was making the menu appear below the grid.
+    position: relative
+    z-index: 50
+
   > li
     +sprite-menu-icons
-    color: #eee
     display: block
     float: left
     padding: 0.2em
     &.right
       float: right
+
+    > a
+      color: #eee
+      &:hover
+        text-decoration: none
 
     .ie &.datasetName
       margin: 0.2em
@@ -135,11 +160,17 @@ html, body
     &.share .menu
       height: 13px
 
+      > a
+        // menu button
+        cursor: pointer
+
       .icon .icon
         display: none
 
       .menuDropdown ul li ul li
         +sprite-menu-icons
+        a
+          min-width: 6em
 
 .toolbar
   background-color= !color_toolbar_color
@@ -148,10 +179,7 @@ html, body
   margin= 0 !frame_padding
   overflow: hidden
   padding: 0.3em
-  @if !frame_orientation == "downwards"
-    top: 0
-  @else if !frame_orientation == "upwards"
-    bottom: 0
+  position: relative
 
   form
     display: none
@@ -178,15 +206,24 @@ html, body
   .close
     +sprite-button-icons
     display: inline-block
-    float: right
+    position: absolute
+    right: 0.3em
+    top: 0.3em
+
+    // I don't even know anymore.
+    .ie7 & .icon
+      display: block
 
 .widgetContent
   clear: both
   margin= !frame_padding
-    top: 0
+  @if !frame_orientation == "downwards"
+    margin-top: 0
+  @else if !frame_orientation == "upwards"
+    margin-bottom: 0
 
   > *
-    background-color: #fff
+    background-color: #fcfcfc
     display: none
 
   .widgetContentClose
@@ -200,91 +237,24 @@ html, body
     #viewHeader
       display: none
 
-    #data-grid
+  .widgetContent_views
+    .gridListWrapper
+      margin: 1em
+        right: 4em
+        top: 0
+      padding-top: 2em
 
-      .blist-table
-        height: 100%
+      table
+        tbody
+          .type
+            +sprite-menu-icons
 
-        a
-          +underline-on-hover
-
-      .blist-table-scrolls
-        background-color: #fff
-
-      .blist-table-header-scrolls
-        background-color: #e8e8e2
-
-      div.blist-th
-        .info-container
-          font-size= !grid_font_header_size
-
-        @if !grid_header_icons == false
-          .blist-th-icon
-            display: none
-
-          .icon-display .name-wrapper
-            padding-left: 0
-
-        .blist-th-name
-          @if !grid_title_bold == true
-            font-weight: bold
-
-      .blist-tr-even .blist-td
-        background-color= !color_grid_zebra
-
-      .blist-td-header
-        font-weight: bold
-
-      .blist-td
-        background-color: #fff
-        height: 16px
-        padding: 4px /* .3636em */
-
-        p
-          margin: 0 0 6px 0
-          padding: 0
-          &:last-child
-            margin-bottom: 0
-
-      .blist-td,
-      .blist-table-editor,
-      .blist-table .blist-combo-dd li
-        font-size= !grid_font_data_size
-        line-height: 16px
-
-      img.blist-table-option-icon
-        padding-right: 4px
-        padding-bottom: -1px
-
-      .blist-tstars
-        margin: -4px 0
-
-      .blist-table-row-numbers.blist-tf
-        background-color: #fcedc1
-        .blist-tf-value:after
-          content: ':'
-      .blist-table-row-handle.blist-tf
-        background-color: #fcedc1
-      .blist-table-footer .blist-tf
-        background-color: #fef8dc
-
-      @if !grid_wrap_header_text == true
-        .blist-th .info-container
-          height: 2.45em /* 30px or so */
-          white-space: normal
-
-        .blist-th .name-wrapper
-          height: 2.45em
-
-        .blist-table-header,
-        .blist-th,
-        .blist-th .dragHandle
-          height: 4.5em
-
-        .indicators-inactive .blist-table-header,
-        .indicators-inactive .blist-th,
-        .indicators-inactive .blist-th .dragHandle
-          height: 3.3em
+  .widgetContent_downloads
+    .gridListWrapper
+      margin: 1em
+        right: 4em
+        top: 0
+      padding-top: 2em
 
   .widgetContent_embed
     .embedForm
@@ -305,9 +275,11 @@ html, body
 
       .sizes li
         cursor: pointer
-        display: inline-block
-        text-align: center
+        float: left
         width: 6em
+
+        p
+          text-align: center
 
         .sizePreview
           background-color: #f7f7f7
@@ -348,4 +320,91 @@ html, body
       padding-top: 1em
 
       .submitActions li
-        display: inline
+        display: block
+        float: left
+
+// START: GRID
+
+.blist-table
+  height: 100%
+
+  a
+    +underline-on-hover
+
+.blist-table-scrolls
+  background-color: #fff
+
+.blist-table-header-scrolls
+  background-color: #e8e8e2
+
+div.blist-th
+  .info-container
+    font-size= !grid_font_header_size
+
+  @if !grid_header_icons == false
+    .blist-th-icon
+      display: none
+
+    .icon-display .name-wrapper
+      padding-left: 0
+
+  .blist-th-name
+    @if !grid_title_bold == true
+      font-weight: bold
+
+.blist-tr-even .blist-td
+  background-color= !color_grid_zebra
+
+.blist-td-header
+  font-weight: bold
+
+.blist-td
+  background-color: #fff
+  height: 16px
+  padding: 4px /* .3636em */
+
+  p
+    margin: 0 0 6px 0
+    padding: 0
+    &:last-child
+      margin-bottom: 0
+
+.blist-td,
+.blist-table-editor,
+.blist-table .blist-combo-dd li
+  font-size= !grid_font_data_size
+  line-height: 16px
+
+img.blist-table-option-icon
+  padding-right: 4px
+  padding-bottom: -1px
+
+.blist-tstars
+  margin: -4px 0
+
+.blist-table-row-numbers.blist-tf
+  background-color: #fcedc1
+  .blist-tf-value:after
+    content: ':'
+.blist-table-row-handle.blist-tf
+  background-color: #fcedc1
+.blist-table-footer .blist-tf
+  background-color: #fef8dc
+
+@if !grid_wrap_header_text == true
+  .blist-th .info-container
+    height: 2.45em /* 30px or so */
+    white-space: normal
+
+  .blist-th .name-wrapper
+    height: 2.45em
+
+  .blist-table-header,
+  .blist-th,
+  .blist-th .dragHandle
+    height: 4.5em
+
+  .indicators-inactive .blist-table-header,
+  .indicators-inactive .blist-th,
+  .indicators-inactive .blist-th .dragHandle
+    height: 3.3em

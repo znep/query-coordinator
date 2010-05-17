@@ -75,16 +75,23 @@ blist.widget.flashToolbarMessage = function($messageElem, message, onDisplay)
         });
 };
 
+blist.widget.showDataView = function()
+{
+    if ($('.widgetContentGrid').is(':visible'))
+    { return; }
+
+    $('.widgetContent > :visible:first').fadeOut(200,
+        function()
+        {
+            $('.widgetContentGrid').fadeIn(200);
+            widgetNS.resizeGrid();
+        });
+};
+
 $(function()
 {
     // orientation
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
-
-    // Infinite Exasperation?
-    if ($.browser.msie)
-    {
-        $('body').addClass('ie ie' + $.browser.version.slice(0, 1)); // I guess this will break when we hit IE10.
-    }
 
     // sizing
     widgetNS.resizeViewport();
@@ -92,6 +99,10 @@ $(function()
 
     // generic events
     $.live('a[rel$=external]', 'focus', function(event)
+    {
+        this.target = '_blank';
+    });
+    $.live('a[rel$=external]', 'mouseover', function(event)
     {
         this.target = '_blank';
     });
@@ -112,6 +123,8 @@ $(function()
     // menus
     $('.mainMenu').menu({
         attached: false,
+        menuButtonTitle: 'Access additional information about this dataset.',
+        menuButtonClass: 'mainMenuButton ' + ((widgetNS.theme['frame']['orientation'] == 'downwards') ? 'upArrow' : 'downArrow'),
         contents: [
             { text: 'Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
             { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads' },
@@ -141,18 +154,19 @@ $(function()
         }
     });
 
-    var tweet = escape('Check out the ' + widgetNS.view.name + ' dataset on ' + configNS.strings.company_name + ': ');
+    var tweet = escape('Check out the ' + $.htmlEscape(widgetNS.view.name) + ' dataset on ' + configNS.strings.company_name + ': ');
     var seoPath = window.location.hostname + $.generateViewUrl(widgetNS.view);
     var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + widgetNS.viewId;
     $('.subHeaderBar .share .shareMenu').menu({
         attached: false,
         menuButtonClass: 'icon',
         menuButtonContents: 'Socialize',
+        menuButtonTitle: 'Share this dataset',
         contents: [
             { text: 'Delicious', className: 'delicious', rel: 'external',
-              href: 'http://del.icio.us/post?url=' + seoPath + '&title=' + widgetNS.view.name },
+              href: 'http://del.icio.us/post?url=' + seoPath + '&title=' + $.htmlEscape(widgetNS.view.name) },
             { text: 'Digg', className: 'digg', rel: 'external',
-              href: 'http://digg.com/submit?phase=2&url=' + seoPath + '&title=' + widgetNS.view.name },
+              href: 'http://digg.com/submit?phase=2&url=' + seoPath + '&title=' + $.htmlEscape(widgetNS.view.name) },
             { text: 'Facebook', className: 'facebook', rel: 'external',
               href: 'http://www.facebook.com/share.php?u=' + seoPath },
             { text: 'Twitter', className: 'twitter', rel: 'external',
@@ -186,6 +200,7 @@ $(function()
         }
         else
         {
+            widgetNS.showDataView();
             widgetNS.showToolbar('search', 'toolbarSearchForm');
         }
     });
@@ -212,7 +227,7 @@ $(function()
                     $('.toolbarEmailForm .toolbarTextbox')
                         .val(emails.join(', '))
                         .attr('disabled', false)
-                        .css('background-color', null);
+                        .css('background-color', widgetNS.theme.toolbar.input_color);
                 }
             );
         }
@@ -227,7 +242,7 @@ $(function()
                         .val('')
                         .blur()
                         .attr('disabled', false)
-                        .css('background-color', null);
+                        .css('background-color', widgetNS.theme.toolbar.input_color);
                 }
             );
         }
@@ -253,7 +268,6 @@ $(function()
                     'method': 'email',
                     'email': email
                 },
-                dataType: 'json',
                 success: function (responseData)
                 {
                     if (responseData['error'] === undefined)
@@ -311,11 +325,101 @@ $(function()
     $('.widgetContent .close').click(function(event)
     {
         event.preventDefault();
-        $('.widgetContent > :visible:first').fadeOut(200,
-            function()
+        widgetNS.showDataView();
+    });
+
+    // more views
+    var moreViews = [];
+    $.ajax({
+        url: '/views.json?method=getByTableId&tableId=' + widgetNS.view.tableId,
+        dataType: 'json',
+        success: function (responseData)
+        {
+            moreViews = _.reject(responseData, function(view)
             {
-                $('.widgetContentGrid').fadeIn(200);
+                return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
+                       (view.viewType == 'blobby');
             });
+
+            var getDisplayType = function(view)
+            {
+                return (view.displayType || 'blist').capitalize();
+            };
+
+            $('.widgetContent_views').append(
+                $.renderTemplate(
+                    'filtersTable',
+                    moreViews,
+                    {
+                        'tbody .item': {
+                            'filter<-': {
+                                '.type .cellInner.icon': function(filter) { return getDisplayType(filter.item); },
+                                '.type@class+': function(filter) { return ' type' + getDisplayType(filter.item); },
+
+                                '.name a': function(filter) { return $.htmlEscape(filter.item.name); },
+                                '.name a@title': function(filter) { return $.htmlEscape(filter.item.description || ''); },
+                                '.name a@href': function(filter) { return $.generateViewUrl(filter.item); },
+
+                                '.viewed .cellInner': 'filter.viewCount',
+
+                                '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
+                                                                              '/images/small-profile.png'; },
+                                '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
+                            }
+                        }
+                    }));
+
+            $('.widgetContent_views .name a').each(function()
+            {
+                var $this = $(this);
+                if ($this.attr('title') === '')
+                { return; }
+
+                $this.socrataTip({ message: $this.attr('title'), trigger: 'hover' });
+            });
+
+            $('.widgetContent_views table.gridList').combinationList({
+                headerContainerSelector: '.widgetContent_views .gridListWrapper',
+                hoverOnly: true,
+                initialSort: [[1, 1]],
+                scrollableBody: false,
+                selectable: false,
+                sortGrouping: false,
+                sortHeaders: {0: {sorter: 'text'}, 1: {sorter: 'text'},
+                    2: {sorter: 'digit'}, 3: {sorter: false}}
+            });
+        },
+        error: function(xhr)
+        {
+            
+        }
+    });
+
+    // downloads
+    var supportedDownloadTypes = [ 'CSV', 'JSON', 'PDF', 'XLS', 'XLSX', 'XML'  ];
+    $('.widgetContent_downloads').append(
+        $.renderTemplate(
+            'downloadsTable',
+            supportedDownloadTypes,
+            {
+                'tbody .item': {
+                    'downloadType<-': {
+                        '.type a': 'Download #{downloadType}',
+                        '.type a@href': function(downloadType) { 
+                            return '/views/' + widgetNS.view.id + '/rows.' +
+                            downloadType.item.toLowerCase() + '?accessType=DOWNLOAD'; }
+                        // TODO: add download count when supported
+                    }
+                }
+            }));
+    $('.widgetContent_downloads table.gridList').combinationList({
+        headerContainerSelector: '.widgetContent_downloads .gridListWrapper',
+        hoverOnly: true,
+        initialSort: [[0, 1]],
+        scrollableBody: false,
+        selectable: false,
+        sortGrouping: false,
+        sortHeaders: {0: {sorter: 'text'}}
     });
 
     // embed
@@ -325,7 +429,12 @@ $(function()
     // TODO: maybe make this generic?
     $('.widgetContent_print form input[type=image]')
         .replaceWith(
-            $('<a href="#submit" class="button submit"><span class="icon"></span>Print</a>')
+            $.tag({ tagName: 'a', href: '#submit', 'class': ['button', 'submit'],
+                    contents: [
+                        { tagName: 'span', 'class': 'left' },
+                        { tagName: 'span', 'class': 'icon' },
+                        'Print'
+                    ]})
                 .click(function(event)
                 {
                     $(this).closest('form').submit();

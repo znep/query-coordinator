@@ -8,12 +8,13 @@ base:
 - forms
 - old-controls
 - controls
+- tables
 base-sdp:
 - base
-- sdp-layout
 - common
 - table-core
 - dataset-grid
 - forms
 - old-controls
 - controls
+- tables

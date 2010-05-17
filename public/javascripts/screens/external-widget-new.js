@@ -131,7 +131,7 @@ $(function()
             { text: 'Comments', className: 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
             { text: 'Embed', className: 'embed', subtext: 'Embed this player on your site', href: '#embed' },
             { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print' },
-            { text: 'About the Socrata Social Data Player', className: 'about', href: 'http://www.socrata.com/try-it-free' }
+            { text: 'About the Socrata Social Data Player', className: 'about', href: 'http://www.socrata.com/try-it-free', rel: 'external' }
         ]
     });
     $('.mainMenu .menuDropdown a').click(function(event)
@@ -154,7 +154,7 @@ $(function()
         }
     });
 
-    var tweet = escape('Check out the ' + $.htmlEscape(widgetNS.view.name) + ' dataset on ' + configNS.strings.company_name + ': ');
+    var tweet = escape('Check out the ' + $.htmlEscape(widgetNS.view.name) + ' dataset on ' + configNS.strings.company + ': ');
     var seoPath = window.location.hostname + $.generateViewUrl(widgetNS.view);
     var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + widgetNS.viewId;
     $('.subHeaderBar .share .shareMenu').menu({
@@ -306,14 +306,11 @@ $(function()
                     accessType: 'WIDGET',
                     showRowNumbers: widgetNS.theme['grid']['row_numbers'],
                     showRowHandle: widgetNS.theme['grid']['row_numbers'],
-                    editEnabled: typeof(isOldIE) === 'undefined',
+                    editEnabled: false,
                     manualResize: true,
-                    columnNameEdit: typeof(isOldIE) === 'undefined' &&
-                        blist.isOwner,
+                    columnNameEdit: false,
                     filterForm: '.toolbar .toolbarSearchForm',
                     autoHideClearFilterItem: false,
-                    clearTempViewCallback: widgetNS.clearTempViewTab,
-                    setTempViewCallback: widgetNS.setTempViewTab,
                     initialResponse: $.unescapeObject(widgetNS.viewJson)
                 });
         }
@@ -339,7 +336,7 @@ $(function()
             {
                 return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
                        (view.viewType == 'blobby');
-            });
+            }).sort(function(a, b) { return a.viewCount > b.viewCount });
 
             $('.widgetContent_views').append(
                 $.renderTemplate(
@@ -372,13 +369,13 @@ $(function()
                 if ($this.attr('title') === '')
                 { return; }
 
-                $this.socrataTip({ message: $this.attr('title'), trigger: 'hover' });
+                $this.socrataTip({ message: $this.attr('title'), trigger: 'hover', shrinkToFit: false });
             });
 
             $('.widgetContent_views table.gridList').combinationList({
                 headerContainerSelector: '.widgetContent_views .gridListWrapper',
                 hoverOnly: true,
-                initialSort: [[1, 1]],
+                initialSort: [[2, 1]],
                 scrollableBody: false,
                 selectable: false,
                 sortGrouping: false,
@@ -412,7 +409,7 @@ $(function()
     $('.widgetContent_downloads table.gridList').combinationList({
         headerContainerSelector: '.widgetContent_downloads .gridListWrapper',
         hoverOnly: true,
-        initialSort: [[0, 1]],
+        initialSort: [[0, 0]],
         scrollableBody: false,
         selectable: false,
         sortGrouping: false,

@@ -38,8 +38,6 @@ $(function()
         {
             $.tag({tagName: 'span', 'class': 'left' }).prependTo($(this));
         });
-
-        linearGradient = borderRadius = false;
     }
 
     // Apply feature detected classes if applicable

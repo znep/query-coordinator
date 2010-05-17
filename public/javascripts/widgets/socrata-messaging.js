@@ -33,6 +33,7 @@
             message: null,
             parent: null,
             positions: null,
+            shrinkToFit: true,
             trigger: 'now'
         },
 
@@ -65,7 +66,7 @@
                         noShadowOpts: {strokeWidth: 2},
 
                         closeWhenOthersOpen: sTipObj.settings.isSolo,
-                        shrinkToFit: true,
+                        shrinkToFit: sTipObj.settings.shrinkToFit,
                         trigger: sTipObj.settings.trigger,
                         positions: pos,
                         offsetParent: sTipObj.settings.parent,

@@ -1,5 +1,6 @@
 <% content_for :head do %>
   <%= auto_discovery_link_tag(:rss, "/views/#{@view.id}/rows.rss") %>
+  <%= rendered_stylesheet_tag 'grid' %>
   <%= stylesheet_link_merged 'blists-show' %>
   <%= raw @display.render_stylesheet_includes %>
 

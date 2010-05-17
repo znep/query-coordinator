@@ -93,7 +93,7 @@ div.blist-th-first
     top: 3px
 
 .blist-th-icon
-  background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png)
+  background-image: url(/stylesheets/images/common/datatypes/data_type_sprites.png?1)
   background-position: 0 20px
   background-repeat: no-repeat
   display: block
@@ -122,16 +122,19 @@ div.blist-th-first
       display: none
 
   .dragHandle
-    cursor: move
     left: 0
     position: absolute
     width: 10px
     z-index: 10
 
+    .blist-table-disabled &
+      z-index: -10
+
   &.hover .dragHandle
     background-image: url(/stylesheets/images/content/table/column_drag_handle.png)
     background-position: top left
     background-repeat: repeat-y
+    cursor: move
 
 .blist-th-drag
   background-color: #ddeaf0
@@ -227,6 +230,29 @@ div.blist-th-first
   .description
     margin-top: 0.5em
 
+.blist-table .disabled-overlay, .blist-table .select-overlay
+  height: 100%
+  position: absolute
+  top: 0
+  z-index: 2
+
+.blist-table .disabled-overlay
+  background-color: #cccccc
+  filter: alpha(opacity=30)
+  opacity: 0.3
+
+.blist-table .select-overlay
+  background-color: #ffffff
+  filter: alpha(opacity=20)
+  opacity: 0.2
+
+.blist-table .select-overlay.overlay-hover
+  background-color: #4d8ab0
+
+.blist-table .blist-table-locked-scrolls .disabled-overlay
+  left: 0
+  width: 100%
+
 div.blist-table-ghost div.blist-column-adder
   background-color: #e8e8e8
   background-image: url('/stylesheets/images/content/table/add_column_icons.gif')
@@ -239,6 +265,9 @@ div.blist-table-ghost div.blist-column-adder
   width: 15px
   &:hover
     background-position: center -15px
+
+.blist-table.disabled .blist-column-adder
+  display: none
 
 div.blist-tr-open div.blist-column-adder,
 div.blist-tr.blist-hot-row div.blist-column-adder
@@ -660,6 +689,10 @@ div.blist-percent
   .blist-percent-bar-pos
     height: 100%
 
+div.drill-td div.blist-percent,
+div.drill-td div.blist-flag
+  margin-left: 28px
+
 img.blist-table-option-icon
   margin-bottom: -4px
   padding-right: 0.4em
@@ -713,6 +746,35 @@ img.blist-table-option-icon
   .type-photo_obsolete a.button.view
     background-position: 0 -32px
     width: 20px
+
+  /* Location editor */
+  .blist-table-editor.type-location .labels
+    border-bottom-color: #d0d0d0
+    border-top: 1px solid #06386a
+
+  .blist-table-editor.type-location .labels.street
+    border-top: none
+
+  .blist-table-editor.type-location .labels span
+    position: static
+
+  .blist-table-editor.type-location input[type="text"]
+    height: auto
+    padding: 3px
+    width: 95%
+
+  .blist-table-editor.type-location input.nonInvalid
+    color: #333333
+    font-style: normal
+
+  .blist-table-editor.type-location .labels span.longitude,
+  .blist-table-editor.type-location input.longitude
+    border-left: 1px solid #d0d0d0
+    left: 50%
+    position: absolute
+
+  .blist-table-editor.type-location input.lat_long
+    width: 47%
 
 .blist-table-expander .blist-td-photo img,
 .blist-table-active-container .blist-td-photo img,
@@ -804,6 +866,8 @@ ul.menu.rowMenu li
     float: left
     position: static
 
+// This is only used for initial positioning; the menu is pulled out, so real
+// styling needs to go directly on the menu
 .blist-th .columnHeaderMenu
   font-size: 0.8333em
 

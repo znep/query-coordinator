@@ -332,9 +332,7 @@ stylesheets:
   - colorpicker
   - form-common
 - blists-show:
-  - table-core
   - table-blist-grid
-  - dataset-grid
   - dataset-menus
   - ui.slider
   - ui.spinner
@@ -369,8 +367,6 @@ stylesheets:
   - carousel/discover-carousel-skin
   - tweetsets-screen
 - widgets-show:
-  - table-core
-  - dataset-grid
   - dataset-menus
   - external-widget
   - info-pane

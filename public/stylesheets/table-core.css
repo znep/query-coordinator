@@ -250,36 +250,6 @@ div.blist-table-expander .blist-td
     position: absolute;
 }
 
-.blist-table .disabled-overlay,
-.blist-table .select-overlay
-{
-    height: 100%;
-    position: absolute;
-    top: 0;
-    z-index: 2;
-}
-
-.blist-table .disabled-overlay
-{
-    background-color: #cccccc;
-    filter: alpha(opacity=30);
-    opacity: 0.3;
-}
-
-.blist-table .select-overlay
-{
-    background-color: #ffffff;
-    filter: alpha(opacity=20);
-    opacity: 0.2;
-}
-.blist-table .select-overlay.overlay-hover { background-color: #4d8ab0; }
-
-.blist-table .blist-table-locked-scrolls .disabled-overlay
-{
-    left: 0;
-    width: 100%;
-}
-
 img.blist-table-option-icon
 {
     width: 16px;

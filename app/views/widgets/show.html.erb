@@ -1,4 +1,5 @@
 <% content_for :head do %>
+  <%= rendered_stylesheet_tag 'grid' %>
   <%= stylesheet_link_merged 'widgets-show' %>
   <%- if @display.can_publish? -%>
   <%= raw @display.render_stylesheet_includes %>

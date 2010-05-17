@@ -357,7 +357,7 @@
                 result = '<div class="radioBlock">'
                 _.each(args.item.options, function(opt, i)
                 {
-                    result += '<div class="radioLine' +
+                    result += '<div class="radioLine ' + opt.type +
                         (i == 0 ? ' first' : '') + '">' +
                         '<input type="radio" ' +
                         (opt.checked ? 'checked="checked" ' : '') +
@@ -477,7 +477,7 @@
         // and isn't stolen by the radio button; then we need to manually trigger
         // the selection of the radio button.  We use mouseup because textPrompt
         // interferes with click events
-        $pane.find('.section label :input').click(function(e)
+        $pane.find('.section label :input, .section label a').click(function(e)
         {
             e.preventDefault();
         }).mouseup(function(e)

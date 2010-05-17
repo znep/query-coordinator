@@ -176,6 +176,7 @@
     font-size: 1em;
     width: 10.75em;
 }
+#gridSidebar .section .line .radioBlock .columnSelect label select { width: 9em; }
 
 #gridSidebar .section .line .radioBlock label span.error
 {

@@ -255,7 +255,6 @@ javascripts:
   - plugins/jquery.bt
   - plugins/jquery.uniform
   - plugins/jquery.tablesorter
-  - widgets/selectable-list
   - widgets/combination-list
   - widgets/socrata-messaging
   - widgets/embed-form

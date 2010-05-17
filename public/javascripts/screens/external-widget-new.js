@@ -90,8 +90,9 @@ blist.widget.showDataView = function()
 
 $(function()
 {
-    // orientation
+    // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
+    widgetNS.isBlobby = (widgetNS.view.viewType === 'blobby');
 
     // sizing
     widgetNS.resizeViewport();
@@ -124,13 +125,13 @@ $(function()
     $('.mainMenu').menu({
         attached: false,
         menuButtonTitle: 'Access additional information about this dataset.',
-        menuButtonClass: 'mainMenuButton ' + ((widgetNS.theme['frame']['orientation'] == 'downwards') ? 'upArrow' : 'downArrow'),
+        menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
         contents: [
             { text: 'Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
-            { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads' },
+            { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads', onlyIf: !widgetNS.isBlobby },
             { text: 'Comments', className: 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
             { text: 'Embed', className: 'embed', subtext: 'Embed this player on your site', href: '#embed' },
-            { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print' },
+            { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby },
             { text: 'About the Socrata Social Data Player', className: 'about', href: 'http://www.socrata.com/try-it-free', rel: 'external' }
         ]
     });
@@ -171,7 +172,7 @@ $(function()
               href: 'http://www.facebook.com/share.php?u=' + seoPath },
             { text: 'Twitter', className: 'twitter', rel: 'external',
               href: 'http://www.twitter.com/home?status=' + tweet + shortPath },
-            { text: 'Email', className: 'email', href: '#email' }
+            { text: 'Email', className: 'email', href: '#email', onlyIf: !widgetNS.isBlobby }
         ]
     });
 
@@ -227,7 +228,8 @@ $(function()
                     $('.toolbarEmailForm .toolbarTextbox')
                         .val(emails.join(', '))
                         .attr('disabled', false)
-                        .css('background-color', widgetNS.theme.toolbar.input_color);
+                        .css('background-color', null) // for firefox/webkit
+                        .css('background-color', widgetNS.theme.toolbar.input_color); // for ie
                 }
             );
         }
@@ -242,11 +244,16 @@ $(function()
                         .val('')
                         .blur()
                         .attr('disabled', false)
-                        .css('background-color', widgetNS.theme.toolbar.input_color);
+                        .css('background-color', null) // for firefox/webkit
+                        .css('background-color', widgetNS.theme.toolbar.input_color); // for ie
                 }
             );
         }
     };
+
+    // force clear textbox; it acts weird on refresh because it thinks you've changed it
+    $('.toolbarEmailForm .toolbarTextbox, .toolbarSearchForm .toolbarTextbox').val('').blur();
+
     $('.toolbar .toolbarEmailForm').submit(function(event)
     {
         event.preventDefault();
@@ -374,7 +381,6 @@ $(function()
 
             $('.widgetContent_views table.gridList').combinationList({
                 headerContainerSelector: '.widgetContent_views .gridListWrapper',
-                hoverOnly: true,
                 initialSort: [[2, 1]],
                 scrollableBody: false,
                 selectable: false,
@@ -408,7 +414,6 @@ $(function()
             }));
     $('.widgetContent_downloads table.gridList').combinationList({
         headerContainerSelector: '.widgetContent_downloads .gridListWrapper',
-        hoverOnly: true,
         initialSort: [[0, 0]],
         scrollableBody: false,
         selectable: false,

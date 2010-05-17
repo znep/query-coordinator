@@ -93,7 +93,7 @@ $(function ()
                 {
                     $('#uploadMessage')
                         .text('Non-tabular data will not be converted to tabular form.' +
-                        '  It will be treated as embedded file.' +
+                        '  It will be treated as an embedded file.' +
                         ' If you do not wish for this to happen, please choose another file.')
                         .removeClass('uploadErrorMessage hide').addClass('uploadInfoMessage');
                     $uploader._settings.action = $('#fileBrowseButton').attr('href') + '&type=blobby';

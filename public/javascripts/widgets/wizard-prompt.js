@@ -72,7 +72,8 @@
                 var events = wizObj.settings.closeEvents;
                 if (_.isNull(events))
                 { events = 'click, change'; }
-                var $closeItems = $domObj.find(wizObj.settings.closeSelector);
+                var $closeItems = $domObj.find(wizObj.settings.closeSelector)
+                    .andSelf().filter(wizObj.settings.closeSelector);
                 if (typeof events == 'string')
                 { events = events.replace(/\s+/g, '').split(','); }
                 _.each(events, function(ev)

@@ -89,8 +89,8 @@ module BlistsHelper
       'external' => is_widget, 'if' => (theme.nil? || theme[:menu][:api])},
 
     'subscribe' => {'text' => 'Subscribe to Updates', 'class' => 'subscribe',
-      'href' => '#', 'if' => (theme.nil? ||
-        theme[:menu][:subscribe].any?{ |key, value| value }),
+      'href' => '#',
+      'if' => (!@view.is_blobby? && ( theme.nil? || theme[:menu][:subscribe].any?{ |key, value| value })),
       'submenu' =>
         {'class' => 'noicon', 'items' => [
           {'text' => 'via Atom', 'external' => true, 'class' => 'atom',

@@ -1,0 +1,245 @@
+.fc
+  table
+    border-collapse: collapse
+    border-spacing: 0
+
+  td, th
+    padding: 0
+    vertical-align: top
+
+
+.fc-content
+  td, th
+    font-size: 1.2em
+
+
+.fc .loadingSpinner
+  left: 50%
+  margin: -24px 0 0 -24px
+  top: 50%
+
+
+table.fc-header
+  width: 100%
+
+
+.fc-header-left
+  width: 25%
+
+  table
+    float: left
+
+
+.fc-header-center
+  width: 50%
+
+  table
+    margin: 0 auto
+
+
+.fc-header-right
+  width: 25%
+
+  table
+    float: right
+
+
+.fc-header-title
+  margin-top: 0
+  white-space: nowrap
+
+
+.fc-header-space
+  padding-left: 10px
+
+
+.fc-rtl .fc-header-title
+  direction: rtl
+
+
+.fc-header .fc-state-default
+  background-color: #656565
+  background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png)
+  background-position: 0 -63px
+  background-repeat: no-repeat
+  height: 21px
+  margin-left: 1px
+  overflow: hidden
+
+  a
+    background-image: url(/stylesheets/images/widgets/background_buttons_summary_sprites.png)
+    background-position: right -84px
+    background-repeat: no-repeat
+    color: #fff
+    cursor: pointer
+    display: block
+    font-size: 1.2em
+    height: 21px
+    line-height: 21px
+    padding-left: 10px
+    padding-right: 10px
+    text-decoration: none
+    text-transform: capitalize
+
+
+.fc-widget-content
+  border: 1px solid #ccc
+
+
+.fc-content
+  clear: both
+
+  .fc-state-default
+    border-style: solid
+    border-color: #ccc
+
+  .fc-state-highlight
+    background: #ffc
+
+  .fc-not-today
+    background: none
+
+
+.fc-cell-overlay
+  background: #9cf
+  opacity: .2
+  filter: alpha(opacity=20)
+
+
+.fc-view
+  width: 100%
+  overflow: hidden
+
+
+.fc-event
+  color: #fff
+  border-style: solid
+  border-color: #20608f
+  background-color: #20608f
+
+  a
+    color: #fff
+    border-style: solid
+    border-color: #20608f
+    background-color: #20608f
+    overflow: hidden
+    font-size: 1.2em
+    text-decoration: none
+    text-align: left
+
+
+.fc-event-editable
+  cursor: pointer
+
+
+.fc-event-time, .fc-event-title
+  padding: 0 1px
+
+
+.fc-event a
+  display: block
+  position: relative
+  width: 100%
+  height: 100%
+
+
+.fc-content .ui-draggable a
+  cursor: move
+
+
+.fc-rtl .fc-event a
+  text-align: right
+
+
+.fc .ui-resizable-handle
+  display: block
+  position: absolute
+  z-index: 99999
+  border: 0
+  background: url(data:image/gif;base64,AAAA) !important
+
+
+.fc-event-hori
+  border-width: 1px 0
+  margin-bottom: 1px
+
+  a
+    border-width: 0
+
+
+.fc-content
+  .fc-corner-left
+    margin-left: 1px
+
+    a
+      margin-left: -1px
+      border-left-width: 1px
+
+  .fc-corner-right
+    margin-right: 1px
+
+    a
+      margin-right: -1px
+      border-right-width: 1px
+
+
+.fc-event-hori
+  .ui-resizable-e
+    top: 0           !important
+    right: -3px      !important
+    width: 7px       !important
+    height: 100%     !important
+    cursor: e-resize
+
+  .ui-resizable-w
+    top: 0           !important
+    left: -3px       !important
+    width: 7px       !important
+    height: 100%     !important
+    cursor: w-resize
+
+  .ui-resizable-handle
+    _padding-bottom: 14px
+
+
+.fc-grid table
+  width: 100%
+
+
+.fc .fc-grid
+  th
+    border-width: 0 0 0 1px
+    text-align: center
+
+  td
+    border-width: 1px 0 0 1px
+
+
+.fc-grid
+  th.fc-leftmost, td.fc-leftmost
+    border-left: 0
+
+  .fc-day-number
+    float: right
+    padding: 0 2px
+
+  .fc-other-month .fc-day-number
+    opacity: 0.3
+    filter: alpha(opacity=30)
+
+  .fc-day-content
+    clear: both
+    padding: 2px 2px 0
+
+  .fc-event-time
+    font-weight: bold
+
+
+.fc-rtl .fc-grid
+  direction: rtl
+
+  .fc-day-number
+    float: left
+
+  .fc-event-time
+    float: right

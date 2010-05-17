@@ -308,14 +308,12 @@ module BlistsHelper
             })},
       menu_options['separator'],
       {'text' => 'Create a Calendar View...', 'href' => "#{view.href}/calendar",
-      'if' => !view.is_alt_view?, 'user_required' => true,
-      'class' => 'calendar mainViewOption' +
+      'if' => !view.is_alt_view?, 'class' => 'calendar mainViewOption' +
         (view.can_add_calendar? ? '' : ' disabled'),
       'title' => (view.can_add_calendar? ? '' :
         'This dataset does not have both a date column and text column')},
       {'text' => 'Create a Chart View...', 'href' => "#{view.href}/visualization",
-      'if' => !view.is_alt_view?, 'user_required' => true,
-      'class' => 'visualization mainViewOption' +
+      'if' => !view.is_alt_view?, 'class' => 'visualization mainViewOption' +
         (view.can_add_visualization? ? '' : ' disabled'),
       'title' => (view.can_add_visualization? ? '' :
         'This dataset does not have the appropriate columns for visualizations')},
@@ -330,8 +328,7 @@ module BlistsHelper
         'This dataset does not have any visible columns')},
       {'text' => 'Create a Map...', 'href' => "#{view.href}/map",
       'if' => !view.is_alt_view? && !view.is_grouped? &&
-        module_available?(:map_publish),
-      'user_required' => true, 'class' => 'map mainViewOption' +
+        module_available?(:map_publish), 'class' => 'map mainViewOption' +
         (view.can_add_map? ? '' : ' disabled'),
       'title' => (view.can_add_map? ? '' :
         'This dataset does not have a location column')}

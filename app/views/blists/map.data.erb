@@ -365,10 +365,26 @@
         vizType: 'map', options: $.json.serialize(options),
         view_query: $('.mapWrapper #view_query').val()};
 
+      var loginMsg = 'You must be signed in to create a map';
+      if (!$.isBlank(blist.util.inlineLogin))
+      {
+          blist.util.inlineLogin.verifyUser(
+              function(isSuccess)
+              {
+                if (isSuccess) { doSave($form, data, options); }
+                else { $('.mapWrapper .mainError').text(loginMsg); }
+              }, loginMsg);
+      }
+      else { doSave($form, data, options); }
+    };
+
+    var doSave = function($form, postData, newDisplayFormat)
+    {
+
       $.ajax({
           url: $form.attr("action"),
           type: "POST",
-          data: data,
+          data: postData,
           dataType: "json",
           success: function(data)
           {
@@ -380,9 +396,11 @@
             {
               $("#modal").jqmHide();
               <%- if @is_edit -%>
-              if ('<%= cur_type %>' != newType || layersChanged)
+              if ('<%= cur_type %>' != $('.mapWrapper #mapType').val()
+                || layersChanged)
               {
-                  blist.$display.socrataMap().reset({displayFormat: options});
+                  blist.$display.socrataMap()
+                    .reset({displayFormat: newDisplayFormat});
               }
               else
               {

@@ -127,8 +127,35 @@
                     </div>
                   </dd>
                 </dl>
+                
               </form>
               <a href="#close" class="closeButton closeGeneral">close</a>
+            </div>
+
+            <div class="attachmentsSummary">
+              <h2>Attachments</h2>
+              <a class="editLink editAttachments<%= can_edit ? "" : " hide" %>" href="<%= @view.href %>/about_edit" title="Edit Attachments">Edit</a>
+              <dd class="editItem">
+                <div class="itemContent">
+                  <ul class="textContent">
+                    <%- if @view.metadata && !@view.metadata.attachments.blank? -%>
+                      <%- @view.metadata.attachments.each do |attachment| -%>
+                        <%- attachmentObj = Attachment.set_up_model(attachment) -%>
+                        <li class="attachmentItem">
+                            <%= link_to( h(attachmentObj.displayName), attachmentObj.href, :target => "_blank" ) %>
+                        </li>
+                      <%- end -%>
+                    <%- else -%>
+                      <h3>No Attachments</h3>
+                    <%- end -%>
+                  </ul>
+                </div>
+              </dd>
+            </div>
+
+            <div class="attachmentsEdit hide">
+              <%= render :partial => 'attachments_edit', :locals => { :view => @view } %>
+              <a href="#close" class="closeButton closeAttachmentsButton">close</a>
             </div>
 
             <div class="attributionSummary">

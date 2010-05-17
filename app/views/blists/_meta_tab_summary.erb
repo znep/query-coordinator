@@ -295,3 +295,34 @@
   <%= render :partial => 'blists/attribution_edit', :locals => { :view => view } %>
 </div>
 
+<div class="attachmentsSummary">
+  <dl class="summaryList <%= allow_edit ? 'actionList' : '' %>">
+    <dt>
+      Attachments
+    </dt>
+    <dd class="editItem">
+      <div class="itemContent">
+        <ul class="textContent">
+          <%- if view.metadata && view.metadata.attachments -%>
+            <%- view.metadata.attachments.each do |attachment| -%>
+              <%- attachmentObj = Attachment.set_up_model(attachment) -%>
+              <li class="attachmentItem">
+                <%= link_to( h(attachmentObj.displayName), attachmentObj.href, :target => "_blank" ) %>
+              </li>
+            <%- end -%>
+          <%- end -%>
+        </ul>
+      </div>
+      <%- if allow_edit -%>
+      <div class="itemActions">
+        <a href="<%= view.href %>" class="action"><span>Edit</span></a>
+      </div>
+      <%- end -%>
+    </dd>
+  </dl>
+</div>
+
+<div class="attachmentsEdit hide">
+  <%= render :partial => 'blists/attachments_edit', :locals => { :view => view } %>
+</div>
+

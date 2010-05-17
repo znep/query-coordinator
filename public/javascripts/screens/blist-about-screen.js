@@ -168,4 +168,9 @@ $(function ()
             $('.attributionEdit').hide();
             $(opts.attributionContainerSelector).show();
         }});
+
+    $('.attachmentsEdit').attachmentsEdit({
+        closeButton: $('.closeAttachmentsButton'),
+        triggerButton: $('.editAttachments')
+    });
 });

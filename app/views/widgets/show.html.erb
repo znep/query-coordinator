@@ -255,7 +255,7 @@
 
       <div class="gridContainer">
         <%- if !@view.is_invalid? -%>
-        <div id="data-grid">
+        <div id="data-grid" class="<%= @display.render_partial ? @display.render_partial.split('/')[1] : '' %> " >
           <%- if !@view.is_blobby? -%>
           <noscript>
             <h3><a href="<%= @view.href %>"><%= @view.name %></a></h3>

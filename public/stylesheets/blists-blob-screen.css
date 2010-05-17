@@ -1,6 +1,6 @@
 #fileDownloadLinks
 {
-   margin: 2em 0 2em 2em;
+   padding: 2em 0 2em 2em;
 }
 
 #fileDownloadLinks h4
@@ -11,4 +11,9 @@
 #fileDownloadLinks a
 {
     font-size: 1.8em;
+}
+
+#data-grid.image
+{
+    overflow:scroll;
 }

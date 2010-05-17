@@ -264,6 +264,7 @@ javascripts:
   - util/urls
   - util/util
   - util/markup
+  - util/dataset
   - plugins/date
   - data/types
   - data/model

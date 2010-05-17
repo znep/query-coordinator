@@ -341,11 +341,6 @@ $(function()
                        (view.viewType == 'blobby');
             });
 
-            var getDisplayType = function(view)
-            {
-                return (view.displayType || 'blist').capitalize();
-            };
-
             $('.widgetContent_views').append(
                 $.renderTemplate(
                     'filtersTable',
@@ -353,8 +348,9 @@ $(function()
                     {
                         'tbody .item': {
                             'filter<-': {
-                                '.type .cellInner.icon': function(filter) { return getDisplayType(filter.item); },
-                                '.type@class+': function(filter) { return ' type' + getDisplayType(filter.item); },
+                                '.type .cellInner.icon': function(filter) { return blist.dataset.getDisplayType(filter.item); },
+                                '.type@title': function(filter) { return blist.dataset.getDisplayType(filter.item); },
+                                '.type@class+': function(filter) { return ' type' + blist.dataset.getDisplayType(filter.item); },
 
                                 '.name a': function(filter) { return $.htmlEscape(filter.item.name); },
                                 '.name a@title': function(filter) { return $.htmlEscape(filter.item.description || ''); },

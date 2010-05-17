@@ -73,6 +73,7 @@
       <a href="#close" class="close widgetContentClose">Close</a>
     </div>
     <div class="widgetContent_downloads">
+      <a href="#close" class="close widgetContentClose">Close</a>
     </div>
     <div class="widgetContent_comments">
     </div>
@@ -96,6 +97,7 @@
 
 <% content_for :templates do %>
   <%= render :partial => 'blists/filters_table_template' %>
+  <%= render :partial => 'blists/downloads_table_template' %>
 <% end %>
 
 <% content_for :js_footer do %>

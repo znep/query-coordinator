@@ -381,7 +381,7 @@ $(function()
             $('.widgetContent_views table.gridList').combinationList({
                 headerContainerSelector: '.widgetContent_views .gridListWrapper',
                 hoverOnly: true,
-                initialSort: [[7, 1]],
+                initialSort: [[1, 1]],
                 scrollableBody: false,
                 selectable: false,
                 sortGrouping: false,
@@ -393,6 +393,33 @@ $(function()
         {
             
         }
+    });
+
+    // downloads
+    var supportedDownloadTypes = [ 'CSV', 'JSON', 'PDF', 'XLS', 'XLSX', 'XML'  ];
+    $('.widgetContent_downloads').append(
+        $.renderTemplate(
+            'downloadsTable',
+            supportedDownloadTypes,
+            {
+                'tbody .item': {
+                    'downloadType<-': {
+                        '.type a': 'Download #{downloadType}',
+                        '.type a@href': function(downloadType) { 
+                            '/views/' + widgetNS.view.id + '/rows.' + downloadType.item.toLowerCase() +
+                            '?accessType=DOWNLOAD'; }
+                        // TODO: add download count when supported
+                    }
+                }
+            }));
+    $('.widgetContent_downloads table.gridList').combinationList({
+        headerContainerSelector: '.widgetContent_downloads .gridListWrapper',
+        hoverOnly: true,
+        initialSort: [[0, 1]],
+        scrollableBody: false,
+        selectable: false,
+        sortGrouping: false,
+        sortHeaders: {0: {sorter: 'text'}}
     });
 
     // embed

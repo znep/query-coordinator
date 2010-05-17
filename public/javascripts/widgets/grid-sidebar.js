@@ -284,15 +284,15 @@
 
         var commonAttrs = function(item)
         {
-            return 'id="' + (item.id || item.name || '') + '"' +
-                ' name="' + (item.name || '') + '"' +
-                ' title="' + (item.prompt || '') + '"' +
-                ' class="' + (item.extraClass || '') +
-                    (item.required ? ' required' : '') +
-                    (' ' + (item.notequalto || '')) +
-                    (!$.isBlank(item.prompt) ? ' textPrompt' : '') + '"' +
-                (!$.isBlank(item.notequalto) ? ' data-notequalto=".' +
-                    item.notequalto.split(' ').join(', .') + '"' : '');
+            return {id: item.id || item.name, name: item.name,
+                title: item.prompt,
+                'class': [ {value: 'required', onlyIf: item.required},
+                        {value: 'textPrompt', onlyIf: !$.isBlank(item.prompt)},
+                        item.notequalto, item.extraClass ],
+                'data-notequalto': {value: '.' + (item.notequalto || '')
+                        .split(' ').join(', .'),
+                    onlyIf: !$.isBlank(item.notequalto)}
+            };
         };
 
         var cols;
@@ -319,57 +319,57 @@
         switch (args.item.type)
         {
             case 'static':
-                result = '<span ' + commonAttrs(args.item) + '>' +
-                    (args.item.text || '') + '</span>';
+                result = $.tag($.extend(commonAttrs(args.item),
+                    {tagName: 'span', contents: args.item.text}), true);
                 break;
 
             case 'text':
-                result = '<input type="text" ' + commonAttrs(args.item) +
-                    (!$.isBlank(args.context.data[args.item.name]) ?
-                        ' value="' +
-                            $.htmlEscape(args.context.data[args.item.name]) +
-                            '"' : '') +
-                    ' />';
+                result = $.tag($.extend(commonAttrs(args.item),
+                    {tagName: 'input', type: 'text', value:
+                        $.htmlEscape(args.context.data[args.item.name])}), true);
                 break;
 
             case 'textarea':
-                result = '<textarea ' + commonAttrs(args.item) + '>' +
-                    (!$.isBlank(args.context.data[args.item.name]) ?
-                        $.htmlEscape(args.context.data[args.item.name]) : '') +
-                    '</textarea>';
+                result = $.tag($.extend(commonAttrs(args.item),
+                    {tagName: 'textarea', contents:
+                        $.htmlEscape(args.context.data[args.item.name])}), true);
                 break;
 
             case 'columnSelect':
-                result = '<a href="#Select:' + colTypes.join('-') + '" ' +
-                    'title="Select a column from the grid" ' +
-                    'class="columnSelector">Select a column from the grid</a>';
-                result += '<select ' + commonAttrs(args.item) + '>';
-                result += '<option value="">Select a Column</option>';
+                result = $.tag({tagName: 'a',
+                    href: '#Select:' + colTypes.join('-'),
+                    title: 'Select a column from the grid',
+                    'class': 'columnSelector',
+                    contents: 'Select a column from the grid'}, true);
+
+                var options =
+                    [{tagName: 'option', value: '', contents: 'Select a Column'}];
                 _.each(cols, function(c)
                 {
-                    result += '<option value="' + c.id + '">' +
-                        $.htmlEscape(c.name) + '</option>';
+                    options.push({tagName: 'option', value: c.id,
+                        contents: $.htmlEscape(c.name)});
                 });
-                result += '</select>';
+                result += $.tag($.extend(commonAttrs(args.item),
+                    {tagName: 'select', contents: options}), true);
                 break;
 
             case 'radioGroup':
-                result = '<div class="radioBlock">'
-                _.each(args.item.options, function(opt, i)
+                var items = _.map(args.item.options, function(opt, i)
                 {
-                    result += '<div class="radioLine ' + opt.type +
-                        (i == 0 ? ' first' : '') + '">' +
-                        '<input type="radio" ' +
-                        (opt.checked ? 'checked="checked" ' : '') +
-                        commonAttrs($.extend({}, args.item,
-                            {id: args.item.name + '_' + i})) + ' />' +
-                        '<label for="' + args.item.name + '_' + i + '">' +
-                        renderInputType(sidebarObj, {context: args.context,
-                            item: opt, items: args.item.options, pos: i}) +
-                        '</label>' +
-                        '</div>';
+                    var id = args.item.name + '_' + i;
+                    return {tagName: 'div', 'class': ['radioLine', opt.type],
+                        contents: [
+                            $.extend(commonAttrs(args.item),
+                                {id: id, tagName: 'input', type: 'radio',
+                                checked: opt.checked}),
+                            {tagName: 'label', for: id,
+                            contents:
+                                renderInputType(sidebarObj, {context: args.context,
+                                    item: opt, items: args.item.options, pos: i})}
+                        ]};
                 });
-                result += '</div>';
+                result = $.tag({tagName: 'div', 'class': 'radioBlock',
+                    contents: items}, true);
                 break;
         }
 

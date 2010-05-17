@@ -362,6 +362,7 @@ $(function()
 
                                 '.viewed .cellInner': 'filter.viewCount',
 
+                                '.picture a@href': function(filter) { return $.generateProfileUrl(filter.item.owner); },
                                 '.picture img@src': function(filter) { return filter.item.owner.profileImageUrlMedium ||
                                                                               '/images/small-profile.png'; },
                                 '.picture img@alt': function(filter) { return $.htmlEscape(filter.item.owner.displayName); }
@@ -391,7 +392,7 @@ $(function()
         },
         error: function(xhr)
         {
-            
+            // TODO: handle somehow?
         }
     });
 

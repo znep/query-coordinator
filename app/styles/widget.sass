@@ -226,6 +226,7 @@ html, body
     background-color: #fcfcfc
     display: none
     overflow-y: auto
+    overflow-x: hidden
 
   .widgetContentClose
     +close-button
@@ -256,6 +257,81 @@ html, body
     tbody
       .type
         +sprite-menu-icons
+
+  .widgetContent_comments
+    // fix IE7 scrolling bug
+    .ie7 &
+      position: relative
+
+    .commentsWrapper
+      margin-right: 4em
+      padding: 1em
+
+      .commentList
+        padding: 0.5em
+        position: relative
+
+        .commentAuthor
+          position: absolute
+          &, img
+            height: 35px
+            width: 35px
+        .commentContainer
+          background-color: #fff
+          border: 1px solid #999
+          margin-left: 55px
+          padding: 1em
+          position: relative
+
+          .commentBody, .replyBody
+            font-size: 1.1em
+            padding-bottom: 1em
+
+            .commentAuthorName, .commentTitle,
+            .replyAuthorName, .replyTitle
+              font-weight: bold
+
+          .commentActions, .replyActions
+            .timestamp, .positiveRatings, .negativeRatings
+              color: #888
+
+            .rateUp, .rateDown
+              +sprite-menu-icons
+
+              .ie7 & .icon
+                display: block
+
+            .timestamp, .actionReply, .actionInappropriate
+              float: left
+              margin-right: 1em
+
+            .positiveRatings, .negativeRatings, .rateUp, .rateDown
+              float: right
+              margin-left: 1em
+
+          .replyWrapper
+            .replyList
+              border-top: 1px solid #ddd
+
+              .replyAuthor
+                margin-top: 0.5em
+                position: absolute
+                &, img
+                  height: 25px
+                  width: 25px
+
+              .replyContainer
+                margin:
+                  left: 35px
+                padding:
+                  bottom: 0.5em
+                  top: 0.5em
+
+            .replyViewAllLink
+              font-size: 1.1em
+              padding:
+                bottom: 0.5em
+                top: 0.5em
 
   .widgetContent_embed
     .embedForm

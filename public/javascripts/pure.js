@@ -10,6 +10,10 @@
 	revision: 2.45
 */
 
+// clint.tseng@socrata.com 18/05/2010
+// Fixed a bug with context carrying over after looping into children
+// Add a space before pre- or ap- pending to a class
+
 var $p, pure = $p = function(){
 	var sel = arguments[0], 
 		ctxt = false;
@@ -298,10 +302,25 @@ $p.core = function(sel, ctxt, plugins){
 				getstr = function(n){ return n.getAttribute(attr); };
 				quotefn = function(s){ return s.replace(/\"/g, '&quot;').replace(/\s/g, '&nbsp;'); };
 			}
+			// clint.tseng@socrata.com 18/05/2010
+			// Add a space in between existing content and new content
+			// if the attr to be set is a class.
 			if(prepend){
-				setfn = function(node, s){ setstr( node, s + getstr( node )); };
+				setfn = function(node, s)
+				{
+				    /*if (isClass)
+				    { setstr( node, s + ' ' + getstr( node )); }
+				    else
+				    { */setstr( node, s + getstr( node ));// }
+				};
 			}else if(append){
-				setfn = function(node, s){ setstr( node, getstr( node ) + s); };
+				setfn = function(node, s)
+				{
+				    /*if (isClass)
+				    { setstr( node, getstr( node ) + ' ' + s); }
+				    else
+				    { */setstr( node, getstr( node ) + s);// }
+				};
 			}else{
 				setfn = function(node, s){ setstr( node, s ); };
 			}
@@ -350,17 +369,21 @@ $p.core = function(sel, ctxt, plugins){
 				length,
 				strs = [],
 				buildArg = function(idx, temp, ftr, len){
-					ctxt.pos = temp.pos = idx;
-					ctxt.item = temp.item = a[ idx ];
-					ctxt.items = a;
+				    // clint.tseng@socrata.com 18/05/2010:
+				    // Fix a context loop bug. Yes, this adds a jQuery dependence,
+				    // but I think it's a tiny bit too late too turn back on that anyway.
+				    var ctxtNew = $.extend({}, ctxt);
+					ctxtNew.pos = temp.pos = idx;
+					ctxtNew.item = temp.item = a[ idx ];
+					ctxtNew.items = a;
 					//if array, set a length property - filtered items
-					typeof len !== 'undefined' &&  (ctxt.length = len);
+					typeof len !== 'undefined' &&  (ctxtNew.length = len);
 					//if filter directive
-					if(typeof ftr === 'function' && ftr(ctxt) === false){
+					if(typeof ftr === 'function' && ftr(ctxtNew) === false){
 						filtered++;
 						return;
 					}
-					strs.push( inner.call(temp, ctxt ) );
+					strs.push( inner.call(temp, ctxtNew ) );
 				};
 			ctxt[name] = temp;
 			if( isArray(a) ){

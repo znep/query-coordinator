@@ -421,6 +421,167 @@ $(function()
         sortHeaders: {0: {sorter: 'text'}}
     });
 
+    // comments
+    // TODO: maybe refactor these into one?
+    var repliesDirective = {
+        '.@data-commentid': 'reply.id',
+
+        '.replyAuthor img@src':
+            function(reply) { return reply.item.user.profileImageUrlMedium ||
+                                       '/images/large-profile.png'; },
+        '.replyAuthor img@alt':
+            function(reply) { return $.htmlEscape(reply.item.user.displayName); },
+
+        '.replyContainer .replyBody .replyAuthorName':
+            function(reply) { return $.htmlEscape(reply.item.user.displayName); },
+        '.replyContainer .replyBody .replyAuthorName@href':
+            function(reply) { return $.generateProfileUrl(reply.item.user); },
+        '.replyContainer .replyBody .replyTitle':
+            function(reply) { return ' ' + $.htmlEscape(reply.item.title || ''); },
+        '.replyContainer .replyBody+':
+            function(reply) { return ' ' + $.htmlEscape(reply.item.body || ''); },
+
+        '.replyContainer .replyActions .timestamp':
+            function(reply) { return blist.util.humaneDate.getFromDate(new Date(reply.item.createdAt * 1000)); },
+        '.replyContainer .replyActions .positiveRatings':
+            function(reply) { return (reply.item.upRatings > 0) ? ('+' + reply.item.upRatings) : ''; },
+        '.replyContainer .replyActions .negativeRatings':
+            function(reply) { return (reply.item.downRatings > 0) ? ('-' + reply.item.downRatings) : ''; },
+        '.replyContainer .replyActions .rateUp@class+':
+            function(reply) { return (!_.isUndefined(reply.item.currentUserRating) &&
+                                       reply.item.currentUserRating.thumbUp === true) ? ' ratedUp' : ''; },
+        '.replyContainer .replyActions .rateDown@class+':
+            function(reply) { return (!_.isUndefined(reply.item.currentUserRating) &&
+                                       reply.item.currentUserRating.thumbUp === false) ? ' ratedDown' : ''; }
+    };
+    var commentsDirective = {
+        '.commentList': {
+            'comment<-': {
+                '.@data-commentid': 'comment.id',
+
+                '.commentAuthor img@src':
+                    function(comment) { return comment.item.user.profileImageUrlMedium ||
+                                               '/images/large-profile.png'; },
+                '.commentAuthor img@alt':
+                    function(comment) { return $.htmlEscape(comment.item.user.displayName); },
+
+                '.commentContainer .commentBody .commentAuthorName':
+                    function(comment) { return $.htmlEscape(comment.item.user.displayName); },
+                '.commentContainer .commentBody .commentAuthorName@href':
+                    function(comment) { return $.generateProfileUrl(comment.item.user); },
+                '.commentContainer .commentBody .commentTitle':
+                    function(comment) { return ' ' + $.htmlEscape(comment.item.title || ''); },
+                '.commentContainer .commentBody+':
+                    function(comment) { return ' ' + $.htmlEscape(comment.item.body || ''); },
+
+                '.commentContainer .commentActions .timestamp':
+                    function(comment) { return blist.util.humaneDate.getFromDate(new Date(comment.item.createdAt * 1000)); },
+                '.commentContainer .commentActions .positiveRatings':
+                    function(comment) { return (comment.item.upRatings > 0) ? ('+' + comment.item.upRatings) : ''; },
+                '.commentContainer .commentActions .negativeRatings':
+                    function(comment) { return (comment.item.downRatings > 0) ? ('-' + comment.item.downRatings) : ''; },
+                '.commentContainer .commentActions .rateUp@class+':
+                    function(comment) { return (!_.isUndefined(comment.item.currentUserRating) &&
+                                               comment.item.currentUserRating.thumbUp === true) ? ' ratedUp' : ''; },
+               '.commentContainer .commentActions .rateDown@class+':
+                   function(comment) { return (!_.isUndefined(comment.item.currentUserRating) &&
+                                              comment.item.currentUserRating.thumbUp === false) ? ' ratedDown' : ''; },
+
+                '.commentContainer .replyViewAllLink':
+                    function(comment) { return 'View all ' + comment.item.childCount + ' replies'; },
+                '.commentContainer .replyViewAllLink@class+':
+                    function(comment) { return (comment.item.childCount < 4) ? ' hide' : ''; },
+
+                '.commentContainer .replyWrapper .replyList': {
+                    'reply<-comment.children': repliesDirective
+                },
+
+                '.commentContainer .replyWrapper@class+':
+                    function(comment) { return (comment.item.childCount === 0) ? ' hide' : ''; }
+            }
+        }
+    };
+
+    var allComments = [];
+    var allCommentsCount = 0;
+    var shownCommentCount = 0;
+    var trimmedComments = [];
+
+    var showMoreComments = function()
+    {
+        $('.widgetContent_comments .commentsWrapper').append(
+            $.renderTemplate(
+                'comments',
+                trimmedComments.slice(shownCommentCount, shownCommentCount + 10),
+                commentsDirective));
+
+        shownCommentCount += 10;
+        if (shownCommentCount >= allCommentsCount)
+        {
+            $('.commentsViewMoreLink').hide();
+        }
+        else if ((allCommentsCount - shownCommentCount) == 1)
+        {
+            $('.commentsViewMoreLink').text('Show last comment');
+        }
+        else
+        {
+            $('.commentsViewMoreLink').text('Next ' +
+                Math.min(10, allCommentsCount - shownCommentCount) + ' comments');
+        }
+    };
+    $.ajax({
+        url: '/views/' + widgetNS.view.id + '/comments.json',
+        dataType: 'json',
+        success: function (responseData)
+        {
+            allComments = responseData;
+            allCommentsCount = responseData.length;
+            trimmedComments = _.map(allComments, function(comment)
+            {
+                var trimmedComment = $.extend({}, comment);
+                if (!_.isUndefined(comment.children) && (comment.children.length > 1))
+                {
+                    trimmedComment.children = comment.children.slice(0, 3);
+                }
+                trimmedComment.childCount = (_.isUndefined(comment.children) ? 0 : comment.children.length);
+                return trimmedComment;
+            });
+
+            showMoreComments();
+        }
+    });
+    $('.commentsViewMoreLink').click(function(event)
+    {
+        event.preventDefault();
+        showMoreComments();
+    });
+    $.live('.widgetContent_comments .replyViewAllLink', 'click', function(event)
+    {
+        event.preventDefault();
+
+        var $this = $(this);
+        var $commentList = $this.closest('.commentList');
+
+        var commentId = parseInt($commentList.attr('data-commentid'));
+        var commentObj = _.detect(allComments, function(comment)
+        {
+            return comment.id === commentId;
+        });
+
+        $commentList.find('.replyWrapper').append(
+            $.renderTemplate(
+                'comments .replyWrapper', // TODO: This is kind of a hack. Rethink with rest of refactor.
+                commentObj.children.slice(3),
+                {
+                    '.replyList': {
+                        'reply<-': repliesDirective
+                    }
+                }));
+
+        $this.remove();
+    });
+
     // embed
     $('.widgetContent_embed .embedForm').embedForm();
 

@@ -102,6 +102,25 @@
   <%- end -%>
 </div>
 
+<div class="commentInterstitial widgetModal">
+  <a href="#close" class="jqmClose interstitialClose">Close</a>
+  <h2>Want to leave a comment?</h2>
+  <p>To leave a comment on this dataset, you will be redirected to the
+     <%= CurrentDomain.strings.company %> website where you will be prompted
+     to sign in. Would you like to go to <%= CurrentDomain.cname %>?</p>
+  <ul class="actions clearfix">
+    <li>
+      <a class="jqmClose button cancel" href="#cancel"><span class="icon"></span>Cancel</a>
+    </li>
+    <li>
+      <a class="noInterstitial button accept" href="<%= @view.href %>" rel="external">
+        <span class="icon"></span>
+        Yes
+      </a>
+    </li>
+  </ul>
+</div>
+
 <% content_for :templates do %>
   <%= render :partial => 'blists/filters_table_template' %>
   <%= render :partial => 'blists/downloads_table_template' %>

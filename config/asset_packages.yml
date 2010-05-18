@@ -245,6 +245,7 @@ javascripts:
   - screens/dataset-menu
 - widgets-show-new:
   - pure
+  - plugins/jqModal
   - plugins/jquery.example.min
   - plugins/jquery.json
   - plugins/ui.core

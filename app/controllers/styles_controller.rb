@@ -191,7 +191,8 @@ protected
                                                      :text => 'color' },
                                      :shadow    => 'color' },
                      :table     => { :header    => { :inactive => 'color',
-                                                     :active => 'color' } } } }
+                                                     :active => 'color' } },
+                     :text      => { :error     => 'color' } } }
 
   @@widget_theme_parse = {
     :frame     => { :border     => { :color => 'color',

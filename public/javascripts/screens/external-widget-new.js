@@ -581,6 +581,13 @@ $(function()
 
         $this.remove();
     });
+    $.live('.widgetContent_comments .commentActions a, .widgetContent_comments .replyActions a', 'click',
+        function (event)
+        {
+            event.preventDefault();
+
+            $('.commentInterstitial').jqmShow();
+        });
 
     // embed
     $('.widgetContent_embed .embedForm').embedForm();
@@ -599,4 +606,25 @@ $(function()
                 {
                     $(this).closest('form').submit();
                 }));
+
+    // Set up modals
+    $('.widgetModal').jqm({
+        trigger: false,
+        modal: true,
+        onShow: function(jqm)
+        {
+            jqm.w.fadeIn('slow');
+            jqm.o.fadeIn('slow');
+        },
+        onHide: function(jqm)
+        {
+            jqm.w.fadeOut('slow');
+            jqm.o.fadeOut('slow');
+        }
+    });
+    $.live('a.jqmClose', 'click', function(event)
+    {
+        event.preventDefault();
+        $('.widgetModal').jqmHide();
+    });
 });

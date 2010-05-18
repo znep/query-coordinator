@@ -400,8 +400,13 @@ class View < Model
   end
 
   def can_add_map?
-    columns.select {|c| c.renderTypeName == 'location' &&
+    if CurrentDomain.module_available?(:location_launch)
+      return columns.select {|c| c.renderTypeName == 'location' &&
         !c.flag?('hidden')}.length > 0
+    else
+      return columns.select {|c| c.renderTypeName == 'number' &&
+        !c.flag?('hidden')}.length > 1
+    end
   end
 
   def is_tabular?

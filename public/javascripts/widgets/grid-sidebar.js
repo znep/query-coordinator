@@ -362,7 +362,7 @@
                             $.extend(commonAttrs(args.item),
                                 {id: id, tagName: 'input', type: 'radio',
                                 checked: opt.checked}),
-                            {tagName: 'label', for: id,
+                            {tagName: 'label', 'for': id,
                             contents:
                                 renderInputType(sidebarObj, {context: args.context,
                                     item: opt, items: args.item.options, pos: i})}

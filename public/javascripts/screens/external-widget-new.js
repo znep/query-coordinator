@@ -343,7 +343,7 @@ $(function()
             {
                 return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
                        (view.viewType == 'blobby');
-            }).sort(function(a, b) { return a.viewCount > b.viewCount });
+            }).sort(function(a, b) { return a.viewCount < b.viewCount });
 
             $('.widgetContent_views').append(
                 $.renderTemplate(

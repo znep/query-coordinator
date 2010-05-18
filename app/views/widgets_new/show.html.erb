@@ -6,6 +6,10 @@
 
   <title><%= @view.name %> | <%= CurrentDomain.strings.site_title %></title>
   <link type="text/css" rel="stylesheet" href="/styles/widget/<%= params[:customization_id] %>.css" />
+
+  <%- if @display.can_publish? -%>
+  <%= raw @display.render_stylesheet_includes %>
+  <%- end -%>
 <% end %>
 
 <div class="widgetWrapper">

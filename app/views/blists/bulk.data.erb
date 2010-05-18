@@ -14,18 +14,18 @@
 
 <div class="modalContentWrapper bulkOperationWrapper">
   <div class="errorMessage"></div>
-  
+
   <div class="helpText">
     <%- if @type == 'append' -%>
-      The rows in the file that you select will be appended 
+      The rows in the file that you select will be appended
       to the current dataset.
     <%- elsif @type == 'replace' -%>
       The rows in the file that you select will be used to
-      replace all of the rows in the current dataset. The existing 
+      replace all of the rows in the current dataset. The existing
       rows in <%= @view.name %> will be replaced, and <strong>cannot be recovered</strong>.
     <%- end -%>
   </div>
-  
+
   <% form_tag("/views/#{@view.id}/rows.txt", :id => "bulkOperationForm") do %>
     <label for="upload_file" class="required">Choose a File</label>
 
@@ -36,8 +36,13 @@
         </li>
       </ul>
     </div>
+
     <span class="helpie" title="For best results, the data file you select should have the same columns in the same order as the current dataset">?</span>
     <%= text_field_tag('upload_file_name', '', :readonly => true) %>
+
+    <label for="skip_headers">Skip header lines</label>
+    <%= check_box_tag('skip_headers') %>
+    <span class="helpie" title="If this box is checked, we'll automatically detect header rows and skip them, just like we do on import">?</span>
 
     <div class="submitLine clearfix">
       <span class="requiredText">Required Entry</span>
@@ -122,7 +127,7 @@
       event.preventDefault();
       if ($form.valid() && fileValid)
       {
-        $uploader._settings.action = $form.attr('action') + '?method=<%= @type %>';
+        $uploader._settings.action = $form.attr('action') + '?method=<%= @type %>&skip_headers=' + $form.find('#skip_headers').is(':checked');
         $uploader.submit();
 
         $('.bulkOperationWrapper .submitActions li:has(.loadingIndicator)').removeClass('hide');

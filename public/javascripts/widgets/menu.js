@@ -8,6 +8,14 @@
         if (!_.isArray(opts.contents[0]))
         { opts.contents = [opts.contents]; }
 
+        var contents = _.map(opts.contents, function(column)
+        {
+            return _.reject(column, function(item)
+            {
+                return item.onlyIf === false;
+            });
+        });
+
         return this.each(function()
         {
             var $menuContainer = $(this);
@@ -19,7 +27,8 @@
                         { menuButtonClass: opts.menuButtonClass,
                           menuButtonContents: opts.menuButtonContents,
                           menuButtonTitle: opts.menuButtonTitle,
-                          columns: opts.contents },
+                          columns: contents
+                        },
                         opts.renderDirective));
 
             var $menuButton = $menuContainer.children('a');

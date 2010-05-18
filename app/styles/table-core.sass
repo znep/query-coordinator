@@ -204,6 +204,8 @@ img.blist-table-option-icon
 .blist-tstars-render-wrapper
   display: inline-block
   padding-left: 11px
+  div.drill-td &
+    padding-left: 0
 
 .blist-tstars-wrapper
   overflow: hidden
@@ -430,6 +432,9 @@ div.blist-table-editor
 .richtext .blist-th-icon
   background-position: 0 -60px
 
+.html .blist-th-icon
+  background-position: 0 -60px
+
 .number .blist-th-icon
   background-position: 0 -20px
 
@@ -553,5 +558,9 @@ div.blist-table-editor
     &.hover .star.star-on
       background-position: 0 -32px
 
-  &.type-richtext textarea
+  &.type-html textarea
     visibility: hidden
+
+.blist-td .drillDown
+  float: left
+  margin-right: 0.4em

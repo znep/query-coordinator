@@ -90,8 +90,9 @@ blist.widget.showDataView = function()
 
 $(function()
 {
-    // orientation
+    // keep track of some stuff for easy access
     widgetNS.orientation = widgetNS.theme['frame']['orientation'];
+    widgetNS.isBlobby = (widgetNS.view.viewType === 'blobby');
 
     // sizing
     widgetNS.resizeViewport();
@@ -124,14 +125,14 @@ $(function()
     $('.mainMenu').menu({
         attached: false,
         menuButtonTitle: 'Access additional information about this dataset.',
-        menuButtonClass: 'mainMenuButton ' + ((widgetNS.theme['frame']['orientation'] == 'downwards') ? 'upArrow' : 'downArrow'),
+        menuButtonClass: 'mainMenuButton ' + ((widgetNS.orientation == 'downwards') ? 'upArrow' : 'downArrow'),
         contents: [
             { text: 'Views', className: 'views', subtext: 'Filters, Charts, and Maps', href: '#views' },
-            { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads' },
+            { text: 'Downloads', className: 'downloads', subtext: 'Download various file formats', href: '#downloads', onlyIf: !widgetNS.isBlobby },
             { text: 'Comments', className: 'comments', subtext: 'Read comments on this dataset', href: '#comments' },
             { text: 'Embed', className: 'embed', subtext: 'Embed this player on your site', href: '#embed' },
-            { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print' },
-            { text: 'About the Socrata Social Data Player', className: 'about', href: 'http://www.socrata.com/try-it-free' }
+            { text: 'Print', className: 'print', subtext: 'Print out this dataset', href: '#print', onlyIf: !widgetNS.isBlobby },
+            { text: 'About the Socrata Social Data Player', className: 'about', href: 'http://www.socrata.com/try-it-free', rel: 'external' }
         ]
     });
     $('.mainMenu .menuDropdown a').click(function(event)
@@ -154,7 +155,7 @@ $(function()
         }
     });
 
-    var tweet = escape('Check out the ' + $.htmlEscape(widgetNS.view.name) + ' dataset on ' + configNS.strings.company_name + ': ');
+    var tweet = escape('Check out the ' + $.htmlEscape(widgetNS.view.name) + ' dataset on ' + configNS.strings.company + ': ');
     var seoPath = window.location.hostname + $.generateViewUrl(widgetNS.view);
     var shortPath = window.location.hostname.replace(/www\./, '') + '/d/' + widgetNS.viewId;
     $('.subHeaderBar .share .shareMenu').menu({
@@ -171,7 +172,7 @@ $(function()
               href: 'http://www.facebook.com/share.php?u=' + seoPath },
             { text: 'Twitter', className: 'twitter', rel: 'external',
               href: 'http://www.twitter.com/home?status=' + tweet + shortPath },
-            { text: 'Email', className: 'email', href: '#email' }
+            { text: 'Email', className: 'email', href: '#email', onlyIf: !widgetNS.isBlobby }
         ]
     });
 
@@ -227,7 +228,8 @@ $(function()
                     $('.toolbarEmailForm .toolbarTextbox')
                         .val(emails.join(', '))
                         .attr('disabled', false)
-                        .css('background-color', widgetNS.theme.toolbar.input_color);
+                        .css('background-color', null) // for firefox/webkit
+                        .css('background-color', widgetNS.theme.toolbar.input_color); // for ie
                 }
             );
         }
@@ -242,11 +244,16 @@ $(function()
                         .val('')
                         .blur()
                         .attr('disabled', false)
-                        .css('background-color', widgetNS.theme.toolbar.input_color);
+                        .css('background-color', null) // for firefox/webkit
+                        .css('background-color', widgetNS.theme.toolbar.input_color); // for ie
                 }
             );
         }
     };
+
+    // force clear textbox; it acts weird on refresh because it thinks you've changed it
+    $('.toolbarEmailForm .toolbarTextbox, .toolbarSearchForm .toolbarTextbox').val('').blur();
+
     $('.toolbar .toolbarEmailForm').submit(function(event)
     {
         event.preventDefault();
@@ -306,14 +313,11 @@ $(function()
                     accessType: 'WIDGET',
                     showRowNumbers: widgetNS.theme['grid']['row_numbers'],
                     showRowHandle: widgetNS.theme['grid']['row_numbers'],
-                    editEnabled: typeof(isOldIE) === 'undefined',
+                    editEnabled: false,
                     manualResize: true,
-                    columnNameEdit: typeof(isOldIE) === 'undefined' &&
-                        blist.isOwner,
+                    columnNameEdit: false,
                     filterForm: '.toolbar .toolbarSearchForm',
                     autoHideClearFilterItem: false,
-                    clearTempViewCallback: widgetNS.clearTempViewTab,
-                    setTempViewCallback: widgetNS.setTempViewTab,
                     initialResponse: $.unescapeObject(widgetNS.viewJson)
                 });
         }
@@ -339,12 +343,7 @@ $(function()
             {
                 return (_.include(view.flags, 'default') && (view.viewType == 'tabular')) ||
                        (view.viewType == 'blobby');
-            });
-
-            var getDisplayType = function(view)
-            {
-                return (view.displayType || 'blist').capitalize();
-            };
+            }).sort(function(a, b) { return a.viewCount > b.viewCount });
 
             $('.widgetContent_views').append(
                 $.renderTemplate(
@@ -353,8 +352,9 @@ $(function()
                     {
                         'tbody .item': {
                             'filter<-': {
-                                '.type .cellInner.icon': function(filter) { return getDisplayType(filter.item); },
-                                '.type@class+': function(filter) { return ' type' + getDisplayType(filter.item); },
+                                '.type .cellInner.icon': function(filter) { return blist.dataset.getDisplayType(filter.item); },
+                                '.type@title': function(filter) { return blist.dataset.getDisplayType(filter.item); },
+                                '.type@class+': function(filter) { return ' type' + blist.dataset.getDisplayType(filter.item); },
 
                                 '.name a': function(filter) { return $.htmlEscape(filter.item.name); },
                                 '.name a@title': function(filter) { return $.htmlEscape(filter.item.description || ''); },
@@ -376,13 +376,12 @@ $(function()
                 if ($this.attr('title') === '')
                 { return; }
 
-                $this.socrataTip({ message: $this.attr('title'), trigger: 'hover' });
+                $this.socrataTip({ message: $this.attr('title'), trigger: 'hover', shrinkToFit: false });
             });
 
             $('.widgetContent_views table.gridList').combinationList({
                 headerContainerSelector: '.widgetContent_views .gridListWrapper',
-                hoverOnly: true,
-                initialSort: [[1, 1]],
+                initialSort: [[2, 1]],
                 scrollableBody: false,
                 selectable: false,
                 sortGrouping: false,
@@ -415,8 +414,7 @@ $(function()
             }));
     $('.widgetContent_downloads table.gridList').combinationList({
         headerContainerSelector: '.widgetContent_downloads .gridListWrapper',
-        hoverOnly: true,
-        initialSort: [[0, 1]],
+        initialSort: [[0, 0]],
         scrollableBody: false,
         selectable: false,
         sortGrouping: false,

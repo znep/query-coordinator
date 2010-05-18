@@ -16,6 +16,7 @@
 .headerMenu .recent .visualization a { background-position: 5px -784px; }
 .headerMenu .recent .grouped a { background-position: 5px -1267px; }
 .headerMenu .recent .form a { background-position: 5px -1313px; }
+.headerMenu .recent .blob a { background-position: 5px -1290px; }
 .headerMenu .flag a { background-position: 5px -1129px; }
 
 /* Filter, Visualize, Views menu */
